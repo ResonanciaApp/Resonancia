@@ -4,7 +4,6 @@ import { useDayRollover } from "@/hooks/useDayRollover";
 import { useStreak } from "@/hooks/useStreak";
 import { StreakWeekRow } from "@/components/StreakWeekRow";
 import { useStreakCelebration } from "@/context/StreakCelebrationContext";
-import { useNotifications } from "@/context/NotificationsContext";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { LinearGradient } from "expo-linear-gradient";
 import { BlurView } from "expo-blur";
@@ -1630,7 +1629,6 @@ const Inicio2HeroStatic = React.memo(function Inicio2HeroStatic({
   giftScale,
   onOpenDrawer,
   onOpenProfile,
-  onOpenSearch,
   isInicio3,
   scrollY,
 }: {
@@ -1639,12 +1637,11 @@ const Inicio2HeroStatic = React.memo(function Inicio2HeroStatic({
   giftScale: Animated.Value;
   onOpenDrawer: () => void;
   onOpenProfile: () => void;
-  onOpenSearch: () => void;
   isInicio3?: boolean;
   scrollY?: SharedValue<number>;
 }) {
   const router = useRouter();
-  const { unreadCount } = useNotifications();
+  const { currentStreak } = useStreak();
   const { user: clerkUser } = useUser();
   const { username, photoUri } = useUserProfile();
   const displayName =
@@ -1813,7 +1810,7 @@ const Inicio2HeroStatic = React.memo(function Inicio2HeroStatic({
           ]}
         >
           <Pressable
-            onPress={isInicio3 ? () => router.push("/notificaciones" as never) : onOpenProfile}
+            onPress={onOpenProfile}
             onPressIn={() =>
               Animated.spring(giftScale, {
                 toValue: 0.84,
@@ -1831,53 +1828,22 @@ const Inicio2HeroStatic = React.memo(function Inicio2HeroStatic({
               }).start()
             }
             hitSlop={12}
-            style={[
-              styles.inicio2HeroLotusButton,
-              isInicio3 && styles.inicio3HeaderActionHitbox,
-            ]}
+            style={styles.inicio2HeroLotusButton}
             accessibilityRole="button"
-            accessibilityLabel={isInicio3 ? "Abrir notificaciones" : "Abrir Tu progreso"}
+            accessibilityLabel="Abrir Tu progreso"
             testID="inicio2-open-progress-control"
           >
             <Animated.View style={{ transform: [{ scale: giftScale }] }}>
               {isInicio3 ? (
-                <View style={styles.inicio3NotificationsButton}>
-                  {Platform.OS === "ios" ? (
-                    <SymbolView name="bell.fill" tintColor="#FFFFFF" size={21} />
-                  ) : (
-                    <Feather name="bell" size={21} color="#FFFFFF" />
-                  )}
-                  {unreadCount > 0 ? (
-                    <View style={styles.inicio3NotificationsBadge}>
-                      <Text style={styles.inicio3NotificationsBadgeText}>
-                        {unreadCount > 99 ? "99+" : unreadCount}
-                      </Text>
-                    </View>
-                  ) : null}
+                <View style={styles.inicio3ProfileLotusPill}>
+                  <Text style={styles.inicio3ProfileLotusCount}>{currentStreak}</Text>
+                  <MaterialCommunityIcons name="spa" size={20} color="#FFFFFF" />
                 </View>
               ) : (
                 <Inicio2LotusStreak />
               )}
             </Animated.View>
           </Pressable>
-          {isInicio3 ? (
-            <Pressable
-              onPress={onOpenSearch}
-              hitSlop={10}
-              style={styles.inicio3HeaderActionHitbox}
-              accessibilityRole="button"
-              accessibilityLabel="Buscar en Inicio"
-              testID="inicio3-open-search"
-            >
-              <View style={styles.inicio3NotificationsButton}>
-                {Platform.OS === "ios" ? (
-                  <SymbolView name="magnifyingglass" tintColor="#FFFFFF" size={24} />
-                ) : (
-                  <Feather name="search" size={24} color="#FFFFFF" />
-                )}
-              </View>
-            </Pressable>
-          ) : null}
         </View>
       </RAnimated.View>
 
@@ -2775,7 +2741,6 @@ export default function HomeScreen2({
               giftScale={giftScaleAnim}
               onOpenDrawer={handleOpenDrawer}
               onOpenProfile={handleOpenProgress}
-              onOpenSearch={handleSearchBtnPress}
               isInicio3={variant === "inicio3"}
               scrollY={inicio3ScrollY}
             />
@@ -3650,12 +3615,23 @@ const styles = StyleSheet.create({
     alignItems: "center",
     gap: 8,
   },
-  inicio3HeaderActionHitbox: {
-    width: 43,
-    height: 43,
-    borderRadius: 21.5,
+  inicio3ProfileLotusPill: {
+    height: 36,
+    minWidth: 58,
+    paddingHorizontal: 10,
+    borderRadius: 20,
+    flexDirection: "row",
+    gap: 6,
     alignItems: "center",
     justifyContent: "center",
+    backgroundColor: "rgba(255,255,255,0.08)",
+  },
+  inicio3ProfileLotusCount: {
+    color: "#FFFFFF",
+    fontFamily: "Manrope",
+    fontSize: 16,
+    fontWeight: "800",
+    lineHeight: 20,
   },
   inicio2HeroLotusCount: {
     minWidth: 13,
@@ -4129,37 +4105,6 @@ const styles = StyleSheet.create({
     alignItems: "center",
     justifyContent: "center",
     backgroundColor: "rgba(0,0,0,0.34)",
-  },
-  inicio3NotificationsButton: {
-    width: 43,
-    height: 43,
-    borderRadius: 21.5,
-    borderWidth: 1,
-    borderColor: "rgba(255,255,255,0.2)",
-    alignItems: "center",
-    justifyContent: "center",
-    backgroundColor: "rgba(0,0,0,0.34)",
-  },
-  inicio3NotificationsBadge: {
-    position: "absolute",
-    top: -4,
-    right: -5,
-    minWidth: 18,
-    height: 18,
-    borderRadius: 9,
-    paddingHorizontal: 4,
-    alignItems: "center",
-    justifyContent: "center",
-    backgroundColor: "#BE9650",
-    borderWidth: 1.5,
-    borderColor: "#060A0F",
-  },
-  inicio3NotificationsBadgeText: {
-    color: "#060A0F",
-    fontFamily: "Manrope",
-    fontSize: 10,
-    fontWeight: "800",
-    lineHeight: 12,
   },
   universeBtnIcon: {
     width: 28,
