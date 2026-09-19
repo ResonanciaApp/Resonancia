@@ -1267,7 +1267,7 @@ export function ProfileScreenBase({
               <ProgressMirrorSections
                 showSectionBorders={false}
                 showPersonalStats={false}
-                showCalendar={false}
+                showCalendar
               />
             </View>
 

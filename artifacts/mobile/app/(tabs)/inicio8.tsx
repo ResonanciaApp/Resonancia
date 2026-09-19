@@ -19,6 +19,7 @@ import {
   FlatList,
   Keyboard,
   Modal,
+  type GestureResponderEvent,
   type NativeScrollEvent,
   type NativeSyntheticEvent,
   Platform,
@@ -1410,6 +1411,7 @@ function Inicio3HeroPager({
   const [activeIndex, setActiveIndex] = useState(0);
   const [todayMediaActive, setTodayMediaActive] = useState(true);
   const todayMediaActiveRef = useRef(true);
+  const slidePressStartXRef = useRef<number | null>(null);
 
   const updateActiveSlide = (offsetX: number) => {
     const index = Math.round(offsetX / slideWidth);
@@ -1477,6 +1479,15 @@ function Inicio3HeroPager({
       router.push("/player" as never);
     }
   }, [isPremium, openCategory, openForSession, playSession, router]);
+  const handleSlidePress = useCallback((
+    item: (typeof pagerSlides)[number],
+    event: GestureResponderEvent,
+  ) => {
+    const startX = slidePressStartXRef.current;
+    slidePressStartXRef.current = null;
+    if (startX !== null && Math.abs(event.nativeEvent.pageX - startX) > 8) return;
+    openSlide(item);
+  }, [openSlide]);
 
   return (
     <RAnimated.View
@@ -1533,7 +1544,10 @@ function Inicio3HeroPager({
             <View style={[styles.inicio3HeroSlide, { width: slideWidth }]}>
               <Pressable
                 style={StyleSheet.absoluteFill}
-                onPress={() => openSlide(item)}
+                onPressIn={(event) => {
+                  slidePressStartXRef.current = event.nativeEvent.pageX;
+                }}
+                onPress={(event) => handleSlidePress(item, event)}
                 accessibilityRole="button"
                 accessibilityLabel={item.title || "Sabiduría diaria"}
                 testID={`inicio3-hero-slide-${index + 1}`}
