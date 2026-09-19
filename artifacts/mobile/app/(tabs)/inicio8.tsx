@@ -1805,8 +1805,8 @@ const Inicio2HeroStatic = React.memo(function Inicio2HeroStatic({
             styles.inicio3HeroRightActions,
             isInicio3 && {
               position: "absolute",
-              top: topInset + 2,
-              right: 14,
+              top: topInset + 7,
+              right: 16,
             },
           ]}
         >
