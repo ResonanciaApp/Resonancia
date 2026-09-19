@@ -39,7 +39,11 @@ export function StreakWeekRow() {
         const hasGradientRing = isToday || active;
         const dayCircle = (
           <View style={styles.day}>
-            {active ? <Feather name="check" size={22} color="#F9F9F9" /> : null}
+            {active ? (
+              <Feather name="check" size={22} color="#F9F9F9" />
+            ) : (
+              <Text style={styles.dayLabel}>{initial}</Text>
+            )}
           </View>
         );
 
@@ -65,7 +69,6 @@ export function StreakWeekRow() {
             ) : (
               dayCircle
             )}
-            <Text style={styles.dayLabel}>{initial}</Text>
           </View>
         );
       })}
@@ -82,7 +85,6 @@ const styles = StyleSheet.create({
   },
   dayWrapper: {
     alignItems: "center",
-    gap: 6,
   },
   day: {
     width: 37,
@@ -107,7 +109,8 @@ const styles = StyleSheet.create({
   dayLabel: {
     color: "#F9F9F9",
     fontFamily: "Manrope",
-    fontSize: 11,
-    fontWeight: "500",
+    fontSize: 17,
+    fontWeight: "700",
+    opacity: 0.8,
   },
 });
