@@ -98,6 +98,9 @@ export function InnerSpaceCard({
     <View style={styles.container}>
       <View style={styles.header}>
         <Text style={[styles.title, { color: colors.foreground }]}>Mi viaje interior</Text>
+        <Text style={[styles.description, { color: colors.mutedForeground }]}>
+          Registra una reflexión e inmortalízala en tu muro
+        </Text>
       </View>
 
       <ScrollView
@@ -172,9 +175,9 @@ export function InnerSpaceCard({
         <Text style={[styles.submitText, { color: "#D4B8F4" }]}>{createMutation.isPending ? "Guardando..." : "Guardar mensaje"}</Text>
       </Pressable>
 
-      <Pressable testID="history-link" accessibilityRole="button" accessibilityLabel="Ver mi espacio interior" onPress={() => router.push("/mi-espacio-interior")} style={styles.historyLinkContainer}>
+      <Pressable testID="history-link" accessibilityRole="button" accessibilityLabel="Ver muro" onPress={() => router.push("/mi-espacio-interior")} style={styles.historyLinkContainer}>
         <View style={styles.historyAction}>
-          <Text style={[styles.historyLinkText, { color: colors.primary }]}>Ver mi espacio interior</Text>
+          <Text style={[styles.historyLinkText, { color: colors.primary }]}>Ver muro</Text>
           <Feather name="arrow-right" size={14} color={colors.primary} />
         </View>
       </Pressable>
@@ -199,6 +202,11 @@ const styles = StyleSheet.create({
     fontSize: 18,
     fontWeight: "600",
     textAlign: "left",
+  },
+  description: {
+    fontSize: 13,
+    lineHeight: 18,
+    marginTop: 6,
   },
   categoriesScroll: {
     marginBottom: 20,
