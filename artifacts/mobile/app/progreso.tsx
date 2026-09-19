@@ -75,7 +75,7 @@ export default function ProgresoScreen() {
             <Image
               source={require("@/assets/images/progreso-lotus-cosmic.jpg")}
               style={styles.heroLotus}
-              contentFit="cover"
+              contentFit="contain"
             />
             <LinearGradient
               colors={[
@@ -162,6 +162,7 @@ const styles = StyleSheet.create({
   headerSpacer: { width: 42, height: 42 },
   heroContainer: {
     position: "relative",
+    backgroundColor: "#080A28",
   },
   heroLotus: {
     ...StyleSheet.absoluteFillObject,
