@@ -1,0 +1,605 @@
+Quiero implementar una nueva funcionalidad dentro de Perfil llamada “Un momento para ti” y crear una nueva pantalla llamada “Mi espacio interior”.
+
+La funcionalidad permite que el usuario registre pensamientos, intenciones o reflexiones personales asociándolos a una de 6 categorías. Cada mensaje queda guardado y posteriormente aparece en un muro cronológico / línea de tiempo donde el usuario puede revisar todo lo que ha escrito a lo largo del tiempo.
+
+1. Ubicación dentro de Perfil
+
+En la pantalla Perfil, actualmente tenemos:
+
+Perfil del usuario
+Tu Premium
+Racha / progreso
+
+Quiero insertar “Un momento para ti” entre el bloque de usuario/Premium y el bloque de racha.
+
+La sección debe mantener exactamente el lenguaje visual actual de Resonancia:
+
+Fondo degradado azul índigo / morado.
+Cards redondeadas.
+Bordes sutiles.
+Glow muy suave.
+Tipografía blanca.
+Colores pastel para las categorías.
+Diseño premium, contemplativo y minimalista.
+No utilizar fotografías dentro de esta sección.
+2. “Un momento para ti”
+
+La card debe tener aproximadamente esta estructura:
+
+Encabezado
+
+Icono de loto / símbolo asociado a reflexión.
+
+Un momento para ti
+
+Texto secundario:
+
+¿Qué necesitas expresar hoy?
+
+Debajo aparecen las 6 categorías.
+
+Categorías
+
+Cada categoría debe tener:
+
+Icono propio.
+Nombre.
+Color distintivo.
+Estado seleccionado / no seleccionado.
+
+Las categorías son:
+
+💗 Gratitud
+
+Color: rosa / magenta.
+
+🧠 Entendimiento
+
+Color: violeta / lavanda.
+
+☀️ Claridad
+
+Color: amarillo / dorado.
+
+🪷 Calma
+
+Color: púrpura.
+
+🌱 Propósito
+
+Color: verde / turquesa.
+
+⛰️ Aceptación
+
+Color: azul.
+
+No utilizar emojis como implementación final si el sistema de iconos de Resonancia permite utilizar iconos propios. Mantener el estilo de iconografía utilizado actualmente en la aplicación.
+
+3. Selección de categoría
+
+El usuario debe seleccionar una sola categoría antes de guardar.
+
+Cuando una categoría está seleccionada:
+
+Su card/botón cambia visualmente.
+Aparece un glow suave.
+El icono se ilumina.
+El usuario puede cambiar de categoría antes de guardar.
+
+No se debe poder guardar un mensaje sin seleccionar una categoría.
+
+4. Campo para escribir
+
+Debajo de las categorías debe existir un campo de texto grande:
+
+Escribe tu mensaje aquí...
+
+Características:
+
+Multilinea.
+Cómodo para escribir reflexiones de varias líneas.
+Contador de caracteres.
+Máximo recomendado: 300 caracteres.
+El contador debe mostrar, por ejemplo:
+
+0/300
+
+y actualizarse mientras el usuario escribe.
+
+El campo debe respetar el diseño visual de Resonancia.
+
+5. Botón Guardar
+
+Debajo del campo:
+
+Guardar mensaje
+
+El botón debe estar deshabilitado cuando:
+
+No hay categoría seleccionada.
+El campo está vacío.
+
+Cuando ambos elementos están completos, el botón pasa a su estado activo.
+
+6. Guardar mensaje
+
+Cuando el usuario pulsa Guardar mensaje:
+
+Crear un nuevo registro con:
+
+id
+userId
+category
+categoryIcon
+categoryColor
+message
+createdAt
+
+El createdAt debe guardar fecha y hora reales del dispositivo/servidor.
+
+Es importante que se puedan guardar varios mensajes en el mismo día.
+
+Por ejemplo:
+
+18 septiembre:
+
+08:12 — Calma
+
+Hoy quiero sentirme en paz...
+
+21:36 — Gratitud
+
+Hoy cierro el día agradeciendo...
+
+Ambos deben conservarse como registros independientes.
+
+No sobrescribir nunca el mensaje anterior del mismo día.
+
+7. Confirmación “Mensaje registrado”
+
+Después de guardar correctamente el mensaje, mostrar una pequeña notificación temporal tipo toast / snackbar en la parte inferior de la pantalla.
+
+Texto:
+
+✓ Mensaje registrado
+
+Tu reflexión ha sido guardada en tu espacio interior.
+
+Debe desaparecer automáticamente después de unos segundos.
+
+No utilizar un modal invasivo.
+
+Después de guardar:
+
+Limpiar el campo.
+Deseleccionar la categoría.
+Mantener al usuario en Perfil.
+Actualizar inmediatamente cualquier contador/estado necesario.
+8. Acceso a “Mi espacio interior”
+
+La sección “Un momento para ti” debe tener una forma clara de acceder al historial.
+
+Puede utilizarse un pequeño enlace/botón en el encabezado de la card, por ejemplo:
+
+Ver mi espacio →
+
+Al tocarlo debe navegar a una nueva pantalla:
+
+Mi espacio interior
+9. Pantalla “Mi espacio interior”
+
+Esta pantalla es un muro infinito de pensamientos personales.
+
+No quiero que parezca un listado administrativo ni una tabla.
+
+Debe sentirse como un diario visual / línea de tiempo personal.
+
+Encabezado:
+
+← Mi espacio interior
+Texto secundario:
+
+Un recorrido por tus intenciones, reflexiones y descubrimientos.
+
+10. Filtros por categoría
+
+Debajo del encabezado colocar filtros horizontales:
+
+Todos
+
+Gratitud
+
+Entendimiento
+
+Claridad
+
+Calma
+
+Propósito
+
+Aceptación
+
+Los filtros deben poder desplazarse horizontalmente si no caben en pantalla.
+
+Todos
+
+Muestra todas las reflexiones en orden cronológico.
+
+Categoría específica
+
+Muestra únicamente los mensajes asociados a esa categoría.
+
+Por ejemplo:
+
+Seleccionar Calma → mostrar únicamente mensajes de Calma.
+
+El filtro seleccionado debe tener un estado visual claramente diferenciado.
+
+11. Timeline / muro
+
+El contenido debe organizarse cronológicamente.
+
+Los mensajes más recientes aparecen primero.
+
+La estructura visual debe ser una línea de tiempo vertical.
+
+Cada registro debe mostrar:
+
+Fecha
+
+Ejemplo:
+
+18
+SEP
+2026
+
+Hora
+
+Ejemplo:
+
+08:12
+
+Icono de categoría
+
+El icono correspondiente debe aparecer en la línea de tiempo.
+
+Píldora
+
+Mostrar la categoría como pill:
+
+Calma
+
+Gratitud
+
+Claridad
+
+etc.
+
+La pill debe utilizar el color correspondiente a la categoría.
+
+Mensaje
+
+Mostrar exactamente el texto que escribió el usuario.
+
+12. Importante: diferentes tamaños de reflexión
+
+Las cards NO deben tener todas exactamente la misma altura.
+
+El tamaño debe adaptarse al contenido.
+
+Por ejemplo:
+
+Una reflexión corta:
+
+Respiro. Todo está bien.
+
+Debe ocupar poco espacio.
+
+Una reflexión larga:
+
+Hoy quiero sentirme en paz con lo que no puedo controlar. Respiro, suelto y confío en que todo se acomoda en su momento.
+
+Debe ocupar más espacio.
+
+No truncar las reflexiones.
+
+No utilizar imágenes dentro de las cards.
+
+La card debe contener únicamente:
+
+Píldora + texto + elementos de timeline.
+
+Esto es importante: el muro debe sentirse como una colección de pensamientos personales, no como un feed de contenido.
+
+13. Varios mensajes en el mismo día
+
+Si existen varios registros en un mismo día, deben aparecer agrupados bajo la misma fecha.
+
+Ejemplo:
+
+18 SEP 2026
+
+08:12
+🪷 Calma
+
+Hoy quiero sentirme en paz con lo que no puedo controlar.
+
+21:36
+💗 Gratitud
+
+Hoy cierro el día con el corazón lleno. Agradezco las pequeñas cosas...
+
+No repetir innecesariamente la fecha para cada mensaje.
+
+La línea de tiempo debe mostrar claramente que ambos pertenecen al mismo día.
+
+14. Navegación por días
+
+El usuario debe poder recorrer su historial hacia atrás mediante scroll vertical.
+
+El muro debe ser conceptualmente infinito:
+
+Septiembre 2026
+18
+  mensaje
+  mensaje
+
+17
+  mensaje
+
+16
+  mensaje
+
+...
+
+Agosto 2026
+31
+  mensaje
+
+28
+  mensaje
+
+...
+
+A medida que el usuario hace scroll deben cargarse más registros si existen.
+
+No cargar todos los registros de una sola vez si la cantidad puede crecer considerablemente.
+
+Preparar la estructura para pagination / infinite scroll.
+
+15. Menú de cada reflexión
+
+Cada reflexión puede tener un pequeño menú •••.
+
+Al tocarlo mostrar opciones:
+
+Editar
+
+Eliminar
+
+Si se selecciona editar:
+
+Abrir nuevamente el editor.
+Permitir modificar categoría y texto.
+Guardar cambios.
+
+Si se selecciona eliminar:
+
+Mostrar una confirmación:
+
+¿Eliminar esta reflexión?
+
+Esta acción no se puede deshacer.
+
+Botones:
+
+Cancelar
+
+Eliminar
+
+16. Estado vacío
+
+Si el usuario todavía no ha escrito ninguna reflexión:
+
+Mostrar un estado vacío bonito y contemplativo.
+
+Por ejemplo:
+
+🪷
+
+Tu espacio interior está comenzando
+
+Cada pensamiento que compartas contigo puede convertirse en un descubrimiento.
+
+Botón:
+
+Escribir mi primera reflexión
+
+Este botón debe llevar o hacer scroll hasta “Un momento para ti” en Perfil.
+
+17. Persistencia de datos
+
+Esto es muy importante.
+
+Los mensajes NO deben ser datos mockeados solamente en el frontend.
+
+Implementar la estructura de datos de forma que los mensajes permanezcan después de:
+
+cerrar la pantalla,
+navegar a otra sección,
+cerrar y volver a abrir la app,
+reiniciar la aplicación.
+
+Utilizar la arquitectura de base de datos / backend que ya utiliza Resonancia.
+
+Si existe una tabla/colección de usuarios, relacionar cada reflexión con el userId.
+
+Modelo conceptual:
+
+Reflection
+---------
+id
+userId
+category
+message
+createdAt
+updatedAt
+
+No guardar la categoría solamente como texto visual. Utilizar un identificador estable:
+
+gratitude
+understanding
+clarity
+calm
+purpose
+acceptance
+
+Y mantener la configuración visual de cada categoría en un único lugar para evitar duplicación.
+
+18. Orden cronológico
+
+Los registros deben ordenarse por:
+
+createdAt DESC
+
+Es decir:
+
+más reciente → más antiguo
+
+Pero dentro de un mismo día:
+
+hora más reciente → hora más antigua
+
+19. Diseño visual
+
+Utilizar como referencia directa los screenshots proporcionados de:
+
+Perfil
+Mi espacio interior
+
+No cambiar el lenguaje visual existente de Resonancia.
+
+Mantener:
+
+Fondo índigo/morado.
+Gradientes existentes.
+Bordes luminosos sutiles.
+Cards translúcidas.
+Glow muy controlado.
+Tipografía actual.
+Radio de bordes existente.
+Espaciado consistente.
+Bottom navigation existente.
+Iconografía consistente.
+MUY IMPORTANTE
+
+En Mi espacio interior NO utilizar imágenes fotográficas dentro de las reflexiones.
+
+Cada reflexión debe ser:
+
+fecha + hora + icono + pill de categoría + texto
+
+La variedad visual debe venir de:
+
+color de categoría,
+iconografía,
+longitud del texto,
+posición dentro de la timeline,
+profundidad/espaciado de las cards.
+20. Animaciones
+
+Agregar animaciones sutiles:
+
+Al seleccionar categoría
+transición de escala muy pequeña;
+glow;
+cambio de borde.
+Al guardar
+botón responde al tap;
+toast aparece con una animación suave;
+la selección se limpia.
+Al entrar al muro
+
+Las reflexiones pueden aparecer con un pequeño fade/slide vertical.
+
+Al filtrar
+
+No recargar abruptamente toda la pantalla. Utilizar una transición suave.
+
+No exagerar las animaciones.
+
+21. Datos de prueba
+
+Para poder probar correctamente la interfaz, crear datos mock de desarrollo con diferentes longitudes de texto.
+
+Necesito específicamente:
+
+18 septiembre
+
+08:12 — Calma
+
+Hoy quiero sentirme en paz con lo que no puedo controlar. Respiro, suelto y confío en que todo se acomoda en su momento.
+
+21:36 — Gratitud
+
+Hoy cierro el día con el corazón lleno. Agradezco las pequeñas cosas, las personas que me rodean y todo lo que estoy aprendiendo en este proceso.
+
+17 septiembre
+
+10:24 — Claridad
+
+Quiero tener más claridad en mis decisiones y escuchar más a mi intuición. Cuando me detengo y respiro, las respuestas aparecen.
+
+16 septiembre
+
+07:50 — Propósito
+
+Hoy elijo recordar hacia dónde quiero dirigir mi energía.
+
+15 septiembre
+
+19:20 — Aceptación
+
+Estoy aprendiendo a aceptar aquello que no puedo cambiar.
+
+14 septiembre
+
+08:15 — Calma
+
+Respiro. Todo está bien. No necesito tener todas las respuestas hoy. Confío en el proceso y me doy permiso para ir más despacio.
+
+12 septiembre
+
+Agregar dos reflexiones diferentes el mismo día, para validar correctamente el agrupamiento por fecha.
+
+Una de Claridad y una de Propósito.
+
+22. Criterio principal de implementación
+
+Quiero que esta funcionalidad se sienta como un espacio personal de autoconocimiento, no como un formulario ni como una red social.
+
+El flujo completo debe ser:
+
+Perfil
+
+→ Un momento para ti
+
+→ seleccionar categoría
+
+→ escribir reflexión
+
+→ Guardar mensaje
+
+→ toast “Mensaje registrado”
+
+→ reflexión almacenada
+
+→ Mi espacio interior
+
+→ timeline cronológica
+
+→ poder revisar, filtrar, editar y eliminar reflexiones.
+
+La experiencia debe permitir que, después de semanas o meses, el usuario pueda volver y leer sus propios pensamientos, reconocer patrones y recordar lo que estaba viviendo en diferentes momentos.
+
+No modificar otras funcionalidades de Perfil ni de la aplicación que no estén relacionadas con esta implementación.
