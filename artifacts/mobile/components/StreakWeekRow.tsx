@@ -58,7 +58,7 @@ export function StreakWeekRow() {
                   maskElement={<View style={styles.ringMask} />}
                 >
                   <LinearGradient
-                    colors={isToday ? ["#BE9650", "#BE9650"] : borderGradient}
+                    colors={active ? borderGradient : ["#BE9650", "#BE9650"]}
                     locations={theme.gradientLocations}
                     start={theme.gradientStart}
                     end={theme.gradientEnd}
