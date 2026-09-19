@@ -1,6 +1,7 @@
 import React, { useState, useRef, useEffect } from "react";
 import { View, Text, TextInput, Pressable, ScrollView, StyleSheet, Animated, Easing } from "react-native";
 import { MaterialCommunityIcons, Feather } from "@expo/vector-icons";
+import * as Haptics from "expo-haptics";
 import { useColors } from "@/hooks/useColors";
 import { useCreateMyReflection, type ReflectionCategory } from "@workspace/api-client-react";
 import { useQueryClient } from "@tanstack/react-query";
@@ -15,6 +16,11 @@ export function InnerSpaceCard() {
   const [toastVisible, setToastVisible] = useState(false);
   const toastAnim = useRef(new Animated.Value(0)).current;
   const toastTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const categoryScales = useRef(
+    Object.fromEntries(
+      REFLECTION_CATEGORY_OPTIONS.map((item) => [item.id, new Animated.Value(1)]),
+    ) as Record<ReflectionCategory, Animated.Value>,
+  ).current;
   const qc = useQueryClient();
   const reducedMotion = useReducedMotion();
 
@@ -32,9 +38,10 @@ export function InnerSpaceCard() {
   useEffect(() => {
     return () => {
       toastAnim.stopAnimation();
+      Object.values(categoryScales).forEach((scale) => scale.stopAnimation());
       if (toastTimerRef.current) clearTimeout(toastTimerRef.current);
     }
-  }, [toastAnim]);
+  }, [categoryScales, toastAnim]);
 
   const showToast = () => {
     setToastVisible(true);
@@ -71,6 +78,28 @@ export function InnerSpaceCard() {
 
   const isSubmitDisabled = !category || message.trim().length === 0 || createMutation.isPending;
 
+  const toggleCategory = (nextCategory: ReflectionCategory) => {
+    void Haptics.selectionAsync().catch(() => {});
+    const scale = categoryScales[nextCategory];
+    scale.setValue(1);
+    if (!reducedMotion) {
+      Animated.sequence([
+        Animated.timing(scale, {
+          toValue: 1.1,
+          duration: 120,
+          useNativeDriver: true,
+        }),
+        Animated.spring(scale, {
+          toValue: 1,
+          friction: 3,
+          tension: 140,
+          useNativeDriver: true,
+        }),
+      ]).start();
+    }
+    setCategory((current) => current === nextCategory ? null : nextCategory);
+  };
+
   return (
     <View style={styles.container}>
       <View style={styles.header}>
@@ -98,18 +127,16 @@ export function InnerSpaceCard() {
               },
               pressed && styles.pressedCategory,
             ]}
-            onPress={() =>
-              setCategory((current) =>
-                current === cat.id ? null : (cat.id as ReflectionCategory),
-              )
-            }
+            onPress={() => toggleCategory(cat.id as ReflectionCategory)}
           >
-            <CategoryIcon
-              category={cat.id as ReflectionCategory}
-              size={18}
-              active={category === cat.id}
-              neutralWhenInactive
-            />
+            <Animated.View style={{ transform: [{ scale: categoryScales[cat.id] }] }}>
+              <CategoryIcon
+                category={cat.id as ReflectionCategory}
+                size={18}
+                active={category === cat.id}
+                neutralWhenInactive
+              />
+            </Animated.View>
             <Text style={[styles.gridLabel, { color: category === cat.id ? colors.foreground : colors.mutedForeground }]}>{cat.label}</Text>
           </Pressable>
         ))}
