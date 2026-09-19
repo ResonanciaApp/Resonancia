@@ -69,8 +69,6 @@ import {
 } from "@/components/BibliotecaScreen";
 import { ProgressMirrorSections } from "@/components/ProgressMirrorSections";
 import { ContinueMeditationPlaylistCard } from "@/components/ContinueMeditationPlaylistCard";
-import { ProfileMixCarousel } from "@/components/ProfileMixCarousel";
-import { ProfilePlaylistCarousel } from "@/components/ProfilePlaylistCarousel";
 import { useCatalog } from "@/context/CatalogContext";
 import { useFoldersPlaylists } from "@/context/FoldersPlaylistsContext";
 import { usePlayer } from "@/context/PlayerContext";
@@ -1453,14 +1451,6 @@ export function ProfileScreenBase({
                 </View>
               </>
             ) : null}
-
-            <View style={styles.profileCarouselAfterDivider}>
-              <ProfileMixCarousel marginBottom={0} />
-            </View>
-            <View style={styles.profileCarouselDivider} />
-            <View style={styles.profileCarouselAfterDivider}>
-              <ProfilePlaylistCarousel marginBottom={0} />
-            </View>
 
           </>
         )}
