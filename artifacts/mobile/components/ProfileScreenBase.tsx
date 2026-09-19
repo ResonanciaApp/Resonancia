@@ -809,9 +809,13 @@ export function ProfileScreenBase({
   };
 
   useEffect(() => {
-    if (accountPhotoPickerVisible || !accountPhotoLibraryPending) return;
-    setAccountPhotoLibraryPending(false);
+    if (
+      Platform.OS === "ios"
+      || accountPhotoPickerVisible
+      || !accountPhotoLibraryPending
+    ) return;
     const frame = requestAnimationFrame(() => {
+      setAccountPhotoLibraryPending(false);
       void pickPhoto();
     });
     return () => cancelAnimationFrame(frame);
@@ -1019,6 +1023,13 @@ export function ProfileScreenBase({
             animationType="slide"
             transparent
             onRequestClose={() => setAccountPhotoPickerVisible(false)}
+            onDismiss={() => {
+              if (!accountPhotoLibraryPending) return;
+              requestAnimationFrame(() => {
+                setAccountPhotoLibraryPending(false);
+                void pickPhoto();
+              });
+            }}
           >
             <Pressable
               style={styles.accountCoverBackdrop}
@@ -1040,7 +1051,7 @@ export function ProfileScreenBase({
                   accessibilityRole="button"
                   accessibilityLabel="Cerrar selector de portada"
                 >
-                  <Feather name="x" size={22} color="#BE9650" />
+                  <Feather name="x" size={22} color="#F9F9F9" />
                 </Pressable>
               </View>
               <View style={styles.accountCoverPreviewSlot}>
