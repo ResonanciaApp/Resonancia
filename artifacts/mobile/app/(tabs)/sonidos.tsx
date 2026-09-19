@@ -428,9 +428,12 @@ export default function SonidosScreen() {
                  presentation="editorial"
                   cardVariant="ambiental"
                   ambientalCardBackground="rgba(0,0,0,0.28)"
-                 ambientalTitleOnly
-                 cardWidth={AMBIENTAL_CAROUSEL_CARD_W}
-                 allowOversizedCardWidth
+                  ambientalTitleOnly
+                  ambientalImageOffsetY={-10}
+                  ambientalPlayRightAligned
+                  ambientalTitleOnlyTitleStyle={styles.ambientalCardTitle}
+                  cardWidth={AMBIENTAL_CAROUSEL_CARD_W}
+                  allowOversizedCardWidth
                  soundPreview={{
                    activeId: soundPreview.activeId,
                    isPlaying: soundPreview.isPlaying,
@@ -593,6 +596,10 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     borderColor: "rgba(255,255,255,0.2)",
     overflow: "hidden",
+  },
+  ambientalCardTitle: {
+    textAlign: "left",
+    paddingRight: 33,
   },
   sonidosTabsHeader: {
     marginTop: 17,
