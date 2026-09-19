@@ -116,6 +116,7 @@ import { DailyRecommendationsSection } from "@/components/DailyRecommendationsSe
 import { DailyWisdomCard } from "@/components/DailyWisdomCard";
 import { VideoCard } from "@/components/VideoCard";
 import { useVideos } from "@/hooks/useVideos";
+import { useResonadores } from "@/hooks/useResonadores";
 import { AlmaCommunitySection } from "@/components/AlmaCommunitySection";
 import {
   CONTENT_CAROUSEL_GAP,
@@ -1950,6 +1951,7 @@ export default function HomeScreen2({
 
   const { isPremium } = usePremium();
   const { videos } = useVideos();
+  const { resonadores } = useResonadores();
   const { playlists } = useFoldersPlaylists();
   const { presets, loadPreset, openSheet } = useMixer();
   const { openMixer } = useMixerPanel();
@@ -2907,19 +2909,32 @@ export default function HomeScreen2({
                 />
               </View>
               {(() => {
-                const guide = featuredMoment.guideId ? getGuide(featuredMoment.guideId) : undefined;
+                const guideIds = featuredMoment.guideIds?.length
+                  ? featuredMoment.guideIds
+                  : featuredMoment.guideId
+                    ? [featuredMoment.guideId]
+                    : [];
+                const guide = guideIds
+                  .map((id) => resonadores.find((profile) => profile.id === id) ?? getGuide(id))
+                  .find(Boolean);
                 const artist = featuredMoment.artistId ? getArtist(featuredMoment.artistId) : undefined;
                 const authorName = guide?.name ?? artist?.name ?? "Casa del Cuenco";
                 const authorPhoto = guide?.photo ?? artist?.photo;
                 return (
                   <View style={{ marginTop: 12, flexDirection: "row", alignItems: "center", gap: 10 }}>
-                    {authorPhoto && (
+                    {authorPhoto ? (
                       <ExpoImage
                         source={authorPhoto}
                         style={styles.heroAvatar}
                         contentFit="cover"
                         cachePolicy="memory-disk"
                       />
+                    ) : (
+                      <View style={[styles.heroAvatar, styles.heroAvatarFallback]}>
+                        <Text style={styles.heroAvatarInitial}>
+                          {authorName.charAt(0).toUpperCase()}
+                        </Text>
+                      </View>
                     )}
                     <View style={{ flex: 1 }}>
                       <Text
@@ -4630,6 +4645,17 @@ const styles = StyleSheet.create({
   heroMetaText: { fontFamily: "Manrope", fontSize: 11, lineHeight: 14, color: "#F4F4F4", marginBottom: 6 },
   heroTitle: { fontFamily: "Manrope", fontSize: 15, fontWeight: "700", lineHeight: 20, color: "#FBFBFB", marginBottom: 4 },
   heroAvatar: { width: 48, height: 48, borderRadius: 24, backgroundColor: "rgba(181,211,255,0.057)" },
+  heroAvatarFallback: {
+    alignItems: "center",
+    justifyContent: "center",
+    backgroundColor: "rgba(190,150,80,0.28)",
+  },
+  heroAvatarInitial: {
+    color: "#F9F9F9",
+    fontFamily: "Manrope",
+    fontSize: 17,
+    fontWeight: "700",
+  },
   heroAuthor: { fontFamily: "Manrope", fontSize: 12, color: "#F4F4F4", marginTop: 2 },
   heroBtn: {
     width: 46,
