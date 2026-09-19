@@ -1436,11 +1436,10 @@ function Inicio3HeroPager({
       if (index === 0) return fallback;
       const configured = configuredByPosition.get((index + 1) as 2 | 3 | 4);
       if (!configured || !configured.imageUrl) return fallback;
-      const localSession = getSessionById(configured.sessionId);
       return {
         ...fallback,
         id: `session-${configured.sessionId}`,
-        image: localSession?.image ?? { uri: absoluteMediaUrl(configured.imageUrl) },
+        image: { uri: absoluteMediaUrl(configured.imageUrl) },
         title: configured.title,
         description: configured.description,
         actionLabel: configured.actionLabel,
