@@ -188,10 +188,12 @@ const styles = StyleSheet.create({
   categoriesContent: {
     paddingHorizontal: 20,
     gap: 5,
+    alignItems: "center",
   },
   gridItem: {
     width: 92,
     alignItems: "center",
+    justifyContent: "center",
     paddingVertical: 12,
     paddingHorizontal: 4,
     borderRadius: 18,
@@ -202,9 +204,11 @@ const styles = StyleSheet.create({
     transform: [{ scale: 0.97 }],
   },
   gridLabel: {
+    width: "100%",
     fontSize: 12,
-    marginTop: 5,
+    marginTop: 1,
     fontWeight: "500",
+    textAlign: "center",
   },
   inputContainer: {
     borderRadius: 16,
