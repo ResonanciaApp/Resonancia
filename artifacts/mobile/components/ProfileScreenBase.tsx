@@ -2745,7 +2745,7 @@ const styles = StyleSheet.create({
     marginBottom: 0,
   },
   innerSpaceSection: {
-    marginTop: 4,
+    marginTop: 5,
   },
   reflectionSavedBanner: {
     position: "absolute",
