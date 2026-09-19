@@ -331,7 +331,7 @@ const styles = StyleSheet.create({
     maxWidth: "100%",
   },
   categoryPillIcon: {
-    transform: [{ translateX: -5 }],
+    transform: [{ translateX: -9 }],
   },
   categoryPillPlain: {
     minHeight: 0,

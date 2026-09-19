@@ -1561,7 +1561,7 @@ function Inicio3HeroPager({
                           inline
                           showIcon
                           whiteGlass
-                          iconSize={17}
+                          iconSize={14}
                           style={styles.inicio3HeroCategoryPill}
                           textStyle={styles.inicio3HeroCategoryPillText}
                         />
