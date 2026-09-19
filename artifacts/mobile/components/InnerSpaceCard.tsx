@@ -129,9 +129,10 @@ export function InnerSpaceCard({
                 size={18}
                 active={category === cat.id}
                 neutralWhenInactive
+                inactiveColor="#E0E0E0"
               />
             </Animated.View>
-            <Text style={[styles.gridLabel, { color: category === cat.id ? colors.foreground : colors.mutedForeground }]}>{cat.label}</Text>
+            <Text style={[styles.gridLabel, { color: category === cat.id ? colors.foreground : "#E0E0E0" }]}>{cat.label}</Text>
           </Pressable>
         ))}
       </ScrollView>

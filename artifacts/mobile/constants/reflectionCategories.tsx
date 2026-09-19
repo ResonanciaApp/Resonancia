@@ -31,11 +31,13 @@ export function CategoryIcon({
   size = 24,
   active = false,
   neutralWhenInactive = false,
+  inactiveColor = "#F9F9F9",
 }: {
   category: ReflectionCategory;
   size?: number;
   active?: boolean;
   neutralWhenInactive?: boolean;
+  inactiveColor?: string;
 }) {
   const cat = REFLECTION_CATEGORIES[category];
   const IconComp = cat.iconFamily === "Feather" ? Feather : MaterialCommunityIcons;
@@ -54,7 +56,7 @@ export function CategoryIcon({
         },
       ]}
     >
-      <IconComp name={cat.icon as any} size={size} color={isNeutral ? "#F9F9F9" : cat.color} />
+      <IconComp name={cat.icon as any} size={size} color={isNeutral ? inactiveColor : cat.color} />
     </View>
   );
 }
