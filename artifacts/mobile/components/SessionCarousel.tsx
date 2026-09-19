@@ -904,7 +904,7 @@ export const SessionCarousel = React.memo(function SessionCarousel({
                                 top:
                                   ambientalImageBottom +
                                   AMBIENTAL_CONTENT_DROP -
-                                  12,
+                                  5,
                               bottom: 0,
                               justifyContent: "center",
                               transform: [],
