@@ -74,10 +74,10 @@ import { ProfilePlaylistCarousel } from "@/components/ProfilePlaylistCarousel";
 import { useCatalog } from "@/context/CatalogContext";
 import { useFoldersPlaylists } from "@/context/FoldersPlaylistsContext";
 import { usePlayer } from "@/context/PlayerContext";
-import { PLAYLISTS } from "@/data/playlists";
 import { useCoverPresetCatalog } from "@/lib/cover-preset-catalog";
 import {
   computePlaylistCompletion,
+  findInProgressMeditationPlaylist,
   isMeditativeSessionPlaylist,
 } from "@/lib/editorial-playlist-helpers";
 import {
@@ -362,28 +362,48 @@ export function ProfileScreenBase({
   const expansorData = expansorId ? getExpansorById(expansorId) : undefined;
   const { activeMeditationPlaylist } = useFoldersPlaylists();
   const { statEvents } = usePlayer();
-  const { version: catalogVersion } = useCatalog();
+  const { editorialPlaylists, version: catalogVersion } = useCatalog();
   const continueMeditationPlaylist = useMemo(() => {
-    if (!activeMeditationPlaylist) return null;
-    const playlist = PLAYLISTS.find(
-      (candidate) => candidate.id === activeMeditationPlaylist.slug,
-    );
-    if (!playlist || !isMeditativeSessionPlaylist(playlist)) return null;
-
     const completedSessionIds = new Set(
       statEvents
         .filter((event) => event.completed)
         .map((event) => event.sessionId),
     );
-    const completion = computePlaylistCompletion(
-      playlist.sessionIds,
+    const activePlaylist = activeMeditationPlaylist
+      ? editorialPlaylists.find(
+          (candidate) => candidate.id === activeMeditationPlaylist.slug,
+        )
+      : undefined;
+    const activeCompletion =
+      activePlaylist && isMeditativeSessionPlaylist(activePlaylist)
+        ? computePlaylistCompletion(activePlaylist.sessionIds, completedSessionIds)
+        : null;
+
+    if (
+      activePlaylist &&
+      activeCompletion &&
+      activeCompletion.total > 0 &&
+      activeCompletion.completed < activeCompletion.total
+    ) {
+      return { playlist: activePlaylist, completion: activeCompletion };
+    }
+
+    const detectedInProgress = findInProgressMeditationPlaylist(
+      editorialPlaylists,
       completedSessionIds,
     );
-    if (completion.total === 0) {
-      return null;
+    if (detectedInProgress) return detectedInProgress;
+
+    if (activePlaylist && activeCompletion && activeCompletion.total > 0) {
+      return { playlist: activePlaylist, completion: activeCompletion };
     }
-    return { playlist, completion };
-  }, [activeMeditationPlaylist, catalogVersion, statEvents]);
+    return null;
+  }, [
+    activeMeditationPlaylist,
+    catalogVersion,
+    editorialPlaylists,
+    statEvents,
+  ]);
 
   const { data: me, refetch: refetchMe } = useGetMe({ query: { queryKey: getGetMeQueryKey(), staleTime: 0 } });
   const selectedAvatarPresetId = avatarPresetId;

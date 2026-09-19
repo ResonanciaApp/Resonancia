@@ -299,6 +299,38 @@ export function computePlaylistCompletion(
   };
 }
 
+export function findInProgressMeditationPlaylist<
+  T extends MeditationPlaylistKind & { sessionIds: readonly string[] },
+>(
+  playlists: readonly T[],
+  completedSessionIds: Iterable<string>,
+): { playlist: T; completion: PlaylistCompletion } | null {
+  const completedIds = new Set(completedSessionIds);
+  let best: { playlist: T; completion: PlaylistCompletion } | null = null;
+
+  for (const playlist of playlists) {
+    if (!isMeditativeSessionPlaylist(playlist)) continue;
+    const completion = computePlaylistCompletion(playlist.sessionIds, completedIds);
+    if (
+      completion.total === 0 ||
+      completion.completed === 0 ||
+      completion.completed === completion.total
+    ) continue;
+    if (
+      !best ||
+      completion.percentage > best.completion.percentage ||
+      (
+        completion.percentage === best.completion.percentage &&
+        completion.completed > best.completion.completed
+      )
+    ) {
+      best = { playlist, completion };
+    }
+  }
+
+  return best;
+}
+
 export type MeditationPlaylistResume = {
   sessionId: string;
   index: number;

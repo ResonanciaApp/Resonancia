@@ -667,23 +667,6 @@ export function MoodPickerSheet({
                   <Text style={styles.resonanceTitle}>Resonancia te recomienda:</Text>
                 </CinematicFadeSlide>
 
-                {moodQuote && (
-                  <View>
-                    <CinematicFadeSlide
-                      active={visible}
-                      replayKey={`${completionCycle}:${firstMood?.id ?? "none"}`}
-                      delay={120}
-                      duration={CINEMATIC_DURATION}
-                    >
-                      <EmotionalQuoteCard
-                        author={moodQuote.author}
-                        background={moodQuote.background}
-                        quote={moodQuote.text}
-                      />
-                    </CinematicFadeSlide>
-                  </View>
-                )}
-
                 <CinematicFadeSlide
                   active={visible}
                   replayKey={completionCycle}
@@ -711,10 +694,26 @@ export function MoodPickerSheet({
                   />
                 </CinematicFadeSlide>
 
+                {moodQuote && (
+                  <CinematicFadeSlide
+                    active={visible}
+                    replayKey={`${completionCycle}:${firstMood?.id ?? "none"}`}
+                    delay={CINEMATIC_BASE_DELAY + 1700}
+                    duration={CINEMATIC_DURATION}
+                  >
+                    <View style={styles.completeSectionDivider} />
+                    <EmotionalQuoteCard
+                      author={moodQuote.author}
+                      background={moodQuote.background}
+                      quote={moodQuote.text}
+                    />
+                  </CinematicFadeSlide>
+                )}
+
                 <CinematicFadeSlide
                   active={visible}
                   replayKey={completionCycle}
-                  delay={CINEMATIC_BASE_DELAY + 1700}
+                  delay={CINEMATIC_BASE_DELAY + 2200}
                   duration={CINEMATIC_DURATION}
                 >
                   <View style={styles.completeSectionDivider} />

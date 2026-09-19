@@ -6,6 +6,7 @@ import {
   buildEditorialQueue,
   classifyEditorialDetailStatus,
   computePlaylistCompletion,
+  findInProgressMeditationPlaylist,
   formatMeditationSessionOrdinal,
   isMeditativeSessionPlaylist,
   parseActiveMeditationPlaylist,
@@ -63,6 +64,34 @@ test("only session-based meditative playlists activate home continuation", () =>
     }),
     false,
   );
+});
+
+test("detects a partially completed meditation playlist when no active marker exists", () => {
+  const completed = ["a", "b"];
+  const result = findInProgressMeditationPlaylist(
+    [
+      {
+        id: "relax",
+        playlistType: "sessions",
+        editorialType: "relaxation",
+        sessionIds: ["a", "b", "c"],
+      },
+      {
+        id: "meditation",
+        playlistType: "sessions",
+        editorialType: "meditative",
+        sessionIds: ["a", "b", "c"],
+      },
+    ],
+    completed,
+  );
+
+  assert.equal(result?.playlist.id, "meditation");
+  assert.deepEqual(result?.completion, {
+    total: 3,
+    completed: 2,
+    percentage: 67,
+  });
 });
 
 test("keeps the most recently started meditation playlist across devices", () => {
