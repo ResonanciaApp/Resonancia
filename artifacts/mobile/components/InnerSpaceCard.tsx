@@ -98,7 +98,11 @@ export function InnerSpaceCard() {
               },
               pressed && styles.pressedCategory,
             ]}
-            onPress={() => setCategory(cat.id as ReflectionCategory)}
+            onPress={() =>
+              setCategory((current) =>
+                current === cat.id ? null : (cat.id as ReflectionCategory),
+              )
+            }
           >
             <CategoryIcon
               category={cat.id as ReflectionCategory}
