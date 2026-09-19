@@ -581,7 +581,7 @@ const styles = StyleSheet.create({
   stickySearchButton: {
     position: "absolute",
     top: 5,
-    right: H_PAD,
+    right: H_PAD - 3,
   },
   headerSearchButton: {
     width: 43,
