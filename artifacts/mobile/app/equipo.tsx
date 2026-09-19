@@ -292,6 +292,7 @@ export default function EquipoScreen() {
         <View style={styles.titleRow}>
           <BackPill
             onPress={backOverride ?? (() => router.back())}
+            standardSurface
             size={28}
             bgColor="rgba(0,0,0,0.28)"
             borderWidth={1}
