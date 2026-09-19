@@ -1267,13 +1267,12 @@ export function ProfileScreenBase({
               <ProgressMirrorSections
                 showSectionBorders={false}
                 showPersonalStats={false}
-                showCalendar
+                showCalendar={false}
               />
             </View>
 
             {continueMeditationPlaylist ? (
               <>
-                <View style={styles.profileCarouselDivider} />
                 <View style={styles.profileMeditationPlaylist}>
                   <ContinueMeditationPlaylistCard
                     title={continueMeditationPlaylist.playlist.title}

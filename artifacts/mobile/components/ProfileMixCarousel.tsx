@@ -8,10 +8,8 @@ import { useDrawer } from "@/context/DrawerContext";
 import { useMixer } from "@/context/MixerContext";
 import { useMixerPanel } from "@/context/MixerPanelContext";
 import { useSceneTheme } from "@/context/SceneThemeContext";
-import { isIndigoThemeId } from "@/config/scene-themes";
 import { useColors } from "@/hooks/useColors";
 import { PressScale } from "@/components/PressScale";
-import { WIDGET_GREEN_SOLID } from "@/constants/colors";
 import { MIX_CATEGORY_ACTION_LABELS } from "@/data/mix-categories";
 import { useAmbientalDuration } from "@/context/AmbientalDurationContext";
 
@@ -32,13 +30,6 @@ export const ProfileMixCarousel = React.memo(function ProfileMixCarousel({
   const { openMixer } = useMixerPanel();
   const cardWidth = getTwoCardCarouselCardWidth(width, GRID_PAD);
   const accent = theme.accent ?? colors.accent;
-  const cardBackground = theme.id === "tibet"
-    ? "rgba(0,0,0,0.15)"
-    : isIndigoThemeId(theme.id)
-      ? "rgba(181,211,255,0.057)"
-      : theme.id === "indigo2"
-        ? "rgba(191,207,255,0.096)"
-        : "rgba(181,211,255,0.057)";
 
   const newestPresets = useMemo(
     () =>
@@ -111,15 +102,14 @@ export const ProfileMixCarousel = React.memo(function ProfileMixCarousel({
                 {
                   width: cardWidth,
                   height: cardWidth,
-                  backgroundColor: cardBackground,
+                  backgroundColor: "rgba(0,0,0,0.28)",
                 },
               ]}
             >
               <MaterialCommunityIcons
                 name="tune-variant"
                 size={44}
-                  color="#BE9650"
-                style={styles.emptyPlaceholderIcon}
+                  color="rgba(249,249,249,0.2)"
               />
             </View>
             ))}
@@ -147,15 +137,14 @@ export const ProfileMixCarousel = React.memo(function ProfileMixCarousel({
                     {
                       width: cardWidth,
                       height: cardWidth,
-                      backgroundColor: cardBackground,
+                      backgroundColor: "rgba(0,0,0,0.28)",
                     },
                   ]}
                 >
                   <MaterialCommunityIcons
                     name="tune-variant"
                     size={44}
-                    color={WIDGET_GREEN_SOLID}
-                    style={styles.placeholderIcon}
+                    color="rgba(249,249,249,0.2)"
                   />
                 </View>
               )}

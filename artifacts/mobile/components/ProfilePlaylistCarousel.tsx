@@ -13,9 +13,7 @@ import {
 } from "react-native";
 
 import { PressScale } from "@/components/PressScale";
-import { isIndigoThemeId } from "@/config/scene-themes";
 import { getTwoCardCarouselCardWidth } from "@/constants/carousel";
-import { WIDGET_GREEN_SOLID } from "@/constants/colors";
 import { useDrawer } from "@/context/DrawerContext";
 import { useFoldersPlaylists } from "@/context/FoldersPlaylistsContext";
 import { useSceneTheme } from "@/context/SceneThemeContext";
@@ -40,13 +38,6 @@ export const ProfilePlaylistCarousel = React.memo(function ProfilePlaylistCarous
   const { playlists } = useFoldersPlaylists();
   const cardWidth = getTwoCardCarouselCardWidth(width, GRID_PAD);
   const accent = theme.accent ?? colors.accent;
-  const cardBackground = theme.id === "tibet"
-    ? "rgba(0,0,0,0.15)"
-    : isIndigoThemeId(theme.id)
-      ? "rgba(181,211,255,0.057)"
-      : theme.id === "indigo2"
-        ? "rgba(191,207,255,0.096)"
-        : "rgba(181,211,255,0.057)";
 
   const userPlaylists = useMemo(
     () =>
@@ -115,15 +106,14 @@ export const ProfilePlaylistCarousel = React.memo(function ProfilePlaylistCarous
                     {
                       width: cardWidth,
                       height: cardWidth,
-                      backgroundColor: cardBackground,
+                      backgroundColor: "rgba(0,0,0,0.28)",
                     },
                   ]}
                 >
                   <Feather
                     name="list"
                     size={44}
-                    color="#BE9650"
-                    style={styles.emptyPlaceholderIcon}
+                    color="rgba(249,249,249,0.2)"
                   />
                 </View>
               ))}
@@ -163,15 +153,14 @@ export const ProfilePlaylistCarousel = React.memo(function ProfilePlaylistCarous
                       {
                         width: cardWidth,
                         height: cardWidth,
-                        backgroundColor: cardBackground,
+                        backgroundColor: "rgba(0,0,0,0.28)",
                       },
                     ]}
                   >
                     <Feather
                       name="list"
                       size={44}
-                      color={WIDGET_GREEN_SOLID}
-                      style={styles.placeholderIcon}
+                      color="rgba(249,249,249,0.2)"
                     />
                   </View>
                 )}
