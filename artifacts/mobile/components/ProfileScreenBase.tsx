@@ -959,7 +959,8 @@ export function ProfileScreenBase({
                   </View>
                 )}
                 <View style={styles.accountAvatarBadge}>
-                  <Feather name="camera" size={14} color="#FFFFFF" />
+                  <GoldGradientFill />
+                  <Feather name="camera" size={14} color="#1B060F" />
                 </View>
               </Pressable>
 
@@ -2058,9 +2059,9 @@ const styles = StyleSheet.create({
     width: 30,
     height: 30,
     borderRadius: 15,
+    overflow: "hidden",
     alignItems: "center",
     justifyContent: "center",
-    backgroundColor: "#784576",
     borderWidth: 2,
     borderColor: "#1B060F",
   },

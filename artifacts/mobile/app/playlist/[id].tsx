@@ -406,12 +406,12 @@ export default function PlaylistDetailScreen({ id: idProp }: { id?: string } = {
               <View style={styles.coverEmpty}>
                 <View pointerEvents="none" style={styles.coverPlaceholderBackground} />
                 <Feather name="music" size={40} color={MUTED} />
-                {/* Badge "+" en esquina inferior derecha */}
-                <View style={styles.coverPlusBadge}>
-                  <Feather name="plus" size={14} color="#FFFFFF" />
-                </View>
               </View>
             )}
+            <View style={styles.coverEditBadge} pointerEvents="none">
+              <GoldGradientFill />
+              <Feather name="camera" size={14} color="#1B060F" />
+            </View>
           </Pressable>
 
           {/* Info */}
@@ -775,6 +775,19 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     flexShrink: 0,
     overflow: "hidden",
+  },
+  coverEditBadge: {
+    position: "absolute",
+    bottom: 8,
+    right: 8,
+    width: 30,
+    height: 30,
+    borderRadius: 15,
+    overflow: "hidden",
+    alignItems: "center",
+    justifyContent: "center",
+    borderWidth: 2,
+    borderColor: "#1B060F",
   },
   heroInfo: { flex: 1, gap: 8, paddingTop: 0, justifyContent: "center" },
   playlistName: { fontFamily: "Manrope", color: "#FFFFFF", fontSize: 20, fontWeight: "700", lineHeight: 26 },
