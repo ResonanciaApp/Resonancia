@@ -1404,7 +1404,7 @@ function Inicio3HeroPager({
   const { version: catalogVersion } = useCatalog();
   const effectiveHero = useEffectiveHero(INICIO3_HERO_FALLBACK);
   const [slideWidth, setSlideWidth] = useState(
-    Dimensions.get("window").width - (GRID_PAD - 3) * 2,
+    Dimensions.get("window").width - GRID_PAD * 2,
   );
   const [activeIndex, setActiveIndex] = useState(0);
   const [todayMediaActive, setTodayMediaActive] = useState(true);
@@ -1704,6 +1704,7 @@ const Inicio2HeroStatic = React.memo(function Inicio2HeroStatic({
         style={[
           styles.inicio2HeroActions,
           { paddingTop: topInset + 8 + (isInicio3 ? 10 - INICIO3_VERTICAL_LIFT : 0) },
+          isInicio3 && styles.inicio3HeroActionsEdge,
           isInicio3 && slowHeaderStyle,
         ]}
       >
@@ -1780,7 +1781,7 @@ const Inicio2HeroStatic = React.memo(function Inicio2HeroStatic({
             isInicio3 && {
               position: "absolute",
               top: topInset + 2,
-              right: 16,
+              right: 14,
             },
           ]}
         >
@@ -3468,6 +3469,9 @@ const styles = StyleSheet.create({
     alignItems: "flex-start",
     paddingHorizontal: 18,
   },
+  inicio3HeroActionsEdge: {
+    paddingHorizontal: GRID_PAD,
+  },
   inicio2HeroProfileButton: {
     maxWidth: "76%",
     flexDirection: "row",
@@ -3693,8 +3697,8 @@ const styles = StyleSheet.create({
     zIndex: 12,
   },
   inicio3HeroStaticImageFrame: {
-    left: GRID_PAD - 3,
-    right: GRID_PAD - 3,
+    left: GRID_PAD,
+    right: GRID_PAD,
     overflow: "visible",
     zIndex: 20,
   },
