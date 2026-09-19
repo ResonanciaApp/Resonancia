@@ -79,7 +79,7 @@ export function InnerSpaceCard() {
   const isSubmitDisabled = !category || message.trim().length === 0 || createMutation.isPending;
 
   const toggleCategory = (nextCategory: ReflectionCategory) => {
-    void Haptics.selectionAsync().catch(() => {});
+    void Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light).catch(() => {});
     const scale = categoryScales[nextCategory];
     scale.setValue(1);
     if (!reducedMotion) {
