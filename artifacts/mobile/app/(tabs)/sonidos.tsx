@@ -427,6 +427,7 @@ export default function SonidosScreen() {
                   ]}
                  presentation="editorial"
                   cardVariant="ambiental"
+                  ambientalCardBackground="rgba(0,0,0,0.28)"
                  ambientalTitleOnly
                  cardWidth={AMBIENTAL_CAROUSEL_CARD_W}
                  allowOversizedCardWidth
