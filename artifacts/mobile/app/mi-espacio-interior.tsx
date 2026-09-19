@@ -495,7 +495,7 @@ export default function InnerSpaceScreen() {
           onPress={() => setMonthPickerVisible(true)}
         >
           <Text style={styles.monthSelectorText}>{MONTH_NAMES[selectedMonth]}</Text>
-          <Feather name="chevron-down" size={18} color="#F9F9F9" />
+          <Feather name="chevron-down" size={15} color="#F9F9F9" />
         </Pressable>
       </View>
 
@@ -706,7 +706,7 @@ const styles = StyleSheet.create({
   },
   dateHeader: {
     alignItems: 'flex-start',
-    marginBottom: 16,
+    marginBottom: 31,
     marginTop: 16,
   },
   datePill: {
@@ -734,8 +734,8 @@ const styles = StyleSheet.create({
   },
   timelineLine: {
     position: 'absolute',
-    top: 0,
-    bottom: -32,
+    top: 34,
+    bottom: -13,
     width: 1,
     backgroundColor: "rgba(249,249,249,0.06)",
   },
@@ -878,19 +878,19 @@ const styles = StyleSheet.create({
     alignItems: "flex-start",
   },
   monthSelectorButton: {
-    height: 42,
-    paddingHorizontal: 15,
-    borderRadius: 21,
+    height: 33,
+    paddingHorizontal: 13,
+    borderRadius: 16.5,
     borderWidth: 1,
     borderColor: "rgba(255,255,255,0.2)",
-    backgroundColor: "rgba(0,0,0,0.28)",
+    backgroundColor: "rgba(249,249,249,0.07)",
     flexDirection: "row",
     alignItems: "center",
     gap: 8,
   },
   monthSelectorText: {
     color: "#F9F9F9",
-    fontSize: 14,
+    fontSize: 11,
     fontWeight: "700",
   },
   monthList: {
