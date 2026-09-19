@@ -91,12 +91,11 @@ const styles = StyleSheet.create({
     backgroundColor: "transparent",
   },
   dayLabel: {
-    color: "#F9F9F9",
+    color: "#FFFFFF",
     fontFamily: "Manrope",
     fontSize: 10,
     lineHeight: 13,
     fontWeight: "500",
-    opacity: 0.6,
     transform: [{ translateY: -1 }],
   },
   checkMark: {
