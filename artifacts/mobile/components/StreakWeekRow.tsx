@@ -109,7 +109,7 @@ const styles = StyleSheet.create({
   dayLabel: {
     color: "#F9F9F9",
     fontFamily: "Manrope",
-    fontSize: 17,
+    fontSize: 19,
     fontWeight: "700",
     opacity: 0.6,
   },
