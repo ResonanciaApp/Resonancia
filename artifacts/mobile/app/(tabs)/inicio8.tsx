@@ -3632,7 +3632,7 @@ const styles = StyleSheet.create({
     color: "#FFFFFF",
     fontFamily: "Manrope",
     fontSize: 16,
-    fontWeight: "800",
+    fontWeight: "500",
     lineHeight: 20,
     transform: [{ translateY: 2 }],
   },
