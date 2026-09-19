@@ -190,9 +190,9 @@ const styles = StyleSheet.create({
     gap: 10,
   },
   gridItem: {
-    width: 92,
     alignItems: "center",
     paddingVertical: 12,
+    paddingHorizontal: 4,
     borderRadius: 16,
   },
   pressedCategory: {
@@ -200,7 +200,7 @@ const styles = StyleSheet.create({
   },
   gridLabel: {
     fontSize: 12,
-    marginTop: 8,
+    marginTop: 5,
     fontWeight: "500",
   },
   inputContainer: {
