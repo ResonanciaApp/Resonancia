@@ -1,42 +1,22 @@
 import MaskedView from "@react-native-masked-view/masked-view";
 import { Feather } from "@expo/vector-icons";
 import { LinearGradient } from "expo-linear-gradient";
-import React, { useMemo } from "react";
+import React from "react";
 import { StyleSheet, Text, View } from "react-native";
 
-import { useSceneTheme } from "@/context/SceneThemeContext";
 import { useStreak } from "@/hooks/useStreak";
 
 const DAY_INITIALS = ["L", "M", "X", "J", "V", "S", "D"];
-
-function brightenColor(hex: string, pct: number): string {
-  const value = hex.replace("#", "");
-  if (!/^[0-9a-f]{6}$/i.test(value)) return hex;
-  const channels = [0, 2, 4].map((offset) =>
-    Number.parseInt(value.slice(offset, offset + 2), 16),
-  );
-  return `rgb(${channels
-    .map((channel) => Math.round(channel + (255 - channel) * (pct / 100)))
-    .join(",")})`;
-}
+const POSITIONED_DAY_GRADIENT = ["#C5A7F2", "#8260B5", "#62428F"] as const;
 
 export function StreakWeekRow() {
   const { weekFlags, todayIndex } = useStreak();
-  const { theme } = useSceneTheme();
-  const borderGradient = useMemo(
-    () =>
-      theme.gradient.map((color) =>
-        brightenColor(color, 47),
-      ) as unknown as [string, string, ...string[]],
-    [theme.gradient],
-  );
 
   return (
     <View style={styles.row}>
       {DAY_INITIALS.map((initial, index) => {
         const active = weekFlags[index];
         const isToday = todayIndex === index;
-        const hasGradientRing = isToday || active;
         const dayCircle = (
           <View style={styles.day}>
             {active ? (
@@ -49,7 +29,7 @@ export function StreakWeekRow() {
 
         return (
           <View key={`${initial}-${index}`} style={styles.dayWrapper}>
-            {hasGradientRing ? (
+            {isToday ? (
               <View style={styles.ringHost}>
                 {dayCircle}
                 <MaskedView
@@ -58,10 +38,9 @@ export function StreakWeekRow() {
                   maskElement={<View style={styles.ringMask} />}
                 >
                   <LinearGradient
-                    colors={active ? borderGradient : ["#BE9650", "#BE9650"]}
-                    locations={theme.gradientLocations}
-                    start={theme.gradientStart}
-                    end={theme.gradientEnd}
+                    colors={POSITIONED_DAY_GRADIENT}
+                    start={{ x: 0, y: 0 }}
+                    end={{ x: 1, y: 1 }}
                     style={StyleSheet.absoluteFill}
                   />
                 </MaskedView>

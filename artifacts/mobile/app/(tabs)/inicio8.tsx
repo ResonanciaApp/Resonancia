@@ -3799,8 +3799,8 @@ const styles = StyleSheet.create({
   inicio3HeroProgressContainer: {
     position: "absolute",
     bottom: 24,
-    left: 24,
-    right: 24,
+    left: GRID_PAD,
+    right: GRID_PAD,
     flexDirection: "row",
     gap: 6,
     justifyContent: "center",
