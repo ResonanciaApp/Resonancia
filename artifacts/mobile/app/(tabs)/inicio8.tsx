@@ -86,6 +86,7 @@ import { useAmbientalDuration } from "@/context/AmbientalDurationContext";
 import { TEMAS } from "@/data/temas";
 import {
   getGetPopularSessionsQueryKey,
+  useGetHeroSessionSlides,
   useGetPinnedFeatured,
   useGetPopularSessions,
   useGetSceneAnimations,
@@ -122,7 +123,7 @@ import {
 } from "@/constants/carousel";
 import { PLAYLISTS } from "@/data/playlists";
 
-import { useEffectiveHero } from "@/hooks/effectiveHero";
+import { absoluteMediaUrl, useEffectiveHero } from "@/hooks/effectiveHero";
 const { width, height } = Dimensions.get("window");
 
 const GRID_GAP = 12;
@@ -1361,7 +1362,19 @@ function Inicio3HeroTitle({ title }: { title: string | undefined }) {
   );
 }
 
-const INICIO3_PAGER_SLIDES = [
+type Inicio3PagerSlide = {
+  id: string;
+  image: any;
+  title: string | null;
+  actionLabel?: string;
+  categoryId?: string;
+  categoryLabel?: string;
+  sessionId?: string;
+  skipDetail?: boolean;
+  skipMiniPlayer?: boolean;
+  isPremiumSession?: boolean;
+};
+const INICIO3_PAGER_SLIDES: Inicio3PagerSlide[] = [
   { id: "today", image: null, title: null },
   { id: "ocean", image: require("@/assets/images/inicio3-slider-oceano.jpg"), title: "Encuentra calma en el sonido de las olas" },
   { id: "forest", image: require("@/assets/images/inicio3-slider-bosque.jpg"), title: "Respira la tranquilidad del bosque" },
@@ -1380,6 +1393,14 @@ function Inicio3HeroPager({
   reduceMotion: boolean;
 }) {
   const router = useRouter();
+  const { data: configuredHero } = useGetHeroSessionSlides({
+    query: { queryKey: ["hero-session-slides"], staleTime: 60_000, refetchOnMount: "always" },
+  });
+  const { isPremium } = usePremium();
+  const { playSession } = usePlayer();
+  const { openCategory } = useCategoryOverlay();
+  const { openForSession } = useAmbientalDuration();
+  const { version: catalogVersion } = useCatalog();
   const effectiveHero = useEffectiveHero(INICIO3_HERO_FALLBACK);
   const [slideWidth, setSlideWidth] = useState(
     Dimensions.get("window").width - (GRID_PAD - 3) * 2,
@@ -1405,6 +1426,54 @@ function Inicio3HeroPager({
     todayMediaActiveRef.current = nextActive;
     setTodayMediaActive(nextActive);
   };
+  const pagerSlides = useMemo(() => {
+    const configuredByPosition = new Map((configuredHero?.slides ?? []).map((slide) => [slide.position, slide]));
+    return INICIO3_PAGER_SLIDES.map((fallback, index) => {
+      if (index === 0) return fallback;
+      const configured = configuredByPosition.get((index + 1) as 2 | 3 | 4);
+      if (!configured || !configured.imageUrl) return fallback;
+      const localSession = getSessionById(configured.sessionId);
+      return {
+        ...fallback,
+        id: `session-${configured.sessionId}`,
+        image: localSession?.image ?? { uri: absoluteMediaUrl(configured.imageUrl) },
+        title: configured.title,
+        actionLabel: configured.actionLabel,
+        categoryId: configured.categoryId,
+        categoryLabel: configured.categoryLabel,
+        sessionId: configured.sessionId,
+        skipDetail: configured.skipDetail,
+        skipMiniPlayer: configured.skipMiniPlayer,
+        isPremiumSession: configured.isPremium,
+      };
+    });
+  }, [catalogVersion, configuredHero?.slides]);
+  const openSlide = useCallback((item: (typeof pagerSlides)[number]) => {
+    if (item.id === "today") {
+      router.push({ pathname: "/inspiracion-diaria", params: { entry: "today" } });
+      return;
+    }
+    if (!item.sessionId) return;
+    const session = getSessionById(item.sessionId);
+    if (!session) return;
+    if (session.isPremium && !isPremium) {
+      router.push("/membresia" as never);
+    } else if (openForSession(session)) {
+      return;
+    } else if (session.skipMiniPlayer) {
+      playSession(session);
+    } else {
+      const skipDetailCategories = ["sonidos-ancestrales", "musica-sonidos"];
+      const goToPlayer = session.skipDetail !== false
+        && (session.skipDetail === true || skipDetailCategories.includes(session.categoryId ?? ""));
+      if (!goToPlayer) {
+        openCategory(`/session/${session.id}`);
+        return;
+      }
+      playSession(session);
+      router.push("/player" as never);
+    }
+  }, [isPremium, openCategory, openForSession, playSession, router]);
 
   return (
     <RAnimated.View
@@ -1440,7 +1509,7 @@ function Inicio3HeroPager({
       >
         <FlatList
           key={`inicio3-pager-${slideWidth}`}
-          data={INICIO3_PAGER_SLIDES}
+          data={pagerSlides}
           horizontal
           pagingEnabled
           snapToInterval={slideWidth}
@@ -1461,7 +1530,7 @@ function Inicio3HeroPager({
             <View style={[styles.inicio3HeroSlide, { width: slideWidth }]}>
               <Pressable
                 style={StyleSheet.absoluteFill}
-                onPress={() => router.push({ pathname: "/inspiracion-diaria", params: { entry: "today" } })}
+                onPress={() => openSlide(item)}
                 accessibilityRole="button"
                 accessibilityLabel={item.title || "Sabiduría diaria"}
                 testID={`inicio3-hero-slide-${index + 1}`}
@@ -1483,12 +1552,17 @@ function Inicio3HeroPager({
                   {item.id === "today" ? (
                     <Inicio3HeroTitle title={effectiveHero.title} />
                   ) : (
-                    <Text style={[styles.inicio2HeroTitle, styles.inicio2HeroStaticTitle, styles.inicio3HeroTitle]}>
-                      {item.title}
-                    </Text>
+                    <>
+                      <View style={styles.inicio2HeroCategory}>
+                        <SessionCategoryPill categoryId={item.categoryId ?? ""} inline />
+                      </View>
+                      <Text style={[styles.inicio2HeroTitle, styles.inicio2HeroStaticTitle, styles.inicio3HeroTitle]}>
+                        {item.title}
+                      </Text>
+                    </>
                   )}
                   <View style={styles.inicio3HeroReadMore}>
-                    <Text style={styles.inicio3HeroReadMoreText}>Leer más</Text>
+                    <Text style={styles.inicio3HeroReadMoreText}>{item.id === "today" ? "Leer más" : item.actionLabel ?? "Escuchar"}</Text>
                   </View>
                 </View>
               </Pressable>

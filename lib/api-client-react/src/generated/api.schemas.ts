@@ -1302,6 +1302,77 @@ export interface EditorialPlaylistPlacement {
   isActive: boolean;
 }
 
+export type HeroSessionSlidePosition = typeof HeroSessionSlidePosition[keyof typeof HeroSessionSlidePosition];
+
+
+export const HeroSessionSlidePosition = {
+  NUMBER_2: 2,
+  NUMBER_3: 3,
+  NUMBER_4: 4,
+} as const;
+
+export interface HeroSessionSlide {
+  position: HeroSessionSlidePosition;
+  sessionId: string;
+  title: string;
+  actionLabel: string;
+  categoryId?: string;
+  categoryLabel: string;
+  /** @nullable */
+  imageUrl: string | null;
+  skipDetail: boolean;
+  skipMiniPlayer: boolean;
+  isPremium: boolean;
+}
+
+export interface HeroSessionSlidesResponse {
+  revision: number;
+  slides: HeroSessionSlide[];
+}
+
+export type HeroSessionSlideInputPosition = typeof HeroSessionSlideInputPosition[keyof typeof HeroSessionSlideInputPosition];
+
+
+export const HeroSessionSlideInputPosition = {
+  NUMBER_2: 2,
+  NUMBER_3: 3,
+  NUMBER_4: 4,
+} as const;
+
+export interface HeroSessionSlideInput {
+  position: HeroSessionSlideInputPosition;
+  /** @minLength 1 */
+  sessionId: string;
+  /**
+     * @minLength 1
+     * @maxLength 200
+     */
+  title: string;
+  /**
+     * @minLength 1
+     * @maxLength 60
+     */
+  actionLabel: string;
+}
+
+export interface UpdateHeroSessionSlidesBody {
+  /** @minimum 0 */
+  revision: number;
+  /**
+     * @minItems 3
+     * @maxItems 3
+     */
+  slides: HeroSessionSlideInput[];
+}
+
+export interface AdminHeroSessionSlides {
+  revision: number;
+  draft: HeroSessionSlideInput[];
+  published: HeroSessionSlide[] | null;
+  /** @nullable */
+  publishedRevision: number | null;
+}
+
 export type PlaylistCarouselSurface = typeof PlaylistCarouselSurface[keyof typeof PlaylistCarouselSurface];
 
 

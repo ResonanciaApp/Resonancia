@@ -74,6 +74,107 @@ export const GetEffectiveHeroResponse = zod.object({
 })
 
 
+export const GetHeroSessionSlidesResponse = zod.object({
+  "revision": zod.number(),
+  "slides": zod.array(zod.object({
+  "position": zod.union([zod.literal(2),zod.literal(3),zod.literal(4)]),
+  "sessionId": zod.string(),
+  "title": zod.string(),
+  "actionLabel": zod.string(),
+  "categoryId": zod.string().optional(),
+  "categoryLabel": zod.string(),
+  "imageUrl": zod.string().nullable(),
+  "skipDetail": zod.boolean(),
+  "skipMiniPlayer": zod.boolean(),
+  "isPremium": zod.boolean()
+}))
+})
+
+
+
+export const getAdminHeroSessionSlidesResponseDraftItemTitleMax = 200;
+
+export const getAdminHeroSessionSlidesResponseDraftItemActionLabelMax = 60;
+
+
+
+export const GetAdminHeroSessionSlidesResponse = zod.object({
+  "revision": zod.number(),
+  "draft": zod.array(zod.object({
+  "position": zod.union([zod.literal(2),zod.literal(3),zod.literal(4)]),
+  "sessionId": zod.string().min(1),
+  "title": zod.string().min(1).max(getAdminHeroSessionSlidesResponseDraftItemTitleMax),
+  "actionLabel": zod.string().min(1).max(getAdminHeroSessionSlidesResponseDraftItemActionLabelMax)
+})),
+  "published": zod.union([zod.array(zod.object({
+  "position": zod.union([zod.literal(2),zod.literal(3),zod.literal(4)]),
+  "sessionId": zod.string(),
+  "title": zod.string(),
+  "actionLabel": zod.string(),
+  "categoryId": zod.string().optional(),
+  "categoryLabel": zod.string(),
+  "imageUrl": zod.string().nullable(),
+  "skipDetail": zod.boolean(),
+  "skipMiniPlayer": zod.boolean(),
+  "isPremium": zod.boolean()
+})),zod.null()]),
+  "publishedRevision": zod.number().nullable()
+})
+
+
+export const updateAdminHeroSessionSlidesBodyRevisionMin = 0;
+
+
+export const updateAdminHeroSessionSlidesBodySlidesItemTitleMax = 200;
+
+export const updateAdminHeroSessionSlidesBodySlidesItemActionLabelMax = 60;
+
+export const updateAdminHeroSessionSlidesBodySlidesMin = 3;
+export const updateAdminHeroSessionSlidesBodySlidesMax = 3;
+
+
+
+export const UpdateAdminHeroSessionSlidesBody = zod.object({
+  "revision": zod.number().min(updateAdminHeroSessionSlidesBodyRevisionMin),
+  "slides": zod.array(zod.object({
+  "position": zod.union([zod.literal(2),zod.literal(3),zod.literal(4)]),
+  "sessionId": zod.string().min(1),
+  "title": zod.string().min(1).max(updateAdminHeroSessionSlidesBodySlidesItemTitleMax),
+  "actionLabel": zod.string().min(1).max(updateAdminHeroSessionSlidesBodySlidesItemActionLabelMax)
+})).min(updateAdminHeroSessionSlidesBodySlidesMin).max(updateAdminHeroSessionSlidesBodySlidesMax)
+})
+
+
+export const updateAdminHeroSessionSlidesResponseDraftItemTitleMax = 200;
+
+export const updateAdminHeroSessionSlidesResponseDraftItemActionLabelMax = 60;
+
+
+
+export const UpdateAdminHeroSessionSlidesResponse = zod.object({
+  "revision": zod.number(),
+  "draft": zod.array(zod.object({
+  "position": zod.union([zod.literal(2),zod.literal(3),zod.literal(4)]),
+  "sessionId": zod.string().min(1),
+  "title": zod.string().min(1).max(updateAdminHeroSessionSlidesResponseDraftItemTitleMax),
+  "actionLabel": zod.string().min(1).max(updateAdminHeroSessionSlidesResponseDraftItemActionLabelMax)
+})),
+  "published": zod.union([zod.array(zod.object({
+  "position": zod.union([zod.literal(2),zod.literal(3),zod.literal(4)]),
+  "sessionId": zod.string(),
+  "title": zod.string(),
+  "actionLabel": zod.string(),
+  "categoryId": zod.string().optional(),
+  "categoryLabel": zod.string(),
+  "imageUrl": zod.string().nullable(),
+  "skipDetail": zod.boolean(),
+  "skipMiniPlayer": zod.boolean(),
+  "isPremium": zod.boolean()
+})),zod.null()]),
+  "publishedRevision": zod.number().nullable()
+})
+
+
 export const GetEffectiveHeroMediaParams = zod.object({
   "id": zod.coerce.string()
 })

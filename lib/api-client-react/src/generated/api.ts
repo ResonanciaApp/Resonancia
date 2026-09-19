@@ -27,6 +27,7 @@ import type {
   AdminEmotionalPhraseSet,
   AdminEmotionalPhrasesResponse,
   AdminHeroOverride,
+  AdminHeroSessionSlides,
   AdminInspiration,
   AdminInspirationWeek,
   AdminMixHideInput,
@@ -119,6 +120,7 @@ import type {
   GuideConfigUpdate,
   HealthStatus,
   HeroOverrideUploadBody,
+  HeroSessionSlidesResponse,
   InspirationDay,
   InspirationFavorite,
   InspirationFavorites,
@@ -190,6 +192,7 @@ import type {
   UpdateDescansoSoundBody,
   UpdateEmotionalPhrasesInput,
   UpdateHeroOverrideBody,
+  UpdateHeroSessionSlidesBody,
   UpdateMixerSoundBody,
   UpdateSceneAnimationBody,
   UpdateVideoBody,
@@ -368,6 +371,213 @@ export function useGetEffectiveHero<TData = Awaited<ReturnType<typeof getEffecti
 
 
 
+
+export const getGetHeroSessionSlidesUrl = () => {
+
+
+
+
+  return `/api/hero/session-slides`
+}
+
+export const getHeroSessionSlides = async ( options?: RequestInit): Promise<HeroSessionSlidesResponse> => {
+
+  return customFetch<HeroSessionSlidesResponse>(getGetHeroSessionSlidesUrl(),
+  {
+    ...options,
+    method: 'GET'
+
+
+  }
+);}
+
+
+
+
+
+export const getGetHeroSessionSlidesQueryKey = () => {
+    return [
+    `/api/hero/session-slides`
+    ] as const;
+    }
+
+
+export const getGetHeroSessionSlidesQueryOptions = <TData = Awaited<ReturnType<typeof getHeroSessionSlides>>, TError = ErrorType<unknown>>( options?: { query?:UseQueryOptions<Awaited<ReturnType<typeof getHeroSessionSlides>>, TError, TData>, request?: SecondParameter<typeof customFetch>}
+) => {
+
+const {query: queryOptions, request: requestOptions} = options ?? {};
+
+  const queryKey =  queryOptions?.queryKey ?? getGetHeroSessionSlidesQueryKey();
+
+
+
+    const queryFn: QueryFunction<Awaited<ReturnType<typeof getHeroSessionSlides>>> = ({ signal }) => getHeroSessionSlides({ signal, ...requestOptions });
+
+
+
+
+
+   return  { queryKey, queryFn, ...queryOptions} as UseQueryOptions<Awaited<ReturnType<typeof getHeroSessionSlides>>, TError, TData> & { queryKey: QueryKey }
+}
+
+export type GetHeroSessionSlidesQueryResult = NonNullable<Awaited<ReturnType<typeof getHeroSessionSlides>>>
+export type GetHeroSessionSlidesQueryError = ErrorType<unknown>
+
+
+
+export function useGetHeroSessionSlides<TData = Awaited<ReturnType<typeof getHeroSessionSlides>>, TError = ErrorType<unknown>>(
+  options?: { query?:UseQueryOptions<Awaited<ReturnType<typeof getHeroSessionSlides>>, TError, TData>, request?: SecondParameter<typeof customFetch>}
+
+ ):  UseQueryResult<TData, TError> & { queryKey: QueryKey } {
+
+  const queryOptions = getGetHeroSessionSlidesQueryOptions(options)
+
+  const query = useQuery(queryOptions) as  UseQueryResult<TData, TError> & { queryKey: QueryKey };
+
+  return { ...query, queryKey: queryOptions.queryKey };
+}
+
+
+
+
+
+
+
+export const getGetAdminHeroSessionSlidesUrl = () => {
+
+
+
+
+  return `/api/admin/hero/session-slides`
+}
+
+export const getAdminHeroSessionSlides = async ( options?: RequestInit): Promise<AdminHeroSessionSlides> => {
+
+  return customFetch<AdminHeroSessionSlides>(getGetAdminHeroSessionSlidesUrl(),
+  {
+    ...options,
+    method: 'GET'
+
+
+  }
+);}
+
+
+
+
+
+export const getGetAdminHeroSessionSlidesQueryKey = () => {
+    return [
+    `/api/admin/hero/session-slides`
+    ] as const;
+    }
+
+
+export const getGetAdminHeroSessionSlidesQueryOptions = <TData = Awaited<ReturnType<typeof getAdminHeroSessionSlides>>, TError = ErrorType<unknown>>( options?: { query?:UseQueryOptions<Awaited<ReturnType<typeof getAdminHeroSessionSlides>>, TError, TData>, request?: SecondParameter<typeof customFetch>}
+) => {
+
+const {query: queryOptions, request: requestOptions} = options ?? {};
+
+  const queryKey =  queryOptions?.queryKey ?? getGetAdminHeroSessionSlidesQueryKey();
+
+
+
+    const queryFn: QueryFunction<Awaited<ReturnType<typeof getAdminHeroSessionSlides>>> = ({ signal }) => getAdminHeroSessionSlides({ signal, ...requestOptions });
+
+
+
+
+
+   return  { queryKey, queryFn, ...queryOptions} as UseQueryOptions<Awaited<ReturnType<typeof getAdminHeroSessionSlides>>, TError, TData> & { queryKey: QueryKey }
+}
+
+export type GetAdminHeroSessionSlidesQueryResult = NonNullable<Awaited<ReturnType<typeof getAdminHeroSessionSlides>>>
+export type GetAdminHeroSessionSlidesQueryError = ErrorType<unknown>
+
+
+
+export function useGetAdminHeroSessionSlides<TData = Awaited<ReturnType<typeof getAdminHeroSessionSlides>>, TError = ErrorType<unknown>>(
+  options?: { query?:UseQueryOptions<Awaited<ReturnType<typeof getAdminHeroSessionSlides>>, TError, TData>, request?: SecondParameter<typeof customFetch>}
+
+ ):  UseQueryResult<TData, TError> & { queryKey: QueryKey } {
+
+  const queryOptions = getGetAdminHeroSessionSlidesQueryOptions(options)
+
+  const query = useQuery(queryOptions) as  UseQueryResult<TData, TError> & { queryKey: QueryKey };
+
+  return { ...query, queryKey: queryOptions.queryKey };
+}
+
+
+
+
+
+
+
+export const getUpdateAdminHeroSessionSlidesUrl = () => {
+
+
+
+
+  return `/api/admin/hero/session-slides`
+}
+
+export const updateAdminHeroSessionSlides = async (updateHeroSessionSlidesBody: UpdateHeroSessionSlidesBody, options?: RequestInit): Promise<AdminHeroSessionSlides> => {
+
+  return customFetch<AdminHeroSessionSlides>(getUpdateAdminHeroSessionSlidesUrl(),
+  {
+    ...options,
+    method: 'PUT',
+    headers: { 'Content-Type': 'application/json', ...options?.headers },
+    body: JSON.stringify(
+      updateHeroSessionSlidesBody,)
+  }
+);}
+
+
+
+
+export const getUpdateAdminHeroSessionSlidesMutationOptions = <TError = ErrorType<unknown>,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof updateAdminHeroSessionSlides>>, TError,{data: BodyType<UpdateHeroSessionSlidesBody>}, TContext>, request?: SecondParameter<typeof customFetch>}
+): UseMutationOptions<Awaited<ReturnType<typeof updateAdminHeroSessionSlides>>, TError,{data: BodyType<UpdateHeroSessionSlidesBody>}, TContext> => {
+
+const mutationKey = ['updateAdminHeroSessionSlides'];
+const {mutation: mutationOptions, request: requestOptions} = options ?
+      options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey ?
+      options
+      : {...options, mutation: {...options.mutation, mutationKey}}
+      : {mutation: { mutationKey, }, request: undefined};
+
+
+
+
+      const mutationFn: MutationFunction<Awaited<ReturnType<typeof updateAdminHeroSessionSlides>>, {data: BodyType<UpdateHeroSessionSlidesBody>}> = (props) => {
+          const {data} = props ?? {};
+
+          return  updateAdminHeroSessionSlides(data,requestOptions)
+        }
+
+
+
+
+
+
+  return  { mutationFn, ...mutationOptions }}
+
+    export type UpdateAdminHeroSessionSlidesMutationResult = NonNullable<Awaited<ReturnType<typeof updateAdminHeroSessionSlides>>>
+    export type UpdateAdminHeroSessionSlidesMutationBody = BodyType<UpdateHeroSessionSlidesBody>
+    export type UpdateAdminHeroSessionSlidesMutationError = ErrorType<unknown>
+
+    export const useUpdateAdminHeroSessionSlides = <TError = ErrorType<unknown>,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof updateAdminHeroSessionSlides>>, TError,{data: BodyType<UpdateHeroSessionSlidesBody>}, TContext>, request?: SecondParameter<typeof customFetch>}
+ ): UseMutationResult<
+        Awaited<ReturnType<typeof updateAdminHeroSessionSlides>>,
+        TError,
+        {data: BodyType<UpdateHeroSessionSlidesBody>},
+        TContext
+      > => {
+      return useMutation(getUpdateAdminHeroSessionSlidesMutationOptions(options));
+    }
 
 export const getGetEffectiveHeroMediaUrl = (id: string,
     params: GetEffectiveHeroMediaParams,) => {

@@ -54,6 +54,24 @@ paths:
         - {name: timeZone, in: query, schema: {type: string}}
       responses:
         "200": {description: Effective hero for the local day, content: {application/json: {schema: {$ref: "#/components/schemas/EffectiveHero"}}}}
+  /hero/session-slides:
+    get:
+      operationId: getHeroSessionSlides
+      tags: [inspirations]
+      responses:
+        "200": {description: Published session-backed Hero slides, content: {application/json: {schema: {$ref: "#/components/schemas/HeroSessionSlidesResponse"}}}}
+  /admin/hero/session-slides:
+    get:
+      operationId: getAdminHeroSessionSlides
+      tags: [admin]
+      responses:
+        "200": {description: Editable Hero session slides, content: {application/json: {schema: {$ref: "#/components/schemas/AdminHeroSessionSlides"}}}}
+    put:
+      operationId: updateAdminHeroSessionSlides
+      tags: [admin]
+      requestBody: {required: true, content: {application/json: {schema: {$ref: "#/components/schemas/UpdateHeroSessionSlidesBody"}}}}
+      responses:
+        "200": {description: Updated Hero session slides, content: {application/json: {schema: {$ref: "#/components/schemas/AdminHeroSessionSlides"}}}}
   /hero/media/{id}:
     get:
       operationId: getEffectiveHeroMedia
@@ -5876,6 +5894,55 @@ components:
         isActive:
           type: boolean
       required: [surface, sortOrder, isActive]
+    HeroSessionSlide:
+      type: object
+      required: [position, sessionId, title, actionLabel, categoryLabel, imageUrl, skipDetail, skipMiniPlayer, isPremium]
+      properties:
+        position: {type: integer, enum: [2, 3, 4]}
+        sessionId: {type: string}
+        title: {type: string}
+        actionLabel: {type: string}
+        categoryId: {type: string}
+        categoryLabel: {type: string}
+        imageUrl: {type: [string, "null"]}
+        skipDetail: {type: boolean}
+        skipMiniPlayer: {type: boolean}
+        isPremium: {type: boolean}
+    HeroSessionSlidesResponse:
+      type: object
+      required: [revision, slides]
+      properties:
+        revision: {type: integer}
+        slides: {type: array, items: {$ref: "#/components/schemas/HeroSessionSlide"}}
+    HeroSessionSlideInput:
+      type: object
+      required: [position, sessionId, title, actionLabel]
+      properties:
+        position: {type: integer, enum: [2, 3, 4]}
+        sessionId: {type: string, minLength: 1}
+        title: {type: string, minLength: 1, maxLength: 200}
+        actionLabel: {type: string, minLength: 1, maxLength: 60}
+    UpdateHeroSessionSlidesBody:
+      type: object
+      required: [revision, slides]
+      properties:
+        revision: {type: integer, minimum: 0}
+        slides:
+          type: array
+          minItems: 3
+          maxItems: 3
+          items: {$ref: "#/components/schemas/HeroSessionSlideInput"}
+    AdminHeroSessionSlides:
+      type: object
+      required: [revision, draft, published, publishedRevision]
+      properties:
+        revision: {type: integer}
+        draft: {type: array, items: {$ref: "#/components/schemas/HeroSessionSlideInput"}}
+        published:
+          anyOf:
+            - {type: array, items: {$ref: "#/components/schemas/HeroSessionSlide"}}
+            - {type: "null"}
+        publishedRevision: {type: [integer, "null"]}
     PlaylistCarousel:
       type: object
       properties:

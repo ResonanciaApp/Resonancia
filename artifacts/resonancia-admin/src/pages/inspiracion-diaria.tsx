@@ -8,14 +8,17 @@ import { InspirationEditor } from "@/components/inspiracion/InspirationEditor";
 import { InspirationSettingsDialog } from "@/components/inspiracion/InspirationSettingsDialog";
 import { AdminInspirationWeek } from "@/components/inspiracion/types";
 import { HeroOverrideEditor } from "@/components/inspiracion/HeroOverrideEditor";
+import { HeroSessionSlidesEditor } from "@/components/inspiracion/HeroSessionSlidesEditor";
 
 export default function InspiracionDiariaPage() {
   const [currentDate, setCurrentDate] = useState(() => format(new Date(), "yyyy-MM-dd"));
   const [selectedDate, setSelectedDate] = useState<string>(currentDate);
   const [showSettings, setShowSettings] = useState(false);
   const [isEditorDirty, setIsEditorDirty] = useState(false);
-  const [isHeroDirty, setIsHeroDirty] = useState(false);
-  const hasDirtyChanges = isEditorDirty || isHeroDirty;
+  const [isHeroOverrideDirty, setIsHeroOverrideDirty] = useState(false);
+  const [isHeroSlidesDirty, setIsHeroSlidesDirty] = useState(false);
+  const hasDateScopedDirty = isEditorDirty || isHeroOverrideDirty;
+  const hasDirtyChanges = isEditorDirty || isHeroOverrideDirty || isHeroSlidesDirty;
 
   useEffect(() => {
     const handleBeforeUnload = (e: BeforeUnloadEvent) => {
@@ -39,7 +42,8 @@ export default function InspiracionDiariaPage() {
           e.preventDefault();
         } else {
           setIsEditorDirty(false);
-          setIsHeroDirty(false);
+          setIsHeroOverrideDirty(false);
+          setIsHeroSlidesDirty(false);
         }
       }
     };
@@ -59,14 +63,14 @@ export default function InspiracionDiariaPage() {
   const weekData = data as unknown as AdminInspirationWeek | undefined;
 
   const handleNavigate = (newDateStr: string, action: () => void) => {
-    if (hasDirtyChanges) {
+    if (hasDateScopedDirty) {
       if (!window.confirm("Tienes cambios sin guardar. ¿Seguro que quieres salir?")) {
         return;
       }
     }
     action();
     setIsEditorDirty(false);
-    setIsHeroDirty(false);
+    setIsHeroOverrideDirty(false);
   };
 
   const handlePrevWeek = () => {
@@ -235,8 +239,9 @@ export default function InspiracionDiariaPage() {
           key={`hero-${selectedDate}`}
           date={selectedDate}
           weekData={weekData}
-          onDirtyChange={(dirty) => setIsHeroDirty(dirty)}
+          onDirtyChange={setIsHeroOverrideDirty}
         />
+        <HeroSessionSlidesEditor onDirtyChange={setIsHeroSlidesDirty} />
       </div>
 
       {showSettings && weekData?.settings && (

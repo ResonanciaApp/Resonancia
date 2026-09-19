@@ -6,6 +6,7 @@ import {
   inspirationAssetsTable as assets, inspirationFavoritesTable as favorites,
   heroOverridesTable as heroes, heroOverrideAssetsTable as heroAssets,
   inspirationNotesTable as notes, catalogSessionsTable,
+  heroSessionSlidesTable,
   type InspirationContent,
 } from "@workspace/db";
 import {
@@ -143,6 +144,40 @@ router.get("/hero", wrap(async (req, res) => {
   if (fallback) {
     res.json({ date: clock.today, timeZone: clock.timeZone, source: "inspiration", media: { type: "image", objectPath: fallback }, fallbackImageUrl: fallback });
   } else res.json({ date: clock.today, timeZone: clock.timeZone, source: "fallback", media: null, fallbackImageUrl: null });
+}));
+function slideInput(value: unknown) {
+  return z.object({
+    position: z.union([z.literal(2), z.literal(3), z.literal(4)]),
+    sessionId: z.string().min(1),
+    title: z.string().trim().min(1).max(200),
+    actionLabel: z.string().trim().min(1).max(60),
+  }).parse(value);
+}
+async function sessionSlidesDto(content: { slides: Array<ReturnType<typeof slideInput> | null> } | null, revision: number) {
+  const inputs = (content?.slides ?? []).filter((slide): slide is ReturnType<typeof slideInput> => slide != null);
+  if (!inputs.length) return { revision, slides: [] };
+  const sessions = await db.select().from(catalogSessionsTable).where(inArray(catalogSessionsTable.id, inputs.map((slide) => slide.sessionId)));
+  const byId = new Map(sessions.filter((session) => session.status === "published").map((session) => [session.id, session]));
+  return {
+    revision,
+    slides: inputs.sort((a, b) => a.position - b.position).map((slide) => {
+      const session = byId.get(slide.sessionId);
+      if (!session) return null;
+      return {
+        ...slide,
+        categoryId: session.categoryId,
+        categoryLabel: session.categoryLabel,
+        imageUrl: session.imageUrl ?? session.imageKey ?? null,
+        skipDetail: session.skipDetail,
+        skipMiniPlayer: session.skipMiniPlayer,
+        isPremium: session.isPremium,
+      };
+    }).filter((slide): slide is NonNullable<typeof slide> => slide != null),
+  };
+}
+router.get("/hero/session-slides", wrap(async (_req, res) => {
+  const [row] = await db.select().from(heroSessionSlidesTable).where(eq(heroSessionSlidesTable.id, 1));
+  res.json(await sessionSlidesDto(row?.published ?? null, row?.publishedRevision ?? 0));
 }));
 router.get("/hero/media/:id", wrap(async (req, res) => {
   const row = await heroEntry(String(req.params.id));
@@ -305,6 +340,67 @@ function streamRangedFile(
   file.createReadStream({ start, end }).pipe(res);
 }
 router.get("/admin/heroes", ...admin, wrap(async (_req, res) => { res.json((await db.select().from(heroes)).map(heroDto)); }));
+router.get("/admin/hero/session-slides", ...admin, wrap(async (_req, res) => {
+  const [row] = await db.select().from(heroSessionSlidesTable).where(eq(heroSessionSlidesTable.id, 1));
+  const draft = row?.draft?.slides ?? [];
+  const published = row?.published ? await sessionSlidesDto(row.published, row.publishedRevision ?? 0) : null;
+  res.json({
+    revision: row?.revision ?? 0,
+    draft,
+    published: published?.slides ?? null,
+    publishedRevision: row?.publishedRevision ?? null,
+  });
+}));
+router.put("/admin/hero/session-slides", ...admin, wrap(async (req, res) => {
+  const body = z.object({
+    revision: z.number().int().min(0),
+    slides: z.array(z.unknown()).length(3),
+  }).parse(req.body);
+  const slides = body.slides.map(slideInput);
+  const positions = new Set(slides.map((slide) => slide.position));
+  if (positions.size !== 3 || ![2, 3, 4].every((position) => positions.has(position as 2 | 3 | 4))) {
+    throw new InspirationError(400, "Los tres slots del hero son obligatorios");
+  }
+  const uniqueSessionIds = [...new Set(slides.map((slide) => slide.sessionId))];
+  const found = await db.select({
+    id: catalogSessionsTable.id,
+    status: catalogSessionsTable.status,
+    imageKey: catalogSessionsTable.imageKey,
+    imageUrl: catalogSessionsTable.imageUrl,
+  })
+    .from(catalogSessionsTable)
+    .where(inArray(catalogSessionsTable.id, uniqueSessionIds));
+  if (found.length !== uniqueSessionIds.length || found.some((session) => session.status !== "published")) {
+    throw new InspirationError(400, "Todas las sesiones deben estar publicadas");
+  }
+  if (found.some((session) => !session.imageUrl && !session.imageKey)) {
+    throw new InspirationError(400, "Todas las sesiones deben tener una portada");
+  }
+  const row = await db.transaction(async (tx) => {
+    await lock(tx, "hero-session-slides");
+    const [old] = await tx.select().from(heroSessionSlidesTable).where(eq(heroSessionSlidesTable.id, 1));
+    requireInspirationRevision(old?.revision ?? 0, body.revision);
+    const value = {
+      id: 1,
+      revision: (old?.revision ?? 0) + 1,
+      draft: { slides: slides as [ReturnType<typeof slideInput>, ReturnType<typeof slideInput>, ReturnType<typeof slideInput>] },
+      published: { slides: slides as [ReturnType<typeof slideInput>, ReturnType<typeof slideInput>, ReturnType<typeof slideInput>] },
+      publishedRevision: (old?.revision ?? 0) + 1,
+      updatedAt: new Date(),
+    };
+    const [saved] = await tx.insert(heroSessionSlidesTable).values(value).onConflictDoUpdate({
+      target: heroSessionSlidesTable.id,
+      set: value,
+    }).returning();
+    return saved;
+  });
+  res.json({
+    revision: row.revision,
+    draft: row.draft.slides,
+    published: row.published ? (await sessionSlidesDto(row.published, row.publishedRevision ?? 0)).slides : null,
+    publishedRevision: row.publishedRevision,
+  });
+}));
 router.get("/admin/heroes/asset", ...admin, wrap(async (req, res) => {
   const path = z.string().max(500).parse(req.query.objectPath);
   const [asset] = await db.select().from(heroAssets).where(eq(heroAssets.objectPath, path));

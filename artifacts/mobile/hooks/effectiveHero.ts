@@ -12,7 +12,10 @@ export function absoluteMediaUrl(path: string): string {
   if (/^https?:\/\//i.test(path)) return path;
   const base = process.env.EXPO_PUBLIC_API_URL || process.env.EXPO_PUBLIC_DOMAIN || "";
   const origin = /^https?:\/\//i.test(base) ? base : base ? `https://${base}` : "";
-  return `${origin.replace(/\/+$/, "")}/${path.replace(/^\/+/, "")}`;
+  const servingPath = path.startsWith("/objects/")
+    ? path.replace(/^\/objects\//, "/api/storage/objects/")
+    : `/${path.replace(/^\/+/, "")}`;
+  return `${origin.replace(/\/+$/, "")}${servingPath}`;
 }
 
 export function resolveEffectiveHeroSource(
