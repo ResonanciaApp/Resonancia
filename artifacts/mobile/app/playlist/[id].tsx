@@ -27,7 +27,6 @@ import { BLUR_PLACEHOLDER, IMAGE_TRANSITION } from "@/constants/imagePlaceholder
 import { PlaylistAddSessionsSheet } from "@/components/PlaylistAddSessionsSheet";
 import { SacredGlyph } from "@/components/SacredGlyph";
 import {
-  PLAYLIST_COVER_PRESETS,
   getDefaultPlaylistCover,
   getPlaylistCoverPreset,
   type PlaylistCoverPreset,
@@ -52,6 +51,7 @@ import { WIDGET_GREEN_SOLID } from "@/constants/colors";
 import { SessionDurationBadge } from "@/components/SessionDurationBadge";
 import { readMoodHistory } from "@/data/mood-history";
 import { getMoodById, type Mood } from "@/data/moods";
+import { catalogImage, useCoverPresetCatalog } from "@/lib/cover-preset-catalog";
 
 const BG_GRADIENT_FALLBACK = ["#340D1A", "#190913"] as const;
 const GOLD = "#F9F9F9";
@@ -165,6 +165,7 @@ export default function PlaylistDetailScreen({ id: idProp }: { id?: string } = {
   const [editOrderVisible, setEditOrderVisible] = useState(false);
   const [editInfoVisible, setEditInfoVisible] = useState(false);
   const [coverModalVisible, setCoverModalVisible] = useState(false);
+  const playlistCatalog = useCoverPresetCatalog("playlist");
 
   const playlist = playlists.find((p) => p.id === id);
   const [descriptionDraft, setDescriptionDraft] = useState("");
@@ -199,6 +200,11 @@ export default function PlaylistDetailScreen({ id: idProp }: { id?: string } = {
   const panelColor = playlist?.coverColor
     ? buildPanelColor(playlist.coverColor)
     : DEFAULT_PANEL_BG;
+  const playlistPresetSource = playlist?.coverPresetId
+    ? playlistCatalog.find((item) => item.key === playlist.coverPresetId || item.id === playlist.coverPresetId)?.source
+      ?? catalogImage("playlist", playlist.coverPresetId)
+      ?? getPlaylistCoverPreset(playlist.coverPresetId)?.source
+    : undefined;
 
   const sessions = useMemo(
     () =>
@@ -384,9 +390,9 @@ export default function PlaylistDetailScreen({ id: idProp }: { id?: string } = {
               <View style={styles.coverCreation}>
                  <CreationCoverPreview creationId={playlist.coverCreationId} size={146.05} />
               </View>
-            ) : playlist.coverPresetId ? (
+            ) : playlist.coverPresetId && playlistPresetSource ? (
               <Image
-                source={getPlaylistCoverPreset(playlist.coverPresetId)?.source}
+                source={playlistPresetSource}
                 style={StyleSheet.absoluteFill}
                 contentFit="cover"
               />
@@ -1020,7 +1026,7 @@ function CoverPickerModal({
   currentPresetId?: string;
   onClose: () => void;
   onPickImage: (closeFn: () => void) => void;
-  onPickPreset: (preset: PlaylistCoverPreset) => void;
+  onPickPreset: (preset: { id: string }) => void;
 }) {
   const { theme: sceneTheme } = useSceneTheme();
   const sheetColor = sceneTheme.gradient[sceneTheme.gradient.length - 1];
@@ -1028,7 +1034,8 @@ function CoverPickerModal({
   const bottomPad = Platform.OS === "web" ? 24 : insets.bottom;
   const topOffset = (Platform.OS === "web" ? 67 : insets.top) + 50;
   const [selectedPresetId, setSelectedPresetId] = useState<string | null>(null);
-  const selectedPreset = getPlaylistCoverPreset(selectedPresetId ?? undefined);
+  const catalog = useCoverPresetCatalog("playlist");
+  const selectedPreset = catalog.find((item) => item.key === selectedPresetId || item.id === selectedPresetId);
 
   useEffect(() => {
     if (!visible) return;
@@ -1072,7 +1079,7 @@ function CoverPickerModal({
         </View>
 
         <View style={modalStyles.selectedPreviewSlot}>
-          {selectedPreset && (
+           {selectedPreset && (
             <Image
               source={selectedPreset.source}
               style={modalStyles.selectedPreview}
@@ -1097,19 +1104,19 @@ function CoverPickerModal({
 
         <FlatList
           style={modalStyles.presetGrid}
-          data={PLAYLIST_COVER_PRESETS}
-          keyExtractor={(preset) => preset.id}
+           data={catalog}
+           keyExtractor={(preset) => preset.id}
           numColumns={5}
           showsVerticalScrollIndicator={false}
           contentContainerStyle={modalStyles.presetGridContent}
           columnWrapperStyle={modalStyles.presetGridRow}
-          renderItem={({ item: preset }) => {
-            const selected = preset.id === selectedPresetId;
+           renderItem={({ item: preset }) => {
+             const selected = preset.id === selectedPresetId || preset.key === selectedPresetId;
             return (
             <Pressable
               onPress={() => {
-                setSelectedPresetId(preset.id);
-                onPickPreset(preset);
+                 setSelectedPresetId(preset.key);
+                 onPickPreset({ id: preset.key });
               }}
               accessibilityRole="button"
               accessibilityLabel={`Portada: ${preset.label}`}
@@ -1394,6 +1401,7 @@ function DragReorderModal({ visible, sessions, onClose, onSave }: {
   onSave: (newIds: string[]) => void;
 }) {
   const { theme: sceneTheme } = useSceneTheme();
+  const playlistCatalog = useCoverPresetCatalog("playlist");
   const BG_GRADIENT = sceneTheme.gradient;
   const insets = useSafeAreaInsets();
   const bottomPad = Platform.OS === "web" ? 24 : insets.bottom;
@@ -1551,6 +1559,7 @@ function EditInfoModal({ visible, playlist, onClose, onSave, onChangeCover, onDe
   onDelete: () => void;
 }) {
   const { theme: sceneTheme } = useSceneTheme();
+  const playlistCatalog = useCoverPresetCatalog("playlist");
   const BG_GRADIENT = sceneTheme.gradient;
   const insets = useSafeAreaInsets();
   const bottomPad = Platform.OS === "web" ? 24 : insets.bottom;
@@ -1587,8 +1596,8 @@ function EditInfoModal({ visible, playlist, onClose, onSave, onChangeCover, onDe
             {/* Portada */}
             <Pressable style={({ pressed }) => [eiSt.coverRow, { opacity: pressed ? 0.7 : 1 }]} onPress={onChangeCover}>
               <View style={eiSt.coverThumb}>
-                {playlist.coverPresetId ? (
-                  <Image source={getPlaylistCoverPreset(playlist.coverPresetId)?.source} style={StyleSheet.absoluteFill} contentFit="cover" />
+                {playlist.coverPresetId && playlistCatalog.find((item) => item.key === playlist.coverPresetId || item.id === playlist.coverPresetId) ? (
+                  <Image source={playlistCatalog.find((item) => item.key === playlist.coverPresetId || item.id === playlist.coverPresetId)?.source} style={StyleSheet.absoluteFill} contentFit="cover" />
                 ) : playlist.coverUri ? (
                   <Image source={{ uri: playlist.coverUri }} style={StyleSheet.absoluteFill} contentFit="cover" />
                 ) : (

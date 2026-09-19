@@ -27,7 +27,7 @@ import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { SacredGlyph } from "@/components/SacredGlyph";
 import { CreationCoverPreview } from "@/components/CreationCoverPreview";
 import { isIndigoThemeId } from "@/config/scene-themes";
-import { formatMixImageLabel, getMixImage, MIX_IMAGE_GALLERY } from "@/config/mix-images";
+import { formatMixImageLabel, getMixImage } from "@/config/mix-images";
 import { getSoundImage } from "@/config/sound-images";
 import { type MixPreset, useMixer } from "@/context/MixerContext";
 import { useSounds } from "@/context/SoundsContext";
@@ -37,6 +37,7 @@ import { useSceneTheme } from "@/context/SceneThemeContext";
 import { useMixerPanel } from "@/context/MixerPanelContext";
 import { REMOTE_SOUND_IMAGE_MAP } from "@/lib/remoteSoundMap";
 import { IMAGE_TRANSITION } from "@/constants/imagePlaceholder";
+import { catalogImage, useCoverPresetCatalog } from "@/lib/cover-preset-catalog";
 
 const GOLD = "#F9F9F9";
 const TEXT = "#FAF0EE";
@@ -56,7 +57,12 @@ export function MixCover({
   showSoundStack?: boolean;
   placeholderBackgroundColor?: string;
 }) {
-  const img = mix.image ? getMixImage(mix.image) : undefined;
+  const catalog = useCoverPresetCatalog("mix");
+  const img = mix.image
+    ? catalog.find((item) => item.key === mix.image || item.id === mix.image)?.source
+      ?? catalogImage("mix", mix.image)
+      ?? getMixImage(mix.image)
+    : undefined;
   const containerStyle = {
     width: size,
     height: size,
@@ -192,6 +198,7 @@ function CoverPickerSheet({
   const bottomPad = Platform.OS === "web" ? 24 : insets.bottom;
   const topOffset = (Platform.OS === "web" ? 67 : insets.top) + 50;
   const [selectedImageKey, setSelectedImageKey] = useState<string | null>(null);
+  const catalog = useCoverPresetCatalog("mix");
   const gradientLocations =
     theme.gradientLocations?.length === theme.gradient.length
       ? theme.gradientLocations
@@ -203,7 +210,9 @@ function CoverPickerSheet({
   }, [currentCoverUri, currentImageKey, visible]);
 
   const selectedSource = selectedImageKey
-    ? getMixImage(selectedImageKey)
+    ? catalog.find((item) => item.key === selectedImageKey || item.id === selectedImageKey)?.source
+      ?? catalogImage("mix", selectedImageKey)
+      ?? getMixImage(selectedImageKey)
     : currentCoverUri
       ? { uri: currentCoverUri }
       : undefined;
@@ -270,24 +279,24 @@ function CoverPickerSheet({
 
         <FlatList
           style={ms.presetGrid}
-          data={MIX_IMAGE_GALLERY}
-          keyExtractor={(key) => key}
+           data={catalog}
+           keyExtractor={(item) => item.id}
           numColumns={5}
           showsVerticalScrollIndicator={false}
           contentContainerStyle={ms.presetGridContent}
           columnWrapperStyle={ms.presetGridRow}
-          renderItem={({ item: key }) => {
-            const source = getMixImage(key);
-            const selected = key === selectedImageKey;
+           renderItem={({ item }) => {
+             const source = item.source;
+             const selected = item.key === selectedImageKey || item.id === selectedImageKey;
             if (!source) return null;
             return (
               <Pressable
                 onPress={() => {
-                  setSelectedImageKey(key);
-                  onPickPreset(key);
+                   setSelectedImageKey(item.key);
+                   onPickPreset(item.key);
                 }}
                 accessibilityRole="button"
-                accessibilityLabel={`Portada: ${formatMixImageLabel(key)}`}
+                 accessibilityLabel={`Portada: ${item.label || formatMixImageLabel(item.key)}`}
                 accessibilityState={{ selected }}
                 style={({ pressed }) => [
                   ms.presetPhotoFrame,

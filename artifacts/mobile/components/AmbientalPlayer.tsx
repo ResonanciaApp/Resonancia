@@ -27,6 +27,7 @@ import { type MixPreset, useMixer } from "@/context/MixerContext";
 import { usePlayer } from "@/context/PlayerContext";
 import { useSceneTheme } from "@/context/SceneThemeContext";
 import { getMixImage } from "@/config/mix-images";
+import { catalogImage, useCoverPresetCatalog } from "@/lib/cover-preset-catalog";
 import type { Session } from "@/data/sessions";
 
 const FADE_DURATION = 450;
@@ -56,6 +57,7 @@ export function AmbientalPlayer({
   initialMinutes,
   onClose,
 }: Props) {
+  const mixCatalog = useCoverPresetCatalog("mix");
   const insets = useSafeAreaInsets();
   const { theme } = useSceneTheme();
   const { unreadCount } = useNotifications();
@@ -285,7 +287,10 @@ export function AmbientalPlayer({
     ? mix.coverUri
       ? { uri: mix.coverUri }
       : mix.image
-        ? (getMixImage(mix.image) ?? null)
+        ? (mixCatalog.find((item) => item.key === mix.image || item.id === mix.image)?.source
+          ?? catalogImage("mix", mix.image)
+          ?? getMixImage(mix.image)
+          ?? null)
         : null
     : session?.image ?? null;
   const lastImageRef = useRef<ImageSourcePropType | null>(null);

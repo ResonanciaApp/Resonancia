@@ -7,6 +7,7 @@ import { SESSIONS } from "@/data/sessions";
 import { usePlayer } from "@/context/PlayerContext";
 import { usePremium } from "@/context/PremiumContext";
 import type { CommunityFeedEvent } from "@/lib/communityApi";
+import { useProfileAvatarSource } from "@/lib/profile-avatar";
 
 // ── Helpers ────────────────────────────────────────────────────────────────
 
@@ -97,6 +98,7 @@ export function ActivityFeedCard({ event }: Props) {
   const { playSession } = usePlayer();
   const { isPremium } = usePremium();
   const { user } = event;
+  const avatarSource = useProfileAvatarSource(user);
   const isLive = event.isLive === true;
   const thumb = sessionThumbnail(event.payload.sessionId);
   const displayName =
@@ -110,12 +112,13 @@ export function ActivityFeedCard({ event }: Props) {
     <View style={styles.card}>
       {/* Avatar */}
       <View style={styles.avatarWrap}>
-        <ExpoImage
-          source={{ uri: user.avatarUrl }}
-          style={styles.avatar}
-          contentFit="cover"
-          cachePolicy="memory-disk"
-        />
+        {avatarSource ? (
+          <ExpoImage source={avatarSource} style={styles.avatar} contentFit="cover" cachePolicy="memory-disk" />
+        ) : (
+          <View style={[styles.avatar, styles.avatarFallback]}>
+            <Text style={styles.avatarFallbackText}>{displayName.charAt(0).toUpperCase()}</Text>
+          </View>
+        )}
         {isLive && <LiveDot />}
       </View>
 
@@ -168,6 +171,14 @@ const styles = StyleSheet.create({
     height: 44,
     borderRadius: 22,
     backgroundColor: "rgba(255,255,255,0.08)",
+  },
+  avatarFallback: {
+    alignItems: "center",
+    justifyContent: "center",
+  },
+  avatarFallbackText: {
+    color: "#F9F9F9",
+    fontWeight: "700",
   },
   liveDot: {
     position: "absolute",

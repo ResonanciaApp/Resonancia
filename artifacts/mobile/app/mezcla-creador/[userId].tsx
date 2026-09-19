@@ -23,9 +23,9 @@ import { getGetSharedMixesQueryOptions, useGetSharedMixes } from "@workspace/api
 import type { SharedMix } from "@workspace/api-client-react";
 
 import { MIX_CATEGORIES } from "@/data/mix-categories";
+import { useProfileAvatarSource } from "@/lib/profile-avatar";
 import { useColors } from "@/hooks/useColors";
 import { useSceneTheme } from "@/context/SceneThemeContext";
-import { resolveAvatarUrl } from "@/lib/avatar";
 
 const COVER_SIZE = 46;
 const GOLD = "#F9F9F9";
@@ -69,7 +69,7 @@ export default function CreatorProfileScreen() {
   const mixes = data?.mixes ?? [];
   const author = mixes[0]?.author;
   const displayName = author?.displayName ?? name ?? "Creador";
-  const avatar = resolveAvatarUrl(author?.avatarUrl);
+  const avatar = useProfileAvatarSource(author ?? { avatarPresetId: null, avatarUrl: null });
   const initial = displayName?.trim()?.[0]?.toUpperCase() ?? "·";
   const totalLikes = mixes.reduce((sum, m) => sum + m.likes, 0);
 
@@ -94,7 +94,7 @@ export default function CreatorProfileScreen() {
           >
             {avatar ? (
               <ExpoImage
-                source={{ uri: avatar }}
+                source={avatar}
                 style={[styles.avatar, { borderColor: colors.border }]}
                 contentFit="cover"
               />

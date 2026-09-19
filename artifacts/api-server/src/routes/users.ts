@@ -15,6 +15,7 @@ import {
   messagesTable,
   liveSessionsTable,
   resonadoresTable,
+  coverPresetsTable,
   type User,
 } from "@workspace/db";
 import {
@@ -43,6 +44,7 @@ function toProfile(u: User) {
     username: u.username,
     displayName: u.displayName,
     avatarUrl: u.avatarUrl,
+    avatarPresetId: u.avatarPresetId ?? null,
     location: u.location ?? null,
     role: u.role,
     createdAt: u.createdAt.toISOString(),
@@ -60,6 +62,10 @@ router.patch("/me", requireAuth, async (req, res) => {
     return;
   }
   const me = req.currentUser!;
+  if (parsed.data.avatarUrl !== undefined && parsed.data.avatarPresetId !== undefined) {
+    res.status(400).json({ error: "Elegí una foto subida o una portada predeterminada, no ambas" });
+    return;
+  }
   if (
     parsed.data.avatarUrl !== undefined &&
     parsed.data.avatarUrl !== null &&
@@ -73,10 +79,30 @@ router.patch("/me", requireAuth, async (req, res) => {
     res.status(403).json({ error: "No podés usar un archivo que no te pertenece" });
     return;
   }
+  if (parsed.data.avatarPresetId !== undefined && parsed.data.avatarPresetId !== null) {
+    const [preset] = await db
+      .select({ id: coverPresetsTable.id })
+      .from(coverPresetsTable)
+      .where(and(
+        eq(coverPresetsTable.id, parsed.data.avatarPresetId),
+        eq(coverPresetsTable.scope, "profile"),
+      ))
+      .limit(1);
+    if (!preset) {
+      res.status(400).json({ error: "La portada de perfil no existe" });
+      return;
+    }
+  }
   const updates: Partial<typeof usersTable.$inferInsert> = {};
   if (parsed.data.username !== undefined) updates.username = parsed.data.username;
   if (parsed.data.displayName !== undefined) updates.displayName = parsed.data.displayName;
-  if (parsed.data.avatarUrl !== undefined) updates.avatarUrl = parsed.data.avatarUrl;
+  if (parsed.data.avatarPresetId !== undefined) {
+    updates.avatarPresetId = parsed.data.avatarPresetId;
+    updates.avatarUrl = null;
+  } else if (parsed.data.avatarUrl !== undefined) {
+    updates.avatarUrl = parsed.data.avatarUrl;
+    updates.avatarPresetId = null;
+  }
   if (parsed.data.location !== undefined) updates.location = parsed.data.location;
 
   if (Object.keys(updates).length === 0) {
@@ -642,6 +668,7 @@ router.get("/users/:userId/public", requireAuth, async (req, res) => {
       username: user.username,
       displayName: user.displayName,
       avatarUrl: user.avatarUrl,
+      avatarPresetId: user.avatarPresetId ?? null,
       location: user.location ?? null,
       role: user.role,
       createdAt: user.createdAt.toISOString(),

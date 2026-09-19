@@ -21,9 +21,9 @@ import { CreationCoverPreview } from "@/components/CreationCoverPreview";
 import { SacredGlyph } from "@/components/SacredGlyph";
 import {
   getDefaultPlaylistCover,
-  getPlaylistCoverPreset,
 } from "@/data/default-playlist-covers";
 import { baseOf, type GeometryId } from "@/data/geometries";
+import { useCoverPresetCatalog } from "@/lib/cover-preset-catalog";
 
 const BG_GRADIENT = ["#340D1A", "#190913"] as const;
 
@@ -31,6 +31,7 @@ export default function PlaylistsScreen() {
   const colors = useColors();
   const insets = useSafeAreaInsets();
   const { playlists } = useFoldersPlaylists();
+  const playlistCatalog = useCoverPresetCatalog("playlist");
   const topPad = Platform.OS === "web" ? 67 : insets.top;
 
   return (
@@ -89,8 +90,8 @@ export default function PlaylistsScreen() {
                   <SacredGlyph id={pl.coverGeometryId as GeometryId} color={colors.primary} size={36} strokeWidth={1.6} opacity={1} />
                 ) : pl.coverType === "creation" && pl.coverCreationId ? (
                   <CreationCoverPreview creationId={pl.coverCreationId} size={36} />
-                ) : pl.coverPresetId ? (
-                  <Image source={getPlaylistCoverPreset(pl.coverPresetId)?.source} style={{ width: 36, height: 36, borderRadius: 6 }} contentFit="cover" />
+                ) : pl.coverPresetId && playlistCatalog.find((item) => item.key === pl.coverPresetId || item.id === pl.coverPresetId) ? (
+                  <Image source={playlistCatalog.find((item) => item.key === pl.coverPresetId || item.id === pl.coverPresetId)?.source} style={{ width: 36, height: 36, borderRadius: 6 }} contentFit="cover" />
                 ) : pl.coverUri ? (
                   <Image source={{ uri: pl.coverUri }} style={{ width: 36, height: 36, borderRadius: 6 }} contentFit="cover" />
                 ) : (

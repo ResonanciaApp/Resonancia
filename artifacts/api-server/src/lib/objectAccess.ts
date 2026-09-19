@@ -1,7 +1,78 @@
-import { and, eq, sql } from "drizzle-orm";
+import { and, eq, sql, type SQL } from "drizzle-orm";
 import { db, uploadsTable, type UserRole } from "@workspace/db";
+import { ObjectStorageService } from "./objectStorage";
 
 export type ObjectReadAccess = "public" | "private" | "denied" | "inspiration-only";
+const objectStorageService = new ObjectStorageService();
+
+export async function lockObjectPaths(
+  tx: { execute: (query: SQL) => Promise<unknown> },
+  objectPaths: string[],
+): Promise<void> {
+  for (const objectPath of [...new Set(objectPaths)].sort()) {
+    await tx.execute(sql`select pg_advisory_xact_lock(hashtextextended(${objectPath}, 402))`);
+  }
+}
+
+export async function isObjectReferenced({
+  objectPath,
+  excludeCoverPresetId,
+}: {
+  objectPath: string;
+  excludeCoverPresetId?: string;
+}): Promise<boolean> {
+  const coverPresetExclusion = excludeCoverPresetId
+    ? sql`AND id <> ${excludeCoverPresetId}`
+    : sql``;
+  const result = await db.execute(sql`
+    SELECT (
+      EXISTS (SELECT 1 FROM cover_presets WHERE object_path = ${objectPath} ${coverPresetExclusion})
+      OR EXISTS (SELECT 1 FROM users WHERE avatar_url = ${objectPath})
+      OR EXISTS (SELECT 1 FROM catalog_sessions WHERE image_url = ${objectPath})
+      OR EXISTS (SELECT 1 FROM catalog_sessions WHERE image_key = ${objectPath})
+      OR EXISTS (SELECT 1 FROM catalog_audio_files WHERE url = ${objectPath})
+      OR EXISTS (SELECT 1 FROM catalog_playlists WHERE cover_url = ${objectPath} OR regexp_replace(cover_url, '^/api/storage/+', '/') = ${objectPath})
+      OR EXISTS (SELECT 1 FROM explore_sections WHERE cover_image_path = ${objectPath})
+      OR EXISTS (SELECT 1 FROM mixer_sounds WHERE object_path = ${objectPath} OR thumbnail_object_path = ${objectPath})
+      OR EXISTS (SELECT 1 FROM descanso_sounds WHERE audio_object_path = ${objectPath} OR thumbnail_object_path = ${objectPath})
+      OR EXISTS (SELECT 1 FROM catalog_videos WHERE thumbnail_object_path = ${objectPath})
+      OR EXISTS (SELECT 1 FROM direct_messages WHERE attachment_url = ${objectPath})
+      OR EXISTS (SELECT 1 FROM inspiration_assets WHERE object_path = ${objectPath})
+      OR EXISTS (SELECT 1 FROM hero_override_assets WHERE object_path = ${objectPath})
+      OR EXISTS (SELECT 1 FROM resonadores WHERE photo_url = ${objectPath} OR cover_photo_url = ${objectPath} OR ${objectPath} = ANY(photos))
+    ) AS referenced
+  `);
+  return Boolean((result.rows[0] as { referenced?: boolean } | undefined)?.referenced);
+}
+
+export async function validateOwnedCompletedImageUpload({
+  objectPath,
+  userId,
+}: {
+  objectPath: string;
+  userId: number;
+}): Promise<{ ok: true } | { ok: false; reason: "path" | "ownership" | "image" | "incomplete" }> {
+  if (!/^\/objects\/[^/].+/.test(objectPath)) return { ok: false, reason: "path" };
+  const [upload] = await db
+    .select()
+    .from(uploadsTable)
+    .where(and(eq(uploadsTable.objectPath, objectPath), eq(uploadsTable.userId, userId)))
+    .limit(1);
+  if (!upload) return { ok: false, reason: "ownership" };
+  if (!upload.contentType.toLowerCase().startsWith("image/")) return { ok: false, reason: "image" };
+  try {
+    const file = await objectStorageService.getObjectEntityFile(objectPath);
+    const [metadata] = await file.getMetadata();
+    const contentType = String(metadata.contentType ?? upload.contentType).toLowerCase();
+    const size = typeof metadata.size === "string" ? Number(metadata.size) : Number(metadata.size ?? 0);
+    if (!contentType.startsWith("image/") || !Number.isFinite(size) || size <= 0) {
+      return { ok: false, reason: "incomplete" };
+    }
+  } catch {
+    return { ok: false, reason: "incomplete" };
+  }
+  return { ok: true };
+}
 
 /**
  * Database-backed access policy for objects stored under PRIVATE_OBJECT_DIR.
@@ -76,6 +147,11 @@ export async function resolveObjectReadAccess({
           FROM explore_sections e
           WHERE e.visible = true
             AND e.cover_image_path = ${objectPath}
+        )
+        OR EXISTS (
+          SELECT 1
+          FROM cover_presets cp
+          WHERE cp.object_path = ${objectPath}
         )
         OR EXISTS (
           SELECT 1

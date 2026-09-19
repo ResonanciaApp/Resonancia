@@ -135,6 +135,7 @@ router.get("/community/feed", async (req, res) => {
         clerkUserId: usersTable.clerkUserId,
         displayName: usersTable.displayName,
         avatarUrl: usersTable.avatarUrl,
+        avatarPresetId: usersTable.avatarPresetId,
         location: usersTable.location,
       })
       .from(communityActivityEventsTable)
@@ -180,6 +181,7 @@ router.get("/community/feed", async (req, res) => {
           clerkUserId: r.clerkUserId,
           displayName: r.displayName,
           avatarUrl: r.avatarUrl,
+          avatarPresetId: r.avatarPresetId ?? null,
           location: r.location ?? null,
         },
       })),

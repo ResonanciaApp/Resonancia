@@ -49,7 +49,7 @@ import Reanimated, {
 import { EscenasMixerContent } from "@/app/escenas-mixer";
 import { useSaveEvent } from "@/context/SaveEventContext";
 import { VolumeSlider } from "@/components/VolumeSlider";
-import { DEFAULT_MIX_IMAGE_KEY, MIX_IMAGE_GALLERY, getMixImage } from "@/config/mix-images";
+import { DEFAULT_MIX_IMAGE_KEY } from "@/config/mix-images";
 import { getSoundImage } from "@/config/sound-images";
 import { MAX_ACTIVE_SOUNDS, useMixer } from "@/context/MixerContext";
 import { InmersivoContent } from "@/components/InmersivoMixerModal";

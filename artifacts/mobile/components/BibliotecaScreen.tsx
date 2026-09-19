@@ -58,8 +58,8 @@ import { CreationCoverPreview } from "@/components/CreationCoverPreview";
 import { PlaylistActionsSheet } from "@/components/PlaylistActionsSheet";
 import {
   getDefaultPlaylistCover,
-  getPlaylistCoverPreset,
 } from "@/data/default-playlist-covers";
+import { useCoverPresetCatalog } from "@/lib/cover-preset-catalog";
 import { FavoriteActionsSheet } from "@/components/FavoriteActionsSheet";
 import { WIDGET_GREEN_SOLID } from "@/constants/colors";
 
@@ -387,6 +387,7 @@ function MixFolderRow({ folder, onPress, onLongPress }: { folder: MixFolder; onP
 
 // ── Fila de playlist del usuario ─────────────────────────────────────────────
 function UserPlaylistRow({ pl, onPress, onLongPress }: { pl: UserPlaylist; onPress: () => void; onLongPress?: () => void }) {
+  const playlistCatalog = useCoverPresetCatalog("playlist");
   return (
     <Pressable onPress={onPress} onLongPress={onLongPress} delayLongPress={600} style={({ pressed }) => [styles.row, { opacity: pressed ? 0.8 : 1 }]}>
       <View style={[styles.userPlCover, { backgroundColor: "rgba(0,0,0,0.28)" }]}>
@@ -398,8 +399,8 @@ function UserPlaylistRow({ pl, onPress, onLongPress }: { pl: UserPlaylist; onPre
           </View>
         ) : pl.coverType === "creation" && pl.coverCreationId ? (
           <CreationCoverPreview creationId={pl.coverCreationId} size={64} />
-        ) : pl.coverPresetId ? (
-          <Image source={getPlaylistCoverPreset(pl.coverPresetId)?.source} style={styles.userPlCover} contentFit="cover" />
+        ) : pl.coverPresetId && playlistCatalog.find((item) => item.key === pl.coverPresetId || item.id === pl.coverPresetId) ? (
+          <Image source={playlistCatalog.find((item) => item.key === pl.coverPresetId || item.id === pl.coverPresetId)?.source} style={styles.userPlCover} contentFit="cover" />
         ) : pl.coverUri ? (
           <Image source={{ uri: pl.coverUri }} style={styles.userPlCover} contentFit="cover" />
         ) : (
@@ -1214,6 +1215,7 @@ export function BibliotecaScreen({
     favFolders,
     pinnedFavoriteIds,
   } = useFoldersPlaylists();
+  const playlistCatalog = useCoverPresetCatalog("playlist");
 
   const { creations: geometrixCreations, reload: reloadCreations } = useGeometrixCreations();
   useFocusEffect(useCallback(() => { reloadCreations(); }, [reloadCreations]));
@@ -1411,8 +1413,8 @@ export function BibliotecaScreen({
                           <SacredGlyph id={pl.coverGeometryId as GeometryId} color={GOLD} size={Math.round(cellW * 1.28)} strokeWidth={1.2} opacity={1} />
                         ) : pl.coverType === "creation" && pl.coverCreationId ? (
                           <CreationCoverPreview creationId={pl.coverCreationId} size={cellW} />
-                        ) : pl.coverPresetId ? (
-                          <Image source={getPlaylistCoverPreset(pl.coverPresetId)?.source} style={{ width: cellW, height: cellW, borderRadius: 8 }} contentFit="cover" />
+                        ) : pl.coverPresetId && playlistCatalog.find((item) => item.key === pl.coverPresetId || item.id === pl.coverPresetId) ? (
+                          <Image source={playlistCatalog.find((item) => item.key === pl.coverPresetId || item.id === pl.coverPresetId)?.source} style={{ width: cellW, height: cellW, borderRadius: 8 }} contentFit="cover" />
                         ) : pl.coverUri ? (
                           <Image source={{ uri: pl.coverUri }} style={{ width: cellW, height: cellW, borderRadius: 8 }} contentFit="cover" />
                         ) : (
@@ -1614,9 +1616,9 @@ export function BibliotecaScreen({
                        <SacredGlyph id={pl.coverGeometryId as GeometryId} color={GOLD} size={Math.round(cellW * 1.28)} strokeWidth={1.2} opacity={1} />
                      ) : pl.coverType === "creation" && pl.coverCreationId ? (
                        <CreationCoverPreview creationId={pl.coverCreationId} size={cellW} />
-                      ) : pl.coverPresetId ? (
-                        <Image source={getPlaylistCoverPreset(pl.coverPresetId)?.source} style={{ width: cellW, height: cellW, borderRadius: 8 }} contentFit="cover" />
-                      ) : pl.coverUri ? (
+                    ) : pl.coverPresetId && playlistCatalog.find((item) => item.key === pl.coverPresetId || item.id === pl.coverPresetId) ? (
+                      <Image source={playlistCatalog.find((item) => item.key === pl.coverPresetId || item.id === pl.coverPresetId)?.source} style={{ width: cellW, height: cellW, borderRadius: 8 }} contentFit="cover" />
+                    ) : pl.coverUri ? (
                        <Image source={{ uri: pl.coverUri }} style={{ width: cellW, height: cellW, borderRadius: 8 }} contentFit="cover" />
                      ) : (
                        <Feather name="music" size={28} color={MUTED} />

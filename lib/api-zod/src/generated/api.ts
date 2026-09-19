@@ -8,6 +8,130 @@
 import * as zod from 'zod';
 
 
+export const ListCoverPresetsQueryParams = zod.object({
+  "scope": zod.enum(['mix', 'playlist', 'profile'])
+})
+
+export const ListCoverPresetsResponse = zod.object({
+  "scope": zod.enum(['mix', 'playlist', 'profile']),
+  "presets": zod.array(zod.object({
+  "id": zod.string(),
+  "scope": zod.enum(['mix', 'playlist', 'profile']),
+  "key": zod.string(),
+  "label": zod.string(),
+  "sortOrder": zod.number(),
+  "source": zod.enum(['builtin', 'object']),
+  "builtinKey": zod.string().nullish(),
+  "objectPath": zod.string().nullish(),
+  "createdAt": zod.coerce.date().optional(),
+  "updatedAt": zod.coerce.date().optional()
+}))
+})
+
+
+export const ListAdminCoverPresetsQueryParams = zod.object({
+  "scope": zod.enum(['mix', 'playlist', 'profile'])
+})
+
+export const ListAdminCoverPresetsResponse = zod.object({
+  "scope": zod.enum(['mix', 'playlist', 'profile']),
+  "presets": zod.array(zod.object({
+  "id": zod.string(),
+  "scope": zod.enum(['mix', 'playlist', 'profile']),
+  "key": zod.string(),
+  "label": zod.string(),
+  "sortOrder": zod.number(),
+  "source": zod.enum(['builtin', 'object']),
+  "builtinKey": zod.string().nullish(),
+  "objectPath": zod.string().nullish(),
+  "createdAt": zod.coerce.date().optional(),
+  "updatedAt": zod.coerce.date().optional()
+}))
+})
+
+
+export const createAdminCoverPresetBodyKeyMax = 120;
+
+export const createAdminCoverPresetBodyLabelMax = 120;
+
+export const createAdminCoverPresetBodyObjectPathRegExp = new RegExp('^\/objects\/.+');
+
+
+export const CreateAdminCoverPresetBody = zod.object({
+  "scope": zod.enum(['mix', 'playlist', 'profile']),
+  "key": zod.string().min(1).max(createAdminCoverPresetBodyKeyMax).optional(),
+  "label": zod.string().min(1).max(createAdminCoverPresetBodyLabelMax),
+  "objectPath": zod.string().regex(createAdminCoverPresetBodyObjectPathRegExp).nullish()
+})
+
+
+export const reorderAdminCoverPresetsBodyIdsMax = 50;
+
+
+
+export const ReorderAdminCoverPresetsBody = zod.object({
+  "scope": zod.enum(['mix', 'playlist', 'profile']),
+  "ids": zod.array(zod.string()).min(1).max(reorderAdminCoverPresetsBodyIdsMax)
+})
+
+export const ReorderAdminCoverPresetsResponse = zod.object({
+  "scope": zod.enum(['mix', 'playlist', 'profile']),
+  "presets": zod.array(zod.object({
+  "id": zod.string(),
+  "scope": zod.enum(['mix', 'playlist', 'profile']),
+  "key": zod.string(),
+  "label": zod.string(),
+  "sortOrder": zod.number(),
+  "source": zod.enum(['builtin', 'object']),
+  "builtinKey": zod.string().nullish(),
+  "objectPath": zod.string().nullish(),
+  "createdAt": zod.coerce.date().optional(),
+  "updatedAt": zod.coerce.date().optional()
+}))
+})
+
+
+export const cleanupAdminCoverPresetUploadBodyObjectPathRegExp = new RegExp('^\/objects\/.+');
+
+
+export const CleanupAdminCoverPresetUploadBody = zod.object({
+  "objectPath": zod.string().regex(cleanupAdminCoverPresetUploadBodyObjectPathRegExp)
+})
+
+
+export const UpdateAdminCoverPresetParams = zod.object({
+  "id": zod.coerce.string()
+})
+
+export const updateAdminCoverPresetBodyLabelMax = 120;
+
+export const updateAdminCoverPresetBodyObjectPathRegExp = new RegExp('^\/objects\/.+');
+
+
+export const UpdateAdminCoverPresetBody = zod.object({
+  "label": zod.string().min(1).max(updateAdminCoverPresetBodyLabelMax).optional(),
+  "objectPath": zod.string().regex(updateAdminCoverPresetBodyObjectPathRegExp).nullish()
+})
+
+export const UpdateAdminCoverPresetResponse = zod.object({
+  "id": zod.string(),
+  "scope": zod.enum(['mix', 'playlist', 'profile']),
+  "key": zod.string(),
+  "label": zod.string(),
+  "sortOrder": zod.number(),
+  "source": zod.enum(['builtin', 'object']),
+  "builtinKey": zod.string().nullish(),
+  "objectPath": zod.string().nullish(),
+  "createdAt": zod.coerce.date().optional(),
+  "updatedAt": zod.coerce.date().optional()
+})
+
+
+export const DeleteAdminCoverPresetParams = zod.object({
+  "id": zod.coerce.string()
+})
+
+
 export const GetInspirationWeekQueryParams = zod.object({
   "date": zod.coerce.string().optional(),
   "timeZone": zod.coerce.string().optional()
@@ -1519,6 +1643,7 @@ export const GetSharedMixesResponse = zod.object({
   "username": zod.string(),
   "displayName": zod.string(),
   "avatarUrl": zod.string().nullish(),
+  "avatarPresetId": zod.string().nullish().describe('Stable profile preset ID; resolve its current image from GET \/api\/cover-presets?scope=profile. avatarUrl is reserved for custom uploaded avatars.'),
   "location": zod.string().nullish(),
   "role": zod.enum(['user', 'creator', 'admin', 'moderador', 'expansor', 'resonador']).optional(),
   "createdAt": zod.coerce.date()
@@ -1583,6 +1708,7 @@ export const ToggleSharedMixLikeResponse = zod.object({
   "username": zod.string(),
   "displayName": zod.string(),
   "avatarUrl": zod.string().nullish(),
+  "avatarPresetId": zod.string().nullish().describe('Stable profile preset ID; resolve its current image from GET \/api\/cover-presets?scope=profile. avatarUrl is reserved for custom uploaded avatars.'),
   "location": zod.string().nullish(),
   "role": zod.enum(['user', 'creator', 'admin', 'moderador', 'expansor', 'resonador']).optional(),
   "createdAt": zod.coerce.date()
@@ -1632,6 +1758,7 @@ export const GetMixCommentsResponse = zod.object({
   "username": zod.string(),
   "displayName": zod.string(),
   "avatarUrl": zod.string().nullish(),
+  "avatarPresetId": zod.string().nullish().describe('Stable profile preset ID; resolve its current image from GET \/api\/cover-presets?scope=profile. avatarUrl is reserved for custom uploaded avatars.'),
   "location": zod.string().nullish(),
   "role": zod.enum(['user', 'creator', 'admin', 'moderador', 'expansor', 'resonador']).optional(),
   "createdAt": zod.coerce.date()
@@ -1704,6 +1831,7 @@ export const GetSharedGlyphsResponse = zod.object({
   "username": zod.string(),
   "displayName": zod.string(),
   "avatarUrl": zod.string().nullish(),
+  "avatarPresetId": zod.string().nullish().describe('Stable profile preset ID; resolve its current image from GET \/api\/cover-presets?scope=profile. avatarUrl is reserved for custom uploaded avatars.'),
   "location": zod.string().nullish(),
   "role": zod.enum(['user', 'creator', 'admin', 'moderador', 'expansor', 'resonador']).optional(),
   "createdAt": zod.coerce.date()
@@ -1776,6 +1904,7 @@ export const ToggleSharedGlyphLikeResponse = zod.object({
   "username": zod.string(),
   "displayName": zod.string(),
   "avatarUrl": zod.string().nullish(),
+  "avatarPresetId": zod.string().nullish().describe('Stable profile preset ID; resolve its current image from GET \/api\/cover-presets?scope=profile. avatarUrl is reserved for custom uploaded avatars.'),
   "location": zod.string().nullish(),
   "role": zod.enum(['user', 'creator', 'admin', 'moderador', 'expansor', 'resonador']).optional(),
   "createdAt": zod.coerce.date()
@@ -1800,6 +1929,7 @@ export const GetMeResponse = zod.object({
   "username": zod.string(),
   "displayName": zod.string(),
   "avatarUrl": zod.string().nullish(),
+  "avatarPresetId": zod.string().nullish().describe('Stable profile preset ID; resolve its current image from GET \/api\/cover-presets?scope=profile. avatarUrl is reserved for custom uploaded avatars.'),
   "location": zod.string().nullish(),
   "role": zod.enum(['user', 'creator', 'admin', 'moderador', 'expansor', 'resonador']).optional(),
   "createdAt": zod.coerce.date()
@@ -1822,6 +1952,7 @@ export const UpdateMeBody = zod.object({
   "username": zod.string().min(updateMeBodyUsernameMin).max(updateMeBodyUsernameMax).regex(updateMeBodyUsernameRegExp).optional(),
   "displayName": zod.string().min(1).max(updateMeBodyDisplayNameMax).optional(),
   "avatarUrl": zod.string().nullish(),
+  "avatarPresetId": zod.string().nullish(),
   "location": zod.string().nullish()
 })
 
@@ -1830,6 +1961,7 @@ export const UpdateMeResponse = zod.object({
   "username": zod.string(),
   "displayName": zod.string(),
   "avatarUrl": zod.string().nullish(),
+  "avatarPresetId": zod.string().nullish().describe('Stable profile preset ID; resolve its current image from GET \/api\/cover-presets?scope=profile. avatarUrl is reserved for custom uploaded avatars.'),
   "location": zod.string().nullish(),
   "role": zod.enum(['user', 'creator', 'admin', 'moderador', 'expansor', 'resonador']).optional(),
   "createdAt": zod.coerce.date()
@@ -1875,6 +2007,7 @@ export const SearchUsersResponseItem = zod.object({
   "username": zod.string(),
   "displayName": zod.string(),
   "avatarUrl": zod.string().nullish(),
+  "avatarPresetId": zod.string().nullish(),
   "location": zod.string().nullish(),
   "friendshipStatus": zod.enum(['none', 'pending_outgoing', 'pending_incoming', 'accepted', 'self'])
 })
@@ -1893,6 +2026,7 @@ export const GetPublicUserProfileResponse = zod.object({
   "username": zod.string(),
   "displayName": zod.string(),
   "avatarUrl": zod.string().nullish(),
+  "avatarPresetId": zod.string().nullish().describe('Stable profile preset ID; resolve its current image from GET \/api\/cover-presets?scope=profile. avatarUrl is reserved for custom uploaded avatars.'),
   "location": zod.string().nullish(),
   "role": zod.enum(['user', 'creator', 'admin', 'moderador', 'expansor', 'resonador']).optional(),
   "createdAt": zod.coerce.date(),
@@ -1923,6 +2057,7 @@ export const SetUserRoleResponse = zod.object({
   "username": zod.string(),
   "displayName": zod.string(),
   "avatarUrl": zod.string().nullish(),
+  "avatarPresetId": zod.string().nullish().describe('Stable profile preset ID; resolve its current image from GET \/api\/cover-presets?scope=profile. avatarUrl is reserved for custom uploaded avatars.'),
   "location": zod.string().nullish(),
   "role": zod.enum(['user', 'creator', 'admin', 'moderador', 'expansor', 'resonador']).optional(),
   "createdAt": zod.coerce.date()
@@ -2028,6 +2163,7 @@ export const GetUserFollowersResponseItem = zod.object({
   "username": zod.string(),
   "displayName": zod.string(),
   "avatarUrl": zod.string().nullish(),
+  "avatarPresetId": zod.string().nullish(),
   "followedAt": zod.coerce.date()
 })
 export const GetUserFollowersResponse = zod.array(GetUserFollowersResponseItem)
@@ -2045,6 +2181,7 @@ export const GetUserFollowingResponseItem = zod.object({
   "username": zod.string(),
   "displayName": zod.string(),
   "avatarUrl": zod.string().nullish(),
+  "avatarPresetId": zod.string().nullish(),
   "followedAt": zod.coerce.date()
 })
 export const GetUserFollowingResponse = zod.array(GetUserFollowingResponseItem)
@@ -2058,6 +2195,7 @@ export const GetFriendsResponseItem = zod.object({
   "username": zod.string(),
   "displayName": zod.string(),
   "avatarUrl": zod.string().nullish(),
+  "avatarPresetId": zod.string().nullish().describe('Stable profile preset ID; resolve its current image from GET \/api\/cover-presets?scope=profile. avatarUrl is reserved for custom uploaded avatars.'),
   "location": zod.string().nullish(),
   "role": zod.enum(['user', 'creator', 'admin', 'moderador', 'expansor', 'resonador']).optional(),
   "createdAt": zod.coerce.date()
@@ -2085,6 +2223,7 @@ export const GetFriendRequestsResponseItem = zod.object({
   "username": zod.string(),
   "displayName": zod.string(),
   "avatarUrl": zod.string().nullish(),
+  "avatarPresetId": zod.string().nullish().describe('Stable profile preset ID; resolve its current image from GET \/api\/cover-presets?scope=profile. avatarUrl is reserved for custom uploaded avatars.'),
   "location": zod.string().nullish(),
   "role": zod.enum(['user', 'creator', 'admin', 'moderador', 'expansor', 'resonador']).optional(),
   "createdAt": zod.coerce.date()
@@ -2094,6 +2233,7 @@ export const GetFriendRequestsResponseItem = zod.object({
   "username": zod.string(),
   "displayName": zod.string(),
   "avatarUrl": zod.string().nullish(),
+  "avatarPresetId": zod.string().nullish().describe('Stable profile preset ID; resolve its current image from GET \/api\/cover-presets?scope=profile. avatarUrl is reserved for custom uploaded avatars.'),
   "location": zod.string().nullish(),
   "role": zod.enum(['user', 'creator', 'admin', 'moderador', 'expansor', 'resonador']).optional(),
   "createdAt": zod.coerce.date()
@@ -2126,6 +2266,7 @@ export const AcceptFriendRequestResponse = zod.object({
   "username": zod.string(),
   "displayName": zod.string(),
   "avatarUrl": zod.string().nullish(),
+  "avatarPresetId": zod.string().nullish().describe('Stable profile preset ID; resolve its current image from GET \/api\/cover-presets?scope=profile. avatarUrl is reserved for custom uploaded avatars.'),
   "location": zod.string().nullish(),
   "role": zod.enum(['user', 'creator', 'admin', 'moderador', 'expansor', 'resonador']).optional(),
   "createdAt": zod.coerce.date()
@@ -2135,6 +2276,7 @@ export const AcceptFriendRequestResponse = zod.object({
   "username": zod.string(),
   "displayName": zod.string(),
   "avatarUrl": zod.string().nullish(),
+  "avatarPresetId": zod.string().nullish().describe('Stable profile preset ID; resolve its current image from GET \/api\/cover-presets?scope=profile. avatarUrl is reserved for custom uploaded avatars.'),
   "location": zod.string().nullish(),
   "role": zod.enum(['user', 'creator', 'admin', 'moderador', 'expansor', 'resonador']).optional(),
   "createdAt": zod.coerce.date()
@@ -2164,6 +2306,7 @@ export const GetNotificationsResponseItem = zod.object({
   "username": zod.string(),
   "displayName": zod.string(),
   "avatarUrl": zod.string().nullish(),
+  "avatarPresetId": zod.string().nullish().describe('Stable profile preset ID; resolve its current image from GET \/api\/cover-presets?scope=profile. avatarUrl is reserved for custom uploaded avatars.'),
   "location": zod.string().nullish(),
   "role": zod.enum(['user', 'creator', 'admin', 'moderador', 'expansor', 'resonador']).optional(),
   "createdAt": zod.coerce.date()
@@ -2235,6 +2378,7 @@ export const GetConversationsResponseItem = zod.object({
   "username": zod.string(),
   "displayName": zod.string(),
   "avatarUrl": zod.string().nullish(),
+  "avatarPresetId": zod.string().nullish().describe('Stable profile preset ID; resolve its current image from GET \/api\/cover-presets?scope=profile. avatarUrl is reserved for custom uploaded avatars.'),
   "location": zod.string().nullish(),
   "role": zod.enum(['user', 'creator', 'admin', 'moderador', 'expansor', 'resonador']).optional(),
   "createdAt": zod.coerce.date()
@@ -3474,6 +3618,7 @@ export const GetPendingSubmissionsResponse = zod.object({
   "username": zod.string(),
   "displayName": zod.string(),
   "avatarUrl": zod.string().nullish(),
+  "avatarPresetId": zod.string().nullish().describe('Stable profile preset ID; resolve its current image from GET \/api\/cover-presets?scope=profile. avatarUrl is reserved for custom uploaded avatars.'),
   "location": zod.string().nullish(),
   "role": zod.enum(['user', 'creator', 'admin', 'moderador', 'expansor', 'resonador']).optional(),
   "createdAt": zod.coerce.date()
@@ -3581,6 +3726,7 @@ export const GetMySubmissionsResponse = zod.object({
   "username": zod.string(),
   "displayName": zod.string(),
   "avatarUrl": zod.string().nullish(),
+  "avatarPresetId": zod.string().nullish().describe('Stable profile preset ID; resolve its current image from GET \/api\/cover-presets?scope=profile. avatarUrl is reserved for custom uploaded avatars.'),
   "location": zod.string().nullish(),
   "role": zod.enum(['user', 'creator', 'admin', 'moderador', 'expansor', 'resonador']).optional(),
   "createdAt": zod.coerce.date()
@@ -3678,6 +3824,7 @@ export const ApproveSubmissionResponse = zod.object({
   "username": zod.string(),
   "displayName": zod.string(),
   "avatarUrl": zod.string().nullish(),
+  "avatarPresetId": zod.string().nullish().describe('Stable profile preset ID; resolve its current image from GET \/api\/cover-presets?scope=profile. avatarUrl is reserved for custom uploaded avatars.'),
   "location": zod.string().nullish(),
   "role": zod.enum(['user', 'creator', 'admin', 'moderador', 'expansor', 'resonador']).optional(),
   "createdAt": zod.coerce.date()
@@ -3782,6 +3929,7 @@ export const RejectSubmissionResponse = zod.object({
   "username": zod.string(),
   "displayName": zod.string(),
   "avatarUrl": zod.string().nullish(),
+  "avatarPresetId": zod.string().nullish().describe('Stable profile preset ID; resolve its current image from GET \/api\/cover-presets?scope=profile. avatarUrl is reserved for custom uploaded avatars.'),
   "location": zod.string().nullish(),
   "role": zod.enum(['user', 'creator', 'admin', 'moderador', 'expansor', 'resonador']).optional(),
   "createdAt": zod.coerce.date()
@@ -3968,6 +4116,7 @@ export const EditSubmissionResponse = zod.object({
   "username": zod.string(),
   "displayName": zod.string(),
   "avatarUrl": zod.string().nullish(),
+  "avatarPresetId": zod.string().nullish().describe('Stable profile preset ID; resolve its current image from GET \/api\/cover-presets?scope=profile. avatarUrl is reserved for custom uploaded avatars.'),
   "location": zod.string().nullish(),
   "role": zod.enum(['user', 'creator', 'admin', 'moderador', 'expansor', 'resonador']).optional(),
   "createdAt": zod.coerce.date()
@@ -4076,6 +4225,7 @@ export const HideSubmissionResponse = zod.object({
   "username": zod.string(),
   "displayName": zod.string(),
   "avatarUrl": zod.string().nullish(),
+  "avatarPresetId": zod.string().nullish().describe('Stable profile preset ID; resolve its current image from GET \/api\/cover-presets?scope=profile. avatarUrl is reserved for custom uploaded avatars.'),
   "location": zod.string().nullish(),
   "role": zod.enum(['user', 'creator', 'admin', 'moderador', 'expansor', 'resonador']).optional(),
   "createdAt": zod.coerce.date()
@@ -4172,6 +4322,7 @@ export const UnhideSubmissionResponse = zod.object({
   "username": zod.string(),
   "displayName": zod.string(),
   "avatarUrl": zod.string().nullish(),
+  "avatarPresetId": zod.string().nullish().describe('Stable profile preset ID; resolve its current image from GET \/api\/cover-presets?scope=profile. avatarUrl is reserved for custom uploaded avatars.'),
   "location": zod.string().nullish(),
   "role": zod.enum(['user', 'creator', 'admin', 'moderador', 'expansor', 'resonador']).optional(),
   "createdAt": zod.coerce.date()
@@ -4277,6 +4428,7 @@ export const GetAdminSessionsResponse = zod.object({
   "username": zod.string(),
   "displayName": zod.string(),
   "avatarUrl": zod.string().nullish(),
+  "avatarPresetId": zod.string().nullish().describe('Stable profile preset ID; resolve its current image from GET \/api\/cover-presets?scope=profile. avatarUrl is reserved for custom uploaded avatars.'),
   "location": zod.string().nullish(),
   "role": zod.enum(['user', 'creator', 'admin', 'moderador', 'expansor', 'resonador']).optional(),
   "createdAt": zod.coerce.date()
@@ -4377,6 +4529,7 @@ export const GetAdminSessionResponse = zod.object({
   "username": zod.string(),
   "displayName": zod.string(),
   "avatarUrl": zod.string().nullish(),
+  "avatarPresetId": zod.string().nullish().describe('Stable profile preset ID; resolve its current image from GET \/api\/cover-presets?scope=profile. avatarUrl is reserved for custom uploaded avatars.'),
   "location": zod.string().nullish(),
   "role": zod.enum(['user', 'creator', 'admin', 'moderador', 'expansor', 'resonador']).optional(),
   "createdAt": zod.coerce.date()
@@ -4492,6 +4645,7 @@ export const AddAdminSessionAudioResponse = zod.object({
   "username": zod.string(),
   "displayName": zod.string(),
   "avatarUrl": zod.string().nullish(),
+  "avatarPresetId": zod.string().nullish().describe('Stable profile preset ID; resolve its current image from GET \/api\/cover-presets?scope=profile. avatarUrl is reserved for custom uploaded avatars.'),
   "location": zod.string().nullish(),
   "role": zod.enum(['user', 'creator', 'admin', 'moderador', 'expansor', 'resonador']).optional(),
   "createdAt": zod.coerce.date()
@@ -4589,6 +4743,7 @@ export const DeleteAdminSessionAudioResponse = zod.object({
   "username": zod.string(),
   "displayName": zod.string(),
   "avatarUrl": zod.string().nullish(),
+  "avatarPresetId": zod.string().nullish().describe('Stable profile preset ID; resolve its current image from GET \/api\/cover-presets?scope=profile. avatarUrl is reserved for custom uploaded avatars.'),
   "location": zod.string().nullish(),
   "role": zod.enum(['user', 'creator', 'admin', 'moderador', 'expansor', 'resonador']).optional(),
   "createdAt": zod.coerce.date()
@@ -4634,6 +4789,7 @@ export const GetAdminUsersResponse = zod.object({
   "displayName": zod.string(),
   "email": zod.string().nullable(),
   "avatarUrl": zod.string().nullable(),
+  "avatarPresetId": zod.string().nullish(),
   "role": zod.enum(['user', 'creator', 'admin', 'moderador', 'expansor', 'resonador']),
   "submissionCount": zod.number(),
   "createdAt": zod.coerce.date()
@@ -4695,6 +4851,7 @@ export const GetAdminMixesResponse = zod.object({
   "username": zod.string(),
   "displayName": zod.string(),
   "avatarUrl": zod.string().nullish(),
+  "avatarPresetId": zod.string().nullish().describe('Stable profile preset ID; resolve its current image from GET \/api\/cover-presets?scope=profile. avatarUrl is reserved for custom uploaded avatars.'),
   "location": zod.string().nullish(),
   "role": zod.enum(['user', 'creator', 'admin', 'moderador', 'expansor', 'resonador']).optional(),
   "createdAt": zod.coerce.date()

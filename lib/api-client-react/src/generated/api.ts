@@ -53,6 +53,12 @@ import type {
   CatalogVideo,
   CommunityMessage,
   Conversation,
+  CoverPreset,
+  CoverPresetInput,
+  CoverPresetList,
+  CoverPresetOrderInput,
+  CoverPresetUpdate,
+  CoverPresetUploadCleanup,
   CreateAdminInspirationBody,
   CreateApplicationInput,
   CreateBunnyUploadUrlBody,
@@ -134,6 +140,8 @@ import type {
   InspirationUploadBody,
   InspirationWeek,
   LibrarySnapshot,
+  ListAdminCoverPresetsParams,
+  ListCoverPresetsParams,
   ListDescansoSounds200,
   MessagesPage,
   MilestoneInput,
@@ -217,6 +225,487 @@ type AwaitedInput<T> = PromiseLike<T> | T;
 type SecondParameter<T extends (...args: never) => unknown> = Parameters<T>[1];
 
 
+
+export const getListCoverPresetsUrl = (params: ListCoverPresetsParams,) => {
+  const normalizedParams = new URLSearchParams();
+
+  Object.entries(params || {}).forEach(([key, value]) => {
+
+    if (value !== undefined) {
+      normalizedParams.append(key, value === null ? 'null' : value.toString())
+    }
+  });
+
+  const stringifiedParams = normalizedParams.toString();
+
+  return stringifiedParams.length > 0 ? `/api/cover-presets?${stringifiedParams}` : `/api/cover-presets`
+}
+
+export const listCoverPresets = async (params: ListCoverPresetsParams, options?: RequestInit): Promise<CoverPresetList> => {
+
+  return customFetch<CoverPresetList>(getListCoverPresetsUrl(params),
+  {
+    ...options,
+    method: 'GET'
+
+
+  }
+);}
+
+
+
+
+
+export const getListCoverPresetsQueryKey = (params?: ListCoverPresetsParams,) => {
+    return [
+    `/api/cover-presets`, ...(params ? [params] : [])
+    ] as const;
+    }
+
+
+export const getListCoverPresetsQueryOptions = <TData = Awaited<ReturnType<typeof listCoverPresets>>, TError = ErrorType<void>>(params: ListCoverPresetsParams, options?: { query?:UseQueryOptions<Awaited<ReturnType<typeof listCoverPresets>>, TError, TData>, request?: SecondParameter<typeof customFetch>}
+) => {
+
+const {query: queryOptions, request: requestOptions} = options ?? {};
+
+  const queryKey =  queryOptions?.queryKey ?? getListCoverPresetsQueryKey(params);
+
+
+
+    const queryFn: QueryFunction<Awaited<ReturnType<typeof listCoverPresets>>> = ({ signal }) => listCoverPresets(params, { signal, ...requestOptions });
+
+
+
+
+
+   return  { queryKey, queryFn, ...queryOptions} as UseQueryOptions<Awaited<ReturnType<typeof listCoverPresets>>, TError, TData> & { queryKey: QueryKey }
+}
+
+export type ListCoverPresetsQueryResult = NonNullable<Awaited<ReturnType<typeof listCoverPresets>>>
+export type ListCoverPresetsQueryError = ErrorType<void>
+
+
+
+export function useListCoverPresets<TData = Awaited<ReturnType<typeof listCoverPresets>>, TError = ErrorType<void>>(
+ params: ListCoverPresetsParams, options?: { query?:UseQueryOptions<Awaited<ReturnType<typeof listCoverPresets>>, TError, TData>, request?: SecondParameter<typeof customFetch>}
+
+ ):  UseQueryResult<TData, TError> & { queryKey: QueryKey } {
+
+  const queryOptions = getListCoverPresetsQueryOptions(params,options)
+
+  const query = useQuery(queryOptions) as  UseQueryResult<TData, TError> & { queryKey: QueryKey };
+
+  return { ...query, queryKey: queryOptions.queryKey };
+}
+
+
+
+
+
+
+
+export const getListAdminCoverPresetsUrl = (params: ListAdminCoverPresetsParams,) => {
+  const normalizedParams = new URLSearchParams();
+
+  Object.entries(params || {}).forEach(([key, value]) => {
+
+    if (value !== undefined) {
+      normalizedParams.append(key, value === null ? 'null' : value.toString())
+    }
+  });
+
+  const stringifiedParams = normalizedParams.toString();
+
+  return stringifiedParams.length > 0 ? `/api/admin/cover-presets?${stringifiedParams}` : `/api/admin/cover-presets`
+}
+
+export const listAdminCoverPresets = async (params: ListAdminCoverPresetsParams, options?: RequestInit): Promise<CoverPresetList> => {
+
+  return customFetch<CoverPresetList>(getListAdminCoverPresetsUrl(params),
+  {
+    ...options,
+    method: 'GET'
+
+
+  }
+);}
+
+
+
+
+
+export const getListAdminCoverPresetsQueryKey = (params?: ListAdminCoverPresetsParams,) => {
+    return [
+    `/api/admin/cover-presets`, ...(params ? [params] : [])
+    ] as const;
+    }
+
+
+export const getListAdminCoverPresetsQueryOptions = <TData = Awaited<ReturnType<typeof listAdminCoverPresets>>, TError = ErrorType<unknown>>(params: ListAdminCoverPresetsParams, options?: { query?:UseQueryOptions<Awaited<ReturnType<typeof listAdminCoverPresets>>, TError, TData>, request?: SecondParameter<typeof customFetch>}
+) => {
+
+const {query: queryOptions, request: requestOptions} = options ?? {};
+
+  const queryKey =  queryOptions?.queryKey ?? getListAdminCoverPresetsQueryKey(params);
+
+
+
+    const queryFn: QueryFunction<Awaited<ReturnType<typeof listAdminCoverPresets>>> = ({ signal }) => listAdminCoverPresets(params, { signal, ...requestOptions });
+
+
+
+
+
+   return  { queryKey, queryFn, ...queryOptions} as UseQueryOptions<Awaited<ReturnType<typeof listAdminCoverPresets>>, TError, TData> & { queryKey: QueryKey }
+}
+
+export type ListAdminCoverPresetsQueryResult = NonNullable<Awaited<ReturnType<typeof listAdminCoverPresets>>>
+export type ListAdminCoverPresetsQueryError = ErrorType<unknown>
+
+
+
+export function useListAdminCoverPresets<TData = Awaited<ReturnType<typeof listAdminCoverPresets>>, TError = ErrorType<unknown>>(
+ params: ListAdminCoverPresetsParams, options?: { query?:UseQueryOptions<Awaited<ReturnType<typeof listAdminCoverPresets>>, TError, TData>, request?: SecondParameter<typeof customFetch>}
+
+ ):  UseQueryResult<TData, TError> & { queryKey: QueryKey } {
+
+  const queryOptions = getListAdminCoverPresetsQueryOptions(params,options)
+
+  const query = useQuery(queryOptions) as  UseQueryResult<TData, TError> & { queryKey: QueryKey };
+
+  return { ...query, queryKey: queryOptions.queryKey };
+}
+
+
+
+
+
+
+
+export const getCreateAdminCoverPresetUrl = () => {
+
+
+
+
+  return `/api/admin/cover-presets`
+}
+
+export const createAdminCoverPreset = async (coverPresetInput: CoverPresetInput, options?: RequestInit): Promise<CoverPreset> => {
+
+  return customFetch<CoverPreset>(getCreateAdminCoverPresetUrl(),
+  {
+    ...options,
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json', ...options?.headers },
+    body: JSON.stringify(
+      coverPresetInput,)
+  }
+);}
+
+
+
+
+export const getCreateAdminCoverPresetMutationOptions = <TError = ErrorType<unknown>,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof createAdminCoverPreset>>, TError,{data: BodyType<CoverPresetInput>}, TContext>, request?: SecondParameter<typeof customFetch>}
+): UseMutationOptions<Awaited<ReturnType<typeof createAdminCoverPreset>>, TError,{data: BodyType<CoverPresetInput>}, TContext> => {
+
+const mutationKey = ['createAdminCoverPreset'];
+const {mutation: mutationOptions, request: requestOptions} = options ?
+      options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey ?
+      options
+      : {...options, mutation: {...options.mutation, mutationKey}}
+      : {mutation: { mutationKey, }, request: undefined};
+
+
+
+
+      const mutationFn: MutationFunction<Awaited<ReturnType<typeof createAdminCoverPreset>>, {data: BodyType<CoverPresetInput>}> = (props) => {
+          const {data} = props ?? {};
+
+          return  createAdminCoverPreset(data,requestOptions)
+        }
+
+
+
+
+
+
+  return  { mutationFn, ...mutationOptions }}
+
+    export type CreateAdminCoverPresetMutationResult = NonNullable<Awaited<ReturnType<typeof createAdminCoverPreset>>>
+    export type CreateAdminCoverPresetMutationBody = BodyType<CoverPresetInput>
+    export type CreateAdminCoverPresetMutationError = ErrorType<unknown>
+
+    export const useCreateAdminCoverPreset = <TError = ErrorType<unknown>,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof createAdminCoverPreset>>, TError,{data: BodyType<CoverPresetInput>}, TContext>, request?: SecondParameter<typeof customFetch>}
+ ): UseMutationResult<
+        Awaited<ReturnType<typeof createAdminCoverPreset>>,
+        TError,
+        {data: BodyType<CoverPresetInput>},
+        TContext
+      > => {
+      return useMutation(getCreateAdminCoverPresetMutationOptions(options));
+    }
+
+export const getReorderAdminCoverPresetsUrl = () => {
+
+
+
+
+  return `/api/admin/cover-presets/order`
+}
+
+export const reorderAdminCoverPresets = async (coverPresetOrderInput: CoverPresetOrderInput, options?: RequestInit): Promise<CoverPresetList> => {
+
+  return customFetch<CoverPresetList>(getReorderAdminCoverPresetsUrl(),
+  {
+    ...options,
+    method: 'PUT',
+    headers: { 'Content-Type': 'application/json', ...options?.headers },
+    body: JSON.stringify(
+      coverPresetOrderInput,)
+  }
+);}
+
+
+
+
+export const getReorderAdminCoverPresetsMutationOptions = <TError = ErrorType<unknown>,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof reorderAdminCoverPresets>>, TError,{data: BodyType<CoverPresetOrderInput>}, TContext>, request?: SecondParameter<typeof customFetch>}
+): UseMutationOptions<Awaited<ReturnType<typeof reorderAdminCoverPresets>>, TError,{data: BodyType<CoverPresetOrderInput>}, TContext> => {
+
+const mutationKey = ['reorderAdminCoverPresets'];
+const {mutation: mutationOptions, request: requestOptions} = options ?
+      options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey ?
+      options
+      : {...options, mutation: {...options.mutation, mutationKey}}
+      : {mutation: { mutationKey, }, request: undefined};
+
+
+
+
+      const mutationFn: MutationFunction<Awaited<ReturnType<typeof reorderAdminCoverPresets>>, {data: BodyType<CoverPresetOrderInput>}> = (props) => {
+          const {data} = props ?? {};
+
+          return  reorderAdminCoverPresets(data,requestOptions)
+        }
+
+
+
+
+
+
+  return  { mutationFn, ...mutationOptions }}
+
+    export type ReorderAdminCoverPresetsMutationResult = NonNullable<Awaited<ReturnType<typeof reorderAdminCoverPresets>>>
+    export type ReorderAdminCoverPresetsMutationBody = BodyType<CoverPresetOrderInput>
+    export type ReorderAdminCoverPresetsMutationError = ErrorType<unknown>
+
+    export const useReorderAdminCoverPresets = <TError = ErrorType<unknown>,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof reorderAdminCoverPresets>>, TError,{data: BodyType<CoverPresetOrderInput>}, TContext>, request?: SecondParameter<typeof customFetch>}
+ ): UseMutationResult<
+        Awaited<ReturnType<typeof reorderAdminCoverPresets>>,
+        TError,
+        {data: BodyType<CoverPresetOrderInput>},
+        TContext
+      > => {
+      return useMutation(getReorderAdminCoverPresetsMutationOptions(options));
+    }
+
+export const getCleanupAdminCoverPresetUploadUrl = () => {
+
+
+
+
+  return `/api/admin/cover-presets/upload`
+}
+
+export const cleanupAdminCoverPresetUpload = async (coverPresetUploadCleanup: CoverPresetUploadCleanup, options?: RequestInit): Promise<void> => {
+
+  return customFetch<void>(getCleanupAdminCoverPresetUploadUrl(),
+  {
+    ...options,
+    method: 'DELETE',
+    headers: { 'Content-Type': 'application/json', ...options?.headers },
+    body: JSON.stringify(
+      coverPresetUploadCleanup,)
+  }
+);}
+
+
+
+
+export const getCleanupAdminCoverPresetUploadMutationOptions = <TError = ErrorType<unknown>,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof cleanupAdminCoverPresetUpload>>, TError,{data: BodyType<CoverPresetUploadCleanup>}, TContext>, request?: SecondParameter<typeof customFetch>}
+): UseMutationOptions<Awaited<ReturnType<typeof cleanupAdminCoverPresetUpload>>, TError,{data: BodyType<CoverPresetUploadCleanup>}, TContext> => {
+
+const mutationKey = ['cleanupAdminCoverPresetUpload'];
+const {mutation: mutationOptions, request: requestOptions} = options ?
+      options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey ?
+      options
+      : {...options, mutation: {...options.mutation, mutationKey}}
+      : {mutation: { mutationKey, }, request: undefined};
+
+
+
+
+      const mutationFn: MutationFunction<Awaited<ReturnType<typeof cleanupAdminCoverPresetUpload>>, {data: BodyType<CoverPresetUploadCleanup>}> = (props) => {
+          const {data} = props ?? {};
+
+          return  cleanupAdminCoverPresetUpload(data,requestOptions)
+        }
+
+
+
+
+
+
+  return  { mutationFn, ...mutationOptions }}
+
+    export type CleanupAdminCoverPresetUploadMutationResult = NonNullable<Awaited<ReturnType<typeof cleanupAdminCoverPresetUpload>>>
+    export type CleanupAdminCoverPresetUploadMutationBody = BodyType<CoverPresetUploadCleanup>
+    export type CleanupAdminCoverPresetUploadMutationError = ErrorType<unknown>
+
+    export const useCleanupAdminCoverPresetUpload = <TError = ErrorType<unknown>,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof cleanupAdminCoverPresetUpload>>, TError,{data: BodyType<CoverPresetUploadCleanup>}, TContext>, request?: SecondParameter<typeof customFetch>}
+ ): UseMutationResult<
+        Awaited<ReturnType<typeof cleanupAdminCoverPresetUpload>>,
+        TError,
+        {data: BodyType<CoverPresetUploadCleanup>},
+        TContext
+      > => {
+      return useMutation(getCleanupAdminCoverPresetUploadMutationOptions(options));
+    }
+
+export const getUpdateAdminCoverPresetUrl = (id: string,) => {
+
+
+
+
+  return `/api/admin/cover-presets/${id}`
+}
+
+export const updateAdminCoverPreset = async (id: string,
+    coverPresetUpdate: CoverPresetUpdate, options?: RequestInit): Promise<CoverPreset> => {
+
+  return customFetch<CoverPreset>(getUpdateAdminCoverPresetUrl(id),
+  {
+    ...options,
+    method: 'PATCH',
+    headers: { 'Content-Type': 'application/json', ...options?.headers },
+    body: JSON.stringify(
+      coverPresetUpdate,)
+  }
+);}
+
+
+
+
+export const getUpdateAdminCoverPresetMutationOptions = <TError = ErrorType<unknown>,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof updateAdminCoverPreset>>, TError,{id: string;data: BodyType<CoverPresetUpdate>}, TContext>, request?: SecondParameter<typeof customFetch>}
+): UseMutationOptions<Awaited<ReturnType<typeof updateAdminCoverPreset>>, TError,{id: string;data: BodyType<CoverPresetUpdate>}, TContext> => {
+
+const mutationKey = ['updateAdminCoverPreset'];
+const {mutation: mutationOptions, request: requestOptions} = options ?
+      options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey ?
+      options
+      : {...options, mutation: {...options.mutation, mutationKey}}
+      : {mutation: { mutationKey, }, request: undefined};
+
+
+
+
+      const mutationFn: MutationFunction<Awaited<ReturnType<typeof updateAdminCoverPreset>>, {id: string;data: BodyType<CoverPresetUpdate>}> = (props) => {
+          const {id,data} = props ?? {};
+
+          return  updateAdminCoverPreset(id,data,requestOptions)
+        }
+
+
+
+
+
+
+  return  { mutationFn, ...mutationOptions }}
+
+    export type UpdateAdminCoverPresetMutationResult = NonNullable<Awaited<ReturnType<typeof updateAdminCoverPreset>>>
+    export type UpdateAdminCoverPresetMutationBody = BodyType<CoverPresetUpdate>
+    export type UpdateAdminCoverPresetMutationError = ErrorType<unknown>
+
+    export const useUpdateAdminCoverPreset = <TError = ErrorType<unknown>,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof updateAdminCoverPreset>>, TError,{id: string;data: BodyType<CoverPresetUpdate>}, TContext>, request?: SecondParameter<typeof customFetch>}
+ ): UseMutationResult<
+        Awaited<ReturnType<typeof updateAdminCoverPreset>>,
+        TError,
+        {id: string;data: BodyType<CoverPresetUpdate>},
+        TContext
+      > => {
+      return useMutation(getUpdateAdminCoverPresetMutationOptions(options));
+    }
+
+export const getDeleteAdminCoverPresetUrl = (id: string,) => {
+
+
+
+
+  return `/api/admin/cover-presets/${id}`
+}
+
+export const deleteAdminCoverPreset = async (id: string, options?: RequestInit): Promise<void> => {
+
+  return customFetch<void>(getDeleteAdminCoverPresetUrl(id),
+  {
+    ...options,
+    method: 'DELETE'
+
+
+  }
+);}
+
+
+
+
+export const getDeleteAdminCoverPresetMutationOptions = <TError = ErrorType<unknown>,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof deleteAdminCoverPreset>>, TError,{id: string}, TContext>, request?: SecondParameter<typeof customFetch>}
+): UseMutationOptions<Awaited<ReturnType<typeof deleteAdminCoverPreset>>, TError,{id: string}, TContext> => {
+
+const mutationKey = ['deleteAdminCoverPreset'];
+const {mutation: mutationOptions, request: requestOptions} = options ?
+      options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey ?
+      options
+      : {...options, mutation: {...options.mutation, mutationKey}}
+      : {mutation: { mutationKey, }, request: undefined};
+
+
+
+
+      const mutationFn: MutationFunction<Awaited<ReturnType<typeof deleteAdminCoverPreset>>, {id: string}> = (props) => {
+          const {id} = props ?? {};
+
+          return  deleteAdminCoverPreset(id,requestOptions)
+        }
+
+
+
+
+
+
+  return  { mutationFn, ...mutationOptions }}
+
+    export type DeleteAdminCoverPresetMutationResult = NonNullable<Awaited<ReturnType<typeof deleteAdminCoverPreset>>>
+
+    export type DeleteAdminCoverPresetMutationError = ErrorType<unknown>
+
+    export const useDeleteAdminCoverPreset = <TError = ErrorType<unknown>,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof deleteAdminCoverPreset>>, TError,{id: string}, TContext>, request?: SecondParameter<typeof customFetch>}
+ ): UseMutationResult<
+        Awaited<ReturnType<typeof deleteAdminCoverPreset>>,
+        TError,
+        {id: string},
+        TContext
+      > => {
+      return useMutation(getDeleteAdminCoverPresetMutationOptions(options));
+    }
 
 export const getGetInspirationWeekUrl = (params?: GetInspirationWeekParams,) => {
   const normalizedParams = new URLSearchParams();

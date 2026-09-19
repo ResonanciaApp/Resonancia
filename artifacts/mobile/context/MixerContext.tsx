@@ -25,6 +25,7 @@ import {
 } from "@/data/sounds";
 import { useSounds } from "@/context/SoundsContext";
 import { getMixImage } from "@/config/mix-images";
+import { catalogImage, useCoverPresetCatalog } from "@/lib/cover-preset-catalog";
 import type { MixCategory } from "@/data/mix-categories";
 import {
   MIXER_GEO_BG_KEY,
@@ -74,7 +75,7 @@ const MIX_ENGINE_ANCHOR_SOURCE = require("@/assets/audio/prueba_voz_generada.mp3
 /** Resuelve la imagen elegida al guardar la mezcla (key de la galería) a un
  *  URL usable como carátula. Cae al logo de la app si no hay imagen. */
 function resolveMixArtworkUrl(imageKey?: string): string | undefined {
-  const source = getMixImage(imageKey);
+  const source = catalogImage("mix", imageKey) ?? getMixImage(imageKey);
   if (source) {
     const uri = assetToUri(source);
     if (uri) return uri;
@@ -236,6 +237,7 @@ type MixerContextType = {
 const MixerContext = createContext<MixerContextType | null>(null);
 
 export function MixerProvider({ children }: { children: React.ReactNode }) {
+  useCoverPresetCatalog("mix");
   const { sounds: catalogSounds, loaded: catalogLoaded } = useSounds();
   const catalogSoundsRef = useRef<MixSound[]>([]);
   const previousCatalogSoundsRef = useRef<MixSound[]>([]);

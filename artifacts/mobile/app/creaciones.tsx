@@ -16,6 +16,7 @@ import { useSafeAreaInsets } from "react-native-safe-area-context";
 
 import { SacredBackground } from "@/components/SacredBackground";
 import { getMixImage } from "@/config/mix-images";
+import { useCoverPresetCatalog, catalogImage } from "@/lib/cover-preset-catalog";
 import { MixPreset, useMixer } from "@/context/MixerContext";
 import { useColors } from "@/hooks/useColors";
 
@@ -40,6 +41,7 @@ export default function CreacionesScreen() {
   const colors = useColors();
   const insets = useSafeAreaInsets();
   const { presets, loadPreset, deletePreset } = useMixer();
+  const mixCatalog = useCoverPresetCatalog("mix");
 
   const topPad = Platform.OS === "web" ? 67 : insets.top;
   const bottomPad = Platform.OS === "web" ? 34 : insets.bottom;
@@ -129,7 +131,9 @@ export default function CreacionesScreen() {
         ) : (
           <View style={styles.list}>
             {presets.map((preset) => {
-              const imageSource = getMixImage(preset.image ?? undefined);
+              const imageSource = mixCatalog.find((item) => item.key === preset.image || item.id === preset.image)?.source
+                ?? catalogImage("mix", preset.image)
+                ?? getMixImage(preset.image ?? undefined);
               const catLabel =
                 CATEGORY_LABELS[preset.category] ?? preset.category;
               const soundCount = preset.sounds.length;

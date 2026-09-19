@@ -617,6 +617,11 @@ export interface UserProfile {
   displayName: string;
   /** @nullable */
   avatarUrl?: string | null;
+  /**
+     * Stable profile preset ID; resolve its current image from GET /api/cover-presets?scope=profile. avatarUrl is reserved for custom uploaded avatars.
+     * @nullable
+     */
+  avatarPresetId?: string | null;
   /** @nullable */
   location?: string | null;
   role?: UserProfileRole;
@@ -966,6 +971,11 @@ export interface PublicUserProfile {
   displayName: string;
   /** @nullable */
   avatarUrl?: string | null;
+  /**
+     * Stable profile preset ID; resolve its current image from GET /api/cover-presets?scope=profile. avatarUrl is reserved for custom uploaded avatars.
+     * @nullable
+     */
+  avatarPresetId?: string | null;
   /** @nullable */
   location?: string | null;
   role?: PublicUserProfileRole;
@@ -1004,6 +1014,8 @@ export interface UserProfileUpdate {
   /** @nullable */
   avatarUrl?: string | null;
   /** @nullable */
+  avatarPresetId?: string | null;
+  /** @nullable */
   location?: string | null;
 }
 
@@ -1024,6 +1036,8 @@ export interface UserSearchResult {
   displayName: string;
   /** @nullable */
   avatarUrl?: string | null;
+  /** @nullable */
+  avatarPresetId?: string | null;
   /** @nullable */
   location?: string | null;
   friendshipStatus: UserSearchResultFriendshipStatus;
@@ -2157,6 +2171,8 @@ export interface AdminUser {
   email: string | null;
   /** @nullable */
   avatarUrl: string | null;
+  /** @nullable */
+  avatarPresetId?: string | null;
   role: AdminUserRole;
   submissionCount: number;
   createdAt: string;
@@ -2290,6 +2306,8 @@ export interface FollowedUser {
   username: string;
   displayName: string;
   avatarUrl?: string | null;
+  /** @nullable */
+  avatarPresetId?: string | null;
   followedAt: string;
 }
 
@@ -2825,6 +2843,97 @@ export interface UpdateDescansoSoundBody {
   sortOrder?: number;
   isActive?: boolean;
 }
+
+export type CoverPresetScope = typeof CoverPresetScope[keyof typeof CoverPresetScope];
+
+
+export const CoverPresetScope = {
+  mix: 'mix',
+  playlist: 'playlist',
+  profile: 'profile',
+} as const;
+
+export type CoverPresetSource = typeof CoverPresetSource[keyof typeof CoverPresetSource];
+
+
+export const CoverPresetSource = {
+  builtin: 'builtin',
+  object: 'object',
+} as const;
+
+export interface CoverPreset {
+  id: string;
+  scope: CoverPresetScope;
+  key: string;
+  label: string;
+  sortOrder: number;
+  source: CoverPresetSource;
+  /** @nullable */
+  builtinKey?: string | null;
+  /** @nullable */
+  objectPath?: string | null;
+  createdAt?: string;
+  updatedAt?: string;
+}
+
+export interface CoverPresetList {
+  scope: CoverPresetScope;
+  presets: CoverPreset[];
+}
+
+export interface CoverPresetInput {
+  scope: CoverPresetScope;
+  /**
+     * @minLength 1
+     * @maxLength 120
+     */
+  key?: string;
+  /**
+     * @minLength 1
+     * @maxLength 120
+     */
+  label: string;
+  /**
+     * @nullable
+     * @pattern ^/objects/.+
+     */
+  objectPath?: string | null;
+}
+
+export interface CoverPresetUpdate {
+  /**
+     * @minLength 1
+     * @maxLength 120
+     */
+  label?: string;
+  /**
+     * @nullable
+     * @pattern ^/objects/.+
+     */
+  objectPath?: string | null;
+}
+
+export interface CoverPresetOrderInput {
+  scope: CoverPresetScope;
+  /**
+     * @minItems 1
+     * @maxItems 50
+     */
+  ids: string[];
+}
+
+export interface CoverPresetUploadCleanup {
+  /** @pattern ^/objects/.+ */
+  objectPath: string;
+}
+
+export type ListCoverPresetsParams = {
+scope: CoverPresetScope;
+};
+
+export type ListAdminCoverPresetsParams = {
+scope: CoverPresetScope;
+};
 
 export type GetInspirationWeekParams = {
 date?: string;

@@ -37,6 +37,117 @@ tags:
   - name: live-sessions
     description: Sesiones en vivo con guiadores (Cal.com + Daily.co)
 paths:
+  /cover-presets:
+    get:
+      operationId: listCoverPresets
+      tags: [catalog]
+      parameters:
+        - name: scope
+          in: query
+          required: true
+          schema:
+            $ref: "#/components/schemas/CoverPresetScope"
+      responses:
+        "200":
+          description: Ordered cover presets for a scope
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/CoverPresetList"
+        "400":
+          description: Invalid scope
+  /admin/cover-presets:
+    get:
+      operationId: listAdminCoverPresets
+      tags: [admin]
+      parameters:
+        - name: scope
+          in: query
+          required: true
+          schema:
+            $ref: "#/components/schemas/CoverPresetScope"
+      responses:
+        "200":
+          description: Ordered editable cover presets
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/CoverPresetList"
+    post:
+      operationId: createAdminCoverPreset
+      tags: [admin]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/CoverPresetInput"
+      responses:
+        "201":
+          description: Created cover preset
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/CoverPreset"
+  /admin/cover-presets/order:
+    put:
+      operationId: reorderAdminCoverPresets
+      tags: [admin]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/CoverPresetOrderInput"
+      responses:
+        "200":
+          description: Reordered cover presets
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/CoverPresetList"
+  /admin/cover-presets/upload:
+    delete:
+      operationId: cleanupAdminCoverPresetUpload
+      tags: [admin]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/CoverPresetUploadCleanup"
+      responses:
+        "204":
+          description: Unclaimed upload cleaned up
+  /admin/cover-presets/{id}:
+    parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: string
+    patch:
+      operationId: updateAdminCoverPreset
+      tags: [admin]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/CoverPresetUpdate"
+      responses:
+        "200":
+          description: Updated cover preset
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/CoverPreset"
+    delete:
+      operationId: deleteAdminCoverPreset
+      tags: [admin]
+      responses:
+        "204":
+          description: Deleted cover preset
   /inspirations/week:
     get:
       operationId: getInspirationWeek
@@ -5511,6 +5622,9 @@ components:
           type: string
         avatarUrl:
           type: ["string", "null"]
+        avatarPresetId:
+          type: ["string", "null"]
+          description: Stable profile preset ID; resolve its current image from GET /api/cover-presets?scope=profile. avatarUrl is reserved for custom uploaded avatars.
         location:
           type: ["string", "null"]
         role:
@@ -5547,6 +5661,9 @@ components:
           type: string
         avatarUrl:
           type: ["string", "null"]
+        avatarPresetId:
+          type: ["string", "null"]
+          description: Stable profile preset ID; resolve its current image from GET /api/cover-presets?scope=profile. avatarUrl is reserved for custom uploaded avatars.
         location:
           type: ["string", "null"]
         role:
@@ -5579,6 +5696,8 @@ components:
           maxLength: 60
         avatarUrl:
           type: ["string", "null"]
+        avatarPresetId:
+          type: ["string", "null"]
         location:
           type: ["string", "null"]
     UserSearchResult:
@@ -5591,6 +5710,8 @@ components:
         displayName:
           type: string
         avatarUrl:
+          type: ["string", "null"]
+        avatarPresetId:
           type: ["string", "null"]
         location:
           type: ["string", "null"]
@@ -7093,6 +7214,8 @@ components:
           type: ["string", "null"]
         avatarUrl:
           type: ["string", "null"]
+        avatarPresetId:
+          type: ["string", "null"]
         role:
           type: string
           enum: [user, creator, admin, moderador, expansor, resonador]
@@ -7270,6 +7393,8 @@ components:
         avatarUrl:
           type: string
           nullable: true
+        avatarPresetId:
+          type: ["string", "null"]
         followedAt:
           type: string
           format: date-time
@@ -7975,3 +8100,89 @@ components:
           type: integer
         isActive:
           type: boolean
+    CoverPresetScope:
+      type: string
+      enum: [mix, playlist, profile]
+    CoverPreset:
+      type: object
+      required: [id, scope, key, label, sortOrder, source]
+      properties:
+        id:
+          type: string
+        scope:
+          $ref: "#/components/schemas/CoverPresetScope"
+        key:
+          type: string
+        label:
+          type: string
+        sortOrder:
+          type: integer
+        source:
+          type: string
+          enum: [builtin, object]
+        builtinKey:
+          type: ["string", "null"]
+        objectPath:
+          type: ["string", "null"]
+        createdAt:
+          type: string
+          format: date-time
+        updatedAt:
+          type: string
+          format: date-time
+    CoverPresetList:
+      type: object
+      required: [scope, presets]
+      properties:
+        scope:
+          $ref: "#/components/schemas/CoverPresetScope"
+        presets:
+          type: array
+          items:
+            $ref: "#/components/schemas/CoverPreset"
+    CoverPresetInput:
+      type: object
+      required: [scope, label]
+      properties:
+        scope:
+          $ref: "#/components/schemas/CoverPresetScope"
+        key:
+          type: string
+          minLength: 1
+          maxLength: 120
+        label:
+          type: string
+          minLength: 1
+          maxLength: 120
+        objectPath:
+          type: ["string", "null"]
+          pattern: "^/objects/.+"
+    CoverPresetUpdate:
+      type: object
+      properties:
+        label:
+          type: string
+          minLength: 1
+          maxLength: 120
+        objectPath:
+          type: ["string", "null"]
+          pattern: "^/objects/.+"
+    CoverPresetOrderInput:
+      type: object
+      required: [scope, ids]
+      properties:
+        scope:
+          $ref: "#/components/schemas/CoverPresetScope"
+        ids:
+          type: array
+          minItems: 1
+          maxItems: 50
+          items:
+            type: string
+    CoverPresetUploadCleanup:
+      type: object
+      required: [objectPath]
+      properties:
+        objectPath:
+          type: string
+          pattern: "^/objects/.+"

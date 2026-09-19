@@ -22,6 +22,7 @@ import type { SharedMix } from "@workspace/api-client-react";
 
 import { MixContextMenu } from "@/components/CommunityMixesCarousel";
 import { getMixImage } from "@/config/mix-images";
+import { catalogImage, useCoverPresetCatalog } from "@/lib/cover-preset-catalog";
 import { MIX_CATEGORIES, type MixCategory } from "@/data/mix-categories";
 import { useColors } from "@/hooks/useColors";
 import { useSceneTheme } from "@/context/SceneThemeContext";
@@ -68,7 +69,12 @@ function Chip({ chip, sel, onPress }: { chip: ChipDef; sel: boolean; onPress: ()
 }
 
 function MixGridCard({ mix, onPress, onOptions }: { mix: SharedMix; onPress: () => void; onOptions: () => void }) {
-  const resolvedImg = mix.image ? getMixImage(mix.image) : undefined;
+  const catalog = useCoverPresetCatalog("mix");
+  const resolvedImg = mix.image
+    ? catalog.find((item) => item.key === mix.image || item.id === mix.image)?.source
+      ?? catalogImage("mix", mix.image)
+      ?? getMixImage(mix.image)
+    : undefined;
 
   return (
     <Pressable onPress={onPress} onLongPress={onOptions} style={({ pressed }) => [gc.card, { width: CARD_W, opacity: pressed ? 0.85 : 1 }]}>

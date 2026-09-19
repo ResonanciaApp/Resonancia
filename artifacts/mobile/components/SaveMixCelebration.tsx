@@ -15,6 +15,7 @@ import { DURATION, easeOutCubic, easeInCubic } from "@/constants/motion";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 
 import { getMixImage } from "@/config/mix-images";
+import { catalogImage, useCoverPresetCatalog } from "@/lib/cover-preset-catalog";
 import type { MixCategoryMeta } from "@/data/mix-categories";
 import { useColors } from "@/hooks/useColors";
 
@@ -26,6 +27,7 @@ type Props = {
 };
 
 export function SaveMixCelebration({ visible, category, imageKey, onDone }: Props) {
+  const mixCatalog = useCoverPresetCatalog("mix");
   const colors = useColors();
   const insets = useSafeAreaInsets();
   const { height } = Dimensions.get("window");
@@ -156,7 +158,12 @@ export function SaveMixCelebration({ visible, category, imageKey, onDone }: Prop
             },
           ]}
         >
-          <Animated.Image source={getMixImage(imageKey)} style={styles.tokenImg} />
+          <Animated.Image
+            source={mixCatalog.find((item) => item.key === imageKey || item.id === imageKey)?.source
+              ?? catalogImage("mix", imageKey)
+              ?? getMixImage(imageKey)}
+            style={styles.tokenImg}
+          />
         </Animated.View>
 
         {/* Mensaje */}

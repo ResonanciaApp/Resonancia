@@ -28,8 +28,9 @@ import {
 } from "@workspace/api-client-react";
 import type { SharedMix } from "@workspace/api-client-react";
 import { getMixImage } from "@/config/mix-images";
+import { catalogImage, useCoverPresetCatalog } from "@/lib/cover-preset-catalog";
 
-import { resolveAvatarUrl } from "@/lib/avatar";
+import { useProfileAvatarSource } from "@/lib/profile-avatar";
 import { useColors } from "@/hooks/useColors";
 import { useSceneTheme } from "@/context/SceneThemeContext";
 import { isIndigoThemeId } from "@/config/scene-themes";
@@ -238,7 +239,7 @@ export function MixRow({
 }) {
   const trending = mix.trending === true;
   const { activeSceneId } = useSceneTheme();
-  const avatarUri = resolveAvatarUrl(mix.author.avatarUrl ?? null);
+  const avatarSource = useProfileAvatarSource(mix.author);
   const initial = mix.author.displayName?.trim()?.[0]?.toUpperCase() ?? "·";
 
   return (
@@ -280,6 +281,13 @@ export function MixRow({
           hitSlop={6}
           style={styles.authorRow}
         >
+          {avatarSource ? (
+            <ExpoImage source={avatarSource} style={styles.authorAvatar} contentFit="cover" />
+          ) : (
+            <View style={styles.authorAvatarFallback}>
+              <Text style={styles.authorInitial}>{initial}</Text>
+            </View>
+          )}
           <Text style={[styles.mixCreator, { color: colors.mutedForeground }]} numberOfLines={1}>
             {mix.author.displayName}
           </Text>
@@ -313,7 +321,12 @@ function MixGridCell({
   onPress: () => void;
   onLongPress: () => void;
 }) {
-  const resolvedImg = mix.image ? getMixImage(mix.image) : undefined;
+  const catalog = useCoverPresetCatalog("mix");
+  const resolvedImg = mix.image
+    ? catalog.find((item) => item.key === mix.image || item.id === mix.image)?.source
+      ?? catalogImage("mix", mix.image)
+      ?? getMixImage(mix.image)
+    : undefined;
 
   return (
     <Pressable
@@ -344,7 +357,12 @@ function MixGridCell({
 
 // ── Portada de la mezcla ───────────────────────────────────────────
 function MixCover({ image }: { image?: string | null }) {
-  const resolvedImg = image ? getMixImage(image) : undefined;
+  const catalog = useCoverPresetCatalog("mix");
+  const resolvedImg = image
+    ? catalog.find((item) => item.key === image || item.id === image)?.source
+      ?? catalogImage("mix", image)
+      ?? getMixImage(image)
+    : undefined;
 
   return (
     <View style={styles.avatarWrap}>

@@ -1,5 +1,4 @@
 import { Feather } from "@expo/vector-icons";
-import { Image } from "expo-image";
 import { router, useLocalSearchParams } from "expo-router";
 import { LinearGradient } from "expo-linear-gradient";
 import { GoldGradientFill } from "@/components/GoldGradient";
@@ -26,6 +25,7 @@ import {
 } from "@workspace/api-client-react";
 import { useColors } from "@/hooks/useColors";
 import { SacredBackground } from "@/components/SacredBackground";
+import { ProfileAvatar } from "@/lib/profile-avatar";
 
 const BG_GRADIENT = ["#340D1A", "#190913"] as const;
 
@@ -99,11 +99,7 @@ export default function SeguidoresScreen() {
             return (
               <View key={user.id} style={[styles.row, { borderBottomColor: colors.border ?? "#1E2A38" }]}>
                 <View style={[styles.avatar, { backgroundColor: colors.card }]}>
-                  {user.avatarUrl ? (
-                    <Image source={{ uri: user.avatarUrl }} style={StyleSheet.absoluteFill} contentFit="cover" />
-                  ) : (
-                    <Feather name="user" size={18} color={colors.mutedForeground} />
-                  )}
+                  <ProfileAvatar profile={user} size={44} fallback={user.displayName} />
                 </View>
                 <View style={{ flex: 1 }}>
                   <Text style={[styles.name, { color: colors.foreground }]} numberOfLines={1}>

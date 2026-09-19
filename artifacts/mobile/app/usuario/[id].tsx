@@ -18,6 +18,7 @@ import {
 import { LinearGradient } from "expo-linear-gradient";
 import { GoldGradientFill } from "@/components/GoldGradient";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
+import { useProfileAvatarSource } from "@/lib/profile-avatar";
 import { useQueryClient } from "@tanstack/react-query";
 import React from "react";
 
@@ -181,7 +182,7 @@ export default function UsuarioScreen() {
     );
   }
 
-  const avatarUri = resolveAvatarUrl(profile.avatarUrl);
+  const avatarSource = useProfileAvatarSource(profile);
   const memberSince = profile.createdAt
     ? new Date(profile.createdAt).toLocaleDateString("es", { month: "long", year: "numeric" })
     : null;
@@ -202,9 +203,9 @@ export default function UsuarioScreen() {
 
           {/* Avatar */}
           <View style={styles.avatarWrapper}>
-            {avatarUri ? (
+            {avatarSource ? (
               <ExpoImage
-                source={{ uri: avatarUri }}
+                source={avatarSource}
                 style={styles.avatarImage}
                 contentFit="cover"
                 placeholder={BLUR_PLACEHOLDER}

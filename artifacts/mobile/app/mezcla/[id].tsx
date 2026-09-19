@@ -48,7 +48,7 @@ import { type MixPreset, useMixer } from "@/context/MixerContext";
 import { useUserProfile } from "@/context/UserProfileContext";
 import { getCategoryMeta, type MixCategory } from "@/data/mix-categories";
 import { useColors } from "@/hooks/useColors";
-import { resolveAvatarUrl } from "@/lib/avatar";
+import { useProfileAvatarSource } from "@/lib/profile-avatar";
 import { useSceneTheme } from "@/context/SceneThemeContext";
 import { useLoadMix } from "@/hooks/useLoadMix";
 
@@ -200,6 +200,12 @@ export default function CommunityMixScreen({ id: idProp }: { id?: string } = {})
     },
     [deleteComment, mixId, refreshComments],
   );
+  // Keep this hook unconditional: the loading/not-found branches below are
+  // still valid renders while the shared mix query is settling.
+  const authorAvatar = useProfileAvatarSource({
+    avatarPresetId: mix?.author.avatarPresetId,
+    avatarUrl: mix?.author.avatarUrl,
+  }) ?? (mix?.isMine && photoUri ? { uri: photoUri } : undefined);
 
   if (isLoading) {
     return (
@@ -225,7 +231,6 @@ export default function CommunityMixScreen({ id: idProp }: { id?: string } = {})
 
   const categoryMeta = getCategoryMeta(mix.category as MixCategory);
   const authorInitial = mix.author.displayName?.trim()?.[0]?.toUpperCase() ?? "·";
-  const authorAvatar = resolveAvatarUrl(mix.author.avatarUrl) ?? (mix.isMine ? photoUri : null);
 
   return (
     <LinearGradient

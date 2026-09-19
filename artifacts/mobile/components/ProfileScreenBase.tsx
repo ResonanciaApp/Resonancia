@@ -1,7 +1,6 @@
 import { Feather, MaterialCommunityIcons } from "@expo/vector-icons";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { File as FSFile, Paths } from "expo-file-system";
-import { Asset } from "expo-asset";
 import { Image } from "expo-image";
 import * as Haptics from "expo-haptics";
 import * as ImagePicker from "expo-image-picker";
@@ -76,10 +75,7 @@ import { useCatalog } from "@/context/CatalogContext";
 import { useFoldersPlaylists } from "@/context/FoldersPlaylistsContext";
 import { usePlayer } from "@/context/PlayerContext";
 import { PLAYLISTS } from "@/data/playlists";
-import {
-  PLAYLIST_COVER_PRESETS,
-  type PlaylistCoverPreset,
-} from "@/data/default-playlist-covers";
+import { useCoverPresetCatalog } from "@/lib/cover-preset-catalog";
 import {
   computePlaylistCompletion,
   isMeditativeSessionPlaylist,
@@ -348,10 +344,13 @@ export function ProfileScreenBase({
     location,
     description,
     photoUri,
+    avatarPresetId,
     expansorId,
     updateProfile,
     setPhotoUri,
+    setAvatarPresetId,
   } = useUserProfile();
+  const profileCatalog = useCoverPresetCatalog("profile");
 
   const resourceBlockBackground = "rgba(0,0,0,0.28)";
   const libraryHeaderButtonBackground = getLibraryTabSurface(activeSceneId);
@@ -386,7 +385,11 @@ export function ProfileScreenBase({
     return { playlist, completion };
   }, [activeMeditationPlaylist, catalogVersion, statEvents]);
 
-  const { refetch: refetchMe } = useGetMe({ query: { queryKey: getGetMeQueryKey(), staleTime: 0 } });
+  const { data: me, refetch: refetchMe } = useGetMe({ query: { queryKey: getGetMeQueryKey(), staleTime: 0 } });
+  const selectedAvatarPresetId = avatarPresetId;
+  const selectedProfilePreset = selectedAvatarPresetId
+    ? profileCatalog.find((preset) => preset.key === selectedAvatarPresetId || preset.id === selectedAvatarPresetId || `profile:${preset.key}` === selectedAvatarPresetId)
+    : undefined;
   const { data: followCounts } = useGetMyFollowCounts({
     query: { queryKey: getGetMyFollowCountsQueryKey(), staleTime: 30_000 },
   });
@@ -617,7 +620,6 @@ export function ProfileScreenBase({
   const [accountAction, setAccountAction] = useState<"delete" | null>(null);
   const [accountPhotoPickerVisible, setAccountPhotoPickerVisible] = useState(false);
   const [accountPhotoLibraryPending, setAccountPhotoLibraryPending] = useState(false);
-  const [accountAvatarPresetId, setAccountAvatarPresetId] = useState<string | null>(null);
   const accountToastOpacity = useRef(new Animated.Value(0)).current;
   const accountToastY = useRef(new Animated.Value(12)).current;
 
@@ -766,7 +768,7 @@ export function ProfileScreenBase({
     });
     if (!result.canceled && result.assets[0]) {
       const tempUri = result.assets[0].uri;
-      setAccountAvatarPresetId(null);
+      setAvatarPresetId(null);
       if (Platform.OS === "web") {
         try {
           const dataUrl = await resizeImageForWeb(tempUri, 320);
@@ -788,24 +790,8 @@ export function ProfileScreenBase({
     }
   };
 
-  const pickAccountAvatarPreset = async (preset: PlaylistCoverPreset) => {
-    setAccountAvatarPresetId(preset.id);
-    try {
-      const asset = Asset.fromModule(preset.source);
-      await asset.downloadAsync();
-      const sourceUri = asset.localUri ?? asset.uri;
-      if (Platform.OS === "web") {
-        setPhotoUri(sourceUri);
-        return;
-      }
-      const source = new FSFile(sourceUri);
-      const destination = new FSFile(Paths.document, `profile_photo_preset_${preset.id}.jpg`);
-      source.copy(destination);
-      setPhotoUri(destination.uri);
-    } catch {
-      const asset = Asset.fromModule(preset.source);
-      setPhotoUri(asset.uri);
-    }
+  const pickAccountAvatarPreset = (preset: (typeof profileCatalog)[number]) => {
+    setAvatarPresetId(preset.key.startsWith("profile:") ? preset.key : `profile:${preset.key}`);
   };
 
   useEffect(() => {
@@ -945,6 +931,8 @@ export function ProfileScreenBase({
               >
                 {photoUri ? (
                   <Image source={{ uri: photoUri }} style={styles.accountAvatar} contentFit="cover" />
+                ) : selectedProfilePreset ? (
+                  <Image source={selectedProfilePreset.source} style={styles.accountAvatar} contentFit="cover" />
                 ) : (
                   <View style={[styles.accountAvatar, styles.accountAvatarFallback, { backgroundColor: colors.secondary }]}>
                     <Feather name="user" size={34} color={colors.primary} />
@@ -1055,9 +1043,9 @@ export function ProfileScreenBase({
                 </Pressable>
               </View>
               <View style={styles.accountCoverPreviewSlot}>
-                {accountAvatarPresetId ? (
+                {selectedProfilePreset ? (
                   <Image
-                    source={PLAYLIST_COVER_PRESETS.find((preset) => preset.id === accountAvatarPresetId)?.source}
+                    source={selectedProfilePreset.source}
                     style={styles.accountCoverPreview}
                     contentFit="cover"
                   />
@@ -1087,14 +1075,14 @@ export function ProfileScreenBase({
               </Pressable>
               <FlatList
                 style={styles.accountCoverPresetGrid}
-                data={PLAYLIST_COVER_PRESETS}
+                 data={profileCatalog}
                 keyExtractor={(preset) => preset.id}
                 numColumns={5}
                 showsVerticalScrollIndicator={false}
                 contentContainerStyle={styles.accountCoverPresetGridContent}
                 columnWrapperStyle={styles.accountCoverPresetGridRow}
                 renderItem={({ item: preset }) => {
-                  const selected = preset.id === accountAvatarPresetId;
+                  const selected = preset.id === avatarPresetId || preset.key === avatarPresetId || `profile:${preset.key}` === avatarPresetId;
                   return (
                     <Pressable
                       onPress={() => void pickAccountAvatarPreset(preset)}
@@ -1336,6 +1324,8 @@ export function ProfileScreenBase({
             >
               {photoUri ? (
                 <Image source={{ uri: photoUri }} style={styles.avatarImage} contentFit="cover" />
+              ) : selectedProfilePreset ? (
+                <Image source={selectedProfilePreset.source} style={styles.avatarImage} contentFit="cover" />
               ) : (
                 <View style={[styles.avatarCircle, { backgroundColor: colors.secondary }]}>
                   <Feather name="user" size={28} color={colors.primary} />

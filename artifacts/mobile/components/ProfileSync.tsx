@@ -48,7 +48,7 @@ function avatarMeta(uri: string): { contentType: string; fileName: string } {
 
 export function ProfileSync() {
   const { isSignedIn } = useAuth();
-  const { username, location, photoUri, profileLoaded } = useUserProfile();
+  const { username, location, photoUri, avatarPresetId, profileLoaded } = useUserProfile();
   const queryClient = useQueryClient();
 
   const { data: me } = useGetMe({
@@ -137,13 +137,38 @@ export function ProfileSync() {
       }
       const marker = avatarMarker.current;
 
+      // A preset is a stable catalog reference, not a resolved URL. Keep the
+      // server's avatarUrl empty so catalog replacements follow the slot.
+      if (avatarPresetId) {
+        if (me.avatarPresetId === avatarPresetId && !me.avatarUrl) return;
+        avatarSyncing.current = true;
+        try {
+          await updateMe.mutateAsync({
+            data: { avatarPresetId },
+          });
+          avatarMarker.current = null;
+          await AsyncStorage.removeItem(markerKey);
+          queryClient.invalidateQueries({ queryKey: getGetMeQueryKey() });
+          queryClient.invalidateQueries({ queryKey: getGetSharedMixesQueryKey() });
+        } catch {
+          // reintentamos en el próximo arranque
+        } finally {
+          avatarSyncing.current = false;
+        }
+        return;
+      }
+
       // El usuario quitó la foto: si nosotros habíamos seteado el avatar del
       // server, lo limpiamos. No tocamos un avatar que no hayamos puesto.
       if (!photoUri) {
-        if (!marker || !me.avatarUrl) return;
+        if (!me.avatarPresetId && (!marker || !me.avatarUrl)) return;
         avatarSyncing.current = true;
         try {
-          await updateMe.mutateAsync({ data: { avatarUrl: null } });
+          // The API treats avatarUrl and avatarPresetId as mutually exclusive
+          // payload modes, even when the other field is null.
+          await updateMe.mutateAsync({
+            data: me.avatarPresetId ? { avatarPresetId: null } : { avatarUrl: null },
+          });
           avatarMarker.current = null;
           await AsyncStorage.removeItem(markerKey);
           queryClient.invalidateQueries({ queryKey: getGetMeQueryKey() });
@@ -157,10 +182,20 @@ export function ProfileSync() {
       }
 
       // Ya sincronizado: misma foto local y el server todavía la tiene.
-      if (marker && marker.uri === photoUri && me.avatarUrl === marker.path) return;
+      if (marker && marker.uri === photoUri && me.avatarUrl === marker.path && !me.avatarPresetId) return;
 
       avatarSyncing.current = true;
       try {
+        // Preset remoto del catálogo: ya está alojado en App Storage, por lo
+        // que no debe volver a subirse como si fuera un archivo local.
+        if (/^(https?:|\/objects\/)/i.test(photoUri)) {
+          await updateMe.mutateAsync({ data: { avatarUrl: photoUri } });
+          avatarMarker.current = { uri: photoUri, path: photoUri };
+          await AsyncStorage.setItem(markerKey, JSON.stringify(avatarMarker.current));
+          queryClient.invalidateQueries({ queryKey: getGetMeQueryKey() });
+          queryClient.invalidateQueries({ queryKey: getGetSharedMixesQueryKey() });
+          return;
+        }
         const { contentType, fileName } = avatarMeta(photoUri);
         const objectPath = await uploadLocalFile(photoUri, contentType, fileName, 1);
         if (cancelled) return;
@@ -179,7 +214,7 @@ export function ProfileSync() {
     return () => {
       cancelled = true;
     };
-  }, [isSignedIn, me, photoUri, profileLoaded, updateMe, queryClient]);
+  }, [avatarPresetId, isSignedIn, me, photoUri, profileLoaded, updateMe, queryClient]);
 
   return null;
 }

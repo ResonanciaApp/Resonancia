@@ -25,6 +25,7 @@ import resonadoresRouter from "./resonadores";
 import searchTrendsRouter from "./search-trends";
 import emotionalPhrasesRouter from "./emotional-phrases";
 import inspirationsRouter from "./inspirations";
+import coverPresetsRouter from "./cover-presets";
 
 const router: IRouter = Router();
 
@@ -54,5 +55,6 @@ router.use(resonadoresRouter);
 router.use(searchTrendsRouter);
 router.use(emotionalPhrasesRouter);
 router.use(inspirationsRouter);
+router.use(coverPresetsRouter);
 
 export default router;

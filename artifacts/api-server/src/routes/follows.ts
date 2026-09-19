@@ -6,12 +6,13 @@ import { sendPushToUsers } from "../lib/push";
 
 const router: IRouter = Router();
 
-function toProfile(u: { id: number; username: string; displayName: string; avatarUrl: string | null }) {
+function toProfile(u: { id: number; username: string; displayName: string; avatarUrl: string | null; avatarPresetId: string | null }) {
   return {
     id: u.id,
     username: u.username,
     displayName: u.displayName,
     avatarUrl: u.avatarUrl,
+    avatarPresetId: u.avatarPresetId,
   };
 }
 
@@ -138,6 +139,7 @@ router.get("/users/:userId/followers", requireAuth, async (req, res) => {
         username: usersTable.username,
         displayName: usersTable.displayName,
         avatarUrl: usersTable.avatarUrl,
+        avatarPresetId: usersTable.avatarPresetId,
         followedAt: followsTable.createdAt,
       })
       .from(followsTable)
@@ -173,6 +175,7 @@ router.get("/users/:userId/following", requireAuth, async (req, res) => {
         username: usersTable.username,
         displayName: usersTable.displayName,
         avatarUrl: usersTable.avatarUrl,
+        avatarPresetId: usersTable.avatarPresetId,
         followedAt: followsTable.createdAt,
       })
       .from(followsTable)

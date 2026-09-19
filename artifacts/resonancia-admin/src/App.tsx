@@ -30,7 +30,8 @@ import {
   UserRound,
   ListOrdered,
   Sparkles,
-  Sun
+  Sun,
+  Images
 } from "lucide-react";
 import { Toaster } from "@/components/ui/sonner";
 import { queryClient } from "@/lib/queryClient";
@@ -53,6 +54,7 @@ import DescansoSonidosPage from "@/pages/descanso-sonidos";
 import EscenasPage from "@/pages/escenas";
 import ExplorarPage from "@/pages/explorar";
 import DormirOrdenPage from "@/pages/dormir-orden";
+import PortadasAvataresPage from "@/pages/portadas-avatares";
 import ResonadoresPage from "@/pages/resonadores";
 import EmocionPage from "@/pages/emocion";
 import InspiracionDiariaPage from "@/pages/inspiracion-diaria";
@@ -198,6 +200,7 @@ const NAV_SECTIONS = [
       { href: "/videos", label: "Videos", icon: Film },
       { href: "/explorar", label: "Otras temáticas", icon: LayoutList },
       { href: "/dormir-orden", label: "Dormir - Orden", icon: ListOrdered },
+      { href: "/portadas-avatares", label: "Portadas y avatares", icon: Images },
       { href: "/geometrix", label: "Geometrix", icon: Hexagon },
     ],
   },
@@ -383,6 +386,7 @@ function AdminGate() {
         <Route path="/escenas" component={EscenasPage} />
         <Route path="/explorar" component={ExplorarPage} />
         <Route path="/dormir-orden" component={DormirOrdenPage} />
+        <Route path="/portadas-avatares" component={PortadasAvataresPage} />
         <Route path="/resonadores" component={ResonadoresPage} />
         <Route component={NotFound} />
       </Switch>

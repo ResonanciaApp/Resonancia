@@ -19,8 +19,8 @@ import { useFoldersPlaylists } from "@/context/FoldersPlaylistsContext";
 import { useSceneTheme } from "@/context/SceneThemeContext";
 import {
   getDefaultPlaylistCover,
-  getPlaylistCoverPreset,
 } from "@/data/default-playlist-covers";
+import { useCoverPresetCatalog } from "@/lib/cover-preset-catalog";
 import { useColors } from "@/hooks/useColors";
 
 const GRID_PAD = 14;
@@ -36,6 +36,7 @@ export const ProfilePlaylistCarousel = React.memo(function ProfilePlaylistCarous
   const { theme } = useSceneTheme();
   const { openLib } = useDrawer();
   const { playlists } = useFoldersPlaylists();
+  const playlistCatalog = useCoverPresetCatalog("playlist");
   const cardWidth = getTwoCardCarouselCardWidth(width, GRID_PAD);
   const accent = theme.accent ?? colors.accent;
 
@@ -126,9 +127,9 @@ export const ProfilePlaylistCarousel = React.memo(function ProfilePlaylistCarous
                 onPress={() => router.push(`/playlist/${encodeURIComponent(playlist.id)}` as never)}
                 style={{ width: cardWidth }}
               >
-                {playlist.coverPresetId ? (
+                {playlist.coverPresetId && playlistCatalog.find((item) => item.key === playlist.coverPresetId || item.id === playlist.coverPresetId) ? (
                   <Image
-                    source={getPlaylistCoverPreset(playlist.coverPresetId)?.source}
+                    source={playlistCatalog.find((item) => item.key === playlist.coverPresetId || item.id === playlist.coverPresetId)?.source}
                     style={{
                       width: cardWidth,
                       height: cardWidth,

@@ -63,4 +63,5 @@ export * from "./sleep-carousel-order";
 export * from "./emotional-phrases";
 export * from "./inspirations";
 export * from "./hero-slides";
+export * from "./cover-presets";
 

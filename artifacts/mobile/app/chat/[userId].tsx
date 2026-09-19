@@ -20,6 +20,7 @@ import {
 import * as FileSystem from "expo-file-system/legacy";
 import * as Haptics from "expo-haptics";
 import { Image } from "expo-image";
+import { ProfileAvatar } from "@/lib/profile-avatar";
 import * as ImagePicker from "expo-image-picker";
 import { LinearGradient } from "expo-linear-gradient";
 import { router, useLocalSearchParams } from "expo-router";
@@ -385,8 +386,8 @@ export default function ChatScreen({ userIdOverride }: { userIdOverride?: number
           <Feather name="arrow-left" size={22} color={"#F9F9F9"} />
         </Pressable>
         <View style={[styles.headerAvatar, { backgroundColor: friendTint + "33" }]}>
-          {friend?.avatarUrl ? (
-            <Image source={{ uri: friend.avatarUrl }} style={styles.headerAvatarImg} contentFit="cover" />
+          {friend ? (
+            <ProfileAvatar profile={friend} size={44} fallback={friendName} />
           ) : (
             <Text style={[styles.headerInitials, { color: friendTint }]}>
               {initialsFor(friendName)}
