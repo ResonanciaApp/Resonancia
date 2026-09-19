@@ -970,7 +970,8 @@ function Inicio2HeroSliderRebuilt({
   onOpenProfile: () => void;
 }) {
   const { user: clerkUser } = useUser();
-  const { username, photoUri } = useUserProfile();
+  const { username } = useUserProfile();
+  const avatarSource = useCurrentUserAvatarSource();
   const sliderRef = useRef<ScrollView>(null);
   const [activeIndex, setActiveIndex] = useState(0);
   const activeIndexRef = useRef(0);
@@ -1087,7 +1088,6 @@ function Inicio2HeroSliderRebuilt({
     || clerkUser?.fullName
     || clerkUser?.username
     || "Explorador";
-  const displayPhoto = photoUri || clerkUser?.imageUrl || null;
   const initial = displayName.charAt(0).toUpperCase();
 
   return (
@@ -1166,9 +1166,9 @@ function Inicio2HeroSliderRebuilt({
             accessibilityLabel="Abrir mi perfil"
             testID="inicio2-open-profile"
           >
-            {displayPhoto ? (
+            {avatarSource ? (
               <ExpoImage
-                source={{ uri: displayPhoto }}
+                source={avatarSource}
                 style={styles.inicio2HeroAvatar}
                 contentFit="cover"
               />
@@ -1644,14 +1644,14 @@ const Inicio2HeroStatic = React.memo(function Inicio2HeroStatic({
   const router = useRouter();
   const { currentStreak } = useStreak();
   const { user: clerkUser } = useUser();
-  const { username, photoUri } = useUserProfile();
+  const { username } = useUserProfile();
+  const avatarSource = useCurrentUserAvatarSource();
   const displayName =
     username
     || clerkUser?.firstName
     || clerkUser?.fullName
     || clerkUser?.username
     || "Explorador";
-  const displayPhoto = photoUri || clerkUser?.imageUrl || null;
   const initial = displayName.charAt(0).toUpperCase();
   const [greeting, setGreeting] = useState(getGreeting);
   useFocusEffect(
@@ -1747,9 +1747,9 @@ const Inicio2HeroStatic = React.memo(function Inicio2HeroStatic({
             accessibilityLabel="Abrir menú"
             testID="inicio2-avatar-open-drawer"
           >
-            {displayPhoto ? (
+            {avatarSource ? (
               <ExpoImage
-                source={{ uri: displayPhoto }}
+                source={avatarSource}
                 style={[
                   styles.inicio2HeroAvatar,
                   isInicio3 && styles.inicio3HeroAvatarBorder,
