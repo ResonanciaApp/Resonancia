@@ -187,13 +187,15 @@ const styles = StyleSheet.create({
   },
   categoriesContent: {
     paddingHorizontal: 20,
-    gap: 10,
+    gap: 5,
   },
   gridItem: {
     alignItems: "center",
     paddingVertical: 12,
     paddingHorizontal: 4,
-    borderRadius: 16,
+    borderRadius: 18,
+    borderWidth: 2,
+    borderColor: "rgba(255,255,255,0.1)",
   },
   pressedCategory: {
     transform: [{ scale: 0.97 }],
