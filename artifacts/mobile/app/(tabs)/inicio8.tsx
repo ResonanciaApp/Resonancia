@@ -1366,6 +1366,7 @@ type Inicio3PagerSlide = {
   id: string;
   image: any;
   title: string | null;
+  description?: string;
   actionLabel?: string;
   categoryId?: string;
   categoryLabel?: string;
@@ -1438,6 +1439,7 @@ function Inicio3HeroPager({
         id: `session-${configured.sessionId}`,
         image: localSession?.image ?? { uri: absoluteMediaUrl(configured.imageUrl) },
         title: configured.title,
+        description: configured.description,
         actionLabel: configured.actionLabel,
         categoryId: configured.categoryId,
         categoryLabel: configured.categoryLabel,
@@ -1567,6 +1569,11 @@ function Inicio3HeroPager({
                       <Text style={[styles.inicio2HeroTitle, styles.inicio2HeroStaticTitle, styles.inicio3HeroTitle]}>
                         {item.title}
                       </Text>
+                      {item.description ? (
+                        <Text style={styles.inicio3HeroDescription} numberOfLines={3}>
+                          {item.description}
+                        </Text>
+                      ) : null}
                     </>
                   )}
                   <View style={styles.inicio3HeroReadMore}>
@@ -3714,6 +3721,16 @@ const styles = StyleSheet.create({
     textAlign: "center",
     fontSize: 21,
     lineHeight: 26,
+  },
+  inicio3HeroDescription: {
+    maxWidth: "86%",
+    marginTop: 8,
+    color: "rgba(249,249,249,0.9)",
+    fontFamily: "Manrope",
+    fontSize: 13,
+    lineHeight: 18,
+    fontWeight: "500",
+    textAlign: "center",
   },
   inicio3HeroReadMore: {
     alignSelf: "center",

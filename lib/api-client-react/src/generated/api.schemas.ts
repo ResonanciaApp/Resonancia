@@ -1315,6 +1315,8 @@ export interface HeroSessionSlide {
   position: HeroSessionSlidePosition;
   sessionId: string;
   title: string;
+  /** @maxLength 300 */
+  description?: string;
   actionLabel: string;
   categoryId?: string;
   categoryLabel: string;
@@ -1348,6 +1350,8 @@ export interface HeroSessionSlideInput {
      * @maxLength 200
      */
   title: string;
+  /** @maxLength 300 */
+  description?: string;
   /**
      * @minLength 1
      * @maxLength 60

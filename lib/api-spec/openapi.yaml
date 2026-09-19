@@ -5901,6 +5901,7 @@ components:
         position: {type: integer, enum: [2, 3, 4]}
         sessionId: {type: string}
         title: {type: string}
+        description: {type: string, maxLength: 300}
         actionLabel: {type: string}
         categoryId: {type: string}
         categoryLabel: {type: string}
@@ -5921,6 +5922,7 @@ components:
         position: {type: integer, enum: [2, 3, 4]}
         sessionId: {type: string, minLength: 1}
         title: {type: string, minLength: 1, maxLength: 200}
+        description: {type: string, maxLength: 300}
         actionLabel: {type: string, minLength: 1, maxLength: 60}
     UpdateHeroSessionSlidesBody:
       type: object

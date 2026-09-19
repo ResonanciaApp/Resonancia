@@ -10,9 +10,9 @@ import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
 import { toast } from "sonner";
 
-type DraftSlide = { position: 2 | 3 | 4; sessionId: string; title: string; actionLabel: string };
+type DraftSlide = { position: 2 | 3 | 4; sessionId: string; title: string; description: string; actionLabel: string };
 
-const fallback: DraftSlide[] = [2, 3, 4].map((position) => ({ position: position as 2 | 3 | 4, sessionId: "", title: "", actionLabel: "Escuchar" }));
+const fallback: DraftSlide[] = [2, 3, 4].map((position) => ({ position: position as 2 | 3 | 4, sessionId: "", title: "", description: "", actionLabel: "Escuchar" }));
 
 function previewUrl(path: string | null | undefined) {
   if (!path) return null;
@@ -34,7 +34,7 @@ export function HeroSessionSlidesEditor({ onDirtyChange }: { onDirtyChange?: (di
   useEffect(() => {
     if (!data) return;
     setRevision(data.revision);
-    setSlides(data.draft.length === 3 ? data.draft.map((slide) => ({ ...slide, position: slide.position as 2 | 3 | 4 })) : fallback);
+    setSlides(data.draft.length === 3 ? data.draft.map((slide) => ({ ...slide, description: slide.description ?? "", position: slide.position as 2 | 3 | 4 })) : fallback);
     setDirty(false);
   }, [data?.revision]);
   useEffect(() => onDirtyChange?.(dirty), [dirty, onDirtyChange]);
@@ -110,6 +110,21 @@ export function HeroSessionSlidesEditor({ onDirtyChange }: { onDirtyChange?: (di
                 <input id={`hero-session-title-${slide.position}`} data-testid={`input-hero-title-${slide.position}`} className="h-10 w-full rounded-md border border-input bg-background px-3 text-sm" value={slide.title} onChange={(event) => { setSlides((current) => current.map((item, i) => i === index ? { ...item, title: event.target.value } : item)); setDirty(true); }} />
               </div>
               <div className="space-y-1">
+                <Label htmlFor={`hero-session-description-${slide.position}`}>Descripción</Label>
+                <textarea
+                  id={`hero-session-description-${slide.position}`}
+                  data-testid={`input-hero-description-${slide.position}`}
+                  className="min-h-20 w-full resize-y rounded-md border border-input bg-background px-3 py-2 text-sm"
+                  maxLength={300}
+                  placeholder="Texto opcional debajo del título"
+                  value={slide.description}
+                  onChange={(event) => {
+                    setSlides((current) => current.map((item, i) => i === index ? { ...item, description: event.target.value } : item));
+                    setDirty(true);
+                  }}
+                />
+              </div>
+              <div className="space-y-1">
                 <Label htmlFor={`hero-session-action-${slide.position}`}>Texto del botón</Label>
                 <input id={`hero-session-action-${slide.position}`} data-testid={`input-hero-action-${slide.position}`} className="h-10 w-full rounded-md border border-input bg-background px-3 text-sm" value={slide.actionLabel} onChange={(event) => { setSlides((current) => current.map((item, i) => i === index ? { ...item, actionLabel: event.target.value } : item)); setDirty(true); }} />
               </div>
@@ -126,6 +141,7 @@ export function HeroSessionSlidesEditor({ onDirtyChange }: { onDirtyChange?: (di
                   <div className="absolute inset-x-3 bottom-3 text-white">
                     <span className="rounded-full bg-white/15 px-2 py-1 text-[10px] font-medium uppercase tracking-wide">{session.categoryLabel}</span>
                     <p className="mt-2 line-clamp-2 text-sm font-semibold">{slide.title || session.title}</p>
+                    {slide.description && <p className="mt-1 line-clamp-2 text-[11px] text-white/85">{slide.description}</p>}
                     <span className="mt-2 inline-flex rounded-full bg-white px-3 py-1 text-[10px] font-semibold text-black">{slide.actionLabel || "Escuchar"}</span>
                   </div>
                 </div>

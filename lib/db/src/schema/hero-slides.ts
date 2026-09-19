@@ -5,6 +5,7 @@ export type HeroSessionSlide = {
   position: 2 | 3 | 4;
   sessionId: string;
   title: string;
+  description?: string;
   actionLabel: string;
 };
 
