@@ -9,7 +9,13 @@ import { router } from "expo-router";
 import { REFLECTION_CATEGORY_OPTIONS, CategoryIcon } from "@/constants/reflectionCategories";
 import { useReducedMotion } from "react-native-reanimated";
 
-export function InnerSpaceCard({ focusRequest = 0 }: { focusRequest?: number }) {
+export function InnerSpaceCard({
+  focusRequest = 0,
+  onComposeRequested,
+}: {
+  focusRequest?: number;
+  onComposeRequested?: () => void;
+}) {
   const colors = useColors();
   const [category, setCategory] = useState<ReflectionCategory | null>(null);
   const [message, setMessage] = useState("");
@@ -17,6 +23,7 @@ export function InnerSpaceCard({ focusRequest = 0 }: { focusRequest?: number }) 
   const toastAnim = useRef(new Animated.Value(0)).current;
   const toastTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const inputRef = useRef<TextInput>(null);
+  const allowProgrammaticFocusRef = useRef(false);
   const categoryScales = useRef(
     Object.fromEntries(
       REFLECTION_CATEGORY_OPTIONS.map((item) => [item.id, new Animated.Value(1)]),
@@ -46,9 +53,19 @@ export function InnerSpaceCard({ focusRequest = 0 }: { focusRequest?: number }) 
 
   useEffect(() => {
     if (focusRequest <= 0) return;
+    allowProgrammaticFocusRef.current = true;
     const frame = requestAnimationFrame(() => inputRef.current?.focus());
     return () => cancelAnimationFrame(frame);
   }, [focusRequest]);
+
+  const handleInputFocus = () => {
+    if (allowProgrammaticFocusRef.current) {
+      allowProgrammaticFocusRef.current = false;
+      return;
+    }
+    inputRef.current?.blur();
+    onComposeRequested?.();
+  };
 
   const showToast = () => {
     setToastVisible(true);
@@ -152,6 +169,7 @@ export function InnerSpaceCard({ focusRequest = 0 }: { focusRequest?: number }) 
       <View style={[styles.inputContainer, { backgroundColor: "rgba(0,0,0,0.2)" }, createMutation.isError && { borderColor: colors.destructive }]}>
         <TextInput
           ref={inputRef}
+          onFocus={handleInputFocus}
           style={[styles.input, { color: colors.foreground }]}
           placeholder="Escribe tu mensaje aquí..."
           placeholderTextColor={colors.mutedForeground}

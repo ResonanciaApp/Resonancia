@@ -423,9 +423,26 @@ export function ProfileScreenBase({
   const [libActions, setLibActions] = useState<LibHeaderActions | null>(null);
   const profileScrollRef = useRef<ScrollView>(null);
   const handledComposeReflectionRef = useRef<string | undefined>(undefined);
+  const composeInteractionRef = useRef<ReturnType<typeof InteractionManager.runAfterInteractions> | null>(null);
+  const composeFocusTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const [innerSpaceLayoutY, setInnerSpaceLayoutY] = useState<number | null>(null);
   const [innerSpaceFocusRequest, setInnerSpaceFocusRequest] = useState(0);
   const navigation = useNavigation();
+  const positionInnerSpaceForWriting = useCallback(() => {
+    if (innerSpaceLayoutY === null) return;
+    composeInteractionRef.current?.cancel();
+    if (composeFocusTimerRef.current) clearTimeout(composeFocusTimerRef.current);
+    composeInteractionRef.current = InteractionManager.runAfterInteractions(() => {
+      profileScrollRef.current?.scrollTo({
+        y: Math.max(0, innerSpaceLayoutY - 131),
+        animated: true,
+      });
+      composeFocusTimerRef.current = setTimeout(() => {
+        setInnerSpaceFocusRequest((value) => value + 1);
+        composeFocusTimerRef.current = null;
+      }, 700);
+    });
+  }, [innerSpaceLayoutY]);
   useEffect(() => {
     if (
       !dedicated ||
@@ -435,21 +452,12 @@ export function ProfileScreenBase({
     ) return;
 
     handledComposeReflectionRef.current = composeReflectionToken;
-    let focusTimer: ReturnType<typeof setTimeout> | null = null;
-    const interactionTask = InteractionManager.runAfterInteractions(() => {
-      profileScrollRef.current?.scrollTo({
-        y: Math.max(0, innerSpaceLayoutY - 131),
-        animated: true,
-      });
-      focusTimer = setTimeout(() => {
-        setInnerSpaceFocusRequest((value) => value + 1);
-      }, 700);
-    });
-    return () => {
-      interactionTask.cancel();
-      if (focusTimer) clearTimeout(focusTimer);
-    };
-  }, [composeReflectionToken, dedicated, innerSpaceLayoutY]);
+    positionInnerSpaceForWriting();
+  }, [composeReflectionToken, dedicated, innerSpaceLayoutY, positionInnerSpaceForWriting]);
+  useEffect(() => () => {
+    composeInteractionRef.current?.cancel();
+    if (composeFocusTimerRef.current) clearTimeout(composeFocusTimerRef.current);
+  }, []);
   useEffect(() => {
     const tabNavigation = navigation as unknown as {
       addListener: (event: "tabPress", callback: () => void) => () => void;
@@ -1439,7 +1447,10 @@ export function ProfileScreenBase({
               style={styles.innerSpaceSection}
               onLayout={(event) => setInnerSpaceLayoutY(event.nativeEvent.layout.y)}
             >
-              <InnerSpaceCard focusRequest={innerSpaceFocusRequest} />
+              <InnerSpaceCard
+                focusRequest={innerSpaceFocusRequest}
+                onComposeRequested={positionInnerSpaceForWriting}
+              />
             </View>
 
             {continueMeditationPlaylist ? (
