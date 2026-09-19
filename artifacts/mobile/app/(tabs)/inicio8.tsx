@@ -1662,7 +1662,7 @@ const Inicio2HeroStatic = React.memo(function Inicio2HeroStatic({
   const fallbackScrollY = useSharedValue(0);
   const effectiveScrollY = scrollY ?? fallbackScrollY;
   const inicio3WeekShift = 5;
-  const inicio3HeroShift = 4;
+  const inicio3HeroShift = 7;
   const inicio3HeroHeight =
     (INICIO2_HERO_HEIGHT + 184 - (topInset + 286) - 52 + 60 + 32) / 2 + 60 + 120;
   const inicio3HeroLayoutTop =
