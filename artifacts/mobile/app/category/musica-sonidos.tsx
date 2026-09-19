@@ -489,7 +489,7 @@ export default function MusicaSonidosScreen() {
         <Animated.View style={[StyleSheet.absoluteFill, { backgroundColor: theme.gradient[theme.gradient.length - 1] as string, transform: [{ translateX: slideX }] }]}>
           <LinearGradient colors={theme.gradient as unknown as [string, string, ...string[]]} style={StyleSheet.absoluteFill} />
           <View style={{ flexDirection: "row", alignItems: "center", paddingTop: topPad + 14, paddingHorizontal: H_PAD, paddingBottom: 14, gap: 4 }}>
-            <Pressable onPress={closeAll} hitSlop={12} style={{ padding: 4 }}>
+              <Pressable onPress={closeAll} hitSlop={12} style={styles.modalBackBtn}>
               <Feather name="chevron-left" size={28} color="#FBFBFB" />
             </Pressable>
             <Text style={{ fontFamily: "Manrope", fontSize: 18, fontWeight: "700", color: "#FBFBFB", flex: 1 }}>Toda la Música y Sonidos</Text>
@@ -570,7 +570,8 @@ const styles = StyleSheet.create({
   root: { flex: 1, backgroundColor: "#0B0811" },
 
   header: { paddingHorizontal: H_PAD, paddingBottom: 10, minHeight: 48, flexDirection: "row", alignItems: "center", justifyContent: "center" },
-  backBtn: { position: "absolute", left: H_PAD, width: 40, height: 40, borderRadius: 20, borderWidth: 1, borderColor: "rgba(255,255,255,0.2)", alignItems: "center", justifyContent: "center" },
+  backBtn: { position: "absolute", left: H_PAD, width: 43, height: 43, borderRadius: 21.5, borderWidth: 1, borderColor: "rgba(255,255,255,0.2)", backgroundColor: "rgba(0,0,0,0.28)", alignItems: "center", justifyContent: "center" },
+  modalBackBtn: { width: 43, height: 43, borderRadius: 21.5, borderWidth: 1, borderColor: "rgba(255,255,255,0.2)", backgroundColor: "rgba(0,0,0,0.28)", alignItems: "center", justifyContent: "center" },
   pageTitle: { fontFamily: "Manrope", fontSize: 18, lineHeight: 24, fontWeight: "700", color: TEXT, letterSpacing: 0.2 },
   stickyHeader: { position: "absolute", top: 0, left: 0, right: 0, zIndex: 20, minHeight: 48, paddingHorizontal: H_PAD, paddingBottom: 6, alignItems: "center", justifyContent: "center" },
   stickyHeaderFadeOverflow: { overflow: "visible" },
@@ -582,7 +583,7 @@ const styles = StyleSheet.create({
   stickyTitleCol: { flex: 1, alignItems: "center" },
   stickyTitle: { fontFamily: "Manrope", fontSize: 18, lineHeight: 21, fontWeight: "700", color: TEXT, letterSpacing: 0.2, textAlign: "center" },
   headerBtn: { width: 45, height: 45, alignItems: "center", justifyContent: "center" },
-  headerSearchButton: { width: 43, height: 43, borderRadius: 21.5, borderWidth: 1, borderColor: "rgba(255,255,255,0.2)", alignItems: "center", justifyContent: "center", backgroundColor: "rgba(0,0,0,0.34)" },
+  headerSearchButton: { width: 43, height: 43, borderRadius: 21.5, borderWidth: 1, borderColor: "rgba(255,255,255,0.2)", alignItems: "center", justifyContent: "center", backgroundColor: "rgba(0,0,0,0.28)" },
   headerTitleCol: { flex: 1, alignItems: "center" },
   headerTitle: { fontFamily: "Manrope", fontSize: 18, fontWeight: "400", color: "#FBFBFB", letterSpacing: 0.2, textAlign: "center", includeFontPadding: false, textAlignVertical: "center" },
   headerSubtitle: { fontFamily: "Manrope", fontSize: 11, color: "#f7f7f7", letterSpacing: 0.3, marginTop: 1, opacity: 0.7 },

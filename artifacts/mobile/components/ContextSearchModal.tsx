@@ -448,7 +448,14 @@ const styles = StyleSheet.create({
     padding: 0,
   },
   closeButton: {
-    padding: 4,
+    width: 43,
+    height: 43,
+    borderRadius: 21.5,
+    alignItems: "center",
+    justifyContent: "center",
+    backgroundColor: "rgba(0,0,0,0.28)",
+    borderWidth: 1,
+    borderColor: "rgba(255,255,255,0.2)",
   },
   empty: {
     flex: 1,

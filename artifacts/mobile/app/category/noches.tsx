@@ -447,7 +447,7 @@ export default function NochesScreen() {
         <View style={styles.heroArea}>
           <View style={[styles.heroOverlayLeft, { top: topPad + 8 }]}>
             <View style={styles.lotoBtn}>
-              <BackPill onPress={() => router.back()} size={28} bgColor="rgba(255,255,255,0.10)" iconOffsetX={-1} />
+              <BackPill onPress={() => router.back()} size={28} iconOffsetX={-1} />
             </View>
           </View>
           <View style={[styles.heroIconFloat]}>
@@ -490,7 +490,7 @@ export default function NochesScreen() {
         <Animated.View style={[StyleSheet.absoluteFill, { backgroundColor: theme.gradient[theme.gradient.length - 1] as string, transform: [{ translateX: slideX }] }]}>
           <LinearGradient colors={theme.gradient as unknown as [string, string, ...string[]]} style={StyleSheet.absoluteFill} />
           <View style={{ flexDirection: "row", alignItems: "center", paddingTop: topPad + 14, paddingHorizontal: H_PAD, paddingBottom: 14, gap: 4 }}>
-            <Pressable onPress={closeAll} hitSlop={12} style={{ padding: 4 }}>
+              <Pressable onPress={closeAll} hitSlop={12} style={styles.modalBackBtn}>
               <Feather name="chevron-left" size={28} color={TEXT} />
             </Pressable>
             <Text style={{ fontFamily: "Manrope", fontSize: 18, fontWeight: "700", color: TEXT, flex: 1 }}>Todas las Noches</Text>
@@ -513,7 +513,7 @@ export default function NochesScreen() {
         pointerEvents="auto"
       >
         <View style={styles.lotoBtn}>
-          <BackPill onPress={() => router.back()} size={28} bgColor="rgba(255,255,255,0.10)" iconOffsetX={-1} />
+          <BackPill onPress={() => router.back()} size={28} iconOffsetX={-1} />
         </View>
         <View style={styles.headerTitleCol}>
           <Text style={styles.headerTitle}>Noches</Text>
@@ -559,8 +559,10 @@ const styles = StyleSheet.create({
   heroOverlayLeft: { position: "absolute", left: H_PAD, zIndex: 10 },
   heroIconFloat: { alignItems: "center", paddingBottom: 13, zIndex: 2 },
   heroIconCircle: { width: 72, height: 72, borderRadius: 36, backgroundColor: ICON_COLOR + "1A", borderWidth: 2, alignItems: "center", justifyContent: "center", overflow: "hidden" },
-  lotoBtn: { width: 45, height: 45, borderRadius: 22.5, overflow: "hidden", alignItems: "center", justifyContent: "center", backgroundColor: "rgba(255,255,255,0.035)" },
-  headerSearchButton: { width: 40, height: 40, borderRadius: 20, borderWidth: 1, borderColor: "rgba(255,255,255,0.2)", alignItems: "center", justifyContent: "center", backgroundColor: "rgba(0,0,0,0.28)" },
+  lotoBtn: { width: 43, height: 43, borderRadius: 21.5, borderWidth: 1, borderColor: "rgba(255,255,255,0.2)", overflow: "hidden", alignItems: "center", justifyContent: "center", backgroundColor: "rgba(0,0,0,0.28)" },
+  backBtn: { width: 43, height: 43, borderRadius: 21.5, borderWidth: 1, borderColor: "rgba(255,255,255,0.2)", alignItems: "center", justifyContent: "center", backgroundColor: "rgba(0,0,0,0.28)" },
+  modalBackBtn: { width: 43, height: 43, borderRadius: 21.5, borderWidth: 1, borderColor: "rgba(255,255,255,0.2)", alignItems: "center", justifyContent: "center", backgroundColor: "rgba(0,0,0,0.28)" },
+  headerSearchButton: { width: 43, height: 43, borderRadius: 21.5, borderWidth: 1, borderColor: "rgba(255,255,255,0.2)", alignItems: "center", justifyContent: "center", backgroundColor: "rgba(0,0,0,0.28)" },
 
   profileCard: { marginHorizontal: H_PAD, marginTop: 4, paddingBottom: 14, gap: 8, alignItems: "center" },
   profileTitle: { fontFamily: "Manrope", fontSize: 20, fontWeight: "700", color: TEXT, letterSpacing: 0.3 },

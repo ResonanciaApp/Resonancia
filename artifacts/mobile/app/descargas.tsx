@@ -77,7 +77,7 @@ export default function DownloadsScreen() {
       <View style={styles.header}>
         <Pressable
           onPress={() => router.back()}
-          style={styles.iconButton}
+          style={styles.headerBackButton}
           accessibilityRole="button"
           accessibilityLabel="Volver"
         >
@@ -241,6 +241,16 @@ const styles = StyleSheet.create({
     alignItems: "center",
     paddingHorizontal: 16,
     justifyContent: "space-between",
+  },
+  headerBackButton: {
+    width: 43,
+    height: 43,
+    borderRadius: 21.5,
+    borderWidth: 1,
+    borderColor: "rgba(255,255,255,0.2)",
+    backgroundColor: "rgba(0,0,0,0.28)",
+    alignItems: "center",
+    justifyContent: "center",
   },
   iconButton: { padding: 9 },
   clearButton: {

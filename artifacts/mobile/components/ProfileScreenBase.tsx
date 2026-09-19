@@ -1113,6 +1113,7 @@ export function ProfileScreenBase({
                 onPress={onBack ?? (() => router.canGoBack() ? router.back() : router.navigate("/(tabs)/inicio8" as never))}
                 size={28}
                 bgColor={libraryHeaderButtonBackground}
+                standardSurface
                 style={{ transform: [{ translateX: -2 }, { translateY: -50 }] }}
               />
             )}

@@ -12,6 +12,8 @@ interface BackPillProps {
   bgColor?: string;
   borderColor?: string;
   borderWidth?: number;
+  /** Superficie circular estándar para controles independientes del drawer. */
+  standardSurface?: boolean;
   /** Desplazamiento horizontal del icono dentro del pill (positivo = derecha). */
   iconOffsetX?: number;
 }
@@ -25,6 +27,7 @@ export function BackPill({
   bgColor,
   borderColor,
   borderWidth,
+  standardSurface = false,
   iconOffsetX,
 }: BackPillProps) {
   return (
@@ -32,8 +35,16 @@ export function BackPill({
       <View
         style={[
           styles.base,
-          bgColor ? { backgroundColor: bgColor, borderRadius: 19 } : undefined,
-          borderWidth ? { borderWidth, borderColor } : undefined,
+          standardSurface && styles.standardSurface,
+          bgColor ? {
+            backgroundColor: bgColor,
+            borderRadius: standardSurface ? 21.5 : 19,
+          } : undefined,
+          (borderWidth || standardSurface) ? {
+            borderWidth: borderWidth ?? 1,
+            borderColor: borderColor ?? "rgba(255,255,255,0.2)",
+          } : undefined,
+          standardSurface && !bgColor ? { backgroundColor: "rgba(0,0,0,0.28)" } : undefined,
         ]}
       >
         <View style={iconOffsetX ? { transform: [{ translateX: iconOffsetX }] } : undefined}>
@@ -50,5 +61,10 @@ const styles = StyleSheet.create({
     height: 38,
     alignItems: "center",
     justifyContent: "center",
+  },
+  standardSurface: {
+    width: 43,
+    height: 43,
+    borderRadius: 21.5,
   },
 });

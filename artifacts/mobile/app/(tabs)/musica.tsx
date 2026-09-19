@@ -1302,7 +1302,14 @@ const styles = StyleSheet.create({
   },
   menuPanelTabTextSel: { color: "#06071F", fontWeight: "700" },
   menuPanelClose: {
-    width: 32, height: 32, alignItems: "center", justifyContent: "center",
+    width: 43,
+    height: 43,
+    borderRadius: 21.5,
+    borderWidth: 1,
+    borderColor: "rgba(255,255,255,0.2)",
+    backgroundColor: "rgba(0,0,0,0.28)",
+    alignItems: "center",
+    justifyContent: "center",
   },
   menuPanelBody: { paddingHorizontal: 16, paddingTop: 14, paddingBottom: 30 },
 

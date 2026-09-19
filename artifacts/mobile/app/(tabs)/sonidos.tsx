@@ -699,7 +699,16 @@ const styles = StyleSheet.create({
     paddingBottom: 14,
     gap: 4,
   },
-  allSessionsBack: { padding: 4 },
+  allSessionsBack: {
+    width: 43,
+    height: 43,
+    borderRadius: 21.5,
+    borderWidth: 1,
+    borderColor: "rgba(255,255,255,0.2)",
+    backgroundColor: "rgba(0,0,0,0.28)",
+    alignItems: "center",
+    justifyContent: "center",
+  },
   allSessionsTitle: {
     fontFamily: "Manrope",
     fontSize: 20,

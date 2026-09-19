@@ -154,6 +154,7 @@ export default function DiarioScreen() {
           bgColor="rgba(0,0,0,0.28)"
           borderWidth={1}
           borderColor="rgba(255,255,255,0.2)"
+          standardSurface
           iconOffsetX={-1}
         />
         <Text style={[styles.screenTitle, { color: "#F9F9F9" }]}>Mis notas</Text>

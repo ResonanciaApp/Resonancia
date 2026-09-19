@@ -452,7 +452,7 @@ export default function SessionDetailScreen({ id: idProp }: { id?: string } = {}
 
       {/* ── Fila superior de acciones ─────────────────────────────────────── */}
       <View style={[styles.topActionRow, { paddingTop: topPad + 8 }]} pointerEvents="box-none">
-        <GhostPill style={styles.blackGhostCircle}>
+        <GhostPill style={styles.blackGhostCircle} noBorder>
           <CircleActionButton
             label="Volver"
             testID="session-detail-back-button"
@@ -924,11 +924,14 @@ const styles = StyleSheet.create({
     zIndex: 4,
   },
   blackGhostCircle: {
-    width: 40,
-    height: 40,
+    width: 43,
+    height: 43,
+    borderRadius: 21.5,
     paddingHorizontal: 0,
     paddingVertical: 0,
-    backgroundColor: BLACK_GHOST_TINT,
+    backgroundColor: "rgba(0,0,0,0.28)",
+    borderWidth: 1,
+    borderColor: "rgba(255,255,255,0.2)",
   },
   blackGhostGroup: {
     paddingHorizontal: 2,

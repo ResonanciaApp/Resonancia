@@ -313,7 +313,7 @@ export default function MananasScreen() {
         {!selectedTag && (
           <>
             <View style={[styles.header, { paddingHorizontal: H_PAD, paddingTop: topPad + 8 }]}>
-              <BackPill onPress={() => router.back()} size={28} bgColor="rgba(255,255,255,0.10)" iconOffsetX={-1} />
+              <BackPill onPress={() => router.back()} size={28} iconOffsetX={-1} style={styles.backBtn} />
               <View style={[styles.catIconCircle, { backgroundColor: ICON_COLOR + "1A" }]}>
                 <Image
                   source={require("../../assets/images/cat-mananas.png")}
@@ -391,7 +391,7 @@ export default function MananasScreen() {
           <>
             {/* Top bar */}
             <View style={[styles.detailTopBar, { paddingTop: topPad + 8, paddingHorizontal: H_PAD }]}>
-              <Pressable onPress={() => setSelectedTag(null)} style={styles.iconBtn}>
+              <Pressable onPress={() => setSelectedTag(null)} style={styles.detailBackBtn}>
                 <Feather name="arrow-left" size={22} color={colors.foreground} />
               </Pressable>
               <Pressable onPress={handleShare} style={styles.iconBtn}>
@@ -568,7 +568,7 @@ export default function MananasScreen() {
           strongBlur={isIndigoTheme}
           fadeBottom={isIndigoTheme}
         />
-        <BackPill onPress={() => router.back()} size={28} bgColor="rgba(255,255,255,0.10)" iconOffsetX={-1} />
+        <BackPill onPress={() => router.back()} size={28} iconOffsetX={-1} style={styles.backBtn} />
         <Text style={[styles.stickyTitle, { color: colors.foreground }]}>Mañanas</Text>
         <View style={styles.stickySpacer} />
       </Animated.View>
@@ -611,7 +611,9 @@ const styles = StyleSheet.create({
   header: { alignItems: "center", marginBottom: 28, paddingTop: 4 },
   backBtn: {
     alignSelf: "flex-start",
-    width: 40, height: 40,
+    width: 43, height: 43, borderRadius: 21.5,
+    borderWidth: 1, borderColor: "rgba(255,255,255,0.2)",
+    backgroundColor: "rgba(0,0,0,0.28)",
     alignItems: "center", justifyContent: "center",
     marginBottom: 16,
   },
@@ -622,7 +624,7 @@ const styles = StyleSheet.create({
     marginBottom: 12,
   },
   titleRow: { flexDirection: "row", alignItems: "center", gap: 14 },
-  headerSearchButton: { width: 40, height: 40, borderRadius: 20, borderWidth: 1, borderColor: "rgba(255,255,255,0.2)", alignItems: "center", justifyContent: "center", backgroundColor: "rgba(0,0,0,0.28)" },
+  headerSearchButton: { width: 43, height: 43, borderRadius: 21.5, borderWidth: 1, borderColor: "rgba(255,255,255,0.2)", alignItems: "center", justifyContent: "center", backgroundColor: "rgba(0,0,0,0.28)" },
   noResults: { fontFamily: "Manrope", fontSize: 14, textAlign: "center", paddingVertical: 24 },
   pageTitle: { fontFamily: "Manrope", fontSize: 19, fontWeight: "700", letterSpacing: 0.2, marginTop: -15, marginBottom: 4, textAlign: "center" },
   pageSub: { fontFamily: "Manrope", fontSize: 13, lineHeight: 19, textAlign: "center" },
@@ -638,6 +640,7 @@ const styles = StyleSheet.create({
     flexDirection: "row", alignItems: "center",
     justifyContent: "space-between", marginBottom: 18,
   },
+  detailBackBtn: { width: 43, height: 43, borderRadius: 21.5, borderWidth: 1, borderColor: "rgba(255,255,255,0.2)", backgroundColor: "rgba(0,0,0,0.28)", alignItems: "center", justifyContent: "center" },
   iconBtn: { width: 40, height: 40, alignItems: "center", justifyContent: "center" },
   detailTitle: {
     fontFamily: "Manrope",

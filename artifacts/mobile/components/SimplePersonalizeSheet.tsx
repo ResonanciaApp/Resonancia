@@ -52,7 +52,7 @@ export function SimplePersonalizeSheet({
         {/* Header */}
         <View style={styles.headerRow}>
           <Text style={styles.title}>Personalizar</Text>
-          <Pressable onPress={onClose} hitSlop={12} style={({ pressed }) => ({ opacity: pressed ? 0.5 : 1 })}>
+          <Pressable onPress={onClose} hitSlop={12} style={({ pressed }) => [styles.closeBtn, { opacity: pressed ? 0.5 : 1 }]}>
             <Feather name="x" size={20} color="rgba(250,240,238,0.6)" />
           </Pressable>
         </View>
@@ -147,6 +147,16 @@ const styles = StyleSheet.create({
     alignItems: "center",
     justifyContent: "space-between",
     paddingVertical: 14,
+  },
+  closeBtn: {
+    width: 43,
+    height: 43,
+    borderRadius: 21.5,
+    alignItems: "center",
+    justifyContent: "center",
+    backgroundColor: "rgba(0,0,0,0.28)",
+    borderWidth: 1,
+    borderColor: "rgba(255,255,255,0.2)",
   },
   title: {
     fontFamily: "Manrope",

@@ -6407,11 +6407,11 @@ export default function GeometrixScreen() {
 
           {/* Botón volver (mismo chevron/fondo que Música) */}
           <View style={[styles.landingBackBtn, { top: insets.top + 3 }]}>
-            <View style={{ width: 40, height: 40, borderRadius: 20, overflow: "hidden", alignItems: "center", justifyContent: "center" }}>
+            <View style={{ width: 43, height: 43, borderRadius: 21.5, overflow: "hidden", alignItems: "center", justifyContent: "center" }}>
               <BackPill
                 onPress={() => { if (isGeometrixOpen) closeGeometrix(); else router.back(); }}
                 size={28}
-                bgColor="rgba(255,255,255,0.10)"
+                standardSurface
                 iconOffsetX={-1}
                 style={{ transform: [{ translateX: -1 }] }}
               />
@@ -6963,14 +6963,14 @@ const styles = StyleSheet.create({
     transform: [{ translateY: -36 }],
   },
   canvasCloseBtn: {
-    width: 40,
-    height: 40,
-    borderRadius: 20,
+    width: 43,
+    height: 43,
+    borderRadius: 21.5,
     alignItems: "center",
     justifyContent: "center",
-    backgroundColor: "rgba(255,255,255,0.10)",
-    borderWidth: StyleSheet.hairlineWidth,
-    borderColor: "rgba(255,255,255,0.12)",
+    backgroundColor: "rgba(0,0,0,0.28)",
+    borderWidth: 1,
+    borderColor: "rgba(255,255,255,0.2)",
   },
   catScroll: {
     flex: 1,

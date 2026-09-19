@@ -270,7 +270,7 @@ function AnimatedChipRow({
       {(onSearch || onAdd) && (
         <View pointerEvents="auto" style={styles.chipRowActions}>
           {onSearch && (
-            <Pressable onPress={onSearch} hitSlop={10} style={styles.chipActionBtn}>
+            <Pressable onPress={onSearch} hitSlop={10} style={[styles.chipActionBtn, styles.chipSearchBtn]}>
               <Feather name="search" size={22} color="#f9f9f9" />
             </Pressable>
           )}
@@ -2217,7 +2217,11 @@ export function BibliotecaScreen({
           >
             <View style={styles.addResModalHeader}>
               <Text style={styles.addResModalTitle}>Agrega Resonador</Text>
-              <Pressable hitSlop={10} onPress={() => { setAddResonadorVisible(false); setAddResonadorQ(""); }}>
+              <Pressable
+                hitSlop={10}
+                style={styles.modalCloseBtn}
+                onPress={() => { setAddResonadorVisible(false); setAddResonadorQ(""); }}
+              >
                 <Feather name="x" size={22} color={TEXT} />
               </Pressable>
             </View>
@@ -2341,6 +2345,16 @@ const styles = StyleSheet.create({
     borderColor: "rgba(255,255,255,0.1)",
   },
   chipActionBtn: { width: 32, height: 32, justifyContent: "center", alignItems: "center" },
+  chipSearchBtn: {
+    width: 43,
+    height: 43,
+    borderRadius: 21.5,
+    justifyContent: "center",
+    alignItems: "center",
+    backgroundColor: "rgba(0,0,0,0.28)",
+    borderWidth: 1,
+    borderColor: "rgba(255,255,255,0.2)",
+  },
   animCloseBtn: { position: "absolute", left: H_PAD - 10, top: 0, bottom: 0, justifyContent: "center", zIndex: 3 },
   chipRowScroller: { flex: 1, transform: [{ translateY: 4 }] },
   chipRow: {
@@ -2617,6 +2631,24 @@ const styles = StyleSheet.create({
     position: "absolute",
     top: 18,
     right: 20,
+    width: 43,
+    height: 43,
+    borderRadius: 21.5,
+    alignItems: "center",
+    justifyContent: "center",
+    backgroundColor: "rgba(0,0,0,0.28)",
+    borderWidth: 1,
+    borderColor: "rgba(255,255,255,0.2)",
+  },
+  modalCloseBtn: {
+    width: 43,
+    height: 43,
+    borderRadius: 21.5,
+    alignItems: "center",
+    justifyContent: "center",
+    backgroundColor: "rgba(0,0,0,0.28)",
+    borderWidth: 1,
+    borderColor: "rgba(255,255,255,0.2)",
   },
   nameCardTitle: {
     fontFamily: "Manrope",

@@ -728,9 +728,9 @@ const styles = StyleSheet.create({
   },
   iconBtn: { width: 40, height: 40, alignItems: "center", justifyContent: "center" },
   playlistBackButton: {
-    width: 40,
-    height: 40,
-    borderRadius: 20,
+    width: 43,
+    height: 43,
+    borderRadius: 21.5,
     borderWidth: 1,
     borderColor: "rgba(255,255,255,0.2)",
     backgroundColor: "rgba(0,0,0,0.28)",
@@ -1518,7 +1518,7 @@ const dreSt = StyleSheet.create({
     backgroundColor: "rgba(212,175,55,0.25)", marginTop: 10,
   },
   header: { flexDirection: "row", alignItems: "center", paddingHorizontal: 16, paddingVertical: 12 },
-  closeBtn: { width: 32, height: 32, alignItems: "center", justifyContent: "center" },
+  closeBtn: { width: 43, height: 43, borderRadius: 21.5, borderWidth: 1, borderColor: "rgba(255,255,255,0.2)", backgroundColor: "rgba(0,0,0,0.28)", alignItems: "center", justifyContent: "center" },
   title: { fontFamily: "Manrope", flex: 1, textAlign: "center", color: TEXT, fontSize: 16, fontWeight: "700" },
   hint: { fontFamily: "Manrope", color: MUTED, fontSize: 12, textAlign: "center", marginBottom: 4, paddingHorizontal: 20 },
   listContent: {
@@ -1653,7 +1653,7 @@ const eiSt = StyleSheet.create({
     backgroundColor: "rgba(212,175,55,0.25)", marginTop: 10,
   },
   header: { flexDirection: "row", alignItems: "center", paddingVertical: 14 },
-  closeBtn: { width: 32, height: 32, alignItems: "center", justifyContent: "center" },
+  closeBtn: { width: 43, height: 43, borderRadius: 21.5, borderWidth: 1, borderColor: "rgba(255,255,255,0.2)", backgroundColor: "rgba(0,0,0,0.28)", alignItems: "center", justifyContent: "center" },
   title: { fontFamily: "Manrope", flex: 1, textAlign: "center", color: TEXT, fontSize: 16, fontWeight: "700" },
   saveText: { fontFamily: "Manrope", color: GOLD, fontSize: 15, fontWeight: "700" },
   coverRow: {

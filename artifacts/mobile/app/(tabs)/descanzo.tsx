@@ -667,7 +667,7 @@ export default function DescansoScreen() {
 
           {/* Cabecera */}
           <View style={{ flexDirection: "row", alignItems: "center", paddingTop: topPad + 14, paddingHorizontal: H_PAD, paddingBottom: 14, gap: 4 }}>
-            <Pressable onPress={closeAll} hitSlop={12} style={{ padding: 4 }}>
+            <Pressable onPress={closeAll} hitSlop={12} style={styles.allSessionsBack}>
               <Feather name="chevron-left" size={28} color="#FBFBFB" />
             </Pressable>
             <Text style={{ fontFamily: "Manrope", fontSize: 20, fontWeight: "700", color: "#FBFBFB", flex: 1 }}>
@@ -988,7 +988,7 @@ const styles = StyleSheet.create({
     borderColor: "rgba(255,255,255,0.2)",
     alignItems: "center",
     justifyContent: "center",
-    backgroundColor: "rgba(0,0,0,0.34)",
+    backgroundColor: "rgba(0,0,0,0.28)",
   },
   headerActions: {
     flexDirection: "row",
@@ -1007,6 +1007,16 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     gap: 7,
     backgroundColor: "rgba(0,0,0,0.34)",
+  },
+  allSessionsBack: {
+    width: 43,
+    height: 43,
+    borderRadius: 21.5,
+    borderWidth: 1,
+    borderColor: "rgba(255,255,255,0.2)",
+    backgroundColor: "rgba(0,0,0,0.28)",
+    alignItems: "center",
+    justifyContent: "center",
   },
   headerReminderPill: {
     maxWidth: 105,

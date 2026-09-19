@@ -617,9 +617,9 @@ const styles = StyleSheet.create({
     transform: [{ translateY: 9 }],
   },
   libraryTabBackBtn: {
-    width: 40,
-    height: 40,
-    borderRadius: 20,
+    width: 43,
+    height: 43,
+    borderRadius: 21.5,
     borderWidth: 1,
     borderColor: "rgba(255,255,255,0.2)",
     alignItems: "center",

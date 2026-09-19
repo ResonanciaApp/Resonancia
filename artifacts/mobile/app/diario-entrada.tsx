@@ -95,9 +95,11 @@ export default function DiarioEntradaScreen() {
 
       {/* Header */}
       <View style={[styles.header, { paddingTop: topPad + 8 }]}>
-        <Pressable onPress={handleClose} hitSlop={10} style={styles.headerSide}>
-          <Feather name="x" size={24} color={"#F9F9F9"} />
-        </Pressable>
+        <View style={styles.headerSide}>
+          <Pressable onPress={handleClose} hitSlop={10} style={styles.headerCloseButton}>
+            <Feather name="x" size={24} color={"#F9F9F9"} />
+          </Pressable>
+        </View>
 
         <Text style={[styles.headerTitle, { color: "#F9F9F9" }]}>
           {isEditing ? "Editar entrada" : "Nueva entrada"}
@@ -148,6 +150,16 @@ const styles = StyleSheet.create({
     paddingBottom: 14,
   },
   headerSide: { minWidth: 64 },
+  headerCloseButton: {
+    width: 43,
+    height: 43,
+    borderRadius: 21.5,
+    alignItems: "center",
+    justifyContent: "center",
+    backgroundColor: "rgba(0,0,0,0.28)",
+    borderWidth: 1,
+    borderColor: "rgba(255,255,255,0.2)",
+  },
   headerRight: {
     flexDirection: "row",
     alignItems: "center",
