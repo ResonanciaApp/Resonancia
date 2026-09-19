@@ -73,7 +73,6 @@ import { ProfileSettingsSections } from "@/components/ProfileSettingsSections";
 import { useCatalog } from "@/context/CatalogContext";
 import { useFoldersPlaylists } from "@/context/FoldersPlaylistsContext";
 import { usePlayer } from "@/context/PlayerContext";
-import { useStreak } from "@/hooks/useStreak";
 import { useCoverPresetCatalog } from "@/lib/cover-preset-catalog";
 import {
   computePlaylistCompletion,
@@ -362,7 +361,6 @@ export function ProfileScreenBase({
   const expansorData = expansorId ? getExpansorById(expansorId) : undefined;
   const { activeMeditationPlaylist } = useFoldersPlaylists();
   const { statEvents } = usePlayer();
-  const { currentStreak } = useStreak();
   const { editorialPlaylists, version: catalogVersion } = useCatalog();
   const continueMeditationPlaylist = useMemo(() => {
     const completedSessionIds = new Set(
@@ -1210,21 +1208,6 @@ export function ProfileScreenBase({
             >
               Perfil
             </Animated.Text>
-            <Pressable
-              hitSlop={10}
-              onPress={() => router.navigate("/(tabs)/inicio3" as never)}
-              style={[
-                styles.dedicatedSettingsButton,
-                styles.profileStickySettingsButton,
-              ]}
-              accessibilityRole="button"
-              accessibilityLabel="Ir a Inicio"
-            >
-              <View style={styles.profileLotusPill}>
-                <Text style={styles.profileLotusCount}>{currentStreak}</Text>
-                <MaterialCommunityIcons name="spa" size={20} color="#FFFFFF" />
-              </View>
-            </Pressable>
           </View>
         </Animated.View>
       )}
@@ -1325,18 +1308,6 @@ export function ProfileScreenBase({
           <View style={styles.dedicatedTitleLeft}>
             <Text style={[styles.dedicatedHeroTitle, { color: colors.foreground }]}>Perfil</Text>
           </View>
-          <Pressable
-            hitSlop={10}
-            onPress={() => router.navigate("/(tabs)/inicio3" as never)}
-            style={styles.dedicatedSettingsButton}
-            accessibilityRole="button"
-            accessibilityLabel="Ir a Inicio"
-          >
-            <View style={styles.profileLotusPill}>
-              <Text style={styles.profileLotusCount}>{currentStreak}</Text>
-              <MaterialCommunityIcons name="spa" size={20} color="#FFFFFF" />
-            </View>
-          </Pressable>
         </View>
 
         {/* ── Profile Card ── */}
@@ -1922,11 +1893,6 @@ const styles = StyleSheet.create({
     letterSpacing: 0.2,
     textAlign: "left",
   },
-  profileStickySettingsButton: {
-    position: "absolute",
-    right: 16,
-    top: 8,
-  },
   stickyHeaderBorder: {
     position: "absolute",
     left: 0,
@@ -1980,31 +1946,6 @@ const styles = StyleSheet.create({
     letterSpacing: 0.3,
     textAlign: "left",
     transform: [{ translateY: 1 }],
-  },
-  dedicatedSettingsButton: {
-    width: 43,
-    height: 43,
-    alignItems: "center",
-    justifyContent: "center",
-    transform: [{ translateY: -2 }],
-  },
-  profileLotusPill: {
-    height: 36,
-    minWidth: 58,
-    paddingHorizontal: 10,
-    borderRadius: 20,
-    flexDirection: "row",
-    gap: 6,
-    alignItems: "center",
-    justifyContent: "center",
-    backgroundColor: "rgba(255,255,255,0.08)",
-  },
-  profileLotusCount: {
-    color: "#FFFFFF",
-    fontFamily: "Manrope",
-    fontSize: 16,
-    fontWeight: "800",
-    lineHeight: 20,
   },
   profileSettingsSections: {
     marginTop: 12,
