@@ -109,7 +109,7 @@ const styles = StyleSheet.create({
     marginBottom: 17,
   },
   card: {
-    minHeight: 138,
+    minHeight: 97,
     flexDirection: "row",
     alignItems: "center",
     gap: 19,
