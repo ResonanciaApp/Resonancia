@@ -148,6 +148,7 @@ router.get("/hero", wrap(async (req, res) => {
 function slideInput(value: unknown) {
   return z.object({
     position: z.union([z.literal(2), z.literal(3), z.literal(4)]),
+    enabled: z.boolean().optional().default(true),
     sessionId: z.string().min(1),
     title: z.string().trim().min(1).max(200),
     description: z.string().trim().max(300).optional(),
@@ -155,7 +156,7 @@ function slideInput(value: unknown) {
   }).parse(value);
 }
 async function sessionSlidesDto(content: { slides: Array<ReturnType<typeof slideInput> | null> } | null, revision: number) {
-  const inputs = (content?.slides ?? []).filter((slide): slide is ReturnType<typeof slideInput> => slide != null);
+  const inputs = (content?.slides ?? []).filter((slide) => slide != null).map(slideInput);
   if (!inputs.length) return { revision, slides: [] };
   const sessions = await db.select().from(catalogSessionsTable).where(inArray(catalogSessionsTable.id, inputs.map((slide) => slide.sessionId)));
   const byId = new Map(sessions.filter((session) => session.status === "published").map((session) => [session.id, session]));
@@ -343,7 +344,7 @@ function streamRangedFile(
 router.get("/admin/heroes", ...admin, wrap(async (_req, res) => { res.json((await db.select().from(heroes)).map(heroDto)); }));
 router.get("/admin/hero/session-slides", ...admin, wrap(async (_req, res) => {
   const [row] = await db.select().from(heroSessionSlidesTable).where(eq(heroSessionSlidesTable.id, 1));
-  const draft = row?.draft?.slides ?? [];
+  const draft = (row?.draft?.slides ?? []).map(slideInput);
   const published = row?.published ? await sessionSlidesDto(row.published, row.publishedRevision ?? 0) : null;
   res.json({
     revision: row?.revision ?? 0,

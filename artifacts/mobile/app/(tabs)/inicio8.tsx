@@ -1412,10 +1412,11 @@ function Inicio3HeroPager({
   const [todayMediaActive, setTodayMediaActive] = useState(true);
   const todayMediaActiveRef = useRef(true);
   const slidePressStartXRef = useRef<number | null>(null);
+  const pagerSlideCountRef = useRef(INICIO3_PAGER_SLIDES.length);
 
   const updateActiveSlide = (offsetX: number) => {
     const index = Math.round(offsetX / slideWidth);
-    setActiveIndex(Math.max(0, Math.min(index, INICIO3_PAGER_SLIDES.length - 1)));
+    setActiveIndex(Math.max(0, Math.min(index, pagerSlideCountRef.current - 1)));
   };
   const onMomentumScrollEnd = (e: NativeSyntheticEvent<NativeScrollEvent>) => {
     updateActiveSlide(e.nativeEvent.contentOffset.x);
@@ -1431,11 +1432,12 @@ function Inicio3HeroPager({
     setTodayMediaActive(nextActive);
   };
   const pagerSlides = useMemo(() => {
+    if (!configuredHero) return INICIO3_PAGER_SLIDES;
     const configuredByPosition = new Map((configuredHero?.slides ?? []).map((slide) => [slide.position, slide]));
     return INICIO3_PAGER_SLIDES.map((fallback, index) => {
       if (index === 0) return fallback;
       const configured = configuredByPosition.get((index + 1) as 2 | 3 | 4);
-      if (!configured || !configured.imageUrl) return fallback;
+      if (!configured || configured.enabled === false || !configured.imageUrl) return null;
       return {
         ...fallback,
         id: `session-${configured.sessionId}`,
@@ -1450,8 +1452,12 @@ function Inicio3HeroPager({
         skipMiniPlayer: configured.skipMiniPlayer,
         isPremiumSession: configured.isPremium,
       };
-    });
+    }).filter((slide): slide is Inicio3PagerSlide => slide != null);
   }, [catalogVersion, configuredHero?.slides]);
+  pagerSlideCountRef.current = pagerSlides.length;
+  useEffect(() => {
+    setActiveIndex((current) => Math.min(current, Math.max(0, pagerSlides.length - 1)));
+  }, [pagerSlides.length]);
   const openSlide = useCallback((item: (typeof pagerSlides)[number]) => {
     if (item.id === "today") {
       router.push({ pathname: "/inspiracion-diaria", params: { entry: "today" } });
@@ -1599,7 +1605,7 @@ function Inicio3HeroPager({
           )}
         />
         <View style={styles.inicio3HeroProgressContainer} pointerEvents="none">
-          {INICIO3_PAGER_SLIDES.map((slide, i) => (
+          {pagerSlides.map((slide, i) => (
             <View
               key={slide.id}
               style={[

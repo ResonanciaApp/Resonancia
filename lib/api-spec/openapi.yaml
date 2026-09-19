@@ -5896,9 +5896,10 @@ components:
       required: [surface, sortOrder, isActive]
     HeroSessionSlide:
       type: object
-      required: [position, sessionId, title, actionLabel, categoryLabel, imageUrl, skipDetail, skipMiniPlayer, isPremium]
+      required: [position, enabled, sessionId, title, actionLabel, categoryLabel, imageUrl, skipDetail, skipMiniPlayer, isPremium]
       properties:
         position: {type: integer, enum: [2, 3, 4]}
+        enabled: {type: boolean, default: true}
         sessionId: {type: string}
         title: {type: string}
         description: {type: string, maxLength: 300}
@@ -5917,9 +5918,10 @@ components:
         slides: {type: array, items: {$ref: "#/components/schemas/HeroSessionSlide"}}
     HeroSessionSlideInput:
       type: object
-      required: [position, sessionId, title, actionLabel]
+      required: [position, enabled, sessionId, title, actionLabel]
       properties:
         position: {type: integer, enum: [2, 3, 4]}
+        enabled: {type: boolean, default: true}
         sessionId: {type: string, minLength: 1}
         title: {type: string, minLength: 1, maxLength: 200}
         description: {type: string, maxLength: 300}

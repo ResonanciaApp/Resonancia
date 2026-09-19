@@ -1313,6 +1313,7 @@ export const HeroSessionSlidePosition = {
 
 export interface HeroSessionSlide {
   position: HeroSessionSlidePosition;
+  enabled: boolean;
   sessionId: string;
   title: string;
   /** @maxLength 300 */
@@ -1343,6 +1344,7 @@ export const HeroSessionSlideInputPosition = {
 
 export interface HeroSessionSlideInput {
   position: HeroSessionSlideInputPosition;
+  enabled: boolean;
   /** @minLength 1 */
   sessionId: string;
   /**

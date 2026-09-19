@@ -74,6 +74,7 @@ export const GetEffectiveHeroResponse = zod.object({
 })
 
 
+export const getHeroSessionSlidesResponseSlidesItemEnabledDefault = true;
 export const getHeroSessionSlidesResponseSlidesItemDescriptionMax = 300;
 
 
@@ -82,6 +83,7 @@ export const GetHeroSessionSlidesResponse = zod.object({
   "revision": zod.number(),
   "slides": zod.array(zod.object({
   "position": zod.union([zod.literal(2),zod.literal(3),zod.literal(4)]),
+  "enabled": zod.boolean().default(getHeroSessionSlidesResponseSlidesItemEnabledDefault),
   "sessionId": zod.string(),
   "title": zod.string(),
   "description": zod.string().max(getHeroSessionSlidesResponseSlidesItemDescriptionMax).optional(),
@@ -96,13 +98,14 @@ export const GetHeroSessionSlidesResponse = zod.object({
 })
 
 
-
+export const getAdminHeroSessionSlidesResponseDraftItemEnabledDefault = true;
 export const getAdminHeroSessionSlidesResponseDraftItemTitleMax = 200;
 
 export const getAdminHeroSessionSlidesResponseDraftItemDescriptionMax = 300;
 
 export const getAdminHeroSessionSlidesResponseDraftItemActionLabelMax = 60;
 
+export const getAdminHeroSessionSlidesResponsePublishedOneItemEnabledDefault = true;
 export const getAdminHeroSessionSlidesResponsePublishedOneItemDescriptionMax = 300;
 
 
@@ -111,6 +114,7 @@ export const GetAdminHeroSessionSlidesResponse = zod.object({
   "revision": zod.number(),
   "draft": zod.array(zod.object({
   "position": zod.union([zod.literal(2),zod.literal(3),zod.literal(4)]),
+  "enabled": zod.boolean().default(getAdminHeroSessionSlidesResponseDraftItemEnabledDefault),
   "sessionId": zod.string().min(1),
   "title": zod.string().min(1).max(getAdminHeroSessionSlidesResponseDraftItemTitleMax),
   "description": zod.string().max(getAdminHeroSessionSlidesResponseDraftItemDescriptionMax).optional(),
@@ -118,6 +122,7 @@ export const GetAdminHeroSessionSlidesResponse = zod.object({
 })),
   "published": zod.union([zod.array(zod.object({
   "position": zod.union([zod.literal(2),zod.literal(3),zod.literal(4)]),
+  "enabled": zod.boolean().default(getAdminHeroSessionSlidesResponsePublishedOneItemEnabledDefault),
   "sessionId": zod.string(),
   "title": zod.string(),
   "description": zod.string().max(getAdminHeroSessionSlidesResponsePublishedOneItemDescriptionMax).optional(),
@@ -135,7 +140,7 @@ export const GetAdminHeroSessionSlidesResponse = zod.object({
 
 export const updateAdminHeroSessionSlidesBodyRevisionMin = 0;
 
-
+export const updateAdminHeroSessionSlidesBodySlidesItemEnabledDefault = true;
 export const updateAdminHeroSessionSlidesBodySlidesItemTitleMax = 200;
 
 export const updateAdminHeroSessionSlidesBodySlidesItemDescriptionMax = 300;
@@ -151,6 +156,7 @@ export const UpdateAdminHeroSessionSlidesBody = zod.object({
   "revision": zod.number().min(updateAdminHeroSessionSlidesBodyRevisionMin),
   "slides": zod.array(zod.object({
   "position": zod.union([zod.literal(2),zod.literal(3),zod.literal(4)]),
+  "enabled": zod.boolean().default(updateAdminHeroSessionSlidesBodySlidesItemEnabledDefault),
   "sessionId": zod.string().min(1),
   "title": zod.string().min(1).max(updateAdminHeroSessionSlidesBodySlidesItemTitleMax),
   "description": zod.string().max(updateAdminHeroSessionSlidesBodySlidesItemDescriptionMax).optional(),
@@ -158,13 +164,14 @@ export const UpdateAdminHeroSessionSlidesBody = zod.object({
 })).min(updateAdminHeroSessionSlidesBodySlidesMin).max(updateAdminHeroSessionSlidesBodySlidesMax)
 })
 
-
+export const updateAdminHeroSessionSlidesResponseDraftItemEnabledDefault = true;
 export const updateAdminHeroSessionSlidesResponseDraftItemTitleMax = 200;
 
 export const updateAdminHeroSessionSlidesResponseDraftItemDescriptionMax = 300;
 
 export const updateAdminHeroSessionSlidesResponseDraftItemActionLabelMax = 60;
 
+export const updateAdminHeroSessionSlidesResponsePublishedOneItemEnabledDefault = true;
 export const updateAdminHeroSessionSlidesResponsePublishedOneItemDescriptionMax = 300;
 
 
@@ -173,6 +180,7 @@ export const UpdateAdminHeroSessionSlidesResponse = zod.object({
   "revision": zod.number(),
   "draft": zod.array(zod.object({
   "position": zod.union([zod.literal(2),zod.literal(3),zod.literal(4)]),
+  "enabled": zod.boolean().default(updateAdminHeroSessionSlidesResponseDraftItemEnabledDefault),
   "sessionId": zod.string().min(1),
   "title": zod.string().min(1).max(updateAdminHeroSessionSlidesResponseDraftItemTitleMax),
   "description": zod.string().max(updateAdminHeroSessionSlidesResponseDraftItemDescriptionMax).optional(),
@@ -180,6 +188,7 @@ export const UpdateAdminHeroSessionSlidesResponse = zod.object({
 })),
   "published": zod.union([zod.array(zod.object({
   "position": zod.union([zod.literal(2),zod.literal(3),zod.literal(4)]),
+  "enabled": zod.boolean().default(updateAdminHeroSessionSlidesResponsePublishedOneItemEnabledDefault),
   "sessionId": zod.string(),
   "title": zod.string(),
   "description": zod.string().max(updateAdminHeroSessionSlidesResponsePublishedOneItemDescriptionMax).optional(),

@@ -10,9 +10,9 @@ import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
 import { toast } from "sonner";
 
-type DraftSlide = { position: 2 | 3 | 4; sessionId: string; title: string; description: string; actionLabel: string };
+type DraftSlide = { position: 2 | 3 | 4; enabled: boolean; sessionId: string; title: string; description: string; actionLabel: string };
 
-const fallback: DraftSlide[] = [2, 3, 4].map((position) => ({ position: position as 2 | 3 | 4, sessionId: "", title: "", description: "", actionLabel: "Escuchar" }));
+const fallback: DraftSlide[] = [2, 3, 4].map((position) => ({ position: position as 2 | 3 | 4, enabled: true, sessionId: "", title: "", description: "", actionLabel: "Escuchar" }));
 
 function previewUrl(path: string | null | undefined) {
   if (!path) return null;
@@ -34,7 +34,7 @@ export function HeroSessionSlidesEditor({ onDirtyChange }: { onDirtyChange?: (di
   useEffect(() => {
     if (!data) return;
     setRevision(data.revision);
-    setSlides(data.draft.length === 3 ? data.draft.map((slide) => ({ ...slide, description: slide.description ?? "", position: slide.position as 2 | 3 | 4 })) : fallback);
+    setSlides(data.draft.length === 3 ? data.draft.map((slide) => ({ ...slide, enabled: slide.enabled ?? true, description: slide.description ?? "", position: slide.position as 2 | 3 | 4 })) : fallback);
     setDirty(false);
   }, [data?.revision]);
   useEffect(() => onDirtyChange?.(dirty), [dirty, onDirtyChange]);
@@ -70,7 +70,26 @@ export function HeroSessionSlidesEditor({ onDirtyChange }: { onDirtyChange?: (di
             : sessions;
           return (
             <div key={slide.position} className="space-y-3 rounded-lg border border-border p-3">
-              <p className="text-xs font-semibold uppercase tracking-wide text-muted-foreground">Slide {slide.position}</p>
+              <div className="flex items-center justify-between gap-3">
+                <p className="text-xs font-semibold uppercase tracking-wide text-muted-foreground">Slide {slide.position}</p>
+                <label className="flex cursor-pointer items-center gap-2 text-xs font-medium">
+                  <input
+                    type="checkbox"
+                    checked={!slide.enabled}
+                    onChange={(event) => {
+                      setSlides((current) => current.map((item, i) => i === index ? { ...item, enabled: !event.target.checked } : item));
+                      setDirty(true);
+                    }}
+                    data-testid={`checkbox-block-hero-slide-${slide.position}`}
+                  />
+                  Bloquear
+                </label>
+              </div>
+              {!slide.enabled && (
+                <p className="rounded-md bg-muted px-2 py-1.5 text-xs text-muted-foreground" data-testid={`status-hero-slide-blocked-${slide.position}`}>
+                  No aparecerá en el slider ni tendrá barra de progreso.
+                </p>
+              )}
               <div className="space-y-1">
                 <Label htmlFor={`hero-session-${slide.position}`}>Sesión</Label>
                 <input

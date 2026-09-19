@@ -3,6 +3,7 @@ import { check, integer, jsonb, pgTable, timestamp } from "drizzle-orm/pg-core";
 
 export type HeroSessionSlide = {
   position: 2 | 3 | 4;
+  enabled: boolean;
   sessionId: string;
   title: string;
   description?: string;
