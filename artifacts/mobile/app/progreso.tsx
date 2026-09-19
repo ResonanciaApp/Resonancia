@@ -17,6 +17,7 @@ import { useSafeAreaInsets } from "react-native-safe-area-context";
 
 import { ProgressMirrorSections } from "@/components/ProgressMirrorSections";
 import { CinematicFadeSlide } from "@/components/CinematicFadeSlide";
+import { SessionBadgeGlass } from "@/components/SessionDurationBadge";
 import { useSceneTheme } from "@/context/SceneThemeContext";
 import { useColors } from "@/hooks/useColors";
 import { useStreak } from "@/hooks/useStreak";
@@ -95,13 +96,18 @@ export default function ProgresoScreen() {
               style={styles.heroAnimatedContent}
             >
               <View style={styles.heroCopyOffset}>
-                <Text
-                  style={[styles.streakIntroCount, { color: colors.foreground }]}
+                <View
+                  style={styles.streakCountCircle}
                   accessibilityLabel={`${completedWeekDays} ${completedWeekDays === 1 ? "día" : "días"}`}
                 >
-                  {completedWeekDays}
-                </Text>
-                <Text style={[styles.streakIntroUnit, { color: colors.foreground }]}>Días</Text>
+                  <View pointerEvents="none" style={StyleSheet.absoluteFill}>
+                    <SessionBadgeGlass showBlackTint={false} showWhiteTint />
+                  </View>
+                  <Text style={[styles.streakIntroCount, { color: colors.foreground }]}>
+                    {completedWeekDays}
+                  </Text>
+                  <Text style={[styles.streakIntroUnit, { color: colors.foreground }]}>Días</Text>
+                </View>
                 <Text style={styles.streakIntroDescription}>
                   Medita al menos 3 días a la semana y transforma tu vida
                 </Text>
@@ -174,7 +180,7 @@ const styles = StyleSheet.create({
   heroCopyOffset: {
     width: "100%",
     alignItems: "center",
-    transform: [{ translateY: 170 }],
+    transform: [{ translateY: 155 }],
   },
   content: {
     paddingHorizontal: 20,
@@ -183,6 +189,14 @@ const styles = StyleSheet.create({
   },
   sectionsOffset: {
     marginTop: 50,
+  },
+  streakCountCircle: {
+    width: 96,
+    height: 96,
+    borderRadius: 48,
+    overflow: "hidden",
+    alignItems: "center",
+    justifyContent: "center",
   },
   streakIntroCount: {
     fontFamily: "Manrope",
