@@ -7,7 +7,7 @@ import { StyleSheet, Text, View } from "react-native";
 import { useStreak } from "@/hooks/useStreak";
 
 const DAY_INITIALS = ["L", "M", "X", "J", "V", "S", "D"];
-const POSITIONED_DAY_GRADIENT = ["#C5A7F2", "#8260B5", "#62428F"] as const;
+const POSITIONED_DAY_GRADIENT = ["#D1B9F5", "#9B80C4", "#8168A5"] as const;
 
 export function StreakWeekRow() {
   const { weekFlags, todayIndex } = useStreak();
