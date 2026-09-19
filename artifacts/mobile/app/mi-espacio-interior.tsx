@@ -11,7 +11,6 @@ import { useUpdateMyReflection, useDeleteMyReflection, type Reflection, type Ref
 import { KeyboardAwareScrollView } from "react-native-keyboard-controller";
 import { useQueryClient } from "@tanstack/react-query";
 import { useAuth } from "@/context/AuthContext";
-import { useReducedMotion } from "react-native-reanimated";
 
 const MONTH_NAMES = [
   "Enero",
@@ -133,63 +132,6 @@ function CollapsibleReflectionMessage({
 }) {
   const [expanded, setExpanded] = useState(false);
   const [hasOverflow, setHasOverflow] = useState(false);
-  const opacity = useRef(new Animated.Value(1)).current;
-  const translateY = useRef(new Animated.Value(0)).current;
-  const reducedMotion = useReducedMotion();
-
-  const animateIn = (fromY: number) => {
-    opacity.setValue(0);
-    translateY.setValue(fromY);
-    Animated.parallel([
-      Animated.timing(opacity, {
-        toValue: 1,
-        duration: 180,
-        useNativeDriver: true,
-      }),
-      Animated.timing(translateY, {
-        toValue: 0,
-        duration: 180,
-        useNativeDriver: true,
-      }),
-    ]).start();
-  };
-
-  const toggleExpanded = () => {
-    if (reducedMotion) {
-      setExpanded((value) => !value);
-      return;
-    }
-
-    if (!expanded) {
-      setExpanded(true);
-      requestAnimationFrame(() => animateIn(-6));
-      return;
-    }
-
-    Animated.parallel([
-      Animated.timing(opacity, {
-        toValue: 0,
-        duration: 120,
-        useNativeDriver: true,
-      }),
-      Animated.timing(translateY, {
-        toValue: -6,
-        duration: 120,
-        useNativeDriver: true,
-      }),
-    ]).start(({ finished }) => {
-      if (!finished) return;
-      setExpanded(false);
-      requestAnimationFrame(() => animateIn(6));
-    });
-  };
-
-  useEffect(() => {
-    return () => {
-      opacity.stopAnimation();
-      translateY.stopAnimation();
-    };
-  }, [opacity, translateY]);
 
   return (
     <View style={styles.messageContainer}>
@@ -200,7 +142,7 @@ function CollapsibleReflectionMessage({
       >
         {message}
       </Text>
-      <Animated.View style={{ opacity, transform: [{ translateY }] }}>
+      <View>
         <Text
           style={[styles.cardMessage, { color }]}
           numberOfLines={expanded ? undefined : 5}
@@ -212,14 +154,14 @@ function CollapsibleReflectionMessage({
           <Pressable
             accessibilityRole="button"
             accessibilityLabel={expanded ? "Leer menos" : "Leer más"}
-            onPress={toggleExpanded}
+            onPress={() => setExpanded((value) => !value)}
             hitSlop={8}
             style={styles.readMoreButton}
           >
             <Text style={styles.readMoreText}>{expanded ? "Leer menos" : "Leer más"}</Text>
           </Pressable>
         )}
-      </Animated.View>
+      </View>
     </View>
   );
 }
@@ -879,8 +821,8 @@ const styles = StyleSheet.create({
   },
   readMoreText: {
     color: "#F9F9F9",
-    fontSize: 13,
-    fontWeight: "700",
+    fontSize: 12,
+    fontWeight: "500",
   },
   centerContainer: {
     flex: 1,
