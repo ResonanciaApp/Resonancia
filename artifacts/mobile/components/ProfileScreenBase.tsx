@@ -57,7 +57,6 @@ import { getExpansorById } from "@/data/expansores";
 import { uploadLocalFile } from "@/lib/upload";
 import { resolveAvatarUrl } from "@/lib/avatar";
 import { removeLocalAccountData } from "@/lib/accountData";
-import { getListenNowButtonColors } from "@/components/GoldGradient";
 import { useGeometrixCreations } from "@/hooks/useGeometrixCreations";
 import { InvitarSheet } from "@/components/InvitarSheet";
 import { SimplePersonalizeSheet } from "@/components/SimplePersonalizeSheet";
@@ -610,6 +609,8 @@ export function ProfileScreenBase({
   const [editDesc, setEditDesc] = useState(description);
   const [accountName, setAccountName] = useState(username);
   const [accountAction, setAccountAction] = useState<"delete" | null>(null);
+  const [accountPhotoPickerVisible, setAccountPhotoPickerVisible] = useState(false);
+  const [accountPhotoLibraryPending, setAccountPhotoLibraryPending] = useState(false);
   const accountToastOpacity = useRef(new Animated.Value(0)).current;
   const accountToastY = useRef(new Animated.Value(12)).current;
 
@@ -779,6 +780,15 @@ export function ProfileScreenBase({
     }
   };
 
+  useEffect(() => {
+    if (accountPhotoPickerVisible || !accountPhotoLibraryPending) return;
+    setAccountPhotoLibraryPending(false);
+    const frame = requestAnimationFrame(() => {
+      void pickPhoto();
+    });
+    return () => cancelAnimationFrame(frame);
+  }, [accountPhotoLibraryPending, accountPhotoPickerVisible]);
+
 
   // ── Fondo activo (degradado de perfil) ────────────────────────────────────
   // Fondo fijo (mismo degradado que Inicio). La personalización de fondo se
@@ -874,7 +884,7 @@ export function ProfileScreenBase({
                 accessibilityRole="button"
                 accessibilityLabel="Volver"
               >
-                <Feather name="chevron-left" size={27} color="#FBFBFB" />
+                <Feather name="chevron-left" size={28} color="#FBFBFB" />
               </Pressable>
               <Text style={styles.stickyTitleLibraryTab}>Mi cuenta</Text>
               <View style={styles.accountHeaderSpacer} />
@@ -891,7 +901,7 @@ export function ProfileScreenBase({
               showsVerticalScrollIndicator={false}
             >
               <Pressable
-                onPress={pickPhoto}
+                onPress={() => setAccountPhotoPickerVisible(true)}
                 style={({ pressed }) => [styles.accountAvatarButton, pressed && styles.accountPressed]}
                 accessibilityRole="button"
                 accessibilityLabel="Cambiar foto de perfil"
@@ -942,12 +952,6 @@ export function ProfileScreenBase({
                   { opacity: pressed || accountAction ? 0.78 : 1 },
                 ]}
               >
-                <LinearGradient
-                  colors={getListenNowButtonColors(true)}
-                  style={StyleSheet.absoluteFill}
-                  start={{ x: 0, y: 0.5 }}
-                  end={{ x: 1, y: 0.5 }}
-                />
                 <Text style={styles.accountSaveButtonText}>Guardar</Text>
               </Pressable>
 
@@ -977,6 +981,62 @@ export function ProfileScreenBase({
             <MaterialCommunityIcons name="ticket-outline" size={20} color="#A777D0" />
             <Text style={styles.accountSavedToastText}>¡Datos actualizados exitosamente!</Text>
           </Animated.View>
+          <Modal
+            visible={accountPhotoPickerVisible}
+            animationType="slide"
+            transparent
+            onRequestClose={() => setAccountPhotoPickerVisible(false)}
+          >
+            <Pressable
+              style={styles.accountCoverBackdrop}
+              onPress={() => setAccountPhotoPickerVisible(false)}
+            />
+            <View style={[styles.accountCoverSheet, { paddingBottom: bottomPad + 20 }]}>
+              <LinearGradient
+                colors={activeTheme.gradient as unknown as [string, string, ...string[]]}
+                style={StyleSheet.absoluteFill}
+                pointerEvents="none"
+              />
+              <View style={styles.accountCoverHandle} />
+              <View style={styles.accountCoverHeader}>
+                <Text style={styles.accountCoverTitle}>Portada</Text>
+                <Pressable
+                  onPress={() => setAccountPhotoPickerVisible(false)}
+                  hitSlop={8}
+                  style={styles.accountCoverCloseButton}
+                  accessibilityRole="button"
+                  accessibilityLabel="Cerrar selector de portada"
+                >
+                  <Feather name="x" size={22} color="#BE9650" />
+                </Pressable>
+              </View>
+              <View style={styles.accountCoverPreviewSlot}>
+                {photoUri ? (
+                  <Image source={{ uri: photoUri }} style={styles.accountCoverPreview} contentFit="cover" />
+                ) : (
+                  <View
+                    style={[
+                      styles.accountCoverPreview,
+                      styles.accountAvatarFallback,
+                      { backgroundColor: colors.secondary },
+                    ]}
+                  >
+                    <Feather name="user" size={34} color={colors.primary} />
+                  </View>
+                )}
+              </View>
+              <Pressable
+                style={styles.accountCoverUploadButton}
+                onPress={() => {
+                  setAccountPhotoLibraryPending(true);
+                  setAccountPhotoPickerVisible(false);
+                }}
+              >
+                <Feather name="image" size={18} color="#F9F9F9" />
+                <Text style={styles.accountCoverUploadText}>Elegir una foto</Text>
+              </Pressable>
+            </View>
+          </Modal>
         </View>
       </View>
     );
@@ -1865,15 +1925,18 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   accountBackButton: {
-    width: 36,
-    height: 36,
-    borderRadius: 18,
+    width: 43,
+    height: 43,
+    borderRadius: 21.5,
+    borderWidth: 1,
+    borderColor: "rgba(255,255,255,0.2)",
+    backgroundColor: "rgba(0,0,0,0.28)",
     alignItems: "center",
     justifyContent: "center",
   },
   accountHeaderSpacer: {
-    width: 36,
-    height: 36,
+    width: 43,
+    height: 43,
   },
   accountFormFlex: {
     flex: 1,
@@ -1913,6 +1976,88 @@ const styles = StyleSheet.create({
   accountPressed: {
     opacity: 0.75,
   },
+  accountCoverBackdrop: {
+    ...StyleSheet.absoluteFillObject,
+    backgroundColor: "rgba(0,0,0,0.55)",
+  },
+  accountCoverSheet: {
+    position: "absolute",
+    left: 0,
+    right: 0,
+    bottom: 0,
+    minHeight: "62%",
+    borderTopLeftRadius: 22,
+    borderTopRightRadius: 22,
+    paddingHorizontal: 20,
+    overflow: "hidden",
+  },
+  accountCoverHandle: {
+    alignSelf: "center",
+    width: 36,
+    height: 4,
+    borderRadius: 2,
+    backgroundColor: "rgba(255,255,255,0.18)",
+    marginTop: 10,
+    marginBottom: 4,
+  },
+  accountCoverHeader: {
+    minHeight: 43,
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "center",
+  },
+  accountCoverTitle: {
+    flex: 1,
+    fontFamily: "Manrope",
+    color: "#F9F9F9",
+    fontSize: 16,
+    fontWeight: "700",
+    textAlign: "center",
+  },
+  accountCoverCloseButton: {
+    position: "absolute",
+    right: 0,
+    width: 43,
+    height: 43,
+    borderRadius: 21.5,
+    borderWidth: 1,
+    borderColor: "rgba(255,255,255,0.2)",
+    backgroundColor: "rgba(0,0,0,0.28)",
+    alignItems: "center",
+    justifyContent: "center",
+  },
+  accountCoverPreviewSlot: {
+    flex: 1,
+    minHeight: 170,
+    alignItems: "center",
+    justifyContent: "center",
+  },
+  accountCoverPreview: {
+    width: 115.5,
+    height: 115.5,
+    borderRadius: 57.75,
+  },
+  accountCoverUploadButton: {
+    minWidth: 190,
+    minHeight: 42,
+    alignSelf: "center",
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "center",
+    gap: 9,
+    paddingHorizontal: 18,
+    paddingVertical: 10,
+    borderRadius: 21,
+    borderWidth: 1,
+    borderColor: "rgba(255,255,255,0.2)",
+    backgroundColor: "rgba(0,0,0,0.28)",
+  },
+  accountCoverUploadText: {
+    fontFamily: "Manrope",
+    color: "#F9F9F9",
+    fontSize: 14,
+    fontWeight: "600",
+  },
   accountField: {
     gap: 8,
   },
@@ -1923,7 +2068,7 @@ const styles = StyleSheet.create({
     color: "#AAAAC4",
   },
   accountFieldValueBox: {
-    backgroundColor: "rgba(181,211,255,0.057)",
+    backgroundColor: "rgba(0,0,0,0.28)",
     borderRadius: 10,
     paddingHorizontal: 14,
     paddingVertical: 12,
@@ -1939,13 +2084,14 @@ const styles = StyleSheet.create({
     minHeight: 42,
     paddingHorizontal: 14,
     paddingVertical: 8,
-    backgroundColor: "rgba(181,211,255,0.057)",
+    backgroundColor: "rgba(0,0,0,0.28)",
     borderRadius: 10,
     borderWidth: 0,
   },
   accountSaveButton: {
     height: 52,
-    borderRadius: 14,
+    borderRadius: 999,
+    backgroundColor: "#F9F9F9",
     alignItems: "center",
     justifyContent: "center",
     overflow: "hidden",
@@ -1955,7 +2101,7 @@ const styles = StyleSheet.create({
     fontFamily: "Manrope",
     fontSize: 16,
     fontWeight: "700",
-    color: "#FFFFFF",
+    color: "#060A0F",
   },
   accountDeleteButton: {
     alignSelf: "center",
