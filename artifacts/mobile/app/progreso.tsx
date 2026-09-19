@@ -1,4 +1,5 @@
 import { Feather } from "@expo/vector-icons";
+import { Image } from "expo-image";
 import { LinearGradient } from "expo-linear-gradient";
 import { router } from "expo-router";
 import React from "react";
@@ -9,6 +10,7 @@ import {
   StatusBar,
   StyleSheet,
   Text,
+  useWindowDimensions,
   View,
 } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
@@ -22,22 +24,27 @@ import { useStreak } from "@/hooks/useStreak";
 export default function ProgresoScreen() {
   const colors = useColors();
   const insets = useSafeAreaInsets();
+  const { width: viewportWidth } = useWindowDimensions();
   const { theme } = useSceneTheme();
   const { weekFlags } = useStreak();
   const completedWeekDays = weekFlags.filter(Boolean).length;
 
   const topPad = Platform.OS === "web" ? 67 : Math.max(insets.top, 40);
   const bottomPad = Platform.OS === "web" ? 34 : insets.bottom;
+  const bgColors = theme.gradient as unknown as [string, string, ...string[]];
+  const fadeColor = bgColors[0] || "#080910";
+  const heroHeight = Math.min(410, Math.max(340, viewportWidth * 0.98));
+  const fadeSolidStart = 1 - 55 / heroHeight;
 
   return (
     <LinearGradient
       style={styles.root}
-      colors={theme.gradient as unknown as [string, string, ...string[]]}
+      colors={bgColors}
       locations={theme.gradientLocations as unknown as [number, number, ...number[]] | undefined}
     >
       <StatusBar barStyle="light-content" translucent backgroundColor="transparent" />
 
-      <View style={[styles.header, { paddingTop: topPad }]}>
+      <View style={[styles.header, { paddingTop: topPad + 8 }]}>
         <Pressable
           onPress={() => router.back()}
           hitSlop={10}
@@ -53,30 +60,57 @@ export default function ProgresoScreen() {
 
       <ScrollView
         showsVerticalScrollIndicator={false}
-        contentContainerStyle={[
-          styles.content,
-          { paddingBottom: bottomPad + 32 },
-        ]}
+        contentContainerStyle={{ paddingBottom: bottomPad + 32 }}
+        bounces={false}
       >
-        <CinematicFadeSlide
-          replayKey="progress-intro"
-          delay={200}
-          duration={3000}
-        >
-          <View style={styles.streakIntro}>
-            <Text style={[styles.streakIntroCount, { color: colors.foreground }]}>
-              {completedWeekDays} {completedWeekDays === 1 ? "Día de racha" : "Días de racha"}
-            </Text>
-            <Text style={styles.streakIntroDescription}>
-              Medita al menos 3 días a la semana y transforma tu vida
-            </Text>
+        <View style={[styles.heroContainer, { width: viewportWidth, height: heroHeight }]}>
+          <CinematicFadeSlide
+            replayKey="progress-hero-background"
+            delay={0}
+            duration={3000}
+            translateYFrom={0}
+            style={StyleSheet.absoluteFill}
+          >
+            <Image
+              source={require("@/assets/images/flor-de-loto.png")}
+              style={styles.heroLotus}
+              contentFit="contain"
+            />
+            <LinearGradient
+              colors={[
+                withOpacity(fadeColor, 0),
+                withOpacity(fadeColor, 0.3),
+                fadeColor,
+                fadeColor,
+              ]}
+              locations={[0.3, 0.7, fadeSolidStart, 1]}
+              style={StyleSheet.absoluteFill}
+            />
+          </CinematicFadeSlide>
+          <View style={[styles.heroOverlay, { paddingTop: topPad + 80 }]}>
+            <CinematicFadeSlide
+              replayKey="progress-intro"
+              delay={200}
+              duration={3000}
+              style={styles.heroAnimatedContent}
+            >
+              <Text style={[styles.streakIntroCount, { color: colors.foreground }]}>
+                {completedWeekDays} {completedWeekDays === 1 ? "Día de racha" : "Días de racha"}
+              </Text>
+              <Text style={styles.streakIntroDescription}>
+                Medita al menos 3 días a la semana y transforma tu vida
+              </Text>
+            </CinematicFadeSlide>
           </View>
-        </CinematicFadeSlide>
-        <ProgressMirrorSections
-          animateEntrance
-          entranceReplayKey="progress-sections"
-          entranceBaseDelay={900}
-        />
+        </View>
+
+        <LinearGradient colors={bgColors} style={styles.content}>
+          <ProgressMirrorSections
+            animateEntrance
+            entranceReplayKey="progress-sections"
+            entranceBaseDelay={900}
+          />
+        </LinearGradient>
       </ScrollView>
     </LinearGradient>
   );
@@ -85,11 +119,16 @@ export default function ProgresoScreen() {
 const styles = StyleSheet.create({
   root: { flex: 1 },
   header: {
-    minHeight: 96,
+    position: "absolute",
+    top: 0,
+    left: 0,
+    right: 0,
+    zIndex: 10,
     paddingHorizontal: 20,
     paddingBottom: 15,
     flexDirection: "row",
     alignItems: "flex-end",
+    backgroundColor: "transparent",
   },
   backButton: {
     width: 42,
@@ -106,28 +145,52 @@ const styles = StyleSheet.create({
     textAlign: "center",
   },
   headerSpacer: { width: 42, height: 42 },
+  heroContainer: {
+    position: "relative",
+  },
+  heroLotus: {
+    ...StyleSheet.absoluteFillObject,
+    opacity: 0.28,
+    transform: [{ scale: 0.86 }],
+  },
+  heroOverlay: {
+    ...StyleSheet.absoluteFillObject,
+    alignItems: "center",
+    paddingHorizontal: 20,
+    transform: [{ translateY: -55 }],
+  },
+  heroAnimatedContent: {
+    width: "100%",
+    alignItems: "center",
+  },
   content: {
     paddingHorizontal: 20,
-    paddingTop: 16,
-  },
-  streakIntro: {
-    marginBottom: 16,
-    alignItems: "center",
+    marginTop: -55,
+    paddingTop: 12,
   },
   streakIntroCount: {
     fontFamily: "Manrope",
-    fontSize: 24,
-    lineHeight: 31,
-    fontWeight: "700",
+    fontSize: 32,
+    lineHeight: 40,
+    fontWeight: "800",
+    letterSpacing: -0.5,
     textAlign: "center",
+    textShadowColor: "rgba(0,0,0,0.5)",
+    textShadowOffset: { width: 0, height: 2 },
+    textShadowRadius: 6,
   },
   streakIntroDescription: {
-    color: "rgba(249,249,249,0.78)",
+    color: "rgba(255,255,255,0.9)",
     fontFamily: "Manrope",
-    fontSize: 14,
-    lineHeight: 20,
-    marginTop: 4,
+    fontSize: 16,
+    lineHeight: 22,
+    fontWeight: "500",
+    marginTop: 8,
     textAlign: "center",
+    maxWidth: "85%",
+    textShadowColor: "rgba(0,0,0,0.5)",
+    textShadowOffset: { width: 0, height: 1 },
+    textShadowRadius: 4,
   },
   streakSection: {
     borderRadius: 18,
@@ -220,3 +283,12 @@ const styles = StyleSheet.create({
     backgroundColor: "rgba(255,255,255,0.07)",
   },
 });
+
+function withOpacity(color: string, opacity: number): string {
+  const match = color.match(/^#([0-9a-f]{6})$/i);
+  if (!match) return color;
+  const alpha = Math.round(Math.max(0, Math.min(1, opacity)) * 255)
+    .toString(16)
+    .padStart(2, "0");
+  return `#${match[1]}${alpha}`;
+}
