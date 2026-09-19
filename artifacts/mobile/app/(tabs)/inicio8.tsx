@@ -3620,6 +3620,8 @@ const styles = StyleSheet.create({
     minWidth: 58,
     paddingHorizontal: 10,
     borderRadius: 20,
+    borderWidth: 2,
+    borderColor: "rgba(255,255,255,0.25)",
     flexDirection: "row",
     gap: 6,
     alignItems: "center",
