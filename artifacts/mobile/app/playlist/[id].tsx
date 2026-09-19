@@ -726,7 +726,7 @@ const styles = StyleSheet.create({
     paddingHorizontal: 12,
     paddingBottom: 8,
   },
-  iconBtn: { width: 40, height: 40, alignItems: "center", justifyContent: "center" },
+  iconBtn: { width: 43, height: 43, alignItems: "center", justifyContent: "center" },
   playlistBackButton: {
     width: 43,
     height: 43,
@@ -739,7 +739,7 @@ const styles = StyleSheet.create({
     transform: [{ translateX: 8 }],
   },
   moreMenuBtn: {
-    borderRadius: 20,
+    borderRadius: 21.5,
     backgroundColor: "rgba(0,0,0,0.28)",
     borderWidth: 1,
     borderColor: "rgba(255,255,255,0.2)",
@@ -1067,7 +1067,7 @@ function CoverPickerModal({
               { opacity: pressed ? 0.7 : 1 },
             ]}
           >
-            <Feather name="x" size={18} color={GOLD} />
+            <Feather name="x" size={22} color={GOLD} />
           </Pressable>
         </View>
 
@@ -1165,7 +1165,7 @@ const modalStyles = StyleSheet.create({
     marginBottom: 0,
   },
   coverHeader: {
-    minHeight: 36,
+    minHeight: 43,
     flexDirection: "row",
     alignItems: "center",
     justifyContent: "center",
@@ -1173,9 +1173,9 @@ const modalStyles = StyleSheet.create({
   coverCloseButton: {
     position: "absolute",
     right: 0,
-    width: 36,
-    height: 36,
-    borderRadius: 18,
+    width: 43,
+    height: 43,
+    borderRadius: 21.5,
     alignItems: "center",
     justifyContent: "center",
     backgroundColor: "rgba(0,0,0,0.28)",
