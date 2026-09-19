@@ -49,9 +49,11 @@ export function SessionDurationBadge({
 export function SessionBadgeGlass({
   intensity,
   showBlackTint = true,
+  showWhiteTint = false,
 }: {
   intensity?: number;
   showBlackTint?: boolean;
+  showWhiteTint?: boolean;
 } = {}) {
   return (
     <>
@@ -62,6 +64,7 @@ export function SessionBadgeGlass({
         style={StyleSheet.absoluteFill}
       />
       {showBlackTint && <View style={[StyleSheet.absoluteFill, styles.blackTint]} />}
+      {showWhiteTint && <View style={[StyleSheet.absoluteFill, styles.whiteTint]} />}
     </>
   );
 }

@@ -629,7 +629,11 @@ export const SessionCarousel = React.memo(function SessionCarousel({
                   duration={450}
                   style={[
                     styles.previewActiveCard,
-                    { borderRadius: ambientalCardBorderRadius ?? 18 },
+                    {
+                      borderRadius: isAmbiental
+                        ? ambientalCardBorderRadius ?? CANONICAL_AMBIENTAL_BORDER_RADIUS
+                        : cardBorderRadius ?? 18,
+                    },
                   ]}
                 />
               )}
@@ -770,7 +774,10 @@ export const SessionCarousel = React.memo(function SessionCarousel({
                               },
                             ]}
                           >
-                            <SessionBadgeGlass />
+                            <SessionBadgeGlass
+                              showBlackTint={false}
+                              showWhiteTint
+                            />
                           </View>
                           <MaterialCommunityIcons
                             name={isPreviewActive && soundPreview.isPlaying ? "pause" : "play"}
