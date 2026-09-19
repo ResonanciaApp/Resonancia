@@ -438,7 +438,7 @@ export function ProfileScreenBase({
     let focusTimer: ReturnType<typeof setTimeout> | null = null;
     const interactionTask = InteractionManager.runAfterInteractions(() => {
       profileScrollRef.current?.scrollTo({
-        y: Math.max(0, innerSpaceLayoutY - 121),
+        y: Math.max(0, innerSpaceLayoutY - 131),
         animated: true,
       });
       focusTimer = setTimeout(() => {
