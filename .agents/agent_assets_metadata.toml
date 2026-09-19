@@ -2909,3 +2909,17 @@ mtime_ms = 1789831094125
 storage_uri = "gcs://replit-rams-assets-worf/rams/assets/repl:5427b858-8852-4aed-954b-cd80d9fa4b6b/b11516fe-fd93-4789-89f1-0788c3cdce91/531f0ce5-7b8f-4df8-aa15-8c502e502448"
 storage_version_token = "1789831149489205"
 content_type = "image/jpeg"
+
+[[outputs]]
+id = "4hLmE5rN9qn2p6mMnfVkT"
+uri = "file://attached_assets/generated_images/progreso-lotus-cosmic.jpg"
+type = "image"
+title = "Flor de loto cósmica"
+description = "Imagen generada para el hero de Tu progreso e integrada en la app."
+logical_id = "c225bbe9-b6bf-4765-9caa-b9dc0e50a1ef"
+content_hash = "sha256:91362a12b48019e0979ed4a5283b57e26f88972b81c34b5e1910e52e58409960"
+size = 136521
+mtime_ms = 1789837298413
+storage_uri = "gcs://replit-rams-assets-worf/rams/assets/repl:5427b858-8852-4aed-954b-cd80d9fa4b6b/c225bbe9-b6bf-4765-9caa-b9dc0e50a1ef/f23bbf44-8c8c-446d-bdc9-fbc40901e161"
+storage_version_token = "1789837355075396"
+content_type = "image/jpeg"

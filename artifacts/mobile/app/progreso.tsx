@@ -72,9 +72,9 @@ export default function ProgresoScreen() {
             style={StyleSheet.absoluteFill}
           >
             <Image
-              source={require("@/assets/images/flor-de-loto.png")}
+              source={require("@/assets/images/progreso-lotus-cosmic.jpg")}
               style={styles.heroLotus}
-              contentFit="contain"
+              contentFit="cover"
             />
             <LinearGradient
               colors={[
@@ -94,12 +94,14 @@ export default function ProgresoScreen() {
               duration={3000}
               style={styles.heroAnimatedContent}
             >
-              <Text style={[styles.streakIntroCount, { color: colors.foreground }]}>
-                {completedWeekDays} {completedWeekDays === 1 ? "Día de racha" : "Días de racha"}
-              </Text>
-              <Text style={styles.streakIntroDescription}>
-                Medita al menos 3 días a la semana y transforma tu vida
-              </Text>
+              <View style={styles.heroCopyOffset}>
+                <Text style={[styles.streakIntroCount, { color: colors.foreground }]}>
+                  {completedWeekDays} {completedWeekDays === 1 ? "Día de racha" : "Días de racha"}
+                </Text>
+                <Text style={styles.streakIntroDescription}>
+                  Medita al menos 3 días a la semana y transforma tu vida
+                </Text>
+              </View>
             </CinematicFadeSlide>
           </View>
         </View>
@@ -150,8 +152,6 @@ const styles = StyleSheet.create({
   },
   heroLotus: {
     ...StyleSheet.absoluteFillObject,
-    opacity: 0.28,
-    transform: [{ scale: 0.86 }],
   },
   heroOverlay: {
     ...StyleSheet.absoluteFillObject,
@@ -162,6 +162,11 @@ const styles = StyleSheet.create({
   heroAnimatedContent: {
     width: "100%",
     alignItems: "center",
+  },
+  heroCopyOffset: {
+    width: "100%",
+    alignItems: "center",
+    transform: [{ translateY: 65 }],
   },
   content: {
     paddingHorizontal: 20,
