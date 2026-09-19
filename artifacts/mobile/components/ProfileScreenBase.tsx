@@ -435,7 +435,7 @@ export function ProfileScreenBase({
 
     handledComposeReflectionRef.current = composeReflectionToken;
     profileScrollRef.current?.scrollTo({
-      y: Math.max(0, innerSpaceLayoutY - 16),
+      y: Math.max(0, innerSpaceLayoutY - 96),
       animated: true,
     });
     const focusTimer = setTimeout(() => {
@@ -1329,7 +1329,7 @@ export function ProfileScreenBase({
         onScroll={handleHeaderScroll}
         scrollEventThrottle={16}
         keyboardShouldPersistTaps="handled"
-        bottomOffset={60}
+        bottomOffset={composeReflectionToken ? 15 : 60}
       >
         <View style={styles.dedicatedTitleRow}>
           <View style={styles.dedicatedTitleLeft}>
@@ -1428,7 +1428,10 @@ export function ProfileScreenBase({
               />
             </View>
 
-            <View onLayout={(event) => setInnerSpaceLayoutY(event.nativeEvent.layout.y)}>
+            <View
+              style={styles.innerSpaceSection}
+              onLayout={(event) => setInnerSpaceLayoutY(event.nativeEvent.layout.y)}
+            >
               <InnerSpaceCard focusRequest={innerSpaceFocusRequest} />
             </View>
 
@@ -2540,6 +2543,9 @@ const styles = StyleSheet.create({
   // Progreso semanal compacto
   profileProgressSection: {
     marginBottom: 0,
+  },
+  innerSpaceSection: {
+    marginTop: 12,
   },
   profileMeditationPlaylist: {
     marginHorizontal: -16,
