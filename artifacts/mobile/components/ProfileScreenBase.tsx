@@ -73,6 +73,7 @@ import { ProfileSettingsSections } from "@/components/ProfileSettingsSections";
 import { useCatalog } from "@/context/CatalogContext";
 import { useFoldersPlaylists } from "@/context/FoldersPlaylistsContext";
 import { usePlayer } from "@/context/PlayerContext";
+import { useStreak } from "@/hooks/useStreak";
 import { useCoverPresetCatalog } from "@/lib/cover-preset-catalog";
 import {
   computePlaylistCompletion,
@@ -361,6 +362,7 @@ export function ProfileScreenBase({
   const expansorData = expansorId ? getExpansorById(expansorId) : undefined;
   const { activeMeditationPlaylist } = useFoldersPlaylists();
   const { statEvents } = usePlayer();
+  const { currentStreak } = useStreak();
   const { editorialPlaylists, version: catalogVersion } = useCatalog();
   const continueMeditationPlaylist = useMemo(() => {
     const completedSessionIds = new Set(
@@ -1219,6 +1221,7 @@ export function ProfileScreenBase({
               accessibilityLabel="Ir a Inicio"
             >
               <View style={styles.profileLotusPill}>
+                <Text style={styles.profileLotusCount}>{currentStreak}</Text>
                 <MaterialCommunityIcons name="spa" size={20} color="#FFFFFF" />
               </View>
             </Pressable>
@@ -1330,6 +1333,7 @@ export function ProfileScreenBase({
             accessibilityLabel="Ir a Inicio"
           >
             <View style={styles.profileLotusPill}>
+              <Text style={styles.profileLotusCount}>{currentStreak}</Text>
               <MaterialCommunityIcons name="spa" size={20} color="#FFFFFF" />
             </View>
           </Pressable>
@@ -1986,12 +1990,21 @@ const styles = StyleSheet.create({
   },
   profileLotusPill: {
     height: 36,
-    minWidth: 40,
+    minWidth: 58,
     paddingHorizontal: 10,
     borderRadius: 20,
+    flexDirection: "row",
+    gap: 6,
     alignItems: "center",
     justifyContent: "center",
     backgroundColor: "rgba(255,255,255,0.08)",
+  },
+  profileLotusCount: {
+    color: "#FFFFFF",
+    fontFamily: "Manrope",
+    fontSize: 16,
+    fontWeight: "800",
+    lineHeight: 20,
   },
   profileSettingsSections: {
     marginTop: 12,

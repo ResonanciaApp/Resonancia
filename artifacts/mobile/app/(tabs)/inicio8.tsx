@@ -4,6 +4,7 @@ import { useDayRollover } from "@/hooks/useDayRollover";
 import { useStreak } from "@/hooks/useStreak";
 import { StreakWeekRow } from "@/components/StreakWeekRow";
 import { useStreakCelebration } from "@/context/StreakCelebrationContext";
+import { useNotifications } from "@/context/NotificationsContext";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { LinearGradient } from "expo-linear-gradient";
 import { BlurView } from "expo-blur";
@@ -1641,6 +1642,7 @@ const Inicio2HeroStatic = React.memo(function Inicio2HeroStatic({
   scrollY?: SharedValue<number>;
 }) {
   const router = useRouter();
+  const { unreadCount } = useNotifications();
   const { user: clerkUser } = useUser();
   const { username, photoUri } = useUserProfile();
   const displayName =
@@ -1809,7 +1811,7 @@ const Inicio2HeroStatic = React.memo(function Inicio2HeroStatic({
           ]}
         >
           <Pressable
-            onPress={onOpenProfile}
+            onPress={isInicio3 ? () => router.push("/notificaciones" as never) : onOpenProfile}
             onPressIn={() =>
               Animated.spring(giftScale, {
                 toValue: 0.84,
@@ -1829,11 +1831,28 @@ const Inicio2HeroStatic = React.memo(function Inicio2HeroStatic({
             hitSlop={12}
             style={styles.inicio2HeroLotusButton}
             accessibilityRole="button"
-            accessibilityLabel="Abrir Tu progreso"
+            accessibilityLabel={isInicio3 ? "Abrir notificaciones" : "Abrir Tu progreso"}
             testID="inicio2-open-progress-control"
           >
             <Animated.View style={{ transform: [{ scale: giftScale }] }}>
-              <Inicio2LotusStreak lightBackground={isInicio3} />
+              {isInicio3 ? (
+                <View style={styles.inicio3NotificationsButton}>
+                  {Platform.OS === "ios" ? (
+                    <SymbolView name="bell.fill" tintColor="#FFFFFF" size={21} />
+                  ) : (
+                    <Feather name="bell" size={21} color="#FFFFFF" />
+                  )}
+                  {unreadCount > 0 ? (
+                    <View style={styles.inicio3NotificationsBadge}>
+                      <Text style={styles.inicio3NotificationsBadgeText}>
+                        {unreadCount > 99 ? "99+" : unreadCount}
+                      </Text>
+                    </View>
+                  ) : null}
+                </View>
+              ) : (
+                <Inicio2LotusStreak />
+              )}
             </Animated.View>
           </Pressable>
         </View>
@@ -4080,6 +4099,37 @@ const styles = StyleSheet.create({
     alignItems: "center",
     justifyContent: "center",
     backgroundColor: "rgba(0,0,0,0.34)",
+  },
+  inicio3NotificationsButton: {
+    width: 43,
+    height: 43,
+    borderRadius: 21.5,
+    borderWidth: 1,
+    borderColor: "rgba(255,255,255,0.2)",
+    alignItems: "center",
+    justifyContent: "center",
+    backgroundColor: "rgba(0,0,0,0.34)",
+  },
+  inicio3NotificationsBadge: {
+    position: "absolute",
+    top: -4,
+    right: -5,
+    minWidth: 18,
+    height: 18,
+    borderRadius: 9,
+    paddingHorizontal: 4,
+    alignItems: "center",
+    justifyContent: "center",
+    backgroundColor: "#BE9650",
+    borderWidth: 1.5,
+    borderColor: "#060A0F",
+  },
+  inicio3NotificationsBadgeText: {
+    color: "#060A0F",
+    fontFamily: "Manrope",
+    fontSize: 10,
+    fontWeight: "800",
+    lineHeight: 12,
   },
   universeBtnIcon: {
     width: 28,
