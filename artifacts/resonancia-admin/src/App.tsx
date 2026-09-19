@@ -169,23 +169,38 @@ function AccessDenied() {
 
 const MODERATOR_NAV_HREFS = ["/sesiones"];
 
-const NAV = [
-  { href: "/", label: "Panel", icon: LayoutDashboard },
-  { href: "/usuarios", label: "Usuarios", icon: Users },
-  { href: "/postulaciones", label: "Postulaciones", icon: UserPlus },
-  { href: "/categorias", label: "Categorías", icon: FolderTree },
-  { href: "/playlists", label: "Playlists", icon: Library },
-  { href: "/sesiones", label: "Sesiones", icon: AudioLines },
-  { href: "/sesiones/nueva", label: "Nueva sesión", icon: PlusCircle },
-  { href: "/sonidos", label: "Sonidos Mixer", icon: Music2 },
-  { href: "/geometrix", label: "Geometrix", icon: Hexagon },
-  { href: "/emocion", label: "Emoción", icon: Sparkles },
-  { href: "/inspiracion-diaria", label: "Sabiduría diaria", icon: Sun },
-  { href: "/guiadores-vivo", label: "Sesiones en vivo", icon: Radio },
-  { href: "/videos", label: "Videos", icon: Film },
-  { href: "/explorar", label: "Explorar — orden", icon: LayoutList },
-  { href: "/dormir-orden", label: "Dormir — orden", icon: ListOrdered },
-  { href: "/resonadores", label: "Resonadores", icon: UserRound },
+const NAV_SECTIONS = [
+  {
+    label: "USUARIOS",
+    items: [
+      { href: "/", label: "Panel", icon: LayoutDashboard },
+      { href: "/usuarios", label: "Usuarios", icon: Users },
+      { href: "/postulaciones", label: "Postulaciones", icon: UserPlus },
+      { href: "/resonadores", label: "Resonadores", icon: UserRound },
+    ],
+  },
+  {
+    label: "SESIONES",
+    items: [
+      { href: "/categorias", label: "Categorías", icon: FolderTree },
+      { href: "/sesiones", label: "Sesiones", icon: AudioLines },
+      { href: "/sesiones/nueva", label: "Nueva sesión", icon: PlusCircle },
+      { href: "/sonidos", label: "Sonidos Mezclador", icon: Music2 },
+      { href: "/playlists", label: "Playlists", icon: Library },
+      { href: "/guiadores-vivo", label: "Sesiones en vivo", icon: Radio },
+    ],
+  },
+  {
+    label: "CONTENIDO",
+    items: [
+      { href: "/inspiracion-diaria", label: "Hero Inicio", icon: Sun },
+      { href: "/emocion", label: "Registro de ánimo", icon: Sparkles },
+      { href: "/videos", label: "Videos", icon: Film },
+      { href: "/explorar", label: "Otras temáticas", icon: LayoutList },
+      { href: "/dormir-orden", label: "Dormir - Orden", icon: ListOrdered },
+      { href: "/geometrix", label: "Geometrix", icon: Hexagon },
+    ],
+  },
 ];
 
 function isActive(location: string, href: string) {
@@ -208,9 +223,14 @@ function DashboardShell({
   const { user } = useUser();
   const { signOut } = useClerk();
   const [location] = useLocation();
-  const navItems = isModerator
-    ? NAV.filter((item) => MODERATOR_NAV_HREFS.includes(item.href))
-    : NAV;
+  const navSections = NAV_SECTIONS
+    .map((section) => ({
+      ...section,
+      items: isModerator
+        ? section.items.filter((item) => MODERATOR_NAV_HREFS.includes(item.href))
+        : section.items,
+    }))
+    .filter((section) => section.items.length > 0);
 
   return (
     <div className="flex min-h-screen bg-background text-foreground">
@@ -221,20 +241,32 @@ function DashboardShell({
             RESONANCIA
           </span>
         </div>
-        <nav className="flex-1 px-4 space-y-1 mt-2">
-          {navItems.map(({ href, label, icon: Icon }) => (
-            <Link
-              key={href}
-              href={href}
-              className={`flex items-center gap-3 px-4 py-2 rounded-md transition-colors ${
-                isActive(location, href)
-                  ? "bg-primary/10 text-primary font-medium"
-                  : "text-muted-foreground hover:bg-secondary hover:text-foreground"
-              }`}
+        <nav className="flex-1 overflow-y-auto px-4 pb-4 mt-2">
+          {navSections.map((section, sectionIndex) => (
+            <div
+              key={section.label}
+              className={sectionIndex === 0 ? undefined : "mt-5"}
             >
-              <Icon className="w-4 h-4" />
-              {label}
-            </Link>
+              <p className="px-4 pb-2 text-[10px] font-semibold tracking-[0.16em] text-muted-foreground/65">
+                {section.label}
+              </p>
+              <div className="space-y-1">
+                {section.items.map(({ href, label, icon: Icon }) => (
+                  <Link
+                    key={href}
+                    href={href}
+                    className={`flex items-center gap-3 px-4 py-2 rounded-md transition-colors ${
+                      isActive(location, href)
+                        ? "bg-primary/10 text-primary font-medium"
+                        : "text-muted-foreground hover:bg-secondary hover:text-foreground"
+                    }`}
+                  >
+                    <Icon className="w-4 h-4" />
+                    {label}
+                  </Link>
+                ))}
+              </div>
+            </div>
           ))}
         </nav>
         <div className="p-4 border-t border-border">
