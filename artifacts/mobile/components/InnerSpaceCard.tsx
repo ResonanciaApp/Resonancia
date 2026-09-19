@@ -99,7 +99,7 @@ export function InnerSpaceCard({
       <View style={styles.header}>
         <Text style={[styles.title, { color: colors.foreground }]}>Mi viaje interior</Text>
         <Text style={[styles.description, { color: colors.mutedForeground }]}>
-          Registra una reflexión e inmortalízala en tu muro
+          Registra una reflexión y asóciala a un tema
         </Text>
       </View>
 
@@ -204,8 +204,8 @@ const styles = StyleSheet.create({
     textAlign: "left",
   },
   description: {
-    fontSize: 13,
-    lineHeight: 18,
+    fontSize: 12,
+    lineHeight: 16,
     marginTop: 6,
   },
   categoriesScroll: {
