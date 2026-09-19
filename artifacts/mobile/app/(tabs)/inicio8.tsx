@@ -98,6 +98,7 @@ import { useRacha } from "@/context/RachaContext";
 import { useIntencionDiaria } from "@/context/IntencionDiariaContext";
 import { useSelectedScene } from "@/context/SelectedSceneContext";
 import { useTabBarVisibility } from "@/context/TabBarVisibilityContext";
+import { useCurrentUserAvatarSource } from "@/lib/profile-avatar";
 import { SceneAnimationInline } from "@/components/SceneAnimationInline";
 import { EscenasAnimSheet } from "@/components/EscenasAnimSheet";
 import { SESSIONS, getSessionById, type Session } from "@/data/sessions";
@@ -484,7 +485,8 @@ function Inicio2HeroSlider({
   onOpenProfile: () => void;
 }) {
   const { user: clerkUser } = useUser();
-  const { username, photoUri } = useUserProfile();
+  const { username } = useUserProfile();
+  const avatarSource = useCurrentUserAvatarSource();
   const [activeIndex, setActiveIndex] = useState(0);
   const activeIndexSV = useSharedValue(0);
   const activeIndexRef = useRef(0);
@@ -791,7 +793,6 @@ function Inicio2HeroSlider({
     clerkUser?.fullName ||
     clerkUser?.username ||
     "Explorador";
-  const displayPhoto = photoUri || clerkUser?.imageUrl || null;
   const initial = displayName.charAt(0).toUpperCase();
 
   return (
@@ -855,9 +856,9 @@ function Inicio2HeroSlider({
             accessibilityLabel="Abrir mi perfil"
             testID="inicio2-open-profile"
           >
-            {displayPhoto ? (
+            {avatarSource ? (
               <ExpoImage
-                source={{ uri: displayPhoto }}
+                source={avatarSource}
                 style={styles.inicio2HeroAvatar}
                 contentFit="cover"
               />

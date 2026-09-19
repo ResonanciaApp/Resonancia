@@ -1,6 +1,10 @@
 import { Image } from "expo-image";
 import { StyleSheet, Text, View } from "react-native";
+import { useUser } from "@clerk/expo";
+import { getGetMeQueryKey, useGetMe } from "@workspace/api-client-react";
 
+import { useAuth } from "@/context/AuthContext";
+import { useUserProfile } from "@/context/UserProfileContext";
 import { useCoverPresetCatalog } from "@/lib/cover-preset-catalog";
 import {
   resolveProfileAvatarSource,
@@ -12,6 +16,32 @@ export type ProfileAvatarSource = number | { uri: string };
 export function useProfileAvatarSource(profile: ProfileAvatarRecord): ProfileAvatarSource | undefined {
   const catalog = useCoverPresetCatalog("profile");
   return resolveProfileAvatarSource(profile, catalog);
+}
+
+export function useCurrentUserAvatarSource(): ProfileAvatarSource | undefined {
+  const { isSignedIn } = useAuth();
+  const { user } = useUser();
+  const { photoUri, avatarPresetId } = useUserProfile();
+  const { data: me } = useGetMe({
+    query: {
+      queryKey: getGetMeQueryKey(),
+      enabled: isSignedIn,
+      staleTime: 60_000,
+    },
+  });
+
+  const profile: ProfileAvatarRecord = avatarPresetId
+    ? { avatarPresetId, avatarUrl: null }
+    : photoUri
+      ? { avatarPresetId: null, avatarUrl: photoUri }
+      : me?.avatarPresetId
+        ? { avatarPresetId: me.avatarPresetId, avatarUrl: null }
+        : {
+            avatarPresetId: null,
+            avatarUrl: me?.avatarUrl ?? user?.imageUrl ?? null,
+          };
+
+  return useProfileAvatarSource(profile);
 }
 
 export function ProfileAvatar({

@@ -25,6 +25,7 @@ import { useUserProfile } from "@/context/UserProfileContext";
 import { useSceneTheme } from "@/context/SceneThemeContext";
 import { useGeometrixPanel } from "@/context/GeometrixPanelContext";
 import { useMixerPanel } from "@/context/MixerPanelContext";
+import { useCurrentUserAvatarSource } from "@/lib/profile-avatar";
 
 const ND = Platform.OS !== "web";
 
@@ -70,7 +71,8 @@ export function DrawerMenu() {
   const insets = useSafeAreaInsets();
   const { isRegistered, isSignedIn } = useAuth();
   const { user: clerkUser } = useUser();
-  const { username, lastName, photoUri } = useUserProfile();
+  const { username, lastName } = useUserProfile();
+  const avatarSource = useCurrentUserAvatarSource();
   const { theme: activeTheme } = useSceneTheme();
   const { openGeometrix } = useGeometrixPanel();
   const { openMixer } = useMixerPanel();
@@ -82,7 +84,6 @@ export function DrawerMenu() {
     clerkUser?.username ||
     clerkUser?.primaryEmailAddress?.emailAddress ||
     null;
-  const clerkPhoto = clerkUser?.imageUrl || null;
 
   const topPad = Platform.OS === "web" ? 67 : insets.top;
   const bottomPad = Platform.OS === "web" ? 34 : insets.bottom;
@@ -144,7 +145,6 @@ export function DrawerMenu() {
   const localFullName = [username, lastName].filter(Boolean).join(" ");
   const hasLocalName = !!localFullName && localFullName !== "Explorador de Sonido";
   const fullName = hasLocalName ? localFullName : (clerkName || "");
-  const displayPhoto = photoUri || clerkPhoto;
   const initial = (fullName || clerkName || "").charAt(0).toUpperCase() || null;
 
   const navigate = (route: string) => {
@@ -219,9 +219,9 @@ export function DrawerMenu() {
           <View style={[styles.profileHeader, { paddingTop: topPad + 16 }]}>
             {/* Fila avatar + nombre + cerrar */}
             <View style={styles.profileSection}>
-              {displayPhoto ? (
+              {avatarSource ? (
                 <Image
-                  source={{ uri: displayPhoto }}
+                  source={avatarSource}
                   style={[styles.profilePhoto, styles.inicio3ProfilePhoto]}
                   contentFit="cover"
                 />
