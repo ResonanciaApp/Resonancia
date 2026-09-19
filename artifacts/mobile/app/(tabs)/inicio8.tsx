@@ -1559,6 +1559,7 @@ function Inicio3HeroPager({
                           inline
                           showIcon
                           iconSize={14}
+                          textStyle={styles.inicio3HeroCategoryPillText}
                         />
                       </View>
                       <Text style={[styles.inicio2HeroTitle, styles.inicio2HeroStaticTitle, styles.inicio3HeroTitle]}>
@@ -3754,7 +3755,11 @@ const styles = StyleSheet.create({
   },
   inicio3HeroSlideOverlay: {
     ...StyleSheet.absoluteFillObject,
-    backgroundColor: "rgba(0,0,0,0.2)",
+    backgroundColor: "rgba(0,0,0,0.3)",
+  },
+  inicio3HeroCategoryPillText: {
+    fontSize: 13,
+    fontWeight: "900",
   },
   inicio2HeroCategory: {
     marginBottom: 10,
