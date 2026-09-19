@@ -1318,6 +1318,8 @@ export interface HeroSessionSlide {
   title: string;
   /** @maxLength 300 */
   description?: string;
+  /** @maxLength 80 */
+  pillLabel?: string;
   actionLabel: string;
   categoryId?: string;
   categoryLabel: string;
@@ -1354,6 +1356,8 @@ export interface HeroSessionSlideInput {
   title: string;
   /** @maxLength 300 */
   description?: string;
+  /** @maxLength 80 */
+  pillLabel?: string;
   /**
      * @minLength 1
      * @maxLength 60

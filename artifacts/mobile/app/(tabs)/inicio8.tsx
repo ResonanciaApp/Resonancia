@@ -1372,6 +1372,7 @@ type Inicio3PagerSlide = {
   actionLabel?: string;
   categoryId?: string;
   categoryLabel?: string;
+  pillLabel?: string;
   sessionId?: string;
   skipDetail?: boolean;
   skipMiniPlayer?: boolean;
@@ -1447,6 +1448,7 @@ function Inicio3HeroPager({
         actionLabel: configured.actionLabel,
         categoryId: configured.categoryId,
         categoryLabel: configured.categoryLabel,
+        pillLabel: configured.pillLabel,
         sessionId: configured.sessionId,
         skipDetail: configured.skipDetail,
         skipMiniPlayer: configured.skipMiniPlayer,
@@ -1575,9 +1577,10 @@ function Inicio3HeroPager({
                     <Inicio3HeroTitle title={effectiveHero.title} />
                   ) : (
                     <>
-                      <View style={styles.inicio2HeroCategory}>
+                      {item.pillLabel ? <View style={styles.inicio2HeroCategory}>
                         <SessionCategoryPill
                           categoryId={item.categoryId ?? ""}
+                          label={item.pillLabel}
                           inline
                           showIcon
                           whiteGlass
@@ -1585,7 +1588,7 @@ function Inicio3HeroPager({
                           style={styles.inicio3HeroCategoryPill}
                           textStyle={styles.inicio3HeroCategoryPillText}
                         />
-                      </View>
+                      </View> : null}
                       <Text style={[styles.inicio2HeroTitle, styles.inicio2HeroStaticTitle, styles.inicio3HeroTitle]}>
                         {item.title}
                       </Text>
@@ -3822,6 +3825,7 @@ const styles = StyleSheet.create({
   inicio3HeroCategoryPill: {
     minHeight: 27,
     paddingLeft: 13,
+    transform: [{ translateY: -12 }],
   },
   inicio2HeroCategory: {
     marginBottom: 10,

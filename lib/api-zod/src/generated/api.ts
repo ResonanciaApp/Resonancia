@@ -77,6 +77,8 @@ export const GetEffectiveHeroResponse = zod.object({
 export const getHeroSessionSlidesResponseSlidesItemEnabledDefault = true;
 export const getHeroSessionSlidesResponseSlidesItemDescriptionMax = 300;
 
+export const getHeroSessionSlidesResponseSlidesItemPillLabelMax = 80;
+
 
 
 export const GetHeroSessionSlidesResponse = zod.object({
@@ -87,6 +89,7 @@ export const GetHeroSessionSlidesResponse = zod.object({
   "sessionId": zod.string(),
   "title": zod.string(),
   "description": zod.string().max(getHeroSessionSlidesResponseSlidesItemDescriptionMax).optional(),
+  "pillLabel": zod.string().max(getHeroSessionSlidesResponseSlidesItemPillLabelMax).optional(),
   "actionLabel": zod.string(),
   "categoryId": zod.string().optional(),
   "categoryLabel": zod.string(),
@@ -103,10 +106,14 @@ export const getAdminHeroSessionSlidesResponseDraftItemTitleMax = 200;
 
 export const getAdminHeroSessionSlidesResponseDraftItemDescriptionMax = 300;
 
+export const getAdminHeroSessionSlidesResponseDraftItemPillLabelMax = 80;
+
 export const getAdminHeroSessionSlidesResponseDraftItemActionLabelMax = 60;
 
 export const getAdminHeroSessionSlidesResponsePublishedOneItemEnabledDefault = true;
 export const getAdminHeroSessionSlidesResponsePublishedOneItemDescriptionMax = 300;
+
+export const getAdminHeroSessionSlidesResponsePublishedOneItemPillLabelMax = 80;
 
 
 
@@ -118,6 +125,7 @@ export const GetAdminHeroSessionSlidesResponse = zod.object({
   "sessionId": zod.string().min(1),
   "title": zod.string().min(1).max(getAdminHeroSessionSlidesResponseDraftItemTitleMax),
   "description": zod.string().max(getAdminHeroSessionSlidesResponseDraftItemDescriptionMax).optional(),
+  "pillLabel": zod.string().max(getAdminHeroSessionSlidesResponseDraftItemPillLabelMax).optional(),
   "actionLabel": zod.string().min(1).max(getAdminHeroSessionSlidesResponseDraftItemActionLabelMax)
 })),
   "published": zod.union([zod.array(zod.object({
@@ -126,6 +134,7 @@ export const GetAdminHeroSessionSlidesResponse = zod.object({
   "sessionId": zod.string(),
   "title": zod.string(),
   "description": zod.string().max(getAdminHeroSessionSlidesResponsePublishedOneItemDescriptionMax).optional(),
+  "pillLabel": zod.string().max(getAdminHeroSessionSlidesResponsePublishedOneItemPillLabelMax).optional(),
   "actionLabel": zod.string(),
   "categoryId": zod.string().optional(),
   "categoryLabel": zod.string(),
@@ -145,6 +154,8 @@ export const updateAdminHeroSessionSlidesBodySlidesItemTitleMax = 200;
 
 export const updateAdminHeroSessionSlidesBodySlidesItemDescriptionMax = 300;
 
+export const updateAdminHeroSessionSlidesBodySlidesItemPillLabelMax = 80;
+
 export const updateAdminHeroSessionSlidesBodySlidesItemActionLabelMax = 60;
 
 export const updateAdminHeroSessionSlidesBodySlidesMin = 3;
@@ -160,6 +171,7 @@ export const UpdateAdminHeroSessionSlidesBody = zod.object({
   "sessionId": zod.string().min(1),
   "title": zod.string().min(1).max(updateAdminHeroSessionSlidesBodySlidesItemTitleMax),
   "description": zod.string().max(updateAdminHeroSessionSlidesBodySlidesItemDescriptionMax).optional(),
+  "pillLabel": zod.string().max(updateAdminHeroSessionSlidesBodySlidesItemPillLabelMax).optional(),
   "actionLabel": zod.string().min(1).max(updateAdminHeroSessionSlidesBodySlidesItemActionLabelMax)
 })).min(updateAdminHeroSessionSlidesBodySlidesMin).max(updateAdminHeroSessionSlidesBodySlidesMax)
 })
@@ -169,10 +181,14 @@ export const updateAdminHeroSessionSlidesResponseDraftItemTitleMax = 200;
 
 export const updateAdminHeroSessionSlidesResponseDraftItemDescriptionMax = 300;
 
+export const updateAdminHeroSessionSlidesResponseDraftItemPillLabelMax = 80;
+
 export const updateAdminHeroSessionSlidesResponseDraftItemActionLabelMax = 60;
 
 export const updateAdminHeroSessionSlidesResponsePublishedOneItemEnabledDefault = true;
 export const updateAdminHeroSessionSlidesResponsePublishedOneItemDescriptionMax = 300;
+
+export const updateAdminHeroSessionSlidesResponsePublishedOneItemPillLabelMax = 80;
 
 
 
@@ -184,6 +200,7 @@ export const UpdateAdminHeroSessionSlidesResponse = zod.object({
   "sessionId": zod.string().min(1),
   "title": zod.string().min(1).max(updateAdminHeroSessionSlidesResponseDraftItemTitleMax),
   "description": zod.string().max(updateAdminHeroSessionSlidesResponseDraftItemDescriptionMax).optional(),
+  "pillLabel": zod.string().max(updateAdminHeroSessionSlidesResponseDraftItemPillLabelMax).optional(),
   "actionLabel": zod.string().min(1).max(updateAdminHeroSessionSlidesResponseDraftItemActionLabelMax)
 })),
   "published": zod.union([zod.array(zod.object({
@@ -192,6 +209,7 @@ export const UpdateAdminHeroSessionSlidesResponse = zod.object({
   "sessionId": zod.string(),
   "title": zod.string(),
   "description": zod.string().max(updateAdminHeroSessionSlidesResponsePublishedOneItemDescriptionMax).optional(),
+  "pillLabel": zod.string().max(updateAdminHeroSessionSlidesResponsePublishedOneItemPillLabelMax).optional(),
   "actionLabel": zod.string(),
   "categoryId": zod.string().optional(),
   "categoryLabel": zod.string(),

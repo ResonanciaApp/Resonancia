@@ -10,9 +10,26 @@ import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
 import { toast } from "sonner";
 
-type DraftSlide = { position: 2 | 3 | 4; enabled: boolean; sessionId: string; title: string; description: string; actionLabel: string };
+type DraftSlide = { position: 2 | 3 | 4; enabled: boolean; sessionId: string; title: string; description: string; pillLabel: string; actionLabel: string };
 
-const fallback: DraftSlide[] = [2, 3, 4].map((position) => ({ position: position as 2 | 3 | 4, enabled: true, sessionId: "", title: "", description: "", actionLabel: "Escuchar" }));
+const fallback: DraftSlide[] = [2, 3, 4].map((position) => ({ position: position as 2 | 3 | 4, enabled: true, sessionId: "", title: "", description: "", pillLabel: "", actionLabel: "Escuchar" }));
+
+const PILL_LABEL_OPTIONS: Record<string, readonly string[]> = {
+  "meditaciones-guiadas": ["Meditación de la semana", "Meditación del mes", "Meditación destacada"],
+  "sonidos-ancestrales": ["Sonoterapia de la semana", "Sonoterapia del mes", "Sonoterapia destacada"],
+  "musica-sonidos": ["Música de la semana", "Música del mes", "Música destacada"],
+  ambientales: ["Sonido ambiental de la semana", "Sonido ambiental del mes", "Sonido ambiental destacado"],
+  reflexiones: ["Reflexión de la semana", "Reflexión del mes", "Reflexión destacada"],
+  historias: ["Historia de la semana", "Historia del mes", "Historia destacada"],
+  charlas: ["Charla de la semana", "Charla del mes", "Charla destacada"],
+  descanso: ["Sonido para dormir de la semana", "Sonido para dormir del mes", "Sonido para dormir destacado"],
+};
+
+function pillLabelOptions(categoryId: string | undefined, categoryLabel: string | undefined): readonly string[] {
+  if (categoryId && PILL_LABEL_OPTIONS[categoryId]) return PILL_LABEL_OPTIONS[categoryId];
+  const label = categoryLabel?.trim() || "Sesión";
+  return [`${label} de la semana`, `${label} del mes`, `${label} destacada`];
+}
 
 function previewUrl(path: string | null | undefined) {
   if (!path) return null;
@@ -34,7 +51,7 @@ export function HeroSessionSlidesEditor({ onDirtyChange }: { onDirtyChange?: (di
   useEffect(() => {
     if (!data) return;
     setRevision(data.revision);
-    setSlides(data.draft.length === 3 ? data.draft.map((slide) => ({ ...slide, enabled: slide.enabled ?? true, description: slide.description ?? "", position: slide.position as 2 | 3 | 4 })) : fallback);
+    setSlides(data.draft.length === 3 ? data.draft.map((slide) => ({ ...slide, enabled: slide.enabled ?? true, description: slide.description ?? "", pillLabel: slide.pillLabel ?? "", position: slide.position as 2 | 3 | 4 })) : fallback);
     setDirty(false);
   }, [data?.revision]);
   useEffect(() => onDirtyChange?.(dirty), [dirty, onDirtyChange]);
@@ -43,6 +60,10 @@ export function HeroSessionSlidesEditor({ onDirtyChange }: { onDirtyChange?: (di
   const save = async () => {
     if (slides.some((slide) => !slide.sessionId || !slide.title.trim() || !slide.actionLabel.trim())) {
       toast.error("Completa las tres sesiones, títulos y botones.");
+      return;
+    }
+    if (slides.some((slide) => slide.enabled && !slide.pillLabel.trim())) {
+      toast.error("Elige una etiqueta para la píldora de cada slide activo.");
       return;
     }
     try {
@@ -63,6 +84,7 @@ export function HeroSessionSlidesEditor({ onDirtyChange }: { onDirtyChange?: (di
       <div className="mt-4 grid gap-4 lg:grid-cols-3">
         {slides.map((slide, index) => {
           const session = sessions.find((item) => item.id === slide.sessionId);
+          const labelOptions = pillLabelOptions(session?.categoryId, session?.categoryLabel);
           const cover = previewUrl(session?.imageUrl ?? session?.imageKey);
           const query = search[slide.position].trim().toLocaleLowerCase("es");
           const filteredSessions = query
@@ -107,7 +129,16 @@ export function HeroSessionSlidesEditor({ onDirtyChange }: { onDirtyChange?: (di
                   data-testid={`select-hero-session-${slide.position}`}
                   onChange={(event) => {
                     const next = sessions.find((item) => item.id === event.target.value);
-                    setSlides((current) => current.map((item, i) => i === index ? { ...item, sessionId: event.target.value, title: item.title || next?.title || "" } : item));
+                    setSlides((current) => current.map((item, i) => {
+                      if (i !== index) return item;
+                      const nextOptions = pillLabelOptions(next?.categoryId, next?.categoryLabel);
+                      return {
+                        ...item,
+                        sessionId: event.target.value,
+                        title: item.title || next?.title || "",
+                        pillLabel: nextOptions.includes(item.pillLabel) ? item.pillLabel : "",
+                      };
+                    }));
                     setDirty(true);
                   }}
                 >
@@ -118,7 +149,27 @@ export function HeroSessionSlidesEditor({ onDirtyChange }: { onDirtyChange?: (di
                   {filteredSessions.map((item) => <option key={item.id} value={item.id}>{item.categoryLabel} · {item.title}</option>)}
                 </select>
               </div>
-              {session && <p className="text-xs text-muted-foreground">Píldora automática: {session.categoryLabel}</p>}
+              {session && (
+                <div className="space-y-1">
+                  <Label htmlFor={`hero-session-pill-${slide.position}`}>Texto de la píldora</Label>
+                  <select
+                    id={`hero-session-pill-${slide.position}`}
+                    className="h-10 w-full rounded-md border border-input bg-background px-2 text-sm"
+                    value={slide.pillLabel}
+                    onChange={(event) => {
+                      setSlides((current) => current.map((item, i) => i === index ? { ...item, pillLabel: event.target.value } : item));
+                      setDirty(true);
+                    }}
+                    data-testid={`select-hero-pill-${slide.position}`}
+                  >
+                    <option value="">Elegir etiqueta…</option>
+                    {labelOptions.map((option) => <option key={option} value={option}>{option}</option>)}
+                  </select>
+                  {!slide.pillLabel && slide.enabled && (
+                    <p className="text-xs text-muted-foreground">Debes elegir una opción para mostrar la píldora.</p>
+                  )}
+                </div>
+              )}
               {slide.sessionId && !session && (
                 <p className="text-xs font-medium text-destructive" data-testid={`status-hero-session-unavailable-${slide.position}`}>
                   Esta sesión ya no está disponible. Elige otra para poder guardar.
@@ -158,7 +209,7 @@ export function HeroSessionSlidesEditor({ onDirtyChange }: { onDirtyChange?: (di
                   )}
                   <div className="absolute inset-0 bg-gradient-to-t from-black/75 via-black/15 to-transparent" />
                   <div className="absolute inset-x-3 bottom-3 text-white">
-                    <span className="rounded-full bg-white/15 px-2 py-1 text-[10px] font-medium uppercase tracking-wide">{session.categoryLabel}</span>
+                    {slide.pillLabel && <span className="rounded-full bg-white/15 px-2 py-1 text-[10px] font-medium uppercase tracking-wide">{slide.pillLabel}</span>}
                     <p className="mt-2 line-clamp-2 text-sm font-semibold">{slide.title || session.title}</p>
                     {slide.description && <p className="mt-1 line-clamp-2 text-[11px] text-white/85">{slide.description}</p>}
                     <span className="mt-2 inline-flex rounded-full bg-white px-3 py-1 text-[10px] font-semibold text-black">{slide.actionLabel || "Escuchar"}</span>

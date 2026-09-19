@@ -152,6 +152,7 @@ function slideInput(value: unknown) {
     sessionId: z.string().min(1),
     title: z.string().trim().min(1).max(200),
     description: z.string().trim().max(300).optional(),
+    pillLabel: z.string().trim().max(80).optional(),
     actionLabel: z.string().trim().min(1).max(60),
   }).parse(value);
 }
@@ -362,6 +363,9 @@ router.put("/admin/hero/session-slides", ...admin, wrap(async (req, res) => {
   const positions = new Set(slides.map((slide) => slide.position));
   if (positions.size !== 3 || ![2, 3, 4].every((position) => positions.has(position as 2 | 3 | 4))) {
     throw new InspirationError(400, "Los tres slots del hero son obligatorios");
+  }
+  if (slides.some((slide) => slide.enabled && !slide.pillLabel)) {
+    throw new InspirationError(400, "Elige una etiqueta editorial para cada slide activo");
   }
   const uniqueSessionIds = [...new Set(slides.map((slide) => slide.sessionId))];
   const found = await db.select({

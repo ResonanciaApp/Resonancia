@@ -7,6 +7,7 @@ export type HeroSessionSlide = {
   sessionId: string;
   title: string;
   description?: string;
+  pillLabel?: string;
   actionLabel: string;
 };
 

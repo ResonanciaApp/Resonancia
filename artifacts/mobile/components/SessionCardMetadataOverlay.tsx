@@ -60,6 +60,7 @@ const CATEGORY_PILL_META: Record<string, {
 
 export function SessionCategoryPill({
   categoryId,
+  label,
   inline = false,
   plain = false,
   textOnly = false,
@@ -77,6 +78,7 @@ export function SessionCategoryPill({
   textStyle,
 }: {
   categoryId?: string;
+  label?: string;
   inline?: boolean;
   plain?: boolean;
   textOnly?: boolean;
@@ -144,7 +146,7 @@ export function SessionCategoryPill({
         ]}
         numberOfLines={1}
       >
-        {category.label.toUpperCase()}
+        {(label ?? category.label).toUpperCase()}
       </Text>
     </View>
   );
