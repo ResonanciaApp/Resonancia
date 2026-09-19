@@ -72,7 +72,7 @@ export function InnerSpaceCard() {
   const isSubmitDisabled = !category || message.trim().length === 0 || createMutation.isPending;
 
   return (
-    <View style={[styles.container, { backgroundColor: colors.card, borderColor: colors.border }]}>
+    <View style={styles.container}>
       <View style={styles.header}>
         <View style={styles.headerIcon}>
           <MaterialCommunityIcons name="flower-tulip" size={24} color={colors.primary} />
@@ -139,7 +139,6 @@ export function InnerSpaceCard() {
       </Pressable>
 
       <Pressable testID="history-link" accessibilityRole="button" accessibilityLabel="Ver mi espacio interior" onPress={() => router.push("/mi-espacio-interior")} style={styles.historyLinkContainer}>
-        <Text style={[styles.historyQuote, { color: colors.mutedForeground }]}>"Tus palabras de hoy también son parte de tu camino."</Text>
         <View style={styles.historyAction}>
           <Text style={[styles.historyLinkText, { color: colors.primary }]}>Ver mi espacio interior</Text>
           <Feather name="arrow-right" size={14} color={colors.primary} />
@@ -167,7 +166,7 @@ export function InnerSpaceCard() {
 const styles = StyleSheet.create({
   container: {
     borderRadius: 24,
-    borderWidth: 1,
+    backgroundColor: "rgba(0,0,0,0.28)",
     padding: 20,
     marginBottom: 24,
     overflow: "hidden",
@@ -256,12 +255,6 @@ const styles = StyleSheet.create({
   },
   historyLinkContainer: {
     alignItems: "center",
-  },
-  historyQuote: {
-    fontStyle: "italic",
-    fontSize: 13,
-    marginBottom: 6,
-    textAlign: "center",
   },
   historyAction: {
     flexDirection: "row",
