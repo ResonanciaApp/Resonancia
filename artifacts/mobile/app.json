@@ -30,7 +30,10 @@
         "NSPhotoLibraryUsageDescription": "RESONANCIA accede a tus fotos para que puedas elegir tu foto de perfil y compartir imágenes en los mensajes.",
         "NSPhotoLibraryAddUsageDescription": "RESONANCIA guarda imágenes en tu galería cuando las descargás.",
         "NSCameraUsageDescription": "RESONANCIA usa la cámara para que puedas sacarte una foto de perfil.",
-        "ITSAppUsesNonExemptEncryption": false
+        "ITSAppUsesNonExemptEncryption": false,
+        "LSApplicationQueriesSchemes": [
+          "instagram-stories"
+        ]
       }
     },
     "android": {
@@ -117,7 +120,8 @@
       ],
       "expo-video",
       "react-native-audio-api",
-      "expo-asset"
+      "expo-asset",
+      "./plugins/with-instagram-sharing"
     ],
     "experiments": {
       "typedRoutes": true,
