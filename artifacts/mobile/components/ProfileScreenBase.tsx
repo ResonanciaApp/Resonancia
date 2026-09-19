@@ -440,7 +440,7 @@ export function ProfileScreenBase({
       composeFocusTimerRef.current = setTimeout(() => {
         setInnerSpaceFocusRequest((value) => value + 1);
         composeFocusTimerRef.current = null;
-      }, 700);
+      }, 120);
     });
   }, [innerSpaceLayoutY]);
   useEffect(() => {
