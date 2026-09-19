@@ -26,28 +26,30 @@ export function CategoryIcon({
   category,
   size = 24,
   active = false,
+  neutralWhenInactive = false,
 }: {
   category: ReflectionCategory;
   size?: number;
   active?: boolean;
+  neutralWhenInactive?: boolean;
 }) {
   const cat = REFLECTION_CATEGORIES[category];
   const IconComp = cat.iconFamily === "Feather" ? Feather : MaterialCommunityIcons;
+  const isNeutral = neutralWhenInactive && !active;
   return (
     <View
       style={[
         {
-          backgroundColor: cat.bg,
+          backgroundColor: isNeutral ? "transparent" : cat.bg,
           width: size * 2.2,
           height: size * 2.2,
           borderRadius: size * 1.1,
           alignItems: "center",
           justifyContent: "center",
         },
-        active && { borderColor: cat.color, borderWidth: 1 },
       ]}
     >
-      <IconComp name={cat.icon as any} size={size} color={cat.color} />
+      <IconComp name={cat.icon as any} size={size} color={isNeutral ? "#F9F9F9" : cat.color} />
     </View>
   );
 }

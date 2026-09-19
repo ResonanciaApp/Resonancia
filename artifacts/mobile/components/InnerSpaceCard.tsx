@@ -91,10 +91,7 @@ export function InnerSpaceCard() {
             accessibilityRole="button"
             style={({ pressed }) => [
               styles.gridItem,
-              category === cat.id && styles.gridItemActive,
               category === cat.id && {
-                backgroundColor: cat.bg,
-                borderColor: cat.color,
                 shadowColor: cat.color,
                 shadowOpacity: 0.22,
                 shadowRadius: 8,
@@ -103,7 +100,12 @@ export function InnerSpaceCard() {
             ]}
             onPress={() => setCategory(cat.id as ReflectionCategory)}
           >
-            <CategoryIcon category={cat.id as ReflectionCategory} size={18} active={category === cat.id} />
+            <CategoryIcon
+              category={cat.id as ReflectionCategory}
+              size={18}
+              active={category === cat.id}
+              neutralWhenInactive
+            />
             <Text style={[styles.gridLabel, { color: category === cat.id ? colors.foreground : colors.mutedForeground }]}>{cat.label}</Text>
           </Pressable>
         ))}
@@ -192,11 +194,6 @@ const styles = StyleSheet.create({
     alignItems: "center",
     paddingVertical: 12,
     borderRadius: 16,
-    borderWidth: 1,
-    borderColor: "transparent",
-  },
-  gridItemActive: {
-    borderColor: "rgba(255,255,255,0.1)",
   },
   pressedCategory: {
     transform: [{ scale: 0.97 }],
