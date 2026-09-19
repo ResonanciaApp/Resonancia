@@ -202,7 +202,7 @@ export default function InnerSpaceScreen() {
     if (item.type === 'header') {
       return (
         <View style={styles.dateHeader}>
-          <View style={[styles.datePill, { backgroundColor: colors.card, borderColor: colors.border }]}>
+          <View style={styles.datePill}>
             <Text style={[styles.dateText, { color: colors.foreground }]}>{item.dateLabel}</Text>
           </View>
         </View>
@@ -219,12 +219,12 @@ export default function InnerSpaceScreen() {
         <View style={styles.timelineLeft}>
           <Text style={[styles.timeText, { color: colors.mutedForeground }]}>{timeLabel}</Text>
           <View style={styles.timelineDotContainer}>
-            <View style={[styles.timelineLine, { backgroundColor: colors.border }, item.isLastInGroup && { bottom: '50%' }]} />
+            <View style={[styles.timelineLine, item.isLastInGroup && { bottom: '50%' }]} />
             <CategoryIcon category={cat.id} size={14} />
           </View>
         </View>
 
-        <View style={[styles.reflectionCard, { backgroundColor: colors.card, borderColor: colors.border }]}>
+        <View style={styles.reflectionCard}>
           <View style={styles.cardHeader}>
             <View style={[styles.cardCatPill, { backgroundColor: cat.bg }]}>
               <Text style={[styles.cardCatText, { color: cat.color }]}>{cat.label}</Text>
@@ -317,7 +317,6 @@ export default function InnerSpaceScreen() {
         </Pressable>
         <View style={styles.headerTitles}>
           <Text style={[styles.mainTitle, { color: colors.foreground }]}>Mi espacio interior</Text>
-          <Text style={[styles.subTitle, { color: colors.mutedForeground }]}>Un recorrido por tus intenciones, reflexiones y descubrimientos.</Text>
         </View>
         <View style={{ width: 44 }} />
       </View>
@@ -327,10 +326,13 @@ export default function InnerSpaceScreen() {
           <Pressable
             testID="filter-all"
             accessibilityLabel="Filtrar por Todos"
-            style={[styles.filterPill, filter === "all" ? { backgroundColor: 'rgba(255,255,255,0.15)', borderColor: 'rgba(255,255,255,0.3)' } : { backgroundColor: colors.card, borderColor: colors.border }]}
+            style={[
+              styles.filterPill,
+              filter === "all" ? styles.filterPillSelected : styles.filterPillInactive,
+            ]}
             onPress={() => setFilter("all")}
           >
-            <Text style={[styles.filterText, { color: filter === "all" ? colors.foreground : colors.mutedForeground }]}>Todos</Text>
+            <Text style={[styles.filterText, { color: filter === "all" ? "#060A0F" : "#F9F9F9" }]}>Todos</Text>
           </Pressable>
            {REFLECTION_CATEGORY_OPTIONS.map(cat => {
             const isActive = filter === cat.id;
@@ -340,11 +342,14 @@ export default function InnerSpaceScreen() {
                 key={cat.id}
                 testID={`filter-${cat.id}`}
                 accessibilityLabel={`Filtrar por ${cat.label}`}
-                style={[styles.filterPill, isActive ? { backgroundColor: cat.bg, borderColor: cat.color } : { backgroundColor: colors.card, borderColor: colors.border }]}
+                style={[
+                  styles.filterPill,
+                  isActive ? styles.filterPillSelected : styles.filterPillInactive,
+                ]}
                 onPress={() => setFilter(cat.id as ReflectionCategory)}
               >
-                <IconComp name={cat.icon as any} size={14} color={isActive ? cat.color : colors.mutedForeground} />
-                <Text style={[styles.filterText, { color: isActive ? cat.color : colors.mutedForeground }, { marginLeft: 6 }]}>{cat.label}</Text>
+                <IconComp name={cat.icon as any} size={14} color={isActive ? cat.color : "#F9F9F9"} />
+                <Text style={[styles.filterText, { color: isActive ? "#060A0F" : "#F9F9F9" }]}>{cat.label}</Text>
               </Pressable>
             );
           })}
@@ -480,12 +485,7 @@ const styles = StyleSheet.create({
   mainTitle: {
     fontSize: 18,
     fontWeight: '600',
-    marginBottom: 4,
-  },
-  subTitle: {
-    fontSize: 12,
     textAlign: 'center',
-    paddingHorizontal: 10,
   },
   filtersContainer: {
     marginBottom: 16,
@@ -497,10 +497,20 @@ const styles = StyleSheet.create({
   filterPill: {
     flexDirection: 'row',
     alignItems: 'center',
+    justifyContent: 'center',
+    height: 51,
     paddingHorizontal: 16,
-    paddingVertical: 10,
-    borderRadius: 20,
+    borderRadius: 27,
     borderWidth: 1,
+    gap: 8,
+  },
+  filterPillInactive: {
+    backgroundColor: "rgba(0,0,0,0.28)",
+    borderColor: "rgba(255,255,255,0.2)",
+  },
+  filterPillSelected: {
+    backgroundColor: "#F9F9F9",
+    borderColor: "transparent",
   },
   filterText: {
     fontSize: 13,
@@ -520,7 +530,7 @@ const styles = StyleSheet.create({
     paddingHorizontal: 12,
     paddingVertical: 6,
     borderRadius: 12,
-    borderWidth: 1,
+    backgroundColor: "rgba(249,249,249,0.1)",
   },
   dateText: {
     fontSize: 12,
@@ -547,11 +557,12 @@ const styles = StyleSheet.create({
     top: 0,
     bottom: -32,
     width: 1,
+    backgroundColor: "rgba(249,249,249,0.06)",
   },
   reflectionCard: {
     flex: 1,
     borderRadius: 16,
-    borderWidth: 1,
+    backgroundColor: "rgba(0,0,0,0.2)",
     padding: 16,
   },
   cardHeader: {
