@@ -76,21 +76,10 @@ function LineAwareAmbientalTitle({
   children: string;
   style: StyleProp<TextStyle>;
 }) {
-  const [lineCount, setLineCount] = React.useState(1);
-
   return (
     <Text
-      style={[
-        style,
-        { transform: [{ translateY: lineCount > 1 ? -2 : 7 }] },
-      ]}
+      style={style}
       numberOfLines={2}
-      onTextLayout={(event) => {
-        const nextLineCount = Math.min(event.nativeEvent.lines.length, 2);
-        setLineCount((current) =>
-          current === nextLineCount ? current : nextLineCount,
-        );
-      }}
     >
       {children}
     </Text>
@@ -141,7 +130,7 @@ function PreviewCircularProgress({
         cy={canvasSize / 2}
         r={radius}
         fill="none"
-        stroke={NEON_VIOLET}
+        stroke="#FFFFFF"
         strokeWidth={strokeWidth}
         strokeLinecap="round"
         strokeDasharray={`${circumference} ${circumference}`}
@@ -541,7 +530,7 @@ export const SessionCarousel = React.memo(function SessionCarousel({
     4 +
     AMBIENTAL_CONTENT_DROP +
     AMBIENTAL_IMAGE_EXTRA_DROP;
-  const ambientalFilledImageVisualTop = ambientalFilledImageTop - 25;
+  const ambientalFilledImageVisualTop = ambientalFilledImageTop - 17;
   const ambientalPlayButtonSize = 34 * ambientalFillScale + 10;
   const ambientalPlayIconSize = 22 * ambientalFillScale + 4;
   const viewAllAccent = theme.accent ?? viewAllColor ?? colors.accent;
@@ -915,7 +904,7 @@ export const SessionCarousel = React.memo(function SessionCarousel({
                                 top:
                                   ambientalImageBottom +
                                   AMBIENTAL_CONTENT_DROP -
-                                  18,
+                                  12,
                               bottom: 0,
                               justifyContent: "center",
                               transform: [],
@@ -959,7 +948,7 @@ export const SessionCarousel = React.memo(function SessionCarousel({
                             ambientalTitleOnlyTitleStyle,
                             {
                               height: 42,
-                              textAlignVertical: "center",
+                               textAlignVertical: "top",
                             },
                           ]}
                         >
