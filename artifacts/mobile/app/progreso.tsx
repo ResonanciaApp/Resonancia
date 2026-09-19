@@ -107,11 +107,13 @@ export default function ProgresoScreen() {
         </View>
 
         <LinearGradient colors={bgColors} style={styles.content}>
-          <ProgressMirrorSections
-            animateEntrance
-            entranceReplayKey="progress-sections"
-            entranceBaseDelay={900}
-          />
+          <View style={styles.sectionsOffset}>
+            <ProgressMirrorSections
+              animateEntrance
+              entranceReplayKey="progress-sections"
+              entranceBaseDelay={900}
+            />
+          </View>
         </LinearGradient>
       </ScrollView>
     </LinearGradient>
@@ -166,12 +168,15 @@ const styles = StyleSheet.create({
   heroCopyOffset: {
     width: "100%",
     alignItems: "center",
-    transform: [{ translateY: 65 }],
+    transform: [{ translateY: 170 }],
   },
   content: {
     paddingHorizontal: 20,
     marginTop: -55,
     paddingTop: 12,
+  },
+  sectionsOffset: {
+    marginTop: 30,
   },
   streakIntroCount: {
     fontFamily: "Manrope",
