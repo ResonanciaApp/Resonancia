@@ -516,13 +516,21 @@ export default function InnerSpaceScreen() {
   const EmptyState = () => (
     <View style={styles.emptyContainer}>
       <MaterialCommunityIcons name="feather" size={48} color={colors.mutedForeground} style={{ marginBottom: 16 }} />
-      <Text style={[styles.emptyTitle, { color: colors.foreground }]}>Tu espacio interior está comenzando</Text>
-      <Text style={[styles.emptyText, { color: colors.mutedForeground }]}>
-        Cada pensamiento que compartas contigo puede convertirse en un descubrimiento.
+      <Text style={[styles.emptyTitle, { color: colors.foreground }]}>
+        {selectedMonth === today.getMonth()
+          ? "¿De qué te has dado cuenta?"
+          : "No compartiste reflexiones este mes"}
       </Text>
-      <Pressable testID="empty-back" style={[styles.emptyButton, { backgroundColor: colors.card, borderColor: colors.border }]} onPress={() => router.back()}>
-        <Text style={[styles.emptyButtonText, { color: colors.foreground }]}>Escribir mi primera reflexión</Text>
-      </Pressable>
+      <Text style={[styles.emptyText, { color: colors.mutedForeground }]}>
+        {selectedMonth === today.getMonth()
+          ? "Comparte tus reflexiones y registra tu viaje interior"
+          : "Tampoco podrás hacerlo, a no ser que crees una maquina del tiempo."}
+      </Text>
+      {selectedMonth === today.getMonth() && (
+        <Pressable testID="empty-back" style={styles.emptyButton} onPress={() => router.back()}>
+          <Text style={styles.emptyButtonText}>Escribir mi primera reflexión</Text>
+        </Pressable>
+      )}
     </View>
   );
 
@@ -636,13 +644,19 @@ export default function InnerSpaceScreen() {
         <ScrollView style={styles.monthList} showsVerticalScrollIndicator={false}>
           {MONTH_NAMES.map((month, index) => {
             const isSelected = selectedMonth === index;
+            const isFuture = index > today.getMonth();
             return (
               <Pressable
                 key={month}
                 testID={`month-${index}`}
                 accessibilityRole="button"
-                accessibilityState={{ selected: isSelected }}
-                style={[styles.monthOption, isSelected && styles.monthOptionSelected]}
+                accessibilityState={{ selected: isSelected, disabled: isFuture }}
+                disabled={isFuture}
+                style={[
+                  styles.monthOption,
+                  isSelected && styles.monthOptionSelected,
+                  isFuture && styles.monthOptionDisabled,
+                ]}
                 onPress={() => {
                   setSelectedMonth(index);
                   setMonthPickerVisible(false);
@@ -869,6 +883,7 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
     paddingHorizontal: 40,
+    transform: [{ translateY: -80 }],
   },
   emptyTitle: {
     fontSize: 18,
@@ -885,9 +900,10 @@ const styles = StyleSheet.create({
     paddingHorizontal: 20,
     paddingVertical: 12,
     borderRadius: 20,
-    borderWidth: 1,
+    backgroundColor: "#F9F9F9",
   },
   emptyButtonText: {
+    color: "#060A0F",
     fontSize: 14,
     fontWeight: '500',
   },
@@ -979,6 +995,9 @@ const styles = StyleSheet.create({
   },
   monthOptionSelected: {
     backgroundColor: "#F9F9F9",
+  },
+  monthOptionDisabled: {
+    opacity: 0.28,
   },
   monthOptionText: {
     color: "#F9F9F9",
