@@ -3781,7 +3781,8 @@ const styles = StyleSheet.create({
     fontWeight: "900",
   },
   inicio3HeroCategoryPill: {
-    minHeight: 30,
+    minHeight: 27,
+    paddingLeft: 13,
   },
   inicio2HeroCategory: {
     marginBottom: 10,
