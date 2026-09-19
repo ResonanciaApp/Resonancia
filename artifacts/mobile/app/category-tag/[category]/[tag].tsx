@@ -17,6 +17,10 @@ import { useSafeAreaInsets } from "react-native-safe-area-context";
 
 import { SessionCarousel } from "@/components/SessionCarousel";
 import { ContextSearchModal } from "@/components/ContextSearchModal";
+import {
+  CategoryEditorialFilterTabs,
+  type CategoryEditorialFilter,
+} from "@/components/CategoryEditorialFilterTabs";
 import { useAmbientalDuration } from "@/context/AmbientalDurationContext";
 import { useBackOverride } from "@/context/BackOverrideContext";
 import { useCatalog } from "@/context/CatalogContext";
@@ -26,6 +30,7 @@ import { usePremium } from "@/context/PremiumContext";
 import { useSceneTheme } from "@/context/SceneThemeContext";
 import {
   getCategoryEditorialTags,
+  getCategoryTagRouteNamespace,
   getCategorySessionTags,
 } from "@/data/category-tabs";
 import { getCategoryPopularSearchTerms } from "@/data/category-search";
@@ -34,16 +39,7 @@ import { useSoundPreview } from "@/hooks/useSoundPreview";
 
 const H_PAD = 20;
 const HEADER_H_PAD = 14;
-type DurationFilter = "all" | "duration-5" | "duration-10" | "duration-11";
-type FilterId = DurationFilter | `editorial:${string}`;
-
-function durationMinutes(label: string) {
-  const match = label.match(/(\d+(?:[.,]\d+)?)\s*min/i);
-  if (match) return Number(match[1].replace(",", "."));
-  const parts = label.split(":").map(Number);
-  if (parts.length === 2 && parts.every(Number.isFinite)) return parts[0] + parts[1] / 60;
-  return Number.parseFloat(label.replace(",", "."));
-}
+type FilterId = CategoryEditorialFilter;
 
 function decodeRoutePart(value: string) {
   try {
@@ -53,62 +49,26 @@ function decodeRoutePart(value: string) {
   }
 }
 
-function tagsForSession(session: Session, categoryId: string) {
-  return getCategorySessionTags(session, categoryId);
-}
-
-function FilterTabs({
-  editorialTags,
-  active,
-  onSelect,
-}: {
-  editorialTags: string[];
-  active: FilterId;
-  onSelect: (filter: FilterId) => void;
-}) {
-  const tabs: { id: FilterId; label: string }[] = [
-    { id: "all", label: "Ver todo" },
-    { id: "duration-5", label: "5 min" },
-    { id: "duration-10", label: "10 min" },
-    { id: "duration-11", label: "11+ min" },
-    ...editorialTags.map((tag) => ({
-      id: `editorial:${tag}` as const,
-      label: tag,
-    })),
-  ];
-  return (
-    <View style={styles.chipRowWrapper}>
-      <ScrollView horizontal showsHorizontalScrollIndicator={false} contentContainerStyle={styles.chipRowContent}>
-        {tabs.map((tab) => (
-          <Pressable
-            key={tab.id}
-            onPress={() => onSelect(tab.id)}
-            accessibilityRole="tab"
-            accessibilityState={{ selected: active === tab.id }}
-            style={({ pressed }) => ({ opacity: pressed ? 0.7 : 1 })}
-          >
-            <View style={[styles.chip, active === tab.id && styles.chipSelected]}>
-              <Text style={[styles.chipText, active === tab.id && styles.chipTextSelected]}>{tab.label}</Text>
-            </View>
-          </Pressable>
-        ))}
-      </ScrollView>
-    </View>
-  );
-}
-
 export default function CategoryTagScreen({
   categoryId: categoryProp,
   tag: tagProp,
+  source: sourceProp,
 }: {
   categoryId?: string;
   tag?: string;
+  source?: "editorial";
 } = {}) {
-  const params = useLocalSearchParams<{ category?: string | string[]; tag?: string | string[] }>();
+  const params = useLocalSearchParams<{
+    category?: string | string[];
+    tag?: string | string[];
+    source?: string | string[];
+  }>();
   const rawCategory = categoryProp ?? params.category;
   const rawTag = tagProp ?? params.tag;
   const categoryId = Array.isArray(rawCategory) ? rawCategory[0] : rawCategory;
   const tag = Array.isArray(rawTag) ? rawTag[0] : rawTag;
+  const rawSource = sourceProp ?? params.source;
+  const source = Array.isArray(rawSource) ? rawSource[0] : rawSource;
   const decodedCategory = categoryId ? decodeRoutePart(categoryId) : "";
   const decodedTag = tag ? decodeRoutePart(tag) : "";
   const { version } = useCatalog();
@@ -141,9 +101,26 @@ export default function CategoryTagScreen({
     }).start();
   }, [stickyBorderOpacity]);
 
+  const routeSessions = useMemo(
+    () => getSessionsByCategory(decodedCategory),
+    [decodedCategory, version],
+  );
+  const routeNamespace = useMemo(
+    () => getCategoryTagRouteNamespace(
+      routeSessions,
+      decodedCategory,
+      decodedTag,
+      source === "editorial" ? "editorial" : undefined,
+    ),
+    [decodedCategory, decodedTag, routeSessions, source],
+  );
   const sessions = useMemo(
-    () => getSessionsByCategory(decodedCategory).filter((session) => tagsForSession(session, decodedCategory).includes(decodedTag)),
-    [decodedCategory, decodedTag, version],
+    () => routeSessions.filter((session) =>
+      routeNamespace === "legacy"
+        ? getCategorySessionTags(session, decodedCategory).includes(decodedTag)
+        : getCategoryEditorialTags(session, decodedCategory).includes(decodedTag),
+    ),
+    [decodedCategory, decodedTag, routeNamespace, routeSessions],
   );
   const editorialTags = useMemo(
     () => [...new Set(sessions.flatMap((session) => getCategoryEditorialTags(session, decodedCategory)))],
@@ -182,15 +159,20 @@ export default function CategoryTagScreen({
       const editorialTag = activeFilter.slice("editorial:".length);
       return getCategoryEditorialTags(session, decodedCategory).includes(editorialTag);
     }
-    const minutes = durationMinutes(session.durationLabel);
-    if (activeFilter === "duration-5") return minutes <= 5;
-    if (activeFilter === "duration-10") return minutes > 5 && minutes <= 10;
-    return minutes > 10;
+    return true;
   }), [activeFilter, sessions]);
 
   useEffect(() => {
     setActiveFilter("all");
   }, [decodedCategory, decodedTag]);
+  useEffect(() => {
+    if (
+      activeFilter.startsWith("editorial:") &&
+      !editorialTags.includes(activeFilter.slice("editorial:".length))
+    ) {
+      setActiveFilter("all");
+    }
+  }, [activeFilter, editorialTags]);
   useEffect(() => () => soundPreview.stop(), [soundPreview.stop]);
 
   if (!decodedCategory || !decodedTag) return null;
@@ -309,9 +291,15 @@ export default function CategoryTagScreen({
         >
           <Feather name="chevron-left" size={28} color="#FBFBFB" style={{ transform: [{ translateX: -1 }] }} />
         </Pressable>
-        <View style={styles.stickyTabs}>
-          <FilterTabs editorialTags={editorialTags} active={activeFilter} onSelect={setActiveFilter} />
-        </View>
+        {editorialTags.length > 0 && (
+          <View style={styles.stickyTabs}>
+            <CategoryEditorialFilterTabs
+              editorialTags={editorialTags}
+              active={activeFilter}
+              onSelect={setActiveFilter}
+            />
+          </View>
+        )}
         <Animated.View
           pointerEvents="none"
           style={[styles.stickyBottomBorder, { opacity: stickyBorderOpacity }]}

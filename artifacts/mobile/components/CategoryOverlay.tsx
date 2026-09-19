@@ -6,6 +6,7 @@ import { BackOverrideProvider } from "@/context/BackOverrideContext";
 import { DURATION, easeOutCubic } from "@/constants/motion";
 import { useSceneTheme } from "@/context/SceneThemeContext";
 import VideosScreen from "@/app/videos";
+import { parseCategoryTagOverlayRoute } from "@/data/category-route";
 
 // ─── Descanzo: import EAGER (es ruta de tab, no de root) ──────────────────────
 // Las rutas de tab son split-bundles de Expo Router. Si se lazy-importan con
@@ -47,13 +48,14 @@ function resolveRoute(route: string): { node: React.ReactNode; eager: boolean; d
   if (route === "/category/meditaciones-guiadas") return { node: <LazyMeditaciones />, eager: false };
   if (route === "/category/sonidos-ancestrales") return { node: <LazySonidos />, eager: false };
   if (route === "/category/musica-sonidos") return { node: <LazyMusica />, eager: false };
-  const categoryTag = route.match(/^\/category-tag\/([^/]+)\/(.+)$/);
+  const categoryTag = parseCategoryTagOverlayRoute(route);
   if (categoryTag) {
     return {
       node: (
         <LazyCategoryTag
-          categoryId={decodeURIComponent(categoryTag[1])}
-          tag={decodeURIComponent(categoryTag[2])}
+          categoryId={categoryTag.categoryId}
+          tag={categoryTag.tag}
+          source={categoryTag.source}
         />
       ),
       eager: false,

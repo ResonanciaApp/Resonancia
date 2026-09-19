@@ -257,15 +257,19 @@ export default function SleepTagDetailScreen({ id: idProp }: { id?: string } = {
             </Pressable>
           </View>
         </View>
-        <View style={styles.stickyTabs}>
-          <SupercategoryFilterTabs
-            editorialTags={editorialTags}
-            active={activeFilter}
-            onSelect={setActiveFilter}
-            bottomBorderOpacity={stickyBorderOpacity}
-            topPadding={2}
-          />
-        </View>
+        {editorialTags.length > 0 && (
+          <View style={styles.stickyTabs}>
+            <SupercategoryFilterTabs
+              editorialTags={editorialTags}
+              active={activeFilter}
+              onSelect={setActiveFilter}
+              includeDurationFilters={false}
+              hideWithoutEditorialTags
+              bottomBorderOpacity={stickyBorderOpacity}
+              topPadding={15}
+            />
+          </View>
+        )}
       </Animated.View>
       <ContextSearchModal
         visible={searchVisible}
@@ -349,7 +353,6 @@ const styles = StyleSheet.create({
   },
   stickyTabs: {
     width: "100%",
-    marginTop: 15,
   },
   stickyTitleCol: {
     flex: 1,

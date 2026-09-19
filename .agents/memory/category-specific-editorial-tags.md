@@ -9,7 +9,7 @@ Las etiquetas editoriales de categorías distintas de Música se guardan dentro 
 
 **How to apply:** Cualquier alta, renombrado, borrado, filtro o consumidor móvil de estas etiquetas debe usar la misma codificación por categoría. Los prefijos nunca deben mostrarse en UI, filtros globales ni auto-crear cards de “Otras temáticas”; servidor y Mobile deben excluirlos.
 
-En Mobile, las subcategorías organizan tabs y carruseles de la pantalla principal. Al abrir una subcategoría, sus filtros son Ver todo, 5 min, 10 min, 11+ min y las etiquetas editoriales presentes en esas sesiones. Las etiquetas editoriales nunca crean tabs o carruseles principales.
+En Mobile, las subcategorías organizan tabs y carruseles de la pantalla principal. Al abrir una subcategoría, la barra interna no usa duraciones: queda desmontada sin etiquetas editoriales y, con al menos una, muestra `Ver todo` más solo las etiquetas presentes. Las etiquetas editoriales nunca crean tabs o carruseles principales.
 
 En Admin, la sección “Subcategoría” contiene dos niveles para Charlas, Historias y Ambientales: primero una subcategoría obligatoria editable que crea los tabs; debajo “Nombre de colección (opcional)”, cuyas etiquetas crean pantallas internas dentro del tab. “Otras temáticas” sigue siendo un grupo histórico separado y no debe eliminarse al añadir estas taxonomías.
 
