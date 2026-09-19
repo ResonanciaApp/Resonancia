@@ -623,17 +623,18 @@ export function MoodPickerSheet({
                     style={StyleSheet.absoluteFill}
                     contentFit="cover"
                   />
-                  <LinearGradient
-                    colors={[
-                      colorWithOpacity(fadeColor, 0),
-                      colorWithOpacity(fadeColor, 0.3),
-                      fadeColor,
-                      fadeColor,
-                    ]}
-                    locations={[0.3, 0.7, fadeSolidStart, 1]}
-                    style={StyleSheet.absoluteFill}
-                  />
                 </CinematicFadeSlide>
+                <LinearGradient
+                  colors={[
+                    colorWithOpacity(fadeColor, 0),
+                    colorWithOpacity(fadeColor, 0.3),
+                    fadeColor,
+                    fadeColor,
+                  ]}
+                  locations={[0.3, 0.7, fadeSolidStart, 1]}
+                  style={StyleSheet.absoluteFill}
+                  pointerEvents="none"
+                />
                 <View style={[styles.heroOverlay, { paddingTop: topPad + 80 }]}>
                   <CinematicFadeSlide
                     active={visible}
