@@ -667,6 +667,23 @@ export function MoodPickerSheet({
                   <Text style={styles.resonanceTitle}>Resonancia te recomienda:</Text>
                 </CinematicFadeSlide>
 
+                {moodQuote && (
+                  <View>
+                    <CinematicFadeSlide
+                      active={visible}
+                      replayKey={`${completionCycle}:${firstMood?.id ?? "none"}`}
+                      delay={120}
+                      duration={CINEMATIC_DURATION}
+                    >
+                      <EmotionalQuoteCard
+                        author={moodQuote.author}
+                        background={moodQuote.background}
+                        quote={moodQuote.text}
+                      />
+                    </CinematicFadeSlide>
+                  </View>
+                )}
+
                 <CinematicFadeSlide
                   active={visible}
                   replayKey={completionCycle}
@@ -740,23 +757,6 @@ export function MoodPickerSheet({
 
                   <View style={styles.completeSectionDivider} />
                 </CinematicFadeSlide>
-
-                {moodQuote && (
-                  <View>
-                    <CinematicFadeSlide
-                      active={visible}
-                      replayKey={`${completionCycle}:${firstMood?.id ?? "none"}`}
-                      delay={120}
-                      duration={CINEMATIC_DURATION}
-                    >
-                      <EmotionalQuoteCard
-                        author={moodQuote.author}
-                        background={moodQuote.background}
-                        quote={moodQuote.text}
-                      />
-                    </CinematicFadeSlide>
-                  </View>
-                )}
 
                 {history.length > 0 && (
                   <Text style={styles.lastCheckIn}>
