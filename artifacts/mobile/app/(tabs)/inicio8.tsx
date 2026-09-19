@@ -1558,7 +1558,8 @@ function Inicio3HeroPager({
                           categoryId={item.categoryId ?? ""}
                           inline
                           showIcon
-                          iconSize={14}
+                          iconSize={17}
+                          style={styles.inicio3HeroCategoryPill}
                           textStyle={styles.inicio3HeroCategoryPillText}
                         />
                       </View>
@@ -3760,6 +3761,9 @@ const styles = StyleSheet.create({
   inicio3HeroCategoryPillText: {
     fontSize: 13,
     fontWeight: "900",
+  },
+  inicio3HeroCategoryPill: {
+    minHeight: 30,
   },
   inicio2HeroCategory: {
     marginBottom: 10,
