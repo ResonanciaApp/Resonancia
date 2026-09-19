@@ -615,6 +615,7 @@ export function MoodPickerSheet({
                   replayKey={`hero-background:${completionCycle}`}
                   delay={0}
                   duration={CINEMATIC_DURATION}
+                  translateYFrom={0}
                   style={StyleSheet.absoluteFill}
                 >
                   <Image

@@ -379,7 +379,7 @@ export function ProfileScreenBase({
       playlist.sessionIds,
       completedSessionIds,
     );
-    if (completion.total === 0 || completion.completed === completion.total) {
+    if (completion.total === 0) {
       return null;
     }
     return { playlist, completion };
