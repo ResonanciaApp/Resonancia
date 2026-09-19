@@ -1,6 +1,7 @@
 import { Feather, MaterialCommunityIcons } from "@expo/vector-icons";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { File as FSFile, Paths } from "expo-file-system";
+import { Asset } from "expo-asset";
 import { Image } from "expo-image";
 import * as Haptics from "expo-haptics";
 import * as ImagePicker from "expo-image-picker";
@@ -15,6 +16,7 @@ import {
   Alert,
   Animated,
   Easing,
+  FlatList,
   KeyboardAvoidingView,
   Linking,
   Modal,
@@ -74,6 +76,10 @@ import { useCatalog } from "@/context/CatalogContext";
 import { useFoldersPlaylists } from "@/context/FoldersPlaylistsContext";
 import { usePlayer } from "@/context/PlayerContext";
 import { PLAYLISTS } from "@/data/playlists";
+import {
+  PLAYLIST_COVER_PRESETS,
+  type PlaylistCoverPreset,
+} from "@/data/default-playlist-covers";
 import {
   computePlaylistCompletion,
   isMeditativeSessionPlaylist,
@@ -611,6 +617,7 @@ export function ProfileScreenBase({
   const [accountAction, setAccountAction] = useState<"delete" | null>(null);
   const [accountPhotoPickerVisible, setAccountPhotoPickerVisible] = useState(false);
   const [accountPhotoLibraryPending, setAccountPhotoLibraryPending] = useState(false);
+  const [accountAvatarPresetId, setAccountAvatarPresetId] = useState<string | null>(null);
   const accountToastOpacity = useRef(new Animated.Value(0)).current;
   const accountToastY = useRef(new Animated.Value(12)).current;
 
@@ -759,6 +766,7 @@ export function ProfileScreenBase({
     });
     if (!result.canceled && result.assets[0]) {
       const tempUri = result.assets[0].uri;
+      setAccountAvatarPresetId(null);
       if (Platform.OS === "web") {
         try {
           const dataUrl = await resizeImageForWeb(tempUri, 320);
@@ -777,6 +785,26 @@ export function ProfileScreenBase({
           setPhotoUri(tempUri);
         }
       }
+    }
+  };
+
+  const pickAccountAvatarPreset = async (preset: PlaylistCoverPreset) => {
+    setAccountAvatarPresetId(preset.id);
+    try {
+      const asset = Asset.fromModule(preset.source);
+      await asset.downloadAsync();
+      const sourceUri = asset.localUri ?? asset.uri;
+      if (Platform.OS === "web") {
+        setPhotoUri(sourceUri);
+        return;
+      }
+      const source = new FSFile(sourceUri);
+      const destination = new FSFile(Paths.document, `profile_photo_preset_${preset.id}.jpg`);
+      source.copy(destination);
+      setPhotoUri(destination.uri);
+    } catch {
+      const asset = Asset.fromModule(preset.source);
+      setPhotoUri(asset.uri);
     }
   };
 
@@ -884,7 +912,12 @@ export function ProfileScreenBase({
                 accessibilityRole="button"
                 accessibilityLabel="Volver"
               >
-                <Feather name="chevron-left" size={28} color="#FBFBFB" />
+                <Feather
+                  name="chevron-left"
+                  size={28}
+                  color="#FBFBFB"
+                  style={{ transform: [{ translateX: -1 }] }}
+                />
               </Pressable>
               <Text style={styles.stickyTitleLibraryTab}>Mi cuenta</Text>
               <View style={styles.accountHeaderSpacer} />
@@ -1011,7 +1044,13 @@ export function ProfileScreenBase({
                 </Pressable>
               </View>
               <View style={styles.accountCoverPreviewSlot}>
-                {photoUri ? (
+                {accountAvatarPresetId ? (
+                  <Image
+                    source={PLAYLIST_COVER_PRESETS.find((preset) => preset.id === accountAvatarPresetId)?.source}
+                    style={styles.accountCoverPreview}
+                    contentFit="cover"
+                  />
+                ) : photoUri ? (
                   <Image source={{ uri: photoUri }} style={styles.accountCoverPreview} contentFit="cover" />
                 ) : (
                   <View
@@ -1035,6 +1074,37 @@ export function ProfileScreenBase({
                 <Feather name="image" size={18} color="#F9F9F9" />
                 <Text style={styles.accountCoverUploadText}>Elegir una foto</Text>
               </Pressable>
+              <FlatList
+                style={styles.accountCoverPresetGrid}
+                data={PLAYLIST_COVER_PRESETS}
+                keyExtractor={(preset) => preset.id}
+                numColumns={5}
+                showsVerticalScrollIndicator={false}
+                contentContainerStyle={styles.accountCoverPresetGridContent}
+                columnWrapperStyle={styles.accountCoverPresetGridRow}
+                renderItem={({ item: preset }) => {
+                  const selected = preset.id === accountAvatarPresetId;
+                  return (
+                    <Pressable
+                      onPress={() => void pickAccountAvatarPreset(preset)}
+                      accessibilityRole="button"
+                      accessibilityLabel={`Avatar: ${preset.label}`}
+                      accessibilityState={{ selected }}
+                      style={({ pressed }) => [
+                        styles.accountCoverPresetFrame,
+                        selected && styles.accountCoverPresetFrameSelected,
+                        { opacity: pressed ? 0.72 : 1 },
+                      ]}
+                    >
+                      <Image
+                        source={preset.source}
+                        style={styles.accountCoverPresetPhoto}
+                        contentFit="cover"
+                      />
+                    </Pressable>
+                  );
+                }}
+              />
             </View>
           </Modal>
         </View>
@@ -2058,6 +2128,33 @@ const styles = StyleSheet.create({
     fontSize: 14,
     fontWeight: "600",
   },
+  accountCoverPresetGrid: {
+    flex: 1,
+  },
+  accountCoverPresetGridContent: {
+    paddingTop: 26,
+    paddingBottom: 20,
+  },
+  accountCoverPresetGridRow: {
+    justifyContent: "space-between",
+    marginBottom: 12,
+  },
+  accountCoverPresetFrame: {
+    width: 63,
+    height: 63,
+    borderRadius: 31.5,
+    borderWidth: 2,
+    borderColor: "transparent",
+    padding: 2,
+  },
+  accountCoverPresetFrameSelected: {
+    borderColor: "#F9F9F9",
+  },
+  accountCoverPresetPhoto: {
+    flex: 1,
+    borderRadius: 27.5,
+    overflow: "hidden",
+  },
   accountField: {
     gap: 8,
   },
@@ -2069,9 +2166,10 @@ const styles = StyleSheet.create({
   },
   accountFieldValueBox: {
     backgroundColor: "rgba(0,0,0,0.28)",
-    borderRadius: 10,
+    height: 48,
+    borderRadius: 999,
     paddingHorizontal: 14,
-    paddingVertical: 12,
+    justifyContent: "center",
   },
   accountFieldValue: {
     fontFamily: "Manrope",
@@ -2081,11 +2179,11 @@ const styles = StyleSheet.create({
   accountNameInput: {
     fontFamily: "Manrope",
     fontSize: 15,
-    minHeight: 42,
+    height: 48,
     paddingHorizontal: 14,
-    paddingVertical: 8,
+    paddingVertical: 0,
     backgroundColor: "rgba(0,0,0,0.28)",
-    borderRadius: 10,
+    borderRadius: 999,
     borderWidth: 0,
   },
   accountSaveButton: {
