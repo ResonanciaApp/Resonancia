@@ -191,13 +191,13 @@ const styles = StyleSheet.create({
     overflow: "hidden",
   },
   header: {
-    alignItems: "center",
+    alignItems: "flex-start",
     marginBottom: 20,
   },
   title: {
     fontSize: 18,
     fontWeight: "600",
-    textAlign: "center",
+    textAlign: "left",
   },
   categoriesScroll: {
     marginBottom: 20,
