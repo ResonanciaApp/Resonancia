@@ -95,9 +95,13 @@ export default function ProgresoScreen() {
               style={styles.heroAnimatedContent}
             >
               <View style={styles.heroCopyOffset}>
-                <Text style={[styles.streakIntroCount, { color: colors.foreground }]}>
-                  {completedWeekDays} {completedWeekDays === 1 ? "Día de racha" : "Días de racha"}
+                <Text
+                  style={[styles.streakIntroCount, { color: colors.foreground }]}
+                  accessibilityLabel={`${completedWeekDays} ${completedWeekDays === 1 ? "día" : "días"}`}
+                >
+                  {completedWeekDays}
                 </Text>
+                <Text style={[styles.streakIntroUnit, { color: colors.foreground }]}>Días</Text>
                 <Text style={styles.streakIntroDescription}>
                   Medita al menos 3 días a la semana y transforma tu vida
                 </Text>
@@ -112,6 +116,7 @@ export default function ProgresoScreen() {
               animateEntrance
               entranceReplayKey="progress-sections"
               entranceBaseDelay={900}
+              showSectionBorders={false}
             />
           </View>
         </LinearGradient>
@@ -157,6 +162,7 @@ const styles = StyleSheet.create({
   },
   heroOverlay: {
     ...StyleSheet.absoluteFillObject,
+    zIndex: 2,
     alignItems: "center",
     paddingHorizontal: 20,
     transform: [{ translateY: -55 }],
@@ -176,12 +182,12 @@ const styles = StyleSheet.create({
     paddingTop: 12,
   },
   sectionsOffset: {
-    marginTop: 30,
+    marginTop: 50,
   },
   streakIntroCount: {
     fontFamily: "Manrope",
-    fontSize: 32,
-    lineHeight: 40,
+    fontSize: 51,
+    lineHeight: 55,
     fontWeight: "800",
     letterSpacing: -0.5,
     textAlign: "center",
@@ -189,13 +195,25 @@ const styles = StyleSheet.create({
     textShadowOffset: { width: 0, height: 2 },
     textShadowRadius: 6,
   },
+  streakIntroUnit: {
+    fontFamily: "Manrope",
+    fontSize: 12,
+    lineHeight: 14,
+    fontWeight: "800",
+    letterSpacing: 0.9,
+    textAlign: "center",
+    textTransform: "uppercase",
+    textShadowColor: "rgba(0,0,0,0.5)",
+    textShadowOffset: { width: 0, height: 1 },
+    textShadowRadius: 4,
+  },
   streakIntroDescription: {
     color: "rgba(255,255,255,0.9)",
     fontFamily: "Manrope",
-    fontSize: 16,
+    fontSize: 13,
     lineHeight: 22,
     fontWeight: "500",
-    marginTop: 8,
+    marginTop: 10,
     textAlign: "center",
     maxWidth: "85%",
     textShadowColor: "rgba(0,0,0,0.5)",
