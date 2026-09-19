@@ -883,8 +883,7 @@ const styles = StyleSheet.create({
     marginBottom: 43,
   },
   tabGridContent: {
-    paddingLeft: H_PAD - 2,
-    paddingRight: H_PAD,
+    paddingHorizontal: H_PAD,
     gap: 8,
     flexDirection: "row",
     alignItems: "center",
@@ -940,8 +939,8 @@ const styles = StyleSheet.create({
   },
   stickyTitle: {
     position: "absolute",
-    left: -2,
-    right: 2,
+    left: 0,
+    right: 0,
     top: 16,
     fontFamily: "Manrope",
     fontSize: 18,
@@ -1065,7 +1064,6 @@ const styles = StyleSheet.create({
     letterSpacing: 0.3,
     textAlign: "left",
     marginTop: 0,
-    marginLeft: -2,
     transform: [{ translateY: 1 }],
   },
 });

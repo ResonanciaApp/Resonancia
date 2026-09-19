@@ -1006,8 +1006,8 @@ const styles = StyleSheet.create({
   titleRow:     { position: "relative", flexDirection: "row", alignItems: "center", justifyContent: "space-between", paddingHorizontal: H_PAD, paddingBottom: 10, paddingTop: 7 },
   stickyTitle: {
     position: "absolute",
-    left: -2,
-    right: 2,
+    left: 0,
+    right: 0,
     top: 16,
     fontFamily: "Manrope",
     fontSize: 18,
@@ -1040,7 +1040,7 @@ const styles = StyleSheet.create({
   },
   header:       { paddingHorizontal: H_PAD, marginBottom: 0 },
   headerRow:    { flexDirection: "row", alignItems: "center", justifyContent: "space-between" },
-  pageTitle:    { fontFamily: "Manrope", fontSize: 30, fontWeight: "800", letterSpacing: 0.3, color: "#F4F4F4", textAlign: "left", marginTop: 0, marginLeft: -2, transform: [{ translateY: 1 }] },
+  pageTitle:    { fontFamily: "Manrope", fontSize: 30, fontWeight: "800", letterSpacing: 0.3, color: "#F4F4F4", textAlign: "left", marginTop: 0, transform: [{ translateY: 1 }] },
   searchWrap:   { paddingHorizontal: H_PAD, paddingTop: 10, paddingBottom: 0 },
   stickySearchWrap: {
     paddingTop: 8,
