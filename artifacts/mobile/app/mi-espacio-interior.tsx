@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useMemo, useRef } from "react";
-import { View, Text, StyleSheet, Pressable, ScrollView, FlatList, ActivityIndicator, Modal, TextInput, Platform } from "react-native";
+import { View, Text, StyleSheet, Pressable, ScrollView, FlatList, ActivityIndicator, Modal, TextInput, Platform, Animated } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { Feather, MaterialCommunityIcons } from "@expo/vector-icons";
 import { router } from "expo-router";
@@ -11,6 +11,107 @@ import { useUpdateMyReflection, useDeleteMyReflection, type Reflection, type Ref
 import { KeyboardAwareScrollView } from "react-native-keyboard-controller";
 import { useQueryClient } from "@tanstack/react-query";
 import { useAuth } from "@/context/AuthContext";
+import { useReducedMotion } from "react-native-reanimated";
+
+function CollapsibleReflectionMessage({
+  message,
+  color,
+}: {
+  message: string;
+  color: string;
+}) {
+  const [expanded, setExpanded] = useState(false);
+  const [hasOverflow, setHasOverflow] = useState(false);
+  const opacity = useRef(new Animated.Value(1)).current;
+  const translateY = useRef(new Animated.Value(0)).current;
+  const reducedMotion = useReducedMotion();
+
+  const animateIn = (fromY: number) => {
+    opacity.setValue(0);
+    translateY.setValue(fromY);
+    Animated.parallel([
+      Animated.timing(opacity, {
+        toValue: 1,
+        duration: 180,
+        useNativeDriver: true,
+      }),
+      Animated.timing(translateY, {
+        toValue: 0,
+        duration: 180,
+        useNativeDriver: true,
+      }),
+    ]).start();
+  };
+
+  const toggleExpanded = () => {
+    if (reducedMotion) {
+      setExpanded((value) => !value);
+      return;
+    }
+
+    if (!expanded) {
+      setExpanded(true);
+      requestAnimationFrame(() => animateIn(-6));
+      return;
+    }
+
+    Animated.parallel([
+      Animated.timing(opacity, {
+        toValue: 0,
+        duration: 120,
+        useNativeDriver: true,
+      }),
+      Animated.timing(translateY, {
+        toValue: -6,
+        duration: 120,
+        useNativeDriver: true,
+      }),
+    ]).start(({ finished }) => {
+      if (!finished) return;
+      setExpanded(false);
+      requestAnimationFrame(() => animateIn(6));
+    });
+  };
+
+  useEffect(() => {
+    return () => {
+      opacity.stopAnimation();
+      translateY.stopAnimation();
+    };
+  }, [opacity, translateY]);
+
+  return (
+    <View style={styles.messageContainer}>
+      <Text
+        pointerEvents="none"
+        style={[styles.cardMessage, styles.messageMeasure, { color }]}
+        onTextLayout={(event) => setHasOverflow(event.nativeEvent.lines.length > 5)}
+      >
+        {message}
+      </Text>
+      <Animated.View style={{ opacity, transform: [{ translateY }] }}>
+        <Text
+          style={[styles.cardMessage, { color }]}
+          numberOfLines={expanded ? undefined : 5}
+          ellipsizeMode="tail"
+        >
+          {message}
+        </Text>
+        {hasOverflow && (
+          <Pressable
+            accessibilityRole="button"
+            accessibilityLabel={expanded ? "Leer menos" : "Leer más"}
+            onPress={toggleExpanded}
+            hitSlop={8}
+            style={styles.readMoreButton}
+          >
+            <Text style={styles.readMoreText}>{expanded ? "Leer menos" : "Leer más"}</Text>
+          </Pressable>
+        )}
+      </Animated.View>
+    </View>
+  );
+}
 
 export default function InnerSpaceScreen() {
   const insets = useSafeAreaInsets();
@@ -285,7 +386,7 @@ export default function InnerSpaceScreen() {
               {updateMutation.isError && <Text style={[styles.errorText, { color: colors.destructive, marginTop: 8, textAlign: 'right' }]}>Error al guardar.</Text>}
             </View>
           ) : (
-            <Text style={[styles.cardMessage, { color: colors.foreground }]}>{reflection.message}</Text>
+            <CollapsibleReflectionMessage message={reflection.message} color={colors.foreground} />
           )}
         </View>
       </View>
@@ -348,7 +449,7 @@ export default function InnerSpaceScreen() {
                 ]}
                 onPress={() => setFilter(cat.id as ReflectionCategory)}
               >
-                <IconComp name={cat.icon as any} size={14} color={isActive ? cat.color : "#F9F9F9"} />
+                <IconComp name={cat.icon as any} size={18} color={isActive ? cat.color : "#F9F9F9"} />
                 <Text style={[styles.filterText, { color: isActive ? "#060A0F" : "#F9F9F9" }]}>{cat.label}</Text>
               </Pressable>
             );
@@ -527,10 +628,7 @@ const styles = StyleSheet.create({
     marginTop: 16,
   },
   datePill: {
-    paddingHorizontal: 12,
-    paddingVertical: 6,
-    borderRadius: 12,
-    backgroundColor: "rgba(249,249,249,0.1)",
+    backgroundColor: "transparent",
   },
   dateText: {
     fontSize: 12,
@@ -586,6 +684,25 @@ const styles = StyleSheet.create({
   cardMessage: {
     fontSize: 15,
     lineHeight: 22,
+  },
+  messageContainer: {
+    position: "relative",
+  },
+  messageMeasure: {
+    position: "absolute",
+    left: 0,
+    right: 0,
+    opacity: 0,
+    zIndex: -1,
+  },
+  readMoreButton: {
+    alignSelf: "flex-start",
+    marginTop: 6,
+  },
+  readMoreText: {
+    color: "#F9F9F9",
+    fontSize: 13,
+    fontWeight: "700",
   },
   centerContainer: {
     flex: 1,
