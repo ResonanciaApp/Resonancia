@@ -23,7 +23,7 @@ export function InnerSpaceCard({
   const toastAnim = useRef(new Animated.Value(0)).current;
   const toastTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const inputRef = useRef<TextInput>(null);
-  const allowProgrammaticFocusRef = useRef(false);
+  const [inputActive, setInputActive] = useState(false);
   const categoryScales = useRef(
     Object.fromEntries(
       REFLECTION_CATEGORY_OPTIONS.map((item) => [item.id, new Animated.Value(1)]),
@@ -53,18 +53,22 @@ export function InnerSpaceCard({
 
   useEffect(() => {
     if (focusRequest <= 0) return;
-    allowProgrammaticFocusRef.current = true;
-    const frame = requestAnimationFrame(() => inputRef.current?.focus());
+    setInputActive(true);
+    const frame = requestAnimationFrame(() => {
+      const focusFrame = requestAnimationFrame(() => inputRef.current?.focus());
+      return () => cancelAnimationFrame(focusFrame);
+    });
     return () => cancelAnimationFrame(frame);
   }, [focusRequest]);
 
-  const handleInputFocus = () => {
-    if (allowProgrammaticFocusRef.current) {
-      allowProgrammaticFocusRef.current = false;
+  const requestInputFocus = () => {
+    if (inputActive) return;
+    if (onComposeRequested) {
+      onComposeRequested();
       return;
     }
-    inputRef.current?.blur();
-    onComposeRequested?.();
+    setInputActive(true);
+    requestAnimationFrame(() => inputRef.current?.focus());
   };
 
   const showToast = () => {
@@ -166,10 +170,15 @@ export function InnerSpaceCard({
         ))}
       </ScrollView>
 
-      <View style={[styles.inputContainer, { backgroundColor: "rgba(0,0,0,0.2)" }, createMutation.isError && { borderColor: colors.destructive }]}>
+      <Pressable
+        style={[styles.inputContainer, { backgroundColor: "rgba(0,0,0,0.2)" }, createMutation.isError && { borderColor: colors.destructive }]}
+        onPress={requestInputFocus}
+      >
         <TextInput
           ref={inputRef}
-          onFocus={handleInputFocus}
+          editable={inputActive}
+          pointerEvents={inputActive ? "auto" : "none"}
+          onBlur={() => setInputActive(false)}
           style={[styles.input, { color: colors.foreground }]}
           placeholder="Escribe tu mensaje aquí..."
           placeholderTextColor={colors.mutedForeground}
@@ -180,7 +189,7 @@ export function InnerSpaceCard({
           textAlignVertical="top"
         />
         <Text style={[styles.charCount, { color: colors.mutedForeground }]}>{message.length}/300</Text>
-      </View>
+      </Pressable>
       {createMutation.isError && (
         <Text style={[styles.errorText, { color: colors.destructive }]}>Ocurrió un error al guardar. Inténtalo de nuevo.</Text>
       )}
