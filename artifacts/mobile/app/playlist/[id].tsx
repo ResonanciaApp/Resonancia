@@ -761,7 +761,7 @@ const styles = StyleSheet.create({
   cover: {
     width: 146.05,
     height: 146.05,
-    borderRadius: 73.025,
+    borderRadius: 17,
     backgroundColor: "transparent",
     borderWidth: StyleSheet.hairlineWidth,
     borderColor: "rgba(212,175,55,0.20)",
@@ -1190,7 +1190,7 @@ const modalStyles = StyleSheet.create({
   selectedPreview: {
     width: 115.5,
     height: 115.5,
-    borderRadius: 57.75,
+    borderRadius: 20,
   },
   uploadPill: {
     flexDirection: "row",
@@ -1227,7 +1227,7 @@ const modalStyles = StyleSheet.create({
   presetPhotoFrame: {
     width: 63,
     height: 63,
-    borderRadius: 31.5,
+    borderRadius: 20,
     borderWidth: 2,
     borderColor: "transparent",
     padding: 2,
@@ -1237,7 +1237,7 @@ const modalStyles = StyleSheet.create({
   },
   presetPhoto: {
     flex: 1,
-    borderRadius: 27.5,
+    borderRadius: 16,
     overflow: "hidden",
   },
   headerRow: {
