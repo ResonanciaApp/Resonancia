@@ -791,11 +791,10 @@ export default function MezcladorScreen() {
             {/* ── Hero: chevron y ajustes arriba, como en Música ── */}
             <View style={{ height: topPad + 45, position: "relative" }}>
               <View style={{ position: "absolute", left: 20, top: topPad + 3, zIndex: 10 }}>
-                <View style={styles.mixerHeaderControl}>
+                <View style={styles.mixerBackControl}>
                   <BackPill
                     onPress={closeMixer}
                     size={28}
-                    bgColor="rgba(0,0,0,0.28)"
                     iconOffsetX={-1}
                     style={{ transform: [{ translateX: -1 }] }}
                   />
@@ -1101,6 +1100,17 @@ const styles = StyleSheet.create({
     width: 40,
     height: 40,
     borderRadius: 20,
+    borderWidth: 1,
+    borderColor: "rgba(255,255,255,0.2)",
+    backgroundColor: "rgba(0,0,0,0.28)",
+    overflow: "hidden",
+    alignItems: "center",
+    justifyContent: "center",
+  },
+  mixerBackControl: {
+    width: 43,
+    height: 43,
+    borderRadius: 21.5,
     borderWidth: 1,
     borderColor: "rgba(255,255,255,0.2)",
     backgroundColor: "rgba(0,0,0,0.28)",
