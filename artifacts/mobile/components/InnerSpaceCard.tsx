@@ -1,5 +1,5 @@
 import React, { useState, useRef, useEffect } from "react";
-import { View, Text, TextInput, Pressable, StyleSheet, Animated, Easing } from "react-native";
+import { View, Text, TextInput, Pressable, ScrollView, StyleSheet, Animated, Easing } from "react-native";
 import { MaterialCommunityIcons, Feather } from "@expo/vector-icons";
 import { useColors } from "@/hooks/useColors";
 import { useCreateMyReflection, type ReflectionCategory } from "@workspace/api-client-react";
@@ -74,16 +74,15 @@ export function InnerSpaceCard() {
   return (
     <View style={styles.container}>
       <View style={styles.header}>
-        <View style={styles.headerIcon}>
-          <MaterialCommunityIcons name="flower-tulip" size={24} color={colors.primary} />
-        </View>
-        <View style={styles.headerTextContainer}>
-          <Text style={[styles.title, { color: colors.foreground }]}>Un momento para ti</Text>
-          <Text style={[styles.subtitle, { color: colors.mutedForeground }]}>¿Qué necesitas expresar hoy?</Text>
-        </View>
+        <Text style={[styles.title, { color: colors.foreground }]}>Un momento para ti</Text>
       </View>
 
-      <View style={styles.grid}>
+      <ScrollView
+        horizontal
+        showsHorizontalScrollIndicator={false}
+        contentContainerStyle={styles.categoriesContent}
+        style={styles.categoriesScroll}
+      >
         {(Object.values(REFLECTION_CATEGORIES)).map((cat) => (
           <Pressable
             key={cat.id}
@@ -108,7 +107,7 @@ export function InnerSpaceCard() {
             <Text style={[styles.gridLabel, { color: category === cat.id ? colors.foreground : colors.mutedForeground }]}>{cat.label}</Text>
           </Pressable>
         ))}
-      </View>
+      </ScrollView>
 
       <View style={[styles.inputContainer, { backgroundColor: "rgba(0,0,0,0.2)" }, createMutation.isError && { borderColor: colors.destructive }]}>
         <TextInput
@@ -172,42 +171,27 @@ const styles = StyleSheet.create({
     overflow: "hidden",
   },
   header: {
-    flexDirection: "row",
     alignItems: "center",
     marginBottom: 20,
-  },
-  headerIcon: {
-    width: 44,
-    height: 44,
-    borderRadius: 22,
-    backgroundColor: "rgba(172, 172, 193, 0.1)",
-    alignItems: "center",
-    justifyContent: "center",
-    marginRight: 12,
-  },
-  headerTextContainer: {
-    flex: 1,
   },
   title: {
     fontSize: 18,
     fontWeight: "600",
-    marginBottom: 4,
+    textAlign: "center",
   },
-  subtitle: {
-    fontSize: 14,
-  },
-  grid: {
-    flexDirection: "row",
-    flexWrap: "wrap",
-    justifyContent: "space-between",
+  categoriesScroll: {
     marginBottom: 20,
+    marginHorizontal: -20,
+  },
+  categoriesContent: {
+    paddingHorizontal: 20,
+    gap: 10,
   },
   gridItem: {
-    width: "31%",
+    width: 92,
     alignItems: "center",
     paddingVertical: 12,
     borderRadius: 16,
-    marginBottom: 10,
     borderWidth: 1,
     borderColor: "transparent",
   },

@@ -1385,8 +1385,6 @@ export function ProfileScreenBase({
           />
         </View>
 
-        <InnerSpaceCard />
-
         {false && (
           <View style={styles.wisdomSection}>
             <Text style={[styles.wisdomSectionTitle, { color: colors.foreground }]}>
@@ -1406,6 +1404,8 @@ export function ProfileScreenBase({
                 showCalendar={false}
               />
             </View>
+
+            <InnerSpaceCard />
 
             {continueMeditationPlaylist ? (
               <>
