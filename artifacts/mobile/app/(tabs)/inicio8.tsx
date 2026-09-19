@@ -3779,6 +3779,7 @@ const styles = StyleSheet.create({
   inicio3HeroCategoryPillText: {
     fontSize: 12,
     fontWeight: "900",
+    transform: [{ translateX: 1 }],
   },
   inicio3HeroCategoryPill: {
     minHeight: 27,
