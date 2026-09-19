@@ -1630,6 +1630,7 @@ const Inicio2HeroStatic = React.memo(function Inicio2HeroStatic({
   giftScale,
   onOpenDrawer,
   onOpenProfile,
+  onOpenSearch,
   isInicio3,
   scrollY,
 }: {
@@ -1638,6 +1639,7 @@ const Inicio2HeroStatic = React.memo(function Inicio2HeroStatic({
   giftScale: Animated.Value;
   onOpenDrawer: () => void;
   onOpenProfile: () => void;
+  onOpenSearch: () => void;
   isInicio3?: boolean;
   scrollY?: SharedValue<number>;
 }) {
@@ -1806,7 +1808,7 @@ const Inicio2HeroStatic = React.memo(function Inicio2HeroStatic({
             isInicio3 && {
               position: "absolute",
               top: topInset + 2,
-              right: 4,
+              right: 6,
             },
           ]}
         >
@@ -1829,7 +1831,10 @@ const Inicio2HeroStatic = React.memo(function Inicio2HeroStatic({
               }).start()
             }
             hitSlop={12}
-            style={styles.inicio2HeroLotusButton}
+            style={[
+              styles.inicio2HeroLotusButton,
+              isInicio3 && styles.inicio3HeaderActionHitbox,
+            ]}
             accessibilityRole="button"
             accessibilityLabel={isInicio3 ? "Abrir notificaciones" : "Abrir Tu progreso"}
             testID="inicio2-open-progress-control"
@@ -1855,6 +1860,24 @@ const Inicio2HeroStatic = React.memo(function Inicio2HeroStatic({
               )}
             </Animated.View>
           </Pressable>
+          {isInicio3 ? (
+            <Pressable
+              onPress={onOpenSearch}
+              hitSlop={10}
+              style={styles.inicio3HeaderActionHitbox}
+              accessibilityRole="button"
+              accessibilityLabel="Buscar en Inicio"
+              testID="inicio3-open-search"
+            >
+              <View style={styles.inicio3NotificationsButton}>
+                {Platform.OS === "ios" ? (
+                  <SymbolView name="magnifyingglass" tintColor="#FFFFFF" size={24} />
+                ) : (
+                  <Feather name="search" size={24} color="#FFFFFF" />
+                )}
+              </View>
+            </Pressable>
+          ) : null}
         </View>
       </RAnimated.View>
 
@@ -2752,6 +2775,7 @@ export default function HomeScreen2({
               giftScale={giftScaleAnim}
               onOpenDrawer={handleOpenDrawer}
               onOpenProfile={handleOpenProgress}
+              onOpenSearch={handleSearchBtnPress}
               isInicio3={variant === "inicio3"}
               scrollY={inicio3ScrollY}
             />
@@ -3626,6 +3650,13 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     alignItems: "center",
     gap: 8,
+  },
+  inicio3HeaderActionHitbox: {
+    width: 43,
+    height: 43,
+    borderRadius: 21.5,
+    alignItems: "center",
+    justifyContent: "center",
   },
   inicio2HeroLotusCount: {
     minWidth: 13,

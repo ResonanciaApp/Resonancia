@@ -984,7 +984,7 @@ const styles = StyleSheet.create({
     width: 43,
     height: 43,
     borderRadius: 21.5,
-    transform: [{ translateX: 3 }],
+    transform: [{ translateX: 1 }],
     borderWidth: 1,
     borderColor: "rgba(255,255,255,0.2)",
     alignItems: "center",
