@@ -148,3 +148,4 @@
 - [Detalle diario de Inspiración](inspiration-detail-layout.md) — fondo fullscreen y contenido continuo; controles flotantes, sin header/footer ni sección Mis notas dentro del detalle
 - [Hero secundario en Admin Inspiración](admin-inspiration-hero-hierarchy.md) — Hero de Inicio va debajo del editor principal y plegado por defecto; nunca como tercera columna que comprima el contenido diario
 - [Controles circulares de navegación](circular-navigation-controls.md) — chevron/X/lupa independientes usan superficie 43×43 negra 28% con borde blanco 20%; no aplicar a indicadores ni acciones locales
+- [Instagram Stories requiere Meta App ID](instagram-stories-meta-app-id.md) — source_application usa el ID numérico público de Meta, no el bundle ID; además declarar scheme iOS y package query Android
