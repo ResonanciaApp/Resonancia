@@ -119,11 +119,16 @@ export function SessionCategoryPill({
         </>
       )}
       {showIcon && category.materialIcon ? (
-        <MaterialCommunityIcons name={category.materialIcon} size={iconSize} color="#F9F9F9" />
+        <MaterialCommunityIcons
+          name={category.materialIcon}
+          size={iconSize}
+          color="#F9F9F9"
+          style={styles.categoryPillIcon}
+        />
       ) : showIcon && category.icon ? (
         <Image
           source={category.icon}
-          style={{ width: iconSize, height: iconSize }}
+          style={[styles.categoryPillIcon, { width: iconSize, height: iconSize }]}
           resizeMode="contain"
         />
       ) : null}
@@ -321,6 +326,9 @@ const styles = StyleSheet.create({
     top: 0,
     left: 0,
     maxWidth: "100%",
+  },
+  categoryPillIcon: {
+    transform: [{ translateX: -4 }],
   },
   categoryPillPlain: {
     minHeight: 0,
