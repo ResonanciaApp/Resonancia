@@ -22,6 +22,10 @@ export const REFLECTION_CATEGORIES: Record<
   acceptance: { id: "acceptance", label: "Aceptación", icon: "triangle", iconFamily: "Feather", color: "#5FA1CA", bg: "rgba(95, 161, 202, 0.15)" },
 };
 
+export const REFLECTION_CATEGORY_OPTIONS = Object.values(REFLECTION_CATEGORIES).filter(
+  (category) => category.id !== "understanding",
+);
+
 export function CategoryIcon({
   category,
   size = 24,
@@ -40,7 +44,7 @@ export function CategoryIcon({
     <View
       style={[
         {
-          backgroundColor: isNeutral ? "transparent" : cat.bg,
+          backgroundColor: neutralWhenInactive ? "transparent" : cat.bg,
           width: size * 2.2,
           height: size * 2.2,
           borderRadius: size * 1.1,

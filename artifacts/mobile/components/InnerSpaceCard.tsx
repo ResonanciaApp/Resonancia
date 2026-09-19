@@ -5,7 +5,7 @@ import { useColors } from "@/hooks/useColors";
 import { useCreateMyReflection, type ReflectionCategory } from "@workspace/api-client-react";
 import { useQueryClient } from "@tanstack/react-query";
 import { router } from "expo-router";
-import { REFLECTION_CATEGORIES, CategoryIcon } from "@/constants/reflectionCategories";
+import { REFLECTION_CATEGORY_OPTIONS, CategoryIcon } from "@/constants/reflectionCategories";
 import { useReducedMotion } from "react-native-reanimated";
 
 export function InnerSpaceCard() {
@@ -83,7 +83,7 @@ export function InnerSpaceCard() {
         contentContainerStyle={styles.categoriesContent}
         style={styles.categoriesScroll}
       >
-        {(Object.values(REFLECTION_CATEGORIES)).map((cat) => (
+        {REFLECTION_CATEGORY_OPTIONS.map((cat) => (
           <Pressable
             key={cat.id}
             testID={`category-${cat.id}`}
@@ -190,11 +190,12 @@ const styles = StyleSheet.create({
     gap: 5,
   },
   gridItem: {
+    width: 92,
     alignItems: "center",
     paddingVertical: 12,
     paddingHorizontal: 4,
     borderRadius: 18,
-    borderWidth: 2,
+    borderWidth: 1,
     borderColor: "rgba(255,255,255,0.1)",
   },
   pressedCategory: {

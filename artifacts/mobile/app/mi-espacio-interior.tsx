@@ -6,7 +6,7 @@ import { router } from "expo-router";
 import { LinearGradient } from "expo-linear-gradient";
 import { useColors } from "@/hooks/useColors";
 import { useSceneTheme } from "@/context/SceneThemeContext";
-import { REFLECTION_CATEGORIES, CategoryIcon } from "@/constants/reflectionCategories";
+import { REFLECTION_CATEGORIES, REFLECTION_CATEGORY_OPTIONS, CategoryIcon } from "@/constants/reflectionCategories";
 import { useUpdateMyReflection, useDeleteMyReflection, type Reflection, type ReflectionCategory, listMyReflections, useListMyReflections, getListMyReflectionsQueryKey } from "@workspace/api-client-react";
 import { KeyboardAwareScrollView } from "react-native-keyboard-controller";
 import { useQueryClient } from "@tanstack/react-query";
@@ -249,7 +249,7 @@ export default function InnerSpaceScreen() {
           {isEditing ? (
             <View style={styles.editContainer}>
               <View style={styles.editCategoryRow}>
-                {Object.values(REFLECTION_CATEGORIES).map(c => (
+                {REFLECTION_CATEGORY_OPTIONS.map(c => (
                   <Pressable
                     key={c.id}
                     testID={`edit-cat-${c.id}`}
@@ -332,7 +332,7 @@ export default function InnerSpaceScreen() {
           >
             <Text style={[styles.filterText, { color: filter === "all" ? colors.foreground : colors.mutedForeground }]}>Todos</Text>
           </Pressable>
-          {Object.values(REFLECTION_CATEGORIES).map(cat => {
+           {REFLECTION_CATEGORY_OPTIONS.map(cat => {
             const isActive = filter === cat.id;
             const IconComp = cat.iconFamily === "Feather" ? Feather : MaterialCommunityIcons;
             return (
