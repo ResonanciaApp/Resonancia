@@ -16,6 +16,7 @@ import {
   Animated,
   Easing,
   FlatList,
+  InteractionManager,
   KeyboardAvoidingView,
   Linking,
   Modal,
@@ -434,14 +435,20 @@ export function ProfileScreenBase({
     ) return;
 
     handledComposeReflectionRef.current = composeReflectionToken;
-    profileScrollRef.current?.scrollTo({
-      y: Math.max(0, innerSpaceLayoutY - 96),
-      animated: true,
+    let focusTimer: ReturnType<typeof setTimeout> | null = null;
+    const interactionTask = InteractionManager.runAfterInteractions(() => {
+      profileScrollRef.current?.scrollTo({
+        y: Math.max(0, innerSpaceLayoutY - 121),
+        animated: true,
+      });
+      focusTimer = setTimeout(() => {
+        setInnerSpaceFocusRequest((value) => value + 1);
+      }, 700);
     });
-    const focusTimer = setTimeout(() => {
-      setInnerSpaceFocusRequest((value) => value + 1);
-    }, 450);
-    return () => clearTimeout(focusTimer);
+    return () => {
+      interactionTask.cancel();
+      if (focusTimer) clearTimeout(focusTimer);
+    };
   }, [composeReflectionToken, dedicated, innerSpaceLayoutY]);
   useEffect(() => {
     const tabNavigation = navigation as unknown as {
