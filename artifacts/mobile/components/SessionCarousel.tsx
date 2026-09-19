@@ -280,10 +280,6 @@ type SessionCarouselProps = {
   ambientalTitleOnly?: boolean;
   /** Moves the centered image of Ambiental cards upward. */
   ambientalImageLift?: number;
-  /** Fine-tunes the rendered Ambiental image without moving its metadata. */
-  ambientalImageOffsetY?: number;
-  /** Places the Ambiental preview control in the card's lower-right corner. */
-  ambientalPlayRightAligned?: boolean;
   /** Fills the upper card area with the image down to the former circle edge. */
   ambientalImageFillTop?: boolean;
   /** Position override used only by Ambiental title-only metadata. */
@@ -383,8 +379,6 @@ export const SessionCarousel = React.memo(function SessionCarousel({
   showSleepCategoryPill = true,
   ambientalTitleOnly = false,
   ambientalImageLift = 9,
-  ambientalImageOffsetY = 0,
-  ambientalPlayRightAligned = false,
   ambientalImageFillTop = true,
   ambientalTitleOnlyMetadataStyle = CANONICAL_AMBIENTAL_METADATA_STYLE,
   ambientalTitleOnlyTitleStyle = CANONICAL_AMBIENTAL_TITLE_STYLE,
@@ -546,8 +540,7 @@ export const SessionCarousel = React.memo(function SessionCarousel({
     (ambientalImageBottom - ambientalFilledImageHeight) / 2 +
     4 +
     AMBIENTAL_CONTENT_DROP +
-    AMBIENTAL_IMAGE_EXTRA_DROP +
-    ambientalImageOffsetY;
+    AMBIENTAL_IMAGE_EXTRA_DROP;
   const ambientalPlayButtonSize = 34 * ambientalFillScale + 10;
   const ambientalPlayIconSize = 22 * ambientalFillScale + 4;
   const viewAllAccent = theme.accent ?? viewAllColor ?? colors.accent;
@@ -758,17 +751,8 @@ export const SessionCarousel = React.memo(function SessionCarousel({
                               width: ambientalPlayButtonSize,
                               height: ambientalPlayButtonSize,
                               borderRadius: ambientalPlayButtonSize / 2,
-                              ...(ambientalPlayRightAligned
-                                ? {
-                                    left: undefined,
-                                    top: undefined,
-                                    right: 8,
-                                    bottom: 8,
-                                  }
-                                : {
-                                    left: 20,
-                                    top: 20,
-                                  }),
+                              left: 20,
+                              top: 20,
                               transform: [{ scale: getPreviewScale(s.id) }],
                             },
                           ]}
