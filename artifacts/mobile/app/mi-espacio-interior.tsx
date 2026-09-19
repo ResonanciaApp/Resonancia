@@ -888,7 +888,7 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
     paddingHorizontal: 40,
-    transform: [{ translateY: -80 }],
+    paddingBottom: 160,
   },
   emptyTitle: {
     fontSize: 18,
