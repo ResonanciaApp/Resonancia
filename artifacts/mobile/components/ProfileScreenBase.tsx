@@ -440,6 +440,7 @@ function BgGlyph({
 export function ProfileScreenBase({
   dedicated = false,
   accountMode = false,
+  settingsMode = false,
   onBack,
   asTab = false,
   initialLibraryTab,
@@ -447,6 +448,7 @@ export function ProfileScreenBase({
 }: {
   dedicated?: boolean;
   accountMode?: boolean;
+  settingsMode?: boolean;
   onBack?: () => void;
   asTab?: boolean;
   initialLibraryTab?: LibraryTab | null;
@@ -1054,6 +1056,59 @@ export function ProfileScreenBase({
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [activeBgCreation?.id]);
 
+  if (settingsMode) {
+    return (
+      <View style={styles.root}>
+        <LinearGradient
+          colors={[activeTheme.gradient[0], activeTheme.gradient[1]]}
+          style={StyleSheet.absoluteFill}
+          start={{ x: 0, y: 0 }}
+          end={{ x: 0, y: 1 }}
+        />
+        <SacredBackground variant="gradient" noImage />
+        <StatusBar barStyle="light-content" />
+
+        <View style={styles.accountContent}>
+          <View style={[styles.stickyHeader, { paddingTop: topPad + 8 }]}>
+            <View style={[styles.stickyHeaderRow, styles.libraryTabHeaderRow]}>
+              <Pressable
+                onPress={() => (onBack ? onBack() : router.back())}
+                hitSlop={8}
+                style={styles.accountBackButton}
+                accessibilityRole="button"
+                accessibilityLabel="Volver"
+              >
+                <Feather
+                  name="chevron-left"
+                  size={28}
+                  color="#FBFBFB"
+                  style={{ transform: [{ translateX: -1 }] }}
+                />
+              </Pressable>
+              <Text style={styles.stickyTitleLibraryTab}>Configuración y ajustes</Text>
+              <View style={styles.accountHeaderSpacer} />
+            </View>
+          </View>
+
+          <ScrollView
+            contentContainerStyle={[styles.settingsScreenContent, { paddingBottom: bottomPad + 40 }]}
+            showsVerticalScrollIndicator={false}
+          >
+            <ProfileSettingsSections
+              placement="settings"
+              sceneId={activeSceneId}
+              foreground={colors.foreground}
+              mutedForeground={colors.mutedForeground}
+              accent={secondaryAccent}
+              cardBackground="rgba(0,0,0,0.28)"
+              onLogout={handleProfileLogout}
+            />
+          </ScrollView>
+        </View>
+      </View>
+    );
+  }
+
   if (accountMode) {
     return (
       <View style={styles.root}>
@@ -1166,17 +1221,6 @@ export function ProfileScreenBase({
                 <Text style={styles.accountDeleteButtonText}>Eliminar cuenta</Text>
               </Pressable>
 
-              <View style={styles.accountSettingsSections}>
-                <ProfileSettingsSections
-                  placement="settings"
-                  sceneId={activeSceneId}
-                  foreground={colors.foreground}
-                  mutedForeground={colors.mutedForeground}
-                  accent={secondaryAccent}
-                  cardBackground="rgba(0,0,0,0.28)"
-                  onLogout={handleProfileLogout}
-                />
-              </View>
             </ScrollView>
           </KeyboardAvoidingView>
           <Animated.View
@@ -1478,7 +1522,7 @@ export function ProfileScreenBase({
             <Text style={[styles.dedicatedHeroTitle, { color: colors.foreground }]}>Perfil</Text>
           </View>
           <Pressable
-            onPress={() => router.push("/mi-perfil")}
+            onPress={() => router.push("/configuracion-ajustes")}
             hitSlop={8}
             style={({ pressed }) => [styles.gearBtn, { opacity: pressed ? 0.68 : 1 }]}
             accessibilityRole="button"
@@ -2136,8 +2180,9 @@ const styles = StyleSheet.create({
   profileSettingsSections: {
     marginTop: 12,
   },
-  accountSettingsSections: {
-    marginTop: 32,
+  settingsScreenContent: {
+    paddingTop: 24,
+    paddingHorizontal: 16,
   },
   stickyTitleBiblioteca: { fontSize: 27, textAlign: "left", position: "absolute", left: 19, top: 25 },
   stickyTitleTab: { fontSize: 30, fontWeight: "800", textAlign: "left", flex: 1, marginLeft: 0, transform: [{ translateY: 3 }] },
