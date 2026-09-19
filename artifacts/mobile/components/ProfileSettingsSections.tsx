@@ -244,14 +244,14 @@ const styles = StyleSheet.create({
   },
   sectionTitle: {
     fontFamily: "Manrope",
-    fontSize: 21,
-    lineHeight: 27,
+    fontSize: 18,
+    lineHeight: 24,
     fontWeight: "700",
     marginBottom: 16,
   },
   sectionTitleCompact: {
-    fontSize: 19,
-    lineHeight: 24,
+    fontSize: 16,
+    lineHeight: 21,
   },
   card: {
     borderRadius: 17,
