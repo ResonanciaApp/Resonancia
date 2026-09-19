@@ -53,7 +53,12 @@ export default function ProgresoScreen() {
           accessibilityRole="button"
           accessibilityLabel="Volver"
         >
-          <Feather name="arrow-left" size={23} color={colors.foreground} />
+          <Feather
+            name="chevron-left"
+            size={28}
+            color={colors.foreground}
+            style={styles.backChevron}
+          />
         </Pressable>
         <Text style={[styles.headerTitle, { color: colors.foreground }]}>Tu progreso</Text>
         <View style={styles.headerSpacer} />
@@ -147,10 +152,17 @@ const styles = StyleSheet.create({
     backgroundColor: "transparent",
   },
   backButton: {
-    width: 42,
-    height: 42,
+    width: 43,
+    height: 43,
+    borderRadius: 21.5,
+    borderWidth: 1,
+    borderColor: "rgba(255,255,255,0.2)",
+    backgroundColor: "rgba(0,0,0,0.28)",
     alignItems: "center",
     justifyContent: "center",
+  },
+  backChevron: {
+    transform: [{ translateX: -1 }],
   },
   headerTitle: {
     flex: 1,
@@ -160,7 +172,7 @@ const styles = StyleSheet.create({
     fontWeight: "700",
     textAlign: "center",
   },
-  headerSpacer: { width: 42, height: 42 },
+  headerSpacer: { width: 43, height: 43 },
   heroContainer: {
     position: "relative",
     backgroundColor: "#080A28",
