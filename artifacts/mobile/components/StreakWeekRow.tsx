@@ -20,7 +20,12 @@ export function StreakWeekRow() {
         const dayCircle = (
           <View style={styles.day}>
             {active ? (
-              <Feather name="check" size={22} color="#FFFFFF" />
+              <Feather
+                name="check"
+                size={24}
+                color="#FFFFFF"
+                style={styles.checkMark}
+              />
             ) : (
               <Text style={styles.dayLabel}>{initial}</Text>
             )}
@@ -66,21 +71,21 @@ const styles = StyleSheet.create({
     alignItems: "center",
   },
   day: {
-    width: 40,
-    height: 40,
-    borderRadius: 20,
+    width: 38,
+    height: 38,
+    borderRadius: 19,
     backgroundColor: "rgba(255,255,255,0.1)",
     alignItems: "center",
     justifyContent: "center",
   },
   ringHost: {
-    width: 40,
-    height: 40,
-    borderRadius: 20,
+    width: 38,
+    height: 38,
+    borderRadius: 19,
   },
   ringMask: {
     flex: 1,
-    borderRadius: 20,
+    borderRadius: 19,
     borderWidth: 2,
     borderColor: "#000000",
     backgroundColor: "transparent",
@@ -91,5 +96,8 @@ const styles = StyleSheet.create({
     fontSize: 19,
     fontWeight: "700",
     opacity: 0.6,
+  },
+  checkMark: {
+    transform: [{ translateY: 1 }],
   },
 });

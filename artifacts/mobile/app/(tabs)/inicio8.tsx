@@ -1808,7 +1808,7 @@ const Inicio2HeroStatic = React.memo(function Inicio2HeroStatic({
             isInicio3 && {
               position: "absolute",
               top: topInset + 2,
-              right: 6,
+              right: 14,
             },
           ]}
         >
@@ -3554,8 +3554,7 @@ const styles = StyleSheet.create({
     borderColor: "rgba(255,255,255,0.1)",
   },
   inicio3HeroAvatarBorder: {
-    borderWidth: 2,
-    borderColor: "rgba(255,255,255,0.7)",
+    borderWidth: 0,
   },
   inicio2HeroAvatarButton: {
     position: "relative",
