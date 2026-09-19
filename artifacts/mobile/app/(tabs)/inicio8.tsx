@@ -1554,7 +1554,12 @@ function Inicio3HeroPager({
                   ) : (
                     <>
                       <View style={styles.inicio2HeroCategory}>
-                        <SessionCategoryPill categoryId={item.categoryId ?? ""} inline />
+                        <SessionCategoryPill
+                          categoryId={item.categoryId ?? ""}
+                          inline
+                          showIcon
+                          iconSize={14}
+                        />
                       </View>
                       <Text style={[styles.inicio2HeroTitle, styles.inicio2HeroStaticTitle, styles.inicio3HeroTitle]}>
                         {item.title}

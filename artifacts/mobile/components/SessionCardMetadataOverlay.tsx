@@ -72,6 +72,7 @@ export function SessionCategoryPill({
   topInset,
   bottomInset,
   whiteGlass = false,
+  showIcon = false,
   style,
   textStyle,
 }: {
@@ -88,6 +89,7 @@ export function SessionCategoryPill({
   topInset?: number;
   bottomInset?: number;
   whiteGlass?: boolean;
+  showIcon?: boolean;
   style?: import("react-native").StyleProp<import("react-native").ViewStyle>;
   textStyle?: import("react-native").StyleProp<import("react-native").TextStyle>;
 }) {
@@ -116,6 +118,15 @@ export function SessionCategoryPill({
           {whiteGlass ? <View style={[StyleSheet.absoluteFill, styles.whiteGlassTint]} /> : null}
         </>
       )}
+      {showIcon && category.materialIcon ? (
+        <MaterialCommunityIcons name={category.materialIcon} size={iconSize} color="#F9F9F9" />
+      ) : showIcon && category.icon ? (
+        <Image
+          source={category.icon}
+          style={{ width: iconSize, height: iconSize }}
+          resizeMode="contain"
+        />
+      ) : null}
       <Text
         style={[
           styles.categoryLabel,
