@@ -40,11 +40,13 @@ function SlidingSheetModal({
   children: React.ReactNode;
 }) {
   const [mounted, setMounted] = useState(visible);
+  const mountedRef = useRef(visible);
   const translateY = useRef(new Animated.Value(700)).current;
   const overlayOpacity = useRef(new Animated.Value(0)).current;
 
   useEffect(() => {
     if (visible) {
+      mountedRef.current = true;
       setMounted(true);
       translateY.setValue(700);
       overlayOpacity.setValue(0);
@@ -66,7 +68,7 @@ function SlidingSheetModal({
       return;
     }
 
-    if (mounted) {
+    if (mountedRef.current) {
       Animated.parallel([
         Animated.timing(translateY, {
           toValue: 700,
@@ -80,10 +82,13 @@ function SlidingSheetModal({
           useNativeDriver: true,
         }),
       ]).start(({ finished }) => {
-        if (finished) setMounted(false);
+        if (finished) {
+          mountedRef.current = false;
+          setMounted(false);
+        }
       });
     }
-  }, [mounted, overlayOpacity, translateY, visible]);
+  }, [overlayOpacity, translateY, visible]);
 
   useEffect(() => () => {
     translateY.stopAnimation();
