@@ -45,9 +45,9 @@ export function CategoryIcon({
       style={[
         {
           backgroundColor: neutralWhenInactive ? "transparent" : cat.bg,
-          width: size * 2.2,
-          height: size * 2.2,
-          borderRadius: size * 1.1,
+          width: neutralWhenInactive ? size : size * 2.2,
+          height: neutralWhenInactive ? size : size * 2.2,
+          borderRadius: neutralWhenInactive ? 0 : size * 1.1,
           alignSelf: "center",
           alignItems: "center",
           justifyContent: "center",

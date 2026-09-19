@@ -74,7 +74,7 @@ export function InnerSpaceCard() {
   return (
     <View style={styles.container}>
       <View style={styles.header}>
-        <Text style={[styles.title, { color: colors.foreground }]}>Un momento para ti</Text>
+        <Text style={[styles.title, { color: colors.foreground }]}>Mi viaje interior</Text>
       </View>
 
       <ScrollView
@@ -194,7 +194,7 @@ const styles = StyleSheet.create({
     width: 92,
     alignItems: "center",
     justifyContent: "center",
-    paddingVertical: 12,
+    paddingVertical: 15,
     paddingHorizontal: 4,
     borderRadius: 18,
     borderWidth: 1,
@@ -206,7 +206,7 @@ const styles = StyleSheet.create({
   gridLabel: {
     width: "100%",
     fontSize: 12,
-    marginTop: 1,
+    marginTop: 3,
     fontWeight: "500",
     textAlign: "center",
   },
