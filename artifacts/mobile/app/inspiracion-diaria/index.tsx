@@ -211,6 +211,9 @@ export default function InspiracionDiariaIndex() {
           data={days}
           horizontal
           pagingEnabled
+          bounces={false}
+          alwaysBounceHorizontal={false}
+          overScrollMode="never"
           initialScrollIndex={Math.max(0, days.length - 1)}
           keyExtractor={(day) => day.date}
           getItemLayout={(_, index) => ({ length: width, offset: width * index, index })}
