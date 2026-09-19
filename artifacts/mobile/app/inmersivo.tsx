@@ -152,7 +152,7 @@ export default function InmersivoScreen() {
       {/* Header */}
       <View style={[styles.header, { paddingTop: insets.top + 8 }]}>
         <Pressable onPress={() => router.back()} style={styles.iconBtn} hitSlop={10}>
-          <Feather name="chevron-down" size={26} color="#FFFFFF" />
+          <Feather name="chevron-down" size={28} color="#FFFFFF" />
         </Pressable>
         <View style={styles.headerCenter}>
           <Text style={styles.headerKicker}>SONIDOS NATURALEZA</Text>

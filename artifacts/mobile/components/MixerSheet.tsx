@@ -949,7 +949,7 @@ export function MixerSheet() {
                 accessibilityRole="button"
                 accessibilityLabel="Cerrar editor de mezcla"
               >
-                <Feather name="chevron-down" size={24} color={palette.headerFg} />
+                <Feather name="chevron-down" size={28} color={palette.headerFg} />
               </Pressable>
               <Text style={[styles.title, { color: palette.headerFg, flex: 1, textAlign: "center", fontSize: 15 }]} numberOfLines={1}>
                 {originPreset?.name ?? "Tu mezcla"}

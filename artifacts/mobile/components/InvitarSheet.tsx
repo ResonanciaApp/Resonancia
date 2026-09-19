@@ -207,7 +207,7 @@ export function InvitarSheet({ visible, onClose }: InvitarSheetProps) {
         {/* Botón X */}
         <Pressable style={styles.closeBtn} onPress={dismiss} hitSlop={14}>
           <View style={styles.closeBtnInner}>
-            <Feather name="x" size={20} color="rgba(255,255,255,0.75)" />
+            <Feather name="x" size={22} color="rgba(255,255,255,0.75)" />
           </View>
         </Pressable>
 

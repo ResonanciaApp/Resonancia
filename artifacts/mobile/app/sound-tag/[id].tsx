@@ -186,7 +186,7 @@ export default function SoundTagDetailScreen({ id: idProp }: { id?: string } = {
       />
       <View style={[styles.header, { paddingTop: topPad + 8 }]}>
          <Pressable onPress={goBack} hitSlop={10} style={styles.back}>
-           <Feather name="chevron-left" size={32} color={colors.foreground} />
+           <Feather name="chevron-left" size={28} color={colors.foreground} />
         </Pressable>
         <Text style={[styles.title, { color: colors.foreground }]} numberOfLines={1}>
           {tag.label}

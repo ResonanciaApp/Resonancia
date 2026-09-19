@@ -520,7 +520,7 @@ export function MoodPickerSheet({
                 accessibilityRole="button"
                 accessibilityLabel="Volver a seleccionar emociones"
               >
-                <Feather name="chevron-left" size={32} color={GOLD} style={{ transform: [{ translateX: -1 }] }} />
+                <Feather name="chevron-left" size={28} color={GOLD} style={{ transform: [{ translateX: -1 }] }} />
               </Pressable>
               <Text style={styles.progressLabel}>
                 {surveyIndex + 1} DE {selectedMoods.length}

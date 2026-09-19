@@ -102,7 +102,7 @@ export default function HistorialEmocionesScreen() {
           accessibilityRole="button"
           accessibilityLabel="Volver"
         >
-          <Feather name="chevron-left" size={32} color="#F9F9F9" style={{ transform: [{ translateX: -1 }] }} />
+          <Feather name="chevron-left" size={28} color="#F9F9F9" style={{ transform: [{ translateX: -1 }] }} />
         </Pressable>
         <View style={styles.headerTitleBlock}>
           <Text style={styles.headerTitle}>Historial estado de ánimo</Text>

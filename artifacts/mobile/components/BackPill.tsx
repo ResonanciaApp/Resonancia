@@ -48,7 +48,9 @@ export function BackPill({
         ]}
       >
         <View style={iconOffsetX ? { transform: [{ translateX: iconOffsetX }] } : undefined}>
-          <Feather name="chevron-left" size={size} color={color} />
+          {/* La superficie circular estándar tiene un único tamaño de icono.
+              Los callers legacy sin standardSurface conservan su `size`. */}
+          <Feather name="chevron-left" size={standardSurface ? 28 : size} color={color} />
         </View>
       </View>
     </PressableScale>

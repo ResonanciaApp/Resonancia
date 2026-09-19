@@ -135,7 +135,7 @@ export default function AncestralInfoScreen() {
         hitSlop={12}
         style={[styles.closeBtn, { top: insets.top + 12 }]}
       >
-        <Feather name="x" size={20} color="#fff" />
+            <Feather name="x" size={22} color="#fff" />
       </Pressable>
 
       <Animated.ScrollView

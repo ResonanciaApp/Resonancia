@@ -228,7 +228,7 @@ export default function SleepTagDetailScreen({ id: idProp }: { id?: string } = {
               accessibilityRole="button"
               accessibilityLabel="Volver"
             >
-              <Feather name="chevron-left" size={32} color={colors.foreground} />
+              <Feather name="chevron-left" size={28} color={colors.foreground} />
             </Pressable>
           </View>
           <View style={styles.stickyTitleCol}>

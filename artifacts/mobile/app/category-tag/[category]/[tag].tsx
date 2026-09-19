@@ -307,7 +307,7 @@ export default function CategoryTagScreen({
           accessibilityRole="button"
           accessibilityLabel="Volver"
         >
-          <Feather name="chevron-left" size={32} color="#FBFBFB" style={{ transform: [{ translateX: -1 }] }} />
+          <Feather name="chevron-left" size={28} color="#FBFBFB" style={{ transform: [{ translateX: -1 }] }} />
         </Pressable>
         <View style={styles.stickyTabs}>
           <FilterTabs editorialTags={editorialTags} active={activeFilter} onSelect={setActiveFilter} />

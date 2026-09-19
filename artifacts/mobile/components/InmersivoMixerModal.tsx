@@ -204,7 +204,7 @@ export function InmersivoContent() {
         <Animated.View style={[styles.controlsLayer, { opacity: controlsOpacity }]} pointerEvents="box-none">
           <View style={[styles.header, { paddingTop: insets.top + 8 }]}>
             <Pressable onPress={handleBack} style={styles.iconBtn} hitSlop={14}>
-              <Feather name="chevron-down" size={26} color="rgba(255,255,255,0.85)" />
+              <Feather name="chevron-down" size={28} color="rgba(255,255,255,0.85)" />
             </Pressable>
             <View style={{ flex: 1 }} />
             <Pressable

@@ -374,7 +374,7 @@ export function EscenasSheet() {
           keyboardShouldPersistTaps="handled"
         >
           <Pressable style={styles.closeBtn} onPress={handleClose} hitSlop={10}>
-            <Feather name="x" size={26} color="#FFFFFF" />
+            <Feather name="x" size={22} color="#FFFFFF" />
           </Pressable>
           <Text style={styles.title}>Escenas</Text>
 
@@ -534,7 +534,7 @@ export function EscenasSheet() {
           {/* Top row */}
           <View style={[styles.previewTop, { paddingTop: Math.max(insets.top, 20) + 10 }]}>
             <Pressable onPress={handleCancelPreview} hitSlop={10} style={styles.previewIconBtn}>
-              <Feather name="x" size={28} color="#FFF" />
+              <Feather name="x" size={22} color="#FFF" />
             </Pressable>
             <Text style={styles.previewTitle}>{previewScene.label}</Text>
           </View>

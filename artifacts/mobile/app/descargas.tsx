@@ -81,7 +81,7 @@ export default function DownloadsScreen() {
           accessibilityRole="button"
           accessibilityLabel="Volver"
         >
-          <Feather name="chevron-left" size={26} color={colors.foreground} />
+          <Feather name="chevron-left" size={28} color={colors.foreground} />
         </Pressable>
         <Text style={[styles.title, { color: colors.foreground }]}>Descargas</Text>
         {entries.length ? (

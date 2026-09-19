@@ -53,7 +53,7 @@ export function SimplePersonalizeSheet({
         <View style={styles.headerRow}>
           <Text style={styles.title}>Personalizar</Text>
           <Pressable onPress={onClose} hitSlop={12} style={({ pressed }) => [styles.closeBtn, { opacity: pressed ? 0.5 : 1 }]}>
-            <Feather name="x" size={20} color="rgba(250,240,238,0.6)" />
+            <Feather name="x" size={22} color="rgba(250,240,238,0.6)" />
           </Pressable>
         </View>
 

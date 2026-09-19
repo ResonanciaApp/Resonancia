@@ -309,7 +309,7 @@ export default function CategoryScreen({ categoryId }: { categoryId?: string } =
             },
           ]}
         >
-          <Feather name="chevron-left" size={32} color={TEXT} style={{ transform: [{ translateX: -1 }] }} />
+          <Feather name="chevron-left" size={28} color={TEXT} style={{ transform: [{ translateX: -1 }] }} />
         </Pressable>
         <View style={styles.stickyChipsArea}>
           <ChipRow

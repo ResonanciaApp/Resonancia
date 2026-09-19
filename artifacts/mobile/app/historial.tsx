@@ -54,7 +54,7 @@ export default function HistorialScreen() {
                     { backgroundColor: libraryHeaderButtonBackground, opacity: pressed ? 0.7 : 1 },
                   ]}
                 >
-                  <Feather name="chevron-left" size={32} color="#FBFBFB" style={{ transform: [{ translateX: -1 }] }} />
+                  <Feather name="chevron-left" size={28} color="#FBFBFB" style={{ transform: [{ translateX: -1 }] }} />
                 </View>
               )}
             </Pressable>

@@ -458,7 +458,7 @@ export default function SessionDetailScreen({ id: idProp }: { id?: string } = {}
             testID="session-detail-back-button"
             onPress={goBack}
           >
-            <Feather name="chevron-left" size={23} color={colors.foreground} />
+            <Feather name="chevron-left" size={28} color={colors.foreground} />
           </CircleActionButton>
         </GhostPill>
 

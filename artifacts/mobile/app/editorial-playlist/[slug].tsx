@@ -397,7 +397,7 @@ export default function EditorialPlaylistScreen({ slug: slugProp }: EditorialPla
               accessibilityRole="button"
               accessibilityLabel="Volver"
             >
-              <Feather name="chevron-left" size={32} color={COLORS.text} style={{ transform: [{ translateX: -1 }] }} />
+              <Feather name="chevron-left" size={28} color={COLORS.text} style={{ transform: [{ translateX: -1 }] }} />
             </Pressable>
             <View style={styles.headerSpacer} />
             <Pressable

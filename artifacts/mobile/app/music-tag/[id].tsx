@@ -238,7 +238,7 @@ export default function MusicTagDetailScreen({ id: idProp }: { id?: string } = {
             accessibilityRole="button"
             accessibilityLabel="Volver a Música"
           >
-            <Feather name="chevron-left" size={26} color={colors.foreground} />
+            <Feather name="chevron-left" size={28} color={colors.foreground} />
           </Pressable>
           <Text
             style={[styles.pageTitle, { color: colors.foreground }]}
@@ -334,7 +334,7 @@ export default function MusicTagDetailScreen({ id: idProp }: { id?: string } = {
             { top: topPad + 2, opacity: pressed ? 0.7 : 1 },
           ]}
         >
-          <Feather name="chevron-left" size={26} color={colors.foreground} />
+          <Feather name="chevron-left" size={28} color={colors.foreground} />
         </Pressable>
         <View style={styles.stickyTabs}>
           <MusicFilterTabs

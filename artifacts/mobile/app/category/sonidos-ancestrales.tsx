@@ -298,7 +298,7 @@ function SessionQuickSheet({ session, onClose, onPlaylist }: { session: Session|
             <Text style={styles.qsTitle} numberOfLines={2}>{session.title}</Text>
             <Text style={styles.qsSub}>{session.categoryLabel} · {session.durationLabel}</Text>
           </View>
-          <Pressable onPress={onClose} hitSlop={10} style={styles.qsClose}><Feather name="x" size={20} color={MUTED} /></Pressable>
+          <Pressable onPress={onClose} hitSlop={10} style={styles.qsClose}><Feather name="x" size={22} color={MUTED} /></Pressable>
         </View>
         <View style={styles.qsDivider} />
 
@@ -651,7 +651,7 @@ export default function SonidosAncestalesScreen() {
             },
           ]}
         >
-          <Feather name="chevron-left" size={32} color={TEXT} style={{ transform: [{ translateX: -1 }] }} />
+          <Feather name="chevron-left" size={28} color={TEXT} style={{ transform: [{ translateX: -1 }] }} />
         </Pressable>
          <View style={{ marginTop: 12 }}>
            <ChipRow

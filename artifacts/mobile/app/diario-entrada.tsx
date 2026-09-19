@@ -97,7 +97,7 @@ export default function DiarioEntradaScreen() {
       <View style={[styles.header, { paddingTop: topPad + 8 }]}>
         <View style={styles.headerSide}>
           <Pressable onPress={handleClose} hitSlop={10} style={styles.headerCloseButton}>
-            <Feather name="x" size={24} color={"#F9F9F9"} />
+            <Feather name="x" size={22} color={"#F9F9F9"} />
           </Pressable>
         </View>
 

@@ -337,7 +337,7 @@ export default function PlaylistDetailScreen({ id: idProp }: { id?: string } = {
             accessibilityRole="button"
             accessibilityLabel="Volver"
           >
-            <Feather name="chevron-left" size={32} color="#FFFFFF" style={{ transform: [{ translateX: -1 }] }} />
+            <Feather name="chevron-left" size={28} color="#FFFFFF" style={{ transform: [{ translateX: -1 }] }} />
           </Pressable>
           <Pressable
             onPress={() => setMenuVisible(true)}

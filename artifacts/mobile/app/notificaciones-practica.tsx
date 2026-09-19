@@ -220,7 +220,7 @@ export default function PracticeNotificationsScreen() {
             accessibilityLabel="Volver"
             style={styles.headerButton}
           >
-            <Feather name="chevron-left" size={32} color="#FBFBFB" style={{ transform: [{ translateX: -1 }] }} />
+            <Feather name="chevron-left" size={28} color="#FBFBFB" style={{ transform: [{ translateX: -1 }] }} />
           </Pressable>
           <Text style={styles.headerTitle}>Notificaciones</Text>
           <View style={styles.headerPlaceholder} />

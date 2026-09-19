@@ -201,7 +201,7 @@ export default function ThemeTagScreen({ id: idProp }: { id?: string } = {}) {
                 },
               ]}
             >
-              <Feather name="chevron-left" size={32} color={colors.foreground} style={{ transform: [{ translateX: -1 }] }} />
+              <Feather name="chevron-left" size={28} color={colors.foreground} style={{ transform: [{ translateX: -1 }] }} />
             </Pressable>
           </View>
           <View style={styles.intro}>
@@ -344,7 +344,7 @@ export default function ThemeTagScreen({ id: idProp }: { id?: string } = {}) {
             },
           ]}
         >
-          <Feather name="chevron-left" size={32} color={colors.foreground} style={{ transform: [{ translateX: -1 }] }} />
+          <Feather name="chevron-left" size={28} color={colors.foreground} style={{ transform: [{ translateX: -1 }] }} />
         </Pressable>
       </Animated.View>
     </View>

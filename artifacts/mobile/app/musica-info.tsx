@@ -79,7 +79,7 @@ export default function MusicaInfoScreen() {
       {/* Botón cerrar */}
       <Pressable onPress={()=>router.back()} hitSlop={10}
         style={[info.closeBtn, { top: insets.top + 4 }]}>
-        <Feather name="x" size={20} color="#fff" />
+        <Feather name="x" size={22} color="#fff" />
       </Pressable>
 
       <Animated.ScrollView

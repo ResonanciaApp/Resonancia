@@ -80,7 +80,7 @@ export function TimerSheet({ visible, onClose, sleepTimerRemaining: propRemainin
           <Feather name="clock" size={18} color={colors.foreground} style={{ marginRight: 8 }} />
           <Text style={[styles.title, { color: colors.foreground }]}>Temporizador</Text>
           <Pressable onPress={onClose} style={styles.closeBtn}>
-            <Feather name="x" size={20} color={colors.mutedForeground} />
+            <Feather name="x" size={22} color={colors.mutedForeground} />
           </Pressable>
         </View>
 
