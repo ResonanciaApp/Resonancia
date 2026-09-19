@@ -1195,7 +1195,7 @@ const styles = StyleSheet.create({
     zIndex: 6,
     borderRadius: 18,
     borderWidth: 1,
-    borderColor: "rgba(255,255,255,0.065)",
+    borderColor: "rgba(255,255,255,0.5)",
   },
   previewBorder: {
     ...StyleSheet.absoluteFillObject,
