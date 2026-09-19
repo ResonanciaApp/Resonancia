@@ -532,7 +532,11 @@ export default function InnerSpaceScreen() {
           : "Tampoco podrás hacerlo, a no ser que crees una maquina del tiempo."}
       </Text>
       {selectedMonth === today.getMonth() && (
-        <Pressable testID="empty-back" style={styles.emptyButton} onPress={() => router.back()}>
+        <Pressable
+          testID="empty-back"
+          style={styles.emptyButton}
+          onPress={() => router.replace(`/profile?composeReflection=${Date.now()}`)}
+        >
           <Text style={styles.emptyButtonText}>Escribir mi primera reflexión</Text>
         </Pressable>
       )}
@@ -599,7 +603,7 @@ export default function InnerSpaceScreen() {
           onPress={() => setMonthPickerVisible(true)}
         >
           <Text style={styles.monthSelectorText}>{MONTH_NAMES[selectedMonth]}</Text>
-          <Feather name="chevron-down" size={15} color="#F9F9F9" />
+          <Feather name="chevron-down" size={20} color="#F9F9F9" />
         </Pressable>
       </View>
 
@@ -973,18 +977,14 @@ const styles = StyleSheet.create({
   },
   monthSelectorButton: {
     height: 33,
-    paddingHorizontal: 13,
-    borderRadius: 16.5,
-    borderWidth: 1,
-    borderColor: "rgba(255,255,255,0.2)",
-    backgroundColor: "rgba(249,249,249,0.07)",
+    paddingHorizontal: 0,
     flexDirection: "row",
     alignItems: "center",
-    gap: 8,
+    gap: 6,
   },
   monthSelectorText: {
     color: "#F9F9F9",
-    fontSize: 11,
+    fontSize: 16,
     fontWeight: "700",
   },
   monthList: {

@@ -328,12 +328,14 @@ export function ProfileScreenBase({
   onBack,
   asTab = false,
   initialLibraryTab,
+  composeReflectionToken,
 }: {
   dedicated?: boolean;
   accountMode?: boolean;
   onBack?: () => void;
   asTab?: boolean;
   initialLibraryTab?: LibraryTab | null;
+  composeReflectionToken?: string;
 }) {
   const colors = useColors();
   const { theme: activeTheme, activeSceneId } = useSceneTheme();
@@ -419,7 +421,28 @@ export function ProfileScreenBase({
 
   const [libActions, setLibActions] = useState<LibHeaderActions | null>(null);
   const profileScrollRef = useRef<ScrollView>(null);
+  const handledComposeReflectionRef = useRef<string | undefined>(undefined);
+  const [innerSpaceLayoutY, setInnerSpaceLayoutY] = useState<number | null>(null);
+  const [innerSpaceFocusRequest, setInnerSpaceFocusRequest] = useState(0);
   const navigation = useNavigation();
+  useEffect(() => {
+    if (
+      !dedicated ||
+      !composeReflectionToken ||
+      innerSpaceLayoutY === null ||
+      handledComposeReflectionRef.current === composeReflectionToken
+    ) return;
+
+    handledComposeReflectionRef.current = composeReflectionToken;
+    profileScrollRef.current?.scrollTo({
+      y: Math.max(0, innerSpaceLayoutY - 16),
+      animated: true,
+    });
+    const focusTimer = setTimeout(() => {
+      setInnerSpaceFocusRequest((value) => value + 1);
+    }, 450);
+    return () => clearTimeout(focusTimer);
+  }, [composeReflectionToken, dedicated, innerSpaceLayoutY]);
   useEffect(() => {
     const tabNavigation = navigation as unknown as {
       addListener: (event: "tabPress", callback: () => void) => () => void;
@@ -1405,7 +1428,9 @@ export function ProfileScreenBase({
               />
             </View>
 
-            <InnerSpaceCard />
+            <View onLayout={(event) => setInnerSpaceLayoutY(event.nativeEvent.layout.y)}>
+              <InnerSpaceCard focusRequest={innerSpaceFocusRequest} />
+            </View>
 
             {continueMeditationPlaylist ? (
               <>

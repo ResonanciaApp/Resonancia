@@ -9,13 +9,14 @@ import { router } from "expo-router";
 import { REFLECTION_CATEGORY_OPTIONS, CategoryIcon } from "@/constants/reflectionCategories";
 import { useReducedMotion } from "react-native-reanimated";
 
-export function InnerSpaceCard() {
+export function InnerSpaceCard({ focusRequest = 0 }: { focusRequest?: number }) {
   const colors = useColors();
   const [category, setCategory] = useState<ReflectionCategory | null>(null);
   const [message, setMessage] = useState("");
   const [toastVisible, setToastVisible] = useState(false);
   const toastAnim = useRef(new Animated.Value(0)).current;
   const toastTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const inputRef = useRef<TextInput>(null);
   const categoryScales = useRef(
     Object.fromEntries(
       REFLECTION_CATEGORY_OPTIONS.map((item) => [item.id, new Animated.Value(1)]),
@@ -42,6 +43,12 @@ export function InnerSpaceCard() {
       if (toastTimerRef.current) clearTimeout(toastTimerRef.current);
     }
   }, [categoryScales, toastAnim]);
+
+  useEffect(() => {
+    if (focusRequest <= 0) return;
+    const frame = requestAnimationFrame(() => inputRef.current?.focus());
+    return () => cancelAnimationFrame(frame);
+  }, [focusRequest]);
 
   const showToast = () => {
     setToastVisible(true);
@@ -144,6 +151,7 @@ export function InnerSpaceCard() {
 
       <View style={[styles.inputContainer, { backgroundColor: "rgba(0,0,0,0.2)" }, createMutation.isError && { borderColor: colors.destructive }]}>
         <TextInput
+          ref={inputRef}
           style={[styles.input, { color: colors.foreground }]}
           placeholder="Escribe tu mensaje aquí..."
           placeholderTextColor={colors.mutedForeground}
