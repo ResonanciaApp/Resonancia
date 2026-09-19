@@ -1662,7 +1662,7 @@ const Inicio2HeroStatic = React.memo(function Inicio2HeroStatic({
   const fallbackScrollY = useSharedValue(0);
   const effectiveScrollY = scrollY ?? fallbackScrollY;
   const inicio3WeekShift = 5;
-  const inicio3HeroShift = 7;
+  const inicio3HeroShift = 10;
   const inicio3HeroHeight =
     (INICIO2_HERO_HEIGHT + 184 - (topInset + 286) - 52 + 60 + 32) / 2 + 60 + 120;
   const inicio3HeroLayoutTop =
@@ -1837,7 +1837,7 @@ const Inicio2HeroStatic = React.memo(function Inicio2HeroStatic({
               {isInicio3 ? (
                 <View style={styles.inicio3ProfileLotusPill}>
                   <Text style={styles.inicio3ProfileLotusCount}>{currentStreak}</Text>
-                  <MaterialCommunityIcons name="spa" size={24} color="#FFFFFF" />
+                  <MaterialCommunityIcons name="spa" size={21} color="#FFFFFF" />
                 </View>
               ) : (
                 <Inicio2LotusStreak />
@@ -1852,7 +1852,7 @@ const Inicio2HeroStatic = React.memo(function Inicio2HeroStatic({
           <RAnimated.View
             style={[
               styles.inicio3StreakRow,
-              { top: topInset + 70 - INICIO3_VERTICAL_LIFT + inicio3WeekShift },
+              { top: topInset + 68 - INICIO3_VERTICAL_LIFT + inicio3WeekShift },
               slowHeaderStyle,
             ]}
             testID="inicio3-streak-row"
@@ -3616,10 +3616,10 @@ const styles = StyleSheet.create({
     gap: 8,
   },
   inicio3ProfileLotusPill: {
-    height: 41,
+    height: 38,
     minWidth: 58,
     paddingHorizontal: 10,
-    borderRadius: 20.5,
+    borderRadius: 19,
     borderWidth: 2,
     borderColor: "rgba(255,255,255,0.25)",
     flexDirection: "row",
@@ -3631,7 +3631,7 @@ const styles = StyleSheet.create({
   inicio3ProfileLotusCount: {
     color: "#FFFFFF",
     fontFamily: "Manrope",
-    fontSize: 16,
+    fontSize: 14,
     fontWeight: "500",
     lineHeight: 20,
     transform: [{ translateY: 2 }],
@@ -3807,7 +3807,7 @@ const styles = StyleSheet.create({
   },
   inicio3HeroProgressContainer: {
     position: "absolute",
-    bottom: 24,
+    bottom: 20,
     left: GRID_PAD,
     right: GRID_PAD,
     flexDirection: "row",
