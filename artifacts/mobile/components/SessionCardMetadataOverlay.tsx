@@ -128,7 +128,10 @@ export function SessionCategoryPill({
       ) : showIcon && category.icon ? (
         <Image
           source={category.icon}
-          style={[styles.categoryPillIcon, { width: iconSize, height: iconSize }]}
+          style={[
+            styles.categoryPillIcon,
+            { width: iconSize, height: iconSize, tintColor: "#F9F9F9" },
+          ]}
           resizeMode="contain"
         />
       ) : null}
