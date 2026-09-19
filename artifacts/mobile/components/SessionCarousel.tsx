@@ -55,7 +55,10 @@ import {
   SESSION_CARD_METADATA_HEIGHT_SCALE,
   SessionCardMetadataOverlay,
 } from "@/components/SessionCardMetadataOverlay";
-import { SessionDurationBadge } from "@/components/SessionDurationBadge";
+import {
+  SessionBadgeGlass,
+  SessionDurationBadge,
+} from "@/components/SessionDurationBadge";
 import { PressScale } from "@/components/PressScale";
 import {
   CONTENT_CAROUSEL_GAP,
@@ -90,14 +93,16 @@ function PreviewFadeLayer({
   active,
   style,
   children,
+  duration = 350,
 }: {
   active: boolean;
   style: StyleProp<ViewStyle>;
   children?: React.ReactNode;
+  duration?: number;
 }) {
   const animatedStyle = useAnimatedStyle(() => ({
-    opacity: withTiming(active ? 1 : 0, { duration: 350 }),
-  }), [active]);
+    opacity: withTiming(active ? 1 : 0, { duration }),
+  }), [active, duration]);
 
   return (
     <Animated.View pointerEvents="none" style={[style, animatedStyle]}>
@@ -618,9 +623,10 @@ export const SessionCarousel = React.memo(function SessionCarousel({
               }}
               style={[styles.card, cardStyle]}
             >
-              {soundPreview && !isAmbiental && (
+              {soundPreview && (
                 <PreviewFadeLayer
                   active={isPreviewActive}
+                  duration={450}
                   style={[
                     styles.previewActiveCard,
                     { borderRadius: ambientalCardBorderRadius ?? 18 },
@@ -763,7 +769,9 @@ export const SessionCarousel = React.memo(function SessionCarousel({
                                 borderRadius: (ambientalPlayButtonSize - 7) / 2,
                               },
                             ]}
-                          />
+                          >
+                            <SessionBadgeGlass />
+                          </View>
                           <MaterialCommunityIcons
                             name={isPreviewActive && soundPreview.isPlaying ? "pause" : "play"}
                             size={ambientalPlayIconSize}
@@ -1177,13 +1185,10 @@ const styles = StyleSheet.create({
   card: { width: CARD_W },
   previewActiveCard: {
     ...StyleSheet.absoluteFillObject,
+    zIndex: 6,
     borderRadius: 18,
-    backgroundColor: "rgba(169,112,255,0.05)",
-    shadowColor: NEON_VIOLET,
-    shadowOpacity: 0.28,
-    shadowRadius: 12,
-    shadowOffset: { width: 0, height: 3 },
-    elevation: 7,
+    borderWidth: 1,
+    borderColor: "rgba(255,255,255,0.065)",
   },
   previewBorder: {
     ...StyleSheet.absoluteFillObject,
@@ -1247,7 +1252,7 @@ const styles = StyleSheet.create({
   },
   ambientalPlayBackground: {
     position: "absolute",
-    backgroundColor: "rgba(255,255,255,0.10)",
+    overflow: "hidden",
   },
   thumbFallback: { backgroundColor: "rgba(212,175,55,0.10)", alignItems: "center", justifyContent: "center" },
   star: {
