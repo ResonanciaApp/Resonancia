@@ -109,7 +109,7 @@ export default function ProgresoScreen() {
                   <Text style={[styles.streakIntroUnit, { color: colors.foreground }]}>Días</Text>
                 </View>
                 <Text style={styles.streakIntroDescription}>
-                  Medita al menos 3 días a la semana y transforma tu vida
+                  Medita al menos 3 días a la semana y transforma todos los aspectos de tu vida
                 </Text>
               </View>
             </CinematicFadeSlide>
@@ -188,12 +188,14 @@ const styles = StyleSheet.create({
     paddingTop: 12,
   },
   sectionsOffset: {
-    marginTop: 50,
+    marginTop: 65,
   },
   streakCountCircle: {
     width: 96,
     height: 96,
     borderRadius: 48,
+    borderWidth: 1,
+    borderColor: "rgba(255,255,255,0.3)",
     overflow: "hidden",
     alignItems: "center",
     justifyContent: "center",
