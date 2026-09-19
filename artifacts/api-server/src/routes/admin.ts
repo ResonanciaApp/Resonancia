@@ -2145,6 +2145,7 @@ const DEFAULT_EXPLORE_SLUGS = [
   "meditaciones-activas",
   "astrologia",
 ];
+const DEFAULT_EXPLORE_SLUG_SET = new Set<string>(DEFAULT_EXPLORE_SLUGS);
 
 const DEFAULT_EXPLORE_LABELS: Record<string, string> = {
   "para-la-ansiedad":       "Para la ansiedad",
@@ -2158,13 +2159,36 @@ const DEFAULT_EXPLORE_LABELS: Record<string, string> = {
   "astrologia":             "Astrología",
 };
 
-function serializeExploreSection(s: ExploreSection) {
+function exploreSectionUsageBySlug(themeTags: Array<string[] | null>): Map<string, number> {
+  const usage = new Map<string, number>();
+  for (const tags of themeTags) {
+    for (const tag of tags ?? []) {
+      if (isInternalEditorialTag(tag)) continue;
+      const slug = labelToSlug(tag);
+      usage.set(slug, (usage.get(slug) ?? 0) + 1);
+    }
+  }
+  return usage;
+}
+
+function serializeExploreSection(s: ExploreSection, usageBySlug = new Map<string, number>()) {
+  const isDefault = DEFAULT_EXPLORE_SLUG_SET.has(s.slug);
+  const inUseCount = usageBySlug.get(s.slug) ?? 0;
   return {
     id:        s.id,
     slug:      s.slug,
     label:     s.label,
     visible:   s.visible,
     sortOrder: s.sortOrder,
+    coverImagePath: s.coverImagePath,
+    isDefault,
+    inUseCount,
+    canDelete: !isDefault && inUseCount === 0,
+    deleteBlockedReason: isDefault
+      ? "Esta temática base no se puede borrar"
+      : inUseCount > 0
+        ? `Está asignada a ${inUseCount} sesión${inUseCount === 1 ? "" : "es"}`
+        : null,
   };
 }
 
@@ -2215,7 +2239,7 @@ async function ensureDefaultSections() {
     for (const tag of row.themeTag ?? []) {
       if (isInternalEditorialTag(tag)) continue;
       const slug = labelToSlug(tag);
-      if (!existingSlugs.has(slug) && !DEFAULT_EXPLORE_SLUGS.includes(slug)) {
+      if (!existingSlugs.has(slug) && !DEFAULT_EXPLORE_SLUG_SET.has(slug)) {
         customLabels.add(slug);
       }
     }
@@ -2260,12 +2284,16 @@ async function ensureDefaultSections() {
 router.get("/admin/explore-sections", requireAuth, requireRole("admin"), async (req, res) => {
   try {
     await ensureDefaultSections();
-    const rows = await db
-      .select()
-      .from(exploreSectionsTable)
-      .orderBy(asc(exploreSectionsTable.sortOrder), asc(exploreSectionsTable.id));
+    const [rows, sessionRows] = await Promise.all([
+      db.select().from(exploreSectionsTable)
+        .orderBy(asc(exploreSectionsTable.sortOrder), asc(exploreSectionsTable.id)),
+      db.select({ themeTag: catalogSessionsTable.themeTag }).from(catalogSessionsTable),
+    ]);
+    const usageBySlug = exploreSectionUsageBySlug(sessionRows.map((row) => row.themeTag));
     res.json({
-      sections: rows.filter((row) => !isInternalExploreSection(row)).map(serializeExploreSection),
+      sections: rows
+        .filter((row) => !isInternalExploreSection(row))
+        .map((row) => serializeExploreSection(row, usageBySlug)),
     });
   } catch (err) {
     req.log.error({ err }, "error fetching explore sections");
@@ -2277,12 +2305,16 @@ router.get("/admin/explore-sections", requireAuth, requireRole("admin"), async (
 router.get("/explore-sections", async (req, res) => {
   try {
     await ensureDefaultSections();
-    const rows = await db
-      .select()
-      .from(exploreSectionsTable)
-      .orderBy(asc(exploreSectionsTable.sortOrder), asc(exploreSectionsTable.id));
+    const [rows, sessionRows] = await Promise.all([
+      db.select().from(exploreSectionsTable)
+        .orderBy(asc(exploreSectionsTable.sortOrder), asc(exploreSectionsTable.id)),
+      db.select({ themeTag: catalogSessionsTable.themeTag }).from(catalogSessionsTable),
+    ]);
+    const usageBySlug = exploreSectionUsageBySlug(sessionRows.map((row) => row.themeTag));
     res.json({
-      sections: rows.filter((row) => !isInternalExploreSection(row)).map(serializeExploreSection),
+      sections: rows
+        .filter((row) => !isInternalExploreSection(row))
+        .map((row) => serializeExploreSection(row, usageBySlug)),
     });
   } catch (err) {
     req.log.error({ err }, "error fetching explore sections (public)");
@@ -2301,6 +2333,7 @@ router.patch("/admin/explore-sections", requireAuth, requireRole("admin"), async
             id: z.coerce.number().int(),
             visible: z.boolean().optional(),
             sortOrder: z.number().int().optional(),
+            coverImagePath: z.string().regex(/^\/objects\/uploads\//).nullable().optional(),
           }),
         )
         .min(1),
@@ -2315,9 +2348,10 @@ router.patch("/admin/explore-sections", requireAuth, requireRole("admin"), async
     await db.transaction(async (tx) => {
       for (const item of items) {
         const id = item.id;
-        const updates: Partial<{ visible: boolean; sortOrder: number }> = {};
+        const updates: Partial<{ visible: boolean; sortOrder: number; coverImagePath: string | null }> = {};
         if (item.visible !== undefined) updates.visible = item.visible;
         if (item.sortOrder !== undefined) updates.sortOrder = item.sortOrder;
+        if (item.coverImagePath !== undefined) updates.coverImagePath = item.coverImagePath;
         if (Object.keys(updates).length === 0) continue;
         await tx
           .update(exploreSectionsTable)
@@ -2325,12 +2359,18 @@ router.patch("/admin/explore-sections", requireAuth, requireRole("admin"), async
           .where(eq(exploreSectionsTable.id, id));
       }
     });
-    const rows = await db
-      .select()
-      .from(exploreSectionsTable)
-      .orderBy(asc(exploreSectionsTable.sortOrder), asc(exploreSectionsTable.id));
+    const [rows, sessionRows] = await Promise.all([
+      db.select().from(exploreSectionsTable)
+        .orderBy(asc(exploreSectionsTable.sortOrder), asc(exploreSectionsTable.id)),
+      db.select({ themeTag: catalogSessionsTable.themeTag }).from(catalogSessionsTable),
+    ]);
+    const usageBySlug = exploreSectionUsageBySlug(sessionRows.map((row) => row.themeTag));
     req.log.info({ count: items.length }, "explore sections updated");
-    res.json({ sections: rows.map(serializeExploreSection) });
+    res.json({
+      sections: rows
+        .filter((row) => !isInternalExploreSection(row))
+        .map((row) => serializeExploreSection(row, usageBySlug)),
+    });
   } catch (err) {
     req.log.error({ err }, "error updating explore sections");
     res.status(500).json({ error: "Error al actualizar secciones" });
@@ -2372,11 +2412,29 @@ router.delete("/admin/explore-sections/:id", requireAuth, requireRole("admin"), 
   const id = parseInt(String(req.params.id), 10);
   if (isNaN(id)) { res.status(400).json({ error: "ID inválido" }); return; }
   try {
+    const [section] = await db
+      .select()
+      .from(exploreSectionsTable)
+      .where(eq(exploreSectionsTable.id, id));
+    if (!section) { res.status(404).json({ error: "Sección no encontrada" }); return; }
+    if (DEFAULT_EXPLORE_SLUG_SET.has(section.slug)) {
+      res.status(409).json({ error: "Las temáticas base no se pueden borrar" });
+      return;
+    }
+    const sessionRows = await db
+      .select({ themeTag: catalogSessionsTable.themeTag })
+      .from(catalogSessionsTable);
+    const inUseCount = exploreSectionUsageBySlug(sessionRows.map((row) => row.themeTag)).get(section.slug) ?? 0;
+    if (inUseCount > 0) {
+      res.status(409).json({
+        error: `Esta temática está asignada a ${inUseCount} sesión${inUseCount === 1 ? "" : "es"}`,
+      });
+      return;
+    }
     const [deleted] = await db
       .delete(exploreSectionsTable)
       .where(eq(exploreSectionsTable.id, id))
       .returning();
-    if (!deleted) { res.status(404).json({ error: "Sección no encontrada" }); return; }
     req.log.info({ id }, "explore section deleted");
     res.status(204).end();
   } catch (err) {

@@ -73,6 +73,8 @@ import type {
   ErrorResponse,
   ExpansorProfile,
   ExpansorProfileUpdate,
+  ExploreSectionsResponse,
+  ExploreSectionsUpdate,
   FavoritesInput,
   FavoritesList,
   FollowCounts,
@@ -12273,6 +12275,301 @@ export const useDeleteAdminSceneAnimation = <TError = ErrorType<void | ErrorResp
         TContext
       > => {
       return useMutation(getDeleteAdminSceneAnimationMutationOptions(options));
+    }
+
+export const getGetExploreSectionsUrl = () => {
+
+
+
+
+  return `/api/explore-sections`
+}
+
+/**
+ * @summary Listar la configuración pública de Otras temáticas
+ */
+export const getExploreSections = async ( options?: RequestInit): Promise<ExploreSectionsResponse> => {
+
+  return customFetch<ExploreSectionsResponse>(getGetExploreSectionsUrl(),
+  {
+    ...options,
+    method: 'GET'
+
+
+  }
+);}
+
+
+
+
+
+export const getGetExploreSectionsQueryKey = () => {
+    return [
+    `/api/explore-sections`
+    ] as const;
+    }
+
+
+export const getGetExploreSectionsQueryOptions = <TData = Awaited<ReturnType<typeof getExploreSections>>, TError = ErrorType<unknown>>( options?: { query?:UseQueryOptions<Awaited<ReturnType<typeof getExploreSections>>, TError, TData>, request?: SecondParameter<typeof customFetch>}
+) => {
+
+const {query: queryOptions, request: requestOptions} = options ?? {};
+
+  const queryKey =  queryOptions?.queryKey ?? getGetExploreSectionsQueryKey();
+
+
+
+    const queryFn: QueryFunction<Awaited<ReturnType<typeof getExploreSections>>> = ({ signal }) => getExploreSections({ signal, ...requestOptions });
+
+
+
+
+
+   return  { queryKey, queryFn, ...queryOptions} as UseQueryOptions<Awaited<ReturnType<typeof getExploreSections>>, TError, TData> & { queryKey: QueryKey }
+}
+
+export type GetExploreSectionsQueryResult = NonNullable<Awaited<ReturnType<typeof getExploreSections>>>
+export type GetExploreSectionsQueryError = ErrorType<unknown>
+
+
+/**
+ * @summary Listar la configuración pública de Otras temáticas
+ */
+
+export function useGetExploreSections<TData = Awaited<ReturnType<typeof getExploreSections>>, TError = ErrorType<unknown>>(
+  options?: { query?:UseQueryOptions<Awaited<ReturnType<typeof getExploreSections>>, TError, TData>, request?: SecondParameter<typeof customFetch>}
+
+ ):  UseQueryResult<TData, TError> & { queryKey: QueryKey } {
+
+  const queryOptions = getGetExploreSectionsQueryOptions(options)
+
+  const query = useQuery(queryOptions) as  UseQueryResult<TData, TError> & { queryKey: QueryKey };
+
+  return { ...query, queryKey: queryOptions.queryKey };
+}
+
+
+
+
+
+
+
+export const getGetAdminExploreSectionsUrl = () => {
+
+
+
+
+  return `/api/admin/explore-sections`
+}
+
+/**
+ * @summary Listar la configuración de Otras temáticas
+ */
+export const getAdminExploreSections = async ( options?: RequestInit): Promise<ExploreSectionsResponse> => {
+
+  return customFetch<ExploreSectionsResponse>(getGetAdminExploreSectionsUrl(),
+  {
+    ...options,
+    method: 'GET'
+
+
+  }
+);}
+
+
+
+
+
+export const getGetAdminExploreSectionsQueryKey = () => {
+    return [
+    `/api/admin/explore-sections`
+    ] as const;
+    }
+
+
+export const getGetAdminExploreSectionsQueryOptions = <TData = Awaited<ReturnType<typeof getAdminExploreSections>>, TError = ErrorType<unknown>>( options?: { query?:UseQueryOptions<Awaited<ReturnType<typeof getAdminExploreSections>>, TError, TData>, request?: SecondParameter<typeof customFetch>}
+) => {
+
+const {query: queryOptions, request: requestOptions} = options ?? {};
+
+  const queryKey =  queryOptions?.queryKey ?? getGetAdminExploreSectionsQueryKey();
+
+
+
+    const queryFn: QueryFunction<Awaited<ReturnType<typeof getAdminExploreSections>>> = ({ signal }) => getAdminExploreSections({ signal, ...requestOptions });
+
+
+
+
+
+   return  { queryKey, queryFn, ...queryOptions} as UseQueryOptions<Awaited<ReturnType<typeof getAdminExploreSections>>, TError, TData> & { queryKey: QueryKey }
+}
+
+export type GetAdminExploreSectionsQueryResult = NonNullable<Awaited<ReturnType<typeof getAdminExploreSections>>>
+export type GetAdminExploreSectionsQueryError = ErrorType<unknown>
+
+
+/**
+ * @summary Listar la configuración de Otras temáticas
+ */
+
+export function useGetAdminExploreSections<TData = Awaited<ReturnType<typeof getAdminExploreSections>>, TError = ErrorType<unknown>>(
+  options?: { query?:UseQueryOptions<Awaited<ReturnType<typeof getAdminExploreSections>>, TError, TData>, request?: SecondParameter<typeof customFetch>}
+
+ ):  UseQueryResult<TData, TError> & { queryKey: QueryKey } {
+
+  const queryOptions = getGetAdminExploreSectionsQueryOptions(options)
+
+  const query = useQuery(queryOptions) as  UseQueryResult<TData, TError> & { queryKey: QueryKey };
+
+  return { ...query, queryKey: queryOptions.queryKey };
+}
+
+
+
+
+
+
+
+export const getUpdateAdminExploreSectionsUrl = () => {
+
+
+
+
+  return `/api/admin/explore-sections`
+}
+
+/**
+ * @summary Actualizar orden, visibilidad y portada
+ */
+export const updateAdminExploreSections = async (exploreSectionsUpdate: ExploreSectionsUpdate, options?: RequestInit): Promise<ExploreSectionsResponse> => {
+
+  return customFetch<ExploreSectionsResponse>(getUpdateAdminExploreSectionsUrl(),
+  {
+    ...options,
+    method: 'PATCH',
+    headers: { 'Content-Type': 'application/json', ...options?.headers },
+    body: JSON.stringify(
+      exploreSectionsUpdate,)
+  }
+);}
+
+
+
+
+export const getUpdateAdminExploreSectionsMutationOptions = <TError = ErrorType<ErrorResponse>,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof updateAdminExploreSections>>, TError,{data: BodyType<ExploreSectionsUpdate>}, TContext>, request?: SecondParameter<typeof customFetch>}
+): UseMutationOptions<Awaited<ReturnType<typeof updateAdminExploreSections>>, TError,{data: BodyType<ExploreSectionsUpdate>}, TContext> => {
+
+const mutationKey = ['updateAdminExploreSections'];
+const {mutation: mutationOptions, request: requestOptions} = options ?
+      options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey ?
+      options
+      : {...options, mutation: {...options.mutation, mutationKey}}
+      : {mutation: { mutationKey, }, request: undefined};
+
+
+
+
+      const mutationFn: MutationFunction<Awaited<ReturnType<typeof updateAdminExploreSections>>, {data: BodyType<ExploreSectionsUpdate>}> = (props) => {
+          const {data} = props ?? {};
+
+          return  updateAdminExploreSections(data,requestOptions)
+        }
+
+
+
+
+
+
+  return  { mutationFn, ...mutationOptions }}
+
+    export type UpdateAdminExploreSectionsMutationResult = NonNullable<Awaited<ReturnType<typeof updateAdminExploreSections>>>
+    export type UpdateAdminExploreSectionsMutationBody = BodyType<ExploreSectionsUpdate>
+    export type UpdateAdminExploreSectionsMutationError = ErrorType<ErrorResponse>
+
+    /**
+ * @summary Actualizar orden, visibilidad y portada
+ */
+export const useUpdateAdminExploreSections = <TError = ErrorType<ErrorResponse>,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof updateAdminExploreSections>>, TError,{data: BodyType<ExploreSectionsUpdate>}, TContext>, request?: SecondParameter<typeof customFetch>}
+ ): UseMutationResult<
+        Awaited<ReturnType<typeof updateAdminExploreSections>>,
+        TError,
+        {data: BodyType<ExploreSectionsUpdate>},
+        TContext
+      > => {
+      return useMutation(getUpdateAdminExploreSectionsMutationOptions(options));
+    }
+
+export const getDeleteAdminExploreSectionUrl = (id: number,) => {
+
+
+
+
+  return `/api/admin/explore-sections/${id}`
+}
+
+/**
+ * @summary Eliminar una temática personalizada sin uso
+ */
+export const deleteAdminExploreSection = async (id: number, options?: RequestInit): Promise<void> => {
+
+  return customFetch<void>(getDeleteAdminExploreSectionUrl(id),
+  {
+    ...options,
+    method: 'DELETE'
+
+
+  }
+);}
+
+
+
+
+export const getDeleteAdminExploreSectionMutationOptions = <TError = ErrorType<ErrorResponse>,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof deleteAdminExploreSection>>, TError,{id: number}, TContext>, request?: SecondParameter<typeof customFetch>}
+): UseMutationOptions<Awaited<ReturnType<typeof deleteAdminExploreSection>>, TError,{id: number}, TContext> => {
+
+const mutationKey = ['deleteAdminExploreSection'];
+const {mutation: mutationOptions, request: requestOptions} = options ?
+      options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey ?
+      options
+      : {...options, mutation: {...options.mutation, mutationKey}}
+      : {mutation: { mutationKey, }, request: undefined};
+
+
+
+
+      const mutationFn: MutationFunction<Awaited<ReturnType<typeof deleteAdminExploreSection>>, {id: number}> = (props) => {
+          const {id} = props ?? {};
+
+          return  deleteAdminExploreSection(id,requestOptions)
+        }
+
+
+
+
+
+
+  return  { mutationFn, ...mutationOptions }}
+
+    export type DeleteAdminExploreSectionMutationResult = NonNullable<Awaited<ReturnType<typeof deleteAdminExploreSection>>>
+
+    export type DeleteAdminExploreSectionMutationError = ErrorType<ErrorResponse>
+
+    /**
+ * @summary Eliminar una temática personalizada sin uso
+ */
+export const useDeleteAdminExploreSection = <TError = ErrorType<ErrorResponse>,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof deleteAdminExploreSection>>, TError,{id: number}, TContext>, request?: SecondParameter<typeof customFetch>}
+ ): UseMutationResult<
+        Awaited<ReturnType<typeof deleteAdminExploreSection>>,
+        TError,
+        {id: number},
+        TContext
+      > => {
+      return useMutation(getDeleteAdminExploreSectionMutationOptions(options));
     }
 
 export const getGetAdminSoundsUrl = () => {

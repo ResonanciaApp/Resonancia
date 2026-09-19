@@ -69,6 +69,7 @@ import {
   parseExploreSectionsCache,
   type ExploreSection,
 } from "@/lib/explore-other-themes";
+import { absoluteMediaUrl } from "@/hooks/effectiveHero";
 
 const { width } = Dimensions.get("window");
 const H_PAD = 16;
@@ -422,6 +423,7 @@ export function ExploreScreen({
         sessions: SESSIONS,
         isExcludedLabel: isChakraTag,
         slugifyLabel: slugifyThemeTag,
+        resolveCoverImage: absoluteMediaUrl,
       }),
     [catalogVersion, exploreSections], // eslint-disable-line react-hooks/exhaustive-deps
   );

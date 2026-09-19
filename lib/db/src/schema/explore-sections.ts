@@ -8,6 +8,7 @@ export const exploreSectionsTable = pgTable("explore_sections", {
   label:     text("label").notNull(),
   visible:   boolean("visible").notNull().default(true),
   sortOrder: integer("sort_order").notNull().default(0),
+  coverImagePath: text("cover_image_path"),
   createdAt: timestamp("created_at", { withTimezone: true }).notNull().defaultNow(),
   updatedAt: timestamp("updated_at", { withTimezone: true }).notNull().defaultNow().$onUpdate(() => new Date()),
 });

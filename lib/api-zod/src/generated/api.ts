@@ -5676,6 +5676,96 @@ export const DeleteAdminSceneAnimationParams = zod.object({
 
 
 /**
+ * @summary Listar la configuración pública de Otras temáticas
+ */
+export const getExploreSectionsResponseSectionsItemInUseCountMin = 0;
+
+
+
+export const GetExploreSectionsResponse = zod.object({
+  "sections": zod.array(zod.object({
+  "id": zod.number(),
+  "slug": zod.string(),
+  "label": zod.string(),
+  "visible": zod.boolean(),
+  "sortOrder": zod.number(),
+  "coverImagePath": zod.string().nullable(),
+  "isDefault": zod.boolean(),
+  "inUseCount": zod.number().min(getExploreSectionsResponseSectionsItemInUseCountMin),
+  "canDelete": zod.boolean(),
+  "deleteBlockedReason": zod.string().nullable()
+}))
+})
+
+
+/**
+ * @summary Listar la configuración de Otras temáticas
+ */
+export const getAdminExploreSectionsResponseSectionsItemInUseCountMin = 0;
+
+
+
+export const GetAdminExploreSectionsResponse = zod.object({
+  "sections": zod.array(zod.object({
+  "id": zod.number(),
+  "slug": zod.string(),
+  "label": zod.string(),
+  "visible": zod.boolean(),
+  "sortOrder": zod.number(),
+  "coverImagePath": zod.string().nullable(),
+  "isDefault": zod.boolean(),
+  "inUseCount": zod.number().min(getAdminExploreSectionsResponseSectionsItemInUseCountMin),
+  "canDelete": zod.boolean(),
+  "deleteBlockedReason": zod.string().nullable()
+}))
+})
+
+
+/**
+ * @summary Actualizar orden, visibilidad y portada
+ */
+export const updateAdminExploreSectionsBodySectionsItemCoverImagePathRegExp = new RegExp('^\/objects\/uploads');
+
+
+
+export const UpdateAdminExploreSectionsBody = zod.object({
+  "sections": zod.array(zod.object({
+  "id": zod.number(),
+  "visible": zod.boolean().optional(),
+  "sortOrder": zod.number().optional(),
+  "coverImagePath": zod.string().regex(updateAdminExploreSectionsBodySectionsItemCoverImagePathRegExp).nullish()
+})).min(1)
+})
+
+export const updateAdminExploreSectionsResponseSectionsItemInUseCountMin = 0;
+
+
+
+export const UpdateAdminExploreSectionsResponse = zod.object({
+  "sections": zod.array(zod.object({
+  "id": zod.number(),
+  "slug": zod.string(),
+  "label": zod.string(),
+  "visible": zod.boolean(),
+  "sortOrder": zod.number(),
+  "coverImagePath": zod.string().nullable(),
+  "isDefault": zod.boolean(),
+  "inUseCount": zod.number().min(updateAdminExploreSectionsResponseSectionsItemInUseCountMin),
+  "canDelete": zod.boolean(),
+  "deleteBlockedReason": zod.string().nullable()
+}))
+})
+
+
+/**
+ * @summary Eliminar una temática personalizada sin uso
+ */
+export const DeleteAdminExploreSectionParams = zod.object({
+  "id": zod.coerce.number()
+})
+
+
+/**
  * @summary Listar todos los sonidos del mixer (admin)
  */
 export const GetAdminSoundsResponse = zod.object({

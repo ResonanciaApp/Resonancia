@@ -73,6 +73,12 @@ export async function resolveObjectReadAccess({
         )
         OR EXISTS (
           SELECT 1
+          FROM explore_sections e
+          WHERE e.visible = true
+            AND e.cover_image_path = ${objectPath}
+        )
+        OR EXISTS (
+          SELECT 1
           FROM resonadores r
           WHERE r.status = 'published'
             AND (

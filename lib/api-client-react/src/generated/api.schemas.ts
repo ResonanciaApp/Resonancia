@@ -5,6 +5,42 @@
  * API specification
  * OpenAPI spec version: 0.1.0
  */
+export interface ExploreSection {
+  id: number;
+  slug: string;
+  label: string;
+  visible: boolean;
+  sortOrder: number;
+  /** @nullable */
+  coverImagePath: string | null;
+  isDefault: boolean;
+  /** @minimum 0 */
+  inUseCount: number;
+  canDelete: boolean;
+  /** @nullable */
+  deleteBlockedReason: string | null;
+}
+
+export interface ExploreSectionsResponse {
+  sections: ExploreSection[];
+}
+
+export interface ExploreSectionUpdateItem {
+  id: number;
+  visible?: boolean;
+  sortOrder?: number;
+  /**
+     * @nullable
+     * @pattern ^/objects/uploads/
+     */
+  coverImagePath?: string | null;
+}
+
+export interface ExploreSectionsUpdate {
+  /** @minItems 1 */
+  sections: ExploreSectionUpdateItem[];
+}
+
 export interface InspirationContent {
   /** @maxLength 2000 */
   quote: string;

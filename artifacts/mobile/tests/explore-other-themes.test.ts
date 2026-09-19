@@ -52,6 +52,28 @@ test("una categoría dinámica usa la imagen de una sesión con el mismo tag", (
   assert.equal(cards[0]?.label, "Rituales de luna");
 });
 
+test("la portada configurada en Admin tiene prioridad sobre los fallbacks locales", () => {
+  const configured = {
+    ...section("rituales-de-luna", "Rituales de luna"),
+    coverImagePath: "/objects/uploads/luna.webp",
+  };
+  const cards = buildOtherThemeCards({
+    sections: [configured],
+    localCards: [{
+      id: "rituales-de-luna",
+      label: "Local",
+      description: "Fallback local",
+      image: "local.jpg",
+    }],
+    sessions: [{ themeTag: ["Rituales de luna"], image: "sesion.jpg" }],
+    isExcludedLabel: () => false,
+    slugifyLabel: slugify,
+    resolveCoverImage: (path) => `remote:${path}`,
+  });
+
+  assert.equal(cards[0]?.image, "remote:/objects/uploads/luna.webp");
+});
+
 test("una categoría dinámica sin sesión queda disponible para el fallback visual", () => {
   const cards = buildOtherThemeCards({
     sections: [section("tema-nuevo", "Tema nuevo")],

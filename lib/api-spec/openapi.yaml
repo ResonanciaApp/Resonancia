@@ -3942,6 +3942,78 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/ErrorResponse"
+  /explore-sections:
+    get:
+      operationId: getExploreSections
+      tags: [catalog]
+      summary: Listar la configuración pública de Otras temáticas
+      responses:
+        "200":
+          description: Secciones ordenadas
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ExploreSectionsResponse"
+  /admin/explore-sections:
+    get:
+      operationId: getAdminExploreSections
+      tags: [admin]
+      summary: Listar la configuración de Otras temáticas
+      responses:
+        "200":
+          description: Secciones ordenadas con estado de uso
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ExploreSectionsResponse"
+    patch:
+      operationId: updateAdminExploreSections
+      tags: [admin]
+      summary: Actualizar orden, visibilidad y portada
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/ExploreSectionsUpdate"
+      responses:
+        "200":
+          description: Secciones actualizadas
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ExploreSectionsResponse"
+        "400":
+          description: Datos inválidos
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+  /admin/explore-sections/{id}:
+    delete:
+      operationId: deleteAdminExploreSection
+      tags: [admin]
+      summary: Eliminar una temática personalizada sin uso
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema: {type: integer}
+      responses:
+        "204":
+          description: Sección eliminada
+        "404":
+          description: No encontrada
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+        "409":
+          description: La sección es base o todavía está en uso
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
   /admin/sounds:
     get:
       operationId: getAdminSounds
@@ -4429,6 +4501,43 @@ paths:
                 $ref: "#/components/schemas/ErrorResponse"
 components:
   schemas:
+    ExploreSection:
+      type: object
+      required: [id, slug, label, visible, sortOrder, coverImagePath, isDefault, inUseCount, canDelete, deleteBlockedReason]
+      properties:
+        id: {type: integer}
+        slug: {type: string}
+        label: {type: string}
+        visible: {type: boolean}
+        sortOrder: {type: integer}
+        coverImagePath: {type: ["string", "null"]}
+        isDefault: {type: boolean}
+        inUseCount: {type: integer, minimum: 0}
+        canDelete: {type: boolean}
+        deleteBlockedReason: {type: ["string", "null"]}
+    ExploreSectionsResponse:
+      type: object
+      required: [sections]
+      properties:
+        sections:
+          type: array
+          items: {$ref: "#/components/schemas/ExploreSection"}
+    ExploreSectionUpdateItem:
+      type: object
+      required: [id]
+      properties:
+        id: {type: integer}
+        visible: {type: boolean}
+        sortOrder: {type: integer}
+        coverImagePath: {type: ["string", "null"], pattern: "^/objects/uploads/"}
+    ExploreSectionsUpdate:
+      type: object
+      required: [sections]
+      properties:
+        sections:
+          type: array
+          minItems: 1
+          items: {$ref: "#/components/schemas/ExploreSectionUpdateItem"}
     InspirationContent:
       type: object
       required: [quote, author, reflection, imagePath, imagePositionX, imagePositionY, overlayOpacity, sessionId]

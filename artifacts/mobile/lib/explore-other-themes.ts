@@ -3,6 +3,7 @@ export interface ExploreSection {
   label: string;
   visible: boolean;
   sortOrder: number;
+  coverImagePath?: string | null;
 }
 
 export interface ThemeCardSource<TImage> {
@@ -55,13 +56,15 @@ export function buildOtherThemeCards<TImage>({
   sessions,
   isExcludedLabel,
   slugifyLabel,
+  resolveCoverImage,
 }: {
   sections: ExploreSection[] | null;
   localCards: readonly ThemeCardSource<TImage>[];
   sessions: readonly ThemeSessionSource<TImage>[];
   isExcludedLabel: (label: string) => boolean;
   slugifyLabel: (label: string) => string;
-}): OtherThemeCard<TImage>[] {
+  resolveCoverImage?: (path: string) => string;
+}): OtherThemeCard<TImage | string>[] {
   if (!sections?.length) return [];
 
   const seen = new Set<string>();
@@ -92,7 +95,12 @@ export function buildOtherThemeCards<TImage>({
         description:
           localCard?.description ??
           `Sesiones para explorar ${section.label.toLocaleLowerCase("es")}.`,
-        image: localCard?.image ?? matchingSession?.image,
+        image:
+          (section.coverImagePath && resolveCoverImage
+            ? resolveCoverImage(section.coverImagePath)
+            : undefined) ??
+          localCard?.image ??
+          matchingSession?.image,
       };
     });
 }
