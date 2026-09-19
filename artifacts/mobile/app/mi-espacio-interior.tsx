@@ -914,6 +914,7 @@ const styles = StyleSheet.create({
   },
   monthSelectorContainer: {
     paddingHorizontal: 16,
+    marginTop: 7,
     marginBottom: 4,
     alignItems: "flex-start",
   },
