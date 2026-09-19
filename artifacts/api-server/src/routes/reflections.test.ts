@@ -27,6 +27,10 @@ vi.mock("@workspace/db", () => {
       const left = row[value.column as keyof typeof row] as Date | number;
       return (left instanceof Date ? left.getTime() : left) < (value.value instanceof Date ? value.value.getTime() : value.value as number);
     }
+    if (value.kind === "gte") {
+      const left = row[value.column as keyof typeof row] as Date | number;
+      return (left instanceof Date ? left.getTime() : left) >= (value.value instanceof Date ? value.value.getTime() : value.value as number);
+    }
     if (value.kind === "and") return (value.conditions ?? []).every((item) => matches(row, item));
     if (value.kind === "or") return (value.conditions ?? []).some((item) => matches(row, item));
     return true;
@@ -95,6 +99,7 @@ vi.mock("drizzle-orm", () => ({
   or: (...conditions: unknown[]) => ({ kind: "or", conditions }),
   eq: (column: string, value: unknown) => ({ kind: "eq", column, value }),
   lt: (column: string, value: unknown) => ({ kind: "lt", column, value }),
+  gte: (column: string, value: unknown) => ({ kind: "gte", column, value }),
   desc: () => null,
 }));
 
@@ -141,5 +146,17 @@ describe("private reflections API", () => {
     expect(second.body.items[0].id).toBeLessThan(first.body.items[1].id);
     await request(app).get("/api/me/reflections?limit=0").expect(400);
     await request(app).get("/api/me/reflections?cursor=bad").expect(400);
+  });
+
+  it("filters a complete monthly date range before paginating", async () => {
+    state.rows = [
+      { id: 1, userId: 1, category: "calm", message: "agosto", createdAt: new Date("2026-08-31T23:59:59.000Z"), updatedAt: new Date() },
+      { id: 2, userId: 1, category: "clarity", message: "septiembre", createdAt: new Date("2026-09-15T12:00:00.000Z"), updatedAt: new Date() },
+      { id: 3, userId: 1, category: "purpose", message: "octubre", createdAt: new Date("2026-10-01T00:00:00.000Z"), updatedAt: new Date() },
+    ];
+    const response = await request(app)
+      .get("/api/me/reflections?from=2026-09-01T00%3A00%3A00.000Z&to=2026-10-01T00%3A00%3A00.000Z")
+      .expect(200);
+    expect(response.body.items.map((item: { message: string }) => item.message)).toEqual(["septiembre"]);
   });
 });

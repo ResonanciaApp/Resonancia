@@ -1,5 +1,5 @@
 import { Router, type IRouter } from "express";
-import { and, desc, eq, lt, or } from "drizzle-orm";
+import { and, desc, eq, gte, lt, or } from "drizzle-orm";
 import { db, reflectionsTable } from "@workspace/db";
 import {
   CreateMyReflectionBody,
@@ -29,14 +29,20 @@ function cleanMessage(message: string) {
 }
 
 router.get("/me/reflections", requireAuth, async (req, res) => {
-  const parsed = ListMyReflectionsQueryParams.safeParse(req.query);
+  const parsed = ListMyReflectionsQueryParams.safeParse({
+    ...req.query,
+    ...(typeof req.query.from === "string" ? { from: new Date(req.query.from) } : {}),
+    ...(typeof req.query.to === "string" ? { to: new Date(req.query.to) } : {}),
+  });
   if (!parsed.success) { res.status(400).json({ error: "Datos inválidos" }); return; }
-  const { cursor, category, limit } = parsed.data;
+  const { cursor, category, from, to, limit } = parsed.data;
   const decoded = cursor ? decodeCursor(cursor) : null;
   if (cursor && !decoded) { res.status(400).json({ error: "Cursor inválido" }); return; }
   const me = req.currentUser!;
   const conditions = [eq(reflectionsTable.userId, me.id)];
   if (category) conditions.push(eq(reflectionsTable.category, category));
+  if (from) conditions.push(gte(reflectionsTable.createdAt, new Date(from)));
+  if (to) conditions.push(lt(reflectionsTable.createdAt, new Date(to)));
   if (decoded) {
     conditions.push(or(
       lt(reflectionsTable.createdAt, decoded.createdAt),

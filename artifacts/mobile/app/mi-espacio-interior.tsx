@@ -13,6 +13,21 @@ import { useQueryClient } from "@tanstack/react-query";
 import { useAuth } from "@/context/AuthContext";
 import { useReducedMotion } from "react-native-reanimated";
 
+const MONTH_NAMES = [
+  "Enero",
+  "Febrero",
+  "Marzo",
+  "Abril",
+  "Mayo",
+  "Junio",
+  "Julio",
+  "Agosto",
+  "Septiembre",
+  "Octubre",
+  "Noviembre",
+  "Diciembre",
+] as const;
+
 function CollapsibleReflectionMessage({
   message,
   color,
@@ -119,15 +134,26 @@ export default function InnerSpaceScreen() {
   const { theme } = useSceneTheme();
   const qc = useQueryClient();
   const { authLoading, isSignedIn, clerkUserId } = useAuth();
-  
+  const today = useRef(new Date()).current;
   const [filter, setFilter] = useState<ReflectionCategory | "all">("all");
+  const [selectedMonth, setSelectedMonth] = useState(today.getMonth());
+  const [monthPickerVisible, setMonthPickerVisible] = useState(false);
+  const selectedYear = today.getFullYear();
   const limit = 30;
-  const filterRef = useRef(filter);
+  const monthRange = useMemo(() => {
+    const from = new Date(selectedYear, selectedMonth, 1);
+    const to = new Date(selectedYear, selectedMonth + 1, 1);
+    return { from: from.toISOString(), to: to.toISOString() };
+  }, [selectedMonth, selectedYear]);
+  const requestScope = `${filter}:${monthRange.from}:${monthRange.to}`;
+  const requestScopeRef = useRef(requestScope);
   const nextRequestRef = useRef<AbortController | null>(null);
   const previousUserRef = useRef<string | null>(null);
   
   const queryParams = { 
     category: filter === "all" ? undefined : filter,
+    from: monthRange.from,
+    to: monthRange.to,
     limit 
   };
   
@@ -147,14 +173,14 @@ export default function InnerSpaceScreen() {
   const [fetchNextError, setFetchNextError] = useState(false);
 
   useEffect(() => {
-    filterRef.current = filter;
+    requestScopeRef.current = requestScope;
     nextRequestRef.current?.abort();
     nextRequestRef.current = null;
     setIsFetchingNext(false);
     setSubsequentPages([]);
     setNextCursor(null);
     setFetchNextError(false);
-  }, [filter]);
+  }, [requestScope]);
 
   useEffect(() => {
     const previousUserId = previousUserRef.current;
@@ -183,6 +209,7 @@ export default function InnerSpaceScreen() {
   const loadMore = async () => {
     if (!nextCursor || isFetchingNext || isFirstLoading) return;
     const requestFilter = filter;
+    const requestedScope = requestScope;
     const requestCursor = nextCursor;
     const controller = new AbortController();
     nextRequestRef.current?.abort();
@@ -193,16 +220,18 @@ export default function InnerSpaceScreen() {
       const res = await listMyReflections(
         {
           category: requestFilter === "all" ? undefined : requestFilter,
+          from: monthRange.from,
+          to: monthRange.to,
           limit,
           cursor: requestCursor,
         },
         { signal: controller.signal },
       );
-      if (controller.signal.aborted || filterRef.current !== requestFilter) return;
+      if (controller.signal.aborted || requestScopeRef.current !== requestedScope) return;
       setSubsequentPages(prev => [...prev, res]);
       setNextCursor(res.nextCursor);
     } catch {
-      if (!controller.signal.aborted && filterRef.current === requestFilter) {
+      if (!controller.signal.aborted && requestScopeRef.current === requestedScope) {
         setFetchNextError(true);
       }
     } finally {
@@ -457,6 +486,19 @@ export default function InnerSpaceScreen() {
         </ScrollView>
       </View>
 
+      <View style={styles.monthSelectorContainer}>
+        <Pressable
+          testID="month-filter"
+          accessibilityRole="button"
+          accessibilityLabel={`Filtrar por mes. Mes actual: ${MONTH_NAMES[selectedMonth]}`}
+          style={styles.monthSelectorButton}
+          onPress={() => setMonthPickerVisible(true)}
+        >
+          <Text style={styles.monthSelectorText}>{MONTH_NAMES[selectedMonth]}</Text>
+          <Feather name="chevron-down" size={18} color="#F9F9F9" />
+        </Pressable>
+      </View>
+
       {isFirstError ? (
         <View style={styles.centerContainer}>
           <Text style={[styles.errorText, { color: colors.destructive }]}>Error al cargar las reflexiones.</Text>
@@ -492,6 +534,47 @@ export default function InnerSpaceScreen() {
           renderScrollComponent={Platform.OS === 'web' ? undefined : (props) => <KeyboardAwareScrollView {...props} />}
         />
       )}
+      <Modal
+        visible={monthPickerVisible}
+        transparent
+        animationType="fade"
+        onRequestClose={() => setMonthPickerVisible(false)}
+      >
+        <Pressable style={styles.modalBackdrop} onPress={() => setMonthPickerVisible(false)}>
+          <Pressable
+            accessibilityViewIsModal
+            style={[styles.actionSheet, { backgroundColor: theme.gradient[0], borderColor: colors.border }]}
+            onPress={(event) => event.stopPropagation()}
+          >
+            <Text style={[styles.actionSheetTitle, { color: colors.foreground }]}>
+              Seleccionar mes · {selectedYear}
+            </Text>
+            <ScrollView style={styles.monthList} showsVerticalScrollIndicator={false}>
+              {MONTH_NAMES.map((month, index) => {
+                const isSelected = selectedMonth === index;
+                return (
+                  <Pressable
+                    key={month}
+                    testID={`month-${index}`}
+                    accessibilityRole="button"
+                    accessibilityState={{ selected: isSelected }}
+                    style={[styles.monthOption, isSelected && styles.monthOptionSelected]}
+                    onPress={() => {
+                      setSelectedMonth(index);
+                      setMonthPickerVisible(false);
+                    }}
+                  >
+                    <Text style={[styles.monthOptionText, isSelected && styles.monthOptionTextSelected]}>
+                      {month}
+                    </Text>
+                    {isSelected && <Feather name="check" size={18} color="#060A0F" />}
+                  </Pressable>
+                );
+              })}
+            </ScrollView>
+          </Pressable>
+        </Pressable>
+      </Modal>
       <Modal
         visible={Boolean(actionReflection)}
         transparent
@@ -623,7 +706,6 @@ const styles = StyleSheet.create({
   },
   dateHeader: {
     alignItems: 'flex-start',
-    marginLeft: 60,
     marginBottom: 16,
     marginTop: 16,
   },
@@ -789,6 +871,49 @@ const styles = StyleSheet.create({
   retryButton: {
     marginTop: 12,
     padding: 10,
+  },
+  monthSelectorContainer: {
+    paddingHorizontal: 16,
+    marginBottom: 4,
+    alignItems: "flex-start",
+  },
+  monthSelectorButton: {
+    height: 42,
+    paddingHorizontal: 15,
+    borderRadius: 21,
+    borderWidth: 1,
+    borderColor: "rgba(255,255,255,0.2)",
+    backgroundColor: "rgba(0,0,0,0.28)",
+    flexDirection: "row",
+    alignItems: "center",
+    gap: 8,
+  },
+  monthSelectorText: {
+    color: "#F9F9F9",
+    fontSize: 14,
+    fontWeight: "700",
+  },
+  monthList: {
+    maxHeight: 460,
+  },
+  monthOption: {
+    height: 48,
+    paddingHorizontal: 14,
+    borderRadius: 16,
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "space-between",
+  },
+  monthOptionSelected: {
+    backgroundColor: "#F9F9F9",
+  },
+  monthOptionText: {
+    color: "#F9F9F9",
+    fontSize: 15,
+    fontWeight: "600",
+  },
+  monthOptionTextSelected: {
+    color: "#060A0F",
   },
   modalBackdrop: {
     ...StyleSheet.absoluteFillObject,

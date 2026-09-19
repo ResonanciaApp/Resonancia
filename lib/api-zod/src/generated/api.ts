@@ -6290,6 +6290,8 @@ export const listMyReflectionsQueryLimitMax = 50;
 export const ListMyReflectionsQueryParams = zod.object({
   "cursor": zod.coerce.string().optional(),
   "category": zod.enum(['gratitude', 'understanding', 'clarity', 'calm', 'purpose', 'acceptance']).optional(),
+  "from": zod.date().optional().describe('Inclusive start of the requested date range'),
+  "to": zod.date().optional().describe('Exclusive end of the requested date range'),
   "limit": zod.coerce.number().min(1).max(listMyReflectionsQueryLimitMax).default(listMyReflectionsQueryLimitDefault)
 })
 

@@ -3295,6 +3295,14 @@ export type ListMyReflectionsParams = {
 cursor?: string;
 category?: ReflectionCategory;
 /**
+ * Inclusive start of the requested date range
+ */
+from?: string;
+/**
+ * Exclusive end of the requested date range
+ */
+to?: string;
+/**
  * @minimum 1
  * @maximum 50
  */
