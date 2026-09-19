@@ -77,17 +77,18 @@ export default function ProgresoScreen() {
               style={styles.heroLotus}
               contentFit="contain"
             />
-            <LinearGradient
-              colors={[
-                withOpacity(fadeColor, 0),
-                withOpacity(fadeColor, 0.3),
-                fadeColor,
-                fadeColor,
-              ]}
-              locations={[0.3, 0.7, fadeSolidStart, 1]}
-              style={StyleSheet.absoluteFill}
-            />
           </CinematicFadeSlide>
+          <LinearGradient
+            colors={[
+              withOpacity(fadeColor, 0),
+              withOpacity(fadeColor, 0.3),
+              fadeColor,
+              fadeColor,
+            ]}
+            locations={[0.3, 0.7, fadeSolidStart, 1]}
+            style={StyleSheet.absoluteFill}
+            pointerEvents="none"
+          />
           <View style={[styles.heroOverlay, { paddingTop: topPad + 80 }]}>
             <CinematicFadeSlide
               replayKey="progress-intro"
