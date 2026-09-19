@@ -541,6 +541,7 @@ export const SessionCarousel = React.memo(function SessionCarousel({
     4 +
     AMBIENTAL_CONTENT_DROP +
     AMBIENTAL_IMAGE_EXTRA_DROP;
+  const ambientalFilledImageVisualTop = ambientalFilledImageTop - 25;
   const ambientalPlayButtonSize = 34 * ambientalFillScale + 10;
   const ambientalPlayIconSize = 22 * ambientalFillScale + 4;
   const viewAllAccent = theme.accent ?? viewAllColor ?? colors.accent;
@@ -675,7 +676,7 @@ export const SessionCarousel = React.memo(function SessionCarousel({
                               width: ambientalFilledImageWidth,
                               height: ambientalFilledImageHeight,
                               left: ambientalFilledImageLeft,
-                              top: ambientalFilledImageTop,
+                              top: ambientalFilledImageVisualTop,
                               borderRadius: ambientalFilledImageDiameter / 2,
                             }
                           : {
@@ -701,7 +702,7 @@ export const SessionCarousel = React.memo(function SessionCarousel({
                             width: ambientalFilledImageWidth,
                             height: ambientalFilledImageHeight,
                             left: ambientalFilledImageLeft,
-                            top: ambientalFilledImageTop,
+                            top: ambientalFilledImageVisualTop,
                             borderBottomLeftRadius: ambientalFilledImageDiameter / 2,
                             borderBottomRightRadius: ambientalFilledImageDiameter / 2,
                           },
@@ -727,7 +728,7 @@ export const SessionCarousel = React.memo(function SessionCarousel({
                               width: ambientalFilledImageDiameter + 6,
                               height: ambientalFilledImageDiameter + 6,
                               left: ambientalFilledImageLeft - 3,
-                              top: ambientalFilledImageTop - 3,
+                              top: ambientalFilledImageVisualTop - 3,
                             },
                           ]}
                         >
@@ -756,7 +757,7 @@ export const SessionCarousel = React.memo(function SessionCarousel({
                                  ambientalFilledImageDiameter / 2 -
                                  ambientalPlayButtonSize / 2,
                                top:
-                                 ambientalFilledImageTop +
+                                 ambientalFilledImageVisualTop +
                                  ambientalFilledImageDiameter -
                                  ambientalPlayButtonSize / 2,
                               transform: [{ scale: getPreviewScale(s.id) }],
@@ -911,7 +912,10 @@ export const SessionCarousel = React.memo(function SessionCarousel({
                           showAmbientalTitleOnly && ambientalTitleOnlyMetadataStyle,
                           showAmbientalTitleOnly &&
                             ambientalImageFillTop && {
-                               top: ambientalImageBottom + AMBIENTAL_CONTENT_DROP,
+                                top:
+                                  ambientalImageBottom +
+                                  AMBIENTAL_CONTENT_DROP -
+                                  18,
                               bottom: 0,
                               justifyContent: "center",
                               transform: [],
