@@ -166,6 +166,7 @@ const styles = StyleSheet.create({
   },
   heroLotus: {
     ...StyleSheet.absoluteFillObject,
+    transform: [{ scale: 1.52 }],
   },
   heroOverlay: {
     ...StyleSheet.absoluteFillObject,
