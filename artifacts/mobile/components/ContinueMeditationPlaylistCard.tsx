@@ -109,11 +109,10 @@ const styles = StyleSheet.create({
     marginBottom: 17,
   },
   card: {
-    width: "70%",
-    minHeight: 97,
+    minHeight: 138,
     flexDirection: "row",
     alignItems: "center",
-    gap: 13,
+    gap: 19,
   },
   coverStack: {
     width: 87,
