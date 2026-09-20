@@ -264,15 +264,7 @@ export default function InspiracionDiariaIndex() {
             <Feather name="chevron-left" size={27} color="#fff" />
           </Pressable>
           <Text style={styles.title}>{current.week?.settings.sectionTitle || "Sabiduría diaria"}</Text>
-          <Pressable
-            onPress={() => setSharing(true)}
-            disabled={activeDay?.status !== "available"}
-            style={[styles.circleButton, activeDay?.status !== "available" && styles.disabled]}
-            accessibilityRole="button"
-            accessibilityLabel="Compartir inspiración"
-          >
-            <Feather name="share" size={21} color="#fff" />
-          </Pressable>
+          <View style={styles.circleButtonPlaceholder} />
         </View>
 
         <Animated.View
@@ -320,6 +312,20 @@ export default function InspiracionDiariaIndex() {
             </View>
           )}
         </Animated.View>
+
+        <Pressable
+          onPress={() => setSharing(true)}
+          disabled={activeDay?.status !== "available"}
+          style={[
+            styles.circleButton,
+            styles.floatingShareButton,
+            activeDay?.status !== "available" && styles.disabled,
+          ]}
+          accessibilityRole="button"
+          accessibilityLabel="Compartir inspiración"
+        >
+          <Feather name="share" size={21} color="#fff" />
+        </Pressable>
 
         <View style={[styles.days, { top: topInset + 59 }]}>
           {days.map((day, index) => (
@@ -397,6 +403,12 @@ const styles = StyleSheet.create({
     backgroundColor: "rgba(255,255,255,.14)",
   },
   readText: { color: "#fff", fontFamily: "Manrope", fontSize: 14, fontWeight: "600" },
+  floatingShareButton: {
+    position: "absolute",
+    bottom: 90,
+    left: "50%",
+    transform: [{ translateX: -21.5 }],
+  },
   overlay: { ...StyleSheet.absoluteFillObject },
   header: { height: 56, flexDirection: "row", alignItems: "center", paddingHorizontal: 18 },
   circleButton: {
@@ -408,6 +420,10 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     borderColor: "rgba(255,255,255,.14)",
     backgroundColor: "rgba(10,12,18,.22)",
+  },
+  circleButtonPlaceholder: {
+    width: 43,
+    height: 43,
   },
   title: { flex: 1, color: "#fff", textAlign: "center", fontFamily: "Manrope", fontSize: 17, fontWeight: "600" },
   days: { position: "absolute", left: 0, right: 0, flexDirection: "row", justifyContent: "space-between", paddingHorizontal: 18 },
