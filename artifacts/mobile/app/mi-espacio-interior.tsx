@@ -451,22 +451,39 @@ export default function InnerSpaceScreen() {
     return result;
   }, [groupedData]);
 
-  const renderItem = ({ item }: { item: any }) => {
+  const renderMonthSelector = () => (
+    <Pressable
+      testID="month-filter"
+      accessibilityRole="button"
+      accessibilityLabel={`Filtrar por mes. Mes actual: ${MONTH_NAMES[selectedMonth]}`}
+      style={styles.monthSelectorButton}
+      onPress={() => setMonthPickerVisible(true)}
+    >
+      <Text style={styles.monthSelectorText}>{MONTH_NAMES[selectedMonth]}</Text>
+      <Feather name="chevron-down" size={17} color="#F9F9F9" />
+    </Pressable>
+  );
+
+  const renderItem = ({ item, index }: { item: any; index: number }) => {
     if (item.type === 'header') {
       const revealId = String(item.id);
       const revealDelay = wallRevealDelays.get(revealId) ?? 0;
       return (
-        <View style={styles.dateHeader}>
+        <View style={[styles.dateHeader, index === 0 && styles.firstDateHeader]}>
           <WallScrollReveal
             active={wallRevealDelays.has(revealId)}
             completedIds={completedRevealIds}
             delay={revealDelay}
             revealId={`${requestScope}:date:${revealId}`}
             scaleFrom={0.98}
+            style={styles.dateHeaderEntrance}
             translateYFrom={12}
           >
-            <View style={styles.datePill}>
-              <Text style={[styles.dateText, { color: colors.foreground }]}>{item.dateLabel}</Text>
+            <View style={styles.dateHeaderRow}>
+              <View style={styles.datePill}>
+                <Text style={[styles.dateText, { color: colors.foreground }]}>{item.dateLabel}</Text>
+              </View>
+              {index === 0 ? renderMonthSelector() : null}
             </View>
           </WallScrollReveal>
         </View>
@@ -703,18 +720,11 @@ export default function InnerSpaceScreen() {
         </ScrollView>
       </View>
 
-      <View style={styles.monthSelectorContainer}>
-        <Pressable
-          testID="month-filter"
-          accessibilityRole="button"
-          accessibilityLabel={`Filtrar por mes. Mes actual: ${MONTH_NAMES[selectedMonth]}`}
-          style={styles.monthSelectorButton}
-          onPress={() => setMonthPickerVisible(true)}
-        >
-          <Text style={styles.monthSelectorText}>{MONTH_NAMES[selectedMonth]}</Text>
-          <Feather name="chevron-down" size={20} color="#F9F9F9" />
-        </Pressable>
-      </View>
+      {flatData.length === 0 ? (
+        <View style={styles.monthSelectorContainer}>
+          {renderMonthSelector()}
+        </View>
+      ) : null}
 
       {isFirstError ? (
         <View style={styles.centerContainer}>
@@ -861,9 +871,21 @@ const styles = StyleSheet.create({
     paddingTop: 10,
   },
   dateHeader: {
-    alignItems: 'flex-start',
+    alignItems: 'stretch',
     marginBottom: 31,
     marginTop: 16,
+  },
+  firstDateHeader: {
+    marginTop: 1,
+  },
+  dateHeaderEntrance: {
+    width: "100%",
+  },
+  dateHeaderRow: {
+    width: "100%",
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "space-between",
   },
   datePill: {
     backgroundColor: "transparent",
@@ -895,7 +917,7 @@ const styles = StyleSheet.create({
   reflectionCard: {
     flex: 1,
     borderRadius: 16,
-    backgroundColor: "rgba(0,0,0,0.2)",
+    backgroundColor: "rgba(0,0,0,0.28)",
     padding: 16,
   },
   reflectionCardEntrance: {
@@ -1059,7 +1081,7 @@ const styles = StyleSheet.create({
   },
   monthSelectorText: {
     color: "#F9F9F9",
-    fontSize: 16,
+    fontSize: 13,
     fontWeight: "700",
   },
   monthList: {
