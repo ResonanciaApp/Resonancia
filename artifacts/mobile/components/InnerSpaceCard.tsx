@@ -201,7 +201,15 @@ export function InnerSpaceCard({
           accessibilityRole="button"
           accessibilityLabel="Abrir Muro expansivo"
         >
-          <Text style={styles.wallHeaderLink}>Mi muro</Text>
+          <View style={styles.historyAction}>
+            <Text style={[styles.historyLinkText, { color: wallLinkColor }]}>Ver muro</Text>
+            <Feather
+              name="chevron-right"
+              size={16}
+              color={wallLinkColor}
+              style={styles.historyChevron}
+            />
+          </View>
         </Pressable>
       </View>
 
@@ -335,18 +343,6 @@ export function InnerSpaceCard({
         </Text>
       </Pressable>
 
-      <Pressable testID="history-link" accessibilityRole="button" accessibilityLabel="Ver muro" onPress={openWall} style={styles.historyLinkContainer}>
-        <View style={styles.historyAction}>
-          <Text style={[styles.historyLinkText, { color: wallLinkColor }]}>Ver muro</Text>
-          <Feather
-            name="chevron-right"
-            size={16}
-            color={wallLinkColor}
-            style={styles.historyChevron}
-          />
-        </View>
-      </Pressable>
-
     </View>
   );
 }
@@ -376,11 +372,6 @@ const styles = StyleSheet.create({
     alignItems: "flex-end",
     justifyContent: "center",
     paddingLeft: 16,
-  },
-  wallHeaderLink: {
-    color: "#F9F9F9",
-    fontSize: 13,
-    fontWeight: "500",
   },
   categoriesMask: {
     marginBottom: 20,
@@ -457,14 +448,10 @@ const styles = StyleSheet.create({
     borderRadius: 20,
     paddingVertical: 14,
     alignItems: "center",
-    marginBottom: 20,
   },
   submitText: {
     fontSize: 15,
     fontWeight: "600",
-  },
-  historyLinkContainer: {
-    alignItems: "center",
   },
   historyAction: {
     flexDirection: "row",
