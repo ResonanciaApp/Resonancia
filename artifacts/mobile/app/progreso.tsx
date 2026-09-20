@@ -151,6 +151,8 @@ export default function ProgresoScreen() {
               entranceReplayKey="progress-sections"
               entranceBaseDelay={900}
               showSectionBorders={false}
+              sectionHorizontalPadding={20}
+              sectionTopPadding={16}
               streakTitle="Tu progreso"
             />
           </View>
@@ -221,7 +223,7 @@ const styles = StyleSheet.create({
     transform: [{ translateY: 155 }],
   },
   content: {
-    paddingHorizontal: 20,
+    paddingHorizontal: 16,
     marginTop: -55,
     paddingTop: 12,
   },

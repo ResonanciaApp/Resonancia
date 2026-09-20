@@ -213,7 +213,15 @@ export function ProgressMirrorSections({
           replayKey={`${entranceReplayKey}:personal`}
           delay={entranceBaseDelay + 500}
         >
-          <View style={[styles.personalStatsSection, !showSectionBorders && styles.borderlessSection]}>
+          <View
+            style={[
+              styles.personalStatsSection,
+              !showSectionBorders && styles.borderlessSection,
+              sectionHorizontalPadding !== undefined && {
+                paddingHorizontal: sectionHorizontalPadding,
+              },
+            ]}
+          >
             <ContentEntrance
               animated={animateEntrance}
               replayKey={`${entranceReplayKey}:personal-header`}
@@ -295,6 +303,7 @@ export function ProgressMirrorSections({
             embedded
             outlined={showSectionBorders}
             backgroundColor={SECTION_BACKGROUND}
+            cardHorizontalPadding={sectionHorizontalPadding}
             animateEntrance={animateEntrance}
             entranceReplayKey={`${entranceReplayKey}:calendar-content`}
             entranceBaseDelay={entranceBaseDelay + (showPersonalStats ? 1450 : 950)}
