@@ -398,6 +398,7 @@ export function ReflectionShare({ reflection, onClose }: { reflection: Reflectio
       titleFontSize={15}
       titleOffsetY={-15}
       headerControlsOffsetY={-15}
+      lightInstagramButton
       headerRightAction={compositionIsModified ? (
         <Pressable
           accessibilityRole="button"
@@ -405,8 +406,7 @@ export function ReflectionShare({ reflection, onClose }: { reflection: Reflectio
           onPress={resetComposition}
           style={({ pressed }) => [styles.resetButton, pressed && styles.resetButtonPressed]}
         >
-          <Feather name="rotate-ccw" size={15} color="#F9F9F9" />
-          <Text style={styles.resetButtonText}>Restablecer</Text>
+          <Feather name="rotate-ccw" size={25} color="#F9F9F9" />
         </Pressable>
       ) : undefined}
       renderArtwork={(width, isExport, callbacks) => {
@@ -470,7 +470,7 @@ export function ReflectionShare({ reflection, onClose }: { reflection: Reflectio
                 />
                 {isSelected && (
                   <View style={styles.checkOverlay}>
-                    <Feather name="check" size={16} color="#FFFFFF" />
+                    <Feather name="check" size={26} color="#3D1766" />
                   </View>
                 )}
               </Pressable>
@@ -544,23 +544,17 @@ const styles = StyleSheet.create({
     padding: 8,
   },
   resetButton: {
-    flexDirection: "row",
+    width: 43,
+    height: 43,
+    borderRadius: 21.5,
     alignItems: "center",
-    gap: 5,
-    paddingHorizontal: 9,
-    paddingVertical: 7,
-    borderRadius: 16,
-    backgroundColor: "rgba(249,249,249,0.08)",
-    borderWidth: 1,
-    borderColor: "rgba(249,249,249,0.12)",
+    justifyContent: "center",
+    backgroundColor: "rgba(255,255,255,0.10)",
+    borderWidth: StyleSheet.hairlineWidth,
+    borderColor: "rgba(255,255,255,0.18)",
   },
   resetButtonPressed: {
     opacity: 0.65,
-  },
-  resetButtonText: {
-    color: "#F9F9F9",
-    fontSize: 11,
-    fontWeight: "600",
   },
   galleryContent: {
     flexDirection: "row",
@@ -577,7 +571,7 @@ const styles = StyleSheet.create({
     borderColor: "transparent",
   },
   galleryItemSelected: {
-    borderColor: "#8954EE",
+    borderColor: "#F9F9F9",
   },
   galleryImage: {
     width: "100%",
@@ -585,7 +579,7 @@ const styles = StyleSheet.create({
   },
   checkOverlay: {
     ...StyleSheet.absoluteFillObject,
-    backgroundColor: "rgba(137, 84, 238, 0.4)",
+    backgroundColor: "rgba(249,249,249,0.4)",
     alignItems: "center",
     justifyContent: "center",
   },

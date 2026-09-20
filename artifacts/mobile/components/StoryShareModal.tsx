@@ -38,6 +38,7 @@ export interface StoryShareModalProps {
   titleFontSize?: number;
   titleOffsetY?: number;
   headerControlsOffsetY?: number;
+  lightInstagramButton?: boolean;
   children?: React.ReactNode;
 }
 
@@ -58,6 +59,7 @@ export function StoryShareModal({
   titleFontSize,
   titleOffsetY = 0,
   headerControlsOffsetY = 0,
+  lightInstagramButton = false,
   children,
 }: StoryShareModalProps) {
   const insets = useSafeAreaInsets();
@@ -322,15 +324,18 @@ export function StoryShareModal({
             style={({ pressed }) => [
               styles.actionButton,
               styles.instagramButton,
+              lightInstagramButton && styles.instagramButtonLight,
               (pressed || busy !== null) && styles.pressed,
             ]}
           >
             {busy === "instagram" ? (
-              <ActivityIndicator color="#F9F9F9" />
+              <ActivityIndicator color={lightInstagramButton ? "#3D1766" : "#F9F9F9"} />
             ) : (
               <>
-                <FontAwesome name="instagram" size={23} color="#F9F9F9" />
-                <Text style={styles.actionText}>Compartir en tus historias</Text>
+                <FontAwesome name="instagram" size={23} color={lightInstagramButton ? "#3D1766" : "#F9F9F9"} />
+                <Text style={[styles.actionText, lightInstagramButton && styles.actionTextDark]}>
+                  Compartir en tus historias
+                </Text>
               </>
             )}
           </Pressable>
@@ -457,6 +462,9 @@ const styles = StyleSheet.create({
   instagramButton: {
     backgroundColor: "#6737C8",
   },
+  instagramButtonLight: {
+    backgroundColor: "#F9F9F9",
+  },
   shareButton: {
     backgroundColor: "#8954EE",
   },
@@ -465,6 +473,9 @@ const styles = StyleSheet.create({
     fontFamily: "Manrope",
     fontSize: 16,
     fontWeight: "700",
+  },
+  actionTextDark: {
+    color: "#3D1766",
   },
   pressed: {
     opacity: 0.62,
