@@ -22,9 +22,13 @@ export const REFLECTION_CATEGORIES: Record<
   acceptance: { id: "acceptance", label: "Aceptación", icon: "triangle", iconFamily: "Feather", color: "#5FA1CA", bg: "rgba(95, 161, 202, 0.15)" },
 };
 
-export const REFLECTION_CATEGORY_OPTIONS = Object.values(REFLECTION_CATEGORIES).filter(
-  (category) => category.id !== "understanding",
-);
+export const REFLECTION_CATEGORY_OPTIONS = [
+  REFLECTION_CATEGORIES.gratitude,
+  REFLECTION_CATEGORIES.purpose,
+  REFLECTION_CATEGORIES.acceptance,
+  REFLECTION_CATEGORIES.calm,
+  REFLECTION_CATEGORIES.clarity,
+];
 
 export function CategoryIcon({
   category,
