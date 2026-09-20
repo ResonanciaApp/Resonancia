@@ -2567,6 +2567,7 @@ const styles = StyleSheet.create({
     height: 44,
     alignItems: "center",
     justifyContent: "center",
+    transform: [{ translateX: 4 }],
   },
   membershipSection: {
     marginTop: 2,

@@ -420,6 +420,7 @@ const styles = StyleSheet.create({
     fontFamily: "Manrope",
     fontSize: 12,
     fontWeight: "400",
+    transform: [{ translateX: -2 }],
   },
   sectionDivider: {
     height: 1,
