@@ -115,7 +115,10 @@ export default function MembresiaScreen() {
             size={31}
             color={MEMBERSHIP_AURORA.premium.accent}
           />
-          <Text style={styles.premiumTitle}>Resonancia Premium</Text>
+          <Text style={styles.premiumTitle}>
+            <Text style={styles.premiumTitleBrand}>Resonancia</Text>
+            {" Premium"}
+          </Text>
         </View>
 
         <View style={styles.subscriptionCard}>
@@ -219,11 +222,10 @@ const styles = StyleSheet.create({
     paddingTop: 18,
   },
   premiumHeading: {
-    minHeight: 54,
     flexDirection: "row",
     alignItems: "center",
     gap: 11,
-    marginBottom: 15,
+    marginBottom: 17,
   },
   premiumTitle: {
     color: MEMBERSHIP_AURORA.premium.accent,
@@ -232,15 +234,18 @@ const styles = StyleSheet.create({
     lineHeight: 26,
     fontWeight: "700",
   },
+  premiumTitleBrand: {
+    color: "#F9F9F9",
+  },
   subscriptionCard: {
     overflow: "hidden",
     borderRadius: 19,
     backgroundColor: "rgba(0,0,0,0.28)",
   },
   detailRow: {
-    minHeight: 82,
+    minHeight: 72,
     paddingHorizontal: 20,
-    paddingVertical: 17,
+    paddingVertical: 12,
     flexDirection: "row",
     alignItems: "center",
     justifyContent: "space-between",
