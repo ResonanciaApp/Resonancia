@@ -3641,7 +3641,7 @@ const styles = StyleSheet.create({
     fontFamily: "Manrope",
     fontSize: 14,
     lineHeight: 18,
-    fontWeight: "500",
+    fontWeight: "300",
     textShadowColor: "rgba(0,0,0,0.65)",
     textShadowOffset: { width: 0, height: 1 },
     textShadowRadius: 4,
