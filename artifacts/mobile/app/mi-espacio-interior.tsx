@@ -814,7 +814,7 @@ const styles = StyleSheet.create({
     paddingHorizontal: 10,
     paddingVertical: 4,
     borderRadius: 10,
-    transform: [{ translateY: -18 }],
+    transform: [{ translateY: -8 }],
   },
   cardCatText: {
     fontSize: 11,
@@ -824,6 +824,7 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     gap: 8,
+    transform: [{ translateY: -5 }],
   },
   menuButton: {
     padding: 4,
@@ -834,7 +835,7 @@ const styles = StyleSheet.create({
   },
   messageContainer: {
     position: "relative",
-    transform: [{ translateY: -43 }],
+    transform: [{ translateY: -17 }],
   },
   messageMeasure: {
     position: "absolute",
