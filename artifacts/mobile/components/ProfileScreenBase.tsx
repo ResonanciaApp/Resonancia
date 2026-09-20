@@ -55,6 +55,7 @@ import { isIndigoThemeId } from "@/config/scene-themes";
 import { useUserProfile } from "@/context/UserProfileContext";
 import { useAuth } from "@/context/AuthContext";
 import type { LibraryTab } from "@/context/DrawerContext";
+import { useDrawer } from "@/context/DrawerContext";
 import { useColors } from "@/hooks/useColors";
 import { getExpansorById } from "@/data/expansores";
 import { uploadLocalFile } from "@/lib/upload";
@@ -83,6 +84,7 @@ import { MEMBERSHIP_AURORA, WIDGET_GREEN_SOLID } from "@/constants/colors";
 import { InnerSpaceCard } from "@/components/InnerSpaceCard";
 import { KeyboardAwareScrollViewCompat } from "@/components/KeyboardAwareScrollViewCompat";
 import { MoonCrescentIcon } from "@/components/MoonCrescentIcon";
+import { SleepReminderSheet } from "@/components/SleepReminderSheet";
 
 const REFLECTION_BANNER_ENTRY_DISTANCE = 86;
 const REFLECTION_BANNER_ENTRY_DURATION = 380;
@@ -482,6 +484,11 @@ export function ProfileScreenBase({
   const bottomPad = Platform.OS === "web" ? 34 : insets.bottom;
 
   const [libActions, setLibActions] = useState<LibHeaderActions | null>(null);
+  const {
+    profileComposeRequest,
+    consumeProfileComposeRequest,
+  } = useDrawer();
+  const [sleepReminderVisible, setSleepReminderVisible] = useState(false);
   const profileScrollRef = useRef<ScrollView>(null);
   const composeInteractionRef = useRef<ReturnType<typeof InteractionManager.runAfterInteractions> | null>(null);
   const composeFocusTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
@@ -522,6 +529,22 @@ export function ProfileScreenBase({
       if (!dedicated) return;
       profileScrollRef.current?.scrollTo({ y: 0, animated: false });
     }, [dedicated]),
+  );
+  useFocusEffect(
+    useCallback(() => {
+      if (!dedicated || profileComposeRequest === null) return;
+      const request = profileComposeRequest;
+      const frame = requestAnimationFrame(() => {
+        positionInnerSpaceForWriting();
+        consumeProfileComposeRequest(request);
+      });
+      return () => cancelAnimationFrame(frame);
+    }, [
+      consumeProfileComposeRequest,
+      dedicated,
+      positionInnerSpaceForWriting,
+      profileComposeRequest,
+    ]),
   );
 
   // ── Borde del sticky header: se activa a partir de unos pocos px de scroll ──
@@ -1581,7 +1604,7 @@ export function ProfileScreenBase({
               accessibilityLabel="Administrar recordatorio meditativo"
             >
               <View style={styles.practiceReminderIcon}>
-                <Feather name="bell" size={21} color={colors.foreground} />
+                <MaterialCommunityIcons name="bell" size={23} color={colors.foreground} />
               </View>
               <View style={styles.practiceReminderCopy}>
                 <Text style={[styles.practiceReminderTitle, { color: colors.foreground }]}>
@@ -1595,7 +1618,7 @@ export function ProfileScreenBase({
             </Pressable>
 
             <Pressable
-              onPress={() => router.push("/(tabs)/descanzo" as never)}
+              onPress={() => setSleepReminderVisible(true)}
               style={({ pressed }) => [
                 styles.practiceReminderSection,
                 styles.practiceReminderLast,
@@ -1984,6 +2007,12 @@ export function ProfileScreenBase({
           </Pressable>
         </Pressable>
       </Modal>
+
+      <SleepReminderSheet
+        visible={sleepReminderVisible}
+        onClose={() => setSleepReminderVisible(false)}
+        onSaved={() => {}}
+      />
     </View>
   );
 }
@@ -2096,9 +2125,11 @@ const styles = StyleSheet.create({
     width: 41,
     height: 41,
     borderRadius: 20.5,
+    borderWidth: 1,
+    borderColor: "rgba(255,255,255,0.2)",
     alignItems: "center",
     justifyContent: "center",
-    backgroundColor: "rgba(181,211,255,0.057)",
+    backgroundColor: "rgba(0,0,0,0.28)",
   },
   giftIcon: {
     width: 35,
@@ -2730,7 +2761,7 @@ const styles = StyleSheet.create({
   },
   practiceReminderTitle: {
     fontFamily: "Manrope",
-    fontSize: 18,
+    fontSize: 16,
     fontWeight: "600",
   },
   practiceReminderSubtitle: {

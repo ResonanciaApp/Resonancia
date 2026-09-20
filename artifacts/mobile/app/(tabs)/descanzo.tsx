@@ -1,5 +1,5 @@
 import { Feather, MaterialCommunityIcons } from "@expo/vector-icons";
-import { router, useFocusEffect } from "expo-router";
+import { router } from "expo-router";
 import { Image } from "expo-image";
 import { SymbolView } from "expo-symbols";
 import React, { useCallback, useEffect, useMemo, useRef, useState } from "react";
@@ -25,7 +25,6 @@ import { useCatalog } from "@/context/CatalogContext";
 import { SessionCarousel } from "@/components/SessionCarousel";
 import { SessionBadgeGlass, SessionDurationBadge } from "@/components/SessionDurationBadge";
 import { ContextSearchModal } from "@/components/ContextSearchModal";
-import { SleepReminderSheet } from "@/components/SleepReminderSheet";
 import { usePlayerBrowse } from "@/context/PlayerContext";
 import { useAmbientalDuration } from "@/context/AmbientalDurationContext";
 import { usePremium } from "@/context/PremiumContext";
@@ -43,12 +42,6 @@ import {
 import { resolveSleepCarouselOrder } from "@/lib/editorial-playlist-helpers";
 import { CONTENT_CAROUSEL_GAP } from "@/constants/carousel";
 import { collectSupercategoryFeaturedSessions } from "@/data/supercategory-editorial-tags";
-import {
-  formatPracticeNotificationTimeLocal,
-  loadPracticeNotificationSettings,
-  PRACTICE_NOTIFICATION_DEFAULTS,
-  type PracticeNotificationPreference,
-} from "@/lib/practiceNotifications";
 
 const AnimatedPressable = Animated.createAnimatedComponent(Pressable);
 
@@ -139,54 +132,16 @@ const FEATURED_SLEEP_CARD_H = Math.round(
 const SOUND_CARD_W  = 120;
 
 function SleepHeaderActions({
-  reminder,
   sticky = false,
   foreground,
-  onOpenReminder,
   onOpenSearch,
 }: {
-  reminder: PracticeNotificationPreference;
   sticky?: boolean;
   foreground: string;
-  onOpenReminder: () => void;
   onOpenSearch: () => void;
 }) {
-  const reminderTime = formatPracticeNotificationTimeLocal(
-    reminder.hour,
-    reminder.minute,
-  );
   return (
     <View style={[styles.headerActions, sticky && styles.stickyHeaderActions]}>
-      <Pressable
-        onPress={onOpenReminder}
-        hitSlop={8}
-        style={[
-          styles.headerReminderButton,
-          reminder.enabled && styles.headerReminderPill,
-        ]}
-        accessibilityRole="button"
-        accessibilityLabel={
-          reminder.enabled
-            ? `Editar recordatorio para dormir a las ${reminderTime}`
-            : "Configurar recordatorio para dormir"
-        }
-        testID="sleep-reminder-button"
-      >
-        {Platform.OS === "ios" ? (
-          <SymbolView name="bell.fill" tintColor={foreground} size={21} />
-        ) : (
-          <Feather name="bell" size={21} color={foreground} />
-        )}
-        {reminder.enabled ? (
-          <Text
-            style={[styles.headerReminderTime, { color: foreground }]}
-            numberOfLines={1}
-            maxFontSizeMultiplier={1.2}
-          >
-            {reminderTime}
-          </Text>
-        ) : null}
-      </Pressable>
       <Pressable
         onPress={onOpenSearch}
         hitSlop={10}
@@ -223,26 +178,7 @@ export default function DescansoScreen() {
         : "rgba(181,211,255,0.1)";
 
   const [searchVisible, setSearchVisible] = useState(false);
-  const [reminderVisible, setReminderVisible] = useState(false);
-  const [nightReminder, setNightReminder] =
-    useState<PracticeNotificationPreference>(
-      PRACTICE_NOTIFICATION_DEFAULTS.noche,
-    );
   const { version: catalogVersion } = useCatalog();
-
-  useFocusEffect(
-    useCallback(() => {
-      let active = true;
-      void loadPracticeNotificationSettings()
-        .then((settings) => {
-          if (active) setNightReminder(settings.noche);
-        })
-        .catch(() => {});
-      return () => {
-        active = false;
-      };
-    }, []),
-  );
 
   const [stickyHeaderHeight, setStickyHeaderHeight] = useState(0);
   const stickyTitleOpacity = useRef(new Animated.Value(0)).current;
@@ -482,10 +418,8 @@ export default function DescansoScreen() {
               Dormir
             </Animated.Text>
             <SleepHeaderActions
-              reminder={nightReminder}
               sticky
               foreground={colors.foreground}
-              onOpenReminder={() => setReminderVisible(true)}
               onOpenSearch={() => setSearchVisible(true)}
             />
           </View>
@@ -652,12 +586,6 @@ export default function DescansoScreen() {
           return session ? handleSessionTap(session) : false;
         }}
         scope="sleep"
-      />
-
-      <SleepReminderSheet
-        visible={reminderVisible}
-        onClose={() => setReminderVisible(false)}
-        onSaved={(preference) => setNightReminder({ ...preference })}
       />
 
       {/* ── Modal "Todas las sesiones de Dormir" (desliza desde la derecha) ── */}
@@ -996,19 +924,6 @@ const styles = StyleSheet.create({
     alignItems: "center",
     gap: 8,
   },
-  headerReminderButton: {
-    height: 43,
-    minWidth: 43,
-    borderRadius: 21.5,
-    borderWidth: 1,
-    borderColor: "rgba(255,255,255,0.2)",
-    paddingHorizontal: 11,
-    flexDirection: "row",
-    alignItems: "center",
-    justifyContent: "center",
-    gap: 7,
-    backgroundColor: "rgba(0,0,0,0.34)",
-  },
   allSessionsBack: {
     width: 43,
     height: 43,
@@ -1018,17 +933,6 @@ const styles = StyleSheet.create({
     backgroundColor: "rgba(0,0,0,0.28)",
     alignItems: "center",
     justifyContent: "center",
-  },
-  headerReminderPill: {
-    maxWidth: 105,
-    paddingLeft: 12,
-    paddingRight: 14,
-  },
-  headerReminderTime: {
-    maxWidth: 65,
-    fontFamily: "Manrope",
-    fontSize: 12,
-    fontWeight: "700",
   },
   sleepMixerBanner: {
     minHeight: 110,

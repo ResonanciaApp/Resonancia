@@ -456,7 +456,21 @@ export function MoodPickerSheet({
                 <Feather name="x" size={23} color={GOLD} />
               </Pressable>
               <View />
-              <View style={styles.headerButtonPlaceholder} />
+              <Pressable
+                onPress={() => {
+                  handleClose();
+                  requestAnimationFrame(() => {
+                    router.push("/historial-emociones" as never);
+                  });
+                }}
+                style={styles.headerButton}
+                hitSlop={8}
+                accessibilityRole="button"
+                accessibilityLabel="Abrir historial de estado de ánimo"
+                testID="mood-picker-history"
+              >
+                <Feather name="calendar" size={21} color="#F9F9F9" />
+              </Pressable>
             </View>
             <ScrollView
               showsVerticalScrollIndicator={false}

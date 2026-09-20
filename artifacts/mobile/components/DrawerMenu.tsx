@@ -39,13 +39,6 @@ type MenuItem = {
 
 const INICIO3_SECTIONS: { title: string; items: MenuItem[] }[] = [
   {
-    title: "Estado de ánimo",
-    items: [
-      { id: "mood-register", label: "Registro de ánimo", icon: "smile", mciIcon: "emoticon-happy-outline", route: "__mood_register" },
-      { id: "mood-history", label: "Historial de ánimo", icon: "activity", mciIcon: "chart-timeline-variant", route: "/historial-emociones" },
-    ],
-  },
-  {
     title: "Mi contenido",
     items: [
       { id: "favorites", label: "Favoritos", icon: "heart", mciIcon: "heart-outline", route: "__overlay:/favoritos-todos" },
@@ -57,7 +50,9 @@ const INICIO3_SECTIONS: { title: string; items: MenuItem[] }[] = [
   {
     title: "Herramientas",
     items: [
+      { id: "mood-register", label: "Registro de ánimo", icon: "smile", mciIcon: "emoticon-happy-outline", route: "__mood_register" },
       { id: "mixer", label: "Mezclador de sonido", icon: "sliders", mciIcon: "tune-vertical", route: "__mixer" },
+      { id: "inner-journey", label: "Mi viaje interior", icon: "edit-3", mciIcon: "message-text-outline", route: "__profile_compose" },
       { id: "notes", label: "Diario de notas", icon: "book-open", mciIcon: "notebook-outline", route: "__overlay:/diario" },
       { id: "geometrix", label: "Geometrix", icon: "hexagon", mciIcon: "hexagon-multiple-outline", route: "__geometrix" },
     ],
@@ -66,7 +61,7 @@ const INICIO3_SECTIONS: { title: string; items: MenuItem[] }[] = [
 
 // ── Drawer principal ──────────────────────────────────────────────────────────
 export function DrawerMenu() {
-  const { isOpen: visible, drawerAnim, close: onClose, markInstantNav, openLib, openOverlay, overlayParallax, requestMoodPicker } = useDrawer();
+  const { isOpen: visible, drawerAnim, close: onClose, markInstantNav, openLib, openOverlay, overlayParallax, requestMoodPicker, requestProfileCompose } = useDrawer();
   const insets = useSafeAreaInsets();
   const { isRegistered, isSignedIn } = useAuth();
   const { user: clerkUser } = useUser();
@@ -150,6 +145,13 @@ export function DrawerMenu() {
     // Overlays sobre el drawer (menú queda abierto debajo)
     if (route === "__biblioteca_overlay") { openLib(); return; }
     if (route === "__mood_register") { onClose(); requestMoodPicker(); return; }
+    if (route === "__profile_compose") {
+      markInstantNav();
+      onClose();
+      requestProfileCompose();
+      router.push("/profile" as never);
+      return;
+    }
     if (route === "__mixer") { onClose(); openMixer(); return; }
     if (route === "__geometrix") { onClose(); openGeometrix(); return; }
     if (route.startsWith("__overlay:")) { openOverlay(route.replace("__overlay:", "")); return; }
