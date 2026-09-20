@@ -413,7 +413,7 @@ const styles = StyleSheet.create({
     paddingHorizontal: 20,
     paddingTop: 16,
     paddingBottom: 20,
-    marginBottom: 24,
+    marginBottom: 32,
     overflow: "hidden",
   },
   header: {
@@ -423,7 +423,7 @@ const styles = StyleSheet.create({
     marginBottom: 20,
   },
   title: {
-    fontSize: 18,
+    fontSize: 16,
     fontWeight: "600",
     textAlign: "left",
   },
@@ -461,7 +461,7 @@ const styles = StyleSheet.create({
     transform: [{ scale: 0.97 }],
   },
   gridLabel: {
-    fontSize: 12,
+    fontSize: 11,
     fontWeight: "500",
     textAlign: "left",
   },

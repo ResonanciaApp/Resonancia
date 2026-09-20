@@ -200,7 +200,7 @@ export function ProgressMirrorSections({
                 }
               >
               <Stat
-                icon={<MaterialCommunityIcons name="spa" size={20} color="#F9F9F9" />}
+                icon={<MaterialCommunityIcons name="spa" size={18} color="#F9F9F9" />}
                 value={currentStreak}
                 label="RACHA ACTUAL"
                 accent={accent}
@@ -229,7 +229,7 @@ export function ProgressMirrorSections({
                 }
               >
               <Stat
-                icon={<MaterialCommunityIcons name="spa" size={20} color="#BE9650" />}
+                icon={<MaterialCommunityIcons name="spa" size={18} color="#BE9650" />}
                 value={maxStreak}
                 label="RACHA MÁS LARGA"
                 accent={accent}
@@ -488,7 +488,7 @@ const styles = StyleSheet.create({
   },
   streakTitle: {
     fontFamily: "Manrope",
-    fontSize: 18,
+    fontSize: 16,
     fontWeight: "600",
   },
   streakViewAll: {
@@ -590,13 +590,13 @@ const styles = StyleSheet.create({
   statValue: {
     color: "#F9F9F9",
     fontFamily: "Manrope",
-    fontSize: 22,
+    fontSize: 20,
     fontWeight: "600",
   },
   statLabel: {
     fontFamily: "Manrope",
-    fontSize: 10,
-    lineHeight: 14,
+    fontSize: 8,
+    lineHeight: 12,
     letterSpacing: 0.35,
     marginTop: 2,
   },

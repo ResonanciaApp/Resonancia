@@ -2541,7 +2541,7 @@ const styles = StyleSheet.create({
     alignItems: "stretch",
     overflow: "hidden",
     marginTop: 14,
-    marginBottom: 12,
+    marginBottom: 20,
     gap: 0,
     transform: [{ translateY: -5 }],
   },
@@ -2735,7 +2735,7 @@ const styles = StyleSheet.create({
 
   // Progreso semanal compacto
   profileProgressSection: {
-    marginBottom: 0,
+    marginBottom: 8,
   },
   innerSpaceSection: {
     marginTop: 5,
@@ -2751,7 +2751,7 @@ const styles = StyleSheet.create({
   },
   practiceReminderFirst: {
     marginTop: -7,
-    marginBottom: 17,
+    marginBottom: 25,
   },
   practiceReminderLast: {
     marginBottom: 53,
@@ -2772,12 +2772,12 @@ const styles = StyleSheet.create({
   },
   practiceReminderTitle: {
     fontFamily: "Manrope",
-    fontSize: 16,
+    fontSize: 14,
     fontWeight: "600",
   },
   practiceReminderSubtitle: {
     fontFamily: "Manrope",
-    fontSize: 13,
+    fontSize: 12,
     fontWeight: "500",
   },
   reflectionSavedBanner: {
