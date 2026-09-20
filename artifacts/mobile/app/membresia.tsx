@@ -243,9 +243,9 @@ const styles = StyleSheet.create({
     backgroundColor: "rgba(0,0,0,0.28)",
   },
   detailRow: {
-    minHeight: 72,
+    minHeight: 65,
     paddingHorizontal: 20,
-    paddingVertical: 12,
+    paddingVertical: 9,
     flexDirection: "row",
     alignItems: "center",
     justifyContent: "space-between",
@@ -253,6 +253,7 @@ const styles = StyleSheet.create({
   },
   detailLabel: {
     flexShrink: 1,
+    transform: [{ translateY: -3 }],
     color: "#F4F4F4",
     fontFamily: "Manrope",
     fontSize: 15,
@@ -261,6 +262,7 @@ const styles = StyleSheet.create({
   },
   detailValue: {
     flexShrink: 1,
+    transform: [{ translateY: -3 }],
     color: "#FFFFFF",
     fontFamily: "Manrope",
     fontSize: 15,
