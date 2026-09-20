@@ -1787,7 +1787,10 @@ const Inicio2HeroStatic = React.memo(function Inicio2HeroStatic({
           <Pressable
             onPress={onOpenDrawer}
             hitSlop={8}
-            style={styles.inicio2HeroGreeting}
+            style={[
+              styles.inicio2HeroGreeting,
+              isInicio3 && styles.inicio3HeroGreeting,
+            ]}
             accessibilityRole="button"
             accessibilityLabel="Abrir menú de perfil"
             testID="inicio2-open-drawer"
@@ -3630,6 +3633,9 @@ const styles = StyleSheet.create({
     gap: 1,
     width: width * 0.6,
   },
+  inicio3HeroGreeting: {
+    transform: [{ translateY: -1 }],
+  },
   inicio2HeroGreetingLabel: {
     color: "#F4F4F4",
     fontFamily: "Manrope",
@@ -3651,7 +3657,7 @@ const styles = StyleSheet.create({
     textShadowRadius: 4,
   },
   inicio3HeroDecree: {
-    color: "#C2C2C2",
+    color: "#F9F9F9",
     fontFamily: "Manrope",
     fontSize: 12,
     lineHeight: 17,

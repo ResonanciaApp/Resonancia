@@ -284,7 +284,9 @@ export function InnerSpaceCard({
         <ScrollView
           horizontal
           showsHorizontalScrollIndicator={false}
-          keyboardShouldPersistTaps={keepKeyboardOnCategories ? "always" : "never"}
+          keyboardShouldPersistTaps={
+            inputActive || keepKeyboardOnCategories ? "always" : "never"
+          }
           keyboardDismissMode={keepKeyboardOnCategories ? "none" : undefined}
           contentContainerStyle={styles.categoriesContent}
           style={styles.categoriesScroll}

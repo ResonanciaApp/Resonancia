@@ -421,7 +421,7 @@ export function ReflectionShare({ reflection, onClose }: { reflection: Reflectio
                 />
                 {isSelected && (
                   <View style={styles.checkOverlay}>
-                    <Feather name="check" size={26} color="#575757" />
+                    <Feather name="check" size={26} color="#F9F9F9" />
                   </View>
                 )}
               </Pressable>

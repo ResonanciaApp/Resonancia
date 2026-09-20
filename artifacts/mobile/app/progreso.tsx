@@ -138,14 +138,6 @@ export default function ProgresoScreen() {
 
         <LinearGradient colors={bgColors} style={styles.content}>
           <View style={styles.sectionsOffset}>
-            <CinematicFadeSlide
-              replayKey="progress-intro-divider"
-              delay={900}
-              duration={3000}
-              style={styles.introDivider}
-            >
-              <View style={styles.introDividerLine} />
-            </CinematicFadeSlide>
             <ProgressMirrorSections
               animateEntrance
               entranceReplayKey="progress-sections"
@@ -153,8 +145,9 @@ export default function ProgresoScreen() {
               showSectionBorders={false}
               sectionHorizontalPadding={20}
               sectionTopPadding={16}
-              sectionBottomPadding={16}
+              sectionBottomPadding={19}
               sectionVerticalPadding={16}
+              sectionMarginBottom={20}
               canonicalVerticalInsets
               streakTitle="Tu progreso"
             />

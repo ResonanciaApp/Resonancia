@@ -30,6 +30,7 @@ export function ProgressMirrorSections({
   sectionTopPadding,
   sectionBottomPadding,
   sectionVerticalPadding,
+  sectionMarginBottom,
   canonicalVerticalInsets = false,
 }: {
   showSectionBorders?: boolean;
@@ -47,6 +48,7 @@ export function ProgressMirrorSections({
   sectionTopPadding?: number;
   sectionBottomPadding?: number;
   sectionVerticalPadding?: number;
+  sectionMarginBottom?: number;
   canonicalVerticalInsets?: boolean;
 }) {
   const colors = useColors();
@@ -126,6 +128,9 @@ export function ProgressMirrorSections({
             },
             sectionBottomPadding !== undefined && {
               paddingBottom: sectionBottomPadding,
+            },
+            sectionMarginBottom !== undefined && {
+              marginBottom: sectionMarginBottom,
             },
           ]}
           accessibilityRole={onStreakTitlePress ? "button" : undefined}
@@ -258,6 +263,12 @@ export function ProgressMirrorSections({
               },
               sectionVerticalPadding !== undefined && {
                 paddingVertical: sectionVerticalPadding,
+              },
+              sectionBottomPadding !== undefined && {
+                paddingBottom: sectionBottomPadding,
+              },
+              sectionMarginBottom !== undefined && {
+                marginBottom: sectionMarginBottom,
               },
             ]}
           >
