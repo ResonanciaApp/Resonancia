@@ -193,6 +193,12 @@ export function InnerSpaceCard({
     <View style={styles.container}>
       <View style={styles.header}>
         <Text style={[styles.title, { color: colors.foreground }]}>Mi viaje interior</Text>
+        <Pressable
+          onPress={openWall}
+          style={styles.wallHitArea}
+          accessibilityRole="button"
+          accessibilityLabel="Abrir Muro expansivo"
+        />
       </View>
 
       <ScrollView
@@ -345,6 +351,11 @@ const styles = StyleSheet.create({
     fontSize: 18,
     fontWeight: "600",
     textAlign: "left",
+  },
+  wallHitArea: {
+    width: 52,
+    height: 44,
+    marginVertical: -12,
   },
   categoriesScroll: {
     marginBottom: 20,
