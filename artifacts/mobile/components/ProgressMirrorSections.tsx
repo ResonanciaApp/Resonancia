@@ -40,7 +40,9 @@ export function ProgressMirrorSections({
   const todayKey = useDayRollover();
   const [statsRangeDays, setStatsRangeDays] = useState<7 | 30 | 90>(30);
   const [statsFilterOpen, setStatsFilterOpen] = useState(false);
-  const streakPulse = useRef(new Animated.Value(1)).current;
+  const weekPulse = useRef(new Animated.Value(1)).current;
+  const currentStreakPulse = useRef(new Animated.Value(1)).current;
+  const maxStreakPulse = useRef(new Animated.Value(1)).current;
   const streakPressRunning = useRef(false);
   const accent = theme.accent ?? colors.accent;
   const maxStreak = useMemo(() => computeMaxStreak(statEvents), [statEvents]);
@@ -66,18 +68,18 @@ export function ProgressMirrorSections({
     };
   }, [statEvents, statsRangeDays, todayKey]);
 
-  const handleStreakPress = () => {
+  const animateProgressTarget = (pulse: Animated.Value) => {
     if (!onStreakTitlePress || streakPressRunning.current) return;
     streakPressRunning.current = true;
-    streakPulse.stopAnimation();
-    streakPulse.setValue(1);
+    pulse.stopAnimation();
+    pulse.setValue(1);
     Animated.sequence([
-      Animated.timing(streakPulse, {
-        toValue: 1.1,
-        duration: 120,
+      Animated.timing(pulse, {
+        toValue: 1.04,
+        duration: 100,
         useNativeDriver: true,
       }),
-      Animated.spring(streakPulse, {
+      Animated.spring(pulse, {
         toValue: 1,
         friction: 3,
         tension: 140,
@@ -88,6 +90,8 @@ export function ProgressMirrorSections({
       onStreakTitlePress();
     });
   };
+
+  const handleStreakPress = () => animateProgressTarget(weekPulse);
 
   return (
     <>
@@ -114,7 +118,7 @@ export function ProgressMirrorSections({
               </Text>
             </View>
           ) : null}
-          <Animated.View style={{ transform: [{ scale: streakPulse }] }}>
+          <Animated.View style={{ transform: [{ scale: weekPulse }] }}>
             <StreakWeekRow />
           </Animated.View>
           <View style={styles.sectionDivider} />
@@ -124,7 +128,8 @@ export function ProgressMirrorSections({
               value={currentStreak}
               label="RACHA ACTUAL"
               accent={accent}
-              iconScale={streakPulse}
+              iconScale={currentStreakPulse}
+              onPress={() => animateProgressTarget(currentStreakPulse)}
             />
             <View style={styles.statDivider} />
             <Stat
@@ -132,7 +137,8 @@ export function ProgressMirrorSections({
               value={maxStreak}
               label="RACHA MÁS LARGA"
               accent={accent}
-              iconScale={streakPulse}
+              iconScale={maxStreakPulse}
+              onPress={() => animateProgressTarget(maxStreakPulse)}
             />
           </View>
         </Pressable>
@@ -249,16 +255,18 @@ function Stat({
   label,
   accent,
   iconScale,
+  onPress,
 }: {
   icon: React.ReactNode;
   value: number;
   label: string;
   accent: string;
   iconScale?: Animated.Value;
+  onPress?: () => void;
 }) {
   const statIcon = <View style={styles.statIcon}>{icon}</View>;
-  return (
-    <View style={styles.statItem}>
+  const content = (
+    <>
       {iconScale ? (
         <Animated.View style={{ transform: [{ scale: iconScale }] }}>
           {statIcon}
@@ -268,7 +276,21 @@ function Stat({
         <Text style={styles.statValue}>{value}</Text>
         <Text style={[styles.statLabel, { color: accent }]}>{label}</Text>
       </View>
-    </View>
+    </>
+  );
+  if (!onPress) return <View style={styles.statItem}>{content}</View>;
+  return (
+    <Pressable
+      style={styles.statItem}
+      onPress={(event) => {
+        event.stopPropagation();
+        onPress();
+      }}
+      accessibilityRole="button"
+      accessibilityLabel={`${label}: ${value}. Abrir Tu progreso`}
+    >
+      {content}
+    </Pressable>
   );
 }
 
