@@ -55,9 +55,19 @@ export function InnerSpaceCard({
   const qc = useQueryClient();
   const reducedMotion = useReducedMotion();
 
+  const settlePlaceholder = (placeholder: string) => {
+    outgoingPlaceholderOpacity.stopAnimation();
+    incomingPlaceholderOpacity.stopAnimation();
+    outgoingPlaceholderOpacity.setValue(1);
+    incomingPlaceholderOpacity.setValue(0);
+    setDisplayedPlaceholder(placeholder);
+    setIncomingPlaceholder(null);
+  };
+
   const createMutation = useCreateMyReflection({
     mutation: {
       onSuccess: () => {
+        settlePlaceholder(DEFAULT_PLACEHOLDER);
         setMessage("");
         setCategory(null);
         inputRef.current?.blur();
@@ -163,6 +173,12 @@ export function InnerSpaceCard({
 
   const isSubmitDisabled = !category || message.trim().length === 0 || createMutation.isPending;
   const wallLinkColor = wallLinkHighlighted ? "#F9F9F9" : colors.primary;
+
+  const saveMessage = () => {
+    if (!category) return;
+    settlePlaceholder(desiredPlaceholder);
+    createMutation.mutate({ data: { category, message: message.trim() } });
+  };
 
   const openWall = () => {
     setWallLinkHighlighted(false);
@@ -331,7 +347,7 @@ export function InnerSpaceCard({
         accessibilityRole="button"
         style={[styles.submitButton, isSubmitDisabled && { opacity: 0.5 }, { backgroundColor: "rgba(184, 117, 240, 0.2)" }]}
         disabled={isSubmitDisabled}
-        onPress={() => createMutation.mutate({ data: { category: category!, message: message.trim() } })}
+        onPress={saveMessage}
       >
         <Text
           style={[
