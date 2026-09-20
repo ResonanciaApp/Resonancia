@@ -59,8 +59,9 @@ function wrappedLines(
 async function makeWebImage(day: InspirationDay): Promise<Blob> {
   const content = day.content!;
   await document.fonts.ready;
+  await document.fonts.load("500 56px CormorantGaramond");
   await document.fonts.load("700 56px Manrope");
-  if (!Font.isLoaded("Manrope")) {
+  if (!Font.isLoaded("CormorantGaramond") || !Font.isLoaded("Manrope")) {
     throw new Error("La tipografía aún no está lista. Vuelve a intentarlo.");
   }
   const image = await loadWebImage(content.imageUrl);
@@ -87,7 +88,7 @@ async function makeWebImage(day: InspirationDay): Promise<Blob> {
 
   const quoteSize = content.quote.length > 360 ? 42 : content.quote.length > 220 ? 48 : 56;
   context.fillStyle = "#F9F9F9";
-  context.font = `700 ${quoteSize}px Manrope`;
+  context.font = `500 ${quoteSize}px CormorantGaramond`;
   context.textAlign = "center";
   context.textBaseline = "middle";
   const lines = wrappedLines(context, content.quote, 820);
@@ -223,8 +224,8 @@ const styles = StyleSheet.create({
   storyQuote: {
     width: "100%",
     color: "#F9F9F9",
-    fontFamily: "Manrope",
-    fontWeight: "700",
+    fontFamily: "CormorantGaramond",
+    fontWeight: "500",
     textAlign: "center",
     textShadowColor: "rgba(0,0,0,0.42)",
     textShadowOffset: { width: 0, height: 2 },
