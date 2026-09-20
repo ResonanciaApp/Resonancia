@@ -141,7 +141,11 @@ export function ProgressMirrorSections({
                 accessibilityLabel="Abrir Tu progreso semanal"
               >
                 <Animated.View style={{ opacity: weekBlink }}>
-                  <StreakWeekRow />
+                  <StreakWeekRow
+                    animateEntrance={animateEntrance}
+                    entranceReplayKey={`${entranceReplayKey}:week`}
+                    entranceBaseDelay={entranceBaseDelay + 250}
+                  />
                 </Animated.View>
               </Pressable>
               <View style={styles.sectionDivider} />

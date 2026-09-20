@@ -4,12 +4,21 @@ import { LinearGradient } from "expo-linear-gradient";
 import React from "react";
 import { StyleSheet, Text, View } from "react-native";
 
+import { CinematicFadeSlide } from "@/components/CinematicFadeSlide";
 import { useStreak } from "@/hooks/useStreak";
 
 const DAY_INITIALS = ["L", "M", "X", "J", "V", "S", "D"];
 const POSITIONED_DAY_GRADIENT = ["#D1B9F5", "#9B80C4", "#8168A5"] as const;
 
-export function StreakWeekRow() {
+export function StreakWeekRow({
+  animateEntrance = false,
+  entranceReplayKey = "streak-week",
+  entranceBaseDelay = 0,
+}: {
+  animateEntrance?: boolean;
+  entranceReplayKey?: string | number;
+  entranceBaseDelay?: number;
+} = {}) {
   const { weekFlags, todayIndex } = useStreak();
 
   return (
@@ -30,7 +39,7 @@ export function StreakWeekRow() {
           </View>
         );
 
-        return (
+        const content = (
           <View key={`${initial}-${index}`} style={styles.dayWrapper}>
             {isToday ? (
               <View style={styles.ringHost}>
@@ -53,6 +62,21 @@ export function StreakWeekRow() {
             )}
             <Text style={styles.dayLabel}>{initial}</Text>
           </View>
+        );
+
+        if (!animateEntrance) return content;
+
+        return (
+          <CinematicFadeSlide
+            key={`${initial}-${index}`}
+            replayKey={`${entranceReplayKey}:${index}`}
+            delay={entranceBaseDelay + index * 140}
+            duration={1200}
+            scaleFrom={0.9}
+            translateYFrom={14}
+          >
+            {content}
+          </CinematicFadeSlide>
         );
       })}
     </View>
