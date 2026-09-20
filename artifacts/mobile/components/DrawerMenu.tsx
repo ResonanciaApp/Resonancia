@@ -23,7 +23,6 @@ import { useDrawer, DRAWER_W, DRAWER_PUSH } from "@/context/DrawerContext";
 import { openCategoryGlobal } from "@/context/CategoryOverlayContext";
 import { useUserProfile } from "@/context/UserProfileContext";
 import { useSceneTheme } from "@/context/SceneThemeContext";
-import { useGeometrixPanel } from "@/context/GeometrixPanelContext";
 import { useMixerPanel } from "@/context/MixerPanelContext";
 import { useCurrentUserAvatarSource } from "@/lib/profile-avatar";
 
@@ -35,9 +34,10 @@ type MenuItem = {
   icon: React.ComponentProps<typeof Feather>["name"];
   mciIcon?: React.ComponentProps<typeof MaterialCommunityIcons>["name"];
   route: string;
+  color?: string;
 };
 
-const INICIO3_SECTIONS: { title: string; items: MenuItem[] }[] = [
+const INICIO3_SECTIONS: { title: string | null; items: MenuItem[] }[] = [
   {
     title: "Mi contenido",
     items: [
@@ -54,8 +54,14 @@ const INICIO3_SECTIONS: { title: string; items: MenuItem[] }[] = [
       { id: "mixer", label: "Mezclador de sonido", icon: "sliders", mciIcon: "tune-vertical", route: "__mixer" },
       { id: "expansive-routine", label: "Mi rutina expansiva", icon: "calendar", mciIcon: "calendar-check-outline", route: "/rutina-calendario" },
       { id: "inner-journey", label: "Mi viaje interior", icon: "edit-3", mciIcon: "message-text-outline", route: "__profile_compose" },
-      { id: "notes", label: "Diario de notas", icon: "book-open", mciIcon: "notebook-outline", route: "__overlay:/diario" },
-      { id: "geometrix", label: "Geometrix", icon: "hexagon", mciIcon: "hexagon-multiple-outline", route: "__geometrix" },
+    ],
+  },
+  {
+    title: null,
+    items: [
+      { id: "invite-friend", label: "Invitar a un amigo", icon: "user-plus", route: "/invitar", color: "#A3A3A3" },
+      { id: "help", label: "Ayuda", icon: "help-circle", route: "/ayuda", color: "#A3A3A3" },
+      { id: "settings", label: "Configuraciones", icon: "settings", route: "/configuraciones", color: "#A3A3A3" },
     ],
   },
 ];
@@ -69,7 +75,6 @@ export function DrawerMenu() {
   const { username, lastName } = useUserProfile();
   const avatarSource = useCurrentUserAvatarSource();
   const { theme: activeTheme } = useSceneTheme();
-  const { openGeometrix } = useGeometrixPanel();
   const { openMixer } = useMixerPanel();
 
   const loggedIn = isRegistered || isSignedIn;
@@ -154,7 +159,6 @@ export function DrawerMenu() {
       return;
     }
     if (route === "__mixer") { onClose(); openMixer(); return; }
-    if (route === "__geometrix") { onClose(); openGeometrix(); return; }
     if (route.startsWith("__overlay:")) { openOverlay(route.replace("__overlay:", "")); return; }
     if (route.startsWith("__cat:")) {
       const target = route.replace("__cat:", "");
@@ -310,11 +314,11 @@ export function DrawerMenu() {
             <View style={styles.inicio3Sections}>
               {INICIO3_SECTIONS.map((section, sectionIndex) => (
                 <View
-                  key={section.title}
+                  key={section.title ?? `drawer-section-${sectionIndex}`}
                   style={sectionIndex > 0 ? styles.inicio3SectionShift : undefined}
                 >
                   {sectionIndex > 0 && <View style={styles.inicio3SectionDivider} />}
-                  <Text style={styles.inicio3SectionTitle}>{section.title}</Text>
+                  {section.title && <Text style={styles.inicio3SectionTitle}>{section.title}</Text>}
                   <View style={styles.itemGroup}>
                     {section.items.map((item) => (
                       <Pressable
@@ -325,12 +329,14 @@ export function DrawerMenu() {
                       >
                         <View style={styles.itemIcon}>
                           {item.mciIcon ? (
-                            <MaterialCommunityIcons name={item.mciIcon} size={23} color="#F9F9F9" />
+                            <MaterialCommunityIcons name={item.mciIcon} size={23} color={item.color ?? "#F9F9F9"} />
                           ) : (
-                            <Feather name={item.icon} size={20} color="#F9F9F9" />
+                            <Feather name={item.icon} size={20} color={item.color ?? "#F9F9F9"} />
                           )}
                         </View>
-                        <Text style={[styles.itemLabel, styles.inicio3ItemLabel]}>{item.label}</Text>
+                        <Text style={[styles.itemLabel, styles.inicio3ItemLabel, item.color && { color: item.color }]}>
+                          {item.label}
+                        </Text>
                       </Pressable>
                     ))}
                   </View>
