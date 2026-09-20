@@ -124,6 +124,7 @@ export default function ProgresoScreen() {
 
         <LinearGradient colors={bgColors} style={styles.content}>
           <View style={styles.sectionsOffset}>
+            <View style={styles.introDivider} />
             <ProgressMirrorSections
               animateEntrance
               entranceReplayKey="progress-sections"
@@ -203,7 +204,16 @@ const styles = StyleSheet.create({
     paddingTop: 12,
   },
   sectionsOffset: {
-    marginTop: 65,
+    marginTop: 95,
+    position: "relative",
+  },
+  introDivider: {
+    position: "absolute",
+    top: -32,
+    left: 0,
+    right: 0,
+    height: 1,
+    backgroundColor: "rgba(255,255,255,0.1)",
   },
   streakCountCircle: {
     width: 103,
