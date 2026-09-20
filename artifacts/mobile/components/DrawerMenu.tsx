@@ -23,6 +23,7 @@ import { useDrawer, DRAWER_W, DRAWER_PUSH } from "@/context/DrawerContext";
 import { openCategoryGlobal } from "@/context/CategoryOverlayContext";
 import { useUserProfile } from "@/context/UserProfileContext";
 import { useSceneTheme } from "@/context/SceneThemeContext";
+import { useGeometrixPanel } from "@/context/GeometrixPanelContext";
 import { useMixerPanel } from "@/context/MixerPanelContext";
 import { useCurrentUserAvatarSource } from "@/lib/profile-avatar";
 
@@ -54,6 +55,7 @@ const INICIO3_SECTIONS: { title: string | null; items: MenuItem[] }[] = [
       { id: "mixer", label: "Mezclador de sonido", icon: "sliders", mciIcon: "tune-vertical", route: "__mixer" },
       { id: "expansive-routine", label: "Mi rutina expansiva", icon: "calendar", mciIcon: "calendar-check-outline", route: "/rutina-calendario" },
       { id: "inner-journey", label: "Mi viaje interior", icon: "edit-3", mciIcon: "message-text-outline", route: "__profile_compose" },
+      { id: "geometrix", label: "Geometrix", icon: "hexagon", mciIcon: "hexagon-multiple-outline", route: "__geometrix" },
     ],
   },
   {
@@ -75,6 +77,7 @@ export function DrawerMenu() {
   const { username, lastName } = useUserProfile();
   const avatarSource = useCurrentUserAvatarSource();
   const { theme: activeTheme } = useSceneTheme();
+  const { openGeometrix } = useGeometrixPanel();
   const { openMixer } = useMixerPanel();
 
   const loggedIn = isRegistered || isSignedIn;
@@ -159,6 +162,7 @@ export function DrawerMenu() {
       return;
     }
     if (route === "__mixer") { onClose(); openMixer(); return; }
+    if (route === "__geometrix") { onClose(); openGeometrix(); return; }
     if (route.startsWith("__overlay:")) { openOverlay(route.replace("__overlay:", "")); return; }
     if (route.startsWith("__cat:")) {
       const target = route.replace("__cat:", "");
