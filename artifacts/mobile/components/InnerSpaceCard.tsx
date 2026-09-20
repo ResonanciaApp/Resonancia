@@ -521,6 +521,7 @@ const styles = StyleSheet.create({
     transform: [{ translateY: 1 }],
   },
   historyLinkText: {
+    fontFamily: "Manrope",
     fontSize: 12,
     fontWeight: "400",
   },
