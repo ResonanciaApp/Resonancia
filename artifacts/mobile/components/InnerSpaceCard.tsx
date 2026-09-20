@@ -9,6 +9,14 @@ import { router } from "expo-router";
 import { REFLECTION_CATEGORY_OPTIONS, CategoryIcon } from "@/constants/reflectionCategories";
 import { useReducedMotion } from "react-native-reanimated";
 
+const CATEGORY_PLACEHOLDERS: Partial<Record<ReflectionCategory, string>> = {
+  gratitude: "Ej: Hoy siento gratitud por...",
+  clarity: "Ej: Ahora veo con claridad que...",
+  calm: "Ej: La calma llega a mi vida cuando...",
+  purpose: "Ej: Me conecto con mi propósito cuando...",
+  acceptance: "Ej: Cuando acepto lo que sucede, la vida...",
+};
+
 export function InnerSpaceCard({
   focusRequest = 0,
   onComposeRequested,
@@ -150,7 +158,7 @@ export function InnerSpaceCard({
           pointerEvents={inputActive ? "auto" : "none"}
           onBlur={() => setInputActive(false)}
           style={[styles.input, { color: colors.foreground }]}
-          placeholder="Escribe tu mensaje aquí..."
+          placeholder={category ? CATEGORY_PLACEHOLDERS[category] ?? "Escribe tu mensaje aquí..." : "Escribe tu mensaje aquí..."}
           placeholderTextColor={colors.mutedForeground}
           multiline
           maxLength={300}
