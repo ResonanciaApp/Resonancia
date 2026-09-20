@@ -401,6 +401,7 @@ export function ReflectionShare({ reflection, onClose }: { reflection: Reflectio
       titleOffsetY={-15}
       headerControlsOffsetY={-15}
       lightInstagramButton
+      compactFooter
       headerRightAction={compositionIsModified ? (
         <Pressable
           accessibilityRole="button"
@@ -429,29 +430,14 @@ export function ReflectionShare({ reflection, onClose }: { reflection: Reflectio
             onFailure={handleFailure}
           />
         ) : (
-          <View style={{ width, height: width * 16 / 9 }}>
-            <View
-              pointerEvents="none"
-              style={[
-                styles.previewHalo,
-                {
-                  width: width * 1.45,
-                  height: width * 1.45,
-                  borderRadius: width,
-                  left: -width * 0.225,
-                  top: width * 16 / 18 - width * 0.725,
-                },
-              ]}
-            />
-            <InteractiveReflectionArtwork
-              reflection={reflection}
-              width={width}
-              bgImageSource={selectedImageSource}
-              composition={composition}
-              onCompositionChange={updateComposition}
-              onFailure={handleFailure}
-            />
-          </View>
+          <InteractiveReflectionArtwork
+            reflection={reflection}
+            width={width}
+            bgImageSource={selectedImageSource}
+            composition={composition}
+            onCompositionChange={updateComposition}
+            onFailure={handleFailure}
+          />
         );
       }}
     >
@@ -487,7 +473,7 @@ export function ReflectionShare({ reflection, onClose }: { reflection: Reflectio
                 />
                 {isSelected && (
                   <View style={styles.checkOverlay}>
-                    <Feather name="check" size={26} color="#F9F9F9" />
+                    <Feather name="check" size={26} color="#575757" />
                   </View>
                 )}
               </Pressable>
@@ -600,14 +586,5 @@ const styles = StyleSheet.create({
     backgroundColor: "rgba(249,249,249,0.4)",
     alignItems: "center",
     justifyContent: "center",
-  },
-  previewHalo: {
-    position: "absolute",
-    backgroundColor: "rgba(249,249,249,0.055)",
-    shadowColor: "#F9F9F9",
-    shadowOpacity: 0.22,
-    shadowRadius: 38,
-    shadowOffset: { width: 0, height: 0 },
-    elevation: 8,
   },
 });

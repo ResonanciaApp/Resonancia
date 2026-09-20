@@ -39,6 +39,7 @@ export interface StoryShareModalProps {
   titleOffsetY?: number;
   headerControlsOffsetY?: number;
   lightInstagramButton?: boolean;
+  compactFooter?: boolean;
   children?: React.ReactNode;
 }
 
@@ -60,6 +61,7 @@ export function StoryShareModal({
   titleOffsetY = 0,
   headerControlsOffsetY = 0,
   lightInstagramButton = false,
+  compactFooter = false,
   children,
 }: StoryShareModalProps) {
   const insets = useSafeAreaInsets();
@@ -323,6 +325,7 @@ export function StoryShareModal({
             onPress={confirmInstagram}
             style={({ pressed }) => [
               styles.actionButton,
+              compactFooter && styles.actionButtonCompact,
               styles.instagramButton,
               lightInstagramButton && styles.instagramButtonLight,
               (pressed || busy !== null) && styles.pressed,
@@ -347,6 +350,7 @@ export function StoryShareModal({
               onPress={() => void shareGeneric()}
               style={({ pressed }) => [
                 styles.actionButton,
+                compactFooter && styles.actionButtonCompact,
                 styles.shareButton,
                 (pressed || busy !== null) && styles.pressed,
               ]}
@@ -458,6 +462,9 @@ const styles = StyleSheet.create({
     alignItems: "center",
     justifyContent: "center",
     gap: 12,
+  },
+  actionButtonCompact: {
+    minHeight: 52,
   },
   instagramButton: {
     backgroundColor: "#6737C8",
