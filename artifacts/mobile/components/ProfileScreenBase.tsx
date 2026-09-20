@@ -2677,6 +2677,9 @@ const styles = StyleSheet.create({
   practiceReminderSection: {
     marginTop: 29,
     marginBottom: 53,
+    padding: 16,
+    borderRadius: 19,
+    backgroundColor: "rgba(0,0,0,0.28)",
     flexDirection: "row",
     alignItems: "center",
     justifyContent: "space-between",
