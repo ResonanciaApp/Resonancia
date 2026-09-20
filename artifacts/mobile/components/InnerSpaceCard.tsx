@@ -29,6 +29,7 @@ export function InnerSpaceCard({
   const colors = useColors();
   const [category, setCategory] = useState<ReflectionCategory | null>(null);
   const [message, setMessage] = useState("");
+  const [wallLinkHighlighted, setWallLinkHighlighted] = useState(false);
   const inputRef = useRef<TextInput>(null);
   const [inputActive, setInputActive] = useState(false);
   const categoryScales = useRef(
@@ -46,6 +47,7 @@ export function InnerSpaceCard({
         setCategory(null);
         inputRef.current?.blur();
         setInputActive(false);
+        setWallLinkHighlighted(true);
         qc.invalidateQueries({ predicate: (query) => query.queryKey[0] === '/api/me/reflections' });
         onMessageSaved?.();
       }
@@ -79,6 +81,12 @@ export function InnerSpaceCard({
   };
 
   const isSubmitDisabled = !category || message.trim().length === 0 || createMutation.isPending;
+  const wallLinkColor = wallLinkHighlighted ? "#F9F9F9" : colors.primary;
+
+  const openWall = () => {
+    setWallLinkHighlighted(false);
+    router.push("/mi-espacio-interior");
+  };
 
   const toggleCategory = (nextCategory: ReflectionCategory) => {
     void Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light).catch(() => {});
@@ -183,10 +191,15 @@ export function InnerSpaceCard({
         <Text style={[styles.submitText, { color: "#D4B8F4" }]}>{createMutation.isPending ? "Guardando..." : "Guardar mensaje"}</Text>
       </Pressable>
 
-      <Pressable testID="history-link" accessibilityRole="button" accessibilityLabel="Ver muro" onPress={() => router.push("/mi-espacio-interior")} style={styles.historyLinkContainer}>
+      <Pressable testID="history-link" accessibilityRole="button" accessibilityLabel="Ver muro" onPress={openWall} style={styles.historyLinkContainer}>
         <View style={styles.historyAction}>
-          <Text style={[styles.historyLinkText, { color: colors.primary }]}>Ver muro</Text>
-          <Feather name="arrow-right" size={14} color={colors.primary} />
+          <Text style={[styles.historyLinkText, { color: wallLinkColor }]}>Ver muro</Text>
+          <Feather
+            name="chevron-right"
+            size={16}
+            color={wallLinkColor}
+            style={styles.historyChevron}
+          />
         </View>
       </Pressable>
 
@@ -283,6 +296,9 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     alignItems: "center",
     gap: 4,
+  },
+  historyChevron: {
+    transform: [{ translateY: 1 }],
   },
   historyLinkText: {
     fontSize: 13,

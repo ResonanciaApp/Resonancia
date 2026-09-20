@@ -70,17 +70,8 @@ import {
   type LibHeaderActions,
 } from "@/components/BibliotecaScreen";
 import { ProgressMirrorSections } from "@/components/ProgressMirrorSections";
-import { ContinueMeditationPlaylistCard } from "@/components/ContinueMeditationPlaylistCard";
 import { ProfileSettingsSections } from "@/components/ProfileSettingsSections";
-import { useCatalog } from "@/context/CatalogContext";
-import { useFoldersPlaylists } from "@/context/FoldersPlaylistsContext";
-import { usePlayer } from "@/context/PlayerContext";
 import { useCoverPresetCatalog } from "@/lib/cover-preset-catalog";
-import {
-  computePlaylistCompletion,
-  findInProgressMeditationPlaylist,
-  isMeditativeSessionPlaylist,
-} from "@/lib/editorial-playlist-helpers";
 import {
   gradientColors,
   type GeoSettings,
@@ -480,51 +471,6 @@ export function ProfileScreenBase({
     ? "#F0F0F0"
     : secondaryAccent;
   const expansorData = expansorId ? getExpansorById(expansorId) : undefined;
-  const { activeMeditationPlaylist } = useFoldersPlaylists();
-  const { statEvents } = usePlayer();
-  const { editorialPlaylists, version: catalogVersion } = useCatalog();
-  const continueMeditationPlaylist = useMemo(() => {
-    const completedSessionIds = new Set(
-      statEvents
-        .filter((event) => event.completed)
-        .map((event) => event.sessionId),
-    );
-    const activePlaylist = activeMeditationPlaylist
-      ? editorialPlaylists.find(
-          (candidate) => candidate.id === activeMeditationPlaylist.slug,
-        )
-      : undefined;
-    const activeCompletion =
-      activePlaylist && isMeditativeSessionPlaylist(activePlaylist)
-        ? computePlaylistCompletion(activePlaylist.sessionIds, completedSessionIds)
-        : null;
-
-    if (
-      activePlaylist &&
-      activeCompletion &&
-      activeCompletion.total > 0 &&
-      activeCompletion.completed < activeCompletion.total
-    ) {
-      return { playlist: activePlaylist, completion: activeCompletion };
-    }
-
-    const detectedInProgress = findInProgressMeditationPlaylist(
-      editorialPlaylists,
-      completedSessionIds,
-    );
-    if (detectedInProgress) return detectedInProgress;
-
-    if (activePlaylist && activeCompletion && activeCompletion.total > 0) {
-      return { playlist: activePlaylist, completion: activeCompletion };
-    }
-    return null;
-  }, [
-    activeMeditationPlaylist,
-    catalogVersion,
-    editorialPlaylists,
-    statEvents,
-  ]);
-
   const { data: me, refetch: refetchMe } = useGetMe({ query: { queryKey: getGetMeQueryKey(), staleTime: 0 } });
   const selectedAvatarPresetId = avatarPresetId;
   const selectedProfilePreset = selectedAvatarPresetId
@@ -1634,36 +1580,6 @@ export function ProfileScreenBase({
                 onMessageSaved={() => setReflectionSavedTrigger((value) => value + 1)}
               />
             </View>
-
-            {continueMeditationPlaylist ? (
-              <>
-                <View style={styles.profileMeditationPlaylist}>
-                  <ContinueMeditationPlaylistCard
-                    title={continueMeditationPlaylist.playlist.title}
-                    description={continueMeditationPlaylist.playlist.description}
-                    coverSource={
-                      continueMeditationPlaylist.playlist.coverUrl
-                        ? { uri: continueMeditationPlaylist.playlist.coverUrl }
-                        : continueMeditationPlaylist.playlist.cover
-                    }
-                    completion={continueMeditationPlaylist.completion}
-                    sectionStyle={styles.profileMeditationPlaylistSection}
-                    onPress={() => {
-                      router.push({
-                        pathname: "/editorial-playlist/[slug]",
-                        params: { slug: continueMeditationPlaylist.playlist.id },
-                      } as never);
-                    }}
-                  />
-                  <View
-                    style={[
-                      styles.profileCarouselDivider,
-                      styles.profileMeditationCarouselDivider,
-                    ]}
-                  />
-                </View>
-              </>
-            ) : null}
 
           </>
         )}
@@ -2806,14 +2722,6 @@ const styles = StyleSheet.create({
     fontFamily: "Manrope",
     fontSize: 13,
     fontWeight: "700",
-  },
-  profileMeditationPlaylist: {
-    marginHorizontal: -16,
-    marginTop: 26,
-  },
-  profileMeditationPlaylistSection: {
-    marginTop: 0,
-    marginBottom: 0,
   },
   profileProgressIntro: {
     paddingTop: 10,
