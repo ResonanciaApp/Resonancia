@@ -462,7 +462,7 @@ const styles = StyleSheet.create({
     transform: [{ translateY: 1 }],
   },
   historyLinkText: {
-    fontSize: 13,
-    fontWeight: "500",
+    fontSize: 12,
+    fontWeight: "400",
   },
 });
