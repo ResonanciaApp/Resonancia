@@ -814,7 +814,7 @@ const styles = StyleSheet.create({
     paddingHorizontal: 10,
     paddingVertical: 4,
     borderRadius: 10,
-    transform: [{ translateY: -8 }],
+    transform: [{ translateY: -3 }],
   },
   cardCatText: {
     fontSize: 11,
@@ -835,7 +835,7 @@ const styles = StyleSheet.create({
   },
   messageContainer: {
     position: "relative",
-    transform: [{ translateY: -17 }],
+    transform: [{ translateY: -12 }],
   },
   messageMeasure: {
     position: "absolute",
