@@ -58,7 +58,6 @@ const INICIO3_SECTIONS: { title: string; items: MenuItem[] }[] = [
     title: "Herramientas",
     items: [
       { id: "mixer", label: "Mezclador de sonido", icon: "sliders", mciIcon: "tune-vertical", route: "__mixer" },
-      { id: "practice-reminders", label: "Recordatorio de prácticas", icon: "bell", mciIcon: "bell-outline", route: "/notificaciones-practica" },
       { id: "notes", label: "Diario de notas", icon: "book-open", mciIcon: "notebook-outline", route: "__overlay:/diario" },
       { id: "geometrix", label: "Geometrix", icon: "hexagon", mciIcon: "hexagon-multiple-outline", route: "__geometrix" },
     ],
