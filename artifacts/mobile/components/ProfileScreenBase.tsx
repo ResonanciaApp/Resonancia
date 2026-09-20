@@ -1577,6 +1577,7 @@ export function ProfileScreenBase({
                 showStreakViewAll
                 streakTitle="Tu progreso"
                 streakContentTranslateY={-5}
+                sectionHorizontalPadding={20}
                 onStreakTitlePress={() => router.push("/progreso" as never)}
               />
             </View>
@@ -2557,8 +2558,7 @@ const styles = StyleSheet.create({
     alignItems: "center",
     width: "100%",
     gap: 16,
-    paddingLeft: 24,
-    paddingRight: 15,
+    paddingHorizontal: 20,
   },
   profileDetailsRow: { flex: 1, minWidth: 0, flexDirection: "row", alignItems: "center", gap: 8 },
   profileDetails: { flex: 1, minWidth: 0, alignItems: "flex-start", gap: 6 },
@@ -2593,13 +2593,13 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     alignItems: "center",
     gap: 13,
-    paddingHorizontal: 15,
+    paddingHorizontal: 20,
     paddingVertical: 15,
   },
   membershipCardHeaderPremium: {
     minHeight: 66,
     paddingVertical: 6,
-    paddingRight: 15,
+    paddingRight: 20,
   },
   membershipCardHeaderPlus: {
     minHeight: 61,
@@ -2637,14 +2637,14 @@ const styles = StyleSheet.create({
     marginTop: 2,
   },
   membershipBenefits: {
-    paddingHorizontal: 15,
+    paddingHorizontal: 20,
     paddingBottom: 15,
   },
   membershipBenefitsDivider: {
     height: 1,
     backgroundColor: "rgba(255,255,255,0.1)",
     marginBottom: 11,
-    marginHorizontal: -15,
+    marginHorizontal: -20,
   },
   membershipBenefitRow: {
     flexDirection: "row",
