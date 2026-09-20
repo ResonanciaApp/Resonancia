@@ -151,3 +151,4 @@
 - [Instagram Stories requiere Meta App ID](instagram-stories-meta-app-id.md) — source_application usa el ID numérico público de Meta, no el bundle ID; además declarar scheme iOS y package query Android
 - [Fondos de historias de reflexión](reflection-story-backgrounds.md) — Mi viaje interior conserva 100 slots permanentes; borrar restaura el fondo incluido y nunca reduce ni renumera el catálogo
 - [Galería de historias iniciadas](reflection-story-gallery.md) — registra al confirmar “Abrir Instagram”, no al completar publicación; snapshot visual reconstruible e idempotencia por intento
+- [Muro expansivo optimista](reflection-wall-optimistic.md) — guardar siembra el caché del muro y borrar oculta la card antes de cerrar el editor; rollback solo si falla la red

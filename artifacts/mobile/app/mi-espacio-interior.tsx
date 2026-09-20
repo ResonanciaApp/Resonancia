@@ -9,7 +9,7 @@ import { useSceneTheme } from "@/context/SceneThemeContext";
 import { REFLECTION_CATEGORIES, REFLECTION_CATEGORY_OPTIONS, CategoryIcon } from "@/constants/reflectionCategories";
 import { useUpdateMyReflection, useDeleteMyReflection, type Reflection, type ReflectionCategory, listMyReflections, useListMyReflections, getListMyReflectionsQueryKey } from "@workspace/api-client-react";
 import { KeyboardAwareScrollView } from "react-native-keyboard-controller";
-import { useQueryClient } from "@tanstack/react-query";
+import { useQueryClient, type QueryKey } from "@tanstack/react-query";
 import { useAuth } from "@/context/AuthContext";
 import { ReflectionShare } from "@/components/ReflectionShare";
 import { CinematicFadeSlide } from "@/components/CinematicFadeSlide";
@@ -305,6 +305,9 @@ export default function InnerSpaceScreen() {
   );
 
   const [subsequentPages, setSubsequentPages] = useState<any[]>([]);
+  const [optimisticallyDeletedIds, setOptimisticallyDeletedIds] = useState<Set<number>>(
+    () => new Set(),
+  );
   const [nextCursor, setNextCursor] = useState<string | null>(null);
   const [isFetchingNext, setIsFetchingNext] = useState(false);
   const [fetchNextError, setFetchNextError] = useState(false);
@@ -388,11 +391,12 @@ export default function InnerSpaceScreen() {
     });
     const seen = new Set();
     return list.filter(item => {
+      if (optimisticallyDeletedIds.has(item.id)) return false;
       if (seen.has(item.id)) return false;
       seen.add(item.id);
       return true;
     });
-  }, [firstPageData, subsequentPages]);
+  }, [firstPageData, optimisticallyDeletedIds, subsequentPages]);
 
   const [editingId, setEditingId] = useState<number | null>(null);
   const [editMessage, setEditMessage] = useState("");
@@ -418,11 +422,14 @@ export default function InnerSpaceScreen() {
   const deleteMutation = useDeleteMyReflection({
     mutation: {
       onSuccess: (_, variables) => {
-        setSubsequentPages(prev => prev.map(page => ({
-          ...page,
-          items: page.items.filter((item: any) => item.id !== variables.id)
-        })));
-        qc.invalidateQueries({ predicate: (query) => query.queryKey[0] === '/api/me/reflections' });
+        setOptimisticallyDeletedIds((current) => {
+          const next = new Set(current);
+          next.delete(variables.id);
+          return next;
+        });
+        void qc.invalidateQueries({
+          predicate: (query) => query.queryKey[0] === "/api/me/reflections",
+        });
       }
     }
   });
@@ -443,8 +450,48 @@ export default function InnerSpaceScreen() {
           text: "Sí, borrar",
           style: "destructive",
           onPress: () => {
-            setEditingId(null);
-            deleteMutation.mutate({ id: reflection.id });
+            const cachedPages = qc.getQueriesData({
+              predicate: (query) => query.queryKey[0] === "/api/me/reflections",
+            });
+            const previousSubsequentPages = subsequentPages;
+
+            setOptimisticallyDeletedIds((current) => {
+              const next = new Set(current);
+              next.add(reflection.id);
+              return next;
+            });
+            cachedPages.forEach(([queryKey, page]) => {
+              if (!page || typeof page !== "object" || !("items" in page)) return;
+              const typedPage = page as { items: Reflection[] };
+              qc.setQueryData(queryKey, {
+                ...typedPage,
+                items: typedPage.items.filter((item) => item.id !== reflection.id),
+              });
+            });
+            setSubsequentPages((pages) => pages.map((page) => ({
+              ...page,
+              items: page.items.filter((item: Reflection) => item.id !== reflection.id),
+            })));
+
+            deleteMutation.mutate(
+              { id: reflection.id },
+              {
+                onError: () => {
+                  cachedPages.forEach(([queryKey, page]) => {
+                    qc.setQueryData(queryKey as QueryKey, page);
+                  });
+                  setSubsequentPages(previousSubsequentPages);
+                  setOptimisticallyDeletedIds((current) => {
+                    const next = new Set(current);
+                    next.delete(reflection.id);
+                    return next;
+                  });
+                  setEditingId(reflection.id);
+                },
+              },
+            );
+
+            requestAnimationFrame(() => setEditingId(null));
           },
         },
       ],

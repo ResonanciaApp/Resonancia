@@ -6,11 +6,17 @@ import { LinearGradient } from "expo-linear-gradient";
 import * as Haptics from "expo-haptics";
 import { useColors } from "@/hooks/useColors";
 import { useSceneTheme } from "@/context/SceneThemeContext";
-import { useCreateMyReflection, type ReflectionCategory } from "@workspace/api-client-react";
+import {
+  useCreateMyReflection,
+  type Reflection,
+  type ReflectionCategory,
+  type ReflectionsPage,
+} from "@workspace/api-client-react";
 import { useQueryClient } from "@tanstack/react-query";
 import { router } from "expo-router";
 import { REFLECTION_CATEGORY_OPTIONS, CategoryIcon } from "@/constants/reflectionCategories";
 import { useReducedMotion } from "react-native-reanimated";
+import { useAuth } from "@/context/AuthContext";
 
 const CATEGORY_PLACEHOLDERS: Partial<Record<ReflectionCategory, string>> = {
   gratitude: "Ej: Hoy siento gratitud por...",
@@ -53,6 +59,7 @@ export function InnerSpaceCard({
     ) as Record<ReflectionCategory, Animated.Value>,
   ).current;
   const qc = useQueryClient();
+  const { clerkUserId } = useAuth();
   const reducedMotion = useReducedMotion();
 
   const settlePlaceholder = (placeholder: string) => {
@@ -66,14 +73,50 @@ export function InnerSpaceCard({
 
   const createMutation = useCreateMyReflection({
     mutation: {
-      onSuccess: () => {
+      onSuccess: (created: Reflection) => {
         settlePlaceholder(DEFAULT_PLACEHOLDER);
         setMessage("");
         setCategory(null);
         inputRef.current?.blur();
         setInputActive(false);
         setWallLinkHighlighted(true);
-        qc.invalidateQueries({ predicate: (query) => query.queryKey[0] === '/api/me/reflections' });
+
+        const createdAt = new Date(created.createdAt).getTime();
+        const reflectionQueries = qc.getQueriesData<ReflectionsPage>({
+          predicate: (query) =>
+            query.queryKey[0] === "/api/me/reflections"
+            && (
+              !clerkUserId
+              || query.queryKey[query.queryKey.length - 1] === clerkUserId
+            ),
+        });
+
+        reflectionQueries.forEach(([queryKey, page]) => {
+          if (!page) return;
+          const params = (
+            queryKey.length > 1
+            && typeof queryKey[1] === "object"
+            && queryKey[1] !== null
+          )
+            ? queryKey[1] as { category?: ReflectionCategory; from?: string; to?: string }
+            : {};
+          const categoryMatches = !params.category || params.category === created.category;
+          const fromMatches = !params.from || createdAt >= new Date(params.from).getTime();
+          const toMatches = !params.to || createdAt < new Date(params.to).getTime();
+          if (!categoryMatches || !fromMatches || !toMatches) return;
+
+          qc.setQueryData<ReflectionsPage>(queryKey, {
+            ...page,
+            items: [
+              created,
+              ...page.items.filter((item) => item.id !== created.id),
+            ],
+          });
+        });
+
+        void qc.invalidateQueries({
+          predicate: (query) => query.queryKey[0] === "/api/me/reflections",
+        });
         onMessageSaved?.();
       }
     }
