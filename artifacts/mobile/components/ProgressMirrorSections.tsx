@@ -23,6 +23,7 @@ export function ProgressMirrorSections({
   entranceBaseDelay = 0,
   streakTitle,
   onStreakTitlePress,
+  showStreakWeek = true,
 }: {
   showSectionBorders?: boolean;
   showPersonalStats?: boolean;
@@ -32,6 +33,7 @@ export function ProgressMirrorSections({
   entranceBaseDelay?: number;
   streakTitle?: string;
   onStreakTitlePress?: () => void;
+  showStreakWeek?: boolean;
 }) {
   const colors = useColors();
   const { theme } = useSceneTheme();
@@ -113,19 +115,23 @@ export function ProgressMirrorSections({
               </Text>
             </View>
           ) : null}
-          <Pressable
-            onPress={(event) => {
-              event.stopPropagation();
-              handleWeekPress();
-            }}
-            accessibilityRole="button"
-            accessibilityLabel="Abrir Tu progreso semanal"
-          >
-            <Animated.View style={{ opacity: weekBlink }}>
-              <StreakWeekRow />
-            </Animated.View>
-          </Pressable>
-          <View style={styles.sectionDivider} />
+          {showStreakWeek ? (
+            <>
+              <Pressable
+                onPress={(event) => {
+                  event.stopPropagation();
+                  handleWeekPress();
+                }}
+                accessibilityRole="button"
+                accessibilityLabel="Abrir Tu progreso semanal"
+              >
+                <Animated.View style={{ opacity: weekBlink }}>
+                  <StreakWeekRow />
+                </Animated.View>
+              </Pressable>
+              <View style={styles.sectionDivider} />
+            </>
+          ) : null}
           <View style={[styles.statsValues, styles.statsValuesNoTitle]}>
             <Stat
               icon={<MaterialCommunityIcons name="spa" size={20} color="#F9F9F9" />}

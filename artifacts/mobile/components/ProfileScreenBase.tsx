@@ -1579,6 +1579,7 @@ export function ProfileScreenBase({
                 showSectionBorders={false}
                 showPersonalStats={false}
                 showCalendar={false}
+                showStreakWeek={false}
                 streakTitle="Tu progreso"
                 onStreakTitlePress={() => router.push("/progreso" as never)}
               />
@@ -2129,7 +2130,7 @@ const styles = StyleSheet.create({
     width: 43,
     height: 43,
     borderRadius: 21.5,
-    transform: [{ translateX: 1 }, { translateY: -1 }],
+    transform: [{ translateX: 1 }, { translateY: -2 }],
     borderWidth: 1,
     borderColor: "rgba(255,255,255,0.2)",
     alignItems: "center",
