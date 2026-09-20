@@ -60,7 +60,6 @@ import { useCategoryOverlay } from "@/context/CategoryOverlayContext";
 import { usePlayer } from "@/context/PlayerContext";
 import { usePremium } from "@/context/PremiumContext";
 import { useSceneTheme } from "@/context/SceneThemeContext";
-import { isIndigoThemeId } from "@/config/scene-themes";
 import { startOfWeek, dayKey } from "@/utils/stats";
 import { getPrimaryMoodId } from "@/data/mood-quote-rotation";
 import colors, { WIDGET_GREEN_SOLID } from "@/constants/colors";
@@ -278,13 +277,6 @@ export function MoodPickerSheet({
   const currentMood = selectedMoods[surveyIndex];
   const currentAnswer = currentMood ? answers[currentMood.id] : undefined;
   const themeAccent = theme.accent ?? colors.light.accent;
-  const themeCardBackground = theme.id === "tibet"
-    ? "rgba(0,0,0,0.15)"
-    : isIndigoThemeId(theme.id)
-      ? "rgba(181,211,255,0.057)"
-      : theme.id === "indigo2"
-        ? "rgba(191,207,255,0.096)"
-        : "rgba(181,211,255,0.057)";
   const recommendations = useMemo(
     () => getRecommendations(selected),
     [selected, catalogVersion],
@@ -493,7 +485,6 @@ export function MoodPickerSheet({
                       testID={`mood-option-${mood.id}`}
                       style={({ pressed }) => [
                         styles.moodCard,
-                        { backgroundColor: themeCardBackground },
                         isSelected && styles.moodCardSelected,
                         { opacity: pressed ? 0.8 : 1 },
                       ]}
@@ -917,17 +908,15 @@ const styles = StyleSheet.create({
     width: "48%",
     minHeight: 84,
     borderRadius: 16,
-    borderWidth: 1,
-    borderColor: "rgba(255,255,255,0.10)",
-    backgroundColor: "rgba(255,255,255,0.075)",
+    borderWidth: 0,
+    backgroundColor: "rgba(0,0,0,0.28)",
     alignItems: "center",
     justifyContent: "center",
     paddingHorizontal: 8,
     paddingVertical: 10,
   },
   moodCardSelected: {
-    borderColor: MOOD_GREEN,
-    backgroundColor: "rgba(0,0,0,0.25)",
+    backgroundColor: "rgba(0,0,0,0.28)",
   },
   moodEmoji: {
     fontSize: 28,
