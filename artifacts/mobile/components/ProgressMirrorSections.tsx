@@ -340,8 +340,8 @@ const styles = StyleSheet.create({
   },
   streakViewAll: {
     fontFamily: "Manrope",
-    fontSize: 13,
-    fontWeight: "600",
+    fontSize: 12,
+    fontWeight: "400",
   },
   sectionDivider: {
     height: 1,
