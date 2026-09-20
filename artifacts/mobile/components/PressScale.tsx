@@ -11,9 +11,20 @@ type Props = {
   onPress: () => void;
   onLongPress?: () => void;
   style?: StyleProp<ViewStyle>;
+  accessibilityRole?: React.ComponentProps<typeof Pressable>["accessibilityRole"];
+  accessibilityLabel?: string;
+  testID?: string;
 };
 
-export function PressScale({ children, onPress, onLongPress, style }: Props) {
+export function PressScale({
+  children,
+  onPress,
+  onLongPress,
+  style,
+  accessibilityRole,
+  accessibilityLabel,
+  testID,
+}: Props) {
   const scale = useRef(new Animated.Value(1)).current;
 
   const handlePressIn = () => {
@@ -41,6 +52,9 @@ export function PressScale({ children, onPress, onLongPress, style }: Props) {
       onLongPress={onLongPress}
       onPressIn={handlePressIn}
       onPressOut={handlePressOut}
+      accessibilityRole={accessibilityRole}
+      accessibilityLabel={accessibilityLabel}
+      testID={testID}
     >
       <Animated.View style={[style, { transform: [{ scale }] }]}>
         {children}

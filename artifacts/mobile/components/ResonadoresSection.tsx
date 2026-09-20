@@ -5,6 +5,7 @@ import { router } from "expo-router";
 
 import { useResonadores } from "@/hooks/useResonadores";
 import { useColors } from "@/hooks/useColors";
+import { PressScale } from "@/components/PressScale";
 
 type Props = {
   marginTop?: number;
@@ -51,13 +52,12 @@ export function ResonadoresSection({ marginTop = 0, marginBottom = 32 }: Props) 
         contentContainerStyle={styles.carouselContent}
       >
           {resonadores.map((resonador) => (
-            <Pressable
+            <PressScale
               key={resonador.id}
               onPress={() => router.push(`/resonador-perfil/${resonador.id}` as never)}
-              style={({ pressed }) => [
-                styles.resonador,
-                { width: cardWidth, opacity: pressed ? 0.75 : 1 },
-              ]}
+              accessibilityRole="button"
+              accessibilityLabel={`Abrir perfil de ${resonador.name}`}
+              style={[styles.resonador, { width: cardWidth }]}
             >
               <View
                 style={[
@@ -80,7 +80,7 @@ export function ResonadoresSection({ marginTop = 0, marginBottom = 32 }: Props) 
               <Text numberOfLines={1} style={[styles.subtype, { color: colors.accent }]}>
                 {resonador.subtipo}
               </Text>
-            </Pressable>
+            </PressScale>
           ))}
       </ScrollView>
     </View>

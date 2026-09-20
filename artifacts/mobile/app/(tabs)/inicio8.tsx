@@ -3633,7 +3633,7 @@ const styles = StyleSheet.create({
     width: width * 0.6,
   },
   inicio2HeroGreetingLabel: {
-    color: "rgba(255,255,255,0.82)",
+    color: "#F4F4F4",
     fontFamily: "Manrope",
     fontSize: 14,
     lineHeight: 18,

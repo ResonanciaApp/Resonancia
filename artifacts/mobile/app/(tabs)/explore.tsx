@@ -52,6 +52,7 @@ import { EditorialPlaylistCarousel } from "@/components/EditorialPlaylistCarouse
 import { SessionCarousel } from "@/components/SessionCarousel";
 import { ContentCategoryGrid } from "@/components/ContentCategoryGrid";
 import { ResonadoresSection } from "@/components/ResonadoresSection";
+import { PressScale } from "@/components/PressScale";
 import {
   useGetPopularSessions,
   getGetPopularSessionsQueryKey,
@@ -645,15 +646,12 @@ export function ExploreScreen({
               contentContainerStyle={styles.newInResonanceRow}
             >
               {recientesMeditaciones.map((session) => (
-                <Pressable
+                <PressScale
                   key={session.id}
                   onPress={() => handleSessionPress(session)}
                   accessibilityRole="button"
                   accessibilityLabel={`${session.title}. ${getSessionAuthor(session)}`}
-                  style={({ pressed }) => [
-                    styles.newInResonanceCard,
-                    { opacity: pressed ? 0.82 : 1 },
-                  ]}
+                  style={styles.newInResonanceCard}
                 >
                   <View style={styles.newInResonanceImageWrap}>
                     <Image
@@ -684,7 +682,7 @@ export function ExploreScreen({
                       {getSessionAuthor(session)}
                     </Text>
                   </View>
-                </Pressable>
+                </PressScale>
               ))}
             </ScrollView>
           </View>
@@ -823,15 +821,12 @@ export function ExploreScreen({
               {otherThemeCards.map((card) => {
                 const meta = OTHER_THEME_META[card.id];
                 return (
-                  <Pressable
+                  <PressScale
                     key={card.id}
                     onPress={() => openCategory(`/tag/${encodeURIComponent(card.id)}`)}
                     accessibilityRole="button"
                     accessibilityLabel={`${card.label}. ${meta?.description ?? card.description}`}
-                    style={({ pressed }) => [
-                      styles.themeGridCard,
-                      { opacity: pressed ? 0.72 : 1 },
-                    ]}
+                    style={styles.themeGridCard}
                   >
                     <View
                       style={[
@@ -864,7 +859,7 @@ export function ExploreScreen({
                         {card.label}
                       </Text>
                     </View>
-                  </Pressable>
+                  </PressScale>
                 );
               })}
             </View>

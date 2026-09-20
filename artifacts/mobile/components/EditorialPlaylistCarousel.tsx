@@ -4,7 +4,6 @@ import { LinearGradient } from "expo-linear-gradient";
 import React from "react";
 import {
   Dimensions,
-  Pressable,
   ScrollView,
   type StyleProp,
   StyleSheet,
@@ -19,6 +18,7 @@ import {
   SessionBadgeGlass,
   SessionDurationBadge,
 } from "@/components/SessionDurationBadge";
+import { PressScale } from "@/components/PressScale";
 const H_PAD = 16;
 const CARD_GAP = 14;
 const CARD_WIDTH = Math.round(
@@ -51,13 +51,13 @@ export function EditorialPlaylistCarousel({
         contentContainerStyle={styles.content}
       >
         {playlists.map((playlist) => (
-          <Pressable
+          <PressScale
             key={playlist.id}
             onPress={() => onPress?.(playlist)}
             accessibilityRole="button"
             accessibilityLabel={`Abrir ${playlist.title}`}
             testID={`editorial-playlist-${playlist.id}`}
-            style={({ pressed }) => [styles.card, { opacity: pressed ? 0.85 : 1 }]}
+            style={styles.card}
           >
             <View style={styles.stack}>
               <View style={styles.stackStripFront} />
@@ -107,7 +107,7 @@ export function EditorialPlaylistCarousel({
             <Text style={styles.cardTitle} numberOfLines={2}>
               {playlist.title}
             </Text>
-          </Pressable>
+          </PressScale>
         ))}
       </ScrollView>
     </View>

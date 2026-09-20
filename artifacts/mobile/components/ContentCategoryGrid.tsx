@@ -25,6 +25,7 @@ import { useGeometrixPanel } from "@/context/GeometrixPanelContext";
 import { useMixerPanel } from "@/context/MixerPanelContext";
 import { useSceneTheme } from "@/context/SceneThemeContext";
 import { isIndigoThemeId } from "@/config/scene-themes";
+import { PressScale } from "@/components/PressScale";
 import {
   CONTENT_CATEGORIES,
   type ContentCategoryDefinition,
@@ -225,19 +226,13 @@ export function ContentCategoryGrid({
         <View style={styles.discoverGrid}>
           {visibleCategories.map((category) => {
             return (
-              <Pressable
+              <PressScale
                 key={category.id}
                 testID={`content-category-${category.id}`}
                 accessibilityRole="button"
                 accessibilityLabel={category.label}
                 onPress={() => openContentCategory(category)}
-                style={({ pressed }) => [
-                  styles.discoverCard,
-                  {
-                    width: cardWidth,
-                    opacity: pressed ? 0.78 : 1,
-                  },
-                ]}
+                style={[styles.discoverCard, { width: cardWidth }]}
               >
                   <View style={[styles.discoverCardImage, { height: cardHeight, backgroundColor: catBlockBg }]}>
                     <View pointerEvents="none" style={styles.discoverCardContent}>
@@ -249,7 +244,7 @@ export function ContentCategoryGrid({
                       </Text>
                     </View>
                  </View>
-              </Pressable>
+              </PressScale>
             );
           })}
         </View>
