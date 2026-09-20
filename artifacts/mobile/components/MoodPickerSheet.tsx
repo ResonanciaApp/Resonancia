@@ -620,6 +620,7 @@ export function MoodPickerSheet({
                   replayKey={`hero-background:${completionCycle}`}
                   delay={0}
                   duration={CINEMATIC_DURATION}
+                  scaleFrom={1.06}
                   translateYFrom={0}
                   style={StyleSheet.absoluteFill}
                 >
@@ -916,6 +917,8 @@ const styles = StyleSheet.create({
     paddingVertical: 10,
   },
   moodCardSelected: {
+    borderWidth: 2,
+    borderColor: "rgba(255,255,255,0.20)",
     backgroundColor: "rgba(0,0,0,0.28)",
   },
   moodEmoji: {
