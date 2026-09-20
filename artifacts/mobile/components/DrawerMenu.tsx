@@ -230,11 +230,13 @@ export function DrawerMenu() {
             {/* Fila avatar + nombre + cerrar */}
             <View style={styles.profileSection}>
               {avatarSource ? (
-                <Image
-                  source={avatarSource}
-                  style={[styles.profilePhoto, styles.inicio3ProfilePhoto]}
-                  contentFit="cover"
-                />
+                <View style={[styles.profilePhoto, styles.inicio3ProfilePhoto]}>
+                  <Image
+                    source={avatarSource}
+                    style={styles.profilePhotoImage}
+                    contentFit="cover"
+                  />
+                </View>
               ) : loggedIn && initial ? (
                 <View style={[styles.profilePhotoFallback, styles.inicio3ProfilePhoto]}>
                   <Text style={styles.profileInitial}>{initial}</Text>
@@ -416,6 +418,11 @@ const styles = StyleSheet.create({
     height: 48,
     borderRadius: 24,
     borderWidth: 0,
+    overflow: "hidden",
+  },
+  profilePhotoImage: {
+    ...StyleSheet.absoluteFillObject,
+    transform: [{ scale: 1.06 }],
   },
   profilePhotoFallback: {
     width: 48,
