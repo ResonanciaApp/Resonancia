@@ -814,7 +814,7 @@ const styles = StyleSheet.create({
   },
   messageContainer: {
     position: "relative",
-    transform: [{ translateY: -12 }],
+    transform: [{ translateY: -2 }],
   },
   messageMeasure: {
     position: "absolute",

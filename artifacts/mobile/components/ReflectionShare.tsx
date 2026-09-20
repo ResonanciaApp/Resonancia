@@ -318,8 +318,8 @@ function InteractiveReflectionArtwork({
             style={[
               styles.storyQuote,
               {
-                fontSize: 60 * width / STORY_WIDTH,
-                lineHeight: 78 * width / STORY_WIDTH,
+                fontSize: 60 * width / STORY_WIDTH + 5,
+                lineHeight: 78 * width / STORY_WIDTH + 5,
               },
             ]}
           >
@@ -392,6 +392,7 @@ export function ReflectionShare({ reflection, onClose }: { reflection: Reflectio
       assetKey={`${selectedBgId ?? "initial"}:${selectedUsesFallback ? "fallback" : "primary"}`}
       showGenericShare={false}
       previewScale={0.8}
+      previewOffsetY={-20}
       closeOnLeft
       titleFontSize={15}
       titleOffsetY={-15}
@@ -465,11 +466,6 @@ export function ReflectionShare({ reflection, onClose }: { reflection: Reflectio
                     }
                   }}
                 />
-                {isSelected && (
-                  <View style={styles.checkOverlay}>
-                    <Feather name="check" size={16} color="#FFFFFF" />
-                  </View>
-                )}
               </Pressable>
             );
           })}
@@ -568,11 +564,5 @@ const styles = StyleSheet.create({
   galleryImage: {
     width: "100%",
     height: "100%",
-  },
-  checkOverlay: {
-    ...StyleSheet.absoluteFillObject,
-    backgroundColor: "rgba(137, 84, 238, 0.4)",
-    alignItems: "center",
-    justifyContent: "center",
   },
 });

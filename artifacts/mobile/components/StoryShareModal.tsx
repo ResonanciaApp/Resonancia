@@ -32,6 +32,7 @@ export interface StoryShareModalProps {
   requiresLogo?: boolean;
   showGenericShare?: boolean;
   previewScale?: number;
+  previewOffsetY?: number;
   closeOnLeft?: boolean;
   headerRightAction?: React.ReactNode;
   titleFontSize?: number;
@@ -50,6 +51,7 @@ export function StoryShareModal({
   requiresLogo = false,
   showGenericShare = true,
   previewScale = 1,
+  previewOffsetY = 0,
   closeOnLeft = false,
   headerRightAction,
   titleFontSize,
@@ -279,7 +281,12 @@ export function StoryShareModal({
           )}
         </View>
 
-        <View style={styles.previewArea}>
+        <View
+          style={[
+            styles.previewArea,
+            previewOffsetY !== 0 && { transform: [{ translateY: previewOffsetY }] },
+          ]}
+        >
           {renderArtwork(previewWidth, false, {
             onReady: () => undefined,
             onFailure: () => {
