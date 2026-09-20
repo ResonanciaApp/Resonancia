@@ -1,0 +1,132 @@
+import { Router, type IRouter } from "express";
+import { and, desc, eq, lt, or } from "drizzle-orm";
+import { db, reflectionStoriesTable } from "@workspace/db";
+import {
+  CreateMyReflectionStoryBody,
+  CreateMyReflectionStoryHeader,
+  GetMyReflectionStoryParams,
+  ListMyReflectionStoriesQueryParams,
+} from "@workspace/api-zod";
+import { requireAuth } from "../middlewares/requireAuth";
+
+const router: IRouter = Router();
+
+const encodeCursor = (createdAt: Date, id: number) =>
+  Buffer.from(JSON.stringify({ createdAt: createdAt.toISOString(), id }), "utf8").toString("base64url");
+
+function decodeCursor(value: string): { createdAt: Date; id: number } | null {
+  try {
+    const parsed = JSON.parse(Buffer.from(value, "base64url").toString("utf8")) as { createdAt: string; id: number };
+    const date = new Date(parsed.createdAt);
+    if (!Number.isFinite(date.getTime()) || !Number.isInteger(parsed.id)) return null;
+    return { createdAt: date, id: parsed.id };
+  } catch {
+    return null;
+  }
+}
+
+function countGraphemes(value: string): number {
+  const Segmenter = (Intl as unknown as { Segmenter?: new (locale?: string, options?: { granularity: string }) => { segment: (input: string) => Iterable<unknown> } }).Segmenter;
+  if (Segmenter) return Array.from(new Segmenter("es", { granularity: "grapheme" }).segment(value)).length;
+  return Array.from(value).length;
+}
+
+function dto(row: typeof reflectionStoriesTable.$inferSelect) {
+  const { idempotencyKey: _idempotencyKey, ...publicRow } = row;
+  return { ...publicRow, createdAt: row.createdAt.toISOString() };
+}
+
+function isUniqueViolation(error: unknown): boolean {
+  return Boolean(error && typeof error === "object" && "code" in error && (error as { code?: string }).code === "23505");
+}
+
+router.get("/me/reflection-stories", requireAuth, async (req, res) => {
+  const parsed = ListMyReflectionStoriesQueryParams.safeParse(req.query);
+  if (!parsed.success) { res.status(400).json({ error: "Datos inválidos" }); return; }
+  const { cursor, limit } = parsed.data;
+  const decoded = cursor ? decodeCursor(cursor) : null;
+  if (cursor && !decoded) { res.status(400).json({ error: "Cursor inválido" }); return; }
+  const conditions = [eq(reflectionStoriesTable.userId, req.currentUser!.id)];
+  if (decoded) {
+    conditions.push(or(
+      lt(reflectionStoriesTable.createdAt, decoded.createdAt),
+      and(eq(reflectionStoriesTable.createdAt, decoded.createdAt), lt(reflectionStoriesTable.id, decoded.id)),
+    )!);
+  }
+  try {
+    const rows = await db.select().from(reflectionStoriesTable)
+      .where(and(...conditions))
+      .orderBy(desc(reflectionStoriesTable.createdAt), desc(reflectionStoriesTable.id))
+      .limit(limit + 1);
+    const hasMore = rows.length > limit;
+    const items = rows.slice(0, limit);
+    res.json({
+      items: items.map(dto),
+      nextCursor: hasMore ? encodeCursor(items[items.length - 1].createdAt, items[items.length - 1].id) : null,
+    });
+  } catch (error) {
+    req.log.error(error);
+    res.status(500).json({ error: "No se pudieron obtener las historias compartidas" });
+  }
+});
+
+router.post("/me/reflection-stories", requireAuth, async (req, res) => {
+  const header = CreateMyReflectionStoryHeader.safeParse({ "Idempotency-Key": req.get("Idempotency-Key") });
+  const parsed = CreateMyReflectionStoryBody.safeParse(req.body);
+  if (!header.success || !parsed.success) { res.status(400).json({ error: "Datos inválidos" }); return; }
+  const input = parsed.data;
+  const message = input.message.trim();
+  const backgroundOffsetLimit = (input.backgroundScale - 1) / 2;
+  if (
+    countGraphemes(message) > 160
+    || message.length === 0
+    || Math.abs(input.backgroundX) > backgroundOffsetLimit
+    || Math.abs(input.backgroundY) > backgroundOffsetLimit
+  ) {
+    res.status(400).json({ error: "La composición no es válida" });
+    return;
+  }
+  const userId = req.currentUser!.id;
+  const idempotencyKey = header.data["Idempotency-Key"];
+  try {
+    const [row] = await db.insert(reflectionStoriesTable).values({
+      userId,
+      idempotencyKey,
+      message,
+      category: input.category,
+      backgroundPresetKey: input.backgroundPresetKey.trim(),
+      backgroundScale: input.backgroundScale,
+      backgroundX: input.backgroundX,
+      backgroundY: input.backgroundY,
+      textX: input.textX,
+      textY: input.textY,
+    }).returning();
+    res.status(201).json(dto(row));
+  } catch (error) {
+    if (isUniqueViolation(error)) {
+      const [existing] = await db.select().from(reflectionStoriesTable)
+        .where(and(eq(reflectionStoriesTable.userId, userId), eq(reflectionStoriesTable.idempotencyKey, idempotencyKey)))
+        .limit(1);
+      if (existing) { res.status(200).json(dto(existing)); return; }
+    }
+    req.log.error(error);
+    res.status(500).json({ error: "No se pudo guardar la historia compartida" });
+  }
+});
+
+router.get("/me/reflection-stories/:id", requireAuth, async (req, res) => {
+  const parsed = GetMyReflectionStoryParams.safeParse(req.params);
+  if (!parsed.success) { res.status(400).json({ error: "Datos inválidos" }); return; }
+  try {
+    const [row] = await db.select().from(reflectionStoriesTable)
+      .where(and(eq(reflectionStoriesTable.id, parsed.data.id), eq(reflectionStoriesTable.userId, req.currentUser!.id)))
+      .limit(1);
+    if (!row) { res.status(404).json({ error: "Historia compartida no encontrada" }); return; }
+    res.json(dto(row));
+  } catch (error) {
+    req.log.error(error);
+    res.status(500).json({ error: "No se pudo obtener la historia compartida" });
+  }
+});
+
+export default router;

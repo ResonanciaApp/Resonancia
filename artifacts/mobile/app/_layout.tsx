@@ -383,6 +383,8 @@ function NavStack() {
         />
         <Stack.Screen name="mi-perfil" options={{ headerShown: false, animation: drawerScreenAnim }} />
         <Stack.Screen name="mi-espacio-interior" options={{ headerShown: false, animation: "slide_from_right" }} />
+        <Stack.Screen name="galeria-reflexiones/index" options={{ headerShown: false, animation: "slide_from_right" }} />
+        <Stack.Screen name="galeria-reflexiones/[id]" options={{ headerShown: false, animation: "slide_from_right" }} />
         <Stack.Screen name="diario" options={{ headerShown: false, animation: drawerScreenAnim }} />
         <Stack.Screen name="crear-rutina" options={{ headerShown: false, animation: "slide_from_right" }} />
         <Stack.Screen name="rutina/[id]" options={{ headerShown: false, animation: "slide_from_right" }} />

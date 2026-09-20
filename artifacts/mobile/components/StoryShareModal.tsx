@@ -27,6 +27,7 @@ export interface StoryShareModalProps {
   renderArtwork: (width: number, isExport: boolean, callbacks: { onReady?: () => void, onFailure?: () => void, onLogoReady?: () => void }) => React.ReactNode;
   makeWebImage?: () => Promise<Blob>;
   checkConstraints?: () => void;
+  onBeforeInstagramShare?: () => Promise<void>;
   captureKey?: string;
   assetKey?: string;
   requiresLogo?: boolean;
@@ -49,6 +50,7 @@ export function StoryShareModal({
   renderArtwork,
   makeWebImage,
   checkConstraints,
+  onBeforeInstagramShare,
   captureKey = "default",
   assetKey,
   requiresLogo = false,
@@ -196,6 +198,11 @@ export function StoryShareModal({
       if (!instagramInstalled) throw new Error("Instagram is not installed");
       await ensureImage();
       if (!uri.current) throw new Error("No se pudo preparar la imagen para Instagram.");
+
+      if (onBeforeInstagramShare) {
+        await onBeforeInstagramShare();
+      }
+
       await Share.shareSingle({
         social: Share.Social.INSTAGRAM_STORIES as never,
         appId: INSTAGRAM_SOURCE_APP,

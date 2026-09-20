@@ -54,6 +54,87 @@ export interface ReflectionsPage {
   nextCursor: string | null;
 }
 
+export interface ReflectionStory {
+  id: number;
+  userId: number;
+  /** @minLength 1 */
+  message: string;
+  category: ReflectionCategory;
+  /**
+     * @minLength 1
+     * @maxLength 120
+     */
+  backgroundPresetKey: string;
+  /**
+     * @minimum 1
+     * @maximum 3
+     */
+  backgroundScale: number;
+  /**
+     * @minimum -1
+     * @maximum 1
+     */
+  backgroundX: number;
+  /**
+     * @minimum -1
+     * @maximum 1
+     */
+  backgroundY: number;
+  /**
+     * @minimum -0.0925925926
+     * @maximum 0.0925925926
+     */
+  textX: number;
+  /**
+     * @minimum -0.2604166667
+     * @maximum 0.2604166667
+     */
+  textY: number;
+  createdAt: string;
+}
+
+export interface ReflectionStoryInput {
+  /** @minLength 1 */
+  message: string;
+  category: ReflectionCategory;
+  /**
+     * @minLength 1
+     * @maxLength 120
+     */
+  backgroundPresetKey: string;
+  /**
+     * @minimum 1
+     * @maximum 3
+     */
+  backgroundScale: number;
+  /**
+     * @minimum -1
+     * @maximum 1
+     */
+  backgroundX: number;
+  /**
+     * @minimum -1
+     * @maximum 1
+     */
+  backgroundY: number;
+  /**
+     * @minimum -0.0925925926
+     * @maximum 0.0925925926
+     */
+  textX: number;
+  /**
+     * @minimum -0.2604166667
+     * @maximum 0.2604166667
+     */
+  textY: number;
+}
+
+export interface ReflectionStoriesPage {
+  items: ReflectionStory[];
+  /** @nullable */
+  nextCursor: string | null;
+}
+
 export interface ExploreSection {
   id: number;
   slug: string;
@@ -3413,6 +3494,15 @@ from?: string;
  * Exclusive end of the requested date range
  */
 to?: string;
+/**
+ * @minimum 1
+ * @maximum 50
+ */
+limit?: number;
+};
+
+export type ListMyReflectionStoriesParams = {
+cursor?: string;
 /**
  * @minimum 1
  * @maximum 50

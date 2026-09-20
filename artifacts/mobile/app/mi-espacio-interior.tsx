@@ -711,6 +711,14 @@ export default function InnerSpaceScreen() {
           <Feather name="chevron-left" size={28} color={colors.foreground} />
         </Pressable>
         <View style={styles.headerTitles}>
+          <Pressable
+            testID="gallery-button"
+            accessibilityLabel="Galería de historias"
+            onPress={() => router.push("/galeria-reflexiones")}
+            style={({pressed}) => [{ marginRight: 12 }, pressed && { opacity: 0.7 }]}
+          >
+            <Feather name="grid" size={22} color={colors.foreground} />
+          </Pressable>
           <Text style={[styles.mainTitle, { color: colors.foreground }]}>Muro expansivo</Text>
         </View>
         <View style={{ width: 44 }} />

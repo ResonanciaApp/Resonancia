@@ -6565,3 +6565,160 @@ export const DeleteMyReflectionParams = zod.object({
 })
 
 
+export const listMyReflectionStoriesQueryLimitDefault = 20;
+export const listMyReflectionStoriesQueryLimitMax = 50;
+
+
+
+export const ListMyReflectionStoriesQueryParams = zod.object({
+  "cursor": zod.coerce.string().optional(),
+  "limit": zod.coerce.number().min(1).max(listMyReflectionStoriesQueryLimitMax).default(listMyReflectionStoriesQueryLimitDefault)
+})
+
+
+export const listMyReflectionStoriesResponseItemsItemBackgroundPresetKeyMax = 120;
+
+export const listMyReflectionStoriesResponseItemsItemBackgroundScaleMax = 3;
+
+export const listMyReflectionStoriesResponseItemsItemBackgroundXMin = -1;
+export const listMyReflectionStoriesResponseItemsItemBackgroundXMax = 1;
+
+export const listMyReflectionStoriesResponseItemsItemBackgroundYMin = -1;
+export const listMyReflectionStoriesResponseItemsItemBackgroundYMax = 1;
+
+export const listMyReflectionStoriesResponseItemsItemTextXMin = -0.0925925926;
+export const listMyReflectionStoriesResponseItemsItemTextXMax = 0.0925925926;
+
+export const listMyReflectionStoriesResponseItemsItemTextYMin = -0.2604166667;
+export const listMyReflectionStoriesResponseItemsItemTextYMax = 0.2604166667;
+
+
+
+export const ListMyReflectionStoriesResponse = zod.object({
+  "items": zod.array(zod.object({
+  "id": zod.number(),
+  "userId": zod.number(),
+  "message": zod.string().min(1),
+  "category": zod.enum(['gratitude', 'understanding', 'clarity', 'calm', 'purpose', 'acceptance']),
+  "backgroundPresetKey": zod.string().min(1).max(listMyReflectionStoriesResponseItemsItemBackgroundPresetKeyMax),
+  "backgroundScale": zod.number().min(1).max(listMyReflectionStoriesResponseItemsItemBackgroundScaleMax),
+  "backgroundX": zod.number().min(listMyReflectionStoriesResponseItemsItemBackgroundXMin).max(listMyReflectionStoriesResponseItemsItemBackgroundXMax),
+  "backgroundY": zod.number().min(listMyReflectionStoriesResponseItemsItemBackgroundYMin).max(listMyReflectionStoriesResponseItemsItemBackgroundYMax),
+  "textX": zod.number().min(listMyReflectionStoriesResponseItemsItemTextXMin).max(listMyReflectionStoriesResponseItemsItemTextXMax),
+  "textY": zod.number().min(listMyReflectionStoriesResponseItemsItemTextYMin).max(listMyReflectionStoriesResponseItemsItemTextYMax),
+  "createdAt": zod.coerce.date()
+})),
+  "nextCursor": zod.string().nullable()
+})
+
+
+export const createMyReflectionStoryHeaderIdempotencyKeyMax = 200;
+
+
+
+export const CreateMyReflectionStoryHeader = zod.object({
+  "Idempotency-Key": zod.string().min(1).max(createMyReflectionStoryHeaderIdempotencyKeyMax)
+})
+
+
+export const createMyReflectionStoryBodyBackgroundPresetKeyMax = 120;
+
+export const createMyReflectionStoryBodyBackgroundScaleMax = 3;
+
+export const createMyReflectionStoryBodyBackgroundXMin = -1;
+export const createMyReflectionStoryBodyBackgroundXMax = 1;
+
+export const createMyReflectionStoryBodyBackgroundYMin = -1;
+export const createMyReflectionStoryBodyBackgroundYMax = 1;
+
+export const createMyReflectionStoryBodyTextXMin = -0.0925925926;
+export const createMyReflectionStoryBodyTextXMax = 0.0925925926;
+
+export const createMyReflectionStoryBodyTextYMin = -0.2604166667;
+export const createMyReflectionStoryBodyTextYMax = 0.2604166667;
+
+
+
+export const CreateMyReflectionStoryBody = zod.object({
+  "message": zod.string().min(1),
+  "category": zod.enum(['gratitude', 'understanding', 'clarity', 'calm', 'purpose', 'acceptance']),
+  "backgroundPresetKey": zod.string().min(1).max(createMyReflectionStoryBodyBackgroundPresetKeyMax),
+  "backgroundScale": zod.number().min(1).max(createMyReflectionStoryBodyBackgroundScaleMax),
+  "backgroundX": zod.number().min(createMyReflectionStoryBodyBackgroundXMin).max(createMyReflectionStoryBodyBackgroundXMax),
+  "backgroundY": zod.number().min(createMyReflectionStoryBodyBackgroundYMin).max(createMyReflectionStoryBodyBackgroundYMax),
+  "textX": zod.number().min(createMyReflectionStoryBodyTextXMin).max(createMyReflectionStoryBodyTextXMax),
+  "textY": zod.number().min(createMyReflectionStoryBodyTextYMin).max(createMyReflectionStoryBodyTextYMax)
+})
+
+
+export const createMyReflectionStoryResponseBackgroundPresetKeyMax = 120;
+
+export const createMyReflectionStoryResponseBackgroundScaleMax = 3;
+
+export const createMyReflectionStoryResponseBackgroundXMin = -1;
+export const createMyReflectionStoryResponseBackgroundXMax = 1;
+
+export const createMyReflectionStoryResponseBackgroundYMin = -1;
+export const createMyReflectionStoryResponseBackgroundYMax = 1;
+
+export const createMyReflectionStoryResponseTextXMin = -0.0925925926;
+export const createMyReflectionStoryResponseTextXMax = 0.0925925926;
+
+export const createMyReflectionStoryResponseTextYMin = -0.2604166667;
+export const createMyReflectionStoryResponseTextYMax = 0.2604166667;
+
+
+
+export const CreateMyReflectionStoryResponse = zod.object({
+  "id": zod.number(),
+  "userId": zod.number(),
+  "message": zod.string().min(1),
+  "category": zod.enum(['gratitude', 'understanding', 'clarity', 'calm', 'purpose', 'acceptance']),
+  "backgroundPresetKey": zod.string().min(1).max(createMyReflectionStoryResponseBackgroundPresetKeyMax),
+  "backgroundScale": zod.number().min(1).max(createMyReflectionStoryResponseBackgroundScaleMax),
+  "backgroundX": zod.number().min(createMyReflectionStoryResponseBackgroundXMin).max(createMyReflectionStoryResponseBackgroundXMax),
+  "backgroundY": zod.number().min(createMyReflectionStoryResponseBackgroundYMin).max(createMyReflectionStoryResponseBackgroundYMax),
+  "textX": zod.number().min(createMyReflectionStoryResponseTextXMin).max(createMyReflectionStoryResponseTextXMax),
+  "textY": zod.number().min(createMyReflectionStoryResponseTextYMin).max(createMyReflectionStoryResponseTextYMax),
+  "createdAt": zod.coerce.date()
+})
+
+
+export const GetMyReflectionStoryParams = zod.object({
+  "id": zod.coerce.number()
+})
+
+
+export const getMyReflectionStoryResponseBackgroundPresetKeyMax = 120;
+
+export const getMyReflectionStoryResponseBackgroundScaleMax = 3;
+
+export const getMyReflectionStoryResponseBackgroundXMin = -1;
+export const getMyReflectionStoryResponseBackgroundXMax = 1;
+
+export const getMyReflectionStoryResponseBackgroundYMin = -1;
+export const getMyReflectionStoryResponseBackgroundYMax = 1;
+
+export const getMyReflectionStoryResponseTextXMin = -0.0925925926;
+export const getMyReflectionStoryResponseTextXMax = 0.0925925926;
+
+export const getMyReflectionStoryResponseTextYMin = -0.2604166667;
+export const getMyReflectionStoryResponseTextYMax = 0.2604166667;
+
+
+
+export const GetMyReflectionStoryResponse = zod.object({
+  "id": zod.number(),
+  "userId": zod.number(),
+  "message": zod.string().min(1),
+  "category": zod.enum(['gratitude', 'understanding', 'clarity', 'calm', 'purpose', 'acceptance']),
+  "backgroundPresetKey": zod.string().min(1).max(getMyReflectionStoryResponseBackgroundPresetKeyMax),
+  "backgroundScale": zod.number().min(1).max(getMyReflectionStoryResponseBackgroundScaleMax),
+  "backgroundX": zod.number().min(getMyReflectionStoryResponseBackgroundXMin).max(getMyReflectionStoryResponseBackgroundXMax),
+  "backgroundY": zod.number().min(getMyReflectionStoryResponseBackgroundYMin).max(getMyReflectionStoryResponseBackgroundYMax),
+  "textX": zod.number().min(getMyReflectionStoryResponseTextXMin).max(getMyReflectionStoryResponseTextXMax),
+  "textY": zod.number().min(getMyReflectionStoryResponseTextYMin).max(getMyReflectionStoryResponseTextYMax),
+  "createdAt": zod.coerce.date()
+})
+
+

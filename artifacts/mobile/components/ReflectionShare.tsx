@@ -8,13 +8,17 @@ import Animated, {
   useAnimatedStyle,
   useSharedValue,
 } from "react-native-reanimated";
+import { useQueryClient } from "@tanstack/react-query";
 
 import type { Reflection } from "@workspace/api-client-react";
+import { createMyReflectionStory, type ReflectionStoryInput } from "@workspace/api-client-react";
 import { StoryShareModal, STORY_WIDTH } from "./StoryShareModal";
+import { StoryArtworkFrame, STORY_QUOTE_TOP, STORY_QUOTE_HEIGHT } from "./StoryArtworkFrame";
 import { useCoverPresetCatalogState } from "@/lib/cover-preset-catalog";
 import {
   canShareReflection,
   clampReflectionStoryComposition,
+  getStableIdempotencyKey,
   DEFAULT_REFLECTION_STORY_COMPOSITION,
   REFLECTION_STORY_MAX_BACKGROUND_SCALE,
   REFLECTION_STORY_MIN_BACKGROUND_SCALE,
@@ -22,9 +26,6 @@ import {
   REFLECTION_STORY_TEXT_Y_LIMIT,
   type ReflectionStoryComposition,
 } from "@/lib/reflection-story-logic";
-
-const STORY_QUOTE_TOP = 610;
-const STORY_QUOTE_HEIGHT = 700;
 
 type ReflectionArtworkProps = {
   reflection: Reflection;
@@ -34,90 +35,6 @@ type ReflectionArtworkProps = {
   onReady?: () => void;
   onFailure?: () => void;
 };
-
-function StoryArtworkFrame({
-  reflection,
-  width,
-  bgImageSource,
-  composition,
-  onReady,
-  onFailure,
-}: ReflectionArtworkProps) {
-  const exportScale = width / STORY_WIDTH;
-  const isExport = width === STORY_WIDTH;
-  const height = width * 16 / 9;
-
-  return (
-    <View
-      style={[
-        styles.storyArtwork,
-        {
-          width,
-          height,
-          borderRadius: isExport ? 0 : 22,
-        },
-      ]}
-    >
-      <View
-        style={[
-          StyleSheet.absoluteFillObject,
-          {
-            transform: [
-              { translateX: composition.backgroundX * width },
-              { translateY: composition.backgroundY * height },
-            ],
-          },
-        ]}
-      >
-        <View
-          style={[
-            StyleSheet.absoluteFillObject,
-            { transform: [{ scale: composition.backgroundScale }] },
-          ]}
-        >
-          <Image
-            source={bgImageSource}
-            style={StyleSheet.absoluteFillObject}
-            contentFit="cover"
-            onLoad={onReady}
-            onError={onFailure}
-          />
-        </View>
-      </View>
-      <View pointerEvents="none" style={styles.storyShade} />
-      <View
-        pointerEvents="none"
-        style={[
-          styles.storyQuoteRegion,
-          {
-            top: STORY_QUOTE_TOP * exportScale,
-            height: STORY_QUOTE_HEIGHT * exportScale,
-            paddingHorizontal: 120 * exportScale,
-            transform: [
-              { translateX: composition.textX * width },
-              { translateY: composition.textY * height },
-            ],
-          },
-        ]}
-      >
-        <Text
-          numberOfLines={14}
-          adjustsFontSizeToFit
-          minimumFontScale={0.5}
-          style={[
-            styles.storyQuote,
-            {
-              fontSize: 60 * exportScale,
-              lineHeight: 78 * exportScale,
-            },
-          ]}
-        >
-          {reflection.message.trim()}
-        </Text>
-      </View>
-    </View>
-  );
-}
 
 function InteractiveReflectionArtwork({
   reflection,
@@ -335,6 +252,8 @@ function InteractiveReflectionArtwork({
 }
 
 export function ReflectionShare({ reflection, onClose }: { reflection: Reflection; onClose: () => void }) {
+  const qc = useQueryClient();
+  const idempotencyState = useRef({ hash: "", key: "" });
   const { items: catalog, hydrated } = useCoverPresetCatalogState("reflection-story");
   const [selectedBgId, setSelectedBgId] = useState<string | null>(() => catalog[0]?.id ?? null);
   const [failedRemoteIds, setFailedRemoteIds] = useState<Set<string>>(() => new Set());
@@ -371,6 +290,34 @@ export function ReflectionShare({ reflection, onClose }: { reflection: Reflectio
   const resetComposition = () => {
     setComposition(DEFAULT_REFLECTION_STORY_COMPOSITION);
   };
+
+  const handleBeforeInstagramShare = async () => {
+    try {
+      const payload: ReflectionStoryInput = {
+        message: reflection.message,
+        category: reflection.category,
+        backgroundPresetKey: selectedItem?.key ?? "01",
+        backgroundScale: composition.backgroundScale,
+        backgroundX: composition.backgroundX,
+        backgroundY: composition.backgroundY,
+        textX: composition.textX,
+        textY: composition.textY,
+      };
+
+      idempotencyState.current = getStableIdempotencyKey(payload, idempotencyState.current);
+
+      await createMyReflectionStory(payload, {
+        headers: {
+          "Idempotency-Key": idempotencyState.current.key,
+        }
+      });
+      // Invalidate the list so the new reflection appears in the gallery
+      qc.invalidateQueries({ predicate: (query) => query.queryKey[0] === '/api/me/reflection-stories' });
+    } catch (err) {
+      throw new Error("No se pudo guardar la historia en la galería.");
+    }
+  };
+
   const compositionIsModified =
     Math.abs(composition.backgroundScale - 1) > 0.0001
     || Math.abs(composition.backgroundX) > 0.0001
@@ -383,6 +330,7 @@ export function ReflectionShare({ reflection, onClose }: { reflection: Reflectio
       title="Compartir"
       onClose={onClose}
       checkConstraints={checkConstraints}
+      onBeforeInstagramShare={handleBeforeInstagramShare}
       captureKey={[
         selectedBgId ?? "initial",
         selectedUsesFallback ? "fallback" : "primary",
@@ -422,7 +370,7 @@ export function ReflectionShare({ reflection, onClose }: { reflection: Reflectio
         };
         return isExport ? (
           <StoryArtworkFrame
-            reflection={reflection}
+            message={reflection.message}
             width={width}
             bgImageSource={selectedImageSource}
             composition={composition}

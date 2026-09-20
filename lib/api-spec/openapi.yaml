@@ -4789,6 +4789,63 @@ paths:
       responses:
         "204": {description: Reflection deleted}
         "404": {description: Reflection not found}
+  /me/reflection-stories:
+    get:
+      operationId: listMyReflectionStories
+      tags: [reflections]
+      parameters:
+        - name: cursor
+          in: query
+          schema: {type: string}
+        - name: limit
+          in: query
+          schema: {type: integer, minimum: 1, maximum: 50, default: 20}
+      responses:
+        "200":
+          description: Paginated private reflection story snapshots
+          content:
+            application/json:
+              schema: {$ref: "#/components/schemas/ReflectionStoriesPage"}
+    post:
+      operationId: createMyReflectionStory
+      tags: [reflections]
+      parameters:
+        - name: Idempotency-Key
+          in: header
+          required: true
+          schema: {type: string, minLength: 1, maxLength: 200}
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: {$ref: "#/components/schemas/ReflectionStoryInput"}
+      responses:
+        "201":
+          description: Created reflection story snapshot
+          content:
+            application/json:
+              schema: {$ref: "#/components/schemas/ReflectionStory"}
+        "200":
+          description: Existing snapshot for the idempotency key
+          content:
+            application/json:
+              schema: {$ref: "#/components/schemas/ReflectionStory"}
+  /me/reflection-stories/{id}:
+    get:
+      operationId: getMyReflectionStory
+      tags: [reflections]
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema: {type: integer}
+      responses:
+        "200":
+          description: Private reflection story snapshot
+          content:
+            application/json:
+              schema: {$ref: "#/components/schemas/ReflectionStory"}
+        "404": {description: Reflection story not found}
 components:
   schemas:
     ReflectionCategory:
@@ -4823,6 +4880,41 @@ components:
         items:
           type: array
           items: {$ref: "#/components/schemas/Reflection"}
+        nextCursor: {type: [string, "null"]}
+    ReflectionStory:
+      type: object
+      required: [id, userId, message, category, backgroundPresetKey, backgroundScale, backgroundX, backgroundY, textX, textY, createdAt]
+      properties:
+        id: {type: integer}
+        userId: {type: integer}
+        message: {type: string, minLength: 1}
+        category: {$ref: "#/components/schemas/ReflectionCategory"}
+        backgroundPresetKey: {type: string, minLength: 1, maxLength: 120}
+        backgroundScale: {type: number, minimum: 1, maximum: 3}
+        backgroundX: {type: number, minimum: -1, maximum: 1}
+        backgroundY: {type: number, minimum: -1, maximum: 1}
+        textX: {type: number, minimum: -0.0925925926, maximum: 0.0925925926}
+        textY: {type: number, minimum: -0.2604166667, maximum: 0.2604166667}
+        createdAt: {type: string, format: date-time}
+    ReflectionStoryInput:
+      type: object
+      required: [message, category, backgroundPresetKey, backgroundScale, backgroundX, backgroundY, textX, textY]
+      properties:
+        message: {type: string, minLength: 1}
+        category: {$ref: "#/components/schemas/ReflectionCategory"}
+        backgroundPresetKey: {type: string, minLength: 1, maxLength: 120}
+        backgroundScale: {type: number, minimum: 1, maximum: 3}
+        backgroundX: {type: number, minimum: -1, maximum: 1}
+        backgroundY: {type: number, minimum: -1, maximum: 1}
+        textX: {type: number, minimum: -0.0925925926, maximum: 0.0925925926}
+        textY: {type: number, minimum: -0.2604166667, maximum: 0.2604166667}
+    ReflectionStoriesPage:
+      type: object
+      required: [items, nextCursor]
+      properties:
+        items:
+          type: array
+          items: {$ref: "#/components/schemas/ReflectionStory"}
         nextCursor: {type: [string, "null"]}
     ExploreSection:
       type: object

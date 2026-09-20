@@ -151,6 +151,7 @@ import type {
   ListAdminDailyQuotesParams,
   ListCoverPresetsParams,
   ListDescansoSounds200,
+  ListMyReflectionStoriesParams,
   ListMyReflectionsParams,
   MessagesPage,
   MilestoneInput,
@@ -175,6 +176,9 @@ import type {
   PutInspirationNoteParams,
   Reflection,
   ReflectionInput,
+  ReflectionStoriesPage,
+  ReflectionStory,
+  ReflectionStoryInput,
   ReflectionUpdate,
   ReflectionsPage,
   RegisterPushTokenBody,
@@ -15387,3 +15391,210 @@ const {mutation: mutationOptions, request: requestOptions} = options ?
       return useMutation(getDeleteMyReflectionMutationOptions(options));
     }
 
+export const getListMyReflectionStoriesUrl = (params?: ListMyReflectionStoriesParams,) => {
+  const normalizedParams = new URLSearchParams();
+
+  Object.entries(params || {}).forEach(([key, value]) => {
+
+    if (value !== undefined) {
+      normalizedParams.append(key, value === null ? 'null' : value.toString())
+    }
+  });
+
+  const stringifiedParams = normalizedParams.toString();
+
+  return stringifiedParams.length > 0 ? `/api/me/reflection-stories?${stringifiedParams}` : `/api/me/reflection-stories`
+}
+
+export const listMyReflectionStories = async (params?: ListMyReflectionStoriesParams, options?: RequestInit): Promise<ReflectionStoriesPage> => {
+
+  return customFetch<ReflectionStoriesPage>(getListMyReflectionStoriesUrl(params),
+  {
+    ...options,
+    method: 'GET'
+
+
+  }
+);}
+
+
+
+
+
+export const getListMyReflectionStoriesQueryKey = (params?: ListMyReflectionStoriesParams,) => {
+    return [
+    `/api/me/reflection-stories`, ...(params ? [params] : [])
+    ] as const;
+    }
+
+
+export const getListMyReflectionStoriesQueryOptions = <TData = Awaited<ReturnType<typeof listMyReflectionStories>>, TError = ErrorType<unknown>>(params?: ListMyReflectionStoriesParams, options?: { query?:UseQueryOptions<Awaited<ReturnType<typeof listMyReflectionStories>>, TError, TData>, request?: SecondParameter<typeof customFetch>}
+) => {
+
+const {query: queryOptions, request: requestOptions} = options ?? {};
+
+  const queryKey =  queryOptions?.queryKey ?? getListMyReflectionStoriesQueryKey(params);
+
+
+
+    const queryFn: QueryFunction<Awaited<ReturnType<typeof listMyReflectionStories>>> = ({ signal }) => listMyReflectionStories(params, { signal, ...requestOptions });
+
+
+
+
+
+   return  { queryKey, queryFn, ...queryOptions} as UseQueryOptions<Awaited<ReturnType<typeof listMyReflectionStories>>, TError, TData> & { queryKey: QueryKey }
+}
+
+export type ListMyReflectionStoriesQueryResult = NonNullable<Awaited<ReturnType<typeof listMyReflectionStories>>>
+export type ListMyReflectionStoriesQueryError = ErrorType<unknown>
+
+
+
+export function useListMyReflectionStories<TData = Awaited<ReturnType<typeof listMyReflectionStories>>, TError = ErrorType<unknown>>(
+ params?: ListMyReflectionStoriesParams, options?: { query?:UseQueryOptions<Awaited<ReturnType<typeof listMyReflectionStories>>, TError, TData>, request?: SecondParameter<typeof customFetch>}
+
+ ):  UseQueryResult<TData, TError> & { queryKey: QueryKey } {
+
+  const queryOptions = getListMyReflectionStoriesQueryOptions(params,options)
+
+  const query = useQuery(queryOptions) as  UseQueryResult<TData, TError> & { queryKey: QueryKey };
+
+  return { ...query, queryKey: queryOptions.queryKey };
+}
+
+
+
+
+
+
+
+export const getCreateMyReflectionStoryUrl = () => {
+
+
+
+
+  return `/api/me/reflection-stories`
+}
+
+export const createMyReflectionStory = async (reflectionStoryInput: ReflectionStoryInput, options?: RequestInit): Promise<ReflectionStory> => {
+
+  return customFetch<ReflectionStory>(getCreateMyReflectionStoryUrl(),
+  {
+    ...options,
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json', ...options?.headers },
+    body: JSON.stringify(
+      reflectionStoryInput,)
+  }
+);}
+
+
+
+
+export const getCreateMyReflectionStoryMutationOptions = <TError = ErrorType<unknown>,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof createMyReflectionStory>>, TError,{data: BodyType<ReflectionStoryInput>}, TContext>, request?: SecondParameter<typeof customFetch>}
+): UseMutationOptions<Awaited<ReturnType<typeof createMyReflectionStory>>, TError,{data: BodyType<ReflectionStoryInput>}, TContext> => {
+
+const mutationKey = ['createMyReflectionStory'];
+const {mutation: mutationOptions, request: requestOptions} = options ?
+      options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey ?
+      options
+      : {...options, mutation: {...options.mutation, mutationKey}}
+      : {mutation: { mutationKey, }, request: undefined};
+
+
+
+
+      const mutationFn: MutationFunction<Awaited<ReturnType<typeof createMyReflectionStory>>, {data: BodyType<ReflectionStoryInput>}> = (props) => {
+          const {data} = props ?? {};
+
+          return  createMyReflectionStory(data,requestOptions)
+        }
+
+
+
+
+
+
+  return  { mutationFn, ...mutationOptions }}
+
+    export type CreateMyReflectionStoryMutationResult = NonNullable<Awaited<ReturnType<typeof createMyReflectionStory>>>
+    export type CreateMyReflectionStoryMutationBody = BodyType<ReflectionStoryInput>
+    export type CreateMyReflectionStoryMutationError = ErrorType<unknown>
+
+    export const useCreateMyReflectionStory = <TError = ErrorType<unknown>,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof createMyReflectionStory>>, TError,{data: BodyType<ReflectionStoryInput>}, TContext>, request?: SecondParameter<typeof customFetch>}
+ ): UseMutationResult<
+        Awaited<ReturnType<typeof createMyReflectionStory>>,
+        TError,
+        {data: BodyType<ReflectionStoryInput>},
+        TContext
+      > => {
+      return useMutation(getCreateMyReflectionStoryMutationOptions(options));
+    }
+
+export const getGetMyReflectionStoryUrl = (id: number,) => {
+
+
+
+
+  return `/api/me/reflection-stories/${id}`
+}
+
+export const getMyReflectionStory = async (id: number, options?: RequestInit): Promise<ReflectionStory> => {
+
+  return customFetch<ReflectionStory>(getGetMyReflectionStoryUrl(id),
+  {
+    ...options,
+    method: 'GET'
+
+
+  }
+);}
+
+
+
+
+
+export const getGetMyReflectionStoryQueryKey = (id: number,) => {
+    return [
+    `/api/me/reflection-stories/${id}`
+    ] as const;
+    }
+
+
+export const getGetMyReflectionStoryQueryOptions = <TData = Awaited<ReturnType<typeof getMyReflectionStory>>, TError = ErrorType<void>>(id: number, options?: { query?:UseQueryOptions<Awaited<ReturnType<typeof getMyReflectionStory>>, TError, TData>, request?: SecondParameter<typeof customFetch>}
+) => {
+
+const {query: queryOptions, request: requestOptions} = options ?? {};
+
+  const queryKey =  queryOptions?.queryKey ?? getGetMyReflectionStoryQueryKey(id);
+
+
+
+    const queryFn: QueryFunction<Awaited<ReturnType<typeof getMyReflectionStory>>> = ({ signal }) => getMyReflectionStory(id, { signal, ...requestOptions });
+
+
+
+
+
+   return  { queryKey, queryFn, enabled: !!(id), ...queryOptions} as UseQueryOptions<Awaited<ReturnType<typeof getMyReflectionStory>>, TError, TData> & { queryKey: QueryKey }
+}
+
+export type GetMyReflectionStoryQueryResult = NonNullable<Awaited<ReturnType<typeof getMyReflectionStory>>>
+export type GetMyReflectionStoryQueryError = ErrorType<void>
+
+
+
+export function useGetMyReflectionStory<TData = Awaited<ReturnType<typeof getMyReflectionStory>>, TError = ErrorType<void>>(
+ id: number, options?: { query?:UseQueryOptions<Awaited<ReturnType<typeof getMyReflectionStory>>, TError, TData>, request?: SecondParameter<typeof customFetch>}
+
+ ):  UseQueryResult<TData, TError> & { queryKey: QueryKey } {
+
+  const queryOptions = getGetMyReflectionStoryQueryOptions(id,options)
+
+  const query = useQuery(queryOptions) as  UseQueryResult<TData, TError> & { queryKey: QueryKey };
+
+  return { ...query, queryKey: queryOptions.queryKey };
+}

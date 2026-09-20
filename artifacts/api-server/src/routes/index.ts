@@ -27,6 +27,7 @@ import emotionalPhrasesRouter from "./emotional-phrases";
 import inspirationsRouter from "./inspirations";
 import coverPresetsRouter from "./cover-presets";
 import reflectionsRouter from "./reflections";
+import reflectionStoriesRouter from "./reflection-stories";
 import dailyQuotesRouter from "./daily-quotes";
 
 const router: IRouter = Router();
@@ -59,6 +60,7 @@ router.use(emotionalPhrasesRouter);
 router.use(inspirationsRouter);
 router.use(coverPresetsRouter);
 router.use(reflectionsRouter);
+router.use(reflectionStoriesRouter);
 router.use(dailyQuotesRouter);
 
 export default router;

@@ -108,3 +108,14 @@ export function reflectionCharacterCount(message: string): number {
 export function canShareReflection(message: string): boolean {
   return reflectionCharacterCount(message) <= REFLECTION_SHARE_CHARACTER_LIMIT;
 }
+
+export function getStableIdempotencyKey(
+  payload: unknown,
+  state: { hash: string; key: string }
+): { hash: string; key: string } {
+  const hash = JSON.stringify(payload);
+  if (hash !== state.hash || !state.key) {
+    return { hash, key: Date.now().toString() + Math.random().toString(36).substring(2, 9) };
+  }
+  return state;
+}
