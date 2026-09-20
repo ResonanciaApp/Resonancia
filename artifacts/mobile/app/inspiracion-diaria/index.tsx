@@ -388,7 +388,7 @@ const styles = StyleSheet.create({
   author: { color: "rgba(255,255,255,.82)", textAlign: "center", fontFamily: "Manrope", fontSize: 14, fontStyle: "italic", marginTop: 12 },
   read: {
     alignSelf: "center",
-    marginTop: 33,
+    marginTop: 39,
     paddingVertical: 9,
     paddingHorizontal: 24,
     borderRadius: 24,
