@@ -233,6 +233,7 @@ export function InnerSpaceCard({
                 styles.gridItem,
                 category === cat.id && {
                   borderColor: "rgba(255,255,255,0.45)",
+                  backgroundColor: "rgba(255,255,255,0.08)",
                   shadowColor: cat.color,
                   shadowOpacity: 0.22,
                   shadowRadius: 8,
@@ -381,16 +382,17 @@ const styles = StyleSheet.create({
   },
   categoriesContent: {
     paddingHorizontal: 20,
-    gap: 5,
+    gap: 8,
     alignItems: "center",
   },
   gridItem: {
-    width: 92,
+    flexDirection: "row",
     alignItems: "center",
     justifyContent: "center",
-    paddingVertical: 15,
-    paddingHorizontal: 4,
-    borderRadius: 18,
+    gap: 7,
+    paddingVertical: 10,
+    paddingHorizontal: 14,
+    borderRadius: 999,
     borderWidth: 1,
     borderColor: "rgba(255,255,255,0.1)",
   },
@@ -398,11 +400,9 @@ const styles = StyleSheet.create({
     transform: [{ scale: 0.97 }],
   },
   gridLabel: {
-    width: "100%",
     fontSize: 12,
-    marginTop: 3,
     fontWeight: "500",
-    textAlign: "center",
+    textAlign: "left",
   },
   inputContainer: {
     borderRadius: 16,
