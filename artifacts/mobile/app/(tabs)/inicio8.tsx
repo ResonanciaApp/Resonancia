@@ -3657,7 +3657,7 @@ const styles = StyleSheet.create({
     textShadowRadius: 4,
   },
   inicio3HeroDecree: {
-    color: "#DAD3F0",
+    color: "#E1DCF2",
     fontFamily: "Manrope",
     fontSize: 12,
     lineHeight: 17,
