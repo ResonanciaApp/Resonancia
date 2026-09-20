@@ -228,6 +228,7 @@ export function HistorialCalendar({
   outlined = false,
   cardHorizontalPadding,
   cardVerticalPadding,
+  canonicalVerticalInsets = false,
   animateEntrance = false,
   entranceReplayKey = "history-calendar",
   entranceBaseDelay = 0,
@@ -238,6 +239,7 @@ export function HistorialCalendar({
   outlined?: boolean;
   cardHorizontalPadding?: number;
   cardVerticalPadding?: number;
+  canonicalVerticalInsets?: boolean;
   animateEntrance?: boolean;
   entranceReplayKey?: string | number;
   entranceBaseDelay?: number;
@@ -436,7 +438,13 @@ export function HistorialCalendar({
               return (
                 <Pressable
                   key={`${entry.sessionId}-${entry.playedAt}-${i}`}
-                  style={({ pressed }) => [styles.embeddedEntryRow, { opacity: pressed ? 0.75 : 1 }]}
+                  style={({ pressed }) => [
+                    styles.embeddedEntryRow,
+                    canonicalVerticalInsets &&
+                      i === dayEntries.length - 1 &&
+                      styles.embeddedEntryRowAtCardEdge,
+                    { opacity: pressed ? 0.75 : 1 },
+                  ]}
                   onPress={() => {
                     if (session.skipMiniPlayer) {
                       playSession(session);
@@ -659,6 +667,9 @@ const styles = StyleSheet.create({
     gap: 12,
     minHeight: 72,
     paddingVertical: 4,
+  },
+  embeddedEntryRowAtCardEdge: {
+    paddingBottom: 0,
   },
   embeddedEntryImageWrap: {
     width: 80,

@@ -30,6 +30,7 @@ export function ProgressMirrorSections({
   sectionTopPadding,
   sectionBottomPadding,
   sectionVerticalPadding,
+  canonicalVerticalInsets = false,
 }: {
   showSectionBorders?: boolean;
   showPersonalStats?: boolean;
@@ -46,6 +47,7 @@ export function ProgressMirrorSections({
   sectionTopPadding?: number;
   sectionBottomPadding?: number;
   sectionVerticalPadding?: number;
+  canonicalVerticalInsets?: boolean;
 }) {
   const colors = useColors();
   const { theme } = useSceneTheme();
@@ -199,6 +201,7 @@ export function ProgressMirrorSections({
                 label="RACHA ACTUAL"
                 accent={accent}
                 onPress={onStreakTitlePress}
+                edgeAligned={canonicalVerticalInsets}
               />
               <View style={styles.statDivider} />
               <Stat
@@ -207,6 +210,7 @@ export function ProgressMirrorSections({
                 label="RACHA MÁS LARGA"
                 accent={accent}
                 onPress={onStreakTitlePress}
+                edgeAligned={canonicalVerticalInsets}
               />
             </View>
           </ContentEntrance>
@@ -289,6 +293,7 @@ export function ProgressMirrorSections({
                   value={personalStats.totalMinutes}
                   label="MINUTOS TOTALES"
                   accent={accent}
+                  edgeAligned={canonicalVerticalInsets}
                 />
                 <View style={styles.statDivider} />
                 <Stat
@@ -296,6 +301,7 @@ export function ProgressMirrorSections({
                   value={personalStats.activeDays}
                   label="DÍAS ACTIVOS"
                   accent={accent}
+                  edgeAligned={canonicalVerticalInsets}
                 />
               </View>
             </ContentEntrance>
@@ -315,6 +321,7 @@ export function ProgressMirrorSections({
             backgroundColor={SECTION_BACKGROUND}
             cardHorizontalPadding={sectionHorizontalPadding}
             cardVerticalPadding={sectionVerticalPadding}
+            canonicalVerticalInsets={canonicalVerticalInsets}
             animateEntrance={animateEntrance}
             entranceReplayKey={`${entranceReplayKey}:calendar-content`}
             entranceBaseDelay={entranceBaseDelay + (showPersonalStats ? 1450 : 950)}
@@ -383,18 +390,20 @@ function Stat({
   label,
   accent,
   onPress,
+  edgeAligned = false,
 }: {
   icon: React.ReactNode;
   value: number;
   label: string;
   accent: string;
   onPress?: () => void;
+  edgeAligned?: boolean;
 }) {
   const statIcon = <View style={styles.statIcon}>{icon}</View>;
   const content = (
     <>
       {statIcon}
-      <View style={styles.statCopy}>
+      <View style={[styles.statCopy, edgeAligned && styles.statCopyEdgeAligned]}>
         <Text style={styles.statValue}>{value}</Text>
         <Text style={[styles.statLabel, { color: accent }]}>{label}</Text>
       </View>
@@ -526,6 +535,7 @@ const styles = StyleSheet.create({
     flexShrink: 0,
   },
   statCopy: { flex: 1, minWidth: 0 },
+  statCopyEdgeAligned: { alignSelf: "flex-end" },
   statDivider: {
     width: 1,
     height: 42,
