@@ -1,6 +1,8 @@
 import React, { useState, useRef, useEffect, useLayoutEffect } from "react";
 import { View, Text, TextInput, Pressable, ScrollView, StyleSheet, Animated } from "react-native";
 import { Feather } from "@expo/vector-icons";
+import MaskedView from "@react-native-masked-view/masked-view";
+import { LinearGradient } from "expo-linear-gradient";
 import * as Haptics from "expo-haptics";
 import { useColors } from "@/hooks/useColors";
 import { useSceneTheme } from "@/context/SceneThemeContext";
@@ -201,45 +203,58 @@ export function InnerSpaceCard({
         />
       </View>
 
-      <ScrollView
-        horizontal
-        showsHorizontalScrollIndicator={false}
-        keyboardShouldPersistTaps={keepKeyboardOnCategories ? "always" : "never"}
-        keyboardDismissMode={keepKeyboardOnCategories ? "none" : undefined}
-        contentContainerStyle={styles.categoriesContent}
-        style={styles.categoriesScroll}
+      <MaskedView
+        style={styles.categoriesMask}
+        maskElement={(
+          <LinearGradient
+            colors={["transparent", "#000000", "#000000", "transparent"]}
+            locations={[0, 0.13, 0.87, 1]}
+            start={{ x: 0, y: 0.5 }}
+            end={{ x: 1, y: 0.5 }}
+            style={StyleSheet.absoluteFill}
+          />
+        )}
       >
-        {REFLECTION_CATEGORY_OPTIONS.map((cat) => (
-          <Pressable
-            key={cat.id}
-            testID={`category-${cat.id}`}
-            accessibilityLabel={`Categoría ${cat.label}`}
-            accessibilityRole="button"
-            style={({ pressed }) => [
-              styles.gridItem,
-              category === cat.id && {
-                borderColor: "rgba(255,255,255,0.45)",
-                shadowColor: cat.color,
-                shadowOpacity: 0.22,
-                shadowRadius: 8,
-              },
-              pressed && styles.pressedCategory,
-            ]}
-            onPress={() => toggleCategory(cat.id as ReflectionCategory)}
-          >
-            <Animated.View style={{ transform: [{ scale: categoryScales[cat.id] }] }}>
-              <CategoryIcon
-                category={cat.id as ReflectionCategory}
-                size={18}
-                active={category === cat.id}
-                neutralWhenInactive
-                inactiveColor="#E0E0E0"
-              />
-            </Animated.View>
-            <Text style={[styles.gridLabel, { color: category === cat.id ? colors.foreground : "#E0E0E0" }]}>{cat.label}</Text>
-          </Pressable>
-        ))}
-      </ScrollView>
+        <ScrollView
+          horizontal
+          showsHorizontalScrollIndicator={false}
+          keyboardShouldPersistTaps={keepKeyboardOnCategories ? "always" : "never"}
+          keyboardDismissMode={keepKeyboardOnCategories ? "none" : undefined}
+          contentContainerStyle={styles.categoriesContent}
+          style={styles.categoriesScroll}
+        >
+          {REFLECTION_CATEGORY_OPTIONS.map((cat) => (
+            <Pressable
+              key={cat.id}
+              testID={`category-${cat.id}`}
+              accessibilityLabel={`Categoría ${cat.label}`}
+              accessibilityRole="button"
+              style={({ pressed }) => [
+                styles.gridItem,
+                category === cat.id && {
+                  borderColor: "rgba(255,255,255,0.45)",
+                  shadowColor: cat.color,
+                  shadowOpacity: 0.22,
+                  shadowRadius: 8,
+                },
+                pressed && styles.pressedCategory,
+              ]}
+              onPress={() => toggleCategory(cat.id as ReflectionCategory)}
+            >
+              <Animated.View style={{ transform: [{ scale: categoryScales[cat.id] }] }}>
+                <CategoryIcon
+                  category={cat.id as ReflectionCategory}
+                  size={18}
+                  active={category === cat.id}
+                  neutralWhenInactive
+                  inactiveColor="#E0E0E0"
+                />
+              </Animated.View>
+              <Text style={[styles.gridLabel, { color: category === cat.id ? colors.foreground : "#E0E0E0" }]}>{cat.label}</Text>
+            </Pressable>
+          ))}
+        </ScrollView>
+      </MaskedView>
 
       <Pressable
         style={[styles.inputContainer, { backgroundColor: "rgba(0,0,0,0.2)" }, createMutation.isError && { borderColor: colors.destructive }]}
@@ -357,9 +372,12 @@ const styles = StyleSheet.create({
     height: 44,
     marginVertical: -12,
   },
-  categoriesScroll: {
+  categoriesMask: {
     marginBottom: 20,
     marginHorizontal: -20,
+  },
+  categoriesScroll: {
+    width: "100%",
   },
   categoriesContent: {
     paddingHorizontal: 20,
