@@ -469,7 +469,7 @@ export default function InnerSpaceScreen() {
       const revealId = String(item.id);
       const revealDelay = wallRevealDelays.get(revealId) ?? 0;
       return (
-        <View style={[styles.dateHeader, index === 0 && styles.firstDateHeader]}>
+        <View style={styles.dateHeader}>
           <WallScrollReveal
             active={wallRevealDelays.has(revealId)}
             completedIds={completedRevealIds}
@@ -875,9 +875,6 @@ const styles = StyleSheet.create({
     marginBottom: 31,
     marginTop: 16,
   },
-  firstDateHeader: {
-    marginTop: 1,
-  },
   dateHeaderEntrance: {
     width: "100%",
   },
@@ -919,6 +916,7 @@ const styles = StyleSheet.create({
     borderRadius: 16,
     backgroundColor: "rgba(0,0,0,0.28)",
     padding: 16,
+    transform: [{ translateY: -15 }],
   },
   reflectionCardEntrance: {
     flex: 1,
