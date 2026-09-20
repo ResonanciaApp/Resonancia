@@ -294,7 +294,7 @@ const styles = StyleSheet.create({
   monthYear: { color: "rgba(255,255,255,.88)", fontFamily: "Manrope", fontSize: 13, marginTop: 2 },
   quote: {
     color: "#fff",
-    fontFamily: "Manrope",
+    fontFamily: "CormorantGaramond",
     fontSize: 21,
     lineHeight: 30,
     textAlign: "center",

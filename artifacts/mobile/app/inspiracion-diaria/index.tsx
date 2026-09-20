@@ -409,7 +409,7 @@ const styles = StyleSheet.create({
     borderColor: "rgba(255,255,255,.14)",
     backgroundColor: "rgba(10,12,18,.22)",
   },
-  title: { flex: 1, color: "#fff", textAlign: "center", fontFamily: "Manrope", fontSize: 17, fontWeight: "600" },
+  title: { flex: 1, color: "#fff", textAlign: "center", fontFamily: "CormorantGaramond", fontSize: 17, fontWeight: "500" },
   days: { position: "absolute", left: 0, right: 0, flexDirection: "row", justifyContent: "space-between", paddingHorizontal: 18 },
   dayCard: {
     width: 31,
