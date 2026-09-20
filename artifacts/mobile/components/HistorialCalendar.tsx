@@ -140,13 +140,13 @@ function DayCell({
 
   const dayFill = embedded
     ? hasCompleted
-      ? "#F9F9F9"
+      ? "rgba(249,249,249,0.1)"
       : isSelected && !isToday
         ? "rgba(255,255,255,0.16)"
         : undefined
     : undefined;
   const showLegacySelectedOutline = !embedded && isSelected && !isToday;
-  const showCompletedBorder = embedded && hasCompleted;
+  const showTodayCompletedBorder = embedded && isToday && hasCompleted;
 
   return (
     <Pressable
@@ -161,11 +161,11 @@ function DayCell({
         style={[
           styles.dayCircle,
           !isFuture && dayFill && { backgroundColor: dayFill },
-          showCompletedBorder && {
+          showTodayCompletedBorder && {
             borderWidth: 1.5,
-            borderColor: "#F9F9F9",
+            borderColor: "#BE9650",
           },
-          isToday && !showCompletedBorder && {
+          embedded && isToday && !hasCompleted && {
             borderWidth: 1.5,
             borderColor: "#F9F9F9",
             borderStyle: "dotted",
@@ -184,7 +184,7 @@ function DayCell({
               color: isFuture
                 ? "rgba(255,255,255,0.24)"
                 : embedded && hasCompleted
-                   ? "#060A0F"
+                   ? "#F9F9F9"
                   : embedded && isToday
                     ? "#F9F9F9"
                     : embedded && isSelected
