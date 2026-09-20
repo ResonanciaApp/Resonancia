@@ -189,12 +189,16 @@ export function ProgressMirrorSections({
               </ContentEntrance>
             </>
           ) : null}
-          <ContentEntrance
-            animated={animateEntrance}
-            replayKey={`${entranceReplayKey}:streak-stats`}
-            delay={entranceBaseDelay + (showStreakWeek ? 1920 : 650)}
-          >
-            <View style={[styles.statsValues, styles.statsValuesNoTitle]}>
+          <View style={[styles.statsValues, styles.statsValuesNoTitle]}>
+            <View style={styles.statEntranceSlot}>
+              <ContentEntrance
+                animated={animateEntrance}
+                replayKey={`${entranceReplayKey}:streak-current`}
+                delay={
+                  entranceBaseDelay +
+                  (showPersonalStats ? 1460 : showStreakWeek ? 1920 : 650)
+                }
+              >
               <Stat
                 icon={<MaterialCommunityIcons name="spa" size={20} color="#F9F9F9" />}
                 value={currentStreak}
@@ -203,7 +207,27 @@ export function ProgressMirrorSections({
                 onPress={onStreakTitlePress}
                 edgeAligned={canonicalVerticalInsets}
               />
+              </ContentEntrance>
+            </View>
+            <ContentEntrance
+              animated={animateEntrance}
+              replayKey={`${entranceReplayKey}:streak-divider-stat`}
+              delay={
+                entranceBaseDelay +
+                (showPersonalStats ? 1610 : showStreakWeek ? 2070 : 800)
+              }
+            >
               <View style={styles.statDivider} />
+            </ContentEntrance>
+            <View style={styles.statEntranceSlot}>
+              <ContentEntrance
+                animated={animateEntrance}
+                replayKey={`${entranceReplayKey}:streak-longest`}
+                delay={
+                  entranceBaseDelay +
+                  (showPersonalStats ? 1610 : showStreakWeek ? 2070 : 800)
+                }
+              >
               <Stat
                 icon={<MaterialCommunityIcons name="spa" size={20} color="#BE9650" />}
                 value={maxStreak}
@@ -212,8 +236,9 @@ export function ProgressMirrorSections({
                 onPress={onStreakTitlePress}
                 edgeAligned={canonicalVerticalInsets}
               />
+              </ContentEntrance>
             </View>
-          </ContentEntrance>
+          </View>
           </View>
         </Pressable>
       </SectionEntrance>
@@ -282,12 +307,13 @@ export function ProgressMirrorSections({
                 </View>
               </View>
             </ContentEntrance>
-            <ContentEntrance
-              animated={animateEntrance}
-              replayKey={`${entranceReplayKey}:personal-stats`}
-              delay={entranceBaseDelay + 1160}
-            >
-              <View style={styles.statsValues}>
+            <View style={styles.statsValues}>
+              <View style={styles.statEntranceSlot}>
+                <ContentEntrance
+                  animated={animateEntrance}
+                  replayKey={`${entranceReplayKey}:personal-minutes`}
+                  delay={entranceBaseDelay + 1160}
+                >
                 <Stat
                   icon={<Feather name="clock" size={20} color="#F9F9F9" />}
                   value={personalStats.totalMinutes}
@@ -295,7 +321,21 @@ export function ProgressMirrorSections({
                   accent={accent}
                   edgeAligned={canonicalVerticalInsets}
                 />
+                </ContentEntrance>
+              </View>
+              <ContentEntrance
+                animated={animateEntrance}
+                replayKey={`${entranceReplayKey}:personal-divider-stat`}
+                delay={entranceBaseDelay + 1310}
+              >
                 <View style={styles.statDivider} />
+              </ContentEntrance>
+              <View style={styles.statEntranceSlot}>
+                <ContentEntrance
+                  animated={animateEntrance}
+                  replayKey={`${entranceReplayKey}:personal-days`}
+                  delay={entranceBaseDelay + 1310}
+                >
                 <Stat
                   icon={<Feather name="calendar" size={20} color="#F9F9F9" />}
                   value={personalStats.activeDays}
@@ -303,8 +343,9 @@ export function ProgressMirrorSections({
                   accent={accent}
                   edgeAligned={canonicalVerticalInsets}
                 />
+                </ContentEntrance>
               </View>
-            </ContentEntrance>
+            </View>
           </View>
         </SectionEntrance>
       ) : null}
@@ -524,6 +565,10 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     alignItems: "center",
     gap: 10,
+  },
+  statEntranceSlot: {
+    flex: 1,
+    minWidth: 0,
   },
   statIcon: {
     width: 34,
