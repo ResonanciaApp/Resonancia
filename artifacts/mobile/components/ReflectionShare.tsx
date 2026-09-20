@@ -185,10 +185,11 @@ function InteractiveReflectionArtwork({
           Math.max(-offsetLimit, startBackgroundX.value + event.translationX / width),
         );
         backgroundX.value = Math.abs(nextX * width) < 8 ? 0 : nextX;
-        backgroundY.value = Math.min(
+        const nextY = Math.min(
           offsetLimit,
           Math.max(-offsetLimit, startBackgroundY.value + event.translationY / height),
         );
+        backgroundY.value = Math.abs(nextY * height) < 8 ? 0 : nextY;
       })
       .onFinalize(() => {
         guideOpacity.value = 0;
@@ -246,10 +247,11 @@ function InteractiveReflectionArtwork({
           Math.max(-REFLECTION_STORY_TEXT_X_LIMIT, startTextX.value + event.translationX / width),
         );
         textX.value = Math.abs(nextX * width) < 8 ? 0 : nextX;
-        textY.value = Math.min(
+        const nextY = Math.min(
           REFLECTION_STORY_TEXT_Y_LIMIT,
           Math.max(-REFLECTION_STORY_TEXT_Y_LIMIT, startTextY.value + event.translationY / height),
         );
+        textY.value = Math.abs(nextY * height) < 8 ? 0 : nextY;
       })
       .onFinalize(() => {
         guideOpacity.value = 0;
