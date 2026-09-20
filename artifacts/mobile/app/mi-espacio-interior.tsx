@@ -496,7 +496,7 @@ export default function InnerSpaceScreen() {
           <Feather name="chevron-left" size={28} color={colors.foreground} />
         </Pressable>
         <View style={styles.headerTitles}>
-          <Text style={[styles.mainTitle, { color: colors.foreground }]}>Mi espacio interior</Text>
+          <Text style={[styles.mainTitle, { color: colors.foreground }]}>Muro expansivo</Text>
         </View>
         <View style={{ width: 44 }} />
       </View>
@@ -759,8 +759,8 @@ const styles = StyleSheet.create({
     marginBottom: 16,
   },
   timelineLeft: {
-    width: 60,
-    alignItems: 'center',
+    width: 40,
+    alignItems: 'flex-start',
   },
   timeText: {
     fontSize: 12,
@@ -768,12 +768,13 @@ const styles = StyleSheet.create({
   },
   timelineDotContainer: {
     flex: 1,
-    alignItems: 'center',
+    alignItems: 'flex-start',
   },
   timelineLine: {
     position: 'absolute',
     top: 34,
     bottom: -13,
+    left: 7,
     width: 1,
     backgroundColor: "rgba(249,249,249,0.06)",
   },
