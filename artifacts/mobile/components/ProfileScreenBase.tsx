@@ -2126,9 +2126,9 @@ const styles = StyleSheet.create({
     paddingBottom: 6,
   },
   gearBtn: {
-    width: 41,
-    height: 41,
-    borderRadius: 20.5,
+    width: 42,
+    height: 42,
+    borderRadius: 21,
     borderWidth: 1,
     borderColor: "rgba(255,255,255,0.2)",
     alignItems: "center",
