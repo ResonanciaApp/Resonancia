@@ -108,6 +108,10 @@ async function makeWebImage(day: InspirationDay): Promise<Blob> {
   context.font = "600 34px Manrope";
   context.letterSpacing = "9px";
   context.fillText("RESONANCIA", canvas.width / 2, 1660);
+  context.font = "500 30px Manrope";
+  context.letterSpacing = "1px";
+  context.fillStyle = "rgba(249,249,249,0.9)";
+  context.fillText("www.appresonancia.cl", canvas.width / 2, 1815);
 
   return new Promise((resolve, reject) => {
     canvas.toBlob(
@@ -201,6 +205,19 @@ function StoryArtwork({
           ]}
         />
       )}
+      <Text
+        pointerEvents="none"
+        style={[
+          styles.storyUrl,
+          {
+            bottom: isExport ? 94 : width * 0.05,
+            fontSize: isExport ? 30 : 12,
+            lineHeight: isExport ? 38 : 15,
+          },
+        ]}
+      >
+        www.appresonancia.cl
+      </Text>
     </View>
   );
 }
@@ -268,5 +285,16 @@ const styles = StyleSheet.create({
   storyLogo: {
     position: "absolute",
     alignSelf: "center",
+  },
+  storyUrl: {
+    position: "absolute",
+    alignSelf: "center",
+    color: "rgba(249,249,249,0.9)",
+    fontFamily: "Manrope",
+    fontWeight: "500",
+    textAlign: "center",
+    textShadowColor: "rgba(0,0,0,0.42)",
+    textShadowOffset: { width: 0, height: 1 },
+    textShadowRadius: 4,
   },
 });
