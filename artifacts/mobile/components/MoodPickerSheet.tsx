@@ -918,7 +918,7 @@ const styles = StyleSheet.create({
   },
   moodCardSelected: {
     borderWidth: 2,
-    borderColor: "rgba(255,255,255,0.20)",
+    borderColor: "rgba(255,255,255,0.90)",
     backgroundColor: "rgba(0,0,0,0.28)",
   },
   moodEmoji: {
