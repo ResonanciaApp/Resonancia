@@ -79,10 +79,19 @@ export function ProgressMirrorSections({
         duration: 100,
         useNativeDriver: true,
       }),
-      Animated.spring(pulse, {
+      Animated.timing(pulse, {
         toValue: 1,
-        friction: 3,
-        tension: 140,
+        duration: 120,
+        useNativeDriver: true,
+      }),
+      Animated.timing(pulse, {
+        toValue: 1.025,
+        duration: 90,
+        useNativeDriver: true,
+      }),
+      Animated.timing(pulse, {
+        toValue: 1,
+        duration: 120,
         useNativeDriver: true,
       }),
     ]).start(() => {
