@@ -408,37 +408,11 @@ export default function InnerSpaceScreen() {
         </View>
 
         <View style={styles.reflectionCard}>
-          <View style={styles.cardHeader}>
-            {isEditing && (
+          {isEditing && (
+            <View style={styles.cardHeader}>
               <View style={[styles.cardCatPill, { backgroundColor: cat.bg }]}>
                 <Text style={[styles.cardCatText, { color: cat.color }]}>{cat.label}</Text>
               </View>
-            )}
-
-            {!isEditing && (
-              <>
-                <Pressable
-                  testID={`share-${reflection.id}`}
-                  accessibilityLabel="Compartir"
-                  accessibilityRole="button"
-                  style={[styles.menuButton, !isShareable && { opacity: 0.3 }]}
-                  disabled={!isShareable}
-                  onPress={() => setShareReflection(reflection)}
-                >
-                  <Feather name="share" size={16} color={colors.mutedForeground} />
-                </Pressable>
-                <Pressable
-                  testID={`menu-${reflection.id}`}
-                  accessibilityLabel="Opciones"
-                  accessibilityRole="button"
-                  style={styles.menuButton}
-                  onPress={() => beginEditing(reflection)}
-                >
-                  <Feather name="more-horizontal" size={20} color={colors.mutedForeground} />
-                </Pressable>
-              </>
-            )}
-            {isEditing && (
               <Pressable
                 testID={`delete-${reflection.id}`}
                 accessibilityLabel="Borrar mensaje"
@@ -449,8 +423,8 @@ export default function InnerSpaceScreen() {
               >
                 <Feather name="trash-2" size={18} color={colors.mutedForeground} />
               </Pressable>
-            )}
-          </View>
+            </View>
+          )}
 
           {isEditing ? (
             <View style={styles.editContainer}>
@@ -507,7 +481,32 @@ export default function InnerSpaceScreen() {
               {updateMutation.isError && <Text style={[styles.errorText, { color: colors.destructive, marginTop: 8, textAlign: 'right' }]}>Error al guardar.</Text>}
             </View>
           ) : (
-            <CollapsibleReflectionMessage message={reflection.message} color={colors.foreground} />
+            <View style={styles.cardContentRow}>
+              <View style={styles.cardMessageColumn}>
+                <CollapsibleReflectionMessage message={reflection.message} color={colors.foreground} />
+              </View>
+              <View style={styles.cardActionsColumn}>
+                <Pressable
+                  testID={`menu-${reflection.id}`}
+                  accessibilityLabel="Opciones"
+                  accessibilityRole="button"
+                  style={styles.menuButton}
+                  onPress={() => beginEditing(reflection)}
+                >
+                  <Feather name="more-horizontal" size={20} color={colors.mutedForeground} />
+                </Pressable>
+                <Pressable
+                  testID={`share-${reflection.id}`}
+                  accessibilityLabel="Compartir"
+                  accessibilityRole="button"
+                  style={[styles.menuButton, !isShareable && { opacity: 0.3 }]}
+                  disabled={!isShareable}
+                  onPress={() => setShareReflection(reflection)}
+                >
+                  <Feather name="share" size={16} color={colors.mutedForeground} />
+                </Pressable>
+              </View>
+            </View>
           )}
         </View>
       </View>
@@ -810,13 +809,25 @@ const styles = StyleSheet.create({
   menuButton: {
     padding: 4,
   },
+  cardContentRow: {
+    flexDirection: "row",
+    alignItems: "flex-start",
+    gap: 6,
+  },
+  cardMessageColumn: {
+    flex: 1,
+    minWidth: 0,
+  },
+  cardActionsColumn: {
+    alignItems: "center",
+    gap: 10,
+  },
   cardMessage: {
     fontSize: 15,
     lineHeight: 22,
   },
   messageContainer: {
     position: "relative",
-    transform: [{ translateY: -13 }],
   },
   messageMeasure: {
     position: "absolute",
