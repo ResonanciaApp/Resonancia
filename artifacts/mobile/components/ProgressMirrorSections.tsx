@@ -111,24 +111,30 @@ export function ProgressMirrorSections({
           accessibilityLabel={onStreakTitlePress ? `Abrir ${streakTitle ?? "progreso"}` : undefined}
         >
           {streakTitle ? (
-            <View style={styles.streakTitleRow}>
-              <Text style={[styles.streakTitle, { color: colors.foreground }]}>
-                {streakTitle}
-              </Text>
-              {showStreakViewAll && onStreakTitlePress ? (
-                <Pressable
-                  onPress={(event) => {
-                    event.stopPropagation();
-                    onStreakTitlePress();
-                  }}
-                  hitSlop={8}
-                  accessibilityRole="button"
-                  accessibilityLabel="Ver todo Tu progreso"
-                >
-                  <Text style={[styles.streakViewAll, { color: accent }]}>Ver todo</Text>
-                </Pressable>
-              ) : null}
-            </View>
+            <ContentEntrance
+              animated={animateEntrance}
+              replayKey={`${entranceReplayKey}:streak-title`}
+              delay={entranceBaseDelay + 420}
+            >
+              <View style={styles.streakTitleRow}>
+                <Text style={[styles.streakTitle, { color: colors.foreground }]}>
+                  {streakTitle}
+                </Text>
+                {showStreakViewAll && onStreakTitlePress ? (
+                  <Pressable
+                    onPress={(event) => {
+                      event.stopPropagation();
+                      onStreakTitlePress();
+                    }}
+                    hitSlop={8}
+                    accessibilityRole="button"
+                    accessibilityLabel="Ver todo Tu progreso"
+                  >
+                    <Text style={[styles.streakViewAll, { color: accent }]}>Ver todo</Text>
+                  </Pressable>
+                ) : null}
+              </View>
+            </ContentEntrance>
           ) : null}
           {showStreakWeek ? (
             <>
@@ -144,30 +150,42 @@ export function ProgressMirrorSections({
                   <StreakWeekRow
                     animateEntrance={animateEntrance}
                     entranceReplayKey={`${entranceReplayKey}:week`}
-                    entranceBaseDelay={entranceBaseDelay + 250}
+                    entranceBaseDelay={entranceBaseDelay + 650}
                   />
                 </Animated.View>
               </Pressable>
-              <View style={styles.sectionDivider} />
+              <ContentEntrance
+                animated={animateEntrance}
+                replayKey={`${entranceReplayKey}:streak-divider`}
+                delay={entranceBaseDelay + 1720}
+              >
+                <View style={styles.sectionDivider} />
+              </ContentEntrance>
             </>
           ) : null}
-          <View style={[styles.statsValues, styles.statsValuesNoTitle]}>
-            <Stat
-              icon={<MaterialCommunityIcons name="spa" size={20} color="#F9F9F9" />}
-              value={currentStreak}
-              label="RACHA ACTUAL"
-              accent={accent}
-              onPress={onStreakTitlePress}
-            />
-            <View style={styles.statDivider} />
-            <Stat
-              icon={<MaterialCommunityIcons name="spa" size={20} color="#BE9650" />}
-              value={maxStreak}
-              label="RACHA MÁS LARGA"
-              accent={accent}
-              onPress={onStreakTitlePress}
-            />
-          </View>
+          <ContentEntrance
+            animated={animateEntrance}
+            replayKey={`${entranceReplayKey}:streak-stats`}
+            delay={entranceBaseDelay + (showStreakWeek ? 1920 : 650)}
+          >
+            <View style={[styles.statsValues, styles.statsValuesNoTitle]}>
+              <Stat
+                icon={<MaterialCommunityIcons name="spa" size={20} color="#F9F9F9" />}
+                value={currentStreak}
+                label="RACHA ACTUAL"
+                accent={accent}
+                onPress={onStreakTitlePress}
+              />
+              <View style={styles.statDivider} />
+              <Stat
+                icon={<MaterialCommunityIcons name="spa" size={20} color="#BE9650" />}
+                value={maxStreak}
+                label="RACHA MÁS LARGA"
+                accent={accent}
+                onPress={onStreakTitlePress}
+              />
+            </View>
+          </ContentEntrance>
         </Pressable>
       </SectionEntrance>
 
@@ -178,61 +196,73 @@ export function ProgressMirrorSections({
           delay={entranceBaseDelay + 500}
         >
           <View style={[styles.personalStatsSection, !showSectionBorders && styles.borderlessSection]}>
-            <View style={styles.personalStatsHeader}>
-              <Text style={[styles.personalStatsTitle, { color: colors.foreground }]}>
-                Estadísticas personales
-              </Text>
-              <View style={styles.filterControl}>
-                <Pressable
-                  onPress={() => setStatsFilterOpen((open) => !open)}
-                  style={styles.filterTrigger}
-                  accessibilityRole="button"
-                  accessibilityLabel="Elegir filtro de días"
-                  accessibilityState={{ expanded: statsFilterOpen }}
-                >
-                  <Text style={[styles.filterText, { color: accent }]}>
-                    Últimos {statsRangeDays} días
-                  </Text>
-                  <Feather name="chevron-down" size={17} color={accent} />
-                </Pressable>
-                {statsFilterOpen && (
-                  <View style={[styles.filterMenu, { backgroundColor: theme.gradient[0] }]}>
-                    {([7, 30, 90] as const).map((days) => (
-                      <Pressable
-                        key={days}
-                        onPress={() => {
-                          setStatsRangeDays(days);
-                          setStatsFilterOpen(false);
-                        }}
-                        style={[
-                          styles.filterOption,
-                          statsRangeDays === days && styles.filterOptionSelected,
-                        ]}
-                      >
-                        <Text style={[styles.filterText, { color: accent }]}>
-                          Últimos {days} días
-                        </Text>
-                      </Pressable>
-                    ))}
-                  </View>
-                )}
+            <ContentEntrance
+              animated={animateEntrance}
+              replayKey={`${entranceReplayKey}:personal-header`}
+              delay={entranceBaseDelay + 920}
+            >
+              <View style={styles.personalStatsHeader}>
+                <Text style={[styles.personalStatsTitle, { color: colors.foreground }]}>
+                  Estadísticas personales
+                </Text>
+                <View style={styles.filterControl}>
+                  <Pressable
+                    onPress={() => setStatsFilterOpen((open) => !open)}
+                    style={styles.filterTrigger}
+                    accessibilityRole="button"
+                    accessibilityLabel="Elegir filtro de días"
+                    accessibilityState={{ expanded: statsFilterOpen }}
+                  >
+                    <Text style={[styles.filterText, { color: accent }]}>
+                      Últimos {statsRangeDays} días
+                    </Text>
+                    <Feather name="chevron-down" size={17} color={accent} />
+                  </Pressable>
+                  {statsFilterOpen && (
+                    <View style={[styles.filterMenu, { backgroundColor: theme.gradient[0] }]}>
+                      {([7, 30, 90] as const).map((days) => (
+                        <Pressable
+                          key={days}
+                          onPress={() => {
+                            setStatsRangeDays(days);
+                            setStatsFilterOpen(false);
+                          }}
+                          style={[
+                            styles.filterOption,
+                            statsRangeDays === days && styles.filterOptionSelected,
+                          ]}
+                        >
+                          <Text style={[styles.filterText, { color: accent }]}>
+                            Últimos {days} días
+                          </Text>
+                        </Pressable>
+                      ))}
+                    </View>
+                  )}
+                </View>
               </View>
-            </View>
-            <View style={styles.statsValues}>
-              <Stat
-                icon={<Feather name="clock" size={20} color="#F9F9F9" />}
-                value={personalStats.totalMinutes}
-                label="MINUTOS TOTALES"
-                accent={accent}
-              />
-              <View style={styles.statDivider} />
-              <Stat
-                icon={<Feather name="calendar" size={20} color="#F9F9F9" />}
-                value={personalStats.activeDays}
-                label="DÍAS ACTIVOS"
-                accent={accent}
-              />
-            </View>
+            </ContentEntrance>
+            <ContentEntrance
+              animated={animateEntrance}
+              replayKey={`${entranceReplayKey}:personal-stats`}
+              delay={entranceBaseDelay + 1160}
+            >
+              <View style={styles.statsValues}>
+                <Stat
+                  icon={<Feather name="clock" size={20} color="#F9F9F9" />}
+                  value={personalStats.totalMinutes}
+                  label="MINUTOS TOTALES"
+                  accent={accent}
+                />
+                <View style={styles.statDivider} />
+                <Stat
+                  icon={<Feather name="calendar" size={20} color="#F9F9F9" />}
+                  value={personalStats.activeDays}
+                  label="DÍAS ACTIVOS"
+                  accent={accent}
+                />
+              </View>
+            </ContentEntrance>
           </View>
         </SectionEntrance>
       ) : null}
@@ -247,6 +277,9 @@ export function ProgressMirrorSections({
             embedded
             outlined={showSectionBorders}
             backgroundColor={SECTION_BACKGROUND}
+            animateEntrance={animateEntrance}
+            entranceReplayKey={`${entranceReplayKey}:calendar-content`}
+            entranceBaseDelay={entranceBaseDelay + (showPersonalStats ? 1450 : 950)}
           />
         </SectionEntrance>
       ) : null}
@@ -271,7 +304,35 @@ function SectionEntrance({
     <CinematicFadeSlide
       replayKey={replayKey}
       delay={delay}
-      duration={3000}
+      duration={1100}
+      scaleFrom={0.985}
+      translateYFrom={12}
+    >
+      {children}
+    </CinematicFadeSlide>
+  );
+}
+
+function ContentEntrance({
+  animated,
+  children,
+  delay,
+  replayKey,
+}: {
+  animated: boolean;
+  children: React.ReactNode;
+  delay: number;
+  replayKey: string | number;
+}) {
+  if (!animated) return <>{children}</>;
+
+  return (
+    <CinematicFadeSlide
+      replayKey={replayKey}
+      delay={delay}
+      duration={1200}
+      scaleFrom={0.97}
+      translateYFrom={14}
     >
       {children}
     </CinematicFadeSlide>

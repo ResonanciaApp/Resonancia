@@ -13,6 +13,7 @@ import { dayKey } from "@/utils/stats";
 import { WIDGET_GREEN_SOLID } from "@/constants/colors";
 import { dedupeCompletedHistoryByDay } from "@/lib/history-calendar";
 import { SessionDurationBadge } from "@/components/SessionDurationBadge";
+import { CinematicFadeSlide } from "@/components/CinematicFadeSlide";
 
 const WEEK_LABELS = ["LUN.", "MAR.", "MIÉ.", "JUE.", "VIE.", "SÁB.", "DOM."];
 const EMBEDDED_WEEK_LABELS = ["L", "M", "M", "J", "V", "S", "D"];
@@ -225,11 +226,17 @@ export function HistorialCalendar({
   embedded = false,
   backgroundColor,
   outlined = false,
+  animateEntrance = false,
+  entranceReplayKey = "history-calendar",
+  entranceBaseDelay = 0,
 }: {
   containerPadding?: number;
   embedded?: boolean;
   backgroundColor?: string;
   outlined?: boolean;
+  animateEntrance?: boolean;
+  entranceReplayKey?: string | number;
+  entranceBaseDelay?: number;
 }) {
   const colors = useColors();
   const { activeSceneId } = useSceneTheme();
@@ -337,6 +344,11 @@ export function HistorialCalendar({
           p ? { marginHorizontal: p } : undefined,
         ]}
       >
+        <CalendarEntrance
+          animated={animateEntrance}
+          replayKey={`${entranceReplayKey}:nav`}
+          delay={entranceBaseDelay}
+        >
         <View style={styles.calendarNav}>
           <Pressable onPress={goPrevMonth} hitSlop={10} style={styles.navBtn}>
             <Feather name="chevron-left" size={18} color={colors.foreground} />
@@ -346,7 +358,13 @@ export function HistorialCalendar({
             <Feather name="chevron-right" size={18} color={colors.foreground} />
           </Pressable>
         </View>
+        </CalendarEntrance>
 
+        <CalendarEntrance
+          animated={animateEntrance}
+          replayKey={`${entranceReplayKey}:labels`}
+          delay={entranceBaseDelay + 180}
+        >
         <View style={[styles.weekRow, embedded && styles.embeddedWeekRow]}>
           {(embedded ? EMBEDDED_WEEK_LABELS : WEEK_LABELS).map((label, index) => (
             <Text key={`${label}-${index}`} style={[styles.weekLabel, { color: calendarAccent }]}>
@@ -354,29 +372,42 @@ export function HistorialCalendar({
             </Text>
           ))}
         </View>
+        </CalendarEntrance>
 
         {weeks.map((week, wi) => (
-          <View key={`week-${wi}`} style={styles.daysGrid}>
-            {week.map((d, i) => {
-              if (!d) return <View key={`empty-${wi}-${i}`} style={styles.dayCell} />;
-              return (
-                <DayCell
-                  key={dayKey(d)}
-                  d={d}
-                  isToday={isSameDay(d, today)}
-                  isSelected={isSameDay(d, selectedDate)}
-                  hasCompleted={completedDayKeys.has(dayKey(d))}
-                  isFuture={d.getTime() > today.getTime()}
-                  embedded={embedded}
-                  color={colors.foreground}
-                  onPress={() => setSelectedDate(d)}
-                />
-              );
-            })}
-          </View>
+          <CalendarEntrance
+            key={`week-${wi}`}
+            animated={animateEntrance}
+            replayKey={`${entranceReplayKey}:week-${wi}`}
+            delay={entranceBaseDelay + 360 + wi * 150}
+          >
+            <View style={styles.daysGrid}>
+              {week.map((d, i) => {
+                if (!d) return <View key={`empty-${wi}-${i}`} style={styles.dayCell} />;
+                return (
+                  <DayCell
+                    key={dayKey(d)}
+                    d={d}
+                    isToday={isSameDay(d, today)}
+                    isSelected={isSameDay(d, selectedDate)}
+                    hasCompleted={completedDayKeys.has(dayKey(d))}
+                    isFuture={d.getTime() > today.getTime()}
+                    embedded={embedded}
+                    color={colors.foreground}
+                    onPress={() => setSelectedDate(d)}
+                  />
+                );
+              })}
+            </View>
+          </CalendarEntrance>
         ))}
 
         {embedded && (
+        <CalendarEntrance
+          animated={animateEntrance}
+          replayKey={`${entranceReplayKey}:summary`}
+          delay={entranceBaseDelay + 360 + weeks.length * 150}
+        >
         <View style={styles.embeddedSummary}>
           <Text style={[styles.embeddedDateLabel, { color: calendarAccent }]}>
             {formatSelectedDate(selectedDate, today)}
@@ -436,6 +467,7 @@ export function HistorialCalendar({
             })
           )}
         </View>
+        </CalendarEntrance>
         )}
       </View>
 
@@ -497,6 +529,31 @@ export function HistorialCalendar({
         })
       ) : null}
     </View>
+  );
+}
+
+function CalendarEntrance({
+  animated,
+  children,
+  delay,
+  replayKey,
+}: {
+  animated: boolean;
+  children: React.ReactNode;
+  delay: number;
+  replayKey: string | number;
+}) {
+  if (!animated) return <>{children}</>;
+  return (
+    <CinematicFadeSlide
+      replayKey={replayKey}
+      delay={delay}
+      duration={1050}
+      scaleFrom={0.98}
+      translateYFrom={12}
+    >
+      {children}
+    </CinematicFadeSlide>
   );
 }
 
