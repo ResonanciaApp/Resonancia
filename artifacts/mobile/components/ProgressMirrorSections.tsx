@@ -22,6 +22,7 @@ export function ProgressMirrorSections({
   entranceReplayKey = "progress-mirror",
   entranceBaseDelay = 0,
   streakTitle,
+  onStreakTitlePress,
 }: {
   showSectionBorders?: boolean;
   showPersonalStats?: boolean;
@@ -30,6 +31,7 @@ export function ProgressMirrorSections({
   entranceReplayKey?: string | number;
   entranceBaseDelay?: number;
   streakTitle?: string;
+  onStreakTitlePress?: () => void;
 }) {
   const colors = useColors();
   const { theme } = useSceneTheme();
@@ -77,9 +79,25 @@ export function ProgressMirrorSections({
           ]}
         >
           {streakTitle ? (
-            <Text style={[styles.streakTitle, { color: colors.foreground }]}>
-              {streakTitle}
-            </Text>
+            <Pressable
+              onPress={onStreakTitlePress}
+              disabled={!onStreakTitlePress}
+              style={styles.streakTitleRow}
+              accessibilityRole={onStreakTitlePress ? "button" : undefined}
+              accessibilityLabel={onStreakTitlePress ? `Abrir ${streakTitle}` : undefined}
+            >
+              <Text style={[styles.streakTitle, { color: colors.foreground }]}>
+                {streakTitle}
+              </Text>
+              {onStreakTitlePress ? (
+                <Feather
+                  name="chevron-right"
+                  size={24}
+                  color={colors.foreground}
+                  style={styles.streakTitleChevron}
+                />
+              ) : null}
+            </Pressable>
           ) : null}
           <StreakWeekRow />
           <View style={styles.sectionDivider} />
@@ -242,11 +260,19 @@ const styles = StyleSheet.create({
   titledStreakSection: {
     paddingTop: 20,
   },
+  streakTitleRow: {
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "space-between",
+    marginBottom: 20,
+  },
   streakTitle: {
     fontFamily: "Manrope",
     fontSize: 18,
     fontWeight: "600",
-    marginBottom: 20,
+  },
+  streakTitleChevron: {
+    transform: [{ translateY: 1 }],
   },
   sectionDivider: {
     height: 1,

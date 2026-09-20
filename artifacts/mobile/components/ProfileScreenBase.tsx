@@ -1554,6 +1554,7 @@ export function ProfileScreenBase({
                 showPersonalStats={false}
                 showCalendar={false}
                 streakTitle="Tu progreso"
+                onStreakTitlePress={() => router.push("/progreso" as never)}
               />
             </View>
 
