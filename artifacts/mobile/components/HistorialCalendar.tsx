@@ -228,7 +228,6 @@ export function HistorialCalendar({
   outlined = false,
   cardHorizontalPadding,
   cardVerticalPadding,
-  cardContentTranslateY = 0,
   animateEntrance = false,
   entranceReplayKey = "history-calendar",
   entranceBaseDelay = 0,
@@ -239,7 +238,6 @@ export function HistorialCalendar({
   outlined?: boolean;
   cardHorizontalPadding?: number;
   cardVerticalPadding?: number;
-  cardContentTranslateY?: number;
   animateEntrance?: boolean;
   entranceReplayKey?: string | number;
   entranceBaseDelay?: number;
@@ -353,18 +351,9 @@ export function HistorialCalendar({
           cardVerticalPadding !== undefined && {
             paddingVertical: cardVerticalPadding,
           },
-          cardContentTranslateY !== 0 && {
-            paddingTop: (cardVerticalPadding ?? 16) - cardContentTranslateY,
-            paddingBottom: (cardVerticalPadding ?? 16) + cardContentTranslateY,
-          },
           p ? { marginHorizontal: p } : undefined,
         ]}
       >
-        <View
-          style={cardContentTranslateY
-            ? { transform: [{ translateY: cardContentTranslateY }] }
-            : undefined}
-        >
         <CalendarEntrance
           animated={animateEntrance}
           replayKey={`${entranceReplayKey}:nav`}
@@ -490,7 +479,6 @@ export function HistorialCalendar({
         </View>
         </CalendarEntrance>
         )}
-        </View>
       </View>
 
       {/* ── Resumen del día ── */}

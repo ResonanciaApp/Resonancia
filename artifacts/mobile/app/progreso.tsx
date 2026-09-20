@@ -152,11 +152,9 @@ export default function ProgresoScreen() {
               entranceBaseDelay={900}
               showSectionBorders={false}
               sectionHorizontalPadding={20}
-              sectionTopPadding={21}
-              sectionBottomPadding={11}
+              sectionTopPadding={16}
+              sectionBottomPadding={16}
               sectionVerticalPadding={16}
-              sectionContentTranslateY={-5}
-              streakContentTranslateY={-5}
               streakTitle="Tu progreso"
             />
           </View>
