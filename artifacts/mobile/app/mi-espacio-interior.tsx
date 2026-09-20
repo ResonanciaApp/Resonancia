@@ -521,6 +521,7 @@ export default function InnerSpaceScreen() {
     const timeLabel = new Date(reflection.createdAt).toLocaleTimeString("es-ES", { hour: "2-digit", minute: "2-digit" });
     const cat = REFLECTION_CATEGORIES[reflection.category];
     const isEditing = editingId === reflection.id;
+    const editingCat = isEditing && editCategory ? REFLECTION_CATEGORIES[editCategory] : cat;
     const isShareable = canShareReflection(reflection.message);
     const reflectionId = String(reflection.id);
     const isRevealed = wallRevealDelays.has(reflectionId);
@@ -570,8 +571,8 @@ export default function InnerSpaceScreen() {
         <View style={styles.reflectionCard}>
           {isEditing && (
             <View style={styles.cardHeader}>
-              <View style={[styles.cardCatPill, { backgroundColor: cat.bg }]}>
-                <Text style={[styles.cardCatText, { color: cat.color }]}>{cat.label}</Text>
+              <View style={[styles.cardCatPill, { backgroundColor: editingCat.bg }]}>
+                <Text style={[styles.cardCatText, { color: editingCat.color }]}>{editingCat.label}</Text>
               </View>
               <Pressable
                 testID={`delete-${reflection.id}`}
