@@ -949,7 +949,12 @@ export function MixerSheet() {
                 accessibilityRole="button"
                 accessibilityLabel="Cerrar editor de mezcla"
               >
-                <Feather name="chevron-down" size={28} color={palette.headerFg} />
+                <Feather
+                  name="chevron-down"
+                  size={28}
+                  color={palette.headerFg}
+                  style={{ transform: [{ translateX: 0.5 }, { translateY: 1 }] }}
+                />
               </Pressable>
               <Text style={[styles.title, { color: palette.headerFg, flex: 1, textAlign: "center", fontSize: 15 }]} numberOfLines={1}>
                 {originPreset?.name ?? "Tu mezcla"}
@@ -1004,7 +1009,7 @@ export function MixerSheet() {
               styles.glassFooter,
               {
                 paddingBottom: insets.bottom + 8,
-                paddingTop: 12,
+                paddingTop: 27,
                 backgroundColor: "transparent",
                 borderTopWidth: 0,
               },
@@ -1050,8 +1055,13 @@ export function MixerSheet() {
 
               {/* Derecha: Guardar */}
               <View style={[styles.footerSide, { transform: [{ translateY: -10 }] }]}>
-                <Pressable style={styles.footerSaveBtn} onPress={() => openSaveModal(originPreset ? "update" : "new")}>
-                  <View style={[styles.footerHeartCircle, { backgroundColor: palette.footerCircleBg }]}>
+                <Pressable
+                  style={styles.footerSaveBtn}
+                  onPress={() => openSaveModal(originPreset ? "update" : "new")}
+                  accessibilityRole="button"
+                  accessibilityLabel="Guardar mezcla"
+                >
+                  <View style={[styles.footerSaveCircle, { backgroundColor: palette.footerCircleBg }]}>
                     <MaterialCommunityIcons name="heart" size={29} color="#F9F9F9" />
                   </View>
                   <Text style={[styles.footerLabel, { color: palette.footerLabel, textAlign: "center" }]}>{"Guardar tu\nmezcla"}</Text>
@@ -1418,7 +1428,7 @@ const styles = StyleSheet.create({
     alignItems: "center",
     gap: 6,
   },
-  footerHeartCircle: {
+  footerSaveCircle: {
     width: 49,
     height: 49,
     borderRadius: 24.5,
