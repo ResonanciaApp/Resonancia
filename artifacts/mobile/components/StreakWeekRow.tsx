@@ -31,7 +31,7 @@ export function StreakWeekRow({
             {active ? (
               <Feather
                 name="check"
-                size={24}
+                size={22}
                 color="#FFFFFF"
                 style={styles.checkMark}
               />
@@ -95,21 +95,21 @@ const styles = StyleSheet.create({
     gap: 5,
   },
   day: {
-    width: 38,
-    height: 38,
-    borderRadius: 19,
+    width: 36,
+    height: 36,
+    borderRadius: 18,
     backgroundColor: "rgba(255,255,255,0.1)",
     alignItems: "center",
     justifyContent: "center",
   },
   ringHost: {
-    width: 38,
-    height: 38,
-    borderRadius: 19,
+    width: 36,
+    height: 36,
+    borderRadius: 18,
   },
   ringMask: {
     flex: 1,
-    borderRadius: 19,
+    borderRadius: 18,
     borderWidth: 2,
     borderColor: "#000000",
     backgroundColor: "transparent",

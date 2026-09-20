@@ -2768,7 +2768,7 @@ const styles = StyleSheet.create({
   practiceReminderCopy: {
     flex: 1,
     gap: 5,
-    transform: [{ translateY: -3 }],
+    transform: [{ translateY: -2 }],
   },
   practiceReminderTitle: {
     fontFamily: "Manrope",

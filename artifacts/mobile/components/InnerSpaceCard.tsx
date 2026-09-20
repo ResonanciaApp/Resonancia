@@ -45,7 +45,6 @@ export function InnerSpaceCard({
   const accent = theme.accent ?? colors.accent;
   const [category, setCategory] = useState<ReflectionCategory | null>(null);
   const [message, setMessage] = useState("");
-  const [wallLinkHighlighted, setWallLinkHighlighted] = useState(false);
   const inputRef = useRef<TextInput>(null);
   const placeholderVisibility = useRef(new Animated.Value(1)).current;
   const outgoingPlaceholderOpacity = useRef(new Animated.Value(1)).current;
@@ -79,7 +78,6 @@ export function InnerSpaceCard({
         setCategory(null);
         inputRef.current?.blur();
         setInputActive(false);
-        setWallLinkHighlighted(true);
 
         const createdAt = new Date(created.createdAt).getTime();
         const reflectionQueries = qc.getQueriesData<ReflectionsPage>({
@@ -215,7 +213,7 @@ export function InnerSpaceCard({
   };
 
   const isSubmitDisabled = !category || message.trim().length === 0 || createMutation.isPending;
-  const wallLinkColor = wallLinkHighlighted ? "#F9F9F9" : colors.primary;
+  const wallLinkColor = "#F9F9F9";
 
   const saveMessage = () => {
     if (!category) return;
@@ -224,7 +222,6 @@ export function InnerSpaceCard({
   };
 
   const openWall = () => {
-    setWallLinkHighlighted(false);
     router.push("/mi-espacio-interior");
   };
 
@@ -486,7 +483,7 @@ const styles = StyleSheet.create({
     right: 12,
   },
   inputPlaceholderText: {
-    fontSize: 15,
+    fontSize: 14,
     lineHeight: 21,
   },
   incomingPlaceholder: {
@@ -518,6 +515,7 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     alignItems: "center",
     gap: 4,
+    transform: [{ translateY: 2 }],
   },
   historyChevron: {
     transform: [{ translateY: 1 }],

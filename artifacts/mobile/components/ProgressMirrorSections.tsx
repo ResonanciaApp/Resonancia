@@ -495,7 +495,7 @@ const styles = StyleSheet.create({
     fontFamily: "Manrope",
     fontSize: 12,
     fontWeight: "400",
-    transform: [{ translateX: -2 }],
+    transform: [{ translateX: -2 }, { translateY: 2 }],
   },
   sectionDivider: {
     height: 1,
@@ -595,7 +595,7 @@ const styles = StyleSheet.create({
   },
   statLabel: {
     fontFamily: "Manrope",
-    fontSize: 8,
+    fontSize: 9,
     lineHeight: 12,
     letterSpacing: 0.35,
     marginTop: 2,
