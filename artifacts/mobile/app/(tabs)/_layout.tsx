@@ -439,7 +439,6 @@ function TabLayoutInner() {
       <CategoryOverlay />
       <RoutineCompletionBanner
         bottom={tabBarHeight + 15}
-        backgroundColor={getTabBarBackground(activeSceneId)}
         visible={completionBannerVisible}
         onAddedPress={() => router.push("/rutina-calendario" as never)}
       />

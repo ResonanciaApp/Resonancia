@@ -9,6 +9,7 @@ import { useColors } from "@/hooks/useColors";
 import { usePremium } from "@/context/PremiumContext";
 import { useSceneTheme } from "@/context/SceneThemeContext";
 import { BLUR_PLACEHOLDER, IMAGE_TRANSITION } from "@/constants/imagePlaceholder";
+import { SessionDurationBadge } from "@/components/SessionDurationBadge";
 
 type Props = {
   video: VideoItem;
@@ -18,6 +19,7 @@ type Props = {
   cardBg?: string;
   borderColor?: string;
   onOptionsPress?: () => void;
+  whiteDurationGlass?: boolean;
 };
 
 function LockStar() {
@@ -48,6 +50,7 @@ export function VideoCard({
   cardBg,
   borderColor,
   onOptionsPress,
+  whiteDurationGlass = false,
 }: Props) {
   const colors = useColors();
   const { theme } = useSceneTheme();
@@ -194,9 +197,17 @@ export function VideoCard({
           onError={handleThumbnailError}
         />
         {locked && <LockStar />}
-        <View style={styles.durBadge}>
-          <Text style={styles.durText}>{video.durationLabel}</Text>
-        </View>
+        {whiteDurationGlass ? (
+          <SessionDurationBadge
+            label={video.durationLabel}
+            whiteGlass
+            style={styles.durBadgeGlass}
+          />
+        ) : (
+          <View style={styles.durBadge}>
+            <Text style={styles.durText}>{video.durationLabel}</Text>
+          </View>
+        )}
       </View>
       <Text style={[styles.cardTitle, { color: colors.foreground }]} numberOfLines={2}>
         {video.title}
@@ -241,6 +252,11 @@ const styles = StyleSheet.create({
     borderRadius: 8,
     paddingHorizontal: 8,
     paddingVertical: 3,
+  },
+  durBadgeGlass: {
+    position: "absolute",
+    bottom: 8,
+    left: 8,
   },
   durText: { fontFamily: "Manrope", fontSize: 11, fontWeight: "600", color: "#FFFFFF" },
 

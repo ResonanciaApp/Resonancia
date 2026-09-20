@@ -30,6 +30,9 @@ const AnimatedPressable = RNAnimated.createAnimatedComponent(Pressable);
 const CANONICAL_AMBIENTAL_BORDER_RADIUS = 41;
 const AMBIENTAL_CONTENT_DROP = 10;
 const AMBIENTAL_IMAGE_EXTRA_DROP = 17;
+const AMBIENTAL_IMAGE_LIFT = 5;
+const AMBIENTAL_TITLE_EXTRA_DROP = 4;
+const AMBIENTAL_PLAY_BUTTON_GROWTH = 4;
 const CANONICAL_AMBIENTAL_METADATA_STYLE: ViewStyle = {
   transform: [{ translateY: -2 }],
 };
@@ -39,6 +42,7 @@ const CANONICAL_AMBIENTAL_TITLE_STYLE: TextStyle = {
   lineHeight: 18,
   textAlign: "center",
   textAlignVertical: "top",
+  transform: [{ translateY: AMBIENTAL_TITLE_EXTRA_DROP }],
 };
 
 import { useColors } from "@/hooks/useColors";
@@ -185,7 +189,16 @@ const AmbientalCardTitle = React.memo(function AmbientalCardTitle({
   numberOfLines: number;
 }) {
   return (
-    <View style={[styles.sleepOverlayMetadata, { transform: [{ translateY: AMBIENTAL_CONTENT_DROP }] }]}>
+    <View
+      style={[
+        styles.sleepOverlayMetadata,
+        {
+          transform: [{
+            translateY: AMBIENTAL_CONTENT_DROP + AMBIENTAL_TITLE_EXTRA_DROP,
+          }],
+        },
+      ]}
+    >
       <Text style={[styles.sleepOverlayTitle, styles.ambientalCardTitle]} numberOfLines={numberOfLines}>
         {title}
       </Text>
@@ -535,8 +548,10 @@ export const SessionCarousel = React.memo(function SessionCarousel({
     4 +
     AMBIENTAL_CONTENT_DROP +
     AMBIENTAL_IMAGE_EXTRA_DROP;
-  const ambientalFilledImageVisualTop = ambientalFilledImageTop - 17;
-  const ambientalPlayButtonSize = 34 * ambientalFillScale + 10;
+  const ambientalFilledImageVisualTop =
+    ambientalFilledImageTop - 17 - AMBIENTAL_IMAGE_LIFT;
+  const ambientalPlayButtonSize =
+    34 * ambientalFillScale + 10 + AMBIENTAL_PLAY_BUTTON_GROWTH;
   const ambientalPlayIconSize = 22 * ambientalFillScale + 4;
   const viewAllAccent = theme.accent ?? viewAllColor ?? colors.accent;
   return (
@@ -688,7 +703,8 @@ export const SessionCarousel = React.memo(function SessionCarousel({
                                 1 -
                                 ambientalImageLift +
                                 AMBIENTAL_CONTENT_DROP +
-                                AMBIENTAL_IMAGE_EXTRA_DROP,
+                                 AMBIENTAL_IMAGE_EXTRA_DROP -
+                                 AMBIENTAL_IMAGE_LIFT,
                             },
                       ]}
                     />

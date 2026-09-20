@@ -666,6 +666,7 @@ export function ExploreScreen({
                     />
                     <SessionDurationBadge
                       label={session.durationLabel}
+                      whiteGlass
                       style={styles.categoryDurationBadge}
                     />
                   </View>

@@ -1,8 +1,8 @@
 import React, { useEffect, useRef, useState } from "react";
 import { Feather } from "@expo/vector-icons";
-import { BlurView } from "expo-blur";
 import { Animated, Easing, Pressable, StyleSheet, Text, View } from "react-native";
 
+import { SessionBadgeGlass } from "@/components/SessionDurationBadge";
 import { useRoutineCompletionBanner } from "@/context/RoutineCompletionBannerContext";
 
 const ENTRY_DISTANCE = 86;
@@ -15,7 +15,6 @@ const COUNTER_SURFACE = "#276FC2";
 
 type Props = {
   bottom: number;
-  backgroundColor: string;
   visible: boolean;
   entryDistance?: number;
   enteredOffset?: number;
@@ -24,7 +23,6 @@ type Props = {
 
 export function RoutineCompletionBanner({
   bottom,
-  backgroundColor,
   visible,
   entryDistance = ENTRY_DISTANCE,
   enteredOffset = 0,
@@ -264,19 +262,7 @@ export function RoutineCompletionBanner({
       ]}
     >
       <View pointerEvents="none" style={styles.glassSurface}>
-        <BlurView
-          intensity={32}
-          tint="dark"
-          experimentalBlurMethod="dimezisBlurView"
-          style={StyleSheet.absoluteFill}
-        />
-        <View
-          style={[
-            StyleSheet.absoluteFill,
-            styles.glassTint,
-            { backgroundColor },
-          ]}
-        />
+        <SessionBadgeGlass showBlackTint={false} showWhiteTint />
       </View>
       <View style={[styles.copy, activeEvent.kind === "added" && styles.addedCopy]}>
         {activeEvent.kind === "added" ? (
@@ -351,9 +337,6 @@ const styles = StyleSheet.create({
     ...StyleSheet.absoluteFillObject,
     borderRadius: 18,
     overflow: "hidden",
-  },
-  glassTint: {
-    opacity: 0.42,
   },
   copy: {
     flex: 1,

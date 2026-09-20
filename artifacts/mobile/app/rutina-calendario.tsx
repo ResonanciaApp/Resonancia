@@ -597,7 +597,6 @@ function RutinaCalendarioScreenContent() {
       </Pressable>
       <RoutineCompletionBanner
         bottom={bottomPad + 22}
-        backgroundColor="#0E0821"
         visible
         enteredOffset={35}
       />

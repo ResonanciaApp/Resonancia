@@ -2973,6 +2973,7 @@ export default function HomeScreen2({
                 />
                 <SessionDurationBadge
                   label={featuredMoment.durationLabel}
+                  whiteGlass
                   style={styles.featuredMomentDuration}
                 />
               </View>
@@ -3140,6 +3141,7 @@ export default function HomeScreen2({
                   key={video.id}
                   video={video}
                   width={INICIO3_VIDEO_CARD_WIDTH}
+                  whiteDurationGlass
                 />
               ))}
             </ScrollView>
