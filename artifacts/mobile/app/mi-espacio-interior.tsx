@@ -1,8 +1,8 @@
-import React, { useState, useEffect, useMemo, useRef } from "react";
+import React, { useState, useEffect, useMemo, useRef, useCallback } from "react";
 import { View, Text, StyleSheet, Pressable, ScrollView, FlatList, ActivityIndicator, Modal, TextInput, Platform, Animated, Easing, Alert } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { Feather, MaterialCommunityIcons } from "@expo/vector-icons";
-import { router } from "expo-router";
+import { router, useFocusEffect } from "expo-router";
 import { LinearGradient } from "expo-linear-gradient";
 import { useColors } from "@/hooks/useColors";
 import { useSceneTheme } from "@/context/SceneThemeContext";
@@ -174,6 +174,7 @@ function WallScrollReveal({
   children,
   completedIds,
   delay = 0,
+  disabled = false,
   revealId,
   scaleFrom,
   style,
@@ -183,6 +184,7 @@ function WallScrollReveal({
   children: React.ReactNode;
   completedIds: React.MutableRefObject<Set<string>>;
   delay?: number;
+  disabled?: boolean;
   revealId: string;
   scaleFrom: number;
   style?: React.ComponentProps<typeof CinematicFadeSlide>["style"];
@@ -194,7 +196,7 @@ function WallScrollReveal({
     if (active && !skipAnimation) completedIds.current.add(revealId);
   }, [active, completedIds, revealId, skipAnimation]);
 
-  if (skipAnimation) return <>{children}</>;
+  if (disabled || skipAnimation) return <>{children}</>;
 
   return (
     <CinematicFadeSlide
@@ -233,6 +235,9 @@ export default function InnerSpaceScreen() {
   const nextRequestRef = useRef<AbortController | null>(null);
   const previousUserRef = useRef<string | null>(null);
   const completedRevealIds = useRef(new Set<string>());
+  const wallAnimationsDisabledRef = useRef(false);
+  const [wallAnimationsDisabled, setWallAnimationsDisabled] = useState(false);
+  const [wallVisitKey, setWallVisitKey] = useState(0);
   const [wallRevealDelays, setWallRevealDelays] = useState<Map<string, number>>(
     () => new Map(),
   );
@@ -242,6 +247,7 @@ export default function InnerSpaceScreen() {
   }).current;
   const onViewableItemsChanged = useRef(
     ({ viewableItems }: { viewableItems: Array<{ item: any; isViewable?: boolean }> }) => {
+      if (wallAnimationsDisabledRef.current) return;
       const visibleIds = viewableItems
         .filter(({ item, isViewable }) => isViewable !== false && item?.id)
         .map(({ item }) => String(item.id));
@@ -260,6 +266,26 @@ export default function InnerSpaceScreen() {
       });
     },
   ).current;
+
+  const disableWallAnimations = useCallback(() => {
+    wallAnimationsDisabledRef.current = true;
+    setWallAnimationsDisabled(true);
+  }, []);
+
+  useFocusEffect(
+    useCallback(() => {
+      wallAnimationsDisabledRef.current = false;
+      completedRevealIds.current.clear();
+      setWallRevealDelays(new Map());
+      setWallAnimationsDisabled(false);
+      setWallVisitKey((current) => current + 1);
+
+      return () => {
+        wallAnimationsDisabledRef.current = true;
+        setWallAnimationsDisabled(true);
+      };
+    }, []),
+  );
   
   const queryParams = { 
     category: filter === "all" ? undefined : filter,
@@ -474,6 +500,7 @@ export default function InnerSpaceScreen() {
             active={wallRevealDelays.has(revealId)}
             completedIds={completedRevealIds}
             delay={revealDelay}
+            disabled={wallAnimationsDisabled}
             revealId={`${requestScope}:date:${revealId}`}
             scaleFrom={0.98}
             style={styles.dateHeaderEntrance}
@@ -506,6 +533,7 @@ export default function InnerSpaceScreen() {
             active={isRevealed}
             completedIds={completedRevealIds}
             delay={revealDelay}
+            disabled={wallAnimationsDisabled}
             revealId={`${requestScope}:time:${reflectionId}`}
             scaleFrom={0.98}
             translateYFrom={10}
@@ -518,6 +546,7 @@ export default function InnerSpaceScreen() {
                 active={isRevealed}
                 completedIds={completedRevealIds}
                 delay={revealDelay + 110}
+                disabled={wallAnimationsDisabled}
                 revealId={`${requestScope}:icon:${reflectionId}`}
                 scaleFrom={0.9}
                 translateYFrom={14}
@@ -532,6 +561,7 @@ export default function InnerSpaceScreen() {
           active={isRevealed}
           completedIds={completedRevealIds}
           delay={revealDelay + 220}
+          disabled={wallAnimationsDisabled}
           revealId={`${requestScope}:card:${reflectionId}`}
           scaleFrom={0.985}
           style={styles.reflectionCardEntrance}
@@ -694,7 +724,11 @@ export default function InnerSpaceScreen() {
               styles.filterPill,
               filter === "all" ? styles.filterPillSelected : styles.filterPillInactive,
             ]}
-            onPress={() => setFilter("all")}
+            onPress={() => {
+              if (filter === "all") return;
+              disableWallAnimations();
+              setFilter("all");
+            }}
           >
             <Text style={[styles.filterText, { color: filter === "all" ? "#060A0F" : "#F9F9F9" }]}>Todos</Text>
           </Pressable>
@@ -710,7 +744,11 @@ export default function InnerSpaceScreen() {
                   styles.filterPill,
                   isActive ? styles.filterPillSelected : styles.filterPillInactive,
                 ]}
-                onPress={() => setFilter(cat.id as ReflectionCategory)}
+                onPress={() => {
+                  if (filter === cat.id) return;
+                  disableWallAnimations();
+                  setFilter(cat.id as ReflectionCategory);
+                }}
               >
                 <IconComp name={cat.icon as any} size={18} color={isActive ? cat.color : "#F9F9F9"} />
                 <Text style={[styles.filterText, { color: isActive ? "#060A0F" : "#F9F9F9" }]}>{cat.label}</Text>
@@ -741,6 +779,7 @@ export default function InnerSpaceScreen() {
         <EmptyState />
       ) : (
         <FlatList
+          key={`wall-visit-${wallVisitKey}`}
           data={flatData}
           keyExtractor={(item) => item.id}
           renderItem={renderItem}
@@ -788,6 +827,7 @@ export default function InnerSpaceScreen() {
                   isFuture && styles.monthOptionDisabled,
                 ]}
                 onPress={() => {
+                  if (selectedMonth !== index) disableWallAnimations();
                   setSelectedMonth(index);
                   setMonthPickerVisible(false);
                 }}
