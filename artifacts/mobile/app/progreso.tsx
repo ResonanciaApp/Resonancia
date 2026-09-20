@@ -45,30 +45,30 @@ export default function ProgresoScreen() {
     >
       <StatusBar barStyle="light-content" translucent backgroundColor="transparent" />
 
-      <View style={[styles.header, { paddingTop: topPad + 8 }]}>
-        <Pressable
-          onPress={() => router.back()}
-          hitSlop={10}
-          style={styles.backButton}
-          accessibilityRole="button"
-          accessibilityLabel="Volver"
-        >
-          <Feather
-            name="chevron-left"
-            size={28}
-            color={colors.foreground}
-            style={styles.backChevron}
-          />
-        </Pressable>
-        <Text style={[styles.headerTitle, { color: colors.foreground }]}>Tu progreso</Text>
-        <View style={styles.headerSpacer} />
-      </View>
-
       <ScrollView
         showsVerticalScrollIndicator={false}
         contentContainerStyle={{ paddingBottom: bottomPad + 32 }}
         bounces={false}
       >
+        <View style={[styles.header, { paddingTop: topPad + 8 }]}>
+          <Pressable
+            onPress={() => router.back()}
+            hitSlop={10}
+            style={styles.backButton}
+            accessibilityRole="button"
+            accessibilityLabel="Volver"
+          >
+            <Feather
+              name="chevron-left"
+              size={28}
+              color={colors.foreground}
+              style={styles.backChevron}
+            />
+          </Pressable>
+          <Text style={[styles.headerTitle, { color: colors.foreground }]}>Tu progreso</Text>
+          <View style={styles.headerSpacer} />
+        </View>
+
         <View style={[styles.heroContainer, { width: viewportWidth, height: heroHeight }]}>
           <CinematicFadeSlide
             replayKey="progress-hero-background"
@@ -206,9 +206,9 @@ const styles = StyleSheet.create({
     marginTop: 65,
   },
   streakCountCircle: {
-    width: 96,
-    height: 96,
-    borderRadius: 48,
+    width: 103,
+    height: 103,
+    borderRadius: 51.5,
     borderWidth: 1,
     borderColor: "rgba(255,255,255,0.3)",
     overflow: "hidden",
@@ -217,7 +217,7 @@ const styles = StyleSheet.create({
   },
   streakIntroCount: {
     fontFamily: "Manrope",
-    fontSize: 51,
+    fontSize: 55,
     lineHeight: 55,
     fontWeight: "800",
     letterSpacing: -0.5,
@@ -225,10 +225,11 @@ const styles = StyleSheet.create({
     textShadowColor: "rgba(0,0,0,0.5)",
     textShadowOffset: { width: 0, height: 2 },
     textShadowRadius: 6,
+    transform: [{ translateY: 9 }],
   },
   streakIntroUnit: {
     fontFamily: "Manrope",
-    fontSize: 12,
+    fontSize: 9,
     lineHeight: 14,
     fontWeight: "800",
     letterSpacing: 0.9,
@@ -237,6 +238,7 @@ const styles = StyleSheet.create({
     textShadowColor: "rgba(0,0,0,0.5)",
     textShadowOffset: { width: 0, height: 1 },
     textShadowRadius: 4,
+    transform: [{ translateY: -2 }],
   },
   streakIntroDescription: {
     color: "rgba(255,255,255,0.9)",
@@ -244,7 +246,7 @@ const styles = StyleSheet.create({
     fontSize: 13,
     lineHeight: 22,
     fontWeight: "500",
-    marginTop: 10,
+    marginTop: 14,
     textAlign: "center",
     maxWidth: "85%",
     textShadowColor: "rgba(0,0,0,0.5)",
