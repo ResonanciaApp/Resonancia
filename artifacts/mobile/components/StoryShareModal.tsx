@@ -32,6 +32,10 @@ export interface StoryShareModalProps {
   requiresLogo?: boolean;
   showGenericShare?: boolean;
   previewScale?: number;
+  closeOnLeft?: boolean;
+  headerRightAction?: React.ReactNode;
+  titleFontSize?: number;
+  titleOffsetY?: number;
   children?: React.ReactNode;
 }
 
@@ -46,6 +50,10 @@ export function StoryShareModal({
   requiresLogo = false,
   showGenericShare = true,
   previewScale = 1,
+  closeOnLeft = false,
+  headerRightAction,
+  titleFontSize,
+  titleOffsetY = 0,
   children,
 }: StoryShareModalProps) {
   const insets = useSafeAreaInsets();
@@ -235,16 +243,40 @@ export function StoryShareModal({
         ]}
       >
         <View style={styles.header}>
-          <View style={styles.headerSpacer} />
-          <Text style={styles.title}>{title}</Text>
-          <Pressable
-            accessibilityRole="button"
-            accessibilityLabel="Cerrar"
-            onPress={onClose}
-            style={({ pressed }) => [styles.closeButton, pressed && styles.pressed]}
+          {closeOnLeft ? (
+            <Pressable
+              accessibilityRole="button"
+              accessibilityLabel="Cerrar"
+              onPress={onClose}
+              style={({ pressed }) => [styles.closeButton, pressed && styles.pressed]}
+            >
+              <Feather name="x" size={25} color="#F9F9F9" />
+            </Pressable>
+          ) : (
+            <View style={styles.headerSpacer} />
+          )}
+          <Text
+            pointerEvents="none"
+            style={[
+              styles.title,
+              titleFontSize !== undefined && { fontSize: titleFontSize },
+              titleOffsetY !== 0 && { transform: [{ translateY: titleOffsetY }] },
+            ]}
           >
-            <Feather name="x" size={25} color="#F9F9F9" />
-          </Pressable>
+            {title}
+          </Text>
+          {closeOnLeft ? (
+            <View style={styles.headerRight}>{headerRightAction}</View>
+          ) : (
+            <Pressable
+              accessibilityRole="button"
+              accessibilityLabel="Cerrar"
+              onPress={onClose}
+              style={({ pressed }) => [styles.closeButton, pressed && styles.pressed]}
+            >
+              <Feather name="x" size={25} color="#F9F9F9" />
+            </Pressable>
+          )}
         </View>
 
         <View style={styles.previewArea}>
@@ -346,17 +378,25 @@ const styles = StyleSheet.create({
     height: 54,
     flexDirection: "row",
     alignItems: "center",
+    justifyContent: "space-between",
+    position: "relative",
   },
   headerSpacer: {
     width: 43,
   },
   title: {
-    flex: 1,
+    position: "absolute",
+    left: 50,
+    right: 50,
     color: "#F9F9F9",
     fontFamily: "Manrope",
     fontSize: 18,
     fontWeight: "700",
     textAlign: "center",
+  },
+  headerRight: {
+    minWidth: 43,
+    alignItems: "flex-end",
   },
   closeButton: {
     width: 43,

@@ -140,6 +140,7 @@ function InteractiveReflectionArtwork({
   const startBackgroundY = useSharedValue(composition.backgroundY);
   const startTextX = useSharedValue(composition.textX);
   const startTextY = useSharedValue(composition.textY);
+  const guideOpacity = useSharedValue(0);
 
   useEffect(() => {
     backgroundScale.value = composition.backgroundScale;
@@ -173,25 +174,31 @@ function InteractiveReflectionArtwork({
       .maxPointers(1)
       .minDistance(3)
       .onBegin(() => {
+        guideOpacity.value = 1;
         startBackgroundX.value = backgroundX.value;
         startBackgroundY.value = backgroundY.value;
       })
       .onUpdate((event) => {
         const offsetLimit = (backgroundScale.value - 1) / 2;
-        backgroundX.value = Math.min(
+        const nextX = Math.min(
           offsetLimit,
           Math.max(-offsetLimit, startBackgroundX.value + event.translationX / width),
         );
+        backgroundX.value = Math.abs(nextX * width) < 8 ? 0 : nextX;
         backgroundY.value = Math.min(
           offsetLimit,
           Math.max(-offsetLimit, startBackgroundY.value + event.translationY / height),
         );
       })
-      .onFinalize(commitComposition),
+      .onFinalize(() => {
+        guideOpacity.value = 0;
+        commitComposition();
+      }),
     [
       backgroundScale,
       backgroundX,
       backgroundY,
+      guideOpacity,
       height,
       startBackgroundX,
       startBackgroundY,
@@ -229,21 +236,26 @@ function InteractiveReflectionArtwork({
       .maxPointers(1)
       .minDistance(1)
       .onBegin(() => {
+        guideOpacity.value = 1;
         startTextX.value = textX.value;
         startTextY.value = textY.value;
       })
       .onUpdate((event) => {
-        textX.value = Math.min(
+        const nextX = Math.min(
           REFLECTION_STORY_TEXT_X_LIMIT,
           Math.max(-REFLECTION_STORY_TEXT_X_LIMIT, startTextX.value + event.translationX / width),
         );
+        textX.value = Math.abs(nextX * width) < 8 ? 0 : nextX;
         textY.value = Math.min(
           REFLECTION_STORY_TEXT_Y_LIMIT,
           Math.max(-REFLECTION_STORY_TEXT_Y_LIMIT, startTextY.value + event.translationY / height),
         );
       })
-      .onFinalize(commitComposition),
-    [height, startTextX, startTextY, textX, textY, width],
+      .onFinalize(() => {
+        guideOpacity.value = 0;
+        commitComposition();
+      }),
+    [guideOpacity, height, startTextX, startTextY, textX, textY, width],
   );
 
   const backgroundGesture = useMemo(
@@ -265,6 +277,9 @@ function InteractiveReflectionArtwork({
       { translateY: textY.value * height },
     ],
   }));
+  const guideStyle = useAnimatedStyle(() => ({
+    opacity: guideOpacity.value,
+  }));
 
   return (
     <View style={[styles.storyArtwork, { width, height, borderRadius: 22 }]}>
@@ -283,6 +298,7 @@ function InteractiveReflectionArtwork({
         </Animated.View>
       </GestureDetector>
       <View pointerEvents="none" style={styles.storyShade} />
+      <Animated.View pointerEvents="none" style={[styles.verticalGuide, guideStyle]} />
       <GestureDetector gesture={textPan}>
         <Animated.View
           style={[
@@ -352,6 +368,12 @@ export function ReflectionShare({ reflection, onClose }: { reflection: Reflectio
   const resetComposition = () => {
     setComposition(DEFAULT_REFLECTION_STORY_COMPOSITION);
   };
+  const compositionIsModified =
+    Math.abs(composition.backgroundScale - 1) > 0.0001
+    || Math.abs(composition.backgroundX) > 0.0001
+    || Math.abs(composition.backgroundY) > 0.0001
+    || Math.abs(composition.textX) > 0.0001
+    || Math.abs(composition.textY) > 0.0001;
 
   return (
     <StoryShareModal
@@ -370,6 +392,20 @@ export function ReflectionShare({ reflection, onClose }: { reflection: Reflectio
       assetKey={`${selectedBgId ?? "initial"}:${selectedUsesFallback ? "fallback" : "primary"}`}
       showGenericShare={false}
       previewScale={0.8}
+      closeOnLeft
+      titleFontSize={15}
+      titleOffsetY={-15}
+      headerRightAction={compositionIsModified ? (
+        <Pressable
+          accessibilityRole="button"
+          accessibilityLabel="Restablecer composición"
+          onPress={resetComposition}
+          style={({ pressed }) => [styles.resetButton, pressed && styles.resetButtonPressed]}
+        >
+          <Feather name="rotate-ccw" size={15} color="#F9F9F9" />
+          <Text style={styles.resetButtonText}>Restablecer</Text>
+        </Pressable>
+      ) : undefined}
       renderArtwork={(width, isExport, callbacks) => {
         const handleFailure = () => {
           if (selectedItem?.fallbackSource && !selectedUsesFallback) {
@@ -399,18 +435,6 @@ export function ReflectionShare({ reflection, onClose }: { reflection: Reflectio
         );
       }}
     >
-      <View style={styles.editorHelpRow}>
-        <Text style={styles.editorHelp}>Arrastra el fondo · Pellizca para ampliar · Mueve el texto</Text>
-        <Pressable
-          accessibilityRole="button"
-          accessibilityLabel="Restablecer composición"
-          onPress={resetComposition}
-          style={({ pressed }) => [styles.resetButton, pressed && styles.resetButtonPressed]}
-        >
-          <Feather name="rotate-ccw" size={15} color="#F9F9F9" />
-          <Text style={styles.resetButtonText}>Restablecer</Text>
-        </Pressable>
-      </View>
       <View style={styles.galleryContainer}>
         <ScrollView contentContainerStyle={styles.galleryContent} showsVerticalScrollIndicator={false}>
           {catalog.map((item) => {
@@ -464,6 +488,17 @@ const styles = StyleSheet.create({
     ...StyleSheet.absoluteFillObject,
     backgroundColor: "rgba(0,0,0,0.28)",
   },
+  verticalGuide: {
+    position: "absolute",
+    top: 0,
+    bottom: 0,
+    left: "50%",
+    width: 1,
+    backgroundColor: "#F075B3",
+    shadowColor: "#F075B3",
+    shadowOpacity: 0.8,
+    shadowRadius: 3,
+  },
   storyQuoteRegion: {
     position: "absolute",
     left: 0,
@@ -493,20 +528,6 @@ const styles = StyleSheet.create({
     backgroundColor: "rgba(0,0,0,0.2)",
     borderRadius: 12,
     padding: 8,
-  },
-  editorHelpRow: {
-    width: "100%",
-    flexDirection: "row",
-    alignItems: "center",
-    justifyContent: "space-between",
-    gap: 10,
-    marginBottom: 10,
-  },
-  editorHelp: {
-    flex: 1,
-    color: "rgba(249,249,249,0.62)",
-    fontSize: 11,
-    lineHeight: 14,
   },
   resetButton: {
     flexDirection: "row",
