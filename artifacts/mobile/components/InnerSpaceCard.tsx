@@ -353,7 +353,7 @@ const styles = StyleSheet.create({
     backgroundColor: "rgba(0,0,0,0.28)",
     paddingHorizontal: 20,
     paddingTop: 16,
-    paddingBottom: 16,
+    paddingBottom: 20,
     marginBottom: 24,
     overflow: "hidden",
   },
