@@ -37,6 +37,7 @@ export interface StoryShareModalProps {
   headerRightAction?: React.ReactNode;
   titleFontSize?: number;
   titleOffsetY?: number;
+  headerControlsOffsetY?: number;
   children?: React.ReactNode;
 }
 
@@ -56,6 +57,7 @@ export function StoryShareModal({
   headerRightAction,
   titleFontSize,
   titleOffsetY = 0,
+  headerControlsOffsetY = 0,
   children,
 }: StoryShareModalProps) {
   const insets = useSafeAreaInsets();
@@ -250,7 +252,11 @@ export function StoryShareModal({
               accessibilityRole="button"
               accessibilityLabel="Cerrar"
               onPress={onClose}
-              style={({ pressed }) => [styles.closeButton, pressed && styles.pressed]}
+              style={({ pressed }) => [
+                styles.closeButton,
+                headerControlsOffsetY !== 0 && { transform: [{ translateY: headerControlsOffsetY }] },
+                pressed && styles.pressed,
+              ]}
             >
               <Feather name="x" size={25} color="#F9F9F9" />
             </Pressable>
@@ -268,7 +274,14 @@ export function StoryShareModal({
             {title}
           </Text>
           {closeOnLeft ? (
-            <View style={styles.headerRight}>{headerRightAction}</View>
+            <View
+              style={[
+                styles.headerRight,
+                headerControlsOffsetY !== 0 && { transform: [{ translateY: headerControlsOffsetY }] },
+              ]}
+            >
+              {headerRightAction}
+            </View>
           ) : (
             <Pressable
               accessibilityRole="button"

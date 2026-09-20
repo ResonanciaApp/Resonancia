@@ -210,9 +210,9 @@ function StoryArtwork({
         style={[
           styles.storyUrl,
           {
-            bottom: isExport ? 94 : width * 0.05,
-            fontSize: isExport ? 30 : 12,
-            lineHeight: isExport ? 38 : 15,
+            bottom: isExport ? 94 : width * 0.05 + 15,
+            fontSize: isExport ? 30 : 11,
+            lineHeight: isExport ? 38 : 14,
           },
         ]}
       >

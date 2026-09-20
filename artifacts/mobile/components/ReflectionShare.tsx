@@ -299,6 +299,7 @@ function InteractiveReflectionArtwork({
       </GestureDetector>
       <View pointerEvents="none" style={styles.storyShade} />
       <Animated.View pointerEvents="none" style={[styles.verticalGuide, guideStyle]} />
+      <Animated.View pointerEvents="none" style={[styles.horizontalGuide, guideStyle]} />
       <GestureDetector gesture={textPan}>
         <Animated.View
           style={[
@@ -396,6 +397,7 @@ export function ReflectionShare({ reflection, onClose }: { reflection: Reflectio
       closeOnLeft
       titleFontSize={15}
       titleOffsetY={-15}
+      headerControlsOffsetY={-15}
       headerRightAction={compositionIsModified ? (
         <Pressable
           accessibilityRole="button"
@@ -466,6 +468,11 @@ export function ReflectionShare({ reflection, onClose }: { reflection: Reflectio
                     }
                   }}
                 />
+                {isSelected && (
+                  <View style={styles.checkOverlay}>
+                    <Feather name="check" size={16} color="#FFFFFF" />
+                  </View>
+                )}
               </Pressable>
             );
           })}
@@ -490,6 +497,17 @@ const styles = StyleSheet.create({
     bottom: 0,
     left: "50%",
     width: 1,
+    backgroundColor: "#F075B3",
+    shadowColor: "#F075B3",
+    shadowOpacity: 0.8,
+    shadowRadius: 3,
+  },
+  horizontalGuide: {
+    position: "absolute",
+    left: 0,
+    right: 0,
+    top: "50%",
+    height: 1,
     backgroundColor: "#F075B3",
     shadowColor: "#F075B3",
     shadowOpacity: 0.8,
@@ -564,5 +582,11 @@ const styles = StyleSheet.create({
   galleryImage: {
     width: "100%",
     height: "100%",
+  },
+  checkOverlay: {
+    ...StyleSheet.absoluteFillObject,
+    backgroundColor: "rgba(137, 84, 238, 0.4)",
+    alignItems: "center",
+    justifyContent: "center",
   },
 });
