@@ -124,12 +124,20 @@ export default function ProgresoScreen() {
 
         <LinearGradient colors={bgColors} style={styles.content}>
           <View style={styles.sectionsOffset}>
-            <View style={styles.introDivider} />
+            <CinematicFadeSlide
+              replayKey="progress-intro-divider"
+              delay={900}
+              duration={3000}
+              style={styles.introDivider}
+            >
+              <View style={styles.introDividerLine} />
+            </CinematicFadeSlide>
             <ProgressMirrorSections
               animateEntrance
               entranceReplayKey="progress-sections"
               entranceBaseDelay={900}
               showSectionBorders={false}
+              streakTitle="Tu progreso"
             />
           </View>
         </LinearGradient>
@@ -209,9 +217,11 @@ const styles = StyleSheet.create({
   },
   introDivider: {
     position: "absolute",
-    top: -32,
+    top: -48,
     left: 0,
     right: 0,
+  },
+  introDividerLine: {
     height: 1,
     backgroundColor: "rgba(255,255,255,0.1)",
   },
