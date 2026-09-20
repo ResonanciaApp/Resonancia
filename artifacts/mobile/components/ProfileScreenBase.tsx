@@ -1580,6 +1580,7 @@ export function ProfileScreenBase({
                 showPersonalStats={false}
                 showCalendar={false}
                 showStreakWeek={false}
+                showStreakViewAll
                 streakTitle="Tu progreso"
                 onStreakTitlePress={() => router.push("/progreso" as never)}
               />

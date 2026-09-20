@@ -24,6 +24,7 @@ export function ProgressMirrorSections({
   streakTitle,
   onStreakTitlePress,
   showStreakWeek = true,
+  showStreakViewAll = false,
 }: {
   showSectionBorders?: boolean;
   showPersonalStats?: boolean;
@@ -34,6 +35,7 @@ export function ProgressMirrorSections({
   streakTitle?: string;
   onStreakTitlePress?: () => void;
   showStreakWeek?: boolean;
+  showStreakViewAll?: boolean;
 }) {
   const colors = useColors();
   const { theme } = useSceneTheme();
@@ -113,6 +115,19 @@ export function ProgressMirrorSections({
               <Text style={[styles.streakTitle, { color: colors.foreground }]}>
                 {streakTitle}
               </Text>
+              {showStreakViewAll && onStreakTitlePress ? (
+                <Pressable
+                  onPress={(event) => {
+                    event.stopPropagation();
+                    onStreakTitlePress();
+                  }}
+                  hitSlop={8}
+                  accessibilityRole="button"
+                  accessibilityLabel="Ver todo Tu progreso"
+                >
+                  <Text style={[styles.streakViewAll, { color: accent }]}>Ver todo</Text>
+                </Pressable>
+              ) : null}
             </View>
           ) : null}
           {showStreakWeek ? (
@@ -321,6 +336,11 @@ const styles = StyleSheet.create({
   streakTitle: {
     fontFamily: "Manrope",
     fontSize: 18,
+    fontWeight: "600",
+  },
+  streakViewAll: {
+    fontFamily: "Manrope",
+    fontSize: 13,
     fontWeight: "600",
   },
   sectionDivider: {
