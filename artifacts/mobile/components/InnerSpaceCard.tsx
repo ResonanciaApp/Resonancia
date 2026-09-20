@@ -191,15 +191,9 @@ export function InnerSpaceCard({
 
   return (
     <View style={styles.container}>
-      <Pressable
-        style={styles.header}
-        onPress={openWall}
-        accessibilityRole="button"
-        accessibilityLabel="Abrir Mi viaje interior"
-      >
+      <View style={styles.header}>
         <Text style={[styles.title, { color: colors.foreground }]}>Mi viaje interior</Text>
-        <Text style={[styles.viewAll, { color: accent }]}>Ver todo</Text>
-      </Pressable>
+      </View>
 
       <ScrollView
         horizontal
@@ -351,11 +345,6 @@ const styles = StyleSheet.create({
     fontSize: 18,
     fontWeight: "600",
     textAlign: "left",
-  },
-  viewAll: {
-    fontFamily: "Manrope",
-    fontSize: 12,
-    fontWeight: "400",
   },
   categoriesScroll: {
     marginBottom: 20,
