@@ -5,7 +5,6 @@ import { Image } from "expo-image";
 import * as Haptics from "expo-haptics";
 import * as ImagePicker from "expo-image-picker";
 import { LinearGradient } from "expo-linear-gradient";
-import { BlurView } from "expo-blur";
 import { SymbolView } from "expo-symbols";
 import { GoldGradient, GoldGradientFill } from "@/components/GoldGradient";
 import { BackPill } from "@/components/BackPill";
@@ -50,6 +49,7 @@ import {
 import { useQueryClient } from "@tanstack/react-query";
 import { QuickAccessGrid } from "@/components/QuickAccessGrid";
 import { SacredBackground } from "@/components/SacredBackground";
+import { SessionBadgeGlass } from "@/components/SessionDurationBadge";
 import { useSceneTheme } from "@/context/SceneThemeContext";
 import { isIndigoThemeId } from "@/config/scene-themes";
 import { useUserProfile } from "@/context/UserProfileContext";
@@ -171,7 +171,7 @@ function ReflectionSavedBanner({
     >
       <Pressable
         accessibilityRole="button"
-        accessibilityLabel="Ver tu mensaje registrado"
+        accessibilityLabel="Ver mensaje registrado en muro"
         onPress={handlePress}
         style={({ pressed }) => [
           styles.reflectionSavedPressable,
@@ -179,19 +179,13 @@ function ReflectionSavedBanner({
         ]}
       >
         <View pointerEvents="none" style={styles.reflectionSavedGlassSurface}>
-          <BlurView
-            intensity={32}
-            tint="dark"
-            experimentalBlurMethod="dimezisBlurView"
-            style={StyleSheet.absoluteFill}
-          />
-          <View style={[StyleSheet.absoluteFill, styles.reflectionSavedGlassTint]} />
+          <SessionBadgeGlass showBlackTint={false} showWhiteTint />
         </View>
         <View style={styles.reflectionSavedTitleRow}>
           <View style={styles.reflectionSavedCheckSurface}>
             <Feather name="check" size={17} color="#F9F9F9" />
           </View>
-          <Text style={styles.reflectionSavedTitle}>Tu mensaje registrado</Text>
+          <Text style={styles.reflectionSavedTitle}>Mensaje registrado en muro</Text>
         </View>
         <Text style={styles.reflectionSavedAction}>Ver</Text>
       </Pressable>
@@ -2804,10 +2798,6 @@ const styles = StyleSheet.create({
     ...StyleSheet.absoluteFillObject,
     borderRadius: 18,
     overflow: "hidden",
-  },
-  reflectionSavedGlassTint: {
-    backgroundColor: "#0E0821",
-    opacity: 0.42,
   },
   reflectionSavedTitleRow: {
     flex: 1,

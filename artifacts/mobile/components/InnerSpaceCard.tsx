@@ -3,6 +3,7 @@ import { View, Text, TextInput, Pressable, ScrollView, StyleSheet, Animated } fr
 import { Feather } from "@expo/vector-icons";
 import * as Haptics from "expo-haptics";
 import { useColors } from "@/hooks/useColors";
+import { useSceneTheme } from "@/context/SceneThemeContext";
 import { useCreateMyReflection, type ReflectionCategory } from "@workspace/api-client-react";
 import { useQueryClient } from "@tanstack/react-query";
 import { router } from "expo-router";
@@ -32,6 +33,8 @@ export function InnerSpaceCard({
   onMessageSaved?: () => void;
 }) {
   const colors = useColors();
+  const { theme } = useSceneTheme();
+  const accent = theme.accent ?? colors.accent;
   const [category, setCategory] = useState<ReflectionCategory | null>(null);
   const [message, setMessage] = useState("");
   const [wallLinkHighlighted, setWallLinkHighlighted] = useState(false);
@@ -195,6 +198,7 @@ export function InnerSpaceCard({
         accessibilityLabel="Abrir Mi viaje interior"
       >
         <Text style={[styles.title, { color: colors.foreground }]}>Mi viaje interior</Text>
+        <Text style={[styles.viewAll, { color: accent }]}>Ver todo</Text>
       </Pressable>
 
       <ScrollView
@@ -347,6 +351,11 @@ const styles = StyleSheet.create({
     fontSize: 18,
     fontWeight: "600",
     textAlign: "left",
+  },
+  viewAll: {
+    fontFamily: "Manrope",
+    fontSize: 12,
+    fontWeight: "400",
   },
   categoriesScroll: {
     marginBottom: 20,
