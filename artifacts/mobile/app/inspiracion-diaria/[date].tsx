@@ -295,8 +295,8 @@ const styles = StyleSheet.create({
   quote: {
     color: "#fff",
     fontFamily: "CormorantGaramond",
-    fontSize: 21,
-    lineHeight: 30,
+    fontSize: 26,
+    lineHeight: 35,
     textAlign: "center",
     fontWeight: "500",
   },
