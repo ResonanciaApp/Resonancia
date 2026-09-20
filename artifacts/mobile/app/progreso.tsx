@@ -74,6 +74,7 @@ export default function ProgresoScreen() {
             replayKey="progress-hero-background"
             delay={0}
             duration={3000}
+            scaleFrom={1.06}
             translateYFrom={0}
             style={StyleSheet.absoluteFill}
           >
@@ -217,7 +218,7 @@ const styles = StyleSheet.create({
   },
   introDivider: {
     position: "absolute",
-    top: -48,
+    top: -24,
     left: 0,
     right: 0,
   },

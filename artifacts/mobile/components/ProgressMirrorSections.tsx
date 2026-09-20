@@ -157,39 +157,41 @@ export function ProgressMirrorSections({
               <Text style={[styles.personalStatsTitle, { color: colors.foreground }]}>
                 Estadísticas personales
               </Text>
-              <Pressable
-                onPress={() => setStatsFilterOpen((open) => !open)}
-                style={styles.filterTrigger}
-                accessibilityRole="button"
-                accessibilityLabel="Elegir filtro de días"
-                accessibilityState={{ expanded: statsFilterOpen }}
-              >
-                <Text style={[styles.filterText, { color: accent }]}>
-                  Últimos {statsRangeDays} días
-                </Text>
-                <Feather name="chevron-down" size={17} color={accent} />
-              </Pressable>
-              {statsFilterOpen && (
-                <View style={[styles.filterMenu, { backgroundColor: theme.gradient[0] }]}>
-                  {([7, 30, 90] as const).map((days) => (
-                    <Pressable
-                      key={days}
-                      onPress={() => {
-                        setStatsRangeDays(days);
-                        setStatsFilterOpen(false);
-                      }}
-                      style={[
-                        styles.filterOption,
-                        statsRangeDays === days && styles.filterOptionSelected,
-                      ]}
-                    >
-                      <Text style={[styles.filterText, { color: accent }]}>
-                        Últimos {days} días
-                      </Text>
-                    </Pressable>
-                  ))}
-                </View>
-              )}
+              <View style={styles.filterControl}>
+                <Pressable
+                  onPress={() => setStatsFilterOpen((open) => !open)}
+                  style={styles.filterTrigger}
+                  accessibilityRole="button"
+                  accessibilityLabel="Elegir filtro de días"
+                  accessibilityState={{ expanded: statsFilterOpen }}
+                >
+                  <Text style={[styles.filterText, { color: accent }]}>
+                    Últimos {statsRangeDays} días
+                  </Text>
+                  <Feather name="chevron-down" size={17} color={accent} />
+                </Pressable>
+                {statsFilterOpen && (
+                  <View style={[styles.filterMenu, { backgroundColor: theme.gradient[0] }]}>
+                    {([7, 30, 90] as const).map((days) => (
+                      <Pressable
+                        key={days}
+                        onPress={() => {
+                          setStatsRangeDays(days);
+                          setStatsFilterOpen(false);
+                        }}
+                        style={[
+                          styles.filterOption,
+                          statsRangeDays === days && styles.filterOptionSelected,
+                        ]}
+                      >
+                        <Text style={[styles.filterText, { color: accent }]}>
+                          Últimos {days} días
+                        </Text>
+                      </Pressable>
+                    ))}
+                  </View>
+                )}
+              </View>
             </View>
             <View style={styles.statsValues}>
               <Stat
@@ -332,7 +334,12 @@ const styles = StyleSheet.create({
   borderlessSection: {
     borderWidth: 0,
   },
-  personalStatsHeader: { gap: 7 },
+  personalStatsHeader: {
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "space-between",
+    gap: 12,
+  },
   personalStatsTitle: {
     fontFamily: "Manrope",
     fontSize: 17,
@@ -341,16 +348,22 @@ const styles = StyleSheet.create({
   filterTrigger: {
     flexDirection: "row",
     alignItems: "center",
-    alignSelf: "flex-start",
     gap: 4,
     paddingVertical: 1,
   },
+  filterControl: {
+    position: "relative",
+    alignItems: "flex-end",
+    zIndex: 2,
+  },
   filterMenu: {
-    alignSelf: "flex-start",
+    position: "absolute",
+    top: 24,
+    right: 0,
     minWidth: 148,
     borderRadius: 12,
     overflow: "hidden",
-    marginTop: 1,
+    zIndex: 3,
   },
   filterOption: { paddingHorizontal: 12, paddingVertical: 9 },
   filterOptionSelected: { backgroundColor: "rgba(152,93,212,0.16)" },

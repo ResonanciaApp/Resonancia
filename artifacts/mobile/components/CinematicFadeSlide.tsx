@@ -13,6 +13,7 @@ type Props = {
   delay?: number;
   duration?: number;
   replayKey: string | number;
+  scaleFrom?: number;
   style?: StyleProp<ViewStyle>;
   translateYFrom?: number;
 };
@@ -27,20 +28,24 @@ export function CinematicFadeSlide({
   delay = 0,
   duration = 3000,
   replayKey,
+  scaleFrom = 1,
   style,
   translateYFrom = 35,
 }: Props) {
   const reduceMotion = useReducedMotion();
   const opacity = useRef(new Animated.Value(0)).current;
+  const scale = useRef(new Animated.Value(scaleFrom)).current;
   const translateY = useRef(new Animated.Value(translateYFrom)).current;
   const [isAvailable, setIsAvailable] = useState(Boolean(reduceMotion));
 
   useEffect(() => {
     opacity.stopAnimation();
+    scale.stopAnimation();
     translateY.stopAnimation();
 
     if (reduceMotion) {
       opacity.setValue(1);
+      scale.setValue(1);
       translateY.setValue(0);
       setIsAvailable(true);
       return;
@@ -48,12 +53,14 @@ export function CinematicFadeSlide({
 
     if (!active) {
       opacity.setValue(0);
+      scale.setValue(scaleFrom);
       translateY.setValue(translateYFrom);
       setIsAvailable(false);
       return;
     }
 
     opacity.setValue(0);
+    scale.setValue(scaleFrom);
     translateY.setValue(translateYFrom);
     setIsAvailable(delay === 0);
     const availabilityTimer = setTimeout(() => setIsAvailable(true), delay);
@@ -73,6 +80,13 @@ export function CinematicFadeSlide({
         easing: Easing.out(Easing.cubic),
         useNativeDriver: true,
       }),
+      Animated.timing(scale, {
+        toValue: 1,
+        delay,
+        duration,
+        easing: Easing.out(Easing.cubic),
+        useNativeDriver: true,
+      }),
     ]);
 
     animation.start();
@@ -87,6 +101,8 @@ export function CinematicFadeSlide({
     opacity,
     reduceMotion,
     replayKey,
+    scale,
+    scaleFrom,
     translateY,
     translateYFrom,
   ]);
@@ -96,7 +112,7 @@ export function CinematicFadeSlide({
       accessibilityElementsHidden={!isAvailable}
       importantForAccessibility={isAvailable ? "auto" : "no-hide-descendants"}
       pointerEvents={isAvailable ? "auto" : "none"}
-      style={[style, { opacity, transform: [{ translateY }] }]}
+      style={[style, { opacity, transform: [{ translateY }, { scale }] }]}
     >
       {children}
     </Animated.View>
