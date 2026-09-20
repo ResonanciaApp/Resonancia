@@ -2987,8 +2987,9 @@ export default function HomeScreen2({
                   .map((id) => resonadores.find((profile) => profile.id === id) ?? getGuide(id))
                   .find(Boolean);
                 const artist = featuredMoment.artistId ? getArtist(featuredMoment.artistId) : undefined;
-                const authorName = guide?.name ?? artist?.name ?? "Casa del Cuenco";
-                const authorPhoto = guide?.photo ?? artist?.photo;
+                const defaultGuide = getGuide();
+                const authorName = guide?.name ?? artist?.name ?? defaultGuide.name;
+                const authorPhoto = guide?.photo ?? artist?.photo ?? defaultGuide.photo;
                 return (
                   <View style={{ marginTop: 12, flexDirection: "row", alignItems: "center", gap: 10 }}>
                     {authorPhoto ? (
@@ -3052,6 +3053,9 @@ export default function HomeScreen2({
               } as never);
             }}
           />
+        )}
+        {variant === "inicio3" && featuredMoment && continueMeditationPlaylist && (
+          <View style={styles.inicio3SectionDivider} />
         )}
         {isInicio2 && (
           <SessionCarousel
