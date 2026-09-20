@@ -1579,7 +1579,7 @@ export function ProfileScreenBase({
                 streakContentTranslateY={-5}
                 sectionHorizontalPadding={20}
                 sectionTopPadding={21}
-                sectionBottomPadding={19}
+                sectionBottomPadding={15}
                 onStreakTitlePress={() => router.push("/progreso" as never)}
               />
             </View>
