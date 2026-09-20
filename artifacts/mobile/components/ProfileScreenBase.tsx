@@ -494,6 +494,7 @@ export function ProfileScreenBase({
   const composeFocusTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const [innerSpaceLayoutY, setInnerSpaceLayoutY] = useState<number | null>(null);
   const [innerSpaceFocusRequest, setInnerSpaceFocusRequest] = useState(0);
+  const [keepInnerSpaceKeyboardOnCategories, setKeepInnerSpaceKeyboardOnCategories] = useState(false);
   const [reflectionSavedTrigger, setReflectionSavedTrigger] = useState(0);
   const navigation = useNavigation();
   const positionInnerSpaceForWriting = useCallback(() => {
@@ -535,6 +536,7 @@ export function ProfileScreenBase({
       if (!dedicated || profileComposeRequest === null) return;
       const request = profileComposeRequest;
       const frame = requestAnimationFrame(() => {
+        setKeepInnerSpaceKeyboardOnCategories(true);
         positionInnerSpaceForWriting();
         consumeProfileComposeRequest(request);
       });
@@ -1588,7 +1590,9 @@ export function ProfileScreenBase({
             >
               <InnerSpaceCard
                 focusRequest={innerSpaceFocusRequest}
+                keepKeyboardOnCategories={keepInnerSpaceKeyboardOnCategories}
                 onComposeRequested={positionInnerSpaceForWriting}
+                onInputBlur={() => setKeepInnerSpaceKeyboardOnCategories(false)}
                 onMessageSaved={() => setReflectionSavedTrigger((value) => value + 1)}
               />
             </View>

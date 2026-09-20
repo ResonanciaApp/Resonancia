@@ -20,11 +20,15 @@ const DEFAULT_PLACEHOLDER = "Registra una reflexión...";
 
 export function InnerSpaceCard({
   focusRequest = 0,
+  keepKeyboardOnCategories = false,
   onComposeRequested,
+  onInputBlur,
   onMessageSaved,
 }: {
   focusRequest?: number;
+  keepKeyboardOnCategories?: boolean;
   onComposeRequested?: () => void;
+  onInputBlur?: () => void;
   onMessageSaved?: () => void;
 }) {
   const colors = useColors();
@@ -196,6 +200,8 @@ export function InnerSpaceCard({
       <ScrollView
         horizontal
         showsHorizontalScrollIndicator={false}
+        keyboardShouldPersistTaps={keepKeyboardOnCategories ? "always" : "never"}
+        keyboardDismissMode={keepKeyboardOnCategories ? "none" : undefined}
         contentContainerStyle={styles.categoriesContent}
         style={styles.categoriesScroll}
       >
@@ -272,7 +278,10 @@ export function InnerSpaceCard({
           ref={inputRef}
           editable={inputActive}
           pointerEvents={inputActive ? "auto" : "none"}
-          onBlur={() => setInputActive(false)}
+          onBlur={() => {
+            setInputActive(false);
+            onInputBlur?.();
+          }}
           style={[styles.input, { color: colors.foreground }]}
           multiline
           maxLength={300}
