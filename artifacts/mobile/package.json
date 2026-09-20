@@ -69,6 +69,7 @@
     "@daily-co/react-native-daily-js": "^0.86.0",
     "@daily-co/react-native-webrtc": "124.0.6-daily.2",
     "@expo-google-fonts/cinzel": "^0.4.2",
+    "@expo-google-fonts/cormorant-garamond": "^0.4.1",
     "@expo-google-fonts/playfair-display": "^0.4.2",
     "@react-native-masked-view/masked-view": "0.3.2",
     "expo": "~54.0.36",

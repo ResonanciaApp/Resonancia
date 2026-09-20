@@ -3,6 +3,7 @@ import { Asset } from "expo-asset";
 import * as Font from "expo-font";
 import { useFonts } from "expo-font";
 import { Feather, FontAwesome5, Ionicons, MaterialCommunityIcons, MaterialIcons } from "@expo/vector-icons";
+import { CormorantGaramond_500Medium } from "@expo-google-fonts/cormorant-garamond";
 import { ClerkProvider, ClerkLoaded, useAuth as useClerkAuth } from "@clerk/expo";
 import { tokenCache } from "@clerk/expo/token-cache";
 import { QueryClient, QueryClientProvider, focusManager } from "@tanstack/react-query";
@@ -445,6 +446,7 @@ export default function RootLayout() {
   // Android falla en silencio y los íconos quedan como cajitas (tofu).
   const [fontsLoaded, fontError] = useFonts({
     Manrope: require("../assets/fonts/Manrope.ttf"),
+    CormorantGaramond: CormorantGaramond_500Medium,
     ...Feather.font,
     ...MaterialCommunityIcons.font,
     ...Ionicons.font,

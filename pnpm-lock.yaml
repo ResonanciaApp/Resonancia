@@ -277,6 +277,9 @@ importers:
       '@expo-google-fonts/cinzel':
         specifier: ^0.4.2
         version: 0.4.2
+      '@expo-google-fonts/cormorant-garamond':
+        specifier: ^0.4.1
+        version: 0.4.1
       '@expo-google-fonts/playfair-display':
         specifier: ^0.4.2
         version: 0.4.2
@@ -1880,6 +1883,9 @@ packages:
 
   '@expo-google-fonts/cinzel@0.4.2':
     resolution: {integrity: sha512-UAlyuHCGjmKpMt2MoCKYueHz8ZEzjHO1VEol2G7NcPW54UH+85SWIGzpor05YNqUvr/aoqS8Qrfnswxg1RsNMw==}
+
+  '@expo-google-fonts/cormorant-garamond@0.4.1':
+    resolution: {integrity: sha512-e8J4Cn13K1txygamg50n3odLUsYP7Ck28XOGobMi7uDsWvFmp/jgK0qcALqJTlmi9NczSWUNdERxcLauHCBa/Q==}
 
   '@expo-google-fonts/inter@0.4.2':
     resolution: {integrity: sha512-syfiImMaDmq7cFi0of+waE2M4uSCyd16zgyWxdPOY7fN2VBmSLKEzkfbZgeOjJq61kSqPBNNtXjggiQiSD6gMQ==}
@@ -9912,6 +9918,8 @@ snapshots:
     optional: true
 
   '@expo-google-fonts/cinzel@0.4.2': {}
+
+  '@expo-google-fonts/cormorant-garamond@0.4.1': {}
 
   '@expo-google-fonts/inter@0.4.2': {}
 

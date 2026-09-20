@@ -109,7 +109,7 @@ export function ReflectionShare({ reflection, onClose }: { reflection: Reflectio
       checkConstraints={checkConstraints}
       captureKey={`${selectedBgId ?? "initial"}:${selectedUsesFallback ? "fallback" : "primary"}`}
       showGenericShare={false}
-      previewScale={0.85}
+      previewScale={0.8}
       renderArtwork={(width, isExport, callbacks) => (
         <ReflectionArtwork
           reflection={reflection}
@@ -183,8 +183,7 @@ const styles = StyleSheet.create({
   storyQuote: {
     width: "100%",
     color: "#F9F9F9",
-    fontFamily: "Manrope",
-    fontWeight: "700",
+    fontFamily: "CormorantGaramond",
     textAlign: "center",
     textShadowColor: "rgba(0,0,0,0.42)",
     textShadowOffset: { width: 0, height: 2 },
