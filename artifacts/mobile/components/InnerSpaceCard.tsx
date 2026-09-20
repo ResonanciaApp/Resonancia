@@ -397,6 +397,7 @@ const styles = StyleSheet.create({
   input: {
     minHeight: 80,
     fontSize: 15,
+    lineHeight: 21,
     transform: [{ translateY: -3 }],
   },
   inputPlaceholder: {
@@ -407,6 +408,7 @@ const styles = StyleSheet.create({
   },
   inputPlaceholderText: {
     fontSize: 15,
+    lineHeight: 21,
   },
   incomingPlaceholder: {
     position: "absolute",
