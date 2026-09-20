@@ -1,6 +1,6 @@
 import { Feather, MaterialCommunityIcons } from "@expo/vector-icons";
-import React, { useMemo, useState } from "react";
-import { Pressable, StyleSheet, Text, View } from "react-native";
+import React, { useMemo, useRef, useState } from "react";
+import { Animated, Pressable, StyleSheet, Text, View } from "react-native";
 
 import { HistorialCalendar } from "@/components/HistorialCalendar";
 import { CinematicFadeSlide } from "@/components/CinematicFadeSlide";
@@ -40,6 +40,8 @@ export function ProgressMirrorSections({
   const todayKey = useDayRollover();
   const [statsRangeDays, setStatsRangeDays] = useState<7 | 30 | 90>(30);
   const [statsFilterOpen, setStatsFilterOpen] = useState(false);
+  const streakPulse = useRef(new Animated.Value(1)).current;
+  const streakPressRunning = useRef(false);
   const accent = theme.accent ?? colors.accent;
   const maxStreak = useMemo(() => computeMaxStreak(statEvents), [statEvents]);
   const personalStats = useMemo(() => {
@@ -64,6 +66,29 @@ export function ProgressMirrorSections({
     };
   }, [statEvents, statsRangeDays, todayKey]);
 
+  const handleStreakPress = () => {
+    if (!onStreakTitlePress || streakPressRunning.current) return;
+    streakPressRunning.current = true;
+    streakPulse.stopAnimation();
+    streakPulse.setValue(1);
+    Animated.sequence([
+      Animated.timing(streakPulse, {
+        toValue: 1.1,
+        duration: 120,
+        useNativeDriver: true,
+      }),
+      Animated.spring(streakPulse, {
+        toValue: 1,
+        friction: 3,
+        tension: 140,
+        useNativeDriver: true,
+      }),
+    ]).start(() => {
+      streakPressRunning.current = false;
+      onStreakTitlePress();
+    });
+  };
+
   return (
     <>
       <SectionEntrance
@@ -71,27 +96,27 @@ export function ProgressMirrorSections({
         replayKey={`${entranceReplayKey}:streak`}
         delay={entranceBaseDelay}
       >
-        <View
+        <Pressable
+          onPress={handleStreakPress}
+          disabled={!onStreakTitlePress}
           style={[
             styles.streakSection,
             streakTitle && styles.titledStreakSection,
             !showSectionBorders && styles.borderlessSection,
           ]}
+          accessibilityRole={onStreakTitlePress ? "button" : undefined}
+          accessibilityLabel={onStreakTitlePress ? `Abrir ${streakTitle ?? "progreso"}` : undefined}
         >
           {streakTitle ? (
-            <Pressable
-              onPress={onStreakTitlePress}
-              disabled={!onStreakTitlePress}
-              style={styles.streakTitleRow}
-              accessibilityRole={onStreakTitlePress ? "button" : undefined}
-              accessibilityLabel={onStreakTitlePress ? `Abrir ${streakTitle}` : undefined}
-            >
+            <View style={styles.streakTitleRow}>
               <Text style={[styles.streakTitle, { color: colors.foreground }]}>
                 {streakTitle}
               </Text>
-            </Pressable>
+            </View>
           ) : null}
-          <StreakWeekRow />
+          <Animated.View style={{ transform: [{ scale: streakPulse }] }}>
+            <StreakWeekRow />
+          </Animated.View>
           <View style={styles.sectionDivider} />
           <View style={[styles.statsValues, styles.statsValuesNoTitle]}>
             <Stat
@@ -99,6 +124,7 @@ export function ProgressMirrorSections({
               value={currentStreak}
               label="RACHA ACTUAL"
               accent={accent}
+              iconScale={streakPulse}
             />
             <View style={styles.statDivider} />
             <Stat
@@ -106,9 +132,10 @@ export function ProgressMirrorSections({
               value={maxStreak}
               label="RACHA MÁS LARGA"
               accent={accent}
+              iconScale={streakPulse}
             />
           </View>
-        </View>
+        </Pressable>
       </SectionEntrance>
 
       {showPersonalStats ? (
@@ -221,15 +248,22 @@ function Stat({
   value,
   label,
   accent,
+  iconScale,
 }: {
   icon: React.ReactNode;
   value: number;
   label: string;
   accent: string;
+  iconScale?: Animated.Value;
 }) {
+  const statIcon = <View style={styles.statIcon}>{icon}</View>;
   return (
     <View style={styles.statItem}>
-      <View style={styles.statIcon}>{icon}</View>
+      {iconScale ? (
+        <Animated.View style={{ transform: [{ scale: iconScale }] }}>
+          {statIcon}
+        </Animated.View>
+      ) : statIcon}
       <View style={styles.statCopy}>
         <Text style={styles.statValue}>{value}</Text>
         <Text style={[styles.statLabel, { color: accent }]}>{label}</Text>
