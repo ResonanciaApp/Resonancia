@@ -2923,3 +2923,101 @@ mtime_ms = 1789837298413
 storage_uri = "gcs://replit-rams-assets-worf/rams/assets/repl:5427b858-8852-4aed-954b-cd80d9fa4b6b/c225bbe9-b6bf-4765-9caa-b9dc0e50a1ef/f23bbf44-8c8c-446d-bdc9-fbc40901e161"
 storage_version_token = "1789837355075396"
 content_type = "image/jpeg"
+
+[[outputs]]
+id = "XasXtN1gWyER2KBnwvIR-"
+uri = "file://attached_assets/generated_images/sabiduria-2026-09-20-bosque-profundo.jpg"
+type = "image"
+title = "Sabiduría — 20 septiembre 2026"
+description = "Bosque profundo para el día de hoy."
+logical_id = "bb32e538-1fc1-46ec-82ff-678be1f64a40"
+content_hash = "sha256:49ea86c335c4b48d9ff156af9876539e4ce7ac4cad039af5d01ffb172fe957be"
+size = 147688
+mtime_ms = 1789876046739
+storage_uri = "gcs://replit-rams-assets-worf/rams/assets/repl:5427b858-8852-4aed-954b-cd80d9fa4b6b/bb32e538-1fc1-46ec-82ff-678be1f64a40/b4a3cf8d-02cb-4668-b568-bb5a16a640bd"
+storage_version_token = "1789876115950168"
+content_type = "image/jpeg"
+
+[[outputs]]
+id = "P_chYXp9j2kuw9a4nu6Qg"
+uri = "file://attached_assets/generated_images/sabiduria-2026-09-21-universo-espiral.jpg"
+type = "image"
+title = "Sabiduría — 21 septiembre 2026"
+description = "Universo espiral para el lunes."
+logical_id = "b3c47418-6b37-402f-b3cf-36cf0e13b7c0"
+content_hash = "sha256:826265071cf80b870bcd86012c05c95ece3c8df767237067470b4198a5c786d0"
+size = 125447
+mtime_ms = 1789876040451
+storage_uri = "gcs://replit-rams-assets-worf/rams/assets/repl:5427b858-8852-4aed-954b-cd80d9fa4b6b/b3c47418-6b37-402f-b3cf-36cf0e13b7c0/4ab46292-b8a9-437f-b159-535ef8e1725c"
+storage_version_token = "1789876116678862"
+content_type = "image/jpeg"
+
+[[outputs]]
+id = "jIy6BJzf2P1mGGpxXmK_2"
+uri = "file://attached_assets/generated_images/sabiduria-2026-09-22-bosque-lluvia.jpg"
+type = "image"
+title = "Sabiduría — 22 septiembre 2026"
+description = "Bosque antiguo después de la lluvia."
+logical_id = "3a97e117-e1d4-4d17-bfd9-6c35504f9bca"
+content_hash = "sha256:c11f4eb040795413f404db9b5eea462a8307e2de5d708d96f60d851d8b32c5e9"
+size = 181703
+mtime_ms = 1789876046047
+storage_uri = "gcs://replit-rams-assets-worf/rams/assets/repl:5427b858-8852-4aed-954b-cd80d9fa4b6b/3a97e117-e1d4-4d17-bfd9-6c35504f9bca/f82f191f-4a45-4674-89de-75f5c89af5ed"
+storage_version_token = "1789876117531287"
+content_type = "image/jpeg"
+
+[[outputs]]
+id = "dublVbN4ClyOJDZIaEmIG"
+uri = "file://attached_assets/generated_images/sabiduria-2026-09-23-horizonte-cosmico.jpg"
+type = "image"
+title = "Sabiduría — 23 septiembre 2026"
+description = "Horizonte cósmico en tonos índigo."
+logical_id = "b039e1c6-de32-47ab-b860-23510964687b"
+content_hash = "sha256:65391a3de3947eb0f5fc473c17ecb3896463d0c6efe035bddc97dcb2efa63993"
+size = 127737
+mtime_ms = 1789876044007
+storage_uri = "gcs://replit-rams-assets-worf/rams/assets/repl:5427b858-8852-4aed-954b-cd80d9fa4b6b/b039e1c6-de32-47ab-b860-23510964687b/77b2d4cc-a64a-41de-a260-e1b5e9e25449"
+storage_version_token = "1789876118350314"
+content_type = "image/jpeg"
+
+[[outputs]]
+id = "HrMMF7asMWmIau8AOT2EH"
+uri = "file://attached_assets/generated_images/sabiduria-2026-09-24-bosque-lunar.jpg"
+type = "image"
+title = "Sabiduría — 24 septiembre 2026"
+description = "Bosque lunar con luz azul profunda."
+logical_id = "ae37a017-c809-496d-8436-23188f6f2a3d"
+content_hash = "sha256:974175c20099e8a29ea7a2d6cca5d454e497b9e6d20822dc1eb526b170d42ba7"
+size = 148997
+mtime_ms = 1789876044547
+storage_uri = "gcs://replit-rams-assets-worf/rams/assets/repl:5427b858-8852-4aed-954b-cd80d9fa4b6b/ae37a017-c809-496d-8436-23188f6f2a3d/cf575e3e-06df-44e4-8fab-8aa53b8677d5"
+storage_version_token = "1789876119102174"
+content_type = "image/jpeg"
+
+[[outputs]]
+id = "G3mVVsiKzr_Su4du0AQJO"
+uri = "file://attached_assets/generated_images/sabiduria-2026-09-25-rio-nebulosa.jpg"
+type = "image"
+title = "Sabiduría — 25 septiembre 2026"
+description = "Río de nebulosa azul y dorada."
+logical_id = "d107950f-e9d4-448f-a57e-179108ea7bbe"
+content_hash = "sha256:31a7558984938b7f712572904def1543d676c8d09d26f6548952f3efc7db7c2b"
+size = 150061
+mtime_ms = 1789876042335
+storage_uri = "gcs://replit-rams-assets-worf/rams/assets/repl:5427b858-8852-4aed-954b-cd80d9fa4b6b/d107950f-e9d4-448f-a57e-179108ea7bbe/a6b16190-07ec-483d-bc47-f60a16f50d17"
+storage_version_token = "1789876119756817"
+content_type = "image/jpeg"
+
+[[outputs]]
+id = "E9xkfdwaar61idjfHpBst"
+uri = "file://attached_assets/generated_images/sabiduria-2026-09-26-claro-estelar.jpg"
+type = "image"
+title = "Sabiduría — 26 septiembre 2026"
+description = "Claro estelar dentro del bosque."
+logical_id = "6bd42f2b-7544-4c90-8e5d-9430ec48d482"
+content_hash = "sha256:99ec695e243a870a317ff1acbe3b5d12bada5e56d6307b3f12c8db4c41f29a55"
+size = 159086
+mtime_ms = 1789876053859
+storage_uri = "gcs://replit-rams-assets-worf/rams/assets/repl:5427b858-8852-4aed-954b-cd80d9fa4b6b/6bd42f2b-7544-4c90-8e5d-9430ec48d482/a23d9a59-d677-4531-9b2c-ddc3855901d7"
+storage_version_token = "1789876120457463"
+content_type = "image/jpeg"
