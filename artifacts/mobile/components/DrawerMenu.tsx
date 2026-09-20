@@ -57,7 +57,7 @@ const INICIO3_SECTIONS: { title: string | null; items: MenuItem[] }[] = [
     ],
   },
   {
-    title: null,
+    title: "General",
     items: [
       { id: "invite-friend", label: "Invitar a un amigo", icon: "user-plus", route: "/invitar", color: "#A3A3A3" },
       { id: "help", label: "Ayuda", icon: "help-circle", route: "/ayuda", color: "#A3A3A3" },
