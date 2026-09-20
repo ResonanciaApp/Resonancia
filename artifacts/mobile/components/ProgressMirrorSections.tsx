@@ -89,14 +89,6 @@ export function ProgressMirrorSections({
               <Text style={[styles.streakTitle, { color: colors.foreground }]}>
                 {streakTitle}
               </Text>
-              {onStreakTitlePress ? (
-                <Feather
-                  name="chevron-right"
-                  size={24}
-                  color={colors.foreground}
-                  style={styles.streakTitleChevron}
-                />
-              ) : null}
             </Pressable>
           ) : null}
           <StreakWeekRow />
@@ -270,9 +262,6 @@ const styles = StyleSheet.create({
     fontFamily: "Manrope",
     fontSize: 18,
     fontWeight: "600",
-  },
-  streakTitleChevron: {
-    transform: [{ translateY: 1 }],
   },
   sectionDivider: {
     height: 1,

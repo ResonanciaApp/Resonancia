@@ -191,12 +191,6 @@ export function InnerSpaceCard({
         accessibilityLabel="Abrir Mi viaje interior"
       >
         <Text style={[styles.title, { color: colors.foreground }]}>Mi viaje interior</Text>
-        <Feather
-          name="chevron-right"
-          size={24}
-          color={colors.foreground}
-          style={styles.headerChevron}
-        />
       </Pressable>
 
       <ScrollView
@@ -344,9 +338,6 @@ const styles = StyleSheet.create({
     fontSize: 18,
     fontWeight: "600",
     textAlign: "left",
-  },
-  headerChevron: {
-    transform: [{ translateY: 1 }],
   },
   categoriesScroll: {
     marginBottom: 20,
