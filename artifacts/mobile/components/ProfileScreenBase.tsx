@@ -299,7 +299,7 @@ function ProfileMembershipModules({
                     {plan.eyebrow}
                   </Text>
                 </View>
-                <View style={styles.profileChevronButton}>
+                <View style={[styles.profileChevronButton, styles.membershipChevronButton]}>
                   <Feather
                     name="chevron-right"
                     size={24}
@@ -1541,7 +1541,7 @@ export function ProfileScreenBase({
               </Pressable>
               <Pressable
                 onPress={() => router.push("/mi-perfil")}
-                style={styles.profileChevronButton}
+                style={[styles.profileChevronButton, styles.userChevronButton]}
                 hitSlop={8}
                 accessibilityRole="button"
                 accessibilityLabel="Abrir Mi cuenta"
@@ -2567,7 +2567,12 @@ const styles = StyleSheet.create({
     height: 44,
     alignItems: "center",
     justifyContent: "center",
-    transform: [{ translateX: 4 }],
+  },
+  userChevronButton: {
+    transform: [{ translateX: 9 }],
+  },
+  membershipChevronButton: {
+    transform: [{ translateX: 7 }],
   },
   membershipSection: {
     marginTop: 2,

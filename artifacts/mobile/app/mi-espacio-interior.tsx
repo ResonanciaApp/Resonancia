@@ -12,6 +12,7 @@ import { KeyboardAwareScrollView } from "react-native-keyboard-controller";
 import { useQueryClient } from "@tanstack/react-query";
 import { useAuth } from "@/context/AuthContext";
 import { ReflectionShare } from "@/components/ReflectionShare";
+import { CinematicFadeSlide } from "@/components/CinematicFadeSlide";
 import { canShareReflection } from "@/lib/reflection-story-logic";
 
 const MONTH_NAMES = [
@@ -168,6 +169,48 @@ function CollapsibleReflectionMessage({
   );
 }
 
+function WallScrollReveal({
+  active,
+  children,
+  completedIds,
+  delay = 0,
+  revealId,
+  scaleFrom,
+  style,
+  translateYFrom,
+}: {
+  active: boolean;
+  children: React.ReactNode;
+  completedIds: React.MutableRefObject<Set<string>>;
+  delay?: number;
+  revealId: string;
+  scaleFrom: number;
+  style?: React.ComponentProps<typeof CinematicFadeSlide>["style"];
+  translateYFrom: number;
+}) {
+  const skipAnimation = useRef(completedIds.current.has(revealId)).current;
+
+  useEffect(() => {
+    if (active && !skipAnimation) completedIds.current.add(revealId);
+  }, [active, completedIds, revealId, skipAnimation]);
+
+  if (skipAnimation) return <>{children}</>;
+
+  return (
+    <CinematicFadeSlide
+      active={active}
+      replayKey={revealId}
+      delay={delay}
+      duration={1100}
+      scaleFrom={scaleFrom}
+      style={style}
+      translateYFrom={translateYFrom}
+    >
+      {children}
+    </CinematicFadeSlide>
+  );
+}
+
 export default function InnerSpaceScreen() {
   const insets = useSafeAreaInsets();
   const colors = useColors();
@@ -189,6 +232,32 @@ export default function InnerSpaceScreen() {
   const requestScopeRef = useRef(requestScope);
   const nextRequestRef = useRef<AbortController | null>(null);
   const previousUserRef = useRef<string | null>(null);
+  const completedRevealIds = useRef(new Set<string>());
+  const [revealedReflectionIds, setRevealedReflectionIds] = useState<Set<string>>(
+    () => new Set(),
+  );
+  const viewabilityConfig = useRef({
+    itemVisiblePercentThreshold: 20,
+    waitForInteraction: false,
+  }).current;
+  const onViewableItemsChanged = useRef(
+    ({ viewableItems }: { viewableItems: Array<{ item: any }> }) => {
+      const visibleIds = viewableItems
+        .filter(({ item }) => item.type === "item")
+        .map(({ item }) => String(item.item.id));
+      if (visibleIds.length === 0) return;
+      setRevealedReflectionIds((current) => {
+        const next = new Set(current);
+        let changed = false;
+        visibleIds.forEach((id) => {
+          if (next.has(id)) return;
+          next.add(id);
+          changed = true;
+        });
+        return changed ? next : current;
+      });
+    },
+  ).current;
   
   const queryParams = { 
     category: filter === "all" ? undefined : filter,
@@ -214,6 +283,8 @@ export default function InnerSpaceScreen() {
 
   useEffect(() => {
     requestScopeRef.current = requestScope;
+    completedRevealIds.current.clear();
+    setRevealedReflectionIds(new Set());
     nextRequestRef.current?.abort();
     nextRequestRef.current = null;
     setIsFetchingNext(false);
@@ -394,6 +465,8 @@ export default function InnerSpaceScreen() {
     const cat = REFLECTION_CATEGORIES[reflection.category];
     const isEditing = editingId === reflection.id;
     const isShareable = canShareReflection(reflection.message);
+    const reflectionId = String(reflection.id);
+    const isRevealed = revealedReflectionIds.has(reflectionId);
 
     return (
       <View style={styles.timelineRow}>
@@ -402,11 +475,28 @@ export default function InnerSpaceScreen() {
           <View style={styles.timelineDotContainer}>
             <View style={[styles.timelineLine, item.isLastInGroup && { bottom: '50%' }]} />
             <View style={styles.timelineIconSlot}>
-              <CategoryIcon category={cat.id} size={17} containerSize={31} />
+              <WallScrollReveal
+                active={isRevealed}
+                completedIds={completedRevealIds}
+                revealId={`${requestScope}:icon:${reflectionId}`}
+                scaleFrom={0.9}
+                translateYFrom={14}
+              >
+                <CategoryIcon category={cat.id} size={17} containerSize={31} />
+              </WallScrollReveal>
             </View>
           </View>
         </View>
 
+        <WallScrollReveal
+          active={isRevealed}
+          completedIds={completedRevealIds}
+          delay={110}
+          revealId={`${requestScope}:card:${reflectionId}`}
+          scaleFrom={0.985}
+          style={styles.reflectionCardEntrance}
+          translateYFrom={18}
+        >
         <View style={styles.reflectionCard}>
           {isEditing && (
             <View style={styles.cardHeader}>
@@ -509,6 +599,7 @@ export default function InnerSpaceScreen() {
             </View>
           )}
         </View>
+        </WallScrollReveal>
       </View>
     );
   };
@@ -623,6 +714,8 @@ export default function InnerSpaceScreen() {
           contentContainerStyle={[styles.listContent, { paddingBottom: insets.bottom + 40 }]}
           onEndReached={loadMore}
           onEndReachedThreshold={0.3}
+          onViewableItemsChanged={onViewableItemsChanged}
+          viewabilityConfig={viewabilityConfig}
           ListFooterComponent={
             <View style={{ margin: 20, alignItems: 'center' }}>
                {isFetchingNext && <ActivityIndicator color={colors.primary} />}
@@ -789,6 +882,9 @@ const styles = StyleSheet.create({
     borderRadius: 16,
     backgroundColor: "rgba(0,0,0,0.2)",
     padding: 16,
+  },
+  reflectionCardEntrance: {
+    flex: 1,
   },
   cardHeader: {
     flexDirection: 'row',
