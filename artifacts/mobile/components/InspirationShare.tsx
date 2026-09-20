@@ -101,7 +101,7 @@ async function makeWebImage(day: InspirationDay): Promise<Blob> {
   if (content.author?.trim()) {
     context.font = "italic 500 34px CormorantGaramond";
     context.fillStyle = "rgba(249,249,249,0.86)";
-    const authorY = startY + ((lines.length - 1) * lineHeight) / 2 + lineHeight + 34;
+    const authorY = startY + ((lines.length - 1) * lineHeight) / 2 + lineHeight + 41;
     context.fillText(`— ${content.author.trim()}`, canvas.width / 2, authorY);
   }
 
@@ -178,7 +178,7 @@ function StoryArtwork({
               {
                 fontSize: 34 * exportScale,
                 lineHeight: 42 * exportScale,
-                marginTop: 28 * exportScale,
+                marginTop: 28 * exportScale + 7,
               },
             ]}
           >
