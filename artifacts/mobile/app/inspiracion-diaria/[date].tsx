@@ -167,9 +167,9 @@ function Detail({ date, expectedId }: { date: string; expectedId?: string }) {
 
             <View style={styles.quoteBlock}>
               <Text style={styles.quote}>{day.content.quote}</Text>
-              {!!day.content.author && <Text style={styles.author}>— {day.content.author}</Text>}
             </View>
             <Text selectable style={styles.reflection}>{day.content.reflection}</Text>
+            {!!day.content.author && <Text style={styles.author}>— {day.content.author}</Text>}
 
             {!!day.content.sessionId && (
               <View style={styles.related}>
@@ -308,7 +308,7 @@ const styles = StyleSheet.create({
     fontFamily: serif,
     fontSize: 15,
     fontStyle: "italic",
-    textAlign: "center",
+    textAlign: "left",
     marginTop: 12,
   },
   reflection: {
