@@ -317,7 +317,6 @@ export function DrawerMenu() {
                   key={section.title ?? `drawer-section-${sectionIndex}`}
                   style={sectionIndex > 0 ? styles.inicio3SectionShift : undefined}
                 >
-                  {sectionIndex > 0 && <View style={styles.inicio3SectionDivider} />}
                   {section.title && <Text style={styles.inicio3SectionTitle}>{section.title}</Text>}
                   <View style={styles.itemGroup}>
                     {section.items.map((item) => (
@@ -515,13 +514,7 @@ const styles = StyleSheet.create({
     marginTop: 14,
   },
   inicio3SectionShift: {
-    marginTop: 0,
-  },
-  inicio3SectionDivider: {
-    height: StyleSheet.hairlineWidth,
-    backgroundColor: "rgba(255,255,255,0.12)",
-    marginVertical: 20,
-    transform: [{ translateY: -3 }],
+    marginTop: 17,
   },
   inicio3SectionTitle: {
     fontFamily: "Manrope",
@@ -540,7 +533,7 @@ const styles = StyleSheet.create({
   item: {
     flexDirection: "row",
     alignItems: "center",
-    paddingVertical: 8,
+    paddingVertical: 6.5,
     paddingHorizontal: 0,
     borderRadius: 10,
     gap: 14,
