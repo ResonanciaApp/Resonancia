@@ -1,0 +1,684 @@
+import { useState, useRef, useCallback } from "react";
+import { useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
+import * as z from "zod";
+import { useQueryClient } from "@tanstack/react-query";
+import {
+  useListAdminDailyQuotes,
+  getListAdminDailyQuotesQueryKey,
+  useCreateAdminDailyQuote,
+  useGetAdminCurrentDailyQuote,
+  getGetAdminCurrentDailyQuoteQueryKey,
+  useGetAdminDailyQuoteHistory,
+  getGetAdminDailyQuoteHistoryQueryKey,
+  useUpdateAdminDailyQuote,
+  useDeleteAdminDailyQuote,
+  useToggleAdminDailyQuote,
+  AdminDailyQuote,
+} from "@workspace/api-client-react";
+
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
+import { Input } from "@/components/ui/input";
+import { Button } from "@/components/ui/button";
+import { Badge } from "@/components/ui/badge";
+import { Switch } from "@/components/ui/switch";
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+} from "@/components/ui/dialog";
+import {
+  Form,
+  FormControl,
+  FormField,
+  FormItem,
+  FormLabel,
+  FormMessage,
+} from "@/components/ui/form";
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+} from "@/components/ui/alert-dialog";
+import { toast } from "sonner";
+import {
+  Search,
+  Plus,
+  Pencil,
+  Trash2,
+  Quote as QuoteIcon,
+  Calendar,
+  History,
+} from "lucide-react";
+import { format, parseISO } from "date-fns";
+import { es } from "date-fns/locale";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+
+const formSchema = z.object({
+  text: z.string().trim().min(1, "El texto no puede estar vacío").max(1000, "Máximo 1000 caracteres"),
+  author: z.string().trim().min(1, "El autor no puede estar vacío").max(120, "Máximo 120 caracteres"),
+  active: z.boolean().default(true),
+});
+
+type FormValues = z.infer<typeof formSchema>;
+
+export default function FraseDelDiaPage() {
+  const queryClient = useQueryClient();
+  const [searchTerm, setSearchTerm] = useState("");
+  const [authorFilter, setAuthorFilter] = useState<string>("all");
+  const [activeFilter, setActiveFilter] = useState<string>("all");
+
+  const [isCreateOpen, setIsCreateOpen] = useState(false);
+  const [isEditOpen, setIsEditOpen] = useState(false);
+  const [isDeleteOpen, setIsDeleteOpen] = useState(false);
+  const [selectedQuote, setSelectedQuote] = useState<AdminDailyQuote | null>(null);
+
+  // Queries
+  const { data: currentQuote, isLoading: isLoadingCurrent, isError: isErrorCurrent } = useGetAdminCurrentDailyQuote({
+    query: {
+      queryKey: getGetAdminCurrentDailyQuoteQueryKey(),
+    },
+  });
+
+  const { data: history, isLoading: isLoadingHistory, isError: isErrorHistory } = useGetAdminDailyQuoteHistory(
+    { limit: 7 },
+    {
+      query: {
+        queryKey: getGetAdminDailyQuoteHistoryQueryKey({ limit: 7 }),
+      },
+    }
+  );
+
+  const { data: poolData, isLoading: isLoadingPool, isError: isErrorPool } = useListAdminDailyQuotes(
+    {}, // Fetch all items to apply filters client-side
+    {
+      query: {
+        queryKey: getListAdminDailyQuotesQueryKey({}),
+        placeholderData: (prev) => prev,
+      },
+    }
+  );
+
+  const filteredQuotes = poolData?.quotes.filter(quote => {
+    // 1. Text/Author search
+    const lowerSearch = searchTerm.toLowerCase();
+    const matchesSearch = !lowerSearch || quote.text.toLowerCase().includes(lowerSearch) || quote.author.toLowerCase().includes(lowerSearch);
+    
+    // 2. Author filter
+    const matchesAuthor = authorFilter === "all" || quote.author === authorFilter;
+
+    // 3. Active filter
+    const matchesActive = activeFilter === "all" || 
+                          (activeFilter === "active" && quote.active) || 
+                          (activeFilter === "inactive" && !quote.active);
+
+    return matchesSearch && matchesAuthor && matchesActive;
+  });
+
+  const uniqueAuthors = poolData 
+    ? Array.from(new Set(poolData.quotes.map(q => q.author))).sort()
+    : [];
+
+  // Mutations
+  const createQuote = useCreateAdminDailyQuote();
+  const updateQuote = useUpdateAdminDailyQuote();
+  const deleteQuote = useDeleteAdminDailyQuote();
+  const toggleQuote = useToggleAdminDailyQuote();
+
+  const createForm = useForm<FormValues>({
+    resolver: zodResolver(formSchema),
+    defaultValues: {
+      text: "",
+      author: "",
+      active: true,
+    },
+  });
+
+  const editForm = useForm<FormValues>({
+    resolver: zodResolver(formSchema),
+    defaultValues: {
+      text: "",
+      author: "",
+      active: true,
+    },
+  });
+
+  const openEdit = (quote: AdminDailyQuote) => {
+    setSelectedQuote(quote);
+    editForm.reset({
+      text: quote.text,
+      author: quote.author,
+      active: quote.active,
+    });
+    setIsEditOpen(true);
+  };
+
+  const openDelete = (quote: AdminDailyQuote) => {
+    setSelectedQuote(quote);
+    setIsDeleteOpen(true);
+  };
+
+  const onCreateSubmit = (values: FormValues) => {
+    createQuote.mutate(
+      { data: values },
+      {
+        onSuccess: () => {
+          toast.success("Frase creada exitosamente");
+          setIsCreateOpen(false);
+          createForm.reset();
+          queryClient.invalidateQueries({ queryKey: getListAdminDailyQuotesQueryKey() });
+        },
+        onError: () => toast.error("Error al crear la frase"),
+      }
+    );
+  };
+
+  const onEditSubmit = (values: FormValues) => {
+    if (!selectedQuote) return;
+    updateQuote.mutate(
+      { id: selectedQuote.id, data: values },
+      {
+        onSuccess: () => {
+          toast.success("Frase actualizada exitosamente");
+          setIsEditOpen(false);
+          setSelectedQuote(null);
+          queryClient.invalidateQueries({ queryKey: getListAdminDailyQuotesQueryKey() });
+          queryClient.invalidateQueries({ queryKey: getGetAdminCurrentDailyQuoteQueryKey() });
+          queryClient.invalidateQueries({ queryKey: getGetAdminDailyQuoteHistoryQueryKey() });
+        },
+        onError: () => toast.error("Error al actualizar la frase"),
+      }
+    );
+  };
+
+  const onDeleteConfirm = () => {
+    if (!selectedQuote) return;
+    deleteQuote.mutate(
+      { id: selectedQuote.id },
+      {
+        onSuccess: () => {
+          toast.success("Frase eliminada exitosamente");
+          setIsDeleteOpen(false);
+          setSelectedQuote(null);
+          queryClient.invalidateQueries({ queryKey: getListAdminDailyQuotesQueryKey() });
+        },
+        onError: () => toast.error("Error al eliminar la frase"),
+      }
+    );
+  };
+
+  const handleToggle = (quote: AdminDailyQuote) => {
+    toggleQuote.mutate(
+      { id: quote.id },
+      {
+        onSuccess: (data) => {
+          toast.success(`Frase ${data.active ? "activada" : "desactivada"}`);
+          queryClient.invalidateQueries({ queryKey: getListAdminDailyQuotesQueryKey() });
+        },
+        onError: () => toast.error("Error al cambiar el estado de la frase"),
+      }
+    );
+  };
+
+  return (
+    <div className="space-y-8 max-w-[1200px] mx-auto pb-12">
+      <div className="flex items-center justify-between">
+        <div>
+          <h1 className="text-2xl font-bold text-foreground tracking-tight">Frase del día</h1>
+          <p className="text-sm text-muted-foreground mt-1">
+            Administra el pool de frases de reflexión diaria y revisa el historial de publicaciones.
+          </p>
+        </div>
+      </div>
+
+      {/* Overviews */}
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+        {/* Current Quote */}
+        <Card className="flex flex-col border-border/50 hover-elevate shadow-sm">
+          <CardHeader className="pb-3 border-b border-border/20 bg-card/50">
+            <div className="flex items-center gap-2 text-primary font-medium">
+              <Calendar className="w-5 h-5" />
+              <CardTitle className="text-base">Frase actual</CardTitle>
+            </div>
+            <CardDescription>
+              {currentQuote ? (
+                <span>Ciclo actual: {currentQuote.cycle}</span>
+              ) : (
+                "Ninguna frase asignada para hoy"
+              )}
+            </CardDescription>
+          </CardHeader>
+          <CardContent className="pt-6 flex-1 flex flex-col justify-center">
+            {isLoadingCurrent ? (
+              <div className="animate-pulse space-y-4">
+                <div className="h-4 bg-muted rounded w-3/4"></div>
+                <div className="h-4 bg-muted rounded w-1/2"></div>
+              </div>
+            ) : isErrorCurrent ? (
+              <div className="text-destructive text-sm text-center">
+                Error al cargar la frase actual.
+              </div>
+            ) : currentQuote ? (
+              <div className="space-y-4">
+                <blockquote className="border-l-4 border-primary/50 pl-4 italic text-foreground text-lg">
+                  "{currentQuote.text}"
+                </blockquote>
+                <p className="text-sm text-muted-foreground font-medium flex items-center justify-end">
+                  — {currentQuote.author}
+                </p>
+                <div className="text-xs text-muted-foreground mt-4 pt-4 border-t border-border/20 text-right">
+                  Asignada el {format(parseISO(currentQuote.assignedAt), "d 'de' MMMM", { locale: es })}
+                </div>
+              </div>
+            ) : (
+              <div className="text-muted-foreground text-sm text-center italic">
+                El sistema no tiene una frase publicada para hoy. Verifica que haya frases activas en el pool.
+              </div>
+            )}
+          </CardContent>
+        </Card>
+
+        {/* History */}
+        <Card className="flex flex-col border-border/50 hover-elevate shadow-sm">
+          <CardHeader className="pb-3 border-b border-border/20 bg-card/50">
+            <div className="flex items-center justify-between">
+              <div className="flex items-center gap-2 text-secondary-foreground font-medium">
+                <History className="w-5 h-5" />
+                <CardTitle className="text-base">Historial reciente</CardTitle>
+              </div>
+            </div>
+          </CardHeader>
+          <CardContent className="pt-4 flex-1 p-0">
+            {isLoadingHistory ? (
+              <div className="p-6 space-y-4">
+                <div className="h-4 bg-muted rounded w-full animate-pulse"></div>
+                <div className="h-4 bg-muted rounded w-full animate-pulse"></div>
+                <div className="h-4 bg-muted rounded w-full animate-pulse"></div>
+              </div>
+            ) : isErrorHistory ? (
+              <div className="p-6 text-center text-sm text-destructive">
+                Error al cargar el historial.
+              </div>
+            ) : history && history.length > 0 ? (
+              <div className="divide-y divide-border/20">
+                {history.map((h, i) => (
+                  <div key={`${h.date}-${i}`} className="p-4 hover:bg-muted/10 transition-colors">
+                    <div className="flex justify-between items-start mb-1">
+                      <span className="text-xs font-medium text-muted-foreground">
+                        {format(parseISO(h.date), "dd/MM/yyyy")}
+                      </span>
+                      <span className="text-[10px] uppercase text-muted-foreground/60 border border-border/40 px-1.5 py-0.5 rounded-sm">
+                        Ciclo {h.cycle}
+                      </span>
+                    </div>
+                    <p className="text-sm line-clamp-2 text-foreground mb-1">"{h.text}"</p>
+                    <p className="text-xs text-muted-foreground">— {h.author}</p>
+                  </div>
+                ))}
+              </div>
+            ) : (
+              <div className="p-6 text-center text-sm text-muted-foreground italic">
+                No hay historial reciente.
+              </div>
+            )}
+          </CardContent>
+        </Card>
+      </div>
+
+      {/* Pool Table */}
+      <Card className="border-border/50 shadow-sm">
+        <CardHeader className="pb-4">
+          <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
+            <div>
+              <CardTitle className="text-lg flex items-center gap-2">
+                <QuoteIcon className="w-5 h-5 text-primary" />
+                Pool de Frases
+              </CardTitle>
+              <CardDescription>
+                {poolData ? (
+                  <>
+                    <span className="font-medium text-foreground">{poolData.activeCount} activas</span> de {poolData.total} en total
+                    {filteredQuotes && filteredQuotes.length !== poolData.total && (
+                       <span className="ml-1 text-muted-foreground">({filteredQuotes.length} resultados)</span>
+                    )}
+                  </>
+                ) : (
+                  "Cargando..."
+                )}
+              </CardDescription>
+            </div>
+            <div className="flex flex-wrap items-center gap-3">
+              <div className="relative w-full md:w-56">
+                <Search className="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground" />
+                <Input
+                  type="search"
+                  placeholder="Buscar por texto o autor..."
+                  value={searchTerm}
+                  onChange={(e) => setSearchTerm(e.target.value)}
+                  className="pl-9 h-9"
+                  data-testid="input-search-quotes"
+                />
+              </div>
+              <div className="w-full md:w-48">
+                <Select value={authorFilter} onValueChange={setAuthorFilter}>
+                  <SelectTrigger className="h-9" data-testid="select-author">
+                    <SelectValue placeholder="Todos los autores" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="all">Todos los autores</SelectItem>
+                    {uniqueAuthors.map(author => (
+                      <SelectItem key={author} value={author}>{author}</SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+              </div>
+              <div className="w-full md:w-40">
+                <Select value={activeFilter} onValueChange={setActiveFilter}>
+                  <SelectTrigger className="h-9" data-testid="select-active-status">
+                    <SelectValue placeholder="Todos los estados" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="all">Todos</SelectItem>
+                    <SelectItem value="active">Activas</SelectItem>
+                    <SelectItem value="inactive">Inactivas</SelectItem>
+                  </SelectContent>
+                </Select>
+              </div>
+              <Button
+                onClick={() => setIsCreateOpen(true)}
+                size="sm"
+                className="h-9 whitespace-nowrap"
+                data-testid="button-create-quote"
+              >
+                <Plus className="w-4 h-4 mr-2" />
+                Nueva frase
+              </Button>
+            </div>
+          </div>
+        </CardHeader>
+        <CardContent className="p-0">
+          <div className="overflow-x-auto">
+            <table className="w-full text-sm text-left">
+              <thead className="bg-muted/20 text-muted-foreground border-y border-border/50 text-xs uppercase tracking-wider">
+                <tr>
+                  <th className="px-6 py-3 font-medium">Estado</th>
+                  <th className="px-6 py-3 font-medium">Frase</th>
+                  <th className="px-6 py-3 font-medium">Autor</th>
+                  <th className="px-6 py-3 font-medium">Actualizada</th>
+                  <th className="px-6 py-3 font-medium text-right">Acciones</th>
+                </tr>
+              </thead>
+              <tbody className="divide-y divide-border/20">
+                {isLoadingPool ? (
+                  Array.from({ length: 5 }).map((_, i) => (
+                    <tr key={i} className="animate-pulse bg-card">
+                      <td className="px-6 py-4"><div className="w-8 h-4 bg-muted rounded"></div></td>
+                      <td className="px-6 py-4"><div className="w-48 h-4 bg-muted rounded"></div></td>
+                      <td className="px-6 py-4"><div className="w-24 h-4 bg-muted rounded"></div></td>
+                      <td className="px-6 py-4"><div className="w-20 h-4 bg-muted rounded"></div></td>
+                      <td className="px-6 py-4"><div className="w-16 h-6 bg-muted rounded ml-auto"></div></td>
+                    </tr>
+                  ))
+                ) : isErrorPool ? (
+                  <tr>
+                    <td colSpan={5} className="px-6 py-12 text-center text-destructive">
+                      Error al cargar las frases. Por favor, intenta nuevamente.
+                    </td>
+                  </tr>
+                ) : filteredQuotes && filteredQuotes.length > 0 ? (
+                  filteredQuotes.map((quote) => (
+                    <tr key={quote.id} className="bg-card hover:bg-muted/10 transition-colors group">
+                      <td className="px-6 py-4 align-middle">
+                        <div className="flex items-center gap-2">
+                          <Switch
+                            checked={quote.active}
+                            onCheckedChange={() => handleToggle(quote)}
+                            disabled={toggleQuote.isPending && toggleQuote.variables?.id === quote.id}
+                            className="scale-90"
+                            data-testid={`switch-active-${quote.id}`}
+                          />
+                          {quote.active ? (
+                            <Badge variant="outline" className="text-emerald-500 border-emerald-500/20 bg-emerald-500/10">Activa</Badge>
+                          ) : (
+                            <Badge variant="outline" className="text-muted-foreground border-border/40">Inactiva</Badge>
+                          )}
+                        </div>
+                      </td>
+                      <td className="px-6 py-4 max-w-sm">
+                        <p className="line-clamp-2 text-foreground">"{quote.text}"</p>
+                      </td>
+                      <td className="px-6 py-4">
+                        <span className="text-muted-foreground font-medium">{quote.author}</span>
+                      </td>
+                      <td className="px-6 py-4 text-xs text-muted-foreground whitespace-nowrap">
+                        {format(parseISO(quote.updatedAt), "dd/MM/yy HH:mm")}
+                      </td>
+                      <td className="px-6 py-4 text-right">
+                        <div className="flex items-center justify-end gap-2 opacity-100 md:opacity-0 group-hover:opacity-100 transition-opacity">
+                          <Button
+                            variant="ghost"
+                            size="icon"
+                            className="h-8 w-8 text-muted-foreground hover:text-primary"
+                            onClick={() => openEdit(quote)}
+                            data-testid={`button-edit-${quote.id}`}
+                          >
+                            <Pencil className="w-4 h-4" />
+                            <span className="sr-only">Editar</span>
+                          </Button>
+                          <Button
+                            variant="ghost"
+                            size="icon"
+                            className="h-8 w-8 text-muted-foreground hover:text-destructive"
+                            onClick={() => openDelete(quote)}
+                            data-testid={`button-delete-${quote.id}`}
+                          >
+                            <Trash2 className="w-4 h-4" />
+                            <span className="sr-only">Eliminar</span>
+                          </Button>
+                        </div>
+                      </td>
+                    </tr>
+                  ))
+                ) : (
+                  <tr>
+                    <td colSpan={5} className="px-6 py-12 text-center text-muted-foreground">
+                      No se encontraron frases.
+                    </td>
+                  </tr>
+                )}
+              </tbody>
+            </table>
+          </div>
+        </CardContent>
+      </Card>
+
+      {/* Dialogs */}
+      <Dialog open={isCreateOpen} onOpenChange={setIsCreateOpen}>
+        <DialogContent className="sm:max-w-[600px]">
+          <DialogHeader>
+            <DialogTitle>Nueva Frase</DialogTitle>
+            <DialogDescription>
+              Añade una nueva frase al pool. Puede estar inactiva si no quieres que aparezca aún.
+            </DialogDescription>
+          </DialogHeader>
+          <Form {...createForm}>
+            <form onSubmit={createForm.handleSubmit(onCreateSubmit)} className="space-y-4 py-4">
+              <FormField
+                control={createForm.control}
+                name="text"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Texto de la frase</FormLabel>
+                    <FormControl>
+                      <Input placeholder="Ej. El que mucho abarca, poco aprieta" {...field} />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+              <FormField
+                control={createForm.control}
+                name="author"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Autor</FormLabel>
+                    <FormControl>
+                      <Input placeholder="Ej. Refrán popular" {...field} />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+              <FormField
+                control={createForm.control}
+                name="active"
+                render={({ field }) => (
+                  <FormItem className="flex flex-row items-center justify-between rounded-lg border p-4">
+                    <div className="space-y-0.5">
+                      <FormLabel className="text-base">Activa</FormLabel>
+                      <CardDescription>
+                        Si está activa, el sistema puede seleccionarla para la rotación diaria.
+                      </CardDescription>
+                    </div>
+                    <FormControl>
+                      <Switch
+                        checked={field.value}
+                        onCheckedChange={field.onChange}
+                      />
+                    </FormControl>
+                  </FormItem>
+                )}
+              />
+              <DialogFooter className="pt-4">
+                <Button type="button" variant="outline" onClick={() => setIsCreateOpen(false)}>
+                  Cancelar
+                </Button>
+                <Button type="submit" disabled={createQuote.isPending} data-testid="button-submit-create">
+                  {createQuote.isPending ? "Guardando..." : "Crear frase"}
+                </Button>
+              </DialogFooter>
+            </form>
+          </Form>
+        </DialogContent>
+      </Dialog>
+
+      <Dialog open={isEditOpen} onOpenChange={setIsEditOpen}>
+        <DialogContent className="sm:max-w-[600px]">
+          <DialogHeader>
+            <DialogTitle>Editar Frase</DialogTitle>
+            <DialogDescription>
+              Modifica los detalles de la frase. Rev {selectedQuote?.revision}.
+            </DialogDescription>
+          </DialogHeader>
+          <Form {...editForm}>
+            <form onSubmit={editForm.handleSubmit(onEditSubmit)} className="space-y-4 py-4">
+              <FormField
+                control={editForm.control}
+                name="text"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Texto de la frase</FormLabel>
+                    <FormControl>
+                      <Input placeholder="Ej. El que mucho abarca, poco aprieta" {...field} />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+              <FormField
+                control={editForm.control}
+                name="author"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Autor</FormLabel>
+                    <FormControl>
+                      <Input placeholder="Ej. Refrán popular" {...field} />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+              <FormField
+                control={editForm.control}
+                name="active"
+                render={({ field }) => (
+                  <FormItem className="flex flex-row items-center justify-between rounded-lg border p-4">
+                    <div className="space-y-0.5">
+                      <FormLabel className="text-base">Activa</FormLabel>
+                      <CardDescription>
+                        Si está activa, el sistema puede seleccionarla para la rotación diaria.
+                      </CardDescription>
+                    </div>
+                    <FormControl>
+                      <Switch
+                        checked={field.value}
+                        onCheckedChange={field.onChange}
+                      />
+                    </FormControl>
+                  </FormItem>
+                )}
+              />
+              <DialogFooter className="pt-4">
+                <Button type="button" variant="outline" onClick={() => setIsEditOpen(false)}>
+                  Cancelar
+                </Button>
+                <Button type="submit" disabled={updateQuote.isPending} data-testid="button-submit-edit">
+                  {updateQuote.isPending ? "Guardando..." : "Guardar cambios"}
+                </Button>
+              </DialogFooter>
+            </form>
+          </Form>
+        </DialogContent>
+      </Dialog>
+
+      <AlertDialog open={isDeleteOpen} onOpenChange={setIsDeleteOpen}>
+        <AlertDialogContent>
+          <AlertDialogHeader>
+            <AlertDialogTitle>¿Eliminar frase?</AlertDialogTitle>
+            <AlertDialogDescription>
+              Esta acción no se puede deshacer. La frase se borrará del pool permanentemente. Si fue utilizada en el pasado, su historial se mantendrá intacto pero la frase en sí desaparecerá de esta lista.
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <div className="my-4 p-4 border rounded-md bg-muted/20">
+            <p className="text-sm italic">"{selectedQuote?.text}"</p>
+            <p className="text-xs text-muted-foreground mt-1">— {selectedQuote?.author}</p>
+          </div>
+          <AlertDialogFooter>
+            <AlertDialogCancel>Cancelar</AlertDialogCancel>
+            <AlertDialogAction
+              className="bg-destructive text-destructive-foreground hover:bg-destructive/90"
+              onClick={(e) => {
+                e.preventDefault();
+                onDeleteConfirm();
+              }}
+              disabled={deleteQuote.isPending}
+              data-testid="button-confirm-delete"
+            >
+              {deleteQuote.isPending ? "Eliminando..." : "Eliminar frase"}
+            </AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
+    </div>
+  );
+}

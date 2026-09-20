@@ -1,4 +1,4 @@
-import React, { useState, useRef } from "react";
+import React, { useMemo, useState, useRef } from "react";
 import {
   Animated,
   FlatList,
@@ -16,7 +16,8 @@ import { router } from "expo-router";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 
 import { GhostPill } from "@/components/GhostPill";
-import { QUOTES, getQuoteOfTheDay, type Quote } from "@/data/quotes";
+import { QUOTES, type Quote } from "@/data/quotes";
+import { useQuoteOfTheDay } from "@/hooks/useQuoteOfTheDay";
 
 const H_PAD   = 16;
 const GOLD    = "#F9F9F9";
@@ -46,16 +47,13 @@ function getAuthorColor(author: string): string {
 
 type QuoteItem = Quote & { isWeek: boolean; key: string };
 
-function buildList(): QuoteItem[] {
-  const week = getQuoteOfTheDay();
-  const all: QuoteItem[] = [{ ...week, isWeek: true, key: "week" }];
-  QUOTES.forEach((q, i) => all.push({ ...q, isWeek: false, key: String(i) }));
-  return all;
-}
-
-const ALL_QUOTES = buildList();
-
 export default function ReflexionesScreen() {
+  const { quote: weekQuote } = useQuoteOfTheDay();
+  const allQuotes = useMemo<QuoteItem[]>(() => {
+    const all: QuoteItem[] = [{ ...weekQuote, isWeek: true, key: "week" }];
+    QUOTES.forEach((q, i) => all.push({ ...q, isWeek: false, key: String(i) }));
+    return all;
+  }, [weekQuote]);
   const insets   = useSafeAreaInsets();
   const topPad   = Platform.OS === "web" ? 67 : insets.top;
   const bottomPad = Platform.OS === "web" ? 34 : insets.bottom;
@@ -70,7 +68,7 @@ export default function ReflexionesScreen() {
     extrapolate: "clamp",
   });
 
-  const visible = ALL_QUOTES.slice(0, visibleCount);
+  const visible = allQuotes.slice(0, visibleCount);
 
   function renderItem({ item }: { item: QuoteItem }) {
     const initials = getAuthorInitials(item.author);

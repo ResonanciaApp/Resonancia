@@ -30,6 +30,7 @@ import {
   UserRound,
   ListOrdered,
   Sparkles,
+  Quote,
   Sun,
   Images
 } from "lucide-react";
@@ -57,6 +58,7 @@ import DormirOrdenPage from "@/pages/dormir-orden";
 import PortadasAvataresPage from "@/pages/portadas-avatares";
 import ResonadoresPage from "@/pages/resonadores";
 import EmocionPage from "@/pages/emocion";
+import FraseDelDiaPage from "@/pages/frase-del-dia";
 import InspiracionDiariaPage from "@/pages/inspiracion-diaria";
 
 const clerkPubKey = publishableKeyFromHost(
@@ -196,6 +198,7 @@ const NAV_SECTIONS = [
     label: "CONTENIDO",
     items: [
       { href: "/inspiracion-diaria", label: "Hero Inicio", icon: Sun },
+      { href: "/frase-del-dia", label: "Frase del día", icon: Quote },
       { href: "/emocion", label: "Registro de ánimo", icon: Sparkles },
       { href: "/videos", label: "Videos", icon: Film },
       { href: "/explorar", label: "Otras temáticas", icon: LayoutList },
@@ -378,6 +381,7 @@ function AdminGate() {
         <Route path="/playlists" component={PlaylistsPage} />
         <Route path="/sonidos" component={SonidosPage} />
         <Route path="/geometrix" component={GeometrixPage} />
+        <Route path="/frase-del-dia" component={FraseDelDiaPage} />
         <Route path="/emocion" component={EmocionPage} />
         <Route path="/inspiracion-diaria" component={InspiracionDiariaPage} />
         <Route path="/guiadores-vivo" component={GuiadoresVivoPage} />

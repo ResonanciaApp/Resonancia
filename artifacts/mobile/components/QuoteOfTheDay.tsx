@@ -1,14 +1,14 @@
 import { useState } from "react";
 import { View, Text, Pressable, StyleSheet, Share, Modal } from "react-native";
 import { Feather } from "@expo/vector-icons";
-import { getQuoteOfTheDay } from "@/data/quotes";
+import { useQuoteOfTheDay } from "@/hooks/useQuoteOfTheDay";
 
 const GOLD  = "#F9F9F9";
 const WHITE = "#FFFFFF";
 const MUTED = "#c2c2c2";
 
 export default function QuoteOfTheDay() {
-  const quote = getQuoteOfTheDay();
+  const { quote } = useQuoteOfTheDay();
   const [menuVisible, setMenuVisible] = useState(false);
 
   const shareMessage = `"${quote.text}"\n\n— ${quote.author}\n\nVía RESONANCIA`;

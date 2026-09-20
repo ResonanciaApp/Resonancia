@@ -956,6 +956,71 @@ export interface UpdateEmotionalPhrasesInput {
   phrases: EmotionalPhrase[];
 }
 
+export interface DailyQuote {
+  id: string;
+  /**
+     * @minLength 1
+     * @maxLength 1000
+     */
+  text: string;
+  /**
+     * @minLength 1
+     * @maxLength 120
+     */
+  author: string;
+  active: boolean;
+  revision: number;
+  createdAt: string;
+  updatedAt: string;
+}
+
+export type AdminDailyQuote = DailyQuote;
+
+export interface DailyQuoteInput {
+  /**
+     * @minLength 1
+     * @maxLength 1000
+     */
+  text: string;
+  /**
+     * @minLength 1
+     * @maxLength 120
+     */
+  author: string;
+  active?: boolean;
+}
+
+export interface DailyQuoteUpdate {
+  /**
+     * @minLength 1
+     * @maxLength 1000
+     */
+  text?: string;
+  /**
+     * @minLength 1
+     * @maxLength 120
+     */
+  author?: string;
+  active?: boolean;
+}
+
+export interface DailyQuoteAssignment {
+  /** @pattern ^[0-9]{4}-[0-9]{2}-[0-9]{2}$ */
+  date: string;
+  /** @nullable */
+  quoteId?: string | null;
+  text: string;
+  author: string;
+  cycle: number;
+  assignedAt: string;
+}
+
+export interface AdminDailyQuoteList {
+  quotes: AdminDailyQuote[];
+  activeCount: number;
+  total: number;
+}
+
 export interface ErrorResponse {
   error: string;
 }
@@ -3052,6 +3117,24 @@ inspirationId?: string;
 
 export type PutInspirationNoteParams = {
 timeZone?: string;
+};
+
+export type GetQuoteOfTheDayParams = {
+timeZone?: string;
+};
+
+export type ListAdminDailyQuotesParams = {
+search?: string;
+author?: string;
+active?: boolean;
+};
+
+export type GetAdminDailyQuoteHistoryParams = {
+/**
+ * @minimum 1
+ * @maximum 100
+ */
+limit?: number;
 };
 
 export type GetMessagesParams = {

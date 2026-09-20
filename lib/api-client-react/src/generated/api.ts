@@ -23,6 +23,8 @@ import type {
   AccountDataExport,
   AdminCategoryInput,
   AdminCategoryUpdate,
+  AdminDailyQuote,
+  AdminDailyQuoteList,
   AdminDescansoSoundItem,
   AdminEmotionalPhraseSet,
   AdminEmotionalPhrasesResponse,
@@ -69,6 +71,9 @@ import type {
   CreateTagOptionBody,
   CreateVideoBody,
   CreatorSubmissionInput,
+  DailyQuoteAssignment,
+  DailyQuoteInput,
+  DailyQuoteUpdate,
   DeleteAccountBody,
   DeleteAccountResponse,
   DeleteSubmission200,
@@ -90,6 +95,7 @@ import type {
   GeometrixSettingUpdate,
   GetAdminApplications200,
   GetAdminApplicationsParams,
+  GetAdminDailyQuoteHistoryParams,
   GetAdminDescansoSounds200,
   GetAdminGeometrix200,
   GetAdminGuideConfigs200,
@@ -119,6 +125,7 @@ import type {
   GetMyStreakParams,
   GetPendingSubmissionsParams,
   GetPopularSessionsParams,
+  GetQuoteOfTheDayParams,
   GetSearchTrendsParams,
   GetSessionPlayCount200,
   GetSharedGlyphsParams,
@@ -141,6 +148,7 @@ import type {
   InspirationWeek,
   LibrarySnapshot,
   ListAdminCoverPresetsParams,
+  ListAdminDailyQuotesParams,
   ListCoverPresetsParams,
   ListDescansoSounds200,
   ListMyReflectionsParams,
@@ -3165,6 +3173,570 @@ const {mutation: mutationOptions, request: requestOptions} = options ?
         TContext
       > => {
       return useMutation(getPutInspirationNoteMutationOptions(options));
+    }
+
+export const getGetQuoteOfTheDayUrl = (params?: GetQuoteOfTheDayParams,) => {
+  const normalizedParams = new URLSearchParams();
+
+  Object.entries(params || {}).forEach(([key, value]) => {
+
+    if (value !== undefined) {
+      normalizedParams.append(key, value === null ? 'null' : value.toString())
+    }
+  });
+
+  const stringifiedParams = normalizedParams.toString();
+
+  return stringifiedParams.length > 0 ? `/api/quote-of-the-day?${stringifiedParams}` : `/api/quote-of-the-day`
+}
+
+export const getQuoteOfTheDay = async (params?: GetQuoteOfTheDayParams, options?: RequestInit): Promise<DailyQuoteAssignment> => {
+
+  return customFetch<DailyQuoteAssignment>(getGetQuoteOfTheDayUrl(params),
+  {
+    ...options,
+    method: 'GET'
+
+
+  }
+);}
+
+
+
+
+
+export const getGetQuoteOfTheDayQueryKey = (params?: GetQuoteOfTheDayParams,) => {
+    return [
+    `/api/quote-of-the-day`, ...(params ? [params] : [])
+    ] as const;
+    }
+
+
+export const getGetQuoteOfTheDayQueryOptions = <TData = Awaited<ReturnType<typeof getQuoteOfTheDay>>, TError = ErrorType<unknown>>(params?: GetQuoteOfTheDayParams, options?: { query?:UseQueryOptions<Awaited<ReturnType<typeof getQuoteOfTheDay>>, TError, TData>, request?: SecondParameter<typeof customFetch>}
+) => {
+
+const {query: queryOptions, request: requestOptions} = options ?? {};
+
+  const queryKey =  queryOptions?.queryKey ?? getGetQuoteOfTheDayQueryKey(params);
+
+
+
+    const queryFn: QueryFunction<Awaited<ReturnType<typeof getQuoteOfTheDay>>> = ({ signal }) => getQuoteOfTheDay(params, { signal, ...requestOptions });
+
+
+
+
+
+   return  { queryKey, queryFn, ...queryOptions} as UseQueryOptions<Awaited<ReturnType<typeof getQuoteOfTheDay>>, TError, TData> & { queryKey: QueryKey }
+}
+
+export type GetQuoteOfTheDayQueryResult = NonNullable<Awaited<ReturnType<typeof getQuoteOfTheDay>>>
+export type GetQuoteOfTheDayQueryError = ErrorType<unknown>
+
+
+
+export function useGetQuoteOfTheDay<TData = Awaited<ReturnType<typeof getQuoteOfTheDay>>, TError = ErrorType<unknown>>(
+ params?: GetQuoteOfTheDayParams, options?: { query?:UseQueryOptions<Awaited<ReturnType<typeof getQuoteOfTheDay>>, TError, TData>, request?: SecondParameter<typeof customFetch>}
+
+ ):  UseQueryResult<TData, TError> & { queryKey: QueryKey } {
+
+  const queryOptions = getGetQuoteOfTheDayQueryOptions(params,options)
+
+  const query = useQuery(queryOptions) as  UseQueryResult<TData, TError> & { queryKey: QueryKey };
+
+  return { ...query, queryKey: queryOptions.queryKey };
+}
+
+
+
+
+
+
+
+export const getListAdminDailyQuotesUrl = (params?: ListAdminDailyQuotesParams,) => {
+  const normalizedParams = new URLSearchParams();
+
+  Object.entries(params || {}).forEach(([key, value]) => {
+
+    if (value !== undefined) {
+      normalizedParams.append(key, value === null ? 'null' : value.toString())
+    }
+  });
+
+  const stringifiedParams = normalizedParams.toString();
+
+  return stringifiedParams.length > 0 ? `/api/admin/daily-quotes?${stringifiedParams}` : `/api/admin/daily-quotes`
+}
+
+export const listAdminDailyQuotes = async (params?: ListAdminDailyQuotesParams, options?: RequestInit): Promise<AdminDailyQuoteList> => {
+
+  return customFetch<AdminDailyQuoteList>(getListAdminDailyQuotesUrl(params),
+  {
+    ...options,
+    method: 'GET'
+
+
+  }
+);}
+
+
+
+
+
+export const getListAdminDailyQuotesQueryKey = (params?: ListAdminDailyQuotesParams,) => {
+    return [
+    `/api/admin/daily-quotes`, ...(params ? [params] : [])
+    ] as const;
+    }
+
+
+export const getListAdminDailyQuotesQueryOptions = <TData = Awaited<ReturnType<typeof listAdminDailyQuotes>>, TError = ErrorType<unknown>>(params?: ListAdminDailyQuotesParams, options?: { query?:UseQueryOptions<Awaited<ReturnType<typeof listAdminDailyQuotes>>, TError, TData>, request?: SecondParameter<typeof customFetch>}
+) => {
+
+const {query: queryOptions, request: requestOptions} = options ?? {};
+
+  const queryKey =  queryOptions?.queryKey ?? getListAdminDailyQuotesQueryKey(params);
+
+
+
+    const queryFn: QueryFunction<Awaited<ReturnType<typeof listAdminDailyQuotes>>> = ({ signal }) => listAdminDailyQuotes(params, { signal, ...requestOptions });
+
+
+
+
+
+   return  { queryKey, queryFn, ...queryOptions} as UseQueryOptions<Awaited<ReturnType<typeof listAdminDailyQuotes>>, TError, TData> & { queryKey: QueryKey }
+}
+
+export type ListAdminDailyQuotesQueryResult = NonNullable<Awaited<ReturnType<typeof listAdminDailyQuotes>>>
+export type ListAdminDailyQuotesQueryError = ErrorType<unknown>
+
+
+
+export function useListAdminDailyQuotes<TData = Awaited<ReturnType<typeof listAdminDailyQuotes>>, TError = ErrorType<unknown>>(
+ params?: ListAdminDailyQuotesParams, options?: { query?:UseQueryOptions<Awaited<ReturnType<typeof listAdminDailyQuotes>>, TError, TData>, request?: SecondParameter<typeof customFetch>}
+
+ ):  UseQueryResult<TData, TError> & { queryKey: QueryKey } {
+
+  const queryOptions = getListAdminDailyQuotesQueryOptions(params,options)
+
+  const query = useQuery(queryOptions) as  UseQueryResult<TData, TError> & { queryKey: QueryKey };
+
+  return { ...query, queryKey: queryOptions.queryKey };
+}
+
+
+
+
+
+
+
+export const getCreateAdminDailyQuoteUrl = () => {
+
+
+
+
+  return `/api/admin/daily-quotes`
+}
+
+export const createAdminDailyQuote = async (dailyQuoteInput: DailyQuoteInput, options?: RequestInit): Promise<AdminDailyQuote> => {
+
+  return customFetch<AdminDailyQuote>(getCreateAdminDailyQuoteUrl(),
+  {
+    ...options,
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json', ...options?.headers },
+    body: JSON.stringify(
+      dailyQuoteInput,)
+  }
+);}
+
+
+
+
+export const getCreateAdminDailyQuoteMutationOptions = <TError = ErrorType<unknown>,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof createAdminDailyQuote>>, TError,{data: BodyType<DailyQuoteInput>}, TContext>, request?: SecondParameter<typeof customFetch>}
+): UseMutationOptions<Awaited<ReturnType<typeof createAdminDailyQuote>>, TError,{data: BodyType<DailyQuoteInput>}, TContext> => {
+
+const mutationKey = ['createAdminDailyQuote'];
+const {mutation: mutationOptions, request: requestOptions} = options ?
+      options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey ?
+      options
+      : {...options, mutation: {...options.mutation, mutationKey}}
+      : {mutation: { mutationKey, }, request: undefined};
+
+
+
+
+      const mutationFn: MutationFunction<Awaited<ReturnType<typeof createAdminDailyQuote>>, {data: BodyType<DailyQuoteInput>}> = (props) => {
+          const {data} = props ?? {};
+
+          return  createAdminDailyQuote(data,requestOptions)
+        }
+
+
+
+
+
+
+  return  { mutationFn, ...mutationOptions }}
+
+    export type CreateAdminDailyQuoteMutationResult = NonNullable<Awaited<ReturnType<typeof createAdminDailyQuote>>>
+    export type CreateAdminDailyQuoteMutationBody = BodyType<DailyQuoteInput>
+    export type CreateAdminDailyQuoteMutationError = ErrorType<unknown>
+
+    export const useCreateAdminDailyQuote = <TError = ErrorType<unknown>,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof createAdminDailyQuote>>, TError,{data: BodyType<DailyQuoteInput>}, TContext>, request?: SecondParameter<typeof customFetch>}
+ ): UseMutationResult<
+        Awaited<ReturnType<typeof createAdminDailyQuote>>,
+        TError,
+        {data: BodyType<DailyQuoteInput>},
+        TContext
+      > => {
+      return useMutation(getCreateAdminDailyQuoteMutationOptions(options));
+    }
+
+export const getGetAdminCurrentDailyQuoteUrl = () => {
+
+
+
+
+  return `/api/admin/daily-quotes/current`
+}
+
+export const getAdminCurrentDailyQuote = async ( options?: RequestInit): Promise<DailyQuoteAssignment> => {
+
+  return customFetch<DailyQuoteAssignment>(getGetAdminCurrentDailyQuoteUrl(),
+  {
+    ...options,
+    method: 'GET'
+
+
+  }
+);}
+
+
+
+
+
+export const getGetAdminCurrentDailyQuoteQueryKey = () => {
+    return [
+    `/api/admin/daily-quotes/current`
+    ] as const;
+    }
+
+
+export const getGetAdminCurrentDailyQuoteQueryOptions = <TData = Awaited<ReturnType<typeof getAdminCurrentDailyQuote>>, TError = ErrorType<unknown>>( options?: { query?:UseQueryOptions<Awaited<ReturnType<typeof getAdminCurrentDailyQuote>>, TError, TData>, request?: SecondParameter<typeof customFetch>}
+) => {
+
+const {query: queryOptions, request: requestOptions} = options ?? {};
+
+  const queryKey =  queryOptions?.queryKey ?? getGetAdminCurrentDailyQuoteQueryKey();
+
+
+
+    const queryFn: QueryFunction<Awaited<ReturnType<typeof getAdminCurrentDailyQuote>>> = ({ signal }) => getAdminCurrentDailyQuote({ signal, ...requestOptions });
+
+
+
+
+
+   return  { queryKey, queryFn, ...queryOptions} as UseQueryOptions<Awaited<ReturnType<typeof getAdminCurrentDailyQuote>>, TError, TData> & { queryKey: QueryKey }
+}
+
+export type GetAdminCurrentDailyQuoteQueryResult = NonNullable<Awaited<ReturnType<typeof getAdminCurrentDailyQuote>>>
+export type GetAdminCurrentDailyQuoteQueryError = ErrorType<unknown>
+
+
+
+export function useGetAdminCurrentDailyQuote<TData = Awaited<ReturnType<typeof getAdminCurrentDailyQuote>>, TError = ErrorType<unknown>>(
+  options?: { query?:UseQueryOptions<Awaited<ReturnType<typeof getAdminCurrentDailyQuote>>, TError, TData>, request?: SecondParameter<typeof customFetch>}
+
+ ):  UseQueryResult<TData, TError> & { queryKey: QueryKey } {
+
+  const queryOptions = getGetAdminCurrentDailyQuoteQueryOptions(options)
+
+  const query = useQuery(queryOptions) as  UseQueryResult<TData, TError> & { queryKey: QueryKey };
+
+  return { ...query, queryKey: queryOptions.queryKey };
+}
+
+
+
+
+
+
+
+export const getGetAdminDailyQuoteHistoryUrl = (params?: GetAdminDailyQuoteHistoryParams,) => {
+  const normalizedParams = new URLSearchParams();
+
+  Object.entries(params || {}).forEach(([key, value]) => {
+
+    if (value !== undefined) {
+      normalizedParams.append(key, value === null ? 'null' : value.toString())
+    }
+  });
+
+  const stringifiedParams = normalizedParams.toString();
+
+  return stringifiedParams.length > 0 ? `/api/admin/daily-quotes/history?${stringifiedParams}` : `/api/admin/daily-quotes/history`
+}
+
+export const getAdminDailyQuoteHistory = async (params?: GetAdminDailyQuoteHistoryParams, options?: RequestInit): Promise<DailyQuoteAssignment[]> => {
+
+  return customFetch<DailyQuoteAssignment[]>(getGetAdminDailyQuoteHistoryUrl(params),
+  {
+    ...options,
+    method: 'GET'
+
+
+  }
+);}
+
+
+
+
+
+export const getGetAdminDailyQuoteHistoryQueryKey = (params?: GetAdminDailyQuoteHistoryParams,) => {
+    return [
+    `/api/admin/daily-quotes/history`, ...(params ? [params] : [])
+    ] as const;
+    }
+
+
+export const getGetAdminDailyQuoteHistoryQueryOptions = <TData = Awaited<ReturnType<typeof getAdminDailyQuoteHistory>>, TError = ErrorType<unknown>>(params?: GetAdminDailyQuoteHistoryParams, options?: { query?:UseQueryOptions<Awaited<ReturnType<typeof getAdminDailyQuoteHistory>>, TError, TData>, request?: SecondParameter<typeof customFetch>}
+) => {
+
+const {query: queryOptions, request: requestOptions} = options ?? {};
+
+  const queryKey =  queryOptions?.queryKey ?? getGetAdminDailyQuoteHistoryQueryKey(params);
+
+
+
+    const queryFn: QueryFunction<Awaited<ReturnType<typeof getAdminDailyQuoteHistory>>> = ({ signal }) => getAdminDailyQuoteHistory(params, { signal, ...requestOptions });
+
+
+
+
+
+   return  { queryKey, queryFn, ...queryOptions} as UseQueryOptions<Awaited<ReturnType<typeof getAdminDailyQuoteHistory>>, TError, TData> & { queryKey: QueryKey }
+}
+
+export type GetAdminDailyQuoteHistoryQueryResult = NonNullable<Awaited<ReturnType<typeof getAdminDailyQuoteHistory>>>
+export type GetAdminDailyQuoteHistoryQueryError = ErrorType<unknown>
+
+
+
+export function useGetAdminDailyQuoteHistory<TData = Awaited<ReturnType<typeof getAdminDailyQuoteHistory>>, TError = ErrorType<unknown>>(
+ params?: GetAdminDailyQuoteHistoryParams, options?: { query?:UseQueryOptions<Awaited<ReturnType<typeof getAdminDailyQuoteHistory>>, TError, TData>, request?: SecondParameter<typeof customFetch>}
+
+ ):  UseQueryResult<TData, TError> & { queryKey: QueryKey } {
+
+  const queryOptions = getGetAdminDailyQuoteHistoryQueryOptions(params,options)
+
+  const query = useQuery(queryOptions) as  UseQueryResult<TData, TError> & { queryKey: QueryKey };
+
+  return { ...query, queryKey: queryOptions.queryKey };
+}
+
+
+
+
+
+
+
+export const getUpdateAdminDailyQuoteUrl = (id: string,) => {
+
+
+
+
+  return `/api/admin/daily-quotes/${id}`
+}
+
+export const updateAdminDailyQuote = async (id: string,
+    dailyQuoteUpdate: DailyQuoteUpdate, options?: RequestInit): Promise<AdminDailyQuote> => {
+
+  return customFetch<AdminDailyQuote>(getUpdateAdminDailyQuoteUrl(id),
+  {
+    ...options,
+    method: 'PATCH',
+    headers: { 'Content-Type': 'application/json', ...options?.headers },
+    body: JSON.stringify(
+      dailyQuoteUpdate,)
+  }
+);}
+
+
+
+
+export const getUpdateAdminDailyQuoteMutationOptions = <TError = ErrorType<unknown>,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof updateAdminDailyQuote>>, TError,{id: string;data: BodyType<DailyQuoteUpdate>}, TContext>, request?: SecondParameter<typeof customFetch>}
+): UseMutationOptions<Awaited<ReturnType<typeof updateAdminDailyQuote>>, TError,{id: string;data: BodyType<DailyQuoteUpdate>}, TContext> => {
+
+const mutationKey = ['updateAdminDailyQuote'];
+const {mutation: mutationOptions, request: requestOptions} = options ?
+      options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey ?
+      options
+      : {...options, mutation: {...options.mutation, mutationKey}}
+      : {mutation: { mutationKey, }, request: undefined};
+
+
+
+
+      const mutationFn: MutationFunction<Awaited<ReturnType<typeof updateAdminDailyQuote>>, {id: string;data: BodyType<DailyQuoteUpdate>}> = (props) => {
+          const {id,data} = props ?? {};
+
+          return  updateAdminDailyQuote(id,data,requestOptions)
+        }
+
+
+
+
+
+
+  return  { mutationFn, ...mutationOptions }}
+
+    export type UpdateAdminDailyQuoteMutationResult = NonNullable<Awaited<ReturnType<typeof updateAdminDailyQuote>>>
+    export type UpdateAdminDailyQuoteMutationBody = BodyType<DailyQuoteUpdate>
+    export type UpdateAdminDailyQuoteMutationError = ErrorType<unknown>
+
+    export const useUpdateAdminDailyQuote = <TError = ErrorType<unknown>,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof updateAdminDailyQuote>>, TError,{id: string;data: BodyType<DailyQuoteUpdate>}, TContext>, request?: SecondParameter<typeof customFetch>}
+ ): UseMutationResult<
+        Awaited<ReturnType<typeof updateAdminDailyQuote>>,
+        TError,
+        {id: string;data: BodyType<DailyQuoteUpdate>},
+        TContext
+      > => {
+      return useMutation(getUpdateAdminDailyQuoteMutationOptions(options));
+    }
+
+export const getDeleteAdminDailyQuoteUrl = (id: string,) => {
+
+
+
+
+  return `/api/admin/daily-quotes/${id}`
+}
+
+export const deleteAdminDailyQuote = async (id: string, options?: RequestInit): Promise<void> => {
+
+  return customFetch<void>(getDeleteAdminDailyQuoteUrl(id),
+  {
+    ...options,
+    method: 'DELETE'
+
+
+  }
+);}
+
+
+
+
+export const getDeleteAdminDailyQuoteMutationOptions = <TError = ErrorType<unknown>,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof deleteAdminDailyQuote>>, TError,{id: string}, TContext>, request?: SecondParameter<typeof customFetch>}
+): UseMutationOptions<Awaited<ReturnType<typeof deleteAdminDailyQuote>>, TError,{id: string}, TContext> => {
+
+const mutationKey = ['deleteAdminDailyQuote'];
+const {mutation: mutationOptions, request: requestOptions} = options ?
+      options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey ?
+      options
+      : {...options, mutation: {...options.mutation, mutationKey}}
+      : {mutation: { mutationKey, }, request: undefined};
+
+
+
+
+      const mutationFn: MutationFunction<Awaited<ReturnType<typeof deleteAdminDailyQuote>>, {id: string}> = (props) => {
+          const {id} = props ?? {};
+
+          return  deleteAdminDailyQuote(id,requestOptions)
+        }
+
+
+
+
+
+
+  return  { mutationFn, ...mutationOptions }}
+
+    export type DeleteAdminDailyQuoteMutationResult = NonNullable<Awaited<ReturnType<typeof deleteAdminDailyQuote>>>
+
+    export type DeleteAdminDailyQuoteMutationError = ErrorType<unknown>
+
+    export const useDeleteAdminDailyQuote = <TError = ErrorType<unknown>,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof deleteAdminDailyQuote>>, TError,{id: string}, TContext>, request?: SecondParameter<typeof customFetch>}
+ ): UseMutationResult<
+        Awaited<ReturnType<typeof deleteAdminDailyQuote>>,
+        TError,
+        {id: string},
+        TContext
+      > => {
+      return useMutation(getDeleteAdminDailyQuoteMutationOptions(options));
+    }
+
+export const getToggleAdminDailyQuoteUrl = (id: string,) => {
+
+
+
+
+  return `/api/admin/daily-quotes/${id}/toggle`
+}
+
+export const toggleAdminDailyQuote = async (id: string, options?: RequestInit): Promise<AdminDailyQuote> => {
+
+  return customFetch<AdminDailyQuote>(getToggleAdminDailyQuoteUrl(id),
+  {
+    ...options,
+    method: 'POST'
+
+
+  }
+);}
+
+
+
+
+export const getToggleAdminDailyQuoteMutationOptions = <TError = ErrorType<unknown>,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof toggleAdminDailyQuote>>, TError,{id: string}, TContext>, request?: SecondParameter<typeof customFetch>}
+): UseMutationOptions<Awaited<ReturnType<typeof toggleAdminDailyQuote>>, TError,{id: string}, TContext> => {
+
+const mutationKey = ['toggleAdminDailyQuote'];
+const {mutation: mutationOptions, request: requestOptions} = options ?
+      options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey ?
+      options
+      : {...options, mutation: {...options.mutation, mutationKey}}
+      : {mutation: { mutationKey, }, request: undefined};
+
+
+
+
+      const mutationFn: MutationFunction<Awaited<ReturnType<typeof toggleAdminDailyQuote>>, {id: string}> = (props) => {
+          const {id} = props ?? {};
+
+          return  toggleAdminDailyQuote(id,requestOptions)
+        }
+
+
+
+
+
+
+  return  { mutationFn, ...mutationOptions }}
+
+    export type ToggleAdminDailyQuoteMutationResult = NonNullable<Awaited<ReturnType<typeof toggleAdminDailyQuote>>>
+
+    export type ToggleAdminDailyQuoteMutationError = ErrorType<unknown>
+
+    export const useToggleAdminDailyQuote = <TError = ErrorType<unknown>,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof toggleAdminDailyQuote>>, TError,{id: string}, TContext>, request?: SecondParameter<typeof customFetch>}
+ ): UseMutationResult<
+        Awaited<ReturnType<typeof toggleAdminDailyQuote>>,
+        TError,
+        {id: string},
+        TContext
+      > => {
+      return useMutation(getToggleAdminDailyQuoteMutationOptions(options));
     }
 
 export const getHealthCheckUrl = () => {

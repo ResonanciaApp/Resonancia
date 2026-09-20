@@ -1552,6 +1552,160 @@ export const PutInspirationNoteResponse = zod.object({
 })
 
 
+export const getQuoteOfTheDayQueryTimeZoneDefault = `America/Santiago`;
+
+export const GetQuoteOfTheDayQueryParams = zod.object({
+  "timeZone": zod.coerce.string().default(getQuoteOfTheDayQueryTimeZoneDefault)
+})
+
+export const getQuoteOfTheDayResponseDateRegExp = new RegExp('^[0-9]{4}-[0-9]{2}-[0-9]{2}$');
+
+
+export const GetQuoteOfTheDayResponse = zod.object({
+  "date": zod.string().regex(getQuoteOfTheDayResponseDateRegExp),
+  "quoteId": zod.string().uuid().nullish(),
+  "text": zod.string(),
+  "author": zod.string(),
+  "cycle": zod.number(),
+  "assignedAt": zod.coerce.date()
+})
+
+
+export const ListAdminDailyQuotesQueryParams = zod.object({
+  "search": zod.coerce.string().optional(),
+  "author": zod.coerce.string().optional(),
+  "active": zod.coerce.boolean().optional()
+})
+
+export const listAdminDailyQuotesResponseQuotesItemOneTextMax = 1000;
+
+export const listAdminDailyQuotesResponseQuotesItemOneAuthorMax = 120;
+
+
+
+export const ListAdminDailyQuotesResponse = zod.object({
+  "quotes": zod.array(zod.object({
+  "id": zod.string().uuid(),
+  "text": zod.string().min(1).max(listAdminDailyQuotesResponseQuotesItemOneTextMax),
+  "author": zod.string().min(1).max(listAdminDailyQuotesResponseQuotesItemOneAuthorMax),
+  "active": zod.boolean(),
+  "revision": zod.number(),
+  "createdAt": zod.coerce.date(),
+  "updatedAt": zod.coerce.date()
+})),
+  "activeCount": zod.number(),
+  "total": zod.number()
+})
+
+
+export const createAdminDailyQuoteBodyTextMax = 1000;
+
+export const createAdminDailyQuoteBodyAuthorMax = 120;
+
+export const createAdminDailyQuoteBodyActiveDefault = true;
+
+export const CreateAdminDailyQuoteBody = zod.object({
+  "text": zod.string().min(1).max(createAdminDailyQuoteBodyTextMax),
+  "author": zod.string().min(1).max(createAdminDailyQuoteBodyAuthorMax),
+  "active": zod.boolean().default(createAdminDailyQuoteBodyActiveDefault)
+})
+
+
+export const getAdminCurrentDailyQuoteResponseDateRegExp = new RegExp('^[0-9]{4}-[0-9]{2}-[0-9]{2}$');
+
+
+export const GetAdminCurrentDailyQuoteResponse = zod.object({
+  "date": zod.string().regex(getAdminCurrentDailyQuoteResponseDateRegExp),
+  "quoteId": zod.string().uuid().nullish(),
+  "text": zod.string(),
+  "author": zod.string(),
+  "cycle": zod.number(),
+  "assignedAt": zod.coerce.date()
+})
+
+
+export const getAdminDailyQuoteHistoryQueryLimitDefault = 30;
+export const getAdminDailyQuoteHistoryQueryLimitMax = 100;
+
+
+
+export const GetAdminDailyQuoteHistoryQueryParams = zod.object({
+  "limit": zod.coerce.number().min(1).max(getAdminDailyQuoteHistoryQueryLimitMax).default(getAdminDailyQuoteHistoryQueryLimitDefault)
+})
+
+export const getAdminDailyQuoteHistoryResponseDateRegExp = new RegExp('^[0-9]{4}-[0-9]{2}-[0-9]{2}$');
+
+
+export const GetAdminDailyQuoteHistoryResponseItem = zod.object({
+  "date": zod.string().regex(getAdminDailyQuoteHistoryResponseDateRegExp),
+  "quoteId": zod.string().uuid().nullish(),
+  "text": zod.string(),
+  "author": zod.string(),
+  "cycle": zod.number(),
+  "assignedAt": zod.coerce.date()
+})
+export const GetAdminDailyQuoteHistoryResponse = zod.array(GetAdminDailyQuoteHistoryResponseItem)
+
+
+export const UpdateAdminDailyQuoteParams = zod.object({
+  "id": zod.coerce.string().uuid()
+})
+
+export const updateAdminDailyQuoteBodyTextMax = 1000;
+
+export const updateAdminDailyQuoteBodyAuthorMax = 120;
+
+
+
+export const UpdateAdminDailyQuoteBody = zod.object({
+  "text": zod.string().min(1).max(updateAdminDailyQuoteBodyTextMax).optional(),
+  "author": zod.string().min(1).max(updateAdminDailyQuoteBodyAuthorMax).optional(),
+  "active": zod.boolean().optional()
+})
+
+export const updateAdminDailyQuoteResponseOneTextMax = 1000;
+
+export const updateAdminDailyQuoteResponseOneAuthorMax = 120;
+
+
+
+export const UpdateAdminDailyQuoteResponse = zod.object({
+  "id": zod.string().uuid(),
+  "text": zod.string().min(1).max(updateAdminDailyQuoteResponseOneTextMax),
+  "author": zod.string().min(1).max(updateAdminDailyQuoteResponseOneAuthorMax),
+  "active": zod.boolean(),
+  "revision": zod.number(),
+  "createdAt": zod.coerce.date(),
+  "updatedAt": zod.coerce.date()
+})
+
+
+export const DeleteAdminDailyQuoteParams = zod.object({
+  "id": zod.coerce.string().uuid()
+})
+
+
+export const ToggleAdminDailyQuoteParams = zod.object({
+  "id": zod.coerce.string().uuid()
+})
+
+export const toggleAdminDailyQuoteResponseOneTextMax = 1000;
+
+export const toggleAdminDailyQuoteResponseOneAuthorMax = 120;
+
+
+
+export const ToggleAdminDailyQuoteResponse = zod.object({
+  "id": zod.string().uuid(),
+  "text": zod.string().min(1).max(toggleAdminDailyQuoteResponseOneTextMax),
+  "author": zod.string().min(1).max(toggleAdminDailyQuoteResponseOneAuthorMax),
+  "active": zod.boolean(),
+  "revision": zod.number(),
+  "createdAt": zod.coerce.date(),
+  "updatedAt": zod.coerce.date()
+})
+
+
 /**
  * Returns server health status
  * @summary Health check
