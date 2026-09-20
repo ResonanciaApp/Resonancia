@@ -207,8 +207,8 @@ export function InnerSpaceCard({
         style={styles.categoriesMask}
         maskElement={(
           <LinearGradient
-            colors={["transparent", "#000000", "#000000", "transparent"]}
-            locations={[0, 0.13, 0.87, 1]}
+            colors={["#000000", "#000000", "transparent"]}
+            locations={[0, 0.87, 1]}
             start={{ x: 0, y: 0.5 }}
             end={{ x: 1, y: 0.5 }}
             style={StyleSheet.absoluteFill}
