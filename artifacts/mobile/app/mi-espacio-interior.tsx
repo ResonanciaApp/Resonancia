@@ -233,25 +233,27 @@ export default function InnerSpaceScreen() {
   const nextRequestRef = useRef<AbortController | null>(null);
   const previousUserRef = useRef<string | null>(null);
   const completedRevealIds = useRef(new Set<string>());
-  const [revealedReflectionIds, setRevealedReflectionIds] = useState<Set<string>>(
-    () => new Set(),
+  const [wallRevealDelays, setWallRevealDelays] = useState<Map<string, number>>(
+    () => new Map(),
   );
   const viewabilityConfig = useRef({
     itemVisiblePercentThreshold: 20,
     waitForInteraction: false,
   }).current;
   const onViewableItemsChanged = useRef(
-    ({ viewableItems }: { viewableItems: Array<{ item: any }> }) => {
+    ({ viewableItems }: { viewableItems: Array<{ item: any; isViewable?: boolean }> }) => {
       const visibleIds = viewableItems
-        .filter(({ item }) => item.type === "item")
-        .map(({ item }) => String(item.item.id));
+        .filter(({ item, isViewable }) => isViewable !== false && item?.id)
+        .map(({ item }) => String(item.id));
       if (visibleIds.length === 0) return;
-      setRevealedReflectionIds((current) => {
-        const next = new Set(current);
+      setWallRevealDelays((current) => {
+        const next = new Map(current);
         let changed = false;
+        let cascadeIndex = 0;
         visibleIds.forEach((id) => {
           if (next.has(id)) return;
-          next.add(id);
+          next.set(id, cascadeIndex * 330);
+          cascadeIndex += 1;
           changed = true;
         });
         return changed ? next : current;
@@ -284,7 +286,7 @@ export default function InnerSpaceScreen() {
   useEffect(() => {
     requestScopeRef.current = requestScope;
     completedRevealIds.current.clear();
-    setRevealedReflectionIds(new Set());
+    setWallRevealDelays(new Map());
     nextRequestRef.current?.abort();
     nextRequestRef.current = null;
     setIsFetchingNext(false);
@@ -451,11 +453,22 @@ export default function InnerSpaceScreen() {
 
   const renderItem = ({ item }: { item: any }) => {
     if (item.type === 'header') {
+      const revealId = String(item.id);
+      const revealDelay = wallRevealDelays.get(revealId) ?? 0;
       return (
         <View style={styles.dateHeader}>
-          <View style={styles.datePill}>
-            <Text style={[styles.dateText, { color: colors.foreground }]}>{item.dateLabel}</Text>
-          </View>
+          <WallScrollReveal
+            active={wallRevealDelays.has(revealId)}
+            completedIds={completedRevealIds}
+            delay={revealDelay}
+            revealId={`${requestScope}:date:${revealId}`}
+            scaleFrom={0.98}
+            translateYFrom={12}
+          >
+            <View style={styles.datePill}>
+              <Text style={[styles.dateText, { color: colors.foreground }]}>{item.dateLabel}</Text>
+            </View>
+          </WallScrollReveal>
         </View>
       );
     }
@@ -466,18 +479,28 @@ export default function InnerSpaceScreen() {
     const isEditing = editingId === reflection.id;
     const isShareable = canShareReflection(reflection.message);
     const reflectionId = String(reflection.id);
-    const isRevealed = revealedReflectionIds.has(reflectionId);
+    const isRevealed = wallRevealDelays.has(reflectionId);
+    const revealDelay = wallRevealDelays.get(reflectionId) ?? 0;
 
     return (
       <View style={styles.timelineRow}>
         <View style={styles.timelineLeft}>
-          <Text style={[styles.timeText, { color: colors.mutedForeground }]}>{timeLabel}</Text>
+          <WallScrollReveal
+            active={isRevealed}
+            completedIds={completedRevealIds}
+            delay={revealDelay}
+            revealId={`${requestScope}:time:${reflectionId}`}
+            scaleFrom={0.98}
+            translateYFrom={10}
+          >
+            <Text style={[styles.timeText, { color: colors.mutedForeground }]}>{timeLabel}</Text>
+          </WallScrollReveal>
           <View style={styles.timelineDotContainer}>
-            <View style={[styles.timelineLine, item.isLastInGroup && { bottom: '50%' }]} />
             <View style={styles.timelineIconSlot}>
               <WallScrollReveal
                 active={isRevealed}
                 completedIds={completedRevealIds}
+                delay={revealDelay + 110}
                 revealId={`${requestScope}:icon:${reflectionId}`}
                 scaleFrom={0.9}
                 translateYFrom={14}
@@ -491,7 +514,7 @@ export default function InnerSpaceScreen() {
         <WallScrollReveal
           active={isRevealed}
           completedIds={completedRevealIds}
-          delay={110}
+          delay={revealDelay + 220}
           revealId={`${requestScope}:card:${reflectionId}`}
           scaleFrom={0.985}
           style={styles.reflectionCardEntrance}
@@ -868,14 +891,6 @@ const styles = StyleSheet.create({
   timelineIconSlot: {
     width: 31,
     alignItems: 'center',
-  },
-  timelineLine: {
-    position: 'absolute',
-    top: 34,
-    bottom: -13,
-    left: 15,
-    width: 1,
-    backgroundColor: "rgba(249,249,249,0.06)",
   },
   reflectionCard: {
     flex: 1,
