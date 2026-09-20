@@ -486,7 +486,7 @@ const styles = StyleSheet.create({
     right: 12,
   },
   inputPlaceholderText: {
-    fontSize: 14,
+    fontSize: 13,
     lineHeight: 21,
   },
   incomingPlaceholder: {
