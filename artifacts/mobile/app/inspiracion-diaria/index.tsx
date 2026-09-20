@@ -384,7 +384,7 @@ const styles = StyleSheet.create({
   quoteBlock: { width: "100%", alignItems: "center" },
   dayNumber: { color: "#fff", textAlign: "center", fontFamily: "Manrope", fontSize: 33, lineHeight: 38, fontWeight: "500" },
   month: { color: "rgba(255,255,255,.9)", textAlign: "center", fontFamily: "Manrope", fontSize: 13, marginTop: 2 },
-  quote: { width: "100%", flexShrink: 1, color: "#fff", textAlign: "center", fontFamily: "Manrope", fontSize: 21, lineHeight: 30, fontWeight: "500", marginTop: 28 },
+  quote: { width: "100%", flexShrink: 1, color: "#fff", textAlign: "center", fontFamily: "CormorantGaramond", fontSize: 21, lineHeight: 30, fontWeight: "500", marginTop: 28 },
   author: { color: "rgba(255,255,255,.82)", textAlign: "center", fontFamily: "Manrope", fontSize: 14, fontStyle: "italic", marginTop: 12 },
   read: {
     alignSelf: "center",
@@ -409,7 +409,7 @@ const styles = StyleSheet.create({
     borderColor: "rgba(255,255,255,.14)",
     backgroundColor: "rgba(10,12,18,.22)",
   },
-  title: { flex: 1, color: "#fff", textAlign: "center", fontFamily: "CormorantGaramond", fontSize: 17, fontWeight: "500" },
+  title: { flex: 1, color: "#fff", textAlign: "center", fontFamily: "Manrope", fontSize: 17, fontWeight: "600" },
   days: { position: "absolute", left: 0, right: 0, flexDirection: "row", justifyContent: "space-between", paddingHorizontal: 18 },
   dayCard: {
     width: 31,
