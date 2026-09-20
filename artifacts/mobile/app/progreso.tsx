@@ -96,33 +96,43 @@ export default function ProgresoScreen() {
             pointerEvents="none"
           />
           <View style={[styles.heroOverlay, { paddingTop: topPad + 80 }]}>
-            <CinematicFadeSlide
-              replayKey="progress-intro"
-              delay={200}
-              duration={3000}
-              style={styles.heroAnimatedContent}
-            >
+            <View style={styles.heroAnimatedContent}>
               <View style={styles.heroCopyOffset}>
-                <View style={styles.streakCountWrap}>
-                  <View pointerEvents="none" style={styles.streakCountShadow} />
-                  <View
-                    style={styles.streakCountCircle}
-                    accessibilityLabel={`${completedWeekDays} ${completedWeekDays === 1 ? "día" : "días"}`}
-                  >
-                    <View pointerEvents="none" style={StyleSheet.absoluteFill}>
-                      <SessionBadgeGlass showBlackTint={false} showWhiteTint />
+                <CinematicFadeSlide
+                  replayKey="progress-streak-count"
+                  delay={1150}
+                  duration={1200}
+                  scaleFrom={0.9}
+                  translateYFrom={14}
+                >
+                  <View style={styles.streakCountWrap}>
+                    <View pointerEvents="none" style={styles.streakCountShadow} />
+                    <View
+                      style={styles.streakCountCircle}
+                      accessibilityLabel={`${completedWeekDays} ${completedWeekDays === 1 ? "día" : "días"}`}
+                    >
+                      <View pointerEvents="none" style={StyleSheet.absoluteFill}>
+                        <SessionBadgeGlass showBlackTint={false} showWhiteTint />
+                      </View>
+                      <Text style={[styles.streakIntroCount, { color: colors.foreground }]}>
+                        {completedWeekDays}
+                      </Text>
+                      <Text style={[styles.streakIntroUnit, { color: colors.foreground }]}>Días</Text>
                     </View>
-                    <Text style={[styles.streakIntroCount, { color: colors.foreground }]}>
-                      {completedWeekDays}
-                    </Text>
-                    <Text style={[styles.streakIntroUnit, { color: colors.foreground }]}>Días</Text>
                   </View>
-                </View>
-                <Text style={styles.streakIntroDescription}>
-                  Medita al menos 3 días a la semana y transforma todos los aspectos de tu vida
-                </Text>
+                </CinematicFadeSlide>
+                <CinematicFadeSlide
+                  replayKey="progress-intro-description"
+                  delay={200}
+                  duration={3000}
+                  style={styles.heroAnimatedContent}
+                >
+                  <Text style={styles.streakIntroDescription}>
+                    Medita al menos 3 días a la semana y transforma todos los aspectos de tu vida
+                  </Text>
+                </CinematicFadeSlide>
               </View>
-            </CinematicFadeSlide>
+            </View>
           </View>
         </View>
 
