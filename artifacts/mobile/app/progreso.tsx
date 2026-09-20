@@ -103,17 +103,20 @@ export default function ProgresoScreen() {
               style={styles.heroAnimatedContent}
             >
               <View style={styles.heroCopyOffset}>
-                <View
-                  style={styles.streakCountCircle}
-                  accessibilityLabel={`${completedWeekDays} ${completedWeekDays === 1 ? "día" : "días"}`}
-                >
-                  <View pointerEvents="none" style={StyleSheet.absoluteFill}>
-                    <SessionBadgeGlass showBlackTint={false} showWhiteTint />
+                <View style={styles.streakCountWrap}>
+                  <View pointerEvents="none" style={styles.streakCountShadow} />
+                  <View
+                    style={styles.streakCountCircle}
+                    accessibilityLabel={`${completedWeekDays} ${completedWeekDays === 1 ? "día" : "días"}`}
+                  >
+                    <View pointerEvents="none" style={StyleSheet.absoluteFill}>
+                      <SessionBadgeGlass showBlackTint={false} showWhiteTint />
+                    </View>
+                    <Text style={[styles.streakIntroCount, { color: colors.foreground }]}>
+                      {completedWeekDays}
+                    </Text>
+                    <Text style={[styles.streakIntroUnit, { color: colors.foreground }]}>Días</Text>
                   </View>
-                  <Text style={[styles.streakIntroCount, { color: colors.foreground }]}>
-                    {completedWeekDays}
-                  </Text>
-                  <Text style={[styles.streakIntroUnit, { color: colors.foreground }]}>Días</Text>
                 </View>
                 <Text style={styles.streakIntroDescription}>
                   Medita al menos 3 días a la semana y transforma todos los aspectos de tu vida
@@ -225,6 +228,24 @@ const styles = StyleSheet.create({
   introDividerLine: {
     height: 1,
     backgroundColor: "rgba(255,255,255,0.1)",
+  },
+  streakCountWrap: {
+    position: "relative",
+    alignItems: "center",
+    justifyContent: "center",
+  },
+  streakCountShadow: {
+    position: "absolute",
+    bottom: -2,
+    width: 52,
+    height: 1,
+    borderRadius: 0.5,
+    backgroundColor: "rgba(0,0,0,0.01)",
+    shadowColor: "#000000",
+    shadowOffset: { width: 0, height: 8 },
+    shadowOpacity: 0.42,
+    shadowRadius: 24,
+    elevation: 3,
   },
   streakCountCircle: {
     width: 103,

@@ -141,11 +141,10 @@ function DayCell({
   const dayFill = embedded
     ? hasCompleted
       ? "rgba(249,249,249,0.1)"
-      : isSelected && !isToday
-        ? "rgba(255,255,255,0.16)"
-        : undefined
+      : undefined
     : undefined;
   const showLegacySelectedOutline = !embedded && isSelected && !isToday;
+  const showEmbeddedSelectedOutline = embedded && isSelected && !isToday;
   const showTodayCompletedBorder = embedded && isToday && hasCompleted;
 
   return (
@@ -169,6 +168,10 @@ function DayCell({
             borderWidth: 1.5,
             borderColor: "#F9F9F9",
             borderStyle: "dotted",
+          },
+          showEmbeddedSelectedOutline && {
+            borderWidth: 1,
+            borderColor: "rgba(249,249,249,0.7)",
           },
           showLegacySelectedOutline && {
             borderWidth: 1.5,
