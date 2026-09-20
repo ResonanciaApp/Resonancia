@@ -3031,6 +3031,9 @@ export default function HomeScreen2({
             </Pressable>
           </View>
         )}
+        {variant === "inicio3" && featuredMoment && (
+          <View style={styles.inicio3SectionDivider} />
+        )}
         {isInicio2 && featuredMoment && continueMeditationPlaylist && (
           <ContinueMeditationPlaylistCard
             title={continueMeditationPlaylist.playlist.title}
@@ -3048,9 +3051,6 @@ export default function HomeScreen2({
               } as never);
             }}
           />
-        )}
-        {variant === "inicio3" && featuredMoment && (
-          <View style={styles.inicio3SectionDivider} />
         )}
         {isInicio2 && (
           <SessionCarousel

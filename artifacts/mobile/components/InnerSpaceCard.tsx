@@ -16,7 +16,7 @@ const CATEGORY_PLACEHOLDERS: Partial<Record<ReflectionCategory, string>> = {
   purpose: "Ej: Me conecto con mi propósito cuando...",
   acceptance: "Ej: Cuando acepto lo que sucede, la vida...",
 };
-const DEFAULT_PLACEHOLDER = "Escribe tu mensaje aquí...";
+const DEFAULT_PLACEHOLDER = "Registra una reflexión...";
 
 export function InnerSpaceCard({
   focusRequest = 0,
@@ -32,8 +32,11 @@ export function InnerSpaceCard({
   const [message, setMessage] = useState("");
   const [wallLinkHighlighted, setWallLinkHighlighted] = useState(false);
   const inputRef = useRef<TextInput>(null);
-  const placeholderOpacity = useRef(new Animated.Value(1)).current;
+  const placeholderVisibility = useRef(new Animated.Value(1)).current;
+  const outgoingPlaceholderOpacity = useRef(new Animated.Value(1)).current;
+  const incomingPlaceholderOpacity = useRef(new Animated.Value(0)).current;
   const [displayedPlaceholder, setDisplayedPlaceholder] = useState(DEFAULT_PLACEHOLDER);
+  const [incomingPlaceholder, setIncomingPlaceholder] = useState<string | null>(null);
   const [inputActive, setInputActive] = useState(false);
   const categoryScales = useRef(
     Object.fromEntries(
@@ -79,39 +82,55 @@ export function InnerSpaceCard({
   const messageIsEmpty = message.length === 0;
 
   useEffect(() => {
-    placeholderOpacity.stopAnimation();
-
-    if (!messageIsEmpty) {
-      Animated.timing(placeholderOpacity, {
-        toValue: 0,
-        duration: 300,
-        useNativeDriver: true,
-      }).start();
-      return () => placeholderOpacity.stopAnimation();
-    }
-
-    if (displayedPlaceholder !== desiredPlaceholder) {
-      Animated.timing(placeholderOpacity, {
-        toValue: 0,
-        duration: 300,
-        useNativeDriver: true,
-      }).start(({ finished }) => {
-        if (finished) setDisplayedPlaceholder(desiredPlaceholder);
-      });
-      return () => placeholderOpacity.stopAnimation();
-    }
-
-    Animated.timing(placeholderOpacity, {
-      toValue: 1,
+    placeholderVisibility.stopAnimation();
+    Animated.timing(placeholderVisibility, {
+      toValue: messageIsEmpty ? 1 : 0,
       duration: 300,
       useNativeDriver: true,
     }).start();
-    return () => placeholderOpacity.stopAnimation();
+    return () => placeholderVisibility.stopAnimation();
+  }, [messageIsEmpty, placeholderVisibility]);
+
+  useEffect(() => {
+    if (displayedPlaceholder === desiredPlaceholder) return;
+
+    outgoingPlaceholderOpacity.stopAnimation();
+    incomingPlaceholderOpacity.stopAnimation();
+    outgoingPlaceholderOpacity.setValue(1);
+    incomingPlaceholderOpacity.setValue(0);
+    setIncomingPlaceholder(desiredPlaceholder);
+
+    const frame = requestAnimationFrame(() => {
+      Animated.parallel([
+        Animated.timing(outgoingPlaceholderOpacity, {
+          toValue: 0,
+          duration: 300,
+          useNativeDriver: true,
+        }),
+        Animated.timing(incomingPlaceholderOpacity, {
+          toValue: 1,
+          duration: 300,
+          useNativeDriver: true,
+        }),
+      ]).start(({ finished }) => {
+        if (!finished) return;
+        setDisplayedPlaceholder(desiredPlaceholder);
+        setIncomingPlaceholder(null);
+        outgoingPlaceholderOpacity.setValue(1);
+        incomingPlaceholderOpacity.setValue(0);
+      });
+    });
+
+    return () => {
+      cancelAnimationFrame(frame);
+      outgoingPlaceholderOpacity.stopAnimation();
+      incomingPlaceholderOpacity.stopAnimation();
+    };
   }, [
     desiredPlaceholder,
     displayedPlaceholder,
-    messageIsEmpty,
-    placeholderOpacity,
+    incomingPlaceholderOpacity,
+    outgoingPlaceholderOpacity,
   ]);
 
   const requestInputFocus = () => {
@@ -158,9 +177,6 @@ export function InnerSpaceCard({
     <View style={styles.container}>
       <View style={styles.header}>
         <Text style={[styles.title, { color: colors.foreground }]}>Mi viaje interior</Text>
-        <Text style={[styles.description, { color: colors.mutedForeground }]}>
-          Registra una reflexión y asóciala a un tema
-        </Text>
       </View>
 
       <ScrollView
@@ -204,15 +220,39 @@ export function InnerSpaceCard({
         style={[styles.inputContainer, { backgroundColor: "rgba(0,0,0,0.2)" }, createMutation.isError && { borderColor: colors.destructive }]}
         onPress={requestInputFocus}
       >
-        <Animated.Text
+        <Animated.View
           pointerEvents="none"
           style={[
             styles.inputPlaceholder,
-            { color: colors.mutedForeground, opacity: placeholderOpacity },
+            { opacity: placeholderVisibility },
           ]}
         >
-          {displayedPlaceholder}
-        </Animated.Text>
+          <Animated.Text
+            style={[
+              styles.inputPlaceholderText,
+              {
+                color: colors.mutedForeground,
+                opacity: outgoingPlaceholderOpacity,
+              },
+            ]}
+          >
+            {displayedPlaceholder}
+          </Animated.Text>
+          {incomingPlaceholder ? (
+            <Animated.Text
+              style={[
+                styles.inputPlaceholderText,
+                styles.incomingPlaceholder,
+                {
+                  color: colors.mutedForeground,
+                  opacity: incomingPlaceholderOpacity,
+                },
+              ]}
+            >
+              {incomingPlaceholder}
+            </Animated.Text>
+          ) : null}
+        </Animated.View>
         <TextInput
           ref={inputRef}
           editable={inputActive}
@@ -275,11 +315,6 @@ const styles = StyleSheet.create({
     fontWeight: "600",
     textAlign: "left",
   },
-  description: {
-    fontSize: 12,
-    lineHeight: 16,
-    marginTop: 6,
-  },
   categoriesScroll: {
     marginBottom: 20,
     marginHorizontal: -20,
@@ -312,6 +347,7 @@ const styles = StyleSheet.create({
   inputContainer: {
     borderRadius: 16,
     padding: 12,
+    paddingTop: 16,
     marginBottom: 8,
     borderWidth: 1,
     borderColor: "rgba(255,255,255,0.05)",
@@ -322,10 +358,18 @@ const styles = StyleSheet.create({
   },
   inputPlaceholder: {
     position: "absolute",
-    top: 12,
+    top: 16,
     left: 12,
     right: 12,
+  },
+  inputPlaceholderText: {
     fontSize: 15,
+  },
+  incomingPlaceholder: {
+    position: "absolute",
+    top: 0,
+    left: 0,
+    right: 0,
   },
   charCount: {
     fontSize: 11,
