@@ -36,12 +36,14 @@ export interface StoryShareModalProps {
   previewScale?: number;
   previewOffsetY?: number;
   closeOnLeft?: boolean;
+  headerLeftAction?: React.ReactNode;
   headerRightAction?: React.ReactNode;
   titleFontSize?: number;
   titleOffsetY?: number;
   headerControlsOffsetY?: number;
   lightInstagramButton?: boolean;
   compactFooter?: boolean;
+  embedded?: boolean;
   children?: React.ReactNode;
 }
 
@@ -59,12 +61,14 @@ export function StoryShareModal({
   previewScale = 1,
   previewOffsetY = 0,
   closeOnLeft = false,
+  headerLeftAction,
   headerRightAction,
   titleFontSize,
   titleOffsetY = 0,
   headerControlsOffsetY = 0,
   lightInstagramButton = false,
   compactFooter = false,
+  embedded = false,
   children,
 }: StoryShareModalProps) {
   const insets = useSafeAreaInsets();
@@ -267,9 +271,8 @@ export function StoryShareModal({
     );
   };
 
-  return (
-    <Modal transparent={false} animationType="slide" onRequestClose={onClose}>
-      <View
+  const content = (
+    <View
         style={[
           styles.container,
           {
@@ -280,18 +283,25 @@ export function StoryShareModal({
       >
         <View style={styles.header}>
           {closeOnLeft ? (
-            <Pressable
-              accessibilityRole="button"
-              accessibilityLabel="Cerrar"
-              onPress={onClose}
-              style={({ pressed }) => [
-                styles.closeButton,
+            <View
+              style={[
+                styles.headerLeft,
                 headerControlsOffsetY !== 0 && { transform: [{ translateY: headerControlsOffsetY }] },
-                pressed && styles.pressed,
               ]}
             >
-              <Feather name="x" size={25} color="#F9F9F9" />
-            </Pressable>
+              <Pressable
+                accessibilityRole="button"
+                accessibilityLabel="Cerrar"
+                onPress={onClose}
+                style={({ pressed }) => [
+                  styles.closeButton,
+                  pressed && styles.pressed,
+                ]}
+              >
+                <Feather name="x" size={25} color="#F9F9F9" />
+              </Pressable>
+              {headerLeftAction}
+            </View>
           ) : (
             <View style={styles.headerSpacer} />
           )}
@@ -420,7 +430,14 @@ export function StoryShareModal({
             </ViewShot>
           </View>
         )}
-      </View>
+    </View>
+  );
+
+  if (embedded) return content;
+
+  return (
+    <Modal transparent={false} animationType="slide" onRequestClose={onClose}>
+      {content}
     </Modal>
   );
 }
@@ -440,6 +457,12 @@ const styles = StyleSheet.create({
   },
   headerSpacer: {
     width: 43,
+  },
+  headerLeft: {
+    flexDirection: "row",
+    alignItems: "center",
+    gap: 8,
+    zIndex: 1,
   },
   title: {
     position: "absolute",

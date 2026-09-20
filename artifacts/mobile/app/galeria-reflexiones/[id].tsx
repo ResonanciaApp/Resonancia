@@ -1,8 +1,9 @@
 import React, { useRef } from "react";
-import { View, StyleSheet, ActivityIndicator, Text, Pressable } from "react-native";
+import { View, StyleSheet, ActivityIndicator, Text, Pressable, Alert } from "react-native";
 import { useLocalSearchParams, router } from "expo-router";
 import {
   createMyReflectionStory,
+  useDeleteMyReflectionStory,
   useGetMyReflectionStory,
   getGetMyReflectionStoryQueryKey,
   type ReflectionStoryInput,
@@ -25,6 +26,7 @@ export default function GalleryDetailScreen() {
   const { items: coverCatalog } = useCoverPresetCatalogState("reflection-story");
   const storyId = Number(id);
   const validStoryId = Number.isInteger(storyId) && storyId > 0;
+  const deleteMutation = useDeleteMyReflectionStory();
 
   const { data: story, isLoading, isError, refetch } = useGetMyReflectionStory(storyId, {
     query: {
@@ -90,6 +92,62 @@ export default function GalleryDetailScreen() {
     }
   };
 
+  const requestDelete = () => {
+    Alert.alert(
+      "¿Quieres borrar esta historia?",
+      "La historia se eliminará de tu galería.",
+      [
+        { text: "Conservar", style: "cancel" },
+        {
+          text: "Sí, borrar",
+          style: "destructive",
+          onPress: () => {
+            const cachedQueries = qc.getQueriesData({
+              predicate: (query) => query.queryKey[0] === "/api/me/reflection-stories",
+            });
+
+            cachedQueries.forEach(([queryKey, data]) => {
+              if (!data || typeof data !== "object") return;
+              if ("items" in data && Array.isArray(data.items)) {
+                qc.setQueryData(queryKey, {
+                  ...data,
+                  items: data.items.filter(
+                    (item) => typeof item !== "object" || item === null || !("id" in item) || item.id !== story.id,
+                  ),
+                });
+                return;
+              }
+              if ("id" in data && data.id === story.id) {
+                qc.removeQueries({ queryKey, exact: true });
+              }
+            });
+
+            router.back();
+            deleteMutation.mutate(
+              { id: story.id },
+              {
+                onError: () => {
+                  cachedQueries.forEach(([queryKey, data]) => {
+                    qc.setQueryData(queryKey, data);
+                  });
+                  Alert.alert(
+                    "No se pudo borrar",
+                    "La historia volvió a aparecer en tu galería. Inténtalo nuevamente.",
+                  );
+                },
+                onSettled: () => {
+                  void qc.invalidateQueries({
+                    predicate: (query) => query.queryKey[0] === "/api/me/reflection-stories",
+                  });
+                },
+              },
+            );
+          },
+        },
+      ],
+    );
+  };
+
   return (
     <StoryShareModal
       title="Historia"
@@ -101,9 +159,24 @@ export default function GalleryDetailScreen() {
       previewScale={0.8}
       previewOffsetY={0}
       closeOnLeft
+      headerRightAction={(
+        <Pressable
+          accessibilityRole="button"
+          accessibilityLabel="Borrar historia"
+          disabled={deleteMutation.isPending}
+          onPress={requestDelete}
+          style={({ pressed }) => [
+            styles.deleteButton,
+            (pressed || deleteMutation.isPending) && styles.buttonPressed,
+          ]}
+        >
+          <Feather name="trash-2" size={19} color="#F9F9F9" />
+        </Pressable>
+      )}
       titleFontSize={15}
       lightInstagramButton
       compactFooter
+      embedded
       renderArtwork={(width, isExport, callbacks) => {
         return (
           <StoryArtworkFrame
@@ -148,5 +221,18 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     alignItems: "center",
     padding: 12,
-  }
+  },
+  deleteButton: {
+    width: 43,
+    height: 43,
+    borderRadius: 21.5,
+    alignItems: "center",
+    justifyContent: "center",
+    backgroundColor: "rgba(255,255,255,0.10)",
+    borderWidth: StyleSheet.hairlineWidth,
+    borderColor: "rgba(255,255,255,0.18)",
+  },
+  buttonPressed: {
+    opacity: 0.58,
+  },
 });

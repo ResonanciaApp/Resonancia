@@ -15598,3 +15598,73 @@ export function useGetMyReflectionStory<TData = Awaited<ReturnType<typeof getMyR
 
   return { ...query, queryKey: queryOptions.queryKey };
 }
+
+
+
+
+
+
+
+export const getDeleteMyReflectionStoryUrl = (id: number,) => {
+
+
+
+
+  return `/api/me/reflection-stories/${id}`
+}
+
+export const deleteMyReflectionStory = async (id: number, options?: RequestInit): Promise<void> => {
+
+  return customFetch<void>(getDeleteMyReflectionStoryUrl(id),
+  {
+    ...options,
+    method: 'DELETE'
+
+
+  }
+);}
+
+
+
+
+export const getDeleteMyReflectionStoryMutationOptions = <TError = ErrorType<void>,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof deleteMyReflectionStory>>, TError,{id: number}, TContext>, request?: SecondParameter<typeof customFetch>}
+): UseMutationOptions<Awaited<ReturnType<typeof deleteMyReflectionStory>>, TError,{id: number}, TContext> => {
+
+const mutationKey = ['deleteMyReflectionStory'];
+const {mutation: mutationOptions, request: requestOptions} = options ?
+      options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey ?
+      options
+      : {...options, mutation: {...options.mutation, mutationKey}}
+      : {mutation: { mutationKey, }, request: undefined};
+
+
+
+
+      const mutationFn: MutationFunction<Awaited<ReturnType<typeof deleteMyReflectionStory>>, {id: number}> = (props) => {
+          const {id} = props ?? {};
+
+          return  deleteMyReflectionStory(id,requestOptions)
+        }
+
+
+
+
+
+
+  return  { mutationFn, ...mutationOptions }}
+
+    export type DeleteMyReflectionStoryMutationResult = NonNullable<Awaited<ReturnType<typeof deleteMyReflectionStory>>>
+
+    export type DeleteMyReflectionStoryMutationError = ErrorType<void>
+
+    export const useDeleteMyReflectionStory = <TError = ErrorType<void>,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof deleteMyReflectionStory>>, TError,{id: number}, TContext>, request?: SecondParameter<typeof customFetch>}
+ ): UseMutationResult<
+        Awaited<ReturnType<typeof deleteMyReflectionStory>>,
+        TError,
+        {id: number},
+        TContext
+      > => {
+      return useMutation(getDeleteMyReflectionStoryMutationOptions(options));
+    }

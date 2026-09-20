@@ -59,6 +59,15 @@ vi.mock("@workspace/db", () => {
         },
       }),
     }),
+    delete: () => ({
+      where: (condition: unknown) => ({
+        returning: async () => {
+          const deleted = state.rows.filter((row) => matches(row, condition));
+          state.rows = state.rows.filter((row) => !matches(row, condition));
+          return deleted.map((row) => ({ id: row.id }));
+        },
+      }),
+    }),
   };
   return { db, reflectionStoriesTable: columns };
 });
@@ -111,6 +120,26 @@ describe("private reflection stories API", () => {
     const retry = await request(app).post("/api/me/reflection-stories").set("Idempotency-Key", "repeat").send({ ...body, message: "No duplicar" }).expect(200);
     expect(retry.body.id).toBe(first.body.id);
     expect(state.rows).toHaveLength(1);
+  });
+
+  it("deletes only the owner's reflection story", async () => {
+    const created = await request(app)
+      .post("/api/me/reflection-stories")
+      .set("Idempotency-Key", "delete-owner")
+      .send(body)
+      .expect(201);
+
+    state.userId = 2;
+    await request(app)
+      .delete(`/api/me/reflection-stories/${created.body.id}`)
+      .expect(404);
+    expect(state.rows).toHaveLength(1);
+
+    state.userId = 1;
+    await request(app)
+      .delete(`/api/me/reflection-stories/${created.body.id}`)
+      .expect(204);
+    expect(state.rows).toHaveLength(0);
   });
 
   it("rejects missing keys, invalid categories, oversized messages, and unsafe offsets", async () => {

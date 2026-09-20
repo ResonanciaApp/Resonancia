@@ -4846,6 +4846,17 @@ paths:
             application/json:
               schema: {$ref: "#/components/schemas/ReflectionStory"}
         "404": {description: Reflection story not found}
+    delete:
+      operationId: deleteMyReflectionStory
+      tags: [reflections]
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema: {type: integer}
+      responses:
+        "204": {description: Reflection story deleted}
+        "404": {description: Reflection story not found}
 components:
   schemas:
     ReflectionCategory:

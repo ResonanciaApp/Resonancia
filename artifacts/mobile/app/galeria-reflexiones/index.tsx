@@ -8,9 +8,16 @@ import { useQueryClient } from "@tanstack/react-query";
 import { useColors } from "@/hooks/useColors";
 import { useAuth } from "@/context/AuthContext";
 import { useSceneTheme } from "@/context/SceneThemeContext";
-import { useListMyReflectionStories, getListMyReflectionStoriesQueryKey, listMyReflectionStories, type ReflectionStory } from "@workspace/api-client-react";
+import {
+  useListMyReflectionStories,
+  getGetMyReflectionStoryQueryKey,
+  getListMyReflectionStoriesQueryKey,
+  listMyReflectionStories,
+  type ReflectionStory,
+} from "@workspace/api-client-react";
 import { StoryArtworkFrame } from "@/components/StoryArtworkFrame";
 import { useCoverPresetCatalogState } from "@/lib/cover-preset-catalog";
+import { REFLECTION_CATEGORIES } from "@/constants/reflectionCategories";
 
 const COLUMN_COUNT = 2;
 const CARD_MARGIN = 8;
@@ -123,12 +130,19 @@ export default function GalleryScreen() {
     const bgImageSource = coverCatalog.find(
       (candidate) => candidate.key === item.backgroundPresetKey,
     )?.source;
+    const category = REFLECTION_CATEGORIES[item.category];
     return (
       <Pressable
         style={[styles.cardWrapper, { width: cardWidth }]}
         accessibilityRole="button"
         accessibilityLabel={`Abrir historia del ${new Date(item.createdAt).toLocaleDateString("es-ES")}`}
-        onPress={() => router.push(`/galeria-reflexiones/${item.id}`)}
+        onPress={() => {
+          qc.setQueryData(
+            [...getGetMyReflectionStoryQueryKey(item.id), clerkUserId],
+            item,
+          );
+          router.push(`/galeria-reflexiones/${item.id}`);
+        }}
       >
         <StoryArtworkFrame
           message={item.message}
@@ -143,9 +157,16 @@ export default function GalleryScreen() {
           }}
         />
         <View style={styles.cardOverlay}>
-          <Text style={styles.cardDate}>
-            {new Date(item.createdAt).toLocaleDateString("es-ES", { day: "numeric", month: "short" })}
-          </Text>
+          <View style={styles.cardMetaRow}>
+            <Text style={styles.cardDate}>
+              {new Date(item.createdAt).toLocaleDateString("es-ES", { day: "numeric", month: "short" })}
+            </Text>
+            <View style={[styles.categoryPill, { backgroundColor: category.bg }]}>
+              <Text style={[styles.categoryText, { color: category.color }]}>
+                {category.label}
+              </Text>
+            </View>
+          </View>
         </View>
       </Pressable>
     );
@@ -292,10 +313,26 @@ const styles = StyleSheet.create({
     padding: 12,
     backgroundColor: "rgba(0,0,0,0.4)",
   },
+  cardMetaRow: {
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "center",
+    gap: 8,
+  },
   cardDate: {
     color: "#fff",
     fontSize: 12,
     fontFamily: "Manrope",
     fontWeight: "600",
+  },
+  categoryPill: {
+    borderRadius: 999,
+    paddingHorizontal: 9,
+    paddingVertical: 4,
+  },
+  categoryText: {
+    fontSize: 10,
+    fontFamily: "Manrope",
+    fontWeight: "700",
   },
 });

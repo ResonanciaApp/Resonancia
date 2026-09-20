@@ -6722,3 +6722,8 @@ export const GetMyReflectionStoryResponse = zod.object({
 })
 
 
+export const DeleteMyReflectionStoryParams = zod.object({
+  "id": zod.coerce.number()
+})
+
+

@@ -129,4 +129,25 @@ router.get("/me/reflection-stories/:id", requireAuth, async (req, res) => {
   }
 });
 
+router.delete("/me/reflection-stories/:id", requireAuth, async (req, res) => {
+  const parsed = GetMyReflectionStoryParams.safeParse(req.params);
+  if (!parsed.success) { res.status(400).json({ error: "Datos inválidos" }); return; }
+  try {
+    const rows = await db.delete(reflectionStoriesTable)
+      .where(and(
+        eq(reflectionStoriesTable.id, parsed.data.id),
+        eq(reflectionStoriesTable.userId, req.currentUser!.id),
+      ))
+      .returning({ id: reflectionStoriesTable.id });
+    if (!rows.length) {
+      res.status(404).json({ error: "Historia compartida no encontrada" });
+      return;
+    }
+    res.status(204).end();
+  } catch (error) {
+    req.log.error(error);
+    res.status(500).json({ error: "No se pudo eliminar la historia compartida" });
+  }
+});
+
 export default router;
