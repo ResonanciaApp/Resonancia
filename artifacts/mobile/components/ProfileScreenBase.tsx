@@ -435,7 +435,6 @@ export function ProfileScreenBase({
   onBack,
   asTab = false,
   initialLibraryTab,
-  composeReflectionToken,
 }: {
   dedicated?: boolean;
   accountMode?: boolean;
@@ -443,7 +442,6 @@ export function ProfileScreenBase({
   onBack?: () => void;
   asTab?: boolean;
   initialLibraryTab?: LibraryTab | null;
-  composeReflectionToken?: string;
 }) {
   const colors = useColors();
   const { theme: activeTheme, activeSceneId } = useSceneTheme();
@@ -484,7 +482,6 @@ export function ProfileScreenBase({
 
   const [libActions, setLibActions] = useState<LibHeaderActions | null>(null);
   const profileScrollRef = useRef<ScrollView>(null);
-  const handledComposeReflectionRef = useRef<string | undefined>(undefined);
   const composeInteractionRef = useRef<ReturnType<typeof InteractionManager.runAfterInteractions> | null>(null);
   const composeFocusTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const [innerSpaceLayoutY, setInnerSpaceLayoutY] = useState<number | null>(null);
@@ -506,17 +503,6 @@ export function ProfileScreenBase({
       }, 120);
     });
   }, [innerSpaceLayoutY]);
-  useEffect(() => {
-    if (
-      !dedicated ||
-      !composeReflectionToken ||
-      innerSpaceLayoutY === null ||
-      handledComposeReflectionRef.current === composeReflectionToken
-    ) return;
-
-    handledComposeReflectionRef.current = composeReflectionToken;
-    positionInnerSpaceForWriting();
-  }, [composeReflectionToken, dedicated, innerSpaceLayoutY, positionInnerSpaceForWriting]);
   useEffect(() => () => {
     composeInteractionRef.current?.cancel();
     if (composeFocusTimerRef.current) clearTimeout(composeFocusTimerRef.current);
@@ -1461,7 +1447,7 @@ export function ProfileScreenBase({
         onScroll={handleHeaderScroll}
         scrollEventThrottle={16}
         keyboardShouldPersistTaps="handled"
-        bottomOffset={composeReflectionToken ? 15 : 60}
+        bottomOffset={60}
       >
         <View style={styles.dedicatedTitleRow}>
           <View style={styles.dedicatedTitleLeft}>

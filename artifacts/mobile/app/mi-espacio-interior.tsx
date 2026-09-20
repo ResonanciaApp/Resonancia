@@ -477,7 +477,7 @@ export default function InnerSpaceScreen() {
         <Pressable
           testID="empty-back"
           style={styles.emptyButton}
-          onPress={() => router.replace(`/profile?composeReflection=${Date.now()}`)}
+          onPress={() => router.replace("/profile")}
         >
           <Text style={styles.emptyButtonText}>Escribir mi primera reflexión</Text>
         </Pressable>
