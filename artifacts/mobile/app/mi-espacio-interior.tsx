@@ -821,6 +821,7 @@ const styles = StyleSheet.create({
     fontWeight: '600',
   },
   cardActionsContainer: {
+    flexDirection: 'row',
     alignItems: 'center',
     gap: 8,
   },
@@ -833,7 +834,7 @@ const styles = StyleSheet.create({
   },
   messageContainer: {
     position: "relative",
-    transform: [{ translateY: -50 }],
+    transform: [{ translateY: -43 }],
   },
   messageMeasure: {
     position: "absolute",
