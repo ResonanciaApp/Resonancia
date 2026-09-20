@@ -29,6 +29,7 @@ import coverPresetsRouter from "./cover-presets";
 import reflectionsRouter from "./reflections";
 import reflectionStoriesRouter from "./reflection-stories";
 import dailyQuotesRouter from "./daily-quotes";
+import greetingRouter from "./greeting";
 
 const router: IRouter = Router();
 
@@ -62,5 +63,6 @@ router.use(coverPresetsRouter);
 router.use(reflectionsRouter);
 router.use(reflectionStoriesRouter);
 router.use(dailyQuotesRouter);
+router.use(greetingRouter);
 
 export default router;

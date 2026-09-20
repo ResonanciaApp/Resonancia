@@ -1571,6 +1571,65 @@ export const GetQuoteOfTheDayResponse = zod.object({
 })
 
 
+/**
+ * @summary Get the active global greeting
+ */
+export const getGreetingResponseTextMax = 160;
+
+
+
+export const GetGreetingResponse = zod.object({
+  "enabled": zod.boolean(),
+  "text": zod.string().max(getGreetingResponseTextMax).nullable()
+})
+
+
+/**
+ * @summary Get the global greeting setting
+ */
+export const getAdminGreetingResponseTextMax = 160;
+
+export const getAdminGreetingResponseRevisionMin = 0;
+
+
+
+export const GetAdminGreetingResponse = zod.object({
+  "enabled": zod.boolean(),
+  "text": zod.string().max(getAdminGreetingResponseTextMax).nullable(),
+  "revision": zod.number().min(getAdminGreetingResponseRevisionMin),
+  "updatedAt": zod.coerce.date()
+})
+
+
+/**
+ * @summary Update the global greeting setting
+ */
+export const updateAdminGreetingBodyTextMax = 160;
+
+export const updateAdminGreetingBodyRevisionMin = 0;
+
+
+
+export const UpdateAdminGreetingBody = zod.object({
+  "enabled": zod.boolean(),
+  "text": zod.string().max(updateAdminGreetingBodyTextMax).nullish(),
+  "revision": zod.number().min(updateAdminGreetingBodyRevisionMin)
+})
+
+export const updateAdminGreetingResponseTextMax = 160;
+
+export const updateAdminGreetingResponseRevisionMin = 0;
+
+
+
+export const UpdateAdminGreetingResponse = zod.object({
+  "enabled": zod.boolean(),
+  "text": zod.string().max(updateAdminGreetingResponseTextMax).nullable(),
+  "revision": zod.number().min(updateAdminGreetingResponseRevisionMin),
+  "updatedAt": zod.coerce.date()
+})
+
+
 export const ListAdminDailyQuotesQueryParams = zod.object({
   "search": zod.coerce.string().optional(),
   "author": zod.coerce.string().optional(),

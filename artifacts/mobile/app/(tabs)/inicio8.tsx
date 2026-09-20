@@ -52,7 +52,8 @@ import Svg, {
 } from "react-native-svg";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 
-import { getGreeting, GreetingHeader } from "@/components/GreetingHeader";
+import { GreetingHeader } from "@/components/GreetingHeader";
+import { useGreeting } from "@/hooks/useGreeting";
 import { useGreetingVisible } from "@/context/GreetingVisibleContext";
 import { useDrawer } from "@/context/DrawerContext";
 import { useCategoryOverlay } from "@/context/CategoryOverlayContext";
@@ -492,6 +493,7 @@ function Inicio2HeroSlider({
 }) {
   const { user: clerkUser } = useUser();
   const { username } = useUserProfile();
+  const greeting = useGreeting();
   const avatarSource = useCurrentUserAvatarSource();
   const [activeIndex, setActiveIndex] = useState(0);
   const activeIndexSV = useSharedValue(0);
@@ -883,7 +885,7 @@ function Inicio2HeroSlider({
             testID="inicio2-open-drawer"
           >
             <Text style={styles.inicio2HeroGreetingLabel}>
-              Buenas tardes
+              {greeting}
             </Text>
             <Text style={styles.inicio2HeroGreetingName}>
               {displayName}
@@ -977,6 +979,7 @@ function Inicio2HeroSliderRebuilt({
 }) {
   const { user: clerkUser } = useUser();
   const { username } = useUserProfile();
+  const greeting = useGreeting();
   const avatarSource = useCurrentUserAvatarSource();
   const sliderRef = useRef<ScrollView>(null);
   const [activeIndex, setActiveIndex] = useState(0);
@@ -1192,7 +1195,7 @@ function Inicio2HeroSliderRebuilt({
             accessibilityLabel="Abrir menú de perfil"
             testID="inicio2-open-drawer"
           >
-            <Text style={styles.inicio2HeroGreetingLabel}>Buenas tardes</Text>
+            <Text style={styles.inicio2HeroGreetingLabel}>{greeting}</Text>
             <Text style={styles.inicio2HeroGreetingName}>{displayName}</Text>
           </Pressable>
         </View>
@@ -1659,12 +1662,7 @@ const Inicio2HeroStatic = React.memo(function Inicio2HeroStatic({
     || clerkUser?.username
     || "Explorador";
   const initial = displayName.charAt(0).toUpperCase();
-  const [greeting, setGreeting] = useState(getGreeting);
-  useFocusEffect(
-    useCallback(() => {
-      setGreeting(getGreeting());
-    }, []),
-  );
+  const greeting = useGreeting();
   const reduceMotion = useReducedMotion();
   const fallbackScrollY = useSharedValue(0);
   const effectiveScrollY = scrollY ?? fallbackScrollY;
@@ -1795,7 +1793,7 @@ const Inicio2HeroStatic = React.memo(function Inicio2HeroStatic({
             testID="inicio2-open-drawer"
           >
             {!isInicio3 && (
-              <Text style={styles.inicio2HeroGreetingLabel}>Buenas tardes</Text>
+              <Text style={styles.inicio2HeroGreetingLabel}>{greeting}</Text>
             )}
             <Text style={styles.inicio2HeroGreetingName}>{displayName}</Text>
             {isInicio3 ? (

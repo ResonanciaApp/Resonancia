@@ -32,7 +32,8 @@ import {
   Sparkles,
   Quote,
   Sun,
-  Images
+  Images,
+  MessageSquare
 } from "lucide-react";
 import { Toaster } from "@/components/ui/sonner";
 import { queryClient } from "@/lib/queryClient";
@@ -61,6 +62,7 @@ import ResonadoresPage from "@/pages/resonadores";
 import EmocionPage from "@/pages/emocion";
 import FraseDelDiaPage from "@/pages/frase-del-dia";
 import InspiracionDiariaPage from "@/pages/inspiracion-diaria";
+import SaludoInicioPage from "@/pages/saludo-inicio";
 
 const clerkPubKey = publishableKeyFromHost(
   window.location.hostname,
@@ -199,6 +201,7 @@ const NAV_SECTIONS = [
     label: "CONTENIDO",
     items: [
       { href: "/inspiracion-diaria", label: "Hero Inicio", icon: Sun },
+      { href: "/saludo-inicio", label: "Saludo inicial", icon: MessageSquare },
       { href: "/frase-del-dia", label: "Frase del día", icon: Quote },
       { href: "/emocion", label: "Registro de ánimo", icon: Sparkles },
       { href: "/videos", label: "Videos", icon: Film },
@@ -386,6 +389,7 @@ function AdminGate() {
         <Route path="/frase-del-dia" component={FraseDelDiaPage} />
         <Route path="/emocion" component={EmocionPage} />
         <Route path="/inspiracion-diaria" component={InspiracionDiariaPage} />
+        <Route path="/saludo-inicio" component={SaludoInicioPage} />
         <Route path="/guiadores-vivo" component={GuiadoresVivoPage} />
         <Route path="/videos" component={VideosPage} />
         <Route path="/descanso-sonidos" component={DescansoSonidosPage} />

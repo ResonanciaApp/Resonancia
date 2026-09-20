@@ -1,17 +1,16 @@
 import { useFocusEffect } from "expo-router";
 import React, { useCallback, useRef } from "react";
 import { Animated, StyleSheet, Text, View } from "react-native";
+import { useGreeting } from "@/hooks/useGreeting";
+import { getAutomaticGreeting } from "@/lib/greeting";
 
 export function getGreeting(): string {
-  const hour = new Date().getHours();
-  if (hour >= 6 && hour < 12) return "Buenos días";
-  if (hour >= 12 && hour < 19) return "Buenas tardes";
-  return "Buenas noches";
+  return getAutomaticGreeting();
 }
 
 export function GreetingHeader() {
   const greetingOpacity = useRef(new Animated.Value(0)).current;
-  const greeting = getGreeting();
+  const greeting = useGreeting();
 
   useFocusEffect(
     useCallback(() => {

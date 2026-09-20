@@ -3150,6 +3150,44 @@ export interface CoverPresetUploadCleanup {
   objectPath: string;
 }
 
+export interface Greeting {
+  enabled: boolean;
+  /**
+     * @maxLength 160
+     * @nullable
+     */
+  text: string | null;
+}
+
+export interface AdminGreeting {
+  enabled: boolean;
+  /**
+     * @maxLength 160
+     * @nullable
+     */
+  text: string | null;
+  /** @minimum 0 */
+  revision: number;
+  updatedAt: string;
+}
+
+export interface GreetingUpdate {
+  enabled: boolean;
+  /**
+     * @maxLength 160
+     * @nullable
+     */
+  text?: string | null;
+  /** @minimum 0 */
+  revision: number;
+}
+
+export interface RevisionConflict {
+  error: string;
+  /** @minimum 0 */
+  currentRevision: number;
+}
+
 export type ListCoverPresetsParams = {
 scope: CoverPresetScope;
 };

@@ -28,6 +28,7 @@ import type {
   AdminDescansoSoundItem,
   AdminEmotionalPhraseSet,
   AdminEmotionalPhrasesResponse,
+  AdminGreeting,
   AdminHeroOverride,
   AdminHeroSessionSlides,
   AdminInspiration,
@@ -130,6 +131,8 @@ import type {
   GetSessionPlayCount200,
   GetSharedGlyphsParams,
   GetSharedMixesParams,
+  Greeting,
+  GreetingUpdate,
   GuideConfig,
   GuideConfigInput,
   GuideConfigUpdate,
@@ -186,6 +189,7 @@ import type {
   RequestUploadUrlResponse,
   ReviewEditBody,
   ReviewRejectBody,
+  RevisionConflict,
   SceneAnimation,
   SceneAnimationsListResponse,
   SearchTrendOpenBody,
@@ -3258,6 +3262,231 @@ export function useGetQuoteOfTheDay<TData = Awaited<ReturnType<typeof getQuoteOf
 
 
 
+
+export const getGetGreetingUrl = () => {
+
+
+
+
+  return `/api/greeting`
+}
+
+/**
+ * @summary Get the active global greeting
+ */
+export const getGreeting = async ( options?: RequestInit): Promise<Greeting> => {
+
+  return customFetch<Greeting>(getGetGreetingUrl(),
+  {
+    ...options,
+    method: 'GET'
+
+
+  }
+);}
+
+
+
+
+
+export const getGetGreetingQueryKey = () => {
+    return [
+    `/api/greeting`
+    ] as const;
+    }
+
+
+export const getGetGreetingQueryOptions = <TData = Awaited<ReturnType<typeof getGreeting>>, TError = ErrorType<unknown>>( options?: { query?:UseQueryOptions<Awaited<ReturnType<typeof getGreeting>>, TError, TData>, request?: SecondParameter<typeof customFetch>}
+) => {
+
+const {query: queryOptions, request: requestOptions} = options ?? {};
+
+  const queryKey =  queryOptions?.queryKey ?? getGetGreetingQueryKey();
+
+
+
+    const queryFn: QueryFunction<Awaited<ReturnType<typeof getGreeting>>> = ({ signal }) => getGreeting({ signal, ...requestOptions });
+
+
+
+
+
+   return  { queryKey, queryFn, ...queryOptions} as UseQueryOptions<Awaited<ReturnType<typeof getGreeting>>, TError, TData> & { queryKey: QueryKey }
+}
+
+export type GetGreetingQueryResult = NonNullable<Awaited<ReturnType<typeof getGreeting>>>
+export type GetGreetingQueryError = ErrorType<unknown>
+
+
+/**
+ * @summary Get the active global greeting
+ */
+
+export function useGetGreeting<TData = Awaited<ReturnType<typeof getGreeting>>, TError = ErrorType<unknown>>(
+  options?: { query?:UseQueryOptions<Awaited<ReturnType<typeof getGreeting>>, TError, TData>, request?: SecondParameter<typeof customFetch>}
+
+ ):  UseQueryResult<TData, TError> & { queryKey: QueryKey } {
+
+  const queryOptions = getGetGreetingQueryOptions(options)
+
+  const query = useQuery(queryOptions) as  UseQueryResult<TData, TError> & { queryKey: QueryKey };
+
+  return { ...query, queryKey: queryOptions.queryKey };
+}
+
+
+
+
+
+
+
+export const getGetAdminGreetingUrl = () => {
+
+
+
+
+  return `/api/admin/greeting`
+}
+
+/**
+ * @summary Get the global greeting setting
+ */
+export const getAdminGreeting = async ( options?: RequestInit): Promise<AdminGreeting> => {
+
+  return customFetch<AdminGreeting>(getGetAdminGreetingUrl(),
+  {
+    ...options,
+    method: 'GET'
+
+
+  }
+);}
+
+
+
+
+
+export const getGetAdminGreetingQueryKey = () => {
+    return [
+    `/api/admin/greeting`
+    ] as const;
+    }
+
+
+export const getGetAdminGreetingQueryOptions = <TData = Awaited<ReturnType<typeof getAdminGreeting>>, TError = ErrorType<void>>( options?: { query?:UseQueryOptions<Awaited<ReturnType<typeof getAdminGreeting>>, TError, TData>, request?: SecondParameter<typeof customFetch>}
+) => {
+
+const {query: queryOptions, request: requestOptions} = options ?? {};
+
+  const queryKey =  queryOptions?.queryKey ?? getGetAdminGreetingQueryKey();
+
+
+
+    const queryFn: QueryFunction<Awaited<ReturnType<typeof getAdminGreeting>>> = ({ signal }) => getAdminGreeting({ signal, ...requestOptions });
+
+
+
+
+
+   return  { queryKey, queryFn, ...queryOptions} as UseQueryOptions<Awaited<ReturnType<typeof getAdminGreeting>>, TError, TData> & { queryKey: QueryKey }
+}
+
+export type GetAdminGreetingQueryResult = NonNullable<Awaited<ReturnType<typeof getAdminGreeting>>>
+export type GetAdminGreetingQueryError = ErrorType<void>
+
+
+/**
+ * @summary Get the global greeting setting
+ */
+
+export function useGetAdminGreeting<TData = Awaited<ReturnType<typeof getAdminGreeting>>, TError = ErrorType<void>>(
+  options?: { query?:UseQueryOptions<Awaited<ReturnType<typeof getAdminGreeting>>, TError, TData>, request?: SecondParameter<typeof customFetch>}
+
+ ):  UseQueryResult<TData, TError> & { queryKey: QueryKey } {
+
+  const queryOptions = getGetAdminGreetingQueryOptions(options)
+
+  const query = useQuery(queryOptions) as  UseQueryResult<TData, TError> & { queryKey: QueryKey };
+
+  return { ...query, queryKey: queryOptions.queryKey };
+}
+
+
+
+
+
+
+
+export const getUpdateAdminGreetingUrl = () => {
+
+
+
+
+  return `/api/admin/greeting`
+}
+
+/**
+ * @summary Update the global greeting setting
+ */
+export const updateAdminGreeting = async (greetingUpdate: GreetingUpdate, options?: RequestInit): Promise<AdminGreeting> => {
+
+  return customFetch<AdminGreeting>(getUpdateAdminGreetingUrl(),
+  {
+    ...options,
+    method: 'PUT',
+    headers: { 'Content-Type': 'application/json', ...options?.headers },
+    body: JSON.stringify(
+      greetingUpdate,)
+  }
+);}
+
+
+
+
+export const getUpdateAdminGreetingMutationOptions = <TError = ErrorType<void | RevisionConflict>,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof updateAdminGreeting>>, TError,{data: BodyType<GreetingUpdate>}, TContext>, request?: SecondParameter<typeof customFetch>}
+): UseMutationOptions<Awaited<ReturnType<typeof updateAdminGreeting>>, TError,{data: BodyType<GreetingUpdate>}, TContext> => {
+
+const mutationKey = ['updateAdminGreeting'];
+const {mutation: mutationOptions, request: requestOptions} = options ?
+      options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey ?
+      options
+      : {...options, mutation: {...options.mutation, mutationKey}}
+      : {mutation: { mutationKey, }, request: undefined};
+
+
+
+
+      const mutationFn: MutationFunction<Awaited<ReturnType<typeof updateAdminGreeting>>, {data: BodyType<GreetingUpdate>}> = (props) => {
+          const {data} = props ?? {};
+
+          return  updateAdminGreeting(data,requestOptions)
+        }
+
+
+
+
+
+
+  return  { mutationFn, ...mutationOptions }}
+
+    export type UpdateAdminGreetingMutationResult = NonNullable<Awaited<ReturnType<typeof updateAdminGreeting>>>
+    export type UpdateAdminGreetingMutationBody = BodyType<GreetingUpdate>
+    export type UpdateAdminGreetingMutationError = ErrorType<void | RevisionConflict>
+
+    /**
+ * @summary Update the global greeting setting
+ */
+export const useUpdateAdminGreeting = <TError = ErrorType<void | RevisionConflict>,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof updateAdminGreeting>>, TError,{data: BodyType<GreetingUpdate>}, TContext>, request?: SecondParameter<typeof customFetch>}
+ ): UseMutationResult<
+        Awaited<ReturnType<typeof updateAdminGreeting>>,
+        TError,
+        {data: BodyType<GreetingUpdate>},
+        TContext
+      > => {
+      return useMutation(getUpdateAdminGreetingMutationOptions(options));
+    }
 
 export const getListAdminDailyQuotesUrl = (params?: ListAdminDailyQuotesParams,) => {
   const normalizedParams = new URLSearchParams();

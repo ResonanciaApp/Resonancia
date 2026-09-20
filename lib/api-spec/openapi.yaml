@@ -36,6 +36,8 @@ tags:
     description: Muro de la comunidad — composiciones Geometrix compartidas
   - name: live-sessions
     description: Sesiones en vivo con guiadores (Cal.com + Daily.co)
+  - name: greeting
+    description: Global greeting shown on Inicio
 paths:
   /cover-presets:
     get:
@@ -430,6 +432,58 @@ paths:
           content:
             application/json:
               schema: {$ref: "#/components/schemas/DailyQuoteAssignment"}
+  /greeting:
+    get:
+      operationId: getGreeting
+      tags: [greeting]
+      summary: Get the active global greeting
+      responses:
+        "200":
+          description: Public greeting configuration
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Greeting"
+  /admin/greeting:
+    get:
+      operationId: getAdminGreeting
+      tags: [admin]
+      summary: Get the global greeting setting
+      responses:
+        "200":
+          description: Editable greeting setting
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/AdminGreeting"
+        "401": {description: Not authenticated}
+        "403": {description: Admin role required}
+    put:
+      operationId: updateAdminGreeting
+      tags: [admin]
+      summary: Update the global greeting setting
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/GreetingUpdate"
+      responses:
+        "200":
+          description: Updated greeting setting
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/AdminGreeting"
+        "400": {description: Invalid greeting}
+        "401": {description: Not authenticated}
+        "403": {description: Admin role required}
+        "409":
+          description: Revision conflict
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/RevisionConflict"
   /admin/daily-quotes:
     get:
       operationId: listAdminDailyQuotes
@@ -8592,3 +8646,33 @@ components:
         objectPath:
           type: string
           pattern: "^/objects/.+"
+    Greeting:
+      type: object
+      required: [enabled, text]
+      properties:
+        enabled:
+          type: boolean
+        text:
+          type: ["string", "null"]
+          maxLength: 160
+    AdminGreeting:
+      type: object
+      required: [enabled, text, revision, updatedAt]
+      properties:
+        enabled: {type: boolean}
+        text: {type: ["string", "null"], maxLength: 160}
+        revision: {type: integer, minimum: 0}
+        updatedAt: {type: string, format: date-time}
+    GreetingUpdate:
+      type: object
+      required: [enabled, revision]
+      properties:
+        enabled: {type: boolean}
+        text: {type: ["string", "null"], maxLength: 160}
+        revision: {type: integer, minimum: 0}
+    RevisionConflict:
+      type: object
+      required: [error, currentRevision]
+      properties:
+        error: {type: string}
+        currentRevision: {type: integer, minimum: 0}
