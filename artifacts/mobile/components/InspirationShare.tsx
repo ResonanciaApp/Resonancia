@@ -98,6 +98,12 @@ async function makeWebImage(day: InspirationDay): Promise<Blob> {
   const lineHeight = Math.round(quoteSize * 1.32);
   const startY = 920 - ((lines.length - 1) * lineHeight) / 2;
   lines.forEach((line, index) => context.fillText(line, canvas.width / 2, startY + index * lineHeight));
+  if (content.author?.trim()) {
+    context.font = "italic 500 34px CormorantGaramond";
+    context.fillStyle = "rgba(249,249,249,0.86)";
+    const authorY = startY + ((lines.length - 1) * lineHeight) / 2 + lineHeight + 34;
+    context.fillText(`— ${content.author.trim()}`, canvas.width / 2, authorY);
+  }
 
   context.font = "600 34px Manrope";
   context.letterSpacing = "9px";
@@ -158,27 +164,43 @@ function StoryArtwork({
           style={[
             styles.storyQuote,
             {
-              fontSize: 60 * exportScale,
-              lineHeight: 78 * exportScale,
+              fontSize: 60 * exportScale + (isExport ? 0 : 4),
+              lineHeight: 78 * exportScale + (isExport ? 0 : 4),
             },
           ]}
         >
           {content.quote}
         </Text>
+        {!!content.author?.trim() && (
+          <Text
+            style={[
+              styles.storyAuthor,
+              {
+                fontSize: 34 * exportScale,
+                lineHeight: 42 * exportScale,
+                marginTop: 28 * exportScale,
+              },
+            ]}
+          >
+            — {content.author.trim()}
+          </Text>
+        )}
       </View>
-      <Image
-        source={WORDMARK}
-        contentFit="contain"
-        onDisplay={onLogoReady}
-        style={[
-          styles.storyLogo,
-          {
-            width: isExport ? 540 : width * 0.57,
-            height: isExport ? 150 : width * 0.16,
-            bottom: isExport ? 178 : width * 0.11,
-          },
-        ]}
-      />
+      {isExport && (
+        <Image
+          source={WORDMARK}
+          contentFit="contain"
+          onDisplay={onLogoReady}
+          style={[
+            styles.storyLogo,
+            {
+              width: 540,
+              height: 150,
+              bottom: 178,
+            },
+          ]}
+        />
+      )}
     </View>
   );
 }
@@ -198,6 +220,8 @@ export function InspirationShare({ day, onClose }: { day: InspirationDay; onClos
       checkConstraints={checkConstraints}
       makeWebImage={() => makeWebImage(day)}
       requiresLogo
+      previewScale={0.85}
+      closeOnLeft
       renderArtwork={(width, isExport, callbacks) => (
         <StoryArtwork day={day} width={width} {...callbacks} />
       )}
@@ -226,6 +250,16 @@ const styles = StyleSheet.create({
     color: "#F9F9F9",
     fontFamily: "CormorantGaramond",
     fontWeight: "500",
+    textAlign: "center",
+    textShadowColor: "rgba(0,0,0,0.42)",
+    textShadowOffset: { width: 0, height: 2 },
+    textShadowRadius: 5,
+  },
+  storyAuthor: {
+    color: "rgba(249,249,249,0.86)",
+    fontFamily: "CormorantGaramond",
+    fontWeight: "500",
+    fontStyle: "italic",
     textAlign: "center",
     textShadowColor: "rgba(0,0,0,0.42)",
     textShadowOffset: { width: 0, height: 2 },
