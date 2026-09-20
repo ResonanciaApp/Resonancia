@@ -321,7 +321,7 @@ export default function InspiracionDiariaIndex() {
           )}
         </Animated.View>
 
-        <View style={[styles.days, { bottom: Math.max(insets.bottom, 18) + 22 }]}>
+        <View style={[styles.days, { top: topInset + 59 }]}>
           {days.map((day, index) => (
             <Pressable
               key={day.date}
@@ -379,7 +379,7 @@ const styles = StyleSheet.create({
   center: { flex: 1, alignItems: "center", justifyContent: "center", gap: 12, padding: 24 },
   slide: { backgroundColor: "#191919" },
   pageContent: { ...StyleSheet.absoluteFillObject, justifyContent: "center", paddingHorizontal: 28 },
-  message: { width: "100%", alignItems: "center", transform: [{ translateY: -40 }] },
+  message: { width: "100%", alignItems: "center", transform: [{ translateY: 15 }] },
   unavailableContent: { alignItems: "center", justifyContent: "center", gap: 12 },
   quoteBlock: { width: "100%", alignItems: "center", paddingHorizontal: 5 },
   dayNumber: { color: "#fff", textAlign: "center", fontFamily: "Manrope", fontSize: 33, lineHeight: 38, fontWeight: "500" },
