@@ -440,15 +440,31 @@ export default function InnerSpaceScreen() {
                     testID={`edit-cat-${c.id}`}
                     accessibilityLabel={`Seleccionar ${c.label}`}
                     onPress={() => setEditCategory(c.id as ReflectionCategory)}
-                    style={[styles.editCategoryPill, editCategory === c.id && { backgroundColor: c.bg, borderColor: c.color }]}
+                    style={[
+                      styles.editCategoryPill,
+                      editCategory === c.id && { borderColor: "rgba(249,249,249,0.1)" },
+                    ]}
                   >
-                    <CategoryIcon category={c.id as ReflectionCategory} size={12} />
+                    <CategoryIcon
+                      category={c.id as ReflectionCategory}
+                      size={16}
+                      active={editCategory === c.id}
+                      neutralWhenInactive
+                      inactiveColor="#F9F9F9"
+                    />
                   </Pressable>
                 ))}
               </View>
 
               <TextInput
-                style={[styles.editInput, { color: colors.foreground, borderColor: colors.border, backgroundColor: 'rgba(0,0,0,0.1)' }]}
+                style={[
+                  styles.editInput,
+                  {
+                    color: colors.foreground,
+                    borderColor: "rgba(249,249,249,0.1)",
+                    backgroundColor: "rgba(0,0,0,0.1)",
+                  },
+                ]}
                 multiline
                 maxLength={300}
                 value={editMessage}
