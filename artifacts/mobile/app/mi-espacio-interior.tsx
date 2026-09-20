@@ -401,7 +401,9 @@ export default function InnerSpaceScreen() {
           <Text style={[styles.timeText, { color: colors.mutedForeground }]}>{timeLabel}</Text>
           <View style={styles.timelineDotContainer}>
             <View style={[styles.timelineLine, item.isLastInGroup && { bottom: '50%' }]} />
-            <CategoryIcon category={cat.id} size={17} />
+            <View style={styles.timelineIconSlot}>
+              <CategoryIcon category={cat.id} size={17} containerSize={31} />
+            </View>
           </View>
         </View>
 
@@ -414,16 +416,7 @@ export default function InnerSpaceScreen() {
             )}
 
             {!isEditing && (
-              <View style={styles.cardActionsContainer}>
-                <Pressable
-                  testID={`menu-${reflection.id}`}
-                  accessibilityLabel="Opciones"
-                  accessibilityRole="button"
-                  style={styles.menuButton}
-                  onPress={() => beginEditing(reflection)}
-                >
-                  <Feather name="more-horizontal" size={20} color={colors.mutedForeground} />
-                </Pressable>
+              <>
                 <Pressable
                   testID={`share-${reflection.id}`}
                   accessibilityLabel="Compartir"
@@ -434,7 +427,16 @@ export default function InnerSpaceScreen() {
                 >
                   <Feather name="share" size={16} color={colors.mutedForeground} />
                 </Pressable>
-              </View>
+                <Pressable
+                  testID={`menu-${reflection.id}`}
+                  accessibilityLabel="Opciones"
+                  accessibilityRole="button"
+                  style={styles.menuButton}
+                  onPress={() => beginEditing(reflection)}
+                >
+                  <Feather name="more-horizontal" size={20} color={colors.mutedForeground} />
+                </Pressable>
+              </>
             )}
             {isEditing && (
               <Pressable
@@ -771,6 +773,10 @@ const styles = StyleSheet.create({
     flex: 1,
     alignItems: 'flex-start',
   },
+  timelineIconSlot: {
+    width: 31,
+    alignItems: 'center',
+  },
   timelineLine: {
     position: 'absolute',
     top: 34,
@@ -800,13 +806,6 @@ const styles = StyleSheet.create({
   cardCatText: {
     fontSize: 11,
     fontWeight: '600',
-  },
-  cardActionsContainer: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    marginLeft: 'auto',
-    gap: 8,
-    transform: [{ translateY: -5 }],
   },
   menuButton: {
     padding: 4,

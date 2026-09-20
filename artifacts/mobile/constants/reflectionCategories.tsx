@@ -29,12 +29,14 @@ export const REFLECTION_CATEGORY_OPTIONS = Object.values(REFLECTION_CATEGORIES).
 export function CategoryIcon({
   category,
   size = 24,
+  containerSize,
   active = false,
   neutralWhenInactive = false,
   inactiveColor = "#F9F9F9",
 }: {
   category: ReflectionCategory;
   size?: number;
+  containerSize?: number;
   active?: boolean;
   neutralWhenInactive?: boolean;
   inactiveColor?: string;
@@ -42,14 +44,15 @@ export function CategoryIcon({
   const cat = REFLECTION_CATEGORIES[category];
   const IconComp = cat.iconFamily === "Feather" ? Feather : MaterialCommunityIcons;
   const isNeutral = neutralWhenInactive && !active;
+  const resolvedContainerSize = containerSize ?? size * 2.2;
   return (
     <View
       style={[
         {
           backgroundColor: neutralWhenInactive ? "transparent" : cat.bg,
-          width: neutralWhenInactive ? size : size * 2.2,
-          height: neutralWhenInactive ? size : size * 2.2,
-          borderRadius: neutralWhenInactive ? 0 : size * 1.1,
+          width: neutralWhenInactive ? size : resolvedContainerSize,
+          height: neutralWhenInactive ? size : resolvedContainerSize,
+          borderRadius: neutralWhenInactive ? 0 : resolvedContainerSize / 2,
           alignSelf: "center",
           alignItems: "center",
           justifyContent: "center",
