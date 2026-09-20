@@ -1,28 +1,51 @@
-import React, { useState, useEffect, useRef } from "react";
+import React, { useState, useEffect, useMemo, useRef } from "react";
 import { View, Text, StyleSheet, Pressable, ScrollView } from "react-native";
 import { Image } from "expo-image";
 import { Feather } from "@expo/vector-icons";
+import { Gesture, GestureDetector } from "react-native-gesture-handler";
+import Animated, {
+  runOnJS,
+  useAnimatedStyle,
+  useSharedValue,
+} from "react-native-reanimated";
 
 import type { Reflection } from "@workspace/api-client-react";
 import { StoryShareModal, STORY_WIDTH } from "./StoryShareModal";
 import { useCoverPresetCatalogState } from "@/lib/cover-preset-catalog";
-import { canShareReflection } from "@/lib/reflection-story-logic";
+import {
+  canShareReflection,
+  clampReflectionStoryComposition,
+  DEFAULT_REFLECTION_STORY_COMPOSITION,
+  REFLECTION_STORY_MAX_BACKGROUND_SCALE,
+  REFLECTION_STORY_MIN_BACKGROUND_SCALE,
+  REFLECTION_STORY_TEXT_X_LIMIT,
+  REFLECTION_STORY_TEXT_Y_LIMIT,
+  type ReflectionStoryComposition,
+} from "@/lib/reflection-story-logic";
 
-function ReflectionArtwork({
-  reflection,
-  width,
-  bgImageSource,
-  onReady,
-  onFailure,
-}: {
+const STORY_QUOTE_TOP = 610;
+const STORY_QUOTE_HEIGHT = 700;
+
+type ReflectionArtworkProps = {
   reflection: Reflection;
   width: number;
   bgImageSource: number | { uri: string } | undefined;
+  composition: ReflectionStoryComposition;
   onReady?: () => void;
   onFailure?: () => void;
-}) {
+};
+
+function StoryArtworkFrame({
+  reflection,
+  width,
+  bgImageSource,
+  composition,
+  onReady,
+  onFailure,
+}: ReflectionArtworkProps) {
   const exportScale = width / STORY_WIDTH;
   const isExport = width === STORY_WIDTH;
+  const height = width * 16 / 9;
 
   return (
     <View
@@ -30,27 +53,50 @@ function ReflectionArtwork({
         styles.storyArtwork,
         {
           width,
-          height: width * 16 / 9,
+          height,
           borderRadius: isExport ? 0 : 22,
         },
       ]}
     >
-      <Image
-        source={bgImageSource}
-        style={StyleSheet.absoluteFillObject}
-        contentFit="cover"
-        onLoad={onReady}
-        onError={onFailure}
-      />
+      <View
+        style={[
+          StyleSheet.absoluteFillObject,
+          {
+            transform: [
+              { translateX: composition.backgroundX * width },
+              { translateY: composition.backgroundY * height },
+            ],
+          },
+        ]}
+      >
+        <View
+          style={[
+            StyleSheet.absoluteFillObject,
+            { transform: [{ scale: composition.backgroundScale }] },
+          ]}
+        >
+          <Image
+            source={bgImageSource}
+            style={StyleSheet.absoluteFillObject}
+            contentFit="cover"
+            onLoad={onReady}
+            onError={onFailure}
+          />
+        </View>
+      </View>
       <View pointerEvents="none" style={styles.storyShade} />
       <View
         pointerEvents="none"
         style={[
           styles.storyQuoteRegion,
           {
-            top: 200 * exportScale,
-            bottom: 200 * exportScale,
+            top: STORY_QUOTE_TOP * exportScale,
+            height: STORY_QUOTE_HEIGHT * exportScale,
             paddingHorizontal: 120 * exportScale,
+            transform: [
+              { translateX: composition.textX * width },
+              { translateY: composition.textY * height },
+            ],
           },
         ]}
       >
@@ -73,10 +119,209 @@ function ReflectionArtwork({
   );
 }
 
+function InteractiveReflectionArtwork({
+  reflection,
+  width,
+  bgImageSource,
+  composition,
+  onCompositionChange,
+  onFailure,
+}: ReflectionArtworkProps & {
+  onCompositionChange: (composition: ReflectionStoryComposition) => void;
+}) {
+  const height = width * 16 / 9;
+  const backgroundScale = useSharedValue(composition.backgroundScale);
+  const backgroundX = useSharedValue(composition.backgroundX);
+  const backgroundY = useSharedValue(composition.backgroundY);
+  const textX = useSharedValue(composition.textX);
+  const textY = useSharedValue(composition.textY);
+  const startScale = useSharedValue(composition.backgroundScale);
+  const startBackgroundX = useSharedValue(composition.backgroundX);
+  const startBackgroundY = useSharedValue(composition.backgroundY);
+  const startTextX = useSharedValue(composition.textX);
+  const startTextY = useSharedValue(composition.textY);
+
+  useEffect(() => {
+    backgroundScale.value = composition.backgroundScale;
+    backgroundX.value = composition.backgroundX;
+    backgroundY.value = composition.backgroundY;
+    textX.value = composition.textX;
+    textY.value = composition.textY;
+  }, [
+    backgroundScale,
+    backgroundX,
+    backgroundY,
+    composition,
+    textX,
+    textY,
+  ]);
+
+  const commitComposition = () => {
+    "worklet";
+    runOnJS(onCompositionChange)({
+      backgroundScale: backgroundScale.value,
+      backgroundX: backgroundX.value,
+      backgroundY: backgroundY.value,
+      textX: textX.value,
+      textY: textY.value,
+    });
+  };
+
+  const backgroundPan = useMemo(
+    () => Gesture.Pan()
+      .minPointers(1)
+      .maxPointers(1)
+      .minDistance(3)
+      .onBegin(() => {
+        startBackgroundX.value = backgroundX.value;
+        startBackgroundY.value = backgroundY.value;
+      })
+      .onUpdate((event) => {
+        const offsetLimit = (backgroundScale.value - 1) / 2;
+        backgroundX.value = Math.min(
+          offsetLimit,
+          Math.max(-offsetLimit, startBackgroundX.value + event.translationX / width),
+        );
+        backgroundY.value = Math.min(
+          offsetLimit,
+          Math.max(-offsetLimit, startBackgroundY.value + event.translationY / height),
+        );
+      })
+      .onFinalize(commitComposition),
+    [
+      backgroundScale,
+      backgroundX,
+      backgroundY,
+      height,
+      startBackgroundX,
+      startBackgroundY,
+      width,
+    ],
+  );
+
+  const backgroundPinch = useMemo(
+    () => Gesture.Pinch()
+      .onBegin(() => {
+        startScale.value = backgroundScale.value;
+      })
+      .onUpdate((event) => {
+        const nextScale = Math.min(
+          REFLECTION_STORY_MAX_BACKGROUND_SCALE,
+          Math.max(REFLECTION_STORY_MIN_BACKGROUND_SCALE, startScale.value * event.scale),
+        );
+        const offsetLimit = (nextScale - 1) / 2;
+        backgroundScale.value = nextScale;
+        backgroundX.value = Math.min(offsetLimit, Math.max(-offsetLimit, backgroundX.value));
+        backgroundY.value = Math.min(offsetLimit, Math.max(-offsetLimit, backgroundY.value));
+      })
+      .onFinalize(commitComposition),
+    [
+      backgroundScale,
+      backgroundX,
+      backgroundY,
+      startScale,
+    ],
+  );
+
+  const textPan = useMemo(
+    () => Gesture.Pan()
+      .minPointers(1)
+      .maxPointers(1)
+      .minDistance(1)
+      .onBegin(() => {
+        startTextX.value = textX.value;
+        startTextY.value = textY.value;
+      })
+      .onUpdate((event) => {
+        textX.value = Math.min(
+          REFLECTION_STORY_TEXT_X_LIMIT,
+          Math.max(-REFLECTION_STORY_TEXT_X_LIMIT, startTextX.value + event.translationX / width),
+        );
+        textY.value = Math.min(
+          REFLECTION_STORY_TEXT_Y_LIMIT,
+          Math.max(-REFLECTION_STORY_TEXT_Y_LIMIT, startTextY.value + event.translationY / height),
+        );
+      })
+      .onFinalize(commitComposition),
+    [height, startTextX, startTextY, textX, textY, width],
+  );
+
+  const backgroundGesture = useMemo(
+    () => Gesture.Simultaneous(backgroundPan, backgroundPinch),
+    [backgroundPan, backgroundPinch],
+  );
+  const backgroundTranslateStyle = useAnimatedStyle(() => ({
+    transform: [
+      { translateX: backgroundX.value * width },
+      { translateY: backgroundY.value * height },
+    ],
+  }));
+  const backgroundScaleStyle = useAnimatedStyle(() => ({
+    transform: [{ scale: backgroundScale.value }],
+  }));
+  const textPositionStyle = useAnimatedStyle(() => ({
+    transform: [
+      { translateX: textX.value * width },
+      { translateY: textY.value * height },
+    ],
+  }));
+
+  return (
+    <View style={[styles.storyArtwork, { width, height, borderRadius: 22 }]}>
+      <GestureDetector gesture={backgroundGesture}>
+        <Animated.View style={StyleSheet.absoluteFillObject}>
+        <Animated.View style={[StyleSheet.absoluteFillObject, backgroundTranslateStyle]}>
+          <Animated.View style={[StyleSheet.absoluteFillObject, backgroundScaleStyle]}>
+            <Image
+              source={bgImageSource}
+              style={StyleSheet.absoluteFillObject}
+              contentFit="cover"
+              onError={onFailure}
+            />
+          </Animated.View>
+        </Animated.View>
+        </Animated.View>
+      </GestureDetector>
+      <View pointerEvents="none" style={styles.storyShade} />
+      <GestureDetector gesture={textPan}>
+        <Animated.View
+          style={[
+            styles.interactiveQuoteRegion,
+            {
+              top: STORY_QUOTE_TOP * width / STORY_WIDTH,
+              height: STORY_QUOTE_HEIGHT * width / STORY_WIDTH,
+              paddingHorizontal: 120 * width / STORY_WIDTH,
+            },
+            textPositionStyle,
+          ]}
+        >
+          <Text
+            numberOfLines={14}
+            adjustsFontSizeToFit
+            minimumFontScale={0.5}
+            style={[
+              styles.storyQuote,
+              {
+                fontSize: 60 * width / STORY_WIDTH,
+                lineHeight: 78 * width / STORY_WIDTH,
+              },
+            ]}
+          >
+            {reflection.message.trim()}
+          </Text>
+        </Animated.View>
+      </GestureDetector>
+    </View>
+  );
+}
+
 export function ReflectionShare({ reflection, onClose }: { reflection: Reflection; onClose: () => void }) {
   const { items: catalog, hydrated } = useCoverPresetCatalogState("reflection-story");
   const [selectedBgId, setSelectedBgId] = useState<string | null>(() => catalog[0]?.id ?? null);
   const [failedRemoteIds, setFailedRemoteIds] = useState<Set<string>>(() => new Set());
+  const [composition, setComposition] = useState<ReflectionStoryComposition>(
+    DEFAULT_REFLECTION_STORY_COMPOSITION,
+  );
   const userSelectedBackground = useRef(false);
 
   useEffect(() => {
@@ -101,31 +346,71 @@ export function ReflectionShare({ reflection, onClose }: { reflection: Reflectio
       throw new Error("La reflexión supera el límite de 160 caracteres para una historia.");
     }
   };
+  const updateComposition = (nextComposition: ReflectionStoryComposition) => {
+    setComposition(clampReflectionStoryComposition(nextComposition));
+  };
+  const resetComposition = () => {
+    setComposition(DEFAULT_REFLECTION_STORY_COMPOSITION);
+  };
 
   return (
     <StoryShareModal
       title="Compartir"
       onClose={onClose}
       checkConstraints={checkConstraints}
-      captureKey={`${selectedBgId ?? "initial"}:${selectedUsesFallback ? "fallback" : "primary"}`}
+      captureKey={[
+        selectedBgId ?? "initial",
+        selectedUsesFallback ? "fallback" : "primary",
+        composition.backgroundScale.toFixed(4),
+        composition.backgroundX.toFixed(4),
+        composition.backgroundY.toFixed(4),
+        composition.textX.toFixed(4),
+        composition.textY.toFixed(4),
+      ].join(":")}
+      assetKey={`${selectedBgId ?? "initial"}:${selectedUsesFallback ? "fallback" : "primary"}`}
       showGenericShare={false}
       previewScale={0.8}
-      renderArtwork={(width, isExport, callbacks) => (
-        <ReflectionArtwork
-          reflection={reflection}
-          width={width}
-          bgImageSource={selectedImageSource}
-          onReady={callbacks.onReady}
-          onFailure={() => {
-            if (selectedItem?.fallbackSource && !selectedUsesFallback) {
-              setFailedRemoteIds((current) => new Set(current).add(selectedItem.id));
-              return;
-            }
-            callbacks.onFailure?.();
-          }}
-        />
-      )}
+      renderArtwork={(width, isExport, callbacks) => {
+        const handleFailure = () => {
+          if (selectedItem?.fallbackSource && !selectedUsesFallback) {
+            setFailedRemoteIds((current) => new Set(current).add(selectedItem.id));
+            return;
+          }
+          callbacks.onFailure?.();
+        };
+        return isExport ? (
+          <StoryArtworkFrame
+            reflection={reflection}
+            width={width}
+            bgImageSource={selectedImageSource}
+            composition={composition}
+            onReady={callbacks.onReady}
+            onFailure={handleFailure}
+          />
+        ) : (
+          <InteractiveReflectionArtwork
+            reflection={reflection}
+            width={width}
+            bgImageSource={selectedImageSource}
+            composition={composition}
+            onCompositionChange={updateComposition}
+            onFailure={handleFailure}
+          />
+        );
+      }}
     >
+      <View style={styles.editorHelpRow}>
+        <Text style={styles.editorHelp}>Arrastra el fondo · Pellizca para ampliar · Mueve el texto</Text>
+        <Pressable
+          accessibilityRole="button"
+          accessibilityLabel="Restablecer composición"
+          onPress={resetComposition}
+          style={({ pressed }) => [styles.resetButton, pressed && styles.resetButtonPressed]}
+        >
+          <Feather name="rotate-ccw" size={15} color="#F9F9F9" />
+          <Text style={styles.resetButtonText}>Restablecer</Text>
+        </Pressable>
+      </View>
       <View style={styles.galleryContainer}>
         <ScrollView contentContainerStyle={styles.galleryContent} showsVerticalScrollIndicator={false}>
           {catalog.map((item) => {
@@ -137,6 +422,12 @@ export function ReflectionShare({ reflection, onClose }: { reflection: Reflectio
                 onPress={() => {
                   userSelectedBackground.current = true;
                   setSelectedBgId(item.id);
+                  setComposition((current) => ({
+                    ...current,
+                    backgroundScale: 1,
+                    backgroundX: 0,
+                    backgroundY: 0,
+                  }));
                 }}
                 style={[styles.galleryItem, isSelected && styles.galleryItemSelected]}
               >
@@ -180,6 +471,13 @@ const styles = StyleSheet.create({
     alignItems: "center",
     justifyContent: "center",
   },
+  interactiveQuoteRegion: {
+    position: "absolute",
+    left: 0,
+    right: 0,
+    alignItems: "center",
+    justifyContent: "center",
+  },
   storyQuote: {
     width: "100%",
     color: "#F9F9F9",
@@ -195,6 +493,39 @@ const styles = StyleSheet.create({
     backgroundColor: "rgba(0,0,0,0.2)",
     borderRadius: 12,
     padding: 8,
+  },
+  editorHelpRow: {
+    width: "100%",
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "space-between",
+    gap: 10,
+    marginBottom: 10,
+  },
+  editorHelp: {
+    flex: 1,
+    color: "rgba(249,249,249,0.62)",
+    fontSize: 11,
+    lineHeight: 14,
+  },
+  resetButton: {
+    flexDirection: "row",
+    alignItems: "center",
+    gap: 5,
+    paddingHorizontal: 9,
+    paddingVertical: 7,
+    borderRadius: 16,
+    backgroundColor: "rgba(249,249,249,0.08)",
+    borderWidth: 1,
+    borderColor: "rgba(249,249,249,0.12)",
+  },
+  resetButtonPressed: {
+    opacity: 0.65,
+  },
+  resetButtonText: {
+    color: "#F9F9F9",
+    fontSize: 11,
+    fontWeight: "600",
   },
   galleryContent: {
     flexDirection: "row",

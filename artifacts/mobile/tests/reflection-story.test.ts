@@ -4,6 +4,9 @@ import assert from "node:assert/strict";
 import { padWithBootstrap, type ResolvedCatalogRecord } from "../lib/cover-preset-catalog-logic.ts";
 import {
   canShareReflection,
+  clampReflectionStoryComposition,
+  DEFAULT_REFLECTION_STORY_COMPOSITION,
+  reflectionBackgroundOffsetLimit,
   reflectionCharacterCount,
 } from "../lib/reflection-story-logic.ts";
 
@@ -43,4 +46,45 @@ test("Text length constraint: <=160 is allowed, >160 is rejected", () => {
   assert.equal(reflectionCharacterCount("🧘".repeat(160)), 160, "Emoji count as visible characters");
   assert.equal(reflectionCharacterCount("👨‍👩‍👧‍👦".repeat(160)), 160, "Joined emoji count as one grapheme");
   assert.equal(reflectionCharacterCount("a\u0301".repeat(160)), 160, "Combining accents count as one grapheme");
+});
+
+test("Story background offsets stay inside the crop at every zoom level", () => {
+  assert.equal(reflectionBackgroundOffsetLimit(1), 0);
+  assert.equal(reflectionBackgroundOffsetLimit(2), 0.5);
+  assert.equal(reflectionBackgroundOffsetLimit(3), 1);
+  assert.equal(reflectionBackgroundOffsetLimit(99), 1, "Scale is capped before calculating limits");
+});
+
+test("Story composition clamps zoom, background crop, and text safe area", () => {
+  assert.deepEqual(
+    clampReflectionStoryComposition({
+      backgroundScale: 1,
+      backgroundX: 0.4,
+      backgroundY: -0.4,
+      textX: 1,
+      textY: -1,
+    }),
+    {
+      backgroundScale: 1,
+      backgroundX: 0,
+      backgroundY: 0,
+      textX: 100 / 1080,
+      textY: -500 / 1920,
+    },
+  );
+
+  assert.deepEqual(
+    clampReflectionStoryComposition({
+      ...DEFAULT_REFLECTION_STORY_COMPOSITION,
+      backgroundScale: 2,
+      backgroundX: 0.75,
+      backgroundY: -0.75,
+    }),
+    {
+      ...DEFAULT_REFLECTION_STORY_COMPOSITION,
+      backgroundScale: 2,
+      backgroundX: 0.5,
+      backgroundY: -0.5,
+    },
+  );
 });

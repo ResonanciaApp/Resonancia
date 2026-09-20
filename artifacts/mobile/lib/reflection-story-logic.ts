@@ -1,4 +1,62 @@
 export const REFLECTION_SHARE_CHARACTER_LIMIT = 160;
+export const REFLECTION_STORY_MIN_BACKGROUND_SCALE = 1;
+export const REFLECTION_STORY_MAX_BACKGROUND_SCALE = 3;
+export const REFLECTION_STORY_TEXT_X_LIMIT = 100 / 1080;
+export const REFLECTION_STORY_TEXT_Y_LIMIT = 500 / 1920;
+
+export type ReflectionStoryComposition = {
+  backgroundScale: number;
+  backgroundX: number;
+  backgroundY: number;
+  textX: number;
+  textY: number;
+};
+
+export const DEFAULT_REFLECTION_STORY_COMPOSITION: ReflectionStoryComposition = {
+  backgroundScale: 1,
+  backgroundX: 0,
+  backgroundY: 0,
+  textX: 0,
+  textY: 0,
+};
+
+function clamp(value: number, minimum: number, maximum: number): number {
+  return Math.min(maximum, Math.max(minimum, value));
+}
+
+export function reflectionBackgroundOffsetLimit(scale: number): number {
+  const safeScale = clamp(
+    scale,
+    REFLECTION_STORY_MIN_BACKGROUND_SCALE,
+    REFLECTION_STORY_MAX_BACKGROUND_SCALE,
+  );
+  return (safeScale - 1) / 2;
+}
+
+export function clampReflectionStoryComposition(
+  composition: ReflectionStoryComposition,
+): ReflectionStoryComposition {
+  const backgroundScale = clamp(
+    composition.backgroundScale,
+    REFLECTION_STORY_MIN_BACKGROUND_SCALE,
+    REFLECTION_STORY_MAX_BACKGROUND_SCALE,
+  );
+  const backgroundOffsetLimit = reflectionBackgroundOffsetLimit(backgroundScale);
+  const backgroundX = backgroundOffsetLimit === 0
+    ? 0
+    : clamp(composition.backgroundX, -backgroundOffsetLimit, backgroundOffsetLimit);
+  const backgroundY = backgroundOffsetLimit === 0
+    ? 0
+    : clamp(composition.backgroundY, -backgroundOffsetLimit, backgroundOffsetLimit);
+
+  return {
+    backgroundScale,
+    backgroundX,
+    backgroundY,
+    textX: clamp(composition.textX, -REFLECTION_STORY_TEXT_X_LIMIT, REFLECTION_STORY_TEXT_X_LIMIT),
+    textY: clamp(composition.textY, -REFLECTION_STORY_TEXT_Y_LIMIT, REFLECTION_STORY_TEXT_Y_LIMIT),
+  };
+}
 
 type SegmenterLike = {
   segment(value: string): Iterable<unknown>;

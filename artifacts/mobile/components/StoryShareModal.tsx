@@ -28,6 +28,7 @@ export interface StoryShareModalProps {
   makeWebImage?: () => Promise<Blob>;
   checkConstraints?: () => void;
   captureKey?: string;
+  assetKey?: string;
   requiresLogo?: boolean;
   showGenericShare?: boolean;
   previewScale?: number;
@@ -41,6 +42,7 @@ export function StoryShareModal({
   makeWebImage,
   checkConstraints,
   captureKey = "default",
+  assetKey,
   requiresLogo = false,
   showGenericShare = true,
   previewScale = 1,
@@ -113,12 +115,15 @@ export function StoryShareModal({
   };
 
   useEffect(() => {
-    setReady(false);
-    captureFailed.current = false;
     file.current = null;
     if (uri.current) releaseCapture(uri.current);
     uri.current = null;
   }, [captureKey]);
+
+  useEffect(() => {
+    setReady(false);
+    captureFailed.current = false;
+  }, [assetKey ?? captureKey]);
 
   const shareGeneric = async () => {
     setBusy("share");
