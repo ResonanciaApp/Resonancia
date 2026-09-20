@@ -2675,7 +2675,7 @@ const styles = StyleSheet.create({
     marginTop: 5,
   },
   practiceReminderSection: {
-    marginTop: 29,
+    marginTop: -7,
     marginBottom: 53,
     padding: 16,
     borderRadius: 19,
@@ -2699,8 +2699,8 @@ const styles = StyleSheet.create({
   },
   practiceReminderTitle: {
     fontFamily: "Manrope",
-    fontSize: 17,
-    fontWeight: "700",
+    fontSize: 18,
+    fontWeight: "600",
   },
   practiceReminderSubtitle: {
     fontFamily: "Manrope",
