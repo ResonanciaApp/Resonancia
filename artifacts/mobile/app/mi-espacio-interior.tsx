@@ -794,7 +794,7 @@ const styles = StyleSheet.create({
     position: 'absolute',
     top: 34,
     bottom: -13,
-    left: 7,
+    left: 15,
     width: 1,
     backgroundColor: "rgba(249,249,249,0.06)",
   },

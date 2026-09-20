@@ -36,11 +36,11 @@ test("Reflection story catalog maintains exactly 40 stable ordered slots", () =>
   assert.equal(finalCatalog[1].source, "remote-6", "Remote source must be preserved");
 });
 
-test("Text length constraint: <=100 is allowed, >100 is rejected", () => {
-  assert.equal(canShareReflection("A".repeat(100)), true);
-  assert.equal(canShareReflection("A".repeat(101)), false);
-  assert.equal(canShareReflection(`  ${"A".repeat(100)}  `), true);
-  assert.equal(reflectionCharacterCount("🧘".repeat(100)), 100, "Emoji count as visible characters");
-  assert.equal(reflectionCharacterCount("👨‍👩‍👧‍👦".repeat(100)), 100, "Joined emoji count as one grapheme");
-  assert.equal(reflectionCharacterCount("a\u0301".repeat(100)), 100, "Combining accents count as one grapheme");
+test("Text length constraint: <=160 is allowed, >160 is rejected", () => {
+  assert.equal(canShareReflection("A".repeat(160)), true);
+  assert.equal(canShareReflection("A".repeat(161)), false);
+  assert.equal(canShareReflection(`  ${"A".repeat(160)}  `), true);
+  assert.equal(reflectionCharacterCount("🧘".repeat(160)), 160, "Emoji count as visible characters");
+  assert.equal(reflectionCharacterCount("👨‍👩‍👧‍👦".repeat(160)), 160, "Joined emoji count as one grapheme");
+  assert.equal(reflectionCharacterCount("a\u0301".repeat(160)), 160, "Combining accents count as one grapheme");
 });

@@ -1,4 +1,4 @@
-export const REFLECTION_SHARE_CHARACTER_LIMIT = 100;
+export const REFLECTION_SHARE_CHARACTER_LIMIT = 160;
 
 type SegmenterLike = {
   segment(value: string): Iterable<unknown>;

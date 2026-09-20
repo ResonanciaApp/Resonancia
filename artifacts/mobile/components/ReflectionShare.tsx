@@ -98,7 +98,7 @@ export function ReflectionShare({ reflection, onClose }: { reflection: Reflectio
 
   const checkConstraints = () => {
     if (!canShareReflection(reflection.message)) {
-      throw new Error("El texto es demasiado largo para una historia.");
+      throw new Error("La reflexión supera el límite de 160 caracteres para una historia.");
     }
   };
 
