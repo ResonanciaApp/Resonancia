@@ -6,16 +6,18 @@ import { z } from "zod/v4";
 export const COVER_PRESET_SCOPES = ["mix", "playlist", "profile", "reflection-story"] as const;
 export type CoverPresetScope = (typeof COVER_PRESET_SCOPES)[number];
 
-export const REFLECTION_STORY_BUILTIN_KEYS = [
+const REFLECTION_STORY_BASE_BUILTIN_KEYS = [
   "cosmic-nebula", "moon-valley", "earth-orbit", "galaxy-lake", "desert-stars",
   "mist-forest", "redwood-light", "autumn-river", "moss-waterfall", "snow-pines",
   "quiet-ocean", "coastal-cliffs", "river-canyon", "rain-lagoon", "ice-lagoon",
   "birds-dawn", "crane-marsh", "elephant-savanna", "deer-meadow", "whale-depths",
   "wild-horses", "mountain-clouds", "volcanic-island", "lavender-hills", "northern-lights",
-  "cosmic-nebula", "moon-valley", "earth-orbit", "galaxy-lake", "desert-stars",
-  "mist-forest", "redwood-light", "autumn-river", "moss-waterfall", "snow-pines",
-  "quiet-ocean", "coastal-cliffs", "river-canyon", "rain-lagoon", "ice-lagoon",
 ] as const;
+
+export const REFLECTION_STORY_BUILTIN_KEYS = Array.from(
+  { length: 100 },
+  (_, index) => REFLECTION_STORY_BASE_BUILTIN_KEYS[index % REFLECTION_STORY_BASE_BUILTIN_KEYS.length],
+);
 
 export const coverPresetScopeEnum = pgEnum("cover_preset_scope", COVER_PRESET_SCOPES);
 

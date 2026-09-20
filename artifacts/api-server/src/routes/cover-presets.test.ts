@@ -137,11 +137,11 @@ describe("cover preset catalog security and profile identity", () => {
     await db.delete(uploadsTable).where(eq(uploadsTable.id, upload.id));
   });
 
-  it("enforces the 40-image limit for reflection story backgrounds", async () => {
+  it("enforces the 100-image limit for reflection story backgrounds", async () => {
     authAs(admin);
     const existingReflectionRows = await db.select().from(coverPresetsTable)
       .where(eq(coverPresetsTable.scope, "reflection-story"));
-    const rows = Array.from({ length: Math.max(0, 40 - existingReflectionRows.length) }, (_, index) => ({
+    const rows = Array.from({ length: Math.max(0, 100 - existingReflectionRows.length) }, (_, index) => ({
       id: `reflection-story:limit-${suffix}-${index}`,
       scope: "reflection-story" as const,
       key: `limit-${suffix}-${index}`,
@@ -153,7 +153,7 @@ describe("cover preset catalog security and profile identity", () => {
     if (rows.length > 0) await db.insert(coverPresetsTable).values(rows);
     const publicList = await request(app).get("/api/cover-presets?scope=reflection-story");
     expect(publicList.status).toBe(200);
-    expect(publicList.body.presets).toHaveLength(40);
+    expect(publicList.body.presets).toHaveLength(100);
     expect(publicList.body.presets[0].sortOrder).toBe(0);
     const [upload] = await db.insert(uploadsTable).values({
       userId: admin.id,
@@ -168,7 +168,7 @@ describe("cover preset catalog security and profile identity", () => {
       objectPath: upload.objectPath,
     });
     expect(response.status).toBe(409);
-    expect(response.body.error).toContain("40");
+    expect(response.body.error).toContain("100");
     expect(storageState.deleteObjectEntity).toHaveBeenCalledWith(upload.objectPath);
     expect(await db.select().from(uploadsTable).where(eq(uploadsTable.id, upload.id))).toHaveLength(0);
     if (rows.length > 0) {
@@ -176,13 +176,15 @@ describe("cover preset catalog security and profile identity", () => {
     }
   });
 
-  it("maps only the 40 permanent reflection story slots to bundled backgrounds", () => {
+  it("maps only the 100 permanent reflection story slots to bundled backgrounds", () => {
     expect(reflectionStoryBuiltinKey("01")).toBe("cosmic-nebula");
     expect(reflectionStoryBuiltinKey("25")).toBe("northern-lights");
     expect(reflectionStoryBuiltinKey("26")).toBe("cosmic-nebula");
     expect(reflectionStoryBuiltinKey("40")).toBe("ice-lagoon");
+    expect(reflectionStoryBuiltinKey("41")).toBe("birds-dawn");
+    expect(reflectionStoryBuiltinKey("100")).toBe("northern-lights");
     expect(reflectionStoryBuiltinKey("00")).toBeUndefined();
-    expect(reflectionStoryBuiltinKey("41")).toBeUndefined();
+    expect(reflectionStoryBuiltinKey("101")).toBeUndefined();
   });
 
   it("does not delete an uploaded object while another entity references it", async () => {

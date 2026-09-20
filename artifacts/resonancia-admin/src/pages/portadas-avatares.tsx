@@ -81,7 +81,7 @@ const SCOPES: { value: CoverPresetScope; label: string; description: string }[] 
   {
     value: "reflection-story",
     label: "Mi viaje interior",
-    description: "40 fondos para compartir reflexiones como historias.",
+    description: "100 fondos para compartir reflexiones como historias.",
   },
 ];
 
@@ -92,7 +92,7 @@ export default function PortadasAvataresPage() {
         <h1 className="text-2xl font-bold">Portadas y avatares</h1>
         <p className="mt-1 text-sm text-muted-foreground">
           Administrá las imágenes predeterminadas que los usuarios pueden elegir.
-            Podés subir hasta 50 opciones por categoría. Mi viaje interior mantiene 40 posiciones fijas.
+            Podés subir hasta 50 opciones por categoría. Mi viaje interior mantiene 100 posiciones fijas.
         </p>
       </div>
 
@@ -135,7 +135,7 @@ function ScopeSection({
   }, [query.error, scope.label]);
 
   const isFixedSlots = scope.value === "reflection-story";
-  const maxSlots = isFixedSlots ? 40 : 50;
+  const maxSlots = isFixedSlots ? 100 : 50;
   const maxReached = presets.length >= maxSlots;
 
   const isMutating = uploading || createPreset.isPending || updatePreset.isPending || deletePreset.isPending || reorderPresets.isPending || cleanupUpload.isPending;

@@ -31,7 +31,7 @@ const router: IRouter = Router();
 const objectStorageService = new ObjectStorageService();
 const REFLECTION_STORY_SCOPE = "reflection-story" as const;
 const DEFAULT_COVER_PRESET_LIMIT = 50;
-const REFLECTION_STORY_PRESET_LIMIT = 40;
+const REFLECTION_STORY_PRESET_LIMIT = 100;
 
 function serializePreset(preset: CoverPreset) {
   return {
@@ -91,7 +91,7 @@ function scopeValidationMessage() {
 }
 
 export function reflectionStoryBuiltinKey(key: string): string | undefined {
-  if (!/^\d{2}$/.test(key)) return undefined;
+  if (!/^(?:0[1-9]|[1-9]\d|100)$/.test(key)) return undefined;
   return REFLECTION_STORY_BUILTIN_KEYS[Number.parseInt(key, 10) - 1];
 }
 
@@ -133,7 +133,7 @@ router.post("/admin/cover-presets", requireAuth, requireRole("admin"), async (re
   const me = req.currentUser!;
   if (scope === REFLECTION_STORY_SCOPE) {
     if (objectPath) await cleanupUnclaimedObject(objectPath, me.id, req.log);
-    res.status(409).json({ error: "Mi viaje interior usa 40 posiciones fijas; reemplaza una posición existente" });
+    res.status(409).json({ error: "Mi viaje interior usa 100 posiciones fijas; reemplaza una posición existente" });
     return;
   }
   if (!objectPath) {
@@ -240,7 +240,7 @@ router.put("/admin/cover-presets/order", requireAuth, requireRole("admin"), asyn
       return;
     }
     if (err instanceof Error && err.message === "fixed_slots") {
-      res.status(409).json({ error: "Mi viaje interior debe conservar exactamente sus 40 posiciones fijas" });
+      res.status(409).json({ error: "Mi viaje interior debe conservar exactamente sus 100 posiciones fijas" });
       return;
     }
     req.log.error({ err }, "error reordering cover presets");
