@@ -239,6 +239,7 @@ export function InspirationShare({ day, onClose }: { day: InspirationDay; onClos
       requiresLogo
       previewScale={0.85}
       closeOnLeft
+      lightActionButtons
       renderArtwork={(width, isExport, callbacks) => (
         <StoryArtwork day={day} width={width} {...callbacks} />
       )}

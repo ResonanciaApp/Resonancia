@@ -42,6 +42,7 @@ export interface StoryShareModalProps {
   titleOffsetY?: number;
   headerControlsOffsetY?: number;
   lightInstagramButton?: boolean;
+  lightActionButtons?: boolean;
   compactFooter?: boolean;
   embedded?: boolean;
   children?: React.ReactNode;
@@ -67,6 +68,7 @@ export function StoryShareModal({
   titleOffsetY = 0,
   headerControlsOffsetY = 0,
   lightInstagramButton = false,
+  lightActionButtons = false,
   compactFooter = false,
   embedded = false,
   children,
@@ -366,15 +368,26 @@ export function StoryShareModal({
               compactFooter && styles.actionButtonCompact,
               styles.instagramButton,
               lightInstagramButton && styles.instagramButtonLight,
+              lightActionButtons && styles.instagramButtonSoftLight,
               (pressed || busy !== null) && styles.pressed,
             ]}
           >
             {busy === "instagram" ? (
-              <ActivityIndicator color={lightInstagramButton ? "#141414" : "#F9F9F9"} />
+              <ActivityIndicator color={lightInstagramButton || lightActionButtons ? "#303030" : "#F9F9F9"} />
             ) : (
               <>
-                <FontAwesome name="instagram" size={23} color={lightInstagramButton ? "#141414" : "#F9F9F9"} />
-                <Text style={[styles.actionText, lightInstagramButton && styles.actionTextDark]}>
+                <FontAwesome
+                  name="instagram"
+                  size={23}
+                  color={lightInstagramButton || lightActionButtons ? "#303030" : "#F9F9F9"}
+                />
+                <Text
+                  style={[
+                    styles.actionText,
+                    lightInstagramButton && styles.actionTextDark,
+                    lightActionButtons && styles.actionTextSoftDark,
+                  ]}
+                >
                   Compartir en tus historias
                 </Text>
               </>
@@ -390,13 +403,16 @@ export function StoryShareModal({
                 styles.actionButton,
                 compactFooter && styles.actionButtonCompact,
                 styles.shareButton,
+                lightActionButtons && styles.shareButtonLight,
                 (pressed || busy !== null) && styles.pressed,
               ]}
             >
               {busy === "share" ? (
-                <ActivityIndicator color="#F9F9F9" />
+                <ActivityIndicator color={lightActionButtons ? "#303030" : "#F9F9F9"} />
               ) : (
-                <Text style={styles.actionText}>Compartir</Text>
+                <Text style={[styles.actionText, lightActionButtons && styles.actionTextSoftDark]}>
+                  Compartir
+                </Text>
               )}
             </Pressable>
           )}
@@ -523,8 +539,14 @@ const styles = StyleSheet.create({
   instagramButtonLight: {
     backgroundColor: "#F9F9F9",
   },
+  instagramButtonSoftLight: {
+    backgroundColor: "#E5E5E5",
+  },
   shareButton: {
     backgroundColor: "#8954EE",
+  },
+  shareButtonLight: {
+    backgroundColor: "#F9F9F9",
   },
   actionText: {
     color: "#F9F9F9",
@@ -534,6 +556,9 @@ const styles = StyleSheet.create({
   },
   actionTextDark: {
     color: "#141414",
+  },
+  actionTextSoftDark: {
+    color: "#303030",
   },
   pressed: {
     opacity: 0.62,
