@@ -82,6 +82,7 @@ import { GeometrixOverlay } from "@/components/GeometrixToggle";
 import { MEMBERSHIP_AURORA, WIDGET_GREEN_SOLID } from "@/constants/colors";
 import { InnerSpaceCard } from "@/components/InnerSpaceCard";
 import { KeyboardAwareScrollViewCompat } from "@/components/KeyboardAwareScrollViewCompat";
+import { MoonCrescentIcon } from "@/components/MoonCrescentIcon";
 
 const REFLECTION_BANNER_ENTRY_DISTANCE = 86;
 const REFLECTION_BANNER_ENTRY_DURATION = 380;
@@ -1573,20 +1574,45 @@ export function ProfileScreenBase({
               onPress={() => router.push("/notificaciones-practica" as never)}
               style={({ pressed }) => [
                 styles.practiceReminderSection,
+                styles.practiceReminderFirst,
                 { opacity: pressed ? 0.72 : 1 },
               ]}
               accessibilityRole="button"
-              accessibilityLabel="Administrar recordatorio de prácticas"
+              accessibilityLabel="Administrar recordatorio meditativo"
             >
               <View style={styles.practiceReminderIcon}>
                 <Feather name="bell" size={21} color={colors.foreground} />
               </View>
               <View style={styles.practiceReminderCopy}>
                 <Text style={[styles.practiceReminderTitle, { color: colors.foreground }]}>
-                  Recordatorio de prácticas
+                  Recordatorio meditativo
                 </Text>
                 <Text style={[styles.practiceReminderSubtitle, { color: profileDescriptionColor }]}>
                   Mañana, tarde y noche
+                </Text>
+              </View>
+              <Feather name="chevron-right" size={22} color={colors.foreground} />
+            </Pressable>
+
+            <Pressable
+              onPress={() => router.push("/(tabs)/descanzo" as never)}
+              style={({ pressed }) => [
+                styles.practiceReminderSection,
+                styles.practiceReminderLast,
+                { opacity: pressed ? 0.72 : 1 },
+              ]}
+              accessibilityRole="button"
+              accessibilityLabel="Administrar recordatorio para dormir"
+            >
+              <View style={styles.practiceReminderIcon}>
+                <MoonCrescentIcon color="#C4A8F5" size={30} />
+              </View>
+              <View style={styles.practiceReminderCopy}>
+                <Text style={[styles.practiceReminderTitle, { color: colors.foreground }]}>
+                  Recordatorio para dormir
+                </Text>
+                <Text style={[styles.practiceReminderSubtitle, { color: profileDescriptionColor }]}>
+                  Configura tu hora de descanso
                 </Text>
               </View>
               <Feather name="chevron-right" size={22} color={colors.foreground} />
@@ -2675,14 +2701,19 @@ const styles = StyleSheet.create({
     marginTop: 5,
   },
   practiceReminderSection: {
-    marginTop: -7,
-    marginBottom: 53,
     padding: 16,
     borderRadius: 19,
     backgroundColor: "rgba(0,0,0,0.28)",
     flexDirection: "row",
     alignItems: "center",
     justifyContent: "space-between",
+  },
+  practiceReminderFirst: {
+    marginTop: -7,
+    marginBottom: 17,
+  },
+  practiceReminderLast: {
+    marginBottom: 53,
   },
   practiceReminderIcon: {
     width: 44,
