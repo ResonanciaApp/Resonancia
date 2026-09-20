@@ -184,9 +184,15 @@ export function InnerSpaceCard({
 
   return (
     <View style={styles.container}>
-      <View style={styles.header}>
+      <Pressable
+        style={styles.header}
+        onPress={openWall}
+        accessibilityRole="button"
+        accessibilityLabel="Abrir Mi viaje interior"
+      >
         <Text style={[styles.title, { color: colors.foreground }]}>Mi viaje interior</Text>
-      </View>
+        <Feather name="chevron-right" size={24} color={colors.foreground} />
+      </Pressable>
 
       <ScrollView
         horizontal
@@ -289,7 +295,14 @@ export function InnerSpaceCard({
         disabled={isSubmitDisabled}
         onPress={() => createMutation.mutate({ data: { category: category!, message: message.trim() } })}
       >
-        <Text style={[styles.submitText, { color: "#D4B8F4" }]}>{createMutation.isPending ? "Guardando..." : "Guardar mensaje"}</Text>
+        <Text
+          style={[
+            styles.submitText,
+            { color: isSubmitDisabled ? "#D4B8F4" : "#F9F9F9" },
+          ]}
+        >
+          {createMutation.isPending ? "Guardando..." : "Guardar mensaje"}
+        </Text>
       </Pressable>
 
       <Pressable testID="history-link" accessibilityRole="button" accessibilityLabel="Ver muro" onPress={openWall} style={styles.historyLinkContainer}>
@@ -317,7 +330,9 @@ const styles = StyleSheet.create({
     overflow: "hidden",
   },
   header: {
-    alignItems: "flex-start",
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "space-between",
     marginBottom: 20,
   },
   title: {
