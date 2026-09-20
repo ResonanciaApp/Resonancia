@@ -1553,6 +1553,7 @@ export function ProfileScreenBase({
                 showSectionBorders={false}
                 showPersonalStats={false}
                 showCalendar={false}
+                streakTitle="Tu progreso"
               />
             </View>
 

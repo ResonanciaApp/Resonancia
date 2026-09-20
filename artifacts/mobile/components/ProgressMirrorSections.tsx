@@ -21,6 +21,7 @@ export function ProgressMirrorSections({
   animateEntrance = false,
   entranceReplayKey = "progress-mirror",
   entranceBaseDelay = 0,
+  streakTitle,
 }: {
   showSectionBorders?: boolean;
   showPersonalStats?: boolean;
@@ -28,6 +29,7 @@ export function ProgressMirrorSections({
   animateEntrance?: boolean;
   entranceReplayKey?: string | number;
   entranceBaseDelay?: number;
+  streakTitle?: string;
 }) {
   const colors = useColors();
   const { theme } = useSceneTheme();
@@ -67,7 +69,18 @@ export function ProgressMirrorSections({
         replayKey={`${entranceReplayKey}:streak`}
         delay={entranceBaseDelay}
       >
-        <View style={[styles.streakSection, !showSectionBorders && styles.borderlessSection]}>
+        <View
+          style={[
+            styles.streakSection,
+            streakTitle && styles.titledStreakSection,
+            !showSectionBorders && styles.borderlessSection,
+          ]}
+        >
+          {streakTitle ? (
+            <Text style={[styles.streakTitle, { color: colors.foreground }]}>
+              {streakTitle}
+            </Text>
+          ) : null}
           <StreakWeekRow />
           <View style={styles.sectionDivider} />
           <View style={[styles.statsValues, styles.statsValuesNoTitle]}>
@@ -225,6 +238,15 @@ const styles = StyleSheet.create({
     paddingTop: 17,
     paddingBottom: 16,
     marginBottom: 12,
+  },
+  titledStreakSection: {
+    paddingTop: 20,
+  },
+  streakTitle: {
+    fontFamily: "Manrope",
+    fontSize: 18,
+    fontWeight: "600",
+    marginBottom: 20,
   },
   sectionDivider: {
     height: 1,
