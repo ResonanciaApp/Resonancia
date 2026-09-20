@@ -315,7 +315,7 @@ export function ProgressMirrorSections({
                   delay={entranceBaseDelay + 1160}
                 >
                 <Stat
-                  icon={<Feather name="clock" size={20} color="#F9F9F9" />}
+                  icon={<Feather name="clock" size={18} color="#F9F9F9" />}
                   value={personalStats.totalMinutes}
                   label="MINUTOS TOTALES"
                   accent={accent}
@@ -337,7 +337,7 @@ export function ProgressMirrorSections({
                   delay={entranceBaseDelay + 1310}
                 >
                 <Stat
-                  icon={<Feather name="calendar" size={20} color="#F9F9F9" />}
+                  icon={<Feather name="calendar" size={18} color="#F9F9F9" />}
                   value={personalStats.activeDays}
                   label="DÍAS ACTIVOS"
                   accent={accent}
@@ -522,8 +522,8 @@ const styles = StyleSheet.create({
   },
   personalStatsTitle: {
     fontFamily: "Manrope",
-    fontSize: 17,
-    fontWeight: "700",
+    fontSize: 16,
+    fontWeight: "600",
   },
   filterTrigger: {
     flexDirection: "row",

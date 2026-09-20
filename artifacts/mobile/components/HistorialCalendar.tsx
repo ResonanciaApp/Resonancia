@@ -365,7 +365,15 @@ export function HistorialCalendar({
           <Pressable onPress={goPrevMonth} hitSlop={10} style={styles.navBtn}>
             <Feather name="chevron-left" size={18} color={colors.foreground} />
           </Pressable>
-          <Text style={[styles.monthLabel, { color: colors.foreground }]}>{monthLabel}</Text>
+          <Text
+            style={[
+              styles.monthLabel,
+              embedded && styles.embeddedMonthLabel,
+              { color: colors.foreground },
+            ]}
+          >
+            {monthLabel}
+          </Text>
           <Pressable onPress={goNextMonth} hitSlop={10} style={styles.navBtn}>
             <Feather name="chevron-right" size={18} color={colors.foreground} />
           </Pressable>
@@ -603,6 +611,7 @@ const styles = StyleSheet.create({
     justifyContent: "center",
   },
   monthLabel: { fontFamily: "Manrope", fontSize: 15, fontWeight: "700", minWidth: 100, textAlign: "center" },
+  embeddedMonthLabel: { fontSize: 13 },
   weekRow: {
     flexDirection: "row",
     marginBottom: 6,
