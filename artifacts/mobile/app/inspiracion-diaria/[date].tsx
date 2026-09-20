@@ -165,8 +165,10 @@ function Detail({ date, expectedId }: { date: string; expectedId?: string }) {
               <Text style={styles.monthYear}>{formatted.monthYear}</Text>
             </View>
 
-            <Text style={styles.quote}>{day.content.quote}</Text>
-            {!!day.content.author && <Text style={styles.author}>— {day.content.author}</Text>}
+            <View style={styles.quoteBlock}>
+              <Text style={styles.quote}>{day.content.quote}</Text>
+              {!!day.content.author && <Text style={styles.author}>— {day.content.author}</Text>}
+            </View>
             <Text selectable style={styles.reflection}>{day.content.reflection}</Text>
 
             {!!day.content.sessionId && (
@@ -292,6 +294,7 @@ const styles = StyleSheet.create({
   dateBlock: { alignItems: "center", marginBottom: 34 },
   day: { color: "#fff", fontFamily: "Manrope", fontSize: 33, lineHeight: 38, fontWeight: "500" },
   monthYear: { color: "rgba(255,255,255,.88)", fontFamily: "Manrope", fontSize: 13, marginTop: 2 },
+  quoteBlock: { paddingHorizontal: 5 },
   quote: {
     color: "#fff",
     fontFamily: "CormorantGaramond",

@@ -381,7 +381,7 @@ const styles = StyleSheet.create({
   pageContent: { ...StyleSheet.absoluteFillObject, justifyContent: "center", paddingHorizontal: 28 },
   message: { width: "100%", alignItems: "center", transform: [{ translateY: -40 }] },
   unavailableContent: { alignItems: "center", justifyContent: "center", gap: 12 },
-  quoteBlock: { width: "100%", alignItems: "center" },
+  quoteBlock: { width: "100%", alignItems: "center", paddingHorizontal: 5 },
   dayNumber: { color: "#fff", textAlign: "center", fontFamily: "Manrope", fontSize: 33, lineHeight: 38, fontWeight: "500" },
   month: { color: "rgba(255,255,255,.9)", textAlign: "center", fontFamily: "Manrope", fontSize: 13, marginTop: 2 },
   quote: { width: "100%", flexShrink: 1, color: "#fff", textAlign: "center", fontFamily: "CormorantGaramond", fontSize: 26, lineHeight: 35, fontWeight: "500", marginTop: 28 },
