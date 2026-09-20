@@ -401,15 +401,17 @@ export default function InnerSpaceScreen() {
           <Text style={[styles.timeText, { color: colors.mutedForeground }]}>{timeLabel}</Text>
           <View style={styles.timelineDotContainer}>
             <View style={[styles.timelineLine, item.isLastInGroup && { bottom: '50%' }]} />
-            <CategoryIcon category={cat.id} size={14} />
+            <CategoryIcon category={cat.id} size={17} />
           </View>
         </View>
 
         <View style={styles.reflectionCard}>
           <View style={styles.cardHeader}>
-            <View style={[styles.cardCatPill, { backgroundColor: cat.bg }]}>
-              <Text style={[styles.cardCatText, { color: cat.color }]}>{cat.label}</Text>
-            </View>
+            {isEditing && (
+              <View style={[styles.cardCatPill, { backgroundColor: cat.bg }]}>
+                <Text style={[styles.cardCatText, { color: cat.color }]}>{cat.label}</Text>
+              </View>
+            )}
 
             {!isEditing && (
               <View style={styles.cardActionsContainer}>
@@ -802,6 +804,7 @@ const styles = StyleSheet.create({
   cardActionsContainer: {
     flexDirection: 'row',
     alignItems: 'center',
+    marginLeft: 'auto',
     gap: 8,
     transform: [{ translateY: -5 }],
   },
@@ -814,7 +817,7 @@ const styles = StyleSheet.create({
   },
   messageContainer: {
     position: "relative",
-    transform: [{ translateY: -2 }],
+    transform: [{ translateY: -13 }],
   },
   messageMeasure: {
     position: "absolute",
