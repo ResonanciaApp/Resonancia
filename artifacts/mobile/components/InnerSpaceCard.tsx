@@ -200,7 +200,9 @@ export function InnerSpaceCard({
           style={styles.wallHitArea}
           accessibilityRole="button"
           accessibilityLabel="Abrir Muro expansivo"
-        />
+        >
+          <Text style={styles.wallHeaderLink}>Mi muro</Text>
+        </Pressable>
       </View>
 
       <MaskedView
@@ -369,9 +371,16 @@ const styles = StyleSheet.create({
     textAlign: "left",
   },
   wallHitArea: {
-    width: 52,
-    height: 44,
+    minHeight: 44,
     marginVertical: -12,
+    alignItems: "flex-end",
+    justifyContent: "center",
+    paddingLeft: 16,
+  },
+  wallHeaderLink: {
+    color: "#F9F9F9",
+    fontSize: 13,
+    fontWeight: "500",
   },
   categoriesMask: {
     marginBottom: 20,
