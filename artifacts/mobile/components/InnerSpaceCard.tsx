@@ -16,6 +16,7 @@ const CATEGORY_PLACEHOLDERS: Partial<Record<ReflectionCategory, string>> = {
   purpose: "Ej: Me conecto con mi propósito cuando...",
   acceptance: "Ej: Cuando acepto lo que sucede, la vida...",
 };
+const DEFAULT_PLACEHOLDER = "Escribe tu mensaje aquí...";
 
 export function InnerSpaceCard({
   focusRequest = 0,
@@ -31,6 +32,8 @@ export function InnerSpaceCard({
   const [message, setMessage] = useState("");
   const [wallLinkHighlighted, setWallLinkHighlighted] = useState(false);
   const inputRef = useRef<TextInput>(null);
+  const placeholderOpacity = useRef(new Animated.Value(1)).current;
+  const [displayedPlaceholder, setDisplayedPlaceholder] = useState(DEFAULT_PLACEHOLDER);
   const [inputActive, setInputActive] = useState(false);
   const categoryScales = useRef(
     Object.fromEntries(
@@ -69,6 +72,47 @@ export function InnerSpaceCard({
     });
     return () => cancelAnimationFrame(frame);
   }, [focusRequest]);
+
+  const desiredPlaceholder = category
+    ? CATEGORY_PLACEHOLDERS[category] ?? DEFAULT_PLACEHOLDER
+    : DEFAULT_PLACEHOLDER;
+  const messageIsEmpty = message.length === 0;
+
+  useEffect(() => {
+    placeholderOpacity.stopAnimation();
+
+    if (!messageIsEmpty) {
+      Animated.timing(placeholderOpacity, {
+        toValue: 0,
+        duration: 300,
+        useNativeDriver: true,
+      }).start();
+      return () => placeholderOpacity.stopAnimation();
+    }
+
+    if (displayedPlaceholder !== desiredPlaceholder) {
+      Animated.timing(placeholderOpacity, {
+        toValue: 0,
+        duration: 300,
+        useNativeDriver: true,
+      }).start(({ finished }) => {
+        if (finished) setDisplayedPlaceholder(desiredPlaceholder);
+      });
+      return () => placeholderOpacity.stopAnimation();
+    }
+
+    Animated.timing(placeholderOpacity, {
+      toValue: 1,
+      duration: 300,
+      useNativeDriver: true,
+    }).start();
+    return () => placeholderOpacity.stopAnimation();
+  }, [
+    desiredPlaceholder,
+    displayedPlaceholder,
+    messageIsEmpty,
+    placeholderOpacity,
+  ]);
 
   const requestInputFocus = () => {
     if (inputActive) return;
@@ -160,14 +204,21 @@ export function InnerSpaceCard({
         style={[styles.inputContainer, { backgroundColor: "rgba(0,0,0,0.2)" }, createMutation.isError && { borderColor: colors.destructive }]}
         onPress={requestInputFocus}
       >
+        <Animated.Text
+          pointerEvents="none"
+          style={[
+            styles.inputPlaceholder,
+            { color: colors.mutedForeground, opacity: placeholderOpacity },
+          ]}
+        >
+          {displayedPlaceholder}
+        </Animated.Text>
         <TextInput
           ref={inputRef}
           editable={inputActive}
           pointerEvents={inputActive ? "auto" : "none"}
           onBlur={() => setInputActive(false)}
           style={[styles.input, { color: colors.foreground }]}
-          placeholder={category ? CATEGORY_PLACEHOLDERS[category] ?? "Escribe tu mensaje aquí..." : "Escribe tu mensaje aquí..."}
-          placeholderTextColor={colors.mutedForeground}
           multiline
           maxLength={300}
           value={message}
@@ -267,6 +318,13 @@ const styles = StyleSheet.create({
   },
   input: {
     minHeight: 80,
+    fontSize: 15,
+  },
+  inputPlaceholder: {
+    position: "absolute",
+    top: 12,
+    left: 12,
+    right: 12,
     fontSize: 15,
   },
   charCount: {
