@@ -1864,6 +1864,7 @@ const Inicio2HeroStatic = React.memo(function Inicio2HeroStatic({
             ]}
             testID="inicio3-streak-row"
           >
+            <Text style={styles.inicio3ProgressTitle}>Tu progreso</Text>
             <StreakWeekRow />
           </RAnimated.View>
         </>
@@ -3816,6 +3817,13 @@ const styles = StyleSheet.create({
     left: GRID_PAD,
     right: GRID_PAD,
     zIndex: 12,
+  },
+  inicio3ProgressTitle: {
+    color: "#F9F9F9",
+    fontFamily: "Manrope",
+    fontSize: 18,
+    fontWeight: "600",
+    marginBottom: 20,
   },
   inicio3HeroStaticImageFrame: {
     left: 0,
