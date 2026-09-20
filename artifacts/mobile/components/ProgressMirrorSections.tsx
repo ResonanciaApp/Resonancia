@@ -40,9 +40,7 @@ export function ProgressMirrorSections({
   const todayKey = useDayRollover();
   const [statsRangeDays, setStatsRangeDays] = useState<7 | 30 | 90>(30);
   const [statsFilterOpen, setStatsFilterOpen] = useState(false);
-  const weekPulse = useRef(new Animated.Value(1)).current;
-  const currentStreakPulse = useRef(new Animated.Value(1)).current;
-  const maxStreakPulse = useRef(new Animated.Value(1)).current;
+  const weekBlink = useRef(new Animated.Value(1)).current;
   const streakPressRunning = useRef(false);
   const accent = theme.accent ?? colors.accent;
   const maxStreak = useMemo(() => computeMaxStreak(statEvents), [statEvents]);
@@ -68,30 +66,20 @@ export function ProgressMirrorSections({
     };
   }, [statEvents, statsRangeDays, todayKey]);
 
-  const animateProgressTarget = (pulse: Animated.Value) => {
+  const handleWeekPress = () => {
     if (!onStreakTitlePress || streakPressRunning.current) return;
     streakPressRunning.current = true;
-    pulse.stopAnimation();
-    pulse.setValue(1);
+    weekBlink.stopAnimation();
+    weekBlink.setValue(1);
     Animated.sequence([
-      Animated.timing(pulse, {
-        toValue: 1.04,
+      Animated.timing(weekBlink, {
+        toValue: 0.55,
+        duration: 70,
+        useNativeDriver: true,
+      }),
+      Animated.timing(weekBlink, {
+        toValue: 1,
         duration: 100,
-        useNativeDriver: true,
-      }),
-      Animated.timing(pulse, {
-        toValue: 1,
-        duration: 120,
-        useNativeDriver: true,
-      }),
-      Animated.timing(pulse, {
-        toValue: 1.025,
-        duration: 90,
-        useNativeDriver: true,
-      }),
-      Animated.timing(pulse, {
-        toValue: 1,
-        duration: 120,
         useNativeDriver: true,
       }),
     ]).start(() => {
@@ -99,8 +87,6 @@ export function ProgressMirrorSections({
       onStreakTitlePress();
     });
   };
-
-  const handleStreakPress = () => animateProgressTarget(weekPulse);
 
   return (
     <>
@@ -110,7 +96,7 @@ export function ProgressMirrorSections({
         delay={entranceBaseDelay}
       >
         <Pressable
-          onPress={handleStreakPress}
+          onPress={onStreakTitlePress}
           disabled={!onStreakTitlePress}
           style={[
             styles.streakSection,
@@ -127,9 +113,18 @@ export function ProgressMirrorSections({
               </Text>
             </View>
           ) : null}
-          <Animated.View style={{ transform: [{ scale: weekPulse }] }}>
-            <StreakWeekRow />
-          </Animated.View>
+          <Pressable
+            onPress={(event) => {
+              event.stopPropagation();
+              handleWeekPress();
+            }}
+            accessibilityRole="button"
+            accessibilityLabel="Abrir Tu progreso semanal"
+          >
+            <Animated.View style={{ opacity: weekBlink }}>
+              <StreakWeekRow />
+            </Animated.View>
+          </Pressable>
           <View style={styles.sectionDivider} />
           <View style={[styles.statsValues, styles.statsValuesNoTitle]}>
             <Stat
@@ -137,8 +132,7 @@ export function ProgressMirrorSections({
               value={currentStreak}
               label="RACHA ACTUAL"
               accent={accent}
-              iconScale={currentStreakPulse}
-              onPress={() => animateProgressTarget(currentStreakPulse)}
+              onPress={onStreakTitlePress}
             />
             <View style={styles.statDivider} />
             <Stat
@@ -146,8 +140,7 @@ export function ProgressMirrorSections({
               value={maxStreak}
               label="RACHA MÁS LARGA"
               accent={accent}
-              iconScale={maxStreakPulse}
-              onPress={() => animateProgressTarget(maxStreakPulse)}
+              onPress={onStreakTitlePress}
             />
           </View>
         </Pressable>
@@ -263,24 +256,18 @@ function Stat({
   value,
   label,
   accent,
-  iconScale,
   onPress,
 }: {
   icon: React.ReactNode;
   value: number;
   label: string;
   accent: string;
-  iconScale?: Animated.Value;
   onPress?: () => void;
 }) {
   const statIcon = <View style={styles.statIcon}>{icon}</View>;
   const content = (
     <>
-      {iconScale ? (
-        <Animated.View style={{ transform: [{ scale: iconScale }] }}>
-          {statIcon}
-        </Animated.View>
-      ) : statIcon}
+      {statIcon}
       <View style={styles.statCopy}>
         <Text style={styles.statValue}>{value}</Text>
         <Text style={[styles.statLabel, { color: accent }]}>{label}</Text>
