@@ -27,6 +27,7 @@ export function ProgressMirrorSections({
   showStreakViewAll = false,
   streakContentTranslateY = 0,
   sectionHorizontalPadding,
+  sectionTopPadding,
 }: {
   showSectionBorders?: boolean;
   showPersonalStats?: boolean;
@@ -40,6 +41,7 @@ export function ProgressMirrorSections({
   showStreakViewAll?: boolean;
   streakContentTranslateY?: number;
   sectionHorizontalPadding?: number;
+  sectionTopPadding?: number;
 }) {
   const colors = useColors();
   const { theme } = useSceneTheme();
@@ -112,6 +114,9 @@ export function ProgressMirrorSections({
             !showSectionBorders && styles.borderlessSection,
             sectionHorizontalPadding !== undefined && {
               paddingHorizontal: sectionHorizontalPadding,
+            },
+            sectionTopPadding !== undefined && {
+              paddingTop: sectionTopPadding,
             },
           ]}
           accessibilityRole={onStreakTitlePress ? "button" : undefined}

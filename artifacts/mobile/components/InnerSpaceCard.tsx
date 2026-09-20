@@ -351,7 +351,9 @@ const styles = StyleSheet.create({
   container: {
     borderRadius: 24,
     backgroundColor: "rgba(0,0,0,0.28)",
-    padding: 20,
+    paddingHorizontal: 20,
+    paddingTop: 16,
+    paddingBottom: 16,
     marginBottom: 24,
     overflow: "hidden",
   },

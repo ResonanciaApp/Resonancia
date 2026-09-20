@@ -1578,6 +1578,7 @@ export function ProfileScreenBase({
                 streakTitle="Tu progreso"
                 streakContentTranslateY={-5}
                 sectionHorizontalPadding={20}
+                sectionTopPadding={21}
                 onStreakTitlePress={() => router.push("/progreso" as never)}
               />
             </View>
@@ -2740,7 +2741,8 @@ const styles = StyleSheet.create({
     marginTop: 5,
   },
   practiceReminderSection: {
-    padding: 16,
+    paddingHorizontal: 16,
+    paddingVertical: 16,
     borderRadius: 19,
     backgroundColor: "rgba(0,0,0,0.28)",
     flexDirection: "row",
