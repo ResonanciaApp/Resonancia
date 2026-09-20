@@ -1,4 +1,4 @@
-import React, { useState, useRef, useEffect } from "react";
+import React, { useState, useRef, useEffect, useLayoutEffect } from "react";
 import { View, Text, TextInput, Pressable, ScrollView, StyleSheet, Animated } from "react-native";
 import { Feather } from "@expo/vector-icons";
 import * as Haptics from "expo-haptics";
@@ -116,8 +116,6 @@ export function InnerSpaceCard({
         if (!finished) return;
         setDisplayedPlaceholder(desiredPlaceholder);
         setIncomingPlaceholder(null);
-        outgoingPlaceholderOpacity.setValue(1);
-        incomingPlaceholderOpacity.setValue(0);
       });
     });
 
@@ -129,6 +127,17 @@ export function InnerSpaceCard({
   }, [
     desiredPlaceholder,
     displayedPlaceholder,
+    incomingPlaceholderOpacity,
+    outgoingPlaceholderOpacity,
+  ]);
+
+  useLayoutEffect(() => {
+    if (incomingPlaceholder !== null) return;
+    outgoingPlaceholderOpacity.setValue(1);
+    incomingPlaceholderOpacity.setValue(0);
+  }, [
+    displayedPlaceholder,
+    incomingPlaceholder,
     incomingPlaceholderOpacity,
     outgoingPlaceholderOpacity,
   ]);

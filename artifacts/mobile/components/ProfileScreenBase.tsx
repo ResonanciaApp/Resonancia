@@ -1581,6 +1581,29 @@ export function ProfileScreenBase({
               />
             </View>
 
+            <Pressable
+              onPress={() => router.push("/notificaciones-practica" as never)}
+              style={({ pressed }) => [
+                styles.practiceReminderSection,
+                { opacity: pressed ? 0.72 : 1 },
+              ]}
+              accessibilityRole="button"
+              accessibilityLabel="Administrar recordatorio de prácticas"
+            >
+              <View style={styles.practiceReminderIcon}>
+                <Feather name="bell" size={21} color={colors.foreground} />
+              </View>
+              <View style={styles.practiceReminderCopy}>
+                <Text style={[styles.practiceReminderTitle, { color: colors.foreground }]}>
+                  Recordatorio de prácticas
+                </Text>
+                <Text style={[styles.practiceReminderSubtitle, { color: profileDescriptionColor }]}>
+                  Mañana, tarde y noche
+                </Text>
+              </View>
+              <Feather name="chevron-right" size={22} color={colors.foreground} />
+            </Pressable>
+
           </>
         )}
 
@@ -2662,6 +2685,36 @@ const styles = StyleSheet.create({
   },
   innerSpaceSection: {
     marginTop: 5,
+  },
+  practiceReminderSection: {
+    marginTop: 29,
+    marginBottom: 53,
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "space-between",
+  },
+  practiceReminderIcon: {
+    width: 44,
+    height: 44,
+    borderRadius: 22,
+    marginRight: 12,
+    alignItems: "center",
+    justifyContent: "center",
+    backgroundColor: "rgba(255,255,255,0.1)",
+  },
+  practiceReminderCopy: {
+    flex: 1,
+    gap: 5,
+  },
+  practiceReminderTitle: {
+    fontFamily: "Manrope",
+    fontSize: 17,
+    fontWeight: "700",
+  },
+  practiceReminderSubtitle: {
+    fontFamily: "Manrope",
+    fontSize: 13,
+    fontWeight: "500",
   },
   reflectionSavedBanner: {
     position: "absolute",
