@@ -429,14 +429,29 @@ export function ReflectionShare({ reflection, onClose }: { reflection: Reflectio
             onFailure={handleFailure}
           />
         ) : (
-          <InteractiveReflectionArtwork
-            reflection={reflection}
-            width={width}
-            bgImageSource={selectedImageSource}
-            composition={composition}
-            onCompositionChange={updateComposition}
-            onFailure={handleFailure}
-          />
+          <View style={{ width, height: width * 16 / 9 }}>
+            <View
+              pointerEvents="none"
+              style={[
+                styles.previewHalo,
+                {
+                  width: width * 1.45,
+                  height: width * 1.45,
+                  borderRadius: width,
+                  left: -width * 0.225,
+                  top: width * 16 / 18 - width * 0.725,
+                },
+              ]}
+            />
+            <InteractiveReflectionArtwork
+              reflection={reflection}
+              width={width}
+              bgImageSource={selectedImageSource}
+              composition={composition}
+              onCompositionChange={updateComposition}
+              onFailure={handleFailure}
+            />
+          </View>
         );
       }}
     >
@@ -472,7 +487,7 @@ export function ReflectionShare({ reflection, onClose }: { reflection: Reflectio
                 />
                 {isSelected && (
                   <View style={styles.checkOverlay}>
-                    <Feather name="check" size={26} color="#3D1766" />
+                    <Feather name="check" size={26} color="#F9F9F9" />
                   </View>
                 )}
               </Pressable>
@@ -554,6 +569,7 @@ const styles = StyleSheet.create({
     backgroundColor: "rgba(255,255,255,0.10)",
     borderWidth: StyleSheet.hairlineWidth,
     borderColor: "rgba(255,255,255,0.18)",
+    transform: [{ translateX: -1 }],
   },
   resetButtonPressed: {
     opacity: 0.65,
@@ -584,5 +600,14 @@ const styles = StyleSheet.create({
     backgroundColor: "rgba(249,249,249,0.4)",
     alignItems: "center",
     justifyContent: "center",
+  },
+  previewHalo: {
+    position: "absolute",
+    backgroundColor: "rgba(249,249,249,0.055)",
+    shadowColor: "#F9F9F9",
+    shadowOpacity: 0.22,
+    shadowRadius: 38,
+    shadowOffset: { width: 0, height: 0 },
+    elevation: 8,
   },
 });

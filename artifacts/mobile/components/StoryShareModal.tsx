@@ -329,10 +329,10 @@ export function StoryShareModal({
             ]}
           >
             {busy === "instagram" ? (
-              <ActivityIndicator color={lightInstagramButton ? "#3D1766" : "#F9F9F9"} />
+              <ActivityIndicator color={lightInstagramButton ? "#141414" : "#F9F9F9"} />
             ) : (
               <>
-                <FontAwesome name="instagram" size={23} color={lightInstagramButton ? "#3D1766" : "#F9F9F9"} />
+                <FontAwesome name="instagram" size={23} color={lightInstagramButton ? "#141414" : "#F9F9F9"} />
                 <Text style={[styles.actionText, lightInstagramButton && styles.actionTextDark]}>
                   Compartir en tus historias
                 </Text>
@@ -475,7 +475,7 @@ const styles = StyleSheet.create({
     fontWeight: "700",
   },
   actionTextDark: {
-    color: "#3D1766",
+    color: "#141414",
   },
   pressed: {
     opacity: 0.62,
