@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useMemo, useRef } from "react";
-import { View, Text, StyleSheet, Pressable, ScrollView, FlatList, ActivityIndicator, Modal, TextInput, Platform, Animated, Easing } from "react-native";
+import { View, Text, StyleSheet, Pressable, ScrollView, FlatList, ActivityIndicator, Modal, TextInput, Platform, Animated, Easing, Alert } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { Feather, MaterialCommunityIcons } from "@expo/vector-icons";
 import { router } from "expo-router";
@@ -298,8 +298,6 @@ export default function InnerSpaceScreen() {
   const [editingId, setEditingId] = useState<number | null>(null);
   const [editMessage, setEditMessage] = useState("");
   const [editCategory, setEditCategory] = useState<ReflectionCategory | null>(null);
-  const [actionReflection, setActionReflection] = useState<Reflection | null>(null);
-  const [actionMode, setActionMode] = useState<"menu" | "delete">("menu");
 
   const [shareReflection, setShareReflection] = useState<Reflection | null>(null);
 
@@ -331,17 +329,27 @@ export default function InnerSpaceScreen() {
   });
 
   const beginEditing = (reflection: Reflection) => {
-    setActionReflection(null);
     setEditingId(reflection.id);
     setEditMessage(reflection.message);
     setEditCategory(reflection.category);
   };
 
-  const confirmDelete = () => {
-    if (!actionReflection) return;
-    const id = actionReflection.id;
-    setActionReflection(null);
-    deleteMutation.mutate({ id });
+  const requestDelete = (reflection: Reflection) => {
+    Alert.alert(
+      "¿Quieres borrar tu mensaje?",
+      undefined,
+      [
+        { text: "Conservar", style: "cancel" },
+        {
+          text: "Sí, borrar",
+          style: "destructive",
+          onPress: () => {
+            setEditingId(null);
+            deleteMutation.mutate({ id: reflection.id });
+          },
+        },
+      ],
+    );
   };
 
   const groupedData = useMemo(() => {
@@ -410,10 +418,7 @@ export default function InnerSpaceScreen() {
                   accessibilityLabel="Opciones"
                   accessibilityRole="button"
                   style={styles.menuButton}
-                  onPress={() => {
-                    setActionMode("menu");
-                    setActionReflection(reflection);
-                  }}
+                  onPress={() => beginEditing(reflection)}
                 >
                   <Feather name="more-horizontal" size={20} color={colors.mutedForeground} />
                 </Pressable>
@@ -428,6 +433,18 @@ export default function InnerSpaceScreen() {
                   <Feather name="share" size={16} color={colors.mutedForeground} />
                 </Pressable>
               </View>
+            )}
+            {isEditing && (
+              <Pressable
+                testID={`delete-${reflection.id}`}
+                accessibilityLabel="Borrar mensaje"
+                accessibilityRole="button"
+                disabled={deleteMutation.isPending}
+                style={[styles.menuButton, deleteMutation.isPending && { opacity: 0.45 }]}
+                onPress={() => requestDelete(reflection)}
+              >
+                <Feather name="trash-2" size={18} color={colors.mutedForeground} />
+              </Pressable>
             )}
           </View>
 
@@ -654,60 +671,6 @@ export default function InnerSpaceScreen() {
             );
           })}
         </ScrollView>
-      </SlidingSheetModal>
-      <SlidingSheetModal
-        visible={Boolean(actionReflection)}
-        onClose={() => setActionReflection(null)}
-        surfaceColor={theme.gradient[0]}
-      >
-        {actionMode === "menu" ? (
-          <>
-            <Text style={[styles.actionSheetTitle, { color: colors.foreground }]}>Reflexión</Text>
-            <Pressable
-              testID="reflection-edit-action"
-              accessibilityRole="button"
-              style={styles.actionRow}
-              onPress={() => actionReflection && beginEditing(actionReflection)}
-            >
-              <Feather name="edit-2" size={19} color={colors.foreground} />
-              <Text style={[styles.actionLabel, { color: colors.foreground }]}>Editar</Text>
-            </Pressable>
-            <Pressable
-              testID="reflection-delete-action"
-              accessibilityRole="button"
-              style={styles.actionRow}
-              onPress={() => setActionMode("delete")}
-            >
-              <Feather name="trash-2" size={19} color={colors.destructive} />
-              <Text style={[styles.actionLabel, { color: colors.destructive }]}>Eliminar</Text>
-            </Pressable>
-          </>
-        ) : (
-          <>
-            <Text style={[styles.actionSheetTitle, { color: colors.foreground }]}>¿Eliminar esta reflexión?</Text>
-            <Text style={[styles.actionSheetBody, { color: colors.mutedForeground }]}>
-              Esta acción no se puede deshacer.
-            </Text>
-            <View style={styles.confirmActions}>
-              <Pressable
-                testID="reflection-delete-cancel"
-                accessibilityRole="button"
-                style={styles.confirmButton}
-                onPress={() => setActionMode("menu")}
-              >
-                <Text style={[styles.confirmLabel, { color: colors.foreground }]}>Cancelar</Text>
-              </Pressable>
-              <Pressable
-                testID="reflection-delete-confirm"
-                accessibilityRole="button"
-                style={[styles.confirmButton, styles.destructiveButton]}
-                onPress={confirmDelete}
-              >
-                <Text style={[styles.confirmLabel, { color: "#FFFFFF" }]}>Eliminar</Text>
-              </Pressable>
-            </View>
-          </>
-        )}
       </SlidingSheetModal>
       {shareReflection && (
         <ReflectionShare reflection={shareReflection} onClose={() => setShareReflection(null)} />
