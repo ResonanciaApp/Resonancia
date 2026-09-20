@@ -30,6 +30,7 @@ export function ProgressMirrorSections({
   sectionTopPadding,
   sectionBottomPadding,
   sectionVerticalPadding,
+  sectionContentTranslateY = 0,
 }: {
   showSectionBorders?: boolean;
   showPersonalStats?: boolean;
@@ -46,6 +47,7 @@ export function ProgressMirrorSections({
   sectionTopPadding?: number;
   sectionBottomPadding?: number;
   sectionVerticalPadding?: number;
+  sectionContentTranslateY?: number;
 }) {
   const colors = useColors();
   const { theme } = useSceneTheme();
@@ -230,8 +232,17 @@ export function ProgressMirrorSections({
               sectionVerticalPadding !== undefined && {
                 paddingVertical: sectionVerticalPadding,
               },
+              sectionContentTranslateY !== 0 && {
+                paddingTop: (sectionVerticalPadding ?? 16) - sectionContentTranslateY,
+                paddingBottom: (sectionVerticalPadding ?? 16) + sectionContentTranslateY,
+              },
             ]}
           >
+            <View
+              style={sectionContentTranslateY
+                ? { transform: [{ translateY: sectionContentTranslateY }] }
+                : undefined}
+            >
             <ContentEntrance
               animated={animateEntrance}
               replayKey={`${entranceReplayKey}:personal-header`}
@@ -299,6 +310,7 @@ export function ProgressMirrorSections({
                 />
               </View>
             </ContentEntrance>
+            </View>
           </View>
         </SectionEntrance>
       ) : null}
@@ -315,6 +327,7 @@ export function ProgressMirrorSections({
             backgroundColor={SECTION_BACKGROUND}
             cardHorizontalPadding={sectionHorizontalPadding}
             cardVerticalPadding={sectionVerticalPadding}
+            cardContentTranslateY={sectionContentTranslateY}
             animateEntrance={animateEntrance}
             entranceReplayKey={`${entranceReplayKey}:calendar-content`}
             entranceBaseDelay={entranceBaseDelay + (showPersonalStats ? 1450 : 950)}
