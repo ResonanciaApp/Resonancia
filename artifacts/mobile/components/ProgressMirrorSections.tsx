@@ -28,6 +28,8 @@ export function ProgressMirrorSections({
   streakContentTranslateY = 0,
   sectionHorizontalPadding,
   sectionTopPadding,
+  sectionBottomPadding,
+  sectionVerticalPadding,
 }: {
   showSectionBorders?: boolean;
   showPersonalStats?: boolean;
@@ -42,6 +44,8 @@ export function ProgressMirrorSections({
   streakContentTranslateY?: number;
   sectionHorizontalPadding?: number;
   sectionTopPadding?: number;
+  sectionBottomPadding?: number;
+  sectionVerticalPadding?: number;
 }) {
   const colors = useColors();
   const { theme } = useSceneTheme();
@@ -117,6 +121,9 @@ export function ProgressMirrorSections({
             },
             sectionTopPadding !== undefined && {
               paddingTop: sectionTopPadding,
+            },
+            sectionBottomPadding !== undefined && {
+              paddingBottom: sectionBottomPadding,
             },
           ]}
           accessibilityRole={onStreakTitlePress ? "button" : undefined}
@@ -220,6 +227,9 @@ export function ProgressMirrorSections({
               sectionHorizontalPadding !== undefined && {
                 paddingHorizontal: sectionHorizontalPadding,
               },
+              sectionVerticalPadding !== undefined && {
+                paddingVertical: sectionVerticalPadding,
+              },
             ]}
           >
             <ContentEntrance
@@ -304,6 +314,7 @@ export function ProgressMirrorSections({
             outlined={showSectionBorders}
             backgroundColor={SECTION_BACKGROUND}
             cardHorizontalPadding={sectionHorizontalPadding}
+            cardVerticalPadding={sectionVerticalPadding}
             animateEntrance={animateEntrance}
             entranceReplayKey={`${entranceReplayKey}:calendar-content`}
             entranceBaseDelay={entranceBaseDelay + (showPersonalStats ? 1450 : 950)}

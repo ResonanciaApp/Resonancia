@@ -227,6 +227,7 @@ export function HistorialCalendar({
   backgroundColor,
   outlined = false,
   cardHorizontalPadding,
+  cardVerticalPadding,
   animateEntrance = false,
   entranceReplayKey = "history-calendar",
   entranceBaseDelay = 0,
@@ -236,6 +237,7 @@ export function HistorialCalendar({
   backgroundColor?: string;
   outlined?: boolean;
   cardHorizontalPadding?: number;
+  cardVerticalPadding?: number;
   animateEntrance?: boolean;
   entranceReplayKey?: string | number;
   entranceBaseDelay?: number;
@@ -345,6 +347,9 @@ export function HistorialCalendar({
           outlined && styles.outlinedCalendarCard,
           cardHorizontalPadding !== undefined && {
             paddingHorizontal: cardHorizontalPadding,
+          },
+          cardVerticalPadding !== undefined && {
+            paddingVertical: cardVerticalPadding,
           },
           p ? { marginHorizontal: p } : undefined,
         ]}
