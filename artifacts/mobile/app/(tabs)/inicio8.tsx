@@ -3708,7 +3708,7 @@ const styles = StyleSheet.create({
     fontSize: 14,
     fontWeight: "500",
     lineHeight: 20,
-    transform: [{ translateY: 2 }],
+    transform: [{ translateY: -0.5 }],
   },
   inicio2HeroLotusCount: {
     minWidth: 13,
@@ -3819,6 +3819,7 @@ const styles = StyleSheet.create({
     position: "absolute",
     left: GRID_PAD,
     right: GRID_PAD,
+    paddingHorizontal: 3,
     zIndex: 12,
   },
   inicio3HeroStaticImageFrame: {
