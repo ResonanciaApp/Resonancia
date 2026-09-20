@@ -8,6 +8,7 @@ import {
   Pressable,
   StyleSheet,
   Text,
+  TurboModuleRegistry,
   useWindowDimensions,
   View,
 } from "react-native";
@@ -184,24 +185,44 @@ export function StoryShareModal({
     }
   };
 
+  const shareCapturedImageWithSystem = async () => {
+    if (!uri.current || !await Sharing.isAvailableAsync()) {
+      throw new Error("Compartir imágenes no está disponible en este dispositivo.");
+    }
+    await Sharing.shareAsync(uri.current, {
+      mimeType: "image/png",
+      UTI: "public.png",
+      dialogTitle: "Compartir historia",
+    });
+    preserveCaptureAfterShare.current = true;
+    onClose();
+  };
+
   const openInstagramStories = async () => {
     setBusy("instagram");
     setError(null);
     try {
-      if (!INSTAGRAM_SOURCE_APP || !/^\d+$/.test(INSTAGRAM_SOURCE_APP)) {
-        throw new Error("Meta App ID missing");
-      }
-      const { default: Share } = await import("react-native-share");
-      const instagramInstalled = Platform.OS === "ios"
-        ? await Linking.canOpenURL("instagram-stories://share")
-        : (await Share.isPackageInstalled("com.instagram.android")).isInstalled;
-      if (!instagramInstalled) throw new Error("Instagram is not installed");
       await ensureImage();
       if (!uri.current) throw new Error("No se pudo preparar la imagen para Instagram.");
 
       if (onBeforeInstagramShare) {
         await onBeforeInstagramShare();
       }
+
+      if (
+        !INSTAGRAM_SOURCE_APP
+        || !/^\d+$/.test(INSTAGRAM_SOURCE_APP)
+        || !TurboModuleRegistry.get("RNShare")
+      ) {
+        await shareCapturedImageWithSystem();
+        return;
+      }
+
+      const { default: Share } = await import("react-native-share");
+      const instagramInstalled = Platform.OS === "ios"
+        ? await Linking.canOpenURL("instagram-stories://share")
+        : (await Share.isPackageInstalled("com.instagram.android")).isInstalled;
+      if (!instagramInstalled) throw new Error("Instagram is not installed");
 
       await Share.shareSingle({
         social: Share.Social.INSTAGRAM_STORIES as never,

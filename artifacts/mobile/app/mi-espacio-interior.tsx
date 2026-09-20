@@ -758,17 +758,19 @@ export default function InnerSpaceScreen() {
           <Feather name="chevron-left" size={28} color={colors.foreground} />
         </Pressable>
         <View style={styles.headerTitles}>
-          <Pressable
-            testID="gallery-button"
-            accessibilityLabel="Galería de historias"
-            onPress={() => router.push("/galeria-reflexiones")}
-            style={({pressed}) => [{ marginRight: 12 }, pressed && { opacity: 0.7 }]}
-          >
-            <Feather name="grid" size={22} color={colors.foreground} />
-          </Pressable>
           <Text style={[styles.mainTitle, { color: colors.foreground }]}>Muro expansivo</Text>
         </View>
-        <View style={{ width: 44 }} />
+        <Pressable
+          testID="gallery-button"
+          accessibilityLabel="Galería de historias"
+          onPress={() => router.push("/galeria-reflexiones")}
+          style={({ pressed }) => [
+            styles.galleryButton,
+            pressed && { opacity: 0.7 },
+          ]}
+        >
+          <Feather name="grid" size={20} color={colors.foreground} />
+        </Pressable>
       </View>
 
       <View style={styles.filtersContainer}>
@@ -923,6 +925,16 @@ const styles = StyleSheet.create({
     backgroundColor: "rgba(0,0,0,0.28)",
     justifyContent: 'center',
     alignItems: 'center',
+  },
+  galleryButton: {
+    width: 43,
+    height: 43,
+    borderRadius: 21.5,
+    borderWidth: 1,
+    borderColor: "rgba(255,255,255,0.2)",
+    backgroundColor: "rgba(0,0,0,0.28)",
+    justifyContent: "center",
+    alignItems: "center",
   },
   headerTitles: {
     flex: 1,

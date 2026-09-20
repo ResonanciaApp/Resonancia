@@ -7,4 +7,4 @@ La galería registra una composición cuando la persona confirma “Abrir Instag
 
 **Why:** Instagram y el sistema operativo no informan de forma fiable si la historia terminó publicada. Guardar antes de preparar la imagen crea falsos registros; guardar después de abrir Instagram no tiene un callback fiable.
 
-**How to apply:** Preparar primero la imagen, persistir inmediatamente antes del handoff nativo y usar una clave idempotente por payload/intento para que reintentos no dupliquen. La galería es privada por cuenta y cualquier paginación/caché debe excluir datos de otra identidad incluso antes de que corran effects.
+**How to apply:** Preparar primero la imagen, persistir antes de consultar o cargar integraciones nativas y usar una clave idempotente por payload/intento para que reintentos no dupliquen. Probar módulos opcionales con una consulta no fatal antes de importarlos; si faltan, abrir el selector de compartir del sistema. La galería es privada por cuenta y cualquier paginación/caché debe excluir datos de otra identidad incluso antes de que corran effects.
