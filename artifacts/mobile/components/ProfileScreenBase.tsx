@@ -1576,6 +1576,7 @@ export function ProfileScreenBase({
                 showStreakWeek
                 showStreakViewAll
                 streakTitle="Tu progreso"
+                streakContentTranslateY={-5}
                 onStreakTitlePress={() => router.push("/progreso" as never)}
               />
             </View>

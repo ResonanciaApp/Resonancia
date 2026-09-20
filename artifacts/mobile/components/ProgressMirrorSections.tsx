@@ -25,6 +25,7 @@ export function ProgressMirrorSections({
   onStreakTitlePress,
   showStreakWeek = true,
   showStreakViewAll = false,
+  streakContentTranslateY = 0,
 }: {
   showSectionBorders?: boolean;
   showPersonalStats?: boolean;
@@ -36,6 +37,7 @@ export function ProgressMirrorSections({
   onStreakTitlePress?: () => void;
   showStreakWeek?: boolean;
   showStreakViewAll?: boolean;
+  streakContentTranslateY?: number;
 }) {
   const colors = useColors();
   const { theme } = useSceneTheme();
@@ -110,6 +112,11 @@ export function ProgressMirrorSections({
           accessibilityRole={onStreakTitlePress ? "button" : undefined}
           accessibilityLabel={onStreakTitlePress ? `Abrir ${streakTitle ?? "progreso"}` : undefined}
         >
+          <View
+            style={streakContentTranslateY
+              ? { transform: [{ translateY: streakContentTranslateY }] }
+              : undefined}
+          >
           {streakTitle ? (
             <ContentEntrance
               animated={animateEntrance}
@@ -186,6 +193,7 @@ export function ProgressMirrorSections({
               />
             </View>
           </ContentEntrance>
+          </View>
         </Pressable>
       </SectionEntrance>
 
