@@ -30,6 +30,7 @@ export interface StoryShareModalProps {
   captureKey?: string;
   requiresLogo?: boolean;
   showGenericShare?: boolean;
+  previewScale?: number;
   children?: React.ReactNode;
 }
 
@@ -42,6 +43,7 @@ export function StoryShareModal({
   captureKey = "default",
   requiresLogo = false,
   showGenericShare = true,
+  previewScale = 1,
   children,
 }: StoryShareModalProps) {
   const insets = useSafeAreaInsets();
@@ -62,7 +64,7 @@ export function StoryShareModal({
   const reservedHeight = children
     ? (showGenericShare ? 420 : 350)
     : (showGenericShare ? 320 : 250);
-  const previewWidth = Math.min(width - 72, Math.max(220, (height - reservedHeight) * 9 / 16));
+  const previewWidth = Math.min(width - 72, Math.max(220, (height - reservedHeight) * 9 / 16)) * previewScale;
   const topInset = Platform.OS === "web" ? 67 : insets.top;
   const bottomInset = Platform.OS === "web" ? 34 : insets.bottom;
 

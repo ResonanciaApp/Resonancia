@@ -109,6 +109,7 @@ export function ReflectionShare({ reflection, onClose }: { reflection: Reflectio
       checkConstraints={checkConstraints}
       captureKey={`${selectedBgId ?? "initial"}:${selectedUsesFallback ? "fallback" : "primary"}`}
       showGenericShare={false}
+      previewScale={0.85}
       renderArtwork={(width, isExport, callbacks) => (
         <ReflectionArtwork
           reflection={reflection}
