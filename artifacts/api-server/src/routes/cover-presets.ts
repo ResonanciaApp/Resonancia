@@ -2,6 +2,7 @@ import { Router, type IRouter } from "express";
 import { and, asc, eq, sql } from "drizzle-orm";
 import {
   COVER_PRESET_SCOPES,
+  REFLECTION_STORY_BUILTIN_KEYS,
   coverPresetsTable,
   db,
   uploadsTable,
@@ -28,6 +29,9 @@ import {
 
 const router: IRouter = Router();
 const objectStorageService = new ObjectStorageService();
+const REFLECTION_STORY_SCOPE = "reflection-story" as const;
+const DEFAULT_COVER_PRESET_LIMIT = 50;
+const REFLECTION_STORY_PRESET_LIMIT = 40;
 
 function serializePreset(preset: CoverPreset) {
   return {
@@ -78,10 +82,23 @@ function parseScope(value: unknown) {
     : undefined;
 }
 
+function scopeLimit(scope: (typeof COVER_PRESET_SCOPES)[number]) {
+  return scope === REFLECTION_STORY_SCOPE ? REFLECTION_STORY_PRESET_LIMIT : DEFAULT_COVER_PRESET_LIMIT;
+}
+
+function scopeValidationMessage() {
+  return `El scope debe ser ${COVER_PRESET_SCOPES.join(", ")}`;
+}
+
+export function reflectionStoryBuiltinKey(key: string): string | undefined {
+  if (!/^\d{2}$/.test(key)) return undefined;
+  return REFLECTION_STORY_BUILTIN_KEYS[Number.parseInt(key, 10) - 1];
+}
+
 router.get("/cover-presets", async (req, res): Promise<void> => {
   const parsed = ListCoverPresetsQueryParams.safeParse(req.query);
   if (!parsed.success) {
-    res.status(400).json({ error: "El scope debe ser mix, playlist o profile" });
+    res.status(400).json({ error: scopeValidationMessage() });
     return;
   }
   try {
@@ -95,7 +112,7 @@ router.get("/cover-presets", async (req, res): Promise<void> => {
 router.get("/admin/cover-presets", requireAuth, requireRole("admin"), async (req, res): Promise<void> => {
   const parsed = ListAdminCoverPresetsQueryParams.safeParse(req.query);
   if (!parsed.success) {
-    res.status(400).json({ error: "El scope debe ser mix, playlist o profile" });
+    res.status(400).json({ error: scopeValidationMessage() });
     return;
   }
   try {
@@ -113,11 +130,16 @@ router.post("/admin/cover-presets", requireAuth, requireRole("admin"), async (re
     return;
   }
   const { scope, label, objectPath } = parsed.data;
+  const me = req.currentUser!;
+  if (scope === REFLECTION_STORY_SCOPE) {
+    if (objectPath) await cleanupUnclaimedObject(objectPath, me.id, req.log);
+    res.status(409).json({ error: "Mi viaje interior usa 40 posiciones fijas; reemplaza una posición existente" });
+    return;
+  }
   if (!objectPath) {
     res.status(400).json({ error: "Las nuevas portadas requieren una imagen subida" });
     return;
   }
-  const me = req.currentUser!;
   const uploadValidation = await validateOwnedCompletedImageUpload({ objectPath, userId: me.id });
   if (!uploadValidation.ok) {
     res.status(uploadValidation.reason === "ownership" ? 403 : 400).json({ error: "La imagen debe ser una subida de imagen completada y perteneciente al administrador" });
@@ -135,7 +157,7 @@ router.post("/admin/cover-presets", requireAuth, requireRole("admin"), async (re
       if (!lockedValidation.ok) throw new Error(`upload_${lockedValidation.reason}`);
       if (await isObjectReferenced({ objectPath })) throw new Error("referenced");
       const existing = await tx.select().from(coverPresetsTable).where(eq(coverPresetsTable.scope, scope));
-      if (existing.length >= 50) throw new Error("limit");
+      if (existing.length >= scopeLimit(scope)) throw new Error("limit");
       const nextOrder = Math.max(-1, ...existing.map((row) => row.sortOrder)) + 1;
       const key = parsed.data.key?.trim() || `custom-${crypto.randomUUID()}`;
       const [row] = await tx.insert(coverPresetsTable).values({
@@ -157,7 +179,7 @@ router.post("/admin/cover-presets", requireAuth, requireRole("admin"), async (re
       return;
     }
     if (err instanceof Error && err.message === "limit") {
-      res.status(409).json({ error: "Cada colección admite como máximo 50 imágenes" });
+      res.status(409).json({ error: `Esta colección admite como máximo ${scopeLimit(scope)} imágenes` });
       await cleanupUnclaimedObject(objectPath, me.id, req.log);
       return;
     }
@@ -182,6 +204,15 @@ router.put("/admin/cover-presets/order", requireAuth, requireRole("admin"), asyn
     const result = await db.transaction(async (tx) => {
       await tx.execute(sql`select pg_advisory_xact_lock(hashtextextended(${parsed.data.scope}, 402))`);
       const rows = await tx.select().from(coverPresetsTable).where(eq(coverPresetsTable.scope, parsed.data.scope));
+      if (
+        parsed.data.scope === REFLECTION_STORY_SCOPE
+        && (
+          rows.length !== REFLECTION_STORY_PRESET_LIMIT
+          || rows.some((row) => reflectionStoryBuiltinKey(row.key) === undefined)
+        )
+      ) {
+        throw new Error("fixed_slots");
+      }
       const ids = new Set(rows.map((row) => row.id));
       if (duplicateIds(parsed.data.ids)) throw new Error("duplicates");
       if (rows.length !== parsed.data.ids.length || parsed.data.ids.some((id) => !ids.has(id))) {
@@ -206,6 +237,10 @@ router.put("/admin/cover-presets/order", requireAuth, requireRole("admin"), asyn
     }
     if (err instanceof Error && err.message === "order") {
       res.status(400).json({ error: "El orden debe incluir exactamente todas las imágenes de la colección" });
+      return;
+    }
+    if (err instanceof Error && err.message === "fixed_slots") {
+      res.status(409).json({ error: "Mi viaje interior debe conservar exactamente sus 40 posiciones fijas" });
       return;
     }
     req.log.error({ err }, "error reordering cover presets");
@@ -334,6 +369,16 @@ router.delete("/admin/cover-presets/:id", requireAuth, requireRole("admin"), asy
       await tx.execute(sql`select pg_advisory_xact_lock(hashtextextended(${current.scope}, 402))`);
       [current] = await tx.select().from(coverPresetsTable).where(eq(coverPresetsTable.id, parsed.data.id)).limit(1);
       if (!current) return [];
+      if (current.scope === REFLECTION_STORY_SCOPE) {
+        const builtinKey = reflectionStoryBuiltinKey(current.key);
+        if (!builtinKey) throw new Error("invalid_fixed_slot");
+        const [reset] = await tx.update(coverPresetsTable).set({
+          objectPath: null,
+          builtinKey,
+          updatedAt: new Date(),
+        }).where(eq(coverPresetsTable.id, parsed.data.id)).returning();
+        return reset ? [{ ...reset, objectPath: current.objectPath }] : [];
+      }
       return tx.delete(coverPresetsTable).where(eq(coverPresetsTable.id, parsed.data.id)).returning();
     });
     const [deleted] = deletedRows;
@@ -354,6 +399,10 @@ router.delete("/admin/cover-presets/:id", requireAuth, requireRole("admin"), asy
     }
     res.status(204).end();
   } catch (err) {
+    if (err instanceof Error && err.message === "invalid_fixed_slot") {
+      res.status(409).json({ error: "La posición no pertenece al catálogo fijo de Mi viaje interior" });
+      return;
+    }
     req.log.error({ err }, "error deleting cover preset");
     res.status(500).json({ error: "Error al eliminar la portada" });
   }

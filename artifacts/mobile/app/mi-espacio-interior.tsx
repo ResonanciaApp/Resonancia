@@ -11,6 +11,8 @@ import { useUpdateMyReflection, useDeleteMyReflection, type Reflection, type Ref
 import { KeyboardAwareScrollView } from "react-native-keyboard-controller";
 import { useQueryClient } from "@tanstack/react-query";
 import { useAuth } from "@/context/AuthContext";
+import { ReflectionShare } from "@/components/ReflectionShare";
+import { canShareReflection } from "@/lib/reflection-story-logic";
 
 const MONTH_NAMES = [
   "Enero",
@@ -299,6 +301,8 @@ export default function InnerSpaceScreen() {
   const [actionReflection, setActionReflection] = useState<Reflection | null>(null);
   const [actionMode, setActionMode] = useState<"menu" | "delete">("menu");
 
+  const [shareReflection, setShareReflection] = useState<Reflection | null>(null);
+
   const updateMutation = useUpdateMyReflection({
     mutation: {
       onSuccess: (updated) => {
@@ -381,6 +385,7 @@ export default function InnerSpaceScreen() {
     const timeLabel = new Date(reflection.createdAt).toLocaleTimeString("es-ES", { hour: "2-digit", minute: "2-digit" });
     const cat = REFLECTION_CATEGORIES[reflection.category];
     const isEditing = editingId === reflection.id;
+    const isShareable = canShareReflection(reflection.message);
 
     return (
       <View style={styles.timelineRow}>
@@ -399,18 +404,30 @@ export default function InnerSpaceScreen() {
             </View>
 
             {!isEditing && (
-              <Pressable
-                testID={`menu-${reflection.id}`}
-                accessibilityLabel="Opciones"
-                accessibilityRole="button"
-                style={styles.menuButton}
-                onPress={() => {
-                  setActionMode("menu");
-                  setActionReflection(reflection);
-                }}
-              >
-                <Feather name="more-horizontal" size={20} color={colors.mutedForeground} />
-              </Pressable>
+              <View style={styles.cardActionsContainer}>
+                <Pressable
+                  testID={`menu-${reflection.id}`}
+                  accessibilityLabel="Opciones"
+                  accessibilityRole="button"
+                  style={styles.menuButton}
+                  onPress={() => {
+                    setActionMode("menu");
+                    setActionReflection(reflection);
+                  }}
+                >
+                  <Feather name="more-horizontal" size={20} color={colors.mutedForeground} />
+                </Pressable>
+                <Pressable
+                  testID={`share-${reflection.id}`}
+                  accessibilityLabel="Compartir"
+                  accessibilityRole="button"
+                  style={[styles.menuButton, !isShareable && { opacity: 0.3 }]}
+                  disabled={!isShareable}
+                  onPress={() => setShareReflection(reflection)}
+                >
+                  <Feather name="share" size={16} color={colors.mutedForeground} />
+                </Pressable>
+              </View>
             )}
           </View>
 
@@ -676,6 +693,9 @@ export default function InnerSpaceScreen() {
           </>
         )}
       </SlidingSheetModal>
+      {shareReflection && (
+        <ReflectionShare reflection={shareReflection} onClose={() => setShareReflection(null)} />
+      )}
     </LinearGradient>
   );
 }
@@ -794,10 +814,15 @@ const styles = StyleSheet.create({
     paddingHorizontal: 10,
     paddingVertical: 4,
     borderRadius: 10,
+    transform: [{ translateY: -18 }],
   },
   cardCatText: {
     fontSize: 11,
     fontWeight: '600',
+  },
+  cardActionsContainer: {
+    alignItems: 'center',
+    gap: 8,
   },
   menuButton: {
     padding: 4,
@@ -808,6 +833,7 @@ const styles = StyleSheet.create({
   },
   messageContainer: {
     position: "relative",
+    transform: [{ translateY: -50 }],
   },
   messageMeasure: {
     position: "absolute",

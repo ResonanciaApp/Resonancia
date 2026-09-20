@@ -2900,6 +2900,7 @@ export const CoverPresetScope = {
   mix: 'mix',
   playlist: 'playlist',
   profile: 'profile',
+  'reflection-story': 'reflection-story',
 } as const;
 
 export type CoverPresetSource = typeof CoverPresetSource[keyof typeof CoverPresetSource];

@@ -52,6 +52,7 @@ const INICIO3_SECTIONS: { title: string; items: MenuItem[] }[] = [
     items: [
       { id: "mood-register", label: "Registro de ánimo", icon: "smile", mciIcon: "emoticon-happy-outline", route: "__mood_register" },
       { id: "mixer", label: "Mezclador de sonido", icon: "sliders", mciIcon: "tune-vertical", route: "__mixer" },
+      { id: "expansive-routine", label: "Mi rutina expansiva", icon: "calendar", mciIcon: "calendar-check-outline", route: "/rutina-calendario" },
       { id: "inner-journey", label: "Mi viaje interior", icon: "edit-3", mciIcon: "message-text-outline", route: "__profile_compose" },
       { id: "notes", label: "Diario de notas", icon: "book-open", mciIcon: "notebook-outline", route: "__overlay:/diario" },
       { id: "geometrix", label: "Geometrix", icon: "hexagon", mciIcon: "hexagon-multiple-outline", route: "__geometrix" },

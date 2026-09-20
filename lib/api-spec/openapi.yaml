@@ -8209,7 +8209,7 @@ components:
           type: boolean
     CoverPresetScope:
       type: string
-      enum: [mix, playlist, profile]
+      enum: [mix, playlist, profile, reflection-story]
     CoverPreset:
       type: object
       required: [id, scope, key, label, sortOrder, source]

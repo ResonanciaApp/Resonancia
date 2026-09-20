@@ -149,3 +149,4 @@
 - [Hero secundario en Admin Inspiración](admin-inspiration-hero-hierarchy.md) — Hero de Inicio va debajo del editor principal y plegado por defecto; nunca como tercera columna que comprima el contenido diario
 - [Controles circulares de navegación](circular-navigation-controls.md) — chevron/X/lupa independientes usan superficie 43×43 negra 28% con borde blanco 20%; no aplicar a indicadores ni acciones locales
 - [Instagram Stories requiere Meta App ID](instagram-stories-meta-app-id.md) — source_application usa el ID numérico público de Meta, no el bundle ID; además declarar scheme iOS y package query Android
+- [Fondos de historias de reflexión](reflection-story-backgrounds.md) — Mi viaje interior conserva 40 slots permanentes; borrar restaura el fondo incluido y nunca reduce ni renumera el catálogo

@@ -9,9 +9,13 @@ import { useEffect, useMemo, useState } from "react";
 import {
   PLAYLIST_COVER_PRESETS,
 } from "@/data/default-playlist-covers";
+import {
+  REFLECTION_STORY_COVER_PRESETS,
+} from "@/data/default-reflection-story-covers";
 import { resolveAvatarUrl } from "@/lib/avatar";
 import {
   resolveCatalogRecord,
+  padWithBootstrap,
 } from "@/lib/cover-preset-catalog-logic";
 
 export type CoverCatalogScope = CoverPresetScope;
@@ -20,12 +24,15 @@ export type CoverCatalogItem = {
   key: string;
   label: string;
   source: number | { uri: string };
+  fallbackSource?: number;
   builtinKey?: string | null;
   objectPath?: string | null;
 };
 
 const CACHE_PREFIX = "@resonance_cover_catalog:";
-const bundledByKey = new Map(PLAYLIST_COVER_PRESETS.map((preset) => [preset.id, preset]));
+const bundledByKey = new Map([
+  ...PLAYLIST_COVER_PRESETS.map((preset) => [preset.id, preset] as const),
+]);
 const memoryCatalog = new Map<CoverCatalogScope, CoverPreset[]>();
 const loading = new Map<CoverCatalogScope, Promise<void>>();
 
@@ -34,30 +41,56 @@ export function bundledCoverCatalog(scope: CoverCatalogScope): CoverCatalogItem[
 }
 
 function bundledRawCatalog(scope: CoverCatalogScope): CoverPreset[] {
-  return PLAYLIST_COVER_PRESETS.map((preset) => ({
-    id: `${scope}:${preset.id}`,
+  let defaultPresets = PLAYLIST_COVER_PRESETS;
+  if (scope === "reflection-story") {
+    defaultPresets = REFLECTION_STORY_COVER_PRESETS;
+  }
+  return defaultPresets.map((preset, index) => ({
+    id: scope === "reflection-story"
+      ? `${scope}:${String(index + 1).padStart(2, "0")}`
+      : `${scope}:${preset.id}`,
     scope,
-    key: preset.id,
+    key: scope === "reflection-story"
+      ? String(index + 1).padStart(2, "0")
+      : preset.id,
     label: preset.label,
-    sortOrder: PLAYLIST_COVER_PRESETS.indexOf(preset),
+    sortOrder: index,
     source: "builtin",
-    builtinKey: preset.id,
+    builtinKey: scope === "reflection-story"
+      ? (preset as (typeof REFLECTION_STORY_COVER_PRESETS)[number]).builtinKey
+      : preset.id,
     objectPath: null,
   }));
 }
 
 function resolveItem(item: CoverPreset): CoverCatalogItem | null {
-  const builtin = item.builtinKey ? bundledByKey.get(item.builtinKey) : undefined;
+  const reflectionSlot = item.scope === "reflection-story"
+    ? REFLECTION_STORY_COVER_PRESETS[Number.parseInt(item.key, 10) - 1]
+    : undefined;
+  const builtin = (item.builtinKey ? bundledByKey.get(item.builtinKey) : undefined) ?? reflectionSlot;
   const remote = item.objectPath ? resolveAvatarUrl(item.objectPath) : null;
-  return resolveCatalogRecord<number | { uri: string }>(
+  const resolved = resolveCatalogRecord<number | { uri: string }>(
     item,
     builtin?.source,
     remote ? { uri: remote } : undefined,
   );
+  if (!resolved) return null;
+  return {
+    ...resolved,
+    source: item.scope === "reflection-story" && remote ? { uri: remote } : resolved.source,
+    fallbackSource: remote ? builtin?.source : undefined,
+  };
 }
 
-export function resolveCoverCatalog(items: CoverPreset[]): CoverCatalogItem[] {
-  return items.map(resolveItem).filter((item): item is CoverCatalogItem => item !== null);
+export function resolveCoverCatalog(items: CoverPreset[], scope?: CoverCatalogScope): CoverCatalogItem[] {
+  let resolved = items.map(resolveItem).filter((item): item is CoverCatalogItem => item !== null);
+
+  if (scope === "reflection-story") {
+    const bootstrap = bundledCoverCatalog(scope);
+    resolved = padWithBootstrap(resolved, bootstrap);
+  }
+
+  return resolved;
 }
 
 export function catalogImage(
@@ -95,9 +128,18 @@ async function refresh(scope: CoverCatalogScope): Promise<void> {
 }
 
 export function useCoverPresetCatalog(scope: CoverCatalogScope): CoverCatalogItem[] {
+  return useCoverPresetCatalogState(scope).items;
+}
+
+export function useCoverPresetCatalogState(scope: CoverCatalogScope): {
+  items: CoverCatalogItem[];
+  hydrated: boolean;
+} {
   const [version, setVersion] = useState(0);
+  const [hydrated, setHydrated] = useState(false);
   useEffect(() => {
     let active = true;
+    setHydrated(false);
     const existing = loading.get(scope);
     const task = existing ?? (async () => {
       await hydrate(scope);
@@ -105,7 +147,10 @@ export function useCoverPresetCatalog(scope: CoverCatalogScope): CoverCatalogIte
     })();
     loading.set(scope, task);
     task.then(() => {
-      if (active) setVersion((value) => value + 1);
+      if (active) {
+        setVersion((value) => value + 1);
+        setHydrated(true);
+      }
     }).finally(() => {
       if (loading.get(scope) === task) loading.delete(scope);
     });
@@ -113,10 +158,11 @@ export function useCoverPresetCatalog(scope: CoverCatalogScope): CoverCatalogIte
       active = false;
     };
   }, [scope]);
-  return useMemo(() => {
+  const items = useMemo(() => {
     void version;
-    return resolveCoverCatalog(memoryCatalog.get(scope) ?? bundledRawCatalog(scope));
+    return resolveCoverCatalog(memoryCatalog.get(scope) ?? bundledRawCatalog(scope), scope);
   }, [scope, version]);
+  return { items, hydrated };
 }
 
 export function resetCoverPresetCatalogForTests(): void {

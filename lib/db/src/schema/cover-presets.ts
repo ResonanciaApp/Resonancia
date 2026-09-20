@@ -3,8 +3,19 @@ import { pgEnum, pgTable, text, integer, timestamp, uniqueIndex, check } from "d
 import { createInsertSchema } from "drizzle-zod";
 import { z } from "zod/v4";
 
-export const COVER_PRESET_SCOPES = ["mix", "playlist", "profile"] as const;
+export const COVER_PRESET_SCOPES = ["mix", "playlist", "profile", "reflection-story"] as const;
 export type CoverPresetScope = (typeof COVER_PRESET_SCOPES)[number];
+
+export const REFLECTION_STORY_BUILTIN_KEYS = [
+  "cosmic-nebula", "moon-valley", "earth-orbit", "galaxy-lake", "desert-stars",
+  "mist-forest", "redwood-light", "autumn-river", "moss-waterfall", "snow-pines",
+  "quiet-ocean", "coastal-cliffs", "river-canyon", "rain-lagoon", "ice-lagoon",
+  "birds-dawn", "crane-marsh", "elephant-savanna", "deer-meadow", "whale-depths",
+  "wild-horses", "mountain-clouds", "volcanic-island", "lavender-hills", "northern-lights",
+  "cosmic-nebula", "moon-valley", "earth-orbit", "galaxy-lake", "desert-stars",
+  "mist-forest", "redwood-light", "autumn-river", "moss-waterfall", "snow-pines",
+  "quiet-ocean", "coastal-cliffs", "river-canyon", "rain-lagoon", "ice-lagoon",
+] as const;
 
 export const coverPresetScopeEnum = pgEnum("cover_preset_scope", COVER_PRESET_SCOPES);
 

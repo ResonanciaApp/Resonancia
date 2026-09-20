@@ -1,0 +1,48 @@
+INSERT INTO "cover_presets" ("id", "scope", "key", "label", "builtin_key", "sort_order")
+VALUES
+  ('reflection-story:01', 'reflection-story', '01', 'Fondo de historia 01', 'cosmic-nebula', 0),
+  ('reflection-story:02', 'reflection-story', '02', 'Fondo de historia 02', 'moon-valley', 1),
+  ('reflection-story:03', 'reflection-story', '03', 'Fondo de historia 03', 'earth-orbit', 2),
+  ('reflection-story:04', 'reflection-story', '04', 'Fondo de historia 04', 'galaxy-lake', 3),
+  ('reflection-story:05', 'reflection-story', '05', 'Fondo de historia 05', 'desert-stars', 4),
+  ('reflection-story:06', 'reflection-story', '06', 'Fondo de historia 06', 'mist-forest', 5),
+  ('reflection-story:07', 'reflection-story', '07', 'Fondo de historia 07', 'redwood-light', 6),
+  ('reflection-story:08', 'reflection-story', '08', 'Fondo de historia 08', 'autumn-river', 7),
+  ('reflection-story:09', 'reflection-story', '09', 'Fondo de historia 09', 'moss-waterfall', 8),
+  ('reflection-story:10', 'reflection-story', '10', 'Fondo de historia 10', 'snow-pines', 9),
+  ('reflection-story:11', 'reflection-story', '11', 'Fondo de historia 11', 'quiet-ocean', 10),
+  ('reflection-story:12', 'reflection-story', '12', 'Fondo de historia 12', 'coastal-cliffs', 11),
+  ('reflection-story:13', 'reflection-story', '13', 'Fondo de historia 13', 'river-canyon', 12),
+  ('reflection-story:14', 'reflection-story', '14', 'Fondo de historia 14', 'rain-lagoon', 13),
+  ('reflection-story:15', 'reflection-story', '15', 'Fondo de historia 15', 'ice-lagoon', 14),
+  ('reflection-story:16', 'reflection-story', '16', 'Fondo de historia 16', 'birds-dawn', 15),
+  ('reflection-story:17', 'reflection-story', '17', 'Fondo de historia 17', 'crane-marsh', 16),
+  ('reflection-story:18', 'reflection-story', '18', 'Fondo de historia 18', 'elephant-savanna', 17),
+  ('reflection-story:19', 'reflection-story', '19', 'Fondo de historia 19', 'deer-meadow', 18),
+  ('reflection-story:20', 'reflection-story', '20', 'Fondo de historia 20', 'whale-depths', 19),
+  ('reflection-story:21', 'reflection-story', '21', 'Fondo de historia 21', 'wild-horses', 20),
+  ('reflection-story:22', 'reflection-story', '22', 'Fondo de historia 22', 'mountain-clouds', 21),
+  ('reflection-story:23', 'reflection-story', '23', 'Fondo de historia 23', 'volcanic-island', 22),
+  ('reflection-story:24', 'reflection-story', '24', 'Fondo de historia 24', 'lavender-hills', 23),
+  ('reflection-story:25', 'reflection-story', '25', 'Fondo de historia 25', 'northern-lights', 24),
+  ('reflection-story:26', 'reflection-story', '26', 'Fondo de historia 26', 'cosmic-nebula', 25),
+  ('reflection-story:27', 'reflection-story', '27', 'Fondo de historia 27', 'moon-valley', 26),
+  ('reflection-story:28', 'reflection-story', '28', 'Fondo de historia 28', 'earth-orbit', 27),
+  ('reflection-story:29', 'reflection-story', '29', 'Fondo de historia 29', 'galaxy-lake', 28),
+  ('reflection-story:30', 'reflection-story', '30', 'Fondo de historia 30', 'desert-stars', 29),
+  ('reflection-story:31', 'reflection-story', '31', 'Fondo de historia 31', 'mist-forest', 30),
+  ('reflection-story:32', 'reflection-story', '32', 'Fondo de historia 32', 'redwood-light', 31),
+  ('reflection-story:33', 'reflection-story', '33', 'Fondo de historia 33', 'autumn-river', 32),
+  ('reflection-story:34', 'reflection-story', '34', 'Fondo de historia 34', 'moss-waterfall', 33),
+  ('reflection-story:35', 'reflection-story', '35', 'Fondo de historia 35', 'snow-pines', 34),
+  ('reflection-story:36', 'reflection-story', '36', 'Fondo de historia 36', 'quiet-ocean', 35),
+  ('reflection-story:37', 'reflection-story', '37', 'Fondo de historia 37', 'coastal-cliffs', 36),
+  ('reflection-story:38', 'reflection-story', '38', 'Fondo de historia 38', 'river-canyon', 37),
+  ('reflection-story:39', 'reflection-story', '39', 'Fondo de historia 39', 'rain-lagoon', 38),
+  ('reflection-story:40', 'reflection-story', '40', 'Fondo de historia 40', 'ice-lagoon', 39)
+ON CONFLICT ("id") DO UPDATE SET
+  "label" = EXCLUDED."label",
+  "builtin_key" = CASE
+    WHEN "cover_presets"."object_path" IS NULL THEN EXCLUDED."builtin_key"
+    ELSE "cover_presets"."builtin_key"
+  END;

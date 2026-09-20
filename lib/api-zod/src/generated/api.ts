@@ -9,14 +9,14 @@ import * as zod from 'zod';
 
 
 export const ListCoverPresetsQueryParams = zod.object({
-  "scope": zod.enum(['mix', 'playlist', 'profile'])
+  "scope": zod.enum(['mix', 'playlist', 'profile', 'reflection-story'])
 })
 
 export const ListCoverPresetsResponse = zod.object({
-  "scope": zod.enum(['mix', 'playlist', 'profile']),
+  "scope": zod.enum(['mix', 'playlist', 'profile', 'reflection-story']),
   "presets": zod.array(zod.object({
   "id": zod.string(),
-  "scope": zod.enum(['mix', 'playlist', 'profile']),
+  "scope": zod.enum(['mix', 'playlist', 'profile', 'reflection-story']),
   "key": zod.string(),
   "label": zod.string(),
   "sortOrder": zod.number(),
@@ -30,14 +30,14 @@ export const ListCoverPresetsResponse = zod.object({
 
 
 export const ListAdminCoverPresetsQueryParams = zod.object({
-  "scope": zod.enum(['mix', 'playlist', 'profile'])
+  "scope": zod.enum(['mix', 'playlist', 'profile', 'reflection-story'])
 })
 
 export const ListAdminCoverPresetsResponse = zod.object({
-  "scope": zod.enum(['mix', 'playlist', 'profile']),
+  "scope": zod.enum(['mix', 'playlist', 'profile', 'reflection-story']),
   "presets": zod.array(zod.object({
   "id": zod.string(),
-  "scope": zod.enum(['mix', 'playlist', 'profile']),
+  "scope": zod.enum(['mix', 'playlist', 'profile', 'reflection-story']),
   "key": zod.string(),
   "label": zod.string(),
   "sortOrder": zod.number(),
@@ -58,7 +58,7 @@ export const createAdminCoverPresetBodyObjectPathRegExp = new RegExp('^\/objects
 
 
 export const CreateAdminCoverPresetBody = zod.object({
-  "scope": zod.enum(['mix', 'playlist', 'profile']),
+  "scope": zod.enum(['mix', 'playlist', 'profile', 'reflection-story']),
   "key": zod.string().min(1).max(createAdminCoverPresetBodyKeyMax).optional(),
   "label": zod.string().min(1).max(createAdminCoverPresetBodyLabelMax),
   "objectPath": zod.string().regex(createAdminCoverPresetBodyObjectPathRegExp).nullish()
@@ -70,15 +70,15 @@ export const reorderAdminCoverPresetsBodyIdsMax = 50;
 
 
 export const ReorderAdminCoverPresetsBody = zod.object({
-  "scope": zod.enum(['mix', 'playlist', 'profile']),
+  "scope": zod.enum(['mix', 'playlist', 'profile', 'reflection-story']),
   "ids": zod.array(zod.string()).min(1).max(reorderAdminCoverPresetsBodyIdsMax)
 })
 
 export const ReorderAdminCoverPresetsResponse = zod.object({
-  "scope": zod.enum(['mix', 'playlist', 'profile']),
+  "scope": zod.enum(['mix', 'playlist', 'profile', 'reflection-story']),
   "presets": zod.array(zod.object({
   "id": zod.string(),
-  "scope": zod.enum(['mix', 'playlist', 'profile']),
+  "scope": zod.enum(['mix', 'playlist', 'profile', 'reflection-story']),
   "key": zod.string(),
   "label": zod.string(),
   "sortOrder": zod.number(),
@@ -115,7 +115,7 @@ export const UpdateAdminCoverPresetBody = zod.object({
 
 export const UpdateAdminCoverPresetResponse = zod.object({
   "id": zod.string(),
-  "scope": zod.enum(['mix', 'playlist', 'profile']),
+  "scope": zod.enum(['mix', 'playlist', 'profile', 'reflection-story']),
   "key": zod.string(),
   "label": zod.string(),
   "sortOrder": zod.number(),

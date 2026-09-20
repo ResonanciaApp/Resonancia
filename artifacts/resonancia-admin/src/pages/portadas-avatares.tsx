@@ -13,6 +13,7 @@ import {
 import { uploadFile } from "@/lib/uploadFile";
 import {
   GripVertical,
+  ChevronDown,
   ImageIcon,
   Loader2,
   Trash2,
@@ -34,6 +35,16 @@ function getBuiltinPreviewUrl(builtinKey: string | null | undefined): string | n
     const filename = path.split("/").pop()?.split(".")[0];
     if (filename === builtinKey) {
       return url as string;
+    }
+  }
+  if (builtinKey.startsWith("reflection-story-")) {
+    const fallbackUrls = Object.entries(builtinModules)
+      .filter(([path]) => /-ai\.(jpg|jpeg|png|webp)$/i.test(path))
+      .sort(([left], [right]) => left.localeCompare(right))
+      .map(([, url]) => url as string);
+    if (fallbackUrls.length > 0) {
+      const slot = Number.parseInt(builtinKey.slice("reflection-story-".length), 10);
+      return fallbackUrls[(Number.isFinite(slot) ? slot - 1 : 0) % fallbackUrls.length] ?? null;
     }
   }
   return null;
@@ -67,6 +78,11 @@ const SCOPES: { value: CoverPresetScope; label: string; description: string }[] 
     label: "Avatares de Perfil",
     description: "Avatares predeterminados para los usuarios.",
   },
+  {
+    value: "reflection-story",
+    label: "Mi viaje interior",
+    description: "40 fondos para compartir reflexiones como historias.",
+  },
 ];
 
 export default function PortadasAvataresPage() {
@@ -76,7 +92,7 @@ export default function PortadasAvataresPage() {
         <h1 className="text-2xl font-bold">Portadas y avatares</h1>
         <p className="mt-1 text-sm text-muted-foreground">
           Administrá las imágenes predeterminadas que los usuarios pueden elegir.
-          Podés subir hasta 50 opciones por categoría.
+            Podés subir hasta 50 opciones por categoría. Mi viaje interior mantiene 40 posiciones fijas.
         </p>
       </div>
 
@@ -103,6 +119,7 @@ function ScopeSection({
   const [presets, setPresets] = useState<CoverPreset[]>([]);
   const [dirty, setDirty] = useState(false);
   const [uploading, setUploading] = useState(false);
+  const [expanded, setExpanded] = useState(false);
   
   const dragIdx = useRef<number | null>(null);
 
@@ -117,7 +134,9 @@ function ScopeSection({
     }
   }, [query.error, scope.label]);
 
-  const maxReached = presets.length >= 50;
+  const isFixedSlots = scope.value === "reflection-story";
+  const maxSlots = isFixedSlots ? 40 : 50;
+  const maxReached = presets.length >= maxSlots;
 
   const isMutating = uploading || createPreset.isPending || updatePreset.isPending || deletePreset.isPending || reorderPresets.isPending || cleanupUpload.isPending;
   const isUploadDisabled = maxReached || isMutating || dirty;
@@ -179,7 +198,7 @@ function ScopeSection({
     if (!file) return;
 
     if (maxReached) {
-      toast.error("Límite de 50 imágenes alcanzado");
+      toast.error(`Límite de ${maxSlots} imágenes alcanzado`);
       return;
     }
 
@@ -226,11 +245,12 @@ function ScopeSection({
   }
 
   async function handleDelete(preset: CoverPreset) {
-    if (!window.confirm(`¿Borrar la imagen "${preset.label}"?`)) return;
+    const action = isFixedSlots ? "restaurar el fondo incluido de" : "borrar";
+    if (!window.confirm(`¿${action.charAt(0).toUpperCase()}${action.slice(1)} "${preset.label}"?`)) return;
     
     try {
       await deletePreset.mutateAsync({ id: preset.id });
-      toast.success("Imagen eliminada");
+      toast.success(isFixedSlots ? "Fondo incluido restaurado" : "Imagen eliminada");
       void query.refetch();
     } catch {
       toast.error("Error al eliminar la imagen");
@@ -238,45 +258,59 @@ function ScopeSection({
   }
 
   return (
-    <div className="rounded-xl border border-border bg-card p-6">
-      <div className="mb-4 flex items-center justify-between gap-4">
+    <div className="rounded-xl border border-border bg-card">
+      <button
+        type="button"
+        className={`flex w-full items-center justify-between gap-4 p-6 text-left ${expanded ? "pb-4" : ""}`}
+        aria-expanded={expanded}
+        aria-controls={`cover-presets-${scope.value}`}
+        onClick={() => setExpanded((value) => !value)}
+      >
         <div>
           <h2 className="text-lg font-semibold">{scope.label}</h2>
           <p className="text-sm text-muted-foreground">{scope.description}</p>
         </div>
         <div className="flex items-center gap-3">
-          <span className="text-sm text-muted-foreground">
-            {presets.length} / 50
+          <span className="text-sm text-muted-foreground" data-testid={`status-cover-presets-${scope.value}`}>
+            {presets.length} / {maxSlots}
           </span>
-          <label className={`inline-flex h-9 items-center justify-center rounded-md border border-input bg-background px-4 py-2 text-sm font-medium shadow-sm transition-colors hover:bg-accent hover:text-accent-foreground ${isUploadDisabled ? 'pointer-events-none opacity-50' : 'cursor-pointer'}`}>
-            <input
-              type="file"
-              accept="image/jpeg,image/png,image/webp"
-              className="hidden"
-              disabled={isUploadDisabled}
-              onChange={handleCreate}
-            />
-            {uploading ? (
-              <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-            ) : (
-              <Upload className="mr-2 h-4 w-4" />
-            )}
-            Subir nueva
-          </label>
+          <ChevronDown className={`h-5 w-5 text-muted-foreground transition-transform ${expanded ? "rotate-180" : ""}`} />
         </div>
-      </div>
+      </button>
 
-      {query.isLoading ? (
-        <div className="flex h-32 items-center justify-center">
-          <Loader2 className="h-6 w-6 animate-spin text-muted-foreground" />
-        </div>
-      ) : presets.length === 0 ? (
-        <div className="flex h-32 flex-col items-center justify-center rounded-lg border border-dashed border-border bg-secondary/20">
-          <ImageIcon className="mb-2 h-8 w-8 text-muted-foreground/50" />
-          <p className="text-sm text-muted-foreground">No hay imágenes configuradas.</p>
-        </div>
-      ) : (
-        <div className="space-y-2">
+      {expanded && (
+        <div id={`cover-presets-${scope.value}`} className="px-6 pb-6">
+          {!isFixedSlots && (
+            <div className="mb-4 flex justify-end">
+              <label className={`inline-flex h-9 items-center justify-center rounded-md border border-input bg-background px-4 py-2 text-sm font-medium shadow-sm transition-colors hover:bg-accent hover:text-accent-foreground ${isUploadDisabled ? 'pointer-events-none opacity-50' : 'cursor-pointer'}`}>
+                <input
+                  type="file"
+                  accept="image/jpeg,image/png,image/webp"
+                  className="hidden"
+                  disabled={isUploadDisabled}
+                  onChange={handleCreate}
+                />
+                {uploading ? (
+                  <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                ) : (
+                  <Upload className="mr-2 h-4 w-4" />
+                )}
+                Subir nueva
+              </label>
+            </div>
+          )}
+
+          {query.isLoading ? (
+            <div className="flex h-32 items-center justify-center">
+              <Loader2 className="h-6 w-6 animate-spin text-muted-foreground" />
+            </div>
+          ) : presets.length === 0 ? (
+            <div className="flex h-32 flex-col items-center justify-center rounded-lg border border-dashed border-border bg-secondary/20">
+              <ImageIcon className="mb-2 h-8 w-8 text-muted-foreground/50" />
+              <p className="text-sm text-muted-foreground">No hay imágenes configuradas.</p>
+            </div>
+          ) : (
+            <div className="space-y-2">
           {presets.map((preset, index) => {
             const isBuiltin = preset.source === "builtin" && !preset.objectPath;
             return (
@@ -321,7 +355,7 @@ function ScopeSection({
                   )}
                 </div>
 
-                <div className="flex shrink-0 items-center gap-2">
+                  <div className="flex shrink-0 items-center gap-2">
                   <label className={`inline-flex h-8 cursor-pointer items-center justify-center rounded-md px-3 text-xs font-medium transition-colors hover:bg-secondary hover:text-foreground ${isMutating || dirty ? 'pointer-events-none opacity-50 text-muted-foreground' : 'text-muted-foreground'}`}>
                     <input
                       type="file"
@@ -330,55 +364,58 @@ function ScopeSection({
                       onChange={(e) => void handleReplace(preset.id, e)}
                       disabled={isMutating || dirty}
                     />
-                    Reemplazar
+                    {isFixedSlots ? "Cambiar fondo" : "Reemplazar"}
                   </label>
-                  
-                  <Button
-                    type="button"
-                    variant="ghost"
-                    size="sm"
-                    className="h-8 px-2 text-destructive hover:bg-destructive/10 hover:text-destructive"
-                    onClick={() => void handleDelete(preset)}
-                    disabled={isMutating || dirty}
-                  >
-                    <Trash2 className="h-4 w-4" />
-                  </Button>
+                  {(!isFixedSlots || preset.source === "object") && (
+                    <Button
+                      type="button"
+                      variant="ghost"
+                      size="sm"
+                      className="h-8 px-2 text-destructive hover:bg-destructive/10 hover:text-destructive"
+                      onClick={() => void handleDelete(preset)}
+                      disabled={isMutating || dirty}
+                    >
+                      <Trash2 className="h-4 w-4" />
+                    </Button>
+                  )}
                 </div>
               </div>
             );
           })}
-        </div>
-      )}
+            </div>
+          )}
       
-      {dirty && (
-        <div className="mt-4 flex items-center justify-between rounded-lg bg-secondary/50 px-4 py-3">
-          <p className="text-sm text-muted-foreground">
-            Has cambiado el orden de las imágenes.
-          </p>
-          <div className="flex items-center gap-2">
-            <Button
-              type="button"
-              variant="outline"
-              size="sm"
-              onClick={() => {
-                setPresets(query.data?.presets || []);
-                setDirty(false);
-              }}
-              disabled={reorderPresets.isPending}
-            >
-              Cancelar
-            </Button>
-            <Button
-              size="sm"
-              onClick={() => void saveOrder()}
-              disabled={reorderPresets.isPending}
-            >
-              {reorderPresets.isPending ? (
-                <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-              ) : null}
-              Guardar orden
-            </Button>
-          </div>
+          {dirty && (
+            <div className="mt-4 flex items-center justify-between rounded-lg bg-secondary/50 px-4 py-3">
+              <p className="text-sm text-muted-foreground">
+                Has cambiado el orden de las imágenes.
+              </p>
+              <div className="flex items-center gap-2">
+                <Button
+                  type="button"
+                  variant="outline"
+                  size="sm"
+                  onClick={() => {
+                    setPresets(query.data?.presets || []);
+                    setDirty(false);
+                  }}
+                  disabled={reorderPresets.isPending}
+                >
+                  Cancelar
+                </Button>
+                <Button
+                  size="sm"
+                  onClick={() => void saveOrder()}
+                  disabled={reorderPresets.isPending}
+                >
+                  {reorderPresets.isPending ? (
+                    <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                  ) : null}
+                  Guardar orden
+                </Button>
+              </div>
+            </div>
+          )}
         </div>
       )}
     </div>
