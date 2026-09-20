@@ -23,13 +23,6 @@ export type PodcastTag =
   | "Sobrenatural"
   | "Neurociencia";
 
-export type SonidosTag =
-  | "Sonidos Binaurales"
-  | "Sonidos Naturaleza"
-  | "Sonidos Atmosféricos"
-  | "Sonidos Hipnóticos"
-  | "Frecuencias Astrales";
-
 export type AncestralTag =
   | "Cuencos Tibetanos"
   | "Cuencos de Cuarzo"
@@ -49,11 +42,15 @@ import {
   type DescansoTagCard,
   type LegacyDescansoTag,
   type SleepTag,
+  type LegacySonidosTag,
   type SonidosCollectionTag,
   type SonidosTagCard,
   type ThemeTag,
 } from "@/data/tags";
+import { normalizeSonidosTags } from "@/data/sonidos-tags";
 import type { MoodId } from "@/data/moods";
+
+export type SonidosTag = LegacySonidosTag;
 
 export type Session = {
   id: string;
@@ -1186,43 +1183,6 @@ export function getSessionsByCategory(categoryId: string): Session[] {
 
 export function getSessionsBySleepTag(sleepTag: SleepTag): Session[] {
   return SESSIONS.filter((s) => s.sleepTag === sleepTag);
-}
-
-const CANONICAL_SONIDOS_TAGS = new Set<SonidosCollectionTag>(
-  SONIDOS_TAG_CARDS.map((card) => card.label),
-);
-
-const LEGACY_SONIDOS_TAG_MAP: Record<SonidosTag, SonidosCollectionTag[]> = {
-  "Sonidos Binaurales": ["Todos los sonidos", "Sonidos binaurales"],
-  "Sonidos Naturaleza": ["Todos los sonidos", "Sonidos de naturaleza"],
-  "Sonidos Atmosféricos": ["Todos los sonidos"],
-  "Sonidos Hipnóticos": ["Todos los sonidos"],
-  "Frecuencias Astrales": ["Todos los sonidos", "Frecuencias Astrales"],
-};
-
-export function normalizeSonidosTags(
-  tags: readonly string[] | null | undefined,
-  legacySonidosTag?: string | null,
-): SonidosCollectionTag[] {
-  const result = new Set<SonidosCollectionTag>();
-  if (Array.isArray(tags)) {
-    for (const tag of tags) {
-      const normalized = tag.trim();
-      if (normalized) result.add(normalized);
-    }
-  }
-  if (tags == null && result.size === 0 && legacySonidosTag && legacySonidosTag in LEGACY_SONIDOS_TAG_MAP) {
-    for (const tag of LEGACY_SONIDOS_TAG_MAP[legacySonidosTag as SonidosTag]) {
-      result.add(tag);
-    }
-  }
-  if (result.size > 0) result.add("Todos los sonidos");
-  return [
-    ...SONIDOS_TAG_CARDS.map((card) => card.label).filter((tag) => result.has(tag)),
-    ...[...result]
-      .filter((tag) => !CANONICAL_SONIDOS_TAGS.has(tag))
-      .sort((a, b) => a.localeCompare(b, "es")),
-  ];
 }
 
 export function getSessionSonidosTags(session: Session): SonidosCollectionTag[] {

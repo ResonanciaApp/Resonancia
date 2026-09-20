@@ -10,6 +10,13 @@ export type SleepCarouselOrderItem = {
   sortOrder: number;
 };
 
+export type SoundCarouselOrderItem = {
+  key: string;
+  label: string;
+  visible: boolean;
+  sortOrder: number;
+};
+
 /**
  * Applies the optional editorial order without allowing an old publication to
  * hide newly available content. Invalid entries are ignored; available keys
@@ -47,6 +54,18 @@ export function resolveSleepCarouselOrder(
     }
   }
   return ordered;
+}
+
+export function resolveSoundCarouselOrder(
+  configured: readonly SoundCarouselOrderItem[] | undefined,
+  availableLabels: readonly string[],
+): string[] {
+  const availableKeys = availableLabels.map((label) => `collection:${label}`);
+  const orderedKeys = resolveSleepCarouselOrder(
+    configured?.map((row) => ({ ...row, type: "session" as const })),
+    availableKeys,
+  );
+  return orderedKeys.map((key) => key.slice("collection:".length));
 }
 
 /**

@@ -199,6 +199,8 @@ import type {
   SharedMixesPage,
   SleepCarouselOrderResponse,
   SleepCarouselOrderUpdate,
+  SoundCarouselOrderResponse,
+  SoundCarouselOrderUpdate,
   StreakResponse,
   Submission,
   SubmissionFilterOptions,
@@ -11286,6 +11288,154 @@ export const useUpdateAdminSleepCarouselOrder = <TError = ErrorType<ErrorRespons
         TContext
       > => {
       return useMutation(getUpdateAdminSleepCarouselOrderMutationOptions(options));
+    }
+
+export const getGetAdminSoundCarouselOrderUrl = () => {
+
+
+
+
+  return `/api/admin/sound-carousel-order`
+}
+
+/**
+ * @summary Obtener el orden de carruseles de Sonidos
+ */
+export const getAdminSoundCarouselOrder = async ( options?: RequestInit): Promise<SoundCarouselOrderResponse> => {
+
+  return customFetch<SoundCarouselOrderResponse>(getGetAdminSoundCarouselOrderUrl(),
+  {
+    ...options,
+    method: 'GET'
+
+
+  }
+);}
+
+
+
+
+
+export const getGetAdminSoundCarouselOrderQueryKey = () => {
+    return [
+    `/api/admin/sound-carousel-order`
+    ] as const;
+    }
+
+
+export const getGetAdminSoundCarouselOrderQueryOptions = <TData = Awaited<ReturnType<typeof getAdminSoundCarouselOrder>>, TError = ErrorType<unknown>>( options?: { query?:UseQueryOptions<Awaited<ReturnType<typeof getAdminSoundCarouselOrder>>, TError, TData>, request?: SecondParameter<typeof customFetch>}
+) => {
+
+const {query: queryOptions, request: requestOptions} = options ?? {};
+
+  const queryKey =  queryOptions?.queryKey ?? getGetAdminSoundCarouselOrderQueryKey();
+
+
+
+    const queryFn: QueryFunction<Awaited<ReturnType<typeof getAdminSoundCarouselOrder>>> = ({ signal }) => getAdminSoundCarouselOrder({ signal, ...requestOptions });
+
+
+
+
+
+   return  { queryKey, queryFn, ...queryOptions} as UseQueryOptions<Awaited<ReturnType<typeof getAdminSoundCarouselOrder>>, TError, TData> & { queryKey: QueryKey }
+}
+
+export type GetAdminSoundCarouselOrderQueryResult = NonNullable<Awaited<ReturnType<typeof getAdminSoundCarouselOrder>>>
+export type GetAdminSoundCarouselOrderQueryError = ErrorType<unknown>
+
+
+/**
+ * @summary Obtener el orden de carruseles de Sonidos
+ */
+
+export function useGetAdminSoundCarouselOrder<TData = Awaited<ReturnType<typeof getAdminSoundCarouselOrder>>, TError = ErrorType<unknown>>(
+  options?: { query?:UseQueryOptions<Awaited<ReturnType<typeof getAdminSoundCarouselOrder>>, TError, TData>, request?: SecondParameter<typeof customFetch>}
+
+ ):  UseQueryResult<TData, TError> & { queryKey: QueryKey } {
+
+  const queryOptions = getGetAdminSoundCarouselOrderQueryOptions(options)
+
+  const query = useQuery(queryOptions) as  UseQueryResult<TData, TError> & { queryKey: QueryKey };
+
+  return { ...query, queryKey: queryOptions.queryKey };
+}
+
+
+
+
+
+
+
+export const getUpdateAdminSoundCarouselOrderUrl = () => {
+
+
+
+
+  return `/api/admin/sound-carousel-order`
+}
+
+/**
+ * @summary Actualizar orden y visibilidad de carruseles de Sonidos
+ */
+export const updateAdminSoundCarouselOrder = async (soundCarouselOrderUpdate: SoundCarouselOrderUpdate, options?: RequestInit): Promise<SoundCarouselOrderResponse> => {
+
+  return customFetch<SoundCarouselOrderResponse>(getUpdateAdminSoundCarouselOrderUrl(),
+  {
+    ...options,
+    method: 'PATCH',
+    headers: { 'Content-Type': 'application/json', ...options?.headers },
+    body: JSON.stringify(
+      soundCarouselOrderUpdate,)
+  }
+);}
+
+
+
+
+export const getUpdateAdminSoundCarouselOrderMutationOptions = <TError = ErrorType<ErrorResponse>,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof updateAdminSoundCarouselOrder>>, TError,{data: BodyType<SoundCarouselOrderUpdate>}, TContext>, request?: SecondParameter<typeof customFetch>}
+): UseMutationOptions<Awaited<ReturnType<typeof updateAdminSoundCarouselOrder>>, TError,{data: BodyType<SoundCarouselOrderUpdate>}, TContext> => {
+
+const mutationKey = ['updateAdminSoundCarouselOrder'];
+const {mutation: mutationOptions, request: requestOptions} = options ?
+      options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey ?
+      options
+      : {...options, mutation: {...options.mutation, mutationKey}}
+      : {mutation: { mutationKey, }, request: undefined};
+
+
+
+
+      const mutationFn: MutationFunction<Awaited<ReturnType<typeof updateAdminSoundCarouselOrder>>, {data: BodyType<SoundCarouselOrderUpdate>}> = (props) => {
+          const {data} = props ?? {};
+
+          return  updateAdminSoundCarouselOrder(data,requestOptions)
+        }
+
+
+
+
+
+
+  return  { mutationFn, ...mutationOptions }}
+
+    export type UpdateAdminSoundCarouselOrderMutationResult = NonNullable<Awaited<ReturnType<typeof updateAdminSoundCarouselOrder>>>
+    export type UpdateAdminSoundCarouselOrderMutationBody = BodyType<SoundCarouselOrderUpdate>
+    export type UpdateAdminSoundCarouselOrderMutationError = ErrorType<ErrorResponse>
+
+    /**
+ * @summary Actualizar orden y visibilidad de carruseles de Sonidos
+ */
+export const useUpdateAdminSoundCarouselOrder = <TError = ErrorType<ErrorResponse>,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof updateAdminSoundCarouselOrder>>, TError,{data: BodyType<SoundCarouselOrderUpdate>}, TContext>, request?: SecondParameter<typeof customFetch>}
+ ): UseMutationResult<
+        Awaited<ReturnType<typeof updateAdminSoundCarouselOrder>>,
+        TError,
+        {data: BodyType<SoundCarouselOrderUpdate>},
+        TContext
+      > => {
+      return useMutation(getUpdateAdminSoundCarouselOrderMutationOptions(options));
     }
 
 export const getUpdateAdminPlaylistCarouselUrl = (id: number,) => {

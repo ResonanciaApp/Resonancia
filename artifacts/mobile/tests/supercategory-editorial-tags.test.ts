@@ -9,6 +9,7 @@ import {
   matchesSupercategoryFilter,
   shouldShowSupercategoryFilterTabs,
 } from "../data/supercategory-editorial-tags.ts";
+import { normalizeSonidosTags } from "../data/sonidos-tags.ts";
 
 const session = {
   durationLabel: "10 min",
@@ -18,6 +19,13 @@ const session = {
     "__category_theme_sonoterapia__:Vibración",
   ],
 };
+
+test("recovers legacy Sonidos collections when the multi-tag array is empty", () => {
+  assert.deepEqual(
+    normalizeSonidosTags([], "Sonidos Binaurales"),
+    ["Todos los sonidos", "Sonidos binaurales"],
+  );
+});
 
 test("keeps Dormir and Sonidos editorial tags isolated", () => {
   assert.deepEqual(getSupercategoryEditorialTags(session, "descanso"), ["Opción A"]);

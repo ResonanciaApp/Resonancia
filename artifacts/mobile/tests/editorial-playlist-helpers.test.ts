@@ -17,7 +17,25 @@ import {
   resolveMeditationPlaylistPlayAction,
   resolveMeditationPlaylistResume,
   resolveSleepCarouselOrder,
+  resolveSoundCarouselOrder,
 } from "../lib/editorial-playlist-helpers.ts";
+
+test("orders and hides sound carousels without removing unconfigured collections", () => {
+  assert.deepEqual(
+    resolveSoundCarouselOrder(
+      [
+        { key: "collection:Lluvia", label: "Lluvia", visible: false, sortOrder: 0 },
+        { key: "collection:Mar", label: "Mar", visible: true, sortOrder: 1 },
+      ],
+      ["Mar", "Lluvia", "Viento"],
+    ),
+    ["Mar", "Viento"],
+  );
+});
+
+test("uses the deterministic source order for legacy sound snapshots", () => {
+  assert.deepEqual(resolveSoundCarouselOrder(undefined, ["Mar", "Lluvia"]), ["Mar", "Lluvia"]);
+});
 
 test("computes meditation playlist completion at 0%, partial and 100%", () => {
   assert.deepEqual(

@@ -1600,6 +1600,32 @@ export interface SleepCarouselOrderResponse {
   carousels: SleepCarouselOrder[];
 }
 
+export interface SoundCarouselOrder {
+  key: string;
+  label: string;
+  visible: boolean;
+  /** @minimum 0 */
+  sortOrder: number;
+}
+
+export type SoundCarouselOrderUpdateCarouselsItem = {
+  /** @minLength 1 */
+  key: string;
+  visible: boolean;
+};
+
+export interface SoundCarouselOrderUpdate {
+  /** @minLength 1 */
+  revision: string;
+  /** @minItems 1 */
+  carousels: SoundCarouselOrderUpdateCarouselsItem[];
+}
+
+export interface SoundCarouselOrderResponse {
+  revision: string;
+  carousels: SoundCarouselOrder[];
+}
+
 export type AdminPlaylistCarouselInputSurface = typeof AdminPlaylistCarouselInputSurface[keyof typeof AdminPlaylistCarouselInputSurface];
 
 
@@ -1784,6 +1810,7 @@ export interface CatalogResponse {
   playlists: CatalogPlaylist[];
   playlistCarousels: PlaylistCarousel[];
   sleepCarouselOrder: SleepCarouselOrder[];
+  soundCarouselOrder: SoundCarouselOrder[];
   /** Alias legado de Inicio, filtrado a showOnHome y máximo cuatro */
   homePlaylists?: CatalogPlaylist[];
 }

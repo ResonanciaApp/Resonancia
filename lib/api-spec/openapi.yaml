@@ -3256,6 +3256,47 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/ErrorResponse"
+  /admin/sound-carousel-order:
+    get:
+      operationId: getAdminSoundCarouselOrder
+      tags: [admin]
+      summary: Obtener el orden de carruseles de Sonidos
+      responses:
+        "200":
+          description: Carruseles de Sonidos
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/SoundCarouselOrderResponse"
+    patch:
+      operationId: updateAdminSoundCarouselOrder
+      tags: [admin]
+      summary: Actualizar orden y visibilidad de carruseles de Sonidos
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/SoundCarouselOrderUpdate"
+      responses:
+        "200":
+          description: Carruseles actualizados
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/SoundCarouselOrderResponse"
+        "400":
+          description: Claves inválidas, duplicadas o incompletas
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+        "409":
+          description: La revisión está desactualizada
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
   /admin/playlist-carousels/{id}:
     patch:
       operationId: updateAdminPlaylistCarousel
@@ -6462,6 +6503,50 @@ components:
           items:
             $ref: "#/components/schemas/SleepCarouselOrder"
       required: [revision, carousels]
+    SoundCarouselOrder:
+      type: object
+      properties:
+        key:
+          type: string
+        label:
+          type: string
+        visible:
+          type: boolean
+        sortOrder:
+          type: integer
+          minimum: 0
+      required: [key, label, visible, sortOrder]
+    SoundCarouselOrderUpdate:
+      type: object
+      additionalProperties: false
+      properties:
+        revision:
+          type: string
+          minLength: 1
+        carousels:
+          type: array
+          minItems: 1
+          items:
+            type: object
+            additionalProperties: false
+            properties:
+              key:
+                type: string
+                minLength: 1
+              visible:
+                type: boolean
+            required: [key, visible]
+      required: [revision, carousels]
+    SoundCarouselOrderResponse:
+      type: object
+      properties:
+        revision:
+          type: string
+        carousels:
+          type: array
+          items:
+            $ref: "#/components/schemas/SoundCarouselOrder"
+      required: [revision, carousels]
     AdminPlaylistCarouselInput:
       type: object
       additionalProperties: false
@@ -6681,12 +6766,16 @@ components:
           type: array
           items:
             $ref: "#/components/schemas/SleepCarouselOrder"
+        soundCarouselOrder:
+          type: array
+          items:
+            $ref: "#/components/schemas/SoundCarouselOrder"
         homePlaylists:
           type: array
           items:
             $ref: "#/components/schemas/CatalogPlaylist"
           description: Alias legado de Inicio, filtrado a showOnHome y máximo cuatro
-      required: [categories, sessions, playlists, playlistCarousels, sleepCarouselOrder]
+      required: [categories, sessions, playlists, playlistCarousels, sleepCarouselOrder, soundCarouselOrder]
     SearchTrendContext:
       type: string
       enum: [discover, sleep, sounds]

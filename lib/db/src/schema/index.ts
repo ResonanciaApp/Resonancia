@@ -60,6 +60,7 @@ export * from "./resonadores";
 export * from "./account-deletions";
 export * from "./search-trend-buckets";
 export * from "./sleep-carousel-order";
+export * from "./sound-carousel-order";
 export * from "./emotional-phrases";
 export * from "./inspirations";
 export * from "./hero-slides";

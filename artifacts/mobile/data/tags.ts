@@ -152,7 +152,8 @@ export const SLEEP_TAG_CARDS: SleepTagCard[] = [
 
 // ── Sonidos Tags ─────────────────────────────────────────────────────────────
 
-export type SonidosCollectionTag = string;
+import type { SonidosCollectionTag } from "@/data/sonidos-tags";
+export type { LegacySonidosTag, SonidosCollectionTag } from "@/data/sonidos-tags";
 
 export interface SonidosTagCard {
   id: string;

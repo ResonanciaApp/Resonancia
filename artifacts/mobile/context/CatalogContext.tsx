@@ -46,6 +46,8 @@ import {
   applySleepCarouselOrder,
 } from "@/data/playlists";
 import type { SleepCarouselOrderItem } from "@/lib/editorial-playlist-helpers";
+import type { SoundCarouselOrderItem } from "@/lib/editorial-playlist-helpers";
+import { applySoundCarouselOrder } from "@/data/sound-carousel-order";
 
 // v3 invalida snapshots que todavía podían contener sesiones retiradas.
 const CACHE_KEY = "cdc_catalog_snapshot_v3";
@@ -84,6 +86,7 @@ type CatalogSnapshot = {
    */
   playlistCarousels?: PlaylistCarouselSnapshot[];
   sleepCarouselOrder?: SleepCarouselOrderItem[];
+  soundCarouselOrder?: SoundCarouselOrderItem[];
 };
 
 function hydrate(snapshot: CatalogSnapshot): void {
@@ -98,6 +101,9 @@ function hydrate(snapshot: CatalogSnapshot): void {
   }
   if (snapshot.sleepCarouselOrder !== undefined) {
     applySleepCarouselOrder(snapshot.sleepCarouselOrder);
+  }
+  if (snapshot.soundCarouselOrder !== undefined) {
+    applySoundCarouselOrder(snapshot.soundCarouselOrder);
   }
 }
 

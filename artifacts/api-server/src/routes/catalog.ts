@@ -40,6 +40,7 @@ import { getCatalogReadiness } from "../lib/catalogReadiness";
 import { resolvePinnedFeaturedValue } from "../lib/pinnedFeatured";
 import { loadPlaylistCarousels } from "../lib/playlistCarousels";
 import { getSleepCarouselProjection } from "../lib/sleepCarouselOrder";
+import { getSoundCarouselProjection } from "../lib/soundCarouselOrder";
 import {
   normalizeFeaturedSleep,
   normalizeSupercategoryEditorialTags,
@@ -379,7 +380,7 @@ async function loadPlaylistPlacements(
 
 // GET /catalog — catálogo público (sesiones publicadas + todas las playlists activas).
 router.get("/catalog", async (req, res) => {
-  const [categories, sessions, playlists, playlistCarousels, sleepCarouselOrder] = await Promise.all([
+  const [categories, sessions, playlists, playlistCarousels, sleepCarouselOrder, soundCarouselOrder] = await Promise.all([
     db.select().from(catalogCategoriesTable)
       .orderBy(asc(catalogCategoriesTable.sortOrder), asc(catalogCategoriesTable.id))
       .limit(200),
@@ -394,6 +395,7 @@ router.get("/catalog", async (req, res) => {
       .orderBy(asc(catalogPlaylistsTable.sortOrder), asc(catalogPlaylistsTable.id)),
     loadPlaylistCarousels(true),
     getSleepCarouselProjection(true),
+    getSoundCarouselProjection(),
   ]);
 
   const sessionIds = sessions.map((s) => s.id);
@@ -441,6 +443,7 @@ router.get("/catalog", async (req, res) => {
     ),
     playlistCarousels,
     sleepCarouselOrder: sleepCarouselOrder.carousels,
+    soundCarouselOrder: soundCarouselOrder.carousels,
     // Alias legado para Inicio: la fuente editorial nueva es `playlists`,
     // mientras que consumidores antiguos pueden seguir mostrando solo las
     // ubicaciones explícitas de home (máximo cuatro por posición).

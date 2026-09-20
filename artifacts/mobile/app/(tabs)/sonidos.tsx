@@ -47,6 +47,8 @@ import {
   getTwoCardCarouselCardWidth,
 } from "@/constants/carousel";
 import { WIDGET_GREEN_SOLID } from "@/constants/colors";
+import { SOUND_CAROUSEL_ORDER } from "@/data/sound-carousel-order";
+import { resolveSoundCarouselOrder } from "@/lib/editorial-playlist-helpers";
 
 const H_PAD = 16;
 const { width: W } = Dimensions.get("window");
@@ -209,6 +211,15 @@ export default function SonidosScreen() {
       })).filter((tag) => tag.sessions.length > 0),
     [version],
   );
+  const orderedCollections = useMemo(() => {
+    const byLabel = new Map(collections.map((collection) => [collection.label, collection]));
+    return resolveSoundCarouselOrder(
+      SOUND_CAROUSEL_ORDER,
+      collections.map((collection) => collection.label),
+    ).map((label) => byLabel.get(label)).filter(
+      (collection): collection is (typeof collections)[number] => collection !== undefined,
+    );
+  }, [collections, version]);
   const allSessions = useMemo(() => getSonidosVisibleSessions(), [version]);
   const allIds = useMemo(() => allSessions.map((session) => session.id), [allSessions]);
   const closeAll = useCallback(() => {
@@ -413,7 +424,7 @@ export default function SonidosScreen() {
                 showMetaBelow
               />
             )}
-            {collections.map((collection, index) => (
+            {orderedCollections.map((collection, index) => (
               <React.Fragment key={collection.id}>
                 {index > 0 ? <View style={styles.sectionDivider} /> : null}
                 <SessionCarousel

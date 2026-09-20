@@ -2911,6 +2911,8 @@ export const getCatalogResponsePlaylistCarouselsItemPlaylistIdsItemMax = 80;
 
 export const getCatalogResponseSleepCarouselOrderItemSortOrderMin = 0;
 
+export const getCatalogResponseSoundCarouselOrderItemSortOrderMin = 0;
+
 export const getCatalogResponseHomePlaylistsItemPlacementsItemSortOrderMin = 0;
 
 
@@ -3027,6 +3029,12 @@ export const GetCatalogResponse = zod.object({
   "label": zod.string(),
   "visible": zod.boolean(),
   "sortOrder": zod.number().min(getCatalogResponseSleepCarouselOrderItemSortOrderMin)
+})),
+  "soundCarouselOrder": zod.array(zod.object({
+  "key": zod.string(),
+  "label": zod.string(),
+  "visible": zod.boolean(),
+  "sortOrder": zod.number().min(getCatalogResponseSoundCarouselOrderItemSortOrderMin)
 })),
   "homePlaylists": zod.array(zod.object({
   "id": zod.number(),
@@ -5279,6 +5287,55 @@ export const UpdateAdminSleepCarouselOrderResponse = zod.object({
   "label": zod.string(),
   "visible": zod.boolean(),
   "sortOrder": zod.number().min(updateAdminSleepCarouselOrderResponseCarouselsItemSortOrderMin)
+}))
+})
+
+
+/**
+ * @summary Obtener el orden de carruseles de Sonidos
+ */
+export const getAdminSoundCarouselOrderResponseCarouselsItemSortOrderMin = 0;
+
+
+
+export const GetAdminSoundCarouselOrderResponse = zod.object({
+  "revision": zod.string(),
+  "carousels": zod.array(zod.object({
+  "key": zod.string(),
+  "label": zod.string(),
+  "visible": zod.boolean(),
+  "sortOrder": zod.number().min(getAdminSoundCarouselOrderResponseCarouselsItemSortOrderMin)
+}))
+})
+
+
+/**
+ * @summary Actualizar orden y visibilidad de carruseles de Sonidos
+ */
+
+
+
+
+
+export const UpdateAdminSoundCarouselOrderBody = zod.object({
+  "revision": zod.string().min(1),
+  "carousels": zod.array(zod.object({
+  "key": zod.string().min(1),
+  "visible": zod.boolean()
+})).min(1)
+})
+
+export const updateAdminSoundCarouselOrderResponseCarouselsItemSortOrderMin = 0;
+
+
+
+export const UpdateAdminSoundCarouselOrderResponse = zod.object({
+  "revision": zod.string(),
+  "carousels": zod.array(zod.object({
+  "key": zod.string(),
+  "label": zod.string(),
+  "visible": zod.boolean(),
+  "sortOrder": zod.number().min(updateAdminSoundCarouselOrderResponseCarouselsItemSortOrderMin)
 }))
 })
 
