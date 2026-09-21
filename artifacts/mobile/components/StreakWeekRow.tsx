@@ -8,7 +8,7 @@ import { CinematicFadeSlide } from "@/components/CinematicFadeSlide";
 import { useStreak } from "@/hooks/useStreak";
 
 const DAY_INITIALS = ["L", "M", "X", "J", "V", "S", "D"];
-const POSITIONED_DAY_GRADIENT = ["#654EC5", "#6A72CC"] as const;
+const POSITIONED_DAY_GRADIENT = ["#8674D2", "#9096D9"] as const;
 
 export function StreakWeekRow({
   animateEntrance = false,

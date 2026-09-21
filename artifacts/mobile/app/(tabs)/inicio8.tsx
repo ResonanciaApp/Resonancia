@@ -3899,8 +3899,8 @@ const styles = StyleSheet.create({
   },
   inicio3HeroProgressBar: {
     flex: 1,
-    height: 3,
-    borderRadius: 2,
+    height: 2,
+    borderRadius: 1,
     backgroundColor: "rgba(255,255,255,0.4)",
   },
   inicio3HeroProgressBarActive: {
