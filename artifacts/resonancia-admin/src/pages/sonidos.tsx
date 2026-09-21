@@ -191,6 +191,7 @@ export default function SonidosPage() {
   const [filterCat, setFilterCat] = useState<string>("all");
   const audioRef = useRef<HTMLInputElement>(null);
   const thumbRef = useRef<HTMLInputElement>(null);
+  const formRef = useRef<HTMLDivElement>(null);
 
   const sounds = data?.sounds ?? [];
   const filtered = filterCat === "all" ? sounds : sounds.filter((s) => s.categoryId === filterCat);
@@ -203,6 +204,11 @@ export default function SonidosPage() {
     setThumbFile(null);
     setThumbPreview(null);
     setShowForm(true);
+    requestAnimationFrame(() => {
+      requestAnimationFrame(() => {
+        formRef.current?.scrollIntoView({ behavior: "smooth", block: "start" });
+      });
+    });
   }
 
   function openEdit(s: (typeof sounds)[number]) {
@@ -385,7 +391,7 @@ export default function SonidosPage() {
             {sounds.length} sonido{sounds.length !== 1 ? "s" : ""} registrado{sounds.length !== 1 ? "s" : ""}
           </p>
         </div>
-        <Button onClick={openCreate} className="gap-2">
+        <Button type="button" onClick={openCreate} className="gap-2">
           <Plus className="w-4 h-4" />
           Nuevo sonido
         </Button>
@@ -393,7 +399,7 @@ export default function SonidosPage() {
 
       {/* Formulario */}
       {showForm && (
-        <div className="bg-card border border-border rounded-2xl p-6 space-y-4">
+        <div ref={formRef} className="bg-card border border-border rounded-2xl p-6 space-y-4 scroll-mt-6">
           <div className="flex items-center justify-between">
             <h2 className="text-lg font-semibold text-foreground">
               {editingId ? "Editar sonido" : "Nuevo sonido"}
