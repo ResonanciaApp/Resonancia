@@ -6,6 +6,7 @@ import {
   ActivityIndicator,
   Animated,
   Easing,
+  Image,
   Linking,
   Modal,
   Platform,
@@ -18,7 +19,7 @@ import {
 } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 
-import { useSceneTheme } from "@/context/SceneThemeContext";
+import { SessionBadgeGlass } from "@/components/SessionDurationBadge";
 import {
   formatPracticeNotificationTimeLocal,
   loadPracticeNotificationSettings,
@@ -41,7 +42,6 @@ export function SleepReminderSheet({
   onClose,
   onSaved,
 }: SleepReminderSheetProps) {
-  const { theme } = useSceneTheme();
   const insets = useSafeAreaInsets();
   const [mounted, setMounted] = useState(false);
   const [draft, setDraft] = useState<PracticeNotificationPreference>(
@@ -146,12 +146,6 @@ export function SleepReminderSheet({
   if (!mounted) return null;
 
   const timeLabel = formatPracticeNotificationTimeLocal(draft.hour, draft.minute);
-  const gradient = [
-    theme.gradient[0] as string,
-    theme.gradient[1] as string,
-    "#08070D",
-  ] as const;
-
   return (
     <Modal
       transparent
@@ -161,10 +155,22 @@ export function SleepReminderSheet({
       onRequestClose={onClose}
     >
       <View style={styles.modalRoot}>
-        <Animated.View
-          pointerEvents="none"
-          style={[styles.backdrop, { opacity: backdropOpacity }]}
-        />
+        <Animated.View pointerEvents="none" style={[styles.background, { opacity: backdropOpacity }]}>
+          <Image
+            source={require("@/assets/images/sleep-reminder-room.jpg")}
+            resizeMode="cover"
+            style={StyleSheet.absoluteFill}
+          />
+          <LinearGradient
+            colors={[
+              "rgba(3,7,13,0.08)",
+              "rgba(3,7,13,0.18)",
+              "rgba(3,7,13,0.42)",
+            ]}
+            locations={[0, 0.48, 1]}
+            style={StyleSheet.absoluteFill}
+          />
+        </Animated.View>
         <Pressable style={StyleSheet.absoluteFill} onPress={onClose} />
         <Animated.View
           style={[
@@ -175,7 +181,8 @@ export function SleepReminderSheet({
             },
           ]}
         >
-          <LinearGradient colors={gradient} style={StyleSheet.absoluteFill} />
+          <SessionBadgeGlass intensity={Platform.OS === "android" ? 72 : 42} showBlackTint={false} />
+          <View pointerEvents="none" style={styles.sheetGlassTint} />
           <View style={styles.handle} />
           <ScrollView
             style={styles.sheetScroll}
@@ -328,9 +335,9 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: "flex-end",
   },
-  backdrop: {
+  background: {
     ...StyleSheet.absoluteFillObject,
-    backgroundColor: "rgba(0,0,0,0.62)",
+    backgroundColor: "#060A0F",
   },
   sheet: {
     maxHeight: "92%",
@@ -341,7 +348,11 @@ const styles = StyleSheet.create({
     paddingTop: 12,
     borderWidth: 1,
     borderBottomWidth: 0,
-    borderColor: "rgba(255,255,255,0.10)",
+    borderColor: "rgba(255,255,255,0.18)",
+  },
+  sheetGlassTint: {
+    ...StyleSheet.absoluteFillObject,
+    backgroundColor: "rgba(17,14,28,0.50)",
   },
   handle: {
     alignSelf: "center",
