@@ -156,7 +156,11 @@ export default function PremiumBanner({
               contentFit="contain"
             />
             <Text style={styles.sleepTitle}>
-              Descubre todo lo que Premium tiene para ti
+              Prueba{" "}
+              <Text style={{ color: MEMBERSHIP_AURORA.premium.accent }}>
+                Premium
+              </Text>{" "}
+              Gratis
             </Text>
           </>
         )}
