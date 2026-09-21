@@ -418,9 +418,6 @@ export default function FavoritosTodosScreen() {
           scrollEventThrottle={16}
           onScroll={handleScroll}
         >
-          <Pressable onPress={() => router.push("/inspiracion-diaria/notas")} style={{ paddingHorizontal: 18, paddingBottom: 20 }}>
-            <Text style={{ color: colors.foreground }}>Mis notas de inspiración ›</Text>
-          </Pressable>
           {activeTab === "all" ? (
             visibleContentTabs.length === 0 ? (
               <View style={styles.empty}>
