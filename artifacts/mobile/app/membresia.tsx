@@ -492,10 +492,13 @@ const styles = StyleSheet.create({
     opacity: 0.84,
   },
   manageButtonText: {
-    color: "#A17C25",
+    color: "#F9F9F9",
     fontFamily: "Manrope",
     fontSize: 15,
     fontWeight: "800",
+    textShadowColor: "rgba(0,0,0,0.32)",
+    textShadowOffset: { width: 0, height: 1 },
+    textShadowRadius: 2,
   },
   pressed: {
     opacity: 0.72,
