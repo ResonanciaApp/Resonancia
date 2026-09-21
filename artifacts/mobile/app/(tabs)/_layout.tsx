@@ -32,6 +32,7 @@ import { useBrightness, applyBrightSat } from "@/context/BrightnessContext";
 import { CategoryOverlayProvider, useCategoryOverlay } from "@/context/CategoryOverlayContext";
 import { CategoryOverlay } from "@/components/CategoryOverlay";
 import { WIDGET_GREEN_SOLID } from "@/constants/colors";
+import { TAB_BAR_BLUR_INTENSITY, TAB_BAR_GLASS_OVERLAY } from "@/constants/tab-bar";
 import { RoutineCompletionBanner } from "@/components/RoutineCompletionBanner";
 import { RoutineCompletionBannerProvider } from "@/context/RoutineCompletionBannerContext";
 
@@ -250,7 +251,7 @@ function CustomTabBar({ state, navigation, descriptors }: TabBarProps) {
         <BlurView
           pointerEvents="none"
           tint="dark"
-          intensity={48}
+          intensity={TAB_BAR_BLUR_INTENSITY}
           experimentalBlurMethod="dimezisBlurView"
           style={StyleSheet.absoluteFill}
         />
@@ -258,7 +259,7 @@ function CustomTabBar({ state, navigation, descriptors }: TabBarProps) {
           pointerEvents="none"
           style={[
             StyleSheet.absoluteFill,
-            { backgroundColor: "rgba(14,8,33,0.62)" },
+            { backgroundColor: TAB_BAR_GLASS_OVERLAY },
           ]}
         />
         <View

@@ -19,6 +19,7 @@ import { BlurView } from "expo-blur";
 import { LinearGradient } from "expo-linear-gradient";
 import { WIDGET_GREEN_SOLID } from "@/constants/colors";
 import { DURATION, easeOutCubic } from "@/constants/motion";
+import { TAB_BAR_BLUR_INTENSITY, TAB_BAR_GLASS_OVERLAY } from "@/constants/tab-bar";
 
 import { usePlayer } from "@/context/PlayerContext";
 import { useMixer } from "@/context/MixerContext";
@@ -249,26 +250,21 @@ export function MiniPlayer({ forceMix = false }: { forceMix?: boolean }) {
       >
         {/* ── Píldora glass: réplica del tab bar horizontal ── */}
         <View style={styles.mixPill}>
-          {/* 1. Blur base (igual al tab bar) */}
+          {/* Mismas capas visuales y tokens que el tab bar horizontal. */}
           <BlurView
-            intensity={Platform.OS === "android" ? 100 : 40}
+            intensity={TAB_BAR_BLUR_INTENSITY}
             tint="dark"
             experimentalBlurMethod="dimezisBlurView"
             pointerEvents="none"
             style={[StyleSheet.absoluteFill, { borderRadius: 999, overflow: "hidden" }]}
-          >
-            {/* 2. Tinte violeta base (sin tinte en Android para no tapar el blur) */}
-            {Platform.OS !== "android" && (
-              <View style={[StyleSheet.absoluteFill, { backgroundColor: "rgba(29,11,77,0.15)" }]} pointerEvents="none" />
-            )}
-            {/* 3. Inner glow vertical */}
-            <LinearGradient
-              colors={["rgba(255,255,255,0.07)", "rgba(255,255,255,0)"]}
-              start={{ x: 0, y: 0 }} end={{ x: 0, y: 1 }}
-              style={StyleSheet.absoluteFill}
-              pointerEvents="none"
-            />
-          </BlurView>
+          />
+          <View
+            pointerEvents="none"
+            style={[
+              StyleSheet.absoluteFill,
+              { backgroundColor: TAB_BAR_GLASS_OVERLAY },
+            ]}
+          />
 
           {/* ── Row principal ── */}
           <View style={styles.mixRow}>
