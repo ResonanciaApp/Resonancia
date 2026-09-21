@@ -1,4 +1,5 @@
 import { Feather } from "@expo/vector-icons";
+import { Asset } from "expo-asset";
 import * as Haptics from "expo-haptics";
 import { LinearGradient } from "expo-linear-gradient";
 import React, { useCallback, useEffect, useRef, useState } from "react";
@@ -36,6 +37,15 @@ type SleepReminderSheetProps = {
 };
 
 const SHEET_OFFSET = 720;
+const SLEEP_REMINDER_IMAGE = require("@/assets/images/sleep-reminder-room-v2.jpg");
+const sleepReminderImageReady = (async () => {
+  const asset = Asset.fromModule(SLEEP_REMINDER_IMAGE);
+  await asset.downloadAsync();
+  const uri = asset.localUri ?? asset.uri;
+  if (uri) {
+    await Image.prefetch(uri);
+  }
+})().catch(() => undefined);
 
 export function SleepReminderSheet({
   visible,
@@ -56,15 +66,21 @@ export function SleepReminderSheet({
 
   useEffect(() => {
     if (!visible) return;
-    setMounted(true);
+    let cancelled = false;
     setError(null);
     setPermissionBlocked(false);
     setChooserOpen(false);
+    void sleepReminderImageReady.then(() => {
+      if (!cancelled) setMounted(true);
+    });
     void loadPracticeNotificationSettings()
       .then((settings) => setDraft(settings.noche))
       .catch(() => {
         setError("No pudimos cargar tu recordatorio. Inténtalo nuevamente.");
       });
+    return () => {
+      cancelled = true;
+    };
   }, [visible]);
 
   useEffect(() => {
@@ -170,7 +186,7 @@ export function SleepReminderSheet({
           ]}
         >
           <Image
-            source={require("@/assets/images/sleep-reminder-room-v2.jpg")}
+            source={SLEEP_REMINDER_IMAGE}
             resizeMode="contain"
             style={styles.sheetBackgroundImage}
           />
