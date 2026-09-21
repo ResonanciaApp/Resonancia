@@ -663,7 +663,7 @@ export function ExploreScreen({
                       transition={IMAGE_TRANSITION}
                       cachePolicy="memory-disk"
                     />
-                    <PremiumBadge session={session} size={22} top={8} left={8} />
+                    <PremiumBadge session={session} size={22} top={16} left={16} />
                     <SessionDurationBadge
                       label={session.durationLabel}
                       whiteGlass

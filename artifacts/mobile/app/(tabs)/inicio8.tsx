@@ -2985,8 +2985,8 @@ export default function HomeScreen2({
                 <PremiumBadge
                   session={featuredMoment}
                   size={22}
-                  top={10}
-                  left={10}
+                  top={16}
+                  left={16}
                 />
                 <SessionDurationBadge
                   label={featuredMoment.durationLabel}
