@@ -1031,11 +1031,11 @@ const styles = StyleSheet.create({
     fontWeight: "800",
   },
   offerHero: {
+    marginTop: 50,
     paddingHorizontal: 24,
     paddingTop: 26,
     paddingBottom: 20,
     alignItems: "center",
-    transform: [{ translateY: 50 }],
   },
   subscriptionUnavailable: {
     minHeight: 275,
@@ -1111,7 +1111,9 @@ const styles = StyleSheet.create({
     fontWeight: "800",
   },
   planGrid: {
-    marginTop: 120,
+    // El bloque de marca ya aporta 50 px de desplazamiento real. Estos 70 px
+    // completan los 120 px pedidos para los planes y empujan todo lo inferior.
+    marginTop: 70,
     gap: 11,
   },
   planCard: {
