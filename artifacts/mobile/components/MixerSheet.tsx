@@ -1357,7 +1357,7 @@ const styles = StyleSheet.create({
     justifyContent: "center",
   },
   trackInfo: { flex: 1, justifyContent: "center", paddingRight: 20 },
-  trackName: { fontFamily: "Manrope", fontSize: 15, fontWeight: "700", marginBottom: -2, paddingLeft: 8, marginTop: 6 },
+  trackName: { fontFamily: "Manrope", fontSize: 12, fontWeight: "700", marginBottom: -2, paddingLeft: 8, marginTop: 6 },
   sliderRow: { flexDirection: "row", alignItems: "center", gap: 4 },
   breatheBtn: {
     width: 27,
