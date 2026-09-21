@@ -1301,6 +1301,7 @@ const styles = StyleSheet.create({
   },
   planGrid: {
     gap: 11,
+    transform: [{ translateY: -15 }],
   },
   planOffset: {
     height: 100,
