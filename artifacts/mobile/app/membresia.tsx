@@ -388,12 +388,7 @@ const styles = StyleSheet.create({
     fontWeight: "700",
   },
   benefitsCard: {
-    paddingHorizontal: 16,
     paddingVertical: 7,
-    borderWidth: 2,
-    borderColor: "rgba(255,255,255,0.15)",
-    borderRadius: 19,
-    backgroundColor: "transparent",
   },
   benefitRow: {
     minHeight: 76,
@@ -413,6 +408,7 @@ const styles = StyleSheet.create({
   },
   benefitText: {
     flex: 1,
+    paddingRight: 8,
     color: "#F9F9F9",
     fontFamily: "Manrope",
     fontSize: 13,
