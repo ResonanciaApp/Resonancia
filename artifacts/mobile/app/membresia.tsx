@@ -676,8 +676,8 @@ export default function MembresiaScreen() {
 }
 
 function getPackageLabel(item: PurchasesPackage) {
-  if (item.packageType === "ANNUAL") return "Resonancia Premium Anual";
-  if (item.packageType === "MONTHLY") return "Resonancia Premium Mensual";
+  if (item.packageType === "ANNUAL") return "Plan Premium Anual";
+  if (item.packageType === "MONTHLY") return "Plan Premium Mensual";
   return item.product.title || "Plan Premium";
 }
 
@@ -828,12 +828,13 @@ function PremiumOfferContent({
               </Pressable>
             );
           })}
+          <GiftCardPlanOption />
         </View>
       ) : previewMode ? (
         <View style={styles.planGrid}>
           {[
-            { id: "monthly-preview", name: "Resonancia Premium Mensual", price: "$5.990" },
-            { id: "annual-preview", name: "Resonancia Premium Anual", price: "$39.990" },
+            { id: "monthly-preview", name: "Plan Premium Mensual", price: "$5.990" },
+            { id: "annual-preview", name: "Plan Premium Anual", price: "$39.990" },
           ].map((item) => {
             const selected = previewSelectedId === item.id;
             return (
@@ -890,6 +891,7 @@ function PremiumOfferContent({
             </Pressable>
             );
           })}
+          <GiftCardPlanOption />
         </View>
       ) : (
         <View style={styles.offerUnavailable}>
@@ -949,6 +951,27 @@ function PremiumOfferContent({
         </Pressable>
       </View>
     </>
+  );
+}
+
+function GiftCardPlanOption() {
+  return (
+    <View
+      style={[styles.planCard, styles.giftCardPlan]}
+      accessibilityRole="text"
+      accessibilityLabel="Plan Premium Anual Gift Card"
+    >
+      <View
+        pointerEvents="none"
+        style={[StyleSheet.absoluteFill, styles.planGlassTint]}
+      />
+      <View style={styles.planRadio} />
+      <View style={styles.planCopy}>
+        <Text style={[styles.planName, styles.raisedPlanContent]}>
+          Plan Premium Anual Gift Card
+        </Text>
+      </View>
+    </View>
   );
 }
 
@@ -1280,7 +1303,7 @@ const styles = StyleSheet.create({
     gap: 11,
   },
   planOffset: {
-    height: 130,
+    height: 115,
   },
   planCard: {
     width: "100%",
@@ -1304,6 +1327,9 @@ const styles = StyleSheet.create({
     backgroundColor: "rgba(107,80,210,0.60)",
   },
   previewPlanCard: {
+    opacity: 1,
+  },
+  giftCardPlan: {
     opacity: 1,
   },
   planCardPressed: {
@@ -1330,8 +1356,8 @@ const styles = StyleSheet.create({
   planName: {
     color: "#F9F9F9",
     fontFamily: "Manrope",
-    fontSize: 12,
-    lineHeight: 18,
+    fontSize: 14,
+    lineHeight: 20,
     fontWeight: "700",
   },
   planTextSelected: {
