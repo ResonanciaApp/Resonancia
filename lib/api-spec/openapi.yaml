@@ -6035,7 +6035,7 @@ components:
         assignedAt: {type: string, format: date-time}
     DailyQuotePalette:
       type: string
-      enum: [jade, violet, ocean, ruby, amber]
+      enum: [jade, violet, ocean, ruby, amber, original]
     QuoteOfTheDayResponse:
       allOf:
         - {$ref: "#/components/schemas/DailyQuoteAssignment"}

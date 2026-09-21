@@ -49,7 +49,8 @@ function parseAssignment(value: unknown, today: string): QuoteOfTheDay | null {
       assignment.paletteId === "violet" ||
       assignment.paletteId === "ocean" ||
       assignment.paletteId === "ruby" ||
-      assignment.paletteId === "amber"
+      assignment.paletteId === "amber" ||
+      assignment.paletteId === "original"
         ? assignment.paletteId
         : "jade",
   };

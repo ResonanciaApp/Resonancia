@@ -1105,6 +1105,7 @@ export const DailyQuotePalette = {
   ocean: 'ocean',
   ruby: 'ruby',
   amber: 'amber',
+  original: 'original',
 } as const;
 
 export type QuoteOfTheDayResponse = DailyQuoteAssignment & {

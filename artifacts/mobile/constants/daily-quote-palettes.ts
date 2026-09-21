@@ -9,4 +9,5 @@ export const DAILY_QUOTE_PALETTE_COLORS: Record<
   ocean: ["#061A32", "#236174"],
   ruby: ["#280711", "#81425B"],
   amber: ["#271307", "#94642E"],
+  original: ["#4A285F", "#A85F62"],
 };

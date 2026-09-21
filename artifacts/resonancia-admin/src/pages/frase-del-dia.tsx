@@ -98,6 +98,7 @@ const DAILY_QUOTE_PALETTES: Array<{
   { id: "ocean", name: "Océano premium", description: "Azul medianoche y petróleo", colors: ["#061A32", "#236174"] },
   { id: "ruby", name: "Rubí sereno", description: "Vino oscuro y rosa mineral", colors: ["#280711", "#81425B"] },
   { id: "amber", name: "Ámbar profundo", description: "Chocolate oscuro y cobre", colors: ["#271307", "#94642E"] },
+  { id: "original", name: "Original", description: "Violeta y coral del fondo anterior", colors: ["#4A285F", "#A85F62"] },
 ];
 
 export default function FraseDelDiaPage() {
@@ -305,7 +306,7 @@ export default function FraseDelDiaPage() {
         </CardHeader>
         <CardContent className="pt-6">
           {isLoadingSettings ? (
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-3">
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-6 gap-3">
               {DAILY_QUOTE_PALETTES.map((palette) => (
                 <div key={palette.id} className="h-28 rounded-xl bg-muted animate-pulse" />
               ))}
@@ -313,7 +314,7 @@ export default function FraseDelDiaPage() {
           ) : isErrorSettings ? (
             <p className="text-sm text-destructive">No se pudieron cargar las paletas.</p>
           ) : (
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-3">
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-6 gap-3">
               {DAILY_QUOTE_PALETTES.map((palette) => {
                 const selected = quoteSettings?.paletteId === palette.id;
                 return (
