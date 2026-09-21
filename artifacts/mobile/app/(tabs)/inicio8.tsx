@@ -3533,7 +3533,7 @@ const styles = StyleSheet.create({
     alignItems: "center",
   },
   inicio3HeroProfileLift: {
-    transform: [{ translateY: -4 }],
+    transform: [{ translateX: -2 }, { translateY: -4 }],
   },
   inicio2HeroAvatar: {
     width: 42,
