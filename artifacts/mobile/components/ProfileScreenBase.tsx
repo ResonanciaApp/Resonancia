@@ -482,6 +482,7 @@ export function ProfileScreenBase({
     profileComposeRequest,
     consumeProfileComposeRequest,
   } = useDrawer();
+  const [morningReminderVisible, setMorningReminderVisible] = useState(false);
   const [sleepReminderVisible, setSleepReminderVisible] = useState(false);
   const profileScrollRef = useRef<ScrollView>(null);
   const composeInteractionRef = useRef<ReturnType<typeof InteractionManager.runAfterInteractions> | null>(null);
@@ -1598,24 +1599,24 @@ export function ProfileScreenBase({
             </View>
 
             <Pressable
-              onPress={() => router.push("/notificaciones-practica" as never)}
+              onPress={() => setMorningReminderVisible(true)}
               style={({ pressed }) => [
                 styles.practiceReminderSection,
                 styles.practiceReminderFirst,
                 { opacity: pressed ? 0.72 : 1 },
               ]}
               accessibilityRole="button"
-              accessibilityLabel="Administrar recordatorio meditativo"
+              accessibilityLabel="Administrar recordatorio matutino"
             >
               <View style={styles.practiceReminderIcon}>
-                <MaterialCommunityIcons name="bell" size={23} color={colors.foreground} />
+                <Feather name="sun" size={24} color="#F4B56A" />
               </View>
               <View style={styles.practiceReminderCopy}>
                 <Text style={[styles.practiceReminderTitle, { color: colors.foreground }]}>
-                  Recordatorio meditativo
+                  Recordatorio matutino
                 </Text>
                 <Text style={[styles.practiceReminderSubtitle, { color: profileDescriptionColor }]}>
-                  Mañana, tarde y noche
+                  Atención plena para tus mañanas
                 </Text>
               </View>
               <Feather name="chevron-right" size={22} color={colors.foreground} />
@@ -2011,6 +2012,13 @@ export function ProfileScreenBase({
           </Pressable>
         </Pressable>
       </Modal>
+
+      <SleepReminderSheet
+        variant="morning"
+        visible={morningReminderVisible}
+        onClose={() => setMorningReminderVisible(false)}
+        onSaved={() => {}}
+      />
 
       <SleepReminderSheet
         visible={sleepReminderVisible}

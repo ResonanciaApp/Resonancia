@@ -32,6 +32,7 @@ type SleepReminderSheetProps = {
   visible: boolean;
   onClose: () => void;
   onSaved: (preference: PracticeNotificationPreference) => void;
+  variant?: "sleep" | "morning";
 };
 
 const SHEET_OFFSET = 720;
@@ -40,12 +41,15 @@ export function SleepReminderSheet({
   visible,
   onClose,
   onSaved,
+  variant = "sleep",
 }: SleepReminderSheetProps) {
   const { theme } = useSceneTheme();
+  const isMorning = variant === "morning";
+  const slot = isMorning ? "manana" : "noche";
   const insets = useSafeAreaInsets();
   const [mounted, setMounted] = useState(false);
   const [draft, setDraft] = useState<PracticeNotificationPreference>(
-    PRACTICE_NOTIFICATION_DEFAULTS.noche,
+    PRACTICE_NOTIFICATION_DEFAULTS[slot],
   );
   const [chooserOpen, setChooserOpen] = useState(false);
   const [saving, setSaving] = useState(false);
@@ -61,11 +65,18 @@ export function SleepReminderSheet({
     setPermissionBlocked(false);
     setChooserOpen(false);
     void loadPracticeNotificationSettings()
-      .then((settings) => setDraft(settings.noche))
+      .then((settings) => {
+        const preference = settings[slot];
+        setDraft(
+          isMorning && preference.hour >= 12
+            ? { ...preference, hour: PRACTICE_NOTIFICATION_DEFAULTS.manana.hour }
+            : preference,
+        );
+      })
       .catch(() => {
         setError("No pudimos cargar tu recordatorio. Inténtalo nuevamente.");
       });
-  }, [visible]);
+  }, [isMorning, slot, visible]);
 
   useEffect(() => {
     if (!mounted) return;
@@ -109,11 +120,11 @@ export function SleepReminderSheet({
     setDraft((current) => ({
       ...current,
       [part]: part === "hour"
-        ? (current.hour + delta + 24) % 24
+        ? (current.hour + delta + (isMorning ? 12 : 24)) % (isMorning ? 12 : 24)
         : (current.minute + delta + 60) % 60,
     }));
     void Haptics.selectionAsync();
-  }, []);
+  }, [isMorning]);
 
   const save = useCallback(async () => {
     if (Platform.OS === "web") {
@@ -132,7 +143,7 @@ export function SleepReminderSheet({
           return;
         }
       }
-      await updatePracticeNotificationPreference("noche", draft);
+      await updatePracticeNotificationPreference(slot, draft);
       onSaved(draft);
       void Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success);
       onClose();
@@ -141,16 +152,18 @@ export function SleepReminderSheet({
     } finally {
       setSaving(false);
     }
-  }, [draft, onClose, onSaved]);
+  }, [draft, onClose, onSaved, slot]);
 
   if (!mounted) return null;
 
   const timeLabel = formatPracticeNotificationTimeLocal(draft.hour, draft.minute);
-  const gradient = [
-    theme.gradient[0] as string,
-    theme.gradient[1] as string,
-    "#08070D",
-  ] as const;
+  const gradient = isMorning
+    ? ["#D47755", "#884B68", "#241A35", "#0B0B13"] as const
+    : [
+        theme.gradient[0] as string,
+        theme.gradient[1] as string,
+        "#08070D",
+      ] as const;
   return (
     <Modal
       transparent
@@ -194,16 +207,26 @@ export function SleepReminderSheet({
             </Pressable>
           </View>
 
-          <Text style={styles.title}>Vuelve a ti,{"\n"}te ayudamos a recordarlo.</Text>
+           <Text style={styles.title}>
+             {isMorning ? <>Trae tu atención{"\n"}al presente</> : <>Vuelve a ti,{"\n"}te ayudamos a recordarlo.</>}
+           </Text>
           <Text style={styles.description}>
-            Te enviaremos recordatorios todos los días en los horarios que tú elijas.
+             {isMorning
+               ? "Medita al menos 3 minutos en la mañana y transforma tu vida"
+               : "Te enviaremos recordatorios todos los días en los horarios que tú elijas."}
           </Text>
 
           <View style={styles.reminderCard}>
             <View style={styles.reminderHeader}>
               <View style={styles.reminderLabel}>
-                <Feather name="moon" size={23} color="#D6C8FF" />
-                <Text style={styles.reminderTitle}>Recordatorio para dormir</Text>
+                 <Feather
+                   name={isMorning ? "sun" : "moon"}
+                   size={23}
+                   color={isMorning ? "#FFD89A" : "#D6C8FF"}
+                 />
+                 <Text style={styles.reminderTitle}>
+                   {isMorning ? "Recordatorio para meditar" : "Recordatorio para dormir"}
+                 </Text>
               </View>
               <Switch
                 value={draft.enabled}
@@ -214,10 +237,10 @@ export function SleepReminderSheet({
                 disabled={saving}
                 trackColor={{
                   false: "rgba(255,255,255,0.20)",
-                  true: "#7651D8",
+                   true: isMorning ? "#D87853" : "#7651D8",
                 }}
                 thumbColor="#FFFFFF"
-                accessibilityLabel="Activar recordatorio para dormir"
+                 accessibilityLabel={`Activar recordatorio para ${isMorning ? "meditar" : "dormir"}`}
               />
             </View>
 
@@ -242,7 +265,7 @@ export function SleepReminderSheet({
               <View style={styles.chooser}>
                 <TimeColumn
                   label="HORA"
-                  value={String(draft.hour).padStart(2, "0")}
+                   value={isMorning && draft.hour === 0 ? "12" : String(draft.hour).padStart(2, "0")}
                   onDecrease={() => adjustTime("hour", -1)}
                   onIncrease={() => adjustTime("hour", 1)}
                 />
@@ -277,7 +300,8 @@ export function SleepReminderSheet({
             onPress={() => void save()}
             disabled={saving}
             style={({ pressed }) => [
-              styles.continueButton,
+               styles.continueButton,
+               isMorning && styles.morningContinueButton,
               pressed && !saving && styles.pressed,
               saving && styles.disabled,
             ]}
@@ -502,6 +526,9 @@ const styles = StyleSheet.create({
     backgroundColor: "#6D3FC0",
     alignItems: "center",
     justifyContent: "center",
+  },
+  morningContinueButton: {
+    backgroundColor: "#C65F4E",
   },
   continueText: {
     color: "#FFFFFF",
