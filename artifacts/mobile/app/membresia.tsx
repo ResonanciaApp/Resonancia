@@ -613,7 +613,6 @@ function PremiumOfferContent({
   return (
     <>
       <View style={styles.offerHero}>
-        <View style={styles.offerHeroGlow} pointerEvents="none" />
         <View style={styles.offerStar}>
           <MaterialCommunityIcons
             name="star-four-points"
@@ -621,14 +620,11 @@ function PremiumOfferContent({
             color={MEMBERSHIP_AURORA.premium.accent}
           />
         </View>
-        <Text style={styles.offerEyebrow}>RESONANCIA PREMIUM</Text>
-        <Text style={styles.offerTitle}>Profundiza tu práctica</Text>
         <Text style={styles.offerSubtitle}>
-          Accede sin límites a experiencias, sonidos y herramientas creadas para acompañar tu bienestar.
+          Accede a más de 500 sesiones creadas para expandir tu consciencia y potenciar tu bienestar
         </Text>
       </View>
 
-      <Text style={styles.offerSectionTitle}>Elige tu plan</Text>
       {packages.length > 0 ? (
         <View style={styles.planGrid}>
           {packages.map((item) => {
@@ -647,17 +643,21 @@ function PremiumOfferContent({
                   pressed && !busy && styles.planCardPressed,
                 ]}
               >
-                {recommended ? (
-                  <View style={styles.recommendedPill}>
-                    <Text style={styles.recommendedText}>RECOMENDADO</Text>
-                  </View>
-                ) : null}
                 <View style={[styles.planRadio, selected && styles.planRadioSelected]}>
                   {selected ? <View style={styles.planRadioDot} /> : null}
                 </View>
-                <Text style={styles.planName}>{getPackageLabel(item)}</Text>
-                <Text style={styles.planPrice}>{item.product.priceString}</Text>
-                <Text style={styles.planPeriod}>{getPackagePeriod(item)}</Text>
+                <View style={styles.planCopy}>
+                  <Text style={styles.planName}>{getPackageLabel(item)}</Text>
+                  {recommended ? (
+                    <View style={styles.recommendedPill}>
+                      <Text style={styles.recommendedText}>RECOMENDADO</Text>
+                    </View>
+                  ) : null}
+                </View>
+                <View style={styles.planPriceBlock}>
+                  <Text style={styles.planPrice}>{item.product.priceString}</Text>
+                  <Text style={styles.planPeriod}>{getPackagePeriod(item)}</Text>
+                </View>
               </Pressable>
             );
           })}
@@ -676,19 +676,23 @@ function PremiumOfferContent({
                 styles.previewPlanCard,
               ]}
             >
-              {item.recommended ? (
-                <View style={styles.recommendedPill}>
-                  <Text style={styles.recommendedText}>RECOMENDADO</Text>
-                </View>
-              ) : null}
               <View style={[styles.planRadio, item.recommended && styles.planRadioSelected]}>
                 {item.recommended ? <View style={styles.planRadioDot} /> : null}
               </View>
-              <Text style={styles.planName}>{item.name}</Text>
-              <Text style={styles.previewPlanPrice}>Precio de la tienda</Text>
-              <Text style={styles.planPeriod}>
-                {item.recommended ? "por año" : "por mes"}
-              </Text>
+              <View style={styles.planCopy}>
+                <Text style={styles.planName}>{item.name}</Text>
+                {item.recommended ? (
+                  <View style={styles.recommendedPill}>
+                    <Text style={styles.recommendedText}>RECOMENDADO</Text>
+                  </View>
+                ) : null}
+              </View>
+              <View style={styles.planPriceBlock}>
+                <Text style={styles.previewPlanPrice}>Precio de la tienda</Text>
+                <Text style={styles.planPeriod}>
+                  {item.recommended ? "por año" : "por mes"}
+                </Text>
+              </View>
             </View>
           ))}
         </View>
@@ -704,50 +708,19 @@ function PremiumOfferContent({
         </View>
       )}
 
-      <Text style={styles.offerSectionTitle}>Todo lo que desbloqueas</Text>
-      <View style={styles.offerBenefitsCard}>
-        {SUBSCRIPTION_BENEFITS.map((benefit, index) => (
-          <View
-            key={benefit.icon}
-            style={[
-              styles.offerBenefitRow,
-              index < SUBSCRIPTION_BENEFITS.length - 1 && styles.offerBenefitDivider,
-            ]}
-          >
-            <View style={styles.benefitIcon}>
-              <Feather
-                name={benefit.icon}
-                size={20}
-                color={MEMBERSHIP_AURORA.premium.accent}
-              />
-            </View>
-            <Text style={styles.benefitText}>
-              {benefit.parts.map((part, partIndex) => (
-                <Text
-                  key={`${benefit.icon}-${partIndex}`}
-                  style={"bold" in part && part.bold ? styles.benefitTextBold : undefined}
-                >
-                  {part.text}
-                </Text>
-              ))}
-            </Text>
-          </View>
-        ))}
-      </View>
-
-      <Pressable
+      {!previewMode ? <Pressable
         onPress={onPurchase}
-        disabled={!selectedPackage || busy || previewMode}
+        disabled={!selectedPackage || busy}
         accessibilityRole="button"
         accessibilityLabel={
           selectedPackage
             ? `Comenzar Premium, ${selectedPackage.product.priceString} ${selectedPeriod}`
             : "Comenzar Premium"
         }
-        accessibilityState={{ disabled: !selectedPackage || busy || previewMode }}
+        accessibilityState={{ disabled: !selectedPackage || busy }}
         style={({ pressed }) => [
           styles.purchaseButton,
-          (!selectedPackage || busy || previewMode) && styles.purchaseButtonDisabled,
+          (!selectedPackage || busy) && styles.purchaseButtonDisabled,
           pressed && selectedPackage && !busy && styles.manageButtonPressed,
         ]}
       >
@@ -760,20 +733,14 @@ function PremiumOfferContent({
         {isPurchasing ? (
           <ActivityIndicator color="#F9F9F9" />
         ) : (
-          <Text style={styles.manageButtonText}>
-            {previewMode ? "Vista previa de Premium" : "Comenzar Premium"}
-          </Text>
+          <Text style={styles.manageButtonText}>Comenzar Premium</Text>
         )}
-      </Pressable>
+      </Pressable> : null}
 
       {selectedPackage ? (
         <Text style={styles.purchaseDisclosure}>
           Se cobrará {selectedPackage.product.priceString} {selectedPeriod} y se renovará automáticamente
           hasta que canceles desde tu cuenta de la tienda.
-        </Text>
-      ) : previewMode ? (
-        <Text style={styles.purchaseDisclosure}>
-          Vista de desarrollo. Los precios y la compra aparecerán al conectar RevenueCat Test Store.
         </Text>
       ) : null}
 
@@ -1044,8 +1011,8 @@ const styles = StyleSheet.create({
     overflow: "hidden",
     borderRadius: 19,
     paddingHorizontal: 24,
-    paddingTop: 26,
-    paddingBottom: 28,
+    paddingTop: 24,
+    paddingBottom: 25,
     alignItems: "center",
     backgroundColor: "rgba(0,0,0,0.28)",
   },
@@ -1102,43 +1069,16 @@ const styles = StyleSheet.create({
     fontSize: 13,
     fontWeight: "800",
   },
-  offerHeroGlow: {
-    position: "absolute",
-    top: -95,
-    width: 230,
-    height: 180,
-    borderRadius: 115,
-    backgroundColor: "rgba(231,185,92,0.12)",
-    transform: [{ scaleX: 1.45 }],
-  },
   offerStar: {
     width: 58,
     height: 58,
     borderRadius: 29,
     alignItems: "center",
     justifyContent: "center",
-    marginBottom: 15,
+    marginBottom: 14,
     backgroundColor: "rgba(231,185,92,0.14)",
     borderWidth: 1,
     borderColor: "rgba(231,185,92,0.3)",
-  },
-  offerEyebrow: {
-    color: MEMBERSHIP_AURORA.premium.accent,
-    fontFamily: "Manrope",
-    fontSize: 11,
-    lineHeight: 16,
-    fontWeight: "800",
-    letterSpacing: 1.35,
-    marginBottom: 7,
-  },
-  offerTitle: {
-    color: "#F9F9F9",
-    fontFamily: "Manrope",
-    fontSize: 25,
-    lineHeight: 32,
-    fontWeight: "800",
-    textAlign: "center",
-    marginBottom: 10,
   },
   offerSubtitle: {
     maxWidth: 300,
@@ -1149,33 +1089,22 @@ const styles = StyleSheet.create({
     fontWeight: "400",
     textAlign: "center",
   },
-  offerSectionTitle: {
-    color: "#F9F9F9",
-    fontFamily: "Manrope",
-    fontSize: 17,
-    lineHeight: 23,
-    fontWeight: "700",
-    marginTop: 25,
-    marginBottom: 14,
-  },
   planGrid: {
-    flexDirection: "row",
-    flexWrap: "wrap",
+    marginTop: 16,
     gap: 12,
   },
   planCard: {
-    position: "relative",
-    flexGrow: 1,
-    flexBasis: "46%",
-    minWidth: 140,
-    minHeight: 150,
+    width: "100%",
+    minHeight: 92,
     overflow: "hidden",
     borderRadius: 17,
     borderWidth: 1,
     borderColor: "rgba(255,255,255,0.12)",
-    paddingHorizontal: 16,
-    paddingTop: 47,
-    paddingBottom: 16,
+    paddingHorizontal: 17,
+    paddingVertical: 15,
+    flexDirection: "row",
+    alignItems: "center",
+    gap: 13,
     backgroundColor: "rgba(0,0,0,0.28)",
   },
   planCardSelected: {
@@ -1190,12 +1119,11 @@ const styles = StyleSheet.create({
     opacity: 0.82,
   },
   recommendedPill: {
-    position: "absolute",
-    top: 12,
-    left: 13,
+    alignSelf: "flex-start",
     borderRadius: 999,
     paddingHorizontal: 9,
     paddingVertical: 4,
+    marginTop: 5,
     backgroundColor: "rgba(231,185,92,0.16)",
   },
   recommendedText: {
@@ -1207,9 +1135,6 @@ const styles = StyleSheet.create({
     letterSpacing: 0.75,
   },
   planRadio: {
-    position: "absolute",
-    top: 13,
-    right: 13,
     width: 20,
     height: 20,
     borderRadius: 10,
@@ -1233,7 +1158,14 @@ const styles = StyleSheet.create({
     fontSize: 14,
     lineHeight: 20,
     fontWeight: "700",
-    marginBottom: 7,
+  },
+  planCopy: {
+    flex: 1,
+    minWidth: 0,
+  },
+  planPriceBlock: {
+    flexShrink: 0,
+    alignItems: "flex-end",
   },
   planPrice: {
     color: "#FFFFFF",
@@ -1282,23 +1214,6 @@ const styles = StyleSheet.create({
     fontFamily: "Manrope",
     fontSize: 12,
     lineHeight: 18,
-  },
-  offerBenefitsCard: {
-    overflow: "hidden",
-    borderRadius: 19,
-    paddingHorizontal: 16,
-    backgroundColor: "rgba(0,0,0,0.2)",
-  },
-  offerBenefitRow: {
-    minHeight: 73,
-    flexDirection: "row",
-    alignItems: "center",
-    gap: 14,
-    paddingVertical: 10,
-  },
-  offerBenefitDivider: {
-    borderBottomWidth: StyleSheet.hairlineWidth,
-    borderBottomColor: "rgba(255,255,255,0.11)",
   },
   purchaseButton: {
     height: 54,
