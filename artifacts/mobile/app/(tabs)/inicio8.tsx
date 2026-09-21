@@ -3295,6 +3295,10 @@ export default function HomeScreen2({
         {variant === "inicio3" && (
           <View style={styles.inicio3LowerSectionDivider} />
         )}
+        {/* ── BANNER PREMIUM ── */}
+        <View style={{ marginBottom: isInicio2 ? INICIO2_SECTION_GAP : SECTION_GAP }}>
+          <PremiumBanner />
+        </View>
         {isInicio2 && <AlmaCommunitySection />}
         {/* ── ESCENAS ANIMADAS ── (se muestran en EscenasSheet) */}
         {false && activeScenes.length > 0 && (
@@ -3369,13 +3373,6 @@ export default function HomeScreen2({
             openCategory={openCategory}
           />
         )}
-
-
-        {/* ── 10. BANNER PREMIUM ── */}
-        <View style={{ marginBottom: isInicio2 ? INICIO2_SECTION_GAP : SECTION_GAP }}>
-          <PremiumBanner />
-        </View>
-
         </View>
       </RAnimated.ScrollView>
 
