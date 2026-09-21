@@ -806,12 +806,20 @@ function PremiumOfferContent({
                   {selected ? <View style={styles.planRadioDot} /> : null}
                 </View>
                 <View style={styles.planCopy}>
-                  <Text style={[styles.planName, selected && styles.planTextSelected]}>
+                  <Text style={[
+                    styles.planName,
+                    selected && styles.planTextSelected,
+                    item.packageType === "ANNUAL" && styles.annualPlanContent,
+                  ]}>
                     {getPackageLabel(item)}
                   </Text>
                 </View>
                 <View style={styles.planPriceBlock}>
-                  <Text style={[styles.planPrice, selected && styles.planTextSelected]}>
+                  <Text style={[
+                    styles.planPrice,
+                    selected && styles.planTextSelected,
+                    item.packageType === "ANNUAL" && styles.annualPlanContent,
+                  ]}>
                     {item.product.priceString}
                   </Text>
                 </View>
@@ -860,7 +868,11 @@ function PremiumOfferContent({
                 {selected ? <View style={styles.planRadioDot} /> : null}
               </View>
               <View style={styles.planCopy}>
-                <Text style={[styles.planName, selected && styles.planTextSelected]}>
+                <Text style={[
+                  styles.planName,
+                  selected && styles.planTextSelected,
+                  item.id === "annual-preview" && styles.annualPlanContent,
+                ]}>
                   {item.name}
                 </Text>
               </View>
@@ -868,6 +880,7 @@ function PremiumOfferContent({
                 <Text style={[
                   styles.planPrice,
                   selected && styles.planTextSelected,
+                  item.id === "annual-preview" && styles.annualPlanContent,
                 ]}>
                   {item.price}
                 </Text>
@@ -1269,11 +1282,11 @@ const styles = StyleSheet.create({
   },
   planCard: {
     width: "100%",
-    minHeight: 52,
+    minHeight: 48,
     overflow: "hidden",
     borderRadius: 21,
     paddingHorizontal: 18,
-    paddingVertical: 4,
+    paddingVertical: 2,
     flexDirection: "row",
     alignItems: "center",
     gap: 13,
@@ -1333,9 +1346,12 @@ const styles = StyleSheet.create({
   planPrice: {
     color: "#F9F9F9",
     fontFamily: "Manrope",
-    fontSize: 17,
-    lineHeight: 23,
+    fontSize: 15,
+    lineHeight: 21,
     fontWeight: "800",
+  },
+  annualPlanContent: {
+    transform: [{ translateY: -1 }],
   },
   offerUnavailable: {
     minHeight: 90,
