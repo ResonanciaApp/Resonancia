@@ -225,7 +225,10 @@ export default function PremiumBanner({
             styles.btnWrap,
             styles.freeTrialButtonWrap,
             sleepVariant && styles.sleepButtonWrap,
-            sleepVariant && { width: Math.max(200, viewportWidth - 159) },
+            {
+              width: Math.max(200, viewportWidth - 159),
+              alignSelf: "center",
+            },
             { opacity: pressed ? 0.88 : 1 },
           ]}
         >
@@ -243,7 +246,6 @@ export default function PremiumBanner({
               style={[
                 styles.btnText,
                 styles.freeTrialButtonText,
-                sleepVariant && styles.sleepButtonText,
               ]}
             >
               Probar gratis
@@ -453,7 +455,7 @@ const styles = StyleSheet.create({
     letterSpacing: 0.3,
   },
   freeTrialButtonText: {
-    color: "#171109",
+    color: "#F9F9F9",
   },
   freeTrialButtonWrap: {
     marginTop: 10,
@@ -466,8 +468,5 @@ const styles = StyleSheet.create({
   },
   sleepButtonInner: {
     borderRadius: 48,
-  },
-  sleepButtonText: {
-    color: "#F9F9F9",
   },
 });
