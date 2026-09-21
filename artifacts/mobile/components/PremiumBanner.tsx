@@ -1,9 +1,14 @@
 import { Feather } from "@expo/vector-icons";
-import { BlurView } from "expo-blur";
 import { LinearGradient } from "expo-linear-gradient";
 import { Image } from "expo-image";
 import { router } from "expo-router";
-import { View, Text, Pressable, StyleSheet } from "react-native";
+import {
+  View,
+  Text,
+  Pressable,
+  ScrollView,
+  StyleSheet,
+} from "react-native";
 
 import { usePremium } from "@/context/PremiumContext";
 import { MEMBERSHIP_AURORA } from "@/constants/colors";
@@ -11,8 +16,14 @@ import { MEMBERSHIP_AURORA } from "@/constants/colors";
 const IMAGES = [
   require("@/assets/images/sessions/session-1.jpg"),
   require("@/assets/images/sessions/session-2.jpg"),
+  require("@/assets/images/sessions/session-4.jpg"),
   require("@/assets/images/sessions/session-5.jpg"),
+  require("@/assets/images/sessions/session-6.jpg"),
+  require("@/assets/images/sessions/session-7.jpg"),
   require("@/assets/images/sessions/session-8.jpg"),
+  require("@/assets/images/sessions/session-9.jpg"),
+  require("@/assets/images/sessions/session-10.jpg"),
+  require("@/assets/images/sessions/session-11.jpg"),
 ];
 
 const P = {
@@ -121,15 +132,6 @@ export default function PremiumBanner() {
   return (
     <View style={styles.outer}>
       <View style={styles.card}>
-        <BlurView
-          intensity={42}
-          tint="dark"
-          experimentalBlurMethod="dimezisBlurView"
-          style={StyleSheet.absoluteFill}
-          pointerEvents="none"
-        />
-        <View style={styles.blackGlassTint} pointerEvents="none" />
-
         {/* Eyebrow */}
         <Text style={[styles.eyebrow, { color: P.textMuted }]}>
           Únete a la comunidad
@@ -157,9 +159,14 @@ export default function PremiumBanner() {
         </Text>
 
         {/* Preview images with star overlay */}
-        <View style={styles.images}>
+        <ScrollView
+          horizontal
+          showsHorizontalScrollIndicator={false}
+          contentContainerStyle={styles.images}
+          style={styles.imagesScroll}
+        >
           {IMAGES.map((src, i) => (
-            <View key={i} style={{ position: "relative" }}>
+            <View key={i} style={styles.previewCard}>
               <Image source={src} style={styles.thumb} contentFit="cover" />
               <Image
                 source={require("../assets/images/estrella-premium.png")}
@@ -168,7 +175,7 @@ export default function PremiumBanner() {
               />
             </View>
           ))}
-        </View>
+        </ScrollView>
 
         {/* CTA button */}
         <Pressable
@@ -194,15 +201,10 @@ const styles = StyleSheet.create({
     marginHorizontal: 16,
     marginBottom: 8,
     borderRadius: 15,
-    borderWidth: 0.6,
-    borderColor: "rgba(169,122,52,0.28)",
+    borderWidth: 2,
+    borderColor: "rgba(255,255,255,0.2)",
     overflow: "hidden",
     opacity: 1,
-    shadowColor: "#06150F",
-    shadowOffset: { width: 0, height: 6 },
-    shadowOpacity: 0.6,
-    shadowRadius: 16,
-    elevation: 10,
   },
   outerActiveWrap: {
     marginHorizontal: 16,
@@ -272,10 +274,7 @@ const styles = StyleSheet.create({
     paddingHorizontal: 22,
     alignItems: "center",
     overflow: "hidden",
-  },
-  blackGlassTint: {
-    ...StyleSheet.absoluteFillObject,
-    backgroundColor: "rgba(0,0,0,0.58)",
+    backgroundColor: "rgba(0,0,0,0.28)",
   },
   topGlow: {
     position: "absolute",
@@ -326,15 +325,25 @@ const styles = StyleSheet.create({
   },
   images: {
     flexDirection: "row",
-    gap: 8,
+    gap: 12,
+    paddingHorizontal: 0,
+  },
+  imagesScroll: {
+    width: "100%",
     marginBottom: 26,
   },
-  thumb: {
+  previewCard: {
+    position: "relative",
     width: 68,
     height: 68,
     borderRadius: 12,
+    overflow: "hidden",
     borderWidth: 1,
     borderColor: "rgba(169,122,52,0.3)",
+  },
+  thumb: {
+    width: "100%",
+    height: "100%",
   },
   btnWrap: {
     width: "100%",
