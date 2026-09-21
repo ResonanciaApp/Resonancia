@@ -119,6 +119,7 @@ export default function SonidosPage() {
   const [thumbPreview, setThumbPreview] = useState<string | null>(null);
   const [filterCat, setFilterCat] = useState<string>("all");
   const [newCategoryName, setNewCategoryName] = useState("");
+  const [categorySaving, setCategorySaving] = useState(false);
   const audioRef = useRef<HTMLInputElement>(null);
   const thumbRef = useRef<HTMLInputElement>(null);
   const formRef = useRef<HTMLDivElement>(null);
@@ -289,17 +290,27 @@ export default function SonidosPage() {
     return category ? categoryLabel(category) : id;
   };
 
-  async function addCategory() {
+  async function addCategory(event?: React.FormEvent) {
+    event?.preventDefault();
     const name = newCategoryName.trim();
-    if (!name) return;
+    if (!name) {
+      toast.error("Escribí un nombre para la categoría");
+      return;
+    }
+    setCategorySaving(true);
     try {
       const id = name.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "")
         .replace(/[^a-z0-9]+/g, "_").replace(/^_|_$/g, "");
+      if (!id) {
+        toast.error("El nombre debe incluir letras o números");
+        return;
+      }
       await createCategory({ data: { id, label: name, sortOrder: categories.length, isActive: true } });
       setNewCategoryName("");
       await qc.invalidateQueries({ queryKey: getListAdminSoundCategoriesQueryKey() });
       toast.success("Categoría creada");
-    } catch { toast.error("No se pudo crear la categoría"); }
+    } catch { toast.error("No se pudo crear la categoría. Revisá que el nombre no exista."); }
+    finally { setCategorySaving(false); }
   }
 
   async function renameCategory(category: (typeof categories)[number]) {
@@ -359,15 +370,29 @@ export default function SonidosPage() {
           <h2 className="font-semibold text-foreground">Categorías del mixer</h2>
           <p className="text-xs text-muted-foreground">Estas categorías aparecen en el selector y en la app.</p>
         </div>
-        <div className="flex gap-2">
-          <Input value={newCategoryName} onChange={(e) => setNewCategoryName(e.target.value)}
-            placeholder="Nueva categoría" onKeyDown={(e) => e.key === "Enter" && addCategory()} />
-          <Button type="button" variant="outline" onClick={addCategory}><Plus className="w-4 h-4 mr-1" />Crear</Button>
-        </div>
-        <div className="flex flex-wrap gap-2">
+        <form onSubmit={addCategory} className="flex flex-col sm:flex-row gap-3 pt-1">
+          <Input
+            value={newCategoryName}
+            onChange={(e) => setNewCategoryName(e.target.value)}
+            placeholder="Nombre de la nueva categoría"
+            disabled={categorySaving}
+            className="sm:max-w-md"
+          />
+          <Button
+            type="submit"
+            variant="outline"
+            disabled={categorySaving}
+            className="sm:min-w-44"
+          >
+            {categorySaving
+              ? <><Loader2 className="w-4 h-4 mr-2 animate-spin" />Guardando…</>
+              : <><Plus className="w-4 h-4 mr-2" />Crear categoría</>}
+          </Button>
+        </form>
+        <div className="flex flex-wrap gap-3 pt-2">
           {[...categories].sort((a, b) => a.sortOrder - b.sortOrder).map((category, index) => (
-            <div key={category.id} className={`flex items-center gap-1 rounded-lg border px-2 py-1 text-sm ${category.isActive ? "" : "opacity-50"}`}>
-              <span>{categoryLabel(category)}</span>
+            <div key={category.id} className={`flex min-h-10 min-w-48 items-center gap-2 rounded-xl border px-3.5 py-2 text-sm ${category.isActive ? "" : "opacity-50"}`}>
+              <span className="min-w-0 flex-1 whitespace-normal leading-tight">{categoryLabel(category)}</span>
               <button type="button" title="Subir" disabled={index === 0} onClick={() => moveCategory(category, -1)}>↑</button>
               <button type="button" title="Bajar" disabled={index === categories.length - 1} onClick={() => moveCategory(category, 1)}>↓</button>
               <button type="button" title="Renombrar" onClick={() => renameCategory(category)}><Pencil className="w-3 h-3" /></button>
@@ -607,7 +632,7 @@ export default function SonidosPage() {
             )}
 
             {/* Acciones */}
-            <div className="md:col-span-2 flex justify-end gap-3 pt-2">
+            <div className="md:col-span-2 mt-3 flex justify-end gap-3 border-t border-border/60 pt-6">
               <Button type="button" variant="outline" onClick={closeForm}>
                 Cancelar
               </Button>
