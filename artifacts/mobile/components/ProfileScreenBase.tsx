@@ -1609,7 +1609,7 @@ export function ProfileScreenBase({
               accessibilityLabel="Administrar recordatorio matutino"
             >
               <View style={styles.practiceReminderIcon}>
-                <Feather name="sun" size={24} color="#F4B56A" />
+                <MaterialCommunityIcons name="weather-sunny" size={26} color="#FFB27D" />
               </View>
               <View style={styles.practiceReminderCopy}>
                 <Text style={[styles.practiceReminderTitle, { color: colors.foreground }]}>

@@ -1,4 +1,4 @@
-import { Feather } from "@expo/vector-icons";
+import { Feather, MaterialCommunityIcons } from "@expo/vector-icons";
 import * as Haptics from "expo-haptics";
 import { LinearGradient } from "expo-linear-gradient";
 import React, { useCallback, useEffect, useRef, useState } from "react";
@@ -158,7 +158,7 @@ export function SleepReminderSheet({
 
   const timeLabel = formatPracticeNotificationTimeLocal(draft.hour, draft.minute);
   const gradient = isMorning
-    ? ["#D47755", "#884B68", "#241A35", "#0B0B13"] as const
+    ? ["#FFE3B3", "#FFB27D", "#FF8A6B", "#D96B8B"] as const
     : [
         theme.gradient[0] as string,
         theme.gradient[1] as string,
@@ -219,11 +219,15 @@ export function SleepReminderSheet({
           <View style={styles.reminderCard}>
             <View style={styles.reminderHeader}>
               <View style={styles.reminderLabel}>
-                 <Feather
-                   name={isMorning ? "sun" : "moon"}
-                   size={23}
-                   color={isMorning ? "#FFD89A" : "#D6C8FF"}
-                 />
+                 {isMorning ? (
+                   <MaterialCommunityIcons
+                     name="weather-sunny"
+                     size={25}
+                     color="#FFE3B3"
+                   />
+                 ) : (
+                   <Feather name="moon" size={23} color="#D6C8FF" />
+                 )}
                  <Text style={styles.reminderTitle}>
                    {isMorning ? "Recordatorio para meditar" : "Recordatorio para dormir"}
                  </Text>
@@ -237,7 +241,7 @@ export function SleepReminderSheet({
                 disabled={saving}
                 trackColor={{
                   false: "rgba(255,255,255,0.20)",
-                   true: isMorning ? "#D87853" : "#7651D8",
+                    true: isMorning ? "#FF8A6B" : "#7651D8",
                 }}
                 thumbColor="#FFFFFF"
                  accessibilityLabel={`Activar recordatorio para ${isMorning ? "meditar" : "dormir"}`}
@@ -528,7 +532,7 @@ const styles = StyleSheet.create({
     justifyContent: "center",
   },
   morningContinueButton: {
-    backgroundColor: "#C65F4E",
+    backgroundColor: "#D96B8B",
   },
   continueText: {
     color: "#FFFFFF",
