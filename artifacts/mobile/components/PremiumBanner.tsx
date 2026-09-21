@@ -133,7 +133,7 @@ export default function PremiumBanner({
 }) {
   const { isPremium } = usePremium();
   const { width: viewportWidth } = useWindowDimensions();
-  const sleepPreviewCardSize = (viewportWidth - 32 - 15) / 4;
+  const sleepPreviewCardSize = ((viewportWidth - 32 - 15) / 4) * 1.1;
   if (isPremium) return null;
 
   return (
@@ -231,12 +231,12 @@ export default function PremiumBanner({
           <LinearGradient
             colors={
               sleepVariant
-                ? ["#C2A64C", "#C2A64C"]
+                ? ["#B88D3E", "#B88D3E"]
                 : ["#F0C36A", MEMBERSHIP_AURORA.premium.accent]
             }
             start={{ x: 0, y: 0 }}
             end={{ x: 1, y: 0 }}
-            style={styles.btn}
+            style={[styles.btn, sleepVariant && styles.sleepButtonInner]}
           >
             <Text
               style={[
@@ -272,6 +272,7 @@ const styles = StyleSheet.create({
     opacity: 0.82,
   },
   sleepOuter: {
+    marginHorizontal: 0,
     borderWidth: 0,
     borderColor: "transparent",
   },
@@ -460,8 +461,12 @@ const styles = StyleSheet.create({
     width: "auto",
     alignSelf: "stretch",
     marginHorizontal: 35,
-    borderWidth: 2,
-    borderColor: "rgba(255,255,255,0.2)",
+    padding: 2,
+    borderWidth: 0,
+    backgroundColor: "rgba(255,255,255,0.2)",
+  },
+  sleepButtonInner: {
+    borderRadius: 48,
   },
   sleepButtonText: {
     color: "#F9F9F9",
