@@ -772,6 +772,8 @@ export function ExploreScreen({
               <EditorialPlaylistCarousel
                 title={carousel.title}
                 playlists={carousel.playlists}
+                showPremiumBadge
+                stackTypeAboveDuration
                 onPress={(playlist) =>
                   openCategory(`/editorial-playlist/${encodeURIComponent(playlist.id)}`)
                 }

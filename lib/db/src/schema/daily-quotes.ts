@@ -35,9 +35,21 @@ export const dailyQuoteAssignmentsTable = pgTable("daily_quote_assignments", {
   check("daily_quote_assignments_cycle_check", sql`${t.cycle} > 0`),
 ]);
 
+export const dailyQuoteSettingsTable = pgTable("daily_quote_settings", {
+  id: integer("id").primaryKey(),
+  paletteId: text("palette_id").notNull().default("jade"),
+  revision: integer("revision").notNull().default(1),
+  updatedAt: timestamp("updated_at", { withTimezone: true }).notNull().defaultNow(),
+}, (t) => [
+  check("daily_quote_settings_id_check", sql`${t.id} = 1`),
+  check("daily_quote_settings_palette_check", sql`${t.paletteId} in ('jade', 'violet', 'ocean', 'ruby', 'amber')`),
+  check("daily_quote_settings_revision_check", sql`${t.revision} > 0`),
+]);
+
 export const insertDailyQuoteSchema = createInsertSchema(dailyQuotesTable).omit({
   id: true, createdAt: true, updatedAt: true,
 });
 export type DailyQuote = typeof dailyQuotesTable.$inferSelect;
 export type InsertDailyQuote = z.infer<typeof insertDailyQuoteSchema>;
 export type DailyQuoteAssignment = typeof dailyQuoteAssignmentsTable.$inferSelect;
+export type DailyQuoteSettings = typeof dailyQuoteSettingsTable.$inferSelect;

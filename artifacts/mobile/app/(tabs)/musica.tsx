@@ -65,7 +65,7 @@ const GOLD  = "#F9F9F9";
 const DARK  = "#1A1E2B";
 const MUTED = "#6B7A96";
 
-type MainTabId = SoundCategoryId;
+type MainTabId = SoundCategoryId | "popular";
 type MainTab = { id: MainTabId; label: string };
 
 const COUNTS_KEY = "@resonance_sound_play_counts_m3";
@@ -552,7 +552,7 @@ export default function MezcladorScreen() {
       setContentAnimKey((k) => k + 1);
       return;
     }
-    const ids = categories.map((t) => t.id);
+    const ids = tabs.map((t) => t.id);
     setContentDir(mainTab === null || ids.indexOf(id) > ids.indexOf(mainTab) ? "right" : "left");
     setMainTab(id);
     if (id !== "bpm") setSelectedBpm(null);
@@ -604,12 +604,23 @@ export default function MezcladorScreen() {
     () => allSounds.filter((s) => !!s.audioUrl || hasSoundFile(s.id) || !!REMOTE_SOUND_MAP[s.id]),
     [allSounds],
   );
+  const popularSounds = useMemo(
+    () => [...playableSounds]
+      .sort((a, b) => (playCounts[b.id] ?? 0) - (playCounts[a.id] ?? 0))
+      .slice(0, 50),
+    [playableSounds, playCounts],
+  );
   const tabs = useMemo<MainTab[]>(
-    () => categories
-      .filter((category) => category.isActive !== false)
-      .filter((category) => playableSounds.some((sound) => sound.category === category.id))
-      .map(({ id, label }) => ({ id, label })),
-    [categories, playableSounds],
+    () => [
+      ...(popularSounds.length > 0
+        ? [{ id: "popular" as const, label: "Populares" }]
+        : []),
+      ...categories
+        .filter((category) => category.isActive !== false)
+        .filter((category) => playableSounds.some((sound) => sound.category === category.id))
+        .map(({ id, label }) => ({ id, label })),
+    ],
+    [categories, playableSounds, popularSounds.length],
   );
   useEffect(() => {
     if (mainTab !== null && !tabs.some((tab) => tab.id === mainTab)) {
@@ -624,20 +635,23 @@ export default function MezcladorScreen() {
 
   const displayedSounds = useMemo(() => {
     if (mainTab === null) return [];
+    if (mainTab === "popular") return popularSounds;
     return playableSounds.filter(
       (s) => s.category === mainTab &&
         (mainTab !== "bpm" || effectiveBpm === null || soundMatchesBpm(s, effectiveBpm)),
     );
-  }, [mainTab, playableSounds, effectiveBpm]);
+  }, [mainTab, playableSounds, popularSounds, effectiveBpm]);
 
   // ── Catálogo completo por secciones (sin tab seleccionado, estilo Insight Timer) ──
   const catalogSections = useMemo(() => {
     if (mainTab !== null) return [];
     return tabs.map((tab) => ({
       tab,
-      sounds: playableSounds.filter((s) => s.category === tab.id),
+      sounds: tab.id === "popular"
+        ? popularSounds
+        : playableSounds.filter((s) => s.category === tab.id),
     })).filter((sec) => sec.sounds.length > 0);
-  }, [mainTab, tabs, playableSounds]);
+  }, [mainTab, tabs, playableSounds, popularSounds]);
 
   return (
     <View style={[styles.root, { backgroundColor: theme.solid }]}>
@@ -1021,7 +1035,7 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     alignItems: "center",
     gap: 14,
-    marginTop: 30,
+    marginTop: 55,
     marginBottom: 22,
     paddingHorizontal: 4,
   },

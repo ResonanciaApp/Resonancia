@@ -1,7 +1,7 @@
 import { Router, type IRouter } from "express";
 import { and, asc, desc, eq, ilike, inArray, sql } from "drizzle-orm";
 import {
-  db, dailyQuotesTable, dailyQuoteAssignmentsTable,
+  db, dailyQuotesTable, dailyQuoteAssignmentsTable, dailyQuoteSettingsTable,
 } from "@workspace/db";
 import {
   CreateAdminDailyQuoteBody, DeleteAdminDailyQuoteParams,
@@ -11,6 +11,8 @@ import {
   ListAdminDailyQuotesResponse, ToggleAdminDailyQuoteParams,
   ToggleAdminDailyQuoteResponse, UpdateAdminDailyQuoteBody,
   UpdateAdminDailyQuoteParams, UpdateAdminDailyQuoteResponse,
+  GetAdminDailyQuoteSettingsResponse, UpdateAdminDailyQuoteSettingsBody,
+  UpdateAdminDailyQuoteSettingsResponse,
 } from "@workspace/api-zod";
 import { requireAuth } from "../middlewares/requireAuth";
 import { requireRole } from "../middlewares/requireRole";
@@ -49,6 +51,24 @@ function quoteDto(row: Quote) {
 function assignmentDto(row: Assignment) {
   return { ...row, date: row.date, assignedAt: row.assignedAt };
 }
+async function getDailyQuoteSettings() {
+  const [settings] = await db.insert(dailyQuoteSettingsTable)
+    .values({ id: 1, paletteId: "jade" })
+    .onConflictDoNothing()
+    .returning();
+  if (settings) return settings;
+  const [existing] = await db.select().from(dailyQuoteSettingsTable)
+    .where(eq(dailyQuoteSettingsTable.id, 1)).limit(1);
+  if (!existing) throw new Error("No se pudo cargar la configuración de frase del día");
+  return existing;
+}
+function settingsDto(row: typeof dailyQuoteSettingsTable.$inferSelect) {
+  return {
+    paletteId: row.paletteId,
+    revision: row.revision,
+    updatedAt: row.updatedAt.toISOString(),
+  };
+}
 
 export async function assignDailyQuote(date = chileDate()): Promise<Assignment> {
   return db.transaction(async (tx) => {
@@ -78,7 +98,11 @@ router.get("/quote-of-the-day", async (req, res): Promise<void> => {
     const parsed = GetQuoteOfTheDayQueryParams.parse(req.query);
     if (parsed.timeZone && parsed.timeZone !== CHILE_TZ) req.log.warn({ requestedTimeZone: parsed.timeZone }, "Daily quote uses Chile timezone");
     await ensureDailyQuoteSeed();
-    res.json(GetQuoteOfTheDayResponse.parse(assignmentDto(await assignDailyQuote())));
+    const [assignment, settings] = await Promise.all([assignDailyQuote(), getDailyQuoteSettings()]);
+    res.json(GetQuoteOfTheDayResponse.parse({
+      ...assignmentDto(assignment),
+      paletteId: settings.paletteId,
+    }));
   } catch (err) {
     req.log.error({ err }, "error assigning daily quote");
     res.status(500).json({ error: "No se pudo obtener la frase del día" });
@@ -111,6 +135,38 @@ router.post("/admin/daily-quotes", ...admin, async (req, res): Promise<void> => 
     const [row] = await db.insert(dailyQuotesTable).values({ ...parsed.data, text: parsed.data.text.trim(), author: parsed.data.author.trim() }).returning();
     res.status(201).json(quoteDto(row));
   } catch (err) { req.log.error({ err }, "error creating daily quote"); res.status(500).json({ error: "No se pudo crear la frase" }); }
+});
+
+router.get("/admin/daily-quotes/settings", ...admin, async (req, res): Promise<void> => {
+  try {
+    res.json(GetAdminDailyQuoteSettingsResponse.parse(settingsDto(await getDailyQuoteSettings())));
+  } catch (err) {
+    req.log.error({ err }, "error getting daily quote settings");
+    res.status(500).json({ error: "No se pudo obtener la paleta" });
+  }
+});
+
+router.patch("/admin/daily-quotes/settings", ...admin, async (req, res): Promise<void> => {
+  const parsed = UpdateAdminDailyQuoteSettingsBody.safeParse(req.body);
+  if (!parsed.success) {
+    res.status(400).json({ error: "Paleta inválida", details: parsed.error.issues });
+    return;
+  }
+  try {
+    await getDailyQuoteSettings();
+    const [updated] = await db.update(dailyQuoteSettingsTable)
+      .set({
+        paletteId: parsed.data.paletteId,
+        revision: sql`${dailyQuoteSettingsTable.revision} + 1`,
+        updatedAt: new Date(),
+      })
+      .where(eq(dailyQuoteSettingsTable.id, 1))
+      .returning();
+    res.json(UpdateAdminDailyQuoteSettingsResponse.parse(settingsDto(updated)));
+  } catch (err) {
+    req.log.error({ err }, "error updating daily quote settings");
+    res.status(500).json({ error: "No se pudo actualizar la paleta" });
+  }
 });
 
 router.get("/admin/daily-quotes/current", ...admin, async (req, res): Promise<void> => {

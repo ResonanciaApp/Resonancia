@@ -1096,6 +1096,32 @@ export interface DailyQuoteAssignment {
   assignedAt: string;
 }
 
+export type DailyQuotePalette = typeof DailyQuotePalette[keyof typeof DailyQuotePalette];
+
+
+export const DailyQuotePalette = {
+  jade: 'jade',
+  violet: 'violet',
+  ocean: 'ocean',
+  ruby: 'ruby',
+  amber: 'amber',
+} as const;
+
+export type QuoteOfTheDayResponse = DailyQuoteAssignment & {
+  paletteId: DailyQuotePalette;
+};
+
+export interface DailyQuoteSettings {
+  paletteId: DailyQuotePalette;
+  /** @minimum 1 */
+  revision: number;
+  updatedAt: string;
+}
+
+export interface DailyQuoteSettingsUpdate {
+  paletteId: DailyQuotePalette;
+}
+
 export interface AdminDailyQuoteList {
   quotes: AdminDailyQuote[];
   activeCount: number;

@@ -2,7 +2,8 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 import {
   getGetQuoteOfTheDayQueryKey,
   useGetQuoteOfTheDay,
-  type DailyQuoteAssignment,
+  type DailyQuotePalette,
+  type QuoteOfTheDayResponse,
 } from "@workspace/api-client-react";
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { AppState } from "react-native";
@@ -12,7 +13,7 @@ import { getQuoteOfTheDay as getBundledQuote, type Quote } from "@/data/quotes";
 const TIME_ZONE = "America/Santiago";
 const CACHE_KEY = "resonancia_quote_of_day_v1";
 
-export type QuoteOfTheDay = Quote & { date: string };
+export type QuoteOfTheDay = Quote & { date: string; paletteId: DailyQuotePalette };
 
 type CachedQuote = QuoteOfTheDay & { receivedAt: string };
 
@@ -29,7 +30,7 @@ function getChileDate(now = new Date()): string {
 
 function parseAssignment(value: unknown, today: string): QuoteOfTheDay | null {
   if (!value || typeof value !== "object") return null;
-  const assignment = value as Partial<DailyQuoteAssignment>;
+  const assignment = value as Partial<QuoteOfTheDayResponse>;
   if (
     typeof assignment.date !== "string" ||
     assignment.date !== today ||
@@ -44,6 +45,13 @@ function parseAssignment(value: unknown, today: string): QuoteOfTheDay | null {
     date: today,
     text: assignment.text.trim(),
     author: assignment.author.trim(),
+    paletteId:
+      assignment.paletteId === "violet" ||
+      assignment.paletteId === "ocean" ||
+      assignment.paletteId === "ruby" ||
+      assignment.paletteId === "amber"
+        ? assignment.paletteId
+        : "jade",
   };
 }
 
@@ -60,7 +68,7 @@ export function useQuoteOfTheDay() {
   const today = getChileDate();
   const fallback = useMemo(() => {
     const quote = getBundledQuote();
-    return { ...quote, date: today };
+    return { ...quote, date: today, paletteId: "jade" as const };
   }, [today]);
   const [cachedQuote, setCachedQuote] = useState<QuoteOfTheDay | null>(null);
   const { data, isLoading, refetch } = useGetQuoteOfTheDay(

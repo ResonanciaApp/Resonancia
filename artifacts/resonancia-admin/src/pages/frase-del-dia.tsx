@@ -14,7 +14,11 @@ import {
   useUpdateAdminDailyQuote,
   useDeleteAdminDailyQuote,
   useToggleAdminDailyQuote,
+  useGetAdminDailyQuoteSettings,
+  getGetAdminDailyQuoteSettingsQueryKey,
+  useUpdateAdminDailyQuoteSettings,
   AdminDailyQuote,
+  DailyQuotePalette,
 } from "@workspace/api-client-react";
 
 import {
@@ -63,6 +67,7 @@ import {
   Quote as QuoteIcon,
   Calendar,
   History,
+  Palette,
 } from "lucide-react";
 import { format, parseISO } from "date-fns";
 import { es } from "date-fns/locale";
@@ -81,6 +86,19 @@ const formSchema = z.object({
 });
 
 type FormValues = z.infer<typeof formSchema>;
+
+const DAILY_QUOTE_PALETTES: Array<{
+  id: DailyQuotePalette;
+  name: string;
+  description: string;
+  colors: [string, string];
+}> = [
+  { id: "jade", name: "Jade dorado", description: "Verde profundo y oro cálido", colors: ["#073C3B", "#987044"] },
+  { id: "violet", name: "Violeta nocturno", description: "Índigo oscuro y amatista", colors: ["#17132D", "#65417E"] },
+  { id: "ocean", name: "Océano premium", description: "Azul medianoche y petróleo", colors: ["#061A32", "#236174"] },
+  { id: "ruby", name: "Rubí sereno", description: "Vino oscuro y rosa mineral", colors: ["#280711", "#81425B"] },
+  { id: "amber", name: "Ámbar profundo", description: "Chocolate oscuro y cobre", colors: ["#271307", "#94642E"] },
+];
 
 export default function FraseDelDiaPage() {
   const queryClient = useQueryClient();
@@ -108,6 +126,15 @@ export default function FraseDelDiaPage() {
       },
     }
   );
+  const {
+    data: quoteSettings,
+    isLoading: isLoadingSettings,
+    isError: isErrorSettings,
+  } = useGetAdminDailyQuoteSettings({
+    query: {
+      queryKey: getGetAdminDailyQuoteSettingsQueryKey(),
+    },
+  });
 
   const { data: poolData, isLoading: isLoadingPool, isError: isErrorPool } = useListAdminDailyQuotes(
     {}, // Fetch all items to apply filters client-side
@@ -144,6 +171,7 @@ export default function FraseDelDiaPage() {
   const updateQuote = useUpdateAdminDailyQuote();
   const deleteQuote = useDeleteAdminDailyQuote();
   const toggleQuote = useToggleAdminDailyQuote();
+  const updateQuoteSettings = useUpdateAdminDailyQuoteSettings();
 
   const createForm = useForm<FormValues>({
     resolver: zodResolver(formSchema),
@@ -240,6 +268,20 @@ export default function FraseDelDiaPage() {
     );
   };
 
+  const handlePaletteChange = (paletteId: DailyQuotePalette) => {
+    if (paletteId === quoteSettings?.paletteId || updateQuoteSettings.isPending) return;
+    updateQuoteSettings.mutate(
+      { data: { paletteId } },
+      {
+        onSuccess: (settings) => {
+          queryClient.setQueryData(getGetAdminDailyQuoteSettingsQueryKey(), settings);
+          toast.success("Fondo de la Frase del día actualizado");
+        },
+        onError: () => toast.error("No se pudo actualizar el fondo"),
+      },
+    );
+  };
+
   return (
     <div className="space-y-8 max-w-[1200px] mx-auto pb-12">
       <div className="flex items-center justify-between">
@@ -250,6 +292,65 @@ export default function FraseDelDiaPage() {
           </p>
         </div>
       </div>
+
+      <Card className="border-border/50 shadow-sm overflow-hidden">
+        <CardHeader className="pb-4 border-b border-border/20 bg-card/50">
+          <div className="flex items-center gap-2">
+            <Palette className="w-5 h-5 text-primary" />
+            <CardTitle className="text-lg">Fondo de la Frase del día</CardTitle>
+          </div>
+          <CardDescription>
+            Selecciona el degradado premium que se mostrará detrás de la frase en la app.
+          </CardDescription>
+        </CardHeader>
+        <CardContent className="pt-6">
+          {isLoadingSettings ? (
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-3">
+              {DAILY_QUOTE_PALETTES.map((palette) => (
+                <div key={palette.id} className="h-28 rounded-xl bg-muted animate-pulse" />
+              ))}
+            </div>
+          ) : isErrorSettings ? (
+            <p className="text-sm text-destructive">No se pudieron cargar las paletas.</p>
+          ) : (
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-3">
+              {DAILY_QUOTE_PALETTES.map((palette) => {
+                const selected = quoteSettings?.paletteId === palette.id;
+                return (
+                  <button
+                    key={palette.id}
+                    type="button"
+                    onClick={() => handlePaletteChange(palette.id)}
+                    disabled={updateQuoteSettings.isPending}
+                    aria-pressed={selected}
+                    className={`relative overflow-hidden rounded-xl border text-left transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 focus-visible:ring-offset-background ${
+                      selected
+                        ? "border-primary ring-2 ring-primary/35"
+                        : "border-white/10 hover:border-white/30"
+                    }`}
+                    data-testid={`palette-${palette.id}`}
+                  >
+                    <div
+                      className="h-20 px-3 py-3 flex items-end"
+                      style={{ backgroundImage: `linear-gradient(135deg, ${palette.colors[0]}, ${palette.colors[1]})` }}
+                    >
+                      {selected && (
+                        <Badge className="bg-white/90 text-slate-950 hover:bg-white/90">
+                          Seleccionado
+                        </Badge>
+                      )}
+                    </div>
+                    <div className="bg-card px-3 py-2.5">
+                      <p className="text-sm font-semibold text-foreground">{palette.name}</p>
+                      <p className="text-[11px] leading-4 text-muted-foreground">{palette.description}</p>
+                    </div>
+                  </button>
+                );
+              })}
+            </div>
+          )}
+        </CardContent>
+      </Card>
 
       {/* Overviews */}
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6">

@@ -1,11 +1,20 @@
 import { useState } from "react";
 import { View, Text, Pressable, StyleSheet, Share, Modal } from "react-native";
 import { Feather } from "@expo/vector-icons";
+import { LinearGradient } from "expo-linear-gradient";
 import { useQuoteOfTheDay } from "@/hooks/useQuoteOfTheDay";
+import type { DailyQuotePalette } from "@workspace/api-client-react";
 
 const GOLD  = "#F9F9F9";
 const WHITE = "#FFFFFF";
 const MUTED = "#c2c2c2";
+const PALETTE_COLORS: Record<DailyQuotePalette, readonly [string, string]> = {
+  jade: ["#073C3B", "#987044"],
+  violet: ["#17132D", "#65417E"],
+  ocean: ["#061A32", "#236174"],
+  ruby: ["#280711", "#81425B"],
+  amber: ["#271307", "#94642E"],
+};
 
 export default function QuoteOfTheDay() {
   const { quote } = useQuoteOfTheDay();
@@ -28,7 +37,12 @@ export default function QuoteOfTheDay() {
   }
 
   return (
-    <View style={styles.card}>
+    <LinearGradient
+      colors={PALETTE_COLORS[quote.paletteId]}
+      start={{ x: 0, y: 0 }}
+      end={{ x: 1, y: 1 }}
+      style={styles.card}
+    >
       {/* Autor arriba-izquierda + ··· arriba-derecha */}
       <View style={styles.header}>
         <Text style={styles.author}>{quote.author}</Text>
@@ -72,7 +86,7 @@ export default function QuoteOfTheDay() {
           </View>
         </Pressable>
       </Modal>
-    </View>
+    </LinearGradient>
   );
 }
 

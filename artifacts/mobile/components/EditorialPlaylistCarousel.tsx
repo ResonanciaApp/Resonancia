@@ -31,11 +31,15 @@ export function EditorialPlaylistCarousel({
   playlists,
   onPress,
   style,
+  showPremiumBadge = false,
+  stackTypeAboveDuration = false,
 }: {
   title: string;
   playlists: EditorialPlaylist[];
   onPress?: (playlist: EditorialPlaylist) => void;
   style?: StyleProp<ViewStyle>;
+  showPremiumBadge?: boolean;
+  stackTypeAboveDuration?: boolean;
 }) {
   if (playlists.length === 0) return null;
 
@@ -85,7 +89,12 @@ export function EditorialPlaylistCarousel({
                   style={StyleSheet.absoluteFill}
                 />
                 {playlist.editorialType !== "none" ? (
-                  <View style={styles.typePill}>
+                  <View
+                    style={[
+                      styles.typePill,
+                      stackTypeAboveDuration && styles.typePillAboveDuration,
+                    ]}
+                  >
                     <SessionBadgeGlass showBlackTint={false} />
                     <View style={styles.whitePillTint} />
                     <Text style={styles.typeText}>
@@ -102,6 +111,13 @@ export function EditorialPlaylistCarousel({
                   style={styles.duration}
                   whiteGlass
                 />
+                {showPremiumBadge ? (
+                  <Image
+                    source={require("@/assets/images/estrella-premium.png")}
+                    style={styles.premiumStar}
+                    contentFit="contain"
+                  />
+                ) : null}
               </View>
             </View>
             <Text style={styles.cardTitle} numberOfLines={2}>
@@ -208,6 +224,17 @@ const styles = StyleSheet.create({
     paddingHorizontal: 9,
     paddingVertical: 5,
     overflow: "hidden",
+  },
+  typePillAboveDuration: {
+    top: undefined,
+    bottom: 45,
+  },
+  premiumStar: {
+    position: "absolute",
+    top: 16,
+    left: 16,
+    width: 22,
+    height: 22,
   },
   whitePillTint: {
     ...StyleSheet.absoluteFillObject,

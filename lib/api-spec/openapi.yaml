@@ -431,7 +431,7 @@ paths:
           description: Frase global asignada para el día calendario de Chile
           content:
             application/json:
-              schema: {$ref: "#/components/schemas/DailyQuoteAssignment"}
+              schema: {$ref: "#/components/schemas/QuoteOfTheDayResponse"}
   /greeting:
     get:
       operationId: getGreeting
@@ -500,6 +500,18 @@ paths:
       requestBody: {required: true, content: {application/json: {schema: {$ref: "#/components/schemas/DailyQuoteInput"}}}}
       responses:
         "201": {description: Frase creada, content: {application/json: {schema: {$ref: "#/components/schemas/AdminDailyQuote"}}}}
+  /admin/daily-quotes/settings:
+    get:
+      operationId: getAdminDailyQuoteSettings
+      tags: [admin]
+      responses:
+        "200": {description: Configuración visual de la frase del día, content: {application/json: {schema: {$ref: "#/components/schemas/DailyQuoteSettings"}}}}
+    patch:
+      operationId: updateAdminDailyQuoteSettings
+      tags: [admin]
+      requestBody: {required: true, content: {application/json: {schema: {$ref: "#/components/schemas/DailyQuoteSettingsUpdate"}}}}
+      responses:
+        "200": {description: Configuración visual actualizada, content: {application/json: {schema: {$ref: "#/components/schemas/DailyQuoteSettings"}}}}
   /admin/daily-quotes/current:
     get:
       operationId: getAdminCurrentDailyQuote
@@ -6021,6 +6033,28 @@ components:
         author: {type: string}
         cycle: {type: integer}
         assignedAt: {type: string, format: date-time}
+    DailyQuotePalette:
+      type: string
+      enum: [jade, violet, ocean, ruby, amber]
+    QuoteOfTheDayResponse:
+      allOf:
+        - {$ref: "#/components/schemas/DailyQuoteAssignment"}
+        - type: object
+          required: [paletteId]
+          properties:
+            paletteId: {$ref: "#/components/schemas/DailyQuotePalette"}
+    DailyQuoteSettings:
+      type: object
+      required: [paletteId, revision, updatedAt]
+      properties:
+        paletteId: {$ref: "#/components/schemas/DailyQuotePalette"}
+        revision: {type: integer, minimum: 1}
+        updatedAt: {type: string, format: date-time}
+    DailyQuoteSettingsUpdate:
+      type: object
+      required: [paletteId]
+      properties:
+        paletteId: {$ref: "#/components/schemas/DailyQuotePalette"}
     AdminDailyQuoteList:
       type: object
       required: [quotes, activeCount, total]

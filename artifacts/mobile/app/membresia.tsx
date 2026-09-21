@@ -793,7 +793,7 @@ function PremiumOfferContent({
                 <AnimatedPlanSelection selected={selected} />
                 <MaterialCommunityIcons
                   name="star"
-                  size={20}
+                  size={24}
                   color={selected ? MEMBERSHIP_AURORA.premium.accent : "#F0F0F0"}
                 />
                 <View style={styles.planCopy}>
@@ -847,7 +847,7 @@ function PremiumOfferContent({
               <AnimatedPlanSelection selected={selected} />
               <MaterialCommunityIcons
                 name="star"
-                size={20}
+                size={24}
                 color={selected ? MEMBERSHIP_AURORA.premium.accent : "#F0F0F0"}
               />
               <View style={styles.planCopy}>
@@ -994,7 +994,7 @@ function GiftCardPlanOption({
       <AnimatedPlanSelection selected={selected} />
       <MaterialCommunityIcons
         name="star"
-        size={20}
+        size={24}
         color={selected ? MEMBERSHIP_AURORA.premium.accent : "#F0F0F0"}
       />
       <View style={styles.planCopy}>

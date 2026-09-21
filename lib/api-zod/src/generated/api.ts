@@ -1558,17 +1558,19 @@ export const GetQuoteOfTheDayQueryParams = zod.object({
   "timeZone": zod.coerce.string().default(getQuoteOfTheDayQueryTimeZoneDefault)
 })
 
-export const getQuoteOfTheDayResponseDateRegExp = new RegExp('^[0-9]{4}-[0-9]{2}-[0-9]{2}$');
+export const getQuoteOfTheDayResponseOneDateRegExp = new RegExp('^[0-9]{4}-[0-9]{2}-[0-9]{2}$');
 
 
 export const GetQuoteOfTheDayResponse = zod.object({
-  "date": zod.string().regex(getQuoteOfTheDayResponseDateRegExp),
+  "date": zod.string().regex(getQuoteOfTheDayResponseOneDateRegExp),
   "quoteId": zod.string().uuid().nullish(),
   "text": zod.string(),
   "author": zod.string(),
   "cycle": zod.number(),
   "assignedAt": zod.coerce.date()
-})
+}).and(zod.object({
+  "paletteId": zod.enum(['jade', 'violet', 'ocean', 'ruby', 'amber'])
+}))
 
 
 /**
@@ -1667,6 +1669,30 @@ export const CreateAdminDailyQuoteBody = zod.object({
   "text": zod.string().min(1).max(createAdminDailyQuoteBodyTextMax),
   "author": zod.string().min(1).max(createAdminDailyQuoteBodyAuthorMax),
   "active": zod.boolean().default(createAdminDailyQuoteBodyActiveDefault)
+})
+
+
+
+
+
+export const GetAdminDailyQuoteSettingsResponse = zod.object({
+  "paletteId": zod.enum(['jade', 'violet', 'ocean', 'ruby', 'amber']),
+  "revision": zod.number().min(1),
+  "updatedAt": zod.coerce.date()
+})
+
+
+export const UpdateAdminDailyQuoteSettingsBody = zod.object({
+  "paletteId": zod.enum(['jade', 'violet', 'ocean', 'ruby', 'amber'])
+})
+
+
+
+
+export const UpdateAdminDailyQuoteSettingsResponse = zod.object({
+  "paletteId": zod.enum(['jade', 'violet', 'ocean', 'ruby', 'amber']),
+  "revision": zod.number().min(1),
+  "updatedAt": zod.coerce.date()
 })
 
 

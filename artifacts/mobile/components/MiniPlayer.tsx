@@ -1,4 +1,4 @@
-import { Feather } from "@expo/vector-icons";
+import { Feather, MaterialCommunityIcons } from "@expo/vector-icons";
 import { router } from "expo-router";
 import React, { useEffect, useRef, useState } from "react";
 import Svg, { Path, Rect } from "react-native-svg";
@@ -17,9 +17,9 @@ import {
 
 import { BlurView } from "expo-blur";
 import { LinearGradient } from "expo-linear-gradient";
-import { WIDGET_GREEN_SOLID } from "@/constants/colors";
 import { DURATION, easeOutCubic } from "@/constants/motion";
 import { TAB_BAR_BLUR_INTENSITY, TAB_BAR_GLASS_OVERLAY } from "@/constants/tab-bar";
+import { SessionBadgeGlass } from "@/components/SessionDurationBadge";
 
 import { usePlayer } from "@/context/PlayerContext";
 import { useMixer } from "@/context/MixerContext";
@@ -316,19 +316,17 @@ export function MiniPlayer({ forceMix = false }: { forceMix?: boolean }) {
               {n} {n === 1 ? "sonido" : "sonidos"}
             </Animated.Text>
 
-            {/* Botón play/pause — absoluto a la derecha, nunca se empuja */}
+            {/* Play/pause glass — mismo diseño que las cards Ambientales */}
             <View style={[styles.waveWrap, { position: "absolute", right: 25, zIndex: 2, transform: [{ translateY: -2 }] }]}>
               <Pressable onPress={(e) => { e.stopPropagation(); togglePlay(); }} style={styles.playPauseBtn}>
-                <Svg width={22} height={22} viewBox="0 0 48 48">
-                  {mixPlaying ? (
-                    <>
-                      <Rect x="7"  y="5" width="12" height="36" rx="5" ry="5" fill="#0E0E17" />
-                      <Rect x="27" y="5" width="12" height="36" rx="5" ry="5" fill="#0E0E17" />
-                    </>
-                  ) : (
-                    <Path d="M 13.2 7.1 Q 8 4 8 10 L 8 36 Q 8 42 13.2 38.9 L 34.8 26.1 Q 40 23 34.8 19.9 Z" fill="#0E0E17" />
-                  )}
-                </Svg>
+                <View pointerEvents="none" style={styles.playPauseGlass}>
+                  <SessionBadgeGlass showBlackTint={false} showWhiteTint />
+                </View>
+                <MaterialCommunityIcons
+                  name={mixPlaying ? "pause" : "play"}
+                  size={26}
+                  color="#F9F9F9"
+                />
               </Pressable>
             </View>
           </View>
@@ -553,14 +551,14 @@ const styles = StyleSheet.create({
     borderRadius: 22,
     alignItems: "center",
     justifyContent: "center",
-    backgroundColor: WIDGET_GREEN_SOLID,
-    borderWidth: 1,
-    borderColor: "rgba(255,255,255,0.1)",
-    shadowColor: "#000",
-    shadowOffset: { width: -3, height: 0 },
-    shadowOpacity: 0.2,
-    shadowRadius: 9,
-    elevation: 4,
+    backgroundColor: "transparent",
+  },
+  playPauseGlass: {
+    position: "absolute",
+    width: 37,
+    height: 37,
+    borderRadius: 18.5,
+    overflow: "hidden",
   },
   playIconNudge: { marginLeft: 2 },
   waveWrap: {
