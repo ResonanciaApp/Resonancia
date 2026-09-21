@@ -1277,10 +1277,10 @@ const styles = StyleSheet.create({
     fontWeight: "800",
   },
   planGrid: {
-    gap: 16,
+    gap: 11,
   },
   planOffset: {
-    height: 140,
+    height: 130,
   },
   planCard: {
     width: "100%",
