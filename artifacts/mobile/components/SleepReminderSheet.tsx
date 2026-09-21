@@ -1,5 +1,4 @@
 import { Feather } from "@expo/vector-icons";
-import { Asset } from "expo-asset";
 import * as Haptics from "expo-haptics";
 import { LinearGradient } from "expo-linear-gradient";
 import React, { useCallback, useEffect, useRef, useState } from "react";
@@ -7,7 +6,6 @@ import {
   ActivityIndicator,
   Animated,
   Easing,
-  Image,
   Linking,
   Modal,
   Platform,
@@ -20,7 +18,7 @@ import {
 } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 
-import { SessionBadgeGlass } from "@/components/SessionDurationBadge";
+import { useSceneTheme } from "@/context/SceneThemeContext";
 import {
   formatPracticeNotificationTimeLocal,
   loadPracticeNotificationSettings,
@@ -37,24 +35,15 @@ type SleepReminderSheetProps = {
 };
 
 const SHEET_OFFSET = 720;
-const SLEEP_REMINDER_IMAGE = require("@/assets/images/sleep-reminder-room-v2.jpg");
-const sleepReminderImageReady = (async () => {
-  const asset = Asset.fromModule(SLEEP_REMINDER_IMAGE);
-  await asset.downloadAsync();
-  const uri = asset.localUri ?? asset.uri;
-  if (uri) {
-    await Image.prefetch(uri);
-  }
-})().catch(() => undefined);
 
 export function SleepReminderSheet({
   visible,
   onClose,
   onSaved,
 }: SleepReminderSheetProps) {
+  const { theme } = useSceneTheme();
   const insets = useSafeAreaInsets();
   const [mounted, setMounted] = useState(false);
-  const [imageRendered, setImageRendered] = useState(false);
   const [draft, setDraft] = useState<PracticeNotificationPreference>(
     PRACTICE_NOTIFICATION_DEFAULTS.noche,
   );
@@ -67,22 +56,15 @@ export function SleepReminderSheet({
 
   useEffect(() => {
     if (!visible) return;
-    let cancelled = false;
+    setMounted(true);
     setError(null);
     setPermissionBlocked(false);
     setChooserOpen(false);
-    setImageRendered(false);
-    void sleepReminderImageReady.then(() => {
-      if (!cancelled) setMounted(true);
-    });
     void loadPracticeNotificationSettings()
       .then((settings) => setDraft(settings.noche))
       .catch(() => {
         setError("No pudimos cargar tu recordatorio. Inténtalo nuevamente.");
       });
-    return () => {
-      cancelled = true;
-    };
   }, [visible]);
 
   useEffect(() => {
@@ -103,7 +85,6 @@ export function SleepReminderSheet({
       ]).start(() => setMounted(false));
       return;
     }
-    if (!imageRendered) return;
     translateY.setValue(SHEET_OFFSET);
     backdropOpacity.setValue(0);
     const frame = requestAnimationFrame(() => {
@@ -122,7 +103,7 @@ export function SleepReminderSheet({
       ]).start();
     });
     return () => cancelAnimationFrame(frame);
-  }, [backdropOpacity, imageRendered, mounted, translateY, visible]);
+  }, [backdropOpacity, mounted, translateY, visible]);
 
   const adjustTime = useCallback((part: "hour" | "minute", delta: number) => {
     setDraft((current) => ({
@@ -165,6 +146,11 @@ export function SleepReminderSheet({
   if (!mounted) return null;
 
   const timeLabel = formatPracticeNotificationTimeLocal(draft.hour, draft.minute);
+  const gradient = [
+    theme.gradient[0] as string,
+    theme.gradient[1] as string,
+    "#08070D",
+  ] as const;
   return (
     <Modal
       transparent
@@ -188,24 +174,7 @@ export function SleepReminderSheet({
             },
           ]}
         >
-          <Image
-            source={SLEEP_REMINDER_IMAGE}
-            resizeMode="contain"
-            style={styles.sheetBackgroundImage}
-            onLoadEnd={() => setImageRendered(true)}
-            onError={() => setImageRendered(true)}
-          />
-          <LinearGradient
-            colors={[
-              "rgba(3,7,13,0.12)",
-              "rgba(3,7,13,0.22)",
-              "rgba(3,7,13,0.45)",
-            ]}
-            locations={[0, 0.48, 1]}
-            style={StyleSheet.absoluteFill}
-          />
-          <SessionBadgeGlass intensity={Platform.OS === "android" ? 44 : 20} showBlackTint={false} />
-          <View pointerEvents="none" style={styles.sheetGlassTint} />
+          <LinearGradient colors={gradient} style={StyleSheet.absoluteFill} />
           <View style={styles.handle} />
           <ScrollView
             style={styles.sheetScroll}
@@ -362,12 +331,6 @@ const styles = StyleSheet.create({
     ...StyleSheet.absoluteFillObject,
     backgroundColor: "rgba(0,0,0,0.62)",
   },
-  sheetBackgroundImage: {
-    ...StyleSheet.absoluteFillObject,
-    width: "100%",
-    height: "100%",
-    resizeMode: "contain",
-  },
   sheet: {
     maxHeight: "92%",
     overflow: "hidden",
@@ -377,11 +340,7 @@ const styles = StyleSheet.create({
     paddingTop: 12,
     borderWidth: 1,
     borderBottomWidth: 0,
-    borderColor: "rgba(255,255,255,0.18)",
-  },
-  sheetGlassTint: {
-    ...StyleSheet.absoluteFillObject,
-    backgroundColor: "rgba(17,14,28,0.50)",
+    borderColor: "rgba(255,255,255,0.10)",
   },
   handle: {
     alignSelf: "center",
