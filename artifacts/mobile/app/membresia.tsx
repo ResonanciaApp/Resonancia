@@ -652,13 +652,15 @@ function PremiumOfferContent({
                   pressed && !busy && styles.planCardPressed,
                 ]}
               >
-                <BlurView
-                  intensity={38}
-                  tint="light"
-                  experimentalBlurMethod="dimezisBlurView"
-                  style={StyleSheet.absoluteFill}
-                  pointerEvents="none"
-                />
+                {selected ? (
+                  <BlurView
+                    intensity={38}
+                    tint="light"
+                    experimentalBlurMethod="dimezisBlurView"
+                    style={StyleSheet.absoluteFill}
+                    pointerEvents="none"
+                  />
+                ) : null}
                 <View
                   pointerEvents="none"
                   style={[
@@ -704,13 +706,15 @@ function PremiumOfferContent({
                 pressed && styles.planCardPressed,
               ]}
             >
-              <BlurView
-                intensity={38}
-                tint="light"
-                experimentalBlurMethod="dimezisBlurView"
-                style={StyleSheet.absoluteFill}
-                pointerEvents="none"
-              />
+              {selected ? (
+                <BlurView
+                  intensity={38}
+                  tint="light"
+                  experimentalBlurMethod="dimezisBlurView"
+                  style={StyleSheet.absoluteFill}
+                  pointerEvents="none"
+                />
+              ) : null}
               <View
                 pointerEvents="none"
                 style={[
@@ -1128,8 +1132,8 @@ const styles = StyleSheet.create({
   offerBrand: {
     color: "#FFFFFF",
     fontFamily: "Manrope",
-    fontSize: 24,
-    lineHeight: 31,
+    fontSize: 20,
+    lineHeight: 27,
     fontWeight: "800",
   },
   planGrid: {
@@ -1154,7 +1158,7 @@ const styles = StyleSheet.create({
     backgroundColor: "transparent",
   },
   planGlassTint: {
-    backgroundColor: "rgba(255,255,255,0.60)",
+    backgroundColor: "rgba(255,255,255,0.10)",
   },
   planGlassTintSelected: {
     backgroundColor: "rgba(107,80,210,0.60)",
@@ -1184,7 +1188,7 @@ const styles = StyleSheet.create({
     backgroundColor: "#FFFFFF",
   },
   planName: {
-    color: "#211B2B",
+    color: "#F9F9F9",
     fontFamily: "Manrope",
     fontSize: 12,
     lineHeight: 18,
@@ -1202,7 +1206,7 @@ const styles = StyleSheet.create({
     alignItems: "flex-end",
   },
   planPrice: {
-    color: "#211B2B",
+    color: "#F9F9F9",
     fontFamily: "Manrope",
     fontSize: 17,
     lineHeight: 23,
