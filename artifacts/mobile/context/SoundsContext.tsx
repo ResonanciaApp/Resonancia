@@ -15,6 +15,11 @@ import React, {
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { replaceSoundCatalog, type MixSound, type SoundCategory } from "@/data/sounds";
 import { applyRemoteSounds, resolveRemoteObjectUrl } from "@/lib/remoteSoundMap";
+import {
+  normalizeCatalogSnapshot,
+  parseSoundCatalogResponse,
+  type CatalogSnapshot,
+} from "@/lib/sound-catalog-snapshot";
 
 const SOUND_CATALOG_CACHE_KEY = "@resonance_sound_catalog_v1";
 
@@ -51,58 +56,13 @@ interface ApiSound {
   showInMeditationBackgrounds?: boolean;
 }
 
-interface ApiCategory {
-  id: string;
-  label: string;
-  sortOrder?: number;
-  isActive?: boolean;
-}
-
-interface CatalogSnapshot {
-  sounds: ApiSound[];
-  /** Undefined only for legacy caches/API responses that predate categories. */
-  categories?: ApiCategory[];
-}
-
-interface NormalizedCatalogSnapshot {
-  sounds: ApiSound[];
-  categories: ApiCategory[];
-}
-
-function deriveLegacyCategories(sounds: readonly ApiSound[]): ApiCategory[] {
-  const seen = new Set<string>();
-  return sounds.reduce<ApiCategory[]>((result, sound) => {
-    const id = sound.categoryId?.trim();
-    if (!id || seen.has(id)) return result;
-    seen.add(id);
-    const words = id.replace(/_/g, " ");
-    result.push({
-      id,
-      label: words.charAt(0).toUpperCase() + words.slice(1),
-      sortOrder: result.length,
-      isActive: true,
-    });
-    return result;
-  }, []);
-}
-
-function normalizeSnapshot(snapshot: CatalogSnapshot): NormalizedCatalogSnapshot {
-  return {
-    sounds: snapshot.sounds,
-    categories:
-      snapshot.categories === undefined
-        ? deriveLegacyCategories(snapshot.sounds)
-        : snapshot.categories,
-  };
-}
-
 export function SoundsProvider({ children }: { children: React.ReactNode }) {
   const [sounds, setSounds] = useState<MixSound[]>([]);
   const [categories, setCategories] = useState<SoundCategory[]>([]);
   const [loaded, setLoaded] = useState(false);
 
-  const applySnapshot = useCallback((snapshot: CatalogSnapshot) => {
-    const normalized = normalizeSnapshot(snapshot);
+  const applySnapshot = useCallback((snapshot: CatalogSnapshot<ApiSound>) => {
+    const normalized = normalizeCatalogSnapshot(snapshot);
     const remoteSounds = normalized.sounds;
     // Only active API rows participate in the mobile catalog or maps.
     const activeSounds = remoteSounds.filter((sound) => sound.isActive === true);
@@ -158,17 +118,8 @@ export function SoundsProvider({ children }: { children: React.ReactNode }) {
         // Las bajas reales se aplican cuando llega una respuesta válida de la API.
         return;
       }
-      const body = (await res.json()) as { sounds?: ApiSound[]; categories?: ApiCategory[] };
-      if (!Array.isArray(body.sounds)) return;
-      const snapshot = normalizeSnapshot({
-        sounds: body.sounds,
-        categories:
-          body.categories === undefined
-            ? undefined
-            : Array.isArray(body.categories)
-              ? body.categories
-              : undefined,
-      });
+      const snapshot = parseSoundCatalogResponse<ApiSound>(await res.json());
+      if (!snapshot) return;
       applySnapshot(snapshot);
       AsyncStorage.setItem(
         SOUND_CATALOG_CACHE_KEY,
@@ -197,11 +148,11 @@ export function SoundsProvider({ children }: { children: React.ReactNode }) {
           } else if (
             cached &&
             typeof cached === "object" &&
-            Array.isArray((cached as CatalogSnapshot).sounds) &&
-            ((cached as CatalogSnapshot).categories === undefined ||
-              Array.isArray((cached as CatalogSnapshot).categories))
+            Array.isArray((cached as CatalogSnapshot<ApiSound>).sounds) &&
+            ((cached as CatalogSnapshot<ApiSound>).categories === undefined ||
+              Array.isArray((cached as CatalogSnapshot<ApiSound>).categories))
           ) {
-            applySnapshot(cached as CatalogSnapshot);
+            applySnapshot(cached as CatalogSnapshot<ApiSound>);
             setLoaded(true);
           }
         }

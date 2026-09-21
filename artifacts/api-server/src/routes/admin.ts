@@ -44,6 +44,7 @@ import {
   exploreSectionsTable,
   type ExploreSection,
 } from "@workspace/db";
+import { reorderSoundCategories } from "../lib/soundCategoryOrder";
 import {
   GetAdminUsersQueryParams,
   CreateAdminCategoryBody,
@@ -545,13 +546,10 @@ router.patch("/admin/sound-categories/:id", requireAuth, requireRole("admin"), a
       : await db.transaction(async (tx) => {
           const ordered = await tx.select().from(mixerSoundCategoriesTable)
             .orderBy(asc(mixerSoundCategoriesTable.sortOrder), asc(mixerSoundCategoriesTable.label));
-          const sourceIndex = ordered.findIndex((category) => category.id === id);
-          if (sourceIndex < 0) return undefined;
-          const targetIndex = Math.max(0, Math.min(parsed.data.sortOrder!, ordered.length - 1));
-          const [source] = ordered.splice(sourceIndex, 1);
-          ordered.splice(targetIndex, 0, source);
+          const reordered = reorderSoundCategories(ordered, id, parsed.data.sortOrder!);
+          if (!reordered) return undefined;
           const updatedAt = new Date();
-          for (const [sortOrder, category] of ordered.entries()) {
+          for (const [sortOrder, category] of reordered.entries()) {
             await tx.update(mixerSoundCategoriesTable)
               .set(category.id === id
                 ? { ...parsed.data, sortOrder, updatedAt }
