@@ -54,6 +54,7 @@ export function SleepReminderSheet({
 }: SleepReminderSheetProps) {
   const insets = useSafeAreaInsets();
   const [mounted, setMounted] = useState(false);
+  const [imageRendered, setImageRendered] = useState(false);
   const [draft, setDraft] = useState<PracticeNotificationPreference>(
     PRACTICE_NOTIFICATION_DEFAULTS.noche,
   );
@@ -70,6 +71,7 @@ export function SleepReminderSheet({
     setError(null);
     setPermissionBlocked(false);
     setChooserOpen(false);
+    setImageRendered(false);
     void sleepReminderImageReady.then(() => {
       if (!cancelled) setMounted(true);
     });
@@ -101,6 +103,7 @@ export function SleepReminderSheet({
       ]).start(() => setMounted(false));
       return;
     }
+    if (!imageRendered) return;
     translateY.setValue(SHEET_OFFSET);
     backdropOpacity.setValue(0);
     const frame = requestAnimationFrame(() => {
@@ -119,7 +122,7 @@ export function SleepReminderSheet({
       ]).start();
     });
     return () => cancelAnimationFrame(frame);
-  }, [backdropOpacity, mounted, translateY, visible]);
+  }, [backdropOpacity, imageRendered, mounted, translateY, visible]);
 
   const adjustTime = useCallback((part: "hour" | "minute", delta: number) => {
     setDraft((current) => ({
@@ -189,6 +192,8 @@ export function SleepReminderSheet({
             source={SLEEP_REMINDER_IMAGE}
             resizeMode="contain"
             style={styles.sheetBackgroundImage}
+            onLoadEnd={() => setImageRendered(true)}
+            onError={() => setImageRendered(true)}
           />
           <LinearGradient
             colors={[
