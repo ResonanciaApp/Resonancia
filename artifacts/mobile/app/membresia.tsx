@@ -218,7 +218,7 @@ const styles = StyleSheet.create({
     height: 43,
   },
   content: {
-    paddingHorizontal: 20,
+    paddingHorizontal: 24,
     paddingTop: 18,
   },
   premiumHeading: {
@@ -253,7 +253,7 @@ const styles = StyleSheet.create({
   },
   detailLabel: {
     flexShrink: 1,
-    transform: [{ translateY: -3 }],
+    transform: [{ translateY: -2 }],
     color: "#F4F4F4",
     fontFamily: "Manrope",
     fontSize: 15,
@@ -262,7 +262,7 @@ const styles = StyleSheet.create({
   },
   detailValue: {
     flexShrink: 1,
-    transform: [{ translateY: -3 }],
+    transform: [{ translateY: -2 }],
     color: "#FFFFFF",
     fontFamily: "Manrope",
     fontSize: 15,
