@@ -225,7 +225,7 @@ export default function PremiumBanner({
             styles.btnWrap,
             styles.freeTrialButtonWrap,
             sleepVariant && styles.sleepButtonWrap,
-            sleepVariant && { width: Math.max(200, viewportWidth - 134) },
+            sleepVariant && { width: Math.max(200, viewportWidth - 159) },
             { opacity: pressed ? 0.88 : 1 },
           ]}
         >
