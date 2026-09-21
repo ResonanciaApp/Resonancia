@@ -809,7 +809,8 @@ function PremiumOfferContent({
                   <Text style={[
                     styles.planName,
                     selected && styles.planTextSelected,
-                    item.packageType === "ANNUAL" && styles.annualPlanContent,
+                    (item.packageType === "ANNUAL" || item.packageType === "MONTHLY")
+                      && styles.raisedPlanContent,
                   ]}>
                     {getPackageLabel(item)}
                   </Text>
@@ -818,7 +819,8 @@ function PremiumOfferContent({
                   <Text style={[
                     styles.planPrice,
                     selected && styles.planTextSelected,
-                    item.packageType === "ANNUAL" && styles.annualPlanContent,
+                    (item.packageType === "ANNUAL" || item.packageType === "MONTHLY")
+                      && styles.raisedPlanContent,
                   ]}>
                     {item.product.priceString}
                   </Text>
@@ -871,7 +873,7 @@ function PremiumOfferContent({
                 <Text style={[
                   styles.planName,
                   selected && styles.planTextSelected,
-                  item.id === "annual-preview" && styles.annualPlanContent,
+                  styles.raisedPlanContent,
                 ]}>
                   {item.name}
                 </Text>
@@ -880,7 +882,7 @@ function PremiumOfferContent({
                 <Text style={[
                   styles.planPrice,
                   selected && styles.planTextSelected,
-                  item.id === "annual-preview" && styles.annualPlanContent,
+                  styles.raisedPlanContent,
                 ]}>
                   {item.price}
                 </Text>
@@ -1275,7 +1277,7 @@ const styles = StyleSheet.create({
     fontWeight: "800",
   },
   planGrid: {
-    gap: 11,
+    gap: 16,
   },
   planOffset: {
     height: 140,
@@ -1350,7 +1352,7 @@ const styles = StyleSheet.create({
     lineHeight: 21,
     fontWeight: "800",
   },
-  annualPlanContent: {
+  raisedPlanContent: {
     transform: [{ translateY: -1 }],
   },
   offerUnavailable: {
@@ -1382,7 +1384,7 @@ const styles = StyleSheet.create({
   },
   purchaseButton: {
     height: 50,
-    marginTop: 29,
+    marginTop: 27,
     borderRadius: 21,
     overflow: "hidden",
     alignItems: "center",
@@ -1394,7 +1396,7 @@ const styles = StyleSheet.create({
   purchaseButtonText: {
     color: "#FFFFFF",
     fontFamily: "Manrope",
-    fontSize: 16,
+    fontSize: 14,
     fontWeight: "800",
   },
   purchaseDisclosure: {
