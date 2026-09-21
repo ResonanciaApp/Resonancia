@@ -225,6 +225,7 @@ export default function PremiumBanner({
             styles.btnWrap,
             styles.freeTrialButtonWrap,
             sleepVariant && styles.sleepButtonWrap,
+            sleepVariant && { width: Math.max(200, viewportWidth - 134) },
             { opacity: pressed ? 0.88 : 1 },
           ]}
         >
@@ -458,9 +459,7 @@ const styles = StyleSheet.create({
     marginTop: 10,
   },
   sleepButtonWrap: {
-    width: "auto",
-    alignSelf: "stretch",
-    marginHorizontal: 35,
+    alignSelf: "center",
     padding: 2,
     borderWidth: 0,
     backgroundColor: "rgba(255,255,255,0.2)",
