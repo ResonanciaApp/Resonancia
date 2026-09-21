@@ -104,12 +104,19 @@ function PlayingDot() {
   );
 }
 
-function LockStar({ ambiental = false }: { ambiental?: boolean }) {
+function LockStar({
+  ambiental = false,
+  square = false,
+}: {
+  ambiental?: boolean;
+  square?: boolean;
+}) {
   return (
     <Image
       source={require("../assets/images/estrella-premium.png")}
       style={[
         styles.lockBadge,
+        square && styles.squareLockBadge,
         ambiental && styles.ambientalLockBadge,
         { width: 22, height: 22 },
       ]}
@@ -160,6 +167,8 @@ export function SessionCard({ session, width = 200, horizontal = false, tint, ca
   const categoryLabel = CATEGORIES.find(c => c.id === session.categoryId)?.title ?? "";
   const isAmbiental = cardVariant === "ambiental" || session.categoryId === "ambientales";
   const isEditorial = editorialPresentation && !horizontal;
+  const isSquarePresentation =
+    !horizontal && (squareMetaBelow || categoryGridPresentation);
   const editorialCardWidth =
     getTwoCardCarouselCardWidth(viewportWidth, 14) - 3.5;
   const renderedCardWidth = width;
@@ -192,7 +201,9 @@ export function SessionCard({ session, width = 200, horizontal = false, tint, ca
       >
         <View style={{ width: thumbWidth, height: thumbHeight, borderRadius: thumbRadius, overflow: "hidden" }}>
           <Image source={session.image} style={{ width: "100%", height: "100%" }} contentFit="cover" placeholder={BLUR_PLACEHOLDER} transition={IMAGE_TRANSITION} />
-          {showPremiumBadge && <LockStar ambiental={isAmbiental} />}
+          {showPremiumBadge && (
+            <LockStar ambiental={isAmbiental} square={isSquarePresentation} />
+          )}
           {showDuration && durationWhiteGlass ? (
             <SessionDurationBadge
               label={session.durationLabel}
@@ -396,7 +407,9 @@ export function SessionCard({ session, width = 200, horizontal = false, tint, ca
             textStyle={styles.durationBadgeText}
           />
         ) : null}
-        {showPremiumBadge && <LockStar ambiental={isAmbiental} />}
+        {showPremiumBadge && (
+          <LockStar ambiental={isAmbiental} square={isSquarePresentation} />
+        )}
       </View>
       {isEditorial ? null : squareMetaBelow ? (
         <View style={styles.squareMeta}>
@@ -798,6 +811,11 @@ const styles = StyleSheet.create({
     textShadowColor: "rgba(0,0,0,0.65)",
     textShadowOffset: { width: 0, height: 1 },
     textShadowRadius: 3,
+  },
+  squareLockBadge: {
+    top: 16,
+    left: 16,
+    right: undefined,
   },
   ambientalLockBadge: {
     top: 18,
