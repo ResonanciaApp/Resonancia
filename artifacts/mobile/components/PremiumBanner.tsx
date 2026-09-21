@@ -195,7 +195,10 @@ export default function PremiumBanner({
             horizontal
             showsHorizontalScrollIndicator={false}
             contentContainerStyle={styles.images}
-            style={styles.imagesScroll}
+            style={[
+              styles.imagesScroll,
+              { width: viewportWidth, marginLeft: -22 },
+            ]}
           >
             {IMAGES.map((src, i) => (
               <View key={i} style={styles.previewCard}>
@@ -251,12 +254,12 @@ export default function PremiumBanner({
 
 const styles = StyleSheet.create({
   outer: {
-    marginHorizontal: 16,
+    marginHorizontal: 0,
     marginBottom: 8,
     borderRadius: 15,
     borderWidth: 0,
     borderColor: "transparent",
-    overflow: "hidden",
+    overflow: "visible",
     opacity: 1,
   },
   outerActiveWrap: {
@@ -331,7 +334,7 @@ const styles = StyleSheet.create({
     paddingVertical: 30,
     paddingHorizontal: 22,
     alignItems: "center",
-    overflow: "hidden",
+    overflow: "visible",
     backgroundColor: "transparent",
   },
   sleepCard: {
