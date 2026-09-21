@@ -485,7 +485,7 @@ export default function DescansoScreen() {
                 {!isPremium ? (
                   <>
                     <View style={styles.sectionDivider} />
-                    <PremiumBanner />
+                    <PremiumBanner sleepVariant />
                   </>
                 ) : null}
                 {orderedSleepCarousels.length > 0 ? (
@@ -542,7 +542,7 @@ export default function DescansoScreen() {
                 {!isPremium && featuredSleepSessions.length === 0 && index === 0 ? (
                   <>
                     <View style={styles.sectionDivider} />
-                    <PremiumBanner />
+                    <PremiumBanner sleepVariant />
                   </>
                 ) : null}
               </React.Fragment>

@@ -125,33 +125,50 @@ function PremiumActiveBanner() {
   );
 }
 
-export default function PremiumBanner() {
+export default function PremiumBanner({
+  sleepVariant = false,
+}: {
+  sleepVariant?: boolean;
+}) {
   const { isPremium } = usePremium();
   if (isPremium) return null;
 
   return (
-    <View style={styles.outer}>
-      <View style={styles.card}>
-        {/* Eyebrow */}
-        <Text style={[styles.eyebrow, { color: P.textMuted }]}>
-          Únete a la comunidad
-        </Text>
+    <View style={[styles.outer, sleepVariant && styles.sleepOuter]}>
+      <View style={[styles.card, sleepVariant && styles.sleepCard]}>
+        {sleepVariant ? (
+          <>
+            <Image
+              source={require("../assets/images/estrella-premium.png")}
+              style={styles.sleepStar}
+              contentFit="contain"
+            />
+            <Text style={styles.sleepTitle}>¿Problemas para dormir?</Text>
+          </>
+        ) : (
+          <>
+            {/* Eyebrow */}
+            <Text style={[styles.eyebrow, { color: P.textMuted }]}>
+              Únete a la comunidad
+            </Text>
 
-        {/* Premium title */}
-        <View style={styles.titleRow}>
-          <Text style={[styles.title, { color: MEMBERSHIP_AURORA.premium.accent }]}>
-            Premium
-          </Text>
-          <Image source={require("../assets/images/estrella-premium.png")} style={{ width: 26, height: 26, marginLeft: 10, marginTop: 6 }} contentFit="contain" />
-        </View>
+            {/* Premium title */}
+            <View style={styles.titleRow}>
+              <Text style={[styles.title, { color: MEMBERSHIP_AURORA.premium.accent }]}>
+                Premium
+              </Text>
+              <Image source={require("../assets/images/estrella-premium.png")} style={{ width: 26, height: 26, marginLeft: 10, marginTop: 6 }} contentFit="contain" />
+            </View>
 
-        {/* Divider line */}
-        <LinearGradient
-          colors={["transparent", P.goldSoft, "transparent"]}
-          start={{ x: 0, y: 0 }}
-          end={{ x: 1, y: 0 }}
-          style={styles.divider}
-        />
+            {/* Divider line */}
+            <LinearGradient
+              colors={["transparent", P.goldSoft, "transparent"]}
+              start={{ x: 0, y: 0 }}
+              end={{ x: 1, y: 0 }}
+              style={styles.divider}
+            />
+          </>
+        )}
 
         {/* Description */}
         <Text style={[styles.sub, { color: P.textMuted }]}>
@@ -217,6 +234,10 @@ const styles = StyleSheet.create({
     overflow: "hidden",
     opacity: 0.82,
   },
+  sleepOuter: {
+    borderWidth: 0,
+    borderColor: "transparent",
+  },
   goldBorder: {
     borderRadius: 15,
     padding: 0.8,
@@ -279,6 +300,24 @@ const styles = StyleSheet.create({
     alignItems: "center",
     overflow: "hidden",
     backgroundColor: "rgba(0,0,0,0.28)",
+  },
+  sleepCard: {
+    backgroundColor: "transparent",
+  },
+  sleepStar: {
+    width: 34,
+    height: 34,
+    alignSelf: "center",
+    marginBottom: 12,
+  },
+  sleepTitle: {
+    color: "#F9F9F9",
+    fontFamily: "Manrope",
+    fontSize: 22,
+    lineHeight: 29,
+    fontWeight: "800",
+    textAlign: "center",
+    marginBottom: 14,
   },
   topGlow: {
     position: "absolute",
