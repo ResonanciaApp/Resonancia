@@ -180,7 +180,11 @@ export default function PremiumBanner() {
         {/* CTA button */}
         <Pressable
           onPress={() => router.push("/membresia" as never)}
-          style={({ pressed }) => [styles.btnWrap, { opacity: pressed ? 0.88 : 1 }]}
+          style={({ pressed }) => [
+            styles.btnWrap,
+            styles.freeTrialButtonWrap,
+            { opacity: pressed ? 0.88 : 1 },
+          ]}
         >
           <LinearGradient
             colors={["#F0C36A", MEMBERSHIP_AURORA.premium.accent]}
@@ -325,7 +329,7 @@ const styles = StyleSheet.create({
   },
   images: {
     flexDirection: "row",
-    gap: 12,
+    gap: 5,
     paddingHorizontal: 0,
   },
   imagesScroll: {
@@ -334,8 +338,8 @@ const styles = StyleSheet.create({
   },
   previewCard: {
     position: "relative",
-    width: 68,
-    height: 68,
+    width: 90,
+    height: 90,
     borderRadius: 12,
     overflow: "hidden",
     borderWidth: 1,
@@ -367,5 +371,8 @@ const styles = StyleSheet.create({
   },
   freeTrialButtonText: {
     color: "#171109",
+  },
+  freeTrialButtonWrap: {
+    marginTop: 10,
   },
 });

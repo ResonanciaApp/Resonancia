@@ -532,44 +532,42 @@ export default function DescansoScreen() {
                   }
                   />
                 ) : null}
-                {index === 2 ? (
-                  <>
-                    <View style={styles.sectionDivider} />
-                    <Pressable
-                      onPress={openMixer}
-                      accessibilityRole="button"
-                      accessibilityLabel="Abrir Mezclador para dormir"
-                      style={({ pressed }) => [
-                        styles.sleepMixerBanner,
-                        {
-                          borderWidth: 2,
-                          borderColor: "rgba(255,255,255,0.27)",
-                          opacity: pressed ? 0.82 : 1,
-                        },
-                      ]}
-                    >
-                      <View style={styles.sleepMixerBannerIcon}>
-                        <MoonCrescentIcon color="#C4A8F5" size={30} />
-                      </View>
-                      <View style={styles.sleepMixerBannerCopy}>
-                        <Text style={styles.sleepMixerBannerTitle}>
-                          Mezclador para dormir
-                        </Text>
-                        <Text style={[styles.sleepMixerBannerSubtitle, { color: colors.accent }]}>
-                          Crea tu propio universo sonoro con más de 400 sonidos ambientales{" "}
-                          <MaterialCommunityIcons
-                            name="diamond-stone"
-                            size={14}
-                            color={MEMBERSHIP_AURORA.plus.accent}
-                          />
-                        </Text>
-                      </View>
-                      <Feather name="chevron-right" size={20} color="rgba(249,249,249,0.7)" />
-                    </Pressable>
-                  </>
-                ) : null}
               </React.Fragment>
             ))}
+            {featuredSleepSessions.length > 0 || orderedSleepCarousels.length > 0 ? (
+              <View style={styles.sectionDivider} />
+            ) : null}
+            <Pressable
+              onPress={openMixer}
+              accessibilityRole="button"
+              accessibilityLabel="Abrir Mezclador para dormir"
+              style={({ pressed }) => [
+                styles.sleepMixerBanner,
+                {
+                  borderWidth: 2,
+                  borderColor: "rgba(255,255,255,0.27)",
+                  opacity: pressed ? 0.82 : 1,
+                },
+              ]}
+            >
+              <View style={styles.sleepMixerBannerIcon}>
+                <MoonCrescentIcon color="#C4A8F5" size={30} />
+              </View>
+              <View style={styles.sleepMixerBannerCopy}>
+                <Text style={styles.sleepMixerBannerTitle}>
+                  Mezclador para dormir
+                </Text>
+                <Text style={[styles.sleepMixerBannerSubtitle, { color: colors.accent }]}>
+                  Crea tu propio universo sonoro con más de 400 sonidos ambientales{" "}
+                  <MaterialCommunityIcons
+                    name="diamond-stone"
+                    size={14}
+                    color={MEMBERSHIP_AURORA.plus.accent}
+                  />
+                </Text>
+              </View>
+              <Feather name="chevron-right" size={20} color="rgba(249,249,249,0.7)" />
+            </Pressable>
           </View>
         </ScrollView>
       </View>
