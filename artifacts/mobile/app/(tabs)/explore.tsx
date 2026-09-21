@@ -53,6 +53,7 @@ import { SessionCarousel } from "@/components/SessionCarousel";
 import { ContentCategoryGrid } from "@/components/ContentCategoryGrid";
 import { ResonadoresSection } from "@/components/ResonadoresSection";
 import { PressScale } from "@/components/PressScale";
+import { PremiumBadge } from "@/components/PremiumBadge";
 import {
   useGetPopularSessions,
   getGetPopularSessionsQueryKey,
@@ -662,6 +663,7 @@ export function ExploreScreen({
                       transition={IMAGE_TRANSITION}
                       cachePolicy="memory-disk"
                     />
+                    <PremiumBadge session={session} size={22} top={8} left={8} />
                     <SessionDurationBadge
                       label={session.durationLabel}
                       whiteGlass

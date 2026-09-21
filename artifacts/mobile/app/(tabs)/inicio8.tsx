@@ -72,6 +72,7 @@ import { SessionRow } from "@/components/SessionRow";
 import { EqualizerBars } from "@/components/EqualizerBars";
 import { SessionCarousel, CoverCarousel } from "@/components/SessionCarousel";
 import { SessionDurationBadge } from "@/components/SessionDurationBadge";
+import { PremiumBadge } from "@/components/PremiumBadge";
 import { MiRutinaSection } from "@/components/MiRutinaSection";
 import { Image as ExpoImage } from "expo-image";
 import { useAmbientPlayer, AMBIENT_SCENES } from "@/context/AmbientPlayerContext";
@@ -2980,6 +2981,12 @@ export default function HomeScreen2({
                   style={styles.heroImage}
                   contentFit="cover"
                   cachePolicy="memory-disk"
+                />
+                <PremiumBadge
+                  session={featuredMoment}
+                  size={22}
+                  top={10}
+                  left={10}
                 />
                 <SessionDurationBadge
                   label={featuredMoment.durationLabel}
