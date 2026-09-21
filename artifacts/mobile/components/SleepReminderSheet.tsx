@@ -1,4 +1,4 @@
-import { Feather, MaterialCommunityIcons } from "@expo/vector-icons";
+import { Feather } from "@expo/vector-icons";
 import * as Haptics from "expo-haptics";
 import { LinearGradient } from "expo-linear-gradient";
 import React, { useCallback, useEffect, useRef, useState } from "react";
@@ -19,6 +19,7 @@ import {
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 
 import { useSceneTheme } from "@/context/SceneThemeContext";
+import { FilledSunIcon } from "@/components/FilledSunIcon";
 import {
   formatPracticeNotificationTimeLocal,
   loadPracticeNotificationSettings,
@@ -220,11 +221,7 @@ export function SleepReminderSheet({
             <View style={styles.reminderHeader}>
               <View style={styles.reminderLabel}>
                  {isMorning ? (
-                   <MaterialCommunityIcons
-                     name="weather-sunny"
-                     size={25}
-                     color="#FFE3B3"
-                   />
+                   <FilledSunIcon size={23} color="#FFD79A" />
                  ) : (
                    <Feather name="moon" size={23} color="#D6C8FF" />
                  )}

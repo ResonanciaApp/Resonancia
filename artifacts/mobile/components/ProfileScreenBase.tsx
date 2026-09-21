@@ -85,6 +85,7 @@ import { InnerSpaceCard } from "@/components/InnerSpaceCard";
 import { KeyboardAwareScrollViewCompat } from "@/components/KeyboardAwareScrollViewCompat";
 import { MoonCrescentIcon } from "@/components/MoonCrescentIcon";
 import { SleepReminderSheet } from "@/components/SleepReminderSheet";
+import { FilledSunIcon } from "@/components/FilledSunIcon";
 
 const REFLECTION_BANNER_ENTRY_DISTANCE = 86;
 const REFLECTION_BANNER_ENTRY_DURATION = 380;
@@ -1609,7 +1610,7 @@ export function ProfileScreenBase({
               accessibilityLabel="Administrar recordatorio matutino"
             >
               <View style={styles.practiceReminderIcon}>
-                <MaterialCommunityIcons name="weather-sunny" size={26} color="#FFB27D" />
+                <FilledSunIcon size={24} color="#FFB27D" />
               </View>
               <View style={styles.practiceReminderCopy}>
                 <Text style={[styles.practiceReminderTitle, { color: colors.foreground }]}>
