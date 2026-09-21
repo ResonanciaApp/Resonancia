@@ -6036,25 +6036,32 @@ components:
     DailyQuotePalette:
       type: string
       enum: [jade, violet, ocean, ruby, amber, original]
+    DailyQuoteDecoration:
+      type: string
+      enum: [circles, vesica, seed, flower, metatron]
     QuoteOfTheDayResponse:
       allOf:
         - {$ref: "#/components/schemas/DailyQuoteAssignment"}
         - type: object
-          required: [paletteId]
+          required: [paletteId, decorationId]
           properties:
             paletteId: {$ref: "#/components/schemas/DailyQuotePalette"}
+            decorationId: {$ref: "#/components/schemas/DailyQuoteDecoration"}
     DailyQuoteSettings:
       type: object
-      required: [paletteId, revision, updatedAt]
+      required: [paletteId, decorationId, revision, updatedAt]
       properties:
         paletteId: {$ref: "#/components/schemas/DailyQuotePalette"}
+        decorationId: {$ref: "#/components/schemas/DailyQuoteDecoration"}
         revision: {type: integer, minimum: 1}
         updatedAt: {type: string, format: date-time}
     DailyQuoteSettingsUpdate:
       type: object
-      required: [paletteId]
+      minProperties: 1
+      additionalProperties: false
       properties:
         paletteId: {$ref: "#/components/schemas/DailyQuotePalette"}
+        decorationId: {$ref: "#/components/schemas/DailyQuoteDecoration"}
     AdminDailyQuoteList:
       type: object
       required: [quotes, activeCount, total]

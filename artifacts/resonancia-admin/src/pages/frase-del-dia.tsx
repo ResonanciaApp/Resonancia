@@ -18,6 +18,7 @@ import {
   getGetAdminDailyQuoteSettingsQueryKey,
   useUpdateAdminDailyQuoteSettings,
   AdminDailyQuote,
+  DailyQuoteDecoration,
   DailyQuotePalette,
 } from "@workspace/api-client-react";
 
@@ -68,6 +69,7 @@ import {
   Calendar,
   History,
   Palette,
+  Shapes,
 } from "lucide-react";
 import { format, parseISO } from "date-fns";
 import { es } from "date-fns/locale";
@@ -100,6 +102,75 @@ const DAILY_QUOTE_PALETTES: Array<{
   { id: "amber", name: "Ámbar profundo", description: "Chocolate oscuro y cobre", colors: ["#271307", "#94642E"] },
   { id: "original", name: "Original", description: "Violeta y coral del fondo anterior", colors: ["#4A285F", "#A85F62"] },
 ];
+
+const DAILY_QUOTE_DECORATIONS: Array<{
+  id: DailyQuoteDecoration;
+  name: string;
+  description: string;
+}> = [
+  { id: "circles", name: "Círculos", description: "Composición original" },
+  { id: "vesica", name: "Vesica Piscis", description: "Dos círculos entrelazados" },
+  { id: "seed", name: "Semilla de la Vida", description: "Siete círculos armónicos" },
+  { id: "flower", name: "Flor de la Vida", description: "Trama sagrada ligera" },
+  { id: "metatron", name: "Cubo de Metatrón", description: "Red geométrica simplificada" },
+];
+
+const HEX_POINTS = [
+  [80, 18], [124, 43], [124, 93], [80, 118], [36, 93], [36, 43],
+] as const;
+
+function DecorationPreview({ id }: { id: DailyQuoteDecoration }) {
+  const common = { fill: "none", stroke: "rgba(255,255,255,0.42)", strokeWidth: 1.2 };
+  const seedCenters = [
+    [80, 68], [80, 42], [102, 55], [102, 81], [80, 94], [58, 81], [58, 55],
+  ] as const;
+  const flowerCenters = [
+    ...seedCenters,
+    [80, 16], [124, 42], [124, 94], [80, 120], [36, 94], [36, 42],
+  ] as const;
+
+  return (
+    <svg viewBox="0 0 160 136" className="absolute inset-0 h-full w-full" aria-hidden="true">
+      {id === "circles" && (
+        <>
+          <circle cx="126" cy="16" r="59" fill="rgba(255,255,255,0.08)" stroke="rgba(255,255,255,0.16)" />
+          <circle cx="101" cy="117" r="28" fill="rgba(255,220,218,0.09)" />
+          <circle cx="8" cy="126" r="40" fill="rgba(245,225,255,0.06)" />
+        </>
+      )}
+      {id === "vesica" && (
+        <g {...common}>
+          <circle cx="68" cy="66" r="42" />
+          <circle cx="94" cy="66" r="42" />
+          <circle cx="81" cy="66" r="55" opacity="0.42" />
+        </g>
+      )}
+      {id === "seed" && (
+        <g {...common}>
+          {seedCenters.map(([cx, cy]) => <circle key={`${cx}-${cy}`} cx={cx} cy={cy} r="26" />)}
+        </g>
+      )}
+      {id === "flower" && (
+        <g {...common} opacity="0.88">
+          {flowerCenters.map(([cx, cy]) => <circle key={`${cx}-${cy}`} cx={cx} cy={cy} r="26" />)}
+        </g>
+      )}
+      {id === "metatron" && (
+        <g {...common}>
+          <circle cx="80" cy="68" r="9" />
+          {HEX_POINTS.map(([x, y], index) => (
+            <g key={`${x}-${y}`}>
+              <circle cx={x} cy={y} r="9" />
+              <line x1="80" y1="68" x2={x} y2={y} />
+              <line x1={x} y1={y} x2={HEX_POINTS[(index + 2) % HEX_POINTS.length][0]} y2={HEX_POINTS[(index + 2) % HEX_POINTS.length][1]} />
+            </g>
+          ))}
+          <circle cx="80" cy="68" r="51" opacity="0.55" />
+        </g>
+      )}
+    </svg>
+  );
+}
 
 export default function FraseDelDiaPage() {
   const queryClient = useQueryClient();
@@ -283,6 +354,20 @@ export default function FraseDelDiaPage() {
     );
   };
 
+  const handleDecorationChange = (decorationId: DailyQuoteDecoration) => {
+    if (decorationId === quoteSettings?.decorationId || updateQuoteSettings.isPending) return;
+    updateQuoteSettings.mutate(
+      { data: { decorationId } },
+      {
+        onSuccess: (settings) => {
+          queryClient.setQueryData(getGetAdminDailyQuoteSettingsQueryKey(), settings);
+          toast.success("Geometría de la Frase del día actualizada");
+        },
+        onError: () => toast.error("No se pudo actualizar la geometría"),
+      },
+    );
+  };
+
   return (
     <div className="space-y-8 max-w-[1200px] mx-auto pb-12">
       <div className="flex items-center justify-between">
@@ -344,6 +429,68 @@ export default function FraseDelDiaPage() {
                     <div className="bg-card px-3 py-2.5">
                       <p className="text-sm font-semibold text-foreground">{palette.name}</p>
                       <p className="text-[11px] leading-4 text-muted-foreground">{palette.description}</p>
+                    </div>
+                  </button>
+                );
+              })}
+            </div>
+          )}
+        </CardContent>
+      </Card>
+
+      <Card className="border-border/50 shadow-sm overflow-hidden">
+        <CardHeader className="pb-4 border-b border-border/20 bg-card/50">
+          <div className="flex items-center gap-2">
+            <Shapes className="w-5 h-5 text-primary" />
+            <CardTitle className="text-lg">Geometría de la Frase del día</CardTitle>
+          </div>
+          <CardDescription>
+            Selecciona la decoración sutil que aparecerá sobre el degradado en la app.
+          </CardDescription>
+        </CardHeader>
+        <CardContent className="pt-6">
+          {isLoadingSettings ? (
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-3">
+              {DAILY_QUOTE_DECORATIONS.map((decoration) => (
+                <div key={decoration.id} className="h-36 rounded-xl bg-muted animate-pulse" />
+              ))}
+            </div>
+          ) : isErrorSettings ? (
+            <p className="text-sm text-destructive">No se pudieron cargar las geometrías.</p>
+          ) : (
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-3">
+              {DAILY_QUOTE_DECORATIONS.map((decoration) => {
+                const selected = quoteSettings?.decorationId === decoration.id;
+                const palette = DAILY_QUOTE_PALETTES.find((item) => item.id === quoteSettings?.paletteId)
+                  ?? DAILY_QUOTE_PALETTES[0];
+                return (
+                  <button
+                    key={decoration.id}
+                    type="button"
+                    onClick={() => handleDecorationChange(decoration.id)}
+                    disabled={updateQuoteSettings.isPending}
+                    aria-pressed={selected}
+                    className={`overflow-hidden rounded-xl border text-left transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 focus-visible:ring-offset-background ${
+                      selected
+                        ? "border-primary ring-2 ring-primary/35"
+                        : "border-white/10 hover:border-white/30"
+                    }`}
+                    data-testid={`decoration-${decoration.id}`}
+                  >
+                    <div
+                      className="relative h-24 overflow-hidden"
+                      style={{ backgroundImage: `linear-gradient(135deg, ${palette.colors[0]}, ${palette.colors[1]})` }}
+                    >
+                      <DecorationPreview id={decoration.id} />
+                      {selected && (
+                        <Badge className="absolute left-2 top-2 bg-white/90 text-slate-950 hover:bg-white/90">
+                          Seleccionado
+                        </Badge>
+                      )}
+                    </div>
+                    <div className="bg-card px-3 py-2.5">
+                      <p className="text-sm font-semibold text-foreground">{decoration.name}</p>
+                      <p className="text-[11px] leading-4 text-muted-foreground">{decoration.description}</p>
                     </div>
                   </button>
                 );

@@ -223,6 +223,7 @@ type SessionCarouselProps = {
   cardHeightAdjustment?: number;
   cardWidthAdjustment?: number;
   durationBadgeStyle?: StyleProp<ViewStyle>;
+  premiumBadgeStyle?: StyleProp<ImageStyle>;
   sleepBelowTitleStyle?: StyleProp<TextStyle>;
   sleepBelowMetadataStyle?: StyleProp<ViewStyle>;
   sleepOverlayTitleStyle?: StyleProp<TextStyle>;
@@ -339,6 +340,7 @@ export const SessionCarousel = React.memo(function SessionCarousel({
   cardHeightAdjustment = 0,
   cardWidthAdjustment = 0,
   durationBadgeStyle,
+  premiumBadgeStyle,
   sleepBelowTitleStyle,
   sleepBelowMetadataStyle,
   sleepOverlayTitleStyle,
@@ -1033,6 +1035,7 @@ export const SessionCarousel = React.memo(function SessionCarousel({
                        styles.star,
                        effectiveSquareCards && styles.squareStar,
                        isAmbiental && styles.ambientalStar,
+                       premiumBadgeStyle,
                      ]}
                     contentFit="contain"
                   />

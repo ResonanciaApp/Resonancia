@@ -38,11 +38,13 @@ export const dailyQuoteAssignmentsTable = pgTable("daily_quote_assignments", {
 export const dailyQuoteSettingsTable = pgTable("daily_quote_settings", {
   id: integer("id").primaryKey(),
   paletteId: text("palette_id").notNull().default("jade"),
+  decorationId: text("decoration_id").notNull().default("circles"),
   revision: integer("revision").notNull().default(1),
   updatedAt: timestamp("updated_at", { withTimezone: true }).notNull().defaultNow(),
 }, (t) => [
   check("daily_quote_settings_id_check", sql`${t.id} = 1`),
   check("daily_quote_settings_palette_check", sql`${t.paletteId} in ('jade', 'violet', 'ocean', 'ruby', 'amber', 'original')`),
+  check("daily_quote_settings_decoration_check", sql`${t.decorationId} in ('circles', 'vesica', 'seed', 'flower', 'metatron')`),
   check("daily_quote_settings_revision_check", sql`${t.revision} > 0`),
 ]);
 

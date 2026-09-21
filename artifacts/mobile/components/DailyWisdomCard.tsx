@@ -4,6 +4,7 @@ import React from "react";
 import { Pressable, Share, StyleSheet, Text, View } from "react-native";
 
 import { DAILY_QUOTE_PALETTE_COLORS } from "@/constants/daily-quote-palettes";
+import { DailyQuoteDecorationLayer } from "@/components/DailyQuoteDecoration";
 import { useQuoteOfTheDay } from "@/hooks/useQuoteOfTheDay";
 import { useRoutineTheme } from "@/hooks/useRoutineTheme";
 
@@ -44,11 +45,7 @@ export function DailyWisdomCard({
         pointerEvents="none"
       />
       {decorativeGradient && (
-        <>
-          <View style={styles.decorativeSphereLarge} pointerEvents="none" />
-          <View style={styles.decorativeSphereSmall} pointerEvents="none" />
-          <View style={styles.decorativeSphereSoft} pointerEvents="none" />
-        </>
+        <DailyQuoteDecorationLayer id={quote.decorationId} />
       )}
       <Text style={[styles.author, { color: accent }]}>{quote.author}</Text>
       <Text style={styles.quote}>{quote.text}</Text>
@@ -76,35 +73,6 @@ const styles = StyleSheet.create({
     overflow: "hidden",
     backgroundColor: "rgba(255,255,255,0.025)",
     alignItems: "flex-start",
-  },
-  decorativeSphereLarge: {
-    position: "absolute",
-    width: 170,
-    height: 170,
-    borderRadius: 85,
-    top: -88,
-    right: -42,
-    backgroundColor: "rgba(255,255,255,0.07)",
-    borderWidth: 1,
-    borderColor: "rgba(255,255,255,0.08)",
-  },
-  decorativeSphereSmall: {
-    position: "absolute",
-    width: 82,
-    height: 82,
-    borderRadius: 41,
-    right: 48,
-    bottom: -45,
-    backgroundColor: "rgba(255,220,218,0.08)",
-  },
-  decorativeSphereSoft: {
-    position: "absolute",
-    width: 112,
-    height: 112,
-    borderRadius: 56,
-    left: -72,
-    bottom: -46,
-    backgroundColor: "rgba(245,225,255,0.055)",
   },
   author: {
     fontFamily: "Manrope",

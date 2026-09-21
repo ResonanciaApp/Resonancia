@@ -65,6 +65,7 @@ async function getDailyQuoteSettings() {
 function settingsDto(row: typeof dailyQuoteSettingsTable.$inferSelect) {
   return {
     paletteId: row.paletteId,
+    decorationId: row.decorationId,
     revision: row.revision,
     updatedAt: row.updatedAt.toISOString(),
   };
@@ -102,6 +103,7 @@ router.get("/quote-of-the-day", async (req, res): Promise<void> => {
     res.json(GetQuoteOfTheDayResponse.parse({
       ...assignmentDto(assignment),
       paletteId: settings.paletteId,
+      decorationId: settings.decorationId,
     }));
   } catch (err) {
     req.log.error({ err }, "error assigning daily quote");
@@ -156,7 +158,8 @@ router.patch("/admin/daily-quotes/settings", ...admin, async (req, res): Promise
     await getDailyQuoteSettings();
     const [updated] = await db.update(dailyQuoteSettingsTable)
       .set({
-        paletteId: parsed.data.paletteId,
+        ...(parsed.data.paletteId !== undefined ? { paletteId: parsed.data.paletteId } : {}),
+        ...(parsed.data.decorationId !== undefined ? { decorationId: parsed.data.decorationId } : {}),
         revision: sql`${dailyQuoteSettingsTable.revision} + 1`,
         updatedAt: new Date(),
       })

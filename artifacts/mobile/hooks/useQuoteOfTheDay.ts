@@ -2,6 +2,7 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 import {
   getGetQuoteOfTheDayQueryKey,
   useGetQuoteOfTheDay,
+  type DailyQuoteDecoration,
   type DailyQuotePalette,
   type QuoteOfTheDayResponse,
 } from "@workspace/api-client-react";
@@ -13,7 +14,11 @@ import { getQuoteOfTheDay as getBundledQuote, type Quote } from "@/data/quotes";
 const TIME_ZONE = "America/Santiago";
 const CACHE_KEY = "resonancia_quote_of_day_v1";
 
-export type QuoteOfTheDay = Quote & { date: string; paletteId: DailyQuotePalette };
+export type QuoteOfTheDay = Quote & {
+  date: string;
+  paletteId: DailyQuotePalette;
+  decorationId: DailyQuoteDecoration;
+};
 
 type CachedQuote = QuoteOfTheDay & { receivedAt: string };
 
@@ -53,6 +58,13 @@ function parseAssignment(value: unknown, today: string): QuoteOfTheDay | null {
       assignment.paletteId === "original"
         ? assignment.paletteId
         : "jade",
+    decorationId:
+      assignment.decorationId === "vesica" ||
+      assignment.decorationId === "seed" ||
+      assignment.decorationId === "flower" ||
+      assignment.decorationId === "metatron"
+        ? assignment.decorationId
+        : "circles",
   };
 }
 
@@ -69,7 +81,7 @@ export function useQuoteOfTheDay() {
   const today = getChileDate();
   const fallback = useMemo(() => {
     const quote = getBundledQuote();
-    return { ...quote, date: today, paletteId: "jade" as const };
+    return { ...quote, date: today, paletteId: "jade" as const, decorationId: "circles" as const };
   }, [today]);
   const [cachedQuote, setCachedQuote] = useState<QuoteOfTheDay | null>(null);
   const { data, isLoading, refetch } = useGetQuoteOfTheDay(

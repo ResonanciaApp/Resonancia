@@ -1108,19 +1108,33 @@ export const DailyQuotePalette = {
   original: 'original',
 } as const;
 
+export type DailyQuoteDecoration = typeof DailyQuoteDecoration[keyof typeof DailyQuoteDecoration];
+
+
+export const DailyQuoteDecoration = {
+  circles: 'circles',
+  vesica: 'vesica',
+  seed: 'seed',
+  flower: 'flower',
+  metatron: 'metatron',
+} as const;
+
 export type QuoteOfTheDayResponse = DailyQuoteAssignment & {
   paletteId: DailyQuotePalette;
+  decorationId: DailyQuoteDecoration;
 };
 
 export interface DailyQuoteSettings {
   paletteId: DailyQuotePalette;
+  decorationId: DailyQuoteDecoration;
   /** @minimum 1 */
   revision: number;
   updatedAt: string;
 }
 
 export interface DailyQuoteSettingsUpdate {
-  paletteId: DailyQuotePalette;
+  paletteId?: DailyQuotePalette;
+  decorationId?: DailyQuoteDecoration;
 }
 
 export interface AdminDailyQuoteList {
