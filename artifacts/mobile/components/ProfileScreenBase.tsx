@@ -263,6 +263,8 @@ function ProfileMembershipModules({
         const isPremiumPlan = plan.id === "premium";
         const displayName =
           isPremiumPlan && !hasPremiumAccess ? "Prueba Premium Gratis" : plan.name;
+        const displayEyebrow =
+          isPremiumPlan && !hasPremiumAccess ? "Comienza tu transformación" : plan.eyebrow;
 
         return (
           <React.Fragment key={plan.id}>
@@ -302,7 +304,7 @@ function ProfileMembershipModules({
                     style={[styles.membershipPlanEyebrow, { color: "#F4F4F4" }]}
                     numberOfLines={1}
                   >
-                    {plan.eyebrow}
+                    {displayEyebrow}
                   </Text>
                 </View>
                 <View style={[styles.profileChevronButton, styles.membershipChevronButton]}>
