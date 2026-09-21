@@ -3295,38 +3295,6 @@ export default function HomeScreen2({
         {variant === "inicio3" && (
           <View style={styles.inicio3LowerSectionDivider} />
         )}
-        {variant === "inicio3" && featuredMoment && (
-          <Pressable
-            onPress={() => router.push("/membresia" as never)}
-            accessibilityRole="button"
-            accessibilityLabel="Suscríbete al plan Premium Plus"
-            style={({ pressed }) => [
-              styles.inicio3ResonadoresBanner,
-              { opacity: pressed ? 0.82 : 1 },
-            ]}
-          >
-            <View style={styles.inicio3ResonadoresBannerIcon}>
-              <MaterialCommunityIcons
-                name="diamond-stone"
-                color={MEMBERSHIP_AURORA.plus.accent}
-                size={30}
-              />
-            </View>
-            <View style={styles.inicio3ResonadoresBannerCopy}>
-              <Text style={styles.inicio3ResonadoresBannerTitle}>
-                Suscríbete al plan{" "}
-                <Text style={styles.inicio3PremiumPlusText}>Premium Plus</Text>
-              </Text>
-              <Text style={styles.inicio3ResonadoresBannerSubtitle}>
-                Sesiones 1:1 con Resonadores + Mezclador de sonidos + Geometrix
-              </Text>
-            </View>
-            <Feather name="chevron-right" size={20} color="rgba(249,249,249,0.7)" />
-          </Pressable>
-        )}
-        {variant === "inicio3" && featuredMoment && (
-          <View style={styles.inicio3LowerSectionDivider} />
-        )}
         {isInicio2 && <AlmaCommunitySection />}
         {/* ── ESCENAS ANIMADAS ── (se muestran en EscenasSheet) */}
         {false && activeScenes.length > 0 && (
@@ -3402,43 +3370,6 @@ export default function HomeScreen2({
           />
         )}
 
-
-        {/* ── BANNER PREMIUM ── */}
-        {!isPremium && (
-          <View style={[styles.premBannerOuter, isInicio2 && { marginTop: 0, marginBottom: INICIO2_SECTION_GAP }]}>
-            <Pressable
-              onPress={() => router.push("/membresia" as never)}
-              style={({ pressed }) => [styles.premBannerWrap, { opacity: pressed ? 0.82 : 1 }]}
-            >
-              <LinearGradient
-                colors={["#4A1212", "#2C0909", "#1E0608"]}
-                start={{ x: 0, y: 0 }}
-                end={{ x: 1, y: 1 }}
-                style={[StyleSheet.absoluteFill, { borderRadius: 16 }]}
-              />
-              <LinearGradient
-                colors={["rgba(181,211,255,0.057)", "transparent"]}
-                start={{ x: 0, y: 0 }}
-                end={{ x: 0.6, y: 1 }}
-                style={[StyleSheet.absoluteFill, { borderRadius: 16 }]}
-                pointerEvents="none"
-              />
-              <View style={styles.premCrownCircle}>
-                <Text style={{ fontSize: 18 }}>👑</Text>
-              </View>
-              <View style={{ flex: 1 }}>
-                <Text style={styles.premTitle}>Prueba Premium</Text>
-                <Text style={styles.premSub}>Desbloquea todo el contenido</Text>
-              </View>
-              <View style={styles.premChevron}>
-                <Feather name="chevron-right" size={14} color="#F9F9F9" />
-              </View>
-            </Pressable>
-          </View>
-        )}
-        {variant === "inicio3" && !isPremium && (
-          <View style={styles.inicio3SectionDivider} />
-        )}
 
         {/* ── 10. BANNER PREMIUM ── */}
         <View style={{ marginBottom: isInicio2 ? INICIO2_SECTION_GAP : SECTION_GAP }}>
@@ -4595,48 +4526,6 @@ const styles = StyleSheet.create({
   resonadoresBannerChevron: {
     marginLeft: 8,
   },
-  inicio3ResonadoresBanner: {
-    minHeight: 110,
-    marginTop: 0,
-    marginBottom: INICIO2_SECTION_GAP,
-    marginHorizontal: GRID_PAD,
-    paddingHorizontal: 16,
-    paddingVertical: 14,
-    borderRadius: 16,
-    borderWidth: 2,
-    borderColor: "rgba(255,255,255,0.27)",
-    backgroundColor: "rgba(0,0,0,0.34)",
-    flexDirection: "row",
-    alignItems: "center",
-    gap: 14,
-  },
-  inicio3ResonadoresBannerIcon: {
-    width: 51,
-    height: 51,
-    borderRadius: 13,
-    backgroundColor: "rgba(255,255,255,0.1)",
-    alignItems: "center",
-    justifyContent: "center",
-  },
-  inicio3ResonadoresBannerCopy: {
-    flex: 1,
-    minWidth: 0,
-  },
-  inicio3ResonadoresBannerTitle: {
-    color: "#F9F9F9",
-    fontFamily: "Manrope",
-    fontSize: 15,
-    fontWeight: "700",
-    marginBottom: 5,
-  },
-  inicio3ResonadoresBannerSubtitle: {
-    color: "#F4F4F4",
-    fontFamily: "Manrope",
-    fontSize: 12,
-  },
-  inicio3PremiumPlusText: {
-    color: MEMBERSHIP_AURORA.plus.accent,
-  },
   verTodasLink: { fontFamily: "Manrope", fontSize: 13, fontWeight: "400" },
 
   // Explorar todo — grid 2 columnas, icono arriba + texto centrado
@@ -4856,42 +4745,6 @@ const styles = StyleSheet.create({
   seeAll: { fontFamily: "Manrope", fontSize: 13 },
   heroLabel: { fontFamily: "Manrope", fontSize: 10, letterSpacing: 2, marginBottom: 6, fontWeight: "600" },
   heroSub: { fontFamily: "Manrope", fontSize: 13, marginBottom: 18, opacity: 0.85 },
-
-  // Banner premium compacto
-  premBannerOuter: {
-    marginHorizontal: GRID_PAD,
-    marginTop: 7,
-    marginBottom: SECTION_GAP,
-  },
-  premBannerWrap: {
-    height: 68,
-    borderRadius: 16,
-    overflow: "hidden",
-    borderWidth: 1,
-    borderColor: "rgba(212,175,55,0.35)",
-    flexDirection: "row",
-    alignItems: "center",
-    paddingHorizontal: 16,
-    gap: 14,
-  },
-  premCrownCircle: {
-    width: 40, height: 40, borderRadius: 20,
-    backgroundColor: "rgba(255,255,255,0.025)",
-    borderWidth: 1.5,
-    borderColor: "rgba(212,175,55,0.45)",
-    alignItems: "center", justifyContent: "center",
-    flexShrink: 0,
-  },
-  premTitle: { fontFamily: "Manrope", fontSize: 15, fontWeight: "700", color: "#FBFBFB", lineHeight: 20, marginBottom: 2 },
-  premSub:   { fontFamily: "Manrope", fontSize: 12, color: "rgba(255,255,255,0.52)" },
-  premChevron: {
-    width: 26, height: 26, borderRadius: 13,
-    backgroundColor: "rgba(255,255,255,0.025)",
-    borderWidth: 1,
-    borderColor: "rgba(212,175,55,0.35)",
-    alignItems: "center", justifyContent: "center",
-    flexShrink: 0,
-  },
 
   // ¿Cuánto tiempo tienes hoy?
   recoDivider: {

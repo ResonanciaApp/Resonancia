@@ -298,7 +298,12 @@ function ProfileMembershipModules({
                 </View>
                 <View style={styles.membershipCardCopy}>
                   <Text style={[styles.membershipPlanName, { color: plan.colors.accent }]}>
-                     {displayName}
+                     {isPremiumPlan && !hasPremiumAccess ? (
+                       <>
+                         <Text style={{ color: "#F9F9F9" }}>Prueba</Text>
+                         {" Premium Gratis"}
+                       </>
+                     ) : displayName}
                   </Text>
                   <Text
                     style={[styles.membershipPlanEyebrow, { color: "#F4F4F4" }]}

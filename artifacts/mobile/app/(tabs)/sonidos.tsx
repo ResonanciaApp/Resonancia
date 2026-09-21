@@ -1,4 +1,4 @@
-import { Feather } from "@expo/vector-icons";
+import { Feather, MaterialCommunityIcons } from "@expo/vector-icons";
 import { LinearGradient } from "expo-linear-gradient";
 import { router, useFocusEffect } from "expo-router";
 import { Image } from "expo-image";
@@ -46,7 +46,7 @@ import {
   CONTENT_CAROUSEL_HEIGHT_SCALE,
   getTwoCardCarouselCardWidth,
 } from "@/constants/carousel";
-import { WIDGET_GREEN_SOLID } from "@/constants/colors";
+import { MEMBERSHIP_AURORA, WIDGET_GREEN_SOLID } from "@/constants/colors";
 import { SOUND_CAROUSEL_ORDER } from "@/data/sound-carousel-order";
 import { resolveSoundCarouselOrder } from "@/lib/editorial-playlist-helpers";
 
@@ -451,6 +451,39 @@ export default function SonidosScreen() {
                 titleSize={17}
                   onViewAll={() => openCategory(`/sound-tag/${collection.id}`)}
                 />
+                {index === 1 ? (
+                  <Pressable
+                    onPress={() => router.push("/membresia" as never)}
+                    accessibilityRole="button"
+                    accessibilityLabel="Suscríbete al Plan Premium"
+                    style={({ pressed }) => [
+                      styles.premiumBanner,
+                      { opacity: pressed ? 0.82 : 1 },
+                    ]}
+                  >
+                    <View style={styles.premiumBannerIcon}>
+                      <MaterialCommunityIcons
+                        name="star"
+                        color={MEMBERSHIP_AURORA.premium.accent}
+                        size={30}
+                      />
+                    </View>
+                    <View style={styles.premiumBannerCopy}>
+                      <Text style={styles.premiumBannerTitle}>
+                        Suscríbete al{" "}
+                        <Text style={styles.premiumBannerAccent}>Plan Premium</Text>
+                      </Text>
+                      <Text style={styles.premiumBannerSubtitle}>
+                        Accede a más de 500 sesiones de música, meditación y sonidos para relajarte
+                      </Text>
+                    </View>
+                    <Feather
+                      name="chevron-right"
+                      size={20}
+                      color="rgba(249,249,249,0.7)"
+                    />
+                  </Pressable>
+                ) : null}
               </React.Fragment>
             ))}
           </>
@@ -662,6 +695,47 @@ const styles = StyleSheet.create({
     marginHorizontal: H_PAD,
     marginTop: 26,
     backgroundColor: "rgba(255,255,255,0.12)",
+  },
+  premiumBanner: {
+    minHeight: 110,
+    marginTop: 26,
+    marginHorizontal: H_PAD,
+    paddingHorizontal: 16,
+    paddingVertical: 14,
+    borderRadius: 16,
+    borderWidth: 2,
+    borderColor: "rgba(255,255,255,0.27)",
+    backgroundColor: "rgba(0,0,0,0.34)",
+    flexDirection: "row",
+    alignItems: "center",
+    gap: 14,
+  },
+  premiumBannerIcon: {
+    width: 51,
+    height: 51,
+    borderRadius: 13,
+    backgroundColor: "rgba(255,255,255,0.1)",
+    alignItems: "center",
+    justifyContent: "center",
+  },
+  premiumBannerCopy: {
+    flex: 1,
+    minWidth: 0,
+  },
+  premiumBannerTitle: {
+    color: "#F9F9F9",
+    fontFamily: "Manrope",
+    fontSize: 15,
+    fontWeight: "700",
+    marginBottom: 5,
+  },
+  premiumBannerSubtitle: {
+    color: "#F4F4F4",
+    fontFamily: "Manrope",
+    fontSize: 12,
+  },
+  premiumBannerAccent: {
+    color: MEMBERSHIP_AURORA.premium.accent,
   },
   recentCarousel: { marginTop: 33 },
   empty: {
