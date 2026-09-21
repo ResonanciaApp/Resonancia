@@ -113,6 +113,7 @@ export default function MembresiaScreen() {
   const { isPremium } = usePremium();
   const [manageMounted, setManageMounted] = useState(false);
   const [selectedPackageId, setSelectedPackageId] = useState<string | null>(null);
+  const scrollRef = React.useRef<ScrollView>(null);
   const manageOverlayOpacity = React.useRef(new Animated.Value(0)).current;
   const manageSheetTranslateY = React.useRef(new Animated.Value(520)).current;
   const topPad = Platform.OS === "web" ? 67 : Math.max(insets.top, 40);
@@ -160,6 +161,14 @@ export default function MembresiaScreen() {
     !isLoading
     && !isPremium
     && !(customerInfoError && (isConfigured || !__DEV__));
+
+  useEffect(() => {
+    if (!isOfferScreen) return;
+    const frame = requestAnimationFrame(() => {
+      scrollRef.current?.scrollTo({ y: 0, animated: false });
+    });
+    return () => cancelAnimationFrame(frame);
+  }, [isOfferScreen]);
 
   const activePackage = useMemo(() => {
     if (!entitlement) return undefined;
@@ -291,6 +300,7 @@ export default function MembresiaScreen() {
       ) : null}
 
       <ScrollView
+        ref={scrollRef}
         style={styles.scroll}
         contentContainerStyle={styles.scrollContent}
         showsVerticalScrollIndicator={false}
@@ -606,6 +616,7 @@ function PremiumOfferContent({
 
   return (
     <>
+      <View style={styles.offerBrandOffset} />
       <View style={styles.offerHero}>
         <LinearGradient
           colors={["#7A68DE", "#5742BC"]}
@@ -622,6 +633,7 @@ function PremiumOfferContent({
         <Text style={styles.offerBrand}>Resonancia</Text>
       </View>
 
+      <View style={styles.planOffset} />
       {packages.length > 0 ? (
         <View style={styles.planGrid}>
           {packages.map((item) => {
@@ -1030,8 +1042,10 @@ const styles = StyleSheet.create({
   benefitTextBold: {
     fontWeight: "800",
   },
+  offerBrandOffset: {
+    height: 50,
+  },
   offerHero: {
-    marginTop: 50,
     paddingHorizontal: 24,
     paddingTop: 26,
     paddingBottom: 20,
@@ -1111,10 +1125,10 @@ const styles = StyleSheet.create({
     fontWeight: "800",
   },
   planGrid: {
-    // El bloque de marca ya aporta 50 px de desplazamiento real. Estos 70 px
-    // completan los 120 px pedidos para los planes y empujan todo lo inferior.
-    marginTop: 70,
     gap: 11,
+  },
+  planOffset: {
+    height: 70,
   },
   planCard: {
     width: "100%",
