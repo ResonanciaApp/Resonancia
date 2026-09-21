@@ -197,7 +197,7 @@ export default function PremiumBanner({
             contentContainerStyle={styles.images}
             style={[
               styles.imagesScroll,
-              { width: viewportWidth, marginLeft: -22 },
+              { width: viewportWidth + 17, marginLeft: -22 },
             ]}
           >
             {IMAGES.map((src, i) => (
