@@ -112,10 +112,13 @@ export default function MembresiaScreen() {
   } = useSubscription();
   const { isPremium } = usePremium();
   const [manageMounted, setManageMounted] = useState(false);
+  const [benefitsMounted, setBenefitsMounted] = useState(false);
   const [selectedPackageId, setSelectedPackageId] = useState<string | null>(null);
   const scrollRef = React.useRef<ScrollView>(null);
   const manageOverlayOpacity = React.useRef(new Animated.Value(0)).current;
   const manageSheetTranslateY = React.useRef(new Animated.Value(520)).current;
+  const benefitsOpacity = React.useRef(new Animated.Value(0)).current;
+  const benefitsScale = React.useRef(new Animated.Value(0.96)).current;
   const topPad = Platform.OS === "web" ? 67 : Math.max(insets.top, 40);
   const backgroundColors = theme.gradient as unknown as [string, string, ...string[]];
   const entitlement =
@@ -266,6 +269,48 @@ export default function MembresiaScreen() {
 
   const closeManageThen = (action: () => void) => closeManage(action);
 
+  const openBenefits = () => {
+    benefitsOpacity.setValue(0);
+    benefitsScale.setValue(0.96);
+    setBenefitsMounted(true);
+    requestAnimationFrame(() => {
+      Animated.parallel([
+        Animated.timing(benefitsOpacity, {
+          toValue: 1,
+          duration: 260,
+          easing: Easing.out(Easing.cubic),
+          useNativeDriver: true,
+        }),
+        Animated.spring(benefitsScale, {
+          toValue: 1,
+          damping: 18,
+          stiffness: 180,
+          mass: 0.8,
+          useNativeDriver: true,
+        }),
+      ]).start();
+    });
+  };
+
+  const closeBenefits = () => {
+    Animated.parallel([
+      Animated.timing(benefitsOpacity, {
+        toValue: 0,
+        duration: 210,
+        easing: Easing.in(Easing.cubic),
+        useNativeDriver: true,
+      }),
+      Animated.timing(benefitsScale, {
+        toValue: 0.96,
+        duration: 210,
+        easing: Easing.in(Easing.cubic),
+        useNativeDriver: true,
+      }),
+    ]).start(({ finished }) => {
+      if (finished) setBenefitsMounted(false);
+    });
+  };
+
   return (
     <LinearGradient
       style={styles.root}
@@ -344,6 +389,7 @@ export default function MembresiaScreen() {
               selectedPackage={selectedPackage}
               onSelect={(item) => setSelectedPackageId(item.identifier)}
               onPurchase={() => void handlePurchase()}
+              onOpenBenefits={openBenefits}
               isPurchasing={isPurchasing}
               previewMode={!isConfigured && __DEV__}
             />
@@ -540,6 +586,91 @@ export default function MembresiaScreen() {
           </Animated.View>
         </View>
       ) : null}
+
+      {benefitsMounted ? (
+        <View style={styles.benefitsOverlay}>
+          <Animated.View
+            pointerEvents="none"
+            style={[StyleSheet.absoluteFill, { opacity: benefitsOpacity }]}
+          >
+            <BlurView
+              intensity={48}
+              tint="dark"
+              experimentalBlurMethod="dimezisBlurView"
+              style={StyleSheet.absoluteFill}
+            />
+            <View style={styles.benefitsBackdropTint} />
+          </Animated.View>
+
+          <Pressable
+            style={StyleSheet.absoluteFill}
+            onPress={closeBenefits}
+            accessibilityLabel="Cerrar beneficios Premium"
+          />
+
+          <Animated.View
+            style={[
+              styles.benefitsDialog,
+              {
+                opacity: benefitsOpacity,
+                transform: [{ scale: benefitsScale }],
+              },
+            ]}
+          >
+            <BlurView
+              intensity={52}
+              tint="dark"
+              experimentalBlurMethod="dimezisBlurView"
+              style={StyleSheet.absoluteFill}
+              pointerEvents="none"
+            />
+            <View
+              pointerEvents="none"
+              style={[StyleSheet.absoluteFill, styles.benefitsDialogTint]}
+            />
+
+            <View style={styles.benefitsDialogHeader}>
+              <Text style={styles.benefitsDialogTitle}>Tus beneficios</Text>
+              <Pressable
+                onPress={closeBenefits}
+                hitSlop={12}
+                style={({ pressed }) => [styles.benefitsDialogClose, pressed && styles.pressed]}
+                accessibilityRole="button"
+                accessibilityLabel="Cerrar"
+              >
+                <Feather name="x" size={23} color="#F9F9F9" />
+              </Pressable>
+            </View>
+
+            <ScrollView
+              showsVerticalScrollIndicator={false}
+              contentContainerStyle={styles.benefitsDialogList}
+            >
+              {SUBSCRIPTION_BENEFITS.map((benefit) => (
+                <View key={benefit.icon} style={styles.benefitRow}>
+                  <View style={styles.benefitIcon}>
+                    <Feather
+                      name={benefit.icon}
+                      size={20}
+                      color={MEMBERSHIP_AURORA.premium.accent}
+                    />
+                  </View>
+                  <Text style={styles.benefitText}>
+                    {benefit.parts.map((part, index) => (
+                      <Text
+                        key={`${benefit.icon}-dialog-${index}`}
+                        style={"bold" in part && part.bold ? styles.benefitTextBold : undefined}
+                      >
+                        {part.text}
+                      </Text>
+                    ))}
+                  </Text>
+                </View>
+              ))}
+            </ScrollView>
+          </Animated.View>
+        </View>
+      ) : null}
     </LinearGradient>
   );
 }
@@ -601,6 +732,7 @@ function PremiumOfferContent({
   selectedPackage,
   onSelect,
   onPurchase,
+  onOpenBenefits,
   isPurchasing,
   previewMode,
 }: {
@@ -608,6 +740,7 @@ function PremiumOfferContent({
   selectedPackage?: PurchasesPackage;
   onSelect: (item: PurchasesPackage) => void;
   onPurchase: () => void;
+  onOpenBenefits: () => void;
   isPurchasing: boolean;
   previewMode: boolean;
 }) {
@@ -793,19 +926,11 @@ function PremiumOfferContent({
 
       <View style={styles.offerFooterActions}>
         <Pressable
-          onPress={() => router.push("/terminos" as never)}
-          accessibilityRole="link"
-          style={({ pressed }) => [styles.offerFooterButton, pressed && styles.pressed]}
+          onPress={onOpenBenefits}
+          accessibilityRole="button"
+          style={({ pressed }) => [styles.discoverPremiumButton, pressed && styles.pressed]}
         >
-          <Text style={styles.offerFooterText}>Términos de uso</Text>
-        </Pressable>
-        <View style={styles.offerFooterDot} />
-        <Pressable
-          onPress={() => router.push("/terminos" as never)}
-          accessibilityRole="link"
-          style={({ pressed }) => [styles.offerFooterButton, pressed && styles.pressed]}
-        >
-          <Text style={styles.offerFooterText}>Privacidad</Text>
+          <Text style={styles.discoverPremiumText}>Descubre Premium</Text>
         </Pressable>
       </View>
     </>
@@ -1269,28 +1394,21 @@ const styles = StyleSheet.create({
   offerFooterActions: {
     minHeight: 42,
     marginTop: 10,
-    flexDirection: "row",
     alignItems: "center",
     justifyContent: "center",
-    flexWrap: "wrap",
   },
-  offerFooterButton: {
+  discoverPremiumButton: {
     minHeight: 44,
     justifyContent: "center",
-    paddingHorizontal: 10,
+    paddingHorizontal: 18,
   },
-  offerFooterText: {
-    color: "rgba(255,255,255,0.76)",
+  discoverPremiumText: {
+    color: "#F9F9F9",
     fontFamily: "Manrope",
-    fontSize: 11,
-    lineHeight: 16,
-    fontWeight: "600",
-  },
-  offerFooterDot: {
-    width: 3,
-    height: 3,
-    borderRadius: 1.5,
-    backgroundColor: "rgba(255,255,255,0.38)",
+    fontSize: 13,
+    lineHeight: 18,
+    fontWeight: "700",
+    textDecorationLine: "underline",
   },
   manageButton: {
     height: 52,
@@ -1311,6 +1429,64 @@ const styles = StyleSheet.create({
     textShadowColor: "rgba(0,0,0,0.58)",
     textShadowOffset: { width: 0, height: 2 },
     textShadowRadius: 3,
+  },
+  benefitsOverlay: {
+    ...StyleSheet.absoluteFillObject,
+    zIndex: 60,
+    paddingHorizontal: 24,
+    alignItems: "center",
+    justifyContent: "center",
+  },
+  benefitsBackdropTint: {
+    ...StyleSheet.absoluteFillObject,
+    backgroundColor: "rgba(0,0,0,0.58)",
+  },
+  benefitsDialog: {
+    width: "100%",
+    maxWidth: 430,
+    maxHeight: "78%",
+    overflow: "hidden",
+    borderRadius: 27,
+    borderWidth: 1,
+    borderColor: "rgba(255,255,255,0.13)",
+    backgroundColor: "transparent",
+    shadowColor: "#000000",
+    shadowOffset: { width: 0, height: 18 },
+    shadowOpacity: 0.5,
+    shadowRadius: 30,
+    elevation: 24,
+  },
+  benefitsDialogTint: {
+    backgroundColor: "rgba(0,0,0,0.76)",
+  },
+  benefitsDialogHeader: {
+    minHeight: 72,
+    paddingHorizontal: 22,
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "center",
+    borderBottomWidth: StyleSheet.hairlineWidth,
+    borderBottomColor: "rgba(255,255,255,0.13)",
+  },
+  benefitsDialogTitle: {
+    color: "#F9F9F9",
+    fontFamily: "Manrope",
+    fontSize: 19,
+    lineHeight: 25,
+    fontWeight: "800",
+  },
+  benefitsDialogClose: {
+    position: "absolute",
+    right: 16,
+    width: 40,
+    height: 40,
+    alignItems: "center",
+    justifyContent: "center",
+  },
+  benefitsDialogList: {
+    paddingHorizontal: 20,
+    paddingTop: 10,
+    paddingBottom: 18,
   },
   manageOverlay: {
     ...StyleSheet.absoluteFillObject,
