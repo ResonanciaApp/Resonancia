@@ -26,8 +26,6 @@ import { useSceneTheme } from "@/context/SceneThemeContext";
 import { useGeometrixPanel } from "@/context/GeometrixPanelContext";
 import { useMixerPanel } from "@/context/MixerPanelContext";
 import { useCurrentUserAvatarSource } from "@/lib/profile-avatar";
-import { MEMBERSHIP_AURORA } from "@/constants/colors";
-import { MoonCrescentIcon } from "@/components/MoonCrescentIcon";
 
 const ND = Platform.OS !== "web";
 
@@ -314,35 +312,6 @@ export function DrawerMenu() {
                   <View style={styles.itemGroup}>
                     {section.items.map((item) => (
                       <React.Fragment key={item.label}>
-                        {item.id === "invite-friend" ? (
-                          <Pressable
-                            onPress={() => navigate("__mixer")}
-                            accessibilityRole="button"
-                            accessibilityLabel="Abrir Mezclador para dormir"
-                            style={({ pressed }) => [
-                              styles.drawerMixerBanner,
-                              pressed && styles.drawerMixerBannerPressed,
-                            ]}
-                          >
-                            <View style={styles.drawerMixerBannerIcon}>
-                              <MoonCrescentIcon color="#C4A8F5" size={30} />
-                            </View>
-                            <View style={styles.drawerMixerBannerCopy}>
-                              <Text style={styles.drawerMixerBannerTitle}>
-                                Mezclador para dormir
-                              </Text>
-                              <Text style={[styles.drawerMixerBannerSubtitle, { color: activeTheme.accent }]}>
-                                Crea tu propio universo sonoro con más de 400 sonidos ambientales{" "}
-                                <MaterialCommunityIcons
-                                  name="diamond-stone"
-                                  size={14}
-                                  color={MEMBERSHIP_AURORA.plus.accent}
-                                />
-                              </Text>
-                            </View>
-                            <Feather name="chevron-right" size={20} color="rgba(249,249,249,0.7)" />
-                          </Pressable>
-                        ) : null}
                         <Pressable
                           testID={item.id ? `drawer-item-${item.id}` : undefined}
                           onPress={() => navigate(item.route)}
@@ -549,46 +518,6 @@ const styles = StyleSheet.create({
   premiumMenuStar: {
     width: 21,
     height: 21,
-  },
-  drawerMixerBanner: {
-    minHeight: 110,
-    marginBottom: 14,
-    paddingHorizontal: 16,
-    paddingVertical: 14,
-    borderRadius: 16,
-    borderWidth: 2,
-    borderColor: "rgba(255,255,255,0.27)",
-    backgroundColor: "rgba(0,0,0,0.28)",
-    flexDirection: "row",
-    alignItems: "center",
-    gap: 14,
-  },
-  drawerMixerBannerPressed: {
-    opacity: 0.82,
-  },
-  drawerMixerBannerIcon: {
-    width: 51,
-    height: 51,
-    borderRadius: 13,
-    backgroundColor: "rgba(255,255,255,0.1)",
-    alignItems: "center",
-    justifyContent: "center",
-    transform: [{ translateY: 2 }],
-  },
-  drawerMixerBannerCopy: {
-    flex: 1,
-    minWidth: 0,
-  },
-  drawerMixerBannerTitle: {
-    color: "#F9F9F9",
-    fontFamily: "Manrope",
-    fontSize: 16,
-    fontWeight: "700",
-    marginBottom: 5,
-  },
-  drawerMixerBannerSubtitle: {
-    fontFamily: "Manrope",
-    fontSize: 12,
   },
   itemLabel: {
     fontFamily: "Manrope",
