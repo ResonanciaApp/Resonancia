@@ -227,9 +227,6 @@ export default function MembresiaScreen() {
           </View>
 
           <View style={styles.benefitsTitleRow}>
-            <View style={styles.benefitsCheck}>
-              <Feather name="check" size={17} color="#3E9E85" />
-            </View>
             <Text style={styles.benefitsTitle}>Tu suscripción incluye:</Text>
           </View>
           <View style={styles.benefitsCard}>
@@ -415,17 +412,6 @@ const styles = StyleSheet.create({
     marginTop: 26,
     marginBottom: 17,
     transform: [{ translateY: 22 }],
-    flexDirection: "row",
-    alignItems: "center",
-    gap: 10,
-  },
-  benefitsCheck: {
-    width: 27,
-    height: 27,
-    borderRadius: 13.5,
-    alignItems: "center",
-    justifyContent: "center",
-    backgroundColor: "#F9F9F9",
   },
   benefitsTitle: {
     color: "#F9F9F9",
