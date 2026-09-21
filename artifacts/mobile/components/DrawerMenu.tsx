@@ -423,11 +423,11 @@ const styles = StyleSheet.create({
     backgroundColor: "rgba(255,255,255,0.04)",
   },
   inicio3ProfilePhoto: {
-    width: 77,
-    height: 77,
-    borderRadius: 38.5,
-    borderWidth: 2,
-    borderColor: "rgba(255,255,255,0.2)",
+    width: 75,
+    height: 75,
+    borderRadius: 37.5,
+    borderWidth: 1,
+    borderColor: "rgba(255,255,255,0.7)",
   },
   profileInfo: {
     flex: 1,
