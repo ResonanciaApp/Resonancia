@@ -53,6 +53,7 @@ import { SessionBadgeGlass } from "@/components/SessionDurationBadge";
 import { useSceneTheme } from "@/context/SceneThemeContext";
 import { isIndigoThemeId } from "@/config/scene-themes";
 import { useUserProfile } from "@/context/UserProfileContext";
+import { usePremium } from "@/context/PremiumContext";
 import { useAuth } from "@/context/AuthContext";
 import type { LibraryTab } from "@/context/DrawerContext";
 import { useDrawer } from "@/context/DrawerContext";
@@ -254,10 +255,14 @@ function ProfileMembershipModules({
 }: {
   foregroundColor: string;
 }) {
+  const { isPremium: hasPremiumAccess } = usePremium();
+
   return (
     <View style={styles.membershipSection}>
       {MEMBERSHIP_PLANS.filter((plan) => plan.id !== "plus").map((plan, index) => {
-        const isPremium = plan.id === "premium";
+        const isPremiumPlan = plan.id === "premium";
+        const displayName =
+          isPremiumPlan && !hasPremiumAccess ? "Prueba Premium Gratis" : plan.name;
 
         return (
           <React.Fragment key={plan.id}>
@@ -267,11 +272,11 @@ function ProfileMembershipModules({
                 onPress={() => router.push("/membresia")}
                 style={({ pressed }) => [
                   styles.membershipCardHeader,
-                  isPremium ? styles.membershipCardHeaderPremium : styles.membershipCardHeaderPlus,
+                   isPremiumPlan ? styles.membershipCardHeaderPremium : styles.membershipCardHeaderPlus,
                   { opacity: pressed ? 0.78 : 1 },
                 ]}
                 accessibilityRole="button"
-                accessibilityLabel={`Abrir perfil de ${plan.name}`}
+                 accessibilityLabel={`Abrir ${displayName}`}
               >
                 <View
                   style={[
@@ -283,7 +288,7 @@ function ProfileMembershipModules({
                     },
                   ]}
                 >
-                  {isPremium ? (
+                  {isPremiumPlan ? (
                     <MaterialCommunityIcons name="star" size={31} color={plan.colors.accent} />
                   ) : (
                     <MaterialCommunityIcons name="diamond-stone" size={23} color={plan.colors.accent} />
@@ -291,7 +296,7 @@ function ProfileMembershipModules({
                 </View>
                 <View style={styles.membershipCardCopy}>
                   <Text style={[styles.membershipPlanName, { color: plan.colors.accent }]}>
-                    {plan.name}
+                     {displayName}
                   </Text>
                   <Text
                     style={[styles.membershipPlanEyebrow, { color: "#F4F4F4" }]}
