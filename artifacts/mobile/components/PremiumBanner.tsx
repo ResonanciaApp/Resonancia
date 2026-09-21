@@ -229,12 +229,24 @@ export default function PremiumBanner({
           ]}
         >
           <LinearGradient
-            colors={["#F0C36A", MEMBERSHIP_AURORA.premium.accent]}
+            colors={
+              sleepVariant
+                ? ["#C2A64C", "#C2A64C"]
+                : ["#F0C36A", MEMBERSHIP_AURORA.premium.accent]
+            }
             start={{ x: 0, y: 0 }}
             end={{ x: 1, y: 0 }}
             style={styles.btn}
           >
-            <Text style={[styles.btnText, styles.freeTrialButtonText]}>Probar gratis</Text>
+            <Text
+              style={[
+                styles.btnText,
+                styles.freeTrialButtonText,
+                sleepVariant && styles.sleepButtonText,
+              ]}
+            >
+              Probar gratis
+            </Text>
           </LinearGradient>
         </Pressable>
       </View>
@@ -447,8 +459,11 @@ const styles = StyleSheet.create({
   sleepButtonWrap: {
     width: "auto",
     alignSelf: "stretch",
-    marginHorizontal: 15,
+    marginHorizontal: 35,
     borderWidth: 2,
     borderColor: "rgba(255,255,255,0.2)",
+  },
+  sleepButtonText: {
+    color: "#F9F9F9",
   },
 });
