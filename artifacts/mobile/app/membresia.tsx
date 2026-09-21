@@ -1303,11 +1303,11 @@ const styles = StyleSheet.create({
     gap: 11,
   },
   planOffset: {
-    height: 115,
+    height: 100,
   },
   planCard: {
     width: "100%",
-    minHeight: 48,
+    minHeight: 45,
     overflow: "hidden",
     borderRadius: 21,
     paddingHorizontal: 18,
@@ -1374,8 +1374,8 @@ const styles = StyleSheet.create({
   planPrice: {
     color: "#F9F9F9",
     fontFamily: "Manrope",
-    fontSize: 15,
-    lineHeight: 21,
+    fontSize: 14,
+    lineHeight: 20,
     fontWeight: "800",
   },
   raisedPlanContent: {
