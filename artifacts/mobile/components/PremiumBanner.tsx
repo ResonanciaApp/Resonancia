@@ -208,7 +208,7 @@ export default function PremiumBanner({
           <ScrollView
             horizontal
             showsHorizontalScrollIndicator={false}
-            contentContainerStyle={styles.images}
+            contentContainerStyle={[styles.images, styles.defaultImages]}
             style={[
               styles.imagesScroll,
               { width: viewportWidth + 17, marginLeft: -22 },
@@ -447,6 +447,9 @@ const styles = StyleSheet.create({
   imagesScroll: {
     width: "100%",
     marginBottom: 26,
+  },
+  defaultImages: {
+    gap: 9,
   },
   sleepImages: {
     alignSelf: "stretch",

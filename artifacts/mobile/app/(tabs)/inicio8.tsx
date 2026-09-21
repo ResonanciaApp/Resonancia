@@ -122,7 +122,6 @@ import { ContinueMeditationPlaylistCard } from "@/components/ContinueMeditationP
 import { VideoCard } from "@/components/VideoCard";
 import { useVideos } from "@/hooks/useVideos";
 import { useResonadores } from "@/hooks/useResonadores";
-import { AlmaCommunitySection } from "@/components/AlmaCommunitySection";
 import {
   CONTENT_CAROUSEL_GAP,
   getTwoCardCarouselCardWidth,
@@ -3299,7 +3298,6 @@ export default function HomeScreen2({
         <View style={{ marginBottom: isInicio2 ? INICIO2_SECTION_GAP : SECTION_GAP }}>
           <PremiumBanner />
         </View>
-        {isInicio2 && <AlmaCommunitySection />}
         {/* ── ESCENAS ANIMADAS ── (se muestran en EscenasSheet) */}
         {false && activeScenes.length > 0 && (
           <View style={{ marginBottom: SECTION_GAP }}>
