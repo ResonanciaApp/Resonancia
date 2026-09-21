@@ -542,17 +542,6 @@ export default function SonidosPage() {
               </div>
             )}
 
-            {/* Premium */}
-            {form.soundType !== "" && (
-              <div className="space-y-1">
-                <Label>Premium</Label>
-                <div className="flex items-center gap-3 h-9">
-                  <Switch checked={form.isPremium} onCheckedChange={(v) => field("isPremium", v)} />
-                  <span className="text-sm text-muted-foreground">{form.isPremium ? "Sí" : "No"}</span>
-                </div>
-              </div>
-            )}
-
             {/* Audio loop */}
             {form.soundType !== "" && (
             <div className="space-y-1">
@@ -629,6 +618,17 @@ export default function SonidosPage() {
                 )}
               </div>
             </div>
+            )}
+
+            {/* Premium — último campo del formulario */}
+            {form.soundType !== "" && (
+              <div className="space-y-1 md:col-span-2">
+                <Label>Premium</Label>
+                <div className="flex items-center gap-3 h-9">
+                  <Switch checked={form.isPremium} onCheckedChange={(v) => field("isPremium", v)} />
+                  <span className="text-sm text-muted-foreground">{form.isPremium ? "Sí" : "No"}</span>
+                </div>
+              </div>
             )}
 
             {/* Acciones */}
