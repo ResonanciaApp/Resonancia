@@ -1,9 +1,12 @@
 import { Feather, MaterialCommunityIcons } from "@expo/vector-icons";
+import { BlurView } from "expo-blur";
 import { LinearGradient } from "expo-linear-gradient";
 import { router } from "expo-router";
-import React, { useMemo } from "react";
+import React, { useMemo, useState } from "react";
 import {
   ActivityIndicator,
+  Animated,
+  Easing,
   Linking,
   Platform,
   Pressable,
@@ -16,6 +19,7 @@ import {
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 
 import { MEMBERSHIP_AURORA } from "@/constants/colors";
+import { SessionBadgeGlass } from "@/components/SessionDurationBadge";
 import { useSceneTheme } from "@/context/SceneThemeContext";
 import { useColors } from "@/hooks/useColors";
 import {
@@ -90,6 +94,9 @@ export default function MembresiaScreen() {
   const insets = useSafeAreaInsets();
   const { theme } = useSceneTheme();
   const { customerInfo, offerings, isSubscribed, isLoading } = useSubscription();
+  const [manageMounted, setManageMounted] = useState(false);
+  const manageOverlayOpacity = React.useRef(new Animated.Value(0)).current;
+  const manageSheetTranslateY = React.useRef(new Animated.Value(520)).current;
   const topPad = Platform.OS === "web" ? 67 : Math.max(insets.top, 40);
   const backgroundColors = theme.gradient as unknown as [string, string, ...string[]];
   const entitlement =
@@ -128,10 +135,50 @@ export default function MembresiaScreen() {
       : "No tienes una suscripción Premium activa.";
   const managementURL = customerInfo?.managementURL;
 
-  const handleManagePremium = async () => {
-    if (!managementURL) return;
-    await Linking.openURL(managementURL);
+  const openManage = () => {
+    manageOverlayOpacity.setValue(0);
+    manageSheetTranslateY.setValue(520);
+    setManageMounted(true);
+    requestAnimationFrame(() => {
+      Animated.parallel([
+        Animated.timing(manageOverlayOpacity, {
+          toValue: 1,
+          duration: 350,
+          easing: Easing.out(Easing.cubic),
+          useNativeDriver: true,
+        }),
+        Animated.timing(manageSheetTranslateY, {
+          toValue: 0,
+          duration: 350,
+          easing: Easing.out(Easing.cubic),
+          useNativeDriver: true,
+        }),
+      ]).start();
+    });
   };
+
+  const closeManage = (action?: () => void) => {
+    Animated.parallel([
+      Animated.timing(manageOverlayOpacity, {
+        toValue: 0,
+        duration: 350,
+        easing: Easing.in(Easing.cubic),
+        useNativeDriver: true,
+      }),
+      Animated.timing(manageSheetTranslateY, {
+        toValue: 520,
+        duration: 350,
+        easing: Easing.in(Easing.cubic),
+        useNativeDriver: true,
+      }),
+    ]).start(({ finished }) => {
+      if (!finished) return;
+      setManageMounted(false);
+      if (action) requestAnimationFrame(action);
+    });
+  };
+
+  const closeManageThen = (action: () => void) => closeManage(action);
 
   return (
     <LinearGradient
@@ -263,11 +310,9 @@ export default function MembresiaScreen() {
           </View>
 
           <Pressable
-            onPress={handleManagePremium}
-            disabled={!managementURL}
+            onPress={openManage}
             accessibilityRole="button"
             accessibilityLabel="Gestionar Premium"
-            accessibilityState={{ disabled: !managementURL }}
             style={({ pressed }) => [
               styles.manageButton,
               pressed && styles.manageButtonPressed,
@@ -283,7 +328,124 @@ export default function MembresiaScreen() {
           </Pressable>
         </View>
       </ScrollView>
+
+      {manageMounted ? (
+        <View style={styles.manageOverlay}>
+          <Animated.View
+            style={[StyleSheet.absoluteFill, { opacity: manageOverlayOpacity }]}
+            pointerEvents="none"
+          >
+            <BlurView
+              intensity={45}
+              tint="dark"
+              experimentalBlurMethod="dimezisBlurView"
+              style={StyleSheet.absoluteFill}
+            />
+            <View style={styles.manageDim} />
+          </Animated.View>
+          <Pressable
+            style={StyleSheet.absoluteFill}
+            onPress={() => closeManage()}
+            accessibilityLabel="Cerrar gestión de suscripción"
+          />
+
+          <Animated.View
+            style={[
+              styles.manageSheet,
+              {
+                paddingBottom: Math.max(insets.bottom, 20) + 14,
+                transform: [{ translateY: manageSheetTranslateY }],
+              },
+            ]}
+          >
+            <View style={StyleSheet.absoluteFill} pointerEvents="none">
+              <SessionBadgeGlass showBlackTint={false} showWhiteTint />
+            </View>
+
+            <View style={styles.neonHandle} />
+
+            <View style={styles.manageSheetHeader}>
+              <Text style={styles.manageSheetTitle}>Gestionar suscripción</Text>
+              <Pressable
+                onPress={() => closeManage()}
+                hitSlop={12}
+                style={({ pressed }) => [styles.manageClose, pressed && styles.pressed]}
+                accessibilityRole="button"
+                accessibilityLabel="Cerrar"
+              >
+                <Feather name="x" size={23} color="#F9F9F9" />
+              </Pressable>
+            </View>
+
+            <View style={styles.manageActions}>
+              <ManageActionRow
+                icon="life-buoy"
+                label="Recibe ayuda"
+                onPress={() => closeManageThen(() => router.push("/ayuda" as never))}
+              />
+              <ManageActionRow
+                icon="message-circle"
+                label="¿Tienes sugerencias?"
+                onPress={() =>
+                  closeManageThen(() => {
+                    void Linking.openURL(
+                      `mailto:hola@resonancia.app?subject=${encodeURIComponent("Sugerencias para Resonancia")}`,
+                    );
+                  })
+                }
+              />
+              <ManageActionRow
+                icon="radio"
+                label="¿Quieres ser un Resonador?"
+                onPress={() => closeManageThen(() => router.push("/resonador-postular" as never))}
+              />
+              <ManageActionRow
+                icon="x-circle"
+                label="Cancelar suscripción"
+                isLast
+                onPress={() => {
+                  if (!managementURL) return;
+                  closeManageThen(() => {
+                    void Linking.openURL(managementURL);
+                  });
+                }}
+              />
+            </View>
+          </Animated.View>
+        </View>
+      ) : null}
     </LinearGradient>
+  );
+}
+
+function ManageActionRow({
+  icon,
+  label,
+  onPress,
+  isLast = false,
+}: {
+  icon: React.ComponentProps<typeof Feather>["name"];
+  label: string;
+  onPress: () => void;
+  isLast?: boolean;
+}) {
+  return (
+    <Pressable
+      onPress={onPress}
+      style={({ pressed }) => [
+        styles.manageActionRow,
+        !isLast && styles.manageActionDivider,
+        pressed && styles.manageActionPressed,
+      ]}
+      accessibilityRole="button"
+      accessibilityLabel={label}
+    >
+      <View style={styles.manageActionIcon}>
+        <Feather name={icon} size={20} color="#F9F9F9" />
+      </View>
+      <Text style={styles.manageActionText}>{label}</Text>
+      <Feather name="chevron-right" size={22} color="#F9F9F9" />
+    </Pressable>
   );
 }
 
@@ -354,7 +516,7 @@ const styles = StyleSheet.create({
     backgroundColor: "rgba(0,0,0,0.28)",
   },
   detailRow: {
-    minHeight: 65,
+    minHeight: 63,
     paddingHorizontal: 20,
     paddingVertical: 9,
     flexDirection: "row",
@@ -376,7 +538,7 @@ const styles = StyleSheet.create({
     transform: [{ translateY: -2 }],
     color: "#FFFFFF",
     fontFamily: "Manrope",
-    fontSize: 15,
+    fontSize: 14,
     lineHeight: 21,
     fontWeight: "700",
     textAlign: "right",
@@ -402,9 +564,9 @@ const styles = StyleSheet.create({
     backgroundColor: "rgba(255,255,255,0.13)",
   },
   billingNote: {
-    minHeight: 104,
+    minHeight: 84,
     paddingHorizontal: 20,
-    paddingVertical: 18,
+    paddingVertical: 8,
     flexDirection: "row",
     alignItems: "center",
     gap: 14,
@@ -496,9 +658,102 @@ const styles = StyleSheet.create({
     fontFamily: "Manrope",
     fontSize: 15,
     fontWeight: "800",
-    textShadowColor: "rgba(0,0,0,0.32)",
-    textShadowOffset: { width: 0, height: 1 },
-    textShadowRadius: 2,
+    textShadowColor: "rgba(0,0,0,0.58)",
+    textShadowOffset: { width: 0, height: 2 },
+    textShadowRadius: 3,
+  },
+  manageOverlay: {
+    ...StyleSheet.absoluteFillObject,
+    zIndex: 50,
+    justifyContent: "flex-end",
+  },
+  manageDim: {
+    ...StyleSheet.absoluteFillObject,
+    backgroundColor: "rgba(0,0,0,0.42)",
+  },
+  manageSheet: {
+    overflow: "hidden",
+    minHeight: 430,
+    paddingHorizontal: 24,
+    paddingTop: 12,
+    borderTopLeftRadius: 28,
+    borderTopRightRadius: 28,
+    borderWidth: 1,
+    borderBottomWidth: 0,
+    borderColor: "rgba(255,255,255,0.12)",
+    backgroundColor: "transparent",
+  },
+  neonHandle: {
+    alignSelf: "center",
+    width: 54,
+    height: 5,
+    borderRadius: 2.5,
+    marginBottom: 22,
+    backgroundColor: "#E7B95C",
+    shadowColor: "#E7B95C",
+    shadowOffset: { width: 0, height: 0 },
+    shadowOpacity: 0.9,
+    shadowRadius: 9,
+    elevation: 8,
+  },
+  manageSheetHeader: {
+    minHeight: 48,
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "center",
+    marginBottom: 18,
+  },
+  manageSheetTitle: {
+    color: "#F9F9F9",
+    fontFamily: "Manrope",
+    fontSize: 18,
+    lineHeight: 24,
+    fontWeight: "800",
+  },
+  manageClose: {
+    position: "absolute",
+    right: 0,
+    width: 40,
+    height: 40,
+    alignItems: "center",
+    justifyContent: "center",
+  },
+  manageActions: {
+    overflow: "hidden",
+    borderRadius: 17,
+    borderWidth: 1,
+    borderColor: "rgba(255,255,255,0.12)",
+    backgroundColor: "rgba(255,255,255,0.055)",
+  },
+  manageActionRow: {
+    minHeight: 66,
+    paddingHorizontal: 15,
+    flexDirection: "row",
+    alignItems: "center",
+    gap: 12,
+  },
+  manageActionDivider: {
+    borderBottomWidth: StyleSheet.hairlineWidth,
+    borderBottomColor: "rgba(255,255,255,0.12)",
+  },
+  manageActionPressed: {
+    backgroundColor: "rgba(231,185,92,0.1)",
+  },
+  manageActionIcon: {
+    width: 32,
+    height: 32,
+    borderRadius: 9,
+    alignItems: "center",
+    justifyContent: "center",
+    backgroundColor: "rgba(255,255,255,0.07)",
+  },
+  manageActionText: {
+    flex: 1,
+    color: "#F9F9F9",
+    fontFamily: "Manrope",
+    fontSize: 14,
+    lineHeight: 20,
+    fontWeight: "700",
   },
   pressed: {
     opacity: 0.72,
