@@ -160,7 +160,7 @@ export function SleepReminderSheet({
         <Animated.View pointerEvents="none" style={[styles.background, { opacity: backdropOpacity }]}>
           <Image
             source={require("@/assets/images/sleep-reminder-room.jpg")}
-            resizeMode="cover"
+            resizeMode="contain"
             style={StyleSheet.absoluteFill}
           />
           <LinearGradient
