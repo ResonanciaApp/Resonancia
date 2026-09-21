@@ -6,6 +6,7 @@ import {
   ActivityIndicator,
   Platform,
   Pressable,
+  ScrollView,
   StatusBar,
   StyleSheet,
   Text,
@@ -38,6 +39,29 @@ function resolvePlanLabel(packageType?: string, subscriptionPeriod?: string | nu
   if (packageType === "MONTHLY" || subscriptionPeriod === "P1M") return "Mensual";
   return "No disponible";
 }
+
+const SUBSCRIPTION_BENEFITS = [
+  {
+    icon: "book-open",
+    text: "Explora sin límites nuestra biblioteca de bienestar y transformación.",
+  },
+  {
+    icon: "download",
+    text: "Descarga tus contenidos favoritos para continuar tu práctica donde estés.",
+  },
+  {
+    icon: "sliders",
+    text: "Mezclador de sonidos desbloqueado con sonidos de la Tierra y el Universo.",
+  },
+  {
+    icon: "edit-3",
+    text: "Diario avanzado de reflexiones y generación de historias para Instagram.",
+  },
+  {
+    icon: "video",
+    text: "Acceso a clases y sesiones online con los Resonadores.",
+  },
+] as const;
 
 export default function MembresiaScreen() {
   const colors = useColors();
@@ -108,76 +132,98 @@ export default function MembresiaScreen() {
         <View style={styles.headerSpacer} />
       </View>
 
-      <View style={styles.content}>
-        <View style={styles.premiumHeading}>
-          <MaterialCommunityIcons
-            name="star"
-            size={31}
-            color={MEMBERSHIP_AURORA.premium.accent}
-          />
-          <Text style={styles.premiumTitle}>
-            <Text style={styles.premiumTitleBrand}>Resonancia</Text>
-            {" Premium"}
-          </Text>
-        </View>
+      <ScrollView
+        style={styles.scroll}
+        contentContainerStyle={styles.scrollContent}
+        showsVerticalScrollIndicator={false}
+      >
+        <View style={styles.content}>
+          <View style={styles.premiumHeading}>
+            <MaterialCommunityIcons
+              name="star"
+              size={31}
+              color={MEMBERSHIP_AURORA.premium.accent}
+            />
+            <Text style={styles.premiumTitle}>
+              <Text style={styles.premiumTitleBrand}>Resonancia</Text>
+              {" Premium"}
+            </Text>
+          </View>
 
-        <View style={styles.subscriptionCard}>
-          {isLoading ? (
-            <View style={styles.loadingState}>
-              <ActivityIndicator color={MEMBERSHIP_AURORA.premium.accent} />
-              <Text style={styles.loadingText}>Cargando tu suscripción…</Text>
+          <View style={styles.subscriptionCard}>
+            {isLoading ? (
+              <View style={styles.loadingState}>
+                <ActivityIndicator color={MEMBERSHIP_AURORA.premium.accent} />
+                <Text style={styles.loadingText}>Cargando tu suscripción…</Text>
             </View>
-          ) : (
-            <>
-              <View style={styles.detailRow}>
-                <Text style={styles.detailLabel}>Estado</Text>
-                <View style={styles.statusValue}>
-                  <Text style={[styles.detailValue, isSubscribed && styles.activeValue]}>
-                    {statusLabel}
+            ) : (
+              <>
+                <View style={styles.detailRow}>
+                  <Text style={styles.detailLabel}>Estado</Text>
+                  <View style={styles.statusValue}>
+                    <Text style={[styles.detailValue, isSubscribed && styles.activeValue]}>
+                      {statusLabel}
+                    </Text>
+                    {isSubscribed ? (
+                      <View style={styles.activeCheck}>
+                        <Feather name="check" size={20} color="#91E2D1" />
+                      </View>
+                    ) : null}
+                  </View>
+                </View>
+
+                <View style={styles.divider} />
+
+                <View style={styles.detailRow}>
+                  <Text style={styles.detailLabel}>Tipo de plan</Text>
+                  <Text style={styles.detailValue}>{planLabel}</Text>
+                </View>
+
+                <View style={styles.divider} />
+
+                <View style={styles.detailRow}>
+                  <Text style={styles.detailLabel}>Fecha de inicio</Text>
+                  <Text style={styles.detailValue}>{startDateLabel}</Text>
+                </View>
+
+                <View style={styles.divider} />
+
+                <View style={styles.detailRow}>
+                  <Text style={styles.detailLabel}>
+                    {isSubscribed && entitlement?.willRenew ? "Próxima renovación" : "Válido hasta"}
                   </Text>
-                  {isSubscribed ? (
-                    <View style={styles.activeCheck}>
-                      <Feather name="check" size={20} color="#91E2D1" />
-                    </View>
-                  ) : null}
+                  <Text style={styles.detailValue}>{renewalDateLabel}</Text>
                 </View>
-              </View>
 
-              <View style={styles.divider} />
+                <View style={styles.divider} />
 
-              <View style={styles.detailRow}>
-                <Text style={styles.detailLabel}>Tipo de plan</Text>
-                <Text style={styles.detailValue}>{planLabel}</Text>
-              </View>
-
-              <View style={styles.divider} />
-
-              <View style={styles.detailRow}>
-                <Text style={styles.detailLabel}>Fecha de inicio</Text>
-                <Text style={styles.detailValue}>{startDateLabel}</Text>
-              </View>
-
-              <View style={styles.divider} />
-
-              <View style={styles.detailRow}>
-                <Text style={styles.detailLabel}>
-                  {isSubscribed && entitlement?.willRenew ? "Próxima renovación" : "Válido hasta"}
-                </Text>
-                <Text style={styles.detailValue}>{renewalDateLabel}</Text>
-              </View>
-
-              <View style={styles.divider} />
-
-              <View style={styles.billingNote}>
-                <View style={styles.infoIcon}>
-                  <Feather name="info" size={17} color="#252537" />
+                <View style={styles.billingNote}>
+                  <View style={styles.infoIcon}>
+                    <Feather name="info" size={17} color="#252537" />
+                  </View>
+                  <Text style={styles.billingText}>{renewalCopy}</Text>
                 </View>
-                <Text style={styles.billingText}>{renewalCopy}</Text>
+              </>
+            )}
+          </View>
+
+          <Text style={styles.benefitsTitle}>Tu suscripción incluye:</Text>
+          <View style={styles.benefitsCard}>
+            {SUBSCRIPTION_BENEFITS.map((benefit) => (
+              <View key={benefit.icon} style={styles.benefitRow}>
+                <View style={styles.benefitIcon}>
+                  <Feather
+                    name={benefit.icon}
+                    size={20}
+                    color={MEMBERSHIP_AURORA.premium.accent}
+                  />
+                </View>
+                <Text style={styles.benefitText}>{benefit.text}</Text>
               </View>
-            </>
-          )}
+            ))}
+          </View>
         </View>
-      </View>
+      </ScrollView>
     </LinearGradient>
   );
 }
@@ -216,6 +262,12 @@ const styles = StyleSheet.create({
   headerSpacer: {
     width: 43,
     height: 43,
+  },
+  scroll: {
+    flex: 1,
+  },
+  scrollContent: {
+    paddingBottom: 44,
   },
   content: {
     paddingHorizontal: 24,
@@ -325,6 +377,47 @@ const styles = StyleSheet.create({
     color: MEMBERSHIP_AURORA.textSoft,
     fontFamily: "Manrope",
     fontSize: 13,
+  },
+  benefitsTitle: {
+    marginTop: 26,
+    marginBottom: 17,
+    color: "#F9F9F9",
+    fontFamily: "Manrope",
+    fontSize: 17,
+    lineHeight: 23,
+    fontWeight: "700",
+  },
+  benefitsCard: {
+    paddingHorizontal: 16,
+    paddingVertical: 7,
+    borderWidth: 2,
+    borderColor: "rgba(255,255,255,0.15)",
+    borderRadius: 19,
+    backgroundColor: "transparent",
+  },
+  benefitRow: {
+    minHeight: 76,
+    flexDirection: "row",
+    alignItems: "center",
+    gap: 14,
+    paddingVertical: 10,
+  },
+  benefitIcon: {
+    width: 42,
+    height: 42,
+    borderRadius: 10,
+    flexShrink: 0,
+    alignItems: "center",
+    justifyContent: "center",
+    backgroundColor: "rgba(231,185,92,0.15)",
+  },
+  benefitText: {
+    flex: 1,
+    color: "#F9F9F9",
+    fontFamily: "Manrope",
+    fontSize: 13,
+    lineHeight: 19,
+    fontWeight: "400",
   },
   pressed: {
     opacity: 0.72,
