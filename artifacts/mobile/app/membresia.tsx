@@ -317,7 +317,7 @@ export default function MembresiaScreen() {
             </Text>
           </View>
 
-          {!isLoading && customerInfoError ? (
+          {!isLoading && customerInfoError && (isConfigured || !__DEV__) ? (
             <SubscriptionStatusUnavailable
               isConfigured={isConfigured}
               onRetry={() => {
@@ -333,6 +333,7 @@ export default function MembresiaScreen() {
               onRestore={() => void handleRestore()}
               isPurchasing={isPurchasing}
               isRestoring={isRestoring}
+              previewMode={!isConfigured && __DEV__}
             />
           ) : (
             <>
@@ -595,6 +596,7 @@ function PremiumOfferContent({
   onRestore,
   isPurchasing,
   isRestoring,
+  previewMode,
 }: {
   packages: PurchasesPackage[];
   selectedPackage?: PurchasesPackage;
@@ -603,6 +605,7 @@ function PremiumOfferContent({
   onRestore: () => void;
   isPurchasing: boolean;
   isRestoring: boolean;
+  previewMode: boolean;
 }) {
   const busy = isPurchasing || isRestoring;
   const selectedPeriod = selectedPackage ? getPackagePeriod(selectedPackage) : null;
@@ -659,6 +662,36 @@ function PremiumOfferContent({
             );
           })}
         </View>
+      ) : previewMode ? (
+        <View style={styles.planGrid}>
+          {[
+            { id: "annual-preview", name: "Plan anual", recommended: true },
+            { id: "monthly-preview", name: "Plan mensual", recommended: false },
+          ].map((item) => (
+            <View
+              key={item.id}
+              style={[
+                styles.planCard,
+                item.recommended && styles.planCardSelected,
+                styles.previewPlanCard,
+              ]}
+            >
+              {item.recommended ? (
+                <View style={styles.recommendedPill}>
+                  <Text style={styles.recommendedText}>RECOMENDADO</Text>
+                </View>
+              ) : null}
+              <View style={[styles.planRadio, item.recommended && styles.planRadioSelected]}>
+                {item.recommended ? <View style={styles.planRadioDot} /> : null}
+              </View>
+              <Text style={styles.planName}>{item.name}</Text>
+              <Text style={styles.previewPlanPrice}>Precio de la tienda</Text>
+              <Text style={styles.planPeriod}>
+                {item.recommended ? "por año" : "por mes"}
+              </Text>
+            </View>
+          ))}
+        </View>
       ) : (
         <View style={styles.offerUnavailable}>
           <Feather name="wifi-off" size={22} color={MEMBERSHIP_AURORA.premium.accent} />
@@ -704,17 +737,17 @@ function PremiumOfferContent({
 
       <Pressable
         onPress={onPurchase}
-        disabled={!selectedPackage || busy}
+        disabled={!selectedPackage || busy || previewMode}
         accessibilityRole="button"
         accessibilityLabel={
           selectedPackage
             ? `Comenzar Premium, ${selectedPackage.product.priceString} ${selectedPeriod}`
             : "Comenzar Premium"
         }
-        accessibilityState={{ disabled: !selectedPackage || busy }}
+        accessibilityState={{ disabled: !selectedPackage || busy || previewMode }}
         style={({ pressed }) => [
           styles.purchaseButton,
-          (!selectedPackage || busy) && styles.purchaseButtonDisabled,
+          (!selectedPackage || busy || previewMode) && styles.purchaseButtonDisabled,
           pressed && selectedPackage && !busy && styles.manageButtonPressed,
         ]}
       >
@@ -727,7 +760,9 @@ function PremiumOfferContent({
         {isPurchasing ? (
           <ActivityIndicator color="#F9F9F9" />
         ) : (
-          <Text style={styles.manageButtonText}>Comenzar Premium</Text>
+          <Text style={styles.manageButtonText}>
+            {previewMode ? "Vista previa de Premium" : "Comenzar Premium"}
+          </Text>
         )}
       </Pressable>
 
@@ -736,22 +771,30 @@ function PremiumOfferContent({
           Se cobrará {selectedPackage.product.priceString} {selectedPeriod} y se renovará automáticamente
           hasta que canceles desde tu cuenta de la tienda.
         </Text>
+      ) : previewMode ? (
+        <Text style={styles.purchaseDisclosure}>
+          Vista de desarrollo. Los precios y la compra aparecerán al conectar RevenueCat Test Store.
+        </Text>
       ) : null}
 
       <View style={styles.offerFooterActions}>
-        <Pressable
-          onPress={onRestore}
-          disabled={busy}
-          accessibilityRole="button"
-          style={({ pressed }) => [styles.offerFooterButton, pressed && styles.pressed]}
-        >
-          {isRestoring ? (
-            <ActivityIndicator size="small" color="#F9F9F9" />
-          ) : (
-            <Text style={styles.offerFooterText}>Restaurar compras</Text>
-          )}
-        </Pressable>
-        <View style={styles.offerFooterDot} />
+        {!previewMode ? (
+          <>
+            <Pressable
+              onPress={onRestore}
+              disabled={busy}
+              accessibilityRole="button"
+              style={({ pressed }) => [styles.offerFooterButton, pressed && styles.pressed]}
+            >
+              {isRestoring ? (
+                <ActivityIndicator size="small" color="#F9F9F9" />
+              ) : (
+                <Text style={styles.offerFooterText}>Restaurar compras</Text>
+              )}
+            </Pressable>
+            <View style={styles.offerFooterDot} />
+          </>
+        ) : null}
         <Pressable
           onPress={() => router.push("/terminos" as never)}
           accessibilityRole="link"
@@ -1140,6 +1183,9 @@ const styles = StyleSheet.create({
     borderColor: MEMBERSHIP_AURORA.premium.accent,
     backgroundColor: "rgba(231,185,92,0.11)",
   },
+  previewPlanCard: {
+    opacity: 0.9,
+  },
   planCardPressed: {
     opacity: 0.82,
   },
@@ -1195,6 +1241,13 @@ const styles = StyleSheet.create({
     fontSize: 20,
     lineHeight: 27,
     fontWeight: "800",
+  },
+  previewPlanPrice: {
+    color: "#F9F9F9",
+    fontFamily: "Manrope",
+    fontSize: 13,
+    lineHeight: 20,
+    fontWeight: "700",
   },
   planPeriod: {
     color: "#D3CFD8",
