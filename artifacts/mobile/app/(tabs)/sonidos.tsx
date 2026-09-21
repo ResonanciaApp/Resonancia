@@ -452,37 +452,40 @@ export default function SonidosScreen() {
                   onViewAll={() => openCategory(`/sound-tag/${collection.id}`)}
                 />
                 {index === 1 ? (
-                  <Pressable
-                    onPress={() => router.push("/membresia" as never)}
-                    accessibilityRole="button"
-                    accessibilityLabel="Suscríbete al Plan Premium"
-                    style={({ pressed }) => [
-                      styles.premiumBanner,
-                      { opacity: pressed ? 0.82 : 1 },
-                    ]}
-                  >
-                    <View style={styles.premiumBannerIcon}>
-                      <MaterialCommunityIcons
-                        name="star"
-                        color={MEMBERSHIP_AURORA.premium.accent}
-                        size={30}
+                  <>
+                    <View style={styles.sectionDivider} />
+                    <Pressable
+                      onPress={() => router.push("/membresia" as never)}
+                      accessibilityRole="button"
+                      accessibilityLabel="Suscríbete al Plan Premium"
+                      style={({ pressed }) => [
+                        styles.premiumBanner,
+                        { opacity: pressed ? 0.82 : 1 },
+                      ]}
+                    >
+                      <View style={styles.premiumBannerIcon}>
+                        <MaterialCommunityIcons
+                          name="star"
+                          color={MEMBERSHIP_AURORA.premium.accent}
+                          size={30}
+                        />
+                      </View>
+                      <View style={styles.premiumBannerCopy}>
+                        <Text style={styles.premiumBannerTitle}>
+                          Suscríbete al{" "}
+                          <Text style={styles.premiumBannerAccent}>Plan Premium</Text>
+                        </Text>
+                        <Text style={styles.premiumBannerSubtitle}>
+                          Accede a una librería de más de 300 sonidos ambientales de Chile y el mundo
+                        </Text>
+                      </View>
+                      <Feather
+                        name="chevron-right"
+                        size={20}
+                        color="rgba(249,249,249,0.7)"
                       />
-                    </View>
-                    <View style={styles.premiumBannerCopy}>
-                      <Text style={styles.premiumBannerTitle}>
-                        Suscríbete al{" "}
-                        <Text style={styles.premiumBannerAccent}>Plan Premium</Text>
-                      </Text>
-                      <Text style={styles.premiumBannerSubtitle}>
-                        Accede a más de 500 sesiones de música, meditación y sonidos para relajarte
-                      </Text>
-                    </View>
-                    <Feather
-                      name="chevron-right"
-                      size={20}
-                      color="rgba(249,249,249,0.7)"
-                    />
-                  </Pressable>
+                    </Pressable>
+                  </>
                 ) : null}
               </React.Fragment>
             ))}
