@@ -1755,7 +1755,10 @@ const Inicio2HeroStatic = React.memo(function Inicio2HeroStatic({
           <Pressable
             onPress={onOpenDrawer}
             hitSlop={10}
-            style={styles.inicio2HeroAvatarButton}
+            style={[
+              styles.inicio2HeroAvatarButton,
+              isInicio3 && styles.inicio3HeroAvatarButtonBorder,
+            ]}
             accessibilityRole="button"
             accessibilityLabel="Abrir menú"
             testID="inicio2-avatar-open-drawer"
@@ -3544,6 +3547,11 @@ const styles = StyleSheet.create({
   },
   inicio2HeroAvatarButton: {
     position: "relative",
+  },
+  inicio3HeroAvatarButtonBorder: {
+    borderWidth: 2,
+    borderColor: "rgba(255,255,255,0.2)",
+    borderRadius: 23,
   },
   inicio2HeroPremiumBadge: {
     position: "absolute",
