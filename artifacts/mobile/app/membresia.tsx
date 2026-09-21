@@ -43,23 +43,42 @@ function resolvePlanLabel(packageType?: string, subscriptionPeriod?: string | nu
 const SUBSCRIPTION_BENEFITS = [
   {
     icon: "book-open",
-    text: "Explora sin límites nuestra biblioteca de bienestar y transformación.",
+    parts: [
+      { text: "Explora " },
+      { text: "sin límites", bold: true },
+      { text: " nuestra biblioteca de bienestar y transformación." },
+    ],
   },
   {
     icon: "download",
-    text: "Descarga tus contenidos favoritos para continuar tu práctica donde estés.",
+    parts: [
+      { text: "Descarga", bold: true },
+      { text: " tus contenidos favoritos para continuar tu práctica donde estés." },
+    ],
   },
   {
     icon: "sliders",
-    text: "Mezclador de sonidos desbloqueado con sonidos de la Tierra y el Universo.",
+    parts: [
+      { text: "Mezclador de sonidos", bold: true },
+      { text: " desbloqueado con sonidos de la Tierra y el Universo." },
+    ],
   },
   {
     icon: "edit-3",
-    text: "Diario avanzado de reflexiones y generación de historias para Instagram.",
+    parts: [
+      { text: "Diario avanzado", bold: true },
+      { text: " de reflexiones y generación de historias para Instagram." },
+    ],
   },
   {
     icon: "video",
-    text: "Acceso a clases y sesiones online con los Resonadores.",
+    parts: [
+      { text: "Acceso a clases y sesiones " },
+      { text: "online", bold: true },
+      { text: " con los " },
+      { text: "Resonadores", bold: true },
+      { text: "." },
+    ],
   },
 ] as const;
 
@@ -207,7 +226,12 @@ export default function MembresiaScreen() {
             )}
           </View>
 
-          <Text style={styles.benefitsTitle}>Tu suscripción incluye:</Text>
+          <View style={styles.benefitsTitleRow}>
+            <View style={styles.benefitsCheck}>
+              <Feather name="check" size={17} color="#3E9E85" />
+            </View>
+            <Text style={styles.benefitsTitle}>Tu suscripción incluye:</Text>
+          </View>
           <View style={styles.benefitsCard}>
             {SUBSCRIPTION_BENEFITS.map((benefit) => (
               <View key={benefit.icon} style={styles.benefitRow}>
@@ -218,7 +242,16 @@ export default function MembresiaScreen() {
                     color={MEMBERSHIP_AURORA.premium.accent}
                   />
                 </View>
-                <Text style={styles.benefitText}>{benefit.text}</Text>
+                <Text style={styles.benefitText}>
+                  {benefit.parts.map((part, index) => (
+                    <Text
+                      key={`${benefit.icon}-${index}`}
+                      style={"bold" in part && part.bold ? styles.benefitTextBold : undefined}
+                    >
+                      {part.text}
+                    </Text>
+                  ))}
+                </Text>
               </View>
             ))}
           </View>
@@ -378,10 +411,23 @@ const styles = StyleSheet.create({
     fontFamily: "Manrope",
     fontSize: 13,
   },
-  benefitsTitle: {
+  benefitsTitleRow: {
     marginTop: 26,
     marginBottom: 17,
-    transform: [{ translateY: 15 }],
+    transform: [{ translateY: 22 }],
+    flexDirection: "row",
+    alignItems: "center",
+    gap: 10,
+  },
+  benefitsCheck: {
+    width: 27,
+    height: 27,
+    borderRadius: 13.5,
+    alignItems: "center",
+    justifyContent: "center",
+    backgroundColor: "#F9F9F9",
+  },
+  benefitsTitle: {
     color: "#F9F9F9",
     fontFamily: "Manrope",
     fontSize: 17,
@@ -415,6 +461,9 @@ const styles = StyleSheet.create({
     fontSize: 13,
     lineHeight: 19,
     fontWeight: "400",
+  },
+  benefitTextBold: {
+    fontWeight: "800",
   },
   pressed: {
     opacity: 0.72,
