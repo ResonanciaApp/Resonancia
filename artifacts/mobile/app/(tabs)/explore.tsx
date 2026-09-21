@@ -869,7 +869,9 @@ export function ExploreScreen({
 
           <View style={[styles.sectionDivider, styles.centeredResonadoresDivider]} />
 
-          <SoundPremiumBanner />
+          <View style={{ marginTop: 10 }}>
+            <SoundPremiumBanner />
+          </View>
 
           {/* ── Descubre algo nuevo (al final de la página) — oculta a pedido del usuario ── */}
           {false && (

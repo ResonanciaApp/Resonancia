@@ -5,6 +5,8 @@ import React, { useMemo, useRef, useState } from "react";
 import { Animated, Pressable, StyleSheet, Text, View } from "react-native";
 
 import { usePlayer } from "@/context/PlayerContext";
+import { getArtist } from "@/data/artists";
+import { getGuide } from "@/data/guides";
 import { getSessionById } from "@/data/sessions";
 import { useSceneTheme } from "@/context/SceneThemeContext";
 import { isIndigoThemeId } from "@/config/scene-themes";
@@ -15,8 +17,8 @@ import { dedupeCompletedHistoryByDay } from "@/lib/history-calendar";
 import { SessionDurationBadge } from "@/components/SessionDurationBadge";
 import { CinematicFadeSlide } from "@/components/CinematicFadeSlide";
 
-const WEEK_LABELS = ["LUN.", "MAR.", "MIÉ.", "JUE.", "VIE.", "SÁB.", "DOM."];
-const EMBEDDED_WEEK_LABELS = ["L", "M", "M", "J", "V", "S", "D"];
+const WEEK_LABELS = ["LUN", "MAR", "MIER", "JUE", "VIE", "SAB", "DOM"];
+const EMBEDDED_WEEK_LABELS = ["LUN", "MAR", "MIER", "JUE", "VIE", "SAB", "DOM"];
 function isSameDay(a: Date, b: Date): boolean {
   return dayKey(a) === dayKey(b);
 }
@@ -152,7 +154,7 @@ function DayCell({
     <Pressable
       onPress={handlePress}
         disabled={isFuture}
-      style={styles.dayCell}
+      style={[styles.dayCell, embedded && styles.embeddedDayCell]}
       accessibilityRole="button"
       accessibilityLabel={`${d.toLocaleDateString("es-CL", { day: "numeric", month: "long" })}${hasCompleted ? ", con sesión completada" : ""}`}
         accessibilityState={{ selected: isSelected, disabled: isFuture }}
@@ -184,6 +186,7 @@ function DayCell({
         <Text
           style={[
             styles.dayNum,
+            embedded && styles.embeddedDayNum,
             {
               color: isFuture
                 ? "rgba(255,255,255,0.24)"
@@ -401,9 +404,16 @@ export function HistorialCalendar({
             replayKey={`${entranceReplayKey}:week-${wi}`}
             delay={entranceBaseDelay + 360 + wi * 150}
           >
-            <View style={styles.daysGrid}>
+            <View style={[styles.daysGrid, embedded && styles.embeddedDaysGrid]}>
               {week.map((d, i) => {
-                if (!d) return <View key={`empty-${wi}-${i}`} style={styles.dayCell} />;
+                if (!d) {
+                  return (
+                    <View
+                      key={`empty-${wi}-${i}`}
+                      style={[styles.dayCell, embedded && styles.embeddedDayCell]}
+                    />
+                  );
+                }
                 return (
                   <DayCell
                     key={dayKey(d)}
@@ -523,6 +533,16 @@ export function HistorialCalendar({
           const session = getSessionById(entry.sessionId);
           if (!session) return null;
           const fav = isFavorite(session.id);
+          const guideIds = session.guideIds?.length
+            ? session.guideIds
+            : session.guideId
+              ? [session.guideId]
+              : [];
+          const authorName = guideIds.length
+            ? guideIds.map((guideId) => getGuide(guideId).name).join(" · ")
+            : session.artistId
+              ? getArtist(session.artistId).name
+              : session.subtitle ?? "Casa del Cuenco";
           return (
             <Pressable
               key={`${entry.sessionId}-${entry.playedAt}-${i}`}
@@ -547,6 +567,12 @@ export function HistorialCalendar({
                 </Text>
                 <Text style={[styles.entryTitle, { color: colors.foreground }]} numberOfLines={1}>
                   {session.title}
+                </Text>
+                <Text
+                  style={[styles.entryAuthor, { color: colors.mutedForeground }]}
+                  numberOfLines={1}
+                >
+                  {authorName}
                 </Text>
               </View>
               <FavoriteHeartButton favorited={fav} onToggle={() => toggleFavorite(session.id)} />
@@ -615,25 +641,36 @@ const styles = StyleSheet.create({
   weekRow: {
     flexDirection: "row",
     marginBottom: 6,
+    marginHorizontal: -4,
   },
-  embeddedWeekRow: { marginTop: 10 },
+  embeddedWeekRow: {
+    marginTop: 10,
+    marginHorizontal: -4,
+  },
   weekLabel: {
     fontFamily: "Manrope",
     flex: 1,
-    fontSize: 10,
-    fontWeight: "600",
+    fontSize: 13,
+    fontWeight: "700",
     textAlign: "center",
     letterSpacing: 0.3,
   },
   daysGrid: {
     flexDirection: "row",
     flexWrap: "nowrap",
+    marginHorizontal: -4,
+  },
+  embeddedDaysGrid: {
+    marginHorizontal: -4,
   },
   dayCell: {
     flex: 1,
     alignItems: "center",
     justifyContent: "center",
-    paddingVertical: 5,
+    paddingVertical: 7,
+  },
+  embeddedDayCell: {
+    paddingVertical: 7,
   },
   dayCircle: {
     width: 30,
@@ -642,7 +679,10 @@ const styles = StyleSheet.create({
     alignItems: "center",
     justifyContent: "center",
   },
-  dayNum: { fontFamily: "Manrope", fontSize: 13, fontWeight: "500" },
+  dayNum: { fontFamily: "Manrope", fontSize: 17, fontWeight: "500" },
+  embeddedDayNum: {
+    fontSize: 17,
+  },
   emptyWrap: {
     borderRadius: 16,
     paddingVertical: 32,
@@ -719,10 +759,15 @@ const styles = StyleSheet.create({
     paddingVertical: 12,
   },
   entryThumb: {
-    width: 77,
-    height: 77,
+    width: 85,
+    height: 85,
     borderRadius: 14,
   },
   entryTime: { fontFamily: "Manrope", fontSize: 11, marginBottom: 5 },
   entryTitle: { fontFamily: "Manrope", fontSize: 13, fontWeight: "700" },
+  entryAuthor: {
+    fontFamily: "Manrope",
+    fontSize: 12,
+    marginTop: 4,
+  },
 });
