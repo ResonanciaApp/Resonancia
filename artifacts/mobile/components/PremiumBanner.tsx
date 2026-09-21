@@ -224,7 +224,7 @@ export default function PremiumBanner({
             sleepVariant && styles.sleepButtonWrap,
             !sleepVariant && styles.defaultButtonWrap,
             {
-              width: Math.max(200, viewportWidth - 195),
+              width: Math.max(178, viewportWidth - 217),
               alignSelf: "center",
             },
             { opacity: pressed ? 0.88 : 1 },

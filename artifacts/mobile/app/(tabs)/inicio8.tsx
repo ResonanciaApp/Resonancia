@@ -3256,9 +3256,6 @@ export default function HomeScreen2({
             }}
           />
         )}
-        {variant === "inicio3" && (
-          <View style={styles.inicio3LowerStandaloneDivider} />
-        )}
         {isInicio2 && variant !== "inicio3" && (
           <View style={{ paddingTop: INICIO2_SECTION_GAP }}>
             <SessionCarousel
@@ -3284,7 +3281,7 @@ export default function HomeScreen2({
           </View>
         )}
         {isInicio2 && (
-          <View>
+          <View style={variant === "inicio3" ? { marginTop: 58 } : undefined}>
             <DailyWisdomCard
               backgroundColor="rgba(0,0,0,0.25)"
               decorativeGradient={variant === "inicio3"}
@@ -3292,7 +3289,12 @@ export default function HomeScreen2({
           </View>
         )}
         {/* ── BANNER PREMIUM ── */}
-        <View style={{ marginBottom: isInicio2 ? INICIO2_SECTION_GAP : SECTION_GAP }}>
+        <View
+          style={{
+            marginTop: -25,
+            marginBottom: isInicio2 ? INICIO2_SECTION_GAP : SECTION_GAP,
+          }}
+        >
           <PremiumBanner />
         </View>
         {/* ── ESCENAS ANIMADAS ── (se muestran en EscenasSheet) */}
