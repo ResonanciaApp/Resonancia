@@ -118,7 +118,7 @@ export default function MembresiaScreen() {
   const manageOverlayOpacity = React.useRef(new Animated.Value(0)).current;
   const manageSheetTranslateY = React.useRef(new Animated.Value(520)).current;
   const benefitsOpacity = React.useRef(new Animated.Value(0)).current;
-  const benefitsScale = React.useRef(new Animated.Value(0.96)).current;
+  const benefitsTranslateY = React.useRef(new Animated.Value(620)).current;
   const topPad = Platform.OS === "web" ? 67 : Math.max(insets.top, 40);
   const backgroundColors = theme.gradient as unknown as [string, string, ...string[]];
   const entitlement =
@@ -271,7 +271,7 @@ export default function MembresiaScreen() {
 
   const openBenefits = () => {
     benefitsOpacity.setValue(0);
-    benefitsScale.setValue(0.96);
+    benefitsTranslateY.setValue(620);
     setBenefitsMounted(true);
     requestAnimationFrame(() => {
       Animated.parallel([
@@ -281,11 +281,11 @@ export default function MembresiaScreen() {
           easing: Easing.out(Easing.cubic),
           useNativeDriver: true,
         }),
-        Animated.spring(benefitsScale, {
-          toValue: 1,
-          damping: 18,
-          stiffness: 180,
-          mass: 0.8,
+        Animated.spring(benefitsTranslateY, {
+          toValue: 0,
+          damping: 22,
+          stiffness: 170,
+          mass: 0.9,
           useNativeDriver: true,
         }),
       ]).start();
@@ -300,9 +300,9 @@ export default function MembresiaScreen() {
         easing: Easing.in(Easing.cubic),
         useNativeDriver: true,
       }),
-      Animated.timing(benefitsScale, {
-        toValue: 0.96,
-        duration: 210,
+      Animated.timing(benefitsTranslateY, {
+        toValue: 620,
+        duration: 280,
         easing: Easing.in(Easing.cubic),
         useNativeDriver: true,
       }),
@@ -594,7 +594,7 @@ export default function MembresiaScreen() {
             style={[StyleSheet.absoluteFill, { opacity: benefitsOpacity }]}
           >
             <BlurView
-              intensity={48}
+              intensity={26}
               tint="dark"
               experimentalBlurMethod="dimezisBlurView"
               style={StyleSheet.absoluteFill}
@@ -613,12 +613,12 @@ export default function MembresiaScreen() {
               styles.benefitsDialog,
               {
                 opacity: benefitsOpacity,
-                transform: [{ scale: benefitsScale }],
+                transform: [{ translateY: benefitsTranslateY }],
               },
             ]}
           >
             <BlurView
-              intensity={52}
+              intensity={42}
               tint="dark"
               experimentalBlurMethod="dimezisBlurView"
               style={StyleSheet.absoluteFill}
@@ -655,7 +655,7 @@ export default function MembresiaScreen() {
                       color={MEMBERSHIP_AURORA.premium.accent}
                     />
                   </View>
-                  <Text style={styles.benefitText}>
+                  <Text style={[styles.benefitText, styles.benefitsDialogText]}>
                     {benefit.parts.map((part, index) => (
                       <Text
                         key={`${benefit.icon}-dialog-${index}`}
@@ -1439,7 +1439,7 @@ const styles = StyleSheet.create({
   },
   benefitsBackdropTint: {
     ...StyleSheet.absoluteFillObject,
-    backgroundColor: "rgba(0,0,0,0.58)",
+    backgroundColor: "rgba(0,0,0,0.32)",
   },
   benefitsDialog: {
     width: "100%",
@@ -1457,7 +1457,7 @@ const styles = StyleSheet.create({
     elevation: 24,
   },
   benefitsDialogTint: {
-    backgroundColor: "rgba(0,0,0,0.76)",
+    backgroundColor: "rgba(0,0,0,0.60)",
   },
   benefitsDialogHeader: {
     minHeight: 72,
@@ -1471,8 +1471,8 @@ const styles = StyleSheet.create({
   benefitsDialogTitle: {
     color: "#F9F9F9",
     fontFamily: "Manrope",
-    fontSize: 19,
-    lineHeight: 25,
+    fontSize: 18,
+    lineHeight: 24,
     fontWeight: "800",
   },
   benefitsDialogClose: {
@@ -1480,13 +1480,19 @@ const styles = StyleSheet.create({
     right: 16,
     width: 40,
     height: 40,
+    borderRadius: 20,
     alignItems: "center",
     justifyContent: "center",
+    backgroundColor: "rgba(255,255,255,0.10)",
   },
   benefitsDialogList: {
     paddingHorizontal: 20,
     paddingTop: 10,
     paddingBottom: 18,
+  },
+  benefitsDialogText: {
+    fontSize: 12,
+    lineHeight: 18,
   },
   manageOverlay: {
     ...StyleSheet.absoluteFillObject,
