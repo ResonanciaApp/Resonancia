@@ -104,11 +104,15 @@ function PlayingDot() {
   );
 }
 
-function LockStar() {
+function LockStar({ ambiental = false }: { ambiental?: boolean }) {
   return (
     <Image
       source={require("../assets/images/estrella-premium.png")}
-      style={[styles.lockBadge, { width: 22, height: 22 }]}
+      style={[
+        styles.lockBadge,
+        ambiental && styles.ambientalLockBadge,
+        { width: 22, height: 22 },
+      ]}
       contentFit="contain"
     />
   );
@@ -188,7 +192,7 @@ export function SessionCard({ session, width = 200, horizontal = false, tint, ca
       >
         <View style={{ width: thumbWidth, height: thumbHeight, borderRadius: thumbRadius, overflow: "hidden" }}>
           <Image source={session.image} style={{ width: "100%", height: "100%" }} contentFit="cover" placeholder={BLUR_PLACEHOLDER} transition={IMAGE_TRANSITION} />
-          {showPremiumBadge && <LockStar />}
+          {showPremiumBadge && <LockStar ambiental={isAmbiental} />}
           {showDuration && durationWhiteGlass ? (
             <SessionDurationBadge
               label={session.durationLabel}
@@ -392,7 +396,7 @@ export function SessionCard({ session, width = 200, horizontal = false, tint, ca
             textStyle={styles.durationBadgeText}
           />
         ) : null}
-        {showPremiumBadge && <LockStar />}
+        {showPremiumBadge && <LockStar ambiental={isAmbiental} />}
       </View>
       {isEditorial ? null : squareMetaBelow ? (
         <View style={styles.squareMeta}>
@@ -794,5 +798,10 @@ const styles = StyleSheet.create({
     textShadowColor: "rgba(0,0,0,0.65)",
     textShadowOffset: { width: 0, height: 1 },
     textShadowRadius: 3,
+  },
+  ambientalLockBadge: {
+    top: 18,
+    left: 18,
+    right: undefined,
   },
 });

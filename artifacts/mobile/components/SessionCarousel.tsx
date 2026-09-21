@@ -1029,7 +1029,7 @@ export const SessionCarousel = React.memo(function SessionCarousel({
                 {(DEV_SHOW_ALL_SESSION_PREMIUM_BADGES || locked) && (
                   <Image
                     source={require("@/assets/images/estrella-premium.png")}
-                    style={styles.star}
+                     style={[styles.star, isAmbiental && styles.ambientalStar]}
                     contentFit="contain"
                   />
                 )}
@@ -1286,6 +1286,11 @@ const styles = StyleSheet.create({
     right: 6,
     width: 22,
     height: 22,
+  },
+  ambientalStar: {
+    top: 18,
+    left: 18,
+    right: undefined,
   },
   durBadge: {
     position: "absolute",
