@@ -1043,7 +1043,7 @@ const styles = StyleSheet.create({
     fontWeight: "800",
   },
   offerBrandOffset: {
-    height: 50,
+    height: 100,
   },
   offerHero: {
     paddingHorizontal: 24,
@@ -1128,15 +1128,15 @@ const styles = StyleSheet.create({
     gap: 11,
   },
   planOffset: {
-    height: 70,
+    height: 140,
   },
   planCard: {
     width: "100%",
-    minHeight: 67,
+    minHeight: 52,
     overflow: "hidden",
     borderRadius: 21,
     paddingHorizontal: 18,
-    paddingVertical: 8,
+    paddingVertical: 4,
     flexDirection: "row",
     alignItems: "center",
     gap: 13,
@@ -1228,7 +1228,7 @@ const styles = StyleSheet.create({
     lineHeight: 18,
   },
   purchaseButton: {
-    height: 58,
+    height: 50,
     marginTop: 29,
     borderRadius: 21,
     overflow: "hidden",
