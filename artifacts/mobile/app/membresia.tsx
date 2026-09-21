@@ -124,8 +124,7 @@ export default function MembresiaScreen() {
       availablePackages
         .filter((candidate) =>
           candidate.packageType === "ANNUAL"
-          || candidate.packageType === "MONTHLY"
-          || candidate.packageType === "WEEKLY",
+          || candidate.packageType === "MONTHLY",
         )
         .sort((a, b) => {
         const rank = (candidate: PurchasesPackage) =>
@@ -269,19 +268,7 @@ export default function MembresiaScreen() {
     >
       <StatusBar barStyle="light-content" translucent backgroundColor="transparent" />
 
-      {isOfferScreen ? (
-        <View style={[styles.offerHeader, { paddingTop: topPad + 8 }]}>
-          <Pressable
-            onPress={() => router.back()}
-            hitSlop={10}
-            style={({ pressed }) => [styles.offerCloseButton, pressed && styles.pressed]}
-            accessibilityRole="button"
-            accessibilityLabel="Cerrar"
-          >
-            <Feather name="x" size={29} color="#FFFFFF" />
-          </Pressable>
-        </View>
-      ) : (
+      {!isOfferScreen ? (
       <View style={[styles.header, { paddingTop: topPad + 8 }]}>
         <Pressable
           onPress={() => router.back()}
@@ -300,7 +287,7 @@ export default function MembresiaScreen() {
         <Text style={[styles.headerTitle, { color: colors.foreground }]}>Suscripción</Text>
         <View style={styles.headerSpacer} />
       </View>
-      )}
+      ) : null}
 
       <ScrollView
         style={styles.scroll}
@@ -308,6 +295,19 @@ export default function MembresiaScreen() {
         showsVerticalScrollIndicator={false}
       >
         <View style={[styles.content, isOfferScreen && styles.offerScreenContent]}>
+          {isOfferScreen ? (
+            <View style={[styles.offerInlineHeader, { paddingTop: topPad + 8 }]}>
+              <Pressable
+                onPress={() => router.back()}
+                hitSlop={10}
+                style={({ pressed }) => [styles.offerCloseButton, pressed && styles.pressed]}
+                accessibilityRole="button"
+                accessibilityLabel="Cerrar"
+              >
+                <Feather name="x" size={29} color="#FFFFFF" />
+              </Pressable>
+            </View>
+          ) : null}
           {!isOfferScreen ? <View style={styles.premiumHeading}>
             <MaterialCommunityIcons
               name="star"
@@ -536,7 +536,6 @@ export default function MembresiaScreen() {
 function getPackageLabel(item: PurchasesPackage) {
   if (item.packageType === "ANNUAL") return "Plan anual";
   if (item.packageType === "MONTHLY") return "Plan mensual";
-  if (item.packageType === "WEEKLY") return "Plan semanal";
   return item.product.title || "Plan Premium";
 }
 
@@ -546,9 +545,6 @@ function getPackagePeriod(item: PurchasesPackage) {
   }
   if (item.packageType === "MONTHLY" || item.product.subscriptionPeriod === "P1M") {
     return "por mes";
-  }
-  if (item.packageType === "WEEKLY" || item.product.subscriptionPeriod === "P1W") {
-    return "por semana";
   }
   return "por período";
 }
@@ -623,16 +619,12 @@ function PremiumOfferContent({
           />
         </LinearGradient>
         <Text style={styles.offerBrand}>Resonancia</Text>
-        <Text style={styles.offerSubtitle}>
-          Accede a más de 500 sesiones creadas para expandir tu consciencia y potenciar tu bienestar
-        </Text>
       </View>
 
       {packages.length > 0 ? (
         <View style={styles.planGrid}>
           {packages.map((item) => {
             const selected = selectedPackage?.identifier === item.identifier;
-            const recommended = item.packageType === "ANNUAL";
             return (
               <Pressable
                 key={item.identifier}
@@ -646,6 +638,21 @@ function PremiumOfferContent({
                   pressed && !busy && styles.planCardPressed,
                 ]}
               >
+                <BlurView
+                  intensity={38}
+                  tint="light"
+                  experimentalBlurMethod="dimezisBlurView"
+                  style={StyleSheet.absoluteFill}
+                  pointerEvents="none"
+                />
+                <View
+                  pointerEvents="none"
+                  style={[
+                    StyleSheet.absoluteFill,
+                    styles.planGlassTint,
+                    selected && styles.planGlassTintSelected,
+                  ]}
+                />
                 <View style={[styles.planRadio, selected && styles.planRadioSelected]}>
                   {selected ? <View style={styles.planRadioDot} /> : null}
                 </View>
@@ -653,13 +660,6 @@ function PremiumOfferContent({
                   <Text style={[styles.planName, selected && styles.planTextSelected]}>
                     {getPackageLabel(item)}
                   </Text>
-                  {recommended ? (
-                    <View style={[styles.recommendedPill, selected && styles.recommendedPillSelected]}>
-                      <Text style={[styles.recommendedText, selected && styles.recommendedTextSelected]}>
-                        RECOMENDADO
-                      </Text>
-                    </View>
-                  ) : null}
                 </View>
                 <View style={styles.planPriceBlock}>
                   <Text style={[styles.planPrice, selected && styles.planTextSelected]}>
@@ -676,49 +676,52 @@ function PremiumOfferContent({
       ) : previewMode ? (
         <View style={styles.planGrid}>
           {[
-            { id: "monthly-preview", name: "Plan mensual", recommended: false },
-            { id: "annual-preview", name: "Plan anual", recommended: true },
-            { id: "weekly-preview", name: "Plan semanal", recommended: false },
+            { id: "monthly-preview", name: "Plan mensual", selected: false, price: "$5.990", period: "por mes" },
+            { id: "annual-preview", name: "Plan anual", selected: true, price: "$39.990", period: "por año" },
           ].map((item) => (
             <View
               key={item.id}
               style={[
                 styles.planCard,
-                item.recommended && styles.planCardSelected,
+                item.selected && styles.planCardSelected,
                 styles.previewPlanCard,
               ]}
             >
-              <View style={[styles.planRadio, item.recommended && styles.planRadioSelected]}>
-                {item.recommended ? <View style={styles.planRadioDot} /> : null}
+              <BlurView
+                intensity={38}
+                tint="light"
+                experimentalBlurMethod="dimezisBlurView"
+                style={StyleSheet.absoluteFill}
+                pointerEvents="none"
+              />
+              <View
+                pointerEvents="none"
+                style={[
+                  StyleSheet.absoluteFill,
+                  styles.planGlassTint,
+                  item.selected && styles.planGlassTintSelected,
+                ]}
+              />
+              <View style={[styles.planRadio, item.selected && styles.planRadioSelected]}>
+                {item.selected ? <View style={styles.planRadioDot} /> : null}
               </View>
               <View style={styles.planCopy}>
-                <Text style={[styles.planName, item.recommended && styles.planTextSelected]}>
+                <Text style={[styles.planName, item.selected && styles.planTextSelected]}>
                   {item.name}
                 </Text>
-                {item.recommended ? (
-                  <View style={[styles.recommendedPill, styles.recommendedPillSelected]}>
-                    <Text style={[styles.recommendedText, styles.recommendedTextSelected]}>
-                      RECOMENDADO
-                    </Text>
-                  </View>
-                ) : null}
               </View>
               <View style={styles.planPriceBlock}>
                 <Text style={[
-                  styles.previewPlanPrice,
-                  item.recommended && styles.planTextSelected,
+                  styles.planPrice,
+                  item.selected && styles.planTextSelected,
                 ]}>
-                  Precio de la tienda
+                  {item.price}
                 </Text>
                 <Text style={[
                   styles.planPeriod,
-                  item.recommended && styles.planPeriodSelected,
+                  item.selected && styles.planPeriodSelected,
                 ]}>
-                  {item.id === "annual-preview"
-                    ? "por año"
-                    : item.id === "weekly-preview"
-                      ? "por semana"
-                      : "por mes"}
+                  {item.period}
                 </Text>
               </View>
             </View>
@@ -834,9 +837,8 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     alignItems: "flex-end",
   },
-  offerHeader: {
+  offerInlineHeader: {
     minHeight: 62,
-    paddingHorizontal: 20,
     paddingBottom: 8,
     alignItems: "flex-end",
   },
@@ -1039,7 +1041,7 @@ const styles = StyleSheet.create({
   offerHero: {
     paddingHorizontal: 24,
     paddingTop: 26,
-    paddingBottom: 34,
+    paddingBottom: 20,
     alignItems: "center",
   },
   subscriptionUnavailable: {
@@ -1114,62 +1116,36 @@ const styles = StyleSheet.create({
     fontSize: 24,
     lineHeight: 31,
     fontWeight: "800",
-    marginBottom: 15,
-  },
-  offerSubtitle: {
-    maxWidth: 315,
-    color: "rgba(255,255,255,0.78)",
-    fontFamily: "Manrope",
-    fontSize: 13.5,
-    lineHeight: 21,
-    fontWeight: "400",
-    textAlign: "center",
   },
   planGrid: {
     gap: 11,
   },
   planCard: {
     width: "100%",
-    minHeight: 82,
+    minHeight: 67,
     overflow: "hidden",
     borderRadius: 21,
     paddingHorizontal: 18,
-    paddingVertical: 13,
+    paddingVertical: 8,
     flexDirection: "row",
     alignItems: "center",
     gap: 13,
-    backgroundColor: "#F8F7FA",
+    backgroundColor: "transparent",
   },
   planCardSelected: {
-    backgroundColor: PREMIUM_VIOLET,
+    backgroundColor: "transparent",
+  },
+  planGlassTint: {
+    backgroundColor: "rgba(255,255,255,0.60)",
+  },
+  planGlassTintSelected: {
+    backgroundColor: "rgba(107,80,210,0.60)",
   },
   previewPlanCard: {
-    opacity: 0.9,
+    opacity: 1,
   },
   planCardPressed: {
     opacity: 0.82,
-  },
-  recommendedPill: {
-    alignSelf: "flex-start",
-    borderRadius: 999,
-    paddingHorizontal: 9,
-    paddingVertical: 4,
-    marginTop: 5,
-    backgroundColor: "rgba(107,80,210,0.12)",
-  },
-  recommendedPillSelected: {
-    backgroundColor: "rgba(255,255,255,0.16)",
-  },
-  recommendedText: {
-    color: PREMIUM_VIOLET,
-    fontFamily: "Manrope",
-    fontSize: 8,
-    lineHeight: 11,
-    fontWeight: "800",
-    letterSpacing: 0.75,
-  },
-  recommendedTextSelected: {
-    color: "#FFFFFF",
   },
   planRadio: {
     width: 20,
@@ -1213,13 +1189,6 @@ const styles = StyleSheet.create({
     fontSize: 20,
     lineHeight: 27,
     fontWeight: "800",
-  },
-  previewPlanPrice: {
-    color: "#211B2B",
-    fontFamily: "Manrope",
-    fontSize: 13,
-    lineHeight: 20,
-    fontWeight: "700",
   },
   planPeriod: {
     color: "#746D7E",
