@@ -4,6 +4,7 @@ import { router } from "expo-router";
 import React, { useMemo } from "react";
 import {
   ActivityIndicator,
+  Linking,
   Platform,
   Pressable,
   ScrollView,
@@ -27,6 +28,8 @@ const DATE_FORMATTER = new Intl.DateTimeFormat("es-CL", {
   month: "long",
   year: "numeric",
 });
+
+const GIFT_GOLD_COLORS = ["#D8A84F", "#F3D58A", "#B9822F"] as const;
 
 function formatSubscriptionDate(value?: string | null) {
   if (!value) return "No disponible";
@@ -123,6 +126,12 @@ export default function MembresiaScreen() {
     : isSubscribed
       ? "La renovación automática está desactivada. Mantendrás el acceso hasta la fecha indicada."
       : "No tienes una suscripción Premium activa.";
+  const managementURL = customerInfo?.managementURL;
+
+  const handleManagePremium = async () => {
+    if (!managementURL) return;
+    await Linking.openURL(managementURL);
+  };
 
   return (
     <LinearGradient
@@ -252,6 +261,27 @@ export default function MembresiaScreen() {
               </View>
             ))}
           </View>
+
+          <Pressable
+            onPress={handleManagePremium}
+            disabled={!managementURL}
+            accessibilityRole="button"
+            accessibilityLabel="Gestionar Premium"
+            accessibilityState={{ disabled: !managementURL }}
+            style={({ pressed }) => [
+              styles.manageButton,
+              !managementURL && styles.manageButtonDisabled,
+              pressed && styles.manageButtonPressed,
+            ]}
+          >
+            <LinearGradient
+              colors={GIFT_GOLD_COLORS}
+              start={{ x: 0, y: 0.5 }}
+              end={{ x: 1, y: 0.5 }}
+              style={StyleSheet.absoluteFill}
+            />
+            <Text style={styles.manageButtonText}>Gestionar Premium</Text>
+          </Pressable>
         </View>
       </ScrollView>
     </LinearGradient>
@@ -449,6 +479,26 @@ const styles = StyleSheet.create({
     fontWeight: "400",
   },
   benefitTextBold: {
+    fontWeight: "800",
+  },
+  manageButton: {
+    height: 52,
+    marginTop: 22,
+    borderRadius: 14,
+    overflow: "hidden",
+    alignItems: "center",
+    justifyContent: "center",
+  },
+  manageButtonDisabled: {
+    opacity: 0.55,
+  },
+  manageButtonPressed: {
+    opacity: 0.84,
+  },
+  manageButtonText: {
+    color: "#FFFFFF",
+    fontFamily: "Manrope",
+    fontSize: 15,
     fontWeight: "800",
   },
   pressed: {
