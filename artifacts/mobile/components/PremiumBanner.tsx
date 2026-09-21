@@ -1,10 +1,12 @@
 import { Feather } from "@expo/vector-icons";
+import { BlurView } from "expo-blur";
 import { LinearGradient } from "expo-linear-gradient";
 import { Image } from "expo-image";
 import { router } from "expo-router";
 import { View, Text, Pressable, StyleSheet } from "react-native";
 
 import { usePremium } from "@/context/PremiumContext";
+import { MEMBERSHIP_AURORA } from "@/constants/colors";
 
 const IMAGES = [
   require("@/assets/images/sessions/session-1.jpg"),
@@ -118,14 +120,15 @@ export default function PremiumBanner() {
 
   return (
     <View style={styles.outer}>
-      <LinearGradient
-        colors={[P.bg1, P.bg0]}
-        start={{ x: 0, y: 0 }}
-        end={{ x: 0, y: 1 }}
-        style={styles.card}
-      >
-        {/* Top glow */}
-        <View style={styles.topGlow} />
+      <View style={styles.card}>
+        <BlurView
+          intensity={42}
+          tint="dark"
+          experimentalBlurMethod="dimezisBlurView"
+          style={StyleSheet.absoluteFill}
+          pointerEvents="none"
+        />
+        <View style={styles.blackGlassTint} pointerEvents="none" />
 
         {/* Eyebrow */}
         <Text style={[styles.eyebrow, { color: P.textMuted }]}>
@@ -134,7 +137,9 @@ export default function PremiumBanner() {
 
         {/* Premium title */}
         <View style={styles.titleRow}>
-          <Text style={[styles.title, { color: P.gold }]}>Premium</Text>
+          <Text style={[styles.title, { color: MEMBERSHIP_AURORA.premium.accent }]}>
+            Premium
+          </Text>
           <Image source={require("../assets/images/estrella-premium.png")} style={{ width: 26, height: 26, marginLeft: 10, marginTop: 6 }} contentFit="contain" />
         </View>
 
@@ -171,15 +176,15 @@ export default function PremiumBanner() {
           style={({ pressed }) => [styles.btnWrap, { opacity: pressed ? 0.88 : 1 }]}
         >
           <LinearGradient
-            colors={[P.btnFrom, P.btnTo]}
+            colors={["#F0C36A", MEMBERSHIP_AURORA.premium.accent]}
             start={{ x: 0, y: 0 }}
             end={{ x: 1, y: 0 }}
             style={styles.btn}
           >
-            <Text style={[styles.btnText, { color: P.gold }]}>Probar gratis</Text>
+            <Text style={[styles.btnText, styles.freeTrialButtonText]}>Probar gratis</Text>
           </LinearGradient>
         </Pressable>
-      </LinearGradient>
+      </View>
     </View>
   );
 }
@@ -192,7 +197,7 @@ const styles = StyleSheet.create({
     borderWidth: 0.6,
     borderColor: "rgba(169,122,52,0.28)",
     overflow: "hidden",
-    opacity: 0.82,
+    opacity: 1,
     shadowColor: "#06150F",
     shadowOffset: { width: 0, height: 6 },
     shadowOpacity: 0.6,
@@ -266,6 +271,11 @@ const styles = StyleSheet.create({
     paddingVertical: 30,
     paddingHorizontal: 22,
     alignItems: "center",
+    overflow: "hidden",
+  },
+  blackGlassTint: {
+    ...StyleSheet.absoluteFillObject,
+    backgroundColor: "rgba(0,0,0,0.58)",
   },
   topGlow: {
     position: "absolute",
@@ -345,5 +355,8 @@ const styles = StyleSheet.create({
     fontSize: 16,
     fontWeight: "700",
     letterSpacing: 0.3,
+  },
+  freeTrialButtonText: {
+    color: "#171109",
   },
 });
