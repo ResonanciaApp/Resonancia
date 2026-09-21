@@ -1,6 +1,7 @@
 import { MaterialCommunityIcons } from "@expo/vector-icons";
 import { Image as ExpoImage } from "expo-image";
 import { LinearGradient } from "expo-linear-gradient";
+import { router } from "expo-router";
 import React from "react";
 import {
   Dimensions,
@@ -72,6 +73,7 @@ function renderCategoryIcon(
   horizontal: boolean,
   forceWhite: boolean,
   sizeBoost = 0,
+  useSoundsIcon = false,
 ) {
   const color = forceWhite ? CATEGORY_ICON_COLOR : undefined;
   switch (category.id) {
@@ -126,8 +128,8 @@ function renderCategoryIcon(
     case "ambientales":
       return (
         <MaterialCommunityIcons
-          name="leaf"
-          size={(horizontal ? 15 : 24) + sizeBoost}
+          name={useSoundsIcon ? "waveform" : "leaf"}
+          size={(horizontal ? 15 : useSoundsIcon ? 30 : 24) + sizeBoost}
           color={color ?? category.color}
         />
       );
@@ -209,6 +211,9 @@ export function ContentCategoryGrid({
     if (category.id === "__descanzo__") openCategory("/(tabs)/descanzo");
     else if (category.id === "__mezcla__") openMixer();
     else if (category.id === "__geometrix__") openGeometrix();
+    else if (discoverTieredLayout && category.id === "ambientales") {
+      router.navigate("/(tabs)/sonidos");
+    }
     else openCategory(`/category/${category.id}`);
   };
 
@@ -225,22 +230,24 @@ export function ContentCategoryGrid({
       >
         <View style={styles.discoverGrid}>
           {visibleCategories.map((category) => {
+            const isSoundsShortcut = category.id === "ambientales";
+            const categoryLabel = isSoundsShortcut ? "Sonidos" : category.label;
             return (
               <PressScale
                 key={category.id}
                 testID={`content-category-${category.id}`}
                 accessibilityRole="button"
-                accessibilityLabel={category.label}
+                accessibilityLabel={categoryLabel}
                 onPress={() => openContentCategory(category)}
                 style={[styles.discoverCard, { width: cardWidth }]}
               >
                   <View style={[styles.discoverCardImage, { height: cardHeight, backgroundColor: catBlockBg }]}>
                     <View pointerEvents="none" style={styles.discoverCardContent}>
                       <View style={styles.discoverCardIcon}>
-                        {renderCategoryIcon(category, false, true, -2)}
+                        {renderCategoryIcon(category, false, true, -2, isSoundsShortcut)}
                       </View>
                       <Text style={styles.discoverCardTitle} numberOfLines={2}>
-                        {category.id === "meditaciones-guiadas" ? "Meditación" : category.label}
+                        {category.id === "meditaciones-guiadas" ? "Meditación" : categoryLabel}
                       </Text>
                     </View>
                  </View>
