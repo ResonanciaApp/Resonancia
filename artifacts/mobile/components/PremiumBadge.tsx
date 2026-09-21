@@ -7,6 +7,7 @@ import { StyleSheet, View } from "react-native";
 import { usePremium } from "@/context/PremiumContext";
 import { usePlayer } from "@/context/PlayerContext";
 import { type Session } from "@/data/sessions";
+import { DEV_SHOW_ALL_SESSION_PREMIUM_BADGES } from "@/constants/devVisualModes";
 
 export function useSessionGate(session: Session) {
   const { isPremium } = usePremium();
@@ -35,7 +36,9 @@ const GOLD = "#E5B84B";
 
 export function PremiumBadge({ session, size = 20, top = 8, right, left }: Props) {
   const { isPremium } = usePremium();
-  if (!session.isPremium || isPremium) return null;
+  const showBadge =
+    DEV_SHOW_ALL_SESSION_PREMIUM_BADGES || (session.isPremium && !isPremium);
+  if (!showBadge) return null;
   const pos = right != null ? { right } : { left: left ?? 8 };
   return (
     <FontAwesome

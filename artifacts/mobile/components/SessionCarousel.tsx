@@ -26,6 +26,8 @@ import {
   type ViewStyle,
 } from "react-native";
 
+import { DEV_SHOW_ALL_SESSION_PREMIUM_BADGES } from "@/constants/devVisualModes";
+
 const AnimatedPressable = RNAnimated.createAnimatedComponent(Pressable);
 const CANONICAL_AMBIENTAL_BORDER_RADIUS = 41;
 const AMBIENTAL_CONTENT_DROP = 10;
@@ -1024,7 +1026,7 @@ export const SessionCarousel = React.memo(function SessionCarousel({
                     whiteGlass={whiteMetadataGlass}
                   />
                 ) : null}
-                {locked && (
+                {(DEV_SHOW_ALL_SESSION_PREMIUM_BADGES || locked) && (
                   <Image
                     source={require("@/assets/images/estrella-premium.png")}
                     style={styles.star}

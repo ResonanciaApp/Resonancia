@@ -35,6 +35,7 @@ import {
   SessionCardMetadataOverlay,
 } from "@/components/SessionCardMetadataOverlay";
 import { PressScale } from "@/components/PressScale";
+import { DEV_SHOW_ALL_SESSION_PREMIUM_BADGES } from "@/constants/devVisualModes";
 
 type Props = {
   session: Session;
@@ -125,6 +126,7 @@ export function SessionCard({ session, width = 200, horizontal = false, tint, ca
   const { resonadores } = useResonadores();
   const { width: viewportWidth } = useWindowDimensions();
   const locked = !!session.isPremium && !isPremium;
+  const showPremiumBadge = DEV_SHOW_ALL_SESSION_PREMIUM_BADGES || locked;
   const handlePress = () => {
     if (locked) { router.push("/membresia" as never); return; }
     if (openForSession(session)) return;
@@ -186,7 +188,7 @@ export function SessionCard({ session, width = 200, horizontal = false, tint, ca
       >
         <View style={{ width: thumbWidth, height: thumbHeight, borderRadius: thumbRadius, overflow: "hidden" }}>
           <Image source={session.image} style={{ width: "100%", height: "100%" }} contentFit="cover" placeholder={BLUR_PLACEHOLDER} transition={IMAGE_TRANSITION} />
-          {locked && <LockStar />}
+          {showPremiumBadge && <LockStar />}
           {showDuration && durationWhiteGlass ? (
             <SessionDurationBadge
               label={session.durationLabel}
@@ -390,7 +392,7 @@ export function SessionCard({ session, width = 200, horizontal = false, tint, ca
             textStyle={styles.durationBadgeText}
           />
         ) : null}
-        {locked && <LockStar />}
+        {showPremiumBadge && <LockStar />}
       </View>
       {isEditorial ? null : squareMetaBelow ? (
         <View style={styles.squareMeta}>
