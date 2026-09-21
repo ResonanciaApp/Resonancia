@@ -254,7 +254,7 @@ const styles = StyleSheet.create({
   headerTitle: {
     flex: 1,
     fontFamily: "Manrope",
-    fontSize: 20,
+    fontSize: 17,
     lineHeight: 42,
     fontWeight: "700",
     textAlign: "center",
@@ -381,6 +381,7 @@ const styles = StyleSheet.create({
   benefitsTitle: {
     marginTop: 26,
     marginBottom: 17,
+    transform: [{ translateY: 15 }],
     color: "#F9F9F9",
     fontFamily: "Manrope",
     fontSize: 17,
