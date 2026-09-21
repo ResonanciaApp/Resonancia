@@ -158,7 +158,7 @@ export function SleepReminderSheet({
 
   const timeLabel = formatPracticeNotificationTimeLocal(draft.hour, draft.minute);
   const gradient = isMorning
-    ? ["#FFE3B3", "#FFB27D", "#FF8A6B", "#D96B8B"] as const
+    ? ["#D96F5F", "#9B526B", "#4A304F", "#171B2D"] as const
     : [
         theme.gradient[0] as string,
         theme.gradient[1] as string,
@@ -210,13 +210,13 @@ export function SleepReminderSheet({
            <Text style={styles.title}>
              {isMorning ? <>Trae tu atención{"\n"}al presente</> : <>Vuelve a ti,{"\n"}te ayudamos a recordarlo.</>}
            </Text>
-          <Text style={styles.description}>
+           <Text style={[styles.description, isMorning && styles.morningDescription]}>
              {isMorning
                ? "Medita al menos 3 minutos en la mañana y transforma tu vida"
                : "Te enviaremos recordatorios todos los días en los horarios que tú elijas."}
           </Text>
 
-          <View style={styles.reminderCard}>
+           <View style={[styles.reminderCard, isMorning && styles.morningReminderCard]}>
             <View style={styles.reminderHeader}>
               <View style={styles.reminderLabel}>
                  {isMorning ? (
@@ -241,7 +241,7 @@ export function SleepReminderSheet({
                 disabled={saving}
                 trackColor={{
                   false: "rgba(255,255,255,0.20)",
-                    true: isMorning ? "#FF8A6B" : "#7651D8",
+                    true: isMorning ? "#E98668" : "#7651D8",
                 }}
                 thumbColor="#FFFFFF"
                  accessibilityLabel={`Activar recordatorio para ${isMorning ? "meditar" : "dormir"}`}
@@ -416,6 +416,9 @@ const styles = StyleSheet.create({
     fontSize: 15,
     lineHeight: 22,
   },
+  morningDescription: {
+    color: "#F3DDE0",
+  },
   reminderCard: {
     marginTop: 20,
     padding: 18,
@@ -423,6 +426,9 @@ const styles = StyleSheet.create({
     backgroundColor: "rgba(255,255,255,0.14)",
     borderWidth: 1,
     borderColor: "rgba(255,255,255,0.10)",
+  },
+  morningReminderCard: {
+    backgroundColor: "rgba(20,18,32,0.36)",
   },
   reminderHeader: {
     flexDirection: "row",
@@ -532,7 +538,7 @@ const styles = StyleSheet.create({
     justifyContent: "center",
   },
   morningContinueButton: {
-    backgroundColor: "#D96B8B",
+    backgroundColor: "#C85F67",
   },
   continueText: {
     color: "#FFFFFF",
