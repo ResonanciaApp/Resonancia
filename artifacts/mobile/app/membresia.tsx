@@ -270,7 +270,6 @@ export default function MembresiaScreen() {
             accessibilityState={{ disabled: !managementURL }}
             style={({ pressed }) => [
               styles.manageButton,
-              !managementURL && styles.manageButtonDisabled,
               pressed && styles.manageButtonPressed,
             ]}
           >
@@ -439,9 +438,9 @@ const styles = StyleSheet.create({
     fontSize: 13,
   },
   benefitsTitleRow: {
-    marginTop: 26,
+    marginTop: 14,
     marginBottom: 17,
-    transform: [{ translateY: 22 }],
+    transform: [{ translateY: 16 }],
   },
   benefitsTitle: {
     color: "#F9F9F9",
@@ -489,14 +488,11 @@ const styles = StyleSheet.create({
     alignItems: "center",
     justifyContent: "center",
   },
-  manageButtonDisabled: {
-    opacity: 0.55,
-  },
   manageButtonPressed: {
     opacity: 0.84,
   },
   manageButtonText: {
-    color: "#FFFFFF",
+    color: "#A17C25",
     fontFamily: "Manrope",
     fontSize: 15,
     fontWeight: "800",
