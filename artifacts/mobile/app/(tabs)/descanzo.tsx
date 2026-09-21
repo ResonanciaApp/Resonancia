@@ -35,6 +35,7 @@ import { useCategoryOverlay } from "@/context/CategoryOverlayContext";
 import { useMixerPanel } from "@/context/MixerPanelContext";
 import { EditorialPlaylistCarousel } from "@/components/EditorialPlaylistCarousel";
 import { MoonCrescentIcon } from "@/components/MoonCrescentIcon";
+import PremiumBanner from "@/components/PremiumBanner";
 import {
   getEditorialPlaylistCarouselsForSurface,
   SLEEP_CAROUSEL_ORDER,
@@ -481,6 +482,12 @@ export default function DescansoScreen() {
                   titleSize={17}
                   hideCategoryAboveTitle
                 />
+                {!isPremium ? (
+                  <>
+                    <View style={styles.sectionDivider} />
+                    <PremiumBanner />
+                  </>
+                ) : null}
                 {orderedSleepCarousels.length > 0 ? (
                   <View style={styles.sectionDivider} />
                 ) : null}
@@ -531,6 +538,12 @@ export default function DescansoScreen() {
                     openCategory(`/editorial-playlist/${encodeURIComponent(playlist.id)}`)
                   }
                   />
+                ) : null}
+                {!isPremium && featuredSleepSessions.length === 0 && index === 0 ? (
+                  <>
+                    <View style={styles.sectionDivider} />
+                    <PremiumBanner />
+                  </>
                 ) : null}
               </React.Fragment>
             ))}
