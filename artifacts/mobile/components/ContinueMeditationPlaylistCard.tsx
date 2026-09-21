@@ -1,4 +1,4 @@
-import { Feather } from "@expo/vector-icons";
+import { Feather, FontAwesome } from "@expo/vector-icons";
 import { Image as ExpoImage, type ImageSource } from "expo-image";
 import React from "react";
 import {
@@ -55,6 +55,12 @@ export function ContinueMeditationPlaylistCard({
             contentFit="cover"
             cachePolicy="memory-disk"
           />
+           <FontAwesome
+             name="star"
+             size={20}
+             color="#E5B84B"
+             style={styles.premiumStar}
+           />
         </View>
         <View style={styles.copy}>
           <Text style={styles.title} numberOfLines={1}>{title}</Text>
@@ -150,6 +156,15 @@ const styles = StyleSheet.create({
     height: 87,
     borderRadius: 13,
     backgroundColor: "rgba(255,255,255,0.08)",
+  },
+  premiumStar: {
+    position: "absolute",
+    top: 8,
+    left: 8,
+    zIndex: 10,
+    textShadowColor: "rgba(0,0,0,0.65)",
+    textShadowOffset: { width: 0, height: 1 },
+    textShadowRadius: 3,
   },
   copy: {
     flex: 1,
