@@ -708,24 +708,24 @@ export function ExploreScreen({
               >
                 <Defs>
                   <SvgLinearGradient id="auroraBase" x1="0%" y1="0%" x2="100%" y2="100%">
-                    <Stop offset="0" stopColor="#E9D5FF" />
-                    <Stop offset="0.55" stopColor="#D8E6FF" />
-                    <Stop offset="1" stopColor="#D9D5FF" />
+                    <Stop offset="0" stopColor="#3155D9" />
+                    <Stop offset="0.55" stopColor="#7257D9" />
+                    <Stop offset="1" stopColor="#C9B6F4" />
                   </SvgLinearGradient>
                   <RadialGradient id="auroraMint" cx="88%" cy="10%" r="72%">
-                    <Stop offset="0" stopColor="#A7F3D0" stopOpacity="0.95" />
-                    <Stop offset="0.48" stopColor="#A7F3D0" stopOpacity="0.42" />
-                    <Stop offset="1" stopColor="#A7F3D0" stopOpacity="0" />
+                    <Stop offset="0" stopColor="#C9B6F4" stopOpacity="0.95" />
+                    <Stop offset="0.48" stopColor="#C9B6F4" stopOpacity="0.42" />
+                    <Stop offset="1" stopColor="#C9B6F4" stopOpacity="0" />
                   </RadialGradient>
                   <RadialGradient id="auroraPink" cx="92%" cy="92%" r="76%">
-                    <Stop offset="0" stopColor="#F0A8E8" stopOpacity="0.95" />
-                    <Stop offset="0.5" stopColor="#F0A8E8" stopOpacity="0.38" />
-                    <Stop offset="1" stopColor="#F0A8E8" stopOpacity="0" />
+                    <Stop offset="0" stopColor="#7257D9" stopOpacity="0.95" />
+                    <Stop offset="0.5" stopColor="#7257D9" stopOpacity="0.38" />
+                    <Stop offset="1" stopColor="#7257D9" stopOpacity="0" />
                   </RadialGradient>
                   <RadialGradient id="auroraLilac" cx="8%" cy="72%" r="82%">
-                    <Stop offset="0" stopColor="#C4B5FD" stopOpacity="0.72" />
-                    <Stop offset="0.55" stopColor="#C4B5FD" stopOpacity="0.24" />
-                    <Stop offset="1" stopColor="#C4B5FD" stopOpacity="0" />
+                    <Stop offset="0" stopColor="#3155D9" stopOpacity="0.72" />
+                    <Stop offset="0.55" stopColor="#3155D9" stopOpacity="0.24" />
+                    <Stop offset="1" stopColor="#3155D9" stopOpacity="0" />
                   </RadialGradient>
                 </Defs>
                 <Rect width="100" height="100" fill="url(#auroraBase)" />
@@ -735,7 +735,7 @@ export function ExploreScreen({
               </Svg>
               <Feather
                 name="users"
-                color="#060A0F"
+                color="#F9F9F9"
                 size={30}
               />
             </View>

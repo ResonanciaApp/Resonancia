@@ -412,7 +412,7 @@ export const SESSIONS: Session[] = [
       "Drones atmosféricos inspirados en los sonidos captados por la NASA del espacio profundo. Una experiencia de vastedad y silencio que disuelve los límites del yo.",
     benefits: ["Expansión de consciencia", "Perspectiva cósmica", "Meditación profunda", "Silencio interior"],
     instruments: ["Drones espaciales", "Texturas electrónicas", "Ruido blanco filtrado"],
-    image: require("@/assets/images/sessions/session-5.jpg"),
+    image: require("@/assets/images/sessions/ambiental-espacio-profundo.jpg"),
     sonidosTag: "Sonidos Atmosféricos" as const,
     isNew: true,
   },
@@ -1436,6 +1436,10 @@ export type CatalogSessionSnapshot = {
 
 /** Imágenes bundleadas por nombre de archivo (imageKey de la DB). */
 const BUNDLED_SESSION_IMAGES: Record<string, import("react-native").ImageSourcePropType> = {
+  "ambiental-123-cascada.jpg": require("@/assets/images/sessions/ambiental-123-cascada.jpg"),
+  "ambiental-123-lago.jpg": require("@/assets/images/sessions/ambiental-123-lago.jpg"),
+  "ambiental-espacio-profundo.jpg": require("@/assets/images/sessions/ambiental-espacio-profundo.jpg"),
+  "ambiental-rrrr-binaural.jpg": require("@/assets/images/sessions/ambiental-rrrr-binaural.jpg"),
   "ancestral-instrumentos.jpg": require("@/assets/images/sessions/ancestral-instrumentos.jpg"),
   "med-escaneo-corporal.jpg": require("@/assets/images/sessions/med-escaneo-corporal.jpg"),
   "med-manifestacion.jpg": require("@/assets/images/sessions/med-manifestacion.jpg"),
