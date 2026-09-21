@@ -1693,6 +1693,7 @@ const Inicio2HeroStatic = React.memo(function Inicio2HeroStatic({
     <View
       style={[
         styles.inicio2Hero,
+        isInicio3 && styles.inicio3HeroLowered,
         isInicio3 && {
           height: inicio3HeroLayoutTop + inicio3HeroHeight + 9,
         },
@@ -3533,6 +3534,9 @@ const styles = StyleSheet.create({
     width: "100%",
     overflow: "visible",
     backgroundColor: "transparent",
+  },
+  inicio3HeroLowered: {
+    marginTop: 20,
   },
   inicio2ContentPanel: {
     position: "relative",

@@ -71,7 +71,7 @@ export function DailyRecommendationsSection({
 
   return (
     <View style={[styles.section, style]} testID="inicio2-daily-recommendations">
-      <View style={inicio3Compact ? styles.inicio3HeaderShift : undefined}>
+      <View style={[styles.headerRow, inicio3Compact && styles.inicio3HeaderShift]}>
         <Text style={[styles.title, { color: colors.foreground }]}>
           Recomendaciones diarias
         </Text>
@@ -152,18 +152,25 @@ const styles = StyleSheet.create({
   section: {
     marginBottom: 53,
   },
+  headerRow: {
+    marginBottom: 27,
+    flexDirection: "row",
+    alignItems: "baseline",
+    justifyContent: "space-between",
+    gap: 12,
+  },
   title: {
+    flexShrink: 1,
     fontFamily: "Manrope",
     fontSize: 17,
     fontWeight: "700",
     letterSpacing: 0.2,
-    marginBottom: 4,
   },
   date: {
+    flexShrink: 0,
     fontFamily: "Manrope",
-    fontSize: 14,
+    fontSize: 12,
     fontWeight: "400",
-    marginBottom: 27,
   },
   inicio3HeaderShift: {
     transform: [{ translateY: 10 }],
