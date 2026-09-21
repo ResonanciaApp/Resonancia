@@ -224,10 +224,7 @@ export default function PremiumBanner({
             sleepVariant && styles.sleepButtonWrap,
             !sleepVariant && styles.defaultButtonWrap,
             {
-              width: Math.max(
-                200,
-                viewportWidth - (sleepVariant ? 159 : 179),
-              ),
+              width: Math.max(200, viewportWidth - 195),
               alignSelf: "center",
             },
             { opacity: pressed ? 0.88 : 1 },
@@ -280,6 +277,7 @@ const styles = StyleSheet.create({
   },
   sleepOuter: {
     marginHorizontal: 0,
+    marginTop: 26,
     borderWidth: 0,
     borderColor: "transparent",
   },
@@ -480,6 +478,7 @@ const styles = StyleSheet.create({
     backgroundColor: "rgba(255,255,255,0.2)",
   },
   sleepButtonInner: {
+    paddingVertical: 14,
     borderRadius: 48,
   },
   defaultButtonInner: {

@@ -485,14 +485,18 @@ export default function DescansoScreen() {
                 {!isPremium ? (
                   <PremiumBanner sleepVariant />
                 ) : null}
-                {orderedSleepCarousels.length > 0 ? (
-                  <View style={styles.sectionDivider} />
-                ) : null}
               </>
             ) : null}
             {orderedSleepCarousels.map((item, index) => (
               <React.Fragment key={item.key}>
-                {index > 0 ? <View style={styles.sectionDivider} /> : null}
+                {index > 0
+                && !(
+                  !isPremium
+                  && featuredSleepSessions.length === 0
+                  && index === 1
+                ) ? (
+                  <View style={styles.sectionDivider} />
+                ) : null}
                 {item.session ? (
                   <SessionCarousel
                   title={item.session.label}
@@ -541,7 +545,12 @@ export default function DescansoScreen() {
                 ) : null}
               </React.Fragment>
             ))}
-            {featuredSleepSessions.length > 0 || orderedSleepCarousels.length > 0 ? (
+            {(featuredSleepSessions.length > 0 || orderedSleepCarousels.length > 0)
+            && !(
+              !isPremium
+              && featuredSleepSessions.length === 0
+              && orderedSleepCarousels.length === 1
+            ) ? (
               <View style={styles.sectionDivider} />
             ) : null}
             <Pressable
