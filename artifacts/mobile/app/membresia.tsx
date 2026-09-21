@@ -2,9 +2,11 @@ import { Feather, MaterialCommunityIcons } from "@expo/vector-icons";
 import { BlurView } from "expo-blur";
 import { LinearGradient } from "expo-linear-gradient";
 import { router } from "expo-router";
-import React, { useMemo, useState } from "react";
+import React, { useEffect, useMemo, useState } from "react";
+import type { PurchasesPackage } from "react-native-purchases";
 import {
   ActivityIndicator,
+  Alert,
   Animated,
   Easing,
   Linking,
@@ -93,14 +95,66 @@ export default function MembresiaScreen() {
   const colors = useColors();
   const insets = useSafeAreaInsets();
   const { theme } = useSceneTheme();
-  const { customerInfo, offerings, isSubscribed, isLoading } = useSubscription();
+  const {
+    customerInfo,
+    offerings,
+    isSubscribed,
+    isLoading,
+    purchase,
+    restore,
+    isPurchasing,
+    isRestoring,
+    isConfigured,
+    customerInfoError,
+    refreshCustomerInfo,
+    refreshOfferings,
+  } = useSubscription();
   const [manageMounted, setManageMounted] = useState(false);
+  const [selectedPackageId, setSelectedPackageId] = useState<string | null>(null);
   const manageOverlayOpacity = React.useRef(new Animated.Value(0)).current;
   const manageSheetTranslateY = React.useRef(new Animated.Value(520)).current;
   const topPad = Platform.OS === "web" ? 67 : Math.max(insets.top, 40);
   const backgroundColors = theme.gradient as unknown as [string, string, ...string[]];
   const entitlement =
     customerInfo?.entitlements.all?.[REVENUECAT_ENTITLEMENT_IDENTIFIER];
+  const availablePackages = offerings?.current?.availablePackages ?? [];
+  const purchasePackages = useMemo(
+    () =>
+      availablePackages
+        .filter((candidate) =>
+          candidate.packageType === "ANNUAL"
+          || candidate.packageType === "MONTHLY"
+          || candidate.packageType === "WEEKLY",
+        )
+        .sort((a, b) => {
+        const rank = (candidate: PurchasesPackage) =>
+          candidate.packageType === "ANNUAL"
+            ? 0
+            : candidate.packageType === "MONTHLY"
+              ? 1
+              : 2;
+        return rank(a) - rank(b);
+      }),
+    [availablePackages],
+  );
+
+  useEffect(() => {
+    if (purchasePackages.length === 0) {
+      setSelectedPackageId(null);
+      return;
+    }
+    if (selectedPackageId && purchasePackages.some((item) => item.identifier === selectedPackageId)) {
+      return;
+    }
+    const preferred =
+      purchasePackages.find((item) => item.packageType === "ANNUAL")
+      ?? purchasePackages[0];
+    setSelectedPackageId(preferred.identifier);
+  }, [purchasePackages, selectedPackageId]);
+
+  const selectedPackage =
+    purchasePackages.find((item) => item.identifier === selectedPackageId)
+    ?? purchasePackages[0];
 
   const activePackage = useMemo(() => {
     if (!entitlement) return undefined;
@@ -134,6 +188,44 @@ export default function MembresiaScreen() {
       ? "La renovación automática está desactivada. Mantendrás el acceso hasta la fecha indicada."
       : "No tienes una suscripción Premium activa.";
   const managementURL = customerInfo?.managementURL;
+
+  const handlePurchase = async () => {
+    if (!selectedPackage || isPurchasing) return;
+    try {
+      await purchase(selectedPackage);
+    } catch (error) {
+      const cancelled =
+        typeof error === "object"
+        && error !== null
+        && "userCancelled" in error
+        && Boolean(error.userCancelled);
+      if (cancelled) return;
+      Alert.alert(
+        "No pudimos completar la compra",
+        "Revisa tu conexión e inténtalo nuevamente.",
+      );
+    }
+  };
+
+  const handleRestore = async () => {
+    if (isRestoring) return;
+    try {
+      const restoredInfo = await restore();
+      const restored =
+        restoredInfo.entitlements.active?.[REVENUECAT_ENTITLEMENT_IDENTIFIER] !== undefined;
+      Alert.alert(
+        restored ? "Compra restaurada" : "No encontramos una suscripción",
+        restored
+          ? "Tu acceso Premium ya está activo."
+          : "Verifica que estés usando la misma cuenta de la tienda con la que realizaste la compra.",
+      );
+    } catch {
+      Alert.alert(
+        "No pudimos restaurar tus compras",
+        "Revisa tu conexión e inténtalo nuevamente.",
+      );
+    }
+  };
 
   const openManage = () => {
     manageOverlayOpacity.setValue(0);
@@ -225,6 +317,25 @@ export default function MembresiaScreen() {
             </Text>
           </View>
 
+          {!isLoading && customerInfoError ? (
+            <SubscriptionStatusUnavailable
+              isConfigured={isConfigured}
+              onRetry={() => {
+                void Promise.all([refreshCustomerInfo(), refreshOfferings()]);
+              }}
+            />
+          ) : !isLoading && !isSubscribed ? (
+            <PremiumOfferContent
+              packages={purchasePackages}
+              selectedPackage={selectedPackage}
+              onSelect={(item) => setSelectedPackageId(item.identifier)}
+              onPurchase={() => void handlePurchase()}
+              onRestore={() => void handleRestore()}
+              isPurchasing={isPurchasing}
+              isRestoring={isRestoring}
+            />
+          ) : (
+            <>
           <View style={styles.subscriptionCard}>
             {isLoading ? (
               <View style={styles.loadingState}>
@@ -326,6 +437,8 @@ export default function MembresiaScreen() {
             />
             <Text style={styles.manageButtonText}>Gestionar Premium</Text>
           </Pressable>
+            </>
+          )}
         </View>
       </ScrollView>
 
@@ -415,6 +528,247 @@ export default function MembresiaScreen() {
         </View>
       ) : null}
     </LinearGradient>
+  );
+}
+
+function getPackageLabel(item: PurchasesPackage) {
+  if (item.packageType === "ANNUAL") return "Plan anual";
+  if (item.packageType === "MONTHLY") return "Plan mensual";
+  if (item.packageType === "WEEKLY") return "Plan semanal";
+  return item.product.title || "Plan Premium";
+}
+
+function getPackagePeriod(item: PurchasesPackage) {
+  if (item.packageType === "ANNUAL" || item.product.subscriptionPeriod === "P1Y") {
+    return "por año";
+  }
+  if (item.packageType === "MONTHLY" || item.product.subscriptionPeriod === "P1M") {
+    return "por mes";
+  }
+  if (item.packageType === "WEEKLY" || item.product.subscriptionPeriod === "P1W") {
+    return "por semana";
+  }
+  return "por período";
+}
+
+function SubscriptionStatusUnavailable({
+  isConfigured,
+  onRetry,
+}: {
+  isConfigured: boolean;
+  onRetry: () => void;
+}) {
+  return (
+    <View style={styles.subscriptionUnavailable}>
+      <View style={styles.subscriptionUnavailableIcon}>
+        <Feather name="shield" size={24} color={MEMBERSHIP_AURORA.premium.accent} />
+      </View>
+      <Text style={styles.subscriptionUnavailableTitle}>
+        No pudimos verificar tu suscripción
+      </Text>
+      <Text style={styles.subscriptionUnavailableText}>
+        {isConfigured
+          ? "Tu acceso no cambiará por este problema. Revisa tu conexión e inténtalo nuevamente."
+          : "Premium no está disponible temporalmente en esta versión de la app."}
+      </Text>
+      {isConfigured ? (
+        <Pressable
+          onPress={onRetry}
+          accessibilityRole="button"
+          style={({ pressed }) => [
+            styles.subscriptionRetryButton,
+            pressed && styles.manageButtonPressed,
+          ]}
+        >
+          <Text style={styles.subscriptionRetryText}>Intentar nuevamente</Text>
+        </Pressable>
+      ) : null}
+    </View>
+  );
+}
+
+function PremiumOfferContent({
+  packages,
+  selectedPackage,
+  onSelect,
+  onPurchase,
+  onRestore,
+  isPurchasing,
+  isRestoring,
+}: {
+  packages: PurchasesPackage[];
+  selectedPackage?: PurchasesPackage;
+  onSelect: (item: PurchasesPackage) => void;
+  onPurchase: () => void;
+  onRestore: () => void;
+  isPurchasing: boolean;
+  isRestoring: boolean;
+}) {
+  const busy = isPurchasing || isRestoring;
+  const selectedPeriod = selectedPackage ? getPackagePeriod(selectedPackage) : null;
+
+  return (
+    <>
+      <View style={styles.offerHero}>
+        <View style={styles.offerHeroGlow} pointerEvents="none" />
+        <View style={styles.offerStar}>
+          <MaterialCommunityIcons
+            name="star-four-points"
+            size={31}
+            color={MEMBERSHIP_AURORA.premium.accent}
+          />
+        </View>
+        <Text style={styles.offerEyebrow}>RESONANCIA PREMIUM</Text>
+        <Text style={styles.offerTitle}>Profundiza tu práctica</Text>
+        <Text style={styles.offerSubtitle}>
+          Accede sin límites a experiencias, sonidos y herramientas creadas para acompañar tu bienestar.
+        </Text>
+      </View>
+
+      <Text style={styles.offerSectionTitle}>Elige tu plan</Text>
+      {packages.length > 0 ? (
+        <View style={styles.planGrid}>
+          {packages.map((item) => {
+            const selected = selectedPackage?.identifier === item.identifier;
+            const recommended = item.packageType === "ANNUAL";
+            return (
+              <Pressable
+                key={item.identifier}
+                onPress={() => onSelect(item)}
+                disabled={busy}
+                accessibilityRole="radio"
+                accessibilityState={{ selected, disabled: busy }}
+                style={({ pressed }) => [
+                  styles.planCard,
+                  selected && styles.planCardSelected,
+                  pressed && !busy && styles.planCardPressed,
+                ]}
+              >
+                {recommended ? (
+                  <View style={styles.recommendedPill}>
+                    <Text style={styles.recommendedText}>RECOMENDADO</Text>
+                  </View>
+                ) : null}
+                <View style={[styles.planRadio, selected && styles.planRadioSelected]}>
+                  {selected ? <View style={styles.planRadioDot} /> : null}
+                </View>
+                <Text style={styles.planName}>{getPackageLabel(item)}</Text>
+                <Text style={styles.planPrice}>{item.product.priceString}</Text>
+                <Text style={styles.planPeriod}>{getPackagePeriod(item)}</Text>
+              </Pressable>
+            );
+          })}
+        </View>
+      ) : (
+        <View style={styles.offerUnavailable}>
+          <Feather name="wifi-off" size={22} color={MEMBERSHIP_AURORA.premium.accent} />
+          <View style={styles.offerUnavailableCopy}>
+            <Text style={styles.offerUnavailableTitle}>No pudimos cargar los planes</Text>
+            <Text style={styles.offerUnavailableText}>
+              Revisa tu conexión y vuelve a abrir esta pantalla.
+            </Text>
+          </View>
+        </View>
+      )}
+
+      <Text style={styles.offerSectionTitle}>Todo lo que desbloqueas</Text>
+      <View style={styles.offerBenefitsCard}>
+        {SUBSCRIPTION_BENEFITS.map((benefit, index) => (
+          <View
+            key={benefit.icon}
+            style={[
+              styles.offerBenefitRow,
+              index < SUBSCRIPTION_BENEFITS.length - 1 && styles.offerBenefitDivider,
+            ]}
+          >
+            <View style={styles.benefitIcon}>
+              <Feather
+                name={benefit.icon}
+                size={20}
+                color={MEMBERSHIP_AURORA.premium.accent}
+              />
+            </View>
+            <Text style={styles.benefitText}>
+              {benefit.parts.map((part, partIndex) => (
+                <Text
+                  key={`${benefit.icon}-${partIndex}`}
+                  style={"bold" in part && part.bold ? styles.benefitTextBold : undefined}
+                >
+                  {part.text}
+                </Text>
+              ))}
+            </Text>
+          </View>
+        ))}
+      </View>
+
+      <Pressable
+        onPress={onPurchase}
+        disabled={!selectedPackage || busy}
+        accessibilityRole="button"
+        accessibilityLabel={
+          selectedPackage
+            ? `Comenzar Premium, ${selectedPackage.product.priceString} ${selectedPeriod}`
+            : "Comenzar Premium"
+        }
+        accessibilityState={{ disabled: !selectedPackage || busy }}
+        style={({ pressed }) => [
+          styles.purchaseButton,
+          (!selectedPackage || busy) && styles.purchaseButtonDisabled,
+          pressed && selectedPackage && !busy && styles.manageButtonPressed,
+        ]}
+      >
+        <LinearGradient
+          colors={GIFT_GOLD_COLORS}
+          start={{ x: 0, y: 0.5 }}
+          end={{ x: 1, y: 0.5 }}
+          style={StyleSheet.absoluteFill}
+        />
+        {isPurchasing ? (
+          <ActivityIndicator color="#F9F9F9" />
+        ) : (
+          <Text style={styles.manageButtonText}>Comenzar Premium</Text>
+        )}
+      </Pressable>
+
+      {selectedPackage ? (
+        <Text style={styles.purchaseDisclosure}>
+          Se cobrará {selectedPackage.product.priceString} {selectedPeriod} y se renovará automáticamente
+          hasta que canceles desde tu cuenta de la tienda.
+        </Text>
+      ) : null}
+
+      <View style={styles.offerFooterActions}>
+        <Pressable
+          onPress={onRestore}
+          disabled={busy}
+          accessibilityRole="button"
+          style={({ pressed }) => [styles.offerFooterButton, pressed && styles.pressed]}
+        >
+          {isRestoring ? (
+            <ActivityIndicator size="small" color="#F9F9F9" />
+          ) : (
+            <Text style={styles.offerFooterText}>Restaurar compras</Text>
+          )}
+        </Pressable>
+        <View style={styles.offerFooterDot} />
+        <Pressable
+          onPress={() => router.push("/terminos" as never)}
+          accessibilityRole="link"
+          style={({ pressed }) => [styles.offerFooterButton, pressed && styles.pressed]}
+        >
+          <Text style={styles.offerFooterText}>Términos de uso</Text>
+        </Pressable>
+        <View style={styles.offerFooterDot} />
+        <Pressable
+          onPress={() => router.push("/terminos" as never)}
+          accessibilityRole="link"
+          style={({ pressed }) => [styles.offerFooterButton, pressed && styles.pressed]}
+        >
+          <Text style={styles.offerFooterText}>Privacidad</Text>
+        </Pressable>
+      </View>
+    </>
   );
 }
 
@@ -641,6 +995,304 @@ const styles = StyleSheet.create({
   },
   benefitTextBold: {
     fontWeight: "800",
+  },
+  offerHero: {
+    position: "relative",
+    overflow: "hidden",
+    borderRadius: 19,
+    paddingHorizontal: 24,
+    paddingTop: 26,
+    paddingBottom: 28,
+    alignItems: "center",
+    backgroundColor: "rgba(0,0,0,0.28)",
+  },
+  subscriptionUnavailable: {
+    minHeight: 275,
+    overflow: "hidden",
+    borderRadius: 19,
+    paddingHorizontal: 24,
+    paddingVertical: 28,
+    alignItems: "center",
+    justifyContent: "center",
+    backgroundColor: "rgba(0,0,0,0.28)",
+  },
+  subscriptionUnavailableIcon: {
+    width: 54,
+    height: 54,
+    borderRadius: 27,
+    alignItems: "center",
+    justifyContent: "center",
+    marginBottom: 17,
+    backgroundColor: "rgba(231,185,92,0.14)",
+  },
+  subscriptionUnavailableTitle: {
+    color: "#F9F9F9",
+    fontFamily: "Manrope",
+    fontSize: 18,
+    lineHeight: 25,
+    fontWeight: "800",
+    textAlign: "center",
+    marginBottom: 9,
+  },
+  subscriptionUnavailableText: {
+    maxWidth: 290,
+    color: "#E5E1EB",
+    fontFamily: "Manrope",
+    fontSize: 13,
+    lineHeight: 20,
+    textAlign: "center",
+  },
+  subscriptionRetryButton: {
+    minWidth: 190,
+    height: 48,
+    borderRadius: 14,
+    marginTop: 21,
+    alignItems: "center",
+    justifyContent: "center",
+    backgroundColor: "rgba(231,185,92,0.16)",
+    borderWidth: 1,
+    borderColor: "rgba(231,185,92,0.44)",
+  },
+  subscriptionRetryText: {
+    color: MEMBERSHIP_AURORA.premium.accent,
+    fontFamily: "Manrope",
+    fontSize: 13,
+    fontWeight: "800",
+  },
+  offerHeroGlow: {
+    position: "absolute",
+    top: -95,
+    width: 230,
+    height: 180,
+    borderRadius: 115,
+    backgroundColor: "rgba(231,185,92,0.12)",
+    transform: [{ scaleX: 1.45 }],
+  },
+  offerStar: {
+    width: 58,
+    height: 58,
+    borderRadius: 29,
+    alignItems: "center",
+    justifyContent: "center",
+    marginBottom: 15,
+    backgroundColor: "rgba(231,185,92,0.14)",
+    borderWidth: 1,
+    borderColor: "rgba(231,185,92,0.3)",
+  },
+  offerEyebrow: {
+    color: MEMBERSHIP_AURORA.premium.accent,
+    fontFamily: "Manrope",
+    fontSize: 11,
+    lineHeight: 16,
+    fontWeight: "800",
+    letterSpacing: 1.35,
+    marginBottom: 7,
+  },
+  offerTitle: {
+    color: "#F9F9F9",
+    fontFamily: "Manrope",
+    fontSize: 25,
+    lineHeight: 32,
+    fontWeight: "800",
+    textAlign: "center",
+    marginBottom: 10,
+  },
+  offerSubtitle: {
+    maxWidth: 300,
+    color: "#E5E1EB",
+    fontFamily: "Manrope",
+    fontSize: 13,
+    lineHeight: 20,
+    fontWeight: "400",
+    textAlign: "center",
+  },
+  offerSectionTitle: {
+    color: "#F9F9F9",
+    fontFamily: "Manrope",
+    fontSize: 17,
+    lineHeight: 23,
+    fontWeight: "700",
+    marginTop: 25,
+    marginBottom: 14,
+  },
+  planGrid: {
+    flexDirection: "row",
+    flexWrap: "wrap",
+    gap: 12,
+  },
+  planCard: {
+    position: "relative",
+    flexGrow: 1,
+    flexBasis: "46%",
+    minWidth: 140,
+    minHeight: 150,
+    overflow: "hidden",
+    borderRadius: 17,
+    borderWidth: 1,
+    borderColor: "rgba(255,255,255,0.12)",
+    paddingHorizontal: 16,
+    paddingTop: 47,
+    paddingBottom: 16,
+    backgroundColor: "rgba(0,0,0,0.28)",
+  },
+  planCardSelected: {
+    borderWidth: 1.5,
+    borderColor: MEMBERSHIP_AURORA.premium.accent,
+    backgroundColor: "rgba(231,185,92,0.11)",
+  },
+  planCardPressed: {
+    opacity: 0.82,
+  },
+  recommendedPill: {
+    position: "absolute",
+    top: 12,
+    left: 13,
+    borderRadius: 999,
+    paddingHorizontal: 9,
+    paddingVertical: 4,
+    backgroundColor: "rgba(231,185,92,0.16)",
+  },
+  recommendedText: {
+    color: MEMBERSHIP_AURORA.premium.accent,
+    fontFamily: "Manrope",
+    fontSize: 8,
+    lineHeight: 11,
+    fontWeight: "800",
+    letterSpacing: 0.75,
+  },
+  planRadio: {
+    position: "absolute",
+    top: 13,
+    right: 13,
+    width: 20,
+    height: 20,
+    borderRadius: 10,
+    borderWidth: 1.5,
+    borderColor: "rgba(255,255,255,0.35)",
+    alignItems: "center",
+    justifyContent: "center",
+  },
+  planRadioSelected: {
+    borderColor: MEMBERSHIP_AURORA.premium.accent,
+  },
+  planRadioDot: {
+    width: 10,
+    height: 10,
+    borderRadius: 5,
+    backgroundColor: MEMBERSHIP_AURORA.premium.accent,
+  },
+  planName: {
+    color: "#F9F9F9",
+    fontFamily: "Manrope",
+    fontSize: 14,
+    lineHeight: 20,
+    fontWeight: "700",
+    marginBottom: 7,
+  },
+  planPrice: {
+    color: "#FFFFFF",
+    fontFamily: "Manrope",
+    fontSize: 20,
+    lineHeight: 27,
+    fontWeight: "800",
+  },
+  planPeriod: {
+    color: "#D3CFD8",
+    fontFamily: "Manrope",
+    fontSize: 11,
+    lineHeight: 16,
+    fontWeight: "500",
+  },
+  offerUnavailable: {
+    minHeight: 90,
+    borderRadius: 17,
+    paddingHorizontal: 18,
+    paddingVertical: 16,
+    flexDirection: "row",
+    alignItems: "center",
+    gap: 14,
+    backgroundColor: "rgba(0,0,0,0.28)",
+  },
+  offerUnavailableCopy: {
+    flex: 1,
+  },
+  offerUnavailableTitle: {
+    color: "#F9F9F9",
+    fontFamily: "Manrope",
+    fontSize: 14,
+    lineHeight: 20,
+    fontWeight: "700",
+    marginBottom: 3,
+  },
+  offerUnavailableText: {
+    color: "#D3CFD8",
+    fontFamily: "Manrope",
+    fontSize: 12,
+    lineHeight: 18,
+  },
+  offerBenefitsCard: {
+    overflow: "hidden",
+    borderRadius: 19,
+    paddingHorizontal: 16,
+    backgroundColor: "rgba(0,0,0,0.2)",
+  },
+  offerBenefitRow: {
+    minHeight: 73,
+    flexDirection: "row",
+    alignItems: "center",
+    gap: 14,
+    paddingVertical: 10,
+  },
+  offerBenefitDivider: {
+    borderBottomWidth: StyleSheet.hairlineWidth,
+    borderBottomColor: "rgba(255,255,255,0.11)",
+  },
+  purchaseButton: {
+    height: 54,
+    marginTop: 25,
+    borderRadius: 14,
+    overflow: "hidden",
+    alignItems: "center",
+    justifyContent: "center",
+  },
+  purchaseButtonDisabled: {
+    opacity: 0.52,
+  },
+  purchaseDisclosure: {
+    color: "#D3CFD8",
+    fontFamily: "Manrope",
+    fontSize: 11,
+    lineHeight: 17,
+    fontWeight: "400",
+    textAlign: "center",
+    paddingHorizontal: 8,
+    marginTop: 12,
+  },
+  offerFooterActions: {
+    minHeight: 42,
+    marginTop: 10,
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "center",
+    flexWrap: "wrap",
+  },
+  offerFooterButton: {
+    minHeight: 44,
+    justifyContent: "center",
+    paddingHorizontal: 10,
+  },
+  offerFooterText: {
+    color: "#E5E1EB",
+    fontFamily: "Manrope",
+    fontSize: 11,
+    lineHeight: 16,
+    fontWeight: "600",
+  },
+  offerFooterDot: {
+    width: 3,
+    height: 3,
+    borderRadius: 1.5,
+    backgroundColor: "rgba(255,255,255,0.38)",
   },
   manageButton: {
     height: 52,
