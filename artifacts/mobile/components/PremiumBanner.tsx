@@ -134,6 +134,7 @@ export default function PremiumBanner({
   const { isPremium } = usePremium();
   const { width: viewportWidth } = useWindowDimensions();
   const sleepPreviewCardSize = ((viewportWidth - 32 - 15) / 4) * 1.1;
+  const defaultPreviewCardSize = (viewportWidth - 15) / 4;
   if (isPremium) return null;
 
   return (
@@ -201,7 +202,17 @@ export default function PremiumBanner({
             ]}
           >
             {IMAGES.map((src, i) => (
-              <View key={i} style={styles.previewCard}>
+              <View
+                key={i}
+                style={[
+                  styles.previewCard,
+                  {
+                    width: defaultPreviewCardSize,
+                    height: defaultPreviewCardSize,
+                    borderWidth: 0,
+                  },
+                ]}
+              >
                 <Image source={src} style={styles.thumb} contentFit="cover" />
                 <Image
                   source={require("../assets/images/estrella-premium.png")}
@@ -221,7 +232,10 @@ export default function PremiumBanner({
             styles.freeTrialButtonWrap,
             sleepVariant && styles.sleepButtonWrap,
             {
-              width: Math.max(200, viewportWidth - 159),
+              width: Math.max(
+                200,
+                viewportWidth - (sleepVariant ? 159 : 179),
+              ),
               alignSelf: "center",
             },
             { opacity: pressed ? 0.88 : 1 },
@@ -235,7 +249,10 @@ export default function PremiumBanner({
             }
             start={{ x: 0, y: 0 }}
             end={{ x: 1, y: 0 }}
-            style={[styles.btn, sleepVariant && styles.sleepButtonInner]}
+            style={[
+              styles.btn,
+              sleepVariant ? styles.sleepButtonInner : styles.defaultButtonInner,
+            ]}
           >
             <Text
               style={[
@@ -469,5 +486,8 @@ const styles = StyleSheet.create({
   },
   sleepButtonInner: {
     borderRadius: 48,
+  },
+  defaultButtonInner: {
+    paddingVertical: 10,
   },
 });
