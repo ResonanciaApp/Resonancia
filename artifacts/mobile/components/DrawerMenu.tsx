@@ -40,7 +40,7 @@ type MenuItem = {
 
 const INICIO3_SECTIONS: { title: string | null; items: MenuItem[] }[] = [
   {
-    title: "Mi contenido",
+    title: null,
     items: [
       { id: "favorites", label: "Favoritos", icon: "heart", mciIcon: "heart-outline", route: "__overlay:/favoritos-todos" },
       { id: "library", label: "Biblioteca", icon: "book", mciIcon: "bookshelf", route: "/(tabs)/biblioteca" },
@@ -49,7 +49,7 @@ const INICIO3_SECTIONS: { title: string | null; items: MenuItem[] }[] = [
     ],
   },
   {
-    title: "Herramientas",
+    title: null,
     items: [
       { id: "mood-register", label: "Registro de ánimo", icon: "smile", mciIcon: "emoticon-happy-outline", route: "__mood_register" },
       { id: "mixer", label: "Mezclador de sonido", icon: "sliders", mciIcon: "tune-vertical", route: "__mixer" },
@@ -59,7 +59,7 @@ const INICIO3_SECTIONS: { title: string | null; items: MenuItem[] }[] = [
     ],
   },
   {
-    title: "General",
+    title: null,
     items: [
       { id: "invite-friend", label: "Invitar a un amigo", icon: "user-plus", route: "/invitar", color: "#A3A3A3" },
       { id: "help", label: "Ayuda", icon: "help-circle", route: "/ayuda", color: "#A3A3A3" },
@@ -326,23 +326,25 @@ export function DrawerMenu() {
                   {section.title && <Text style={styles.inicio3SectionTitle}>{section.title}</Text>}
                   <View style={styles.itemGroup}>
                     {section.items.map((item) => (
-                      <Pressable
-                        key={item.label}
-                        testID={item.id ? `drawer-item-${item.id}` : undefined}
-                        onPress={() => navigate(item.route)}
-                        style={styles.item}
-                      >
-                        <View style={styles.itemIcon}>
-                          {item.mciIcon ? (
-                            <MaterialCommunityIcons name={item.mciIcon} size={23} color={item.color ?? "#F9F9F9"} />
-                          ) : (
-                            <Feather name={item.icon} size={20} color={item.color ?? "#F9F9F9"} />
-                          )}
-                        </View>
-                        <Text style={[styles.itemLabel, styles.inicio3ItemLabel, item.color && { color: item.color }]}>
-                          {item.label}
-                        </Text>
-                      </Pressable>
+                      <React.Fragment key={item.label}>
+                        {item.id === "invite-friend" ? <View style={styles.generalDivider} /> : null}
+                        <Pressable
+                          testID={item.id ? `drawer-item-${item.id}` : undefined}
+                          onPress={() => navigate(item.route)}
+                          style={styles.item}
+                        >
+                          <View style={styles.itemIcon}>
+                            {item.mciIcon ? (
+                              <MaterialCommunityIcons name={item.mciIcon} size={23} color={item.color ?? "#F9F9F9"} />
+                            ) : (
+                              <Feather name={item.icon} size={20} color={item.color ?? "#F9F9F9"} />
+                            )}
+                          </View>
+                          <Text style={[styles.itemLabel, styles.inicio3ItemLabel, item.color && { color: item.color }]}>
+                            {item.label}
+                          </Text>
+                        </Pressable>
+                      </React.Fragment>
                     ))}
                   </View>
                 </View>
@@ -519,6 +521,11 @@ const styles = StyleSheet.create({
   // ── Items ──
   itemGroup: { gap: 2, marginTop: 10 },
   divider: { height: 1, marginBottom: 8 },
+  generalDivider: {
+    height: StyleSheet.hairlineWidth,
+    marginBottom: 9,
+    backgroundColor: "rgba(191,230,255,0.2)",
+  },
   inicio3Sections: {
     marginTop: 14,
   },
