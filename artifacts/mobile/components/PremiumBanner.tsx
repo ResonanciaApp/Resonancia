@@ -150,6 +150,12 @@ export default function PremiumBanner({
           </>
         ) : (
           <>
+            <Image
+              source={require("../assets/images/estrella-premium.png")}
+              style={styles.defaultStar}
+              contentFit="contain"
+            />
+
             {/* Eyebrow */}
             <Text style={[styles.eyebrow, { color: P.textMuted }]}>
               Únete a la comunidad
@@ -160,7 +166,6 @@ export default function PremiumBanner({
               <Text style={[styles.title, { color: MEMBERSHIP_AURORA.premium.accent }]}>
                 Premium
               </Text>
-              <Image source={require("../assets/images/estrella-premium.png")} style={{ width: 26, height: 26, marginLeft: 10, marginTop: 6 }} contentFit="contain" />
             </View>
 
             {/* Divider line */}
@@ -350,6 +355,12 @@ const styles = StyleSheet.create({
     height: 34,
     alignSelf: "center",
     marginBottom: 12,
+  },
+  defaultStar: {
+    width: 26,
+    height: 26,
+    alignSelf: "center",
+    marginBottom: 10,
   },
   sleepTitle: {
     color: "#F9F9F9",
