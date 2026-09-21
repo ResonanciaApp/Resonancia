@@ -22,6 +22,7 @@ import { useSafeAreaInsets } from "react-native-safe-area-context";
 
 import { MEMBERSHIP_AURORA } from "@/constants/colors";
 import { SessionBadgeGlass } from "@/components/SessionDurationBadge";
+import { usePremium } from "@/context/PremiumContext";
 import { useSceneTheme } from "@/context/SceneThemeContext";
 import { useColors } from "@/hooks/useColors";
 import {
@@ -101,7 +102,6 @@ export default function MembresiaScreen() {
   const {
     customerInfo,
     offerings,
-    isSubscribed,
     isLoading,
     purchase,
     isPurchasing,
@@ -110,6 +110,7 @@ export default function MembresiaScreen() {
     refreshCustomerInfo,
     refreshOfferings,
   } = useSubscription();
+  const { isPremium } = usePremium();
   const [manageMounted, setManageMounted] = useState(false);
   const [selectedPackageId, setSelectedPackageId] = useState<string | null>(null);
   const manageOverlayOpacity = React.useRef(new Animated.Value(0)).current;
@@ -157,7 +158,7 @@ export default function MembresiaScreen() {
     ?? purchasePackages[0];
   const isOfferScreen =
     !isLoading
-    && !isSubscribed
+    && !isPremium
     && !(customerInfoError && (isConfigured || !__DEV__));
 
   const activePackage = useMemo(() => {
@@ -183,12 +184,12 @@ export default function MembresiaScreen() {
   const priceLabel = activePackage?.product.priceString;
   const billingPeriod =
     planLabel === "Anual" ? "anualmente" : planLabel === "Mensual" ? "mensualmente" : null;
-  const statusLabel = isSubscribed ? "Activo" : entitlement ? "Inactivo" : "Sin suscripción";
-  const renewalCopy = isSubscribed && entitlement?.willRenew
+  const statusLabel = isPremium ? "Activo" : entitlement ? "Inactivo" : "Sin suscripción";
+  const renewalCopy = isPremium && entitlement?.willRenew
     ? priceLabel && billingPeriod
       ? `Se te cobrará ${priceLabel} ${billingPeriod}, de forma automática.`
       : "Tu suscripción se renovará automáticamente al finalizar el período."
-    : isSubscribed
+    : isPremium
       ? "La renovación automática está desactivada. Mantendrás el acceso hasta la fecha indicada."
       : "No tienes una suscripción Premium activa.";
   const managementURL = customerInfo?.managementURL;
@@ -320,14 +321,14 @@ export default function MembresiaScreen() {
             </Text>
           </View> : null}
 
-          {!isLoading && customerInfoError && (isConfigured || !__DEV__) ? (
+          {!isLoading && !isPremium && customerInfoError && (isConfigured || !__DEV__) ? (
             <SubscriptionStatusUnavailable
               isConfigured={isConfigured}
               onRetry={() => {
                 void Promise.all([refreshCustomerInfo(), refreshOfferings()]);
               }}
             />
-          ) : !isLoading && !isSubscribed ? (
+          ) : !isLoading && !isPremium ? (
             <PremiumOfferContent
               packages={purchasePackages}
               selectedPackage={selectedPackage}
@@ -349,10 +350,10 @@ export default function MembresiaScreen() {
                 <View style={styles.detailRow}>
                   <Text style={styles.detailLabel}>Estado</Text>
                   <View style={styles.statusValue}>
-                    <Text style={[styles.detailValue, isSubscribed && styles.activeValue]}>
+                    <Text style={[styles.detailValue, isPremium && styles.activeValue]}>
                       {statusLabel}
                     </Text>
-                    {isSubscribed ? (
+                    {isPremium ? (
                       <View style={styles.activeCheck}>
                         <Feather name="check" size={20} color="#91E2D1" />
                       </View>
@@ -378,7 +379,7 @@ export default function MembresiaScreen() {
 
                 <View style={styles.detailRow}>
                   <Text style={styles.detailLabel}>
-                    {isSubscribed && entitlement?.willRenew ? "Próxima renovación" : "Válido hasta"}
+                    {isPremium && entitlement?.willRenew ? "Próxima renovación" : "Válido hasta"}
                   </Text>
                   <Text style={styles.detailValue}>{renewalDateLabel}</Text>
                 </View>
