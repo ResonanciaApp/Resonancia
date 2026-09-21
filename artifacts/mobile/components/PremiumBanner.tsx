@@ -155,26 +155,9 @@ export default function PremiumBanner({
               style={styles.defaultStar}
               contentFit="contain"
             />
-
-            {/* Eyebrow */}
-            <Text style={[styles.eyebrow, { color: P.textMuted }]}>
-              Únete a la comunidad
+            <Text style={styles.sleepTitle}>
+              Descubre todo lo que Premium tiene para ti
             </Text>
-
-            {/* Premium title */}
-            <View style={styles.titleRow}>
-              <Text style={[styles.title, { color: MEMBERSHIP_AURORA.premium.accent }]}>
-                Premium
-              </Text>
-            </View>
-
-            {/* Divider line */}
-            <LinearGradient
-              colors={["transparent", P.goldSoft, "transparent"]}
-              start={{ x: 0, y: 0 }}
-              end={{ x: 1, y: 0 }}
-              style={styles.divider}
-            />
           </>
         )}
 
