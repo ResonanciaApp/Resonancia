@@ -1667,6 +1667,7 @@ const Inicio2HeroStatic = React.memo(function Inicio2HeroStatic({
   const fallbackScrollY = useSharedValue(0);
   const effectiveScrollY = scrollY ?? fallbackScrollY;
   const inicio3WeekShift = 5;
+  const inicio3ProfileHeaderLift = 15;
   const inicio3HeroShift = 10;
   const inicio3HeroHeight =
     (INICIO2_HERO_HEIGHT + 184 - (topInset + 286) - 52 + 60 + 32) / 2 + 60 + 120;
@@ -1733,7 +1734,14 @@ const Inicio2HeroStatic = React.memo(function Inicio2HeroStatic({
         pointerEvents="box-none"
         style={[
           styles.inicio2HeroActions,
-          { paddingTop: topInset + 8 + (isInicio3 ? 10 - INICIO3_VERTICAL_LIFT : 0) },
+          {
+            paddingTop:
+              topInset
+              + 8
+              + (isInicio3
+                ? 10 - INICIO3_VERTICAL_LIFT - inicio3ProfileHeaderLift
+                : 0),
+          },
           isInicio3 && styles.inicio3HeroActionsEdge,
           isInicio3 && slowHeaderStyle,
         ]}
@@ -1813,7 +1821,7 @@ const Inicio2HeroStatic = React.memo(function Inicio2HeroStatic({
             styles.inicio3HeroRightActions,
             isInicio3 && {
               position: "absolute",
-              top: topInset + 2,
+              top: topInset + 2 - inicio3ProfileHeaderLift,
               right: 14,
             },
           ]}
