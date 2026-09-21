@@ -42,28 +42,23 @@ const INICIO3_SECTIONS: { title: string | null; items: MenuItem[] }[] = [
   {
     title: null,
     items: [
+      { id: "premium", label: "Tu Premium", icon: "star", route: "/membresia", color: "#E7B95C" },
       { id: "favorites", label: "Favoritos", icon: "heart", mciIcon: "heart-outline", route: "__overlay:/favoritos-todos" },
       { id: "library", label: "Biblioteca", icon: "book", mciIcon: "bookshelf", route: "/(tabs)/biblioteca" },
       { id: "history", label: "Historial", icon: "clock", mciIcon: "history", route: "__overlay:/historial" },
       { id: "downloads", label: "Descargas", icon: "download", mciIcon: "download-outline", route: "/descargas" },
-    ],
-  },
-  {
-    title: null,
-    items: [
       { id: "mood-register", label: "Registro de ánimo", icon: "smile", mciIcon: "emoticon-happy-outline", route: "__mood_register" },
       { id: "mixer", label: "Mezclador de sonido", icon: "sliders", mciIcon: "tune-vertical", route: "__mixer" },
-      { id: "expansive-routine", label: "Mi rutina expansiva", icon: "calendar", mciIcon: "calendar-check-outline", route: "/rutina-calendario" },
-      { id: "inner-journey", label: "Mi viaje interior", icon: "edit-3", mciIcon: "message-text-outline", route: "__profile_compose" },
+      { id: "journal", label: "Diario", icon: "edit-3", mciIcon: "book-open-page-variant-outline", route: "__overlay:/diario" },
       { id: "geometrix", label: "Geometrix", icon: "hexagon", mciIcon: "hexagon-multiple-outline", route: "__geometrix" },
     ],
   },
   {
     title: null,
     items: [
-      { id: "invite-friend", label: "Invitar a un amigo", icon: "user-plus", route: "/invitar", color: "#A3A3A3" },
-      { id: "help", label: "Ayuda", icon: "help-circle", route: "/ayuda", color: "#A3A3A3" },
-      { id: "settings", label: "Configuraciones", icon: "settings", route: "/configuraciones", color: "#A3A3A3" },
+      { id: "invite-friend", label: "Invitar a un amigo", icon: "user-plus", route: "/invitar", color: "#CCCCCC" },
+      { id: "help", label: "Ayuda", icon: "help-circle", route: "/ayuda", color: "#CCCCCC" },
+      { id: "settings", label: "Configuraciones", icon: "settings", route: "/configuraciones", color: "#CCCCCC" },
     ],
   },
 ];
@@ -254,14 +249,6 @@ export function DrawerMenu() {
               <View style={styles.profileInfo}>
                 {loggedIn ? (
                   <>
-                    <View style={styles.profilePremiumRow}>
-                      <Text style={styles.profilePremiumText}>Premium</Text>
-                      <Image
-                        source={require("../assets/images/estrella-premium.png")}
-                        style={styles.profilePremiumStar}
-                        contentFit="contain"
-                      />
-                    </View>
                     <Pressable
                       onPress={() => navigate("/(tabs)/profile")}
                       style={styles.profileNameRow}
@@ -334,7 +321,13 @@ export function DrawerMenu() {
                           style={styles.item}
                         >
                           <View style={styles.itemIcon}>
-                            {item.mciIcon ? (
+                            {item.id === "premium" ? (
+                              <Image
+                                source={require("../assets/images/estrella-premium.png")}
+                                style={styles.premiumMenuStar}
+                                contentFit="contain"
+                              />
+                            ) : item.mciIcon ? (
                               <MaterialCommunityIcons name={item.mciIcon} size={23} color={item.color ?? "#F9F9F9"} />
                             ) : (
                               <Feather name={item.icon} size={20} color={item.color ?? "#F9F9F9"} />
@@ -448,6 +441,7 @@ const styles = StyleSheet.create({
   profileInfo: {
     flex: 1,
     gap: 3,
+    justifyContent: "center",
   },
   profileName: {
     fontFamily: "Manrope",
@@ -498,26 +492,10 @@ const styles = StyleSheet.create({
     letterSpacing: 0.3,
   },
   inicio3VerPerfilText: {
-    color: "#F9F9F9",
-  },
-  profilePremiumRow: {
-    flexDirection: "row",
-    alignItems: "center",
-    alignSelf: "flex-start",
-    gap: 4,
-  },
-  profilePremiumText: {
-    fontFamily: "Manrope",
-    color: "#E7B95C",
-    fontSize: 12,
+    color: "#E5E1EB",
+    fontSize: 13,
     fontWeight: "600",
-    letterSpacing: 0.3,
   },
-  profilePremiumStar: {
-    width: 14,
-    height: 14,
-  },
-
   // ── Items ──
   itemGroup: { gap: 2, marginTop: 10 },
   divider: { height: 1, marginBottom: 8 },
@@ -525,6 +503,7 @@ const styles = StyleSheet.create({
     height: StyleSheet.hairlineWidth,
     marginBottom: 9,
     backgroundColor: "rgba(191,230,255,0.2)",
+    transform: [{ translateY: -7 }],
   },
   inicio3Sections: {
     marginTop: 14,
@@ -555,6 +534,10 @@ const styles = StyleSheet.create({
     gap: 14,
   },
   itemIcon: { width: 26, alignItems: "center" },
+  premiumMenuStar: {
+    width: 21,
+    height: 21,
+  },
   itemLabel: {
     fontFamily: "Manrope",
     color: "#FFFFFF",
