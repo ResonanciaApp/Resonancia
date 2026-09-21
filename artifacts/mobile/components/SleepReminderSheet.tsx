@@ -79,8 +79,7 @@ export function SleepReminderSheet({
         }),
         Animated.timing(backdropOpacity, {
           toValue: 0,
-          duration: 260,
-          delay: 60,
+          duration: 200,
           useNativeDriver: true,
         }),
       ]).start(() => setMounted(false));
@@ -93,13 +92,12 @@ export function SleepReminderSheet({
         Animated.timing(translateY, {
           toValue: 0,
           duration: 340,
-          delay: 90,
           easing: Easing.out(Easing.cubic),
           useNativeDriver: true,
         }),
         Animated.timing(backdropOpacity, {
           toValue: 1,
-          duration: 180,
+          duration: 240,
           useNativeDriver: true,
         }),
       ]).start();
@@ -157,22 +155,10 @@ export function SleepReminderSheet({
       onRequestClose={onClose}
     >
       <View style={styles.modalRoot}>
-        <Animated.View pointerEvents="none" style={[styles.background, { opacity: backdropOpacity }]}>
-          <Image
-            source={require("@/assets/images/sleep-reminder-room.jpg")}
-            resizeMode="contain"
-            style={StyleSheet.absoluteFill}
-          />
-          <LinearGradient
-            colors={[
-              "rgba(3,7,13,0.08)",
-              "rgba(3,7,13,0.18)",
-              "rgba(3,7,13,0.42)",
-            ]}
-            locations={[0, 0.48, 1]}
-            style={StyleSheet.absoluteFill}
-          />
-        </Animated.View>
+        <Animated.View
+          pointerEvents="none"
+          style={[styles.backdrop, { opacity: backdropOpacity }]}
+        />
         <Pressable style={StyleSheet.absoluteFill} onPress={onClose} />
         <Animated.View
           style={[
@@ -183,7 +169,21 @@ export function SleepReminderSheet({
             },
           ]}
         >
-          <SessionBadgeGlass intensity={Platform.OS === "android" ? 72 : 42} showBlackTint={false} />
+          <Image
+            source={require("@/assets/images/sleep-reminder-room-v2.jpg")}
+            resizeMode="contain"
+            style={styles.sheetBackgroundImage}
+          />
+          <LinearGradient
+            colors={[
+              "rgba(3,7,13,0.12)",
+              "rgba(3,7,13,0.22)",
+              "rgba(3,7,13,0.45)",
+            ]}
+            locations={[0, 0.48, 1]}
+            style={StyleSheet.absoluteFill}
+          />
+          <SessionBadgeGlass intensity={Platform.OS === "android" ? 44 : 20} showBlackTint={false} />
           <View pointerEvents="none" style={styles.sheetGlassTint} />
           <View style={styles.handle} />
           <ScrollView
@@ -337,9 +337,15 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: "flex-end",
   },
-  background: {
+  backdrop: {
     ...StyleSheet.absoluteFillObject,
-    backgroundColor: "#060A0F",
+    backgroundColor: "rgba(0,0,0,0.62)",
+  },
+  sheetBackgroundImage: {
+    ...StyleSheet.absoluteFillObject,
+    width: "100%",
+    height: "100%",
+    resizeMode: "contain",
   },
   sheet: {
     maxHeight: "92%",
