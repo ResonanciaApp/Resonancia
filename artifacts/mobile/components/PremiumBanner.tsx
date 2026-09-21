@@ -146,7 +146,6 @@ export default function PremiumBanner({
 }) {
   const { isPremium } = usePremium();
   const { width: viewportWidth } = useWindowDimensions();
-  const sleepPreviewCardSize = ((viewportWidth - 32 - 15) / 4) * 1.1;
   const defaultPreviewCardSize = (viewportWidth - 15) / 4;
   if (isPremium) return null;
 
@@ -185,57 +184,36 @@ export default function PremiumBanner({
         </Text>
 
         {/* Preview images with star overlay */}
-        {sleepVariant ? (
-          <View style={[styles.images, styles.sleepImages]}>
-            {IMAGES.slice(0, 4).map((src, i) => (
-              <View
-                key={i}
-                style={[
-                  styles.previewCard,
-                  { width: sleepPreviewCardSize, height: sleepPreviewCardSize },
-                ]}
-              >
-                <Image source={src} style={styles.thumb} contentFit="cover" />
-                <Image
-                  source={require("../assets/images/estrella-premium.png")}
-                  style={{ position: "absolute", top: 4, left: 4, width: 18, height: 18, zIndex: 2 }}
-                  contentFit="contain"
-                />
-              </View>
-            ))}
-          </View>
-        ) : (
-          <ScrollView
-            horizontal
-            showsHorizontalScrollIndicator={false}
-            contentContainerStyle={[styles.images, styles.defaultImages]}
-            style={[
-              styles.imagesScroll,
-              { width: viewportWidth + 17, marginLeft: -22 },
-            ]}
-          >
-            {AMBIENT_IMAGES.map((src, i) => (
-              <View
-                key={i}
-                style={[
-                  styles.previewCard,
-                  {
-                    width: defaultPreviewCardSize,
-                    height: defaultPreviewCardSize,
-                    borderWidth: 0,
-                  },
-                ]}
-              >
-                <Image source={src} style={styles.thumb} contentFit="cover" />
-                <Image
-                  source={require("../assets/images/estrella-premium.png")}
-                  style={{ position: "absolute", top: 4, left: 4, width: 18, height: 18, zIndex: 2 }}
-                  contentFit="contain"
-                />
-              </View>
-            ))}
-          </ScrollView>
-        )}
+        <ScrollView
+          horizontal
+          showsHorizontalScrollIndicator={false}
+          contentContainerStyle={[styles.images, styles.defaultImages]}
+          style={[
+            styles.imagesScroll,
+            { width: viewportWidth + 17, marginLeft: -22 },
+          ]}
+        >
+          {AMBIENT_IMAGES.map((src, i) => (
+            <View
+              key={i}
+              style={[
+                styles.previewCard,
+                {
+                  width: defaultPreviewCardSize,
+                  height: defaultPreviewCardSize,
+                  borderWidth: 0,
+                },
+              ]}
+            >
+              <Image source={src} style={styles.thumb} contentFit="cover" />
+              <Image
+                source={require("../assets/images/estrella-premium.png")}
+                style={{ position: "absolute", top: 4, left: 4, width: 18, height: 18, zIndex: 2 }}
+                contentFit="contain"
+              />
+            </View>
+          ))}
+        </ScrollView>
 
         {/* CTA button */}
         <Pressable
@@ -372,8 +350,8 @@ const styles = StyleSheet.create({
     backgroundColor: "transparent",
   },
   sleepStar: {
-    width: 34,
-    height: 34,
+    width: 36,
+    height: 36,
     alignSelf: "center",
     marginBottom: 12,
   },

@@ -51,7 +51,7 @@ import { ContextSearchModal } from "@/components/ContextSearchModal";
 import { EditorialPlaylistCarousel } from "@/components/EditorialPlaylistCarousel";
 import { SessionCarousel } from "@/components/SessionCarousel";
 import { ContentCategoryGrid } from "@/components/ContentCategoryGrid";
-import { ResonadoresSection } from "@/components/ResonadoresSection";
+import { SoundPremiumBanner } from "@/components/SoundPremiumBanner";
 import { PressScale } from "@/components/PressScale";
 import { PremiumBadge } from "@/components/PremiumBadge";
 import {
@@ -869,7 +869,7 @@ export function ExploreScreen({
 
           <View style={[styles.sectionDivider, styles.centeredResonadoresDivider]} />
 
-          <ResonadoresSection marginTop={36} marginBottom={32} />
+          <SoundPremiumBanner />
 
           {/* ── Descubre algo nuevo (al final de la página) — oculta a pedido del usuario ── */}
           {false && (

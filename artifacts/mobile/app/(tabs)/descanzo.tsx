@@ -483,10 +483,7 @@ export default function DescansoScreen() {
                   hideCategoryAboveTitle
                 />
                 {!isPremium ? (
-                  <>
-                    <View style={styles.sectionDivider} />
-                    <PremiumBanner sleepVariant />
-                  </>
+                  <PremiumBanner sleepVariant />
                 ) : null}
                 {orderedSleepCarousels.length > 0 ? (
                   <View style={styles.sectionDivider} />
@@ -540,10 +537,7 @@ export default function DescansoScreen() {
                   />
                 ) : null}
                 {!isPremium && featuredSleepSessions.length === 0 && index === 0 ? (
-                  <>
-                    <View style={styles.sectionDivider} />
-                    <PremiumBanner sleepVariant />
-                  </>
+                  <PremiumBanner sleepVariant />
                 ) : null}
               </React.Fragment>
             ))}

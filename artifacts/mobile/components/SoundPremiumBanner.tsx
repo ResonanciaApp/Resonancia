@@ -1,0 +1,81 @@
+import { Feather, MaterialCommunityIcons } from "@expo/vector-icons";
+import { router } from "expo-router";
+import { Pressable, StyleSheet, Text, View } from "react-native";
+
+import { MEMBERSHIP_AURORA } from "@/constants/colors";
+
+export function SoundPremiumBanner() {
+  return (
+    <Pressable
+      onPress={() => router.push("/membresia" as never)}
+      accessibilityRole="button"
+      accessibilityLabel="Suscríbete al Plan Premium"
+      style={({ pressed }) => [
+        styles.banner,
+        { opacity: pressed ? 0.82 : 1 },
+      ]}
+    >
+      <View style={styles.icon}>
+        <MaterialCommunityIcons
+          name="star"
+          color={MEMBERSHIP_AURORA.premium.accent}
+          size={30}
+        />
+      </View>
+      <View style={styles.copy}>
+        <Text style={styles.title}>
+          Suscríbete al{" "}
+          <Text style={styles.accent}>Plan Premium</Text>
+        </Text>
+        <Text style={styles.subtitle}>
+          Accede a una librería de más de 300 sonidos ambientales de Chile y el mundo
+        </Text>
+      </View>
+      <Feather name="chevron-right" size={20} color="rgba(249,249,249,0.7)" />
+    </Pressable>
+  );
+}
+
+const styles = StyleSheet.create({
+  banner: {
+    minHeight: 110,
+    marginTop: 26,
+    marginHorizontal: 16,
+    paddingHorizontal: 16,
+    paddingVertical: 14,
+    borderRadius: 16,
+    borderWidth: 2,
+    borderColor: "rgba(255,255,255,0.27)",
+    backgroundColor: "rgba(0,0,0,0.34)",
+    flexDirection: "row",
+    alignItems: "center",
+    gap: 14,
+  },
+  icon: {
+    width: 51,
+    height: 51,
+    borderRadius: 13,
+    backgroundColor: "rgba(255,255,255,0.1)",
+    alignItems: "center",
+    justifyContent: "center",
+  },
+  copy: {
+    flex: 1,
+    minWidth: 0,
+  },
+  title: {
+    color: "#F9F9F9",
+    fontFamily: "Manrope",
+    fontSize: 15,
+    fontWeight: "700",
+    marginBottom: 5,
+  },
+  subtitle: {
+    color: "#F4F4F4",
+    fontFamily: "Manrope",
+    fontSize: 12,
+  },
+  accent: {
+    color: MEMBERSHIP_AURORA.premium.accent,
+  },
+});

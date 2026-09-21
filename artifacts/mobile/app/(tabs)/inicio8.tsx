@@ -3291,9 +3291,6 @@ export default function HomeScreen2({
             />
           </View>
         )}
-        {variant === "inicio3" && (
-          <View style={styles.inicio3LowerSectionDivider} />
-        )}
         {/* ── BANNER PREMIUM ── */}
         <View style={{ marginBottom: isInicio2 ? INICIO2_SECTION_GAP : SECTION_GAP }}>
           <PremiumBanner />

@@ -23,6 +23,7 @@ import { ContextSearchModal } from "@/components/ContextSearchModal";
 import { GeoUniverseBackground } from "@/components/GeoUniverseBackground";
 import { SessionCarousel } from "@/components/SessionCarousel";
 import { SessionDurationBadge } from "@/components/SessionDurationBadge";
+import { SoundPremiumBanner } from "@/components/SoundPremiumBanner";
 import { SESSION_CARD_METADATA_HEIGHT_SCALE } from "@/components/SessionCardMetadataOverlay";
 import { useCatalog } from "@/context/CatalogContext";
 import { usePlayer } from "@/context/PlayerContext";
@@ -454,37 +455,7 @@ export default function SonidosScreen() {
                 {index === 1 ? (
                   <>
                     <View style={styles.sectionDivider} />
-                    <Pressable
-                      onPress={() => router.push("/membresia" as never)}
-                      accessibilityRole="button"
-                      accessibilityLabel="Suscríbete al Plan Premium"
-                      style={({ pressed }) => [
-                        styles.premiumBanner,
-                        { opacity: pressed ? 0.82 : 1 },
-                      ]}
-                    >
-                      <View style={styles.premiumBannerIcon}>
-                        <MaterialCommunityIcons
-                          name="star"
-                          color={MEMBERSHIP_AURORA.premium.accent}
-                          size={30}
-                        />
-                      </View>
-                      <View style={styles.premiumBannerCopy}>
-                        <Text style={styles.premiumBannerTitle}>
-                          Suscríbete al{" "}
-                          <Text style={styles.premiumBannerAccent}>Plan Premium</Text>
-                        </Text>
-                        <Text style={styles.premiumBannerSubtitle}>
-                          Accede a una librería de más de 300 sonidos ambientales de Chile y el mundo
-                        </Text>
-                      </View>
-                      <Feather
-                        name="chevron-right"
-                        size={20}
-                        color="rgba(249,249,249,0.7)"
-                      />
-                    </Pressable>
+                    <SoundPremiumBanner />
                   </>
                 ) : null}
               </React.Fragment>
