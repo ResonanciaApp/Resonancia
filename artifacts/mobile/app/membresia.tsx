@@ -791,9 +791,11 @@ function PremiumOfferContent({
                 ]}
               >
                 <AnimatedPlanSelection selected={selected} />
-                <View style={[styles.planRadio, selected && styles.planRadioSelected]}>
-                  {selected ? <View style={styles.planRadioDot} /> : null}
-                </View>
+                <MaterialCommunityIcons
+                  name="star"
+                  size={20}
+                  color={selected ? MEMBERSHIP_AURORA.premium.accent : "#F0F0F0"}
+                />
                 <View style={styles.planCopy}>
                   <Text style={[
                     styles.planName,
@@ -843,9 +845,11 @@ function PremiumOfferContent({
               ]}
             >
               <AnimatedPlanSelection selected={selected} />
-              <View style={[styles.planRadio, selected && styles.planRadioSelected]}>
-                {selected ? <View style={styles.planRadioDot} /> : null}
-              </View>
+              <MaterialCommunityIcons
+                name="star"
+                size={20}
+                color={selected ? MEMBERSHIP_AURORA.premium.accent : "#F0F0F0"}
+              />
               <View style={styles.planCopy}>
                 <Text style={[
                   styles.planName,
@@ -988,9 +992,11 @@ function GiftCardPlanOption({
       accessibilityState={{ selected }}
     >
       <AnimatedPlanSelection selected={selected} />
-      <View style={[styles.planRadio, selected && styles.planRadioSelected]}>
-        {selected ? <View style={styles.planRadioDot} /> : null}
-      </View>
+      <MaterialCommunityIcons
+        name="star"
+        size={20}
+        color={selected ? MEMBERSHIP_AURORA.premium.accent : "#F0F0F0"}
+      />
       <View style={styles.planCopy}>
         <Text style={[
           styles.planName,
@@ -1373,24 +1379,6 @@ const styles = StyleSheet.create({
   },
   planCardPressed: {
     opacity: 0.82,
-  },
-  planRadio: {
-    width: 20,
-    height: 20,
-    borderRadius: 10,
-    borderWidth: 1.5,
-    borderColor: "#8B8496",
-    alignItems: "center",
-    justifyContent: "center",
-  },
-  planRadioSelected: {
-    borderColor: "#FFFFFF",
-  },
-  planRadioDot: {
-    width: 10,
-    height: 10,
-    borderRadius: 5,
-    backgroundColor: "#FFFFFF",
   },
   planName: {
     color: "#F9F9F9",
