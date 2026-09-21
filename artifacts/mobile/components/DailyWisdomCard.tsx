@@ -1,9 +1,10 @@
 import { Feather } from "@expo/vector-icons";
 import { LinearGradient } from "expo-linear-gradient";
-import React, { useMemo } from "react";
+import React from "react";
 import { Pressable, Share, StyleSheet, Text, View } from "react-native";
 
-import { getDailyWisdomQuote } from "@/data/dailyWisdomQuotes";
+import { DAILY_QUOTE_PALETTE_COLORS } from "@/constants/daily-quote-palettes";
+import { useQuoteOfTheDay } from "@/hooks/useQuoteOfTheDay";
 import { useRoutineTheme } from "@/hooks/useRoutineTheme";
 
 export function DailyWisdomCard({
@@ -14,7 +15,7 @@ export function DailyWisdomCard({
   decorativeGradient?: boolean;
 }) {
   const routineTheme = useRoutineTheme();
-  const quote = useMemo(() => getDailyWisdomQuote(), []);
+  const { quote } = useQuoteOfTheDay();
   const accent = routineTheme.accent;
 
   const shareQuote = async () => {
@@ -35,15 +36,15 @@ export function DailyWisdomCard({
       ]}
       testID="inicio2-daily-wisdom"
     >
+      <LinearGradient
+        colors={[...DAILY_QUOTE_PALETTE_COLORS[quote.paletteId]]}
+        start={{ x: 0, y: 0 }}
+        end={{ x: 1, y: 1 }}
+        style={StyleSheet.absoluteFill}
+        pointerEvents="none"
+      />
       {decorativeGradient && (
         <>
-          <LinearGradient
-            colors={["#4A285F", "#A85F62"]}
-            start={{ x: 0, y: 0 }}
-            end={{ x: 1, y: 1 }}
-            style={StyleSheet.absoluteFill}
-            pointerEvents="none"
-          />
           <View style={styles.decorativeSphereLarge} pointerEvents="none" />
           <View style={styles.decorativeSphereSmall} pointerEvents="none" />
           <View style={styles.decorativeSphereSoft} pointerEvents="none" />
