@@ -612,6 +612,7 @@ function PremiumOfferContent({
   previewMode: boolean;
 }) {
   const busy = isPurchasing;
+  const [previewSelectedId, setPreviewSelectedId] = useState("annual-preview");
   const selectedPeriod = selectedPackage ? getPackagePeriod(selectedPackage) : null;
 
   return (
@@ -686,15 +687,21 @@ function PremiumOfferContent({
       ) : previewMode ? (
         <View style={styles.planGrid}>
           {[
-            { id: "monthly-preview", name: "Resonancia Premium Mensual", selected: false, price: "$5.990" },
-            { id: "annual-preview", name: "Resonancia Premium Anual", selected: true, price: "$39.990" },
-          ].map((item) => (
-            <View
+            { id: "monthly-preview", name: "Resonancia Premium Mensual", price: "$5.990" },
+            { id: "annual-preview", name: "Resonancia Premium Anual", price: "$39.990" },
+          ].map((item) => {
+            const selected = previewSelectedId === item.id;
+            return (
+            <Pressable
               key={item.id}
-              style={[
+              onPress={() => setPreviewSelectedId(item.id)}
+              accessibilityRole="radio"
+              accessibilityState={{ selected }}
+              style={({ pressed }) => [
                 styles.planCard,
-                item.selected && styles.planCardSelected,
+                selected && styles.planCardSelected,
                 styles.previewPlanCard,
+                pressed && styles.planCardPressed,
               ]}
             >
               <BlurView
@@ -709,27 +716,28 @@ function PremiumOfferContent({
                 style={[
                   StyleSheet.absoluteFill,
                   styles.planGlassTint,
-                  item.selected && styles.planGlassTintSelected,
+                  selected && styles.planGlassTintSelected,
                 ]}
               />
-              <View style={[styles.planRadio, item.selected && styles.planRadioSelected]}>
-                {item.selected ? <View style={styles.planRadioDot} /> : null}
+              <View style={[styles.planRadio, selected && styles.planRadioSelected]}>
+                {selected ? <View style={styles.planRadioDot} /> : null}
               </View>
               <View style={styles.planCopy}>
-                <Text style={[styles.planName, item.selected && styles.planTextSelected]}>
+                <Text style={[styles.planName, selected && styles.planTextSelected]}>
                   {item.name}
                 </Text>
               </View>
               <View style={styles.planPriceBlock}>
                 <Text style={[
                   styles.planPrice,
-                  item.selected && styles.planTextSelected,
+                  selected && styles.planTextSelected,
                 ]}>
                   {item.price}
                 </Text>
               </View>
-            </View>
-          ))}
+            </Pressable>
+            );
+          })}
         </View>
       ) : (
         <View style={styles.offerUnavailable}>
