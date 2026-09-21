@@ -5701,6 +5701,14 @@ export const GetMixerSoundsResponse = zod.object({
   "tags": zod.array(zod.string()).nullable(),
   "bpm": zod.number().nullable(),
   "loopBars": zod.number().nullable()
+})),
+  "categories": zod.array(zod.object({
+  "id": zod.string(),
+  "label": zod.string(),
+  "sortOrder": zod.number(),
+  "isActive": zod.boolean(),
+  "createdAt": zod.coerce.date(),
+  "updatedAt": zod.coerce.date()
 }))
 })
 
@@ -6192,6 +6200,58 @@ export const DeleteAdminExploreSectionParams = zod.object({
 })
 
 
+export const ListAdminSoundCategoriesResponse = zod.object({
+  "categories": zod.array(zod.object({
+  "id": zod.string(),
+  "label": zod.string(),
+  "sortOrder": zod.number(),
+  "isActive": zod.boolean(),
+  "createdAt": zod.coerce.date(),
+  "updatedAt": zod.coerce.date()
+}))
+})
+
+
+
+
+
+
+export const CreateAdminSoundCategoryBody = zod.object({
+  "id": zod.string().min(1),
+  "label": zod.string().min(1),
+  "sortOrder": zod.number().optional(),
+  "isActive": zod.boolean().optional()
+})
+
+
+export const UpdateAdminSoundCategoryParams = zod.object({
+  "id": zod.coerce.string()
+})
+
+
+
+
+export const UpdateAdminSoundCategoryBody = zod.object({
+  "label": zod.string().min(1).optional(),
+  "sortOrder": zod.number().optional(),
+  "isActive": zod.boolean().optional()
+})
+
+export const UpdateAdminSoundCategoryResponse = zod.object({
+  "id": zod.string(),
+  "label": zod.string(),
+  "sortOrder": zod.number(),
+  "isActive": zod.boolean(),
+  "createdAt": zod.coerce.date(),
+  "updatedAt": zod.coerce.date()
+})
+
+
+export const DeleteAdminSoundCategoryParams = zod.object({
+  "id": zod.coerce.string()
+})
+
+
 /**
  * @summary Listar todos los sonidos del mixer (admin)
  */
@@ -6212,6 +6272,14 @@ export const GetAdminSoundsResponse = zod.object({
   "bpm": zod.number().nullable(),
   "loopBars": zod.number().nullable(),
   "createdAt": zod.coerce.date()
+})),
+  "categories": zod.array(zod.object({
+  "id": zod.string(),
+  "label": zod.string(),
+  "sortOrder": zod.number(),
+  "isActive": zod.boolean(),
+  "createdAt": zod.coerce.date(),
+  "updatedAt": zod.coerce.date()
 }))
 })
 
@@ -6227,7 +6295,7 @@ export const GetAdminSoundsResponse = zod.object({
 export const CreateAdminSoundBody = zod.object({
   "id": zod.string().min(1),
   "name": zod.string().min(1),
-  "categoryId": zod.enum(['animales', 'bosque', 'mar', 'fuego', 'desierto', 'cuencos_tibetanos', 'cuencos_cuarzo', 'gongs', 'campanas_viento', 'vientos', 'cantos', 'percusion', 'mantras', 'solfeggio', 'ruidos', 'frecuencias', 'asmr', 'bpm', 'binaural']),
+  "categoryId": zod.string().describe('Stable ID from the mixer sound categories catalog'),
   "iconName": zod.string().min(1),
   "iconSet": zod.enum(['feather', 'ionicons']),
   "isPremium": zod.boolean().optional(),
@@ -6254,7 +6322,7 @@ export const UpdateAdminSoundParams = zod.object({
 
 export const UpdateAdminSoundBody = zod.object({
   "name": zod.string().min(1).optional(),
-  "categoryId": zod.enum(['animales', 'bosque', 'mar', 'fuego', 'desierto', 'cuencos_tibetanos', 'cuencos_cuarzo', 'gongs', 'campanas_viento', 'vientos', 'cantos', 'percusion', 'mantras', 'solfeggio', 'ruidos', 'frecuencias', 'asmr', 'bpm', 'binaural']).optional(),
+  "categoryId": zod.string().optional().describe('Stable ID from the mixer sound categories catalog'),
   "iconName": zod.string().min(1).optional(),
   "iconSet": zod.enum(['feather', 'ionicons']).optional(),
   "isPremium": zod.boolean().optional(),

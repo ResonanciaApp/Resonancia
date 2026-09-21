@@ -15,6 +15,9 @@ import {
   sharedMixesTable,
   sharedMixReportsTable,
   mixerSoundsTable,
+  mixerSoundCategoriesTable,
+  insertMixerSoundCategorySchema,
+  updateMixerSoundCategorySchema,
   guideConfigsTable,
   insertMixerSoundSchema,
   updateMixerSoundSchema,
@@ -495,6 +498,90 @@ router.post("/admin/mixes/:id/hide", requireAuth, requireRole("admin"), async (r
 
 // ── Sonidos del Mixer ─────────────────────────────────────────────────────
 
+function serializeMixerSoundCategory(c: typeof mixerSoundCategoriesTable.$inferSelect) {
+  return {
+    id: c.id,
+    label: c.label,
+    sortOrder: c.sortOrder,
+    isActive: c.isActive,
+    createdAt: c.createdAt.toISOString(),
+    updatedAt: c.updatedAt.toISOString(),
+  };
+}
+
+router.get("/admin/sound-categories", requireAuth, requireRole("admin"), async (req, res) => {
+  try {
+    const categories = await db.select().from(mixerSoundCategoriesTable)
+      .orderBy(asc(mixerSoundCategoriesTable.sortOrder), asc(mixerSoundCategoriesTable.label));
+    res.json({ categories: categories.map(serializeMixerSoundCategory) });
+  } catch (err) {
+    req.log.error({ err }, "error listing mixer sound categories");
+    res.status(500).json({ error: "Error al obtener categorías de sonidos" });
+  }
+});
+
+router.post("/admin/sound-categories", requireAuth, requireRole("admin"), async (req, res) => {
+  const parsed = insertMixerSoundCategorySchema.safeParse(req.body);
+  if (!parsed.success) { res.status(400).json({ error: "Datos inválidos", details: parsed.error.issues }); return; }
+  try {
+    const [created] = await db.insert(mixerSoundCategoriesTable).values(parsed.data).returning();
+    res.status(201).json(serializeMixerSoundCategory(created));
+  } catch (err) {
+    if ((err as { code?: string }).code === "23505") { res.status(409).json({ error: "Ya existe una categoría con ese ID" }); return; }
+    req.log.error({ err }, "error creating mixer sound category");
+    res.status(500).json({ error: "Error al crear la categoría" });
+  }
+});
+
+router.patch("/admin/sound-categories/:id", requireAuth, requireRole("admin"), async (req, res) => {
+  const parsed = updateMixerSoundCategorySchema.safeParse(req.body);
+  if (!parsed.success || Object.keys(parsed.data).length === 0) { res.status(400).json({ error: "Datos inválidos", details: parsed.success ? undefined : parsed.error.issues }); return; }
+  const id = String(req.params.id);
+  try {
+    const updated = parsed.data.sortOrder === undefined
+      ? (await db.update(mixerSoundCategoriesTable)
+          .set({ ...parsed.data, updatedAt: new Date() })
+          .where(eq(mixerSoundCategoriesTable.id, id)).returning())[0]
+      : await db.transaction(async (tx) => {
+          const ordered = await tx.select().from(mixerSoundCategoriesTable)
+            .orderBy(asc(mixerSoundCategoriesTable.sortOrder), asc(mixerSoundCategoriesTable.label));
+          const sourceIndex = ordered.findIndex((category) => category.id === id);
+          if (sourceIndex < 0) return undefined;
+          const targetIndex = Math.max(0, Math.min(parsed.data.sortOrder!, ordered.length - 1));
+          const [source] = ordered.splice(sourceIndex, 1);
+          ordered.splice(targetIndex, 0, source);
+          const updatedAt = new Date();
+          for (const [sortOrder, category] of ordered.entries()) {
+            await tx.update(mixerSoundCategoriesTable)
+              .set(category.id === id
+                ? { ...parsed.data, sortOrder, updatedAt }
+                : { sortOrder, updatedAt })
+              .where(eq(mixerSoundCategoriesTable.id, category.id));
+          }
+          return (await tx.select().from(mixerSoundCategoriesTable)
+            .where(eq(mixerSoundCategoriesTable.id, id)).limit(1))[0];
+        });
+    if (!updated) { res.status(404).json({ error: "Categoría no encontrada" }); return; }
+    res.json(serializeMixerSoundCategory(updated));
+  } catch (err) {
+    req.log.error({ err }, "error updating mixer sound category");
+    res.status(500).json({ error: "Error al actualizar la categoría" });
+  }
+});
+
+router.delete("/admin/sound-categories/:id", requireAuth, requireRole("admin"), async (req, res) => {
+  try {
+    const [deleted] = await db.delete(mixerSoundCategoriesTable)
+      .where(eq(mixerSoundCategoriesTable.id, String(req.params.id))).returning();
+    if (!deleted) { res.status(404).json({ error: "Categoría no encontrada" }); return; }
+    res.status(204).end();
+  } catch (err) {
+    if ((err as { code?: string }).code === "23503") { res.status(409).json({ error: "La categoría está siendo usada por sonidos" }); return; }
+    req.log.error({ err }, "error deleting mixer sound category");
+    res.status(500).json({ error: "Error al eliminar la categoría" });
+  }
+});
+
 function serializeMixerSound(s: MixerSound) {
   return {
     id: s.id,
@@ -518,11 +605,13 @@ function serializeMixerSound(s: MixerSound) {
 // GET /admin/sounds — listar todos los sonidos del mixer.
 router.get("/admin/sounds", requireAuth, requireRole("admin"), async (req, res) => {
   try {
-    const rows = await db
+    const [rows, categories] = await Promise.all([db
       .select()
       .from(mixerSoundsTable)
-      .orderBy(asc(mixerSoundsTable.categoryId), asc(mixerSoundsTable.sortOrder), asc(mixerSoundsTable.name));
-    res.json({ sounds: rows.map(serializeMixerSound) });
+      .orderBy(asc(mixerSoundsTable.categoryId), asc(mixerSoundsTable.sortOrder), asc(mixerSoundsTable.name)),
+      db.select().from(mixerSoundCategoriesTable)
+        .orderBy(asc(mixerSoundCategoriesTable.sortOrder), asc(mixerSoundCategoriesTable.label))]);
+    res.json({ sounds: rows.map(serializeMixerSound), categories: categories.map(serializeMixerSoundCategory) });
   } catch (err) {
     req.log.error({ err }, "error listing mixer sounds");
     res.status(500).json({ error: "Error al obtener sonidos" });
@@ -537,6 +626,9 @@ router.post("/admin/sounds", requireAuth, requireRole("admin"), async (req, res)
     return;
   }
   try {
+    const [category] = await db.select({ id: mixerSoundCategoriesTable.id })
+      .from(mixerSoundCategoriesTable).where(eq(mixerSoundCategoriesTable.id, parsed.data.categoryId)).limit(1);
+    if (!category) { res.status(400).json({ error: "Categoría de sonido no encontrada" }); return; }
     const [existing] = await db.select().from(mixerSoundsTable).where(eq(mixerSoundsTable.id, parsed.data.id)).limit(1);
     if (existing) {
       res.status(409).json({ error: "Ya existe un sonido con ese ID" });
@@ -564,6 +656,11 @@ router.patch("/admin/sounds/:id", requireAuth, requireRole("admin"), async (req,
     return;
   }
   try {
+    if (parsed.data.categoryId !== undefined) {
+      const [category] = await db.select({ id: mixerSoundCategoriesTable.id })
+        .from(mixerSoundCategoriesTable).where(eq(mixerSoundCategoriesTable.id, parsed.data.categoryId)).limit(1);
+      if (!category) { res.status(400).json({ error: "Categoría de sonido no encontrada" }); return; }
+    }
     const [updated] = await db
       .update(mixerSoundsTable)
       .set({ ...parsed.data, updatedAt: new Date() })

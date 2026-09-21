@@ -68,6 +68,7 @@ import type {
   CreateDescansoSoundBody,
   CreateMessageBody,
   CreateMixerSoundBody,
+  CreateMixerSoundCategoryBody,
   CreateSceneAnimationBody,
   CreateTagOptionBody,
   CreateVideoBody,
@@ -152,6 +153,7 @@ import type {
   LibrarySnapshot,
   ListAdminCoverPresetsParams,
   ListAdminDailyQuotesParams,
+  ListAdminSoundCategories200,
   ListCoverPresetsParams,
   ListDescansoSounds200,
   ListMyReflectionStoriesParams,
@@ -162,6 +164,7 @@ import type {
   MixComment,
   MixCommentInput,
   MixCommentsPage,
+  MixerSoundCategory,
   Notification,
   OkResponse,
   PinnedFeaturedResponse,
@@ -227,6 +230,7 @@ import type {
   UpdateHeroOverrideBody,
   UpdateHeroSessionSlidesBody,
   UpdateMixerSoundBody,
+  UpdateMixerSoundCategoryBody,
   UpdateSceneAnimationBody,
   UpdateVideoBody,
   UpsertHeroOverrideBody,
@@ -284,7 +288,6 @@ export const getListCoverPresetsQueryKey = (params?: ListCoverPresetsParams,) =>
     `/api/cover-presets`, ...(params ? [params] : [])
     ] as const;
     }
-
 
 export const getListCoverPresetsQueryOptions = <TData = Awaited<ReturnType<typeof listCoverPresets>>, TError = ErrorType<void>>(params: ListCoverPresetsParams, options?: { query?:UseQueryOptions<Awaited<ReturnType<typeof listCoverPresets>>, TError, TData>, request?: SecondParameter<typeof customFetch>}
 ) => {
@@ -14019,6 +14022,272 @@ export const useDeleteAdminExploreSection = <TError = ErrorType<ErrorResponse>,
         TContext
       > => {
       return useMutation(getDeleteAdminExploreSectionMutationOptions(options));
+    }
+
+export const getListAdminSoundCategoriesUrl = () => {
+
+
+
+
+  return `/api/admin/sound-categories`
+}
+
+export const listAdminSoundCategories = async ( options?: RequestInit): Promise<ListAdminSoundCategories200> => {
+
+  return customFetch<ListAdminSoundCategories200>(getListAdminSoundCategoriesUrl(),
+  {
+    ...options,
+    method: 'GET'
+
+
+  }
+);}
+
+
+
+
+
+export const getListAdminSoundCategoriesQueryKey = () => {
+    return [
+    `/api/admin/sound-categories`
+    ] as const;
+    }
+
+
+export const getListAdminSoundCategoriesQueryOptions = <TData = Awaited<ReturnType<typeof listAdminSoundCategories>>, TError = ErrorType<unknown>>( options?: { query?:UseQueryOptions<Awaited<ReturnType<typeof listAdminSoundCategories>>, TError, TData>, request?: SecondParameter<typeof customFetch>}
+) => {
+
+const {query: queryOptions, request: requestOptions} = options ?? {};
+
+  const queryKey =  queryOptions?.queryKey ?? getListAdminSoundCategoriesQueryKey();
+
+
+
+    const queryFn: QueryFunction<Awaited<ReturnType<typeof listAdminSoundCategories>>> = ({ signal }) => listAdminSoundCategories({ signal, ...requestOptions });
+
+
+
+
+
+   return  { queryKey, queryFn, ...queryOptions} as UseQueryOptions<Awaited<ReturnType<typeof listAdminSoundCategories>>, TError, TData> & { queryKey: QueryKey }
+}
+
+export type ListAdminSoundCategoriesQueryResult = NonNullable<Awaited<ReturnType<typeof listAdminSoundCategories>>>
+export type ListAdminSoundCategoriesQueryError = ErrorType<unknown>
+
+
+
+export function useListAdminSoundCategories<TData = Awaited<ReturnType<typeof listAdminSoundCategories>>, TError = ErrorType<unknown>>(
+  options?: { query?:UseQueryOptions<Awaited<ReturnType<typeof listAdminSoundCategories>>, TError, TData>, request?: SecondParameter<typeof customFetch>}
+
+ ):  UseQueryResult<TData, TError> & { queryKey: QueryKey } {
+
+  const queryOptions = getListAdminSoundCategoriesQueryOptions(options)
+
+  const query = useQuery(queryOptions) as  UseQueryResult<TData, TError> & { queryKey: QueryKey };
+
+  return { ...query, queryKey: queryOptions.queryKey };
+}
+
+
+
+
+
+
+
+export const getCreateAdminSoundCategoryUrl = () => {
+
+
+
+
+  return `/api/admin/sound-categories`
+}
+
+export const createAdminSoundCategory = async (createMixerSoundCategoryBody: CreateMixerSoundCategoryBody, options?: RequestInit): Promise<MixerSoundCategory> => {
+
+  return customFetch<MixerSoundCategory>(getCreateAdminSoundCategoryUrl(),
+  {
+    ...options,
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json', ...options?.headers },
+    body: JSON.stringify(
+      createMixerSoundCategoryBody,)
+  }
+);}
+
+
+
+
+export const getCreateAdminSoundCategoryMutationOptions = <TError = ErrorType<unknown>,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof createAdminSoundCategory>>, TError,{data: BodyType<CreateMixerSoundCategoryBody>}, TContext>, request?: SecondParameter<typeof customFetch>}
+): UseMutationOptions<Awaited<ReturnType<typeof createAdminSoundCategory>>, TError,{data: BodyType<CreateMixerSoundCategoryBody>}, TContext> => {
+
+const mutationKey = ['createAdminSoundCategory'];
+const {mutation: mutationOptions, request: requestOptions} = options ?
+      options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey ?
+      options
+      : {...options, mutation: {...options.mutation, mutationKey}}
+      : {mutation: { mutationKey, }, request: undefined};
+
+
+
+
+      const mutationFn: MutationFunction<Awaited<ReturnType<typeof createAdminSoundCategory>>, {data: BodyType<CreateMixerSoundCategoryBody>}> = (props) => {
+          const {data} = props ?? {};
+
+          return  createAdminSoundCategory(data,requestOptions)
+        }
+
+
+
+
+
+
+  return  { mutationFn, ...mutationOptions }}
+
+    export type CreateAdminSoundCategoryMutationResult = NonNullable<Awaited<ReturnType<typeof createAdminSoundCategory>>>
+    export type CreateAdminSoundCategoryMutationBody = BodyType<CreateMixerSoundCategoryBody>
+    export type CreateAdminSoundCategoryMutationError = ErrorType<unknown>
+
+    export const useCreateAdminSoundCategory = <TError = ErrorType<unknown>,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof createAdminSoundCategory>>, TError,{data: BodyType<CreateMixerSoundCategoryBody>}, TContext>, request?: SecondParameter<typeof customFetch>}
+ ): UseMutationResult<
+        Awaited<ReturnType<typeof createAdminSoundCategory>>,
+        TError,
+        {data: BodyType<CreateMixerSoundCategoryBody>},
+        TContext
+      > => {
+      return useMutation(getCreateAdminSoundCategoryMutationOptions(options));
+    }
+
+export const getUpdateAdminSoundCategoryUrl = (id: string,) => {
+
+
+
+
+  return `/api/admin/sound-categories/${id}`
+}
+
+export const updateAdminSoundCategory = async (id: string,
+    updateMixerSoundCategoryBody: UpdateMixerSoundCategoryBody, options?: RequestInit): Promise<MixerSoundCategory> => {
+
+  return customFetch<MixerSoundCategory>(getUpdateAdminSoundCategoryUrl(id),
+  {
+    ...options,
+    method: 'PATCH',
+    headers: { 'Content-Type': 'application/json', ...options?.headers },
+    body: JSON.stringify(
+      updateMixerSoundCategoryBody,)
+  }
+);}
+
+
+
+
+export const getUpdateAdminSoundCategoryMutationOptions = <TError = ErrorType<unknown>,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof updateAdminSoundCategory>>, TError,{id: string;data: BodyType<UpdateMixerSoundCategoryBody>}, TContext>, request?: SecondParameter<typeof customFetch>}
+): UseMutationOptions<Awaited<ReturnType<typeof updateAdminSoundCategory>>, TError,{id: string;data: BodyType<UpdateMixerSoundCategoryBody>}, TContext> => {
+
+const mutationKey = ['updateAdminSoundCategory'];
+const {mutation: mutationOptions, request: requestOptions} = options ?
+      options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey ?
+      options
+      : {...options, mutation: {...options.mutation, mutationKey}}
+      : {mutation: { mutationKey, }, request: undefined};
+
+
+
+
+      const mutationFn: MutationFunction<Awaited<ReturnType<typeof updateAdminSoundCategory>>, {id: string;data: BodyType<UpdateMixerSoundCategoryBody>}> = (props) => {
+          const {id,data} = props ?? {};
+
+          return  updateAdminSoundCategory(id,data,requestOptions)
+        }
+
+
+
+
+
+
+  return  { mutationFn, ...mutationOptions }}
+
+    export type UpdateAdminSoundCategoryMutationResult = NonNullable<Awaited<ReturnType<typeof updateAdminSoundCategory>>>
+    export type UpdateAdminSoundCategoryMutationBody = BodyType<UpdateMixerSoundCategoryBody>
+    export type UpdateAdminSoundCategoryMutationError = ErrorType<unknown>
+
+    export const useUpdateAdminSoundCategory = <TError = ErrorType<unknown>,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof updateAdminSoundCategory>>, TError,{id: string;data: BodyType<UpdateMixerSoundCategoryBody>}, TContext>, request?: SecondParameter<typeof customFetch>}
+ ): UseMutationResult<
+        Awaited<ReturnType<typeof updateAdminSoundCategory>>,
+        TError,
+        {id: string;data: BodyType<UpdateMixerSoundCategoryBody>},
+        TContext
+      > => {
+      return useMutation(getUpdateAdminSoundCategoryMutationOptions(options));
+    }
+
+export const getDeleteAdminSoundCategoryUrl = (id: string,) => {
+
+
+
+
+  return `/api/admin/sound-categories/${id}`
+}
+
+export const deleteAdminSoundCategory = async (id: string, options?: RequestInit): Promise<void> => {
+
+  return customFetch<void>(getDeleteAdminSoundCategoryUrl(id),
+  {
+    ...options,
+    method: 'DELETE'
+
+
+  }
+);}
+
+
+
+
+export const getDeleteAdminSoundCategoryMutationOptions = <TError = ErrorType<unknown>,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof deleteAdminSoundCategory>>, TError,{id: string}, TContext>, request?: SecondParameter<typeof customFetch>}
+): UseMutationOptions<Awaited<ReturnType<typeof deleteAdminSoundCategory>>, TError,{id: string}, TContext> => {
+
+const mutationKey = ['deleteAdminSoundCategory'];
+const {mutation: mutationOptions, request: requestOptions} = options ?
+      options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey ?
+      options
+      : {...options, mutation: {...options.mutation, mutationKey}}
+      : {mutation: { mutationKey, }, request: undefined};
+
+
+
+
+      const mutationFn: MutationFunction<Awaited<ReturnType<typeof deleteAdminSoundCategory>>, {id: string}> = (props) => {
+          const {id} = props ?? {};
+
+          return  deleteAdminSoundCategory(id,requestOptions)
+        }
+
+
+
+
+
+
+  return  { mutationFn, ...mutationOptions }}
+
+    export type DeleteAdminSoundCategoryMutationResult = NonNullable<Awaited<ReturnType<typeof deleteAdminSoundCategory>>>
+
+    export type DeleteAdminSoundCategoryMutationError = ErrorType<unknown>
+
+    export const useDeleteAdminSoundCategory = <TError = ErrorType<unknown>,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof deleteAdminSoundCategory>>, TError,{id: string}, TContext>, request?: SecondParameter<typeof customFetch>}
+ ): UseMutationResult<
+        Awaited<ReturnType<typeof deleteAdminSoundCategory>>,
+        TError,
+        {id: string},
+        TContext
+      > => {
+      return useMutation(getDeleteAdminSoundCategoryMutationOptions(options));
     }
 
 export const getGetAdminSoundsUrl = () => {

@@ -36,13 +36,9 @@ import { useSceneTheme } from "@/context/SceneThemeContext";
 import {
   type MixSound,
   type SoundCategoryId,
-  type SoundTagId,
-  SOUND_CATEGORIES,
-  SOUND_TAGS,
   hasSoundFile,
   soundMatchesBpm,
 } from "@/data/sounds";
-import { MOODS, MOOD_SOUND_TAGS, type MoodId } from "@/data/moods";
 import {
   DEFAULT_MIXER_BG_PALETTE,
   getMixerBgPalette,
@@ -69,59 +65,8 @@ const GOLD  = "#F9F9F9";
 const DARK  = "#1A1E2B";
 const MUTED = "#6B7A96";
 
-const SUB_TAB_LABELS: Partial<Record<SoundCategoryId, string>> = {
-  cuencos_tibetanos: "Tibetanos",
-  cuencos_cuarzo:    "Cuarzo",
-  gongs:             "Gongs",
-  campanas_viento:   "Campanas",
-  vientos:           "Vientos",
-  cantos:            "Cantos",
-  percusion:         "Percusión",
-};
-
-const SUB_TAB_ICONS: Partial<Record<SoundCategoryId, string>> = {
-  animales:          "paw",
-  bosque:            "tree",
-  mar:               "waves",
-  fuego:             "fire",
-  desierto:          "weather-sunny",
-  cuencos_tibetanos: "bowl-mix",
-  cuencos_cuarzo:    "circle-outline",
-  gongs:             "bell-outline",
-  campanas_viento:   "weather-windy",
-  vientos:           "weather-windy",
-  cantos:            "microphone",
-  percusion:         "music-note",
-  mantras:           "om",
-  solfeggio:         "music-clef-treble",
-  frecuencias:       "sine-wave",
-  ruidos:            "volume-vibrate",
-};
-
-type MainTabId =
-  | "popular" | "naturaleza" | "ancestrales" | "sintetizadores" | "voces" | "bpm"
-  | "ambientales" | "ciudad" | "astrales" | "relatos" | "meditaciones";
-
-const MAIN_TABS: {
-  id: MainTabId;
-  label: string;
-  icon: string;
-  color: string;
-  categories: SoundCategoryId[] | null;
-}[] = [
-  { id: "popular",        label: "Populares",  icon: "music-note-eighth", color: "#8C1A2B", categories: null },
-  { id: "naturaleza",     label: "Naturales",  icon: "leaf",              color: "#3A9060", categories: ["animales", "bosque", "mar", "fuego", "desierto"] },
-  { id: "ancestrales",    label: "Sagrados",   icon: "bell",              color: "#B09040", categories: ["cuencos_tibetanos", "cuencos_cuarzo", "gongs", "campanas_viento", "vientos", "cantos", "percusion"] },
-  { id: "sintetizadores", label: "Digital",    icon: "sine-wave",         color: "#3A80B0", categories: ["solfeggio"] },
-  { id: "voces",          label: "Voces",      icon: "microphone",        color: "#9060A0", categories: ["mantras"] },
-  { id: "bpm",            label: "BPM",        icon: "metronome",         color: "#A04040", categories: ["bpm"] },
-  // ── Nuevas pantallas (sin audios todavía) ──
-  { id: "ambientales",    label: "Ambientales",  icon: "waveform",        color: "#4A6B8A", categories: [] },
-  { id: "ciudad",         label: "Ciudad",       icon: "city-variant",    color: "#6B6B7A", categories: [] },
-  { id: "astrales",       label: "Astrales",     icon: "star-four-points",color: "#5A4A8A", categories: [] },
-  { id: "relatos",        label: "Relatos",      icon: "book-open-variant",color: "#8A6A4A", categories: [] },
-  { id: "meditaciones",   label: "Meditaciones", icon: "meditation",      color: "#4A8A7A", categories: [] },
-];
+type MainTabId = SoundCategoryId;
+type MainTab = { id: MainTabId; label: string };
 
 const COUNTS_KEY = "@resonance_sound_play_counts_m3";
 const SETTINGS_KEY = "@resonance_mixer_settings_v1";
@@ -135,56 +80,15 @@ const MEZ_PLACEHOLDERS = [
 ];
 
 // ── Colores de tab ────────────────────────────────────────────────────────────
-const TAB_HEADER_GRADIENT: Record<MainTabId, [string, string, ...string[]]> = {
-  popular:        ["#340D1A", "#190913"],
-  naturaleza:     ["#0A1A0E", "#0A1A0E", "#0A1A0E"],
-  ancestrales:    ["#221510", "#221510", "#221510"],
-  sintetizadores: ["#061A2E", "#061A2E", "#061A2E"],
-  voces:          ["#220830", "#220830", "#220830"],
-  bpm:            ["#0A2020", "#0A2020", "#0A2020"],
-  ambientales:    ["#0B1622", "#0B1622", "#0B1622"],
-  ciudad:         ["#16161C", "#16161C", "#16161C"],
-  astrales:       ["#150F26", "#150F26", "#150F26"],
-  relatos:        ["#1E150C", "#1E150C", "#1E150C"],
-  meditaciones:   ["#0C1E1A", "#0C1E1A", "#0C1E1A"],
-};
-
-
-/** Gradiente de fondo de contenido en modo "noche" — último stop neutro oscuro (sin bordeaux) */
-const TAB_NOCHE_BG: Record<MainTabId, [string, string, ...string[]]> = {
-  popular:        ["#340D1A", "#190913"],
-  naturaleza:     ["#0A1A0E", "#0A1A0E", "#0A1A0E"],
-  ancestrales:    ["#221510", "#221510", "#221510"],
-  sintetizadores: ["#061A2E", "#061A2E", "#061A2E"],
-  voces:          ["#220830", "#220830", "#220830"],
-  bpm:            ["#0A2020", "#0A2020", "#0A2020"],
-  ambientales:    ["#0B1622", "#0B1622", "#0B1622"],
-  ciudad:         ["#16161C", "#16161C", "#16161C"],
-  astrales:       ["#150F26", "#150F26", "#150F26"],
-  relatos:        ["#1E150C", "#1E150C", "#1E150C"],
-  meditaciones:   ["#0C1E1A", "#0C1E1A", "#0C1E1A"],
-};
-
-const TAB_GRADIENT: Record<MainTabId, [string, string]> = {
-  popular:        ["#5E1E2D", "#5E1E2D"],
-  naturaleza:     ["#3B4933", "#303E27"],
-  ancestrales:    ["#A3631F", "#A3631F"],
-  sintetizadores: ["#2C62AB", "#2C62AB"],
-  voces:          ["#FF6B6B", "#C9184A"],
-  bpm:            ["#1A5454", "#0D3535"],
-  ambientales:    ["#2E4A66", "#2E4A66"],
-  ciudad:         ["#4A4A58", "#4A4A58"],
-  astrales:       ["#453A70", "#453A70"],
-  relatos:        ["#6B5236", "#6B5236"],
-  meditaciones:   ["#2E6658", "#2E6658"],
-};
+const TAB_HEADER_GRADIENT: [string, string, string] = ["#221510", "#221510", "#221510"];
+const TAB_GRADIENT: [string, string] = ["#A3631F", "#A3631F"];
 
 // ── PillTab — estilo Biblioteca (texto + subrayado animado) ──────────────────
 const CHIP_ANIM_DURATION = 550;
 
 const PillTab = memo(function PillTab({
   tab, sel, onPress,
-}: { tab: (typeof MAIN_TABS)[0]; sel: boolean; onPress: () => void }) {
+}: { tab: MainTab; sel: boolean; onPress: () => void }) {
   const { theme } = useSceneTheme();
 
   return (
@@ -460,7 +364,7 @@ const bpmStyles = StyleSheet.create({
 export default function MezcladorScreen() {
   const insets      = useSafeAreaInsets();
   const { isPremium }    = usePremium();
-  const { sounds: allSounds, refresh: refreshSounds } = useSounds();
+  const { sounds: allSounds, categories, refresh: refreshSounds } = useSounds();
   const { open: openDrawer } = useDrawer();
   const { isMixerOpen, closeMixer } = useMixerPanel();
   const { isActive, toggleSound, activeBpm, bgPaletteId, setBgPaletteId, pauseMix } = useMixer();
@@ -501,12 +405,10 @@ export default function MezcladorScreen() {
 
   // null = ningún tab seleccionado → catálogo completo por secciones
   const [mainTab,        setMainTab]        = useState<MainTabId | null>(null);
-  const [subTab,         setSubTab]         = useState<SoundCategoryId | null>(null);
   const [selectedBpm,    setSelectedBpm]    = useState<44 | 50 | 68 | 72 | null>(null);
   const [playCounts,     setPlayCounts]     = useState<Record<string, number>>({});
   const [contentAnimKey, setContentAnimKey] = useState(0);
   const [contentDir,     setContentDir]     = useState<"right" | "left">("right");
-  const [subTabAnimKey,  setSubTabAnimKey]  = useState(0);
 
   // ── Menú inline (3 puntitos) ──
   const [menuOpen, setMenuOpen]   = useState(false);
@@ -535,8 +437,6 @@ export default function MezcladorScreen() {
   };
 
   // ── Ajustes del Mezclador (filtros: tema + etiquetas) ──
-  const [moodFilter,      setMoodFilter]      = useState<MoodId | null>(null);
-  const [tagFilters,      setTagFilters]      = useState<SoundTagId[]>([]);
   const settingsLoaded = useRef(false);
 
   // Carga inicial de los ajustes guardados
@@ -546,15 +446,6 @@ export default function MezcladorScreen() {
         if (raw) {
           const s = JSON.parse(raw);
           // Validar contra los valores actuales (descarta datos obsoletos/corruptos)
-          if (s.moodFilter && s.moodFilter in MOOD_SOUND_TAGS) {
-            setMoodFilter(s.moodFilter as MoodId);
-          }
-          if (Array.isArray(s.tagFilters)) {
-            const validTags = new Set(SOUND_TAGS.map((t) => t.id));
-            setTagFilters(s.tagFilters.filter((t: unknown): t is SoundTagId =>
-              typeof t === "string" && validTags.has(t as SoundTagId),
-            ));
-          }
           if (s.bgPaletteId) setBgPaletteId(getMixerBgPalette(s.bgPaletteId).id);
         }
       })
@@ -567,22 +458,15 @@ export default function MezcladorScreen() {
     if (!settingsLoaded.current) return;
     AsyncStorage.setItem(
       SETTINGS_KEY,
-      JSON.stringify({ moodFilter, tagFilters, bgPaletteId }),
+      JSON.stringify({ bgPaletteId }),
     ).catch(() => {});
-  }, [moodFilter, tagFilters, bgPaletteId]);
-
-  const toggleTagFilter = (t: SoundTagId) =>
-    setTagFilters((prev) =>
-      prev.includes(t) ? prev.filter((x) => x !== t) : [...prev, t],
-    );
+  }, [bgPaletteId]);
 
   const clearFilters = () => {
-    setMoodFilter(null);
-    setTagFilters([]);
     setBgPaletteId(DEFAULT_MIXER_BG_PALETTE);
     AsyncStorage.setItem(
       SETTINGS_KEY,
-      JSON.stringify({ moodFilter: null, tagFilters: [], bgPaletteId: DEFAULT_MIXER_BG_PALETTE }),
+      JSON.stringify({ bgPaletteId: DEFAULT_MIXER_BG_PALETTE }),
     ).catch(() => {});
   };
 
@@ -590,7 +474,6 @@ export default function MezcladorScreen() {
   const clearForMode = () => {
     setBgPaletteId(DEFAULT_MIXER_BG_PALETTE);
     emitBgPresetChange("oscuro");
-    setTagFilters([]);
   };
 
   const bgPalette = getMixerBgPalette(bgPaletteId);
@@ -665,18 +548,15 @@ export default function MezcladorScreen() {
     if (id === mainTab) {
       // Des-seleccionar → volver al catálogo completo
       setMainTab(null);
-      setSubTab(null);
       setSelectedBpm(null);
       setContentAnimKey((k) => k + 1);
       return;
     }
-    const ids = MAIN_TABS.map((t) => t.id);
+    const ids = categories.map((t) => t.id);
     setContentDir(mainTab === null || ids.indexOf(id) > ids.indexOf(mainTab) ? "right" : "left");
     setMainTab(id);
-    setSubTab(null);
     if (id !== "bpm") setSelectedBpm(null);
     setContentAnimKey((k) => k + 1);
-    setSubTabAnimKey((k) => k + 1);
   };
 
   useEffect(() => {
@@ -720,59 +600,44 @@ export default function MezcladorScreen() {
     }
   };
 
-  const popularSounds = useMemo(() =>
-    allSounds.filter((s) => !!s.audioUrl || hasSoundFile(s.id) || !!REMOTE_SOUND_MAP[s.id])
-      .slice()
-      .sort((a, b) => (playCounts[b.id] ?? 0) - (playCounts[a.id] ?? 0))
-      .slice(0, 50),
-    [allSounds, playCounts],
+  const playableSounds = useMemo(
+    () => allSounds.filter((s) => !!s.audioUrl || hasSoundFile(s.id) || !!REMOTE_SOUND_MAP[s.id]),
+    [allSounds],
   );
-
-  const currentTabDef    = MAIN_TABS.find((t) => t.id === mainTab);
-  const subTabCategories = currentTabDef?.categories ?? null;
+  const tabs = useMemo<MainTab[]>(
+    () => categories
+      .filter((category) => category.isActive !== false)
+      .filter((category) => playableSounds.some((sound) => sound.category === category.id))
+      .map(({ id, label }) => ({ id, label })),
+    [categories, playableSounds],
+  );
+  useEffect(() => {
+    if (mainTab !== null && !tabs.some((tab) => tab.id === mainTab)) {
+      setMainTab(null);
+      setSelectedBpm(null);
+    }
+  }, [mainTab, tabs]);
 
   // BPM efectivo para filtrar: activeBpm tiene prioridad (ya hay ritmos sonando),
   // si no, el que el usuario eligió en el selector local.
   const effectiveBpm = activeBpm ?? selectedBpm;
 
   const displayedSounds = useMemo(() => {
-    const base = !subTabCategories
-      ? popularSounds
-      : allSounds.filter(
-          (s) =>
-            (subTab ? [subTab] : subTabCategories).includes(s.category as SoundCategoryId) &&
-            (mainTab !== "bpm" || effectiveBpm === null || soundMatchesBpm(s, effectiveBpm)),
-        );
-
-    const moodTags = moodFilter ? MOOD_SOUND_TAGS[moodFilter] ?? [] : [];
-    const activeTags = Array.from(new Set([...moodTags, ...tagFilters]));
-    if (activeTags.length === 0) return base;
-
-    // Solo filtrar sonidos que TIENEN tags definidos; los que no tienen tags pasan siempre.
-    return base.filter((s) => !s.tags?.length || s.tags.some((t) => activeTags.includes(t)));
-  }, [mainTab, subTab, popularSounds, subTabCategories, moodFilter, tagFilters, effectiveBpm]);
+    if (mainTab === null) return [];
+    return playableSounds.filter(
+      (s) => s.category === mainTab &&
+        (mainTab !== "bpm" || effectiveBpm === null || soundMatchesBpm(s, effectiveBpm)),
+    );
+  }, [mainTab, playableSounds, effectiveBpm]);
 
   // ── Catálogo completo por secciones (sin tab seleccionado, estilo Insight Timer) ──
   const catalogSections = useMemo(() => {
     if (mainTab !== null) return [];
-    const moodTags = moodFilter ? MOOD_SOUND_TAGS[moodFilter] ?? [] : [];
-    const activeTags = Array.from(new Set([...moodTags, ...tagFilters]));
-    const applyTags = (list: MixSound[]) =>
-      activeTags.length === 0
-        ? list
-        : list.filter((s) => !s.tags?.length || s.tags.some((t) => activeTags.includes(t)));
-
-    return MAIN_TABS.map((tab) => {
-      const base = tab.categories === null
-        ? popularSounds
-        : allSounds.filter(
-            (s) =>
-              tab.categories!.includes(s.category as SoundCategoryId) &&
-              (tab.id !== "bpm" || effectiveBpm === null || soundMatchesBpm(s, effectiveBpm)),
-          );
-      return { tab, sounds: applyTags(base) };
-    }).filter((sec) => sec.sounds.length > 0);
-  }, [mainTab, popularSounds, allSounds, moodFilter, tagFilters, effectiveBpm]);
+    return tabs.map((tab) => ({
+      tab,
+      sounds: playableSounds.filter((s) => s.category === tab.id),
+    })).filter((sec) => sec.sounds.length > 0);
+  }, [mainTab, tabs, playableSounds]);
 
   return (
     <View style={[styles.root, { backgroundColor: theme.solid }]}>
@@ -832,8 +697,8 @@ export default function MezcladorScreen() {
             >
               <View style={{ gap: 12 }}>
                 {[
-                  MAIN_TABS.slice(0, Math.ceil(MAIN_TABS.length / 2)),
-                  MAIN_TABS.slice(Math.ceil(MAIN_TABS.length / 2)),
+                  tabs.slice(0, Math.ceil(tabs.length / 2)),
+                  tabs.slice(Math.ceil(tabs.length / 2)),
                 ].map((row, i) => (
                   <View key={i} style={{ flexDirection: "row", gap: 11 }}>
                     {row.map((tab) => (
@@ -869,42 +734,6 @@ export default function MezcladorScreen() {
           onScroll={handleCatalogScroll}
         >
           <ContentSlide dir={contentDir}>
-            {/* ── Chips de filtros activos ── */}
-            {(tagFilters.length > 0 || moodFilter !== null) && (
-              <ScrollView
-                horizontal
-                showsHorizontalScrollIndicator={false}
-                style={styles.activeFilterRow}
-                contentContainerStyle={styles.activeFilterRowContent}
-              >
-                {moodFilter !== null && (() => {
-                  const mood = MOODS.find((m) => m.id === moodFilter);
-                  return mood ? (
-                    <Pressable
-                      key="mood"
-                      onPress={() => setMoodFilter(null)}
-                      style={({ pressed }) => [styles.activeChip, { opacity: pressed ? 0.75 : 1 }]}
-                    >
-                      <Text style={styles.activeChipText}>{mood.emoji} {mood.label}</Text>
-                      <Text style={styles.activeChipX}>✕</Text>
-                    </Pressable>
-                  ) : null;
-                })()}
-                {tagFilters.map((tagId) => {
-                  const tag = SOUND_TAGS.find((t) => t.id === tagId);
-                  return tag ? (
-                    <Pressable
-                      key={tagId}
-                      onPress={() => toggleTagFilter(tagId)}
-                      style={({ pressed }) => [styles.activeChip, { opacity: pressed ? 0.75 : 1 }]}
-                    >
-                      <Text style={styles.activeChipText}>{tag.label}</Text>
-                      <Text style={styles.activeChipX}>✕</Text>
-                    </Pressable>
-                  ) : null;
-                })}
-              </ScrollView>
-            )}
             {mainTab === "bpm" && (
               <BpmSelector
                 selected={selectedBpm}
@@ -937,7 +766,7 @@ export default function MezcladorScreen() {
                         locked={!!s.isPremium && !isPremium}
                         available={!!s.audioUrl || hasSoundFile(s.id) || !!REMOTE_SOUND_MAP[s.id]}
                         image={s.imageUrl ?? REMOTE_SOUND_IMAGE_MAP[s.id] ?? getSoundImage(s.id)}
-                        borderGradient={bgPaletteId === "noche" ? ["#FFFFFF", "#FFFFFF", "#FFFFFF"] : [TAB_GRADIENT[sec.tab.id][0], TAB_HEADER_GRADIENT[sec.tab.id][1], TAB_HEADER_GRADIENT[sec.tab.id][2]]}
+                        borderGradient={bgPaletteId === "noche" ? ["#FFFFFF", "#FFFFFF", "#FFFFFF"] : [TAB_GRADIENT[0], TAB_HEADER_GRADIENT[1], TAB_HEADER_GRADIENT[2]]}
                         textColor={bgPaletteId === "noche" ? "#FFFFFF" : undefined}
                         bgPaletteId={bgPaletteId}
                         onPress={() => handleSoundPress(s)}
@@ -971,7 +800,7 @@ export default function MezcladorScreen() {
                     locked={!!s.isPremium && !isPremium}
                     available={!!s.audioUrl || hasSoundFile(s.id) || !!REMOTE_SOUND_MAP[s.id]}
                         image={s.imageUrl ?? REMOTE_SOUND_IMAGE_MAP[s.id] ?? getSoundImage(s.id)}
-                    borderGradient={bgPaletteId === "noche" ? ["#FFFFFF", "#FFFFFF", "#FFFFFF"] : [TAB_GRADIENT[mainTab][0], TAB_HEADER_GRADIENT[mainTab][1], TAB_HEADER_GRADIENT[mainTab][2]]}
+                    borderGradient={bgPaletteId === "noche" ? ["#FFFFFF", "#FFFFFF", "#FFFFFF"] : [TAB_GRADIENT[0], TAB_HEADER_GRADIENT[1], TAB_HEADER_GRADIENT[2]]}
                     textColor={bgPaletteId === "noche" ? "#FFFFFF" : undefined}
                     bgPaletteId={bgPaletteId}
                     onPress={() => handleSoundPress(s)}
@@ -1017,37 +846,16 @@ export default function MezcladorScreen() {
             onScroll={(e) => setMenuScrolled(e.nativeEvent.contentOffset.y > 2)}
             scrollEventThrottle={16}
           >
-            <Text style={styles.menuSectionTitle}>Etiquetas</Text>
-            <View style={styles.menuChipWrap}>
-              {SOUND_TAGS.map((tag) => {
-                const sel = tagFilters.includes(tag.id);
-                return (
-                  <Pressable
-                    key={tag.id}
-                    onPress={() => toggleTagFilter(tag.id)}
-                    style={({ pressed }) => [
-                      styles.menuChip,
-                      { backgroundColor: sel ? "rgba(190,150,80,0.22)" : "rgba(255,255,255,0.07)", borderColor: sel ? GOLD : "rgba(255,255,255,0.18)", opacity: pressed ? 0.8 : 1 },
-                    ]}
-                  >
-                    <Text style={[styles.menuChipText, { color: sel ? GOLD : "rgba(255,255,255,0.9)", fontWeight: sel ? "700" : "500" }]}>
-                      {tag.label}
-                    </Text>
-                  </Pressable>
-                );
-              })}
-            </View>
-
             <Pressable
               onPress={clearForMode}
-              disabled={tagFilters.length === 0 && bgPaletteId === DEFAULT_MIXER_BG_PALETTE}
+              disabled={bgPaletteId === DEFAULT_MIXER_BG_PALETTE}
               style={({ pressed }) => [
                 styles.menuClearBtn,
-                (tagFilters.length === 0 && bgPaletteId === DEFAULT_MIXER_BG_PALETTE) && styles.menuClearBtnDisabled,
+                bgPaletteId === DEFAULT_MIXER_BG_PALETTE && styles.menuClearBtnDisabled,
                 { opacity: pressed ? 0.8 : 1 },
               ]}
             >
-              <Text style={[styles.menuClearBtnText, (tagFilters.length === 0 && bgPaletteId === DEFAULT_MIXER_BG_PALETTE) && { color: "rgba(255,255,255,0.4)" }]}>
+              <Text style={[styles.menuClearBtnText, bgPaletteId === DEFAULT_MIXER_BG_PALETTE && { color: "rgba(255,255,255,0.4)" }]}>
                 Limpiar filtros
               </Text>
             </Pressable>
@@ -1205,25 +1013,6 @@ const styles = StyleSheet.create({
     color: "#F9F9F9",
     letterSpacing: 0.2,
   },
-
-  subTabZone: { position: "relative", justifyContent: "center", marginTop: -6 },
-  subTabRow:  { flexDirection: "row", gap: 8, paddingTop: 4, paddingBottom: 12, paddingHorizontal: 15 },
-  subTabBorderOuter: {},
-  subTabBorderSel: {},
-  subTab: {
-    flexDirection: "row",
-    alignItems: "center",
-    justifyContent: "center",
-    paddingHorizontal: 13,
-    height: 31,
-    borderRadius: 999,
-    overflow: "hidden",
-    backgroundColor: "rgba(181,211,255,0.057)",
-    borderWidth: 1,
-    borderColor: "rgba(255,255,255,0.1)",
-  },
-  subTabSel: { borderWidth: 0 },
-  subTabText: { fontFamily: "Manrope", fontSize: 13, letterSpacing: 0.3, fontWeight: "400", includeFontPadding: false },
 
   grid:      { flexDirection: "row", flexWrap: "wrap", columnGap: 20, rowGap: 17, justifyContent: "space-evenly" },
 

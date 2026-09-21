@@ -5,30 +5,14 @@
  */
 
 export type SoundIconSet = "feather" | "ionicons";
-export type SoundCategoryId =
-  | "animales"
-  | "bosque"
-  | "mar"
-  | "fuego"
-  | "desierto"
-  | "cuencos_tibetanos"
-  | "cuencos_cuarzo"
-  | "gongs"
-  | "campanas_viento"
-  | "vientos"
-  | "cantos"
-  | "percusion"
-  | "mantras"
-  | "solfeggio"
-  | "ruidos"
-  | "frecuencias"
-  | "asmr"
-  | "bpm"
-  | "binaural";
+/** IDs are managed remotely; new categories must not require an app release. */
+export type SoundCategoryId = string;
 
 export interface SoundCategory {
   id: SoundCategoryId;
   label: string;
+  sortOrder?: number;
+  isActive?: boolean;
 }
 
 /**

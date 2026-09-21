@@ -8,6 +8,11 @@ import {
   useDeleteAdminSound,
   useRequestUploadUrl,
   getGetAdminSoundsQueryKey,
+  useListAdminSoundCategories,
+  useCreateAdminSoundCategory,
+  useUpdateAdminSoundCategory,
+  useDeleteAdminSoundCategory,
+  getListAdminSoundCategoriesQueryKey,
 } from "@workspace/api-client-react";
 import { useQueryClient } from "@tanstack/react-query";
 import { Button } from "@/components/ui/button";
@@ -15,87 +20,15 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Badge } from "@/components/ui/badge";
 import { Switch } from "@/components/ui/switch";
-import { Checkbox } from "@/components/ui/checkbox";
 import {
   Select,
   SelectContent,
-  SelectGroup,
   SelectItem,
-  SelectLabel,
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
 
 // ── Constantes ────────────────────────────────────────────────────────────────
-
-// Grupos de categorías → reflejan los tabs del mixer en la app
-const CATEGORY_GROUPS = [
-  {
-    tab: "Naturales",
-    items: [
-      { id: "animales",  label: "Animales" },
-      { id: "bosque",    label: "Bosque" },
-      { id: "mar",       label: "Mar" },
-      { id: "fuego",     label: "Fuego" },
-      { id: "desierto",  label: "Desierto" },
-    ],
-  },
-  {
-    tab: "Sagrados",
-    items: [
-      { id: "cuencos_tibetanos", label: "Cuencos Tibetanos" },
-      { id: "cuencos_cuarzo",    label: "Cuencos de Cuarzo" },
-      { id: "gongs",             label: "Gongs" },
-      { id: "campanas_viento",   label: "Campanas de Viento" },
-      { id: "vientos",           label: "Vientos" },
-      { id: "cantos",            label: "Cantos" },
-      { id: "percusion",         label: "Percusión" },
-    ],
-  },
-  {
-    tab: "Voces",
-    items: [
-      { id: "mantras", label: "Mantras" },
-    ],
-  },
-  {
-    tab: "Digital",
-    items: [
-      { id: "solfeggio", label: "Solfeggio" },
-      { id: "ruidos", label: "Ruidos" },
-      { id: "frecuencias", label: "Frecuencias" },
-      { id: "asmr", label: "ASMR" },
-      { id: "binaural", label: "Binaurales" },
-    ],
-  },
-  {
-    tab: "BPM",
-    items: [
-      { id: "bpm", label: "BPM" },
-    ],
-  },
-] as const;
-
-type CategoryId =
-  | "animales" | "bosque" | "mar" | "fuego" | "desierto"
-  | "cuencos_tibetanos" | "cuencos_cuarzo" | "gongs" | "campanas_viento"
-  | "vientos" | "cantos" | "percusion"
-  | "mantras" | "solfeggio" | "ruidos" | "frecuencias" | "asmr" | "binaural"
-  | "bpm";
-
-// Lista plana derivada — usada para catLabel y chips de filtro
-const CATEGORIES: { id: CategoryId; label: string }[] =
-  CATEGORY_GROUPS.flatMap((g) => [...g.items] as { id: CategoryId; label: string }[]);
-
-const ICON_SETS = ["feather", "ionicons"] as const;
-
-const SOUND_TAGS = [
-  { id: "armonicos",    label: "Armónicos" },
-  { id: "psicodelicas", label: "Atmósferas psicodélicas" },
-  { id: "solfeggio",    label: "Solfeggio" },
-  { id: "naturaleza",   label: "Naturaleza" },
-  { id: "binaural",     label: "Binaural" },
-] as const;
 
 const BPM_OPTIONS = [44, 50, 68, 72] as const;
 
@@ -103,14 +36,10 @@ interface FormState {
   soundType: "ambiental" | "bpm" | "";
   id: string;
   name: string;
-  categoryId: CategoryId | "";
-  iconName: string;
-  iconSet: "feather" | "ionicons";
+  categoryId: string;
   isPremium: boolean;
-  showInMeditationBackgrounds: boolean;
   objectPath: string;
   thumbnailObjectPath: string;
-  tags: string[];
   bpm: string;
   loopBars: string;
   sortOrder: string;
@@ -121,19 +50,13 @@ const emptyForm = (): FormState => ({
   id: "",
   name: "",
   categoryId: "",
-  iconName: "music",
-  iconSet: "feather",
   isPremium: false,
-  showInMeditationBackgrounds: false,
   objectPath: "",
   thumbnailObjectPath: "",
-  tags: [],
   bpm: "",
   loopBars: "",
   sortOrder: "0",
 });
-
-const AMBIENTAL_GROUPS = CATEGORY_GROUPS.filter((g) => g.tab !== "BPM");
 
 // ── Upload helper ─────────────────────────────────────────────────────────────
 
@@ -175,6 +98,12 @@ export default function SonidosPage() {
   const { data, isLoading } = useGetAdminSounds({
     query: { queryKey: getGetAdminSoundsQueryKey() },
   });
+  const { data: categoryData } = useListAdminSoundCategories({
+    query: { queryKey: getListAdminSoundCategoriesQueryKey() },
+  });
+  const { mutateAsync: createCategory } = useCreateAdminSoundCategory();
+  const { mutateAsync: updateCategory } = useUpdateAdminSoundCategory();
+  const { mutateAsync: deleteCategory } = useDeleteAdminSoundCategory();
   const { mutateAsync: createSound } = useCreateAdminSound();
   const { mutateAsync: updateSound } = useUpdateAdminSound();
   const { mutateAsync: deleteSound } = useDeleteAdminSound();
@@ -189,11 +118,16 @@ export default function SonidosPage() {
   const [thumbFile, setThumbFile] = useState<File | null>(null);
   const [thumbPreview, setThumbPreview] = useState<string | null>(null);
   const [filterCat, setFilterCat] = useState<string>("all");
+  const [newCategoryName, setNewCategoryName] = useState("");
   const audioRef = useRef<HTMLInputElement>(null);
   const thumbRef = useRef<HTMLInputElement>(null);
   const formRef = useRef<HTMLDivElement>(null);
 
   const sounds = data?.sounds ?? [];
+  const categories = (categoryData?.categories ?? []) as Array<{
+    id: string; label: string; isActive: boolean; sortOrder: number;
+  }>;
+  const categoryLabel = (c: (typeof categories)[number]) => c.label;
   const filtered = filterCat === "all" ? sounds : sounds.filter((s) => s.categoryId === filterCat);
   const isBpmCategory = form.soundType === "bpm";
 
@@ -217,14 +151,10 @@ export default function SonidosPage() {
       soundType: s.categoryId === "bpm" ? "bpm" : "ambiental",
       id: s.id,
       name: s.name,
-      categoryId: s.categoryId as CategoryId,
-      iconName: s.iconName,
-      iconSet: s.iconSet as "feather" | "ionicons",
+       categoryId: s.categoryId,
       isPremium: s.isPremium,
-      showInMeditationBackgrounds: s.showInMeditationBackgrounds,
       objectPath: s.objectPath ?? "",
       thumbnailObjectPath: s.thumbnailObjectPath ?? "",
-      tags: s.tags ?? [],
       bpm: s.bpm != null ? String(s.bpm) : "",
       loopBars: s.loopBars != null ? String(s.loopBars) : "",
       sortOrder: String(s.sortOrder),
@@ -257,13 +187,6 @@ export default function SonidosPage() {
     }));
   }
 
-  function toggleTag(tagId: string) {
-    setForm((f) => ({
-      ...f,
-      tags: f.tags.includes(tagId) ? f.tags.filter((t) => t !== tagId) : [...f.tags, tagId],
-    }));
-  }
-
   function onThumbChange(e: React.ChangeEvent<HTMLInputElement>) {
     const file = e.target.files?.[0] ?? null;
     setThumbFile(file);
@@ -287,21 +210,15 @@ export default function SonidosPage() {
 
       const bpmVal = isBpmCategory && form.bpm ? parseInt(form.bpm) : null;
       const loopBarsVal = isBpmCategory && form.loopBars ? parseInt(form.loopBars) : null;
-      const tagsVal = form.tags.length > 0 ? form.tags : null;
-
       if (editingId) {
         await updateSound({
           id: editingId,
           data: {
             name: form.name,
-            categoryId: form.categoryId,
-            iconName: form.iconName,
-            iconSet: form.iconSet,
+            categoryId: form.categoryId as never,
             isPremium: form.isPremium,
-            showInMeditationBackgrounds: form.showInMeditationBackgrounds,
             objectPath,
             thumbnailObjectPath,
-            tags: tagsVal,
             bpm: bpmVal,
             loopBars: loopBarsVal,
             sortOrder: parseInt(form.sortOrder) || 0,
@@ -313,14 +230,14 @@ export default function SonidosPage() {
           data: {
             id: form.id.trim().toLowerCase().replace(/\s+/g, "_"),
             name: form.name,
-            categoryId: form.categoryId,
-            iconName: form.iconName,
-            iconSet: form.iconSet,
+            categoryId: form.categoryId as never,
+            // Kept only for compatibility with older generated create types;
+            // these values are not user-editable legacy fields.
+            iconName: "music",
+            iconSet: "feather",
             isPremium: form.isPremium,
-            showInMeditationBackgrounds: form.showInMeditationBackgrounds,
             objectPath,
             thumbnailObjectPath,
-            tags: tagsVal,
             bpm: bpmVal,
             loopBars: loopBarsVal,
             sortOrder: parseInt(form.sortOrder) || 0,
@@ -356,18 +273,6 @@ export default function SonidosPage() {
     }
   }
 
-  async function toggleMeditationBackgrounds(s: (typeof sounds)[number]) {
-    try {
-      await updateSound({
-        id: s.id,
-        data: { showInMeditationBackgrounds: !s.showInMeditationBackgrounds },
-      });
-      await qc.invalidateQueries({ queryKey: getGetAdminSoundsQueryKey() });
-    } catch {
-      toast.error("Error al actualizar");
-    }
-  }
-
   async function handleDelete(s: (typeof sounds)[number]) {
     if (!confirm(`¿Eliminar "${s.name}"? Esta acción no se puede deshacer.`)) return;
     try {
@@ -379,7 +284,58 @@ export default function SonidosPage() {
     }
   }
 
-  const catLabel = (id: string) => CATEGORIES.find((c) => c.id === id)?.label ?? id;
+  const catLabel = (id: string) => {
+    const category = categories.find((c) => c.id === id);
+    return category ? categoryLabel(category) : id;
+  };
+
+  async function addCategory() {
+    const name = newCategoryName.trim();
+    if (!name) return;
+    try {
+      const id = name.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "")
+        .replace(/[^a-z0-9]+/g, "_").replace(/^_|_$/g, "");
+      await createCategory({ data: { id, label: name, sortOrder: categories.length, isActive: true } });
+      setNewCategoryName("");
+      await qc.invalidateQueries({ queryKey: getListAdminSoundCategoriesQueryKey() });
+      toast.success("Categoría creada");
+    } catch { toast.error("No se pudo crear la categoría"); }
+  }
+
+  async function renameCategory(category: (typeof categories)[number]) {
+    const name = prompt("Nuevo nombre de categoría", categoryLabel(category))?.trim();
+    if (!name || name === categoryLabel(category)) return;
+    try {
+      await updateCategory({ id: category.id, data: { label: name } });
+      await qc.invalidateQueries({ queryKey: getListAdminSoundCategoriesQueryKey() });
+    } catch { toast.error("No se pudo renombrar la categoría"); }
+  }
+
+  async function toggleCategory(category: (typeof categories)[number]) {
+    try {
+      await updateCategory({ id: category.id, data: { isActive: !category.isActive } });
+      await qc.invalidateQueries({ queryKey: getListAdminSoundCategoriesQueryKey() });
+    } catch { toast.error("No se pudo actualizar la categoría"); }
+  }
+
+  async function moveCategory(category: (typeof categories)[number], direction: -1 | 1) {
+    const ordered = [...categories].sort((a, b) => a.sortOrder - b.sortOrder);
+    const index = ordered.findIndex((c) => c.id === category.id);
+    const other = ordered[index + direction];
+    if (!other) return;
+    try {
+      await updateCategory({ id: category.id, data: { sortOrder: index + direction } });
+      await qc.invalidateQueries({ queryKey: getListAdminSoundCategoriesQueryKey() });
+    } catch { toast.error("No se pudo reordenar"); }
+  }
+
+  async function removeCategory(category: (typeof categories)[number]) {
+    if (!confirm(`¿Eliminar "${categoryLabel(category)}"?`)) return;
+    try {
+      await deleteCategory({ id: category.id });
+      await qc.invalidateQueries({ queryKey: getListAdminSoundCategoriesQueryKey() });
+    } catch { toast.error("No se pudo eliminar la categoría"); }
+  }
 
   return (
     <div className="space-y-6">
@@ -396,6 +352,33 @@ export default function SonidosPage() {
           Nuevo sonido
         </Button>
       </div>
+
+      {/* Gestión de categorías canónicas */}
+      <section className="bg-card border border-border rounded-2xl p-4 space-y-3">
+        <div>
+          <h2 className="font-semibold text-foreground">Categorías del mixer</h2>
+          <p className="text-xs text-muted-foreground">Estas categorías aparecen en el selector y en la app.</p>
+        </div>
+        <div className="flex gap-2">
+          <Input value={newCategoryName} onChange={(e) => setNewCategoryName(e.target.value)}
+            placeholder="Nueva categoría" onKeyDown={(e) => e.key === "Enter" && addCategory()} />
+          <Button type="button" variant="outline" onClick={addCategory}><Plus className="w-4 h-4 mr-1" />Crear</Button>
+        </div>
+        <div className="flex flex-wrap gap-2">
+          {[...categories].sort((a, b) => a.sortOrder - b.sortOrder).map((category, index) => (
+            <div key={category.id} className={`flex items-center gap-1 rounded-lg border px-2 py-1 text-sm ${category.isActive ? "" : "opacity-50"}`}>
+              <span>{categoryLabel(category)}</span>
+              <button type="button" title="Subir" disabled={index === 0} onClick={() => moveCategory(category, -1)}>↑</button>
+              <button type="button" title="Bajar" disabled={index === categories.length - 1} onClick={() => moveCategory(category, 1)}>↓</button>
+              <button type="button" title="Renombrar" onClick={() => renameCategory(category)}><Pencil className="w-3 h-3" /></button>
+              <button type="button" title={category.isActive ? "Desactivar" : "Activar"} onClick={() => toggleCategory(category)}>
+                {category.isActive ? "●" : "○"}
+              </button>
+              <button type="button" title="Eliminar" onClick={() => removeCategory(category)}><Trash2 className="w-3 h-3" /></button>
+            </div>
+          ))}
+        </div>
+      </section>
 
       {/* Formulario */}
       {showForm && (
@@ -470,26 +453,17 @@ export default function SonidosPage() {
               </div>
             )}
 
-            {/* Subcategoría (solo Ambiental) */}
-            {form.soundType === "ambiental" && (
+            {/* Categoría canónica */}
+            {form.soundType !== "" && (
               <div className="space-y-1">
-                <Label>Subcategoría</Label>
+                <Label>Categoría</Label>
                 <Select value={form.categoryId} onValueChange={(v) => field("categoryId", v)}>
                   <SelectTrigger>
                     <SelectValue placeholder="Seleccionar categoría" />
                   </SelectTrigger>
                   <SelectContent>
-                    {AMBIENTAL_GROUPS.map((g) => (
-                      <SelectGroup key={g.tab}>
-                        <SelectLabel className="text-xs font-semibold text-muted-foreground uppercase tracking-wider px-2 py-1">
-                          {g.tab}
-                        </SelectLabel>
-                        {g.items.map((c) => (
-                          <SelectItem key={c.id} value={c.id} className="pl-5">
-                            {c.label}
-                          </SelectItem>
-                        ))}
-                      </SelectGroup>
+                    {categories.filter((c) => c.isActive).map((c) => (
+                      <SelectItem key={c.id} value={c.id}>{categoryLabel(c)}</SelectItem>
                     ))}
                   </SelectContent>
                 </Select>
@@ -530,31 +504,6 @@ export default function SonidosPage() {
               </>
             )}
 
-            {/* Ícono */}
-            {form.soundType !== "" && (
-              <div className="space-y-1">
-                <Label>Ícono</Label>
-                <div className="flex gap-2">
-                  <Input
-                    value={form.iconName}
-                    onChange={(e) => field("iconName", e.target.value)}
-                    placeholder="ej. wind"
-                    className="flex-1"
-                  />
-                  <Select value={form.iconSet} onValueChange={(v) => field("iconSet", v)}>
-                    <SelectTrigger className="w-36">
-                      <SelectValue />
-                    </SelectTrigger>
-                    <SelectContent>
-                      {ICON_SETS.map((s) => (
-                        <SelectItem key={s} value={s}>{s}</SelectItem>
-                      ))}
-                    </SelectContent>
-                  </Select>
-                </div>
-              </div>
-            )}
-
             {/* Orden */}
             {form.soundType !== "" && (
               <div className="space-y-1">
@@ -575,40 +524,6 @@ export default function SonidosPage() {
                 <div className="flex items-center gap-3 h-9">
                   <Switch checked={form.isPremium} onCheckedChange={(v) => field("isPremium", v)} />
                   <span className="text-sm text-muted-foreground">{form.isPremium ? "Sí" : "No"}</span>
-                </div>
-              </div>
-            )}
-
-            {/* Fondos de meditación */}
-            {form.soundType !== "" && (
-              <div className="space-y-1">
-                <Label>Fondos de meditación</Label>
-                <div className="flex items-center gap-3 h-9">
-                  <Switch
-                    checked={form.showInMeditationBackgrounds}
-                    onCheckedChange={(v) => field("showInMeditationBackgrounds", v)}
-                  />
-                  <span className="text-sm text-muted-foreground">
-                    {form.showInMeditationBackgrounds ? "Sí" : "No"}
-                  </span>
-                </div>
-              </div>
-            )}
-
-            {/* Etiquetas */}
-            {form.soundType !== "" && (
-              <div className="space-y-2 md:col-span-2">
-                <Label>Etiquetas</Label>
-                <div className="flex flex-wrap gap-3">
-                  {SOUND_TAGS.map((tag) => (
-                    <label key={tag.id} className="flex items-center gap-2 cursor-pointer select-none">
-                      <Checkbox
-                        checked={form.tags.includes(tag.id)}
-                        onCheckedChange={() => toggleTag(tag.id)}
-                      />
-                      <span className="text-sm text-foreground">{tag.label}</span>
-                    </label>
-                  ))}
                 </div>
               </div>
             )}
@@ -720,7 +635,7 @@ export default function SonidosPage() {
         >
           Todos ({sounds.length})
         </button>
-        {CATEGORIES.filter((c) => sounds.some((s) => s.categoryId === c.id)).map((c) => (
+        {categories.filter((c) => sounds.some((s) => s.categoryId === c.id)).map((c) => (
           <button
             key={c.id}
             onClick={() => setFilterCat(c.id)}
@@ -730,7 +645,7 @@ export default function SonidosPage() {
                 : "text-muted-foreground hover:text-foreground"
             }`}
           >
-            {c.label} ({sounds.filter((s) => s.categoryId === c.id).length})
+            {categoryLabel(c)} ({sounds.filter((s) => s.categoryId === c.id).length})
           </button>
         ))}
       </div>
@@ -754,11 +669,9 @@ export default function SonidosPage() {
                 <th className="text-left px-4 py-3 text-muted-foreground font-medium w-10"></th>
                 <th className="text-left px-4 py-3 text-muted-foreground font-medium">Nombre</th>
                 <th className="text-left px-4 py-3 text-muted-foreground font-medium">Categoría</th>
-                <th className="text-left px-4 py-3 text-muted-foreground font-medium">Etiquetas</th>
                 <th className="text-left px-4 py-3 text-muted-foreground font-medium">BPM</th>
                 <th className="text-left px-4 py-3 text-muted-foreground font-medium">Audio</th>
                 <th className="text-left px-4 py-3 text-muted-foreground font-medium">Premium</th>
-                <th className="text-left px-4 py-3 text-muted-foreground font-medium">Fondos de meditación</th>
                 <th className="text-left px-4 py-3 text-muted-foreground font-medium">Activo</th>
                 <th className="px-4 py-3" />
               </tr>
@@ -794,14 +707,6 @@ export default function SonidosPage() {
                   <td className="px-4 py-3">
                     <Badge variant="outline" className="text-xs">{catLabel(s.categoryId)}</Badge>
                   </td>
-                  {/* Etiquetas */}
-                  <td className="px-4 py-3">
-                    <div className="flex flex-wrap gap-1">
-                      {(s.tags ?? []).map((t) => (
-                        <Badge key={t} variant="secondary" className="text-xs px-1.5 py-0">{t}</Badge>
-                      ))}
-                    </div>
-                  </td>
                   {/* BPM */}
                   <td className="px-4 py-3 text-xs text-muted-foreground">
                     {s.bpm != null ? (
@@ -822,13 +727,6 @@ export default function SonidosPage() {
                   {/* Premium */}
                   <td className="px-4 py-3">
                     <Switch checked={s.isPremium} onCheckedChange={() => togglePremium(s)} />
-                  </td>
-                  {/* Fondos de meditación */}
-                  <td className="px-4 py-3">
-                    <Switch
-                      checked={s.showInMeditationBackgrounds}
-                      onCheckedChange={() => toggleMeditationBackgrounds(s)}
-                    />
                   </td>
                   {/* Activo */}
                   <td className="px-4 py-3">

@@ -9,34 +9,30 @@ import {
 import { createInsertSchema, createSelectSchema } from "drizzle-zod";
 import { z } from "zod/v4";
 
-export const MIXER_SOUND_CATEGORIES = [
-  "animales",
-  "bosque",
-  "mar",
-  "fuego",
-  "desierto",
-  "cuencos_tibetanos",
-  "cuencos_cuarzo",
-  "gongs",
-  "campanas_viento",
-  "vientos",
-  "cantos",
-  "percusion",
-  "mantras",
-  "solfeggio",
-  "ruidos",
-  "frecuencias",
-  "asmr",
-  "bpm",
-  "binaural",
-] as const;
+export const mixerSoundCategoriesTable = pgTable("mixer_sound_categories", {
+  id: text("id").primaryKey(),
+  label: text("label").notNull(),
+  sortOrder: integer("sort_order").notNull().default(0),
+  isActive: boolean("is_active").notNull().default(true),
+  createdAt: timestamp("created_at").notNull().defaultNow(),
+  updatedAt: timestamp("updated_at").notNull().defaultNow(),
+});
 
-export type MixerSoundCategory = (typeof MIXER_SOUND_CATEGORIES)[number];
+export const insertMixerSoundCategorySchema = createInsertSchema(mixerSoundCategoriesTable, {
+  id: z.string().min(1).regex(/^[a-z0-9_-]+$/),
+  label: z.string().min(1),
+});
+export const updateMixerSoundCategorySchema = createSelectSchema(mixerSoundCategoriesTable)
+  .omit({ id: true, createdAt: true, updatedAt: true })
+  .partial();
+export type MixerSoundCategory = typeof mixerSoundCategoriesTable.$inferSelect;
+export type InsertMixerSoundCategory = z.infer<typeof insertMixerSoundCategorySchema>;
+export type UpdateMixerSoundCategory = z.infer<typeof updateMixerSoundCategorySchema>;
 
 export const mixerSoundsTable = pgTable("mixer_sounds", {
   id: text("id").primaryKey(),
   name: text("name").notNull(),
-  categoryId: text("category_id").notNull(),
+  categoryId: text("category_id").notNull().references(() => mixerSoundCategoriesTable.id),
   iconName: text("icon_name").notNull().default("music"),
   iconSet: text("icon_set").notNull().default("feather"),
   isPremium: boolean("is_premium").notNull().default(false),
@@ -55,14 +51,14 @@ export const mixerSoundsTable = pgTable("mixer_sounds", {
 export const insertMixerSoundSchema = createInsertSchema(mixerSoundsTable, {
   id: z.string().min(1).regex(/^[a-z0-9_-]+$/),
   name: z.string().min(1),
-  categoryId: z.enum(MIXER_SOUND_CATEGORIES),
+  categoryId: z.string().min(1),
   iconName: z.string().min(1),
   iconSet: z.enum(["feather", "ionicons"]),
   tags: z.array(z.string()).optional(),
 });
 
 export const updateMixerSoundSchema = createSelectSchema(mixerSoundsTable, {
-  categoryId: z.enum(MIXER_SOUND_CATEGORIES),
+  categoryId: z.string().min(1),
   iconSet: z.enum(["feather", "ionicons"]),
   tags: z.array(z.string()).optional().nullable(),
 })

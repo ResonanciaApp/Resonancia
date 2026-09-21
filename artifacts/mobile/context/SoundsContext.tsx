@@ -13,7 +13,7 @@ import React, {
   useCallback,
 } from "react";
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import { replaceSoundCatalog, type MixSound } from "@/data/sounds";
+import { replaceSoundCatalog, type MixSound, type SoundCategory } from "@/data/sounds";
 import { applyRemoteSounds, resolveRemoteObjectUrl } from "@/lib/remoteSoundMap";
 
 const SOUND_CATALOG_CACHE_KEY = "@resonance_sound_catalog_v1";
@@ -21,12 +21,14 @@ const SOUND_CATALOG_CACHE_KEY = "@resonance_sound_catalog_v1";
 interface SoundsContextValue {
   /** Lista activa publicada por la API. */
   sounds: MixSound[];
+  categories: SoundCategory[];
   loaded: boolean;
   refresh: () => void;
 }
 
 const SoundsContext = createContext<SoundsContextValue>({
   sounds: [],
+  categories: [],
   loaded: false,
   refresh: () => {},
 });
@@ -49,11 +51,59 @@ interface ApiSound {
   showInMeditationBackgrounds?: boolean;
 }
 
+interface ApiCategory {
+  id: string;
+  label: string;
+  sortOrder?: number;
+  isActive?: boolean;
+}
+
+interface CatalogSnapshot {
+  sounds: ApiSound[];
+  /** Undefined only for legacy caches/API responses that predate categories. */
+  categories?: ApiCategory[];
+}
+
+interface NormalizedCatalogSnapshot {
+  sounds: ApiSound[];
+  categories: ApiCategory[];
+}
+
+function deriveLegacyCategories(sounds: readonly ApiSound[]): ApiCategory[] {
+  const seen = new Set<string>();
+  return sounds.reduce<ApiCategory[]>((result, sound) => {
+    const id = sound.categoryId?.trim();
+    if (!id || seen.has(id)) return result;
+    seen.add(id);
+    const words = id.replace(/_/g, " ");
+    result.push({
+      id,
+      label: words.charAt(0).toUpperCase() + words.slice(1),
+      sortOrder: result.length,
+      isActive: true,
+    });
+    return result;
+  }, []);
+}
+
+function normalizeSnapshot(snapshot: CatalogSnapshot): NormalizedCatalogSnapshot {
+  return {
+    sounds: snapshot.sounds,
+    categories:
+      snapshot.categories === undefined
+        ? deriveLegacyCategories(snapshot.sounds)
+        : snapshot.categories,
+  };
+}
+
 export function SoundsProvider({ children }: { children: React.ReactNode }) {
   const [sounds, setSounds] = useState<MixSound[]>([]);
+  const [categories, setCategories] = useState<SoundCategory[]>([]);
   const [loaded, setLoaded] = useState(false);
 
-  const applySnapshot = useCallback((remoteSounds: ApiSound[]) => {
+  const applySnapshot = useCallback((snapshot: CatalogSnapshot) => {
+    const normalized = normalizeSnapshot(snapshot);
+    const remoteSounds = normalized.sounds;
     // Only active API rows participate in the mobile catalog or maps.
     const activeSounds = remoteSounds.filter((sound) => sound.isActive === true);
     applyRemoteSounds(activeSounds);
@@ -86,6 +136,17 @@ export function SoundsProvider({ children }: { children: React.ReactNode }) {
 
     replaceSoundCatalog(catalog);
     setSounds(catalog);
+    setCategories(
+      normalized.categories
+        .filter((category) => category.isActive === true)
+        .sort((a, b) => (a.sortOrder ?? 0) - (b.sortOrder ?? 0))
+        .map((category) => ({
+          id: category.id,
+          label: category.label,
+          sortOrder: category.sortOrder,
+          isActive: true,
+        })),
+    );
   }, []);
 
   const fetchAndMerge = useCallback(async () => {
@@ -97,12 +158,21 @@ export function SoundsProvider({ children }: { children: React.ReactNode }) {
         // Las bajas reales se aplican cuando llega una respuesta válida de la API.
         return;
       }
-      const body = (await res.json()) as { sounds?: ApiSound[] };
-      const remoteSounds = Array.isArray(body.sounds) ? body.sounds : [];
-      applySnapshot(remoteSounds);
+      const body = (await res.json()) as { sounds?: ApiSound[]; categories?: ApiCategory[] };
+      if (!Array.isArray(body.sounds)) return;
+      const snapshot = normalizeSnapshot({
+        sounds: body.sounds,
+        categories:
+          body.categories === undefined
+            ? undefined
+            : Array.isArray(body.categories)
+              ? body.categories
+              : undefined,
+      });
+      applySnapshot(snapshot);
       AsyncStorage.setItem(
         SOUND_CATALOG_CACHE_KEY,
-        JSON.stringify(remoteSounds),
+        JSON.stringify(snapshot),
       ).catch(() => {});
     } catch {
       // Conserva el último catálogo válido; la próxima apertura vuelve a intentar.
@@ -120,7 +190,18 @@ export function SoundsProvider({ children }: { children: React.ReactNode }) {
         if (raw && !cancelled) {
           const cached = JSON.parse(raw) as unknown;
           if (Array.isArray(cached)) {
-            applySnapshot(cached as ApiSound[]);
+            // Migrate the previous cache format by deriving text-only tabs from
+            // the category IDs already stored on each sound.
+            applySnapshot({ sounds: cached as ApiSound[] });
+            setLoaded(true);
+          } else if (
+            cached &&
+            typeof cached === "object" &&
+            Array.isArray((cached as CatalogSnapshot).sounds) &&
+            ((cached as CatalogSnapshot).categories === undefined ||
+              Array.isArray((cached as CatalogSnapshot).categories))
+          ) {
+            applySnapshot(cached as CatalogSnapshot);
             setLoaded(true);
           }
         }
@@ -140,7 +221,7 @@ export function SoundsProvider({ children }: { children: React.ReactNode }) {
   }, [applySnapshot, fetchAndMerge]);
 
   return (
-    <SoundsContext.Provider value={{ sounds, loaded, refresh: fetchAndMerge }}>
+    <SoundsContext.Provider value={{ sounds, categories, loaded, refresh: fetchAndMerge }}>
       {children}
     </SoundsContext.Provider>
   );

@@ -2533,6 +2533,31 @@ export interface FollowedUser {
   followedAt: string;
 }
 
+export interface MixerSoundCategory {
+  id: string;
+  label: string;
+  sortOrder: number;
+  isActive: boolean;
+  createdAt: string;
+  updatedAt: string;
+}
+
+export interface CreateMixerSoundCategoryBody {
+  /** @minLength 1 */
+  id: string;
+  /** @minLength 1 */
+  label: string;
+  sortOrder?: number;
+  isActive?: boolean;
+}
+
+export interface UpdateMixerSoundCategoryBody {
+  /** @minLength 1 */
+  label?: string;
+  sortOrder?: number;
+  isActive?: boolean;
+}
+
 export interface MixerSoundItem {
   id: string;
   name: string;
@@ -2568,31 +2593,6 @@ export interface AdminMixerSoundItem {
   createdAt: string;
 }
 
-export type CreateMixerSoundBodyCategoryId = typeof CreateMixerSoundBodyCategoryId[keyof typeof CreateMixerSoundBodyCategoryId];
-
-
-export const CreateMixerSoundBodyCategoryId = {
-  animales: 'animales',
-  bosque: 'bosque',
-  mar: 'mar',
-  fuego: 'fuego',
-  desierto: 'desierto',
-  cuencos_tibetanos: 'cuencos_tibetanos',
-  cuencos_cuarzo: 'cuencos_cuarzo',
-  gongs: 'gongs',
-  campanas_viento: 'campanas_viento',
-  vientos: 'vientos',
-  cantos: 'cantos',
-  percusion: 'percusion',
-  mantras: 'mantras',
-  solfeggio: 'solfeggio',
-  ruidos: 'ruidos',
-  frecuencias: 'frecuencias',
-  asmr: 'asmr',
-  bpm: 'bpm',
-  binaural: 'binaural',
-} as const;
-
 export type CreateMixerSoundBodyIconSet = typeof CreateMixerSoundBodyIconSet[keyof typeof CreateMixerSoundBodyIconSet];
 
 
@@ -2606,7 +2606,8 @@ export interface CreateMixerSoundBody {
   id: string;
   /** @minLength 1 */
   name: string;
-  categoryId: CreateMixerSoundBodyCategoryId;
+  /** Stable ID from the mixer sound categories catalog */
+  categoryId: string;
   /** @minLength 1 */
   iconName: string;
   iconSet: CreateMixerSoundBodyIconSet;
@@ -2620,31 +2621,6 @@ export interface CreateMixerSoundBody {
   sortOrder?: number;
 }
 
-export type UpdateMixerSoundBodyCategoryId = typeof UpdateMixerSoundBodyCategoryId[keyof typeof UpdateMixerSoundBodyCategoryId];
-
-
-export const UpdateMixerSoundBodyCategoryId = {
-  animales: 'animales',
-  bosque: 'bosque',
-  mar: 'mar',
-  fuego: 'fuego',
-  desierto: 'desierto',
-  cuencos_tibetanos: 'cuencos_tibetanos',
-  cuencos_cuarzo: 'cuencos_cuarzo',
-  gongs: 'gongs',
-  campanas_viento: 'campanas_viento',
-  vientos: 'vientos',
-  cantos: 'cantos',
-  percusion: 'percusion',
-  mantras: 'mantras',
-  solfeggio: 'solfeggio',
-  ruidos: 'ruidos',
-  frecuencias: 'frecuencias',
-  asmr: 'asmr',
-  bpm: 'bpm',
-  binaural: 'binaural',
-} as const;
-
 export type UpdateMixerSoundBodyIconSet = typeof UpdateMixerSoundBodyIconSet[keyof typeof UpdateMixerSoundBodyIconSet];
 
 
@@ -2656,7 +2632,8 @@ export const UpdateMixerSoundBodyIconSet = {
 export interface UpdateMixerSoundBody {
   /** @minLength 1 */
   name?: string;
-  categoryId?: UpdateMixerSoundBodyCategoryId;
+  /** Stable ID from the mixer sound categories catalog */
+  categoryId?: string;
   /** @minLength 1 */
   iconName?: string;
   iconSet?: UpdateMixerSoundBodyIconSet;
@@ -3473,6 +3450,7 @@ export type GetAdminApplications200 = {
 
 export type GetMixerSounds200 = {
   sounds: MixerSoundItem[];
+  categories: MixerSoundCategory[];
 };
 
 export type CreateBunnyUploadUrlBody = {
@@ -3487,8 +3465,13 @@ export type GetAdminDescansoSounds200 = {
   sounds: AdminDescansoSoundItem[];
 };
 
+export type ListAdminSoundCategories200 = {
+  categories: MixerSoundCategory[];
+};
+
 export type GetAdminSounds200 = {
   sounds: AdminMixerSoundItem[];
+  categories: MixerSoundCategory[];
 };
 
 export type GetAdminGeometrix200 = {

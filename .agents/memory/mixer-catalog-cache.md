@@ -7,4 +7,4 @@ El catálogo administrado sigue siendo la fuente autoritativa, pero Mobile debe 
 
 **Why:** El catálogo local está vacío por diseño. Si la API está detenida o falla durante un arranque frío, iniciar el contexto con una lista vacía hace desaparecer todas las cards aunque los registros sigan existiendo en la base de datos.
 
-**How to apply:** Persistir los registros remotos con sus object paths, no las URLs absolutas resueltas. Una respuesta válida —incluso vacía— reemplaza el caché para respetar bajas reales; un error HTTP o de red conserva el último snapshot.
+**How to apply:** Persistir los registros remotos con sus object paths y metadatos de categorías, no las URLs absolutas resueltas. Una respuesta válida —incluso vacía— reemplaza el caché para respetar bajas reales; un error HTTP o de red conserva el último snapshot. Durante cambios de contrato, derivar categorías desde `categoryId` solo si el campo `categories` está ausente (cliente/caché legado); un `categories: []` explícito es autoritativo y no debe reconstruirse.

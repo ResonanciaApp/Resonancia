@@ -3725,12 +3725,16 @@ paths:
             application/json:
               schema:
                 type: object
-                required: [sounds]
+                required: [sounds, categories]
                 properties:
                   sounds:
                     type: array
                     items:
                       $ref: "#/components/schemas/MixerSoundItem"
+                  categories:
+                    type: array
+                    items:
+                      $ref: "#/components/schemas/MixerSoundCategory"
   /videos:
     get:
       operationId: listVideos
@@ -4284,6 +4288,58 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/ErrorResponse"
+  /admin/sound-categories:
+    get:
+      operationId: listAdminSoundCategories
+      tags: [admin]
+      responses:
+        "200":
+          description: Categorías del mixer
+          content:
+            application/json:
+              schema:
+                type: object
+                required: [categories]
+                properties:
+                  categories:
+                    type: array
+                    items: {$ref: "#/components/schemas/MixerSoundCategory"}
+    post:
+      operationId: createAdminSoundCategory
+      tags: [admin]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: {$ref: "#/components/schemas/CreateMixerSoundCategoryBody"}
+      responses:
+        "201":
+          description: Categoría creada
+          content:
+            application/json:
+              schema: {$ref: "#/components/schemas/MixerSoundCategory"}
+  /admin/sound-categories/{id}:
+    parameters:
+      - {name: id, in: path, required: true, schema: {type: string}}
+    patch:
+      operationId: updateAdminSoundCategory
+      tags: [admin]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: {$ref: "#/components/schemas/UpdateMixerSoundCategoryBody"}
+      responses:
+        "200":
+          description: Categoría actualizada
+          content:
+            application/json:
+              schema: {$ref: "#/components/schemas/MixerSoundCategory"}
+    delete:
+      operationId: deleteAdminSoundCategory
+      tags: [admin]
+      responses:
+        "204": {description: Categoría eliminada}
   /admin/sounds:
     get:
       operationId: getAdminSounds
@@ -4296,12 +4352,15 @@ paths:
             application/json:
               schema:
                 type: object
-                required: [sounds]
+                required: [sounds, categories]
                 properties:
                   sounds:
                     type: array
                     items:
                       $ref: "#/components/schemas/AdminMixerSoundItem"
+                  categories:
+                    type: array
+                    items: {$ref: "#/components/schemas/MixerSoundCategory"}
         "401":
           description: No autenticado
           content:
@@ -7858,6 +7917,30 @@ components:
         followedAt:
           type: string
           format: date-time
+    MixerSoundCategory:
+      type: object
+      required: [id, label, sortOrder, isActive, createdAt, updatedAt]
+      properties:
+        id: {type: string}
+        label: {type: string}
+        sortOrder: {type: integer}
+        isActive: {type: boolean}
+        createdAt: {type: string, format: date-time}
+        updatedAt: {type: string, format: date-time}
+    CreateMixerSoundCategoryBody:
+      type: object
+      required: [id, label]
+      properties:
+        id: {type: string, minLength: 1}
+        label: {type: string, minLength: 1}
+        sortOrder: {type: integer}
+        isActive: {type: boolean}
+    UpdateMixerSoundCategoryBody:
+      type: object
+      properties:
+        label: {type: string, minLength: 1}
+        sortOrder: {type: integer}
+        isActive: {type: boolean}
     MixerSoundItem:
       type: object
       required: [id, name, categoryId, iconName, iconSet, isPremium, showInMeditationBackgrounds, isActive, sortOrder, objectPath, thumbnailObjectPath, tags, bpm, loopBars]
@@ -7951,7 +8034,7 @@ components:
           minLength: 1
         categoryId:
           type: string
-          enum: [animales, bosque, mar, fuego, desierto, cuencos_tibetanos, cuencos_cuarzo, gongs, campanas_viento, vientos, cantos, percusion, mantras, solfeggio, ruidos, frecuencias, asmr, bpm, binaural]
+          description: Stable ID from the mixer sound categories catalog
         iconName:
           type: string
           minLength: 1
@@ -7989,7 +8072,7 @@ components:
           minLength: 1
         categoryId:
           type: string
-          enum: [animales, bosque, mar, fuego, desierto, cuencos_tibetanos, cuencos_cuarzo, gongs, campanas_viento, vientos, cantos, percusion, mantras, solfeggio, ruidos, frecuencias, asmr, bpm, binaural]
+          description: Stable ID from the mixer sound categories catalog
         iconName:
           type: string
           minLength: 1
