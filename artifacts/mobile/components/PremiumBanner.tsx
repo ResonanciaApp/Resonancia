@@ -27,6 +27,19 @@ const IMAGES = [
   require("@/assets/images/sessions/session-11.jpg"),
 ];
 
+const AMBIENT_IMAGES = [
+  require("@/assets/images/sessions/ambiental-123-cascada.jpg"),
+  require("@/assets/images/sessions/ambiental-123-lago.jpg"),
+  require("@/assets/images/sessions/ambiental-espacio-profundo.jpg"),
+  require("@/assets/images/sessions/ambiental-rrrr-binaural.jpg"),
+  require("@/assets/images/sessions/ambiental-test-01-lluvia-suave.jpg"),
+  require("@/assets/images/sessions/ambiental-test-02-bosque-amanecer.jpg"),
+  require("@/assets/images/sessions/ambiental-test-03-oceano-calma.jpg"),
+  require("@/assets/images/sessions/ambiental-test-04-viento-bambues.jpg"),
+  require("@/assets/images/sessions/ambiental-test-05-fuego-hogar.jpg"),
+  require("@/assets/images/sessions/ambiental-test-06-noche-estrellas.jpg"),
+];
+
 const P = {
   bg0:        "#06150F",
   bg1:        "#0D261D",
@@ -201,7 +214,7 @@ export default function PremiumBanner({
               { width: viewportWidth + 17, marginLeft: -22 },
             ]}
           >
-            {IMAGES.map((src, i) => (
+            {AMBIENT_IMAGES.map((src, i) => (
               <View
                 key={i}
                 style={[
@@ -231,6 +244,7 @@ export default function PremiumBanner({
             styles.btnWrap,
             styles.freeTrialButtonWrap,
             sleepVariant && styles.sleepButtonWrap,
+            !sleepVariant && styles.defaultButtonWrap,
             {
               width: Math.max(
                 200,
@@ -488,6 +502,12 @@ const styles = StyleSheet.create({
     borderRadius: 48,
   },
   defaultButtonInner: {
-    paddingVertical: 10,
+    paddingVertical: 14,
+    borderRadius: 48,
+  },
+  defaultButtonWrap: {
+    padding: 2,
+    borderWidth: 0,
+    backgroundColor: "rgba(255,255,255,0.2)",
   },
 });
