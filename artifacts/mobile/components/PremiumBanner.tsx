@@ -232,7 +232,7 @@ export default function PremiumBanner({
             colors={
               sleepVariant
                 ? ["#B88D3E", "#B88D3E"]
-                : ["#F0C36A", MEMBERSHIP_AURORA.premium.accent]
+                : ["#B88D3E", "#B88D3E"]
             }
             start={{ x: 0, y: 0 }}
             end={{ x: 1, y: 0 }}
