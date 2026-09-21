@@ -8,6 +8,7 @@ import {
   Pressable,
   ScrollView,
   StyleSheet,
+  useWindowDimensions,
 } from "react-native";
 
 import { usePremium } from "@/context/PremiumContext";
@@ -131,6 +132,8 @@ export default function PremiumBanner({
   sleepVariant?: boolean;
 }) {
   const { isPremium } = usePremium();
+  const { width: viewportWidth } = useWindowDimensions();
+  const sleepPreviewCardSize = (viewportWidth - 32 - 15) / 4;
   if (isPremium) return null;
 
   return (
@@ -176,23 +179,44 @@ export default function PremiumBanner({
         </Text>
 
         {/* Preview images with star overlay */}
-        <ScrollView
-          horizontal
-          showsHorizontalScrollIndicator={false}
-          contentContainerStyle={styles.images}
-          style={styles.imagesScroll}
-        >
-          {IMAGES.map((src, i) => (
-            <View key={i} style={styles.previewCard}>
-              <Image source={src} style={styles.thumb} contentFit="cover" />
-              <Image
-                source={require("../assets/images/estrella-premium.png")}
-                style={{ position: "absolute", top: 4, left: 4, width: 18, height: 18, zIndex: 2 }}
-                contentFit="contain"
-              />
-            </View>
-          ))}
-        </ScrollView>
+        {sleepVariant ? (
+          <View style={[styles.images, styles.sleepImages]}>
+            {IMAGES.slice(0, 4).map((src, i) => (
+              <View
+                key={i}
+                style={[
+                  styles.previewCard,
+                  { width: sleepPreviewCardSize, height: sleepPreviewCardSize },
+                ]}
+              >
+                <Image source={src} style={styles.thumb} contentFit="cover" />
+                <Image
+                  source={require("../assets/images/estrella-premium.png")}
+                  style={{ position: "absolute", top: 4, left: 4, width: 18, height: 18, zIndex: 2 }}
+                  contentFit="contain"
+                />
+              </View>
+            ))}
+          </View>
+        ) : (
+          <ScrollView
+            horizontal
+            showsHorizontalScrollIndicator={false}
+            contentContainerStyle={styles.images}
+            style={styles.imagesScroll}
+          >
+            {IMAGES.map((src, i) => (
+              <View key={i} style={styles.previewCard}>
+                <Image source={src} style={styles.thumb} contentFit="cover" />
+                <Image
+                  source={require("../assets/images/estrella-premium.png")}
+                  style={{ position: "absolute", top: 4, left: 4, width: 18, height: 18, zIndex: 2 }}
+                  contentFit="contain"
+                />
+              </View>
+            ))}
+          </ScrollView>
+        )}
 
         {/* CTA button */}
         <Pressable
@@ -200,6 +224,7 @@ export default function PremiumBanner({
           style={({ pressed }) => [
             styles.btnWrap,
             styles.freeTrialButtonWrap,
+            sleepVariant && styles.sleepButtonWrap,
             { opacity: pressed ? 0.88 : 1 },
           ]}
         >
@@ -375,6 +400,11 @@ const styles = StyleSheet.create({
     width: "100%",
     marginBottom: 26,
   },
+  sleepImages: {
+    alignSelf: "stretch",
+    marginHorizontal: -22,
+    marginBottom: 26,
+  },
   previewCard: {
     position: "relative",
     width: 90,
@@ -413,5 +443,12 @@ const styles = StyleSheet.create({
   },
   freeTrialButtonWrap: {
     marginTop: 10,
+  },
+  sleepButtonWrap: {
+    width: "auto",
+    alignSelf: "stretch",
+    marginHorizontal: 15,
+    borderWidth: 2,
+    borderColor: "rgba(255,255,255,0.2)",
   },
 });
