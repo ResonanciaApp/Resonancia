@@ -746,7 +746,9 @@ function PremiumOfferContent({
 }) {
   const busy = isPurchasing;
   const [previewSelectedId, setPreviewSelectedId] = useState("annual-preview");
-  const selectedPeriod = selectedPackage ? getPackagePeriod(selectedPackage) : null;
+  const [giftSelected, setGiftSelected] = useState(false);
+  const effectiveSelectedPackage = giftSelected ? undefined : selectedPackage;
+  const selectedPeriod = effectiveSelectedPackage ? getPackagePeriod(effectiveSelectedPackage) : null;
 
   return (
     <>
@@ -771,11 +773,14 @@ function PremiumOfferContent({
       {packages.length > 0 ? (
         <View style={styles.planGrid}>
           {packages.map((item) => {
-            const selected = selectedPackage?.identifier === item.identifier;
+            const selected = !giftSelected && selectedPackage?.identifier === item.identifier;
             return (
               <Pressable
                 key={item.identifier}
-                onPress={() => onSelect(item)}
+                onPress={() => {
+                  setGiftSelected(false);
+                  onSelect(item);
+                }}
                 disabled={busy}
                 accessibilityRole="radio"
                 accessibilityState={{ selected, disabled: busy }}
@@ -785,23 +790,7 @@ function PremiumOfferContent({
                   pressed && !busy && styles.planCardPressed,
                 ]}
               >
-                {selected ? (
-                  <BlurView
-                    intensity={38}
-                    tint="light"
-                    experimentalBlurMethod="dimezisBlurView"
-                    style={StyleSheet.absoluteFill}
-                    pointerEvents="none"
-                  />
-                ) : null}
-                <View
-                  pointerEvents="none"
-                  style={[
-                    StyleSheet.absoluteFill,
-                    styles.planGlassTint,
-                    selected && styles.planGlassTintSelected,
-                  ]}
-                />
+                <AnimatedPlanSelection selected={selected} />
                 <View style={[styles.planRadio, selected && styles.planRadioSelected]}>
                   {selected ? <View style={styles.planRadioDot} /> : null}
                 </View>
@@ -828,7 +817,10 @@ function PremiumOfferContent({
               </Pressable>
             );
           })}
-          <GiftCardPlanOption />
+          <GiftCardPlanOption
+            selected={giftSelected}
+            onPress={() => setGiftSelected(true)}
+          />
         </View>
       ) : previewMode ? (
         <View style={styles.planGrid}>
@@ -850,23 +842,7 @@ function PremiumOfferContent({
                 pressed && styles.planCardPressed,
               ]}
             >
-              {selected ? (
-                <BlurView
-                  intensity={38}
-                  tint="light"
-                  experimentalBlurMethod="dimezisBlurView"
-                  style={StyleSheet.absoluteFill}
-                  pointerEvents="none"
-                />
-              ) : null}
-              <View
-                pointerEvents="none"
-                style={[
-                  StyleSheet.absoluteFill,
-                  styles.planGlassTint,
-                  selected && styles.planGlassTintSelected,
-                ]}
-              />
+              <AnimatedPlanSelection selected={selected} />
               <View style={[styles.planRadio, selected && styles.planRadioSelected]}>
                 {selected ? <View style={styles.planRadioDot} /> : null}
               </View>
@@ -891,7 +867,10 @@ function PremiumOfferContent({
             </Pressable>
             );
           })}
-          <GiftCardPlanOption />
+          <GiftCardPlanOption
+            selected={previewSelectedId === "gift-preview"}
+            onPress={() => setPreviewSelectedId("gift-preview")}
+          />
         </View>
       ) : (
         <View style={styles.offerUnavailable}>
@@ -907,18 +886,18 @@ function PremiumOfferContent({
 
       <Pressable
         onPress={onPurchase}
-        disabled={!selectedPackage || busy || previewMode}
+        disabled={!effectiveSelectedPackage || busy || previewMode}
         accessibilityRole="button"
         accessibilityLabel={
-          selectedPackage
-            ? `Comenzar Premium, ${selectedPackage.product.priceString} ${selectedPeriod}`
+          effectiveSelectedPackage
+            ? `Comenzar Premium, ${effectiveSelectedPackage.product.priceString} ${selectedPeriod}`
             : "Comenzar Premium"
         }
-        accessibilityState={{ disabled: !selectedPackage || busy || previewMode }}
+        accessibilityState={{ disabled: !effectiveSelectedPackage || busy || previewMode }}
         style={({ pressed }) => [
           styles.purchaseButton,
-          (!selectedPackage || busy || previewMode) && styles.purchaseButtonDisabled,
-          pressed && selectedPackage && !busy && styles.manageButtonPressed,
+          (!effectiveSelectedPackage || busy || previewMode) && styles.purchaseButtonDisabled,
+          pressed && effectiveSelectedPackage && !busy && styles.manageButtonPressed,
         ]}
       >
         <LinearGradient
@@ -934,9 +913,9 @@ function PremiumOfferContent({
         )}
       </Pressable>
 
-      {selectedPackage ? (
+      {effectiveSelectedPackage ? (
         <Text style={styles.purchaseDisclosure}>
-          Se cobrará {selectedPackage.product.priceString} {selectedPeriod} y se renovará automáticamente
+          Se cobrará {effectiveSelectedPackage.product.priceString} {selectedPeriod} y se renovará automáticamente
           hasta que canceles desde tu cuenta de la tienda.
         </Text>
       ) : null}
@@ -954,24 +933,83 @@ function PremiumOfferContent({
   );
 }
 
-function GiftCardPlanOption() {
+function AnimatedPlanSelection({ selected }: { selected: boolean }) {
+  const opacity = React.useRef(new Animated.Value(selected ? 1 : 0)).current;
+
+  useEffect(() => {
+    Animated.timing(opacity, {
+      toValue: selected ? 1 : 0,
+      duration: 400,
+      easing: Easing.inOut(Easing.cubic),
+      useNativeDriver: true,
+    }).start();
+  }, [opacity, selected]);
+
   return (
-    <View
-      style={[styles.planCard, styles.giftCardPlan]}
-      accessibilityRole="text"
-      accessibilityLabel="Plan Premium Anual Gift Card"
-    >
+    <>
       <View
         pointerEvents="none"
         style={[StyleSheet.absoluteFill, styles.planGlassTint]}
       />
-      <View style={styles.planRadio} />
+      <Animated.View
+        pointerEvents="none"
+        style={[StyleSheet.absoluteFill, { opacity }]}
+      >
+        <BlurView
+          intensity={38}
+          tint="light"
+          experimentalBlurMethod="dimezisBlurView"
+          style={StyleSheet.absoluteFill}
+        />
+        <View style={[StyleSheet.absoluteFill, styles.planGlassTintSelected]} />
+      </Animated.View>
+    </>
+  );
+}
+
+function GiftCardPlanOption({
+  selected,
+  onPress,
+}: {
+  selected: boolean;
+  onPress: () => void;
+}) {
+  return (
+    <Pressable
+      onPress={onPress}
+      style={({ pressed }) => [
+        styles.planCard,
+        styles.giftCardPlan,
+        selected && styles.planCardSelected,
+        pressed && styles.planCardPressed,
+      ]}
+      accessibilityRole="radio"
+      accessibilityLabel="Plan Premium Anual Gift Card"
+      accessibilityState={{ selected }}
+    >
+      <AnimatedPlanSelection selected={selected} />
+      <View style={[styles.planRadio, selected && styles.planRadioSelected]}>
+        {selected ? <View style={styles.planRadioDot} /> : null}
+      </View>
       <View style={styles.planCopy}>
-        <Text style={[styles.planName, styles.raisedPlanContent]}>
+        <Text style={[
+          styles.planName,
+          selected && styles.planTextSelected,
+          styles.raisedPlanContent,
+        ]}>
           Plan Premium Anual Gift Card
         </Text>
       </View>
-    </View>
+      <View style={styles.planPriceBlock}>
+        <Text style={[
+          styles.planPrice,
+          selected && styles.planTextSelected,
+          styles.raisedPlanContent,
+        ]}>
+          $45.990
+        </Text>
+      </View>
+    </Pressable>
   );
 }
 
@@ -1357,8 +1395,8 @@ const styles = StyleSheet.create({
   planName: {
     color: "#F9F9F9",
     fontFamily: "Manrope",
-    fontSize: 14,
-    lineHeight: 20,
+    fontSize: 13,
+    lineHeight: 19,
     fontWeight: "700",
   },
   planTextSelected: {
