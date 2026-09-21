@@ -534,8 +534,8 @@ export default function MembresiaScreen() {
 }
 
 function getPackageLabel(item: PurchasesPackage) {
-  if (item.packageType === "ANNUAL") return "Plan anual";
-  if (item.packageType === "MONTHLY") return "Plan mensual";
+  if (item.packageType === "ANNUAL") return "Resonancia Premium Anual";
+  if (item.packageType === "MONTHLY") return "Resonancia Premium Mensual";
   return item.product.title || "Plan Premium";
 }
 
@@ -665,9 +665,6 @@ function PremiumOfferContent({
                   <Text style={[styles.planPrice, selected && styles.planTextSelected]}>
                     {item.product.priceString}
                   </Text>
-                  <Text style={[styles.planPeriod, selected && styles.planPeriodSelected]}>
-                    {getPackagePeriod(item)}
-                  </Text>
                 </View>
               </Pressable>
             );
@@ -676,8 +673,8 @@ function PremiumOfferContent({
       ) : previewMode ? (
         <View style={styles.planGrid}>
           {[
-            { id: "monthly-preview", name: "Plan mensual", selected: false, price: "$5.990", period: "por mes" },
-            { id: "annual-preview", name: "Plan anual", selected: true, price: "$39.990", period: "por año" },
+            { id: "monthly-preview", name: "Resonancia Premium Mensual", selected: false, price: "$5.990" },
+            { id: "annual-preview", name: "Resonancia Premium Anual", selected: true, price: "$39.990" },
           ].map((item) => (
             <View
               key={item.id}
@@ -716,12 +713,6 @@ function PremiumOfferContent({
                   item.selected && styles.planTextSelected,
                 ]}>
                   {item.price}
-                </Text>
-                <Text style={[
-                  styles.planPeriod,
-                  item.selected && styles.planPeriodSelected,
-                ]}>
-                  {item.period}
                 </Text>
               </View>
             </View>
@@ -1043,6 +1034,7 @@ const styles = StyleSheet.create({
     paddingTop: 26,
     paddingBottom: 20,
     alignItems: "center",
+    transform: [{ translateY: 50 }],
   },
   subscriptionUnavailable: {
     minHeight: 275,
@@ -1118,6 +1110,7 @@ const styles = StyleSheet.create({
     fontWeight: "800",
   },
   planGrid: {
+    marginTop: 120,
     gap: 11,
   },
   planCard: {
@@ -1168,8 +1161,8 @@ const styles = StyleSheet.create({
   planName: {
     color: "#211B2B",
     fontFamily: "Manrope",
-    fontSize: 14,
-    lineHeight: 20,
+    fontSize: 12,
+    lineHeight: 18,
     fontWeight: "700",
   },
   planTextSelected: {
@@ -1186,19 +1179,9 @@ const styles = StyleSheet.create({
   planPrice: {
     color: "#211B2B",
     fontFamily: "Manrope",
-    fontSize: 20,
-    lineHeight: 27,
+    fontSize: 17,
+    lineHeight: 23,
     fontWeight: "800",
-  },
-  planPeriod: {
-    color: "#746D7E",
-    fontFamily: "Manrope",
-    fontSize: 11,
-    lineHeight: 16,
-    fontWeight: "500",
-  },
-  planPeriodSelected: {
-    color: "rgba(255,255,255,0.78)",
   },
   offerUnavailable: {
     minHeight: 90,
