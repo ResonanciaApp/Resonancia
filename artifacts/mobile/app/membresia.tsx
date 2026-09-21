@@ -36,6 +36,9 @@ const DATE_FORMATTER = new Intl.DateTimeFormat("es-CL", {
 });
 
 const GIFT_GOLD_COLORS = ["#D8A84F", "#F3D58A", "#B9822F"] as const;
+const PREMIUM_OFFER_BACKGROUND = ["#24153F", "#110A20", "#020104"] as const;
+const PREMIUM_VIOLET = "#6B50D2";
+const PREMIUM_VIOLET_DARK = "#5139AF";
 
 function formatSubscriptionDate(value?: string | null) {
   if (!value) return "No disponible";
@@ -101,9 +104,7 @@ export default function MembresiaScreen() {
     isSubscribed,
     isLoading,
     purchase,
-    restore,
     isPurchasing,
-    isRestoring,
     isConfigured,
     customerInfoError,
     refreshCustomerInfo,
@@ -155,6 +156,10 @@ export default function MembresiaScreen() {
   const selectedPackage =
     purchasePackages.find((item) => item.identifier === selectedPackageId)
     ?? purchasePackages[0];
+  const isOfferScreen =
+    !isLoading
+    && !isSubscribed
+    && !(customerInfoError && (isConfigured || !__DEV__));
 
   const activePackage = useMemo(() => {
     if (!entitlement) return undefined;
@@ -202,26 +207,6 @@ export default function MembresiaScreen() {
       if (cancelled) return;
       Alert.alert(
         "No pudimos completar la compra",
-        "Revisa tu conexión e inténtalo nuevamente.",
-      );
-    }
-  };
-
-  const handleRestore = async () => {
-    if (isRestoring) return;
-    try {
-      const restoredInfo = await restore();
-      const restored =
-        restoredInfo.entitlements.active?.[REVENUECAT_ENTITLEMENT_IDENTIFIER] !== undefined;
-      Alert.alert(
-        restored ? "Compra restaurada" : "No encontramos una suscripción",
-        restored
-          ? "Tu acceso Premium ya está activo."
-          : "Verifica que estés usando la misma cuenta de la tienda con la que realizaste la compra.",
-      );
-    } catch {
-      Alert.alert(
-        "No pudimos restaurar tus compras",
         "Revisa tu conexión e inténtalo nuevamente.",
       );
     }
@@ -275,11 +260,28 @@ export default function MembresiaScreen() {
   return (
     <LinearGradient
       style={styles.root}
-      colors={backgroundColors}
-      locations={theme.gradientLocations as unknown as [number, number, ...number[]] | undefined}
+      colors={isOfferScreen ? PREMIUM_OFFER_BACKGROUND : backgroundColors}
+      locations={
+        isOfferScreen
+          ? [0, 0.56, 1]
+          : theme.gradientLocations as unknown as [number, number, ...number[]] | undefined
+      }
     >
       <StatusBar barStyle="light-content" translucent backgroundColor="transparent" />
 
+      {isOfferScreen ? (
+        <View style={[styles.offerHeader, { paddingTop: topPad + 8 }]}>
+          <Pressable
+            onPress={() => router.back()}
+            hitSlop={10}
+            style={({ pressed }) => [styles.offerCloseButton, pressed && styles.pressed]}
+            accessibilityRole="button"
+            accessibilityLabel="Cerrar"
+          >
+            <Feather name="x" size={29} color="#FFFFFF" />
+          </Pressable>
+        </View>
+      ) : (
       <View style={[styles.header, { paddingTop: topPad + 8 }]}>
         <Pressable
           onPress={() => router.back()}
@@ -298,14 +300,15 @@ export default function MembresiaScreen() {
         <Text style={[styles.headerTitle, { color: colors.foreground }]}>Suscripción</Text>
         <View style={styles.headerSpacer} />
       </View>
+      )}
 
       <ScrollView
         style={styles.scroll}
         contentContainerStyle={styles.scrollContent}
         showsVerticalScrollIndicator={false}
       >
-        <View style={styles.content}>
-          <View style={styles.premiumHeading}>
+        <View style={[styles.content, isOfferScreen && styles.offerScreenContent]}>
+          {!isOfferScreen ? <View style={styles.premiumHeading}>
             <MaterialCommunityIcons
               name="star"
               size={31}
@@ -315,7 +318,7 @@ export default function MembresiaScreen() {
               <Text style={styles.premiumTitleBrand}>Resonancia</Text>
               {" Premium"}
             </Text>
-          </View>
+          </View> : null}
 
           {!isLoading && customerInfoError && (isConfigured || !__DEV__) ? (
             <SubscriptionStatusUnavailable
@@ -330,9 +333,7 @@ export default function MembresiaScreen() {
               selectedPackage={selectedPackage}
               onSelect={(item) => setSelectedPackageId(item.identifier)}
               onPurchase={() => void handlePurchase()}
-              onRestore={() => void handleRestore()}
               isPurchasing={isPurchasing}
-              isRestoring={isRestoring}
               previewMode={!isConfigured && __DEV__}
             />
           ) : (
@@ -593,33 +594,35 @@ function PremiumOfferContent({
   selectedPackage,
   onSelect,
   onPurchase,
-  onRestore,
   isPurchasing,
-  isRestoring,
   previewMode,
 }: {
   packages: PurchasesPackage[];
   selectedPackage?: PurchasesPackage;
   onSelect: (item: PurchasesPackage) => void;
   onPurchase: () => void;
-  onRestore: () => void;
   isPurchasing: boolean;
-  isRestoring: boolean;
   previewMode: boolean;
 }) {
-  const busy = isPurchasing || isRestoring;
+  const busy = isPurchasing;
   const selectedPeriod = selectedPackage ? getPackagePeriod(selectedPackage) : null;
 
   return (
     <>
       <View style={styles.offerHero}>
-        <View style={styles.offerStar}>
+        <LinearGradient
+          colors={["#7A68DE", "#5742BC"]}
+          start={{ x: 0, y: 0 }}
+          end={{ x: 1, y: 1 }}
+          style={styles.offerLogo}
+        >
           <MaterialCommunityIcons
-            name="star-four-points"
-            size={31}
-            color={MEMBERSHIP_AURORA.premium.accent}
+            name="white-balance-sunny"
+            size={47}
+            color="#FFFFFF"
           />
-        </View>
+        </LinearGradient>
+        <Text style={styles.offerBrand}>Resonancia</Text>
         <Text style={styles.offerSubtitle}>
           Accede a más de 500 sesiones creadas para expandir tu consciencia y potenciar tu bienestar
         </Text>
@@ -647,16 +650,24 @@ function PremiumOfferContent({
                   {selected ? <View style={styles.planRadioDot} /> : null}
                 </View>
                 <View style={styles.planCopy}>
-                  <Text style={styles.planName}>{getPackageLabel(item)}</Text>
+                  <Text style={[styles.planName, selected && styles.planTextSelected]}>
+                    {getPackageLabel(item)}
+                  </Text>
                   {recommended ? (
-                    <View style={styles.recommendedPill}>
-                      <Text style={styles.recommendedText}>RECOMENDADO</Text>
+                    <View style={[styles.recommendedPill, selected && styles.recommendedPillSelected]}>
+                      <Text style={[styles.recommendedText, selected && styles.recommendedTextSelected]}>
+                        RECOMENDADO
+                      </Text>
                     </View>
                   ) : null}
                 </View>
                 <View style={styles.planPriceBlock}>
-                  <Text style={styles.planPrice}>{item.product.priceString}</Text>
-                  <Text style={styles.planPeriod}>{getPackagePeriod(item)}</Text>
+                  <Text style={[styles.planPrice, selected && styles.planTextSelected]}>
+                    {item.product.priceString}
+                  </Text>
+                  <Text style={[styles.planPeriod, selected && styles.planPeriodSelected]}>
+                    {getPackagePeriod(item)}
+                  </Text>
                 </View>
               </Pressable>
             );
@@ -665,8 +676,9 @@ function PremiumOfferContent({
       ) : previewMode ? (
         <View style={styles.planGrid}>
           {[
-            { id: "annual-preview", name: "Plan anual", recommended: true },
             { id: "monthly-preview", name: "Plan mensual", recommended: false },
+            { id: "annual-preview", name: "Plan anual", recommended: true },
+            { id: "weekly-preview", name: "Plan semanal", recommended: false },
           ].map((item) => (
             <View
               key={item.id}
@@ -680,17 +692,33 @@ function PremiumOfferContent({
                 {item.recommended ? <View style={styles.planRadioDot} /> : null}
               </View>
               <View style={styles.planCopy}>
-                <Text style={styles.planName}>{item.name}</Text>
+                <Text style={[styles.planName, item.recommended && styles.planTextSelected]}>
+                  {item.name}
+                </Text>
                 {item.recommended ? (
-                  <View style={styles.recommendedPill}>
-                    <Text style={styles.recommendedText}>RECOMENDADO</Text>
+                  <View style={[styles.recommendedPill, styles.recommendedPillSelected]}>
+                    <Text style={[styles.recommendedText, styles.recommendedTextSelected]}>
+                      RECOMENDADO
+                    </Text>
                   </View>
                 ) : null}
               </View>
               <View style={styles.planPriceBlock}>
-                <Text style={styles.previewPlanPrice}>Precio de la tienda</Text>
-                <Text style={styles.planPeriod}>
-                  {item.recommended ? "por año" : "por mes"}
+                <Text style={[
+                  styles.previewPlanPrice,
+                  item.recommended && styles.planTextSelected,
+                ]}>
+                  Precio de la tienda
+                </Text>
+                <Text style={[
+                  styles.planPeriod,
+                  item.recommended && styles.planPeriodSelected,
+                ]}>
+                  {item.id === "annual-preview"
+                    ? "por año"
+                    : item.id === "weekly-preview"
+                      ? "por semana"
+                      : "por mes"}
                 </Text>
               </View>
             </View>
@@ -708,24 +736,24 @@ function PremiumOfferContent({
         </View>
       )}
 
-      {!previewMode ? <Pressable
+      <Pressable
         onPress={onPurchase}
-        disabled={!selectedPackage || busy}
+        disabled={!selectedPackage || busy || previewMode}
         accessibilityRole="button"
         accessibilityLabel={
           selectedPackage
             ? `Comenzar Premium, ${selectedPackage.product.priceString} ${selectedPeriod}`
             : "Comenzar Premium"
         }
-        accessibilityState={{ disabled: !selectedPackage || busy }}
+        accessibilityState={{ disabled: !selectedPackage || busy || previewMode }}
         style={({ pressed }) => [
           styles.purchaseButton,
-          (!selectedPackage || busy) && styles.purchaseButtonDisabled,
+          (!selectedPackage || busy || previewMode) && styles.purchaseButtonDisabled,
           pressed && selectedPackage && !busy && styles.manageButtonPressed,
         ]}
       >
         <LinearGradient
-          colors={GIFT_GOLD_COLORS}
+          colors={[PREMIUM_VIOLET, PREMIUM_VIOLET_DARK]}
           start={{ x: 0, y: 0.5 }}
           end={{ x: 1, y: 0.5 }}
           style={StyleSheet.absoluteFill}
@@ -733,9 +761,9 @@ function PremiumOfferContent({
         {isPurchasing ? (
           <ActivityIndicator color="#F9F9F9" />
         ) : (
-          <Text style={styles.manageButtonText}>Comenzar Premium</Text>
+          <Text style={styles.purchaseButtonText}>Comprar</Text>
         )}
-      </Pressable> : null}
+      </Pressable>
 
       {selectedPackage ? (
         <Text style={styles.purchaseDisclosure}>
@@ -745,23 +773,6 @@ function PremiumOfferContent({
       ) : null}
 
       <View style={styles.offerFooterActions}>
-        {!previewMode ? (
-          <>
-            <Pressable
-              onPress={onRestore}
-              disabled={busy}
-              accessibilityRole="button"
-              style={({ pressed }) => [styles.offerFooterButton, pressed && styles.pressed]}
-            >
-              {isRestoring ? (
-                <ActivityIndicator size="small" color="#F9F9F9" />
-              ) : (
-                <Text style={styles.offerFooterText}>Restaurar compras</Text>
-              )}
-            </Pressable>
-            <View style={styles.offerFooterDot} />
-          </>
-        ) : null}
         <Pressable
           onPress={() => router.push("/terminos" as never)}
           accessibilityRole="link"
@@ -823,6 +834,22 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     alignItems: "flex-end",
   },
+  offerHeader: {
+    minHeight: 62,
+    paddingHorizontal: 20,
+    paddingBottom: 8,
+    alignItems: "flex-end",
+  },
+  offerCloseButton: {
+    width: 47,
+    height: 47,
+    borderRadius: 23.5,
+    borderWidth: 1,
+    borderColor: "rgba(255,255,255,0.14)",
+    backgroundColor: "rgba(255,255,255,0.055)",
+    alignItems: "center",
+    justifyContent: "center",
+  },
   backButton: {
     width: 43,
     height: 43,
@@ -857,6 +884,9 @@ const styles = StyleSheet.create({
   content: {
     paddingHorizontal: 24,
     paddingTop: 18,
+  },
+  offerScreenContent: {
+    paddingTop: 2,
   },
   premiumHeading: {
     flexDirection: "row",
@@ -1007,14 +1037,10 @@ const styles = StyleSheet.create({
     fontWeight: "800",
   },
   offerHero: {
-    position: "relative",
-    overflow: "hidden",
-    borderRadius: 19,
     paddingHorizontal: 24,
-    paddingTop: 24,
-    paddingBottom: 25,
+    paddingTop: 26,
+    paddingBottom: 34,
     alignItems: "center",
-    backgroundColor: "rgba(0,0,0,0.28)",
   },
   subscriptionUnavailable: {
     minHeight: 275,
@@ -1069,48 +1095,53 @@ const styles = StyleSheet.create({
     fontSize: 13,
     fontWeight: "800",
   },
-  offerStar: {
-    width: 58,
-    height: 58,
-    borderRadius: 29,
+  offerLogo: {
+    width: 104,
+    height: 104,
+    borderRadius: 27,
     alignItems: "center",
     justifyContent: "center",
-    marginBottom: 14,
-    backgroundColor: "rgba(231,185,92,0.14)",
-    borderWidth: 1,
-    borderColor: "rgba(231,185,92,0.3)",
+    marginBottom: 16,
+    shadowColor: "#8B72F2",
+    shadowOffset: { width: 0, height: 10 },
+    shadowOpacity: 0.28,
+    shadowRadius: 22,
+    elevation: 10,
+  },
+  offerBrand: {
+    color: "#FFFFFF",
+    fontFamily: "Manrope",
+    fontSize: 24,
+    lineHeight: 31,
+    fontWeight: "800",
+    marginBottom: 15,
   },
   offerSubtitle: {
-    maxWidth: 300,
-    color: "#E5E1EB",
+    maxWidth: 315,
+    color: "rgba(255,255,255,0.78)",
     fontFamily: "Manrope",
-    fontSize: 13,
-    lineHeight: 20,
+    fontSize: 13.5,
+    lineHeight: 21,
     fontWeight: "400",
     textAlign: "center",
   },
   planGrid: {
-    marginTop: 16,
-    gap: 12,
+    gap: 11,
   },
   planCard: {
     width: "100%",
-    minHeight: 92,
+    minHeight: 82,
     overflow: "hidden",
-    borderRadius: 17,
-    borderWidth: 1,
-    borderColor: "rgba(255,255,255,0.12)",
-    paddingHorizontal: 17,
-    paddingVertical: 15,
+    borderRadius: 21,
+    paddingHorizontal: 18,
+    paddingVertical: 13,
     flexDirection: "row",
     alignItems: "center",
     gap: 13,
-    backgroundColor: "rgba(0,0,0,0.28)",
+    backgroundColor: "#F8F7FA",
   },
   planCardSelected: {
-    borderWidth: 1.5,
-    borderColor: MEMBERSHIP_AURORA.premium.accent,
-    backgroundColor: "rgba(231,185,92,0.11)",
+    backgroundColor: PREMIUM_VIOLET,
   },
   previewPlanCard: {
     opacity: 0.9,
@@ -1124,40 +1155,49 @@ const styles = StyleSheet.create({
     paddingHorizontal: 9,
     paddingVertical: 4,
     marginTop: 5,
-    backgroundColor: "rgba(231,185,92,0.16)",
+    backgroundColor: "rgba(107,80,210,0.12)",
+  },
+  recommendedPillSelected: {
+    backgroundColor: "rgba(255,255,255,0.16)",
   },
   recommendedText: {
-    color: MEMBERSHIP_AURORA.premium.accent,
+    color: PREMIUM_VIOLET,
     fontFamily: "Manrope",
     fontSize: 8,
     lineHeight: 11,
     fontWeight: "800",
     letterSpacing: 0.75,
   },
+  recommendedTextSelected: {
+    color: "#FFFFFF",
+  },
   planRadio: {
     width: 20,
     height: 20,
     borderRadius: 10,
     borderWidth: 1.5,
-    borderColor: "rgba(255,255,255,0.35)",
+    borderColor: "#8B8496",
     alignItems: "center",
     justifyContent: "center",
   },
   planRadioSelected: {
-    borderColor: MEMBERSHIP_AURORA.premium.accent,
+    borderColor: "#FFFFFF",
   },
   planRadioDot: {
     width: 10,
     height: 10,
     borderRadius: 5,
-    backgroundColor: MEMBERSHIP_AURORA.premium.accent,
+    backgroundColor: "#FFFFFF",
   },
   planName: {
-    color: "#F9F9F9",
+    color: "#211B2B",
     fontFamily: "Manrope",
     fontSize: 14,
     lineHeight: 20,
     fontWeight: "700",
+  },
+  planTextSelected: {
+    color: "#FFFFFF",
   },
   planCopy: {
     flex: 1,
@@ -1168,25 +1208,28 @@ const styles = StyleSheet.create({
     alignItems: "flex-end",
   },
   planPrice: {
-    color: "#FFFFFF",
+    color: "#211B2B",
     fontFamily: "Manrope",
     fontSize: 20,
     lineHeight: 27,
     fontWeight: "800",
   },
   previewPlanPrice: {
-    color: "#F9F9F9",
+    color: "#211B2B",
     fontFamily: "Manrope",
     fontSize: 13,
     lineHeight: 20,
     fontWeight: "700",
   },
   planPeriod: {
-    color: "#D3CFD8",
+    color: "#746D7E",
     fontFamily: "Manrope",
     fontSize: 11,
     lineHeight: 16,
     fontWeight: "500",
+  },
+  planPeriodSelected: {
+    color: "rgba(255,255,255,0.78)",
   },
   offerUnavailable: {
     minHeight: 90,
@@ -1216,15 +1259,21 @@ const styles = StyleSheet.create({
     lineHeight: 18,
   },
   purchaseButton: {
-    height: 54,
-    marginTop: 25,
-    borderRadius: 14,
+    height: 58,
+    marginTop: 29,
+    borderRadius: 21,
     overflow: "hidden",
     alignItems: "center",
     justifyContent: "center",
   },
   purchaseButtonDisabled: {
-    opacity: 0.52,
+    opacity: 0.76,
+  },
+  purchaseButtonText: {
+    color: "#FFFFFF",
+    fontFamily: "Manrope",
+    fontSize: 16,
+    fontWeight: "800",
   },
   purchaseDisclosure: {
     color: "#D3CFD8",
@@ -1250,7 +1299,7 @@ const styles = StyleSheet.create({
     paddingHorizontal: 10,
   },
   offerFooterText: {
-    color: "#E5E1EB",
+    color: "rgba(255,255,255,0.76)",
     fontFamily: "Manrope",
     fontSize: 11,
     lineHeight: 16,
