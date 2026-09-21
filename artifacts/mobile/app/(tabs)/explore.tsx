@@ -736,7 +736,7 @@ export function ExploreScreen({
               <Feather
                 name="users"
                 color="#F9F9F9"
-                size={30}
+                size={27}
               />
             </View>
             <View style={styles.resonadoresBannerCopy}>
