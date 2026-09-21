@@ -79,7 +79,8 @@ export function SleepReminderSheet({
         }),
         Animated.timing(backdropOpacity, {
           toValue: 0,
-          duration: 200,
+          duration: 260,
+          delay: 60,
           useNativeDriver: true,
         }),
       ]).start(() => setMounted(false));
@@ -92,12 +93,13 @@ export function SleepReminderSheet({
         Animated.timing(translateY, {
           toValue: 0,
           duration: 340,
+          delay: 90,
           easing: Easing.out(Easing.cubic),
           useNativeDriver: true,
         }),
         Animated.timing(backdropOpacity, {
           toValue: 1,
-          duration: 240,
+          duration: 180,
           useNativeDriver: true,
         }),
       ]).start();
