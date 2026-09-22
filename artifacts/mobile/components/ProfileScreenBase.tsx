@@ -1697,7 +1697,7 @@ export function ProfileScreenBase({
               accessibilityLabel="Abrir Ejercicios de respiración"
             >
               <View style={styles.practiceReminderIcon}>
-                <MaterialCommunityIcons name="weather-windy" size={29} color="#4A7D48" />
+                <MaterialCommunityIcons name="weather-windy" size={29} color="#57C785" />
               </View>
               <View style={styles.practiceReminderCopy}>
                 <Text style={[styles.practiceReminderTitle, { color: colors.foreground }]}>
