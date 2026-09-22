@@ -208,6 +208,8 @@ const styles = StyleSheet.create({
     paddingVertical: 14,
     borderRadius: 20,
     backgroundColor: "rgba(184,117,240,0.2)",
+    borderWidth: 1,
+    borderColor: "rgba(255,255,255,0.15)",
   },
   inicio3RefreshButton: {
     marginHorizontal: 11,
