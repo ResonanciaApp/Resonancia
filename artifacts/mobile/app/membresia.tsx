@@ -23,6 +23,7 @@ import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { MEMBERSHIP_AURORA } from "@/constants/colors";
 import { SessionBadgeGlass } from "@/components/SessionDurationBadge";
 import { usePremium } from "@/context/PremiumContext";
+import { useBackAfterClose, useBackOverride } from "@/context/BackOverrideContext";
 import { useSceneTheme } from "@/context/SceneThemeContext";
 import { useColors } from "@/hooks/useColors";
 import {
@@ -96,6 +97,8 @@ const SUBSCRIPTION_BENEFITS = [
 ] as const;
 
 export default function MembresiaScreen() {
+  const backOverride = useBackOverride();
+  const backAfterClose = useBackAfterClose();
   const colors = useColors();
   const insets = useSafeAreaInsets();
   const { theme } = useSceneTheme();
@@ -326,7 +329,7 @@ export default function MembresiaScreen() {
       {!isOfferScreen ? (
       <View style={[styles.header, { paddingTop: topPad + 8 }]}>
         <Pressable
-          onPress={() => router.back()}
+          onPress={backOverride ?? (() => router.back())}
           hitSlop={10}
           style={({ pressed }) => [styles.backButton, pressed && styles.pressed]}
           accessibilityRole="button"
@@ -354,7 +357,7 @@ export default function MembresiaScreen() {
           {isOfferScreen ? (
             <View style={[styles.offerInlineHeader, { paddingTop: topPad + 8 }]}>
               <Pressable
-                onPress={() => router.back()}
+                onPress={backOverride ?? (() => router.back())}
                 hitSlop={10}
                 style={({ pressed }) => [styles.offerCloseButton, pressed && styles.pressed]}
                 accessibilityRole="button"
@@ -553,7 +556,13 @@ export default function MembresiaScreen() {
               <ManageActionRow
                 icon="life-buoy"
                 label="Recibe ayuda"
-                onPress={() => closeManageThen(() => router.push("/ayuda" as never))}
+                onPress={() => closeManageThen(() => {
+                  if (backAfterClose) {
+                    backAfterClose(() => router.push("/ayuda" as never));
+                  } else {
+                    router.push("/ayuda" as never);
+                  }
+                })}
               />
               <ManageActionRow
                 icon="message-circle"
@@ -569,7 +578,13 @@ export default function MembresiaScreen() {
               <ManageActionRow
                 icon="radio"
                 label="¿Quieres ser un Resonador?"
-                onPress={() => closeManageThen(() => router.push("/resonador-postular" as never))}
+                onPress={() => closeManageThen(() => {
+                  if (backAfterClose) {
+                    backAfterClose(() => router.push("/resonador-postular" as never));
+                  } else {
+                    router.push("/resonador-postular" as never);
+                  }
+                })}
               />
               <ManageActionRow
                 icon="x-circle"

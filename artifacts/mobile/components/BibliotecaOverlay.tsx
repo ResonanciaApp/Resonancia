@@ -1,11 +1,12 @@
-import React, { useEffect, useRef, useState } from "react";
-import { Animated, Dimensions, StyleSheet } from "react-native";
+import React, { useEffect, useMemo, useState } from "react";
+import { Animated, BackHandler, Dimensions, StyleSheet } from "react-native";
 
 import { ProfileScreenBase } from "@/components/ProfileScreenBase";
 import { useDrawer } from "@/context/DrawerContext";
-import { DURATION, easeOutCubic } from "@/constants/motion";
+import { easeOutCubic } from "@/constants/motion";
 
 const W = Dimensions.get("window").width;
+const DRAWER_DESTINATION_DURATION = 450;
 
 /**
  * La pantalla de Biblioteca original (ProfileScreenBase) deslizándose desde
@@ -13,52 +14,92 @@ const W = Dimensions.get("window").width;
  * la pantalla, el drawer sigue visible.
  */
 export function BibliotecaOverlay() {
-  const { libOpen, libraryInitialTab, closeLib } = useDrawer();
+  const {
+    libOpen,
+    libraryInitialTab,
+    closeLib,
+    drawerTransitionProgress,
+    libOpenedFromDrawer,
+  } = useDrawer();
   const [rendered, setRendered] = useState(false);
-  const slideAnim = useRef(new Animated.Value(W)).current;
-  const fadeAnim = useRef(new Animated.Value(0)).current;
+  const normalSlideAnim = React.useRef(new Animated.Value(W)).current;
+  const normalFadeAnim = React.useRef(new Animated.Value(0)).current;
+  const transitionToken = React.useRef(0);
+  const slideX = useMemo(
+    () => drawerTransitionProgress.interpolate({
+      inputRange: [0, 1],
+      outputRange: [W, 0],
+      extrapolate: "clamp",
+    }),
+    [drawerTransitionProgress],
+  );
 
   useEffect(() => {
+    const token = ++transitionToken.current;
+    normalSlideAnim.stopAnimation();
+    normalFadeAnim.stopAnimation();
+    drawerTransitionProgress.stopAnimation();
     if (libOpen) {
       setRendered(true);
-      slideAnim.stopAnimation();
-      fadeAnim.stopAnimation();
-      Animated.parallel([
-        Animated.timing(slideAnim, {
-          toValue: 0,
-          duration: DURATION.DRAWER,
-          easing: easeOutCubic,
-          useNativeDriver: true,
-        }),
-        Animated.timing(fadeAnim, {
-          toValue: 1,
-          duration: DURATION.DRAWER,
-          easing: easeOutCubic,
-          useNativeDriver: true,
-        }),
-      ]).start();
+      const progress = libOpenedFromDrawer ? drawerTransitionProgress : normalSlideAnim;
+      if (!rendered) progress.setValue(libOpenedFromDrawer ? 0 : W);
+      if (!libOpenedFromDrawer) {
+        drawerTransitionProgress.setValue(0);
+        normalFadeAnim.setValue(0);
+      }
+      const movement = Animated.timing(progress, {
+        toValue: libOpenedFromDrawer ? 1 : 0,
+        duration: libOpenedFromDrawer ? DRAWER_DESTINATION_DURATION : 350,
+        easing: easeOutCubic,
+        useNativeDriver: true,
+      });
+      if (libOpenedFromDrawer) {
+        movement.start();
+      } else {
+        Animated.parallel([
+          movement,
+          Animated.timing(normalFadeAnim, {
+            toValue: 1,
+            duration: 350,
+            easing: easeOutCubic,
+            useNativeDriver: true,
+          }),
+        ]).start();
+      }
     } else if (rendered) {
-      slideAnim.stopAnimation();
-      fadeAnim.stopAnimation();
-      Animated.parallel([
-        Animated.timing(slideAnim, {
-          toValue: W,
-          duration: DURATION.DRAWER,
-          easing: easeOutCubic,
-          useNativeDriver: true,
-        }),
-        Animated.timing(fadeAnim, {
-          toValue: 0,
-          duration: DURATION.DRAWER,
-          easing: easeOutCubic,
-          useNativeDriver: true,
-        }),
-      ]).start(({ finished }) => {
-        if (finished) setRendered(false);
+      const progress = libOpenedFromDrawer ? drawerTransitionProgress : normalSlideAnim;
+      const movement = Animated.timing(progress, {
+        toValue: libOpenedFromDrawer ? 0 : W,
+        duration: libOpenedFromDrawer ? DRAWER_DESTINATION_DURATION : 350,
+        easing: easeOutCubic,
+        useNativeDriver: true,
+      });
+      const animation = libOpenedFromDrawer
+        ? movement
+        : Animated.parallel([
+            movement,
+            Animated.timing(normalFadeAnim, {
+              toValue: 0,
+              duration: 350,
+              easing: easeOutCubic,
+              useNativeDriver: true,
+            }),
+          ]);
+      animation.start(({ finished }) => {
+        if (finished && token === transitionToken.current) setRendered(false);
       });
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [libOpen]);
+
+  useEffect(() => {
+    if (!rendered) return;
+    const subscription = BackHandler.addEventListener("hardwareBackPress", () => {
+      closeLib();
+      return true;
+    });
+    return () => subscription.remove();
+  }, [closeLib, rendered]);
 
   if (!rendered) return null;
 
@@ -67,8 +108,8 @@ export function BibliotecaOverlay() {
       style={[
         StyleSheet.absoluteFill,
         {
-          opacity: fadeAnim,
-          transform: [{ translateX: slideAnim }],
+          opacity: libOpenedFromDrawer ? 1 : normalFadeAnim,
+          transform: [{ translateX: libOpenedFromDrawer ? slideX : normalSlideAnim }],
         },
       ]}
     >

@@ -48,11 +48,11 @@ const INICIO3_SECTIONS: { title: string | null; items: MenuItem[] }[] = [
   {
     title: null,
     items: [
-      { id: "premium", label: "Tu Premium", icon: "star", route: "/membresia", color: "#E7B95C" },
+      { id: "premium", label: "Tu Premium", icon: "star", route: "__overlay:/membresia", color: "#E7B95C" },
       { id: "favorites", label: "Favoritos", icon: "heart", mciIcon: "heart-outline", route: "__overlay:/favoritos-todos" },
-      { id: "library", label: "Biblioteca", icon: "book", mciIcon: "bookshelf", route: "/(tabs)/biblioteca" },
+      { id: "library", label: "Biblioteca", icon: "book", mciIcon: "bookshelf", route: "__biblioteca_overlay" },
       { id: "history", label: "Historial", icon: "clock", mciIcon: "history", route: "__overlay:/historial" },
-      { id: "downloads", label: "Descargas", icon: "download", mciIcon: "download-outline", route: "/descargas" },
+      { id: "downloads", label: "Descargas", icon: "download", mciIcon: "download-outline", route: "__overlay:/descargas" },
       { id: "mood-register", label: "Registro de ánimo", icon: "smile", mciIcon: "emoticon-happy-outline", route: "__mood_register" },
       { id: "mixer", label: "Mezclador de sonido", icon: "sliders", mciIcon: "tune-vertical", route: "__mixer" },
       { id: "journal", label: "Diario", icon: "edit-3", mciIcon: "book-open-page-variant-outline", route: "__overlay:/diario" },
@@ -76,10 +76,11 @@ export function DrawerMenu() {
     drawerAnim,
     close: onClose,
     markInstantNav,
-    openLib,
+    openLibFromDrawer,
     openOverlay,
+    openOverlayFromDrawer,
     overlayParallax,
-    historyProgress,
+    drawerTransitionProgress,
     requestMoodPicker,
     requestProfileCompose,
   } = useDrawer();
@@ -89,8 +90,8 @@ export function DrawerMenu() {
   const { username, lastName } = useUserProfile();
   const avatarSource = useCurrentUserAvatarSource();
   const { theme: activeTheme } = useSceneTheme();
-  const { openGeometrix } = useGeometrixPanel();
-  const { openMixer } = useMixerPanel();
+  const { openGeometrixFromDrawer } = useGeometrixPanel();
+  const { openMixerFromDrawer } = useMixerPanel();
 
   const loggedIn = isRegistered || isSignedIn;
   const clerkName =
@@ -128,29 +129,29 @@ export function DrawerMenu() {
             outputRange: [0, DRAWER_OVERLAY_PARALLAX_X],
           }),
         ),
-        historyProgress.interpolate({
+        drawerTransitionProgress.interpolate({
           inputRange: [0, 1],
           outputRange: [0, -18],
           extrapolate: "clamp",
         }),
       ),
-    [translateX, dragX, overlayParallax, historyProgress],
+    [translateX, dragX, overlayParallax, drawerTransitionProgress],
   );
   const historyScale = React.useMemo(
-    () => historyProgress.interpolate({
+    () => drawerTransitionProgress.interpolate({
       inputRange: [0, 1],
       outputRange: [1, 0.985],
       extrapolate: "clamp",
     }),
-    [historyProgress],
+    [drawerTransitionProgress],
   );
   const historyOpacity = React.useMemo(
-    () => historyProgress.interpolate({
+    () => drawerTransitionProgress.interpolate({
       inputRange: [0, 1],
       outputRange: [1, 0.985],
       extrapolate: "clamp",
     }),
-    [historyProgress],
+    [drawerTransitionProgress],
   );
   const composedDrawerOpacity = React.useMemo(
     () => Animated.multiply(drawerOpacity, historyOpacity),
@@ -210,7 +211,7 @@ export function DrawerMenu() {
 
   const navigate = (route: string) => {
     // Overlays sobre el drawer (menú queda abierto debajo)
-    if (route === "__biblioteca_overlay") { openLib(); return; }
+    if (route === "__biblioteca_overlay") { openLibFromDrawer(); return; }
     if (route === "__mood_register") { onClose(); requestMoodPicker(); return; }
     if (route === "__profile_compose") {
       markInstantNav();
@@ -219,9 +220,17 @@ export function DrawerMenu() {
       router.push("/profile" as never);
       return;
     }
-    if (route === "__mixer") { onClose(); openMixer(); return; }
-    if (route === "__geometrix") { onClose(); openGeometrix(); return; }
-    if (route.startsWith("__overlay:")) { openOverlay(route.replace("__overlay:", "")); return; }
+    if (route === "__mixer") { openMixerFromDrawer(); return; }
+    if (route === "__geometrix") { openGeometrixFromDrawer(); return; }
+    if (route.startsWith("__overlay:")) {
+      const target = route.replace("__overlay:", "");
+      if (["/historial", "/favoritos-todos", "/diario", "/descargas", "/membresia"].includes(target)) {
+        openOverlayFromDrawer(target);
+      } else {
+        openOverlay(target);
+      }
+      return;
+    }
     if (route.startsWith("__cat:")) {
       const target = route.replace("__cat:", "");
       onClose();

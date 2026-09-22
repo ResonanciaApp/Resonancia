@@ -153,3 +153,4 @@
 - [Galería de historias iniciadas](reflection-story-gallery.md) — registra al confirmar “Abrir Instagram”, no al completar publicación; snapshot visual reconstruible e idempotencia por intento
 - [Muro expansivo optimista](reflection-wall-optimistic.md) — guardar siembra el caché del muro y borrar oculta la card antes de cerrar el editor; rollback solo si falla la red
 - [Entitlement RevenueCat desconocido](revenuecat-entitlement-unknown.md) — error/carga/no-configurado nunca equivale a free; conservar último entitlement verificado solo hasta su expiración real
+- [Transiciones desde el drawer](drawer-destination-transition.md) — destinos del menú usan un progreso único para ventana+drawer; aperturas desde otros orígenes conservan su animación normal

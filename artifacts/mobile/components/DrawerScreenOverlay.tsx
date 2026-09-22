@@ -1,6 +1,6 @@
 import React, { useEffect, useMemo, useRef, useState, Suspense } from "react";
 import { LinearGradient } from "expo-linear-gradient";
-import { Animated, Dimensions, StyleSheet, View } from "react-native";
+import { Animated, BackHandler, Dimensions, StyleSheet, View } from "react-native";
 
 import { useDrawer } from "@/context/DrawerContext";
 import { BackOverrideProvider } from "@/context/BackOverrideContext";
@@ -8,7 +8,14 @@ import { DURATION, easeOutCubic } from "@/constants/motion";
 import { useSceneTheme } from "@/context/SceneThemeContext";
 
 const W = Dimensions.get("window").width;
-const HISTORY_TRANSITION_DURATION = 450;
+const DRAWER_DESTINATION_DURATION = 450;
+const SHARED_DRAWER_ROUTES = new Set([
+  "/historial",
+  "/favoritos-todos",
+  "/diario",
+  "/descargas",
+  "/membresia",
+]);
 
 // Lazy imports para evitar dependencia circular con las rutas de Expo Router
 const SCREENS: Record<string, React.LazyExoticComponent<React.ComponentType>> = {
@@ -19,6 +26,8 @@ const SCREENS: Record<string, React.LazyExoticComponent<React.ComponentType>> = 
   "/favoritos-todos": React.lazy(() => import("@/app/favoritos-todos")),
   "/mis-sesiones":    React.lazy(() => import("@/app/mis-sesiones")),
   "/equipo":          React.lazy(() => import("@/app/equipo")),
+  "/descargas":       React.lazy(() => import("@/app/descargas")),
+  "/membresia":       React.lazy(() => import("@/app/membresia")),
 };
 
 /**
@@ -26,18 +35,25 @@ const SCREENS: Record<string, React.LazyExoticComponent<React.ComponentType>> = 
  * Cada pantalla recibe BackOverrideContext para que su botón ← cierre el overlay.
  */
 export function DrawerScreenOverlay() {
-  const { overlayRoute, closeOverlay, historyProgress } = useDrawer();
+  const {
+    overlayRoute,
+    closeOverlay,
+    drawerTransitionProgress,
+    overlayOpenedFromDrawer,
+  } = useDrawer();
   const { theme: sceneTheme } = useSceneTheme();
   const [rendered, setRendered] = useState(false);
   const [activeRoute, setActiveRoute] = useState<string | null>(null);
   const slideAnim = useRef(new Animated.Value(W)).current;
-  const historySlideX = useMemo(
-    () => historyProgress.interpolate({
+  const transitionToken = useRef(0);
+  const afterCloseRef = useRef<(() => void) | null>(null);
+  const sharedSlideX = useMemo(
+    () => drawerTransitionProgress.interpolate({
       inputRange: [0, 1],
       outputRange: [W, 0],
       extrapolate: "clamp",
     }),
-    [historyProgress],
+    [drawerTransitionProgress],
   );
 
   // Pre-cargar todos los módulos al montar el componente para que cuando el
@@ -52,24 +68,29 @@ export function DrawerScreenOverlay() {
       import("@/app/favoritos-todos"),
       import("@/app/mis-sesiones"),
       import("@/app/equipo"),
+      import("@/app/descargas"),
+      import("@/app/membresia"),
     ]);
   }, []);
 
   useEffect(() => {
+    const token = ++transitionToken.current;
+    slideAnim.stopAnimation();
+    drawerTransitionProgress.stopAnimation();
     if (overlayRoute) {
+      afterCloseRef.current = null;
       setActiveRoute(overlayRoute);
       setRendered(true);
-      if (overlayRoute === "/historial") {
-        historyProgress.stopAnimation();
-        if (!rendered) historyProgress.setValue(0);
-        Animated.timing(historyProgress, {
+      if (overlayOpenedFromDrawer && SHARED_DRAWER_ROUTES.has(overlayRoute)) {
+        if (!rendered) drawerTransitionProgress.setValue(0);
+        Animated.timing(drawerTransitionProgress, {
           toValue: 1,
-          duration: HISTORY_TRANSITION_DURATION,
+          duration: DRAWER_DESTINATION_DURATION,
           easing: easeOutCubic,
           useNativeDriver: true,
         }).start();
       } else {
-        slideAnim.stopAnimation();
+        drawerTransitionProgress.setValue(0);
         Animated.timing(slideAnim, {
           toValue: 0,
           duration: DURATION.DRAWER,
@@ -78,23 +99,41 @@ export function DrawerScreenOverlay() {
         }).start();
       }
     } else if (rendered) {
-      const closingHistory = activeRoute === "/historial";
-      const progress = closingHistory ? historyProgress : slideAnim;
-      progress.stopAnimation();
+      const closingSharedRoute = Boolean(
+        overlayOpenedFromDrawer && activeRoute && SHARED_DRAWER_ROUTES.has(activeRoute),
+      );
+      const progress = closingSharedRoute ? drawerTransitionProgress : slideAnim;
       Animated.timing(progress, {
-        toValue: closingHistory ? 0 : W,
-        duration: closingHistory ? HISTORY_TRANSITION_DURATION : DURATION.DRAWER,
+        toValue: closingSharedRoute ? 0 : W,
+        duration: closingSharedRoute ? DRAWER_DESTINATION_DURATION : DURATION.DRAWER,
         easing: easeOutCubic,
         useNativeDriver: true,
       }).start(({ finished }) => {
-        if (finished) {
+        if (finished && token === transitionToken.current) {
           setRendered(false);
           setActiveRoute(null);
+          const afterClose = afterCloseRef.current;
+          afterCloseRef.current = null;
+          afterClose?.();
         }
       });
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [overlayRoute]);
+
+  const closeAfterAnimation = React.useCallback((callback: () => void) => {
+    afterCloseRef.current = callback;
+    closeOverlay();
+  }, [closeOverlay]);
+
+  useEffect(() => {
+    if (!rendered) return;
+    const subscription = BackHandler.addEventListener("hardwareBackPress", () => {
+      closeOverlay();
+      return true;
+    });
+    return () => subscription.remove();
+  }, [closeOverlay, rendered]);
 
   if (!rendered || !activeRoute) return null;
 
@@ -107,11 +146,16 @@ export function DrawerScreenOverlay() {
         StyleSheet.absoluteFill,
         {
           backgroundColor: sceneTheme.gradient[0],
-          transform: [{ translateX: activeRoute === "/historial" ? historySlideX : slideAnim }],
+          transform: [{
+            translateX:
+              overlayOpenedFromDrawer && SHARED_DRAWER_ROUTES.has(activeRoute)
+                ? sharedSlideX
+                : slideAnim,
+          }],
         },
       ]}
     >
-      <BackOverrideProvider onBack={closeOverlay}>
+      <BackOverrideProvider onBack={closeOverlay} onBackAfterClose={closeAfterAnimation}>
         <Suspense fallback={<LinearGradient style={StyleSheet.absoluteFill} colors={sceneTheme.gradient} start={{ x: 0, y: 0 }} end={{ x: 0, y: 1 }} />}>
           <Screen />
         </Suspense>

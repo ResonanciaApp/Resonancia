@@ -14,6 +14,8 @@ import {
 } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { useDownloads } from "@/context/DownloadContext";
+import { useBackOverride } from "@/context/BackOverrideContext";
+import { useBackAfterClose } from "@/context/BackOverrideContext";
 import { usePlayer } from "@/context/PlayerContext";
 import { useSceneTheme } from "@/context/SceneThemeContext";
 import { getSessionById } from "@/data/sessions";
@@ -26,6 +28,8 @@ function formatBytes(bytes: number) {
 }
 
 export default function DownloadsScreen() {
+  const backOverride = useBackOverride();
+  const backAfterClose = useBackAfterClose();
   const colors = useColors();
   const { theme } = useSceneTheme();
   const insets = useSafeAreaInsets();
@@ -76,7 +80,7 @@ export default function DownloadsScreen() {
       <Stack.Screen options={{ headerShown: false }} />
       <View style={styles.header}>
         <Pressable
-          onPress={() => router.back()}
+          onPress={backOverride ?? (() => router.back())}
           style={styles.headerBackButton}
           accessibilityRole="button"
           accessibilityLabel="Volver"
@@ -159,7 +163,11 @@ export default function DownloadsScreen() {
                   disabled={item.status !== "complete"}
                   onPress={() => {
                     playSession(session);
-                    router.push("/player");
+                    if (backAfterClose) {
+                      backAfterClose(() => router.push("/player"));
+                    } else {
+                      router.push("/player");
+                    }
                   }}
                   accessibilityRole="button"
                   accessibilityLabel={`Reproducir ${session.title}`}

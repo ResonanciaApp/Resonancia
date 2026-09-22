@@ -31,14 +31,18 @@ type DrawerCtx = {
   libraryParallax: Animated.Value;
   libraryInitialTab: LibraryTab | null;
   openLib: (initialTab?: LibraryTab) => void;
+  openLibFromDrawer: (initialTab?: LibraryTab) => void;
   closeLib: () => void;
+  libOpenedFromDrawer: boolean;
   /** Overlay genérico para otras pantallas del drawer (diario, amigos, etc.) */
   overlayRoute: string | null;
   openOverlay: (route: string) => void;
+  openOverlayFromDrawer: (route: string) => void;
   closeOverlay: () => void;
-  /** Progreso único de la transición de Historial (0 cerrado, 1 abierto).
-   *  La ventana y el drawer derivan todo su movimiento de este mismo valor. */
-  historyProgress: Animated.Value;
+  overlayOpenedFromDrawer: boolean;
+  /** Progreso único de los destinos abiertos desde el drawer (0 cerrado, 1 abierto).
+   *  La ventana activa y el drawer derivan todo su movimiento de este mismo valor. */
+  drawerTransitionProgress: Animated.Value;
   /** Chat overlay que se desliza SOBRE el overlay de amigos (queda abierto debajo). */
   chatUserId: number | null;
   openChat: (userId: number) => void;
@@ -100,10 +104,18 @@ export function DrawerProvider({ children }: { children: React.ReactNode }) {
   }, []);
 
   const [libOpen, setLibOpen] = useState(false);
+  const drawerTransitionProgress = useRef(new Animated.Value(0)).current;
   const libraryParallax = useRef(new Animated.Value(0)).current;
+  const [libOpenedFromDrawer, setLibOpenedFromDrawer] = useState(false);
   const [libraryInitialTab, setLibraryInitialTab] = useState<LibraryTab | null>(null);
   const openLib = useCallback((initialTab?: LibraryTab) => {
     setLibraryInitialTab(initialTab ?? null);
+    setLibOpenedFromDrawer(false);
+    setLibOpen(true);
+  }, []);
+  const openLibFromDrawer = useCallback((initialTab?: LibraryTab) => {
+    setLibraryInitialTab(initialTab ?? null);
+    setLibOpenedFromDrawer(true);
     setLibOpen(true);
   }, []);
   const closeLib = useCallback(() => {
@@ -111,6 +123,7 @@ export function DrawerProvider({ children }: { children: React.ReactNode }) {
     setLibraryInitialTab(null);
   }, []);
   useEffect(() => {
+    if (libOpenedFromDrawer) return;
     libraryParallax.stopAnimation();
     Animated.timing(libraryParallax, {
       toValue: libOpen ? 1 : 0,
@@ -118,14 +131,14 @@ export function DrawerProvider({ children }: { children: React.ReactNode }) {
       easing: easeOutCubic,
       useNativeDriver: true,
     }).start();
-  }, [libOpen, libraryParallax]);
+  }, [libOpen, libOpenedFromDrawer, libraryParallax]);
 
   const [overlayRoute, setOverlayRoute] = useState<string | null>(null);
+  const [overlayOpenedFromDrawer, setOverlayOpenedFromDrawer] = useState(false);
   // Parallax: el drawer y la pantalla que queda detrás se corren un poco al
   // abrir cualquiera de los overlays del drawer, incluida Biblioteca.
   const overlayParallax = useRef(new Animated.Value(0)).current;
-  const historyProgress = useRef(new Animated.Value(0)).current;
-  const overlayOpen = Boolean((overlayRoute && overlayRoute !== "/historial") || libOpen);
+  const overlayOpen = Boolean(overlayRoute && !overlayOpenedFromDrawer);
   useEffect(() => {
     overlayParallax.stopAnimation();
     Animated.timing(overlayParallax, {
@@ -135,15 +148,22 @@ export function DrawerProvider({ children }: { children: React.ReactNode }) {
       useNativeDriver: true,
     }).start();
   }, [overlayOpen, overlayParallax]);
-  const openOverlay = useCallback((route: string) => setOverlayRoute(route), []);
+  const openOverlay = useCallback((route: string) => {
+    setOverlayOpenedFromDrawer(false);
+    setOverlayRoute(route);
+  }, []);
+  const openOverlayFromDrawer = useCallback((route: string) => {
+    setOverlayOpenedFromDrawer(true);
+    setOverlayRoute(route);
+  }, []);
   const closeOverlay = useCallback(() => setOverlayRoute(null), []);
   const [chatUserId, setChatUserId] = useState<number | null>(null);
   const openChat = useCallback((userId: number) => setChatUserId(userId), []);
   const closeChat = useCallback(() => setChatUserId(null), []);
 
   const value = React.useMemo(
-    () => ({ isOpen, open, close, moodPickerRequest, requestMoodPicker, profileComposeRequest, requestProfileCompose, consumeProfileComposeRequest, drawerAnim, instantNav, markInstantNav, libOpen, libraryParallax, libraryInitialTab, openLib, closeLib, overlayRoute, openOverlay, closeOverlay, overlayParallax, historyProgress, chatUserId, openChat, closeChat }),
-    [isOpen, open, close, moodPickerRequest, requestMoodPicker, profileComposeRequest, requestProfileCompose, consumeProfileComposeRequest, drawerAnim, instantNav, markInstantNav, libOpen, libraryParallax, libraryInitialTab, openLib, closeLib, overlayRoute, openOverlay, closeOverlay, overlayParallax, historyProgress, chatUserId, openChat, closeChat],
+    () => ({ isOpen, open, close, moodPickerRequest, requestMoodPicker, profileComposeRequest, requestProfileCompose, consumeProfileComposeRequest, drawerAnim, instantNav, markInstantNav, libOpen, libraryParallax, libraryInitialTab, openLib, openLibFromDrawer, closeLib, libOpenedFromDrawer, overlayRoute, openOverlay, openOverlayFromDrawer, closeOverlay, overlayOpenedFromDrawer, overlayParallax, drawerTransitionProgress, chatUserId, openChat, closeChat }),
+    [isOpen, open, close, moodPickerRequest, requestMoodPicker, profileComposeRequest, requestProfileCompose, consumeProfileComposeRequest, drawerAnim, instantNav, markInstantNav, libOpen, libraryParallax, libraryInitialTab, openLib, openLibFromDrawer, closeLib, libOpenedFromDrawer, overlayRoute, openOverlay, openOverlayFromDrawer, closeOverlay, overlayOpenedFromDrawer, overlayParallax, drawerTransitionProgress, chatUserId, openChat, closeChat],
   );
 
   return <Ctx.Provider value={value}>{children}</Ctx.Provider>;

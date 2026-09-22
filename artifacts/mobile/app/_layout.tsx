@@ -423,9 +423,9 @@ function GlobalSceneModal() {
 function RootLayoutNav() {
   return (
     <SelectedSceneProvider>
-      <MixerPanelProvider>
-        <GeometrixPanelProvider>
-        <DrawerProvider>
+      <DrawerProvider>
+        <MixerPanelProvider>
+          <GeometrixPanelProvider>
           <ApiAuthBridge />
           <AuthGate />
           <PushBridge />
@@ -439,9 +439,9 @@ function RootLayoutNav() {
           <MixerSheet />
           <EscenasSheet />
           <GlobalSceneModal />
-        </DrawerProvider>
-        </GeometrixPanelProvider>
-      </MixerPanelProvider>
+          </GeometrixPanelProvider>
+        </MixerPanelProvider>
+      </DrawerProvider>
     </SelectedSceneProvider>
   );
 }

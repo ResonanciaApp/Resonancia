@@ -357,8 +357,8 @@ function TabLayoutInner() {
   const tabBarHeight       = PILL_H + bottomPb;
   const { libOpen }        = useDrawer();
   const [barProps, setBarProps] = useState<any>(null);
-  const { isMixerOpen, closeMixer, panelAnim } = useMixerPanel();
-  const { isGeometrixOpen, hasOpenedGeometrix, closeGeometrix, panelAnim: geoPanelAnim } = useGeometrixPanel();
+  const { isMixerOpen, openedFromDrawer: mixerFromDrawer, closeMixer, panelAnim } = useMixerPanel();
+  const { isGeometrixOpen, openedFromDrawer: geometrixFromDrawer, hasOpenedGeometrix, closeGeometrix, panelAnim: geoPanelAnim } = useGeometrixPanel();
 
   const geoTranslateX = geoPanelAnim.interpolate({
     inputRange:  [0, 1],
@@ -366,7 +366,7 @@ function TabLayoutInner() {
   });
   const geoBackdropOpacity = geoPanelAnim.interpolate({
     inputRange:  [0, 1],
-    outputRange: [0, 0.55],
+    outputRange: geometrixFromDrawer ? [0, 0] : [0, 0.55],
   });
   const { activeSceneId, theme } = useSceneTheme();
   const { brightMode } = useBrightness();
@@ -378,7 +378,7 @@ function TabLayoutInner() {
   });
   const backdropOpacity = panelAnim.interpolate({
     inputRange:  [0, 1],
-    outputRange: [0, 0.55],
+    outputRange: mixerFromDrawer ? [0, 0] : [0, 0.55],
   });
 
   // Parallax sutil: el contenido de fondo se corre un poco a la izquierda
@@ -397,8 +397,8 @@ function TabLayoutInner() {
     !isGeometrixOpen;
   const bgParallaxX = Animated.add(
     Animated.add(
-      panelAnim.interpolate({ inputRange: [0, 1], outputRange: [0, -56], extrapolate: "clamp" }),
-      geoPanelAnim.interpolate({ inputRange: [0, 1], outputRange: [0, -56], extrapolate: "clamp" }),
+      panelAnim.interpolate({ inputRange: [0, 1], outputRange: mixerFromDrawer ? [0, 0] : [0, -56], extrapolate: "clamp" }),
+      geoPanelAnim.interpolate({ inputRange: [0, 1], outputRange: geometrixFromDrawer ? [0, 0] : [0, -56], extrapolate: "clamp" }),
     ),
     overlayParallax.interpolate({ inputRange: [0, 1], outputRange: [0, -56], extrapolate: "clamp" }),
   );
