@@ -41,9 +41,9 @@ const MOOD_TONES: Record<MoodId, MoodTone> = {
 
 const MOOD_GRADIENTS: Record<MoodTone, readonly [string, string]> = {
   joy: ["rgba(128,207,244,0.38)", "rgba(79,151,215,0.18)"],
-  calm: ["rgba(120,211,168,0.36)", "rgba(70,151,112,0.17)"],
+  calm: ["rgba(100,224,112,0.52)", "rgba(46,174,73,0.28)"],
   discomfort: ["rgba(255,192,82,0.72)", "rgba(242,126,38,0.48)"],
-  anger: ["rgba(255,116,62,0.82)", "rgba(230,55,34,0.58)"],
+  anger: ["rgba(255,76,67,0.86)", "rgba(214,27,35,0.64)"],
 };
 
 export function MoodCalendar({
@@ -154,12 +154,12 @@ const styles = StyleSheet.create({
     alignItems: "center",
   },
   moodCircle: {
-    width: 34,
-    height: 34,
-    borderRadius: 17,
+    width: 37,
+    height: 37,
+    borderRadius: 18.5,
     borderWidth: 1,
     borderColor: "rgba(255,255,255,0.13)",
-    backgroundColor: "rgba(0,0,0,0.40)",
+    backgroundColor: "transparent",
     alignItems: "center",
     justifyContent: "center",
   },
@@ -178,8 +178,8 @@ const styles = StyleSheet.create({
     marginTop: 3,
     fontFamily: "Manrope",
     color: "rgba(249,249,249,0.70)",
-    fontSize: 10,
-    lineHeight: 13,
+    fontSize: 12,
+    lineHeight: 15,
     fontWeight: "500",
   },
   todayNumber: {
