@@ -478,6 +478,7 @@ const styles = StyleSheet.create({
     textAlign: "left",
     alignSelf: "stretch",
     opacity: 0.92,
+    transform: [{ translateY: -4 }],
   },
   internalHeader: {
     zIndex: 10,
