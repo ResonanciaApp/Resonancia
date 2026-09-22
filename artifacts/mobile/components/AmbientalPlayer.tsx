@@ -31,7 +31,6 @@ import { catalogImage, useCoverPresetCatalog } from "@/lib/cover-preset-catalog"
 import type { Session } from "@/data/sessions";
 
 const FADE_DURATION = 450;
-const AUTO_HIDE_DELAY = 4000;
 const SLIDE_DURATION = 400;
 const SLIDE_OFFSET = 900;
 
@@ -89,53 +88,26 @@ export function AmbientalPlayer({
   const [rendered, setRendered] = useState(false);
   const slideAnim = useRef(new Animated.Value(SLIDE_OFFSET)).current;
 
-  // ── UI auto-hide animation ────────────────────────────────────────────────
+  // ── UI visibility animation ───────────────────────────────────────────────
   const uiOpacity = useRef(new Animated.Value(1)).current;
   const uiVisibleRef = useRef(true);
-  const hideTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
-
-  const clearHideTimer = useCallback(() => {
-    if (hideTimerRef.current) {
-      clearTimeout(hideTimerRef.current);
-      hideTimerRef.current = null;
-    }
-  }, []);
-
-  const scheduleHide = useCallback(() => {
-    clearHideTimer();
-    hideTimerRef.current = setTimeout(() => {
-      uiVisibleRef.current = false;
-      Animated.timing(uiOpacity, {
-        toValue: 0,
-        duration: FADE_DURATION,
-        useNativeDriver: true,
-      }).start();
-    }, AUTO_HIDE_DELAY);
-  }, [clearHideTimer, uiOpacity]);
-
-  const showUI = useCallback(() => {
-    uiVisibleRef.current = true;
-    Animated.timing(uiOpacity, {
-      toValue: 1,
-      duration: FADE_DURATION,
-      useNativeDriver: true,
-    }).start(() => scheduleHide());
-  }, [uiOpacity, scheduleHide]);
 
   const handleScreenTap = useCallback(() => {
-    if (!uiVisibleRef.current) {
-      showUI();
-    } else {
-      scheduleHide();
-    }
-  }, [showUI, scheduleHide]);
+    const nextVisible = !uiVisibleRef.current;
+    uiVisibleRef.current = nextVisible;
+    uiOpacity.stopAnimation();
+    Animated.timing(uiOpacity, {
+      toValue: nextVisible ? 1 : 0,
+      duration: FADE_DURATION,
+      useNativeDriver: true,
+    }).start();
+  }, [uiOpacity]);
 
   // ── Slide lifecycle ───────────────────────────────────────────────────────
   useEffect(() => {
     if (visible) {
       uiOpacity.setValue(1);
       uiVisibleRef.current = true;
-      clearHideTimer();
       setRendered(true);
       slideAnim.stopAnimation();
       slideAnim.setValue(SLIDE_OFFSET);
@@ -144,12 +116,9 @@ export function AmbientalPlayer({
           toValue: 0,
           duration: SLIDE_DURATION,
           useNativeDriver: true,
-        }).start(({ finished }) => {
-          if (finished) scheduleHide();
-        });
+        }).start();
       });
     } else {
-      clearHideTimer();
       uiOpacity.setValue(1);
       uiVisibleRef.current = true;
       if (!rendered) return;
@@ -221,7 +190,6 @@ export function AmbientalPlayer({
   const confirmExitRef = useRef<() => void>(() => undefined);
 
   const confirmExit = useCallback(() => {
-    clearHideTimer();
     const ownerPlaybackId = targetId;
     Alert.alert(
       "¿Estás seguro/a de que quieres salir?",
@@ -243,14 +211,12 @@ export function AmbientalPlayer({
             onClose();
           },
         },
-        { text: "No", style: "cancel", onPress: scheduleHide },
+        { text: "No", style: "cancel" },
       ],
     );
   }, [
-    clearHideTimer,
     isMixMode,
     onClose,
-    scheduleHide,
     stop,
     stopMix,
     targetId,
