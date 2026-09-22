@@ -1,5 +1,4 @@
 import { Feather } from "@expo/vector-icons";
-import { BackPill } from "@/components/BackPill";
 import { GhostPill } from "@/components/GhostPill";
 import { LinearGradient } from "expo-linear-gradient";
 import { router, Stack, useFocusEffect } from "expo-router";
@@ -419,7 +418,7 @@ export default function GruposScreen() {
   const colors = useColors();
   const { theme: sceneTheme } = useSceneTheme();
   const insets = useSafeAreaInsets();
-  const topPad = Platform.OS === "web" ? 67 : insets.top;
+  const topPad = Platform.OS === "web" ? 67 : Math.max(insets.top, 40);
   const [tab, setTab] = useState<TabType>("ojear");
   const [showCreate, setShowCreate] = useState(false);
   const { grupos: gruposCreados, loading: gruposLoading, reload } = useGrupos();
@@ -448,13 +447,23 @@ export default function GruposScreen() {
       >
         <StatusBar hidden />
 
-      {/* Floating back */}
-      <BackPill onPress={goBack ?? (() => router.back())} size={28} bgColor="rgba(255,255,255,0.10)" iconOffsetX={-1} style={{ position: "absolute", left: 20, top: topPad + 8, zIndex: 20 }} />
-
-      {/* Fixed header */}
-      <View style={[styles.fixedHeader, { paddingTop: topPad + 52 }]}>
-        <View style={{ paddingHorizontal: 20 }}>
-          <Text style={[styles.title, { color: "#F9F9F9", marginTop: 7 }]}>Grupos</Text>
+      <View style={styles.contentShift}>
+      <View style={[styles.fixedHeader, { paddingTop: topPad + 4 }]}>
+        <View style={[styles.stickyHeaderRow, styles.libraryTabHeaderRow]}>
+          <Pressable
+            onPress={goBack ?? (() => router.canGoBack() ? router.back() : router.replace("/(tabs)" as never))}
+            hitSlop={6}
+            style={styles.libraryTabBackHitArea}
+            accessibilityRole="button"
+            accessibilityLabel="Volver a Inicio"
+          >
+            {({ pressed }) => (
+              <View style={[styles.libraryTabBackBtn, { opacity: pressed ? 0.7 : 1 }]}>
+                <Feather name="chevron-left" size={28} color="#FBFBFB" style={{ transform: [{ translateX: -1 }] }} />
+              </View>
+            )}
+          </Pressable>
+          <Text style={styles.stickyTitleLibraryTab}>Grupos</Text>
         </View>
 
         {/* Tabs */}
@@ -510,6 +519,7 @@ export default function GruposScreen() {
       </View>
 
       <CreateGroupSheet visible={showCreate} onClose={() => setShowCreate(false)} />
+      </View>
       </LinearGradient>
     </>
   );
@@ -517,9 +527,52 @@ export default function GruposScreen() {
 
 const styles = StyleSheet.create({
   root: { flex: 1 },
+  contentShift: { flex: 1, transform: [{ translateY: -5 }] },
   fixedHeader: { zIndex: 10 },
-  headerRow: { flexDirection: "row", alignItems: "center", height: 44 },
-  title: { fontFamily: "Manrope", fontSize: 27, fontWeight: "700", letterSpacing: 0.3, marginBottom: 10, marginTop: 2 },
+  stickyHeaderRow: {
+    position: "relative",
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "space-between",
+    paddingHorizontal: 20,
+    paddingBottom: 6,
+  },
+  libraryTabHeaderRow: {
+    minHeight: 48,
+    paddingBottom: 6,
+    transform: [{ translateY: 8 }],
+  },
+  libraryTabBackBtn: {
+    width: 43,
+    height: 43,
+    borderRadius: 21.5,
+    borderWidth: 1,
+    borderColor: "rgba(255,255,255,0.2)",
+    backgroundColor: "rgba(0,0,0,0.28)",
+    alignItems: "center",
+    justifyContent: "center",
+  },
+  libraryTabBackHitArea: {
+    position: "absolute",
+    left: 16,
+    top: -4,
+    width: 48,
+    height: 48,
+    alignItems: "center",
+    justifyContent: "center",
+    zIndex: 20,
+    elevation: 20,
+  },
+  stickyTitleLibraryTab: {
+    fontFamily: "Manrope",
+    fontSize: 18,
+    lineHeight: 21,
+    fontWeight: "700",
+    color: "#FBFBFB",
+    letterSpacing: 0.2,
+    textAlign: "center",
+    flex: 1,
+  },
   tabRow: {
     flexDirection: "row",
     paddingHorizontal: 20,

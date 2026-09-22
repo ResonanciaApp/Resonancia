@@ -25,11 +25,9 @@ import {
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 
 import { GoldGradient } from "@/components/GoldGradient";
-import { SacredBackground } from "@/components/SacredBackground";
 import { useBackOverride } from "@/context/BackOverrideContext";
+import { useSceneTheme } from "@/context/SceneThemeContext";
 import { useColors } from "@/hooks/useColors";
-
-const BG_GRADIENT = ["#340D1A", "#190913"] as const;
 
 const AVATAR_PALETTE = ["#D4709A", "#8AAAD4", "#f4c993", "#A8C4A8", "#C8B4E0", "#EDD9B8"];
 
@@ -128,8 +126,9 @@ function groupNotifications(list: Notification[]): GroupedNotification[] {
 export default function NotificacionesScreen() {
   const colors = useColors();
   const backOverride = useBackOverride();
+  const { theme } = useSceneTheme();
   const insets = useSafeAreaInsets();
-  const topPad = Platform.OS === "web" ? 67 : insets.top;
+  const topPad = Platform.OS === "web" ? 67 : Math.max(insets.top, 40);
   const bottomPad = Platform.OS === "web" ? 34 : insets.bottom;
   const { isSignedIn, isLoaded } = useClerkAuth();
   const qc = useQueryClient();
@@ -170,111 +169,183 @@ export default function NotificacionesScreen() {
   return (
     <LinearGradient
       style={styles.root}
-      colors={BG_GRADIENT}
-      locations={[0, 1]}
+      colors={theme.gradient as unknown as [string, string, ...string[]]}
+      locations={theme.gradientLocations}
       start={{ x: 0, y: 0 }}
       end={{ x: 0, y: 1 }}
     >
       <StatusBar hidden />
-      <SacredBackground variant="solid" />
 
-      <ScrollView
-        contentContainerStyle={{
-          paddingTop: topPad + 8,
-          paddingBottom: bottomPad + 40,
-          paddingHorizontal: 20,
-        }}
-        showsVerticalScrollIndicator={false}
-      >
-        <View style={styles.headerRow}>
-          <Pressable
-            onPress={backOverride ?? (() => router.back())}
-            hitSlop={12}
-          >
-            <Feather name="arrow-left" size={22} color={colors.foreground} />
-          </Pressable>
+      <View style={styles.contentShift}>
+        <View style={[styles.stickyHeader, { paddingTop: topPad + 4 }]}>
+          <View style={[styles.stickyHeaderRow, styles.libraryTabHeaderRow]}>
+            <Pressable
+              onPress={backOverride ?? (() => router.canGoBack() ? router.back() : router.replace("/(tabs)" as never))}
+              hitSlop={6}
+              style={styles.libraryTabBackHitArea}
+              accessibilityRole="button"
+              accessibilityLabel="Volver a Inicio"
+            >
+              {({ pressed }) => (
+                <View
+                  style={[
+                    styles.libraryTabBackBtn,
+                    { opacity: pressed ? 0.7 : 1 },
+                  ]}
+                >
+                  <Feather
+                    name="chevron-left"
+                    size={28}
+                    color="#FBFBFB"
+                    style={{ transform: [{ translateX: -1 }] }}
+                  />
+                </View>
+              )}
+            </Pressable>
+            <Text style={styles.stickyTitleLibraryTab}>Notificaciones</Text>
+          </View>
         </View>
 
-        <Text style={[styles.title, { color: colors.foreground }]}>Notificaciones</Text>
-
-        {!isLoaded ? (
-          <ActivityIndicator color={colors.primary} style={{ marginTop: 40 }} />
-        ) : !isSignedIn ? (
-          <Text style={[styles.empty, { color: colors.mutedForeground }]}>
-            Conéctate para ver tus notificaciones.
-          </Text>
-        ) : notifsQ.isLoading ? (
-          <ActivityIndicator color={colors.primary} style={{ marginTop: 40 }} />
-        ) : list.length === 0 ? (
-          <Text style={[styles.empty, { color: colors.mutedForeground }]}>
-            No tienes notificaciones todavía.
-          </Text>
-        ) : list.map((n) => {
-            const tint = colorFor(n.actor.id);
-            const isGroupedDm = n.type === "dm" && n.groupCount > 1;
-            const messageText = isGroupedDm
-              ? `te envió ${n.groupCount} mensajes`
-              : messageFor(n);
-            return (
-              <Pressable
-                key={n.type === "dm" ? `dm-${n.actor.id}` : `n-${n.id}`}
-                onPress={() => router.push(routeFor(n) as never)}
-                style={({ pressed }) => [
-                  styles.row,
-                  {
-                    backgroundColor: colors.card,
-                    borderColor: colors.border,
-                    opacity: pressed ? 0.85 : 1,
-                  },
-                ]}
-              >
-                {/* Avatar + type icon badge */}
-                <View style={styles.avatarWrap}>
-                  <View style={[styles.avatar, { backgroundColor: tint + "33" }]}>
-                    <Text style={[styles.initials, { color: tint }]}>{initials(n.actor.displayName)}</Text>
+        <ScrollView
+          style={styles.scroll}
+          contentContainerStyle={{
+            paddingTop: 23,
+            paddingBottom: bottomPad + 40,
+            paddingHorizontal: 20,
+          }}
+          showsVerticalScrollIndicator={false}
+        >
+          {!isLoaded ? (
+            <ActivityIndicator color={colors.primary} style={{ marginTop: 40 }} />
+          ) : !isSignedIn ? (
+            <Text style={[styles.empty, { color: colors.mutedForeground }]}>
+              Conéctate para ver tus notificaciones.
+            </Text>
+          ) : notifsQ.isLoading ? (
+            <ActivityIndicator color={colors.primary} style={{ marginTop: 40 }} />
+          ) : list.length === 0 ? (
+            <Text style={[styles.empty, { color: colors.mutedForeground }]}>
+              No tienes notificaciones todavía.
+            </Text>
+          ) : list.map((n) => {
+              const tint = colorFor(n.actor.id);
+              const isGroupedDm = n.type === "dm" && n.groupCount > 1;
+              const messageText = isGroupedDm
+                ? `te envió ${n.groupCount} mensajes`
+                : messageFor(n);
+              return (
+                <Pressable
+                  key={n.type === "dm" ? `dm-${n.actor.id}` : `n-${n.id}`}
+                  onPress={() => router.push(routeFor(n) as never)}
+                  style={({ pressed }) => [
+                    styles.row,
+                    {
+                      opacity: pressed ? 0.85 : 1,
+                    },
+                  ]}
+                >
+                  {/* Avatar + type icon badge */}
+                  <View style={styles.avatarWrap}>
+                    <View style={[styles.avatar, { backgroundColor: tint + "33" }]}>
+                      <Text style={[styles.initials, { color: tint }]}>{initials(n.actor.displayName)}</Text>
+                    </View>
+                    <View style={[styles.typeBadge, { backgroundColor: iconFor(n.type).color + "22", borderColor: iconFor(n.type).color + "55" }]}>
+                      <Feather name={iconFor(n.type).name} size={10} color={iconFor(n.type).color} />
+                    </View>
                   </View>
-                  <View style={[styles.typeBadge, { backgroundColor: iconFor(n.type).color + "22", borderColor: iconFor(n.type).color + "55" }]}>
-                    <Feather name={iconFor(n.type).name} size={10} color={iconFor(n.type).color} />
+                  <View style={{ flex: 1 }}>
+                    <Text style={[styles.text, { color: colors.foreground }]}>
+                      <Text style={{ fontWeight: "700" }}>{n.actor.displayName}</Text>{" "}
+                      {messageText}
+                    </Text>
+                    <Text style={[styles.time, { color: colors.mutedForeground }]}>
+                      {relativeTime(n.createdAt)}
+                    </Text>
                   </View>
-                </View>
-                <View style={{ flex: 1 }}>
-                  <Text style={[styles.text, { color: colors.foreground }]}>
-                    <Text style={{ fontWeight: "700" }}>{n.actor.displayName}</Text>{" "}
-                    {messageText}
-                  </Text>
-                  <Text style={[styles.time, { color: colors.mutedForeground }]}>
-                    {relativeTime(n.createdAt)}
-                  </Text>
-                </View>
-                {isGroupedDm && (
-                  <GoldGradient style={styles.countBadge}>
-                    <Text style={styles.countText}>{n.groupCount > 9 ? "9+" : n.groupCount}</Text>
-                  </GoldGradient>
-                )}
-                {n.groupHasUnread && (
-                  <GoldGradient style={styles.dot} />
-                )}
-              </Pressable>
-            );
-          })}
-      </ScrollView>
+                  {isGroupedDm && (
+                    <GoldGradient style={styles.countBadge}>
+                      <Text style={styles.countText}>{n.groupCount > 9 ? "9+" : n.groupCount}</Text>
+                    </GoldGradient>
+                  )}
+                  {n.groupHasUnread && (
+                    <GoldGradient style={styles.dot} />
+                  )}
+                </Pressable>
+              );
+            })}
+        </ScrollView>
+      </View>
     </LinearGradient>
   );
 }
 
 const styles = StyleSheet.create({
   root: { flex: 1 },
-  headerRow: { flexDirection: "row", alignItems: "center", marginBottom: 16, height: 40 },
-  title: { fontFamily: "Manrope", fontSize: 26, fontWeight: "700", marginBottom: 20 },
+  contentShift: {
+    flex: 1,
+    transform: [{ translateY: -5 }],
+  },
+  stickyHeader: {
+    zIndex: 10,
+    backgroundColor: "transparent",
+  },
+  stickyHeaderRow: {
+    position: "relative",
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "space-between",
+    paddingHorizontal: 20,
+    paddingBottom: 6,
+  },
+  libraryTabHeaderRow: {
+    minHeight: 48,
+    paddingBottom: 6,
+    transform: [{ translateY: 8 }],
+  },
+  libraryTabBackBtn: {
+    width: 43,
+    height: 43,
+    borderRadius: 21.5,
+    borderWidth: 1,
+    borderColor: "rgba(255,255,255,0.2)",
+    backgroundColor: "rgba(0,0,0,0.28)",
+    alignItems: "center",
+    justifyContent: "center",
+  },
+  libraryTabBackHitArea: {
+    position: "absolute",
+    left: 16,
+    top: -4,
+    width: 48,
+    height: 48,
+    alignItems: "center",
+    justifyContent: "center",
+    zIndex: 20,
+    elevation: 20,
+  },
+  stickyTitleLibraryTab: {
+    fontFamily: "Manrope",
+    fontSize: 18,
+    lineHeight: 21,
+    fontWeight: "700",
+    color: "#FBFBFB",
+    letterSpacing: 0.2,
+    textAlign: "center",
+    flex: 1,
+    marginLeft: 0,
+  },
+  scroll: { flex: 1 },
   empty: { fontFamily: "Manrope", fontSize: 14, textAlign: "center", marginTop: 40 },
   row: {
     flexDirection: "row",
     alignItems: "center",
     gap: 12,
     borderRadius: 16,
-    borderWidth: 1,
-    padding: 14,
-    marginBottom: 10,
+    borderWidth: 0,
+    backgroundColor: "rgba(0,0,0,0.28)",
+    paddingHorizontal: 14,
+    paddingVertical: 18,
+    marginBottom: 14,
   },
   avatarWrap: { position: "relative", width: 44, height: 44 },
   avatar: { width: 44, height: 44, borderRadius: 22, alignItems: "center", justifyContent: "center" },
@@ -290,8 +361,8 @@ const styles = StyleSheet.create({
     justifyContent: "center",
   },
   initials: { fontFamily: "Manrope", fontSize: 15, fontWeight: "700" },
-  text: { fontFamily: "Manrope", fontSize: 14, lineHeight: 20, marginBottom: 4 },
-  time: { fontFamily: "Manrope", fontSize: 12 },
+  text: { fontFamily: "Manrope", fontSize: 13, lineHeight: 19, marginBottom: 4 },
+  time: { fontFamily: "Manrope", fontSize: 11 },
   dot: { width: 8, height: 8, borderRadius: 4 },
   countBadge: {
     minWidth: 24,

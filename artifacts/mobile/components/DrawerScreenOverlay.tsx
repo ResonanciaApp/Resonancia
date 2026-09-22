@@ -15,6 +15,8 @@ const SHARED_DRAWER_ROUTES = new Set([
   "/diario",
   "/descargas",
   "/notificaciones",
+  "/amigos",
+  "/grupos",
   "/membresia",
 ]);
 

@@ -1,6 +1,5 @@
 import { Feather } from "@expo/vector-icons";
 import { usePollingInterval } from "@/hooks/usePollingInterval";
-import { BackPill } from "@/components/BackPill";
 import { GhostPill } from "@/components/GhostPill";
 import { useAuth as useClerkAuth } from "@clerk/expo";
 import { useQueryClient } from "@tanstack/react-query";
@@ -66,7 +65,7 @@ export default function AmigosScreen() {
   const colors = useColors();
   const { theme: sceneTheme } = useSceneTheme();
   const insets = useSafeAreaInsets();
-  const topPad = Platform.OS === "web" ? 67 : insets.top;
+  const topPad = Platform.OS === "web" ? 67 : Math.max(insets.top, 40);
   const bottomPad = Platform.OS === "web" ? 34 : insets.bottom;
   const { isSignedIn, isLoaded } = useClerkAuth();
 
@@ -81,14 +80,31 @@ export default function AmigosScreen() {
       >
         <StatusBar hidden />
 
-      {/* Floating back */}
-      <BackPill onPress={goBack ?? (() => router.back())} size={28} bgColor="rgba(255,255,255,0.10)" iconOffsetX={-1} style={{ position: "absolute", left: 20, top: topPad + 8, zIndex: 10 }} />
+      <View style={styles.contentShift}>
+        <View style={[styles.stickyHeader, { paddingTop: topPad + 4 }]}>
+          <View style={[styles.stickyHeaderRow, styles.libraryTabHeaderRow]}>
+            <Pressable
+              onPress={goBack ?? (() => router.canGoBack() ? router.back() : router.replace("/(tabs)" as never))}
+              hitSlop={6}
+              style={styles.libraryTabBackHitArea}
+              accessibilityRole="button"
+              accessibilityLabel="Volver a Inicio"
+            >
+              {({ pressed }) => (
+                <View style={[styles.libraryTabBackBtn, { opacity: pressed ? 0.7 : 1 }]}>
+                  <Feather name="chevron-left" size={28} color="#FBFBFB" style={{ transform: [{ translateX: -1 }] }} />
+                </View>
+              )}
+            </Pressable>
+            <Text style={styles.stickyTitleLibraryTab}>Amigos</Text>
+          </View>
+        </View>
 
       <ScrollView
-        contentContainerStyle={{ paddingTop: topPad + 60, paddingBottom: bottomPad + 40, paddingHorizontal: 20 }}
+        style={styles.scroll}
+        contentContainerStyle={{ paddingTop: 23, paddingBottom: bottomPad + 40, paddingHorizontal: 20 }}
         showsVerticalScrollIndicator={false}
       >
-        <Text style={[styles.title, { color: "#F9F9F9" }]}>Amigos</Text>
         <Text style={[styles.subtitle, { color: "#F4F4F4" }]}>
           Conecta con practicantes de tu comunidad
         </Text>
@@ -103,6 +119,7 @@ export default function AmigosScreen() {
           <GuestPrompt />
         )}
       </ScrollView>
+      </View>
     </LinearGradient>
   </>
   );
@@ -489,8 +506,53 @@ function relativeShort(iso: string): string {
 
 const styles = StyleSheet.create({
   root: { flex: 1 },
-  headerRow: { flexDirection: "row", alignItems: "center", marginBottom: 16, height: 40 },
-  title: { fontFamily: "Manrope", fontSize: 27, fontWeight: "700", letterSpacing: 0.3, marginBottom: 6 },
+  contentShift: { flex: 1, transform: [{ translateY: -5 }] },
+  stickyHeader: { zIndex: 10, backgroundColor: "transparent" },
+  stickyHeaderRow: {
+    position: "relative",
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "space-between",
+    paddingHorizontal: 20,
+    paddingBottom: 6,
+  },
+  libraryTabHeaderRow: {
+    minHeight: 48,
+    paddingBottom: 6,
+    transform: [{ translateY: 8 }],
+  },
+  libraryTabBackBtn: {
+    width: 43,
+    height: 43,
+    borderRadius: 21.5,
+    borderWidth: 1,
+    borderColor: "rgba(255,255,255,0.2)",
+    backgroundColor: "rgba(0,0,0,0.28)",
+    alignItems: "center",
+    justifyContent: "center",
+  },
+  libraryTabBackHitArea: {
+    position: "absolute",
+    left: 16,
+    top: -4,
+    width: 48,
+    height: 48,
+    alignItems: "center",
+    justifyContent: "center",
+    zIndex: 20,
+    elevation: 20,
+  },
+  stickyTitleLibraryTab: {
+    fontFamily: "Manrope",
+    fontSize: 18,
+    lineHeight: 21,
+    fontWeight: "700",
+    color: "#FBFBFB",
+    letterSpacing: 0.2,
+    textAlign: "center",
+    flex: 1,
+  },
+  scroll: { flex: 1 },
   subtitle: { fontFamily: "Manrope", fontSize: 14, marginBottom: 20 },
   searchRow: {
     flexDirection: "row",
