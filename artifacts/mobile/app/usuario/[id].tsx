@@ -141,6 +141,9 @@ export default function UsuarioScreen() {
 
   const topPad = Platform.OS === "web" ? 67 : insets.top;
   const bottomPad = Platform.OS === "web" ? 34 : insets.bottom;
+  const avatarSource = useProfileAvatarSource(
+    profile ?? { avatarPresetId: null, avatarUrl: null },
+  );
 
   const HeaderBar = (
     <View style={[styles.headerRow, { paddingHorizontal: H_PAD, paddingTop: topPad + 8 }]}>
@@ -182,7 +185,6 @@ export default function UsuarioScreen() {
     );
   }
 
-  const avatarSource = useProfileAvatarSource(profile);
   const memberSince = profile.createdAt
     ? new Date(profile.createdAt).toLocaleDateString("es", { month: "long", year: "numeric" })
     : null;
