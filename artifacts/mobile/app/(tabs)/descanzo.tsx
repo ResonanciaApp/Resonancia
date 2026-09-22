@@ -541,14 +541,6 @@ export default function DescansoScreen() {
                 ) : null}
               </React.Fragment>
             ))}
-            {!isPremium
-            && (featuredSleepSessions.length > 0 || orderedSleepCarousels.length > 0)
-            && !(
-              featuredSleepSessions.length === 0
-              && orderedSleepCarousels.length === 1
-            ) ? (
-              <View style={styles.sectionDivider} />
-            ) : null}
           </View>
         </ScrollView>
       </View>
