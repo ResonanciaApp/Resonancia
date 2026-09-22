@@ -330,8 +330,8 @@ const styles = StyleSheet.create({
   },
   intro: {
     paddingHorizontal: H_PAD,
-    paddingTop: 45,
-    paddingBottom: 24,
+    paddingTop: 38,
+    paddingBottom: 21,
     alignItems: "flex-start",
   },
   legacyPageTitle: {
