@@ -74,7 +74,7 @@ import {
 } from "@/lib/explore-other-themes";
 import { absoluteMediaUrl } from "@/hooks/effectiveHero";
 
-const { width } = Dimensions.get("window");
+const { width, height: SCREEN_HEIGHT } = Dimensions.get("window");
 const H_PAD = 16;
 const GAP = 16;
 const SECTION_GAP = 53;
@@ -542,7 +542,13 @@ export function ExploreScreen({
 
   return (
     <View style={[styles.root, { backgroundColor: activeTheme.gradient[0] as string }]}>
-      <LinearGradient colors={activeTheme.gradient} style={styles.rootGradient} />
+      <LinearGradient
+        colors={activeTheme.gradient}
+        locations={activeTheme.gradientLocations}
+        start={activeTheme.gradientStart}
+        end={activeTheme.gradientEnd}
+        style={styles.rootGradient}
+      />
       <StatusBar hidden />
 
       <Animated.View
@@ -550,11 +556,19 @@ export function ExploreScreen({
           styles.stickyHeader,
           {
             paddingTop: topPad + 2,
-            backgroundColor: activeTheme.gradient[0] as string,
           },
         ]}
         onLayout={(event) => setStickyHeaderHeight(event.nativeEvent.layout.height)}
       >
+        <View pointerEvents="none" style={styles.stickyGradientClip}>
+          <LinearGradient
+            colors={activeTheme.gradient}
+            locations={activeTheme.gradientLocations}
+            start={activeTheme.gradientStart}
+            end={activeTheme.gradientEnd}
+            style={styles.stickyScreenGradient}
+          />
+        </View>
         <View style={[styles.titleRow, styles.stickyTitleRow]}>
           <Animated.Text
             style={[
@@ -960,6 +974,17 @@ const styles = StyleSheet.create({
     left: 0,
     right: 0,
     zIndex: 20,
+  },
+  stickyGradientClip: {
+    ...StyleSheet.absoluteFillObject,
+    overflow: "hidden",
+  },
+  stickyScreenGradient: {
+    position: "absolute",
+    top: 0,
+    left: 0,
+    right: 0,
+    height: SCREEN_HEIGHT,
   },
 
   pageHeader: { paddingBottom: 10 },

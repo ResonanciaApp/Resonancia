@@ -436,6 +436,9 @@ export default function DescansoScreen() {
   return (
     <LinearGradient
       colors={bgGradient}
+      locations={sceneTheme.gradientLocations}
+      start={sceneTheme.gradientStart}
+      end={sceneTheme.gradientEnd}
       style={styles.root}
     >
       <StatusBar hidden />
@@ -447,10 +450,18 @@ export default function DescansoScreen() {
             styles.stickyHeader,
             {
               paddingTop: topPad + 2,
-              backgroundColor: sceneTheme.gradient[0] as string,
             },
           ]}
         >
+          <View pointerEvents="none" style={styles.stickyGradientClip}>
+            <LinearGradient
+              colors={bgGradient}
+              locations={sceneTheme.gradientLocations}
+              start={sceneTheme.gradientStart}
+              end={sceneTheme.gradientEnd}
+              style={styles.stickyScreenGradient}
+            />
+          </View>
           <View style={[styles.titleRow, styles.stickyTitleRow]}>
             <Animated.Text
               pointerEvents="none"
@@ -653,6 +664,17 @@ const styles = StyleSheet.create({
     left: 0,
     right: 0,
     zIndex: 20,
+  },
+  stickyGradientClip: {
+    ...StyleSheet.absoluteFillObject,
+    overflow: "hidden",
+  },
+  stickyScreenGradient: {
+    position: "absolute",
+    top: 0,
+    left: 0,
+    right: 0,
+    height: H,
   },
   stickyDivider: {
     position: "absolute",

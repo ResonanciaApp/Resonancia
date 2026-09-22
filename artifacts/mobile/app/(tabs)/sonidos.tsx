@@ -54,7 +54,7 @@ import { SOUND_CAROUSEL_ORDER } from "@/data/sound-carousel-order";
 import { resolveSoundCarouselOrder } from "@/lib/editorial-playlist-helpers";
 
 const H_PAD = 16;
-const { width: W } = Dimensions.get("window");
+const { width: W, height: SCREEN_HEIGHT } = Dimensions.get("window");
 const RECENT_CARD_W = getTwoCardCarouselCardWidth(W, H_PAD);
 const COMPACT_CARD_W = getTwoCardCarouselCardWidth(W, 14, 45);
 const COMPACT_CARD_H =
@@ -309,7 +309,13 @@ export default function SonidosScreen() {
   );
 
   return (
-    <LinearGradient colors={theme.gradient} style={styles.root}>
+    <LinearGradient
+      colors={theme.gradient}
+      locations={theme.gradientLocations}
+      start={theme.gradientStart}
+      end={theme.gradientEnd}
+      style={styles.root}
+    >
       <StatusBar hidden />
       <GeoUniverseBackground />
       <View style={styles.contentShift}>
@@ -320,10 +326,18 @@ export default function SonidosScreen() {
             styles.stickyHeader,
             {
               paddingTop: topPad + 2,
-              backgroundColor: theme.gradient[0] as string,
             },
           ]}
         >
+          <View pointerEvents="none" style={styles.stickyGradientClip}>
+            <LinearGradient
+              colors={theme.gradient}
+              locations={theme.gradientLocations}
+              start={theme.gradientStart}
+              end={theme.gradientEnd}
+              style={styles.stickyScreenGradient}
+            />
+          </View>
           <View style={[styles.titleRow, styles.stickyTitleRow]}>
             <Animated.Text
               style={[
@@ -565,6 +579,17 @@ const styles = StyleSheet.create({
     left: 0,
     right: 0,
     zIndex: 20,
+  },
+  stickyGradientClip: {
+    ...StyleSheet.absoluteFillObject,
+    overflow: "hidden",
+  },
+  stickyScreenGradient: {
+    position: "absolute",
+    top: 0,
+    left: 0,
+    right: 0,
+    height: SCREEN_HEIGHT,
   },
   titleRow: {
     position: "relative",
