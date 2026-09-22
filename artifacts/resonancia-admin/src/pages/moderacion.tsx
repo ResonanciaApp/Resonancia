@@ -856,7 +856,7 @@ function EditDialog({
             <TagOptionSelector
               tagType="other_theme"
               defaults={OTHER_THEME_TAGS}
-              label="Otras temáticas (opcional)"
+              label="Explora por objetivo (opcional)"
               selected={themeTag.filter((tag) => !tag.startsWith("__"))}
               onToggle={toggleTheme}
               onRename={(from, to) => setThemeTag((tags) => {

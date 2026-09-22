@@ -822,7 +822,7 @@ export function ExploreScreen({
           <View style={styles.otherThemesSection}>
             <View style={styles.otherThemesHeader}>
               <Text style={[styles.sectionTitle, { marginBottom: 0 }]}>
-                Otras temáticas
+                Explora por objetivo
               </Text>
             </View>
             <View style={styles.themeGrid}>

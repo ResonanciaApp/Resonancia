@@ -205,7 +205,7 @@ const NAV_SECTIONS = [
       { href: "/frase-del-dia", label: "Frase del día", icon: Quote },
       { href: "/emocion", label: "Registro de ánimo", icon: Sparkles },
       { href: "/videos", label: "Videos", icon: Film },
-      { href: "/explorar", label: "Otras temáticas", icon: LayoutList },
+      { href: "/explorar", label: "Explora por objetivo", icon: LayoutList },
       { href: "/dormir-orden", label: "Dormir - Orden", icon: ListOrdered },
       { href: "/sonidos-orden", label: "Sonidos - Orden", icon: ListOrdered },
       { href: "/portadas-avatares", label: "Portadas y avatares", icon: Images },

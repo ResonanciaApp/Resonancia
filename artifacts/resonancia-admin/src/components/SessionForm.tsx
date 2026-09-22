@@ -1010,7 +1010,7 @@ export default function SessionForm({ mode, initial, onSaved }: SessionFormProps
       {/* ── SECCIÓN: Otras temáticas ── */}
       {(isEdit || categoryId) && (
         <Section
-          title="Otras temáticas"
+          title="Explora por objetivo (opcional)"
           open={openSections.otrasTematicas}
           onToggle={() => toggleSection("otrasTematicas")}
         >
