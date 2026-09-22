@@ -130,7 +130,7 @@ export function DrawerMenu() {
         ),
         historyProgress.interpolate({
           inputRange: [0, 1],
-          outputRange: [0, -12],
+          outputRange: [0, -18],
           extrapolate: "clamp",
         }),
       ),
@@ -139,7 +139,7 @@ export function DrawerMenu() {
   const historyScale = React.useMemo(
     () => historyProgress.interpolate({
       inputRange: [0, 1],
-      outputRange: [1, 0.99],
+      outputRange: [1, 0.985],
       extrapolate: "clamp",
     }),
     [historyProgress],
