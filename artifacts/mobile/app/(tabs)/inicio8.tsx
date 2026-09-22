@@ -3286,18 +3286,24 @@ export default function HomeScreen2({
             />
           </View>
         )}
+        {isInicio2 && variant === "inicio3" && (
+          <View style={styles.inicio3StandaloneDivider} />
+        )}
         {isInicio2 && (
-          <View style={variant === "inicio3" ? { marginTop: 58 } : undefined}>
+          <View>
             <DailyWisdomCard
               backgroundColor="rgba(0,0,0,0.25)"
               decorativeGradient={variant === "inicio3"}
             />
           </View>
         )}
+        {isInicio2 && variant === "inicio3" && (
+          <View style={styles.inicio3SectionDivider} />
+        )}
         {/* ── BANNER PREMIUM ── */}
         <View
           style={{
-            marginTop: -25,
+            marginTop: variant === "inicio3" ? 0 : -25,
             marginBottom: isInicio2 ? INICIO2_SECTION_GAP : SECTION_GAP,
           }}
         >
