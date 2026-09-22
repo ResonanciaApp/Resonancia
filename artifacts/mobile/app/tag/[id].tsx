@@ -18,6 +18,7 @@ import {
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 
 import { SessionCarousel } from "@/components/SessionCarousel";
+import { CONTENT_CAROUSEL_GAP } from "@/constants/carousel";
 import { BLUR_PLACEHOLDER, IMAGE_TRANSITION } from "@/constants/imagePlaceholder";
 import { useBackOverride } from "@/context/BackOverrideContext";
 import { useCatalog } from "@/context/CatalogContext";
@@ -41,6 +42,9 @@ import { useColors } from "@/hooks/useColors";
 
 const { width } = Dimensions.get("window");
 const H_PAD = 16;
+const HOME_FAVORITES_CARD_WIDTH = Math.round(
+  (width - H_PAD - CONTENT_CAROUSEL_GAP) / 1.9,
+);
 const THEME_DETAIL_DESCRIPTION_BY_SLUG: Record<string, string> = {
   "para-la-ansiedad": "Calma tu mente y recupera la paz",
   "energiza-tus-mananas": "Activa tu energía para comenzar",
@@ -284,6 +288,8 @@ export default function ThemeTagScreen({
                     styles.internalCarousel,
                     index === 0 && styles.firstInternalCarousel,
                   ]}
+                  cardWidth={HOME_FAVORITES_CARD_WIDTH}
+                  allowOversizedCardWidth
                   eagerRender
                   presentation="editorial"
                   disableAmbientalVariant
@@ -468,7 +474,7 @@ const styles = StyleSheet.create({
     marginBottom: 0,
   },
   firstInternalCarousel: {
-    marginTop: 25,
+    marginTop: 45,
   },
   emptySlot: {
     marginHorizontal: H_PAD,
