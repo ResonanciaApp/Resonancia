@@ -58,6 +58,20 @@ function SacredGeometry({ id }: { id: Exclude<DailyQuoteDecoration, "circles"> }
   );
 }
 
+const DECORATION_MOTIFS: Record<
+  Exclude<DailyQuoteDecoration, "circles">,
+  readonly [
+    Exclude<DailyQuoteDecoration, "circles">,
+    Exclude<DailyQuoteDecoration, "circles">,
+    Exclude<DailyQuoteDecoration, "circles">,
+  ]
+> = {
+  vesica: ["vesica", "metatron", "seed"],
+  seed: ["seed", "metatron", "vesica"],
+  flower: ["flower", "metatron", "vesica"],
+  metatron: ["metatron", "seed", "vesica"],
+};
+
 export function DailyQuoteDecorationLayer({ id }: { id: DailyQuoteDecoration }) {
   if (id === "circles") {
     return (
@@ -69,13 +83,18 @@ export function DailyQuoteDecorationLayer({ id }: { id: DailyQuoteDecoration }) 
     );
   }
 
+  const [largeMotif, smallMotif, softMotif] = DECORATION_MOTIFS[id];
+
   return (
     <>
-      <View style={styles.geometryPrimary} pointerEvents="none">
-        <SacredGeometry id={id} />
+      <View style={styles.geometryLarge} pointerEvents="none">
+        <SacredGeometry id={largeMotif} />
       </View>
-      <View style={styles.geometrySecondary} pointerEvents="none">
-        <SacredGeometry id={id} />
+      <View style={styles.geometrySmall} pointerEvents="none">
+        <SacredGeometry id={smallMotif} />
+      </View>
+      <View style={styles.geometrySoft} pointerEvents="none">
+        <SacredGeometry id={softMotif} />
       </View>
     </>
   );
@@ -111,22 +130,31 @@ const styles = StyleSheet.create({
     bottom: -46,
     backgroundColor: "rgba(245,225,255,0.055)",
   },
-  geometryPrimary: {
+  geometryLarge: {
     position: "absolute",
-    width: 190,
-    height: 162,
-    top: -45,
+    width: 170,
+    height: 170,
+    top: -88,
     right: -42,
-    opacity: 0.105,
+    opacity: 0.11,
     transform: [{ rotate: "7deg" }],
   },
-  geometrySecondary: {
+  geometrySmall: {
     position: "absolute",
-    width: 116,
-    height: 99,
-    left: -46,
-    bottom: -39,
-    opacity: 0.06,
+    width: 82,
+    height: 82,
+    right: 48,
+    bottom: -45,
+    opacity: 0.085,
+    transform: [{ rotate: "-8deg" }],
+  },
+  geometrySoft: {
+    position: "absolute",
+    width: 112,
+    height: 112,
+    left: -72,
+    bottom: -46,
+    opacity: 0.065,
     transform: [{ rotate: "-10deg" }],
   },
 });

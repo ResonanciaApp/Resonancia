@@ -129,6 +129,56 @@ function DecorationPreview({ id }: { id: DailyQuoteDecoration }) {
     [80, 16], [124, 42], [124, 94], [80, 120], [36, 94], [36, 42],
   ] as const;
 
+  const motifs: Record<
+    Exclude<DailyQuoteDecoration, "circles">,
+    readonly [
+      Exclude<DailyQuoteDecoration, "circles">,
+      Exclude<DailyQuoteDecoration, "circles">,
+      Exclude<DailyQuoteDecoration, "circles">,
+    ]
+  > = {
+    vesica: ["vesica", "metatron", "seed"],
+    seed: ["seed", "metatron", "vesica"],
+    flower: ["flower", "metatron", "vesica"],
+    metatron: ["metatron", "seed", "vesica"],
+  };
+
+  const renderMotif = (
+    motif: Exclude<DailyQuoteDecoration, "circles">,
+    key: string,
+    transform: string,
+    opacity: number,
+  ) => (
+    <g key={key} transform={transform} opacity={opacity} {...common}>
+      {motif === "vesica" && (
+        <>
+          <circle cx="68" cy="66" r="42" />
+          <circle cx="94" cy="66" r="42" />
+          <circle cx="81" cy="66" r="55" opacity="0.42" />
+        </>
+      )}
+      {motif === "seed" && seedCenters.map(([cx, cy]) => (
+        <circle key={`${key}-${cx}-${cy}`} cx={cx} cy={cy} r="26" />
+      ))}
+      {motif === "flower" && flowerCenters.map(([cx, cy]) => (
+        <circle key={`${key}-${cx}-${cy}`} cx={cx} cy={cy} r="26" />
+      ))}
+      {motif === "metatron" && (
+        <>
+          <circle cx="80" cy="68" r="9" />
+          {HEX_POINTS.map(([x, y], index) => (
+            <g key={`${key}-${x}-${y}`}>
+              <circle cx={x} cy={y} r="9" />
+              <line x1="80" y1="68" x2={x} y2={y} />
+              <line x1={x} y1={y} x2={HEX_POINTS[(index + 2) % HEX_POINTS.length][0]} y2={HEX_POINTS[(index + 2) % HEX_POINTS.length][1]} />
+            </g>
+          ))}
+          <circle cx="80" cy="68" r="51" opacity="0.55" />
+        </>
+      )}
+    </g>
+  );
+
   return (
     <svg viewBox="0 0 160 136" className="absolute inset-0 h-full w-full" aria-hidden="true">
       {id === "circles" && (
@@ -138,35 +188,12 @@ function DecorationPreview({ id }: { id: DailyQuoteDecoration }) {
           <circle cx="8" cy="126" r="40" fill="rgba(245,225,255,0.06)" />
         </>
       )}
-      {id === "vesica" && (
-        <g {...common}>
-          <circle cx="68" cy="66" r="42" />
-          <circle cx="94" cy="66" r="42" />
-          <circle cx="81" cy="66" r="55" opacity="0.42" />
-        </g>
-      )}
-      {id === "seed" && (
-        <g {...common}>
-          {seedCenters.map(([cx, cy]) => <circle key={`${cx}-${cy}`} cx={cx} cy={cy} r="26" />)}
-        </g>
-      )}
-      {id === "flower" && (
-        <g {...common} opacity="0.88">
-          {flowerCenters.map(([cx, cy]) => <circle key={`${cx}-${cy}`} cx={cx} cy={cy} r="26" />)}
-        </g>
-      )}
-      {id === "metatron" && (
-        <g {...common}>
-          <circle cx="80" cy="68" r="9" />
-          {HEX_POINTS.map(([x, y], index) => (
-            <g key={`${x}-${y}`}>
-              <circle cx={x} cy={y} r="9" />
-              <line x1="80" y1="68" x2={x} y2={y} />
-              <line x1={x} y1={y} x2={HEX_POINTS[(index + 2) % HEX_POINTS.length][0]} y2={HEX_POINTS[(index + 2) % HEX_POINTS.length][1]} />
-            </g>
-          ))}
-          <circle cx="80" cy="68" r="51" opacity="0.55" />
-        </g>
+      {id !== "circles" && (
+        <>
+          {renderMotif(motifs[id][0], "large", "translate(70 -54) scale(0.86)", 0.88)}
+          {renderMotif(motifs[id][1], "small", "translate(54 83) scale(0.42)", 0.72)}
+          {renderMotif(motifs[id][2], "soft", "translate(-50 83) scale(0.58)", 0.56)}
+        </>
       )}
     </svg>
   );
