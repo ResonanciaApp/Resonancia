@@ -3,10 +3,8 @@ import { SymbolView } from "expo-symbols";
 import { BlurView } from "expo-blur";
 import { Feather, MaterialCommunityIcons } from "@expo/vector-icons";
 import React, { useEffect, useRef, useCallback, useLayoutEffect, useState } from "react";
-import { useMixerPanel, MIXER_PANEL_W } from "@/context/MixerPanelContext";
-import { useGeometrixPanel, GEOMETRIX_PANEL_W } from "@/context/GeometrixPanelContext";
-import MezcladorScreen from "./musica";
-import GeometrixScreen from "./geometrix";
+import { useMixerPanel } from "@/context/MixerPanelContext";
+import { useGeometrixPanel } from "@/context/GeometrixPanelContext";
 import { DURATION, easeOutCubic } from "@/constants/motion";
 import {
   Animated,
@@ -20,10 +18,7 @@ import {
 } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 
-import { MiniPlayer } from "@/components/MiniPlayer";
-import { useMixer } from "@/context/MixerContext";
 import {
-  TabBarVisibilityProvider,
   useTabBarVisibility,
 } from "@/context/TabBarVisibilityContext";
 import { useSceneTheme } from "@/context/SceneThemeContext";
@@ -45,7 +40,6 @@ const ICON_SIZE      = 27;
 const PILL_H         = 58;   // altura del bloque de navegación, sin safe area
 const TAB_CONTENT_OFFSET_Y = 11;
 const TAB_LABEL_OFFSET_Y = 2;
-const MINI_PLAYER_MARGIN_H = 15;
 
 function getTabBarBackground(activeSceneId: string) {
   return "#0E0821";
@@ -349,7 +343,6 @@ function CustomTabBar({ state, navigation, descriptors }: TabBarProps) {
 }
 
 function TabLayoutInner() {
-  const { activeSounds }   = useMixer();
   const pathname           = usePathname();
   const insets             = useSafeAreaInsets();
   const isWeb              = Platform.OS === "web";
@@ -357,29 +350,11 @@ function TabLayoutInner() {
   const tabBarHeight       = PILL_H + bottomPb;
   const { libOpen }        = useDrawer();
   const [barProps, setBarProps] = useState<any>(null);
-  const { isMixerOpen, openedFromDrawer: mixerFromDrawer, closeMixer, panelAnim } = useMixerPanel();
-  const { isGeometrixOpen, openedFromDrawer: geometrixFromDrawer, hasOpenedGeometrix, closeGeometrix, panelAnim: geoPanelAnim } = useGeometrixPanel();
-
-  const geoTranslateX = geoPanelAnim.interpolate({
-    inputRange:  [0, 1],
-    outputRange: [GEOMETRIX_PANEL_W, 0],
-  });
-  const geoBackdropOpacity = geoPanelAnim.interpolate({
-    inputRange:  [0, 1],
-    outputRange: geometrixFromDrawer ? [0, 0] : [0, 0.55],
-  });
+  const { isMixerOpen, openedFromDrawer: mixerFromDrawer, panelAnim } = useMixerPanel();
+  const { isGeometrixOpen, openedFromDrawer: geometrixFromDrawer, panelAnim: geoPanelAnim } = useGeometrixPanel();
   const { activeSceneId, theme } = useSceneTheme();
   const { brightMode } = useBrightness();
   const bg = brightMode ? applyBrightSat(theme.solid) : theme.solid;
-
-  const panelTranslateX = panelAnim.interpolate({
-    inputRange:  [0, 1],
-    outputRange: [MIXER_PANEL_W, 0],
-  });
-  const backdropOpacity = panelAnim.interpolate({
-    inputRange:  [0, 1],
-    outputRange: mixerFromDrawer ? [0, 0] : [0, 0.55],
-  });
 
   // Parallax sutil: el contenido de fondo se corre un poco a la izquierda
   // cuando entra un panel derecha→izquierda (estilo Insight Timer).
@@ -445,43 +420,6 @@ function TabLayoutInner() {
       />
       {barProps && <CustomTabBar {...barProps} />}
 
-      {/* ── Mixer Drawer Panel — siempre montado, desliza desde la izquierda ── */}
-      <Animated.View
-        pointerEvents={isMixerOpen ? "box-none" : "none"}
-        style={[styles.mixerPanel, { transform: [{ translateX: panelTranslateX }] }]}
-      >
-        <MezcladorScreen />
-        {activeSounds.length > 0 && (
-          <View style={styles.miniPlayerFloat} pointerEvents="box-none">
-            <MiniPlayer forceMix />
-          </View>
-        )}
-      </Animated.View>
-      <Animated.View
-        pointerEvents={isMixerOpen ? "auto" : "none"}
-        style={[styles.mixerBackdrop, { opacity: backdropOpacity }]}
-      >
-        <Pressable style={{ flex: 1 }} onPress={closeMixer} />
-      </Animated.View>
-
-      {/* ── Geometrix Panel — se monta en la primera apertura, desliza derecha→izquierda ── */}
-      {hasOpenedGeometrix && (
-        <>
-          <Animated.View
-            pointerEvents={isGeometrixOpen ? "box-none" : "none"}
-            style={[styles.mixerPanel, { transform: [{ translateX: geoTranslateX }] }]}
-          >
-            <GeometrixScreen />
-          </Animated.View>
-          <Animated.View
-            pointerEvents={isGeometrixOpen ? "auto" : "none"}
-            style={[styles.mixerBackdrop, { opacity: geoBackdropOpacity }]}
-          >
-            <Pressable style={{ flex: 1 }} onPress={closeGeometrix} />
-          </Animated.View>
-        </>
-      )}
-
     </View>
   );
 }
@@ -504,11 +442,9 @@ function TabBarPropsBridge({ props, onProps }: { props: any; onProps: (p: any) =
 export default function TabLayout() {
   return (
     <CategoryOverlayProvider>
-      <TabBarVisibilityProvider>
-        <RoutineCompletionBannerProvider>
-          <TabLayoutInner />
-        </RoutineCompletionBannerProvider>
-      </TabBarVisibilityProvider>
+      <RoutineCompletionBannerProvider>
+        <TabLayoutInner />
+      </RoutineCompletionBannerProvider>
     </CategoryOverlayProvider>
   );
 }
@@ -581,32 +517,5 @@ const styles = StyleSheet.create({
     height: 4,
     borderRadius: 99,
     backgroundColor: "rgba(255,255,255,0.18)",
-  },
-  miniPlayerFloat: {
-    position: "absolute",
-    left: MINI_PLAYER_MARGIN_H,
-    right: MINI_PLAYER_MARGIN_H,
-    bottom: 29,
-  },
-  mixerPanel: {
-    position: "absolute",
-    left: 0,
-    top: 0,
-    bottom: 0,
-    width: MIXER_PANEL_W,
-    zIndex: 500,
-    elevation: 0,
-    backgroundColor: "#1B060F",
-    overflow: "hidden",
-  },
-  mixerBackdrop: {
-    position: "absolute",
-    left: 0,
-    right: 0,
-    top: 0,
-    bottom: 0,
-    backgroundColor: "#000",
-    zIndex: 499,
-    elevation: 0,
   },
 });

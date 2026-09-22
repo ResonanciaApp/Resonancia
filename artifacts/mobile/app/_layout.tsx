@@ -22,10 +22,12 @@ import { BibliotecaOverlay } from "@/components/BibliotecaOverlay";
 import { DrawerScreenOverlay } from "@/components/DrawerScreenOverlay";
 import { ChatOverlay } from "@/components/ChatOverlay";
 import { DrawerMenu } from "@/components/DrawerMenu";
+import { CreationPanelsOverlay } from "@/components/CreationPanelsOverlay";
 import { MixerSheet } from "@/components/MixerSheet";
 import { EscenasSheet } from "@/components/EscenasSheet";
 import { SceneAnimationModal } from "@/components/SceneAnimationModal";
 import { SelectedSceneProvider, useSelectedScene } from "@/context/SelectedSceneContext";
+import { TabBarVisibilityProvider } from "@/context/TabBarVisibilityContext";
 import { ErrorBoundary } from "@/components/ErrorBoundary";
 import { AmbientPlayerProvider } from "@/context/AmbientPlayerContext";
 import { SceneThemeProvider, SceneThemeTransitionOverlay, useSceneTheme, loadPersistedSceneId } from "@/context/SceneThemeContext";
@@ -433,6 +435,7 @@ function RootLayoutNav() {
             <NavStack />
           </PushWrapper>
           <DrawerMenu />
+           <CreationPanelsOverlay />
           <BibliotecaOverlay />
           <DrawerScreenOverlay />
           <ChatOverlay />
@@ -580,7 +583,9 @@ export default function RootLayout() {
                               <AmbientalDurationProvider>
                                 <StatusBar hidden />
                                 <KeyboardProvider>
-                                  <RootLayoutNav />
+                                   <TabBarVisibilityProvider>
+                                     <RootLayoutNav />
+                                   </TabBarVisibilityProvider>
                                 </KeyboardProvider>
                                 <SceneThemeTransitionOverlay />
                                 <StreakCelebrationFlow />
