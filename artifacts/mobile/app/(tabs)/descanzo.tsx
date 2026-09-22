@@ -818,7 +818,7 @@ const styles = StyleSheet.create({
     gap: 12,
     overflow: "hidden",
     backgroundColor: "rgba(255,255,255,0.1)",
-    borderWidth: 1.4,
+    borderWidth: 1.2,
     borderColor: "rgba(241,224,255,0.25)",
   },
   sleepPillTibet: { backgroundColor: "rgba(0,0,0,0.21)" },
