@@ -137,7 +137,7 @@ const styles = StyleSheet.create({
   },
   content: {
     paddingHorizontal: 20,
-    paddingTop: 12,
+    paddingTop: 32,
   },
   monthSection: {
     marginBottom: 20,

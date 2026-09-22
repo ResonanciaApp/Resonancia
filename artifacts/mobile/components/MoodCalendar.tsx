@@ -42,7 +42,7 @@ const MOOD_TONES: Record<MoodId, MoodTone> = {
 const MOOD_GRADIENTS: Record<MoodTone, readonly [string, string]> = {
   joy: ["rgba(128,207,244,0.38)", "rgba(79,151,215,0.18)"],
   calm: ["rgba(100,224,112,0.52)", "rgba(46,174,73,0.28)"],
-  discomfort: ["rgba(255,192,82,0.72)", "rgba(242,126,38,0.48)"],
+  discomfort: ["rgba(255,174,38,0.82)", "rgba(245,92,24,0.62)"],
   anger: ["rgba(255,76,67,0.86)", "rgba(214,27,35,0.64)"],
 };
 
