@@ -526,6 +526,7 @@ export default function FavoritosTodosScreen() {
                           title={tab.label}
                           playlists={favoritePlaylists}
                           onPress={openEditorialPlaylist}
+                          gridLayout
                         />
                       </React.Fragment>
                     );
@@ -605,6 +606,7 @@ export default function FavoritosTodosScreen() {
               playlists={favoritePlaylists}
               onPress={openEditorialPlaylist}
               style={styles.playlistsTab}
+              gridLayout
             />
           ) : tabSessions.length === 0 ? (
             <View style={styles.empty}>
@@ -781,13 +783,13 @@ const styles = StyleSheet.create({
   themeCollectionsGrid: {
     flexDirection: "row",
     flexWrap: "wrap",
-    columnGap: 8,
-    rowGap: 10,
+    columnGap: 14,
+    rowGap: 18,
   },
   themeCollectionCard: {
-    width: (W - H_PAD * 2 - 8) / 2,
-    aspectRatio: 1.35,
-    borderRadius: 14,
+    width: (W - H_PAD * 2 - 14) / 2,
+    aspectRatio: 1,
+    borderRadius: 16,
     overflow: "hidden",
     justifyContent: "flex-end",
     padding: 12,

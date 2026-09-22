@@ -33,6 +33,7 @@ export function EditorialPlaylistCarousel({
   style,
   showPremiumBadge = false,
   stackTypeAboveDuration = false,
+  gridLayout = false,
 }: {
   title: string;
   playlists: EditorialPlaylist[];
@@ -40,94 +41,104 @@ export function EditorialPlaylistCarousel({
   style?: StyleProp<ViewStyle>;
   showPremiumBadge?: boolean;
   stackTypeAboveDuration?: boolean;
+  gridLayout?: boolean;
 }) {
   if (playlists.length === 0) return null;
+  const cardSize = gridLayout
+    ? (Dimensions.get("window").width - H_PAD * 2 - CARD_GAP) / 2
+    : CARD_WIDTH;
+
+  const cards = playlists.map((playlist) => (
+    <PressScale
+      key={playlist.id}
+      onPress={() => onPress?.(playlist)}
+      accessibilityRole="button"
+      accessibilityLabel={`Abrir ${playlist.title}`}
+      testID={`editorial-playlist-${playlist.id}`}
+      style={[styles.card, { width: cardSize }]}
+    >
+      <View style={[styles.stack, { width: cardSize, height: cardSize + 14 }]}>
+        <View style={[styles.stackStripFront, { top: cardSize }]} />
+        <View style={[styles.stackStripBack, { top: cardSize + 5 }]} />
+        <View style={[styles.stackStripThird, { top: cardSize + 9 }]} />
+        <View style={[styles.cover, { width: cardSize, height: cardSize }]}>
+          {playlist.coverUrl ? (
+            <Image
+              source={{ uri: playlist.coverUrl }}
+              style={StyleSheet.absoluteFill}
+              contentFit="cover"
+              placeholder={BLUR_PLACEHOLDER}
+              transition={IMAGE_TRANSITION}
+              cachePolicy="memory-disk"
+            />
+          ) : (
+            <View style={styles.missingCover}>
+              <Feather name="image" size={28} color="rgba(251,251,251,0.55)" />
+              <Text style={styles.missingCoverText}>Sin portada</Text>
+            </View>
+          )}
+          <LinearGradient
+            pointerEvents="none"
+            colors={["rgba(0,0,0,0.02)", "rgba(0,0,0,0.08)", "rgba(0,0,0,0.42)"]}
+            style={StyleSheet.absoluteFill}
+          />
+          {playlist.editorialType !== "none" ? (
+            <View
+              style={[
+                styles.typePill,
+                stackTypeAboveDuration && styles.typePillAboveDuration,
+              ]}
+            >
+              <SessionBadgeGlass showBlackTint={false} />
+              <View style={styles.whitePillTint} />
+              <Text style={styles.typeText}>
+                {playlist.editorialType === "meditative"
+                  ? "Meditativa"
+                  : playlist.editorialType === "relaxation"
+                    ? "Relajación"
+                    : playlist.editorialType === "ritual"
+                      ? "Ritual"
+                      : playlist.editorialType}
+              </Text>
+            </View>
+          ) : null}
+          <SessionDurationBadge
+            label={playlist.durationLabel}
+            style={styles.duration}
+            whiteGlass
+          />
+          {showPremiumBadge ? (
+            <Image
+              source={require("@/assets/images/estrella-premium.png")}
+              style={styles.premiumStar}
+              contentFit="contain"
+            />
+          ) : null}
+        </View>
+      </View>
+      <Text style={styles.cardTitle} numberOfLines={2}>
+        {playlist.title}
+      </Text>
+    </PressScale>
+  ));
 
   return (
     <View style={[styles.section, style]}>
       <View style={styles.titleRow}>
         <Text style={styles.title}>{title}</Text>
       </View>
-      <ScrollView
-        horizontal
-        showsHorizontalScrollIndicator={false}
-        style={styles.carousel}
-        contentContainerStyle={styles.content}
-      >
-        {playlists.map((playlist) => (
-          <PressScale
-            key={playlist.id}
-            onPress={() => onPress?.(playlist)}
-            accessibilityRole="button"
-            accessibilityLabel={`Abrir ${playlist.title}`}
-            testID={`editorial-playlist-${playlist.id}`}
-            style={styles.card}
-          >
-            <View style={styles.stack}>
-              <View style={styles.stackStripFront} />
-              <View style={styles.stackStripBack} />
-               <View style={styles.stackStripThird} />
-              <View style={styles.cover}>
-                {playlist.coverUrl ? (
-                  <Image
-                    source={{ uri: playlist.coverUrl }}
-                    style={StyleSheet.absoluteFill}
-                    contentFit="cover"
-                    placeholder={BLUR_PLACEHOLDER}
-                    transition={IMAGE_TRANSITION}
-                    cachePolicy="memory-disk"
-                  />
-                ) : (
-                  <View style={styles.missingCover}>
-                    <Feather name="image" size={28} color="rgba(251,251,251,0.55)" />
-                    <Text style={styles.missingCoverText}>Sin portada</Text>
-                  </View>
-                )}
-                <LinearGradient
-                  pointerEvents="none"
-                  colors={["rgba(0,0,0,0.02)", "rgba(0,0,0,0.08)", "rgba(0,0,0,0.42)"]}
-                  style={StyleSheet.absoluteFill}
-                />
-                {playlist.editorialType !== "none" ? (
-                  <View
-                    style={[
-                      styles.typePill,
-                      stackTypeAboveDuration && styles.typePillAboveDuration,
-                    ]}
-                  >
-                    <SessionBadgeGlass showBlackTint={false} />
-                    <View style={styles.whitePillTint} />
-                    <Text style={styles.typeText}>
-                      {playlist.editorialType === "meditative"
-                        ? "Meditativa"
-                        : playlist.editorialType === "relaxation"
-                          ? "Relajación"
-                          : playlist.editorialType === "ritual"
-                            ? "Ritual"
-                            : playlist.editorialType}
-                    </Text>
-                  </View>
-                ) : null}
-                <SessionDurationBadge
-                  label={playlist.durationLabel}
-                  style={styles.duration}
-                  whiteGlass
-                />
-                {showPremiumBadge ? (
-                  <Image
-                    source={require("@/assets/images/estrella-premium.png")}
-                    style={styles.premiumStar}
-                    contentFit="contain"
-                  />
-                ) : null}
-              </View>
-            </View>
-            <Text style={styles.cardTitle} numberOfLines={2}>
-              {playlist.title}
-            </Text>
-          </PressScale>
-        ))}
-      </ScrollView>
+      {gridLayout ? (
+        <View style={styles.gridContent}>{cards}</View>
+      ) : (
+        <ScrollView
+          horizontal
+          showsHorizontalScrollIndicator={false}
+          style={styles.carousel}
+          contentContainerStyle={styles.content}
+        >
+          {cards}
+        </ScrollView>
+      )}
     </View>
   );
 }
@@ -156,6 +167,11 @@ const styles = StyleSheet.create({
   },
   content: {
     paddingHorizontal: H_PAD,
+    gap: CARD_GAP,
+  },
+  gridContent: {
+    flexDirection: "row",
+    flexWrap: "wrap",
     gap: CARD_GAP,
   },
   card: {
