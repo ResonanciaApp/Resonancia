@@ -2824,13 +2824,13 @@ const styles = StyleSheet.create({
   },
   practiceReminderFirst: {
     marginTop: -7,
-    marginBottom: 16,
+    marginBottom: 25,
   },
   practiceReminderLast: {
     marginBottom: 53,
   },
   practiceReminderMiddle: {
-    marginBottom: 16,
+    marginBottom: 25,
   },
   practiceReminderIcon: {
     width: 44,
