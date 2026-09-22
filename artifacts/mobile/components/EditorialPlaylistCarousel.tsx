@@ -34,6 +34,7 @@ export function EditorialPlaylistCarousel({
   showPremiumBadge = false,
   stackTypeAboveDuration = false,
   gridLayout = false,
+  titleLift = 0,
 }: {
   title: string;
   playlists: EditorialPlaylist[];
@@ -42,6 +43,7 @@ export function EditorialPlaylistCarousel({
   showPremiumBadge?: boolean;
   stackTypeAboveDuration?: boolean;
   gridLayout?: boolean;
+  titleLift?: number;
 }) {
   if (playlists.length === 0) return null;
   const cardSize = gridLayout
@@ -116,7 +118,13 @@ export function EditorialPlaylistCarousel({
           ) : null}
         </View>
       </View>
-      <Text style={styles.cardTitle} numberOfLines={2}>
+      <Text
+        style={[
+          styles.cardTitle,
+          titleLift !== 0 && { transform: [{ translateY: -titleLift }] },
+        ]}
+        numberOfLines={2}
+      >
         {playlist.title}
       </Text>
     </PressScale>

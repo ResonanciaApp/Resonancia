@@ -247,46 +247,66 @@ function FavoriteThemeCollections({
   collections,
   onPress,
   title,
+  gridLayout = false,
 }: {
   collections: typeof TAG_CARDS;
   onPress: (id: string) => void;
   title?: string;
+  gridLayout?: boolean;
 }) {
   if (collections.length === 0) return null;
+  const cards = collections.map((collection) => (
+    <Pressable
+      key={collection.id}
+      onPress={() => onPress(collection.id)}
+      accessibilityRole="button"
+      accessibilityLabel={collection.label}
+      style={({ pressed }) => [
+        styles.themeCollectionItem,
+        gridLayout ? styles.themeCollectionGridItem : styles.themeCollectionCarouselItem,
+        { opacity: pressed ? 0.78 : 1 },
+      ]}
+    >
+      <View
+        style={[
+          styles.themeCollectionCard,
+          {
+            backgroundColor: THEME_CARD_BACKGROUND_BY_SLUG[collection.id] ?? "rgba(0,0,0,0.28)",
+          },
+        ]}
+      >
+        <Image
+          source={collection.image}
+          style={StyleSheet.absoluteFill}
+          contentFit="cover"
+          cachePolicy="memory-disk"
+        />
+        <LinearGradient
+          colors={THEME_CARD_OVERLAY_BY_SLUG[collection.id] ?? ["rgba(0,0,0,0.18)", "rgba(0,0,0,0.62)"]}
+          style={StyleSheet.absoluteFill}
+        />
+      </View>
+      <Text style={styles.themeCollectionLabel} numberOfLines={2}>
+        {collection.label}
+      </Text>
+    </Pressable>
+  ));
+
   return (
     <View style={styles.themeCollectionsSection}>
       {title ? <Text style={styles.carouselTitle}>{title}</Text> : null}
-      <View style={styles.themeCollectionsGrid}>
-        {collections.map((collection) => (
-          <Pressable
-            key={collection.id}
-            onPress={() => onPress(collection.id)}
-            accessibilityRole="button"
-            accessibilityLabel={collection.label}
-            style={({ pressed }) => [
-              styles.themeCollectionCard,
-              {
-                backgroundColor: THEME_CARD_BACKGROUND_BY_SLUG[collection.id] ?? "rgba(0,0,0,0.28)",
-                opacity: pressed ? 0.78 : 1,
-              },
-            ]}
-          >
-            <Image
-              source={collection.image}
-              style={StyleSheet.absoluteFill}
-              contentFit="cover"
-              cachePolicy="memory-disk"
-            />
-            <LinearGradient
-              colors={THEME_CARD_OVERLAY_BY_SLUG[collection.id] ?? ["rgba(0,0,0,0.18)", "rgba(0,0,0,0.62)"]}
-              style={StyleSheet.absoluteFill}
-            />
-            <Text style={styles.themeCollectionLabel} numberOfLines={2}>
-              {collection.label}
-            </Text>
-          </Pressable>
-        ))}
-      </View>
+      {gridLayout ? (
+        <View style={styles.themeCollectionsGrid}>{cards}</View>
+      ) : (
+        <ScrollView
+          horizontal
+          showsHorizontalScrollIndicator={false}
+          style={styles.themeCollectionsCarousel}
+          contentContainerStyle={styles.themeCollectionsCarouselContent}
+        >
+          {cards}
+        </ScrollView>
+      )}
     </View>
   );
 }
@@ -526,7 +546,7 @@ export default function FavoritosTodosScreen() {
                           title={tab.label}
                           playlists={favoritePlaylists}
                           onPress={openEditorialPlaylist}
-                          gridLayout
+                          titleLift={14}
                         />
                       </React.Fragment>
                     );
@@ -578,6 +598,7 @@ export default function FavoritosTodosScreen() {
             <FavoriteThemeCollections
               collections={favoriteThemeCollections}
               onPress={openThemeCollection}
+              gridLayout
             />
           ) : activeTab === "videos" ? (
             favVideos.length === 0 ? (
@@ -778,7 +799,7 @@ const styles = StyleSheet.create({
   pillTextIndigoSel: { color: "#F9F9F9" },
   themeCollectionsSection: {
     paddingHorizontal: H_PAD,
-    marginBottom: 28,
+    marginBottom: 53,
   },
   themeCollectionsGrid: {
     flexDirection: "row",
@@ -786,26 +807,34 @@ const styles = StyleSheet.create({
     columnGap: 14,
     rowGap: 18,
   },
-  themeCollectionCard: {
+  themeCollectionsCarousel: {
+    marginHorizontal: -H_PAD,
+  },
+  themeCollectionsCarouselContent: {
+    paddingHorizontal: H_PAD,
+    gap: 14,
+  },
+  themeCollectionItem: {
+    gap: 3,
+  },
+  themeCollectionGridItem: {
     width: (W - H_PAD * 2 - 14) / 2,
+  },
+  themeCollectionCarouselItem: {
+    width: CAROUSEL_CARD_W,
+  },
+  themeCollectionCard: {
+    width: "100%",
     aspectRatio: 1,
     borderRadius: 16,
     overflow: "hidden",
-    justifyContent: "flex-end",
-    padding: 12,
-    borderWidth: 1,
-    borderColor: "rgba(255,255,255,0.20)",
   },
   themeCollectionLabel: {
     fontFamily: "Manrope",
     color: "#FFFFFF",
     fontSize: 14,
     lineHeight: 18,
-    fontWeight: "700",
-    textAlign: "center",
-    textShadowColor: "rgba(0,0,0,0.55)",
-    textShadowOffset: { width: 0, height: 1 },
-    textShadowRadius: 4,
+    fontWeight: "600",
   },
   grid: {
     flexDirection: "row",
