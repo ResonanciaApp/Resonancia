@@ -42,8 +42,8 @@ const MOOD_TONES: Record<MoodId, MoodTone> = {
 const MOOD_GRADIENTS: Record<MoodTone, readonly [string, string]> = {
   joy: ["rgba(128,207,244,0.38)", "rgba(79,151,215,0.18)"],
   calm: ["rgba(120,211,168,0.36)", "rgba(70,151,112,0.17)"],
-  discomfort: ["rgba(244,174,91,0.38)", "rgba(211,117,51,0.17)"],
-  anger: ["rgba(241,105,66,0.42)", "rgba(204,68,40,0.20)"],
+  discomfort: ["rgba(255,192,82,0.72)", "rgba(242,126,38,0.48)"],
+  anger: ["rgba(255,116,62,0.82)", "rgba(230,55,34,0.58)"],
 };
 
 export function MoodCalendar({
@@ -56,6 +56,13 @@ export function MoodCalendar({
     [month, records],
   );
   const todayKey = localMoodDayKey(new Date());
+  const weeks = React.useMemo(
+    () => Array.from(
+      { length: calendar.cells.length / 7 },
+      (_, index) => calendar.cells.slice(index * 7, index * 7 + 7),
+    ),
+    [calendar.cells],
+  );
 
   return (
     <View>
@@ -66,43 +73,47 @@ export function MoodCalendar({
         ))}
       </View>
       <View style={styles.grid}>
-        {calendar.cells.map((cell) => {
-          if (!cell.date || !cell.day) {
-            return <View key={cell.key} style={styles.dayCell} />;
-          }
-          const moodId = cell.record?.moodIds[0];
-          const mood = moodId ? getMoodById(moodId) : undefined;
-          const isToday = cell.key === todayKey;
-          const circleStyle = [
-            styles.moodCircle,
-            mood && styles.moodCircleActive,
-            isToday && styles.todayCircle,
-          ];
-          return (
-            <View
-              key={cell.key}
-              style={styles.dayCell}
-              accessible
-              accessibilityLabel={`${cell.day} de ${calendar.label}${mood ? `, ${mood.label}` : ", sin registro"}`}
-            >
-              {mood ? (
-                <LinearGradient
-                  colors={MOOD_GRADIENTS[MOOD_TONES[mood.id]]}
-                  start={{ x: 0.15, y: 0 }}
-                  end={{ x: 0.85, y: 1 }}
-                  style={circleStyle}
+        {weeks.map((week, weekIndex) => (
+          <View key={`${calendar.key}-week-${weekIndex}`} style={styles.weekRow}>
+            {week.map((cell) => {
+              if (!cell.date || !cell.day) {
+                return <View key={cell.key} style={styles.dayCell} />;
+              }
+              const moodId = cell.record?.moodIds[0];
+              const mood = moodId ? getMoodById(moodId) : undefined;
+              const isToday = cell.key === todayKey;
+              const circleStyle = [
+                styles.moodCircle,
+                mood && styles.moodCircleActive,
+                isToday && styles.todayCircle,
+              ];
+              return (
+                <View
+                  key={cell.key}
+                  style={styles.dayCell}
+                  accessible
+                  accessibilityLabel={`${cell.day} de ${calendar.label}${mood ? `, ${mood.label}` : ", sin registro"}`}
                 >
-                  <Text style={styles.moodEmoji}>{mood.emoji}</Text>
-                </LinearGradient>
-              ) : (
-                <View style={circleStyle} />
-              )}
-              <Text style={[styles.dayNumber, isToday && styles.todayNumber]}>
-                {cell.day}
-              </Text>
-            </View>
-          );
-        })}
+                  {mood ? (
+                    <LinearGradient
+                      colors={MOOD_GRADIENTS[MOOD_TONES[mood.id]]}
+                      start={{ x: 0.15, y: 0 }}
+                      end={{ x: 0.85, y: 1 }}
+                      style={circleStyle}
+                    >
+                      <Text style={styles.moodEmoji}>{mood.emoji}</Text>
+                    </LinearGradient>
+                  ) : (
+                    <View style={circleStyle} />
+                  )}
+                  <Text style={[styles.dayNumber, isToday && styles.todayNumber]}>
+                    {cell.day}
+                  </Text>
+                </View>
+              );
+            })}
+          </View>
+        ))}
       </View>
     </View>
   );
@@ -123,7 +134,7 @@ const styles = StyleSheet.create({
     marginBottom: 10,
   },
   weekdayLabel: {
-    width: `${100 / 7}%`,
+    flex: 1,
     fontFamily: "Manrope",
     color: "rgba(249,249,249,0.62)",
     fontSize: 9,
@@ -132,12 +143,13 @@ const styles = StyleSheet.create({
     textAlign: "center",
   },
   grid: {
-    flexDirection: "row",
-    flexWrap: "wrap",
     rowGap: 9,
   },
+  weekRow: {
+    flexDirection: "row",
+  },
   dayCell: {
-    width: `${100 / 7}%`,
+    flex: 1,
     minHeight: 51,
     alignItems: "center",
   },
@@ -147,11 +159,13 @@ const styles = StyleSheet.create({
     borderRadius: 17,
     borderWidth: 1,
     borderColor: "rgba(255,255,255,0.13)",
+    backgroundColor: "rgba(0,0,0,0.40)",
     alignItems: "center",
     justifyContent: "center",
   },
   moodCircleActive: {
     borderColor: "rgba(255,255,255,0.38)",
+    backgroundColor: "transparent",
   },
   todayCircle: {
     borderWidth: 2,
