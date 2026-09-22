@@ -433,7 +433,7 @@ const styles = StyleSheet.create({
   discoverCard: {
     borderRadius: 23,
     borderWidth: 1,
-    borderColor: "rgba(255,255,255,0.2)",
+    borderColor: "rgba(241,224,255,0.25)",
     overflow: "hidden",
   },
   discoverCardImage: {
