@@ -139,7 +139,9 @@ export default function PlayerScreen() {
   const progressBarWidthShared = useSharedValue(0);
   const terminarOpacity = useRef(new RNAnimated.Value(0)).current;
   const uiOpacity = useRef(new RNAnimated.Value(1)).current;
+  const centeredTimeOpacity = useRef(new RNAnimated.Value(0)).current;
   const [uiShown, setUiShown] = useState(true);
+  const uiTransitionToken = useRef(0);
   const playlistCloseHandledRef = useRef(false);
   const stopRef = useRef(stop);
   stopRef.current = stop;
@@ -179,15 +181,45 @@ export default function PlayerScreen() {
   }, [playlistSlug, privatePlaylistId]);
 
   const toggleUI = useCallback(() => {
+    const token = ++uiTransitionToken.current;
     const next = !uiShown;
     setUiShown(next);
-    RNAnimated.timing(uiOpacity, {
-      toValue: next ? 1 : 0,
-      duration: 280,
+    uiOpacity.stopAnimation();
+    centeredTimeOpacity.stopAnimation();
+
+    if (!next) {
+      RNAnimated.timing(uiOpacity, {
+        toValue: 0,
+        duration: 220,
+        easing: easeOutCubic,
+        useNativeDriver: true,
+      }).start(({ finished }) => {
+        if (!finished || token !== uiTransitionToken.current) return;
+        RNAnimated.timing(centeredTimeOpacity, {
+          toValue: 1,
+          duration: 280,
+          easing: easeOutCubic,
+          useNativeDriver: true,
+        }).start();
+      });
+      return;
+    }
+
+    RNAnimated.timing(centeredTimeOpacity, {
+      toValue: 0,
+      duration: 180,
       easing: easeOutCubic,
       useNativeDriver: true,
-    }).start();
-  }, [uiShown, uiOpacity]);
+    }).start(({ finished }) => {
+      if (!finished || token !== uiTransitionToken.current) return;
+      RNAnimated.timing(uiOpacity, {
+        toValue: 1,
+        duration: 280,
+        easing: easeOutCubic,
+        useNativeDriver: true,
+      }).start();
+    });
+  }, [centeredTimeOpacity, uiShown, uiOpacity]);
 
   const [rating, setRating] = useState(0);
   const [repeatMode, setRepeatMode] = useState(false);
@@ -543,17 +575,27 @@ export default function PlayerScreen() {
         </Animated.View>
       </View>
 
+      {/* El oscurecimiento permanece aunque se oculten los controles. */}
+      <View style={[StyleSheet.absoluteFill, styles.darkOverlay]} pointerEvents="none" />
+
       {/* ── Tap invisible para ocultar/mostrar UI ────────────────────────── */}
       <Pressable style={StyleSheet.absoluteFill} onPress={toggleUI} />
+
+      {/* Tiempo visible en modo inmersivo, sin controles. */}
+      <RNAnimated.View
+        style={[styles.centeredTime, { opacity: centeredTimeOpacity }]}
+        pointerEvents="none"
+      >
+        <Text style={styles.centeredTimeText}>
+          {formatTime(elapsed)} / {formatTime(totalSeconds)}
+        </Text>
+      </RNAnimated.View>
 
       {/* ── Toda la UI (se desvanece al tap) ─────────────────────────────── */}
       <RNAnimated.View
         style={[StyleSheet.absoluteFill, { opacity: uiOpacity }]}
         pointerEvents="box-none"
       >
-        {/* Overlay oscuro */}
-        <View style={[StyleSheet.absoluteFill, styles.darkOverlay]} pointerEvents="none" />
-
         {/* ── Cierre ──────────────────────────────────────────────────────── */}
         <View style={[styles.topRow, { paddingTop: topPad + 8 }]} pointerEvents="box-none">
           <Pressable
@@ -749,7 +791,11 @@ export default function PlayerScreen() {
                 accessibilityLabel={fav ? "Quitar de favoritos" : "Añadir a favoritos"}
               >
                 <RNAnimated.View style={{ transform: [{ scale: scaleHeart }] }}>
-                  <FontAwesome name="heart" size={20} color={fav ? "#F9F9F9" : "rgba(255,255,255,0.92)"} />
+                  {fav ? (
+                    <FontAwesome name="heart" size={20} color="#F9F9F9" />
+                  ) : (
+                    <Feather name="heart" size={20} color="rgba(255,255,255,0.92)" />
+                  )}
                 </RNAnimated.View>
               </Pressable>
               <Pressable
@@ -1063,9 +1109,22 @@ const styles = StyleSheet.create({
     overflow: "hidden",
   },
 
-  // Overlay oscuro (se desvanece con la UI)
+  // Overlay oscuro permanente
   darkOverlay: {
     backgroundColor: "rgba(0,0,0,0.50)",
+  },
+  centeredTime: {
+    ...StyleSheet.absoluteFillObject,
+    alignItems: "center",
+    justifyContent: "center",
+  },
+  centeredTimeText: {
+    color: "#FBFBFB",
+    fontFamily: "Manrope",
+    fontSize: 18,
+    fontWeight: "600",
+    letterSpacing: 0.3,
+    fontVariant: ["tabular-nums"],
   },
 
   // Fila superior: chevron izq + descarga der
