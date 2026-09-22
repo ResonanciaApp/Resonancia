@@ -452,7 +452,7 @@ export default function SonidosScreen() {
                 titleSize={17}
                   onViewAll={() => openCategory(`/sound-tag/${collection.id}`)}
                 />
-                {index === 1 ? (
+                {index === 1 && !isPremium ? (
                   <>
                     <View style={styles.sectionDivider} />
                     <SoundPremiumBanner />
