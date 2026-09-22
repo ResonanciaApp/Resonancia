@@ -4,6 +4,20 @@ import { getMoodById, type MoodId } from "@/data/moods";
 
 const STORAGE_KEY = "@resonance_mood_history_v1";
 
+function localDayKey(date: Date): string {
+  const year = date.getFullYear();
+  const month = String(date.getMonth() + 1).padStart(2, "0");
+  const day = String(date.getDate()).padStart(2, "0");
+  return `${year}-${month}-${day}`;
+}
+
+export class MoodCheckInAlreadyExistsError extends Error {
+  constructor() {
+    super("Ya existe un registro de estado de ánimo para hoy");
+    this.name = "MoodCheckInAlreadyExistsError";
+  }
+}
+
 export type MoodHistoryRecord = {
   id: string;
   createdAt: string;
@@ -72,10 +86,14 @@ export async function saveMoodCheckIn(
   quoteRotation?: MoodHistoryRecord["quoteRotation"],
 ): Promise<MoodHistoryRecord[]> {
   const current = await readMoodHistory();
+  const today = localDayKey(new Date());
+  if (current.some((record) => localDayKey(new Date(record.createdAt)) === today)) {
+    throw new MoodCheckInAlreadyExistsError();
+  }
   const record: MoodHistoryRecord = {
     id: `${Date.now()}-${Math.random().toString(36).slice(2)}`,
     createdAt: new Date().toISOString(),
-    moodIds: [...new Set(moodIds)],
+    moodIds: moodIds.slice(0, 1),
     answers,
     quoteRotation,
   };

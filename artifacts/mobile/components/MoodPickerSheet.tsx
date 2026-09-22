@@ -53,6 +53,7 @@ const MOOD_HEROES: Record<MoodId, number> = {
 };
 import { SESSIONS, type Session } from "@/data/sessions";
 import {
+  MoodCheckInAlreadyExistsError,
   readMoodHistory,
   saveMoodCheckIn,
   type MoodHistoryRecord,
@@ -237,6 +238,8 @@ export function MoodPickerSheet({
   const [surveyIndex, setSurveyIndex] = useState(0);
   const [answers, setAnswers] = useState<Answers>({});
   const [history, setHistory] = useState<MoodHistoryRecord[]>([]);
+  const [historyReady, setHistoryReady] = useState(false);
+  const [hasCheckedInToday, setHasCheckedInToday] = useState(false);
   const [completionCycle, setCompletionCycle] = useState(0);
   const [completionQuote, setCompletionQuote] = useState<MoodQuote | null>(null);
   const [isFinishing, setIsFinishing] = useState(false);
@@ -249,7 +252,9 @@ export function MoodPickerSheet({
       return;
     }
     setStep("select");
-    setSelected([...initialSelectedIds]);
+    setSelected(initialSelectedIds.slice(0, 1));
+    setHistoryReady(false);
+    setHasCheckedInToday(false);
     setSurveyIndex(0);
     setAnswers({});
     setCompletionQuote(null);
@@ -257,10 +262,22 @@ export function MoodPickerSheet({
     let active = true;
     readMoodHistory()
       .then((records) => {
-        if (active) setHistory(records);
+        if (!active) return;
+        setHistory(records);
+        const today = dayKey(new Date());
+        const todayRecord = records.find(
+          (record) => dayKey(new Date(record.createdAt)) === today,
+        );
+        if (todayRecord) {
+          setHasCheckedInToday(true);
+          setSelected(todayRecord.moodIds.slice(0, 1));
+        }
       })
       .catch(() => {
         if (active) setHistory([]);
+      })
+      .finally(() => {
+        if (active) setHistoryReady(true);
       });
     return () => {
       active = false;
@@ -319,18 +336,15 @@ export function MoodPickerSheet({
   }
 
   function handleStartSurvey() {
-    if (!selected.length) return;
+    if (!historyReady || hasCheckedInToday || !selected.length) return;
     setAnswers({});
     setSurveyIndex(0);
     setStep("survey");
   }
 
   function toggleMood(moodId: MoodId) {
-    setSelected((current) =>
-      current.includes(moodId)
-        ? current.filter((id) => id !== moodId)
-        : [...current, moodId],
-    );
+    if (!historyReady || hasCheckedInToday) return;
+    setSelected((current) => current[0] === moodId ? [] : [moodId]);
   }
 
   async function finishFlow(nextAnswers: Answers) {
@@ -358,11 +372,20 @@ export function MoodPickerSheet({
         return;
       }
       setHistory(records);
+      setHasCheckedInToday(true);
       setCompletionQuote(quote);
-    } catch {
+    } catch (error) {
       isFinishingRef.current = false;
       setIsFinishing(false);
       if (flowGeneration !== flowGenerationRef.current) return;
+      if (error instanceof MoodCheckInAlreadyExistsError) {
+        setHasCheckedInToday(true);
+        Alert.alert(
+          "Ya registraste tu emoción de hoy",
+          "Podrás registrar una nueva emoción mañana.",
+        );
+        return;
+      }
       Alert.alert(
         "No pudimos guardar este registro",
         "Inténtalo nuevamente para conservarlo en tu historial.",
@@ -473,7 +496,9 @@ export function MoodPickerSheet({
             >
               <Text style={styles.title}>¿Cómo te sientes hoy?</Text>
               <Text style={styles.subtitle}>
-                Elige una o varias emociones para personalizar este momento.
+                {hasCheckedInToday
+                  ? "Ya registraste tu emoción de hoy. Podrás hacerlo nuevamente mañana."
+                  : "Elige una emoción para personalizar este momento."}
               </Text>
               <View style={styles.grid}>
                 {MOOD_PICKER_OPTIONS.map((mood) => {
@@ -482,14 +507,15 @@ export function MoodPickerSheet({
                     <Pressable
                       key={mood.id}
                       onPress={() => toggleMood(mood.id)}
-                      accessibilityRole="checkbox"
-                      accessibilityState={{ checked: isSelected }}
+                      disabled={!historyReady || hasCheckedInToday}
+                      accessibilityRole="radio"
+                      accessibilityState={{ selected: isSelected, disabled: !historyReady || hasCheckedInToday }}
                       accessibilityLabel={mood.label}
                       testID={`mood-option-${mood.id}`}
                       style={({ pressed }) => [
                         styles.moodCard,
                         isSelected && styles.moodCardSelected,
-                        { opacity: pressed ? 0.8 : 1 },
+                        { opacity: !historyReady || hasCheckedInToday ? 0.55 : pressed ? 0.8 : 1 },
                       ]}
                     >
                       <Text style={styles.moodEmoji}>{mood.emoji}</Text>
@@ -510,7 +536,7 @@ export function MoodPickerSheet({
             >
               <PrimaryButton
                 label="Continuar"
-                disabled={!selected.length}
+                disabled={!historyReady || hasCheckedInToday || !selected.length}
                 onPress={handleStartSurvey}
                 testID="mood-picker-continue"
               />
