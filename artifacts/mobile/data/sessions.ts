@@ -1,3 +1,47 @@
+import type { ImageSourcePropType } from "react-native";
+
+import { PLAYLIST_COVER_PRESETS } from "@/data/default-playlist-covers";
+
+const AMBIENTAL_NATURE_COVER_IDS = new Set([
+  "mist-forest",
+  "redwood-light",
+  "autumn-river",
+  "moss-waterfall",
+  "snow-pines",
+  "quiet-ocean",
+  "coastal-cliffs",
+  "river-canyon",
+  "rain-lagoon",
+  "ice-lagoon",
+  "birds-dawn",
+  "crane-marsh",
+  "elephant-savanna",
+  "deer-meadow",
+  "whale-depths",
+  "wild-horses",
+  "mountain-clouds",
+  "volcanic-island",
+  "lavender-hills",
+]);
+
+const AMBIENTAL_NATURE_COVERS = PLAYLIST_COVER_PRESETS
+  .filter((cover) => AMBIENTAL_NATURE_COVER_IDS.has(cover.id))
+  .map((cover) => cover.source);
+
+function stableCoverIndex(value: string, coverCount: number): number {
+  let hash = 0;
+  for (let index = 0; index < value.length; index += 1) {
+    hash = (hash * 31 + value.charCodeAt(index)) | 0;
+  }
+  return Math.abs(hash) % coverCount;
+}
+
+export function getAmbientalNatureCover(sessionId: string): ImageSourcePropType {
+  return AMBIENTAL_NATURE_COVERS[
+    stableCoverIndex(sessionId, AMBIENTAL_NATURE_COVERS.length)
+  ];
+}
+
 export type SoundTag = "Música Ambient" | "Música Enteógena" | "Música Tribal" | "Música Étnica";
 export type MeditationTag =
   | "No Duales"
@@ -1069,7 +1113,7 @@ export const SESSIONS: Session[] = [
     description: "Una lluvia delicada sobre el cristal crea un refugio íntimo para bajar el ritmo y descansar la atención.",
     benefits: ["Calma inmediata", "Pausa mental", "Descanso sensorial"],
     instruments: ["Lluvia", "Gotas sobre cristal"],
-    image: require("@/assets/images/sessions/ambiental-test-01-lluvia-suave.jpg"),
+    image: getAmbientalNatureCover("test-ambiental-01"),
     isPlaceholder: true,
     voiceTag: "Sin voz",
     sonidosTags: ["Todos los sonidos"],
@@ -1085,7 +1129,7 @@ export const SESSIONS: Session[] = [
     description: "La atmósfera húmeda de un bosque que despierta acompaña una práctica suave de presencia y conexión con la naturaleza.",
     benefits: ["Conexión natural", "Atención plena", "Relajación profunda"],
     instruments: ["Aves lejanas", "Hojas", "Brisa"],
-    image: require("@/assets/images/sessions/ambiental-test-02-bosque-amanecer.jpg"),
+    image: getAmbientalNatureCover("test-ambiental-02"),
     isPlaceholder: true,
     voiceTag: "Sin voz",
     sonidosTags: ["Todos los sonidos", "Sonidos de naturaleza"],
@@ -1101,7 +1145,7 @@ export const SESSIONS: Session[] = [
     description: "El movimiento lento de las olas sobre la arena abre un espacio amplio y sereno para respirar con más profundidad.",
     benefits: ["Respiración amplia", "Sensación de amplitud", "Quietud"],
     instruments: ["Olas", "Agua", "Arena"],
-    image: require("@/assets/images/sessions/ambiental-test-03-oceano-calma.jpg"),
+    image: getAmbientalNatureCover("test-ambiental-03"),
     isPlaceholder: true,
     voiceTag: "Sin voz",
     sonidosTags: ["Todos los sonidos", "Sonidos de naturaleza"],
@@ -1117,7 +1161,7 @@ export const SESSIONS: Session[] = [
     description: "El viento atraviesa los tallos de bambú con un pulso orgánico y repetitivo que invita a soltar tensión.",
     benefits: ["Liberación de tensión", "Ritmo sostenido", "Respiración consciente"],
     instruments: ["Bambú", "Viento suave", "Hojas"],
-    image: require("@/assets/images/sessions/ambiental-test-04-viento-bambues.jpg"),
+    image: getAmbientalNatureCover("test-ambiental-04"),
     isPlaceholder: true,
     voiceTag: "Sin voz",
     sonidosTags: ["Todos los sonidos", "Sonidos de naturaleza"],
@@ -1133,7 +1177,7 @@ export const SESSIONS: Session[] = [
     description: "Chasquidos cálidos y fuego lento construyen una sensación de hogar para acompañar una tarde tranquila.",
     benefits: ["Sensación de refugio", "Relajación", "Pausa reparadora"],
     instruments: ["Leña", "Brasas", "Fuego"],
-    image: require("@/assets/images/sessions/ambiental-test-05-fuego-hogar.jpg"),
+    image: getAmbientalNatureCover("test-ambiental-05"),
     isPlaceholder: true,
     voiceTag: "Sin voz",
     sonidosTags: ["Todos los sonidos"],
@@ -1149,7 +1193,7 @@ export const SESSIONS: Session[] = [
     description: "Una noche abierta y silenciosa sostiene la desaceleración, ideal para cerrar el día y preparar el descanso.",
     benefits: ["Desaceleración", "Cierre del día", "Descanso profundo"],
     instruments: ["Noche", "Brisa distante", "Pradera"],
-    image: require("@/assets/images/sessions/ambiental-test-06-noche-estrellas.jpg"),
+    image: getAmbientalNatureCover("test-ambiental-06"),
     isPlaceholder: true,
     voiceTag: "Sin voz",
     sonidosTags: ["Todos los sonidos"],
@@ -1165,7 +1209,7 @@ export const SESSIONS: Session[] = [
     description: "El agua transparente corre entre piedras redondeadas y ofrece una textura continua para volver al presente.",
     benefits: ["Enfoque suave", "Presencia", "Limpieza mental"],
     instruments: ["Río", "Piedras", "Agua corriente"],
-    image: require("@/assets/images/sessions/ambiental-test-07-rio-cristal.jpg"),
+    image: getAmbientalNatureCover("test-ambiental-07"),
     isPlaceholder: true,
     voiceTag: "Sin voz",
     sonidosTags: ["Todos los sonidos", "Sonidos de naturaleza"],
@@ -1642,6 +1686,9 @@ export function applyCatalogSnapshot(remote: CatalogSessionSnapshot[]): void {
     if (r.imageUrl && !(r.imageUrl in BUNDLED_SESSION_IMAGES)) {
       local.image = { uri: resolveObjectPath(r.imageUrl) as string };
     }
+    if (local.categoryId === "ambientales") {
+      local.image = getAmbientalNatureCover(local.id);
+    }
   }
 
   // 2. Insertar sesiones nuevas (subidas vía admin) que no están en el bundle.
@@ -1649,12 +1696,15 @@ export function applyCatalogSnapshot(remote: CatalogSessionSnapshot[]): void {
     if (SESSIONS.some((s) => s.id === r.id)) continue;
     const main = r.audioFiles?.find((a) => a.role === "main" || a.role === "base") ?? r.audioFiles?.[0];
     const voice = r.audioFiles?.find((a) => a.role === "voice");
-    const image: import("react-native").ImageSourcePropType = r.imageUrl
-      ? (BUNDLED_SESSION_IMAGES[r.imageUrl] ??
-          (r.imageUrl.startsWith("/") || /^https?:/i.test(r.imageUrl)
-            ? { uri: resolveObjectPath(r.imageUrl) as string }
-            : require("@/assets/images/sessions/session-2.jpg")))
-      : require("@/assets/images/sessions/session-2.jpg");
+    const image: import("react-native").ImageSourcePropType =
+      r.categoryId === "ambientales"
+        ? getAmbientalNatureCover(r.id)
+        : r.imageUrl
+          ? (BUNDLED_SESSION_IMAGES[r.imageUrl] ??
+              (r.imageUrl.startsWith("/") || /^https?:/i.test(r.imageUrl)
+                ? { uri: resolveObjectPath(r.imageUrl) as string }
+                : require("@/assets/images/sessions/session-2.jpg")))
+          : require("@/assets/images/sessions/session-2.jpg");
     SESSIONS.push({
       id: r.id,
       title: r.title,

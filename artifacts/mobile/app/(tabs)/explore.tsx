@@ -1408,8 +1408,6 @@ const styles = StyleSheet.create({
     width: "100%",
     aspectRatio: 1.35,
     borderRadius: 14,
-    borderWidth: 1,
-    borderColor: "rgba(255,255,255,0.2)",
     overflow: "hidden",
     alignItems: "center",
     justifyContent: "center",
