@@ -267,8 +267,7 @@ export default function ThemeTagScreen({
           </View>
         ) : (
           <>
-            {!internalLabel &&
-            !internalLabel && [...internalGroups.entries()].map(([label, labelSessions]) => (
+            {!internalLabel && [...internalGroups.entries()].map(([label, labelSessions], index) => (
                 <SessionCarousel
                   key={label}
                   title={label}
@@ -281,7 +280,10 @@ export default function ThemeTagScreen({
                     )
                   }
                   viewAllLabel="Ver todo"
-                  style={styles.sessionGrid}
+                  style={[
+                    styles.internalCarousel,
+                    index === 0 && styles.firstInternalCarousel,
+                  ]}
                   eagerRender
                   presentation="editorial"
                   disableAmbientalVariant
@@ -461,6 +463,12 @@ const styles = StyleSheet.create({
   sessionGrid: {
     paddingHorizontal: 0,
     marginBottom: 0,
+  },
+  internalCarousel: {
+    marginBottom: 0,
+  },
+  firstInternalCarousel: {
+    marginTop: 25,
   },
   emptySlot: {
     marginHorizontal: H_PAD,
