@@ -344,7 +344,7 @@ const styles = StyleSheet.create({
     borderWidth: 0,
     backgroundColor: "rgba(0,0,0,0.28)",
     paddingHorizontal: 14,
-    paddingVertical: 18,
+    paddingVertical: 14,
     marginBottom: 14,
   },
   avatarWrap: { position: "relative", width: 44, height: 44 },

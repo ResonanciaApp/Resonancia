@@ -3,6 +3,7 @@ import { GhostPill } from "@/components/GhostPill";
 import { LinearGradient } from "expo-linear-gradient";
 import { router, Stack, useFocusEffect } from "expo-router";
 import { useBackOverride } from "@/context/BackOverrideContext";
+import { useDrawer } from "@/context/DrawerContext";
 import React, { useCallback, useState } from "react";
 import {
   ActivityIndicator,
@@ -121,11 +122,13 @@ function GroupAvatar({
 // ─── Create group sheet ───────────────────────────────────────────────────────
 function CreateGroupSheet({ visible, onClose }: { visible: boolean; onClose: () => void }) {
   const colors = useColors();
+  const { closeOverlay } = useDrawer();
   const { theme: sceneTheme } = useSceneTheme();
   const insets = useSafeAreaInsets();
 
   const handleSelect = (tipo: "publico" | "privado") => {
     onClose();
+    closeOverlay();
     router.push(`/grupo/crear?privado=${tipo === "privado" ? "1" : "0"}` as never);
   };
 
@@ -190,6 +193,7 @@ function TabOjear({
   gruposAdmin: GrupoLocal[];
   adminName: string;
 }) {
+  const { closeOverlay } = useDrawer();
   return (
     <ScrollView showsVerticalScrollIndicator={false} contentContainerStyle={{ paddingBottom: 100 }}>
       {/* Grupos populares */}
@@ -200,7 +204,10 @@ function TabOjear({
         {gruposAdmin.map((g) => (
           <Pressable
             key={g.id}
-            onPress={() => router.push(`/grupo/${g.id}` as never)}
+            onPress={() => {
+              closeOverlay();
+              router.push(`/grupo/${g.id}` as never);
+            }}
             style={({ pressed }) => [
               styles.popularRow,
               { backgroundColor: "rgba(0,0,0,0.2)", overflow: "hidden", borderWidth: 0, opacity: pressed ? 0.8 : 1 },
@@ -211,7 +218,7 @@ function TabOjear({
               <Text style={[styles.popularTipo, { color: "#F4F4F4" }]}>
                 Círculo público
               </Text>
-              <Text style={[styles.popularName, { color: "#F9F9F9" }]} numberOfLines={1}>
+              <Text style={[styles.popularName, styles.compactCardTitle, { color: "#F9F9F9" }]} numberOfLines={1}>
                 {g.nombre}
               </Text>
               <Text style={[styles.popularMembers, { color: "#F4F4F4" }]} numberOfLines={1}>
@@ -254,6 +261,7 @@ function TabMisGrupos({
   onCreatePress: () => void;
   gruposCreados: GrupoLocal[];
 }) {
+  const { closeOverlay } = useDrawer();
   return (
     <ScrollView showsVerticalScrollIndicator={false} contentContainerStyle={{ paddingBottom: 100 }}>
       {/* Grupos que gestiono */}
@@ -261,7 +269,7 @@ function TabMisGrupos({
         <View style={styles.sectionHeader}>
           <Text style={[styles.sectionTitle, { color: "#F9F9F9" }]}>Grupos que gestiono</Text>
           <Pressable onPress={onCreatePress} hitSlop={8}>
-            <View style={[styles.addBtn, { backgroundColor: "rgba(255,255,255,0.075)", overflow: "hidden", borderColor: "rgba(255,255,255,0.1)" }]}>
+            <View style={[styles.addBtn, { backgroundColor: "rgba(0,0,0,0.28)", overflow: "hidden", borderColor: "rgba(255,255,255,0.1)" }]}>
               <Feather name="plus" size={20} color={"#F9F9F9"} />
             </View>
           </Pressable>
@@ -277,7 +285,10 @@ function TabMisGrupos({
           gruposCreados.map((g) => (
             <Pressable
               key={g.id}
-              onPress={() => router.push(`/grupo/${g.id}` as never)}
+              onPress={() => {
+                closeOverlay();
+                router.push(`/grupo/${g.id}` as never);
+              }}
               style={({ pressed }) => [
                 styles.unitoRow,
                 { backgroundColor: "rgba(0,0,0,0.2)", overflow: "hidden", borderWidth: 0, opacity: pressed ? 0.8 : 1 },
@@ -319,7 +330,10 @@ function TabMisGrupos({
           GRUPOS_UNIDOS.map((g) => (
             <Pressable
               key={g.id}
-              onPress={() => router.push(`/grupo/${g.id}` as never)}
+              onPress={() => {
+                closeOverlay();
+                router.push(`/grupo/${g.id}` as never);
+              }}
               style={({ pressed }) => [
                 styles.unitoRow,
                 { backgroundColor: "rgba(0,0,0,0.2)", overflow: "hidden", borderWidth: 0, opacity: pressed ? 0.8 : 1 },
@@ -327,7 +341,7 @@ function TabMisGrupos({
             >
               <GroupAvatar gradient={g.gradient} icon={g.icon} color={g.color} size={54} />
               <View style={{ flex: 1 }}>
-                <Text style={[styles.popularName, { color: "#F9F9F9" }]} numberOfLines={1}>
+                <Text style={[styles.popularName, styles.compactCardTitle, { color: "#F9F9F9" }]} numberOfLines={1}>
                   {g.name}
                 </Text>
                 <Text style={[styles.popularMembers, { color: "#F4F4F4" }]}>
@@ -360,7 +374,7 @@ function TabTablon({ colors }: { colors: ReturnType<typeof useColors> }) {
       {FEED_POSTS.map((post) => (
         <View
           key={post.id}
-          style={[styles.feedCard, { backgroundColor: "rgba(255,255,255,0.075)", overflow: "hidden", borderColor: "rgba(255,255,255,0.1)" }]}
+          style={[styles.feedCard, { backgroundColor: "rgba(0,0,0,0.28)", overflow: "hidden", borderColor: "rgba(255,255,255,0.1)" }]}
         >
           {/* Post header */}
           <View style={styles.feedHeader}>
@@ -586,7 +600,7 @@ const styles = StyleSheet.create({
   // Sections
   section: { marginBottom: 24 },
   sectionHeader: { flexDirection: "row", alignItems: "center", justifyContent: "space-between", marginBottom: 14 },
-  sectionTitle: { fontFamily: "Manrope", fontSize: 20, fontWeight: "700", letterSpacing: 0.5 },
+  sectionTitle: { fontFamily: "Manrope", fontSize: 17, fontWeight: "700", letterSpacing: 0.5 },
   verTodos: { fontFamily: "Manrope", fontSize: 14, fontWeight: "600" },
   addBtn: {
     width: 32, height: 32, borderRadius: 16,
@@ -606,6 +620,7 @@ const styles = StyleSheet.create({
   },
   popularTipo: { fontFamily: "Manrope", fontSize: 11, marginBottom: 2 },
   popularName: { fontFamily: "Manrope", fontSize: 14, fontWeight: "700" },
+  compactCardTitle: { fontSize: 12 },
   popularMembers: { fontFamily: "Manrope", fontSize: 12, marginTop: 2 },
 
   // Tema rows
