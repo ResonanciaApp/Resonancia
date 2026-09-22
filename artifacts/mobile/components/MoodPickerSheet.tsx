@@ -19,6 +19,7 @@ import {
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 
 import { EmotionalQuoteCard } from "@/components/EmotionalQuoteCard";
+import { MoodCalendar } from "@/components/MoodCalendar";
 import { CinematicFadeSlide } from "@/components/CinematicFadeSlide";
 import { SessionCarousel } from "@/components/SessionCarousel";
 import {
@@ -63,7 +64,7 @@ import { useCategoryOverlay } from "@/context/CategoryOverlayContext";
 import { usePlayer } from "@/context/PlayerContext";
 import { usePremium } from "@/context/PremiumContext";
 import { useSceneTheme } from "@/context/SceneThemeContext";
-import { startOfWeek, dayKey } from "@/utils/stats";
+import { dayKey } from "@/utils/stats";
 import { getPrimaryMoodId } from "@/data/mood-quote-rotation";
 import colors, { WIDGET_GREEN_SOLID } from "@/constants/colors";
 
@@ -77,7 +78,6 @@ type Props = {
 type FlowStep = "select" | "survey" | "complete";
 type Answers = Partial<Record<MoodId, string>>;
 
-const WEEKDAY_LABELS = ["LUN", "MAR", "MIÉ", "JUE", "VIE", "SÁB", "DOM"];
 const GOLD = "#F9F9F9";
 const FG = "#F5F2F8";
 const MUTED = "rgba(245,242,248,0.62)";
@@ -308,28 +308,10 @@ export function MoodPickerSheet({
     (recommendationCardWidth / (16 / 9)) * 1.1,
   );
 
-  const weekDays = useMemo(() => {
-    const monday = startOfWeek(new Date());
-    return Array.from({ length: 7 }, (_, index) => {
-      const date = new Date(monday);
-      date.setDate(monday.getDate() + index);
-      return date;
-    });
+  const currentMonth = useMemo(() => {
+    const now = new Date();
+    return new Date(now.getFullYear(), now.getMonth(), 1);
   }, [history]);
-
-  const weekRecordsByDay = useMemo(() => {
-    const monday = weekDays[0];
-    const nextMonday = new Date(monday);
-    nextMonday.setDate(monday.getDate() + 7);
-    const byDay = new Map<string, MoodHistoryRecord[]>();
-    history.forEach((record) => {
-      const date = new Date(record.createdAt);
-      if (date < monday || date >= nextMonday) return;
-      const key = dayKey(date);
-      byDay.set(key, [...(byDay.get(key) ?? []), record]);
-    });
-    return byDay;
-  }, [history, weekDays]);
 
   function handleClose() {
     onClose();
@@ -754,28 +736,13 @@ export function MoodPickerSheet({
                 >
                   <View style={styles.completeSectionDivider} />
 
-                  <View style={styles.weekCard}>
-                    <Text style={styles.weekTitle}>Esta semana</Text>
-                    <View style={styles.weekDaysRow}>
-                      {weekDays.map((date, index) => {
-                        const records = weekRecordsByDay.get(dayKey(date)) ?? [];
-                        const moods = records.flatMap((record) => record.moodIds);
-                        const firstDayMood = moods[0] ? getMoodById(moods[0]) : undefined;
-                        return (
-                          <View key={dayKey(date)} style={styles.weekDay}>
-                            <Text style={styles.weekDayLabel}>{WEEKDAY_LABELS[index]}</Text>
-                            <View style={[styles.weekMood, firstDayMood && styles.weekMoodActive]}>
-                              {firstDayMood ? (
-                                <Text style={styles.weekMoodEmoji}>{firstDayMood.emoji}</Text>
-                              ) : (
-                                <View style={styles.weekMoodEmpty} />
-                              )}
-                            </View>
-                            {moods.length > 1 && <Text style={styles.weekMoodCount}>+{moods.length - 1}</Text>}
-                          </View>
-                        );
-                      })}
-                    </View>
+                  <View style={styles.monthCard}>
+                    <Text style={styles.monthSectionTitle}>Este mes</Text>
+                    <MoodCalendar
+                      month={currentMonth}
+                      records={history}
+                      showMonthTitle
+                    />
                     <Pressable
                       onPress={() => {
                         onClose();
@@ -1134,65 +1101,19 @@ const styles = StyleSheet.create({
     marginBottom: 31,
     backgroundColor: "rgba(255,255,255,0.18)",
   },
-  weekCard: {
+  monthCard: {
     borderRadius: 18,
     borderWidth: 2,
     borderColor: "rgba(255,255,255,0.10)",
     padding: 18,
     backgroundColor: "transparent",
   },
-  weekTitle: {
+  monthSectionTitle: {
     fontFamily: "Manrope",
     color: "#FFFFFF",
     fontSize: 15,
     fontWeight: "700",
     marginBottom: 18,
-  },
-  weekDaysRow: {
-    flexDirection: "row",
-    justifyContent: "space-between",
-    gap: 4,
-  },
-  weekDay: {
-    flex: 1,
-    alignItems: "center",
-  },
-  weekDayLabel: {
-    fontFamily: "Manrope",
-    color: "rgba(255,255,255,0.48)",
-    fontSize: 9,
-    fontWeight: "700",
-    marginBottom: 9,
-  },
-  weekMood: {
-    width: 32,
-    height: 32,
-    borderRadius: 16,
-    alignItems: "center",
-    justifyContent: "center",
-    borderWidth: 1,
-    borderColor: "rgba(255,255,255,0.14)",
-  },
-  weekMoodActive: {
-    borderColor: "rgba(255,255,255,0.34)",
-    backgroundColor: "rgba(255,255,255,0.08)",
-  },
-  weekMoodEmpty: {
-    width: 14,
-    height: 14,
-    borderRadius: 7,
-    borderWidth: 1,
-    borderColor: "rgba(255,255,255,0.12)",
-  },
-  weekMoodEmoji: {
-    fontSize: 18,
-  },
-  weekMoodCount: {
-    position: "absolute",
-    top: 43,
-    fontFamily: "Manrope",
-    color: "rgba(255,255,255,0.62)",
-    fontSize: 9,
   },
   historyButton: {
     height: 44,

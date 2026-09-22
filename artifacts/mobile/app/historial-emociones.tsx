@@ -13,56 +13,11 @@ import {
 } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 
-import { getMoodById } from "@/data/moods";
 import { readMoodHistory, type MoodHistoryRecord } from "@/data/mood-history";
+import { buildMoodCalendarRange } from "@/data/mood-calendar";
 import { useSceneTheme } from "@/context/SceneThemeContext";
 import { getLibraryTabSurface } from "@/components/BibliotecaScreen";
-
-type DayGroup = {
-  key: string;
-  date: Date;
-  records: MoodHistoryRecord[];
-};
-
-type MonthGroup = {
-  key: string;
-  label: string;
-  days: DayGroup[];
-};
-
-function groupHistory(records: MoodHistoryRecord[]): MonthGroup[] {
-  const days = new Map<string, DayGroup>();
-  for (const record of records) {
-    const date = new Date(record.createdAt);
-    const key = `${date.getFullYear()}-${date.getMonth()}-${date.getDate()}`;
-    const current = days.get(key);
-    if (current) {
-      current.records.push(record);
-    } else {
-      days.set(key, { key, date, records: [record] });
-    }
-  }
-
-  const months = new Map<string, MonthGroup>();
-  [...days.values()]
-    .sort((a, b) => b.date.getTime() - a.date.getTime())
-    .forEach((day) => {
-      const key = `${day.date.getFullYear()}-${day.date.getMonth()}`;
-      const current = months.get(key);
-      if (current) {
-        current.days.push(day);
-      } else {
-        months.set(key, {
-          key,
-          label: day.date
-            .toLocaleDateString("es-CL", { month: "long", year: "numeric" })
-            .toUpperCase(),
-          days: [day],
-        });
-      }
-    });
-  return [...months.values()];
-}
+import { MoodCalendar } from "@/components/MoodCalendar";
 
 export default function HistorialEmocionesScreen() {
   const insets = useSafeAreaInsets();
@@ -87,7 +42,7 @@ export default function HistorialEmocionesScreen() {
     }, [reload]),
   );
 
-  const months = useMemo(() => groupHistory(records), [records]);
+  const months = useMemo(() => buildMoodCalendarRange(records), [records]);
 
   return (
     <LinearGradient
@@ -131,31 +86,7 @@ export default function HistorialEmocionesScreen() {
         >
           {months.map((month) => (
             <View key={month.key} style={styles.monthSection}>
-              <Text style={styles.monthTitle}>{month.label}</Text>
-              {month.days.map((day, dayIndex) => (
-                <View key={day.key} style={styles.dayRow}>
-                  <View style={styles.dateRail}>
-                    <View style={styles.dateCircle}>
-                      <Text style={styles.dateText}>{day.date.getDate()}</Text>
-                    </View>
-                    {dayIndex < month.days.length - 1 && <View style={styles.railLine} />}
-                  </View>
-                  <View style={styles.dayMoods}>
-                    {day.records.flatMap((record) =>
-                      record.moodIds.map((moodId) => {
-                        const mood = getMoodById(moodId);
-                        if (!mood) return null;
-                        return (
-                          <View key={`${record.id}-${moodId}`} style={styles.moodChip}>
-                            <Text style={styles.moodEmoji}>{mood.emoji}</Text>
-                            <Text style={styles.moodLabel}>{mood.label}</Text>
-                          </View>
-                        );
-                      }),
-                    )}
-                  </View>
-                </View>
-              ))}
+              <MoodCalendar month={month.date} records={records} showMonthTitle />
             </View>
           ))}
         </ScrollView>
@@ -209,72 +140,14 @@ const styles = StyleSheet.create({
     paddingTop: 12,
   },
   monthSection: {
-    marginBottom: 28,
-  },
-  monthTitle: {
-    fontFamily: "Manrope",
-    color: "rgba(249,249,249,0.72)",
-    fontSize: 12,
-    fontWeight: "800",
-    letterSpacing: 1.2,
-    marginTop: 15,
-    marginBottom: 18,
-  },
-  dayRow: {
-    minHeight: 74,
-    flexDirection: "row",
-    alignItems: "flex-start",
-  },
-  dateRail: {
-    width: 48,
-    alignItems: "center",
-    alignSelf: "stretch",
-  },
-  dateCircle: {
-    width: 36,
-    height: 36,
-    borderRadius: 18,
-    borderWidth: 1,
-    borderColor: "rgba(255,255,255,0.2)",
-    alignItems: "center",
-    justifyContent: "center",
-    backgroundColor: "rgba(0,0,0,0.28)",
-  },
-  dateText: {
-    fontFamily: "Manrope",
-    color: "#F9F9F9",
-    fontSize: 13,
-    fontWeight: "600",
-  },
-  railLine: {
-    width: 1,
-    flex: 1,
-    minHeight: 30,
-    marginTop: 5,
-    backgroundColor: "rgba(255,255,255,0.18)",
-  },
-  dayMoods: {
-    flex: 1,
-    gap: 7,
-    paddingLeft: 7,
+    marginBottom: 20,
+    paddingHorizontal: 14,
+    paddingTop: 20,
     paddingBottom: 15,
-  },
-  moodChip: {
-    alignSelf: "flex-start",
-    minHeight: 36,
-    paddingVertical: 7,
-    flexDirection: "row",
-    alignItems: "center",
-    gap: 7,
-  },
-  moodEmoji: {
-    fontSize: 18,
-  },
-  moodLabel: {
-    fontFamily: "Manrope",
-    color: "#F9F9F9",
-    fontSize: 14,
-    fontWeight: "600",
+    borderRadius: 20,
+    borderWidth: 1,
+    borderColor: "rgba(255,255,255,0.10)",
+    backgroundColor: "rgba(0,0,0,0.14)",
   },
   emptyState: {
     flex: 1,
