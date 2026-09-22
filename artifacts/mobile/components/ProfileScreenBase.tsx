@@ -1667,26 +1667,6 @@ export function ProfileScreenBase({
               />
             </View>
 
-            {continueMeditationPlaylist && (
-              <ContinueMeditationPlaylistCard
-                title={continueMeditationPlaylist.playlist.title}
-                description={continueMeditationPlaylist.playlist.description}
-                coverSource={
-                  continueMeditationPlaylist.playlist.coverUrl
-                    ? { uri: continueMeditationPlaylist.playlist.coverUrl }
-                    : continueMeditationPlaylist.playlist.cover
-                }
-                completion={continueMeditationPlaylist.completion}
-                sectionStyle={styles.continueProgramSection}
-                onPress={() => {
-                  router.push({
-                    pathname: "/editorial-playlist/[slug]",
-                    params: { slug: continueMeditationPlaylist.playlist.id },
-                  } as never);
-                }}
-              />
-            )}
-
             <Pressable
               onPress={() => setMorningReminderVisible(true)}
               style={({ pressed }) => [
@@ -1782,6 +1762,26 @@ export function ProfileScreenBase({
               </View>
               <Feather name="chevron-right" size={22} color={colors.foreground} />
             </Pressable>
+
+            {continueMeditationPlaylist && (
+              <ContinueMeditationPlaylistCard
+                title={continueMeditationPlaylist.playlist.title}
+                description={continueMeditationPlaylist.playlist.description}
+                coverSource={
+                  continueMeditationPlaylist.playlist.coverUrl
+                    ? { uri: continueMeditationPlaylist.playlist.coverUrl }
+                    : continueMeditationPlaylist.playlist.cover
+                }
+                completion={continueMeditationPlaylist.completion}
+                sectionStyle={styles.continueProgramSection}
+                onPress={() => {
+                  router.push({
+                    pathname: "/editorial-playlist/[slug]",
+                    params: { slug: continueMeditationPlaylist.playlist.id },
+                  } as never);
+                }}
+              />
+            )}
 
           </>
         )}
@@ -2888,6 +2888,7 @@ const styles = StyleSheet.create({
   },
   continueProgramSection: {
     marginHorizontal: -16,
+    marginTop: -15,
   },
   practiceReminderSection: {
     paddingHorizontal: 16,

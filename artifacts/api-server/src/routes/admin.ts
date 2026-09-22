@@ -1835,6 +1835,10 @@ router.post("/admin/tag-options", requireAuth, requireRole("admin"), async (req,
     return;
   }
   const { type, label } = parsedBody.data;
+  if (type.startsWith("other_theme_internal:") && !isOtherThemeInternalType(type)) {
+    res.status(400).json({ error: "Tipo de etiqueta interna inválido" });
+    return;
+  }
   const baseType = type.endsWith("_hidden") ? type.slice(0, -"_hidden".length) : type;
   if (
     baseType === "sonidos_collection" &&
@@ -1854,6 +1858,17 @@ router.post("/admin/tag-options", requireAuth, requireRole("admin"), async (req,
         .where(and(eq(catalogTagOptionsTable.type, type), sql`lower(${catalogTagOptionsTable.label}) = lower(${label})`))
         .limit(1);
       if (duplicate.length) throw new Error("DUPLICATE");
+      if (type === "other_theme") {
+        const sameDefault = OTHER_THEME_PARENT_DEFAULTS.some(
+          (parent) => otherThemeSlug(parent) === otherThemeSlug(label),
+        );
+        const currentParents = await tx.select({ id: catalogTagOptionsTable.id, label: catalogTagOptionsTable.label })
+          .from(catalogTagOptionsTable)
+          .where(eq(catalogTagOptionsTable.type, "other_theme"));
+        if (sameDefault || currentParents.some((parent) => otherThemeSlug(parent.label) === otherThemeSlug(label))) {
+          throw new Error("PARENT_SLUG_COLLISION");
+        }
+      }
       if (type.endsWith("_hidden")) {
         const inUse = baseType === "podcast"
           ? await tx.select({ id: catalogSessionsTable.id })
@@ -1905,6 +1920,20 @@ router.post("/admin/tag-options", requireAuth, requireRole("admin"), async (req,
           await tx.update(catalogSessionsTable)
             .set({ sonidosTags: sql`array_remove(${catalogSessionsTable.sonidosTags}, ${label})` })
             .where(sql`${catalogSessionsTable.sonidosTags} @> ARRAY[${label}]::text[]`);
+        } else if (baseType === "other_theme") {
+          const internalType = `other_theme_internal:${otherThemeSlug(label)}`;
+          const children = await tx.select({ label: catalogTagOptionsTable.label })
+            .from(catalogTagOptionsTable)
+            .where(eq(catalogTagOptionsTable.type, internalType));
+          for (const child of children) {
+            const storedLabel = storedOtherThemeInternalLabel(internalType, child.label);
+            await tx.update(catalogSessionsTable)
+              .set({ themeTag: sql`array_remove(${catalogSessionsTable.themeTag}, ${storedLabel})` })
+              .where(sql`${catalogSessionsTable.themeTag} @> ARRAY[${storedLabel}]::text[]`);
+          }
+          await tx.update(catalogSessionsTable)
+            .set({ themeTag: sql`array_remove(${catalogSessionsTable.themeTag}, ${label})` })
+            .where(sql`${catalogSessionsTable.themeTag} @> ARRAY[${label}]::text[]`);
         }
       }
       return created;
@@ -1914,6 +1943,10 @@ router.post("/admin/tag-options", requireAuth, requireRole("admin"), async (req,
   } catch (err) {
     if (err instanceof Error && err.message === "DUPLICATE") {
       res.status(409).json({ error: "Ya existe una etiqueta con ese nombre" });
+      return;
+    }
+    if (err instanceof Error && err.message === "PARENT_SLUG_COLLISION") {
+      res.status(409).json({ error: "Ya existe una temática con ese identificador interno" });
       return;
     }
     if (err instanceof Error && err.message === "SUBCATEGORY_IN_USE") {
@@ -1945,6 +1978,48 @@ function isManagedThemeType(type: string): boolean {
   return Boolean(CATEGORY_THEME_TYPE_TO_ID[type]) || SUPERCATEGORY_THEME_TYPES.has(type);
 }
 
+const OTHER_THEME_INTERNAL_TYPE_RE = /^other_theme_internal:[a-z0-9]+(?:-[a-z0-9]+)*$/;
+
+function isOtherThemeInternalType(type: string): boolean {
+  return OTHER_THEME_INTERNAL_TYPE_RE.test(type);
+}
+
+function otherThemeSlug(label: string): string {
+  const canonical: Record<string, string> = {
+    "Para la ansiedad": "para-la-ansiedad",
+    "Energiza tus mañanas": "energiza-tus-mananas",
+    "Foco y concentración": "foco-concentracion",
+    "Suelto la Rabia": "suelto-la-rabia",
+    "Crecimiento personal": "crecimiento-personal",
+    "Armonía familiar": "armonia-familiar",
+    "Respiración consciente": "respiracion-consciente",
+    "Meditaciones Activas": "meditaciones-activas",
+    Astrología: "astrologia",
+  };
+  const normalized = label.normalize("NFD").replace(/[\u0300-\u036f]/g, "").toLocaleLowerCase().trim();
+  const canonicalEntry = Object.entries(canonical).find(([key]) =>
+    key.normalize("NFD").replace(/[\u0300-\u036f]/g, "").toLocaleLowerCase() === normalized);
+  if (canonicalEntry) return canonicalEntry[1];
+  return label.normalize("NFD").replace(/[\u0300-\u036f]/g, "")
+    .toLocaleLowerCase().trim().replace(/[^a-z0-9]+/g, "-").replace(/^-+|-+$/g, "");
+}
+
+function storedOtherThemeInternalLabel(type: string, label: string): string {
+  return `__${type}__:${label}`;
+}
+
+const OTHER_THEME_PARENT_DEFAULTS = [
+  "Para la ansiedad",
+  "Energiza tus mañanas",
+  "Foco y concentración",
+  "Suelto la Rabia",
+  "Crecimiento personal",
+  "Armonía familiar",
+  "Respiración consciente",
+  "Meditaciones Activas",
+  "Astrología",
+];
+
 function storedCategoryThemeLabel(type: string, label: string): string {
   return type === "theme" ? label : `__${type}__:${label}`;
 }
@@ -1960,6 +2035,10 @@ router.patch("/admin/tag-options", requireAuth, requireRole("admin"), async (req
     return;
   }
   const { type, oldLabel, newLabel } = parsed.data;
+  if (type.startsWith("other_theme_internal:") && !isOtherThemeInternalType(type)) {
+    res.status(400).json({ error: "Tipo de etiqueta interna inválido" });
+    return;
+  }
   if (
     type === "sonidos_collection" &&
     [oldLabel, newLabel].some(
@@ -1988,6 +2067,25 @@ router.patch("/admin/tag-options", requireAuth, requireRole("admin"), async (req
       const existing = await tx.select().from(catalogTagOptionsTable)
         .where(and(eq(catalogTagOptionsTable.type, type), sql`lower(${catalogTagOptionsTable.label}) = lower(${oldLabel})`))
         .limit(1);
+      if (type === "other_theme") {
+        const defaultCollision = OTHER_THEME_PARENT_DEFAULTS.some(
+          (parent) =>
+            otherThemeSlug(parent) === otherThemeSlug(newLabel) &&
+            parent.toLocaleLowerCase() !== oldLabel.toLocaleLowerCase(),
+        );
+        const currentParents = await tx.select({ id: catalogTagOptionsTable.id, label: catalogTagOptionsTable.label })
+          .from(catalogTagOptionsTable)
+          .where(eq(catalogTagOptionsTable.type, "other_theme"));
+        if (
+          defaultCollision ||
+          currentParents.some((parent) =>
+            parent.id !== existing[0]?.id &&
+            otherThemeSlug(parent.label) === otherThemeSlug(newLabel),
+          )
+        ) {
+          throw new Error("PARENT_SLUG_COLLISION");
+        }
+      }
       let row;
       if (existing[0]) {
         [row] = await tx.update(catalogTagOptionsTable)
@@ -2012,6 +2110,33 @@ router.patch("/admin/tag-options", requireAuth, requireRole("admin"), async (req
                 sql`${catalogSessionsTable.themeTag} @> ARRAY[${oldStored}]::text[]`,
               )
             : sql`${catalogSessionsTable.themeTag} @> ARRAY[${oldStored}]::text[]`);
+      } else if (isOtherThemeInternalType(type)) {
+        const oldStored = storedOtherThemeInternalLabel(type, oldLabel);
+        const newStored = storedOtherThemeInternalLabel(type, newLabel);
+        await tx.update(catalogSessionsTable)
+          .set({ themeTag: sql`array_replace(${catalogSessionsTable.themeTag}, ${oldStored}, ${newStored})` })
+          .where(sql`${catalogSessionsTable.themeTag} @> ARRAY[${oldStored}]::text[]`);
+      } else if (type === "other_theme") {
+        const oldType = `other_theme_internal:${otherThemeSlug(oldLabel)}`;
+        const newType = `other_theme_internal:${otherThemeSlug(newLabel)}`;
+        await tx.update(catalogSessionsTable)
+          .set({ themeTag: sql`array_replace(${catalogSessionsTable.themeTag}, ${oldLabel}, ${newLabel})` })
+          .where(sql`${catalogSessionsTable.themeTag} @> ARRAY[${oldLabel}]::text[]`);
+        if (oldType !== newType) {
+          const children = await tx.select({ label: catalogTagOptionsTable.label })
+            .from(catalogTagOptionsTable)
+            .where(eq(catalogTagOptionsTable.type, oldType));
+          await tx.update(catalogTagOptionsTable)
+            .set({ type: newType })
+            .where(eq(catalogTagOptionsTable.type, oldType));
+          for (const child of children) {
+            const oldStored = storedOtherThemeInternalLabel(oldType, child.label);
+            const newStored = storedOtherThemeInternalLabel(newType, child.label);
+            await tx.update(catalogSessionsTable)
+              .set({ themeTag: sql`array_replace(${catalogSessionsTable.themeTag}, ${oldStored}, ${newStored})` })
+              .where(sql`${catalogSessionsTable.themeTag} @> ARRAY[${oldStored}]::text[]`);
+          }
+        }
       } else if (type === "podcast") {
         await tx.update(catalogSessionsTable)
           .set({ podcastTag: newLabel })
@@ -2050,6 +2175,10 @@ router.patch("/admin/tag-options", requireAuth, requireRole("admin"), async (req
       res.status(409).json({ error: "Ya existe una etiqueta con ese nombre" });
       return;
     }
+    if (err instanceof Error && err.message === "PARENT_SLUG_COLLISION") {
+      res.status(409).json({ error: "Ya existe una temática con ese identificador interno" });
+      return;
+    }
     req.log.error({ err }, "error renaming tag option");
     res.status(500).json({ error: "Error al renombrar etiqueta" });
   }
@@ -2068,6 +2197,9 @@ router.delete("/admin/tag-options/:id", requireAuth, requireRole("admin"), async
         option.label.toLocaleLowerCase() === "todos los sonidos"
       ) {
         throw new Error("PROTECTED");
+      }
+      if (option.type.startsWith("other_theme_internal:") && !isOtherThemeInternalType(option.type)) {
+        throw new Error("INVALID_INTERNAL_TYPE");
       }
       const inUse = option.type === "podcast"
         ? await tx.select({ id: catalogSessionsTable.id })
@@ -2096,7 +2228,24 @@ router.delete("/admin/tag-options/:id", requireAuth, requireRole("admin"), async
             : [];
       if (inUse.length > 0) throw new Error("SUBCATEGORY_IN_USE");
       const categoryId = CATEGORY_THEME_TYPE_TO_ID[option.type];
-      if (isManagedThemeType(option.type)) {
+      const isOtherThemeParent = option.type === "other_theme" || option.type === "other_theme_hidden";
+      if (isOtherThemeParent) {
+        const internalType = `other_theme_internal:${otherThemeSlug(option.label)}`;
+        const children = await tx.select({ label: catalogTagOptionsTable.label })
+          .from(catalogTagOptionsTable)
+          .where(eq(catalogTagOptionsTable.type, internalType));
+        for (const child of children) {
+          const storedLabel = storedOtherThemeInternalLabel(internalType, child.label);
+          await tx.update(catalogSessionsTable)
+            .set({ themeTag: sql`array_remove(${catalogSessionsTable.themeTag}, ${storedLabel})` })
+            .where(sql`${catalogSessionsTable.themeTag} @> ARRAY[${storedLabel}]::text[]`);
+        }
+        await tx.delete(catalogTagOptionsTable)
+          .where(eq(catalogTagOptionsTable.type, internalType));
+        await tx.update(catalogSessionsTable)
+          .set({ themeTag: sql`array_remove(${catalogSessionsTable.themeTag}, ${option.label})` })
+          .where(sql`${catalogSessionsTable.themeTag} @> ARRAY[${option.label}]::text[]`);
+      } else if (isManagedThemeType(option.type)) {
         const storedLabel = storedCategoryThemeLabel(option.type, option.label);
         await tx.update(catalogSessionsTable)
           .set({ themeTag: sql`array_remove(${catalogSessionsTable.themeTag}, ${storedLabel})` })
@@ -2106,6 +2255,11 @@ router.delete("/admin/tag-options/:id", requireAuth, requireRole("admin"), async
                 sql`${catalogSessionsTable.themeTag} @> ARRAY[${storedLabel}]::text[]`,
               )
             : sql`${catalogSessionsTable.themeTag} @> ARRAY[${storedLabel}]::text[]`);
+      } else if (isOtherThemeInternalType(option.type)) {
+        const storedLabel = storedOtherThemeInternalLabel(option.type, option.label);
+        await tx.update(catalogSessionsTable)
+          .set({ themeTag: sql`array_remove(${catalogSessionsTable.themeTag}, ${storedLabel})` })
+          .where(sql`${catalogSessionsTable.themeTag} @> ARRAY[${storedLabel}]::text[]`);
       } else if (option.type === "descanso") {
         await tx.update(catalogSessionsTable)
           .set({ descansoTags: sql`array_remove(${catalogSessionsTable.descansoTags}, ${option.label})` })
@@ -2125,6 +2279,10 @@ router.delete("/admin/tag-options/:id", requireAuth, requireRole("admin"), async
   } catch (err) {
     if (err instanceof Error && err.message === "PROTECTED") {
       res.status(403).json({ error: "“Todos los sonidos” es una colección protegida" });
+      return;
+    }
+    if (err instanceof Error && err.message === "INVALID_INTERNAL_TYPE") {
+      res.status(400).json({ error: "Tipo de etiqueta interna inválido" });
       return;
     }
     if (err instanceof Error && err.message === "SUBCATEGORY_IN_USE") {

@@ -31,6 +31,45 @@ export const OTHER_THEME_TAGS = [
   "Meditaciones Activas",
   "Astrología",
 ];
+
+/** Stable key used by the second-level labels under Otras temáticas. */
+export function otherThemeSlug(label: string): string {
+  const canonical: Record<string, string> = {
+    "Para la ansiedad": "para-la-ansiedad",
+    "Energiza tus mañanas": "energiza-tus-mananas",
+    "Foco y concentración": "foco-concentracion",
+    "Suelto la Rabia": "suelto-la-rabia",
+    "Crecimiento personal": "crecimiento-personal",
+    "Armonía familiar": "armonia-familiar",
+    "Respiración consciente": "respiracion-consciente",
+    "Meditaciones Activas": "meditaciones-activas",
+    Astrología: "astrologia",
+  };
+  const normalized = label.normalize("NFD").replace(/[\u0300-\u036f]/g, "").toLocaleLowerCase().trim();
+  const canonicalEntry = Object.entries(canonical).find(([key]) =>
+    key.normalize("NFD").replace(/[\u0300-\u036f]/g, "").toLocaleLowerCase() === normalized);
+  if (canonicalEntry) return canonicalEntry[1];
+  return label
+    .normalize("NFD")
+    .replace(/[\u0300-\u036f]/g, "")
+    .toLocaleLowerCase()
+    .trim()
+    .replace(/[^a-z0-9]+/g, "-")
+    .replace(/^-+|-+$/g, "");
+}
+
+export function otherThemeInternalType(parentLabel: string): string {
+  return `other_theme_internal:${otherThemeSlug(parentLabel)}`;
+}
+
+export function otherThemeInternalStoredValue(parentLabel: string, label: string): string {
+  return `__${otherThemeInternalType(parentLabel)}__:${label}`;
+}
+
+export function otherThemeInternalSelectedLabels(parentLabel: string, stored: string[]): string[] {
+  const prefix = `__${otherThemeInternalType(parentLabel)}__:`;
+  return stored.filter((value) => value.startsWith(prefix)).map((value) => value.slice(prefix.length));
+}
 export const SONIDOS_COLLECTION_TAGS = [
   "Todos los sonidos",
   "Sonidos de naturaleza",

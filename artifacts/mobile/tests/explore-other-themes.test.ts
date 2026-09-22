@@ -3,6 +3,11 @@ import test from "node:test";
 
 import {
   buildOtherThemeCards,
+  buildOtherThemeInternalRoute,
+  canonicalOtherThemeParentSlug,
+  groupOtherThemeInternalSessions,
+  hasOtherThemeInternalTag,
+  parseOtherThemeInternalTag,
   keepLastExploreSections,
   parseExploreSectionsCache,
   type ExploreSection,
@@ -132,4 +137,85 @@ test("conserva la última configuración cacheada ante una falla temporal", () =
   assert.strictEqual(keepLastExploreSections(restored), restored);
   assert.deepEqual(keepLastExploreSections(null), []);
   assert.equal(parseExploreSectionsCache("{corrupto"), null);
+});
+
+test("parsea y agrupa etiquetas internas por temática principal", () => {
+  assert.deepEqual(
+    parseOtherThemeInternalTag("__other_theme_internal:ansiedad__:Calma"),
+    { parentSlug: "ansiedad", label: "Calma" },
+  );
+  const sessions = [
+    { themeTag: ["Para la ansiedad", "__other_theme_internal:ansiedad__:Calma"], image: "a" },
+    { themeTag: ["Para la ansiedad", "__other_theme_internal:ansiedad__:Sueño"], image: "b" },
+    { themeTag: ["Otra", "__other_theme_internal:otra__:Calma"], image: "c" },
+  ];
+  const groups = groupOtherThemeInternalSessions(sessions, "ansiedad", "Para la ansiedad");
+  assert.deepEqual([...groups.keys()], ["Calma", "Sueño"]);
+  assert.equal(groups.get("Calma")?.length, 1);
+});
+
+test("normaliza todos los IDs canónicos de las nueve temáticas", () => {
+  const defaults = [
+    ["Para la ansiedad", "para-la-ansiedad"],
+    ["Energiza tus mañanas", "energiza-tus-mananas"],
+    ["Foco y concentración", "foco-concentracion"],
+    ["Suelto la Rabia", "suelto-la-rabia"],
+    ["Crecimiento personal", "crecimiento-personal"],
+    ["Armonía familiar", "armonia-familiar"],
+    ["Respiración consciente", "respiracion-consciente"],
+    ["Meditaciones Activas", "meditaciones-activas"],
+    ["Astrología", "astrologia"],
+  ] as const;
+  for (const [label, slug] of defaults) {
+    assert.equal(canonicalOtherThemeParentSlug(label), slug);
+    assert.equal(
+      parseOtherThemeInternalTag(`__other_theme_internal:${slug}__:Calma`)?.parentSlug,
+      slug,
+    );
+  }
+});
+
+test("permite conservar en la vista general solo sesiones sin etiqueta hija", () => {
+  const sessions = [
+    { themeTag: ["Para la ansiedad"], image: "general" },
+    { themeTag: ["Para la ansiedad", "__other_theme_internal:para-la-ansiedad__:Calma"], image: "child" },
+  ];
+  const general = sessions.filter(
+    (session) => !hasOtherThemeInternalTag(session, "para-la-ansiedad", "Para la ansiedad"),
+  );
+  assert.deepEqual(general.map((session) => session.image), ["general"]);
+});
+
+test("construye la ruta interna preservando parent y etiqueta codificados", () => {
+  assert.equal(
+    buildOtherThemeInternalRoute("para-la-ansiedad", "Calma y sueño"),
+    "/tag/para-la-ansiedad/internal/Calma%20y%20sue%C3%B1o",
+  );
+});
+
+test("una etiqueta interna limita el carrusel a seis sesiones", () => {
+  const sessions = Array.from({ length: 8 }, (_, index) => ({
+    themeTag: ["Para la ansiedad", "__other_theme_internal:ansiedad__:Calma"],
+    image: String(index),
+  }));
+  const group = groupOtherThemeInternalSessions(
+    sessions,
+    "ansiedad",
+    "Para la ansiedad",
+  ).get("Calma") ?? [];
+  assert.equal(group.slice(0, 6).length, 6);
+});
+
+test("los tokens internos no se usan para la imagen de una card principal", () => {
+  const cards = buildOtherThemeCards({
+    sections: [section("ansiedad", "Para la ansiedad")],
+    localCards: [],
+    sessions: [{
+      themeTag: ["__other_theme_internal:ansiedad__:Calma"],
+      image: "internal.jpg",
+    }],
+    isExcludedLabel: () => false,
+    slugifyLabel: slugify,
+  });
+  assert.equal(cards[0]?.image, undefined);
 });

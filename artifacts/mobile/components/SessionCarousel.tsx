@@ -242,6 +242,7 @@ type SessionCarouselProps = {
   squareCards?: boolean;
   showImageCategoryPill?: boolean;
   onViewAll?: () => void;
+  viewAllLabel?: string;
   viewAllColor?: string;
   showCardMetadata?: boolean;
   metadataTitleNumberOfLines?: number;
@@ -361,6 +362,7 @@ export const SessionCarousel = React.memo(function SessionCarousel({
   squareCards = false,
   showImageCategoryPill = false,
   onViewAll,
+  viewAllLabel = "Ver todos",
   viewAllColor,
   showCardMetadata = false,
   metadataTitleNumberOfLines,
@@ -569,7 +571,7 @@ export const SessionCarousel = React.memo(function SessionCarousel({
           <View style={{ flexDirection: "row", alignItems: "center", justifyContent: "space-between" }}>
             <Text style={[styles.sectionTitle, { fontSize: titleFontSize, marginBottom: description ? 4 : 0 }]}>{title}</Text>
               <Pressable onPress={onViewAll} hitSlop={8}>
-                <Text style={{ fontFamily: "Manrope", fontSize: 13, fontWeight: "600", color: viewAllAccent }}>Ver todos</Text>
+                <Text style={{ fontFamily: "Manrope", fontSize: 13, fontWeight: "600", color: viewAllAccent }}>{viewAllLabel}</Text>
               </Pressable>
           </View>
           {description && (

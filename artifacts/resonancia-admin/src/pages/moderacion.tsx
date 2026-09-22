@@ -41,6 +41,9 @@ import {
   categoryThemeStoredValue,
   themeTagSelectedLabels,
   themeTagStoredValue,
+  otherThemeInternalType,
+  otherThemeInternalStoredValue,
+  otherThemeInternalSelectedLabels,
 } from "@/lib/categoryThemeTags";
 import { useQueryClient } from "@tanstack/react-query";
 import { toast } from "sonner";
@@ -417,9 +420,18 @@ function EditDialog({
   const categoryThemeConfig = CATEGORY_THEME_TAGS[catId];
 
   const toggleTheme = (tag: string) =>
-    setThemeTag((prev) =>
-      prev.includes(tag) ? prev.filter((t) => t !== tag) : [...prev, tag]
-    );
+    setThemeTag((prev) => {
+      if (!prev.includes(tag)) return [...prev, tag];
+      const prefix = `__${otherThemeInternalType(tag)}__:`;
+      return prev.filter((value) => value !== tag && !value.startsWith(prefix));
+    });
+
+  const toggleOtherThemeInternal = (parent: string, label: string) => {
+    const stored = otherThemeInternalStoredValue(parent, label);
+    setThemeTag((tags) => tags.includes(stored)
+      ? tags.filter((tag) => tag !== stored)
+      : [...tags, stored]);
+  };
 
   const toggleTema = (tag: string) =>
     setTemaTag((prev) =>
@@ -844,8 +856,40 @@ function EditDialog({
               label="Otras temáticas (opcional)"
               selected={themeTag.filter((tag) => !tag.startsWith("__"))}
               onToggle={toggleTheme}
+              onRename={(from, to) => setThemeTag((tags) => {
+                const oldPrefix = `__${otherThemeInternalType(from)}__:`;
+                const newPrefix = `__${otherThemeInternalType(to)}__:`;
+                return tags.map((tag) => tag === from
+                  ? to
+                  : tag.startsWith(oldPrefix)
+                    ? `${newPrefix}${tag.slice(oldPrefix.length)}`
+                    : tag);
+              })}
+              onDelete={(parent) => setThemeTag((tags) => {
+                const prefix = `__${otherThemeInternalType(parent)}__:`;
+                return tags.filter((tag) => tag !== parent && !tag.startsWith(prefix));
+              })}
               pill
             />
+            {themeTag.filter((parent) => !parent.startsWith("__")).map((parent) => (
+              <TagOptionSelector
+                key={parent}
+                tagType={otherThemeInternalType(parent)}
+                defaults={[]}
+                label={`Etiquetas internas de ${parent}`}
+                selected={otherThemeInternalSelectedLabels(parent, themeTag)}
+                onToggle={(label) => toggleOtherThemeInternal(parent, label)}
+                onRename={(from, to) => setThemeTag((tags) => tags.map((tag) =>
+                  tag === otherThemeInternalStoredValue(parent, from)
+                    ? otherThemeInternalStoredValue(parent, to)
+                    : tag
+                ))}
+                onDelete={(label) => setThemeTag((tags) =>
+                  tags.filter((tag) => tag !== otherThemeInternalStoredValue(parent, label))
+                )}
+                pill
+              />
+            ))}
 
             <TagOptionSelector
               tagType="descanso"

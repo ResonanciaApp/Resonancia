@@ -22,6 +22,7 @@ import {
   catalogCategoriesTable,
   catalogAudioFilesTable,
   catalogSessionsTable,
+  catalogTagOptionsTable,
   type User,
   type UserRole,
 } from "@workspace/db";
@@ -618,6 +619,142 @@ describe("catalog hide/unhide — security boundary (admin)", () => {
       .post("/api/admin/tag-options")
       .send({ type: "sabiduria", label: "subcategoría 1" });
     expect(createRes.status).toBe(409);
+  });
+});
+
+describe("other theme internal labels — transactional propagation", () => {
+  let adminUser: User;
+  let parentOptionId: number | undefined;
+  let childOptionId: number | undefined;
+  let sessionId: string | undefined;
+
+  const parentLabel = `Tema interna padre ${suffix}`;
+  const childLabel = `Carrusel hijo ${suffix}`;
+  const renamedChildLabel = `Carrusel hijo renombrado ${suffix}`;
+  const renamedParentLabel = `Tema interna padre renombrada ${suffix}`;
+  const parentSlug = parentLabel
+    .normalize("NFD")
+    .replace(/[\u0300-\u036f]/g, "")
+    .toLocaleLowerCase()
+    .replace(/[^a-z0-9]+/g, "-")
+    .replace(/^-+|-+$/g, "");
+  const internalType = `other_theme_internal:${parentSlug}`;
+  const parentToken = parentLabel;
+  const childToken = `__${internalType}__:${childLabel}`;
+
+  beforeAll(async () => {
+    adminUser = await createUser("other_theme_internal", "admin");
+  });
+
+  afterAll(async () => {
+    noAuth();
+    if (sessionId) {
+      await db.delete(catalogSessionsTable).where(eq(catalogSessionsTable.id, sessionId));
+    }
+    const optionIds = [parentOptionId, childOptionId].filter(
+      (id): id is number => id !== undefined,
+    );
+    if (optionIds.length) {
+      await db.delete(catalogTagOptionsTable).where(inArray(catalogTagOptionsTable.id, optionIds));
+    }
+    if (adminUser) {
+      await db.delete(usersTable).where(eq(usersTable.id, adminUser.id));
+    }
+  });
+
+  it("propaga CRUD padre/hijo y rechaza colisiones de namespace", async () => {
+    authAs(adminUser);
+
+    const parentRes = await request(app)
+      .post("/api/admin/tag-options")
+      .send({ type: "other_theme", label: parentLabel });
+    expect(parentRes.status).toBe(201);
+    parentOptionId = parentRes.body.id;
+
+    const childRes = await request(app)
+      .post("/api/admin/tag-options")
+      .send({ type: internalType, label: childLabel });
+    expect(childRes.status).toBe(201);
+    childOptionId = childRes.body.id;
+
+    const collisionRes = await request(app)
+      .post("/api/admin/tag-options")
+      .send({ type: "other_theme", label: "foco y concentración" });
+    expect(collisionRes.status).toBe(409);
+
+    const createSessionRes = await request(app)
+      .post("/api/catalog/submissions")
+      .send({
+        title: `Sesión temática interna ${suffix}`,
+        subtitle: "Cobertura de etiquetas internas",
+        categoryId: "musica-sonidos",
+        categoryLabel: "Música",
+        duration: 5,
+        description: "Sesión creada para probar la propagación transaccional.",
+        benefits: [],
+        instruments: [],
+        isPlaceholder: true,
+        status: "draft",
+        audioFiles: [],
+        themeTag: [parentToken, childToken],
+      });
+    expect(createSessionRes.status).toBe(201);
+    const createdSessionId = createSessionRes.body.id as string;
+    sessionId = createdSessionId;
+
+    const childRenameRes = await request(app)
+      .patch("/api/admin/tag-options")
+      .send({
+        type: internalType,
+        oldLabel: childLabel,
+        newLabel: renamedChildLabel,
+      });
+    expect(childRenameRes.status).toBe(200);
+    const [afterChildRename] = await db
+      .select({ themeTag: catalogSessionsTable.themeTag })
+      .from(catalogSessionsTable)
+      .where(eq(catalogSessionsTable.id, createdSessionId))
+      .limit(1);
+    expect(afterChildRename.themeTag).toEqual([
+      parentToken,
+      `__${internalType}__:${renamedChildLabel}`,
+    ]);
+
+    const parentRenameRes = await request(app)
+      .patch("/api/admin/tag-options")
+      .send({
+        type: "other_theme",
+        oldLabel: parentLabel,
+        newLabel: renamedParentLabel,
+      });
+    expect(parentRenameRes.status).toBe(200);
+    const renamedParentSlug = renamedParentLabel
+      .normalize("NFD")
+      .replace(/[\u0300-\u036f]/g, "")
+      .toLocaleLowerCase()
+      .replace(/[^a-z0-9]+/g, "-")
+      .replace(/^-+|-+$/g, "");
+    const renamedInternalType = `other_theme_internal:${renamedParentSlug}`;
+    const [afterParentRename] = await db
+      .select({ themeTag: catalogSessionsTable.themeTag })
+      .from(catalogSessionsTable)
+      .where(eq(catalogSessionsTable.id, createdSessionId))
+      .limit(1);
+    expect(afterParentRename.themeTag).toEqual([
+      renamedParentLabel,
+      `__${renamedInternalType}__:${renamedChildLabel}`,
+    ]);
+
+    const deleteChildRes = await request(app)
+      .delete(`/api/admin/tag-options/${childOptionId}`);
+    expect(deleteChildRes.status).toBe(204);
+    const [afterChildDelete] = await db
+      .select({ themeTag: catalogSessionsTable.themeTag })
+      .from(catalogSessionsTable)
+      .where(eq(catalogSessionsTable.id, createdSessionId))
+      .limit(1);
+    expect(afterChildDelete.themeTag).toEqual([renamedParentLabel]);
+    childOptionId = undefined;
   });
 });
 

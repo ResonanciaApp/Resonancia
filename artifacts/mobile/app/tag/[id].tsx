@@ -30,6 +30,13 @@ import {
   TAG_CARDS,
   slugifyThemeTag,
 } from "@/data/tags";
+import {
+  buildOtherThemeInternalRoute,
+  groupOtherThemeInternalSessions,
+  hasOtherThemeInternalTag,
+  isOtherThemeInternalTag,
+  parseOtherThemeInternalTag,
+} from "@/lib/explore-other-themes";
 import { useColors } from "@/hooks/useColors";
 
 const { width } = Dimensions.get("window");
@@ -58,7 +65,9 @@ function resolveThemeLabel(slug: string | undefined): string | undefined {
   if (predefined) return predefined.label;
 
   const labels = new Set(
-    SESSIONS.flatMap((session) => session.themeTag ?? []),
+    SESSIONS.flatMap((session) =>
+      (session.themeTag ?? []).filter((label) => !isOtherThemeInternalTag(label)),
+    ),
   );
   const dynamicLabel = [...labels].find((label) => slugifyThemeTag(label) === slug);
   if (dynamicLabel) return dynamicLabel;
@@ -69,10 +78,14 @@ function resolveThemeLabel(slug: string | undefined): string | undefined {
     : undefined;
 }
 
-export default function ThemeTagScreen({ id: idProp }: { id?: string } = {}) {
+export default function ThemeTagScreen({
+  id: idProp,
+  internalLabel: internalLabelProp,
+}: { id?: string; internalLabel?: string } = {}) {
   const params = useLocalSearchParams<{ id?: string | string[] }>();
   const rawId = idProp ?? params.id;
   const slug = Array.isArray(rawId) ? rawId[0] : rawId;
+  const internalLabel = internalLabelProp;
   const colors = useColors();
   const insets = useSafeAreaInsets();
   const overlayBack = useBackOverride();
@@ -96,14 +109,35 @@ export default function ThemeTagScreen({ id: idProp }: { id?: string } = {}) {
     () =>
       tagLabel
         ? SESSIONS.filter((session) =>
-            (session.themeTag as readonly string[] | undefined)?.includes(tagLabel),
+            (session.themeTag as readonly string[] | undefined)?.some(
+              (tag) =>
+                tag === tagLabel ||
+                tag === slug ||
+                parseOtherThemeInternalTag(tag)?.parentSlug === slug,
+            ),
           )
         : [],
-    [tagLabel, catalogVersion],
+    [catalogVersion, slug, tagLabel],
   );
+  const internalGroups = useMemo(
+    () => groupOtherThemeInternalSessions(sessions, slug ?? "", tagLabel),
+    [sessions, slug, tagLabel],
+  );
+  const mainSessions = useMemo(
+    () =>
+      internalLabel
+        ? internalGroups.get(internalLabel) ?? []
+        : sessions.filter(
+            (session) => !hasOtherThemeInternalTag(session, slug ?? "", tagLabel),
+          ),
+    [internalGroups, internalLabel, sessions],
+  );
+  const pageTitle = internalLabel ?? tagLabel;
   const description =
-    (slug ? THEME_DETAIL_DESCRIPTION_BY_SLUG[slug] : undefined) ??
-    `Sesiones para conectar con ${tagLabel?.toLocaleLowerCase("es") ?? "esta temática"}`;
+    (internalLabel
+      ? `Sesiones de ${internalLabel.toLocaleLowerCase("es")}`
+      : (slug ? THEME_DETAIL_DESCRIPTION_BY_SLUG[slug] : undefined) ??
+        `Sesiones para conectar con ${tagLabel?.toLocaleLowerCase("es") ?? "esta temática"}`);
 
   const [stickyActive, setStickyActive] = React.useState(false);
   const [headerBottomY, setHeaderBottomY] = React.useState(Number.POSITIVE_INFINITY);
@@ -141,6 +175,9 @@ export default function ThemeTagScreen({ id: idProp }: { id?: string } = {}) {
   };
 
   if (!tagLabel) return null;
+  const hasContent = internalLabel
+    ? mainSessions.length > 0
+    : sessions.length > 0 || internalGroups.size > 0;
 
   return (
     <View
@@ -205,7 +242,7 @@ export default function ThemeTagScreen({ id: idProp }: { id?: string } = {}) {
           </View>
           <View style={styles.intro}>
             <Text style={[styles.legacyPageTitle, { color: colors.foreground }]}>
-              {tagLabel}
+               {pageTitle}
             </Text>
             <Text
               style={[styles.pageDescription, { color: colors.mutedForeground }]}
@@ -218,7 +255,7 @@ export default function ThemeTagScreen({ id: idProp }: { id?: string } = {}) {
           </View>
         </View>
 
-        {sessions.length === 0 ? (
+        {!hasContent ? (
           <View style={[styles.emptySlot, { borderColor: "rgba(255,255,255,0.1)" }]}>
             <Feather name="inbox" size={28} color={colors.mutedForeground} />
             <Text style={[styles.emptyTitle, { color: colors.foreground }]}>
@@ -229,37 +266,78 @@ export default function ThemeTagScreen({ id: idProp }: { id?: string } = {}) {
             </Text>
           </View>
         ) : (
-          <SessionCarousel
-            title=""
-            sessions={sessions}
-            isPremium={isPremium}
-            onPress={openSession}
-            style={styles.sessionGrid}
-            showHeader={false}
-            gridLayout
-            fillGridWidth
-            gridScrollEnabled={false}
-            eagerRender
-            presentation="editorial"
-            disableAmbientalVariant
-            sleepMetadataBelow
-            categoryGridPresentation
-            whiteMetadataGlass
-            showDurationClock
-             durationBadgeStyle={{ bottom: 8, left: 8 }}
-            showCategoryLabelBelow
-             showCategoryLabelAfterTitle
-             showAuthor={false}
-            sleepBelowMetadataStyle={{
-              marginTop: 7,
-              transform: [{ translateX: 3 }],
-            }}
-            trailingPeek={20}
-            cardBorderRadius={16}
-            hideCategoryAboveTitle
-            showSleepCategoryPillWithInlineDuration
-            ambientalTitleOnly
-          />
+          <>
+            {!internalLabel &&
+            !internalLabel && [...internalGroups.entries()].map(([label, labelSessions]) => (
+                <SessionCarousel
+                  key={label}
+                  title={label}
+                  sessions={labelSessions.slice(0, 6)}
+                  isPremium={isPremium}
+                  onPress={openSession}
+                  onViewAll={() =>
+                    router.push(
+                      buildOtherThemeInternalRoute(slug ?? "", label) as never,
+                    )
+                  }
+                  viewAllLabel="Ver todo"
+                  style={styles.sessionGrid}
+                  eagerRender
+                  presentation="editorial"
+                  disableAmbientalVariant
+                  sleepMetadataBelow
+                  categoryGridPresentation
+                  whiteMetadataGlass
+                  showDurationClock
+                  durationBadgeStyle={{ bottom: 8, left: 8 }}
+                  showCategoryLabelBelow
+                  showCategoryLabelAfterTitle
+                  showAuthor={false}
+                  sleepBelowMetadataStyle={{
+                    marginTop: 7,
+                    transform: [{ translateX: 3 }],
+                  }}
+                  trailingPeek={20}
+                  cardBorderRadius={16}
+                  hideCategoryAboveTitle
+                  showSleepCategoryPillWithInlineDuration
+                  ambientalTitleOnly
+                />
+              ))}
+            {mainSessions.length > 0 && (
+              <SessionCarousel
+                title=""
+                sessions={mainSessions}
+                isPremium={isPremium}
+                onPress={openSession}
+                style={styles.sessionGrid}
+                showHeader={false}
+                gridLayout
+                fillGridWidth
+                gridScrollEnabled={false}
+                eagerRender
+                presentation="editorial"
+                disableAmbientalVariant
+                sleepMetadataBelow
+                categoryGridPresentation
+                whiteMetadataGlass
+                showDurationClock
+                durationBadgeStyle={{ bottom: 8, left: 8 }}
+                showCategoryLabelBelow
+                showCategoryLabelAfterTitle
+                showAuthor={false}
+                sleepBelowMetadataStyle={{
+                  marginTop: 7,
+                  transform: [{ translateX: 3 }],
+                }}
+                trailingPeek={20}
+                cardBorderRadius={16}
+                hideCategoryAboveTitle
+                showSleepCategoryPillWithInlineDuration
+                ambientalTitleOnly
+              />
+            )}
+          </>
         )}
       </ScrollView>
 
@@ -283,7 +361,7 @@ export default function ThemeTagScreen({ id: idProp }: { id?: string } = {}) {
               adjustsFontSizeToFit
               minimumFontScale={0.75}
             >
-              {tagLabel}
+              {pageTitle}
             </Text>
           </View>
           <View style={styles.stickyHeaderSpacer} />
@@ -337,10 +415,9 @@ const styles = StyleSheet.create({
   },
   legacyPageTitle: {
     fontFamily: "Manrope",
-    fontSize: 28,
-    lineHeight: 35,
-    fontWeight: "500",
-    letterSpacing: 0.2,
+    fontSize: 24,
+    lineHeight: 30,
+    fontWeight: "800",
     textAlign: "left",
     alignSelf: "stretch",
   },
