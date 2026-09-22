@@ -6,6 +6,7 @@ export type LibraryTab = "playlists" | "mezclas" | "geometrix" | "historial" | "
 
 export const DRAWER_W = Math.min(Dimensions.get("window").width * 0.78, 300);
 export const DRAWER_PUSH = DRAWER_W + 50;
+export const DRAWER_OVERLAY_PARALLAX_X = -32;
 
 type DrawerCtx = {
   isOpen: boolean;
@@ -110,7 +111,7 @@ export function DrawerProvider({ children }: { children: React.ReactNode }) {
     libraryParallax.stopAnimation();
     Animated.timing(libraryParallax, {
       toValue: libOpen ? 1 : 0,
-      duration: 320,
+      duration: DURATION.DRAWER,
       easing: easeOutCubic,
       useNativeDriver: true,
     }).start();
@@ -125,7 +126,7 @@ export function DrawerProvider({ children }: { children: React.ReactNode }) {
     overlayParallax.stopAnimation();
     Animated.timing(overlayParallax, {
       toValue: overlayOpen ? 1 : 0,
-      duration: 320,
+      duration: DURATION.DRAWER,
       easing: easeOutCubic,
       useNativeDriver: true,
     }).start();

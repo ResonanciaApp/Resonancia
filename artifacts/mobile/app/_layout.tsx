@@ -41,7 +41,11 @@ import { initializePracticeNotifications } from "@/lib/practiceNotifications";
 import { DiarioFavoritesProvider } from "@/context/DiarioFavoritesContext";
 import { FoldersPlaylistsProvider } from "@/context/FoldersPlaylistsContext";
 import { VideosProvider } from "@/context/VideosContext";
-import { DrawerProvider, useDrawer } from "@/context/DrawerContext";
+import {
+  DrawerProvider,
+  DRAWER_OVERLAY_PARALLAX_X,
+  useDrawer,
+} from "@/context/DrawerContext";
 import { MixerPanelProvider } from "@/context/MixerPanelContext";
 import { GeometrixPanelProvider } from "@/context/GeometrixPanelContext";
 import { GreetingVisibleProvider } from "@/context/GreetingVisibleContext";
@@ -208,7 +212,7 @@ function PushWrapper({ children }: { children: React.ReactNode }) {
   // Amigos y Grupos.
   const backgroundParallaxX = overlayParallax.interpolate({
     inputRange: [0, 1],
-    outputRange: [0, -56],
+    outputRange: [0, DRAWER_OVERLAY_PARALLAX_X],
     extrapolate: "clamp",
   });
   return (

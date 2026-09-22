@@ -19,7 +19,13 @@ import { MaterialCommunityIcons } from "@expo/vector-icons";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 
 import { useAuth } from "@/context/AuthContext";
-import { useDrawer, DRAWER_W, DRAWER_PUSH } from "@/context/DrawerContext";
+import {
+  useDrawer,
+  DRAWER_W,
+  DRAWER_PUSH,
+  DRAWER_OVERLAY_PARALLAX_X,
+} from "@/context/DrawerContext";
+import { DURATION } from "@/constants/motion";
 import { openCategoryGlobal } from "@/context/CategoryOverlayContext";
 import { useUserProfile } from "@/context/UserProfileContext";
 import { useSceneTheme } from "@/context/SceneThemeContext";
@@ -97,6 +103,7 @@ export function DrawerMenu() {
   });
 
   const dragX = React.useRef(new Animated.Value(0)).current;
+  const dragResetTimer = React.useRef<ReturnType<typeof setTimeout> | null>(null);
 
   // Nodo de transform ESTABLE entre renders: recrearlo en cada render
   // re-ata el nodo nativo y produce un glitch de un frame al abrir overlays.
@@ -104,7 +111,10 @@ export function DrawerMenu() {
     () =>
       Animated.add(
         Animated.add(translateX, dragX),
-        overlayParallax.interpolate({ inputRange: [0, 1], outputRange: [0, -56] }),
+        overlayParallax.interpolate({
+          inputRange: [0, 1],
+          outputRange: [0, DRAWER_OVERLAY_PARALLAX_X],
+        }),
       ),
     [translateX, dragX, overlayParallax],
   );
@@ -123,7 +133,11 @@ export function DrawerMenu() {
           // Dejamos dragX en su posición arrastrada; drawerAnim lleva el panel
           // fuera de pantalla y reseteamos dragX al terminar.
           onClose();
-          setTimeout(() => dragX.setValue(0), 440);
+          if (dragResetTimer.current) clearTimeout(dragResetTimer.current);
+          dragResetTimer.current = setTimeout(() => {
+            dragX.setValue(0);
+            dragResetTimer.current = null;
+          }, DURATION.DRAWER + 32);
         } else {
           Animated.spring(dragX, { toValue: 0, useNativeDriver: true, bounciness: 0 }).start();
         }
@@ -136,9 +150,20 @@ export function DrawerMenu() {
 
   React.useLayoutEffect(() => {
     if (!visible) return;
+    if (dragResetTimer.current) {
+      clearTimeout(dragResetTimer.current);
+      dragResetTimer.current = null;
+    }
     dragX.stopAnimation();
     dragX.setValue(0);
   }, [dragX, visible]);
+
+  React.useEffect(
+    () => () => {
+      if (dragResetTimer.current) clearTimeout(dragResetTimer.current);
+    },
+    [],
+  );
 
   const localFullName = [username, lastName].filter(Boolean).join(" ");
   const hasLocalName = !!localFullName && localFullName !== "Explorador de Sonido";
