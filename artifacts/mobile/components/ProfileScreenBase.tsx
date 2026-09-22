@@ -83,11 +83,20 @@ import { baseOf, type GeometryId } from "@/data/geometries";
 import { GeometrixOverlay } from "@/components/GeometrixToggle";
 import { MEMBERSHIP_AURORA, WIDGET_GREEN_SOLID } from "@/constants/colors";
 import { InnerSpaceCard } from "@/components/InnerSpaceCard";
+import { ContinueMeditationPlaylistCard } from "@/components/ContinueMeditationPlaylistCard";
 import { KeyboardAwareScrollViewCompat } from "@/components/KeyboardAwareScrollViewCompat";
 import { MoonCrescentIcon } from "@/components/MoonCrescentIcon";
 import { SleepReminderSheet } from "@/components/SleepReminderSheet";
 import { FilledSunIcon } from "@/components/FilledSunIcon";
 import { useMixerPanel } from "@/context/MixerPanelContext";
+import { useCatalog } from "@/context/CatalogContext";
+import { useFoldersPlaylists } from "@/context/FoldersPlaylistsContext";
+import { usePlayer } from "@/context/PlayerContext";
+import {
+  computePlaylistCompletion,
+  findInProgressMeditationPlaylist,
+  isMeditativeSessionPlaylist,
+} from "@/lib/editorial-playlist-helpers";
 
 const REFLECTION_BANNER_ENTRY_DISTANCE = 86;
 const REFLECTION_BANNER_ENTRY_DURATION = 380;
@@ -457,6 +466,9 @@ export function ProfileScreenBase({
   const colors = useColors();
   const { isPremium } = usePremium();
   const { openMixer } = useMixerPanel();
+  const { statEvents } = usePlayer();
+  const { editorialPlaylists, version: catalogVersion } = useCatalog();
+  const { activeMeditationPlaylist } = useFoldersPlaylists();
   const { theme: activeTheme, activeSceneId } = useSceneTheme();
   const insets = useSafeAreaInsets();
   const { email, logout } = useAuth();
@@ -492,6 +504,47 @@ export function ProfileScreenBase({
   });
   const topPad = Platform.OS === "web" ? 67 : Math.max(insets.top, 40);
   const bottomPad = Platform.OS === "web" ? 34 : insets.bottom;
+  const continueMeditationPlaylist = useMemo(() => {
+    const completedSessionIds = new Set(
+      statEvents
+        .filter((event) => event.completed)
+        .map((event) => event.sessionId),
+    );
+    const activePlaylist = activeMeditationPlaylist
+      ? editorialPlaylists.find(
+          (candidate) => candidate.id === activeMeditationPlaylist.slug,
+        )
+      : undefined;
+    const activeCompletion =
+      activePlaylist && isMeditativeSessionPlaylist(activePlaylist)
+        ? computePlaylistCompletion(activePlaylist.sessionIds, completedSessionIds)
+        : null;
+
+    if (
+      activePlaylist &&
+      activeCompletion &&
+      activeCompletion.total > 0 &&
+      activeCompletion.completed < activeCompletion.total
+    ) {
+      return { playlist: activePlaylist, completion: activeCompletion };
+    }
+
+    const detectedInProgress = findInProgressMeditationPlaylist(
+      editorialPlaylists,
+      completedSessionIds,
+    );
+    if (detectedInProgress) return detectedInProgress;
+
+    if (activePlaylist && activeCompletion && activeCompletion.total > 0) {
+      return { playlist: activePlaylist, completion: activeCompletion };
+    }
+    return null;
+  }, [
+    activeMeditationPlaylist,
+    catalogVersion,
+    editorialPlaylists,
+    statEvents,
+  ]);
 
   const [libActions, setLibActions] = useState<LibHeaderActions | null>(null);
   const {
@@ -1613,6 +1666,26 @@ export function ProfileScreenBase({
                 onMessageSaved={() => setReflectionSavedTrigger((value) => value + 1)}
               />
             </View>
+
+            {continueMeditationPlaylist && (
+              <ContinueMeditationPlaylistCard
+                title={continueMeditationPlaylist.playlist.title}
+                description={continueMeditationPlaylist.playlist.description}
+                coverSource={
+                  continueMeditationPlaylist.playlist.coverUrl
+                    ? { uri: continueMeditationPlaylist.playlist.coverUrl }
+                    : continueMeditationPlaylist.playlist.cover
+                }
+                completion={continueMeditationPlaylist.completion}
+                sectionStyle={styles.continueProgramSection}
+                onPress={() => {
+                  router.push({
+                    pathname: "/editorial-playlist/[slug]",
+                    params: { slug: continueMeditationPlaylist.playlist.id },
+                  } as never);
+                }}
+              />
+            )}
 
             <Pressable
               onPress={() => setMorningReminderVisible(true)}
@@ -2812,6 +2885,9 @@ const styles = StyleSheet.create({
   },
   innerSpaceSection: {
     marginTop: 5,
+  },
+  continueProgramSection: {
+    marginHorizontal: -16,
   },
   practiceReminderSection: {
     paddingHorizontal: 16,

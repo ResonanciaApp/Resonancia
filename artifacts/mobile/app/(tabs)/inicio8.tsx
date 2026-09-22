@@ -120,7 +120,6 @@ import { ToolsGrid } from "@/components/ToolsGrid";
 import { DailyRecommendationsSection } from "@/components/DailyRecommendationsSection";
 import { DailyWisdomCard } from "@/components/DailyWisdomCard";
 import { AlmaCommunitySection } from "@/components/AlmaCommunitySection";
-import { ContinueMeditationPlaylistCard } from "@/components/ContinueMeditationPlaylistCard";
 import { VideoCard } from "@/components/VideoCard";
 import { useVideos } from "@/hooks/useVideos";
 import { useResonadores } from "@/hooks/useResonadores";
@@ -131,11 +130,6 @@ import {
 import { PLAYLISTS } from "@/data/playlists";
 
 import { absoluteMediaUrl, useEffectiveHero } from "@/hooks/effectiveHero";
-import {
-  computePlaylistCompletion,
-  findInProgressMeditationPlaylist,
-  isMeditativeSessionPlaylist,
-} from "@/lib/editorial-playlist-helpers";
 const { width, height } = Dimensions.get("window");
 
 const GRID_GAP = 12;
@@ -1993,7 +1987,6 @@ export default function HomeScreen2({
     pauseResume,
     history,
     favorites,
-    statEvents,
     sessionProgress,
     getSessionProgress,
   } = usePlayer();
@@ -2004,7 +1997,7 @@ export default function HomeScreen2({
   const { isPremium } = usePremium();
   const { videos } = useVideos();
   const { resonadores } = useResonadores();
-  const { playlists, activeMeditationPlaylist } = useFoldersPlaylists();
+  const { playlists } = useFoldersPlaylists();
   const { presets, loadPreset, openSheet } = useMixer();
   const { openMixer } = useMixerPanel();
   const { openCategory } = useCategoryOverlay();
@@ -2229,51 +2222,9 @@ export default function HomeScreen2({
   }, [activeTheme]);
 
   const {
-    editorialPlaylists,
     version: catalogVersion,
     status: catalogStatus,
   } = useCatalog();
-  const continueMeditationPlaylist = useMemo(() => {
-    const completedSessionIds = new Set(
-      statEvents
-        .filter((event) => event.completed)
-        .map((event) => event.sessionId),
-    );
-    const activePlaylist = activeMeditationPlaylist
-      ? editorialPlaylists.find(
-          (candidate) => candidate.id === activeMeditationPlaylist.slug,
-        )
-      : undefined;
-    const activeCompletion =
-      activePlaylist && isMeditativeSessionPlaylist(activePlaylist)
-        ? computePlaylistCompletion(activePlaylist.sessionIds, completedSessionIds)
-        : null;
-
-    if (
-      activePlaylist &&
-      activeCompletion &&
-      activeCompletion.total > 0 &&
-      activeCompletion.completed < activeCompletion.total
-    ) {
-      return { playlist: activePlaylist, completion: activeCompletion };
-    }
-
-    const detectedInProgress = findInProgressMeditationPlaylist(
-      editorialPlaylists,
-      completedSessionIds,
-    );
-    if (detectedInProgress) return detectedInProgress;
-
-    if (activePlaylist && activeCompletion && activeCompletion.total > 0) {
-      return { playlist: activePlaylist, completion: activeCompletion };
-    }
-    return null;
-  }, [
-    activeMeditationPlaylist,
-    catalogVersion,
-    editorialPlaylists,
-    statEvents,
-  ]);
   const {
     data: pinnedFeaturedData,
     refetch: refetchPinnedFeatured,
@@ -3055,27 +3006,6 @@ export default function HomeScreen2({
           </View>
         )}
         {variant === "inicio3" && featuredMoment && (
-          <View style={styles.inicio3SectionDivider} />
-        )}
-        {isInicio2 && featuredMoment && continueMeditationPlaylist && (
-          <ContinueMeditationPlaylistCard
-            title={continueMeditationPlaylist.playlist.title}
-            description={continueMeditationPlaylist.playlist.description}
-            coverSource={
-              continueMeditationPlaylist.playlist.coverUrl
-                ? { uri: continueMeditationPlaylist.playlist.coverUrl }
-                : continueMeditationPlaylist.playlist.cover
-            }
-            completion={continueMeditationPlaylist.completion}
-            onPress={() => {
-              router.push({
-                pathname: "/editorial-playlist/[slug]",
-                params: { slug: continueMeditationPlaylist.playlist.id },
-              } as never);
-            }}
-          />
-        )}
-        {variant === "inicio3" && featuredMoment && continueMeditationPlaylist && (
           <View style={styles.inicio3SectionDivider} />
         )}
         {isInicio2 && (
