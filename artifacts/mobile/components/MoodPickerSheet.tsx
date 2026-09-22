@@ -1102,11 +1102,10 @@ const styles = StyleSheet.create({
     backgroundColor: "rgba(255,255,255,0.18)",
   },
   monthCard: {
-    borderRadius: 18,
-    borderWidth: 2,
-    borderColor: "rgba(255,255,255,0.10)",
+    borderRadius: 19,
     padding: 18,
-    backgroundColor: "transparent",
+    backgroundColor: "rgba(0,0,0,0.28)",
+    overflow: "hidden",
   },
   monthSectionTitle: {
     fontFamily: "Manrope",

@@ -144,10 +144,9 @@ const styles = StyleSheet.create({
     paddingHorizontal: 14,
     paddingTop: 20,
     paddingBottom: 15,
-    borderRadius: 20,
-    borderWidth: 1,
-    borderColor: "rgba(255,255,255,0.10)",
-    backgroundColor: "rgba(0,0,0,0.14)",
+    borderRadius: 19,
+    backgroundColor: "rgba(0,0,0,0.28)",
+    overflow: "hidden",
   },
   emptyState: {
     flex: 1,

@@ -1,7 +1,8 @@
 import React from "react";
+import { LinearGradient } from "expo-linear-gradient";
 import { StyleSheet, Text, View } from "react-native";
 
-import { getMoodById } from "@/data/moods";
+import { getMoodById, type MoodId } from "@/data/moods";
 import type { MoodHistoryRecord } from "@/data/mood-history";
 import {
   buildMoodCalendarMonth,
@@ -13,6 +14,36 @@ type Props = {
   month: Date;
   records: MoodHistoryRecord[];
   showMonthTitle?: boolean;
+};
+
+type MoodTone = "joy" | "calm" | "discomfort" | "anger";
+
+const MOOD_TONES: Record<MoodId, MoodTone> = {
+  estresado: "discomfort",
+  ansioso: "discomfort",
+  cansado: "discomfort",
+  inepto: "discomfort",
+  triste: "discomfort",
+  solo: "discomfort",
+  deprimido: "discomfort",
+  desmotivado: "discomfort",
+  enojado: "anger",
+  adolorido: "discomfort",
+  agradecido: "joy",
+  emocionado: "joy",
+  "lleno-de-amor": "joy",
+  feliz: "joy",
+  "en-paz": "calm",
+  esperanzado: "joy",
+  contento: "joy",
+  presente: "calm",
+};
+
+const MOOD_GRADIENTS: Record<MoodTone, readonly [string, string]> = {
+  joy: ["rgba(128,207,244,0.38)", "rgba(79,151,215,0.18)"],
+  calm: ["rgba(120,211,168,0.36)", "rgba(70,151,112,0.17)"],
+  discomfort: ["rgba(244,174,91,0.38)", "rgba(211,117,51,0.17)"],
+  anger: ["rgba(241,105,66,0.42)", "rgba(204,68,40,0.20)"],
 };
 
 export function MoodCalendar({
@@ -42,6 +73,11 @@ export function MoodCalendar({
           const moodId = cell.record?.moodIds[0];
           const mood = moodId ? getMoodById(moodId) : undefined;
           const isToday = cell.key === todayKey;
+          const circleStyle = [
+            styles.moodCircle,
+            mood && styles.moodCircleActive,
+            isToday && styles.todayCircle,
+          ];
           return (
             <View
               key={cell.key}
@@ -49,15 +85,18 @@ export function MoodCalendar({
               accessible
               accessibilityLabel={`${cell.day} de ${calendar.label}${mood ? `, ${mood.label}` : ", sin registro"}`}
             >
-              <View
-                style={[
-                  styles.moodCircle,
-                  mood && styles.moodCircleActive,
-                  isToday && styles.todayCircle,
-                ]}
-              >
-                {mood ? <Text style={styles.moodEmoji}>{mood.emoji}</Text> : null}
-              </View>
+              {mood ? (
+                <LinearGradient
+                  colors={MOOD_GRADIENTS[MOOD_TONES[mood.id]]}
+                  start={{ x: 0.15, y: 0 }}
+                  end={{ x: 0.85, y: 1 }}
+                  style={circleStyle}
+                >
+                  <Text style={styles.moodEmoji}>{mood.emoji}</Text>
+                </LinearGradient>
+              ) : (
+                <View style={circleStyle} />
+              )}
               <Text style={[styles.dayNumber, isToday && styles.todayNumber]}>
                 {cell.day}
               </Text>
@@ -113,7 +152,6 @@ const styles = StyleSheet.create({
   },
   moodCircleActive: {
     borderColor: "rgba(255,255,255,0.38)",
-    backgroundColor: "rgba(255,255,255,0.10)",
   },
   todayCircle: {
     borderWidth: 2,
