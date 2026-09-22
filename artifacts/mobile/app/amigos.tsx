@@ -105,10 +105,6 @@ export default function AmigosScreen() {
         contentContainerStyle={{ paddingTop: 23, paddingBottom: bottomPad + 40, paddingHorizontal: 20 }}
         showsVerticalScrollIndicator={false}
       >
-        <Text style={[styles.subtitle, { color: "#F4F4F4" }]}>
-          Conecta con practicantes de tu comunidad
-        </Text>
-
         {!isLoaded ? (
           <View style={{ paddingTop: 60, alignItems: "center" }}>
             <ActivityIndicator color={"#F9F9F9"} size="large" />
@@ -128,7 +124,7 @@ export default function AmigosScreen() {
 function GuestPrompt() {
   const colors = useColors();
   return (
-    <View style={[styles.guestCard, { backgroundColor: "rgba(255,255,255,0.075)", overflow: "hidden", borderColor: "rgba(255,255,255,0.1)" }]}>
+    <View style={styles.guestCard}>
       <Feather name="users" size={28} color={colors.primary} />
       <Text style={[styles.guestTitle, { color: "#F9F9F9" }]}>Crea tu cuenta para agregar amigos</Text>
       <Text style={[styles.guestText, { color: "#F4F4F4" }]}>
@@ -234,7 +230,7 @@ function SignedInAmigos() {
 
   return (
     <>
-      <View style={[styles.searchRow, { backgroundColor: "rgba(255,255,255,0.075)", overflow: "hidden", borderColor: "rgba(255,255,255,0.1)" }]}>
+      <View style={styles.searchRow}>
         <Feather name="search" size={16} color={"#F4F4F4"} />
         <TextInput
           value={search}
@@ -290,7 +286,7 @@ function SignedInAmigos() {
 
       {!showSearch && conversations.length > 0 && (
         <View style={styles.section}>
-          <Text style={[styles.sectionTitle, { color: "#F9F9F9" }]}>Conversaciones</Text>
+          <Text style={[styles.sectionTitle, styles.compactSectionTitle, { color: "#F9F9F9" }]}>Conversaciones</Text>
           {conversations.map((c) => (
             <ConversationRow key={c.friend.id} conversation={c} />
           ))}
@@ -299,7 +295,7 @@ function SignedInAmigos() {
 
       {!showSearch && (
         <View style={styles.section}>
-          <Text style={[styles.sectionTitle, { color: "#F9F9F9" }]}>
+          <Text style={[styles.sectionTitle, styles.compactSectionTitle, { color: "#F9F9F9" }]}>
             Mis amigos · {friends.length}
           </Text>
           {friendsQ.isLoading && <ActivityIndicator color={colors.primary} />}
@@ -348,7 +344,7 @@ function SearchResultRow({
       onPress={onPress}
       style={({ pressed }) => [
         styles.friendRow,
-        { backgroundColor: "rgba(255,255,255,0.075)", overflow: "hidden", borderColor: "rgba(255,255,255,0.1)", opacity: pressed ? 0.75 : 1 },
+        { opacity: pressed ? 0.75 : 1 },
       ]}
     >
       <Avatar user={user} />
@@ -388,7 +384,7 @@ function RequestRow({
   const colors = useColors();
   const requester = request.requester;
   return (
-    <View style={[styles.requestCard, { backgroundColor: "rgba(255,255,255,0.075)", overflow: "hidden", borderColor: "rgba(255,255,255,0.1)" }]}>
+    <View style={styles.requestCard}>
       <Avatar user={requester} />
       <View style={{ flex: 1 }}>
         <Text style={[styles.friendName, { color: "#F9F9F9" }]}>{requester.displayName}</Text>
@@ -431,7 +427,7 @@ function FriendRow({
       delayLongPress={350}
       style={({ pressed }) => [
         styles.friendRow,
-        { backgroundColor: "rgba(255,255,255,0.075)", overflow: "hidden", borderColor: "rgba(255,255,255,0.1)", opacity: pressed ? 0.8 : 1 },
+        { opacity: pressed ? 0.8 : 1 },
       ]}
     >
       <Avatar user={friend} />
@@ -463,7 +459,7 @@ function ConversationRow({ conversation }: { conversation: Conversation }) {
       onPress={() => openChat(friend.id)}
       style={({ pressed }) => [
         styles.friendRow,
-        { backgroundColor: "rgba(255,255,255,0.075)", overflow: "hidden", borderColor: "rgba(255,255,255,0.1)", opacity: pressed ? 0.8 : 1 },
+        { opacity: pressed ? 0.8 : 1 },
       ]}
     >
       <Avatar user={friend} />
@@ -553,13 +549,14 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   scroll: { flex: 1 },
-  subtitle: { fontFamily: "Manrope", fontSize: 14, marginBottom: 20 },
   searchRow: {
     flexDirection: "row",
     alignItems: "center",
     gap: 10,
     borderRadius: 14,
-    borderWidth: 1,
+    borderWidth: 0,
+    backgroundColor: "rgba(0,0,0,0.28)",
+    overflow: "hidden",
     paddingHorizontal: 14,
     paddingVertical: 12,
     marginBottom: 28,
@@ -567,13 +564,16 @@ const styles = StyleSheet.create({
   searchInput: { fontFamily: "Manrope", flex: 1, fontSize: 14 },
   section: { marginBottom: 28, gap: 10 },
   sectionTitle: { fontFamily: "Manrope", fontSize: 20, fontWeight: "700", letterSpacing: 0.5, marginBottom: 4 },
+  compactSectionTitle: { fontSize: 17 },
   empty: { fontFamily: "Manrope", fontSize: 13, paddingVertical: 8 },
   requestCard: {
     flexDirection: "row",
     alignItems: "center",
     gap: 12,
     borderRadius: 16,
-    borderWidth: 1,
+    borderWidth: 0,
+    backgroundColor: "rgba(0,0,0,0.28)",
+    overflow: "hidden",
     padding: 14,
   },
   avatar: { width: 44, height: 44, borderRadius: 22, alignItems: "center", justifyContent: "center" },
@@ -590,7 +590,9 @@ const styles = StyleSheet.create({
     alignItems: "center",
     gap: 12,
     borderRadius: 16,
-    borderWidth: 1,
+    borderWidth: 0,
+    backgroundColor: "rgba(0,0,0,0.28)",
+    overflow: "hidden",
     padding: 14,
   },
   statusBadge: { fontFamily: "Manrope", fontSize: 12, fontWeight: "600" },
@@ -605,7 +607,9 @@ const styles = StyleSheet.create({
   unreadText: { fontFamily: "Manrope", color: "#080F0A", fontSize: 11, fontWeight: "700" },
   guestCard: {
     borderRadius: 20,
-    borderWidth: 1,
+    borderWidth: 0,
+    backgroundColor: "rgba(0,0,0,0.28)",
+    overflow: "hidden",
     padding: 22,
     alignItems: "center",
     gap: 12,
