@@ -19,6 +19,16 @@ import {
   View,
 } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
+import Svg, {
+  Circle,
+  Defs,
+  LinearGradient as SvgLinearGradient,
+  Path,
+  Pattern,
+  RadialGradient,
+  Rect,
+  Stop,
+} from "react-native-svg";
 
 import { MEMBERSHIP_AURORA } from "@/constants/colors";
 import { SessionBadgeGlass } from "@/components/SessionDurationBadge";
@@ -38,9 +48,86 @@ const DATE_FORMATTER = new Intl.DateTimeFormat("es-CL", {
 });
 
 const GIFT_GOLD_COLORS = ["#D8A84F", "#F3D58A", "#B9822F"] as const;
-const PREMIUM_OFFER_BACKGROUND = ["#24153F", "#110A20", "#020104"] as const;
+const PREMIUM_OFFER_BACKGROUND = ["#362064", "#2C2468", "#202B6E", "#103274"] as const;
+const PREMIUM_OFFER_LOCATIONS = [0, 0.3, 0.68, 1] as const;
 const PREMIUM_VIOLET = "#6B50D2";
 const PREMIUM_VIOLET_DARK = "#5139AF";
+
+function PremiumAtmosphereBackground() {
+  return (
+    <View pointerEvents="none" style={styles.premiumAtmosphere}>
+      <Svg
+        width="100%"
+        height="100%"
+        viewBox="0 0 100 180"
+        preserveAspectRatio="xMidYMid slice"
+        style={StyleSheet.absoluteFill}
+      >
+        <Defs>
+          <RadialGradient id="premiumGlowTop" cx="22%" cy="5%" rx="88%" ry="58%">
+            <Stop offset="0" stopColor="#7655A3" stopOpacity={0.25} />
+            <Stop offset="0.34" stopColor="#674A93" stopOpacity={0.13} />
+            <Stop offset="1" stopColor="#443274" stopOpacity={0} />
+          </RadialGradient>
+          <RadialGradient id="premiumGlowCenter" cx="68%" cy="47%" rx="72%" ry="44%">
+            <Stop offset="0" stopColor="#5D68B0" stopOpacity={0.2} />
+            <Stop offset="0.38" stopColor="#44539D" stopOpacity={0.11} />
+            <Stop offset="1" stopColor="#273C82" stopOpacity={0} />
+          </RadialGradient>
+          <RadialGradient id="premiumGlowLower" cx="38%" cy="82%" rx="86%" ry="50%">
+            <Stop offset="0" stopColor="#3768A8" stopOpacity={0.2} />
+            <Stop offset="0.42" stopColor="#285597" stopOpacity={0.1} />
+            <Stop offset="1" stopColor="#153B7B" stopOpacity={0} />
+          </RadialGradient>
+          <RadialGradient id="premiumMistLeft" cx="4%" cy="56%" rx="56%" ry="42%">
+            <Stop offset="0" stopColor="#7761B0" stopOpacity={0.16} />
+            <Stop offset="0.46" stopColor="#5D509B" stopOpacity={0.07} />
+            <Stop offset="1" stopColor="#4A438D" stopOpacity={0} />
+          </RadialGradient>
+          <SvgLinearGradient id="premiumWaveOne" x1="0" y1="0" x2="1" y2="1">
+            <Stop offset="0" stopColor="#9174C4" stopOpacity={0} />
+            <Stop offset="0.42" stopColor="#8068B8" stopOpacity={0.16} />
+            <Stop offset="1" stopColor="#5366B0" stopOpacity={0} />
+          </SvgLinearGradient>
+          <SvgLinearGradient id="premiumWaveTwo" x1="1" y1="0" x2="0" y2="1">
+            <Stop offset="0" stopColor="#5C72BF" stopOpacity={0} />
+            <Stop offset="0.5" stopColor="#7180C7" stopOpacity={0.11} />
+            <Stop offset="1" stopColor="#3D65A5" stopOpacity={0} />
+          </SvgLinearGradient>
+          <SvgLinearGradient id="premiumWaveThree" x1="0" y1="0" x2="1" y2="0">
+            <Stop offset="0" stopColor="#435FA4" stopOpacity={0} />
+            <Stop offset="0.46" stopColor="#5B78BB" stopOpacity={0.09} />
+            <Stop offset="1" stopColor="#315A9D" stopOpacity={0} />
+          </SvgLinearGradient>
+          <Pattern id="premiumGrain" width="2.4" height="2.4" patternUnits="userSpaceOnUse">
+            <Circle cx="0.45" cy="0.65" r="0.075" fill="#FFFFFF" opacity={0.55} />
+            <Circle cx="1.75" cy="1.15" r="0.055" fill="#FFFFFF" opacity={0.42} />
+            <Circle cx="1.05" cy="2.05" r="0.06" fill="#0A1638" opacity={0.6} />
+            <Circle cx="2.18" cy="2.2" r="0.045" fill="#FFFFFF" opacity={0.38} />
+          </Pattern>
+        </Defs>
+
+        <Rect width="100" height="180" fill="url(#premiumGlowTop)" />
+        <Rect width="100" height="180" fill="url(#premiumGlowCenter)" />
+        <Rect width="100" height="180" fill="url(#premiumGlowLower)" />
+        <Rect width="100" height="180" fill="url(#premiumMistLeft)" />
+        <Path
+          d="M-34 39 C1 12 33 60 72 48 C99 39 119 17 139 27 L139 92 C104 71 73 89 38 75 C6 62 -14 76 -34 67 Z"
+          fill="url(#premiumWaveOne)"
+        />
+        <Path
+          d="M-38 79 C-2 56 25 91 58 83 C91 75 111 47 139 59 L139 125 C109 110 80 122 49 112 C17 101 -9 117 -38 105 Z"
+          fill="url(#premiumWaveTwo)"
+        />
+        <Path
+          d="M-31 128 C3 107 27 139 61 132 C91 126 113 103 137 112 L137 180 L-31 180 Z"
+          fill="url(#premiumWaveThree)"
+        />
+        <Rect width="100" height="180" fill="url(#premiumGrain)" opacity={0.035} />
+      </Svg>
+    </View>
+  );
+}
 
 function formatSubscriptionDate(value?: string | null) {
   if (!value) return "No disponible";
@@ -320,11 +407,12 @@ export default function MembresiaScreen() {
       colors={isOfferScreen ? PREMIUM_OFFER_BACKGROUND : backgroundColors}
       locations={
         isOfferScreen
-          ? [0, 0.56, 1]
+          ? PREMIUM_OFFER_LOCATIONS
           : theme.gradientLocations as unknown as [number, number, ...number[]] | undefined
       }
     >
       <StatusBar barStyle="light-content" translucent backgroundColor="transparent" />
+      {isOfferScreen ? <PremiumAtmosphereBackground /> : null}
 
       {!isOfferScreen ? (
       <View style={[styles.header, { paddingTop: topPad + 8 }]}>
@@ -1068,6 +1156,10 @@ function ManageActionRow({
 const styles = StyleSheet.create({
   root: {
     flex: 1,
+  },
+  premiumAtmosphere: {
+    ...StyleSheet.absoluteFillObject,
+    overflow: "hidden",
   },
   header: {
     paddingHorizontal: 20,

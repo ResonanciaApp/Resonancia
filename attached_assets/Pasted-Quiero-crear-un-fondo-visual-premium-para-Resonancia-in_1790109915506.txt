@@ -1,0 +1,28 @@
+Quiero crear un fondo visual premium para Resonancia inspirado en el fondo azul/morado de referencia.
+
+IMPORTANTE: no quiero un degradado lineal convencional. El fondo debe sentirse orgánico, atmosférico y dinámico, como una mezcla de luz difusa y niebla sobre un fondo azul profundo.
+
+Crea el fondo utilizando varias capas visuales superpuestas:
+
+Base: fondo oscuro azul índigo usando aproximadamente #362064 en la zona superior y evolucionando hacia #103274 en la zona inferior.
+Iluminación difusa: agrega varios radial-gradient() grandes y muy suaves, con bordes completamente difuminados. Las manchas de luz deben mezclarse entre sí y no parecer círculos.
+Variación de color: incorpora pequeñas zonas de azul ligeramente más luminoso alrededor del centro y parte inferior, manteniendo siempre una transición muy suave.
+Velos/ondas orgánicas: agrega 2–3 capas enormes de formas curvas o blobs mediante pseudo-elementos (::before, ::after) o elementos absolutamente posicionados. Deben parecer ondas de niebla/luz, no formas geométricas visibles.
+Usa filter: blur() bastante alto en estas capas, aproximadamente entre 60px y 120px, para que los bordes desaparezcan completamente.
+Las formas deben tener una opacidad baja, aproximadamente entre 0.08 y 0.18.
+Agrega un noise/grain extremadamente sutil por encima de todo, con una opacidad aproximada de 0.02–0.04, para evitar que el fondo se vea demasiado digital o plano.
+El resultado debe ser estático, sin animación por ahora.
+Debe ser responsive y funcionar perfectamente tanto en móvil como en desktop.
+No agregar texto, iconos, imágenes ni ningún elemento de contenido.
+
+Sensación visual buscada: profundidad, calma, misterio, espacio, meditación y luz ambiental. Debe parecer una atmósfera azul-violeta creada con capas de luz, no simplemente un linear-gradient.
+
+Mantén el contraste suficientemente bajo para que posteriormente pueda colocar texto blanco encima.
+
+Si es posible, implementarlo únicamente con CSS (background, radial-gradient, pseudo-elementos, filter: blur(), opacity, etc.) sin utilizar imágenes externas.
+
+Y hay una parte MUY importante
+
+Yo agregaría esto al final del prompt:
+
+No intentes reproducir el fondo mediante un único gradient. La clave es que diferentes zonas tengan diferentes intensidades de luz y que las transiciones sean irregulares y orgánicas. El usuario debe percibir profundidad y movimiento visual aunque el fondo sea completamente estático.
