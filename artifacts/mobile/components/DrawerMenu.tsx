@@ -52,8 +52,6 @@ const INICIO3_SECTIONS: { title: string | null; items: MenuItem[] }[] = [
       { id: "history", label: "Historial", icon: "clock", mciIcon: "history", route: "__overlay:/historial" },
       { id: "downloads", label: "Descargas", icon: "download", mciIcon: "download-outline", route: "__overlay:/descargas" },
       { id: "notifications", label: "Notificaciones", icon: "bell", mciIcon: "bell-outline", route: "__overlay:/notificaciones" },
-      { id: "friends", label: "Amigos", icon: "users", mciIcon: "account-multiple-outline", route: "__overlay:/amigos" },
-      { id: "groups", label: "Grupos", icon: "circle", mciIcon: "account-group-outline", route: "__overlay:/grupos" },
       { id: "journal", label: "Diario", icon: "edit-3", mciIcon: "book-open-page-variant-outline", route: "__overlay:/diario" },
     ],
   },
