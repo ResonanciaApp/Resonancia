@@ -871,7 +871,7 @@ export function ExploreScreen({
 
           <View style={[styles.sectionDivider, styles.centeredResonadoresDivider]} />
 
-          <View style={{ marginTop: 10 }}>
+          <View style={{ marginTop: 15 }}>
             <SoundPremiumBanner />
           </View>
 
