@@ -1289,20 +1289,18 @@ const styles = StyleSheet.create({
   thumbFallback: { backgroundColor: "rgba(212,175,55,0.10)", alignItems: "center", justifyContent: "center" },
   star: {
     position: "absolute",
-    top: 6,
-    right: 6,
-    width: 22,
-    height: 22,
+    top: 15,
+    left: 15,
+    width: 26,
+    height: 26,
   },
   squareStar: {
-    top: 16,
-    left: 16,
-    right: undefined,
+    top: 15,
+    left: 15,
   },
   ambientalStar: {
-    top: 18,
-    left: 18,
-    right: undefined,
+    top: 15,
+    left: 15,
   },
   durBadge: {
     position: "absolute",

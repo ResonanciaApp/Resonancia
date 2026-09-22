@@ -481,7 +481,6 @@ export default function DescansoScreen() {
                   cardBorderRadius={16}
                   titleSize={17}
                   hideCategoryAboveTitle
-                  premiumBadgeStyle={styles.sleepPremiumCarouselStar}
                 />
                 {!isPremium ? (
                   <PremiumBanner sleepVariant />
@@ -527,7 +526,6 @@ export default function DescansoScreen() {
                   sleepOverlayMetadataStyle={{ transform: [{ translateX: 3 }, { translateY: -1 }] }}
                   overlayGradientLocations={[0.18, 0.48, 1]}
                   onViewAll={sleepCarouselViewAllHandlers[item.session.id]}
-                  premiumBadgeStyle={styles.sleepPremiumCarouselStar}
                   />
                 ) : item.playlist ? (
                   <EditorialPlaylistCarousel
@@ -676,11 +674,6 @@ export default function DescansoScreen() {
 }
 
 const styles = StyleSheet.create({
-  sleepPremiumCarouselStar: {
-    width: 26,
-    height: 26,
-    transform: [{ translateX: 5 }, { translateY: 5 }],
-  },
   root:   { flex: 1 },
   contentShift: { flex: 1, transform: [{ translateY: -5 }] },
   stickyHeader: {

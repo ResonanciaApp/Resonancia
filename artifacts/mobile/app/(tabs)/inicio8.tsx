@@ -3093,7 +3093,6 @@ export default function HomeScreen2({
             onViewAll={handleViewAllRecent}
             viewAllColor={carouselViewAllColor}
             eagerRender
-            premiumBadgeStyle={styles.homePremiumCarouselStar}
           />
         )}
         {variant === "inicio3" && <View style={styles.inicio3SectionDivider} />}
@@ -3110,7 +3109,6 @@ export default function HomeScreen2({
             squareTitleAuthorBelow
             sleepBelowMetadataStyle={variant === "inicio3" ? { marginTop: 5 } : undefined}
             categoryGridPresentation
-            premiumBadgeStyle={styles.homePremiumCarouselStar}
             whiteMetadataGlass
             showDurationClock
             durationBadgeStyle={{ top: "auto", bottom: 8, left: 8 }}
@@ -3282,7 +3280,6 @@ export default function HomeScreen2({
               titleSize={17}
               hideCategoryAboveTitle
               durationBadgeStyle={{ top: "auto", bottom: 8, left: 8 }}
-              premiumBadgeStyle={styles.homePremiumCarouselStar}
             />
           </View>
         )}
@@ -3367,7 +3364,6 @@ export default function HomeScreen2({
             presentation="editorial"
             hideCategoryAboveTitle
             titleSize={17}
-            premiumBadgeStyle={styles.homePremiumCarouselStar}
           />
         )}
         {!isInicio2 && (
@@ -3481,11 +3477,6 @@ const ctrlBtnStyles = StyleSheet.create({
 });
 
 const styles = StyleSheet.create({
-  homePremiumCarouselStar: {
-    width: 26,
-    height: 26,
-    transform: [{ translateX: 5 }, { translateY: 5 }],
-  },
   root: { flex: 1, backgroundColor: "#210911" },
   inicio2Hero: {
     height: INICIO2_HERO_HEIGHT,
