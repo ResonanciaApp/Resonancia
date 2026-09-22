@@ -2438,7 +2438,7 @@ export default function HomeScreen2({
       .filter((session): session is Session => session !== undefined)
       .filter((session) => session.categoryId !== "ambientales")
       .slice(0, 10);
-  }, [favorites]);
+  }, [catalogVersion, favorites]);
 
   const { data: popularData } = useGetPopularSessions(
     { limit: 30 },
