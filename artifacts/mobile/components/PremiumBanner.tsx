@@ -168,7 +168,7 @@ export default function PremiumBanner({
               style={styles.defaultStar}
               contentFit="contain"
             />
-            <Text style={styles.sleepTitle}>
+            <Text style={[styles.sleepTitle, styles.defaultTitle]}>
               Prueba{" "}
               <Text style={{ color: MEMBERSHIP_AURORA.premium.accent }}>
                 Premium
@@ -367,6 +367,9 @@ const styles = StyleSheet.create({
     fontWeight: "800",
     textAlign: "center",
     marginBottom: 14,
+  },
+  defaultTitle: {
+    marginTop: 6,
   },
   topGlow: {
     position: "absolute",

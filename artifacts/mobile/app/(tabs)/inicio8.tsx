@@ -3299,7 +3299,7 @@ export default function HomeScreen2({
         {/* ── BANNER PREMIUM ── */}
         <View
           style={{
-            marginTop: (variant === "inicio3" ? 0 : -25) - (isPremium ? 17 : 0),
+            marginTop: (variant === "inicio3" ? 0 : -25) - (isPremium ? 17 : 20),
             marginBottom: isInicio2 ? INICIO2_SECTION_GAP : SECTION_GAP,
           }}
         >
