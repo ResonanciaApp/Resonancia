@@ -19,14 +19,6 @@ import {
   View,
 } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
-import Svg, {
-  Circle,
-  Defs,
-  Pattern,
-  RadialGradient,
-  Rect,
-  Stop,
-} from "react-native-svg";
 
 import { MEMBERSHIP_AURORA } from "@/constants/colors";
 import { SessionBadgeGlass } from "@/components/SessionDurationBadge";
@@ -46,77 +38,10 @@ const DATE_FORMATTER = new Intl.DateTimeFormat("es-CL", {
 });
 
 const GIFT_GOLD_COLORS = ["#D8A84F", "#F3D58A", "#B9822F"] as const;
-const PREMIUM_OFFER_BACKGROUND = ["#180F2A", "#131A35", "#0B2237", "#111426"] as const;
-const PREMIUM_OFFER_LOCATIONS = [0, 0.3, 0.68, 1] as const;
+const PREMIUM_OFFER_BACKGROUND = ["#3A1F66", "#291653", "#1A0F3E", "#0D0826"] as const;
+const PREMIUM_OFFER_LOCATIONS = [0, 0.33, 0.66, 1] as const;
 const PREMIUM_VIOLET = "#6B50D2";
 const PREMIUM_VIOLET_DARK = "#5139AF";
-
-function PremiumAtmosphereBackground() {
-  return (
-    <View pointerEvents="none" style={styles.premiumAtmosphere}>
-      <Svg
-        width="100%"
-        height="100%"
-        viewBox="0 0 100 180"
-        preserveAspectRatio="xMidYMid slice"
-        style={StyleSheet.absoluteFill}
-      >
-        <Defs>
-          <RadialGradient id="chakraViolet" cx="86%" cy="4%" rx="72%" ry="42%">
-            <Stop offset="0" stopColor="#A776D6" stopOpacity={0.72} />
-            <Stop offset="0.38" stopColor="#A776D6" stopOpacity={0.27} />
-            <Stop offset="1" stopColor="#A776D6" stopOpacity={0} />
-          </RadialGradient>
-          <RadialGradient id="chakraIndigo" cx="10%" cy="20%" rx="74%" ry="44%">
-            <Stop offset="0" stopColor="#6F68B6" stopOpacity={0.68} />
-            <Stop offset="0.42" stopColor="#6F68B6" stopOpacity={0.24} />
-            <Stop offset="1" stopColor="#6F68B6" stopOpacity={0} />
-          </RadialGradient>
-          <RadialGradient id="chakraBlue" cx="92%" cy="37%" rx="70%" ry="40%">
-            <Stop offset="0" stopColor="#5998BB" stopOpacity={0.7} />
-            <Stop offset="0.4" stopColor="#5998BB" stopOpacity={0.25} />
-            <Stop offset="1" stopColor="#5998BB" stopOpacity={0} />
-          </RadialGradient>
-          <RadialGradient id="chakraGreen" cx="22%" cy="51%" rx="72%" ry="42%">
-            <Stop offset="0" stopColor="#60A186" stopOpacity={0.63} />
-            <Stop offset="0.42" stopColor="#60A186" stopOpacity={0.22} />
-            <Stop offset="1" stopColor="#60A186" stopOpacity={0} />
-          </RadialGradient>
-          <RadialGradient id="chakraYellow" cx="88%" cy="65%" rx="72%" ry="42%">
-            <Stop offset="0" stopColor="#E7C85D" stopOpacity={0.66} />
-            <Stop offset="0.4" stopColor="#D5B84F" stopOpacity={0.22} />
-            <Stop offset="1" stopColor="#B99B3D" stopOpacity={0} />
-          </RadialGradient>
-          <RadialGradient id="chakraOrange" cx="14%" cy="80%" rx="75%" ry="43%">
-            <Stop offset="0" stopColor="#DE9363" stopOpacity={0.7} />
-            <Stop offset="0.42" stopColor="#DE9363" stopOpacity={0.24} />
-            <Stop offset="1" stopColor="#DE9363" stopOpacity={0} />
-          </RadialGradient>
-          <RadialGradient id="chakraRed" cx="82%" cy="98%" rx="78%" ry="48%">
-            <Stop offset="0" stopColor="#C65860" stopOpacity={0.72} />
-            <Stop offset="0.4" stopColor="#C65860" stopOpacity={0.26} />
-            <Stop offset="1" stopColor="#C65860" stopOpacity={0} />
-          </RadialGradient>
-          <Pattern id="premiumGrain" width="2.4" height="2.4" patternUnits="userSpaceOnUse">
-            <Circle cx="0.45" cy="0.65" r="0.075" fill="#FFFFFF" opacity={0.55} />
-            <Circle cx="1.75" cy="1.15" r="0.055" fill="#FFFFFF" opacity={0.42} />
-            <Circle cx="1.05" cy="2.05" r="0.06" fill="#0A1638" opacity={0.6} />
-            <Circle cx="2.18" cy="2.2" r="0.045" fill="#FFFFFF" opacity={0.38} />
-          </Pattern>
-        </Defs>
-
-        <Rect width="100" height="180" fill="url(#chakraViolet)" />
-        <Rect width="100" height="180" fill="url(#chakraIndigo)" />
-        <Rect width="100" height="180" fill="url(#chakraBlue)" />
-        <Rect width="100" height="180" fill="url(#chakraGreen)" />
-        <Rect width="100" height="180" fill="url(#chakraYellow)" />
-        <Rect width="100" height="180" fill="url(#chakraOrange)" />
-        <Rect width="100" height="180" fill="url(#chakraRed)" />
-        <Rect width="100" height="180" fill="url(#premiumGrain)" opacity={0.035} />
-      </Svg>
-    </View>
-  );
-}
 
 function formatSubscriptionDate(value?: string | null) {
   if (!value) return "No disponible";
@@ -401,7 +326,6 @@ export default function MembresiaScreen() {
       }
     >
       <StatusBar barStyle="light-content" translucent backgroundColor="transparent" />
-      {isOfferScreen ? <PremiumAtmosphereBackground /> : null}
 
       {!isOfferScreen ? (
       <View style={[styles.header, { paddingTop: topPad + 8 }]}>
@@ -1145,10 +1069,6 @@ function ManageActionRow({
 const styles = StyleSheet.create({
   root: {
     flex: 1,
-  },
-  premiumAtmosphere: {
-    ...StyleSheet.absoluteFillObject,
-    overflow: "hidden",
   },
   header: {
     paddingHorizontal: 20,
