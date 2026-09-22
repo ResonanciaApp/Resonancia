@@ -19,7 +19,6 @@ import {
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { LinearGradient } from "expo-linear-gradient";
 import { useColors } from "@/hooks/useColors";
-import { MEMBERSHIP_AURORA } from "@/constants/colors";
 import { getSessionsByDescansoTag, getSessionById, getDescansoVisibleSessions, getDescansoCollectionCards } from "@/data/sessions";
 import { useCatalog } from "@/context/CatalogContext";
 import { SessionCarousel } from "@/components/SessionCarousel";
@@ -32,9 +31,7 @@ import { isIndigoThemeId } from "@/config/scene-themes";
 import { useSceneTheme } from "@/context/SceneThemeContext";
 import { useBackOverride } from "@/context/BackOverrideContext";
 import { useCategoryOverlay } from "@/context/CategoryOverlayContext";
-import { useMixerPanel } from "@/context/MixerPanelContext";
 import { EditorialPlaylistCarousel } from "@/components/EditorialPlaylistCarousel";
-import { MoonCrescentIcon } from "@/components/MoonCrescentIcon";
 import PremiumBanner from "@/components/PremiumBanner";
 import {
   getEditorialPlaylistCarouselsForSurface,
@@ -168,7 +165,6 @@ export default function DescansoScreen() {
   const topPad    = Platform.OS === "web" ? 67 : Math.max(insets.top, 40);
   const bottomPad = Platform.OS === "web" ? 34 : insets.bottom;
   const { theme: sceneTheme } = useSceneTheme();
-  const { openMixer } = useMixerPanel();
   const bgGradient = sceneTheme.gradient;
   const indigoSurface = sceneTheme.id === "tibet"
     ? "rgba(0,0,0,0.1)"
@@ -553,37 +549,6 @@ export default function DescansoScreen() {
             ) ? (
               <View style={styles.sectionDivider} />
             ) : null}
-            <Pressable
-              onPress={openMixer}
-              accessibilityRole="button"
-              accessibilityLabel="Abrir Mezclador para dormir"
-              style={({ pressed }) => [
-                styles.sleepMixerBanner,
-                {
-                  borderWidth: 2,
-                  borderColor: "rgba(255,255,255,0.27)",
-                  opacity: pressed ? 0.82 : 1,
-                },
-              ]}
-            >
-              <View style={styles.sleepMixerBannerIcon}>
-                <MoonCrescentIcon color="#C4A8F5" size={30} />
-              </View>
-              <View style={styles.sleepMixerBannerCopy}>
-                <Text style={styles.sleepMixerBannerTitle}>
-                  Mezclador para dormir
-                </Text>
-                <Text style={[styles.sleepMixerBannerSubtitle, { color: colors.accent }]}>
-                  Crea tu propio universo sonoro con más de 400 sonidos ambientales{" "}
-                  <MaterialCommunityIcons
-                    name="diamond-stone"
-                    size={14}
-                    color={MEMBERSHIP_AURORA.plus.accent}
-                  />
-                </Text>
-              </View>
-              <Feather name="chevron-right" size={20} color="rgba(249,249,249,0.7)" />
-            </Pressable>
           </View>
         </ScrollView>
       </View>
@@ -947,44 +912,6 @@ const styles = StyleSheet.create({
     backgroundColor: "rgba(0,0,0,0.28)",
     alignItems: "center",
     justifyContent: "center",
-  },
-  sleepMixerBanner: {
-    minHeight: 110,
-    marginTop: 26,
-    marginHorizontal: H_PAD,
-    paddingHorizontal: 16,
-    paddingVertical: 14,
-    borderRadius: 16,
-    borderWidth: 2,
-    borderColor: "rgba(255,255,255,0.27)",
-    backgroundColor: "rgba(0,0,0,0.28)",
-    flexDirection: "row",
-    alignItems: "center",
-    gap: 14,
-  },
-  sleepMixerBannerIcon: {
-    width: 51,
-    height: 51,
-    borderRadius: 13,
-    backgroundColor: "rgba(255,255,255,0.1)",
-    alignItems: "center",
-    justifyContent: "center",
-    transform: [{ translateY: 2 }],
-  },
-  sleepMixerBannerCopy: {
-    flex: 1,
-    minWidth: 0,
-  },
-  sleepMixerBannerTitle: {
-    color: "#F9F9F9",
-    fontFamily: "Manrope",
-    fontSize: 16,
-    fontWeight: "700",
-    marginBottom: 5,
-  },
-  sleepMixerBannerSubtitle: {
-    fontFamily: "Manrope",
-    fontSize: 12,
   },
   heroTitle: {
     fontFamily: "Manrope",

@@ -118,6 +118,7 @@ import { CardTint } from "@/components/CardTint";
 import { ToolsGrid } from "@/components/ToolsGrid";
 import { DailyRecommendationsSection } from "@/components/DailyRecommendationsSection";
 import { DailyWisdomCard } from "@/components/DailyWisdomCard";
+import { AlmaCommunitySection } from "@/components/AlmaCommunitySection";
 import { ContinueMeditationPlaylistCard } from "@/components/ContinueMeditationPlaylistCard";
 import { VideoCard } from "@/components/VideoCard";
 import { useVideos } from "@/hooks/useVideos";
@@ -3294,10 +3295,11 @@ export default function HomeScreen2({
             />
           </View>
         )}
+        {isInicio2 && isPremium && <AlmaCommunitySection />}
         {/* ── BANNER PREMIUM ── */}
         <View
           style={{
-            marginTop: variant === "inicio3" ? 0 : -25,
+            marginTop: (variant === "inicio3" ? 0 : -25) - (isPremium ? 17 : 0),
             marginBottom: isInicio2 ? INICIO2_SECTION_GAP : SECTION_GAP,
           }}
         >

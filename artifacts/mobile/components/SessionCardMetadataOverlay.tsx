@@ -52,7 +52,7 @@ const CATEGORY_PILL_META: Record<string, {
     materialIcon: "book-open-page-variant",
   },
   charlas: {
-    label: "Charlas",
+    label: "Reflexiones",
     color: "#78221E",
     materialIcon: "message-text-outline",
   },

@@ -29,7 +29,6 @@ import { DURATION } from "@/constants/motion";
 import { openCategoryGlobal } from "@/context/CategoryOverlayContext";
 import { useUserProfile } from "@/context/UserProfileContext";
 import { useSceneTheme } from "@/context/SceneThemeContext";
-import { useGeometrixPanel } from "@/context/GeometrixPanelContext";
 import { useMixerPanel } from "@/context/MixerPanelContext";
 import { useCurrentUserAvatarSource } from "@/lib/profile-avatar";
 
@@ -53,10 +52,8 @@ const INICIO3_SECTIONS: { title: string | null; items: MenuItem[] }[] = [
       { id: "library", label: "Biblioteca", icon: "book", mciIcon: "bookshelf", route: "__biblioteca_overlay" },
       { id: "history", label: "Historial", icon: "clock", mciIcon: "history", route: "__overlay:/historial" },
       { id: "downloads", label: "Descargas", icon: "download", mciIcon: "download-outline", route: "__overlay:/descargas" },
-      { id: "mood-register", label: "Registro de ánimo", icon: "smile", mciIcon: "emoticon-happy-outline", route: "__mood_register" },
       { id: "mixer", label: "Mezclador de sonido", icon: "sliders", mciIcon: "tune-vertical", route: "__mixer" },
       { id: "journal", label: "Diario", icon: "edit-3", mciIcon: "book-open-page-variant-outline", route: "__overlay:/diario" },
-      { id: "geometrix", label: "Geometrix", icon: "hexagon", mciIcon: "hexagon-multiple-outline", route: "__geometrix" },
     ],
   },
   {
@@ -81,7 +78,6 @@ export function DrawerMenu() {
     openOverlayFromDrawer,
     overlayParallax,
     drawerTransitionProgress,
-    requestMoodPicker,
     requestProfileCompose,
   } = useDrawer();
   const insets = useSafeAreaInsets();
@@ -90,7 +86,6 @@ export function DrawerMenu() {
   const { username, lastName } = useUserProfile();
   const avatarSource = useCurrentUserAvatarSource();
   const { theme: activeTheme } = useSceneTheme();
-  const { openGeometrixFromDrawer } = useGeometrixPanel();
   const { openMixerFromDrawer } = useMixerPanel();
 
   const loggedIn = isRegistered || isSignedIn;
@@ -212,7 +207,6 @@ export function DrawerMenu() {
   const navigate = (route: string) => {
     // Overlays sobre el drawer (menú queda abierto debajo)
     if (route === "__biblioteca_overlay") { openLibFromDrawer(); return; }
-    if (route === "__mood_register") { onClose(); requestMoodPicker(); return; }
     if (route === "__profile_compose") {
       markInstantNav();
       onClose();
@@ -221,7 +215,6 @@ export function DrawerMenu() {
       return;
     }
     if (route === "__mixer") { openMixerFromDrawer(); return; }
-    if (route === "__geometrix") { openGeometrixFromDrawer(); return; }
     if (route.startsWith("__overlay:")) {
       const target = route.replace("__overlay:", "");
       if (["/historial", "/favoritos-todos", "/diario", "/descargas", "/membresia"].includes(target)) {

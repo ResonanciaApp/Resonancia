@@ -782,7 +782,7 @@ function EditDialog({
               <SingleTagOptionSelector
                 tagType="podcast"
                 defaults={CHARLAS_SUBCATEGORY_TAGS}
-                label="Subcategoría Charlas"
+                label="Subcategoría Reflexiones"
                 selected={podcastTag}
                 onSelect={setPodcastTag}
                 onRename={(from, to) => setPodcastTag((current) => current === from ? to : current)}

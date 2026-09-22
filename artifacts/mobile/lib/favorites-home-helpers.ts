@@ -4,7 +4,7 @@ export const FAVORITE_COLLECTION_TABS = [
   { id: "musica", label: "Música", categoryId: "musica-sonidos" },
   { id: "ambientales", label: "Ambientales", categoryId: "ambientales" },
   { id: "historias", label: "Historias", categoryId: "historias" },
-  { id: "charlas", label: "Charlas", categoryId: "charlas" },
+  { id: "charlas", label: "Reflexiones", categoryId: "charlas" },
 ] as const;
 
 export type FavoriteCollectionTabId =

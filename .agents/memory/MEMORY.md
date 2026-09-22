@@ -155,3 +155,4 @@
 - [Entitlement RevenueCat desconocido](revenuecat-entitlement-unknown.md) — error/carga/no-configurado nunca equivale a free; conservar último entitlement verificado solo hasta su expiración real
 - [Transiciones desde el drawer](drawer-destination-transition.md) — destinos del menú usan un progreso único para ventana+drawer; aperturas desde otros orígenes conservan su animación normal
 - [Etiquetas libres de playlists](playlist-free-editorial-labels.md) — Tipo editorial admite texto libre; `none` oculta la píldora y los slugs históricos conservan su etiqueta traducida
+- [Reflexiones conserva el ID charlas](reflexiones-charlas-id.md) — la categoría visible Reflexiones usa el ID técnico `charlas`; no confundir con diario/reflexiones personales

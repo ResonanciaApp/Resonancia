@@ -60,7 +60,7 @@ export const CONTENT_CATEGORIES: readonly ContentCategoryDefinition[] = [
   },
   {
     id: "charlas",
-    label: "Charlas",
+    label: "Reflexiones",
     color: "#F0B17A",
     cardColor: "#78221E",
     horizontalWidth: 118,

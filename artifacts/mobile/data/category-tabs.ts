@@ -2,7 +2,7 @@ import type { Session } from "@/data/sessions";
 
 /**
  * Tags que alimentan las pestañas de las categorías editoriales.
- * Charlas, Historias y el resto de categorías de contenido usan los tags
+ * Reflexiones, Historias y el resto de categorías de contenido usan los tags
  * de podcast/sabiduría/tema; Ambientales conserva sus tags de sonidos.
  */
 export function getCategorySessionTags(

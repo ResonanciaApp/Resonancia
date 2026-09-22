@@ -518,10 +518,10 @@ describe("catalog hide/unhide — security boundary (admin)", () => {
     ]);
   });
 
-  it("exige subcategoría al crear Charlas, Historias y Ambientales", async () => {
+  it("exige subcategoría al crear Reflexiones, Historias y Ambientales", async () => {
     authAs(adminUser);
     for (const [categoryId, categoryLabel] of [
-      ["charlas", "Charlas"],
+      ["charlas", "Reflexiones"],
       ["historias", "Historias"],
       ["ambientales", "Ambientales"],
     ] as const) {
@@ -545,10 +545,10 @@ describe("catalog hide/unhide — security boundary (admin)", () => {
     }
   });
 
-  it("propaga renombre y borrado de una subcategoría de Charlas", async () => {
+  it("propaga renombre y borrado de una subcategoría de Reflexiones", async () => {
     authAs(adminUser);
-    const originalLabel = `Charlas original ${suffix}`;
-    const renamedLabel = `Charlas renombrada ${suffix}`;
+    const originalLabel = `Reflexiones original ${suffix}`;
+    const renamedLabel = `Reflexiones renombrada ${suffix}`;
 
     const optionRes = await request(app)
       .post("/api/admin/tag-options")
@@ -558,10 +558,10 @@ describe("catalog hide/unhide — security boundary (admin)", () => {
     const createRes = await request(app)
       .post("/api/catalog/submissions")
       .send({
-        title: "Charla con subcategoría",
+        title: "Reflexión con subcategoría",
         subtitle: "Prueba de propagación",
         categoryId: "charlas",
-        categoryLabel: "Charlas",
+        categoryLabel: "Reflexiones",
         duration: 12,
         description: "Contenido de prueba para validar el renombre de subcategoría.",
         benefits: [],

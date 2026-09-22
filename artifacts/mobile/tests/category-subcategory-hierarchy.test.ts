@@ -12,7 +12,7 @@ const baseSession = {
   themeTag: [] as string[],
 };
 
-test("keeps Charlas subcategories separate from collection labels", () => {
+test("keeps Reflexiones subcategories separate from collection labels", () => {
   const session = {
     ...baseSession,
     podcastTag: "Subcategoría 1",

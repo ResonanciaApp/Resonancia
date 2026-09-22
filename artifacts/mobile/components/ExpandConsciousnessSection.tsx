@@ -79,7 +79,7 @@ export function ExpandConsciousnessSection({
       <View style={styles.header}>
         <Text style={styles.title}>Expande tu consciencia</Text>
         <Text style={[styles.description, { color: theme.accent ?? colors.accent }]}>
-          Charlas que despiertan lo verdadero en ti
+          Reflexiones que despiertan lo verdadero en ti
         </Text>
       </View>
 
@@ -126,7 +126,7 @@ export function ExpandConsciousnessSection({
         />
       ) : (
         <Text style={[styles.empty, { color: theme.accent ?? colors.accent }]}>
-          Próximamente en Charlas
+          Próximamente en Reflexiones
         </Text>
       )}
     </View>

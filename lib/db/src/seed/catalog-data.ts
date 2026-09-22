@@ -74,7 +74,7 @@ export const SEED_CATEGORIES: InsertCatalogCategory[] = [
   },
   {
     "id": "charlas",
-    "title": "Charlas",
+    "title": "Reflexiones",
     "subtitle": "Conversaciones para abrir nuevas perspectivas",
     "icon": "message-text-outline",
     "sessionCount": 0,

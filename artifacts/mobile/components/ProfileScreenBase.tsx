@@ -87,6 +87,7 @@ import { KeyboardAwareScrollViewCompat } from "@/components/KeyboardAwareScrollV
 import { MoonCrescentIcon } from "@/components/MoonCrescentIcon";
 import { SleepReminderSheet } from "@/components/SleepReminderSheet";
 import { FilledSunIcon } from "@/components/FilledSunIcon";
+import { useMixerPanel } from "@/context/MixerPanelContext";
 
 const REFLECTION_BANNER_ENTRY_DISTANCE = 86;
 const REFLECTION_BANNER_ENTRY_DURATION = 380;
@@ -455,6 +456,7 @@ export function ProfileScreenBase({
 }) {
   const colors = useColors();
   const { isPremium } = usePremium();
+  const { openMixer } = useMixerPanel();
   const { theme: activeTheme, activeSceneId } = useSceneTheme();
   const insets = useSafeAreaInsets();
   const { email, logout } = useAuth();
@@ -1640,7 +1642,7 @@ export function ProfileScreenBase({
               onPress={() => setSleepReminderVisible(true)}
               style={({ pressed }) => [
                 styles.practiceReminderSection,
-                styles.practiceReminderLast,
+                styles.practiceReminderMiddle,
                 { opacity: pressed ? 0.72 : 1 },
               ]}
               accessibilityRole="button"
@@ -1655,6 +1657,30 @@ export function ProfileScreenBase({
                 </Text>
                 <Text style={[styles.practiceReminderSubtitle, { color: profileDescriptionColor }]}>
                   Configura tu hora de descanso
+                </Text>
+              </View>
+              <Feather name="chevron-right" size={22} color={colors.foreground} />
+            </Pressable>
+
+            <Pressable
+              onPress={() => openMixer()}
+              style={({ pressed }) => [
+                styles.practiceReminderSection,
+                styles.practiceReminderLast,
+                { opacity: pressed ? 0.72 : 1 },
+              ]}
+              accessibilityRole="button"
+              accessibilityLabel="Abrir Mezclador de sonidos"
+            >
+              <View style={styles.practiceReminderIcon}>
+                <MaterialCommunityIcons name="tune-vertical" size={27} color="#7DD8F5" />
+              </View>
+              <View style={styles.practiceReminderCopy}>
+                <Text style={[styles.practiceReminderTitle, { color: colors.foreground }]}>
+                  Mezclador de sonidos
+                </Text>
+                <Text style={[styles.practiceReminderSubtitle, { color: profileDescriptionColor }]}>
+                  Crea tu propio universo sonoro
                 </Text>
               </View>
               <Feather name="chevron-right" size={22} color={colors.foreground} />
@@ -2778,6 +2804,9 @@ const styles = StyleSheet.create({
   },
   practiceReminderLast: {
     marginBottom: 53,
+  },
+  practiceReminderMiddle: {
+    marginBottom: 25,
   },
   practiceReminderIcon: {
     width: 44,

@@ -15,6 +15,7 @@ import {
 import { MilestoneCards } from "@/components/MilestoneCards";
 import { isIndigoThemeId } from "@/config/scene-themes";
 import type { SceneId } from "@/context/AmbientPlayerContext";
+import { useGeometrixPanel } from "@/context/GeometrixPanelContext";
 
 type FeatherName = React.ComponentProps<typeof Feather>["name"];
 
@@ -54,6 +55,7 @@ export function ProfileSettingsSections({
   onLogout,
 }: ProfileSettingsSectionsProps) {
   const [milestonesOpen, setMilestonesOpen] = useState(false);
+  const { openGeometrix } = useGeometrixPanel();
   const isIndigo = isIndigoThemeId(sceneId);
   const isIndigo2 = sceneId === "indigo2";
   const themeAccent = isIndigo2 ? accent : isIndigo ? "#AAAAC4" : accent;
@@ -210,6 +212,26 @@ export function ProfileSettingsSections({
       {placement === "settings" && (
         <>
           <Pressable
+            onPress={() => openGeometrix()}
+            accessibilityRole="button"
+            accessibilityLabel="Abrir Geometrix"
+            style={({ pressed }) => [
+              styles.geometrixButton,
+              {
+                backgroundColor: cardBackground,
+                borderColor,
+                opacity: pressed ? 0.72 : 1,
+              },
+            ]}
+          >
+            <View style={styles.iconBox}>
+              <Feather name="hexagon" size={21} color="#F9F9F9" />
+            </View>
+            <Text style={[styles.geometrixText, { color: foreground }]}>Geometrix</Text>
+            <Feather name="chevron-right" size={20} color={themeAccent} />
+          </Pressable>
+
+          <Pressable
             onPress={onLogout}
             accessibilityRole="button"
             accessibilityLabel="Cerrar sesión"
@@ -315,6 +337,22 @@ const styles = StyleSheet.create({
     gap: 12,
     marginTop: 3,
     marginHorizontal: 2,
+  },
+  geometrixButton: {
+    minHeight: 66,
+    borderRadius: 17,
+    borderWidth: 1,
+    flexDirection: "row",
+    alignItems: "center",
+    paddingHorizontal: 15,
+    marginBottom: 16,
+  },
+  geometrixText: {
+    flex: 1,
+    fontFamily: "Manrope",
+    fontSize: 15.5,
+    lineHeight: 21,
+    fontWeight: "600",
   },
   logoutText: {
     fontFamily: "Manrope",

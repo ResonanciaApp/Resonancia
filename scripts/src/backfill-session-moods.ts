@@ -68,9 +68,6 @@ function inferMoodIds(session: typeof catalogSessionsTable.$inferSelect): string
     case "ambientales":
       add(CALM, ["cansado"]);
       break;
-    case "reflexiones":
-      add(GROWTH, CONNECTION, ["enojado"]);
-      break;
     case "descanso":
       if (searchable.includes("historia")) add(CONNECTION, ["deprimido", "en-paz", "presente"]);
       else add(["estresado", "ansioso", "cansado", "adolorido", "en-paz"]);

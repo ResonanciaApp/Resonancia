@@ -64,7 +64,7 @@ function missingRequiredCategorySubcategory(session: {
   sonidosTag?: string | null;
 }): string | null {
   if (session.categoryId === "charlas" && !session.podcastTag?.trim()) {
-    return "Seleccioná una subcategoría de Charlas";
+    return "Seleccioná una subcategoría de Reflexiones";
   }
   if (session.categoryId === "historias" && !session.sabiduriaTag?.trim()) {
     return "Seleccioná una subcategoría de Historias";

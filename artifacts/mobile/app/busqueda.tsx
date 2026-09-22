@@ -48,7 +48,7 @@ const CATEGORY_OPTIONS = [
   { label: "Música",       categoryId: "musica-sonidos" },
   { label: "Dormir",       categoryId: "descanso" },
   { label: "Historias",    categoryId: "historias" },
-  { label: "Charlas",      categoryId: "charlas" },
+  { label: "Reflexiones",  categoryId: "charlas" },
 ] as const;
 type CategoryLabel = (typeof CATEGORY_OPTIONS)[number]["label"];
 

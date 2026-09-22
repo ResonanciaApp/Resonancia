@@ -81,7 +81,7 @@ const CATS = [
   { id: "musica-sonidos", label: "Música", categoryLabel: "Música", color: "#FBA980" },
   { id: "meditaciones-guiadas", label: "Meditaciones", categoryLabel: "Meditaciones", color: "#E9C46A" },
   { id: "sonidos-ancestrales", label: "Sonoterapia", categoryLabel: "Sonoterapia", color: "#D4AF37" },
-  { id: "charlas", label: "Charlas", categoryLabel: "Charlas", color: "#F0B17A" },
+  { id: "charlas", label: "Reflexiones", categoryLabel: "Reflexiones", color: "#F0B17A" },
   { id: "historias", label: "Historias", categoryLabel: "Historias", color: "#D5A4E8" },
   { id: "ambientales", label: "Ambientales", categoryLabel: "Ambientales", color: "#78AFA5" },
 ] as const;
@@ -373,7 +373,7 @@ export default function SessionForm({ mode, initial, onSaved }: SessionFormProps
   const validate = (durationValue = duration): string | null => {
     if (!categoryId) return "Seleccioná una categoría";
     if (categoryId === "musica-sonidos" && !soundTag) return "Seleccioná una subcategoría de Música";
-    if (categoryId === "charlas" && !podcastTag) return "Seleccioná una subcategoría de Charlas";
+    if (categoryId === "charlas" && !podcastTag) return "Seleccioná una subcategoría de Reflexiones";
     if (categoryId === "historias" && !sabiduriaTag) return "Seleccioná una subcategoría de Historias";
     if (categoryId === "ambientales" && !sonidosTag) return "Seleccioná una subcategoría de Ambientales";
     if (!title.trim()) return "El título es requerido";

@@ -76,7 +76,7 @@ export const CATEGORIES: Category[] = [
   },
   {
     id: "charlas",
-    title: "Charlas",
+    title: "Reflexiones",
     subtitle: "Conversaciones para abrir nuevas perspectivas",
     icon: "message-text-outline",
     iconFamily: "MaterialCommunityIcons",

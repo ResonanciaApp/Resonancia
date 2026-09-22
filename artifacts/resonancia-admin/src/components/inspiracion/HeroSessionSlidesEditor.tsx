@@ -19,9 +19,8 @@ const PILL_LABEL_OPTIONS: Record<string, readonly string[]> = {
   "sonidos-ancestrales": ["Sonoterapia de la semana", "Sonoterapia del mes", "Sonoterapia destacada"],
   "musica-sonidos": ["Música de la semana", "Música del mes", "Música destacada"],
   ambientales: ["Sonido ambiental de la semana", "Sonido ambiental del mes", "Sonido ambiental destacado"],
-  reflexiones: ["Reflexión de la semana", "Reflexión del mes", "Reflexión destacada"],
   historias: ["Historia de la semana", "Historia del mes", "Historia destacada"],
-  charlas: ["Charla de la semana", "Charla del mes", "Charla destacada"],
+  charlas: ["Reflexión de la semana", "Reflexión del mes", "Reflexión destacada"],
   descanso: ["Sonido para dormir de la semana", "Sonido para dormir del mes", "Sonido para dormir destacado"],
 };
 
