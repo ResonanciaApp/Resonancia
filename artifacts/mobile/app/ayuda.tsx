@@ -107,7 +107,13 @@ export default function AyudaScreen() {
             <Pressable
               key={i}
               onPress={() => setOpenIndex(openIndex === i ? null : i)}
-              style={[styles.faqItem, { backgroundColor: "rgba(255,255,255,0.03)", borderColor: openIndex === i ? colors.primary + "66" : "transparent" }]}
+              style={[
+                styles.faqItem,
+                {
+                  backgroundColor: "rgba(255,255,255,0.03)",
+                  borderColor: "rgba(241,224,255,0.25)",
+                },
+              ]}
             >
               <View style={styles.faqHeader}>
                 <Text style={[styles.faqQ, { color: colors.foreground, flex: 1 }]}>{faq.q}</Text>
@@ -157,7 +163,7 @@ const styles = StyleSheet.create({
   topicLabel: { fontFamily: "Manrope", fontSize: 13, fontWeight: "600", lineHeight: 18 },
   faqTitle: { fontFamily: "Manrope", fontSize: 17, fontWeight: "700", marginBottom: 14 },
   faqList: { gap: 10, marginBottom: 28 },
-  faqItem: { borderRadius: 14, borderWidth: 1, padding: 16, gap: 0 },
+  faqItem: { borderRadius: 14, borderWidth: 1.2, padding: 16, gap: 0 },
   faqHeader: { flexDirection: "row", alignItems: "center", gap: 10 },
   faqQ: { fontFamily: "Manrope", fontSize: 14, fontWeight: "600", lineHeight: 20 },
   faqA: { fontFamily: "Manrope", fontSize: 13, lineHeight: 20, marginTop: 12 },

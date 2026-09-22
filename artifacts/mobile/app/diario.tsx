@@ -151,8 +151,8 @@ export default function DiarioScreen() {
           onPress={goBack ?? (() => router.canGoBack() ? router.back() : router.replace("/(tabs)" as never))}
           size={32}
           bgColor="rgba(0,0,0,0.28)"
-          borderWidth={1}
-          borderColor="rgba(255,255,255,0.2)"
+          borderWidth={1.2}
+          borderColor="rgba(241,224,255,0.25)"
           standardSurface
           iconOffsetX={-1}
         />
