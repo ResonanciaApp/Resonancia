@@ -72,8 +72,6 @@ function AuthorAvatar({
   );
 }
 
-const BG_GRADIENT = ["#340D1A", "#190913"] as const;
-
 export default function MensajesDelAlmaScreen() {
   const colors = useColors();
   const { theme: sceneTheme } = useSceneTheme();
@@ -123,11 +121,14 @@ export default function MensajesDelAlmaScreen() {
     <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
       <LinearGradient
 
-        style={styles.root}
+        style={[
+          styles.root,
+          { backgroundColor: sceneTheme.gradient[sceneTheme.gradient.length - 1] as string },
+        ]}
 
         colors={sceneTheme.gradient as [string, string, ...string[]]}
 
-        locations={[0, 0.5, 1]}
+        locations={sceneTheme.gradientLocations}
 
         start={{ x: 0, y: 0 }}
 

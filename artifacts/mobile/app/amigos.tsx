@@ -286,7 +286,7 @@ function SignedInAmigos() {
 
       {!showSearch && conversations.length > 0 && (
         <View style={styles.section}>
-          <Text style={[styles.sectionTitle, styles.compactSectionTitle, { color: "#F9F9F9" }]}>Conversaciones</Text>
+          <Text style={[styles.sectionTitle, { color: "#F9F9F9" }]}>Conversaciones</Text>
           {conversations.map((c) => (
             <ConversationRow key={c.friend.id} conversation={c} />
           ))}
@@ -295,7 +295,7 @@ function SignedInAmigos() {
 
       {!showSearch && (
         <View style={styles.section}>
-          <Text style={[styles.sectionTitle, styles.compactSectionTitle, { color: "#F9F9F9" }]}>
+          <Text style={[styles.sectionTitle, { color: "#F9F9F9" }]}>
             Mis amigos · {friends.length}
           </Text>
           {friendsQ.isLoading && <ActivityIndicator color={colors.primary} />}
@@ -563,8 +563,7 @@ const styles = StyleSheet.create({
   },
   searchInput: { fontFamily: "Manrope", flex: 1, fontSize: 14 },
   section: { marginBottom: 28, gap: 10 },
-  sectionTitle: { fontFamily: "Manrope", fontSize: 20, fontWeight: "700", letterSpacing: 0.5, marginBottom: 4 },
-  compactSectionTitle: { fontSize: 17 },
+  sectionTitle: { fontFamily: "Manrope", fontSize: 17, fontWeight: "700", letterSpacing: 0.3, marginBottom: 4 },
   empty: { fontFamily: "Manrope", fontSize: 13, paddingVertical: 8 },
   requestCard: {
     flexDirection: "row",
