@@ -1715,53 +1715,47 @@ export function ProfileScreenBase({
               <Feather name="chevron-right" size={22} color={colors.foreground} />
             </Pressable>
 
-            <Pressable
-              onPress={() => openMixer()}
-              style={({ pressed }) => [
-                styles.practiceReminderSection,
-                styles.practiceReminderMiddle,
-                { opacity: pressed ? 0.72 : 1 },
-              ]}
-              accessibilityRole="button"
-              accessibilityLabel="Abrir Mezclador de sonidos"
-            >
-              <View style={styles.practiceReminderIcon}>
-                <MaterialCommunityIcons name="tune-vertical" size={27} color="#7DD8F5" />
-              </View>
-              <View style={styles.practiceReminderCopy}>
-                <Text style={[styles.practiceReminderTitle, { color: colors.foreground }]}>
+            <View style={styles.practiceToolsRow}>
+              <Pressable
+                onPress={() => openMixer()}
+                style={({ pressed }) => [
+                  styles.practiceToolCard,
+                  { opacity: pressed ? 0.72 : 1 },
+                ]}
+                accessibilityRole="button"
+                accessibilityLabel="Abrir Mezclador de sonidos"
+              >
+                <View style={[styles.practiceReminderIcon, styles.practiceToolIcon]}>
+                  <MaterialCommunityIcons name="tune-vertical" size={27} color="#7DD8F5" />
+                </View>
+                <Text style={[styles.practiceReminderTitle, styles.practiceToolTitle, { color: colors.foreground }]}>
                   Mezclador de sonidos
                 </Text>
-                <Text style={[styles.practiceReminderSubtitle, { color: profileDescriptionColor }]}>
+                <Text style={[styles.practiceReminderSubtitle, styles.practiceToolSubtitle, { color: profileDescriptionColor }]}>
                   Crea tu propio universo sonoro
                 </Text>
-              </View>
-              <Feather name="chevron-right" size={22} color={colors.foreground} />
-            </Pressable>
+              </Pressable>
 
-            <Pressable
-              onPress={() => router.push("/respiracion" as never)}
-              style={({ pressed }) => [
-                styles.practiceReminderSection,
-                styles.practiceReminderLast,
-                { opacity: pressed ? 0.72 : 1 },
-              ]}
-              accessibilityRole="button"
-              accessibilityLabel="Abrir Ejercicios de respiración"
-            >
-              <View style={styles.practiceReminderIcon}>
-                <MaterialCommunityIcons name="weather-windy" size={29} color="#57C785" />
-              </View>
-              <View style={styles.practiceReminderCopy}>
-                <Text style={[styles.practiceReminderTitle, { color: colors.foreground }]}>
+              <Pressable
+                onPress={() => router.push("/respiracion" as never)}
+                style={({ pressed }) => [
+                  styles.practiceToolCard,
+                  { opacity: pressed ? 0.72 : 1 },
+                ]}
+                accessibilityRole="button"
+                accessibilityLabel="Abrir Ejercicios de respiración"
+              >
+                <View style={[styles.practiceReminderIcon, styles.practiceToolIcon]}>
+                  <MaterialCommunityIcons name="weather-windy" size={29} color="#57C785" />
+                </View>
+                <Text style={[styles.practiceReminderTitle, styles.practiceToolTitle, { color: colors.foreground }]}>
                   Ejercicios de respiración
                 </Text>
-                <Text style={[styles.practiceReminderSubtitle, { color: profileDescriptionColor }]}>
+                <Text style={[styles.practiceReminderSubtitle, styles.practiceToolSubtitle, { color: profileDescriptionColor }]}>
                   Vuelve al presente y tranquilízate
                 </Text>
-              </View>
-              <Feather name="chevron-right" size={22} color={colors.foreground} />
-            </Pressable>
+              </Pressable>
+            </View>
 
             {continueMeditationPlaylist && (
               <ContinueMeditationPlaylistCard
@@ -2908,6 +2902,34 @@ const styles = StyleSheet.create({
   },
   practiceReminderMiddle: {
     marginBottom: 25,
+  },
+  practiceToolsRow: {
+    flexDirection: "row",
+    gap: 12,
+    marginBottom: 53,
+  },
+  practiceToolCard: {
+    flex: 1,
+    minHeight: 178,
+    paddingHorizontal: 12,
+    paddingVertical: 18,
+    borderRadius: 19,
+    backgroundColor: "rgba(0,0,0,0.28)",
+    alignItems: "center",
+    justifyContent: "center",
+  },
+  practiceToolIcon: {
+    marginRight: 0,
+    marginBottom: 12,
+  },
+  practiceToolTitle: {
+    textAlign: "center",
+    lineHeight: 19,
+  },
+  practiceToolSubtitle: {
+    marginTop: 6,
+    textAlign: "center",
+    lineHeight: 17,
   },
   practiceReminderIcon: {
     width: 44,
