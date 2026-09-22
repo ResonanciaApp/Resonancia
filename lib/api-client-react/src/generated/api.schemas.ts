@@ -1122,11 +1122,13 @@ export const DailyQuoteDecoration = {
 export type QuoteOfTheDayResponse = DailyQuoteAssignment & {
   paletteId: DailyQuotePalette;
   decorationId: DailyQuoteDecoration;
+  decorationsEnabled: boolean;
 };
 
 export interface DailyQuoteSettings {
   paletteId: DailyQuotePalette;
   decorationId: DailyQuoteDecoration;
+  decorationsEnabled: boolean;
   /** @minimum 1 */
   revision: number;
   updatedAt: string;
@@ -1135,6 +1137,7 @@ export interface DailyQuoteSettings {
 export interface DailyQuoteSettingsUpdate {
   paletteId?: DailyQuotePalette;
   decorationId?: DailyQuoteDecoration;
+  decorationsEnabled?: boolean;
 }
 
 export interface AdminDailyQuoteList {

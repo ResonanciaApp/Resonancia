@@ -39,6 +39,7 @@ export const dailyQuoteSettingsTable = pgTable("daily_quote_settings", {
   id: integer("id").primaryKey(),
   paletteId: text("palette_id").notNull().default("jade"),
   decorationId: text("decoration_id").notNull().default("circles"),
+  decorationsEnabled: boolean("decorations_enabled").notNull().default(true),
   revision: integer("revision").notNull().default(1),
   updatedAt: timestamp("updated_at", { withTimezone: true }).notNull().defaultNow(),
 }, (t) => [

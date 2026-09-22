@@ -6043,16 +6043,18 @@ components:
       allOf:
         - {$ref: "#/components/schemas/DailyQuoteAssignment"}
         - type: object
-          required: [paletteId, decorationId]
+          required: [paletteId, decorationId, decorationsEnabled]
           properties:
             paletteId: {$ref: "#/components/schemas/DailyQuotePalette"}
             decorationId: {$ref: "#/components/schemas/DailyQuoteDecoration"}
+            decorationsEnabled: {type: boolean}
     DailyQuoteSettings:
       type: object
-      required: [paletteId, decorationId, revision, updatedAt]
+      required: [paletteId, decorationId, decorationsEnabled, revision, updatedAt]
       properties:
         paletteId: {$ref: "#/components/schemas/DailyQuotePalette"}
         decorationId: {$ref: "#/components/schemas/DailyQuoteDecoration"}
+        decorationsEnabled: {type: boolean}
         revision: {type: integer, minimum: 1}
         updatedAt: {type: string, format: date-time}
     DailyQuoteSettingsUpdate:
@@ -6062,6 +6064,7 @@ components:
       properties:
         paletteId: {$ref: "#/components/schemas/DailyQuotePalette"}
         decorationId: {$ref: "#/components/schemas/DailyQuoteDecoration"}
+        decorationsEnabled: {type: boolean}
     AdminDailyQuoteList:
       type: object
       required: [quotes, activeCount, total]

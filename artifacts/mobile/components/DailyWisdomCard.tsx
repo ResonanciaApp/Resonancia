@@ -44,7 +44,7 @@ export function DailyWisdomCard({
         style={StyleSheet.absoluteFill}
         pointerEvents="none"
       />
-      {decorativeGradient && (
+      {decorativeGradient && quote.decorationsEnabled && (
         <DailyQuoteDecorationLayer id={quote.decorationId} />
       )}
       <Text style={[styles.author, { color: accent }]}>{quote.author}</Text>

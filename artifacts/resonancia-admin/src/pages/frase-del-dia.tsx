@@ -395,6 +395,24 @@ export default function FraseDelDiaPage() {
     );
   };
 
+  const handleDecorationsEnabledChange = (decorationsEnabled: boolean) => {
+    if (decorationsEnabled === quoteSettings?.decorationsEnabled || updateQuoteSettings.isPending) return;
+    updateQuoteSettings.mutate(
+      { data: { decorationsEnabled } },
+      {
+        onSuccess: (settings) => {
+          queryClient.setQueryData(getGetAdminDailyQuoteSettingsQueryKey(), settings);
+          toast.success(
+            decorationsEnabled
+              ? "Decoraciones activadas"
+              : "La Frase del día mostrará solo el fondo",
+          );
+        },
+        onError: () => toast.error("No se pudo actualizar la visibilidad de las decoraciones"),
+      },
+    );
+  };
+
   return (
     <div className="space-y-8 max-w-[1200px] mx-auto pb-12">
       <div className="flex items-center justify-between">
@@ -485,43 +503,63 @@ export default function FraseDelDiaPage() {
           ) : isErrorSettings ? (
             <p className="text-sm text-destructive">No se pudieron cargar las geometrías.</p>
           ) : (
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-3">
-              {DAILY_QUOTE_DECORATIONS.map((decoration) => {
-                const selected = quoteSettings?.decorationId === decoration.id;
-                const palette = DAILY_QUOTE_PALETTES.find((item) => item.id === quoteSettings?.paletteId)
-                  ?? DAILY_QUOTE_PALETTES[0];
-                return (
-                  <button
-                    key={decoration.id}
-                    type="button"
-                    onClick={() => handleDecorationChange(decoration.id)}
-                    disabled={updateQuoteSettings.isPending}
-                    aria-pressed={selected}
-                    className={`overflow-hidden rounded-xl border text-left transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 focus-visible:ring-offset-background ${
-                      selected
-                        ? "border-primary ring-2 ring-primary/35"
-                        : "border-white/10 hover:border-white/30"
-                    }`}
-                    data-testid={`decoration-${decoration.id}`}
-                  >
-                    <div
-                      className="relative h-24 overflow-hidden"
-                      style={{ backgroundImage: `linear-gradient(135deg, ${palette.colors[0]}, ${palette.colors[1]})` }}
+            <div className="space-y-5">
+              <div className="flex items-center justify-between gap-4 rounded-xl border border-border/60 bg-muted/20 px-4 py-3">
+                <div>
+                  <p className="text-sm font-semibold text-foreground">Mostrar decoraciones</p>
+                  <p className="text-xs text-muted-foreground">
+                    Al desactivarlo se mostrará únicamente el degradado de fondo.
+                  </p>
+                </div>
+                <Switch
+                  checked={quoteSettings?.decorationsEnabled ?? true}
+                  onCheckedChange={handleDecorationsEnabledChange}
+                  disabled={updateQuoteSettings.isPending}
+                  aria-label="Mostrar decoraciones en la Frase del día"
+                />
+              </div>
+              <div
+                className={`grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-3 transition-opacity ${
+                  quoteSettings?.decorationsEnabled === false ? "opacity-45" : ""
+                }`}
+              >
+                {DAILY_QUOTE_DECORATIONS.map((decoration) => {
+                  const selected = quoteSettings?.decorationId === decoration.id;
+                  const palette = DAILY_QUOTE_PALETTES.find((item) => item.id === quoteSettings?.paletteId)
+                    ?? DAILY_QUOTE_PALETTES[0];
+                  return (
+                    <button
+                      key={decoration.id}
+                      type="button"
+                      onClick={() => handleDecorationChange(decoration.id)}
+                      disabled={updateQuoteSettings.isPending || quoteSettings?.decorationsEnabled === false}
+                      aria-pressed={selected}
+                      className={`overflow-hidden rounded-xl border text-left transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 focus-visible:ring-offset-background ${
+                        selected
+                          ? "border-primary ring-2 ring-primary/35"
+                          : "border-white/10 hover:border-white/30"
+                      }`}
+                      data-testid={`decoration-${decoration.id}`}
                     >
-                      <DecorationPreview id={decoration.id} />
-                      {selected && (
-                        <Badge className="absolute left-2 top-2 bg-white/90 text-slate-950 hover:bg-white/90">
-                          Seleccionado
-                        </Badge>
-                      )}
-                    </div>
-                    <div className="bg-card px-3 py-2.5">
-                      <p className="text-sm font-semibold text-foreground">{decoration.name}</p>
-                      <p className="text-[11px] leading-4 text-muted-foreground">{decoration.description}</p>
-                    </div>
-                  </button>
-                );
-              })}
+                      <div
+                        className="relative h-24 overflow-hidden"
+                        style={{ backgroundImage: `linear-gradient(135deg, ${palette.colors[0]}, ${palette.colors[1]})` }}
+                      >
+                        <DecorationPreview id={decoration.id} />
+                        {selected && (
+                          <Badge className="absolute left-2 top-2 bg-white/90 text-slate-950 hover:bg-white/90">
+                            Seleccionado
+                          </Badge>
+                        )}
+                      </div>
+                      <div className="bg-card px-3 py-2.5">
+                        <p className="text-sm font-semibold text-foreground">{decoration.name}</p>
+                        <p className="text-[11px] leading-4 text-muted-foreground">{decoration.description}</p>
+                      </div>
+                    </button>
+                  );
+                })}
+              </div>
             </div>
           )}
         </CardContent>

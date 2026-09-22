@@ -18,6 +18,7 @@ export type QuoteOfTheDay = Quote & {
   date: string;
   paletteId: DailyQuotePalette;
   decorationId: DailyQuoteDecoration;
+  decorationsEnabled: boolean;
 };
 
 type CachedQuote = QuoteOfTheDay & { receivedAt: string };
@@ -65,6 +66,7 @@ function parseAssignment(value: unknown, today: string): QuoteOfTheDay | null {
       assignment.decorationId === "metatron"
         ? assignment.decorationId
         : "circles",
+    decorationsEnabled: assignment.decorationsEnabled !== false,
   };
 }
 
@@ -81,7 +83,13 @@ export function useQuoteOfTheDay() {
   const today = getChileDate();
   const fallback = useMemo(() => {
     const quote = getBundledQuote();
-    return { ...quote, date: today, paletteId: "jade" as const, decorationId: "circles" as const };
+    return {
+      ...quote,
+      date: today,
+      paletteId: "jade" as const,
+      decorationId: "circles" as const,
+      decorationsEnabled: true,
+    };
   }, [today]);
   const [cachedQuote, setCachedQuote] = useState<QuoteOfTheDay | null>(null);
   const { data, isLoading, refetch } = useGetQuoteOfTheDay(
