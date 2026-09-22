@@ -6,7 +6,6 @@ import { useBackOverride } from "@/context/BackOverrideContext";
 import { LinearGradient } from "expo-linear-gradient";
 import React, { useCallback } from "react";
 import {
-  ActivityIndicator,
   Alert,
   Platform,
   Pressable,
@@ -165,9 +164,7 @@ export default function DiarioScreen() {
 
       {/* Body */}
       {loading ? (
-        <View style={styles.emptyWrap}>
-          <ActivityIndicator color={"#F9F9F9"} size="large" />
-        </View>
+        <View style={styles.emptyWrap} />
       ) : entries.length === 0 ? (
         <View style={styles.emptyWrap}>
           <Text style={[styles.emptyTitle, { color: "#F9F9F9" }]}>No hay entradas</Text>

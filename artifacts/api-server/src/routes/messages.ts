@@ -2,7 +2,7 @@ import { Router, type IRouter } from "express";
 import { sql, desc, lt, eq, and } from "drizzle-orm";
 import { getAuth } from "@clerk/express";
 import { requireAuth } from "../middlewares/requireAuth";
-import { db, messagesTable, messageLikesTable, usersTable } from "@workspace/db";
+import { db, messagesTable, messageLikesTable, usersTable, coverPresetsTable } from "@workspace/db";
 import {
   CreateMessageBody,
   GetMessagesQueryParams,
@@ -14,6 +14,30 @@ const PAGE_SIZE = 20;
 
 /** Messages older than this are considered expired and get deleted. */
 const WINDOW_MS = 24 * 60 * 60 * 1000;
+
+function withCurrentAuthorAvatar<T extends typeof messagesTable.$inferSelect>(
+  row: { message: T; currentAvatarUrl: string | null; currentPresetPath: string | null },
+): T {
+  return {
+    ...row.message,
+    authorAvatarUrl:
+      row.currentAvatarUrl
+      ?? row.currentPresetPath
+      ?? row.message.authorAvatarUrl,
+  };
+}
+
+function selectMessagesWithCurrentAvatar() {
+  return db
+    .select({
+      message: messagesTable,
+      currentAvatarUrl: usersTable.avatarUrl,
+      currentPresetPath: coverPresetsTable.objectPath,
+    })
+    .from(messagesTable)
+    .leftJoin(usersTable, eq(messagesTable.authorClerkId, usersTable.clerkUserId))
+    .leftJoin(coverPresetsTable, eq(usersTable.avatarPresetId, coverPresetsTable.id));
+}
 
 /** Delete messages older than 24 h. Called on write operations so the table stays clean. */
 async function pruneExpired() {
@@ -35,9 +59,7 @@ router.get("/messages", async (req, res) => {
     const start = windowStart();
 
     const [rows, countResult] = await Promise.all([
-      db
-        .select()
-        .from(messagesTable)
+      selectMessagesWithCurrentAvatar()
         .where(sql`${messagesTable.createdAt} > ${start}`)
         .orderBy(desc(messagesTable.createdAt))
         .limit(PAGE_SIZE)
@@ -49,7 +71,7 @@ router.get("/messages", async (req, res) => {
     ]);
 
     res.json({
-      messages: rows,
+      messages: rows.map(withCurrentAuthorAvatar),
       total: countResult[0]?.count ?? 0,
       page,
       pageSize: PAGE_SIZE,
@@ -64,13 +86,11 @@ router.get("/messages", async (req, res) => {
 router.get("/messages/top", async (req, res) => {
   try {
     const start = windowStart();
-    const [top] = await db
-      .select()
-      .from(messagesTable)
+    const [top] = await selectMessagesWithCurrentAvatar()
       .where(sql`${messagesTable.createdAt} > ${start}`)
       .orderBy(desc(messagesTable.likes), desc(messagesTable.createdAt))
       .limit(1);
-    res.json({ message: top ?? null });
+    res.json({ message: top ? withCurrentAuthorAvatar(top) : null });
   } catch (err) {
     req.log.error(err);
     res.status(500).json({ error: "Error al obtener el mensaje más popular" });
@@ -97,13 +117,18 @@ router.post("/messages", async (req, res) => {
     if (auth?.userId) {
       authorClerkId = auth.userId;
       const [user] = await db
-        .select({ displayName: usersTable.displayName, avatarUrl: usersTable.avatarUrl })
+        .select({
+          displayName: usersTable.displayName,
+          avatarUrl: usersTable.avatarUrl,
+          avatarPresetPath: coverPresetsTable.objectPath,
+        })
         .from(usersTable)
+        .leftJoin(coverPresetsTable, eq(usersTable.avatarPresetId, coverPresetsTable.id))
         .where(eq(usersTable.clerkUserId, auth.userId))
         .limit(1);
       if (user) {
         authorName = user.displayName ?? null;
-        authorAvatarUrl = user.avatarUrl ?? null;
+        authorAvatarUrl = user.avatarUrl ?? user.avatarPresetPath ?? null;
       }
     }
 

@@ -34,6 +34,10 @@ import { useSceneTheme } from "@/context/SceneThemeContext";
 import { resolveAvatarUrl } from "@/lib/avatar";
 import { useUserProfile } from "@/context/UserProfileContext";
 import { useQueryClient } from "@tanstack/react-query";
+import {
+  useCurrentUserAvatarSource,
+  type ProfileAvatarSource,
+} from "@/lib/profile-avatar";
 
 const MAX_CHARS = 300;
 
@@ -47,11 +51,19 @@ function timeAgo(iso: string | Date): string {
   return `Hace ${days} ${days === 1 ? "día" : "días"}`;
 }
 
-function AuthorAvatar({ uri, name, size = 38 }: { uri?: string | null; name?: string | null; size?: number }) {
+function AuthorAvatar({
+  source,
+  name,
+  size = 38,
+}: {
+  source?: ProfileAvatarSource;
+  name?: string | null;
+  size?: number;
+}) {
   const initials = name ? name.slice(0, 1).toUpperCase() : "?";
   const radius = size / 2;
-  if (uri) {
-    return <Image source={{ uri }} style={{ width: size, height: size, borderRadius: radius }} />;
+  if (source) {
+    return <Image source={source} style={{ width: size, height: size, borderRadius: radius }} />;
   }
   return (
     <View style={[{ width: size, height: size, borderRadius: radius, backgroundColor: "rgba(212,175,55,0.18)", alignItems: "center", justifyContent: "center" }]}>
@@ -69,7 +81,8 @@ export default function MensajesDelAlmaScreen() {
   const topPad = Platform.OS === "web" ? 56 : insets.top;
   const bottomPad = Platform.OS === "web" ? 34 : insets.bottom;
   const queryClient = useQueryClient();
-  const { recordSentMessage, sentMessageIds, username, photoUri } = useUserProfile();
+  const { recordSentMessage, sentMessageIds, username } = useUserProfile();
+  const currentAvatarSource = useCurrentUserAvatarSource();
 
   const [text, setText] = useState("");
   const [publishedThisVisit, setPublishedThisVisit] = useState(false);
@@ -126,7 +139,7 @@ export default function MensajesDelAlmaScreen() {
 
         {/* Top bar */}
         <View style={[styles.topBar, { paddingTop: topPad + 6 }]}>
-          <BackPill onPress={() => router.back()} size={28} bgColor="rgba(255,255,255,0.10)" iconOffsetX={-1} />
+          <BackPill onPress={() => router.back()} size={28} bgColor="rgba(0,0,0,0.28)" iconOffsetX={-1} />
           <View style={styles.topTitleBlock}>
             <Text style={[styles.topTitle, { color: colors.foreground }]}>Agradecer es el inicio</Text>
           </View>
@@ -148,15 +161,15 @@ export default function MensajesDelAlmaScreen() {
         >
           {/* Compose card */}
           {hasPublished ? (
-            <View style={[styles.publishedNotice, { backgroundColor: "rgba(255,255,255,0.04)", borderColor: "rgba(255,255,255,0.1)" }]}>
+            <View style={[styles.publishedNotice, { backgroundColor: "rgba(0,0,0,0.28)", borderColor: "rgba(255,255,255,0.1)" }]}>
               <Text style={[styles.publishedNoticeText, { color: colors.mutedForeground }]}>
                 Ya compartiste tu mensaje de hoy
               </Text>
             </View>
           ) : (
-            <View style={[styles.composeCard, { backgroundColor: "rgba(255,255,255,0.04)", borderColor: "rgba(255,255,255,0.1)", borderWidth: 2 }]}>
+            <View style={[styles.composeCard, { backgroundColor: "rgba(0,0,0,0.28)", borderColor: "rgba(255,255,255,0.1)", borderWidth: 2 }]}>
               <View style={styles.composeTop}>
-                <AuthorAvatar uri={photoUri} name={username} size={36} />
+                <AuthorAvatar source={currentAvatarSource} name={username} size={36} />
                 <TextInput
                   ref={inputRef}
                   value={text}
@@ -228,6 +241,7 @@ export default function MensajesDelAlmaScreen() {
           ) : (
             <View style={styles.feedList}>
               {allMessages.map((msg) => {
+                const avatarUri = resolveAvatarUrl(msg.authorAvatarUrl);
                 return (
                   <View
                     key={msg.id}
@@ -236,7 +250,11 @@ export default function MensajesDelAlmaScreen() {
                       { borderBottomColor: "rgba(255,255,255,0.1)" },
                     ]}
                   >
-                    <AuthorAvatar uri={resolveAvatarUrl(msg.authorAvatarUrl)} name={msg.authorName} size={40} />
+                    <AuthorAvatar
+                      source={avatarUri ? { uri: avatarUri } : undefined}
+                      name={msg.authorName}
+                      size={40}
+                    />
                     <View style={styles.msgRight}>
                       <View style={styles.msgHeader}>
                         <Text style={styles.msgAuthor}>
