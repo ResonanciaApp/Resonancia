@@ -371,6 +371,67 @@ export default function DescansoScreen() {
       })),
     [allDormiSessions],
   );
+  const renderSleepCarousel = (
+    item: (typeof orderedSleepCarousels)[number],
+    index: number,
+  ) => (
+    <React.Fragment key={item.key}>
+      {index > 0
+      && !(
+        !isPremium
+        && featuredSleepSessions.length === 0
+        && index === 1
+      ) ? (
+        <View style={styles.sectionDivider} />
+      ) : null}
+      {item.session ? (
+        <SessionCarousel
+          title={item.session.label}
+          sessions={item.session.sessions}
+          isPremium={isPremium}
+          onPress={handleSessionTap}
+          style={{
+            marginTop: index === 0 ? 33 : 26,
+            marginBottom: 0,
+            paddingHorizontal: H_PAD,
+          }}
+          presentation="editorial"
+          disableAmbientalVariant
+          sleepMetadataBelow
+          categoryGridPresentation
+          whiteMetadataGlass
+          showDurationClock
+          sleepBelowMetadataStyle={{ marginTop: 3, transform: [{ translateX: 3 }] }}
+          trailingPeek={20}
+          cardWidth={SLEEP_CAROUSEL_CARD_W}
+          allowOversizedCardWidth
+          cardBorderRadius={16}
+          titleSize={17}
+          hideCategoryAboveTitle
+          showSleepCategoryPillWithInlineDuration
+          ambientalTitleOnly
+          sleepOverlayMetadataStyle={{ transform: [{ translateX: 3 }, { translateY: -1 }] }}
+          overlayGradientLocations={[0.18, 0.48, 1]}
+          onViewAll={sleepCarouselViewAllHandlers[item.session.id]}
+        />
+      ) : item.playlist ? (
+        <EditorialPlaylistCarousel
+          title={item.playlist.title}
+          playlists={item.playlist.playlists}
+          style={{
+            marginTop: index === 0 ? 33 : 26,
+            marginBottom: 0,
+          }}
+          onPress={(playlist) =>
+            openCategory(`/editorial-playlist/${encodeURIComponent(playlist.id)}`)
+          }
+        />
+      ) : null}
+      {!isPremium && featuredSleepSessions.length === 0 && index === 0 ? (
+        <PremiumBanner sleepVariant />
+      ) : null}
+    </React.Fragment>
+  );
 
   return (
     <LinearGradient
@@ -458,15 +519,19 @@ export default function DescansoScreen() {
           onScroll={handleScroll}
         >
           <View style={{ marginTop: -3 }}>
+            {orderedSleepCarousels.slice(0, 3).map(renderSleepCarousel)}
             {featuredSleepSessions.length > 0 ? (
               <>
+                {orderedSleepCarousels.length > 0 ? (
+                  <View style={styles.sectionDivider} />
+                ) : null}
                 <SessionCarousel
                   title="Contenido destacado"
                   sessions={featuredSleepSessions}
                   isPremium={isPremium}
                   onPress={handleSessionTap}
                   style={{
-                    marginTop: 33,
+                    marginTop: orderedSleepCarousels.length > 0 ? 26 : 33,
                     marginBottom: 0,
                     paddingHorizontal: H_PAD,
                   }}
@@ -486,64 +551,9 @@ export default function DescansoScreen() {
                 ) : null}
               </>
             ) : null}
-            {orderedSleepCarousels.map((item, index) => (
-              <React.Fragment key={item.key}>
-                {index > 0
-                && !(
-                  !isPremium
-                  && featuredSleepSessions.length === 0
-                  && index === 1
-                ) ? (
-                  <View style={styles.sectionDivider} />
-                ) : null}
-                {item.session ? (
-                  <SessionCarousel
-                  title={item.session.label}
-                  sessions={item.session.sessions}
-                  isPremium={isPremium}
-                  onPress={handleSessionTap}
-                  style={{
-                    marginTop: index === 0 ? 33 : 26,
-                    marginBottom: 0,
-                    paddingHorizontal: H_PAD,
-                  }}
-                  presentation="editorial"
-                  disableAmbientalVariant
-                  sleepMetadataBelow
-                  categoryGridPresentation
-                  whiteMetadataGlass
-                  showDurationClock
-                  sleepBelowMetadataStyle={{ marginTop: 3, transform: [{ translateX: 3 }] }}
-                  trailingPeek={20}
-                  cardWidth={SLEEP_CAROUSEL_CARD_W}
-                  allowOversizedCardWidth
-                  cardBorderRadius={16}
-                  titleSize={17}
-                  hideCategoryAboveTitle
-                  showSleepCategoryPillWithInlineDuration
-                  ambientalTitleOnly
-                  sleepOverlayMetadataStyle={{ transform: [{ translateX: 3 }, { translateY: -1 }] }}
-                  overlayGradientLocations={[0.18, 0.48, 1]}
-                  onViewAll={sleepCarouselViewAllHandlers[item.session.id]}
-                  />
-                ) : item.playlist ? (
-                  <EditorialPlaylistCarousel
-                  title={item.playlist.title}
-                  playlists={item.playlist.playlists}
-                  style={{
-                    marginTop: index === 0 ? 33 : 26,
-                    marginBottom: 0,
-                  }}
-                  onPress={(playlist) =>
-                    openCategory(`/editorial-playlist/${encodeURIComponent(playlist.id)}`)
-                  }
-                  />
-                ) : null}
-                {!isPremium && featuredSleepSessions.length === 0 && index === 0 ? (
-                  <PremiumBanner sleepVariant />
-                ) : null}
-              </React.Fragment>
-            ))}
+            {orderedSleepCarousels.slice(3).map((item, index) =>
+              renderSleepCarousel(item, index + 3),
+            )}
           </View>
         </ScrollView>
       </View>
