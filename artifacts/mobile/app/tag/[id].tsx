@@ -296,7 +296,7 @@ export default function ThemeTagScreen({ id: idProp }: { id?: string } = {}) {
             {
               backgroundColor: "rgba(0,0,0,0.28)",
               opacity: pressed ? 0.7 : 1,
-              top: topPad + 2,
+               top: topPad - 4,
             },
           ]}
         >
