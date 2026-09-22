@@ -820,7 +820,7 @@ export function ExploreScreen({
                   style={({ pressed }) => [
                     styles.durationCard,
                     {
-                      backgroundColor: "rgba(184,117,240,0.2)",
+                      backgroundColor: "rgba(0,0,0,0.28)",
                       opacity: pressed ? 0.72 : 1,
                     },
                   ]}

@@ -129,9 +129,9 @@ function FavoriteThemeHeart({
     >
       <Animated.View style={{ transform: [{ scale }] }}>
         {favorited || isPressed ? (
-          <Ionicons name="heart" size={18} color="#F9F9F9" />
+          <Ionicons name="heart" size={19} color="#F9F9F9" />
         ) : (
-          <Ionicons name="heart-outline" size={18} color="#F9F9F9" />
+          <Ionicons name="heart-outline" size={19} color="#F9F9F9" />
         )}
       </Animated.View>
     </Pressable>
