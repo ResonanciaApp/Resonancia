@@ -293,6 +293,7 @@ export default function ThemeTagScreen({ id: idProp }: { id?: string } = {}) {
             categoryGridPresentation
             whiteMetadataGlass
             showDurationClock
+             durationBadgeStyle={{ bottom: 8, left: 8 }}
             showCategoryLabelBelow
              showCategoryLabelAfterTitle
              showAuthor={false}
