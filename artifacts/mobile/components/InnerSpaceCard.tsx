@@ -7,7 +7,9 @@ import * as Haptics from "expo-haptics";
 import { useColors } from "@/hooks/useColors";
 import { useSceneTheme } from "@/context/SceneThemeContext";
 import {
+  getListMyReflectionsQueryKey,
   useCreateMyReflection,
+  useListMyReflections,
   type Reflection,
   type ReflectionCategory,
   type ReflectionsPage,
@@ -18,6 +20,7 @@ import { REFLECTION_CATEGORY_OPTIONS, CategoryIcon } from "@/constants/reflectio
 import { useReducedMotion } from "react-native-reanimated";
 import { useAuth } from "@/context/AuthContext";
 import { usePremium } from "@/context/PremiumContext";
+import { FREE_REFLECTIONS_LIMIT, showPremiumGate } from "@/lib/premiumGate";
 
 const CATEGORY_PLACEHOLDERS: Partial<Record<ReflectionCategory, string>> = {
   gratitude: "Ej: Hoy siento gratitud por...",
@@ -59,9 +62,21 @@ export function InnerSpaceCard({
     ) as Record<ReflectionCategory, Animated.Value>,
   ).current;
   const qc = useQueryClient();
-  const { clerkUserId } = useAuth();
+  const { authLoading, isSignedIn, clerkUserId } = useAuth();
   const { isPremium } = usePremium();
   const reducedMotion = useReducedMotion();
+  const freeQuotaParams = { limit: FREE_REFLECTIONS_LIMIT + 1 };
+  const { data: freeQuotaData, isLoading: freeQuotaLoading } = useListMyReflections(
+    freeQuotaParams,
+    {
+      query: {
+        queryKey: [...getListMyReflectionsQueryKey(freeQuotaParams), clerkUserId],
+        enabled: !authLoading && isSignedIn && Boolean(clerkUserId) && !isPremium,
+      },
+    },
+  );
+  const freeLimitReached =
+    !isPremium && (freeQuotaData?.items.length ?? 0) >= FREE_REFLECTIONS_LIMIT;
 
   const settlePlaceholder = (placeholder: string) => {
     outgoingPlaceholderOpacity.stopAnimation();
@@ -130,13 +145,14 @@ export function InnerSpaceCard({
 
   useEffect(() => {
     if (focusRequest <= 0) return;
+    if (freeLimitReached) return;
     setInputActive(true);
     const frame = requestAnimationFrame(() => {
       const focusFrame = requestAnimationFrame(() => inputRef.current?.focus());
       return () => cancelAnimationFrame(focusFrame);
     });
     return () => cancelAnimationFrame(frame);
-  }, [focusRequest]);
+  }, [focusRequest, freeLimitReached]);
 
   const desiredPlaceholder = category
     ? CATEGORY_PLACEHOLDERS[category] ?? DEFAULT_PLACEHOLDER
@@ -205,6 +221,12 @@ export function InnerSpaceCard({
   ]);
 
   const requestInputFocus = () => {
+    if (freeLimitReached) {
+      showPremiumGate(
+        `Ya publicaste tus ${FREE_REFLECTIONS_LIMIT} entradas gratuitas. Con Premium puedes seguir sumando reflexiones a tu viaje interior.`,
+      );
+      return;
+    }
     if (inputActive) return;
     if (onComposeRequested) {
       onComposeRequested();
@@ -214,17 +236,27 @@ export function InnerSpaceCard({
     requestAnimationFrame(() => inputRef.current?.focus());
   };
 
-  const isSubmitDisabled = !category || message.trim().length === 0 || createMutation.isPending;
+  const isSubmitDisabled =
+    !category
+    || message.trim().length === 0
+    || createMutation.isPending
+    || (!isPremium && freeQuotaLoading)
+    || freeLimitReached;
   const wallLinkColor = "#F9F9F9";
 
   const saveMessage = () => {
     if (!category) return;
+    if (freeLimitReached) {
+      showPremiumGate(
+        `Ya publicaste tus ${FREE_REFLECTIONS_LIMIT} entradas gratuitas. Con Premium puedes seguir sumando reflexiones a tu viaje interior.`,
+      );
+      return;
+    }
     settlePlaceholder(desiredPlaceholder);
     createMutation.mutate({ data: { category, message: message.trim() } });
   };
 
   const openWall = () => {
-    if (!isPremium) return;
     router.push("/mi-espacio-interior");
   };
 
@@ -256,16 +288,14 @@ export function InnerSpaceCard({
         <Text style={[styles.title, { color: colors.foreground }]}>Mi viaje interior</Text>
         <Pressable
           onPress={openWall}
-          disabled={!isPremium}
           style={styles.wallHitArea}
           accessibilityRole="button"
           accessibilityLabel="Abrir Muro expansivo"
-          accessibilityState={{ disabled: !isPremium }}
         >
-          <View style={[styles.historyAction, !isPremium && { opacity: 0.42 }]}>
+          <View style={styles.historyAction}>
             <Text style={[styles.historyLinkText, { color: wallLinkColor }]}>Ver muro</Text>
             <Feather
-              name={isPremium ? "chevron-right" : "lock"}
+              name="chevron-right"
               size={16}
               color={wallLinkColor}
               style={styles.historyChevron}
@@ -386,6 +416,11 @@ export function InnerSpaceCard({
       </Pressable>
       {createMutation.isError && (
         <Text style={[styles.errorText, { color: colors.destructive }]}>Ocurrió un error al guardar. Inténtalo de nuevo.</Text>
+      )}
+      {freeLimitReached && (
+        <Text style={[styles.errorText, { color: colors.mutedForeground }]}>
+          Ya publicaste tus {FREE_REFLECTIONS_LIMIT} entradas gratuitas. Puedes verlas y editarlas en tu muro.
+        </Text>
       )}
 
       <Pressable

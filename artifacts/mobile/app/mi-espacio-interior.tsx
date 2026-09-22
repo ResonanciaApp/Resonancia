@@ -215,13 +215,6 @@ function WallScrollReveal({
 }
 
 export default function InnerSpaceScreen() {
-  const { isPremium } = usePremium();
-
-  useEffect(() => {
-    if (!isPremium) router.back();
-  }, [isPremium]);
-
-  if (!isPremium) return null;
   return <PremiumInnerSpaceScreen />;
 }
 
@@ -231,6 +224,7 @@ function PremiumInnerSpaceScreen() {
   const { theme } = useSceneTheme();
   const qc = useQueryClient();
   const { authLoading, isSignedIn, clerkUserId } = useAuth();
+  const { isPremium } = usePremium();
   const today = useRef(new Date()).current;
   const [filter, setFilter] = useState<ReflectionCategory | "all">("all");
   const [selectedMonth, setSelectedMonth] = useState(today.getMonth());
@@ -715,16 +709,18 @@ function PremiumInnerSpaceScreen() {
                 >
                   <Feather name="more-horizontal" size={20} color={colors.mutedForeground} />
                 </Pressable>
-                <Pressable
-                  testID={`share-${reflection.id}`}
-                  accessibilityLabel="Compartir"
-                  accessibilityRole="button"
-                  style={[styles.menuButton, !isShareable && { opacity: 0.3 }]}
-                  disabled={!isShareable}
-                  onPress={() => setShareReflection(reflection)}
-                >
-                  <Feather name="share" size={16} color={colors.mutedForeground} />
-                </Pressable>
+                {isPremium && (
+                  <Pressable
+                    testID={`share-${reflection.id}`}
+                    accessibilityLabel="Compartir"
+                    accessibilityRole="button"
+                    style={[styles.menuButton, !isShareable && { opacity: 0.3 }]}
+                    disabled={!isShareable}
+                    onPress={() => setShareReflection(reflection)}
+                  >
+                    <Feather name="share" size={16} color={colors.mutedForeground} />
+                  </Pressable>
+                )}
               </View>
             </View>
           )}
@@ -911,7 +907,7 @@ function PremiumInnerSpaceScreen() {
           })}
         </ScrollView>
       </SlidingSheetModal>
-      {shareReflection && (
+      {isPremium && shareReflection && (
         <ReflectionShare reflection={shareReflection} onClose={() => setShareReflection(null)} />
       )}
     </LinearGradient>

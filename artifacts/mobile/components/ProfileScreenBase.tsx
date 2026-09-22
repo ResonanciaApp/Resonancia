@@ -1666,7 +1666,7 @@ export function ProfileScreenBase({
               onPress={() => openMixer()}
               style={({ pressed }) => [
                 styles.practiceReminderSection,
-                styles.practiceReminderLast,
+                styles.practiceReminderMiddle,
                 { opacity: pressed ? 0.72 : 1 },
               ]}
               accessibilityRole="button"
@@ -1681,6 +1681,30 @@ export function ProfileScreenBase({
                 </Text>
                 <Text style={[styles.practiceReminderSubtitle, { color: profileDescriptionColor }]}>
                   Crea tu propio universo sonoro
+                </Text>
+              </View>
+              <Feather name="chevron-right" size={22} color={colors.foreground} />
+            </Pressable>
+
+            <Pressable
+              onPress={() => router.push("/respiracion" as never)}
+              style={({ pressed }) => [
+                styles.practiceReminderSection,
+                styles.practiceReminderLast,
+                { opacity: pressed ? 0.72 : 1 },
+              ]}
+              accessibilityRole="button"
+              accessibilityLabel="Abrir Ejercicios de respiración"
+            >
+              <View style={styles.practiceReminderIcon}>
+                <MaterialCommunityIcons name="weather-windy" size={29} color="#4A7D48" />
+              </View>
+              <View style={styles.practiceReminderCopy}>
+                <Text style={[styles.practiceReminderTitle, { color: colors.foreground }]}>
+                  Ejercicios de respiración
+                </Text>
+                <Text style={[styles.practiceReminderSubtitle, { color: profileDescriptionColor }]}>
+                  Vuelve al presente y tranquilízate
                 </Text>
               </View>
               <Feather name="chevron-right" size={22} color={colors.foreground} />
