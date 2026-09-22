@@ -191,8 +191,8 @@ function DecorationPreview({ id }: { id: DailyQuoteDecoration }) {
       {id !== "circles" && (
         <>
           {renderMotif(motifs[id][0], "large", "translate(70 -54) scale(0.86)", 0.88)}
-          {renderMotif(motifs[id][1], "small", "translate(54 83) scale(0.42)", 0.72)}
-          {renderMotif(motifs[id][2], "soft", "translate(-50 83) scale(0.58)", 0.56)}
+          {renderMotif(motifs[id][1], "small", "translate(54 63) scale(0.42)", 0.72)}
+          {renderMotif(motifs[id][2], "soft", "translate(-50 56) scale(0.58)", 0.56)}
         </>
       )}
     </svg>
