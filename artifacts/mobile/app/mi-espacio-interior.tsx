@@ -11,6 +11,7 @@ import { useUpdateMyReflection, useDeleteMyReflection, type Reflection, type Ref
 import { KeyboardAwareScrollView } from "react-native-keyboard-controller";
 import { useQueryClient, type QueryKey } from "@tanstack/react-query";
 import { useAuth } from "@/context/AuthContext";
+import { usePremium } from "@/context/PremiumContext";
 import { ReflectionShare } from "@/components/ReflectionShare";
 import { CinematicFadeSlide } from "@/components/CinematicFadeSlide";
 import { canShareReflection } from "@/lib/reflection-story-logic";
@@ -214,6 +215,17 @@ function WallScrollReveal({
 }
 
 export default function InnerSpaceScreen() {
+  const { isPremium } = usePremium();
+
+  useEffect(() => {
+    if (!isPremium) router.back();
+  }, [isPremium]);
+
+  if (!isPremium) return null;
+  return <PremiumInnerSpaceScreen />;
+}
+
+function PremiumInnerSpaceScreen() {
   const insets = useSafeAreaInsets();
   const colors = useColors();
   const { theme } = useSceneTheme();

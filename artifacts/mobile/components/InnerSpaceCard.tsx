@@ -17,6 +17,7 @@ import { router } from "expo-router";
 import { REFLECTION_CATEGORY_OPTIONS, CategoryIcon } from "@/constants/reflectionCategories";
 import { useReducedMotion } from "react-native-reanimated";
 import { useAuth } from "@/context/AuthContext";
+import { usePremium } from "@/context/PremiumContext";
 
 const CATEGORY_PLACEHOLDERS: Partial<Record<ReflectionCategory, string>> = {
   gratitude: "Ej: Hoy siento gratitud por...",
@@ -59,6 +60,7 @@ export function InnerSpaceCard({
   ).current;
   const qc = useQueryClient();
   const { clerkUserId } = useAuth();
+  const { isPremium } = usePremium();
   const reducedMotion = useReducedMotion();
 
   const settlePlaceholder = (placeholder: string) => {
@@ -222,6 +224,7 @@ export function InnerSpaceCard({
   };
 
   const openWall = () => {
+    if (!isPremium) return;
     router.push("/mi-espacio-interior");
   };
 
@@ -253,14 +256,16 @@ export function InnerSpaceCard({
         <Text style={[styles.title, { color: colors.foreground }]}>Mi viaje interior</Text>
         <Pressable
           onPress={openWall}
+          disabled={!isPremium}
           style={styles.wallHitArea}
           accessibilityRole="button"
           accessibilityLabel="Abrir Muro expansivo"
+          accessibilityState={{ disabled: !isPremium }}
         >
-          <View style={styles.historyAction}>
+          <View style={[styles.historyAction, !isPremium && { opacity: 0.42 }]}>
             <Text style={[styles.historyLinkText, { color: wallLinkColor }]}>Ver muro</Text>
             <Feather
-              name="chevron-right"
+              name={isPremium ? "chevron-right" : "lock"}
               size={16}
               color={wallLinkColor}
               style={styles.historyChevron}

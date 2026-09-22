@@ -454,6 +454,7 @@ export function ProfileScreenBase({
   initialLibraryTab?: LibraryTab | null;
 }) {
   const colors = useColors();
+  const { isPremium } = usePremium();
   const { theme: activeTheme, activeSceneId } = useSceneTheme();
   const insets = useSafeAreaInsets();
   const { email, logout } = useAuth();
@@ -1811,7 +1812,7 @@ export function ProfileScreenBase({
       {!dedicated && <BibliotecaScreen embedded initialTab={initialLibraryTab} onHeaderActions={setLibActions} />}
       </View>
 
-      {dedicated && (
+      {dedicated && isPremium && (
         <ReflectionSavedBanner
           trigger={reflectionSavedTrigger}
           bottom={58 + bottomPad + 15}
