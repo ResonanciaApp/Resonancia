@@ -40,6 +40,19 @@ test("shows only Ver todos when every favorite collection is empty", () => {
   );
 });
 
+test("shows thematic collections only after one is saved", () => {
+  assert.equal(
+    buildVisibleFavoriteTabs([], false, false, false, false)
+      .some((tab) => tab.id === "collections"),
+    false,
+  );
+  assert.equal(
+    buildVisibleFavoriteTabs([], false, false, false, true)
+      .some((tab) => tab.id === "collections"),
+    true,
+  );
+});
+
 test("resolves saved playlists in order and drops duplicate, missing and inactive ids", () => {
   const playlists = [
     { id: "music", isActive: true },

@@ -37,6 +37,9 @@ import { buildVisibleFavoriteTabs, FAVORITE_COLLECTION_TABS, resolveSavedEditori
 import { useInspiration } from "@/hooks/inspiration";
 import type { InspirationFavorite } from "@/types/inspiration";
 import { confirmInspirationAction } from "@/components/InspirationNotes";
+import { TAG_CARDS, THEME_CARD_BACKGROUND_BY_SLUG, THEME_CARD_OVERLAY_BY_SLUG } from "@/data/tags";
+import { useFavoriteThemeCollections } from "@/hooks/useFavoriteThemeCollections";
+import { useCategoryOverlayOptional } from "@/context/CategoryOverlayContext";
 
 const H_PAD = 14;
 const { width: W } = Dimensions.get("window");
@@ -240,6 +243,54 @@ function FavoriteInspirationsCarousel({
   );
 }
 
+function FavoriteThemeCollections({
+  collections,
+  onPress,
+  title,
+}: {
+  collections: typeof TAG_CARDS;
+  onPress: (id: string) => void;
+  title?: string;
+}) {
+  if (collections.length === 0) return null;
+  return (
+    <View style={styles.themeCollectionsSection}>
+      {title ? <Text style={styles.carouselTitle}>{title}</Text> : null}
+      <View style={styles.themeCollectionsGrid}>
+        {collections.map((collection) => (
+          <Pressable
+            key={collection.id}
+            onPress={() => onPress(collection.id)}
+            accessibilityRole="button"
+            accessibilityLabel={collection.label}
+            style={({ pressed }) => [
+              styles.themeCollectionCard,
+              {
+                backgroundColor: THEME_CARD_BACKGROUND_BY_SLUG[collection.id] ?? "rgba(0,0,0,0.28)",
+                opacity: pressed ? 0.78 : 1,
+              },
+            ]}
+          >
+            <Image
+              source={collection.image}
+              style={StyleSheet.absoluteFill}
+              contentFit="cover"
+              cachePolicy="memory-disk"
+            />
+            <LinearGradient
+              colors={THEME_CARD_OVERLAY_BY_SLUG[collection.id] ?? ["rgba(0,0,0,0.18)", "rgba(0,0,0,0.62)"]}
+              style={StyleSheet.absoluteFill}
+            />
+            <Text style={styles.themeCollectionLabel} numberOfLines={2}>
+              {collection.label}
+            </Text>
+          </Pressable>
+        ))}
+      </View>
+    </View>
+  );
+}
+
 export default function FavoritosTodosScreen() {
   const params = useLocalSearchParams<{ tab?: string }>();
   const goBack = useBackOverride();
@@ -253,6 +304,8 @@ export default function FavoritosTodosScreen() {
   const { theme: sceneTheme } = useSceneTheme();
   const { videos: allVideos } = useVideos();
   const { favorites: inspirationFavorites } = useInspiration();
+  const { favoriteThemeIds } = useFavoriteThemeCollections();
+  const categoryOverlay = useCategoryOverlayOptional();
   const topPad = Platform.OS === "web" ? 67 : Math.max(insets.top, 40);
   const bottomPad = Platform.OS === "web" ? 34 : insets.bottom;
   const stickyHeaderHeight = topPad + 126;
@@ -299,15 +352,22 @@ export default function FavoritosTodosScreen() {
     () => resolveSavedEditorialFavorites(savedEditorialPlaylistIds, PLAYLISTS),
     [savedEditorialPlaylistIds, catalogVersion],
   );
+  const favoriteThemeCollections = useMemo(
+    () => favoriteThemeIds
+      .map((id) => TAG_CARDS.find((collection) => collection.id === id))
+      .filter((collection): collection is (typeof TAG_CARDS)[number] => Boolean(collection)),
+    [favoriteThemeIds],
+  );
 
   const visibleTabs = useMemo(
     () => buildVisibleFavoriteTabs(
       favSessions.map((session) => session.categoryId),
       favVideos.length > 0,
       favoritePlaylists.length > 0,
-      inspirationFavorites.length > 0 || params.tab === "inspiraciones"
+      inspirationFavorites.length > 0 || params.tab === "inspiraciones",
+      favoriteThemeCollections.length > 0,
     ),
-    [favSessions, favVideos.length, favoritePlaylists.length, inspirationFavorites.length, params.tab],
+    [favSessions, favVideos.length, favoritePlaylists.length, inspirationFavorites.length, favoriteThemeCollections.length, params.tab],
   );
   const visibleContentTabs = useMemo(
     () => {
@@ -337,6 +397,14 @@ export default function FavoritosTodosScreen() {
   };
   const openEditorialPlaylist = (playlist: EditorialPlaylist) => {
     router.push(`/editorial-playlist/${encodeURIComponent(playlist.id)}` as never);
+  };
+  const openThemeCollection = (id: string) => {
+    const path = `/tag/${encodeURIComponent(id)}`;
+    if (categoryOverlay) {
+      categoryOverlay.openCategory(path);
+    } else {
+      router.push(path as never);
+    }
   };
 
   return (
@@ -462,6 +530,18 @@ export default function FavoritosTodosScreen() {
                       </React.Fragment>
                     );
                   }
+                  if (tab.id === "collections") {
+                    return (
+                      <React.Fragment key={tab.id}>
+                        {index > 0 ? <View style={styles.sectionDivider} /> : null}
+                        <FavoriteThemeCollections
+                          title={tab.label}
+                          collections={favoriteThemeCollections}
+                          onPress={openThemeCollection}
+                        />
+                      </React.Fragment>
+                    );
+                  }
                   const sessions = favSessions.filter(
                     (session) => session.categoryId === tab.categoryId,
                   );
@@ -493,6 +573,11 @@ export default function FavoritosTodosScreen() {
                 <FavoriteInspirationsCarousel title="Inspiraciones" inspirations={inspirationFavorites} />
               </View>
             )
+          ) : activeTab === "collections" ? (
+            <FavoriteThemeCollections
+              collections={favoriteThemeCollections}
+              onPress={openThemeCollection}
+            />
           ) : activeTab === "videos" ? (
             favVideos.length === 0 ? (
               <View style={[styles.empty, { backgroundColor: "rgba(255,255,255,0.075)" }]}>
@@ -689,6 +774,37 @@ const styles = StyleSheet.create({
   },
   pillTextSel: { fontFamily: "Manrope", color: "#2D0D3A", fontWeight: "600" },
   pillTextIndigoSel: { color: "#F9F9F9" },
+  themeCollectionsSection: {
+    paddingHorizontal: H_PAD,
+    marginBottom: 28,
+  },
+  themeCollectionsGrid: {
+    flexDirection: "row",
+    flexWrap: "wrap",
+    columnGap: 8,
+    rowGap: 10,
+  },
+  themeCollectionCard: {
+    width: (W - H_PAD * 2 - 8) / 2,
+    aspectRatio: 1.35,
+    borderRadius: 14,
+    overflow: "hidden",
+    justifyContent: "flex-end",
+    padding: 12,
+    borderWidth: 1,
+    borderColor: "rgba(255,255,255,0.20)",
+  },
+  themeCollectionLabel: {
+    fontFamily: "Manrope",
+    color: "#FFFFFF",
+    fontSize: 14,
+    lineHeight: 18,
+    fontWeight: "700",
+    textAlign: "center",
+    textShadowColor: "rgba(0,0,0,0.55)",
+    textShadowOffset: { width: 0, height: 1 },
+    textShadowRadius: 4,
+  },
   grid: {
     flexDirection: "row",
     flexWrap: "wrap",

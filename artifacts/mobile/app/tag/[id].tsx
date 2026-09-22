@@ -38,6 +38,7 @@ import {
   parseOtherThemeInternalTag,
 } from "@/lib/explore-other-themes";
 import { useColors } from "@/hooks/useColors";
+import { useFavoriteThemeCollections } from "@/hooks/useFavoriteThemeCollections";
 
 const { width } = Dimensions.get("window");
 const H_PAD = 16;
@@ -97,6 +98,11 @@ export default function ThemeTagScreen({
   const { playSession } = usePlayer();
   const { version: catalogVersion } = useCatalog();
   const { theme } = useSceneTheme();
+  const {
+    favoriteThemeIds,
+    isHydrated: favoriteThemesHydrated,
+    toggleFavoriteTheme,
+  } = useFavoriteThemeCollections();
   const topPad = Platform.OS === "web" ? 67 : Math.max(insets.top, 40);
   const bottomPad = Platform.OS === "web" ? 34 : insets.bottom;
 
@@ -136,6 +142,7 @@ export default function ThemeTagScreen({
       ? `Sesiones de ${internalLabel.toLocaleLowerCase("es")}`
       : (slug ? THEME_DETAIL_DESCRIPTION_BY_SLUG[slug] : undefined) ??
         `Sesiones para conectar con ${tagLabel?.toLocaleLowerCase("es") ?? "esta temática"}`);
+  const isFavoriteTheme = Boolean(slug && favoriteThemeIds.includes(slug));
 
   const [stickyActive, setStickyActive] = React.useState(false);
   const [headerBottomY, setHeaderBottomY] = React.useState(Number.POSITIVE_INFINITY);
@@ -284,9 +291,33 @@ export default function ThemeTagScreen({
               </Pressable>
             </View>
             <View style={styles.intro}>
-              <Text style={[styles.legacyPageTitle, { color: colors.foreground }]}>
-                {pageTitle}
-              </Text>
+              <View style={styles.titleRow}>
+                <Text style={[styles.legacyPageTitle, { color: colors.foreground }]}>
+                  {pageTitle}
+                </Text>
+                {slug ? (
+                  <Pressable
+                    onPress={() => void toggleFavoriteTheme(slug)}
+                    disabled={!favoriteThemesHydrated}
+                    hitSlop={10}
+                    accessibilityRole="button"
+                    accessibilityLabel={isFavoriteTheme ? "Quitar colección de favoritos" : "Agregar colección a favoritos"}
+                    accessibilityState={{ selected: isFavoriteTheme, disabled: !favoriteThemesHydrated }}
+                    style={({ pressed }) => [
+                      styles.favoriteThemeButton,
+                      {
+                        opacity: !favoriteThemesHydrated ? 0.45 : pressed ? 0.68 : 1,
+                      },
+                    ]}
+                  >
+                    <Feather
+                      name="heart"
+                      size={24}
+                      color={isFavoriteTheme ? "#BE9650" : colors.foreground}
+                    />
+                  </Pressable>
+                ) : null}
+              </View>
               <Text
                 style={[styles.pageDescription, { color: colors.mutedForeground }]}
                 numberOfLines={1}
@@ -461,13 +492,29 @@ const styles = StyleSheet.create({
     paddingBottom: 4,
     alignItems: "flex-start",
   },
+  titleRow: {
+    alignSelf: "stretch",
+    flexDirection: "row",
+    alignItems: "center",
+    gap: 12,
+  },
   legacyPageTitle: {
     fontFamily: "Manrope",
     fontSize: 27,
     lineHeight: 34,
     fontWeight: "600",
     textAlign: "left",
-    alignSelf: "stretch",
+    flex: 1,
+  },
+  favoriteThemeButton: {
+    width: 43,
+    height: 43,
+    borderRadius: 21.5,
+    borderWidth: 1,
+    borderColor: "rgba(255,255,255,0.20)",
+    alignItems: "center",
+    justifyContent: "center",
+    backgroundColor: "rgba(0,0,0,0.28)",
   },
   pageDescription: {
     fontFamily: "Manrope",
