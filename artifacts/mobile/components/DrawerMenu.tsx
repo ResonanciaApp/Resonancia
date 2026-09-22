@@ -51,6 +51,7 @@ const INICIO3_SECTIONS: { title: string | null; items: MenuItem[] }[] = [
       { id: "library", label: "Biblioteca", icon: "book", mciIcon: "bookshelf", route: "__biblioteca_overlay" },
       { id: "history", label: "Historial", icon: "clock", mciIcon: "history", route: "__overlay:/historial" },
       { id: "downloads", label: "Descargas", icon: "download", mciIcon: "download-outline", route: "__overlay:/descargas" },
+      { id: "notifications", label: "Notificaciones", icon: "bell", mciIcon: "bell-outline", route: "__overlay:/notificaciones" },
       { id: "journal", label: "Diario", icon: "edit-3", mciIcon: "book-open-page-variant-outline", route: "__overlay:/diario" },
     ],
   },
@@ -213,7 +214,7 @@ export function DrawerMenu() {
     }
     if (route.startsWith("__overlay:")) {
       const target = route.replace("__overlay:", "");
-      if (["/historial", "/favoritos-todos", "/diario", "/descargas", "/membresia"].includes(target)) {
+      if (["/historial", "/favoritos-todos", "/diario", "/descargas", "/notificaciones", "/membresia"].includes(target)) {
         openOverlayFromDrawer(target);
       } else {
         openOverlay(target);

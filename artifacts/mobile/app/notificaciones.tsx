@@ -26,6 +26,7 @@ import { useSafeAreaInsets } from "react-native-safe-area-context";
 
 import { GoldGradient } from "@/components/GoldGradient";
 import { SacredBackground } from "@/components/SacredBackground";
+import { useBackOverride } from "@/context/BackOverrideContext";
 import { useColors } from "@/hooks/useColors";
 
 const BG_GRADIENT = ["#340D1A", "#190913"] as const;
@@ -126,6 +127,7 @@ function groupNotifications(list: Notification[]): GroupedNotification[] {
 
 export default function NotificacionesScreen() {
   const colors = useColors();
+  const backOverride = useBackOverride();
   const insets = useSafeAreaInsets();
   const topPad = Platform.OS === "web" ? 67 : insets.top;
   const bottomPad = Platform.OS === "web" ? 34 : insets.bottom;
@@ -185,7 +187,10 @@ export default function NotificacionesScreen() {
         showsVerticalScrollIndicator={false}
       >
         <View style={styles.headerRow}>
-          <Pressable onPress={() => router.back()} hitSlop={12}>
+          <Pressable
+            onPress={backOverride ?? (() => router.back())}
+            hitSlop={12}
+          >
             <Feather name="arrow-left" size={22} color={colors.foreground} />
           </Pressable>
         </View>

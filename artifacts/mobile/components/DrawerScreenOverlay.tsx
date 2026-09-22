@@ -14,6 +14,7 @@ const SHARED_DRAWER_ROUTES = new Set([
   "/favoritos-todos",
   "/diario",
   "/descargas",
+  "/notificaciones",
   "/membresia",
 ]);
 
@@ -27,6 +28,7 @@ const SCREENS: Record<string, React.LazyExoticComponent<React.ComponentType>> = 
   "/mis-sesiones":    React.lazy(() => import("@/app/mis-sesiones")),
   "/equipo":          React.lazy(() => import("@/app/equipo")),
   "/descargas":       React.lazy(() => import("@/app/descargas")),
+  "/notificaciones":  React.lazy(() => import("@/app/notificaciones")),
   "/membresia":       React.lazy(() => import("@/app/membresia")),
 };
 
@@ -69,6 +71,7 @@ export function DrawerScreenOverlay() {
       import("@/app/mis-sesiones"),
       import("@/app/equipo"),
       import("@/app/descargas"),
+      import("@/app/notificaciones"),
       import("@/app/membresia"),
     ]);
   }, []);

@@ -586,9 +586,7 @@ export default function PlayerScreen() {
         style={[styles.centeredTime, { opacity: centeredTimeOpacity }]}
         pointerEvents="none"
       >
-        <Text style={styles.centeredTimeText}>
-          {formatTime(elapsed)} / {formatTime(totalSeconds)}
-        </Text>
+        <Text style={styles.centeredTimeText}>{formatTime(elapsed)}</Text>
       </RNAnimated.View>
 
       {/* ── Toda la UI (se desvanece al tap) ─────────────────────────────── */}
@@ -1121,7 +1119,7 @@ const styles = StyleSheet.create({
   centeredTimeText: {
     color: "#FBFBFB",
     fontFamily: "Manrope",
-    fontSize: 18,
+    fontSize: 43,
     fontWeight: "600",
     letterSpacing: 0.3,
     fontVariant: ["tabular-nums"],
@@ -1261,7 +1259,7 @@ const styles = StyleSheet.create({
     paddingHorizontal: 0,
     paddingVertical: 0,
     backgroundColor: "rgba(130,96,181,0.48)",
-    transform: [{ translateX: -14 }],
+    transform: [{ translateX: -14 }, { translateY: 3 }],
   },
   ambientPillContent: {
     flex: 1,
