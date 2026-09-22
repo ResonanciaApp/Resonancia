@@ -310,6 +310,8 @@ type SessionCarouselProps = {
   categoryGridPresentation?: boolean;
   /** Shows the session category below the image, immediately above the title. */
   showCategoryLabelBelow?: boolean;
+  /** Places the below-image category immediately after the card title. */
+  showCategoryLabelAfterTitle?: boolean;
   /** Shows the session category as a glass pill in the image's upper-left corner. */
   showCategoryPillTopLeft?: boolean;
   /** Shows the session category as author-style text immediately above the card title. */
@@ -400,6 +402,7 @@ export const SessionCarousel = React.memo(function SessionCarousel({
   squareTitleAuthorBelow = false,
   categoryGridPresentation = false,
   showCategoryLabelBelow = false,
+  showCategoryLabelAfterTitle = false,
   showCategoryPillTopLeft = false,
   showCategoryAboveCardTitle = false,
   whiteMetadataGlass = false,
@@ -1049,7 +1052,7 @@ export const SessionCarousel = React.memo(function SessionCarousel({
               </View>
               {useSleepMetadataBelow ? (
                 <View style={[styles.sleepBelowMetadata, sleepBelowMetadataStyle]}>
-                   {showCategoryLabelBelow && s.categoryLabel ? (
+                   {showCategoryLabelBelow && !showCategoryLabelAfterTitle && s.categoryLabel ? (
                     <Text
                       style={[styles.sleepBelowSecondary, { color: viewAllAccent }]}
                       numberOfLines={1}
@@ -1068,7 +1071,15 @@ export const SessionCarousel = React.memo(function SessionCarousel({
                   <Text style={[styles.sleepBelowTitle, sleepBelowTitleStyle]} numberOfLines={2}>
                     {s.title}
                   </Text>
-                  {!squareTitleOnlyBelow && authorName ? (
+                   {showCategoryLabelBelow && showCategoryLabelAfterTitle && s.categoryLabel ? (
+                     <Text
+                       style={[styles.sleepBelowSecondary, { color: viewAllAccent }]}
+                       numberOfLines={1}
+                     >
+                       {s.categoryLabel}
+                     </Text>
+                   ) : null}
+                   {!squareTitleOnlyBelow && effectiveShowAuthor && authorName ? (
                     <Text
                       style={[styles.sleepBelowSecondary, { color: viewAllAccent }]}
                       numberOfLines={1}

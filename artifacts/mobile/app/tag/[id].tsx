@@ -294,6 +294,8 @@ export default function ThemeTagScreen({ id: idProp }: { id?: string } = {}) {
             whiteMetadataGlass
             showDurationClock
             showCategoryLabelBelow
+             showCategoryLabelAfterTitle
+             showAuthor={false}
             sleepBelowMetadataStyle={{
               marginTop: 7,
               transform: [{ translateX: 3 }],
@@ -377,15 +379,16 @@ const styles = StyleSheet.create({
     paddingHorizontal: H_PAD,
     paddingTop: 20,
     paddingBottom: 24,
-    alignItems: "center",
+    alignItems: "flex-start",
   },
   legacyPageTitle: {
     fontFamily: "Manrope",
-    fontSize: 19,
-    lineHeight: 26,
+    fontSize: 26,
+    lineHeight: 33,
     fontWeight: "700",
     letterSpacing: 0.2,
-    textAlign: "center",
+    textAlign: "left",
+    alignSelf: "stretch",
     marginBottom: 6,
   },
   pageDescription: {

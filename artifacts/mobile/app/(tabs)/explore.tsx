@@ -817,7 +817,7 @@ export function ExploreScreen({
 
           <View style={styles.otherThemesSection}>
             <View style={styles.otherThemesHeader}>
-              <Text style={styles.otherThemesTitle}>
+              <Text style={[styles.sectionTitle, { marginBottom: 0 }]}>
                 Otras temáticas
               </Text>
             </View>
@@ -1355,16 +1355,7 @@ const styles = StyleSheet.create({
     marginTop: 8,
   },
   otherThemesHeader: {
-    alignItems: "flex-start",
     marginBottom: 17,
-  },
-  otherThemesTitle: {
-    alignSelf: "flex-start",
-    fontFamily: "Manrope",
-    fontSize: 24,
-    fontWeight: "700",
-    letterSpacing: 0.3,
-    color: "#FBFBFB",
   },
   otherThemesSection: {
     paddingHorizontal: H_PAD,
