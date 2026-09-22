@@ -253,11 +253,10 @@ export default function FavoritosTodosScreen() {
   const { theme: sceneTheme } = useSceneTheme();
   const { videos: allVideos } = useVideos();
   const { favorites: inspirationFavorites } = useInspiration();
-  const [actionsVideo, setActionsVideo] = useState<VideoItem | null>(null);
-  const [stickyHeaderHeight, setStickyHeaderHeight] = useState(0);
-
   const topPad = Platform.OS === "web" ? 67 : Math.max(insets.top, 40);
   const bottomPad = Platform.OS === "web" ? 34 : insets.bottom;
+  const stickyHeaderHeight = topPad + 126;
+  const [actionsVideo, setActionsVideo] = useState<VideoItem | null>(null);
   const libraryHeaderButtonBackground = "rgba(0,0,0,0.28)";
 
   const [activeTab, setActiveTab] = useState<FavoriteCollectionTabId>(params.tab === "inspiraciones" ? "inspiraciones" : "all");
@@ -355,7 +354,6 @@ export default function FavoritosTodosScreen() {
             styles.stickyHeader,
             { paddingTop: topPad + 4 },
           ]}
-          onLayout={(event) => setStickyHeaderHeight(event.nativeEvent.layout.height)}
         >
           <View
             pointerEvents="none"
