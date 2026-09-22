@@ -22,8 +22,6 @@ import { useSafeAreaInsets } from "react-native-safe-area-context";
 import Svg, {
   Circle,
   Defs,
-  LinearGradient as SvgLinearGradient,
-  Path,
   Pattern,
   RadialGradient,
   Rect,
@@ -48,7 +46,7 @@ const DATE_FORMATTER = new Intl.DateTimeFormat("es-CL", {
 });
 
 const GIFT_GOLD_COLORS = ["#D8A84F", "#F3D58A", "#B9822F"] as const;
-const PREMIUM_OFFER_BACKGROUND = ["#362064", "#2C2468", "#202B6E", "#103274"] as const;
+const PREMIUM_OFFER_BACKGROUND = ["#180F2A", "#131A35", "#0B2237", "#111426"] as const;
 const PREMIUM_OFFER_LOCATIONS = [0, 0.3, 0.68, 1] as const;
 const PREMIUM_VIOLET = "#6B50D2";
 const PREMIUM_VIOLET_DARK = "#5139AF";
@@ -64,41 +62,41 @@ function PremiumAtmosphereBackground() {
         style={StyleSheet.absoluteFill}
       >
         <Defs>
-          <RadialGradient id="premiumGlowTop" cx="22%" cy="5%" rx="88%" ry="58%">
-            <Stop offset="0" stopColor="#7655A3" stopOpacity={0.25} />
-            <Stop offset="0.34" stopColor="#674A93" stopOpacity={0.13} />
-            <Stop offset="1" stopColor="#443274" stopOpacity={0} />
+          <RadialGradient id="chakraViolet" cx="86%" cy="4%" rx="72%" ry="42%">
+            <Stop offset="0" stopColor="#A776D6" stopOpacity={0.72} />
+            <Stop offset="0.38" stopColor="#A776D6" stopOpacity={0.27} />
+            <Stop offset="1" stopColor="#A776D6" stopOpacity={0} />
           </RadialGradient>
-          <RadialGradient id="premiumGlowCenter" cx="68%" cy="47%" rx="72%" ry="44%">
-            <Stop offset="0" stopColor="#5D68B0" stopOpacity={0.2} />
-            <Stop offset="0.38" stopColor="#44539D" stopOpacity={0.11} />
-            <Stop offset="1" stopColor="#273C82" stopOpacity={0} />
+          <RadialGradient id="chakraIndigo" cx="10%" cy="20%" rx="74%" ry="44%">
+            <Stop offset="0" stopColor="#6F68B6" stopOpacity={0.68} />
+            <Stop offset="0.42" stopColor="#6F68B6" stopOpacity={0.24} />
+            <Stop offset="1" stopColor="#6F68B6" stopOpacity={0} />
           </RadialGradient>
-          <RadialGradient id="premiumGlowLower" cx="38%" cy="82%" rx="86%" ry="50%">
-            <Stop offset="0" stopColor="#3768A8" stopOpacity={0.2} />
-            <Stop offset="0.42" stopColor="#285597" stopOpacity={0.1} />
-            <Stop offset="1" stopColor="#153B7B" stopOpacity={0} />
+          <RadialGradient id="chakraBlue" cx="92%" cy="37%" rx="70%" ry="40%">
+            <Stop offset="0" stopColor="#5998BB" stopOpacity={0.7} />
+            <Stop offset="0.4" stopColor="#5998BB" stopOpacity={0.25} />
+            <Stop offset="1" stopColor="#5998BB" stopOpacity={0} />
           </RadialGradient>
-          <RadialGradient id="premiumMistLeft" cx="4%" cy="56%" rx="56%" ry="42%">
-            <Stop offset="0" stopColor="#7761B0" stopOpacity={0.16} />
-            <Stop offset="0.46" stopColor="#5D509B" stopOpacity={0.07} />
-            <Stop offset="1" stopColor="#4A438D" stopOpacity={0} />
+          <RadialGradient id="chakraGreen" cx="22%" cy="51%" rx="72%" ry="42%">
+            <Stop offset="0" stopColor="#60A186" stopOpacity={0.63} />
+            <Stop offset="0.42" stopColor="#60A186" stopOpacity={0.22} />
+            <Stop offset="1" stopColor="#60A186" stopOpacity={0} />
           </RadialGradient>
-          <SvgLinearGradient id="premiumWaveOne" x1="0" y1="0" x2="1" y2="1">
-            <Stop offset="0" stopColor="#9174C4" stopOpacity={0} />
-            <Stop offset="0.42" stopColor="#8068B8" stopOpacity={0.16} />
-            <Stop offset="1" stopColor="#5366B0" stopOpacity={0} />
-          </SvgLinearGradient>
-          <SvgLinearGradient id="premiumWaveTwo" x1="1" y1="0" x2="0" y2="1">
-            <Stop offset="0" stopColor="#5C72BF" stopOpacity={0} />
-            <Stop offset="0.5" stopColor="#7180C7" stopOpacity={0.11} />
-            <Stop offset="1" stopColor="#3D65A5" stopOpacity={0} />
-          </SvgLinearGradient>
-          <SvgLinearGradient id="premiumWaveThree" x1="0" y1="0" x2="1" y2="0">
-            <Stop offset="0" stopColor="#435FA4" stopOpacity={0} />
-            <Stop offset="0.46" stopColor="#5B78BB" stopOpacity={0.09} />
-            <Stop offset="1" stopColor="#315A9D" stopOpacity={0} />
-          </SvgLinearGradient>
+          <RadialGradient id="chakraYellow" cx="88%" cy="65%" rx="72%" ry="42%">
+            <Stop offset="0" stopColor="#E7C85D" stopOpacity={0.66} />
+            <Stop offset="0.4" stopColor="#D5B84F" stopOpacity={0.22} />
+            <Stop offset="1" stopColor="#B99B3D" stopOpacity={0} />
+          </RadialGradient>
+          <RadialGradient id="chakraOrange" cx="14%" cy="80%" rx="75%" ry="43%">
+            <Stop offset="0" stopColor="#DE9363" stopOpacity={0.7} />
+            <Stop offset="0.42" stopColor="#DE9363" stopOpacity={0.24} />
+            <Stop offset="1" stopColor="#DE9363" stopOpacity={0} />
+          </RadialGradient>
+          <RadialGradient id="chakraRed" cx="82%" cy="98%" rx="78%" ry="48%">
+            <Stop offset="0" stopColor="#C65860" stopOpacity={0.72} />
+            <Stop offset="0.4" stopColor="#C65860" stopOpacity={0.26} />
+            <Stop offset="1" stopColor="#C65860" stopOpacity={0} />
+          </RadialGradient>
           <Pattern id="premiumGrain" width="2.4" height="2.4" patternUnits="userSpaceOnUse">
             <Circle cx="0.45" cy="0.65" r="0.075" fill="#FFFFFF" opacity={0.55} />
             <Circle cx="1.75" cy="1.15" r="0.055" fill="#FFFFFF" opacity={0.42} />
@@ -107,22 +105,13 @@ function PremiumAtmosphereBackground() {
           </Pattern>
         </Defs>
 
-        <Rect width="100" height="180" fill="url(#premiumGlowTop)" />
-        <Rect width="100" height="180" fill="url(#premiumGlowCenter)" />
-        <Rect width="100" height="180" fill="url(#premiumGlowLower)" />
-        <Rect width="100" height="180" fill="url(#premiumMistLeft)" />
-        <Path
-          d="M-34 39 C1 12 33 60 72 48 C99 39 119 17 139 27 L139 92 C104 71 73 89 38 75 C6 62 -14 76 -34 67 Z"
-          fill="url(#premiumWaveOne)"
-        />
-        <Path
-          d="M-38 79 C-2 56 25 91 58 83 C91 75 111 47 139 59 L139 125 C109 110 80 122 49 112 C17 101 -9 117 -38 105 Z"
-          fill="url(#premiumWaveTwo)"
-        />
-        <Path
-          d="M-31 128 C3 107 27 139 61 132 C91 126 113 103 137 112 L137 180 L-31 180 Z"
-          fill="url(#premiumWaveThree)"
-        />
+        <Rect width="100" height="180" fill="url(#chakraViolet)" />
+        <Rect width="100" height="180" fill="url(#chakraIndigo)" />
+        <Rect width="100" height="180" fill="url(#chakraBlue)" />
+        <Rect width="100" height="180" fill="url(#chakraGreen)" />
+        <Rect width="100" height="180" fill="url(#chakraYellow)" />
+        <Rect width="100" height="180" fill="url(#chakraOrange)" />
+        <Rect width="100" height="180" fill="url(#chakraRed)" />
         <Rect width="100" height="180" fill="url(#premiumGrain)" opacity={0.035} />
       </Svg>
     </View>
