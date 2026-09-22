@@ -3,6 +3,8 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 import { getMoodById, type MoodId } from "@/data/moods";
 
 const STORAGE_KEY = "@resonance_mood_history_v1";
+const ALLOW_REPEATED_DAILY_CHECK_INS =
+  typeof __DEV__ !== "undefined" && __DEV__;
 
 function localDayKey(date: Date): string {
   const year = date.getFullYear();
@@ -87,7 +89,10 @@ export async function saveMoodCheckIn(
 ): Promise<MoodHistoryRecord[]> {
   const current = await readMoodHistory();
   const today = localDayKey(new Date());
-  if (current.some((record) => localDayKey(new Date(record.createdAt)) === today)) {
+  if (
+    !ALLOW_REPEATED_DAILY_CHECK_INS &&
+    current.some((record) => localDayKey(new Date(record.createdAt)) === today)
+  ) {
     throw new MoodCheckInAlreadyExistsError();
   }
   const record: MoodHistoryRecord = {

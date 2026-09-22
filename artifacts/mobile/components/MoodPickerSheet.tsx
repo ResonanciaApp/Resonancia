@@ -243,6 +243,7 @@ export function MoodPickerSheet({
   const [completionCycle, setCompletionCycle] = useState(0);
   const [completionQuote, setCompletionQuote] = useState<MoodQuote | null>(null);
   const [isFinishing, setIsFinishing] = useState(false);
+  const isDailyCheckInLocked = hasCheckedInToday && !__DEV__;
   const isFinishingRef = useRef(false);
   const flowGenerationRef = useRef(0);
 
@@ -318,14 +319,14 @@ export function MoodPickerSheet({
   }
 
   function handleStartSurvey() {
-    if (!historyReady || hasCheckedInToday || !selected.length) return;
+    if (!historyReady || isDailyCheckInLocked || !selected.length) return;
     setAnswers({});
     setSurveyIndex(0);
     setStep("survey");
   }
 
   function toggleMood(moodId: MoodId) {
-    if (!historyReady || hasCheckedInToday) return;
+    if (!historyReady || isDailyCheckInLocked) return;
     setSelected((current) => current[0] === moodId ? [] : [moodId]);
   }
 
@@ -477,10 +478,10 @@ export function MoodPickerSheet({
               contentContainerStyle={[styles.content, { paddingBottom: bottomPad + 28 }]}
             >
               <Text style={styles.title}>
-                {hasCheckedInToday ? "Ya ingresaste tu emoción" : "¿Cómo te sientes hoy?"}
+                {isDailyCheckInLocked ? "Ya ingresaste tu emoción" : "¿Cómo te sientes hoy?"}
               </Text>
               <Text style={styles.subtitle}>
-                {hasCheckedInToday
+                {isDailyCheckInLocked
                   ? "Mañana podrás registrar una nuevamente"
                   : "Elige una emoción para personalizar este momento."}
               </Text>
@@ -491,15 +492,15 @@ export function MoodPickerSheet({
                     <Pressable
                       key={mood.id}
                       onPress={() => toggleMood(mood.id)}
-                      disabled={!historyReady || hasCheckedInToday}
+                      disabled={!historyReady || isDailyCheckInLocked}
                       accessibilityRole="radio"
-                      accessibilityState={{ selected: isSelected, disabled: !historyReady || hasCheckedInToday }}
+                      accessibilityState={{ selected: isSelected, disabled: !historyReady || isDailyCheckInLocked }}
                       accessibilityLabel={mood.label}
                       testID={`mood-option-${mood.id}`}
                       style={({ pressed }) => [
                         styles.moodCard,
                         isSelected && styles.moodCardSelected,
-                        { opacity: !historyReady || hasCheckedInToday ? 0.55 : pressed ? 0.8 : 1 },
+                        { opacity: !historyReady || isDailyCheckInLocked ? 0.55 : pressed ? 0.8 : 1 },
                       ]}
                     >
                       <Text style={styles.moodEmoji}>{mood.emoji}</Text>
@@ -520,7 +521,7 @@ export function MoodPickerSheet({
             >
               <PrimaryButton
                 label="Continuar"
-                disabled={!historyReady || hasCheckedInToday || !selected.length}
+                disabled={!historyReady || isDailyCheckInLocked || !selected.length}
                 onPress={handleStartSurvey}
                 testID="mood-picker-continue"
               />
