@@ -133,11 +133,7 @@ export function DailyRecommendationsSection({
             style={({ pressed }) => [
               styles.refreshButton,
               inicio3Compact && styles.inicio3RefreshButton,
-              {
-                backgroundColor: pressed
-                  ? "rgba(255,255,255,0.12)"
-                  : "rgba(0,0,0,0.28)",
-              },
+              { opacity: pressed ? 0.78 : 1 },
             ]}
           >
             <Text style={styles.refreshButtonText}>Actualizar recomendaciones</Text>
@@ -210,9 +206,8 @@ const styles = StyleSheet.create({
     alignItems: "center",
     justifyContent: "center",
     paddingVertical: 14,
-    borderRadius: 100,
-    borderWidth: 1,
-    borderColor: "#F9F9F9",
+    borderRadius: 20,
+    backgroundColor: "rgba(184,117,240,0.2)",
   },
   inicio3RefreshButton: {
     marginHorizontal: 11,
@@ -220,9 +215,9 @@ const styles = StyleSheet.create({
   },
   refreshButtonText: {
     fontFamily: "Manrope",
-    fontSize: 14,
+    fontSize: 15,
     color: "#F9F9F9",
-    fontWeight: "500",
+    fontWeight: "600",
   },
   row: {
     paddingVertical: 9.3,
