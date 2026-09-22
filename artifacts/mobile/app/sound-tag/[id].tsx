@@ -39,6 +39,7 @@ import { useBackOverride } from "@/context/BackOverrideContext";
 import { useCategoryOverlayOptional } from "@/context/CategoryOverlayContext";
 import { useSceneTheme } from "@/context/SceneThemeContext";
 import { useSoundPreview } from "@/hooks/useSoundPreview";
+import { useAmbientalDuration } from "@/context/AmbientalDurationContext";
 
 const H_PAD = 16;
 
@@ -55,6 +56,7 @@ export default function SoundTagDetailScreen({ id: idProp }: { id?: string } = {
   const overlayBack = useBackOverride();
   const overlay = useCategoryOverlayOptional();
   const soundPreview = useSoundPreview();
+  const { openForSession } = useAmbientalDuration();
   const [activeFilter, setActiveFilter] = React.useState<SupercategoryFilter>("all");
   const [searchVisible, setSearchVisible] = React.useState(false);
   const filterBorderOpacity = React.useRef(new Animated.Value(0)).current;
@@ -142,6 +144,7 @@ export default function SoundTagDetailScreen({ id: idProp }: { id?: string } = {
       router.push("/membresia" as never);
       return;
     }
+    if (openForSession(session, { forceAmbiental: true })) return;
     const playWithQueue = () => {
       if (currentSession?.id !== session.id) {
         playSessionInPlaylist(session, queueIds);

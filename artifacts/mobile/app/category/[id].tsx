@@ -171,7 +171,13 @@ export default function CategoryScreen({ categoryId }: { categoryId?: string } =
       router.push("/membresia" as never);
       return;
     }
-    if (openForSession(session)) return;
+    if (
+      openForSession(session, {
+        forceAmbiental: id === "ambientales",
+      })
+    ) {
+      return;
+    }
     if (session.skipMiniPlayer) {
       playSession(session);
       return;

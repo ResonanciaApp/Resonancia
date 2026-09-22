@@ -183,7 +183,12 @@ export default function CategoryTagScreen({
       router.push("/membresia" as never);
       return;
     }
-    if (decodedCategory === "ambientales" && openForSession(session)) return;
+    if (
+      decodedCategory === "ambientales" &&
+      openForSession(session, { forceAmbiental: true })
+    ) {
+      return;
+    }
     if (session.skipMiniPlayer) {
       playSession(session);
       return;

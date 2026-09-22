@@ -637,7 +637,13 @@ export const SessionCarousel = React.memo(function SessionCarousel({
                   else router.push("/membresia" as never);
                   return;
                 }
-                if (openForSession(s)) return;
+                if (
+                  openForSession(s, {
+                    forceAmbiental: forceAmbientalVariant,
+                  })
+                ) {
+                  return;
+                }
                 onPress(s);
               }}
               style={[styles.card, cardStyle]}

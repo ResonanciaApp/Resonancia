@@ -16,7 +16,10 @@ import type { Session } from "@/data/sessions";
 import { useLoadMix } from "@/hooks/useLoadMix";
 
 type AmbientalDurationContextValue = {
-  openForSession: (session: Session) => boolean;
+  openForSession: (
+    session: Session,
+    options?: { forceAmbiental?: boolean },
+  ) => boolean;
   openForMix: (mix: MixPreset) => void;
 };
 
@@ -44,8 +47,16 @@ export function AmbientalDurationProvider({
   const { setSleepTimer } = useMixer();
   const loadMix = useLoadMix();
 
-  const openForSession = useCallback((candidate: Session) => {
-    if (candidate.categoryId !== "ambientales") return false;
+  const openForSession = useCallback((
+    candidate: Session,
+    options?: { forceAmbiental?: boolean },
+  ) => {
+    if (
+      candidate.categoryId !== "ambientales" &&
+      options?.forceAmbiental !== true
+    ) {
+      return false;
+    }
     pendingPlaybackRef.current = null;
     setTarget({ kind: "session", session: candidate });
     return true;

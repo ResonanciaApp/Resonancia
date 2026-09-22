@@ -119,6 +119,7 @@
 - [Contadores animados interrumpibles](interruptible-counter-events.md) — al ocultar la superficie, conservar eventos aún no mostrados y descartar solo los ya confirmados para evitar pérdidas o repeticiones
 - [Separación tras contenido dinámico](dynamic-section-spacing.md) — en Inicio, el gap posterior a un bloque que cambia al terminar una animación debe pertenecer al siguiente contenedor estable
 - [Cards Ambientales en Sonidos](ambiental-cards-sonidos.md) — tratamiento propio de Sonidos: título centrado y categoría; sin autor, duración ni overlay oscuro
+- [Reproducción Ambiental por superficie](ambiental-playback-surface.md) — una colección marcada Ambiental abre temporizador y AmbientalPlayer aunque la sesión conserve otra categoría técnica
 - [Playlists editoriales](editorial-playlist-boundaries.md) — publicación por pantalla, no por tags; guardar referencia editorial no crea una playlist privada editable
 - [Transacciones de recordatorios locales](practice-notification-transactions.md) — actualizar una alarma exige operación nativa estricta + rollback; la cancelación tolerante queda solo para limpieza
 - [Límite de limpieza del catálogo Mixer](mixer-catalog-cleanup-boundary.md) — limpiar el bundle local no autoriza borrar sonidos creados en Admin ni sesiones Ambientales de prueba
