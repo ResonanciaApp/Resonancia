@@ -8,6 +8,7 @@ import { DURATION, easeOutCubic } from "@/constants/motion";
 import { useSceneTheme } from "@/context/SceneThemeContext";
 
 const W = Dimensions.get("window").width;
+const HISTORY_TRANSITION_DURATION = 450;
 
 // Lazy imports para evitar dependencia circular con las rutas de Expo Router
 const SCREENS: Record<string, React.LazyExoticComponent<React.ComponentType>> = {
@@ -63,7 +64,7 @@ export function DrawerScreenOverlay() {
         if (!rendered) historyProgress.setValue(0);
         Animated.timing(historyProgress, {
           toValue: 1,
-          duration: DURATION.DRAWER,
+          duration: HISTORY_TRANSITION_DURATION,
           easing: easeOutCubic,
           useNativeDriver: true,
         }).start();
@@ -82,7 +83,7 @@ export function DrawerScreenOverlay() {
       progress.stopAnimation();
       Animated.timing(progress, {
         toValue: closingHistory ? 0 : W,
-        duration: DURATION.DRAWER,
+        duration: closingHistory ? HISTORY_TRANSITION_DURATION : DURATION.DRAWER,
         easing: easeOutCubic,
         useNativeDriver: true,
       }).start(({ finished }) => {
