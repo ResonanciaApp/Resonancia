@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState, Suspense } from "react";
+import React, { useEffect, useMemo, useRef, useState, Suspense } from "react";
 import { LinearGradient } from "expo-linear-gradient";
 import { Animated, Dimensions, StyleSheet, View } from "react-native";
 
@@ -25,11 +25,19 @@ const SCREENS: Record<string, React.LazyExoticComponent<React.ComponentType>> = 
  * Cada pantalla recibe BackOverrideContext para que su botón ← cierre el overlay.
  */
 export function DrawerScreenOverlay() {
-  const { overlayRoute, closeOverlay } = useDrawer();
+  const { overlayRoute, closeOverlay, historyProgress } = useDrawer();
   const { theme: sceneTheme } = useSceneTheme();
   const [rendered, setRendered] = useState(false);
   const [activeRoute, setActiveRoute] = useState<string | null>(null);
   const slideAnim = useRef(new Animated.Value(W)).current;
+  const historySlideX = useMemo(
+    () => historyProgress.interpolate({
+      inputRange: [0, 1],
+      outputRange: [W, 0],
+      extrapolate: "clamp",
+    }),
+    [historyProgress],
+  );
 
   // Pre-cargar todos los módulos al montar el componente para que cuando el
   // usuario toque un ítem del drawer el JS ya esté en caché y renderice
@@ -50,17 +58,30 @@ export function DrawerScreenOverlay() {
     if (overlayRoute) {
       setActiveRoute(overlayRoute);
       setRendered(true);
-      slideAnim.stopAnimation();
-      Animated.timing(slideAnim, {
-        toValue: 0,
-        duration: DURATION.DRAWER,
-        easing: easeOutCubic,
-        useNativeDriver: true,
-      }).start();
+      if (overlayRoute === "/historial") {
+        historyProgress.stopAnimation();
+        if (!rendered) historyProgress.setValue(0);
+        Animated.timing(historyProgress, {
+          toValue: 1,
+          duration: DURATION.DRAWER,
+          easing: easeOutCubic,
+          useNativeDriver: true,
+        }).start();
+      } else {
+        slideAnim.stopAnimation();
+        Animated.timing(slideAnim, {
+          toValue: 0,
+          duration: DURATION.DRAWER,
+          easing: easeOutCubic,
+          useNativeDriver: true,
+        }).start();
+      }
     } else if (rendered) {
-      slideAnim.stopAnimation();
-      Animated.timing(slideAnim, {
-        toValue: W,
+      const closingHistory = activeRoute === "/historial";
+      const progress = closingHistory ? historyProgress : slideAnim;
+      progress.stopAnimation();
+      Animated.timing(progress, {
+        toValue: closingHistory ? 0 : W,
         duration: DURATION.DRAWER,
         easing: easeOutCubic,
         useNativeDriver: true,
@@ -83,7 +104,10 @@ export function DrawerScreenOverlay() {
     <Animated.View
       style={[
         StyleSheet.absoluteFill,
-        { backgroundColor: sceneTheme.gradient[0], transform: [{ translateX: slideAnim }] },
+        {
+          backgroundColor: sceneTheme.gradient[0],
+          transform: [{ translateX: activeRoute === "/historial" ? historySlideX : slideAnim }],
+        },
       ]}
     >
       <BackOverrideProvider onBack={closeOverlay}>

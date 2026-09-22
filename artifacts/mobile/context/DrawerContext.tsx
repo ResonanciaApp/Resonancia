@@ -36,6 +36,9 @@ type DrawerCtx = {
   overlayRoute: string | null;
   openOverlay: (route: string) => void;
   closeOverlay: () => void;
+  /** Progreso único de la transición de Historial (0 cerrado, 1 abierto).
+   *  La ventana y el drawer derivan todo su movimiento de este mismo valor. */
+  historyProgress: Animated.Value;
   /** Chat overlay que se desliza SOBRE el overlay de amigos (queda abierto debajo). */
   chatUserId: number | null;
   openChat: (userId: number) => void;
@@ -121,7 +124,8 @@ export function DrawerProvider({ children }: { children: React.ReactNode }) {
   // Parallax: el drawer y la pantalla que queda detrás se corren un poco al
   // abrir cualquiera de los overlays del drawer, incluida Biblioteca.
   const overlayParallax = useRef(new Animated.Value(0)).current;
-  const overlayOpen = Boolean(overlayRoute || libOpen);
+  const historyProgress = useRef(new Animated.Value(0)).current;
+  const overlayOpen = Boolean((overlayRoute && overlayRoute !== "/historial") || libOpen);
   useEffect(() => {
     overlayParallax.stopAnimation();
     Animated.timing(overlayParallax, {
@@ -138,8 +142,8 @@ export function DrawerProvider({ children }: { children: React.ReactNode }) {
   const closeChat = useCallback(() => setChatUserId(null), []);
 
   const value = React.useMemo(
-    () => ({ isOpen, open, close, moodPickerRequest, requestMoodPicker, profileComposeRequest, requestProfileCompose, consumeProfileComposeRequest, drawerAnim, instantNav, markInstantNav, libOpen, libraryParallax, libraryInitialTab, openLib, closeLib, overlayRoute, openOverlay, closeOverlay, overlayParallax, chatUserId, openChat, closeChat }),
-    [isOpen, open, close, moodPickerRequest, requestMoodPicker, profileComposeRequest, requestProfileCompose, consumeProfileComposeRequest, drawerAnim, instantNav, markInstantNav, libOpen, libraryParallax, libraryInitialTab, openLib, closeLib, overlayRoute, openOverlay, closeOverlay, overlayParallax, chatUserId, openChat, closeChat],
+    () => ({ isOpen, open, close, moodPickerRequest, requestMoodPicker, profileComposeRequest, requestProfileCompose, consumeProfileComposeRequest, drawerAnim, instantNav, markInstantNav, libOpen, libraryParallax, libraryInitialTab, openLib, closeLib, overlayRoute, openOverlay, closeOverlay, overlayParallax, historyProgress, chatUserId, openChat, closeChat }),
+    [isOpen, open, close, moodPickerRequest, requestMoodPicker, profileComposeRequest, requestProfileCompose, consumeProfileComposeRequest, drawerAnim, instantNav, markInstantNav, libOpen, libraryParallax, libraryInitialTab, openLib, closeLib, overlayRoute, openOverlay, closeOverlay, overlayParallax, historyProgress, chatUserId, openChat, closeChat],
   );
 
   return <Ctx.Provider value={value}>{children}</Ctx.Provider>;

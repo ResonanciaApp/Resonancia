@@ -1,0 +1,155 @@
+Quiero mejorar la animación de apertura de las ventanas/pantallas que se abren desde la derecha hacia la izquierda en la app.
+
+Objetivo
+
+Crear un efecto parallax sutil y premium entre la nueva ventana y el Menu Drawer, dando la sensación de que la nueva pantalla entra físicamente por encima del Drawer y lo “empuja” ligeramente hacia atrás, aunque la pantalla nunca toque realmente el Drawer.
+
+La animación debe sentirse fluida, natural, elegante y con profundidad, similar a una interfaz móvil moderna con capas físicas.
+
+Comportamiento
+
+Cuando el usuario selecciona una opción del Menu Drawer:
+
+La nueva ventana/pantalla entra desde el lado derecho.
+La pantalla se desplaza hacia la izquierda hasta ocupar el 100% de la pantalla.
+Mientras la nueva pantalla avanza, el Menu Drawer debe reaccionar con un movimiento de parallax MUY sutil.
+El Drawer debe desplazarse ligeramente hacia la izquierda y/o cambiar mínimamente su escala, como si la pantalla que entra estuviera generando una presión visual sobre él.
+El movimiento del Drawer debe estar sincronizado con el progreso de la transición de la nueva ventana.
+El Drawer NO debe esperar a que la nueva pantalla lo toque para comenzar a moverse. La reacción debe comenzar prácticamente desde el inicio de la transición.
+Cuando la nueva pantalla termina de entrar, el Drawer queda completamente detrás de ella y fuera del foco visual.
+Sensación buscada
+
+No quiero un simple:
+
+Drawer quieto → pantalla entra → Drawer desaparece
+
+Quiero algo más parecido a:
+
+Drawer
+↓
+ligero movimiento hacia atrás
+↓
+Nueva pantalla entra desde la derecha
+↓
+las dos capas se sienten conectadas físicamente
+
+La sensación debe ser similar a una capa de profundidad que está siendo desplazada por otra capa, pero sin exagerar.
+
+Parámetros visuales
+
+Mantener el efecto extremadamente sutil:
+
+Parallax del Drawer: aproximadamente 8–20 px máximo.
+Movimiento sincronizado con la transición principal.
+Opcional: reducción de escala muy leve del Drawer, aproximadamente 0.98–0.99.
+Opcional: reducción mínima de opacidad, sin que el Drawer desaparezca abruptamente.
+No utilizar movimientos bruscos.
+No utilizar rebotes fuertes.
+No utilizar efectos elásticos exagerados.
+No generar sensación de "spring" demasiado evidente.
+
+La prioridad es que se sienta premium, suave y natural.
+
+Timing
+
+Utilizar una transición de aproximadamente 350–450 ms.
+
+La curva de animación debe ser suave, preferentemente:
+
+easeOutCubic / easeInOutCubic
+
+o una curva equivalente que produzca una aceleración inicial suave y una desaceleración progresiva al finalizar.
+
+Evitar linear, porque hace que la transición se sienta mecánica.
+
+Profundidad
+
+Agregar, si ya existe infraestructura para ello, una ligera diferencia visual entre las capas:
+
+Nueva pantalla: capa superior.
+Drawer: capa inferior.
+El Drawer puede reducir mínimamente su escala durante la transición.
+Se puede utilizar una sombra muy sutil o cambio de elevación en la pantalla entrante.
+No agregar sombras pesadas ni efectos que cambien el diseño actual.
+Muy importante
+
+La animación debe estar basada en un único progreso de transición compartido.
+
+Es decir, no crear una animación independiente para el Drawer que empiece después.
+
+Conceptualmente:
+
+transitionProgress = 0 → 1
+
+Y utilizar ese mismo progreso para controlar:
+
+NewScreen.translateX
+Drawer.translateX
+Drawer.scale
+Drawer.opacity
+
+Por ejemplo, conceptualmente:
+
+NewScreen:
+translateX = screenWidth * (1 - progress)
+
+Drawer:
+translateX = -12px * progress
+scale = 1 - (0.01 * progress)
+
+Los valores son orientativos. Ajustarlos para que el resultado sea visualmente sutil.
+
+Interacción
+
+La animación debe funcionar correctamente tanto al abrir una ventana como al volver atrás.
+
+Al hacer BACK:
+
+La ventana superior debe regresar hacia la derecha.
+El Drawer debe recuperar progresivamente su posición original.
+El parallax debe reproducirse en sentido inverso.
+La transición debe ser igualmente fluida.
+Performance
+
+La animación debe ejecutarse utilizando propiedades optimizadas para animación, idealmente:
+
+transform
+opacity
+
+Evitar animar propiedades que provoquen layout/reflow innecesario.
+
+Si el proyecto utiliza React Native / Expo, priorizar la solución compatible con la arquitectura de animación que ya utiliza el proyecto (por ejemplo Reanimated si ya está instalado).
+
+No introducir una nueva librería si no es necesaria.
+
+Compatibilidad con el diseño actual
+
+NO modificar:
+
+colores
+tipografías
+tamaños
+iconos
+layout
+navegación
+contenido
+comportamiento funcional del Drawer
+
+Solo modificar la animación y percepción de profundidad durante la transición.
+
+Antes de implementar, revisa cómo está construida actualmente la navegación y el Drawer y adapta la solución a la arquitectura existente en lugar de reemplazarla.
+
+Resultado esperado
+
+El resultado final debería sentirse como una interfaz con capas físicas y profundidad, donde al abrir una nueva ventana desde la derecha, el Drawer parece reaccionar ligeramente como si la nueva pantalla lo estuviera empujando.
+
+El efecto debe ser perceptible al observarlo, pero suficientemente sutil para que el usuario no piense "el Drawer se está moviendo"; debería sentirse simplemente como una transición más fluida, sofisticada y espacial.
+
+Prioridad:
+
+Fluidez
+Sensación de profundidad
+Sincronización entre capas
+Sutileza
+Performance
+Mantener intacto el diseño actual

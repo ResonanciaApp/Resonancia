@@ -71,7 +71,18 @@ const INICIO3_SECTIONS: { title: string | null; items: MenuItem[] }[] = [
 
 // ── Drawer principal ──────────────────────────────────────────────────────────
 export function DrawerMenu() {
-  const { isOpen: visible, drawerAnim, close: onClose, markInstantNav, openLib, openOverlay, overlayParallax, requestMoodPicker, requestProfileCompose } = useDrawer();
+  const {
+    isOpen: visible,
+    drawerAnim,
+    close: onClose,
+    markInstantNav,
+    openLib,
+    openOverlay,
+    overlayParallax,
+    historyProgress,
+    requestMoodPicker,
+    requestProfileCompose,
+  } = useDrawer();
   const insets = useSafeAreaInsets();
   const { isRegistered, isSignedIn } = useAuth();
   const { user: clerkUser } = useUser();
@@ -110,13 +121,40 @@ export function DrawerMenu() {
   const drawerTranslate = React.useMemo(
     () =>
       Animated.add(
-        Animated.add(translateX, dragX),
-        overlayParallax.interpolate({
+        Animated.add(
+          Animated.add(translateX, dragX),
+          overlayParallax.interpolate({
+            inputRange: [0, 1],
+            outputRange: [0, DRAWER_OVERLAY_PARALLAX_X],
+          }),
+        ),
+        historyProgress.interpolate({
           inputRange: [0, 1],
-          outputRange: [0, DRAWER_OVERLAY_PARALLAX_X],
+          outputRange: [0, -12],
+          extrapolate: "clamp",
         }),
       ),
-    [translateX, dragX, overlayParallax],
+    [translateX, dragX, overlayParallax, historyProgress],
+  );
+  const historyScale = React.useMemo(
+    () => historyProgress.interpolate({
+      inputRange: [0, 1],
+      outputRange: [1, 0.99],
+      extrapolate: "clamp",
+    }),
+    [historyProgress],
+  );
+  const historyOpacity = React.useMemo(
+    () => historyProgress.interpolate({
+      inputRange: [0, 1],
+      outputRange: [1, 0.985],
+      extrapolate: "clamp",
+    }),
+    [historyProgress],
+  );
+  const composedDrawerOpacity = React.useMemo(
+    () => Animated.multiply(drawerOpacity, historyOpacity),
+    [drawerOpacity, historyOpacity],
   );
 
   const panResponder = React.useRef(
@@ -213,8 +251,8 @@ export function DrawerMenu() {
           visible && styles.drawerShadow,
           {
             bottom: 0,
-            transform: [{ translateX: drawerTranslate }],
-            opacity: drawerOpacity,
+            transform: [{ translateX: drawerTranslate }, { scale: historyScale }],
+            opacity: composedDrawerOpacity,
           },
         ]}
       >

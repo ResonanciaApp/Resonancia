@@ -208,8 +208,8 @@ function PushWrapper({ children }: { children: React.ReactNode }) {
   // Los overlays que nacen desde el drawer viven fuera de NavStack. Mover solo
   // su propia capa deja el fondo inmóvil, a diferencia del panel Mezclador.
   // Este desplazamiento mantiene la pantalla de fondo sincronizada con la
-  // entrada/salida de Diario, Biblioteca, sesiones, favoritos, historial,
-  // Amigos y Grupos.
+  // entrada/salida de Diario, Biblioteca, sesiones, favoritos, Amigos y Grupos.
+  // Historial usa su propio progreso único compartido con el drawer.
   const backgroundParallaxX = overlayParallax.interpolate({
     inputRange: [0, 1],
     outputRange: [0, DRAWER_OVERLAY_PARALLAX_X],
