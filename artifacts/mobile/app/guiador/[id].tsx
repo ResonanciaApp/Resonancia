@@ -1,5 +1,6 @@
 import { Feather } from "@expo/vector-icons";
 import { router, useLocalSearchParams } from "expo-router";
+import { openPremiumPlans } from "@/lib/premiumGate";
 import { Image as ExpoImage } from "expo-image";
 import {
   Linking,
@@ -74,7 +75,7 @@ export default function GuiadorScreen() {
     const session = sessions.find((s) => s.id === sessionId);
     if (!session) return;
     if (session.isPremium && !isPremium) {
-      router.push("/membresia" as never);
+      openPremiumPlans();
       return;
     }
     playSession(session);

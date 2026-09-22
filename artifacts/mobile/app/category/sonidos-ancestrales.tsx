@@ -14,6 +14,8 @@ import {
   getContentCarouselCardWidth,
 } from "@/constants/carousel";
 import { router } from "expo-router";
+import { openPremiumPlans } from "@/lib/premiumGate";
+import { FREE_FAVORITES_LIMIT } from "@/lib/premiumGate";
 import { Image } from "expo-image";
 import { LinearGradient } from "expo-linear-gradient";
 import { SymbolView } from "expo-symbols";
@@ -40,6 +42,7 @@ import { SESSIONS, getSessionById, type Session } from "@/data/sessions";
 import { isIndigoThemeId } from "@/config/scene-themes";
 import { getCategorySessionTags } from "@/data/category-tabs";
 import { ContextSearchModal, type ContextSearchItem } from "@/components/ContextSearchModal";
+import { PremiumPlansSurface, usePremiumPlansModalHost } from "@/components/PremiumPlansOverlay";
 
 const { width, height: SCREEN_HEIGHT } = Dimensions.get("window");
 const H_PAD = 14;
@@ -178,7 +181,7 @@ function CategoryCard({
   const { playSession } = usePlayer();
   const locked   = !!session.isPremium && !isPremium;
   const handlePress = () => {
-    if (locked) { router.push("/membresia" as never); return; }
+    if (locked) { openPremiumPlans(); return; }
     if (session.skipMiniPlayer) { playSession(session); return; }
     // Sonidos Ancestrales: siempre abre el reproductor (no pantalla de detalle).
     playSession(session);
@@ -275,7 +278,9 @@ const ac = StyleSheet.create({
 function SessionQuickSheet({ session, onClose, onPlaylist }: { session: Session|null; onClose:()=>void; onPlaylist:()=>void }) {
   const insets = useSafeAreaInsets();
   const slide  = useRef(new Animated.Value(300)).current;
-  const { isFavorite, toggleFavorite, sleepTimerRemaining } = usePlayer();
+  const { isFavorite, toggleFavorite, sleepTimerRemaining, favorites } = usePlayer();
+  const { isPremium } = usePremium();
+  const premiumPlans = usePremiumPlansModalHost(Boolean(session));
   const [showTimer,  setShowTimer]  = useState(false);
   const [showFolder, setShowFolder] = useState(false);
   useEffect(() => {
@@ -286,7 +291,13 @@ function SessionQuickSheet({ session, onClose, onPlaylist }: { session: Session|
   const fav = isFavorite(session.id);
   const timerLabel = sleepTimerRemaining === null ? "Apagado" : sleepTimerRemaining >= 3600 ? `${Math.round(sleepTimerRemaining/3600)}h` : `${Math.round(sleepTimerRemaining/60)} min`;
   return (
-    <Modal visible={!!session} transparent animationType="none" onRequestClose={onClose} statusBarTranslucent>
+    <Modal
+      visible={!!session}
+      transparent
+      animationType="none"
+      onRequestClose={premiumPlans.visible ? premiumPlans.close : onClose}
+      statusBarTranslucent
+    >
       <Pressable style={styles.qsBackdrop} onPress={onClose} />
       <Animated.View style={[styles.qsSheet,{paddingBottom:Math.max(insets.bottom,24),transform:[{translateY:slide}]}]}>
         <View style={styles.qsHandle} />
@@ -310,7 +321,15 @@ function SessionQuickSheet({ session, onClose, onPlaylist }: { session: Session|
           <Text style={styles.qsLabel}>Descargar</Text>
           <Feather name="chevron-right" size={16} color={MUTED} />
         </Pressable>
-        <Pressable onPress={() => { toggleFavorite(session.id); onClose(); }} style={({pressed})=>[styles.qsRow,{opacity:pressed?0.7:1}]}>
+        <Pressable
+          onPress={() => {
+            const willAdd = !fav;
+            toggleFavorite(session.id);
+            if (willAdd && !isPremium && favorites.length >= FREE_FAVORITES_LIMIT) return;
+            onClose();
+          }}
+          style={({pressed})=>[styles.qsRow,{opacity:pressed?0.7:1}]}
+        >
           <Feather name="heart" size={20} color={fav?"#E05C5C":TEXT} style={styles.qsIcon} />
           <Text style={[styles.qsLabel,fav&&{color:"#E05C5C"}]}>{fav?"Quitar de favoritos":"Agregar a favoritos"}</Text>
           <Feather name="chevron-right" size={16} color={MUTED} />
@@ -335,6 +354,7 @@ function SessionQuickSheet({ session, onClose, onPlaylist }: { session: Session|
 
         <TimerSheet visible={showTimer} onClose={() => setShowTimer(false)} />
         <AddToFolderSheet visible={showFolder} sessionId={session.id} onClose={() => setShowFolder(false)} />
+        {premiumPlans.visible ? <PremiumPlansSurface onClose={premiumPlans.close} /> : null}
       </Animated.View>
     </Modal>
   );
@@ -675,6 +695,7 @@ export default function SonidosAncestalesScreen() {
         onSelect={(item) => {
           const session = getSessionById(item.id);
           if (!session) return false;
+          if (session.isPremium && !isPremium) { openPremiumPlans(); return false; }
           if (session.skipMiniPlayer) { playSession(session); return true; }
           playSession(session);
           router.push("/player" as never);

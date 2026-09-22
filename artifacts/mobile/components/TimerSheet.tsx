@@ -12,6 +12,7 @@ import { useSafeAreaInsets } from "react-native-safe-area-context";
 
 import { usePlayer } from "@/context/PlayerContext";
 import { usePremium } from "@/context/PremiumContext";
+import { PremiumPlansSurface, usePremiumPlansModalHost } from "@/components/PremiumPlansOverlay";
 import { useColors } from "@/hooks/useColors";
 import { FREE_TIMER_MAX_MINUTES, showPremiumGate } from "@/lib/premiumGate";
 
@@ -40,6 +41,7 @@ export function TimerSheet({ visible, onClose, sleepTimerRemaining: propRemainin
   const { sleepTimerRemaining: playerRemaining, setSleepTimer: playerSetTimer } = usePlayer();
   const { isPremium } = usePremium();
   const insets = useSafeAreaInsets();
+  const premiumPlans = usePremiumPlansModalHost(visible);
 
   const sleepTimerRemaining = propRemaining !== undefined ? propRemaining : playerRemaining;
   const setSleepTimer = propSetTimer ?? playerSetTimer;
@@ -49,7 +51,6 @@ export function TimerSheet({ visible, onClose, sleepTimerRemaining: propRemainin
 
   const handleSelect = (value: number | null) => {
     if (value !== null && value > FREE_TIMER_MAX_MINUTES && !isPremium) {
-      onClose();
       showPremiumGate(
         `El temporizador gratuito llega hasta ${FREE_TIMER_MAX_MINUTES} minutos. Hazte Premium para dormir con hasta 8 horas.`,
       );
@@ -64,7 +65,7 @@ export function TimerSheet({ visible, onClose, sleepTimerRemaining: propRemainin
       visible={visible}
       transparent
       animationType="slide"
-      onRequestClose={onClose}
+      onRequestClose={premiumPlans.visible ? premiumPlans.close : onClose}
       statusBarTranslucent
     >
       {/* Backdrop */}
@@ -122,6 +123,7 @@ export function TimerSheet({ visible, onClose, sleepTimerRemaining: propRemainin
             );
           })}
         </ScrollView>
+        {premiumPlans.visible ? <PremiumPlansSurface onClose={premiumPlans.close} /> : null}
       </View>
     </Modal>
   );

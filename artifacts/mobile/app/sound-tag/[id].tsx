@@ -2,6 +2,7 @@ import { Feather } from "@expo/vector-icons";
 import { LinearGradient } from "expo-linear-gradient";
 import { SymbolView } from "expo-symbols";
 import { router, useLocalSearchParams } from "expo-router";
+import { openPremiumPlans } from "@/lib/premiumGate";
 import { useFocusEffect } from "expo-router";
 import React, { useCallback, useMemo } from "react";
 import {
@@ -141,7 +142,7 @@ export default function SoundTagDetailScreen({ id: idProp }: { id?: string } = {
 
   const openSession = (session: Session) => {
     if (session.isPremium && !isPremium) {
-      router.push("/membresia" as never);
+      openPremiumPlans();
       return;
     }
     if (openForSession(session, { forceAmbiental: true })) return;

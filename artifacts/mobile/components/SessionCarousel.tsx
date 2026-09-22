@@ -66,6 +66,7 @@ import {
   SessionDurationBadge,
 } from "@/components/SessionDurationBadge";
 import { PressScale } from "@/components/PressScale";
+import { openPremiumPlans } from "@/lib/premiumGate";
 import {
   CONTENT_CAROUSEL_GAP,
   CONTENT_CAROUSEL_HEIGHT_SCALE,
@@ -637,7 +638,7 @@ export const SessionCarousel = React.memo(function SessionCarousel({
               onPress={() => {
                 if (locked) {
                   if (onLockedPress) onLockedPress(s);
-                  else router.push("/membresia" as never);
+                   else openPremiumPlans();
                   return;
                 }
                 if (

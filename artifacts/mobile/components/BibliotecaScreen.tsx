@@ -5,6 +5,7 @@ import type { SceneId } from "@/context/AmbientPlayerContext";
 import MaskedView from "@react-native-masked-view/masked-view";
 import { GoldGradient, GoldGradientFill } from "@/components/GoldGradient";
 import { router, useFocusEffect } from "expo-router";
+import { openPremiumPlans } from "@/lib/premiumGate";
 import { useCategoryOverlayOptional } from "@/context/CategoryOverlayContext";
 import { Image } from "expo-image";
 import { LinearGradient } from "expo-linear-gradient";
@@ -61,6 +62,7 @@ import {
 } from "@/data/default-playlist-covers";
 import { useCoverPresetCatalog } from "@/lib/cover-preset-catalog";
 import { FavoriteActionsSheet } from "@/components/FavoriteActionsSheet";
+import { PremiumPlansSurface, usePremiumPlansModalHost } from "@/components/PremiumPlansOverlay";
 import { WIDGET_GREEN_SOLID } from "@/constants/colors";
 
 const { width } = Dimensions.get("window");
@@ -459,6 +461,7 @@ function SearchOverlay({ visible, onClose, gradient, accentColor }: { visible: b
   const fadeAnim  = useRef(new Animated.Value(0)).current;
   const pendingMixRef = useRef<MixPreset | null>(null);
   const insets    = useSafeAreaInsets();
+  const premiumPlans = usePremiumPlansModalHost(visible);
 
   const { favorites, playSession } = usePlayer();
   const { isPremium: libIsPremium } = usePremium();
@@ -523,13 +526,17 @@ function SearchOverlay({ visible, onClose, gradient, accentColor }: { visible: b
       onClose();
       return;
     }
-    onClose();
     if (result.kind === "session") {
+      if (result.data.isPremium && !libIsPremium) { openPremiumPlans(); return; }
+      onClose();
       if (result.data.skipMiniPlayer && !(result.data.isPremium && !libIsPremium)) { playSession(result.data); return; }
       if (result.data.skipDetail) { playSession(result.data); router.push("/player" as never); return; }
       if (overlay) overlay.openCategory(`/session/${result.data.id}`); else router.push(`/session/${result.data.id}` as never);
     }
-    else openPlaylistPanel(result.data.id);
+    else {
+      onClose();
+      openPlaylistPanel(result.data.id);
+    }
   };
 
   return (
@@ -537,7 +544,7 @@ function SearchOverlay({ visible, onClose, gradient, accentColor }: { visible: b
       visible={visible}
       animationType="fade"
       transparent
-      onRequestClose={onClose}
+      onRequestClose={premiumPlans.visible ? premiumPlans.close : onClose}
       onDismiss={consumePendingMix}
       onShow={() => inputRef.current?.focus()}
     >
@@ -645,6 +652,7 @@ function SearchOverlay({ visible, onClose, gradient, accentColor }: { visible: b
           />
         )}
       </LinearGradient>
+      {premiumPlans.visible ? <PremiumPlansSurface onClose={premiumPlans.close} /> : null}
     </Modal>
   );
 }

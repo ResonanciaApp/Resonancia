@@ -4,6 +4,7 @@ import { LinearGradient } from "expo-linear-gradient";
 import { GoldGradient, GoldGradientFill } from "@/components/GoldGradient";
 import * as ImagePicker from "expo-image-picker";
 import { router, useFocusEffect, useLocalSearchParams } from "expo-router";
+import { openPremiumPlans } from "@/lib/premiumGate";
 import { useBackOverride } from "@/context/BackOverrideContext";
 import React, { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import {
@@ -487,7 +488,7 @@ export default function PlaylistDetailScreen({ id: idProp }: { id?: string } = {
             isPlaying={ownsActiveQueue && displayIsPlaying}
             onPlay={() => {
               if (session.isPremium && !isPremium) {
-                router.push("/membresia" as never);
+                openPremiumPlans();
                 return;
               }
               playSessionInPlaylist(session, playableSessionIds, playlistOwner ?? undefined);
@@ -654,7 +655,7 @@ function PlaylistSessionRow({
 
   return (
     <View style={styles.sessionRow}>
-      <Pressable onPress={locked ? () => router.push("/membresia" as never) : onPlay}
+      <Pressable onPress={locked ? openPremiumPlans : onPlay}
         style={({ pressed }) => [
           styles.thumbWrap,
           styles.recommendedThumbWrap,
@@ -668,7 +669,7 @@ function PlaylistSessionRow({
           textStyle={styles.thumbDurationText}
         />
       </Pressable>
-      <Pressable onPress={locked ? () => router.push("/membresia" as never) : onPlay}
+      <Pressable onPress={locked ? openPremiumPlans : onPlay}
         style={({ pressed }) => [{ flex: 1, opacity: pressed ? 0.75 : 1 }]}>
         <Text style={styles.rowCategoryText} numberOfLines={1}>
           {session.categoryLabel}

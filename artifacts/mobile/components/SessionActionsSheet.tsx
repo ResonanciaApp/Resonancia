@@ -24,12 +24,15 @@ import { useSafeAreaInsets } from "react-native-safe-area-context";
 
 import { AddToFolderSheet } from "@/components/AddToFolderSheet";
 import { TimerSheet } from "@/components/TimerSheet";
+import { PremiumPlansSurface, usePremiumPlansModalHost } from "@/components/PremiumPlansOverlay";
 import { BLUR_PLACEHOLDER, IMAGE_TRANSITION } from "@/constants/imagePlaceholder";
 import { usePlayer } from "@/context/PlayerContext";
 import { useSceneTheme } from "@/context/SceneThemeContext";
 import { type Session } from "@/data/sessions";
 import { getGuideById } from "@/data/guides";
 import { useColors } from "@/hooks/useColors";
+import { FREE_FAVORITES_LIMIT } from "@/lib/premiumGate";
+import { usePremium } from "@/context/PremiumContext";
 
 type Props = {
   session: Session | null;
@@ -41,7 +44,9 @@ export function SessionActionsSheet({ session, visible, onClose }: Props) {
   const colors = useColors();
   const insets = useSafeAreaInsets();
   const { theme } = useSceneTheme();
-  const { isFavorite, toggleFavorite, sleepTimerRemaining } = usePlayer();
+  const { isFavorite, toggleFavorite, sleepTimerRemaining, favorites } = usePlayer();
+  const { isPremium } = usePremium();
+  const premiumPlans = usePremiumPlansModalHost(visible);
 
   const [showTimer, setShowTimer] = useState(false);
   const [showFolder, setShowFolder] = useState(false);
@@ -102,6 +107,7 @@ export function SessionActionsSheet({ session, visible, onClose }: Props) {
   const handleFavorite = () => {
     const willAdd = !favorited;
     toggleFavorite(session.id);
+    if (willAdd && !isPremium && favorites.length >= FREE_FAVORITES_LIMIT) return;
     showToast(willAdd);
     // Auto-close after toast
     toastTimer.current = setTimeout(onClose, 2000);
@@ -119,7 +125,7 @@ export function SessionActionsSheet({ session, visible, onClose }: Props) {
         visible={visible}
         transparent
         animationType="slide"
-        onRequestClose={onClose}
+        onRequestClose={premiumPlans.visible ? premiumPlans.close : onClose}
         statusBarTranslucent
       >
         <View style={styles.modalRoot}>
@@ -229,6 +235,7 @@ export function SessionActionsSheet({ session, visible, onClose }: Props) {
             />
           )}
         </View>
+        {premiumPlans.visible ? <PremiumPlansSurface onClose={premiumPlans.close} /> : null}
       </Modal>
 
     </>

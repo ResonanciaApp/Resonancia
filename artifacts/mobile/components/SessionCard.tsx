@@ -36,6 +36,7 @@ import {
 } from "@/components/SessionCardMetadataOverlay";
 import { PressScale } from "@/components/PressScale";
 import { DEV_SHOW_ALL_SESSION_PREMIUM_BADGES } from "@/constants/devVisualModes";
+import { openPremiumPlans } from "@/lib/premiumGate";
 
 type Props = {
   session: Session;
@@ -139,7 +140,7 @@ export function SessionCard({ session, width = 200, horizontal = false, tint, ca
   const locked = !!session.isPremium && !isPremium;
   const showPremiumBadge = DEV_SHOW_ALL_SESSION_PREMIUM_BADGES || locked;
   const handlePress = () => {
-    if (locked) { router.push("/membresia" as never); return; }
+    if (locked) { openPremiumPlans(); return; }
     if (openForSession(session)) return;
     if (overridePress) { overridePress(); return; }
     if (session.skipMiniPlayer) { playSession(session); return; }

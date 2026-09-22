@@ -2,6 +2,7 @@ import { Feather } from "@expo/vector-icons";
 import { BackPill } from "@/components/BackPill";
 import { LinearGradient } from "expo-linear-gradient";
 import { router, useLocalSearchParams } from "expo-router";
+import { openPremiumPlans } from "@/lib/premiumGate";
 import { useBackOverride } from "@/context/BackOverrideContext";
 import React, { useMemo, useState } from "react";
 import {
@@ -223,7 +224,7 @@ export default function BusquedaScreen({ tiempo: tiempoProp }: { tiempo?: string
 
   function handleSessionPress(s: Session) {
     const locked = s.isPremium && !isPremium;
-    if (locked) { router.push("/membresia" as never); return; }
+    if (locked) { openPremiumPlans(); return; }
     if (s.skipMiniPlayer) { playSession(s); return; }
     if (s.skipDetail) { playSession(s); router.push("/player" as never); return; }
     router.push(`/session/${s.id}` as never);

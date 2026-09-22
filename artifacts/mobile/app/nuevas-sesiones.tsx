@@ -1,6 +1,7 @@
 import { Feather } from "@expo/vector-icons";
 import { GoldGradient } from "@/components/GoldGradient";
 import { router } from "expo-router";
+import { openPremiumPlans } from "@/lib/premiumGate";
 import React, { useState } from "react";
 import {
   FlatList,
@@ -100,7 +101,7 @@ export default function NuevasSessionesScreen() {
           return (
           <Pressable
             onPress={() => {
-              if (locked) { router.push("/membresia" as never); return; }
+              if (locked) { openPremiumPlans(); return; }
               if (session.skipMiniPlayer) { playSession(session); return; }
               if (session.skipDetail) { playSession(session); router.push("/player" as never); return; }
               router.push(`/session/${session.id}` as never);

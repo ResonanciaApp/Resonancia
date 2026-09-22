@@ -1,6 +1,7 @@
 import { Feather } from "@expo/vector-icons";
 import { LinearGradient } from "expo-linear-gradient";
 import { router, useLocalSearchParams } from "expo-router";
+import { openPremiumPlans } from "@/lib/premiumGate";
 import React, { useRef } from "react";
 import {
   Animated,
@@ -128,7 +129,7 @@ export default function SerieScreen() {
               <Pressable
                 key={session.id}
                 onPress={() => {
-                  if (locked) { router.push("/membresia" as never); return; }
+                  if (locked) { openPremiumPlans(); return; }
                   if (session.skipMiniPlayer) { playSession(session); return; }
                   if (session.skipDetail) { playSession(session); router.push("/player" as never); return; }
                   router.push(`/session/${session.id}` as never);

@@ -12,7 +12,9 @@ import {
 } from "@/constants/carousel";
 import { SessionActionsSheet } from "@/components/SessionActionsSheet";
 import { ContextSearchModal, type ContextSearchItem } from "@/components/ContextSearchModal";
+import { PremiumPlansSurface, usePremiumPlansModalHost } from "@/components/PremiumPlansOverlay";
 import { router } from "expo-router";
+import { openPremiumPlans } from "@/lib/premiumGate";
 import { Image } from "expo-image";
 import { LinearGradient } from "expo-linear-gradient";
 import React, { useRef, useState, useEffect, useMemo } from "react";
@@ -129,7 +131,7 @@ function CategoryCard({
   const { playSession } = usePlayer();
   const locked = !!session.isPremium && !isPremium;
   const handlePress = () => {
-    if (locked) { router.push("/membresia" as never); return; }
+    if (locked) { openPremiumPlans(); return; }
     if (session.skipMiniPlayer) { playSession(session); return; }
     playSession(session);
     router.push("/player" as never);
@@ -234,6 +236,7 @@ export default function NochesScreen() {
   const [selectedSession, setSelectedSession] = useState<Session | null>(null);
   const [searchVisible, setSearchVisible] = useState(false);
   const [allVisible,      setAllVisible]      = useState(false);
+  const premiumPlans = usePremiumPlansModalHost(allVisible);
   const slideX = useRef(new Animated.Value(W)).current;
 
   const closeAll = () => {
@@ -483,7 +486,7 @@ export default function NochesScreen() {
       <SessionActionsSheet session={selectedSession} visible={!!selectedSession} onClose={() => setSelectedSession(null)} />
 
       {/* ── Vista "Todas las sesiones" (desliza desde la derecha) ── */}
-      <Modal visible={allVisible} transparent animationType="none" onRequestClose={closeAll} statusBarTranslucent>
+      <Modal visible={allVisible} transparent animationType="none" onRequestClose={premiumPlans.visible ? premiumPlans.close : closeAll} statusBarTranslucent>
         <Animated.View style={[StyleSheet.absoluteFill, { backgroundColor: theme.gradient[theme.gradient.length - 1] as string, transform: [{ translateX: slideX }] }]}>
           <LinearGradient colors={theme.gradient as unknown as [string, string, ...string[]]} style={StyleSheet.absoluteFill} />
           <View style={{ flexDirection: "row", alignItems: "center", paddingTop: topPad + 14, paddingHorizontal: H_PAD, paddingBottom: 14, gap: 4 }}>
@@ -498,6 +501,7 @@ export default function NochesScreen() {
             ))}
           </ScrollView>
         </Animated.View>
+        {premiumPlans.visible ? <PremiumPlansSurface onClose={premiumPlans.close} /> : null}
       </Modal>
 
       {/* ── Sticky header ── */}
@@ -533,6 +537,7 @@ export default function NochesScreen() {
         onSelect={(item) => {
           const session = getSessionById(item.id);
           if (!session) return false;
+          if (session.isPremium && !isPremium) { openPremiumPlans(); return false; }
           if (session.skipMiniPlayer) { playSession(session); return true; }
           playSession(session);
           router.push("/player" as never);

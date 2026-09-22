@@ -2,6 +2,7 @@ import { Feather } from "@expo/vector-icons";
 import { Image as ExpoImage } from "expo-image";
 import { LinearGradient } from "expo-linear-gradient";
 import { router, useLocalSearchParams } from "expo-router";
+import { openPremiumPlans } from "@/lib/premiumGate";
 import React, { useMemo } from "react";
 import {
   Animated,
@@ -122,7 +123,7 @@ export default function ThemeTagScreen({ id: idProp }: { id?: string } = {}) {
 
   const openSession = (session: Session) => {
     if (session.isPremium && !isPremium) {
-      router.push("/membresia" as never);
+      openPremiumPlans();
       return;
     }
     if (session.skipMiniPlayer) {

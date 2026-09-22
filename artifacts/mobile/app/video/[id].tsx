@@ -1,6 +1,7 @@
 import { Feather } from "@expo/vector-icons";
 import { BackPill } from "@/components/BackPill";
 import { Stack, router, useLocalSearchParams } from "expo-router";
+import { openPremiumPlans } from "@/lib/premiumGate";
 import { useVideoPlayer, VideoView } from "expo-video";
 import React, { useEffect } from "react";
 import { Platform, Pressable, ScrollView, StyleSheet, Text, View } from "react-native";
@@ -27,7 +28,7 @@ export default function VideoPlayerScreen() {
   });
 
   useEffect(() => {
-    if (locked) router.replace("/membresia" as never);
+    if (locked) openPremiumPlans();
   }, [locked]);
 
   // Temporizador de reposo (VideosContext): al expirar, pausa el video

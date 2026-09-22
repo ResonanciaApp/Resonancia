@@ -3,6 +3,7 @@ import { BlurView } from "expo-blur";
 import { Image } from "expo-image";
 import { LinearGradient } from "expo-linear-gradient";
 import { router, useLocalSearchParams } from "expo-router";
+import { openPremiumPlans } from "@/lib/premiumGate";
 import React, { useEffect, useMemo, useRef, useState } from "react";
 import {
   Alert,
@@ -240,7 +241,7 @@ export default function EditorialPlaylistScreen({ slug: slugProp }: EditorialPla
   const handlePlayAll = () => {
     if (!playableIds.length) {
       if (rows.some((row) => row.session?.isPremium)) {
-        router.push("/membresia" as never);
+        openPremiumPlans();
       } else {
         Alert.alert("Selección no disponible", "Esta selección no tiene sesiones reproducibles.");
       }
@@ -265,7 +266,7 @@ export default function EditorialPlaylistScreen({ slug: slugProp }: EditorialPla
   const handleRowPress = (row: { id: string; session?: Session }) => {
     if (!row.session) return;
     if (row.session.isPremium && !isPremium) {
-      router.push("/membresia" as never);
+      openPremiumPlans();
       return;
     }
     openPlayerFrom(row.session);
@@ -296,7 +297,7 @@ export default function EditorialPlaylistScreen({ slug: slugProp }: EditorialPla
         if (firstPlayable) openPlayerFrom(firstPlayable, false);
         break;
       case "membership":
-        router.push("/membresia" as never);
+      openPremiumPlans();
         break;
       case "unavailable":
         Alert.alert("Selección no disponible", "Esta selección no tiene sesiones reproducibles.");

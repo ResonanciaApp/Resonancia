@@ -24,6 +24,7 @@ import { ProfileAvatar } from "@/lib/profile-avatar";
 import * as ImagePicker from "expo-image-picker";
 import { LinearGradient } from "expo-linear-gradient";
 import { router, useLocalSearchParams } from "expo-router";
+import { openPremiumPlans } from "@/lib/premiumGate";
 import { useBackOverride } from "@/context/BackOverrideContext";
 import React, { useEffect, useMemo, useRef, useState } from "react";
 import {
@@ -599,6 +600,7 @@ function MessageBubble({
       ) : session ? (
         <Pressable
           onPress={() => {
+            if (session.isPremium && !isPremium) { openPremiumPlans(); return; }
             if (session.skipMiniPlayer && !(session.isPremium && !isPremium)) { playSession(session); return; }
             if (session.skipDetail) { playSession(session); router.push("/player" as never); return; }
             router.push(`/session/${session.id}`);

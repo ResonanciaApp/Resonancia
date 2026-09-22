@@ -17,7 +17,12 @@ import { LinearGradient } from "expo-linear-gradient";
 import { GoldGradient, GoldGradientFill } from "@/components/GoldGradient";
 import { GhostPill } from "@/components/GhostPill";
 import { MilestoneCelebration } from "@/components/MilestoneCelebration";
+import {
+  PremiumPlansSurface,
+  usePremiumPlansModalHost,
+} from "@/components/PremiumPlansOverlay";
 import { useMilestones } from "@/context/MilestonesContext";
+import { openPremiumPlans } from "@/lib/premiumGate";
 import { router } from "expo-router";
 import React, { useCallback, useEffect, useLayoutEffect, useMemo, useRef, useState } from "react";
 import { DURATION, easeOutCubic } from "@/constants/motion";
@@ -786,14 +791,7 @@ export function MixerSheet() {
           (p) => p.category === mixCategory && p.id !== originId,
         ).length;
         if (!isPremium && countInTarget >= FREE_MIX_PER_CATEGORY) {
-          Alert.alert(
-            "Mezclas ilimitadas con Premium",
-            `En la versión gratuita podés guardar ${FREE_MIX_PER_CATEGORY} mezcla por categoría. Hacete Premium para mover y guardar todas las que quieras.`,
-            [
-              { text: "Ahora no", style: "cancel" },
-              { text: "Ver Premium", onPress: () => router.push("/membresia" as never) },
-            ],
-          );
+          openPremiumPlans();
           return;
         }
       }
@@ -809,14 +807,7 @@ export function MixerSheet() {
 
     const countInCategory = presets.filter((p) => p.category === mixCategory).length;
     if (!isPremium && countInCategory >= FREE_MIX_PER_CATEGORY) {
-      Alert.alert(
-        "Mezclas ilimitadas con Premium",
-        `En la versión gratuita podés guardar ${FREE_MIX_PER_CATEGORY} mezcla por categoría. Hacete Premium para guardar todas las que quieras.`,
-        [
-          { text: "Ahora no", style: "cancel" },
-          { text: "Ver Premium", onPress: () => router.push("/membresia" as never) },
-        ],
-      );
+      openPremiumPlans();
       return;
     }
     const savedPresetId = savePreset({
@@ -862,13 +853,14 @@ export function MixerSheet() {
   if (baseVisible) milestoneHoldRef.current = true;
   else if (!celebrating) milestoneHoldRef.current = false;
   const modalVisible = baseVisible || (celebrating != null && milestoneHoldRef.current);
+  const premiumPlans = usePremiumPlansModalHost(modalVisible);
 
   return (
     <Modal
       visible={modalVisible}
       transparent
       animationType="none"
-      onRequestClose={() => { if (inmersivoOpen) closeImmersivo(); else handleAnimatedCloseRef.current(); }}
+      onRequestClose={premiumPlans.visible ? premiumPlans.close : () => { if (inmersivoOpen) closeImmersivo(); else handleAnimatedCloseRef.current(); }}
     >
       {/* La opacidad envuelve TODA la superficie (backdrop + sheet) para que
           el fade cubra el MixerPanel subyacente sin flashes */}
@@ -1232,6 +1224,7 @@ export function MixerSheet() {
       {/* Celebración de hitos DENTRO de este Modal: una ventana hermana no
           aparece sobre un Modal ya abierto en iOS (pantalla quedaba bloqueada) */}
       <MilestoneCelebration />
+      {premiumPlans.visible ? <PremiumPlansSurface onClose={premiumPlans.close} /> : null}
     </Modal>
   );
 }

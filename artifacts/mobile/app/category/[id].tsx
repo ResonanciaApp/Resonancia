@@ -2,6 +2,7 @@ import { Feather } from "@expo/vector-icons";
 import { LinearGradient } from "expo-linear-gradient";
 import { SymbolView } from "expo-symbols";
 import { router, useFocusEffect, useLocalSearchParams } from "expo-router";
+import { openPremiumPlans } from "@/lib/premiumGate";
 import React, { useCallback, useMemo, useRef, useState } from "react";
 import {
   Animated,
@@ -168,7 +169,7 @@ export default function CategoryScreen({ categoryId }: { categoryId?: string } =
   const goBack = backOverride ?? (() => router.back());
   const handleSessionPress = (session: Session) => {
     if (session.isPremium && !isPremium) {
-      router.push("/membresia" as never);
+      openPremiumPlans();
       return;
     }
     if (

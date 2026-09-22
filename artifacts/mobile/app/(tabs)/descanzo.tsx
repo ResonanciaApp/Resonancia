@@ -1,5 +1,6 @@
 import { Feather, MaterialCommunityIcons } from "@expo/vector-icons";
 import { router } from "expo-router";
+import { openPremiumPlans } from "@/lib/premiumGate";
 import { Image } from "expo-image";
 import { SymbolView } from "expo-symbols";
 import React, { useCallback, useEffect, useMemo, useRef, useState } from "react";
@@ -24,6 +25,7 @@ import { useCatalog } from "@/context/CatalogContext";
 import { SessionCarousel } from "@/components/SessionCarousel";
 import { SessionBadgeGlass, SessionDurationBadge } from "@/components/SessionDurationBadge";
 import { ContextSearchModal } from "@/components/ContextSearchModal";
+import { PremiumPlansSurface, usePremiumPlansModalHost } from "@/components/PremiumPlansOverlay";
 import { usePlayerBrowse } from "@/context/PlayerContext";
 import { useAmbientalDuration } from "@/context/AmbientalDurationContext";
 import { usePremium } from "@/context/PremiumContext";
@@ -241,7 +243,7 @@ export default function DescansoScreen() {
   const handleSessionTap = useCallback(
     (s: Parameters<typeof playSession>[0]) => {
       if (s.isPremium && !isPremium) {
-        router.push("/membresia" as never);
+        openPremiumPlans();
         return false;
       }
       if (openForSession(s)) return false;
@@ -337,6 +339,7 @@ export default function DescansoScreen() {
   const cardW = (W - H_PAD * 2 - 14) / 2;
   // ── "Todas las sesiones" Modal ──
   const [allVisible,      setAllVisible]      = useState(false);
+  const premiumPlans = usePremiumPlansModalHost(allVisible);
   const [allVisibleCount, setAllVisibleCount] = useState(20);
   const slideX = useRef(new Animated.Value(W)).current;
   const closeAll = () => {
@@ -560,7 +563,7 @@ export default function DescansoScreen() {
       />
 
       {/* ── Modal "Todas las sesiones de Dormir" (desliza desde la derecha) ── */}
-      <Modal visible={allVisible} transparent animationType="none" onRequestClose={closeAll} statusBarTranslucent>
+      <Modal visible={allVisible} transparent animationType="none" onRequestClose={premiumPlans.visible ? premiumPlans.close : closeAll} statusBarTranslucent>
         <Animated.View style={[StyleSheet.absoluteFill, { backgroundColor: bgGradient[bgGradient.length - 1] as string, transform: [{ translateX: slideX }] }]}>
           <LinearGradient colors={bgGradient} style={StyleSheet.absoluteFill} />
 
@@ -596,7 +599,7 @@ export default function DescansoScreen() {
                 <Pressable
                   key={s.id}
                   onPress={() => {
-                    if (locked) { router.push("/membresia" as never); return; }
+                    if (locked) { openPremiumPlans(); return; }
                     closeAll();
                     handleSessionTap(s);
                   }}
@@ -624,6 +627,7 @@ export default function DescansoScreen() {
             })}
           </ScrollView>
         </Animated.View>
+        {premiumPlans.visible ? <PremiumPlansSurface onClose={premiumPlans.close} /> : null}
       </Modal>
 
     </LinearGradient>

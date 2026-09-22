@@ -1,5 +1,6 @@
 import { Feather } from "@expo/vector-icons";
 import { router } from "expo-router";
+import { openPremiumPlans } from "@/lib/premiumGate";
 import { Image } from "expo-image";
 import React, { useEffect, useState } from "react";
 import { Pressable, StyleSheet, Text, View } from "react-native";
@@ -78,7 +79,7 @@ export function VideoCard({
   };
 
   const handlePress = () => {
-    if (locked) router.push("/membresia" as never);
+    if (locked) openPremiumPlans();
     else router.push(`/video/${video.id}` as never);
   };
 

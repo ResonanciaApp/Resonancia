@@ -1,6 +1,8 @@
 import { Feather } from "@expo/vector-icons";
 import { Image } from "expo-image";
 import { router } from "expo-router";
+import { openPremiumPlans } from "@/lib/premiumGate";
+import { PremiumPlansSurface, usePremiumPlansModalHost } from "@/components/PremiumPlansOverlay";
 import { LinearGradient } from "expo-linear-gradient";
 import React, { useEffect, useMemo, useRef, useState } from "react";
 import {
@@ -229,6 +231,7 @@ export function MoodPickerSheet({
   const { getQuoteForMood, completeCheckIn } = useMoodQuotes();
   const topPad =  Platform.OS === "web" ? 67 : insets.top;
   const bottomPad = Platform.OS === "web" ? 34 : insets.bottom;
+  const premiumPlans = usePremiumPlansModalHost(visible);
   const [step, setStep] = useState<FlowStep>("select");
   const [selected, setSelected] = useState<MoodId[]>([]);
   const [surveyIndex, setSurveyIndex] = useState(0);
@@ -398,11 +401,11 @@ export function MoodPickerSheet({
   }
 
   function handleSessionPress(session: Session) {
-    onClose();
     if (session.isPremium && !isPremium) {
-      router.push("/membresia" as never);
+      openPremiumPlans();
       return;
     }
+    onClose();
     if (session.skipMiniPlayer) {
       playSession(session);
       return;
@@ -430,7 +433,7 @@ export function MoodPickerSheet({
       visible={visible}
       transparent
       animationType="slide"
-      onRequestClose={handleClose}
+      onRequestClose={premiumPlans.visible ? premiumPlans.close : handleClose}
       statusBarTranslucent
     >
       <LinearGradient colors={bgColors} style={styles.root}>
@@ -774,6 +777,7 @@ export function MoodPickerSheet({
           </View>
         )}
       </LinearGradient>
+      {premiumPlans.visible ? <PremiumPlansSurface onClose={premiumPlans.close} /> : null}
     </Modal>
   );
 }

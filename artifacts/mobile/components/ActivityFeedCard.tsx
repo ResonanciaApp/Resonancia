@@ -2,6 +2,7 @@ import React, { useEffect, useRef } from "react";
 import { Animated, Pressable, StyleSheet, Text, View } from "react-native";
 import { Image as ExpoImage } from "expo-image";
 import { router } from "expo-router";
+import { openPremiumPlans } from "@/lib/premiumGate";
 import { useCategoryOverlayOptional } from "@/context/CategoryOverlayContext";
 import { SESSIONS } from "@/data/sessions";
 import { usePlayer } from "@/context/PlayerContext";
@@ -135,6 +136,7 @@ export function ActivityFeedCard({ event }: Props) {
         <Pressable
           onPress={() => {
             const s = SESSIONS.find((x) => String(x.id) === String(event.payload.sessionId));
+            if (s?.isPremium && !isPremium) { openPremiumPlans(); return; }
             if (s?.skipMiniPlayer && !(s.isPremium && !isPremium)) { playSession(s); return; }
             if (s?.skipDetail) { playSession(s); router.push("/player" as never); return; }
             if (overlay) overlay.openCategory(`/session/${event.payload.sessionId}`);

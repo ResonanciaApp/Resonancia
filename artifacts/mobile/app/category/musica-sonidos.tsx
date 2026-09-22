@@ -12,6 +12,7 @@ import {
   getContentCarouselCardWidth,
 } from "@/constants/carousel";
 import { router } from "expo-router";
+import { openPremiumPlans } from "@/lib/premiumGate";
 import { Image } from "expo-image";
 import { LinearGradient } from "expo-linear-gradient";
 import { SymbolView } from "expo-symbols";
@@ -141,7 +142,7 @@ function CategoryCard({
   const { playSession } = usePlayer();
   const locked   = !!session.isPremium && !isPremium;
   const handlePress = () => {
-    if (locked) { router.push("/membresia" as never); return; }
+    if (locked) { openPremiumPlans(); return; }
     if (session.skipMiniPlayer) { playSession(session); return; }
     // Música/Sonidos: siempre abre el reproductor (no pantalla de detalle).
     // skipDetail explícito o el default de categoría → player.
@@ -338,7 +339,7 @@ export default function MusicaSonidosScreen() {
 
   const handleMusicSessionTap = (session: Session) => {
     if (session.isPremium && !isPremium) {
-      router.push("/membresia" as never);
+      openPremiumPlans();
       return;
     }
     if (session.skipMiniPlayer) {
@@ -475,6 +476,7 @@ export default function MusicaSonidosScreen() {
         onSelect={(item) => {
           const session = getSessionById(item.id);
           if (!session) return false;
+          if (session.isPremium && !isPremium) { openPremiumPlans(); return false; }
           if (session.skipMiniPlayer) { playSession(session); return true; }
           playSession(session);
           router.push("/player" as never);

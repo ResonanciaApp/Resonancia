@@ -9,6 +9,7 @@ import { Image } from "expo-image";
 import { LinearGradient } from "expo-linear-gradient";
 import { createAudioPlayer, type AudioPlayer } from "expo-audio";
 import { router, useFocusEffect, useLocalSearchParams } from "expo-router";
+import { openPremiumPlans } from "@/lib/premiumGate";
 import React, { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import {
   Alert,
@@ -58,6 +59,7 @@ const AnimatedTextInput = Animated.createAnimatedComponent(TextInput);
 import { Gesture, GestureDetector } from "react-native-gesture-handler";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { BackPill } from "@/components/BackPill";
+import { PremiumPlansSurface, usePremiumPlansModalHost } from "@/components/PremiumPlansOverlay";
 
 import Svg, {
   Circle,
@@ -2310,6 +2312,7 @@ export default function GeometrixScreen() {
   const [guideOrientation, setGuideOrientation] = useState<"h" | "v">("h");
   const [guidePct, setGuidePct] = useState("50");
   const [generalOpen, setGeneralOpen] = useState(false);
+  const premiumPlans = usePremiumPlansModalHost(generalOpen);
   const [generalSheetHeight, setGeneralSheetHeight] = useState(0);
   // Alto real del sheet de ajustes, para anclar la vista previa justo encima.
   const [sheetHeight, setSheetHeight] = useState(0);
@@ -5163,7 +5166,7 @@ export default function GeometrixScreen() {
         visible={generalOpen}
         transparent
         animationType="slide"
-        onRequestClose={() => setGeneralOpen(false)}
+        onRequestClose={premiumPlans.visible ? premiumPlans.close : () => setGeneralOpen(false)}
       >
         <View style={{ flex: 1, justifyContent: "flex-end" }}>
         <Pressable
@@ -5333,7 +5336,7 @@ export default function GeometrixScreen() {
                   <Toggle
                     value={!!master.bgPattern}
                     onChange={(v) => {
-                      if (!isPremium) { router.push("/membresia"); return; }
+                      if (!isPremium) { openPremiumPlans(); return; }
                       setMaster((m) => ({
                         ...m,
                         bgPattern: v
@@ -5780,6 +5783,7 @@ export default function GeometrixScreen() {
           </ScrollView>
         </View>
         </View>
+        {premiumPlans.visible ? <PremiumPlansSurface onClose={premiumPlans.close} /> : null}
       </Modal>
 
       {/* ── Panel de guías del usuario ──────────────────────────────────── */}

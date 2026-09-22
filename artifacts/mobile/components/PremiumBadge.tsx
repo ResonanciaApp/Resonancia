@@ -8,6 +8,7 @@ import { usePremium } from "@/context/PremiumContext";
 import { usePlayer } from "@/context/PlayerContext";
 import { type Session } from "@/data/sessions";
 import { DEV_SHOW_ALL_SESSION_PREMIUM_BADGES } from "@/constants/devVisualModes";
+import { openPremiumPlans } from "@/lib/premiumGate";
 
 export function useSessionGate(session: Session) {
   const { isPremium } = usePremium();
@@ -15,7 +16,7 @@ export function useSessionGate(session: Session) {
   const overlay = useCategoryOverlayOptional();
   const locked = !!session.isPremium && !isPremium;
   const openSession = () => {
-    if (locked) { router.push("/membresia" as never); return; }
+    if (locked) { openPremiumPlans(); return; }
     if (session.skipMiniPlayer) { playSession(session); return; }
     if (session.skipDetail) { playSession(session); router.push("/player" as never); return; }
     if (overlay) overlay.openCategory(`/session/${session.id}`);

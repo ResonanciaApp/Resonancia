@@ -4,7 +4,6 @@ import { LinearGradient } from "expo-linear-gradient";
 import { router, useFocusEffect } from "expo-router";
 import React, { useCallback, useMemo, useState } from "react";
 import {
-  Alert,
   Image,
   Platform,
   Pressable,
@@ -26,6 +25,7 @@ import { usePremium } from "@/context/PremiumContext";
 import { type MixCategory, MIX_CATEGORIES } from "@/data/mix-categories";
 import { useColors } from "@/hooks/useColors";
 import { useLoadMix } from "@/hooks/useLoadMix";
+import { openPremiumPlans } from "@/lib/premiumGate";
 
 const BG_GRADIENT = ["#340D1A", "#190913"] as const;
 const FG      = "#FAF0EE";
@@ -108,14 +108,7 @@ export default function MezclasIndexScreen() {
   const handleDuplicate = (mix: MixPreset) => {
     const countInCategory = presets.filter((p) => p.category === mix.category).length;
     if (!isPremium && countInCategory >= 1) {
-      Alert.alert(
-        "Mezclas ilimitadas con Premium",
-        "En la versión gratuita podés guardar 1 mezcla por categoría. Hacete Premium para duplicar y guardar todas las que quieras.",
-        [
-          { text: "Ahora no", style: "cancel" },
-          { text: "Ver Premium", onPress: () => router.push("/membresia" as never) },
-        ],
-      );
+      openPremiumPlans();
       return;
     }
     duplicatePreset(mix.id);

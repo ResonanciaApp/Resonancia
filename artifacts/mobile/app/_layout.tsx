@@ -26,6 +26,7 @@ import { CreationPanelsOverlay } from "@/components/CreationPanelsOverlay";
 import { MixerSheet } from "@/components/MixerSheet";
 import { EscenasSheet } from "@/components/EscenasSheet";
 import { SceneAnimationModal } from "@/components/SceneAnimationModal";
+import { PremiumPlansOverlay } from "@/components/PremiumPlansOverlay";
 import { SelectedSceneProvider, useSelectedScene } from "@/context/SelectedSceneContext";
 import { TabBarVisibilityProvider } from "@/context/TabBarVisibilityContext";
 import { ErrorBoundary } from "@/components/ErrorBoundary";
@@ -442,6 +443,7 @@ function RootLayoutNav() {
           <MixerSheet />
           <EscenasSheet />
           <GlobalSceneModal />
+           <PremiumPlansOverlay />
           </GeometrixPanelProvider>
         </MixerPanelProvider>
       </DrawerProvider>

@@ -5,7 +5,6 @@
 - [Expo Router tab-group back nav](expo-router-tab-group-back-nav.md) — detail screens under app/(tabs)/ break back nav (resolves to Inicio); put them at app root like mezcla/[id], artista/[id]
 - [Favoritos folders hide from flat list](favoritos-folder-hides-flat-list.md) — excepción deliberada: sesión en una carpeta de Favoritos desaparece de la lista plana (a diferencia de Playlist/Mezclas donde no se oculta)
 - [Nested folders pattern](nested-folders-pattern.md) — subFolderIds + helpers + unified action sheet shared across Playlist/Mezclas/Favoritos; cycle-prevention via descendant-exclusion in move picker
-- [expo-image-manipulator requires native rebuild](expo-image-manipulator-native.md) — ExpoImageManipulator es módulo nativo; crash en dev client existente; usar expo-file-system + pako para parsear PNG sin rebuild
 - [Storage URL absolute (RN)](storage-url-absolute.md) — URLs relativas /api/storage/… no funcionan en RN; siempre prepend EXPO_PUBLIC_API_URL; patrón en avatar.ts/remoteSoundMap.ts
 - [Chip fontWeight shift](chip-fontweight-shift.md) — cambiar fontWeight al seleccionar un chip empuja los adyacentes; solo cambiar color; paddingHorizontal va en contentContainerStyle no en el View padre
 - [Slide decks](slide-decks.md) — tres artifacts slides distintos: resonancia-deck (Brochure), resonancia-pitch (Pitch Inversionistas), resonancia-plantilla (Invitación); no mezclarlos
@@ -14,22 +13,13 @@
 - [MixerSheet al guardar](mixer-sheet-fade.md) — guardar cierra solo el popup, conserva “Tu mezcla”, pausa sin vaciar sonidos y confirma con toast; el fade global queda solo para cierres reales
 - [expo-audio lock-screen player](expo-audio-lockscreen.md) — persistent player + .replace() shares one status listener; guard session switches (switchingRef, pause old track) or stale position bleeds across sessions
 - [Crossfade B-entry click fix](crossfade-b-entry-click.md) — fade de entrada de B requiere setInterval a 16ms, NO Date.now() inline en el listener (iOS ticks cada ~200ms → bEntry ya vale 1 en el primer tick siguiente)
-- [Codegen clean breaks Metro](codegen-metro-resolve.md) — Orval clean:true deletes generated/ mid-run; Metro caches "Unable to resolve ./generated/api" → restart expo after codegen
 - [iOS 26 Hermes PAC crash](ios26-hermes-pac-crash.md) — EXC_BAD_ACCESS on JS thread on physical iOS 26 devices; prebuilt Hermes fails PAC → fix = buildReactNativeFromSource (Xcode 26)
-- [expo-av launch SIGABRT](expo-av-launch-crash.md) — expo-av audio-session call at launch under SDK54 New Arch = uncatchable NSException→SIGABRT; keep expo-av off launch path, expo-audio owns session
-- [api-server stale bundle](api-server-stale-bundle.md) — campo zod-validado se descarta en silencio pese a source correcto → bundle esbuild viejo; grep el dist (no source), fix = restart workflow (rebuild)
-- [Admin gate y API caída](admin-gate-api-unavailable.md) — AdminGate muestra “acceso restringido” también cuando /api/me falla; verificar API workflow antes de cambiar roles
 - [Listen-time stats](listen-time-stats.md) — stat minutes = wall-clock accumulator gated on isPlaying, NEVER elapsed/position (seek corrupts position; loop interval ticks while paused)
 - [Profile name sync to server](profile-name-sync.md) — username local (AsyncStorage) NO se sincroniza solo; ProfileSync empuja a displayName del server o las features sociales muestran el ID de Clerk
-- [expo-router debe seguir la línea del SDK](expo-router-cli-float.md) — con SDK 57, expo-router 6.x crashea (@expo/cli flotado pide internal/routing); pinear 57.x y verificar versión instalada
-- [Expo pkg versions = SDK](expo-package-versions-sdk-match.md) — usar `expo install`, no versiones adivinadas; mismatch → "Cannot find native module" SOLO en builds de device; fix: expo install --fix + rebuild dev client
-- [UserProfile serializer contract](userprofile-serializer-contract.md) — `toProfile` está duplicado en varios routes; hacer requerido un campo en un schema OpenAPI compartido obliga a actualizar TODAS las copias (typecheck no lo atrapa)
 - [Admin web panel auth](admin-web-auth.md) — resonancia-admin usa Clerk cookie same-origin (NO Bearer/setBaseUrl como mobile); gating real solo server requireRole("admin"), front es UX
 - [Cloud sync activity](cloud-sync-activity.md) — historial derivable de eventos (no entidad); firstSync solo se marca si recovered (lecturas OK) o local vacío pisa la nube; merge post-await con update funcional
 - [Cloud sync merge rules](cloud-sync-merge.md) — actividad offline-first; favoritos/progreso: unión solo en firstSync, luego local autoritativo (o los borrados reaparecen); eventos = unión append-only
-- [Shared mix category enum](shared-mix-category-enum.md) — el set de categorías de mezclas compartidas vive en 5 lugares (DB zod, OpenAPI x3, route const, frontend cast); sincronizar o compartir/filtrar falla
 - [Shared-mix likes consistency](shared-mix-likes-consistency.md) — feed ordena por likes DESC + trending=likes>=3; columna likes denormalizada se recalcula bajo row lock (.for("update")); compartir exige min 2 sonidos
-- [Recientes/Nuevas ordering](recientes-sort-by-id.md) — listas "más recientes/nuevas" deben sort por parseInt(id) desc + dep en useCatalog().version, o las sesiones de DB (SESSIONS.push runtime) no salen primeras
 - [Skip-flags only-if-true](skip-flags-only-if-true.md) — snapshot solo aplica skipDetail/skipMiniPlayer/isLoop si remoto true (false clobbea defaults de categoría); miniplayer trigger ANTES del return isLoop; form admin bloquea solo hidratación inicial
 - [voiceTag three-state caption](voice-tag-three-state.md) — caption de voz: undefined=fallback VOICE_MAP, null=DB vacío, string=admin; fase 1 de applyCatalogSnapshot NO debe clobbear undefined→null
 - [Tab bar overlay padding](tab-bar-overlay-padding.md) — la tab bar de (tabs) es overlay absoluto; pantallas con contenido al fondo deben reservar tabBarHeight (recalcular fórmula de _layout.tsx)
@@ -41,7 +31,6 @@
 - [Card/module background](card-module-background.md) — fondo estándar de cards/módulos = tinte dorado translúcido rgba(190,150,80,0.05) (#BE9650 5%); token card/darkChocolate en mobile/constants/colors.ts; no migrar hardcodes a ciegas
 - [SacredGlyph box-fill sizing](sacred-glyph-fill.md) — contenido ≈0.78×size (extent 39 horneado); EXTENT maps NO se usan; para cubrir un cover sin esquinas vacías: size = diagonal/0.78 (no solo ancho)
 - [Modal bottom sheet rounded corners](modal-bottom-sheet-rounded-corners.md) — backdrop flex:1 NO cubre las esquinas cortadas; usar absoluteFill + container justifyContent:"flex-end"
-- [Modal first-frame flash](modal-first-frame-flash.md) — Modal animationType=none + entrada Animated: el 1er frame usa el valor residual (abierto); resetear los Animated.Value a CERRADO al cerrar + dim animado (no estático)
 - [Reanimated drag-reorder sin ghost](reanimated-layout-toggle-ghost.md) — modelo FLIP: DOM estable + translateX por orderSV/slotSV; reorder atómico en worklet de soltado (sin layout commit → sin flicker); NO reintroducir el reorder-on-release con dragSettling
 - [Geometrix panel overlay](geometrix-panel-overlay.md) — Geometrix abre como panel deslizante estilo Mezclador vía openGeometrix(params); NUNCA navegar a la ruta /(tabs)/geometrix
 - [Geometrix carousel selection](geometrix-carousel-selection.md) — orden del carrusel DERIVADO de active+activatingIds (no mutar prevOrder con gate global de pending); deselect siempre vuelve al natural; glow solo en seleccionadas; auto-scroll con rAF
@@ -50,13 +39,11 @@
 - [Geometrix live-rotation sync effect dep](geometrix-rotation-sync-effect.md) — el effect que sincroniza liveRot debe depender del escalar manualAngle, no de getSettings; el commit de zoom del pinch simultáneo lo pisaba ("gira y vuelve")
 - [Geometrix settings sheet](geometrix-settings-sheet.md) — preview deriva del alto MEDIDO del sheet (fijar alto = preview fijo); "modificado/restablecer" excluye transformaciones por gesto (TRANSFORM_KEYS) y compara settings fusionados
 - [Reanimated slider oscillator](reanimated-slider-oscillator.md) — loop start/stop deps deben ser boolean on/off (no la amplitud analógica) o cada tick del slider colapsa el barrido; amplitud vive en el worklet
-- [Reanimated closure capture order](reanimated-closure-capture-order.md) — variables usadas en worklets deben declararse ANTES de useAnimatedStyle o Reanimated captura undefined (Babel serializa el closure al llamar al hook)
 - [RN overlay effect gotchas](rn-overlay-effect-gotchas.md) — hitSlop se recorta al padre directo (wrap > botón); sibling con margin negativo roba taps (zIndex); onda one-shot reposa en 1; glow = ring+shadow no disco
 - [Geometrix carousel microlag](geometrix-carousel-microlag.md) — parámetros fijos del carrusel (HOLD/FLIP/gap) y modelo FLIP: DOM estable + translateX por slot; gap 180ms para evitar lag de arrastre; NO tocar layout animations
 - [Geometrix Hold mode](geometrix-hold-mode.md) — toggle manito aplica gestos a TODAS las capas; bifurca en holdModeSV dentro del worklet; commitHold* usa setSettings funcional sobre active[]; rotationGesture.enabled usa estado React (holdMode) no SV
 - [Geometrix undo (Atrás)](geometrix-undo-history.md) — pila de snapshots {active,settings,master,hiddenIds}; restaurar por setState revierte gestos (props ganan en reposo); debounce agrupa ráfagas; hiddenIds cleanup debe mantener ref estable; reset en load/new NO en clearCanvas
 - [Geometrix category filter](geometrix-category-filter.md) — carrusel renderiza solo la categoría activa (evita montar 44 tiles → lag); reordenar dentro de una categoría permuta solo sus slots en `active` (z-order global), nunca splice al final
-- [Reanimated slide-push sin glitch](reanimated-slide-push-noглitch.md) — spacer vacío (width animado, sin texto) + pill con opacity pura (width fijo); marginLeft:-gap en el spacer cancela el mini-snap al desmontar
 - [Geometrix trazo fino vs relleno](geometrix-thin-stroke.md) — "fino" (strokeMode) solo escala stroke-width; mosaicos de relleno (c/k/r-asset) no cambian; geometryType es metadato no usado en render; admin gatea "Trazo" por SVG real
 - [Hero como fondo único](hero-fade-bg-match.md) — imagen hero + bg degradado leídos como "dos fondos": fix = meter la imagen EN la capa de fondo raíz y desvanecerla al color EXACTO del degradado raíz a la Y del borde (mismo degradado continuo debajo, sin costura); top fade desde #4A0C0C opaco→transparente; offsets px vía locations
 - [BPM mix-bus limiter](bpm-mixbus-limiter.md) — apilar 3+ loops satura el master (clipping); fix = WaveShaper soft-clip (la lib NO trae compresor); createWaveShaper() = 0 args, curva/oversample por propiedad
@@ -67,12 +54,7 @@
 - [BPM engine only — sin fallback expo](bpm-engine-only.md) — bpmSystemRef/bpmClockRef/bpmTickRef/scheduler JS eliminados; bpmAudioEngine es la única ruta BPM; init() dedup con _initPromise; toggleSound/loadPreset esperan init async si el motor no está listo
 - [EAS iOS CocoaPods modular headers](eas-ios-modular-headers.md) — AppCheckCore (RevenueCat/Clerk) exige modular_headers en GoogleUtilities+RecaptchaInterop; fix = expo-build-properties ios.extraPods con modular_headers:true (NO plugin custom: falla silencioso)
 - [iOS deployment target 17.0 — Clerk](ios-deployment-target-clerk.md) — @clerk/expo ≥3.7 exige iOS 17; bajar el target omite ClerkExpo pod → SPM nil crash + "no such module ClerkExpo"
-- [Metro require inside try-catch](metro-require-try-catch.md) — Metro resuelve TODOS los require() incluso en try-catch; SDK nativo opcional = import comentado + flag booleano, nunca require() dinámico
-- [Mobile package.json clobbered](mobile-pkgjson-clobbered.md) — tooling externo (eas/expo) puede reescribir package.json de mobile (pierde deps, rompe dev script); restaurar desde HEAD + pnpm install
-- [metro.config.js clobbered](metro-config-clobbered.md) — metro.config.js puede quedarse vacío (10 líneas) perdiendo monorepo config; backup en metro.config.js.bak; requiere projectRoot+watchFolders+extraNodeModules+resolveRequest
 - [ErrorFallback no context hooks](error-fallback-no-hooks.md) — ErrorBoundary vive encima de SceneThemeProvider/AuthProvider; ErrorFallback debe usar colores hardcoded (#060A0F/#BE9650) — ningún hook de contexto es seguro ahí
-- [pnpm add timeout deja node_modules corrupto](pnpm-add-timeout-corruption.md) — pnpm add interrumpido puede borrar binarios (expo) y desincronizar lockfile; fix = pnpm install --no-frozen-lockfile + mkdir tmp dir de Metro
-- [Tab route lazy import crash](tab-route-lazy-import-crash.md) — React.lazy de ruta (tabs) duplica SceneThemeContext → crash "must be inside Provider"; solo rutas root son lazy-safe
 - [Category overlay stack](category-overlay-stack.md) — pantallas con tab bar visible abren vía openCategory (pila de overlays bajo la barra), nunca router.push; useCategoryOverlayOptional en componentes compartidos
 - [Dormir multi-tag](descanso-4tabs-restructure.md) — supercategoría dinámica con 8 tags canónicos; sesiones multi-tag salen en varios carruseles pero se deduplican en la cola
 - [Buscador de Inicio como Descubrir](inicio-inline-search.md) — Inicio 3 usa barra completa y el mismo ContextSearchModal de Descubrir, con recientes, populares y filtros de duración
@@ -84,10 +66,8 @@
 - [Para este momento](home-featured-selection.md) — “Destacada en Inicio” rota diariamente; “Mostrar hoy” fija una única sesión de cualquier categoría
 - [Session tap three-state](session-tap-three-state.md) — prioridad skipMiniPlayer > skipDetail > detalle, duplicada en ~22 sitios incl. onPress inline de carruseles (SessionCard no los cubre)
 - [Catalog create vs edit field parity](catalog-create-vs-edit-fields.md) — INSERT de creación y PATCH de edición enumeran campos por separado; omitir uno lo pierde en silencio ("funciona al editar, no al crear")
-- [RN Modal null-stub](modal-null-stub-metro.md) — si NINGÚN <Modal> aparece (estado true, sin error): specs_DEPRECATED/components stubbeado a null en metro.config + parche in-place; RCTModalHostViewNativeComponent debe cargar real
 - [Biblioteca overlay sobre drawer](biblioteca-drawer-overlay.md) — "Biblioteca" del menú no navega: overlay deslizante sobre el drawer (queda abierto debajo); patrón para pantallas "sobre el menú"
 - [FlatList header remount](flatlist-header-remount.md) — ListHeaderComponent como useCallback con deps cambiantes remonta el header y resetea carruseles internos; pasar elemento JSX
-- [RN specs_DEPRECATED StubComponent patch](rn-specs-deprecated-stub-patch.md) — crash iOS "two views same name StubComponent": parchear src/private/specs_DEPRECATED/components/*.js con null en TODAS las instancias de RN en node_modules/.pnpm/
 - [Clerk native SSO redirect](clerk-native-sso-redirect.md) — SSO Expo vuelve sin sesión: scheme correcto + allowlist redirect_urls por API (estaba vacía) + ruta explícita sso-callback
 - [Manrope default font patch](manrope-default-font-patch.md) — fuente global via patch de Text.render (base primero), NUNCA parchando StyleSheet.create: eso pisaba la fontFamily de los íconos → tofu en Android
 - [Android top-inset floor](android-top-inset-floor.md) — tablets Android dan insets.top chico (~24) vs iPhone (~59); topPad nativo = Math.max(insets.top, 40) en todas las pantallas
@@ -123,8 +103,6 @@
 - [Playlists editoriales](editorial-playlist-boundaries.md) — publicación por pantalla, no por tags; guardar referencia editorial no crea una playlist privada editable
 - [Transacciones de recordatorios locales](practice-notification-transactions.md) — actualizar una alarma exige operación nativa estricta + rollback; la cancelación tolerante queda solo para limpieza
 - [Límite de limpieza del catálogo Mixer](mixer-catalog-cleanup-boundary.md) — limpiar el bundle local no autoriza borrar sonidos creados en Admin ni sesiones Ambientales de prueba
-- [Expo dev bundle con entrada local](expo-local-entry-bundle-url.md) — usar index.js local evita URLs internas de pnpm que el development build de iOS no logra descargar
-- [Memoria de Metro en RESONANCE](metro-memory-limit.md) — web+iOS pueden superar 4 GB durante rebuild limpio; conservar heap de 6 GB en el workflow móvil
 - [Drawer único de Inicio](single-home-drawer.md) — el drawer ya no tiene modo legado; toda apertura usa la estructura de Inicio 3 y debe limpiar el desplazamiento residual del gesto
 - [Parallax del header de Inicio 3](inicio3-header-parallax.md) — avatar, acciones y fila semanal conservan desplazamiento lento conjunto; optimizar renders sin quitar ni alterar este efecto
 - [Progreso en Perfil](progress-profile-mirror.md) — Perfil muestra racha semanal y calendario; Estadísticas personales quedan exclusivas de Tu progreso
@@ -138,7 +116,6 @@
 - [Agregar favoritos a playlists](playlist-add-from-favorites.md) — el selector de sesiones de una playlist es pantalla completa y muestra solo favoritos con tabs/cards de Mis Favoritos
 - [Afinidad emocional de sesiones](session-mood-affinity.md) — recomendaciones usan moodIds editoriales directos; cinco slots fijos y reservas base con cobertura de las 18 emociones
 - [Colecciones dinámicas de supercategorías](dynamic-supercategory-collections.md) — Dormir/Sonidos admiten colecciones Admin; Mobile deriva cards de sesiones y “Todos los sonidos” es inmutable
-- [Reinicio duplicado de Expo](expo-workflow-duplicate-process.md) — un restart puede dejar el Metro anterior vivo y el nuevo esperando el mismo puerto; diagnosticar grupos de proceso antes de reintentar
 - [Cards de frases emocionales](emotional-quote-cards.md) — dirección aprobada: fondo propio emparentado con cada hero, overlay oscuro y espaciado vertical igual a Frase del día
 - [Rotación de frases emocionales](emotional-quote-rotation.md) — el slot consumido vive también en el historial; este dato recupera la secuencia si falla el contador secundario
 - [Portadas bundleadas de playlists](playlist-bundled-cover-ids.md) — persistir un ID estable y resolver el asset local al renderizar; nunca sincronizar la URI runtime del bundle
@@ -157,3 +134,4 @@
 - [Transiciones desde el drawer](drawer-destination-transition.md) — destinos del menú usan un progreso único para ventana+drawer; aperturas desde otros orígenes conservan su animación normal
 - [Etiquetas libres de playlists](playlist-free-editorial-labels.md) — Tipo editorial admite texto libre; `none` oculta la píldora y los slugs históricos conservan su etiqueta traducida
 - [Reflexiones conserva el ID charlas](reflexiones-charlas-id.md) — la categoría visible Reflexiones usa el ID técnico `charlas`; no confundir con diario/reflexiones personales
+- [Gate Premium global y modales nativos](premium-gate-modal-hosts.md) — todo bloqueo free abre directamente la oferta de 3 planes; dentro de Modal se hospeda en esa misma ventana nativa

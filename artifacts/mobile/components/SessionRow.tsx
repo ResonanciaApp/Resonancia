@@ -25,6 +25,7 @@ import type { Session } from "@/data/sessions";
 import { useColors } from "@/hooks/useColors";
 import { usePremium } from "@/context/PremiumContext";
 import { usePlayer } from "@/context/PlayerContext";
+import { openPremiumPlans } from "@/lib/premiumGate";
 
 type Props = {
   session: Session;
@@ -98,7 +99,7 @@ export function SessionRow({
   const displayRating = rating ?? 4.7;
 
   const defaultPress = () => {
-    if (locked) { router.push("/membresia" as never); return; }
+    if (locked) { openPremiumPlans(); return; }
     if (session.skipMiniPlayer) { playSession(session); return; }
     if (session.skipDetail) { playSession(session); router.push("/player" as never); return; }
     if (overlay) overlay.openCategory(`/session/${session.id}`);

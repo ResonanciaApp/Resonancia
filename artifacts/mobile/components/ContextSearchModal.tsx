@@ -19,6 +19,7 @@ import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { LinearGradient } from "expo-linear-gradient";
 
 import { useColors } from "@/hooks/useColors";
+import { PremiumPlansSurface, usePremiumPlansModalHost } from "@/components/PremiumPlansOverlay";
 import { useSceneTheme } from "@/context/SceneThemeContext";
 import {
   SEARCH_DURATION_RANGES,
@@ -81,6 +82,7 @@ export function ContextSearchModal({
   const colors = useColors();
   const { theme, activeSceneId } = useSceneTheme();
   const insets = useSafeAreaInsets();
+  const premiumPlans = usePremiumPlansModalHost(visible);
   const inputRef = useRef<TextInput>(null);
   const [query, setQuery] = useState("");
   const [durationRangeId, setDurationRangeId] = useState<SearchDurationRangeId | null>(null);
@@ -166,10 +168,10 @@ export function ContextSearchModal({
 
   const selectItem = (item: ContextSearchItem) => {
     const term = query.trim();
-    close();
     const selectionResult = onSelect(item);
     const openedSuccessfully = scope ? selectionResult === true : selectionResult !== false;
     if (!openedSuccessfully) return;
+    if (!premiumPlans.isOpening()) close();
 
     if (recentStorageKey) AsyncStorage.setItem(recentStorageKey, item.id).catch(() => {});
     setRecentId(item.id);
@@ -206,7 +208,7 @@ export function ContextSearchModal({
       animationType="fade"
       transparent
       statusBarTranslucent
-      onRequestClose={close}
+      onRequestClose={premiumPlans.visible ? premiumPlans.close : close}
     >
       <KeyboardAvoidingView style={styles.root} behavior="padding" keyboardVerticalOffset={0}>
         <View style={[StyleSheet.absoluteFillObject, { backgroundColor }]}>
@@ -405,6 +407,7 @@ export function ContextSearchModal({
           />
         )}
       </KeyboardAvoidingView>
+      {premiumPlans.visible ? <PremiumPlansSurface onClose={premiumPlans.close} /> : null}
     </Modal>
   );
 }

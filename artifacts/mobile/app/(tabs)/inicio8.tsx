@@ -9,6 +9,7 @@ import { LinearGradient } from "expo-linear-gradient";
 import { BlurView } from "expo-blur";
 import { SymbolView } from "expo-symbols";
 import { router, useFocusEffect, useRouter } from "expo-router";
+import { openPremiumPlans } from "@/lib/premiumGate";
 import { useVideoPlayer, VideoView } from "expo-video";
 import React, { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import {
@@ -1480,7 +1481,7 @@ function Inicio3HeroPager({
     const session = getSessionById(item.sessionId);
     if (!session) return;
     if (session.isPremium && !isPremium) {
-      router.push("/membresia" as never);
+      openPremiumPlans();
     } else if (openForSession(session)) {
       return;
     } else if (session.skipMiniPlayer) {
@@ -2395,7 +2396,7 @@ export default function HomeScreen2({
   const handleContinueListening = useCallback(() => {
     if (!continueSession) return;
     if (continueLocked) {
-      router.push("/membresia" as never);
+      openPremiumPlans();
       return;
     }
     if (openForSession(continueSession)) return;
@@ -2638,7 +2639,7 @@ export default function HomeScreen2({
     (s: Session) => {
       closeSearch();
       if (s.isPremium && !isPremium) {
-        router.push("/membresia" as never);
+        openPremiumPlans();
         return;
       }
       if (openForSession(s)) return;
@@ -2959,7 +2960,7 @@ export default function HomeScreen2({
             <Pressable
               onPress={() => {
                 if (featuredMoment.isPremium && !isPremium) {
-                  router.push("/membresia" as never);
+                  openPremiumPlans();
                   return;
                 }
                 if (openForSession(featuredMoment)) return;
@@ -4918,7 +4919,7 @@ function InicioMoodRecommendations({
                   showCategoryPill
                   onPress={() => {
                     if (session.isPremium && !isPremium) {
-                      router.push("/membresia" as never);
+                      openPremiumPlans();
                       return;
                     }
                     if (openForSession(session)) return;

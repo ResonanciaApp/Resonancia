@@ -25,6 +25,7 @@ import { getArtistById } from "@/data/artists";
 import { computeWeekFlags } from "@/utils/stats";
 import { useSceneTheme } from "@/context/SceneThemeContext";
 import { SCENE_THEMES } from "@/config/scene-themes";
+import { PremiumPlansSurface, usePremiumPlansModalHost } from "@/components/PremiumPlansOverlay";
 
 // ── Flujo de celebración al completar el día de racha ───────────────────────
 // Pantalla 1: "Día N: ¡Excelente!" + contador circular + semana + Continuar.
@@ -69,6 +70,7 @@ export function StreakCelebrationFlow() {
   const [slot, setSlot] = useState<ReminderSlot | null>(null);
   const [stars, setStars] = useState(0);
   const [rated, setRated] = useState(false);
+  const premiumPlans = usePremiumPlansModalHost(Boolean(flow));
   const closeTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
   // Reset al abrir un flujo nuevo
@@ -129,7 +131,12 @@ export function StreakCelebrationFlow() {
   };
 
   return (
-    <Modal visible transparent animationType="fade" onRequestClose={closeFlow}>
+    <Modal
+      visible
+      transparent
+      animationType="fade"
+      onRequestClose={premiumPlans.visible ? premiumPlans.close : closeFlow}
+    >
       <LinearGradient
         colors={bgColors}
         start={{ x: 0, y: 0 }}
@@ -325,6 +332,7 @@ export function StreakCelebrationFlow() {
           </ScrollView>
         </View>
       )}
+      {premiumPlans.visible ? <PremiumPlansSurface onClose={premiumPlans.close} /> : null}
     </Modal>
   );
 }

@@ -1,6 +1,7 @@
 import { Feather } from "@expo/vector-icons";
 import { LinearGradient } from "expo-linear-gradient";
 import { router } from "expo-router";
+import { openPremiumPlans } from "@/lib/premiumGate";
 import React, { useState } from "react";
 import {
   Platform,
@@ -217,7 +218,7 @@ export default function EmocionScreen() {
                   metaText={session.categoryLabel}
                   onPress={() => {
                     if (session.isPremium && !isPremium) {
-                      router.push("/membresia" as never);
+                      openPremiumPlans();
                       return;
                     }
                     if (session.skipMiniPlayer) {

@@ -20,6 +20,7 @@ import { InspirationArtwork } from "@/components/InspirationArtwork";
 import { InspirationShare } from "@/components/InspirationShare";
 import { useColors } from "@/hooks/useColors";
 import { parseISO } from "@/lib/date-utils";
+import { openPremiumPlans } from "@/lib/premiumGate";
 import { usePlayerBrowse } from "@/context/PlayerContext";
 import { getSessionById } from "@/data/sessions";
 import { usePremium } from "@/context/PremiumContext";
@@ -68,7 +69,7 @@ function Detail({ date, expectedId }: { date: string; expectedId?: string }) {
   const play = () => {
     if (!session || !hydrated) return;
     if (session.isPremium && !isPremium) {
-      router.push("/membresia");
+      openPremiumPlans();
       return;
     }
     if (session.isPlaceholder) {

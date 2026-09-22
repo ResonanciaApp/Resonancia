@@ -12,6 +12,7 @@ import {
   getContentCarouselCardWidth,
 } from "@/constants/carousel";
 import { router } from "expo-router";
+import { openPremiumPlans } from "@/lib/premiumGate";
 import { Image } from "expo-image";
 import { LinearGradient } from "expo-linear-gradient";
 import { SymbolView } from "expo-symbols";
@@ -36,6 +37,7 @@ import { useBackOverride } from "@/context/BackOverrideContext";
 import { isIndigoThemeId } from "@/config/scene-themes";
 import { getCategorySessionTags } from "@/data/category-tabs";
 import { ContextSearchModal, type ContextSearchItem } from "@/components/ContextSearchModal";
+import { PremiumPlansSurface, usePremiumPlansModalHost } from "@/components/PremiumPlansOverlay";
 
 const H_PAD = 14;
 const CARD_GAP = 12;
@@ -125,7 +127,7 @@ function CategoryCard({
   const { openCategory } = useCategoryOverlay();
   const locked   = !!session.isPremium && !isPremium;
   const handlePress = () => {
-    if (locked) { router.push("/membresia" as never); return; }
+    if (locked) { openPremiumPlans(); return; }
     if (session.skipMiniPlayer) { playSession(session); return; }
     if (session.skipDetail) { playSession(session); router.push("/player" as never); return; }
     openCategory(`/session/${session.id}`);
@@ -250,6 +252,7 @@ export default function MeditacionesGuiadasScreen() {
   const [searchVisible,     setSearchVisible]     = useState(false);
   const [selectedSession,   setSelectedSession]   = useState<Session|null>(null);
   const [allVisible,        setAllVisible]         = useState(false);
+  const premiumPlans = usePremiumPlansModalHost(allVisible);
   const slideX = useRef(new Animated.Value(W)).current;
   const closeAll = () => {
     Animated.timing(slideX, { toValue: W, duration: 280, easing: Easing.in(Easing.cubic), useNativeDriver: true }).start(() => setAllVisible(false));
@@ -482,6 +485,7 @@ export default function MeditacionesGuiadasScreen() {
         onSelect={(item) => {
           const session = getSessionById(item.id);
           if (!session) return false;
+          if (session.isPremium && !isPremium) { openPremiumPlans(); return false; }
           if (session.skipMiniPlayer) { playSession(session); return true; }
           if (session.skipDetail) { playSession(session); router.push("/player" as never); return true; }
           openCategory(`/session/${session.id}`);
@@ -492,7 +496,7 @@ export default function MeditacionesGuiadasScreen() {
       <SessionActionsSheet session={selectedSession} visible={!!selectedSession} onClose={() => setSelectedSession(null)} />
 
       {/* ── Vista "Todas las sesiones" (desliza desde la derecha) ── */}
-      <Modal visible={allVisible} transparent animationType="none" onRequestClose={closeAll} statusBarTranslucent>
+      <Modal visible={allVisible} transparent animationType="none" onRequestClose={premiumPlans.visible ? premiumPlans.close : closeAll} statusBarTranslucent>
         <Animated.View style={[StyleSheet.absoluteFill, { backgroundColor: theme.gradient[theme.gradient.length - 1] as string, transform: [{ translateX: slideX }] }]}>
           <LinearGradient colors={theme.gradient as unknown as [string, string, ...string[]]} style={StyleSheet.absoluteFill} />
           <View style={{ flexDirection: "row", alignItems: "center", paddingTop: topPad + 14, paddingHorizontal: H_PAD, paddingBottom: 14, gap: 4 }}>
@@ -507,6 +511,7 @@ export default function MeditacionesGuiadasScreen() {
             ))}
           </ScrollView>
         </Animated.View>
+        {premiumPlans.visible ? <PremiumPlansSurface onClose={premiumPlans.close} /> : null}
       </Modal>
 
       {/* ── Sticky header ── */}

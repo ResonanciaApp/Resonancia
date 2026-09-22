@@ -2,6 +2,7 @@ import { Feather, MaterialCommunityIcons } from "@expo/vector-icons";
 import { BlurView } from "expo-blur";
 import { LinearGradient } from "expo-linear-gradient";
 import { router, useFocusEffect } from "expo-router";
+import { openPremiumPlans } from "@/lib/premiumGate";
 import { useMixerPanel } from "@/context/MixerPanelContext";
 import React, { useCallback, useEffect, useLayoutEffect, useMemo, useRef, useState, memo } from "react";
 import AsyncStorage from "@react-native-async-storage/async-storage";
@@ -576,7 +577,7 @@ export default function MezcladorScreen() {
   const handleSoundPress = (sound: MixSound) => {
     if (!sound.audioUrl && !hasSoundFile(sound.id) && !REMOTE_SOUND_MAP[sound.id]) return;
     if (sound.isPremium && !isPremium) {
-      router.push("/membresia" as never);
+      openPremiumPlans();
       return;
     }
     if (!isActive(sound.id)) {

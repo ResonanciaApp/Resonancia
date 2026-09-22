@@ -1,6 +1,7 @@
 import { Feather, MaterialCommunityIcons } from "@expo/vector-icons";
 import { LinearGradient } from "expo-linear-gradient";
 import { router, useFocusEffect } from "expo-router";
+import { openPremiumPlans } from "@/lib/premiumGate";
 import { Image } from "expo-image";
 import React, { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import {
@@ -20,6 +21,7 @@ import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { SymbolView } from "expo-symbols";
 
 import { ContextSearchModal } from "@/components/ContextSearchModal";
+import { PremiumPlansSurface, usePremiumPlansModalHost } from "@/components/PremiumPlansOverlay";
 import { GeoUniverseBackground } from "@/components/GeoUniverseBackground";
 import { SessionCarousel } from "@/components/SessionCarousel";
 import { SessionDurationBadge } from "@/components/SessionDurationBadge";
@@ -143,6 +145,7 @@ export default function SonidosScreen() {
   } = usePlayer();
   const [searchVisible, setSearchVisible] = useState(false);
   const [allVisible, setAllVisible] = useState(false);
+  const premiumPlans = usePremiumPlansModalHost(allVisible);
   const [allVisibleCount, setAllVisibleCount] = useState(20);
   useFocusEffect(
     useCallback(() => () => soundPreview.stop(), [soundPreview.stop]),
@@ -262,7 +265,7 @@ export default function SonidosScreen() {
 
   const openSession = useCallback((session: Session) => {
     if (session.isPremium && !isPremium) {
-      router.push("/membresia" as never);
+      openPremiumPlans();
       return false;
     }
     if (openForSession(session, { forceAmbiental: true })) return true;
@@ -481,7 +484,7 @@ export default function SonidosScreen() {
         showDurationFilters={false}
       />
 
-      <Modal visible={allVisible} transparent animationType="none" onRequestClose={closeAll} statusBarTranslucent>
+      <Modal visible={allVisible} transparent animationType="none" onRequestClose={premiumPlans.visible ? premiumPlans.close : closeAll} statusBarTranslucent>
         <Animated.View
           style={[
             StyleSheet.absoluteFill,
@@ -516,7 +519,7 @@ export default function SonidosScreen() {
                   key={session.id}
                   onPress={() => {
                     if (locked) {
-                      router.push("/membresia" as never);
+                      openPremiumPlans();
                       return;
                     }
                     closeAll();
@@ -547,6 +550,7 @@ export default function SonidosScreen() {
             })}
           </ScrollView>
         </Animated.View>
+        {premiumPlans.visible ? <PremiumPlansSurface onClose={premiumPlans.close} /> : null}
       </Modal>
     </LinearGradient>
   );

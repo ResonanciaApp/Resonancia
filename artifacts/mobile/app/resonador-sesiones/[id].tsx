@@ -1,6 +1,7 @@
 import { Feather } from "@expo/vector-icons";
 import { LinearGradient } from "expo-linear-gradient";
 import { router, useLocalSearchParams } from "expo-router";
+import { openPremiumPlans } from "@/lib/premiumGate";
 import React, { useMemo, useRef, useState } from "react";
 import {
   Animated,
@@ -69,7 +70,7 @@ export default function ResonadorSesionesScreen() {
   const openSession = React.useCallback(
     (session: Session) => {
       if (session.isPremium && !isPremium) {
-        router.push("/membresia" as never);
+        openPremiumPlans();
         return;
       }
       if (openForSession(session)) return;

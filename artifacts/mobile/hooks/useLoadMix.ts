@@ -8,7 +8,6 @@
  * Lo usan tanto la pantalla "Mi Música" como la librería por categoría.
  * ─────────────────────────────────────────────────────────────────
  */
-import { router } from "expo-router";
 import { useCallback } from "react";
 import { Alert } from "react-native";
 
@@ -17,6 +16,7 @@ import { usePremium } from "@/context/PremiumContext";
 import { useSounds } from "@/context/SoundsContext";
 import { hasSoundFile } from "@/data/sounds";
 import { REMOTE_SOUND_MAP } from "@/lib/remoteSoundMap";
+import { openPremiumPlans } from "@/lib/premiumGate";
 
 export function useLoadMix() {
   const { isPremium } = usePremium();
@@ -25,6 +25,14 @@ export function useLoadMix() {
 
   return useCallback(
     (preset: MixPreset): boolean => {
+      const hasLockedPremium = preset.sounds.some(
+        (s) => catalogSounds.find((candidate) => candidate.id === s.id)?.isPremium && !isPremium,
+      );
+      if (hasLockedPremium) {
+        openPremiumPlans();
+        return false;
+      }
+
       const accessible = preset.sounds.filter((s) => {
         const snd = catalogSounds.find((candidate) => candidate.id === s.id);
         if (!snd || (!snd.audioUrl && !hasSoundFile(s.id) && !REMOTE_SOUND_MAP[s.id])) return false;
@@ -33,17 +41,7 @@ export function useLoadMix() {
       });
 
       if (accessible.length === 0) {
-        const hasLockedPremium = preset.sounds.some(
-          (s) => catalogSounds.find((candidate) => candidate.id === s.id)?.isPremium && !isPremium,
-        );
-        if (hasLockedPremium) {
-          Alert.alert("Mezcla Premium", "Esta mezcla usa sonidos exclusivos de Premium.", [
-            { text: "Ahora no", style: "cancel" },
-            { text: "Ver Premium", onPress: () => router.push("/membresia" as never) },
-          ]);
-        } else {
-          Alert.alert("Mezcla vacía", "Los sonidos de esta mezcla aún no están disponibles.");
-        }
+        Alert.alert("Mezcla vacía", "Los sonidos de esta mezcla aún no están disponibles.");
         return false;
       }
 

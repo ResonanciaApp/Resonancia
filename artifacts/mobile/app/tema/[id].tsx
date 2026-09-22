@@ -2,6 +2,7 @@ import { Feather } from "@expo/vector-icons";
 import { BackPill } from "@/components/BackPill";
 import { GhostPill } from "@/components/GhostPill";
 import { router, useLocalSearchParams } from "expo-router";
+import { openPremiumPlans } from "@/lib/premiumGate";
 import { useBackOverride } from "@/context/BackOverrideContext";
 import { useCategoryOverlayOptional } from "@/context/CategoryOverlayContext";
 import { Image } from "expo-image";
@@ -155,7 +156,7 @@ export default function TemaScreen({ id: idProp }: { id?: string } = {}) {
               editorialPresentation
               showAuthorAvatar={false}
               overridePress={() => {
-                if (s.isPremium && !isPremium) { router.push("/membresia" as never); return; }
+                if (s.isPremium && !isPremium) { openPremiumPlans(); return; }
                 openSession(s.id);
               }}
             />

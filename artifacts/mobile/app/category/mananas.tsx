@@ -4,6 +4,7 @@ import { BackPill } from "@/components/BackPill";
 import { SessionCarousel } from "@/components/SessionCarousel";
 import { SessionDurationBadge } from "@/components/SessionDurationBadge";
 import { router } from "expo-router";
+import { openPremiumPlans } from "@/lib/premiumGate";
 import React, { useEffect, useMemo, useRef, useState } from "react";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { Image } from "react-native";
@@ -112,7 +113,7 @@ function FeaturedCard({ session }: { session: Session }) {
   const { playSession } = usePlayer();
   const locked = !!session.isPremium && !isPremium;
   const handlePress = () => {
-    if (locked) { router.push("/membresia" as never); return; }
+    if (locked) { openPremiumPlans(); return; }
     if (session.skipMiniPlayer) { playSession(session); return; }
     playSession(session);
     router.push("/player" as never);
@@ -591,6 +592,7 @@ export default function MananasScreen() {
         onSelect={(item) => {
           const session = MANANAS_SESSIONS.find((candidate) => candidate.id === item.id);
           if (!session) return false;
+          if (session.isPremium && !isPremium) { openPremiumPlans(); return false; }
           if (session.skipMiniPlayer) { playSession(session); return true; }
           playSession(session);
           router.push("/player" as never);

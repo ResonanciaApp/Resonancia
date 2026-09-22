@@ -16,6 +16,7 @@ import { isIndigoThemeId } from "@/config/scene-themes";
 import { useColors } from "@/hooks/useColors";
 import { FREE_TIMER_MAX_MINUTES, showPremiumGate } from "@/lib/premiumGate";
 import { WIDGET_GREEN_SOLID } from "@/constants/colors";
+import { PremiumPlansSurface, usePremiumPlansModalHost } from "@/components/PremiumPlansOverlay";
 import Svg, { Path } from "react-native-svg";
 
 const SHEET_HEIGHT = 320;
@@ -121,6 +122,7 @@ export function AmbientalDurationSheet({
   const backdropOpacity = useRef(new Animated.Value(0)).current;
   const presetsOpacity = useRef(new Animated.Value(1)).current;
   const customOpacity = useRef(new Animated.Value(0)).current;
+  const premiumPlans = usePremiumPlansModalHost(rendered);
 
   useEffect(() => {
     if (visible) {
@@ -234,7 +236,7 @@ export function AmbientalDurationSheet({
       visible={rendered}
       transparent
       animationType="none"
-      onRequestClose={onClose}
+      onRequestClose={premiumPlans.visible ? premiumPlans.close : onClose}
       statusBarTranslucent
     >
       <View style={styles.modalRoot}>
@@ -421,6 +423,7 @@ export function AmbientalDurationSheet({
             </Pressable>
           )}
         </Animated.View>
+        {premiumPlans.visible ? <PremiumPlansSurface onClose={premiumPlans.close} /> : null}
       </View>
     </Modal>
   );

@@ -1,5 +1,6 @@
 import { Feather, MaterialCommunityIcons } from "@expo/vector-icons";
 import { router } from "expo-router";
+import { openPremiumPlans } from "@/lib/premiumGate";
 import React, { useState, useMemo, useRef } from "react";
 import {
   Dimensions,
@@ -481,7 +482,7 @@ export function ExploreScreen({
 
   const handleSessionPress = React.useCallback((s: Session) => {
     const locked = s.isPremium && !isPremium;
-    if (locked) { router.push("/membresia" as never); return false; }
+    if (locked) { openPremiumPlans(); return false; }
     if (openForSession(s)) return false;
     if (s.skipMiniPlayer) { playSession(s); return true; }
     if (s.skipDetail) { playSession(s); router.push("/player" as never); return true; }
