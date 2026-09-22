@@ -192,9 +192,53 @@ export default function ThemeTagScreen({
         pointerEvents="none"
       />
 
+      {internalLabel && (
+        <View style={[styles.internalHeader, { paddingTop: topPad + 4 }]}>
+          <View style={styles.internalHeaderRow}>
+            <Pressable
+              onPress={goBack}
+              hitSlop={6}
+              style={styles.internalBackHitArea}
+              accessibilityRole="button"
+              accessibilityLabel="Volver"
+            >
+              {({ pressed }) => (
+                <View
+                  style={[
+                    styles.internalBackBtn,
+                    {
+                      backgroundColor: "rgba(0,0,0,0.28)",
+                      opacity: pressed ? 0.7 : 1,
+                    },
+                  ]}
+                >
+                  <Feather
+                    name="chevron-left"
+                    size={28}
+                    color={colors.foreground}
+                    style={{ transform: [{ translateX: -1 }] }}
+                  />
+                </View>
+              )}
+            </Pressable>
+            <Text
+              style={[styles.internalHeaderTitle, { color: colors.foreground }]}
+              numberOfLines={1}
+              adjustsFontSizeToFit
+              minimumFontScale={0.75}
+            >
+              {pageTitle}
+            </Text>
+          </View>
+        </View>
+      )}
+
       <ScrollView
         style={styles.scroll}
-        contentContainerStyle={{ paddingBottom: 60 + bottomPad }}
+        contentContainerStyle={{
+          paddingBottom: 60 + bottomPad,
+          paddingTop: internalLabel ? 23 : 0,
+        }}
         showsVerticalScrollIndicator={false}
         scrollEventThrottle={16}
         onScroll={(event) => {
@@ -203,55 +247,57 @@ export default function ThemeTagScreen({
           if (active !== stickyActive) setStickyActive(active);
         }}
       >
-        <View
-          style={styles.legacyHeader}
-          onLayout={(event) => {
-            const { y, height } = event.nativeEvent.layout;
-            setHeaderBottomY(y + height);
-          }}
-        >
-          <View style={styles.hero}>
-            {tag?.image ? (
-              <ExpoImage
-                source={tag.image}
-                style={StyleSheet.absoluteFill}
-                contentFit="cover"
-                placeholder={BLUR_PLACEHOLDER}
-                transition={IMAGE_TRANSITION}
-                cachePolicy="memory-disk"
-              />
-            ) : (
-              <View style={[StyleSheet.absoluteFill, { backgroundColor: theme.gradient[0] as string }]} />
-            )}
-            <Pressable
-              onPress={goBack}
-              hitSlop={10}
-              style={({ pressed }) => [
-                styles.heroBackBtn,
-                {
-                  top: topPad + 8,
-                  backgroundColor: "rgba(0,0,0,0.28)",
-                  opacity: pressed ? 0.7 : 1,
-                },
-              ]}
-            >
-              <Feather name="chevron-left" size={28} color={colors.foreground} style={{ transform: [{ translateX: -1 }] }} />
-            </Pressable>
+        {!internalLabel && (
+          <View
+            style={styles.legacyHeader}
+            onLayout={(event) => {
+              const { y, height } = event.nativeEvent.layout;
+              setHeaderBottomY(y + height);
+            }}
+          >
+            <View style={styles.hero}>
+              {tag?.image ? (
+                <ExpoImage
+                  source={tag.image}
+                  style={StyleSheet.absoluteFill}
+                  contentFit="cover"
+                  placeholder={BLUR_PLACEHOLDER}
+                  transition={IMAGE_TRANSITION}
+                  cachePolicy="memory-disk"
+                />
+              ) : (
+                <View style={[StyleSheet.absoluteFill, { backgroundColor: theme.gradient[0] as string }]} />
+              )}
+              <Pressable
+                onPress={goBack}
+                hitSlop={10}
+                style={({ pressed }) => [
+                  styles.heroBackBtn,
+                  {
+                    top: topPad + 8,
+                    backgroundColor: "rgba(0,0,0,0.28)",
+                    opacity: pressed ? 0.7 : 1,
+                  },
+                ]}
+              >
+                <Feather name="chevron-left" size={28} color={colors.foreground} style={{ transform: [{ translateX: -1 }] }} />
+              </Pressable>
+            </View>
+            <View style={styles.intro}>
+              <Text style={[styles.legacyPageTitle, { color: colors.foreground }]}>
+                {pageTitle}
+              </Text>
+              <Text
+                style={[styles.pageDescription, { color: colors.mutedForeground }]}
+                numberOfLines={1}
+                adjustsFontSizeToFit
+                minimumFontScale={0.75}
+              >
+                {description}
+              </Text>
+            </View>
           </View>
-          <View style={styles.intro}>
-            <Text style={[styles.legacyPageTitle, { color: colors.foreground }]}>
-               {pageTitle}
-            </Text>
-            <Text
-              style={[styles.pageDescription, { color: colors.mutedForeground }]}
-              numberOfLines={1}
-              adjustsFontSizeToFit
-              minimumFontScale={0.75}
-            >
-              {description}
-            </Text>
-          </View>
-        </View>
+        )}
 
         {!hasContent ? (
           <View style={[styles.emptySlot, { borderColor: "rgba(255,255,255,0.1)" }]}>
@@ -343,7 +389,7 @@ export default function ThemeTagScreen({
         )}
       </ScrollView>
 
-      <Animated.View
+      {!internalLabel && <Animated.View
         style={[
           styles.stickyHeader,
           {
@@ -382,7 +428,7 @@ export default function ThemeTagScreen({
         >
           <Feather name="chevron-left" size={28} color={colors.foreground} style={{ transform: [{ translateX: -1 }] }} />
         </Pressable>
-      </Animated.View>
+      </Animated.View>}
     </View>
   );
 }
@@ -433,6 +479,50 @@ const styles = StyleSheet.create({
     alignSelf: "stretch",
     opacity: 0.92,
   },
+  internalHeader: {
+    zIndex: 10,
+    backgroundColor: "transparent",
+  },
+  internalHeaderRow: {
+    position: "relative",
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "space-between",
+    minHeight: 48,
+    paddingHorizontal: 20,
+    paddingBottom: 6,
+    transform: [{ translateY: 8 }],
+  },
+  internalBackBtn: {
+    width: 43,
+    height: 43,
+    borderRadius: 21.5,
+    borderWidth: 1,
+    borderColor: "rgba(255,255,255,0.2)",
+    alignItems: "center",
+    justifyContent: "center",
+  },
+  internalBackHitArea: {
+    position: "absolute",
+    left: 16,
+    top: -4,
+    width: 48,
+    height: 48,
+    alignItems: "center",
+    justifyContent: "center",
+    zIndex: 20,
+    elevation: 20,
+  },
+  internalHeaderTitle: {
+    fontFamily: "Manrope",
+    fontSize: 18,
+    lineHeight: 21,
+    fontWeight: "700",
+    letterSpacing: 0.2,
+    textAlign: "center",
+    flex: 1,
+    marginLeft: 0,
+  },
   header: {
     paddingHorizontal: H_PAD,
     paddingBottom: 12,
@@ -468,7 +558,7 @@ const styles = StyleSheet.create({
     marginBottom: 0,
   },
   firstInternalCarousel: {
-    marginTop: 45,
+    marginTop: 23,
   },
   emptySlot: {
     marginHorizontal: H_PAD,
