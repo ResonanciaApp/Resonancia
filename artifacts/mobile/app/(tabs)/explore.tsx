@@ -869,7 +869,9 @@ export function ExploreScreen({
             </View>
           </View>
 
-          <View style={[styles.sectionDivider, styles.centeredResonadoresDivider]} />
+          {!isPremium && (
+            <View style={[styles.sectionDivider, styles.centeredResonadoresDivider]} />
+          )}
 
           {!isPremium && (
             <View style={{ marginTop: 15 }}>

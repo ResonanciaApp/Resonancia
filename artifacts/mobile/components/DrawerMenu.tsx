@@ -29,7 +29,6 @@ import { DURATION } from "@/constants/motion";
 import { openCategoryGlobal } from "@/context/CategoryOverlayContext";
 import { useUserProfile } from "@/context/UserProfileContext";
 import { useSceneTheme } from "@/context/SceneThemeContext";
-import { useMixerPanel } from "@/context/MixerPanelContext";
 import { useCurrentUserAvatarSource } from "@/lib/profile-avatar";
 
 const ND = Platform.OS !== "web";
@@ -52,7 +51,6 @@ const INICIO3_SECTIONS: { title: string | null; items: MenuItem[] }[] = [
       { id: "library", label: "Biblioteca", icon: "book", mciIcon: "bookshelf", route: "__biblioteca_overlay" },
       { id: "history", label: "Historial", icon: "clock", mciIcon: "history", route: "__overlay:/historial" },
       { id: "downloads", label: "Descargas", icon: "download", mciIcon: "download-outline", route: "__overlay:/descargas" },
-      { id: "mixer", label: "Mezclador de sonido", icon: "sliders", mciIcon: "tune-vertical", route: "__mixer" },
       { id: "journal", label: "Diario", icon: "edit-3", mciIcon: "book-open-page-variant-outline", route: "__overlay:/diario" },
     ],
   },
@@ -86,7 +84,6 @@ export function DrawerMenu() {
   const { username, lastName } = useUserProfile();
   const avatarSource = useCurrentUserAvatarSource();
   const { theme: activeTheme } = useSceneTheme();
-  const { openMixerFromDrawer } = useMixerPanel();
 
   const loggedIn = isRegistered || isSignedIn;
   const clerkName =
@@ -214,7 +211,6 @@ export function DrawerMenu() {
       router.push("/profile" as never);
       return;
     }
-    if (route === "__mixer") { openMixerFromDrawer(); return; }
     if (route.startsWith("__overlay:")) {
       const target = route.replace("__overlay:", "");
       if (["/historial", "/favoritos-todos", "/diario", "/descargas", "/membresia"].includes(target)) {

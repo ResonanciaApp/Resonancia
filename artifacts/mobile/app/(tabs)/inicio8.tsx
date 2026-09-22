@@ -3284,7 +3284,7 @@ export default function HomeScreen2({
             />
           </View>
         )}
-        {isInicio2 && variant === "inicio3" && (
+        {isInicio2 && variant === "inicio3" && !isPremium && (
           <View style={styles.inicio3LowerStandaloneDivider} />
         )}
         {isInicio2 && (
