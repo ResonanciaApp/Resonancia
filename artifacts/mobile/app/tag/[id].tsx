@@ -33,7 +33,7 @@ import {
 import { useColors } from "@/hooks/useColors";
 
 const { width } = Dimensions.get("window");
-const H_PAD = 20;
+const H_PAD = 16;
 const THEME_DETAIL_DESCRIPTION_BY_SLUG: Record<string, string> = {
   "para-la-ansiedad": "Calma tu mente y recupera la paz",
   "energiza-tus-mananas": "Activa tu energía para comenzar",
@@ -237,6 +237,7 @@ export default function ThemeTagScreen({ id: idProp }: { id?: string } = {}) {
             style={styles.sessionGrid}
             showHeader={false}
             gridLayout
+            fillGridWidth
             gridScrollEnabled={false}
             eagerRender
             presentation="editorial"
@@ -331,14 +332,14 @@ const styles = StyleSheet.create({
   intro: {
     paddingHorizontal: H_PAD,
     paddingTop: 38,
-    paddingBottom: 21,
+    paddingBottom: 4,
     alignItems: "flex-start",
   },
   legacyPageTitle: {
     fontFamily: "Manrope",
-    fontSize: 29,
-    lineHeight: 36,
-    fontWeight: "400",
+    fontSize: 28,
+    lineHeight: 35,
+    fontWeight: "500",
     letterSpacing: 0.2,
     textAlign: "left",
     alignSelf: "stretch",
