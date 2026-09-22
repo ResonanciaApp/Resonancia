@@ -82,19 +82,10 @@ function authAs(user: User | null) {
 
 beforeAll(async () => {
   // Keep the integration fixture usable against development databases that
-  // predate migration 0004. Production schema/data is never changed here.
-  await db.execute(sql`
-    DO $$ BEGIN
-      CREATE TYPE editorial_playlist_type AS ENUM ('meditative', 'relaxation', 'ritual');
-    EXCEPTION WHEN duplicate_object THEN NULL;
-    END $$;
-  `);
-  await db.execute(sql`
-    ALTER TYPE editorial_playlist_type ADD VALUE IF NOT EXISTS 'none';
-  `);
+  // predate the free-form editorial label migration. Production is untouched.
   await db.execute(sql`
     ALTER TABLE catalog_playlists
-      ADD COLUMN IF NOT EXISTS editorial_type editorial_playlist_type
+      ADD COLUMN IF NOT EXISTS editorial_type text
       NOT NULL DEFAULT 'meditative';
   `);
   admin = await createUser("admin", "admin");
@@ -189,17 +180,31 @@ describe("editorial playlist contract", () => {
       });
     expect(missingType.status).toBe(400);
 
-    const invalidType = await request(app)
+    const customType = await request(app)
       .post("/api/admin/playlists")
       .send({
-        slug: `editorial-invalid-type-${suffix}`,
-        title: "Tipo inválido",
+        slug: `editorial-custom-type-${suffix}`,
+        title: "Tipo personalizado",
         playlistType: "sessions",
-        editorialType: "selection",
+        editorialType: "Selección de la semana",
         durationLabel: "1 min",
         sessionIds: [sessionIds[0]],
       });
-    expect(invalidType.status).toBe(400);
+    expect(customType.status).toBe(201);
+    createdPlaylistIds.push(customType.body.id);
+    expect(customType.body.editorialType).toBe("Selección de la semana");
+
+    const emptyType = await request(app)
+      .post("/api/admin/playlists")
+      .send({
+        slug: `editorial-empty-type-${suffix}`,
+        title: "Tipo vacío",
+        playlistType: "sessions",
+        editorialType: "   ",
+        durationLabel: "1 min",
+        sessionIds: [sessionIds[0]],
+      });
+    expect(emptyType.status).toBe(400);
   });
 
   it("allows metadata edits without revalidating unchanged legacy sessions", async () => {

@@ -98,11 +98,13 @@ export function EditorialPlaylistCarousel({
                     <SessionBadgeGlass showBlackTint={false} />
                     <View style={styles.whitePillTint} />
                     <Text style={styles.typeText}>
-                      {playlist.editorialType === "relaxation"
-                        ? "Relajación"
-                        : playlist.editorialType === "ritual"
-                          ? "Ritual"
-                          : "Meditativa"}
+                      {playlist.editorialType === "meditative"
+                        ? "Meditativa"
+                        : playlist.editorialType === "relaxation"
+                          ? "Relajación"
+                          : playlist.editorialType === "ritual"
+                            ? "Ritual"
+                            : playlist.editorialType}
                     </Text>
                   </View>
                 ) : null}

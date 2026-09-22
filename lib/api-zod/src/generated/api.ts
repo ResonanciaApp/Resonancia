@@ -2996,6 +2996,8 @@ export const getCatalogResponseSessionsItemMoodIdsMax = 18;
 
 export const getCatalogResponseSessionsItemGuideIdsMax = 4;
 
+export const getCatalogResponsePlaylistsItemEditorialTypeMax = 40;
+
 export const getCatalogResponsePlaylistsItemPlacementsItemSortOrderMin = 0;
 
 export const getCatalogResponsePlaylistCarouselsItemSortOrderMin = 0;
@@ -3005,6 +3007,8 @@ export const getCatalogResponsePlaylistCarouselsItemPlaylistIdsItemMax = 80;
 export const getCatalogResponseSleepCarouselOrderItemSortOrderMin = 0;
 
 export const getCatalogResponseSoundCarouselOrderItemSortOrderMin = 0;
+
+export const getCatalogResponseHomePlaylistsItemEditorialTypeMax = 40;
 
 export const getCatalogResponseHomePlaylistsItemPlacementsItemSortOrderMin = 0;
 
@@ -3097,7 +3101,7 @@ export const GetCatalogResponse = zod.object({
   "savedCount": zod.number(),
   "sessionIds": zod.array(zod.string()),
   "playlistType": zod.string(),
-  "editorialType": zod.enum(['meditative', 'relaxation', 'ritual', 'none']),
+  "editorialType": zod.string().min(1).max(getCatalogResponsePlaylistsItemEditorialTypeMax),
   "sortOrder": zod.number(),
   "isActive": zod.boolean(),
   "showOnHome": zod.boolean(),
@@ -3139,7 +3143,7 @@ export const GetCatalogResponse = zod.object({
   "savedCount": zod.number(),
   "sessionIds": zod.array(zod.string()),
   "playlistType": zod.string(),
-  "editorialType": zod.enum(['meditative', 'relaxation', 'ritual', 'none']),
+  "editorialType": zod.string().min(1).max(getCatalogResponseHomePlaylistsItemEditorialTypeMax),
   "sortOrder": zod.number(),
   "isActive": zod.boolean(),
   "showOnHome": zod.boolean(),
@@ -3189,6 +3193,8 @@ export const GetCatalogPlaylistParams = zod.object({
   "slug": zod.coerce.string().min(1).max(getCatalogPlaylistPathSlugMax).regex(getCatalogPlaylistPathSlugRegExp)
 })
 
+export const getCatalogPlaylistResponsePlaylistEditorialTypeMax = 40;
+
 export const getCatalogPlaylistResponsePlaylistPlacementsItemSortOrderMin = 0;
 
 export const getCatalogPlaylistResponseSessionsItemIsPlaceholderDefault = false;
@@ -3214,7 +3220,7 @@ export const GetCatalogPlaylistResponse = zod.object({
   "savedCount": zod.number(),
   "sessionIds": zod.array(zod.string()),
   "playlistType": zod.string(),
-  "editorialType": zod.enum(['meditative', 'relaxation', 'ritual', 'none']),
+  "editorialType": zod.string().min(1).max(getCatalogPlaylistResponsePlaylistEditorialTypeMax),
   "sortOrder": zod.number(),
   "isActive": zod.boolean(),
   "showOnHome": zod.boolean(),
@@ -5145,6 +5151,8 @@ export const DeleteAdminMixParams = zod.object({
 /**
  * @summary Listar todas las playlists de Resonancia (admin)
  */
+export const listAdminPlaylistsResponseEditorialTypeMax = 40;
+
 export const listAdminPlaylistsResponsePlacementsItemSortOrderMin = 0;
 
 
@@ -5159,7 +5167,7 @@ export const ListAdminPlaylistsResponseItem = zod.object({
   "savedCount": zod.number(),
   "sessionIds": zod.array(zod.string()),
   "playlistType": zod.string(),
-  "editorialType": zod.enum(['meditative', 'relaxation', 'ritual', 'none']),
+  "editorialType": zod.string().min(1).max(listAdminPlaylistsResponseEditorialTypeMax),
   "sortOrder": zod.number(),
   "isActive": zod.boolean(),
   "showOnHome": zod.boolean(),
@@ -5186,6 +5194,8 @@ export const createAdminPlaylistBodyDescriptionMax = 500;
 
 export const createAdminPlaylistBodyDurationLabelMax = 30;
 
+export const createAdminPlaylistBodyEditorialTypeMax = 40;
+
 export const createAdminPlaylistBodyHomePositionMax = 4;
 
 export const createAdminPlaylistBodyPlacementsItemSortOrderMin = 0;
@@ -5201,7 +5211,7 @@ export const CreateAdminPlaylistBody = zod.object({
   "savedCount": zod.number().optional(),
   "sessionIds": zod.array(zod.string()).optional(),
   "playlistType": zod.enum(['sessions', 'music']),
-  "editorialType": zod.enum(['meditative', 'relaxation', 'ritual', 'none']),
+  "editorialType": zod.string().min(1).max(createAdminPlaylistBodyEditorialTypeMax),
   "sortOrder": zod.number().optional(),
   "isActive": zod.boolean().optional(),
   "showOnHome": zod.boolean().optional(),
@@ -5231,6 +5241,8 @@ export const updateAdminPlaylistBodyDescriptionMax = 500;
 
 export const updateAdminPlaylistBodyDurationLabelMax = 30;
 
+export const updateAdminPlaylistBodyEditorialTypeMax = 40;
+
 export const updateAdminPlaylistBodyHomePositionMax = 4;
 
 export const updateAdminPlaylistBodyPlacementsItemSortOrderMin = 0;
@@ -5246,7 +5258,7 @@ export const UpdateAdminPlaylistBody = zod.object({
   "savedCount": zod.number().optional(),
   "sessionIds": zod.array(zod.string()).optional(),
   "playlistType": zod.enum(['sessions', 'music']).optional(),
-  "editorialType": zod.enum(['meditative', 'relaxation', 'ritual', 'none']).optional(),
+  "editorialType": zod.string().min(1).max(updateAdminPlaylistBodyEditorialTypeMax).optional(),
   "sortOrder": zod.number().optional(),
   "isActive": zod.boolean().optional(),
   "showOnHome": zod.boolean().optional(),
@@ -5257,6 +5269,8 @@ export const UpdateAdminPlaylistBody = zod.object({
   "isActive": zod.boolean()
 })).optional().describe('Reemplaza todas las ubicaciones; una por superficie como máximo')
 })
+
+export const updateAdminPlaylistResponseEditorialTypeMax = 40;
 
 export const updateAdminPlaylistResponsePlacementsItemSortOrderMin = 0;
 
@@ -5272,7 +5286,7 @@ export const UpdateAdminPlaylistResponse = zod.object({
   "savedCount": zod.number(),
   "sessionIds": zod.array(zod.string()),
   "playlistType": zod.string(),
-  "editorialType": zod.enum(['meditative', 'relaxation', 'ritual', 'none']),
+  "editorialType": zod.string().min(1).max(updateAdminPlaylistResponseEditorialTypeMax),
   "sortOrder": zod.number(),
   "isActive": zod.boolean(),
   "showOnHome": zod.boolean(),
@@ -5487,6 +5501,8 @@ export const PublishAdminPlaylistParams = zod.object({
   "id": zod.coerce.number()
 })
 
+export const publishAdminPlaylistResponseEditorialTypeMax = 40;
+
 export const publishAdminPlaylistResponsePlacementsItemSortOrderMin = 0;
 
 
@@ -5501,7 +5517,7 @@ export const PublishAdminPlaylistResponse = zod.object({
   "savedCount": zod.number(),
   "sessionIds": zod.array(zod.string()),
   "playlistType": zod.string(),
-  "editorialType": zod.enum(['meditative', 'relaxation', 'ritual', 'none']),
+  "editorialType": zod.string().min(1).max(publishAdminPlaylistResponseEditorialTypeMax),
   "sortOrder": zod.number(),
   "isActive": zod.boolean(),
   "showOnHome": zod.boolean(),
@@ -5521,6 +5537,8 @@ export const HideAdminPlaylistParams = zod.object({
   "id": zod.coerce.number()
 })
 
+export const hideAdminPlaylistResponseEditorialTypeMax = 40;
+
 export const hideAdminPlaylistResponsePlacementsItemSortOrderMin = 0;
 
 
@@ -5535,7 +5553,7 @@ export const HideAdminPlaylistResponse = zod.object({
   "savedCount": zod.number(),
   "sessionIds": zod.array(zod.string()),
   "playlistType": zod.string(),
-  "editorialType": zod.enum(['meditative', 'relaxation', 'ritual', 'none']),
+  "editorialType": zod.string().min(1).max(hideAdminPlaylistResponseEditorialTypeMax),
   "sortOrder": zod.number(),
   "isActive": zod.boolean(),
   "showOnHome": zod.boolean(),

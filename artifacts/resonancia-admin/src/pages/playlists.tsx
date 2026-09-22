@@ -14,7 +14,7 @@ import {
   useRequestUploadUrl,
   getListAdminPlaylistsQueryKey,
 } from "@workspace/api-client-react";
-import type { CatalogPlaylist, AdminPlaylistInputPlaylistType, AdminPlaylistInputEditorialType } from "@workspace/api-client-react";
+import type { CatalogPlaylist, AdminPlaylistInputPlaylistType } from "@workspace/api-client-react";
 import { useQueryClient } from "@tanstack/react-query";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -48,7 +48,7 @@ type PlaylistForm = {
   savedCount: number;
   sessionIds: string[];
   playlistType: "sessions" | "music";
-  editorialType: "meditative" | "relaxation" | "ritual" | "none";
+  editorialType: string;
   isActive: boolean;
 };
 
@@ -64,6 +64,9 @@ const EMPTY_FORM: PlaylistForm = {
   editorialType: "meditative",
   isActive: true,
 };
+
+const BUILTIN_EDITORIAL_TYPES = new Set(["meditative", "relaxation", "ritual", "none"]);
+const CUSTOM_EDITORIAL_TYPE = "__custom__";
 
 // ── Helpers ────────────────────────────────────────────────────────────────
 
@@ -399,6 +402,8 @@ function PlaylistForm({
     e.preventDefault();
     if (!form.title.trim()) { toast.error("El título es obligatorio"); return; }
     if (!form.slug.trim()) { toast.error("El slug es obligatorio"); return; }
+    if (!form.editorialType.trim()) { toast.error("La etiqueta editorial es obligatoria"); return; }
+    if (form.editorialType.trim().length > 40) { toast.error("La etiqueta editorial admite hasta 40 caracteres"); return; }
     if (form.isActive && !form.durationLabel.trim()) { toast.error("La duración es obligatoria para playlists activas"); return; }
     if (form.isActive && form.sessionIds.length === 0) { toast.error("Agrega al menos una sesión para activarla"); return; }
 
@@ -413,7 +418,7 @@ function PlaylistForm({
         savedCount: form.savedCount,
         sessionIds: form.sessionIds,
         playlistType: form.playlistType as AdminPlaylistInputPlaylistType,
-        editorialType: form.editorialType as AdminPlaylistInputEditorialType,
+        editorialType: form.editorialType.trim(),
         isActive: form.isActive,
       };
 
@@ -494,8 +499,8 @@ function PlaylistForm({
         <div className="space-y-1.5">
           <Label>Tipo editorial *</Label>
           <Select
-            value={form.editorialType}
-            onValueChange={(v) => set("editorialType", v as PlaylistForm["editorialType"])}
+            value={BUILTIN_EDITORIAL_TYPES.has(form.editorialType) ? form.editorialType : CUSTOM_EDITORIAL_TYPE}
+            onValueChange={(v) => set("editorialType", v === CUSTOM_EDITORIAL_TYPE ? "" : v)}
           >
             <SelectTrigger><SelectValue /></SelectTrigger>
             <SelectContent>
@@ -503,8 +508,18 @@ function PlaylistForm({
               <SelectItem value="relaxation">Relajación</SelectItem>
               <SelectItem value="ritual">Ritual</SelectItem>
               <SelectItem value="none">Sin píldora</SelectItem>
+              <SelectItem value={CUSTOM_EDITORIAL_TYPE}>Crear etiqueta personalizada…</SelectItem>
             </SelectContent>
           </Select>
+          {!BUILTIN_EDITORIAL_TYPES.has(form.editorialType) && (
+            <Input
+              value={form.editorialType}
+              onChange={(e) => set("editorialType", e.target.value)}
+              placeholder="Ej. Respiración, Calma profunda…"
+              maxLength={40}
+              autoFocus
+            />
+          )}
         </div>
         <div className="space-y-1.5">
           <Label htmlFor="durationLabel">Duración</Label>

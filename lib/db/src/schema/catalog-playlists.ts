@@ -1,6 +1,5 @@
 import {
   pgTable,
-  pgEnum,
   text,
   integer,
   boolean,
@@ -21,13 +20,6 @@ import { z } from "zod/v4";
  * `playlistType` se conserva por compatibilidad con el catálogo legado; las
  * playlists editoriales nuevas pueden contener sesiones de cualquier categoría.
  */
-export const editorialPlaylistTypeEnum = pgEnum("editorial_playlist_type", [
-  "meditative",
-  "relaxation",
-  "ritual",
-  "none",
-]);
-
 export const catalogPlaylistsTable = pgTable("catalog_playlists", {
   id: serial("id").primaryKey(),
   slug: text("slug").notNull().unique(),
@@ -38,7 +30,7 @@ export const catalogPlaylistsTable = pgTable("catalog_playlists", {
   savedCount: integer("saved_count").notNull().default(0),
   sessionIds: text("session_ids").array().notNull().default([]),
   playlistType: text("playlist_type").notNull().default("sessions"),
-  editorialType: editorialPlaylistTypeEnum("editorial_type").notNull().default("meditative"),
+  editorialType: text("editorial_type").notNull().default("meditative"),
   sortOrder: integer("sort_order").notNull().default(0),
   isActive: boolean("is_active").notNull().default(true),
   /** Si true, esta playlist aparece en el home de la app (máx 4). */

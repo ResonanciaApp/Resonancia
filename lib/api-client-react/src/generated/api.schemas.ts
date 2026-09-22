@@ -1793,16 +1793,6 @@ export interface AdminPlaylistCarouselUpdate {
   playlistIds?: string[];
 }
 
-export type CatalogPlaylistEditorialType = typeof CatalogPlaylistEditorialType[keyof typeof CatalogPlaylistEditorialType];
-
-
-export const CatalogPlaylistEditorialType = {
-  meditative: 'meditative',
-  relaxation: 'relaxation',
-  ritual: 'ritual',
-  none: 'none',
-} as const;
-
 export interface CatalogPlaylist {
   id: number;
   slug: string;
@@ -1813,7 +1803,11 @@ export interface CatalogPlaylist {
   savedCount: number;
   sessionIds: string[];
   playlistType: string;
-  editorialType: CatalogPlaylistEditorialType;
+  /**
+     * @minLength 1
+     * @maxLength 40
+     */
+  editorialType: string;
   sortOrder: number;
   isActive: boolean;
   showOnHome: boolean;
@@ -1828,16 +1822,6 @@ export type AdminPlaylistInputPlaylistType = typeof AdminPlaylistInputPlaylistTy
 export const AdminPlaylistInputPlaylistType = {
   sessions: 'sessions',
   music: 'music',
-} as const;
-
-export type AdminPlaylistInputEditorialType = typeof AdminPlaylistInputEditorialType[keyof typeof AdminPlaylistInputEditorialType];
-
-
-export const AdminPlaylistInputEditorialType = {
-  meditative: 'meditative',
-  relaxation: 'relaxation',
-  ritual: 'ritual',
-  none: 'none',
 } as const;
 
 export interface AdminPlaylistInput {
@@ -1860,7 +1844,11 @@ export interface AdminPlaylistInput {
   savedCount?: number;
   sessionIds?: string[];
   playlistType: AdminPlaylistInputPlaylistType;
-  editorialType: AdminPlaylistInputEditorialType;
+  /**
+     * @minLength 1
+     * @maxLength 40
+     */
+  editorialType: string;
   sortOrder?: number;
   isActive?: boolean;
   showOnHome?: boolean;
@@ -1879,16 +1867,6 @@ export type AdminPlaylistUpdatePlaylistType = typeof AdminPlaylistUpdatePlaylist
 export const AdminPlaylistUpdatePlaylistType = {
   sessions: 'sessions',
   music: 'music',
-} as const;
-
-export type AdminPlaylistUpdateEditorialType = typeof AdminPlaylistUpdateEditorialType[keyof typeof AdminPlaylistUpdateEditorialType];
-
-
-export const AdminPlaylistUpdateEditorialType = {
-  meditative: 'meditative',
-  relaxation: 'relaxation',
-  ritual: 'ritual',
-  none: 'none',
 } as const;
 
 export interface AdminPlaylistUpdate {
@@ -1911,7 +1889,11 @@ export interface AdminPlaylistUpdate {
   savedCount?: number;
   sessionIds?: string[];
   playlistType?: AdminPlaylistUpdatePlaylistType;
-  editorialType?: AdminPlaylistUpdateEditorialType;
+  /**
+     * @minLength 1
+     * @maxLength 40
+     */
+  editorialType?: string;
   sortOrder?: number;
   isActive?: boolean;
   showOnHome?: boolean;

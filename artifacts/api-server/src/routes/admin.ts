@@ -709,12 +709,7 @@ type EditorialPlaylistPlacementInput = zod4.infer<
   typeof editorialPlaylistPlacementSchema
 >;
 
-const editorialPlaylistTypeSchema = zod4.enum([
-  "meditative",
-  "relaxation",
-  "ritual",
-  "none",
-]);
+const editorialPlaylistTypeSchema = zod4.string().trim().min(1).max(40);
 
 const adminPlaylistInputSchema = insertCatalogPlaylistSchema
   .extend({

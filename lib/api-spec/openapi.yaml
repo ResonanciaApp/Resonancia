@@ -6878,7 +6878,8 @@ components:
           type: string
         editorialType:
           type: string
-          enum: [meditative, relaxation, ritual, none]
+          minLength: 1
+          maxLength: 40
         sortOrder:
           type: integer
         isActive:
@@ -6926,7 +6927,8 @@ components:
           enum: [sessions, music]
         editorialType:
           type: string
-          enum: [meditative, relaxation, ritual, none]
+          minLength: 1
+          maxLength: 40
         sortOrder:
           type: integer
         isActive:
@@ -6976,7 +6978,8 @@ components:
           enum: [sessions, music]
         editorialType:
           type: string
-          enum: [meditative, relaxation, ritual, none]
+          minLength: 1
+          maxLength: 40
         sortOrder:
           type: integer
         isActive:

@@ -3284,7 +3284,7 @@ export default function HomeScreen2({
           </View>
         )}
         {isInicio2 && variant === "inicio3" && (
-          <View style={styles.inicio3StandaloneDivider} />
+          <View style={styles.inicio3LowerStandaloneDivider} />
         )}
         {isInicio2 && (
           <View>
@@ -3293,9 +3293,6 @@ export default function HomeScreen2({
               decorativeGradient={variant === "inicio3"}
             />
           </View>
-        )}
-        {isInicio2 && variant === "inicio3" && (
-          <View style={styles.inicio3SectionDivider} />
         )}
         {/* ── BANNER PREMIUM ── */}
         <View
