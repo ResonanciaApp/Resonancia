@@ -2695,13 +2695,13 @@ const styles = StyleSheet.create({
     shadowOffset: { width: 0, height: 0 },
     shadowOpacity: 0.75,
     shadowRadius: 18,
-    transform: [{ translateY: -5 }],
+    transform: [{ translateY: -2 }],
   },
   membershipCardCopy: {
     minWidth: 0,
     flex: 1,
     paddingRight: 3,
-    transform: [{ translateX: -8 }, { translateY: -5 }],
+    transform: [{ translateX: -8 }, { translateY: -2 }],
   },
   membershipPlanName: {
     fontFamily: "Manrope",
