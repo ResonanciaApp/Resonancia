@@ -159,8 +159,8 @@ export default function SonidosScreen() {
       : theme.id === "indigo2"
         ? "rgba(191,207,255,0.1)"
         : "rgba(181,211,255,0.1)";
-  const inactiveTabSurface = "rgba(0,0,0,0.28)";
-  const inactiveTabBorder = "rgba(255,255,255,0.2)";
+  const inactiveTabSurface = "rgba(0,0,0,0.21)";
+  const inactiveTabBorder = "rgba(241,224,255,0.25)";
   const slideX = useRef(new Animated.Value(W)).current;
   const stickyHeaderOpacity = useRef(new Animated.Value(0)).current;
   const stickyBorderOpacity = useRef(new Animated.Value(0)).current;
@@ -649,9 +649,9 @@ const styles = StyleSheet.create({
     borderRadius: 27,
     gap: 12,
     overflow: "hidden",
-    backgroundColor: "rgba(255,255,255,0.1)",
-    borderWidth: 1,
-    borderColor: "rgba(255,255,255,0.1)",
+    backgroundColor: "rgba(0,0,0,0.21)",
+    borderWidth: 1.2,
+    borderColor: "rgba(241,224,255,0.25)",
   },
   pillText: {
     fontFamily: "Manrope",
