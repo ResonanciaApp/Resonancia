@@ -32,6 +32,7 @@ import {
   otherThemeInternalType,
   otherThemeInternalStoredValue,
   otherThemeInternalSelectedLabels,
+  hasMissingOtherThemeInternalLabels,
 } from "@/lib/categoryThemeTags";
 import {
   useCreateSubmission,
@@ -391,6 +392,9 @@ export default function SessionForm({ mode, initial, onSaved }: SessionFormProps
     if (!title.trim()) return "El título es requerido";
     if (!subtitle.trim()) return "El subtítulo es requerido";
     if (!description.trim()) return "La descripción es requerida";
+    if (hasMissingOtherThemeInternalLabels(themeTag)) {
+      return "Seleccioná al menos una etiqueta interna para cada temática elegida";
+    }
     const d = Number(durationValue);
     if (!d || d < 1 || d > 600) return "La duración debe ser entre 1 y 600 minutos";
     if (!isEdit && !isPlaceholder) {
@@ -1036,7 +1040,7 @@ export default function SessionForm({ mode, initial, onSaved }: SessionFormProps
               key={parent}
               tagType={otherThemeInternalType(parent)}
               defaults={[]}
-              label={`Etiquetas internas de ${parent}`}
+                label={`Etiquetas internas de ${parent} (obligatorio)`}
               selected={otherThemeInternalSelectedLabels(parent, themeTag)}
               onToggle={(label) => toggleOtherThemeInternal(parent, label)}
               onRename={(from, to) => setThemeTag((tags) => tags.map((tag) =>

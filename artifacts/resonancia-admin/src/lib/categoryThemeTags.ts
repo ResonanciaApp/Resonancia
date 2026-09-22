@@ -70,6 +70,12 @@ export function otherThemeInternalSelectedLabels(parentLabel: string, stored: st
   const prefix = `__${otherThemeInternalType(parentLabel)}__:`;
   return stored.filter((value) => value.startsWith(prefix)).map((value) => value.slice(prefix.length));
 }
+
+export function hasMissingOtherThemeInternalLabels(stored: string[]): boolean {
+  return stored
+    .filter((value) => !value.startsWith("__"))
+    .some((parent) => otherThemeInternalSelectedLabels(parent, stored).length === 0);
+}
 export const SONIDOS_COLLECTION_TAGS = [
   "Todos los sonidos",
   "Sonidos de naturaleza",

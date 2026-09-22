@@ -34,7 +34,6 @@ import {
 import {
   buildOtherThemeInternalRoute,
   groupOtherThemeInternalSessions,
-  hasOtherThemeInternalTag,
   isOtherThemeInternalTag,
   parseOtherThemeInternalTag,
 } from "@/lib/explore-other-themes";
@@ -128,13 +127,8 @@ export default function ThemeTagScreen({
     [sessions, slug, tagLabel],
   );
   const mainSessions = useMemo(
-    () =>
-      internalLabel
-        ? internalGroups.get(internalLabel) ?? []
-        : sessions.filter(
-            (session) => !hasOtherThemeInternalTag(session, slug ?? "", tagLabel),
-          ),
-    [internalGroups, internalLabel, sessions],
+    () => internalLabel ? internalGroups.get(internalLabel) ?? [] : [],
+    [internalGroups, internalLabel],
   );
   const pageTitle = internalLabel ?? tagLabel;
   const description =
@@ -181,7 +175,7 @@ export default function ThemeTagScreen({
   if (!tagLabel) return null;
   const hasContent = internalLabel
     ? mainSessions.length > 0
-    : sessions.length > 0 || internalGroups.size > 0;
+    : internalGroups.size > 0;
 
   return (
     <View
@@ -312,7 +306,7 @@ export default function ThemeTagScreen({
                   ambientalTitleOnly
                 />
               ))}
-            {mainSessions.length > 0 && (
+            {internalLabel && mainSessions.length > 0 && (
               <SessionCarousel
                 title=""
                 sessions={mainSessions}

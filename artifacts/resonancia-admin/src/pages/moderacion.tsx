@@ -44,6 +44,7 @@ import {
   otherThemeInternalType,
   otherThemeInternalStoredValue,
   otherThemeInternalSelectedLabels,
+  hasMissingOtherThemeInternalLabels,
 } from "@/lib/categoryThemeTags";
 import { useQueryClient } from "@tanstack/react-query";
 import { toast } from "sonner";
@@ -417,6 +418,8 @@ function EditDialog({
     (isTalk && !podcastTag) ||
     (isStory && !sabiduriaTag) ||
     (isAmbiental && !sonidosTag);
+  const missingOtherThemeInternalLabel =
+    hasMissingOtherThemeInternalLabels(themeTag);
   const categoryThemeConfig = CATEGORY_THEME_TAGS[catId];
 
   const toggleTheme = (tag: string) =>
@@ -876,7 +879,7 @@ function EditDialog({
                 key={parent}
                 tagType={otherThemeInternalType(parent)}
                 defaults={[]}
-                label={`Etiquetas internas de ${parent}`}
+                label={`Etiquetas internas de ${parent} (obligatorio)`}
                 selected={otherThemeInternalSelectedLabels(parent, themeTag)}
                 onToggle={(label) => toggleOtherThemeInternal(parent, label)}
                 onRename={(from, to) => setThemeTag((tags) => tags.map((tag) =>
@@ -975,6 +978,7 @@ function EditDialog({
               title.trim().length === 0 ||
               subtitle.trim().length === 0 ||
               missingRequiredSubcategory ||
+              missingOtherThemeInternalLabel ||
               mutation.isPending ||
               imageUploading
             }
