@@ -246,18 +246,19 @@ export function DrawerMenu() {
 
   return (
     <View style={StyleSheet.absoluteFill} pointerEvents="box-none">
-      {visible && (
-        <Pressable
-          style={[StyleSheet.absoluteFill, { left: DRAWER_PUSH }]}
-          onPress={onClose}
-        />
-      )}
+      <Pressable
+        pointerEvents={visible ? "auto" : "none"}
+        style={[StyleSheet.absoluteFill, { left: DRAWER_PUSH }]}
+        onPress={onClose}
+      />
 
       <Animated.View
+        renderToHardwareTextureAndroid
+        shouldRasterizeIOS
         {...panResponder.panHandlers}
         style={[
           styles.drawer,
-          visible && styles.drawerShadow,
+          styles.drawerShadow,
           {
             bottom: 0,
             transform: [{ translateX: drawerTranslate }, { scale: historyScale }],
