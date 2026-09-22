@@ -18,7 +18,6 @@ import {
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 
 import { SessionCarousel } from "@/components/SessionCarousel";
-import { WIDGET_GREEN_SOLID } from "@/constants/colors";
 import { BLUR_PLACEHOLDER, IMAGE_TRANSITION } from "@/constants/imagePlaceholder";
 import { useBackOverride } from "@/context/BackOverrideContext";
 import { useCatalog } from "@/context/CatalogContext";
@@ -35,12 +34,17 @@ import { useColors } from "@/hooks/useColors";
 
 const { width } = Dimensions.get("window");
 const H_PAD = 20;
-const DURATION_FILTERS = [
-  { label: "5–10 min", min: 0, max: 10 },
-  { label: "10–20 min", min: 11, max: 20 },
-  { label: "20–30 min", min: 21, max: 30 },
-  { label: "30+ min", min: 31, max: Number.POSITIVE_INFINITY },
-] as const;
+const THEME_DETAIL_DESCRIPTION_BY_SLUG: Record<string, string> = {
+  "para-la-ansiedad": "Calma tu mente y recupera la paz",
+  "energiza-tus-mananas": "Activa tu energía para comenzar",
+  "foco-concentracion": "Claridad para sostener tu atención",
+  "suelto-la-rabia": "Libera y transforma lo que sientes",
+  "crecimiento-personal": "Expande tu conciencia y tus recursos",
+  "armonia-familiar": "Fortalece vínculos y crea armonía",
+  "respiracion-consciente": "Regresa al presente con tu respiración",
+  "meditaciones-activas": "Conecta cuerpo y mente en movimiento",
+  astrologia: "Conecta con los ciclos y la energía cósmica",
+};
 
 /**
  * The API stores the display label on each session and exposes a slug on the
@@ -97,15 +101,9 @@ export default function ThemeTagScreen({ id: idProp }: { id?: string } = {}) {
         : [],
     [tagLabel, catalogVersion],
   );
-  const [durationFilter, setDurationFilter] = React.useState<string | null>(null);
-  const filteredSessions = useMemo(() => {
-    if (!durationFilter) return sessions;
-    const filter = DURATION_FILTERS.find((candidate) => candidate.label === durationFilter);
-    if (!filter) return sessions;
-    return sessions.filter(
-      (session) => session.duration >= filter.min && session.duration <= filter.max,
-    );
-  }, [durationFilter, sessions]);
+  const description =
+    (slug ? THEME_DETAIL_DESCRIPTION_BY_SLUG[slug] : undefined) ??
+    `Sesiones para conectar con ${tagLabel?.toLocaleLowerCase("es") ?? "esta temática"}`;
 
   const [stickyActive, setStickyActive] = React.useState(false);
   const [headerBottomY, setHeaderBottomY] = React.useState(Number.POSITIVE_INFINITY);
@@ -209,53 +207,16 @@ export default function ThemeTagScreen({ id: idProp }: { id?: string } = {}) {
             <Text style={[styles.legacyPageTitle, { color: colors.foreground }]}>
               {tagLabel}
             </Text>
+            <Text
+              style={[styles.pageDescription, { color: colors.mutedForeground }]}
+              numberOfLines={1}
+              adjustsFontSizeToFit
+              minimumFontScale={0.75}
+            >
+              {description}
+            </Text>
           </View>
         </View>
-
-        <ScrollView
-          horizontal
-          showsHorizontalScrollIndicator={false}
-          contentContainerStyle={styles.filtersRow}
-        >
-          <Pressable
-            onPress={() => setDurationFilter(null)}
-            style={[
-              styles.filterPill,
-              durationFilter === null ? styles.filterPillSelected : styles.filterPillIdle,
-            ]}
-          >
-            <Text
-              style={[
-                styles.filterLabel,
-                durationFilter === null ? styles.filterLabelSelected : styles.filterLabelIdle,
-              ]}
-            >
-              Todos
-            </Text>
-          </Pressable>
-          {DURATION_FILTERS.map((filter) => {
-            const active = durationFilter === filter.label;
-            return (
-              <Pressable
-                key={filter.label}
-                onPress={() => setDurationFilter(active ? null : filter.label)}
-                style={[
-                  styles.filterPill,
-                  active ? styles.filterPillSelected : styles.filterPillIdle,
-                ]}
-              >
-                <Text
-                  style={[
-                    styles.filterLabel,
-                    active ? styles.filterLabelSelected : styles.filterLabelIdle,
-                  ]}
-                >
-                  {filter.label}
-                </Text>
-              </Pressable>
-            );
-          })}
-        </ScrollView>
 
         {sessions.length === 0 ? (
           <View style={[styles.emptySlot, { borderColor: "rgba(255,255,255,0.1)" }]}>
@@ -267,20 +228,10 @@ export default function ThemeTagScreen({ id: idProp }: { id?: string } = {}) {
               Estamos preparando nuevas experiencias para esta temática
             </Text>
           </View>
-        ) : filteredSessions.length === 0 ? (
-          <View style={[styles.emptySlot, { borderColor: colors.border }]}>
-            <Feather name="clock" size={28} color={colors.mutedForeground} />
-            <Text style={[styles.emptyTitle, { color: colors.foreground }]}>
-              Sin sesiones en este filtro
-            </Text>
-            <Text style={[styles.emptySub, { color: colors.mutedForeground }]}>
-              Prueba con otra duración
-            </Text>
-          </View>
         ) : (
           <SessionCarousel
             title=""
-            sessions={filteredSessions}
+            sessions={sessions}
             isPremium={isPremium}
             onPress={openSession}
             style={styles.sessionGrid}
@@ -363,7 +314,7 @@ const styles = StyleSheet.create({
   },
   hero: {
     width: "100%",
-    height: Math.round(width * 0.72),
+    height: Math.round(width * 0.72) + 15,
     overflow: "hidden",
   },
   heroBackBtn: {
@@ -379,59 +330,28 @@ const styles = StyleSheet.create({
   },
   intro: {
     paddingHorizontal: H_PAD,
-    paddingTop: 20,
+    paddingTop: 45,
     paddingBottom: 24,
     alignItems: "flex-start",
   },
   legacyPageTitle: {
     fontFamily: "Manrope",
-    fontSize: 26,
-    lineHeight: 33,
-    fontWeight: "700",
+    fontSize: 29,
+    lineHeight: 36,
+    fontWeight: "400",
     letterSpacing: 0.2,
     textAlign: "left",
     alignSelf: "stretch",
-    marginBottom: 6,
   },
   pageDescription: {
     fontFamily: "Manrope",
     fontSize: 14,
-    lineHeight: 22,
-    textAlign: "center",
+    lineHeight: 20,
+    fontWeight: "400",
+    marginTop: 15,
+    textAlign: "left",
+    alignSelf: "stretch",
     opacity: 0.92,
-  },
-  filtersRow: {
-    paddingHorizontal: H_PAD,
-    paddingBottom: 4,
-    gap: 9,
-  },
-  filterPill: {
-    minHeight: 38,
-    borderRadius: 20,
-    paddingHorizontal: 16,
-    alignItems: "center",
-    justifyContent: "center",
-    overflow: "hidden",
-    borderWidth: 1,
-  },
-  filterPillSelected: {
-    backgroundColor: WIDGET_GREEN_SOLID,
-    borderColor: WIDGET_GREEN_SOLID,
-  },
-  filterPillIdle: {
-    backgroundColor: "rgba(0,0,0,0.28)",
-    borderColor: "rgba(255,255,255,0.2)",
-  },
-  filterLabel: {
-    fontFamily: "Manrope",
-    fontSize: 13,
-    fontWeight: "600",
-  },
-  filterLabelSelected: {
-    color: "#0E0E17",
-  },
-  filterLabelIdle: {
-    color: "#F4F4F4",
   },
   header: {
     paddingHorizontal: H_PAD,
