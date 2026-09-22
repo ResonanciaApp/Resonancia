@@ -26,7 +26,7 @@ import {
 import { LinearGradient } from "expo-linear-gradient";
 import { GoldGradient, GoldGradientFill } from "@/components/GoldGradient";
 import { router, Stack } from "expo-router";
-import { useBackOverride } from "@/context/BackOverrideContext";
+import { useBackAfterClose, useBackOverride } from "@/context/BackOverrideContext";
 import { useDrawer } from "@/context/DrawerContext";
 import React, { useMemo, useState } from "react";
 import {
@@ -148,12 +148,19 @@ function GuestPrompt() {
 }
 
 function SignedInAmigos() {
-  // Amigos vive como overlay sobre el drawer: al navegar a otra ruta hay que
-  // cerrar el overlay o la pantalla nueva queda montada DEBAJO y no se ve.
-  const { closeOverlay, openChat } = useDrawer();
+  const backAfterClose = useBackAfterClose();
+  const { openChat } = useDrawer();
   const colors = useColors();
   const qc = useQueryClient();
   const [search, setSearch] = useState("");
+  const openProfile = (userId: number) => {
+    const navigate = () => router.push(`/usuario/${userId}` as never);
+    if (backAfterClose) {
+      backAfterClose(navigate);
+    } else {
+      navigate();
+    }
+  };
 
   // Ensure the user row exists server-side (JIT provisioning).
   useGetMe({ query: { queryKey: getGetMeQueryKey(), staleTime: 60_000 } });
@@ -261,7 +268,7 @@ function SignedInAmigos() {
             <SearchResultRow
               key={u.id}
               user={u}
-              onPress={() => { closeOverlay(); router.push(`/usuario/${u.id}` as never); }}
+              onPress={() => openProfile(u.id)}
               onAdd={() => sendReq.mutate({ data: { addresseeId: u.id } })}
             />
           ))}
@@ -308,7 +315,7 @@ function SignedInAmigos() {
             <FriendRow
               key={f.id}
               friend={f}
-              onOpen={() => { closeOverlay(); router.push(`/usuario/${f.id}` as never); }}
+              onOpen={() => openProfile(f.id)}
               onMessage={() => openChat(f.id)}
               onRemove={() => onRemove(f)}
             />
@@ -445,7 +452,7 @@ function FriendRow({
 }
 
 function ConversationRow({ conversation }: { conversation: Conversation }) {
-  const { closeOverlay, openChat } = useDrawer();
+  const { openChat } = useDrawer();
   const colors = useColors();
   const { friend, lastMessage, unreadCount } = conversation;
   const preview = lastMessage
