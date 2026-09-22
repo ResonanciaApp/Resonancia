@@ -748,10 +748,13 @@ export function ExploreScreen({
                 La esencia que le da vida a este espacio, las personas detrás de Resonancia.
               </Text>
             </View>
-            <Feather name="chevron-right" size={20} color="rgba(249,249,249,0.7)" />
+            <Feather
+              name="chevron-right"
+              size={20}
+              color="rgba(249,249,249,0.7)"
+              style={styles.resonadoresBannerChevron}
+            />
           </Pressable>
-
-          <View style={styles.sectionDivider} />
 
           <View style={styles.categoryBlocksSection}>
             <ContentCategoryGrid
@@ -1189,11 +1192,15 @@ const styles = StyleSheet.create({
     alignItems: "center",
     justifyContent: "center",
     overflow: "hidden",
-    transform: [{ translateY: 2 }],
+    transform: [{ translateY: 0 }],
   },
   resonadoresBannerCopy: {
     flex: 1,
     minWidth: 0,
+    transform: [{ translateY: -2 }],
+  },
+  resonadoresBannerChevron: {
+    transform: [{ translateY: -2 }],
   },
   resonadoresBannerTitle: {
     fontFamily: "Manrope",
