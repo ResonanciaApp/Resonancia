@@ -1,4 +1,4 @@
-import { Feather } from "@expo/vector-icons";
+import { Feather, Ionicons } from "@expo/vector-icons";
 import { Image as ExpoImage } from "expo-image";
 import { LinearGradient } from "expo-linear-gradient";
 import { router, useLocalSearchParams } from "expo-router";
@@ -80,6 +80,62 @@ function resolveThemeLabel(slug: string | undefined): string | undefined {
   return readableSlug
     ? readableSlug.charAt(0).toUpperCase() + readableSlug.slice(1)
     : undefined;
+}
+
+function FavoriteThemeHeart({
+  favorited,
+  disabled,
+  onToggle,
+}: {
+  favorited: boolean;
+  disabled: boolean;
+  onToggle: () => void;
+}) {
+  const scale = React.useRef(new Animated.Value(1)).current;
+  const [isPressed, setIsPressed] = React.useState(false);
+
+  const handlePress = () => {
+    onToggle();
+    scale.setValue(1);
+    Animated.sequence([
+      Animated.timing(scale, {
+        toValue: 1.1,
+        duration: 120,
+        useNativeDriver: true,
+      }),
+      Animated.spring(scale, {
+        toValue: 1,
+        friction: 3,
+        tension: 140,
+        useNativeDriver: true,
+      }),
+    ]).start();
+  };
+
+  return (
+    <Pressable
+      onPress={handlePress}
+      onPressIn={() => setIsPressed(true)}
+      onPressOut={() => setIsPressed(false)}
+      disabled={disabled}
+      hitSlop={10}
+      accessibilityRole="button"
+      accessibilityLabel={favorited ? "Quitar colección de favoritos" : "Agregar colección a favoritos"}
+      accessibilityState={{ selected: favorited, disabled }}
+      style={({ pressed }) => [
+        styles.favoriteThemeButton,
+        { opacity: disabled ? 0.45 : pressed ? 0.68 : 1 },
+      ]}
+    >
+      <Animated.View style={{ transform: [{ scale }] }}>
+        {favorited || isPressed ? (
+          <Ionicons name="heart" size={18} color="#F9F9F9" />
+        ) : (
+          <Ionicons name="heart-outline" size={18} color="#F9F9F9" />
+        )}
+      </Animated.View>
+    </Pressable>
+  );
 }
 
 export default function ThemeTagScreen({
@@ -296,26 +352,11 @@ export default function ThemeTagScreen({
                   {pageTitle}
                 </Text>
                 {slug ? (
-                  <Pressable
-                    onPress={() => void toggleFavoriteTheme(slug)}
+                  <FavoriteThemeHeart
+                    favorited={isFavoriteTheme}
                     disabled={!favoriteThemesHydrated}
-                    hitSlop={10}
-                    accessibilityRole="button"
-                    accessibilityLabel={isFavoriteTheme ? "Quitar colección de favoritos" : "Agregar colección a favoritos"}
-                    accessibilityState={{ selected: isFavoriteTheme, disabled: !favoriteThemesHydrated }}
-                    style={({ pressed }) => [
-                      styles.favoriteThemeButton,
-                      {
-                        opacity: !favoriteThemesHydrated ? 0.45 : pressed ? 0.68 : 1,
-                      },
-                    ]}
-                  >
-                    <Feather
-                      name="heart"
-                      size={24}
-                      color={isFavoriteTheme ? "#BE9650" : colors.foreground}
-                    />
-                  </Pressable>
+                    onToggle={() => void toggleFavoriteTheme(slug)}
+                  />
                 ) : null}
               </View>
               <Text
@@ -507,9 +548,9 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   favoriteThemeButton: {
-    width: 43,
-    height: 43,
-    borderRadius: 21.5,
+    width: 39,
+    height: 39,
+    borderRadius: 19.5,
     borderWidth: 1,
     borderColor: "rgba(255,255,255,0.20)",
     alignItems: "center",
