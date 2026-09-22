@@ -136,7 +136,7 @@ export default function MensajesDelAlmaScreen() {
 
       >
         <StatusBar hidden />
-        <SacredBackground />
+        <SacredBackground variant="gradient" noImage />
 
         {/* Top bar */}
         <View style={[styles.topBar, { paddingTop: topPad + 6 }]}>
