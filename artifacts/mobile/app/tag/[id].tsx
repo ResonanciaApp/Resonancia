@@ -463,22 +463,22 @@ const styles = StyleSheet.create({
   },
   legacyPageTitle: {
     fontFamily: "Manrope",
-    fontSize: 28,
+    fontSize: 27,
     lineHeight: 34,
-    fontWeight: "500",
+    fontWeight: "600",
     textAlign: "left",
     alignSelf: "stretch",
   },
   pageDescription: {
     fontFamily: "Manrope",
-    fontSize: 14,
+    fontSize: 13,
     lineHeight: 20,
     fontWeight: "400",
     marginTop: 10,
     textAlign: "left",
     alignSelf: "stretch",
     opacity: 0.92,
-    transform: [{ translateY: -4 }],
+    transform: [{ translateY: -1 }],
   },
   internalHeader: {
     zIndex: 10,
@@ -559,6 +559,7 @@ const styles = StyleSheet.create({
     marginBottom: 0,
   },
   firstInternalCarousel: {
+    transform: [{ translateY: -6 }],
     marginTop: 23,
   },
   emptySlot: {
