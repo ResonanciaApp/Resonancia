@@ -75,6 +75,7 @@ import { SessionCarousel, CoverCarousel } from "@/components/SessionCarousel";
 import { SessionDurationBadge } from "@/components/SessionDurationBadge";
 import { PremiumBadge } from "@/components/PremiumBadge";
 import { MiRutinaSection } from "@/components/MiRutinaSection";
+import { ContinueMeditationPlaylistCard } from "@/components/ContinueMeditationPlaylistCard";
 import { Image as ExpoImage } from "expo-image";
 import { useAmbientPlayer, AMBIENT_SCENES } from "@/context/AmbientPlayerContext";
 import { useSceneTheme } from "@/context/SceneThemeContext";
@@ -98,6 +99,11 @@ import {
 import type { SceneAnimation } from "@workspace/api-client-react";
 import { SceneAnimationCard } from "@/components/SceneAnimationCard";
 import { useRacha } from "@/context/RachaContext";
+import {
+  computePlaylistCompletion,
+  findInProgressMeditationPlaylist,
+  isMeditativeSessionPlaylist,
+} from "@/lib/editorial-playlist-helpers";
 import { useIntencionDiaria } from "@/context/IntencionDiariaContext";
 import { useSelectedScene } from "@/context/SelectedSceneContext";
 import { useTabBarVisibility } from "@/context/TabBarVisibilityContext";
@@ -1989,6 +1995,7 @@ export default function HomeScreen2({
     favorites,
     sessionProgress,
     getSessionProgress,
+    statEvents,
   } = usePlayer();
   const { previewFlow: previewStreakFlow } = useStreakCelebration();
 
@@ -1997,7 +2004,7 @@ export default function HomeScreen2({
   const { isPremium } = usePremium();
   const { videos } = useVideos();
   const { resonadores } = useResonadores();
-  const { playlists } = useFoldersPlaylists();
+  const { playlists, activeMeditationPlaylist } = useFoldersPlaylists();
   const { presets, loadPreset, openSheet } = useMixer();
   const { openMixer } = useMixerPanel();
   const { openCategory } = useCategoryOverlay();
@@ -2224,7 +2231,49 @@ export default function HomeScreen2({
   const {
     version: catalogVersion,
     status: catalogStatus,
+    editorialPlaylists,
   } = useCatalog();
+  const continueMeditationPlaylist = useMemo(() => {
+    const completedSessionIds = new Set(
+      statEvents
+        .filter((event) => event.completed)
+        .map((event) => event.sessionId),
+    );
+    const activePlaylist = activeMeditationPlaylist
+      ? editorialPlaylists.find(
+          (candidate) => candidate.id === activeMeditationPlaylist.slug,
+        )
+      : undefined;
+    const activeCompletion =
+      activePlaylist && isMeditativeSessionPlaylist(activePlaylist)
+        ? computePlaylistCompletion(activePlaylist.sessionIds, completedSessionIds)
+        : null;
+
+    if (
+      activePlaylist &&
+      activeCompletion &&
+      activeCompletion.total > 0 &&
+      activeCompletion.completed < activeCompletion.total
+    ) {
+      return { playlist: activePlaylist, completion: activeCompletion };
+    }
+
+    const detectedInProgress = findInProgressMeditationPlaylist(
+      editorialPlaylists,
+      completedSessionIds,
+    );
+    if (detectedInProgress) return detectedInProgress;
+
+    if (activePlaylist && activeCompletion && activeCompletion.total > 0) {
+      return { playlist: activePlaylist, completion: activeCompletion };
+    }
+    return null;
+  }, [
+    activeMeditationPlaylist,
+    catalogVersion,
+    editorialPlaylists,
+    statEvents,
+  ]);
   const {
     data: pinnedFeaturedData,
     refetch: refetchPinnedFeatured,
@@ -3004,6 +3053,24 @@ export default function HomeScreen2({
               })()}
             </Pressable>
           </View>
+        )}
+        {isInicio2 && continueMeditationPlaylist && (
+          <ContinueMeditationPlaylistCard
+            title={continueMeditationPlaylist.playlist.title}
+            description={continueMeditationPlaylist.playlist.description}
+            coverSource={
+              continueMeditationPlaylist.playlist.coverUrl
+                ? { uri: continueMeditationPlaylist.playlist.coverUrl }
+                : continueMeditationPlaylist.playlist.cover
+            }
+            completion={continueMeditationPlaylist.completion}
+            onPress={() => {
+              router.push({
+                pathname: "/editorial-playlist/[slug]",
+                params: { slug: continueMeditationPlaylist.playlist.id },
+              } as never);
+            }}
+          />
         )}
         {variant === "inicio3" && featuredMoment && (
           <View style={styles.inicio3SectionDivider} />

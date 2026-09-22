@@ -537,6 +537,7 @@ const styles = StyleSheet.create({
     paddingVertical: 10,
     alignItems: "center",
     justifyContent: "center",
+    backgroundColor: "rgba(0,0,0,0.28)",
   },
   tabLabel: {
     fontFamily: "Manrope",

@@ -407,12 +407,12 @@ const styles = StyleSheet.create({
     gap: 12,
     alignItems: "center",
     justifyContent: "center",
-    backgroundColor: "rgba(0,0,0,0.21)",
+    backgroundColor: "rgba(0,0,0,0.28)",
   },
-  chipTibet: { backgroundColor: "rgba(0,0,0,0.21)" },
-  chipIndigo: { backgroundColor: "rgba(0,0,0,0.21)" },
+  chipTibet: { backgroundColor: "rgba(0,0,0,0.28)" },
+  chipIndigo: { backgroundColor: "rgba(0,0,0,0.28)" },
   chipIndigo2Inactive: {
-    backgroundColor: "rgba(0,0,0,0.21)",
+    backgroundColor: "rgba(0,0,0,0.28)",
     borderColor: "rgba(241,224,255,0.25)",
   },
   chipSelected: {
