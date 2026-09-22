@@ -270,7 +270,7 @@ export function MoodPickerSheet({
         );
         if (todayRecord) {
           setHasCheckedInToday(true);
-          setSelected(todayRecord.moodIds.slice(0, 1));
+          setSelected([]);
         }
       })
       .catch(() => {
@@ -476,10 +476,12 @@ export function MoodPickerSheet({
               showsVerticalScrollIndicator={false}
               contentContainerStyle={[styles.content, { paddingBottom: bottomPad + 28 }]}
             >
-              <Text style={styles.title}>¿Cómo te sientes hoy?</Text>
+              <Text style={styles.title}>
+                {hasCheckedInToday ? "Ya ingresaste tu emoción" : "¿Cómo te sientes hoy?"}
+              </Text>
               <Text style={styles.subtitle}>
                 {hasCheckedInToday
-                  ? "Ya registraste tu emoción de hoy. Podrás hacerlo nuevamente mañana."
+                  ? "Mañana podrás registrar una nuevamente"
                   : "Elige una emoción para personalizar este momento."}
               </Text>
               <View style={styles.grid}>
