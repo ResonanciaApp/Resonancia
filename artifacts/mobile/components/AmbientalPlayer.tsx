@@ -1,4 +1,5 @@
 import { Feather, Ionicons } from "@expo/vector-icons";
+import * as Haptics from "expo-haptics";
 import { LinearGradient } from "expo-linear-gradient";
 import React, {
   useCallback,
@@ -93,6 +94,7 @@ export function AmbientalPlayer({
   // ── UI visibility animation ───────────────────────────────────────────────
   const uiOpacity = useRef(new Animated.Value(1)).current;
   const uiVisibleRef = useRef(true);
+  const favoriteScale = useRef(new Animated.Value(1)).current;
 
   const handleScreenTap = useCallback(() => {
     const nextVisible = !uiVisibleRef.current;
@@ -275,6 +277,22 @@ export function AmbientalPlayer({
             mix.favorited),
       );
   const handleFavorite = () => {
+    if (!session && !mix) return;
+    favoriteScale.setValue(1);
+    Animated.sequence([
+      Animated.timing(favoriteScale, {
+        toValue: 1.25,
+        duration: 120,
+        useNativeDriver: true,
+      }),
+      Animated.spring(favoriteScale, {
+        toValue: 1,
+        friction: 3,
+        tension: 140,
+        useNativeDriver: true,
+      }),
+    ]).start();
+    void Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
     if (session) {
       void toggleFavorite(session.id);
       return;
@@ -348,11 +366,13 @@ export function AmbientalPlayer({
               accessibilityState={{ selected: favorited }}
               testID="ambiental-player-favorite"
             >
-              <Ionicons
-                name={favorited ? "heart" : "heart-outline"}
-                size={22}
-                color="#FFFFFF"
-              />
+              <Animated.View style={{ transform: [{ scale: favoriteScale }] }}>
+                <Ionicons
+                  name={favorited ? "heart" : "heart-outline"}
+                  size={22}
+                  color="#FFFFFF"
+                />
+              </Animated.View>
             </Pressable>
           </View>
 
