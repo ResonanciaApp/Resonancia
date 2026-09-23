@@ -1,8 +1,8 @@
 import MaskedView from "@react-native-masked-view/masked-view";
-import { Feather } from "@expo/vector-icons";
 import { LinearGradient } from "expo-linear-gradient";
 import React from "react";
 import { StyleSheet, Text, View } from "react-native";
+import Svg, { Path } from "react-native-svg";
 
 import { CinematicFadeSlide } from "@/components/CinematicFadeSlide";
 import { useStreak } from "@/hooks/useStreak";
@@ -34,12 +34,16 @@ export function StreakWeekRow({
             ]}
           >
             {active ? (
-              <Feather
-                name="check"
-                size={28}
-                color="#FFFFFF"
-                style={styles.checkMark}
-              />
+              <Svg width={27} height={27} viewBox="0 0 24 24" style={styles.checkMark}>
+                <Path
+                  d="M20 6 9 17l-5-5"
+                  fill="none"
+                  stroke="#FFFFFF"
+                  strokeWidth={1.5}
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                />
+              </Svg>
             ) : (
               <Text style={[styles.dayLabel, isToday && styles.positionedDayLabel]}>
                 {initial}

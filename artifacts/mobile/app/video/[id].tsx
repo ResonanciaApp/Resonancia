@@ -100,7 +100,7 @@ const BUNNY_PLAYER_STYLE_SCRIPT = `
       .plyr--video .plyr__controls .plyr__control:not([data-plyr="play"]):active,
       .plyr--video .plyr__controls .plyr__control:not([data-plyr="play"]).plyr__tab-focus,
       .plyr--video .plyr__controls .plyr__control:not([data-plyr="play"])[aria-expanded="true"] {
-        background: rgba(255,255,255,0.1) !important;
+        background: rgba(255,255,255,0.30) !important;
       }
 
       .plyr__pb .sp__container > .sp__section:last-child {
@@ -214,7 +214,7 @@ export default function VideoPlayerScreen() {
         <View style={styles.videoWrap}>
           {video.playbackUrl ? (
             <WebView
-              key={`bunny-player-style-v6-${webPlayerKey}`}
+              key={`bunny-player-style-v7-${webPlayerKey}`}
               source={{ uri: video.playbackUrl }}
               style={styles.video}
               allowsFullscreenVideo
