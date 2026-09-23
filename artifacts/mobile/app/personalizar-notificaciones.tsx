@@ -55,14 +55,14 @@ const CATEGORY_LABELS: Record<string, string> = {
   charlas: "Reflexiones",
 };
 
-function renderCategoryIcon(categoryId: string) {
+function renderCategoryIcon(categoryId: string, color: string) {
   if (categoryId === "meditaciones-guiadas") {
     return (
       <ExpoImage
         source={require("@/assets/images/cat-meditaciones.png")}
         style={styles.meditationIcon}
         contentFit="contain"
-        tintColor="#F9F9F9"
+        tintColor={color}
       />
     );
   }
@@ -72,7 +72,7 @@ function renderCategoryIcon(categoryId: string) {
         source={require("@/assets/images/cat-sesiones.png")}
         style={styles.categoryImageIcon}
         contentFit="contain"
-        tintColor="#F9F9F9"
+        tintColor={color}
       />
     );
   }
@@ -82,7 +82,7 @@ function renderCategoryIcon(categoryId: string) {
         source={require("@/assets/images/cat-musica.png")}
         style={styles.categoryImageIcon}
         contentFit="contain"
-        tintColor="#F9F9F9"
+        tintColor={color}
       />
     );
   }
@@ -94,7 +94,7 @@ function renderCategoryIcon(categoryId: string) {
         : categoryId === "charlas"
           ? "message-text-outline"
           : "bell-outline";
-  return <MaterialCommunityIcons name={icon} size={categoryId === "ambientales" ? 28 : 22} color="#F9F9F9" />;
+  return <MaterialCommunityIcons name={icon} size={categoryId === "ambientales" ? 28 : 22} color={color} />;
 }
 
 function asOption(value: unknown): PreferenceOption | null {
@@ -313,6 +313,7 @@ export default function PersonalizarNotificacionesScreen() {
                     <View style={styles.categoryGrid}>
                       {categories.map((category) => {
                         const selected = activeCategoryIds.includes(category.id);
+                        const categoryColor = selected ? "#F9F9F9" : "rgba(255,255,255,0.82)";
                         return (
                           <Pressable
                             key={category.id}
@@ -326,19 +327,18 @@ export default function PersonalizarNotificacionesScreen() {
                                 width: categoryCardWidth,
                                 height: categoryCardHeight,
                                 borderColor: selected
-                                  ? colors.primary
+                                  ? "#F9F9F9"
                                   : "rgba(241,224,255,0.25)",
                               },
                               { opacity: pressed ? 0.76 : 1 },
                             ]}
                           >
                             <View style={styles.categoryIcon}>
-                              {renderCategoryIcon(category.id)}
+                              {renderCategoryIcon(category.id, categoryColor)}
                             </View>
-                            <Text style={styles.categoryLabel}>
+                            <Text style={[styles.categoryLabel, { color: categoryColor }]}>
                               {CATEGORY_LABELS[category.id] ?? category.label}
                             </Text>
-                            {selected && <Feather name="check" size={16} color="#FBFBFB" style={styles.check} />}
                           </Pressable>
                         );
                       })}
@@ -366,7 +366,6 @@ export default function PersonalizarNotificacionesScreen() {
                             ]}
                           >
                             <Text style={[styles.pillLabel, selected && styles.pillLabelSelected]}>{tag.label}</Text>
-                            {selected && <Feather name="check" size={14} color="#FBFBFB" />}
                           </Pressable>
                         );
                       })}
@@ -451,8 +450,7 @@ const styles = StyleSheet.create({
   categoryIcon: { height: 32, alignItems: "center", justifyContent: "center", marginBottom: 5 },
   meditationIcon: { width: 20, height: 20 },
   categoryImageIcon: { width: 24, height: 24 },
-  categoryLabel: { color: "#FBFBFB", fontFamily: "Manrope", fontSize: 12, lineHeight: 17, fontWeight: "600", textAlign: "center" },
-  check: { position: "absolute", top: 9, right: 9 },
+  categoryLabel: { fontFamily: "Manrope", fontSize: 12, lineHeight: 17, fontWeight: "600", textAlign: "center" },
   pills: { flexDirection: "row", flexWrap: "wrap", gap: 9 },
   pill: {
     minHeight: 38,
@@ -467,7 +465,7 @@ const styles = StyleSheet.create({
   },
   pillSelected: { borderColor: "rgba(255,255,255,0.75)", backgroundColor: "rgba(0,0,0,0.28)" },
   pillLabel: { color: "rgba(255,255,255,0.82)", fontFamily: "Manrope", fontSize: 13 },
-  pillLabelSelected: { color: "#FBFBFB", fontWeight: "700" },
+  pillLabelSelected: { color: "#F9F9F9" },
   error: { color: "#FFB4B4", fontFamily: "Manrope", fontSize: 13, textAlign: "center", marginTop: 4 },
   saving: { color: "rgba(255,255,255,0.64)", fontFamily: "Manrope", fontSize: 12, textAlign: "center", marginTop: 8 },
 });
