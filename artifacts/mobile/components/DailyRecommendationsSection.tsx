@@ -250,7 +250,7 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     paddingVertical: 14,
     borderRadius: 20,
-    backgroundColor: "rgba(184,117,240,0.2)",
+    backgroundColor: "rgba(0,0,0,0.28)",
   },
   inicio3RefreshButton: {
     marginHorizontal: 11,
