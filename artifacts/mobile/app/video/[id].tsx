@@ -15,6 +15,42 @@ import { useColors } from "@/hooks/useColors";
 import { usePremium } from "@/context/PremiumContext";
 import { useVideosState } from "@/context/VideosContext";
 
+const BUNNY_PLAYER_STYLE_SCRIPT = `
+  (() => {
+    const style = document.createElement("style");
+    style.textContent = \`
+      :root {
+        --plyr-video-background: #000 !important;
+      }
+
+      html,
+      body,
+      .container,
+      .plyr,
+      .plyr__video-wrapper {
+        background: #000 !important;
+      }
+
+      .plyr--full-ui.plyr--video .plyr__control--overlaid {
+        width: 54px !important;
+        height: 54px !important;
+        padding: 15px !important;
+        background: #000 !important;
+      }
+
+      .plyr__controls .plyr__control[data-plyr="play"],
+      .plyr__controls .plyr__control[data-plyr="play"]:hover,
+      .plyr__controls .plyr__control[data-plyr="play"]:focus,
+      .plyr__controls .plyr__control[data-plyr="play"].plyr__tab-focus {
+        background: transparent !important;
+        box-shadow: none !important;
+      }
+    \`;
+    document.head.appendChild(style);
+  })();
+  true;
+`;
+
 export default function VideoPlayerScreen() {
   const { id } = useLocalSearchParams<{ id: string }>();
   const colors = useColors();
@@ -109,6 +145,7 @@ export default function VideoPlayerScreen() {
               javaScriptEnabled
               domStorageEnabled
               scrollEnabled={false}
+              injectedJavaScript={BUNNY_PLAYER_STYLE_SCRIPT}
             />
           ) : (
             <VideoView
