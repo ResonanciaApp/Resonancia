@@ -1,8 +1,6 @@
 import type { ImageSourcePropType } from "react-native";
 
-/** Temas reales de video (deben coincidir con CATALOG_VIDEO_THEMES en @workspace/db). */
-export const VIDEO_THEMES = ["Movimiento", "Respiración", "Naturaleza", "Música"] as const;
-export type VideoTheme = (typeof VIDEO_THEMES)[number];
+export type VideoTheme = string;
 
 /**
  * Sección de videos pregrabados.
@@ -60,7 +58,7 @@ export type VideoItem = {
   rating?: number;
   /** Prioridad editorial: los valores menores aparecen primero en “Popular”. */
   sortOrder?: number;
-  /** Tema real del video (uno de VIDEO_THEMES). Null/undefined = sin tema asignado, no aparece en ningún chip. */
+  /** Etiqueta temática editorial. Null/undefined = sin etiqueta; solo aparece en “Todos”. */
   theme?: VideoTheme | null;
   /** ID del guiador (data/guides.ts) que presenta el video. Sin guideId → sin acciones "Seguir/Ver perfil". */
   guideId?: string;

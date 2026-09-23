@@ -5768,6 +5768,12 @@ export const GetMixerSoundsResponse = zod.object({
 /**
  * @summary Listar videos publicados
  */
+export const listVideosResponseVideosItemThemeMax = 48;
+
+
+export const listVideosResponseVideosItemThemeRegExp = new RegExp('^(?!\\s\*[Tt][Oo][Dd][Oo][Ss]\\s\*$).+');
+
+
 export const ListVideosResponse = zod.object({
   "videos": zod.array(zod.object({
   "id": zod.number(),
@@ -5778,7 +5784,7 @@ export const ListVideosResponse = zod.object({
   "bunnyVideoId": zod.string(),
   "thumbnailObjectPath": zod.string().nullable(),
   "author": zod.string(),
-  "theme": zod.union([zod.literal('Movimiento'),zod.literal('Respiración'),zod.literal('Naturaleza'),zod.literal('Música'),zod.literal(null)]).nullable(),
+  "theme": zod.string().min(1).max(listVideosResponseVideosItemThemeMax).regex(listVideosResponseVideosItemThemeRegExp).nullable().describe('Etiqueta temática editorial; se recortan espacios y se normaliza Unicode. “Todos” está reservado por el filtro global.'),
   "isPremium": zod.boolean(),
   "isNew": zod.boolean(),
   "status": zod.enum(['published', 'draft']),
@@ -5796,6 +5802,12 @@ export const GetVideoParams = zod.object({
   "id": zod.coerce.number()
 })
 
+export const getVideoResponseThemeMax = 48;
+
+
+export const getVideoResponseThemeRegExp = new RegExp('^(?!\\s\*[Tt][Oo][Dd][Oo][Ss]\\s\*$).+');
+
+
 export const GetVideoResponse = zod.object({
   "id": zod.number(),
   "title": zod.string(),
@@ -5805,7 +5817,7 @@ export const GetVideoResponse = zod.object({
   "bunnyVideoId": zod.string(),
   "thumbnailObjectPath": zod.string().nullable(),
   "author": zod.string(),
-  "theme": zod.union([zod.literal('Movimiento'),zod.literal('Respiración'),zod.literal('Naturaleza'),zod.literal('Música'),zod.literal(null)]).nullable(),
+  "theme": zod.string().min(1).max(getVideoResponseThemeMax).regex(getVideoResponseThemeRegExp).nullable().describe('Etiqueta temática editorial; se recortan espacios y se normaliza Unicode. “Todos” está reservado por el filtro global.'),
   "isPremium": zod.boolean(),
   "isNew": zod.boolean(),
   "status": zod.enum(['published', 'draft']),
@@ -5818,6 +5830,12 @@ export const GetVideoResponse = zod.object({
 /**
  * @summary Listar todos los videos (admin)
  */
+export const listAdminVideosResponseVideosItemThemeMax = 48;
+
+
+export const listAdminVideosResponseVideosItemThemeRegExp = new RegExp('^(?!\\s\*[Tt][Oo][Dd][Oo][Ss]\\s\*$).+');
+
+
 export const ListAdminVideosResponse = zod.object({
   "videos": zod.array(zod.object({
   "id": zod.number(),
@@ -5828,7 +5846,7 @@ export const ListAdminVideosResponse = zod.object({
   "bunnyVideoId": zod.string(),
   "thumbnailObjectPath": zod.string().nullable(),
   "author": zod.string(),
-  "theme": zod.union([zod.literal('Movimiento'),zod.literal('Respiración'),zod.literal('Naturaleza'),zod.literal('Música'),zod.literal(null)]).nullable(),
+  "theme": zod.string().min(1).max(listAdminVideosResponseVideosItemThemeMax).regex(listAdminVideosResponseVideosItemThemeRegExp).nullable().describe('Etiqueta temática editorial; se recortan espacios y se normaliza Unicode. “Todos” está reservado por el filtro global.'),
   "isPremium": zod.boolean(),
   "isNew": zod.boolean(),
   "status": zod.enum(['published', 'draft']),
@@ -5842,6 +5860,10 @@ export const ListAdminVideosResponse = zod.object({
 /**
  * @summary Crear registro de video (admin)
  */
+export const createAdminVideoBodyThemeMax = 48;
+
+
+export const createAdminVideoBodyThemeRegExp = new RegExp('^(?!\\s\*[Tt][Oo][Dd][Oo][Ss]\\s\*$).+');
 export const createAdminVideoBodyIsPremiumDefault = false;
 export const createAdminVideoBodyIsNewDefault = false;
 export const createAdminVideoBodyStatusDefault = `published`;
@@ -5855,7 +5877,7 @@ export const CreateAdminVideoBody = zod.object({
   "bunnyVideoId": zod.string(),
   "thumbnailObjectPath": zod.string().nullish(),
   "author": zod.string().optional(),
-  "theme": zod.union([zod.literal('Movimiento'),zod.literal('Respiración'),zod.literal('Naturaleza'),zod.literal('Música'),zod.literal(null)]).nullish(),
+  "theme": zod.string().min(1).max(createAdminVideoBodyThemeMax).regex(createAdminVideoBodyThemeRegExp).nullish().describe('Etiqueta temática editorial; se recortan espacios y se normaliza Unicode. “Todos” está reservado por el filtro global.'),
   "isPremium": zod.boolean().default(createAdminVideoBodyIsPremiumDefault),
   "isNew": zod.boolean().default(createAdminVideoBodyIsNewDefault),
   "status": zod.enum(['published', 'draft']).default(createAdminVideoBodyStatusDefault),
@@ -5870,6 +5892,12 @@ export const UpdateAdminVideoParams = zod.object({
   "id": zod.coerce.number()
 })
 
+export const updateAdminVideoBodyThemeMax = 48;
+
+
+export const updateAdminVideoBodyThemeRegExp = new RegExp('^(?!\\s\*[Tt][Oo][Dd][Oo][Ss]\\s\*$).+');
+
+
 export const UpdateAdminVideoBody = zod.object({
   "title": zod.string().optional(),
   "subtitle": zod.string().optional(),
@@ -5878,12 +5906,18 @@ export const UpdateAdminVideoBody = zod.object({
   "bunnyVideoId": zod.string().optional(),
   "thumbnailObjectPath": zod.string().nullish(),
   "author": zod.string().optional(),
-  "theme": zod.union([zod.literal('Movimiento'),zod.literal('Respiración'),zod.literal('Naturaleza'),zod.literal('Música'),zod.literal(null)]).nullish(),
+  "theme": zod.string().min(1).max(updateAdminVideoBodyThemeMax).regex(updateAdminVideoBodyThemeRegExp).nullish().describe('Etiqueta temática editorial; se recortan espacios y se normaliza Unicode. “Todos” está reservado por el filtro global.'),
   "isPremium": zod.boolean().optional(),
   "isNew": zod.boolean().optional(),
   "status": zod.enum(['published', 'draft']).optional(),
   "sortOrder": zod.number().optional()
 })
+
+export const updateAdminVideoResponseThemeMax = 48;
+
+
+export const updateAdminVideoResponseThemeRegExp = new RegExp('^(?!\\s\*[Tt][Oo][Dd][Oo][Ss]\\s\*$).+');
+
 
 export const UpdateAdminVideoResponse = zod.object({
   "id": zod.number(),
@@ -5894,7 +5928,7 @@ export const UpdateAdminVideoResponse = zod.object({
   "bunnyVideoId": zod.string(),
   "thumbnailObjectPath": zod.string().nullable(),
   "author": zod.string(),
-  "theme": zod.union([zod.literal('Movimiento'),zod.literal('Respiración'),zod.literal('Naturaleza'),zod.literal('Música'),zod.literal(null)]).nullable(),
+  "theme": zod.string().min(1).max(updateAdminVideoResponseThemeMax).regex(updateAdminVideoResponseThemeRegExp).nullable().describe('Etiqueta temática editorial; se recortan espacios y se normaliza Unicode. “Todos” está reservado por el filtro global.'),
   "isPremium": zod.boolean(),
   "isNew": zod.boolean(),
   "status": zod.enum(['published', 'draft']),

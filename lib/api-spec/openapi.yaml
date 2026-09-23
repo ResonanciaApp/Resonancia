@@ -8379,7 +8379,10 @@ components:
         theme:
           type: string
           nullable: true
-          enum: [Movimiento, Respiración, Naturaleza, Música, null]
+          minLength: 1
+          maxLength: 48
+          pattern: '^(?!\s*[Tt][Oo][Dd][Oo][Ss]\s*$).+'
+          description: Etiqueta temática editorial; se recortan espacios y se normaliza Unicode. “Todos” está reservado por el filtro global.
         isPremium:
           type: boolean
         isNew:
@@ -8425,7 +8428,10 @@ components:
         theme:
           type: string
           nullable: true
-          enum: [Movimiento, Respiración, Naturaleza, Música, null]
+          minLength: 1
+          maxLength: 48
+          pattern: '^(?!\s*[Tt][Oo][Dd][Oo][Ss]\s*$).+'
+          description: Etiqueta temática editorial; se recortan espacios y se normaliza Unicode. “Todos” está reservado por el filtro global.
         isPremium:
           type: boolean
           default: false
@@ -8460,7 +8466,10 @@ components:
         theme:
           type: string
           nullable: true
-          enum: [Movimiento, Respiración, Naturaleza, Música, null]
+          minLength: 1
+          maxLength: 48
+          pattern: '^(?!\s*[Tt][Oo][Dd][Oo][Ss]\s*$).+'
+          description: Etiqueta temática editorial; se recortan espacios y se normaliza Unicode. “Todos” está reservado por el filtro global.
         isPremium:
           type: boolean
         isNew:

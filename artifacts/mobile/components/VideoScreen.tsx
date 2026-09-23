@@ -4,7 +4,7 @@ import { LinearGradient } from "expo-linear-gradient";
 import { useRouter } from "expo-router";
 import { SymbolView } from "expo-symbols";
 import { useBackOverride } from "@/context/BackOverrideContext";
-import React, { useMemo, useRef, useState } from "react";
+import React, { useEffect, useMemo, useRef, useState } from "react";
 import {
   ActivityIndicator,
   Modal,
@@ -27,8 +27,11 @@ import { useColors } from "@/hooks/useColors";
 import { useSceneTheme } from "@/context/SceneThemeContext";
 import { isIndigoThemeId } from "@/config/scene-themes";
 import type { VideoItem } from "@/data/videos";
-
-const FILTER_CHIPS = ["Todos", "Movimiento", "Respiración", "Naturaleza", "Música"] as const;
+import {
+  ALL_VIDEOS_FILTER_ID,
+  getVideoFilterChips,
+  matchesVideoFilter,
+} from "@/lib/video-filters";
 
 type SortOption = "popular" | "puntuacion" | "novedades" | "corto" | "largo";
 const SORT_LABELS: Record<SortOption, string> = {
@@ -60,7 +63,7 @@ export function VideoScreen({ showBack = false }: Props) {
   const { videos, isLoading } = useVideos();
 
   const [searchVisible, setSearchVisible] = useState(false);
-  const [activeChip, setActiveChip]     = useState<(typeof FILTER_CHIPS)[number]>("Todos");
+  const [activeFilterId, setActiveFilterId] = useState(ALL_VIDEOS_FILTER_ID);
   const [sortOpen, setSortOpen]         = useState(false);
   const [sortBy, setSortBy]             = useState<SortOption>("popular");
   const [actionsVideo, setActionsVideo] = useState<VideoItem | null>(null);
@@ -70,10 +73,18 @@ export function VideoScreen({ showBack = false }: Props) {
   const topPad    = Platform.OS === "web" ? 16 : Math.max(insets.top, 40);
   const bottomPad = Platform.OS === "web" ? 24 : insets.bottom;
 
-  const filtered = useMemo(() => {
-    let list = videos;
+  const filterChips = useMemo(() => getVideoFilterChips(videos), [videos]);
 
-    if (activeChip !== "Todos") list = list.filter((v) => v.theme === activeChip);
+  useEffect(() => {
+    if (!filterChips.some((filter) => filter.id === activeFilterId)) {
+      setActiveFilterId(ALL_VIDEOS_FILTER_ID);
+    }
+  }, [activeFilterId, filterChips]);
+
+  const filtered = useMemo(() => {
+    let list = videos.filter((video) =>
+      matchesVideoFilter(video, activeFilterId),
+    );
 
     if (sortBy === "popular") list = [...list].sort((a, b) => (a.sortOrder ?? Number.MAX_SAFE_INTEGER) - (b.sortOrder ?? Number.MAX_SAFE_INTEGER));
     else if (sortBy === "puntuacion") list = [...list].sort((a, b) => (b.rating ?? 4.8) - (a.rating ?? 4.8));
@@ -82,7 +93,7 @@ export function VideoScreen({ showBack = false }: Props) {
     else if (sortBy === "largo")  list = [...list].sort((a, b) => parseDurationToSeconds(b.durationLabel) - parseDurationToSeconds(a.durationLabel));
 
     return list;
-  }, [videos, sortBy, activeChip]);
+  }, [videos, sortBy, activeFilterId]);
 
   const searchItems = useMemo(
     () =>
@@ -150,12 +161,12 @@ export function VideoScreen({ showBack = false }: Props) {
             style={styles.chipsScroll}
             contentContainerStyle={styles.chipsRow}
           >
-            {FILTER_CHIPS.map((chip) => {
-              const sel = chip === activeChip;
+            {filterChips.map((filter) => {
+              const sel = filter.id === activeFilterId;
               return (
                 <Pressable
-                  key={chip}
-                  onPress={() => setActiveChip(chip)}
+                  key={filter.id}
+                  onPress={() => setActiveFilterId(filter.id)}
                   style={[styles.chip, activeTheme.id === "tibet" && styles.chipTibet, isIndigoThemeId(activeSceneId) && styles.chipIndigo, sel && styles.chipSel]}
                 >
                   {sel && isIndigoThemeId(activeSceneId) && (
@@ -167,7 +178,7 @@ export function VideoScreen({ showBack = false }: Props) {
                     />
                   )}
                   <Text style={[styles.chipText, { color: sel ? (isIndigoThemeId(activeSceneId) ? "#F9F9F9" : "#0D0A1E") : "#F4F4F4" }]}>
-                    {chip}
+                    {filter.label}
                   </Text>
                 </Pressable>
               );
@@ -199,10 +210,10 @@ export function VideoScreen({ showBack = false }: Props) {
           <View style={styles.empty}>
             <Feather name="film" size={36} color="rgba(255,255,255,0.3)" />
             <Text style={[styles.emptyTitle, { color: colors.foreground }]}>
-              {activeChip !== "Todos" ? "Sin resultados" : "Próximamente"}
+              {activeFilterId !== ALL_VIDEOS_FILTER_ID ? "Sin resultados" : "Próximamente"}
             </Text>
             <Text style={[styles.emptySub, { color: colors.mutedForeground }]}>
-              {activeChip !== "Todos"
+              {activeFilterId !== ALL_VIDEOS_FILTER_ID
                 ? "Probá con otra categoría."
                 : "Pronto vas a encontrar videos aquí."}
             </Text>

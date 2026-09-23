@@ -24,11 +24,7 @@ import { Badge } from "@/components/ui/badge";
 import { Switch } from "@/components/ui/switch";
 import { Textarea } from "@/components/ui/textarea";
 import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
+  Select, SelectContent, SelectItem, SelectTrigger, SelectValue,
 } from "@/components/ui/select";
 import {
   Dialog,
@@ -66,7 +62,8 @@ function bunnyStatusVariant(status: number): "default" | "secondary" | "destruct
 
 // ── Tipos de formulario ────────────────────────────────────────────────────
 
-const VIDEO_THEMES = ["Movimiento", "Respiración", "Naturaleza", "Música"] as const;
+const VIDEO_THEME_MAX_LENGTH = 48;
+const RESERVED_VIDEO_THEME = "Todos";
 
 type VideoForm = {
   title: string;
@@ -253,11 +250,13 @@ function VideoFormModal({
   open,
   onClose,
   editingVideo,
+  existingThemes,
   onSuccess,
 }: {
   open: boolean;
   onClose: () => void;
   editingVideo: CatalogVideo | null;
+  existingThemes: string[];
   onSuccess: () => void;
 }) {
   const isEditing = !!editingVideo;
@@ -335,6 +334,10 @@ function VideoFormModal({
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
     if (!form.title.trim()) { toast.error("El título es requerido"); return; }
+    if (form.theme.trim().toLocaleLowerCase("es") === RESERVED_VIDEO_THEME.toLocaleLowerCase("es")) {
+      toast.error(`“${RESERVED_VIDEO_THEME}” está reservado para mostrar todos los videos`);
+      return;
+    }
 
     try {
       setSaving(true);
@@ -352,7 +355,7 @@ function VideoFormModal({
         thumbPath = await uploadThumbnail(thumbFile);
       }
 
-      const theme = VIDEO_THEMES.find((t) => t === form.theme);
+      const theme = form.theme.trim().normalize("NFC").replace(/\s+/g, " ");
 
       const payload = {
         title: form.title.trim(),
@@ -362,7 +365,7 @@ function VideoFormModal({
         bunnyVideoId: bunnyId.trim(),
         thumbnailObjectPath: thumbPath || null,
         author: form.author.trim() || "Casa del Cuenco",
-        theme: theme ?? null,
+        theme: theme || null,
         isPremium: form.isPremium,
         isNew: form.isNew,
         status: form.status,
@@ -583,21 +586,23 @@ function VideoFormModal({
           </div>
 
           <div className="space-y-2">
-            <Label>Tema (para filtro)</Label>
-            <Select
-              value={form.theme || "none"}
-              onValueChange={(v) => setField("theme", v === "none" ? "" : v)}
-            >
-              <SelectTrigger>
-                <SelectValue placeholder="Sin tema" />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectItem value="none">Sin tema</SelectItem>
-                {VIDEO_THEMES.map((t) => (
-                  <SelectItem key={t} value={t}>{t}</SelectItem>
-                ))}
-              </SelectContent>
-            </Select>
+            <Label htmlFor="video-theme">Etiqueta temática (para filtro)</Label>
+            <Input
+              id="video-theme"
+              list="video-theme-options"
+              value={form.theme}
+              maxLength={VIDEO_THEME_MAX_LENGTH}
+              onChange={(e) => setField("theme", e.target.value)}
+              placeholder="Escribí una etiqueta o elegí una existente"
+            />
+            <datalist id="video-theme-options">
+              {existingThemes.map((theme) => (
+                <option key={theme} value={theme} />
+              ))}
+            </datalist>
+            <p className="text-xs text-muted-foreground">
+              Esta etiqueta crea automáticamente un tab en la pantalla de Videos. Dejala vacía para mostrar el video solo en “Todos”.
+            </p>
           </div>
 
           <div className="grid grid-cols-2 gap-4">
@@ -682,6 +687,14 @@ export default function VideosPage() {
   const [deletingId, setDeletingId] = useState<number | null>(null);
 
   const videos = data?.videos ?? [];
+  const existingThemes = Array.from(
+    new Map(
+      videos
+        .map((video) => video.theme?.trim().normalize("NFC").replace(/\s+/g, " "))
+        .filter((theme): theme is string => Boolean(theme))
+        .map((theme) => [theme.toLocaleLowerCase("es"), theme]),
+    ).values(),
+  );
 
   function openCreate() {
     setEditingVideo(null);
@@ -780,6 +793,7 @@ export default function VideosPage() {
         open={modalOpen}
         onClose={() => { setModalOpen(false); setEditingVideo(null); }}
         editingVideo={editingVideo}
+        existingThemes={existingThemes}
         onSuccess={handleSuccess}
       />
     </div>

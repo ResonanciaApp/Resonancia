@@ -2826,16 +2826,6 @@ export interface GuideConfigUpdate {
   isLiveEnabled?: boolean;
 }
 
-export type CatalogVideoTheme = typeof CatalogVideoTheme[keyof typeof CatalogVideoTheme] | null;
-
-
-export const CatalogVideoTheme = {
-  Movimiento: 'Movimiento',
-  Respiración: 'Respiración',
-  Naturaleza: 'Naturaleza',
-  Música: 'Música',
-} as const;
-
 export type CatalogVideoStatus = typeof CatalogVideoStatus[keyof typeof CatalogVideoStatus];
 
 
@@ -2853,7 +2843,13 @@ export interface CatalogVideo {
   bunnyVideoId: string;
   thumbnailObjectPath: string | null;
   author: string;
-  theme: CatalogVideoTheme;
+  /**
+     * Etiqueta temática editorial; se recortan espacios y se normaliza Unicode. “Todos” está reservado por el filtro global.
+     * @minLength 1
+     * @maxLength 48
+     * @pattern ^(?!\s*[Tt][Oo][Dd][Oo][Ss]\s*$).+
+     */
+  theme: string | null;
   isPremium: boolean;
   isNew: boolean;
   status: CatalogVideoStatus;
@@ -2865,16 +2861,6 @@ export interface CatalogVideo {
 export interface VideosListResponse {
   videos: CatalogVideo[];
 }
-
-export type CreateVideoBodyTheme = typeof CreateVideoBodyTheme[keyof typeof CreateVideoBodyTheme] | null;
-
-
-export const CreateVideoBodyTheme = {
-  Movimiento: 'Movimiento',
-  Respiración: 'Respiración',
-  Naturaleza: 'Naturaleza',
-  Música: 'Música',
-} as const;
 
 export type CreateVideoBodyStatus = typeof CreateVideoBodyStatus[keyof typeof CreateVideoBodyStatus];
 
@@ -2892,22 +2878,18 @@ export interface CreateVideoBody {
   bunnyVideoId: string;
   thumbnailObjectPath?: string | null;
   author?: string;
-  theme?: CreateVideoBodyTheme;
+  /**
+     * Etiqueta temática editorial; se recortan espacios y se normaliza Unicode. “Todos” está reservado por el filtro global.
+     * @minLength 1
+     * @maxLength 48
+     * @pattern ^(?!\s*[Tt][Oo][Dd][Oo][Ss]\s*$).+
+     */
+  theme?: string | null;
   isPremium?: boolean;
   isNew?: boolean;
   status?: CreateVideoBodyStatus;
   sortOrder?: number;
 }
-
-export type UpdateVideoBodyTheme = typeof UpdateVideoBodyTheme[keyof typeof UpdateVideoBodyTheme] | null;
-
-
-export const UpdateVideoBodyTheme = {
-  Movimiento: 'Movimiento',
-  Respiración: 'Respiración',
-  Naturaleza: 'Naturaleza',
-  Música: 'Música',
-} as const;
 
 export type UpdateVideoBodyStatus = typeof UpdateVideoBodyStatus[keyof typeof UpdateVideoBodyStatus];
 
@@ -2925,7 +2907,13 @@ export interface UpdateVideoBody {
   bunnyVideoId?: string;
   thumbnailObjectPath?: string | null;
   author?: string;
-  theme?: UpdateVideoBodyTheme;
+  /**
+     * Etiqueta temática editorial; se recortan espacios y se normaliza Unicode. “Todos” está reservado por el filtro global.
+     * @minLength 1
+     * @maxLength 48
+     * @pattern ^(?!\s*[Tt][Oo][Dd][Oo][Ss]\s*$).+
+     */
+  theme?: string | null;
   isPremium?: boolean;
   isNew?: boolean;
   status?: UpdateVideoBodyStatus;

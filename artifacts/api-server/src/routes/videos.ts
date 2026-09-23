@@ -1,9 +1,10 @@
 import { Router, type IRouter } from "express";
 import { and, asc, desc, eq } from "drizzle-orm";
 import { z } from "zod";
-import { db, catalogVideosTable, CATALOG_VIDEO_THEMES, type CatalogVideo } from "@workspace/db";
+import { db, catalogVideosTable, type CatalogVideo } from "@workspace/db";
 import { requireAuth } from "../middlewares/requireAuth";
 import { requireRole } from "../middlewares/requireRole";
+import { optionalVideoThemeSchema } from "../lib/videoTheme";
 
 const router: IRouter = Router();
 
@@ -19,7 +20,7 @@ const CreateVideoBody = z.object({
   bunnyVideoId: z.string().trim().min(1, "El bunnyVideoId es requerido"),
   thumbnailObjectPath: z.string().nullable().optional(),
   author: z.string().optional(),
-  theme: z.string().nullable().optional(),
+  theme: optionalVideoThemeSchema,
   isPremium: z.boolean().optional(),
   isNew: z.boolean().optional(),
   status: z.enum(["published", "draft"]).optional(),
@@ -154,11 +155,6 @@ router.post("/admin/videos", requireAuth, requireRole("admin"), async (req, res)
     sortOrder,
   } = parsed.data;
 
-  if (theme && !(CATALOG_VIDEO_THEMES as readonly string[]).includes(theme)) {
-    res.status(400).json({ error: "Tema inválido" });
-    return;
-  }
-
   try {
     const [created] = await db
       .insert(catalogVideosTable)
@@ -210,10 +206,6 @@ router.patch("/admin/videos/:id", requireAuth, requireRole("admin"), async (req,
     }
 
     const body = parsedBody.data;
-    if (body.theme && !(CATALOG_VIDEO_THEMES as readonly string[]).includes(body.theme)) {
-      res.status(400).json({ error: "Tema inválido" });
-      return;
-    }
     const updates: Partial<typeof catalogVideosTable.$inferInsert> = {};
     if (body.title !== undefined) updates.title = body.title;
     if (body.subtitle !== undefined) updates.subtitle = body.subtitle;

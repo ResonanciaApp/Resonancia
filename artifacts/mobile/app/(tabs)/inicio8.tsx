@@ -3561,8 +3561,8 @@ const styles = StyleSheet.create({
     position: "relative",
   },
   inicio3HeroAvatarButtonBorder: {
-    borderWidth: 1,
-    borderColor: "rgba(255,255,255,0.7)",
+    borderWidth: 1.5,
+    borderColor: "rgba(0,0,0,0.35)",
     borderRadius: 22,
   },
   inicio2HeroPremiumBadge: {

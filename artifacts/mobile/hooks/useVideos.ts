@@ -1,6 +1,6 @@
 import { useListVideos, getListVideosQueryKey } from "@workspace/api-client-react";
 import type { CatalogVideo as ApiVideo } from "@workspace/api-client-react";
-import { VIDEOS as STATIC_VIDEOS, type VideoItem } from "@/data/videos";
+import type { VideoItem } from "@/data/videos";
 
 const CDN_HOST = process.env.EXPO_PUBLIC_BUNNY_CDN_HOSTNAME || "vz-881ead65-839.b-cdn.net";
 const API_BASE = (process.env.EXPO_PUBLIC_API_URL ?? "").replace(/\/+$/, "");
@@ -46,8 +46,8 @@ export function apiVideoToItem(v: ApiVideo): VideoItem {
 
 /**
  * Hook que devuelve la lista de videos:
- * - Si la API responde → usa los de DB (Bunny)
- * - Si no hay datos o falla → fallback a STATIC_VIDEOS (datos locales hardcodeados)
+ * La API es la fuente editorial: una respuesta vacía o un error no debe
+ * resucitar videos locales de prueba ni sus etiquetas.
  */
 export function useVideos(): {
   videos: VideoItem[];
@@ -60,7 +60,7 @@ export function useVideos(): {
 
   const apiVideos = data?.videos;
 
-  if (apiVideos && apiVideos.length > 0) {
+  if (apiVideos) {
     return {
       videos: apiVideos.map(apiVideoToItem),
       isLoading: false,
@@ -68,9 +68,8 @@ export function useVideos(): {
     };
   }
 
-  // Fallback a datos estáticos mientras carga o si hay error
   return {
-    videos: isLoading ? [] : STATIC_VIDEOS,
+    videos: [],
     isLoading,
     isError,
   };
