@@ -24,9 +24,11 @@ import {
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 
 import { useBackOverride } from "@/context/BackOverrideContext";
+import { useNotifications } from "@/context/NotificationsContext";
 import { useSceneTheme } from "@/context/SceneThemeContext";
 import { useColors } from "@/hooks/useColors";
 import { SavedConfirmationBanner } from "@/components/SavedConfirmationBanner";
+import { SessionBadgeGlass } from "@/components/SessionDurationBadge";
 
 type PreferenceOption = {
   id: string;
@@ -186,6 +188,7 @@ export default function PersonalizarNotificacionesScreen() {
   });
   const queryClient = useQueryClient();
   const updatePreferences = useUpdateNotificationPreferences();
+  const { unreadCount } = useNotifications();
   const response = (preferencesQ.data ?? {}) as PreferencesResponse;
 
   const categories = useMemo(
@@ -322,6 +325,38 @@ export default function PersonalizarNotificacionesScreen() {
                 {({ pressed }) => (
                   <View style={[styles.libraryTabBackBtn, { opacity: pressed ? 0.7 : 1 }]}>
                     <Feather name="chevron-left" size={28} color="#FBFBFB" style={{ transform: [{ translateX: -1 }] }} />
+                  </View>
+                )}
+              </Pressable>
+              <Pressable
+                onPress={() => router.push("/notificaciones" as never)}
+                hitSlop={6}
+                style={styles.notificationCountHitArea}
+                accessibilityRole="button"
+                accessibilityLabel={`${unreadCount} notificaciones sin leer`}
+                testID="notification-preferences-open-notifications"
+              >
+                {({ pressed }) => (
+                  <View
+                    style={[
+                      styles.notificationCountButton,
+                      unreadCount === 0 && styles.notificationCountButtonInactive,
+                      { opacity: pressed ? 0.7 : 1 },
+                    ]}
+                  >
+                    {unreadCount > 0 && (
+                      <View pointerEvents="none" style={styles.notificationCountGlass}>
+                        <SessionBadgeGlass showBlackTint={false} showWhiteTint />
+                      </View>
+                    )}
+                    <Text
+                      style={[
+                        styles.notificationCountText,
+                        unreadCount === 0 && styles.notificationCountTextInactive,
+                      ]}
+                    >
+                      {unreadCount > 99 ? "99+" : unreadCount}
+                    </Text>
                   </View>
                 )}
               </Pressable>
@@ -466,6 +501,46 @@ const styles = StyleSheet.create({
     alignItems: "center",
     justifyContent: "center",
     backgroundColor: "rgba(0,0,0,0.28)",
+  },
+  notificationCountHitArea: {
+    position: "absolute",
+    right: 20,
+    top: 0,
+    width: 48,
+    height: 48,
+    alignItems: "center",
+    justifyContent: "center",
+    zIndex: 20,
+    elevation: 20,
+  },
+  notificationCountButton: {
+    width: 43,
+    height: 43,
+    borderRadius: 21.5,
+    borderWidth: 1.2,
+    borderColor: "rgba(241,224,255,0.25)",
+    alignItems: "center",
+    justifyContent: "center",
+    overflow: "hidden",
+  },
+  notificationCountButtonInactive: {
+    backgroundColor: "rgba(0,0,0,0.28)",
+  },
+  notificationCountGlass: {
+    ...StyleSheet.absoluteFillObject,
+    borderRadius: 21.5,
+    overflow: "hidden",
+  },
+  notificationCountText: {
+    color: "#F9F9F9",
+    fontFamily: "Manrope",
+    fontSize: 14,
+    lineHeight: 18,
+    fontWeight: "700",
+    textAlign: "center",
+  },
+  notificationCountTextInactive: {
+    color: "rgba(249,249,249,0.40)",
   },
   stickyTitle: {
     fontFamily: "Manrope",
