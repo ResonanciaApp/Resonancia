@@ -33,6 +33,8 @@ import {
   View,
 } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
+
+const PROFILE_GRADIENT = ["#2A276A", "#1F2D6E", "#112F6F"] as const;
 import MaskedView from "@react-native-masked-view/masked-view";
 
 import {
@@ -1317,14 +1319,14 @@ export function ProfileScreenBase({
         style={[StyleSheet.absoluteFill, { opacity: crossFadeAnim.interpolate({ inputRange: [0, 1], outputRange: [1, 0] }) }]}
         pointerEvents="none"
       >
-        <LinearGradient colors={[bgFrom[0], bgFrom[1], ...bgFrom.slice(2)]} style={StyleSheet.absoluteFill} start={{ x: 0, y: 0 }} end={{ x: 0, y: 1 }} />
+        <LinearGradient colors={PROFILE_GRADIENT} locations={[0, 0.5, 1]} style={StyleSheet.absoluteFill} start={{ x: 0.5, y: 0 }} end={{ x: 0.5, y: 1 }} />
       </Animated.View>
       {/* Fondo nuevo — aparece */}
       <Animated.View
         style={[StyleSheet.absoluteFill, { opacity: crossFadeAnim }]}
         pointerEvents="none"
       >
-        <LinearGradient colors={[bgTo[0], bgTo[1], ...bgTo.slice(2)]} style={StyleSheet.absoluteFill} start={{ x: 0, y: 0 }} end={{ x: 0, y: 1 }} />
+        <LinearGradient colors={PROFILE_GRADIENT} locations={[0, 0.5, 1]} style={StyleSheet.absoluteFill} start={{ x: 0.5, y: 0 }} end={{ x: 0.5, y: 1 }} />
       </Animated.View>
       {/* Geometrías de la creación seleccionada — fade-in al montar + crossfade de colores */}
       {activeBgCreation && (
@@ -1350,11 +1352,6 @@ export function ProfileScreenBase({
         </Animated.View>
       )}
       <StatusBar barStyle="light-content" />
-      <SacredBackground
-        variant="gradient"
-        noImage
-        ambientGlowMode="none"
-      />
       <GeometrixOverlay active={profileGeoActive} />
 
       <View style={styles.contentShift}>
@@ -1365,7 +1362,7 @@ export function ProfileScreenBase({
             styles.profileStickyHeader,
             {
               paddingTop: topPad + 2,
-              backgroundColor: activeTheme.gradient[0] as string,
+              backgroundColor: PROFILE_GRADIENT[0],
               opacity: profileStickyHeaderOpacity,
             },
           ]}
