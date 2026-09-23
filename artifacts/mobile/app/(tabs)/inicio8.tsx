@@ -3827,6 +3827,8 @@ const styles = StyleSheet.create({
   },
   inicio3DailyWisdomTitle: {
     fontFamily: "CormorantGaramond",
+    fontSize: 28,
+    lineHeight: 33,
   },
   inicio3HeroDescription: {
     maxWidth: "86%",
