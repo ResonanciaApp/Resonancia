@@ -89,6 +89,9 @@ import { SleepReminderSheet } from "@/components/SleepReminderSheet";
 import { FilledSunIcon } from "@/components/FilledSunIcon";
 import { useMixerPanel } from "@/context/MixerPanelContext";
 
+const PROFILE_INDIGO_2_GRADIENT = ["#361D5E", "#322366", "#2A276A", "#1F2D6E", "#112F6F"] as const;
+const PROFILE_INDIGO_2_LOCATIONS = [0, 0.25, 0.5, 0.75, 1] as const;
+
 const REFLECTION_BANNER_ENTRY_DISTANCE = 86;
 const REFLECTION_BANNER_ENTRY_DURATION = 380;
 const REFLECTION_BANNER_HOLD_DURATION = 1800;
@@ -957,8 +960,8 @@ export function ProfileScreenBase({
   // retiró de la UI (WatercolorBtn); ya no debe tomar el color de una paleta
   // guardada previamente en AsyncStorage (@profile_bg_gradient/@profile_bg_creation).
   const activeBgColors = useMemo((): readonly string[] => {
-    return activeTheme.gradient;
-  }, [activeTheme]);
+    return PROFILE_INDIGO_2_GRADIENT;
+  }, []);
 
   // Creación activa (para renderizar glyphs en el fondo)
   const activeBgCreation = useMemo(
@@ -969,7 +972,7 @@ export function ProfileScreenBase({
   const glyphSize = width * 0.96;
 
   // ── Crossfade de fondo ────────────────────────────────────────────────────
-  const defaultBg = activeTheme.gradient;
+  const defaultBg = PROFILE_INDIGO_2_GRADIENT;
   const [bgFrom, setBgFrom] = useState<readonly string[]>(defaultBg);
   const [bgTo, setBgTo] = useState<readonly string[]>(defaultBg);
   const crossFadeAnim = useRef(new Animated.Value(1)).current;
@@ -1317,14 +1320,26 @@ export function ProfileScreenBase({
         style={[StyleSheet.absoluteFill, { opacity: crossFadeAnim.interpolate({ inputRange: [0, 1], outputRange: [1, 0] }) }]}
         pointerEvents="none"
       >
-        <LinearGradient colors={[bgFrom[0], bgFrom[1], ...bgFrom.slice(2)]} style={StyleSheet.absoluteFill} start={{ x: 0, y: 0 }} end={{ x: 0, y: 1 }} />
+        <LinearGradient
+          colors={[bgFrom[0], bgFrom[1], ...bgFrom.slice(2)]}
+          locations={PROFILE_INDIGO_2_LOCATIONS}
+          style={StyleSheet.absoluteFill}
+          start={{ x: 0, y: 0 }}
+          end={{ x: 0, y: 1 }}
+        />
       </Animated.View>
       {/* Fondo nuevo — aparece */}
       <Animated.View
         style={[StyleSheet.absoluteFill, { opacity: crossFadeAnim }]}
         pointerEvents="none"
       >
-        <LinearGradient colors={[bgTo[0], bgTo[1], ...bgTo.slice(2)]} style={StyleSheet.absoluteFill} start={{ x: 0, y: 0 }} end={{ x: 0, y: 1 }} />
+        <LinearGradient
+          colors={[bgTo[0], bgTo[1], ...bgTo.slice(2)]}
+          locations={PROFILE_INDIGO_2_LOCATIONS}
+          style={StyleSheet.absoluteFill}
+          start={{ x: 0, y: 0 }}
+          end={{ x: 0, y: 1 }}
+        />
       </Animated.View>
       {/* Geometrías de la creación seleccionada — fade-in al montar + crossfade de colores */}
       {activeBgCreation && (
