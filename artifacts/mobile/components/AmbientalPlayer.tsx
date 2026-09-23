@@ -22,7 +22,6 @@ import {
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import Svg, { Path, Rect } from "react-native-svg";
 
-import { useNotifications } from "@/context/NotificationsContext";
 import { type MixPreset, useMixer } from "@/context/MixerContext";
 import { usePlayer } from "@/context/PlayerContext";
 import { useSceneTheme } from "@/context/SceneThemeContext";
@@ -59,7 +58,6 @@ export function AmbientalPlayer({
   const mixCatalog = useCoverPresetCatalog("mix");
   const insets = useSafeAreaInsets();
   const { theme } = useSceneTheme();
-  const { unreadCount } = useNotifications();
   const {
     currentSession,
     isPlaying,
@@ -67,6 +65,8 @@ export function AmbientalPlayer({
     pauseResume,
     sleepTimerRemaining,
     stop,
+    isFavorite,
+    toggleFavorite,
   } = usePlayer();
   const {
     loadedPresetId,
@@ -74,6 +74,8 @@ export function AmbientalPlayer({
     sleepTimerRemaining: mixTimerRemaining,
     togglePlay: toggleMixPlay,
     stopAll: stopMix,
+    presets,
+    togglePresetFavorite,
   } = useMixer();
   const isMixMode = mix !== null;
   const playbackId = isMixMode ? loadedPresetId : currentSession?.id ?? null;
@@ -265,6 +267,20 @@ export function AmbientalPlayer({
 
   const countdown =
     playbackTimerRemaining ?? Math.max(0, initialMinutes * 60);
+  const favorited = session
+    ? isFavorite(session.id)
+    : Boolean(
+        mix &&
+          (presets.find((preset) => preset.id === mix.id)?.favorited ??
+            mix.favorited),
+      );
+  const handleFavorite = () => {
+    if (session) {
+      void toggleFavorite(session.id);
+      return;
+    }
+    if (mix) togglePresetFavorite(mix.id);
+  };
 
   if (!rendered) return null;
 
@@ -319,20 +335,25 @@ export function AmbientalPlayer({
 
             <Text style={styles.headerTitle}>Contador</Text>
 
-            <View
-              style={styles.ghostPill}
-              accessible={false}
-              importantForAccessibility="no"
+            <Pressable
+              onPress={handleFavorite}
+              style={({ pressed }) => [
+                styles.ghostPill,
+                pressed && styles.buttonPressed,
+              ]}
+              accessibilityRole="button"
+              accessibilityLabel={
+                favorited ? "Quitar de Mis favoritos" : "Guardar en Mis favoritos"
+              }
+              accessibilityState={{ selected: favorited }}
+              testID="ambiental-player-favorite"
             >
-              <Ionicons name="notifications" size={20} color="#FFFFFF" />
-              {unreadCount > 0 && (
-                <View style={styles.notificationBadge}>
-                  <Text style={styles.notificationBadgeText}>
-                    {unreadCount > 9 ? "9+" : unreadCount}
-                  </Text>
-                </View>
-              )}
-            </View>
+              <Ionicons
+                name={favorited ? "heart" : "heart-outline"}
+                size={22}
+                color="#FFFFFF"
+              />
+            </Pressable>
           </View>
 
           <View style={styles.countdownContainer} pointerEvents="none">
@@ -467,25 +488,6 @@ const styles = StyleSheet.create({
     fontFamily: "Manrope",
     fontSize: 16,
     fontWeight: "600",
-  },
-  notificationBadge: {
-    position: "absolute",
-    top: 4,
-    right: 3,
-    minWidth: 15,
-    height: 15,
-    paddingHorizontal: 3,
-    borderRadius: 8,
-    alignItems: "center",
-    justifyContent: "center",
-    backgroundColor: "#BE9650",
-  },
-  notificationBadgeText: {
-    color: "#FFFFFF",
-    fontFamily: "Manrope",
-    fontSize: 8,
-    fontWeight: "800",
-    lineHeight: 10,
   },
   countdownContainer: {
     ...StyleSheet.absoluteFillObject,
