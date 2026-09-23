@@ -667,94 +667,97 @@ export function ExploreScreen({
       >
         <View style={styles.scrollContent}>
           {featuredMoment && (
-            <View style={styles.featuredMomentSection}>
-              <Text style={styles.sectionTitle}>Para este momento</Text>
-              <Pressable
-                onPress={() => {
-                  handleSessionPress(featuredMoment);
-                }}
-                accessibilityRole="button"
-                accessibilityLabel={featuredMoment.title}
-                style={({ pressed }) => ({ opacity: pressed ? 0.88 : 1 })}
-              >
-                <View style={styles.heroImageContainer}>
-                  <Image
-                    source={featuredMoment.image}
-                    style={styles.heroImage}
-                    contentFit="cover"
-                    cachePolicy="memory-disk"
-                  />
-                  <PremiumBadge
-                    session={featuredMoment}
-                    size={22}
-                    top={16}
-                    left={16}
-                  />
-                  <SessionDurationBadge
-                    label={featuredMoment.durationLabel}
-                    whiteGlass
-                    style={styles.featuredMomentDuration}
-                  />
-                </View>
-                {(() => {
-                  const guideIds = featuredMoment.guideIds?.length
-                    ? featuredMoment.guideIds
-                    : featuredMoment.guideId
-                      ? [featuredMoment.guideId]
-                      : [];
-                  const guide = guideIds
-                    .map((id) => resonadores.find((profile) => profile.id === id) ?? getGuide(id))
-                    .find(Boolean);
-                  const artist = featuredMoment.artistId
-                    ? getArtist(featuredMoment.artistId)
-                    : undefined;
-                  const defaultGuide = getGuide();
-                  const authorName = guide?.name ?? artist?.name ?? defaultGuide.name;
-                  const authorPhoto = guide?.photo ?? artist?.photo ?? defaultGuide.photo;
-                  return (
-                    <View style={styles.heroMeta}>
-                      {authorPhoto ? (
-                        <Image
-                          source={authorPhoto}
-                          style={styles.heroAvatar}
-                          contentFit="cover"
-                          cachePolicy="memory-disk"
-                        />
-                      ) : (
-                        <View style={[styles.heroAvatar, styles.heroAvatarFallback]}>
-                          <Text style={styles.heroAvatarInitial}>
-                            {authorName.charAt(0).toUpperCase()}
+            <>
+              <View style={styles.featuredMomentSection}>
+                <Text style={styles.sectionTitle}>Para este momento</Text>
+                <Pressable
+                  onPress={() => {
+                    handleSessionPress(featuredMoment);
+                  }}
+                  accessibilityRole="button"
+                  accessibilityLabel={featuredMoment.title}
+                  style={({ pressed }) => ({ opacity: pressed ? 0.88 : 1 })}
+                >
+                  <View style={styles.heroImageContainer}>
+                    <Image
+                      source={featuredMoment.image}
+                      style={styles.heroImage}
+                      contentFit="cover"
+                      cachePolicy="memory-disk"
+                    />
+                    <PremiumBadge
+                      session={featuredMoment}
+                      size={22}
+                      top={16}
+                      left={16}
+                    />
+                    <SessionDurationBadge
+                      label={featuredMoment.durationLabel}
+                      whiteGlass
+                      style={styles.featuredMomentDuration}
+                    />
+                  </View>
+                  {(() => {
+                    const guideIds = featuredMoment.guideIds?.length
+                      ? featuredMoment.guideIds
+                      : featuredMoment.guideId
+                        ? [featuredMoment.guideId]
+                        : [];
+                    const guide = guideIds
+                      .map((id) => resonadores.find((profile) => profile.id === id) ?? getGuide(id))
+                      .find(Boolean);
+                    const artist = featuredMoment.artistId
+                      ? getArtist(featuredMoment.artistId)
+                      : undefined;
+                    const defaultGuide = getGuide();
+                    const authorName = guide?.name ?? artist?.name ?? defaultGuide.name;
+                    const authorPhoto = guide?.photo ?? artist?.photo ?? defaultGuide.photo;
+                    return (
+                      <View style={styles.heroMeta}>
+                        {authorPhoto ? (
+                          <Image
+                            source={authorPhoto}
+                            style={styles.heroAvatar}
+                            contentFit="cover"
+                            cachePolicy="memory-disk"
+                          />
+                        ) : (
+                          <View style={[styles.heroAvatar, styles.heroAvatarFallback]}>
+                            <Text style={styles.heroAvatarInitial}>
+                              {authorName.charAt(0).toUpperCase()}
+                            </Text>
+                          </View>
+                        )}
+                        <View style={styles.heroMetaCopy}>
+                          <Text
+                            style={[
+                              styles.heroMetaText,
+                              { color: activeTheme.accent ?? "#c2c2c2" },
+                            ]}
+                            numberOfLines={1}
+                          >
+                            {featuredMoment.categoryLabel}
+                          </Text>
+                          <Text style={styles.heroTitle} numberOfLines={2}>
+                            {featuredMoment.title}
+                          </Text>
+                          <Text
+                            style={[
+                              styles.heroAuthor,
+                              { color: activeTheme.accent ?? "#c2c2c2" },
+                            ]}
+                            numberOfLines={1}
+                          >
+                            {authorName}
                           </Text>
                         </View>
-                      )}
-                      <View style={styles.heroMetaCopy}>
-                        <Text
-                          style={[
-                            styles.heroMetaText,
-                            { color: activeTheme.accent ?? "#c2c2c2" },
-                          ]}
-                          numberOfLines={1}
-                        >
-                          {featuredMoment.categoryLabel}
-                        </Text>
-                        <Text style={styles.heroTitle} numberOfLines={2}>
-                          {featuredMoment.title}
-                        </Text>
-                        <Text
-                          style={[
-                            styles.heroAuthor,
-                            { color: activeTheme.accent ?? "#c2c2c2" },
-                          ]}
-                          numberOfLines={1}
-                        >
-                          {authorName}
-                        </Text>
                       </View>
-                    </View>
-                  );
-                })()}
-              </Pressable>
-            </View>
+                    );
+                  })()}
+                </Pressable>
+              </View>
+              <View style={styles.sectionDivider} />
+            </>
           )}
 
           <View style={styles.newInResonanceSection}>
@@ -1231,6 +1234,7 @@ const styles = StyleSheet.create({
   sectionTitle: { fontFamily: "Manrope", fontSize: 17, fontWeight: "700", letterSpacing: 0.3, color: "#FBFBFB", marginBottom: 17 },
   featuredMomentSection: {
     paddingHorizontal: H_PAD,
+    marginTop: 33,
     marginBottom: SECTION_GAP,
   },
   heroImageContainer: {
@@ -1501,7 +1505,7 @@ const styles = StyleSheet.create({
   },
   newInResonanceSection: {
     paddingHorizontal: H_PAD,
-    marginTop: 33,
+    marginTop: 0,
     marginBottom: SECTION_GAP,
   },
   newInResonanceHeader: {
