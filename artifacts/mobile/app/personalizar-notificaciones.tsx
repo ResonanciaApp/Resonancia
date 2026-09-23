@@ -12,7 +12,6 @@ import { router, Stack } from "expo-router";
 import React, { useEffect, useMemo, useRef, useState } from "react";
 import {
   ActivityIndicator,
-  Animated,
   Platform,
   Pressable,
   ScrollView,
@@ -26,8 +25,8 @@ import { useSafeAreaInsets } from "react-native-safe-area-context";
 
 import { useBackOverride } from "@/context/BackOverrideContext";
 import { useSceneTheme } from "@/context/SceneThemeContext";
-import { CONTENT_CATEGORIES } from "@/data/content-categories";
 import { useColors } from "@/hooks/useColors";
+import { SavedConfirmationBanner } from "@/components/SavedConfirmationBanner";
 
 type PreferenceOption = {
   id: string;
@@ -119,20 +118,8 @@ function NotificationCategoryCard({
   height: number;
   onPress: () => void;
 }) {
-  const selectedIconOpacity = useRef(new Animated.Value(selected ? 1 : 0)).current;
-  const categoryColor =
-    CONTENT_CATEGORIES.find((candidate) => candidate.id === category.id)?.color ??
-    category.color ??
-    "#F9F9F9";
   const neutralColor = "rgba(255,255,255,0.82)";
-
-  useEffect(() => {
-    Animated.timing(selectedIconOpacity, {
-      toValue: selected ? 1 : 0,
-      duration: 180,
-      useNativeDriver: true,
-    }).start();
-  }, [selected, selectedIconOpacity]);
+  const selectedColor = "#060A0F";
 
   return (
     <Pressable
@@ -146,23 +133,18 @@ function NotificationCategoryCard({
           width,
           height,
           borderColor: selected ? "#F9F9F9" : "rgba(241,224,255,0.25)",
+          backgroundColor: selected ? "#F9F9F9" : "rgba(0,0,0,0.28)",
         },
         { opacity: pressed ? 0.76 : 1 },
       ]}
     >
       <View style={styles.categoryIcon}>
-        {renderCategoryIcon(category.id, neutralColor)}
-        <Animated.View
-          pointerEvents="none"
-          style={[styles.selectedCategoryIcon, { opacity: selectedIconOpacity }]}
-        >
-          {renderCategoryIcon(category.id, categoryColor)}
-        </Animated.View>
+        {renderCategoryIcon(category.id, selected ? selectedColor : neutralColor)}
       </View>
       <Text
         style={[
           styles.categoryLabel,
-          { color: selected ? "#F9F9F9" : neutralColor },
+          { color: selected ? selectedColor : neutralColor },
         ]}
       >
         {CATEGORY_LABELS[category.id] ?? category.label}
@@ -221,6 +203,7 @@ export default function PersonalizarNotificacionesScreen() {
   const [selectedCategoryIds, setSelectedCategoryIds] = useState<string[] | null>(null);
   const [selectedEditorialTags, setSelectedEditorialTags] = useState<string[] | null>(null);
   const [saveError, setSaveError] = useState<string | null>(null);
+  const [saveSuccessTrigger, setSaveSuccessTrigger] = useState(0);
   const selectionRef = useRef<Selection | null>(null);
   const confirmedRef = useRef<Selection | null>(null);
 
@@ -259,6 +242,7 @@ export default function PersonalizarNotificacionesScreen() {
       selectionRef.current = confirmed;
       setSelectedCategoryIds(confirmed.categoryIds);
       setSelectedEditorialTags(confirmed.editorialTags);
+      setSaveSuccessTrigger((value) => value + 1);
     } catch {
       setSaveError("No se pudieron guardar tus preferencias. Inténtalo de nuevo.");
     }
@@ -447,6 +431,11 @@ export default function PersonalizarNotificacionesScreen() {
             Guardar cambios
           </Text>
         </Pressable>
+        <SavedConfirmationBanner
+          trigger={saveSuccessTrigger}
+          bottom={114}
+          title="Notificaciones guardadas correctamente"
+        />
       </LinearGradient>
     </>
   );
@@ -517,11 +506,6 @@ const styles = StyleSheet.create({
     overflow: "hidden",
   },
   categoryIcon: { height: 32, alignItems: "center", justifyContent: "center", marginBottom: 5 },
-  selectedCategoryIcon: {
-    ...StyleSheet.absoluteFillObject,
-    alignItems: "center",
-    justifyContent: "center",
-  },
   meditationIcon: { width: 20, height: 20 },
   categoryImageIcon: { width: 24, height: 24 },
   categoryLabel: { fontFamily: "Manrope", fontSize: 12, lineHeight: 17, fontWeight: "600", textAlign: "center" },
