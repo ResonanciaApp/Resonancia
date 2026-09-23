@@ -1,6 +1,7 @@
 import { router, Tabs, usePathname } from "expo-router";
 import { SymbolView } from "expo-symbols";
 import { BlurView } from "expo-blur";
+import * as Haptics from "expo-haptics";
 import { Feather, MaterialCommunityIcons } from "@expo/vector-icons";
 import React, { useEffect, useRef, useCallback, useLayoutEffect, useState } from "react";
 import { useMixerPanel } from "@/context/MixerPanelContext";
@@ -47,6 +48,13 @@ function getTabBarBackground(activeSceneId: string) {
 
 // Rutas que nunca aparecen en el menú inferior
 const HIDDEN_ROUTES = new Set(["musica", "biblioteca", "video", "emocion", "herramientas", "explore", "encuentros"]);
+const MAIN_HAPTIC_ROUTES = new Set([
+  "inicio3",
+  "explore-copia",
+  "descanzo",
+  "sonidos",
+  "profile",
+]);
 
 const TAB_CONFIG: Record<
   string,
@@ -268,6 +276,9 @@ function CustomTabBar({ state, navigation, descriptors }: TabBarProps) {
 
             const isFocused = effectiveRouteIndex === index;
             const onPress   = () => {
+              if (MAIN_HAPTIC_ROUTES.has(route.name)) {
+                void Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium).catch(() => {});
+              }
               if (libOpen) closeLib();
               if (route.name === "musica") {
                 openMixer();

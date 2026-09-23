@@ -248,7 +248,7 @@ export function InnerSpaceCard({
   };
 
   const toggleCategory = (nextCategory: ReflectionCategory) => {
-    void Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light).catch(() => {});
+    void Haptics.selectionAsync().catch(() => {});
     setCategory((current) => current === nextCategory ? null : nextCategory);
   };
 
@@ -306,7 +306,7 @@ export function InnerSpaceCard({
                 styles.gridItem,
                 category === cat.id && {
                   borderColor: "rgba(255,255,255,0.45)",
-                  backgroundColor: "rgba(255,255,255,0.08)",
+                  backgroundColor: "rgba(0,0,0,0.33)",
                   shadowColor: cat.color,
                   shadowOpacity: 0.22,
                   shadowRadius: 8,
