@@ -582,39 +582,28 @@ function PremiumInnerSpaceScreen() {
 
     return (
       <View style={styles.timelineRow}>
-        <View style={styles.timelineLeft}>
-          <WallScrollReveal
-            active={isRevealed}
-            completedIds={completedRevealIds}
-            delay={revealDelay}
-            disabled={wallAnimationsDisabled}
-            revealId={`${requestScope}:time:${reflectionId}`}
-            scaleFrom={0.98}
-            translateYFrom={10}
-          >
-            <Text style={[styles.timeText, { color: colors.mutedForeground }]}>{timeLabel}</Text>
-          </WallScrollReveal>
-          <View style={styles.timelineDotContainer}>
-            <View style={styles.timelineIconSlot}>
-              <WallScrollReveal
-                active={isRevealed}
-                completedIds={completedRevealIds}
-                delay={revealDelay + 110}
-                disabled={wallAnimationsDisabled}
-                revealId={`${requestScope}:icon:${reflectionId}`}
-                scaleFrom={0.9}
-                translateYFrom={14}
-              >
-                <CategoryIcon category={cat.id} size={17} containerSize={31} />
-              </WallScrollReveal>
+        <WallScrollReveal
+          active={isRevealed}
+          completedIds={completedRevealIds}
+          delay={revealDelay}
+          disabled={wallAnimationsDisabled}
+          revealId={`${requestScope}:meta:${reflectionId}`}
+          scaleFrom={0.98}
+          style={styles.reflectionMetaEntrance}
+          translateYFrom={10}
+        >
+          <View style={styles.reflectionMetaRow}>
+            <View style={[styles.cardCatPill, { backgroundColor: editingCat.bg }]}>
+              <Text style={[styles.cardCatText, { color: editingCat.color }]}>{editingCat.label}</Text>
             </View>
+            <Text style={[styles.timeText, { color: colors.mutedForeground }]}>{timeLabel}</Text>
           </View>
-        </View>
+        </WallScrollReveal>
 
         <WallScrollReveal
           active={isRevealed}
           completedIds={completedRevealIds}
-          delay={revealDelay + 220}
+          delay={revealDelay + 110}
           disabled={wallAnimationsDisabled}
           revealId={`${requestScope}:card:${reflectionId}`}
           scaleFrom={0.985}
@@ -624,9 +613,6 @@ function PremiumInnerSpaceScreen() {
         <View style={styles.reflectionCard}>
           {isEditing && (
             <View style={styles.cardHeader}>
-              <View style={[styles.cardCatPill, { backgroundColor: editingCat.bg }]}>
-                <Text style={[styles.cardCatText, { color: editingCat.color }]}>{editingCat.label}</Text>
-              </View>
               <Pressable
                 testID={`delete-${reflection.id}`}
                 accessibilityLabel="Borrar mensaje"
@@ -1008,38 +994,35 @@ const styles = StyleSheet.create({
     fontWeight: '600',
   },
   timelineRow: {
-    flexDirection: 'row',
+    width: "100%",
     marginBottom: 16,
   },
-  timelineLeft: {
-    width: 40,
-    alignItems: 'flex-start',
+  reflectionMetaEntrance: {
+    width: "100%",
+  },
+  reflectionMetaRow: {
+    width: "100%",
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "flex-start",
+    gap: 8,
+    marginBottom: 10,
   },
   timeText: {
     fontSize: 12,
-    marginBottom: 8,
-  },
-  timelineDotContainer: {
-    flex: 1,
-    alignItems: 'flex-start',
-  },
-  timelineIconSlot: {
-    width: 31,
-    alignItems: 'center',
   },
   reflectionCard: {
-    flex: 1,
+    width: "100%",
     borderRadius: 16,
     backgroundColor: "rgba(0,0,0,0.28)",
     padding: 16,
-    transform: [{ translateY: -15 }],
   },
   reflectionCardEntrance: {
-    flex: 1,
+    width: "100%",
   },
   cardHeader: {
     flexDirection: 'row',
-    justifyContent: 'space-between',
+    justifyContent: 'flex-end',
     alignItems: 'center',
     marginBottom: 12,
   },
@@ -1047,7 +1030,6 @@ const styles = StyleSheet.create({
     paddingHorizontal: 10,
     paddingVertical: 4,
     borderRadius: 10,
-    transform: [{ translateY: -3 }],
   },
   cardCatText: {
     fontSize: 11,
