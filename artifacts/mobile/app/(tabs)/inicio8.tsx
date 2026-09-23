@@ -1699,7 +1699,7 @@ const Inicio2HeroStatic = React.memo(function Inicio2HeroStatic({
         styles.inicio2Hero,
         isInicio3 && styles.inicio3HeroLowered,
         isInicio3 && {
-          height: inicio3HeroLayoutTop + inicio3HeroHeight + 9,
+          height: inicio3HeroLayoutTop + inicio3HeroHeight + 16,
         },
       ]}
       testID="inicio2-hero-static"
