@@ -502,7 +502,7 @@ const styles = StyleSheet.create({
     width: 75,
     height: 75,
     borderRadius: 37.5,
-    borderWidth: 1,
+    borderWidth: 0.5,
     borderColor: "rgba(255,255,255,0.7)",
   },
   profileInfo: {
