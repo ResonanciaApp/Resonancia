@@ -1370,7 +1370,6 @@ function Inicio3HeroTitle({ title }: { title: string | undefined }) {
         styles.inicio2HeroTitle,
         styles.inicio2HeroStaticTitle,
         styles.inicio3HeroTitle,
-        styles.inicio3DailyWisdomTitle,
       ]}
     >
       {title ?? "Aprendamos a conectar con lo esencial"}
@@ -3824,11 +3823,6 @@ const styles = StyleSheet.create({
     textAlign: "center",
     fontSize: 21,
     lineHeight: 26,
-  },
-  inicio3DailyWisdomTitle: {
-    fontFamily: "CormorantGaramond",
-    fontSize: 28,
-    lineHeight: 33,
   },
   inicio3HeroDescription: {
     maxWidth: "86%",
