@@ -6,11 +6,13 @@ import {
 } from "@workspace/api-client-react";
 import { useQueryClient } from "@tanstack/react-query";
 import { Image as ExpoImage } from "expo-image";
+import * as Haptics from "expo-haptics";
 import { LinearGradient } from "expo-linear-gradient";
 import { router, Stack } from "expo-router";
 import React, { useEffect, useMemo, useRef, useState } from "react";
 import {
   ActivityIndicator,
+  Animated,
   Platform,
   Pressable,
   ScrollView,
@@ -24,6 +26,7 @@ import { useSafeAreaInsets } from "react-native-safe-area-context";
 
 import { useBackOverride } from "@/context/BackOverrideContext";
 import { useSceneTheme } from "@/context/SceneThemeContext";
+import { CONTENT_CATEGORIES } from "@/data/content-categories";
 import { useColors } from "@/hooks/useColors";
 
 type PreferenceOption = {
@@ -95,6 +98,71 @@ function renderCategoryIcon(categoryId: string, color: string) {
           ? "message-text-outline"
           : "bell-outline";
   return <MaterialCommunityIcons name={icon} size={categoryId === "ambientales" ? 28 : 22} color={color} />;
+}
+
+function NotificationCategoryCard({
+  category,
+  selected,
+  width,
+  height,
+  onPress,
+}: {
+  category: PreferenceOption;
+  selected: boolean;
+  width: number;
+  height: number;
+  onPress: () => void;
+}) {
+  const selectedIconOpacity = useRef(new Animated.Value(selected ? 1 : 0)).current;
+  const categoryColor =
+    CONTENT_CATEGORIES.find((candidate) => candidate.id === category.id)?.color ??
+    category.color ??
+    "#F9F9F9";
+  const neutralColor = "rgba(255,255,255,0.82)";
+
+  useEffect(() => {
+    Animated.timing(selectedIconOpacity, {
+      toValue: selected ? 1 : 0,
+      duration: 180,
+      useNativeDriver: true,
+    }).start();
+  }, [selected, selectedIconOpacity]);
+
+  return (
+    <Pressable
+      testID={`notification-category-${category.id}`}
+      onPress={onPress}
+      accessibilityRole="checkbox"
+      accessibilityState={{ checked: selected }}
+      style={({ pressed }) => [
+        styles.categoryBlock,
+        {
+          width,
+          height,
+          borderColor: selected ? "#F9F9F9" : "rgba(241,224,255,0.25)",
+        },
+        { opacity: pressed ? 0.76 : 1 },
+      ]}
+    >
+      <View style={styles.categoryIcon}>
+        {renderCategoryIcon(category.id, neutralColor)}
+        <Animated.View
+          pointerEvents="none"
+          style={[styles.selectedCategoryIcon, { opacity: selectedIconOpacity }]}
+        >
+          {renderCategoryIcon(category.id, categoryColor)}
+        </Animated.View>
+      </View>
+      <Text
+        style={[
+          styles.categoryLabel,
+          { color: selected ? "#F9F9F9" : neutralColor },
+        ]}
+      >
+        {CATEGORY_LABELS[category.id] ?? category.label}
+      </Text>
+    </Pressable>
+  );
 }
 
 function asOption(value: unknown): PreferenceOption | null {
@@ -222,6 +290,7 @@ export default function PersonalizarNotificacionesScreen() {
   }
 
   function toggleCategory(id: string) {
+    void Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium).catch(() => {});
     const current = selectionRef.current ?? {
       categoryIds: activeCategoryIds,
       editorialTags: activeEditorialTags,
@@ -233,6 +302,7 @@ export default function PersonalizarNotificacionesScreen() {
   }
 
   function toggleEditorialTag(id: string) {
+    void Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium).catch(() => {});
     const current = selectionRef.current ?? {
       categoryIds: activeCategoryIds,
       editorialTags: activeEditorialTags,
@@ -313,33 +383,15 @@ export default function PersonalizarNotificacionesScreen() {
                     <View style={styles.categoryGrid}>
                       {categories.map((category) => {
                         const selected = activeCategoryIds.includes(category.id);
-                        const categoryColor = selected ? "#F9F9F9" : "rgba(255,255,255,0.82)";
                         return (
-                          <Pressable
+                          <NotificationCategoryCard
                             key={category.id}
-                            testID={`notification-category-${category.id}`}
+                            category={category}
+                            selected={selected}
+                            width={categoryCardWidth}
+                            height={categoryCardHeight}
                             onPress={() => toggleCategory(category.id)}
-                            accessibilityRole="checkbox"
-                            accessibilityState={{ checked: selected }}
-                            style={({ pressed }) => [
-                              styles.categoryBlock,
-                              {
-                                width: categoryCardWidth,
-                                height: categoryCardHeight,
-                                borderColor: selected
-                                  ? "#F9F9F9"
-                                  : "rgba(241,224,255,0.25)",
-                              },
-                              { opacity: pressed ? 0.76 : 1 },
-                            ]}
-                          >
-                            <View style={styles.categoryIcon}>
-                              {renderCategoryIcon(category.id, categoryColor)}
-                            </View>
-                            <Text style={[styles.categoryLabel, { color: categoryColor }]}>
-                              {CATEGORY_LABELS[category.id] ?? category.label}
-                            </Text>
-                          </Pressable>
+                          />
                         );
                       })}
                     </View>
@@ -375,7 +427,6 @@ export default function PersonalizarNotificacionesScreen() {
               </>
             )}
             {saveError && <Text style={styles.error}>{saveError}</Text>}
-            {updatePreferences.isPending && <Text style={styles.saving}>Guardando…</Text>}
           </ScrollView>
         </View>
       </LinearGradient>
@@ -416,7 +467,7 @@ const styles = StyleSheet.create({
     fontWeight: "700",
     color: "#FBFBFB",
     letterSpacing: 0.2,
-    marginTop: 9,
+    marginTop: 24,
   },
   headerDescription: {
     color: "rgba(255,255,255,0.68)",
@@ -448,6 +499,11 @@ const styles = StyleSheet.create({
     overflow: "hidden",
   },
   categoryIcon: { height: 32, alignItems: "center", justifyContent: "center", marginBottom: 5 },
+  selectedCategoryIcon: {
+    ...StyleSheet.absoluteFillObject,
+    alignItems: "center",
+    justifyContent: "center",
+  },
   meditationIcon: { width: 20, height: 20 },
   categoryImageIcon: { width: 24, height: 24 },
   categoryLabel: { fontFamily: "Manrope", fontSize: 12, lineHeight: 17, fontWeight: "600", textAlign: "center" },
@@ -467,5 +523,4 @@ const styles = StyleSheet.create({
   pillLabel: { color: "rgba(255,255,255,0.82)", fontFamily: "Manrope", fontSize: 13 },
   pillLabelSelected: { color: "#F9F9F9" },
   error: { color: "#FFB4B4", fontFamily: "Manrope", fontSize: 13, textAlign: "center", marginTop: 4 },
-  saving: { color: "rgba(255,255,255,0.64)", fontFamily: "Manrope", fontSize: 12, textAlign: "center", marginTop: 8 },
 });

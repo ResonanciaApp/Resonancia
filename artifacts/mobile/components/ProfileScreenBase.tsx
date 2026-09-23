@@ -1489,26 +1489,33 @@ export function ProfileScreenBase({
           <View style={styles.dedicatedTitleLeft}>
             <Text style={[styles.dedicatedHeroTitle, { color: colors.foreground }]}>Perfil</Text>
           </View>
-          <Pressable
-            onPress={() => router.push("/personalizar-notificaciones")}
-            hitSlop={8}
-            style={({ pressed }) => [styles.gearBtn, { opacity: pressed ? 0.68 : 1 }]}
-            accessibilityRole="button"
-            accessibilityLabel="Personalizar notificaciones"
-            testID="profile-open-notification-preferences"
-          >
-            <MaterialCommunityIcons name="bell-outline" size={23} color={colors.foreground} />
-          </Pressable>
-          <Pressable
-            onPress={() => router.push("/configuracion-ajustes")}
-            hitSlop={8}
-            style={({ pressed }) => [styles.gearBtn, { opacity: pressed ? 0.68 : 1 }]}
-            accessibilityRole="button"
-            accessibilityLabel="Abrir ajustes"
-            testID="profile-open-settings"
-          >
-            <Feather name="settings" size={21} color={colors.foreground} />
-          </Pressable>
+          <View style={styles.profileHeaderActions}>
+            <Pressable
+              onPress={() => router.push("/personalizar-notificaciones")}
+              hitSlop={8}
+              style={({ pressed }) => [styles.gearBtn, { opacity: pressed ? 0.68 : 1 }]}
+              accessibilityRole="button"
+              accessibilityLabel="Personalizar notificaciones"
+              testID="profile-open-notification-preferences"
+            >
+              <MaterialCommunityIcons
+                name="bell-outline"
+                size={23}
+                color={colors.foreground}
+                style={styles.notificationBellIcon}
+              />
+            </Pressable>
+            <Pressable
+              onPress={() => router.push("/configuracion-ajustes")}
+              hitSlop={8}
+              style={({ pressed }) => [styles.gearBtn, { opacity: pressed ? 0.68 : 1 }]}
+              accessibilityRole="button"
+              accessibilityLabel="Abrir ajustes"
+              testID="profile-open-settings"
+            >
+              <Feather name="settings" size={21} color={colors.foreground} />
+            </Pressable>
+          </View>
         </View>
 
         {/* ── Profile Card ── */}
@@ -2210,6 +2217,14 @@ const styles = StyleSheet.create({
     alignItems: "center",
     justifyContent: "center",
     backgroundColor: "rgba(0,0,0,0.28)",
+  },
+  profileHeaderActions: {
+    flexDirection: "row",
+    alignItems: "center",
+    gap: 6,
+  },
+  notificationBellIcon: {
+    transform: [{ translateX: -0.5 }],
   },
   giftIcon: {
     width: 35,
