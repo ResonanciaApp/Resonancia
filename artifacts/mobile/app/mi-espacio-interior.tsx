@@ -786,7 +786,6 @@ function PremiumInnerSpaceScreen() {
           </Pressable>
            {REFLECTION_CATEGORY_OPTIONS.map(cat => {
             const isActive = filter === cat.id;
-            const IconComp = cat.iconFamily === "Feather" ? Feather : MaterialCommunityIcons;
             return (
               <Pressable
                 key={cat.id}
@@ -802,7 +801,6 @@ function PremiumInnerSpaceScreen() {
                   setFilter(cat.id as ReflectionCategory);
                 }}
               >
-                <IconComp name={cat.icon as any} size={18} color={isActive ? cat.color : "#F9F9F9"} />
                 <Text style={[styles.filterText, { color: isActive ? "#060A0F" : "#F9F9F9" }]}>{cat.label}</Text>
               </Pressable>
             );
