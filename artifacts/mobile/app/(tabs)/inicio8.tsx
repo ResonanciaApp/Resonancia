@@ -2092,9 +2092,8 @@ export default function HomeScreen2({
   const { open: openDrawer, moodPickerRequest } = useDrawer();
   const { theme: activeTheme, activeSceneId } = useSceneTheme();
   // Degradado exclusivo de Inicio 3: no modificar el tema compartido.
-  // La cabecera tapa el centro del viewport; mantener una franja visible del tono medio debajo.
   const inicioGradient = variant === "inicio3"
-    ? ["#27296A", "#27296A", "#1F2D6E", "#1F2D6E", "#112F6F", "#112F6F"] as const
+    ? ["#332366", "#292366", "#27296A", "#1F2D6E", "#112F6F"] as const
     : null;
   const homeGradient = inicioGradient ?? activeTheme.gradient;
   const handleOpenDrawer = useCallback(() => {
@@ -2783,10 +2782,10 @@ export default function HomeScreen2({
       testID={`inicio-${variant}`}
       style={[styles.root, { backgroundColor: homeGradient[homeGradient.length - 1] as string }]}
     >
-      {/* ── Fondo degradado; Inicio 3 distribuye sus tres tonos bajo el hero ── */}
+      {/* ── Fondo degradado; Inicio 3 usa sus cinco stops propios ── */}
       <LinearGradient
         colors={homeGradient as unknown as [string, string, ...string[]]}
-        locations={inicioGradient ? [0, 0.52, 0.65, 0.78, 0.87, 1] : activeTheme.gradientLocations}
+        locations={inicioGradient ? [0, 0.25, 0.5, 0.75, 1] : activeTheme.gradientLocations}
         style={StyleSheet.absoluteFill}
         pointerEvents="none"
       />

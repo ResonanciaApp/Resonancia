@@ -1,10 +1,10 @@
 ---
-name: Degradado visible en Inicio 3
-description: Restricción visual para degradados locales de Inicio 3 debajo del hero.
+name: Degradado propio de Inicio 3
+description: Alcance y fidelidad de los colores pedidos para el fondo de Inicio 3.
 ---
 
-Un degradado con tres colores equidistantes no garantiza que los tres se vean en Inicio 3: el hero ocupa gran parte del centro de la pantalla y puede tapar el tono intermedio. Para colores cercanos, dar al intermedio una franja propia en la parte descubierta, manteniendo transiciones suaves entre franjas.
+Si el usuario pide N stops concretos para Inicio, usar exactamente esos N stops en el orden indicado. No duplicar tonos para crear franjas ni condicionar el override al ID de la escena, salvo que lo solicite expresamente.
 
-**Why:** Tras añadir los tres tonos solicitados, el usuario seguía percibiendo solo dos; verificar la cantidad de stops en el código no equivale a verificar su visibilidad.
+**Why:** Se probaron tres stops, luego tonos repetidos y un gate por Índigo 2; el usuario seguía sin ver lo pedido y precisó que quiere cuatro stops exactos solo en Inicio. Los cambios indirectos no arreglan una discrepancia visible no verificada.
 
-**How to apply:** Al ajustar fondos de Inicio 3, calcular dónde cae cada tono respecto del hero y la barra inferior en un viewport real. Mantener el override dentro de Inicio 3, sin condicionarlo a la escena visual activa si el pedido dice simplemente «solo Inicio»: el tema global sirve también de referencia para otras pantallas.
+**How to apply:** Cambiar únicamente el degradado raíz local de Inicio 3 y conservar el tema global para las otras pantallas. La imagen del hero puede tapar parte del fondo: comprobar visualmente en el dispositivo antes de afirmar que todos los tonos se ven.
