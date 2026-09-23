@@ -522,8 +522,6 @@ const styles = StyleSheet.create({
     gap: 6,
     paddingVertical: 12,
     borderRadius: 100,
-    borderWidth: 1.5,
-    borderColor: "rgba(249,249,249,0.5)",
   },
   refreshRecommendationsText: {
     fontFamily: "Manrope",
