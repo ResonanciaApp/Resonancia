@@ -972,8 +972,8 @@ const styles = StyleSheet.create({
   },
   dateHeader: {
     alignItems: 'stretch',
-    marginBottom: 31,
-    marginTop: 16,
+    marginBottom: 21,
+    marginTop: 6,
   },
   dateHeaderEntrance: {
     width: "100%",
