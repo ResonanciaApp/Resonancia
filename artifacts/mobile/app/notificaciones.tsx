@@ -160,10 +160,11 @@ export default function NotificacionesScreen() {
     },
   });
 
-  // Mark as read on open.
+  // Keep the unread marker visible briefly before clearing the inbox count.
   useEffect(() => {
     if (isSignedIn && notifsQ.data && notifsQ.data.some((n) => !n.readAt)) {
-      markAll.mutate();
+      const timer = setTimeout(() => markAll.mutate(), 2_000);
+      return () => clearTimeout(timer);
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [isSignedIn, notifsQ.data]);
