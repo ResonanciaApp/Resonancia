@@ -35,7 +35,9 @@ export function StreakWeekRow({
                 color="#FFFFFF"
                 style={styles.checkMark}
               />
-            ) : null}
+            ) : (
+              <Text style={styles.dayLabel}>{initial}</Text>
+            )}
           </View>
         );
 
@@ -60,7 +62,6 @@ export function StreakWeekRow({
             ) : (
               dayCircle
             )}
-            <Text style={styles.dayLabel}>{initial}</Text>
           </View>
         );
 
@@ -92,7 +93,6 @@ const styles = StyleSheet.create({
   },
   dayWrapper: {
     alignItems: "center",
-    gap: 5,
   },
   day: {
     width: 36,
@@ -115,12 +115,11 @@ const styles = StyleSheet.create({
     backgroundColor: "transparent",
   },
   dayLabel: {
-    color: "#FFFFFF",
+    color: "rgba(255,255,255,0.65)",
     fontFamily: "Manrope",
-    fontSize: 10,
-    lineHeight: 13,
+    fontSize: 20,
+    lineHeight: 24,
     fontWeight: "500",
-    transform: [{ translateY: -1 }],
   },
   checkMark: {
     transform: [{ translateY: 1 }],
