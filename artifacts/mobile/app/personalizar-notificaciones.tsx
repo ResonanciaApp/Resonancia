@@ -121,7 +121,7 @@ function NotificationCategoryCard({
   onPress: () => void;
 }) {
   const neutralColor = "rgba(255,255,255,0.82)";
-  const selectedColor = "#060A0F";
+  const selectedColor = "#F9F9F9";
 
   return (
     <Pressable
@@ -134,8 +134,9 @@ function NotificationCategoryCard({
         {
           width,
           height,
-          borderColor: selected ? "#F9F9F9" : "rgba(241,224,255,0.25)",
-          backgroundColor: selected ? "#F9F9F9" : "rgba(0,0,0,0.28)",
+          borderWidth: selected ? 2 : 1,
+          borderColor: selected ? "rgba(255,255,255,0.5)" : "rgba(241,224,255,0.25)",
+          backgroundColor: selected ? "rgba(14,5,33,0.23)" : "rgba(0,0,0,0.28)",
         },
         { opacity: pressed ? 0.76 : 1 },
       ]}
