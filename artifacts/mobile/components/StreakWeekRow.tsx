@@ -109,16 +109,16 @@ const styles = StyleSheet.create({
     width: 39,
     height: 39,
     borderRadius: 19.5,
-    backgroundColor: "rgba(255,255,255,0.18)",
+    backgroundColor: "rgba(255,255,255,0.08)",
     alignItems: "center",
     justifyContent: "center",
   },
   inactiveDay: {
-    backgroundColor: "rgba(255,255,255,0.18)",
+    backgroundColor: "rgba(255,255,255,0.08)",
     borderWidth: 0,
   },
   positionedInactiveDay: {
-    backgroundColor: "rgba(255,255,255,0.18)",
+    backgroundColor: "rgba(255,255,255,0.08)",
   },
   ringHost: {
     width: 39,
