@@ -17,8 +17,45 @@ import { useVideosState } from "@/context/VideosContext";
 
 const BUNNY_PLAYER_STYLE_SCRIPT = `
   (() => {
-    const style = document.createElement("style");
-    style.textContent = \`
+    const applyResonanciaPlayerStyles = () => {
+      document.documentElement.style.setProperty("--plyr-video-background", "#000", "important");
+      if (document.body) {
+        document.body.style.setProperty("background", "#000", "important");
+        document.body.style.setProperty("background-color", "#000", "important");
+      }
+
+      document
+        .querySelectorAll(".container, .plyr, .plyr__video-wrapper")
+        .forEach((element) => {
+          element.style.setProperty("background", "#000", "important");
+          element.style.setProperty("background-color", "#000", "important");
+        });
+
+      const centralPlay = document.querySelector(".plyr__control--overlaid");
+      if (centralPlay) {
+        centralPlay.style.setProperty("width", "54px", "important");
+        centralPlay.style.setProperty("height", "54px", "important");
+        centralPlay.style.setProperty("padding", "15px", "important");
+        centralPlay.style.setProperty("background", "rgba(255,255,255,0.07)", "important");
+        centralPlay.style.setProperty("background-color", "rgba(255,255,255,0.07)", "important");
+        centralPlay.style.setProperty("border", "1px solid rgba(255,255,255,0.18)", "important");
+        centralPlay.style.setProperty("border-radius", "50%", "important");
+      }
+
+      document
+        .querySelectorAll('.plyr__controls .plyr__control[data-plyr="play"]')
+        .forEach((controlPlay) => {
+          controlPlay.style.setProperty("background", "transparent", "important");
+          controlPlay.style.setProperty("background-color", "transparent", "important");
+          controlPlay.style.setProperty("box-shadow", "none", "important");
+        });
+    };
+
+    let style = document.getElementById("resonancia-bunny-player-styles");
+    if (!style) {
+      style = document.createElement("style");
+      style.id = "resonancia-bunny-player-styles";
+      style.textContent = \`
       :root {
         --plyr-video-background: #000 !important;
       }
@@ -35,7 +72,9 @@ const BUNNY_PLAYER_STYLE_SCRIPT = `
         width: 54px !important;
         height: 54px !important;
         padding: 15px !important;
-        background: #000 !important;
+        background: rgba(255,255,255,0.07) !important;
+        border: 1px solid rgba(255,255,255,0.18) !important;
+        border-radius: 50% !important;
       }
 
       .plyr__controls .plyr__control[data-plyr="play"],
@@ -46,7 +85,17 @@ const BUNNY_PLAYER_STYLE_SCRIPT = `
         box-shadow: none !important;
       }
     \`;
-    document.head.appendChild(style);
+      (document.head || document.documentElement).appendChild(style);
+    }
+
+    applyResonanciaPlayerStyles();
+    new MutationObserver(applyResonanciaPlayerStyles).observe(document.documentElement, {
+      childList: true,
+      subtree: true,
+    });
+    window.addEventListener("load", applyResonanciaPlayerStyles);
+    setTimeout(applyResonanciaPlayerStyles, 250);
+    setTimeout(applyResonanciaPlayerStyles, 1000);
   })();
   true;
 `;
@@ -136,7 +185,7 @@ export default function VideoPlayerScreen() {
         <View style={styles.videoWrap}>
           {video.playbackUrl ? (
             <WebView
-              key={webPlayerKey}
+              key={`bunny-player-style-v3-${webPlayerKey}`}
               source={{ uri: video.playbackUrl }}
               style={styles.video}
               allowsFullscreenVideo
@@ -145,6 +194,7 @@ export default function VideoPlayerScreen() {
               javaScriptEnabled
               domStorageEnabled
               scrollEnabled={false}
+              injectedJavaScriptBeforeContentLoaded={BUNNY_PLAYER_STYLE_SCRIPT}
               injectedJavaScript={BUNNY_PLAYER_STYLE_SCRIPT}
             />
           ) : (
