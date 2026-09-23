@@ -305,7 +305,8 @@ function ProfileMembershipModules({
                      {isPremiumPlan && !hasPremiumAccess ? (
                        <>
                          <Text style={{ color: "#F9F9F9" }}>Prueba</Text>
-                         {" Premium Gratis"}
+                          {" Premium "}
+                          <Text style={{ color: "#F9F9F9" }}>Gratis</Text>
                        </>
                      ) : displayName}
                   </Text>
