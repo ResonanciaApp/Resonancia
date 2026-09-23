@@ -5,6 +5,7 @@ import {
   useUpdateNotificationPreferences,
 } from "@workspace/api-client-react";
 import { useQueryClient } from "@tanstack/react-query";
+import { Image as ExpoImage } from "expo-image";
 import { LinearGradient } from "expo-linear-gradient";
 import { router, Stack } from "expo-router";
 import React, { useEffect, useMemo, useRef, useState } from "react";
@@ -16,6 +17,7 @@ import {
   StatusBar,
   StyleSheet,
   Text,
+  useWindowDimensions,
   View,
 } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
@@ -44,14 +46,56 @@ type Selection = {
   editorialTags: string[];
 };
 
-const CATEGORY_ICONS: Record<string, React.ComponentProps<typeof MaterialCommunityIcons>["name"]> = {
-  "musica-sonidos": "music-note",
-  "meditaciones-guiadas": "meditation",
-  "sonidos-ancestrales": "bowl-mix",
-  ambientales: "leaf",
-  historias: "book-open-page-variant",
-  charlas: "message-text-outline",
+const CATEGORY_LABELS: Record<string, string> = {
+  "meditaciones-guiadas": "Meditación",
+  "sonidos-ancestrales": "Sonoterapia",
+  "musica-sonidos": "Música",
+  ambientales: "Sonidos",
+  historias: "Historias",
+  charlas: "Reflexiones",
 };
+
+function renderCategoryIcon(categoryId: string) {
+  if (categoryId === "meditaciones-guiadas") {
+    return (
+      <ExpoImage
+        source={require("@/assets/images/cat-meditaciones.png")}
+        style={styles.meditationIcon}
+        contentFit="contain"
+        tintColor="#F9F9F9"
+      />
+    );
+  }
+  if (categoryId === "sonidos-ancestrales") {
+    return (
+      <ExpoImage
+        source={require("@/assets/images/cat-sesiones.png")}
+        style={styles.categoryImageIcon}
+        contentFit="contain"
+        tintColor="#F9F9F9"
+      />
+    );
+  }
+  if (categoryId === "musica-sonidos") {
+    return (
+      <ExpoImage
+        source={require("@/assets/images/cat-musica.png")}
+        style={styles.categoryImageIcon}
+        contentFit="contain"
+        tintColor="#F9F9F9"
+      />
+    );
+  }
+  const icon: React.ComponentProps<typeof MaterialCommunityIcons>["name"] =
+    categoryId === "ambientales"
+      ? "waveform"
+      : categoryId === "historias"
+        ? "book-open-page-variant"
+        : categoryId === "charlas"
+          ? "message-text-outline"
+          : "bell-outline";
+  return <MaterialCommunityIcons name={icon} size={categoryId === "ambientales" ? 28 : 22} color="#F9F9F9" />;
+}
 
 function asOption(value: unknown): PreferenceOption | null {
   if (typeof value === "string") return { id: value, label: value };
@@ -77,6 +121,7 @@ export default function PersonalizarNotificacionesScreen() {
   const colors = useColors();
   const { theme } = useSceneTheme();
   const insets = useSafeAreaInsets();
+  const { width: windowWidth } = useWindowDimensions();
   const backOverride = useBackOverride();
   const topPad = Platform.OS === "web" ? 67 : Math.max(insets.top, 40);
   const bottomPad = Platform.OS === "web" ? 34 : insets.bottom;
@@ -92,13 +137,8 @@ export default function PersonalizarNotificacionesScreen() {
     () => readOptions(response.editorialTagOptions),
     [response.editorialTagOptions],
   );
-  const editorialTagColumns = useMemo(
-    () =>
-      Array.from({ length: Math.ceil(editorialTags.length / 2) }, (_, index) =>
-        editorialTags.slice(index * 2, index * 2 + 2),
-      ),
-    [editorialTags],
-  );
+  const categoryCardWidth = Math.floor((windowWidth - 14 * 2 - 9 * 2) / 3);
+  const categoryCardHeight = Math.round(categoryCardWidth * 0.66) + 2;
   const serverCategoryIds = response.selectedCategoryIds ?? response.categoryIds ?? [];
   const serverEditorialTags = response.selectedEditorialTags ?? response.editorialTagValues ?? [];
   const [selectedCategoryIds, setSelectedCategoryIds] = useState<string[] | null>(null);
@@ -266,12 +306,8 @@ export default function PersonalizarNotificacionesScreen() {
               <>
                 {categories.length > 0 && (
                   <View style={styles.section}>
-                    <Text style={styles.sectionTitle}>Notificaciones por categoría</Text>
-                    <ScrollView
-                      horizontal
-                      showsHorizontalScrollIndicator={false}
-                      contentContainerStyle={styles.categoryCarousel}
-                    >
+                    <Text style={styles.sectionTitle}>Por categoría</Text>
+                    <View style={styles.categoryGrid}>
                       {categories.map((category) => {
                         const selected = activeCategoryIds.includes(category.id);
                         return (
@@ -283,57 +319,55 @@ export default function PersonalizarNotificacionesScreen() {
                             accessibilityState={{ checked: selected }}
                             style={({ pressed }) => [
                               styles.categoryBlock,
-                              { borderColor: selected ? category.color ?? colors.primary : "rgba(255,255,255,0.16)" },
+                              {
+                                width: categoryCardWidth,
+                                height: categoryCardHeight,
+                                borderColor: selected
+                                  ? colors.primary
+                                  : "rgba(241,224,255,0.25)",
+                              },
                               { opacity: pressed ? 0.76 : 1 },
                             ]}
                           >
-                            <MaterialCommunityIcons
-                              name={CATEGORY_ICONS[category.id] ?? "bell-outline"}
-                              size={24}
-                              color={category.color ?? "#F9F9F9"}
-                            />
-                            <Text style={styles.categoryLabel}>{category.label}</Text>
+                            <View style={styles.categoryIcon}>
+                              {renderCategoryIcon(category.id)}
+                            </View>
+                            <Text style={styles.categoryLabel}>
+                              {CATEGORY_LABELS[category.id] ?? category.label}
+                            </Text>
                             {selected && <Feather name="check" size={16} color="#FBFBFB" style={styles.check} />}
                           </Pressable>
                         );
                       })}
-                    </ScrollView>
+                    </View>
                   </View>
                 )}
 
                 {editorialTags.length > 0 && (
                   <View style={styles.section}>
-                    <Text style={styles.sectionTitle}>Notificaciones por temática</Text>
-                    <ScrollView
-                      horizontal
-                      showsHorizontalScrollIndicator={false}
-                      contentContainerStyle={styles.themeCarousel}
-                    >
-                      {editorialTagColumns.map((column, columnIndex) => (
-                        <View key={`theme-column-${columnIndex}`} style={styles.themeColumn}>
-                          {column.map((tag) => {
-                            const selected = activeEditorialTags.includes(tag.id);
-                            return (
-                              <Pressable
-                                key={tag.id}
-                                testID={`notification-editorial-${tag.id}`}
-                                onPress={() => toggleEditorialTag(tag.id)}
-                                accessibilityRole="checkbox"
-                                accessibilityState={{ checked: selected }}
-                                style={({ pressed }) => [
-                                  styles.pill,
-                                  selected && styles.pillSelected,
-                                  { opacity: pressed ? 0.74 : 1 },
-                                ]}
-                              >
-                                <Text style={[styles.pillLabel, selected && styles.pillLabelSelected]}>{tag.label}</Text>
-                                {selected && <Feather name="check" size={14} color="#FBFBFB" />}
-                              </Pressable>
-                            );
-                          })}
-                        </View>
-                      ))}
-                    </ScrollView>
+                    <Text style={styles.sectionTitle}>Por temática</Text>
+                    <View style={styles.pills}>
+                      {editorialTags.map((tag) => {
+                        const selected = activeEditorialTags.includes(tag.id);
+                        return (
+                          <Pressable
+                            key={tag.id}
+                            testID={`notification-editorial-${tag.id}`}
+                            onPress={() => toggleEditorialTag(tag.id)}
+                            accessibilityRole="checkbox"
+                            accessibilityState={{ checked: selected }}
+                            style={({ pressed }) => [
+                              styles.pill,
+                              selected && styles.pillSelected,
+                              { opacity: pressed ? 0.74 : 1 },
+                            ]}
+                          >
+                            <Text style={[styles.pillLabel, selected && styles.pillLabelSelected]}>{tag.label}</Text>
+                            {selected && <Feather name="check" size={14} color="#FBFBFB" />}
+                          </Pressable>
+                        );
+                      })}
+                    </View>
                   </View>
                 )}
               </>
@@ -397,33 +431,38 @@ const styles = StyleSheet.create({
   retryText: { color: "#FBFBFB", fontFamily: "Manrope", fontSize: 14, fontWeight: "700" },
   section: { marginBottom: 29 },
   sectionTitle: { color: "#FBFBFB", fontFamily: "Manrope", fontSize: 16, fontWeight: "700", letterSpacing: 0.1, marginBottom: 13 },
-  categoryCarousel: { gap: 10, paddingRight: 20 },
+  categoryGrid: {
+    flexDirection: "row",
+    flexWrap: "wrap",
+    gap: 9,
+    marginHorizontal: -6,
+  },
   categoryBlock: {
-    width: 124,
-    minHeight: 103,
     borderWidth: 1,
-    borderRadius: 18,
-    padding: 12,
+    borderRadius: 23,
     justifyContent: "center",
     alignItems: "center",
     backgroundColor: "rgba(0,0,0,0.28)",
+    overflow: "hidden",
   },
-  categoryLabel: { color: "#FBFBFB", fontFamily: "Manrope", fontSize: 12, fontWeight: "700", textAlign: "center", marginTop: 8 },
+  categoryIcon: { height: 32, alignItems: "center", justifyContent: "center", marginBottom: 5 },
+  meditationIcon: { width: 20, height: 20 },
+  categoryImageIcon: { width: 24, height: 24 },
+  categoryLabel: { color: "#FBFBFB", fontFamily: "Manrope", fontSize: 12, lineHeight: 17, fontWeight: "600", textAlign: "center" },
   check: { position: "absolute", top: 9, right: 9 },
-  themeCarousel: { gap: 9, paddingRight: 20 },
-  themeColumn: { gap: 9, justifyContent: "flex-start" },
+  pills: { flexDirection: "row", flexWrap: "wrap", gap: 9 },
   pill: {
     minHeight: 38,
     borderRadius: 20,
     borderWidth: 1,
     borderColor: "rgba(255,255,255,0.2)",
-    backgroundColor: "rgba(255,255,255,0.07)",
+    backgroundColor: "rgba(0,0,0,0.28)",
     paddingHorizontal: 14,
     flexDirection: "row",
     alignItems: "center",
     gap: 7,
   },
-  pillSelected: { borderColor: "rgba(255,255,255,0.75)", backgroundColor: "rgba(255,255,255,0.2)" },
+  pillSelected: { borderColor: "rgba(255,255,255,0.75)", backgroundColor: "rgba(0,0,0,0.28)" },
   pillLabel: { color: "rgba(255,255,255,0.82)", fontFamily: "Manrope", fontSize: 13 },
   pillLabelSelected: { color: "#FBFBFB", fontWeight: "700" },
   error: { color: "#FFB4B4", fontFamily: "Manrope", fontSize: 13, textAlign: "center", marginTop: 4 },
