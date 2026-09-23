@@ -114,7 +114,7 @@ const styles = StyleSheet.create({
     borderWidth: 0,
   },
   positionedInactiveDay: {
-    backgroundColor: "transparent",
+    backgroundColor: "rgba(255,255,255,0.1)",
   },
   ringHost: {
     width: 39,
@@ -124,7 +124,7 @@ const styles = StyleSheet.create({
   ringMask: {
     flex: 1,
     borderRadius: 19.5,
-    borderWidth: 3,
+    borderWidth: 2.5,
     borderColor: "#000000",
     backgroundColor: "transparent",
   },
