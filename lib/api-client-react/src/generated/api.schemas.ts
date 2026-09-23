@@ -1333,6 +1333,12 @@ export interface Notification {
   sessionId: string | null;
   /** @nullable */
   message: string | null;
+  /** @nullable */
+  sessionTitle: string | null;
+  /** @nullable */
+  sessionImageUrl: string | null;
+  /** @nullable */
+  sessionLabel: string | null;
   createdAt: string;
   /** @nullable */
   readAt: string | null;

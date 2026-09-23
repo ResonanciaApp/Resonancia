@@ -29,7 +29,38 @@ function toProfile(u: User) {
   };
 }
 
-function serialize(n: Notification, actor: User | null) {
+type NotificationSessionPreview = Pick<
+  typeof catalogSessionsTable.$inferSelect,
+  "title" | "imageUrl" | "categoryLabel"
+>;
+
+function getNotificationSessionLabel(
+  message: string | null,
+  session: NotificationSessionPreview | null,
+) {
+  if (!session || !message) return session?.categoryLabel ?? null;
+
+  const currentPrefix = 'Hemos subido a Resonancia una nueva sesión de "';
+  const currentSuffix = `": "${session.title}"`;
+  if (message.startsWith(currentPrefix) && message.endsWith(currentSuffix)) {
+    return message.slice(currentPrefix.length, -currentSuffix.length);
+  }
+
+  // Compatibilidad con avisos creados antes del nuevo texto.
+  const legacyPrefix = "Nueva sesión de ";
+  const legacySuffix = `: ${session.title}`;
+  if (message.startsWith(legacyPrefix) && message.endsWith(legacySuffix)) {
+    return message.slice(legacyPrefix.length, -legacySuffix.length);
+  }
+
+  return session.categoryLabel;
+}
+
+function serialize(
+  n: Notification,
+  actor: User | null,
+  session: NotificationSessionPreview | null,
+) {
   return {
     id: n.id,
     type: n.type,
@@ -39,6 +70,9 @@ function serialize(n: Notification, actor: User | null) {
     createdAt: n.createdAt.toISOString(),
     readAt: n.readAt ? n.readAt.toISOString() : null,
     actor: actor ? toProfile(actor) : null,
+    sessionTitle: session?.title ?? null,
+    sessionImageUrl: session?.imageUrl ?? null,
+    sessionLabel: getNotificationSessionLabel(n.message, session),
   };
 }
 
@@ -88,13 +122,14 @@ router.get("/notifications", requireAuth, async (req, res) => {
   const me = req.currentUser!;
   try {
     const rows = await db
-      .select({ n: notificationsTable, actor: usersTable })
+      .select({ n: notificationsTable, actor: usersTable, session: catalogSessionsTable })
       .from(notificationsTable)
       .leftJoin(usersTable, eq(usersTable.id, notificationsTable.actorUserId))
+      .leftJoin(catalogSessionsTable, eq(catalogSessionsTable.id, notificationsTable.sessionId))
       .where(eq(notificationsTable.userId, me.id))
       .orderBy(desc(notificationsTable.createdAt))
       .limit(50);
-    res.json(rows.map((r) => serialize(r.n, r.actor)));
+    res.json(rows.map((r) => serialize(r.n, r.actor, r.session)));
   } catch (err) {
     req.log.error(err);
     res.status(500).json({ error: "Error al obtener notificaciones" });

@@ -2548,6 +2548,9 @@ export const GetNotificationsResponseItem = zod.object({
   "entityId": zod.number().nullable().describe('ID de la entidad relacionada (p. ej. la mezcla para mix_like\/mix_comment)'),
   "sessionId": zod.string().nullable().describe('Textual catalog session ID for session_published notices'),
   "message": zod.string().nullable(),
+  "sessionTitle": zod.string().nullable(),
+  "sessionImageUrl": zod.string().nullable(),
+  "sessionLabel": zod.string().nullable(),
   "createdAt": zod.coerce.date(),
   "readAt": zod.coerce.date().nullable(),
   "actor": zod.union([zod.object({

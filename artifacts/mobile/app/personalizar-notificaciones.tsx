@@ -49,6 +49,12 @@ type Selection = {
   editorialTags: string[];
 };
 
+function sameValues(left: string[], right: string[]) {
+  if (left.length !== right.length) return false;
+  const rightValues = new Set(right);
+  return left.every((value) => rightValues.has(value));
+}
+
 const CATEGORY_LABELS: Record<string, string> = {
   "meditaciones-guiadas": "Meditación",
   "sonidos-ancestrales": "Sonoterapia",
@@ -217,8 +223,6 @@ export default function PersonalizarNotificacionesScreen() {
   const [saveError, setSaveError] = useState<string | null>(null);
   const selectionRef = useRef<Selection | null>(null);
   const confirmedRef = useRef<Selection | null>(null);
-  const desiredRef = useRef<Selection | null>(null);
-  const queueRunningRef = useRef(false);
 
   useEffect(() => {
     if (!preferencesQ.data || confirmedRef.current) return;
@@ -235,58 +239,40 @@ export default function PersonalizarNotificacionesScreen() {
   const activeCategoryIds = selectedCategoryIds ?? serverCategoryIds;
   const activeEditorialTags = selectedEditorialTags ?? serverEditorialTags;
 
-  async function drainSaveQueue() {
-    if (queueRunningRef.current) return;
-    queueRunningRef.current = true;
+  async function saveChanges() {
+    const target = selectionRef.current;
+    if (!target || updatePreferences.isPending) return;
     setSaveError(null);
-
-    while (desiredRef.current) {
-      const target = desiredRef.current;
-      desiredRef.current = null;
-      try {
-        const saved = await updatePreferences.mutateAsync({
-          data: {
-            selectedCategoryIds: target.categoryIds,
-            selectedEditorialTags: target.editorialTags,
-          },
-        });
-        const confirmed: Selection = {
-          categoryIds: [...(saved.selectedCategoryIds ?? target.categoryIds)],
-          editorialTags: [...(saved.selectedEditorialTags ?? target.editorialTags)],
-        };
-        queryClient.setQueryData(getGetNotificationPreferencesQueryKey(), saved);
-        confirmedRef.current = confirmed;
-        if (!desiredRef.current) {
-          selectionRef.current = confirmed;
-          setSelectedCategoryIds(confirmed.categoryIds);
-          setSelectedEditorialTags(confirmed.editorialTags);
-        }
-      } catch {
-        if (!desiredRef.current) {
-          const rollback = confirmedRef.current ?? target;
-          selectionRef.current = rollback;
-          setSelectedCategoryIds(rollback.categoryIds);
-          setSelectedEditorialTags(rollback.editorialTags);
-          setSaveError("No se pudieron guardar tus preferencias. Inténtalo de nuevo.");
-        }
-      }
+    try {
+      const saved = await updatePreferences.mutateAsync({
+        data: {
+          selectedCategoryIds: target.categoryIds,
+          selectedEditorialTags: target.editorialTags,
+        },
+      });
+      const confirmed: Selection = {
+        categoryIds: [...(saved.selectedCategoryIds ?? target.categoryIds)],
+        editorialTags: [...(saved.selectedEditorialTags ?? target.editorialTags)],
+      };
+      queryClient.setQueryData(getGetNotificationPreferencesQueryKey(), saved);
+      confirmedRef.current = confirmed;
+      selectionRef.current = confirmed;
+      setSelectedCategoryIds(confirmed.categoryIds);
+      setSelectedEditorialTags(confirmed.editorialTags);
+    } catch {
+      setSaveError("No se pudieron guardar tus preferencias. Inténtalo de nuevo.");
     }
-
-    queueRunningRef.current = false;
-    if (desiredRef.current) void drainSaveQueue();
   }
 
-  function save(nextCategories: string[], nextEditorialTags: string[]) {
+  function updateSelection(nextCategories: string[], nextEditorialTags: string[]) {
     const next: Selection = {
       categoryIds: [...nextCategories],
       editorialTags: [...nextEditorialTags],
     };
     selectionRef.current = next;
-    desiredRef.current = next;
     setSelectedCategoryIds(nextCategories);
     setSelectedEditorialTags(nextEditorialTags);
     setSaveError(null);
-    void drainSaveQueue();
   }
 
   function toggleCategory(id: string) {
@@ -298,7 +284,7 @@ export default function PersonalizarNotificacionesScreen() {
     const next = current.categoryIds.includes(id)
       ? current.categoryIds.filter((value) => value !== id)
       : [...current.categoryIds, id];
-    save(next, current.editorialTags);
+    updateSelection(next, current.editorialTags);
   }
 
   function toggleEditorialTag(id: string) {
@@ -310,12 +296,23 @@ export default function PersonalizarNotificacionesScreen() {
     const next = current.editorialTags.includes(id)
       ? current.editorialTags.filter((value) => value !== id)
       : [...current.editorialTags, id];
-    save(current.categoryIds, next);
+    updateSelection(current.categoryIds, next);
   }
 
   const isLoading = preferencesQ.isLoading;
   const isError = preferencesQ.isError;
   const hasOptions = categories.length > 0 || editorialTags.length > 0;
+  const confirmed = confirmedRef.current;
+  const hasUnsavedChanges = !!confirmed && (
+    !sameValues(activeCategoryIds, confirmed.categoryIds) ||
+    !sameValues(activeEditorialTags, confirmed.editorialTags)
+  );
+  const saveDisabled =
+    !hasUnsavedChanges ||
+    updatePreferences.isPending ||
+    isLoading ||
+    isError ||
+    !hasOptions;
 
   return (
     <>
@@ -355,7 +352,7 @@ export default function PersonalizarNotificacionesScreen() {
             style={styles.scroll}
             contentContainerStyle={{
               paddingTop: 23,
-              paddingBottom: bottomPad + 40,
+              paddingBottom: bottomPad + 150,
               paddingHorizontal: 20,
             }}
             showsVerticalScrollIndicator={false}
@@ -429,6 +426,27 @@ export default function PersonalizarNotificacionesScreen() {
             {saveError && <Text style={styles.error}>{saveError}</Text>}
           </ScrollView>
         </View>
+        <Pressable
+          onPress={() => void saveChanges()}
+          disabled={saveDisabled}
+          accessibilityRole="button"
+          accessibilityLabel="Guardar cambios"
+          accessibilityState={{ disabled: saveDisabled }}
+          style={({ pressed }) => [
+            styles.saveButton,
+            saveDisabled ? styles.saveButtonDisabled : styles.saveButtonEnabled,
+            !saveDisabled && pressed && styles.saveButtonPressed,
+          ]}
+        >
+          <Text
+            style={[
+              styles.saveButtonText,
+              saveDisabled ? styles.saveButtonTextDisabled : styles.saveButtonTextEnabled,
+            ]}
+          >
+            Guardar cambios
+          </Text>
+        </Pressable>
       </LinearGradient>
     </>
   );
@@ -523,4 +541,24 @@ const styles = StyleSheet.create({
   pillLabel: { color: "rgba(255,255,255,0.82)", fontFamily: "Manrope", fontSize: 13 },
   pillLabelSelected: { color: "#F9F9F9" },
   error: { color: "#FFB4B4", fontFamily: "Manrope", fontSize: 13, textAlign: "center", marginTop: 4 },
+  saveButton: {
+    position: "absolute",
+    left: 20,
+    right: 20,
+    bottom: 50,
+    height: 52,
+    borderRadius: 26,
+    alignItems: "center",
+    justifyContent: "center",
+  },
+  saveButtonDisabled: { backgroundColor: "rgba(249,249,249,0.4)" },
+  saveButtonEnabled: { backgroundColor: "#F9F9F9" },
+  saveButtonPressed: { opacity: 0.86 },
+  saveButtonText: {
+    fontFamily: "Manrope",
+    fontSize: 15,
+    fontWeight: "700",
+  },
+  saveButtonTextDisabled: { color: "rgba(249,249,249,0.8)" },
+  saveButtonTextEnabled: { color: "#060A0F" },
 });

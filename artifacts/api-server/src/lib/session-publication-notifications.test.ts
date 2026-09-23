@@ -34,7 +34,8 @@ describe("published session notification matching", () => {
       ],
     })).toEqual({
       label: "Música tranquilizadora",
-      message: "Nueva sesión de Música tranquilizadora: Cuencos al amanecer",
+      message:
+        'Hemos subido a Resonancia una nueva sesión de "Música tranquilizadora": "Cuencos al amanecer"',
     });
   });
 

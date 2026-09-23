@@ -6316,6 +6316,12 @@ components:
           description: Textual catalog session ID for session_published notices
         message:
           type: ["string", "null"]
+        sessionTitle:
+          type: ["string", "null"]
+        sessionImageUrl:
+          type: ["string", "null"]
+        sessionLabel:
+          type: ["string", "null"]
         createdAt:
           type: string
           format: date-time
@@ -6326,7 +6332,7 @@ components:
           anyOf:
             - $ref: "#/components/schemas/UserProfile"
             - type: "null"
-      required: [id, type, entityId, sessionId, message, createdAt, readAt, actor]
+      required: [id, type, entityId, sessionId, message, sessionTitle, sessionImageUrl, sessionLabel, createdAt, readAt, actor]
     NotificationOption:
       type: object
       properties:

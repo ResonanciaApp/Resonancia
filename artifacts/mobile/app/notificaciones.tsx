@@ -10,6 +10,7 @@ import {
   type Notification,
 } from "@workspace/api-client-react";
 import { LinearGradient } from "expo-linear-gradient";
+import { Image } from "expo-image";
 import { router } from "expo-router";
 import React, { useEffect, useMemo } from "react";
 import {
@@ -28,6 +29,7 @@ import { GoldGradient } from "@/components/GoldGradient";
 import { useBackOverride } from "@/context/BackOverrideContext";
 import { useSceneTheme } from "@/context/SceneThemeContext";
 import { useColors } from "@/hooks/useColors";
+import { absoluteMediaUrl } from "@/hooks/effectiveHero";
 
 const AVATAR_PALETTE = ["#D4709A", "#8AAAD4", "#f4c993", "#A8C4A8", "#C8B4E0", "#EDD9B8"];
 
@@ -243,6 +245,7 @@ export default function NotificacionesScreen() {
               const messageText = isGroupedDm
                 ? `te envió ${n.groupCount} mensajes`
                 : messageFor(n);
+              const isSessionPublished = notificationType === "session_published";
               return (
                 <Pressable
                   key={n.type === "dm" ? `dm-${actorId}` : `n-${n.id}`}
@@ -254,20 +257,34 @@ export default function NotificacionesScreen() {
                     },
                   ]}
                 >
-                  {/* Avatar + type icon badge */}
-                  <View style={styles.avatarWrap}>
-                    <View style={[styles.avatar, { backgroundColor: tint + "33" }]}>
-                      <Text style={[styles.initials, { color: tint }]}>{initials(actorName)}</Text>
+                  {isSessionPublished && n.sessionImageUrl ? (
+                    <Image
+                      source={{ uri: absoluteMediaUrl(n.sessionImageUrl) }}
+                      style={styles.sessionThumbnail}
+                      contentFit="cover"
+                    />
+                  ) : (
+                    <View style={styles.avatarWrap}>
+                      <View style={[styles.avatar, { backgroundColor: tint + "33" }]}>
+                        <Text style={[styles.initials, { color: tint }]}>{initials(actorName)}</Text>
+                      </View>
+                      <View style={[styles.typeBadge, { backgroundColor: iconFor(n.type).color + "22", borderColor: iconFor(n.type).color + "55" }]}>
+                        <Feather name={iconFor(n.type).name} size={10} color={iconFor(n.type).color} />
+                      </View>
                     </View>
-                    <View style={[styles.typeBadge, { backgroundColor: iconFor(n.type).color + "22", borderColor: iconFor(n.type).color + "55" }]}>
-                      <Feather name={iconFor(n.type).name} size={10} color={iconFor(n.type).color} />
-                    </View>
-                  </View>
+                  )}
                   <View style={{ flex: 1 }}>
-                     <Text style={[styles.text, { color: colors.foreground }]}>
-                       <Text style={{ fontWeight: "700" }}>{notificationType === "session_published" ? "Resonancia" : actorName}</Text>{" "}
-                      {messageText}
-                    </Text>
+                    {isSessionPublished && n.sessionTitle && n.sessionLabel ? (
+                      <Text style={[styles.text, { color: colors.foreground }]}>
+                        Hemos subido a <Text style={styles.bold}>Resonancia</Text> una nueva sesión de{" "}
+                        <Text style={styles.bold}>&quot;{n.sessionLabel}&quot;</Text>: &quot;{n.sessionTitle}&quot;
+                      </Text>
+                    ) : (
+                      <Text style={[styles.text, { color: colors.foreground }]}>
+                        <Text style={styles.bold}>{actorName}</Text>{" "}
+                        {messageText}
+                      </Text>
+                    )}
                     <Text style={[styles.time, { color: colors.mutedForeground }]}>
                       {relativeTime(n.createdAt)}
                     </Text>
@@ -359,6 +376,12 @@ const styles = StyleSheet.create({
   },
   avatarWrap: { position: "relative", width: 44, height: 44 },
   avatar: { width: 44, height: 44, borderRadius: 22, alignItems: "center", justifyContent: "center" },
+  sessionThumbnail: {
+    width: 56,
+    height: 56,
+    borderRadius: 10,
+    backgroundColor: "rgba(255,255,255,0.08)",
+  },
   typeBadge: {
     position: "absolute",
     bottom: -2,
@@ -372,6 +395,7 @@ const styles = StyleSheet.create({
   },
   initials: { fontFamily: "Manrope", fontSize: 15, fontWeight: "700" },
   text: { fontFamily: "Manrope", fontSize: 13, lineHeight: 19, marginBottom: 4 },
+  bold: { fontWeight: "700" },
   time: { fontFamily: "Manrope", fontSize: 11 },
   dot: { width: 8, height: 8, borderRadius: 4 },
   countBadge: {

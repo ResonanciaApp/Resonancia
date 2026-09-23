@@ -30,5 +30,8 @@ export function getPublicationNotificationMatch(
       ? getInternalEditorialTagOption(matchingEditorial)!.label
       : matchingEditorial
     : session.categoryLabel;
-  return { label, message: `Nueva sesión de ${label}: ${session.title}` };
+  return {
+    label,
+    message: `Hemos subido a Resonancia una nueva sesión de "${label}": "${session.title}"`,
+  };
 }
