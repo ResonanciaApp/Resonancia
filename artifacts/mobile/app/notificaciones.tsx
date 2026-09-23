@@ -55,10 +55,6 @@ function relativeTime(iso: string): string {
 
 type FeatherName = React.ComponentProps<typeof Feather>["name"];
 
-// Tipos silenciados: se guardan en DB y cuentan como no leídas,
-// pero no se muestran en la lista (sin pantalla de destino todavía).
-const SILENT_TYPES: Notification["type"][] = ["content_approved", "content_rejected"];
-
 function iconFor(type: string): { name: FeatherName; color: string } {
   switch (type) {
     case "session_published": return { name: "bell", color: "#E7B95C" };
@@ -167,8 +163,10 @@ export default function NotificacionesScreen() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [isSignedIn, notifsQ.data]);
 
+  // Durante esta etapa, el buzón del drawer muestra únicamente los avisos
+  // configurados desde “Personalizar notificaciones”.
   const rawList = (notifsQ.data ?? []).filter(
-    (n) => !SILENT_TYPES.includes(n.type),
+    (notification) => notification.type === "session_published",
   );
 
   // Group consecutive `dm` notifications from the same actor into a single row.
@@ -233,7 +231,7 @@ export default function NotificacionesScreen() {
             <ActivityIndicator color={colors.primary} style={{ marginTop: 40 }} />
           ) : list.length === 0 ? (
             <Text style={[styles.empty, { color: colors.mutedForeground }]}>
-              No tienes notificaciones todavía.
+              No tienes notificaciones de nuevas sesiones todavía.
             </Text>
           ) : list.map((n) => {
               const notificationType = (n as Notification & { type: string }).type;

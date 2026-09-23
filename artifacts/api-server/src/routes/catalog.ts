@@ -1352,7 +1352,11 @@ router.patch(
           .set(updates)
           .where(eq(catalogSessionsTable.id, id))
           .returning();
-        return { kind: "updated" as const, updated };
+        const pushGroups =
+          current.status !== "published" && updated.status === "published"
+            ? await insertPublishedSessionNotifications(tx, updated)
+            : [];
+        return { kind: "updated" as const, updated, pushGroups };
       });
       if (outcome.kind === "not-found") {
         res.status(404).json({ error: "Envío no encontrado" });
@@ -1383,6 +1387,7 @@ router.patch(
         });
         return;
       }
+      await sendPublishedSessionPushes(outcome.updated.id, outcome.pushGroups);
       const loaded = await loadSubmission(id);
       req.log.info({ submissionId: id }, "submission edited");
       res.json(serializeSubmission(loaded!.session, loaded!.audioFiles, loaded!.creator));

@@ -163,7 +163,13 @@ router.get("/notifications/unread-count", requireAuth, async (req, res) => {
     const [row] = await db
       .select({ count: sql<number>`count(*)::int` })
       .from(notificationsTable)
-      .where(and(eq(notificationsTable.userId, me.id), isNull(notificationsTable.readAt)));
+      .where(
+        and(
+          eq(notificationsTable.userId, me.id),
+          eq(notificationsTable.type, "session_published"),
+          isNull(notificationsTable.readAt),
+        ),
+      );
     res.json({ count: row?.count ?? 0 });
   } catch (err) {
     req.log.error(err);
