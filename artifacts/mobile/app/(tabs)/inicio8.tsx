@@ -3821,8 +3821,9 @@ const styles = StyleSheet.create({
   inicio3HeroTitle: {
     maxWidth: "86%",
     textAlign: "center",
-    fontSize: 21,
-    lineHeight: 26,
+    fontSize: 24,
+    lineHeight: 29,
+    fontWeight: "600",
   },
   inicio3HeroDescription: {
     maxWidth: "86%",
