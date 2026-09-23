@@ -122,7 +122,7 @@ const styles = StyleSheet.create({
     fontSize: 18,
     lineHeight: 22,
     fontWeight: "700",
-    transform: [{ translateY: 2 }],
+    transform: [{ translateY: 1 }],
   },
   positionedDayLabel: {
     color: "#FCFCFC",
