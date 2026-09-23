@@ -1,6 +1,6 @@
 import { Router, type IRouter } from "express";
 import { randomUUID } from "node:crypto";
-import { and, asc, desc, eq, gte, inArray, or, sql } from "drizzle-orm";
+import { and, asc, desc, eq, gte, inArray, ne, or, sql } from "drizzle-orm";
 import {
   db,
   catalogCategoriesTable,
@@ -41,6 +41,7 @@ import { resolvePinnedFeaturedValue } from "../lib/pinnedFeatured";
 import { loadPlaylistCarousels } from "../lib/playlistCarousels";
 import { getSleepCarouselProjection } from "../lib/sleepCarouselOrder";
 import { getSoundCarouselProjection } from "../lib/soundCarouselOrder";
+import { isRetiredOtherThemeTag, RETIRED_REFLEXIONES_ID } from "../lib/retiredEditorialContent";
 import {
   normalizeFeaturedSleep,
   normalizeSupercategoryEditorialTags,
@@ -212,7 +213,7 @@ function serializeSession(s: CatalogSession, audioFiles: CatalogAudioFile[]) {
     sonidosTags: s.sonidosTags,
     descansoTag: s.descansoTag,
     descansoTags: s.descansoTags,
-    themeTag: s.themeTag,
+    themeTag: s.themeTag?.filter((tag) => !isRetiredOtherThemeTag(tag)) ?? [],
     temaTag: s.temaTag,
     moodIds: s.moodIds,
     sleepTag: s.sleepTag,
@@ -386,10 +387,14 @@ async function loadPlaylistPlacements(
 router.get("/catalog", async (req, res) => {
   const [categories, sessions, playlists, playlistCarousels, sleepCarouselOrder, soundCarouselOrder] = await Promise.all([
     db.select().from(catalogCategoriesTable)
+      .where(ne(catalogCategoriesTable.id, RETIRED_REFLEXIONES_ID))
       .orderBy(asc(catalogCategoriesTable.sortOrder), asc(catalogCategoriesTable.id))
       .limit(200),
     db.select().from(catalogSessionsTable)
-      .where(eq(catalogSessionsTable.status, "published"))
+      .where(and(
+        eq(catalogSessionsTable.status, "published"),
+        ne(catalogSessionsTable.categoryId, RETIRED_REFLEXIONES_ID),
+      ))
       .orderBy(asc(catalogSessionsTable.sortOrder), asc(catalogSessionsTable.id))
       // Cota defensiva: el mobile hidrata el catálogo completo, pero el
       // endpoint no debe volverse un full-scan sin techo si el catálogo crece.
@@ -497,6 +502,7 @@ router.get("/catalog/playlists/:slug", async (req, res) => {
             and(
               inArray(catalogSessionsTable.id, playlist.sessionIds),
               eq(catalogSessionsTable.status, "published"),
+              ne(catalogSessionsTable.categoryId, RETIRED_REFLEXIONES_ID),
             ),
           )
       : Promise.resolve([] as CatalogSession[]),
@@ -548,6 +554,7 @@ router.get("/catalog/pinned-featured", async (req, res) => {
       and(
         eq(catalogSessionsTable.isPinnedFeatured, true),
         eq(catalogSessionsTable.status, "published"),
+        ne(catalogSessionsTable.categoryId, RETIRED_REFLEXIONES_ID),
       ),
     )
     .limit(1);
@@ -593,6 +600,7 @@ router.put(
             and(
               eq(catalogSessionsTable.id, sessionId),
               eq(catalogSessionsTable.status, "published"),
+              ne(catalogSessionsTable.categoryId, RETIRED_REFLEXIONES_ID),
               eq(catalogSessionsTable.isPlaceholder, false),
             ),
           )
@@ -662,6 +670,7 @@ router.get("/catalog/popular", async (req, res) => {
       and(
         eq(catalogSessionsTable.status, "published"),
         inArray(catalogSessionsTable.id, rankedIds),
+        ne(catalogSessionsTable.categoryId, RETIRED_REFLEXIONES_ID),
       ),
     );
   const sessionById = new Map(published.map((s) => [s.id, s]));

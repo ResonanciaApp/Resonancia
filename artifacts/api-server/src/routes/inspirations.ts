@@ -1,5 +1,5 @@
 import { Router, type IRouter, type Request, type Response, type RequestHandler } from "express";
-import { and, eq, inArray, sql } from "drizzle-orm";
+import { and, eq, inArray, ne, sql } from "drizzle-orm";
 import { z } from "zod";
 import {
   db, inspirationsTable as entries, inspirationSettingsTable as settings,
@@ -20,6 +20,7 @@ import { requireRole } from "../middlewares/requireRole";
 import { getClerkProxyHost } from "../middlewares/clerkProxyMiddleware";
 import { ObjectStorageService, ObjectNotFoundError } from "../lib/objectStorage";
 import { validateInspirationImage } from "../lib/inspirationImage";
+import { isRetiredOtherThemeTag, RETIRED_REFLEXIONES_ID } from "../lib/retiredEditorialContent";
 import {
   InspirationError, inspirationDate, inspirationClock, inspirationWeekDates,
   inspirationAvailable, inspirationDay, defaultInspirationSettings,
@@ -206,7 +207,7 @@ async function sessionSlidesDto(content: { slides: Array<unknown | null> } | nul
   if (!inputs.length) return { revision, slides: [] };
   const sessionInputs = inputs.filter((slide) => slide.destinationType === "session");
   const sessions = sessionInputs.length ? await db.select().from(catalogSessionsTable).where(inArray(catalogSessionsTable.id, sessionInputs.map((slide) => slide.destinationId!))) : [];
-  const byId = new Map(sessions.filter((session) => session.status === "published").map((session) => [session.id, session]));
+  const byId = new Map(sessions.filter((session) => session.status === "published" && session.categoryId !== RETIRED_REFLEXIONES_ID).map((session) => [session.id, session]));
   const validInputs = (await Promise.all(inputs.map(async (slide) => {
     try { await validateHeroDestination(slide); return slide; } catch { return null; }
   }))).filter((slide): slide is ReturnType<typeof slideInput> => slide !== null);
@@ -374,6 +375,17 @@ async function validateHeroDestination(slide: ReturnType<typeof slideInput>) {
     if (slide.destinationType === "session" && !slide.destinationId) throw new InspirationError(400, "La sesión requiere un identificador");
     return;
   }
+  if ((slide.destinationType === "category" && slide.destinationId === RETIRED_REFLEXIONES_ID) ||
+      (slide.destinationType === "category-internal" && slide.destinationParentId === RETIRED_REFLEXIONES_ID)) {
+    throw new InspirationError(400, "La categoría antigua ya no está disponible");
+  }
+  if (slide.destinationType === "topics" && slide.destinationId && isRetiredOtherThemeTag(slide.destinationId)) {
+    throw new InspirationError(400, "La temática ya no está disponible");
+  }
+  if (slide.destinationType === "topics-internal" &&
+      (isRetiredOtherThemeTag(slide.destinationParentId ?? "") || isRetiredOtherThemeTag(slide.destinationId ?? ""))) {
+    throw new InspirationError(400, "La temática ya no está disponible");
+  }
   if (slide.destinationType === "topics" && !slide.destinationId) return;
   const id = slide.destinationId;
   if (!id) throw new InspirationError(400, "El destino requiere un identificador");
@@ -403,13 +415,13 @@ async function validateHeroDestination(slide: ReturnType<typeof slideInput>) {
     if (!valid) throw new InspirationError(400, "La colección no está disponible");
   } else if (slide.destinationType === "topics-internal") {
     const rows = await db.select({ themeTag: catalogSessionsTable.themeTag }).from(catalogSessionsTable).where(eq(catalogSessionsTable.status, "published"));
-    const matchingTag = rows.flatMap((row) => row.themeTag ?? []).map(parseOtherThemeTag).find((tag): tag is { parentId: string; label: string } => tag !== null && tag.parentId === slide.destinationParentId && tag.label === id);
+    const matchingTag = rows.flatMap((row) => row.themeTag ?? []).filter((tag) => !isRetiredOtherThemeTag(tag)).map(parseOtherThemeTag).find((tag): tag is { parentId: string; label: string } => tag !== null && tag.parentId === slide.destinationParentId && tag.label === id);
     if (!matchingTag || !slide.destinationParentId) throw new InspirationError(400, "La colección no está disponible");
   }
   if (slide.destinationType === "topics") {
     const rows = await db.select({ themeTag: catalogSessionsTable.themeTag }).from(catalogSessionsTable).where(eq(catalogSessionsTable.status, "published"));
-    if (!rows.some((row) => (row.themeTag ?? []).some((tag) => !tag.startsWith("__") && themeSlug(tag) === id)) &&
-      !rows.some((row) => (row.themeTag ?? []).some((tag) => parseOtherThemeTag(tag)?.parentId === id))) {
+    if (!rows.some((row) => (row.themeTag ?? []).some((tag) => !isRetiredOtherThemeTag(tag) && !tag.startsWith("__") && themeSlug(tag) === id)) &&
+      !rows.some((row) => (row.themeTag ?? []).some((tag) => !isRetiredOtherThemeTag(tag) && parseOtherThemeTag(tag)?.parentId === id))) {
       throw new InspirationError(400, "La temática no está disponible");
     }
   }
@@ -471,8 +483,8 @@ router.get("/admin/hero/session-slides", ...admin, wrap(async (_req, res) => {
   });
 }));
 router.get("/admin/hero/destinations", ...admin, wrap(async (_req, res) => {
-  const sessions = await db.select({ id: catalogSessionsTable.id, label: catalogSessionsTable.title, categoryId: catalogSessionsTable.categoryId, categoryLabel: catalogSessionsTable.categoryLabel, sonidosTags: catalogSessionsTable.sonidosTags, sonidosTag: catalogSessionsTable.sonidosTag, descansoTags: catalogSessionsTable.descansoTags, temaTag: catalogSessionsTable.temaTag, soundTag: catalogSessionsTable.soundTag, meditationTag: catalogSessionsTable.meditationTag, ancestralTag: catalogSessionsTable.ancestralTag, sabiduriaTag: catalogSessionsTable.sabiduriaTag, podcastTag: catalogSessionsTable.podcastTag, themeTag: catalogSessionsTable.themeTag }).from(catalogSessionsTable).where(eq(catalogSessionsTable.status, "published"));
-  const categories = await db.select({ id: catalogCategoriesTable.id, label: catalogCategoriesTable.title }).from(catalogCategoriesTable);
+  const sessions = await db.select({ id: catalogSessionsTable.id, label: catalogSessionsTable.title, categoryId: catalogSessionsTable.categoryId, categoryLabel: catalogSessionsTable.categoryLabel, sonidosTags: catalogSessionsTable.sonidosTags, sonidosTag: catalogSessionsTable.sonidosTag, descansoTags: catalogSessionsTable.descansoTags, temaTag: catalogSessionsTable.temaTag, soundTag: catalogSessionsTable.soundTag, meditationTag: catalogSessionsTable.meditationTag, ancestralTag: catalogSessionsTable.ancestralTag, sabiduriaTag: catalogSessionsTable.sabiduriaTag, podcastTag: catalogSessionsTable.podcastTag, themeTag: catalogSessionsTable.themeTag }).from(catalogSessionsTable).where(and(eq(catalogSessionsTable.status, "published"), ne(catalogSessionsTable.categoryId, RETIRED_REFLEXIONES_ID)));
+  const categories = await db.select({ id: catalogCategoriesTable.id, label: catalogCategoriesTable.title }).from(catalogCategoriesTable).where(ne(catalogCategoriesTable.id, RETIRED_REFLEXIONES_ID));
   const options = (items: Array<{ id: string; label: string; parentId?: string; source?: "legacy" | "editorial" }>) => items.sort((a, b) => a.label.localeCompare(b.label));
   const publishedTags = (field: "descansoTags" | "sonidosTags", type: "sleep" | "sounds") => {
     const values = sessions.flatMap((session) => (session[field] ?? []) as string[]);
@@ -491,12 +503,12 @@ router.get("/admin/hero/destinations", ...admin, wrap(async (_req, res) => {
     { destinationType: "sounds", options: [] },
     { destinationType: "sounds-internal", options: publishedTags("sonidosTags", "sounds") },
     { destinationType: "mixer", options: [] },
-    { destinationType: "topics", options: options([...new Map(sessions.flatMap((s) => (s.themeTag ?? []).flatMap((tag) => {
+    { destinationType: "topics", options: options([...new Map(sessions.flatMap((s) => (s.themeTag ?? []).filter((tag) => !isRetiredOtherThemeTag(tag)).flatMap((tag) => {
       const internal = parseOtherThemeTag(tag);
       if (internal) return [{ id: internal.parentId, label: themeLabels[internal.parentId] ?? internal.parentId.replace(/-/g, " ") }];
       return tag.startsWith("__") ? [] : [{ id: themeSlug(tag), label: tag }];
     })).map((item) => [item.id, item])).values()]) },
-    { destinationType: "topics-internal", options: options([...new Map(sessions.flatMap((s) => (s.themeTag ?? []).map(parseOtherThemeTag).filter((tag): tag is { parentId: string; label: string } => Boolean(tag)).map((tag) => ({ id: tag.label, label: tag.label, parentId: tag.parentId }))).map((item) => [`${item.parentId}:${item.id}`, item])).values()]) },
+    { destinationType: "topics-internal", options: options([...new Map(sessions.flatMap((s) => (s.themeTag ?? []).filter((tag) => !isRetiredOtherThemeTag(tag)).map(parseOtherThemeTag).filter((tag): tag is { parentId: string; label: string } => Boolean(tag)).map((tag) => ({ id: tag.label, label: tag.label, parentId: tag.parentId }))).map((item) => [`${item.parentId}:${item.id}`, item])).values()]) },
   ]);
 }));
 router.put("/admin/hero/session-slides", ...admin, wrap(async (req, res) => {
@@ -516,12 +528,13 @@ router.put("/admin/hero/session-slides", ...admin, wrap(async (req, res) => {
   const found = uniqueSessionIds.length ? await db.select({
     id: catalogSessionsTable.id,
     status: catalogSessionsTable.status,
+    categoryId: catalogSessionsTable.categoryId,
     imageKey: catalogSessionsTable.imageKey,
     imageUrl: catalogSessionsTable.imageUrl,
   })
     .from(catalogSessionsTable)
     .where(inArray(catalogSessionsTable.id, uniqueSessionIds)) : [];
-  if (found.length !== uniqueSessionIds.length || found.some((session) => session.status !== "published")) {
+  if (found.length !== uniqueSessionIds.length || found.some((session) => session.status !== "published" || session.categoryId === RETIRED_REFLEXIONES_ID)) {
     throw new InspirationError(400, "Todas las sesiones deben estar publicadas");
   }
   const foundById = new Map(found.map((session) => [session.id, session]));

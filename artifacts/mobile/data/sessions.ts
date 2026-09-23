@@ -1216,6 +1216,15 @@ export const SESSIONS: Session[] = [
   },
 ];
 
+// Estas dos sesiones siguen publicadas en la categoría retirada en la BD.
+// Mantenerlas allí para revisión, pero no mostrarlas como Música en el fallback
+// offline antes de que llegue el catálogo filtrado del servidor.
+for (let index = SESSIONS.length - 1; index >= 0; index -= 1) {
+  if (SESSIONS[index].id === "39" || SESSIONS[index].id === "40") {
+    SESSIONS.splice(index, 1);
+  }
+}
+
 // Identidad del catálogo incluido en el bundle. Se captura antes de aplicar
 // snapshots para distinguirlo de las sesiones que se agregan dinámicamente
 // desde el servidor y poder retirar estas últimas cuando dejan de publicarse.
@@ -1596,7 +1605,8 @@ function resolveObjectPath(path: string | null | undefined): string | undefined 
  * de estado (published → pending/rejected) sin reiniciar la aplicación.
  */
 export function applyCatalogSnapshot(remote: CatalogSessionSnapshot[]): void {
-  const byId = new Map(remote.map((s) => [s.id, s]));
+  // Keep retired editorial content out of both cached and fresh snapshots.
+  const byId = new Map(remote.filter((s) => s.categoryId !== "reflexiones").map((s) => [s.id, s]));
   const normalizeGuideIds = (guideIds: string[] | null | undefined, guideId: string | null | undefined): string[] => {
     const candidates = guideIds?.length ? guideIds : guideId ? [guideId] : [];
     return Array.from(new Set(candidates.map((id) => id.trim()).filter(Boolean))).slice(0, 4);
@@ -1607,7 +1617,7 @@ export function applyCatalogSnapshot(remote: CatalogSessionSnapshot[]): void {
   // esas siguen siendo el fallback offline.
   for (let index = SESSIONS.length - 1; index >= 0; index -= 1) {
     const session = SESSIONS[index];
-    if (!BUNDLED_SESSION_IDS.has(session.id) && !byId.has(session.id)) {
+    if (session.categoryId === "reflexiones" || (!BUNDLED_SESSION_IDS.has(session.id) && !byId.has(session.id))) {
       SESSIONS.splice(index, 1);
     }
   }
@@ -1651,7 +1661,7 @@ export function applyCatalogSnapshot(remote: CatalogSessionSnapshot[]): void {
     local.sonidosTags = normalizeSonidosTags(r.sonidosTags, r.sonidosTag);
     local.descansoTags = normalizeDescansoTags(r.descansoTags, r.descansoTag, r.sleepTag);
     local.descansoTag = undefined;
-    local.themeTag = (r.themeTag ?? undefined) as ThemeTag[] | undefined;
+    local.themeTag = r.themeTag?.filter((tag) => !/chakra/i.test(tag)) as ThemeTag[] | undefined;
     local.temaTag = r.temaTag ?? undefined;
     local.moodIds = r.moodIds ?? undefined;
     local.sleepTag = (r.sleepTag ?? undefined) as SleepTag | undefined;
@@ -1692,7 +1702,7 @@ export function applyCatalogSnapshot(remote: CatalogSessionSnapshot[]): void {
   }
 
   // 2. Insertar sesiones nuevas (subidas vía admin) que no están en el bundle.
-  for (const r of remote) {
+  for (const r of byId.values()) {
     if (SESSIONS.some((s) => s.id === r.id)) continue;
     const main = r.audioFiles?.find((a) => a.role === "main" || a.role === "base") ?? r.audioFiles?.[0];
     const voice = r.audioFiles?.find((a) => a.role === "voice");
@@ -1738,7 +1748,7 @@ export function applyCatalogSnapshot(remote: CatalogSessionSnapshot[]): void {
       sonidosTag: (r.sonidosTag ?? undefined) as SonidosTag | undefined,
       sonidosTags: normalizeSonidosTags(r.sonidosTags, r.sonidosTag),
       descansoTags: normalizeDescansoTags(r.descansoTags, r.descansoTag, r.sleepTag),
-      themeTag: (r.themeTag ?? undefined) as ThemeTag[] | undefined,
+      themeTag: r.themeTag?.filter((tag) => !/chakra/i.test(tag)) as ThemeTag[] | undefined,
       temaTag: r.temaTag ?? undefined,
       moodIds: r.moodIds ?? undefined,
       sleepTag: (r.sleepTag ?? undefined) as SleepTag | undefined,

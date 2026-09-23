@@ -1018,7 +1018,7 @@ export default function SessionForm({ mode, initial, onSaved }: SessionFormProps
             tagType="other_theme"
             defaults={OTHER_THEME_TAGS}
             label=""
-            selected={themeTag.filter((tag) => !tag.startsWith("__"))}
+            selected={themeTag.filter((tag) => !tag.startsWith("__") && !/chakra/i.test(tag))}
             onToggle={toggleTheme}
             onRename={(from, to) => setThemeTag((tags) => {
               const oldPrefix = `__${otherThemeInternalType(from)}__:`;
@@ -1035,7 +1035,7 @@ export default function SessionForm({ mode, initial, onSaved }: SessionFormProps
             })}
             pill
           />
-          {themeTag.filter((parent) => !parent.startsWith("__")).map((parent) => (
+          {themeTag.filter((parent) => !parent.startsWith("__") && !/chakra/i.test(parent)).map((parent) => (
             <TagOptionSelector
               key={parent}
               tagType={otherThemeInternalType(parent)}

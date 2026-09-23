@@ -441,7 +441,7 @@ export function ExploreScreen({
         sections: exploreSections,
         localCards: TAG_CARDS,
         sessions: SESSIONS,
-        isExcludedLabel: isChakraTag,
+        isExcludedLabel: (label) => isChakraTag(label) || /chakra/i.test(label),
         slugifyLabel: slugifyThemeTag,
         resolveCoverImage: absoluteMediaUrl,
       }),

@@ -55,6 +55,7 @@ import { requireRole } from "../middlewares/requireRole";
 import { loadPlaylistCarousels } from "../lib/playlistCarousels";
 import { getSleepCarouselProjection, updateSleepCarouselOrder } from "../lib/sleepCarouselOrder";
 import { getSoundCarouselProjection, updateSoundCarouselOrder } from "../lib/soundCarouselOrder";
+import { isRetiredOtherThemeTag } from "../lib/retiredEditorialContent";
 
 const router: IRouter = Router();
 
@@ -1816,7 +1817,10 @@ router.get("/admin/tag-options", requireAuth, requireRole("admin"), async (req, 
       .from(catalogTagOptionsTable)
       .where(type ? eq(catalogTagOptionsTable.type, type) : undefined)
       .orderBy(catalogTagOptionsTable.createdAt);
-    res.json(rows);
+    res.json(rows.filter((row) =>
+      !((row.type === "other_theme" || row.type.startsWith("other_theme_internal:")) &&
+        isRetiredOtherThemeTag(row.label)),
+    ));
   } catch (err) {
     req.log.error({ err }, "error fetching tag options");
     res.status(500).json({ error: "Error al obtener etiquetas" });
@@ -1835,6 +1839,10 @@ router.post("/admin/tag-options", requireAuth, requireRole("admin"), async (req,
     return;
   }
   const { type, label } = parsedBody.data;
+  if ((type === "other_theme" || type.startsWith("other_theme_internal:")) && isRetiredOtherThemeTag(label)) {
+    res.status(400).json({ error: "La temática Chakra ya no está disponible" });
+    return;
+  }
   if (type.startsWith("other_theme_internal:") && !isOtherThemeInternalType(type)) {
     res.status(400).json({ error: "Tipo de etiqueta interna inválido" });
     return;
