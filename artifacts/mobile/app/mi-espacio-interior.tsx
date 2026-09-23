@@ -31,6 +31,9 @@ const MONTH_NAMES = [
   "Diciembre",
 ] as const;
 
+const WALL_GRADIENT = ["#2A276A", "#1F2D6E", "#112F6F"] as const;
+const WALL_GRADIENT_LOCATIONS = [0, 0.5, 1] as const;
+
 function SlidingSheetModal({
   visible,
   onClose,
@@ -548,7 +551,7 @@ function PremiumInnerSpaceScreen() {
       const revealId = String(item.id);
       const revealDelay = wallRevealDelays.get(revealId) ?? 0;
       return (
-        <View style={styles.dateHeader}>
+        <View style={[styles.dateHeader, index > 0 && styles.subsequentDateHeader]}>
           <WallScrollReveal
             active={wallRevealDelays.has(revealId)}
             completedIds={completedRevealIds}
@@ -739,8 +742,10 @@ function PremiumInnerSpaceScreen() {
 
   return (
     <LinearGradient
-      colors={theme.gradient as unknown as [string, string, ...string[]]}
-      locations={theme.gradientLocations as unknown as [number, number, ...number[]] | undefined}
+      colors={WALL_GRADIENT}
+      locations={WALL_GRADIENT_LOCATIONS}
+      start={{ x: 0.5, y: 0 }}
+      end={{ x: 0.5, y: 1 }}
       style={styles.root}
     >
       <View style={[styles.headerContainer, { paddingTop: (Platform.OS === "web" ? 67 : Math.max(insets.top, 40)) + 8 }]}>
@@ -970,6 +975,9 @@ const styles = StyleSheet.create({
     alignItems: 'stretch',
     marginBottom: 21,
     marginTop: 6,
+  },
+  subsequentDateHeader: {
+    marginTop: 16,
   },
   dateHeaderEntrance: {
     width: "100%",

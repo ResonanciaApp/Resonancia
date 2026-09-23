@@ -306,7 +306,7 @@ export function InnerSpaceCard({
                 styles.gridItem,
                 category === cat.id && {
                   borderColor: "rgba(255,255,255,0.45)",
-                  backgroundColor: "rgba(0,0,0,0.33)",
+                  backgroundColor: "rgba(0,0,0,0.28)",
                   shadowColor: cat.color,
                   shadowOpacity: 0.22,
                   shadowRadius: 8,
