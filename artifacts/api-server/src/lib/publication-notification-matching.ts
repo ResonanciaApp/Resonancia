@@ -30,8 +30,9 @@ export function getPublicationNotificationMatch(
       ? getInternalEditorialTagOption(matchingEditorial)!.label
       : matchingEditorial
     : session.categoryLabel;
+  const labelType = matchingEditorial ? "temática" : "categoría";
   return {
     label,
-    message: `Hemos subido una nueva sesión de ${label}: ${session.title}`,
+    message: `Hemos subido una nueva sesión de la ${labelType} ${label}, se llama ${session.title}.`,
   };
 }

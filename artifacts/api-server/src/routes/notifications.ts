@@ -40,16 +40,26 @@ function getNotificationSessionLabel(
 ) {
   if (!session || !message) return session?.categoryLabel ?? null;
 
+  const currentSuffix = `, se llama ${session.title}.`;
+  for (const prefix of [
+    "Hemos subido una nueva sesión de la categoría ",
+    "Hemos subido una nueva sesión de la temática ",
+  ]) {
+    if (message.startsWith(prefix) && message.endsWith(currentSuffix)) {
+      return message.slice(prefix.length, -currentSuffix.length);
+    }
+  }
+
   const simplifiedPrefix = "Hemos subido una nueva sesión de ";
   const simplifiedSuffix = `: ${session.title}`;
   if (message.startsWith(simplifiedPrefix) && message.endsWith(simplifiedSuffix)) {
     return message.slice(simplifiedPrefix.length, -simplifiedSuffix.length);
   }
 
-  const currentPrefix = 'Hemos subido a Resonancia una nueva sesión de "';
-  const currentSuffix = `": "${session.title}"`;
-  if (message.startsWith(currentPrefix) && message.endsWith(currentSuffix)) {
-    return message.slice(currentPrefix.length, -currentSuffix.length);
+  const quotedPrefix = 'Hemos subido a Resonancia una nueva sesión de "';
+  const quotedSuffix = `": "${session.title}"`;
+  if (message.startsWith(quotedPrefix) && message.endsWith(quotedSuffix)) {
+    return message.slice(quotedPrefix.length, -quotedSuffix.length);
   }
 
   // Compatibilidad con avisos creados antes del nuevo texto.
@@ -62,23 +72,39 @@ function getNotificationSessionLabel(
   return session.categoryLabel;
 }
 
+function getNotificationSessionMessage(
+  message: string | null,
+  session: NotificationSessionPreview | null,
+  label: string | null,
+) {
+  if (!session || !label) return message;
+  const isEditorial =
+    message?.startsWith("Hemos subido una nueva sesión de la temática ") ||
+    label !== session.categoryLabel;
+  const labelType = isEditorial ? "temática" : "categoría";
+  return `Hemos subido una nueva sesión de la ${labelType} ${label}, se llama ${session.title}.`;
+}
+
 function serialize(
   n: Notification,
   actor: User | null,
   session: NotificationSessionPreview | null,
 ) {
+  const sessionLabel = getNotificationSessionLabel(n.message, session);
   return {
     id: n.id,
     type: n.type,
     entityId: n.entityId,
     sessionId: n.sessionId,
-    message: n.message,
+    message: n.type === "session_published"
+      ? getNotificationSessionMessage(n.message, session, sessionLabel)
+      : n.message,
     createdAt: n.createdAt.toISOString(),
     readAt: n.readAt ? n.readAt.toISOString() : null,
     actor: actor ? toProfile(actor) : null,
     sessionTitle: session?.title ?? null,
     sessionImageUrl: session?.imageUrl ?? null,
-    sessionLabel: getNotificationSessionLabel(n.message, session),
+    sessionLabel,
   };
 }
 

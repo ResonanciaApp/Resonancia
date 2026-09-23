@@ -34,7 +34,17 @@ describe("published session notification matching", () => {
       ],
     })).toEqual({
       label: "Música tranquilizadora",
-      message: "Hemos subido una nueva sesión de Música tranquilizadora: Cuencos al amanecer",
+      message: "Hemos subido una nueva sesión de la temática Música tranquilizadora, se llama Cuencos al amanecer.",
+    });
+  });
+
+  it("describes a category match as a category", () => {
+    expect(getPublicationNotificationMatch(session, {
+      selectedCategoryIds: ["musica-sonidos"],
+      selectedEditorialTags: [],
+    })).toEqual({
+      label: "Música",
+      message: "Hemos subido una nueva sesión de la categoría Música, se llama Cuencos al amanecer.",
     });
   });
 

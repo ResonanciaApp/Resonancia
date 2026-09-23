@@ -256,6 +256,9 @@ export default function NotificacionesScreen() {
                 ? `te envió ${n.groupCount} mensajes`
                 : messageFor(n);
               const isSessionPublished = notificationType === "session_published";
+              const isEditorialNotification =
+                isSessionPublished &&
+                n.message?.startsWith("Hemos subido una nueva sesión de la temática ");
               return (
                 <Pressable
                   key={n.type === "dm" ? `dm-${actorId}` : `n-${n.id}`}
@@ -286,8 +289,10 @@ export default function NotificacionesScreen() {
                   <View style={{ flex: 1 }}>
                     {isSessionPublished && n.sessionTitle && n.sessionLabel ? (
                       <Text style={[styles.text, { color: colors.foreground }]}>
-                        Hemos subido una nueva sesión de{" "}
-                        <Text style={styles.bold}>{n.sessionLabel}</Text>: {n.sessionTitle}
+                        Hemos subido una nueva sesión de la{" "}
+                        {isEditorialNotification ? "temática" : "categoría"}{" "}
+                        <Text style={styles.bold}>{n.sessionLabel}</Text>, se llama{" "}
+                        {n.sessionTitle}.
                       </Text>
                     ) : (
                       <Text style={[styles.text, { color: colors.foreground }]}>
