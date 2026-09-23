@@ -2346,15 +2346,6 @@ export default function HomeScreen2({
       todayKey,
     ],
   );
-  const nextDailyRecommendations = React.useMemo<Session[]>(
-    () => selectDailyRecommendations(
-      dailyRecommendationPool,
-      todayKey,
-      recoOffset + 1,
-      dailyRecommendations.map((session) => session.id),
-    ),
-    [dailyRecommendationPool, dailyRecommendations, recoOffset, todayKey],
-  );
   const commitDailyRecommendations = React.useCallback(() => {
     setPreviousDailyRecommendationIds(
       dailyRecommendations.map((session) => session.id),
@@ -2937,8 +2928,6 @@ export default function HomeScreen2({
             style={{ paddingHorizontal: GRID_PAD, marginTop: -11 }}
             inicio3Compact
             onRefreshRecommendations={commitDailyRecommendations}
-            nextSessions={nextDailyRecommendations}
-            roulettePool={dailyRecommendationPool}
           />
         )}
 
@@ -2961,8 +2950,6 @@ export default function HomeScreen2({
             dayKey={todayKey}
             style={{ paddingHorizontal: GRID_PAD, marginTop: -11 }}
             onRefreshRecommendations={commitDailyRecommendations}
-            nextSessions={nextDailyRecommendations}
-            roulettePool={dailyRecommendationPool}
           />
         )}
         {isInicio2 && featuredMoment && (

@@ -1,9 +1,5 @@
 import React from "react";
-import { useFocusEffect } from "expo-router";
 import {
-  AccessibilityInfo,
-  Animated,
-  Easing,
   StyleProp,
   Pressable,
   StyleSheet,
@@ -13,6 +9,7 @@ import {
 } from "react-native";
 
 import { CategoryAtmosphericCard } from "@/components/CategoryAtmosphericCard";
+import { CinematicFadeSlide } from "@/components/CinematicFadeSlide";
 import { SessionRow } from "@/components/SessionRow";
 import type { Session } from "@/data/sessions";
 import { useColors } from "@/hooks/useColors";
@@ -24,175 +21,11 @@ type Props = {
   style?: StyleProp<ViewStyle>;
   inicio3Compact?: boolean;
   onRefreshRecommendations?: () => void;
-  nextSessions?: Session[];
-  roulettePool?: Session[];
 };
 
-type RouletteSlotHandle = {
-  run: (
-    sequence: Session[],
-    durations: number[],
-    initialDelay: number,
-    reduceMotion: boolean,
-  ) => Promise<void>;
-  stop: (resetDisplay?: boolean) => void;
-};
-
-const ROULETTE_DURATIONS = [100, 110, 120, 140, 170, 210, 260, 320, 400, 500, 650];
-
-function runTiming(
-  value: Animated.Value,
-  toValue: number,
-  duration: number,
-  easing: (value: number) => number,
-) {
-  return new Promise<void>((resolve) => {
-    Animated.timing(value, {
-      toValue,
-      duration,
-      easing,
-      useNativeDriver: true,
-    }).start(() => resolve());
-  });
-}
-
-const RouletteRecommendationSlot = React.forwardRef<RouletteSlotHandle, {
-  session: Session;
-  slotIndex: number;
-  inicio3Compact: boolean;
-  themeAccent: string;
-  indigo2: boolean;
-  interactive: boolean;
-}>(({
-  session,
-  slotIndex,
-  inicio3Compact,
-  themeAccent,
-  indigo2,
-  interactive,
-}, ref) => {
-  const [animatedSession, setAnimatedSession] = React.useState<Session | null>(null);
-  const translateY = React.useRef(new Animated.Value(0)).current;
-  const opacity = React.useRef(new Animated.Value(1)).current;
-  const scale = React.useRef(new Animated.Value(1)).current;
-  const generationRef = React.useRef(0);
-  const timerRef = React.useRef<ReturnType<typeof setTimeout> | null>(null);
-  const delayResolveRef = React.useRef<(() => void) | null>(null);
-
-  React.useEffect(() => {
-    setAnimatedSession(null);
-  }, [session.id]);
-
-  const stop = React.useCallback((resetDisplay = true) => {
-    generationRef.current += 1;
-    if (timerRef.current) clearTimeout(timerRef.current);
-    timerRef.current = null;
-    delayResolveRef.current?.();
-    delayResolveRef.current = null;
-    translateY.stopAnimation();
-    opacity.stopAnimation();
-    scale.stopAnimation();
-    translateY.setValue(0);
-    opacity.setValue(1);
-    scale.setValue(1);
-    if (resetDisplay) setAnimatedSession(null);
-  }, [opacity, scale, translateY]);
-
-  React.useEffect(() => () => stop(false), [stop]);
-
-  React.useImperativeHandle(ref, () => ({
-    stop,
-    run: async (sequence, durations, initialDelay, reduceMotion) => {
-      stop();
-      const generation = generationRef.current;
-      if (initialDelay > 0) {
-        await new Promise<void>((resolve) => {
-          delayResolveRef.current = resolve;
-          timerRef.current = setTimeout(() => {
-            timerRef.current = null;
-            delayResolveRef.current = null;
-            resolve();
-          }, initialDelay);
-        });
-      }
-      if (generation !== generationRef.current) return;
-
-      if (reduceMotion) {
-        await runTiming(opacity, 0, 120, Easing.out(Easing.quad));
-        if (generation !== generationRef.current) return;
-        setAnimatedSession(sequence[sequence.length - 1]);
-        await runTiming(opacity, 1, 180, Easing.out(Easing.cubic));
-        return;
-      }
-
-      for (let index = 0; index < sequence.length; index += 1) {
-        const duration = durations[index] ?? durations[durations.length - 1] ?? 180;
-        const outgoingDuration = Math.max(40, Math.round(duration * 0.42));
-        const incomingDuration = Math.max(50, duration - outgoingDuration);
-        await Promise.all([
-          runTiming(translateY, -18, outgoingDuration, Easing.in(Easing.quad)),
-          runTiming(opacity, 0.18, outgoingDuration, Easing.in(Easing.quad)),
-          runTiming(scale, 0.97, outgoingDuration, Easing.in(Easing.quad)),
-        ]);
-        if (generation !== generationRef.current) return;
-        setAnimatedSession(sequence[index]);
-        translateY.setValue(18);
-        scale.setValue(0.97);
-        await Promise.all([
-          runTiming(translateY, 0, incomingDuration, Easing.out(Easing.cubic)),
-          runTiming(opacity, 1, incomingDuration, Easing.out(Easing.cubic)),
-          runTiming(scale, 1, incomingDuration, Easing.out(Easing.cubic)),
-        ]);
-        if (generation !== generationRef.current) return;
-      }
-    },
-  }), [opacity, scale, stop, translateY]);
-
-  const visibleSession = animatedSession ?? session;
-  return (
-    <>
-      <Animated.View
-        pointerEvents={interactive ? "auto" : "none"}
-        style={{
-          opacity,
-          transform: [{ translateY }, { scale }],
-        }}
-      >
-        <CategoryAtmosphericCard
-          categoryId={visibleSession.categoryId}
-          style={[
-            styles.recommendationCard,
-            inicio3Compact && styles.inicio3RecommendationCard,
-          ]}
-        >
-          <SessionRow
-            session={visibleSession}
-            imageSize={inicio3Compact ? 81.9 : 103.7}
-            imageOffsetX={inicio3Compact ? 0 : -4}
-            metaText={
-              inicio3Compact
-                ? visibleSession.categoryLabel
-                : `${visibleSession.categoryLabel} · ${visibleSession.durationLabel}`
-            }
-            showDurationBadge={inicio3Compact}
-            showChevron
-            titleFontSize={inicio3Compact ? 15 : undefined}
-            titleFontWeight={inicio3Compact ? "600" : undefined}
-            authorColor={themeAccent}
-            authorFontSize={indigo2 ? 11 : undefined}
-            chevronColor={inicio3Compact ? "#F9F9F9" : indigo2 ? themeAccent : undefined}
-            style={[styles.row, inicio3Compact && styles.inicio3Row]}
-          />
-        </CategoryAtmosphericCard>
-      </Animated.View>
-      {inicio3Compact && slotIndex < 2 ? (
-        <View style={styles.inicio3CardDivider} />
-      ) : null}
-    </>
-  );
-});
-
-RouletteRecommendationSlot.displayName = "RouletteRecommendationSlot";
+const CARD_FADE_DURATION = 420;
+const CARD_FADE_STAGGER = 90;
+const CARD_FADE_TOTAL = CARD_FADE_DURATION + CARD_FADE_STAGGER * 2;
 
 const WEEKDAYS = [
   "domingo",
@@ -233,114 +66,31 @@ export function DailyRecommendationsSection({
   style,
   inicio3Compact = false,
   onRefreshRecommendations,
-  nextSessions = [],
-  roulettePool = [],
 }: Props) {
   const colors = useColors();
   const { theme } = useSceneTheme();
   const recommendations = sessions.slice(0, 3);
   const themeAccent = theme.accent ?? colors.accent;
-  const [isSpinning, setIsSpinning] = React.useState(false);
-  const slotRefs = React.useRef<Array<RouletteSlotHandle | null>>([]);
-  const spinCounterRef = React.useRef(0);
-  const activeRunRef = React.useRef(0);
-  const mountedRef = React.useRef(true);
-  const focusedRef = React.useRef(false);
-  const inputSignature = `${dayKey ?? ""}|${recommendations
-    .map((session) => session.id)
-    .join(",")}|${nextSessions.map((session) => session.id).join(",")}`;
-  const inputSignatureRef = React.useRef(inputSignature);
-  inputSignatureRef.current = inputSignature;
-  const previousInputSignatureRef = React.useRef(inputSignature);
+  const [animationCycle, setAnimationCycle] = React.useState(0);
+  const [isRefreshing, setIsRefreshing] = React.useState(false);
+  const refreshTimerRef = React.useRef<ReturnType<typeof setTimeout> | null>(null);
 
   React.useEffect(() => {
-    mountedRef.current = true;
     return () => {
-      mountedRef.current = false;
-      activeRunRef.current += 1;
-      slotRefs.current.forEach((slot) => slot?.stop());
+      if (refreshTimerRef.current) clearTimeout(refreshTimerRef.current);
     };
   }, []);
 
-  useFocusEffect(
-    React.useCallback(() => {
-      focusedRef.current = true;
-      return () => {
-        focusedRef.current = false;
-        activeRunRef.current += 1;
-        slotRefs.current.forEach((slot) => slot?.stop());
-        setIsSpinning(false);
-      };
-    }, []),
-  );
-
-  React.useEffect(() => {
-    const inputChanged = previousInputSignatureRef.current !== inputSignature;
-    previousInputSignatureRef.current = inputSignature;
-    if (!inputChanged || !isSpinning) return;
-    activeRunRef.current += 1;
-    slotRefs.current.forEach((slot) => slot?.stop(true));
-    setIsSpinning(false);
-  }, [inputSignature, isSpinning]);
-
-  const startRoulette = React.useCallback(async () => {
-    if (
-      isSpinning ||
-      !onRefreshRecommendations ||
-      nextSessions.length < 3 ||
-      roulettePool.length < 3
-    ) return;
-
-    setIsSpinning(true);
-    const runId = activeRunRef.current + 1;
-    activeRunRef.current = runId;
-    const startingInputSignature = inputSignatureRef.current;
-    spinCounterRef.current += 1;
-    const spinNumber = spinCounterRef.current;
-    const reduceMotion = await AccessibilityInfo.isReduceMotionEnabled().catch(() => false);
-    if (
-      !mountedRef.current ||
-      !focusedRef.current ||
-      runId !== activeRunRef.current ||
-      startingInputSignature !== inputSignatureRef.current
-    ) return;
-
-    const runs = recommendations.map((current, slotIndex) => {
-      const target = nextSessions[slotIndex];
-      const interimPool = roulettePool.filter(
-        (candidate) => candidate.id !== current.id && candidate.id !== target.id,
-      );
-      const sequence = ROULETTE_DURATIONS.map((_, stepIndex) => {
-        if (stepIndex === ROULETTE_DURATIONS.length - 1) return target;
-        if (interimPool.length === 0) return target;
-        const candidateIndex =
-          (spinNumber * 7 + slotIndex * 5 + stepIndex * 3) % interimPool.length;
-        return interimPool[candidateIndex];
-      });
-      return slotRefs.current[slotIndex]?.run(
-        sequence,
-        ROULETTE_DURATIONS,
-        reduceMotion ? 0 : slotIndex * 250,
-        reduceMotion,
-      ) ?? Promise.resolve();
-    });
-
-    await Promise.all(runs);
-    if (
-      !mountedRef.current ||
-      !focusedRef.current ||
-      runId !== activeRunRef.current ||
-      startingInputSignature !== inputSignatureRef.current
-    ) return;
+  const refreshRecommendations = React.useCallback(() => {
+    if (isRefreshing || !onRefreshRecommendations) return;
+    setIsRefreshing(true);
     onRefreshRecommendations();
-    setIsSpinning(false);
-  }, [
-    isSpinning,
-    nextSessions,
-    onRefreshRecommendations,
-    recommendations,
-    roulettePool,
-  ]);
+    setAnimationCycle((cycle) => cycle + 1);
+    refreshTimerRef.current = setTimeout(() => {
+      refreshTimerRef.current = null;
+      setIsRefreshing(false);
+    }, CARD_FADE_TOTAL);
+  }, [isRefreshing, onRefreshRecommendations]);
 
   if (recommendations.length < 3) return null;
 
@@ -362,35 +112,66 @@ export function DailyRecommendationsSection({
         ]}
       >
         {recommendations.map((session, index) => (
-          <RouletteRecommendationSlot
-            key={index}
-            ref={(slot) => {
-              slotRefs.current[index] = slot;
-            }}
-            session={session}
-            slotIndex={index}
-            inicio3Compact={inicio3Compact}
-            themeAccent={themeAccent}
-            indigo2={theme.id === "indigo2"}
-            interactive={!isSpinning}
-          />
+          <React.Fragment key={session.id}>
+            <CinematicFadeSlide
+              replayKey={`${animationCycle}:${session.id}`}
+              delay={index * CARD_FADE_STAGGER}
+              duration={CARD_FADE_DURATION}
+              translateYFrom={14}
+              scaleFrom={0.99}
+            >
+              <CategoryAtmosphericCard
+                categoryId={session.categoryId}
+                style={[
+                  styles.recommendationCard,
+                  inicio3Compact && styles.inicio3RecommendationCard,
+                ]}
+              >
+                <SessionRow
+                  session={session}
+                  imageSize={inicio3Compact ? 81.9 : 103.7}
+                  imageOffsetX={inicio3Compact ? 0 : -4}
+                  metaText={
+                    inicio3Compact
+                      ? session.categoryLabel
+                      : `${session.categoryLabel} · ${session.durationLabel}`
+                  }
+                  showDurationBadge={inicio3Compact}
+                  showChevron
+                  titleFontSize={inicio3Compact ? 15 : undefined}
+                  titleFontWeight={inicio3Compact ? "600" : undefined}
+                  authorColor={themeAccent}
+                  authorFontSize={theme.id === "indigo2" ? 11 : undefined}
+                  chevronColor={
+                    inicio3Compact
+                      ? "#F9F9F9"
+                      : theme.id === "indigo2"
+                        ? themeAccent
+                        : undefined
+                  }
+                  style={[styles.row, inicio3Compact && styles.inicio3Row]}
+                />
+              </CategoryAtmosphericCard>
+            </CinematicFadeSlide>
+            {inicio3Compact && index < recommendations.length - 1 ? (
+              <View style={styles.inicio3CardDivider} />
+            ) : null}
+          </React.Fragment>
         ))}
         {onRefreshRecommendations ? (
           <Pressable
-            onPress={() => void startRoulette()}
-            disabled={isSpinning}
+            onPress={refreshRecommendations}
+            disabled={isRefreshing}
             accessibilityRole="button"
             accessibilityLabel="Actualizar recomendaciones"
-            accessibilityState={{ disabled: isSpinning, busy: isSpinning }}
+            accessibilityState={{ disabled: isRefreshing, busy: isRefreshing }}
             style={({ pressed }) => [
               styles.refreshButton,
               inicio3Compact && styles.inicio3RefreshButton,
-              { opacity: isSpinning ? 0.58 : pressed ? 0.78 : 1 },
+              { opacity: isRefreshing ? 0.72 : pressed ? 0.78 : 1 },
             ]}
           >
-            <Text style={styles.refreshButtonText}>
-              {isSpinning ? "Buscando recomendaciones..." : "Actualizar recomendaciones"}
-            </Text>
+            <Text style={styles.refreshButtonText}>Actualizar recomendaciones</Text>
           </Pressable>
         ) : null}
       </View>
