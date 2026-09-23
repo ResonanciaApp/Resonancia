@@ -16,8 +16,7 @@ import {
 } from "@workspace/api-client-react";
 import { useQueryClient } from "@tanstack/react-query";
 import { router } from "expo-router";
-import { REFLECTION_CATEGORY_OPTIONS, CategoryIcon } from "@/constants/reflectionCategories";
-import { useReducedMotion } from "react-native-reanimated";
+import { REFLECTION_CATEGORY_OPTIONS } from "@/constants/reflectionCategories";
 import { useAuth } from "@/context/AuthContext";
 import { usePremium } from "@/context/PremiumContext";
 import { FREE_REFLECTIONS_LIMIT, showPremiumGate } from "@/lib/premiumGate";
@@ -56,15 +55,9 @@ export function InnerSpaceCard({
   const [displayedPlaceholder, setDisplayedPlaceholder] = useState(DEFAULT_PLACEHOLDER);
   const [incomingPlaceholder, setIncomingPlaceholder] = useState<string | null>(null);
   const [inputActive, setInputActive] = useState(false);
-  const categoryScales = useRef(
-    Object.fromEntries(
-      REFLECTION_CATEGORY_OPTIONS.map((item) => [item.id, new Animated.Value(1)]),
-    ) as Record<ReflectionCategory, Animated.Value>,
-  ).current;
   const qc = useQueryClient();
   const { authLoading, isSignedIn, clerkUserId } = useAuth();
   const { isPremium } = usePremium();
-  const reducedMotion = useReducedMotion();
   const freeQuotaParams = { limit: FREE_REFLECTIONS_LIMIT + 1 };
   const { data: freeQuotaData, isLoading: freeQuotaLoading } = useListMyReflections(
     freeQuotaParams,
@@ -136,12 +129,6 @@ export function InnerSpaceCard({
       }
     }
   });
-
-  useEffect(() => {
-    return () => {
-      Object.values(categoryScales).forEach((scale) => scale.stopAnimation());
-    }
-  }, [categoryScales]);
 
   useEffect(() => {
     if (focusRequest <= 0) return;
@@ -262,23 +249,6 @@ export function InnerSpaceCard({
 
   const toggleCategory = (nextCategory: ReflectionCategory) => {
     void Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light).catch(() => {});
-    const scale = categoryScales[nextCategory];
-    scale.setValue(1);
-    if (!reducedMotion) {
-      Animated.sequence([
-        Animated.timing(scale, {
-          toValue: 1.1,
-          duration: 120,
-          useNativeDriver: true,
-        }),
-        Animated.spring(scale, {
-          toValue: 1,
-          friction: 3,
-          tension: 140,
-          useNativeDriver: true,
-        }),
-      ]).start();
-    }
     setCategory((current) => current === nextCategory ? null : nextCategory);
   };
 
@@ -345,15 +315,6 @@ export function InnerSpaceCard({
               ]}
               onPress={() => toggleCategory(cat.id as ReflectionCategory)}
             >
-              <Animated.View style={{ transform: [{ scale: categoryScales[cat.id] }] }}>
-                <CategoryIcon
-                  category={cat.id as ReflectionCategory}
-                  size={18}
-                  active={category === cat.id}
-                  neutralWhenInactive
-                  inactiveColor="#E0E0E0"
-                />
-              </Animated.View>
               <Text style={[styles.gridLabel, { color: category === cat.id ? colors.foreground : "#E0E0E0" }]}>{cat.label}</Text>
             </Pressable>
           ))}
