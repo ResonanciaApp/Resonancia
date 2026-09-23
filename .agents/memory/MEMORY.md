@@ -139,3 +139,4 @@
 - [Avisos de nuevas sesiones](session-publication-notifications.md) — preferencias usan categorías + tags internos de Explora; publicación y buzón son atómicos, dedupe por usuario/sesión y push es solo entrega
 - [Reproducción protegida de Bunny](bunny-protected-playback.md) — el HLS directo del CDN devuelve 403; Mobile debe usar la URL oficial de embed entregada por el API
 - [Contrato de destinos editoriales](hero-destination-contract.md) — los IDs de opciones Admin no equivalen a IDs de rutas Mobile; verificar contrato extremo a extremo y namespace editorial
+- [Degradado visible en Inicio 3](inicio3-visible-gradient.md) — el hero puede ocultar el tono medio de un degradado uniforme de viewport; distribuir las franjas visibles sin tocar el tema global
