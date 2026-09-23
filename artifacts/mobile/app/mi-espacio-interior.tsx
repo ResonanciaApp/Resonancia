@@ -593,10 +593,10 @@ function PremiumInnerSpaceScreen() {
           translateYFrom={10}
         >
           <View style={styles.reflectionMetaRow}>
+            <Text style={[styles.timeText, { color: colors.mutedForeground }]}>{timeLabel}</Text>
             <View style={[styles.cardCatPill, { backgroundColor: editingCat.bg }]}>
               <Text style={[styles.cardCatText, { color: editingCat.color }]}>{editingCat.label}</Text>
             </View>
-            <Text style={[styles.timeText, { color: colors.mutedForeground }]}>{timeLabel}</Text>
           </View>
         </WallScrollReveal>
 
@@ -613,6 +613,25 @@ function PremiumInnerSpaceScreen() {
         <View style={styles.reflectionCard}>
           {isEditing && (
             <View style={styles.cardHeader}>
+              <View style={styles.editCategoryRow}>
+                {REFLECTION_CATEGORY_OPTIONS.map(c => (
+                  <Pressable
+                    key={c.id}
+                    testID={`edit-cat-${c.id}`}
+                    accessibilityLabel={`Seleccionar ${c.label}`}
+                    onPress={() => setEditCategory(c.id as ReflectionCategory)}
+                    style={styles.editCategoryPill}
+                  >
+                    <CategoryIcon
+                      category={c.id as ReflectionCategory}
+                      size={19}
+                      active={editCategory === c.id}
+                      neutralWhenInactive
+                      inactiveColor="#F9F9F9"
+                    />
+                  </Pressable>
+                ))}
+              </View>
               <Pressable
                 testID={`delete-${reflection.id}`}
                 accessibilityLabel="Borrar mensaje"
@@ -628,29 +647,6 @@ function PremiumInnerSpaceScreen() {
 
           {isEditing ? (
             <View style={styles.editContainer}>
-              <View style={styles.editCategoryRow}>
-                {REFLECTION_CATEGORY_OPTIONS.map(c => (
-                  <Pressable
-                    key={c.id}
-                    testID={`edit-cat-${c.id}`}
-                    accessibilityLabel={`Seleccionar ${c.label}`}
-                    onPress={() => setEditCategory(c.id as ReflectionCategory)}
-                    style={[
-                      styles.editCategoryPill,
-                      editCategory === c.id && { borderColor: "rgba(249,249,249,0.1)" },
-                    ]}
-                  >
-                    <CategoryIcon
-                      category={c.id as ReflectionCategory}
-                      size={16}
-                      active={editCategory === c.id}
-                      neutralWhenInactive
-                      inactiveColor="#F9F9F9"
-                    />
-                  </Pressable>
-                ))}
-              </View>
-
               <TextInput
                 style={[
                   styles.editInput,
@@ -993,7 +989,7 @@ const styles = StyleSheet.create({
   },
   timelineRow: {
     width: "100%",
-    marginBottom: 16,
+    marginBottom: 26,
   },
   reflectionMetaEntrance: {
     width: "100%",
@@ -1020,7 +1016,7 @@ const styles = StyleSheet.create({
   },
   cardHeader: {
     flexDirection: 'row',
-    justifyContent: 'flex-end',
+    justifyContent: 'space-between',
     alignItems: 'center',
     marginBottom: 12,
   },
@@ -1110,16 +1106,13 @@ const styles = StyleSheet.create({
     marginTop: 8,
   },
   editCategoryRow: {
+    flex: 1,
     flexDirection: 'row',
-    flexWrap: 'wrap',
     gap: 8,
-    marginBottom: 12,
   },
   editCategoryPill: {
     padding: 4,
     borderRadius: 20,
-    borderWidth: 1,
-    borderColor: 'transparent',
   },
   editInput: {
     minHeight: 80,
