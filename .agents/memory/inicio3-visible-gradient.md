@@ -7,4 +7,4 @@ Un degradado con tres colores equidistantes no garantiza que los tres se vean en
 
 **Why:** Tras añadir los tres tonos solicitados, el usuario seguía percibiendo solo dos; verificar la cantidad de stops en el código no equivale a verificar su visibilidad.
 
-**How to apply:** Al ajustar fondos de Inicio 3, calcular dónde cae cada tono respecto del hero y la barra inferior en un viewport real. Mantener overrides locales al tema y variante solicitados: el tema global sirve también de referencia para otras pantallas.
+**How to apply:** Al ajustar fondos de Inicio 3, calcular dónde cae cada tono respecto del hero y la barra inferior en un viewport real. Mantener el override dentro de Inicio 3, sin condicionarlo a la escena visual activa si el pedido dice simplemente «solo Inicio»: el tema global sirve también de referencia para otras pantallas.
