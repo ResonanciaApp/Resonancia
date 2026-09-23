@@ -26,7 +26,7 @@ import {
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 
 import { GoldGradient } from "@/components/GoldGradient";
-import { useBackOverride } from "@/context/BackOverrideContext";
+import { useBackAfterClose, useBackOverride } from "@/context/BackOverrideContext";
 import { useSceneTheme } from "@/context/SceneThemeContext";
 import { useColors } from "@/hooks/useColors";
 import { absoluteMediaUrl } from "@/hooks/effectiveHero";
@@ -132,6 +132,7 @@ function groupNotifications(list: Notification[]): GroupedNotification[] {
 export default function NotificacionesScreen() {
   const colors = useColors();
   const backOverride = useBackOverride();
+  const backAfterClose = useBackAfterClose();
   const { theme } = useSceneTheme();
   const insets = useSafeAreaInsets();
   const topPad = Platform.OS === "web" ? 67 : Math.max(insets.top, 40);
@@ -173,6 +174,15 @@ export default function NotificacionesScreen() {
 
   // Group consecutive `dm` notifications from the same actor into a single row.
   const list = useMemo(() => groupNotifications(rawList), [rawList]);
+
+  function openNotification(notification: Notification) {
+    const target = routeFor(notification);
+    if (backAfterClose) {
+      backAfterClose(() => router.push(target as never));
+      return;
+    }
+    router.push(target as never);
+  }
 
   return (
     <LinearGradient
@@ -249,7 +259,7 @@ export default function NotificacionesScreen() {
               return (
                 <Pressable
                   key={n.type === "dm" ? `dm-${actorId}` : `n-${n.id}`}
-                  onPress={() => router.push(routeFor(n) as never)}
+                  onPress={() => openNotification(n)}
                   style={({ pressed }) => [
                     styles.row,
                     {
