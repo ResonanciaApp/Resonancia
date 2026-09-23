@@ -22,7 +22,7 @@ export function getPublicationNotificationMatch(
     (tag) => tags.has(tag) && getInternalEditorialTagOption(tag),
   );
   const matchesCategory =
-    session.categoryId !== "charlas" &&
+    session.categoryId !== "reflexiones" &&
     preference.selectedCategoryIds.includes(session.categoryId);
   if (!matchingEditorial && !matchesCategory) return null;
   const label = matchingEditorial

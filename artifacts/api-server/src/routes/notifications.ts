@@ -49,7 +49,7 @@ async function getPreferenceOptions() {
       .where(
         and(
           eq(catalogCategoriesTable.isPrimary, true),
-          ne(catalogCategoriesTable.id, "charlas"),
+          ne(catalogCategoriesTable.id, "reflexiones"),
         ),
       )
       .orderBy(asc(catalogCategoriesTable.sortOrder), asc(catalogCategoriesTable.title)),

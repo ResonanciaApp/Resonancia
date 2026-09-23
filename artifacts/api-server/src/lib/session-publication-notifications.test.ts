@@ -47,14 +47,14 @@ describe("published session notification matching", () => {
     })).toBeNull();
   });
 
-  it("does not offer category-only notifications for Reflexiones", () => {
+  it("does not offer category-only notifications for the duplicate Reflexiones category", () => {
     expect(getPublicationNotificationMatch({
       ...session,
-      categoryId: "charlas",
+      categoryId: "reflexiones",
       categoryLabel: "Reflexiones",
       themeTag: [],
     }, {
-      selectedCategoryIds: ["charlas"],
+      selectedCategoryIds: ["reflexiones"],
       selectedEditorialTags: [],
     })).toBeNull();
   });
