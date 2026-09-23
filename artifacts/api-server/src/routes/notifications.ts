@@ -40,13 +40,14 @@ function getNotificationSessionLabel(
 ) {
   if (!session || !message) return session?.categoryLabel ?? null;
 
-  const currentSuffix = `, se llama ${session.title}.`;
-  for (const prefix of [
-    "Hemos subido una nueva sesión de la categoría ",
-    "Hemos subido una nueva sesión de la temática ",
-  ]) {
-    if (message.startsWith(prefix) && message.endsWith(currentSuffix)) {
-      return message.slice(prefix.length, -currentSuffix.length);
+  for (const [prefix, suffix] of [
+    ["Subimos una sesión de la categoría ", `, se llama "${session.title}"`],
+    ["Subimos una sesión de la temática ", `, se llama "${session.title}"`],
+    ["Hemos subido una nueva sesión de la categoría ", `, se llama ${session.title}.`],
+    ["Hemos subido una nueva sesión de la temática ", `, se llama ${session.title}.`],
+  ] as const) {
+    if (message.startsWith(prefix) && message.endsWith(suffix)) {
+      return message.slice(prefix.length, -suffix.length);
     }
   }
 
@@ -79,10 +80,11 @@ function getNotificationSessionMessage(
 ) {
   if (!session || !label) return message;
   const isEditorial =
+    message?.startsWith("Subimos una sesión de la temática ") ||
     message?.startsWith("Hemos subido una nueva sesión de la temática ") ||
     label !== session.categoryLabel;
   const labelType = isEditorial ? "temática" : "categoría";
-  return `Hemos subido una nueva sesión de la ${labelType} ${label}, se llama ${session.title}.`;
+  return `Subimos una sesión de la ${labelType} ${label}, se llama "${session.title}"`;
 }
 
 function serialize(

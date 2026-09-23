@@ -34,7 +34,7 @@ describe("published session notification matching", () => {
       ],
     })).toEqual({
       label: "Música tranquilizadora",
-      message: "Hemos subido una nueva sesión de la temática Música tranquilizadora, se llama Cuencos al amanecer.",
+      message: 'Subimos una sesión de la temática Música tranquilizadora, se llama "Cuencos al amanecer"',
     });
   });
 
@@ -44,7 +44,7 @@ describe("published session notification matching", () => {
       selectedEditorialTags: [],
     })).toEqual({
       label: "Música",
-      message: "Hemos subido una nueva sesión de la categoría Música, se llama Cuencos al amanecer.",
+      message: 'Subimos una sesión de la categoría Música, se llama "Cuencos al amanecer"',
     });
   });
 

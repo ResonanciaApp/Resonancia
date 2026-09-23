@@ -27,6 +27,7 @@ import { useSafeAreaInsets } from "react-native-safe-area-context";
 
 import { GoldGradient } from "@/components/GoldGradient";
 import { useBackAfterClose, useBackOverride } from "@/context/BackOverrideContext";
+import { useDrawer } from "@/context/DrawerContext";
 import { useSceneTheme } from "@/context/SceneThemeContext";
 import { useColors } from "@/hooks/useColors";
 import { absoluteMediaUrl } from "@/hooks/effectiveHero";
@@ -133,6 +134,7 @@ export default function NotificacionesScreen() {
   const colors = useColors();
   const backOverride = useBackOverride();
   const backAfterClose = useBackAfterClose();
+  const { close: closeDrawer } = useDrawer();
   const { theme } = useSceneTheme();
   const insets = useSafeAreaInsets();
   const topPad = Platform.OS === "web" ? 67 : Math.max(insets.top, 40);
@@ -178,6 +180,7 @@ export default function NotificacionesScreen() {
   function openNotification(notification: Notification) {
     const target = routeFor(notification);
     if (backAfterClose) {
+      closeDrawer();
       backAfterClose(() => router.push(target as never));
       return;
     }
@@ -258,7 +261,7 @@ export default function NotificacionesScreen() {
               const isSessionPublished = notificationType === "session_published";
               const isEditorialNotification =
                 isSessionPublished &&
-                n.message?.startsWith("Hemos subido una nueva sesión de la temática ");
+                n.message?.startsWith("Subimos una sesión de la temática ");
               return (
                 <Pressable
                   key={n.type === "dm" ? `dm-${actorId}` : `n-${n.id}`}
@@ -289,10 +292,10 @@ export default function NotificacionesScreen() {
                   <View style={{ flex: 1 }}>
                     {isSessionPublished && n.sessionTitle && n.sessionLabel ? (
                       <Text style={[styles.text, { color: colors.foreground }]}>
-                        Hemos subido una nueva sesión de la{" "}
+                        Subimos una sesión de la{" "}
                         {isEditorialNotification ? "temática" : "categoría"}{" "}
                         <Text style={styles.bold}>{n.sessionLabel}</Text>, se llama{" "}
-                        {n.sessionTitle}.
+                        {"\""}<Text style={styles.bold}>{n.sessionTitle}</Text>{"\""}
                       </Text>
                     ) : (
                       <Text style={[styles.text, { color: colors.foreground }]}>
