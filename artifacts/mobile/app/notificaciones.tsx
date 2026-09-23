@@ -276,8 +276,8 @@ export default function NotificacionesScreen() {
                   <View style={{ flex: 1 }}>
                     {isSessionPublished && n.sessionTitle && n.sessionLabel ? (
                       <Text style={[styles.text, { color: colors.foreground }]}>
-                        Hemos subido a <Text style={styles.bold}>Resonancia</Text> una nueva sesión de{" "}
-                        <Text style={styles.bold}>&quot;{n.sessionLabel}&quot;</Text>: &quot;{n.sessionTitle}&quot;
+                        Hemos subido una nueva sesión de{" "}
+                        <Text style={styles.bold}>{n.sessionLabel}</Text>: {n.sessionTitle}
                       </Text>
                     ) : (
                       <Text style={[styles.text, { color: colors.foreground }]}>

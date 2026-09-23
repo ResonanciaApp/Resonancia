@@ -32,6 +32,6 @@ export function getPublicationNotificationMatch(
     : session.categoryLabel;
   return {
     label,
-    message: `Hemos subido a Resonancia una nueva sesión de "${label}": "${session.title}"`,
+    message: `Hemos subido una nueva sesión de ${label}: ${session.title}`,
   };
 }

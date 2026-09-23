@@ -40,6 +40,12 @@ function getNotificationSessionLabel(
 ) {
   if (!session || !message) return session?.categoryLabel ?? null;
 
+  const simplifiedPrefix = "Hemos subido una nueva sesión de ";
+  const simplifiedSuffix = `: ${session.title}`;
+  if (message.startsWith(simplifiedPrefix) && message.endsWith(simplifiedSuffix)) {
+    return message.slice(simplifiedPrefix.length, -simplifiedSuffix.length);
+  }
+
   const currentPrefix = 'Hemos subido a Resonancia una nueva sesión de "';
   const currentSuffix = `": "${session.title}"`;
   if (message.startsWith(currentPrefix) && message.endsWith(currentSuffix)) {
