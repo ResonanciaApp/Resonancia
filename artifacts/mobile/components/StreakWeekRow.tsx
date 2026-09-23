@@ -132,8 +132,8 @@ const styles = StyleSheet.create({
   dayLabel: {
     color: "rgba(255,255,255,0.65)",
     fontFamily: "Manrope",
-    fontSize: 18,
-    lineHeight: 22,
+    fontSize: 16,
+    lineHeight: 20,
     fontWeight: "700",
     transform: [{ translateY: 1 }],
   },
