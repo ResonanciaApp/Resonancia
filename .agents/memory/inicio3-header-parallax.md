@@ -1,16 +1,10 @@
 ---
-name: Parallax del header de Inicio 3
-description: Restricción visual para optimizaciones de rendimiento del hero de Inicio 3.
+name: Backdrop fijo de Inicio 3
+description: Dirección confirmada para la relación entre header, hero y contenido desplazable de Inicio 3.
 ---
 
-El avatar, las acciones laterales y la fila semanal de Inicio 3 deben conservar su desplazamiento lento y sincronizado respecto del scroll.
+El header y el hero de Inicio 3 quedan fijos como backdrop mientras las secciones se desplazan por delante. El degradado superior termina justo debajo del hero; el contenido inferior usa su color final.
 
-**Why:** El usuario confirmó que este parallax es intencional. No es el sticky header que pidió retirar; eliminar la compensación de scroll cambió el diseño equivocado.
+**Why:** Antes se había confirmado un parallax de 0,52 para avatar, acciones y fila semanal, pero después el usuario pidió explícitamente que el header y el hero quedaran fijos detrás del contenido y confirmó esa interpretación. Esta decisión reemplaza la anterior.
 
-**How to apply:** Al optimizar el hero, aislar renders de React y mantener el movimiento en el hilo de UI. No retirar el estilo compartido ni cambiar su factor sin una solicitud explícita.
-
-El factor de compensación confirmado es `0.52`: el bloque se desplaza visualmente a cerca del 48% de la velocidad normal del contenido.
-
-No animar una máscara (`MaskedView`) en respuesta al scroll del hero. Aunque el valor viva en el hilo de UI, la recomposición de la máscara puede trabar tanto el hero como las capas parallax. Preferir un degradado simple.
-
-No activar `shouldRasterizeIOS` ni `renderToHardwareTextureAndroid` en los bloques que reciben el transform del parallax: bajo Fabric pueden invalidar la superficie durante el scroll y volver a introducir el lag. Mantener esos subárboles estáticos y dejar que Reanimated componga solo el `translateY`.
+**How to apply:** Los cambios de layout en Inicio 3 deben preservar el fondo fijo y la interactividad del hero y sus controles; no reintroducir desplazamiento parallax del header por el recuerdo de la decisión anterior. Evitar máscaras animadas al hacer scroll y rasterización forzada, que ya habían generado lag bajo Fabric.
