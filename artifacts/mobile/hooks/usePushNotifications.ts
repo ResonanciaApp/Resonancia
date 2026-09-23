@@ -9,6 +9,7 @@ import {
   registerPushToken,
   unregisterPushToken,
 } from "@workspace/api-client-react";
+import { routeForPushData } from "@/lib/push-routing";
 
 const PUSH_TOKEN_KEY = "@resonancia_push_token";
 
@@ -66,17 +67,8 @@ async function getExpoPushToken(): Promise<string | null> {
 }
 
 function routeForPush(data: Record<string, unknown> | undefined) {
-  if (!data) return;
-  const kind = typeof data.kind === "string" ? data.kind : null;
-  const fromUserId =
-    typeof data.fromUserId === "number" ? data.fromUserId : null;
-  if (kind === "dm" && fromUserId != null) {
-    router.push(`/chat/${fromUserId}`);
-  } else if (kind === "friend_request" || kind === "friend_accepted") {
-    router.push("/amigos");
-  } else if (kind === "practice_reminder") {
-    router.push("/notificaciones-practica" as never);
-  }
+  const destination = routeForPushData(data);
+  if (destination) router.push(destination as never);
 }
 
 /**

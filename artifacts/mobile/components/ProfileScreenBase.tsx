@@ -1490,6 +1490,16 @@ export function ProfileScreenBase({
             <Text style={[styles.dedicatedHeroTitle, { color: colors.foreground }]}>Perfil</Text>
           </View>
           <Pressable
+            onPress={() => router.push("/personalizar-notificaciones")}
+            hitSlop={8}
+            style={({ pressed }) => [styles.gearBtn, { opacity: pressed ? 0.68 : 1 }]}
+            accessibilityRole="button"
+            accessibilityLabel="Personalizar notificaciones"
+            testID="profile-open-notification-preferences"
+          >
+            <MaterialCommunityIcons name="bell-outline" size={23} color={colors.foreground} />
+          </Pressable>
+          <Pressable
             onPress={() => router.push("/configuracion-ajustes")}
             hitSlop={8}
             style={({ pressed }) => [styles.gearBtn, { opacity: pressed ? 0.68 : 1 }]}

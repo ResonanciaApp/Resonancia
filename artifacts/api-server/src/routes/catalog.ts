@@ -45,6 +45,10 @@ import {
   normalizeFeaturedSleep,
   normalizeSupercategoryEditorialTags,
 } from "../lib/supercategoryEditorialTags";
+import {
+  insertPublishedSessionNotifications,
+  sendPublishedSessionPushes,
+} from "../lib/session-publication-notifications";
 
 const router: IRouter = Router();
 
@@ -1038,29 +1042,45 @@ router.post(
           return;
         }
       }
-      const [updated] = await db
-        .update(catalogSessionsTable)
-        .set({
-          status: "published",
-          rejectionReason: null,
-          reviewedBy: me.id,
-          reviewedAt: new Date(),
-          isNew: true,
-          updatedAt: new Date(),
-        })
-        .where(eq(catalogSessionsTable.id, id))
-        .returning();
-      if (!updated) {
+       const publication = await db.transaction(async (tx) => {
+         const [locked] = await tx
+           .select()
+           .from(catalogSessionsTable)
+           .where(eq(catalogSessionsTable.id, id))
+           .for("update");
+         if (!locked) return null;
+         if (locked.status === "published") {
+           return { updated: locked, pushGroups: [] };
+         }
+         const [updated] = await tx
+           .update(catalogSessionsTable)
+           .set({
+             status: "published",
+             rejectionReason: null,
+             reviewedBy: me.id,
+             reviewedAt: new Date(),
+             isNew: true,
+             updatedAt: new Date(),
+           })
+           .where(eq(catalogSessionsTable.id, id))
+           .returning();
+         if (!updated) return null;
+         if (updated.createdBy != null && updated.createdBy !== me.id) {
+           await tx.insert(notificationsTable).values({
+             userId: updated.createdBy,
+             actorUserId: me.id,
+             type: "content_approved",
+           });
+         }
+         const pushGroups = await insertPublishedSessionNotifications(tx, updated);
+         return { updated, pushGroups };
+       });
+       if (!publication) {
         res.status(404).json({ error: "Envío no encontrado" });
         return;
       }
-      if (updated.createdBy != null && updated.createdBy !== me.id) {
-        await db.insert(notificationsTable).values({
-          userId: updated.createdBy,
-          actorUserId: me.id,
-          type: "content_approved",
-        });
-      }
+       const { updated } = publication;
+       await sendPublishedSessionPushes(updated.id, publication.pushGroups);
       const loaded = await loadSubmission(id);
       req.log.info({ submissionId: id, by: me.id }, "submission approved");
       res.json(serializeSubmission(loaded!.session, loaded!.audioFiles, loaded!.creator));

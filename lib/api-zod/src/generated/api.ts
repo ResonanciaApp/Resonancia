@@ -2544,11 +2544,13 @@ export const DeclineFriendRequestParams = zod.object({
  */
 export const GetNotificationsResponseItem = zod.object({
   "id": zod.number(),
-  "type": zod.enum(['friend_request', 'friend_accepted', 'new_follower', 'dm', 'group_message', 'mix_like', 'mix_comment', 'content_approved', 'content_rejected']),
+  "type": zod.enum(['friend_request', 'friend_accepted', 'new_follower', 'dm', 'group_message', 'mix_like', 'mix_comment', 'content_approved', 'content_rejected', 'session_published']),
   "entityId": zod.number().nullable().describe('ID de la entidad relacionada (p. ej. la mezcla para mix_like\/mix_comment)'),
+  "sessionId": zod.string().nullable().describe('Textual catalog session ID for session_published notices'),
+  "message": zod.string().nullable(),
   "createdAt": zod.coerce.date(),
   "readAt": zod.coerce.date().nullable(),
-  "actor": zod.object({
+  "actor": zod.union([zod.object({
   "id": zod.number(),
   "username": zod.string(),
   "displayName": zod.string(),
@@ -2557,9 +2559,48 @@ export const GetNotificationsResponseItem = zod.object({
   "location": zod.string().nullish(),
   "role": zod.enum(['user', 'creator', 'admin', 'moderador', 'expansor', 'resonador']).optional(),
   "createdAt": zod.coerce.date()
-})
+}),zod.null()])
 })
 export const GetNotificationsResponse = zod.array(GetNotificationsResponseItem)
+
+
+/**
+ * @summary Get content notification preferences and current options
+ */
+export const GetNotificationPreferencesResponse = zod.object({
+  "selectedCategoryIds": zod.array(zod.string()),
+  "selectedEditorialTags": zod.array(zod.string()),
+  "categoryOptions": zod.array(zod.object({
+  "id": zod.string(),
+  "label": zod.string()
+})),
+  "editorialTagOptions": zod.array(zod.object({
+  "id": zod.string(),
+  "label": zod.string()
+}))
+})
+
+
+/**
+ * @summary Replace content notification preferences
+ */
+export const UpdateNotificationPreferencesBody = zod.object({
+  "selectedCategoryIds": zod.array(zod.string()),
+  "selectedEditorialTags": zod.array(zod.string())
+})
+
+export const UpdateNotificationPreferencesResponse = zod.object({
+  "selectedCategoryIds": zod.array(zod.string()),
+  "selectedEditorialTags": zod.array(zod.string()),
+  "categoryOptions": zod.array(zod.object({
+  "id": zod.string(),
+  "label": zod.string()
+})),
+  "editorialTagOptions": zod.array(zod.object({
+  "id": zod.string(),
+  "label": zod.string()
+}))
+})
 
 
 /**

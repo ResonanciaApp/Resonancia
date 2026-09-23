@@ -22,6 +22,7 @@ export const NOTIFICATION_TYPES = [
   "mix_comment",
   "content_approved",
   "content_rejected",
+  "session_published",
 ] as const;
 export type NotificationType = (typeof NOTIFICATION_TYPES)[number];
 
@@ -33,12 +34,13 @@ export const notificationsTable = pgTable(
       .notNull()
       .references(() => usersTable.id, { onDelete: "cascade" }),
     actorUserId: integer("actor_user_id")
-      .notNull()
       .references(() => usersTable.id, { onDelete: "cascade" }),
     type: text("type").$type<NotificationType>().notNull(),
     // ID de la entidad relacionada (p. ej. la mezcla en mix_like/mix_comment),
     // para poder enlazar el tap de la notificación a la pantalla correcta.
     entityId: integer("entity_id"),
+    sessionId: text("session_id"),
+    message: text("message"),
     readAt: timestamp("read_at", { withTimezone: true }),
     createdAt: timestamp("created_at", { withTimezone: true }).notNull().defaultNow(),
   },
@@ -54,6 +56,9 @@ export const notificationsTable = pgTable(
       .where(
         sql`${table.readAt} IS NULL AND ${table.type} IN ('mix_like', 'mix_comment')`,
       ),
+    sessionPublishedUnique: uniqueIndex("notifications_session_published_unique")
+      .on(table.userId, table.sessionId)
+      .where(sql`${table.type} = 'session_published' AND ${table.sessionId} IS NOT NULL`),
   }),
 );
 

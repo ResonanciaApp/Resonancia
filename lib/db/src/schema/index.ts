@@ -21,6 +21,7 @@ export * from "./messages";
 export * from "./users";
 export * from "./friendships";
 export * from "./notifications";
+export * from "./notification-preferences";
 export * from "./direct-messages";
 export * from "./push-tokens";
 export * from "./shared-mixes";

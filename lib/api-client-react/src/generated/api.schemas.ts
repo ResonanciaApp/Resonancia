@@ -1315,6 +1315,7 @@ export const NotificationType = {
   mix_comment: 'mix_comment',
   content_approved: 'content_approved',
   content_rejected: 'content_rejected',
+  session_published: 'session_published',
 } as const;
 
 export interface Notification {
@@ -1325,10 +1326,34 @@ export interface Notification {
      * @nullable
      */
   entityId: number | null;
+  /**
+     * Textual catalog session ID for session_published notices
+     * @nullable
+     */
+  sessionId: string | null;
+  /** @nullable */
+  message: string | null;
   createdAt: string;
   /** @nullable */
   readAt: string | null;
-  actor: UserProfile;
+  actor: UserProfile | null;
+}
+
+export interface NotificationOption {
+  id: string;
+  label: string;
+}
+
+export interface NotificationPreferences {
+  selectedCategoryIds: string[];
+  selectedEditorialTags: string[];
+  categoryOptions: NotificationOption[];
+  editorialTagOptions: NotificationOption[];
+}
+
+export interface NotificationPreferencesInput {
+  selectedCategoryIds: string[];
+  selectedEditorialTags: string[];
 }
 
 /**

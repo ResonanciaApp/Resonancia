@@ -1510,6 +1510,38 @@ paths:
                 type: array
                 items:
                   $ref: "#/components/schemas/Notification"
+  /notification-preferences:
+    get:
+      operationId: getNotificationPreferences
+      tags: [notifications]
+      summary: Get content notification preferences and current options
+      responses:
+        "200":
+          description: Notification preferences
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/NotificationPreferences"
+        "401": {description: Not authenticated}
+    put:
+      operationId: updateNotificationPreferences
+      tags: [notifications]
+      summary: Replace content notification preferences
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/NotificationPreferencesInput"
+      responses:
+        "200":
+          description: Updated notification preferences
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/NotificationPreferences"
+        "400": {description: Invalid preference selections}
+        "401": {description: Not authenticated}
   /notifications/unread-count:
     get:
       operationId: getUnreadNotificationCount
@@ -6274,10 +6306,16 @@ components:
               "mix_comment",
               "content_approved",
               "content_rejected",
+              "session_published",
             ]
         entityId:
           type: ["integer", "null"]
           description: ID de la entidad relacionada (p. ej. la mezcla para mix_like/mix_comment)
+        sessionId:
+          type: ["string", "null"]
+          description: Textual catalog session ID for session_published notices
+        message:
+          type: ["string", "null"]
         createdAt:
           type: string
           format: date-time
@@ -6285,8 +6323,42 @@ components:
           type: ["string", "null"]
           format: date-time
         actor:
-          $ref: "#/components/schemas/UserProfile"
-      required: [id, type, entityId, createdAt, readAt, actor]
+          anyOf:
+            - $ref: "#/components/schemas/UserProfile"
+            - type: "null"
+      required: [id, type, entityId, sessionId, message, createdAt, readAt, actor]
+    NotificationOption:
+      type: object
+      properties:
+        id: {type: string}
+        label: {type: string}
+      required: [id, label]
+    NotificationPreferences:
+      type: object
+      properties:
+        selectedCategoryIds:
+          type: array
+          items: {type: string}
+        selectedEditorialTags:
+          type: array
+          items: {type: string}
+        categoryOptions:
+          type: array
+          items: {$ref: "#/components/schemas/NotificationOption"}
+        editorialTagOptions:
+          type: array
+          items: {$ref: "#/components/schemas/NotificationOption"}
+      required: [selectedCategoryIds, selectedEditorialTags, categoryOptions, editorialTagOptions]
+    NotificationPreferencesInput:
+      type: object
+      properties:
+        selectedCategoryIds:
+          type: array
+          items: {type: string}
+        selectedEditorialTags:
+          type: array
+          items: {type: string}
+      required: [selectedCategoryIds, selectedEditorialTags]
     DirectMessage:
       type: object
       properties:

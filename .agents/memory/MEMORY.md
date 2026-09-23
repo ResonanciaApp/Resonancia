@@ -135,3 +135,4 @@
 - [Etiquetas libres de playlists](playlist-free-editorial-labels.md) — Tipo editorial admite texto libre; `none` oculta la píldora y los slugs históricos conservan su etiqueta traducida
 - [Reflexiones conserva el ID charlas](reflexiones-charlas-id.md) — la categoría visible Reflexiones usa el ID técnico `charlas`; no confundir con diario/reflexiones personales
 - [Gate Premium global y modales nativos](premium-gate-modal-hosts.md) — todo bloqueo free abre directamente la oferta de 3 planes; dentro de Modal se hospeda en esa misma ventana nativa
+- [Avisos de nuevas sesiones](session-publication-notifications.md) — preferencias usan categorías + tags internos de Explora; publicación y buzón son atómicos, dedupe por usuario/sesión y push es solo entrega

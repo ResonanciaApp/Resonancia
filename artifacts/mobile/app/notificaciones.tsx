@@ -59,8 +59,9 @@ type FeatherName = React.ComponentProps<typeof Feather>["name"];
 // pero no se muestran en la lista (sin pantalla de destino todavía).
 const SILENT_TYPES: Notification["type"][] = ["content_approved", "content_rejected"];
 
-function iconFor(type: Notification["type"]): { name: FeatherName; color: string } {
+function iconFor(type: string): { name: FeatherName; color: string } {
   switch (type) {
+    case "session_published": return { name: "bell", color: "#E7B95C" };
     case "friend_request":  return { name: "user-plus",      color: "#8AAAD4" };
     case "friend_accepted": return { name: "user-check",     color: "#A8C4A8" };
     case "new_follower":    return { name: "user",           color: "#F9F9F9" };
@@ -73,7 +74,8 @@ function iconFor(type: Notification["type"]): { name: FeatherName; color: string
 }
 
 function messageFor(n: Notification): string {
-  switch (n.type) {
+  switch ((n as Notification & { type: string }).type) {
+    case "session_published": return n.message?.trim() || "hay una nueva sesión para ti";
     case "friend_request":  return "te envió una solicitud de amistad";
     case "friend_accepted": return "aceptó tu solicitud de amistad";
     case "new_follower":    return "empezó a seguirte";
@@ -86,9 +88,15 @@ function messageFor(n: Notification): string {
 }
 
 function routeFor(n: Notification): string {
-  if (n.type === "dm")            return `/chat/${n.actor.id}`;
+  const type = (n as Notification & { type: string }).type;
+  if (type === "session_published") {
+    const data = n as Notification & { sessionId?: string; entityKey?: string };
+    const sessionId = data.sessionId ?? data.entityKey;
+    return sessionId ? `/session/${encodeURIComponent(sessionId)}` : "/nuevas-sesiones";
+  }
+  if (n.type === "dm")            return n.actor?.id != null ? `/chat/${n.actor.id}` : "/amigos";
   if (n.type === "group_message") return n.entityId != null ? `/grupo/${n.entityId}` : "/grupos";
-  if (n.type === "new_follower")  return `/expansor-perfil/${n.actor.id}`;
+  if (n.type === "new_follower")  return n.actor?.id != null ? `/expansor-perfil/${n.actor.id}` : "/amigos";
   if (n.type === "mix_like" || n.type === "mix_comment") {
     return n.entityId != null ? `/mezcla/${n.entityId}` : "/";
   }
@@ -105,7 +113,7 @@ function groupNotifications(list: Notification[]): GroupedNotification[] {
   const dmSeen = new Map<string, number>(); // String(actorId) -> index into `out`
   for (const n of list) {
     if (n.type === "dm") {
-      const key = String(n.actor.id);
+      const key = String(n.actor?.id ?? 0);
       const existingIdx = dmSeen.get(key);
       if (existingIdx != null) {
         const existing = out[existingIdx];
@@ -228,14 +236,18 @@ export default function NotificacionesScreen() {
               No tienes notificaciones todavía.
             </Text>
           ) : list.map((n) => {
-              const tint = colorFor(n.actor.id);
+              const notificationType = (n as Notification & { type: string }).type;
+              const actor = n.actor;
+              const actorId = actor?.id ?? 0;
+              const actorName = actor?.displayName ?? "Resonancia";
+              const tint = colorFor(actorId);
               const isGroupedDm = n.type === "dm" && n.groupCount > 1;
               const messageText = isGroupedDm
                 ? `te envió ${n.groupCount} mensajes`
                 : messageFor(n);
               return (
                 <Pressable
-                  key={n.type === "dm" ? `dm-${n.actor.id}` : `n-${n.id}`}
+                  key={n.type === "dm" ? `dm-${actorId}` : `n-${n.id}`}
                   onPress={() => router.push(routeFor(n) as never)}
                   style={({ pressed }) => [
                     styles.row,
@@ -247,15 +259,15 @@ export default function NotificacionesScreen() {
                   {/* Avatar + type icon badge */}
                   <View style={styles.avatarWrap}>
                     <View style={[styles.avatar, { backgroundColor: tint + "33" }]}>
-                      <Text style={[styles.initials, { color: tint }]}>{initials(n.actor.displayName)}</Text>
+                      <Text style={[styles.initials, { color: tint }]}>{initials(actorName)}</Text>
                     </View>
                     <View style={[styles.typeBadge, { backgroundColor: iconFor(n.type).color + "22", borderColor: iconFor(n.type).color + "55" }]}>
                       <Feather name={iconFor(n.type).name} size={10} color={iconFor(n.type).color} />
                     </View>
                   </View>
                   <View style={{ flex: 1 }}>
-                    <Text style={[styles.text, { color: colors.foreground }]}>
-                      <Text style={{ fontWeight: "700" }}>{n.actor.displayName}</Text>{" "}
+                     <Text style={[styles.text, { color: colors.foreground }]}>
+                       <Text style={{ fontWeight: "700" }}>{notificationType === "session_published" ? "Resonancia" : actorName}</Text>{" "}
                       {messageText}
                     </Text>
                     <Text style={[styles.time, { color: colors.mutedForeground }]}>
