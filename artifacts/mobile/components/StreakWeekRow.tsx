@@ -133,15 +133,15 @@ const styles = StyleSheet.create({
     backgroundColor: "transparent",
   },
   dayLabel: {
-    color: "rgba(255,255,255,0.65)",
+    color: "rgba(255,255,255,0.52)",
     fontFamily: "Manrope",
     fontSize: 16,
     lineHeight: 20,
-    fontWeight: "700",
+    fontWeight: "600",
     transform: [{ translateY: 1 }],
   },
   positionedDayLabel: {
-    color: "#FCFCFC",
+    color: "rgba(252,252,252,0.52)",
   },
   checkMark: {
     transform: [{ translateY: 1 }],
