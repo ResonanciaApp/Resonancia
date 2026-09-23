@@ -27,11 +27,16 @@ export function StreakWeekRow({
         const active = weekFlags[index];
         const isToday = todayIndex === index;
         const dayCircle = (
-          <View style={styles.day}>
+          <View
+            style={[
+              styles.day,
+              !active && (isToday ? styles.positionedInactiveDay : styles.inactiveDay),
+            ]}
+          >
             {active ? (
               <Feather
                 name="check"
-                size={22}
+                size={26}
                 color="#FFFFFF"
                 style={styles.checkMark}
               />
@@ -103,6 +108,14 @@ const styles = StyleSheet.create({
     backgroundColor: "rgba(255,255,255,0.1)",
     alignItems: "center",
     justifyContent: "center",
+  },
+  inactiveDay: {
+    backgroundColor: "transparent",
+    borderWidth: 2,
+    borderColor: "rgba(255,255,255,0.2)",
+  },
+  positionedInactiveDay: {
+    backgroundColor: "transparent",
   },
   ringHost: {
     width: 36,
