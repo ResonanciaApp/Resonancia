@@ -31,6 +31,7 @@ import { useUserProfile } from "@/context/UserProfileContext";
 import { useSceneTheme } from "@/context/SceneThemeContext";
 import { useCurrentUserAvatarSource } from "@/lib/profile-avatar";
 import { useNotifications } from "@/context/NotificationsContext";
+import { usePremium } from "@/context/PremiumContext";
 import { SessionBadgeGlass } from "@/components/SessionDurationBadge";
 
 const ND = Platform.OS !== "web";
@@ -88,6 +89,7 @@ export function DrawerMenu() {
   const avatarSource = useCurrentUserAvatarSource();
   const { theme: activeTheme } = useSceneTheme();
   const { unreadCount } = useNotifications();
+  const { isPremium, hydrated: premiumHydrated } = usePremium();
 
   const loggedIn = isRegistered || isSignedIn;
   const clerkName =
@@ -406,9 +408,22 @@ export function DrawerMenu() {
                               </View>
                             )}
                           </View>
-                          <Text style={[styles.itemLabel, styles.inicio3ItemLabel, item.color && { color: item.color }]}>
-                            {item.label}
-                          </Text>
+                          {item.id === "premium" ? (
+                            <Text style={[styles.itemLabel, styles.inicio3ItemLabel]}>
+                              {premiumHydrated && !isPremium ? (
+                                <>
+                                  <Text style={styles.premiumPromoNeutral}>Prueba </Text>
+                                  <Text style={styles.premiumPromoHighlight}>Premium</Text>
+                                </>
+                              ) : (
+                                <Text style={styles.premiumPromoHighlight}>Tu Premium</Text>
+                              )}
+                            </Text>
+                          ) : (
+                            <Text style={[styles.itemLabel, styles.inicio3ItemLabel, item.color && { color: item.color }]}>
+                              {item.label}
+                            </Text>
+                          )}
                         </Pressable>
                       </React.Fragment>
                     ))}
@@ -619,6 +634,13 @@ const styles = StyleSheet.create({
   premiumMenuStar: {
     width: 21,
     height: 21,
+  },
+  premiumPromoNeutral: {
+    color: "#F9F9F9",
+  },
+  premiumPromoHighlight: {
+    color: "#E7B95C",
+    fontWeight: "700",
   },
   itemLabel: {
     fontFamily: "Manrope",

@@ -894,7 +894,7 @@ export function ExploreScreen({
             />
           </View>
 
-          <View style={styles.sectionDivider} />
+          <View style={[styles.sectionDivider, styles.categoryBlocksDivider]} />
 
           {editorialDiscoverCarousels.map((carousel) => (
             <React.Fragment key={carousel.id}>
@@ -1310,6 +1310,9 @@ const styles = StyleSheet.create({
     marginTop: -24,
     marginBottom: -13,
   },
+  categoryBlocksDivider: {
+    marginTop: -24,
+  },
   popularSection: {
     marginTop: 0,
     marginBottom: SECTION_GAP,
@@ -1376,7 +1379,7 @@ const styles = StyleSheet.create({
   },
   resonadoresBanner: {
     minHeight: 110,
-    marginTop: 0,
+    marginTop: 3,
     marginBottom: 53,
     marginHorizontal: H_PAD,
     paddingHorizontal: 16,
