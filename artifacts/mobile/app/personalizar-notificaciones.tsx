@@ -557,6 +557,7 @@ const styles = StyleSheet.create({
     fontSize: 14,
     lineHeight: 20,
     marginTop: 15,
+    transform: [{ translateY: -5 }],
   },
   scroll: { flex: 1 },
   state: { alignItems: "center", justifyContent: "center", paddingTop: 72, paddingHorizontal: 16 },
