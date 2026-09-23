@@ -36,10 +36,12 @@ const BUNNY_PLAYER_STYLE_SCRIPT = `
         centralPlay.style.setProperty("width", "54px", "important");
         centralPlay.style.setProperty("height", "54px", "important");
         centralPlay.style.setProperty("padding", "15px", "important");
-        centralPlay.style.setProperty("background", "rgba(255,255,255,0.07)", "important");
-        centralPlay.style.setProperty("background-color", "rgba(255,255,255,0.07)", "important");
-        centralPlay.style.setProperty("border", "1px solid rgba(255,255,255,0.18)", "important");
+        centralPlay.style.setProperty("background", "rgba(255,255,255,0.03)", "important");
+        centralPlay.style.setProperty("background-color", "rgba(255,255,255,0.03)", "important");
+        centralPlay.style.setProperty("border", "1px solid rgba(255,255,255,0.12)", "important");
         centralPlay.style.setProperty("border-radius", "50%", "important");
+        centralPlay.style.setProperty("-webkit-backdrop-filter", "blur(12px)", "important");
+        centralPlay.style.setProperty("backdrop-filter", "blur(12px)", "important");
       }
 
       document
@@ -48,6 +50,12 @@ const BUNNY_PLAYER_STYLE_SCRIPT = `
           controlPlay.style.setProperty("background", "transparent", "important");
           controlPlay.style.setProperty("background-color", "transparent", "important");
           controlPlay.style.setProperty("box-shadow", "none", "important");
+        });
+
+      document
+        .querySelectorAll(".plyr__pb .sp__container > .sp__section:last-child")
+        .forEach((progress) => {
+          progress.style.setProperty("background-color", "#FFFFFF", "important");
         });
     };
 
@@ -72,9 +80,11 @@ const BUNNY_PLAYER_STYLE_SCRIPT = `
         width: 54px !important;
         height: 54px !important;
         padding: 15px !important;
-        background: rgba(255,255,255,0.07) !important;
-        border: 1px solid rgba(255,255,255,0.18) !important;
+        background: rgba(255,255,255,0.03) !important;
+        border: 1px solid rgba(255,255,255,0.12) !important;
         border-radius: 50% !important;
+        -webkit-backdrop-filter: blur(12px) !important;
+        backdrop-filter: blur(12px) !important;
       }
 
       .plyr__controls .plyr__control[data-plyr="play"],
@@ -83,6 +93,25 @@ const BUNNY_PLAYER_STYLE_SCRIPT = `
       .plyr__controls .plyr__control[data-plyr="play"].plyr__tab-focus {
         background: transparent !important;
         box-shadow: none !important;
+      }
+
+      .plyr--video .plyr__controls .plyr__control:not([data-plyr="play"]):hover,
+      .plyr--video .plyr__controls .plyr__control:not([data-plyr="play"]):focus,
+      .plyr--video .plyr__controls .plyr__control:not([data-plyr="play"]):active,
+      .plyr--video .plyr__controls .plyr__control:not([data-plyr="play"]).plyr__tab-focus,
+      .plyr--video .plyr__controls .plyr__control:not([data-plyr="play"])[aria-expanded="true"] {
+        background: rgba(255,255,255,0.1) !important;
+      }
+
+      .plyr__pb .sp__container > .sp__section:last-child {
+        background-color: #FFFFFF !important;
+      }
+
+      .plyr__progress input[type="range"]::-webkit-slider-thumb {
+        background: #FFFFFF !important;
+      }
+      .plyr__progress input[type="range"]::-moz-range-thumb {
+        background: #FFFFFF !important;
       }
     \`;
       (document.head || document.documentElement).appendChild(style);
@@ -185,7 +214,7 @@ export default function VideoPlayerScreen() {
         <View style={styles.videoWrap}>
           {video.playbackUrl ? (
             <WebView
-              key={`bunny-player-style-v3-${webPlayerKey}`}
+              key={`bunny-player-style-v6-${webPlayerKey}`}
               source={{ uri: video.playbackUrl }}
               style={styles.video}
               allowsFullscreenVideo
