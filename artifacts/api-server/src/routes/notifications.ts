@@ -1,5 +1,5 @@
 import { Router, type IRouter } from "express";
-import { and, asc, desc, eq, isNull, sql } from "drizzle-orm";
+import { and, asc, desc, eq, isNull, ne, sql } from "drizzle-orm";
 import {
   db,
   catalogCategoriesTable,
@@ -46,7 +46,12 @@ async function getPreferenceOptions() {
   const [categories, sessions] = await Promise.all([
     db.select({ id: catalogCategoriesTable.id, label: catalogCategoriesTable.title })
       .from(catalogCategoriesTable)
-      .where(eq(catalogCategoriesTable.isPrimary, true))
+      .where(
+        and(
+          eq(catalogCategoriesTable.isPrimary, true),
+          ne(catalogCategoriesTable.id, "charlas"),
+        ),
+      )
       .orderBy(asc(catalogCategoriesTable.sortOrder), asc(catalogCategoriesTable.title)),
     db.select({
       themeTag: catalogSessionsTable.themeTag,
@@ -105,8 +110,11 @@ router.get("/notification-preferences", requireAuth, async (req, res) => {
         .where(eq(notificationPreferencesTable.userId, me.id)).limit(1),
     ]);
     const saved = savedRows[0];
+    const availableCategoryIds = new Set(options.categoryOptions.map((option) => option.id));
     res.json({
-      selectedCategoryIds: saved?.selectedCategoryIds ?? [],
+      selectedCategoryIds: (saved?.selectedCategoryIds ?? []).filter((id) =>
+        availableCategoryIds.has(id),
+      ),
       selectedEditorialTags: saved?.selectedEditorialTags ?? [],
       ...options,
     });

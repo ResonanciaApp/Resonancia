@@ -21,7 +21,10 @@ export function getPublicationNotificationMatch(
   const matchingEditorial = preference.selectedEditorialTags.find(
     (tag) => tags.has(tag) && getInternalEditorialTagOption(tag),
   );
-  if (!matchingEditorial && !preference.selectedCategoryIds.includes(session.categoryId)) return null;
+  const matchesCategory =
+    session.categoryId !== "charlas" &&
+    preference.selectedCategoryIds.includes(session.categoryId);
+  if (!matchingEditorial && !matchesCategory) return null;
   const label = matchingEditorial
     ? matchingEditorial.includes(":")
       ? getInternalEditorialTagOption(matchingEditorial)!.label

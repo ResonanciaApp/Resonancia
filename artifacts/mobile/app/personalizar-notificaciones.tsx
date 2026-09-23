@@ -132,7 +132,10 @@ export default function PersonalizarNotificacionesScreen() {
   const updatePreferences = useUpdateNotificationPreferences();
   const response = (preferencesQ.data ?? {}) as PreferencesResponse;
 
-  const categories = useMemo(() => readOptions(response.categoryOptions), [response.categoryOptions]);
+  const categories = useMemo(
+    () => readOptions(response.categoryOptions).filter((category) => category.id !== "charlas"),
+    [response.categoryOptions],
+  );
   const editorialTags = useMemo(
     () => readOptions(response.editorialTagOptions),
     [response.editorialTagOptions],
