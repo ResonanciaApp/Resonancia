@@ -111,7 +111,7 @@ const styles = StyleSheet.create({
   },
   inactiveDay: {
     backgroundColor: "transparent",
-    borderWidth: 1.5,
+    borderWidth: 2,
     borderColor: "rgba(255,255,255,0.2)",
   },
   positionedInactiveDay: {
