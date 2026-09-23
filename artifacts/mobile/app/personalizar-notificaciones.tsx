@@ -360,9 +360,9 @@ export default function PersonalizarNotificacionesScreen() {
                   </View>
                 )}
               </Pressable>
-              <Text style={styles.stickyTitle}>Personalizar notificaciones</Text>
+              <Text style={styles.stickyTitle}>Personaliza tus notificaciones</Text>
               <Text style={styles.headerDescription}>
-                Elige qué contenido quieres recibir cuando haya nuevas sesiones.
+                Elige qué tipo de contenido quieres recibir en tus notificaciones
               </Text>
             </View>
           </View>
