@@ -36,7 +36,9 @@ export function StreakWeekRow({
                 style={styles.checkMark}
               />
             ) : (
-              <Text style={styles.dayLabel}>{initial}</Text>
+              <Text style={[styles.dayLabel, isToday && styles.positionedDayLabel]}>
+                {initial}
+              </Text>
             )}
           </View>
         );
@@ -117,9 +119,13 @@ const styles = StyleSheet.create({
   dayLabel: {
     color: "rgba(255,255,255,0.65)",
     fontFamily: "Manrope",
-    fontSize: 20,
-    lineHeight: 24,
-    fontWeight: "500",
+    fontSize: 18,
+    lineHeight: 22,
+    fontWeight: "700",
+    transform: [{ translateY: 2 }],
+  },
+  positionedDayLabel: {
+    color: "#FCFCFC",
   },
   checkMark: {
     transform: [{ translateY: 1 }],
