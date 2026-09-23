@@ -137,4 +137,3 @@
 - [Gate Premium global y modales nativos](premium-gate-modal-hosts.md) — todo bloqueo free abre directamente la oferta de 3 planes; dentro de Modal se hospeda en esa misma ventana nativa
 - [Avisos de nuevas sesiones](session-publication-notifications.md) — preferencias usan categorías + tags internos de Explora; publicación y buzón son atómicos, dedupe por usuario/sesión y push es solo entrega
 - [Reproducción protegida de Bunny](bunny-protected-playback.md) — el HLS directo del CDN devuelve 403; Mobile debe usar la URL oficial de embed entregada por el API
-- [Etiquetas semanales sin mover hero](weekly-streak-label-overlay.md) — las letras bajo los siete círculos no deben aumentar la altura de la fila de Inicio ni desplazar el hero

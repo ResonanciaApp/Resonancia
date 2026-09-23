@@ -1707,8 +1707,8 @@ const Inicio2HeroStatic = React.memo(function Inicio2HeroStatic({
     >
       {isInicio3 ? (
         <Inicio3HeroPager
-          top={inicio3HeroTop - 61 + 14}
-          height={inicio3HeroHeight + 59 - 12}
+          top={inicio3HeroTop - 61}
+          height={inicio3HeroHeight + 59}
           shadowStyle={heroShadowStyle}
           reduceMotion={reduceMotion}
         />
