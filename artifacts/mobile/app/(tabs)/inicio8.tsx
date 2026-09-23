@@ -124,6 +124,7 @@ import { ProgresoModal } from "@/components/ProgresoModal";
 import { CardTint } from "@/components/CardTint";
 import { ToolsGrid } from "@/components/ToolsGrid";
 import { DailyRecommendationsSection } from "@/components/DailyRecommendationsSection";
+import { selectDailyRecommendations } from "@/lib/daily-recommendations";
 import { DailyWisdomCard } from "@/components/DailyWisdomCard";
 import { AlmaCommunitySection } from "@/components/AlmaCommunitySection";
 import { VideoCard } from "@/components/VideoCard";
@@ -2293,6 +2294,8 @@ export default function HomeScreen2({
 
   const [actionsSession, setActionsSession] = useState<Session | null>(null);
   const [recoOffset, setRecoOffset] = useState(0);
+  const [previousDailyRecommendationIds, setPreviousDailyRecommendationIds] =
+    useState<string[]>([]);
 
   const [progresoVisible, setProgresoVisible] = useState(false);
   const { rachaEnabled } = useRacha();
@@ -2325,27 +2328,39 @@ export default function HomeScreen2({
   // Recomendaciones diarias — selección estable durante el día local.
   // No depende del historial: escuchar una sesión no cambia las otras
   // recomendaciones hasta que cambie la fecha.
-  const dailyRecommendations = React.useMemo<Session[]>(() => {
-    const pool = SESSIONS.filter((session) => !session.isPlaceholder);
-    const seed = `${todayKey}:${recoOffset}:${pool.map((session) => session.id).join(",")}`;
-    let hash = 2166136261;
-    for (let i = 0; i < seed.length; i++) {
-      hash ^= seed.charCodeAt(i);
-      hash = Math.imul(hash, 16777619);
-    }
-
-    let state = hash >>> 0;
-    const shuffled = [...pool];
-    const nextRandom = () => {
-      state = (Math.imul(state, 1664525) + 1013904223) >>> 0;
-      return state / 0x100000000;
-    };
-    for (let i = shuffled.length - 1; i > 0; i--) {
-      const j = Math.floor(nextRandom() * (i + 1));
-      [shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]];
-    }
-    return shuffled.slice(0, 3);
-  }, [todayKey, catalogVersion, recoOffset]);
+  const dailyRecommendationPool = React.useMemo(
+    () => SESSIONS.filter((session) => !session.isPlaceholder),
+    [catalogVersion],
+  );
+  const dailyRecommendations = React.useMemo<Session[]>(
+    () => selectDailyRecommendations(
+      dailyRecommendationPool,
+      todayKey,
+      recoOffset,
+      previousDailyRecommendationIds,
+    ),
+    [
+      dailyRecommendationPool,
+      previousDailyRecommendationIds,
+      recoOffset,
+      todayKey,
+    ],
+  );
+  const nextDailyRecommendations = React.useMemo<Session[]>(
+    () => selectDailyRecommendations(
+      dailyRecommendationPool,
+      todayKey,
+      recoOffset + 1,
+      dailyRecommendations.map((session) => session.id),
+    ),
+    [dailyRecommendationPool, dailyRecommendations, recoOffset, todayKey],
+  );
+  const commitDailyRecommendations = React.useCallback(() => {
+    setPreviousDailyRecommendationIds(
+      dailyRecommendations.map((session) => session.id),
+    );
+    setRecoOffset((offset) => offset + 1);
+  }, [dailyRecommendations]);
 
   // Escuchadas recientemente — historial deduplicado, más recientes primero
   // (history ya viene ordenado con el más reciente al inicio, ver addToHistory)
@@ -2921,7 +2936,9 @@ export default function HomeScreen2({
             dayKey={todayKey}
             style={{ paddingHorizontal: GRID_PAD, marginTop: -11 }}
             inicio3Compact
-            onRefreshRecommendations={() => setRecoOffset((offset) => offset + 1)}
+            onRefreshRecommendations={commitDailyRecommendations}
+            nextSessions={nextDailyRecommendations}
+            roulettePool={dailyRecommendationPool}
           />
         )}
 
@@ -2943,7 +2960,9 @@ export default function HomeScreen2({
             sessions={dailyRecommendations}
             dayKey={todayKey}
             style={{ paddingHorizontal: GRID_PAD, marginTop: -11 }}
-            onRefreshRecommendations={() => setRecoOffset((offset) => offset + 1)}
+            onRefreshRecommendations={commitDailyRecommendations}
+            nextSessions={nextDailyRecommendations}
+            roulettePool={dailyRecommendationPool}
           />
         )}
         {isInicio2 && featuredMoment && (
