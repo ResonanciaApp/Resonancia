@@ -2091,12 +2091,11 @@ export default function HomeScreen2({
   const { openSheet: openEscenasSheet } = useAmbientPlayer();
   const { open: openDrawer, moodPickerRequest } = useDrawer();
   const { theme: activeTheme, activeSceneId } = useSceneTheme();
-  // Fondo exclusivo de Inicio 3 en Índigo 2: no modificar el tema compartido.
-  const inicioIndigo2Background =
-    variant === "inicio3" && activeSceneId === "indigo2" ? "#27296A" : null;
-  const homeGradient = inicioIndigo2Background
-    ? [inicioIndigo2Background, inicioIndigo2Background] as const
-    : activeTheme.gradient;
+  // Degradado exclusivo de Inicio 3 en Índigo 2: no modificar el tema compartido.
+  const inicioIndigo2Gradient = variant === "inicio3" && activeSceneId === "indigo2"
+    ? ["#27296A", "#1F2D6E", "#112F6F"] as const
+    : null;
+  const homeGradient = inicioIndigo2Gradient ?? activeTheme.gradient;
   const handleOpenDrawer = useCallback(() => {
     openDrawer();
   }, [openDrawer]);
@@ -2781,12 +2780,12 @@ export default function HomeScreen2({
   return (
     <View
       testID={`inicio-${variant}`}
-      style={[styles.root, { backgroundColor: inicioIndigo2Background ?? activeTheme.gradient[activeTheme.gradient.length - 1] as string }]}
+      style={[styles.root, { backgroundColor: homeGradient[homeGradient.length - 1] as string }]}
     >
       {/* ── Fondo degradado del tema (4 stops) ── */}
       <LinearGradient
         colors={homeGradient as unknown as [string, string, ...string[]]}
-        locations={inicioIndigo2Background ? undefined : activeTheme.gradientLocations}
+        locations={inicioIndigo2Gradient ? undefined : activeTheme.gradientLocations}
         style={StyleSheet.absoluteFill}
         pointerEvents="none"
       />
