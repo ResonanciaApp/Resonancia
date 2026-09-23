@@ -134,9 +134,9 @@ function NotificationCategoryCard({
         {
           width,
           height,
-          borderWidth: selected ? 2 : 1,
-          borderColor: selected ? "rgba(255,255,255,0.5)" : "rgba(241,224,255,0.25)",
-          backgroundColor: selected ? "rgba(14,5,33,0.23)" : "rgba(0,0,0,0.28)",
+          borderWidth: selected ? 1.5 : 1,
+          borderColor: selected ? "rgba(255,255,255,0.57)" : "rgba(241,224,255,0.25)",
+          backgroundColor: selected ? "rgba(40,8,92,0.27)" : "rgba(0,0,0,0.28)",
         },
         { opacity: pressed ? 0.76 : 1 },
       ]}
