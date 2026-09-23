@@ -42,7 +42,7 @@ import { useFavoriteThemeCollections } from "@/hooks/useFavoriteThemeCollections
 import { useCategoryOverlayOptional } from "@/context/CategoryOverlayContext";
 
 const H_PAD = 14;
-const { width: W } = Dimensions.get("window");
+const { width: W, height: H } = Dimensions.get("window");
 const CAROUSEL_CARD_W = Math.round((W - H_PAD - 14) / 1.9);
 function FavPill({
   sel, label, indigo2BackgroundColor, onPress,
@@ -431,8 +431,9 @@ export default function FavoritosTodosScreen() {
     <LinearGradient
       style={styles.root}
       colors={sceneTheme.gradient as unknown as [string, string, ...string[]]}
-      start={{ x: 0, y: 0 }}
-      end={{ x: 0, y: 1 }}
+      locations={sceneTheme.gradientLocations}
+      start={sceneTheme.gradientStart}
+      end={sceneTheme.gradientEnd}
     >
       <StatusBar hidden />
 
@@ -443,15 +444,15 @@ export default function FavoritosTodosScreen() {
             { paddingTop: topPad + 4 },
           ]}
         >
-          <View
-            pointerEvents="none"
-            style={[
-              StyleSheet.absoluteFill,
-              {
-                backgroundColor: sceneTheme.gradient[0] as string,
-              },
-            ]}
-          />
+          <View pointerEvents="none" style={styles.stickyGradientClip}>
+            <LinearGradient
+              colors={sceneTheme.gradient as unknown as [string, string, ...string[]]}
+              locations={sceneTheme.gradientLocations}
+              start={sceneTheme.gradientStart}
+              end={sceneTheme.gradientEnd}
+              style={styles.stickyScreenGradient}
+            />
+          </View>
           <View style={[styles.stickyHeaderRow, styles.libraryTabHeaderRow]}>
             <Pressable
               onPress={goBack ?? (() => router.canGoBack() ? router.back() : router.replace("/(tabs)" as never))}
@@ -703,8 +704,17 @@ const styles = StyleSheet.create({
     right: 0,
     zIndex: 20,
     paddingBottom: 10,
-    backgroundColor: "#060A0F",
+  },
+  stickyGradientClip: {
+    ...StyleSheet.absoluteFillObject,
     overflow: "hidden",
+  },
+  stickyScreenGradient: {
+    position: "absolute",
+    top: 0,
+    left: 0,
+    right: 0,
+    height: H,
   },
   stickyHeaderRow: {
     position: "relative",

@@ -291,9 +291,11 @@ export function AmbientalDurationSheet({
                       style={[
                         styles.preset,
                         {
-                          backgroundColor: sleepTabSurface,
+                          backgroundColor: selected
+                            ? "rgba(0,0,0,0.3)"
+                            : sleepTabSurface,
                           borderColor: selected
-                            ? "rgba(255,255,255,0.15)"
+                            ? "rgba(249,249,249,0.8)"
                             : "transparent",
                         },
                       ]}
@@ -302,12 +304,6 @@ export function AmbientalDurationSheet({
                       accessibilityLabel={`${minutes} minutos`}
                       testID={`ambiental-duration-${minutes}`}
                     >
-                      {selected && (
-                        <View
-                          pointerEvents="none"
-                          style={styles.selectedPresetOverlay}
-                        />
-                      )}
                       <Text
                         style={[
                           styles.presetValue,
@@ -483,18 +479,12 @@ const styles = StyleSheet.create({
     transform: [{ translateY: 18 }],
   },
   preset: {
-    width: 72,
-    height: 72,
-    borderRadius: 36,
-    borderWidth: 2,
+    width: 76,
+    height: 76,
+    borderRadius: 38,
+    borderWidth: 1.5,
     alignItems: "center",
     justifyContent: "center",
-  },
-  selectedPresetOverlay: {
-    ...StyleSheet.absoluteFillObject,
-    backgroundColor: "#000000",
-    opacity: 0.6,
-    borderRadius: 36,
   },
   presetValue: {
     fontFamily: "Manrope",
