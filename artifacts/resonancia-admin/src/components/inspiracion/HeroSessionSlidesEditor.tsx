@@ -29,8 +29,8 @@ const fallback: DraftSlide[] = [2, 3, 4].map((position) => ({
 const destinationNames: Record<DestinationType, string> = {
   session: "Sesión", category: "Categoría", "category-internal": "Pantalla de categoría",
   sleep: "Dormir", "sleep-internal": "Pantalla de Dormir", sounds: "Sonidos",
-  "sounds-internal": "Pantalla de Sonidos", mixer: "Mezclador", topics: "Otras temáticas",
-  "topics-internal": "Pantalla de Otras temáticas",
+  "sounds-internal": "Pantalla de Sonidos", mixer: "Mezclador", topics: "Explora por objetivo",
+  "topics-internal": "Pantallas Explora por objetivo",
 };
 function previewUrl(path?: string | null) {
   if (!path) return null;
@@ -218,7 +218,7 @@ export function HeroSessionSlidesEditor({ onDirtyChange }: { onDirtyChange?: (di
                 </select>
                 {unavailable && <p className="text-xs text-destructive">Este destino ya no está disponible. Selecciona otro.</p>}
               </> : <p className="rounded-md bg-muted px-2 py-2 text-xs text-muted-foreground">Este destino abre su pantalla principal; no requiere seleccionar un elemento.</p>}
-            {slide.destinationType === "topics" && <select className="h-10 w-full rounded-md border border-input bg-background px-2 text-sm" value={slide.destinationId ?? ""} onChange={(e) => setSlide(index, { destinationId: e.target.value || undefined })}><option value="">Portada de Otras temáticas</option>{typeItems.map((item) => <option key={item.id} value={item.id}>{item.label}</option>)}</select>}
+            {slide.destinationType === "topics" && <select className="h-10 w-full rounded-md border border-input bg-background px-2 text-sm" value={slide.destinationId ?? ""} onChange={(e) => setSlide(index, { destinationId: e.target.value || undefined })}><option value="">Portada de Explora por objetivo</option>{typeItems.map((item) => <option key={item.id} value={item.id}>{item.label}</option>)}</select>}
             <div className="space-y-1"><Label htmlFor={`hero-pill-${slide.position}`}>Texto de la píldora <span className="text-muted-foreground">({slide.pillLabel.length}/80)</span></Label><input id={`hero-pill-${slide.position}`} maxLength={80} className="h-10 w-full rounded-md border border-input bg-background px-3 text-sm" value={slide.pillLabel} onChange={(e) => setSlide(index, { pillLabel: e.target.value })} data-testid={`input-hero-pill-${slide.position}`} />{slide.enabled && !slide.pillLabel.trim() && <p className="text-xs text-destructive">Escribe una etiqueta para publicar este slide.</p>}</div>
             <div className="space-y-1"><Label>Título</Label><input className="h-10 w-full rounded-md border border-input bg-background px-3 text-sm" value={slide.title} onChange={(e) => setSlide(index, { title: e.target.value })} /></div>
             <div className="space-y-1"><Label>Descripción</Label><textarea maxLength={300} className="min-h-16 w-full rounded-md border border-input px-3 py-2 text-sm" value={slide.description} onChange={(e) => setSlide(index, { description: e.target.value })} /></div>
