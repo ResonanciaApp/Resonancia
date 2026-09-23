@@ -185,6 +185,21 @@ paths:
       requestBody: {required: true, content: {application/json: {schema: {$ref: "#/components/schemas/UpdateHeroSessionSlidesBody"}}}}
       responses:
         "200": {description: Updated Hero session slides, content: {application/json: {schema: {$ref: "#/components/schemas/AdminHeroSessionSlides"}}}}
+  /admin/hero/destinations:
+    get:
+      operationId: listAdminHeroDestinations
+      tags: [admin]
+      responses:
+        "200": {description: Published destinations available to Hero slides, content: {application/json: {schema: {type: array, items: {$ref: "#/components/schemas/HeroDestinationOptions"}}}}}
+  /hero/session-slide-image/{position}:
+    get:
+      operationId: getHeroSessionSlideImage
+      tags: [inspirations]
+      parameters:
+        - {name: position, in: path, required: true, schema: {type: integer, enum: [2, 3, 4]}}
+        - {name: revision, in: query, required: true, schema: {type: integer, minimum: 1}}
+      responses:
+        "200": {description: Published Hero slide image, content: {image/jpeg: {schema: {type: string, format: binary}}, image/png: {schema: {type: string, format: binary}}, image/webp: {schema: {type: string, format: binary}}}}
   /hero/media/{id}:
     get:
       operationId: getEffectiveHeroMedia
@@ -6719,11 +6734,16 @@ components:
       required: [surface, sortOrder, isActive]
     HeroSessionSlide:
       type: object
-      required: [position, enabled, sessionId, title, actionLabel, categoryLabel, imageUrl, skipDetail, skipMiniPlayer, isPremium]
+      required: [position, enabled, destinationType, title, actionLabel, imageUrl]
       properties:
         position: {type: integer, enum: [2, 3, 4]}
         enabled: {type: boolean, default: true}
         sessionId: {type: string}
+        destinationType: {type: string, enum: [session, category, category-internal, sleep, sleep-internal, sounds, sounds-internal, mixer, topics, topics-internal]}
+        destinationId: {type: string}
+        destinationParentId: {type: string}
+        destinationSource: {type: string, enum: [legacy, editorial]}
+        imageObjectPath: {type: string}
         title: {type: string}
         description: {type: string, maxLength: 300}
         pillLabel: {type: string, maxLength: 80}
@@ -6742,15 +6762,34 @@ components:
         slides: {type: array, items: {$ref: "#/components/schemas/HeroSessionSlide"}}
     HeroSessionSlideInput:
       type: object
-      required: [position, enabled, sessionId, title, actionLabel]
+      required: [position, enabled, title, actionLabel]
       properties:
         position: {type: integer, enum: [2, 3, 4]}
         enabled: {type: boolean, default: true}
         sessionId: {type: string, minLength: 1}
+        destinationType: {type: string, enum: [session, category, category-internal, sleep, sleep-internal, sounds, sounds-internal, mixer, topics, topics-internal]}
+        destinationId: {type: string, minLength: 1}
+        destinationParentId: {type: string, minLength: 1}
+        destinationSource: {type: string, enum: [legacy, editorial]}
+        imageObjectPath: {type: string, minLength: 1}
         title: {type: string, minLength: 1, maxLength: 200}
         description: {type: string, maxLength: 300}
         pillLabel: {type: string, maxLength: 80}
         actionLabel: {type: string, minLength: 1, maxLength: 60}
+    HeroDestinationOption:
+      type: object
+      required: [id, label]
+      properties:
+        id: {type: string}
+        label: {type: string}
+        parentId: {type: string}
+        source: {type: string, enum: [legacy, editorial]}
+    HeroDestinationOptions:
+      type: object
+      required: [destinationType, options]
+      properties:
+        destinationType: {type: string, enum: [session, category, category-internal, sleep, sleep-internal, sounds, sounds-internal, mixer, topics, topics-internal]}
+        options: {type: array, items: {$ref: "#/components/schemas/HeroDestinationOption"}}
     UpdateHeroSessionSlidesBody:
       type: object
       required: [revision, slides]

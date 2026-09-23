@@ -210,22 +210,30 @@ export const GetHeroSessionSlidesResponse = zod.object({
   "slides": zod.array(zod.object({
   "position": zod.union([zod.literal(2),zod.literal(3),zod.literal(4)]),
   "enabled": zod.boolean().default(getHeroSessionSlidesResponseSlidesItemEnabledDefault),
-  "sessionId": zod.string(),
+  "sessionId": zod.string().optional(),
+  "destinationType": zod.enum(['session', 'category', 'category-internal', 'sleep', 'sleep-internal', 'sounds', 'sounds-internal', 'mixer', 'topics', 'topics-internal']),
+  "destinationId": zod.string().optional(),
+  "destinationParentId": zod.string().optional(),
+  "destinationSource": zod.enum(['legacy', 'editorial']).optional(),
+  "imageObjectPath": zod.string().optional(),
   "title": zod.string(),
   "description": zod.string().max(getHeroSessionSlidesResponseSlidesItemDescriptionMax).optional(),
   "pillLabel": zod.string().max(getHeroSessionSlidesResponseSlidesItemPillLabelMax).optional(),
   "actionLabel": zod.string(),
   "categoryId": zod.string().optional(),
-  "categoryLabel": zod.string(),
+  "categoryLabel": zod.string().optional(),
   "imageUrl": zod.string().nullable(),
-  "skipDetail": zod.boolean(),
-  "skipMiniPlayer": zod.boolean(),
-  "isPremium": zod.boolean()
+  "skipDetail": zod.boolean().optional(),
+  "skipMiniPlayer": zod.boolean().optional(),
+  "isPremium": zod.boolean().optional()
 }))
 })
 
 
 export const getAdminHeroSessionSlidesResponseDraftItemEnabledDefault = true;
+
+
+
 export const getAdminHeroSessionSlidesResponseDraftItemTitleMax = 200;
 
 export const getAdminHeroSessionSlidesResponseDraftItemDescriptionMax = 300;
@@ -246,7 +254,12 @@ export const GetAdminHeroSessionSlidesResponse = zod.object({
   "draft": zod.array(zod.object({
   "position": zod.union([zod.literal(2),zod.literal(3),zod.literal(4)]),
   "enabled": zod.boolean().default(getAdminHeroSessionSlidesResponseDraftItemEnabledDefault),
-  "sessionId": zod.string().min(1),
+  "sessionId": zod.string().min(1).optional(),
+  "destinationType": zod.enum(['session', 'category', 'category-internal', 'sleep', 'sleep-internal', 'sounds', 'sounds-internal', 'mixer', 'topics', 'topics-internal']).optional(),
+  "destinationId": zod.string().min(1).optional(),
+  "destinationParentId": zod.string().min(1).optional(),
+  "destinationSource": zod.enum(['legacy', 'editorial']).optional(),
+  "imageObjectPath": zod.string().min(1).optional(),
   "title": zod.string().min(1).max(getAdminHeroSessionSlidesResponseDraftItemTitleMax),
   "description": zod.string().max(getAdminHeroSessionSlidesResponseDraftItemDescriptionMax).optional(),
   "pillLabel": zod.string().max(getAdminHeroSessionSlidesResponseDraftItemPillLabelMax).optional(),
@@ -255,17 +268,22 @@ export const GetAdminHeroSessionSlidesResponse = zod.object({
   "published": zod.union([zod.array(zod.object({
   "position": zod.union([zod.literal(2),zod.literal(3),zod.literal(4)]),
   "enabled": zod.boolean().default(getAdminHeroSessionSlidesResponsePublishedOneItemEnabledDefault),
-  "sessionId": zod.string(),
+  "sessionId": zod.string().optional(),
+  "destinationType": zod.enum(['session', 'category', 'category-internal', 'sleep', 'sleep-internal', 'sounds', 'sounds-internal', 'mixer', 'topics', 'topics-internal']),
+  "destinationId": zod.string().optional(),
+  "destinationParentId": zod.string().optional(),
+  "destinationSource": zod.enum(['legacy', 'editorial']).optional(),
+  "imageObjectPath": zod.string().optional(),
   "title": zod.string(),
   "description": zod.string().max(getAdminHeroSessionSlidesResponsePublishedOneItemDescriptionMax).optional(),
   "pillLabel": zod.string().max(getAdminHeroSessionSlidesResponsePublishedOneItemPillLabelMax).optional(),
   "actionLabel": zod.string(),
   "categoryId": zod.string().optional(),
-  "categoryLabel": zod.string(),
+  "categoryLabel": zod.string().optional(),
   "imageUrl": zod.string().nullable(),
-  "skipDetail": zod.boolean(),
-  "skipMiniPlayer": zod.boolean(),
-  "isPremium": zod.boolean()
+  "skipDetail": zod.boolean().optional(),
+  "skipMiniPlayer": zod.boolean().optional(),
+  "isPremium": zod.boolean().optional()
 })),zod.null()]),
   "publishedRevision": zod.number().nullable()
 })
@@ -274,6 +292,9 @@ export const GetAdminHeroSessionSlidesResponse = zod.object({
 export const updateAdminHeroSessionSlidesBodyRevisionMin = 0;
 
 export const updateAdminHeroSessionSlidesBodySlidesItemEnabledDefault = true;
+
+
+
 export const updateAdminHeroSessionSlidesBodySlidesItemTitleMax = 200;
 
 export const updateAdminHeroSessionSlidesBodySlidesItemDescriptionMax = 300;
@@ -292,7 +313,12 @@ export const UpdateAdminHeroSessionSlidesBody = zod.object({
   "slides": zod.array(zod.object({
   "position": zod.union([zod.literal(2),zod.literal(3),zod.literal(4)]),
   "enabled": zod.boolean().default(updateAdminHeroSessionSlidesBodySlidesItemEnabledDefault),
-  "sessionId": zod.string().min(1),
+  "sessionId": zod.string().min(1).optional(),
+  "destinationType": zod.enum(['session', 'category', 'category-internal', 'sleep', 'sleep-internal', 'sounds', 'sounds-internal', 'mixer', 'topics', 'topics-internal']).optional(),
+  "destinationId": zod.string().min(1).optional(),
+  "destinationParentId": zod.string().min(1).optional(),
+  "destinationSource": zod.enum(['legacy', 'editorial']).optional(),
+  "imageObjectPath": zod.string().min(1).optional(),
   "title": zod.string().min(1).max(updateAdminHeroSessionSlidesBodySlidesItemTitleMax),
   "description": zod.string().max(updateAdminHeroSessionSlidesBodySlidesItemDescriptionMax).optional(),
   "pillLabel": zod.string().max(updateAdminHeroSessionSlidesBodySlidesItemPillLabelMax).optional(),
@@ -301,6 +327,9 @@ export const UpdateAdminHeroSessionSlidesBody = zod.object({
 })
 
 export const updateAdminHeroSessionSlidesResponseDraftItemEnabledDefault = true;
+
+
+
 export const updateAdminHeroSessionSlidesResponseDraftItemTitleMax = 200;
 
 export const updateAdminHeroSessionSlidesResponseDraftItemDescriptionMax = 300;
@@ -321,7 +350,12 @@ export const UpdateAdminHeroSessionSlidesResponse = zod.object({
   "draft": zod.array(zod.object({
   "position": zod.union([zod.literal(2),zod.literal(3),zod.literal(4)]),
   "enabled": zod.boolean().default(updateAdminHeroSessionSlidesResponseDraftItemEnabledDefault),
-  "sessionId": zod.string().min(1),
+  "sessionId": zod.string().min(1).optional(),
+  "destinationType": zod.enum(['session', 'category', 'category-internal', 'sleep', 'sleep-internal', 'sounds', 'sounds-internal', 'mixer', 'topics', 'topics-internal']).optional(),
+  "destinationId": zod.string().min(1).optional(),
+  "destinationParentId": zod.string().min(1).optional(),
+  "destinationSource": zod.enum(['legacy', 'editorial']).optional(),
+  "imageObjectPath": zod.string().min(1).optional(),
   "title": zod.string().min(1).max(updateAdminHeroSessionSlidesResponseDraftItemTitleMax),
   "description": zod.string().max(updateAdminHeroSessionSlidesResponseDraftItemDescriptionMax).optional(),
   "pillLabel": zod.string().max(updateAdminHeroSessionSlidesResponseDraftItemPillLabelMax).optional(),
@@ -330,19 +364,48 @@ export const UpdateAdminHeroSessionSlidesResponse = zod.object({
   "published": zod.union([zod.array(zod.object({
   "position": zod.union([zod.literal(2),zod.literal(3),zod.literal(4)]),
   "enabled": zod.boolean().default(updateAdminHeroSessionSlidesResponsePublishedOneItemEnabledDefault),
-  "sessionId": zod.string(),
+  "sessionId": zod.string().optional(),
+  "destinationType": zod.enum(['session', 'category', 'category-internal', 'sleep', 'sleep-internal', 'sounds', 'sounds-internal', 'mixer', 'topics', 'topics-internal']),
+  "destinationId": zod.string().optional(),
+  "destinationParentId": zod.string().optional(),
+  "destinationSource": zod.enum(['legacy', 'editorial']).optional(),
+  "imageObjectPath": zod.string().optional(),
   "title": zod.string(),
   "description": zod.string().max(updateAdminHeroSessionSlidesResponsePublishedOneItemDescriptionMax).optional(),
   "pillLabel": zod.string().max(updateAdminHeroSessionSlidesResponsePublishedOneItemPillLabelMax).optional(),
   "actionLabel": zod.string(),
   "categoryId": zod.string().optional(),
-  "categoryLabel": zod.string(),
+  "categoryLabel": zod.string().optional(),
   "imageUrl": zod.string().nullable(),
-  "skipDetail": zod.boolean(),
-  "skipMiniPlayer": zod.boolean(),
-  "isPremium": zod.boolean()
+  "skipDetail": zod.boolean().optional(),
+  "skipMiniPlayer": zod.boolean().optional(),
+  "isPremium": zod.boolean().optional()
 })),zod.null()]),
   "publishedRevision": zod.number().nullable()
+})
+
+
+export const ListAdminHeroDestinationsResponseItem = zod.object({
+  "destinationType": zod.enum(['session', 'category', 'category-internal', 'sleep', 'sleep-internal', 'sounds', 'sounds-internal', 'mixer', 'topics', 'topics-internal']),
+  "options": zod.array(zod.object({
+  "id": zod.string(),
+  "label": zod.string(),
+  "parentId": zod.string().optional(),
+  "source": zod.enum(['legacy', 'editorial']).optional()
+}))
+})
+export const ListAdminHeroDestinationsResponse = zod.array(ListAdminHeroDestinationsResponseItem)
+
+
+export const GetHeroSessionSlideImageParams = zod.object({
+  "position": zod.union([zod.literal(2),zod.literal(3),zod.literal(4)])
+})
+
+
+
+
+export const GetHeroSessionSlideImageQueryParams = zod.object({
+  "revision": zod.coerce.number().min(1)
 })
 
 

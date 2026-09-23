@@ -7,6 +7,7 @@ import {
   heroOverridesTable as heroes, heroOverrideAssetsTable as heroAssets,
   inspirationNotesTable as notes, catalogSessionsTable,
   heroSessionSlidesTable,
+  catalogCategoriesTable,
   type InspirationContent,
 } from "@workspace/db";
 import {
@@ -31,6 +32,44 @@ const uuid = z.string().uuid();
 const admin = [requireAuth, requireRole("admin")];
 const heroMedia = z.object({ type: z.enum(["image", "video"]), objectPath: z.string().min(1), contentType: z.enum(["image/jpeg", "image/png", "image/webp", "video/mp4", "video/webm"]), sizeBytes: z.number().int().positive().max(104857600), generation: z.string().nullable(), posterObjectPath: z.string().nullable().optional() });
 const heroContent = z.object({ media: heroMedia, title: z.string().max(200).nullable().optional() });
+const slugifyHeroTag = (value: string) => value.normalize("NFD").replace(/[\u0300-\u036f]/g, "").toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "");
+const themeSlug = (value: string) => {
+  const slug = slugifyHeroTag(value);
+  return slug === "foco-y-concentracion" ? "foco-concentracion" : slug;
+};
+const themeLabels: Record<string, string> = {
+  "para-la-ansiedad": "Para la ansiedad", "energiza-tus-mananas": "Energiza tus mañanas",
+  "foco-concentracion": "Foco y concentración", "suelto-la-rabia": "Suelto la Rabia",
+  "crecimiento-personal": "Crecimiento personal", "armonia-familiar": "Armonía familiar",
+  "respiracion-consciente": "Respiración consciente", "meditaciones-activas": "Meditaciones Activas",
+  astrologia: "Astrología",
+};
+const customCollectionId = (label: string) => {
+  const slug = slugifyHeroTag(label).slice(0, 48) || "coleccion";
+  let hash = 0;
+  for (let i = 0; i < label.length; i++) hash = ((hash << 5) - hash + label.charCodeAt(i)) | 0;
+  return `custom-${slug}-${Math.abs(hash).toString(36)}`;
+};
+const sleepLabels = ["Música para dormir", "Meditaciones para dormir", "Historias para dormir", "Sonidos para dormir", "Paisajes sonoros", "Para niños", "Sonidos de lluvia", "Ruido"];
+const soundLabels = ["Todos los sonidos", "Sonidos de naturaleza", "Sonidos binaurales", "Frecuencias Astrales", "Música de enfoque", "Cantos medicinales", "Sonidos de lluvia", "Sonidos para Chakras"];
+const collectionRouteId = (label: string, type: "sleep" | "sounds") =>
+  (type === "sleep" ? sleepLabels : soundLabels).includes(label) ? slugifyHeroTag(label) : customCollectionId(label);
+const editorialPrefixByCategory: Record<string, string> = {
+  "meditaciones-guiadas": "__category_theme_meditaciones__:",
+  "sonidos-ancestrales": "__category_theme_sonoterapia__:",
+  charlas: "__category_theme_charlas__:",
+  historias: "__category_theme_historias__:",
+  ambientales: "__category_theme_ambientales__:",
+};
+const categoryEditorialLabels = (values: string[], categoryId: string) => {
+  if (categoryId === "musica-sonidos" || categoryId === "noches") return values.filter((value) => !value.startsWith("__"));
+  const prefix = editorialPrefixByCategory[categoryId];
+  return prefix ? values.filter((value) => value.startsWith(prefix)).map((value) => value.slice(prefix.length)) : [];
+};
+const parseOtherThemeTag = (value: string) => {
+  const match = /^__other_theme_internal:([^_]+)__:(.+)$/.exec(value);
+  return match ? { parentId: themeSlug(match[1]), label: match[2].trim() } : null;
+};
 type Entry = typeof entries.$inferSelect;
 type Tx = Parameters<Parameters<typeof db.transaction>[0]>[0];
 const wrap = (fn: (req: Request, res: Response) => Promise<void>): RequestHandler => async (req, res) => {
@@ -149,31 +188,41 @@ function slideInput(value: unknown) {
   return z.object({
     position: z.union([z.literal(2), z.literal(3), z.literal(4)]),
     enabled: z.boolean().optional().default(true),
-    sessionId: z.string().min(1),
+    destinationType: z.enum(["session", "category", "category-internal", "sleep", "sleep-internal", "sounds", "sounds-internal", "mixer", "topics", "topics-internal"]).optional(),
+    destinationId: z.string().min(1).optional(),
+    destinationParentId: z.string().min(1).optional(),
+    destinationSource: z.enum(["legacy", "editorial"]).optional(),
+    imageObjectPath: z.string().min(1).optional(),
+    sessionId: z.string().min(1).optional(),
     title: z.string().trim().min(1).max(200),
     description: z.string().trim().max(300).optional(),
     pillLabel: z.string().trim().max(80).optional(),
     actionLabel: z.string().trim().min(1).max(60),
-  }).parse(value);
+  }).transform((slide) => ({ ...slide, destinationType: slide.destinationType ?? "session", destinationId: slide.destinationId ?? slide.sessionId }))
+    .parse(value);
 }
-async function sessionSlidesDto(content: { slides: Array<ReturnType<typeof slideInput> | null> } | null, revision: number) {
+async function sessionSlidesDto(content: { slides: Array<unknown | null> } | null, revision: number) {
   const inputs = (content?.slides ?? []).filter((slide) => slide != null).map(slideInput);
   if (!inputs.length) return { revision, slides: [] };
-  const sessions = await db.select().from(catalogSessionsTable).where(inArray(catalogSessionsTable.id, inputs.map((slide) => slide.sessionId)));
+  const sessionInputs = inputs.filter((slide) => slide.destinationType === "session");
+  const sessions = sessionInputs.length ? await db.select().from(catalogSessionsTable).where(inArray(catalogSessionsTable.id, sessionInputs.map((slide) => slide.destinationId!))) : [];
   const byId = new Map(sessions.filter((session) => session.status === "published").map((session) => [session.id, session]));
+  const validInputs = (await Promise.all(inputs.map(async (slide) => {
+    try { await validateHeroDestination(slide); return slide; } catch { return null; }
+  }))).filter((slide): slide is ReturnType<typeof slideInput> => slide !== null);
   return {
     revision,
-    slides: inputs.sort((a, b) => a.position - b.position).map((slide) => {
-      const session = byId.get(slide.sessionId);
-      if (!session) return null;
+    slides: validInputs.sort((a, b) => a.position - b.position).map((slide) => {
+       const session = slide.destinationType === "session" ? byId.get(slide.destinationId!) : undefined;
+       if (slide.destinationType === "session" && !session) return null;
+       const imageUrl = slide.imageObjectPath
+         ? `/api/hero/session-slide-image/${slide.position}?revision=${revision}`
+         : session?.imageUrl ?? session?.imageKey ?? null;
+       if (!imageUrl) return null;
       return {
         ...slide,
-        categoryId: session.categoryId,
-        categoryLabel: session.categoryLabel,
-        imageUrl: session.imageUrl ?? session.imageKey ?? null,
-        skipDetail: session.skipDetail,
-        skipMiniPlayer: session.skipMiniPlayer,
-        isPremium: session.isPremium,
+         ...(session ? { categoryId: session.categoryId, categoryLabel: session.categoryLabel, skipDetail: session.skipDetail, skipMiniPlayer: session.skipMiniPlayer, isPremium: session.isPremium } : {}),
+         imageUrl,
       };
     }).filter((slide): slide is NonNullable<typeof slide> => slide != null),
   };
@@ -181,6 +230,14 @@ async function sessionSlidesDto(content: { slides: Array<ReturnType<typeof slide
 router.get("/hero/session-slides", wrap(async (_req, res) => {
   const [row] = await db.select().from(heroSessionSlidesTable).where(eq(heroSessionSlidesTable.id, 1));
   res.json(await sessionSlidesDto(row?.published ?? null, row?.publishedRevision ?? 0));
+}));
+router.get("/hero/session-slide-image/:position", wrap(async (req, res) => {
+  const position = z.coerce.number().int().min(2).max(4).parse(req.params.position);
+  const [row] = await db.select().from(heroSessionSlidesTable).where(eq(heroSessionSlidesTable.id, 1));
+  if (!row?.published || String(row.publishedRevision) !== String(req.query.revision)) throw new InspirationError(404, "Imagen no disponible");
+  const slide = row.published.slides.find((item) => item?.position === position);
+  if (!slide?.imageObjectPath) throw new InspirationError(404, "Imagen no disponible");
+  await sendHeroAsset(slide.imageObjectPath, res, true);
 }));
 router.get("/hero/media/:id", wrap(async (req, res) => {
   const row = await heroEntry(String(req.params.id));
@@ -298,6 +355,65 @@ async function sendHeroAsset(path: string, res: Response, published: boolean) {
   res.setHeader("X-Content-Type-Options", "nosniff");
   res.send(bytes);
 }
+async function checkedHeroSlideAsset(path: string) {
+  const [asset] = await db.select().from(heroAssets).where(eq(heroAssets.objectPath, path));
+  if (!asset || !asset.contentType.startsWith("image/") || asset.sizeBytes > 15 * 1024 * 1024) {
+    throw new InspirationError(400, "Imagen editorial no encontrada");
+  }
+  const file = await storage.getObjectEntityFile(path);
+  const [metadata] = await file.getMetadata();
+  if (Number(metadata.size) !== asset.sizeBytes || metadata.contentType !== asset.contentType || !metadata.generation) {
+    throw new InspirationError(400, "La imagen no coincide con el archivo cargado");
+  }
+  const [bytes] = await file.download();
+  await validateInspirationImage(bytes, asset.contentType);
+  await db.update(heroAssets).set({ generation: String(metadata.generation) }).where(eq(heroAssets.objectPath, path));
+}
+async function validateHeroDestination(slide: ReturnType<typeof slideInput>) {
+  if (["session", "sleep", "sounds", "mixer"].includes(slide.destinationType)) {
+    if (slide.destinationType === "session" && !slide.destinationId) throw new InspirationError(400, "La sesión requiere un identificador");
+    return;
+  }
+  if (slide.destinationType === "topics" && !slide.destinationId) return;
+  const id = slide.destinationId;
+  if (!id) throw new InspirationError(400, "El destino requiere un identificador");
+  if (slide.destinationType === "category" && !(await db.select({ id: catalogCategoriesTable.id }).from(catalogCategoriesTable).where(eq(catalogCategoriesTable.id, id))).length) {
+    throw new InspirationError(400, "La categoría no está disponible");
+  }
+  if (slide.destinationType === "category-internal") {
+    if (!slide.destinationParentId) throw new InspirationError(400, "La categoría requiere un identificador padre");
+    const rows = await db.select({ categoryId: catalogSessionsTable.categoryId, sonidosTags: catalogSessionsTable.sonidosTags, descansoTags: catalogSessionsTable.descansoTags, temaTag: catalogSessionsTable.temaTag, soundTag: catalogSessionsTable.soundTag, meditationTag: catalogSessionsTable.meditationTag, ancestralTag: catalogSessionsTable.ancestralTag, sabiduriaTag: catalogSessionsTable.sabiduriaTag, podcastTag: catalogSessionsTable.podcastTag, sonidosTag: catalogSessionsTable.sonidosTag, themeTag: catalogSessionsTable.themeTag }).from(catalogSessionsTable).where(and(eq(catalogSessionsTable.status, "published"), eq(catalogSessionsTable.categoryId, slide.destinationParentId)));
+    const valid = rows.some((row) => {
+      const legacyValue = slide.destinationParentId === "musica-sonidos" ? row.soundTag
+        : slide.destinationParentId === "meditaciones-guiadas" ? row.meditationTag
+        : slide.destinationParentId === "sonidos-ancestrales" ? row.ancestralTag
+        : slide.destinationParentId === "charlas" ? row.podcastTag
+        : slide.destinationParentId === "historias" ? row.sabiduriaTag
+        : slide.destinationParentId === "ambientales" ? row.sonidosTag : null;
+      const values = slide.destinationSource === "editorial"
+        ? categoryEditorialLabels(row.themeTag ?? [], slide.destinationParentId!)
+        : legacyValue ? [legacyValue] : [];
+      return values.filter((value): value is string => Boolean(value)).includes(id);
+    });
+    if (!valid) throw new InspirationError(400, "La etiqueta de categoría no está disponible");
+  } else if (["sleep-internal", "sounds-internal"].includes(slide.destinationType)) {
+    const sessions = await db.select({ descansoTags: catalogSessionsTable.descansoTags, sonidosTags: catalogSessionsTable.sonidosTags }).from(catalogSessionsTable).where(eq(catalogSessionsTable.status, "published"));
+    const type = slide.destinationType === "sleep-internal" ? "sleep" : "sounds";
+    const valid = sessions.some((row) => (type === "sleep" ? row.descansoTags : row.sonidosTags).some((label) => collectionRouteId(label, type) === id));
+    if (!valid) throw new InspirationError(400, "La colección no está disponible");
+  } else if (slide.destinationType === "topics-internal") {
+    const rows = await db.select({ themeTag: catalogSessionsTable.themeTag }).from(catalogSessionsTable).where(eq(catalogSessionsTable.status, "published"));
+    const matchingTag = rows.flatMap((row) => row.themeTag ?? []).map(parseOtherThemeTag).find((tag): tag is { parentId: string; label: string } => tag !== null && tag.parentId === slide.destinationParentId && tag.label === id);
+    if (!matchingTag || !slide.destinationParentId) throw new InspirationError(400, "La colección no está disponible");
+  }
+  if (slide.destinationType === "topics") {
+    const rows = await db.select({ themeTag: catalogSessionsTable.themeTag }).from(catalogSessionsTable).where(eq(catalogSessionsTable.status, "published"));
+    if (!rows.some((row) => (row.themeTag ?? []).some((tag) => !tag.startsWith("__") && themeSlug(tag) === id)) &&
+      !rows.some((row) => (row.themeTag ?? []).some((tag) => parseOtherThemeTag(tag)?.parentId === id))) {
+      throw new InspirationError(400, "La temática no está disponible");
+    }
+  }
+}
 function streamRangedFile(
   req: Request,
   res: Response,
@@ -354,6 +470,35 @@ router.get("/admin/hero/session-slides", ...admin, wrap(async (_req, res) => {
     publishedRevision: row?.publishedRevision ?? null,
   });
 }));
+router.get("/admin/hero/destinations", ...admin, wrap(async (_req, res) => {
+  const sessions = await db.select({ id: catalogSessionsTable.id, label: catalogSessionsTable.title, categoryId: catalogSessionsTable.categoryId, categoryLabel: catalogSessionsTable.categoryLabel, sonidosTags: catalogSessionsTable.sonidosTags, sonidosTag: catalogSessionsTable.sonidosTag, descansoTags: catalogSessionsTable.descansoTags, temaTag: catalogSessionsTable.temaTag, soundTag: catalogSessionsTable.soundTag, meditationTag: catalogSessionsTable.meditationTag, ancestralTag: catalogSessionsTable.ancestralTag, sabiduriaTag: catalogSessionsTable.sabiduriaTag, podcastTag: catalogSessionsTable.podcastTag, themeTag: catalogSessionsTable.themeTag }).from(catalogSessionsTable).where(eq(catalogSessionsTable.status, "published"));
+  const categories = await db.select({ id: catalogCategoriesTable.id, label: catalogCategoriesTable.title }).from(catalogCategoriesTable);
+  const options = (items: Array<{ id: string; label: string; parentId?: string; source?: "legacy" | "editorial" }>) => items.sort((a, b) => a.label.localeCompare(b.label));
+  const publishedTags = (field: "descansoTags" | "sonidosTags", type: "sleep" | "sounds") => {
+    const values = sessions.flatMap((session) => (session[field] ?? []) as string[]);
+    return options([...new Set(values)].map((label) => ({ id: collectionRouteId(label, type), label })));
+  };
+  res.json([
+    { destinationType: "session", options: options(sessions.map((s) => ({ id: s.id, label: s.label, parentId: s.categoryId }))) },
+    { destinationType: "category", options: options(categories.map((c) => ({ id: c.id, label: c.label }))) },
+    { destinationType: "category-internal", options: options(sessions.flatMap((s) => {
+      const legacy = [{ value: s.soundTag, category: "musica-sonidos" }, { value: s.meditationTag, category: "meditaciones-guiadas" }, { value: s.ancestralTag, category: "sonidos-ancestrales" }, { value: s.podcastTag, category: "charlas" }, { value: s.sabiduriaTag, category: "historias" }, { value: s.sonidosTag, category: "ambientales" }].filter((item) => item.value && item.category === s.categoryId);
+      const editorial = categoryEditorialLabels(s.themeTag ?? [], s.categoryId);
+      return [...legacy.map(({ value }) => ({ id: value!, label: value!, parentId: s.categoryId, source: "legacy" as const })), ...editorial.map((label) => ({ id: label, label, parentId: s.categoryId, source: "editorial" as const }))];
+    }).filter((option, index, all) => all.findIndex((item) => item.id === option.id && item.parentId === option.parentId && item.source === option.source) === index)) },
+    { destinationType: "sleep", options: [] },
+    { destinationType: "sleep-internal", options: publishedTags("descansoTags", "sleep") },
+    { destinationType: "sounds", options: [] },
+    { destinationType: "sounds-internal", options: publishedTags("sonidosTags", "sounds") },
+    { destinationType: "mixer", options: [] },
+    { destinationType: "topics", options: options([...new Map(sessions.flatMap((s) => (s.themeTag ?? []).flatMap((tag) => {
+      const internal = parseOtherThemeTag(tag);
+      if (internal) return [{ id: internal.parentId, label: themeLabels[internal.parentId] ?? internal.parentId.replace(/-/g, " ") }];
+      return tag.startsWith("__") ? [] : [{ id: themeSlug(tag), label: tag }];
+    })).map((item) => [item.id, item])).values()]) },
+    { destinationType: "topics-internal", options: options([...new Map(sessions.flatMap((s) => (s.themeTag ?? []).map(parseOtherThemeTag).filter((tag): tag is { parentId: string; label: string } => Boolean(tag)).map((tag) => ({ id: tag.label, label: tag.label, parentId: tag.parentId }))).map((item) => [`${item.parentId}:${item.id}`, item])).values()]) },
+  ]);
+}));
 router.put("/admin/hero/session-slides", ...admin, wrap(async (req, res) => {
   const body = z.object({
     revision: z.number().int().min(0),
@@ -367,20 +512,30 @@ router.put("/admin/hero/session-slides", ...admin, wrap(async (req, res) => {
   if (slides.some((slide) => slide.enabled && !slide.pillLabel)) {
     throw new InspirationError(400, "Elige una etiqueta editorial para cada slide activo");
   }
-  const uniqueSessionIds = [...new Set(slides.map((slide) => slide.sessionId))];
-  const found = await db.select({
+  const uniqueSessionIds = [...new Set(slides.filter((slide) => slide.destinationType === "session").map((slide) => slide.destinationId!))];
+  const found = uniqueSessionIds.length ? await db.select({
     id: catalogSessionsTable.id,
     status: catalogSessionsTable.status,
     imageKey: catalogSessionsTable.imageKey,
     imageUrl: catalogSessionsTable.imageUrl,
   })
     .from(catalogSessionsTable)
-    .where(inArray(catalogSessionsTable.id, uniqueSessionIds));
+    .where(inArray(catalogSessionsTable.id, uniqueSessionIds)) : [];
   if (found.length !== uniqueSessionIds.length || found.some((session) => session.status !== "published")) {
     throw new InspirationError(400, "Todas las sesiones deben estar publicadas");
   }
-  if (found.some((session) => !session.imageUrl && !session.imageKey)) {
+  const foundById = new Map(found.map((session) => [session.id, session]));
+  if (slides.some((slide) => {
+    if (slide.destinationType !== "session" || slide.imageObjectPath) return false;
+    const session = foundById.get(slide.destinationId!);
+    return !session?.imageUrl && !session?.imageKey;
+  })) {
     throw new InspirationError(400, "Todas las sesiones deben tener una portada");
+  }
+  for (const slide of slides) {
+    await validateHeroDestination(slide);
+    if (slide.destinationType !== "session" && !slide.imageObjectPath) throw new InspirationError(400, "Los destinos sin sesión necesitan una imagen");
+    if (slide.imageObjectPath) await checkedHeroSlideAsset(slide.imageObjectPath);
   }
   const row = await db.transaction(async (tx) => {
     await lock(tx, "hero-session-slides");

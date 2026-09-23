@@ -1631,10 +1631,39 @@ export const HeroSessionSlidePosition = {
   NUMBER_4: 4,
 } as const;
 
+export type HeroSessionSlideDestinationType = typeof HeroSessionSlideDestinationType[keyof typeof HeroSessionSlideDestinationType];
+
+
+export const HeroSessionSlideDestinationType = {
+  session: 'session',
+  category: 'category',
+  'category-internal': 'category-internal',
+  sleep: 'sleep',
+  'sleep-internal': 'sleep-internal',
+  sounds: 'sounds',
+  'sounds-internal': 'sounds-internal',
+  mixer: 'mixer',
+  topics: 'topics',
+  'topics-internal': 'topics-internal',
+} as const;
+
+export type HeroSessionSlideDestinationSource = typeof HeroSessionSlideDestinationSource[keyof typeof HeroSessionSlideDestinationSource];
+
+
+export const HeroSessionSlideDestinationSource = {
+  legacy: 'legacy',
+  editorial: 'editorial',
+} as const;
+
 export interface HeroSessionSlide {
   position: HeroSessionSlidePosition;
   enabled: boolean;
-  sessionId: string;
+  sessionId?: string;
+  destinationType: HeroSessionSlideDestinationType;
+  destinationId?: string;
+  destinationParentId?: string;
+  destinationSource?: HeroSessionSlideDestinationSource;
+  imageObjectPath?: string;
   title: string;
   /** @maxLength 300 */
   description?: string;
@@ -1642,12 +1671,12 @@ export interface HeroSessionSlide {
   pillLabel?: string;
   actionLabel: string;
   categoryId?: string;
-  categoryLabel: string;
+  categoryLabel?: string;
   /** @nullable */
   imageUrl: string | null;
-  skipDetail: boolean;
-  skipMiniPlayer: boolean;
-  isPremium: boolean;
+  skipDetail?: boolean;
+  skipMiniPlayer?: boolean;
+  isPremium?: boolean;
 }
 
 export interface HeroSessionSlidesResponse {
@@ -1664,11 +1693,43 @@ export const HeroSessionSlideInputPosition = {
   NUMBER_4: 4,
 } as const;
 
+export type HeroSessionSlideInputDestinationType = typeof HeroSessionSlideInputDestinationType[keyof typeof HeroSessionSlideInputDestinationType];
+
+
+export const HeroSessionSlideInputDestinationType = {
+  session: 'session',
+  category: 'category',
+  'category-internal': 'category-internal',
+  sleep: 'sleep',
+  'sleep-internal': 'sleep-internal',
+  sounds: 'sounds',
+  'sounds-internal': 'sounds-internal',
+  mixer: 'mixer',
+  topics: 'topics',
+  'topics-internal': 'topics-internal',
+} as const;
+
+export type HeroSessionSlideInputDestinationSource = typeof HeroSessionSlideInputDestinationSource[keyof typeof HeroSessionSlideInputDestinationSource];
+
+
+export const HeroSessionSlideInputDestinationSource = {
+  legacy: 'legacy',
+  editorial: 'editorial',
+} as const;
+
 export interface HeroSessionSlideInput {
   position: HeroSessionSlideInputPosition;
   enabled: boolean;
   /** @minLength 1 */
-  sessionId: string;
+  sessionId?: string;
+  destinationType?: HeroSessionSlideInputDestinationType;
+  /** @minLength 1 */
+  destinationId?: string;
+  /** @minLength 1 */
+  destinationParentId?: string;
+  destinationSource?: HeroSessionSlideInputDestinationSource;
+  /** @minLength 1 */
+  imageObjectPath?: string;
   /**
      * @minLength 1
      * @maxLength 200
@@ -1683,6 +1744,42 @@ export interface HeroSessionSlideInput {
      * @maxLength 60
      */
   actionLabel: string;
+}
+
+export type HeroDestinationOptionSource = typeof HeroDestinationOptionSource[keyof typeof HeroDestinationOptionSource];
+
+
+export const HeroDestinationOptionSource = {
+  legacy: 'legacy',
+  editorial: 'editorial',
+} as const;
+
+export interface HeroDestinationOption {
+  id: string;
+  label: string;
+  parentId?: string;
+  source?: HeroDestinationOptionSource;
+}
+
+export type HeroDestinationOptionsDestinationType = typeof HeroDestinationOptionsDestinationType[keyof typeof HeroDestinationOptionsDestinationType];
+
+
+export const HeroDestinationOptionsDestinationType = {
+  session: 'session',
+  category: 'category',
+  'category-internal': 'category-internal',
+  sleep: 'sleep',
+  'sleep-internal': 'sleep-internal',
+  sounds: 'sounds',
+  'sounds-internal': 'sounds-internal',
+  mixer: 'mixer',
+  topics: 'topics',
+  'topics-internal': 'topics-internal',
+} as const;
+
+export interface HeroDestinationOptions {
+  destinationType: HeroDestinationOptionsDestinationType;
+  options: HeroDestinationOption[];
 }
 
 export interface UpdateHeroSessionSlidesBody {
@@ -3227,6 +3324,13 @@ timeZone?: string;
 
 export type GetEffectiveHeroParams = {
 timeZone?: string;
+};
+
+export type GetHeroSessionSlideImageParams = {
+/**
+ * @minimum 1
+ */
+revision: number;
 };
 
 export type GetEffectiveHeroMediaParams = {

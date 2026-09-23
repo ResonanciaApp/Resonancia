@@ -96,7 +96,7 @@ import {
   useGetPopularSessions,
   useGetSceneAnimations,
 } from "@workspace/api-client-react";
-import type { SceneAnimation } from "@workspace/api-client-react";
+import type { HeroSessionSlide, SceneAnimation } from "@workspace/api-client-react";
 import { SceneAnimationCard } from "@/components/SceneAnimationCard";
 import { useRacha } from "@/context/RachaContext";
 import {
@@ -135,6 +135,7 @@ import {
   getTwoCardCarouselCardWidth,
 } from "@/constants/carousel";
 import { PLAYLISTS } from "@/data/playlists";
+import { buildOtherThemeInternalRoute } from "@/lib/explore-other-themes";
 
 import { absoluteMediaUrl, useEffectiveHero } from "@/hooks/effectiveHero";
 const { width, height } = Dimensions.get("window");
@@ -1390,7 +1391,24 @@ type Inicio3PagerSlide = {
   skipDetail?: boolean;
   skipMiniPlayer?: boolean;
   isPremiumSession?: boolean;
+  destinationType?: HeroDestinationType;
+  destinationId?: string;
+  destinationParentId?: string;
+  destinationSource?: HeroDestinationSource;
 };
+type HeroDestinationType =
+  | "session"
+  | "category"
+  | "category-internal"
+  | "sleep"
+  | "sleep-internal"
+  | "sounds"
+  | "sounds-internal"
+  | "mixer"
+  | "topics"
+  | "topics-internal";
+type HeroDestinationSource = "legacy" | "editorial";
+
 const INICIO3_PAGER_SLIDES: Inicio3PagerSlide[] = [
   { id: "today", image: null, title: null },
   { id: "ocean", image: require("@/assets/images/inicio3-slider-oceano.jpg"), title: "Encuentra calma en el sonido de las olas" },
@@ -1417,6 +1435,7 @@ function Inicio3HeroPager({
   const { playSession } = usePlayer();
   const { openCategory } = useCategoryOverlay();
   const { openForSession } = useAmbientalDuration();
+  const { openMixer } = useMixerPanel();
   const { version: catalogVersion } = useCatalog();
   const effectiveHero = useEffectiveHero(INICIO3_HERO_FALLBACK);
   const [slideWidth, setSlideWidth] = useState(
@@ -1447,15 +1466,18 @@ function Inicio3HeroPager({
   };
   const pagerSlides = useMemo(() => {
     if (!configuredHero) return INICIO3_PAGER_SLIDES;
-    const configuredByPosition = new Map((configuredHero?.slides ?? []).map((slide) => [slide.position, slide]));
+    const configuredByPosition = new Map(
+      (configuredHero.slides ?? []).map((slide: HeroSessionSlide) => [slide.position, slide]),
+    );
     return INICIO3_PAGER_SLIDES.map((fallback, index) => {
       if (index === 0) return fallback;
       const configured = configuredByPosition.get((index + 1) as 2 | 3 | 4);
-      if (!configured || configured.enabled === false || !configured.imageUrl) return null;
+      const imageUrl = configured?.imageUrl ?? configured?.imageObjectPath;
+      if (!configured || configured.enabled === false || !imageUrl) return null;
       return {
         ...fallback,
-        id: `session-${configured.sessionId}`,
-        image: { uri: absoluteMediaUrl(configured.imageUrl) },
+        id: `${configured.destinationType ?? "session"}-${configured.destinationId ?? configured.sessionId ?? configured.position}`,
+        image: { uri: absoluteMediaUrl(imageUrl) },
         title: configured.title,
         description: configured.description,
         actionLabel: configured.actionLabel,
@@ -1466,6 +1488,12 @@ function Inicio3HeroPager({
         skipDetail: configured.skipDetail,
         skipMiniPlayer: configured.skipMiniPlayer,
         isPremiumSession: configured.isPremium,
+        destinationType: configured.destinationType ?? "session",
+        destinationId: configured.destinationId,
+        destinationParentId: configured.destinationParentId,
+        destinationSource: (configured as HeroSessionSlide & {
+          destinationSource?: HeroDestinationSource;
+        }).destinationSource,
       };
     }).filter((slide): slide is Inicio3PagerSlide => slide != null);
   }, [catalogVersion, configuredHero?.slides]);
@@ -1478,8 +1506,58 @@ function Inicio3HeroPager({
       router.push({ pathname: "/inspiracion-diaria", params: { entry: "today" } });
       return;
     }
-    if (!item.sessionId) return;
-    const session = getSessionById(item.sessionId);
+    const destinationType = item.destinationType ?? "session";
+    if (destinationType !== "session") {
+      const destinationId = item.destinationId;
+      const parentId = item.destinationParentId;
+      switch (destinationType) {
+        case "category":
+          if (destinationId) openCategory(`/category/${encodeURIComponent(destinationId)}`);
+          return;
+        case "category-internal":
+          if (destinationId && parentId) {
+            const sourceQuery = item.destinationSource === "editorial" ? "?source=editorial" : "";
+            const tagRoute = parentId === "music" || parentId === "musica"
+              ? `/music-tag/${encodeURIComponent(destinationId)}${sourceQuery}`
+              : `/category-tag/${encodeURIComponent(parentId)}/${encodeURIComponent(destinationId)}${sourceQuery}`;
+            openCategory(tagRoute);
+          }
+          return;
+        case "sleep":
+          router.push("/(tabs)/descanzo" as never);
+          return;
+        case "sleep-internal":
+          if (destinationId) openCategory(`/sleep-tag/${encodeURIComponent(destinationId)}`);
+          return;
+        case "sounds":
+          router.push("/(tabs)/sonidos" as never);
+          return;
+        case "sounds-internal":
+          if (destinationId) openCategory(`/sound-tag/${encodeURIComponent(destinationId)}`);
+          return;
+        case "mixer":
+          openMixer();
+          router.push("/(tabs)/musica" as never);
+          return;
+        case "topics":
+          router.push(
+            destinationId
+              ? `/tag/${encodeURIComponent(destinationId)}`
+              : "/todas-las-tematicas" as never,
+          );
+          return;
+        case "topics-internal":
+          if (destinationId && parentId) {
+            router.push(buildOtherThemeInternalRoute(parentId, destinationId) as never);
+          }
+          return;
+     }
+    }
+    // Legacy slides did not have destinationType and remain session links.
+    if (!item.sessionId && !item.destinationId) return;
+    const sessionId = item.destinationId ?? item.sessionId;
+    if (!sessionId) return;
+     const session = getSessionById(sessionId);
     if (!session) return;
     if (session.isPremium && !isPremium) {
       openPremiumPlans();
@@ -1498,7 +1576,7 @@ function Inicio3HeroPager({
       playSession(session);
       router.push("/player" as never);
     }
-  }, [isPremium, openCategory, openForSession, playSession, router]);
+   }, [isPremium, openCategory, openForSession, openMixer, playSession, router]);
   const handleSlidePress = useCallback((
     item: (typeof pagerSlides)[number],
     event: GestureResponderEvent,

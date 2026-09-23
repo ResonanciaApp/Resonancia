@@ -4,7 +4,14 @@ import { check, integer, jsonb, pgTable, timestamp } from "drizzle-orm/pg-core";
 export type HeroSessionSlide = {
   position: 2 | 3 | 4;
   enabled: boolean;
-  sessionId: string;
+  /** Omit destinationType for legacy session slides. */
+  destinationType?: "session" | "category" | "category-internal" | "sleep" | "sleep-internal" | "sounds" | "sounds-internal" | "mixer" | "topics" | "topics-internal";
+  destinationId?: string;
+  destinationParentId?: string;
+  destinationSource?: "legacy" | "editorial";
+  imageObjectPath?: string;
+  /** @deprecated Use destinationId when destinationType is session. */
+  sessionId?: string;
   title: string;
   description?: string;
   pillLabel?: string;

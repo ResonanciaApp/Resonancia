@@ -115,6 +115,7 @@ import type {
   GetEffectiveHeroParams,
   GetEffectiveHeroPosterParams,
   GetGeometrixSettings200,
+  GetHeroSessionSlideImageParams,
   GetInspirationByDateParams,
   GetInspirationFavoritesParams,
   GetInspirationImageParams,
@@ -140,6 +141,7 @@ import type {
   GuideConfigInput,
   GuideConfigUpdate,
   HealthStatus,
+  HeroDestinationOptions,
   HeroOverrideUploadBody,
   HeroSessionSlidesResponse,
   InspirationDay,
@@ -293,6 +295,7 @@ export const getListCoverPresetsQueryKey = (params?: ListCoverPresetsParams,) =>
     `/api/cover-presets`, ...(params ? [params] : [])
     ] as const;
     }
+
 
 export const getListCoverPresetsQueryOptions = <TData = Awaited<ReturnType<typeof listCoverPresets>>, TError = ErrorType<void>>(params: ListCoverPresetsParams, options?: { query?:UseQueryOptions<Awaited<ReturnType<typeof listCoverPresets>>, TError, TData>, request?: SecondParameter<typeof customFetch>}
 ) => {
@@ -1100,6 +1103,160 @@ const {mutation: mutationOptions, request: requestOptions} = options ?
       > => {
       return useMutation(getUpdateAdminHeroSessionSlidesMutationOptions(options));
     }
+
+export const getListAdminHeroDestinationsUrl = () => {
+
+
+
+
+  return `/api/admin/hero/destinations`
+}
+
+export const listAdminHeroDestinations = async ( options?: RequestInit): Promise<HeroDestinationOptions[]> => {
+
+  return customFetch<HeroDestinationOptions[]>(getListAdminHeroDestinationsUrl(),
+  {
+    ...options,
+    method: 'GET'
+
+
+  }
+);}
+
+
+
+
+
+export const getListAdminHeroDestinationsQueryKey = () => {
+    return [
+    `/api/admin/hero/destinations`
+    ] as const;
+    }
+
+
+export const getListAdminHeroDestinationsQueryOptions = <TData = Awaited<ReturnType<typeof listAdminHeroDestinations>>, TError = ErrorType<unknown>>( options?: { query?:UseQueryOptions<Awaited<ReturnType<typeof listAdminHeroDestinations>>, TError, TData>, request?: SecondParameter<typeof customFetch>}
+) => {
+
+const {query: queryOptions, request: requestOptions} = options ?? {};
+
+  const queryKey =  queryOptions?.queryKey ?? getListAdminHeroDestinationsQueryKey();
+
+
+
+    const queryFn: QueryFunction<Awaited<ReturnType<typeof listAdminHeroDestinations>>> = ({ signal }) => listAdminHeroDestinations({ signal, ...requestOptions });
+
+
+
+
+
+   return  { queryKey, queryFn, ...queryOptions} as UseQueryOptions<Awaited<ReturnType<typeof listAdminHeroDestinations>>, TError, TData> & { queryKey: QueryKey }
+}
+
+export type ListAdminHeroDestinationsQueryResult = NonNullable<Awaited<ReturnType<typeof listAdminHeroDestinations>>>
+export type ListAdminHeroDestinationsQueryError = ErrorType<unknown>
+
+
+
+export function useListAdminHeroDestinations<TData = Awaited<ReturnType<typeof listAdminHeroDestinations>>, TError = ErrorType<unknown>>(
+  options?: { query?:UseQueryOptions<Awaited<ReturnType<typeof listAdminHeroDestinations>>, TError, TData>, request?: SecondParameter<typeof customFetch>}
+
+ ):  UseQueryResult<TData, TError> & { queryKey: QueryKey } {
+
+  const queryOptions = getListAdminHeroDestinationsQueryOptions(options)
+
+  const query = useQuery(queryOptions) as  UseQueryResult<TData, TError> & { queryKey: QueryKey };
+
+  return { ...query, queryKey: queryOptions.queryKey };
+}
+
+
+
+
+
+
+
+export const getGetHeroSessionSlideImageUrl = (position: 2 | 3 | 4,
+    params: GetHeroSessionSlideImageParams,) => {
+  const normalizedParams = new URLSearchParams();
+
+  Object.entries(params || {}).forEach(([key, value]) => {
+
+    if (value !== undefined) {
+      normalizedParams.append(key, value === null ? 'null' : value.toString())
+    }
+  });
+
+  const stringifiedParams = normalizedParams.toString();
+
+  return stringifiedParams.length > 0 ? `/api/hero/session-slide-image/${position}?${stringifiedParams}` : `/api/hero/session-slide-image/${position}`
+}
+
+export const getHeroSessionSlideImage = async (position: 2 | 3 | 4,
+    params: GetHeroSessionSlideImageParams, options?: RequestInit): Promise<Blob> => {
+
+  return customFetch<Blob>(getGetHeroSessionSlideImageUrl(position,params),
+  {
+    ...options,
+    method: 'GET'
+
+
+  }
+);}
+
+
+
+
+
+export const getGetHeroSessionSlideImageQueryKey = (position: 2 | 3 | 4,
+    params?: GetHeroSessionSlideImageParams,) => {
+    return [
+    `/api/hero/session-slide-image/${position}`, ...(params ? [params] : [])
+    ] as const;
+    }
+
+
+export const getGetHeroSessionSlideImageQueryOptions = <TData = Awaited<ReturnType<typeof getHeroSessionSlideImage>>, TError = ErrorType<unknown>>(position: 2 | 3 | 4,
+    params: GetHeroSessionSlideImageParams, options?: { query?:UseQueryOptions<Awaited<ReturnType<typeof getHeroSessionSlideImage>>, TError, TData>, request?: SecondParameter<typeof customFetch>}
+) => {
+
+const {query: queryOptions, request: requestOptions} = options ?? {};
+
+  const queryKey =  queryOptions?.queryKey ?? getGetHeroSessionSlideImageQueryKey(position,params);
+
+
+
+    const queryFn: QueryFunction<Awaited<ReturnType<typeof getHeroSessionSlideImage>>> = ({ signal }) => getHeroSessionSlideImage(position,params, { signal, ...requestOptions });
+
+
+
+
+
+   return  { queryKey, queryFn, enabled: !!(position), ...queryOptions} as UseQueryOptions<Awaited<ReturnType<typeof getHeroSessionSlideImage>>, TError, TData> & { queryKey: QueryKey }
+}
+
+export type GetHeroSessionSlideImageQueryResult = NonNullable<Awaited<ReturnType<typeof getHeroSessionSlideImage>>>
+export type GetHeroSessionSlideImageQueryError = ErrorType<unknown>
+
+
+
+export function useGetHeroSessionSlideImage<TData = Awaited<ReturnType<typeof getHeroSessionSlideImage>>, TError = ErrorType<unknown>>(
+ position: 2 | 3 | 4,
+    params: GetHeroSessionSlideImageParams, options?: { query?:UseQueryOptions<Awaited<ReturnType<typeof getHeroSessionSlideImage>>, TError, TData>, request?: SecondParameter<typeof customFetch>}
+
+ ):  UseQueryResult<TData, TError> & { queryKey: QueryKey } {
+
+  const queryOptions = getGetHeroSessionSlideImageQueryOptions(position,params,options)
+
+  const query = useQuery(queryOptions) as  UseQueryResult<TData, TError> & { queryKey: QueryKey };
+
+  return { ...query, queryKey: queryOptions.queryKey };
+}
+
+
+
+
+
+
 
 export const getGetEffectiveHeroMediaUrl = (id: string,
     params: GetEffectiveHeroMediaParams,) => {
@@ -16455,3 +16612,4 @@ const {mutation: mutationOptions, request: requestOptions} = options ?
       > => {
       return useMutation(getDeleteMyReflectionStoryMutationOptions(options));
     }
+
