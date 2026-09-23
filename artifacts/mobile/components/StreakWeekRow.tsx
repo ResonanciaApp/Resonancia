@@ -33,7 +33,7 @@ export function StreakWeekRow({
               !active && (isToday ? styles.positionedInactiveDay : styles.inactiveDay),
             ]}
           >
-            {active ? (
+            {active && (
               <Svg width={27} height={27} viewBox="0 0 24 24" style={styles.checkMark}>
                 <Path
                   d="M20 6 9 17l-5-5"
@@ -44,10 +44,6 @@ export function StreakWeekRow({
                   strokeLinejoin="round"
                 />
               </Svg>
-            ) : (
-              <Text style={[styles.dayLabel, isToday && styles.positionedDayLabel]}>
-                {initial}
-              </Text>
             )}
           </View>
         );
@@ -73,6 +69,9 @@ export function StreakWeekRow({
             ) : (
               dayCircle
             )}
+            <Text style={[styles.dayLabel, isToday && styles.positionedDayLabel]}>
+              {initial}
+            </Text>
           </View>
         );
 
@@ -103,6 +102,8 @@ const styles = StyleSheet.create({
     alignItems: "center",
   },
   dayWrapper: {
+    width: 39,
+    height: 39,
     alignItems: "center",
   },
   day: {
@@ -133,12 +134,16 @@ const styles = StyleSheet.create({
     backgroundColor: "transparent",
   },
   dayLabel: {
+    position: "absolute",
+    top: 43,
+    width: 39,
+    textAlign: "center",
     color: "rgba(255,255,255,0.65)",
     fontFamily: "Manrope",
-    fontSize: 16,
-    lineHeight: 20,
-    fontWeight: "700",
-    transform: [{ translateY: 1 }],
+    fontSize: 10,
+    lineHeight: 12,
+    fontWeight: "300",
+    includeFontPadding: false,
   },
   positionedDayLabel: {
     color: "#FCFCFC",
