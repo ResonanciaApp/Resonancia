@@ -30,6 +30,8 @@ import { openCategoryGlobal } from "@/context/CategoryOverlayContext";
 import { useUserProfile } from "@/context/UserProfileContext";
 import { useSceneTheme } from "@/context/SceneThemeContext";
 import { useCurrentUserAvatarSource } from "@/lib/profile-avatar";
+import { useNotifications } from "@/context/NotificationsContext";
+import { SessionBadgeGlass } from "@/components/SessionDurationBadge";
 
 const ND = Platform.OS !== "web";
 
@@ -51,8 +53,8 @@ const INICIO3_SECTIONS: { title: string | null; items: MenuItem[] }[] = [
       { id: "library", label: "Biblioteca", icon: "book", mciIcon: "bookshelf", route: "__biblioteca_overlay" },
       { id: "history", label: "Historial", icon: "clock", mciIcon: "history", route: "__overlay:/historial" },
       { id: "downloads", label: "Descargas", icon: "download", mciIcon: "download-outline", route: "__overlay:/descargas" },
-      { id: "notifications", label: "Notificaciones", icon: "bell", mciIcon: "bell-outline", route: "__overlay:/notificaciones" },
       { id: "journal", label: "Diario", icon: "edit-3", mciIcon: "book-open-page-variant-outline", route: "__overlay:/diario" },
+      { id: "notifications", label: "Notificaciones", icon: "bell", mciIcon: "bell-outline", route: "__overlay:/notificaciones" },
     ],
   },
   {
@@ -85,6 +87,7 @@ export function DrawerMenu() {
   const { username, lastName } = useUserProfile();
   const avatarSource = useCurrentUserAvatarSource();
   const { theme: activeTheme } = useSceneTheme();
+  const { unreadCount } = useNotifications();
 
   const loggedIn = isRegistered || isSignedIn;
   const clerkName =
@@ -392,6 +395,16 @@ export function DrawerMenu() {
                             ) : (
                               <Feather name={item.icon} size={20} color={item.color ?? "#F9F9F9"} />
                             )}
+                            {item.id === "notifications" && unreadCount > 0 && (
+                              <View pointerEvents="none" style={styles.notificationBadge}>
+                                <View style={styles.notificationBadgeGlass}>
+                                  <SessionBadgeGlass showBlackTint={false} showWhiteTint />
+                                </View>
+                                <Text style={styles.notificationBadgeText}>
+                                  {unreadCount > 9 ? "9+" : unreadCount}
+                                </Text>
+                              </View>
+                            )}
                           </View>
                           <Text style={[styles.itemLabel, styles.inicio3ItemLabel, item.color && { color: item.color }]}>
                             {item.label}
@@ -579,6 +592,30 @@ const styles = StyleSheet.create({
     gap: 14,
   },
   itemIcon: { width: 26, alignItems: "center" },
+  notificationBadge: {
+    position: "absolute",
+    left: -7,
+    top: -7,
+    width: 18,
+    height: 18,
+    borderRadius: 9,
+    alignItems: "center",
+    justifyContent: "center",
+    overflow: "hidden",
+  },
+  notificationBadgeGlass: {
+    ...StyleSheet.absoluteFillObject,
+    borderRadius: 9,
+    overflow: "hidden",
+  },
+  notificationBadgeText: {
+    color: "#F9F9F9",
+    fontFamily: "Manrope",
+    fontSize: 9,
+    lineHeight: 11,
+    fontWeight: "700",
+    textAlign: "center",
+  },
   premiumMenuStar: {
     width: 21,
     height: 21,

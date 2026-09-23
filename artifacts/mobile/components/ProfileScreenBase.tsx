@@ -88,7 +88,6 @@ import { MoonCrescentIcon } from "@/components/MoonCrescentIcon";
 import { SleepReminderSheet } from "@/components/SleepReminderSheet";
 import { FilledSunIcon } from "@/components/FilledSunIcon";
 import { useMixerPanel } from "@/context/MixerPanelContext";
-import { useNotifications } from "@/context/NotificationsContext";
 
 const REFLECTION_BANNER_ENTRY_DISTANCE = 86;
 const REFLECTION_BANNER_ENTRY_DURATION = 380;
@@ -507,7 +506,6 @@ export function ProfileScreenBase({
   const [innerSpaceFocusRequest, setInnerSpaceFocusRequest] = useState(0);
   const [keepInnerSpaceKeyboardOnCategories, setKeepInnerSpaceKeyboardOnCategories] = useState(false);
   const [reflectionSavedTrigger, setReflectionSavedTrigger] = useState(0);
-  const { unreadCount } = useNotifications();
   const navigation = useNavigation();
   const positionInnerSpaceForWriting = useCallback(() => {
     if (innerSpaceLayoutY === null) return;
@@ -1506,16 +1504,6 @@ export function ProfileScreenBase({
                 color={colors.foreground}
                 style={styles.notificationBellIcon}
               />
-              {unreadCount > 0 && (
-                <View pointerEvents="none" style={styles.profileNotificationBadge}>
-                  <View style={styles.profileNotificationBadgeGlass}>
-                    <SessionBadgeGlass showBlackTint={false} showWhiteTint />
-                  </View>
-                  <Text style={styles.profileNotificationBadgeText}>
-                    {unreadCount > 9 ? "9+" : unreadCount}
-                  </Text>
-                </View>
-              )}
             </Pressable>
             <Pressable
               onPress={() => router.push("/configuracion-ajustes")}
@@ -2237,30 +2225,6 @@ const styles = StyleSheet.create({
   },
   notificationBellIcon: {
     transform: [{ translateX: -0.5 }],
-  },
-  profileNotificationBadge: {
-    position: "absolute",
-    right: -9,
-    top: 12.5,
-    width: 18,
-    height: 18,
-    borderRadius: 9,
-    alignItems: "center",
-    justifyContent: "center",
-    overflow: "hidden",
-  },
-  profileNotificationBadgeGlass: {
-    ...StyleSheet.absoluteFillObject,
-    borderRadius: 9,
-    overflow: "hidden",
-  },
-  profileNotificationBadgeText: {
-    color: "#F9F9F9",
-    fontFamily: "Manrope",
-    fontSize: 9,
-    lineHeight: 11,
-    fontWeight: "700",
-    textAlign: "center",
   },
   giftIcon: {
     width: 35,
