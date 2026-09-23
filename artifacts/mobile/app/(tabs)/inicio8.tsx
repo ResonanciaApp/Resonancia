@@ -1707,7 +1707,7 @@ const Inicio2HeroStatic = React.memo(function Inicio2HeroStatic({
     >
       {isInicio3 ? (
         <Inicio3HeroPager
-          top={inicio3HeroTop - 45}
+          top={inicio3HeroTop - 51}
           height={inicio3HeroHeight + 45}
           shadowStyle={heroShadowStyle}
           reduceMotion={reduceMotion}
@@ -1875,7 +1875,7 @@ const Inicio2HeroStatic = React.memo(function Inicio2HeroStatic({
           <RAnimated.View
             style={[
               styles.inicio3StreakRow,
-              { top: topInset + 68 - INICIO3_VERTICAL_LIFT + inicio3WeekShift - 13 },
+              { top: topInset + 68 - INICIO3_VERTICAL_LIFT + inicio3WeekShift - 18 },
               slowHeaderStyle,
             ]}
             testID="inicio3-streak-row"
@@ -2925,7 +2925,7 @@ export default function HomeScreen2({
           <DailyRecommendationsSection
             sessions={dailyRecommendations}
             dayKey={todayKey}
-            style={{ paddingHorizontal: GRID_PAD, marginTop: -11 }}
+            style={{ paddingHorizontal: GRID_PAD, marginTop: -19 }}
             inicio3Compact
             onRefreshRecommendations={commitDailyRecommendations}
           />
