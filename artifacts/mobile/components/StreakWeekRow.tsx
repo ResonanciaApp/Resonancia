@@ -7,7 +7,7 @@ import { StyleSheet, Text, View } from "react-native";
 import { CinematicFadeSlide } from "@/components/CinematicFadeSlide";
 import { useStreak } from "@/hooks/useStreak";
 
-const DAY_INITIALS = ["L", "M", "X", "J", "V", "S", "D"];
+const DAY_INITIALS = ["L", "M", "MI", "J", "V", "S", "D"];
 const POSITIONED_DAY_GRADIENT = ["#9380E7", "#9EA5EF"] as const;
 
 export function StreakWeekRow({
@@ -110,9 +110,8 @@ const styles = StyleSheet.create({
     justifyContent: "center",
   },
   inactiveDay: {
-    backgroundColor: "transparent",
-    borderWidth: 2,
-    borderColor: "rgba(255,255,255,0.2)",
+    backgroundColor: "rgba(255,255,255,0.1)",
+    borderWidth: 0,
   },
   positionedInactiveDay: {
     backgroundColor: "transparent",
