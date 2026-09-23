@@ -1875,7 +1875,7 @@ const Inicio2HeroStatic = React.memo(function Inicio2HeroStatic({
           <RAnimated.View
             style={[
               styles.inicio3StreakRow,
-              { top: topInset + 68 - INICIO3_VERTICAL_LIFT + inicio3WeekShift - 18 },
+              { top: topInset + 68 - INICIO3_VERTICAL_LIFT + inicio3WeekShift - 17 },
               slowHeaderStyle,
             ]}
             testID="inicio3-streak-row"
@@ -3561,8 +3561,8 @@ const styles = StyleSheet.create({
     position: "relative",
   },
   inicio3HeroAvatarButtonBorder: {
-    borderWidth: 1.5,
-    borderColor: "rgba(0,0,0,0.35)",
+    borderWidth: 0.5,
+    borderColor: "rgba(255,255,255,0.7)",
     borderRadius: 22,
   },
   inicio2HeroPremiumBadge: {
