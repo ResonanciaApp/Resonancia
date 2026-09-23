@@ -158,18 +158,16 @@ const styles = StyleSheet.create({
     height: 37,
     borderRadius: 18.5,
     borderWidth: 1,
-    borderColor: "rgba(255,255,255,0.13)",
+    borderColor: "rgba(0,0,0,0.28)",
     backgroundColor: "transparent",
     alignItems: "center",
     justifyContent: "center",
   },
   moodCircleActive: {
-    borderColor: "rgba(255,255,255,0.38)",
     backgroundColor: "transparent",
   },
   todayCircle: {
     borderWidth: 2,
-    borderColor: "#BE9650",
   },
   moodEmoji: {
     fontSize: 19,

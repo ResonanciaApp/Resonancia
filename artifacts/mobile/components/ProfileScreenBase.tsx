@@ -2496,7 +2496,7 @@ const styles = StyleSheet.create({
   accountFieldValueBox: {
     backgroundColor: "rgba(0,0,0,0.28)",
     height: 48,
-    borderRadius: 999,
+    borderRadius: 17,
     paddingHorizontal: 14,
     justifyContent: "center",
   },
@@ -2512,7 +2512,7 @@ const styles = StyleSheet.create({
     paddingHorizontal: 14,
     paddingVertical: 0,
     backgroundColor: "rgba(0,0,0,0.28)",
-    borderRadius: 999,
+    borderRadius: 17,
     borderWidth: 0,
   },
   accountSaveButton: {
