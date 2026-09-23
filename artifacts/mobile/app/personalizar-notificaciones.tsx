@@ -210,7 +210,7 @@ export default function PersonalizarNotificacionesScreen() {
         <StatusBar hidden />
         <View style={styles.contentShift}>
           <View style={[styles.stickyHeader, { paddingTop: topPad + 4 }]}>
-            <View style={[styles.stickyHeaderRow, styles.libraryTabHeaderRow]}>
+            <View style={styles.headerContent}>
               <Pressable
                 onPress={backOverride ?? (() => (router.canGoBack() ? router.back() : router.replace("/(tabs)" as never)))}
                 hitSlop={6}
@@ -225,6 +225,9 @@ export default function PersonalizarNotificacionesScreen() {
                 )}
               </Pressable>
               <Text style={styles.stickyTitle}>Personalizar notificaciones</Text>
+              <Text style={styles.headerDescription}>
+                Elige qué contenido quieres recibir cuando haya nuevas sesiones.
+              </Text>
             </View>
           </View>
 
@@ -256,7 +259,7 @@ export default function PersonalizarNotificacionesScreen() {
               <>
                 {categories.length > 0 && (
                   <View style={styles.section}>
-                    <Text style={styles.sectionTitle}>Notificaciones categorías principales</Text>
+                    <Text style={styles.sectionTitle}>Notificaciones por categoría</Text>
                     <View style={styles.categoryGrid}>
                       {categories.map((category) => {
                         const selected = activeCategoryIds.includes(category.id);
@@ -290,7 +293,7 @@ export default function PersonalizarNotificacionesScreen() {
 
                 {editorialTags.length > 0 && (
                   <View style={styles.section}>
-                    <Text style={styles.sectionTitle}>Notificaciones tags editoriales</Text>
+                    <Text style={styles.sectionTitle}>Notificaciones por temática</Text>
                     <Text style={styles.sectionDescription}>Elige los temas específicos que quieres seguir.</Text>
                     <View style={styles.pills}>
                       {editorialTags.map((tag) => {
@@ -331,19 +334,11 @@ const styles = StyleSheet.create({
   root: { flex: 1 },
   contentShift: { flex: 1, transform: [{ translateY: -5 }] },
   stickyHeader: { zIndex: 10, backgroundColor: "transparent" },
-  stickyHeaderRow: {
-    position: "relative",
-    flexDirection: "row",
-    alignItems: "center",
-    justifyContent: "space-between",
+  headerContent: {
     paddingHorizontal: 20,
     paddingBottom: 6,
   },
-  libraryTabHeaderRow: { minHeight: 48, paddingBottom: 6, transform: [{ translateY: 8 }] },
   libraryTabBackHitArea: {
-    position: "absolute",
-    left: 16,
-    top: -4,
     width: 48,
     height: 48,
     alignItems: "center",
@@ -363,13 +358,19 @@ const styles = StyleSheet.create({
   },
   stickyTitle: {
     fontFamily: "Manrope",
-    fontSize: 18,
-    lineHeight: 21,
+    fontSize: 25,
+    lineHeight: 30,
     fontWeight: "700",
     color: "#FBFBFB",
     letterSpacing: 0.2,
-    textAlign: "center",
-    flex: 1,
+    marginTop: 9,
+  },
+  headerDescription: {
+    color: "rgba(255,255,255,0.68)",
+    fontFamily: "Manrope",
+    fontSize: 14,
+    lineHeight: 20,
+    marginTop: 15,
   },
   scroll: { flex: 1 },
   state: { alignItems: "center", justifyContent: "center", paddingTop: 72, paddingHorizontal: 16 },
