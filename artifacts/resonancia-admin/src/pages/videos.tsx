@@ -568,11 +568,12 @@ function VideoFormModal({
 
           <div className="grid grid-cols-2 gap-4">
             <div className="space-y-2">
-              <Label>Duración (etiqueta)</Label>
+              <Label>Duración automática</Label>
               <Input
                 value={form.durationLabel}
-                onChange={(e) => setField("durationLabel", e.target.value)}
-                placeholder="Ej: 12:34"
+                readOnly
+                disabled
+                placeholder="Se detecta desde Bunny"
               />
             </div>
             <div className="space-y-2">

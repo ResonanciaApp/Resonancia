@@ -73,6 +73,39 @@ async function bunnyFetch(path: string, options: RequestInit = {}) {
   return res;
 }
 
+type BunnyVideoMetadata = {
+  guid: string;
+  status: number;
+  length: number;
+  framerate: number;
+  width: number;
+  height: number;
+  availableResolutions: string | null;
+};
+
+function formatVideoDuration(lengthSeconds: number): string | null {
+  if (!Number.isFinite(lengthSeconds) || lengthSeconds <= 0) return null;
+  const totalSeconds = Math.max(1, Math.round(lengthSeconds));
+  const hours = Math.floor(totalSeconds / 3600);
+  const minutes = Math.floor((totalSeconds % 3600) / 60);
+  const seconds = totalSeconds % 60;
+
+  return hours > 0
+    ? `${hours}:${String(minutes).padStart(2, "0")}:${String(seconds).padStart(2, "0")}`
+    : `${minutes}:${String(seconds).padStart(2, "0")}`;
+}
+
+async function getBunnyVideoMetadata(bunnyVideoId: string): Promise<BunnyVideoMetadata | null> {
+  if (!BUNNY_LIBRARY_ID || !BUNNY_API_KEY) return null;
+  try {
+    const response = await bunnyFetch(`/videos/${bunnyVideoId}`);
+    if (!response.ok) return null;
+    return response.json() as Promise<BunnyVideoMetadata>;
+  } catch {
+    return null;
+  }
+}
+
 // ── Rutas públicas ────────────────────────────────────────────────────────────
 
 // GET /videos — lista de videos publicados (mobile + cualquier cliente)
@@ -83,7 +116,27 @@ router.get("/videos", async (req, res) => {
       .from(catalogVideosTable)
       .where(eq(catalogVideosTable.status, "published"))
       .orderBy(asc(catalogVideosTable.sortOrder), desc(catalogVideosTable.createdAt));
-    res.json({ videos: videos.map(serializeVideo) });
+    const resolvedVideos = await Promise.all(
+      videos.map(async (video) => {
+        const metadata = await getBunnyVideoMetadata(video.bunnyVideoId);
+        const detectedDuration = metadata
+          ? formatVideoDuration(metadata.length)
+          : null;
+
+        if (detectedDuration && detectedDuration !== video.durationLabel) {
+          await db
+            .update(catalogVideosTable)
+            .set({ durationLabel: detectedDuration, updatedAt: new Date() })
+            .where(eq(catalogVideosTable.id, video.id));
+        }
+
+        return serializeVideo({
+          ...video,
+          durationLabel: detectedDuration ?? "",
+        });
+      }),
+    );
+    res.json({ videos: resolvedVideos });
   } catch (err) {
     req.log.error({ err }, "error listing videos");
     res.status(500).json({ error: "Error al obtener los videos" });
@@ -107,7 +160,20 @@ router.get("/videos/:id", async (req, res) => {
       res.status(404).json({ error: "Video no encontrado" });
       return;
     }
-    res.json(serializeVideo(video));
+    const metadata = await getBunnyVideoMetadata(video.bunnyVideoId);
+    const detectedDuration = metadata
+      ? formatVideoDuration(metadata.length)
+      : null;
+    if (detectedDuration && detectedDuration !== video.durationLabel) {
+      await db
+        .update(catalogVideosTable)
+        .set({ durationLabel: detectedDuration, updatedAt: new Date() })
+        .where(eq(catalogVideosTable.id, video.id));
+    }
+    res.json(serializeVideo({
+      ...video,
+      durationLabel: detectedDuration ?? "",
+    }));
   } catch (err) {
     req.log.error({ err }, "error getting video");
     res.status(500).json({ error: "Error al obtener el video" });
@@ -156,13 +222,17 @@ router.post("/admin/videos", requireAuth, requireRole("admin"), async (req, res)
   } = parsed.data;
 
   try {
+    const bunnyMetadata = await getBunnyVideoMetadata(bunnyVideoId);
+    const detectedDuration = bunnyMetadata
+      ? formatVideoDuration(bunnyMetadata.length)
+      : null;
     const [created] = await db
       .insert(catalogVideosTable)
       .values({
         title,
         subtitle: subtitle?.trim() ?? "",
         description: description?.trim() ?? "",
-        durationLabel: durationLabel?.trim() ?? "",
+        durationLabel: detectedDuration ?? durationLabel?.trim() ?? "",
         bunnyVideoId,
         thumbnailObjectPath: thumbnailObjectPath ?? null,
         author: author?.trim() ?? "Casa del Cuenco",
@@ -210,7 +280,13 @@ router.patch("/admin/videos/:id", requireAuth, requireRole("admin"), async (req,
     if (body.title !== undefined) updates.title = body.title;
     if (body.subtitle !== undefined) updates.subtitle = body.subtitle;
     if (body.description !== undefined) updates.description = body.description;
-    if (body.durationLabel !== undefined) updates.durationLabel = body.durationLabel;
+    const bunnyVideoId = body.bunnyVideoId ?? existing.bunnyVideoId;
+    const bunnyMetadata = await getBunnyVideoMetadata(bunnyVideoId);
+    const detectedDuration = bunnyMetadata
+      ? formatVideoDuration(bunnyMetadata.length)
+      : null;
+    if (detectedDuration) updates.durationLabel = detectedDuration;
+    else if (body.durationLabel !== undefined) updates.durationLabel = body.durationLabel;
     if (body.bunnyVideoId !== undefined) updates.bunnyVideoId = body.bunnyVideoId;
     if ("thumbnailObjectPath" in body) updates.thumbnailObjectPath = body.thumbnailObjectPath ?? null;
     if (body.author !== undefined) updates.author = body.author;
@@ -341,15 +417,14 @@ router.get(
         res.status(bunnyRes.status).json({ error: "Video no encontrado en Bunny" });
         return;
       }
-      const data = (await bunnyRes.json()) as {
-        guid: string;
-        status: number;
-        length: number;
-        framerate: number;
-        width: number;
-        height: number;
-        availableResolutions: string | null;
-      };
+      const data = (await bunnyRes.json()) as BunnyVideoMetadata;
+      const detectedDuration = formatVideoDuration(data.length);
+      if (detectedDuration) {
+        await db
+          .update(catalogVideosTable)
+          .set({ durationLabel: detectedDuration, updatedAt: new Date() })
+          .where(eq(catalogVideosTable.bunnyVideoId, bunnyVideoId));
+      }
       // Bunny status codes: 0=Created, 1=Uploaded, 2=Processing, 3=Transcoding, 4=Finished, 5=Error, 6=UploadFailed
       res.json({
         bunnyVideoId: data.guid,

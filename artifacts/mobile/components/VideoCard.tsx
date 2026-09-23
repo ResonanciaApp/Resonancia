@@ -97,17 +97,26 @@ export function VideoCard({
               onError={handleThumbnailError}
             />
             {locked && <LockStar />}
-            <View style={styles.feedCamBadge}>
-              <Feather name="video" size={13} color="#FFFFFF" />
-            </View>
+            {video.durationLabel ? (
+              <SessionDurationBadge
+                label={video.durationLabel}
+                style={styles.feedDurationBadge}
+              />
+            ) : null}
           </View>
         </Pressable>
 
         <View style={styles.feedCaptionRow}>
           <View style={{ flexDirection: "row", alignItems: "center", flex: 1, marginRight: 12 }}>
-            <Text style={[styles.feedCaption, { color: secondaryTextColor, marginRight: 0 }]} numberOfLines={1}>
-              {video.subtitle} · {video.durationLabel}
-            </Text>
+            {video.subtitle ? (
+              <Text style={[styles.feedCaption, { color: secondaryTextColor, marginRight: 0 }]} numberOfLines={1}>
+                {video.subtitle}
+              </Text>
+            ) : (
+              <Text style={[styles.feedTitleInline, { color: colors.foreground }]} numberOfLines={2}>
+                {video.title}
+              </Text>
+            )}
           </View>
           <Pressable
             hitSlop={10}
@@ -119,11 +128,20 @@ export function VideoCard({
         </View>
 
         <Pressable onPress={handlePress}>
-          <Text style={[styles.feedTitle, { color: colors.foreground }]} numberOfLines={2}>
-            {video.title}
-          </Text>
+          {video.subtitle ? (
+            <Text style={[styles.feedTitle, { color: colors.foreground }]} numberOfLines={2}>
+              {video.title}
+            </Text>
+          ) : null}
           {video.author && (
-            <Text style={[styles.feedAuthor, { color: secondaryTextColor }]} numberOfLines={1}>
+            <Text
+              style={[
+                styles.feedAuthor,
+                !video.subtitle && styles.feedAuthorWithoutSubtitle,
+                { color: secondaryTextColor },
+              ]}
+              numberOfLines={1}
+            >
               {video.author}
             </Text>
           )}
@@ -284,13 +302,10 @@ const styles = StyleSheet.create({
     overflow: "hidden",
   },
   feedImage: { width: "100%", height: "100%" },
-  feedCamBadge: {
+  feedDurationBadge: {
     position: "absolute",
     bottom: 10,
     left: 10,
-    backgroundColor: "rgba(0,0,0,0.55)",
-    borderRadius: 6,
-    padding: 5,
   },
   feedCaptionRow: {
     flexDirection: "row",
@@ -299,8 +314,10 @@ const styles = StyleSheet.create({
     marginTop: 12,
   },
   feedCaption: { fontFamily: "Manrope", fontSize: 11, flex: 1, marginRight: 12 },
-  feedTitle: { fontFamily: "Manrope", fontSize: 13, fontWeight: "700", lineHeight: 18, marginTop: 6 },
+  feedTitle: { fontFamily: "Manrope", fontSize: 13, fontWeight: "700", lineHeight: 18, marginTop: 4 },
+  feedTitleInline: { fontFamily: "Manrope", fontSize: 13, fontWeight: "700", lineHeight: 18, flex: 1 },
   feedAuthor: { fontFamily: "Manrope", fontSize: 11, marginTop: 4 },
+  feedAuthorWithoutSubtitle: { marginTop: 2 },
 
   playOverlay: { ...StyleSheet.absoluteFillObject, alignItems: "center", justifyContent: "center" },
   playCircle: {
