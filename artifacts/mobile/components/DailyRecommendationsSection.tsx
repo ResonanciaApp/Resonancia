@@ -1,5 +1,6 @@
 import React from "react";
 import {
+  Animated,
   StyleProp,
   Pressable,
   StyleSheet,
@@ -25,7 +26,6 @@ type Props = {
 
 const CARD_FADE_DURATION = 420;
 const CARD_FADE_STAGGER = 90;
-const CARD_FADE_TOTAL = CARD_FADE_DURATION + CARD_FADE_STAGGER * 2;
 
 const WEEKDAYS = [
   "domingo",
@@ -72,25 +72,31 @@ export function DailyRecommendationsSection({
   const recommendations = sessions.slice(0, 3);
   const themeAccent = theme.accent ?? colors.accent;
   const [animationCycle, setAnimationCycle] = React.useState(0);
-  const [isRefreshing, setIsRefreshing] = React.useState(false);
-  const refreshTimerRef = React.useRef<ReturnType<typeof setTimeout> | null>(null);
+  const buttonScale = React.useRef(new Animated.Value(1)).current;
 
-  React.useEffect(() => {
-    return () => {
-      if (refreshTimerRef.current) clearTimeout(refreshTimerRef.current);
-    };
-  }, []);
+  const animateButtonPress = React.useCallback((pressed: boolean) => {
+    buttonScale.stopAnimation();
+    if (pressed) {
+      Animated.timing(buttonScale, {
+        toValue: 0.97,
+        duration: 90,
+        useNativeDriver: true,
+      }).start();
+      return;
+    }
+    Animated.spring(buttonScale, {
+      toValue: 1,
+      tension: 180,
+      friction: 14,
+      useNativeDriver: true,
+    }).start();
+  }, [buttonScale]);
 
   const refreshRecommendations = React.useCallback(() => {
-    if (isRefreshing || !onRefreshRecommendations) return;
-    setIsRefreshing(true);
+    if (!onRefreshRecommendations) return;
     onRefreshRecommendations();
     setAnimationCycle((cycle) => cycle + 1);
-    refreshTimerRef.current = setTimeout(() => {
-      refreshTimerRef.current = null;
-      setIsRefreshing(false);
-    }, CARD_FADE_TOTAL);
-  }, [isRefreshing, onRefreshRecommendations]);
+  }, [onRefreshRecommendations]);
 
   if (recommendations.length < 3) return null;
 
@@ -118,7 +124,7 @@ export function DailyRecommendationsSection({
               delay={index * CARD_FADE_STAGGER}
               duration={CARD_FADE_DURATION}
               translateYFrom={14}
-              scaleFrom={0.99}
+              scaleFrom={0.97}
             >
               <CategoryAtmosphericCard
                 categoryId={session.categoryId}
@@ -159,20 +165,22 @@ export function DailyRecommendationsSection({
           </React.Fragment>
         ))}
         {onRefreshRecommendations ? (
-          <Pressable
-            onPress={refreshRecommendations}
-            disabled={isRefreshing}
-            accessibilityRole="button"
-            accessibilityLabel="Actualizar recomendaciones"
-            accessibilityState={{ disabled: isRefreshing, busy: isRefreshing }}
-            style={({ pressed }) => [
-              styles.refreshButton,
-              inicio3Compact && styles.inicio3RefreshButton,
-              { opacity: isRefreshing ? 0.72 : pressed ? 0.78 : 1 },
-            ]}
-          >
-            <Text style={styles.refreshButtonText}>Actualizar recomendaciones</Text>
-          </Pressable>
+          <Animated.View style={{ transform: [{ scale: buttonScale }] }}>
+            <Pressable
+              onPress={refreshRecommendations}
+              onPressIn={() => animateButtonPress(true)}
+              onPressOut={() => animateButtonPress(false)}
+              accessibilityRole="button"
+              accessibilityLabel="Actualizar recomendaciones"
+              style={({ pressed }) => [
+                styles.refreshButton,
+                inicio3Compact && styles.inicio3RefreshButton,
+                { opacity: pressed ? 0.78 : 1 },
+              ]}
+            >
+              <Text style={styles.refreshButtonText}>Actualizar recomendaciones</Text>
+            </Pressable>
+          </Animated.View>
         ) : null}
       </View>
     </View>
