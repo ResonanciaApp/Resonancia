@@ -6,6 +6,7 @@ import { openPremiumPlans } from "@/lib/premiumGate";
 import React, { useEffect, useMemo, useRef, useState } from "react";
 import {
   Animated,
+  Dimensions,
   Platform,
   Pressable,
   ScrollView,
@@ -40,6 +41,7 @@ import { useSoundPreview } from "@/hooks/useSoundPreview";
 
 const H_PAD = 20;
 const HEADER_H_PAD = 14;
+const { height: SCREEN_HEIGHT } = Dimensions.get("window");
 type FilterId = CategoryEditorialFilter;
 
 function decodeRoutePart(value: string) {
@@ -247,7 +249,13 @@ export default function CategoryTagScreen({
   return (
     <View style={[styles.root, { backgroundColor: theme.gradient[theme.gradient.length - 1] as string }]}>
       <StatusBar hidden />
-      <LinearGradient colors={theme.gradient as unknown as [string, string, ...string[]]} locations={theme.gradientLocations} style={StyleSheet.absoluteFill} />
+      <LinearGradient
+        colors={theme.gradient as unknown as [string, string, ...string[]]}
+        locations={theme.gradientLocations}
+        start={theme.gradientStart}
+        end={theme.gradientEnd}
+        style={StyleSheet.absoluteFill}
+      />
       <ScrollView
         showsVerticalScrollIndicator={false}
         contentContainerStyle={{
@@ -260,9 +268,18 @@ export default function CategoryTagScreen({
         {list}
       </ScrollView>
       <View
-        style={[styles.stickyHeader, { paddingTop: topPad + 4, backgroundColor: theme.gradient[0] as string }]}
+        style={[styles.stickyHeader, { paddingTop: topPad + 4 }]}
         onLayout={(event) => setStickyHeaderHeight(event.nativeEvent.layout.height)}
       >
+        <View pointerEvents="none" style={styles.stickyGradientClip}>
+          <LinearGradient
+            colors={theme.gradient as unknown as [string, string, ...string[]]}
+            locations={theme.gradientLocations}
+            start={theme.gradientStart}
+            end={theme.gradientEnd}
+            style={styles.stickyScreenGradient}
+          />
+        </View>
         <View style={styles.stickyHeaderRow}>
           <View style={styles.stickySpacer} />
           <Text style={styles.stickyTitle} numberOfLines={1}>{title}</Text>
@@ -345,6 +362,8 @@ const styles = StyleSheet.create({
   emptyTitle: { fontFamily: "Manrope", fontSize: 17, fontWeight: "700", color: "#FBFBFB" },
   emptyText: { fontFamily: "Manrope", fontSize: 13, lineHeight: 19, textAlign: "center", color: "#c2c2c2" },
   stickyHeader: { position: "absolute", top: 0, left: 0, right: 0, zIndex: 20, minHeight: 48, paddingHorizontal: HEADER_H_PAD, paddingBottom: 6 },
+  stickyGradientClip: { ...StyleSheet.absoluteFillObject, overflow: "hidden" },
+  stickyScreenGradient: { position: "absolute", top: 0, left: 0, right: 0, height: SCREEN_HEIGHT },
   stickyBottomBorder: { position: "absolute", left: 0, right: 0, bottom: 0, height: 1, backgroundColor: "rgba(255,255,255,0.07)" },
   stickyHeaderRow: { flexDirection: "row", alignItems: "center", justifyContent: "space-between", paddingBottom: 6 },
   stickySpacer: { width: 40, alignItems: "center", justifyContent: "center" },

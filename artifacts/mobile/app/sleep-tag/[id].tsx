@@ -5,6 +5,7 @@ import { router, useLocalSearchParams } from "expo-router";
 import React from "react";
 import {
   Animated,
+  Dimensions,
   Platform,
   Pressable,
   ScrollView,
@@ -35,6 +36,7 @@ import { useBackOverride } from "@/context/BackOverrideContext";
 import { useCategoryOverlayOptional } from "@/context/CategoryOverlayContext";
 
 const H_PAD = 16;
+const { height: SCREEN_HEIGHT } = Dimensions.get("window");
 
 export default function SleepTagDetailScreen({ id: idProp }: { id?: string } = {}) {
   const params = useLocalSearchParams<{ id?: string | string[] }>();
@@ -151,6 +153,8 @@ export default function SleepTagDetailScreen({ id: idProp }: { id?: string } = {
       <LinearGradient
         colors={theme.gradient as unknown as [string, string, ...string[]]}
         locations={theme.gradientLocations}
+        start={theme.gradientStart}
+        end={theme.gradientEnd}
         style={StyleSheet.absoluteFill}
         pointerEvents="none"
       />
@@ -214,11 +218,19 @@ export default function SleepTagDetailScreen({ id: idProp }: { id?: string } = {
           styles.stickyHeader,
           {
             paddingTop: topPad + 8,
-            backgroundColor: theme.gradient[0] as string,
           },
         ]}
         onLayout={(event) => setStickyHeaderHeight(event.nativeEvent.layout.height)}
       >
+        <View pointerEvents="none" style={styles.stickyGradientClip}>
+          <LinearGradient
+            colors={theme.gradient as unknown as [string, string, ...string[]]}
+            locations={theme.gradientLocations}
+            start={theme.gradientStart}
+            end={theme.gradientEnd}
+            style={styles.stickyScreenGradient}
+          />
+        </View>
         <View style={styles.stickyHeaderRow}>
           <View style={styles.stickyHeaderSpacer}>
             <Pressable
@@ -328,6 +340,17 @@ const styles = StyleSheet.create({
     paddingBottom: 0,
     alignItems: "center",
     justifyContent: "center",
+  },
+  stickyGradientClip: {
+    ...StyleSheet.absoluteFillObject,
+    overflow: "hidden",
+  },
+  stickyScreenGradient: {
+    position: "absolute",
+    top: 0,
+    left: 0,
+    right: 0,
+    height: SCREEN_HEIGHT,
   },
   stickyHeaderRow: {
     width: "100%",

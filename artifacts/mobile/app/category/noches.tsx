@@ -34,7 +34,7 @@ import { isIndigoThemeId } from "@/config/scene-themes";
 
 const H_PAD   = 14;
 const CARD_GAP = 12;
-const { width: W } = Dimensions.get("window");
+const { width: W, height: SCREEN_HEIGHT } = Dimensions.get("window");
 const cardW   = (W - H_PAD * 2 - CARD_GAP) / 2;
 const FEATURED_CARD_W = getContentCarouselCardWidth(W, H_PAD);
 const ICON_COLOR = "#C87BB5";
@@ -426,7 +426,13 @@ export default function NochesScreen() {
 
   return (
     <View style={[styles.root, { backgroundColor: theme.gradient[theme.gradient.length - 1] as string }]}>
-      <LinearGradient colors={theme.gradient as unknown as [string, string, ...string[]]} style={StyleSheet.absoluteFill} />
+      <LinearGradient
+        colors={theme.gradient as unknown as [string, string, ...string[]]}
+        locations={theme.gradientLocations}
+        start={theme.gradientStart}
+        end={theme.gradientEnd}
+        style={StyleSheet.absoluteFill}
+      />
 
       <ScrollView
         ref={scrollRef}
@@ -509,10 +515,18 @@ export default function NochesScreen() {
         style={[styles.stickyHeader, {
           paddingTop: topPad + 8,
           opacity: 1,
-          backgroundColor: theme.gradient[0] as string,
         }]}
         pointerEvents="auto"
       >
+        <View pointerEvents="none" style={styles.stickyGradientClip}>
+          <LinearGradient
+            colors={theme.gradient as unknown as [string, string, ...string[]]}
+            locations={theme.gradientLocations}
+            start={theme.gradientStart}
+            end={theme.gradientEnd}
+            style={styles.stickyScreenGradient}
+          />
+        </View>
         <View style={styles.lotoBtn}>
           <BackPill onPress={() => router.back()} size={28} iconOffsetX={-1} />
         </View>
@@ -553,6 +567,8 @@ const styles = StyleSheet.create({
   scroll: { flex: 1 },
 
   stickyHeader: { position: "absolute", top: 0, left: 0, right: 0, zIndex: 20, flexDirection: "row", alignItems: "center", justifyContent: "space-between", paddingHorizontal: H_PAD, paddingBottom: 14, overflow: "visible" },
+  stickyGradientClip: { ...StyleSheet.absoluteFillObject, overflow: "hidden" },
+  stickyScreenGradient: { position: "absolute", top: 0, left: 0, right: 0, height: SCREEN_HEIGHT },
   headerTitleCol: { flex: 1, alignItems: "center" },
   headerTitle: { fontFamily: "Manrope", fontSize: 16, fontWeight: "400", color: TEXT, letterSpacing: 0.2, textAlign: "center" },
   headerSubtitle: { fontFamily: "Manrope", fontSize: 11, color: "#f7f7f7", letterSpacing: 0.3, marginTop: 1, opacity: 0.7 },

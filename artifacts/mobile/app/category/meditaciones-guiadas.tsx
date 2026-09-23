@@ -438,6 +438,9 @@ export default function MeditacionesGuiadasScreen() {
     <View style={[styles.root, { backgroundColor: theme.gradient[theme.gradient.length - 1] as string }]}>
       <LinearGradient
         colors={theme.gradient as unknown as [string, string, ...string[]]}
+        locations={theme.gradientLocations}
+        start={theme.gradientStart}
+        end={theme.gradientEnd}
         style={StyleSheet.absoluteFill}
       />
 
@@ -522,6 +525,9 @@ export default function MeditacionesGuiadasScreen() {
         <View pointerEvents="none" style={styles.stickyGradientClip}>
           <LinearGradient
             colors={theme.gradient as unknown as [string, string, ...string[]]}
+            locations={theme.gradientLocations}
+            start={theme.gradientStart}
+            end={theme.gradientEnd}
             style={styles.stickyScreenGradient}
           />
         </View>

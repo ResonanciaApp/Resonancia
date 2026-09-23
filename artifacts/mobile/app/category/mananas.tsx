@@ -35,7 +35,6 @@ import type { Session } from "@/data/sessions";
 import { useColors } from "@/hooks/useColors";
 import { LinearGradient } from "expo-linear-gradient";
 import { useSceneTheme } from "@/context/SceneThemeContext";
-import { StickyHeaderSurface } from "@/components/StickyHeaderSurface";
 import { isIndigoThemeId } from "@/config/scene-themes";
 import {
   CONTENT_CAROUSEL_HEIGHT_SCALE,
@@ -43,7 +42,7 @@ import {
 } from "@/constants/carousel";
 
 const H_PAD = 14;
-const { width: W } = Dimensions.get("window");
+const { width: W, height: SCREEN_HEIGHT } = Dimensions.get("window");
 const FEATURED_CARD_W = getContentCarouselCardWidth(W, H_PAD);
 const FEATURED_CARD_H = Math.round(187 * CONTENT_CAROUSEL_HEIGHT_SCALE);
 const ICON_COLOR = "#f4c993";
@@ -297,7 +296,13 @@ export default function MananasScreen() {
 
   return (
         <View style={[styles.root, { backgroundColor: theme.gradient[theme.gradient.length - 1] as string }]}>
-      <LinearGradient colors={theme.gradient as unknown as [string, string, ...string[]]} style={StyleSheet.absoluteFill} />
+      <LinearGradient
+        colors={theme.gradient as unknown as [string, string, ...string[]]}
+        locations={theme.gradientLocations}
+        start={theme.gradientStart}
+        end={theme.gradientEnd}
+        style={StyleSheet.absoluteFill}
+      />
       <StatusBar hidden />
 
       <ScrollView
@@ -559,16 +564,15 @@ export default function MananasScreen() {
         pointerEvents={!selectedTag && stickyActive ? "auto" : "none"}
         style={[styles.stickyHeader, { paddingTop: topPad + 8, opacity: stickyHeaderOpacity }]}
       >
-        <StickyHeaderSurface
-          opacity={0.96}
-          tint={theme.gradient[0] as string}
-          showTint={!isIndigoTheme}
-          showDivider={!isIndigoTheme}
-          blurIntensity={isIndigoTheme ? 85 : undefined}
-          showBlackTint={!isIndigoTheme}
-          strongBlur={isIndigoTheme}
-          fadeBottom={isIndigoTheme}
-        />
+        <View pointerEvents="none" style={styles.stickyGradientClip}>
+          <LinearGradient
+            colors={theme.gradient as unknown as [string, string, ...string[]]}
+            locations={theme.gradientLocations}
+            start={theme.gradientStart}
+            end={theme.gradientEnd}
+            style={styles.stickyScreenGradient}
+          />
+        </View>
         <BackPill onPress={() => router.back()} size={28} iconOffsetX={-1} style={styles.backBtn} />
         <Text style={[styles.stickyTitle, { color: colors.foreground }]}>Mañanas</Text>
         <View style={styles.stickySpacer} />
@@ -607,6 +611,8 @@ const styles = StyleSheet.create({
   root: { flex: 1 },
   scroll: { flex: 1 },
   stickyHeader: { position: "absolute", top: 0, left: 0, right: 0, zIndex: 20, flexDirection: "row", alignItems: "center", justifyContent: "space-between", paddingHorizontal: H_PAD, paddingBottom: 14, overflow: "visible" },
+  stickyGradientClip: { ...StyleSheet.absoluteFillObject, overflow: "hidden" },
+  stickyScreenGradient: { position: "absolute", top: 0, left: 0, right: 0, height: SCREEN_HEIGHT },
   stickyTitle: { fontFamily: "Manrope", fontSize: 16, fontWeight: "700", letterSpacing: 0.2, textAlign: "center" },
   stickySpacer: { width: 45 },
 

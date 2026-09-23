@@ -240,6 +240,9 @@ export default function CategoryScreen({ categoryId }: { categoryId?: string } =
       <StatusBar hidden />
       <LinearGradient
         colors={theme.gradient as unknown as [string, string, ...string[]]}
+        locations={theme.gradientLocations}
+        start={theme.gradientStart}
+        end={theme.gradientEnd}
         style={StyleSheet.absoluteFill}
       />
 
@@ -271,6 +274,9 @@ export default function CategoryScreen({ categoryId }: { categoryId?: string } =
         <View pointerEvents="none" style={styles.stickyGradientClip}>
           <LinearGradient
             colors={theme.gradient as unknown as [string, string, ...string[]]}
+            locations={theme.gradientLocations}
+            start={theme.gradientStart}
+            end={theme.gradientEnd}
             style={styles.stickyScreenGradient}
           />
         </View>
