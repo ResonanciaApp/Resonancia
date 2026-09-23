@@ -104,7 +104,7 @@
 - [Transacciones de recordatorios locales](practice-notification-transactions.md) — actualizar una alarma exige operación nativa estricta + rollback; la cancelación tolerante queda solo para limpieza
 - [Límite de limpieza del catálogo Mixer](mixer-catalog-cleanup-boundary.md) — limpiar el bundle local no autoriza borrar sonidos creados en Admin ni sesiones Ambientales de prueba
 - [Drawer único de Inicio](single-home-drawer.md) — el drawer ya no tiene modo legado; toda apertura usa la estructura de Inicio 3 y debe limpiar el desplazamiento residual del gesto
-- [Backdrop fijo de Inicio 3](inicio3-header-parallax.md) — header y hero fijos detrás del contenido; el degradado termina bajo el hero; reemplaza el parallax anterior
+- [Parallax del header de Inicio 3](inicio3-header-parallax.md) — avatar, acciones y fila semanal conservan desplazamiento lento conjunto; optimizar renders sin quitar ni alterar este efecto
 - [Progreso en Perfil](progress-profile-mirror.md) — Perfil muestra racha semanal y calendario; Estadísticas personales quedan exclusivas de Tu progreso
 - [Dos controles Añadir actividad](routine-add-controls.md) — el bloque inferior de Mi rutina y la píldora del estado Rutina completa tienen diseños deliberadamente distintos
 - [Aviso único al añadir rutina](routine-addition-banner-once.md) — la transición desde calendario lleva el ID creado y lo reconoce globalmente; Inicio no debe volver a mostrar “Actividad añadida”

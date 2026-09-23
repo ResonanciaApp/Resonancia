@@ -39,6 +39,7 @@ import RAnimated, {
   runOnJS,
   type SharedValue,
   useAnimatedProps,
+  useAnimatedScrollHandler,
   useAnimatedStyle,
   useReducedMotion,
   useSharedValue,
@@ -1713,21 +1714,6 @@ function Inicio3HeroPager({
   );
 }
 
-function getInicio3HeroLayout(topInset: number) {
-  const heroHeight =
-    (INICIO2_HERO_HEIGHT + 184 - (topInset + 286) - 52 + 60 + 32) / 2 + 60 + 120;
-  const layoutTop =
-    topInset + 165 - INICIO3_VERTICAL_LIFT + 12 + 5 + 10;
-  return {
-    heroHeight,
-    layoutTop,
-    heroTop: layoutTop - 19,
-    // The hero wrapper has a 20px top margin; its last 16px remain below the pager.
-    spacerHeight: 20 + layoutTop + heroHeight + 16,
-    backgroundHeight: layoutTop + heroHeight + 1,
-  };
-}
-
 const Inicio2HeroStatic = React.memo(function Inicio2HeroStatic({
   topInset,
   isPremium,
@@ -1735,6 +1721,7 @@ const Inicio2HeroStatic = React.memo(function Inicio2HeroStatic({
   onOpenDrawer,
   onOpenProfile,
   isInicio3,
+  scrollY,
 }: {
   topInset: number;
   isPremium: boolean;
@@ -1742,6 +1729,7 @@ const Inicio2HeroStatic = React.memo(function Inicio2HeroStatic({
   onOpenDrawer: () => void;
   onOpenProfile: () => void;
   isInicio3?: boolean;
+  scrollY?: SharedValue<number>;
 }) {
   const router = useRouter();
   const { currentStreak } = useStreak();
@@ -1757,13 +1745,32 @@ const Inicio2HeroStatic = React.memo(function Inicio2HeroStatic({
   const initial = displayName.charAt(0).toUpperCase();
   const greeting = useGreeting();
   const reduceMotion = useReducedMotion();
+  const fallbackScrollY = useSharedValue(0);
+  const effectiveScrollY = scrollY ?? fallbackScrollY;
   const inicio3WeekShift = 5;
   const inicio3ProfileHeaderLift = 15;
-  const {
-    heroHeight: inicio3HeroHeight,
-    layoutTop: inicio3HeroLayoutTop,
-    heroTop: inicio3HeroTop,
-  } = getInicio3HeroLayout(topInset);
+  const inicio3HeroShift = 10;
+  const inicio3HeroHeight =
+    (INICIO2_HERO_HEIGHT + 184 - (topInset + 286) - 52 + 60 + 32) / 2 + 60 + 120;
+  const inicio3HeroLayoutTop =
+    topInset +
+    165 -
+    INICIO3_VERTICAL_LIFT +
+    12 +
+    inicio3WeekShift +
+    inicio3HeroShift;
+  const inicio3HeroTop = inicio3HeroLayoutTop - 19;
+  const slowHeaderStyle = useAnimatedStyle(() => {
+    if (!isInicio3 || reduceMotion) return { transform: [{ translateY: 0 }] };
+    const y = Math.max(0, effectiveScrollY.value);
+    return { transform: [{ translateY: y * 0.52 }] };
+  }, [isInicio3, reduceMotion]);
+  const heroShadowStyle = useAnimatedStyle(() => {
+    if (!isInicio3) return { opacity: 0 };
+    const y = Math.max(0, effectiveScrollY.value);
+    return { opacity: reduceMotion ? (y > 1 ? 1 : 0) : Math.min(1, y / 28) };
+  }, [isInicio3, reduceMotion]);
+
   return (
     <View
       style={[
@@ -1780,7 +1787,7 @@ const Inicio2HeroStatic = React.memo(function Inicio2HeroStatic({
         <Inicio3HeroPager
           top={inicio3HeroTop - 61}
           height={inicio3HeroHeight + 59}
-          shadowStyle={{ opacity: 0 }}
+          shadowStyle={heroShadowStyle}
           reduceMotion={reduceMotion}
         />
       ) : (
@@ -1817,6 +1824,7 @@ const Inicio2HeroStatic = React.memo(function Inicio2HeroStatic({
                 : 0),
           },
           isInicio3 && styles.inicio3HeroActionsEdge,
+          isInicio3 && slowHeaderStyle,
         ]}
       >
         <View
@@ -1946,6 +1954,7 @@ const Inicio2HeroStatic = React.memo(function Inicio2HeroStatic({
             style={[
               styles.inicio3StreakRow,
               { top: topInset + 68 - INICIO3_VERTICAL_LIFT + inicio3WeekShift - 17 },
+              slowHeaderStyle,
             ]}
             testID="inicio3-streak-row"
           >
@@ -2538,11 +2547,11 @@ export default function HomeScreen2({
 
 
   const topPad = Platform.OS === "web" ? 67 : Math.max(insets.top, 40);
-  const inicio3BackdropLayout = getInicio3HeroLayout(topPad);
   const bottomPad = Platform.OS === "web" ? 34 : insets.bottom;
 
   const searchOpenRef = useRef(false);
   const scrollYRef = useRef(0);
+  const inicio3ScrollY = useSharedValue(0);
 
   const searchBtnAnim = useRef(new Animated.Value(0)).current;
   const giftScaleAnim = useRef(new Animated.Value(1)).current;
@@ -2629,6 +2638,12 @@ export default function HomeScreen2({
     },
     [backdropAnim],
   );
+  const handleInicio3Scroll = useAnimatedScrollHandler({
+    onScroll: (event) => {
+      inicio3ScrollY.value = Math.max(0, event.contentOffset.y);
+    },
+  });
+
   // ── Buscador desplegable (se abre desde el ícono de lupa) ────────────────
   const [searchOpen, setSearchOpen] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
@@ -2762,15 +2777,13 @@ export default function HomeScreen2({
       testID={`inicio-${variant}`}
       style={[styles.root, { backgroundColor: activeTheme.gradient[activeTheme.gradient.length - 1] as string }]}
     >
-      {/* En Inicio 3 el degradado termina debajo del hero; el resto es el color final. */}
-      {variant !== "inicio3" && (
-        <LinearGradient
-          colors={activeTheme.gradient as unknown as [string, string, ...string[]]}
-          locations={activeTheme.gradientLocations}
-          style={StyleSheet.absoluteFill}
-          pointerEvents="none"
-        />
-      )}
+      {/* ── Fondo degradado del tema (4 stops) ── */}
+      <LinearGradient
+        colors={activeTheme.gradient as unknown as [string, string, ...string[]]}
+        locations={activeTheme.gradientLocations}
+        style={StyleSheet.absoluteFill}
+        pointerEvents="none"
+      />
 
       {/* ── Todo el contenido se desvanece en modo inmersivo ── */}
       <Animated.View style={{ flex: 1, opacity: contentOpacity }} pointerEvents={immersive ? "none" : "auto"}>
@@ -2794,28 +2807,6 @@ export default function HomeScreen2({
       )}
 
       <StatusBar hidden />
-
-      {variant === "inicio3" && (
-        <View
-          style={[styles.inicio3Backdrop, { height: inicio3BackdropLayout.spacerHeight }]}
-          pointerEvents="box-none"
-        >
-          <LinearGradient
-            colors={activeTheme.gradient as unknown as [string, string, ...string[]]}
-            locations={activeTheme.gradientLocations}
-            style={[styles.inicio3BackdropGradient, { height: inicio3BackdropLayout.backgroundHeight }]}
-            pointerEvents="none"
-          />
-          <Inicio2HeroStatic
-            topInset={topPad}
-            isPremium={isPremium}
-            giftScale={giftScaleAnim}
-            onOpenDrawer={handleOpenDrawer}
-            onOpenProfile={handleOpenProgress}
-            isInicio3
-          />
-        </View>
-      )}
 
       {/* ── Header fijo: Menú + Racha (solo Inicio original) ── */}
       {!isInicio2 && (
@@ -2881,16 +2872,19 @@ export default function HomeScreen2({
 
       <RAnimated.ScrollView
         style={styles.scroll}
-        pointerEvents={variant === "inicio3" ? "box-none" : "auto"}
         contentContainerStyle={{ paddingBottom: 160 + bottomPad, paddingTop: isInicio2 ? 0 : topPad + 38 }}
         showsVerticalScrollIndicator={false}
-        onScroll={isInicio2 ? undefined : handleMainScroll}
+        onScroll={
+          variant === "inicio3"
+            ? handleInicio3Scroll
+            : isInicio2
+              ? undefined
+              : handleMainScroll
+        }
         scrollEventThrottle={16}
       >
         {/* ── Slider místico Inicio 2 / escena o intención del Inicio original ── */}
-        {variant === "inicio3" ? (
-          <View style={{ height: inicio3BackdropLayout.spacerHeight }} pointerEvents="none" />
-        ) : isInicio2 ? (
+        {isInicio2 ? (
           <>
             <Inicio2HeroStatic
               topInset={topPad}
@@ -2898,6 +2892,8 @@ export default function HomeScreen2({
               giftScale={giftScaleAnim}
               onOpenDrawer={handleOpenDrawer}
               onOpenProfile={handleOpenProgress}
+              isInicio3={variant === "inicio3"}
+              scrollY={inicio3ScrollY}
             />
           </>
         ) : showAnimatedScene ? (
@@ -3003,7 +2999,6 @@ export default function HomeScreen2({
           </View>
         ) : null}
 
-        <View style={variant === "inicio3" && { backgroundColor: activeTheme.gradient[activeTheme.gradient.length - 1] }}>
         {variant === "inicio3" && (
           <DailyRecommendationsSection
             sessions={dailyRecommendations}
@@ -3469,7 +3464,6 @@ export default function HomeScreen2({
           />
         )}
         </View>
-        </View>
       </RAnimated.ScrollView>
 
       <InicioEmotionWidget
@@ -3576,18 +3570,6 @@ const styles = StyleSheet.create({
   },
   inicio3HeroLowered: {
     marginTop: 20,
-  },
-  inicio3Backdrop: {
-    position: "absolute",
-    top: 0,
-    left: 0,
-    right: 0,
-  },
-  inicio3BackdropGradient: {
-    position: "absolute",
-    top: 0,
-    left: 0,
-    right: 0,
   },
   inicio2ContentPanel: {
     position: "relative",
