@@ -268,14 +268,14 @@ const styles = StyleSheet.create({
   streakIntroCount: {
     fontFamily: "Manrope",
     fontSize: 55,
-    lineHeight: 55,
+    lineHeight: 60,
     fontWeight: "800",
     letterSpacing: -0.5,
     textAlign: "center",
     textShadowColor: "rgba(0,0,0,0.5)",
     textShadowOffset: { width: 0, height: 2 },
     textShadowRadius: 6,
-    transform: [{ translateY: 9 }],
+    transform: [{ translateY: 4 }],
   },
   streakIntroUnit: {
     fontFamily: "Manrope",
