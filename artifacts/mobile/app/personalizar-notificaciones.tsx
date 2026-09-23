@@ -521,9 +521,9 @@ const styles = StyleSheet.create({
     alignItems: "center",
     gap: 7,
   },
-  pillSelected: { borderColor: "rgba(255,255,255,0.75)", backgroundColor: "rgba(0,0,0,0.28)" },
+  pillSelected: { borderColor: "#F9F9F9", backgroundColor: "#F9F9F9" },
   pillLabel: { color: "rgba(255,255,255,0.82)", fontFamily: "Manrope", fontSize: 13 },
-  pillLabelSelected: { color: "#F9F9F9" },
+  pillLabelSelected: { color: "#060A0F" },
   error: { color: "#FFB4B4", fontFamily: "Manrope", fontSize: 13, textAlign: "center", marginTop: 4 },
   saveButton: {
     position: "absolute",

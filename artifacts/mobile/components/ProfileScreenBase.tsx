@@ -2906,7 +2906,7 @@ const styles = StyleSheet.create({
     position: "absolute",
     left: 12,
     right: 12,
-    height: 64,
+    height: 56,
     borderRadius: 18,
     borderWidth: StyleSheet.hairlineWidth,
     borderColor: "rgba(255,255,255,0.10)",
