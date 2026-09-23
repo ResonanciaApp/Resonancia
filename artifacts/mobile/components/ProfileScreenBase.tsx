@@ -2904,8 +2904,8 @@ const styles = StyleSheet.create({
   },
   reflectionSavedBanner: {
     position: "absolute",
-    left: 12,
-    right: 12,
+    left: 14,
+    right: 14,
     height: 56,
     borderRadius: 18,
     borderWidth: StyleSheet.hairlineWidth,

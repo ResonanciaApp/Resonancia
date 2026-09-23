@@ -318,8 +318,8 @@ export function RoutineCompletionBanner({
 const styles = StyleSheet.create({
   banner: {
     position: "absolute",
-    left: 12,
-    right: 12,
+    left: 14,
+    right: 14,
     height: 56,
     borderRadius: 18,
     borderWidth: StyleSheet.hairlineWidth,
