@@ -34,6 +34,7 @@ export function apiVideoToItem(v: ApiVideo): VideoItem {
     description: v.description,
     durationLabel: v.durationLabel,
     bunnyVideoId: v.bunnyVideoId,
+    playbackUrl: v.playbackUrl,
     thumbnail,
     isPremium: v.isPremium,
     isNew: v.isNew,

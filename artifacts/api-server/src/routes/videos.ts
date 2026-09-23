@@ -47,6 +47,7 @@ function serializeVideo(v: CatalogVideo) {
     description: v.description,
     durationLabel: v.durationLabel,
     bunnyVideoId: v.bunnyVideoId,
+    playbackUrl: `https://iframe.mediadelivery.net/embed/${BUNNY_LIBRARY_ID}/${v.bunnyVideoId}`,
     thumbnailObjectPath: v.thumbnailObjectPath ?? null,
     author: v.author,
     theme: v.theme ?? null,

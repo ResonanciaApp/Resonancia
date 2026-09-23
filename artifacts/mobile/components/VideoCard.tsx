@@ -314,7 +314,7 @@ const styles = StyleSheet.create({
     marginTop: 12,
   },
   feedCaption: { fontFamily: "Manrope", fontSize: 11, flex: 1, marginRight: 12 },
-  feedTitle: { fontFamily: "Manrope", fontSize: 13, fontWeight: "700", lineHeight: 18, marginTop: 4 },
+  feedTitle: { fontFamily: "Manrope", fontSize: 13, fontWeight: "700", lineHeight: 18, marginTop: 3 },
   feedTitleInline: { fontFamily: "Manrope", fontSize: 13, fontWeight: "700", lineHeight: 18, flex: 1 },
   feedAuthor: { fontFamily: "Manrope", fontSize: 11, marginTop: 4 },
   feedAuthorWithoutSubtitle: { marginTop: 2 },

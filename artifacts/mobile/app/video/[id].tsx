@@ -3,10 +3,11 @@ import { BackPill } from "@/components/BackPill";
 import { Stack, router, useLocalSearchParams } from "expo-router";
 import { openPremiumPlans } from "@/lib/premiumGate";
 import { useVideoPlayer, VideoView } from "expo-video";
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { Platform, Pressable, ScrollView, StyleSheet, Text, View } from "react-native";
 import { StatusBar } from "expo-status-bar";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
+import { WebView } from "react-native-webview";
 
 import { SacredBackground } from "@/components/SacredBackground";
 import { useVideoById, getVideoSourceUri } from "@/hooks/useVideos";
@@ -22,8 +23,9 @@ export default function VideoPlayerScreen() {
 
   const { video } = useVideoById(id);
   const locked = !!video?.isPremium && !isPremium;
+  const [webPlayerKey, setWebPlayerKey] = useState(0);
 
-  const player = useVideoPlayer(video ? getVideoSourceUri(video) : "", (p) => {
+  const player = useVideoPlayer(video && !video.playbackUrl ? getVideoSourceUri(video) : "", (p) => {
     p.loop = false;
   });
 
@@ -40,14 +42,18 @@ export default function VideoPlayerScreen() {
   }, []);
   useEffect(() => {
     if (timerExpired) {
-      try {
-        player.pause();
-      } catch {
-        // silent
+      if (video?.playbackUrl) {
+        setWebPlayerKey((key) => key + 1);
+      } else {
+        try {
+          player.pause();
+        } catch {
+          // silent
+        }
       }
       clearTimerExpired();
     }
-  }, [timerExpired, clearTimerExpired, player]);
+  }, [timerExpired, clearTimerExpired, player, video?.playbackUrl]);
 
   const topPad = Platform.OS === "web" ? 16 : insets.top;
   const bottomPad = Platform.OS === "web" ? 24 : insets.bottom;
@@ -56,7 +62,7 @@ export default function VideoPlayerScreen() {
     return (
       <View style={[styles.root, { backgroundColor: colors.background }]}>
         <Stack.Screen options={{ headerShown: false }} />
-        <SacredBackground />
+        <SacredBackground variant="gradient" noImage />
         <View style={[styles.center, { paddingTop: topPad + 40 }]}>
           <Feather name="film" size={36} color={colors.border} />
           <Text style={[styles.notFoundTitle, { color: colors.foreground }]}>
@@ -74,10 +80,17 @@ export default function VideoPlayerScreen() {
     <View style={[styles.root, { backgroundColor: colors.background }]}>
       <Stack.Screen options={{ headerShown: false }} />
       <StatusBar hidden />
-      <SacredBackground />
+      <SacredBackground variant="gradient" noImage />
 
       <View style={[styles.header, { paddingTop: topPad + 8 }]}>
-        <BackPill onPress={() => router.back()} size={28} bgColor="rgba(255,255,255,0.10)" iconOffsetX={-1} />
+        <BackPill
+          onPress={() => router.back()}
+          size={28}
+          bgColor="rgba(0,0,0,0.28)"
+          borderColor="rgba(241,224,255,0.25)"
+          borderWidth={1.2}
+          iconOffsetX={-1}
+        />
       </View>
 
       <ScrollView
@@ -85,18 +98,32 @@ export default function VideoPlayerScreen() {
         showsVerticalScrollIndicator={false}
       >
         <View style={styles.videoWrap}>
-          <VideoView
-            style={styles.video}
-            player={player}
-            allowsFullscreen
-            allowsPictureInPicture
-            contentFit="contain"
-          />
+          {video.playbackUrl ? (
+            <WebView
+              key={webPlayerKey}
+              source={{ uri: video.playbackUrl }}
+              style={styles.video}
+              allowsFullscreenVideo
+              allowsInlineMediaPlayback
+              mediaPlaybackRequiresUserAction
+              javaScriptEnabled
+              domStorageEnabled
+              scrollEnabled={false}
+            />
+          ) : (
+            <VideoView
+              style={styles.video}
+              player={player}
+              allowsFullscreen
+              allowsPictureInPicture
+              contentFit="contain"
+            />
+          )}
         </View>
 
         <View style={styles.meta}>
           <Text style={[styles.kicker, { color: colors.accent }]}>
-            VIDEO · {video.durationLabel}
+            {video.durationLabel}
           </Text>
           <Text style={[styles.title, { color: colors.foreground }]}>{video.title}</Text>
           {video.subtitle ? (

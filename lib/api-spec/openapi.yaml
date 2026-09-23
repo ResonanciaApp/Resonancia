@@ -8435,7 +8435,7 @@ components:
           type: boolean
     CatalogVideo:
       type: object
-      required: [id, title, subtitle, description, durationLabel, bunnyVideoId, thumbnailObjectPath, author, theme, isPremium, isNew, status, sortOrder, createdAt, updatedAt]
+      required: [id, title, subtitle, description, durationLabel, bunnyVideoId, playbackUrl, thumbnailObjectPath, author, theme, isPremium, isNew, status, sortOrder, createdAt, updatedAt]
       properties:
         id:
           type: integer
@@ -8449,6 +8449,9 @@ components:
           type: string
         bunnyVideoId:
           type: string
+        playbackUrl:
+          type: string
+          description: URL del reproductor oficial de Bunny Stream.
         thumbnailObjectPath:
           type: string
           nullable: true

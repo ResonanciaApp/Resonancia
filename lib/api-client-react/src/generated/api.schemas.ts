@@ -2872,6 +2872,8 @@ export interface CatalogVideo {
   description: string;
   durationLabel: string;
   bunnyVideoId: string;
+  /** URL del reproductor oficial de Bunny Stream. */
+  playbackUrl: string;
   thumbnailObjectPath: string | null;
   author: string;
   /**

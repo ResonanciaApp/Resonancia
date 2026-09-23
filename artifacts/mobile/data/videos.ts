@@ -44,6 +44,8 @@ export type VideoItem = {
    * tiene prioridad sobre `objectPath`.
    */
   bunnyVideoId?: string;
+  /** URL del reproductor oficial para bibliotecas Bunny con HLS protegido. */
+  playbackUrl?: string;
   /**
    * objectPath de Object Storage ("/objects/...") o URL absoluta.
    * Modo legado: se usa cuando `bunnyVideoId` no está o el CDN no está

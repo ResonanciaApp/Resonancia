@@ -294,7 +294,6 @@ export const getListCoverPresetsQueryKey = (params?: ListCoverPresetsParams,) =>
     ] as const;
     }
 
-
 export const getListCoverPresetsQueryOptions = <TData = Awaited<ReturnType<typeof listCoverPresets>>, TError = ErrorType<void>>(params: ListCoverPresetsParams, options?: { query?:UseQueryOptions<Awaited<ReturnType<typeof listCoverPresets>>, TError, TData>, request?: SecondParameter<typeof customFetch>}
 ) => {
 
