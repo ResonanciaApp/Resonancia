@@ -600,6 +600,32 @@ function VideoFormModal({
                 <option key={theme} value={theme} />
               ))}
             </datalist>
+            {existingThemes.length > 0 && (
+              <div className="flex flex-wrap gap-2 pt-1" aria-label="Etiquetas temáticas disponibles">
+                {existingThemes.map((theme) => {
+                  const selected =
+                    form.theme.trim().toLocaleLowerCase("es") ===
+                    theme.toLocaleLowerCase("es");
+
+                  return (
+                    <button
+                      key={theme}
+                      type="button"
+                      onClick={() => setField("theme", theme)}
+                      className={[
+                        "rounded-full border px-3 py-1 text-xs font-medium transition-colors",
+                        selected
+                          ? "border-primary bg-primary text-primary-foreground"
+                          : "border-border bg-secondary/50 text-muted-foreground hover:border-primary/50 hover:text-foreground",
+                      ].join(" ")}
+                      aria-pressed={selected}
+                    >
+                      {theme}
+                    </button>
+                  );
+                })}
+              </div>
+            )}
             <p className="text-xs text-muted-foreground">
               Esta etiqueta crea automáticamente un tab en la pantalla de Videos. Dejala vacía para mostrar el video solo en “Todos”.
             </p>
