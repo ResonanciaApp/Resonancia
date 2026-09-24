@@ -2242,7 +2242,7 @@ const styles = StyleSheet.create({
     gap: 6,
   },
   notificationBellIcon: {
-    transform: [{ translateX: -0.5 }],
+    transform: [{ translateX: 0.5 }, { translateY: -1 }],
   },
   giftIcon: {
     width: 35,
