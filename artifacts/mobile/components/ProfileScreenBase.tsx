@@ -266,9 +266,11 @@ function ProfileMembershipModules({
       {MEMBERSHIP_PLANS.filter((plan) => plan.id !== "plus").map((plan, index) => {
         const isPremiumPlan = plan.id === "premium";
         const displayName =
-          isPremiumPlan && !hasPremiumAccess ? "Prueba Premium Gratis" : plan.name;
+          isPremiumPlan && !hasPremiumAccess ? "Prueba Premium" : plan.name;
         const displayEyebrow =
-          isPremiumPlan && !hasPremiumAccess ? "Comienza tu transformación" : plan.eyebrow;
+          isPremiumPlan && !hasPremiumAccess
+            ? "Más de 500 sesiones creadas para tu bienestar y expansión de consciencia."
+            : plan.eyebrow;
 
         return (
           <React.Fragment key={plan.id}>
@@ -305,10 +307,8 @@ function ProfileMembershipModules({
                      {isPremiumPlan && !hasPremiumAccess ? (
                        <>
                          <Text style={{ color: "#F9F9F9" }}>Prueba</Text>
-                           {" "}
-                           <Text style={{ color: MEMBERSHIP_AURORA.premium.text }}>Premium</Text>
-                           {" "}
-                          <Text style={{ color: "#F9F9F9" }}>Gratis</Text>
+                          {" "}
+                          <Text style={{ color: MEMBERSHIP_AURORA.premium.text }}>Premium</Text>
                        </>
                      ) : isPremiumPlan ? (
                        <>Tu <Text style={{ color: MEMBERSHIP_AURORA.premium.text }}>Premium</Text></>
@@ -316,7 +316,7 @@ function ProfileMembershipModules({
                   </Text>
                   <Text
                     style={[styles.membershipPlanEyebrow, { color: "#F4F4F4" }]}
-                    numberOfLines={1}
+                    numberOfLines={isPremiumPlan && !hasPremiumAccess ? undefined : 1}
                   >
                     {displayEyebrow}
                   </Text>
