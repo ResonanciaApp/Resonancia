@@ -9,7 +9,7 @@ import { useDrawer, type LibraryTab } from "@/context/DrawerContext";
  * overlay, no a la tab que quedó debajo (por ejemplo, Recursos).
  */
 export function useLibraryReturnBack(fromLibrary?: string | string[], returnTab?: LibraryTab) {
-  const { openLib } = useDrawer();
+  const { openLib, openLibFromDrawer, libOpenedFromDrawer, open: openDrawer } = useDrawer();
   const returningRef = useRef(false);
   const shouldReturnToLibrary = Array.isArray(fromLibrary)
     ? fromLibrary.includes("1")
@@ -26,12 +26,17 @@ export function useLibraryReturnBack(fromLibrary?: string | string[], returnTab?
 
     // Montar Biblioteca antes de retirar el detalle evita que Recursos se vea
     // siquiera durante un frame mientras el router restaura la ruta inferior.
-    openLib(returnTab);
+    if (libOpenedFromDrawer) {
+      openDrawer();
+      openLibFromDrawer(returnTab);
+    } else {
+      openLib(returnTab);
+    }
     requestAnimationFrame(() => {
       if (router.canGoBack()) router.back();
       else router.navigate("/(tabs)/biblioteca" as never);
     });
-  }, [openLib, returnTab, shouldReturnToLibrary]);
+  }, [libOpenedFromDrawer, openDrawer, openLib, openLibFromDrawer, returnTab, shouldReturnToLibrary]);
 
   useFocusEffect(
     useCallback(() => {

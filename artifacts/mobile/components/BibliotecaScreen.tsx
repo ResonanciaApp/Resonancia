@@ -99,7 +99,7 @@ const MIX_THUMB = 65;
 
 /** Abre un detalle desde Biblioteca y conserva el origen para volver aquí. */
 function useLibraryRouteOpener() {
-  const { libOpen, closeLib } = useDrawer();
+  const { libOpen, closeLib, isOpen: drawerOpen, close: closeDrawer } = useDrawer();
 
   return useCallback((route: string) => {
     if (!libOpen) {
@@ -110,19 +110,24 @@ function useLibraryRouteOpener() {
     const separator = route.includes("?") ? "&" : "?";
     router.push(`${route}${separator}fromLibrary=1` as never);
     // El detalle ya queda montado detrás; recién entonces retiramos Biblioteca.
-    requestAnimationFrame(closeLib);
-  }, [libOpen, closeLib]);
+    requestAnimationFrame(() => {
+      closeLib();
+      if (drawerOpen) closeDrawer();
+    });
+  }, [libOpen, closeLib, drawerOpen, closeDrawer]);
 }
 
 /** Abre una playlist como panel bajo el tab bar (fallback: ruta raíz). */
 function usePlaylistPanelOpener() {
   const overlay = useCategoryOverlayOptional();
+  const { libOpen } = useDrawer();
   const openLibraryRoute = useLibraryRouteOpener();
 
   return useCallback((plId: string) => {
-    if (overlay) overlay.openCategory(`/playlist/${plId}`);
+    if (libOpen) openLibraryRoute(`/playlist/${plId}`);
+    else if (overlay) overlay.openCategory(`/playlist/${plId}`);
     else openLibraryRoute(`/playlist/${plId}`);
-  }, [overlay, openLibraryRoute]);
+  }, [libOpen, overlay, openLibraryRoute]);
 }
 
 function MixRow({
@@ -954,14 +959,14 @@ function FavFolderRow({ folder, onPress, onLongPress }: { folder: FavFolder; onP
 }
 
 // ── Hoja de crear ────────────────────────────────────────────────────────────
-function CreateSheet({ visible, onClose, onCreatePlaylist, onCreateCarpeta, onGoMezclas, onAddResonador, gradient }: {
+function CreateSheet({ visible, onClose, onCreatePlaylist, onCreateCarpeta, onGoMezclas, onAddResonador, sheetColor }: {
   visible: boolean;
   onClose: () => void;
   onCreatePlaylist: () => void;
   onCreateCarpeta: () => void;
   onGoMezclas: () => void;
   onAddResonador: () => void;
-  gradient: readonly string[];
+  sheetColor: string;
 }) {
   const { activeSceneId } = useSceneTheme();
   const libraryTabSurface = getLibraryTabSurface(activeSceneId);
@@ -974,7 +979,7 @@ function CreateSheet({ visible, onClose, onCreatePlaylist, onCreateCarpeta, onGo
   return (
     <Modal visible={visible} animationType="slide" transparent onRequestClose={onClose}>
       <Pressable style={[StyleSheet.absoluteFill, styles.sheetBackdrop]} onPress={onClose} />
-      <LinearGradient colors={gradient as [string, string, ...string[]]} style={styles.sheet}>
+      <View style={[styles.sheet, { backgroundColor: sheetColor }]}>
         <View style={styles.sheetHandle} />
         <Text style={styles.sheetTitle}>¿Qué quieres crear?</Text>
         {ITEMS.map((it) => (
@@ -988,7 +993,7 @@ function CreateSheet({ visible, onClose, onCreatePlaylist, onCreateCarpeta, onGo
             </View>
           </Pressable>
         ))}
-      </LinearGradient>
+      </View>
     </Modal>
   );
 }
@@ -1164,8 +1169,9 @@ export function BibliotecaScreen({
   const openPlaylistPanel = usePlaylistPanelOpener();
   const insets = useSafeAreaInsets();
   const { photoUri } = useUserProfile();
-  const { open: openDrawer } = useDrawer();
+  const { open: openDrawer, openLibraryMix } = useDrawer();
   const { activeSceneId, theme: sceneTheme } = useSceneTheme();
+  const librarySheetColor = sceneTheme.gradient[sceneTheme.gradient.length - 1];
   const iconPlaceholderColor = "#fefefe";
   const libraryTabSurface = getLibraryTabSurface(activeSceneId);
   const addResSearchSurface =
@@ -1546,7 +1552,7 @@ export function BibliotecaScreen({
                     isPlayingThis={loadedPresetId === mix.id && mixerPlaying}
                     onPress={() => openForMix(mix)}
                     onPressThumb={() => openForMix(mix)}
-                    onPressEdit={() => openLibraryRoute(`/mi-mezcla/${mix.id}`)}
+                    onPressEdit={() => openLibraryMix(mix.id)}
                     onLongPress={() => setMixMenuPreset(mix)}
                   />
                 );
@@ -1730,7 +1736,7 @@ export function BibliotecaScreen({
                   isPlayingThis={loadedPresetId === mix.id && mixerPlaying}
                   onPress={() => openForMix(mix)}
                   onPressThumb={() => openForMix(mix)}
-                  onPressEdit={() => openLibraryRoute(`/mi-mezcla/${mix.id}`)}
+                  onPressEdit={() => openLibraryMix(mix.id)}
                    onLongPress={() => setMixMenuPreset(mix)}
                 />
               ))}
@@ -2163,7 +2169,7 @@ export function BibliotecaScreen({
         onCreateCarpeta={() => setNombreCarpetaVisible(true)}
         onGoMezclas={() => { openMixer(); router.navigate("/(tabs)/musica" as never); }}
         onAddResonador={() => setAddResonadorVisible(true)}
-        gradient={sceneTheme.gradient}
+        sheetColor={librarySheetColor}
       />
       <NombrePlaylistModal
         visible={nombreVisible}
@@ -2194,7 +2200,7 @@ export function BibliotecaScreen({
         folder={mixMenuFolder}
         visible={mixMenuPreset !== null || mixMenuFolder !== null}
         onClose={() => { setMixMenuPreset(null); setMixMenuFolder(null); }}
-        onEdit={(mix) => openLibraryRoute(`/mi-mezcla/${mix.id}`)}
+        onEdit={(mix) => openLibraryMix(mix.id)}
         onDuplicate={(mix) => duplicatePreset(mix.id)}
         onDelete={(mix) => deletePreset(mix.id)}
         libraryActionsOnly
@@ -2220,13 +2226,7 @@ export function BibliotecaScreen({
             behavior={Platform.OS === "ios" ? "padding" : "height"}
             style={{ flex: 1, justifyContent: "flex-end" }}
           >
-          <LinearGradient
-            colors={[
-              sceneTheme.gradient[1] ?? sceneTheme.gradient[0],
-              sceneTheme.gradient[1] ?? sceneTheme.gradient[0],
-            ]}
-            style={styles.addResModalSheet}
-          >
+           <View style={[styles.addResModalSheet, { backgroundColor: librarySheetColor }]}>
             <View style={styles.addResModalHeader}>
               <Text style={styles.addResModalTitle}>Agrega Resonador</Text>
               <Pressable
@@ -2285,7 +2285,7 @@ export function BibliotecaScreen({
                   );
                 })}
             </ScrollView>
-          </LinearGradient>
+           </View>
           </KeyboardAvoidingView>
         </View>
       </Modal>

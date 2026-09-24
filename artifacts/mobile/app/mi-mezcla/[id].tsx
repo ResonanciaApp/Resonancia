@@ -33,6 +33,7 @@ import { type MixPreset, useMixer } from "@/context/MixerContext";
 import { useSounds } from "@/context/SoundsContext";
 import { type GeometryId } from "@/data/geometries";
 import { useLibraryReturnBack } from "@/hooks/useLibraryReturnBack";
+import { useBackOverride } from "@/context/BackOverrideContext";
 import { useSceneTheme } from "@/context/SceneThemeContext";
 import { useMixerPanel } from "@/context/MixerPanelContext";
 import { REMOTE_SOUND_IMAGE_MAP } from "@/lib/remoteSoundMap";
@@ -473,10 +474,13 @@ function EditMixInfoModal({
 }
 
 // ── Pantalla principal ────────────────────────────────────────────────────────
-export default function MiMezclaScreen() {
+export default function MiMezclaScreen({ id: idProp }: { id?: string } = {}) {
   const insets = useSafeAreaInsets();
-  const { id, fromLibrary } = useLocalSearchParams<{ id: string; fromLibrary?: string }>();
-  const goBack = useLibraryReturnBack(fromLibrary, "mezclas");
+  const { id: idParam, fromLibrary } = useLocalSearchParams<{ id: string; fromLibrary?: string }>();
+  const id = idProp ?? idParam;
+  const backOverride = useBackOverride();
+  const libraryBack = useLibraryReturnBack(backOverride ? undefined : fromLibrary, "mezclas");
+  const goBack = backOverride ?? libraryBack;
 
   const { theme, activeSceneId } = useSceneTheme();
   const bgGradient = theme.gradient;

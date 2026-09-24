@@ -19,6 +19,7 @@ import { KeyboardProvider } from "react-native-keyboard-controller";
 import { SafeAreaProvider } from "react-native-safe-area-context";
 
 import { BibliotecaOverlay } from "@/components/BibliotecaOverlay";
+import { LibraryMixOverlay } from "@/components/LibraryMixOverlay";
 import { DrawerScreenOverlay } from "@/components/DrawerScreenOverlay";
 import { ChatOverlay } from "@/components/ChatOverlay";
 import { DrawerMenu } from "@/components/DrawerMenu";
@@ -444,6 +445,7 @@ function RootLayoutNav() {
           <DrawerMenu />
            <CreationPanelsOverlay />
           <BibliotecaOverlay />
+          <LibraryMixOverlay />
           <DrawerScreenOverlay />
           <ChatOverlay />
           <MixerSheet />
