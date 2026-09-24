@@ -735,62 +735,20 @@ export function ExploreScreen({
             </>
           )}
 
-          <View style={styles.newInResonanceSection}>
-            <View style={styles.newInResonanceHeader}>
-              <Text style={[styles.sectionTitle, { marginBottom: 0 }]}>
-                Nuevo en Resonancia
-              </Text>
-            </View>
-            <ScrollView
-              horizontal
-              showsHorizontalScrollIndicator={false}
-              style={{ marginHorizontal: -H_PAD }}
-              contentContainerStyle={styles.newInResonanceRow}
-            >
-              {recientesMeditaciones.map((session) => (
-                <PressScale
-                  key={session.id}
-                  onPress={() => handleSessionPress(session)}
-                  accessibilityRole="button"
-                  accessibilityLabel={`${session.title}. ${getSessionAuthor(session)}`}
-                  style={styles.newInResonanceCard}
-                >
-                  <View style={styles.newInResonanceImageWrap}>
-                    <Image
-                      source={session.image as number}
-                      style={StyleSheet.absoluteFill}
-                      contentFit="cover"
-                      placeholder={BLUR_PLACEHOLDER}
-                      transition={IMAGE_TRANSITION}
-                      cachePolicy="memory-disk"
-                    />
-                    <PremiumBadge session={session} size={22} top={16} left={16} />
-                    <SessionDurationBadge
-                      label={session.durationLabel}
-                      whiteGlass
-                      style={styles.categoryDurationBadge}
-                    />
-                  </View>
-                  <View style={styles.newInResonanceMeta}>
-                    <Text style={styles.newInResonanceTitle} numberOfLines={2}>
-                      {session.title}
-                    </Text>
-                    <Text
-                      style={[
-                        styles.newInResonanceSecondary,
-                        { color: activeTheme.accent ?? "#c2c2c2" },
-                      ]}
-                      numberOfLines={1}
-                    >
-                      {getSessionAuthor(session)}
-                    </Text>
-                  </View>
-                </PressScale>
-              ))}
-            </ScrollView>
-          </View>
-
-          <View style={styles.sectionDivider} />
+          {editorialDiscoverCarousels.map((carousel) => (
+            <React.Fragment key={carousel.id}>
+              <EditorialPlaylistCarousel
+                title={carousel.title}
+                playlists={carousel.playlists}
+                showPremiumBadge
+                stackTypeAboveDuration
+                onPress={(playlist) =>
+                  openCategory(`/editorial-playlist/${encodeURIComponent(playlist.id)}`)
+                }
+              />
+              <View style={styles.sectionDivider} />
+            </React.Fragment>
+          ))}
 
           <Pressable
             onPress={() => router.push("/equipo" as never)}
@@ -871,20 +829,62 @@ export function ExploreScreen({
 
           <View style={[styles.sectionDivider, styles.categoryBlocksDivider]} />
 
-          {editorialDiscoverCarousels.map((carousel) => (
-            <React.Fragment key={carousel.id}>
-              <EditorialPlaylistCarousel
-                title={carousel.title}
-                playlists={carousel.playlists}
-                showPremiumBadge
-                stackTypeAboveDuration
-                onPress={(playlist) =>
-                  openCategory(`/editorial-playlist/${encodeURIComponent(playlist.id)}`)
-                }
-              />
-              <View style={styles.sectionDivider} />
-            </React.Fragment>
-          ))}
+          <View style={styles.newInResonanceSection}>
+            <View style={styles.newInResonanceHeader}>
+              <Text style={[styles.sectionTitle, { marginBottom: 0 }]}>
+                Nuevo en Resonancia
+              </Text>
+            </View>
+            <ScrollView
+              horizontal
+              showsHorizontalScrollIndicator={false}
+              style={{ marginHorizontal: -H_PAD }}
+              contentContainerStyle={styles.newInResonanceRow}
+            >
+              {recientesMeditaciones.map((session) => (
+                <PressScale
+                  key={session.id}
+                  onPress={() => handleSessionPress(session)}
+                  accessibilityRole="button"
+                  accessibilityLabel={`${session.title}. ${getSessionAuthor(session)}`}
+                  style={styles.newInResonanceCard}
+                >
+                  <View style={styles.newInResonanceImageWrap}>
+                    <Image
+                      source={session.image as number}
+                      style={StyleSheet.absoluteFill}
+                      contentFit="cover"
+                      placeholder={BLUR_PLACEHOLDER}
+                      transition={IMAGE_TRANSITION}
+                      cachePolicy="memory-disk"
+                    />
+                    <PremiumBadge session={session} size={22} top={16} left={16} />
+                    <SessionDurationBadge
+                      label={session.durationLabel}
+                      whiteGlass
+                      style={styles.categoryDurationBadge}
+                    />
+                  </View>
+                  <View style={styles.newInResonanceMeta}>
+                    <Text style={styles.newInResonanceTitle} numberOfLines={2}>
+                      {session.title}
+                    </Text>
+                    <Text
+                      style={[
+                        styles.newInResonanceSecondary,
+                        { color: activeTheme.accent ?? "#c2c2c2" },
+                      ]}
+                      numberOfLines={1}
+                    >
+                      {getSessionAuthor(session)}
+                    </Text>
+                  </View>
+                </PressScale>
+              ))}
+            </ScrollView>
+          </View>
+
+          <View style={styles.sectionDivider} />
 
           <View style={styles.durationSection}>
             <Text style={[styles.sectionTitle, { paddingHorizontal: H_PAD }]}>
