@@ -146,6 +146,24 @@ export function ProfileSettingsSections({
 
   return (
     <View style={styles.root}>
+      {placement === "settings" && (
+        <View style={styles.section}>
+          <View style={[styles.card, { backgroundColor: cardBackground, borderColor }]}>
+            <Pressable
+              onPress={() => router.push("/membresia")}
+              accessibilityRole="button"
+              accessibilityLabel="Suscripción Premium"
+              style={({ pressed }) => [styles.row, pressed && styles.rowPressed]}
+            >
+              <Text style={[styles.sectionTitle, styles.sectionTitleCompact, styles.subscriptionTitle, { color: foreground }]}>
+                Suscripción
+              </Text>
+              <Text style={[styles.rowValue, { color: mutedForeground }]}>Premium</Text>
+              <Feather name="chevron-right" size={20} color={themeAccent} />
+            </Pressable>
+          </View>
+        </View>
+      )}
       {visibleSections.map((section) => (
         <View key={section.title} style={styles.section}>
           <Text
@@ -274,6 +292,10 @@ const styles = StyleSheet.create({
   sectionTitleCompact: {
     fontSize: 16,
     lineHeight: 21,
+  },
+  subscriptionTitle: {
+    flex: 1,
+    marginBottom: 0,
   },
   card: {
     borderRadius: 17,
