@@ -163,7 +163,7 @@ export function SleepReminderSheet({
 
   const timeLabel = formatPracticeNotificationTimeLocal(draft.hour, draft.minute);
   const gradient = isMorning
-    ? ["#D96F5F", "#9B526B", "#4A304F", "#171B2D"] as const
+    ? ["#C96D68", "#855269", "#443044"] as const
     : [
         theme.gradient[0] as string,
         theme.gradient[1] as string,
@@ -242,7 +242,7 @@ export function SleepReminderSheet({
                 disabled={saving}
                 trackColor={{
                   false: "rgba(255,255,255,0.20)",
-                    true: isMorning ? "#E98668" : "#7651D8",
+                     true: isMorning ? "#C96D68" : "#7651D8",
                 }}
                 thumbColor="#FFFFFF"
                  accessibilityLabel={`Activar recordatorio para ${isMorning ? "meditar" : "dormir"}`}
@@ -539,7 +539,7 @@ const styles = StyleSheet.create({
     justifyContent: "center",
   },
   morningContinueButton: {
-    backgroundColor: "#C85F67",
+    backgroundColor: "#C96D68",
   },
   continueText: {
     color: "#FFFFFF",
