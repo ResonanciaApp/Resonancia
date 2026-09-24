@@ -580,7 +580,6 @@ function PremiumInnerSpaceScreen() {
     }
 
     const reflection: Reflection = item.item;
-    const timeLabel = new Date(reflection.createdAt).toLocaleTimeString("es-ES", { hour: "2-digit", minute: "2-digit" });
     const cat = reflectionCategories[reflection.category] ?? reflectionCategories.clarity;
     const isEditing = editingId === reflection.id;
     const isShareable = canShareReflection(reflection.message);
@@ -604,7 +603,6 @@ function PremiumInnerSpaceScreen() {
             <View style={[styles.cardCatPill, { backgroundColor: cat.bg }]}>
               <Text style={[styles.cardCatText, { color: cat.color }]}>{cat.label}</Text>
             </View>
-            <Text style={[styles.timeText, { color: colors.mutedForeground }]}>{timeLabel}</Text>
           </View>
         </WallScrollReveal>
 
@@ -1008,12 +1006,7 @@ const styles = StyleSheet.create({
     width: "100%",
     flexDirection: "row",
     alignItems: "center",
-    justifyContent: "flex-start",
-    gap: 8,
     marginBottom: 10,
-  },
-  timeText: {
-    fontSize: 12,
   },
   reflectionCard: {
     width: "100%",
