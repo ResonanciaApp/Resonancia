@@ -184,7 +184,6 @@ export default function ResonadorPerfilScreen() {
         </Animated.View>
         <Animated.View pointerEvents="none" style={[styles.headerTitleAbs, { top: topPad + 8, opacity: headerBgOpacity }]}>
           <Text style={styles.headerNameTitle} numberOfLines={1}>{resonador.name}</Text>
-          <Text style={styles.headerVerificadoSub} numberOfLines={1}>Resonador Verificado</Text>
         </Animated.View>
         <GhostPill noBorder style={{ backgroundColor: "rgba(0,0,0,0.28)", borderWidth: 1, borderColor: "rgba(255,255,255,0.20)", marginTop: -2, transform: [{ translateY: 2 }] }}>
           <BackPill onPress={() => router.back()} size={27} iconOffsetX={-2} />
@@ -255,16 +254,15 @@ export default function ResonadorPerfilScreen() {
         <View style={[styles.profileCard, { marginTop: -1 }]}>
 
           <Text style={[styles.userName, { color: colors.foreground }]}>{resonador.name}</Text>
-          <Text style={styles.resonadorVerificadoLabel}>Resonador Verificado</Text>
-
-          {/* Subtipo pill */}
-          <View style={styles.subtipoPill}>
-            <Text style={styles.subtipoText}>{resonador.subtipo}</Text>
-          </View>
 
           <View style={[styles.locationRow, { marginTop: 4 }]}>
             <Feather name="map-pin" size={12} color={colors.mutedForeground} />
             <Text style={[styles.locationText, { color: colors.mutedForeground }]}>{locationStr}</Text>
+          </View>
+
+          {/* Subtipo pill */}
+          <View style={styles.subtipoPill}>
+            <Text style={styles.subtipoText}>{resonador.subtipo}</Text>
           </View>
 
           <Text style={[styles.bioText, { color: colors.mutedForeground }]}>{resonador.bio}</Text>
@@ -439,14 +437,6 @@ const styles = StyleSheet.create({
     color: "#F9F9F9",
     textAlign: "center",
   },
-  headerVerificadoSub: {
-    fontFamily: "Manrope",
-    fontSize: 11,
-    fontWeight: "400",
-    color: "#E5D6FF",
-    textAlign: "center",
-    marginTop: 1,
-  },
   headerTitleAbs: {
     position: "absolute",
     left: 0,
@@ -539,14 +529,6 @@ const styles = StyleSheet.create({
   },
   certBadgeStar: { fontFamily: "Manrope", fontSize: 10, color: "#1B060F", fontWeight: "800" },
   userName: { fontFamily: "Manrope", fontSize: 20, fontWeight: "700", textAlign: "center" },
-  resonadorVerificadoLabel: {
-    fontFamily: "Manrope",
-    fontSize: 12,
-    fontWeight: "400",
-    color: "#E5D6FF",
-    textAlign: "center",
-    marginTop: -2,
-  },
 
   subtipoPill: {
     borderRadius: 20,
@@ -580,6 +562,7 @@ const styles = StyleSheet.create({
     height: StyleSheet.hairlineWidth,
     backgroundColor: "rgba(255,255,255,0.20)",
     marginTop: 14,
+    transform: [{ translateY: 20 }],
   },
 
   actionPillsWrap: { alignSelf: "stretch", gap: 8, marginTop: 14 },
@@ -616,11 +599,11 @@ const styles = StyleSheet.create({
 
   /* ── Sección 1: Sesiones ── */
   sessionsSection: {
-    marginTop: 18,
+    marginTop: 3,
     backgroundColor: "transparent",
     paddingHorizontal: 0,
   },
-  sessionGrid: { marginTop: -24 },
+  sessionGrid: { marginTop: -24, marginBottom: 18 },
   viewAllButton: {
     marginHorizontal: H_PAD,
     marginTop: 8,
