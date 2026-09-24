@@ -23,6 +23,12 @@ falls back to the active theme automatically — prefer wiring NEW screens
 through `SacredBackground`/`useSceneTheme()` rather than hardcoding hex
 backgrounds.
 
+El selector «Tema» de Configuración y ajustes cambia únicamente el tema
+visual persistente; elegir un color allí no debe iniciar ni cambiar el audio
+ambiente. **Why:** el usuario pidió cambiar el color de la app desde ajustes,
+no seleccionar una escena sonora. **How to apply:** mantener esa separación
+al ampliar las opciones del selector.
+
 **Scope limitation:** root providers/nav (`app/_layout.tsx`,
 `app/(tabs)/_layout.tsx`), `SacredBackground`'s fallback, the drawer menu,
 and several high-traffic tab screens (Inicio, Medita, Video, Colección,

@@ -91,6 +91,7 @@
 - [Handoff entre Modal nativos](native-modal-handoff.md) — nunca abrir un segundo Modal con un timeout estimado; esperar cierre real + siguiente frame para evitar fallos intermitentes en iOS
 - [Membresía Aurora jade-gold](membership-aurora-jade.md) — amarillo sólido de estrella en promos, drawer y ambos títulos de Perfil; loto de racha conserva degradado
 - [Háptica suave del tab bar](tab-haptics-soft.md) — un solo impacto Soft para taps de navegación; no simular fade con pulsos acumulados
+- [Toggles de notificaciones de ajustes](settings-notification-toggles.md) — Racha y Registro diario serán opt-ins de avisos, no visibilidad; diseño desactivado hasta tener programación real
 - [Bajas remotas del catálogo](catalog-remote-deletions.md) — un cache móvil viejo puede resucitar sesiones DB-only; snapshots frescos deben podar entradas remotas ausentes
 - [Rendimiento del drag de Mi Rutina](routine-drag-performance.md) — animar cambios de slot una sola vez, memoizar filas/gestos y limpiar estados transitorios al perder foco
 - [Sticky headers Índigo](indigo-sticky-headers.md) — navegación y Perfil comparten vidrio puro; tabs y barra inferior respetan las superficies de Índigo 2
