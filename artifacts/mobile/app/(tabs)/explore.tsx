@@ -14,7 +14,6 @@ import {
   View,
 } from "react-native";
 import { Image } from "expo-image";
-import { SymbolView } from "expo-symbols";
 import { BLUR_PLACEHOLDER, IMAGE_TRANSITION } from "@/constants/imagePlaceholder";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import AsyncStorage from "@react-native-async-storage/async-storage";
@@ -328,7 +327,6 @@ export function ExploreScreen({
   const { version: catalogVersion } = useCatalog();
   const { resonadores } = useResonadores();
   const { theme: activeTheme, activeSceneId } = useSceneTheme();
-  const searchTabBarSurface = "rgba(0,0,0,0.28)";
   const durationSurfaceColor =
     activeSceneId === "tibet"
       ? "rgba(0,0,0,0.14)"
@@ -614,35 +612,12 @@ export function ExploreScreen({
         <View style={[styles.searchWrap, styles.stickySearchWrap]}>
           <Pressable
             onPress={() => setSearchVisible(true)}
-            style={[
-              styles.searchBox,
-              activeSceneId === "tibet"
-                ? styles.searchBoxTibet
-                : isIndigoThemeId(activeSceneId)
-                  ? styles.searchBoxIndigo
-                  : activeSceneId === "indigo2"
-                    ? styles.searchBoxIndigo2
-                    : null,
-              styles.searchBoxWhiteBorder,
-              { backgroundColor: searchTabBarSurface },
-            ]}
+            style={styles.searchBox}
             accessibilityRole="button"
             accessibilityLabel={`Buscar en ${screenTitle}`}
             testID="discover-sticky-search-button"
           >
-            {Platform.OS === "ios" ? (
-              <SymbolView
-                name="magnifyingglass"
-                tintColor="rgba(249,249,249,0.72)"
-                size={20}
-              />
-            ) : (
-              <Feather
-                name="search"
-                size={20}
-                color="rgba(249,249,249,0.72)"
-              />
-            )}
+            <Feather name="search" size={16} color="#F4F4F4" />
             <Text style={styles.searchPlaceholder}>
               Busca por título, categoría o autor
             </Text>
@@ -1202,30 +1177,23 @@ const styles = StyleSheet.create({
     height: 1,
     backgroundColor: "rgba(255,255,255,0.07)",
   },
-  searchBox:    { flexDirection: "row" as "row", alignItems: "center" as "center", gap: 10, borderRadius: 999, borderWidth: 1, paddingHorizontal: 18, height: 50 },
-  searchBoxWhiteBorder: {
-    borderWidth: 2,
-    borderColor: "#F9F9F9",
-  },
-  searchInput:  { fontFamily: "Manrope", flex: 1, fontSize: 15, fontWeight: "300", padding: 0 },
-  searchBoxTibet: {
-    backgroundColor: "rgba(0,0,0,0.15)",
-    borderColor: "rgba(255,255,255,0.12)",
-  },
-  searchBoxIndigo: {
-    backgroundColor: "rgba(181,211,255,0.057)",
-    borderColor: "rgba(170,170,196,0.18)",
-  },
-  searchBoxIndigo2: {
-    backgroundColor: "rgba(191,207,255,0.096)",
-    borderColor: "rgba(255,255,255,0.08)",
+  searchBox: {
+    flexDirection: "row",
+    alignItems: "center",
+    gap: 10,
+    borderRadius: 999,
+    borderWidth: 1,
+    borderColor: "rgba(249,249,249,0.8)",
+    backgroundColor: "rgba(0,0,0,0.28)",
+    paddingHorizontal: 18,
+    height: 45,
   },
   searchPlaceholder: {
     flex: 1,
     fontFamily: "Manrope",
     fontSize: 15,
-    fontWeight: "400",
-    color: "#F4F4F4",
+    fontWeight: "300",
+    color: "rgba(244,244,244,0.5)",
   },
   pageSubtitle: { fontFamily: "Manrope", fontSize: 14, color: "#F4F4F4", marginTop: 2 },
 
