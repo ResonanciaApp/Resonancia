@@ -83,20 +83,16 @@ const MEZ_PLACEHOLDERS = [
 const TAB_HEADER_GRADIENT: [string, string, string] = ["#221510", "#221510", "#221510"];
 const TAB_GRADIENT: [string, string] = ["#A3631F", "#A3631F"];
 
-// ── PillTab — estilo Biblioteca (texto + subrayado animado) ──────────────────
-const CHIP_ANIM_DURATION = 550;
-
 const PillTab = memo(function PillTab({
   tab, sel, onPress,
 }: { tab: MainTab; sel: boolean; onPress: () => void }) {
   return (
     <Pressable
-      onPress={onPress}
-      style={({ pressed }) => [
-        styles.pillTab,
-        sel && styles.pillTabSel,
-        { opacity: pressed ? 0.7 : 1 },
-      ]}
+      onPress={() => {
+        void Haptics.selectionAsync().catch(() => {});
+        onPress();
+      }}
+      style={[styles.pillTab, sel && styles.pillTabSel]}
     >
       {/* Texto */}
       <Text style={[styles.pillTabLabel, sel && styles.pillTabLabelSel]}>
@@ -104,15 +100,6 @@ const PillTab = memo(function PillTab({
       </Text>
     </Pressable>
   );
-});
-
-// ── ContentSlide / SubTabSlide ────────────────────────────────────────────────
-const ContentSlide = memo(function ContentSlide({ dir: _dir, children }: { dir: "right" | "left"; children: React.ReactNode }) {
-  return <View>{children}</View>;
-});
-
-const SubTabSlide = memo(function SubTabSlide({ children }: { children: React.ReactNode }) {
-  return <View>{children}</View>;
 });
 
 // ── SoundCard ─────────────────────────────────────────────────────────────────
@@ -403,8 +390,6 @@ export default function MezcladorScreen() {
   const [mainTab,        setMainTab]        = useState<MainTabId | null>(null);
   const [selectedBpm,    setSelectedBpm]    = useState<44 | 50 | 68 | 72 | null>(null);
   const [playCounts,     setPlayCounts]     = useState<Record<string, number>>({});
-  const [contentAnimKey, setContentAnimKey] = useState(0);
-  const [contentDir,     setContentDir]     = useState<"right" | "left">("right");
 
   // ── Menú inline (3 puntitos) ──
   const [menuOpen, setMenuOpen]   = useState(false);
@@ -545,14 +530,10 @@ export default function MezcladorScreen() {
       // Des-seleccionar → volver al catálogo completo
       setMainTab(null);
       setSelectedBpm(null);
-      setContentAnimKey((k) => k + 1);
       return;
     }
-    const ids = tabs.map((t) => t.id);
-    setContentDir(mainTab === null || ids.indexOf(id) > ids.indexOf(mainTab) ? "right" : "left");
     setMainTab(id);
     if (id !== "bpm") setSelectedBpm(null);
-    setContentAnimKey((k) => k + 1);
   };
 
   useEffect(() => {
@@ -743,7 +724,7 @@ export default function MezcladorScreen() {
           scrollEventThrottle={16}
           onScroll={handleCatalogScroll}
         >
-          <ContentSlide dir={contentDir}>
+          <>
             {mainTab === "bpm" && (
               <BpmSelector
                 selected={selectedBpm}
@@ -818,7 +799,7 @@ export default function MezcladorScreen() {
                 ))}
               </View>
             )}
-          </ContentSlide>
+          </>
         </ScrollView>
         </View>
       </View>
@@ -920,7 +901,7 @@ const styles = StyleSheet.create({
     borderRadius: 21.5,
     borderWidth: 1,
     borderColor: "rgba(255,255,255,0.2)",
-    backgroundColor: "rgba(0,0,0,0.28)",
+    backgroundColor: "rgba(255,255,255,0.1)",
     overflow: "hidden",
     alignItems: "center",
     justifyContent: "center",
@@ -931,7 +912,7 @@ const styles = StyleSheet.create({
     borderRadius: 21.5,
     borderWidth: 1,
     borderColor: "rgba(255,255,255,0.2)",
-    backgroundColor: "rgba(0,0,0,0.28)",
+    backgroundColor: "rgba(255,255,255,0.1)",
     overflow: "hidden",
     alignItems: "center",
     justifyContent: "center",
@@ -951,15 +932,15 @@ const styles = StyleSheet.create({
     alignItems: "center",
     gap: 9,
     paddingHorizontal: 13,
-    height: 40,
-    borderRadius: 21,
+    height: 35,
+    borderRadius: 17.5,
     overflow: "hidden",
     backgroundColor: "transparent",
     borderWidth: 1,
-    borderColor: "rgba(255,255,255,0.6)",
+    borderColor: "rgba(255,255,255,0.25)",
   },
   pillTabSel: {
-    backgroundColor: "rgba(0,0,0,0.28)",
+    backgroundColor: "rgba(0,0,0,0.31)",
     borderColor: "rgba(255,255,255,0.8)",
   },
   pillTabLabel:   { fontFamily: "Manrope", fontSize: 11, fontWeight: "550" as any, letterSpacing: 0.3, color: "#F9F9F9", textAlign: "center" },

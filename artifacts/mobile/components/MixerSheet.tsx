@@ -398,7 +398,12 @@ export function MixerSheet() {
     GRADIENT_PRESETS.find((p) => p.id === bgPresetId) ??
     GRADIENT_PRESETS.find((p) => p.id === DEFAULT_BG_PRESET_ID)!;
   const activeBgPreset = isDefaultBg
-    ? { ...rawBgPreset, colors: theme.gradient, image: undefined, isLight: false }
+    ? {
+        ...rawBgPreset,
+        colors: [theme.gradient[0], theme.gradient[1], theme.gradient[2] ?? theme.gradient[1]] as const,
+        image: undefined,
+        isLight: false,
+      }
     : rawBgPreset;
   const sheetGradient = activeBgPreset.colors;
   const isLight = activeBgPreset.isLight ?? false;
@@ -908,7 +913,6 @@ export function MixerSheet() {
             ) : (
               <LinearGradient
                 colors={[...sheetGradient]}
-                locations={isDefaultBg ? [0, 1, 1] : undefined}
                 start={{ x: 0.5, y: 0 }}
                 end={{ x: 0.5, y: 1 }}
                 style={styles.sheetGradient}
@@ -1274,7 +1278,7 @@ const styles = StyleSheet.create({
     alignItems: "center",
     justifyContent: "center",
     borderRadius: 21.5,
-    backgroundColor: "rgba(0,0,0,0.28)",
+    backgroundColor: "rgba(255,255,255,0.1)",
     borderWidth: 1,
     borderColor: "rgba(255,255,255,0.2)",
   },

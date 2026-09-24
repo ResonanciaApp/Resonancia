@@ -309,7 +309,8 @@ export function MiniPlayer({ forceMix = false }: { forceMix?: boolean }) {
             <View style={[styles.waveWrap, { position: "absolute", right: 25, zIndex: 2, transform: [{ translateY: -2 }] }]}>
               <Pressable onPress={(e) => { e.stopPropagation(); togglePlay(); }} style={styles.playPauseBtn}>
                 <View pointerEvents="none" style={styles.playPauseGlass}>
-                  <SessionBadgeGlass showBlackTint={false} showWhiteTint />
+                  <SessionBadgeGlass showBlackTint={false} />
+                  <View style={[StyleSheet.absoluteFill, styles.playPauseTint]} />
                 </View>
                 <MaterialCommunityIcons
                   name={mixPlaying ? "pause" : "play"}
@@ -541,10 +542,13 @@ const styles = StyleSheet.create({
   },
   playPauseGlass: {
     position: "absolute",
-    width: 37,
-    height: 37,
-    borderRadius: 18.5,
+    width: 42,
+    height: 42,
+    borderRadius: 21,
     overflow: "hidden",
+  },
+  playPauseTint: {
+    backgroundColor: "rgba(255,255,255,0.2)",
   },
   playIconNudge: { marginLeft: 2 },
   waveWrap: {
