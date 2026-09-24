@@ -1890,7 +1890,7 @@ export function ProfileScreenBase({
       {!dedicated && <BibliotecaScreen embedded initialTab={initialLibraryTab} onHeaderActions={setLibActions} />}
       </View>
 
-      {dedicated && isPremium && (
+      {dedicated && (
         <ReflectionSavedBanner
           trigger={reflectionSavedTrigger}
           bottom={58 + bottomPad + 15}

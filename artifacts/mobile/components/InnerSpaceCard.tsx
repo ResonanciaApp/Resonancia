@@ -65,6 +65,7 @@ export function InnerSpaceCard({
     isCatalogStale,
     isCatalogEmpty,
   } = useReflectionCategories();
+  const selectedCategoryShadow = reflectionCategoryOptions.find((cat) => cat.id === "gratitude")?.color ?? "#F075B3";
   const freeQuotaParams = { limit: FREE_REFLECTIONS_LIMIT + 1 };
   const { data: freeQuotaData, isLoading: freeQuotaLoading } = useListMyReflections(
     freeQuotaParams,
@@ -311,13 +312,8 @@ export function InnerSpaceCard({
               accessibilityRole="button"
               style={({ pressed }) => [
                 styles.gridItem,
-                category === cat.id && {
-                  borderColor: "rgba(255,255,255,0.45)",
-                  backgroundColor: "rgba(0,0,0,0.28)",
-                  shadowColor: cat.color,
-                  shadowOpacity: 0.22,
-                  shadowRadius: 8,
-                },
+                 category === cat.id && styles.selectedGridItem,
+                 category === cat.id && { shadowColor: selectedCategoryShadow },
                 pressed && styles.pressedCategory,
               ]}
               onPress={() => toggleCategory(cat.id as ReflectionCategory)}
@@ -476,6 +472,12 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     borderColor: "rgba(255,255,255,0.1)",
   },
+  selectedGridItem: {
+    borderColor: "rgba(255,255,255,0.45)",
+    backgroundColor: "rgba(0,0,0,0.28)",
+    shadowOpacity: 0.22,
+    shadowRadius: 8,
+  },
   pressedCategory: {
     transform: [{ scale: 0.97 }],
   },
@@ -494,13 +496,12 @@ const styles = StyleSheet.create({
   },
   input: {
     minHeight: 80,
-    fontSize: 15,
+    fontSize: 13,
     lineHeight: 21,
-    transform: [{ translateY: -3 }],
   },
   inputPlaceholder: {
     position: "absolute",
-    top: 16,
+    top: 19,
     left: 12,
     right: 12,
   },
