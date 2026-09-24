@@ -4,7 +4,7 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 import { router, useLocalSearchParams, useFocusEffect } from "expo-router";
 import { Image } from "expo-image";
 import { LinearGradient } from "expo-linear-gradient";
-import React, { useState } from "react";
+import React from "react";
 import {
   Animated,
   Linking,
@@ -24,8 +24,10 @@ import { GhostPill } from "@/components/GhostPill";
 import { BLUR_PLACEHOLDER, IMAGE_TRANSITION } from "@/constants/imagePlaceholder";
 import { COUNTRY_FLAGS, type ExternalProject, type Resonador } from "@/data/resonadores";
 import { useResonadorById } from "@/hooks/useResonadores";
-import { getSessionById } from "@/data/sessions";
-import { SessionCard } from "@/components/SessionCard";
+import { getSessionById, type Session } from "@/data/sessions";
+import { SessionCarousel } from "@/components/SessionCarousel";
+import { usePlayer } from "@/context/PlayerContext";
+import { usePremium } from "@/context/PremiumContext";
 import { useColors } from "@/hooks/useColors";
 import { useGetMe, getGetMeQueryKey } from "@workspace/api-client-react";
 
@@ -56,6 +58,8 @@ export default function ResonadorPerfilScreen() {
 
   const { clerkUserId, isSignedIn } = useAuth();
   const { data: me } = useGetMe({ query: { queryKey: getGetMeQueryKey(), enabled: isSignedIn } });
+  const { playSession } = usePlayer();
+  const { isPremium } = usePremium();
   const [following, setFollowing] = React.useState(false);
   const [friendRequested, setFriendRequested] = React.useState(false);
   const [overrides, setOverrides] = React.useState<(Partial<Resonador> & { photoUri?: string }) | null>(null);
@@ -124,14 +128,9 @@ export default function ResonadorPerfilScreen() {
   const locationStr = resonador.city.includes(resonador.country)
     ? `${flag} ${resonador.city}`.trim()
     : `${flag} ${resonador.city}, ${resonador.country}`.trim();
-  const hasContacts = !!(resonador.instagram || resonador.phone || resonador.email);
   const sessions = (resonador.sessionIds ?? [])
     .map((sid) => getSessionById(sid))
     .filter(Boolean) as NonNullable<ReturnType<typeof getSessionById>>[];
-
-  const SESSION_PAGE = 10;
-  const [sessionLimit, setSessionLimit] = useState(SESSION_PAGE);
-  const [sessionSort, setSessionSort] = useState<"recientes" | "escuchadas">("recientes");
 
   // ── Sticky header gradient ─────────────────────────────────────────────────
   const scrollY = React.useRef(new Animated.Value(0)).current;
@@ -145,11 +144,23 @@ export default function ResonadorPerfilScreen() {
     extrapolate: "clamp",
   });
 
-  const sortedSessions = [...sessions].sort((a, b) => {
-    if (sessionSort === "recientes") return parseInt(b.id) - parseInt(a.id);
-    // "escuchadas": mantener orden original (sin datos reales de escuchas)
-    return 0;
-  });
+  const sortedSessions = [...sessions].sort(
+    (a, b) => Number.parseInt(b.id, 10) - Number.parseInt(a.id, 10),
+  );
+
+  const openSession = (session: Session) => {
+    if (session.skipMiniPlayer) {
+      playSession(session);
+    } else if (
+      session.skipDetail !== false &&
+      (session.skipDetail || ["sonidos-ancestrales", "musica-sonidos"].includes(session.categoryId ?? ""))
+    ) {
+      playSession(session);
+      router.push("/player" as never);
+    } else {
+      router.push(`/session/${session.id}` as never);
+    }
+  };
 
   return (
     <View style={styles.root}>
@@ -341,125 +352,64 @@ export default function ResonadorPerfilScreen() {
         </View>
 
 
-        {/* ── Bloque Agenda online ── */}
-        {resonador.bookingUrl && (
-          <>
-            <View style={[styles.agendaDivider, { marginHorizontal: H_PAD }]} />
-            <Pressable
-              onPress={() => router.push(`/resonador-servicio/${resonador.id}` as never)}
-              style={({ pressed }) => [styles.agendaBlock, { marginHorizontal: H_PAD, opacity: pressed ? 0.82 : 1 }]}
-            >
-              <View style={styles.agendaTopRow}>
-                <View style={styles.agendaIconCircle}>
-                  <Feather name="calendar" size={18} color="#F9F9F9" />
-                </View>
-                <Text style={styles.agendaAvailText}>Disponible para sesiones</Text>
-                <View style={styles.agendaBtn}>
-                  <Text style={styles.agendaBtnText}>Agenda online</Text>
-                </View>
-              </View>
-              {resonador.bookingTagline ? (
-                <Text style={styles.agendaTagline}>{resonador.bookingTagline}</Text>
-              ) : null}
-            </Pressable>
-            <View style={[styles.agendaDivider, styles.agendaDividerBottom, { marginHorizontal: H_PAD }]} />
-          </>
-        )}
-
         {/* ── Mis sesiones ── */}
         {sessions.length > 0 && (
-          <View style={[styles.card, { marginHorizontal: H_PAD, backgroundColor: "transparent", paddingHorizontal: 0, marginTop: 2 }]}>
-            <View style={[styles.cardHeader, { paddingHorizontal: 0 }]}>
+          <View style={[styles.card, styles.sessionsSection]}>
+            <View style={[styles.cardHeader, { paddingHorizontal: H_PAD }]}>
               <Text style={[styles.cardTitle, { fontSize: 19 }]}>Mis sesiones</Text>
+            </View>
+
+            <SessionCarousel
+              title=""
+              sessions={sortedSessions.slice(0, 8)}
+              isPremium={isPremium}
+              onPress={openSession}
+              style={styles.sessionGrid}
+              showHeader={false}
+              gridLayout
+              fillGridWidth
+              gridScrollEnabled={false}
+              eagerRender
+              presentation="editorial"
+              disableAmbientalVariant
+              sleepMetadataBelow
+              categoryGridPresentation
+              whiteMetadataGlass
+              showDurationClock
+              hideCategoryAboveTitle
+              showSleepCategoryPillWithInlineDuration
+            />
+            {sortedSessions.length > 8 && (
               <Pressable
                 onPress={() => router.push(`/resonador-sesiones/${resonador.id}` as never)}
-                hitSlop={8}
-                style={({ pressed }) => ({ opacity: pressed ? 0.6 : 1 })}
+                accessibilityRole="button"
+                accessibilityLabel="Ver todas las sesiones"
+                style={({ pressed }) => [
+                  styles.viewAllButton,
+                  { backgroundColor: pressed ? "rgba(255,255,255,0.12)" : "rgba(255,255,255,0.1)" },
+                ]}
               >
-                <Text style={[styles.verTodasText, { color: colors.primary }]}>Ver todas</Text>
-              </Pressable>
-            </View>
-
-            <Pressable
-              hitSlop={8}
-              onPress={() => {
-                setSessionSort((v) => v === "recientes" ? "escuchadas" : "recientes");
-                setSessionLimit(SESSION_PAGE);
-              }}
-              style={({ pressed }) => [styles.sessionSortBtn, { opacity: pressed ? 0.7 : 1 }]}
-            >
-              <Feather name="chevrons-down" size={13} color="rgba(250,240,238,0.40)" />
-              <Text style={styles.sessionSortText}>
-                {sessionSort === "recientes" ? "Más recientes" : "Más escuchadas"}
-              </Text>
-            </Pressable>
-
-            <View style={styles.sessionList}>
-              {sortedSessions.slice(0, sessionLimit).map((session) => (
-                <SessionCard
-                  key={session.id}
-                  session={session}
-                  horizontal
-                  showAuthor={false}
-                  showDuration
-                  durationWhiteGlass
-                  showCategoryBelow
-                  titleFontSize={14}
-                  thumbWidth={92}
-                  thumbHeight={92}
-                  thumbRadius={18}
-                />
-              ))}
-            </View>
-            {sortedSessions.length > sessionLimit && (
-              <Pressable
-                onPress={() => setSessionLimit((v) => v + SESSION_PAGE)}
-                style={({ pressed }) => [styles.verMasBtn, { opacity: pressed ? 0.7 : 1 }]}
-              >
-                <Text style={styles.verMasText}>Ver más</Text>
-                <Feather name="chevron-down" size={14} color={GOLD} />
-              </Pressable>
-            )}
-            {sessionLimit > SESSION_PAGE && sortedSessions.length <= sessionLimit && (
-              <Pressable
-                onPress={() => setSessionLimit(SESSION_PAGE)}
-                style={({ pressed }) => [styles.verMasBtn, { opacity: pressed ? 0.7 : 1 }]}
-              >
-                <Text style={styles.verMasText}>Ver menos</Text>
-                <Feather name="chevron-up" size={14} color={GOLD} />
+                <Text style={styles.viewAllText}>Ver todas</Text>
               </Pressable>
             )}
           </View>
         )}
 
         {sessions.length > 0 &&
-          (resonador.servicesDescription?.trim() ||
-            (resonador.projects && resonador.projects.length > 0)) && (
+          resonador.projects && resonador.projects.length > 0 && (
           <View style={[styles.sessionsProjectsDivider, { marginHorizontal: H_PAD }]} />
         )}
 
-        {resonador.servicesDescription?.trim() ? (
-          <View style={[styles.card, styles.servicesCard, { marginHorizontal: H_PAD, marginTop: 18 }]}>
-            <Text style={styles.cardTitle}>Mis servicios</Text>
-            <Text style={styles.servicesDescription}>
-              {resonador.servicesDescription.trim()}
-            </Text>
-          </View>
-        ) : null}
-
-        {/* ── SECCIÓN 4: Proyectos externos ── */}
+        {/* ── Enlaces externos ── */}
         {resonador.projects && resonador.projects.length > 0 && (
           <View
             style={[
               styles.card,
               styles.projectsCard,
-              {
-                marginHorizontal: H_PAD,
-                marginTop: resonador.servicesDescription?.trim() ? 0 : 18,
-              },
+              { marginHorizontal: H_PAD, marginTop: 18 },
             ]}
           >
-            <Text style={styles.cardTitle}>Proyectos externos</Text>
+            <Text style={styles.cardTitle}>Sígueme</Text>
             <View style={styles.projectsList}>
               {resonador.projects.map((proj, i) => (
                 <Pressable
@@ -483,69 +433,6 @@ export default function ResonadorPerfilScreen() {
               ))}
             </View>
           </View>
-        )}
-
-        {/* Contacto y redes */}
-        {hasContacts && (
-          <View style={[styles.contactGrid, { marginHorizontal: H_PAD }]}>
-            {resonador.instagram && (
-              <Pressable
-                onPress={() => Linking.openURL(resonador.instagram!)}
-                style={({ pressed }) => [styles.actionPill, styles.contactPill, { opacity: pressed ? 0.75 : 1 }]}
-              >
-                <Feather name="instagram" size={13} color="#FFFFFF" />
-                <Text style={styles.actionPillText}>Instagram</Text>
-              </Pressable>
-            )}
-            {resonador.phone && (
-              <Pressable
-                onPress={() => Linking.openURL(`tel:${resonador.phone}`)}
-                style={({ pressed }) => [styles.actionPill, styles.contactPill, { opacity: pressed ? 0.75 : 1 }]}
-              >
-                <Feather name="phone" size={13} color="#FFFFFF" />
-                <Text style={styles.actionPillText}>Teléfono</Text>
-              </Pressable>
-            )}
-            {resonador.email && (
-              <Pressable
-                onPress={() => Linking.openURL(`mailto:${resonador.email}`)}
-                style={({ pressed }) => [styles.actionPill, styles.contactPill, { opacity: pressed ? 0.75 : 1 }]}
-              >
-                <Feather name="mail" size={13} color="#FFFFFF" />
-                <Text style={styles.actionPillText}>Correo</Text>
-              </Pressable>
-            )}
-          </View>
-        )}
-
-        {/* ── Botón Agenda una hora ── */}
-        {resonador.bookingUrl && (
-          <Pressable
-            onPress={() => router.push(`/resonador-servicio/${resonador.id}` as never)}
-            style={({ pressed }) => ({
-              marginTop: 16,
-              marginHorizontal: H_PAD,
-              borderRadius: 100,
-              overflow: "hidden" as const,
-              backgroundColor: "#F9F9F9",
-              opacity: pressed ? 0.85 : 1,
-            })}
-          >
-            <View
-              style={{
-                flexDirection: "row",
-                alignItems: "center",
-                justifyContent: "center",
-                gap: 6,
-                paddingVertical: 12,
-                borderRadius: 100,
-              }}
-            >
-              <Text style={{ fontFamily: "Manrope", fontSize: 14, color: "#060A0F", fontWeight: "600" }}>
-                Agenda una hora
-              </Text>
-            </View>
-          </Pressable>
         )}
 
       </Animated.ScrollView>
@@ -739,74 +626,6 @@ const styles = StyleSheet.create({
   actionPillText: { fontFamily: "Manrope", fontSize: 13, fontWeight: "400", color: "#FFFFFF", letterSpacing: 0.1 },
   actionPillTextActive: { fontFamily: "Manrope", color: "#1B060F", fontWeight: "600" },
   actionPillTextSent: { color: "#c2c2c2" },
-  contactRow: { flexDirection: "row", flexWrap: "wrap", gap: 8 },
-  contactGrid: { flexDirection: "row", flexWrap: "wrap", gap: 8 },
-  contactPill: {
-    flexBasis: "30%",
-    flexGrow: 1,
-    justifyContent: "center",
-    paddingHorizontal: 8,
-    backgroundColor: "rgba(0,0,0,0.28)",
-    borderWidth: 1,
-    borderColor: "rgba(255,255,255,0.20)",
-  },
-
-  /* ── Bloque Agenda online ── */
-  agendaDivider: {
-    height: StyleSheet.hairlineWidth,
-    backgroundColor: "rgba(255,255,255,0.20)",
-    marginTop: 1,
-  },
-  agendaDividerBottom: {
-    marginTop: 16,
-  },
-  agendaBlock: {
-    borderWidth: 2,
-    borderColor: "rgba(255,255,255,0.20)",
-    borderRadius: 16,
-    backgroundColor: "rgba(0,0,0,0.35)",
-    padding: 16,
-    gap: 10,
-    marginTop: 16,
-  },
-  agendaTopRow: {
-    flexDirection: "row",
-    alignItems: "center",
-    gap: 10,
-  },
-  agendaIconCircle: {
-    width: 36,
-    height: 36,
-    borderRadius: 18,
-    backgroundColor: "rgba(255,255,255,0.04)",
-    alignItems: "center",
-    justifyContent: "center",
-  },
-  agendaAvailText: {
-    fontFamily: "Manrope",
-    fontSize: 14,
-    fontWeight: "600",
-    color: "#F9F9F9",
-    flex: 1,
-  },
-  agendaBtn: {
-    backgroundColor: "#F9F9F9",
-    borderRadius: 20,
-    paddingHorizontal: 13,
-    paddingVertical: 6,
-  },
-  agendaBtnText: {
-    fontFamily: "Manrope",
-    fontSize: 12,
-    fontWeight: "700",
-    color: "#060A0F",
-  },
-  agendaTagline: {
-    fontFamily: "Manrope",
-    fontSize: 12,
-    color: "rgba(249,249,249,0.5)",
-    paddingLeft: 46,
-  },
 
   /* ── Cards de sección ── */
   card: {
@@ -820,33 +639,27 @@ const styles = StyleSheet.create({
   cardCount: { fontFamily: "Manrope", fontSize: 11, color: GOLD_MUTED, fontWeight: "500" },
 
   /* ── Sección 1: Sesiones ── */
-  verTodasText: { fontFamily: "Manrope", fontSize: 12, fontWeight: "600", letterSpacing: 0.2 },
-  sessionSortBtn: { flexDirection: "row", alignItems: "center", gap: 4, marginBottom: 4, alignSelf: "flex-start" },
-  sessionSortText: { fontFamily: "Manrope", fontSize: 12, color: "rgba(250,240,238,0.40)", fontWeight: "500" },
-  sessionList: { gap: 9 },
-  sessionsProjectsDivider: {
-    height: StyleSheet.hairlineWidth,
-    backgroundColor: "rgba(255,255,255,0.20)",
-    marginTop: -4,
+  sessionsSection: {
+    marginTop: 18,
+    backgroundColor: "transparent",
+    paddingHorizontal: 0,
   },
-  servicesCard: {
-    backgroundColor: "rgba(0,0,0,0.28)",
-  },
-  servicesDescription: {
-    fontFamily: "Manrope",
-    fontSize: 13,
-    lineHeight: 20,
-    color: "rgba(255,255,255,0.72)",
-  },
-  verMasBtn: {
+  sessionGrid: { marginTop: -24 },
+  viewAllButton: {
+    marginHorizontal: H_PAD,
+    marginTop: 8,
     flexDirection: "row",
     alignItems: "center",
     justifyContent: "center",
-    gap: 5,
-    paddingVertical: 10,
-    marginTop: 4,
+    paddingVertical: 12,
+    borderRadius: 100,
   },
-  verMasText: { fontFamily: "Manrope", fontSize: 13, fontWeight: "600", color: GOLD },
+  viewAllText: { fontFamily: "Manrope", fontSize: 14, color: "#F9F9F9", fontWeight: "500" },
+  sessionsProjectsDivider: {
+    height: StyleSheet.hairlineWidth,
+    backgroundColor: "rgba(255,255,255,0.20)",
+    marginTop: 10,
+  },
 
   /* ── Sección 2: Géneros ── */
   genresWrap: { flexDirection: "row", flexWrap: "wrap", gap: 8 },
@@ -860,7 +673,7 @@ const styles = StyleSheet.create({
   },
   genreText: { fontFamily: "Manrope", fontSize: 12, color: GOLD_MUTED, fontWeight: "500", letterSpacing: 0.2 },
 
-  /* ── Sección 4: Proyectos externos ── */
+  /* ── Sígueme ── */
   projectsCard: { backgroundColor: "rgba(0,0,0,0.28)" },
   projectsList: { gap: 0 },
   projectRow: {

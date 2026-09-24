@@ -510,8 +510,8 @@ export default function ResonadorEditarScreen() {
             </View>
           </SectionCard>
 
-          {/* ── Proyectos externos ── */}
-          <SectionCard title="Proyectos externos" hint="Spotify, YouTube, Bandcamp…">
+          {/* ── Enlaces de Sígueme ── */}
+          <SectionCard title="Sígueme" hint="Spotify, YouTube, Bandcamp…">
             {form.projects.map((proj, i) => (
               <View key={i} style={styles.listItem}>
                 <ScrollView

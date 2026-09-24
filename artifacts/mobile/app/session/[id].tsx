@@ -97,7 +97,6 @@ export default function SessionDetailScreen({ id: idProp }: { id?: string } = {}
   const {
     playSession,
     playSessionInPlaylist,
-    pauseResume,
     isFavorite,
     toggleFavorite,
     currentSession,
@@ -299,11 +298,17 @@ export default function SessionDetailScreen({ id: idProp }: { id?: string } = {}
 
   const fav = localFav !== null ? localFav : isFavorite(session.id);
   const isCurrentSession = currentSession?.id === session.id;
-  const isCurrentlyPlaying = isCurrentSession && isPlaying;
 
   const { data: playsData } = useGetSessionPlayCount(session.id, {
     query: { queryKey: getGetSessionPlayCountQueryKey(session.id), staleTime: 60_000 },
   });
+
+  const openPlayer = () => {
+    preserveTabBarHiddenRef.current = true;
+    setRevealHandleHidden(true);
+    requestHide();
+    router.push("/player" as never);
+  };
 
   const handlePlay = () => {
     Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium);
@@ -317,21 +322,13 @@ export default function SessionDetailScreen({ id: idProp }: { id?: string } = {}
       playSession(session);
     }
     if (session.skipMiniPlayer) return;
-    preserveTabBarHiddenRef.current = true;
-    setRevealHandleHidden(true);
-    requestHide();
-    router.push("/player" as never);
+    openPlayer();
   };
 
   const handlePlayback = () => {
-    if (isLoading && isCurrentSession) return;
-    if (isPlaceholder) {
-      handlePlay();
-      return;
-    }
-    if (isCurrentSession && (isPlaying || progress < 1)) {
+    if (isCurrentSession && !isPlaceholder) {
       Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
-      pauseResume();
+      openPlayer();
       return;
     }
     handlePlay();
@@ -530,21 +527,19 @@ export default function SessionDetailScreen({ id: idProp }: { id?: string } = {}
               accessibilityLabel={
                 isPlaceholder
                   ? "Ver disponibilidad de la sesión"
-                  : isCurrentlyPlaying
-                    ? "Pausar sesión"
+                  : isCurrentSession
+                    ? "Abrir reproductor"
                     : "Reproducir sesión"
               }
               accessibilityState={{
                 busy: isLoading && isCurrentSession,
-                disabled: isLoading && isCurrentSession,
               }}
               testID="session-detail-play-button"
               onPress={handlePlayback}
-              disabled={isLoading && isCurrentSession}
               style={({ pressed }) => [
                 styles.immersivePlayButton,
                 {
-                  opacity: isLoading && isCurrentSession ? 0.82 : pressed ? 0.82 : 1,
+                  opacity: pressed ? 0.82 : 1,
                   transform: [{ scale: pressed ? 0.96 : 1 }],
                 },
               ]}
@@ -553,10 +548,10 @@ export default function SessionDetailScreen({ id: idProp }: { id?: string } = {}
                 <ActivityIndicator size="small" color={colors.foreground} />
               ) : (
                 <Ionicons
-                  name={isCurrentlyPlaying ? "pause" : "play"}
+                  name="play"
                   size={31}
                   color={colors.foreground}
-                  style={!isCurrentlyPlaying ? { marginLeft: 3 } : undefined}
+                  style={{ marginLeft: 3 }}
                 />
               )}
             </Pressable>

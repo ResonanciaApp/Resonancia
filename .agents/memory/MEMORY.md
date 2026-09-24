@@ -1,5 +1,5 @@
 - [GitHub push via GHPUSH_TOKEN](github-push-token.md) — askpass del workspace da token vacío; push con secreto GHPUSH_TOKEN en la URL (sanear con sed); PAT necesita Contents read/write
-- [Agenda block palette](agenda-block-palette.md) — bloque de agendamiento del perfil resonador es PÚRPURA #8260B5 deliberado (no dorado); no "corregir" en pasadas de consistencia
+- [Agenda block palette](agenda-block-palette.md) — banner de agenda ahora oculto; si vuelve, su paleta púrpura fue una elección deliberada
 - [SceneAnimationInline focus gate](scene-animation-inline-focus.md) — SceneAnimationInline necesita prop paused={!tabFocused}; sin él los withRepeat de cada capa corren 60fps en todas las tabs siempre
 - [Stale legacy default in AsyncStorage](stale-legacy-default-persisted.md) — cuando un "default" theme-linked reemplaza un default hardcodeado viejo, excluir el ID viejo (no solo el nuevo) al restaurar de storage o queda pegado
 - [Expo Router tab-group back nav](expo-router-tab-group-back-nav.md) — detail screens under app/(tabs)/ break back nav (resolves to Inicio); put them at app root like mezcla/[id], artista/[id]
