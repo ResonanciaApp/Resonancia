@@ -295,7 +295,11 @@ export function ContextSearchModal({
                 </View>
                 <Pressable
                   onPress={() => selectItem(recentItem)}
-                  style={({ pressed }) => [styles.recentCard, { opacity: pressed ? 0.72 : 1 }]}
+                  style={({ pressed }) => [
+                    styles.recentCard,
+                    matchDiscoverSearchBar && styles.mainSearchRecentCard,
+                    { opacity: pressed ? 0.72 : 1 },
+                  ]}
                   accessibilityRole="button"
                   accessibilityLabel={`Abrir ${recentItem.title}`}
                 >
@@ -307,7 +311,9 @@ export function ContextSearchModal({
                       {recentItem.title}
                     </Text>
                     <Text style={[styles.resultSubtitle, { color: colors.mutedForeground }]} numberOfLines={1}>
-                      {[recentItem.meta, recentItem.subtitle].filter(Boolean).join(" · ")}
+                      {matchDiscoverSearchBar
+                        ? recentItem.meta
+                        : [recentItem.meta, recentItem.subtitle].filter(Boolean).join(" · ")}
                     </Text>
                   </View>
                   <Feather name="chevron-right" size={20} color={colors.mutedForeground} />
@@ -552,6 +558,9 @@ const styles = StyleSheet.create({
     paddingRight: 14,
     borderRadius: 18,
     backgroundColor: "rgba(255,255,255,0.08)",
+  },
+  mainSearchRecentCard: {
+    backgroundColor: "rgba(0,0,0,0.28)",
   },
   recentThumb: {
     width: 66,
