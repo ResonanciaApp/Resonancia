@@ -146,7 +146,7 @@ export function ProfileSettingsSections({
   return (
     <View style={styles.root}>
       {placement === "settings" && (
-        <View style={styles.section}>
+        <View style={[styles.section, styles.compactSection]}>
           <View style={[styles.card, { backgroundColor: cardBackground, borderColor }]}>
             <Pressable
               onPress={() => router.push("/membresia")}
@@ -168,8 +168,8 @@ export function ProfileSettingsSections({
           </View>
         </View>
       )}
-      {visibleSections.map((section) => (
-        <View key={section.title} style={styles.section}>
+      {visibleSections.map((section, index) => (
+        <View key={section.title} style={[styles.section, index < visibleSections.length - 1 && styles.compactSection]}>
           {!section.hideTitle && (
             <Text
               style={[
@@ -318,6 +318,9 @@ const styles = StyleSheet.create({
   },
   section: {
     marginBottom: 38,
+  },
+  compactSection: {
+    marginBottom: 21,
   },
   sectionTitle: {
     fontFamily: "Manrope",
