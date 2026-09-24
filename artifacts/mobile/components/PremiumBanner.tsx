@@ -221,8 +221,6 @@ export default function PremiumBanner({
           style={({ pressed }) => [
             styles.btnWrap,
             styles.freeTrialButtonWrap,
-            sleepVariant && styles.sleepButtonWrap,
-            !sleepVariant && styles.defaultButtonWrap,
             {
               width: Math.max(178, viewportWidth - 217),
               alignSelf: "center",
@@ -230,19 +228,7 @@ export default function PremiumBanner({
             { opacity: pressed ? 0.88 : 1 },
           ]}
         >
-          <LinearGradient
-            colors={
-              sleepVariant
-                ? ["#B88D3E", "#B88D3E"]
-                : ["#B88D3E", "#B88D3E"]
-            }
-            start={{ x: 0, y: 0 }}
-            end={{ x: 1, y: 0 }}
-            style={[
-              styles.btn,
-              sleepVariant ? styles.sleepButtonInner : styles.defaultButtonInner,
-            ]}
-          >
+          <View style={[styles.btn, styles.freeTrialButtonInner]}>
             <Text
               style={[
                 styles.btnText,
@@ -251,7 +237,7 @@ export default function PremiumBanner({
             >
               Probar gratis
             </Text>
-          </LinearGradient>
+          </View>
         </Pressable>
       </View>
     </View>
@@ -473,24 +459,12 @@ const styles = StyleSheet.create({
   },
   freeTrialButtonWrap: {
     marginTop: 10,
+    borderRadius: 999,
+    borderWidth: 2,
+    borderColor: "rgba(255,255,255,0.2)",
+    backgroundColor: "#B9822F",
   },
-  sleepButtonWrap: {
-    alignSelf: "center",
-    padding: 2,
-    borderWidth: 0,
-    backgroundColor: "rgba(255,255,255,0.2)",
-  },
-  sleepButtonInner: {
+  freeTrialButtonInner: {
     paddingVertical: 14,
-    borderRadius: 48,
-  },
-  defaultButtonInner: {
-    paddingVertical: 14,
-    borderRadius: 48,
-  },
-  defaultButtonWrap: {
-    padding: 2,
-    borderWidth: 0,
-    backgroundColor: "rgba(255,255,255,0.2)",
   },
 });
