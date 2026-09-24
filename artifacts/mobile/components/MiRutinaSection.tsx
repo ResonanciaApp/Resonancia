@@ -665,7 +665,7 @@ const styles = StyleSheet.create({
   },
   activityCard: {
     height: ROUTINE_CARD_HEIGHT,
-    borderRadius: 16,
+    borderRadius: 21,
     flexDirection: "row",
     alignItems: "center",
     paddingLeft: 10,
@@ -775,7 +775,7 @@ const styles = StyleSheet.create({
   },
   addButton: {
     minHeight: 68,
-    borderRadius: 16,
+    borderRadius: 21,
     borderWidth: 1,
     borderStyle: "dashed",
     backgroundColor: "transparent",

@@ -17,6 +17,7 @@ import { LinearGradient } from "expo-linear-gradient";
 import { GoldGradient, GoldGradientFill } from "@/components/GoldGradient";
 import { GhostPill } from "@/components/GhostPill";
 import { MilestoneCelebration } from "@/components/MilestoneCelebration";
+import { SessionBadgeGlass } from "@/components/SessionDurationBadge";
 import {
   PremiumPlansSurface,
   usePremiumPlansModalHost,
@@ -102,26 +103,6 @@ function isLightGradient(g: readonly [string, string, string]): boolean {
   const gr = parseInt(hex.slice(2, 4), 16);
   const b = parseInt(hex.slice(4, 6), 16);
   return (r + gr + b) / 3 > 100;
-}
-
-function getDarkestGradientColor(colors: readonly string[]): string {
-  let darkest = colors[0] ?? "#000000";
-  let darkestLuminance = Number.POSITIVE_INFINITY;
-
-  for (const color of colors) {
-    const hex = color.replace("#", "");
-    if (hex.length !== 6) continue;
-    const r = parseInt(hex.slice(0, 2), 16);
-    const g = parseInt(hex.slice(2, 4), 16);
-    const b = parseInt(hex.slice(4, 6), 16);
-    const luminance = 0.2126 * r + 0.7152 * g + 0.0722 * b;
-    if (luminance < darkestLuminance) {
-      darkest = color;
-      darkestLuminance = luminance;
-    }
-  }
-
-  return darkest;
 }
 
 /** Flotante Zen — paleta para el sheet del mezclador. */
@@ -254,7 +235,10 @@ function DraggableTrackRow({
               accessibilityRole="button"
               accessibilityLabel={`Quitar ${sound.name} de la mezcla`}
             >
-              <Feather name="x" size={16} color="#060A0F" />
+              <View pointerEvents="none" style={StyleSheet.absoluteFill}>
+                <SessionBadgeGlass showBlackTint={false} showWhiteTint />
+              </View>
+              <Feather name="x" size={14} color="#060A0F" />
             </Pressable>
           </View>
         </GestureDetector>
@@ -958,7 +942,7 @@ export function MixerSheet() {
               <Pressable
                 onPress={() => handleAnimatedCloseRef.current(true)}
                 hitSlop={10}
-                style={[styles.headerBtn, { marginRight: -8 }]}
+                style={[styles.headerBtn, { marginRight: -8, transform: [{ translateX: -3 }] }]}
                 accessibilityRole="button"
                 accessibilityLabel="Cerrar mezcla"
               >
@@ -1036,7 +1020,7 @@ export function MixerSheet() {
                 accessibilityRole="button"
               >
                 <View style={styles.footerPlayCircle}>
-                  <Svg width={45} height={45} viewBox="0 0 48 48" style={{ marginLeft: 2 }}>
+                  <Svg width={45} height={45} viewBox="0 0 48 48" style={{ marginLeft: 4 }}>
                     {isPlaying ? (
                       <>
                         <Rect x="7"  y="5" width="12" height="36" rx="5" ry="5" fill="#F9F9F9" />
@@ -1079,7 +1063,7 @@ export function MixerSheet() {
         <Animated.View style={[styles.modalOverlay, { opacity: saveOverlayOpacity }]}>
           <Pressable style={StyleSheet.absoluteFill} onPress={cancelSave} />
           <Pressable
-            style={[styles.modalCard, { backgroundColor: getDarkestGradientColor(sheetGradient) }]}
+            style={[styles.modalCard, { backgroundColor: theme.gradient[theme.gradient.length - 1] }]}
             onPress={(e) => e.stopPropagation()}
           >
             <Text style={[styles.modalTitle, { color: "#FFFFFF" }]}>Nombra tu mezcla</Text>
@@ -1349,7 +1333,7 @@ const styles = StyleSheet.create({
     width: 20,
     height: 20,
     borderRadius: 10,
-    backgroundColor: "#F9F9F9",
+    overflow: "hidden",
     alignItems: "center",
     justifyContent: "center",
   },

@@ -441,6 +441,7 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     alignItems: "center",
     marginRight: 2,
+    transform: [{ translateY: -3 }],
   },
 
   // ── Píldora de mezcla (vidrio blanco, altura 68, radio 999) ──
@@ -471,7 +472,7 @@ const styles = StyleSheet.create({
     paddingLeft: 12,
     paddingRight: 84,
     gap: 10,
-    transform: [{ translateY: 1 }],
+    transform: [{ translateY: 2 }],
   },
 
   // ── Stack / carrusel: ancho animado, overflow visible (≥6 thumbs pasan por detrás) ─
