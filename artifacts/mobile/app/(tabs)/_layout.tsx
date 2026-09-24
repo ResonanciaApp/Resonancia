@@ -278,7 +278,7 @@ function CustomTabBar({ state, navigation, descriptors }: TabBarProps) {
             const isFocused = effectiveRouteIndex === index;
             const onPress   = () => {
               if (MAIN_HAPTIC_ROUTES.has(route.name)) {
-                void Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium).catch(() => {});
+                void Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Soft).catch(() => {});
               }
               if (libOpen) closeLib();
               if (route.name === "musica") {
