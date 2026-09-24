@@ -33,6 +33,7 @@ const colors = {
 
 export const WIDGET_GREEN_SOLID = "#F9F9F9";
 export const INSPIRATION_SKY = "#7DD3FC";
+export const POSITIONED_DAY_GRADIENT = ["#9380E7", "#9EA5EF"] as const;
 
 export const MEMBERSHIP_AURORA = {
   textSoft: "#D4DDDA",

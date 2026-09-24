@@ -5,10 +5,10 @@ import { StyleSheet, Text, View } from "react-native";
 import Svg, { Path } from "react-native-svg";
 
 import { CinematicFadeSlide } from "@/components/CinematicFadeSlide";
+import { POSITIONED_DAY_GRADIENT } from "@/constants/colors";
 import { useStreak } from "@/hooks/useStreak";
 
 const DAY_INITIALS = ["L", "M", "M", "J", "V", "S", "D"];
-const POSITIONED_DAY_GRADIENT = ["#9380E7", "#9EA5EF"] as const;
 
 export function StreakWeekRow({
   animateEntrance = false,
