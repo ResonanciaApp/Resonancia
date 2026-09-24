@@ -6,7 +6,7 @@ import { router, useFocusEffect } from "expo-router";
 import { LinearGradient } from "expo-linear-gradient";
 import { useColors } from "@/hooks/useColors";
 import { useSceneTheme } from "@/context/SceneThemeContext";
-import { useReflectionCategories, CategoryIcon } from "@/constants/reflectionCategories";
+import { useReflectionCategories } from "@/constants/reflectionCategories";
 import { useUpdateMyReflection, useDeleteMyReflection, type Reflection, type ReflectionCategory, listMyReflections, useListMyReflections, getListMyReflectionsQueryKey } from "@workspace/api-client-react";
 import { KeyboardAwareScrollView } from "react-native-keyboard-controller";
 import { useQueryClient, type QueryKey } from "@tanstack/react-query";
@@ -417,7 +417,6 @@ function PremiumInnerSpaceScreen() {
 
   const [editingId, setEditingId] = useState<number | null>(null);
   const [editMessage, setEditMessage] = useState("");
-  const [editCategory, setEditCategory] = useState<ReflectionCategory | null>(null);
 
   const [shareReflection, setShareReflection] = useState<Reflection | null>(null);
 
@@ -454,7 +453,6 @@ function PremiumInnerSpaceScreen() {
   const beginEditing = (reflection: Reflection) => {
     setEditingId(reflection.id);
     setEditMessage(reflection.message);
-    setEditCategory(reflection.category);
   };
 
   const requestDelete = (reflection: Reflection) => {
@@ -585,9 +583,6 @@ function PremiumInnerSpaceScreen() {
     const timeLabel = new Date(reflection.createdAt).toLocaleTimeString("es-ES", { hour: "2-digit", minute: "2-digit" });
     const cat = reflectionCategories[reflection.category] ?? reflectionCategories.clarity;
     const isEditing = editingId === reflection.id;
-    const editingCat = isEditing && editCategory
-      ? reflectionCategories[editCategory] ?? reflectionCategories.clarity
-      : cat;
     const isShareable = canShareReflection(reflection.message);
     const reflectionId = String(reflection.id);
     const isRevealed = wallRevealDelays.has(reflectionId);
@@ -606,10 +601,10 @@ function PremiumInnerSpaceScreen() {
           translateYFrom={10}
         >
           <View style={styles.reflectionMetaRow}>
-            <Text style={[styles.timeText, { color: colors.mutedForeground }]}>{timeLabel}</Text>
-            <View style={[styles.cardCatPill, { backgroundColor: editingCat.bg }]}>
-              <Text style={[styles.cardCatText, { color: editingCat.color }]}>{editingCat.label}</Text>
+            <View style={[styles.cardCatPill, { backgroundColor: cat.bg }]}>
+              <Text style={[styles.cardCatText, { color: cat.color }]}>{cat.label}</Text>
             </View>
+            <Text style={[styles.timeText, { color: colors.mutedForeground }]}>{timeLabel}</Text>
           </View>
         </WallScrollReveal>
 
@@ -624,41 +619,6 @@ function PremiumInnerSpaceScreen() {
           translateYFrom={18}
         >
         <View style={styles.reflectionCard}>
-          {isEditing && (
-            <View style={styles.cardHeader}>
-              <View style={styles.editCategoryRow}>
-                {reflectionCategoryOptions.map(c => (
-                  <Pressable
-                    key={c.id}
-                    testID={`edit-cat-${c.id}`}
-                    accessibilityLabel={`Seleccionar ${c.label}`}
-                    onPress={() => setEditCategory(c.id as ReflectionCategory)}
-                    style={styles.editCategoryPill}
-                  >
-                    <CategoryIcon
-                      category={c.id as ReflectionCategory}
-                      categoryConfig={c}
-                      size={19}
-                      active={editCategory === c.id}
-                      neutralWhenInactive
-                      inactiveColor="#F9F9F9"
-                    />
-                  </Pressable>
-                ))}
-              </View>
-              <Pressable
-                testID={`delete-${reflection.id}`}
-                accessibilityLabel="Borrar mensaje"
-                accessibilityRole="button"
-                disabled={deleteMutation.isPending}
-                style={[styles.menuButton, deleteMutation.isPending && { opacity: 0.45 }]}
-                onPress={() => requestDelete(reflection)}
-              >
-                <Feather name="trash-2" size={18} color={colors.mutedForeground} />
-              </Pressable>
-            </View>
-          )}
-
           {isEditing ? (
             <View style={styles.editContainer}>
               <TextInput
@@ -676,29 +636,29 @@ function PremiumInnerSpaceScreen() {
                 onChangeText={setEditMessage}
               />
               <View style={styles.editActions}>
-                <Pressable testID="cancel-edit" style={styles.editCancel} onPress={() => setEditingId(null)}>
-                  <Text style={[styles.editCancelText, { color: colors.mutedForeground }]}>Cancelar</Text>
-                </Pressable>
                 <Pressable
-                  testID="save-edit"
-                  style={[styles.editSave, { backgroundColor: colors.primary }]}
-                  disabled={editMessage.trim() === "" || !editCategory || updateMutation.isPending}
-                  onPress={() => {
-                    const data: { message: string; category?: ReflectionCategory } = {
-                      message: editMessage.trim(),
-                    };
-                    // Archived categories are intentionally absent from the
-                    // active picker. Do not resend one unchanged: the API
-                    // treats category as an optional edit and can preserve
-                    // historical values when it is omitted.
-                    if (editCategory && editCategory !== reflection.category) {
-                      data.category = editCategory;
-                    }
-                    updateMutation.mutate({ id: reflection.id, data });
-                  }}
+                  testID={`delete-${reflection.id}`}
+                  accessibilityLabel="Borrar mensaje"
+                  accessibilityRole="button"
+                  disabled={deleteMutation.isPending}
+                  style={[styles.editDelete, deleteMutation.isPending && { opacity: 0.45 }]}
+                  onPress={() => requestDelete(reflection)}
                 >
-                  <Text style={[styles.editSaveText, { color: colors.primaryForeground }]}>{updateMutation.isPending ? "Guardando..." : "Guardar"}</Text>
+                  <Feather name="trash-2" size={18} color={colors.mutedForeground} />
                 </Pressable>
+                <View style={styles.editActionButtons}>
+                  <Pressable testID="cancel-edit" style={styles.editCancel} onPress={() => setEditingId(null)}>
+                    <Text style={[styles.editCancelText, { color: colors.mutedForeground }]}>Cancelar</Text>
+                  </Pressable>
+                  <Pressable
+                    testID="save-edit"
+                    style={[styles.editSave, { backgroundColor: colors.primary }]}
+                    disabled={editMessage.trim() === "" || updateMutation.isPending}
+                    onPress={() => updateMutation.mutate({ id: reflection.id, data: { message: editMessage.trim() } })}
+                  >
+                    <Text style={[styles.editSaveText, { color: colors.primaryForeground }]}>{updateMutation.isPending ? "Guardando..." : "Guardar"}</Text>
+                  </Pressable>
+                </View>
               </View>
               {updateMutation.isError && <Text style={[styles.errorText, { color: colors.destructive, marginTop: 8, textAlign: 'right' }]}>Error al guardar.</Text>}
             </View>
@@ -1064,12 +1024,6 @@ const styles = StyleSheet.create({
   reflectionCardEntrance: {
     width: "100%",
   },
-  cardHeader: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-    marginBottom: 12,
-  },
   cardCatPill: {
     paddingHorizontal: 10,
     paddingVertical: 4,
@@ -1153,16 +1107,7 @@ const styles = StyleSheet.create({
     fontWeight: '500',
   },
   editContainer: {
-    marginTop: 8,
-  },
-  editCategoryRow: {
-    flex: 1,
-    flexDirection: 'row',
-    gap: 8,
-  },
-  editCategoryPill: {
-    padding: 4,
-    borderRadius: 20,
+    width: "100%",
   },
   editInput: {
     minHeight: 80,
@@ -1175,8 +1120,18 @@ const styles = StyleSheet.create({
   },
   editActions: {
     flexDirection: 'row',
-    justifyContent: 'flex-end',
+    justifyContent: 'space-between',
     alignItems: 'center',
+  },
+  editDelete: {
+    width: 40,
+    height: 40,
+    alignItems: "flex-start",
+    justifyContent: "center",
+  },
+  editActionButtons: {
+    flexDirection: "row",
+    alignItems: "center",
     gap: 12,
   },
   editCancel: {
