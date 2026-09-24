@@ -769,6 +769,8 @@ export function ProfileScreenBase({
     if (accountMode) setAccountName(username);
   }, [accountMode, username]);
 
+  const accountSaveDisabled = Boolean(accountAction) || accountName.trim() === username.trim();
+
   const openEdit = () => {
     setEditNombre(username);
     setEditApellido(lastName);
@@ -789,6 +791,7 @@ export function ProfileScreenBase({
   };
 
   const saveAccount = () => {
+    if (accountSaveDisabled) return;
     updateProfile({ username: accountName });
     Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success);
     accountToastOpacity.stopAnimation();
@@ -1167,13 +1170,18 @@ export function ProfileScreenBase({
 
               <Pressable
                 onPress={saveAccount}
-                disabled={Boolean(accountAction)}
+                disabled={accountSaveDisabled}
+                accessibilityRole="button"
+                accessibilityState={{ disabled: accountSaveDisabled }}
                 style={({ pressed }) => [
                   styles.accountSaveButton,
-                  { opacity: pressed || accountAction ? 0.78 : 1 },
+                  accountSaveDisabled && styles.accountSaveButtonDisabled,
+                  !accountSaveDisabled && pressed && styles.accountSaveButtonPressed,
                 ]}
               >
-                <Text style={styles.accountSaveButtonText}>Guardar</Text>
+                <Text style={[styles.accountSaveButtonText, accountSaveDisabled && styles.accountSaveButtonTextDisabled]}>
+                  Guardar
+                </Text>
               </Pressable>
 
               <Pressable
@@ -2518,11 +2526,20 @@ const styles = StyleSheet.create({
     overflow: "hidden",
     marginTop: 4,
   },
+  accountSaveButtonDisabled: {
+    backgroundColor: "rgba(249,249,249,0.4)",
+  },
+  accountSaveButtonPressed: {
+    opacity: 0.86,
+  },
   accountSaveButtonText: {
     fontFamily: "Manrope",
     fontSize: 16,
     fontWeight: "700",
     color: "#060A0F",
+  },
+  accountSaveButtonTextDisabled: {
+    color: "rgba(249,249,249,0.8)",
   },
   accountDeleteButton: {
     alignSelf: "center",
@@ -2530,8 +2547,6 @@ const styles = StyleSheet.create({
     paddingVertical: 10,
     marginTop: -8,
     borderRadius: 999,
-    borderWidth: 2,
-    borderColor: "rgba(42,40,64,0.65)",
   },
   accountDeleteButtonText: {
     fontFamily: "Manrope",
