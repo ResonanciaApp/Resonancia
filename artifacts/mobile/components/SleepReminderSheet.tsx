@@ -5,7 +5,6 @@ import React, { useCallback, useEffect, useRef, useState } from "react";
 import {
   ActivityIndicator,
   Animated,
-  Easing,
   Linking,
   Modal,
   Platform,
@@ -82,34 +81,39 @@ export function SleepReminderSheet({
   useEffect(() => {
     if (!mounted) return;
     if (!visible) {
+      translateY.stopAnimation();
+      backdropOpacity.stopAnimation();
       Animated.parallel([
         Animated.timing(translateY, {
           toValue: SHEET_OFFSET,
-          duration: 240,
-          easing: Easing.in(Easing.cubic),
+          duration: 500,
           useNativeDriver: true,
         }),
         Animated.timing(backdropOpacity, {
           toValue: 0,
-          duration: 200,
+          duration: 460,
           useNativeDriver: true,
         }),
-      ]).start(() => setMounted(false));
+      ]).start(({ finished }) => {
+        if (finished) setMounted(false);
+      });
       return;
     }
+    translateY.stopAnimation();
+    backdropOpacity.stopAnimation();
     translateY.setValue(SHEET_OFFSET);
     backdropOpacity.setValue(0);
     const frame = requestAnimationFrame(() => {
       Animated.parallel([
-        Animated.timing(translateY, {
+        Animated.spring(translateY, {
           toValue: 0,
-          duration: 340,
-          easing: Easing.out(Easing.cubic),
+          tension: 55,
+          friction: 8,
           useNativeDriver: true,
         }),
         Animated.timing(backdropOpacity, {
-          toValue: 1,
-          duration: 240,
+          toValue: 0.62,
+          duration: 500,
           useNativeDriver: true,
         }),
       ]).start();
@@ -354,7 +358,7 @@ const styles = StyleSheet.create({
   },
   backdrop: {
     ...StyleSheet.absoluteFillObject,
-    backgroundColor: "rgba(0,0,0,0.62)",
+    backgroundColor: "#000000",
   },
   sheet: {
     maxHeight: "92%",

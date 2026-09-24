@@ -5,13 +5,14 @@ description: Cambiar fontWeight al seleccionar un chip ensancha el elemento y em
 
 ## Regla
 
-En chips animados con `translateX` (selección+fade), el `fontWeight` del texto **no debe cambiar** entre el estado normal y seleccionado. Solo cambiar el color es seguro.
+En chips animados con `translateX` (selección+fade), el `fontWeight` del texto **no debe cambiar el ancho del chip** entre el estado normal y seleccionado. Cambiar solo el color es lo más seguro. Si se pide negrita solo al seleccionar, reservar siempre el ancho con una copia invisible del texto en negrita y superponer el texto visible centrado; así el chip mantiene el mismo tamaño.
 
 **Why:** Un cambio de peso de fuente (ej. 500→700) modifica el ancho del chip en el layout nativo antes de que `useNativeDriver: true` pueda ocultarlo. Los chips a la derecha se desplazan visualmente durante el fade-out, aunque su propio `opacity` esté animando hacia 0.
 
 **How to apply:**
 - `chipText`: definir el peso final (ej. `fontWeight: "600"`) en el estado base.
 - `chipTextSel`: solo `{ color: "..." }`, sin `fontWeight`.
+- Excepción para tabs que exigen negrita seleccionada: medir siempre con un texto bold invisible (fuera del árbol de accesibilidad); el texto visible se superpone y alterna su peso. No usar `opacity` para ocultar el texto visible porque seguiría ocupando ancho variable.
 - Si se necesita resaltar visualmente el seleccionado, hacerlo con color de fondo (LinearGradient/backgroundColor) o color de texto, nunca con peso.
 
 ## Referencia de implementación correcta (categorías)

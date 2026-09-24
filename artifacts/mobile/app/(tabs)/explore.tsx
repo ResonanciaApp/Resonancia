@@ -1194,7 +1194,7 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     borderColor: "rgba(255,255,255,0.7)",
     paddingHorizontal: 18,
-    height: 55,
+    height: 52,
   },
   searchPlaceholder: {
     flex: 1,

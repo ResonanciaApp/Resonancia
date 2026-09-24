@@ -94,10 +94,18 @@ const PillTab = memo(function PillTab({
       }}
       style={[styles.pillTab, sel && styles.pillTabSel]}
     >
-      {/* Texto */}
-      <Text style={[styles.pillTabLabel, sel && styles.pillTabLabelSel]}>
-        {tab.label}
-      </Text>
+      <View style={styles.pillTabLabelWrap}>
+        <Text
+          style={[styles.pillTabLabel, styles.pillTabLabelMeasure]}
+          accessible={false}
+          importantForAccessibility="no-hide-descendants"
+        >
+          {tab.label}
+        </Text>
+        <Text style={[styles.pillTabLabel, styles.pillTabLabelVisible, sel && styles.pillTabLabelSel]}>
+          {tab.label}
+        </Text>
+      </View>
     </Pressable>
   );
 });
@@ -943,8 +951,11 @@ const styles = StyleSheet.create({
     backgroundColor: "rgba(0,0,0,0.31)",
     borderColor: "rgba(255,255,255,0.8)",
   },
+  pillTabLabelWrap: { alignItems: "center", justifyContent: "center" },
   pillTabLabel:   { fontFamily: "Manrope", fontSize: 11, fontWeight: "550" as any, letterSpacing: 0.3, color: "#F9F9F9", textAlign: "center" },
-  pillTabLabelSel:{ color: "#FFFFFF", fontWeight: "550" as any },
+  pillTabLabelMeasure: { fontWeight: "700", opacity: 0 },
+  pillTabLabelVisible: { position: "absolute" },
+  pillTabLabelSel:{ color: "#FFFFFF", fontWeight: "700" },
   pillTabUnderline: {},
 
   separator: { height: StyleSheet.hairlineWidth, backgroundColor: "rgba(0,0,0,0.07)", marginTop: -6 },

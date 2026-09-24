@@ -238,7 +238,7 @@ function DraggableTrackRow({
               <View pointerEvents="none" style={StyleSheet.absoluteFill}>
                 <SessionBadgeGlass showBlackTint={false} showWhiteTint />
               </View>
-              <Feather name="x" size={14} color="#060A0F" />
+              <Feather name="x" size={14} color="#F9F9F9" />
             </Pressable>
           </View>
         </GestureDetector>
@@ -1020,7 +1020,7 @@ export function MixerSheet() {
                 accessibilityRole="button"
               >
                 <View style={styles.footerPlayCircle}>
-                  <Svg width={45} height={45} viewBox="0 0 48 48" style={{ marginLeft: 4 }}>
+                  <Svg width={45} height={45} viewBox="0 0 48 48" style={{ marginLeft: isPlaying ? 2 : 5 }}>
                     {isPlaying ? (
                       <>
                         <Rect x="7"  y="5" width="12" height="36" rx="5" ry="5" fill="#F9F9F9" />
