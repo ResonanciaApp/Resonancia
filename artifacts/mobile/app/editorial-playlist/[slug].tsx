@@ -1,4 +1,4 @@
-import { Feather, Ionicons } from "@expo/vector-icons";
+import { Feather, Ionicons, MaterialCommunityIcons } from "@expo/vector-icons";
 import { BlurView } from "expo-blur";
 import { Image } from "expo-image";
 import { LinearGradient } from "expo-linear-gradient";
@@ -23,6 +23,7 @@ import Svg, { Path, Rect } from "react-native-svg";
 
 import { BLUR_PLACEHOLDER, IMAGE_TRANSITION } from "@/constants/imagePlaceholder";
 import { EqualizerBars } from "@/components/EqualizerBars";
+import { SessionBadgeGlass } from "@/components/SessionDurationBadge";
 import { useBackOverride } from "@/context/BackOverrideContext";
 import { useCatalog } from "@/context/CatalogContext";
 import { useFoldersPlaylists } from "@/context/FoldersPlaylistsContext";
@@ -619,19 +620,17 @@ function EditorialSessionRow({
     >
       {session && showPlayControl && (
         <View style={styles.sessionPlayControl}>
-          {isPlaying ? (
-            <Svg width={16} height={16} viewBox="0 0 46 46">
-              <Rect x="7" y="5" width="12" height="36" rx="5" ry="5" fill={COLORS.navy} />
-              <Rect x="27" y="5" width="12" height="36" rx="5" ry="5" fill={COLORS.navy} />
-            </Svg>
-          ) : (
-            <Svg width={16} height={16} viewBox="0 0 46 46">
-              <Path d="M 13.2 7.1 Q 8 4 8 10 L 8 36 Q 8 42 13.2 38.9 L 34.8 26.1 Q 40 23 34.8 19.9 Z" fill={COLORS.navy} />
-            </Svg>
-          )}
+          <View pointerEvents="none" style={styles.sessionPlayGlass}>
+            <SessionBadgeGlass showBlackTint={false} showWhiteTint />
+          </View>
+          <MaterialCommunityIcons
+            name={isPlaying ? "pause" : "play"}
+            size={24}
+            color="#F9F9F9"
+          />
           {isCompleted && (
-            <View style={styles.sessionCompletedBadge}>
-              <Feather name="check" size={11} color="#FFFFFF" />
+            <View style={styles.sessionCompletedCheck}>
+              <Feather name="check" size={21} color="#4ADE80" />
             </View>
           )}
         </View>
@@ -802,21 +801,23 @@ const styles = StyleSheet.create({
     borderRadius: 20,
     alignItems: "center",
     justifyContent: "center",
-    backgroundColor: "#F9F9F9",
     position: "relative",
   },
-  sessionCompletedBadge: {
+  sessionPlayGlass: {
+    position: "absolute",
+    width: 33,
+    height: 33,
+    borderRadius: 16.5,
+    overflow: "hidden",
+  },
+  sessionCompletedCheck: {
     position: "absolute",
     top: -5,
     right: -5,
     width: 18,
     height: 18,
-    borderRadius: 9,
     alignItems: "center",
     justifyContent: "center",
-    backgroundColor: "#8260B5",
-    borderWidth: 1.5,
-    borderColor: "#060A0F",
   },
   sessionTitle: { color: COLORS.text, fontSize: 14, lineHeight: 19, fontWeight: "600" },
   sessionTitleActive: { color: "#F9F9F9" },

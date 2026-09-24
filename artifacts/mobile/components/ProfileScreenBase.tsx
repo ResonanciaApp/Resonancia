@@ -270,7 +270,7 @@ function ProfileMembershipModules({
           isPremiumPlan && !hasPremiumAccess ? "Prueba Premium" : plan.name;
         const displayEyebrow =
           isPremiumPlan && !hasPremiumAccess
-            ? "Más de 500 sesiones creadas para tu bienestar y expansión de consciencia."
+            ? "Más de 500 sesiones creadas para tu transformación y bienestar"
             : plan.eyebrow;
 
         return (
