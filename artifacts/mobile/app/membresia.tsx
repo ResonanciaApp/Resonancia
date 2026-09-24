@@ -38,7 +38,6 @@ const DATE_FORMATTER = new Intl.DateTimeFormat("es-CL", {
   year: "numeric",
 });
 
-const GIFT_GOLD_COLORS = ["#D8A84F", "#F3D58A", "#B9822F"] as const;
 const PREMIUM_VIOLET = "#6B50D2";
 const PREMIUM_VIOLET_DARK = "#5139AF";
 
@@ -491,12 +490,6 @@ export default function MembresiaScreen() {
               pressed && styles.manageButtonPressed,
             ]}
           >
-            <LinearGradient
-              colors={GIFT_GOLD_COLORS}
-              start={{ x: 0, y: 0.5 }}
-              end={{ x: 1, y: 0.5 }}
-              style={StyleSheet.absoluteFill}
-            />
             <Text style={styles.manageButtonText}>Gestionar Premium</Text>
           </Pressable>
             </>
@@ -1499,7 +1492,10 @@ const styles = StyleSheet.create({
   manageButton: {
     height: 52,
     marginTop: 22,
-    borderRadius: 14,
+    borderRadius: 999,
+    borderWidth: 2,
+    borderColor: "rgba(255,255,255,0.2)",
+    backgroundColor: "#B9822F",
     overflow: "hidden",
     alignItems: "center",
     justifyContent: "center",
