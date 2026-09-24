@@ -268,32 +268,7 @@ export default function ResonadorPerfilScreen() {
           </View>
 
           <Text style={[styles.bioText, { color: colors.mutedForeground }]}>{resonador.bio}</Text>
-
-          {resonador.memberSince ? (
-            <View style={styles.locationRow}>
-              <Feather name="calendar" size={12} color={colors.mutedForeground} />
-              <Text style={[styles.locationText, { color: colors.mutedForeground }]}>
-                Miembro desde {resonador.memberSince}
-              </Text>
-            </View>
-          ) : null}
-
-          {/* Seguidores / Siguiendo */}
-          <View style={styles.followCountsRow}>
-            <View style={styles.followCountItem}>
-              <Text style={[styles.followCountNum, { color: colors.foreground }]}>
-                {resonador.followersCount ?? 0}
-              </Text>
-              <Text style={[styles.followCountLabel, { color: colors.mutedForeground }]}>seguidores</Text>
-            </View>
-            <View style={[styles.followCountDivider, { backgroundColor: "rgba(255,255,255,0.1)" }]} />
-            <View style={styles.followCountItem}>
-              <Text style={[styles.followCountNum, { color: colors.foreground }]}>
-                {resonador.followingCount ?? 0}
-              </Text>
-              <Text style={[styles.followCountLabel, { color: colors.mutedForeground }]}>siguiendo</Text>
-            </View>
-          </View>
+          <View style={styles.bioDivider} />
 
           {/* Pills de acción */}
           {!isOwn && (
@@ -600,11 +575,12 @@ const styles = StyleSheet.create({
     paddingHorizontal: 8,
     fontStyle: "italic",
   },
-  followCountsRow: { flexDirection: "row", alignItems: "center", marginTop: 14, marginBottom: 4 },
-  followCountItem: { alignItems: "center", paddingHorizontal: 20 },
-  followCountNum: { fontFamily: "Manrope", fontSize: 18, fontWeight: "700" },
-  followCountLabel: { fontFamily: "Manrope", fontSize: 11, marginTop: 1 },
-  followCountDivider: { width: 1, height: 28 },
+  bioDivider: {
+    alignSelf: "stretch",
+    height: StyleSheet.hairlineWidth,
+    backgroundColor: "rgba(255,255,255,0.20)",
+    marginTop: 14,
+  },
 
   actionPillsWrap: { alignSelf: "stretch", gap: 8, marginTop: 14 },
   actionPillsRow: { flexDirection: "row", gap: 8 },
