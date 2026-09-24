@@ -38,7 +38,7 @@ const DATE_FORMATTER = new Intl.DateTimeFormat("es-CL", {
 });
 
 const GIFT_GOLD_COLORS = ["#D8A84F", "#F3D58A", "#B9822F"] as const;
-const PREMIUM_OFFER_BACKGROUND = ["#3A1F66", "#291653", "#1A0F3E", "#0D0826"] as const;
+const PREMIUM_OFFER_BACKGROUND = ["#261147", "#211042", "#160C42", "#110833"] as const;
 const PREMIUM_OFFER_LOCATIONS = [0, 0.33, 0.66, 1] as const;
 const PREMIUM_VIOLET = "#6B50D2";
 const PREMIUM_VIOLET_DARK = "#5139AF";
