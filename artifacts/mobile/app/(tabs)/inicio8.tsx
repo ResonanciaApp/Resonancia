@@ -1360,6 +1360,10 @@ function Inicio3HeroMedia({
           allowsPictureInPicture={false}
         />
       ) : null}
+      <View
+        pointerEvents="none"
+        style={[StyleSheet.absoluteFill, { backgroundColor: `rgba(0,0,0,${effectiveHero.overlayOpacity})` }]}
+      />
     </View>
   );
 }

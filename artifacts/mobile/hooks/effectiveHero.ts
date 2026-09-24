@@ -93,6 +93,7 @@ export function useEffectiveHero(fallbackImage: string | number, enabled = true)
     loading: query.isLoading && !inspirationImage,
     error: query.error ?? inspiration.error,
     title: inspirationDay?.content?.quote,
+    overlayOpacity: inspirationDay?.content?.overlayOpacity ?? 0,
     fallbackImage: fallbackImageUrl ? absoluteMediaUrl(fallbackImageUrl) : fallbackImage,
   };
 }
