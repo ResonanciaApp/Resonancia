@@ -233,8 +233,17 @@ export function ContextSearchModal({
             },
           ]}
         >
-          <View style={styles.headerTitleRow}>
-            <Text style={[styles.headerTitle, { color: colors.foreground }]}>Buscar</Text>
+          <View style={[styles.headerTitleRow, matchDiscoverSearchBar && styles.discoverTitleRow]}>
+            {matchDiscoverSearchBar && <View style={styles.titleSpacer} />}
+            <Text
+              style={[
+                styles.headerTitle,
+                matchDiscoverSearchBar && styles.discoverTitle,
+                { color: colors.foreground },
+              ]}
+            >
+              Buscar
+            </Text>
             <Pressable onPress={close} hitSlop={10} style={styles.closeButton} accessibilityLabel="Cerrar búsqueda">
               <Feather name="x" size={22} color={colors.foreground} />
             </Pressable>
@@ -432,11 +441,21 @@ const styles = StyleSheet.create({
     justifyContent: "space-between",
     marginBottom: 10,
   },
+  discoverTitleRow: {
+    marginBottom: 5,
+  },
+  titleSpacer: {
+    width: 43,
+    height: 43,
+  },
   headerTitle: {
     fontFamily: "Manrope",
     fontSize: 28,
     fontWeight: "800",
     letterSpacing: 0.2,
+  },
+  discoverTitle: {
+    fontSize: 21,
   },
   searchBar: {
     width: "100%",
