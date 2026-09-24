@@ -30,6 +30,7 @@ import { PremiumPlansOverlay } from "@/components/PremiumPlansOverlay";
 import { SelectedSceneProvider, useSelectedScene } from "@/context/SelectedSceneContext";
 import { TabBarVisibilityProvider } from "@/context/TabBarVisibilityContext";
 import { ErrorBoundary } from "@/components/ErrorBoundary";
+import { SacredBackground } from "@/components/SacredBackground";
 import { AmbientPlayerProvider } from "@/context/AmbientPlayerContext";
 import { SceneThemeProvider, SceneThemeTransitionOverlay, useSceneTheme, loadPersistedSceneId } from "@/context/SceneThemeContext";
 import type { SceneId } from "@/context/AmbientPlayerContext";
@@ -190,6 +191,7 @@ function ThemedGestureRoot({ children }: { children: React.ReactNode }) {
 
   return (
     <GestureHandlerRootView style={{ flex: 1, backgroundColor: bg }}>
+      {theme.id === "indigo2" && <SacredBackground variant="gradient" noImage />}
       {children}
       <Animated.View
         pointerEvents="none"
@@ -242,7 +244,7 @@ function NavStack() {
       <Stack
         screenOptions={{
           headerShown: false,
-          contentStyle: { backgroundColor: bg },
+          contentStyle: { backgroundColor: theme.id === "indigo2" ? "transparent" : bg },
         }}
       >
         <Stack.Screen name="(auth)" options={{ headerShown: false, animation: "fade" }} />

@@ -27,6 +27,7 @@ import { useDrawer } from "@/context/DrawerContext";
 import { useBrightness, applyBrightSat } from "@/context/BrightnessContext";
 import { CategoryOverlayProvider, useCategoryOverlay } from "@/context/CategoryOverlayContext";
 import { CategoryOverlay } from "@/components/CategoryOverlay";
+import { SacredBackground } from "@/components/SacredBackground";
 import { WIDGET_GREEN_SOLID } from "@/constants/colors";
 import { TAB_BAR_BLUR_INTENSITY, TAB_BAR_GLASS_OVERLAY } from "@/constants/tab-bar";
 import { RoutineCompletionBanner } from "@/components/RoutineCompletionBanner";
@@ -391,9 +392,10 @@ function TabLayoutInner() {
 
   return (
     <View style={{ flex: 1, backgroundColor: bg }}>
+      {activeSceneId === "indigo2" && <SacredBackground variant="gradient" noImage />}
       <Animated.View style={{ flex: 1, transform: [{ translateX: bgParallaxX }] }}>
       <Tabs
-        screenOptions={{ headerShown: false, sceneStyle: { backgroundColor: bg } }}
+        screenOptions={{ headerShown: false, sceneStyle: { backgroundColor: activeSceneId === "indigo2" ? "transparent" : bg } }}
         tabBar={(props) => <TabBarPropsBridge props={props} onProps={setBarProps} />}
       >
         <Tabs.Screen name="index"          options={{ href: null }} />
