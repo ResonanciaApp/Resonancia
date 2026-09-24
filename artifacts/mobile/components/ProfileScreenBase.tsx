@@ -304,7 +304,7 @@ function ProfileMembershipModules({
                   )}
                 </View>
                 <View style={styles.membershipCardCopy}>
-                  {isPremiumPlan ? (
+                  {isPremiumPlan && hasPremiumAccess ? (
                     <PremiumStarGradientText text={displayName} style={styles.membershipPlanName} />
                   ) : (
                     <Text style={[styles.membershipPlanName, { color: plan.colors.accent }]}>{displayName}</Text>

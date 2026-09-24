@@ -9,8 +9,8 @@ Los módulos de membresía del Perfil deben usar la dirección Aurora jade-gold:
 
 **How to apply:** Mantener esta jerarquía, colores relativos e iconografía al ajustar esos módulos. Identidad (avatar/nombre), Premium y Premium Plus comparten una sola superficie, con divisores sutiles de ancho completo; no volver a separarlos en cards independientes. Conservar el acordeón inline, beneficios legibles y el CTA de Premium hacia la pantalla de membresía.
 
-El texto destacado de membresía en Inicio, Descubrir, Sonidos, Perfil y drawer usa el degradado amarillo-dorado inspirado en la estrella Premium. En Inicio solo «Premium» lleva el degradado; en Descubrir/Sonidos «Plan Premium»; en Perfil la frase completa «Tu Premium» o «Prueba Premium»; en el drawer «Tu Premium» para miembros y solo «Premium» para quienes aún no lo son. El icono de loto de «Racha más larga» también lleva ese degradado. El fondo oscuro del CTA y Premium Plus conservan sus tratamientos propios.
+El amarillo sólido de la estrella de Perfil se reutiliza en «Prueba Premium» de no miembros, en «Plan Premium» de Sonidos y Descubrir, en solo «Premium» del banner inferior de Inicio y en la palabra «Premium» del drawer en ambos estados. «Prueba» y «Gratis» de Inicio no cambian; en el drawer «Prueba» sigue blanco y «Tu» conserva el degradado. «Tu Premium» de Perfil y el loto de «Racha más larga» conservan el degradado. El fondo oscuro del CTA y Premium Plus mantienen sus tratamientos propios.
 
-**Why:** Tras probar un dorado cálido plano separado del botón, el usuario pidió explícitamente alinear estas frases y el loto con el degradado de la estrella, sin extenderlo a todos los elementos de membresía.
+**Why:** Tras comparar el degradado más luminoso de los textos con el amarillo real de la estrella de Perfil, el usuario pidió extender ese amarillo sólido exacto a estas palabras concretas, sin recolorear todo el título ni otras superficies.
 
-**How to apply:** Al ajustar estas promociones, mantener los límites por frase y estado de membresía; no recolorear el CTA, otros iconos, bordes ni Premium Plus por analogía.
+**How to apply:** Mantener los límites por frase y estado de membresía; no sustituir el amarillo sólido solicitado por el degradado de texto antiguo. No recolorear el CTA, otros iconos, bordes ni Premium Plus por analogía.

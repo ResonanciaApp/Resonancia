@@ -89,7 +89,7 @@
 - [Ticket de Mi Rutina](routine-ticket-behavior.md) — solo el ticket completa; la card pasa a teal y sale de Inicio tras 1 s; el tap restante abre detalle
 - [Flujo emocional local](mood-checkin-local.md) — guarda check-ins completos localmente; cierre usa cinco tipos fijos con reservas inmutables porque el catálogo muta sesiones en sitio
 - [Handoff entre Modal nativos](native-modal-handoff.md) — nunca abrir un segundo Modal con un timeout estimado; esperar cierre real + siguiente frame para evitar fallos intermitentes en iOS
-- [Membresía Aurora jade-gold](membership-aurora-jade.md) — frases Premium seleccionadas y loto de racha usan degradado de estrella; CTA y Premium Plus conservan tratamiento propio
+- [Membresía Aurora jade-gold](membership-aurora-jade.md) — amarillo sólido de estrella en promos selectas; «Tu» drawer, «Tu Premium» Perfil y loto conservan degradado
 - [Bajas remotas del catálogo](catalog-remote-deletions.md) — un cache móvil viejo puede resucitar sesiones DB-only; snapshots frescos deben podar entradas remotas ausentes
 - [Rendimiento del drag de Mi Rutina](routine-drag-performance.md) — animar cambios de slot una sola vez, memoizar filas/gestos y limpiar estados transitorios al perder foco
 - [Sticky headers Índigo](indigo-sticky-headers.md) — navegación y Perfil comparten vidrio puro; tabs y barra inferior respetan las superficies de Índigo 2

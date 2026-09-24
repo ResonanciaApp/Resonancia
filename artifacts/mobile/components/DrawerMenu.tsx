@@ -418,15 +418,13 @@ export function DrawerMenu() {
                           {item.id === "premium" ? (
                             <View style={styles.premiumLabelRow}>
                               {premiumHydrated && !isPremium ? (
-                                <>
-                                  <Text style={[styles.itemLabel, styles.inicio3ItemLabel, styles.premiumPromoNeutral]}>
-                                    Prueba
-                                  </Text>
-                                  <PremiumStarGradientText text="Premium" style={styles.premiumPromoHighlight} />
-                                </>
+                                <Text style={[styles.itemLabel, styles.inicio3ItemLabel, styles.premiumPromoNeutral]}>
+                                  Prueba
+                                </Text>
                               ) : (
-                                <PremiumStarGradientText text="Tu Premium" style={styles.premiumPromoHighlight} />
+                                <PremiumStarGradientText text="Tu" style={styles.premiumPromoHighlight} />
                               )}
+                              <Text style={styles.premiumPromoHighlight}>Premium</Text>
                             </View>
                           ) : (
                             <Text style={[styles.itemLabel, styles.inicio3ItemLabel, item.color && { color: item.color }]}>
@@ -653,7 +651,7 @@ const styles = StyleSheet.create({
     color: "#F9F9F9",
   },
   premiumPromoHighlight: {
-    color: MEMBERSHIP_AURORA.premium.text,
+    color: MEMBERSHIP_AURORA.premium.accent,
     fontFamily: "Manrope",
     fontSize: 14,
     fontWeight: "700",
