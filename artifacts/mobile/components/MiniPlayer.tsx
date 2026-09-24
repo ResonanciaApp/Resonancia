@@ -15,10 +15,8 @@ import {
   View,
 } from "react-native";
 
-import { BlurView } from "expo-blur";
 import { LinearGradient } from "expo-linear-gradient";
 import { DURATION, easeOutCubic } from "@/constants/motion";
-import { TAB_BAR_BLUR_INTENSITY, TAB_BAR_GLASS_OVERLAY } from "@/constants/tab-bar";
 import { SessionBadgeGlass } from "@/components/SessionDurationBadge";
 
 import { usePlayer } from "@/context/PlayerContext";
@@ -248,23 +246,14 @@ export function MiniPlayer({ forceMix = false }: { forceMix?: boolean }) {
           },
         ]}
       >
-        {/* ── Píldora glass: réplica del tab bar horizontal ── */}
+        {/* ── Píldora con el mismo vidrio blanco de las cards Ambientales ── */}
         <View style={styles.mixPill}>
-          {/* Mismas capas visuales y tokens que el tab bar horizontal. */}
-          <BlurView
-            intensity={TAB_BAR_BLUR_INTENSITY}
-            tint="dark"
-            experimentalBlurMethod="dimezisBlurView"
-            pointerEvents="none"
-            style={[StyleSheet.absoluteFill, { borderRadius: 999, overflow: "hidden" }]}
-          />
           <View
             pointerEvents="none"
-            style={[
-              StyleSheet.absoluteFill,
-              { backgroundColor: TAB_BAR_GLASS_OVERLAY },
-            ]}
-          />
+            style={StyleSheet.absoluteFill}
+          >
+            <SessionBadgeGlass showBlackTint={false} showWhiteTint />
+          </View>
 
           {/* ── Row principal ── */}
           <View style={styles.mixRow}>
@@ -453,7 +442,7 @@ const styles = StyleSheet.create({
     marginRight: 2,
   },
 
-  // ── Píldora de mezcla (réplica del tab bar: altura 68, radio 999) ──
+  // ── Píldora de mezcla (vidrio blanco, altura 68, radio 999) ──
   mixPill: {
     overflow: "hidden",
     maxWidth: MAX_PLAYER_WIDTH,
@@ -461,8 +450,6 @@ const styles = StyleSheet.create({
     height: 68,
     borderRadius: 999,
     justifyContent: "center",
-    borderWidth: 1,
-    borderColor: "rgba(255,255,255,0.1)",
   },
 
   // ── Card (modo sesión, sin cambios) ───────────────────────────
@@ -483,6 +470,7 @@ const styles = StyleSheet.create({
     paddingLeft: 12,
     paddingRight: 84,
     gap: 10,
+    transform: [{ translateY: 1 }],
   },
 
   // ── Stack / carrusel: ancho animado, overflow visible (≥6 thumbs pasan por detrás) ─

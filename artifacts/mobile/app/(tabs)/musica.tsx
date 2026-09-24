@@ -32,7 +32,6 @@ import { useSaveEvent } from "@/context/SaveEventContext";
 import { useDrawer } from "@/context/DrawerContext";
 import { useUserProfile } from "@/context/UserProfileContext";
 import { useTabBarVisibility } from "@/context/TabBarVisibilityContext";
-import { isIndigoThemeId } from "@/config/scene-themes";
 import { useSceneTheme } from "@/context/SceneThemeContext";
 import {
   type MixSound,
@@ -90,15 +89,11 @@ const CHIP_ANIM_DURATION = 550;
 const PillTab = memo(function PillTab({
   tab, sel, onPress,
 }: { tab: MainTab; sel: boolean; onPress: () => void }) {
-  const { theme } = useSceneTheme();
-
   return (
     <Pressable
       onPress={onPress}
       style={({ pressed }) => [
         styles.pillTab,
-        theme.id === "tibet" && styles.pillTabTibet,
-        isIndigoThemeId(theme.id) && styles.pillTabIndigo,
         sel && styles.pillTabSel,
         { opacity: pressed ? 0.7 : 1 },
       ]}
@@ -959,15 +954,16 @@ const styles = StyleSheet.create({
     height: 40,
     borderRadius: 21,
     overflow: "hidden",
-    backgroundColor: "rgba(0,0,0,0.28)",
+    backgroundColor: "transparent",
     borderWidth: 1,
-    borderColor: "rgba(255,255,255,0.2)",
+    borderColor: "rgba(255,255,255,0.6)",
   },
-  pillTabTibet: { backgroundColor: "rgba(0,0,0,0.28)" },
-  pillTabIndigo: { backgroundColor: "rgba(0,0,0,0.28)" },
-  pillTabSel: { backgroundColor: "#F9F9F9" },
+  pillTabSel: {
+    backgroundColor: "rgba(0,0,0,0.28)",
+    borderColor: "rgba(255,255,255,0.8)",
+  },
   pillTabLabel:   { fontFamily: "Manrope", fontSize: 11, fontWeight: "550" as any, letterSpacing: 0.3, color: "#F9F9F9", textAlign: "center" },
-  pillTabLabelSel:{ color: "#0D0A1E", fontWeight: "550" as any },
+  pillTabLabelSel:{ color: "#FFFFFF", fontWeight: "550" as any },
   pillTabUnderline: {},
 
   separator: { height: StyleSheet.hairlineWidth, backgroundColor: "rgba(0,0,0,0.07)", marginTop: -6 },
