@@ -15,24 +15,23 @@ import {
   StyleSheet,
   Text,
   TextInput,
+  useWindowDimensions,
   View,
 } from "react-native";
 import { Image } from "expo-image";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 
-import { CardTint } from "@/components/CardTint";
-import { SessionCard } from "@/components/SessionCard";
 import { SESSIONS, type Session } from "@/data/sessions";
 import { getArtist } from "@/data/artists";
 import { getGuide } from "@/data/guides";
 import { usePremium } from "@/context/PremiumContext";
 import { usePlayer } from "@/context/PlayerContext";
 import { useSceneTheme } from "@/context/SceneThemeContext";
+import { useCategoryOverlayOptional } from "@/context/CategoryOverlayContext";
 
 const { width } = Dimensions.get("window");
 const H_PAD = 20;
 const RESULT_CARD_GAP = 12;
-const RESULT_CARD_W = (width - H_PAD * 2 - RESULT_CARD_GAP) / 2;
 
 const DURATION_SLOTS = [
   { label: "5 min",  min: 0,  max: 5 },
@@ -75,27 +74,18 @@ function getSessionAuthor(s: Session): string | null {
 
 // ── Colores derivados del tema de Escena ─────────────────────────────────────
 type ThemeColors = {
-  bg: string;         // fondo raíz
-  sheetBg: string;    // fondo del bottom sheet
-  accent: string;     // color de acento (borde, seleccionado, dorado equivalente)
-  accentBg: string;   // fondo de opción seleccionada (accent + alpha)
-  pillActiveBg: string; // fondo de pill activa
-  pillActiveText: string; // texto de pill activa (legible sobre pillActiveBg)
-  borderFaint: string;  // borde sutil
+  accent: string;
+  pillActiveBg: string;
+  pillActiveText: string;
 };
 
-function deriveThemeColors(solid: string, gradient: readonly [string, string, ...string[]]): ThemeColors {
+function deriveThemeColors(gradient: readonly [string, string, ...string[]]): ThemeColors {
   const lastStop = gradient[gradient.length - 1];
   const accent = brighten(lastStop, 2.8);
   return {
-    bg: solid,
-    sheetBg: brighten(solid, 1.35),
     accent,
-    accentBg: accent + "18",
-    // Pills activas siempre #f9f9f9 con texto oscuro (igual en todos los temas)
     pillActiveBg: "#f9f9f9",
     pillActiveText: "#1B060F",
-    borderFaint: accent + "44",
   };
 }
 
@@ -108,7 +98,6 @@ function FilterSheet({
   onSelect,
   onClear,
   onClose,
-  tc,
   gradient,
 }: {
   visible: boolean;
@@ -118,18 +107,20 @@ function FilterSheet({
   onSelect: (v: string) => void;
   onClear: () => void;
   onClose: () => void;
-  tc: ThemeColors;
   gradient: readonly [string, string, ...string[]];
 }) {
   const insets = useSafeAreaInsets();
+  const sheetGradient: [string, string] = [
+    gradient[gradient.length - 2],
+    gradient[gradient.length - 1],
+  ];
   return (
     <Modal visible={visible} transparent animationType="fade" onRequestClose={onClose}>
       <View style={StyleSheet.absoluteFill}>
         <Pressable style={[StyleSheet.absoluteFill, { backgroundColor: "rgba(0,0,0,0.55)" }]} onPress={onClose} />
         <View style={sheetStyles.container} pointerEvents="box-none">
-          {/* Degradado del tema como fondo del sheet: mismo orden que Inicio */}
           <LinearGradient
-            colors={gradient as unknown as [string, string, ...string[]]}
+            colors={sheetGradient}
             start={{ x: 0, y: 0 }}
             end={{ x: 0, y: 1 }}
             style={[sheetStyles.sheet, {
@@ -137,9 +128,9 @@ function FilterSheet({
             }]}
           >
             <View style={sheetStyles.headerRow}>
-              <Text style={[sheetStyles.title, { color: tc.accent }]}>{title}</Text>
+              <Text style={sheetStyles.title}>{title}</Text>
               <Pressable onPress={onClose} hitSlop={10} style={sheetStyles.closeBtn}>
-                <Feather name="x" size={20} color={tc.accent} />
+                <Feather name="x" size={20} color="#F9F9F9" />
               </Pressable>
             </View>
             <View style={sheetStyles.grid}>
@@ -152,16 +143,15 @@ function FilterSheet({
                     style={({ pressed }) => [
                       sheetStyles.option,
                       {
-                        borderColor: sel ? tc.accent : tc.borderFaint,
-                        backgroundColor: sel ? tc.accentBg : "rgba(255,255,255,0.04)",
-                        borderWidth: sel ? 1.5 : 1,
+                        backgroundColor: "rgba(0,0,0,0.28)",
                         opacity: pressed ? 0.75 : 1,
                       },
                     ]}
                   >
-                    <Text style={[sheetStyles.optionText, { color: sel ? tc.accent : "#F4F4F4" }]} numberOfLines={1}>
+                    <Text style={sheetStyles.optionText} numberOfLines={1}>
                       {opt}
                     </Text>
+                    {sel && <Feather name="check" size={15} color="#F9F9F9" style={sheetStyles.selectedCheck} />}
                   </Pressable>
                 );
               })}
@@ -170,7 +160,7 @@ function FilterSheet({
               onPress={() => { onClear(); onClose(); }}
               style={({ pressed }) => [sheetStyles.clearBtn, { opacity: pressed ? 0.7 : 1 }]}
             >
-              <Text style={[sheetStyles.clearText, { color: tc.accent }]}>Borrar</Text>
+              <Text style={sheetStyles.clearText}>Limpiar</Text>
             </Pressable>
           </LinearGradient>
         </View>
@@ -182,6 +172,8 @@ function FilterSheet({
 // ── Pantalla de búsqueda ─────────────────────────────────────────────────────
 export default function BusquedaScreen({ tiempo: tiempoProp }: { tiempo?: string } = {}) {
   const insets = useSafeAreaInsets();
+  const { width: windowWidth } = useWindowDimensions();
+  const resultCardWidth = (windowWidth - H_PAD * 2 - RESULT_CARD_GAP) / 2;
   const topPad = Platform.OS === "web" ? 56 : insets.top;
   const { tiempo: tiempoParam } = useLocalSearchParams<{ tiempo?: string }>();
   const tiempo = tiempoProp ?? tiempoParam;
@@ -190,8 +182,9 @@ export default function BusquedaScreen({ tiempo: tiempoProp }: { tiempo?: string
   const { isPremium } = usePremium();
   const { playSession } = usePlayer();
   const { theme } = useSceneTheme();
+  const categoryOverlay = useCategoryOverlayOptional();
 
-  const tc = useMemo(() => deriveThemeColors(theme.solid, theme.gradient), [theme]);
+  const tc = useMemo(() => deriveThemeColors(theme.gradient), [theme.gradient]);
 
   const initialDur = DURATION_SLOTS.find((s) => s.label === tiempo)?.label ?? null;
   const [q, setQ] = useState("");
@@ -201,7 +194,6 @@ export default function BusquedaScreen({ tiempo: tiempoProp }: { tiempo?: string
   const [durSheetOpen, setDurSheetOpen] = useState(false);
 
   const hasFilters = q.trim().length > 0 || selectedCat !== null || selectedDur !== null;
-  const showVerticalResults = selectedDur !== null;
 
   const results = useMemo(() => {
     if (!hasFilters) return [] as Session[];
@@ -227,6 +219,7 @@ export default function BusquedaScreen({ tiempo: tiempoProp }: { tiempo?: string
     if (locked) { openPremiumPlans(); return; }
     if (s.skipMiniPlayer) { playSession(s); return; }
     if (s.skipDetail) { playSession(s); router.push("/player" as never); return; }
+    if (categoryOverlay) { categoryOverlay.openCategory(`/session/${s.id}`); return; }
     router.push(`/session/${s.id}` as never);
   }
 
@@ -254,8 +247,7 @@ export default function BusquedaScreen({ tiempo: tiempoProp }: { tiempo?: string
 
       {/* Barra de búsqueda */}
       <View style={styles.searchWrap}>
-        <View style={[styles.searchBox, { borderColor: tc.borderFaint, overflow: "hidden" }]}>
-          <CardTint />
+        <View style={styles.searchBox}>
           <Feather name="search" size={16} color="#F4F4F4" />
           <TextInput
             style={styles.searchInput}
@@ -274,29 +266,29 @@ export default function BusquedaScreen({ tiempo: tiempoProp }: { tiempo?: string
         </View>
       </View>
 
-      {/* Pills de filtro + Borrar todo */}
+      {/* Pills de filtro + Limpiar todo */}
       <View style={styles.filterRow}>
         <Pressable
           onPress={() => setCatSheetOpen(true)}
           style={({ pressed }) => [
             styles.filterPill,
             {
-              borderColor: selectedCat ? tc.accent : "rgba(80,42,247,0.1)",
-              backgroundColor: selectedCat ? tc.pillActiveBg : "rgba(255,255,255,0.03)",
+              backgroundColor: "rgba(0,0,0,0.28)",
               opacity: pressed ? 0.75 : 1,
             },
           ]}
         >
-          <Text style={[styles.filterPillText, { color: selectedCat ? tc.pillActiveText : "#F4F4F4" }]} numberOfLines={1}>
+          <Text style={[styles.filterPillText, { color: "#F9F9F9" }]} numberOfLines={1}>
             {selectedCat ?? "Categoría"}
           </Text>
-          <Feather name="chevron-down" size={14} color={selectedCat ? tc.pillActiveText : "#F4F4F4"} />
+          <Feather name="chevron-down" size={14} color="#F9F9F9" />
         </Pressable>
         <Pressable
           onPress={() => setDurSheetOpen(true)}
           style={({ pressed }) => [
             styles.filterPill,
             {
+              borderWidth: 1,
               borderColor: selectedDur ? tc.accent : "rgba(80,42,247,0.1)",
               backgroundColor: selectedDur ? tc.pillActiveBg : "rgba(255,255,255,0.03)",
               opacity: pressed ? 0.75 : 1,
@@ -311,7 +303,7 @@ export default function BusquedaScreen({ tiempo: tiempoProp }: { tiempo?: string
         <View style={{ flex: 1 }} />
         {hasFilters && (
           <Pressable onPress={clearAll} hitSlop={8} style={({ pressed }) => ({ opacity: pressed ? 0.7 : 1 })}>
-            <Text style={[styles.clearAllText, { color: "#f9f9f9" }]}>Borrar todo</Text>
+            <Text style={[styles.clearAllText, { color: "#f9f9f9" }]}>Limpiar todo</Text>
           </Pressable>
         )}
       </View>
@@ -325,58 +317,37 @@ export default function BusquedaScreen({ tiempo: tiempoProp }: { tiempo?: string
         </View>
       ) : (
         <FlatList
-          key={showVerticalResults ? "vertical-results" : "list-results"}
           data={results}
           keyExtractor={(s) => s.id}
-          numColumns={showVerticalResults ? 2 : 1}
-          columnWrapperStyle={showVerticalResults ? styles.resultGridRow : undefined}
+          numColumns={2}
+          columnWrapperStyle={styles.resultGridRow}
           keyboardShouldPersistTaps="handled"
-          contentContainerStyle={[
-            styles.resultsContent,
-            showVerticalResults && styles.verticalResultsContent,
-            { paddingBottom: 40 + insets.bottom },
-          ]}
+          contentContainerStyle={[styles.resultsContent, { paddingBottom: 40 + insets.bottom }]}
           ListEmptyComponent={
-            <View style={[styles.empty, showVerticalResults && { width: width - H_PAD * 2 }]}>
+            <View style={[styles.empty, { width: windowWidth - H_PAD * 2 }]}>
               <Feather name="search" size={36} color="rgba(242,231,228,0.45)" style={{ marginBottom: 12 }} />
               <Text style={styles.emptyTitle}>Sin resultados</Text>
               <Text style={styles.emptySub}>Intenta con otro término o cambia los filtros</Text>
             </View>
           }
           renderItem={({ item }) => {
-            if (showVerticalResults) {
-              return (
-                <SessionCard
-                  session={item}
-                  width={RESULT_CARD_W}
-                  showCardMetadata
-                  overridePress={() => handleSessionPress(item)}
-                  style={styles.verticalResultCard}
-                />
-              );
-            }
-
             const authorName = getSessionAuthor(item);
             return (
               <Pressable
                 onPress={() => handleSessionPress(item)}
-                style={({ pressed }) => [styles.resultRow, { opacity: pressed ? 0.7 : 1 }]}
+                style={({ pressed }) => [styles.resultCard, { width: resultCardWidth, opacity: pressed ? 0.7 : 1 }]}
               >
-                <View>
-                  <Image source={item.image as number} style={styles.thumb} contentFit="cover" />
+                <View style={styles.resultImageWrap}>
+                  <Image source={item.image as number} style={styles.resultImage} contentFit="cover" />
                   {item.isPremium && !isPremium && (
                     <View style={styles.premiumBadge}>
-                      <Feather name="star" size={9} color={tc.accent} />
+                      <Feather name="star" size={12} color="#F9F9F9" />
                     </View>
                   )}
                 </View>
-                <View style={{ flex: 1 }}>
-                  <Text style={styles.resultCat} numberOfLines={1}>
-                    {item.categoryLabel}{item.durationLabel ? ` · ${item.durationLabel}` : ""}
-                  </Text>
-                  <Text style={styles.resultTitle} numberOfLines={1}>{item.title}</Text>
-                  {authorName && <Text style={styles.resultAuthor} numberOfLines={1}>{authorName}</Text>}
-                </View>
+                <Text style={styles.resultCat} numberOfLines={1}>{item.categoryLabel}</Text>
+                <Text style={styles.resultTitle} numberOfLines={2}>{item.title}</Text>
+                {authorName && <Text style={styles.resultAuthor} numberOfLines={1}>{authorName}</Text>}
               </Pressable>
             );
           }}
@@ -392,7 +363,6 @@ export default function BusquedaScreen({ tiempo: tiempoProp }: { tiempo?: string
         onSelect={(v) => setSelectedCat(v as CategoryLabel)}
         onClear={() => setSelectedCat(null)}
         onClose={() => setCatSheetOpen(false)}
-        tc={tc}
         gradient={theme.gradient}
       />
       <FilterSheet
@@ -403,7 +373,6 @@ export default function BusquedaScreen({ tiempo: tiempoProp }: { tiempo?: string
         onSelect={(v) => setSelectedDur(v as DurSlotLabel)}
         onClear={() => setSelectedDur(null)}
         onClose={() => setDurSheetOpen(false)}
-        tc={tc}
         gradient={theme.gradient}
       />
     </LinearGradient>
@@ -437,6 +406,8 @@ const styles = StyleSheet.create({
     gap: 10,
     borderRadius: 999,
     borderWidth: 1,
+    borderColor: "rgba(249,249,249,0.8)",
+    backgroundColor: "rgba(0,0,0,0.28)",
     paddingHorizontal: 18,
     height: 45,
   },
@@ -455,7 +426,6 @@ const styles = StyleSheet.create({
     alignItems: "center",
     gap: 6,
     borderRadius: 999,
-    borderWidth: 1,
     paddingHorizontal: 14,
     height: 36,
   },
@@ -466,12 +436,11 @@ const styles = StyleSheet.create({
   emptyTitle: { fontFamily: "Manrope", fontSize: 18, fontWeight: "700", color: "#FBFBFB", textAlign: "center", marginBottom: 10 },
   emptySub: { fontFamily: "Manrope", fontSize: 14, color: "rgba(242,231,228,0.45)", textAlign: "center", lineHeight: 20 },
 
-  resultRow: { flexDirection: "row", alignItems: "center", gap: 14, paddingVertical: 11 },
-  resultsContent: { paddingHorizontal: H_PAD, paddingTop: 8 },
-  verticalResultsContent: { paddingTop: 12 },
-  resultGridRow: { justifyContent: "space-between", gap: RESULT_CARD_GAP, marginBottom: 24 },
-  verticalResultCard: { marginRight: 0 },
-  thumb: { width: 75, height: 75, borderRadius: 14, backgroundColor: "rgba(255,255,255,0.025)" },
+  resultsContent: { paddingHorizontal: H_PAD, paddingTop: 12 },
+  resultGridRow: { gap: RESULT_CARD_GAP, marginBottom: 24 },
+  resultCard: { alignSelf: "flex-start" },
+  resultImageWrap: { width: "100%", aspectRatio: 1, borderRadius: 16, overflow: "hidden" },
+  resultImage: { width: "100%", height: "100%" },
   premiumBadge: {
     position: "absolute",
     top: 5,
@@ -480,9 +449,9 @@ const styles = StyleSheet.create({
     borderRadius: 9,
     padding: 3,
   },
-  resultCat: { fontFamily: "Manrope", fontSize: 12, color: "#f4f4f4", marginBottom: 3 },
-  resultTitle: { fontFamily: "Manrope", fontSize: 15, fontWeight: "700", color: "#FBFBFB", marginBottom: 3 },
-  resultAuthor: { fontFamily: "Manrope", fontSize: 12, color: "#f4f4f4" },
+  resultCat: { fontFamily: "Manrope", fontSize: 11, lineHeight: 15, color: "#F9F9F9", marginTop: 8 },
+  resultTitle: { fontFamily: "Manrope", fontSize: 14, lineHeight: 18, fontWeight: "700", color: "#F9F9F9", marginTop: 2 },
+  resultAuthor: { fontFamily: "Manrope", fontSize: 11, lineHeight: 15, color: "rgba(249,249,249,0.82)", marginTop: 2 },
 });
 
 const sheetStyles = StyleSheet.create({
@@ -494,7 +463,7 @@ const sheetStyles = StyleSheet.create({
     paddingTop: 18,
   },
   headerRow: { flexDirection: "row", alignItems: "center", justifyContent: "space-between", marginBottom: 18 },
-  title: { fontFamily: "Manrope", fontSize: 17, fontWeight: "700" },
+  title: { fontFamily: "Manrope", fontSize: 17, fontWeight: "700", color: "#F9F9F9" },
   closeBtn: { width: 32, height: 32, alignItems: "center", justifyContent: "center" },
   grid: { flexDirection: "row", flexWrap: "wrap", gap: 12 },
   option: {
@@ -504,7 +473,8 @@ const sheetStyles = StyleSheet.create({
     alignItems: "center",
     justifyContent: "center",
   },
-  optionText: { fontFamily: "Manrope", fontSize: 14, fontWeight: "600" },
+  optionText: { fontFamily: "Manrope", fontSize: 14, fontWeight: "600", color: "#F9F9F9" },
+  selectedCheck: { position: "absolute", right: 12 },
   clearBtn: { alignSelf: "center", marginTop: 22, paddingVertical: 6, paddingHorizontal: 12 },
-  clearText: { fontFamily: "Manrope", fontSize: 14, fontWeight: "600" },
+  clearText: { fontFamily: "Manrope", fontSize: 14, fontWeight: "600", color: "#F9F9F9" },
 });
