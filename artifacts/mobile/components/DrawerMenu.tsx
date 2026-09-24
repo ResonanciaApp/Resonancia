@@ -26,6 +26,7 @@ import {
   DRAWER_OVERLAY_PARALLAX_X,
 } from "@/context/DrawerContext";
 import { DURATION } from "@/constants/motion";
+import { MEMBERSHIP_AURORA } from "@/constants/colors";
 import { openCategoryGlobal } from "@/context/CategoryOverlayContext";
 import { useUserProfile } from "@/context/UserProfileContext";
 import { useSceneTheme } from "@/context/SceneThemeContext";
@@ -49,7 +50,7 @@ const INICIO3_SECTIONS: { title: string | null; items: MenuItem[] }[] = [
   {
     title: null,
     items: [
-      { id: "premium", label: "Tu Premium", icon: "star", route: "__overlay:/membresia", color: "#E7B95C" },
+      { id: "premium", label: "Tu Premium", icon: "star", route: "__overlay:/membresia", color: MEMBERSHIP_AURORA.premium.accent },
       { id: "favorites", label: "Favoritos", icon: "heart", mciIcon: "heart-outline", route: "__overlay:/favoritos-todos" },
       { id: "library", label: "Biblioteca", icon: "book", mciIcon: "bookshelf", route: "__biblioteca_overlay" },
       { id: "history", label: "Historial", icon: "clock", mciIcon: "history", route: "__overlay:/historial" },
@@ -416,7 +417,10 @@ export function DrawerMenu() {
                                   <Text style={styles.premiumPromoHighlight}>Premium</Text>
                                 </>
                               ) : (
-                                <Text style={styles.premiumPromoHighlight}>Tu Premium</Text>
+                                <>
+                                  <Text style={styles.premiumPromoPrefix}>Tu </Text>
+                                  <Text style={styles.premiumPromoHighlight}>Premium</Text>
+                                </>
                               )}
                             </Text>
                           ) : (
@@ -638,8 +642,12 @@ const styles = StyleSheet.create({
   premiumPromoNeutral: {
     color: "#F9F9F9",
   },
+  premiumPromoPrefix: {
+    color: MEMBERSHIP_AURORA.premium.accent,
+    fontWeight: "700",
+  },
   premiumPromoHighlight: {
-    color: "#E7B95C",
+    color: MEMBERSHIP_AURORA.premium.text,
     fontWeight: "700",
   },
   itemLabel: {

@@ -39,6 +39,7 @@ export const MEMBERSHIP_AURORA = {
   textMuted: "#AAB9BE",
   premium: {
     accent: "#E7B95C",
+    text: "#EDAE4E",
     soft: "#FFF1BF",
     border: "rgba(231,185,92,0.55)",
     glow: "rgba(231,185,92,0.18)",

@@ -170,7 +170,7 @@ export default function PremiumBanner({
             />
             <Text style={[styles.sleepTitle, styles.defaultTitle]}>
               Prueba{" "}
-              <Text style={{ color: MEMBERSHIP_AURORA.premium.accent }}>
+              <Text style={{ color: MEMBERSHIP_AURORA.premium.text }}>
                 Premium
               </Text>{" "}
               Gratis

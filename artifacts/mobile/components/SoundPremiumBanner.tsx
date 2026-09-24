@@ -25,7 +25,8 @@ export function SoundPremiumBanner() {
       <View style={styles.copy}>
         <Text style={styles.title}>
           Suscríbete al{" "}
-          <Text style={styles.accent}>Plan Premium</Text>
+          <Text style={styles.accent}>Plan </Text>
+          <Text style={styles.premiumText}>Premium</Text>
         </Text>
         <Text style={styles.subtitle}>
           Accede a una librería de más de 300 sonidos ambientales de Chile y el mundo
@@ -77,5 +78,8 @@ const styles = StyleSheet.create({
   },
   accent: {
     color: MEMBERSHIP_AURORA.premium.accent,
+  },
+  premiumText: {
+    color: MEMBERSHIP_AURORA.premium.text,
   },
 });

@@ -305,9 +305,13 @@ function ProfileMembershipModules({
                      {isPremiumPlan && !hasPremiumAccess ? (
                        <>
                          <Text style={{ color: "#F9F9F9" }}>Prueba</Text>
-                          {" Premium "}
+                           {" "}
+                           <Text style={{ color: MEMBERSHIP_AURORA.premium.text }}>Premium</Text>
+                           {" "}
                           <Text style={{ color: "#F9F9F9" }}>Gratis</Text>
                        </>
+                     ) : isPremiumPlan ? (
+                       <>Tu <Text style={{ color: MEMBERSHIP_AURORA.premium.text }}>Premium</Text></>
                      ) : displayName}
                   </Text>
                   <Text
@@ -1646,6 +1650,54 @@ export function ProfileScreenBase({
               />
             </View>
 
+            <Pressable
+              onPress={() => setMorningReminderVisible(true)}
+              style={({ pressed }) => [
+                styles.practiceReminderSection,
+                styles.practiceReminderFirst,
+                { opacity: pressed ? 0.72 : 1 },
+              ]}
+              accessibilityRole="button"
+              accessibilityLabel="Administrar recordatorio matutino"
+            >
+              <View style={styles.practiceReminderIcon}>
+                <FilledSunIcon size={24} color="#FFB27D" />
+              </View>
+              <View style={styles.practiceReminderCopy}>
+                <Text style={[styles.practiceReminderTitle, { color: colors.foreground }]}>
+                  Recordatorio matutino
+                </Text>
+                <Text style={[styles.practiceReminderSubtitle, { color: profileDescriptionColor }]}>
+                  Atención plena para tus mañanas
+                </Text>
+              </View>
+              <Feather name="chevron-right" size={22} color={colors.foreground} />
+            </Pressable>
+
+            <Pressable
+              onPress={() => setSleepReminderVisible(true)}
+              style={({ pressed }) => [
+                styles.practiceReminderSection,
+                styles.practiceReminderMiddle,
+                { opacity: pressed ? 0.72 : 1 },
+              ]}
+              accessibilityRole="button"
+              accessibilityLabel="Administrar recordatorio para dormir"
+            >
+              <View style={styles.practiceReminderIcon}>
+                <MoonCrescentIcon color="#C4A8F5" size={30} />
+              </View>
+              <View style={styles.practiceReminderCopy}>
+                <Text style={[styles.practiceReminderTitle, { color: colors.foreground }]}>
+                  Recordatorio para dormir
+                </Text>
+                <Text style={[styles.practiceReminderSubtitle, { color: profileDescriptionColor }]}>
+                  Configura tu hora de descanso
+                </Text>
+              </View>
+              <Feather name="chevron-right" size={22} color={colors.foreground} />
+            </Pressable>
+
             <View style={styles.practiceToolsRow}>
               <Pressable
                 onPress={() => openMixer()}
@@ -1687,54 +1739,6 @@ export function ProfileScreenBase({
                 </Text>
               </Pressable>
             </View>
-
-            <Pressable
-              onPress={() => setMorningReminderVisible(true)}
-              style={({ pressed }) => [
-                styles.practiceReminderSection,
-                styles.practiceReminderMiddle,
-                { opacity: pressed ? 0.72 : 1 },
-              ]}
-              accessibilityRole="button"
-              accessibilityLabel="Administrar recordatorio matutino"
-            >
-              <View style={styles.practiceReminderIcon}>
-                <FilledSunIcon size={24} color="#FFB27D" />
-              </View>
-              <View style={styles.practiceReminderCopy}>
-                <Text style={[styles.practiceReminderTitle, { color: colors.foreground }]}>
-                  Recordatorio matutino
-                </Text>
-                <Text style={[styles.practiceReminderSubtitle, { color: profileDescriptionColor }]}>
-                  Atención plena para tus mañanas
-                </Text>
-              </View>
-              <Feather name="chevron-right" size={22} color={colors.foreground} />
-            </Pressable>
-
-            <Pressable
-              onPress={() => setSleepReminderVisible(true)}
-              style={({ pressed }) => [
-                styles.practiceReminderSection,
-                styles.practiceReminderLast,
-                { opacity: pressed ? 0.72 : 1 },
-              ]}
-              accessibilityRole="button"
-              accessibilityLabel="Administrar recordatorio para dormir"
-            >
-              <View style={styles.practiceReminderIcon}>
-                <MoonCrescentIcon color="#C4A8F5" size={30} />
-              </View>
-              <View style={styles.practiceReminderCopy}>
-                <Text style={[styles.practiceReminderTitle, { color: colors.foreground }]}>
-                  Recordatorio para dormir
-                </Text>
-                <Text style={[styles.practiceReminderSubtitle, { color: profileDescriptionColor }]}>
-                  Configura tu hora de descanso
-                </Text>
-              </View>
-              <Feather name="chevron-right" size={22} color={colors.foreground} />
-            </Pressable>
 
           </>
         )}
@@ -2856,8 +2860,9 @@ const styles = StyleSheet.create({
     alignItems: "center",
     justifyContent: "space-between",
   },
-  practiceReminderLast: {
-    marginBottom: 53,
+  practiceReminderFirst: {
+    marginTop: -7,
+    marginBottom: 25,
   },
   practiceReminderMiddle: {
     marginBottom: 25,
@@ -2865,8 +2870,7 @@ const styles = StyleSheet.create({
   practiceToolsRow: {
     flexDirection: "row",
     gap: 12,
-    marginTop: -7,
-    marginBottom: 25,
+    marginBottom: 53,
   },
   practiceToolCard: {
     flex: 1,
