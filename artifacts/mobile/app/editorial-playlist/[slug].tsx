@@ -64,6 +64,7 @@ export default function EditorialPlaylistScreen({ slug: slugProp }: EditorialPla
   const slug = slugProp ?? resolveSlug(params.slug);
   const insets = useSafeAreaInsets();
   const { theme } = useSceneTheme();
+  const backgroundGradient = theme.gradient.slice(0, 3) as [string, string, ...string[]];
   const { version: catalogVersion } = useCatalog();
   const { isPremium } = usePremium();
   const {
@@ -308,7 +309,7 @@ export default function EditorialPlaylistScreen({ slug: slugProp }: EditorialPla
   if (!playlist) {
     return (
       <View style={[styles.root, { backgroundColor: theme.solid }]}>
-        <LinearGradient colors={theme.gradient} style={StyleSheet.absoluteFill} />
+        <LinearGradient colors={backgroundGradient} style={StyleSheet.absoluteFill} />
         <View style={styles.empty}>
           <Feather name="list" size={42} color={COLORS.muted} />
           <Text style={styles.emptyTitle}>Selección no disponible</Text>
@@ -328,7 +329,7 @@ export default function EditorialPlaylistScreen({ slug: slugProp }: EditorialPla
 
   return (
     <View style={[styles.root, { backgroundColor: theme.solid }]}>
-      <LinearGradient colors={theme.gradient} style={StyleSheet.absoluteFill} />
+      <LinearGradient colors={backgroundGradient} style={StyleSheet.absoluteFill} />
       <StatusBar hidden />
       <ScrollView
         showsVerticalScrollIndicator={false}
@@ -899,8 +900,8 @@ const styles = StyleSheet.create({
     flex: 1,
     color: COLORS.text,
     fontFamily: "Manrope",
-    fontSize: 24,
-    lineHeight: 30,
+    fontSize: 28,
+    lineHeight: 34,
     fontWeight: "800",
     textAlign: "left",
   },
