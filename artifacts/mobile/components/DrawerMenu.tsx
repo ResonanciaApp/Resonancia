@@ -34,7 +34,6 @@ import { useCurrentUserAvatarSource } from "@/lib/profile-avatar";
 import { useNotifications } from "@/context/NotificationsContext";
 import { usePremium } from "@/context/PremiumContext";
 import { SessionBadgeGlass } from "@/components/SessionDurationBadge";
-import { PremiumStarGradientText } from "@/components/PremiumStarGradientText";
 
 const ND = Platform.OS !== "web";
 
@@ -422,7 +421,7 @@ export function DrawerMenu() {
                                   Prueba
                                 </Text>
                               ) : (
-                                <PremiumStarGradientText text="Tu" style={styles.premiumPromoHighlight} />
+                                <Text style={styles.premiumPromoHighlight}>Tu</Text>
                               )}
                               <Text style={styles.premiumPromoHighlight}>Premium</Text>
                             </View>

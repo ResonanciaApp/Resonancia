@@ -72,7 +72,6 @@ import {
   type LibHeaderActions,
 } from "@/components/BibliotecaScreen";
 import { ProgressMirrorSections } from "@/components/ProgressMirrorSections";
-import { PremiumStarGradientText } from "@/components/PremiumStarGradientText";
 import { ProfileSettingsSections } from "@/components/ProfileSettingsSections";
 import { useCoverPresetCatalog } from "@/lib/cover-preset-catalog";
 import {
@@ -304,11 +303,7 @@ function ProfileMembershipModules({
                   )}
                 </View>
                 <View style={styles.membershipCardCopy}>
-                  {isPremiumPlan && hasPremiumAccess ? (
-                    <PremiumStarGradientText text={displayName} style={styles.membershipPlanName} />
-                  ) : (
-                    <Text style={[styles.membershipPlanName, { color: plan.colors.accent }]}>{displayName}</Text>
-                  )}
+                  <Text style={[styles.membershipPlanName, { color: plan.colors.accent }]}>{displayName}</Text>
                   <Text
                     style={[styles.membershipPlanEyebrow, { color: "#F4F4F4" }]}
                     numberOfLines={isPremiumPlan && !hasPremiumAccess ? undefined : 1}
