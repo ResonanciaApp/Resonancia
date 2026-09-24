@@ -29,6 +29,7 @@ import { LinearGradient } from "expo-linear-gradient";
 import { SacredBackground } from "@/components/SacredBackground";
 import { isIndigoThemeId, type SceneTheme } from "@/config/scene-themes";
 import { useSceneTheme } from "@/context/SceneThemeContext";
+import { useColors } from "@/hooks/useColors";
 import { SessionDurationBadge } from "@/components/SessionDurationBadge";
 import { ChakraCarouselSection } from "@/components/ChakraCarouselSection";
 import {
@@ -327,6 +328,13 @@ export function ExploreScreen({
   const { version: catalogVersion } = useCatalog();
   const { resonadores } = useResonadores();
   const { theme: activeTheme, activeSceneId } = useSceneTheme();
+  const colors = useColors();
+  const searchBarSurface =
+    activeSceneId === "indigo2"
+      ? "rgba(21,13,46,0.7)"
+      : activeSceneId === "resonancia"
+        ? "rgba(9,11,23,0.7)"
+        : "rgba(14,14,23,0.7)";
   const durationSurfaceColor =
     activeSceneId === "tibet"
       ? "rgba(0,0,0,0.14)"
@@ -612,14 +620,14 @@ export function ExploreScreen({
         <View style={[styles.searchWrap, styles.stickySearchWrap]}>
           <Pressable
             onPress={() => setSearchVisible(true)}
-            style={styles.searchBox}
+            style={[styles.searchBox, { backgroundColor: searchBarSurface }]}
             accessibilityRole="button"
             accessibilityLabel={`Buscar en ${screenTitle}`}
             testID="discover-sticky-search-button"
           >
-            <Feather name="search" size={16} color="#F4F4F4" />
-            <Text style={styles.searchPlaceholder}>
-              Busca por título, categoría o autor
+            <Feather name="search" size={17} color={colors.foreground} />
+            <Text style={[styles.searchPlaceholder, { color: colors.mutedForeground }]}>
+              Buscar en {screenTitle}...
             </Text>
           </Pressable>
         </View>
@@ -1178,22 +1186,20 @@ const styles = StyleSheet.create({
     backgroundColor: "rgba(255,255,255,0.07)",
   },
   searchBox: {
+    width: "100%",
     flexDirection: "row",
     alignItems: "center",
     gap: 10,
     borderRadius: 999,
     borderWidth: 1,
-    borderColor: "rgba(249,249,249,0.8)",
-    backgroundColor: "rgba(0,0,0,0.28)",
+    borderColor: "rgba(255,255,255,0.7)",
     paddingHorizontal: 18,
-    height: 45,
+    height: 55,
   },
   searchPlaceholder: {
     flex: 1,
     fontFamily: "Manrope",
     fontSize: 15,
-    fontWeight: "300",
-    color: "rgba(244,244,244,0.5)",
   },
   pageSubtitle: { fontFamily: "Manrope", fontSize: 14, color: "#F4F4F4", marginTop: 2 },
 
