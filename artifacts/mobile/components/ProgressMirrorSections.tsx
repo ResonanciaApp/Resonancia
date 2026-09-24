@@ -1,4 +1,6 @@
 import { Feather, MaterialCommunityIcons } from "@expo/vector-icons";
+import MaskedView from "@react-native-masked-view/masked-view";
+import { LinearGradient } from "expo-linear-gradient";
 import React, { useMemo, useRef, useState } from "react";
 import { Animated, Pressable, StyleSheet, Text, View } from "react-native";
 
@@ -11,6 +13,7 @@ import { useDayRollover } from "@/hooks/useDayRollover";
 import { useStreak } from "@/hooks/useStreak";
 import { useColors } from "@/hooks/useColors";
 import { computeActiveDays, computeMaxStreak } from "@/utils/stats";
+import { PREMIUM_STAR_GRADIENT } from "@/constants/colors";
 
 const SECTION_BACKGROUND = "rgba(0,0,0,0.28)";
 
@@ -234,7 +237,17 @@ export function ProgressMirrorSections({
                 }
               >
               <Stat
-                icon={<MaterialCommunityIcons name="spa" size={18} color="#BE9650" />}
+                icon={
+                  <MaskedView maskElement={<MaterialCommunityIcons name="spa" size={18} color="#FFFFFF" />}>
+                    <LinearGradient
+                      colors={PREMIUM_STAR_GRADIENT}
+                      start={{ x: 0, y: 0 }}
+                      end={{ x: 0, y: 1 }}
+                    >
+                      <MaterialCommunityIcons name="spa" size={18} color="transparent" />
+                    </LinearGradient>
+                  </MaskedView>
+                }
                 value={maxStreak}
                 label="RACHA MÁS LARGA"
                 accent={accent}

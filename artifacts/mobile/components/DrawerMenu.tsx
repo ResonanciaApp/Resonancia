@@ -1,4 +1,3 @@
-import MaskedView from "@react-native-masked-view/masked-view";
 import { Feather } from "@expo/vector-icons";
 import { useUser } from "@clerk/expo";
 import { Image } from "expo-image";
@@ -35,6 +34,7 @@ import { useCurrentUserAvatarSource } from "@/lib/profile-avatar";
 import { useNotifications } from "@/context/NotificationsContext";
 import { usePremium } from "@/context/PremiumContext";
 import { SessionBadgeGlass } from "@/components/SessionDurationBadge";
+import { PremiumStarGradientText } from "@/components/PremiumStarGradientText";
 
 const ND = Platform.OS !== "web";
 
@@ -46,26 +46,6 @@ type MenuItem = {
   route: string;
   color?: string;
 };
-
-const PREMIUM_STAR_GRADIENT = ["#FFD848", "#FCC200", "#F6BA00"] as const;
-
-function PremiumGradientWord() {
-  return (
-    <MaskedView
-      maskElement={<Text style={styles.premiumPromoHighlight}>Premium</Text>}
-    >
-      <LinearGradient
-        colors={PREMIUM_STAR_GRADIENT}
-        start={{ x: 0, y: 0 }}
-        end={{ x: 0, y: 1 }}
-      >
-        <Text style={[styles.premiumPromoHighlight, styles.premiumGradientPlaceholder]}>
-          Premium
-        </Text>
-      </LinearGradient>
-    </MaskedView>
-  );
-}
 
 const INICIO3_SECTIONS: { title: string | null; items: MenuItem[] }[] = [
   {
@@ -437,18 +417,16 @@ export function DrawerMenu() {
                           </View>
                           {item.id === "premium" ? (
                             <View style={styles.premiumLabelRow}>
-                              <Text
-                                style={[
-                                  styles.itemLabel,
-                                  styles.inicio3ItemLabel,
-                                  premiumHydrated && !isPremium
-                                    ? styles.premiumPromoNeutral
-                                    : styles.premiumPromoPrefix,
-                                ]}
-                              >
-                                {premiumHydrated && !isPremium ? "Prueba" : "Tu"}
-                              </Text>
-                              <PremiumGradientWord />
+                              {premiumHydrated && !isPremium ? (
+                                <>
+                                  <Text style={[styles.itemLabel, styles.inicio3ItemLabel, styles.premiumPromoNeutral]}>
+                                    Prueba
+                                  </Text>
+                                  <PremiumStarGradientText text="Premium" style={styles.premiumPromoHighlight} />
+                                </>
+                              ) : (
+                                <PremiumStarGradientText text="Tu Premium" style={styles.premiumPromoHighlight} />
+                              )}
                             </View>
                           ) : (
                             <Text style={[styles.itemLabel, styles.inicio3ItemLabel, item.color && { color: item.color }]}>
@@ -674,19 +652,12 @@ const styles = StyleSheet.create({
   premiumPromoNeutral: {
     color: "#F9F9F9",
   },
-  premiumPromoPrefix: {
-    color: MEMBERSHIP_AURORA.premium.accent,
-    fontWeight: "700",
-  },
   premiumPromoHighlight: {
     color: MEMBERSHIP_AURORA.premium.text,
     fontFamily: "Manrope",
     fontSize: 14,
     fontWeight: "700",
     letterSpacing: 0.2,
-  },
-  premiumGradientPlaceholder: {
-    opacity: 0,
   },
   itemLabel: {
     fontFamily: "Manrope",

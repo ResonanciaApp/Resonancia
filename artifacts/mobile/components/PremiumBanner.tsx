@@ -12,7 +12,7 @@ import {
 } from "react-native";
 
 import { usePremium } from "@/context/PremiumContext";
-import { MEMBERSHIP_AURORA } from "@/constants/colors";
+import { PremiumStarGradientText } from "@/components/PremiumStarGradientText";
 
 const IMAGES = [
   require("@/assets/images/sessions/session-1.jpg"),
@@ -168,13 +168,11 @@ export default function PremiumBanner({
               style={styles.defaultStar}
               contentFit="contain"
             />
-            <Text style={[styles.sleepTitle, styles.defaultTitle]}>
-              Prueba{" "}
-              <Text style={{ color: MEMBERSHIP_AURORA.premium.text }}>
-                Premium
-              </Text>{" "}
-              Gratis
-            </Text>
+            <View style={styles.defaultTitle}>
+              <Text style={[styles.sleepTitle, styles.defaultTitleWord]}>Prueba</Text>
+              <PremiumStarGradientText text="Premium" style={[styles.sleepTitle, styles.defaultTitleWord]} />
+              <Text style={[styles.sleepTitle, styles.defaultTitleWord]}>Gratis</Text>
+            </View>
           </>
         )}
 
@@ -356,6 +354,15 @@ const styles = StyleSheet.create({
   },
   defaultTitle: {
     marginTop: 6,
+    marginBottom: 14,
+    flexDirection: "row",
+    flexWrap: "wrap",
+    alignItems: "center",
+    justifyContent: "center",
+    columnGap: 6,
+  },
+  defaultTitleWord: {
+    marginBottom: 0,
   },
   topGlow: {
     position: "absolute",

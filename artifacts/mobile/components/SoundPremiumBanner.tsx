@@ -3,6 +3,7 @@ import { router } from "expo-router";
 import { Pressable, StyleSheet, Text, View } from "react-native";
 
 import { MEMBERSHIP_AURORA } from "@/constants/colors";
+import { PremiumStarGradientText } from "@/components/PremiumStarGradientText";
 
 export function SoundPremiumBanner() {
   return (
@@ -23,11 +24,10 @@ export function SoundPremiumBanner() {
         />
       </View>
       <View style={styles.copy}>
-        <Text style={styles.title}>
-          Suscríbete al{" "}
-          <Text style={styles.accent}>Plan </Text>
-          <Text style={styles.premiumText}>Premium</Text>
-        </Text>
+        <View style={styles.titleRow}>
+          <Text style={styles.title}>Suscríbete al</Text>
+          <PremiumStarGradientText text="Plan Premium" style={styles.title} />
+        </View>
         <Text style={styles.subtitle}>
           Accede a una librería de más de 300 sonidos ambientales de Chile y el mundo
         </Text>
@@ -69,17 +69,17 @@ const styles = StyleSheet.create({
     fontFamily: "Manrope",
     fontSize: 15,
     fontWeight: "700",
+  },
+  titleRow: {
+    flexDirection: "row",
+    flexWrap: "wrap",
+    alignItems: "center",
+    gap: 4,
     marginBottom: 5,
   },
   subtitle: {
     color: "#F4F4F4",
     fontFamily: "Manrope",
     fontSize: 12,
-  },
-  accent: {
-    color: MEMBERSHIP_AURORA.premium.accent,
-  },
-  premiumText: {
-    color: MEMBERSHIP_AURORA.premium.text,
   },
 });
