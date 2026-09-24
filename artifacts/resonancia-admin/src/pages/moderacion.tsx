@@ -333,10 +333,12 @@ function EditDialog({
   submission,
   open,
   onOpenChange,
+  isModerator,
 }: {
   submission: Submission;
   open: boolean;
   onOpenChange: (v: boolean) => void;
+  isModerator?: boolean;
 }) {
   const qc = useQueryClient();
 
@@ -364,6 +366,40 @@ function EditDialog({
   const [themeTag, setThemeTag] = useState<string[]>(submission.themeTag ?? []);
   const [temaTag, setTemaTag] = useState<string[]>(submission.temaTag ?? []);
   const [playerDescription, setPlayerDescription] = useState(submission.playerDescription ?? "");
+  const initialGuideIds = submission.guideIds?.length
+    ? submission.guideIds
+    : submission.guideId
+      ? [submission.guideId]
+      : [""];
+  const [guideIds, setGuideIds] = useState<string[]>(initialGuideIds);
+  const [customGuideSlots, setCustomGuideSlots] = useState<boolean[]>(initialGuideIds.map(() => false));
+  const [resonadores, setResonadores] = useState<{ id: string; name: string; status?: string }[]>([]);
+  const [resonadoresLoading, setResonadoresLoading] = useState(true);
+  const [resonadoresError, setResonadoresError] = useState<string | null>(null);
+  useEffect(() => {
+    if (!open) return;
+    let active = true;
+    fetch(isModerator ? "/api/resonadores" : "/api/admin/resonadores", { credentials: "include" })
+      .then(async (res) => {
+        if (!res.ok) throw new Error("No se pudieron cargar los perfiles de Resonador");
+        return (await res.json()) as { resonadores?: { id: string; name: string; status?: string }[] };
+      })
+      .then((data) => {
+        if (!active) return;
+        setResonadores(data.resonadores ?? []);
+        setResonadoresError(null);
+      })
+      .catch((error: unknown) => {
+        if (active) setResonadoresError(error instanceof Error ? error.message : "Error al cargar Resonadores");
+      })
+      .finally(() => {
+        if (active) setResonadoresLoading(false);
+      });
+    return () => { active = false; };
+  }, [open, isModerator]);
+
+  const setGuideSlot = (index: number, value: string) =>
+    setGuideIds((current) => current.map((id, i) => i === index ? value : id));
 
   // ── Portada ──
   const imageInputRef = useRef<HTMLInputElement>(null);
@@ -414,6 +450,7 @@ function EditDialog({
   const isTalk        = catId === "charlas";
   const isStory       = catId === "historias";
   const isAmbiental   = catId === "ambientales";
+  const selectedGuideIds = [...new Set(guideIds.map((id) => id.trim()).filter(Boolean))];
   const missingRequiredSubcategory =
     (isTalk && !podcastTag) ||
     (isStory && !sabiduriaTag) ||
@@ -583,6 +620,88 @@ function EditDialog({
                 />
               </div>
             </div>
+
+            {!isMusic && (
+              <div className="space-y-3">
+                <p className="text-xs font-semibold uppercase tracking-wide text-muted-foreground">Resonador</p>
+                {guideIds.map((gid, i) => (
+                  <div key={i} className="flex items-center gap-2">
+                    <Select
+                      value={customGuideSlots[i] ? "__custom__" : gid}
+                      onValueChange={(value) => {
+                        if (value === "__custom__") {
+                          setCustomGuideSlots((current) => current.map((slot, index) => index === i ? true : slot));
+                          setGuideSlot(i, "");
+                          return;
+                        }
+                        if (guideIds.some((id, index) => index !== i && id === value)) {
+                          toast.error("Ese autor ya está seleccionado");
+                          return;
+                        }
+                        setCustomGuideSlots((current) => current.map((slot, index) => index === i ? false : slot));
+                        setGuideSlot(i, value);
+                      }}
+                    >
+                      <SelectTrigger className="flex-1">
+                        <SelectValue placeholder="Seleccionar autor…" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value="casa-cuenco">Casa del Cuenco (default)</SelectItem>
+                        {resonadores.filter((resonador) => resonador.id !== "casa-cuenco").map((resonador) => (
+                          <SelectItem key={resonador.id} value={resonador.id}>
+                            {resonador.name} {resonador.status && resonador.status !== "published" ? `(${resonador.status})` : ""}
+                          </SelectItem>
+                        ))}
+                        {gid && gid !== "casa-cuenco" && !resonadores.some((resonador) => resonador.id === gid) && (
+                          <SelectItem value={gid}>ID existente: {gid}</SelectItem>
+                        )}
+                        <SelectItem value="__custom__">Otro (escribir ID)…</SelectItem>
+                      </SelectContent>
+                    </Select>
+                    {customGuideSlots[i] && (
+                      <Input
+                        value={gid}
+                        onChange={(event) => {
+                          const next = event.target.value;
+                          if (guideIds.some((id, index) => index !== i && id === next.trim())) return;
+                          setGuideSlot(i, next);
+                        }}
+                        placeholder="id-del-autor"
+                        className="flex-1"
+                      />
+                    )}
+                    {guideIds.length > 1 && (
+                      <button
+                        type="button"
+                        onClick={() => {
+                          setGuideIds((current) => current.filter((_, index) => index !== i));
+                          setCustomGuideSlots((current) => current.filter((_, index) => index !== i));
+                        }}
+                        className="text-muted-foreground hover:text-destructive transition-colors px-1"
+                        title="Quitar"
+                      >
+                        <X size={16} />
+                      </button>
+                    )}
+                  </div>
+                ))}
+                {resonadoresLoading && <p className="text-xs text-muted-foreground">Cargando Resonadores…</p>}
+                {resonadoresError && <p className="text-xs text-destructive">{resonadoresError}</p>}
+                {guideIds.length < 4 && (
+                  <button
+                    type="button"
+                    onClick={() => {
+                      setGuideIds((current) => [...current, ""]);
+                      setCustomGuideSlots((current) => [...current, false]);
+                    }}
+                    className="text-xs text-primary hover:underline"
+                  >
+                    + Agregar otro autor
+                  </button>
+                )}
+                <p className="text-xs text-muted-foreground">Default si no se selecciona: Casa del Cuenco</p>
+              </div>
+            )}
 
             {/* Portada */}
             <div className="space-y-3">
@@ -1005,6 +1124,9 @@ function EditDialog({
                   ...(isAncestral ? { ancestralTag: ancestralTag || null } : {}),
                   ...(isMeditation ? { meditationTag: meditationTag || null } : {}),
                   ...(isMusic ? { soundTag: soundTag || null } : {}),
+                  ...(!isMusic ? {
+                    guideIds: selectedGuideIds.length ? selectedGuideIds : ["casa-cuenco"],
+                  } : {}),
                   ...(isTalk ? { podcastTag: podcastTag || null } : {}),
                   ...(isStory ? { sabiduriaTag: sabiduriaTag || null } : {}),
                   ...(isAmbiental ? { sonidosTag: sonidosTag || null } : {}),
@@ -1213,6 +1335,7 @@ function SubmissionCard({ submission, isModerator }: { submission: Submission; i
         submission={submission}
         open={editOpen}
         onOpenChange={setEditOpen}
+        isModerator={isModerator}
       />
     </Card>
   );
