@@ -7,6 +7,7 @@ import { LinearGradient } from "expo-linear-gradient";
 import { useColors } from "@/hooks/useColors";
 import { useSceneTheme } from "@/context/SceneThemeContext";
 import { useReflectionCategories } from "@/constants/reflectionCategories";
+import { PREMIUM_OFFER_BACKGROUND, PREMIUM_OFFER_LOCATIONS } from "@/constants/premiumOfferBackground";
 import { useUpdateMyReflection, useDeleteMyReflection, type Reflection, type ReflectionCategory, listMyReflections, useListMyReflections, getListMyReflectionsQueryKey } from "@workspace/api-client-react";
 import { KeyboardAwareScrollView } from "react-native-keyboard-controller";
 import { useQueryClient, type QueryKey } from "@tanstack/react-query";
@@ -31,8 +32,6 @@ const MONTH_NAMES = [
   "Diciembre",
 ] as const;
 
-const WALL_GRADIENT = ["#2A276A", "#1F2D6E", "#112F6F"] as const;
-const WALL_GRADIENT_LOCATIONS = [0, 0.5, 1] as const;
 
 function SlidingSheetModal({
   visible,
@@ -723,8 +722,8 @@ function PremiumInnerSpaceScreen() {
 
   return (
     <LinearGradient
-      colors={WALL_GRADIENT}
-      locations={WALL_GRADIENT_LOCATIONS}
+      colors={PREMIUM_OFFER_BACKGROUND}
+      locations={PREMIUM_OFFER_LOCATIONS}
       start={{ x: 0.5, y: 0 }}
       end={{ x: 0.5, y: 1 }}
       style={styles.root}
@@ -1011,7 +1010,7 @@ const styles = StyleSheet.create({
   reflectionCard: {
     width: "100%",
     borderRadius: 16,
-    backgroundColor: "rgba(0,0,0,0.28)",
+    backgroundColor: "rgba(255,255,255,0.1)",
     padding: 16,
   },
   reflectionCardEntrance: {

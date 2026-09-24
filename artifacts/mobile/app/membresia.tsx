@@ -26,6 +26,7 @@ import { usePremium } from "@/context/PremiumContext";
 import { useBackAfterClose, useBackOverride } from "@/context/BackOverrideContext";
 import { useSceneTheme } from "@/context/SceneThemeContext";
 import { useColors } from "@/hooks/useColors";
+import { PREMIUM_OFFER_BACKGROUND, PREMIUM_OFFER_LOCATIONS } from "@/constants/premiumOfferBackground";
 import {
   REVENUECAT_ENTITLEMENT_IDENTIFIER,
   useSubscription,
@@ -38,8 +39,6 @@ const DATE_FORMATTER = new Intl.DateTimeFormat("es-CL", {
 });
 
 const GIFT_GOLD_COLORS = ["#D8A84F", "#F3D58A", "#B9822F"] as const;
-const PREMIUM_OFFER_BACKGROUND = ["#1E0E42", "#190C38", "#110826", "#0D061C"] as const;
-const PREMIUM_OFFER_LOCATIONS = [0, 0.33, 0.66, 1] as const;
 const PREMIUM_VIOLET = "#6B50D2";
 const PREMIUM_VIOLET_DARK = "#5139AF";
 
