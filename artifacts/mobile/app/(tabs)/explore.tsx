@@ -1,4 +1,3 @@
-import MaskedView from "@react-native-masked-view/masked-view";
 import { Feather, MaterialCommunityIcons } from "@expo/vector-icons";
 import { router, useFocusEffect } from "expo-router";
 import { openPremiumPlans } from "@/lib/premiumGate";
@@ -15,7 +14,6 @@ import {
   View,
 } from "react-native";
 import { Image } from "expo-image";
-import { POSITIONED_DAY_GRADIENT } from "@/constants/colors";
 import { BLUR_PLACEHOLDER, IMAGE_TRANSITION } from "@/constants/imagePlaceholder";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import AsyncStorage from "@react-native-async-storage/async-storage";
@@ -29,6 +27,7 @@ import Svg, {
 
 import { LinearGradient } from "expo-linear-gradient";
 import { SacredBackground } from "@/components/SacredBackground";
+import { DiscoverSearchBorder } from "@/components/DiscoverSearchBorder";
 import { isIndigoThemeId, type SceneTheme } from "@/config/scene-themes";
 import { useSceneTheme } from "@/context/SceneThemeContext";
 import { useColors } from "@/hooks/useColors";
@@ -85,15 +84,6 @@ const GAP = 16;
 const SECTION_GAP = 53;
 const MONTHLY_SOUND_THERAPY_HERO_HEIGHT = 220;
 const EXPLORE_SECTIONS_CACHE_KEY = "cdc_explore_sections_v1";
-const brightenBorderColor = (hex: string) =>
-  `#${[1, 3, 5].map((i) =>
-    Math.round(Number.parseInt(hex.slice(i, i + 2), 16) * 0.4 + 255 * 0.6)
-      .toString(16).padStart(2, "0"),
-  ).join("")}`;
-const SEARCH_BORDER_GRADIENT: [string, string] = [
-  brightenBorderColor(POSITIONED_DAY_GRADIENT[0]),
-  brightenBorderColor(POSITIONED_DAY_GRADIENT[1]),
-];
 
 const SQCARD_W = getContentCarouselCardWidth(width, H_PAD);
 const DURATION_GAP = 9;
@@ -636,18 +626,7 @@ export function ExploreScreen({
             accessibilityLabel={`Buscar en ${screenTitle}`}
             testID="discover-sticky-search-button"
           >
-            <MaskedView
-              pointerEvents="none"
-              style={styles.searchBorderGradient}
-              maskElement={<View style={styles.searchBorderMask} />}
-            >
-              <LinearGradient
-                colors={SEARCH_BORDER_GRADIENT}
-                start={{ x: 0, y: 0 }}
-                end={{ x: 1, y: 1 }}
-                style={StyleSheet.absoluteFill}
-              />
-            </MaskedView>
+            <DiscoverSearchBorder />
             <Feather name="search" size={17} color={colors.foreground} />
             <Text style={[styles.searchPlaceholder, { color: colors.mutedForeground }]}>
               Buscar en {screenTitle}...
@@ -1059,6 +1038,7 @@ export function ExploreScreen({
 
       <ContextSearchModal
         visible={searchVisible}
+        matchDiscoverSearchBar
         onClose={() => setSearchVisible(false)}
         items={discoverSearchItems}
         placeholder={`Buscar en ${screenTitle}...`}
@@ -1216,17 +1196,6 @@ const styles = StyleSheet.create({
     borderRadius: 999,
     paddingHorizontal: 20,
     height: 50,
-  },
-  searchBorderGradient: {
-    ...StyleSheet.absoluteFillObject,
-    opacity: 0.99,
-  },
-  searchBorderMask: {
-    flex: 1,
-    borderRadius: 999,
-    borderWidth: 2,
-    borderColor: "#000000",
-    backgroundColor: "transparent",
   },
   searchPlaceholder: {
     flex: 1,

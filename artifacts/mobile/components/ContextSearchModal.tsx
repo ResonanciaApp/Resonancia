@@ -19,6 +19,7 @@ import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { LinearGradient } from "expo-linear-gradient";
 
 import { useColors } from "@/hooks/useColors";
+import { DiscoverSearchBorder } from "@/components/DiscoverSearchBorder";
 import { PremiumPlansSurface, usePremiumPlansModalHost } from "@/components/PremiumPlansOverlay";
 import { useSceneTheme } from "@/context/SceneThemeContext";
 import {
@@ -45,6 +46,7 @@ export type ContextSearchScope = "sleep" | "discover" | "sounds";
 
 type ContextSearchModalProps = {
   visible: boolean;
+  matchDiscoverSearchBar?: boolean;
   onClose: () => void;
   items: ContextSearchItem[];
   placeholder: string;
@@ -67,6 +69,7 @@ function normalize(value: string): string {
 
 export function ContextSearchModal({
   visible,
+  matchDiscoverSearchBar = false,
   onClose,
   items,
   placeholder,
@@ -239,11 +242,13 @@ export function ContextSearchModal({
           <Pressable
             style={[
               styles.searchBar,
+              matchDiscoverSearchBar && styles.discoverSearchBar,
               { backgroundColor: searchBarSurface },
             ]}
             onPress={() => inputRef.current?.focus()}
             accessibilityRole="search"
           >
+            {matchDiscoverSearchBar && <DiscoverSearchBorder />}
             <Feather name="search" size={17} color={colors.foreground} />
             <TextInput
               ref={inputRef}
@@ -443,6 +448,11 @@ const styles = StyleSheet.create({
     paddingHorizontal: 18,
     borderWidth: 1,
     borderColor: "rgba(255,255,255,0.7)",
+  },
+  discoverSearchBar: {
+    height: 50,
+    paddingHorizontal: 20,
+    borderWidth: 0,
   },
   input: {
     flex: 1,
