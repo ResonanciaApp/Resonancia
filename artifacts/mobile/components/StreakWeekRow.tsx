@@ -2,7 +2,7 @@ import MaskedView from "@react-native-masked-view/masked-view";
 import { LinearGradient } from "expo-linear-gradient";
 import React from "react";
 import { StyleSheet, Text, View } from "react-native";
-import Svg, { Defs, LinearGradient as SvgLinearGradient, Path, Stop } from "react-native-svg";
+import Svg, { Path } from "react-native-svg";
 
 import { CinematicFadeSlide } from "@/components/CinematicFadeSlide";
 import { useStreak } from "@/hooks/useStreak";
@@ -20,14 +20,12 @@ export function StreakWeekRow({
   entranceBaseDelay?: number;
 } = {}) {
   const { weekFlags, todayIndex } = useStreak();
-  const checkGradientPrefix = React.useId().replace(/:/g, "");
 
   return (
     <View style={styles.row}>
       {DAY_INITIALS.map((initial, index) => {
         const active = weekFlags[index];
         const isToday = todayIndex === index;
-        const checkGradientId = `${checkGradientPrefix}-check-${index}`;
         const dayCircle = (
           <View
             style={[
@@ -37,16 +35,10 @@ export function StreakWeekRow({
           >
             {active ? (
               <Svg width={27} height={27} viewBox="0 0 24 24" style={styles.checkMark}>
-                <Defs>
-                  <SvgLinearGradient id={checkGradientId} x1="0%" y1="0%" x2="100%" y2="100%">
-                    <Stop offset="0%" stopColor={POSITIONED_DAY_GRADIENT[0]} />
-                    <Stop offset="100%" stopColor={POSITIONED_DAY_GRADIENT[1]} />
-                  </SvgLinearGradient>
-                </Defs>
                 <Path
                   d="M20 6 9 17l-5-5"
                   fill="none"
-                  stroke={`url(#${checkGradientId})`}
+                  stroke="#FFFFFF"
                   strokeWidth={1.5}
                   strokeLinecap="round"
                   strokeLinejoin="round"
