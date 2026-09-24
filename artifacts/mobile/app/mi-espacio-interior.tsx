@@ -1042,8 +1042,8 @@ const styles = StyleSheet.create({
     gap: 10,
   },
   cardMessage: {
-    fontSize: 15,
-    lineHeight: 22,
+    fontSize: 14,
+    lineHeight: 21,
   },
   messageContainer: {
     position: "relative",
@@ -1106,7 +1106,8 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     borderRadius: 12,
     padding: 12,
-    fontSize: 15,
+    fontSize: 14,
+    lineHeight: 21,
     marginBottom: 12,
     textAlignVertical: "top",
   },
