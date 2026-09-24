@@ -22,7 +22,7 @@ import { useSceneTheme } from "@/context/SceneThemeContext";
 import { BackPill } from "@/components/BackPill";
 import { GhostPill } from "@/components/GhostPill";
 import { BLUR_PLACEHOLDER, IMAGE_TRANSITION } from "@/constants/imagePlaceholder";
-import { COUNTRY_FLAGS, type ExternalProject, type Resonador } from "@/data/resonadores";
+import { type ExternalProject, type Resonador } from "@/data/resonadores";
 import { useResonadorById } from "@/hooks/useResonadores";
 import { getSessionById, type Session } from "@/data/sessions";
 import { SessionCarousel } from "@/components/SessionCarousel";
@@ -32,6 +32,7 @@ import { useColors } from "@/hooks/useColors";
 import { useGetMe, getGetMeQueryKey } from "@workspace/api-client-react";
 
 const H_PAD = 20;
+const AVATAR_SIZE = 84 * 1.35;
 const GOLD = "#F9F9F9";
 const GOLD_MUTED = "rgba(212,175,55,0.70)";
 
@@ -124,10 +125,6 @@ export default function ResonadorPerfilScreen() {
   const isOwn = isAdmin || !!(clerkUserId && resonador.clerkId && clerkUserId === resonador.clerkId);
 
 
-  const flag = COUNTRY_FLAGS[resonador.country] ?? "";
-  const locationStr = resonador.city.includes(resonador.country)
-    ? `${flag} ${resonador.city}`.trim()
-    : `${flag} ${resonador.city}, ${resonador.country}`.trim();
   const sessions = (resonador.sessionIds ?? [])
     .map((sid) => getSessionById(sid))
     .filter(Boolean) as NonNullable<ReturnType<typeof getSessionById>>[];
@@ -255,11 +252,6 @@ export default function ResonadorPerfilScreen() {
 
           <Text style={[styles.userName, { color: colors.foreground }]}>{resonador.name}</Text>
 
-          <View style={[styles.locationRow, { marginTop: 4 }]}>
-            <Feather name="map-pin" size={12} color={colors.mutedForeground} />
-            <Text style={[styles.locationText, { color: colors.mutedForeground }]}>{locationStr}</Text>
-          </View>
-
           {/* Subtipo pill */}
           <View style={styles.subtipoPill}>
             <Text style={styles.subtipoText}>{resonador.subtipo}</Text>
@@ -329,7 +321,7 @@ export default function ResonadorPerfilScreen() {
         {sessions.length > 0 && (
           <View style={[styles.card, styles.sessionsSection]}>
             <View style={[styles.cardHeader, { paddingHorizontal: H_PAD }]}>
-              <Text style={[styles.cardTitle, { fontSize: 19 }]}>Mis sesiones</Text>
+              <Text style={[styles.cardTitle, { fontSize: 17 }]}>Mis sesiones</Text>
             </View>
 
             <SessionCarousel
@@ -487,9 +479,9 @@ const styles = StyleSheet.create({
     position: "absolute",
     bottom: -15,
     alignSelf: "center",
-    width: 84,
-    height: 84,
-    borderRadius: 42,
+    width: AVATAR_SIZE,
+    height: AVATAR_SIZE,
+    borderRadius: AVATAR_SIZE / 2,
     // Sombra para efecto flotante
     shadowColor: "#000",
     shadowOffset: { width: 0, height: 6 },
@@ -508,9 +500,9 @@ const styles = StyleSheet.create({
   },
   avatarWrapper: { position: "relative", marginBottom: 8 },
   avatarImage: {
-    width: 84,
-    height: 84,
-    borderRadius: 42,
+    width: AVATAR_SIZE,
+    height: AVATAR_SIZE,
+    borderRadius: AVATAR_SIZE / 2,
     borderWidth: 2.5,
     borderColor: "rgba(212,175,55,0.50)",
   },
@@ -547,8 +539,6 @@ const styles = StyleSheet.create({
     letterSpacing: 0.3,
   },
 
-  locationRow: { flexDirection: "row", alignItems: "center", gap: 4 },
-  locationText: { fontFamily: "Manrope", fontSize: 12 },
   bioText: {
     fontFamily: "Manrope",
     fontSize: 13,
@@ -556,6 +546,7 @@ const styles = StyleSheet.create({
     textAlign: "center",
     paddingHorizontal: 8,
     fontStyle: "italic",
+    marginTop: 5,
   },
   bioDivider: {
     alignSelf: "stretch",

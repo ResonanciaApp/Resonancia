@@ -126,7 +126,9 @@ export function MixActionsSheet({
   const colors = useColors();
   const insets = useSafeAreaInsets();
   const { theme } = useSceneTheme();
-  const sheetColor = theme.gradient[2] ?? theme.gradient[1] ?? theme.gradient[0];
+  const sheetColor = libraryActionsOnly
+    ? theme.gradient[theme.gradient.length - 1]
+    : (theme.gradient[2] ?? theme.gradient[1] ?? theme.gradient[0]);
   const sheetGradient = [sheetColor, sheetColor] as [string, string];
   const {
     togglePresetFavorite,
@@ -404,7 +406,7 @@ export function MixActionsSheet({
                 />
                 <ActionRow
                   icon="trash-2"
-                  label={libraryActionsOnly ? "Eliminar playlist" : "Eliminar"}
+                  label={libraryActionsOnly ? "Eliminar mezcla" : "Eliminar"}
                   iconColor={libraryActionsOnly ? undefined : "#E05C5C"}
                   onPress={handleDelete}
                   colors={colors}

@@ -74,6 +74,11 @@ const DARK_BLUE = "#210911";
 const TEXT = "#FBFBFB";
 const MUTED = "#c2c2c2";
 
+const sessionCountText = (count: number) => `${count} ${count === 1 ? "sesión" : "sesiones"}`;
+const soundCountText = (count: number) => `${count} sonido${count === 1 ? "" : "s"}`;
+const playlistSubtitle = (count: number) => `Playlist · ${sessionCountText(count)}`;
+const mixSubtitle = (count: number) => `Mezcla · ${soundCountText(count)}`;
+
 export function getLibraryTabSurface(_sceneId: SceneId): string {
   return "rgba(0,0,0,0.28)";
 }
@@ -147,16 +152,12 @@ function MixRow({
         style={({ pressed }) => [styles.rowInfo, { opacity: pressed ? 0.8 : 1 }]}
       >
         <Text style={styles.rowTitle} numberOfLines={1}>{mix.name}</Text>
-        {isPlayingThis ? (
-          <View style={{ flexDirection: "row", alignItems: "center", gap: 6 }}>
-            <EqualizerBars color="#f9f9f9" size="sm" />
-            <Text style={[styles.rowSub, { color: "#f9f9f9" }]}>Reproduciendo</Text>
-          </View>
-        ) : (
-          <Text style={styles.rowSub} numberOfLines={1}>
-            {mix.sounds.length} sonido{mix.sounds.length !== 1 ? "s" : ""}
+        <View style={{ flexDirection: "row", alignItems: "center", gap: 6 }}>
+          {isPlayingThis && <EqualizerBars color="#f9f9f9" size="sm" />}
+          <Text style={[styles.rowSub, { flexShrink: 1 }]} numberOfLines={1}>
+            {mixSubtitle(mix.sounds.length)}
           </Text>
-        )}
+        </View>
       </Pressable>
       <Pressable onPress={onPressEdit} hitSlop={10} style={styles.mixMenuBtn}>
         <Feather name="edit-2" size={18} color={MUTED} />
@@ -414,7 +415,7 @@ function UserPlaylistRow({ pl, onPress, onLongPress }: { pl: UserPlaylist; onPre
           <Text style={styles.rowTitle} numberOfLines={1}>{pl.name}</Text>
           {pl.pinned && <Feather name="bookmark" size={12} color={GOLD} />}
         </View>
-        <Text style={styles.rowSub} numberOfLines={1}>Playlist · Casa del Cuenco</Text>
+        <Text style={styles.rowSub} numberOfLines={1}>{playlistSubtitle(pl.sessionIds.length)}</Text>
       </View>
     </Pressable>
   );
@@ -622,7 +623,7 @@ function SearchOverlay({ visible, onClose, gradient, accentColor }: { visible: b
                 );
                 cat   = "Playlist";
                 title = p.name;
-                sub   = `${p.sessionIds.length} sesión${p.sessionIds.length !== 1 ? "es" : ""}`;
+                sub   = sessionCountText(p.sessionIds.length);
               } else {
                 const m = result.data;
                 thumb = (
@@ -632,7 +633,7 @@ function SearchOverlay({ visible, onClose, gradient, accentColor }: { visible: b
                 );
                 cat   = "Mezcla";
                 title = m.name;
-                sub   = `${m.sounds.length} sonido${m.sounds.length !== 1 ? "s" : ""}`;
+                sub   = soundCountText(m.sounds.length);
               }
 
               return (
@@ -1430,6 +1431,7 @@ export function BibliotecaScreen({
                         )}
                       </View>
                       <Text style={styles.gridTitle} numberOfLines={2}>{pl.name}</Text>
+                      <Text style={styles.gridSub} numberOfLines={1}>{playlistSubtitle(pl.sessionIds.length)}</Text>
                     </Pressable>
                   );
                 }
@@ -1475,6 +1477,7 @@ export function BibliotecaScreen({
                       >
                         <Text style={styles.gridTitle} numberOfLines={2}>{mix.name}</Text>
                       </Pressable>
+                      <Text style={styles.gridSub} numberOfLines={1}>{mixSubtitle(mix.sounds.length)}</Text>
                     </View>
                   );
               })}
@@ -1633,6 +1636,7 @@ export function BibliotecaScreen({
                      )}
                    </View>
                    <Text style={styles.gridTitle} numberOfLines={2}>{pl.name}</Text>
+                    <Text style={styles.gridSub} numberOfLines={1}>{playlistSubtitle(pl.sessionIds.length)}</Text>
                  </Pressable>
              ))}
              </View>
@@ -1703,9 +1707,7 @@ export function BibliotecaScreen({
                     >
                       <Text style={styles.gridTitle} numberOfLines={2}>{mix.name}</Text>
                     </Pressable>
-                    <Text style={[styles.gridTitle, { color: MUTED, fontWeight: "400", marginTop: 1 }]} numberOfLines={1}>
-                      {mix.sounds.length} sonido{mix.sounds.length !== 1 ? "s" : ""}
-                    </Text>
+                    <Text style={styles.gridSub} numberOfLines={1}>{mixSubtitle(mix.sounds.length)}</Text>
                   </View>
                 );
               })}
@@ -2513,6 +2515,7 @@ const styles = StyleSheet.create({
     transform: [{ scale: 0.9 }],
   },
   gridTitle: { fontFamily: "Manrope", fontSize: 12, color: TEXT, marginTop: 6, fontWeight: "500" },
+  gridSub: { fontFamily: "Manrope", fontSize: 12, color: MUTED, marginTop: 1, fontWeight: "400" },
 
   // ── SortSheet ────────────────────────────────────────────────────────────────
   sortSheet: {
