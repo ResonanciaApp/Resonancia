@@ -442,7 +442,8 @@ const styles = StyleSheet.create({
     marginBottom: 10,
   },
   discoverTitleRow: {
-    marginBottom: 5,
+    marginBottom: 6,
+    transform: [{ translateY: -4 }],
   },
   titleSpacer: {
     width: 43,

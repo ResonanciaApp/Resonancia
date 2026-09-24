@@ -485,6 +485,7 @@ export default function SonidosScreen() {
 
       <ContextSearchModal
         visible={searchVisible}
+        matchDiscoverSearchBar
         onClose={() => setSearchVisible(false)}
         items={searchItems}
         placeholder="Buscar en Sonidos..."
