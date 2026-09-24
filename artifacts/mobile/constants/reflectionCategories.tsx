@@ -1,10 +1,24 @@
 import React from "react";
 import { View } from "react-native";
 import { MaterialCommunityIcons, Feather } from "@expo/vector-icons";
-import type { ReflectionCategory } from "@workspace/api-client-react";
+import {
+  getListReflectionCategoriesQueryKey,
+  useListReflectionCategories,
+  type ReflectionCategory,
+  type ReflectionCategoryConfig,
+} from "@workspace/api-client-react";
+
+type ReflectionCategoryPresentation = {
+    id: ReflectionCategory;
+    label: string;
+    icon: string;
+    iconFamily: "MaterialCommunityIcons" | "Feather";
+    color: string;
+    bg: string;
+};
 
 export const REFLECTION_CATEGORIES: Record<
-  ReflectionCategory,
+  string,
   {
     id: ReflectionCategory;
     label: string;
@@ -30,8 +44,81 @@ export const REFLECTION_CATEGORY_OPTIONS = [
   REFLECTION_CATEGORIES.clarity,
 ];
 
+const DEFAULT_SORT_ORDER = [ "gratitude", "purpose", "acceptance", "calm", "clarity" ];
+
+function presentation(config: ReflectionCategoryConfig): ReflectionCategoryPresentation {
+  const legacy = REFLECTION_CATEGORIES[config.id];
+  const color = config.color || legacy?.color || "#B875F0";
+  const background = legacy?.bg ?? (
+    color.startsWith("rgba(")
+      ? color
+      : color.startsWith("rgb(")
+        ? `${color.slice(0, -1)}, 0.15)`
+        : color.startsWith("#") && (color.length === 7 || color.length === 4)
+      ? (() => {
+        const hex = color.length === 4
+          ? color.slice(1).split("").map((part) => part + part).join("")
+          : color.slice(1);
+        const red = Number.parseInt(hex.slice(0, 2), 16);
+        const green = Number.parseInt(hex.slice(2, 4), 16);
+        const blue = Number.parseInt(hex.slice(4, 6), 16);
+        return `rgba(${red}, ${green}, ${blue}, 0.15)`;
+        })()
+        : "rgba(184, 117, 240, 0.15)"
+  );
+  return {
+    id: config.id,
+    label: config.label,
+    icon: config.icon,
+    iconFamily: config.iconFamily,
+    color,
+    bg: background,
+  };
+}
+
+/**
+ * The catalog is server-owned, while this legacy presentation map intentionally
+ * remains available for historical reflections and offline rendering.
+ */
+export function useReflectionCategories() {
+  const query = useListReflectionCategories({
+    query: {
+      queryKey: getListReflectionCategoriesQueryKey(),
+      staleTime: 5 * 60 * 1000,
+      gcTime: 30 * 60 * 1000,
+      retry: 1,
+      refetchInterval: 60 * 1000,
+      refetchOnWindowFocus: true,
+    },
+  });
+  const catalog = query.data?.items ?? [];
+  const active = catalog
+    .filter((item) => item.active)
+    .sort((a, b) => a.sortOrder - b.sortOrder || a.id.localeCompare(b.id))
+    .map(presentation);
+  const fallback = DEFAULT_SORT_ORDER
+    .map((id) => REFLECTION_CATEGORIES[id])
+    .filter(Boolean);
+  const options = active.length > 0 || query.data ? active : fallback;
+  const categories: Record<string, ReflectionCategoryPresentation> = {
+    ...REFLECTION_CATEGORIES,
+    ...Object.fromEntries(catalog.map((item) => [item.id, presentation(item)])),
+  };
+  return {
+    options,
+    categories,
+    icons: query.data?.icons ?? [],
+    isCatalogLoading: query.isLoading,
+    isCatalogError: query.isError,
+    isCatalogEmpty: Boolean(query.data && active.length === 0),
+    isCatalogStale: Boolean(query.data && query.isFetching),
+    refetchCatalog: query.refetch,
+  };
+}
+
 export function CategoryIcon({
   category,
+  categoryConfig,
   size = 24,
   containerSize,
   active = false,
@@ -39,13 +126,14 @@ export function CategoryIcon({
   inactiveColor = "#F9F9F9",
 }: {
   category: ReflectionCategory;
+  categoryConfig?: ReflectionCategoryPresentation;
   size?: number;
   containerSize?: number;
   active?: boolean;
   neutralWhenInactive?: boolean;
   inactiveColor?: string;
 }) {
-  const cat = REFLECTION_CATEGORIES[category];
+  const cat = categoryConfig ?? REFLECTION_CATEGORIES[category] ?? REFLECTION_CATEGORIES.clarity;
   const IconComp = cat.iconFamily === "Feather" ? Feather : MaterialCommunityIcons;
   const isNeutral = neutralWhenInactive && !active;
   const resolvedContainerSize = containerSize ?? size * 2.2;

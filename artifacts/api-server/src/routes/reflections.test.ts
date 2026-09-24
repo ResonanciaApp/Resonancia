@@ -5,6 +5,7 @@ import request from "supertest";
 const state = vi.hoisted(() => ({
   userId: 1,
   rows: [] as Array<{ id: number; userId: number; category: string; message: string; createdAt: Date; updatedAt: Date }>,
+  categories: { gratitude: true, calm: true, clarity: true, purpose: true, acceptance: true, understanding: false, courage: true } as Record<string, boolean>,
 }));
 
 vi.mock("../middlewares/requireAuth", () => ({
@@ -12,6 +13,10 @@ vi.mock("../middlewares/requireAuth", () => ({
     (req as unknown as { currentUser?: { id: number } }).currentUser = { id: state.userId };
     next();
   },
+}));
+vi.mock("./reflection-categories", () => ({
+  findReflectionCategory: async (id: string) =>
+    id in state.categories ? { id, active: state.categories[id] } : undefined,
 }));
 
 vi.mock("@workspace/db", () => {
@@ -117,7 +122,21 @@ describe("private reflections API", () => {
 
   it("requires valid category and trimmed non-empty messages", async () => {
     await request(app).post("/api/me/reflections").send({ category: "unknown", message: "x" }).expect(400);
+    await request(app).post("/api/me/reflections").send({ category: "understanding", message: "x" }).expect(400);
     await request(app).post("/api/me/reflections").send({ category: "calm", message: "   " }).expect(400);
+  });
+
+  it("accepts new editorial categories and keeps archived reflections readable", async () => {
+    const created = await request(app).post("/api/me/reflections")
+      .send({ category: "courage", message: "Hoy me atrevo" }).expect(201);
+    expect(created.body.category).toBe("courage");
+    state.categories.courage = false;
+    await request(app).get("/api/me/reflections?category=courage").expect(200);
+    await request(app).patch(`/api/me/reflections/${created.body.id}`)
+      .send({ category: "courage" }).expect(400);
+    await request(app).patch(`/api/me/reflections/${created.body.id}`)
+      .send({ message: "Sigo avanzando" }).expect(200);
+    state.categories.courage = true;
   });
 
   it("supports CRUD and never exposes another user's reflection", async () => {

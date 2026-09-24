@@ -188,6 +188,12 @@ import type {
   PutInspirationNoteParams,
   QuoteOfTheDayResponse,
   Reflection,
+  ReflectionCategory,
+  ReflectionCategoryCatalog,
+  ReflectionCategoryConfig,
+  ReflectionCategoryInput,
+  ReflectionCategoryOrder,
+  ReflectionCategoryUpdate,
   ReflectionInput,
   ReflectionStoriesPage,
   ReflectionStory,
@@ -16060,6 +16066,279 @@ export const useDeleteAdminGuideConfig = <TError = ErrorType<ErrorResponse>,
         TContext
       > => {
       return useMutation(getDeleteAdminGuideConfigMutationOptions(options));
+    }
+
+export const getListReflectionCategoriesUrl = () => {
+
+
+
+
+  return `/api/reflection-categories`
+}
+
+/**
+ * @summary Ordered reflection categories including archived entries for historical display
+ */
+export const listReflectionCategories = async ( options?: RequestInit): Promise<ReflectionCategoryCatalog> => {
+
+  return customFetch<ReflectionCategoryCatalog>(getListReflectionCategoriesUrl(),
+  {
+    ...options,
+    method: 'GET'
+
+
+  }
+);}
+
+
+
+
+
+export const getListReflectionCategoriesQueryKey = () => {
+    return [
+    `/api/reflection-categories`
+    ] as const;
+    }
+
+
+export const getListReflectionCategoriesQueryOptions = <TData = Awaited<ReturnType<typeof listReflectionCategories>>, TError = ErrorType<unknown>>( options?: { query?:UseQueryOptions<Awaited<ReturnType<typeof listReflectionCategories>>, TError, TData>, request?: SecondParameter<typeof customFetch>}
+) => {
+
+const {query: queryOptions, request: requestOptions} = options ?? {};
+
+  const queryKey =  queryOptions?.queryKey ?? getListReflectionCategoriesQueryKey();
+
+
+
+    const queryFn: QueryFunction<Awaited<ReturnType<typeof listReflectionCategories>>> = ({ signal }) => listReflectionCategories({ signal, ...requestOptions });
+
+
+
+
+
+   return  { queryKey, queryFn, ...queryOptions} as UseQueryOptions<Awaited<ReturnType<typeof listReflectionCategories>>, TError, TData> & { queryKey: QueryKey }
+}
+
+export type ListReflectionCategoriesQueryResult = NonNullable<Awaited<ReturnType<typeof listReflectionCategories>>>
+export type ListReflectionCategoriesQueryError = ErrorType<unknown>
+
+
+/**
+ * @summary Ordered reflection categories including archived entries for historical display
+ */
+
+export function useListReflectionCategories<TData = Awaited<ReturnType<typeof listReflectionCategories>>, TError = ErrorType<unknown>>(
+  options?: { query?:UseQueryOptions<Awaited<ReturnType<typeof listReflectionCategories>>, TError, TData>, request?: SecondParameter<typeof customFetch>}
+
+ ):  UseQueryResult<TData, TError> & { queryKey: QueryKey } {
+
+  const queryOptions = getListReflectionCategoriesQueryOptions(options)
+
+  const query = useQuery(queryOptions) as  UseQueryResult<TData, TError> & { queryKey: QueryKey };
+
+  return { ...query, queryKey: queryOptions.queryKey };
+}
+
+
+
+
+
+
+
+export const getCreateAdminReflectionCategoryUrl = () => {
+
+
+
+
+  return `/api/admin/reflection-categories`
+}
+
+export const createAdminReflectionCategory = async (reflectionCategoryInput: ReflectionCategoryInput, options?: RequestInit): Promise<ReflectionCategoryConfig> => {
+
+  return customFetch<ReflectionCategoryConfig>(getCreateAdminReflectionCategoryUrl(),
+  {
+    ...options,
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json', ...options?.headers },
+    body: JSON.stringify(
+      reflectionCategoryInput,)
+  }
+);}
+
+
+
+
+export const getCreateAdminReflectionCategoryMutationOptions = <TError = ErrorType<unknown>,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof createAdminReflectionCategory>>, TError,{data: BodyType<ReflectionCategoryInput>}, TContext>, request?: SecondParameter<typeof customFetch>}
+): UseMutationOptions<Awaited<ReturnType<typeof createAdminReflectionCategory>>, TError,{data: BodyType<ReflectionCategoryInput>}, TContext> => {
+
+const mutationKey = ['createAdminReflectionCategory'];
+const {mutation: mutationOptions, request: requestOptions} = options ?
+      options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey ?
+      options
+      : {...options, mutation: {...options.mutation, mutationKey}}
+      : {mutation: { mutationKey, }, request: undefined};
+
+
+
+
+      const mutationFn: MutationFunction<Awaited<ReturnType<typeof createAdminReflectionCategory>>, {data: BodyType<ReflectionCategoryInput>}> = (props) => {
+          const {data} = props ?? {};
+
+          return  createAdminReflectionCategory(data,requestOptions)
+        }
+
+
+
+
+
+
+  return  { mutationFn, ...mutationOptions }}
+
+    export type CreateAdminReflectionCategoryMutationResult = NonNullable<Awaited<ReturnType<typeof createAdminReflectionCategory>>>
+    export type CreateAdminReflectionCategoryMutationBody = BodyType<ReflectionCategoryInput>
+    export type CreateAdminReflectionCategoryMutationError = ErrorType<unknown>
+
+    export const useCreateAdminReflectionCategory = <TError = ErrorType<unknown>,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof createAdminReflectionCategory>>, TError,{data: BodyType<ReflectionCategoryInput>}, TContext>, request?: SecondParameter<typeof customFetch>}
+ ): UseMutationResult<
+        Awaited<ReturnType<typeof createAdminReflectionCategory>>,
+        TError,
+        {data: BodyType<ReflectionCategoryInput>},
+        TContext
+      > => {
+      return useMutation(getCreateAdminReflectionCategoryMutationOptions(options));
+    }
+
+export const getReorderAdminReflectionCategoriesUrl = () => {
+
+
+
+
+  return `/api/admin/reflection-categories/order`
+}
+
+export const reorderAdminReflectionCategories = async (reflectionCategoryOrder: ReflectionCategoryOrder, options?: RequestInit): Promise<ReflectionCategoryCatalog> => {
+
+  return customFetch<ReflectionCategoryCatalog>(getReorderAdminReflectionCategoriesUrl(),
+  {
+    ...options,
+    method: 'PUT',
+    headers: { 'Content-Type': 'application/json', ...options?.headers },
+    body: JSON.stringify(
+      reflectionCategoryOrder,)
+  }
+);}
+
+
+
+
+export const getReorderAdminReflectionCategoriesMutationOptions = <TError = ErrorType<unknown>,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof reorderAdminReflectionCategories>>, TError,{data: BodyType<ReflectionCategoryOrder>}, TContext>, request?: SecondParameter<typeof customFetch>}
+): UseMutationOptions<Awaited<ReturnType<typeof reorderAdminReflectionCategories>>, TError,{data: BodyType<ReflectionCategoryOrder>}, TContext> => {
+
+const mutationKey = ['reorderAdminReflectionCategories'];
+const {mutation: mutationOptions, request: requestOptions} = options ?
+      options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey ?
+      options
+      : {...options, mutation: {...options.mutation, mutationKey}}
+      : {mutation: { mutationKey, }, request: undefined};
+
+
+
+
+      const mutationFn: MutationFunction<Awaited<ReturnType<typeof reorderAdminReflectionCategories>>, {data: BodyType<ReflectionCategoryOrder>}> = (props) => {
+          const {data} = props ?? {};
+
+          return  reorderAdminReflectionCategories(data,requestOptions)
+        }
+
+
+
+
+
+
+  return  { mutationFn, ...mutationOptions }}
+
+    export type ReorderAdminReflectionCategoriesMutationResult = NonNullable<Awaited<ReturnType<typeof reorderAdminReflectionCategories>>>
+    export type ReorderAdminReflectionCategoriesMutationBody = BodyType<ReflectionCategoryOrder>
+    export type ReorderAdminReflectionCategoriesMutationError = ErrorType<unknown>
+
+    export const useReorderAdminReflectionCategories = <TError = ErrorType<unknown>,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof reorderAdminReflectionCategories>>, TError,{data: BodyType<ReflectionCategoryOrder>}, TContext>, request?: SecondParameter<typeof customFetch>}
+ ): UseMutationResult<
+        Awaited<ReturnType<typeof reorderAdminReflectionCategories>>,
+        TError,
+        {data: BodyType<ReflectionCategoryOrder>},
+        TContext
+      > => {
+      return useMutation(getReorderAdminReflectionCategoriesMutationOptions(options));
+    }
+
+export const getUpdateAdminReflectionCategoryUrl = (id: ReflectionCategory,) => {
+
+
+
+
+  return `/api/admin/reflection-categories/${id}`
+}
+
+export const updateAdminReflectionCategory = async (id: ReflectionCategory,
+    reflectionCategoryUpdate: ReflectionCategoryUpdate, options?: RequestInit): Promise<ReflectionCategoryConfig> => {
+
+  return customFetch<ReflectionCategoryConfig>(getUpdateAdminReflectionCategoryUrl(id),
+  {
+    ...options,
+    method: 'PATCH',
+    headers: { 'Content-Type': 'application/json', ...options?.headers },
+    body: JSON.stringify(
+      reflectionCategoryUpdate,)
+  }
+);}
+
+
+
+
+export const getUpdateAdminReflectionCategoryMutationOptions = <TError = ErrorType<unknown>,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof updateAdminReflectionCategory>>, TError,{id: ReflectionCategory;data: BodyType<ReflectionCategoryUpdate>}, TContext>, request?: SecondParameter<typeof customFetch>}
+): UseMutationOptions<Awaited<ReturnType<typeof updateAdminReflectionCategory>>, TError,{id: ReflectionCategory;data: BodyType<ReflectionCategoryUpdate>}, TContext> => {
+
+const mutationKey = ['updateAdminReflectionCategory'];
+const {mutation: mutationOptions, request: requestOptions} = options ?
+      options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey ?
+      options
+      : {...options, mutation: {...options.mutation, mutationKey}}
+      : {mutation: { mutationKey, }, request: undefined};
+
+
+
+
+      const mutationFn: MutationFunction<Awaited<ReturnType<typeof updateAdminReflectionCategory>>, {id: ReflectionCategory;data: BodyType<ReflectionCategoryUpdate>}> = (props) => {
+          const {id,data} = props ?? {};
+
+          return  updateAdminReflectionCategory(id,data,requestOptions)
+        }
+
+
+
+
+
+
+  return  { mutationFn, ...mutationOptions }}
+
+    export type UpdateAdminReflectionCategoryMutationResult = NonNullable<Awaited<ReturnType<typeof updateAdminReflectionCategory>>>
+    export type UpdateAdminReflectionCategoryMutationBody = BodyType<ReflectionCategoryUpdate>
+    export type UpdateAdminReflectionCategoryMutationError = ErrorType<unknown>
+
+    export const useUpdateAdminReflectionCategory = <TError = ErrorType<unknown>,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof updateAdminReflectionCategory>>, TError,{id: ReflectionCategory;data: BodyType<ReflectionCategoryUpdate>}, TContext>, request?: SecondParameter<typeof customFetch>}
+ ): UseMutationResult<
+        Awaited<ReturnType<typeof updateAdminReflectionCategory>>,
+        TError,
+        {id: ReflectionCategory;data: BodyType<ReflectionCategoryUpdate>},
+        TContext
+      > => {
+      return useMutation(getUpdateAdminReflectionCategoryMutationOptions(options));
     }
 
 export const getListMyReflectionsUrl = (params?: ListMyReflectionsParams,) => {

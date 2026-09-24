@@ -3,7 +3,6 @@ import { check, index, integer, pgTable, real, serial, text, timestamp, uniqueIn
 import { createInsertSchema } from "drizzle-zod";
 import { z } from "zod/v4";
 import { usersTable } from "./users";
-import { REFLECTION_CATEGORIES } from "./reflections";
 
 export const reflectionStoriesTable = pgTable(
   "reflection_stories",
@@ -24,7 +23,6 @@ export const reflectionStoriesTable = pgTable(
   (table) => [
     uniqueIndex("reflection_stories_user_idempotency_idx").on(table.userId, table.idempotencyKey),
     index("reflection_stories_user_created_id_idx").on(table.userId, table.createdAt, table.id),
-    check("reflection_stories_category_check", sql`${table.category} in ('gratitude', 'understanding', 'clarity', 'calm', 'purpose', 'acceptance')`),
     check("reflection_stories_message_check", sql`length(btrim(${table.message})) >= 1`),
     check("reflection_stories_scale_check", sql`${table.backgroundScale} between 1 and 3`),
     check("reflection_stories_background_x_check", sql`${table.backgroundX} between -((${table.backgroundScale} - 1) / 2) and ((${table.backgroundScale} - 1) / 2)`),

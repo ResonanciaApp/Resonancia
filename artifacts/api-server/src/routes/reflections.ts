@@ -8,6 +8,7 @@ import {
   UpdateMyReflectionParams,
 } from "@workspace/api-zod";
 import { requireAuth } from "../middlewares/requireAuth";
+import { findReflectionCategory } from "./reflection-categories";
 
 const router: IRouter = Router();
 const encodeCursor = (createdAt: Date, id: number) =>
@@ -50,6 +51,9 @@ router.get("/me/reflections", requireAuth, async (req, res) => {
     )!);
   }
   try {
+    if (category && !(await findReflectionCategory(category))) {
+      res.status(400).json({ error: "Categoría desconocida" }); return;
+    }
     const rows = await db.select().from(reflectionsTable)
       .where(and(...conditions)).orderBy(desc(reflectionsTable.createdAt), desc(reflectionsTable.id)).limit(limit + 1);
     const hasMore = rows.length > limit;
@@ -63,6 +67,8 @@ router.post("/me/reflections", requireAuth, async (req, res) => {
   const message = parsed.success ? cleanMessage(parsed.data.message) : null;
   if (!parsed.success || !message) { res.status(400).json({ error: "Datos inválidos" }); return; }
   try {
+    const category = await findReflectionCategory(parsed.data.category);
+    if (!category?.active) { res.status(400).json({ error: "Selecciona una categoría activa" }); return; }
     const [row] = await db.insert(reflectionsTable).values({ userId: req.currentUser!.id, category: parsed.data.category, message }).returning();
     res.status(201).json(dto(row));
   } catch (error) { req.log.error(error); res.status(500).json({ error: "No se pudo crear la reflexión" }); }
@@ -77,6 +83,10 @@ router.patch("/me/reflections/:id", requireAuth, async (req, res) => {
   }
   const values = { ...(parsed.data.category !== undefined ? { category: parsed.data.category } : {}), ...(message !== undefined ? { message } : {}), updatedAt: new Date() };
   try {
+    if (parsed.data.category !== undefined) {
+      const category = await findReflectionCategory(parsed.data.category);
+      if (!category?.active) { res.status(400).json({ error: "Selecciona una categoría activa" }); return; }
+    }
     const [row] = await db.update(reflectionsTable).set(values)
       .where(and(eq(reflectionsTable.id, params.data.id), eq(reflectionsTable.userId, req.currentUser!.id))).returning();
     if (!row) { res.status(404).json({ error: "Reflexión no encontrada" }); return; }

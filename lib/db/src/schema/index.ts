@@ -67,6 +67,7 @@ export * from "./inspirations";
 export * from "./hero-slides";
 export * from "./cover-presets";
 export * from "./reflections";
+export * from "./reflection-categories";
 export * from "./reflection-stories";
 export * from "./daily-quotes";
 export * from "./greeting";

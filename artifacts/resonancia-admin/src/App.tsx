@@ -33,7 +33,8 @@ import {
   Quote,
   Sun,
   Images,
-  MessageSquare
+  MessageSquare,
+  BookOpen
 } from "lucide-react";
 import { Toaster } from "@/components/ui/sonner";
 import { queryClient } from "@/lib/queryClient";
@@ -63,6 +64,7 @@ import EmocionPage from "@/pages/emocion";
 import FraseDelDiaPage from "@/pages/frase-del-dia";
 import InspiracionDiariaPage from "@/pages/inspiracion-diaria";
 import SaludoInicioPage from "@/pages/saludo-inicio";
+import CategoriasReflexionPage from "@/pages/categorias-reflexion";
 
 const clerkPubKey = publishableKeyFromHost(
   window.location.hostname,
@@ -204,6 +206,7 @@ const NAV_SECTIONS = [
       { href: "/saludo-inicio", label: "Saludo inicial", icon: MessageSquare },
       { href: "/frase-del-dia", label: "Frase del día", icon: Quote },
       { href: "/emocion", label: "Registro de ánimo", icon: Sparkles },
+      { href: "/categorias-reflexion", label: "Categorías reflexión", icon: BookOpen },
       { href: "/videos", label: "Videos", icon: Film },
       { href: "/explorar", label: "Explora por objetivo", icon: LayoutList },
       { href: "/dormir-orden", label: "Dormir - Orden", icon: ListOrdered },
@@ -388,6 +391,7 @@ function AdminGate() {
         <Route path="/geometrix" component={GeometrixPage} />
         <Route path="/frase-del-dia" component={FraseDelDiaPage} />
         <Route path="/emocion" component={EmocionPage} />
+        <Route path="/categorias-reflexion" component={CategoriasReflexionPage} />
         <Route path="/inspiracion-diaria" component={InspiracionDiariaPage} />
         <Route path="/saludo-inicio" component={SaludoInicioPage} />
         <Route path="/guiadores-vivo" component={GuiadoresVivoPage} />

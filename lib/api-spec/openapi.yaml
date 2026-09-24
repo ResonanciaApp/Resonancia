@@ -4887,6 +4887,67 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/ErrorResponse"
+  /reflection-categories:
+    get:
+      operationId: listReflectionCategories
+      tags: [reflections]
+      summary: Ordered reflection categories including archived entries for historical display
+      responses:
+        "200":
+          description: Reflection category catalog
+          content:
+            application/json:
+              schema: {$ref: "#/components/schemas/ReflectionCategoryCatalog"}
+  /admin/reflection-categories:
+    post:
+      operationId: createAdminReflectionCategory
+      tags: [admin]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: {$ref: "#/components/schemas/ReflectionCategoryInput"}
+      responses:
+        "201":
+          description: Category created
+          content:
+            application/json:
+              schema: {$ref: "#/components/schemas/ReflectionCategoryConfig"}
+  /admin/reflection-categories/order:
+    put:
+      operationId: reorderAdminReflectionCategories
+      tags: [admin]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: {$ref: "#/components/schemas/ReflectionCategoryOrder"}
+      responses:
+        "200":
+          description: Updated category catalog
+          content:
+            application/json:
+              schema: {$ref: "#/components/schemas/ReflectionCategoryCatalog"}
+  /admin/reflection-categories/{id}:
+    patch:
+      operationId: updateAdminReflectionCategory
+      tags: [admin]
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema: {$ref: "#/components/schemas/ReflectionCategory"}
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: {$ref: "#/components/schemas/ReflectionCategoryUpdate"}
+      responses:
+        "200":
+          description: Updated category
+          content:
+            application/json:
+              schema: {$ref: "#/components/schemas/ReflectionCategoryConfig"}
   /me/reflections:
     get:
       operationId: listMyReflections
@@ -5033,7 +5094,56 @@ components:
   schemas:
     ReflectionCategory:
       type: string
-      enum: [gratitude, understanding, clarity, calm, purpose, acceptance]
+      pattern: "^[a-z][a-z0-9-]{0,39}$"
+      maxLength: 40
+    ReflectionIconOption:
+      type: object
+      required: [name, family]
+      properties:
+        name: {type: string}
+        family: {type: string, enum: [MaterialCommunityIcons, Feather]}
+    ReflectionCategoryConfig:
+      type: object
+      required: [id, label, icon, iconFamily, color, sortOrder, active]
+      properties:
+        id: {$ref: "#/components/schemas/ReflectionCategory"}
+        label: {type: string}
+        icon: {type: string}
+        iconFamily: {type: string, enum: [MaterialCommunityIcons, Feather]}
+        color: {type: string}
+        sortOrder: {type: integer}
+        active: {type: boolean}
+    ReflectionCategoryCatalog:
+      type: object
+      required: [items, icons]
+      properties:
+        items:
+          type: array
+          items: {$ref: "#/components/schemas/ReflectionCategoryConfig"}
+        icons:
+          type: array
+          items: {$ref: "#/components/schemas/ReflectionIconOption"}
+    ReflectionCategoryInput:
+      type: object
+      required: [id, label]
+      properties:
+        id: {$ref: "#/components/schemas/ReflectionCategory"}
+        label: {type: string, minLength: 1, maxLength: 40}
+        icon: {type: string}
+    ReflectionCategoryUpdate:
+      type: object
+      minProperties: 1
+      properties:
+        label: {type: string, minLength: 1, maxLength: 40}
+        icon: {type: string}
+        active: {type: boolean}
+    ReflectionCategoryOrder:
+      type: object
+      required: [ids]
+      properties:
+        ids:
+          type: array
+          items: {$ref: "#/components/schemas/ReflectionCategory"}
     Reflection:
       type: object
       required: [id, userId, category, message, createdAt, updatedAt]

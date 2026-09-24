@@ -13,6 +13,12 @@ vi.mock("../middlewares/requireAuth", () => ({
     next();
   },
 }));
+vi.mock("./reflection-categories", () => ({
+  findReflectionCategory: async (id: string) =>
+    ["gratitude", "understanding", "clarity", "calm", "purpose", "acceptance", "courage"].includes(id)
+      ? { id, active: id !== "understanding" }
+      : undefined,
+}));
 
 vi.mock("@workspace/db", () => {
   const columns = {

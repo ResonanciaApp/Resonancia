@@ -5,17 +5,71 @@
  * API specification
  * OpenAPI spec version: 0.1.0
  */
-export type ReflectionCategory = typeof ReflectionCategory[keyof typeof ReflectionCategory];
+/**
+ * @maxLength 40
+ * @pattern ^[a-z][a-z0-9-]{0,39}$
+ */
+export type ReflectionCategory = string;
+
+export type ReflectionIconOptionFamily = typeof ReflectionIconOptionFamily[keyof typeof ReflectionIconOptionFamily];
 
 
-export const ReflectionCategory = {
-  gratitude: 'gratitude',
-  understanding: 'understanding',
-  clarity: 'clarity',
-  calm: 'calm',
-  purpose: 'purpose',
-  acceptance: 'acceptance',
+export const ReflectionIconOptionFamily = {
+  MaterialCommunityIcons: 'MaterialCommunityIcons',
+  Feather: 'Feather',
 } as const;
+
+export interface ReflectionIconOption {
+  name: string;
+  family: ReflectionIconOptionFamily;
+}
+
+export type ReflectionCategoryConfigIconFamily = typeof ReflectionCategoryConfigIconFamily[keyof typeof ReflectionCategoryConfigIconFamily];
+
+
+export const ReflectionCategoryConfigIconFamily = {
+  MaterialCommunityIcons: 'MaterialCommunityIcons',
+  Feather: 'Feather',
+} as const;
+
+export interface ReflectionCategoryConfig {
+  id: ReflectionCategory;
+  label: string;
+  icon: string;
+  iconFamily: ReflectionCategoryConfigIconFamily;
+  color: string;
+  sortOrder: number;
+  active: boolean;
+}
+
+export interface ReflectionCategoryCatalog {
+  items: ReflectionCategoryConfig[];
+  icons: ReflectionIconOption[];
+}
+
+export interface ReflectionCategoryInput {
+  id: ReflectionCategory;
+  /**
+     * @minLength 1
+     * @maxLength 40
+     */
+  label: string;
+  icon?: string;
+}
+
+export interface ReflectionCategoryUpdate {
+  /**
+     * @minLength 1
+     * @maxLength 40
+     */
+  label?: string;
+  icon?: string;
+  active?: boolean;
+}
+
+export interface ReflectionCategoryOrder {
+  ids: ReflectionCategory[];
+}
 
 export interface Reflection {
   id: number;

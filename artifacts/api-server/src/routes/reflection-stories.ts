@@ -8,6 +8,7 @@ import {
   ListMyReflectionStoriesQueryParams,
 } from "@workspace/api-zod";
 import { requireAuth } from "../middlewares/requireAuth";
+import { findReflectionCategory } from "./reflection-categories";
 
 const router: IRouter = Router();
 
@@ -89,6 +90,9 @@ router.post("/me/reflection-stories", requireAuth, async (req, res) => {
   const userId = req.currentUser!.id;
   const idempotencyKey = header.data["Idempotency-Key"];
   try {
+    if (!(await findReflectionCategory(input.category))) {
+      res.status(400).json({ error: "Categoría desconocida" }); return;
+    }
     const [row] = await db.insert(reflectionStoriesTable).values({
       userId,
       idempotencyKey,

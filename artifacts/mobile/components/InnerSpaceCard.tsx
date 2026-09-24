@@ -16,7 +16,7 @@ import {
 } from "@workspace/api-client-react";
 import { useQueryClient } from "@tanstack/react-query";
 import { router } from "expo-router";
-import { REFLECTION_CATEGORY_OPTIONS } from "@/constants/reflectionCategories";
+import { useReflectionCategories } from "@/constants/reflectionCategories";
 import { useAuth } from "@/context/AuthContext";
 import { usePremium } from "@/context/PremiumContext";
 import { FREE_REFLECTIONS_LIMIT, showPremiumGate } from "@/lib/premiumGate";
@@ -58,6 +58,13 @@ export function InnerSpaceCard({
   const qc = useQueryClient();
   const { authLoading, isSignedIn, clerkUserId } = useAuth();
   const { isPremium } = usePremium();
+  const {
+    options: reflectionCategoryOptions,
+    isCatalogLoading,
+    isCatalogError,
+    isCatalogStale,
+    isCatalogEmpty,
+  } = useReflectionCategories();
   const freeQuotaParams = { limit: FREE_REFLECTIONS_LIMIT + 1 };
   const { data: freeQuotaData, isLoading: freeQuotaLoading } = useListMyReflections(
     freeQuotaParams,
@@ -296,7 +303,7 @@ export function InnerSpaceCard({
           contentContainerStyle={styles.categoriesContent}
           style={styles.categoriesScroll}
         >
-          {REFLECTION_CATEGORY_OPTIONS.map((cat) => (
+           {reflectionCategoryOptions.map((cat) => (
             <Pressable
               key={cat.id}
               testID={`category-${cat.id}`}
@@ -320,6 +327,17 @@ export function InnerSpaceCard({
           ))}
         </ScrollView>
       </MaskedView>
+       {(isCatalogLoading || isCatalogError || isCatalogEmpty || isCatalogStale) && (
+         <Text style={[styles.catalogNotice, { color: colors.mutedForeground }]}>
+           {isCatalogLoading
+             ? "Cargando categorías…"
+             : isCatalogError
+               ? "No se pudieron cargar las categorías nuevas. Mostrando las categorías guardadas; inténtalo de nuevo más tarde."
+               : isCatalogEmpty
+                 ? "No hay categorías activas disponibles en este momento."
+               : "Categorías actualizadas en segundo plano…"}
+         </Text>
+       )}
 
       <Pressable
         style={[styles.inputContainer, { backgroundColor: "rgba(0,0,0,0.2)" }, createMutation.isError && { borderColor: colors.destructive }]}
@@ -504,6 +522,13 @@ const styles = StyleSheet.create({
   errorText: {
     fontSize: 12,
     marginBottom: 12,
+    textAlign: "center",
+  },
+  catalogNotice: {
+    fontSize: 11,
+    lineHeight: 16,
+    marginTop: -10,
+    marginBottom: 10,
     textAlign: "center",
   },
   submitButton: {

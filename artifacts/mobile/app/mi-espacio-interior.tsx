@@ -6,7 +6,7 @@ import { router, useFocusEffect } from "expo-router";
 import { LinearGradient } from "expo-linear-gradient";
 import { useColors } from "@/hooks/useColors";
 import { useSceneTheme } from "@/context/SceneThemeContext";
-import { REFLECTION_CATEGORIES, REFLECTION_CATEGORY_OPTIONS, CategoryIcon } from "@/constants/reflectionCategories";
+import { useReflectionCategories, CategoryIcon } from "@/constants/reflectionCategories";
 import { useUpdateMyReflection, useDeleteMyReflection, type Reflection, type ReflectionCategory, listMyReflections, useListMyReflections, getListMyReflectionsQueryKey } from "@workspace/api-client-react";
 import { KeyboardAwareScrollView } from "react-native-keyboard-controller";
 import { useQueryClient, type QueryKey } from "@tanstack/react-query";
@@ -228,6 +228,14 @@ function PremiumInnerSpaceScreen() {
   const qc = useQueryClient();
   const { authLoading, isSignedIn, clerkUserId } = useAuth();
   const { isPremium } = usePremium();
+  const {
+    options: reflectionCategoryOptions,
+    categories: reflectionCategories,
+    isCatalogLoading,
+    isCatalogError,
+    isCatalogStale,
+    isCatalogEmpty,
+  } = useReflectionCategories();
   const today = useRef(new Date()).current;
   const [filter, setFilter] = useState<ReflectionCategory | "all">("all");
   const [selectedMonth, setSelectedMonth] = useState(today.getMonth());
@@ -575,9 +583,11 @@ function PremiumInnerSpaceScreen() {
 
     const reflection: Reflection = item.item;
     const timeLabel = new Date(reflection.createdAt).toLocaleTimeString("es-ES", { hour: "2-digit", minute: "2-digit" });
-    const cat = REFLECTION_CATEGORIES[reflection.category];
+    const cat = reflectionCategories[reflection.category] ?? reflectionCategories.clarity;
     const isEditing = editingId === reflection.id;
-    const editingCat = isEditing && editCategory ? REFLECTION_CATEGORIES[editCategory] : cat;
+    const editingCat = isEditing && editCategory
+      ? reflectionCategories[editCategory] ?? reflectionCategories.clarity
+      : cat;
     const isShareable = canShareReflection(reflection.message);
     const reflectionId = String(reflection.id);
     const isRevealed = wallRevealDelays.has(reflectionId);
@@ -617,7 +627,7 @@ function PremiumInnerSpaceScreen() {
           {isEditing && (
             <View style={styles.cardHeader}>
               <View style={styles.editCategoryRow}>
-                {REFLECTION_CATEGORY_OPTIONS.map(c => (
+                {reflectionCategoryOptions.map(c => (
                   <Pressable
                     key={c.id}
                     testID={`edit-cat-${c.id}`}
@@ -627,6 +637,7 @@ function PremiumInnerSpaceScreen() {
                   >
                     <CategoryIcon
                       category={c.id as ReflectionCategory}
+                      categoryConfig={c}
                       size={19}
                       active={editCategory === c.id}
                       neutralWhenInactive
@@ -672,7 +683,19 @@ function PremiumInnerSpaceScreen() {
                   testID="save-edit"
                   style={[styles.editSave, { backgroundColor: colors.primary }]}
                   disabled={editMessage.trim() === "" || !editCategory || updateMutation.isPending}
-                  onPress={() => updateMutation.mutate({ id: reflection.id, data: { message: editMessage.trim(), category: editCategory! } })}
+                  onPress={() => {
+                    const data: { message: string; category?: ReflectionCategory } = {
+                      message: editMessage.trim(),
+                    };
+                    // Archived categories are intentionally absent from the
+                    // active picker. Do not resend one unchanged: the API
+                    // treats category as an optional edit and can preserve
+                    // historical values when it is omitted.
+                    if (editCategory && editCategory !== reflection.category) {
+                      data.category = editCategory;
+                    }
+                    updateMutation.mutate({ id: reflection.id, data });
+                  }}
                 >
                   <Text style={[styles.editSaveText, { color: colors.primaryForeground }]}>{updateMutation.isPending ? "Guardando..." : "Guardar"}</Text>
                 </Pressable>
@@ -785,7 +808,7 @@ function PremiumInnerSpaceScreen() {
           >
             <Text style={[styles.filterText, { color: filter === "all" ? "#060A0F" : "#F9F9F9" }]}>Todos</Text>
           </Pressable>
-           {REFLECTION_CATEGORY_OPTIONS.map(cat => {
+           {reflectionCategoryOptions.map(cat => {
             const isActive = filter === cat.id;
             return (
               <Pressable
@@ -808,6 +831,17 @@ function PremiumInnerSpaceScreen() {
           })}
         </ScrollView>
       </View>
+      {(isCatalogLoading || isCatalogError || isCatalogEmpty || isCatalogStale) && (
+        <Text style={[styles.catalogNotice, { color: colors.mutedForeground }]}>
+          {isCatalogLoading
+            ? "Cargando categorías…"
+            : isCatalogError
+              ? "No se pudieron cargar las categorías nuevas. Mostrando las categorías guardadas; inténtalo de nuevo más tarde."
+              : isCatalogEmpty
+                ? "No hay categorías activas disponibles en este momento."
+              : "Categorías actualizadas en segundo plano…"}
+        </Text>
+      )}
 
       {flatData.length === 0 ? (
         <View style={styles.monthSelectorContainer}>
@@ -902,6 +936,14 @@ function PremiumInnerSpaceScreen() {
 const styles = StyleSheet.create({
   root: {
     flex: 1,
+  },
+  catalogNotice: {
+    fontSize: 11,
+    lineHeight: 16,
+    marginHorizontal: 20,
+    marginTop: -4,
+    marginBottom: 8,
+    textAlign: "center",
   },
   headerContainer: {
     flexDirection: 'row',

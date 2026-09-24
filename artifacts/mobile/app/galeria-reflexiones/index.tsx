@@ -17,7 +17,7 @@ import {
 } from "@workspace/api-client-react";
 import { StoryArtworkFrame } from "@/components/StoryArtworkFrame";
 import { useCoverPresetCatalogState } from "@/lib/cover-preset-catalog";
-import { REFLECTION_CATEGORIES } from "@/constants/reflectionCategories";
+import { useReflectionCategories } from "@/constants/reflectionCategories";
 
 const COLUMN_COUNT = 2;
 const CARD_MARGIN = 8;
@@ -30,6 +30,7 @@ export default function GalleryScreen() {
   const qc = useQueryClient();
   const { width: windowWidth } = useWindowDimensions();
   const { items: coverCatalog } = useCoverPresetCatalogState("reflection-story");
+  const { categories: reflectionCategories } = useReflectionCategories();
   const cardWidth = (windowWidth - 40 - CARD_MARGIN * (COLUMN_COUNT - 1)) / COLUMN_COUNT;
   const limit = 20;
   const queryParams = { limit };
@@ -130,7 +131,10 @@ export default function GalleryScreen() {
     const bgImageSource = coverCatalog.find(
       (candidate) => candidate.key === item.backgroundPresetKey,
     )?.source;
-    const category = REFLECTION_CATEGORIES[item.category];
+    // Stories can outlive a category (or arrive before the catalog request
+    // finishes). Keep historical stories renderable instead of indexing an
+    // undefined legacy presentation.
+    const category = reflectionCategories[item.category] ?? reflectionCategories.clarity;
     return (
       <Pressable
         style={[styles.cardWrapper, { width: cardWidth }]}

@@ -6817,6 +6817,121 @@ export const DeleteAdminGuideConfigParams = zod.object({
 })
 
 
+/**
+ * @summary Ordered reflection categories including archived entries for historical display
+ */
+export const listReflectionCategoriesResponseItemsItemIdMax = 40;
+
+
+export const listReflectionCategoriesResponseItemsItemIdRegExp = new RegExp('^[a-z][a-z0-9-]{0,39}$');
+
+
+export const ListReflectionCategoriesResponse = zod.object({
+  "items": zod.array(zod.object({
+  "id": zod.string().max(listReflectionCategoriesResponseItemsItemIdMax).regex(listReflectionCategoriesResponseItemsItemIdRegExp),
+  "label": zod.string(),
+  "icon": zod.string(),
+  "iconFamily": zod.enum(['MaterialCommunityIcons', 'Feather']),
+  "color": zod.string(),
+  "sortOrder": zod.number(),
+  "active": zod.boolean()
+})),
+  "icons": zod.array(zod.object({
+  "name": zod.string(),
+  "family": zod.enum(['MaterialCommunityIcons', 'Feather'])
+}))
+})
+
+
+export const createAdminReflectionCategoryBodyIdMax = 40;
+
+
+export const createAdminReflectionCategoryBodyIdRegExp = new RegExp('^[a-z][a-z0-9-]{0,39}$');
+export const createAdminReflectionCategoryBodyLabelMax = 40;
+
+
+
+export const CreateAdminReflectionCategoryBody = zod.object({
+  "id": zod.string().max(createAdminReflectionCategoryBodyIdMax).regex(createAdminReflectionCategoryBodyIdRegExp),
+  "label": zod.string().min(1).max(createAdminReflectionCategoryBodyLabelMax),
+  "icon": zod.string().optional()
+})
+
+
+export const reorderAdminReflectionCategoriesBodyIdsItemMax = 40;
+
+
+export const reorderAdminReflectionCategoriesBodyIdsItemRegExp = new RegExp('^[a-z][a-z0-9-]{0,39}$');
+
+
+export const ReorderAdminReflectionCategoriesBody = zod.object({
+  "ids": zod.array(zod.string().max(reorderAdminReflectionCategoriesBodyIdsItemMax).regex(reorderAdminReflectionCategoriesBodyIdsItemRegExp))
+})
+
+export const reorderAdminReflectionCategoriesResponseItemsItemIdMax = 40;
+
+
+export const reorderAdminReflectionCategoriesResponseItemsItemIdRegExp = new RegExp('^[a-z][a-z0-9-]{0,39}$');
+
+
+export const ReorderAdminReflectionCategoriesResponse = zod.object({
+  "items": zod.array(zod.object({
+  "id": zod.string().max(reorderAdminReflectionCategoriesResponseItemsItemIdMax).regex(reorderAdminReflectionCategoriesResponseItemsItemIdRegExp),
+  "label": zod.string(),
+  "icon": zod.string(),
+  "iconFamily": zod.enum(['MaterialCommunityIcons', 'Feather']),
+  "color": zod.string(),
+  "sortOrder": zod.number(),
+  "active": zod.boolean()
+})),
+  "icons": zod.array(zod.object({
+  "name": zod.string(),
+  "family": zod.enum(['MaterialCommunityIcons', 'Feather'])
+}))
+})
+
+
+export const updateAdminReflectionCategoryPathIdMax = 40;
+
+
+export const updateAdminReflectionCategoryPathIdRegExp = new RegExp('^[a-z][a-z0-9-]{0,39}$');
+
+
+export const UpdateAdminReflectionCategoryParams = zod.object({
+  "id": zod.coerce.string().max(updateAdminReflectionCategoryPathIdMax).regex(updateAdminReflectionCategoryPathIdRegExp)
+})
+
+export const updateAdminReflectionCategoryBodyLabelMax = 40;
+
+
+
+export const UpdateAdminReflectionCategoryBody = zod.object({
+  "label": zod.string().min(1).max(updateAdminReflectionCategoryBodyLabelMax).optional(),
+  "icon": zod.string().optional(),
+  "active": zod.boolean().optional()
+})
+
+export const updateAdminReflectionCategoryResponseIdMax = 40;
+
+
+export const updateAdminReflectionCategoryResponseIdRegExp = new RegExp('^[a-z][a-z0-9-]{0,39}$');
+
+
+export const UpdateAdminReflectionCategoryResponse = zod.object({
+  "id": zod.string().max(updateAdminReflectionCategoryResponseIdMax).regex(updateAdminReflectionCategoryResponseIdRegExp),
+  "label": zod.string(),
+  "icon": zod.string(),
+  "iconFamily": zod.enum(['MaterialCommunityIcons', 'Feather']),
+  "color": zod.string(),
+  "sortOrder": zod.number(),
+  "active": zod.boolean()
+})
+
+
+export const listMyReflectionsQueryCategoryMax = 40;
+
+
+export const listMyReflectionsQueryCategoryRegExp = new RegExp('^[a-z][a-z0-9-]{0,39}$');
 export const listMyReflectionsQueryLimitDefault = 20;
 export const listMyReflectionsQueryLimitMax = 50;
 
@@ -6824,12 +6939,16 @@ export const listMyReflectionsQueryLimitMax = 50;
 
 export const ListMyReflectionsQueryParams = zod.object({
   "cursor": zod.coerce.string().optional(),
-  "category": zod.enum(['gratitude', 'understanding', 'clarity', 'calm', 'purpose', 'acceptance']).optional(),
+  "category": zod.coerce.string().max(listMyReflectionsQueryCategoryMax).regex(listMyReflectionsQueryCategoryRegExp).optional(),
   "from": zod.date().optional().describe('Inclusive start of the requested date range'),
   "to": zod.date().optional().describe('Exclusive end of the requested date range'),
   "limit": zod.coerce.number().min(1).max(listMyReflectionsQueryLimitMax).default(listMyReflectionsQueryLimitDefault)
 })
 
+export const listMyReflectionsResponseItemsItemCategoryMax = 40;
+
+
+export const listMyReflectionsResponseItemsItemCategoryRegExp = new RegExp('^[a-z][a-z0-9-]{0,39}$');
 export const listMyReflectionsResponseItemsItemMessageMax = 300;
 
 
@@ -6838,7 +6957,7 @@ export const ListMyReflectionsResponse = zod.object({
   "items": zod.array(zod.object({
   "id": zod.number(),
   "userId": zod.number(),
-  "category": zod.enum(['gratitude', 'understanding', 'clarity', 'calm', 'purpose', 'acceptance']),
+  "category": zod.string().max(listMyReflectionsResponseItemsItemCategoryMax).regex(listMyReflectionsResponseItemsItemCategoryRegExp),
   "message": zod.string().min(1).max(listMyReflectionsResponseItemsItemMessageMax),
   "createdAt": zod.coerce.date(),
   "updatedAt": zod.coerce.date()
@@ -6847,12 +6966,16 @@ export const ListMyReflectionsResponse = zod.object({
 })
 
 
+export const createMyReflectionBodyCategoryMax = 40;
+
+
+export const createMyReflectionBodyCategoryRegExp = new RegExp('^[a-z][a-z0-9-]{0,39}$');
 export const createMyReflectionBodyMessageMax = 300;
 
 
 
 export const CreateMyReflectionBody = zod.object({
-  "category": zod.enum(['gratitude', 'understanding', 'clarity', 'calm', 'purpose', 'acceptance']),
+  "category": zod.string().max(createMyReflectionBodyCategoryMax).regex(createMyReflectionBodyCategoryRegExp),
   "message": zod.string().min(1).max(createMyReflectionBodyMessageMax)
 })
 
@@ -6861,15 +6984,23 @@ export const UpdateMyReflectionParams = zod.object({
   "id": zod.coerce.number()
 })
 
+export const updateMyReflectionBodyCategoryMax = 40;
+
+
+export const updateMyReflectionBodyCategoryRegExp = new RegExp('^[a-z][a-z0-9-]{0,39}$');
 export const updateMyReflectionBodyMessageMax = 300;
 
 
 
 export const UpdateMyReflectionBody = zod.object({
-  "category": zod.enum(['gratitude', 'understanding', 'clarity', 'calm', 'purpose', 'acceptance']).optional(),
+  "category": zod.string().max(updateMyReflectionBodyCategoryMax).regex(updateMyReflectionBodyCategoryRegExp).optional(),
   "message": zod.string().min(1).max(updateMyReflectionBodyMessageMax).optional()
 })
 
+export const updateMyReflectionResponseCategoryMax = 40;
+
+
+export const updateMyReflectionResponseCategoryRegExp = new RegExp('^[a-z][a-z0-9-]{0,39}$');
 export const updateMyReflectionResponseMessageMax = 300;
 
 
@@ -6877,7 +7008,7 @@ export const updateMyReflectionResponseMessageMax = 300;
 export const UpdateMyReflectionResponse = zod.object({
   "id": zod.number(),
   "userId": zod.number(),
-  "category": zod.enum(['gratitude', 'understanding', 'clarity', 'calm', 'purpose', 'acceptance']),
+  "category": zod.string().max(updateMyReflectionResponseCategoryMax).regex(updateMyReflectionResponseCategoryRegExp),
   "message": zod.string().min(1).max(updateMyReflectionResponseMessageMax),
   "createdAt": zod.coerce.date(),
   "updatedAt": zod.coerce.date()
@@ -6900,6 +7031,10 @@ export const ListMyReflectionStoriesQueryParams = zod.object({
 })
 
 
+export const listMyReflectionStoriesResponseItemsItemCategoryMax = 40;
+
+
+export const listMyReflectionStoriesResponseItemsItemCategoryRegExp = new RegExp('^[a-z][a-z0-9-]{0,39}$');
 export const listMyReflectionStoriesResponseItemsItemBackgroundPresetKeyMax = 120;
 
 export const listMyReflectionStoriesResponseItemsItemBackgroundScaleMax = 3;
@@ -6923,7 +7058,7 @@ export const ListMyReflectionStoriesResponse = zod.object({
   "id": zod.number(),
   "userId": zod.number(),
   "message": zod.string().min(1),
-  "category": zod.enum(['gratitude', 'understanding', 'clarity', 'calm', 'purpose', 'acceptance']),
+  "category": zod.string().max(listMyReflectionStoriesResponseItemsItemCategoryMax).regex(listMyReflectionStoriesResponseItemsItemCategoryRegExp),
   "backgroundPresetKey": zod.string().min(1).max(listMyReflectionStoriesResponseItemsItemBackgroundPresetKeyMax),
   "backgroundScale": zod.number().min(1).max(listMyReflectionStoriesResponseItemsItemBackgroundScaleMax),
   "backgroundX": zod.number().min(listMyReflectionStoriesResponseItemsItemBackgroundXMin).max(listMyReflectionStoriesResponseItemsItemBackgroundXMax),
@@ -6945,6 +7080,10 @@ export const CreateMyReflectionStoryHeader = zod.object({
 })
 
 
+export const createMyReflectionStoryBodyCategoryMax = 40;
+
+
+export const createMyReflectionStoryBodyCategoryRegExp = new RegExp('^[a-z][a-z0-9-]{0,39}$');
 export const createMyReflectionStoryBodyBackgroundPresetKeyMax = 120;
 
 export const createMyReflectionStoryBodyBackgroundScaleMax = 3;
@@ -6965,7 +7104,7 @@ export const createMyReflectionStoryBodyTextYMax = 0.2604166667;
 
 export const CreateMyReflectionStoryBody = zod.object({
   "message": zod.string().min(1),
-  "category": zod.enum(['gratitude', 'understanding', 'clarity', 'calm', 'purpose', 'acceptance']),
+  "category": zod.string().max(createMyReflectionStoryBodyCategoryMax).regex(createMyReflectionStoryBodyCategoryRegExp),
   "backgroundPresetKey": zod.string().min(1).max(createMyReflectionStoryBodyBackgroundPresetKeyMax),
   "backgroundScale": zod.number().min(1).max(createMyReflectionStoryBodyBackgroundScaleMax),
   "backgroundX": zod.number().min(createMyReflectionStoryBodyBackgroundXMin).max(createMyReflectionStoryBodyBackgroundXMax),
@@ -6975,6 +7114,10 @@ export const CreateMyReflectionStoryBody = zod.object({
 })
 
 
+export const createMyReflectionStoryResponseCategoryMax = 40;
+
+
+export const createMyReflectionStoryResponseCategoryRegExp = new RegExp('^[a-z][a-z0-9-]{0,39}$');
 export const createMyReflectionStoryResponseBackgroundPresetKeyMax = 120;
 
 export const createMyReflectionStoryResponseBackgroundScaleMax = 3;
@@ -6997,7 +7140,7 @@ export const CreateMyReflectionStoryResponse = zod.object({
   "id": zod.number(),
   "userId": zod.number(),
   "message": zod.string().min(1),
-  "category": zod.enum(['gratitude', 'understanding', 'clarity', 'calm', 'purpose', 'acceptance']),
+  "category": zod.string().max(createMyReflectionStoryResponseCategoryMax).regex(createMyReflectionStoryResponseCategoryRegExp),
   "backgroundPresetKey": zod.string().min(1).max(createMyReflectionStoryResponseBackgroundPresetKeyMax),
   "backgroundScale": zod.number().min(1).max(createMyReflectionStoryResponseBackgroundScaleMax),
   "backgroundX": zod.number().min(createMyReflectionStoryResponseBackgroundXMin).max(createMyReflectionStoryResponseBackgroundXMax),
@@ -7013,6 +7156,10 @@ export const GetMyReflectionStoryParams = zod.object({
 })
 
 
+export const getMyReflectionStoryResponseCategoryMax = 40;
+
+
+export const getMyReflectionStoryResponseCategoryRegExp = new RegExp('^[a-z][a-z0-9-]{0,39}$');
 export const getMyReflectionStoryResponseBackgroundPresetKeyMax = 120;
 
 export const getMyReflectionStoryResponseBackgroundScaleMax = 3;
@@ -7035,7 +7182,7 @@ export const GetMyReflectionStoryResponse = zod.object({
   "id": zod.number(),
   "userId": zod.number(),
   "message": zod.string().min(1),
-  "category": zod.enum(['gratitude', 'understanding', 'clarity', 'calm', 'purpose', 'acceptance']),
+  "category": zod.string().max(getMyReflectionStoryResponseCategoryMax).regex(getMyReflectionStoryResponseCategoryRegExp),
   "backgroundPresetKey": zod.string().min(1).max(getMyReflectionStoryResponseBackgroundPresetKeyMax),
   "backgroundScale": zod.number().min(1).max(getMyReflectionStoryResponseBackgroundScaleMax),
   "backgroundX": zod.number().min(getMyReflectionStoryResponseBackgroundXMin).max(getMyReflectionStoryResponseBackgroundXMax),
