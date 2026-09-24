@@ -206,6 +206,7 @@ export function ProfileSettingsSections({
                     </View>
                     {row.toggle ? (
                       <Switch
+                        style={styles.toggleSwitch}
                         value={false}
                         disabled
                         accessible={false}
@@ -376,6 +377,9 @@ const styles = StyleSheet.create({
     fontSize: 13.5,
     lineHeight: 19,
     fontWeight: "600",
+  },
+  toggleSwitch: {
+    transform: [{ translateY: 4 }],
   },
   themeChoices: {
     borderTopWidth: StyleSheet.hairlineWidth,
