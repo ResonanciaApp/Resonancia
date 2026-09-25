@@ -4,7 +4,13 @@ import MaskedView from "@react-native-masked-view/masked-view";
 import { LinearGradient } from "expo-linear-gradient";
 import * as Haptics from "expo-haptics";
 import { Feather } from "@expo/vector-icons";
-import { useReducedMotion } from "react-native-reanimated";
+import Reanimated, {
+  Easing as ReanimatedEasing,
+  useAnimatedStyle,
+  useReducedMotion,
+  useSharedValue,
+  withTiming,
+} from "react-native-reanimated";
 import { useColors } from "@/hooks/useColors";
 import { useSceneTheme } from "@/context/SceneThemeContext";
 import {
@@ -43,9 +49,9 @@ const PLUS_ROTATION_STOPS = [
 const EXPANSION_DURATION = PLUS_ROTATION_STOPS.reduce((total, stop) => total + stop.duration, 0);
 const HALO_SIZES = [46, 36, 26] as const;
 const HALO_COLORS = [
+  "rgba(255, 255, 255, 0.06)",
   "rgba(255, 255, 255, 0.10)",
   "rgba(255, 255, 255, 0.15)",
-  "rgba(255, 255, 255, 0.20)",
 ] as const;
 
 export function InnerSpaceCard({
@@ -80,7 +86,8 @@ export function InnerSpaceCard({
   const focusAfterExpandRef = useRef(false);
   const contentHeightRef = useRef(0);
   const reduceMotion = useReducedMotion();
-  const heightAnim = useRef(new Animated.Value(0)).current;
+  const clipHeight = useSharedValue(0);
+  const clipStyle = useAnimatedStyle(() => ({ height: clipHeight.value }));
   const revealOpacity = useRef(new Animated.Value(0)).current;
   const revealY = useRef(new Animated.Value(-14)).current;
   const plusSpin = useRef(new Animated.Value(0)).current;
@@ -284,7 +291,7 @@ export function InnerSpaceCard({
   const updateContentHeight = (height: number) => {
     if (height <= 0 || height === contentHeightRef.current) return;
     contentHeightRef.current = height;
-    if (expandedRef.current && !animatingRef.current) heightAnim.setValue(height);
+    if (expandedRef.current && !animatingRef.current) clipHeight.value = height;
   };
 
   const animateExpansion = (opening: boolean) => {
@@ -298,7 +305,7 @@ export function InnerSpaceCard({
     }
 
     if (reduceMotion) {
-      heightAnim.setValue(opening ? contentHeightRef.current : 0);
+      clipHeight.value = opening ? contentHeightRef.current : 0;
       revealOpacity.setValue(opening ? 1 : 0);
       revealY.setValue(opening ? 0 : -14);
       plusSpin.setValue(0);
@@ -314,17 +321,16 @@ export function InnerSpaceCard({
     plusSpin.setValue(0);
     if (opening) revealY.setValue(-14);
     const spinDirection = opening ? -1 : 1;
+    clipHeight.value = withTiming(opening ? contentHeightRef.current : 0, {
+      duration: EXPANSION_DURATION,
+      easing: opening ? ReanimatedEasing.out(ReanimatedEasing.cubic) : ReanimatedEasing.inOut(ReanimatedEasing.cubic),
+    });
 
     const animations = [
-      Animated.timing(heightAnim, {
-        toValue: opening ? contentHeightRef.current : 0,
-        duration: EXPANSION_DURATION,
-        easing: opening ? Easing.out(Easing.cubic) : Easing.inOut(Easing.cubic),
-        useNativeDriver: false,
-      }),
       Animated.timing(revealOpacity, {
         toValue: opening ? 1 : 0,
-        duration: opening ? 380 : 250,
+        duration: opening ? 380 : 500,
+        delay: opening ? 0 : EXPANSION_DURATION - 500,
         useNativeDriver: true,
       }),
       Animated.timing(revealY, {
@@ -354,7 +360,7 @@ export function InnerSpaceCard({
     Animated.parallel(animations).start(({ finished }) => {
       if (!finished) return;
       animatingRef.current = false;
-      heightAnim.setValue(opening ? contentHeightRef.current : 0);
+      clipHeight.value = opening ? contentHeightRef.current : 0;
       plusSpin.setValue(0);
       if (queuedOpenRef.current && !opening) {
         queuedOpenRef.current = false;
@@ -428,8 +434,8 @@ export function InnerSpaceCard({
           </Animated.View>
         </Pressable>
       </View>
-      <Animated.View
-        style={[styles.expandClip, { height: heightAnim }]}
+      <Reanimated.View
+        style={[styles.expandClip, clipStyle]}
         pointerEvents={expanded ? "auto" : "none"}
         accessibilityElementsHidden={!expanded}
         importantForAccessibility={expanded ? "auto" : "no-hide-descendants"}
@@ -582,7 +588,7 @@ export function InnerSpaceCard({
       </View>
           </Animated.View>
         </View>
-      </Animated.View>
+      </Reanimated.View>
     </View>
   );
 }
