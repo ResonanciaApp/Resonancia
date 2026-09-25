@@ -5,9 +5,11 @@ description: Restricción visual para optimizaciones de rendimiento del hero de 
 
 El avatar, las acciones laterales y la fila semanal de Inicio 3 deben conservar su desplazamiento lento y sincronizado respecto del scroll.
 
-**Why:** El usuario confirmó que este parallax es intencional. No es el sticky header que pidió retirar; eliminar la compensación de scroll cambió el diseño equivocado.
+Al acortar el carrusel hero de Inicio 3 por arriba, dejar ese espacio arriba como fondo visible: desplazar el borde superior hacia abajo y conservar fijo el borde inferior y el alto del contenedor exterior, en vez de subir el resto del contenido.
 
-**How to apply:** Al optimizar el hero, aislar renders de React y mantener el movimiento en el hilo de UI. No retirar el estilo compartido ni cambiar su factor sin una solicitud explícita.
+**Why:** El usuario confirmó que este parallax es intencional. No es el sticky header que pidió retirar; eliminar la compensación de scroll cambió el diseño equivocado. También pidió expresamente conservar arriba el hueco liberado al achicar el hero.
+
+**How to apply:** Al optimizar el hero, aislar renders de React y mantener el movimiento en el hilo de UI. No retirar el estilo compartido ni cambiar su factor sin una solicitud explícita. Si se ajusta el tamaño del carrusel, mantener fijo su borde inferior y no trasladar el contenido de debajo al espacio liberado.
 
 El factor de compensación confirmado es `0.52`: el bloque se desplaza visualmente a cerca del 48% de la velocidad normal del contenido.
 
