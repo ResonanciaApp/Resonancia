@@ -36,14 +36,13 @@ const REGISTER_BUTTON_ENABLED_BACKGROUND = "rgba(184, 117, 240, 0.45)";
 // Cada extremo del rebote cruza la posición de reposo con menor amplitud.
 const PLUS_ROTATION_STOPS = [
   { angle: 288, duration: 360 },
-  { angle: 255, duration: 185 },
-  { angle: 281, duration: 160 },
-  { angle: 263, duration: 140 },
-  { angle: 274, duration: 120 },
-  { angle: 270, duration: 95 },
+  { angle: 255, duration: 225 },
+  { angle: 281, duration: 195 },
+  { angle: 263, duration: 170 },
+  { angle: 270, duration: 110 },
 ] as const;
 const EXPANSION_DURATION = PLUS_ROTATION_STOPS.reduce((total, stop) => total + stop.duration, 0);
-const HALO_SIZES = [44, 34, 24] as const;
+const HALO_SIZES = [46, 36, 26] as const;
 const HALO_COLORS = [
   "rgba(114, 207, 245, 0.18)",
   "rgba(125, 216, 250, 0.29)",
@@ -426,7 +425,7 @@ export function InnerSpaceCard({
               }) }] },
             ]}
           >
-            <Feather name="plus" size={23} color="#E5F7FF" />
+            <Feather name="plus" size={27} color="#E5F7FF" />
           </Animated.View>
         </Pressable>
       </View>
@@ -630,8 +629,8 @@ const styles = StyleSheet.create({
     position: "absolute",
   },
   plusGlyph: {
-    width: 26,
-    height: 26,
+    width: 30,
+    height: 30,
     alignItems: "center",
     justifyContent: "center",
   },
