@@ -25,6 +25,8 @@ import { useCatalog } from "@/context/CatalogContext";
 import { SessionCarousel } from "@/components/SessionCarousel";
 import { SessionBadgeGlass, SessionDurationBadge } from "@/components/SessionDurationBadge";
 import { ContextSearchModal } from "@/components/ContextSearchModal";
+import { MoonCrescentIcon } from "@/components/MoonCrescentIcon";
+import { SleepReminderSheet } from "@/components/SleepReminderSheet";
 import { PremiumPlansSurface, usePremiumPlansModalHost } from "@/components/PremiumPlansOverlay";
 import { usePlayerBrowse } from "@/context/PlayerContext";
 import { useAmbientalDuration } from "@/context/AmbientalDurationContext";
@@ -135,13 +137,25 @@ function SleepHeaderActions({
   sticky = false,
   foreground,
   onOpenSearch,
+  onOpenReminder,
 }: {
   sticky?: boolean;
   foreground: string;
   onOpenSearch: () => void;
+  onOpenReminder: () => void;
 }) {
   return (
     <View style={[styles.headerActions, sticky && styles.stickyHeaderActions]}>
+      <Pressable
+        onPress={onOpenReminder}
+        hitSlop={10}
+        style={styles.headerSearchButton}
+        accessibilityRole="button"
+        accessibilityLabel="Recordatorio para dormir"
+        testID="sleep-reminder-button"
+      >
+        <MoonCrescentIcon color="#FFFFFF" size={30} />
+      </Pressable>
       <Pressable
         onPress={onOpenSearch}
         hitSlop={10}
@@ -177,6 +191,7 @@ export default function DescansoScreen() {
         : "rgba(181,211,255,0.1)";
 
   const [searchVisible, setSearchVisible] = useState(false);
+  const [sleepReminderVisible, setSleepReminderVisible] = useState(false);
   const { version: catalogVersion } = useCatalog();
 
   const [stickyHeaderHeight, setStickyHeaderHeight] = useState(0);
@@ -493,6 +508,7 @@ export default function DescansoScreen() {
               sticky
               foreground={colors.foreground}
               onOpenSearch={() => setSearchVisible(true)}
+              onOpenReminder={() => setSleepReminderVisible(true)}
             />
           </View>
           <View style={styles.stickySleepTabsHeader}>
@@ -582,6 +598,11 @@ export default function DescansoScreen() {
           return session ? handleSessionTap(session) : false;
         }}
         scope="sleep"
+      />
+      <SleepReminderSheet
+        visible={sleepReminderVisible}
+        onClose={() => setSleepReminderVisible(false)}
+        onSaved={() => {}}
       />
 
       {/* ── Modal "Todas las sesiones de Dormir" (desliza desde la derecha) ── */}

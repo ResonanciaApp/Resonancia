@@ -92,6 +92,7 @@ import { SCENE_THEMES } from "@/config/scene-themes";
 
 const PROFILE_INDIGO_2_GRADIENT = SCENE_THEMES.indigo2.gradient;
 const PROFILE_INDIGO_2_LOCATIONS = SCENE_THEMES.indigo2.gradientLocations;
+const SHOW_PROFILE_PRACTICE_CARDS = false;
 
 const REFLECTION_BANNER_ENTRY_DISTANCE = 86;
 const REFLECTION_BANNER_ENTRY_DURATION = 380;
@@ -1625,9 +1626,7 @@ export function ProfileScreenBase({
                 showSectionBorders={false}
                 showPersonalStats={false}
                 showCalendar={false}
-                showStreakWeek
-                showStreakViewAll
-                streakTitle="Tu progreso"
+                showStreakWeek={false}
                 streakContentTranslateY={-5}
                 sectionHorizontalPadding={20}
                 sectionTopPadding={21}
@@ -1649,6 +1648,8 @@ export function ProfileScreenBase({
               />
             </View>
 
+            {SHOW_PROFILE_PRACTICE_CARDS && (
+            <>
             <Pressable
               onPress={() => setMorningReminderVisible(true)}
               style={({ pressed }) => [
@@ -1738,6 +1739,8 @@ export function ProfileScreenBase({
                 </Text>
               </Pressable>
             </View>
+            </>
+            )}
 
           </>
         )}
@@ -2106,6 +2109,8 @@ export function ProfileScreenBase({
         </Pressable>
       </Modal>
 
+      {SHOW_PROFILE_PRACTICE_CARDS && (
+      <>
       <SleepReminderSheet
         variant="morning"
         visible={morningReminderVisible}
@@ -2118,6 +2123,8 @@ export function ProfileScreenBase({
         onClose={() => setSleepReminderVisible(false)}
         onSaved={() => {}}
       />
+      </>
+      )}
     </View>
   );
 }

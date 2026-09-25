@@ -76,7 +76,7 @@ export default function ConfiguracionesScreen() {
 
   const { getToken } = useClerkAuth();
   const { logout, isCreator, isAdmin, isSignedIn, clerkUserId } = useAuth();
-  const { isPremium: isPremiumDev, setPremium: setPremiumDev } = usePremium();
+  const { isPremium: isPremiumDev } = usePremium();
   const { expansorId, setExpansorId } = useUserProfile();
   const { updateDefaultSleepTimer } = usePlayer();
   const { brightness, setBrightness } = useBrightness();
@@ -643,16 +643,6 @@ export default function ConfiguracionesScreen() {
           <>
             <Text style={[styles.sectionLabel, { color: colors.mutedForeground }]}>DESARROLLO</Text>
             <View style={[styles.group, { backgroundColor: settingsCardBackground, borderColor: settingsBorderColor }]}>
-              <View style={styles.row}>
-                <RowIcon icon="star" colors={colors} />
-                <Text style={[styles.rowLabel, { color: colors.foreground }]}>Modo Premium (testing)</Text>
-                <Switch
-                  value={isPremiumDev}
-                  onValueChange={(v) => setPremiumDev(v)}
-                  trackColor={{ false: "rgba(61,14,22,0.50)", true: colors.primary + "AA" }}
-                  thumbColor={isPremiumDev ? colors.primary : "#888"}
-                />
-              </View>
               <Pressable
                 onPress={() => {
                   const options = [

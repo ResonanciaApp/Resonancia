@@ -33,6 +33,7 @@ import { useSceneTheme } from "@/context/SceneThemeContext";
 import { useCurrentUserAvatarSource } from "@/lib/profile-avatar";
 import { useNotifications } from "@/context/NotificationsContext";
 import { usePremium } from "@/context/PremiumContext";
+import { useMixerPanel } from "@/context/MixerPanelContext";
 import { SessionBadgeGlass } from "@/components/SessionDurationBadge";
 
 const ND = Platform.OS !== "web";
@@ -62,8 +63,8 @@ const INICIO3_SECTIONS: { title: string | null; items: MenuItem[] }[] = [
   {
     title: null,
     items: [
-      { id: "invite-friend", label: "Invitar a un amigo", icon: "user-plus", route: "/invitar", color: "#CCCCCC" },
-      { id: "help", label: "Ayuda", icon: "help-circle", route: "/ayuda", color: "#CCCCCC" },
+      { id: "mixer", label: "Mezclador de sonidos", icon: "sliders", mciIcon: "tune-vertical", route: "__mixer", color: "#F9F9F9" },
+      { id: "breathing", label: "Ejercicios de respiración", icon: "wind", mciIcon: "weather-windy", route: "/respiracion", color: "#F9F9F9" },
       { id: "settings", label: "Configuraciones", icon: "settings", route: "/configuraciones", color: "#CCCCCC" },
     ],
   },
@@ -91,6 +92,7 @@ export function DrawerMenu() {
   const { theme: activeTheme } = useSceneTheme();
   const { unreadCount } = useNotifications();
   const { isPremium, hydrated: premiumHydrated } = usePremium();
+  const { openMixer } = useMixerPanel();
 
   const loggedIn = isRegistered || isSignedIn;
   const clerkName =
@@ -211,6 +213,11 @@ export function DrawerMenu() {
   const navigate = (route: string) => {
     // Overlays sobre el drawer (menú queda abierto debajo)
     if (route === "__biblioteca_overlay") { openLibFromDrawer(); return; }
+    if (route === "__mixer") {
+      onClose();
+      openMixer();
+      return;
+    }
     if (route === "__profile_compose") {
       markInstantNav();
       onClose();

@@ -18,7 +18,9 @@ import { isIndigoThemeId, SCENE_THEMES } from "@/config/scene-themes";
 import { MEMBERSHIP_AURORA } from "@/constants/colors";
 import type { SceneId } from "@/context/AmbientPlayerContext";
 import { useGeometrixPanel } from "@/context/GeometrixPanelContext";
+import { usePremium } from "@/context/PremiumContext";
 import { useSceneTheme } from "@/context/SceneThemeContext";
+import { useColors } from "@/hooks/useColors";
 
 type FeatherName = React.ComponentProps<typeof Feather>["name"];
 
@@ -61,6 +63,8 @@ export function ProfileSettingsSections({
   const [milestonesOpen, setMilestonesOpen] = useState(false);
   const [themesOpen, setThemesOpen] = useState(false);
   const { openGeometrix } = useGeometrixPanel();
+  const { isPremium: isPremiumDev, setPremium: setPremiumDev } = usePremium();
+  const { primary } = useColors();
   const { setActiveSceneWithFade } = useSceneTheme();
   const isIndigo = isIndigoThemeId(sceneId);
   const isIndigo2 = sceneId === "indigo2";
@@ -165,6 +169,26 @@ export function ProfileSettingsSections({
               </Text>
               <Feather name="chevron-right" size={19} color={themeAccent} />
             </Pressable>
+            {__DEV__ && (
+              <>
+                <View style={[styles.divider, { backgroundColor: dividerColor }]} />
+                <View style={styles.row}>
+                  <View style={styles.iconBox}>
+                    <Feather name="star" size={20} color="#F9F9F9" />
+                  </View>
+                  <Text style={[styles.rowLabel, styles.rowCopy, { color: foreground }]}>
+                    Modo Premium (testing)
+                  </Text>
+                  <Switch
+                    value={isPremiumDev}
+                    onValueChange={setPremiumDev}
+                    accessibilityLabel="Modo Premium (testing)"
+                    trackColor={{ false: "rgba(61,14,22,0.50)", true: primary + "AA" }}
+                    thumbColor={isPremiumDev ? primary : "#888"}
+                  />
+                </View>
+              </>
+            )}
           </View>
         </View>
       )}
