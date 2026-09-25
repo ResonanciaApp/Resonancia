@@ -33,20 +33,19 @@ const DEFAULT_PLACEHOLDER = "Registra una reflexión...";
 const REGISTER_BUTTON_BACKGROUND = "rgba(184, 117, 240, 0.2)";
 const REGISTER_BUTTON_ENABLED_BACKGROUND = "rgba(184, 117, 240, 0.45)";
 // La + se repite visualmente cada 90°: 270° son tres ciclos perceptibles.
-// Cada extremo del rebote cruza la posición de reposo con menor amplitud.
+// Tras el giro hay solo tres movimientos: cruce moderado, cruce menor y ajuste final.
 const PLUS_ROTATION_STOPS = [
-  { angle: 288, duration: 360 },
-  { angle: 255, duration: 225 },
-  { angle: 281, duration: 195 },
-  { angle: 263, duration: 170 },
-  { angle: 270, duration: 110 },
+  { angle: 279, duration: 360 },
+  { angle: 264, duration: 260 },
+  { angle: 272, duration: 240 },
+  { angle: 270, duration: 200 },
 ] as const;
 const EXPANSION_DURATION = PLUS_ROTATION_STOPS.reduce((total, stop) => total + stop.duration, 0);
 const HALO_SIZES = [46, 36, 26] as const;
 const HALO_COLORS = [
-  "rgba(114, 207, 245, 0.18)",
-  "rgba(125, 216, 250, 0.29)",
-  "rgba(163, 231, 255, 0.39)",
+  "rgba(255, 255, 255, 0.18)",
+  "rgba(255, 255, 255, 0.29)",
+  "rgba(255, 255, 255, 0.39)",
 ] as const;
 
 export function InnerSpaceCard({
