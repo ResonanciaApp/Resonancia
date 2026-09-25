@@ -1443,7 +1443,7 @@ function Inicio3HeroPager({
   const { version: catalogVersion } = useCatalog();
   const effectiveHero = useEffectiveHero(INICIO3_HERO_FALLBACK);
   const [slideWidth, setSlideWidth] = useState(
-    Dimensions.get("window").width,
+    Dimensions.get("window").width - GRID_PAD * 2,
   );
   const [activeIndex, setActiveIndex] = useState(0);
   const [todayMediaActive, setTodayMediaActive] = useState(true);
@@ -1753,7 +1753,7 @@ const Inicio2HeroStatic = React.memo(function Inicio2HeroStatic({
   const effectiveScrollY = scrollY ?? fallbackScrollY;
   const inicio3WeekShift = 2;
   const inicio3ProfileHeaderLift = 15;
-  const inicio3HeroShift = 10;
+  const inicio3HeroShift = 10 - 70;
   const inicio3HeroTopTrim = 25 + 80;
   const inicio3HeroHeight =
     (INICIO2_HERO_HEIGHT + 184 - (topInset + 286) - 52 + 60 + 32) / 2 + 60 + 120;
@@ -3868,15 +3868,17 @@ const styles = StyleSheet.create({
     zIndex: 12,
   },
   inicio3HeroStaticImageFrame: {
-    left: 0,
-    right: 0,
+    left: GRID_PAD,
+    right: GRID_PAD,
+    borderTopLeftRadius: 25,
+    borderTopRightRadius: 25,
+    borderBottomLeftRadius: 25,
+    borderBottomRightRadius: 25,
     overflow: "visible",
     zIndex: 20,
   },
   inicio3HeroImageClip: {
-    borderRadius: 0,
-    borderTopLeftRadius: 12,
-    borderTopRightRadius: 12,
+    borderRadius: 25,
     overflow: "hidden",
   },
   inicio3HeroBackShadow: {
