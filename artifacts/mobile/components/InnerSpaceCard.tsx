@@ -36,11 +36,11 @@ const REGISTER_BUTTON_ENABLED_BACKGROUND = "rgba(184, 117, 240, 0.45)";
 // Cada extremo del rebote cruza la posición de reposo con menor amplitud.
 const PLUS_ROTATION_STOPS = [
   { angle: 288, duration: 360 },
-  { angle: 255, duration: 140 },
-  { angle: 281, duration: 120 },
-  { angle: 263, duration: 105 },
-  { angle: 274, duration: 90 },
-  { angle: 270, duration: 75 },
+  { angle: 255, duration: 185 },
+  { angle: 281, duration: 160 },
+  { angle: 263, duration: 140 },
+  { angle: 274, duration: 120 },
+  { angle: 270, duration: 95 },
 ] as const;
 const EXPANSION_DURATION = PLUS_ROTATION_STOPS.reduce((total, stop) => total + stop.duration, 0);
 const HALO_SIZES = [44, 34, 24] as const;
