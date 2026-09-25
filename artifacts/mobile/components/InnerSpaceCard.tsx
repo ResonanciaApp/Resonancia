@@ -32,16 +32,17 @@ const CATEGORY_PLACEHOLDERS: Partial<Record<ReflectionCategory, string>> = {
 const DEFAULT_PLACEHOLDER = "Registra una reflexión...";
 const REGISTER_BUTTON_BACKGROUND = "rgba(184, 117, 240, 0.2)";
 const REGISTER_BUTTON_ENABLED_BACKGROUND = "rgba(184, 117, 240, 0.45)";
-const EXPANSION_DURATION = 650;
-// Respuesta de un oscilador amortiguado: empieza y termina en reposo,
-// cruza el ángulo final alternando lados con amplitud decreciente.
-const angularBounceEasing = (progress: number) => {
-  const damping = 4.2;
-  const frequency = 4 * Math.PI;
-  const remaining = Math.exp(-damping * progress) *
-    (Math.cos(frequency * progress) + (damping / frequency) * Math.sin(frequency * progress));
-  return (1 - remaining) / (1 - Math.exp(-damping));
-};
+// La + se repite visualmente cada 90°: 270° son tres ciclos perceptibles.
+// Cada extremo del rebote cruza la posición de reposo con menor amplitud.
+const PLUS_ROTATION_STOPS = [
+  { angle: 288, duration: 360 },
+  { angle: 255, duration: 140 },
+  { angle: 281, duration: 120 },
+  { angle: 263, duration: 105 },
+  { angle: 274, duration: 90 },
+  { angle: 270, duration: 75 },
+] as const;
+const EXPANSION_DURATION = PLUS_ROTATION_STOPS.reduce((total, stop) => total + stop.duration, 0);
 const HALO_SIZES = [44, 34, 24] as const;
 const HALO_COLORS = [
   "rgba(114, 207, 245, 0.18)",
@@ -314,6 +315,7 @@ export function InnerSpaceCard({
 
     plusSpin.setValue(0);
     if (opening) revealY.setValue(-14);
+    const spinDirection = opening ? -1 : 1;
 
     const animations = [
       Animated.timing(heightAnim, {
@@ -333,21 +335,14 @@ export function InnerSpaceCard({
         easing: opening ? Easing.out(Easing.cubic) : Easing.in(Easing.cubic),
         useNativeDriver: true,
       }),
-      Animated.sequence([
-        // La + se repite visualmente cada 90°: 270° son tres ciclos perceptibles.
+      Animated.sequence(PLUS_ROTATION_STOPS.map((stop, index) =>
         Animated.timing(plusSpin, {
-          toValue: opening ? -285 : 285,
-          duration: 400,
-          easing: Easing.out(Easing.quad),
+          toValue: spinDirection * stop.angle,
+          duration: stop.duration,
+          easing: index === 0 ? Easing.out(Easing.cubic) : Easing.inOut(Easing.cubic),
           useNativeDriver: true,
         }),
-        Animated.timing(plusSpin, {
-          toValue: opening ? -270 : 270,
-          duration: EXPANSION_DURATION - 400,
-          easing: angularBounceEasing,
-          useNativeDriver: true,
-        }),
-      ]),
+      )),
       ...haloValues.map((value, index) =>
         Animated.timing(value, {
           toValue: opening ? 0 : 1,
