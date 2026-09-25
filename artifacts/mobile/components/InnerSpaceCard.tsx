@@ -64,7 +64,6 @@ export function InnerSpaceCard({
     options: reflectionCategoryOptions,
     isCatalogLoading,
     isCatalogError,
-    isCatalogStale,
     isCatalogEmpty,
   } = useReflectionCategories();
   const selectedCategoryShadow = reflectionCategoryOptions.find((cat) => cat.id === "gratitude")?.color ?? "#F075B3";
@@ -278,7 +277,7 @@ export function InnerSpaceCard({
           accessibilityState={{ expanded: infoOpen }}
           testID="reflection-wall-info"
         >
-          <Feather name="info" size={21} color={colors.foreground} />
+          <Feather name="info" size={21} color="#A8A8A8" style={{ transform: [{ translateY: 5 }] }} />
         </Pressable>
       </View>
       {infoOpen ? (
@@ -327,15 +326,13 @@ export function InnerSpaceCard({
           ))}
         </ScrollView>
       </MaskedView>
-       {(isCatalogLoading || isCatalogError || isCatalogEmpty || isCatalogStale) && (
+       {(isCatalogLoading || isCatalogError || isCatalogEmpty) && (
          <Text style={[styles.catalogNotice, { color: colors.mutedForeground }]}>
            {isCatalogLoading
              ? "Cargando categorías…"
              : isCatalogError
                ? "No se pudieron cargar las categorías nuevas. Mostrando las categorías guardadas; inténtalo de nuevo más tarde."
-               : isCatalogEmpty
-                 ? "No hay categorías activas disponibles en este momento."
-               : "Categorías actualizadas en segundo plano…"}
+               : "No hay categorías activas disponibles en este momento."}
          </Text>
        )}
 
@@ -391,7 +388,6 @@ export function InnerSpaceCard({
           onChangeText={setMessage}
           textAlignVertical="top"
         />
-        <Text style={[styles.charCount, { color: colors.mutedForeground }]}>{message.length}/300</Text>
       </Pressable>
       {createMutation.isError && (
         <Text style={[styles.errorText, { color: colors.destructive }]}>Ocurrió un error al guardar. Inténtalo de nuevo.</Text>
@@ -442,7 +438,7 @@ const styles = StyleSheet.create({
   },
   header: {
     flexDirection: "row",
-    alignItems: "center",
+    alignItems: "flex-start",
     justifyContent: "space-between",
     gap: 12,
     marginBottom: 18,
@@ -465,10 +461,8 @@ const styles = StyleSheet.create({
   infoButton: {
     width: 43,
     height: 43,
-    borderRadius: 21.5,
-    backgroundColor: "rgba(255,255,255,0.1)",
     alignItems: "center",
-    justifyContent: "center",
+    justifyContent: "flex-start",
   },
   infoDescription: {
     fontFamily: "Manrope",
@@ -517,12 +511,15 @@ const styles = StyleSheet.create({
     borderRadius: 16,
     padding: 12,
     paddingTop: 16,
-    marginBottom: 8,
+    // Reserva el espacio del contador retirado; el borde baja 12 px menos
+    // y la fila de acciones conserva su posición anterior.
+    paddingBottom: 34,
+    marginBottom: 20,
     borderWidth: 1,
     borderColor: "rgba(255,255,255,0.05)",
   },
   input: {
-    minHeight: 65,
+    minHeight: 53,
     fontSize: 13,
     lineHeight: 21,
     transform: [{ translateY: -5 }],
@@ -542,11 +539,6 @@ const styles = StyleSheet.create({
     top: 0,
     left: 0,
     right: 0,
-  },
-  charCount: {
-    fontSize: 11,
-    textAlign: "right",
-    marginTop: 8,
   },
   errorText: {
     fontSize: 12,
@@ -576,7 +568,7 @@ const styles = StyleSheet.create({
     backgroundColor: "transparent",
   },
   submitText: {
-    fontSize: 8,
+    fontSize: 11,
     fontWeight: "600",
   },
 });

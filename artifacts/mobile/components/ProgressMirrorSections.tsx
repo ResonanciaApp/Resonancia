@@ -21,6 +21,7 @@ export function ProgressMirrorSections({
   showSectionBorders = true,
   showPersonalStats = true,
   personalStatsFilterBelowTitle = false,
+  personalStatsFilterColor,
   showCalendar = true,
   animateEntrance = false,
   entranceReplayKey = "progress-mirror",
@@ -41,6 +42,7 @@ export function ProgressMirrorSections({
   showSectionBorders?: boolean;
   showPersonalStats?: boolean;
   personalStatsFilterBelowTitle?: boolean;
+  personalStatsFilterColor?: string;
   showCalendar?: boolean;
   animateEntrance?: boolean;
   entranceReplayKey?: string | number;
@@ -68,6 +70,7 @@ export function ProgressMirrorSections({
   const weekBlink = useRef(new Animated.Value(1)).current;
   const streakPressRunning = useRef(false);
   const accent = theme.accent ?? colors.accent;
+  const filterColor = personalStatsFilterColor ?? accent;
   const maxStreak = useMemo(() => computeMaxStreak(statEvents), [statEvents]);
   const personalStats = useMemo(() => {
     const rangeStart = new Date();
@@ -149,10 +152,10 @@ export function ProgressMirrorSections({
               accessibilityLabel="Elegir filtro de días"
               accessibilityState={{ expanded: statsFilterOpen }}
             >
-              <Text style={[styles.filterText, { color: accent }]}>
+              <Text style={[styles.filterText, { color: filterColor }]}>
                 Últimos {statsRangeDays} días
               </Text>
-              <Feather name="chevron-down" size={17} color={accent} />
+              <Feather name="chevron-down" size={17} color={filterColor} />
             </Pressable>
             {statsFilterOpen && (
               <View style={[
@@ -172,7 +175,7 @@ export function ProgressMirrorSections({
                       statsRangeDays === days && styles.filterOptionSelected,
                     ]}
                   >
-                    <Text style={[styles.filterText, { color: accent }]}>
+                    <Text style={[styles.filterText, { color: filterColor }]}>
                       Últimos {days} días
                     </Text>
                   </Pressable>

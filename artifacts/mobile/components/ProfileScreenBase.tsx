@@ -1628,6 +1628,7 @@ export function ProfileScreenBase({
               <ProgressMirrorSections
                 showSectionBorders={false}
                 personalStatsFilterBelowTitle
+                personalStatsFilterColor="#A8A8A8"
                 showCalendar={false}
                 showStreakWeek={false}
                 streakContentTranslateY={-5}
@@ -1665,25 +1666,38 @@ export function ProfileScreenBase({
                 </Pressable>
               </View>
               {(() => {
-                const session = [...history]
+                const recentSessions = [...history]
                   .sort((a, b) => Date.parse(b.playedAt) - Date.parse(a.playedAt))
-                  .map((entry) => getSessionById(entry.sessionId))
-                  .find((candidate) => candidate !== undefined);
-                return session ? (
-                  <Pressable
-                    onPress={() => router.push(`/session/${session.id}` as never)}
-                    style={styles.profileHistoryCard}
-                    accessibilityRole="button"
-                    accessibilityLabel={`Abrir ${session.title}`}
-                  >
-                    <View>
-                      <Image source={session.image as never} style={styles.profileHistoryImage} contentFit="cover" />
-                      <Text style={styles.profileHistoryDuration}>{session.durationLabel}</Text>
-                    </View>
-                    <Text style={[styles.profileHistorySessionTitle, { color: colors.foreground }]} numberOfLines={2}>
-                      {session.title}
-                    </Text>
-                  </Pressable>
+                  .flatMap((entry, index) => {
+                    const session = getSessionById(entry.sessionId);
+                    return session ? [{ session, key: `${entry.sessionId}:${entry.playedAt}:${index}` }] : [];
+                  })
+                  .slice(0, 3);
+                return recentSessions.length > 0 ? (
+                  <View style={styles.profileHistoryCards}>
+                    {recentSessions.map(({ session, key }) => (
+                      <Pressable
+                        key={key}
+                        onPress={() => router.push(`/session/${session.id}` as never)}
+                        style={styles.profileHistoryCard}
+                        accessibilityRole="button"
+                        accessibilityLabel={`Abrir ${session.title}`}
+                      >
+                        <View>
+                          <Image source={session.image as never} style={styles.profileHistoryImage} contentFit="cover" />
+                          <Text style={styles.profileHistoryDuration}>{session.durationLabel}</Text>
+                        </View>
+                        <View style={styles.profileHistorySessionCopy}>
+                          <Text style={[styles.profileHistorySessionTitle, { color: colors.foreground }]} numberOfLines={2}>
+                            {session.title}
+                          </Text>
+                          <Text style={[styles.profileHistoryCategory, { color: profileDescriptionColor }]} numberOfLines={1}>
+                            {session.categoryLabel || "Contenido"}
+                          </Text>
+                        </View>
+                      </Pressable>
+                    ))}
+                  </View>
                 ) : (
                   <Text style={{ color: profileDescriptionColor, fontSize: 13 }}>Aquí aparecerá lo que escuches.</Text>
                 );
@@ -2292,7 +2306,7 @@ const styles = StyleSheet.create({
     gap: 6,
   },
   notificationBellIcon: {
-    transform: [{ translateX: 0.5 }, { translateY: -1 }],
+    transform: [{ translateX: 0 }, { translateY: -1 }],
   },
   giftIcon: {
     width: 35,
@@ -3073,10 +3087,19 @@ const styles = StyleSheet.create({
     fontSize: 13,
     fontWeight: "700",
   },
+  profileHistoryCards: {
+    marginTop: 7,
+    gap: 12,
+  },
   profileHistoryCard: {
     flexDirection: "row",
     alignItems: "center",
     gap: 12,
+  },
+  profileHistorySessionCopy: {
+    flex: 1,
+    minWidth: 0,
+    gap: 4,
   },
   profileHistoryImage: {
     width: 68,
@@ -3094,10 +3117,13 @@ const styles = StyleSheet.create({
     borderRadius: 4,
   },
   profileHistorySessionTitle: {
-    flex: 1,
     fontFamily: "Manrope",
     fontSize: 14,
     fontWeight: "700",
+  },
+  profileHistoryCategory: {
+    fontFamily: "Manrope",
+    fontSize: 12,
   },
   profileProgressHeader: {
     flexDirection: "row",
