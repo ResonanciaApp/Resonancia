@@ -154,7 +154,7 @@ function SleepHeaderActions({
         accessibilityLabel="Recordatorio para dormir"
         testID="sleep-reminder-button"
       >
-        <MoonCrescentIcon color="#FFFFFF" size={30} />
+        <MoonCrescentIcon color="#FFFFFF" size={27} />
       </Pressable>
       <Pressable
         onPress={onOpenSearch}
