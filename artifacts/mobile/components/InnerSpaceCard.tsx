@@ -43,9 +43,9 @@ const PLUS_ROTATION_STOPS = [
 const EXPANSION_DURATION = PLUS_ROTATION_STOPS.reduce((total, stop) => total + stop.duration, 0);
 const HALO_SIZES = [46, 36, 26] as const;
 const HALO_COLORS = [
-  "rgba(255, 255, 255, 0.18)",
-  "rgba(255, 255, 255, 0.29)",
-  "rgba(255, 255, 255, 0.39)",
+  "rgba(255, 255, 255, 0.10)",
+  "rgba(255, 255, 255, 0.15)",
+  "rgba(255, 255, 255, 0.20)",
 ] as const;
 
 export function InnerSpaceCard({
