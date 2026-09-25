@@ -1754,6 +1754,7 @@ const Inicio2HeroStatic = React.memo(function Inicio2HeroStatic({
   const inicio3WeekShift = 5;
   const inicio3ProfileHeaderLift = 15;
   const inicio3HeroShift = 10;
+  const inicio3HeroTopTrim = 25;
   const inicio3HeroHeight =
     (INICIO2_HERO_HEIGHT + 184 - (topInset + 286) - 52 + 60 + 32) / 2 + 60 + 120;
   const inicio3HeroLayoutTop =
@@ -1789,8 +1790,8 @@ const Inicio2HeroStatic = React.memo(function Inicio2HeroStatic({
     >
       {isInicio3 ? (
         <Inicio3HeroPager
-          top={inicio3HeroTop - 61}
-          height={inicio3HeroHeight + 59}
+          top={inicio3HeroTop - 61 + inicio3HeroTopTrim}
+          height={inicio3HeroHeight + 59 - inicio3HeroTopTrim}
           shadowStyle={heroShadowStyle}
           reduceMotion={reduceMotion}
         />
@@ -1954,7 +1955,7 @@ const Inicio2HeroStatic = React.memo(function Inicio2HeroStatic({
           <RAnimated.View
             style={[
               styles.inicio3StreakRow,
-              { top: topInset + 68 - INICIO3_VERTICAL_LIFT + inicio3WeekShift - 17 },
+              { top: topInset + 68 - INICIO3_VERTICAL_LIFT + inicio3WeekShift - 17 + 12 },
               slowHeaderStyle,
             ]}
             testID="inicio3-streak-row"

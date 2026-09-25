@@ -36,7 +36,7 @@ export function StreakWeekRow({
             ]}
           >
             {active ? (
-              <Svg width={smallLabels ? 25 : 27} height={smallLabels ? 25 : 27} viewBox="0 0 24 24" style={styles.checkMark}>
+              <Svg width={smallLabels ? 21 : 27} height={smallLabels ? 21 : 27} viewBox="0 0 24 24" style={styles.checkMark}>
                 <Path
                   d="M20 6 9 17l-5-5"
                   fill="none"
