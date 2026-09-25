@@ -30,6 +30,7 @@ const CATEGORY_PLACEHOLDERS: Partial<Record<ReflectionCategory, string>> = {
 };
 const DEFAULT_PLACEHOLDER = "Registra una reflexión...";
 const REGISTER_BUTTON_BACKGROUND = "rgba(184, 117, 240, 0.2)";
+const REGISTER_BUTTON_ENABLED_BACKGROUND = "rgba(184, 117, 240, 0.45)";
 
 export function InnerSpaceCard({
   focusRequest = 0,
@@ -62,7 +63,6 @@ export function InnerSpaceCard({
   const { isPremium } = usePremium();
   const {
     options: reflectionCategoryOptions,
-    isCatalogLoading,
     isCatalogError,
     isCatalogEmpty,
   } = useReflectionCategories();
@@ -265,7 +265,7 @@ export function InnerSpaceCard({
       <View style={styles.header}>
         <View style={styles.headerCopy}>
           <Text style={[styles.headerTitle, { color: colors.foreground }]}>Mi muro expansivo</Text>
-          <Text style={[styles.headerDescription, { color: colors.mutedForeground }]}>
+          <Text style={[styles.headerDescription, { color: "#A8A8A8" }]}>
             Exprésate y compártelo con el mundo
           </Text>
         </View>
@@ -277,7 +277,7 @@ export function InnerSpaceCard({
           accessibilityState={{ expanded: infoOpen }}
           testID="reflection-wall-info"
         >
-          <Feather name="info" size={21} color="#A8A8A8" style={{ transform: [{ translateY: 5 }] }} />
+          <Feather name="info" size={21} color="#A8A8A8" style={{ transform: [{ translateX: 4 }, { translateY: 5 }] }} />
         </Pressable>
       </View>
       {infoOpen ? (
@@ -326,13 +326,11 @@ export function InnerSpaceCard({
           ))}
         </ScrollView>
       </MaskedView>
-       {(isCatalogLoading || isCatalogError || isCatalogEmpty) && (
+       {(isCatalogError || isCatalogEmpty) && (
          <Text style={[styles.catalogNotice, { color: colors.mutedForeground }]}>
-           {isCatalogLoading
-             ? "Cargando categorías…"
-             : isCatalogError
-               ? "No se pudieron cargar las categorías nuevas. Mostrando las categorías guardadas; inténtalo de nuevo más tarde."
-               : "No hay categorías activas disponibles en este momento."}
+           {isCatalogError
+             ? "No se pudieron cargar las categorías nuevas. Mostrando las categorías guardadas; inténtalo de nuevo más tarde."
+             : "No hay categorías activas disponibles en este momento."}
          </Text>
        )}
 
@@ -412,7 +410,11 @@ export function InnerSpaceCard({
           testID="save-reflection"
           accessibilityLabel="Registrar"
           accessibilityRole="button"
-          style={[styles.submitButton, { backgroundColor: REGISTER_BUTTON_BACKGROUND }, isSubmitDisabled && { opacity: 0.5 }]}
+          style={[
+            styles.submitButton,
+            { backgroundColor: isSubmitDisabled ? REGISTER_BUTTON_BACKGROUND : REGISTER_BUTTON_ENABLED_BACKGROUND },
+            isSubmitDisabled && { opacity: 0.5 },
+          ]}
           disabled={isSubmitDisabled}
           onPress={saveMessage}
         >

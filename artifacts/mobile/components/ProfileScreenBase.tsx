@@ -3089,7 +3089,7 @@ const styles = StyleSheet.create({
   },
   profileHistoryCards: {
     marginTop: 7,
-    gap: 12,
+    gap: 16,
   },
   profileHistoryCard: {
     flexDirection: "row",

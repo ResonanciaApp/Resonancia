@@ -118,7 +118,7 @@ export function DailyRecommendationsSection({
         ]}
       >
         {recommendations.map((session, index) => (
-          <React.Fragment key={session.id}>
+          <View key={session.id} style={styles.recommendationGroup}>
             <CinematicFadeSlide
               replayKey={`${animationCycle}:${session.id}`}
               delay={index * CARD_FADE_STAGGER}
@@ -162,10 +162,10 @@ export function DailyRecommendationsSection({
             {inicio3Compact && index < recommendations.length - 1 ? (
               <View style={styles.inicio3CardDivider} />
             ) : null}
-          </React.Fragment>
+          </View>
         ))}
         {onRefreshRecommendations ? (
-          <Animated.View style={{ transform: [{ scale: buttonScale }] }}>
+          <Animated.View style={{ transform: [{ translateY: -3 }, { scale: buttonScale }] }}>
             <Pressable
               onPress={refreshRecommendations}
               onPressIn={() => animateButtonPress(true)}
@@ -206,6 +206,9 @@ const styles = StyleSheet.create({
     letterSpacing: 0.2,
   },
   date: {
+    position: "absolute",
+    top: 24,
+    left: 0,
     flexShrink: 0,
     fontFamily: "Manrope",
     fontSize: 12,
@@ -225,6 +228,9 @@ const styles = StyleSheet.create({
     borderColor: "rgba(255,255,255,0.1)",
     borderRadius: 16,
     overflow: "hidden",
+  },
+  recommendationGroup: {
+    transform: [{ translateY: 3 }],
   },
   recommendationCard: {
     backgroundColor: "rgba(0,0,0,0.28)",
