@@ -2,7 +2,6 @@ import { Feather, Ionicons, MaterialCommunityIcons } from "@expo/vector-icons";
 import { useUser } from "@clerk/expo";
 import { useDayRollover } from "@/hooks/useDayRollover";
 import { useStreak } from "@/hooks/useStreak";
-import { StreakWeekRow } from "@/components/StreakWeekRow";
 import { useStreakCelebration } from "@/context/StreakCelebrationContext";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { LinearGradient } from "expo-linear-gradient";
@@ -1754,6 +1753,7 @@ const Inicio2HeroStatic = React.memo(function Inicio2HeroStatic({
   const inicio3WeekShift = 5;
   const inicio3ProfileHeaderLift = 15;
   const inicio3HeroShift = 10;
+  const inicio3HeroLift = 35;
   const inicio3HeroHeight =
     (INICIO2_HERO_HEIGHT + 184 - (topInset + 286) - 52 + 60 + 32) / 2 + 60 + 120;
   const inicio3HeroLayoutTop =
@@ -1762,7 +1762,8 @@ const Inicio2HeroStatic = React.memo(function Inicio2HeroStatic({
     INICIO3_VERTICAL_LIFT +
     12 +
     inicio3WeekShift +
-    inicio3HeroShift;
+    inicio3HeroShift -
+    inicio3HeroLift;
   const inicio3HeroTop = inicio3HeroLayoutTop - 19;
   const slowHeaderStyle = useAnimatedStyle(() => {
     if (!isInicio3 || reduceMotion) return { transform: [{ translateY: 0 }] };
@@ -1951,21 +1952,6 @@ const Inicio2HeroStatic = React.memo(function Inicio2HeroStatic({
           </Pressable>
         </View>
       </RAnimated.View>
-
-      {isInicio3 && (
-        <>
-          <RAnimated.View
-            style={[
-              styles.inicio3StreakRow,
-              { top: topInset + 68 - INICIO3_VERTICAL_LIFT + inicio3WeekShift - 17 },
-              slowHeaderStyle,
-            ]}
-            testID="inicio3-streak-row"
-          >
-            <StreakWeekRow />
-          </RAnimated.View>
-        </>
-      )}
 
       {!isInicio3 && (
         <Pressable
@@ -3866,13 +3852,6 @@ const styles = StyleSheet.create({
     lineHeight: 26,
     textAlign: "left",
     transform: [],
-  },
-  inicio3StreakRow: {
-    position: "absolute",
-    left: GRID_PAD,
-    right: GRID_PAD,
-    paddingHorizontal: 3,
-    zIndex: 12,
   },
   inicio3HeroStaticImageFrame: {
     left: 0,

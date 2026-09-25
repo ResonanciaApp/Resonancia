@@ -1624,7 +1624,7 @@ export function ProfileScreenBase({
                 showSectionBorders={false}
                 showPersonalStats={false}
                 showCalendar={false}
-                showStreakWeek
+                showStreakWeek={false}
                 showStreakViewAll
                 streakTitle="Tu progreso"
                 streakContentTranslateY={-5}
