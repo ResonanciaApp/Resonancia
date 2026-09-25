@@ -36,7 +36,7 @@ export function StreakWeekRow({
             ]}
           >
             {active ? (
-              <Svg width={27} height={27} viewBox="0 0 24 24" style={styles.checkMark}>
+              <Svg width={smallLabels ? 25 : 27} height={smallLabels ? 25 : 27} viewBox="0 0 24 24" style={styles.checkMark}>
                 <Path
                   d="M20 6 9 17l-5-5"
                   fill="none"
@@ -47,7 +47,7 @@ export function StreakWeekRow({
                 />
               </Svg>
             ) : (
-              <Text style={[styles.dayLabel, smallLabels && styles.smallDayLabel, isToday && styles.positionedDayLabel]}>
+              <Text style={[styles.dayLabel, isToday && styles.positionedDayLabel, smallLabels && styles.smallDayLabel]}>
                 {initial}
               </Text>
             )}
@@ -143,6 +143,7 @@ const styles = StyleSheet.create({
     transform: [{ translateY: 1 }],
   },
   smallDayLabel: {
+    color: "#FFFFFF",
     fontSize: 11,
     lineHeight: 14,
     fontWeight: "400",

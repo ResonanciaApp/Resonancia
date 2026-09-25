@@ -1895,7 +1895,7 @@ const Inicio2HeroStatic = React.memo(function Inicio2HeroStatic({
             {!isInicio3 && (
               <Text style={styles.inicio2HeroGreetingLabel}>{greeting}</Text>
             )}
-            <Text style={styles.inicio2HeroGreetingName}>{displayName}</Text>
+            <Text style={[styles.inicio2HeroGreetingName, isInicio3 && styles.inicio3HeroGreetingName]}>{displayName}</Text>
             {isInicio3 ? (
               <Text style={styles.inicio3HeroDecree} numberOfLines={2}>
                 {greeting}
@@ -1940,9 +1940,9 @@ const Inicio2HeroStatic = React.memo(function Inicio2HeroStatic({
           >
             <Animated.View style={{ transform: [{ scale: giftScale }] }}>
               {isInicio3 ? (
-                <View style={styles.inicio3ProfileLotusPill}>
+                <View style={styles.inicio3ProfileLotusContent}>
                   <Text style={styles.inicio3ProfileLotusCount}>{currentStreak}</Text>
-                  <MaterialCommunityIcons name="spa" size={21} color="#FFFFFF" />
+                  <MaterialCommunityIcons name="spa" size={21} color="#CCCCCC" />
                 </View>
               ) : (
                 <Inicio2LotusStreak />
@@ -3702,11 +3702,15 @@ const styles = StyleSheet.create({
     textShadowOffset: { width: 0, height: 1 },
     textShadowRadius: 4,
   },
+  inicio3HeroGreetingName: {
+    fontSize: 13,
+    lineHeight: 18,
+  },
   inicio3HeroDecree: {
     color: "#E5E1EB",
     fontFamily: "Manrope",
-    fontSize: 13,
-    lineHeight: 17,
+    fontSize: 11,
+    lineHeight: 15,
     fontWeight: "600",
     letterSpacing: 0.2,
     textShadowColor: "rgba(0,0,0,0.55)",
@@ -3741,18 +3745,11 @@ const styles = StyleSheet.create({
     alignItems: "center",
     gap: 8,
   },
-  inicio3ProfileLotusPill: {
-    height: 38,
-    minWidth: 58,
-    paddingHorizontal: 10,
-    borderRadius: 19,
-    borderWidth: 1,
-    borderColor: "rgba(241,224,255,0.25)",
+  inicio3ProfileLotusContent: {
     flexDirection: "row",
     gap: 6,
     alignItems: "center",
     justifyContent: "center",
-    backgroundColor: "rgba(0,0,0,0.23)",
   },
   inicio3ProfileLotusCount: {
     color: "#FFFFFF",
