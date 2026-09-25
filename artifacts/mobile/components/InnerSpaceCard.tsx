@@ -1,9 +1,10 @@
 import React, { useState, useRef, useEffect, useLayoutEffect } from "react";
-import { View, Text, TextInput, Pressable, ScrollView, StyleSheet, Animated } from "react-native";
+import { View, Text, TextInput, Pressable, ScrollView, StyleSheet, Animated, Easing } from "react-native";
 import MaskedView from "@react-native-masked-view/masked-view";
 import { LinearGradient } from "expo-linear-gradient";
 import * as Haptics from "expo-haptics";
 import { Feather } from "@expo/vector-icons";
+import { useReducedMotion } from "react-native-reanimated";
 import { useColors } from "@/hooks/useColors";
 import { useSceneTheme } from "@/context/SceneThemeContext";
 import {
@@ -31,6 +32,12 @@ const CATEGORY_PLACEHOLDERS: Partial<Record<ReflectionCategory, string>> = {
 const DEFAULT_PLACEHOLDER = "Registra una reflexión...";
 const REGISTER_BUTTON_BACKGROUND = "rgba(184, 117, 240, 0.2)";
 const REGISTER_BUTTON_ENABLED_BACKGROUND = "rgba(184, 117, 240, 0.45)";
+const HALO_SIZES = [44, 34, 24] as const;
+const HALO_COLORS = [
+  "rgba(114, 207, 245, 0.18)",
+  "rgba(125, 216, 250, 0.29)",
+  "rgba(163, 231, 255, 0.39)",
+] as const;
 
 export function InnerSpaceCard({
   focusRequest = 0,
@@ -57,7 +64,18 @@ export function InnerSpaceCard({
   const [displayedPlaceholder, setDisplayedPlaceholder] = useState(DEFAULT_PLACEHOLDER);
   const [incomingPlaceholder, setIncomingPlaceholder] = useState<string | null>(null);
   const [inputActive, setInputActive] = useState(false);
-  const [infoOpen, setInfoOpen] = useState(false);
+  const [expanded, setExpanded] = useState(false);
+  const expandedRef = useRef(false);
+  const animatingRef = useRef(false);
+  const queuedOpenRef = useRef(false);
+  const focusAfterExpandRef = useRef(false);
+  const contentHeightRef = useRef(0);
+  const reduceMotion = useReducedMotion();
+  const heightAnim = useRef(new Animated.Value(0)).current;
+  const revealOpacity = useRef(new Animated.Value(0)).current;
+  const revealY = useRef(new Animated.Value(-14)).current;
+  const plusSpin = useRef(new Animated.Value(0)).current;
+  const haloValues = useRef(HALO_SIZES.map(() => new Animated.Value(1))).current;
   const qc = useQueryClient();
   const { authLoading, isSignedIn, clerkUserId } = useAuth();
   const { isPremium } = usePremium();
@@ -138,17 +156,6 @@ export function InnerSpaceCard({
       }
     }
   });
-
-  useEffect(() => {
-    if (focusRequest <= 0) return;
-    if (freeLimitReached) return;
-    setInputActive(true);
-    const frame = requestAnimationFrame(() => {
-      const focusFrame = requestAnimationFrame(() => inputRef.current?.focus());
-      return () => cancelAnimationFrame(focusFrame);
-    });
-    return () => cancelAnimationFrame(frame);
-  }, [focusRequest, freeLimitReached]);
 
   const desiredPlaceholder = category
     ? CATEGORY_PLACEHOLDERS[category] ?? DEFAULT_PLACEHOLDER
@@ -260,6 +267,121 @@ export function InnerSpaceCard({
     setCategory((current) => current === nextCategory ? null : nextCategory);
   };
 
+  const focusInput = () => {
+    setInputActive(true);
+    requestAnimationFrame(() => requestAnimationFrame(() => inputRef.current?.focus()));
+  };
+
+  const updateContentHeight = (height: number) => {
+    if (height <= 0 || height === contentHeightRef.current) return;
+    contentHeightRef.current = height;
+    if (expandedRef.current && !animatingRef.current) heightAnim.setValue(height);
+  };
+
+  const animateExpansion = (opening: boolean) => {
+    if (animatingRef.current || expandedRef.current === opening) return;
+    animatingRef.current = true;
+    expandedRef.current = opening;
+    setExpanded(opening);
+    if (!opening) {
+      inputRef.current?.blur();
+      setInputActive(false);
+    }
+
+    if (reduceMotion) {
+      heightAnim.setValue(opening ? contentHeightRef.current : 0);
+      revealOpacity.setValue(opening ? 1 : 0);
+      revealY.setValue(opening ? 0 : -14);
+      plusSpin.setValue(0);
+      haloValues.forEach((value) => value.setValue(opening ? 0 : 1));
+      animatingRef.current = false;
+      if (opening && focusAfterExpandRef.current) {
+        focusAfterExpandRef.current = false;
+        focusInput();
+      }
+      return;
+    }
+
+    plusSpin.setValue(0);
+    if (opening) revealY.setValue(-14);
+
+    const animations = [
+      Animated.timing(heightAnim, {
+        toValue: opening ? contentHeightRef.current : 0,
+        duration: opening ? 470 : 350,
+        useNativeDriver: false,
+      }),
+      Animated.timing(revealOpacity, {
+        toValue: opening ? 1 : 0,
+        duration: opening ? 380 : 250,
+        useNativeDriver: true,
+      }),
+      opening
+        ? Animated.sequence([
+            Animated.timing(revealY, { toValue: 6, duration: 335, useNativeDriver: true }),
+            Animated.spring(revealY, { toValue: 0, speed: 17, bounciness: 8, useNativeDriver: true }),
+          ])
+        : Animated.sequence([
+            Animated.timing(revealY, { toValue: 6, duration: 90, useNativeDriver: true }),
+            Animated.timing(revealY, { toValue: -14, duration: 260, useNativeDriver: true }),
+          ]),
+      Animated.sequence([
+        // La + se repite visualmente cada 90°: 270° son tres ciclos perceptibles.
+        Animated.timing(plusSpin, {
+          toValue: opening ? -270 : 270,
+          duration: 1050,
+          easing: Easing.linear,
+          useNativeDriver: true,
+        }),
+        Animated.timing(plusSpin, {
+          toValue: opening ? -285 : 285,
+          duration: 120,
+          useNativeDriver: true,
+        }),
+        Animated.spring(plusSpin, {
+          toValue: opening ? -270 : 270,
+          speed: 15,
+          bounciness: 8,
+          useNativeDriver: true,
+        }),
+      ]),
+      ...haloValues.map((value, index) =>
+        Animated.timing(value, {
+          toValue: opening ? 0 : 1,
+          duration: opening ? 300 : 240,
+          delay: opening ? 0 : index * 100,
+          useNativeDriver: true,
+        }),
+      ),
+    ];
+
+    Animated.parallel(animations).start(({ finished }) => {
+      if (!finished) return;
+      animatingRef.current = false;
+      heightAnim.setValue(opening ? contentHeightRef.current : 0);
+      plusSpin.setValue(0);
+      if (queuedOpenRef.current && !opening) {
+        queuedOpenRef.current = false;
+        requestAnimationFrame(() => animateExpansion(true));
+      } else if (opening && focusAfterExpandRef.current) {
+        focusAfterExpandRef.current = false;
+        focusInput();
+      }
+    });
+  };
+
+  useEffect(() => {
+    if (focusRequest <= 0 || freeLimitReached) return;
+    focusAfterExpandRef.current = true;
+    if (!expandedRef.current) {
+      if (animatingRef.current) queuedOpenRef.current = true;
+      else animateExpansion(true);
+    } else if (!animatingRef.current) {
+      focusAfterExpandRef.current = false;
+      focusInput();
+    }
+  }, [focusRequest, freeLimitReached]);
+
   return (
     <View style={styles.container}>
       <View style={styles.header}>
@@ -271,20 +393,53 @@ export function InnerSpaceCard({
         </View>
         <Pressable
           style={styles.infoButton}
-          onPress={() => setInfoOpen((open) => !open)}
+          onPress={() => animateExpansion(!expandedRef.current)}
           accessibilityRole="button"
-          accessibilityLabel="Información sobre Mi muro expansivo"
-          accessibilityState={{ expanded: infoOpen }}
-          testID="reflection-wall-info"
+          accessibilityLabel={expanded ? "Contraer Mi muro expansivo" : "Expandir Mi muro expansivo"}
+          accessibilityState={{ expanded }}
+          testID="reflection-wall-toggle"
         >
-          <Feather name="info" size={21} color="#A8A8A8" style={{ transform: [{ translateX: 4 }, { translateY: 5 }] }} />
+          {haloValues.map((value, index) => (
+            <Animated.View
+              key={HALO_SIZES[index]}
+              pointerEvents="none"
+              style={[
+                styles.halo,
+                {
+                  width: HALO_SIZES[index],
+                  height: HALO_SIZES[index],
+                  borderRadius: HALO_SIZES[index] / 2,
+                  top: (43 - HALO_SIZES[index]) / 2,
+                  left: (43 - HALO_SIZES[index]) / 2,
+                  backgroundColor: HALO_COLORS[index],
+                  opacity: value,
+                  transform: [{ scale: value.interpolate({ inputRange: [0, 1], outputRange: [0.1, 1] }) }],
+                },
+              ]}
+            />
+          ))}
+          <Animated.View
+            collapsable={false}
+            style={[
+              styles.plusGlyph,
+              { transform: [{ rotate: plusSpin.interpolate({
+                inputRange: [-300, 0, 300],
+                outputRange: ["-300deg", "0deg", "300deg"],
+              }) }] },
+            ]}
+          >
+            <Feather name="plus" size={23} color="#E5F7FF" />
+          </Animated.View>
         </Pressable>
       </View>
-      {infoOpen ? (
-        <Text style={[styles.infoDescription, { color: colors.mutedForeground }]}>
-          Elige una categoría y registra tu reflexión. En Ver muro puedes consultar y editar tus mensajes.
-        </Text>
-      ) : null}
+      <Animated.View
+        style={[styles.expandClip, { height: heightAnim }]}
+        pointerEvents={expanded ? "auto" : "none"}
+        accessibilityElementsHidden={!expanded}
+        importantForAccessibility={expanded ? "auto" : "no-hide-descendants"}
+      >
+        <View style={styles.expandBody}>
+          <Animated.View style={{ opacity: revealOpacity, transform: [{ translateY: revealY }] }}>
       <MaskedView
         style={styles.categoriesMask}
         maskElement={(
@@ -396,7 +551,13 @@ export function InnerSpaceCard({
         </Text>
       )}
 
-      <View style={styles.actionRow}>
+      <View
+        style={styles.actionRow}
+        onLayout={(event) => {
+          const { y, height } = event.nativeEvent.layout;
+          updateContentHeight(18 + y + height);
+        }}
+      >
         <Pressable
           testID="open-reflection-wall"
           onPress={openWall}
@@ -423,7 +584,9 @@ export function InnerSpaceCard({
           </Text>
         </Pressable>
       </View>
-
+          </Animated.View>
+        </View>
+      </Animated.View>
     </View>
   );
 }
@@ -443,7 +606,6 @@ const styles = StyleSheet.create({
     alignItems: "flex-start",
     justifyContent: "space-between",
     gap: 12,
-    marginBottom: 18,
   },
   headerCopy: {
     flex: 1,
@@ -464,13 +626,27 @@ const styles = StyleSheet.create({
     width: 43,
     height: 43,
     alignItems: "center",
-    justifyContent: "flex-start",
+    justifyContent: "center",
   },
-  infoDescription: {
-    fontFamily: "Manrope",
-    fontSize: 12,
-    lineHeight: 18,
-    marginBottom: 18,
+  halo: {
+    position: "absolute",
+  },
+  plusGlyph: {
+    width: 26,
+    height: 26,
+    alignItems: "center",
+    justifyContent: "center",
+  },
+  expandClip: {
+    overflow: "hidden",
+    marginHorizontal: -20,
+  },
+  expandBody: {
+    position: "absolute",
+    top: 0,
+    left: 20,
+    right: 20,
+    paddingTop: 18,
   },
   categoriesMask: {
     marginBottom: 20,
