@@ -1627,9 +1627,11 @@ export function ProfileScreenBase({
             <View style={styles.profileProgressSection}>
               <ProgressMirrorSections
                 showSectionBorders={false}
+                personalStatsFilterBelowTitle
                 showCalendar={false}
                 showStreakWeek={false}
                 streakContentTranslateY={-5}
+                streakMarginBottom={25}
                 sectionHorizontalPadding={20}
                 sectionTopPadding={21}
                 sectionBottomPadding={15}

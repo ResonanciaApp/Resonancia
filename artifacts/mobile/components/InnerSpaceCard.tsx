@@ -3,6 +3,7 @@ import { View, Text, TextInput, Pressable, ScrollView, StyleSheet, Animated } fr
 import MaskedView from "@react-native-masked-view/masked-view";
 import { LinearGradient } from "expo-linear-gradient";
 import * as Haptics from "expo-haptics";
+import { Feather } from "@expo/vector-icons";
 import { useColors } from "@/hooks/useColors";
 import { useSceneTheme } from "@/context/SceneThemeContext";
 import {
@@ -55,6 +56,7 @@ export function InnerSpaceCard({
   const [displayedPlaceholder, setDisplayedPlaceholder] = useState(DEFAULT_PLACEHOLDER);
   const [incomingPlaceholder, setIncomingPlaceholder] = useState<string | null>(null);
   const [inputActive, setInputActive] = useState(false);
+  const [infoOpen, setInfoOpen] = useState(false);
   const qc = useQueryClient();
   const { authLoading, isSignedIn, clerkUserId } = useAuth();
   const { isPremium } = usePremium();
@@ -261,6 +263,29 @@ export function InnerSpaceCard({
 
   return (
     <View style={styles.container}>
+      <View style={styles.header}>
+        <View style={styles.headerCopy}>
+          <Text style={[styles.headerTitle, { color: colors.foreground }]}>Mi muro expansivo</Text>
+          <Text style={[styles.headerDescription, { color: colors.mutedForeground }]}>
+            Exprésate y compártelo con el mundo
+          </Text>
+        </View>
+        <Pressable
+          style={styles.infoButton}
+          onPress={() => setInfoOpen((open) => !open)}
+          accessibilityRole="button"
+          accessibilityLabel="Información sobre Mi muro expansivo"
+          accessibilityState={{ expanded: infoOpen }}
+          testID="reflection-wall-info"
+        >
+          <Feather name="info" size={21} color={colors.foreground} />
+        </Pressable>
+      </View>
+      {infoOpen ? (
+        <Text style={[styles.infoDescription, { color: colors.mutedForeground }]}>
+          Elige una categoría y registra tu reflexión. En Ver muro puedes consultar y editar tus mensajes.
+        </Text>
+      ) : null}
       <MaskedView
         style={styles.categoriesMask}
         maskElement={(
@@ -379,6 +404,15 @@ export function InnerSpaceCard({
 
       <View style={styles.actionRow}>
         <Pressable
+          testID="open-reflection-wall"
+          onPress={openWall}
+          style={[styles.submitButton, styles.wallButton, { borderColor: REGISTER_BUTTON_BACKGROUND }]}
+          accessibilityRole="button"
+          accessibilityLabel="Ver muro"
+        >
+          <Text style={[styles.submitText, { color: "#F9F9F9" }]}>VER MURO</Text>
+        </Pressable>
+        <Pressable
           testID="save-reflection"
           accessibilityLabel="Registrar"
           accessibilityRole="button"
@@ -389,15 +423,6 @@ export function InnerSpaceCard({
           <Text style={[styles.submitText, { color: isSubmitDisabled ? "#D4B8F4" : "#F9F9F9" }]}>
             {createMutation.isPending ? "Registrando..." : "REGISTRAR"}
           </Text>
-        </Pressable>
-        <Pressable
-          testID="open-reflection-wall"
-          onPress={openWall}
-          style={[styles.submitButton, styles.wallButton, { borderColor: REGISTER_BUTTON_BACKGROUND }]}
-          accessibilityRole="button"
-          accessibilityLabel="Ver muro"
-        >
-          <Text style={[styles.submitText, { color: "#F9F9F9" }]}>VER MURO</Text>
         </Pressable>
       </View>
 
@@ -414,6 +439,42 @@ const styles = StyleSheet.create({
     paddingBottom: 20,
     marginBottom: 32,
     overflow: "hidden",
+  },
+  header: {
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "space-between",
+    gap: 12,
+    marginBottom: 18,
+  },
+  headerCopy: {
+    flex: 1,
+    minWidth: 0,
+  },
+  headerTitle: {
+    fontFamily: "Manrope",
+    fontSize: 16,
+    fontWeight: "700",
+  },
+  headerDescription: {
+    fontFamily: "Manrope",
+    fontSize: 12,
+    lineHeight: 17,
+    marginTop: 3,
+  },
+  infoButton: {
+    width: 43,
+    height: 43,
+    borderRadius: 21.5,
+    backgroundColor: "rgba(255,255,255,0.1)",
+    alignItems: "center",
+    justifyContent: "center",
+  },
+  infoDescription: {
+    fontFamily: "Manrope",
+    fontSize: 12,
+    lineHeight: 18,
+    marginBottom: 18,
   },
   categoriesMask: {
     marginBottom: 20,
@@ -515,7 +576,7 @@ const styles = StyleSheet.create({
     backgroundColor: "transparent",
   },
   submitText: {
-    fontSize: 15,
+    fontSize: 8,
     fontWeight: "600",
   },
 });

@@ -20,6 +20,7 @@ const SECTION_BACKGROUND = "rgba(0,0,0,0.28)";
 export function ProgressMirrorSections({
   showSectionBorders = true,
   showPersonalStats = true,
+  personalStatsFilterBelowTitle = false,
   showCalendar = true,
   animateEntrance = false,
   entranceReplayKey = "progress-mirror",
@@ -34,10 +35,12 @@ export function ProgressMirrorSections({
   sectionBottomPadding,
   sectionVerticalPadding,
   sectionMarginBottom,
+  streakMarginBottom,
   canonicalVerticalInsets = false,
 }: {
   showSectionBorders?: boolean;
   showPersonalStats?: boolean;
+  personalStatsFilterBelowTitle?: boolean;
   showCalendar?: boolean;
   animateEntrance?: boolean;
   entranceReplayKey?: string | number;
@@ -52,6 +55,7 @@ export function ProgressMirrorSections({
   sectionBottomPadding?: number;
   sectionVerticalPadding?: number;
   sectionMarginBottom?: number;
+  streakMarginBottom?: number;
   canonicalVerticalInsets?: boolean;
 }) {
   const colors = useColors();
@@ -133,11 +137,11 @@ export function ProgressMirrorSections({
         replayKey={`${entranceReplayKey}:personal-header`}
         delay={entranceBaseDelay + 920}
       >
-        <View style={styles.personalStatsHeader}>
+        <View style={[styles.personalStatsHeader, personalStatsFilterBelowTitle && styles.personalStatsHeaderStacked]}>
           <Text style={[styles.personalStatsTitle, { color: colors.foreground }]}>
             Estadísticas personales
           </Text>
-          <View style={styles.filterControl}>
+          <View style={[styles.filterControl, personalStatsFilterBelowTitle && styles.filterControlStacked]}>
             <Pressable
               onPress={() => setStatsFilterOpen((open) => !open)}
               style={styles.filterTrigger}
@@ -151,7 +155,11 @@ export function ProgressMirrorSections({
               <Feather name="chevron-down" size={17} color={accent} />
             </Pressable>
             {statsFilterOpen && (
-              <View style={[styles.filterMenu, { backgroundColor: theme.gradient[0] }]}>
+              <View style={[
+                styles.filterMenu,
+                personalStatsFilterBelowTitle && styles.filterMenuStacked,
+                { backgroundColor: theme.gradient[0] },
+              ]}>
                 {([7, 30, 90] as const).map((days) => (
                   <Pressable
                     key={days}
@@ -239,6 +247,9 @@ export function ProgressMirrorSections({
             },
             sectionMarginBottom !== undefined && {
               marginBottom: sectionMarginBottom,
+            },
+            streakMarginBottom !== undefined && {
+              marginBottom: streakMarginBottom,
             },
           ]}
         >
@@ -555,6 +566,12 @@ const styles = StyleSheet.create({
     alignItems: "center",
     justifyContent: "space-between",
     gap: 12,
+    zIndex: 3,
+  },
+  personalStatsHeaderStacked: {
+    flexDirection: "column",
+    alignItems: "flex-start",
+    gap: 4,
   },
   personalStatsTitle: {
     fontFamily: "Manrope",
@@ -572,6 +589,10 @@ const styles = StyleSheet.create({
     alignItems: "flex-end",
     zIndex: 2,
   },
+  filterControlStacked: {
+    alignItems: "flex-start",
+    alignSelf: "flex-start",
+  },
   filterMenu: {
     position: "absolute",
     top: 24,
@@ -580,6 +601,10 @@ const styles = StyleSheet.create({
     borderRadius: 12,
     overflow: "hidden",
     zIndex: 3,
+  },
+  filterMenuStacked: {
+    left: 0,
+    right: undefined,
   },
   filterOption: { paddingHorizontal: 12, paddingVertical: 9 },
   filterOptionSelected: { backgroundColor: "rgba(152,93,212,0.16)" },
