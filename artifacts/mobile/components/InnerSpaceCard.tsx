@@ -32,6 +32,7 @@ const CATEGORY_PLACEHOLDERS: Partial<Record<ReflectionCategory, string>> = {
 const DEFAULT_PLACEHOLDER = "Registra una reflexión...";
 const REGISTER_BUTTON_BACKGROUND = "rgba(184, 117, 240, 0.2)";
 const REGISTER_BUTTON_ENABLED_BACKGROUND = "rgba(184, 117, 240, 0.45)";
+const EXPANSION_DURATION = 610;
 const HALO_SIZES = [44, 34, 24] as const;
 const HALO_COLORS = [
   "rgba(114, 207, 245, 0.18)",
@@ -308,7 +309,7 @@ export function InnerSpaceCard({
     const animations = [
       Animated.timing(heightAnim, {
         toValue: opening ? contentHeightRef.current : 0,
-        duration: opening ? 470 : 350,
+        duration: EXPANSION_DURATION,
         useNativeDriver: false,
       }),
       Animated.timing(revealOpacity, {
@@ -318,30 +319,35 @@ export function InnerSpaceCard({
       }),
       opening
         ? Animated.sequence([
-            Animated.timing(revealY, { toValue: 6, duration: 335, useNativeDriver: true }),
-            Animated.spring(revealY, { toValue: 0, speed: 17, bounciness: 8, useNativeDriver: true }),
+            Animated.timing(revealY, { toValue: 6, duration: 400, useNativeDriver: true }),
+            Animated.timing(revealY, { toValue: -2, duration: 110, useNativeDriver: true }),
+            Animated.timing(revealY, { toValue: 0, duration: 100, useNativeDriver: true }),
           ])
         : Animated.sequence([
-            Animated.timing(revealY, { toValue: 6, duration: 90, useNativeDriver: true }),
-            Animated.timing(revealY, { toValue: -14, duration: 260, useNativeDriver: true }),
+            Animated.timing(revealY, { toValue: 6, duration: 100, useNativeDriver: true }),
+            Animated.timing(revealY, { toValue: -14, duration: 510, useNativeDriver: true }),
           ]),
       Animated.sequence([
         // La + se repite visualmente cada 90°: 270° son tres ciclos perceptibles.
         Animated.timing(plusSpin, {
           toValue: opening ? -270 : 270,
-          duration: 1050,
+          duration: 430,
           easing: Easing.linear,
           useNativeDriver: true,
         }),
         Animated.timing(plusSpin, {
           toValue: opening ? -285 : 285,
-          duration: 120,
+          duration: 60,
           useNativeDriver: true,
         }),
-        Animated.spring(plusSpin, {
+        Animated.timing(plusSpin, {
+          toValue: opening ? -266 : 266,
+          duration: 60,
+          useNativeDriver: true,
+        }),
+        Animated.timing(plusSpin, {
           toValue: opening ? -270 : 270,
-          speed: 15,
-          bounciness: 8,
+          duration: 60,
           useNativeDriver: true,
         }),
       ]),
