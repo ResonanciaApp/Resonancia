@@ -14,10 +14,12 @@ export function StreakWeekRow({
   animateEntrance = false,
   entranceReplayKey = "streak-week",
   entranceBaseDelay = 0,
+  smallLabels = false,
 }: {
   animateEntrance?: boolean;
   entranceReplayKey?: string | number;
   entranceBaseDelay?: number;
+  smallLabels?: boolean;
 } = {}) {
   const { weekFlags, todayIndex } = useStreak();
 
@@ -45,7 +47,7 @@ export function StreakWeekRow({
                 />
               </Svg>
             ) : (
-              <Text style={[styles.dayLabel, isToday && styles.positionedDayLabel]}>
+              <Text style={[styles.dayLabel, smallLabels && styles.smallDayLabel, isToday && styles.positionedDayLabel]}>
                 {initial}
               </Text>
             )}
@@ -139,6 +141,11 @@ const styles = StyleSheet.create({
     lineHeight: 20,
     fontWeight: "700",
     transform: [{ translateY: 1 }],
+  },
+  smallDayLabel: {
+    fontSize: 11,
+    lineHeight: 14,
+    fontWeight: "400",
   },
   positionedDayLabel: {
     color: "rgba(252,252,252,0.7)",

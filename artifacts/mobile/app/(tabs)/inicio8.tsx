@@ -1962,7 +1962,7 @@ const Inicio2HeroStatic = React.memo(function Inicio2HeroStatic({
             ]}
             testID="inicio3-streak-row"
           >
-            <StreakWeekRow />
+            <StreakWeekRow smallLabels />
           </RAnimated.View>
         </>
       )}
