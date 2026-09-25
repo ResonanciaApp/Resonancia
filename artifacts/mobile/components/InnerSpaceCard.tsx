@@ -1,6 +1,5 @@
 import React, { useState, useRef, useEffect, useLayoutEffect } from "react";
 import { View, Text, TextInput, Pressable, ScrollView, StyleSheet, Animated } from "react-native";
-import { Feather } from "@expo/vector-icons";
 import MaskedView from "@react-native-masked-view/masked-view";
 import { LinearGradient } from "expo-linear-gradient";
 import * as Haptics from "expo-haptics";
@@ -29,6 +28,7 @@ const CATEGORY_PLACEHOLDERS: Partial<Record<ReflectionCategory, string>> = {
   acceptance: "Ej: Cuando acepto lo que sucede, la vida...",
 };
 const DEFAULT_PLACEHOLDER = "Registra una reflexión...";
+const REGISTER_BUTTON_BACKGROUND = "rgba(184, 117, 240, 0.2)";
 
 export function InnerSpaceCard({
   focusRequest = 0,
@@ -237,7 +237,6 @@ export function InnerSpaceCard({
     || createMutation.isPending
     || (!isPremium && freeQuotaLoading)
     || freeLimitReached;
-  const wallLinkColor = "#F9F9F9";
 
   const saveMessage = () => {
     if (!category) return;
@@ -378,39 +377,29 @@ export function InnerSpaceCard({
         </Text>
       )}
 
-      <Pressable
-        testID="save-reflection"
-        accessibilityLabel="Guardar mensaje"
-        accessibilityRole="button"
-        style={[styles.submitButton, isSubmitDisabled && { opacity: 0.5 }, { backgroundColor: "rgba(184, 117, 240, 0.2)" }]}
-        disabled={isSubmitDisabled}
-        onPress={saveMessage}
-      >
-        <Text
-          style={[
-            styles.submitText,
-            { color: isSubmitDisabled ? "#D4B8F4" : "#F9F9F9" },
-          ]}
+      <View style={styles.actionRow}>
+        <Pressable
+          testID="save-reflection"
+          accessibilityLabel="Registrar"
+          accessibilityRole="button"
+          style={[styles.submitButton, { backgroundColor: REGISTER_BUTTON_BACKGROUND }, isSubmitDisabled && { opacity: 0.5 }]}
+          disabled={isSubmitDisabled}
+          onPress={saveMessage}
         >
-          {createMutation.isPending ? "Guardando..." : "Guardar mensaje"}
-        </Text>
-      </Pressable>
-      <Pressable
-        onPress={openWall}
-        style={styles.wallHitArea}
-        accessibilityRole="button"
-        accessibilityLabel="Abrir Muro expansivo"
-      >
-        <View style={styles.historyAction}>
-          <Text style={[styles.historyLinkText, { color: wallLinkColor }]}>Ver muro</Text>
-          <Feather
-            name="chevron-right"
-            size={16}
-            color={wallLinkColor}
-            style={styles.historyChevron}
-          />
-        </View>
-      </Pressable>
+          <Text style={[styles.submitText, { color: isSubmitDisabled ? "#D4B8F4" : "#F9F9F9" }]}>
+            {createMutation.isPending ? "Registrando..." : "REGISTRAR"}
+          </Text>
+        </Pressable>
+        <Pressable
+          testID="open-reflection-wall"
+          onPress={openWall}
+          style={[styles.submitButton, styles.wallButton, { borderColor: REGISTER_BUTTON_BACKGROUND }]}
+          accessibilityRole="button"
+          accessibilityLabel="Ver muro"
+        >
+          <Text style={[styles.submitText, { color: "#F9F9F9" }]}>VER MURO</Text>
+        </Pressable>
+      </View>
 
     </View>
   );
@@ -425,14 +414,6 @@ const styles = StyleSheet.create({
     paddingBottom: 20,
     marginBottom: 32,
     overflow: "hidden",
-  },
-  wallHitArea: {
-    minHeight: 44,
-    marginTop: 8,
-    alignSelf: "flex-end",
-    alignItems: "flex-end",
-    justifyContent: "center",
-    paddingLeft: 16,
   },
   categoriesMask: {
     marginBottom: 20,
@@ -518,27 +499,23 @@ const styles = StyleSheet.create({
     marginBottom: 10,
     textAlign: "center",
   },
+  actionRow: {
+    flexDirection: "row",
+    gap: 10,
+  },
   submitButton: {
+    flex: 1,
+    minHeight: 48,
     borderRadius: 20,
-    paddingVertical: 14,
     alignItems: "center",
+    justifyContent: "center",
+  },
+  wallButton: {
+    borderWidth: 1,
+    backgroundColor: "transparent",
   },
   submitText: {
     fontSize: 15,
     fontWeight: "600",
-  },
-  historyAction: {
-    flexDirection: "row",
-    alignItems: "center",
-    gap: 4,
-    transform: [{ translateY: 2 }],
-  },
-  historyChevron: {
-    transform: [{ translateY: 1 }],
-  },
-  historyLinkText: {
-    fontFamily: "Manrope",
-    fontSize: 12,
-    fontWeight: "400",
   },
 });
