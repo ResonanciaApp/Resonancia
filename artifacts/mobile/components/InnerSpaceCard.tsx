@@ -46,7 +46,8 @@ const PLUS_ROTATION_STOPS = [
   { angle: 272, duration: 240 },
   { angle: 270, duration: 200 },
 ] as const;
-const EXPANSION_DURATION = PLUS_ROTATION_STOPS.reduce((total, stop) => total + stop.duration, 0);
+const PLUS_ANIMATION_DURATION = PLUS_ROTATION_STOPS.reduce((total, stop) => total + stop.duration, 0);
+const PANEL_DURATION = PLUS_ANIMATION_DURATION - 150;
 const HALO_SIZES = [46, 36, 26] as const;
 const HALO_COLORS = [
   "rgba(255, 255, 255, 0.06)",
@@ -322,7 +323,7 @@ export function InnerSpaceCard({
     if (opening) revealY.setValue(-14);
     const spinDirection = opening ? -1 : 1;
     clipHeight.value = withTiming(opening ? contentHeightRef.current : 0, {
-      duration: EXPANSION_DURATION,
+      duration: PANEL_DURATION,
       easing: opening ? ReanimatedEasing.out(ReanimatedEasing.cubic) : ReanimatedEasing.inOut(ReanimatedEasing.cubic),
     });
 
@@ -330,12 +331,12 @@ export function InnerSpaceCard({
       Animated.timing(revealOpacity, {
         toValue: opening ? 1 : 0,
         duration: opening ? 380 : 500,
-        delay: opening ? 0 : EXPANSION_DURATION - 500,
+        delay: opening ? 0 : PANEL_DURATION - 500,
         useNativeDriver: true,
       }),
       Animated.timing(revealY, {
         toValue: opening ? 0 : -14,
-        duration: EXPANSION_DURATION,
+        duration: PANEL_DURATION,
         easing: opening ? Easing.out(Easing.cubic) : Easing.in(Easing.cubic),
         useNativeDriver: true,
       }),
@@ -347,11 +348,10 @@ export function InnerSpaceCard({
           useNativeDriver: true,
         }),
       )),
-      ...haloValues.map((value, index) =>
+      ...haloValues.map((value) =>
         Animated.timing(value, {
           toValue: opening ? 0 : 1,
-          duration: opening ? 300 : 240,
-          delay: opening ? 0 : index * 100,
+          duration: opening ? 300 : 420,
           useNativeDriver: true,
         }),
       ),
@@ -415,7 +415,11 @@ export function InnerSpaceCard({
                   left: (43 - HALO_SIZES[index]) / 2,
                   backgroundColor: HALO_COLORS[index],
                   opacity: value,
-                  transform: [{ scale: value.interpolate({ inputRange: [0, 1], outputRange: [0.1, 1] }) }],
+                   transform: [{ scale: value.interpolate(
+                     index === HALO_SIZES.length - 1 && !expanded
+                       ? { inputRange: [0, 0.88, 1], outputRange: [0.1, 1.07, 1] }
+                       : { inputRange: [0, 1], outputRange: [0.1, 1] },
+                   ) }],
                 },
               ]}
             />
