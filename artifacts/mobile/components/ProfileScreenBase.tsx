@@ -1627,7 +1627,6 @@ export function ProfileScreenBase({
             <View style={styles.profileProgressSection}>
               <ProgressMirrorSections
                 showSectionBorders={false}
-                personalStatsInsideStreak
                 showCalendar={false}
                 showStreakWeek={false}
                 streakContentTranslateY={-5}

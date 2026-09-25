@@ -20,7 +20,6 @@ const SECTION_BACKGROUND = "rgba(0,0,0,0.28)";
 export function ProgressMirrorSections({
   showSectionBorders = true,
   showPersonalStats = true,
-  personalStatsInsideStreak = false,
   showCalendar = true,
   animateEntrance = false,
   entranceReplayKey = "progress-mirror",
@@ -39,7 +38,6 @@ export function ProgressMirrorSections({
 }: {
   showSectionBorders?: boolean;
   showPersonalStats?: boolean;
-  personalStatsInsideStreak?: boolean;
   showCalendar?: boolean;
   animateEntrance?: boolean;
   entranceReplayKey?: string | number;
@@ -116,17 +114,16 @@ export function ProgressMirrorSections({
       style={[
         styles.personalStatsSection,
         !showSectionBorders && styles.borderlessSection,
-        personalStatsInsideStreak && styles.inlinePersonalStats,
-        !personalStatsInsideStreak && sectionHorizontalPadding !== undefined && {
+        sectionHorizontalPadding !== undefined && {
           paddingHorizontal: sectionHorizontalPadding,
         },
-        !personalStatsInsideStreak && sectionVerticalPadding !== undefined && {
+        sectionVerticalPadding !== undefined && {
           paddingVertical: sectionVerticalPadding,
         },
-        !personalStatsInsideStreak && sectionBottomPadding !== undefined && {
+        sectionBottomPadding !== undefined && {
           paddingBottom: sectionBottomPadding,
         },
-        !personalStatsInsideStreak && sectionMarginBottom !== undefined && {
+        sectionMarginBottom !== undefined && {
           marginBottom: sectionMarginBottom,
         },
       ]}
@@ -376,16 +373,10 @@ export function ProgressMirrorSections({
             </View>
           </View>
           </View>
-          {personalStatsInsideStreak && personalStatsContent ? (
-            <>
-              <View style={styles.sectionDivider} />
-              {personalStatsContent}
-            </>
-          ) : null}
         </View>
       </SectionEntrance>
 
-      {showPersonalStats && !personalStatsInsideStreak ? (
+      {showPersonalStats ? (
         <SectionEntrance
           animated={animateEntrance}
           replayKey={`${entranceReplayKey}:personal`}
@@ -555,12 +546,6 @@ const styles = StyleSheet.create({
     backgroundColor: SECTION_BACKGROUND,
     padding: 16,
     marginBottom: 12,
-  },
-  inlinePersonalStats: {
-    borderWidth: 0,
-    backgroundColor: "transparent",
-    padding: 0,
-    marginBottom: 0,
   },
   borderlessSection: {
     borderWidth: 0,

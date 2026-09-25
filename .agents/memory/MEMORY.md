@@ -107,7 +107,7 @@
 - [Límite de limpieza del catálogo Mixer](mixer-catalog-cleanup-boundary.md) — limpiar el bundle local no autoriza borrar sonidos creados en Admin ni sesiones Ambientales de prueba
 - [Drawer único de Inicio](single-home-drawer.md) — el drawer ya no tiene modo legado; toda apertura usa la estructura de Inicio 3 y debe limpiar el desplazamiento residual del gesto
 - [Parallax del header de Inicio 3](inicio3-header-parallax.md) — avatar, acciones y fila semanal conservan desplazamiento lento conjunto; optimizar renders sin quitar ni alterar este efecto
-- [Progreso en Perfil](progress-profile-mirror.md) — Perfil reúne racha y estadísticas personales en una tarjeta; semana y calendario quedan en Tu progreso
+- [Progreso en Perfil](progress-profile-mirror.md) — Perfil separa racha y estadísticas personales en tarjetas consecutivas; semana y calendario quedan en Tu progreso
 - [Dos controles Añadir actividad](routine-add-controls.md) — el bloque inferior de Mi rutina y la píldora del estado Rutina completa tienen diseños deliberadamente distintos
 - [Aviso único al añadir rutina](routine-addition-banner-once.md) — la transición desde calendario lleva el ID creado y lo reconoce globalmente; Inicio no debe volver a mostrar “Actividad añadida”
 - [Etiquetas editoriales por categoría](category-specific-editorial-tags.md) — no mezclar themeTag históricos: categorías nuevas usan prefijo interno; Admin codifica y Mobile decodifica
