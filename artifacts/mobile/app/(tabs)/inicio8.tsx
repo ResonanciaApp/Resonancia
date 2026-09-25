@@ -1843,23 +1843,27 @@ const Inicio2HeroStatic = React.memo(function Inicio2HeroStatic({
             hitSlop={10}
             style={[
               styles.inicio2HeroAvatarButton,
-              isInicio3 && styles.inicio3HeroMenuButton,
+              isInicio3 && styles.inicio3HeroAvatarButtonBorder,
             ]}
             accessibilityRole="button"
             accessibilityLabel="Abrir menú"
             testID="inicio2-avatar-open-drawer"
           >
-            {isInicio3 ? (
-              <Ionicons name="menu" size={24} color="#FFFFFF" />
-            ) : avatarSource ? (
+            {avatarSource ? (
               <ExpoImage
                 source={avatarSource}
-                style={styles.inicio2HeroAvatar}
+                style={[
+                  styles.inicio2HeroAvatar,
+                  isInicio3 && styles.inicio3HeroAvatarBorder,
+                ]}
                 contentFit="cover"
               />
             ) : (
               <View
-                style={styles.inicio2HeroAvatarFallback}
+                style={[
+                  styles.inicio2HeroAvatarFallback,
+                  isInicio3 && styles.inicio3HeroAvatarBorder,
+                ]}
               >
                 <Text style={styles.inicio2HeroAvatarInitial}>{initial}</Text>
               </View>
@@ -1878,19 +1882,27 @@ const Inicio2HeroStatic = React.memo(function Inicio2HeroStatic({
               </View>
             )}
           </Pressable>
-          {!isInicio3 && (
-            <Pressable
-              onPress={onOpenDrawer}
-              hitSlop={8}
-              style={styles.inicio2HeroGreeting}
-              accessibilityRole="button"
-              accessibilityLabel="Abrir menú de perfil"
-              testID="inicio2-open-drawer"
-            >
+          <Pressable
+            onPress={onOpenDrawer}
+            hitSlop={8}
+            style={[
+              styles.inicio2HeroGreeting,
+              isInicio3 && styles.inicio3HeroGreeting,
+            ]}
+            accessibilityRole="button"
+            accessibilityLabel="Abrir menú de perfil"
+            testID="inicio2-open-drawer"
+          >
+            {!isInicio3 && (
               <Text style={styles.inicio2HeroGreetingLabel}>{greeting}</Text>
-              <Text style={styles.inicio2HeroGreetingName}>{displayName}</Text>
-            </Pressable>
-          )}
+            )}
+            <Text style={styles.inicio2HeroGreetingName}>{displayName}</Text>
+            {isInicio3 ? (
+              <Text style={styles.inicio3HeroDecree} numberOfLines={2}>
+                {greeting}
+              </Text>
+            ) : null}
+          </Pressable>
         </View>
 
         <View
@@ -3610,17 +3622,16 @@ const styles = StyleSheet.create({
     borderWidth: 2,
     borderColor: "rgba(255,255,255,0.1)",
   },
+  inicio3HeroAvatarBorder: {
+    borderWidth: 0,
+  },
   inicio2HeroAvatarButton: {
     position: "relative",
   },
-  inicio3HeroMenuButton: {
+  inicio3HeroAvatarButtonBorder: {
     borderWidth: 0.5,
     borderColor: "rgba(255,255,255,0.7)",
     borderRadius: 22,
-    width: 42,
-    height: 42,
-    alignItems: "center",
-    justifyContent: "center",
   },
   inicio2HeroPremiumBadge: {
     position: "absolute",
@@ -3654,6 +3665,9 @@ const styles = StyleSheet.create({
     gap: 1,
     width: width * 0.6,
   },
+  inicio3HeroGreeting: {
+    transform: [{ translateY: -1 }],
+  },
   inicio2HeroGreetingLabel: {
     color: "#F4F4F4",
     fontFamily: "Manrope",
@@ -3673,6 +3687,17 @@ const styles = StyleSheet.create({
     textShadowColor: "rgba(0,0,0,0.65)",
     textShadowOffset: { width: 0, height: 1 },
     textShadowRadius: 4,
+  },
+  inicio3HeroDecree: {
+    color: "#E5E1EB",
+    fontFamily: "Manrope",
+    fontSize: 13,
+    lineHeight: 17,
+    fontWeight: "600",
+    letterSpacing: 0.2,
+    textShadowColor: "rgba(0,0,0,0.55)",
+    textShadowOffset: { width: 0, height: 1 },
+    textShadowRadius: 3,
   },
   inicio2HeroLotusButton: {
     width: 62,
