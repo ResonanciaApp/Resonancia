@@ -1955,7 +1955,7 @@ const Inicio2HeroStatic = React.memo(function Inicio2HeroStatic({
           <RAnimated.View
             style={[
               styles.inicio3StreakRow,
-              { top: topInset + 68 - INICIO3_VERTICAL_LIFT + inicio3WeekShift - 17 + 12 },
+              { top: topInset + 68 - INICIO3_VERTICAL_LIFT + inicio3WeekShift - 17 },
               slowHeaderStyle,
             ]}
             testID="inicio3-streak-row"
