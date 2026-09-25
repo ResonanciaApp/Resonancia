@@ -3005,7 +3005,7 @@ export default function HomeScreen2({
           <DailyRecommendationsSection
             sessions={dailyRecommendations}
             dayKey={todayKey}
-            style={{ paddingHorizontal: GRID_PAD, marginTop: -19 }}
+            style={{ paddingHorizontal: GRID_PAD, marginTop: -13 }}
             inicio3Compact
             onRefreshRecommendations={commitDailyRecommendations}
           />

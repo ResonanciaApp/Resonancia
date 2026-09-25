@@ -215,7 +215,7 @@ const styles = StyleSheet.create({
     fontWeight: "400",
   },
   inicio3HeaderShift: {
-    transform: [{ translateY: 10 }],
+    transform: [{ translateY: 4 }],
   },
   recommendationsList: {
     gap: 12,
