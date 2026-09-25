@@ -88,9 +88,10 @@ import { MoonCrescentIcon } from "@/components/MoonCrescentIcon";
 import { SleepReminderSheet } from "@/components/SleepReminderSheet";
 import { FilledSunIcon } from "@/components/FilledSunIcon";
 import { useMixerPanel } from "@/context/MixerPanelContext";
+import { SCENE_THEMES } from "@/config/scene-themes";
 
-const PROFILE_INDIGO_2_GRADIENT = ["#361D5E", "#322366", "#2A276A", "#1F2D6E", "#112F6F"] as const;
-const PROFILE_INDIGO_2_LOCATIONS = [0, 0.25, 0.5, 0.75, 1] as const;
+const PROFILE_INDIGO_2_GRADIENT = SCENE_THEMES.indigo2.gradient;
+const PROFILE_INDIGO_2_LOCATIONS = SCENE_THEMES.indigo2.gradientLocations;
 
 const REFLECTION_BANNER_ENTRY_DISTANCE = 86;
 const REFLECTION_BANNER_ENTRY_DURATION = 380;

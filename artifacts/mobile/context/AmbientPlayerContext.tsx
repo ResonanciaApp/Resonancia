@@ -6,6 +6,7 @@ import React, {
   useMemo,
   useState,
 } from "react";
+import { SCENE_THEMES } from "@/config/scene-themes";
 
 export type SceneId =
   | "tibet"
@@ -18,7 +19,7 @@ export type SceneId =
 export type AmbientScene = {
   id: SceneId;
   label: string;
-  colors: readonly [string, string];
+  colors: readonly [string, string, ...string[]];
   icon: string;
   image: number;
 };
@@ -55,7 +56,7 @@ export const AMBIENT_SCENES: AmbientScene[] = [
   {
     id: "indigo2",
     label: "Indigo 2",
-    colors: ["#361D5E", "#112F6F"] as const,
+    colors: SCENE_THEMES.indigo2.gradient,
     icon: "layers",
     image: require("@/assets/images/ambient/zafiro.png"),
   },
