@@ -58,6 +58,8 @@ import { useAuth } from "@/context/AuthContext";
 import type { LibraryTab } from "@/context/DrawerContext";
 import { useDrawer } from "@/context/DrawerContext";
 import { useColors } from "@/hooks/useColors";
+import { usePlayerBrowse } from "@/context/PlayerContext";
+import { getSessionById } from "@/data/sessions";
 import { getExpansorById } from "@/data/expansores";
 import { uploadLocalFile } from "@/lib/upload";
 import { resolveAvatarUrl } from "@/lib/avatar";
@@ -457,6 +459,7 @@ export function ProfileScreenBase({
   const colors = useColors();
   const { isPremium } = usePremium();
   const { openMixer } = useMixerPanel();
+  const { history } = usePlayerBrowse();
   const { theme: activeTheme, activeSceneId } = useSceneTheme();
   const insets = useSafeAreaInsets();
   const { email, logout } = useAuth();
@@ -1646,6 +1649,44 @@ export function ProfileScreenBase({
                 onInputBlur={() => setKeepInnerSpaceKeyboardOnCategories(false)}
                 onMessageSaved={() => setReflectionSavedTrigger((value) => value + 1)}
               />
+            </View>
+
+            <View style={[styles.outlinedProfileSection, styles.profileHistorySection]}>
+              <View style={styles.profileHistoryHeader}>
+                <Text style={[styles.profileHistoryTitle, { color: colors.foreground }]}>Historial</Text>
+                <Pressable
+                  onPress={() => router.push("/historial" as never)}
+                  accessibilityRole="button"
+                  accessibilityLabel="Ver todo el historial"
+                  hitSlop={8}
+                >
+                  <Text style={[styles.profileHistoryLink, { color: secondaryAccent }]}>Ver todo</Text>
+                </Pressable>
+              </View>
+              {(() => {
+                const session = [...history]
+                  .sort((a, b) => Date.parse(b.playedAt) - Date.parse(a.playedAt))
+                  .map((entry) => getSessionById(entry.sessionId))
+                  .find((candidate) => candidate !== undefined);
+                return session ? (
+                  <Pressable
+                    onPress={() => router.push(`/session/${session.id}` as never)}
+                    style={styles.profileHistoryCard}
+                    accessibilityRole="button"
+                    accessibilityLabel={`Abrir ${session.title}`}
+                  >
+                    <View>
+                      <Image source={session.image as never} style={styles.profileHistoryImage} contentFit="cover" />
+                      <Text style={styles.profileHistoryDuration}>{session.durationLabel}</Text>
+                    </View>
+                    <Text style={[styles.profileHistorySessionTitle, { color: colors.foreground }]} numberOfLines={2}>
+                      {session.title}
+                    </Text>
+                  </Pressable>
+                ) : (
+                  <Text style={{ color: profileDescriptionColor, fontSize: 13 }}>Aquí aparecerá lo que escuches.</Text>
+                );
+              })()}
             </View>
 
             {SHOW_PROFILE_PRACTICE_CARDS && (
@@ -3011,6 +3052,51 @@ const styles = StyleSheet.create({
     borderWidth: 0,
     backgroundColor: "rgba(0,0,0,0.28)",
     padding: 16,
+  },
+  profileHistorySection: {
+    marginBottom: 32,
+  },
+  profileHistoryHeader: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+    alignItems: "center",
+    marginBottom: 12,
+  },
+  profileHistoryTitle: {
+    fontFamily: "Manrope",
+    fontSize: 16,
+    fontWeight: "800",
+  },
+  profileHistoryLink: {
+    fontFamily: "Manrope",
+    fontSize: 13,
+    fontWeight: "700",
+  },
+  profileHistoryCard: {
+    flexDirection: "row",
+    alignItems: "center",
+    gap: 12,
+  },
+  profileHistoryImage: {
+    width: 68,
+    height: 68,
+    borderRadius: 10,
+  },
+  profileHistoryDuration: {
+    position: "absolute",
+    bottom: 4,
+    right: 4,
+    color: "#FFFFFF",
+    fontSize: 10,
+    backgroundColor: "rgba(0,0,0,0.62)",
+    paddingHorizontal: 4,
+    borderRadius: 4,
+  },
+  profileHistorySessionTitle: {
+    flex: 1,
+    fontFamily: "Manrope",
+    fontSize: 14,
+    fontWeight: "700",
   },
   profileProgressHeader: {
     flexDirection: "row",

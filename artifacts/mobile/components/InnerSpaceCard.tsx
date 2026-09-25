@@ -262,26 +262,6 @@ export function InnerSpaceCard({
 
   return (
     <View style={styles.container}>
-      <View style={styles.header}>
-        <Text style={[styles.title, { color: colors.foreground }]}>Mi viaje interior</Text>
-        <Pressable
-          onPress={openWall}
-          style={styles.wallHitArea}
-          accessibilityRole="button"
-          accessibilityLabel="Abrir Muro expansivo"
-        >
-          <View style={styles.historyAction}>
-            <Text style={[styles.historyLinkText, { color: wallLinkColor }]}>Ver muro</Text>
-            <Feather
-              name="chevron-right"
-              size={16}
-              color={wallLinkColor}
-              style={styles.historyChevron}
-            />
-          </View>
-        </Pressable>
-      </View>
-
       <MaskedView
         style={styles.categoriesMask}
         maskElement={(
@@ -415,6 +395,22 @@ export function InnerSpaceCard({
           {createMutation.isPending ? "Guardando..." : "Guardar mensaje"}
         </Text>
       </Pressable>
+      <Pressable
+        onPress={openWall}
+        style={styles.wallHitArea}
+        accessibilityRole="button"
+        accessibilityLabel="Abrir Muro expansivo"
+      >
+        <View style={styles.historyAction}>
+          <Text style={[styles.historyLinkText, { color: wallLinkColor }]}>Ver muro</Text>
+          <Feather
+            name="chevron-right"
+            size={16}
+            color={wallLinkColor}
+            style={styles.historyChevron}
+          />
+        </View>
+      </Pressable>
 
     </View>
   );
@@ -430,21 +426,10 @@ const styles = StyleSheet.create({
     marginBottom: 32,
     overflow: "hidden",
   },
-  header: {
-    flexDirection: "row",
-    alignItems: "center",
-    justifyContent: "space-between",
-    marginTop: 3,
-    marginBottom: 20,
-  },
-  title: {
-    fontSize: 16,
-    fontWeight: "600",
-    textAlign: "left",
-  },
   wallHitArea: {
     minHeight: 44,
-    marginVertical: -12,
+    marginTop: 8,
+    alignSelf: "flex-end",
     alignItems: "flex-end",
     justifyContent: "center",
     paddingLeft: 16,

@@ -61,11 +61,10 @@ const INICIO3_SECTIONS: { title: string | null; items: MenuItem[] }[] = [
     ],
   },
   {
-    title: null,
+    title: "Herramientas",
     items: [
       { id: "mixer", label: "Mezclador de sonidos", icon: "sliders", mciIcon: "tune-vertical", route: "__mixer", color: "#F9F9F9" },
       { id: "breathing", label: "Ejercicios de respiración", icon: "wind", mciIcon: "weather-windy", route: "/respiracion", color: "#F9F9F9" },
-      { id: "settings", label: "Configuraciones", icon: "settings", route: "/configuraciones", color: "#CCCCCC" },
     ],
   },
 ];
