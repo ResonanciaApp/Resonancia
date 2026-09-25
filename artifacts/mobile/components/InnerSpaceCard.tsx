@@ -480,7 +480,7 @@ const styles = StyleSheet.create({
     borderColor: "rgba(255,255,255,0.05)",
   },
   input: {
-    minHeight: 80,
+    minHeight: 65,
     fontSize: 13,
     lineHeight: 21,
     transform: [{ translateY: -5 }],
