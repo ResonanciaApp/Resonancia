@@ -32,7 +32,16 @@ const CATEGORY_PLACEHOLDERS: Partial<Record<ReflectionCategory, string>> = {
 const DEFAULT_PLACEHOLDER = "Registra una reflexión...";
 const REGISTER_BUTTON_BACKGROUND = "rgba(184, 117, 240, 0.2)";
 const REGISTER_BUTTON_ENABLED_BACKGROUND = "rgba(184, 117, 240, 0.45)";
-const EXPANSION_DURATION = 610;
+const EXPANSION_DURATION = 650;
+// Respuesta de un oscilador amortiguado: empieza y termina en reposo,
+// cruza el ángulo final alternando lados con amplitud decreciente.
+const angularBounceEasing = (progress: number) => {
+  const damping = 4.2;
+  const frequency = 4 * Math.PI;
+  const remaining = Math.exp(-damping * progress) *
+    (Math.cos(frequency * progress) + (damping / frequency) * Math.sin(frequency * progress));
+  return (1 - remaining) / (1 - Math.exp(-damping));
+};
 const HALO_SIZES = [44, 34, 24] as const;
 const HALO_COLORS = [
   "rgba(114, 207, 245, 0.18)",
@@ -310,6 +319,7 @@ export function InnerSpaceCard({
       Animated.timing(heightAnim, {
         toValue: opening ? contentHeightRef.current : 0,
         duration: EXPANSION_DURATION,
+        easing: opening ? Easing.out(Easing.cubic) : Easing.inOut(Easing.cubic),
         useNativeDriver: false,
       }),
       Animated.timing(revealOpacity, {
@@ -317,37 +327,24 @@ export function InnerSpaceCard({
         duration: opening ? 380 : 250,
         useNativeDriver: true,
       }),
-      opening
-        ? Animated.sequence([
-            Animated.timing(revealY, { toValue: 6, duration: 400, useNativeDriver: true }),
-            Animated.timing(revealY, { toValue: -2, duration: 110, useNativeDriver: true }),
-            Animated.timing(revealY, { toValue: 0, duration: 100, useNativeDriver: true }),
-          ])
-        : Animated.sequence([
-            Animated.timing(revealY, { toValue: 6, duration: 100, useNativeDriver: true }),
-            Animated.timing(revealY, { toValue: -14, duration: 510, useNativeDriver: true }),
-          ]),
+      Animated.timing(revealY, {
+        toValue: opening ? 0 : -14,
+        duration: EXPANSION_DURATION,
+        easing: opening ? Easing.out(Easing.cubic) : Easing.in(Easing.cubic),
+        useNativeDriver: true,
+      }),
       Animated.sequence([
         // La + se repite visualmente cada 90°: 270° son tres ciclos perceptibles.
         Animated.timing(plusSpin, {
-          toValue: opening ? -270 : 270,
-          duration: 430,
-          easing: Easing.linear,
-          useNativeDriver: true,
-        }),
-        Animated.timing(plusSpin, {
           toValue: opening ? -285 : 285,
-          duration: 60,
-          useNativeDriver: true,
-        }),
-        Animated.timing(plusSpin, {
-          toValue: opening ? -266 : 266,
-          duration: 60,
+          duration: 400,
+          easing: Easing.out(Easing.quad),
           useNativeDriver: true,
         }),
         Animated.timing(plusSpin, {
           toValue: opening ? -270 : 270,
-          duration: 60,
+          duration: EXPANSION_DURATION - 400,
+          easing: angularBounceEasing,
           useNativeDriver: true,
         }),
       ]),
