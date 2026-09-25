@@ -1942,7 +1942,7 @@ const Inicio2HeroStatic = React.memo(function Inicio2HeroStatic({
               {isInicio3 ? (
                 <View style={styles.inicio3ProfileLotusContent}>
                   <Text style={styles.inicio3ProfileLotusCount}>{currentStreak}</Text>
-                  <MaterialCommunityIcons name="spa" size={21} color="#CCCCCC" />
+                  <MaterialCommunityIcons name="spa" size={21} color="#A8A8A8" />
                 </View>
               ) : (
                 <Inicio2LotusStreak />
@@ -3703,14 +3703,14 @@ const styles = StyleSheet.create({
     textShadowRadius: 4,
   },
   inicio3HeroGreetingName: {
-    fontSize: 13,
-    lineHeight: 18,
+    fontSize: 14,
+    lineHeight: 19,
   },
   inicio3HeroDecree: {
     color: "#E5E1EB",
     fontFamily: "Manrope",
-    fontSize: 11,
-    lineHeight: 15,
+    fontSize: 12,
+    lineHeight: 16,
     fontWeight: "600",
     letterSpacing: 0.2,
     textShadowColor: "rgba(0,0,0,0.55)",
@@ -3757,7 +3757,7 @@ const styles = StyleSheet.create({
     fontSize: 14,
     fontWeight: "500",
     lineHeight: 20,
-    transform: [{ translateY: -0.5 }],
+    transform: [{ translateY: 0.5 }],
   },
   inicio2HeroLotusCount: {
     minWidth: 13,
