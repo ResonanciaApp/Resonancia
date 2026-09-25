@@ -1,10 +1,10 @@
 ---
 name: Progreso visible en Perfil
-description: Regla de producto que separa las métricas de racha en Perfil de la pantalla completa Tu progreso.
+description: Perfil reúne racha y estadísticas personales en una tarjeta, sin trasladar la vista semanal ni el calendario.
 ---
 
-Perfil muestra solo las métricas de racha actual y racha más larga, sin título «Tu progreso», «Ver todo», fila de siete días ni divisor horizontal de esa sección. La pantalla Tu progreso conserva la vista semanal, el calendario y las estadísticas personales.
+Perfil muestra racha actual y racha más larga junto con el contenido de «Estadísticas personales» (filtro de período, minutos totales y días activos) dentro de la misma tarjeta. Sigue sin mostrar la fila semanal, el calendario, el título «Tu progreso» ni «Ver todo». La pantalla Tu progreso conserva todo su contenido.
 
-**Why:** El usuario pidió simplificar el resumen en Perfil y reservar los detalles para la pantalla dedicada.
+**Why:** El usuario cambió la separación anterior y pidió explícitamente insertar las estadísticas personales en la misma sección de racha del Perfil, no como tarjeta independiente.
 
-**How to apply:** Mantener las métricas de racha en Perfil sin mostrar allí la semana, calendario, título ni enlace; no retirar esos detalles de Tu progreso.
+**How to apply:** Al cambiar el bloque compartido de progreso, mantener las estadísticas personales dentro de la tarjeta de racha solo en Perfil y conservar el diseño completo de Tu progreso.

@@ -20,6 +20,7 @@ const SECTION_BACKGROUND = "rgba(0,0,0,0.28)";
 export function ProgressMirrorSections({
   showSectionBorders = true,
   showPersonalStats = true,
+  personalStatsInsideStreak = false,
   showCalendar = true,
   animateEntrance = false,
   entranceReplayKey = "progress-mirror",
@@ -38,6 +39,7 @@ export function ProgressMirrorSections({
 }: {
   showSectionBorders?: boolean;
   showPersonalStats?: boolean;
+  personalStatsInsideStreak?: boolean;
   showCalendar?: boolean;
   animateEntrance?: boolean;
   entranceReplayKey?: string | number;
@@ -109,6 +111,114 @@ export function ProgressMirrorSections({
     });
   };
 
+  const personalStatsContent = showPersonalStats ? (
+    <View
+      style={[
+        styles.personalStatsSection,
+        !showSectionBorders && styles.borderlessSection,
+        personalStatsInsideStreak && styles.inlinePersonalStats,
+        !personalStatsInsideStreak && sectionHorizontalPadding !== undefined && {
+          paddingHorizontal: sectionHorizontalPadding,
+        },
+        !personalStatsInsideStreak && sectionVerticalPadding !== undefined && {
+          paddingVertical: sectionVerticalPadding,
+        },
+        !personalStatsInsideStreak && sectionBottomPadding !== undefined && {
+          paddingBottom: sectionBottomPadding,
+        },
+        !personalStatsInsideStreak && sectionMarginBottom !== undefined && {
+          marginBottom: sectionMarginBottom,
+        },
+      ]}
+    >
+      <ContentEntrance
+        animated={animateEntrance}
+        replayKey={`${entranceReplayKey}:personal-header`}
+        delay={entranceBaseDelay + 920}
+      >
+        <View style={styles.personalStatsHeader}>
+          <Text style={[styles.personalStatsTitle, { color: colors.foreground }]}>
+            Estadísticas personales
+          </Text>
+          <View style={styles.filterControl}>
+            <Pressable
+              onPress={() => setStatsFilterOpen((open) => !open)}
+              style={styles.filterTrigger}
+              accessibilityRole="button"
+              accessibilityLabel="Elegir filtro de días"
+              accessibilityState={{ expanded: statsFilterOpen }}
+            >
+              <Text style={[styles.filterText, { color: accent }]}>
+                Últimos {statsRangeDays} días
+              </Text>
+              <Feather name="chevron-down" size={17} color={accent} />
+            </Pressable>
+            {statsFilterOpen && (
+              <View style={[styles.filterMenu, { backgroundColor: theme.gradient[0] }]}>
+                {([7, 30, 90] as const).map((days) => (
+                  <Pressable
+                    key={days}
+                    onPress={() => {
+                      setStatsRangeDays(days);
+                      setStatsFilterOpen(false);
+                    }}
+                    style={[
+                      styles.filterOption,
+                      statsRangeDays === days && styles.filterOptionSelected,
+                    ]}
+                  >
+                    <Text style={[styles.filterText, { color: accent }]}>
+                      Últimos {days} días
+                    </Text>
+                  </Pressable>
+                ))}
+              </View>
+            )}
+          </View>
+        </View>
+      </ContentEntrance>
+      <View style={styles.statsValues}>
+        <View style={styles.statEntranceSlot}>
+          <ContentEntrance
+            animated={animateEntrance}
+            replayKey={`${entranceReplayKey}:personal-minutes`}
+            delay={entranceBaseDelay + 1160}
+          >
+            <Stat
+              icon={<Feather name="clock" size={18} color="#F9F9F9" />}
+              value={personalStats.totalMinutes}
+              label="MINUTOS TOTALES"
+              accent={accent}
+              edgeAligned={canonicalVerticalInsets}
+            />
+          </ContentEntrance>
+        </View>
+        <ContentEntrance
+          animated={animateEntrance}
+          replayKey={`${entranceReplayKey}:personal-divider-stat`}
+          delay={entranceBaseDelay + 1310}
+        >
+          <View style={styles.statDivider} />
+        </ContentEntrance>
+        <View style={styles.statEntranceSlot}>
+          <ContentEntrance
+            animated={animateEntrance}
+            replayKey={`${entranceReplayKey}:personal-days`}
+            delay={entranceBaseDelay + 1310}
+          >
+            <Stat
+              icon={<Feather name="calendar" size={18} color="#F9F9F9" />}
+              value={personalStats.activeDays}
+              label="DÍAS ACTIVOS"
+              accent={accent}
+              edgeAligned={canonicalVerticalInsets}
+            />
+          </ContentEntrance>
+        </View>
+      </View>
+    </View>
+  ) : null;
+
   return (
     <>
       <SectionEntrance
@@ -116,9 +226,7 @@ export function ProgressMirrorSections({
         replayKey={`${entranceReplayKey}:streak`}
         delay={entranceBaseDelay}
       >
-        <Pressable
-          onPress={onStreakTitlePress}
-          disabled={!onStreakTitlePress}
+        <View
           style={[
             styles.streakSection,
             streakTitle && styles.titledStreakSection,
@@ -136,8 +244,6 @@ export function ProgressMirrorSections({
               marginBottom: sectionMarginBottom,
             },
           ]}
-          accessibilityRole={onStreakTitlePress ? "button" : undefined}
-          accessibilityLabel={onStreakTitlePress ? `Abrir ${streakTitle ?? "progreso"}` : undefined}
         >
           <View
             style={streakContentTranslateY
@@ -151,9 +257,21 @@ export function ProgressMirrorSections({
               delay={entranceBaseDelay + 420}
             >
               <View style={styles.streakTitleRow}>
-                <Text style={[styles.streakTitle, { color: colors.foreground }]}>
-                  {streakTitle}
-                </Text>
+                {onStreakTitlePress ? (
+                  <Pressable
+                    onPress={onStreakTitlePress}
+                    accessibilityRole="button"
+                    accessibilityLabel={`Abrir ${streakTitle}`}
+                  >
+                    <Text style={[styles.streakTitle, { color: colors.foreground }]}>
+                      {streakTitle}
+                    </Text>
+                  </Pressable>
+                ) : (
+                  <Text style={[styles.streakTitle, { color: colors.foreground }]}>
+                    {streakTitle}
+                  </Text>
+                )}
                 {showStreakViewAll && onStreakTitlePress ? (
                   <Pressable
                     onPress={(event) => {
@@ -258,119 +376,22 @@ export function ProgressMirrorSections({
             </View>
           </View>
           </View>
-        </Pressable>
+          {personalStatsInsideStreak && personalStatsContent ? (
+            <>
+              <View style={styles.sectionDivider} />
+              {personalStatsContent}
+            </>
+          ) : null}
+        </View>
       </SectionEntrance>
 
-      {showPersonalStats ? (
+      {showPersonalStats && !personalStatsInsideStreak ? (
         <SectionEntrance
           animated={animateEntrance}
           replayKey={`${entranceReplayKey}:personal`}
           delay={entranceBaseDelay + 500}
         >
-          <View
-            style={[
-              styles.personalStatsSection,
-              !showSectionBorders && styles.borderlessSection,
-              sectionHorizontalPadding !== undefined && {
-                paddingHorizontal: sectionHorizontalPadding,
-              },
-              sectionVerticalPadding !== undefined && {
-                paddingVertical: sectionVerticalPadding,
-              },
-              sectionBottomPadding !== undefined && {
-                paddingBottom: sectionBottomPadding,
-              },
-              sectionMarginBottom !== undefined && {
-                marginBottom: sectionMarginBottom,
-              },
-            ]}
-          >
-            <ContentEntrance
-              animated={animateEntrance}
-              replayKey={`${entranceReplayKey}:personal-header`}
-              delay={entranceBaseDelay + 920}
-            >
-              <View style={styles.personalStatsHeader}>
-                <Text style={[styles.personalStatsTitle, { color: colors.foreground }]}>
-                  Estadísticas personales
-                </Text>
-                <View style={styles.filterControl}>
-                  <Pressable
-                    onPress={() => setStatsFilterOpen((open) => !open)}
-                    style={styles.filterTrigger}
-                    accessibilityRole="button"
-                    accessibilityLabel="Elegir filtro de días"
-                    accessibilityState={{ expanded: statsFilterOpen }}
-                  >
-                    <Text style={[styles.filterText, { color: accent }]}>
-                      Últimos {statsRangeDays} días
-                    </Text>
-                    <Feather name="chevron-down" size={17} color={accent} />
-                  </Pressable>
-                  {statsFilterOpen && (
-                    <View style={[styles.filterMenu, { backgroundColor: theme.gradient[0] }]}>
-                      {([7, 30, 90] as const).map((days) => (
-                        <Pressable
-                          key={days}
-                          onPress={() => {
-                            setStatsRangeDays(days);
-                            setStatsFilterOpen(false);
-                          }}
-                          style={[
-                            styles.filterOption,
-                            statsRangeDays === days && styles.filterOptionSelected,
-                          ]}
-                        >
-                          <Text style={[styles.filterText, { color: accent }]}>
-                            Últimos {days} días
-                          </Text>
-                        </Pressable>
-                      ))}
-                    </View>
-                  )}
-                </View>
-              </View>
-            </ContentEntrance>
-            <View style={styles.statsValues}>
-              <View style={styles.statEntranceSlot}>
-                <ContentEntrance
-                  animated={animateEntrance}
-                  replayKey={`${entranceReplayKey}:personal-minutes`}
-                  delay={entranceBaseDelay + 1160}
-                >
-                <Stat
-                  icon={<Feather name="clock" size={18} color="#F9F9F9" />}
-                  value={personalStats.totalMinutes}
-                  label="MINUTOS TOTALES"
-                  accent={accent}
-                  edgeAligned={canonicalVerticalInsets}
-                />
-                </ContentEntrance>
-              </View>
-              <ContentEntrance
-                animated={animateEntrance}
-                replayKey={`${entranceReplayKey}:personal-divider-stat`}
-                delay={entranceBaseDelay + 1310}
-              >
-                <View style={styles.statDivider} />
-              </ContentEntrance>
-              <View style={styles.statEntranceSlot}>
-                <ContentEntrance
-                  animated={animateEntrance}
-                  replayKey={`${entranceReplayKey}:personal-days`}
-                  delay={entranceBaseDelay + 1310}
-                >
-                <Stat
-                  icon={<Feather name="calendar" size={18} color="#F9F9F9" />}
-                  value={personalStats.activeDays}
-                  label="DÍAS ACTIVOS"
-                  accent={accent}
-                  edgeAligned={canonicalVerticalInsets}
-                />
-                </ContentEntrance>
-              </View>
-            </View>
-          </View>
+          {personalStatsContent}
         </SectionEntrance>
       ) : null}
 
@@ -534,6 +555,12 @@ const styles = StyleSheet.create({
     backgroundColor: SECTION_BACKGROUND,
     padding: 16,
     marginBottom: 12,
+  },
+  inlinePersonalStats: {
+    borderWidth: 0,
+    backgroundColor: "transparent",
+    padding: 0,
+    marginBottom: 0,
   },
   borderlessSection: {
     borderWidth: 0,
