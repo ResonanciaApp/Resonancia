@@ -1840,10 +1840,7 @@ const Inicio2HeroStatic = React.memo(function Inicio2HeroStatic({
           <Pressable
             onPress={onOpenDrawer}
             hitSlop={10}
-            style={[
-              styles.inicio2HeroAvatarButton,
-              isInicio3 && styles.inicio3HeroAvatarButtonBorder,
-            ]}
+            style={styles.inicio2HeroAvatarButton}
             accessibilityRole="button"
             accessibilityLabel="Abrir menú"
             testID="inicio2-avatar-open-drawer"
@@ -1910,7 +1907,7 @@ const Inicio2HeroStatic = React.memo(function Inicio2HeroStatic({
             isInicio3 && {
               position: "absolute",
               top: topInset + 2 - inicio3ProfileHeaderLift,
-              right: 14,
+              right: GRID_PAD,
             },
           ]}
         >
@@ -1933,7 +1930,7 @@ const Inicio2HeroStatic = React.memo(function Inicio2HeroStatic({
               }).start()
             }
             hitSlop={12}
-            style={styles.inicio2HeroLotusButton}
+            style={[styles.inicio2HeroLotusButton, isInicio3 && styles.inicio3HeroLotusButton]}
             accessibilityRole="button"
             accessibilityLabel="Abrir Tu progreso"
             testID="inicio2-open-progress-control"
@@ -3637,15 +3634,11 @@ const styles = StyleSheet.create({
     borderColor: "rgba(255,255,255,0.1)",
   },
   inicio3HeroAvatarBorder: {
-    borderWidth: 0,
+    borderWidth: 2,
+    borderColor: "rgba(255,255,255,0.5)",
   },
   inicio2HeroAvatarButton: {
     position: "relative",
-  },
-  inicio3HeroAvatarButtonBorder: {
-    borderWidth: 0.5,
-    borderColor: "rgba(255,255,255,0.7)",
-    borderRadius: 22,
   },
   inicio2HeroPremiumBadge: {
     position: "absolute",
@@ -3709,8 +3702,8 @@ const styles = StyleSheet.create({
   inicio3HeroDecree: {
     color: "#E5E1EB",
     fontFamily: "Manrope",
-    fontSize: 12,
-    lineHeight: 16,
+    fontSize: 13,
+    lineHeight: 17,
     fontWeight: "600",
     letterSpacing: 0.2,
     textShadowColor: "rgba(0,0,0,0.55)",
@@ -3723,6 +3716,9 @@ const styles = StyleSheet.create({
     borderRadius: 21.5,
     alignItems: "center",
     justifyContent: "center",
+  },
+  inicio3HeroLotusButton: {
+    alignItems: "flex-end",
   },
   inicio2HeroLotusContent: {
     width: 62,
@@ -3868,7 +3864,6 @@ const styles = StyleSheet.create({
     position: "absolute",
     left: GRID_PAD,
     right: GRID_PAD,
-    paddingHorizontal: 3,
     zIndex: 12,
   },
   inicio3HeroStaticImageFrame: {
