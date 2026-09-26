@@ -94,6 +94,7 @@ import { SCENE_THEMES } from "@/config/scene-themes";
 
 const PROFILE_INDIGO_2_GRADIENT = SCENE_THEMES.indigo2.gradient;
 const PROFILE_INDIGO_2_LOCATIONS = SCENE_THEMES.indigo2.gradientLocations;
+const SHOW_PROFILE_HISTORY = false;
 const SHOW_PROFILE_PRACTICE_CARDS = false;
 
 const REFLECTION_BANNER_ENTRY_DISTANCE = 86;
@@ -1632,7 +1633,7 @@ export function ProfileScreenBase({
                 showCalendar={false}
                 showStreakWeek={false}
                 streakContentTranslateY={-5}
-                streakMarginBottom={25}
+                streakMarginBottom={21}
                 sectionHorizontalPadding={20}
                 sectionTopPadding={21}
                 sectionBottomPadding={15}
@@ -1653,6 +1654,7 @@ export function ProfileScreenBase({
               />
             </View>
 
+            {SHOW_PROFILE_HISTORY && (
             <View style={[styles.outlinedProfileSection, styles.profileHistorySection]}>
               <View style={styles.profileHistoryHeader}>
                 <Text style={[styles.profileHistoryTitle, { color: colors.foreground }]}>Historial</Text>
@@ -1703,6 +1705,7 @@ export function ProfileScreenBase({
                 );
               })()}
             </View>
+            )}
 
             {SHOW_PROFILE_PRACTICE_CARDS && (
             <>
@@ -2721,7 +2724,7 @@ const styles = StyleSheet.create({
     alignItems: "stretch",
     overflow: "hidden",
     marginTop: 14,
-    marginBottom: 20,
+    marginBottom: 16,
     gap: 0,
     transform: [{ translateY: -5 }],
   },
@@ -2865,18 +2868,18 @@ const styles = StyleSheet.create({
   },
   avatarWrapper: { position: "relative", marginBottom: 0 },
   avatarCircle: {
-    width: 83,
-    height: 83,
-    borderRadius: 41.5,
+    width: 76,
+    height: 76,
+    borderRadius: 38,
     borderWidth: 2,
     borderColor: "rgba(255,255,255,0.8)",
     alignItems: "center",
     justifyContent: "center",
   },
   avatarImage: {
-    width: 83,
-    height: 83,
-    borderRadius: 41.5,
+    width: 76,
+    height: 76,
+    borderRadius: 38,
     borderWidth: 2,
     borderColor: "rgba(255,255,255,0.8)",
   },
@@ -2915,7 +2918,7 @@ const styles = StyleSheet.create({
 
   // Progreso semanal compacto
   profileProgressSection: {
-    marginBottom: 8,
+    marginBottom: 4,
   },
   innerSpaceSection: {
     marginTop: 5,

@@ -232,6 +232,7 @@ const styles = StyleSheet.create({
     borderColor: "rgba(255,255,255,0.1)",
     borderRadius: 16,
     overflow: "hidden",
+    transform: [{ translateY: 7 }],
   },
   recommendationGroup: {
     transform: [{ translateY: 3 }],

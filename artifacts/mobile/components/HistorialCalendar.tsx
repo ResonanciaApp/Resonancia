@@ -163,6 +163,7 @@ function DayCell({
         style={[
           styles.dayCircle,
           !isFuture && dayFill && { backgroundColor: dayFill },
+          !embedded && isSelected && !isFuture && { backgroundColor: "#F9F9F9" },
           showTodayCompletedBorder && {
             borderWidth: 1.5,
             borderColor: "#BE9650",
@@ -190,6 +191,8 @@ function DayCell({
             {
               color: isFuture
                 ? "rgba(255,255,255,0.24)"
+                : !embedded && isSelected
+                  ? "#060A0F"
                 : embedded && hasCompleted
                    ? "#F9F9F9"
                   : embedded && isToday
@@ -522,7 +525,7 @@ export function HistorialCalendar({
           </Text>
         </View>
       ) : !embedded && dayEntries.length === 0 ? (
-        <View style={[styles.emptyWrap, { backgroundColor: "rgba(255,255,255,0.045)" }, p ? { marginHorizontal: p } : undefined]}>
+        <View style={[styles.emptyWrap, { backgroundColor: "rgba(0,0,0,0.28)" }, p ? { marginHorizontal: p } : undefined]}>
           <Feather name="clock" size={26} color={colors.primary} style={{ marginBottom: 10 }} />
           <Text style={[styles.emptyText, { color: colors.mutedForeground }]}>
             No hay sesiones registradas este día.
@@ -679,7 +682,7 @@ const styles = StyleSheet.create({
     alignItems: "center",
     justifyContent: "center",
   },
-  dayNum: { fontFamily: "Manrope", fontSize: 17, fontWeight: "500" },
+  dayNum: { fontFamily: "Manrope", fontSize: 15, fontWeight: "500" },
   embeddedDayNum: {
     fontSize: 17,
   },
