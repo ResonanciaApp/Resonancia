@@ -1351,7 +1351,7 @@ const styles = StyleSheet.create({
     marginBottom: SECTION_GAP,
   },
   categoryBlocksSection: {
-    marginTop: 33,
+    marginTop: 38,
     marginBottom: SECTION_GAP,
   },
   resonadoresBanner: {
