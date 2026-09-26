@@ -3984,7 +3984,7 @@ const styles = StyleSheet.create({
   inicio3HeroReadMore: {
     alignSelf: "center",
     marginTop: 28,
-    paddingVertical: 3,
+    paddingVertical: 5,
     paddingHorizontal: 19.5,
     borderRadius: 24,
     backgroundColor: "#F9F9F9",
