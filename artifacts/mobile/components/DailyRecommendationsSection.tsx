@@ -139,7 +139,7 @@ export function DailyRecommendationsSection({
                   imageOffsetX={inicio3Compact ? 0 : -4}
                   metaText={`${session.categoryLabel} · ${session.durationLabel}`}
                   showChevron
-                  titleFontSize={inicio3Compact ? 18 : undefined}
+                  titleFontSize={inicio3Compact ? 16.5 : undefined}
                   titleFontWeight={inicio3Compact ? "600" : undefined}
                   authorColor={themeAccent}
                   authorFontSize={theme.id === "indigo2" ? 11 : undefined}
