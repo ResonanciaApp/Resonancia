@@ -1,10 +1,10 @@
 ---
 name: Progreso visible en Perfil
-description: Perfil muestra racha y estadísticas personales en tarjetas separadas; Tu progreso conserva su pantalla propia.
+description: Perfil muestra solo la tarjeta de racha con siete días; las estadísticas personales quedan en Tu progreso.
 ---
 
-Perfil muestra dos tarjetas separadas: primero la fila de los siete días, un divisor y las cifras de «Racha actual» y «Racha más larga» en una tarjeta; luego «Estadísticas personales» con el filtro «Últimos N días» debajo del título en otra. No muestra el calendario, el título «Tu progreso» ni «Ver todo». La pantalla Tu progreso conserva su presentación completa.
+Perfil muestra solo la tarjeta con la fila de los siete días, un divisor y las cifras de «Racha actual» y «Racha más larga». No muestra la tarjeta de «Estadísticas personales», el calendario, el título «Tu progreso» ni «Ver todo». La pantalla Tu progreso conserva su presentación completa, incluidas las estadísticas personales.
 
-**Why:** Tras probar ambas secciones unidas en una sola tarjeta, el usuario pidió explícitamente volver a separarlas y después pidió incluir la semana de siete días dentro de la tarjeta de racha, separada de las cifras por un divisor. El filtro sigue debajo del título de estadísticas.
+**Why:** Tras probar ambas secciones unidas y luego separadas, el usuario decidió ocultar las estadísticas personales en Perfil y mantener la semana de siete días dentro de la tarjeta de racha, separada de las cifras por un divisor.
 
-**How to apply:** Si cambia el bloque de progreso de Perfil, conservar las dos tarjetas separadas y la fila semanal dentro de racha; no propagar esa composición a Tu progreso.
+**How to apply:** Si cambia el bloque de progreso de Perfil, conservar solo la tarjeta de racha con la semana y no quitar las estadísticas de Tu progreso.

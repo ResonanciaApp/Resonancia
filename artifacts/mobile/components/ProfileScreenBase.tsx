@@ -1613,10 +1613,8 @@ export function ProfileScreenBase({
             <View style={styles.profileProgressSection}>
               <ProgressMirrorSections
                 showSectionBorders={false}
-                personalStatsFilterBelowTitle
-                personalStatsFilterColor="#A8A8A8"
+                showPersonalStats={false}
                 showCalendar={false}
-                streakMarginBottom={21}
                 sectionHorizontalPadding={20}
                 sectionTopPadding={21}
                 sectionBottomPadding={15}
