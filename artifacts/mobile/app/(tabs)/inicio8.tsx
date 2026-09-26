@@ -1657,7 +1657,6 @@ function Inicio3HeroPager({
                           categoryId={item.categoryId ?? ""}
                           label={item.pillLabel}
                           inline
-                          whiteGlass
                           style={styles.inicio3HeroCategoryPill}
                           textStyle={styles.inicio3HeroCategoryPillText}
                         />
@@ -3868,7 +3867,6 @@ const styles = StyleSheet.create({
     alignItems: "flex-start",
     justifyContent: "center",
     paddingHorizontal: 24,
-    paddingBottom: 55,
   },
   inicio3HeroTitle: {
     maxWidth: "86%",
@@ -3890,8 +3888,8 @@ const styles = StyleSheet.create({
   inicio3HeroReadMore: {
     alignSelf: "flex-start",
     marginTop: 28,
-    paddingVertical: 6,
-    paddingHorizontal: 24,
+    paddingVertical: 4,
+    paddingHorizontal: 20,
     borderRadius: 24,
     borderWidth: 1,
     borderColor: "rgba(255,255,255,0.2)",
@@ -3900,7 +3898,7 @@ const styles = StyleSheet.create({
   inicio3HeroReadMoreText: {
     color: "#F9F9F9",
     fontFamily: "Manrope",
-    fontSize: 14,
+    fontSize: 12,
     fontWeight: "600",
   },
   inicio3HeroProgressContainer: {
@@ -3912,9 +3910,9 @@ const styles = StyleSheet.create({
     zIndex: 40,
   },
   inicio3HeroProgressDot: {
-    width: 30,
-    height: 30,
-    borderRadius: 15,
+    width: 21,
+    height: 21,
+    borderRadius: 10.5,
     backgroundColor: "rgba(255,255,255,0.2)",
   },
   inicio3HeroSlide: {
@@ -3933,7 +3931,6 @@ const styles = StyleSheet.create({
     minHeight: 27,
     paddingLeft: 13,
     paddingRight: 13,
-    transform: [{ translateY: -12 }],
   },
   inicio2HeroCategory: {
     marginBottom: 10,
