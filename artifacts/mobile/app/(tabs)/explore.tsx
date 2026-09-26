@@ -1,5 +1,5 @@
 import { Feather, MaterialCommunityIcons } from "@expo/vector-icons";
-import { router, useFocusEffect } from "expo-router";
+import { router } from "expo-router";
 import { openPremiumPlans } from "@/lib/premiumGate";
 import React, { useState, useMemo, useRef } from "react";
 import {
@@ -40,7 +40,6 @@ import {
 } from "@/data/sessions";
 import { getArtist } from "@/data/artists";
 import { getGuide } from "@/data/guides";
-import { resolveFeaturedMoment } from "@/data/featured-moment";
 import { getEditorialPlaylistCarouselsForSurface } from "@/data/playlists";
 import { isChakraTag } from "@/data/chakras";
 import { TAG_CARDS, slugifyThemeTag } from "@/data/tags";
@@ -57,11 +56,9 @@ import { ContentCategoryGrid } from "@/components/ContentCategoryGrid";
 import { SoundPremiumBanner } from "@/components/SoundPremiumBanner";
 import { PressScale } from "@/components/PressScale";
 import { PremiumBadge } from "@/components/PremiumBadge";
-import { useResonadores } from "@/hooks/useResonadores";
 import {
   useGetPopularSessions,
   getGetPopularSessionsQueryKey,
-  useGetPinnedFeatured,
 } from "@workspace/api-client-react";
 import {
   CONTENT_CAROUSEL_GAP,
@@ -327,7 +324,6 @@ export function ExploreScreen({
   const { isPremium } = usePremium();
   const { playSession, history } = usePlayerBrowse();
   const { version: catalogVersion } = useCatalog();
-  const { resonadores } = useResonadores();
   const { theme: activeTheme, activeSceneId } = useSceneTheme();
   const colors = useColors();
   const searchBarSurface =
@@ -350,20 +346,6 @@ export function ExploreScreen({
     () => getEditorialPlaylistCarouselsForSurface("discover"),
     [catalogVersion],
   );
-  const {
-    data: pinnedFeaturedData,
-    refetch: refetchPinnedFeatured,
-  } = useGetPinnedFeatured();
-  useFocusEffect(
-    React.useCallback(() => {
-      void refetchPinnedFeatured();
-    }, [refetchPinnedFeatured]),
-  );
-  const featuredMoment = React.useMemo(
-    () => resolveFeaturedMoment(SESSIONS, pinnedFeaturedData?.session?.id),
-    [catalogVersion, pinnedFeaturedData],
-  );
-
   const ancestralesSessions = React.useMemo(
     () => SESSIONS.filter(s => s.categoryId === "sonidos-ancestrales").slice(0, 10),
     [catalogVersion],
@@ -666,99 +648,62 @@ export function ExploreScreen({
 
           <View style={[styles.sectionDivider, styles.categoryBlocksDivider]} />
 
-          {featuredMoment && (
-            <>
-              <View style={styles.featuredMomentSection}>
-                <Text style={styles.sectionTitle}>Para este momento</Text>
-                <Pressable
-                  onPress={() => {
-                    handleSessionPress(featuredMoment);
-                  }}
+          <View style={styles.newInResonanceSection}>
+            <View style={styles.newInResonanceHeader}>
+              <Text style={[styles.sectionTitle, { marginBottom: 0 }]}>
+                Nuevo en Resonancia
+              </Text>
+            </View>
+            <ScrollView
+              horizontal
+              showsHorizontalScrollIndicator={false}
+              style={{ marginHorizontal: -H_PAD }}
+              contentContainerStyle={styles.newInResonanceRow}
+            >
+              {recientesMeditaciones.map((session) => (
+                <PressScale
+                  key={session.id}
+                  onPress={() => handleSessionPress(session)}
                   accessibilityRole="button"
-                  accessibilityLabel={featuredMoment.title}
-                  style={({ pressed }) => ({ opacity: pressed ? 0.88 : 1 })}
+                  accessibilityLabel={`${session.title}. ${getSessionAuthor(session)}`}
+                  style={styles.newInResonanceCard}
                 >
-                  <View style={styles.heroImageContainer}>
+                  <View style={styles.newInResonanceImageWrap}>
                     <Image
-                      source={featuredMoment.image}
-                      style={styles.heroImage}
+                      source={session.image as number}
+                      style={StyleSheet.absoluteFill}
                       contentFit="cover"
+                      placeholder={BLUR_PLACEHOLDER}
+                      transition={IMAGE_TRANSITION}
                       cachePolicy="memory-disk"
                     />
-                    <PremiumBadge
-                      session={featuredMoment}
-                      size={22}
-                      top={16}
-                      left={16}
-                    />
+                    <PremiumBadge session={session} size={22} top={16} left={16} />
                     <SessionDurationBadge
-                      label={featuredMoment.durationLabel}
+                      label={session.durationLabel}
                       whiteGlass
-                      style={styles.featuredMomentDuration}
+                      style={styles.categoryDurationBadge}
                     />
                   </View>
-                  {(() => {
-                    const guideIds = featuredMoment.guideIds?.length
-                      ? featuredMoment.guideIds
-                      : featuredMoment.guideId
-                        ? [featuredMoment.guideId]
-                        : [];
-                    const guide = guideIds
-                      .map((id) => resonadores.find((profile) => profile.id === id) ?? getGuide(id))
-                      .find(Boolean);
-                    const artist = featuredMoment.artistId
-                      ? getArtist(featuredMoment.artistId)
-                      : undefined;
-                    const defaultGuide = getGuide();
-                    const authorName = guide?.name ?? artist?.name ?? defaultGuide.name;
-                    const authorPhoto = guide?.photo ?? artist?.photo ?? defaultGuide.photo;
-                    return (
-                      <View style={styles.heroMeta}>
-                        {authorPhoto ? (
-                          <Image
-                            source={authorPhoto}
-                            style={styles.heroAvatar}
-                            contentFit="cover"
-                            cachePolicy="memory-disk"
-                          />
-                        ) : (
-                          <View style={[styles.heroAvatar, styles.heroAvatarFallback]}>
-                            <Text style={styles.heroAvatarInitial}>
-                              {authorName.charAt(0).toUpperCase()}
-                            </Text>
-                          </View>
-                        )}
-                        <View style={styles.heroMetaCopy}>
-                          <Text
-                            style={[
-                              styles.heroMetaText,
-                              { color: activeTheme.accent ?? "#c2c2c2" },
-                            ]}
-                            numberOfLines={1}
-                          >
-                            {featuredMoment.categoryLabel}
-                          </Text>
-                          <Text style={styles.heroTitle} numberOfLines={2}>
-                            {featuredMoment.title}
-                          </Text>
-                          <Text
-                            style={[
-                              styles.heroAuthor,
-                              { color: activeTheme.accent ?? "#c2c2c2" },
-                            ]}
-                            numberOfLines={1}
-                          >
-                            {authorName}
-                          </Text>
-                        </View>
-                      </View>
-                    );
-                  })()}
-                </Pressable>
-              </View>
-              <View style={styles.sectionDivider} />
-            </>
-          )}
+                  <View style={styles.newInResonanceMeta}>
+                    <Text style={styles.newInResonanceTitle} numberOfLines={2}>
+                      {session.title}
+                    </Text>
+                    <Text
+                      style={[
+                        styles.newInResonanceSecondary,
+                        { color: activeTheme.accent ?? "#c2c2c2" },
+                      ]}
+                      numberOfLines={1}
+                    >
+                      {getSessionAuthor(session)}
+                    </Text>
+                  </View>
+                </PressScale>
+              ))}
+            </ScrollView>
+          </View>
+
+          <View style={styles.sectionDivider} />
 
           {editorialDiscoverCarousels.map((carousel) => (
             <React.Fragment key={carousel.id}>
@@ -838,63 +783,6 @@ export function ExploreScreen({
               style={styles.resonadoresBannerChevron}
             />
           </Pressable>
-
-          <View style={styles.newInResonanceSection}>
-            <View style={styles.newInResonanceHeader}>
-              <Text style={[styles.sectionTitle, { marginBottom: 0 }]}>
-                Nuevo en Resonancia
-              </Text>
-            </View>
-            <ScrollView
-              horizontal
-              showsHorizontalScrollIndicator={false}
-              style={{ marginHorizontal: -H_PAD }}
-              contentContainerStyle={styles.newInResonanceRow}
-            >
-              {recientesMeditaciones.map((session) => (
-                <PressScale
-                  key={session.id}
-                  onPress={() => handleSessionPress(session)}
-                  accessibilityRole="button"
-                  accessibilityLabel={`${session.title}. ${getSessionAuthor(session)}`}
-                  style={styles.newInResonanceCard}
-                >
-                  <View style={styles.newInResonanceImageWrap}>
-                    <Image
-                      source={session.image as number}
-                      style={StyleSheet.absoluteFill}
-                      contentFit="cover"
-                      placeholder={BLUR_PLACEHOLDER}
-                      transition={IMAGE_TRANSITION}
-                      cachePolicy="memory-disk"
-                    />
-                    <PremiumBadge session={session} size={22} top={16} left={16} />
-                    <SessionDurationBadge
-                      label={session.durationLabel}
-                      whiteGlass
-                      style={styles.categoryDurationBadge}
-                    />
-                  </View>
-                  <View style={styles.newInResonanceMeta}>
-                    <Text style={styles.newInResonanceTitle} numberOfLines={2}>
-                      {session.title}
-                    </Text>
-                    <Text
-                      style={[
-                        styles.newInResonanceSecondary,
-                        { color: activeTheme.accent ?? "#c2c2c2" },
-                      ]}
-                      numberOfLines={1}
-                    >
-                      {getSessionAuthor(session)}
-                    </Text>
-                  </View>
-                </PressScale>
-              ))}
-            </ScrollView>
-          </View>
-
-          <View style={styles.sectionDivider} />
 
           <View style={styles.durationSection}>
             <Text style={[styles.sectionTitle, { paddingHorizontal: H_PAD }]}>
