@@ -1420,6 +1420,19 @@ const INICIO3_PAGER_SLIDES: Inicio3PagerSlide[] = [
   { id: "mountain", image: require("@/assets/images/inicio3-slider-montana.jpg"), title: "Alcanza nuevas alturas de bienestar" },
 ];
 
+function Inicio3HeroProgressDot({ active, reduceMotion }: { active: boolean; reduceMotion: boolean }) {
+  const opacity = useSharedValue(active ? 0.9 : 0.2);
+
+  useEffect(() => {
+    opacity.value = reduceMotion
+      ? (active ? 0.9 : 0.2)
+      : withTiming(active ? 0.9 : 0.2, { duration: 240 });
+  }, [active, opacity, reduceMotion]);
+
+  const animatedStyle = useAnimatedStyle(() => ({ opacity: opacity.value }));
+  return <RAnimated.View style={[styles.inicio3HeroProgressDot, animatedStyle]} />;
+}
+
 function Inicio3HeroPager({
   top,
   height,
@@ -1446,6 +1459,7 @@ function Inicio3HeroPager({
     Dimensions.get("window").width - GRID_PAD * 2,
   );
   const [todayMediaActive, setTodayMediaActive] = useState(true);
+  const [activeSlideIndex, setActiveSlideIndex] = useState(0);
   const todayMediaActiveRef = useRef(true);
   const slidePressStartXRef = useRef<number | null>(null);
   const onPagerScroll = (e: NativeSyntheticEvent<NativeScrollEvent>) => {
@@ -1602,6 +1616,7 @@ function Inicio3HeroPager({
           const measuredWidth = Math.round(event.nativeEvent.layout.width);
           if (measuredWidth > 0 && measuredWidth !== slideWidth) {
             setSlideWidth(measuredWidth);
+            setActiveSlideIndex(0);
           }
         }}
       >
@@ -1619,6 +1634,10 @@ function Inicio3HeroPager({
           overScrollMode="never"
           showsHorizontalScrollIndicator={false}
           onScroll={onPagerScroll}
+          onMomentumScrollEnd={(e) => {
+            const index = Math.round(e.nativeEvent.contentOffset.x / slideWidth);
+            setActiveSlideIndex(Math.max(0, Math.min(index, pagerSlides.length - 1)));
+          }}
           scrollEventThrottle={16}
           keyExtractor={(item) => item.id}
           getItemLayout={(_, index) => ({ length: slideWidth, offset: slideWidth * index, index })}
@@ -1683,8 +1702,12 @@ function Inicio3HeroPager({
           )}
         />
         <View style={styles.inicio3HeroProgressContainer} pointerEvents="none">
-          {pagerSlides.map((slide) => (
-            <View key={slide.id} style={styles.inicio3HeroProgressDot} />
+          {pagerSlides.map((slide, index) => (
+            <Inicio3HeroProgressDot
+              key={slide.id}
+              active={index === Math.min(activeSlideIndex, pagerSlides.length - 1)}
+              reduceMotion={reduceMotion}
+            />
           ))}
         </View>
       </View>
@@ -3871,8 +3894,8 @@ const styles = StyleSheet.create({
   inicio3HeroTitle: {
     maxWidth: "86%",
     textAlign: "left",
-    fontSize: 17,
-    lineHeight: 22,
+    fontSize: 19,
+    lineHeight: 24,
     fontWeight: "600",
   },
   inicio3HeroDescription: {
@@ -3908,10 +3931,10 @@ const styles = StyleSheet.create({
     zIndex: 40,
   },
   inicio3HeroProgressDot: {
-    width: 16,
-    height: 16,
-    borderRadius: 8,
-    backgroundColor: "rgba(255,255,255,0.2)",
+    width: 9,
+    height: 9,
+    borderRadius: 4.5,
+    backgroundColor: "#FFF",
   },
   inicio3HeroSlide: {
     height: "100%",
