@@ -1794,7 +1794,7 @@ const Inicio2HeroStatic = React.memo(function Inicio2HeroStatic({
   const fallbackScrollY = useSharedValue(0);
   const effectiveScrollY = scrollY ?? fallbackScrollY;
   const inicio3WeekShift = 2;
-  const inicio3WeekDownshift = 15;
+  const inicio3WeekDownshift = 7;
   const inicio3ProfileHeaderLift = 15;
   const inicio3HeroShift = 10 - 70 - 25;
   const inicio3HeroDownshift = 25;
@@ -3050,7 +3050,7 @@ export default function HomeScreen2({
           <DailyRecommendationsSection
             sessions={dailyRecommendations}
             dayKey={todayKey}
-            style={{ paddingHorizontal: GRID_PAD, marginTop: -13 }}
+            style={{ paddingHorizontal: GRID_PAD, marginTop: -6 }}
             inicio3Compact
             onRefreshRecommendations={commitDailyRecommendations}
           />

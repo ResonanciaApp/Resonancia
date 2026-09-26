@@ -106,7 +106,7 @@ export function DailyRecommendationsSection({
         <Text style={[styles.title, { color: colors.foreground }]}>
           Recomendaciones diarias
         </Text>
-        <Text style={[styles.date, { color: theme.id === "indigo2" ? colors.accent : colors.mutedForeground }]}>
+        <Text style={[styles.date, inicio3Compact && styles.inicio3DateLowered, { color: theme.id === "indigo2" ? colors.accent : colors.mutedForeground }]}>
           {formatDailyDate(dayKey)}
         </Text>
       </View>
@@ -215,7 +215,11 @@ const styles = StyleSheet.create({
     fontWeight: "400",
   },
   inicio3HeaderShift: {
+    marginBottom: 32,
     transform: [{ translateY: -4 }],
+  },
+  inicio3DateLowered: {
+    top: 29,
   },
   recommendationsList: {
     gap: 12,
