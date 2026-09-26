@@ -1683,6 +1683,11 @@ function Inicio3HeroPager({
             </View>
           )}
         />
+        <View style={styles.inicio3HeroProgressContainer} pointerEvents="none">
+          {pagerSlides.map((slide) => (
+            <View key={slide.id} style={styles.inicio3HeroProgressDot} />
+          ))}
+        </View>
       </View>
     </RAnimated.View>
   );
@@ -3861,9 +3866,9 @@ const styles = StyleSheet.create({
   inicio3HeroCopy: {
     zIndex: 30,
     alignItems: "flex-start",
-    justifyContent: "flex-end",
+    justifyContent: "center",
     paddingHorizontal: 24,
-    paddingBottom: 25,
+    paddingBottom: 55,
   },
   inicio3HeroTitle: {
     maxWidth: "86%",
@@ -3888,6 +3893,8 @@ const styles = StyleSheet.create({
     paddingVertical: 6,
     paddingHorizontal: 24,
     borderRadius: 24,
+    borderWidth: 1,
+    borderColor: "rgba(255,255,255,0.2)",
     overflow: "hidden",
   },
   inicio3HeroReadMoreText: {
@@ -3895,6 +3902,20 @@ const styles = StyleSheet.create({
     fontFamily: "Manrope",
     fontSize: 14,
     fontWeight: "600",
+  },
+  inicio3HeroProgressContainer: {
+    position: "absolute",
+    left: 20,
+    bottom: 20,
+    flexDirection: "row",
+    gap: 8,
+    zIndex: 40,
+  },
+  inicio3HeroProgressDot: {
+    width: 30,
+    height: 30,
+    borderRadius: 15,
+    backgroundColor: "rgba(255,255,255,0.2)",
   },
   inicio3HeroSlide: {
     height: "100%",
