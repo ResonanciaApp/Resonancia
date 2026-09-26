@@ -118,6 +118,52 @@ export function ProgressMirrorSections({
     });
   };
 
+  const filterControl = (
+    <View style={[
+      styles.filterControl,
+      (personalStatsFilterBelowTitle || mergeStatsAndStreak) && styles.filterControlStacked,
+    ]}>
+      <Pressable
+        onPress={() => setStatsFilterOpen((open) => !open)}
+        style={styles.filterTrigger}
+        accessibilityRole="button"
+        accessibilityLabel="Elegir filtro de días"
+        accessibilityState={{ expanded: statsFilterOpen }}
+      >
+        <Text style={[styles.filterText, { color: filterColor }]}>
+          Últimos {statsRangeDays} días
+        </Text>
+        <Feather name="chevron-down" size={17} color={filterColor} />
+      </Pressable>
+      {statsFilterOpen && (
+        <View style={[
+          styles.filterMenu,
+          (personalStatsFilterBelowTitle || mergeStatsAndStreak) && styles.filterMenuStacked,
+          mergeStatsAndStreak && styles.filterMenuInFlow,
+          { backgroundColor: theme.gradient[0] },
+        ]}>
+          {([7, 30, 90] as const).map((days) => (
+            <Pressable
+              key={days}
+              onPress={() => {
+                setStatsRangeDays(days);
+                setStatsFilterOpen(false);
+              }}
+              style={[
+                styles.filterOption,
+                statsRangeDays === days && styles.filterOptionSelected,
+              ]}
+            >
+              <Text style={[styles.filterText, { color: filterColor }]}>
+                Últimos {days} días
+              </Text>
+            </Pressable>
+          ))}
+        </View>
+      )}
+    </View>
+  );
+
   const personalStatsContent = showPersonalStats ? (
     <View
       style={[
@@ -146,68 +192,15 @@ export function ProgressMirrorSections({
       >
         <View style={[
           styles.personalStatsHeader,
-          personalStatsFilterBelowTitle && styles.personalStatsHeaderStacked,
-          mergeStatsAndStreak && styles.personalStatsHeaderIconOnly,
+          (personalStatsFilterBelowTitle || mergeStatsAndStreak) && styles.personalStatsHeaderStacked,
         ]}>
-          {!mergeStatsAndStreak && (
-            <Text style={[styles.personalStatsTitle, { color: colors.foreground }]}>
-              Estadísticas personales
-            </Text>
-          )}
-          <View style={[
-            styles.filterControl,
-            personalStatsFilterBelowTitle && !mergeStatsAndStreak && styles.filterControlStacked,
-          ]}>
-            <Pressable
-              onPress={() => setStatsFilterOpen((open) => !open)}
-              style={[styles.filterTrigger, mergeStatsAndStreak && styles.filterIconTrigger]}
-              accessibilityRole="button"
-              accessibilityLabel={mergeStatsAndStreak
-                ? `Filtrar estadísticas, últimos ${statsRangeDays} días`
-                : "Elegir filtro de días"}
-              accessibilityState={{ expanded: statsFilterOpen }}
-            >
-              {mergeStatsAndStreak ? (
-                <Feather name="sliders" size={17} color={filterColor} />
-              ) : (
-                <>
-                  <Text style={[styles.filterText, { color: filterColor }]}>
-                    Últimos {statsRangeDays} días
-                  </Text>
-                  <Feather name="chevron-down" size={17} color={filterColor} />
-                </>
-              )}
-            </Pressable>
-            {statsFilterOpen && (
-              <View style={[
-                styles.filterMenu,
-                personalStatsFilterBelowTitle && !mergeStatsAndStreak && styles.filterMenuStacked,
-                mergeStatsAndStreak && styles.filterMenuIconOnly,
-                { backgroundColor: theme.gradient[0] },
-              ]}>
-                {([7, 30, 90] as const).map((days) => (
-                  <Pressable
-                    key={days}
-                    onPress={() => {
-                      setStatsRangeDays(days);
-                      setStatsFilterOpen(false);
-                    }}
-                    style={[
-                      styles.filterOption,
-                      statsRangeDays === days && styles.filterOptionSelected,
-                    ]}
-                  >
-                    <Text style={[styles.filterText, { color: filterColor }]}>
-                      Últimos {days} días
-                    </Text>
-                  </Pressable>
-                ))}
-              </View>
-            )}
-          </View>
+          <Text style={[styles.personalStatsTitle, { color: colors.foreground }]}>
+            Estadísticas personales
+          </Text>
+          {filterControl}
         </View>
       </ContentEntrance>
-      <View style={[styles.statsValues, mergeStatsAndStreak && styles.statsValuesNoTitle]}>
+      <View style={styles.statsValues}>
         <View style={styles.statEntranceSlot}>
           <ContentEntrance
             animated={animateEntrance}
@@ -640,11 +633,6 @@ const styles = StyleSheet.create({
     alignItems: "flex-start",
     gap: 4,
   },
-  personalStatsHeaderIconOnly: {
-    position: "absolute",
-    top: 17,
-    right: 20,
-  },
   personalStatsTitle: {
     fontFamily: "Manrope",
     fontSize: 16,
@@ -655,11 +643,6 @@ const styles = StyleSheet.create({
     alignItems: "center",
     gap: 4,
     paddingVertical: 1,
-  },
-  filterIconTrigger: {
-    width: 42,
-    height: 42,
-    justifyContent: "center",
   },
   filterControl: {
     position: "relative",
@@ -683,8 +666,11 @@ const styles = StyleSheet.create({
     left: 0,
     right: undefined,
   },
-  filterMenuIconOnly: {
-    top: 44,
+  filterMenuInFlow: {
+    position: "relative",
+    top: 0,
+    right: undefined,
+    marginTop: 6,
   },
   filterOption: { paddingHorizontal: 12, paddingVertical: 9 },
   filterOptionSelected: { backgroundColor: "rgba(152,93,212,0.16)" },

@@ -83,7 +83,6 @@ import {
 import { SacredGlyph } from "@/components/SacredGlyph";
 import { baseOf, type GeometryId } from "@/data/geometries";
 import { GeometrixOverlay } from "@/components/GeometrixToggle";
-import { MEMBERSHIP_AURORA, WIDGET_GREEN_SOLID } from "@/constants/colors";
 import { InnerSpaceCard } from "@/components/InnerSpaceCard";
 import { KeyboardAwareScrollViewCompat } from "@/components/KeyboardAwareScrollViewCompat";
 import { MoonCrescentIcon } from "@/components/MoonCrescentIcon";
@@ -226,108 +225,6 @@ function resizeImageForWeb(uri: string, maxSize: number): Promise<string> {
 
 function isoDow(d: Date): number {
   return (d.getDay() + 6) % 7;
-}
-
-const MEMBERSHIP_PLANS = [
-  {
-    id: "premium",
-    name: "Tu Premium",
-    eyebrow: "Gestiona tu suscripción y beneficios",
-    icon: "star" as const,
-    colors: MEMBERSHIP_AURORA.premium,
-    benefits: [
-      "Acceso ilimitado a todas las sesiones",
-      "Sonidos y música",
-      "Programas de bienestar",
-    ],
-  },
-  {
-    id: "plus",
-    name: "Usuario Premium Plus",
-    eyebrow: "Lleva tu experiencia al siguiente nivel",
-    icon: "diamond" as const,
-    colors: MEMBERSHIP_AURORA.plus,
-    benefits: [
-      "Experiencias avanzadas",
-      "Prácticas de transformación",
-      "Contenido exclusivo",
-    ],
-  },
-] as const;
-
-
-function ProfileMembershipModules({
-  foregroundColor,
-}: {
-  foregroundColor: string;
-}) {
-  const { isPremium: hasPremiumAccess } = usePremium();
-
-  return (
-    <View style={styles.membershipSection}>
-      {MEMBERSHIP_PLANS.filter((plan) => plan.id !== "plus").map((plan, index) => {
-        const isPremiumPlan = plan.id === "premium";
-        const displayName =
-          isPremiumPlan && !hasPremiumAccess ? "Prueba Premium" : plan.name;
-        const displayEyebrow =
-          isPremiumPlan && !hasPremiumAccess
-            ? "Tu transformación comienza aca"
-            : plan.eyebrow;
-
-        return (
-          <React.Fragment key={plan.id}>
-            {index > 0 && <View style={styles.membershipSectionDivider} />}
-            <View style={styles.membershipCard}>
-              <Pressable
-                onPress={() => router.push("/membresia")}
-                style={({ pressed }) => [
-                  styles.membershipCardHeader,
-                   isPremiumPlan ? styles.membershipCardHeaderPremium : styles.membershipCardHeaderPlus,
-                  { opacity: pressed ? 0.78 : 1 },
-                ]}
-                accessibilityRole="button"
-                 accessibilityLabel={`Abrir ${displayName}`}
-              >
-                <View
-                  style={[
-                    styles.membershipIcon,
-                    {
-                      backgroundColor: "transparent",
-                      borderColor: plan.colors.accent,
-                      shadowColor: plan.colors.glow,
-                    },
-                  ]}
-                >
-                  {isPremiumPlan ? (
-                    <MaterialCommunityIcons name="star" size={31} color={plan.colors.accent} />
-                  ) : (
-                    <MaterialCommunityIcons name="diamond-stone" size={23} color={plan.colors.accent} />
-                  )}
-                </View>
-                <View style={styles.membershipCardCopy}>
-                  <Text style={[styles.membershipPlanName, { color: plan.colors.accent }]}>{displayName}</Text>
-                  <Text
-                    style={[styles.membershipPlanEyebrow, { color: "#F4F4F4" }]}
-                    numberOfLines={isPremiumPlan && !hasPremiumAccess ? undefined : 1}
-                  >
-                    {displayEyebrow}
-                  </Text>
-                </View>
-                <View style={[styles.profileChevronButton, styles.membershipChevronButton]}>
-                  <Feather
-                    name="chevron-right"
-                    size={24}
-                    color={foregroundColor}
-                  />
-                </View>
-              </Pressable>
-
-            </View>
-          </React.Fragment>
-        );
-      })}
-    </View>
-  );
 }
 
 // ── BgGlyph: renderiza una capa de geometría animada en el fondo del perfil ─
@@ -1602,10 +1499,6 @@ export function ProfileScreenBase({
               </Pressable>
             </View>
           </View>
-          <View style={styles.profileCardDivider} />
-          <ProfileMembershipModules
-            foregroundColor={colors.foreground}
-          />
         </View>
 
         {false && (
@@ -2713,7 +2606,7 @@ const styles = StyleSheet.create({
     borderRadius: 19,
     backgroundColor: "rgba(0,0,0,0.28)",
     paddingTop: 24,
-    paddingBottom: 6,
+    paddingBottom: 24,
     alignItems: "stretch",
     overflow: "hidden",
     marginTop: 14,
@@ -2747,117 +2640,6 @@ const styles = StyleSheet.create({
   },
   userChevronButton: {
     transform: [{ translateX: 9 }],
-  },
-  membershipChevronButton: {
-    transform: [{ translateX: 7 }],
-  },
-  membershipSection: {
-    marginTop: 2,
-    marginBottom: 0,
-  },
-  membershipCard: {
-    overflow: "hidden",
-    backgroundColor: "transparent",
-  },
-  profileCardDivider: {
-    height: 1,
-    width: "100%",
-    backgroundColor: "rgba(181,211,255,0.057)",
-    marginTop: 20,
-    marginBottom: 4,
-  },
-  membershipSectionDivider: {
-    height: 1,
-    width: "100%",
-    backgroundColor: "rgba(255,255,255,0.1)",
-  },
-  membershipCardHeader: {
-    minHeight: 86,
-    flexDirection: "row",
-    alignItems: "center",
-    gap: 13,
-    paddingHorizontal: 20,
-    paddingVertical: 15,
-  },
-  membershipCardHeaderPremium: {
-    minHeight: 66,
-    paddingVertical: 6,
-    paddingRight: 20,
-  },
-  membershipCardHeaderPlus: {
-    minHeight: 61,
-    paddingVertical: 3.5,
-  },
-  membershipIcon: {
-    width: 54,
-    height: 54,
-    borderRadius: 27,
-    alignItems: "center",
-    justifyContent: "center",
-    borderWidth: 0,
-    shadowOffset: { width: 0, height: 0 },
-    shadowOpacity: 0.75,
-    shadowRadius: 18,
-    transform: [{ translateY: -2 }],
-  },
-  membershipCardCopy: {
-    minWidth: 0,
-    flex: 1,
-    paddingRight: 3,
-    transform: [{ translateX: -8 }, { translateY: -2 }],
-  },
-  membershipPlanName: {
-    fontFamily: "Manrope",
-    fontSize: 14,
-    fontWeight: "700",
-    letterSpacing: -0.5,
-  },
-  membershipPlanEyebrow: {
-    fontFamily: "Manrope",
-    fontSize: 12,
-    lineHeight: 16,
-    color: MEMBERSHIP_AURORA.textMuted,
-    marginTop: 2,
-  },
-  membershipBenefits: {
-    paddingHorizontal: 20,
-    paddingBottom: 15,
-  },
-  membershipBenefitsDivider: {
-    height: 1,
-    backgroundColor: "rgba(255,255,255,0.1)",
-    marginBottom: 11,
-    marginHorizontal: -20,
-  },
-  membershipBenefitRow: {
-    flexDirection: "row",
-    alignItems: "flex-start",
-    gap: 9,
-    marginBottom: 9,
-  },
-  membershipBenefitText: {
-    flex: 1,
-    fontFamily: "Manrope",
-    fontSize: 13,
-    lineHeight: 19,
-    color: MEMBERSHIP_AURORA.textSoft,
-  },
-  membershipManageButton: {
-    height: 44,
-    borderRadius: 12,
-    overflow: "hidden",
-    alignItems: "center",
-    justifyContent: "center",
-    marginTop: 5,
-  },
-  membershipActionPressable: {
-    borderRadius: 12,
-  },
-  membershipManageText: {
-    fontFamily: "Manrope",
-    fontSize: 13,
-    fontWeight: "800",
-    color: "#152132",
   },
   avatarWrapper: { position: "relative", marginBottom: 0 },
   avatarCircle: {
