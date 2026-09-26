@@ -49,6 +49,7 @@ const PLUS_ROTATION_STOPS = [
 ] as const;
 // El panel termina antes que el rebote de la +; el scroll espera solo al panel.
 const PANEL_DURATION = 620;
+const SCREEN_SETTLE_DURATION = 360;
 const HALO_SIZES = [46, 36, 26] as const;
 const HALO_COLORS = [
   "rgba(255, 255, 255, 0.06)",
@@ -94,6 +95,10 @@ export function InnerSpaceCard({
   const reduceMotion = useReducedMotion();
   const clipHeight = useSharedValue(0);
   const clipStyle = useAnimatedStyle(() => ({ height: clipHeight.value }));
+  const reservedHeight = useSharedValue(0);
+  const collapseSpacerStyle = useAnimatedStyle(() => ({
+    height: Math.max(0, reservedHeight.value - clipHeight.value),
+  }));
   const revealOpacity = useRef(new Animated.Value(0)).current;
   const revealY = useRef(new Animated.Value(-14)).current;
   const plusSpin = useRef(new Animated.Value(0)).current;
@@ -308,12 +313,12 @@ export function InnerSpaceCard({
     if (opening && followScroll) {
       onExpandStart?.();
     }
-    if (!opening) {
-      inputRef.current?.blur();
-      setInputActive(false);
-    }
-
     if (reduceMotion) {
+      if (!opening) {
+        inputRef.current?.blur();
+        setInputActive(false);
+      }
+      reservedHeight.value = 0;
       clipHeight.value = opening ? contentHeightRef.current : 0;
       revealOpacity.setValue(opening ? 1 : 0);
       revealY.setValue(0);
@@ -341,15 +346,13 @@ export function InnerSpaceCard({
     }
     const spinDirection = opening ? -1 : 1;
     const panelTargetHeight = contentHeightRef.current;
-    clipHeight.value = withTiming(opening ? panelTargetHeight : 0, {
-      duration: PANEL_DURATION,
-      easing: opening ? ReanimatedEasing.out(ReanimatedEasing.cubic) : ReanimatedEasing.inOut(ReanimatedEasing.quad),
-    }, (finished) => {
-      if (finished && opening && followScroll && onExpandComplete) {
-        runOnJS(onExpandComplete)(panelTargetHeight);
-      }
-    });
-
+    const blurAfterCollapse = () => {
+      inputRef.current?.blur();
+      setInputActive(false);
+    };
+    // Mantiene el alto total mientras se pliega la ventana; al acabar,
+    // se libera suavemente el espacio y recién entonces se mueve la pantalla.
+    reservedHeight.value = opening ? 0 : panelTargetHeight;
     const animations = [
       ...(opening ? [
         Animated.timing(revealOpacity, {
@@ -381,20 +384,41 @@ export function InnerSpaceCard({
       ),
     ];
 
-    Animated.parallel(animations).start(({ finished }) => {
+    const startControls = () => {
+      Animated.parallel(animations).start(({ finished }) => {
+        if (!finished) return;
+        animatingRef.current = false;
+        clipHeight.value = opening ? contentHeightRef.current : 0;
+        if (!opening) revealOpacity.setValue(0);
+        plusSpin.setValue(0);
+        if (queuedOpenRef.current && !opening) {
+          queuedOpenRef.current = false;
+          requestAnimationFrame(() => animateExpansion(true));
+        } else if (opening && focusAfterExpandRef.current) {
+          focusAfterExpandRef.current = false;
+          focusInput();
+        }
+      });
+    };
+
+    clipHeight.value = withTiming(opening ? panelTargetHeight : 0, {
+      duration: PANEL_DURATION,
+      easing: opening ? ReanimatedEasing.out(ReanimatedEasing.cubic) : ReanimatedEasing.inOut(ReanimatedEasing.quad),
+    }, (finished) => {
       if (!finished) return;
-      animatingRef.current = false;
-      clipHeight.value = opening ? contentHeightRef.current : 0;
-      if (!opening) revealOpacity.setValue(0);
-      plusSpin.setValue(0);
-      if (queuedOpenRef.current && !opening) {
-        queuedOpenRef.current = false;
-        requestAnimationFrame(() => animateExpansion(true));
-      } else if (opening && focusAfterExpandRef.current) {
-        focusAfterExpandRef.current = false;
-        focusInput();
+      if (opening && followScroll && onExpandComplete) {
+        runOnJS(onExpandComplete)(panelTargetHeight);
+      }
+      if (!opening) {
+        reservedHeight.value = withTiming(0, {
+          duration: SCREEN_SETTLE_DURATION,
+          easing: ReanimatedEasing.inOut(ReanimatedEasing.quad),
+        });
+        runOnJS(blurAfterCollapse)();
       }
     });
+    // El + y los círculos reaccionan desde el toque, también al cerrar.
+    startControls();
   };
 
   useEffect(() => {
@@ -410,6 +434,7 @@ export function InnerSpaceCard({
   }, [focusRequest, freeLimitReached]);
 
   return (
+    <>
     <View style={styles.container}>
       <View style={styles.header}>
         <View style={styles.headerCopy}>
@@ -619,6 +644,8 @@ export function InnerSpaceCard({
         </View>
       </Reanimated.View>
     </View>
+    <Reanimated.View pointerEvents="none" style={collapseSpacerStyle} />
+    </>
   );
 }
 
