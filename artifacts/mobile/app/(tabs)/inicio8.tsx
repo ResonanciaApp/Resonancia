@@ -1286,6 +1286,7 @@ function Inicio2HeroSliderRebuilt({
 }
 
 const INICIO3_HERO_FALLBACK = require("@/assets/images/inicio2-mistico-1-warm.jpg");
+const INICIO3_SLIDES_CACHE_KEY = "inicio3-published-slides-v1";
 
 type Inicio3EffectiveHero = ReturnType<typeof useEffectiveHero>;
 
@@ -1301,6 +1302,7 @@ function Inicio3HeroMedia({
   const [focused, setFocused] = useState(false);
   const [videoFailed, setVideoFailed] = useState(false);
   const [videoReady, setVideoReady] = useState(false);
+  const [failedImageUri, setFailedImageUri] = useState<string | number | null>(null);
   const videoUri = effectiveHero.kind === "video" && !videoFailed && !reduceMotion
     ? effectiveHero.uri
     : "";
@@ -1340,14 +1342,19 @@ function Inicio3HeroMedia({
   const imageSource = effectiveHero.kind === "image" && typeof effectiveHero.uri === "string"
     ? { uri: effectiveHero.uri }
     : fallbackSource;
+  const visibleImageSource = failedImageUri === effectiveHero.uri
+    ? INICIO3_HERO_FALLBACK
+    : imageSource;
   const showVideo = effectiveHero.kind === "video" && !videoFailed && !reduceMotion;
 
   return (
     <View style={StyleSheet.absoluteFill}>
-      <Image
-        source={imageSource}
-        defaultSource={INICIO3_HERO_FALLBACK}
-        resizeMode="cover"
+      <ExpoImage
+        source={visibleImageSource}
+        placeholder={INICIO3_HERO_FALLBACK}
+        cachePolicy="memory-disk"
+        onError={() => setFailedImageUri(effectiveHero.uri)}
+        contentFit="cover"
         style={styles.inicio2HeroImage}
       />
       {showVideo ? (
@@ -1415,9 +1422,6 @@ type HeroDestinationSource = "legacy" | "editorial";
 
 const INICIO3_PAGER_SLIDES: Inicio3PagerSlide[] = [
   { id: "today", image: null, title: null },
-  { id: "ocean", image: require("@/assets/images/inicio3-slider-oceano.jpg"), title: "Encuentra calma en el sonido de las olas" },
-  { id: "forest", image: require("@/assets/images/inicio3-slider-bosque.jpg"), title: "Respira la tranquilidad del bosque" },
-  { id: "mountain", image: require("@/assets/images/inicio3-slider-montana.jpg"), title: "Alcanza nuevas alturas de bienestar" },
 ];
 
 function Inicio3HeroProgressDot({ active, reduceMotion }: { active: boolean; reduceMotion: boolean }) {
@@ -1448,6 +1452,31 @@ function Inicio3HeroPager({
   const { data: configuredHero } = useGetHeroSessionSlides({
     query: { queryKey: ["hero-session-slides"], staleTime: 60_000, refetchOnMount: "always" },
   });
+  const [cachedSlides, setCachedSlides] = useState<HeroSessionSlide[] | null>(null);
+  useEffect(() => {
+    let mounted = true;
+    AsyncStorage.getItem(INICIO3_SLIDES_CACHE_KEY)
+      .then((raw) => {
+        if (!raw || !mounted) return;
+        const parsed: unknown = JSON.parse(raw);
+        if (!parsed || typeof parsed !== "object" || !("slides" in parsed) || !Array.isArray(parsed.slides)) return;
+        const slides = parsed.slides;
+        if (slides.every((slide) => slide && typeof slide === "object"
+          && [2, 3, 4].includes(slide.position)
+          && typeof slide.title === "string"
+          && typeof slide.imageUrl === "string")) {
+          setCachedSlides(slides as HeroSessionSlide[]);
+        }
+      })
+      .catch((error) => console.warn("No se pudo leer el caché de slides del hero", error));
+    return () => { mounted = false; };
+  }, []);
+  useEffect(() => {
+    if (!configuredHero) return;
+    setCachedSlides(configuredHero.slides ?? []);
+    AsyncStorage.setItem(INICIO3_SLIDES_CACHE_KEY, JSON.stringify(configuredHero))
+      .catch((error) => console.warn("No se pudo guardar el caché de slides del hero", error));
+  }, [configuredHero]);
   const { isPremium } = usePremium();
   const { playSession } = usePlayer();
   const { openCategory } = useCategoryOverlay();
@@ -1481,18 +1510,17 @@ function Inicio3HeroPager({
     setTodayMediaActive(nextActive);
   };
   const pagerSlides = useMemo(() => {
-    if (!configuredHero) return INICIO3_PAGER_SLIDES;
+    const availableSlides = configuredHero?.slides ?? cachedSlides;
+    if (!availableSlides) return INICIO3_PAGER_SLIDES;
     const configuredByPosition = new Map(
-      (configuredHero.slides ?? []).map((slide: HeroSessionSlide) => [slide.position, slide]),
+      availableSlides.map((slide: HeroSessionSlide) => [slide.position, slide]),
     );
-    return INICIO3_PAGER_SLIDES.map((fallback, index) => {
-      if (index === 0) return fallback;
-      const configured = configuredByPosition.get((index + 1) as 2 | 3 | 4);
+    return [2, 3, 4].reduce<Inicio3PagerSlide[]>((slides, position) => {
+      const configured = configuredByPosition.get(position as 2 | 3 | 4);
       const imageUrl = configured?.imageUrl ?? configured?.imageObjectPath;
-      if (!configured || configured.enabled === false || !imageUrl) return null;
-      return {
-        ...fallback,
-        id: `${configured.destinationType ?? "session"}-${configured.destinationId ?? configured.sessionId ?? configured.position}`,
+      if (!configured || configured.enabled === false || !imageUrl) return slides;
+      slides.push({
+        id: `slide-${configured.position}`,
         image: { uri: absoluteMediaUrl(imageUrl) },
         title: configured.title,
         description: configured.description,
@@ -1510,9 +1538,10 @@ function Inicio3HeroPager({
         destinationSource: (configured as HeroSessionSlide & {
           destinationSource?: HeroDestinationSource;
         }).destinationSource,
-      };
-    }).filter((slide): slide is Inicio3PagerSlide => slide != null);
-  }, [catalogVersion, configuredHero?.slides]);
+      });
+      return slides;
+    }, [...INICIO3_PAGER_SLIDES]);
+  }, [catalogVersion, configuredHero?.slides, cachedSlides]);
   const openSlide = useCallback((item: (typeof pagerSlides)[number]) => {
     if (item.id === "today") {
       router.push({ pathname: "/inspiracion-diaria", params: { entry: "today" } });
@@ -1678,7 +1707,7 @@ function Inicio3HeroPager({
                   />
                 ) : (
                   <View style={StyleSheet.absoluteFill}>
-                    <Image source={item.image} resizeMode="cover" style={styles.inicio2HeroImage} />
+                    <ExpoImage source={item.image} contentFit="cover" cachePolicy="memory-disk" style={styles.inicio2HeroImage} />
                     <View style={styles.inicio3HeroSlideOverlay} />
                   </View>
                 )}
@@ -1765,6 +1794,7 @@ const Inicio2HeroStatic = React.memo(function Inicio2HeroStatic({
   const fallbackScrollY = useSharedValue(0);
   const effectiveScrollY = scrollY ?? fallbackScrollY;
   const inicio3WeekShift = 2;
+  const inicio3WeekDownshift = 15;
   const inicio3ProfileHeaderLift = 15;
   const inicio3HeroShift = 10 - 70 - 25;
   const inicio3HeroDownshift = 25;
@@ -1970,7 +2000,7 @@ const Inicio2HeroStatic = React.memo(function Inicio2HeroStatic({
           <RAnimated.View
             style={[
               styles.inicio3StreakRow,
-              { top: topInset + 68 - INICIO3_VERTICAL_LIFT + inicio3WeekShift - 12 },
+              { top: topInset + 68 - INICIO3_VERTICAL_LIFT + inicio3WeekShift - 12 + inicio3WeekDownshift },
               slowHeaderStyle,
             ]}
             testID="inicio3-streak-row"

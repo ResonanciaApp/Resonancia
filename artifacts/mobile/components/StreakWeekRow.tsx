@@ -46,10 +46,6 @@ export function StreakWeekRow({
                   strokeLinejoin="round"
                 />
               </Svg>
-            ) : !smallLabels ? (
-              <Text style={[styles.dayLabel, isToday && styles.positionedDayLabel]}>
-                {initial}
-              </Text>
             ) : null}
           </View>
         );
@@ -75,11 +71,14 @@ export function StreakWeekRow({
             ) : (
               dayCircle
             )}
-            {smallLabels && (
-              <Text style={[styles.dayLabel, isToday && styles.positionedDayLabel, styles.smallDayLabel, styles.outsideDayLabel]}>
-                {initial}
-              </Text>
-            )}
+            <Text style={[
+              styles.dayLabel,
+              isToday && styles.positionedDayLabel,
+              smallLabels && styles.smallDayLabel,
+              styles.outsideDayLabel,
+            ]}>
+              {initial}
+            </Text>
           </View>
         );
 
@@ -142,20 +141,15 @@ const styles = StyleSheet.create({
   dayLabel: {
     color: "rgba(255,255,255,0.7)",
     fontFamily: "Manrope",
-    fontSize: 18,
-    lineHeight: 21,
-    fontWeight: "300",
-    transform: [{ translateY: 1 }],
-  },
-  smallDayLabel: {
-    color: "#FFFFFF",
     fontSize: 11,
     lineHeight: 14,
     fontWeight: "400",
   },
+  smallDayLabel: {
+    color: "#FFFFFF",
+  },
   outsideDayLabel: {
-    marginTop: 4,
-    transform: [],
+    marginTop: 5,
   },
   positionedDayLabel: {
     color: "rgba(252,252,252,0.7)",
