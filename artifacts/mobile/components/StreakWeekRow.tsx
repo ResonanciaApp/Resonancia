@@ -11,10 +11,13 @@ import { useStreak } from "@/hooks/useStreak";
 const DAY_INITIALS = ["L", "M", "M", "J", "V", "S", "D"];
 // Conserva la luminosidad especial del anillo sin cambiar la dirección cromática del tema.
 const RING_BRIGHTNESS_OFFSET = 125;
+const RING_BRIGHTNESS_GAIN = 1.1;
 
 function brightenRingColor(hex: string): string {
   return `#${[1, 3, 5].map((index) =>
-    Math.min(255, Number.parseInt(hex.slice(index, index + 2), 16) + RING_BRIGHTNESS_OFFSET)
+    Math.min(255, Math.round(
+      (Number.parseInt(hex.slice(index, index + 2), 16) + RING_BRIGHTNESS_OFFSET) * RING_BRIGHTNESS_GAIN,
+    ))
       .toString(16).padStart(2, "0"),
   ).join("")}`;
 }
