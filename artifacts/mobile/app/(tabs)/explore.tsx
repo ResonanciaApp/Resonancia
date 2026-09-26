@@ -28,6 +28,7 @@ import Svg, {
 import { LinearGradient } from "expo-linear-gradient";
 import { SacredBackground } from "@/components/SacredBackground";
 import { DiscoverSearchBorder } from "@/components/DiscoverSearchBorder";
+import { DISCOVER_SEARCH_SURFACE } from "@/constants/colors";
 import { isIndigoThemeId, type SceneTheme } from "@/config/scene-themes";
 import { useSceneTheme } from "@/context/SceneThemeContext";
 import { useColors } from "@/hooks/useColors";
@@ -330,12 +331,6 @@ export function ExploreScreen({
   const { resonadores } = useResonadores();
   const { theme: activeTheme, activeSceneId } = useSceneTheme();
   const colors = useColors();
-  const searchBarSurface =
-    activeSceneId === "indigo2"
-      ? "rgba(21,13,46,0.7)"
-      : activeSceneId === "resonancia"
-        ? "rgba(9,11,23,0.7)"
-        : "rgba(14,14,23,0.7)";
   const durationSurfaceColor =
     activeSceneId === "tibet"
       ? "rgba(0,0,0,0.14)"
@@ -621,7 +616,7 @@ export function ExploreScreen({
         <View style={[styles.searchWrap, styles.stickySearchWrap]}>
           <Pressable
             onPress={() => setSearchVisible(true)}
-            style={[styles.searchBox, { backgroundColor: searchBarSurface }]}
+            style={[styles.searchBox, { backgroundColor: DISCOVER_SEARCH_SURFACE }]}
             accessibilityRole="button"
             accessibilityLabel={`Buscar en ${screenTitle}`}
             testID="discover-sticky-search-button"

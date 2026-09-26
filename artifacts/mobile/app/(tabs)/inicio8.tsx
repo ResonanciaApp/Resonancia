@@ -2096,7 +2096,7 @@ function InicioEmotionWidget({
         style={styles.inicio2HeroEmotionGlass}
       />
       <Text style={styles.inicio2HeroEmotionEmoji}>😌</Text>
-      <View style={[styles.inicio2HeroEmotionAdd, { backgroundColor: "#462996" }]}>
+      <View style={[styles.inicio2HeroEmotionAdd, { backgroundColor: "#32478C" }]}>
         <Text style={styles.inicio2HeroEmotionAddText}>+</Text>
       </View>
     </Pressable>

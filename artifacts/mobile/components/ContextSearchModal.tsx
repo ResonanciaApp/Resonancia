@@ -20,6 +20,7 @@ import { LinearGradient } from "expo-linear-gradient";
 
 import { useColors } from "@/hooks/useColors";
 import { DiscoverSearchBorder } from "@/components/DiscoverSearchBorder";
+import { DISCOVER_SEARCH_SURFACE } from "@/constants/colors";
 import { PremiumPlansSurface, usePremiumPlansModalHost } from "@/components/PremiumPlansOverlay";
 import { useSceneTheme } from "@/context/SceneThemeContext";
 import {
@@ -199,11 +200,13 @@ export function ContextSearchModal({
 
   const backgroundColor = theme.gradient[0] as string;
   const searchBarSurface =
-    activeSceneId === "indigo2"
-      ? "rgba(21,13,46,0.7)"
-      : activeSceneId === "resonancia"
-        ? "rgba(9,11,23,0.7)"
-        : "rgba(14,14,23,0.7)";
+    matchDiscoverSearchBar
+      ? DISCOVER_SEARCH_SURFACE
+      : activeSceneId === "indigo2"
+        ? "rgba(21,13,46,0.7)"
+        : activeSceneId === "resonancia"
+          ? "rgba(9,11,23,0.7)"
+          : "rgba(14,14,23,0.7)";
 
   return (
     <Modal
