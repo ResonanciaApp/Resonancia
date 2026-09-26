@@ -316,7 +316,7 @@ export function InnerSpaceCard({
     if (reduceMotion) {
       clipHeight.value = opening ? contentHeightRef.current : 0;
       revealOpacity.setValue(opening ? 1 : 0);
-      revealY.setValue(opening ? 0 : -14);
+      revealY.setValue(0);
       plusSpin.setValue(0);
       haloValues.forEach((value) => value.setValue(opening ? 0 : 1));
       animatingRef.current = false;
@@ -333,12 +333,17 @@ export function InnerSpaceCard({
     }
 
     plusSpin.setValue(0);
-    if (opening) revealY.setValue(-14);
+    if (opening) {
+      revealOpacity.setValue(0);
+      revealY.setValue(-14);
+    } else {
+      revealY.setValue(0);
+    }
     const spinDirection = opening ? -1 : 1;
     const panelTargetHeight = contentHeightRef.current;
     clipHeight.value = withTiming(opening ? panelTargetHeight : 0, {
       duration: PANEL_DURATION,
-      easing: opening ? ReanimatedEasing.out(ReanimatedEasing.cubic) : ReanimatedEasing.inOut(ReanimatedEasing.cubic),
+      easing: opening ? ReanimatedEasing.out(ReanimatedEasing.cubic) : ReanimatedEasing.inOut(ReanimatedEasing.quad),
     }, (finished) => {
       if (finished && opening && followScroll && onExpandComplete) {
         runOnJS(onExpandComplete)(panelTargetHeight);
@@ -346,18 +351,19 @@ export function InnerSpaceCard({
     });
 
     const animations = [
-      Animated.timing(revealOpacity, {
-        toValue: opening ? 1 : 0,
-        duration: opening ? 380 : 500,
-        delay: opening ? 0 : PANEL_DURATION - 500,
-        useNativeDriver: true,
-      }),
-      Animated.timing(revealY, {
-        toValue: opening ? 0 : -14,
-        duration: PANEL_DURATION,
-        easing: opening ? Easing.out(Easing.cubic) : Easing.in(Easing.cubic),
-        useNativeDriver: true,
-      }),
+      ...(opening ? [
+        Animated.timing(revealOpacity, {
+          toValue: 1,
+          duration: 380,
+          useNativeDriver: true,
+        }),
+        Animated.timing(revealY, {
+          toValue: 0,
+          duration: PANEL_DURATION,
+          easing: Easing.out(Easing.cubic),
+          useNativeDriver: true,
+        }),
+      ] : []),
       Animated.sequence(PLUS_ROTATION_STOPS.map((stop, index) =>
         Animated.timing(plusSpin, {
           toValue: spinDirection * stop.angle,
@@ -379,6 +385,7 @@ export function InnerSpaceCard({
       if (!finished) return;
       animatingRef.current = false;
       clipHeight.value = opening ? contentHeightRef.current : 0;
+      if (!opening) revealOpacity.setValue(0);
       plusSpin.setValue(0);
       if (queuedOpenRef.current && !opening) {
         queuedOpenRef.current = false;
