@@ -651,6 +651,21 @@ export function ExploreScreen({
         onScroll={handleMainScroll}
       >
         <View style={styles.scrollContent}>
+          <View style={styles.categoryBlocksSection}>
+            <ContentCategoryGrid
+              marginTop={0}
+              marginBottom={0}
+              hiddenIds={[
+                "__descanzo__",
+                "__mezcla__",
+                "__geometrix__",
+              ]}
+              discoverTieredLayout
+            />
+          </View>
+
+          <View style={[styles.sectionDivider, styles.categoryBlocksDivider]} />
+
           {featuredMoment && (
             <>
               <View style={styles.featuredMomentSection}>
@@ -823,21 +838,6 @@ export function ExploreScreen({
               style={styles.resonadoresBannerChevron}
             />
           </Pressable>
-
-          <View style={styles.categoryBlocksSection}>
-            <ContentCategoryGrid
-              marginTop={0}
-              marginBottom={0}
-              hiddenIds={[
-                "__descanzo__",
-                "__mezcla__",
-                "__geometrix__",
-              ]}
-              discoverTieredLayout
-            />
-          </View>
-
-          <View style={[styles.sectionDivider, styles.categoryBlocksDivider]} />
 
           <View style={styles.newInResonanceSection}>
             <View style={styles.newInResonanceHeader}>
@@ -1209,7 +1209,7 @@ const styles = StyleSheet.create({
   sectionTitle: { fontFamily: "Manrope", fontSize: 17, fontWeight: "700", letterSpacing: 0.3, color: "#FBFBFB", marginBottom: 17 },
   featuredMomentSection: {
     paddingHorizontal: H_PAD,
-    marginTop: 33,
+    marginTop: 0,
     marginBottom: SECTION_GAP,
   },
   heroImageContainer: {
@@ -1349,7 +1349,7 @@ const styles = StyleSheet.create({
     marginBottom: SECTION_GAP,
   },
   categoryBlocksSection: {
-    marginTop: -23,
+    marginTop: 33,
     marginBottom: SECTION_GAP,
   },
   resonadoresBanner: {
