@@ -1657,9 +1657,7 @@ function Inicio3HeroPager({
                           categoryId={item.categoryId ?? ""}
                           label={item.pillLabel}
                           inline
-                          showIcon
                           whiteGlass
-                          iconSize={14}
                           style={styles.inicio3HeroCategoryPill}
                           textStyle={styles.inicio3HeroCategoryPillText}
                         />
@@ -3907,13 +3905,13 @@ const styles = StyleSheet.create({
     backgroundColor: "rgba(0,0,0,0.3)",
   },
   inicio3HeroCategoryPillText: {
-    fontSize: 12,
-    fontWeight: "900",
-    transform: [{ translateX: 1 }],
+    fontSize: 9,
+    fontWeight: "700",
   },
   inicio3HeroCategoryPill: {
     minHeight: 27,
     paddingLeft: 13,
+    paddingRight: 13,
     transform: [{ translateY: -12 }],
   },
   inicio2HeroCategory: {
