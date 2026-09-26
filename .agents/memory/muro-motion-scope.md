@@ -11,6 +11,6 @@ En Mi muro expansivo, la “+” tiene rebote exclusivamente angular: sobrepasa 
 
 Al abrir el panel con “+”, dejar que termine primero el despliegue; solo después desplazar suavemente Perfil un poco si la parte inferior queda fuera del área visible. El arrastre manual del usuario tiene prioridad. No desplazar automáticamente al cerrarlo ni competir con el posicionamiento para escribir cuando se abre desde otro acceso.
 
-**Why:** El panel podía crecer fuera de la pantalla mientras el scroll quedaba quieto, pero sincronizar el scroll a cada fotograma del despliegue produjo lag al pulsar “+”. El usuario prefirió movimientos secuenciales y aclaró que no quería esperar al rebote final de la “+”, que termina después del despliegue del panel.
+**Why:** El panel podía crecer fuera de la pantalla mientras el scroll quedaba quieto, pero sincronizar el scroll a cada fotograma del despliegue produjo lag al pulsar “+”. El usuario prefirió movimientos secuenciales y aclaró que no quería esperar al rebote final de la “+”. Una apertura de altura apenas más corta que el rebote seguía pareciendo la misma espera.
 
-**How to apply:** Esperar la finalización real de la animación de ALTURA del panel, no la finalización del grupo de animaciones que incluye el rebote de la “+”. Hacer entonces un solo scroll nativo animado y moderado si hace falta, y descartarlo si el usuario empezó a desplazar manualmente.
+**How to apply:** Mantener la duración de la altura independiente y perceptiblemente más corta que la del rebote. Esperar la finalización real de esa altura, no la del grupo de animaciones de la “+”; hacer entonces un solo scroll nativo animado y moderado si hace falta, y descartarlo si el usuario empezó a desplazar manualmente.

@@ -47,8 +47,8 @@ const PLUS_ROTATION_STOPS = [
   { angle: 272, duration: 240 },
   { angle: 270, duration: 200 },
 ] as const;
-const PLUS_ANIMATION_DURATION = PLUS_ROTATION_STOPS.reduce((total, stop) => total + stop.duration, 0);
-const PANEL_DURATION = PLUS_ANIMATION_DURATION - 150;
+// El panel termina antes que el rebote de la +; el scroll espera solo al panel.
+const PANEL_DURATION = 620;
 const HALO_SIZES = [46, 36, 26] as const;
 const HALO_COLORS = [
   "rgba(255, 255, 255, 0.06)",
