@@ -1719,13 +1719,15 @@ function Inicio3HeroPager({
           )}
         />
         <View style={styles.inicio3HeroProgressContainer} pointerEvents="none">
-          {pagerSlides.map((slide, index) => (
-            <Inicio3HeroProgressDot
-              key={slide.id}
-              active={index === Math.min(activeSlideIndex, pagerSlides.length - 1)}
-              reduceMotion={reduceMotion}
-            />
-          ))}
+          <View style={styles.inicio3HeroProgressBackdrop}>
+            {pagerSlides.map((slide, index) => (
+              <Inicio3HeroProgressDot
+                key={slide.id}
+                active={index === Math.min(activeSlideIndex, pagerSlides.length - 1)}
+                reduceMotion={reduceMotion}
+              />
+            ))}
+          </View>
         </View>
       </View>
     </RAnimated.View>
@@ -3943,11 +3945,19 @@ const styles = StyleSheet.create({
     position: "absolute",
     left: 0,
     right: 0,
-    bottom: 20,
+    bottom: 14,
     flexDirection: "row",
     justifyContent: "center",
-    gap: 8,
     zIndex: 40,
+  },
+  inicio3HeroProgressBackdrop: {
+    flexDirection: "row",
+    alignItems: "center",
+    gap: 8,
+    paddingHorizontal: 10,
+    paddingVertical: 6,
+    borderRadius: 20,
+    backgroundColor: "rgba(0,0,0,0.25)",
   },
   inicio3HeroProgressDot: {
     width: 9,

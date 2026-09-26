@@ -36,7 +36,7 @@ export function StreakWeekRow({
             ]}
           >
             {active ? (
-              <Svg width={smallLabels ? 21 : 27} height={smallLabels ? 21 : 27} viewBox="0 0 24 24" style={styles.checkMark}>
+              <Svg width={smallLabels ? 18 : 24} height={smallLabels ? 18 : 24} viewBox="0 0 24 24" style={styles.checkMark}>
                 <Path
                   d="M20 6 9 17l-5-5"
                   fill="none"
@@ -113,9 +113,9 @@ const styles = StyleSheet.create({
     alignItems: "center",
   },
   day: {
-    width: 39,
-    height: 39,
-    borderRadius: 19.5,
+    width: 36,
+    height: 36,
+    borderRadius: 18,
     backgroundColor: "rgba(255,255,255,0.08)",
     alignItems: "center",
     justifyContent: "center",
@@ -128,22 +128,22 @@ const styles = StyleSheet.create({
     backgroundColor: "rgba(255,255,255,0.08)",
   },
   ringHost: {
-    width: 39,
-    height: 39,
-    borderRadius: 19.5,
+    width: 36,
+    height: 36,
+    borderRadius: 18,
   },
   ringMask: {
     flex: 1,
-    borderRadius: 19.5,
-    borderWidth: 2.5,
+    borderRadius: 18,
+    borderWidth: 2,
     borderColor: "#000000",
     backgroundColor: "transparent",
   },
   dayLabel: {
     color: "rgba(255,255,255,0.7)",
     fontFamily: "Manrope",
-    fontSize: 17,
-    lineHeight: 20,
+    fontSize: 14,
+    lineHeight: 17,
     fontWeight: "700",
     transform: [{ translateY: 1 }],
   },
