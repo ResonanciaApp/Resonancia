@@ -2098,7 +2098,7 @@ function InicioEmotionWidget({
         style={styles.inicio2HeroEmotionGlass}
       />
       <Text style={styles.inicio2HeroEmotionEmoji}>😌</Text>
-      <View style={[styles.inicio2HeroEmotionAdd, { backgroundColor: "#32478C" }]}>
+      <View style={styles.inicio2HeroEmotionAdd}>
         <Text style={styles.inicio2HeroEmotionAddText}>+</Text>
       </View>
     </Pressable>
@@ -3873,7 +3873,7 @@ const styles = StyleSheet.create({
     overflow: "hidden",
     alignItems: "center",
     justifyContent: "center",
-    backgroundColor: "transparent",
+    backgroundColor: "#4D2C96",
   },
   inicio2HeroEmotionAddText: {
     color: "#FFFFFF",
