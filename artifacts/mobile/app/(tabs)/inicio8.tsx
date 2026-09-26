@@ -61,6 +61,7 @@ import { useCategoryOverlay } from "@/context/CategoryOverlayContext";
 import { getWeeklyPhrase } from "@/data/greeting-phrases";
 import { resolveFeaturedMoment } from "@/data/featured-moment";
 import { GlowRing } from "@/components/GlowRing";
+import { HeroCornerBorder } from "@/components/HeroCornerBorder";
 import { MoodPickerSheet } from "@/components/MoodPickerSheet";
 import { ContextSearchModal } from "@/components/ContextSearchModal";
 import { SessionActionsSheet } from "@/components/SessionActionsSheet";
@@ -1774,7 +1775,7 @@ function Inicio3HeroPager({
           </View>
         </View>
       </View>
-      <View pointerEvents="none" style={styles.inicio3HeroOuterBorder} />
+      <HeroCornerBorder width={slideWidth} height={height} />
     </RAnimated.View>
   );
 }
@@ -3949,16 +3950,6 @@ const styles = StyleSheet.create({
   inicio3HeroImageClip: {
     borderRadius: 21,
     overflow: "hidden",
-  },
-  inicio3HeroOuterBorder: {
-    position: "absolute",
-    top: -1,
-    right: -1,
-    bottom: -1,
-    left: -1,
-    borderRadius: 22,
-    borderWidth: 1,
-    borderColor: "rgba(255,255,255,0.1)",
   },
   inicio3HeroBackShadow: {
     position: "absolute",
