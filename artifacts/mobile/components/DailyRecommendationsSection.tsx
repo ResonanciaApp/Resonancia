@@ -135,16 +135,11 @@ export function DailyRecommendationsSection({
               >
                 <SessionRow
                   session={session}
-                  imageSize={inicio3Compact ? 81.9 : 103.7}
+                  imageSize={inicio3Compact ? 81.9 * 1.2 : 103.7}
                   imageOffsetX={inicio3Compact ? 0 : -4}
-                  metaText={
-                    inicio3Compact
-                      ? session.categoryLabel
-                      : `${session.categoryLabel} · ${session.durationLabel}`
-                  }
-                  showDurationBadge={inicio3Compact}
+                  metaText={`${session.categoryLabel} · ${session.durationLabel}`}
                   showChevron
-                  titleFontSize={inicio3Compact ? 15 : undefined}
+                  titleFontSize={inicio3Compact ? 18 : undefined}
                   titleFontWeight={inicio3Compact ? "600" : undefined}
                   authorColor={themeAccent}
                   authorFontSize={theme.id === "indigo2" ? 11 : undefined}
