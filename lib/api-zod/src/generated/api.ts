@@ -137,6 +137,11 @@ export const GetInspirationWeekQueryParams = zod.object({
   "timeZone": zod.coerce.string().optional()
 })
 
+export const getInspirationWeekResponseDaysItemContentOneQuoteBoldRangesItemStartMin = 0;
+
+
+export const getInspirationWeekResponseDaysItemContentOneQuoteBoldRangesMax = 1000;
+
 export const getInspirationWeekResponseDaysMin = 7;
 export const getInspirationWeekResponseDaysMax = 7;
 
@@ -169,7 +174,11 @@ export const GetInspirationWeekResponse = zod.object({
   "imagePositionX": zod.number(),
   "imagePositionY": zod.number(),
   "overlayOpacity": zod.number(),
-  "sessionId": zod.string().nullable()
+  "sessionId": zod.string().nullable(),
+  "quoteBoldRanges": zod.array(zod.object({
+  "start": zod.number().min(getInspirationWeekResponseDaysItemContentOneQuoteBoldRangesItemStartMin),
+  "end": zod.number().min(1)
+})).max(getInspirationWeekResponseDaysItemContentOneQuoteBoldRangesMax).optional().describe('Optional half-open [start, end) UTF-16 offsets into the plain quote.')
 }),zod.null()])
 })).min(getInspirationWeekResponseDaysMin).max(getInspirationWeekResponseDaysMax),
   "settings": zod.object({
@@ -804,6 +813,13 @@ export const GetInspirationByDateQueryParams = zod.object({
   "timeZone": zod.coerce.string().optional()
 })
 
+export const getInspirationByDateResponseContentOneQuoteBoldRangesItemStartMin = 0;
+
+
+export const getInspirationByDateResponseContentOneQuoteBoldRangesMax = 1000;
+
+
+
 export const GetInspirationByDateResponse = zod.object({
   "date": zod.string(),
   "status": zod.enum(['available', 'future', 'unavailable']),
@@ -817,7 +833,11 @@ export const GetInspirationByDateResponse = zod.object({
   "imagePositionX": zod.number(),
   "imagePositionY": zod.number(),
   "overlayOpacity": zod.number(),
-  "sessionId": zod.string().nullable()
+  "sessionId": zod.string().nullable(),
+  "quoteBoldRanges": zod.array(zod.object({
+  "start": zod.number().min(getInspirationByDateResponseContentOneQuoteBoldRangesItemStartMin),
+  "end": zod.number().min(1)
+})).max(getInspirationByDateResponseContentOneQuoteBoldRangesMax).optional().describe('Optional half-open [start, end) UTF-16 offsets into the plain quote.')
 }),zod.null()])
 })
 
@@ -829,6 +849,13 @@ export const GetInspirationParams = zod.object({
 export const GetInspirationQueryParams = zod.object({
   "timeZone": zod.coerce.string().optional()
 })
+
+export const getInspirationResponseContentOneQuoteBoldRangesItemStartMin = 0;
+
+
+export const getInspirationResponseContentOneQuoteBoldRangesMax = 1000;
+
+
 
 export const GetInspirationResponse = zod.object({
   "date": zod.string(),
@@ -843,7 +870,11 @@ export const GetInspirationResponse = zod.object({
   "imagePositionX": zod.number(),
   "imagePositionY": zod.number(),
   "overlayOpacity": zod.number(),
-  "sessionId": zod.string().nullable()
+  "sessionId": zod.string().nullable(),
+  "quoteBoldRanges": zod.array(zod.object({
+  "start": zod.number().min(getInspirationResponseContentOneQuoteBoldRangesItemStartMin),
+  "end": zod.number().min(1)
+})).max(getInspirationResponseContentOneQuoteBoldRangesMax).optional().describe('Optional half-open [start, end) UTF-16 offsets into the plain quote.')
 }),zod.null()])
 })
 
@@ -880,6 +911,11 @@ export const getAdminInspirationWeekResponseDaysItemInspirationOneDraftImagePosi
 export const getAdminInspirationWeekResponseDaysItemInspirationOneDraftOverlayOpacityMin = 0;
 export const getAdminInspirationWeekResponseDaysItemInspirationOneDraftOverlayOpacityMax = 0.85;
 
+export const getAdminInspirationWeekResponseDaysItemInspirationOneDraftQuoteBoldRangesItemStartMin = 0;
+
+
+export const getAdminInspirationWeekResponseDaysItemInspirationOneDraftQuoteBoldRangesMax = 1000;
+
 export const getAdminInspirationWeekResponseDaysItemInspirationOnePublishedOneQuoteMax = 2000;
 
 export const getAdminInspirationWeekResponseDaysItemInspirationOnePublishedOneAuthorMax = 200;
@@ -894,6 +930,11 @@ export const getAdminInspirationWeekResponseDaysItemInspirationOnePublishedOneIm
 
 export const getAdminInspirationWeekResponseDaysItemInspirationOnePublishedOneOverlayOpacityMin = 0;
 export const getAdminInspirationWeekResponseDaysItemInspirationOnePublishedOneOverlayOpacityMax = 0.85;
+
+export const getAdminInspirationWeekResponseDaysItemInspirationOnePublishedOneQuoteBoldRangesItemStartMin = 0;
+
+
+export const getAdminInspirationWeekResponseDaysItemInspirationOnePublishedOneQuoteBoldRangesMax = 1000;
 
 export const getAdminInspirationWeekResponseSettingsRevisionMin = 0;
 
@@ -923,7 +964,11 @@ export const GetAdminInspirationWeekResponse = zod.object({
   "imagePositionX": zod.number().min(getAdminInspirationWeekResponseDaysItemInspirationOneDraftImagePositionXMin).max(getAdminInspirationWeekResponseDaysItemInspirationOneDraftImagePositionXMax),
   "imagePositionY": zod.number().min(getAdminInspirationWeekResponseDaysItemInspirationOneDraftImagePositionYMin).max(getAdminInspirationWeekResponseDaysItemInspirationOneDraftImagePositionYMax),
   "overlayOpacity": zod.number().min(getAdminInspirationWeekResponseDaysItemInspirationOneDraftOverlayOpacityMin).max(getAdminInspirationWeekResponseDaysItemInspirationOneDraftOverlayOpacityMax),
-  "sessionId": zod.string().nullable()
+  "sessionId": zod.string().nullable(),
+  "quoteBoldRanges": zod.array(zod.object({
+  "start": zod.number().min(getAdminInspirationWeekResponseDaysItemInspirationOneDraftQuoteBoldRangesItemStartMin),
+  "end": zod.number().min(1)
+})).max(getAdminInspirationWeekResponseDaysItemInspirationOneDraftQuoteBoldRangesMax).optional().describe('Optional half-open [start, end) UTF-16 offsets into the plain quote. Ranges must be sorted, non-overlapping, non-empty, and within the quote.')
 }),
   "published": zod.union([zod.object({
   "quote": zod.string().max(getAdminInspirationWeekResponseDaysItemInspirationOnePublishedOneQuoteMax),
@@ -933,7 +978,11 @@ export const GetAdminInspirationWeekResponse = zod.object({
   "imagePositionX": zod.number().min(getAdminInspirationWeekResponseDaysItemInspirationOnePublishedOneImagePositionXMin).max(getAdminInspirationWeekResponseDaysItemInspirationOnePublishedOneImagePositionXMax),
   "imagePositionY": zod.number().min(getAdminInspirationWeekResponseDaysItemInspirationOnePublishedOneImagePositionYMin).max(getAdminInspirationWeekResponseDaysItemInspirationOnePublishedOneImagePositionYMax),
   "overlayOpacity": zod.number().min(getAdminInspirationWeekResponseDaysItemInspirationOnePublishedOneOverlayOpacityMin).max(getAdminInspirationWeekResponseDaysItemInspirationOnePublishedOneOverlayOpacityMax),
-  "sessionId": zod.string().nullable()
+  "sessionId": zod.string().nullable(),
+  "quoteBoldRanges": zod.array(zod.object({
+  "start": zod.number().min(getAdminInspirationWeekResponseDaysItemInspirationOnePublishedOneQuoteBoldRangesItemStartMin),
+  "end": zod.number().min(1)
+})).max(getAdminInspirationWeekResponseDaysItemInspirationOnePublishedOneQuoteBoldRangesMax).optional().describe('Optional half-open [start, end) UTF-16 offsets into the plain quote. Ranges must be sorted, non-overlapping, non-empty, and within the quote.')
 }),zod.null()]),
   "publishedRevision": zod.number().nullable(),
   "deleted": zod.boolean(),
@@ -1029,6 +1078,11 @@ export const createAdminInspirationBodyDraftImagePositionYMax = 100;
 export const createAdminInspirationBodyDraftOverlayOpacityMin = 0;
 export const createAdminInspirationBodyDraftOverlayOpacityMax = 0.85;
 
+export const createAdminInspirationBodyDraftQuoteBoldRangesItemStartMin = 0;
+
+
+export const createAdminInspirationBodyDraftQuoteBoldRangesMax = 1000;
+
 
 
 export const CreateAdminInspirationBody = zod.object({
@@ -1041,7 +1095,11 @@ export const CreateAdminInspirationBody = zod.object({
   "imagePositionX": zod.number().min(createAdminInspirationBodyDraftImagePositionXMin).max(createAdminInspirationBodyDraftImagePositionXMax),
   "imagePositionY": zod.number().min(createAdminInspirationBodyDraftImagePositionYMin).max(createAdminInspirationBodyDraftImagePositionYMax),
   "overlayOpacity": zod.number().min(createAdminInspirationBodyDraftOverlayOpacityMin).max(createAdminInspirationBodyDraftOverlayOpacityMax),
-  "sessionId": zod.string().nullable()
+  "sessionId": zod.string().nullable(),
+  "quoteBoldRanges": zod.array(zod.object({
+  "start": zod.number().min(createAdminInspirationBodyDraftQuoteBoldRangesItemStartMin),
+  "end": zod.number().min(1)
+})).max(createAdminInspirationBodyDraftQuoteBoldRangesMax).optional().describe('Optional half-open [start, end) UTF-16 offsets into the plain quote. Ranges must be sorted, non-overlapping, non-empty, and within the quote.')
 })
 })
 
@@ -1060,6 +1118,11 @@ export const createAdminInspirationResponseDraftImagePositionYMax = 100;
 export const createAdminInspirationResponseDraftOverlayOpacityMin = 0;
 export const createAdminInspirationResponseDraftOverlayOpacityMax = 0.85;
 
+export const createAdminInspirationResponseDraftQuoteBoldRangesItemStartMin = 0;
+
+
+export const createAdminInspirationResponseDraftQuoteBoldRangesMax = 1000;
+
 export const createAdminInspirationResponsePublishedOneQuoteMax = 2000;
 
 export const createAdminInspirationResponsePublishedOneAuthorMax = 200;
@@ -1075,6 +1138,11 @@ export const createAdminInspirationResponsePublishedOneImagePositionYMax = 100;
 export const createAdminInspirationResponsePublishedOneOverlayOpacityMin = 0;
 export const createAdminInspirationResponsePublishedOneOverlayOpacityMax = 0.85;
 
+export const createAdminInspirationResponsePublishedOneQuoteBoldRangesItemStartMin = 0;
+
+
+export const createAdminInspirationResponsePublishedOneQuoteBoldRangesMax = 1000;
+
 
 
 export const CreateAdminInspirationResponse = zod.object({
@@ -1089,7 +1157,11 @@ export const CreateAdminInspirationResponse = zod.object({
   "imagePositionX": zod.number().min(createAdminInspirationResponseDraftImagePositionXMin).max(createAdminInspirationResponseDraftImagePositionXMax),
   "imagePositionY": zod.number().min(createAdminInspirationResponseDraftImagePositionYMin).max(createAdminInspirationResponseDraftImagePositionYMax),
   "overlayOpacity": zod.number().min(createAdminInspirationResponseDraftOverlayOpacityMin).max(createAdminInspirationResponseDraftOverlayOpacityMax),
-  "sessionId": zod.string().nullable()
+  "sessionId": zod.string().nullable(),
+  "quoteBoldRanges": zod.array(zod.object({
+  "start": zod.number().min(createAdminInspirationResponseDraftQuoteBoldRangesItemStartMin),
+  "end": zod.number().min(1)
+})).max(createAdminInspirationResponseDraftQuoteBoldRangesMax).optional().describe('Optional half-open [start, end) UTF-16 offsets into the plain quote. Ranges must be sorted, non-overlapping, non-empty, and within the quote.')
 }),
   "published": zod.union([zod.object({
   "quote": zod.string().max(createAdminInspirationResponsePublishedOneQuoteMax),
@@ -1099,7 +1171,11 @@ export const CreateAdminInspirationResponse = zod.object({
   "imagePositionX": zod.number().min(createAdminInspirationResponsePublishedOneImagePositionXMin).max(createAdminInspirationResponsePublishedOneImagePositionXMax),
   "imagePositionY": zod.number().min(createAdminInspirationResponsePublishedOneImagePositionYMin).max(createAdminInspirationResponsePublishedOneImagePositionYMax),
   "overlayOpacity": zod.number().min(createAdminInspirationResponsePublishedOneOverlayOpacityMin).max(createAdminInspirationResponsePublishedOneOverlayOpacityMax),
-  "sessionId": zod.string().nullable()
+  "sessionId": zod.string().nullable(),
+  "quoteBoldRanges": zod.array(zod.object({
+  "start": zod.number().min(createAdminInspirationResponsePublishedOneQuoteBoldRangesItemStartMin),
+  "end": zod.number().min(1)
+})).max(createAdminInspirationResponsePublishedOneQuoteBoldRangesMax).optional().describe('Optional half-open [start, end) UTF-16 offsets into the plain quote. Ranges must be sorted, non-overlapping, non-empty, and within the quote.')
 }),zod.null()]),
   "publishedRevision": zod.number().nullable(),
   "deleted": zod.boolean(),
@@ -1126,6 +1202,11 @@ export const getAdminInspirationResponseDraftImagePositionYMax = 100;
 export const getAdminInspirationResponseDraftOverlayOpacityMin = 0;
 export const getAdminInspirationResponseDraftOverlayOpacityMax = 0.85;
 
+export const getAdminInspirationResponseDraftQuoteBoldRangesItemStartMin = 0;
+
+
+export const getAdminInspirationResponseDraftQuoteBoldRangesMax = 1000;
+
 export const getAdminInspirationResponsePublishedOneQuoteMax = 2000;
 
 export const getAdminInspirationResponsePublishedOneAuthorMax = 200;
@@ -1141,6 +1222,11 @@ export const getAdminInspirationResponsePublishedOneImagePositionYMax = 100;
 export const getAdminInspirationResponsePublishedOneOverlayOpacityMin = 0;
 export const getAdminInspirationResponsePublishedOneOverlayOpacityMax = 0.85;
 
+export const getAdminInspirationResponsePublishedOneQuoteBoldRangesItemStartMin = 0;
+
+
+export const getAdminInspirationResponsePublishedOneQuoteBoldRangesMax = 1000;
+
 
 
 export const GetAdminInspirationResponse = zod.object({
@@ -1155,7 +1241,11 @@ export const GetAdminInspirationResponse = zod.object({
   "imagePositionX": zod.number().min(getAdminInspirationResponseDraftImagePositionXMin).max(getAdminInspirationResponseDraftImagePositionXMax),
   "imagePositionY": zod.number().min(getAdminInspirationResponseDraftImagePositionYMin).max(getAdminInspirationResponseDraftImagePositionYMax),
   "overlayOpacity": zod.number().min(getAdminInspirationResponseDraftOverlayOpacityMin).max(getAdminInspirationResponseDraftOverlayOpacityMax),
-  "sessionId": zod.string().nullable()
+  "sessionId": zod.string().nullable(),
+  "quoteBoldRanges": zod.array(zod.object({
+  "start": zod.number().min(getAdminInspirationResponseDraftQuoteBoldRangesItemStartMin),
+  "end": zod.number().min(1)
+})).max(getAdminInspirationResponseDraftQuoteBoldRangesMax).optional().describe('Optional half-open [start, end) UTF-16 offsets into the plain quote. Ranges must be sorted, non-overlapping, non-empty, and within the quote.')
 }),
   "published": zod.union([zod.object({
   "quote": zod.string().max(getAdminInspirationResponsePublishedOneQuoteMax),
@@ -1165,7 +1255,11 @@ export const GetAdminInspirationResponse = zod.object({
   "imagePositionX": zod.number().min(getAdminInspirationResponsePublishedOneImagePositionXMin).max(getAdminInspirationResponsePublishedOneImagePositionXMax),
   "imagePositionY": zod.number().min(getAdminInspirationResponsePublishedOneImagePositionYMin).max(getAdminInspirationResponsePublishedOneImagePositionYMax),
   "overlayOpacity": zod.number().min(getAdminInspirationResponsePublishedOneOverlayOpacityMin).max(getAdminInspirationResponsePublishedOneOverlayOpacityMax),
-  "sessionId": zod.string().nullable()
+  "sessionId": zod.string().nullable(),
+  "quoteBoldRanges": zod.array(zod.object({
+  "start": zod.number().min(getAdminInspirationResponsePublishedOneQuoteBoldRangesItemStartMin),
+  "end": zod.number().min(1)
+})).max(getAdminInspirationResponsePublishedOneQuoteBoldRangesMax).optional().describe('Optional half-open [start, end) UTF-16 offsets into the plain quote. Ranges must be sorted, non-overlapping, non-empty, and within the quote.')
 }),zod.null()]),
   "publishedRevision": zod.number().nullable(),
   "deleted": zod.boolean(),
@@ -1194,6 +1288,11 @@ export const updateAdminInspirationBodyDraftImagePositionYMax = 100;
 export const updateAdminInspirationBodyDraftOverlayOpacityMin = 0;
 export const updateAdminInspirationBodyDraftOverlayOpacityMax = 0.85;
 
+export const updateAdminInspirationBodyDraftQuoteBoldRangesItemStartMin = 0;
+
+
+export const updateAdminInspirationBodyDraftQuoteBoldRangesMax = 1000;
+
 
 
 export const UpdateAdminInspirationBody = zod.object({
@@ -1207,7 +1306,11 @@ export const UpdateAdminInspirationBody = zod.object({
   "imagePositionX": zod.number().min(updateAdminInspirationBodyDraftImagePositionXMin).max(updateAdminInspirationBodyDraftImagePositionXMax),
   "imagePositionY": zod.number().min(updateAdminInspirationBodyDraftImagePositionYMin).max(updateAdminInspirationBodyDraftImagePositionYMax),
   "overlayOpacity": zod.number().min(updateAdminInspirationBodyDraftOverlayOpacityMin).max(updateAdminInspirationBodyDraftOverlayOpacityMax),
-  "sessionId": zod.string().nullable()
+  "sessionId": zod.string().nullable(),
+  "quoteBoldRanges": zod.array(zod.object({
+  "start": zod.number().min(updateAdminInspirationBodyDraftQuoteBoldRangesItemStartMin),
+  "end": zod.number().min(1)
+})).max(updateAdminInspirationBodyDraftQuoteBoldRangesMax).optional().describe('Optional half-open [start, end) UTF-16 offsets into the plain quote. Ranges must be sorted, non-overlapping, non-empty, and within the quote.')
 })
 })
 
@@ -1226,6 +1329,11 @@ export const updateAdminInspirationResponseDraftImagePositionYMax = 100;
 export const updateAdminInspirationResponseDraftOverlayOpacityMin = 0;
 export const updateAdminInspirationResponseDraftOverlayOpacityMax = 0.85;
 
+export const updateAdminInspirationResponseDraftQuoteBoldRangesItemStartMin = 0;
+
+
+export const updateAdminInspirationResponseDraftQuoteBoldRangesMax = 1000;
+
 export const updateAdminInspirationResponsePublishedOneQuoteMax = 2000;
 
 export const updateAdminInspirationResponsePublishedOneAuthorMax = 200;
@@ -1241,6 +1349,11 @@ export const updateAdminInspirationResponsePublishedOneImagePositionYMax = 100;
 export const updateAdminInspirationResponsePublishedOneOverlayOpacityMin = 0;
 export const updateAdminInspirationResponsePublishedOneOverlayOpacityMax = 0.85;
 
+export const updateAdminInspirationResponsePublishedOneQuoteBoldRangesItemStartMin = 0;
+
+
+export const updateAdminInspirationResponsePublishedOneQuoteBoldRangesMax = 1000;
+
 
 
 export const UpdateAdminInspirationResponse = zod.object({
@@ -1255,7 +1368,11 @@ export const UpdateAdminInspirationResponse = zod.object({
   "imagePositionX": zod.number().min(updateAdminInspirationResponseDraftImagePositionXMin).max(updateAdminInspirationResponseDraftImagePositionXMax),
   "imagePositionY": zod.number().min(updateAdminInspirationResponseDraftImagePositionYMin).max(updateAdminInspirationResponseDraftImagePositionYMax),
   "overlayOpacity": zod.number().min(updateAdminInspirationResponseDraftOverlayOpacityMin).max(updateAdminInspirationResponseDraftOverlayOpacityMax),
-  "sessionId": zod.string().nullable()
+  "sessionId": zod.string().nullable(),
+  "quoteBoldRanges": zod.array(zod.object({
+  "start": zod.number().min(updateAdminInspirationResponseDraftQuoteBoldRangesItemStartMin),
+  "end": zod.number().min(1)
+})).max(updateAdminInspirationResponseDraftQuoteBoldRangesMax).optional().describe('Optional half-open [start, end) UTF-16 offsets into the plain quote. Ranges must be sorted, non-overlapping, non-empty, and within the quote.')
 }),
   "published": zod.union([zod.object({
   "quote": zod.string().max(updateAdminInspirationResponsePublishedOneQuoteMax),
@@ -1265,7 +1382,11 @@ export const UpdateAdminInspirationResponse = zod.object({
   "imagePositionX": zod.number().min(updateAdminInspirationResponsePublishedOneImagePositionXMin).max(updateAdminInspirationResponsePublishedOneImagePositionXMax),
   "imagePositionY": zod.number().min(updateAdminInspirationResponsePublishedOneImagePositionYMin).max(updateAdminInspirationResponsePublishedOneImagePositionYMax),
   "overlayOpacity": zod.number().min(updateAdminInspirationResponsePublishedOneOverlayOpacityMin).max(updateAdminInspirationResponsePublishedOneOverlayOpacityMax),
-  "sessionId": zod.string().nullable()
+  "sessionId": zod.string().nullable(),
+  "quoteBoldRanges": zod.array(zod.object({
+  "start": zod.number().min(updateAdminInspirationResponsePublishedOneQuoteBoldRangesItemStartMin),
+  "end": zod.number().min(1)
+})).max(updateAdminInspirationResponsePublishedOneQuoteBoldRangesMax).optional().describe('Optional half-open [start, end) UTF-16 offsets into the plain quote. Ranges must be sorted, non-overlapping, non-empty, and within the quote.')
 }),zod.null()]),
   "publishedRevision": zod.number().nullable(),
   "deleted": zod.boolean(),
@@ -1300,6 +1421,11 @@ export const deleteAdminInspirationResponseDraftImagePositionYMax = 100;
 export const deleteAdminInspirationResponseDraftOverlayOpacityMin = 0;
 export const deleteAdminInspirationResponseDraftOverlayOpacityMax = 0.85;
 
+export const deleteAdminInspirationResponseDraftQuoteBoldRangesItemStartMin = 0;
+
+
+export const deleteAdminInspirationResponseDraftQuoteBoldRangesMax = 1000;
+
 export const deleteAdminInspirationResponsePublishedOneQuoteMax = 2000;
 
 export const deleteAdminInspirationResponsePublishedOneAuthorMax = 200;
@@ -1315,6 +1441,11 @@ export const deleteAdminInspirationResponsePublishedOneImagePositionYMax = 100;
 export const deleteAdminInspirationResponsePublishedOneOverlayOpacityMin = 0;
 export const deleteAdminInspirationResponsePublishedOneOverlayOpacityMax = 0.85;
 
+export const deleteAdminInspirationResponsePublishedOneQuoteBoldRangesItemStartMin = 0;
+
+
+export const deleteAdminInspirationResponsePublishedOneQuoteBoldRangesMax = 1000;
+
 
 
 export const DeleteAdminInspirationResponse = zod.object({
@@ -1329,7 +1460,11 @@ export const DeleteAdminInspirationResponse = zod.object({
   "imagePositionX": zod.number().min(deleteAdminInspirationResponseDraftImagePositionXMin).max(deleteAdminInspirationResponseDraftImagePositionXMax),
   "imagePositionY": zod.number().min(deleteAdminInspirationResponseDraftImagePositionYMin).max(deleteAdminInspirationResponseDraftImagePositionYMax),
   "overlayOpacity": zod.number().min(deleteAdminInspirationResponseDraftOverlayOpacityMin).max(deleteAdminInspirationResponseDraftOverlayOpacityMax),
-  "sessionId": zod.string().nullable()
+  "sessionId": zod.string().nullable(),
+  "quoteBoldRanges": zod.array(zod.object({
+  "start": zod.number().min(deleteAdminInspirationResponseDraftQuoteBoldRangesItemStartMin),
+  "end": zod.number().min(1)
+})).max(deleteAdminInspirationResponseDraftQuoteBoldRangesMax).optional().describe('Optional half-open [start, end) UTF-16 offsets into the plain quote. Ranges must be sorted, non-overlapping, non-empty, and within the quote.')
 }),
   "published": zod.union([zod.object({
   "quote": zod.string().max(deleteAdminInspirationResponsePublishedOneQuoteMax),
@@ -1339,7 +1474,11 @@ export const DeleteAdminInspirationResponse = zod.object({
   "imagePositionX": zod.number().min(deleteAdminInspirationResponsePublishedOneImagePositionXMin).max(deleteAdminInspirationResponsePublishedOneImagePositionXMax),
   "imagePositionY": zod.number().min(deleteAdminInspirationResponsePublishedOneImagePositionYMin).max(deleteAdminInspirationResponsePublishedOneImagePositionYMax),
   "overlayOpacity": zod.number().min(deleteAdminInspirationResponsePublishedOneOverlayOpacityMin).max(deleteAdminInspirationResponsePublishedOneOverlayOpacityMax),
-  "sessionId": zod.string().nullable()
+  "sessionId": zod.string().nullable(),
+  "quoteBoldRanges": zod.array(zod.object({
+  "start": zod.number().min(deleteAdminInspirationResponsePublishedOneQuoteBoldRangesItemStartMin),
+  "end": zod.number().min(1)
+})).max(deleteAdminInspirationResponsePublishedOneQuoteBoldRangesMax).optional().describe('Optional half-open [start, end) UTF-16 offsets into the plain quote. Ranges must be sorted, non-overlapping, non-empty, and within the quote.')
 }),zod.null()]),
   "publishedRevision": zod.number().nullable(),
   "deleted": zod.boolean(),
@@ -1374,6 +1513,11 @@ export const publishAdminInspirationResponseDraftImagePositionYMax = 100;
 export const publishAdminInspirationResponseDraftOverlayOpacityMin = 0;
 export const publishAdminInspirationResponseDraftOverlayOpacityMax = 0.85;
 
+export const publishAdminInspirationResponseDraftQuoteBoldRangesItemStartMin = 0;
+
+
+export const publishAdminInspirationResponseDraftQuoteBoldRangesMax = 1000;
+
 export const publishAdminInspirationResponsePublishedOneQuoteMax = 2000;
 
 export const publishAdminInspirationResponsePublishedOneAuthorMax = 200;
@@ -1389,6 +1533,11 @@ export const publishAdminInspirationResponsePublishedOneImagePositionYMax = 100;
 export const publishAdminInspirationResponsePublishedOneOverlayOpacityMin = 0;
 export const publishAdminInspirationResponsePublishedOneOverlayOpacityMax = 0.85;
 
+export const publishAdminInspirationResponsePublishedOneQuoteBoldRangesItemStartMin = 0;
+
+
+export const publishAdminInspirationResponsePublishedOneQuoteBoldRangesMax = 1000;
+
 
 
 export const PublishAdminInspirationResponse = zod.object({
@@ -1403,7 +1552,11 @@ export const PublishAdminInspirationResponse = zod.object({
   "imagePositionX": zod.number().min(publishAdminInspirationResponseDraftImagePositionXMin).max(publishAdminInspirationResponseDraftImagePositionXMax),
   "imagePositionY": zod.number().min(publishAdminInspirationResponseDraftImagePositionYMin).max(publishAdminInspirationResponseDraftImagePositionYMax),
   "overlayOpacity": zod.number().min(publishAdminInspirationResponseDraftOverlayOpacityMin).max(publishAdminInspirationResponseDraftOverlayOpacityMax),
-  "sessionId": zod.string().nullable()
+  "sessionId": zod.string().nullable(),
+  "quoteBoldRanges": zod.array(zod.object({
+  "start": zod.number().min(publishAdminInspirationResponseDraftQuoteBoldRangesItemStartMin),
+  "end": zod.number().min(1)
+})).max(publishAdminInspirationResponseDraftQuoteBoldRangesMax).optional().describe('Optional half-open [start, end) UTF-16 offsets into the plain quote. Ranges must be sorted, non-overlapping, non-empty, and within the quote.')
 }),
   "published": zod.union([zod.object({
   "quote": zod.string().max(publishAdminInspirationResponsePublishedOneQuoteMax),
@@ -1413,7 +1566,11 @@ export const PublishAdminInspirationResponse = zod.object({
   "imagePositionX": zod.number().min(publishAdminInspirationResponsePublishedOneImagePositionXMin).max(publishAdminInspirationResponsePublishedOneImagePositionXMax),
   "imagePositionY": zod.number().min(publishAdminInspirationResponsePublishedOneImagePositionYMin).max(publishAdminInspirationResponsePublishedOneImagePositionYMax),
   "overlayOpacity": zod.number().min(publishAdminInspirationResponsePublishedOneOverlayOpacityMin).max(publishAdminInspirationResponsePublishedOneOverlayOpacityMax),
-  "sessionId": zod.string().nullable()
+  "sessionId": zod.string().nullable(),
+  "quoteBoldRanges": zod.array(zod.object({
+  "start": zod.number().min(publishAdminInspirationResponsePublishedOneQuoteBoldRangesItemStartMin),
+  "end": zod.number().min(1)
+})).max(publishAdminInspirationResponsePublishedOneQuoteBoldRangesMax).optional().describe('Optional half-open [start, end) UTF-16 offsets into the plain quote. Ranges must be sorted, non-overlapping, non-empty, and within the quote.')
 }),zod.null()]),
   "publishedRevision": zod.number().nullable(),
   "deleted": zod.boolean(),
@@ -1448,6 +1605,11 @@ export const unpublishAdminInspirationResponseDraftImagePositionYMax = 100;
 export const unpublishAdminInspirationResponseDraftOverlayOpacityMin = 0;
 export const unpublishAdminInspirationResponseDraftOverlayOpacityMax = 0.85;
 
+export const unpublishAdminInspirationResponseDraftQuoteBoldRangesItemStartMin = 0;
+
+
+export const unpublishAdminInspirationResponseDraftQuoteBoldRangesMax = 1000;
+
 export const unpublishAdminInspirationResponsePublishedOneQuoteMax = 2000;
 
 export const unpublishAdminInspirationResponsePublishedOneAuthorMax = 200;
@@ -1463,6 +1625,11 @@ export const unpublishAdminInspirationResponsePublishedOneImagePositionYMax = 10
 export const unpublishAdminInspirationResponsePublishedOneOverlayOpacityMin = 0;
 export const unpublishAdminInspirationResponsePublishedOneOverlayOpacityMax = 0.85;
 
+export const unpublishAdminInspirationResponsePublishedOneQuoteBoldRangesItemStartMin = 0;
+
+
+export const unpublishAdminInspirationResponsePublishedOneQuoteBoldRangesMax = 1000;
+
 
 
 export const UnpublishAdminInspirationResponse = zod.object({
@@ -1477,7 +1644,11 @@ export const UnpublishAdminInspirationResponse = zod.object({
   "imagePositionX": zod.number().min(unpublishAdminInspirationResponseDraftImagePositionXMin).max(unpublishAdminInspirationResponseDraftImagePositionXMax),
   "imagePositionY": zod.number().min(unpublishAdminInspirationResponseDraftImagePositionYMin).max(unpublishAdminInspirationResponseDraftImagePositionYMax),
   "overlayOpacity": zod.number().min(unpublishAdminInspirationResponseDraftOverlayOpacityMin).max(unpublishAdminInspirationResponseDraftOverlayOpacityMax),
-  "sessionId": zod.string().nullable()
+  "sessionId": zod.string().nullable(),
+  "quoteBoldRanges": zod.array(zod.object({
+  "start": zod.number().min(unpublishAdminInspirationResponseDraftQuoteBoldRangesItemStartMin),
+  "end": zod.number().min(1)
+})).max(unpublishAdminInspirationResponseDraftQuoteBoldRangesMax).optional().describe('Optional half-open [start, end) UTF-16 offsets into the plain quote. Ranges must be sorted, non-overlapping, non-empty, and within the quote.')
 }),
   "published": zod.union([zod.object({
   "quote": zod.string().max(unpublishAdminInspirationResponsePublishedOneQuoteMax),
@@ -1487,7 +1658,11 @@ export const UnpublishAdminInspirationResponse = zod.object({
   "imagePositionX": zod.number().min(unpublishAdminInspirationResponsePublishedOneImagePositionXMin).max(unpublishAdminInspirationResponsePublishedOneImagePositionXMax),
   "imagePositionY": zod.number().min(unpublishAdminInspirationResponsePublishedOneImagePositionYMin).max(unpublishAdminInspirationResponsePublishedOneImagePositionYMax),
   "overlayOpacity": zod.number().min(unpublishAdminInspirationResponsePublishedOneOverlayOpacityMin).max(unpublishAdminInspirationResponsePublishedOneOverlayOpacityMax),
-  "sessionId": zod.string().nullable()
+  "sessionId": zod.string().nullable(),
+  "quoteBoldRanges": zod.array(zod.object({
+  "start": zod.number().min(unpublishAdminInspirationResponsePublishedOneQuoteBoldRangesItemStartMin),
+  "end": zod.number().min(1)
+})).max(unpublishAdminInspirationResponsePublishedOneQuoteBoldRangesMax).optional().describe('Optional half-open [start, end) UTF-16 offsets into the plain quote. Ranges must be sorted, non-overlapping, non-empty, and within the quote.')
 }),zod.null()]),
   "publishedRevision": zod.number().nullable(),
   "deleted": zod.boolean(),
@@ -1498,6 +1673,13 @@ export const UnpublishAdminInspirationResponse = zod.object({
 export const GetInspirationFavoritesQueryParams = zod.object({
   "timeZone": zod.coerce.string().optional()
 })
+
+export const getInspirationFavoritesResponseItemsItemDayOneContentOneQuoteBoldRangesItemStartMin = 0;
+
+
+export const getInspirationFavoritesResponseItemsItemDayOneContentOneQuoteBoldRangesMax = 1000;
+
+
 
 export const GetInspirationFavoritesResponse = zod.object({
   "items": zod.array(zod.object({
@@ -1518,7 +1700,11 @@ export const GetInspirationFavoritesResponse = zod.object({
   "imagePositionX": zod.number(),
   "imagePositionY": zod.number(),
   "overlayOpacity": zod.number(),
-  "sessionId": zod.string().nullable()
+  "sessionId": zod.string().nullable(),
+  "quoteBoldRanges": zod.array(zod.object({
+  "start": zod.number().min(getInspirationFavoritesResponseItemsItemDayOneContentOneQuoteBoldRangesItemStartMin),
+  "end": zod.number().min(1)
+})).max(getInspirationFavoritesResponseItemsItemDayOneContentOneQuoteBoldRangesMax).optional().describe('Optional half-open [start, end) UTF-16 offsets into the plain quote.')
 }),zod.null()])
 }),zod.null()])
 }))
@@ -1542,6 +1728,13 @@ export const PutInspirationFavoriteBody = zod.object({
   "deleted": zod.boolean()
 })
 
+export const putInspirationFavoriteResponseDayOneContentOneQuoteBoldRangesItemStartMin = 0;
+
+
+export const putInspirationFavoriteResponseDayOneContentOneQuoteBoldRangesMax = 1000;
+
+
+
 export const PutInspirationFavoriteResponse = zod.object({
   "inspirationId": zod.string(),
   "revision": zod.number(),
@@ -1560,7 +1753,11 @@ export const PutInspirationFavoriteResponse = zod.object({
   "imagePositionX": zod.number(),
   "imagePositionY": zod.number(),
   "overlayOpacity": zod.number(),
-  "sessionId": zod.string().nullable()
+  "sessionId": zod.string().nullable(),
+  "quoteBoldRanges": zod.array(zod.object({
+  "start": zod.number().min(putInspirationFavoriteResponseDayOneContentOneQuoteBoldRangesItemStartMin),
+  "end": zod.number().min(1)
+})).max(putInspirationFavoriteResponseDayOneContentOneQuoteBoldRangesMax).optional().describe('Optional half-open [start, end) UTF-16 offsets into the plain quote.')
 }),zod.null()])
 }),zod.null()])
 })

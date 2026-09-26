@@ -14,6 +14,7 @@ import {
   useGetCatalog,
 } from "@workspace/api-client-react";
 import { InspirationContent, AdminInspiration, AdminInspirationWeek } from "./types";
+import { BoldQuoteEditor, BoldQuoteText } from "./BoldQuoteEditor";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -47,6 +48,7 @@ import { getApiErrorCurrentRevision, getApiErrorMessage, getApiErrorStatus } fro
 const schema = z.object({
   date: z.string().regex(/^\d{4}-\d{2}-\d{2}$/, "Formato YYYY-MM-DD"),
   quote: z.string().max(2000),
+  quoteBoldRanges: z.array(z.object({ start: z.number().int(), end: z.number().int() })),
   author: z.string().max(200).nullable(),
   reflection: z.string().max(20000),
   imagePath: z.string().nullable(),
@@ -103,6 +105,7 @@ export function InspirationEditor({
   const defaultValues: FormValues = {
     date: date,
     quote: draft?.quote ?? "",
+    quoteBoldRanges: draft?.quoteBoldRanges ?? [],
     author: draft?.author ?? "",
     reflection: draft?.reflection ?? "",
     imagePath: draft?.imagePath ?? null,
@@ -127,6 +130,7 @@ export function InspirationEditor({
       form.reset({
         date: date,
         quote: inspiration?.draft?.quote ?? "",
+        quoteBoldRanges: inspiration?.draft?.quoteBoldRanges ?? [],
         author: inspiration?.draft?.author ?? "",
         reflection: inspiration?.draft?.reflection ?? "",
         imagePath: inspiration?.draft?.imagePath ?? null,
@@ -145,6 +149,7 @@ export function InspirationEditor({
         form.reset({
           date: date,
           quote: inspiration.draft.quote ?? "",
+          quoteBoldRanges: inspiration.draft.quoteBoldRanges ?? [],
           author: inspiration.draft.author ?? "",
           reflection: inspiration.draft.reflection ?? "",
           imagePath: inspiration.draft.imagePath ?? null,
@@ -257,6 +262,7 @@ export function InspirationEditor({
 
   const toDraft = (data: FormValues): InspirationContent => ({
     quote: data.quote,
+    quoteBoldRanges: data.quoteBoldRanges,
     author: data.author || null,
     reflection: data.reflection,
     imagePath: data.imagePath,
@@ -586,6 +592,7 @@ export function InspirationEditor({
               form.reset({
                 date: serverConflict.date,
                 quote: serverConflict.draft.quote ?? "",
+                quoteBoldRanges: serverConflict.draft.quoteBoldRanges ?? [],
                 author: serverConflict.draft.author ?? "",
                 reflection: serverConflict.draft.reflection ?? "",
                 imagePath: serverConflict.draft.imagePath ?? null,
@@ -631,12 +638,25 @@ export function InspirationEditor({
             </div>
 
             <div className="space-y-2">
-              <Label>Frase del día (hasta 2000 caracteres)</Label>
-              <Textarea
-                {...form.register("quote")}
-                placeholder="Escribe la frase principal..."
-                className="min-h-[100px] resize-y text-lg leading-relaxed"
+              <Label>Frase del día · título del primer slide (hasta 2000 caracteres)</Label>
+              <Controller
+                control={form.control}
+                name="quote"
+                render={({ field }) => (
+                  <BoldQuoteEditor
+                    quote={field.value}
+                    ranges={form.watch("quoteBoldRanges")}
+                    onBlur={field.onBlur}
+                    onChange={(quote, ranges) => {
+                      field.onChange(quote);
+                      form.setValue("quoteBoldRanges", ranges, { shouldDirty: true, shouldValidate: true });
+                    }}
+                  />
+                )}
               />
+              {form.formState.errors.quote && (
+                <p className="text-sm text-destructive">La frase no puede superar 2000 caracteres.</p>
+              )}
             </div>
 
             <div className="space-y-2">
@@ -742,7 +762,9 @@ export function InspirationEditor({
                       {previewView === "portada" ? (
                         <div className="flex-1 flex flex-col justify-end text-center pb-20 opacity-90 overflow-y-auto">
                            <p className="text-xl font-serif mb-2 whitespace-pre-wrap leading-snug drop-shadow-md">
-                             {previewQuote || "Frase de ejemplo para ver contraste"}
+                              {previewQuote
+                                ? <BoldQuoteText quote={previewQuote} ranges={previewVersion === "published" ? inspiration?.published?.quoteBoldRanges : form.watch("quoteBoldRanges")} />
+                                : "Frase de ejemplo para ver contraste"}
                            </p>
                            <p className="text-sm uppercase tracking-widest opacity-80 mt-6">LEER MÁS</p>
                         </div>

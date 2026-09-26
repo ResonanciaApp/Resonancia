@@ -24,7 +24,7 @@ import { isRetiredOtherThemeTag, RETIRED_REFLEXIONES_ID } from "../lib/retiredEd
 import {
   InspirationError, inspirationDate, inspirationClock, inspirationWeekDates,
   inspirationAvailable, inspirationDay, defaultInspirationSettings,
-  emptyInspirationContent, requireInspirationRevision,
+  emptyInspirationContent, requireInspirationRevision, validateQuoteBoldRanges,
 } from "../lib/inspirationPolicy";
 
 const router: IRouter = Router();
@@ -117,6 +117,7 @@ async function entry(id: string, tx: Tx | typeof db = db) {
 async function lock(tx: Tx, key: string) { await tx.execute(sql`SELECT pg_advisory_xact_lock(hashtextextended(${`inspiration:${key}`}, 0))`); }
 function adminDto(row: Entry) { return { ...row, updatedAt: row.updatedAt.toISOString() }; }
 async function checkDraft(draft: InspirationContent, tx: Tx | typeof db) {
+  validateQuoteBoldRanges(draft);
   if (draft.imagePath) {
     const [image] = await tx.select().from(assets).where(eq(assets.objectPath, draft.imagePath));
     if (!image) throw new InspirationError(400, "Usa una imagen cargada desde Sabiduría diaria");
@@ -669,6 +670,7 @@ router.get("/admin/inspirations/image", ...admin, wrap(async (req, res) => {
 router.get("/admin/inspirations/:id", ...admin, wrap(async (req, res) => { res.json(adminDto(await entry(String(req.params.id)))); }));
 router.post("/admin/inspirations", ...admin, wrap(async (req, res) => {
   const body = CreateAdminInspirationBody.parse(req.body);
+  validateQuoteBoldRanges(body.draft);
   inspirationDate.parse(body.date);
   const result = await db.transaction(async (tx) => {
     await lock(tx, "editorial");
@@ -682,6 +684,7 @@ router.post("/admin/inspirations", ...admin, wrap(async (req, res) => {
 }));
 router.put("/admin/inspirations/:id", ...admin, wrap(async (req, res) => {
   const body = UpdateAdminInspirationBody.parse(req.body);
+  validateQuoteBoldRanges(body.draft);
   inspirationDate.parse(body.date);
   const result = await db.transaction(async (tx) => {
     await lock(tx, "editorial");

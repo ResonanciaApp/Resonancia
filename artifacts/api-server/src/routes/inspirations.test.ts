@@ -78,6 +78,10 @@ describe("inspiration route validation/authentication", () => {
     await post("/admin/inspirations/uploads", { name: "x", size: 1, contentType: "image/svg+xml" }).expect(400);
     await post("/admin/inspirations/uploads", { name: "x", size: 20_000_000, contentType: "image/png" }).expect(400);
     await post("/admin/inspirations", { date: "2026-01-01", draft: { ...draft, overlayOpacity: 1 } }).expect(400);
+    await post("/admin/inspirations", { date: "2026-01-01", draft: { ...draft, quoteBoldRanges: [{ start: -1, end: 1 }] } }).expect(400);
+    await post("/admin/inspirations", { date: "2026-01-01", draft: { ...draft, quoteBoldRanges: [{ start: 0.5, end: 1 }] } }).expect(400);
+    await post("/admin/inspirations", { date: "2026-01-01", draft: { ...draft, quoteBoldRanges: [{ start: 0, end: 1000 }] } }).expect(400);
+    await put("/admin/inspirations/11111111-1111-4111-8111-111111111111", { revision: 1, date: "2026-01-01", draft: { ...draft, quoteBoldRanges: [{ start: 2, end: 4 }, { start: 1, end: 2 }] } }).expect(400);
   });
 });
 
@@ -112,6 +116,16 @@ describe.skipIf(process.env.INSPIRATION_DB_TEST !== "development")("inspiration 
     await publish(edited);
     expect((await get(`/inspirations/${row.id}`)).body.content.quote).toBe("Unpublished edit");
     await put(`/admin/inspirations/${row.id}`, { revision: edited.revision + 1, date: future, draft }).expect(400);
+  });
+  it("validates quote bold ranges on create and update, then publishes them without markup", async () => {
+    await post("/admin/inspirations", { date: past, draft: { ...draft, quote: "A 💡 quote", quoteBoldRanges: [{ start: 2, end: 99 }] } }).expect(400);
+    let row = (await post("/admin/inspirations", { date: past, draft: { ...draft, quote: "A 💡 quote", quoteBoldRanges: [{ start: 2, end: 4 }] } }).expect(200)).body;
+    await put(`/admin/inspirations/${row.id}`, { revision: row.revision, date: past, draft: { ...draft, quote: "A 💡 quote", quoteBoldRanges: [{ start: 2, end: 4 }, { start: 3, end: 5 }] } }).expect(400);
+    row = await publish(row);
+    const publicContent = (await get(`/inspirations/${row.id}`).expect(200)).body.content;
+    expect(publicContent.quote).toBe("A 💡 quote");
+    expect(publicContent.quoteBoldRanges).toEqual([{ start: 2, end: 4 }]);
+    expect(publicContent).not.toHaveProperty("html");
   });
   it("returns seven positions; gates future ID/date/week/image without editorial leakage", async () => {
     const row = await publish(await create(future));

@@ -225,6 +225,13 @@ export interface ExploreSectionsUpdate {
   sections: ExploreSectionUpdateItem[];
 }
 
+export type InspirationContentQuoteBoldRangesItem = {
+  /** @minimum 0 */
+  start: number;
+  /** @minimum 1 */
+  end: number;
+};
+
 export interface InspirationContent {
   /** @maxLength 2000 */
   quote: string;
@@ -254,7 +261,19 @@ export interface InspirationContent {
   overlayOpacity: number;
   /** @nullable */
   sessionId: string | null;
+  /**
+     * Optional half-open [start, end) UTF-16 offsets into the plain quote. Ranges must be sorted, non-overlapping, non-empty, and within the quote.
+     * @maxItems 1000
+     */
+  quoteBoldRanges?: InspirationContentQuoteBoldRangesItem[];
 }
+
+export type InspirationPublicContentQuoteBoldRangesItem = {
+  /** @minimum 0 */
+  start: number;
+  /** @minimum 1 */
+  end: number;
+};
 
 export interface InspirationPublicContent {
   quote: string;
@@ -267,6 +286,11 @@ export interface InspirationPublicContent {
   overlayOpacity: number;
   /** @nullable */
   sessionId: string | null;
+  /**
+     * Optional half-open [start, end) UTF-16 offsets into the plain quote.
+     * @maxItems 1000
+     */
+  quoteBoldRanges?: InspirationPublicContentQuoteBoldRangesItem[];
 }
 
 export type InspirationDayStatus = typeof InspirationDayStatus[keyof typeof InspirationDayStatus];

@@ -36,6 +36,21 @@ export const emptyInspirationContent: InspirationContent = {
   quote: "", author: null, reflection: "", imagePath: null,
   imagePositionX: 50, imagePositionY: 50, overlayOpacity: .35, sessionId: null,
 };
+export function validateQuoteBoldRanges(content: Pick<InspirationContent, "quote" | "quoteBoldRanges">) {
+  const ranges = content.quoteBoldRanges;
+  if (ranges === undefined) return;
+  if (!Array.isArray(ranges) || ranges.length > 1000) {
+    throw new InspirationError(400, "Los rangos de negrita de la frase no son válidos");
+  }
+  let previousEnd = 0;
+  for (const range of ranges) {
+    if (!range || !Number.isSafeInteger(range.start) || !Number.isSafeInteger(range.end)
+      || range.start < previousEnd || range.end <= range.start || range.end > content.quote.length) {
+      throw new InspirationError(400, "Los rangos de negrita de la frase no son válidos");
+    }
+    previousEnd = range.end;
+  }
+}
 type Row = typeof inspirationsTable.$inferSelect;
 export function inspirationAvailable(row: Row | undefined, today: string): row is Row & { published: InspirationContent } {
   return !!row && !row.deleted && !!row.published && row.date <= today;

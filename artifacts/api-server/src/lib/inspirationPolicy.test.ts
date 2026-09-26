@@ -2,7 +2,7 @@ import { describe, expect, it } from "vitest";
 import sharp from "sharp";
 import {
   inspirationClock, inspirationWeekDates, inspirationDate, inspirationDay,
-  emptyInspirationContent, requireInspirationRevision,
+  emptyInspirationContent, requireInspirationRevision, validateQuoteBoldRanges,
 } from "./inspirationPolicy";
 import { validateInspirationImage } from "./inspirationImage";
 
@@ -24,17 +24,36 @@ describe("inspiration publication policy", () => {
     expect(inspirationDate.safeParse("2026-13-01").success).toBe(false);
   });
   it("never serializes future or withdrawn editorial fields and uses only published snapshots", () => {
-    const row = { id: "b6f996da-5ed1-4630-a3ba-b887311e1fc2", date: "2027-01-01", revision: 4, draft: { ...emptyInspirationContent, quote: "secret draft" }, published: { ...emptyInspirationContent, quote: "published", imagePath: "/objects/private" }, publishedRevision: 2, deleted: false, updatedAt: new Date() };
+    const row = { id: "b6f996da-5ed1-4630-a3ba-b887311e1fc2", date: "2027-01-01", revision: 4, draft: { ...emptyInspirationContent, quote: "secret draft" }, published: { ...emptyInspirationContent, quote: "published", quoteBoldRanges: [{ start: 0, end: 9 }], imagePath: "/objects/private" }, publishedRevision: 2, deleted: false, updatedAt: new Date() };
     const future = inspirationDay(row, row.date, "2026-12-31", "UTC", "https://example.org");
     expect(future).toEqual({ date: row.date, status: "future", id: null, revision: null, content: null });
     expect(JSON.stringify(future)).not.toMatch(/secret|published|objects/);
     const live = inspirationDay(row, row.date, "2027-01-01", "UTC", "https://example.org");
     expect(live.content?.quote).toBe("published");
+    expect(live.content?.quoteBoldRanges).toEqual([{ start: 0, end: 9 }]);
     expect(live.revision).toBe(2);
     expect(live.content?.imageUrl).toContain("https://example.org/api/inspirations/");
     expect(live.content).not.toHaveProperty("imagePath");
     expect(inspirationDay({ ...row, deleted: true }, row.date, "2027-01-01", "UTC", "").content).toBeNull();
     expect(inspirationDay({ ...row, published: null }, row.date, "2027-01-01", "UTC", "").content).toBeNull();
+    const { quoteBoldRanges: _oldRanges, ...legacyContent } = row.published;
+    const legacy = inspirationDay({ ...row, published: legacyContent }, row.date, "2027-01-01", "UTC", "");
+    expect(legacy.content).not.toHaveProperty("quoteBoldRanges");
+  });
+  it("validates sorted, non-overlapping half-open UTF-16 quote ranges", () => {
+    expect(() => validateQuoteBoldRanges({ quote: "A 💡 quote", quoteBoldRanges: [{ start: 2, end: 4 }] })).not.toThrow();
+    expect(() => validateQuoteBoldRanges({ quote: "A 💡 quote" })).not.toThrow();
+    for (const quoteBoldRanges of [
+      [{ start: -1, end: 1 }],
+      [{ start: 0.5, end: 1 }],
+      [{ start: 1, end: 1 }],
+      [{ start: 0, end: 2 }, { start: 1, end: 3 }],
+      [{ start: 2, end: 4 }, { start: 0, end: 1 }],
+      [{ start: 0, end: 99 }],
+      Array.from({ length: 1001 }, () => ({ start: 0, end: 1 })),
+    ]) {
+      expect(() => validateQuoteBoldRanges({ quote: "A 💡 quote", quoteBoldRanges })).toThrow(expect.objectContaining({ status: 400 }));
+    }
   });
   it("revision conflicts include the current revision", () => {
     expect(() => requireInspirationRevision(3, 1)).toThrow(expect.objectContaining({ status: 409, currentRevision: 3 }));

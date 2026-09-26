@@ -11,6 +11,7 @@ export type InspirationContent = {
   imagePositionY: number;
   overlayOpacity: number;
   sessionId: string | null;
+  quoteBoldRanges?: Array<{ start: number; end: number }>;
 };
 export type InspirationLabels = {
   sectionTitle: string;

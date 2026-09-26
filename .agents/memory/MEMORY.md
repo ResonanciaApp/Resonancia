@@ -146,3 +146,4 @@
 - [Contrato de destinos editoriales](hero-destination-contract.md) — los IDs de opciones Admin no equivalen a IDs de rutas Mobile; verificar contrato extremo a extremo y namespace editorial
 - [Degradado global de Índigo 2](indigo2-global-gradient.md) — la dirección final es tema compartido, no excepción de Inicio; fondos temáticos heredan sus stops exactos
 - [Movimiento de Mi muro](muro-motion-scope.md) — solo la + rebota angularmente; formulario entra sin sobrepaso, y la simetría del signo cambia la percepción de las vueltas
+- [Negrita editorial de Sabiduría diaria](daily-wisdom-bold.md) — la frase sigue siendo texto plano; la negrita selectiva solo afecta el primer slide del hero, no detalle ni compartir

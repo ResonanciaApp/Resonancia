@@ -1375,7 +1375,23 @@ function Inicio3HeroMedia({
   );
 }
 
-function Inicio3HeroTitle({ title }: { title: string | undefined }) {
+function Inicio3HeroTitle({
+  title,
+  boldRanges,
+}: {
+  title: string | undefined;
+  boldRanges: { start: number; end: number }[];
+}) {
+  const text = title ?? "Aprendamos a conectar con lo esencial";
+  const parts: { text: string; bold: boolean }[] = [];
+  let position = 0;
+  for (const { start, end } of boldRanges) {
+    if (start < position || end <= start || end > text.length) continue;
+    if (start > position) parts.push({ text: text.slice(position, start), bold: false });
+    parts.push({ text: text.slice(start, end), bold: true });
+    position = end;
+  }
+  if (position < text.length) parts.push({ text: text.slice(position), bold: false });
   return (
     <Text
       style={[
@@ -1384,7 +1400,9 @@ function Inicio3HeroTitle({ title }: { title: string | undefined }) {
         styles.inicio3HeroTitle,
       ]}
     >
-      {title ?? "Aprendamos a conectar con lo esencial"}
+      {parts.map((part, index) => part.bold
+        ? <Text key={index} style={styles.inicio3HeroTitleBold}>{part.text}</Text>
+        : part.text)}
     </Text>
   );
 }
@@ -1696,7 +1714,7 @@ function Inicio3HeroPager({
                 }}
                 onPress={(event) => handleSlidePress(item, event)}
                 accessibilityRole="button"
-                accessibilityLabel={item.title || "Sabiduría diaria"}
+                accessibilityLabel={item.id === "today" ? effectiveHero.title || "Sabiduría diaria" : item.title || "Sabiduría diaria"}
                 testID={`inicio3-hero-slide-${index + 1}`}
               >
                 {item.id === "today" ? (
@@ -1714,7 +1732,7 @@ function Inicio3HeroPager({
 
                 <View style={[StyleSheet.absoluteFill, styles.inicio3HeroCopy]} pointerEvents="box-none">
                   {item.id === "today" ? (
-                    <Inicio3HeroTitle title={effectiveHero.title} />
+                    <Inicio3HeroTitle title={effectiveHero.title} boldRanges={effectiveHero.titleBoldRanges} />
                   ) : (
                     <>
                       {item.pillLabel ? <View style={styles.inicio2HeroCategory}>
@@ -3942,9 +3960,12 @@ const styles = StyleSheet.create({
   inicio3HeroTitle: {
     maxWidth: "86%",
     textAlign: "center",
-    fontSize: 19,
-    lineHeight: 24,
+    fontSize: 21,
+    lineHeight: 29,
     fontWeight: "600",
+  },
+  inicio3HeroTitleBold: {
+    fontWeight: "800",
   },
   inicio3HeroDescription: {
     maxWidth: "86%",

@@ -5258,6 +5258,16 @@ components:
         imagePositionY: {type: number, minimum: 0, maximum: 100}
         overlayOpacity: {type: number, minimum: 0, maximum: 0.85}
         sessionId: {type: [string, "null"]}
+        quoteBoldRanges:
+          type: array
+          maxItems: 1000
+          description: "Optional half-open [start, end) UTF-16 offsets into the plain quote. Ranges must be sorted, non-overlapping, non-empty, and within the quote."
+          items:
+            type: object
+            required: [start, end]
+            properties:
+              start: {type: integer, minimum: 0}
+              end: {type: integer, minimum: 1}
     InspirationPublicContent:
       type: object
       required: [quote, author, reflection, imageUrl, imagePositionX, imagePositionY, overlayOpacity, sessionId]
@@ -5270,6 +5280,16 @@ components:
         imagePositionY: {type: number}
         overlayOpacity: {type: number}
         sessionId: {type: [string, "null"]}
+        quoteBoldRanges:
+          type: array
+          maxItems: 1000
+          description: "Optional half-open [start, end) UTF-16 offsets into the plain quote."
+          items:
+            type: object
+            required: [start, end]
+            properties:
+              start: {type: integer, minimum: 0}
+              end: {type: integer, minimum: 1}
     InspirationDay:
       type: object
       required: [date, status, id, revision, content]

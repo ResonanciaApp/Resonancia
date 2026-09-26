@@ -1,5 +1,6 @@
 export interface InspirationContent {
   quote: string;
+  quoteBoldRanges?: { start: number; end: number }[];
   author: string | null;
   reflection: string;
   imagePath: string | null;
