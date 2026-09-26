@@ -3937,15 +3937,15 @@ const styles = StyleSheet.create({
   inicio3HeroStaticImageFrame: {
     left: GRID_PAD,
     right: GRID_PAD,
-    borderTopLeftRadius: 25,
-    borderTopRightRadius: 25,
-    borderBottomLeftRadius: 25,
-    borderBottomRightRadius: 25,
+    borderTopLeftRadius: 21,
+    borderTopRightRadius: 21,
+    borderBottomLeftRadius: 21,
+    borderBottomRightRadius: 21,
     overflow: "visible",
     zIndex: 20,
   },
   inicio3HeroImageClip: {
-    borderRadius: 25,
+    borderRadius: 21,
     overflow: "hidden",
   },
   inicio3HeroBackShadow: {
