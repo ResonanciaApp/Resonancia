@@ -1815,7 +1815,7 @@ const Inicio2HeroStatic = React.memo(function Inicio2HeroStatic({
   const inicio3WeekDownshift = 10;
   const inicio3ProfileHeaderLift = 15;
   const inicio3HeroShift = 10 - 70 - 25;
-  const inicio3HeroDownshift = 30;
+  const inicio3HeroDownshift = 70;
   const inicio3HeroTopTrim = 25 + 80;
   const inicio3HeroHeight =
     (INICIO2_HERO_HEIGHT + 184 - (topInset + 286) - 52 + 60 + 32) / 2 + 60 + 120 + 25 + 15 - 40;
@@ -3964,7 +3964,7 @@ const styles = StyleSheet.create({
   inicio3HeroTitle: {
     maxWidth: "86%",
     textAlign: "center",
-    fontSize: 21,
+    fontSize: 18,
     lineHeight: 33,
     fontWeight: "600",
   },
