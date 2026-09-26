@@ -9,7 +9,6 @@ import {
   ScrollView,
   StyleSheet,
   Text,
-  type TextStyle,
   useWindowDimensions,
   View,
 } from "react-native";
@@ -459,7 +458,7 @@ const styles = StyleSheet.create({
     fontFamily: "Manrope",
     fontSize: 12,
     lineHeight: 17,
-    fontWeight: "650" as unknown as TextStyle["fontWeight"],
+    fontWeight: "700",
     textAlign: "center",
   },
   watercolorHorizontalContent: {
