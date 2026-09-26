@@ -187,10 +187,13 @@ export function InnerSpaceCard({
         onMessageSaved?.();
       },
       onError: (error) => {
-        const response = error as { status?: number; data?: { error?: string } };
+        const response = error as { status?: number; data?: { error?: string }; message?: string };
         if (response.status === 401) {
           setSignInRequired(true);
-          setSaveError("Inicia sesión para guardar tu reflexión. Tu texto sigue aquí.");
+          setSaveError("No se pudo validar tu sesión. Vuelve a iniciar sesión para guardar tu reflexión.");
+        } else if (response.status === undefined) {
+          setSignInRequired(false);
+          setSaveError("No se pudo conectar para guardar tu reflexión. Comprueba tu conexión e inténtalo de nuevo.");
         } else {
           setSignInRequired(false);
           setSaveError(response.data?.error ?? "No se pudo guardar la reflexión. Inténtalo de nuevo.");
@@ -198,6 +201,7 @@ export function InnerSpaceCard({
         console.warn("[Mi muro] No se pudo guardar la reflexión", {
           status: response.status,
           error: response.data?.error,
+          detail: response.message,
         });
       },
     }
