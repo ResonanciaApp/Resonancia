@@ -72,7 +72,7 @@ import {
 import { SessionRow } from "@/components/SessionRow";
 import { EqualizerBars } from "@/components/EqualizerBars";
 import { SessionCarousel, CoverCarousel } from "@/components/SessionCarousel";
-import { SessionBadgeGlass, SessionDurationBadge } from "@/components/SessionDurationBadge";
+import { SessionDurationBadge } from "@/components/SessionDurationBadge";
 import { PremiumBadge } from "@/components/PremiumBadge";
 import { MiRutinaSection } from "@/components/MiRutinaSection";
 import { ContinueMeditationPlaylistCard } from "@/components/ContinueMeditationPlaylistCard";
@@ -1708,9 +1708,6 @@ function Inicio3HeroPager({
                     </>
                   )}
                   <View style={styles.inicio3HeroReadMore}>
-                    <View pointerEvents="none" style={StyleSheet.absoluteFill}>
-                      <SessionBadgeGlass showBlackTint={false} showWhiteTint />
-                    </View>
                     <Text style={styles.inicio3HeroReadMoreText}>{item.id === "today" ? "Leer más" : item.actionLabel ?? "Escuchar"}</Text>
                   </View>
                 </View>
@@ -3933,10 +3930,11 @@ const styles = StyleSheet.create({
     paddingVertical: 3,
     paddingHorizontal: 19.5,
     borderRadius: 24,
+    backgroundColor: "#F9F9F9",
     overflow: "hidden",
   },
   inicio3HeroReadMoreText: {
-    color: "#F9F9F9",
+    color: "#060A0F",
     fontFamily: "Manrope",
     fontSize: 12,
     fontWeight: "600",
