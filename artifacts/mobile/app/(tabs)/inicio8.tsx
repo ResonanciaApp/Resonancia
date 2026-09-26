@@ -1818,7 +1818,7 @@ const Inicio2HeroStatic = React.memo(function Inicio2HeroStatic({
   const inicio3HeroDownshift = 30;
   const inicio3HeroTopTrim = 25 + 80;
   const inicio3HeroHeight =
-    (INICIO2_HERO_HEIGHT + 184 - (topInset + 286) - 52 + 60 + 32) / 2 + 60 + 120 + 25 + 15;
+    (INICIO2_HERO_HEIGHT + 184 - (topInset + 286) - 52 + 60 + 32) / 2 + 60 + 120 + 25 + 15 - 40;
   const inicio3HeroLayoutTop =
     topInset +
     165 -
