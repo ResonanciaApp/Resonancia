@@ -77,11 +77,11 @@ export const SCENE_THEMES: Record<SceneId, SceneTheme> = {
   indigo2: {
     id: "indigo2",
     label: "Indigo 2",
-    gradient: ["#23224C", "#22284C", "#222F4C", "#22364C"],
-    gradientLocations: [0, 0.25, 0.47, 0.72],
+    gradient: ["#22314C", "#222E4C", "#22284C", "#23224C", "#29224C", "#2E224C"],
+    gradientLocations: [0, 0.2, 0.4, 0.6, 0.8, 1],
     gradientStart: { x: 0.5, y: 0 },
     gradientEnd: { x: 0.5, y: 1 },
-    solid: "#23224C",
+    solid: "#22314C",
     accent: "#E8E8E8",
   },
   indigo3: {
