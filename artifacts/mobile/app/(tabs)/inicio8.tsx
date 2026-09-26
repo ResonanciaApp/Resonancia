@@ -72,7 +72,7 @@ import {
 import { SessionRow } from "@/components/SessionRow";
 import { EqualizerBars } from "@/components/EqualizerBars";
 import { SessionCarousel, CoverCarousel } from "@/components/SessionCarousel";
-import { SessionDurationBadge } from "@/components/SessionDurationBadge";
+import { SessionBadgeGlass, SessionDurationBadge } from "@/components/SessionDurationBadge";
 import { PremiumBadge } from "@/components/PremiumBadge";
 import { MiRutinaSection } from "@/components/MiRutinaSection";
 import { ContinueMeditationPlaylistCard } from "@/components/ContinueMeditationPlaylistCard";
@@ -1445,23 +1445,9 @@ function Inicio3HeroPager({
   const [slideWidth, setSlideWidth] = useState(
     Dimensions.get("window").width - GRID_PAD * 2,
   );
-  const [activeIndex, setActiveIndex] = useState(0);
   const [todayMediaActive, setTodayMediaActive] = useState(true);
   const todayMediaActiveRef = useRef(true);
   const slidePressStartXRef = useRef<number | null>(null);
-  const pagerSlideCountRef = useRef(INICIO3_PAGER_SLIDES.length);
-
-  const updateActiveSlide = (offsetX: number) => {
-    const index = Math.round(offsetX / slideWidth);
-    setActiveIndex(Math.max(0, Math.min(index, pagerSlideCountRef.current - 1)));
-  };
-  const onMomentumScrollEnd = (e: NativeSyntheticEvent<NativeScrollEvent>) => {
-    updateActiveSlide(e.nativeEvent.contentOffset.x);
-  };
-  const onScrollEndDrag = (e: NativeSyntheticEvent<NativeScrollEvent>) => {
-    const targetOffset = e.nativeEvent.targetContentOffset?.x ?? e.nativeEvent.contentOffset.x;
-    updateActiveSlide(targetOffset);
-  };
   const onPagerScroll = (e: NativeSyntheticEvent<NativeScrollEvent>) => {
     const nextActive = e.nativeEvent.contentOffset.x <= 1;
     if (nextActive === todayMediaActiveRef.current) return;
@@ -1501,10 +1487,6 @@ function Inicio3HeroPager({
       };
     }).filter((slide): slide is Inicio3PagerSlide => slide != null);
   }, [catalogVersion, configuredHero?.slides]);
-  pagerSlideCountRef.current = pagerSlides.length;
-  useEffect(() => {
-    setActiveIndex((current) => Math.min(current, Math.max(0, pagerSlides.length - 1)));
-  }, [pagerSlides.length]);
   const openSlide = useCallback((item: (typeof pagerSlides)[number]) => {
     if (item.id === "today") {
       router.push({ pathname: "/inspiracion-diaria", params: { entry: "today" } });
@@ -1638,8 +1620,6 @@ function Inicio3HeroPager({
           showsHorizontalScrollIndicator={false}
           onScroll={onPagerScroll}
           scrollEventThrottle={16}
-          onScrollEndDrag={onScrollEndDrag}
-          onMomentumScrollEnd={onMomentumScrollEnd}
           keyExtractor={(item) => item.id}
           getItemLayout={(_, index) => ({ length: slideWidth, offset: slideWidth * index, index })}
           renderItem={({ item, index }) => (
@@ -1695,6 +1675,9 @@ function Inicio3HeroPager({
                     </>
                   )}
                   <View style={styles.inicio3HeroReadMore}>
+                    <View pointerEvents="none" style={StyleSheet.absoluteFill}>
+                      <SessionBadgeGlass showBlackTint={false} showWhiteTint />
+                    </View>
                     <Text style={styles.inicio3HeroReadMoreText}>{item.id === "today" ? "Leer más" : item.actionLabel ?? "Escuchar"}</Text>
                   </View>
                 </View>
@@ -1702,17 +1685,6 @@ function Inicio3HeroPager({
             </View>
           )}
         />
-        <View style={styles.inicio3HeroProgressContainer} pointerEvents="none">
-          {pagerSlides.map((slide, i) => (
-            <View
-              key={slide.id}
-              style={[
-                styles.inicio3HeroProgressBar,
-                i === activeIndex && styles.inicio3HeroProgressBarActive,
-              ]}
-            />
-          ))}
-        </View>
       </View>
     </RAnimated.View>
   );
@@ -1753,7 +1725,7 @@ const Inicio2HeroStatic = React.memo(function Inicio2HeroStatic({
   const effectiveScrollY = scrollY ?? fallbackScrollY;
   const inicio3WeekShift = 2;
   const inicio3ProfileHeaderLift = 15;
-  const inicio3HeroShift = 10 - 70;
+  const inicio3HeroShift = 10 - 70 - 25;
   const inicio3HeroTopTrim = 25 + 80;
   const inicio3HeroHeight =
     (INICIO2_HERO_HEIGHT + 184 - (topInset + 286) - 52 + 60 + 32) / 2 + 60 + 120;
@@ -3890,14 +3862,14 @@ const styles = StyleSheet.create({
   },
   inicio3HeroCopy: {
     zIndex: 30,
-    alignItems: "center",
-    justifyContent: "center",
+    alignItems: "flex-start",
+    justifyContent: "flex-end",
     paddingHorizontal: 24,
-    transform: [{ scale: 0.94 }],
+    paddingBottom: 25,
   },
   inicio3HeroTitle: {
     maxWidth: "86%",
-    textAlign: "center",
+    textAlign: "left",
     fontSize: 20,
     lineHeight: 25,
     fontWeight: "600",
@@ -3910,43 +3882,21 @@ const styles = StyleSheet.create({
     fontSize: 13,
     lineHeight: 18,
     fontWeight: "500",
-    textAlign: "center",
+    textAlign: "left",
   },
   inicio3HeroReadMore: {
-    alignSelf: "center",
+    alignSelf: "flex-start",
     marginTop: 28,
     paddingVertical: 6,
     paddingHorizontal: 24,
     borderRadius: 24,
-    borderWidth: 1,
-    borderColor: "#F9F9F9",
-    backgroundColor: "#F9F9F9",
+    overflow: "hidden",
   },
   inicio3HeroReadMoreText: {
-    color: "#060A0F",
+    color: "#F9F9F9",
     fontFamily: "Manrope",
     fontSize: 14,
     fontWeight: "600",
-  },
-  inicio3HeroProgressContainer: {
-    position: "absolute",
-    bottom: 20,
-    left: GRID_PAD,
-    right: GRID_PAD,
-    flexDirection: "row",
-    gap: 6,
-    justifyContent: "center",
-    alignItems: "center",
-    zIndex: 40,
-  },
-  inicio3HeroProgressBar: {
-    flex: 1,
-    height: 2,
-    borderRadius: 1,
-    backgroundColor: "rgba(255,255,255,0.4)",
-  },
-  inicio3HeroProgressBarActive: {
-    backgroundColor: "#FFFFFF",
   },
   inicio3HeroSlide: {
     height: "100%",
