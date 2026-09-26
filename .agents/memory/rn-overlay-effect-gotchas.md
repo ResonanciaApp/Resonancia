@@ -17,6 +17,13 @@ A sibling laid out with negative margin (e.g. a carousel `marginTop:-25`) can vi
 
 **Why:** the real bug felt like a bad hitSlop but was paint/stacking order.
 
+## SVG decorativo sobre carruseles
+Un SVG decorativo de tamaño completo encima de un carrusel puede interceptar el arrastre incluso con `pointerEvents="none"` en `<Svg>`: la vista nativa de react-native-svg hace hit-test de todo su rectángulo, no solo de los trazos visibles.
+
+**Why:** Al sustituir un borde `<View pointerEvents="none">` por un `<Svg>` de borde, el hero conservó sus slides publicados pero dejó de responder al gesto horizontal.
+
+**How to apply:** Encerrar el SVG decorativo en un `<View pointerEvents="none">` de React Native, con el tamaño y posición del overlay; así toda la subrama queda excluida del hit-test. No confiar solo en la prop del SVG.
+
 ## One-shot expanding-ring resting value
 For a one-shot "onda expansiva" ring whose opacity is `(1 - value) * k` and scale grows with `value`, the **resting** shared value must be `1` (→ opacity 0 = invisible), not `0`. Initialize `useSharedValue(1)` and reset to `1` (not `0`) when stopping. On play: set to `0` then `withTiming(1)`. Starting/resting at `0` leaves the ring permanently visible at `k` opacity at mount and after every stop.
 

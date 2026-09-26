@@ -50,6 +50,7 @@ const PLUS_ROTATION_STOPS = [
 // El panel termina antes que el rebote de la +; el scroll espera solo al panel.
 const PANEL_DURATION = 620;
 const SCREEN_SETTLE_DURATION = 650;
+export const INNER_SPACE_CARD_BOTTOM_MARGIN = 32;
 const HALO_SIZES = [46, 36, 26] as const;
 const HALO_COLORS = [
   "rgba(255, 255, 255, 0.06)",
@@ -669,7 +670,7 @@ const styles = StyleSheet.create({
     paddingHorizontal: 20,
     paddingTop: 16,
     paddingBottom: 20,
-    marginBottom: 32,
+    marginBottom: INNER_SPACE_CARD_BOTTOM_MARGIN,
     overflow: "hidden",
   },
   header: {

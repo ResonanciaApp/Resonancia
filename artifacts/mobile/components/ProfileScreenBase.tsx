@@ -17,6 +17,7 @@ import {
   Easing,
   FlatList,
   InteractionManager,
+  Keyboard,
   KeyboardAvoidingView,
   Linking,
   Modal,
@@ -83,7 +84,7 @@ import {
 import { SacredGlyph } from "@/components/SacredGlyph";
 import { baseOf, type GeometryId } from "@/data/geometries";
 import { GeometrixOverlay } from "@/components/GeometrixToggle";
-import { InnerSpaceCard } from "@/components/InnerSpaceCard";
+import { InnerSpaceCard, INNER_SPACE_CARD_BOTTOM_MARGIN } from "@/components/InnerSpaceCard";
 import { KeyboardAwareScrollViewCompat } from "@/components/KeyboardAwareScrollViewCompat";
 import { MoonCrescentIcon } from "@/components/MoonCrescentIcon";
 import { SleepReminderSheet } from "@/components/SleepReminderSheet";
@@ -97,6 +98,9 @@ const REFLECTION_BANNER_ENTRY_DISTANCE = 86;
 const REFLECTION_BANNER_ENTRY_DURATION = 380;
 const REFLECTION_BANNER_HOLD_DURATION = 1800;
 const REFLECTION_BANNER_EXIT_DURATION = 320;
+const COMPOSE_KEYBOARD_ESTIMATE = Platform.OS === "android" ? 305 : 335;
+const COMPOSE_KEYBOARD_GAP = 15;
+const COMPOSE_EXTRA_SCROLL_SPACE = 440;
 
 function ReflectionSavedBanner({
   trigger,
@@ -405,6 +409,10 @@ export function ProfileScreenBase({
   const wallAutoScrollPendingRef = useRef(false);
   const composeInteractionRef = useRef<ReturnType<typeof InteractionManager.runAfterInteractions> | null>(null);
   const composeFocusTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const composeScrollTargetRef = useRef<number | null>(null);
+  const composePendingRef = useRef(false);
+  const lastKeyboardHeightRef = useRef(0);
+  const [composingReflection, setComposingReflection] = useState(false);
   const [innerSpaceLayoutY, setInnerSpaceLayoutY] = useState<number | null>(null);
   const [innerSpaceFocusRequest, setInnerSpaceFocusRequest] = useState(0);
   const [keepInnerSpaceKeyboardOnCategories, setKeepInnerSpaceKeyboardOnCategories] = useState(false);
@@ -433,22 +441,57 @@ export function ProfileScreenBase({
       });
     });
   }, [innerSpaceLayoutY]);
+  const finishComposeScroll = useCallback(() => {
+    if (!composePendingRef.current) return;
+    composePendingRef.current = false;
+    composeScrollTargetRef.current = null;
+    if (composeFocusTimerRef.current) clearTimeout(composeFocusTimerRef.current);
+    composeFocusTimerRef.current = null;
+    setInnerSpaceFocusRequest((value) => value + 1);
+  }, []);
   const positionInnerSpaceForWriting = useCallback(() => {
     if (innerSpaceLayoutY === null) return;
     composeInteractionRef.current?.cancel();
     if (composeFocusTimerRef.current) clearTimeout(composeFocusTimerRef.current);
+    composePendingRef.current = true;
+    // Reserva espacio para llegar a la posición final ANTES de mostrar el teclado.
+    setComposingReflection(true);
     composeInteractionRef.current = InteractionManager.runAfterInteractions(() => {
-      profileScrollRef.current?.scrollTo({
-        y: Math.max(0, innerSpaceLayoutY - 131),
-        animated: true,
+      requestAnimationFrame(() => {
+        if (!composePendingRef.current) return;
+        const viewportHeight = profileViewportHeightRef.current;
+        const keyboardHeight = lastKeyboardHeightRef.current || COMPOSE_KEYBOARD_ESTIMATE;
+        // Si se entra desde el menú, la tarjeta puede seguir plegada al medirla.
+        const expandedSectionHeight = innerSpaceHeightRef.current > 220
+          ? innerSpaceHeightRef.current
+          : 390;
+        const cardBottom = innerSpaceLayoutY + expandedSectionHeight - INNER_SPACE_CARD_BOTTOM_MARGIN;
+        const targetY = Math.max(0, cardBottom - (viewportHeight - keyboardHeight - COMPOSE_KEYBOARD_GAP));
+        if (viewportHeight <= 0 || Math.abs(targetY - profileScrollYRef.current) < 3) {
+          finishComposeScroll();
+          return;
+        }
+        composeScrollTargetRef.current = targetY;
+        profileScrollRef.current?.scrollTo({ y: targetY, animated: true });
+        // Respaldo si la plataforma no emite el último onScroll del movimiento programático.
+        composeFocusTimerRef.current = setTimeout(finishComposeScroll, 750);
       });
-      composeFocusTimerRef.current = setTimeout(() => {
-        setInnerSpaceFocusRequest((value) => value + 1);
-        composeFocusTimerRef.current = null;
-      }, 120);
     });
-  }, [innerSpaceLayoutY]);
+  }, [innerSpaceLayoutY, finishComposeScroll]);
+  useEffect(() => {
+    const keyboardListener = Keyboard.addListener("keyboardDidShow", (event) => {
+      lastKeyboardHeightRef.current = event.endCoordinates.height;
+    });
+    const hideListener = Keyboard.addListener("keyboardDidHide", () => {
+      if (!composePendingRef.current) setComposingReflection(false);
+    });
+    return () => {
+      keyboardListener.remove();
+      hideListener.remove();
+    };
+  }, []);
   useEffect(() => () => {
+    composePendingRef.current = false;
     composeInteractionRef.current?.cancel();
     if (composeFocusTimerRef.current) clearTimeout(composeFocusTimerRef.current);
   }, []);
@@ -498,6 +541,10 @@ export function ProfileScreenBase({
   const handleHeaderScroll = (e: { nativeEvent: { contentOffset: { y: number } } }) => {
     const y = e.nativeEvent.contentOffset.y;
     profileScrollYRef.current = y;
+    if (composeScrollTargetRef.current !== null && Math.abs(y - composeScrollTargetRef.current) < 3) {
+      if (composeFocusTimerRef.current) clearTimeout(composeFocusTimerRef.current);
+      composeFocusTimerRef.current = setTimeout(finishComposeScroll, 80);
+    }
     const shouldShowBorder = y >= HEADER_BORDER_THRESHOLD_PX;
     if (shouldShowBorder !== headerBorderActiveRef.current) {
       headerBorderActiveRef.current = shouldShowBorder;
@@ -1422,17 +1469,27 @@ export function ProfileScreenBase({
         style={styles.scroll}
         onLayout={(event) => { profileViewportHeightRef.current = event.nativeEvent.layout.height; }}
         contentContainerStyle={{
-          paddingBottom: 160 + bottomPad,
+          paddingBottom: 160 + bottomPad + (composingReflection ? COMPOSE_EXTRA_SCROLL_SPACE : 0),
           paddingTop: topPad + 2,
           paddingHorizontal: 16,
         }}
         showsVerticalScrollIndicator={false}
         scrollEnabled={scrollEnabled}
         onScroll={handleHeaderScroll}
-        onScrollBeginDrag={cancelWallAutoScroll}
+        onScrollBeginDrag={() => {
+          cancelWallAutoScroll();
+          if (composePendingRef.current) {
+            composePendingRef.current = false;
+            composeScrollTargetRef.current = null;
+            if (composeFocusTimerRef.current) clearTimeout(composeFocusTimerRef.current);
+            setComposingReflection(false);
+          }
+        }}
         scrollEventThrottle={16}
         keyboardShouldPersistTaps="handled"
         bottomOffset={165}
+        enabled={!composingReflection}
+        disableScrollOnKeyboardHide
       >
         <View style={styles.dedicatedTitleRow}>
           <View style={styles.dedicatedTitleLeft}>
@@ -1578,7 +1635,10 @@ export function ProfileScreenBase({
                 focusRequest={innerSpaceFocusRequest}
                 keepKeyboardOnCategories={keepInnerSpaceKeyboardOnCategories}
                 onComposeRequested={positionInnerSpaceForWriting}
-                onInputBlur={() => setKeepInnerSpaceKeyboardOnCategories(false)}
+                onInputBlur={() => {
+                  setKeepInnerSpaceKeyboardOnCategories(false);
+                  if (!Keyboard.isVisible()) setComposingReflection(false);
+                }}
                 onMessageSaved={() => setReflectionSavedTrigger((value) => value + 1)}
                 onExpandStart={beginWallAutoScroll}
                 onExpandComplete={finishWallAutoScroll}

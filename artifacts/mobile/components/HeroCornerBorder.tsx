@@ -1,5 +1,5 @@
 import React from "react";
-import { StyleSheet } from "react-native";
+import { StyleSheet, View } from "react-native";
 import Svg, {
   Defs,
   LinearGradient,
@@ -44,39 +44,35 @@ export const HeroCornerBorder = React.memo(function HeroCornerBorder({
   ] as const;
 
   return (
-    <Svg
-      width={w}
-      height={h}
-      style={styles.outline}
-      pointerEvents="none"
-      accessible={false}
-    >
-      <Defs>
-        {segments.map(({ id, opacity, x1, y1, x2, y2 }) => (
-          <LinearGradient
-            key={id}
-            id={id}
-            x1={x1}
-            y1={y1}
-            x2={x2}
-            y2={y2}
-            gradientUnits="userSpaceOnUse"
-          >
-            <Stop offset="0%" stopColor="#FFFFFF" stopOpacity={opacity} />
-            <Stop offset="42%" stopColor="#FFFFFF" stopOpacity={opacity * 0.65} />
-            <Stop offset="78%" stopColor="#FFFFFF" stopOpacity={opacity * 0.18} />
-            <Stop offset="100%" stopColor="#FFFFFF" stopOpacity={0} />
-          </LinearGradient>
+    <View pointerEvents="none" accessible={false} style={[styles.outline, { width: w, height: h }]}>
+      <Svg width={w} height={h} accessible={false}>
+        <Defs>
+          {segments.map(({ id, opacity, x1, y1, x2, y2 }) => (
+            <LinearGradient
+              key={id}
+              id={id}
+              x1={x1}
+              y1={y1}
+              x2={x2}
+              y2={y2}
+              gradientUnits="userSpaceOnUse"
+            >
+              <Stop offset="0%" stopColor="#FFFFFF" stopOpacity={opacity} />
+              <Stop offset="42%" stopColor="#FFFFFF" stopOpacity={opacity * 0.65} />
+              <Stop offset="78%" stopColor="#FFFFFF" stopOpacity={opacity * 0.18} />
+              <Stop offset="100%" stopColor="#FFFFFF" stopOpacity={0} />
+            </LinearGradient>
+          ))}
+        </Defs>
+        {segments.map(({ id, d }) => (
+          <Path key={id} d={d} stroke={`url(#${id})`} strokeWidth={1} fill="none" />
         ))}
-      </Defs>
-      {segments.map(({ id, d }) => (
-        <Path key={id} d={d} stroke={`url(#${id})`} strokeWidth={1} fill="none" />
-      ))}
-      <Path d={`M ${edge} ${corner} A ${radius} ${radius} 0 0 1 ${corner} ${edge}`} stroke="rgba(255,255,255,0.1)" strokeWidth={1} fill="none" />
-      <Path d={`M ${xBeforeRight} ${edge} A ${radius} ${radius} 0 0 1 ${xRight} ${corner}`} stroke="rgba(255,255,255,0.075)" strokeWidth={1} fill="none" />
-      <Path d={`M ${edge} ${yBeforeBottom} A ${radius} ${radius} 0 0 0 ${corner} ${yBottom}`} stroke="rgba(255,255,255,0.055)" strokeWidth={1} fill="none" />
-      <Path d={`M ${xBeforeRight} ${yBottom} A ${radius} ${radius} 0 0 0 ${xRight} ${yBeforeBottom}`} stroke="rgba(255,255,255,0.09)" strokeWidth={1} fill="none" />
-    </Svg>
+        <Path d={`M ${edge} ${corner} A ${radius} ${radius} 0 0 1 ${corner} ${edge}`} stroke="rgba(255,255,255,0.1)" strokeWidth={1} fill="none" />
+        <Path d={`M ${xBeforeRight} ${edge} A ${radius} ${radius} 0 0 1 ${xRight} ${corner}`} stroke="rgba(255,255,255,0.075)" strokeWidth={1} fill="none" />
+        <Path d={`M ${edge} ${yBeforeBottom} A ${radius} ${radius} 0 0 0 ${corner} ${yBottom}`} stroke="rgba(255,255,255,0.055)" strokeWidth={1} fill="none" />
+        <Path d={`M ${xBeforeRight} ${yBottom} A ${radius} ${radius} 0 0 0 ${xRight} ${yBeforeBottom}`} stroke="rgba(255,255,255,0.09)" strokeWidth={1} fill="none" />
+      </Svg>
+    </View>
   );
 });
 
