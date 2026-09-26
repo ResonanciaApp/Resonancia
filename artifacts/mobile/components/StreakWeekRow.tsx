@@ -36,7 +36,7 @@ export function StreakWeekRow({
             ]}
           >
             {active ? (
-              <Svg width={smallLabels ? 18 : 24} height={smallLabels ? 18 : 24} viewBox="0 0 24 24" style={styles.checkMark}>
+              <Svg width={smallLabels ? 20 : 26} height={smallLabels ? 20 : 26} viewBox="0 0 24 24" style={styles.checkMark}>
                 <Path
                   d="M20 6 9 17l-5-5"
                   fill="none"
@@ -113,28 +113,28 @@ const styles = StyleSheet.create({
     alignItems: "center",
   },
   day: {
-    width: 36,
-    height: 36,
-    borderRadius: 18,
-    backgroundColor: "rgba(0,0,0,0.28)",
+    width: 38,
+    height: 38,
+    borderRadius: 19,
+    backgroundColor: "rgba(255,255,255,0.15)",
     alignItems: "center",
     justifyContent: "center",
   },
   inactiveDay: {
-    backgroundColor: "rgba(0,0,0,0.28)",
+    backgroundColor: "rgba(255,255,255,0.15)",
     borderWidth: 0,
   },
   positionedInactiveDay: {
-    backgroundColor: "rgba(0,0,0,0.28)",
+    backgroundColor: "rgba(255,255,255,0.15)",
   },
   ringHost: {
-    width: 36,
-    height: 36,
-    borderRadius: 18,
+    width: 38,
+    height: 38,
+    borderRadius: 19,
   },
   ringMask: {
     flex: 1,
-    borderRadius: 18,
+    borderRadius: 19,
     borderWidth: 2,
     borderColor: "#000000",
     backgroundColor: "transparent",
@@ -142,8 +142,8 @@ const styles = StyleSheet.create({
   dayLabel: {
     color: "rgba(255,255,255,0.7)",
     fontFamily: "Manrope",
-    fontSize: 14,
-    lineHeight: 17,
+    fontSize: 16,
+    lineHeight: 19,
     fontWeight: "700",
     transform: [{ translateY: 1 }],
   },
