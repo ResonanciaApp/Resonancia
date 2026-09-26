@@ -24,7 +24,6 @@ import { getSessionById } from "@/data/sessions";
 import { getArtistById } from "@/data/artists";
 import { computeWeekFlags } from "@/utils/stats";
 import { useSceneTheme } from "@/context/SceneThemeContext";
-import { SCENE_THEMES } from "@/config/scene-themes";
 import { PremiumPlansSurface, usePremiumPlansModalHost } from "@/components/PremiumPlansOverlay";
 
 // ── Flujo de celebración al completar el día de racha ───────────────────────
@@ -56,13 +55,8 @@ const SLOTS: { id: ReminderSlot; label: string }[] = [
 export function StreakCelebrationFlow() {
   const { flow, closeFlow } = useStreakCelebration();
   const { statEvents, isFavorite, toggleFavorite } = usePlayer();
-  const { activeSceneId } = useSceneTheme();
-  // Con el tema Tíbet activo, el fondo del flujo usa el mismo degradado del
-  // Inicio de ese tema; con los demás temas mantiene el azul marino base.
-  const bgColors: [string, string, ...string[]] =
-    activeSceneId === "tibet"
-      ? ([...SCENE_THEMES.tibet.gradient] as [string, string, ...string[]])
-      : [NAVY_TOP, NAVY_BOTTOM];
+  const { theme } = useSceneTheme();
+  const bgColors: [string, string, ...string[]] = [...theme.gradient];
   const insets = useSafeAreaInsets();
   const topPad = Math.max(insets.top, 40);
 

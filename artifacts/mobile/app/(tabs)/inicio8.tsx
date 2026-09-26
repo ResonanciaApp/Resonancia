@@ -3785,6 +3785,7 @@ const styles = StyleSheet.create({
     width: "auto",
     minWidth: 62,
     alignItems: "flex-end",
+    transform: [{ translateY: -2 }],
   },
   inicio2HeroLotusContent: {
     width: 62,

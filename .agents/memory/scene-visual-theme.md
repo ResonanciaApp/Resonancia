@@ -1,50 +1,10 @@
 ---
-name: Scene visual theme (global background)
-description: How the app-wide visual theme tied to Escenas selection is implemented, its intentional scope limits, and the independent-persistence decision vs ambient audio scene.
+name: Tema visual único y escenas sonoras
+description: Cómo mantener Índigo 2 y Luz/Noche separados de la selección de escenas de audio.
 ---
 
-The Escenas panel drives both the ambient audio loop (`AmbientPlayerContext`) and a
-global visual theme (`SceneThemeContext`). These are deliberately **separate
-contexts with separate AsyncStorage keys**, even though they share the same
-`SceneId` set and are updated together from the same user action.
+El tema visual de la app móvil es siempre Índigo 2. La elección de una escena sonora no debe cambiar el aspecto visual. Luz y Noche solo alteran los colores de fondo del tema: Noche conserva los tonos originales y Luz los mezcla una única vez con blanco al 7 %. La preferencia visual se conserva localmente y se resuelve antes de mostrar la app.
 
-**Why:** `AmbientPlayerContext`'s scene always resets to `"universo"` on cold
-boot for native-audio-session safety (see `expo-audio-lockscreen` /
-`expo-av-launch-crash` memories) — audio scene is intentionally NOT persisted
-across restarts. But the visual theme MUST persist across restarts (task
-requirement). Reusing the audio context's scene state for theming would have
-silently broken theme persistence. Keeping them independent avoids that
-coupling entirely while still updating both from one tap.
+**Why:** El usuario pidió retirar los otros temas visuales, pero conservar las escenas de audio como funcionalidad independiente. La implementación previa de «modo brillante» combinaba cambios de saturación/luminosidad con un overlay adicional; acumular esos efectos no representaba un único aumento del 7 %.
 
-**How to apply:** `useSceneTheme()` (theme.solid / theme.gradient) is the
-single source of truth for "what should this screen's background be right
-now." `SacredBackground` (`variant="solid"`, no explicit `solidColor`) now
-falls back to the active theme automatically — prefer wiring NEW screens
-through `SacredBackground`/`useSceneTheme()` rather than hardcoding hex
-backgrounds.
-
-El selector «Tema» de Configuración y ajustes cambia únicamente el tema
-visual persistente; elegir un color allí no debe iniciar ni cambiar el audio
-ambiente. **Why:** el usuario pidió cambiar el color de la app desde ajustes,
-no seleccionar una escena sonora. **How to apply:** mantener esa separación
-al ampliar las opciones del selector.
-
-**Scope limitation:** root providers/nav (`app/_layout.tsx`,
-`app/(tabs)/_layout.tsx`), `SacredBackground`'s fallback, the drawer menu,
-and several high-traffic tab screens (Inicio, Medita, Video, Colección,
-Perfil) read from the theme. Screens with their own dedicated decorative
-identity (e.g. Resonadores' hero image) are deliberately excluded — forcing
-the generic Scene theme onto them would clobber intentional art direction.
-**Mezclador (musica.tsx) NOW INCLUDED (ago 2026):** root `<View>` uses
-`theme.solid` as backgroundColor + `LinearGradient absoluteFill` with
-`theme.gradient`; Ajustes/Filtros panel uses `theme.solid`. Previously
-excluded — now reacts to Scene changes. A long tail of
-lower-traffic screens/components still hardcodes brand hex backgrounds
-directly and will NOT react to a Scene change until migrated. Do not
-assume "global theme" means every screen already reacts — check whether a
-given screen reads `useSceneTheme()`/uses `SacredBackground` before
-claiming it's themed. Cold-start flash is mitigated by resolving the
-persisted Scene id before the splash screen hides and passing it into
-`SceneThemeProvider` as `initialSceneId` (see `loadPersistedSceneId`).
-
-**Universo (tibet) gradient corregido (jul 2026):** el gradiente real de Universo es azul `#2D1C52→#261F57→#1F255A→#1F2A62→#283673→#2D4082`, solid `#2d4081`. El morado viejo (`#340866…#23044D`) quedó obsoleto; varias pantallas lo sobreescribían hardcodeado con el azul — al tocar temas, confiar en lo que se VE, no solo en config/scene-themes.ts; quedan overrides hardcodeados del azul (session/[id].tsx, carpetas) que ahora son redundantes.
+**How to apply:** Si se añade una pantalla u hoja temática, consumir la paleta visual compartida para su fondo; no inferir el tema desde la escena de audio ni volver a introducir selectores de temas. No aclarar textos, iconos ni imágenes editoriales mediante un overlay de pantalla completa. Los fondos de marca explícitos son excepciones editoriales, no otros temas seleccionables.

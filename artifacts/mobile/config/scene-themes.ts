@@ -1,16 +1,4 @@
-/**
- * Temas visuales globales por Escena (Task #82).
- * ─────────────────────────────────────────────────────────────────
- * Cada Escena del panel "Escenas" (Task #81) queda asociada a un tema
- * visual: un degradado de fondo + un color sólido de contenedor. El
- * tema activo se lee desde `context/SceneThemeContext.tsx` y se aplica
- * a los contenedores raíz (layout, tabs) y a `SacredBackground`.
- *
- * El tema por defecto ("naturaleza") conserva la estética actual
- * (borgoña + dorado). Los demás son variaciones oscuras coherentes con
- * la marca, pensadas para mantener legibilidad del dorado/texto claro.
- * ─────────────────────────────────────────────────────────────────
- */
+/** Tema visual único de la app; las escenas de audio son independientes. */
 import type { SceneId } from "@/context/AmbientPlayerContext";
 
 export type SceneTheme = {
@@ -48,56 +36,21 @@ export type SceneTheme = {
   }>;
 };
 
-export const SCENE_THEMES: Record<SceneId, SceneTheme> = {
-  tibet: {
-    id: "tibet",
-    label: "Universo",
-    gradient: ["#2D1C52", "#261F57", "#1F255A", "#1F2A62"],
-    solid: "#1F2A62",
-  },
-  profundo: {
-    id: "profundo",
-    label: "Profundo",
-    gradient: ["#311F3D", "#2C1C38", "#291A34", "#261830", "#23162D", "#21142A"],
-    solid: "#311F3D",
-  },
-  indigo: {
-    id: "indigo",
-    label: "Índigo",
-    gradient: ["#181824", "#181824"],
-    solid: "#181824",
-  },
-  resonancia: {
-    id: "resonancia",
-    label: "Resonancia",
-    gradient: ["#2E4369", "#263654", "#1D2A3D", "#17202E"],
-    solid: "#17202E",
-    accent: "#E2E2E2",
-  },
+export const SCENE_THEMES: Record<"indigo2", SceneTheme> = {
   indigo2: {
     id: "indigo2",
     label: "Indigo 2",
-    gradient: ["#222C4C", "#22254C", "#24224C", "#26224C", "#2C224C", "#2F224C"],
+    // Mismo tono y luminosidad de Índigo 2, con +5 puntos de saturación HSL.
+    gradient: ["#1F2B4F", "#1F234F", "#221F4F", "#241F4F", "#2B1F4F", "#2E1F4F"],
     gradientLocations: [0, 0.2, 0.4, 0.6, 0.8, 1],
     gradientStart: { x: 0.5, y: 0 },
     gradientEnd: { x: 0.5, y: 1 },
-    solid: "#222C4C",
-    accent: "#E8E8E8",
-  },
-  indigo3: {
-    id: "indigo3",
-    label: "Indigo 3",
-    gradient: ["#000000", "#000000"],
-    gradientStart: { x: 0.5, y: 0 },
-    gradientEnd: { x: 0.5, y: 1 },
-    solid: "#000000",
+    solid: "#1F2B4F",
     accent: "#E8E8E8",
   },
 };
 
-export const DEFAULT_THEME_ID: SceneId = "tibet";
-
-export const SCENE_THEME_STORAGE_KEY = "@active_theme_scene";
+export const DEFAULT_THEME_ID: SceneId = "indigo2";
 
 /** Resonancia hereda exactamente las reglas visuales especiales de Índigo. */
 export function isIndigoThemeId(id: SceneId): boolean {

@@ -7,7 +7,6 @@ import { LinearGradient } from "expo-linear-gradient";
 import { useColors } from "@/hooks/useColors";
 import { useSceneTheme } from "@/context/SceneThemeContext";
 import { useReflectionCategories } from "@/constants/reflectionCategories";
-import { SCENE_THEMES } from "@/config/scene-themes";
 import { useUpdateMyReflection, useDeleteMyReflection, type Reflection, type ReflectionCategory, listMyReflections, useListMyReflections, getListMyReflectionsQueryKey } from "@workspace/api-client-react";
 import { KeyboardAwareScrollView } from "react-native-keyboard-controller";
 import { useQueryClient, type QueryKey } from "@tanstack/react-query";
@@ -722,8 +721,8 @@ function PremiumInnerSpaceScreen() {
 
   return (
     <LinearGradient
-      colors={SCENE_THEMES.indigo2.gradient as unknown as [string, string, ...string[]]}
-      locations={SCENE_THEMES.indigo2.gradientLocations}
+      colors={theme.gradient}
+      locations={theme.gradientLocations}
       start={{ x: 0.5, y: 0 }}
       end={{ x: 0.5, y: 1 }}
       style={styles.root}

@@ -24,7 +24,6 @@ import {
 } from "@/context/TabBarVisibilityContext";
 import { useSceneTheme } from "@/context/SceneThemeContext";
 import { useDrawer } from "@/context/DrawerContext";
-import { useBrightness, applyBrightSat } from "@/context/BrightnessContext";
 import { CategoryOverlayProvider, useCategoryOverlay } from "@/context/CategoryOverlayContext";
 import { CategoryOverlay } from "@/components/CategoryOverlay";
 import { SacredBackground } from "@/components/SacredBackground";
@@ -365,8 +364,7 @@ function TabLayoutInner() {
   const { isMixerOpen, openedFromDrawer: mixerFromDrawer, panelAnim } = useMixerPanel();
   const { isGeometrixOpen, openedFromDrawer: geometrixFromDrawer, panelAnim: geoPanelAnim } = useGeometrixPanel();
   const { activeSceneId, theme } = useSceneTheme();
-  const { brightMode } = useBrightness();
-  const bg = brightMode ? applyBrightSat(theme.solid) : theme.solid;
+  const bg = theme.solid;
 
   // Parallax sutil: el contenido de fondo se corre un poco a la izquierda
   // cuando entra un panel derecha→izquierda (estilo Insight Timer).

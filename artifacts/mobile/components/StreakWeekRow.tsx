@@ -1,14 +1,23 @@
 import MaskedView from "@react-native-masked-view/masked-view";
 import { LinearGradient } from "expo-linear-gradient";
-import React from "react";
+import React, { useMemo } from "react";
 import { StyleSheet, Text, View } from "react-native";
 import Svg, { Path } from "react-native-svg";
 
 import { CinematicFadeSlide } from "@/components/CinematicFadeSlide";
-import { POSITIONED_DAY_GRADIENT } from "@/constants/colors";
+import { useSceneTheme } from "@/context/SceneThemeContext";
 import { useStreak } from "@/hooks/useStreak";
 
 const DAY_INITIALS = ["L", "M", "M", "J", "V", "S", "D"];
+// Conserva la luminosidad especial del anillo sin cambiar la dirección cromática del tema.
+const RING_BRIGHTNESS_OFFSET = 125;
+
+function brightenRingColor(hex: string): string {
+  return `#${[1, 3, 5].map((index) =>
+    Math.min(255, Number.parseInt(hex.slice(index, index + 2), 16) + RING_BRIGHTNESS_OFFSET)
+      .toString(16).padStart(2, "0"),
+  ).join("")}`;
+}
 
 export function StreakWeekRow({
   animateEntrance = false,
@@ -22,6 +31,11 @@ export function StreakWeekRow({
   smallLabels?: boolean;
 } = {}) {
   const { weekFlags, todayIndex } = useStreak();
+  const { theme } = useSceneTheme();
+  const ringGradient = useMemo(
+    () => theme.gradient.map(brightenRingColor) as [string, string, ...string[]],
+    [theme.gradient],
+  );
 
   return (
     <View style={styles.row}>
@@ -61,9 +75,10 @@ export function StreakWeekRow({
                   maskElement={<View style={styles.ringMask} />}
                 >
                   <LinearGradient
-                    colors={POSITIONED_DAY_GRADIENT}
-                    start={{ x: 0, y: 0 }}
-                    end={{ x: 1, y: 1 }}
+                    colors={ringGradient}
+                    locations={theme.gradientLocations}
+                    start={theme.gradientStart ?? { x: 0.5, y: 0 }}
+                    end={theme.gradientEnd ?? { x: 0.5, y: 1 }}
                     style={StyleSheet.absoluteFill}
                   />
                 </MaskedView>

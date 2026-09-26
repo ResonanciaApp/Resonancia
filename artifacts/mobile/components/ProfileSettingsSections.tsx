@@ -1,6 +1,5 @@
 import { Feather } from "@expo/vector-icons";
 import * as Application from "expo-application";
-import { LinearGradient } from "expo-linear-gradient";
 import { router } from "expo-router";
 import React, { useState } from "react";
 import {
@@ -14,12 +13,12 @@ import {
 } from "react-native";
 
 import { MilestoneCards } from "@/components/MilestoneCards";
-import { isIndigoThemeId, SCENE_THEMES } from "@/config/scene-themes";
+import { isIndigoThemeId } from "@/config/scene-themes";
 import { MEMBERSHIP_AURORA } from "@/constants/colors";
 import type { SceneId } from "@/context/AmbientPlayerContext";
+import { useBrightness } from "@/context/BrightnessContext";
 import { useGeometrixPanel } from "@/context/GeometrixPanelContext";
 import { usePremium } from "@/context/PremiumContext";
-import { useSceneTheme } from "@/context/SceneThemeContext";
 import { useColors } from "@/hooks/useColors";
 
 type FeatherName = React.ComponentProps<typeof Feather>["name"];
@@ -31,6 +30,8 @@ type MenuRow = {
   description?: string;
   accent?: boolean;
   toggle?: boolean;
+  toggleValue?: boolean;
+  onToggle?: (value: boolean) => void;
   onPress?: () => void;
 };
 
@@ -61,11 +62,10 @@ export function ProfileSettingsSections({
   onLogout,
 }: ProfileSettingsSectionsProps) {
   const [milestonesOpen, setMilestonesOpen] = useState(false);
-  const [themesOpen, setThemesOpen] = useState(false);
   const { openGeometrix } = useGeometrixPanel();
   const { isPremium: isPremiumDev, setPremium: setPremiumDev } = usePremium();
   const { primary } = useColors();
-  const { setActiveSceneWithFade } = useSceneTheme();
+  const { brightMode, setBrightMode } = useBrightness();
   const isIndigo = isIndigoThemeId(sceneId);
   const isIndigo2 = sceneId === "indigo2";
   const themeAccent = isIndigo2 ? accent : isIndigo ? "#AAAAC4" : accent;
@@ -89,11 +89,6 @@ export function ProfileSettingsSections({
     setMilestonesOpen((open) => !open);
   };
 
-  const toggleThemes = () => {
-    LayoutAnimation.configureNext(LayoutAnimation.Presets.easeInEaseOut);
-    setThemesOpen((open) => !open);
-  };
-
   const sections: MenuSection[] = [
     {
       title: "Preferencias",
@@ -107,7 +102,14 @@ export function ProfileSettingsSections({
         },
         { icon: "zap", label: "Racha", toggle: true },
         { icon: "smile", label: "Registro diario estado de ánimo", toggle: true },
-        { icon: "moon", label: "Tema", value: SCENE_THEMES[sceneId].label, onPress: toggleThemes },
+        {
+          icon: brightMode ? "sun" : "moon",
+          label: "Luz / Noche",
+          description: brightMode ? "Luz · Índigo 2 con 7 % más brillo" : "Noche · Índigo 2 original",
+          toggle: true,
+          toggleValue: brightMode,
+          onToggle: setBrightMode,
+        },
         { icon: "flag", label: "Hitos", value: milestonesOpen ? "Ocultar" : undefined, onPress: toggleMilestones },
         { icon: "help-circle", label: "Ayuda y Soporte", onPress: () => router.push("/ayuda" as never) },
       ],
@@ -212,11 +214,11 @@ export function ProfileSettingsSections({
                 <React.Fragment key={row.label}>
                   {index > 0 && <View style={[styles.divider, { backgroundColor: dividerColor }]} />}
                   <Pressable
-                    onPress={row.toggle ? undefined : row.onPress}
-                    disabled={row.toggle}
+                     onPress={row.toggle ? (row.onToggle ? () => row.onToggle?.(!row.toggleValue) : undefined) : row.onPress}
+                     disabled={row.toggle && !row.onToggle}
                     accessibilityRole={row.toggle ? "switch" : "button"}
                     accessibilityLabel={row.label}
-                    accessibilityState={row.toggle ? { checked: false, disabled: true } : undefined}
+                     accessibilityState={row.toggle ? { checked: !!row.toggleValue, disabled: !row.onToggle } : undefined}
                     style={({ pressed }) => [styles.row, pressed && styles.rowPressed]}
                   >
                     <View style={styles.iconBox}>
@@ -231,8 +233,9 @@ export function ProfileSettingsSections({
                     {row.toggle ? (
                       <Switch
                         style={styles.toggleSwitch}
-                        value={false}
-                        disabled
+                         value={!!row.toggleValue}
+                         disabled={!row.onToggle}
+                         pointerEvents={row.onToggle ? "none" : "auto"}
                         accessible={false}
                         trackColor={{ false: "rgba(255,255,255,0.16)", true: themeAccent }}
                         thumbColor="#F9F9F9"
@@ -241,42 +244,13 @@ export function ProfileSettingsSections({
                       <>
                         {row.value && <Text style={[styles.rowValue, { color: mutedForeground }]}>{row.value}</Text>}
                         <Feather
-                          name={(row.label === "Hitos" && milestonesOpen) || (row.label === "Tema" && themesOpen) ? "chevron-up" : "chevron-right"}
+                           name={row.label === "Hitos" && milestonesOpen ? "chevron-up" : "chevron-right"}
                           size={19}
                           color={themeAccent}
                         />
                       </>
                     )}
                   </Pressable>
-                  {row.label === "Tema" && themesOpen && (
-                    <View style={[styles.themeChoices, { borderTopColor: dividerColor }]}>
-                      {Object.values(SCENE_THEMES).map((candidate) => {
-                        const selected = candidate.id === sceneId;
-                        return (
-                          <Pressable
-                            key={candidate.id}
-                            onPress={() => {
-                              setActiveSceneWithFade(candidate.id);
-                              setThemesOpen(false);
-                            }}
-                            accessibilityRole="button"
-                            accessibilityLabel={`Tema ${candidate.label}`}
-                            accessibilityState={{ selected }}
-                            style={({ pressed }) => [styles.themeChoice, pressed && styles.rowPressed]}
-                          >
-                            <LinearGradient
-                              colors={[candidate.gradient[0], candidate.gradient[candidate.gradient.length - 1]]}
-                              start={{ x: 0, y: 0 }}
-                              end={{ x: 1, y: 0 }}
-                              style={styles.themeSwatch}
-                            />
-                            <Text style={[styles.themeChoiceLabel, { color: foreground }]}>{candidate.label}</Text>
-                            {selected && <Feather name="check" size={18} color={themeAccent} />}
-                          </Pressable>
-                        );
-                      })}
-                    </View>
-                  )}
                   {row.label === "Hitos" && milestonesOpen && (
                     <View style={[styles.milestones, { borderTopColor: dividerColor }]}>
                       <MilestoneCards showTitle={false} />
@@ -404,31 +378,6 @@ const styles = StyleSheet.create({
   },
   toggleSwitch: {
     transform: [{ translateY: 4 }],
-  },
-  themeChoices: {
-    borderTopWidth: StyleSheet.hairlineWidth,
-    paddingVertical: 5,
-  },
-  themeChoice: {
-    minHeight: 48,
-    flexDirection: "row",
-    alignItems: "center",
-    paddingHorizontal: 18,
-    gap: 12,
-  },
-  themeSwatch: {
-    width: 40,
-    height: 22,
-    borderRadius: 11,
-    borderWidth: 1,
-    borderColor: "rgba(255,255,255,0.22)",
-    overflow: "hidden",
-  },
-  themeChoiceLabel: {
-    flex: 1,
-    fontFamily: "Manrope",
-    fontSize: 13.5,
-    fontWeight: "600",
   },
   rowDescription: {
     fontFamily: "Manrope",

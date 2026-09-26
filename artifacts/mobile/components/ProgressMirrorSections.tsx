@@ -20,6 +20,7 @@ const SECTION_BACKGROUND = "rgba(0,0,0,0.28)";
 export function ProgressMirrorSections({
   showSectionBorders = true,
   showPersonalStats = true,
+  mergeStatsAndStreak = false,
   personalStatsFilterBelowTitle = false,
   personalStatsFilterColor,
   showCalendar = true,
@@ -41,6 +42,7 @@ export function ProgressMirrorSections({
 }: {
   showSectionBorders?: boolean;
   showPersonalStats?: boolean;
+  mergeStatsAndStreak?: boolean;
   personalStatsFilterBelowTitle?: boolean;
   personalStatsFilterColor?: string;
   showCalendar?: boolean;
@@ -133,6 +135,7 @@ export function ProgressMirrorSections({
         sectionMarginBottom !== undefined && {
           marginBottom: sectionMarginBottom,
         },
+        mergeStatsAndStreak && styles.mergedInnerSection,
       ]}
     >
       <ContentEntrance
@@ -140,27 +143,45 @@ export function ProgressMirrorSections({
         replayKey={`${entranceReplayKey}:personal-header`}
         delay={entranceBaseDelay + 920}
       >
-        <View style={[styles.personalStatsHeader, personalStatsFilterBelowTitle && styles.personalStatsHeaderStacked]}>
-          <Text style={[styles.personalStatsTitle, { color: colors.foreground }]}>
-            Estadísticas personales
-          </Text>
-          <View style={[styles.filterControl, personalStatsFilterBelowTitle && styles.filterControlStacked]}>
+        <View style={[
+          styles.personalStatsHeader,
+          personalStatsFilterBelowTitle && styles.personalStatsHeaderStacked,
+          mergeStatsAndStreak && styles.personalStatsHeaderIconOnly,
+        ]}>
+          {!mergeStatsAndStreak && (
+            <Text style={[styles.personalStatsTitle, { color: colors.foreground }]}>
+              Estadísticas personales
+            </Text>
+          )}
+          <View style={[
+            styles.filterControl,
+            personalStatsFilterBelowTitle && !mergeStatsAndStreak && styles.filterControlStacked,
+          ]}>
             <Pressable
               onPress={() => setStatsFilterOpen((open) => !open)}
-              style={styles.filterTrigger}
+              style={[styles.filterTrigger, mergeStatsAndStreak && styles.filterIconTrigger]}
               accessibilityRole="button"
-              accessibilityLabel="Elegir filtro de días"
+              accessibilityLabel={mergeStatsAndStreak
+                ? `Filtrar estadísticas, últimos ${statsRangeDays} días`
+                : "Elegir filtro de días"}
               accessibilityState={{ expanded: statsFilterOpen }}
             >
-              <Text style={[styles.filterText, { color: filterColor }]}>
-                Últimos {statsRangeDays} días
-              </Text>
-              <Feather name="chevron-down" size={17} color={filterColor} />
+              {mergeStatsAndStreak ? (
+                <Feather name="filter" size={20} color={filterColor} />
+              ) : (
+                <>
+                  <Text style={[styles.filterText, { color: filterColor }]}>
+                    Últimos {statsRangeDays} días
+                  </Text>
+                  <Feather name="chevron-down" size={17} color={filterColor} />
+                </>
+              )}
             </Pressable>
             {statsFilterOpen && (
               <View style={[
                 styles.filterMenu,
-                personalStatsFilterBelowTitle && styles.filterMenuStacked,
+                personalStatsFilterBelowTitle && !mergeStatsAndStreak && styles.filterMenuStacked,
+                mergeStatsAndStreak && styles.filterMenuIconOnly,
                 { backgroundColor: theme.gradient[0] },
               ]}>
                 {([7, 30, 90] as const).map((days) => (
@@ -227,13 +248,7 @@ export function ProgressMirrorSections({
     </View>
   ) : null;
 
-  return (
-    <>
-      <SectionEntrance
-        animated={animateEntrance}
-        replayKey={`${entranceReplayKey}:streak`}
-        delay={entranceBaseDelay}
-      >
+  const streakContent = (
         <View
           style={[
             styles.streakSection,
@@ -254,6 +269,7 @@ export function ProgressMirrorSections({
             streakMarginBottom !== undefined && {
               marginBottom: streakMarginBottom,
             },
+            mergeStatsAndStreak && styles.mergedInnerSection,
           ]}
         >
           <View
@@ -388,17 +404,42 @@ export function ProgressMirrorSections({
           </View>
           </View>
         </View>
-      </SectionEntrance>
+  );
 
-      {showPersonalStats ? (
+  return (
+    <>
+      {mergeStatsAndStreak && showPersonalStats ? (
         <SectionEntrance
           animated={animateEntrance}
-          replayKey={`${entranceReplayKey}:personal`}
-          delay={entranceBaseDelay + 500}
+          replayKey={`${entranceReplayKey}:combined-progress`}
+          delay={entranceBaseDelay}
         >
-          {personalStatsContent}
+          <View style={[styles.mergedSection, !showSectionBorders && styles.borderlessSection]}>
+            {personalStatsContent}
+            <View style={styles.mergedDivider} />
+            {streakContent}
+          </View>
         </SectionEntrance>
-      ) : null}
+      ) : (
+        <>
+          <SectionEntrance
+            animated={animateEntrance}
+            replayKey={`${entranceReplayKey}:streak`}
+            delay={entranceBaseDelay}
+          >
+            {streakContent}
+          </SectionEntrance>
+          {showPersonalStats ? (
+            <SectionEntrance
+              animated={animateEntrance}
+              replayKey={`${entranceReplayKey}:personal`}
+              delay={entranceBaseDelay + 500}
+            >
+              {personalStatsContent}
+            </SectionEntrance>
+          ) : null}
+        </>
+      )}
 
       {showCalendar ? (
         <SectionEntrance
@@ -517,6 +558,24 @@ function Stat({
 }
 
 const styles = StyleSheet.create({
+  mergedSection: {
+    borderRadius: 19,
+    borderWidth: 1,
+    borderColor: "rgba(255,255,255,0.2)",
+    backgroundColor: SECTION_BACKGROUND,
+    marginBottom: 12,
+  },
+  mergedInnerSection: {
+    borderRadius: 0,
+    borderWidth: 0,
+    backgroundColor: "transparent",
+    marginBottom: 0,
+  },
+  mergedDivider: {
+    height: 1,
+    backgroundColor: "rgba(255,255,255,0.05)",
+    marginHorizontal: 20,
+  },
   streakSection: {
     borderRadius: 19,
     borderWidth: 1,
@@ -576,6 +635,9 @@ const styles = StyleSheet.create({
     alignItems: "flex-start",
     gap: 4,
   },
+  personalStatsHeaderIconOnly: {
+    justifyContent: "flex-end",
+  },
   personalStatsTitle: {
     fontFamily: "Manrope",
     fontSize: 16,
@@ -586,6 +648,11 @@ const styles = StyleSheet.create({
     alignItems: "center",
     gap: 4,
     paddingVertical: 1,
+  },
+  filterIconTrigger: {
+    width: 42,
+    height: 42,
+    justifyContent: "center",
   },
   filterControl: {
     position: "relative",
@@ -608,6 +675,9 @@ const styles = StyleSheet.create({
   filterMenuStacked: {
     left: 0,
     right: undefined,
+  },
+  filterMenuIconOnly: {
+    top: 44,
   },
   filterOption: { paddingHorizontal: 12, paddingVertical: 9 },
   filterOptionSelected: { backgroundColor: "rgba(152,93,212,0.16)" },

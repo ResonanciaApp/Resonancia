@@ -33,9 +33,8 @@ import { TabBarVisibilityProvider } from "@/context/TabBarVisibilityContext";
 import { ErrorBoundary } from "@/components/ErrorBoundary";
 import { SacredBackground } from "@/components/SacredBackground";
 import { AmbientPlayerProvider } from "@/context/AmbientPlayerContext";
-import { SceneThemeProvider, SceneThemeTransitionOverlay, useSceneTheme, loadPersistedSceneId } from "@/context/SceneThemeContext";
-import type { SceneId } from "@/context/AmbientPlayerContext";
-import { BrightnessProvider, useBrightness, applyBrightSat } from "@/context/BrightnessContext";
+import { SceneThemeProvider, useSceneTheme } from "@/context/SceneThemeContext";
+import { BrightnessProvider, loadPersistedBrightMode } from "@/context/BrightnessContext";
 import { CatalogProvider } from "@/context/CatalogContext";
 import { MoodQuotesProvider } from "@/context/MoodQuotesContext";
 import { AuthProvider, useAuth } from "@/context/AuthContext";
@@ -173,34 +172,13 @@ function PushBridge() {
   return null;
 }
 
-/** GestureHandlerRootView con el color de fondo del tema activo.
- *  Cuando Modo brillante está activo añade un overlay blanco semitransparente
- *  con pointerEvents="none" para no bloquear taps. */
+/** El fondo y el degradado proceden del único tema visual. */
 function ThemedGestureRoot({ children }: { children: React.ReactNode }) {
   const { theme } = useSceneTheme();
-  const { brightMode } = useBrightness();
-  const bg = brightMode ? applyBrightSat(theme.solid) : theme.solid;
-  const overlayOpacity = React.useRef(new Animated.Value(brightMode ? 1 : 0)).current;
-
-  React.useEffect(() => {
-    Animated.timing(overlayOpacity, {
-      toValue: brightMode ? 1 : 0,
-      duration: 350,
-      useNativeDriver: true,
-    }).start();
-  }, [brightMode]);
-
   return (
-    <GestureHandlerRootView style={{ flex: 1, backgroundColor: bg }}>
-      {theme.id === "indigo2" && <SacredBackground variant="gradient" noImage />}
+    <GestureHandlerRootView style={{ flex: 1, backgroundColor: theme.solid }}>
+      <SacredBackground variant="gradient" noImage />
       {children}
-      <Animated.View
-        pointerEvents="none"
-        style={[
-          StyleSheet.absoluteFill,
-          { backgroundColor: "#FFFFFF", opacity: overlayOpacity.interpolate({ inputRange: [0, 1], outputRange: [0, 0.06] }) },
-        ]}
-      />
     </GestureHandlerRootView>
   );
 }
@@ -238,14 +216,12 @@ function NavStack() {
   // alcanza a ver Inicio antes de la página. Desde otros lados, slide normal.
   const { instantNav } = useDrawer();
   const { theme } = useSceneTheme();
-  const { brightMode } = useBrightness();
-  const bg = brightMode ? applyBrightSat(theme.solid) : theme.solid;
   const drawerScreenAnim = instantNav ? "none" : "slide_from_right";
   return (
       <Stack
         screenOptions={{
           headerShown: false,
-          contentStyle: { backgroundColor: theme.id === "indigo2" ? "transparent" : bg },
+          contentStyle: { backgroundColor: "transparent" },
         }}
       >
         <Stack.Screen name="(auth)" options={{ headerShown: false, animation: "fade" }} />
@@ -514,34 +490,25 @@ export default function RootLayout() {
     }
   }, [fontsLoaded, fontError]);
 
-  // Resuelve la Escena persistida ANTES de montar SceneThemeProvider, para
-  // que el primer render ya use el tema correcto (evita el flash del tema
-  // por defecto cuando el usuario había elegido otra Escena).
-  const [initialSceneId, setInitialSceneId] = React.useState<SceneId | null>(null);
+  // Carga Luz/Noche antes del primer render para evitar un destello de Noche.
+  const [initialBrightMode, setInitialBrightMode] = React.useState<boolean | null>(null);
   useEffect(() => {
     let cancelled = false;
-    loadPersistedSceneId().then((id) => {
-      if (!cancelled) setInitialSceneId(id);
+    loadPersistedBrightMode().then((enabled) => {
+      if (!cancelled) setInitialBrightMode(enabled);
     });
     return () => {
       cancelled = true;
     };
   }, []);
 
-  const themeReady = initialSceneId !== null;
+  const themeReady = initialBrightMode !== null;
 
   useEffect(() => {
     if ((fontsLoaded || fontError) && themeReady) {
       SplashScreen.hideAsync().catch(() => {});
     }
   }, [fontsLoaded, fontError, themeReady]);
-
-  useEffect(() => {
-    const t = setTimeout(() => {
-      SplashScreen.hideAsync().catch(() => {});
-    }, 800);
-    return () => clearTimeout(t);
-  }, []);
 
   // Precarga el audio del logo reveal de Geometrix al arrancar la app (la
   // pestaña se monta perezosa, así que precargarlo allí llegaba tarde). Con
@@ -550,6 +517,8 @@ export default function RootLayout() {
     preloadGeometrixIntro();
     void initializePracticeNotifications();
   }, []);
+
+  if (!themeReady) return null;
 
   return (
     <ClerkProvider
@@ -560,7 +529,7 @@ export default function RootLayout() {
       <ClerkLoaded>
         <SafeAreaProvider>
           <ErrorBoundary>
-            <BrightnessProvider>
+            <BrightnessProvider initialBrightMode={initialBrightMode}>
             <QueryClientProvider client={queryClient}>
               <ReactQueryAppStateBridge />
               <SoundsProvider>
@@ -584,7 +553,7 @@ export default function RootLayout() {
                         <FoldersPlaylistsProvider>
                         <VideosProvider>
                         <DiarioFavoritesProvider>
-                          <SceneThemeProvider initialSceneId={initialSceneId ?? undefined}>
+                          <SceneThemeProvider>
                           <GeoUniverseProvider>
                           <RachaProvider>
                           <IntencionDiariaProvider>
@@ -597,7 +566,6 @@ export default function RootLayout() {
                                      <RootLayoutNav />
                                    </TabBarVisibilityProvider>
                                 </KeyboardProvider>
-                                <SceneThemeTransitionOverlay />
                                 <StreakCelebrationFlow />
                               </AmbientalDurationProvider>
                             </ThemedGestureRoot>

@@ -90,10 +90,7 @@ import { MoonCrescentIcon } from "@/components/MoonCrescentIcon";
 import { SleepReminderSheet } from "@/components/SleepReminderSheet";
 import { FilledSunIcon } from "@/components/FilledSunIcon";
 import { useMixerPanel } from "@/context/MixerPanelContext";
-import { SCENE_THEMES } from "@/config/scene-themes";
 
-const PROFILE_INDIGO_2_GRADIENT = SCENE_THEMES.indigo2.gradient;
-const PROFILE_INDIGO_2_LOCATIONS = SCENE_THEMES.indigo2.gradientLocations;
 const SHOW_PROFILE_HISTORY = false;
 const SHOW_PROFILE_PRACTICE_CARDS = false;
 
@@ -963,9 +960,7 @@ export function ProfileScreenBase({
   // Fondo fijo (mismo degradado que Inicio). La personalización de fondo se
   // retiró de la UI (WatercolorBtn); ya no debe tomar el color de una paleta
   // guardada previamente en AsyncStorage (@profile_bg_gradient/@profile_bg_creation).
-  const activeBgColors = useMemo((): readonly string[] => {
-    return PROFILE_INDIGO_2_GRADIENT;
-  }, []);
+  const activeBgColors = activeTheme.gradient;
 
   // Creación activa (para renderizar glyphs en el fondo)
   const activeBgCreation = useMemo(
@@ -976,7 +971,7 @@ export function ProfileScreenBase({
   const glyphSize = width * 0.96;
 
   // ── Crossfade de fondo ────────────────────────────────────────────────────
-  const defaultBg = PROFILE_INDIGO_2_GRADIENT;
+  const defaultBg = activeTheme.gradient;
   const [bgFrom, setBgFrom] = useState<readonly string[]>(defaultBg);
   const [bgTo, setBgTo] = useState<readonly string[]>(defaultBg);
   const crossFadeAnim = useRef(new Animated.Value(1)).current;
@@ -1331,7 +1326,7 @@ export function ProfileScreenBase({
       >
         <LinearGradient
           colors={[bgFrom[0], bgFrom[1], ...bgFrom.slice(2)]}
-          locations={PROFILE_INDIGO_2_LOCATIONS}
+          locations={activeTheme.gradientLocations}
           style={StyleSheet.absoluteFill}
           start={{ x: 0, y: 0 }}
           end={{ x: 0, y: 1 }}
@@ -1344,7 +1339,7 @@ export function ProfileScreenBase({
       >
         <LinearGradient
           colors={[bgTo[0], bgTo[1], ...bgTo.slice(2)]}
-          locations={PROFILE_INDIGO_2_LOCATIONS}
+          locations={activeTheme.gradientLocations}
           style={StyleSheet.absoluteFill}
           start={{ x: 0, y: 0 }}
           end={{ x: 0, y: 1 }}
@@ -1628,12 +1623,10 @@ export function ProfileScreenBase({
             <View style={styles.profileProgressSection}>
               <ProgressMirrorSections
                 showSectionBorders={false}
-                personalStatsFilterBelowTitle
+                mergeStatsAndStreak
                 personalStatsFilterColor="#A8A8A8"
                 showCalendar={false}
                 showStreakWeek={false}
-                streakContentTranslateY={-5}
-                streakMarginBottom={21}
                 sectionHorizontalPadding={20}
                 sectionTopPadding={21}
                 sectionBottomPadding={15}

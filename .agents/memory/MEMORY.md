@@ -58,7 +58,7 @@
 - [Category overlay stack](category-overlay-stack.md) — pantallas con tab bar visible abren vía openCategory (pila de overlays bajo la barra), nunca router.push; useCategoryOverlayOptional en componentes compartidos
 - [Dormir multi-tag](descanso-4tabs-restructure.md) — supercategoría dinámica con 8 tags canónicos; sesiones multi-tag salen en varios carruseles pero se deduplican en la cola
 - [Buscador de Inicio como Descubrir](inicio-inline-search.md) — Inicio 3 usa barra completa y el mismo ContextSearchModal de Descubrir, con recientes, populares y filtros de duración
-- [Scene visual theme](scene-visual-theme.md) — SceneThemeContext persists independently from audio scene; screens with their own decorative identity (Mezclador, Resonadores) are deliberately excluded
+- [Tema visual único](scene-visual-theme.md) — Índigo 2 fijo; Luz mezcla fondos con blanco al 7 %, Noche original; las escenas sonoras siguen independientes
 - [Sticky header divider per-tab scroll](sticky-header-divider-per-tab-scroll.md) — divisor scroll-triggered debe cablearse a onScroll compartido en TODOS los ScrollView bajo el header, no solo la pestaña default
 - [Header divider full-bleed](header-border-full-bleed.md) — divider inside a padded header must be normal-flow + negative marginHorizontal, not absolute inside a padded child, to reach screen edge
 - [Action sheet theme hierarchy](action-sheet-theme-hierarchy.md) — "..." menu backgrounds: Nivel1&2 full gradient, Nivel3 solid gradient[0], Nivel4 Geometrix untouched, Nivel5 Diario/Grupos not themeable
@@ -108,7 +108,7 @@
 - [Límite de limpieza del catálogo Mixer](mixer-catalog-cleanup-boundary.md) — limpiar el bundle local no autoriza borrar sonidos creados en Admin ni sesiones Ambientales de prueba
 - [Drawer único de Inicio](single-home-drawer.md) — el drawer ya no tiene modo legado; toda apertura usa la estructura de Inicio 3 y debe limpiar el desplazamiento residual del gesto
 - [Parallax del header de Inicio 3](inicio3-header-parallax.md) — avatar, acciones y fila semanal conservan desplazamiento lento conjunto; optimizar renders sin quitar ni alterar este efecto
-- [Progreso en Perfil](progress-profile-mirror.md) — Perfil separa racha y estadísticas personales en tarjetas consecutivas; semana y calendario quedan en Tu progreso
+- [Progreso en Perfil](progress-profile-mirror.md) — Perfil reúne estadísticas arriba y racha abajo en una tarjeta con divisor; semana y calendario quedan en Tu progreso
 - [Dos controles Añadir actividad](routine-add-controls.md) — el bloque inferior de Mi rutina y la píldora del estado Rutina completa tienen diseños deliberadamente distintos
 - [Aviso único al añadir rutina](routine-addition-banner-once.md) — la transición desde calendario lleva el ID creado y lo reconoce globalmente; Inicio no debe volver a mostrar “Actividad añadida”
 - [Etiquetas editoriales por categoría](category-specific-editorial-tags.md) — no mezclar themeTag históricos: categorías nuevas usan prefijo interno; Admin codifica y Mobile decodifica

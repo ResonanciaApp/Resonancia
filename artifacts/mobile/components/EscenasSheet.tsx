@@ -36,12 +36,10 @@ import { useSafeAreaInsets } from "react-native-safe-area-context";
 
 import { SceneAnimationCard, type SceneItem } from "@/components/SceneAnimationCard";
 import { AMBIENT_SCENES, useAmbientPlayer, type SceneId } from "@/context/AmbientPlayerContext";
-import { SCENE_THEMES } from "@/config/scene-themes";
 import { useSelectedScene } from "@/context/SelectedSceneContext";
 import type { SceneAnimation } from "@workspace/api-client-react";
 import { useGetSceneAnimations } from "@workspace/api-client-react";
 import { useGreetingVisible } from "@/context/GreetingVisibleContext";
-import { useBrightness } from "@/context/BrightnessContext";
 import { useIntencionDiaria } from "@/context/IntencionDiariaContext";
 import { FadeToggleSection } from "@/components/FadeToggleSection";
 import { useSceneTheme } from "@/context/SceneThemeContext";
@@ -180,7 +178,7 @@ export function EscenasSheet() {
   const insets = useSafeAreaInsets();
   const router = useRouter();
   const { openGeometrix } = useGeometrixPanel();
-  const { theme, activeSceneId, setActiveSceneWithFade, overlayColors, overlayOpacity } = useSceneTheme();
+  const { theme } = useSceneTheme();
   const { data: sceneAnimationsData } = useGetSceneAnimations();
   const geoScenes = sceneAnimationsData?.scenes ?? [];
   const { creations: geometrixCreations, reload: reloadCreations } = useGeometrixCreations();
@@ -193,7 +191,6 @@ export function EscenasSheet() {
   } = useAmbientPlayer();
   const { intencionDiariaEnabled, setIntencionDiariaEnabled, escenasAnimadasEnabled, setEscenasAnimadasEnabled } = useIntencionDiaria();
   const { greetingVisible, setGreetingVisible } = useGreetingVisible();
-  const { brightMode, setBrightMode } = useBrightness();
   // ID de la escena CONFIRMADA (la que muestra el borde blanco en el carrusel).
   // Se actualiza solo cuando el usuario presiona "Elegir escena", NO al abrir el preview.
   const [confirmedSceneId, setConfirmedSceneId] = useState<SceneId>(currentScene.id);
@@ -333,10 +330,7 @@ export function EscenasSheet() {
 
   const handleConfirmScene = (id: SceneId) => {
     setConfirmedSceneId(id);
-    closePreviewAnimated(() => {
-      // Volver al listado → aplicar fade del tema (el sheet queda abierto)
-      setActiveSceneWithFade(id);
-    });
+    closePreviewAnimated();
   };
 
   return (
@@ -351,22 +345,8 @@ export function EscenasSheet() {
       <Animated.View
         style={[styles.sheet, { transform: [{ translateY: sheetEnterY }] }]}
       >
-        {/* Fondo fijo (tema actual — no cambia durante la transición) */}
+        {/* El fondo visual no depende de la escena de audio. */}
         <LinearGradient colors={theme.gradient} style={StyleSheet.absoluteFill} />
-        {/* Nuevo tema entrando detrás del contenido — el contenido NUNCA se tapa */}
-        {overlayColors && (
-          <Animated.View
-            style={[StyleSheet.absoluteFill, { opacity: overlayOpacity }]}
-            pointerEvents="none"
-          >
-            <LinearGradient
-              colors={[...overlayColors] as [string, string]}
-              start={{ x: 0, y: 0 }}
-              end={{ x: 0, y: 1 }}
-              style={StyleSheet.absoluteFill}
-            />
-          </Animated.View>
-        )}
         <ScrollView
           style={{ flex: 1 }}
           contentContainerStyle={{ paddingTop: Math.max(insets.top, 20), paddingBottom: Math.max(insets.bottom, 24) }}
@@ -377,49 +357,6 @@ export function EscenasSheet() {
             <Feather name="x" size={22} color="#FFFFFF" />
           </Pressable>
           <Text style={styles.title}>Escenas</Text>
-
-          {/* ── Color picker: rectángulos horizontales ── */}
-          <View style={{ marginBottom: 14, marginTop: 20 }}>
-            <View style={{ flexDirection: "row", gap: 8, marginTop: 6 }}>
-              {AMBIENT_SCENES.filter((s) => !!SCENE_THEMES[s.id as keyof typeof SCENE_THEMES]).map((scene) => {
-                const themeData = SCENE_THEMES[scene.id as keyof typeof SCENE_THEMES];
-                if (!themeData) return null;
-                const isActive = scene.id === activeSceneId;
-                return (
-                  <Pressable
-                    key={scene.id}
-                    onPress={() => setActiveSceneWithFade(scene.id)}
-                    style={{ flex: 1, alignItems: "center", gap: 6 }}
-                    hitSlop={6}
-                  >
-                    {/* Borde externo (sin overflow:hidden para no recortar el borde) */}
-                    <View style={{
-                      width: "100%",
-                      height: 30,
-                      borderRadius: 17,
-                      borderWidth: 2,
-                      borderColor: isActive ? "rgba(255,255,255,0.75)" : "rgba(255,255,255,0.035)",
-                      padding: 2,
-                    }}>
-                      {/* Relleno con degradado (overflow:hidden para el redondeo interior) */}
-                      <View style={{ flex: 1, borderRadius: 13, overflow: "hidden" }}>
-                        <LinearGradient
-                          colors={[themeData.gradient[0], themeData.gradient[themeData.gradient.length - 1]] as [string, string]}
-                          start={{ x: 0, y: 0 }}
-                          end={{ x: 1, y: 0 }}
-                          style={{ flex: 1 }}
-                        />
-                      </View>
-                    </View>
-                    <Text style={{ fontFamily: "Manrope", fontSize: 11, color: isActive ? "#F9F9F9" : "rgba(249,249,249,0.55)", textAlign: "center" }}>
-                      {themeData.label}
-                    </Text>
-                  </Pressable>
-                );
-              })}
-            </View>
-          </View>
-
 
           {/* Intención diaria (reemplaza la escena animada en Inicio) */}
           <View style={[styles.controlRow, {
