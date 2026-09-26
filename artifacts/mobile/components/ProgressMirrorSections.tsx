@@ -136,6 +136,7 @@ export function ProgressMirrorSections({
           marginBottom: sectionMarginBottom,
         },
         mergeStatsAndStreak && styles.mergedInnerSection,
+        mergeStatsAndStreak && styles.mergedPersonalStatsSection,
       ]}
     >
       <ContentEntrance
@@ -167,7 +168,7 @@ export function ProgressMirrorSections({
               accessibilityState={{ expanded: statsFilterOpen }}
             >
               {mergeStatsAndStreak ? (
-                <Feather name="filter" size={20} color={filterColor} />
+                <Feather name="sliders" size={17} color={filterColor} />
               ) : (
                 <>
                   <Text style={[styles.filterText, { color: filterColor }]}>
@@ -206,7 +207,7 @@ export function ProgressMirrorSections({
           </View>
         </View>
       </ContentEntrance>
-      <View style={styles.statsValues}>
+      <View style={[styles.statsValues, mergeStatsAndStreak && styles.statsValuesNoTitle]}>
         <View style={styles.statEntranceSlot}>
           <ContentEntrance
             animated={animateEntrance}
@@ -571,6 +572,10 @@ const styles = StyleSheet.create({
     backgroundColor: "transparent",
     marginBottom: 0,
   },
+  mergedPersonalStatsSection: {
+    paddingTop: 15,
+    zIndex: 2,
+  },
   mergedDivider: {
     height: 1,
     backgroundColor: "rgba(255,255,255,0.05)",
@@ -636,7 +641,9 @@ const styles = StyleSheet.create({
     gap: 4,
   },
   personalStatsHeaderIconOnly: {
-    justifyContent: "flex-end",
+    position: "absolute",
+    top: 17,
+    right: 20,
   },
   personalStatsTitle: {
     fontFamily: "Manrope",
