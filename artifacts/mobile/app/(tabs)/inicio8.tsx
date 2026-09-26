@@ -3101,7 +3101,7 @@ export default function HomeScreen2({
           <View
             style={{
               paddingHorizontal: GRID_PAD,
-              marginTop: variant === "inicio3" ? -18 : 0,
+              marginTop: variant === "inicio3" ? -8 : 0,
               marginBottom: INICIO2_SECTION_GAP,
             }}
           >
