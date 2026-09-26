@@ -1616,8 +1616,6 @@ export function ProfileScreenBase({
                 personalStatsFilterBelowTitle
                 personalStatsFilterColor="#A8A8A8"
                 showCalendar={false}
-                showStreakWeek={false}
-                streakContentTranslateY={-5}
                 streakMarginBottom={21}
                 sectionHorizontalPadding={20}
                 sectionTopPadding={21}
