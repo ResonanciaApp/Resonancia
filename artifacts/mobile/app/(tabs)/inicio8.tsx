@@ -1460,10 +1460,22 @@ function Inicio3HeroPager({
   );
   const [todayMediaActive, setTodayMediaActive] = useState(true);
   const [activeSlideIndex, setActiveSlideIndex] = useState(0);
+  const settledSlideIndexRef = useRef(0);
+  const activeSlideIndexRef = useRef(0);
   const todayMediaActiveRef = useRef(true);
   const slidePressStartXRef = useRef<number | null>(null);
   const onPagerScroll = (e: NativeSyntheticEvent<NativeScrollEvent>) => {
-    const nextActive = e.nativeEvent.contentOffset.x <= 1;
+    const offsetX = e.nativeEvent.contentOffset.x;
+    const delta = offsetX - settledSlideIndexRef.current * slideWidth;
+    const nextIndex = Math.max(0, Math.min(
+      pagerSlides.length - 1,
+      settledSlideIndexRef.current + (Math.abs(delta) > 1 ? Math.sign(delta) : 0),
+    ));
+    if (nextIndex !== activeSlideIndexRef.current) {
+      activeSlideIndexRef.current = nextIndex;
+      setActiveSlideIndex(nextIndex);
+    }
+    const nextActive = offsetX <= 1;
     if (nextActive === todayMediaActiveRef.current) return;
     todayMediaActiveRef.current = nextActive;
     setTodayMediaActive(nextActive);
@@ -1616,6 +1628,8 @@ function Inicio3HeroPager({
           const measuredWidth = Math.round(event.nativeEvent.layout.width);
           if (measuredWidth > 0 && measuredWidth !== slideWidth) {
             setSlideWidth(measuredWidth);
+            settledSlideIndexRef.current = 0;
+            activeSlideIndexRef.current = 0;
             setActiveSlideIndex(0);
           }
         }}
@@ -1636,7 +1650,10 @@ function Inicio3HeroPager({
           onScroll={onPagerScroll}
           onMomentumScrollEnd={(e) => {
             const index = Math.round(e.nativeEvent.contentOffset.x / slideWidth);
-            setActiveSlideIndex(Math.max(0, Math.min(index, pagerSlides.length - 1)));
+            const settledIndex = Math.max(0, Math.min(index, pagerSlides.length - 1));
+            settledSlideIndexRef.current = settledIndex;
+            activeSlideIndexRef.current = settledIndex;
+            setActiveSlideIndex(settledIndex);
           }}
           scrollEventThrottle={16}
           keyExtractor={(item) => item.id}
