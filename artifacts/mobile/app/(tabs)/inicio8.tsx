@@ -3871,8 +3871,8 @@ const styles = StyleSheet.create({
   inicio3HeroTitle: {
     maxWidth: "86%",
     textAlign: "left",
-    fontSize: 20,
-    lineHeight: 25,
+    fontSize: 17,
+    lineHeight: 22,
     fontWeight: "600",
   },
   inicio3HeroDescription: {
@@ -3888,11 +3888,9 @@ const styles = StyleSheet.create({
   inicio3HeroReadMore: {
     alignSelf: "flex-start",
     marginTop: 28,
-    paddingVertical: 4,
-    paddingHorizontal: 20,
+    paddingVertical: 3,
+    paddingHorizontal: 19.5,
     borderRadius: 24,
-    borderWidth: 1,
-    borderColor: "rgba(255,255,255,0.2)",
     overflow: "hidden",
   },
   inicio3HeroReadMoreText: {
@@ -3910,9 +3908,9 @@ const styles = StyleSheet.create({
     zIndex: 40,
   },
   inicio3HeroProgressDot: {
-    width: 21,
-    height: 21,
-    borderRadius: 10.5,
+    width: 16,
+    height: 16,
+    borderRadius: 8,
     backgroundColor: "rgba(255,255,255,0.2)",
   },
   inicio3HeroSlide: {
@@ -3931,6 +3929,8 @@ const styles = StyleSheet.create({
     minHeight: 27,
     paddingLeft: 13,
     paddingRight: 13,
+    borderWidth: 1,
+    borderColor: "rgba(255,255,255,0.2)",
   },
   inicio2HeroCategory: {
     marginBottom: 10,
