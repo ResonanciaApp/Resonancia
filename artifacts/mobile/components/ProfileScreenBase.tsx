@@ -1432,7 +1432,7 @@ export function ProfileScreenBase({
         onScrollBeginDrag={cancelWallAutoScroll}
         scrollEventThrottle={16}
         keyboardShouldPersistTaps="handled"
-        bottomOffset={60}
+        bottomOffset={140}
       >
         <View style={styles.dedicatedTitleRow}>
           <View style={styles.dedicatedTitleLeft}>

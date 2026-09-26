@@ -49,7 +49,7 @@ const PLUS_ROTATION_STOPS = [
 ] as const;
 // El panel termina antes que el rebote de la +; el scroll espera solo al panel.
 const PANEL_DURATION = 620;
-const SCREEN_SETTLE_DURATION = 360;
+const SCREEN_SETTLE_DURATION = 650;
 const HALO_SIZES = [46, 36, 26] as const;
 const HALO_COLORS = [
   "rgba(255, 255, 255, 0.06)",
@@ -350,6 +350,26 @@ export function InnerSpaceCard({
       inputRef.current?.blur();
       setInputActive(false);
     };
+    let controlsFinished = false;
+    let movementFinished = opening;
+    const finishWhenSettled = () => {
+      if (!controlsFinished || !movementFinished) return;
+      animatingRef.current = false;
+      clipHeight.value = opening ? contentHeightRef.current : 0;
+      if (!opening) revealOpacity.setValue(0);
+      plusSpin.setValue(0);
+      if (queuedOpenRef.current && !opening) {
+        queuedOpenRef.current = false;
+        requestAnimationFrame(() => animateExpansion(true));
+      } else if (opening && focusAfterExpandRef.current) {
+        focusAfterExpandRef.current = false;
+        focusInput();
+      }
+    };
+    const finishScreenMovement = () => {
+      movementFinished = true;
+      finishWhenSettled();
+    };
     // Mantiene el alto total mientras se pliega la ventana; al acabar,
     // se libera suavemente el espacio y recién entonces se mueve la pantalla.
     reservedHeight.value = opening ? 0 : panelTargetHeight;
@@ -387,17 +407,8 @@ export function InnerSpaceCard({
     const startControls = () => {
       Animated.parallel(animations).start(({ finished }) => {
         if (!finished) return;
-        animatingRef.current = false;
-        clipHeight.value = opening ? contentHeightRef.current : 0;
-        if (!opening) revealOpacity.setValue(0);
-        plusSpin.setValue(0);
-        if (queuedOpenRef.current && !opening) {
-          queuedOpenRef.current = false;
-          requestAnimationFrame(() => animateExpansion(true));
-        } else if (opening && focusAfterExpandRef.current) {
-          focusAfterExpandRef.current = false;
-          focusInput();
-        }
+        controlsFinished = true;
+        finishWhenSettled();
       });
     };
 
@@ -413,6 +424,8 @@ export function InnerSpaceCard({
         reservedHeight.value = withTiming(0, {
           duration: SCREEN_SETTLE_DURATION,
           easing: ReanimatedEasing.inOut(ReanimatedEasing.quad),
+        }, (settled) => {
+          if (settled) runOnJS(finishScreenMovement)();
         });
         runOnJS(blurAfterCollapse)();
       }
