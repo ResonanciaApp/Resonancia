@@ -1767,16 +1767,18 @@ const Inicio2HeroStatic = React.memo(function Inicio2HeroStatic({
   const inicio3WeekShift = 2;
   const inicio3ProfileHeaderLift = 15;
   const inicio3HeroShift = 10 - 70 - 25;
+  const inicio3HeroDownshift = 25;
   const inicio3HeroTopTrim = 25 + 80;
   const inicio3HeroHeight =
-    (INICIO2_HERO_HEIGHT + 184 - (topInset + 286) - 52 + 60 + 32) / 2 + 60 + 120;
+    (INICIO2_HERO_HEIGHT + 184 - (topInset + 286) - 52 + 60 + 32) / 2 + 60 + 120 + 25;
   const inicio3HeroLayoutTop =
     topInset +
     165 -
     INICIO3_VERTICAL_LIFT +
     12 +
     inicio3WeekShift +
-    inicio3HeroShift;
+    inicio3HeroShift +
+    inicio3HeroDownshift;
   const inicio3HeroTop = inicio3HeroLayoutTop - 19;
   const slowHeaderStyle = useAnimatedStyle(() => {
     if (!isInicio3 || reduceMotion) return { transform: [{ translateY: 0 }] };
@@ -3710,8 +3712,8 @@ const styles = StyleSheet.create({
     textShadowRadius: 4,
   },
   inicio3HeroGreetingName: {
-    fontSize: 14,
-    lineHeight: 19,
+    fontSize: 15,
+    lineHeight: 20,
   },
   inicio3HeroDecree: {
     color: "#E5E1EB",
