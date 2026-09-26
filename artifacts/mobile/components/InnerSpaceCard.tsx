@@ -80,6 +80,8 @@ export function InnerSpaceCard({
   const accent = theme.accent ?? colors.accent;
   const [category, setCategory] = useState<ReflectionCategory | null>(null);
   const [message, setMessage] = useState("");
+  const [saveError, setSaveError] = useState<string | null>(null);
+  const [signInRequired, setSignInRequired] = useState(false);
   const inputRef = useRef<TextInput>(null);
   const placeholderVisibility = useRef(new Animated.Value(1)).current;
   const outgoingPlaceholderOpacity = useRef(new Animated.Value(1)).current;
@@ -138,6 +140,8 @@ export function InnerSpaceCard({
   const createMutation = useCreateMyReflection({
     mutation: {
       onSuccess: (created: Reflection) => {
+        setSaveError(null);
+        setSignInRequired(false);
         settlePlaceholder(DEFAULT_PLACEHOLDER);
         setMessage("");
         setCategory(null);
@@ -181,7 +185,21 @@ export function InnerSpaceCard({
           predicate: (query) => query.queryKey[0] === "/api/me/reflections",
         });
         onMessageSaved?.();
-      }
+      },
+      onError: (error) => {
+        const response = error as { status?: number; data?: { error?: string } };
+        if (response.status === 401) {
+          setSignInRequired(true);
+          setSaveError("Inicia sesión para guardar tu reflexión. Tu texto sigue aquí.");
+        } else {
+          setSignInRequired(false);
+          setSaveError(response.data?.error ?? "No se pudo guardar la reflexión. Inténtalo de nuevo.");
+        }
+        console.warn("[Mi muro] No se pudo guardar la reflexión", {
+          status: response.status,
+          error: response.data?.error,
+        });
+      },
     }
   });
 
@@ -271,6 +289,7 @@ export function InnerSpaceCard({
     !category
     || message.trim().length === 0
     || createMutation.isPending
+    || authLoading
     || (!isPremium && freeQuotaLoading)
     || freeLimitReached;
 
@@ -282,6 +301,14 @@ export function InnerSpaceCard({
       );
       return;
     }
+    if (authLoading) return;
+    if (!isSignedIn) {
+      setSignInRequired(true);
+      setSaveError("Inicia sesión para guardar tu reflexión. Tu texto sigue aquí.");
+      return;
+    }
+    setSaveError(null);
+    setSignInRequired(false);
     settlePlaceholder(desiredPlaceholder);
     createMutation.mutate({ data: { category, message: message.trim() } });
   };
@@ -560,7 +587,7 @@ export function InnerSpaceCard({
        )}
 
       <Pressable
-        style={[styles.inputContainer, { backgroundColor: "rgba(0,0,0,0.2)" }, createMutation.isError && { borderColor: colors.destructive }]}
+        style={[styles.inputContainer, { backgroundColor: "rgba(0,0,0,0.2)" }, saveError && { borderColor: colors.destructive }]}
         onPress={requestInputFocus}
       >
         <Animated.View
@@ -608,12 +635,27 @@ export function InnerSpaceCard({
           multiline
           maxLength={300}
           value={message}
-          onChangeText={setMessage}
+          onChangeText={(text) => {
+            setMessage(text);
+            if (!signInRequired) setSaveError(null);
+          }}
           textAlignVertical="top"
         />
       </Pressable>
-      {createMutation.isError && (
-        <Text style={[styles.errorText, { color: colors.destructive }]}>Ocurrió un error al guardar. Inténtalo de nuevo.</Text>
+      {saveError && (
+        <View>
+          <Text style={[styles.errorText, { color: colors.destructive }]}>{saveError}</Text>
+          {signInRequired && (
+            <Pressable
+              onPress={() => router.push("/(auth)/sign-in")}
+              accessibilityRole="button"
+              accessibilityLabel="Iniciar sesión para guardar la reflexión"
+              style={{ alignSelf: "flex-start", paddingVertical: 8 }}
+            >
+              <Text style={{ color: accent, fontFamily: "Manrope", fontWeight: "700" }}>Iniciar sesión</Text>
+            </Pressable>
+          )}
+        </View>
       )}
       {freeLimitReached && (
         <Text style={[styles.errorText, { color: colors.mutedForeground }]}>
