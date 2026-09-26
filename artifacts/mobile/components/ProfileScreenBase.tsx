@@ -398,6 +398,11 @@ export function ProfileScreenBase({
   const [morningReminderVisible, setMorningReminderVisible] = useState(false);
   const [sleepReminderVisible, setSleepReminderVisible] = useState(false);
   const profileScrollRef = useRef<ScrollView>(null);
+  const profileScrollYRef = useRef(0);
+  const profileViewportHeightRef = useRef(0);
+  const innerSpaceHeightRef = useRef(0);
+  const wallCollapsedHeightRef = useRef(0);
+  const wallAutoScrollPendingRef = useRef(false);
   const composeInteractionRef = useRef<ReturnType<typeof InteractionManager.runAfterInteractions> | null>(null);
   const composeFocusTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const [innerSpaceLayoutY, setInnerSpaceLayoutY] = useState<number | null>(null);
@@ -405,6 +410,29 @@ export function ProfileScreenBase({
   const [keepInnerSpaceKeyboardOnCategories, setKeepInnerSpaceKeyboardOnCategories] = useState(false);
   const [reflectionSavedTrigger, setReflectionSavedTrigger] = useState(0);
   const navigation = useNavigation();
+  const cancelWallAutoScroll = useCallback(() => {
+    wallAutoScrollPendingRef.current = false;
+  }, []);
+  const beginWallAutoScroll = useCallback(() => {
+    wallCollapsedHeightRef.current = innerSpaceHeightRef.current;
+    wallAutoScrollPendingRef.current = true;
+  }, []);
+  const finishWallAutoScroll = useCallback((expandedHeight: number) => {
+    requestAnimationFrame(() => {
+      if (!wallAutoScrollPendingRef.current) return;
+      wallAutoScrollPendingRef.current = false;
+      if (expandedHeight <= 0 || innerSpaceLayoutY === null || profileViewportHeightRef.current <= 0) return;
+      const expandedBottom = innerSpaceLayoutY
+        + Math.max(innerSpaceHeightRef.current, wallCollapsedHeightRef.current + expandedHeight);
+      const visibleBottom = profileScrollYRef.current + profileViewportHeightRef.current - 96;
+      const missingSpace = expandedBottom - visibleBottom;
+      if (missingSpace < 2) return;
+      profileScrollRef.current?.scrollTo({
+        y: profileScrollYRef.current + Math.min(missingSpace, 140),
+        animated: true,
+      });
+    });
+  }, [innerSpaceLayoutY]);
   const positionInnerSpaceForWriting = useCallback(() => {
     if (innerSpaceLayoutY === null) return;
     composeInteractionRef.current?.cancel();
@@ -436,8 +464,10 @@ export function ProfileScreenBase({
   useFocusEffect(
     useCallback(() => {
       if (!dedicated) return;
+      profileScrollYRef.current = 0;
       profileScrollRef.current?.scrollTo({ y: 0, animated: false });
-    }, [dedicated]),
+      return cancelWallAutoScroll;
+    }, [dedicated, cancelWallAutoScroll]),
   );
   useFocusEffect(
     useCallback(() => {
@@ -467,6 +497,7 @@ export function ProfileScreenBase({
   const [profileStickyHeaderActive, setProfileStickyHeaderActive] = useState(false);
   const handleHeaderScroll = (e: { nativeEvent: { contentOffset: { y: number } } }) => {
     const y = e.nativeEvent.contentOffset.y;
+    profileScrollYRef.current = y;
     const shouldShowBorder = y >= HEADER_BORDER_THRESHOLD_PX;
     if (shouldShowBorder !== headerBorderActiveRef.current) {
       headerBorderActiveRef.current = shouldShowBorder;
@@ -1389,6 +1420,7 @@ export function ProfileScreenBase({
       <KeyboardAwareScrollViewCompat
         scrollRef={profileScrollRef}
         style={styles.scroll}
+        onLayout={(event) => { profileViewportHeightRef.current = event.nativeEvent.layout.height; }}
         contentContainerStyle={{
           paddingBottom: 160 + bottomPad,
           paddingTop: topPad + 2,
@@ -1397,6 +1429,7 @@ export function ProfileScreenBase({
         showsVerticalScrollIndicator={false}
         scrollEnabled={scrollEnabled}
         onScroll={handleHeaderScroll}
+        onScrollBeginDrag={cancelWallAutoScroll}
         scrollEventThrottle={16}
         keyboardShouldPersistTaps="handled"
         bottomOffset={60}
@@ -1452,6 +1485,13 @@ export function ProfileScreenBase({
                 <View style={[styles.avatarCircle, { backgroundColor: colors.secondary }]}>
                   <Feather name="user" size={28} color={colors.primary} />
                 </View>
+              )}
+              {isPremium && (
+                <Image
+                  source={require("../assets/images/estrella-premium.png")}
+                  style={styles.premiumAvatarStar}
+                  contentFit="contain"
+                />
               )}
             </Pressable>
 
@@ -1529,7 +1569,10 @@ export function ProfileScreenBase({
 
             <View
               style={styles.innerSpaceSection}
-              onLayout={(event) => setInnerSpaceLayoutY(event.nativeEvent.layout.y)}
+              onLayout={(event) => {
+                innerSpaceHeightRef.current = event.nativeEvent.layout.height;
+                setInnerSpaceLayoutY(event.nativeEvent.layout.y);
+              }}
             >
               <InnerSpaceCard
                 focusRequest={innerSpaceFocusRequest}
@@ -1537,6 +1580,8 @@ export function ProfileScreenBase({
                 onComposeRequested={positionInnerSpaceForWriting}
                 onInputBlur={() => setKeepInnerSpaceKeyboardOnCategories(false)}
                 onMessageSaved={() => setReflectionSavedTrigger((value) => value + 1)}
+                onExpandStart={beginWallAutoScroll}
+                onExpandComplete={finishWallAutoScroll}
               />
             </View>
 
@@ -2642,6 +2687,14 @@ const styles = StyleSheet.create({
     transform: [{ translateX: 9 }],
   },
   avatarWrapper: { position: "relative", marginBottom: 0 },
+  premiumAvatarStar: {
+    position: "absolute",
+    top: 7,
+    left: -5,
+    width: 24,
+    height: 24,
+    zIndex: 1,
+  },
   avatarCircle: {
     width: 76,
     height: 76,

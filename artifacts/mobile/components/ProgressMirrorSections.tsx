@@ -210,6 +210,7 @@ export function ProgressMirrorSections({
             <Stat
               icon={<Feather name="clock" size={18} color="#F9F9F9" />}
               value={personalStats.totalMinutes}
+              unit={mergeStatsAndStreak ? "min" : undefined}
               label="MINUTOS TOTALES"
               accent={accent}
               edgeAligned={canonicalVerticalInsets}
@@ -513,6 +514,7 @@ function ContentEntrance({
 function Stat({
   icon,
   value,
+  unit,
   label,
   accent,
   onPress,
@@ -520,6 +522,7 @@ function Stat({
 }: {
   icon: React.ReactNode;
   value: number;
+  unit?: string;
   label: string;
   accent: string;
   onPress?: () => void;
@@ -530,7 +533,7 @@ function Stat({
     <>
       {statIcon}
       <View style={[styles.statCopy, edgeAligned && styles.statCopyEdgeAligned]}>
-        <Text style={styles.statValue}>{value}</Text>
+        <Text style={styles.statValue}>{value}{unit ? ` ${unit}` : ""}</Text>
         <Text style={[styles.statLabel, { color: accent }]}>{label}</Text>
       </View>
     </>
@@ -573,6 +576,7 @@ const styles = StyleSheet.create({
     height: 1,
     backgroundColor: "rgba(255,255,255,0.05)",
     marginHorizontal: 20,
+    transform: [{ translateY: 3 }],
   },
   streakSection: {
     borderRadius: 19,

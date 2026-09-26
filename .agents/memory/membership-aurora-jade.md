@@ -3,11 +3,11 @@ name: Membresía Aurora jade-gold
 description: Límite de la tarjeta de usuario en Perfil y acentos Premium de las demás superficies.
 ---
 
-La tarjeta principal de Perfil muestra SOLO al usuario: avatar, nombre y datos personales. No colocar debajo «Tu Premium» para miembros ni «Prueba Premium» para no miembros; tampoco recuperar Premium Plus en esa tarjeta.
+La tarjeta principal de Perfil muestra SOLO al usuario: avatar, nombre y datos personales. No colocar debajo «Tu Premium» para miembros ni «Prueba Premium» para no miembros; tampoco recuperar Premium Plus en esa tarjeta. Para miembros activos, la estrella Premium canónica de la app sobre el borde superior izquierdo del avatar indica Premium sin añadir otro bloque de contenido.
 
-**Why:** Aunque se había aprobado una dirección Aurora jade-gold para los módulos de membresía de Perfil, el usuario pidió después eliminarlos de debajo de la identidad para simplificar la tarjeta.
+**Why:** Aunque se había aprobado una dirección Aurora jade-gold para los módulos de membresía de Perfil, el usuario pidió después eliminarlos de debajo de la identidad para simplificar la tarjeta, y más tarde solicitó una insignia discreta en el avatar. Rechazó expresamente un ícono genérico: la estrella debe ser la misma imagen que se usa en el resto de la app.
 
-**How to apply:** No reintroducir el módulo en Perfil por analogía con otras superficies. La página de membresía y otros puntos de entrada a Premium son independientes.
+**How to apply:** No reintroducir el módulo en Perfil por analogía con otras superficies; la insignia solo refleja una membresía activa. Reutilizar el asset de estrella Premium existente, sin reemplazarlo por un ícono de librería ni rodearlo con una insignia distinta. La página de membresía y otros puntos de entrada a Premium son independientes.
 
 El amarillo sólido de Premium sigue en «Plan Premium» de Sonidos y Descubrir, en solo «Premium» del banner inferior de Inicio y en «Tu Premium» del drawer para miembros o solo «Premium» para no miembros. «Prueba» y «Gratis» de Inicio no cambian; en el drawer «Prueba» sigue blanco. El loto de «Racha más larga» conserva el degradado.
 

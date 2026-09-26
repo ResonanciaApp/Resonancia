@@ -1774,6 +1774,7 @@ function Inicio3HeroPager({
           </View>
         </View>
       </View>
+      <View pointerEvents="none" style={styles.inicio3HeroOuterBorder} />
     </RAnimated.View>
   );
 }
@@ -3948,6 +3949,16 @@ const styles = StyleSheet.create({
   inicio3HeroImageClip: {
     borderRadius: 21,
     overflow: "hidden",
+  },
+  inicio3HeroOuterBorder: {
+    position: "absolute",
+    top: -1.5,
+    right: -1.5,
+    bottom: -1.5,
+    left: -1.5,
+    borderRadius: 22.5,
+    borderWidth: 1.5,
+    borderColor: "rgba(255,255,255,0.35)",
   },
   inicio3HeroBackShadow: {
     position: "absolute",

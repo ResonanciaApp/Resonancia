@@ -6,6 +6,7 @@ import * as Haptics from "expo-haptics";
 import { Feather } from "@expo/vector-icons";
 import Reanimated, {
   Easing as ReanimatedEasing,
+  runOnJS,
   useAnimatedStyle,
   useReducedMotion,
   useSharedValue,
@@ -61,12 +62,16 @@ export function InnerSpaceCard({
   onComposeRequested,
   onInputBlur,
   onMessageSaved,
+  onExpandStart,
+  onExpandComplete,
 }: {
   focusRequest?: number;
   keepKeyboardOnCategories?: boolean;
   onComposeRequested?: () => void;
   onInputBlur?: () => void;
   onMessageSaved?: () => void;
+  onExpandStart?: () => void;
+  onExpandComplete?: (height: number) => void;
 }) {
   const colors = useColors();
   const { theme } = useSceneTheme();
@@ -295,11 +300,14 @@ export function InnerSpaceCard({
     if (expandedRef.current && !animatingRef.current) clipHeight.value = height;
   };
 
-  const animateExpansion = (opening: boolean) => {
+  const animateExpansion = (opening: boolean, followScroll = false) => {
     if (animatingRef.current || expandedRef.current === opening) return;
     animatingRef.current = true;
     expandedRef.current = opening;
     setExpanded(opening);
+    if (opening && followScroll) {
+      onExpandStart?.();
+    }
     if (!opening) {
       inputRef.current?.blur();
       setInputActive(false);
@@ -312,6 +320,11 @@ export function InnerSpaceCard({
       plusSpin.setValue(0);
       haloValues.forEach((value) => value.setValue(opening ? 0 : 1));
       animatingRef.current = false;
+      if (opening && followScroll) {
+        requestAnimationFrame(() => {
+          if (expandedRef.current) onExpandComplete?.(contentHeightRef.current);
+        });
+      }
       if (opening && focusAfterExpandRef.current) {
         focusAfterExpandRef.current = false;
         focusInput();
@@ -322,9 +335,14 @@ export function InnerSpaceCard({
     plusSpin.setValue(0);
     if (opening) revealY.setValue(-14);
     const spinDirection = opening ? -1 : 1;
-    clipHeight.value = withTiming(opening ? contentHeightRef.current : 0, {
+    const panelTargetHeight = contentHeightRef.current;
+    clipHeight.value = withTiming(opening ? panelTargetHeight : 0, {
       duration: PANEL_DURATION,
       easing: opening ? ReanimatedEasing.out(ReanimatedEasing.cubic) : ReanimatedEasing.inOut(ReanimatedEasing.cubic),
+    }, (finished) => {
+      if (finished && opening && followScroll && onExpandComplete) {
+        runOnJS(onExpandComplete)(panelTargetHeight);
+      }
     });
 
     const animations = [
@@ -395,7 +413,7 @@ export function InnerSpaceCard({
         </View>
         <Pressable
           style={styles.infoButton}
-          onPress={() => animateExpansion(!expandedRef.current)}
+          onPress={() => animateExpansion(!expandedRef.current, true)}
           accessibilityRole="button"
           accessibilityLabel={expanded ? "Contraer Mi muro expansivo" : "Expandir Mi muro expansivo"}
           accessibilityState={{ expanded }}
