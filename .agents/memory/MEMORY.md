@@ -90,7 +90,7 @@
 - [Ticket de Mi Rutina](routine-ticket-behavior.md) — solo el ticket completa; la card pasa a teal y sale de Inicio tras 1 s; el tap restante abre detalle
 - [Flujo emocional local](mood-checkin-local.md) — guarda check-ins completos localmente; cierre usa cinco tipos fijos con reservas inmutables porque el catálogo muta sesiones en sitio
 - [Handoff entre Modal nativos](native-modal-handoff.md) — nunca abrir un segundo Modal con un timeout estimado; esperar cierre real + siguiente frame para evitar fallos intermitentes en iOS
-- [Membresía Aurora jade-gold](membership-aurora-jade.md) — Perfil muestra solo usuario; amarillo Premium sigue en promos y drawer; loto de racha conserva degradado
+- [Membresía Aurora jade-gold](membership-aurora-jade.md) — Perfil muestra Tu Premium/Prueba Premium bajo usuario, sin estrella sobre el avatar; otros acentos siguen
 - [Háptica suave del tab bar](tab-haptics-soft.md) — un solo impacto Soft para taps de navegación; no simular fade con pulsos acumulados
 - [Toggles de notificaciones de ajustes](settings-notification-toggles.md) — Racha y Registro diario serán opt-ins de avisos, no visibilidad; diseño desactivado hasta tener programación real
 - [Bajas remotas del catálogo](catalog-remote-deletions.md) — un cache móvil viejo puede resucitar sesiones DB-only; snapshots frescos deben podar entradas remotas ausentes

@@ -90,6 +90,7 @@ import { MoonCrescentIcon } from "@/components/MoonCrescentIcon";
 import { SleepReminderSheet } from "@/components/SleepReminderSheet";
 import { FilledSunIcon } from "@/components/FilledSunIcon";
 import { useMixerPanel } from "@/context/MixerPanelContext";
+import { MEMBERSHIP_AURORA } from "@/constants/colors";
 
 const SHOW_PROFILE_HISTORY = false;
 const SHOW_PROFILE_PRACTICE_CARDS = false;
@@ -1543,13 +1544,6 @@ export function ProfileScreenBase({
                   <Feather name="user" size={28} color={colors.primary} />
                 </View>
               )}
-              {isPremium && (
-                <Image
-                  source={require("../assets/images/estrella-premium.png")}
-                  style={styles.premiumAvatarStar}
-                  contentFit="contain"
-                />
-              )}
             </Pressable>
 
             {/* Name + details */}
@@ -1596,6 +1590,35 @@ export function ProfileScreenBase({
               </Pressable>
             </View>
           </View>
+          <View style={styles.profileCardDivider} />
+          <Pressable
+            onPress={() => router.push("/membresia")}
+            style={({ pressed }) => [
+              styles.membershipCardHeader,
+              { opacity: pressed ? 0.78 : 1 },
+            ]}
+            accessibilityRole="button"
+            accessibilityLabel={isPremium ? "Abrir Tu Premium" : "Abrir Prueba Premium"}
+          >
+            <View style={styles.membershipIcon}>
+              <MaterialCommunityIcons
+                name="star"
+                size={31}
+                color={MEMBERSHIP_AURORA.premium.accent}
+              />
+            </View>
+            <View style={styles.membershipCardCopy}>
+              <Text style={[styles.membershipPlanName, { color: MEMBERSHIP_AURORA.premium.accent }]}>
+                {isPremium ? "Tu Premium" : "Prueba Premium"}
+              </Text>
+              <Text style={[styles.membershipPlanEyebrow, { color: colors.foreground }]}>
+                {isPremium ? "Gestiona tu suscripción y beneficios" : "Tu transformación comienza acá"}
+              </Text>
+            </View>
+            <View style={[styles.profileChevronButton, styles.membershipChevronButton]}>
+              <Feather name="chevron-right" size={24} color={colors.foreground} />
+            </View>
+          </Pressable>
         </View>
 
         {false && (
@@ -2709,7 +2732,7 @@ const styles = StyleSheet.create({
     borderRadius: 19,
     backgroundColor: "rgba(0,0,0,0.28)",
     paddingTop: 24,
-    paddingBottom: 24,
+    paddingBottom: 6,
     alignItems: "stretch",
     overflow: "hidden",
     marginTop: 14,
@@ -2744,15 +2767,55 @@ const styles = StyleSheet.create({
   userChevronButton: {
     transform: [{ translateX: 9 }],
   },
-  avatarWrapper: { position: "relative", marginBottom: 0 },
-  premiumAvatarStar: {
-    position: "absolute",
-    top: 7,
-    left: -5,
-    width: 24,
-    height: 24,
-    zIndex: 1,
+  profileCardDivider: {
+    height: 1,
+    width: "100%",
+    backgroundColor: "rgba(181,211,255,0.057)",
+    marginTop: 20,
+    marginBottom: 4,
   },
+  membershipCardHeader: {
+    minHeight: 66,
+    flexDirection: "row",
+    alignItems: "center",
+    gap: 13,
+    paddingHorizontal: 20,
+    paddingVertical: 6,
+  },
+  membershipIcon: {
+    width: 54,
+    height: 54,
+    borderRadius: 27,
+    alignItems: "center",
+    justifyContent: "center",
+    shadowColor: MEMBERSHIP_AURORA.premium.glow,
+    shadowOffset: { width: 0, height: 0 },
+    shadowOpacity: 0.75,
+    shadowRadius: 18,
+    transform: [{ translateY: -2 }],
+  },
+  membershipCardCopy: {
+    minWidth: 0,
+    flex: 1,
+    paddingRight: 3,
+    transform: [{ translateX: -8 }, { translateY: -2 }],
+  },
+  membershipPlanName: {
+    fontFamily: "Manrope",
+    fontSize: 14,
+    fontWeight: "700",
+    letterSpacing: -0.5,
+  },
+  membershipPlanEyebrow: {
+    fontFamily: "Manrope",
+    fontSize: 12,
+    lineHeight: 16,
+    marginTop: 2,
+  },
+  membershipChevronButton: {
+    transform: [{ translateX: 7 }],
+  },
+  avatarWrapper: { position: "relative", marginBottom: 0 },
   avatarCircle: {
     width: 76,
     height: 76,
