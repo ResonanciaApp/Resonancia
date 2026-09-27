@@ -71,6 +71,7 @@ export function DailyRecommendationsSection({
   const { theme } = useSceneTheme();
   const recommendations = sessions.slice(0, 3);
   const themeAccent = theme.accent ?? colors.accent;
+  const recommendationSecondaryColor = "#EBF2FF";
   const [animationCycle, setAnimationCycle] = React.useState(0);
   const buttonScale = React.useRef(new Animated.Value(1)).current;
 
@@ -138,10 +139,11 @@ export function DailyRecommendationsSection({
                   imageSize={(inicio3Compact ? 81.9 * 1.2 : 103.7) * 0.85}
                   imageOffsetX={inicio3Compact ? 0 : -4}
                   metaText={`${session.categoryLabel} · ${session.durationLabel}`}
+                  metaTextColor={recommendationSecondaryColor}
                   showChevron
                   titleFontSize={inicio3Compact ? 16.5 : undefined}
                   titleFontWeight={inicio3Compact ? "600" : undefined}
-                  authorColor={themeAccent}
+                  authorColor={recommendationSecondaryColor}
                   authorFontSize={theme.id === "indigo2" ? 11 : undefined}
                   chevronColor={
                     inicio3Compact

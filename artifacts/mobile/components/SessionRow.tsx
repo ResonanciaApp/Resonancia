@@ -34,6 +34,7 @@ type Props = {
   imageSize?: number;
   imageOffsetX?: number;
   metaText?: string;
+  metaTextColor?: string;
   showCategoryPill?: boolean;
   showCategoryText?: boolean;
   categoryPillPlain?: boolean;
@@ -64,6 +65,7 @@ export function SessionRow({
   imageSize = 80,
   imageOffsetX = 0,
   metaText,
+  metaTextColor,
   showCategoryPill = false,
   showCategoryText = false,
   categoryPillPlain = true,
@@ -189,7 +191,7 @@ export function SessionRow({
             ) : (
               <View style={styles.sessionMeta}>
                 {metaText ? (
-                  <Text style={[styles.sessionMetaText, { color: colors.mutedForeground }]}>{metaText}</Text>
+                  <Text style={[styles.sessionMetaText, { color: metaTextColor ?? colors.mutedForeground }]}>{metaText}</Text>
                 ) : (
                   <>
                     <Feather name="star" size={11} color={colors.mutedForeground} />
