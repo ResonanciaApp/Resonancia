@@ -157,6 +157,7 @@ function getRecommendations(moodIds: MoodId[]): Session[] {
     const match = ranked.find(
       (session) =>
         !used.has(session.id) &&
+        session.categoryId !== "ambientales" &&
         relevanceScore(session) > 0 &&
         (!BUNDLED_MOOD_RECOMMENDATION_IDS.has(session.id) ||
           session.id === fallback.id) &&
@@ -715,26 +716,10 @@ export function MoodPickerSheet({
                   />
                 </CinematicFadeSlide>
 
-                {moodQuote && (
-                  <CinematicFadeSlide
-                    active={visible}
-                    replayKey={`${completionCycle}:${firstMood?.id ?? "none"}`}
-                    delay={CINEMATIC_BASE_DELAY + 1700}
-                    duration={CINEMATIC_DURATION}
-                  >
-                    <View style={styles.completeSectionDivider} />
-                    <EmotionalQuoteCard
-                      author={moodQuote.author}
-                      background={moodQuote.background}
-                      quote={moodQuote.text}
-                    />
-                  </CinematicFadeSlide>
-                )}
-
                 <CinematicFadeSlide
                   active={visible}
                   replayKey={completionCycle}
-                  delay={CINEMATIC_BASE_DELAY + 2200}
+                  delay={CINEMATIC_BASE_DELAY + 1700}
                   duration={CINEMATIC_DURATION}
                 >
                   <View style={styles.completeSectionDivider} />
@@ -759,9 +744,24 @@ export function MoodPickerSheet({
                       <Feather name="chevron-right" size={16} color="#060A0F" />
                     </Pressable>
                   </View>
-
-                  <View style={styles.completeSectionDivider} />
+                  {!moodQuote && <View style={styles.completeSectionDivider} />}
                 </CinematicFadeSlide>
+
+                {moodQuote && (
+                  <CinematicFadeSlide
+                    active={visible}
+                    replayKey={`${completionCycle}:${firstMood?.id ?? "none"}`}
+                    delay={CINEMATIC_BASE_DELAY + 2200}
+                    duration={CINEMATIC_DURATION}
+                  >
+                    <View style={styles.completeSectionDivider} />
+                    <EmotionalQuoteCard
+                      author="Resonancia"
+                      quote={moodQuote.text}
+                    />
+                    <View style={styles.completeSectionDivider} />
+                  </CinematicFadeSlide>
+                )}
 
                 {history.length > 0 && (
                   <Text style={styles.lastCheckIn}>

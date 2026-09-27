@@ -1,16 +1,13 @@
 import { Feather } from "@expo/vector-icons";
-import { Image, type ImageSource } from "expo-image";
-import { LinearGradient } from "expo-linear-gradient";
 import React from "react";
 import { Pressable, Share, StyleSheet, Text, View } from "react-native";
 
 type Props = {
   author: string;
-  background: ImageSource;
   quote: string;
 };
 
-export function EmotionalQuoteCard({ author, background, quote }: Props) {
+export function EmotionalQuoteCard({ author, quote }: Props) {
   async function shareQuote() {
     try {
       await Share.share({
@@ -23,19 +20,6 @@ export function EmotionalQuoteCard({ author, background, quote }: Props) {
 
   return (
     <View style={styles.card} testID="emotional-quote-card">
-      <Image
-        source={background}
-        style={StyleSheet.absoluteFill}
-        contentFit="cover"
-        transition={250}
-      />
-      <LinearGradient
-        colors={["rgba(6,10,15,0.16)", "rgba(6,10,15,0.58)", "rgba(6,10,15,0.88)"]}
-        locations={[0, 0.55, 1]}
-        style={StyleSheet.absoluteFill}
-        pointerEvents="none"
-      />
-
       <Text style={styles.author}>{author}</Text>
       <Text style={styles.quote}>“{quote}”</Text>
 
@@ -64,7 +48,7 @@ const styles = StyleSheet.create({
     paddingBottom: 22,
     borderWidth: StyleSheet.hairlineWidth,
     borderColor: "rgba(255,255,255,0.15)",
-    backgroundColor: "#15282B",
+    backgroundColor: "rgba(0,0,0,0.22)",
   },
   author: {
     fontFamily: "Manrope",

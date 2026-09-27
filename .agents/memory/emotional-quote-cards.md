@@ -1,10 +1,10 @@
 ---
 name: Cards de frases emocionales
-description: Dirección visual aprobada y reglas de espaciado para las frases del cierre emocional.
+description: Dirección visual vigente y orden de las frases del cierre emocional.
 ---
 
-Cada emoción usa una card de frase con un fondo propio, visualmente relacionado con su hero pero no repetido, y un overlay oscuro que asegura contraste. La card mantiene la estructura autor, frase y compartir.
+En el cierre de «¿Cómo te sientes hoy?», el historial mensual aparece antes de la frase. La card de frase no lleva imagen: usa negro translúcido, muestra siempre «Resonancia» como autor y mantiene frase y compartir.
 
-**Why:** Casa del Cuenco aprobó explícitamente la prueba de Deprimido(a) y pidió replicar esa dirección para las 18 emociones.
+**Why:** Casa del Cuenco reemplazó expresamente la dirección anterior de fondos propios por emoción para este cierre y pidió un autor de marca constante.
 
-**How to apply:** El cierre usa la grilla lateral de 16 px de Inicio. “Esta semana” va transparente y queda entre dos divisores con 31 px de aire por lado. La frase mantiene 22 px internos arriba y abajo; si crece, la card aumenta su alto sin alterar esos márgenes.
+**How to apply:** Conservar la grilla lateral de Inicio y el espaciado interno de la card. No volver a introducir imágenes ni el autor editorial de cada frase en esta superficie al hacer cambios al catálogo de citas.
