@@ -4523,9 +4523,9 @@ const styles = StyleSheet.create({
   inicio3LowerStandaloneDivider: {
     height: StyleSheet.hairlineWidth,
     marginHorizontal: GRID_PAD,
-    // El muro ya deja 32 px debajo: 26 px antes del divisor y 27 después ≈ 53 px en total.
-    marginTop: 26 - INNER_SPACE_CARD_BOTTOM_MARGIN,
-    marginBottom: INICIO2_SECTION_GAP - 26,
+    // La tarjeta ya deja 32 px: completar 36 px hasta la línea y dejar otros 36 px después.
+    marginTop: 36 - INNER_SPACE_CARD_BOTTOM_MARGIN,
+    marginBottom: 36,
     backgroundColor: SECTION_DIVIDER_COLOR,
   },
   inicio3LowerSectionDivider: {
