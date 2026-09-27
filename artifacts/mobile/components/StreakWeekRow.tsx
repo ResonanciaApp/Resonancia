@@ -91,8 +91,6 @@ export function StreakWeekRow({
             )}
             <Text style={[
               styles.dayLabel,
-              isToday && styles.positionedDayLabel,
-              smallLabels && styles.smallDayLabel,
               styles.outsideDayLabel,
             ]}>
               {initial}
@@ -157,20 +155,14 @@ const styles = StyleSheet.create({
     backgroundColor: "transparent",
   },
   dayLabel: {
-    color: "rgba(255,255,255,0.7)",
+    color: "#FFFFFF",
     fontFamily: "Manrope",
     fontSize: 11,
     lineHeight: 14,
     fontWeight: "400",
   },
-  smallDayLabel: {
-    color: "#FFFFFF",
-  },
   outsideDayLabel: {
     marginTop: 5,
-  },
-  positionedDayLabel: {
-    color: "rgba(252,252,252,0.7)",
   },
   checkMark: {
     transform: [{ translateY: 1 }],

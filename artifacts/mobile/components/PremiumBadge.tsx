@@ -38,7 +38,7 @@ const GOLD = "#E5B84B";
 export function PremiumBadge({ session, size = 20, top = 8, right, left }: Props) {
   const { isPremium } = usePremium();
   const showBadge =
-    DEV_SHOW_ALL_SESSION_PREMIUM_BADGES || (session.isPremium && !isPremium);
+    !isPremium && (DEV_SHOW_ALL_SESSION_PREMIUM_BADGES || !!session.isPremium);
   if (!showBadge) return null;
   const pos = right != null ? { right } : { left: left ?? 8 };
   return (

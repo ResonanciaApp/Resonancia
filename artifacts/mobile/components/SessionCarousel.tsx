@@ -1040,7 +1040,7 @@ export const SessionCarousel = React.memo(function SessionCarousel({
                     whiteGlass={whiteMetadataGlass}
                   />
                 ) : null}
-                {(DEV_SHOW_ALL_SESSION_PREMIUM_BADGES || locked) && (
+                {!isPremium && (DEV_SHOW_ALL_SESSION_PREMIUM_BADGES || locked) && (
                   <Image
                     source={require("@/assets/images/estrella-premium.png")}
                      style={[

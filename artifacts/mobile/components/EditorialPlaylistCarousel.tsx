@@ -19,6 +19,7 @@ import {
   SessionDurationBadge,
 } from "@/components/SessionDurationBadge";
 import { PressScale } from "@/components/PressScale";
+import { usePremium } from "@/context/PremiumContext";
 const H_PAD = 16;
 const CARD_GAP = 14;
 const CARD_WIDTH = Math.round(
@@ -45,6 +46,7 @@ export function EditorialPlaylistCarousel({
   gridLayout?: boolean;
   titleLift?: number;
 }) {
+  const { isPremium } = usePremium();
   if (playlists.length === 0) return null;
   const cardSize = gridLayout
     ? (Dimensions.get("window").width - H_PAD * 2 - CARD_GAP) / 2
@@ -109,7 +111,7 @@ export function EditorialPlaylistCarousel({
             style={styles.duration}
             whiteGlass
           />
-          {showPremiumBadge ? (
+          {showPremiumBadge && !isPremium ? (
             <Image
               source={require("@/assets/images/estrella-premium.png")}
               style={styles.premiumStar}

@@ -540,7 +540,7 @@ export function ExploreScreen({
                   transition={IMAGE_TRANSITION}
                   cachePolicy="memory-disk"
                 />
-                {s.isPremium && (
+                {s.isPremium && !isPremium && (
                   <View style={styles.premiumBadge}>
                     <Feather name="star" size={10} color="#F9F9F9" />
                   </View>

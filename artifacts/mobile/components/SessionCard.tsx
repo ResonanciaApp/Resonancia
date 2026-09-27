@@ -138,7 +138,7 @@ export function SessionCard({ session, width = 200, horizontal = false, tint, ca
   const { resonadores } = useResonadores();
   const { width: viewportWidth } = useWindowDimensions();
   const locked = !!session.isPremium && !isPremium;
-  const showPremiumBadge = DEV_SHOW_ALL_SESSION_PREMIUM_BADGES || locked;
+  const showPremiumBadge = !isPremium && (DEV_SHOW_ALL_SESSION_PREMIUM_BADGES || locked);
   const handlePress = () => {
     if (locked) { openPremiumPlans(); return; }
     if (openForSession(session)) return;

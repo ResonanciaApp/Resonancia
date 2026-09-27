@@ -11,6 +11,7 @@ import {
 } from "react-native";
 
 import type { PlaylistCompletion } from "@/lib/editorial-playlist-helpers";
+import { usePremium } from "@/context/PremiumContext";
 
 type Props = {
   title: string;
@@ -29,6 +30,7 @@ export function ContinueMeditationPlaylistCard({
   onPress,
   sectionStyle,
 }: Props) {
+  const { isPremium } = usePremium();
   return (
     <View
       style={[styles.section, sectionStyle]}
@@ -55,12 +57,14 @@ export function ContinueMeditationPlaylistCard({
             contentFit="cover"
             cachePolicy="memory-disk"
           />
-           <FontAwesome
-             name="star"
-             size={20}
-             color="#E5B84B"
-             style={styles.premiumStar}
-           />
+           {!isPremium && (
+             <FontAwesome
+               name="star"
+               size={20}
+               color="#E5B84B"
+               style={styles.premiumStar}
+             />
+           )}
         </View>
         <View style={styles.copy}>
           <Text style={styles.title} numberOfLines={1}>{title}</Text>
