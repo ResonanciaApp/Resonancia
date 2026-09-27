@@ -1,5 +1,5 @@
 import React from "react";
-import { CARD_TEXT_ABOVE, CARD_TEXT_BELOW } from "@/constants/colors";
+import { CARD_TEXT_BELOW } from "@/constants/colors";
 import {
   Animated,
   StyleProp,
@@ -139,7 +139,7 @@ export function DailyRecommendationsSection({
                   imageSize={(inicio3Compact ? 81.9 * 1.2 : 103.7) * 0.85}
                   imageOffsetX={inicio3Compact ? 0 : -4}
                   metaText={`${session.categoryLabel} · ${session.durationLabel}`}
-                  metaTextColor={CARD_TEXT_ABOVE}
+                  metaTextColor={CARD_TEXT_BELOW}
                   metaFontSize={10}
                   showChevron
                   titleFontSize={inicio3Compact ? 16.5 : undefined}

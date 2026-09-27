@@ -14,6 +14,7 @@ import Reanimated, {
 } from "react-native-reanimated";
 import { useColors } from "@/hooks/useColors";
 import { useSceneTheme } from "@/context/SceneThemeContext";
+import { CARD_TEXT_BELOW } from "@/constants/colors";
 import {
   getListMyReflectionsQueryKey,
   useCreateMyReflection,
@@ -484,7 +485,7 @@ export function InnerSpaceCard({
       <View style={styles.header}>
         <View style={styles.headerCopy}>
           <Text style={[styles.headerTitle, { color: colors.foreground }]}>Mi muro expansivo</Text>
-          <Text style={[styles.headerDescription, { color: "#A8A8A8" }]}>
+          <Text style={[styles.headerDescription, { color: CARD_TEXT_BELOW }]}>
             Exprésate y compártelo con el mundo
           </Text>
         </View>

@@ -1500,7 +1500,7 @@ export function ProfileScreenBase({
             <Pressable
               onPress={() => router.push("/personalizar-notificaciones")}
               hitSlop={8}
-              style={({ pressed }) => [styles.gearBtn, { opacity: pressed ? 0.68 : 1 }]}
+              style={({ pressed }) => [styles.gearBtn, styles.notificationBellButton, { opacity: pressed ? 0.68 : 1 }]}
               accessibilityRole="button"
               accessibilityLabel="Personalizar notificaciones"
               testID="profile-open-notification-preferences"
@@ -1564,7 +1564,7 @@ export function ProfileScreenBase({
 
                 {email ? (
                   <Text
-                    style={[styles.emailText, { color: secondaryAccent }]}
+                    style={[styles.emailText, { color: CARD_TEXT_BELOW }]}
                     numberOfLines={1}
                     ellipsizeMode="tail"
                   >
@@ -2314,6 +2314,9 @@ const styles = StyleSheet.create({
     alignItems: "center",
     justifyContent: "center",
     backgroundColor: "rgba(0,0,0,0.28)",
+  },
+  notificationBellButton: {
+    transform: [{ translateX: -2 }, { translateY: -2 }],
   },
   profileHeaderActions: {
     flexDirection: "row",
