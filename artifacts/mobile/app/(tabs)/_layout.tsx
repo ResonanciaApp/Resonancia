@@ -33,7 +33,7 @@ import { RoutineCompletionBanner } from "@/components/RoutineCompletionBanner";
 import { RoutineCompletionBannerProvider } from "@/context/RoutineCompletionBannerContext";
 
 const ACTIVE_COLOR   = "#FFFFFF";
-const INACTIVE_COLOR = "#BAB1E1";
+const INACTIVE_COLOR = "#CFDAFF";
 const INDIGO2_COLOR  = "#DEDEDE";
 const GRAD_END       = "#F9F9F9";
 
@@ -94,14 +94,12 @@ function TabItem({
   onPress,
   tibetMode = false,
   lightNeutralColors = false,
-  inactiveColorOverride,
 }: {
   route: { key: string; name: string };
   isFocused: boolean;
   onPress: () => void;
   tibetMode?: boolean;
   lightNeutralColors?: boolean;
-  inactiveColorOverride?: string;
 }) {
   const conf = TAB_CONFIG[route.name];
   if (!conf) return null;
@@ -307,9 +305,6 @@ function CustomTabBar({ state, navigation, descriptors }: TabBarProps) {
                 tibetMode={activeSceneId === "tibet"}
                 lightNeutralColors={
                   indigo2Mode || activeSceneId === "resonancia"
-                }
-                inactiveColorOverride={
-                  "#E3F1FF"
                 }
               />
             );
