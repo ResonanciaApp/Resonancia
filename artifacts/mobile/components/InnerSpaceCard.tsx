@@ -701,7 +701,7 @@ export function InnerSpaceCard({
           </Animated.View>
         </View>
       </Reanimated.View>
-      <DiscoverSearchBorder borderRadius={24} />
+      <DiscoverSearchBorder borderRadius={24} borderWidth={1} />
     </View>
     <Reanimated.View pointerEvents="none" style={collapseSpacerStyle} />
     </>

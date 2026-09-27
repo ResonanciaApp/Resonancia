@@ -15,12 +15,18 @@ const SEARCH_BORDER_GRADIENT: [string, string] = [
   brightenBorderColor(POSITIONED_DAY_GRADIENT[1]),
 ];
 
-export function DiscoverSearchBorder({ borderRadius = 999 }: { borderRadius?: number }) {
+export function DiscoverSearchBorder({
+  borderRadius = 999,
+  borderWidth = 2,
+}: {
+  borderRadius?: number;
+  borderWidth?: number;
+}) {
   return (
     <MaskedView
       pointerEvents="none"
       style={styles.gradient}
-      maskElement={<View style={[styles.mask, { borderRadius }]} />}
+      maskElement={<View style={[styles.mask, { borderRadius, borderWidth }]} />}
     >
       <LinearGradient
         colors={SEARCH_BORDER_GRADIENT}
@@ -39,7 +45,6 @@ const styles = StyleSheet.create({
   },
   mask: {
     flex: 1,
-    borderWidth: 2,
     borderColor: "#000000",
     backgroundColor: "transparent",
   },
