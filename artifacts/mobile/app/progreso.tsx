@@ -1,7 +1,7 @@
 import { Feather } from "@expo/vector-icons";
 import { LinearGradient } from "expo-linear-gradient";
 import { router } from "expo-router";
-import React from "react";
+import React, { useMemo } from "react";
 import {
   Platform,
   Pressable,
@@ -13,13 +13,20 @@ import {
   View,
 } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
+import Svg, { Circle, Defs, LinearGradient as SvgLinearGradient, Stop } from "react-native-svg";
 
 import { ProgressMirrorSections } from "@/components/ProgressMirrorSections";
 import { CinematicFadeSlide } from "@/components/CinematicFadeSlide";
 import { SessionBadgeGlass } from "@/components/SessionDurationBadge";
+import { getPositionedDayGradient } from "@/components/StreakWeekRow";
 import { useSceneTheme } from "@/context/SceneThemeContext";
 import { useColors } from "@/hooks/useColors";
 import { useStreak } from "@/hooks/useStreak";
+
+const RING_SIZE = 136;
+const RING_STROKE = 9;
+const RING_RADIUS = (RING_SIZE - RING_STROKE) / 2;
+const RING_CIRCUMFERENCE = 2 * Math.PI * RING_RADIUS;
 
 export default function ProgresoScreen() {
   const colors = useColors();
@@ -28,6 +35,8 @@ export default function ProgresoScreen() {
   const { theme } = useSceneTheme();
   const { weekFlags } = useStreak();
   const completedWeekDays = weekFlags.filter(Boolean).length;
+  const ringGradient = useMemo(() => getPositionedDayGradient(theme.gradient), [theme.gradient]);
+  const ringProgress = Math.min(completedWeekDays / 7, 1);
 
   const topPad = Platform.OS === "web" ? 67 : Math.max(insets.top, 40);
   const bottomPad = Platform.OS === "web" ? 34 : insets.bottom;
@@ -79,6 +88,44 @@ export default function ProgresoScreen() {
                 >
                   <View style={styles.streakCountWrap}>
                     <View pointerEvents="none" style={styles.streakCountShadow} />
+                    <Svg
+                      pointerEvents="none"
+                      width={RING_SIZE}
+                      height={RING_SIZE}
+                      style={styles.streakProgressRing}
+                    >
+                      <Defs>
+                        <SvgLinearGradient id="positioned-day-progress" x1="0%" y1="0%" x2="0%" y2="100%">
+                          {ringGradient.map((color, index) => (
+                            <Stop
+                              key={index}
+                              offset={`${(theme.gradientLocations?.[index] ?? index / (ringGradient.length - 1)) * 100}%`}
+                              stopColor={color}
+                            />
+                          ))}
+                        </SvgLinearGradient>
+                      </Defs>
+                      <Circle
+                        cx={RING_SIZE / 2}
+                        cy={RING_SIZE / 2}
+                        r={RING_RADIUS}
+                        stroke="rgba(255,255,255,0.16)"
+                        strokeWidth={RING_STROKE}
+                        fill="none"
+                      />
+                      <Circle
+                        cx={RING_SIZE / 2}
+                        cy={RING_SIZE / 2}
+                        r={RING_RADIUS}
+                        stroke="url(#positioned-day-progress)"
+                        strokeWidth={RING_STROKE}
+                        strokeLinecap="round"
+                        fill="none"
+                        strokeDasharray={`${RING_CIRCUMFERENCE}`}
+                        strokeDashoffset={RING_CIRCUMFERENCE * (1 - Math.max(ringProgress, 0.06))}
+                        transform={`rotate(-90 ${RING_SIZE / 2} ${RING_SIZE / 2})`}
+                      />
+                    </Svg>
                     <View
                       style={styles.streakCountCircle}
                       accessibilityLabel={`${completedWeekDays} ${completedWeekDays === 1 ? "día" : "días"}`}
@@ -210,6 +257,11 @@ const styles = StyleSheet.create({
     alignItems: "center",
     justifyContent: "center",
   },
+  streakProgressRing: {
+    position: "absolute",
+    top: -11.5,
+    left: -11.5,
+  },
   streakCountShadow: {
     position: "absolute",
     bottom: -2,
@@ -224,9 +276,9 @@ const styles = StyleSheet.create({
     elevation: 3,
   },
   streakCountCircle: {
-    width: 103,
-    height: 103,
-    borderRadius: 51.5,
+    width: 113,
+    height: 113,
+    borderRadius: 56.5,
     borderWidth: 1,
     borderColor: "rgba(255,255,255,0.3)",
     overflow: "hidden",

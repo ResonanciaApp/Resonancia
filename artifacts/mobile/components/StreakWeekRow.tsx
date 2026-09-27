@@ -22,6 +22,12 @@ function brightenRingColor(hex: string): string {
   ).join("")}`;
 }
 
+export function getPositionedDayGradient(
+  gradient: readonly [string, string, ...string[]],
+): [string, string, ...string[]] {
+  return gradient.map(brightenRingColor) as [string, string, ...string[]];
+}
+
 export function StreakWeekRow({
   animateEntrance = false,
   entranceReplayKey = "streak-week",
@@ -36,7 +42,7 @@ export function StreakWeekRow({
   const { weekFlags, todayIndex } = useStreak();
   const { theme } = useSceneTheme();
   const ringGradient = useMemo(
-    () => theme.gradient.map(brightenRingColor) as [string, string, ...string[]],
+    () => getPositionedDayGradient(theme.gradient),
     [theme.gradient],
   );
 
