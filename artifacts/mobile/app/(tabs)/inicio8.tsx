@@ -3886,7 +3886,7 @@ const styles = StyleSheet.create({
     justifyContent: "center",
   },
   inicio2HeroEmotionAddBrighten: {
-    backgroundColor: "rgba(255,255,255,0.15)",
+    backgroundColor: "rgba(255,255,255,0.09)",
   },
   inicio2HeroEmotionAddText: {
     color: "#FFFFFF",
