@@ -14,3 +14,9 @@ Dentro del reproductor Ambiental, el contenido se oculta y reaparece únicamente
 **Why:** El auto-ocultado retrasado hacía que un tap pareciera no responder y retiraba los controles sin una acción explícita.
 
 **How to apply:** Mantener un toggle inmediato controlado por el usuario; los botones internos siguen ejecutando sus propias acciones y no deben activar el toggle del fondo.
+
+El reproductor normal de sesiones entra automáticamente en el mismo modo inmersivo del tap después de 10 segundos con controles visibles; el reproductor Ambiental sigue siendo manual.
+
+**Why:** El usuario pidió auto-inmersión solo para las sesiones no Ambientales, conservando en Ambientales la decisión previa de no auto-ocultar controles.
+
+**How to apply:** Al modificar visibilidad del reproductor, distinguir los dos flujos. En sesiones normales, suspender la espera cuando el reproductor no esté en primer plano o haya un panel abierto.

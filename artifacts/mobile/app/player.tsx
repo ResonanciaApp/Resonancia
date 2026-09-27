@@ -3,7 +3,7 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 import { BlurView } from "expo-blur";
 import * as Haptics from "expo-haptics";
 import { LinearGradient } from "expo-linear-gradient";
-import { router, Stack, useLocalSearchParams } from "expo-router";
+import { router, Stack, useFocusEffect, useLocalSearchParams } from "expo-router";
 import React, { useCallback, useEffect, useRef, useState } from "react";
 import { Image as ExpoImage } from "expo-image";
 import { BLUR_PLACEHOLDER, IMAGE_TRANSITION } from "@/constants/imagePlaceholder";
@@ -180,9 +180,8 @@ export default function PlayerScreen() {
     };
   }, [playlistSlug, privatePlaylistId]);
 
-  const toggleUI = useCallback(() => {
+  const setUIVisible = useCallback((next: boolean) => {
     const token = ++uiTransitionToken.current;
-    const next = !uiShown;
     setUiShown(next);
     uiOpacity.stopAnimation();
     centeredTimeOpacity.stopAnimation();
@@ -219,7 +218,37 @@ export default function PlayerScreen() {
         useNativeDriver: true,
       }).start();
     });
-  }, [centeredTimeOpacity, uiShown, uiOpacity]);
+  }, [centeredTimeOpacity, uiOpacity]);
+
+  const toggleUI = useCallback(() => {
+    setUIVisible(!uiShown);
+  }, [setUIVisible, uiShown]);
+
+  useFocusEffect(
+    useCallback(() => {
+      if (
+        !currentSession ||
+        currentSession.categoryId === "ambientales" ||
+        !uiShown ||
+        showOptionsSheet ||
+        showPlaylistSheet ||
+        showFolderSheet ||
+        showAmbientPicker
+      ) return;
+
+      const timer = setTimeout(() => setUIVisible(false), 10_000);
+      return () => clearTimeout(timer);
+    }, [
+      currentSession?.id,
+      currentSession?.categoryId,
+      uiShown,
+      showOptionsSheet,
+      showPlaylistSheet,
+      showFolderSheet,
+      showAmbientPicker,
+      setUIVisible,
+    ]),
+  );
 
   const [rating, setRating] = useState(0);
   const [repeatMode, setRepeatMode] = useState(false);
