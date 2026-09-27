@@ -736,6 +736,7 @@ const styles = StyleSheet.create({
     height: 43,
     alignItems: "center",
     justifyContent: "center",
+    transform: [{ translateY: 3 }],
   },
   halo: {
     position: "absolute",
