@@ -16,8 +16,6 @@ import {
   Animated,
   Easing,
   FlatList,
-  InteractionManager,
-  Keyboard,
   KeyboardAvoidingView,
   Linking,
   Modal,
@@ -50,14 +48,12 @@ import {
 import { useQueryClient } from "@tanstack/react-query";
 import { QuickAccessGrid } from "@/components/QuickAccessGrid";
 import { SacredBackground } from "@/components/SacredBackground";
-import { SessionBadgeGlass } from "@/components/SessionDurationBadge";
 import { useSceneTheme } from "@/context/SceneThemeContext";
 import { isIndigoThemeId } from "@/config/scene-themes";
 import { useUserProfile } from "@/context/UserProfileContext";
 import { usePremium } from "@/context/PremiumContext";
 import { useAuth } from "@/context/AuthContext";
 import type { LibraryTab } from "@/context/DrawerContext";
-import { useDrawer } from "@/context/DrawerContext";
 import { useColors } from "@/hooks/useColors";
 import { usePlayerBrowse } from "@/context/PlayerContext";
 import { getSessionById } from "@/data/sessions";
@@ -84,7 +80,6 @@ import {
 import { SacredGlyph } from "@/components/SacredGlyph";
 import { baseOf, type GeometryId } from "@/data/geometries";
 import { GeometrixOverlay } from "@/components/GeometrixToggle";
-import { InnerSpaceCard, INNER_SPACE_CARD_BOTTOM_MARGIN } from "@/components/InnerSpaceCard";
 import { KeyboardAwareScrollViewCompat } from "@/components/KeyboardAwareScrollViewCompat";
 import { MoonCrescentIcon } from "@/components/MoonCrescentIcon";
 import { SleepReminderSheet } from "@/components/SleepReminderSheet";
@@ -96,116 +91,6 @@ const SHOW_PROFILE_HISTORY = false;
 const SHOW_PROFILE_PRACTICE_CARDS = false;
 // Separación visual entre la tarjeta de usuario y la racha (16 de margen + 5 de translateY).
 const PROFILE_SECTION_GAP = 21;
-
-const REFLECTION_BANNER_ENTRY_DISTANCE = 86;
-const REFLECTION_BANNER_ENTRY_DURATION = 380;
-const REFLECTION_BANNER_HOLD_DURATION = 1800;
-const REFLECTION_BANNER_EXIT_DURATION = 320;
-const COMPOSE_KEYBOARD_ESTIMATE = Platform.OS === "android" ? 305 : 335;
-const COMPOSE_KEYBOARD_GAP = 15;
-const COMPOSE_EXTRA_SCROLL_SPACE = 440;
-
-function ReflectionSavedBanner({
-  trigger,
-  bottom,
-  onPress,
-}: {
-  trigger: number;
-  bottom: number;
-  onPress: () => void;
-}) {
-  const [visible, setVisible] = useState(false);
-  const translateY = useRef(new Animated.Value(REFLECTION_BANNER_ENTRY_DISTANCE)).current;
-  const opacity = useRef(new Animated.Value(1)).current;
-  const holdTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
-
-  useEffect(() => {
-    if (trigger <= 0) return;
-    if (holdTimerRef.current) clearTimeout(holdTimerRef.current);
-    translateY.stopAnimation();
-    opacity.stopAnimation();
-    translateY.setValue(REFLECTION_BANNER_ENTRY_DISTANCE);
-    opacity.setValue(1);
-    setVisible(true);
-
-    Animated.timing(translateY, {
-      toValue: 0,
-      duration: REFLECTION_BANNER_ENTRY_DURATION,
-      easing: Easing.out(Easing.cubic),
-      useNativeDriver: true,
-    }).start(({ finished }) => {
-      if (!finished) return;
-      holdTimerRef.current = setTimeout(() => {
-        holdTimerRef.current = null;
-        Animated.parallel([
-          Animated.timing(translateY, {
-            toValue: REFLECTION_BANNER_ENTRY_DISTANCE,
-            duration: REFLECTION_BANNER_EXIT_DURATION,
-            easing: Easing.in(Easing.cubic),
-            useNativeDriver: true,
-          }),
-          Animated.timing(opacity, {
-            toValue: 0,
-            duration: REFLECTION_BANNER_EXIT_DURATION,
-            easing: Easing.out(Easing.quad),
-            useNativeDriver: true,
-          }),
-        ]).start(({ finished: exited }) => {
-          if (exited) setVisible(false);
-        });
-      }, REFLECTION_BANNER_HOLD_DURATION);
-    });
-
-    return () => {
-      if (holdTimerRef.current) clearTimeout(holdTimerRef.current);
-      translateY.stopAnimation();
-      opacity.stopAnimation();
-    };
-  }, [opacity, translateY, trigger]);
-
-  if (!visible) return null;
-
-  const handlePress = () => {
-    if (holdTimerRef.current) {
-      clearTimeout(holdTimerRef.current);
-      holdTimerRef.current = null;
-    }
-    translateY.stopAnimation();
-    opacity.stopAnimation();
-    setVisible(false);
-    onPress();
-  };
-
-  return (
-    <Animated.View
-      style={[
-        styles.reflectionSavedBanner,
-        { bottom, opacity, transform: [{ translateY }] },
-      ]}
-    >
-      <Pressable
-        accessibilityRole="button"
-        accessibilityLabel="Ver mensaje registrado en muro"
-        onPress={handlePress}
-        style={({ pressed }) => [
-          styles.reflectionSavedPressable,
-          pressed && styles.reflectionSavedPressed,
-        ]}
-      >
-        <View pointerEvents="none" style={styles.reflectionSavedGlassSurface}>
-          <SessionBadgeGlass showBlackTint={false} showWhiteTint />
-        </View>
-        <View style={styles.reflectionSavedTitleRow}>
-          <View style={styles.reflectionSavedCheckSurface}>
-            <Feather name="check" size={17} color="#F9F9F9" />
-          </View>
-          <Text style={styles.reflectionSavedTitle}>Mensaje registrado en muro</Text>
-        </View>
-        <Text style={styles.reflectionSavedAction}>Ver</Text>
-      </Pressable>
-    </Animated.View>
-  );
-}
 
 function resizeImageForWeb(uri: string, maxSize: number): Promise<string> {
   return new Promise((resolve, reject) => {
@@ -398,106 +283,10 @@ export function ProfileScreenBase({
   const topPad = Platform.OS === "web" ? 67 : Math.max(insets.top, 40);
   const bottomPad = Platform.OS === "web" ? 34 : insets.bottom;
   const [libActions, setLibActions] = useState<LibHeaderActions | null>(null);
-  const {
-    profileComposeRequest,
-    consumeProfileComposeRequest,
-  } = useDrawer();
   const [morningReminderVisible, setMorningReminderVisible] = useState(false);
   const [sleepReminderVisible, setSleepReminderVisible] = useState(false);
   const profileScrollRef = useRef<ScrollView>(null);
-  const profileScrollYRef = useRef(0);
-  const profileViewportHeightRef = useRef(0);
-  const innerSpaceHeightRef = useRef(0);
-  const wallCollapsedHeightRef = useRef(0);
-  const wallAutoScrollPendingRef = useRef(false);
-  const composeInteractionRef = useRef<ReturnType<typeof InteractionManager.runAfterInteractions> | null>(null);
-  const composeFocusTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
-  const composeScrollTargetRef = useRef<number | null>(null);
-  const composePendingRef = useRef(false);
-  const lastKeyboardHeightRef = useRef(0);
-  const [composingReflection, setComposingReflection] = useState(false);
-  const [innerSpaceLayoutY, setInnerSpaceLayoutY] = useState<number | null>(null);
-  const [innerSpaceFocusRequest, setInnerSpaceFocusRequest] = useState(0);
-  const [keepInnerSpaceKeyboardOnCategories, setKeepInnerSpaceKeyboardOnCategories] = useState(false);
-  const [reflectionSavedTrigger, setReflectionSavedTrigger] = useState(0);
   const navigation = useNavigation();
-  const cancelWallAutoScroll = useCallback(() => {
-    wallAutoScrollPendingRef.current = false;
-  }, []);
-  const beginWallAutoScroll = useCallback(() => {
-    wallCollapsedHeightRef.current = innerSpaceHeightRef.current;
-    wallAutoScrollPendingRef.current = true;
-  }, []);
-  const finishWallAutoScroll = useCallback((expandedHeight: number) => {
-    requestAnimationFrame(() => {
-      if (!wallAutoScrollPendingRef.current) return;
-      wallAutoScrollPendingRef.current = false;
-      if (expandedHeight <= 0 || innerSpaceLayoutY === null || profileViewportHeightRef.current <= 0) return;
-      const expandedBottom = innerSpaceLayoutY
-        + Math.max(innerSpaceHeightRef.current, wallCollapsedHeightRef.current + expandedHeight);
-      const visibleBottom = profileScrollYRef.current + profileViewportHeightRef.current - 96;
-      const missingSpace = expandedBottom - visibleBottom;
-      if (missingSpace < 2) return;
-      profileScrollRef.current?.scrollTo({
-        y: profileScrollYRef.current + Math.min(missingSpace, 140),
-        animated: true,
-      });
-    });
-  }, [innerSpaceLayoutY]);
-  const finishComposeScroll = useCallback(() => {
-    if (!composePendingRef.current) return;
-    composePendingRef.current = false;
-    composeScrollTargetRef.current = null;
-    if (composeFocusTimerRef.current) clearTimeout(composeFocusTimerRef.current);
-    composeFocusTimerRef.current = null;
-    setInnerSpaceFocusRequest((value) => value + 1);
-  }, []);
-  const positionInnerSpaceForWriting = useCallback(() => {
-    if (innerSpaceLayoutY === null) return;
-    composeInteractionRef.current?.cancel();
-    if (composeFocusTimerRef.current) clearTimeout(composeFocusTimerRef.current);
-    composePendingRef.current = true;
-    // Reserva espacio para llegar a la posición final ANTES de mostrar el teclado.
-    setComposingReflection(true);
-    composeInteractionRef.current = InteractionManager.runAfterInteractions(() => {
-      requestAnimationFrame(() => {
-        if (!composePendingRef.current) return;
-        const viewportHeight = profileViewportHeightRef.current;
-        const keyboardHeight = lastKeyboardHeightRef.current || COMPOSE_KEYBOARD_ESTIMATE;
-        // Si se entra desde el menú, la tarjeta puede seguir plegada al medirla.
-        const expandedSectionHeight = innerSpaceHeightRef.current > 220
-          ? innerSpaceHeightRef.current
-          : 390;
-        const cardBottom = innerSpaceLayoutY + expandedSectionHeight - INNER_SPACE_CARD_BOTTOM_MARGIN;
-        const targetY = Math.max(0, cardBottom - (viewportHeight - keyboardHeight - COMPOSE_KEYBOARD_GAP));
-        if (viewportHeight <= 0 || Math.abs(targetY - profileScrollYRef.current) < 3) {
-          finishComposeScroll();
-          return;
-        }
-        composeScrollTargetRef.current = targetY;
-        profileScrollRef.current?.scrollTo({ y: targetY, animated: true });
-        // Respaldo si la plataforma no emite el último onScroll del movimiento programático.
-        composeFocusTimerRef.current = setTimeout(finishComposeScroll, 750);
-      });
-    });
-  }, [innerSpaceLayoutY, finishComposeScroll]);
-  useEffect(() => {
-    const keyboardListener = Keyboard.addListener("keyboardDidShow", (event) => {
-      lastKeyboardHeightRef.current = event.endCoordinates.height;
-    });
-    const hideListener = Keyboard.addListener("keyboardDidHide", () => {
-      if (!composePendingRef.current) setComposingReflection(false);
-    });
-    return () => {
-      keyboardListener.remove();
-      hideListener.remove();
-    };
-  }, []);
-  useEffect(() => () => {
-    composePendingRef.current = false;
-    composeInteractionRef.current?.cancel();
-    if (composeFocusTimerRef.current) clearTimeout(composeFocusTimerRef.current);
-  }, []);
   useEffect(() => {
     const tabNavigation = navigation as unknown as {
       addListener: (event: "tabPress", callback: () => void) => () => void;
@@ -510,27 +299,8 @@ export function ProfileScreenBase({
   useFocusEffect(
     useCallback(() => {
       if (!dedicated) return;
-      profileScrollYRef.current = 0;
       profileScrollRef.current?.scrollTo({ y: 0, animated: false });
-      return cancelWallAutoScroll;
-    }, [dedicated, cancelWallAutoScroll]),
-  );
-  useFocusEffect(
-    useCallback(() => {
-      if (!dedicated || profileComposeRequest === null) return;
-      const request = profileComposeRequest;
-      const frame = requestAnimationFrame(() => {
-        setKeepInnerSpaceKeyboardOnCategories(true);
-        positionInnerSpaceForWriting();
-        consumeProfileComposeRequest(request);
-      });
-      return () => cancelAnimationFrame(frame);
-    }, [
-      consumeProfileComposeRequest,
-      dedicated,
-      positionInnerSpaceForWriting,
-      profileComposeRequest,
-    ]),
+    }, [dedicated]),
   );
 
   // ── Borde del sticky header: se activa a partir de unos pocos px de scroll ──
@@ -543,11 +313,6 @@ export function ProfileScreenBase({
   const [profileStickyHeaderActive, setProfileStickyHeaderActive] = useState(false);
   const handleHeaderScroll = (e: { nativeEvent: { contentOffset: { y: number } } }) => {
     const y = e.nativeEvent.contentOffset.y;
-    profileScrollYRef.current = y;
-    if (composeScrollTargetRef.current !== null && Math.abs(y - composeScrollTargetRef.current) < 3) {
-      if (composeFocusTimerRef.current) clearTimeout(composeFocusTimerRef.current);
-      composeFocusTimerRef.current = setTimeout(finishComposeScroll, 80);
-    }
     const shouldShowBorder = y >= HEADER_BORDER_THRESHOLD_PX;
     if (shouldShowBorder !== headerBorderActiveRef.current) {
       headerBorderActiveRef.current = shouldShowBorder;
@@ -1470,28 +1235,17 @@ export function ProfileScreenBase({
       <KeyboardAwareScrollViewCompat
         scrollRef={profileScrollRef}
         style={styles.scroll}
-        onLayout={(event) => { profileViewportHeightRef.current = event.nativeEvent.layout.height; }}
         contentContainerStyle={{
-          paddingBottom: 160 + bottomPad + (composingReflection ? COMPOSE_EXTRA_SCROLL_SPACE : 0),
+          paddingBottom: 160 + bottomPad,
           paddingTop: topPad + 2,
           paddingHorizontal: 16,
         }}
         showsVerticalScrollIndicator={false}
         scrollEnabled={scrollEnabled}
         onScroll={handleHeaderScroll}
-        onScrollBeginDrag={() => {
-          cancelWallAutoScroll();
-          if (composePendingRef.current) {
-            composePendingRef.current = false;
-            composeScrollTargetRef.current = null;
-            if (composeFocusTimerRef.current) clearTimeout(composeFocusTimerRef.current);
-            setComposingReflection(false);
-          }
-        }}
         scrollEventThrottle={16}
         keyboardShouldPersistTaps="handled"
         bottomOffset={165}
-        enabled={!composingReflection}
         disableScrollOnKeyboardHide
       >
         <View style={styles.dedicatedTitleRow}>
@@ -1647,26 +1401,6 @@ export function ProfileScreenBase({
                 sectionBottomPadding={15}
                 sectionMarginBottom={PROFILE_SECTION_GAP}
                 onStreakTitlePress={() => router.push("/progreso" as never)}
-              />
-            </View>
-
-            <View
-              onLayout={(event) => {
-                innerSpaceHeightRef.current = event.nativeEvent.layout.height;
-                setInnerSpaceLayoutY(event.nativeEvent.layout.y);
-              }}
-            >
-              <InnerSpaceCard
-                focusRequest={innerSpaceFocusRequest}
-                keepKeyboardOnCategories={keepInnerSpaceKeyboardOnCategories}
-                onComposeRequested={positionInnerSpaceForWriting}
-                onInputBlur={() => {
-                  setKeepInnerSpaceKeyboardOnCategories(false);
-                  if (!Keyboard.isVisible()) setComposingReflection(false);
-                }}
-                onMessageSaved={() => setReflectionSavedTrigger((value) => value + 1)}
-                onExpandStart={beginWallAutoScroll}
-                onExpandComplete={finishWallAutoScroll}
               />
             </View>
 
@@ -1968,14 +1702,6 @@ export function ProfileScreenBase({
 
       {!dedicated && <BibliotecaScreen embedded initialTab={initialLibraryTab} onHeaderActions={setLibActions} />}
       </View>
-
-      {dedicated && (
-        <ReflectionSavedBanner
-          trigger={reflectionSavedTrigger}
-          bottom={58 + bottomPad + 15}
-          onPress={() => router.push("/mi-espacio-interior")}
-        />
-      )}
 
       {/* ── Invitar Sheet ── */}
       <InvitarSheet
@@ -2943,62 +2669,6 @@ const styles = StyleSheet.create({
     fontFamily: "Manrope",
     fontSize: 12,
     fontWeight: "500",
-  },
-  reflectionSavedBanner: {
-    position: "absolute",
-    left: 14,
-    right: 14,
-    height: 56,
-    borderRadius: 18,
-    borderWidth: StyleSheet.hairlineWidth,
-    borderColor: "rgba(255,255,255,0.10)",
-    shadowColor: "#000000",
-    shadowOpacity: 0.3,
-    shadowRadius: 12,
-    shadowOffset: { width: 0, height: -3 },
-    zIndex: 40,
-  },
-  reflectionSavedPressable: {
-    flex: 1,
-    borderRadius: 18,
-    paddingHorizontal: 17,
-    flexDirection: "row",
-    alignItems: "center",
-  },
-  reflectionSavedPressed: {
-    opacity: 0.6,
-  },
-  reflectionSavedGlassSurface: {
-    ...StyleSheet.absoluteFillObject,
-    borderRadius: 18,
-    overflow: "hidden",
-  },
-  reflectionSavedTitleRow: {
-    flex: 1,
-    minWidth: 0,
-    flexDirection: "row",
-    alignItems: "center",
-    gap: 10,
-  },
-  reflectionSavedCheckSurface: {
-    width: 28,
-    height: 28,
-    borderRadius: 14,
-    backgroundColor: "rgba(255,255,255,0.10)",
-    alignItems: "center",
-    justifyContent: "center",
-  },
-  reflectionSavedTitle: {
-    color: "#F9F9F9",
-    fontFamily: "Manrope",
-    fontSize: 14,
-    fontWeight: "700",
-  },
-  reflectionSavedAction: {
-    color: "#F9F9F9",
-    fontFamily: "Manrope",
-    fontSize: 13,
-    fontWeight: "700",
   },
   profileProgressIntro: {
     paddingTop: 10,

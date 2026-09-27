@@ -75,7 +75,9 @@ import { EqualizerBars } from "@/components/EqualizerBars";
 import { SessionCarousel, CoverCarousel } from "@/components/SessionCarousel";
 import { SessionDurationBadge } from "@/components/SessionDurationBadge";
 import { PremiumBadge } from "@/components/PremiumBadge";
-import { MiRutinaSection } from "@/components/MiRutinaSection";
+import { HomeReflectionWallSection, type HomeReflectionWallHandle } from "@/components/HomeReflectionWallSection";
+import { ReflectionSavedBanner } from "@/components/ReflectionSavedBanner";
+import { INNER_SPACE_CARD_BOTTOM_MARGIN } from "@/components/InnerSpaceCard";
 import { Image as ExpoImage } from "expo-image";
 import { useAmbientPlayer, AMBIENT_SCENES } from "@/context/AmbientPlayerContext";
 import { useSceneTheme } from "@/context/SceneThemeContext";
@@ -143,6 +145,7 @@ const { width, height } = Dimensions.get("window");
 const GRID_GAP = 12;
 const GRID_PAD = 16;
 const INICIO2_SECTION_GAP = 53;
+const SECTION_DIVIDER_COLOR = "rgba(255,255,255,0.12)";
 const INICIO3_VERTICAL_LIFT = 11;
 const INICIO3_SESSION_CARD_WIDTH = Math.round(
   (width - GRID_PAD - CONTENT_CAROUSEL_GAP) / 1.9,
@@ -2582,6 +2585,14 @@ export default function HomeScreen2({
   const searchOpenRef = useRef(false);
   const scrollYRef = useRef(0);
   const inicio3ScrollY = useSharedValue(0);
+  const homeScrollRef = useRef<React.ElementRef<typeof RAnimated.ScrollView>>(null);
+  const wallSectionRef = useRef<HomeReflectionWallHandle>(null);
+  const [composingReflection, setComposingReflection] = useState(false);
+  const [reflectionSavedTrigger, setReflectionSavedTrigger] = useState(0);
+  const getHomeScrollY = useCallback(
+    () => variant === "inicio3" ? inicio3ScrollY.value : scrollYRef.current,
+    [inicio3ScrollY, variant],
+  );
 
   const searchBtnAnim = useRef(new Animated.Value(0)).current;
   const giftScaleAnim = useRef(new Animated.Value(1)).current;
@@ -2901,16 +2912,21 @@ export default function HomeScreen2({
       )}
 
       <RAnimated.ScrollView
+        ref={homeScrollRef}
         style={styles.scroll}
-        contentContainerStyle={{ paddingBottom: 160 + bottomPad, paddingTop: isInicio2 ? 0 : topPad + 38 }}
+        contentContainerStyle={{
+          paddingBottom: 160 + bottomPad + (composingReflection ? 440 : 0),
+          paddingTop: isInicio2 ? 0 : topPad + 38,
+        }}
         showsVerticalScrollIndicator={false}
         onScroll={
           variant === "inicio3"
             ? handleInicio3Scroll
-            : isInicio2
-              ? undefined
-              : handleMainScroll
+            : handleMainScroll
         }
+        onScrollBeginDrag={() => wallSectionRef.current?.cancelPendingScroll()}
+        onMomentumScrollEnd={() => wallSectionRef.current?.finishPendingScroll()}
+        keyboardShouldPersistTaps="handled"
         scrollEventThrottle={16}
       >
         {/* ── Slider místico Inicio 2 / escena o intención del Inicio original ── */}
@@ -3339,19 +3355,13 @@ export default function HomeScreen2({
           <View style={styles.inicio3SectionDivider} />
         )}
         {isInicio2 && (
-          <MiRutinaSection
-            cardBackgroundColor={
-              activeSceneId === "tibet"
-                ? "rgba(0,0,0,0.14)"
-                : activeSceneId === "indigo2"
-                  ? "rgba(0,0,0,0.28)"
-                  : isIndigoThemeId(activeSceneId)
-                    ? "rgba(181,211,255,0.14)"
-                    : "rgba(181,211,255,0.14)"
-            }
-            style={{
-              marginHorizontal: GRID_PAD,
-            }}
+          <HomeReflectionWallSection
+            ref={wallSectionRef}
+            scrollRef={homeScrollRef}
+            getScrollY={getHomeScrollY}
+            onComposingChange={setComposingReflection}
+            onMessageSaved={() => setReflectionSavedTrigger((value) => value + 1)}
+            style={{ marginHorizontal: GRID_PAD }}
           />
         )}
         {isInicio2 && variant !== "inicio3" && (
@@ -3481,6 +3491,13 @@ export default function HomeScreen2({
       />
       </Animated.View>{/* fin contenido desvanecible */}
 
+      {isInicio2 && (
+        <ReflectionSavedBanner
+          trigger={reflectionSavedTrigger}
+          bottom={58 + bottomPad + 15}
+          onPress={() => router.push("/mi-espacio-interior")}
+        />
+      )}
 
       <EscenasAnimSheet
         visible={!isInicio2 && animSheetOpen}
@@ -4482,30 +4499,36 @@ const styles = StyleSheet.create({
     marginHorizontal: GRID_PAD * 2,
     marginBottom: SECTION_GAP,
     height: StyleSheet.hairlineWidth,
+    backgroundColor: SECTION_DIVIDER_COLOR,
   },
   inicio3SectionDivider: {
     height: StyleSheet.hairlineWidth,
     marginHorizontal: GRID_PAD,
     marginTop: -27,
     marginBottom: 26,
+    backgroundColor: SECTION_DIVIDER_COLOR,
   },
   inicio3StandaloneDivider: {
     height: StyleSheet.hairlineWidth,
     marginHorizontal: GRID_PAD,
     marginTop: 26,
     marginBottom: 26,
+    backgroundColor: SECTION_DIVIDER_COLOR,
   },
   inicio3LowerStandaloneDivider: {
     height: StyleSheet.hairlineWidth,
     marginHorizontal: GRID_PAD,
-    marginTop: 31,
-    marginBottom: 31,
+    // El muro ya deja 32 px debajo: 26 px antes del divisor y 27 después ≈ 53 px en total.
+    marginTop: 26 - INNER_SPACE_CARD_BOTTOM_MARGIN,
+    marginBottom: INICIO2_SECTION_GAP - 26,
+    backgroundColor: SECTION_DIVIDER_COLOR,
   },
   inicio3LowerSectionDivider: {
     height: StyleSheet.hairlineWidth,
     marginHorizontal: GRID_PAD,
     marginTop: -22,
     marginBottom: 31,
+    backgroundColor: SECTION_DIVIDER_COLOR,
   },
   sectionRow: {
     flexDirection: "row",

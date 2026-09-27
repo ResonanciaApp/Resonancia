@@ -485,6 +485,9 @@ export function InnerSpaceCard({
       <View style={styles.header}>
         <View style={styles.headerCopy}>
           <Text style={[styles.headerTitle, { color: colors.foreground }]}>Mi muro expansivo</Text>
+          <Text style={[styles.headerDescription, { color: colors.mutedForeground }]}>
+            Comparte tus reflexiones y registra tu viaje interior
+          </Text>
         </View>
         <Pressable
           style={styles.infoButton}
@@ -733,12 +736,17 @@ const styles = StyleSheet.create({
     fontSize: 16,
     fontWeight: "700",
   },
+  headerDescription: {
+    fontFamily: "Manrope",
+    fontSize: 13,
+    lineHeight: 18,
+    marginTop: 4,
+  },
   infoButton: {
     width: 43,
     height: 43,
     alignItems: "center",
     justifyContent: "center",
-    transform: [{ translateY: 3 }],
   },
   halo: {
     position: "absolute",

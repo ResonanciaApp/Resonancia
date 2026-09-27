@@ -12,6 +12,7 @@ import { KeyboardAwareScrollView } from "react-native-keyboard-controller";
 import { useQueryClient, type QueryKey } from "@tanstack/react-query";
 import { useAuth } from "@/context/AuthContext";
 import { usePremium } from "@/context/PremiumContext";
+import { useDrawer } from "@/context/DrawerContext";
 import { ReflectionShare } from "@/components/ReflectionShare";
 import { CinematicFadeSlide } from "@/components/CinematicFadeSlide";
 import { canShareReflection } from "@/lib/reflection-story-logic";
@@ -221,6 +222,7 @@ export default function InnerSpaceScreen() {
 
 function PremiumInnerSpaceScreen() {
   const insets = useSafeAreaInsets();
+  const { requestWallCompose } = useDrawer();
   const colors = useColors();
   const { theme } = useSceneTheme();
   const qc = useQueryClient();
@@ -711,7 +713,10 @@ function PremiumInnerSpaceScreen() {
         <Pressable
           testID="empty-back"
           style={styles.emptyButton}
-          onPress={() => router.replace("/profile")}
+          onPress={() => {
+            requestWallCompose();
+            router.replace("/(tabs)/inicio3");
+          }}
         >
           <Text style={styles.emptyButtonText}>Escribir mi primera reflexión</Text>
         </Pressable>

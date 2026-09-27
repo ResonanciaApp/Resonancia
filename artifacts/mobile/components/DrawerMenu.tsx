@@ -81,7 +81,7 @@ export function DrawerMenu() {
     openOverlayFromDrawer,
     overlayParallax,
     drawerTransitionProgress,
-    requestProfileCompose,
+    requestWallCompose,
   } = useDrawer();
   const insets = useSafeAreaInsets();
   const { isRegistered, isSignedIn } = useAuth();
@@ -220,8 +220,8 @@ export function DrawerMenu() {
     if (route === "__profile_compose") {
       markInstantNav();
       onClose();
-      requestProfileCompose();
-      router.push("/profile" as never);
+      requestWallCompose();
+      router.push("/(tabs)/inicio3" as never);
       return;
     }
     if (route.startsWith("__overlay:")) {

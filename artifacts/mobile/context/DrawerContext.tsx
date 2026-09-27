@@ -14,9 +14,9 @@ type DrawerCtx = {
   close: () => void;
   moodPickerRequest: number;
   requestMoodPicker: () => void;
-  profileComposeRequest: number | null;
-  requestProfileCompose: () => void;
-  consumeProfileComposeRequest: (request: number) => void;
+  wallComposeRequest: number | null;
+  requestWallCompose: () => void;
+  consumeWallComposeRequest: (request: number) => void;
   drawerAnim: Animated.Value;
   /** True durante una navegación iniciada desde el menú: las pantallas destino
    *  del drawer entran SIN animación propia, así el único movimiento es el cierre
@@ -58,7 +58,7 @@ const Ctx = createContext<DrawerCtx | null>(null);
 export function DrawerProvider({ children }: { children: React.ReactNode }) {
   const [isOpen, setIsOpen] = useState(false);
   const [moodPickerRequest, setMoodPickerRequest] = useState(0);
-  const [profileComposeRequest, setProfileComposeRequest] = useState<number | null>(null);
+  const [wallComposeRequest, setWallComposeRequest] = useState<number | null>(null);
   const [instantNav, setInstantNav] = useState(false);
   const instantNavTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
   const drawerAnim = useRef(new Animated.Value(0)).current;
@@ -99,11 +99,11 @@ export function DrawerProvider({ children }: { children: React.ReactNode }) {
   const requestMoodPicker = useCallback(() => {
     setMoodPickerRequest((request) => request + 1);
   }, []);
-  const requestProfileCompose = useCallback(() => {
-    setProfileComposeRequest((request) => (request ?? 0) + 1);
+  const requestWallCompose = useCallback(() => {
+    setWallComposeRequest((request) => (request ?? 0) + 1);
   }, []);
-  const consumeProfileComposeRequest = useCallback((request: number) => {
-    setProfileComposeRequest((current) => current === request ? null : current);
+  const consumeWallComposeRequest = useCallback((request: number) => {
+    setWallComposeRequest((current) => current === request ? null : current);
   }, []);
 
   const [libOpen, setLibOpen] = useState(false);
@@ -168,8 +168,8 @@ export function DrawerProvider({ children }: { children: React.ReactNode }) {
   const closeChat = useCallback(() => setChatUserId(null), []);
 
   const value = React.useMemo(
-    () => ({ isOpen, open, close, moodPickerRequest, requestMoodPicker, profileComposeRequest, requestProfileCompose, consumeProfileComposeRequest, drawerAnim, instantNav, markInstantNav, libOpen, libraryParallax, libraryInitialTab, openLib, openLibFromDrawer, closeLib, libOpenedFromDrawer, libraryMixId, openLibraryMix, closeLibraryMix, overlayRoute, openOverlay, openOverlayFromDrawer, closeOverlay, overlayOpenedFromDrawer, overlayParallax, drawerTransitionProgress, chatUserId, openChat, closeChat }),
-    [isOpen, open, close, moodPickerRequest, requestMoodPicker, profileComposeRequest, requestProfileCompose, consumeProfileComposeRequest, drawerAnim, instantNav, markInstantNav, libOpen, libraryParallax, libraryInitialTab, openLib, openLibFromDrawer, closeLib, libOpenedFromDrawer, libraryMixId, openLibraryMix, closeLibraryMix, overlayRoute, openOverlay, openOverlayFromDrawer, closeOverlay, overlayOpenedFromDrawer, overlayParallax, drawerTransitionProgress, chatUserId, openChat, closeChat],
+    () => ({ isOpen, open, close, moodPickerRequest, requestMoodPicker, wallComposeRequest, requestWallCompose, consumeWallComposeRequest, drawerAnim, instantNav, markInstantNav, libOpen, libraryParallax, libraryInitialTab, openLib, openLibFromDrawer, closeLib, libOpenedFromDrawer, libraryMixId, openLibraryMix, closeLibraryMix, overlayRoute, openOverlay, openOverlayFromDrawer, closeOverlay, overlayOpenedFromDrawer, overlayParallax, drawerTransitionProgress, chatUserId, openChat, closeChat }),
+    [isOpen, open, close, moodPickerRequest, requestMoodPicker, wallComposeRequest, requestWallCompose, consumeWallComposeRequest, drawerAnim, instantNav, markInstantNav, libOpen, libraryParallax, libraryInitialTab, openLib, openLibFromDrawer, closeLib, libOpenedFromDrawer, libraryMixId, openLibraryMix, closeLibraryMix, overlayRoute, openOverlay, openOverlayFromDrawer, closeOverlay, overlayOpenedFromDrawer, overlayParallax, drawerTransitionProgress, chatUserId, openChat, closeChat],
   );
 
   return <Ctx.Provider value={value}>{children}</Ctx.Provider>;
