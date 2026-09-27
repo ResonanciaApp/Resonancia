@@ -36,7 +36,7 @@ const CATEGORY_PLACEHOLDERS: Partial<Record<ReflectionCategory, string>> = {
   purpose: "Ej: Me conecto con mi propósito cuando...",
   acceptance: "Ej: Cuando acepto lo que sucede, la vida...",
 };
-const DEFAULT_PLACEHOLDER = "Registra una reflexión...";
+const DEFAULT_PLACEHOLDER = "¿Qué sientes compartir hoy?";
 const REGISTER_BUTTON_BACKGROUND = "rgba(184, 117, 240, 0.2)";
 const REGISTER_BUTTON_ENABLED_BACKGROUND = "rgba(184, 117, 240, 0.45)";
 // La + se repite visualmente cada 90°: 270° son tres ciclos perceptibles.
