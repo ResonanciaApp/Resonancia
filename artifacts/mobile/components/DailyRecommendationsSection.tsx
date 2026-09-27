@@ -270,12 +270,12 @@ const styles = StyleSheet.create({
   },
   row: {
     paddingVertical: 9.3,
-    paddingLeft: 22,
+    paddingLeft: 18,
     paddingRight: 16,
   },
   inicio3Row: {
     paddingVertical: 8.3,
-    paddingLeft: 17,
+    paddingLeft: 13,
     paddingRight: 11,
   },
 });
