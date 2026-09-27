@@ -1,5 +1,4 @@
 import { Feather } from "@expo/vector-icons";
-import { Image } from "expo-image";
 import { LinearGradient } from "expo-linear-gradient";
 import { router } from "expo-router";
 import React from "react";
@@ -33,9 +32,7 @@ export default function ProgresoScreen() {
   const topPad = Platform.OS === "web" ? 67 : Math.max(insets.top, 40);
   const bottomPad = Platform.OS === "web" ? 34 : insets.bottom;
   const bgColors = theme.gradient as unknown as [string, string, ...string[]];
-  const fadeColor = bgColors[0] || "#080910";
-  const heroHeight = Math.min(410, Math.max(340, viewportWidth * 0.98));
-  const fadeSolidStart = 1 - 55 / heroHeight;
+  const heroHeight = Math.min(410, Math.max(340, viewportWidth * 0.98)) - 75;
 
   return (
     <LinearGradient
@@ -70,32 +67,7 @@ export default function ProgresoScreen() {
         </View>
 
         <View style={[styles.heroContainer, { width: viewportWidth, height: heroHeight }]}>
-          <CinematicFadeSlide
-            replayKey="progress-hero-background"
-            delay={0}
-            duration={3000}
-            scaleFrom={1.06}
-            translateYFrom={0}
-            style={StyleSheet.absoluteFill}
-          >
-            <Image
-              source={require("@/assets/images/progreso-lotus-cosmic.jpg")}
-              style={styles.heroLotus}
-              contentFit="contain"
-            />
-          </CinematicFadeSlide>
-          <LinearGradient
-            colors={[
-              withOpacity(fadeColor, 0),
-              withOpacity(fadeColor, 0.3),
-              fadeColor,
-              fadeColor,
-            ]}
-            locations={[0.3, 0.7, fadeSolidStart, 1]}
-            style={StyleSheet.absoluteFill}
-            pointerEvents="none"
-          />
-          <View style={[styles.heroOverlay, { paddingTop: topPad + 80 }]}>
+          <View style={[styles.heroOverlay, { paddingTop: topPad + 5 }]}>
             <View style={styles.heroAnimatedContent}>
               <View style={styles.heroCopyOffset}>
                 <CinematicFadeSlide
@@ -136,23 +108,24 @@ export default function ProgresoScreen() {
           </View>
         </View>
 
-        <LinearGradient colors={bgColors} style={styles.content}>
+        <View style={styles.content}>
           <View style={styles.sectionsOffset}>
             <ProgressMirrorSections
               animateEntrance
               entranceReplayKey="progress-sections"
               entranceBaseDelay={900}
               showSectionBorders={false}
+              showPersonalStats={false}
+              showCalendar={false}
               sectionHorizontalPadding={20}
               sectionTopPadding={16}
               sectionBottomPadding={19}
-              sectionVerticalPadding={16}
               sectionMarginBottom={20}
               canonicalVerticalInsets
               streakTitle="Tu progreso"
             />
           </View>
-        </LinearGradient>
+        </View>
       </ScrollView>
     </LinearGradient>
   );
@@ -196,11 +169,6 @@ const styles = StyleSheet.create({
   headerSpacer: { width: 43, height: 43 },
   heroContainer: {
     position: "relative",
-    backgroundColor: "#080A28",
-  },
-  heroLotus: {
-    ...StyleSheet.absoluteFillObject,
-    transform: [{ scale: 1.52 }],
   },
   heroOverlay: {
     ...StyleSheet.absoluteFillObject,
@@ -394,12 +362,3 @@ const styles = StyleSheet.create({
     backgroundColor: "rgba(255,255,255,0.07)",
   },
 });
-
-function withOpacity(color: string, opacity: number): string {
-  const match = color.match(/^#([0-9a-f]{6})$/i);
-  if (!match) return color;
-  const alpha = Math.round(Math.max(0, Math.min(1, opacity)) * 255)
-    .toString(16)
-    .padStart(2, "0");
-  return `#${match[1]}${alpha}`;
-}

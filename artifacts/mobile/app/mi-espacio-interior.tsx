@@ -684,7 +684,7 @@ function PremiumInnerSpaceScreen() {
                     disabled={!isShareable}
                     onPress={() => setShareReflection(reflection)}
                   >
-                    <Feather name="share" size={16} color={colors.mutedForeground} />
+                    <Feather name="instagram" size={16} color={colors.mutedForeground} />
                   </Pressable>
                 )}
               </View>
