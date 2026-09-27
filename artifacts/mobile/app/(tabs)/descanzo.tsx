@@ -849,6 +849,7 @@ const styles = StyleSheet.create({
     height: StyleSheet.hairlineWidth,
     marginHorizontal: H_PAD,
     marginTop: 26,
+    backgroundColor: "rgba(255,255,255,0.12)",
   },
   sleepPillBorder: {},
   sleepPillBorderSel: {},

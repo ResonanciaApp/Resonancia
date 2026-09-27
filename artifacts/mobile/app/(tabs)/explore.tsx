@@ -1274,6 +1274,7 @@ const styles = StyleSheet.create({
     marginHorizontal: H_PAD,
     marginTop: -27,
     marginBottom: 26,
+    backgroundColor: "rgba(255,255,255,0.12)",
   },
   categoryBlocksDivider: {
     marginTop: -24,
