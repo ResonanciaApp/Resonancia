@@ -76,6 +76,7 @@ import { SessionCarousel, CoverCarousel } from "@/components/SessionCarousel";
 import { SessionDurationBadge } from "@/components/SessionDurationBadge";
 import { PremiumBadge } from "@/components/PremiumBadge";
 import { MiRutinaSection } from "@/components/MiRutinaSection";
+import { InnerSpaceCard, INNER_SPACE_CARD_BOTTOM_MARGIN } from "@/components/InnerSpaceCard";
 import { Image as ExpoImage } from "expo-image";
 import { useAmbientPlayer, AMBIENT_SCENES } from "@/context/AmbientPlayerContext";
 import { useSceneTheme } from "@/context/SceneThemeContext";
@@ -126,7 +127,6 @@ import { ToolsGrid } from "@/components/ToolsGrid";
 import { DailyRecommendationsSection } from "@/components/DailyRecommendationsSection";
 import { selectDailyRecommendations } from "@/lib/daily-recommendations";
 import { DailyWisdomCard } from "@/components/DailyWisdomCard";
-import { AlmaCommunitySection } from "@/components/AlmaCommunitySection";
 import { VideoCard } from "@/components/VideoCard";
 import { useVideos } from "@/hooks/useVideos";
 import { useResonadores } from "@/hooks/useResonadores";
@@ -3335,25 +3335,6 @@ export default function HomeScreen2({
             </Pressable>
           </View>
         )}
-        {variant === "inicio3" && SHOW_CONTINUE_LISTENING && continueSession && (
-          <View style={styles.inicio3SectionDivider} />
-        )}
-        {isInicio2 && (
-          <MiRutinaSection
-            cardBackgroundColor={
-              activeSceneId === "tibet"
-                ? "rgba(0,0,0,0.14)"
-                : activeSceneId === "indigo2"
-                  ? "rgba(0,0,0,0.28)"
-                  : isIndigoThemeId(activeSceneId)
-                    ? "rgba(181,211,255,0.14)"
-                    : "rgba(181,211,255,0.14)"
-            }
-            style={{
-              marginHorizontal: GRID_PAD,
-            }}
-          />
-        )}
         {isInicio2 && variant !== "inicio3" && (
           <View style={{ paddingTop: INICIO2_SECTION_GAP }}>
             <SessionCarousel
@@ -3382,18 +3363,37 @@ export default function HomeScreen2({
           <View style={styles.inicio3LowerStandaloneDivider} />
         )}
         {isInicio2 && (
-          <View>
+          <View style={{ marginHorizontal: GRID_PAD }}>
+            <InnerSpaceCard />
+          </View>
+        )}
+        {isInicio2 && (
+          <View style={{ paddingTop: INICIO2_SECTION_GAP - INNER_SPACE_CARD_BOTTOM_MARGIN }}>
             <DailyWisdomCard
               backgroundColor="rgba(0,0,0,0.25)"
               decorativeGradient={variant === "inicio3"}
             />
           </View>
         )}
-        {isInicio2 && isPremium && <AlmaCommunitySection />}
+        {isInicio2 && (
+          <MiRutinaSection
+            cardBackgroundColor={
+              activeSceneId === "tibet"
+                ? "rgba(0,0,0,0.14)"
+                : activeSceneId === "indigo2"
+                  ? "rgba(0,0,0,0.28)"
+                  : isIndigoThemeId(activeSceneId)
+                    ? "rgba(181,211,255,0.14)"
+                    : "rgba(181,211,255,0.14)"
+            }
+            style={{ marginHorizontal: GRID_PAD }}
+          />
+        )}
         {/* ── BANNER PREMIUM ── */}
         <View
           style={{
-            marginTop: (variant === "inicio3" ? 0 : -25) - (isPremium ? 17 : 20),
+            marginTop: isInicio2 ? 0 : -25 - (isPremium ? 17 : 20),
+            paddingTop: isInicio2 ? INICIO2_SECTION_GAP : 0,
             marginBottom: isInicio2 ? INICIO2_SECTION_GAP : SECTION_GAP,
           }}
         >
