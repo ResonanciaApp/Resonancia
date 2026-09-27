@@ -2,8 +2,9 @@ import React from "react";
 import { LinearGradient } from "expo-linear-gradient";
 import { StyleSheet, Text, View } from "react-native";
 
-import { getMoodById, type MoodId } from "@/data/moods";
+import { getMoodById } from "@/data/moods";
 import type { MoodHistoryRecord } from "@/data/mood-history";
+import { MOOD_CALENDAR_COLORS } from "@/data/mood-calendar-colors";
 import {
   buildMoodCalendarMonth,
   localMoodDayKey,
@@ -14,36 +15,6 @@ type Props = {
   month: Date;
   records: MoodHistoryRecord[];
   showMonthTitle?: boolean;
-};
-
-type MoodTone = "joy" | "calm" | "discomfort" | "anger";
-
-const MOOD_TONES: Record<MoodId, MoodTone> = {
-  estresado: "discomfort",
-  ansioso: "discomfort",
-  cansado: "discomfort",
-  inepto: "discomfort",
-  triste: "discomfort",
-  solo: "discomfort",
-  deprimido: "discomfort",
-  desmotivado: "discomfort",
-  enojado: "anger",
-  adolorido: "discomfort",
-  agradecido: "joy",
-  emocionado: "joy",
-  "lleno-de-amor": "joy",
-  feliz: "joy",
-  "en-paz": "calm",
-  esperanzado: "joy",
-  contento: "joy",
-  presente: "calm",
-};
-
-const MOOD_GRADIENTS: Record<MoodTone, readonly [string, string]> = {
-  joy: ["rgba(128,207,244,0.38)", "rgba(79,151,215,0.18)"],
-  calm: ["rgba(100,224,112,0.52)", "rgba(46,174,73,0.28)"],
-  discomfort: ["rgba(255,174,38,0.82)", "rgba(245,92,24,0.62)"],
-  anger: ["rgba(255,76,67,0.86)", "rgba(214,27,35,0.64)"],
 };
 
 export function MoodCalendar({
@@ -96,7 +67,7 @@ export function MoodCalendar({
                 >
                   {mood ? (
                     <LinearGradient
-                      colors={MOOD_GRADIENTS[MOOD_TONES[mood.id]]}
+                      colors={MOOD_CALENDAR_COLORS[mood.id]}
                       start={{ x: 0.15, y: 0 }}
                       end={{ x: 0.85, y: 1 }}
                       style={circleStyle}

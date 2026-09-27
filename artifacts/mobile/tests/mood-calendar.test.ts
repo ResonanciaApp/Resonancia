@@ -5,6 +5,7 @@ import {
   buildMoodCalendarMonth,
   buildMoodCalendarRange,
 } from "../data/mood-calendar.ts";
+import { MOOD_CALENDAR_COLORS } from "../data/mood-calendar-colors.ts";
 import type { MoodHistoryRecord } from "../data/mood-history.ts";
 
 function record(
@@ -49,4 +50,22 @@ test("uses only the first record and first emotion displayed for a day", () => {
   const day = month.cells.find((cell) => cell.day === 15);
   assert.equal(day?.record?.id, "newer");
   assert.equal(day?.record?.moodIds[0], "feliz");
+});
+
+test("uses the reference palette for each calendar emotion group", () => {
+  for (const id of ["agradecido", "emocionado", "lleno-de-amor"] as const) {
+    assert.deepEqual(MOOD_CALENDAR_COLORS[id], ["#56B3CD", "#62A2D2"]);
+  }
+  for (const id of ["feliz", "esperanzado", "contento"] as const) {
+    assert.deepEqual(MOOD_CALENDAR_COLORS[id], ["#41BB9F", "#2CA379"]);
+  }
+  for (const id of ["ansioso", "cansado", "inepto", "solo", "deprimido", "triste"] as const) {
+    assert.deepEqual(MOOD_CALENDAR_COLORS[id], ["#E77A8D", "#FA876C"]);
+  }
+  for (const id of ["enojado", "adolorido", "desmotivado", "estresado"] as const) {
+    assert.deepEqual(MOOD_CALENDAR_COLORS[id], ["#C581BB", "#EC8282"]);
+  }
+  for (const id of ["presente", "en-paz"] as const) {
+    assert.deepEqual(MOOD_CALENDAR_COLORS[id], ["#9188E2", "#BB7EBF"]);
+  }
 });
