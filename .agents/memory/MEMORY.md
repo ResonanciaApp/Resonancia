@@ -115,6 +115,7 @@
 - [Filtros editoriales de supercategorías](supercategory-editorial-tags.md) — Dormir/Sonidos conservan colecciones como navegación; una segunda taxonomía prefijada filtra dentro de cada colección
 - [Header del calendario de rutina](routine-calendar-sticky-header.md) — fecha, semana y divisor forman un solo sticky header; margen lateral canónico de Inicio
 - [Ubicación de carpetas en Biblioteca](library-folder-placement.md) — las carpetas viven solo en la portada general y el tab Carpetas; no duplicarlas en Mis playlist ni Mis mezclas
+- [Fondos de creación en Biblioteca](biblioteca-create-surfaces.md) — carpeta, playlist y menú + usan color liso del último stop del tema; no degradado
 - [Carpetas de contenido exclusivo](exclusive-folder-content.md) — una carpeta general guarda playlists o mezclas, nunca ambas; al vaciarse vuelve a quedar libre
 - [Agregar favoritos a playlists](playlist-add-from-favorites.md) — el selector de sesiones de una playlist es pantalla completa y muestra solo favoritos con tabs/cards de Mis Favoritos
 - [Afinidad emocional de sesiones](session-mood-affinity.md) — recomendaciones usan moodIds editoriales directos; cinco slots fijos y reservas base con cobertura de las 18 emociones

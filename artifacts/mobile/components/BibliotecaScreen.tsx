@@ -681,7 +681,7 @@ const blStyles = StyleSheet.create({
 });
 
 // ── Modal de nombre de carpeta ────────────────────────────────────────────────
-function NombreCarpetaModal({ visible, onClose, bgColor }: { visible: boolean; onClose: () => void; bgColor?: string }) {
+function NombreCarpetaModal({ visible, onClose, bgColor }: { visible: boolean; onClose: () => void; bgColor: string }) {
   const openLibraryRoute = useLibraryRouteOpener();
   const { folders, createFolder } = useFoldersPlaylists();
   const [name, setName] = useState("");
@@ -708,7 +708,7 @@ function NombreCarpetaModal({ visible, onClose, bgColor }: { visible: boolean; o
       onRequestClose={onClose}
     >
       <KeyboardAvoidingView behavior={Platform.OS === "ios" ? "padding" : "height"} style={{ flex: 1 }}>
-        <View style={[styles.nameCard, bgColor ? { backgroundColor: bgColor } : undefined]}>
+        <View style={[styles.nameCard, { backgroundColor: bgColor }]}>
           <Pressable style={styles.nameCloseBtn} onPress={onClose} hitSlop={12}>
             <Feather name="x" size={22} color={TEXT} />
           </Pressable>
@@ -745,7 +745,7 @@ function NombreCarpetaModal({ visible, onClose, bgColor }: { visible: boolean; o
 }
 
 // ── Modal de nombre de playlist ───────────────────────────────────────────────
-function NombrePlaylistModal({ visible, onClose, bgColor }: { visible: boolean; onClose: () => void; bgColor?: string }) {
+function NombrePlaylistModal({ visible, onClose, bgColor }: { visible: boolean; onClose: () => void; bgColor: string }) {
   const openPlaylistPanel = usePlaylistPanelOpener();
   const { playlists, createPlaylist } = useFoldersPlaylists();
   const [name, setName] = useState("");
@@ -772,7 +772,7 @@ function NombrePlaylistModal({ visible, onClose, bgColor }: { visible: boolean; 
       onRequestClose={onClose}
     >
       <KeyboardAvoidingView behavior={Platform.OS === "ios" ? "padding" : "height"} style={{ flex: 1 }}>
-        <View style={[styles.nameCard, bgColor ? { backgroundColor: bgColor } : undefined]}>
+        <View style={[styles.nameCard, { backgroundColor: bgColor }]}>
           <Pressable style={styles.nameCloseBtn} onPress={onClose} hitSlop={12}>
             <Feather name="x" size={22} color={TEXT} />
           </Pressable>
@@ -809,10 +809,9 @@ function NombrePlaylistModal({ visible, onClose, bgColor }: { visible: boolean; 
 }
 
 // ── Modal de nombre de carpeta de mezclas ─────────────────────────────────────
-function NombreCarpetaMezclaModal({ visible, onClose }: { visible: boolean; onClose: () => void }) {
+function NombreCarpetaMezclaModal({ visible, onClose, bgColor }: { visible: boolean; onClose: () => void; bgColor: string }) {
   const openLibraryRoute = useLibraryRouteOpener();
   const { mixFolders, createMixFolder } = useMixer();
-  const { activeSceneId } = useSceneTheme();
   const [name, setName] = useState("");
   const inputRef = useRef<TextInput>(null);
 
@@ -837,7 +836,7 @@ function NombreCarpetaMezclaModal({ visible, onClose }: { visible: boolean; onCl
       onRequestClose={onClose}
     >
       <KeyboardAvoidingView behavior={Platform.OS === "ios" ? "padding" : "height"} style={{ flex: 1 }}>
-        <View style={[styles.nameCard, { backgroundColor: "#2d4081" }]}>
+        <View style={[styles.nameCard, { backgroundColor: bgColor }]}>
           <Pressable style={styles.nameCloseBtn} onPress={onClose} hitSlop={12}>
             <Feather name="x" size={22} color={TEXT} />
           </Pressable>
@@ -873,7 +872,7 @@ function NombreCarpetaMezclaModal({ visible, onClose }: { visible: boolean; onCl
   );
 }
 
-function NombreCarpetaFavModal({ visible, onClose }: { visible: boolean; onClose: () => void }) {
+function NombreCarpetaFavModal({ visible, onClose, bgColor }: { visible: boolean; onClose: () => void; bgColor: string }) {
   const openLibraryRoute = useLibraryRouteOpener();
   const { favFolders, createFavFolder } = useFoldersPlaylists();
   const [name, setName] = useState("");
@@ -900,7 +899,7 @@ function NombreCarpetaFavModal({ visible, onClose }: { visible: boolean; onClose
       onRequestClose={onClose}
     >
       <KeyboardAvoidingView behavior={Platform.OS === "ios" ? "padding" : "height"} style={{ flex: 1 }}>
-        <View style={[styles.nameCard, { backgroundColor: "#2d4081" }]}>
+        <View style={[styles.nameCard, { backgroundColor: bgColor }]}>
           <Pressable style={styles.nameCloseBtn} onPress={onClose} hitSlop={12}>
             <Feather name="x" size={22} color={TEXT} />
           </Pressable>
@@ -2174,15 +2173,15 @@ export function BibliotecaScreen({
       <NombrePlaylistModal
         visible={nombreVisible}
         onClose={() => setNombreVisible(false)}
-        bgColor={sceneTheme.gradient[0]}
+        bgColor={librarySheetColor}
       />
       <NombreCarpetaModal
         visible={nombreCarpetaVisible}
         onClose={() => setNombreCarpetaVisible(false)}
-        bgColor={sceneTheme.gradient[0]}
+        bgColor={librarySheetColor}
       />
-      <NombreCarpetaMezclaModal visible={nombreCarpetaMezclaVisible} onClose={() => setNombreCarpetaMezclaVisible(false)} />
-      <NombreCarpetaFavModal visible={nombreCarpetaFavVisible} onClose={() => setNombreCarpetaFavVisible(false)} />
+      <NombreCarpetaMezclaModal visible={nombreCarpetaMezclaVisible} onClose={() => setNombreCarpetaMezclaVisible(false)} bgColor={librarySheetColor} />
+      <NombreCarpetaFavModal visible={nombreCarpetaFavVisible} onClose={() => setNombreCarpetaFavVisible(false)} bgColor={librarySheetColor} />
       <PlaylistActionsSheet
         itemId={actionsItemId}
         itemKind={actionsItemKind}
