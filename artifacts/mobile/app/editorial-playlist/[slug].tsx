@@ -21,6 +21,7 @@ import {
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import Svg, { Path, Rect } from "react-native-svg";
 
+import { EDITORIAL_PLAYLIST_GRADIENT } from "@/constants/colors";
 import { BLUR_PLACEHOLDER, IMAGE_TRANSITION } from "@/constants/imagePlaceholder";
 import { EqualizerBars } from "@/components/EqualizerBars";
 import { SessionBadgeGlass } from "@/components/SessionDurationBadge";
@@ -47,7 +48,6 @@ import {
   resolveMeditationPlaylistPlayAction,
   resolveMeditationPlaylistResume,
 } from "@/lib/editorial-playlist-helpers";
-import { useSceneTheme } from "@/context/SceneThemeContext";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 
 const DETAIL_CACHE_PREFIX = "@resonance_editorial_playlist_detail:";
@@ -64,8 +64,6 @@ export default function EditorialPlaylistScreen({ slug: slugProp }: EditorialPla
   const params = useLocalSearchParams<{ slug?: string | string[] }>();
   const slug = slugProp ?? resolveSlug(params.slug);
   const insets = useSafeAreaInsets();
-  const { theme } = useSceneTheme();
-  const backgroundGradient = theme.gradient.slice(0, 3) as [string, string, ...string[]];
   const { version: catalogVersion } = useCatalog();
   const { isPremium } = usePremium();
   const {
@@ -309,8 +307,8 @@ export default function EditorialPlaylistScreen({ slug: slugProp }: EditorialPla
 
   if (!playlist) {
     return (
-      <View style={[styles.root, { backgroundColor: theme.solid }]}>
-        <LinearGradient colors={backgroundGradient} style={StyleSheet.absoluteFill} />
+      <View style={[styles.root, { backgroundColor: EDITORIAL_PLAYLIST_GRADIENT[0] }]}>
+        <LinearGradient colors={EDITORIAL_PLAYLIST_GRADIENT} style={StyleSheet.absoluteFill} />
         <View style={styles.empty}>
           <Feather name="list" size={42} color={COLORS.muted} />
           <Text style={styles.emptyTitle}>Selección no disponible</Text>
@@ -329,8 +327,8 @@ export default function EditorialPlaylistScreen({ slug: slugProp }: EditorialPla
   const coverSource = playlist.coverUrl ? { uri: playlist.coverUrl } : null;
 
   return (
-    <View style={[styles.root, { backgroundColor: theme.solid }]}>
-      <LinearGradient colors={backgroundGradient} style={StyleSheet.absoluteFill} />
+    <View style={[styles.root, { backgroundColor: EDITORIAL_PLAYLIST_GRADIENT[0] }]}>
+      <LinearGradient colors={EDITORIAL_PLAYLIST_GRADIENT} style={StyleSheet.absoluteFill} />
       <StatusBar hidden />
       <ScrollView
         showsVerticalScrollIndicator={false}

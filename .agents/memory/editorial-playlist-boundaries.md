@@ -15,6 +15,12 @@ Las cards del carrusel deben conservar el diseño previamente aprobado: portada 
 
 **How to apply:** Mantener dimensiones, tipografía y tiras grises al cambiar la fuente de datos; el nuevo diseño de detalle no se extiende a las cards.
 
+El fondo del detalle de playlists editoriales meditativas y musicales es una elección propia, distinta del tema global Índigo 2; no extenderla a playlists privadas ni a las portadas de carrusel.
+
+**Why:** El usuario pidió el degradado de su referencia específicamente para las playlists «que creamos nosotros», no un cambio de tema para toda la app.
+
+**How to apply:** Mantener la separación visual entre detalle editorial y superficies personales cuando se retoquen fondos o se unifiquen componentes.
+
 Las migraciones editoriales deben preservar el contenido efectivo visible, incluidos los fallbacks antiguos, pero no volver a publicarlo después de que el editor lo elimine u oculte.
 
 **Why:** Importar solo las ubicaciones explícitas omite playlists que antes aparecían por compatibilidad con Inicio. Una corrección posterior que recrea defaults o rellena grupos ya editados invalida las decisiones del editor.
