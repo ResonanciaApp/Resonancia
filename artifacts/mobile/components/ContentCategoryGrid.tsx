@@ -458,7 +458,7 @@ const styles = StyleSheet.create({
     fontFamily: "Manrope",
     fontSize: 12,
     lineHeight: 17,
-    fontWeight: "400",
+    fontWeight: "500",
     textAlign: "center",
   },
   watercolorHorizontalContent: {
