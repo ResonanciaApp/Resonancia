@@ -268,7 +268,7 @@ const styles = StyleSheet.create({
     justifyContent: "center",
   },
   rightSpacer: { width: 44 },
-  title: { fontSize: 18, fontWeight: "800" },
+  title: { fontSize: 18, fontWeight: "700" },
   clearText: { fontSize: 13, fontWeight: "700" },
   content: { padding: 16, gap: 12 },
   storageSummary: { fontSize: 12, marginBottom: 2 },
