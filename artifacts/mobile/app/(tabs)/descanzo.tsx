@@ -46,6 +46,8 @@ import { CONTENT_CAROUSEL_GAP } from "@/constants/carousel";
 import { collectSupercategoryFeaturedSessions } from "@/data/supercategory-editorial-tags";
 
 const AnimatedPressable = Animated.createAnimatedComponent(Pressable);
+const SLEEP_GRADIENT: [string, string, string] = ["#0B0A26", "#08071C", "#070514"];
+const SLEEP_GRADIENT_LOCATIONS: [number, number, number] = [0, 0.5, 1];
 
 function SleepPill({
   sel, label, icon, onPress,
@@ -181,7 +183,7 @@ export default function DescansoScreen() {
   const topPad    = Platform.OS === "web" ? 67 : Math.max(insets.top, 40);
   const bottomPad = Platform.OS === "web" ? 34 : insets.bottom;
   const { theme: sceneTheme } = useSceneTheme();
-  const bgGradient = sceneTheme.gradient;
+  const bgGradient = SLEEP_GRADIENT;
   const indigoSurface = sceneTheme.id === "tibet"
     ? "rgba(0,0,0,0.1)"
     : isIndigoThemeId(sceneTheme.id)
@@ -451,9 +453,9 @@ export default function DescansoScreen() {
   return (
     <LinearGradient
       colors={bgGradient}
-      locations={sceneTheme.gradientLocations}
-      start={sceneTheme.gradientStart}
-      end={sceneTheme.gradientEnd}
+      locations={SLEEP_GRADIENT_LOCATIONS}
+      start={{ x: 0, y: 0 }}
+      end={{ x: 0, y: 1 }}
       style={styles.root}
     >
       <StatusBar hidden />
@@ -471,9 +473,9 @@ export default function DescansoScreen() {
           <View pointerEvents="none" style={styles.stickyGradientClip}>
             <LinearGradient
               colors={bgGradient}
-              locations={sceneTheme.gradientLocations}
-              start={sceneTheme.gradientStart}
-              end={sceneTheme.gradientEnd}
+              locations={SLEEP_GRADIENT_LOCATIONS}
+              start={{ x: 0, y: 0 }}
+              end={{ x: 0, y: 1 }}
               style={styles.stickyScreenGradient}
             />
           </View>
@@ -609,7 +611,7 @@ export default function DescansoScreen() {
       {/* ── Modal "Todas las sesiones de Dormir" (desliza desde la derecha) ── */}
       <Modal visible={allVisible} transparent animationType="none" onRequestClose={premiumPlans.visible ? premiumPlans.close : closeAll} statusBarTranslucent>
         <Animated.View style={[StyleSheet.absoluteFill, { backgroundColor: bgGradient[bgGradient.length - 1] as string, transform: [{ translateX: slideX }] }]}>
-          <LinearGradient colors={bgGradient} style={StyleSheet.absoluteFill} />
+          <LinearGradient colors={bgGradient} locations={SLEEP_GRADIENT_LOCATIONS} start={{ x: 0, y: 0 }} end={{ x: 0, y: 1 }} style={StyleSheet.absoluteFill} />
 
           {/* Cabecera */}
           <View style={{ flexDirection: "row", alignItems: "center", paddingTop: topPad + 14, paddingHorizontal: H_PAD, paddingBottom: 14, gap: 4 }}>
