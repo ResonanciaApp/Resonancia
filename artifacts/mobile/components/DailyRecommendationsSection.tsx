@@ -135,7 +135,7 @@ export function DailyRecommendationsSection({
               >
                 <SessionRow
                   session={session}
-                  imageSize={inicio3Compact ? 81.9 * 1.2 : 103.7}
+                  imageSize={(inicio3Compact ? 81.9 * 1.2 : 103.7) * 0.85}
                   imageOffsetX={inicio3Compact ? 0 : -4}
                   metaText={`${session.categoryLabel} · ${session.durationLabel}`}
                   showChevron
