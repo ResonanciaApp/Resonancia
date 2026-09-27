@@ -19,9 +19,19 @@ import { useSceneTheme } from "@/context/SceneThemeContext";
 import { getLibraryTabSurface } from "@/components/BibliotecaScreen";
 import { MoodCalendar } from "@/components/MoodCalendar";
 
+const HISTORY_GRADIENT: [string, string, ...string[]] = [
+  "#074B4C",
+  "#24414F",
+  "#2E3955",
+  "#363459",
+  "#493453",
+  "#57334F",
+  "#5B3D25",
+];
+
 export default function HistorialEmocionesScreen() {
   const insets = useSafeAreaInsets();
-  const { theme, activeSceneId } = useSceneTheme();
+  const { activeSceneId } = useSceneTheme();
   const [records, setRecords] = useState<MoodHistoryRecord[]>([]);
   const [loading, setLoading] = useState(true);
   const topPad = Platform.OS === "web" ? 67 : Math.max(insets.top, 40);
@@ -46,7 +56,9 @@ export default function HistorialEmocionesScreen() {
 
   return (
     <LinearGradient
-      colors={theme.gradient as unknown as [string, string, ...string[]]}
+      colors={HISTORY_GRADIENT}
+      start={{ x: 0.35, y: 0 }}
+      end={{ x: 0.65, y: 1 }}
       style={styles.root}
     >
       <View style={[styles.header, { paddingTop: topPad + 4 }]}>
@@ -102,7 +114,7 @@ const styles = StyleSheet.create({
   },
   header: {
     paddingHorizontal: 20,
-    paddingBottom: 6,
+    paddingBottom: 12,
     flexDirection: "row",
     alignItems: "center",
     gap: 12,
