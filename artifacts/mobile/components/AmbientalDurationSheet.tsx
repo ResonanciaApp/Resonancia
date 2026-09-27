@@ -1,5 +1,4 @@
 import { Feather } from "@expo/vector-icons";
-import { LinearGradient } from "expo-linear-gradient";
 import React, { useEffect, useMemo, useRef, useState } from "react";
 import {
   Animated,
@@ -113,10 +112,7 @@ export function AmbientalDurationSheet({
 }: Props) {
   const colors = useColors();
   const { theme } = useSceneTheme();
-  const sheetGradient: [string, string] = [
-    theme.gradient[theme.gradient.length - 2],
-    theme.gradient[theme.gradient.length - 1],
-  ];
+  const sheetColor = theme.gradient[2];
   const insets = useSafeAreaInsets();
   const [rendered, setRendered] = useState(visible);
   const [customMode, setCustomMode] = useState(false);
@@ -262,20 +258,13 @@ export function AmbientalDurationSheet({
           style={[
             styles.sheet,
             {
-              backgroundColor: sheetGradient[1],
+              backgroundColor: sheetColor,
               paddingBottom: Math.max(insets.bottom, 16),
               transform: [{ translateY: sheetY }],
             },
           ]}
           accessibilityViewIsModal
         >
-          <LinearGradient
-            pointerEvents="none"
-            colors={sheetGradient}
-            start={theme.gradientStart}
-            end={theme.gradientEnd}
-            style={StyleSheet.absoluteFillObject}
-          />
           <View style={styles.handle} />
           <Text
             style={[styles.title, { color: colors.foreground }]}
