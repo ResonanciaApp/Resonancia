@@ -1636,8 +1636,8 @@ export function ProfileScreenBase({
             <View style={styles.profileProgressSection}>
               <ProgressMirrorSections
                 showSectionBorders={false}
-                showPersonalStats={false}
-                showCalendar={false}
+                showPersonalStats
+                showCalendar
                 sectionHorizontalPadding={20}
                 sectionTopPadding={21}
                 sectionBottomPadding={15}
