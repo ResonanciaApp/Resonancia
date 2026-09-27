@@ -65,6 +65,8 @@ const INICIO3_SECTIONS: { title: string | null; items: MenuItem[] }[] = [
     items: [
       { id: "mixer", label: "Mezclador de sonidos", icon: "sliders", mciIcon: "tune-vertical", route: "__mixer", color: "#F9F9F9" },
       { id: "breathing", label: "Ejercicios de respiración", icon: "wind", mciIcon: "weather-windy", route: "/respiracion", color: "#F9F9F9" },
+      { id: "mood-register", label: "Registro de ánimo", icon: "smile", mciIcon: "emoticon-happy-outline", route: "__mood_picker", color: "#F9F9F9" },
+      { id: "mood-history", label: "Historial de estado de ánimo", icon: "calendar", mciIcon: "chart-timeline-variant", route: "/historial-emociones", color: "#F9F9F9" },
     ],
   },
 ];
@@ -82,6 +84,7 @@ export function DrawerMenu() {
     overlayParallax,
     drawerTransitionProgress,
     requestWallCompose,
+    requestMoodPicker,
   } = useDrawer();
   const insets = useSafeAreaInsets();
   const { isRegistered, isSignedIn } = useAuth();
@@ -212,6 +215,11 @@ export function DrawerMenu() {
   const navigate = (route: string) => {
     // Overlays sobre el drawer (menú queda abierto debajo)
     if (route === "__biblioteca_overlay") { openLibFromDrawer(); return; }
+    if (route === "__mood_picker") {
+      onClose();
+      requestMoodPicker();
+      return;
+    }
     if (route === "__mixer") {
       onClose();
       openMixer();
@@ -594,7 +602,7 @@ const styles = StyleSheet.create({
     marginTop: -1,
   },
   inicio3SectionShift: {
-    marginTop: 17,
+    marginTop: 27,
   },
   inicio3SectionTitle: {
     fontFamily: "Manrope",
