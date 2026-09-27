@@ -1392,7 +1392,6 @@ export function ProfileScreenBase({
             <View style={styles.profileProgressSection}>
               <ProgressMirrorSections
                 showSectionBorders={false}
-                streakWeekOutsideCard
                 showPersonalStats
                 showCalendar
                 personalStatsFilterBelowTitle
@@ -2601,7 +2600,6 @@ const styles = StyleSheet.create({
 
   // Progreso semanal compacto
   profileProgressSection: {
-    marginTop: 15,
     marginBottom: PROFILE_SECTION_GAP,
   },
   practiceReminderSection: {

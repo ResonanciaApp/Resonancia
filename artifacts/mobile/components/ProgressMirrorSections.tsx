@@ -31,7 +31,6 @@ export function ProgressMirrorSections({
   streakTitle,
   onStreakTitlePress,
   showStreakWeek = true,
-  streakWeekOutsideCard = false,
   showStreakViewAll = false,
   streakContentTranslateY = 0,
   sectionHorizontalPadding,
@@ -55,7 +54,6 @@ export function ProgressMirrorSections({
   streakTitle?: string;
   onStreakTitlePress?: () => void;
   showStreakWeek?: boolean;
-  streakWeekOutsideCard?: boolean;
   showStreakViewAll?: boolean;
   streakContentTranslateY?: number;
   sectionHorizontalPadding?: number;
@@ -74,7 +72,6 @@ export function ProgressMirrorSections({
   const [statsRangeDays, setStatsRangeDays] = useState<7 | 30 | 90>(30);
   const [statsFilterOpen, setStatsFilterOpen] = useState(false);
   const weekBlink = useRef(new Animated.Value(1)).current;
-  const weekOutsideCard = showStreakWeek && streakWeekOutsideCard && !mergeStatsAndStreak;
   const streakPressRunning = useRef(false);
   const accent = theme.accent ?? colors.accent;
   const filterColor = personalStatsFilterColor ?? accent;
@@ -336,9 +333,9 @@ export function ProgressMirrorSections({
               </View>
             </ContentEntrance>
           ) : null}
-           {showStreakWeek && !weekOutsideCard ? (
+           {showStreakWeek ? (
             <>
-               {streakWeekRow}
+              {streakWeekRow}
               <ContentEntrance
                 animated={animateEntrance}
                 replayKey={`${entranceReplayKey}:streak-divider`}
@@ -433,14 +430,6 @@ export function ProgressMirrorSections({
             replayKey={`${entranceReplayKey}:streak`}
             delay={entranceBaseDelay}
           >
-            {weekOutsideCard ? (
-              <View style={[
-                styles.streakWeekOutsideCard,
-                sectionHorizontalPadding !== undefined && { paddingHorizontal: sectionHorizontalPadding },
-              ]}>
-                {streakWeekRow}
-              </View>
-            ) : null}
             {streakContent}
           </SectionEntrance>
           {showPersonalStats ? (
@@ -606,10 +595,6 @@ const styles = StyleSheet.create({
     paddingTop: 17,
     paddingBottom: 16,
     marginBottom: 12,
-  },
-  streakWeekOutsideCard: {
-    paddingHorizontal: 16,
-    marginBottom: 10,
   },
   titledStreakSection: {
     paddingTop: 20,
