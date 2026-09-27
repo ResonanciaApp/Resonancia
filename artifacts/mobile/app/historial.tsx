@@ -24,7 +24,7 @@ export default function HistorialScreen() {
 
   const topPad = Platform.OS === "web" ? 67 : Math.max(insets.top, 40);
   const bottomPad = insets.bottom + 24;
-  const libraryHeaderButtonBackground = "rgba(0,0,0,0.28)";
+  const libraryHeaderButtonBackground = "rgba(0,0,0,0.22)";
 
   return (
     <>
@@ -71,7 +71,7 @@ export default function HistorialScreen() {
           }}
           showsVerticalScrollIndicator={false}
         >
-          <HistorialCalendar backgroundColor="rgba(0,0,0,0.28)" />
+          <HistorialCalendar backgroundColor="rgba(0,0,0,0.22)" />
         </ScrollView>
       </View>
     </LinearGradient>

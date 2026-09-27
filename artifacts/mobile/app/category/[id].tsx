@@ -163,7 +163,7 @@ export default function CategoryScreen({ categoryId }: { categoryId?: string } =
   }, [stickyBorderOpacity]);
   const useDiscoverStickyStyle = isIndigoThemeId(theme.id) || theme.id === "indigo2";
 
-  const profileSectionBackground = "rgba(0,0,0,0.28)";
+  const profileSectionBackground = "rgba(0,0,0,0.22)";
   const title = category?.title ?? "Categoría";
 
   const goBack = backOverride ?? (() => router.back());
@@ -365,7 +365,7 @@ const styles = StyleSheet.create({
     borderRadius: 21.5,
     borderWidth: 1,
     borderColor: "rgba(255,255,255,0.2)",
-    backgroundColor: "rgba(0,0,0,0.28)",
+    backgroundColor: "rgba(0,0,0,0.22)",
     alignItems: "center",
     justifyContent: "center",
   },
@@ -385,7 +385,7 @@ const styles = StyleSheet.create({
     borderColor: "rgba(255,255,255,0.2)",
     alignItems: "center",
     justifyContent: "center",
-    backgroundColor: "rgba(0,0,0,0.28)",
+    backgroundColor: "rgba(0,0,0,0.22)",
   },
   chipsArea: {
     paddingTop: 10,
@@ -413,12 +413,12 @@ const styles = StyleSheet.create({
     gap: 12,
     alignItems: "center",
     justifyContent: "center",
-    backgroundColor: "rgba(0,0,0,0.28)",
+    backgroundColor: "rgba(0,0,0,0.22)",
   },
-  chipTibet: { backgroundColor: "rgba(0,0,0,0.28)" },
-  chipIndigo: { backgroundColor: "rgba(0,0,0,0.28)" },
+  chipTibet: { backgroundColor: "rgba(0,0,0,0.22)" },
+  chipIndigo: { backgroundColor: "rgba(0,0,0,0.22)" },
   chipIndigo2Inactive: {
-    backgroundColor: "rgba(0,0,0,0.28)",
+    backgroundColor: "rgba(0,0,0,0.22)",
     borderColor: "rgba(241,224,255,0.25)",
   },
   chipSelected: {

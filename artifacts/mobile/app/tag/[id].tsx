@@ -270,7 +270,7 @@ export default function ThemeTagScreen({
                   style={[
                     styles.internalBackBtn,
                     {
-                      backgroundColor: "rgba(0,0,0,0.28)",
+                      backgroundColor: "rgba(0,0,0,0.22)",
                       opacity: pressed ? 0.7 : 1,
                     },
                   ]}
@@ -338,7 +338,7 @@ export default function ThemeTagScreen({
                   styles.heroBackBtn,
                   {
                     top: topPad + 8,
-                    backgroundColor: "rgba(0,0,0,0.28)",
+                    backgroundColor: "rgba(0,0,0,0.22)",
                     opacity: pressed ? 0.7 : 1,
                   },
                 ]}
@@ -492,7 +492,7 @@ export default function ThemeTagScreen({
           style={({ pressed }) => [
             styles.backBtn,
             {
-              backgroundColor: "rgba(0,0,0,0.28)",
+              backgroundColor: "rgba(0,0,0,0.22)",
               opacity: pressed ? 0.7 : 1,
                top: topPad - 4,
             },
@@ -555,7 +555,7 @@ const styles = StyleSheet.create({
     borderColor: "rgba(255,255,255,0.20)",
     alignItems: "center",
     justifyContent: "center",
-    backgroundColor: "rgba(0,0,0,0.28)",
+    backgroundColor: "rgba(0,0,0,0.22)",
   },
   pageDescription: {
     fontFamily: "Manrope",

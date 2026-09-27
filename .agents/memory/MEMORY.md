@@ -29,6 +29,7 @@
 - [SVG gradient import clash](svg-gradient-import-clash.md) — react-native-svg LinearGradient choca con expo-linear-gradient (mismo nombre); aliasear + sanear useId (quitar ":") + colors refs estables para memo
 - [Geometrix zoom = render size](geometrix-zoom-vector.md) — escalar geometrías plegando la magnificación confirmada en el size real del SVG (no transform scale) → vector nítido + trazo constante; transform solo lleva respiración + delta de pinch en vivo
 - [Card/module background](card-module-background.md) — fondo estándar de cards/módulos = tinte dorado translúcido rgba(190,150,80,0.05) (#BE9650 5%); token card/darkChocolate en mobile/constants/colors.ts; no migrar hardcodes a ciegas
+- [Fondos negros translúcidos](black-surface-opacity.md) — superficies negras antes al 28 % ahora van al 22 %; no extender el cambio a bordes, sombras ni excepciones locales
 - [SacredGlyph box-fill sizing](sacred-glyph-fill.md) — contenido ≈0.78×size (extent 39 horneado); EXTENT maps NO se usan; para cubrir un cover sin esquinas vacías: size = diagonal/0.78 (no solo ancho)
 - [Modal bottom sheet rounded corners](modal-bottom-sheet-rounded-corners.md) — backdrop flex:1 NO cubre las esquinas cortadas; usar absoluteFill + container justifyContent:"flex-end"
 - [Reanimated drag-reorder sin ghost](reanimated-layout-toggle-ghost.md) — modelo FLIP: DOM estable + translateX por orderSV/slotSV; reorder atómico en worklet de soltado (sin layout commit → sin flicker); NO reintroducir el reorder-on-release con dragSettling

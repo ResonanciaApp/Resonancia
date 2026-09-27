@@ -334,12 +334,12 @@ export function ExploreScreen({
     activeSceneId === "tibet"
       ? "rgba(0,0,0,0.14)"
       : activeSceneId === "indigo2"
-        ? "rgba(0,0,0,0.28)"
+        ? "rgba(0,0,0,0.22)"
         : isIndigoThemeId(activeSceneId)
           ? "rgba(181,211,255,0.14)"
           : "rgba(181,211,255,0.14)";
   const contentCardSurfaceColor = durationSurfaceColor;
-  const otherThemeCardSurfaceColor = "rgba(0,0,0,0.28)";
+  const otherThemeCardSurfaceColor = "rgba(0,0,0,0.22)";
   const editorialDiscoverCarousels = useMemo(
     () => getEditorialPlaylistCarouselsForSurface("discover"),
     [catalogVersion],
@@ -912,7 +912,7 @@ export function ExploreScreen({
                   style={({ pressed }) => [
                     styles.durationCard,
                     {
-                      backgroundColor: "rgba(0,0,0,0.28)",
+                      backgroundColor: "rgba(0,0,0,0.22)",
                       opacity: pressed ? 0.72 : 1,
                     },
                   ]}
@@ -1155,7 +1155,7 @@ const styles = StyleSheet.create({
     borderRadius: 21.5,
     alignItems: "center",
     justifyContent: "center",
-    backgroundColor: "rgba(0,0,0,0.28)",
+    backgroundColor: "rgba(0,0,0,0.22)",
     borderWidth: 1,
     borderColor: "rgba(255,255,255,0.1)",
   },

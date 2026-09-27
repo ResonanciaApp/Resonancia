@@ -140,7 +140,7 @@ export default function MensajesDelAlmaScreen() {
 
         {/* Top bar */}
         <View style={[styles.topBar, { paddingTop: topPad + 6 }]}>
-          <BackPill onPress={() => router.back()} size={28} bgColor="rgba(0,0,0,0.28)" iconOffsetX={-1} />
+          <BackPill onPress={() => router.back()} size={28} bgColor="rgba(0,0,0,0.22)" iconOffsetX={-1} />
           <View style={styles.topTitleBlock}>
             <Text style={[styles.topTitle, { color: colors.foreground }]}>Agradecer es el inicio</Text>
           </View>
@@ -162,13 +162,13 @@ export default function MensajesDelAlmaScreen() {
         >
           {/* Compose card */}
           {hasPublished ? (
-            <View style={[styles.publishedNotice, { backgroundColor: "rgba(0,0,0,0.28)", borderColor: "rgba(255,255,255,0.1)" }]}>
+            <View style={[styles.publishedNotice, { backgroundColor: "rgba(0,0,0,0.22)", borderColor: "rgba(255,255,255,0.1)" }]}>
               <Text style={[styles.publishedNoticeText, { color: colors.mutedForeground }]}>
                 Ya compartiste tu mensaje de hoy
               </Text>
             </View>
           ) : (
-            <View style={[styles.composeCard, { backgroundColor: "rgba(0,0,0,0.28)", borderColor: "rgba(255,255,255,0.1)", borderWidth: 2 }]}>
+            <View style={[styles.composeCard, { backgroundColor: "rgba(0,0,0,0.22)", borderColor: "rgba(255,255,255,0.1)", borderWidth: 2 }]}>
               <View style={styles.composeTop}>
                 <AuthorAvatar source={currentAvatarSource} name={username} size={36} />
                 <TextInput

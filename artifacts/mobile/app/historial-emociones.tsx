@@ -126,7 +126,7 @@ const styles = StyleSheet.create({
     borderRadius: 21.5,
     borderWidth: 1.2,
     borderColor: "rgba(241,224,255,0.25)",
-    backgroundColor: "rgba(0,0,0,0.28)",
+    backgroundColor: "rgba(0,0,0,0.22)",
     alignItems: "center",
     justifyContent: "center",
   },
@@ -174,7 +174,7 @@ const styles = StyleSheet.create({
     alignItems: "center",
     justifyContent: "center",
     marginBottom: 18,
-    backgroundColor: "rgba(0,0,0,0.28)",
+    backgroundColor: "rgba(0,0,0,0.22)",
   },
   emptyTitle: {
     fontFamily: "Manrope",

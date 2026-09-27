@@ -44,7 +44,7 @@ export function BackPill({
             borderWidth: borderWidth ?? 1,
             borderColor: borderColor ?? "rgba(255,255,255,0.2)",
           } : undefined,
-          standardSurface && !bgColor ? { backgroundColor: "rgba(0,0,0,0.28)" } : undefined,
+          standardSurface && !bgColor ? { backgroundColor: "rgba(0,0,0,0.22)" } : undefined,
         ]}
       >
         <View style={iconOffsetX ? { transform: [{ translateX: iconOffsetX }] } : undefined}>

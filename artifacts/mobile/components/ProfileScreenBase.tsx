@@ -264,7 +264,7 @@ export function ProfileScreenBase({
   } = useUserProfile();
   const profileCatalog = useCoverPresetCatalog("profile");
 
-  const resourceBlockBackground = "rgba(0,0,0,0.28)";
+  const resourceBlockBackground = "rgba(0,0,0,0.22)";
   const libraryHeaderButtonBackground = getLibraryTabSurface(activeSceneId);
   const resourceBlockBorder = "rgba(255,255,255,0.1)";
   const secondaryAccent = activeTheme.accent ?? colors.accent;
@@ -813,7 +813,7 @@ export function ProfileScreenBase({
               foreground={colors.foreground}
               mutedForeground={colors.mutedForeground}
               accent={secondaryAccent}
-              cardBackground="rgba(0,0,0,0.28)"
+              cardBackground="rgba(0,0,0,0.22)"
               onLogout={handleProfileLogout}
             />
           </ScrollView>
@@ -2043,7 +2043,7 @@ const styles = StyleSheet.create({
     borderColor: "rgba(241,224,255,0.25)",
     alignItems: "center",
     justifyContent: "center",
-    backgroundColor: "rgba(0,0,0,0.28)",
+    backgroundColor: "rgba(0,0,0,0.22)",
   },
   notificationBellButton: {
     transform: [{ translateX: -2 }, { translateY: -2 }],
@@ -2143,7 +2143,7 @@ const styles = StyleSheet.create({
     borderRadius: 21.5,
     borderWidth: 1,
     borderColor: "rgba(255,255,255,0.2)",
-    backgroundColor: "rgba(0,0,0,0.28)",
+    backgroundColor: "rgba(0,0,0,0.22)",
     alignItems: "center",
     justifyContent: "center",
   },
@@ -2235,7 +2235,7 @@ const styles = StyleSheet.create({
     borderRadius: 21.5,
     borderWidth: 1,
     borderColor: "rgba(255,255,255,0.2)",
-    backgroundColor: "rgba(0,0,0,0.28)",
+    backgroundColor: "rgba(0,0,0,0.22)",
     alignItems: "center",
     justifyContent: "center",
   },
@@ -2263,7 +2263,7 @@ const styles = StyleSheet.create({
     borderRadius: 21,
     borderWidth: 1,
     borderColor: "rgba(255,255,255,0.2)",
-    backgroundColor: "rgba(0,0,0,0.28)",
+    backgroundColor: "rgba(0,0,0,0.22)",
   },
   accountCoverUploadText: {
     fontFamily: "Manrope",
@@ -2308,7 +2308,7 @@ const styles = StyleSheet.create({
     color: "#AAAAC4",
   },
   accountFieldValueBox: {
-    backgroundColor: "rgba(0,0,0,0.28)",
+    backgroundColor: "rgba(0,0,0,0.22)",
     height: 48,
     borderRadius: 17,
     paddingHorizontal: 14,
@@ -2325,7 +2325,7 @@ const styles = StyleSheet.create({
     height: 48,
     paddingHorizontal: 14,
     paddingVertical: 0,
-    backgroundColor: "rgba(0,0,0,0.28)",
+    backgroundColor: "rgba(0,0,0,0.22)",
     borderRadius: 17,
     borderWidth: 0,
   },
@@ -2441,7 +2441,7 @@ const styles = StyleSheet.create({
   registrosCard: {
     borderRadius: 16,
     overflow: "hidden",
-    backgroundColor: "rgba(0,0,0,0.28)",
+    backgroundColor: "rgba(0,0,0,0.22)",
   },
   registrosRow: {
     flexDirection: "row",
@@ -2591,7 +2591,7 @@ const styles = StyleSheet.create({
   followCountDivider: { width: 1, height: 28 },
 
   // Plan card
-  planCard: { borderRadius: 18, paddingHorizontal: 16, paddingVertical: 14, flexDirection: "row", alignItems: "center", gap: 14, marginBottom: 10, backgroundColor: "rgba(0,0,0,0.28)" },
+  planCard: { borderRadius: 18, paddingHorizontal: 16, paddingVertical: 14, flexDirection: "row", alignItems: "center", gap: 14, marginBottom: 10, backgroundColor: "rgba(0,0,0,0.22)" },
   planIconWrap: { width: 40, height: 40, borderRadius: 20, alignItems: "center", justifyContent: "center" },
   planTitle: { fontFamily: "Manrope", fontSize: 15, fontWeight: "700", marginBottom: 2 },
   planSub: { fontFamily: "Manrope", fontSize: 12 },
@@ -2606,7 +2606,7 @@ const styles = StyleSheet.create({
     paddingHorizontal: 16,
     paddingVertical: 16,
     borderRadius: 19,
-    backgroundColor: "rgba(0,0,0,0.28)",
+    backgroundColor: "rgba(0,0,0,0.22)",
     flexDirection: "row",
     alignItems: "center",
     justifyContent: "space-between",
@@ -2629,7 +2629,7 @@ const styles = StyleSheet.create({
     paddingHorizontal: 12,
     paddingVertical: 18,
     borderRadius: 19,
-    backgroundColor: "rgba(0,0,0,0.28)",
+    backgroundColor: "rgba(0,0,0,0.22)",
     alignItems: "center",
     justifyContent: "center",
   },
@@ -2683,7 +2683,7 @@ const styles = StyleSheet.create({
     borderRadius: 14,
     borderWidth: 1,
     borderColor: "rgba(255,255,255,0.2)",
-    backgroundColor: "rgba(0,0,0,0.28)",
+    backgroundColor: "rgba(0,0,0,0.22)",
     paddingHorizontal: 16,
     paddingTop: 17,
     paddingBottom: 16,
@@ -2691,7 +2691,7 @@ const styles = StyleSheet.create({
   outlinedProfileSection: {
     borderRadius: 14,
     borderWidth: 0,
-    backgroundColor: "rgba(0,0,0,0.28)",
+    backgroundColor: "rgba(0,0,0,0.22)",
     padding: 16,
   },
   profileHistorySection: {
@@ -2785,7 +2785,7 @@ const styles = StyleSheet.create({
   profileNotificationsCard: {
     minHeight: 66,
     borderRadius: 17,
-    backgroundColor: "rgba(0,0,0,0.28)",
+    backgroundColor: "rgba(0,0,0,0.22)",
     paddingHorizontal: 15,
     paddingVertical: 12,
     flexDirection: "row",
@@ -2818,7 +2818,7 @@ const styles = StyleSheet.create({
     borderRadius: 17,
     borderWidth: 1,
     borderColor: "rgba(255,255,255,0.2)",
-    backgroundColor: "rgba(0,0,0,0.28)",
+    backgroundColor: "rgba(0,0,0,0.22)",
     padding: 16,
     marginTop: 12,
     marginBottom: 12,
@@ -2946,7 +2946,7 @@ const styles = StyleSheet.create({
   // Membresía
   membershipRow: {
     borderRadius: 18,
-    backgroundColor: "rgba(0,0,0,0.28)",
+    backgroundColor: "rgba(0,0,0,0.22)",
     borderWidth: 1,
     padding: 16,
     flexDirection: "row",
@@ -2964,7 +2964,7 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     alignItems: "center",
     borderRadius: 14,
-    backgroundColor: "rgba(0,0,0,0.28)",
+    backgroundColor: "rgba(0,0,0,0.22)",
     padding: 10,
     gap: 12,
     marginBottom: 10,
@@ -2978,7 +2978,7 @@ const styles = StyleSheet.create({
   menuCard: {
     borderRadius: 18,
     overflow: "hidden",
-    backgroundColor: "rgba(0,0,0,0.28)",
+    backgroundColor: "rgba(0,0,0,0.22)",
   },
   streakStatsDivider: {
     height: 1,
@@ -3060,7 +3060,7 @@ const styles = StyleSheet.create({
     paddingBottom: 12,
     paddingHorizontal: 8,
     borderRadius: 18,
-    backgroundColor: "rgba(0,0,0,0.28)",
+    backgroundColor: "rgba(0,0,0,0.22)",
     alignItems: "center",
     justifyContent: "center",
     gap: 8,

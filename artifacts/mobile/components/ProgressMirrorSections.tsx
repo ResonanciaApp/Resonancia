@@ -15,7 +15,7 @@ import { useColors } from "@/hooks/useColors";
 import { computeActiveDays, computeMaxStreak } from "@/utils/stats";
 import { PREMIUM_STAR_GRADIENT } from "@/constants/colors";
 
-const SECTION_BACKGROUND = "rgba(0,0,0,0.28)";
+const SECTION_BACKGROUND = "rgba(0,0,0,0.22)";
 
 export function ProgressMirrorSections({
   showSectionBorders = true,

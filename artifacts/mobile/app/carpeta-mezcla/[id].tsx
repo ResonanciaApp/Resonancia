@@ -106,7 +106,7 @@ export default function CarpetaMezclaDetailScreen() {
 
       {/* Header */}
       <View style={[styles.header, { paddingTop: topPad + 8 }]}>
-        <BackPill onPress={goBack} size={28} bgColor="rgba(0,0,0,0.28)" iconOffsetX={-1} style={{ marginLeft: 10 }} />
+        <BackPill onPress={goBack} size={28} bgColor="rgba(0,0,0,0.22)" iconOffsetX={-1} style={{ marginLeft: 10 }} />
         <Text style={styles.headerName} numberOfLines={1}>{folder.name}</Text>
         <Pressable
           style={styles.iconBtn}

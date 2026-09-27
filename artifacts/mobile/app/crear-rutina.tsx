@@ -294,7 +294,7 @@ export default function CrearRutinaScreen() {
                   style={({ pressed }) => [
                     styles.suggestionRow,
                     {
-                      backgroundColor: "rgba(0,0,0,0.28)",
+                      backgroundColor: "rgba(0,0,0,0.22)",
                       opacity: pressed ? 0.72 : 1,
                     },
                   ]}

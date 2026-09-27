@@ -830,7 +830,7 @@ const styles = StyleSheet.create({
     borderColor: "rgba(255,255,255,0.2)",
     alignItems: "center",
     justifyContent: "center",
-    backgroundColor: "rgba(0,0,0,0.28)",
+    backgroundColor: "rgba(0,0,0,0.22)",
   },
   surveyBackButton: {
     width: 43,
@@ -838,7 +838,7 @@ const styles = StyleSheet.create({
     borderRadius: 21.5,
     borderWidth: 1,
     borderColor: "rgba(255,255,255,0.2)",
-    backgroundColor: "rgba(0,0,0,0.28)",
+    backgroundColor: "rgba(0,0,0,0.22)",
   },
   headerButtonPlaceholder: {
     width: 43,
@@ -910,7 +910,7 @@ const styles = StyleSheet.create({
     minHeight: 84,
     borderRadius: 16,
     borderWidth: 0,
-    backgroundColor: "rgba(0,0,0,0.28)",
+    backgroundColor: "rgba(0,0,0,0.22)",
     alignItems: "center",
     justifyContent: "center",
     paddingHorizontal: 8,
@@ -919,7 +919,7 @@ const styles = StyleSheet.create({
   moodCardSelected: {
     borderWidth: 2,
     borderColor: "rgba(255,255,255,0.90)",
-    backgroundColor: "rgba(0,0,0,0.28)",
+    backgroundColor: "rgba(0,0,0,0.22)",
   },
   moodEmoji: {
     fontSize: 28,
@@ -968,7 +968,7 @@ const styles = StyleSheet.create({
   optionsCard: {
     overflow: "hidden",
     borderRadius: 18,
-    backgroundColor: "rgba(0,0,0,0.28)",
+    backgroundColor: "rgba(0,0,0,0.22)",
   },
   optionRow: {
     minHeight: 70,
@@ -1107,7 +1107,7 @@ const styles = StyleSheet.create({
   monthCard: {
     borderRadius: 19,
     padding: 18,
-    backgroundColor: "rgba(0,0,0,0.28)",
+    backgroundColor: "rgba(0,0,0,0.22)",
     overflow: "hidden",
   },
   monthSectionTitle: {

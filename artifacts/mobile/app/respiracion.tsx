@@ -210,7 +210,7 @@ export default function RespiracionScreen() {
         <BackPill
           onPress={() => router.back()}
           size={32}
-          bgColor="rgba(0,0,0,0.28)"
+          bgColor="rgba(0,0,0,0.22)"
           borderWidth={1}
           borderColor="rgba(255,255,255,0.2)"
           iconOffsetX={-1}
@@ -240,7 +240,7 @@ export default function RespiracionScreen() {
                     styles.chip,
                     {
                       borderColor: "rgba(255,255,255,0.2)",
-                      backgroundColor: active ? "#F9F9F9" : "rgba(0,0,0,0.28)",
+                      backgroundColor: active ? "#F9F9F9" : "rgba(0,0,0,0.22)",
                     },
                   ]}
                 >
@@ -273,7 +273,7 @@ export default function RespiracionScreen() {
                 styles.circle,
                 {
                   borderColor: "rgba(255,255,255,0.3)",
-                  backgroundColor: "rgba(0,0,0,0.28)",
+                  backgroundColor: "rgba(0,0,0,0.22)",
                 },
               ]}
             >

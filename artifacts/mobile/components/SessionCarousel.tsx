@@ -540,7 +540,7 @@ export const SessionCarousel = React.memo(function SessionCarousel({
       hideAmbientalTitleInSquareRecent) &&
     effectiveSquareCards;
   const ambientalCardBackground =
-    ambientalCardBackgroundOverride ?? "rgba(0,0,0,0.28)";
+    ambientalCardBackgroundOverride ?? "rgba(0,0,0,0.22)";
   const ambientalImageSize = Math.round(cw * 0.72);
   const ambientalDisplayedImageSize = ambientalImageSize * 1.05;
   const ambientalImageBottom =

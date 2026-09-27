@@ -784,7 +784,7 @@ const styles = StyleSheet.create({
   },
   selectedGridItem: {
     borderColor: "rgba(255,255,255,0.45)",
-    backgroundColor: "rgba(0,0,0,0.28)",
+    backgroundColor: "rgba(0,0,0,0.22)",
     shadowOpacity: 0.22,
     shadowRadius: 8,
   },

@@ -272,7 +272,7 @@ function FavoriteThemeCollections({
         style={[
           styles.themeCollectionCard,
           {
-            backgroundColor: THEME_CARD_BACKGROUND_BY_SLUG[collection.id] ?? "rgba(0,0,0,0.28)",
+            backgroundColor: THEME_CARD_BACKGROUND_BY_SLUG[collection.id] ?? "rgba(0,0,0,0.22)",
           },
         ]}
       >
@@ -331,7 +331,7 @@ export default function FavoritosTodosScreen() {
   const bottomPad = Platform.OS === "web" ? 34 : insets.bottom;
   const stickyHeaderHeight = topPad + 126;
   const [actionsVideo, setActionsVideo] = useState<VideoItem | null>(null);
-  const libraryHeaderButtonBackground = "rgba(0,0,0,0.28)";
+  const libraryHeaderButtonBackground = "rgba(0,0,0,0.22)";
 
   const [activeTab, setActiveTab] = useState<FavoriteCollectionTabId>(params.tab === "inspiraciones" ? "inspiraciones" : "all");
   const titleProgress = useRef(new Animated.Value(0)).current;
@@ -339,7 +339,7 @@ export default function FavoritosTodosScreen() {
   const compactRef = useRef(false);
   const indigo2TabsBackgroundColor = indigo2TabsSurfaceAnim.interpolate({
     inputRange: [0, 1],
-    outputRange: ["rgba(0,0,0,0.28)", "rgba(0,0,0,0.28)"],
+    outputRange: ["rgba(0,0,0,0.22)", "rgba(0,0,0,0.22)"],
   });
   const handleScroll = useCallback((event: { nativeEvent: { contentOffset: { y: number } } }) => {
     const compact = event.nativeEvent.contentOffset.y > 0.5;

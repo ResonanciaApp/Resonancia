@@ -199,7 +199,7 @@ export function ContentCategoryGrid({
     : isIndigoThemeId(activeSceneId) && isDiscoverGrid
       ? "rgba(181,211,255,0.057)"
       : activeSceneId === "indigo2" && isDiscoverGrid
-        ? "rgba(0,0,0,0.28)"
+        ? "rgba(0,0,0,0.22)"
       : isIndigoThemeId(activeSceneId)
         ? "rgba(255,255,255,0.04)"
         : CARD_BG;

@@ -515,7 +515,7 @@ const styles = StyleSheet.create({
   },
   activeOverlay: {
     ...StyleSheet.absoluteFillObject,
-    backgroundColor: "rgba(0,0,0,0.28)",
+    backgroundColor: "rgba(0,0,0,0.22)",
     alignItems: "center",
     justifyContent: "center",
   },

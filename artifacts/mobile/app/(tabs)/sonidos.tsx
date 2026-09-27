@@ -159,7 +159,7 @@ export default function SonidosScreen() {
       : theme.id === "indigo2"
         ? "rgba(191,207,255,0.1)"
         : "rgba(181,211,255,0.1)";
-  const inactiveTabSurface = "rgba(0,0,0,0.28)";
+  const inactiveTabSurface = "rgba(0,0,0,0.22)";
   const inactiveTabBorder = "rgba(241,224,255,0.25)";
   const slideX = useRef(new Animated.Value(W)).current;
   const stickyHeaderOpacity = useRef(new Animated.Value(0)).current;
@@ -456,7 +456,7 @@ export default function SonidosScreen() {
                   ]}
                  presentation="editorial"
                   cardVariant="ambiental"
-                  ambientalCardBackground="rgba(0,0,0,0.28)"
+                  ambientalCardBackground="rgba(0,0,0,0.22)"
                  ambientalTitleOnly
                  cardWidth={AMBIENTAL_CAROUSEL_CARD_W}
                  allowOversizedCardWidth
@@ -638,7 +638,7 @@ const styles = StyleSheet.create({
     borderRadius: 21.5,
     alignItems: "center",
     justifyContent: "center",
-    backgroundColor: "rgba(0,0,0,0.28)",
+    backgroundColor: "rgba(0,0,0,0.22)",
     borderWidth: 1.2,
     borderColor: "rgba(241,224,255,0.25)",
     overflow: "hidden",
@@ -676,7 +676,7 @@ const styles = StyleSheet.create({
     borderRadius: 27,
     gap: 12,
     overflow: "hidden",
-    backgroundColor: "rgba(0,0,0,0.28)",
+    backgroundColor: "rgba(0,0,0,0.22)",
     borderWidth: 1.2,
     borderColor: "rgba(241,224,255,0.25)",
   },
@@ -795,7 +795,7 @@ const styles = StyleSheet.create({
     borderRadius: 21.5,
     borderWidth: 1.2,
     borderColor: "rgba(241,224,255,0.25)",
-    backgroundColor: "rgba(0,0,0,0.28)",
+    backgroundColor: "rgba(0,0,0,0.22)",
     alignItems: "center",
     justifyContent: "center",
   },

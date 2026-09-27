@@ -182,7 +182,7 @@ export default function ResonadorPerfilScreen() {
         <Animated.View pointerEvents="none" style={[styles.headerTitleAbs, { top: topPad + 8, opacity: headerBgOpacity }]}>
           <Text style={styles.headerNameTitle} numberOfLines={1}>{resonador.name}</Text>
         </Animated.View>
-        <GhostPill noBorder style={{ backgroundColor: "rgba(0,0,0,0.28)", borderWidth: 1, borderColor: "rgba(255,255,255,0.20)", marginTop: -2, transform: [{ translateY: 2 }] }}>
+        <GhostPill noBorder style={{ backgroundColor: "rgba(0,0,0,0.22)", borderWidth: 1, borderColor: "rgba(255,255,255,0.20)", marginTop: -2, transform: [{ translateY: 2 }] }}>
           <BackPill onPress={() => router.back()} size={27} iconOffsetX={-2} />
         </GhostPill>
         <Animated.View style={{ opacity: isOwn ? 1 : headerBgOpacity }}>
@@ -226,7 +226,7 @@ export default function ResonadorPerfilScreen() {
             transition={IMAGE_TRANSITION}
           />
           <LinearGradient
-            colors={["transparent", "rgba(0,0,0,0.28)", "rgba(0,0,0,0.55)"]}
+            colors={["transparent", "rgba(0,0,0,0.22)", "rgba(0,0,0,0.55)"]}
             locations={[0.55, 0.82, 1]}
             style={styles.heroFade}
           />
@@ -624,7 +624,7 @@ const styles = StyleSheet.create({
   genreText: { fontFamily: "Manrope", fontSize: 12, color: GOLD_MUTED, fontWeight: "500", letterSpacing: 0.2 },
 
   /* ── Sígueme ── */
-  projectsCard: { backgroundColor: "rgba(0,0,0,0.28)" },
+  projectsCard: { backgroundColor: "rgba(0,0,0,0.22)" },
   projectsList: { gap: 0 },
   projectRow: {
     flexDirection: "row",
@@ -653,7 +653,7 @@ const styles = StyleSheet.create({
     borderRadius: 20,
     paddingHorizontal: 13,
     paddingVertical: 6,
-    backgroundColor: "rgba(0,0,0,0.28)",
+    backgroundColor: "rgba(0,0,0,0.22)",
     borderWidth: 1,
     borderColor: "rgba(255,255,255,0.20)",
   },

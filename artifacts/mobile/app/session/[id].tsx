@@ -438,7 +438,7 @@ export default function SessionDetailScreen({ id: idProp }: { id?: string } = {}
         />
         <LinearGradient
           colors={[
-            "rgba(0,0,0,0.28)",
+            "rgba(0,0,0,0.22)",
             "rgba(0,0,0,0.48)",
             "rgba(0,0,0,0.82)",
           ]}
@@ -924,7 +924,7 @@ const styles = StyleSheet.create({
     borderRadius: 21.5,
     paddingHorizontal: 0,
     paddingVertical: 0,
-    backgroundColor: "rgba(0,0,0,0.28)",
+    backgroundColor: "rgba(0,0,0,0.22)",
     borderWidth: 1,
     borderColor: "rgba(255,255,255,0.2)",
   },

@@ -151,7 +151,7 @@ export default function DiarioScreen() {
         <BackPill
           onPress={goBack ?? (() => router.canGoBack() ? router.back() : router.replace("/(tabs)" as never))}
           size={32}
-          bgColor="rgba(0,0,0,0.28)"
+          bgColor="rgba(0,0,0,0.22)"
           borderWidth={1.2}
           borderColor="rgba(241,224,255,0.25)"
           standardSurface

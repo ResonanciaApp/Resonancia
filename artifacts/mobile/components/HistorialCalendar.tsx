@@ -525,7 +525,7 @@ export function HistorialCalendar({
           </Text>
         </View>
       ) : !embedded && dayEntries.length === 0 ? (
-        <View style={[styles.emptyWrap, { backgroundColor: "rgba(0,0,0,0.28)" }, p ? { marginHorizontal: p } : undefined]}>
+        <View style={[styles.emptyWrap, { backgroundColor: "rgba(0,0,0,0.22)" }, p ? { marginHorizontal: p } : undefined]}>
           <Feather name="clock" size={26} color={colors.primary} style={{ marginBottom: 10 }} />
           <Text style={[styles.emptyText, { color: colors.mutedForeground }]}>
             No hay sesiones registradas este día.
