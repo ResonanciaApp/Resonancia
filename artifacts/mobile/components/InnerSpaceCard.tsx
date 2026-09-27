@@ -709,6 +709,8 @@ export function InnerSpaceCard({
 const styles = StyleSheet.create({
   container: {
     borderRadius: 24,
+    borderWidth: 1,
+    borderColor: "rgba(255,255,255,0.1)",
     backgroundColor: "rgba(0,0,0,0.22)",
     paddingHorizontal: 20,
     paddingTop: 12,
