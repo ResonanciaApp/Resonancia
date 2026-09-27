@@ -87,7 +87,7 @@ import { FilledSunIcon } from "@/components/FilledSunIcon";
 import { useMixerPanel } from "@/context/MixerPanelContext";
 import { CARD_TEXT_ABOVE, CARD_TEXT_BELOW, MEMBERSHIP_AURORA } from "@/constants/colors";
 
-const SHOW_PROFILE_HISTORY = false;
+const SHOW_PROFILE_HISTORY = true;
 const SHOW_PROFILE_PRACTICE_CARDS = false;
 // Separación visual entre la tarjeta de usuario y la racha (16 de margen + 5 de translateY).
 const PROFILE_SECTION_GAP = 21;
@@ -1392,6 +1392,7 @@ export function ProfileScreenBase({
             <View style={styles.profileProgressSection}>
               <ProgressMirrorSections
                 showSectionBorders={false}
+                streakWeekOutsideCard
                 showPersonalStats
                 showCalendar
                 personalStatsFilterBelowTitle
