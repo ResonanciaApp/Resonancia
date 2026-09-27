@@ -166,7 +166,7 @@ function DayCell({
           !embedded && isSelected && !isFuture && { backgroundColor: "#F9F9F9" },
           showTodayCompletedBorder && {
             borderWidth: 1.5,
-            borderColor: "#BE9650",
+            borderColor: "#F9F9F9",
           },
           embedded && isToday && !hasCompleted && {
             borderWidth: 1.5,

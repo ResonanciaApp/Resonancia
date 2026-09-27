@@ -17,13 +17,13 @@ import Svg, { Circle, Defs, LinearGradient as SvgLinearGradient, Stop } from "re
 
 import { ProgressMirrorSections } from "@/components/ProgressMirrorSections";
 import { CinematicFadeSlide } from "@/components/CinematicFadeSlide";
-import { SessionBadgeGlass } from "@/components/SessionDurationBadge";
 import { getPositionedDayGradient } from "@/components/StreakWeekRow";
 import { useSceneTheme } from "@/context/SceneThemeContext";
 import { useColors } from "@/hooks/useColors";
 import { useStreak } from "@/hooks/useStreak";
 
-const RING_SIZE = 136;
+const DESCRIPTION_SHIFT = 18;
+const RING_SIZE = 131;
 const RING_STROKE = 9;
 const RING_RADIUS = (RING_SIZE - RING_STROKE) / 2;
 const RING_CIRCUMFERENCE = 2 * Math.PI * RING_RADIUS;
@@ -41,7 +41,7 @@ export default function ProgresoScreen() {
   const topPad = Platform.OS === "web" ? 67 : Math.max(insets.top, 40);
   const bottomPad = Platform.OS === "web" ? 34 : insets.bottom;
   const bgColors = theme.gradient as unknown as [string, string, ...string[]];
-  const heroHeight = Math.min(410, Math.max(340, viewportWidth * 0.98)) - 75;
+  const heroHeight = Math.min(410, Math.max(340, viewportWidth * 0.98)) - 75 + DESCRIPTION_SHIFT;
 
   return (
     <LinearGradient
@@ -87,7 +87,6 @@ export default function ProgresoScreen() {
                   translateYFrom={14}
                 >
                   <View style={styles.streakCountWrap}>
-                    <View pointerEvents="none" style={styles.streakCountShadow} />
                     <Svg
                       pointerEvents="none"
                       width={RING_SIZE}
@@ -130,9 +129,6 @@ export default function ProgresoScreen() {
                       style={styles.streakCountCircle}
                       accessibilityLabel={`${completedWeekDays} ${completedWeekDays === 1 ? "día" : "días"}`}
                     >
-                      <View pointerEvents="none" style={StyleSheet.absoluteFill}>
-                        <SessionBadgeGlass showBlackTint={false} showWhiteTint />
-                      </View>
                       <Text style={[styles.streakIntroCount, { color: colors.foreground }]}>
                         {completedWeekDays}
                       </Text>
@@ -164,12 +160,12 @@ export default function ProgresoScreen() {
               showSectionBorders={false}
               showPersonalStats={false}
               showCalendar={false}
+              sectionBackgroundColor="rgba(0,0,0,0.2)"
               sectionHorizontalPadding={20}
               sectionTopPadding={16}
               sectionBottomPadding={19}
               sectionMarginBottom={20}
               canonicalVerticalInsets
-              streakTitle="Tu progreso"
             />
           </View>
         </View>
@@ -259,42 +255,25 @@ const styles = StyleSheet.create({
   },
   streakProgressRing: {
     position: "absolute",
-    top: -11.5,
-    left: -11.5,
-  },
-  streakCountShadow: {
-    position: "absolute",
-    bottom: -2,
-    width: 52,
-    height: 1,
-    borderRadius: 0.5,
-    backgroundColor: "rgba(0,0,0,0.01)",
-    shadowColor: "#000000",
-    shadowOffset: { width: 0, height: 8 },
-    shadowOpacity: 0.42,
-    shadowRadius: 24,
-    elevation: 3,
+    top: -9,
+    left: -9,
   },
   streakCountCircle: {
     width: 113,
     height: 113,
     borderRadius: 56.5,
-    borderWidth: 1,
-    borderColor: "rgba(255,255,255,0.3)",
+    backgroundColor: "rgba(255,255,255,0.1)",
     overflow: "hidden",
     alignItems: "center",
     justifyContent: "center",
   },
   streakIntroCount: {
     fontFamily: "Manrope",
-    fontSize: 55,
+    fontSize: 53,
     lineHeight: 60,
     fontWeight: "800",
     letterSpacing: -0.5,
     textAlign: "center",
-    textShadowColor: "rgba(0,0,0,0.5)",
-    textShadowOffset: { width: 0, height: 2 },
-    textShadowRadius: 6,
     transform: [{ translateY: 4 }],
   },
   streakIntroUnit: {
@@ -305,9 +284,6 @@ const styles = StyleSheet.create({
     letterSpacing: 0.9,
     textAlign: "center",
     textTransform: "uppercase",
-    textShadowColor: "rgba(0,0,0,0.5)",
-    textShadowOffset: { width: 0, height: 1 },
-    textShadowRadius: 4,
     transform: [{ translateY: -2 }],
   },
   streakIntroDescription: {
@@ -316,7 +292,7 @@ const styles = StyleSheet.create({
     fontSize: 13,
     lineHeight: 22,
     fontWeight: "500",
-    marginTop: 14,
+    marginTop: 14 + DESCRIPTION_SHIFT,
     textAlign: "center",
     maxWidth: "85%",
     textShadowColor: "rgba(0,0,0,0.5)",
