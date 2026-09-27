@@ -51,7 +51,7 @@ const PLUS_ROTATION_STOPS = [
 const PANEL_DURATION = 620;
 const SCREEN_SETTLE_DURATION = 650;
 export const INNER_SPACE_CARD_BOTTOM_MARGIN = 32;
-const HALO_SIZES = [46, 36, 26] as const;
+const HALO_SIZES = [44, 34, 24] as const;
 const HALO_COLORS = [
   "rgba(255, 255, 255, 0.06)",
   "rgba(255, 255, 255, 0.10)",
@@ -526,7 +526,7 @@ export function InnerSpaceCard({
               }) }] },
             ]}
           >
-            <Feather name="plus" size={27} color="#E5F7FF" />
+            <Feather name="plus" size={25} color="#E5F7FF" />
           </Animated.View>
         </Pressable>
       </View>
@@ -711,14 +711,14 @@ const styles = StyleSheet.create({
     borderRadius: 24,
     backgroundColor: "rgba(0,0,0,0.28)",
     paddingHorizontal: 20,
-    paddingTop: 16,
-    paddingBottom: 20,
+    paddingTop: 12,
+    paddingBottom: 16,
     marginBottom: INNER_SPACE_CARD_BOTTOM_MARGIN,
     overflow: "hidden",
   },
   header: {
     flexDirection: "row",
-    alignItems: "flex-start",
+    alignItems: "center",
     justifyContent: "space-between",
     gap: 12,
   },
@@ -741,8 +741,8 @@ const styles = StyleSheet.create({
     position: "absolute",
   },
   plusGlyph: {
-    width: 30,
-    height: 30,
+    width: 28,
+    height: 28,
     alignItems: "center",
     justifyContent: "center",
   },
