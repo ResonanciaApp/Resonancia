@@ -145,7 +145,7 @@ const styles = StyleSheet.create({
     paddingTop: 20,
     paddingBottom: 15,
     borderRadius: 19,
-    backgroundColor: "rgba(0,0,0,0.2)",
+    backgroundColor: "rgba(0,0,0,0.16)",
     overflow: "hidden",
   },
   emptyState: {
