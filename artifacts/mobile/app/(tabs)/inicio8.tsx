@@ -2072,7 +2072,6 @@ function InicioEmotionWidget({
   borderColor?: string;
   onOpenMoodPicker: () => void;
 }) {
-  const { theme } = useSceneTheme();
   return (
     <Pressable
       onPress={onOpenMoodPicker}
@@ -2102,13 +2101,11 @@ function InicioEmotionWidget({
       <View style={styles.inicio2HeroEmotionAdd}>
         <LinearGradient
           pointerEvents="none"
-          colors={theme.gradient}
-          locations={theme.gradientLocations}
-          start={theme.gradientStart ?? { x: 0.5, y: 0 }}
-          end={theme.gradientEnd ?? { x: 0.5, y: 1 }}
+          colors={["#532FA8", "#372FA8"]}
+          start={{ x: 0.5, y: 0 }}
+          end={{ x: 0.5, y: 1 }}
           style={StyleSheet.absoluteFill}
         />
-        <View pointerEvents="none" style={[StyleSheet.absoluteFill, styles.inicio2HeroEmotionAddBrighten]} />
         <Text style={styles.inicio2HeroEmotionAddText}>+</Text>
       </View>
     </Pressable>
@@ -3836,9 +3833,6 @@ const styles = StyleSheet.create({
     overflow: "hidden",
     alignItems: "center",
     justifyContent: "center",
-  },
-  inicio2HeroEmotionAddBrighten: {
-    backgroundColor: "rgba(255,255,255,0.09)",
   },
   inicio2HeroEmotionAddText: {
     color: "#FFFFFF",
