@@ -61,7 +61,7 @@
 - [Tema visual único](scene-visual-theme.md) — Índigo 2 fijo; Luz mezcla fondos con blanco al 7 %, Noche original; las escenas sonoras siguen independientes
 - [Sticky header divider per-tab scroll](sticky-header-divider-per-tab-scroll.md) — divisor scroll-triggered debe cablearse a onScroll compartido en TODOS los ScrollView bajo el header, no solo la pestaña default
 - [Header divider full-bleed](header-border-full-bleed.md) — divider inside a padded header must be normal-flow + negative marginHorizontal, not absolute inside a padded child, to reach screen edge
-- [Action sheet theme hierarchy](action-sheet-theme-hierarchy.md) — "..." menu backgrounds: Nivel1&2 full gradient, Nivel3 solid gradient[0], Nivel4 Geometrix untouched, Nivel5 Diario/Grupos not themeable
+- [Action sheet theme hierarchy](action-sheet-theme-hierarchy.md) — Biblioteca: acciones con tercer stop; menú + y Agrega Resonador con último; otras superficies conservan su regla
 - [Destacados por superficie](featured-category-flag.md) — Inicio, categoría y Dormir son destinos independientes; Dormir exige pertenencia a una colección
 - [Para este momento](home-featured-selection.md) — “Destacada en Inicio” rota diariamente; “Mostrar hoy” fija una única sesión de cualquier categoría
 - [Session tap three-state](session-tap-three-state.md) — prioridad skipMiniPlayer > skipDetail > detalle, duplicada en ~22 sitios incl. onPress inline de carruseles (SessionCard no los cubre)

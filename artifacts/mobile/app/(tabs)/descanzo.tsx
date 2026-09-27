@@ -588,6 +588,7 @@ export default function DescansoScreen() {
       <ContextSearchModal
         visible={searchVisible}
         matchDiscoverSearchBar
+        thirdStopBackground
         onClose={() => setSearchVisible(false)}
         items={sleepSearchItems}
         placeholder="Buscar en Dormir..."

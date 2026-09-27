@@ -1034,6 +1034,7 @@ export function ExploreScreen({
       <ContextSearchModal
         visible={searchVisible}
         matchDiscoverSearchBar
+        thirdStopBackground
         onClose={() => setSearchVisible(false)}
         items={discoverSearchItems}
         placeholder={`Buscar en ${screenTitle}...`}

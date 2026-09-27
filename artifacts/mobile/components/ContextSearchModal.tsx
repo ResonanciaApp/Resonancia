@@ -48,6 +48,7 @@ export type ContextSearchScope = "sleep" | "discover" | "sounds";
 type ContextSearchModalProps = {
   visible: boolean;
   matchDiscoverSearchBar?: boolean;
+  thirdStopBackground?: boolean;
   onClose: () => void;
   items: ContextSearchItem[];
   placeholder: string;
@@ -71,6 +72,7 @@ function normalize(value: string): string {
 export function ContextSearchModal({
   visible,
   matchDiscoverSearchBar = false,
+  thirdStopBackground = false,
   onClose,
   items,
   placeholder,
@@ -198,7 +200,9 @@ export function ContextSearchModal({
     if (recentStorageKey) AsyncStorage.removeItem(recentStorageKey).catch(() => {});
   };
 
-  const backgroundColor = theme.gradient[0] as string;
+  const backgroundColor = thirdStopBackground
+    ? (theme.gradient[2] ?? theme.gradient[1])
+    : theme.gradient[0];
   const searchBarSurface =
     matchDiscoverSearchBar
       ? DISCOVER_SEARCH_SURFACE
@@ -218,7 +222,7 @@ export function ContextSearchModal({
     >
       <KeyboardAvoidingView style={styles.root} behavior="padding" keyboardVerticalOffset={0}>
         <View style={[StyleSheet.absoluteFillObject, { backgroundColor }]}>
-          {theme.id === "tibet" && (
+          {theme.id === "tibet" && !thirdStopBackground && (
             <LinearGradient
               colors={theme.gradient as [string, string, ...string[]]}
               style={StyleSheet.absoluteFill}
@@ -232,7 +236,7 @@ export function ContextSearchModal({
             styles.header,
             {
               paddingTop: insets.top + 14,
-              backgroundColor: theme.id === "tibet" ? "transparent" : backgroundColor,
+              backgroundColor: theme.id === "tibet" && !thirdStopBackground ? "transparent" : backgroundColor,
             },
           ]}
         >
