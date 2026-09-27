@@ -89,7 +89,7 @@ import { CARD_TEXT_ABOVE, CARD_TEXT_BELOW, MEMBERSHIP_AURORA } from "@/constants
 
 const SHOW_PROFILE_HISTORY = true;
 const SHOW_PROFILE_PRACTICE_CARDS = false;
-// Separación visual entre la tarjeta de usuario y la racha (16 de margen + 5 de translateY).
+// Separación entre los bloques de progreso en Perfil.
 const PROFILE_SECTION_GAP = 21;
 
 function resizeImageForWeb(uri: string, maxSize: number): Promise<string> {
@@ -2601,6 +2601,7 @@ const styles = StyleSheet.create({
 
   // Progreso semanal compacto
   profileProgressSection: {
+    marginTop: 15,
     marginBottom: PROFILE_SECTION_GAP,
   },
   practiceReminderSection: {
