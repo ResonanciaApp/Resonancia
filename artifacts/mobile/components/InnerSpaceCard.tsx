@@ -14,7 +14,6 @@ import Reanimated, {
 } from "react-native-reanimated";
 import { useColors } from "@/hooks/useColors";
 import { useSceneTheme } from "@/context/SceneThemeContext";
-import { DiscoverSearchBorder } from "@/components/DiscoverSearchBorder";
 import {
   getListMyReflectionsQueryKey,
   useCreateMyReflection,
@@ -484,10 +483,7 @@ export function InnerSpaceCard({
     <View style={styles.container}>
       <View style={styles.header}>
         <View style={styles.headerCopy}>
-          <Text style={[styles.headerTitle, { color: colors.foreground }]}>Mi muro expansivo</Text>
-          <Text style={[styles.headerDescription, { color: colors.mutedForeground }]}>
-            Comparte tus reflexiones y registra tu viaje interior
-          </Text>
+          <Text style={[styles.headerTitle, { color: colors.foreground }]}>Registra y comparte tu viaje</Text>
         </View>
         <Pressable
           style={styles.infoButton}
@@ -704,7 +700,6 @@ export function InnerSpaceCard({
           </Animated.View>
         </View>
       </Reanimated.View>
-      <DiscoverSearchBorder borderRadius={24} borderWidth={1} />
     </View>
     <Reanimated.View pointerEvents="none" style={collapseSpacerStyle} />
     </>
@@ -735,12 +730,6 @@ const styles = StyleSheet.create({
     fontFamily: "Manrope",
     fontSize: 16,
     fontWeight: "700",
-  },
-  headerDescription: {
-    fontFamily: "Manrope",
-    fontSize: 13,
-    lineHeight: 18,
-    marginTop: 4,
   },
   infoButton: {
     width: 43,

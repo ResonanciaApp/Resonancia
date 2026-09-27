@@ -3355,14 +3355,19 @@ export default function HomeScreen2({
           <View style={styles.inicio3SectionDivider} />
         )}
         {isInicio2 && (
-          <HomeReflectionWallSection
-            ref={wallSectionRef}
-            scrollRef={homeScrollRef}
-            getScrollY={getHomeScrollY}
-            onComposingChange={setComposingReflection}
-            onMessageSaved={() => setReflectionSavedTrigger((value) => value + 1)}
-            style={{ marginHorizontal: GRID_PAD }}
-          />
+          <>
+            <View style={{ marginHorizontal: GRID_PAD }}>
+              <Text style={styles.sectionTitle}>Mi muro expansivo</Text>
+            </View>
+            <HomeReflectionWallSection
+              ref={wallSectionRef}
+              scrollRef={homeScrollRef}
+              getScrollY={getHomeScrollY}
+              onComposingChange={setComposingReflection}
+              onMessageSaved={() => setReflectionSavedTrigger((value) => value + 1)}
+              style={{ marginHorizontal: GRID_PAD }}
+            />
+          </>
         )}
         {isInicio2 && variant !== "inicio3" && (
           <View style={{ paddingTop: INICIO2_SECTION_GAP }}>
