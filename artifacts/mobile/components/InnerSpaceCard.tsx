@@ -14,6 +14,7 @@ import Reanimated, {
 } from "react-native-reanimated";
 import { useColors } from "@/hooks/useColors";
 import { useSceneTheme } from "@/context/SceneThemeContext";
+import { DiscoverSearchBorder } from "@/components/DiscoverSearchBorder";
 import {
   getListMyReflectionsQueryKey,
   useCreateMyReflection,
@@ -700,6 +701,7 @@ export function InnerSpaceCard({
           </Animated.View>
         </View>
       </Reanimated.View>
+      <DiscoverSearchBorder borderRadius={24} />
     </View>
     <Reanimated.View pointerEvents="none" style={collapseSpacerStyle} />
     </>
