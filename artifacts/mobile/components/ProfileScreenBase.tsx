@@ -2503,7 +2503,7 @@ const styles = StyleSheet.create({
   profileCardDivider: {
     height: 1,
     width: "100%",
-    backgroundColor: "rgba(181,211,255,0.057)",
+    backgroundColor: "rgba(181,211,255,0.05)",
     marginTop: 20,
     marginBottom: 4,
   },

@@ -620,7 +620,7 @@ const styles = StyleSheet.create({
     height: 1,
     width: "100%",
     marginVertical: 16,
-    backgroundColor: "rgba(255,255,255,0.07)",
+    backgroundColor: "rgba(255,255,255,0.05)",
   },
   personalStatsSection: {
     borderRadius: 19,
@@ -724,7 +724,7 @@ const styles = StyleSheet.create({
     width: 1,
     height: 42,
     marginHorizontal: 10,
-    backgroundColor: "rgba(255,255,255,0.1)",
+    backgroundColor: "rgba(255,255,255,0.05)",
   },
   statValue: {
     color: "#F9F9F9",
