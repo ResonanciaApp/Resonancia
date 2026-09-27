@@ -14,7 +14,6 @@ import Reanimated, {
 } from "react-native-reanimated";
 import { useColors } from "@/hooks/useColors";
 import { useSceneTheme } from "@/context/SceneThemeContext";
-import { CARD_TEXT_BELOW } from "@/constants/colors";
 import {
   getListMyReflectionsQueryKey,
   useCreateMyReflection,
@@ -485,9 +484,6 @@ export function InnerSpaceCard({
       <View style={styles.header}>
         <View style={styles.headerCopy}>
           <Text style={[styles.headerTitle, { color: colors.foreground }]}>Mi muro expansivo</Text>
-          <Text style={[styles.headerDescription, { color: CARD_TEXT_BELOW }]}>
-            Exprésate y compártelo con el mundo
-          </Text>
         </View>
         <Pressable
           style={styles.infoButton}
@@ -735,12 +731,6 @@ const styles = StyleSheet.create({
     fontSize: 16,
     fontWeight: "700",
   },
-  headerDescription: {
-    fontFamily: "Manrope",
-    fontSize: 12,
-    lineHeight: 17,
-    marginTop: 3,
-  },
   infoButton: {
     width: 43,
     height: 43,
@@ -800,7 +790,7 @@ const styles = StyleSheet.create({
     transform: [{ scale: 0.97 }],
   },
   gridLabel: {
-    fontSize: 11,
+    fontSize: 12,
     fontWeight: "500",
     textAlign: "left",
   },
@@ -817,7 +807,7 @@ const styles = StyleSheet.create({
   },
   input: {
     minHeight: 53,
-    fontSize: 13,
+    fontSize: 15,
     lineHeight: 21,
     transform: [{ translateY: -5 }],
   },
@@ -828,7 +818,7 @@ const styles = StyleSheet.create({
     right: 12,
   },
   inputPlaceholderText: {
-    fontSize: 13,
+    fontSize: 15,
     lineHeight: 21,
   },
   incomingPlaceholder: {
