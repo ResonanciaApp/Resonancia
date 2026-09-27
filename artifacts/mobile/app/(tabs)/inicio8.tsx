@@ -353,7 +353,7 @@ function Inicio2LotusStreak({ lightBackground = false }: { lightBackground?: boo
     <View
       style={[
         styles.inicio2HeroLotusContent,
-        { backgroundColor: "rgba(0,0,0,0.2)" },
+        { backgroundColor: "rgba(0,0,0,0.22)" },
         lightBackground && styles.inicio3HeroLotusSurface,
       ]}
     >
@@ -3761,7 +3761,7 @@ const styles = StyleSheet.create({
   inicio3HeroLotusSurface: {
     height: 39,
     borderRadius: 19.5,
-    backgroundColor: "rgba(0,0,0,0.2)",
+    backgroundColor: "rgba(0,0,0,0.22)",
     borderWidth: 1,
     borderColor: "rgba(255,255,255,0.2)",
   },

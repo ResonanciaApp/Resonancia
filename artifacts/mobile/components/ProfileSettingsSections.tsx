@@ -74,11 +74,6 @@ export function ProfileSettingsSections({
     : isIndigo2
       ? "rgba(255,255,255,0.07)"
       : "rgba(255,255,255,0.09)";
-  const borderColor = isIndigo
-    ? "rgba(170,170,196,0.16)"
-    : isIndigo2
-      ? "rgba(255,255,255,0.08)"
-      : "rgba(255,255,255,0.1)";
 
   const comingSoon = (label: string) => {
     Alert.alert(label, "Esta función estará disponible próximamente.");
@@ -153,7 +148,7 @@ export function ProfileSettingsSections({
     <View style={styles.root}>
       {placement === "settings" && (
         <View style={[styles.section, styles.compactSection]}>
-          <View style={[styles.card, { backgroundColor: cardBackground, borderColor }]}>
+          <View style={[styles.card, { backgroundColor: cardBackground }]}>
             <Pressable
               onPress={() => router.push("/membresia")}
               accessibilityRole="button"
@@ -207,7 +202,7 @@ export function ProfileSettingsSections({
               {section.title}
             </Text>
           )}
-          <View style={[styles.card, { backgroundColor: cardBackground, borderColor }]}>
+          <View style={[styles.card, { backgroundColor: cardBackground }]}>
             {section.rows.map((row, index) => {
               const rowColor = row.accent ? "#D8B56A" : foreground;
               return (
@@ -273,7 +268,6 @@ export function ProfileSettingsSections({
               styles.geometrixButton,
               {
                 backgroundColor: cardBackground,
-                borderColor,
                 opacity: pressed ? 0.72 : 1,
               },
             ]}
@@ -298,7 +292,7 @@ export function ProfileSettingsSections({
             <Text style={[styles.logoutText, { color: foreground }]}>Cerrar sesión</Text>
           </Pressable>
 
-          <View style={[styles.versionCard, { backgroundColor: cardBackground, borderColor }]}>
+          <View style={[styles.versionCard, { backgroundColor: cardBackground }]}>
             <Text style={[styles.versionText, { color: mutedForeground }]}>
               Versión {Application.nativeApplicationVersion ?? "1.0.0"} ({Application.nativeBuildVersion ?? "—"})
             </Text>
@@ -343,7 +337,6 @@ const styles = StyleSheet.create({
   },
   card: {
     borderRadius: 17,
-    borderWidth: 1,
     overflow: "hidden",
   },
   divider: {
@@ -410,7 +403,6 @@ const styles = StyleSheet.create({
   geometrixButton: {
     minHeight: 66,
     borderRadius: 17,
-    borderWidth: 1,
     flexDirection: "row",
     alignItems: "center",
     paddingHorizontal: 15,
@@ -430,7 +422,6 @@ const styles = StyleSheet.create({
   },
   versionCard: {
     borderRadius: 17,
-    borderWidth: 1,
     alignItems: "center",
     paddingVertical: 22,
     paddingHorizontal: 16,
