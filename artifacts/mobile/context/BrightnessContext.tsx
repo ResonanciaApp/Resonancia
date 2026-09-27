@@ -3,12 +3,14 @@ import React, { createContext, useCallback, useContext, useState } from "react";
 
 const KEY = "@resonance_bright_mode";
 const DEFAULT_BRIGHTNESS = 0.5;
+const BRIGHT_MODE_WHITE_MIX = 0.035;
 
-/** Aclara un fondo mezclándolo una sola vez con blanco al 7 %. */
+/** Aclara un fondo mezclándolo una sola vez con blanco al 3,5 %. */
 export function brightenThemeColor(hex: string): string {
   return `#${[1, 3, 5].map((offset) => {
     const channel = parseInt(hex.slice(offset, offset + 2), 16);
-    return Math.round(channel * 0.93 + 255 * 0.07).toString(16).padStart(2, "0");
+    return Math.round(channel * (1 - BRIGHT_MODE_WHITE_MIX) + 255 * BRIGHT_MODE_WHITE_MIX)
+      .toString(16).padStart(2, "0");
   }).join("")}`;
 }
 

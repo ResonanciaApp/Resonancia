@@ -3,7 +3,7 @@ name: Progreso visible en Perfil
 description: Orden actual del progreso en Perfil y su relación con Tu progreso.
 ---
 
-Perfil muestra la tarjeta de racha con siete días, divisor y cifras; debajo van «Estadísticas personales» y, después, el calendario de Tu progreso. No necesita duplicar el encabezado «Tu progreso» ni «Ver todo».
+Perfil muestra la tarjeta de racha con siete días, divisor y cifras; debajo van «Mis estadísticas» y, después, el calendario de Tu progreso. No necesita duplicar el encabezado «Tu progreso» ni «Ver todo».
 
 **Why:** La decisión anterior de dejar solo la racha en Perfil fue sustituida por una petición explícita posterior de incorporar estadísticas personales y calendario en ese orden.
 

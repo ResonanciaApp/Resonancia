@@ -1640,6 +1640,7 @@ export function ProfileScreenBase({
                 showSectionBorders={false}
                 showPersonalStats
                 showCalendar
+                personalStatsFilterBelowTitle
                 sectionBackgroundColor="rgba(0,0,0,0.22)"
                 sectionHorizontalPadding={20}
                 sectionTopPadding={21}

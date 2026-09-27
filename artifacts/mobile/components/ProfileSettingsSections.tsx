@@ -105,7 +105,7 @@ export function ProfileSettingsSections({
         {
           icon: brightMode ? "sun" : "moon",
           label: "Luz / Noche",
-          description: brightMode ? "Luz · Índigo 2 con 7 % más brillo" : "Noche · Índigo 2 original",
+          description: brightMode ? "Luz · Índigo 2 con 3,5 % más brillo" : "Noche · Índigo 2 original",
           toggle: true,
           toggleValue: brightMode,
           onToggle: setBrightMode,

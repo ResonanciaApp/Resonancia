@@ -653,7 +653,7 @@ const styles = StyleSheet.create({
   weekLabel: {
     fontFamily: "Manrope",
     flex: 1,
-    fontSize: 13,
+    fontSize: 12,
     fontWeight: "700",
     textAlign: "center",
     letterSpacing: 0.3,

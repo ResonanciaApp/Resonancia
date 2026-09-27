@@ -198,7 +198,7 @@ export function ProgressMirrorSections({
           (personalStatsFilterBelowTitle || mergeStatsAndStreak) && styles.personalStatsHeaderStacked,
         ]}>
           <Text style={[styles.personalStatsTitle, { color: colors.foreground }]}>
-            Estadísticas personales
+            Mis estadísticas
           </Text>
           {filterControl}
         </View>
