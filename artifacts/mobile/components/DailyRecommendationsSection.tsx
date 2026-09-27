@@ -224,13 +224,13 @@ const styles = StyleSheet.create({
     paddingTop: 8,
     paddingBottom: 8,
     borderWidth: 2,
-    borderColor: "rgba(255,255,255,0.08)",
+    borderColor: "rgba(255,255,255,0.04)",
     borderRadius: 16,
     overflow: "hidden",
     transform: [{ translateY: 7 }],
   },
   recommendationGroup: {
-    transform: [{ translateY: -2 }],
+    transform: [{ translateY: 3 }],
   },
   recommendationCard: {
     backgroundColor: "rgba(0,0,0,0.28)",
@@ -273,12 +273,12 @@ const styles = StyleSheet.create({
   },
   row: {
     paddingVertical: 9.3,
-    paddingLeft: 18,
+    paddingLeft: 22,
     paddingRight: 16,
   },
   inicio3Row: {
     paddingVertical: 8.3,
-    paddingLeft: 13,
+    paddingLeft: 17,
     paddingRight: 11,
   },
 });
