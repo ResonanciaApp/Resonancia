@@ -55,7 +55,6 @@ import { ContextSearchModal } from "@/components/ContextSearchModal";
 import { EditorialPlaylistCarousel } from "@/components/EditorialPlaylistCarousel";
 import { SessionCarousel } from "@/components/SessionCarousel";
 import { ContentCategoryGrid } from "@/components/ContentCategoryGrid";
-import { SoundPremiumBanner } from "@/components/SoundPremiumBanner";
 import { PressScale } from "@/components/PressScale";
 import { PremiumBadge } from "@/components/PremiumBadge";
 import { useResonadores } from "@/hooks/useResonadores";
@@ -979,14 +978,6 @@ export function ExploreScreen({
               })}
             </View>
           </View>
-
-          <View style={styles.sectionDivider} />
-
-          {!isPremium && (
-            <View style={{ marginTop: 15 }}>
-              <SoundPremiumBanner />
-            </View>
-          )}
 
           {/* ── Descubre algo nuevo (al final de la página) — oculta a pedido del usuario ── */}
           {false && (
