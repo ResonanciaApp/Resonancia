@@ -11,7 +11,7 @@ import { useStreak } from "@/hooks/useStreak";
 const DAY_INITIALS = ["L", "M", "M", "J", "V", "S", "D"];
 // Conserva la luminosidad especial del anillo sin cambiar la dirección cromática del tema.
 const RING_BRIGHTNESS_OFFSET = 125;
-const RING_BRIGHTNESS_GAIN = 1.1;
+const RING_BRIGHTNESS_GAIN = 1.21;
 
 function brightenRingColor(hex: string): string {
   return `#${[1, 3, 5].map((index) =>
