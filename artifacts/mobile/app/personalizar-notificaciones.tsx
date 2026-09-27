@@ -30,6 +30,15 @@ import { useColors } from "@/hooks/useColors";
 import { SavedConfirmationBanner } from "@/components/SavedConfirmationBanner";
 import { SessionBadgeGlass } from "@/components/SessionDurationBadge";
 
+// La portada de Playlist meditativas oculta su primer stop, más claro.
+// Esta pantalla no tiene portada, así que parte del siguiente tono.
+const NOTIFICATIONS_GRADIENT = [
+  EDITORIAL_PLAYLIST_GRADIENT[1],
+  EDITORIAL_PLAYLIST_GRADIENT[1],
+  EDITORIAL_PLAYLIST_GRADIENT[2],
+  EDITORIAL_PLAYLIST_GRADIENT[3],
+] as const;
+
 type PreferenceOption = {
   id: string;
   label: string;
@@ -303,10 +312,10 @@ export default function PersonalizarNotificacionesScreen() {
 
   return (
     <>
-      <Stack.Screen options={{ contentStyle: { backgroundColor: EDITORIAL_PLAYLIST_GRADIENT[0] } }} />
+      <Stack.Screen options={{ contentStyle: { backgroundColor: NOTIFICATIONS_GRADIENT[0] } }} />
       <LinearGradient
-        style={[styles.root, { backgroundColor: EDITORIAL_PLAYLIST_GRADIENT[0] }]}
-        colors={EDITORIAL_PLAYLIST_GRADIENT}
+        style={[styles.root, { backgroundColor: NOTIFICATIONS_GRADIENT[0] }]}
+        colors={NOTIFICATIONS_GRADIENT}
         start={{ x: 0, y: 0 }}
         end={{ x: 0, y: 1 }}
       >
