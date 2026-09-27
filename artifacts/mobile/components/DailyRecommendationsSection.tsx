@@ -230,7 +230,7 @@ const styles = StyleSheet.create({
     transform: [{ translateY: 7 }],
   },
   recommendationGroup: {
-    transform: [{ translateY: 3 }],
+    transform: [{ translateY: -2 }],
   },
   recommendationCard: {
     backgroundColor: "rgba(0,0,0,0.28)",

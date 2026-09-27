@@ -2063,15 +2063,14 @@ const Inicio2HeroStatic = React.memo(function Inicio2HeroStatic({
 
 function InicioEmotionWidget({
   bottom,
-  backgroundColor,
   borderColor,
   onOpenMoodPicker,
 }: {
   bottom: number;
-  backgroundColor: string;
   borderColor?: string;
   onOpenMoodPicker: () => void;
 }) {
+  const { theme } = useSceneTheme();
   return (
     <Pressable
       onPress={onOpenMoodPicker}
@@ -2099,6 +2098,14 @@ function InicioEmotionWidget({
       />
       <Text style={styles.inicio2HeroEmotionEmoji}>😌</Text>
       <View style={styles.inicio2HeroEmotionAdd}>
+        <LinearGradient
+          pointerEvents="none"
+          colors={theme.gradient}
+          locations={theme.gradientLocations}
+          start={theme.gradientStart ?? { x: 0.5, y: 0 }}
+          end={theme.gradientEnd ?? { x: 0.5, y: 1 }}
+          style={StyleSheet.absoluteFill}
+        />
         <Text style={styles.inicio2HeroEmotionAddText}>+</Text>
       </View>
     </Pressable>
@@ -2177,7 +2184,6 @@ export default function HomeScreen2({
   const tabBarBottomOffset =
     Platform.OS === "web" ? 2 : Math.max(3, insets.bottom - 15) - 1;
   const emotionWidgetBottom = tabBarBottomOffset + 68 + 25;
-  const emotionWidgetBackground = "#2D4082";
   const cardBg = "rgba(255,255,255,0.1)";
   const durationPillBg = cardBg;
   const recommendationSurfaceBg = cardBg;
@@ -3535,7 +3541,6 @@ export default function HomeScreen2({
 
       <InicioEmotionWidget
         bottom={emotionWidgetBottom}
-        backgroundColor={emotionWidgetBackground}
         onOpenMoodPicker={() => setMoodSheetVisible(true)}
       />
       </Animated.View>{/* fin contenido desvanecible */}
@@ -3873,7 +3878,6 @@ const styles = StyleSheet.create({
     overflow: "hidden",
     alignItems: "center",
     justifyContent: "center",
-    backgroundColor: "#4D2C96",
   },
   inicio2HeroEmotionAddText: {
     color: "#FFFFFF",
