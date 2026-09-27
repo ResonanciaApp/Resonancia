@@ -114,8 +114,8 @@ export function AmbientalDurationSheet({
   const colors = useColors();
   const { theme } = useSceneTheme();
   const sheetGradient: [string, string] = [
-    theme.gradient[0],
-    theme.gradient[1],
+    theme.gradient[theme.gradient.length - 2],
+    theme.gradient[theme.gradient.length - 1],
   ];
   const insets = useSafeAreaInsets();
   const [rendered, setRendered] = useState(visible);
