@@ -94,6 +94,8 @@ import { CARD_TEXT_ABOVE, CARD_TEXT_BELOW, MEMBERSHIP_AURORA } from "@/constants
 
 const SHOW_PROFILE_HISTORY = false;
 const SHOW_PROFILE_PRACTICE_CARDS = false;
+// Separación visual entre la tarjeta de usuario y la racha (16 de margen + 5 de translateY).
+const PROFILE_SECTION_GAP = 21;
 
 const REFLECTION_BANNER_ENTRY_DISTANCE = 86;
 const REFLECTION_BANNER_ENTRY_DURATION = 380;
@@ -1638,15 +1640,16 @@ export function ProfileScreenBase({
                 showSectionBorders={false}
                 showPersonalStats
                 showCalendar
+                sectionBackgroundColor="rgba(0,0,0,0.22)"
                 sectionHorizontalPadding={20}
                 sectionTopPadding={21}
                 sectionBottomPadding={15}
+                sectionMarginBottom={PROFILE_SECTION_GAP}
                 onStreakTitlePress={() => router.push("/progreso" as never)}
               />
             </View>
 
             <View
-              style={styles.innerSpaceSection}
               onLayout={(event) => {
                 innerSpaceHeightRef.current = event.nativeEvent.layout.height;
                 setInnerSpaceLayoutY(event.nativeEvent.layout.y);
@@ -2733,7 +2736,7 @@ const styles = StyleSheet.create({
   // Profile card
   profileCard: {
     borderRadius: 19,
-    backgroundColor: "rgba(0,0,0,0.28)",
+    backgroundColor: "rgba(0,0,0,0.22)",
     paddingTop: 24,
     paddingBottom: 6,
     alignItems: "stretch",
@@ -2870,10 +2873,7 @@ const styles = StyleSheet.create({
 
   // Progreso semanal compacto
   profileProgressSection: {
-    marginBottom: 4,
-  },
-  innerSpaceSection: {
-    marginTop: 5,
+    marginBottom: PROFILE_SECTION_GAP,
   },
   practiceReminderSection: {
     paddingHorizontal: 16,

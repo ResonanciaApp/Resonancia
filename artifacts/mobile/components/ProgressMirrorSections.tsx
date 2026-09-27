@@ -20,6 +20,7 @@ const SECTION_BACKGROUND = "rgba(0,0,0,0.28)";
 export function ProgressMirrorSections({
   showSectionBorders = true,
   showPersonalStats = true,
+  sectionBackgroundColor = SECTION_BACKGROUND,
   mergeStatsAndStreak = false,
   personalStatsFilterBelowTitle = false,
   personalStatsFilterColor,
@@ -42,6 +43,7 @@ export function ProgressMirrorSections({
 }: {
   showSectionBorders?: boolean;
   showPersonalStats?: boolean;
+  sectionBackgroundColor?: string;
   mergeStatsAndStreak?: boolean;
   personalStatsFilterBelowTitle?: boolean;
   personalStatsFilterColor?: string;
@@ -169,6 +171,7 @@ export function ProgressMirrorSections({
       style={[
         styles.personalStatsSection,
         !showSectionBorders && styles.borderlessSection,
+        !mergeStatsAndStreak && { backgroundColor: sectionBackgroundColor },
         sectionHorizontalPadding !== undefined && {
           paddingHorizontal: sectionHorizontalPadding,
         },
@@ -249,6 +252,7 @@ export function ProgressMirrorSections({
             styles.streakSection,
             streakTitle && styles.titledStreakSection,
             !showSectionBorders && styles.borderlessSection,
+            !mergeStatsAndStreak && { backgroundColor: sectionBackgroundColor },
             sectionHorizontalPadding !== undefined && {
               paddingHorizontal: sectionHorizontalPadding,
             },
@@ -409,7 +413,7 @@ export function ProgressMirrorSections({
           replayKey={`${entranceReplayKey}:combined-progress`}
           delay={entranceBaseDelay}
         >
-          <View style={[styles.mergedSection, !showSectionBorders && styles.borderlessSection]}>
+          <View style={[styles.mergedSection, { backgroundColor: sectionBackgroundColor }, !showSectionBorders && styles.borderlessSection]}>
             {personalStatsContent}
             <View style={styles.mergedDivider} />
             {streakContent}
@@ -445,7 +449,7 @@ export function ProgressMirrorSections({
           <HistorialCalendar
             embedded
             outlined={showSectionBorders}
-            backgroundColor={SECTION_BACKGROUND}
+            backgroundColor={sectionBackgroundColor}
             cardHorizontalPadding={sectionHorizontalPadding}
             cardVerticalPadding={sectionVerticalPadding}
             canonicalVerticalInsets={canonicalVerticalInsets}
