@@ -28,7 +28,7 @@ import Svg, {
 import { LinearGradient } from "expo-linear-gradient";
 import { SacredBackground } from "@/components/SacredBackground";
 import { DiscoverSearchBorder } from "@/components/DiscoverSearchBorder";
-import { DISCOVER_SEARCH_SURFACE } from "@/constants/colors";
+import { CARD_TEXT_ABOVE, CARD_TEXT_BELOW, DISCOVER_SEARCH_SURFACE } from "@/constants/colors";
 import { isIndigoThemeId, type SceneTheme } from "@/config/scene-themes";
 import { useSceneTheme } from "@/context/SceneThemeContext";
 import { useColors } from "@/hooks/useColors";
@@ -549,7 +549,7 @@ export function ExploreScreen({
               <Text style={[styles.sqTitle, { color: "#FBFBFB" }]} numberOfLines={2}>
                 {s.title}
               </Text>
-              <Text style={[styles.sqAuthor, { color: "#c2c2c2" }]} numberOfLines={1}>
+              <Text style={[styles.sqAuthor, { color: CARD_TEXT_BELOW }]} numberOfLines={1}>
                 {getSessionAuthor(s)}
               </Text>
             </Pressable>
@@ -727,7 +727,7 @@ export function ExploreScreen({
                           <Text
                             style={[
                               styles.heroMetaText,
-                              { color: activeTheme.accent ?? "#c2c2c2" },
+                              { color: CARD_TEXT_ABOVE },
                             ]}
                             numberOfLines={1}
                           >
@@ -739,7 +739,7 @@ export function ExploreScreen({
                           <Text
                             style={[
                               styles.heroAuthor,
-                              { color: activeTheme.accent ?? "#c2c2c2" },
+                              { color: CARD_TEXT_BELOW },
                             ]}
                             numberOfLines={1}
                           >
@@ -864,7 +864,7 @@ export function ExploreScreen({
                     <Text
                       style={[
                         styles.newInResonanceSecondary,
-                        { color: activeTheme.accent ?? "#c2c2c2" },
+                        { color: CARD_TEXT_BELOW },
                       ]}
                       numberOfLines={1}
                     >
@@ -1384,7 +1384,7 @@ const styles = StyleSheet.create({
   resonadoresBannerSubtitle: {
     fontFamily: "Manrope",
     fontSize: 12,
-    color: "#F9F9F9",
+    color: CARD_TEXT_BELOW,
   },
   durationSection: {
     marginBottom: SECTION_GAP,

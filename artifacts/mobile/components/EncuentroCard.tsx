@@ -10,6 +10,7 @@ import { Image } from "expo-image";
 import type { Encuentro } from "@/data/encuentros";
 import { formatearFecha } from "@/data/encuentros";
 import { CONTENT_CAROUSEL_HEIGHT_SCALE } from "@/constants/carousel";
+import { CARD_TEXT_ABOVE, CARD_TEXT_BELOW } from "@/constants/colors";
 
 type Props = {
   encuentro: Encuentro;
@@ -121,7 +122,7 @@ const styles = StyleSheet.create({
     fontWeight: "700",
   },
   guideNameBody: {
-    color: "#F4F4F4",
+    color: CARD_TEXT_BELOW,
     fontSize: 12,
     fontFamily: "Manrope",
     fontWeight: "600",
@@ -170,7 +171,7 @@ const styles = StyleSheet.create({
     paddingVertical: 5,
   },
   fechaText: {
-    color: "#F4F4F4",
+    color: CARD_TEXT_ABOVE,
     fontSize: 13,
     fontFamily: "Manrope",
     fontWeight: "500",
@@ -195,7 +196,7 @@ const styles = StyleSheet.create({
     fontWeight: "700",
   },
   inscritosText: {
-    color: "#F4DAD5",
+    color: CARD_TEXT_BELOW,
     fontSize: 12,
     fontFamily: "Manrope",
     fontWeight: "600",
@@ -210,7 +211,7 @@ const styles = StyleSheet.create({
   },
   descripcion: {
     marginTop: 15,
-    color: "#F4F4F4",
+    color: CARD_TEXT_BELOW,
     fontSize: 13,
     fontFamily: "Manrope",
     fontWeight: "400",

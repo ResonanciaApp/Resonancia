@@ -5,6 +5,7 @@ import { Image as ExpoImage } from "expo-image";
 import { Pressable, StyleSheet, Text, View } from "react-native";
 
 import { BLUR_PLACEHOLDER, IMAGE_TRANSITION } from "@/constants/imagePlaceholder";
+import { CARD_TEXT_BELOW } from "@/constants/colors";
 import type { Artist } from "@/data/artists";
 import { useColors } from "@/hooks/useColors";
 
@@ -35,7 +36,7 @@ export function ArtistCard({ artist }: { artist: Artist }) {
       <Text style={[styles.name, { color: colors.foreground }]} numberOfLines={1}>
         {artist.name}
       </Text>
-      <Text style={[styles.genre, { color: colors.mutedForeground }]} numberOfLines={1}>
+      <Text style={[styles.genre, { color: CARD_TEXT_BELOW }]} numberOfLines={1}>
         {artist.genre}
       </Text>
     </Pressable>

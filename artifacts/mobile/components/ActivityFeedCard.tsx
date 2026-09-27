@@ -9,6 +9,7 @@ import { usePlayer } from "@/context/PlayerContext";
 import { usePremium } from "@/context/PremiumContext";
 import type { CommunityFeedEvent } from "@/lib/communityApi";
 import { useProfileAvatarSource } from "@/lib/profile-avatar";
+import { CARD_TEXT_BELOW } from "@/constants/colors";
 
 // ── Helpers ────────────────────────────────────────────────────────────────
 
@@ -201,21 +202,21 @@ const styles = StyleSheet.create({
     fontFamily: "Manrope",
     fontSize: 11,
     fontWeight: "600",
-    color: "rgba(244,244,244,0.55)",
+    color: CARD_TEXT_BELOW,
     transform: [{ translateY: 1 }],
   },
   action: {
     fontFamily: "Manrope",
     fontSize: 12,
     fontWeight: "400",
-    color: "rgba(244,244,244,0.55)",
+    color: CARD_TEXT_BELOW,
     lineHeight: 17,
   },
   actionMuted: {
     fontFamily: "Manrope",
     fontSize: 12,
     fontWeight: "400",
-    color: "rgba(249,249,249,0.9)",
+    color: CARD_TEXT_BELOW,
   },
   actionGold: {
     fontFamily: "Manrope",
@@ -227,7 +228,7 @@ const styles = StyleSheet.create({
     fontFamily: "Manrope",
     fontSize: 12,
     fontWeight: "500",
-    color: "rgba(249,249,249,0.9)",
+    color: CARD_TEXT_BELOW,
   },
   thumb: {
     width: 52,

@@ -10,6 +10,7 @@ import {
 } from "react-native";
 
 import { SessionBadgeGlass, SessionDurationBadge } from "@/components/SessionDurationBadge";
+import { CARD_TEXT_ABOVE, CARD_TEXT_BELOW } from "@/constants/colors";
 
 export const SESSION_CARD_METADATA_HEIGHT_SCALE = 1.2;
 
@@ -259,6 +260,7 @@ export function SessionCardMetadataOverlay({
           tinted={categoryPillTinted}
           plainIcon={categoryPillPlainIcon}
           topInset={categoryPillTopInset}
+          textStyle={styles.cardAboveText}
         />
       )}
       {showDuration && (
@@ -304,6 +306,7 @@ export function SessionCardMetadataOverlay({
 }
 
 const styles = StyleSheet.create({
+  cardAboveText: { color: CARD_TEXT_ABOVE },
   bottomGradient: {
     position: "absolute",
     left: 0,
@@ -395,7 +398,7 @@ const styles = StyleSheet.create({
     fontFamily: "Manrope",
     fontSize: 11,
     fontWeight: "600",
-    color: "#F9F9F9",
+    color: CARD_TEXT_ABOVE,
   },
   meta: {
     position: "absolute",
@@ -422,7 +425,7 @@ const styles = StyleSheet.create({
   author: {
     fontFamily: "Manrope",
     fontSize: 11,
-    color: "#A9A9C3",
+    color: CARD_TEXT_BELOW,
     marginTop: 4,
     flexShrink: 1,
   },

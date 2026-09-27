@@ -18,6 +18,7 @@ import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { GhostPill } from "@/components/GhostPill";
 import { QUOTES, type Quote } from "@/data/quotes";
 import { useQuoteOfTheDay } from "@/hooks/useQuoteOfTheDay";
+import { CARD_TEXT_BELOW } from "@/constants/colors";
 
 const H_PAD   = 16;
 const GOLD    = "#F9F9F9";
@@ -302,7 +303,7 @@ const styles = StyleSheet.create({
     fontFamily: "Manrope",
     fontSize: 13,
     fontWeight: "500",
-    color: "rgba(255,255,255,0.50)",
+    color: CARD_TEXT_BELOW,
     textAlign: "center",
     marginBottom: 14,
   },

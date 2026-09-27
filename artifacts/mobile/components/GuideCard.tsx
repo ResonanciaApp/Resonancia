@@ -5,6 +5,7 @@ import { Image as ExpoImage } from "expo-image";
 import { Pressable, StyleSheet, Text, View } from "react-native";
 
 import { BLUR_PLACEHOLDER, IMAGE_TRANSITION } from "@/constants/imagePlaceholder";
+import { CARD_TEXT_BELOW } from "@/constants/colors";
 import type { Guide } from "@/data/guides";
 import { useColors } from "@/hooks/useColors";
 
@@ -35,7 +36,7 @@ export function GuideCard({ guide }: { guide: Guide }) {
       <Text style={[styles.name, { color: colors.foreground }]} numberOfLines={1}>
         {guide.name}
       </Text>
-      <Text style={[styles.specialty, { color: colors.mutedForeground }]} numberOfLines={1}>
+      <Text style={[styles.specialty, { color: CARD_TEXT_BELOW }]} numberOfLines={1}>
         {guide.specialty}
       </Text>
     </Pressable>

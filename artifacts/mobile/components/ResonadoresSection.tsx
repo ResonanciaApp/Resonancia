@@ -6,6 +6,7 @@ import { router } from "expo-router";
 import { useResonadores } from "@/hooks/useResonadores";
 import { useColors } from "@/hooks/useColors";
 import { PressScale } from "@/components/PressScale";
+import { CARD_TEXT_BELOW } from "@/constants/colors";
 
 type Props = {
   marginTop?: number;
@@ -77,7 +78,7 @@ export function ResonadoresSection({ marginTop = 0, marginBottom = 32 }: Props) 
               <Text numberOfLines={1} style={styles.name}>
                 {resonador.name}
               </Text>
-              <Text numberOfLines={1} style={[styles.subtype, { color: colors.accent }]}>
+              <Text numberOfLines={1} style={[styles.subtype, { color: CARD_TEXT_BELOW }]}>
                 {resonador.subtipo}
               </Text>
             </PressScale>

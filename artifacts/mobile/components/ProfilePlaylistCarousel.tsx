@@ -22,6 +22,7 @@ import {
 } from "@/data/default-playlist-covers";
 import { useCoverPresetCatalog } from "@/lib/cover-preset-catalog";
 import { useColors } from "@/hooks/useColors";
+import { CARD_TEXT_BELOW } from "@/constants/colors";
 
 const GRID_PAD = 14;
 const CARD_GAP = 14;
@@ -168,7 +169,7 @@ export const ProfilePlaylistCarousel = React.memo(function ProfilePlaylistCarous
                 <Text style={styles.playlistName} numberOfLines={2}>
                   {playlist.name}
                 </Text>
-                <Text style={[styles.contentCount, { color: accent }]} numberOfLines={1}>
+                <Text style={styles.contentCount} numberOfLines={1}>
                   {contentCount} contenido{contentCount === 1 ? "" : "s"}
                 </Text>
               </PressScale>
@@ -247,6 +248,7 @@ const styles = StyleSheet.create({
     marginTop: 10,
   },
   contentCount: {
+    color: CARD_TEXT_BELOW,
     fontFamily: "Manrope",
     fontSize: 12,
     lineHeight: 17,

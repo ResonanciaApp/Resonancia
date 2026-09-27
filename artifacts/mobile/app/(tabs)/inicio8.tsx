@@ -118,7 +118,12 @@ import { getGuide } from "@/data/guides";
 import { usePremium } from "@/context/PremiumContext";
 import { useUserProfile } from "@/context/UserProfileContext";
 import { useColors } from "@/hooks/useColors";
-import { MEMBERSHIP_AURORA, WIDGET_GREEN_SOLID } from "@/constants/colors";
+import {
+  CARD_TEXT_ABOVE,
+  CARD_TEXT_BELOW,
+  MEMBERSHIP_AURORA,
+  WIDGET_GREEN_SOLID,
+} from "@/constants/colors";
 import PremiumBanner from "@/components/PremiumBanner";
 import QuoteOfTheDay from "@/components/QuoteOfTheDay";
 import { ProgresoModal } from "@/components/ProgresoModal";
@@ -2106,6 +2111,7 @@ function InicioEmotionWidget({
           end={theme.gradientEnd ?? { x: 0.5, y: 1 }}
           style={StyleSheet.absoluteFill}
         />
+        <View pointerEvents="none" style={[StyleSheet.absoluteFill, styles.inicio2HeroEmotionAddBrighten]} />
         <Text style={styles.inicio2HeroEmotionAddText}>+</Text>
       </View>
     </Pressable>
@@ -3358,7 +3364,7 @@ export default function HomeScreen2({
                 transition={180}
               />
               <View style={styles.continueMeta}>
-                <Text style={[styles.continueKicker, { color: colors.primary }]}>
+                <Text style={[styles.continueKicker, { color: CARD_TEXT_ABOVE }]}>
                   {continueProgress > 0
                     ? `RETOMA · ${Math.round(continueProgress * 100)}% ESCUCHADO`
                     : "RETOMA DONDE LO DEJASTE"}
@@ -3366,7 +3372,7 @@ export default function HomeScreen2({
                 <Text style={[styles.continueTitle, { color: colors.foreground }]} numberOfLines={2}>
                   {continueSession.title}
                 </Text>
-                <Text style={[styles.continueSub, { color: colors.mutedForeground }]} numberOfLines={1}>
+                <Text style={[styles.continueSub, { color: CARD_TEXT_BELOW }]} numberOfLines={1}>
                   {continueAuthor}
                 </Text>
                 {continueProgress > 0 && (
@@ -3878,6 +3884,9 @@ const styles = StyleSheet.create({
     overflow: "hidden",
     alignItems: "center",
     justifyContent: "center",
+  },
+  inicio2HeroEmotionAddBrighten: {
+    backgroundColor: "rgba(255,255,255,0.15)",
   },
   inicio2HeroEmotionAddText: {
     color: "#FFFFFF",

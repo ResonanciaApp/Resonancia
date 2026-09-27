@@ -1,4 +1,5 @@
 import React from "react";
+import { CARD_TEXT_ABOVE, CARD_TEXT_BELOW } from "@/constants/colors";
 import {
   Animated,
   StyleProp,
@@ -71,7 +72,6 @@ export function DailyRecommendationsSection({
   const { theme } = useSceneTheme();
   const recommendations = sessions.slice(0, 3);
   const themeAccent = theme.accent ?? colors.accent;
-  const recommendationSecondaryColor = "#EBF2FF";
   const [animationCycle, setAnimationCycle] = React.useState(0);
   const buttonScale = React.useRef(new Animated.Value(1)).current;
 
@@ -139,12 +139,13 @@ export function DailyRecommendationsSection({
                   imageSize={(inicio3Compact ? 81.9 * 1.2 : 103.7) * 0.85}
                   imageOffsetX={inicio3Compact ? 0 : -4}
                   metaText={`${session.categoryLabel} · ${session.durationLabel}`}
-                  metaTextColor={recommendationSecondaryColor}
+                  metaTextColor={CARD_TEXT_ABOVE}
+                  metaFontSize={10}
                   showChevron
                   titleFontSize={inicio3Compact ? 16.5 : undefined}
                   titleFontWeight={inicio3Compact ? "600" : undefined}
-                  authorColor={recommendationSecondaryColor}
-                  authorFontSize={theme.id === "indigo2" ? 11 : undefined}
+                  authorColor={CARD_TEXT_BELOW}
+                  authorFontSize={theme.id === "indigo2" ? 10 : 11}
                   chevronColor={
                     inicio3Compact
                       ? "#F9F9F9"

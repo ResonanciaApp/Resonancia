@@ -12,6 +12,7 @@ import { useColors } from "@/hooks/useColors";
 import { PressScale } from "@/components/PressScale";
 import { MIX_CATEGORY_ACTION_LABELS } from "@/data/mix-categories";
 import { useAmbientalDuration } from "@/context/AmbientalDurationContext";
+import { CARD_TEXT_BELOW } from "@/constants/colors";
 
 const GRID_PAD = 14;
 const CARD_GAP = 14;
@@ -151,7 +152,7 @@ export const ProfileMixCarousel = React.memo(function ProfileMixCarousel({
               <Text style={styles.mixName} numberOfLines={2}>
                 {mix.name}
               </Text>
-              <Text style={[styles.soundCount, { color: accent }]} numberOfLines={1}>
+              <Text style={styles.soundCount} numberOfLines={1}>
                 {mix.sounds.length} sonido{mix.sounds.length === 1 ? "" : "s"}
                 {mix.categoryChosen ? ` · ${MIX_CATEGORY_ACTION_LABELS[mix.category]}` : ""}
               </Text>
@@ -230,6 +231,7 @@ const styles = StyleSheet.create({
     marginTop: 10,
   },
   soundCount: {
+    color: CARD_TEXT_BELOW,
     fontFamily: "Manrope",
     fontSize: 12,
     lineHeight: 17,

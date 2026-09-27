@@ -17,7 +17,7 @@ import {
 import { useColors } from "@/hooks/useColors";
 import { resolveAvatarUrl } from "@/lib/avatar";
 import { useUserProfile } from "@/context/UserProfileContext";
-import { WIDGET_GREEN_SOLID } from "@/constants/colors";
+import { CARD_TEXT_ABOVE, CARD_TEXT_BELOW, WIDGET_GREEN_SOLID } from "@/constants/colors";
 
 const PREVIEW_COUNT = 10;
 
@@ -200,9 +200,9 @@ const styles = StyleSheet.create({
   },
   msgBody: { flex: 1 },
   msgHeader: { flexDirection: "row", alignItems: "center", justifyContent: "space-between", gap: 10, marginBottom: 4 },
-  msgAuthor: { fontFamily: "Manrope", fontSize: 11, fontWeight: "600", color: "#F4F4F4" },
+  msgAuthor: { fontFamily: "Manrope", fontSize: 11, fontWeight: "600", color: CARD_TEXT_BELOW },
   msgText: { fontFamily: "Manrope", fontSize: 14, lineHeight: 20, color: "#F9F9F9" },
-  msgTime: { fontFamily: "Manrope", fontSize: 10, color: "#F4F4F4" },
+  msgTime: { fontFamily: "Manrope", fontSize: 10, color: CARD_TEXT_ABOVE },
 
   cargarMasBtn: {
     alignItems: "center",

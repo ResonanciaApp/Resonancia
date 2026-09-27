@@ -21,6 +21,7 @@ import { type DiarioEntry, useDiario } from "@/hooks/useDiario";
 import { useColors } from "@/hooks/useColors";
 import { useSceneTheme } from "@/context/SceneThemeContext";
 import { dayKey } from "@/utils/stats";
+import { CARD_TEXT_ABOVE } from "@/constants/colors";
 
 function formatMonth(iso: string) {
   const d = new Date(iso);
@@ -118,7 +119,7 @@ export default function DiarioScreen() {
             onPress={() => router.push(`/diario-entrada?id=${entry.id}` as never)}
             style={[styles.entryBody, i > 0 && styles.entryBodySpacing]}
           >
-            <Text style={[styles.entryTime, { color: "#F4F4F4" }]}>
+            <Text style={[styles.entryTime, { color: CARD_TEXT_ABOVE }]}>
               {formatTime(entry.createdAt)}
             </Text>
             <Text style={[styles.entryText, { color: "#F9F9F9" }]} numberOfLines={2}>

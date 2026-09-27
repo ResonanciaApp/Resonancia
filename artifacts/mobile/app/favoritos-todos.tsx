@@ -40,6 +40,7 @@ import { confirmInspirationAction } from "@/components/InspirationNotes";
 import { TAG_CARDS, THEME_CARD_BACKGROUND_BY_SLUG, THEME_CARD_OVERLAY_BY_SLUG } from "@/data/tags";
 import { useFavoriteThemeCollections } from "@/hooks/useFavoriteThemeCollections";
 import { useCategoryOverlayOptional } from "@/context/CategoryOverlayContext";
+import { CARD_TEXT_BELOW } from "@/constants/colors";
 
 const H_PAD = 14;
 const { width: W, height: H } = Dimensions.get("window");
@@ -223,7 +224,7 @@ function FavoriteInspirationsCarousel({
             </Text>
             {fav.day?.status !== "available" && <Text style={{ color: colors.mutedForeground, marginTop: 4 }}>No disponible · Tus notas se conservan</Text>}
             {fav.day?.content?.quote && (
-              <Text style={{ fontFamily: 'Manrope', fontSize: 13, color: colors.mutedForeground }} numberOfLines={1}>
+              <Text style={{ fontFamily: 'Manrope', fontSize: 13, color: CARD_TEXT_BELOW }} numberOfLines={1}>
                 "{fav.day.content.quote}"
               </Text>
             )}

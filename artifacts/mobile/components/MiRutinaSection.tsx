@@ -32,6 +32,7 @@ import { useColors } from "@/hooks/useColors";
 import { useDayRollover } from "@/hooks/useDayRollover";
 import { useRoutineTheme } from "@/hooks/useRoutineTheme";
 import { useRoutineCompletionBanner } from "@/context/RoutineCompletionBannerContext";
+import { CARD_TEXT_ABOVE } from "@/constants/colors";
 
 type Props = {
   style?: StyleProp<ViewStyle>;
@@ -258,7 +259,7 @@ const ActivityRow = React.memo(function ActivityRow({
               <Text
                 style={[
                   styles.activityCategory,
-                  { color: completing ? "rgba(255,255,255,0.78)" : routineTheme.accent },
+                  { color: CARD_TEXT_ABOVE },
                 ]}
                 numberOfLines={1}
               >

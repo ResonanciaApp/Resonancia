@@ -90,7 +90,7 @@ import { MoonCrescentIcon } from "@/components/MoonCrescentIcon";
 import { SleepReminderSheet } from "@/components/SleepReminderSheet";
 import { FilledSunIcon } from "@/components/FilledSunIcon";
 import { useMixerPanel } from "@/context/MixerPanelContext";
-import { MEMBERSHIP_AURORA } from "@/constants/colors";
+import { CARD_TEXT_ABOVE, CARD_TEXT_BELOW, MEMBERSHIP_AURORA } from "@/constants/colors";
 
 const SHOW_PROFILE_HISTORY = false;
 const SHOW_PROFILE_PRACTICE_CARDS = false;
@@ -1611,7 +1611,7 @@ export function ProfileScreenBase({
               <Text style={[styles.membershipPlanName, { color: MEMBERSHIP_AURORA.premium.accent }]}>
                 {isPremium ? "Tu Premium" : "Prueba Premium"}
               </Text>
-              <Text style={[styles.membershipPlanEyebrow, { color: colors.foreground }]}>
+              <Text style={[styles.membershipPlanEyebrow, { color: CARD_TEXT_BELOW }]}>
                 {isPremium ? "Gestiona tu suscripción y beneficios" : "Tu transformación comienza acá"}
               </Text>
             </View>
@@ -1699,13 +1699,13 @@ export function ProfileScreenBase({
                       >
                         <View>
                           <Image source={session.image as never} style={styles.profileHistoryImage} contentFit="cover" />
-                          <Text style={styles.profileHistoryDuration}>{session.durationLabel}</Text>
+                          <Text style={[styles.profileHistoryDuration, { color: CARD_TEXT_ABOVE }]}>{session.durationLabel}</Text>
                         </View>
                         <View style={styles.profileHistorySessionCopy}>
                           <Text style={[styles.profileHistorySessionTitle, { color: colors.foreground }]} numberOfLines={2}>
                             {session.title}
                           </Text>
-                          <Text style={[styles.profileHistoryCategory, { color: profileDescriptionColor }]} numberOfLines={1}>
+                          <Text style={[styles.profileHistoryCategory, { color: CARD_TEXT_BELOW }]} numberOfLines={1}>
                             {session.categoryLabel || "Contenido"}
                           </Text>
                         </View>
@@ -1738,7 +1738,7 @@ export function ProfileScreenBase({
                 <Text style={[styles.practiceReminderTitle, { color: colors.foreground }]}>
                   Recordatorio matutino
                 </Text>
-                <Text style={[styles.practiceReminderSubtitle, { color: profileDescriptionColor }]}>
+                <Text style={[styles.practiceReminderSubtitle, { color: CARD_TEXT_BELOW }]}>
                   Atención plena para tus mañanas
                 </Text>
               </View>
@@ -1762,7 +1762,7 @@ export function ProfileScreenBase({
                 <Text style={[styles.practiceReminderTitle, { color: colors.foreground }]}>
                   Recordatorio para dormir
                 </Text>
-                <Text style={[styles.practiceReminderSubtitle, { color: profileDescriptionColor }]}>
+                <Text style={[styles.practiceReminderSubtitle, { color: CARD_TEXT_BELOW }]}>
                   Configura tu hora de descanso
                 </Text>
               </View>
@@ -1785,7 +1785,7 @@ export function ProfileScreenBase({
                 <Text style={[styles.practiceReminderTitle, styles.practiceToolTitle, { color: colors.foreground }]}>
                   Mezclador de sonidos
                 </Text>
-                <Text style={[styles.practiceReminderSubtitle, styles.practiceToolSubtitle, { color: profileDescriptionColor }]}>
+                <Text style={[styles.practiceReminderSubtitle, styles.practiceToolSubtitle, { color: CARD_TEXT_BELOW }]}>
                   Crea tu propio universo sonoro
                 </Text>
               </Pressable>
@@ -1805,7 +1805,7 @@ export function ProfileScreenBase({
                 <Text style={[styles.practiceReminderTitle, styles.practiceToolTitle, { color: colors.foreground }]}>
                   Ejercicios de respiración
                 </Text>
-                <Text style={[styles.practiceReminderSubtitle, styles.practiceToolSubtitle, { color: profileDescriptionColor }]}>
+                <Text style={[styles.practiceReminderSubtitle, styles.practiceToolSubtitle, { color: CARD_TEXT_BELOW }]}>
                   Vuelve al presente y tranquilízate
                 </Text>
               </Pressable>

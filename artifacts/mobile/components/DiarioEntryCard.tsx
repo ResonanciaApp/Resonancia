@@ -8,6 +8,7 @@ import {
 } from "react-native";
 
 import { useColors } from "@/hooks/useColors";
+import { CARD_TEXT_ABOVE } from "@/constants/colors";
 
 const LINE_H = 20;
 const MAX_LINES = 3;
@@ -67,7 +68,7 @@ export function DiarioEntryCard({
         </View>
         {showHeart && <Feather name="heart" size={11} color="#E07070" />}
         {showDate && !showHeart && (
-          <Text style={[styles.date, { color: colors.mutedForeground }]}>
+          <Text style={[styles.date, { color: CARD_TEXT_ABOVE }]}>
             {formatDate(entry.createdAt)}
           </Text>
         )}

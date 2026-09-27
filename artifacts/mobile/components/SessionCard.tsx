@@ -21,9 +21,9 @@ import { useResonadores } from "@/hooks/useResonadores";
 import { useColors } from "@/hooks/useColors";
 import { usePremium } from "@/context/PremiumContext";
 import { usePlayer } from "@/context/PlayerContext";
-import { useSceneTheme } from "@/context/SceneThemeContext";
 import { useAmbientalDuration } from "@/context/AmbientalDurationContext";
 import { BLUR_PLACEHOLDER, IMAGE_TRANSITION } from "@/constants/imagePlaceholder";
+import { CARD_TEXT_ABOVE, CARD_TEXT_BELOW } from "@/constants/colors";
 import {
   CONTENT_CAROUSEL_HEIGHT_SCALE,
   getTwoCardCarouselCardWidth,
@@ -131,7 +131,6 @@ export function SessionCard({ session, width = 200, horizontal = false, tint, ca
   const tintOverlay =
     tint === "terracotta" ? "rgba(184,86,46,0.11)" : "transparent";
   const colors = useColors();
-  const { theme } = useSceneTheme();
   const { isPremium } = usePremium();
   const { playSession } = usePlayer();
   const { openForSession } = useAmbientalDuration();
@@ -224,7 +223,7 @@ export function SessionCard({ session, width = 200, horizontal = false, tint, ca
             {pinned && <Feather name="bookmark" size={12} color="#F9F9F9" />}
           </View>
           {(showMetaBelow || showCategoryBelow) && (
-            <Text style={[styles.hMetaBelow, theme.id === "indigo2" && { color: colors.accent }]} numberOfLines={1}>
+            <Text style={styles.hMetaBelow} numberOfLines={1}>
               {showCategoryBelow
                 ? categoryLabel
                 : [session.durationLabel, categoryLabel].filter(Boolean).join(" · ")}
@@ -235,7 +234,7 @@ export function SessionCard({ session, width = 200, horizontal = false, tint, ca
               {showAuthorAvatar && authorPhoto && (
                 <Image source={authorPhoto} style={styles.hAuthorAvatar} contentFit="cover" />
               )}
-              <Text style={[styles.hAuthor, { color: theme.id === "indigo2" ? colors.accent : colors.mutedForeground }]} numberOfLines={1}>
+              <Text style={[styles.hAuthor, { color: CARD_TEXT_BELOW }]} numberOfLines={1}>
                 {authorName}
               </Text>
             </View>
@@ -343,7 +342,7 @@ export function SessionCard({ session, width = 200, horizontal = false, tint, ca
                 leftInset={11}
                 topInset={15}
                 style={styles.sleepCategoryPill}
-                textStyle={styles.sleepCategoryPillText}
+                  textStyle={styles.sleepCategoryPillText}
               />
             ) : null}
             <View pointerEvents="none" style={styles.sleepEditorialMetadata}>
@@ -415,7 +414,7 @@ export function SessionCard({ session, width = 200, horizontal = false, tint, ca
       {isEditorial ? null : squareMetaBelow ? (
         <View style={styles.squareMeta}>
           {!categoryGridPresentation && (
-            <Text style={[styles.squareSecondary, { color: colors.accent }]} numberOfLines={1}>
+            <Text style={[styles.squareSecondary, { color: CARD_TEXT_ABOVE }]} numberOfLines={1}>
               {[categoryLabel, session.durationLabel].filter(Boolean).join(" · ")}
             </Text>
           )}
@@ -423,7 +422,7 @@ export function SessionCard({ session, width = 200, horizontal = false, tint, ca
             {session.title}
           </Text>
           {!!authorName && (
-            <Text style={[styles.squareSecondary, { color: colors.accent }]} numberOfLines={1}>
+            <Text style={[styles.squareSecondary, { color: CARD_TEXT_BELOW }]} numberOfLines={1}>
               {authorName}
             </Text>
           )}
@@ -453,7 +452,7 @@ export function SessionCard({ session, width = 200, horizontal = false, tint, ca
               {showAuthorAvatar && authorPhoto && (
                 <Image source={authorPhoto} style={styles.cardAuthorAvatar} contentFit="cover" />
               )}
-              <Text style={[styles.cardAuthor, { color: theme.id === "indigo2" ? colors.accent : colors.mutedForeground }]} numberOfLines={1}>
+              <Text style={[styles.cardAuthor, { color: CARD_TEXT_BELOW }]} numberOfLines={1}>
                 {authorName}
               </Text>
             </View>
@@ -577,7 +576,7 @@ const styles = StyleSheet.create({
     fontFamily: "Manrope",
     fontSize: 11,
     fontWeight: "600",
-    color: "#FFFFFF",
+    color: CARD_TEXT_ABOVE,
     textShadowColor: "rgba(0,0,0,0.95)",
     textShadowOffset: { width: 1, height: 1 },
     textShadowRadius: 0,
@@ -596,6 +595,7 @@ const styles = StyleSheet.create({
     fontSize: 10,
     lineHeight: 12,
     fontWeight: "600",
+    color: CARD_TEXT_ABOVE,
   },
   editorialDuration: {
     position: "absolute",
@@ -642,7 +642,7 @@ const styles = StyleSheet.create({
     fontSize: 10,
     lineHeight: 15,
     fontWeight: "500",
-    color: "rgba(249,249,249,0.82)",
+    color: CARD_TEXT_BELOW,
     textShadowColor: "rgba(0,0,0,0.75)",
     textShadowOffset: { width: 0, height: 1 },
     textShadowRadius: 4,
@@ -655,6 +655,7 @@ const styles = StyleSheet.create({
   sleepCategoryPillText: {
     fontSize: 10,
     fontWeight: "600",
+    color: CARD_TEXT_ABOVE,
   },
   sleepEditorialMetadata: {
     position: "absolute",
@@ -678,6 +679,7 @@ const styles = StyleSheet.create({
   sleepDurationText: {
     fontSize: 10,
     fontWeight: "600",
+    color: CARD_TEXT_ABOVE,
   },
   sleepEditorialTitle: {
     fontFamily: "Manrope",
@@ -696,7 +698,7 @@ const styles = StyleSheet.create({
     fontSize: 10,
     lineHeight: 15,
     fontWeight: "500",
-    color: "rgba(249,249,249,0.82)",
+    color: CARD_TEXT_BELOW,
     textShadowColor: "rgba(0,0,0,0.75)",
     textShadowOffset: { width: 0, height: 1 },
     textShadowRadius: 4,
@@ -719,7 +721,7 @@ const styles = StyleSheet.create({
     left: 8,
     fontSize: 13,
     fontWeight: "700",
-    color: "#fff",
+    color: CARD_TEXT_ABOVE,
     textShadowColor: "rgba(0,0,0,0.85)",
     textShadowOffset: { width: 0, height: 1 },
     textShadowRadius: 4,
@@ -728,7 +730,7 @@ const styles = StyleSheet.create({
     fontFamily: "Manrope",
     fontSize: 12,
     fontWeight: "400",
-    color: "rgba(249,249,249,0.55)",
+    color: CARD_TEXT_BELOW,
     marginTop: 4,
   },
   hAuthorRow: {

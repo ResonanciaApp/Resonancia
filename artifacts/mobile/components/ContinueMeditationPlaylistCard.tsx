@@ -12,6 +12,7 @@ import {
 
 import type { PlaylistCompletion } from "@/lib/editorial-playlist-helpers";
 import { usePremium } from "@/context/PremiumContext";
+import { CARD_TEXT_BELOW } from "@/constants/colors";
 
 type Props = {
   title: string;
@@ -68,11 +69,11 @@ export function ContinueMeditationPlaylistCard({
         </View>
         <View style={styles.copy}>
           <Text style={styles.title} numberOfLines={1}>{title}</Text>
-          <Text style={styles.description} numberOfLines={2}>
+          <Text style={[styles.description, { color: CARD_TEXT_BELOW }]} numberOfLines={2}>
             {description}
           </Text>
           <View style={styles.progressRow}>
-            <Text style={styles.progressCount}>
+            <Text style={[styles.progressCount, { color: CARD_TEXT_BELOW }]}>
               {completion.completed}/{completion.total}
             </Text>
             <View

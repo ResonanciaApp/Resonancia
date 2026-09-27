@@ -8,8 +8,8 @@ import { Pressable, StyleSheet, Text, View } from "react-native";
 import { VIDEOS as STATIC_VIDEOS, type VideoItem } from "@/data/videos";
 import { useColors } from "@/hooks/useColors";
 import { usePremium } from "@/context/PremiumContext";
-import { useSceneTheme } from "@/context/SceneThemeContext";
 import { BLUR_PLACEHOLDER, IMAGE_TRANSITION } from "@/constants/imagePlaceholder";
+import { CARD_TEXT_ABOVE, CARD_TEXT_BELOW } from "@/constants/colors";
 import { SessionDurationBadge } from "@/components/SessionDurationBadge";
 
 type Props = {
@@ -54,8 +54,6 @@ export function VideoCard({
   whiteDurationGlass = false,
 }: Props) {
   const colors = useColors();
-  const { theme } = useSceneTheme();
-  const secondaryTextColor = theme.id === "indigo2" ? colors.accent : colors.mutedForeground;
   const { isPremium } = usePremium();
   const locked = !!video.isPremium && !isPremium;
   const [thumbnailFailed, setThumbnailFailed] = useState(false);
@@ -101,6 +99,7 @@ export function VideoCard({
               <SessionDurationBadge
                 label={video.durationLabel}
                 style={styles.feedDurationBadge}
+                textStyle={{ color: CARD_TEXT_ABOVE }}
               />
             ) : null}
           </View>
@@ -109,7 +108,7 @@ export function VideoCard({
         <View style={styles.feedCaptionRow}>
           <View style={{ flexDirection: "row", alignItems: "center", flex: 1, marginRight: 12 }}>
             {video.subtitle ? (
-              <Text style={[styles.feedCaption, { color: secondaryTextColor, marginRight: 0 }]} numberOfLines={1}>
+              <Text style={[styles.feedCaption, { color: CARD_TEXT_ABOVE, marginRight: 0 }]} numberOfLines={1}>
                 {video.subtitle}
               </Text>
             ) : (
@@ -138,7 +137,7 @@ export function VideoCard({
               style={[
                 styles.feedAuthor,
                 !video.subtitle && styles.feedAuthorWithoutSubtitle,
-                { color: secondaryTextColor },
+                { color: CARD_TEXT_BELOW },
               ]}
               numberOfLines={1}
             >
@@ -180,7 +179,7 @@ export function VideoCard({
             {video.title}
           </Text>
           <View style={styles.hMeta}>
-            <Text style={[styles.hDuration, { color: secondaryTextColor }]}>
+            <Text style={[styles.hDuration, { color: CARD_TEXT_BELOW }]}>
               {video.durationLabel}
             </Text>
           </View>
@@ -221,10 +220,11 @@ export function VideoCard({
             label={video.durationLabel}
             whiteGlass
             style={styles.durBadgeGlass}
+            textStyle={{ color: CARD_TEXT_ABOVE }}
           />
         ) : (
           <View style={styles.durBadge}>
-            <Text style={styles.durText}>{video.durationLabel}</Text>
+            <Text style={[styles.durText, { color: CARD_TEXT_ABOVE }]}>{video.durationLabel}</Text>
           </View>
         )}
       </View>
@@ -232,7 +232,7 @@ export function VideoCard({
         {video.title}
       </Text>
       {video.author && (
-        <Text style={[styles.cardAuthor, { color: secondaryTextColor }]} numberOfLines={1}>
+        <Text style={[styles.cardAuthor, { color: CARD_TEXT_BELOW }]} numberOfLines={1}>
           {video.author}
         </Text>
       )}

@@ -5,6 +5,7 @@ import React from "react";
 import { Pressable, StyleSheet, Text, View } from "react-native";
 
 import { type Category } from "@/data/categories";
+import { CARD_TEXT_BELOW } from "@/constants/colors";
 import { useColors } from "@/hooks/useColors";
 
 type FeatherIconName = React.ComponentProps<typeof Feather>["name"];
@@ -54,11 +55,11 @@ export function CategoryCard({ category, wide = false }: Props) {
           {category.title}
         </Text>
         {wide ? (
-          <Text style={[styles.subtitle, { color: colors.foreground }]} numberOfLines={1}>
+          <Text style={[styles.subtitle, { color: CARD_TEXT_BELOW }]} numberOfLines={1}>
             {category.subtitle}
           </Text>
         ) : null}
-        <Text style={[styles.count, { color: colors.accent }]}>
+        <Text style={[styles.count, { color: CARD_TEXT_BELOW }]}>
           {category.sessionCount} sessions
         </Text>
       </View>

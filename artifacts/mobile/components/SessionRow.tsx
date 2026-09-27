@@ -12,6 +12,7 @@ import {
 import { Image } from "expo-image";
 
 import { BLUR_PLACEHOLDER, IMAGE_TRANSITION } from "@/constants/imagePlaceholder";
+import { CARD_TEXT_ABOVE, CARD_TEXT_BELOW } from "@/constants/colors";
 import { PremiumBadge } from "@/components/PremiumBadge";
 import {
   SessionCategoryPill,
@@ -35,6 +36,7 @@ type Props = {
   imageOffsetX?: number;
   metaText?: string;
   metaTextColor?: string;
+  metaFontSize?: number;
   showCategoryPill?: boolean;
   showCategoryText?: boolean;
   categoryPillPlain?: boolean;
@@ -66,6 +68,7 @@ export function SessionRow({
   imageOffsetX = 0,
   metaText,
   metaTextColor,
+  metaFontSize,
   showCategoryPill = false,
   showCategoryText = false,
   categoryPillPlain = true,
@@ -153,7 +156,7 @@ export function SessionRow({
               <SessionDurationBadge
                 label={session.durationLabel}
                 style={styles.rowDurationBadge}
-                textStyle={styles.rowDurationText}
+                textStyle={[styles.rowDurationText, { color: CARD_TEXT_ABOVE }]}
               />
             )}
           </View>
@@ -166,7 +169,7 @@ export function SessionRow({
                 <Text
                   style={[
                     styles.sessionAuthor,
-                    { color: authorColor ?? colors.mutedForeground },
+                    { color: CARD_TEXT_ABOVE },
                     authorFontSize !== undefined && { fontSize: authorFontSize },
                   ]}
                   numberOfLines={1}
@@ -184,6 +187,7 @@ export function SessionRow({
                   tinted={categoryPillTinted}
                   plainIcon={categoryPillPlainIcon}
                   outlineColor={categoryPillOutlineColor}
+                  textStyle={{ color: CARD_TEXT_ABOVE }}
                   showIconGlyph={categoryPillShowIconGlyph}
                   iconSize={categoryPillIconSize}
                 />
@@ -191,11 +195,11 @@ export function SessionRow({
             ) : (
               <View style={styles.sessionMeta}>
                 {metaText ? (
-                  <Text style={[styles.sessionMetaText, { color: metaTextColor ?? colors.mutedForeground }]}>{metaText}</Text>
+                  <Text style={[styles.sessionMetaText, { color: metaTextColor ?? CARD_TEXT_ABOVE }, metaFontSize !== undefined && { fontSize: metaFontSize }]}>{metaText}</Text>
                 ) : (
                   <>
                     <Feather name="star" size={11} color={colors.mutedForeground} />
-                    <Text style={[styles.sessionMetaText, { color: colors.mutedForeground }]}>
+                     <Text style={[styles.sessionMetaText, { color: CARD_TEXT_ABOVE }]}>
                       {" "}{displayRating.toFixed(1)}{voiceLabel ? ` · ${voiceLabel}` : ""} · {session.durationLabel}
                     </Text>
                   </>
@@ -222,7 +226,7 @@ export function SessionRow({
           <Text
             style={[
               styles.sessionAuthor,
-              { color: authorColor ?? colors.mutedForeground },
+               { color: authorColor ?? CARD_TEXT_BELOW },
               authorFontSize !== undefined && { fontSize: authorFontSize },
             ]}
             numberOfLines={1}

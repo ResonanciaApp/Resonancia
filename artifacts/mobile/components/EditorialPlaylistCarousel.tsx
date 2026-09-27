@@ -12,6 +12,7 @@ import {
   type ViewStyle,
 } from "react-native";
 
+import { CARD_TEXT_ABOVE } from "@/constants/colors";
 import { BLUR_PLACEHOLDER, IMAGE_TRANSITION } from "@/constants/imagePlaceholder";
 import type { EditorialPlaylist } from "@/data/playlists";
 import {
@@ -95,7 +96,7 @@ export function EditorialPlaylistCarousel({
             >
               <SessionBadgeGlass showBlackTint={false} />
               <View style={styles.whitePillTint} />
-              <Text style={styles.typeText}>
+              <Text style={[styles.typeText, { color: CARD_TEXT_ABOVE }]}>
                 {playlist.editorialType === "meditative"
                   ? "Meditativa"
                   : playlist.editorialType === "relaxation"
@@ -110,6 +111,7 @@ export function EditorialPlaylistCarousel({
             label={playlist.durationLabel}
             style={styles.duration}
             whiteGlass
+            textStyle={{ color: CARD_TEXT_ABOVE }}
           />
           {showPremiumBadge && !isPremium ? (
             <Image

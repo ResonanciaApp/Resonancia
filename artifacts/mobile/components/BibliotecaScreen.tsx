@@ -63,7 +63,7 @@ import {
 import { useCoverPresetCatalog } from "@/lib/cover-preset-catalog";
 import { FavoriteActionsSheet } from "@/components/FavoriteActionsSheet";
 import { PremiumPlansSurface, usePremiumPlansModalHost } from "@/components/PremiumPlansOverlay";
-import { WIDGET_GREEN_SOLID } from "@/constants/colors";
+import { CARD_TEXT_ABOVE, CARD_TEXT_BELOW, WIDGET_GREEN_SOLID } from "@/constants/colors";
 
 const { width } = Dimensions.get("window");
 const H_PAD = 15;
@@ -675,9 +675,9 @@ const blStyles = StyleSheet.create({
   emptySub:     { fontFamily: "Manrope", fontSize: 14, color: "rgba(242,231,228,0.45)", textAlign: "center", lineHeight: 20 },
   resultRow:    { flexDirection: "row", alignItems: "center", gap: 14, paddingVertical: 5 },
   thumb:        { width: 75, height: 75, borderRadius: 14, backgroundColor: "rgba(255,255,255,0.07)" },
-  resultCat:    { fontFamily: "Manrope", fontSize: 12, color: "rgba(242,231,228,0.45)", marginBottom: 3 },
+  resultCat:    { fontFamily: "Manrope", fontSize: 12, color: CARD_TEXT_ABOVE, marginBottom: 3 },
   resultTitle:  { fontFamily: "Manrope", fontSize: 15, fontWeight: "700", color: "#FBFBFB", marginBottom: 3 },
-  resultAuthor: { fontFamily: "Manrope", fontSize: 12, color: "rgba(242,231,228,0.45)" },
+  resultAuthor: { fontFamily: "Manrope", fontSize: 12, color: CARD_TEXT_BELOW },
 });
 
 // ── Modal de nombre de carpeta ────────────────────────────────────────────────
@@ -1453,7 +1453,7 @@ export function BibliotecaScreen({
                     >
                       <Image source={resonador.photo} style={[styles.gridThumb, { width: cellW, height: cellW, borderRadius: cellW / 2 }]} resizeMode="cover" />
                       <Text style={styles.gridTitle} numberOfLines={2}>{resonador.name}</Text>
-                      <Text style={[styles.gridTitle, { color: MUTED, fontWeight: "400", marginTop: 1 }]} numberOfLines={1}>{resonador.tags[0]}</Text>
+                      <Text style={[styles.gridTitle, { color: CARD_TEXT_BELOW, fontWeight: "400", marginTop: 1 }]} numberOfLines={1}>{resonador.tags[0]}</Text>
                     </Pressable>
                   );
                 }
@@ -1871,7 +1871,7 @@ export function BibliotecaScreen({
                       })}
                     </View>
                     <Text style={styles.gridTitle} numberOfLines={2}>{c.name}</Text>
-                    <Text style={[styles.gridTitle, { color: MUTED, fontWeight: "400", marginTop: 1 }]} numberOfLines={1}>
+                    <Text style={[styles.gridTitle, { color: CARD_TEXT_BELOW, fontWeight: "400", marginTop: 1 }]} numberOfLines={1}>
                       {c.active.length} {c.active.length === 1 ? "capa" : "capas"}
                     </Text>
                   </Pressable>
@@ -2041,7 +2041,7 @@ export function BibliotecaScreen({
               >
                 <Image source={r.photo} style={[styles.gridThumb, { width: cellW, height: cellW, borderRadius: cellW / 2 }]} resizeMode="cover" />
                 <Text style={styles.gridTitle} numberOfLines={2}>{r.name}</Text>
-                <Text style={[styles.gridTitle, { color: MUTED, fontWeight: "400", marginTop: 1 }]} numberOfLines={1}>{r.tags[0]}</Text>
+                <Text style={[styles.gridTitle, { color: CARD_TEXT_BELOW, fontWeight: "400", marginTop: 1 }]} numberOfLines={1}>{r.tags[0]}</Text>
               </Pressable>
             ))}
           </View>
@@ -2489,7 +2489,7 @@ const styles = StyleSheet.create({
   },
   rowInfo: { flex: 1, gap: 3 },
   rowTitle: { fontFamily: "Manrope", fontSize: 15, fontWeight: "600", color: TEXT },
-  rowSub:   { fontFamily: "Manrope", fontSize: 12, color: MUTED },
+  rowSub:   { fontFamily: "Manrope", fontSize: 12, color: CARD_TEXT_BELOW },
   mixMenuBtn: {
     width: 32,
     height: 32,
@@ -2515,7 +2515,7 @@ const styles = StyleSheet.create({
     transform: [{ scale: 0.9 }],
   },
   gridTitle: { fontFamily: "Manrope", fontSize: 12, color: TEXT, marginTop: 6, fontWeight: "500" },
-  gridSub: { fontFamily: "Manrope", fontSize: 12, color: MUTED, marginTop: 1, fontWeight: "400" },
+  gridSub: { fontFamily: "Manrope", fontSize: 12, color: CARD_TEXT_BELOW, marginTop: 1, fontWeight: "400" },
 
   // ── SortSheet ────────────────────────────────────────────────────────────────
   sortSheet: {
@@ -2617,7 +2617,7 @@ const styles = StyleSheet.create({
   },
   geoInfo: { marginTop: 7, alignItems: "center" },
   geoName: { fontFamily: "Manrope", color: TEXT, fontSize: 14, fontWeight: "600", textAlign: "center" },
-  geoSub:  { fontFamily: "Manrope", color: MUTED, fontSize: 12, marginTop: 3, textAlign: "center" },
+  geoSub:  { fontFamily: "Manrope", color: CARD_TEXT_BELOW, fontSize: 12, marginTop: 3, textAlign: "center" },
 
   // ── User playlist cover ──────────────────────────────────────────────────────
   userPlCover: {

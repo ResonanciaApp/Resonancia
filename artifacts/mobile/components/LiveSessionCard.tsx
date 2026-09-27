@@ -5,12 +5,12 @@ import { Pressable, StyleSheet, Text, View } from "react-native";
 import { getGuide } from "@/data/guides";
 import { BLUR_PLACEHOLDER, IMAGE_TRANSITION } from "@/constants/imagePlaceholder";
 import { type LiveSessionItem, canEnterLiveSession, formatLiveSessionDate } from "@/hooks/useLiveSessions";
+import { CARD_TEXT_BELOW } from "@/constants/colors";
 
 // ── Paleta ────────────────────────────────────────────────────────────────────
 const WARM_BLACK = "#1B060F";
 const PRIMARY_GOLD = "#F9F9F9";
 const ACCENT_GOLD = "#F9F9F9";
-const FOREGROUND = "#FFFFFF";
 const MUTED = "#F4F4F4";
 const BORDER = "#3D0E16";
 const CARD_BG = "rgba(74,12,12,0.14)";
@@ -161,7 +161,7 @@ const styles = StyleSheet.create({
     gap: 3,
   },
   guideName: {
-    color: FOREGROUND,
+    color: CARD_TEXT_BELOW,
     fontSize: 14,
     fontFamily: "Manrope", fontWeight: "600",
   },
@@ -170,7 +170,7 @@ const styles = StyleSheet.create({
     alignItems: "flex-start",
   },
   dateText: {
-    color: MUTED,
+    color: CARD_TEXT_BELOW,
     fontSize: 11,
     fontFamily: "Manrope",
     flex: 1,

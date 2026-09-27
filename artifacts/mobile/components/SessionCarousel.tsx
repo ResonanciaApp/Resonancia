@@ -27,6 +27,7 @@ import {
 } from "react-native";
 
 import { DEV_SHOW_ALL_SESSION_PREMIUM_BADGES } from "@/constants/devVisualModes";
+import { CARD_TEXT_ABOVE, CARD_TEXT_BELOW } from "@/constants/colors";
 
 const AnimatedPressable = RNAnimated.createAnimatedComponent(Pressable);
 const CANONICAL_AMBIENTAL_BORDER_RADIUS = 41;
@@ -831,6 +832,7 @@ export const SessionCarousel = React.memo(function SessionCarousel({
                         categoryId={s.categoryId}
                         leftInset={18}
                         topInset={18}
+                        textStyle={styles.cardAboveText}
                       />
                     )}
                     {!isEditorialPresentation && durationInsideWithMeta && effectiveShowDurationBadge && (
@@ -873,7 +875,7 @@ export const SessionCarousel = React.memo(function SessionCarousel({
                     {!isSleepCategoryPresentation &&
                       (!effectiveShowMetaBelow || durationInsideWithMeta) &&
                       showImageCategoryPill && (
-                      <SessionCategoryPill categoryId={s.categoryId} />
+                      <SessionCategoryPill categoryId={s.categoryId} textStyle={styles.cardAboveText} />
                     )}
                     {effectiveShowDurationBadge &&
                       !useOverlayMetadata &&
@@ -916,7 +918,7 @@ export const SessionCarousel = React.memo(function SessionCarousel({
                         leftInset={11}
                         topInset={15}
                         style={styles.sleepCompactPill}
-                        textStyle={styles.sleepCompactPillText}
+                        textStyle={[styles.sleepCompactPillText, styles.cardAboveText]}
                       />
                     ) : !showAmbientalTitleOnly && effectiveShowDurationBadge && effectiveOverlayDurationTopLeft ? (
                       <SessionDurationBadge
@@ -936,7 +938,7 @@ export const SessionCarousel = React.memo(function SessionCarousel({
                          leftInset={showAmbientalTitleOnly ? 11 : 18}
                          topInset={showAmbientalTitleOnly ? 15 : 18}
                          style={showAmbientalTitleOnly ? styles.sleepCompactPill : undefined}
-                         textStyle={showAmbientalTitleOnly ? styles.sleepCompactPillText : undefined}
+                         textStyle={[showAmbientalTitleOnly && styles.sleepCompactPillText, styles.cardAboveText]}
                        />
                      ) : null}
                      <View
@@ -967,7 +969,7 @@ export const SessionCarousel = React.memo(function SessionCarousel({
                             styles.sleepOverlayDurationInline,
                             styles.sleepInlineDurationBorder,
                           ]}
-                          textStyle={[styles.durText, styles.sleepInlineDurationText]}
+                           textStyle={[styles.durText, styles.sleepInlineDurationText, styles.cardAboveText]}
                         />
                       ) : null}
                        {!showAmbientalTitleOnly && effectiveShowDurationBadge && !effectiveOverlayDurationTopLeft ? (
@@ -982,7 +984,7 @@ export const SessionCarousel = React.memo(function SessionCarousel({
                         />
                       ) : null}
                        {!showAmbientalTitleOnly && effectiveShowCategoryAboveTitle && s.categoryLabel ? (
-                        <Text style={styles.sleepOverlayCategoryText} numberOfLines={1}>
+                         <Text style={[styles.sleepOverlayCategoryText, styles.cardAboveText]} numberOfLines={1}>
                           {s.categoryLabel}
                         </Text>
                       ) : null}
@@ -1023,6 +1025,7 @@ export const SessionCarousel = React.memo(function SessionCarousel({
                             styles.sleepOverlayAuthor,
                             isEditorialPresentation && styles.editorialAuthor,
                             sleepOverlayAuthorStyle,
+                            styles.cardBelowText,
                           ]}
                           numberOfLines={1}
                         >
@@ -1038,6 +1041,7 @@ export const SessionCarousel = React.memo(function SessionCarousel({
                     leftInset={12}
                     topInset={12}
                     whiteGlass={whiteMetadataGlass}
+                    textStyle={styles.cardAboveText}
                   />
                 ) : null}
                 {!isPremium && (DEV_SHOW_ALL_SESSION_PREMIUM_BADGES || locked) && (
@@ -1057,7 +1061,7 @@ export const SessionCarousel = React.memo(function SessionCarousel({
                 <View style={[styles.sleepBelowMetadata, sleepBelowMetadataStyle]}>
                    {showCategoryLabelBelow && !showCategoryLabelAfterTitle && s.categoryLabel ? (
                     <Text
-                      style={[styles.sleepBelowSecondary, { color: viewAllAccent }]}
+                       style={[styles.sleepBelowSecondary, styles.cardAboveText]}
                       numberOfLines={1}
                     >
                       {s.categoryLabel}
@@ -1065,7 +1069,7 @@ export const SessionCarousel = React.memo(function SessionCarousel({
                   ) : null}
                    {!categoryGridPresentation && !squareTitleOnlyBelow && !squareTitleAuthorBelow ? (
                     <Text
-                      style={[styles.sleepBelowSecondary, { color: viewAllAccent }]}
+                       style={[styles.sleepBelowSecondary, styles.cardAboveText]}
                       numberOfLines={1}
                     >
                       {[s.categoryLabel, s.durationLabel].filter(Boolean).join(" · ")}
@@ -1076,7 +1080,7 @@ export const SessionCarousel = React.memo(function SessionCarousel({
                   </Text>
                    {showCategoryLabelBelow && showCategoryLabelAfterTitle && s.categoryLabel ? (
                      <Text
-                       style={[styles.sleepBelowSecondary, { color: viewAllAccent }]}
+                       style={[styles.sleepBelowSecondary, styles.cardBelowText]}
                        numberOfLines={1}
                      >
                        {s.categoryLabel}
@@ -1084,7 +1088,7 @@ export const SessionCarousel = React.memo(function SessionCarousel({
                    ) : null}
                    {!squareTitleOnlyBelow && effectiveShowAuthor && authorName ? (
                     <Text
-                      style={[styles.sleepBelowSecondary, { color: viewAllAccent }]}
+                       style={[styles.sleepBelowSecondary, styles.cardBelowText]}
                       numberOfLines={1}
                     >
                       {authorName}
@@ -1098,7 +1102,7 @@ export const SessionCarousel = React.memo(function SessionCarousel({
                       style={[
                         styles.cardAuthor,
                         styles.cardCategoryAboveTitle,
-                        { color: viewAllAccent },
+                        styles.cardAboveText,
                       ]}
                       numberOfLines={1}
                     >
@@ -1125,21 +1129,21 @@ export const SessionCarousel = React.memo(function SessionCarousel({
                   </Text>
                   {effectiveShowMetaBelow && !durationInsideWithMeta ? (
                     <Text
-                      style={[styles.cardAuthor, { color: viewAllAccent }]}
+                       style={[styles.cardAuthor, styles.cardBelowText]}
                       numberOfLines={1}
                     >
                       {[s.categoryLabel, s.durationLabel].filter(Boolean).join(" · ")}
                     </Text>
                   ) : effectiveShowCollectionBelow && s.categoryLabel ? (
                     <Text
-                      style={[styles.cardAuthor, { color: viewAllAccent }]}
+                       style={[styles.cardAuthor, styles.cardBelowText]}
                       numberOfLines={1}
                     >
                       {s.categoryLabel}
                     </Text>
                   ) : effectiveShowAuthor && authorName ? (
                     <Text
-                      style={[styles.cardAuthor, { color: viewAllAccent }]}
+                       style={[styles.cardAuthor, styles.cardBelowText]}
                       numberOfLines={1}
                     >
                       {authorName}
@@ -1217,6 +1221,8 @@ export function CoverCarousel({ title, items, onPress }: CoverCarouselProps) {
 }
 
 const styles = StyleSheet.create({
+  cardAboveText: { color: CARD_TEXT_ABOVE },
+  cardBelowText: { color: CARD_TEXT_BELOW },
   section: {
     marginBottom: SECTION_GAP,
     paddingHorizontal: GRID_PAD,
@@ -1339,7 +1345,7 @@ const styles = StyleSheet.create({
     left: 8,
     paddingHorizontal: 9,
   },
-  durText: { fontFamily: "Manrope", fontSize: 11, fontWeight: "600", color: "#FFFFFF" },
+  durText: { fontFamily: "Manrope", fontSize: 11, fontWeight: "600", color: CARD_TEXT_ABOVE },
   sleepOverlayMetadata: {
     position: "absolute",
     left: 12,
@@ -1480,7 +1486,7 @@ const styles = StyleSheet.create({
     color: "#FFFFFF",
     lineHeight: 17,
   },
-  cardAuthor: { fontFamily: "Manrope", fontSize: 11, color: "#F4F4F4", marginTop: 4 },
+  cardAuthor: { fontFamily: "Manrope", fontSize: 11, color: CARD_TEXT_BELOW, marginTop: 4 },
   cardCategoryAboveTitle: {
     marginTop: 8,
     marginBottom: 0,
