@@ -25,7 +25,7 @@ import { useSafeAreaInsets } from "react-native-safe-area-context";
 
 import { useBackOverride } from "@/context/BackOverrideContext";
 import { useNotifications } from "@/context/NotificationsContext";
-import { useSceneTheme } from "@/context/SceneThemeContext";
+import { EDITORIAL_PLAYLIST_GRADIENT } from "@/constants/colors";
 import { useColors } from "@/hooks/useColors";
 import { SavedConfirmationBanner } from "@/components/SavedConfirmationBanner";
 import { SessionBadgeGlass } from "@/components/SessionDurationBadge";
@@ -178,7 +178,6 @@ function readOptions(value: unknown): PreferenceOption[] {
 
 export default function PersonalizarNotificacionesScreen() {
   const colors = useColors();
-  const { theme } = useSceneTheme();
   const insets = useSafeAreaInsets();
   const { width: windowWidth } = useWindowDimensions();
   const backOverride = useBackOverride();
@@ -304,11 +303,10 @@ export default function PersonalizarNotificacionesScreen() {
 
   return (
     <>
-      <Stack.Screen options={{ contentStyle: { backgroundColor: theme.gradient[0] } }} />
+      <Stack.Screen options={{ contentStyle: { backgroundColor: EDITORIAL_PLAYLIST_GRADIENT[0] } }} />
       <LinearGradient
-        style={[styles.root, { backgroundColor: theme.solid }]}
-        colors={theme.gradient as unknown as [string, string, ...string[]]}
-        locations={theme.gradientLocations}
+        style={[styles.root, { backgroundColor: EDITORIAL_PLAYLIST_GRADIENT[0] }]}
+        colors={EDITORIAL_PLAYLIST_GRADIENT}
         start={{ x: 0, y: 0 }}
         end={{ x: 0, y: 1 }}
       >
