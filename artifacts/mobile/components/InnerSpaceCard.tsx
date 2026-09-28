@@ -99,7 +99,9 @@ export function InnerSpaceCard({
   const clipHeight = useSharedValue(0);
   const clipStyle = useAnimatedStyle(() => ({ height: clipHeight.value }));
   const reservedHeight = useSharedValue(0);
-  const reservedStyle = useAnimatedStyle(() => ({ height: reservedHeight.value }));
+  const collapseSpacerStyle = useAnimatedStyle(() => ({
+    height: Math.max(0, reservedHeight.value - clipHeight.value),
+  }));
   const revealOpacity = useRef(new Animated.Value(0)).current;
   const revealY = useRef(new Animated.Value(-14)).current;
   const plusSpin = useRef(new Animated.Value(0)).current;
@@ -332,10 +334,7 @@ export function InnerSpaceCard({
   const updateContentHeight = (height: number) => {
     if (height <= 0 || height === contentHeightRef.current) return;
     contentHeightRef.current = height;
-    if (expandedRef.current && !animatingRef.current) {
-      clipHeight.value = height;
-      reservedHeight.value = height;
-    }
+    if (expandedRef.current && !animatingRef.current) clipHeight.value = height;
   };
 
   const animateExpansion = (opening: boolean, followScroll = false) => {
@@ -351,7 +350,7 @@ export function InnerSpaceCard({
         inputRef.current?.blur();
         setInputActive(false);
       }
-      reservedHeight.value = opening ? contentHeightRef.current : 0;
+      reservedHeight.value = 0;
       clipHeight.value = opening ? contentHeightRef.current : 0;
       revealOpacity.setValue(opening ? 1 : 0);
       revealY.setValue(0);
@@ -389,7 +388,6 @@ export function InnerSpaceCard({
       if (!controlsFinished || !movementFinished) return;
       animatingRef.current = false;
       clipHeight.value = opening ? contentHeightRef.current : 0;
-      reservedHeight.value = opening ? contentHeightRef.current : 0;
       if (!opening) revealOpacity.setValue(0);
       plusSpin.setValue(0);
       if (queuedOpenRef.current && !opening) {
@@ -404,17 +402,9 @@ export function InnerSpaceCard({
       movementFinished = true;
       finishWhenSettled();
     };
-    // Un solo contenedor ocupa espacio en el layout. Al cerrar, el recorte
-    // absoluto se pliega sin mover las secciones de abajo; luego se libera
-    // el alto reservado con una única animación de layout.
-    if (opening) {
-      reservedHeight.value = withTiming(panelTargetHeight, {
-        duration: PANEL_DURATION,
-        easing: ReanimatedEasing.out(ReanimatedEasing.cubic),
-      });
-    } else {
-      reservedHeight.value = panelTargetHeight;
-    }
+    // Mantiene el alto total mientras se pliega la ventana; al acabar,
+    // se libera suavemente el espacio y recién entonces se mueve la pantalla.
+    reservedHeight.value = opening ? 0 : panelTargetHeight;
     const animations = [
       ...(opening ? [
         Animated.timing(revealOpacity, {
@@ -489,6 +479,7 @@ export function InnerSpaceCard({
   }, [focusRequest, freeLimitReached]);
 
   return (
+    <>
     <View style={styles.container}>
       <View style={styles.header}>
         <View style={styles.headerCopy}>
@@ -539,15 +530,14 @@ export function InnerSpaceCard({
           </Animated.View>
         </Pressable>
       </View>
-      <Reanimated.View style={reservedStyle}>
-        <Reanimated.View
-          style={[styles.expandClip, clipStyle]}
-          pointerEvents={expanded ? "auto" : "none"}
-          accessibilityElementsHidden={!expanded}
-          importantForAccessibility={expanded ? "auto" : "no-hide-descendants"}
-        >
-          <View style={styles.expandBody}>
-            <Animated.View style={{ opacity: revealOpacity, transform: [{ translateY: revealY }] }}>
+      <Reanimated.View
+        style={[styles.expandClip, clipStyle]}
+        pointerEvents={expanded ? "auto" : "none"}
+        accessibilityElementsHidden={!expanded}
+        importantForAccessibility={expanded ? "auto" : "no-hide-descendants"}
+      >
+        <View style={styles.expandBody}>
+          <Animated.View style={{ opacity: revealOpacity, transform: [{ translateY: revealY }] }}>
       <MaskedView
         style={styles.categoriesMask}
         maskElement={(
@@ -707,11 +697,12 @@ export function InnerSpaceCard({
           </Text>
         </Pressable>
       </View>
-            </Animated.View>
-          </View>
-        </Reanimated.View>
+          </Animated.View>
+        </View>
       </Reanimated.View>
     </View>
+    <Reanimated.View pointerEvents="none" style={collapseSpacerStyle} />
+    </>
   );
 }
 
@@ -758,10 +749,6 @@ const styles = StyleSheet.create({
     justifyContent: "center",
   },
   expandClip: {
-    position: "absolute",
-    top: 0,
-    left: 0,
-    right: 0,
     overflow: "hidden",
     marginHorizontal: -20,
   },

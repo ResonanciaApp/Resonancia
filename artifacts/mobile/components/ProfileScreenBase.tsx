@@ -1360,6 +1360,39 @@ export function ProfileScreenBase({
               </Pressable>
             </View>
           </View>
+          {isPremium && (
+            <>
+              <View style={styles.profileCardDivider} />
+              <Pressable
+                onPress={() => router.push("/membresia")}
+                style={({ pressed }) => [
+                  styles.membershipCardHeader,
+                  { opacity: pressed ? 0.78 : 1 },
+                ]}
+                accessibilityRole="button"
+                accessibilityLabel="Abrir Tu Premium"
+              >
+                <View style={styles.membershipIcon}>
+                  <MaterialCommunityIcons
+                    name="star"
+                    size={31}
+                    color={MEMBERSHIP_AURORA.premium.accent}
+                  />
+                </View>
+                <View style={styles.membershipCardCopy}>
+                  <Text style={[styles.membershipPlanName, { color: MEMBERSHIP_AURORA.premium.accent }]}>
+                    Tu Premium
+                  </Text>
+                  <Text style={[styles.membershipPlanEyebrow, { color: CARD_TEXT_BELOW }]}>
+                    Gestiona tu suscripción y beneficios
+                  </Text>
+                </View>
+                <View style={[styles.profileChevronButton, styles.membershipChevronButton]}>
+                  <Feather name="chevron-right" size={24} color={colors.foreground} />
+                </View>
+              </Pressable>
+            </>
+          )}
         </View>
 
         {false && (
@@ -2484,11 +2517,59 @@ const styles = StyleSheet.create({
   userChevronButton: {
     transform: [{ translateX: 9 }],
   },
+  profileCardDivider: {
+    height: 1,
+    width: "100%",
+    backgroundColor: "rgba(181,211,255,0.05)",
+    marginTop: 20,
+    marginBottom: 4,
+  },
+  membershipCardHeader: {
+    minHeight: 66,
+    flexDirection: "row",
+    alignItems: "center",
+    gap: 13,
+    paddingHorizontal: 20,
+    paddingVertical: 6,
+  },
+  membershipIcon: {
+    width: 54,
+    height: 54,
+    borderRadius: 27,
+    alignItems: "center",
+    justifyContent: "center",
+    shadowColor: MEMBERSHIP_AURORA.premium.glow,
+    shadowOffset: { width: 0, height: 0 },
+    shadowOpacity: 0.75,
+    shadowRadius: 18,
+    transform: [{ translateY: -2 }],
+  },
+  membershipCardCopy: {
+    minWidth: 0,
+    flex: 1,
+    paddingRight: 3,
+    transform: [{ translateX: -8 }, { translateY: -2 }],
+  },
+  membershipPlanName: {
+    fontFamily: "Manrope",
+    fontSize: 14,
+    fontWeight: "700",
+    letterSpacing: -0.5,
+  },
+  membershipPlanEyebrow: {
+    fontFamily: "Manrope",
+    fontSize: 12,
+    lineHeight: 16,
+    marginTop: 2,
+  },
+  membershipChevronButton: {
+    transform: [{ translateX: 7 }],
+  },
   avatarWrapper: { position: "relative", marginBottom: 0 },
   avatarPremiumBadge: {
     position: "absolute",
-    left: -3,
-    top: -3,
+    right: -3,
+    bottom: -3,
     width: 24,
     height: 24,
     borderRadius: 12,
