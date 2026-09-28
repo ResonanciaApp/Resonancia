@@ -2463,7 +2463,6 @@ const styles = StyleSheet.create({
   // Profile card
   profileCard: {
     borderRadius: 19,
-    backgroundColor: "rgba(0,0,0,0.22)",
     paddingTop: 24,
     paddingBottom: 6,
     alignItems: "stretch",
