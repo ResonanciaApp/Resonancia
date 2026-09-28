@@ -15,7 +15,7 @@ import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { useSceneTheme } from "@/context/SceneThemeContext";
 import { useColors } from "@/hooks/useColors";
 import { FREE_TIMER_MAX_MINUTES, showPremiumGate } from "@/lib/premiumGate";
-import { WIDGET_GREEN_SOLID } from "@/constants/colors";
+import { REGISTER_BUTTON_ENABLED_BACKGROUND } from "@/constants/colors";
 import { PremiumPlansSurface, usePremiumPlansModalHost } from "@/components/PremiumPlansOverlay";
 import Svg, { Path } from "react-native-svg";
 
@@ -282,7 +282,7 @@ export function AmbientalDurationSheet({
             >
               <View style={styles.presetRow}>
                 {PRESETS.map((minutes) => {
-                  const selected = selectedPreset === minutes;
+                  const selected = !customMode && selectedPreset === minutes;
                   return (
                     <Pressable
                       key={minutes}
@@ -290,6 +290,9 @@ export function AmbientalDurationSheet({
                       style={[
                         styles.preset,
                         {
+                          backgroundColor: selected
+                            ? "rgba(0,0,0,0.28)"
+                            : "rgba(255,255,255,0.1)",
                           borderColor: selected
                             ? "rgba(249,249,249,0.8)"
                             : "transparent",
@@ -331,7 +334,12 @@ export function AmbientalDurationSheet({
                   onPress={enterCustomMode}
                   style={[
                     styles.preset,
-                    { borderColor: "transparent" },
+                    {
+                      backgroundColor: customMode
+                        ? "rgba(0,0,0,0.28)"
+                        : "rgba(255,255,255,0.1)",
+                      borderColor: "transparent",
+                    },
                   ]}
                   accessibilityRole="button"
                   accessibilityLabel="Elegir una duración personalizada"
@@ -381,14 +389,14 @@ export function AmbientalDurationSheet({
             <View
               style={[
                 styles.startButtonFill,
-                { backgroundColor: WIDGET_GREEN_SOLID },
+                { backgroundColor: REGISTER_BUTTON_ENABLED_BACKGROUND },
               ]}
             />
             <View style={styles.startButtonContent}>
               <Svg width={21} height={21} viewBox="0 0 48 48">
                 <Path
                   d="M 13.2 7.1 Q 8 4 8 10 L 8 36 Q 8 42 13.2 38.9 L 34.8 26.1 Q 40 23 34.8 19.9 Z"
-                  fill="#0E0E17"
+                  fill="#F9F9F9"
                 />
               </Svg>
               <Text style={styles.startButtonText}>Empezar sesión</Text>
@@ -479,7 +487,6 @@ const styles = StyleSheet.create({
     height: 76,
     borderRadius: 38,
     borderWidth: 1.5,
-    backgroundColor: "rgba(0,0,0,0.28)",
     overflow: "hidden",
     alignItems: "center",
     justifyContent: "center",
@@ -573,7 +580,7 @@ const styles = StyleSheet.create({
     fontSize: 13,
     fontWeight: "700",
     letterSpacing: 0.5,
-    color: "#0E0E17",
+    color: "#F9F9F9",
   },
   cancelButton: {
     height: 54,

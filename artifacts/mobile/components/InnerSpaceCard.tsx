@@ -28,6 +28,7 @@ import { useReflectionCategories } from "@/constants/reflectionCategories";
 import { useAuth } from "@/context/AuthContext";
 import { usePremium } from "@/context/PremiumContext";
 import { FREE_REFLECTIONS_LIMIT, showPremiumGate } from "@/lib/premiumGate";
+import { REGISTER_BUTTON_ENABLED_BACKGROUND } from "@/constants/colors";
 
 const CATEGORY_PLACEHOLDERS: Partial<Record<ReflectionCategory, string>> = {
   gratitude: "Ej: Hoy siento gratitud por...",
@@ -38,7 +39,6 @@ const CATEGORY_PLACEHOLDERS: Partial<Record<ReflectionCategory, string>> = {
 };
 const DEFAULT_PLACEHOLDER = "¿Qué sientes compartir hoy?";
 const REGISTER_BUTTON_BACKGROUND = "rgba(184, 117, 240, 0.2)";
-const REGISTER_BUTTON_ENABLED_BACKGROUND = "rgba(184, 117, 240, 0.45)";
 // La + se repite visualmente cada 90°: 270° son tres ciclos perceptibles.
 // Tras el giro hay solo tres movimientos: cruce moderado, cruce menor y ajuste final.
 const PLUS_ROTATION_STOPS = [

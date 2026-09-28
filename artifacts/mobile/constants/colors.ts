@@ -32,6 +32,7 @@ const colors = {
 };
 
 export const WIDGET_GREEN_SOLID = "#F9F9F9";
+export const REGISTER_BUTTON_ENABLED_BACKGROUND = "rgba(184, 117, 240, 0.45)";
 export const CARD_TEXT_ABOVE = "#D1D1D1";
 export const CARD_TEXT_BELOW = "#EBF2FF";
 export const DISCOVER_SEARCH_SURFACE = "rgba(0,0,0,0.33)";
