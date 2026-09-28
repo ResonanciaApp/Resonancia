@@ -25,19 +25,10 @@ import { useSafeAreaInsets } from "react-native-safe-area-context";
 
 import { useBackOverride } from "@/context/BackOverrideContext";
 import { useNotifications } from "@/context/NotificationsContext";
-import { EDITORIAL_PLAYLIST_GRADIENT } from "@/constants/colors";
+import { NOTIFICATIONS_GRADIENT } from "@/constants/colors";
 import { useColors } from "@/hooks/useColors";
 import { SavedConfirmationBanner } from "@/components/SavedConfirmationBanner";
 import { SessionBadgeGlass } from "@/components/SessionDurationBadge";
-
-// La portada de Playlist meditativas oculta su primer stop, más claro.
-// Esta pantalla no tiene portada, así que parte del siguiente tono.
-const NOTIFICATIONS_GRADIENT = [
-  EDITORIAL_PLAYLIST_GRADIENT[1],
-  EDITORIAL_PLAYLIST_GRADIENT[1],
-  EDITORIAL_PLAYLIST_GRADIENT[2],
-  EDITORIAL_PLAYLIST_GRADIENT[3],
-] as const;
 
 type PreferenceOption = {
   id: string;
