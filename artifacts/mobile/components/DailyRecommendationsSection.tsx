@@ -153,6 +153,7 @@ export function DailyRecommendationsSection({
                         ? themeAccent
                         : undefined
                   }
+                  chevronOffsetX={-1}
                   style={[styles.row, inicio3Compact && styles.inicio3Row]}
                 />
               </CategoryAtmosphericCard>
@@ -239,6 +240,7 @@ const styles = StyleSheet.create({
     backgroundColor: "rgba(0,0,0,0.22)",
     borderWidth: 1,
     borderColor: "rgba(255,255,255,0.1)",
+    transform: [{ translateX: 1 }],
   },
   inicio3RecommendationCard: {
     borderRadius: 16,

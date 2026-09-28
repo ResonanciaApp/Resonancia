@@ -56,6 +56,7 @@ type Props = {
   hideMeta?: boolean;
   secondaryText?: string;
   chevronColor?: string;
+  chevronOffsetX?: number;
   onActionsPress?: () => void;
   onPress?: () => void;
 };
@@ -88,6 +89,7 @@ export function SessionRow({
   hideMeta = false,
   secondaryText,
   chevronColor,
+  chevronOffsetX = 0,
   onActionsPress,
   onPress,
 }: Props) {
@@ -239,7 +241,7 @@ export function SessionRow({
             name="chevron-right"
             size={25}
             color={chevronColor ?? colors.mutedForeground}
-            style={styles.chevron}
+            style={[styles.chevron, chevronOffsetX !== 0 && { transform: [{ translateX: chevronOffsetX }] }]}
           />
         )}
       </Pressable>
