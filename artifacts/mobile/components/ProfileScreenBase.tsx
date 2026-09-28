@@ -1317,48 +1317,37 @@ export function ProfileScreenBase({
             </Pressable>
 
             {/* Name + details */}
-            <View style={styles.profileDetailsRow}>
-              <Pressable
-                onPress={() => router.push("/mi-perfil")}
-                style={styles.profileDetails}
-                accessibilityRole="button"
-                accessibilityLabel="Abrir Mi cuenta"
+            <Pressable
+              onPress={() => router.push("/mi-perfil")}
+              style={styles.profileDetails}
+              accessibilityRole="button"
+              accessibilityLabel="Abrir Mi cuenta"
+            >
+              <Text
+                style={[styles.userName, { color: colors.foreground }]}
+                numberOfLines={1}
+                ellipsizeMode="tail"
               >
+                {username}{lastName ? ` ${lastName}` : ""}
+              </Text>
+
+              {email ? (
                 <Text
-                  style={[styles.userName, styles.userNameLeft, { color: colors.foreground }]}
+                  style={[styles.emailText, { color: CARD_TEXT_BELOW }]}
                   numberOfLines={1}
                   ellipsizeMode="tail"
                 >
-                  {username}{lastName ? ` ${lastName}` : ""}
+                  {email}
                 </Text>
+              ) : null}
 
-                {email ? (
-                  <Text
-                    style={[styles.emailText, { color: CARD_TEXT_BELOW }]}
-                    numberOfLines={1}
-                    ellipsizeMode="tail"
-                  >
-                    {email}
-                  </Text>
-                ) : null}
-
-                {location ? (
-                  <View style={styles.locationRow}>
-                    <Feather name="map-pin" size={12} color={secondaryAccent} />
-                    <Text style={[styles.locationText, { color: secondaryAccent }]}>{location}</Text>
-                  </View>
-                ) : null}
-              </Pressable>
-              <Pressable
-                onPress={() => router.push("/mi-perfil")}
-                style={[styles.profileChevronButton, styles.userChevronButton]}
-                hitSlop={8}
-                accessibilityRole="button"
-                accessibilityLabel="Abrir Mi cuenta"
-              >
-                <Feather name="chevron-right" size={24} color={colors.foreground} />
-              </Pressable>
-            </View>
+              {location ? (
+                <View style={styles.locationRow}>
+                  <Feather name="map-pin" size={12} color={secondaryAccent} />
+                  <Text style={[styles.locationText, { color: secondaryAccent }]}>{location}</Text>
+                </View>
+              ) : null}
+            </Pressable>
           </View>
         </View>
 
@@ -2451,7 +2440,7 @@ const styles = StyleSheet.create({
     paddingTop: 24,
     paddingBottom: 6,
     alignItems: "stretch",
-    marginTop: 14,
+    marginTop: 30,
     marginBottom: 16,
     gap: 0,
     transform: [{ translateY: -5 }],
@@ -2466,23 +2455,12 @@ const styles = StyleSheet.create({
     marginBottom: 17,
   },
   profileIdentityRow: {
-    flexDirection: "row",
     alignItems: "center",
     width: "100%",
-    gap: 16,
-    paddingRight: 20,
+    gap: 12,
+    paddingHorizontal: 16,
   },
-  profileDetailsRow: { flex: 1, minWidth: 0, flexDirection: "row", alignItems: "center", gap: 8 },
-  profileDetails: { flex: 1, minWidth: 0, alignItems: "flex-start", gap: 6 },
-  profileChevronButton: {
-    width: 32,
-    height: 44,
-    alignItems: "center",
-    justifyContent: "center",
-  },
-  userChevronButton: {
-    transform: [{ translateX: 9 }],
-  },
+  profileDetails: { width: "100%", alignItems: "center", gap: 6 },
   avatarWrapper: { position: "relative", marginBottom: 0 },
   avatarPremiumBadge: {
     position: "absolute",
@@ -2510,9 +2488,8 @@ const styles = StyleSheet.create({
     borderColor: "rgba(255,255,255,0.8)",
   },
   userName: { fontFamily: "Manrope", fontSize: 20, fontWeight: "700", textAlign: "center" },
-  userNameLeft: { textAlign: "left" },
-  emailText: { fontFamily: "Manrope", fontSize: 12 },
-  locationRow: { flexDirection: "row", alignItems: "center", gap: 4 },
+  emailText: { fontFamily: "Manrope", fontSize: 12, textAlign: "center" },
+  locationRow: { flexDirection: "row", alignItems: "center", justifyContent: "center", gap: 4 },
   locationText: { fontFamily: "Manrope", fontSize: 12 },
   bioText: { fontFamily: "Manrope", fontSize: 13, lineHeight: 19, textAlign: "center", paddingHorizontal: 8, fontStyle: "italic" },
   bioTextLeft: { textAlign: "left", paddingHorizontal: 0 },
