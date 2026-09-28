@@ -1311,7 +1311,7 @@ export function ProfileScreenBase({
                   pointerEvents="none"
                   style={[styles.avatarPremiumBadge, { backgroundColor: activeTheme.gradient[0] }]}
                 >
-                  <MaterialCommunityIcons name="star" size={17} color={MEMBERSHIP_AURORA.premium.accent} />
+                  <MaterialCommunityIcons name="star" size={24} color={MEMBERSHIP_AURORA.premium.accent} />
                 </View>
               )}
             </Pressable>
@@ -2487,11 +2487,11 @@ const styles = StyleSheet.create({
   avatarWrapper: { position: "relative", marginBottom: 0 },
   avatarPremiumBadge: {
     position: "absolute",
-    left: -3,
-    top: -3,
-    width: 24,
-    height: 24,
-    borderRadius: 12,
+    left: -6.5,
+    top: -6.5,
+    width: 31,
+    height: 31,
+    borderRadius: 15.5,
     alignItems: "center",
     justifyContent: "center",
   },
