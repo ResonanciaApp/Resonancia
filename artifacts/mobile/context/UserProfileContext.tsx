@@ -19,8 +19,6 @@ interface UserProfile {
   description: string;
   photoUri: string | null;
   avatarPresetId: string | null;
-  coverPresetId: string | null;
-  coverPhotoUri: string | null;
   sentMessageIds: number[];
   earnedCrowns: number;
   lastCrownDate: string | null;
@@ -35,8 +33,6 @@ const DEFAULT_PROFILE: UserProfile = {
   description: "",
   photoUri: null,
   avatarPresetId: null,
-  coverPresetId: null,
-  coverPhotoUri: null,
   sentMessageIds: [],
   earnedCrowns: 0,
   lastCrownDate: null,
@@ -60,8 +56,6 @@ interface UserProfileContextValue extends UserProfile {
   updateProfile: (fields: ProfileUpdate) => void;
   setPhotoUri: (uri: string | null) => void;
   setAvatarPresetId: (id: string | null) => void;
-  setCoverPresetId: (id: string | null) => void;
-  setCoverPhotoUri: (uri: string | null) => void;
   setExpansorId: (id: string | null) => void;
   recordSentMessage: (id: number) => void;
   checkAndAwardCrown: (topMessageId: number | null) => void;
@@ -133,16 +127,6 @@ export function UserProfileProvider({ children }: { children: React.ReactNode })
     [profile, persist],
   );
 
-  const setCoverPresetId = useCallback(
-    (id: string | null) => persist({ ...profile, coverPresetId: id, coverPhotoUri: null }),
-    [profile, persist],
-  );
-
-  const setCoverPhotoUri = useCallback(
-    (uri: string | null) => persist({ ...profile, coverPhotoUri: uri, coverPresetId: null }),
-    [profile, persist],
-  );
-
   const setExpansorId = useCallback(
     (id: string | null) => persist({ ...profile, expansorId: id }),
     [profile, persist],
@@ -184,8 +168,6 @@ export function UserProfileProvider({ children }: { children: React.ReactNode })
         updateProfile,
         setPhotoUri,
         setAvatarPresetId,
-        setCoverPresetId,
-        setCoverPhotoUri,
         setExpansorId,
         recordSentMessage,
         checkAndAwardCrown,
