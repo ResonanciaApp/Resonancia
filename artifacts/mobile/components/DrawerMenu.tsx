@@ -66,7 +66,6 @@ const INICIO3_SECTIONS: { title: string | null; items: MenuItem[] }[] = [
       { id: "mixer", label: "Mezclador de sonidos", icon: "sliders", mciIcon: "tune-vertical", route: "__mixer", color: "#F9F9F9" },
       { id: "breathing", label: "Ejercicios de respiración", icon: "wind", mciIcon: "weather-windy", route: "/respiracion", color: "#F9F9F9" },
       { id: "mood-register", label: "Registro de ánimo", icon: "smile", mciIcon: "emoticon-happy-outline", route: "__mood_picker", color: "#F9F9F9" },
-      { id: "mood-history", label: "Historial de estado de ánimo", icon: "calendar", mciIcon: "chart-timeline-variant", route: "/historial-emociones", color: "#F9F9F9" },
     ],
   },
 ];
