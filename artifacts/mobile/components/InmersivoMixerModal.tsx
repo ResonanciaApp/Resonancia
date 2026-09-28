@@ -69,7 +69,7 @@ export function InmersivoContent() {
     GRADIENT_PRESETS.find((p) => p.id === inmersivoPresetId) ??
     GRADIENT_PRESETS.find((p) => p.id === DEFAULT_BG_PRESET_ID)!;
   const bgPreset = isDefaultBg
-    ? { ...rawBgPreset, colors: [theme.gradient[0], theme.gradient[1], theme.gradient[1]] as const, image: undefined, isLight: false }
+    ? { ...rawBgPreset, colors: theme.gradient.slice(0, 4) as [string, string, string, string], image: undefined, isLight: false }
     : rawBgPreset;
 
   const breathScale = useRef(new Animated.Value(1)).current;
