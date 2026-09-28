@@ -18,6 +18,7 @@ import {
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 
 import { FilledSunIcon } from "@/components/FilledSunIcon";
+import { SLEEP_REMINDER_NIGHT_GRADIENT } from "@/constants/colors";
 import {
   formatPracticeNotificationTimeLocal,
   loadPracticeNotificationSettings,
@@ -162,7 +163,7 @@ export function SleepReminderSheet({
   const timeLabel = formatPracticeNotificationTimeLocal(draft.hour, draft.minute);
   const gradient = isMorning
     ? ["#C96D68", "#855269", "#443044"] as const
-    : ["#0B0A26", "#08071C", "#070514"] as const;
+    : SLEEP_REMINDER_NIGHT_GRADIENT;
   return (
     <Modal
       transparent
@@ -307,6 +308,13 @@ export function SleepReminderSheet({
             accessibilityRole="button"
             accessibilityLabel="Guardar recordatorio"
           >
+            {!isMorning && (
+              <LinearGradient
+                pointerEvents="none"
+                colors={["#321F5E", "#4D318F"]}
+                style={StyleSheet.absoluteFill}
+              />
+            )}
             {saving ? (
               <ActivityIndicator color="#FFFFFF" />
             ) : (
@@ -528,7 +536,8 @@ const styles = StyleSheet.create({
     height: 58,
     borderRadius: 29,
     marginTop: 18,
-    backgroundColor: "#6D3FC0",
+    backgroundColor: "#321F5E",
+    overflow: "hidden",
     alignItems: "center",
     justifyContent: "center",
   },

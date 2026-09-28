@@ -5,6 +5,7 @@ import { useCategoryOverlay, type OverlayEntry } from "@/context/CategoryOverlay
 import { BackOverrideProvider } from "@/context/BackOverrideContext";
 import { DURATION, easeOutCubic } from "@/constants/motion";
 import { useSceneTheme } from "@/context/SceneThemeContext";
+import { SacredBackground } from "@/components/SacredBackground";
 import VideosScreen from "@/app/videos";
 import { parseCategoryTagOverlayRoute } from "@/data/category-route";
 
@@ -107,6 +108,14 @@ type LayerState = OverlayEntry & { closing: boolean; depth: number };
 
 const PARALLAX_SHIFT = -56;
 
+function OverlayLoading() {
+  return (
+    <View style={styles.loading}>
+      <ActivityIndicator size="large" color="#F9F9F9" style={styles.loadingSpinner} />
+    </View>
+  );
+}
+
 /** Una capa del overlay: desliza al entrar y al salir. */
 function OverlayLayer({
   layer,
@@ -169,31 +178,14 @@ function OverlayLayer({
         },
       ]}
     >
+      <SacredBackground variant="gradient" noImage />
       <BackOverrideProvider onBack={onBack}>
         {!contentReady ? (
-          <View
-            style={[
-              StyleSheet.absoluteFill,
-              { backgroundColor: bg, alignItems: "center", justifyContent: "center" },
-            ]}
-          >
-            <ActivityIndicator size="large" color="#BE9650" />
-          </View>
+          <OverlayLoading />
         ) : resolved.eager ? (
           resolved.node
         ) : (
-          <Suspense
-            fallback={
-              <View
-                style={[
-                  StyleSheet.absoluteFill,
-                  { backgroundColor: bg, alignItems: "center", justifyContent: "center" },
-                ]}
-              >
-                <ActivityIndicator size="large" color="#BE9650" />
-              </View>
-            }
-          >
+          <Suspense fallback={<OverlayLoading />}>
             {resolved.node}
           </Suspense>
         )}
@@ -281,3 +273,14 @@ export function CategoryOverlay() {
     </>
   );
 }
+
+const styles = StyleSheet.create({
+  loading: {
+    ...StyleSheet.absoluteFillObject,
+    alignItems: "center",
+    justifyContent: "center",
+  },
+  loadingSpinner: {
+    transform: [{ scale: 46 / 36 }],
+  },
+});

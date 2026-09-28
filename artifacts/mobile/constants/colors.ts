@@ -39,6 +39,7 @@ export const INSPIRATION_SKY = "#7DD3FC";
 export const POSITIONED_DAY_GRADIENT = ["#9380E7", "#9EA5EF"] as const;
 export const EDITORIAL_PLAYLIST_GRADIENT = ["#363459", "#231E53", "#2B1E53", "#2E1E53"] as const;
 export const NOTIFICATIONS_GRADIENT = ["#231E53", "#2B1E53"] as const;
+export const SLEEP_REMINDER_NIGHT_GRADIENT = ["#0B0A26", "#08071C", "#070514"] as const;
 export const PREMIUM_STAR_GRADIENT = ["#FFD848", "#FCC200", "#F6BA00"] as const;
 
 export const MEMBERSHIP_AURORA = {

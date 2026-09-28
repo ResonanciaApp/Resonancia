@@ -1,4 +1,5 @@
 import { Feather } from "@expo/vector-icons";
+import { LinearGradient } from "expo-linear-gradient";
 import React, { useEffect, useMemo, useRef, useState } from "react";
 import {
   Animated,
@@ -15,7 +16,7 @@ import { useSceneTheme } from "@/context/SceneThemeContext";
 import { isIndigoThemeId } from "@/config/scene-themes";
 import { useColors } from "@/hooks/useColors";
 import { FREE_TIMER_MAX_MINUTES, showPremiumGate } from "@/lib/premiumGate";
-import { WIDGET_GREEN_SOLID } from "@/constants/colors";
+import { SLEEP_REMINDER_NIGHT_GRADIENT, WIDGET_GREEN_SOLID } from "@/constants/colors";
 import { PremiumPlansSurface, usePremiumPlansModalHost } from "@/components/PremiumPlansOverlay";
 import Svg, { Path } from "react-native-svg";
 
@@ -112,7 +113,6 @@ export function AmbientalDurationSheet({
 }: Props) {
   const colors = useColors();
   const { theme } = useSceneTheme();
-  const sheetColor = theme.gradient[2];
   const insets = useSafeAreaInsets();
   const [rendered, setRendered] = useState(visible);
   const [customMode, setCustomMode] = useState(false);
@@ -258,13 +258,18 @@ export function AmbientalDurationSheet({
           style={[
             styles.sheet,
             {
-              backgroundColor: sheetColor,
+              backgroundColor: SLEEP_REMINDER_NIGHT_GRADIENT[0],
               paddingBottom: Math.max(insets.bottom, 16),
               transform: [{ translateY: sheetY }],
             },
           ]}
           accessibilityViewIsModal
         >
+          <LinearGradient
+            pointerEvents="none"
+            colors={SLEEP_REMINDER_NIGHT_GRADIENT}
+            style={StyleSheet.absoluteFill}
+          />
           <View style={styles.handle} />
           <Text
             style={[styles.title, { color: colors.foreground }]}
