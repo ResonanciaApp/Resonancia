@@ -190,7 +190,6 @@ export function AmbientalDurationSheet({
   const customTotalMinutes = customHours * 60 + customMinutes;
   const selectedMinutes = customMode ? customTotalMinutes : selectedPreset;
   const canStart = selectedMinutes > 0;
-  const timerCardGradient = theme.gradient.slice(-3) as [string, string, ...string[]];
   const enterCustomMode = () => {
     setCustomMode(true);
     Animated.parallel([
@@ -286,7 +285,6 @@ export function AmbientalDurationSheet({
                       style={[
                         styles.preset,
                         {
-                          backgroundColor: timerCardGradient[0],
                           borderColor: selected
                             ? "rgba(249,249,249,0.8)"
                             : "transparent",
@@ -297,11 +295,6 @@ export function AmbientalDurationSheet({
                       accessibilityLabel={`${minutes} minutos`}
                       testID={`ambiental-duration-${minutes}`}
                     >
-                      <LinearGradient
-                        pointerEvents="none"
-                        colors={timerCardGradient}
-                        style={styles.presetGradient}
-                      />
                       <Text
                         style={[
                           styles.presetValue,
@@ -333,17 +326,12 @@ export function AmbientalDurationSheet({
                   onPress={enterCustomMode}
                   style={[
                     styles.preset,
-                    { backgroundColor: timerCardGradient[0], borderColor: "transparent" },
+                    { borderColor: "transparent" },
                   ]}
                   accessibilityRole="button"
                   accessibilityLabel="Elegir una duración personalizada"
                   testID="ambiental-duration-custom"
                 >
-                  <LinearGradient
-                    pointerEvents="none"
-                    colors={timerCardGradient}
-                    style={styles.presetGradient}
-                  />
                   <Feather name="plus" size={34} color="#F4F4F4" />
                 </Pressable>
               </View>
@@ -486,16 +474,10 @@ const styles = StyleSheet.create({
     height: 76,
     borderRadius: 38,
     borderWidth: 1.5,
+    backgroundColor: "rgba(0,0,0,0.22)",
     overflow: "hidden",
     alignItems: "center",
     justifyContent: "center",
-  },
-  presetGradient: {
-    ...StyleSheet.absoluteFillObject,
-    top: 1.5,
-    right: 1.5,
-    bottom: 1.5,
-    left: 1.5,
   },
   presetValue: {
     fontFamily: "Manrope",
