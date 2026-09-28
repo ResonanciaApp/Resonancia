@@ -70,7 +70,6 @@ import {
   type LibHeaderActions,
 } from "@/components/BibliotecaScreen";
 import { ProgressMirrorSections } from "@/components/ProgressMirrorSections";
-import { ProfileAuraBackground } from "@/components/ProfileAuraBackground";
 import { ProfileSettingsSections } from "@/components/ProfileSettingsSections";
 import { useCoverPresetCatalog } from "@/lib/cover-preset-catalog";
 import {
@@ -1253,8 +1252,6 @@ export function ProfileScreenBase({
         bottomOffset={165}
         disableScrollOnKeyboardHide
       >
-        <View style={styles.profileHeroArea}>
-        <ProfileAuraBackground topInset={topPad + 2} />
         <View style={styles.dedicatedTitleRow}>
           <View style={styles.dedicatedTitleLeft}>
             <Text style={[styles.dedicatedHeroTitle, { color: colors.foreground }]}>Perfil</Text>
@@ -1342,7 +1339,6 @@ export function ProfileScreenBase({
               ) : null}
             </Pressable>
           </View>
-        </View>
         </View>
 
         {false && (
@@ -2429,10 +2425,6 @@ const styles = StyleSheet.create({
   },
 
   // Profile card
-  profileHeroArea: {
-    marginHorizontal: -16,
-    paddingHorizontal: 16,
-  },
   profileCard: {
     borderRadius: 19,
     paddingTop: 24,
