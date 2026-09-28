@@ -216,7 +216,7 @@ export function SleepReminderSheet({
                : "Te enviaremos recordatorios todos los días en los horarios que tú elijas."}
           </Text>
 
-           <View style={[styles.reminderCard, isMorning && styles.morningReminderCard]}>
+           <View style={[styles.reminderCard, isMorning ? styles.morningReminderCard : styles.nightReminderCard]}>
             <View style={styles.reminderHeader}>
               <View style={styles.reminderLabel}>
                  {isMorning ? (
@@ -322,6 +322,7 @@ export function SleepReminderSheet({
             )}
           </Pressable>
           </ScrollView>
+           {!isMorning && <View pointerEvents="none" style={styles.sheetOutline} />}
         </Animated.View>
       </View>
     </Modal>
@@ -372,6 +373,19 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     borderBottomWidth: 0,
     borderColor: "rgba(255,255,255,0.10)",
+  },
+  sheetOutline: {
+    position: "absolute",
+    top: 1,
+    left: 1,
+    right: 1,
+    bottom: 0,
+    borderTopLeftRadius: 31,
+    borderTopRightRadius: 31,
+    borderTopWidth: 1,
+    borderLeftWidth: 1,
+    borderRightWidth: 1,
+    borderColor: "rgba(255,255,255,0.26)",
   },
   handle: {
     alignSelf: "center",
@@ -429,6 +443,9 @@ const styles = StyleSheet.create({
     backgroundColor: "rgba(255,255,255,0.14)",
     borderWidth: 1,
     borderColor: "rgba(255,255,255,0.10)",
+  },
+  nightReminderCard: {
+    backgroundColor: "rgba(255,255,255,0.10)",
   },
   morningReminderCard: {
     backgroundColor: "rgba(20,18,32,0.36)",
