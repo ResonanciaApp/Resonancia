@@ -15,7 +15,7 @@ import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { useSceneTheme } from "@/context/SceneThemeContext";
 import { useColors } from "@/hooks/useColors";
 import { FREE_TIMER_MAX_MINUTES, showPremiumGate } from "@/lib/premiumGate";
-import { SLEEP_REMINDER_NIGHT_GRADIENT, WIDGET_GREEN_SOLID } from "@/constants/colors";
+import { WIDGET_GREEN_SOLID } from "@/constants/colors";
 import { PremiumPlansSurface, usePremiumPlansModalHost } from "@/components/PremiumPlansOverlay";
 import Svg, { Path } from "react-native-svg";
 
@@ -252,18 +252,13 @@ export function AmbientalDurationSheet({
           style={[
             styles.sheet,
             {
-              backgroundColor: SLEEP_REMINDER_NIGHT_GRADIENT[0],
+              backgroundColor: theme.gradient[0],
               paddingBottom: Math.max(insets.bottom, 16),
               transform: [{ translateY: sheetY }],
             },
           ]}
           accessibilityViewIsModal
         >
-          <LinearGradient
-            pointerEvents="none"
-            colors={SLEEP_REMINDER_NIGHT_GRADIENT}
-            style={StyleSheet.absoluteFill}
-          />
           <View style={styles.handle} />
           <Text
             style={[styles.title, { color: colors.foreground }]}
