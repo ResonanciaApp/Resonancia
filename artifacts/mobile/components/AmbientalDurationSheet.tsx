@@ -258,6 +258,11 @@ export function AmbientalDurationSheet({
           ]}
           accessibilityViewIsModal
         >
+          <LinearGradient
+            pointerEvents="none"
+            colors={theme.gradient.slice(0, 3) as [string, string, string]}
+            style={StyleSheet.absoluteFill}
+          />
           <View style={styles.handle} />
           <Text
             style={[styles.title, { color: colors.foreground }]}
@@ -474,7 +479,7 @@ const styles = StyleSheet.create({
     height: 76,
     borderRadius: 38,
     borderWidth: 1.5,
-    backgroundColor: "rgba(0,0,0,0.22)",
+    backgroundColor: "rgba(0,0,0,0.28)",
     overflow: "hidden",
     alignItems: "center",
     justifyContent: "center",
