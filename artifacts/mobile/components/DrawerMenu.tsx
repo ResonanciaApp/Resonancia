@@ -388,8 +388,8 @@ export function DrawerMenu() {
               {INICIO3_SECTIONS.map((section, sectionIndex) => (
                 <View
                   key={section.title ?? `drawer-section-${sectionIndex}`}
-                  style={sectionIndex > 0 ? styles.inicio3SectionShift : undefined}
                 >
+                  {sectionIndex > 0 && <View style={styles.inicio3SectionDivider} />}
                   {section.title && <Text style={styles.inicio3SectionTitle}>{section.title}</Text>}
                   <View style={styles.itemGroup}>
                     {section.items.map((item) => (
@@ -600,8 +600,11 @@ const styles = StyleSheet.create({
   inicio3Sections: {
     marginTop: -1,
   },
-  inicio3SectionShift: {
-    marginTop: 27,
+  inicio3SectionDivider: {
+    height: 1,
+    backgroundColor: "rgba(255,255,255,0.20)",
+    marginTop: 24,
+    marginBottom: 25,
   },
   inicio3SectionTitle: {
     fontFamily: "Manrope",
