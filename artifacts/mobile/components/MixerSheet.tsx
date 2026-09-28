@@ -384,7 +384,7 @@ export function MixerSheet() {
   const activeBgPreset = isDefaultBg
     ? {
         ...rawBgPreset,
-        colors: [theme.gradient[0], theme.gradient[1], theme.gradient[2] ?? theme.gradient[1]] as const,
+        colors: theme.gradient.slice(0, 4) as [string, string, string, string],
         image: undefined,
         isLight: false,
       }

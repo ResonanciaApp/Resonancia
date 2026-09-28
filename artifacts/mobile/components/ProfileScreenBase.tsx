@@ -1114,7 +1114,7 @@ export function ProfileScreenBase({
       <StatusBar barStyle="light-content" />
       {asTab ? (
         <LinearGradient
-          colors={activeTheme.gradient.slice(0, 3) as [string, string, string]}
+          colors={activeTheme.gradient.slice(0, 4) as [string, string, string, string]}
           start={activeTheme.gradientStart}
           end={activeTheme.gradientEnd}
           style={StyleSheet.absoluteFill}

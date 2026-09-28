@@ -3,9 +3,9 @@ name: Fondo global de Índigo 2
 description: Alcance compartido y referencia visual confirmada para los colores del fondo de Índigo 2.
 ---
 
-Índigo 2 usa un degradado temático compartido en toda la app. El primer tono también es el color sólido base; el fondo visible NO debe quedar plano. Biblioteca, Descargas, Diario y Notificaciones usan solo los tres primeros tonos del tema; Historial usa los cuatro primeros. Los tonos elegidos se distribuyen a lo largo de cada pantalla. El fondo predeterminado del Mezclador de sonidos usa tres tonos, pero sus fondos personalizados se respetan.
+Índigo 2 usa un degradado temático compartido en toda la app. El primer tono también es el color sólido base; el fondo visible NO debe quedar plano. Biblioteca, Descargas, Diario, Notificaciones e Historial usan los cuatro primeros tonos del tema. Los tonos elegidos se distribuyen a lo largo de cada pantalla. El fondo predeterminado del Mezclador de sonidos también usa cuatro tonos, pero sus fondos personalizados se respetan.
 
-**Why:** Cambiar solo el valor `solid` no alteró el fondo visible, porque la mayoría de pantallas dibujan los stops del tema. Tras varias referencias, el usuario envió una secuencia de seis tonos sin porcentajes visibles; a diferencia de la referencia anterior de cuatro tonos, esta necesita posiciones nuevas. Se distribuyen uniformemente de arriba abajo hasta que haya porcentajes explícitos.
+**Why:** Cambiar solo el valor `solid` no alteró el fondo visible, porque la mayoría de pantallas dibujan los stops del tema. Tras varias referencias, el usuario envió una secuencia de seis tonos sin porcentajes visibles; a diferencia de la referencia anterior de cuatro tonos, esta necesita posiciones nuevas. Se distribuyen uniformemente de arriba abajo hasta que haya porcentajes explícitos. Luego pidió expresamente que las cinco superficies indicadas usaran los cuatro primeros tonos.
 
 **How to apply:** Tratar la definición del tema como fuente única para fondos de pantalla; si cambia el número de tonos, actualizar también las posiciones en igual cantidad. Aplicar el recorte específico de cada superficie sin truncar el tema global ni cambiar Perfil. Los fondos explícitos de cards, sheets o identidades particulares no se modifican sin solicitud específica.
 

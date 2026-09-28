@@ -191,7 +191,7 @@ export default function NotificacionesScreen() {
   return (
     <LinearGradient
       style={styles.root}
-      colors={theme.gradient.slice(0, 3) as [string, string, string]}
+      colors={theme.gradient.slice(0, 4) as [string, string, string, string]}
       start={{ x: 0, y: 0 }}
       end={{ x: 0, y: 1 }}
     >

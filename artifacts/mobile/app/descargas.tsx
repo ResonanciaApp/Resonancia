@@ -67,7 +67,7 @@ export default function DownloadsScreen() {
 
   return (
     <LinearGradient
-      colors={theme.gradient.slice(0, 3) as [string, string, string]}
+      colors={theme.gradient.slice(0, 4) as [string, string, string, string]}
       style={[
         styles.root,
         {
