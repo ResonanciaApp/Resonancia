@@ -3,11 +3,11 @@ name: Fondo global de Índigo 2
 description: Alcance compartido y referencia visual confirmada para los colores del fondo de Índigo 2.
 ---
 
-Índigo 2 usa un degradado temático compartido en toda la app. El primer tono también es el color sólido base; el fondo visible NO debe quedar plano. No añadir excepciones locales.
+Índigo 2 usa un degradado temático compartido en toda la app. El primer tono también es el color sólido base; el fondo visible NO debe quedar plano. Biblioteca es una excepción solicitada: su fondo usa solo los tres primeros tonos del tema, distribuidos a lo largo de la pantalla.
 
 **Why:** Cambiar solo el valor `solid` no alteró el fondo visible, porque la mayoría de pantallas dibujan los stops del tema. Tras varias referencias, el usuario envió una secuencia de seis tonos sin porcentajes visibles; a diferencia de la referencia anterior de cuatro tonos, esta necesita posiciones nuevas. Se distribuyen uniformemente de arriba abajo hasta que haya porcentajes explícitos.
 
-**How to apply:** Tratar la definición del tema como fuente única para fondos de pantalla; si cambia el número de tonos, actualizar también las posiciones en igual cantidad. Los fondos explícitos de cards, sheets o identidades particulares no se modifican sin solicitud específica.
+**How to apply:** Tratar la definición del tema como fuente única para fondos de pantalla; si cambia el número de tonos, actualizar también las posiciones en igual cantidad. Mantener la excepción de Biblioteca limitada a esa pantalla, sin truncar el tema global ni cambiar Perfil. Los fondos explícitos de cards, sheets o identidades particulares no se modifican sin solicitud específica.
 
 Historial estado de ánimo conserva un degradado editorial propio, ligeramente diagonal, independiente del tema global.
 

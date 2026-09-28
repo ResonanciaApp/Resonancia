@@ -91,7 +91,7 @@
 - [Ticket de Mi Rutina](routine-ticket-behavior.md) — solo el ticket completa; la card pasa a teal y sale de Inicio tras 1 s; el tap restante abre detalle
 - [Flujo emocional local](mood-checkin-local.md) — guarda check-ins completos localmente; cierre usa cinco tipos fijos con reservas inmutables porque el catálogo muta sesiones en sitio
 - [Handoff entre Modal nativos](native-modal-handoff.md) — nunca abrir un segundo Modal con un timeout estimado; esperar cierre real + siguiente frame para evitar fallos intermitentes en iOS
-- [Membresía Aurora jade-gold](membership-aurora-jade.md) — Perfil muestra «Tu Premium» solo para miembros; sin Prueba Premium ni divisor para no miembros; otros acentos siguen
+- [Membresía Aurora jade-gold](membership-aurora-jade.md) — Perfil: «Tu Premium» y estrella en avatar solo para miembros; sin Prueba Premium ni divisor para no miembros
 - [Háptica suave del tab bar](tab-haptics-soft.md) — un solo impacto Soft para taps de navegación; no simular fade con pulsos acumulados
 - [Toggles de notificaciones de ajustes](settings-notification-toggles.md) — Racha y Registro diario serán opt-ins de avisos, no visibilidad; diseño desactivado hasta tener programación real
 - [Bajas remotas del catálogo](catalog-remote-deletions.md) — un cache móvil viejo puede resucitar sesiones DB-only; snapshots frescos deben podar entradas remotas ausentes
@@ -146,7 +146,7 @@
 - [Avisos de nuevas sesiones](session-publication-notifications.md) — preferencias usan categorías + tags internos de Explora; publicación y buzón son atómicos, dedupe por usuario/sesión y push es solo entrega
 - [Reproducción protegida de Bunny](bunny-protected-playback.md) — el HLS directo del CDN devuelve 403; Mobile debe usar la URL oficial de embed entregada por el API
 - [Contrato de destinos editoriales](hero-destination-contract.md) — los IDs de opciones Admin no equivalen a IDs de rutas Mobile; verificar contrato extremo a extremo y namespace editorial
-- [Fondo global de Índigo 2](indigo2-global-gradient.md) — usar el tema compartido, no overrides; el fondo visible toma los stops, no solo `solid`
+- [Fondo global de Índigo 2](indigo2-global-gradient.md) — usar el tema compartido; Biblioteca es excepción de 3 primeros stops, el resto conserva el degradado completo
 - [Movimiento de Mi muro](muro-motion-scope.md) — solo la + rebota angularmente; formulario entra sin sobrepaso, y la simetría del signo cambia la percepción de las vueltas
 - [Negrita editorial de Sabiduría diaria](daily-wisdom-bold.md) — la frase sigue siendo texto plano; la negrita selectiva solo afecta el primer slide del hero, no detalle ni compartir
 - [Activación de tareas propuestas](task-activation.md) — cambiar a Build y ejecutar por chat no activa un borrador; el cierre requiere una tarea asignada en progreso

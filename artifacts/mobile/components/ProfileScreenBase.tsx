@@ -1112,11 +1112,17 @@ export function ProfileScreenBase({
         </Animated.View>
       )}
       <StatusBar barStyle="light-content" />
-      <SacredBackground
-        variant="gradient"
-        noImage
-        ambientGlowMode="none"
-      />
+      {asTab ? (
+        <LinearGradient
+          colors={activeTheme.gradient.slice(0, 3) as [string, string, string]}
+          start={activeTheme.gradientStart}
+          end={activeTheme.gradientEnd}
+          style={StyleSheet.absoluteFill}
+          pointerEvents="none"
+        />
+      ) : (
+        <SacredBackground variant="gradient" noImage ambientGlowMode="none" />
+      )}
       <GeometrixOverlay active={profileGeoActive} />
 
       <View style={styles.contentShift}>
@@ -1298,6 +1304,14 @@ export function ProfileScreenBase({
               ) : (
                 <View style={[styles.avatarCircle, { backgroundColor: colors.secondary }]}>
                   <Feather name="user" size={28} color={colors.primary} />
+                </View>
+              )}
+              {isPremium && (
+                <View
+                  pointerEvents="none"
+                  style={[styles.avatarPremiumBadge, { backgroundColor: activeTheme.gradient[0] }]}
+                >
+                  <MaterialCommunityIcons name="star" size={17} color={MEMBERSHIP_AURORA.premium.accent} />
                 </View>
               )}
             </Pressable>
@@ -2552,6 +2566,16 @@ const styles = StyleSheet.create({
     transform: [{ translateX: 7 }],
   },
   avatarWrapper: { position: "relative", marginBottom: 0 },
+  avatarPremiumBadge: {
+    position: "absolute",
+    right: -3,
+    bottom: -3,
+    width: 24,
+    height: 24,
+    borderRadius: 12,
+    alignItems: "center",
+    justifyContent: "center",
+  },
   avatarCircle: {
     width: 76,
     height: 76,
@@ -2603,6 +2627,7 @@ const styles = StyleSheet.create({
 
   // Progreso semanal compacto
   profileProgressSection: {
+    marginTop: 15,
     marginBottom: PROFILE_SECTION_GAP,
   },
   practiceReminderSection: {
