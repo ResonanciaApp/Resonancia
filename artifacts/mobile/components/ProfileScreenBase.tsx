@@ -1346,35 +1346,39 @@ export function ProfileScreenBase({
               </Pressable>
             </View>
           </View>
-          <View style={styles.profileCardDivider} />
-          <Pressable
-            onPress={() => router.push("/membresia")}
-            style={({ pressed }) => [
-              styles.membershipCardHeader,
-              { opacity: pressed ? 0.78 : 1 },
-            ]}
-            accessibilityRole="button"
-            accessibilityLabel={isPremium ? "Abrir Tu Premium" : "Abrir Prueba Premium"}
-          >
-            <View style={styles.membershipIcon}>
-              <MaterialCommunityIcons
-                name="star"
-                size={31}
-                color={MEMBERSHIP_AURORA.premium.accent}
-              />
-            </View>
-            <View style={styles.membershipCardCopy}>
-              <Text style={[styles.membershipPlanName, { color: MEMBERSHIP_AURORA.premium.accent }]}>
-                {isPremium ? "Tu Premium" : "Prueba Premium"}
-              </Text>
-              <Text style={[styles.membershipPlanEyebrow, { color: CARD_TEXT_BELOW }]}>
-                {isPremium ? "Gestiona tu suscripción y beneficios" : "Tu transformación comienza acá"}
-              </Text>
-            </View>
-            <View style={[styles.profileChevronButton, styles.membershipChevronButton]}>
-              <Feather name="chevron-right" size={24} color={colors.foreground} />
-            </View>
-          </Pressable>
+          {isPremium && (
+            <>
+              <View style={styles.profileCardDivider} />
+              <Pressable
+                onPress={() => router.push("/membresia")}
+                style={({ pressed }) => [
+                  styles.membershipCardHeader,
+                  { opacity: pressed ? 0.78 : 1 },
+                ]}
+                accessibilityRole="button"
+                accessibilityLabel="Abrir Tu Premium"
+              >
+                <View style={styles.membershipIcon}>
+                  <MaterialCommunityIcons
+                    name="star"
+                    size={31}
+                    color={MEMBERSHIP_AURORA.premium.accent}
+                  />
+                </View>
+                <View style={styles.membershipCardCopy}>
+                  <Text style={[styles.membershipPlanName, { color: MEMBERSHIP_AURORA.premium.accent }]}>
+                    Tu Premium
+                  </Text>
+                  <Text style={[styles.membershipPlanEyebrow, { color: CARD_TEXT_BELOW }]}>
+                    Gestiona tu suscripción y beneficios
+                  </Text>
+                </View>
+                <View style={[styles.profileChevronButton, styles.membershipChevronButton]}>
+                  <Feather name="chevron-right" size={24} color={colors.foreground} />
+                </View>
+              </Pressable>
+            </>
+          )}
         </View>
 
         {false && (
