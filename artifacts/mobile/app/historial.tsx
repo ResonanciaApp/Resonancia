@@ -31,7 +31,7 @@ export default function HistorialScreen() {
     <Stack.Screen options={{ contentStyle: { backgroundColor: sceneTheme.gradient[0] } }} />
     <LinearGradient
       style={[styles.root, { backgroundColor: sceneTheme.solid }]}
-      colors={sceneTheme.gradient}
+      colors={sceneTheme.gradient.slice(0, 3) as [string, string, string]}
       start={{ x: 0, y: 0 }}
       end={{ x: 0, y: 1 }}
     >
