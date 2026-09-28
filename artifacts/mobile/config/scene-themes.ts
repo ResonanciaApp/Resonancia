@@ -40,13 +40,11 @@ export const SCENE_THEMES: Record<"indigo2", SceneTheme> = {
   indigo2: {
     id: "indigo2",
     label: "Indigo 2",
-    // En HSL: los primeros tres tonos tienen +3 puntos de saturación;
-    // los últimos tres, +2; todos tienen +0,5 puntos de luminosidad.
-    gradient: ["#1D2557", "#1D1F57", "#201D57", "#231E56", "#2B1E56", "#2F1E56"],
-    gradientLocations: [0, 0.2, 0.4, 0.6, 0.8, 1],
+    gradient: ["#1D2561", "#1B2359", "#1D1F57", "#201D57", "#231E56", "#2B1E56", "#321F5E"],
+    gradientLocations: [0, 1 / 6, 1 / 3, 0.5, 2 / 3, 5 / 6, 1],
     gradientStart: { x: 0.5, y: 0 },
     gradientEnd: { x: 0.5, y: 1 },
-    solid: "#1D2557",
+    solid: "#1D2561",
     accent: "#E8E8E8",
   },
 };
