@@ -1309,7 +1309,7 @@ export function ProfileScreenBase({
               {isPremium && (
                 <View
                   pointerEvents="none"
-                  style={[styles.avatarPremiumBadge, { backgroundColor: activeTheme.gradient[0] }]}
+                  style={styles.avatarPremiumBadge}
                 >
                   <MaterialCommunityIcons name="star" size={24} color={MEMBERSHIP_AURORA.premium.accent} />
                 </View>
@@ -2490,7 +2490,6 @@ const styles = StyleSheet.create({
     top: -6.5,
     width: 31,
     height: 31,
-    borderRadius: 15.5,
     alignItems: "center",
     justifyContent: "center",
   },
