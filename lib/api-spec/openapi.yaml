@@ -1577,6 +1577,23 @@ paths:
       responses:
         "204":
           description: Marked as read
+  /notifications/{id}:
+    delete:
+      operationId: deleteNotification
+      tags: [notifications]
+      summary: Delete one of the current user's read notifications
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        "204":
+          description: Deleted
+        "400": {description: Invalid notification ID}
+        "401": {description: Not authenticated}
+        "404": {description: Not found or unread}
   /storage/uploads/request-url:
     post:
       tags: [storage]

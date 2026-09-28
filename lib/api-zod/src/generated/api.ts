@@ -2875,6 +2875,14 @@ export const GetUnreadNotificationCountResponse = zod.object({
 
 
 /**
+ * @summary Delete one of the current user's read notifications
+ */
+export const DeleteNotificationParams = zod.object({
+  "id": zod.coerce.number()
+})
+
+
+/**
  * @summary Request a presigned URL for file upload
  */
 

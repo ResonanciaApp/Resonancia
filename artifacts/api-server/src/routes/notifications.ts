@@ -1,5 +1,5 @@
 import { Router, type IRouter } from "express";
-import { and, asc, desc, eq, isNull, ne, sql } from "drizzle-orm";
+import { and, asc, desc, eq, isNotNull, isNull, ne, sql } from "drizzle-orm";
 import {
   db,
   catalogCategoriesTable,
@@ -257,6 +257,32 @@ router.post("/notifications/read-all", requireAuth, async (req, res) => {
   } catch (err) {
     req.log.error(err);
     res.status(500).json({ error: "Error" });
+  }
+});
+
+router.delete("/notifications/:id", requireAuth, async (req, res) => {
+  const id = Number(req.params.id);
+  if (!Number.isSafeInteger(id) || id <= 0) {
+    res.status(400).json({ error: "ID de notificación inválido" });
+    return;
+  }
+  try {
+    const [deleted] = await db
+      .delete(notificationsTable)
+      .where(and(
+        eq(notificationsTable.id, id),
+        eq(notificationsTable.userId, req.currentUser!.id),
+        isNotNull(notificationsTable.readAt),
+      ))
+      .returning({ id: notificationsTable.id });
+    if (!deleted) {
+      res.status(404).json({ error: "Notificación no encontrada o aún sin leer" });
+      return;
+    }
+    res.status(204).send();
+  } catch (err) {
+    req.log.error(err);
+    res.status(500).json({ error: "Error al eliminar notificación" });
   }
 });
 
