@@ -72,6 +72,8 @@ import {
 import { ProgressMirrorSections } from "@/components/ProgressMirrorSections";
 import { ProfileSettingsSections } from "@/components/ProfileSettingsSections";
 import { useCoverPresetCatalog } from "@/lib/cover-preset-catalog";
+import { ProfileCoverPicker } from "@/components/ProfileCoverPicker";
+import { profileCoverSource } from "@/data/profile-cover-options";
 import {
   gradientColors,
   type GeoSettings,
@@ -255,10 +257,14 @@ export function ProfileScreenBase({
     description,
     photoUri,
     avatarPresetId,
+    coverPresetId,
+    coverPhotoUri,
     expansorId,
     updateProfile,
     setPhotoUri,
     setAvatarPresetId,
+    setCoverPresetId,
+    setCoverPhotoUri,
   } = useUserProfile();
   const profileCatalog = useCoverPresetCatalog("profile");
 
@@ -275,6 +281,7 @@ export function ProfileScreenBase({
   const selectedProfilePreset = selectedAvatarPresetId
     ? profileCatalog.find((preset) => preset.key === selectedAvatarPresetId || preset.id === selectedAvatarPresetId || `profile:${preset.key}` === selectedAvatarPresetId)
     : undefined;
+  const selectedCoverSource = profileCoverSource(coverPresetId, coverPhotoUri);
   const { data: followCounts } = useGetMyFollowCounts({
     query: { queryKey: getGetMyFollowCountsQueryKey(), staleTime: 30_000 },
   });
@@ -506,6 +513,7 @@ export function ProfileScreenBase({
   const [accountAction, setAccountAction] = useState<"delete" | null>(null);
   const [accountPhotoPickerVisible, setAccountPhotoPickerVisible] = useState(false);
   const [accountPhotoLibraryPending, setAccountPhotoLibraryPending] = useState(false);
+  const [profileCoverPickerVisible, setProfileCoverPickerVisible] = useState(false);
   const accountToastOpacity = useRef(new Animated.Value(0)).current;
   const accountToastY = useRef(new Animated.Value(12)).current;
 
@@ -978,13 +986,13 @@ export function ProfileScreenBase({
               />
               <View style={styles.accountCoverHandle} />
               <View style={styles.accountCoverHeader}>
-                <Text style={styles.accountCoverTitle}>Portada</Text>
+                <Text style={styles.accountCoverTitle}>Foto de perfil</Text>
                 <Pressable
                   onPress={() => setAccountPhotoPickerVisible(false)}
                   hitSlop={8}
                   style={styles.accountCoverCloseButton}
                   accessibilityRole="button"
-                  accessibilityLabel="Cerrar selector de portada"
+                  accessibilityLabel="Cerrar selector de foto de perfil"
                 >
                   <Feather name="x" size={22} color="#F9F9F9" />
                 </Pressable>
@@ -1123,7 +1131,7 @@ export function ProfileScreenBase({
       )}
       <GeometrixOverlay active={profileGeoActive} />
 
-      <View style={styles.contentShift}>
+      <View style={[styles.contentShift, dedicated && styles.dedicatedContentShift]}>
       {dedicated && (
         <Animated.View
           pointerEvents={profileStickyHeaderActive ? "auto" : "none"}
@@ -1252,41 +1260,66 @@ export function ProfileScreenBase({
         bottomOffset={165}
         disableScrollOnKeyboardHide
       >
-        <View style={styles.dedicatedTitleRow}>
-          <View style={styles.dedicatedTitleLeft}>
-            <Text style={[styles.dedicatedHeroTitle, { color: colors.foreground }]}>Perfil</Text>
-          </View>
-          <View style={styles.profileHeaderActions}>
-            <Pressable
-              onPress={() => router.push("/personalizar-notificaciones")}
-              hitSlop={8}
-              style={({ pressed }) => [styles.gearBtn, styles.notificationBellButton, { opacity: pressed ? 0.68 : 1 }]}
-              accessibilityRole="button"
-              accessibilityLabel="Personalizar notificaciones"
-              testID="profile-open-notification-preferences"
-            >
-              <MaterialCommunityIcons
-                name="bell-outline"
-                size={23}
-                color={colors.foreground}
-                style={styles.notificationBellIcon}
-              />
-            </Pressable>
-            <Pressable
-              onPress={() => router.push("/configuracion-ajustes")}
-              hitSlop={8}
-              style={({ pressed }) => [styles.gearBtn, { opacity: pressed ? 0.68 : 1 }]}
-              accessibilityRole="button"
-              accessibilityLabel="Abrir ajustes"
-              testID="profile-open-settings"
-            >
-              <Feather name="settings" size={21} color={colors.foreground} />
-            </Pressable>
+        <View style={[styles.profileCoverHero, { marginTop: -(topPad + 2) }]}>
+          <Pressable
+            onPress={() => setProfileCoverPickerVisible(true)}
+            style={StyleSheet.absoluteFill}
+            accessibilityRole="button"
+            accessibilityLabel={coverPresetId || coverPhotoUri ? "Cambiar portada de Perfil" : "Agregar portada a Perfil"}
+          >
+            {selectedCoverSource ? (
+              <Image source={selectedCoverSource} style={StyleSheet.absoluteFill} contentFit="cover" />
+            ) : (
+              <LinearGradient colors={["#29346A", "#221B4E", "#141531"]} style={StyleSheet.absoluteFill} />
+            )}
+            <LinearGradient
+              colors={["rgba(5,8,24,0.5)", "transparent", "rgba(5,8,24,0.52)"]}
+              locations={[0, 0.44, 1]}
+              style={StyleSheet.absoluteFill}
+              pointerEvents="none"
+            />
+            {!selectedCoverSource && <Text style={styles.profileCoverEmptyText}>Añade tu portada</Text>}
+            <View style={styles.profileCoverEdit}>
+              <Feather name="camera" size={15} color="#FFFFFF" />
+              <Text style={styles.profileCoverEditText}>Portada</Text>
+            </View>
+          </Pressable>
+          <View style={[styles.dedicatedTitleRow, styles.profileCoverTitleRow, { top: topPad + 2 }]}>
+            <View style={styles.dedicatedTitleLeft}>
+              <Text style={[styles.dedicatedHeroTitle, { color: colors.foreground }]}>Perfil</Text>
+            </View>
+            <View style={styles.profileHeaderActions}>
+              <Pressable
+                onPress={() => router.push("/personalizar-notificaciones")}
+                hitSlop={8}
+                style={({ pressed }) => [styles.gearBtn, styles.notificationBellButton, { opacity: pressed ? 0.68 : 1 }]}
+                accessibilityRole="button"
+                accessibilityLabel="Personalizar notificaciones"
+                testID="profile-open-notification-preferences"
+              >
+                <MaterialCommunityIcons
+                  name="bell-outline"
+                  size={23}
+                  color={colors.foreground}
+                  style={styles.notificationBellIcon}
+                />
+              </Pressable>
+              <Pressable
+                onPress={() => router.push("/configuracion-ajustes")}
+                hitSlop={8}
+                style={({ pressed }) => [styles.gearBtn, { opacity: pressed ? 0.68 : 1 }]}
+                accessibilityRole="button"
+                accessibilityLabel="Abrir ajustes"
+                testID="profile-open-settings"
+              >
+                <Feather name="settings" size={21} color={colors.foreground} />
+              </Pressable>
+            </View>
           </View>
         </View>
 
         {/* ── Profile Card ── */}
-          <View style={styles.profileCard}>
+        <View style={styles.profileCard}>
           <View style={styles.profileIdentityRow}>
             {/* Avatar */}
             <Pressable
@@ -1668,6 +1701,16 @@ export function ProfileScreenBase({
       </View>
 
       {/* ── Invitar Sheet ── */}
+      <ProfileCoverPicker
+        visible={profileCoverPickerVisible}
+        onClose={() => setProfileCoverPickerVisible(false)}
+        presetId={coverPresetId}
+        photoUri={coverPhotoUri}
+        onSelectPreset={setCoverPresetId}
+        onSelectPhoto={setCoverPhotoUri}
+        gradient={activeTheme.gradient}
+        bottomPad={bottomPad}
+      />
       <InvitarSheet
         visible={showInvitar}
         onClose={() => setShowInvitar(false)}
@@ -1948,6 +1991,7 @@ const styles = StyleSheet.create({
     flex: 1,
     transform: [{ translateY: -5 }],
   },
+  dedicatedContentShift: { transform: [{ translateY: 0 }] },
   scroll: { flex: 1 },
 
   pageTitle: { fontFamily: "Manrope", fontSize: 28, fontWeight: "800", letterSpacing: 0.5 },
@@ -2037,6 +2081,12 @@ const styles = StyleSheet.create({
     paddingBottom: 10,
     paddingHorizontal: 16,
     marginHorizontal: -16,
+  },
+  profileCoverTitleRow: {
+    position: "absolute",
+    left: 0,
+    right: 0,
+    marginHorizontal: 0,
   },
   dedicatedTitleLeft: {
     flexDirection: "row",
@@ -2426,14 +2476,12 @@ const styles = StyleSheet.create({
 
   // Profile card
   profileCard: {
-    borderRadius: 19,
-    paddingTop: 24,
+    paddingTop: 0,
     paddingBottom: 6,
     alignItems: "stretch",
-    marginTop: 55,
+    marginTop: -42,
     marginBottom: 16,
     gap: 0,
-    transform: [{ translateY: -5 }],
   },
   wisdomSection: {
     marginBottom: 28,
@@ -2450,6 +2498,34 @@ const styles = StyleSheet.create({
     gap: 12,
     paddingHorizontal: 16,
   },
+  profileCoverHero: {
+    height: 300,
+    marginHorizontal: -16,
+  },
+  profileCoverEmptyText: {
+    color: "#F9F9F9",
+    fontFamily: "Manrope",
+    fontSize: 15,
+    fontWeight: "600",
+    textAlign: "center",
+    position: "absolute",
+    top: 166,
+    left: 0,
+    right: 0,
+  },
+  profileCoverEdit: {
+    position: "absolute",
+    right: 12,
+    bottom: 12,
+    flexDirection: "row",
+    gap: 6,
+    alignItems: "center",
+    paddingHorizontal: 10,
+    height: 31,
+    borderRadius: 18,
+    backgroundColor: "rgba(0,0,0,0.55)",
+  },
+  profileCoverEditText: { color: "#FFFFFF", fontFamily: "Manrope", fontSize: 11, fontWeight: "700" },
   profileDetails: { width: "100%", alignItems: "center", gap: 6 },
   avatarWrapper: { position: "relative", marginBottom: 0 },
   avatarCircle: {
