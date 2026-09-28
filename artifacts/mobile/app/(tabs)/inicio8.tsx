@@ -1815,7 +1815,8 @@ const Inicio2HeroStatic = React.memo(function Inicio2HeroStatic({
   const reduceMotion = useReducedMotion();
   const fallbackScrollY = useSharedValue(0);
   const effectiveScrollY = scrollY ?? fallbackScrollY;
-  const inicio3WeekShift = 2;
+  // La racha, el hero y el contenido siguiente comparten este desplazamiento.
+  const inicio3WeekShift = 2 - 15;
   const inicio3WeekDownshift = 33;
   const inicio3ProfileHeaderLift = 0;
   const inicio3HeroShift = 10 - 70 - 25;
