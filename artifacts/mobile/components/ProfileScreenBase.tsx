@@ -51,7 +51,6 @@ import { SacredBackground } from "@/components/SacredBackground";
 import { useSceneTheme } from "@/context/SceneThemeContext";
 import { isIndigoThemeId } from "@/config/scene-themes";
 import { useUserProfile } from "@/context/UserProfileContext";
-import { usePremium } from "@/context/PremiumContext";
 import { useAuth } from "@/context/AuthContext";
 import type { LibraryTab } from "@/context/DrawerContext";
 import { useColors } from "@/hooks/useColors";
@@ -85,7 +84,7 @@ import { MoonCrescentIcon } from "@/components/MoonCrescentIcon";
 import { SleepReminderSheet } from "@/components/SleepReminderSheet";
 import { FilledSunIcon } from "@/components/FilledSunIcon";
 import { useMixerPanel } from "@/context/MixerPanelContext";
-import { CARD_TEXT_ABOVE, CARD_TEXT_BELOW, MEMBERSHIP_AURORA } from "@/constants/colors";
+import { CARD_TEXT_ABOVE, CARD_TEXT_BELOW } from "@/constants/colors";
 
 const SHOW_PROFILE_HISTORY = true;
 const SHOW_PROFILE_PRACTICE_CARDS = false;
@@ -244,7 +243,6 @@ export function ProfileScreenBase({
   initialLibraryTab?: LibraryTab | null;
 }) {
   const colors = useColors();
-  const { isPremium } = usePremium();
   const { openMixer } = useMixerPanel();
   const { history } = usePlayerBrowse();
   const { theme: activeTheme, activeSceneId } = useSceneTheme();
@@ -1304,14 +1302,6 @@ export function ProfileScreenBase({
               ) : (
                 <View style={[styles.avatarCircle, { backgroundColor: colors.secondary }]}>
                   <Feather name="user" size={28} color={colors.primary} />
-                </View>
-              )}
-              {isPremium && (
-                <View
-                  pointerEvents="none"
-                  style={styles.avatarPremiumBadge}
-                >
-                  <MaterialCommunityIcons name="star" size={24} color={MEMBERSHIP_AURORA.premium.accent} />
                 </View>
               )}
             </Pressable>
@@ -2462,30 +2452,21 @@ const styles = StyleSheet.create({
   },
   profileDetails: { width: "100%", alignItems: "center", gap: 6 },
   avatarWrapper: { position: "relative", marginBottom: 0 },
-  avatarPremiumBadge: {
-    position: "absolute",
-    left: -6.5,
-    top: -6.5,
-    width: 31,
-    height: 31,
-    alignItems: "center",
-    justifyContent: "center",
-  },
   avatarCircle: {
-    width: 76,
-    height: 76,
-    borderRadius: 38,
-    borderWidth: 2,
-    borderColor: "rgba(255,255,255,0.8)",
+    width: 91,
+    height: 91,
+    borderRadius: 45.5,
+    borderWidth: 3,
+    borderColor: "rgba(255,255,255,0.057)",
     alignItems: "center",
     justifyContent: "center",
   },
   avatarImage: {
-    width: 76,
-    height: 76,
-    borderRadius: 38,
-    borderWidth: 2,
-    borderColor: "rgba(255,255,255,0.8)",
+    width: 91,
+    height: 91,
+    borderRadius: 45.5,
+    borderWidth: 3,
+    borderColor: "rgba(255,255,255,0.057)",
   },
   userName: { fontFamily: "Manrope", fontSize: 20, fontWeight: "700", textAlign: "center" },
   emailText: { fontFamily: "Manrope", fontSize: 12, textAlign: "center" },
