@@ -1307,6 +1307,7 @@ export function ProfileScreenBase({
                   <Feather name="user" size={28} color={colors.primary} />
                 </View>
               )}
+              <View pointerEvents="none" style={styles.avatarOuterBorder} />
               {isPremium && (
                 <View pointerEvents="none" style={styles.avatarPremiumBadge}>
                   <SessionBadgeGlass showBlackTint={false} showWhiteTint />
@@ -2461,6 +2462,16 @@ const styles = StyleSheet.create({
   },
   profileDetails: { width: "100%", alignItems: "center", gap: 6 },
   avatarWrapper: { position: "relative", marginBottom: 0 },
+  avatarOuterBorder: {
+    position: "absolute",
+    top: -3,
+    left: -3,
+    width: 117,
+    height: 117,
+    borderRadius: 58.5,
+    borderWidth: 3,
+    borderColor: "rgba(255,255,255,0.25)",
+  },
   avatarPremiumBadge: {
     position: "absolute",
     left: -6.5,
@@ -2476,8 +2487,6 @@ const styles = StyleSheet.create({
     width: 111,
     height: 111,
     borderRadius: 55.5,
-    borderWidth: 3,
-    borderColor: "rgba(255,255,255,0.25)",
     alignItems: "center",
     justifyContent: "center",
   },
@@ -2485,8 +2494,6 @@ const styles = StyleSheet.create({
     width: 111,
     height: 111,
     borderRadius: 55.5,
-    borderWidth: 3,
-    borderColor: "rgba(255,255,255,0.25)",
   },
   userName: { fontFamily: "Manrope", fontSize: 20, fontWeight: "700", textAlign: "center" },
   emailText: { fontFamily: "Manrope", fontSize: 12, textAlign: "center" },
