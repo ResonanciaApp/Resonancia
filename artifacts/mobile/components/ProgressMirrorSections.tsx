@@ -28,6 +28,7 @@ export function ProgressMirrorSections({
   animateEntrance = false,
   entranceReplayKey = "progress-mirror",
   entranceBaseDelay = 0,
+  syncStreakStatsWithWeek = false,
   streakTitle,
   onStreakTitlePress,
   showStreakWeek = true,
@@ -51,6 +52,7 @@ export function ProgressMirrorSections({
   animateEntrance?: boolean;
   entranceReplayKey?: string | number;
   entranceBaseDelay?: number;
+  syncStreakStatsWithWeek?: boolean;
   streakTitle?: string;
   onStreakTitlePress?: () => void;
   showStreakWeek?: boolean;
@@ -119,6 +121,10 @@ export function ProgressMirrorSections({
       onStreakTitlePress();
     });
   };
+
+  const synchronizedStreakDelay = syncStreakStatsWithWeek && showStreakWeek
+    ? entranceBaseDelay + 650
+    : null;
 
   const filterControl = (
     <View style={[
@@ -339,7 +345,7 @@ export function ProgressMirrorSections({
               <ContentEntrance
                 animated={animateEntrance}
                 replayKey={`${entranceReplayKey}:streak-divider`}
-                delay={entranceBaseDelay + 1720}
+                delay={synchronizedStreakDelay ?? entranceBaseDelay + 1720}
               >
                 <View style={styles.sectionDivider} />
               </ContentEntrance>
@@ -350,10 +356,8 @@ export function ProgressMirrorSections({
               <ContentEntrance
                 animated={animateEntrance}
                 replayKey={`${entranceReplayKey}:streak-current`}
-                delay={
-                  entranceBaseDelay +
-                  (showPersonalStats ? 1460 : showStreakWeek ? 1920 : 650)
-                }
+                delay={synchronizedStreakDelay ??
+                  entranceBaseDelay + (showPersonalStats ? 1460 : showStreakWeek ? 1920 : 650)}
               >
               <Stat
                 icon={<MaterialCommunityIcons name="spa" size={18} color="#F9F9F9" />}
@@ -368,10 +372,8 @@ export function ProgressMirrorSections({
             <ContentEntrance
               animated={animateEntrance}
               replayKey={`${entranceReplayKey}:streak-divider-stat`}
-              delay={
-                entranceBaseDelay +
-                (showPersonalStats ? 1610 : showStreakWeek ? 2070 : 800)
-              }
+              delay={synchronizedStreakDelay ??
+                entranceBaseDelay + (showPersonalStats ? 1610 : showStreakWeek ? 2070 : 800)}
             >
               <View style={styles.statDivider} />
             </ContentEntrance>
@@ -379,10 +381,8 @@ export function ProgressMirrorSections({
               <ContentEntrance
                 animated={animateEntrance}
                 replayKey={`${entranceReplayKey}:streak-longest`}
-                delay={
-                  entranceBaseDelay +
-                  (showPersonalStats ? 1610 : showStreakWeek ? 2070 : 800)
-                }
+                delay={synchronizedStreakDelay ??
+                  entranceBaseDelay + (showPersonalStats ? 1610 : showStreakWeek ? 2070 : 800)}
               >
               <Stat
                 icon={

@@ -241,6 +241,7 @@ export default function ProgresoScreen() {
               animateEntrance
               entranceReplayKey="progress-sections"
               entranceBaseDelay={STREAK_SECTION_ENTRANCE_DELAY}
+              syncStreakStatsWithWeek
               showSectionBorders={false}
               showPersonalStats={false}
               showCalendar={false}
