@@ -38,7 +38,9 @@ const RING_SIZE = 131;
 const RING_STROKE = 9;
 const RING_RADIUS = (RING_SIZE - RING_STROKE) / 2;
 const RING_CIRCUMFERENCE = 2 * Math.PI * RING_RADIUS;
-const RING_ENTRANCE_DELAY = 1150;
+const RING_ENTRANCE_DELAY = 250;
+const DESCRIPTION_ENTRANCE_DELAY = 1600;
+const STREAK_SECTION_ENTRANCE_DELAY = 2700;
 const AnimatedCircle = Animated.createAnimatedComponent(Circle);
 
 function StreakCountDigit({
@@ -220,7 +222,7 @@ export default function ProgresoScreen() {
                 </CinematicFadeSlide>
                 <CinematicFadeSlide
                   replayKey="progress-intro-description"
-                  delay={200}
+                  delay={DESCRIPTION_ENTRANCE_DELAY}
                   duration={3000}
                   style={styles.heroAnimatedContent}
                 >
@@ -238,7 +240,7 @@ export default function ProgresoScreen() {
             <ProgressMirrorSections
               animateEntrance
               entranceReplayKey="progress-sections"
-              entranceBaseDelay={900}
+              entranceBaseDelay={STREAK_SECTION_ENTRANCE_DELAY}
               showSectionBorders={false}
               showPersonalStats={false}
               showCalendar={false}
