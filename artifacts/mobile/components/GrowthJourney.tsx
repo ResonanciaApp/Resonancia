@@ -22,7 +22,7 @@ const GROWTH_COLORS = {
   inactiveLine: "rgba(174,161,237,0.28)",
 } as const;
 
-type Status = "current" | "locked";
+type Status = "previous" | "current" | "locked";
 
 function GrowthLevelImage({
   level,
@@ -58,6 +58,9 @@ function GrowthRow({
 }) {
   const colors = useColors();
   const reduceMotion = useReducedMotion();
+  const dayLabel = level.startDay === level.endDay
+    ? `${level.startDay} días`
+    : `${level.startDay}–${level.endDay} días`;
   const entrance = useSharedValue(reduceMotion ? 1 : 0);
   const textEntrance = useSharedValue(reduceMotion ? 1 : 0);
 
@@ -89,7 +92,7 @@ function GrowthRow({
     <View
       style={styles.row}
       accessible
-      accessibilityLabel={`Nivel ${index + 1}, ${level.name}, ${level.startDay} a ${level.endDay} días de práctica, ${status === "current" ? "nivel actual" : "por desbloquear"}. ${level.story}`}
+      accessibilityLabel={`Nivel ${index}, ${level.name}, ${dayLabel} de práctica, ${status === "current" ? "nivel actual" : status === "previous" ? "etapa previa" : "por desbloquear"}. ${level.story}`}
     >
       {index < growthLevels.length - 1 && (
         <View style={styles.lineBase} pointerEvents="none" />
@@ -101,7 +104,9 @@ function GrowthRow({
           {
             borderWidth: status === "current" ? 2 : 0,
             borderColor: GROWTH_COLORS.current,
-            backgroundColor: status === "current" ? GROWTH_COLORS.current : GROWTH_COLORS.inactiveLine,
+            backgroundColor: status === "current"
+              ? GROWTH_COLORS.current
+              : status === "previous" ? GROWTH_COLORS.line : GROWTH_COLORS.inactiveLine,
             shadowColor: GROWTH_COLORS.current,
             shadowOpacity: status === "current" ? 0.8 : 0,
           },
@@ -117,14 +122,14 @@ function GrowthRow({
       </Animated.View>
       <Animated.View style={[styles.copy, status === "locked" && styles.lockedCopy, copyEntranceStyle]}>
         <Text style={[styles.eyebrow, { color: status === "locked" ? GROWTH_COLORS.muted : GROWTH_COLORS.line }]}>
-          NIVEL {index + 1}
+          NIVEL {index}
         </Text>
         <Text style={[styles.name, { color: status === "locked" ? GROWTH_COLORS.muted : colors.foreground }]}>
           {level.name}
         </Text>
         <View style={[styles.dayPill, status === "current" && styles.currentPill]}>
           <Text style={[styles.days, { color: status === "locked" ? GROWTH_COLORS.muted : colors.foreground }]}>
-            {level.startDay}–{level.endDay} días
+            {dayLabel}
           </Text>
         </View>
         <Text style={[styles.story, { color: status === "locked" ? GROWTH_COLORS.muted : colors.mutedForeground }]}>
@@ -162,7 +167,7 @@ export function GrowthJourney({
             key={level.id}
             level={level}
             index={index}
-            status={index === 0 ? "current" : "locked"}
+            status={index === 0 ? "previous" : index === 1 ? "current" : "locked"}
             visible={reduceMotion || index <= visibleThrough}
           />
         ))}

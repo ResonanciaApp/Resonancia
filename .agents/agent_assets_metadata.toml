@@ -3028,6 +3028,7 @@ uri = "file://attached_assets/generated_audio/mixer_oleaje_isla_remota.mp3"
 type = "audio"
 title = "Oleaje de Isla Remota"
 description = "Generated sound effect: calm ocean waves rolling onto a remote sandy island shore, gentle foam and retreating water, no birds, no voices. Produce a clean immersive 24-second ambience for a meditation…"
+logical_id = "aaefb982-3844-495e-ab21-0744195b29cf"
 
 [[outputs]]
 id = "vzmQeLSODuUDp-vOP35pE"
@@ -3035,6 +3036,7 @@ uri = "file://attached_assets/generated_audio/mixer_hojas_bajo_luna.mp3"
 type = "audio"
 title = "Hojas bajo la Luna"
 description = "Generated sound effect: soft dry leaves rustling under a calm night breeze in a quiet moonlit forest, subtle distant crickets, no voices. Produce a clean immersive 24-second ambience for a meditation…"
+logical_id = "edaff8e6-ba66-4da9-a2c1-614adf488372"
 
 [[outputs]]
 id = "7QlM4Y3bwvj2MCmzjOVwm"
@@ -3042,6 +3044,7 @@ uri = "file://attached_assets/generated_audio/mixer_viento_desierto_rojo.mp3"
 type = "audio"
 title = "Viento del Desierto Rojo"
 description = "Generated sound effect: soft desert wind flowing across broad sand dunes, fine grains moving, spacious and meditative, no voices, no music. Produce a clean immersive 24-second ambience for a meditati…"
+logical_id = "06d3f567-17eb-40b9-a6cc-1d8a3c183659"
 
 [[outputs]]
 id = "IyvbpqH2emU1V-ZRdSXMD"
@@ -3049,6 +3052,7 @@ uri = "file://attached_assets/generated_audio/mixer_fuego_bajo_estrellas.mp3"
 type = "audio"
 title = "Fuego bajo las Estrellas"
 description = "Generated sound effect: warm close campfire crackling steadily outdoors at night, soft embers and subtle night air, no voices, no music. Produce a clean immersive 24-second ambience for a meditation …"
+logical_id = "d10cdb63-87d1-4cfb-854d-82e5ce65e19d"
 
 [[outputs]]
 id = "LD4timMlybcSEDQhb3Oi2"
@@ -3056,6 +3060,7 @@ uri = "file://attached_assets/generated_audio/mixer_amanecer_aves_tropicales.mp3
 type = "audio"
 title = "Amanecer de Aves Tropicales"
 description = "Generated sound effect: peaceful tropical forest dawn with varied gentle bird calls, soft distant foliage and humid ambience, no human sounds. Produce a clean immersive 24-second ambience for a medit…"
+logical_id = "aef2dbcf-5cd1-4387-b461-6268037829f9"
 
 [[outputs]]
 id = "-6CV1R9HaPlNWLyFyvp8n"
@@ -3063,6 +3068,7 @@ uri = "file://attached_assets/generated_audio/mixer_cristal_aurora.mp3"
 type = "audio"
 title = "Cristal de Aurora"
 description = "Generated sound effect: pure quartz crystal singing bowl resonance, luminous high harmonics and slow natural decay, spacious, no voice, no beat. Produce a clean immersive 24-second ambience for a med…"
+logical_id = "36be7703-0a37-46d7-ac2e-eb022816aeb1"
 
 [[outputs]]
 id = "nkJjOnBDaRudRAs4v6Ilw"
@@ -3070,6 +3076,7 @@ uri = "file://attached_assets/generated_audio/mixer_ballenas_oceano_profundo.mp3
 type = "audio"
 title = "Ballenas del Océano Profundo"
 description = "Generated sound effect: deep underwater ocean ambience with distant original whale-like calls, spacious low aquatic resonance, tranquil, no music. Produce a clean immersive 24-second ambience for a m…"
+logical_id = "2df65cff-4836-4489-a06d-92ef6dd84a4d"
 
 [[outputs]]
 id = "f-fsbu7W-m5GTFC1NZanM"
@@ -3077,6 +3084,7 @@ uri = "file://attached_assets/generated_audio/mixer_lluvia_bosque_antiguo.mp3"
 type = "audio"
 title = "Lluvia en Bosque Antiguo"
 description = "Generated sound effect: gentle steady rain in an ancient dense forest, soft leaf droplets, distant natural woodland ambience, no thunder, no voices. Produce a clean immersive 24-second ambience for a…"
+logical_id = "c127f1e7-4349-4c5e-bb91-4b14f416acbb"
 
 [[outputs]]
 id = "YfpwHJCvCuzo64f8TVtbH"
@@ -3084,6 +3092,7 @@ uri = "file://attached_assets/generated_audio/mixer_gong_eclipse.mp3"
 type = "audio"
 title = "Gong de Eclipse"
 description = "Generated sound effect: deep ceremonial gong swell with a long smooth shimmering decay and low cosmic resonance, no rhythm, no voice. Produce a clean immersive 24-second ambience for a meditation sou…"
+logical_id = "9dc87385-6de5-422b-9e88-fde339a02ccd"
 
 [[outputs]]
 id = "Cx65HZhwSZ-2zJ0USmKg3"
@@ -3091,6 +3100,7 @@ uri = "file://attached_assets/generated_audio/mixer_cuenco_himalaya.mp3"
 type = "audio"
 title = "Cuenco del Himalaya"
 description = "Generated sound effect: single large Tibetan singing bowl struck gently with long rich evolving harmonics, calm mountain air, no melody, no voice. Produce a clean immersive 24-second ambience for a m…"
+logical_id = "00e99be3-07ee-47d5-8c6c-d116de2d19a1"
 
 [[outputs]]
 id = "Wbh1K8rvsa2waUvKKKlHw"
@@ -3098,6 +3108,7 @@ uri = "file://attached_assets/generated_audio/mixer_campanas_jardin_celeste.mp3"
 type = "audio"
 title = "Campanas del Jardín Celeste"
 description = "Generated sound effect: delicate wind chimes moving slowly in a light garden breeze, sparse bright tones, peaceful natural ambience, no voice. Produce a clean immersive 24-second ambience for a medit…"
+logical_id = "2252bf66-be67-4ecf-9546-c1ca3076d635"
 
 [[outputs]]
 id = "ztrrRK7egiughIl3_SjqR"
@@ -3105,6 +3116,7 @@ uri = "file://attached_assets/generated_audio/mixer_flauta_valle_sagrado.mp3"
 type = "audio"
 title = "Flauta del Valle Sagrado"
 description = "Generated sound effect: breathy wooden flute playing sparse original meditative tones in a vast mountain valley, soft wind, no percussion, no voice. Produce a clean immersive 24-second ambience for a…"
+logical_id = "bc10931b-baa6-4b10-9202-5c8ec32782d3"
 
 [[outputs]]
 id = "4_SqDKQYGpv_Oh_5RWJoN"
@@ -3112,6 +3124,7 @@ uri = "file://attached_assets/generated_audio/mixer_coro_tierra.mp3"
 type = "audio"
 title = "Coro de la Tierra"
 description = "Generated sound effect: original wordless mixed human choir humming a warm sustained earth tone, slow breathing texture, no lyrics, no recognizable melody. Produce a clean immersive 24-second ambienc…"
+logical_id = "08736eb1-01aa-432c-9795-6c52921b828d"
 
 [[outputs]]
 id = "WLeWRWYP64WPBjDdOGA_p"
@@ -3119,6 +3132,7 @@ uri = "file://attached_assets/generated_audio/mixer_pulso_binaural_lunar.mp3"
 type = "audio"
 title = "Pulso Binaural Lunar"
 description = "Generated sound effect: subtle stereo binaural-style lunar ambience, smooth low drone with gently separated left and right tones, no beat, no voice. Produce a clean immersive 24-second ambience for a…"
+logical_id = "38e8f923-a3c7-43f5-bae1-11bcc32c8e05"
 
 [[outputs]]
 id = "XG-j9RqwQMs9GpjS9DFG5"
@@ -3126,6 +3140,7 @@ uri = "file://attached_assets/generated_audio/mixer_frecuencia_nebulosa.mp3"
 type = "audio"
 title = "Frecuencia Nebulosa"
 description = "Generated sound effect: smooth evolving cosmic frequency drone with gentle harmonic overtones, stable volume, meditative and seamless, no beat, no voice. Produce a clean immersive 24-second ambience …"
+logical_id = "c7c235ca-1aee-4eca-ac08-a2fd5618a9b8"
 
 [[outputs]]
 id = "S61xEXCSfHSPh-GmuL-gN"
@@ -3133,6 +3148,7 @@ uri = "file://attached_assets/generated_audio/mixer_mantra_estrellas.mp3"
 type = "audio"
 title = "Mantra de las Estrellas"
 description = "Generated sound effect: original wordless ethereal vocal mantra with soft layered vowels and cosmic reverb, no lyrics, no identifiable singer, no beat. Produce a clean immersive 24-second ambience fo…"
+logical_id = "b2a07f95-cb6f-4f58-a297-0c280679c5ff"
 
 [[outputs]]
 id = "hnLsidH4ndFuk46dHjof5"
@@ -3140,6 +3156,7 @@ uri = "file://attached_assets/generated_audio/mixer_asmr_cristales_cosmicos.mp3"
 type = "audio"
 title = "ASMR de Cristales Cósmicos"
 description = "Generated sound effect: close gentle crystal taps and delicate glass-like textures spaced slowly, soft ASMR detail, no whispering, no voice, no music. Produce a clean immersive 24-second ambience for…"
+logical_id = "346d80c3-274f-472c-8b33-e718cbd8c5f4"
 
 [[outputs]]
 id = "-frNm5isDUURNlIEL8abK"
@@ -3147,6 +3164,7 @@ uri = "file://attached_assets/generated_audio/mixer_ruido_rosa_galactico.mp3"
 type = "audio"
 title = "Ruido Rosa Galáctico"
 description = "Generated sound effect: soft even pink noise blended with a very subtle deep-space ambience, steady soothing texture, no pulses, no voice. Produce a clean immersive 24-second ambience for a meditatio…"
+logical_id = "241ebe32-70a5-423a-9311-525ed20623cf"
 
 [[outputs]]
 id = "PtA7R3Q0vLQDP1NH9IM6O"
@@ -3154,6 +3172,7 @@ uri = "file://attached_assets/generated_audio/mixer_armonicos_saturno.mp3"
 type = "audio"
 title = "Armónicos de Saturno"
 description = "Generated sound effect: pure meditative harmonic tone bed inspired by Saturn, gentle resonant overtones and slow cosmic movement, no beat, no voice. Produce a clean immersive 24-second ambience for a…"
+logical_id = "e161e115-1ecb-40af-a32c-77e4105fb026"
 
 [[outputs]]
 id = "NQrIxHBr8rPQFVn-tMlHJ"
@@ -3161,3 +3180,18 @@ uri = "file://attached_assets/generated_audio/mixer_cascada_niebla.mp3"
 type = "audio"
 title = "Cascada de Niebla"
 description = "Generated sound effect: steady hidden waterfall in a misty cloud forest, soft broad water rush with nearby droplets, no birds, no voices. Produce a clean immersive 24-second ambience for a meditation…"
+logical_id = "c21477f8-a730-4e98-9526-fbdf187c3d65"
+
+[[outputs]]
+id = "rIbrTFoXsFZPzpxJmwtLB"
+uri = "file://artifacts/mobile/assets/images/growth/00-intencion.png"
+type = "image"
+title = "Intención — imagen del nivel 0"
+description = "Una luz dorada sobre tierra oscura, antes de que aparezca la semilla."
+logical_id = "81f935f1-66e8-4795-829d-e27b8ce08cd7"
+content_hash = "sha256:b5a15c28cac0d2b438fb8066af7d5c2ac7cb9aa7121c195d9be6c47ba26da01e"
+size = 416118
+mtime_ms = 1790647608643
+storage_uri = "gcs://replit-rams-assets-worf/rams/assets/repl:5427b858-8852-4aed-954b-cd80d9fa4b6b/81f935f1-66e8-4795-829d-e27b8ce08cd7/ff942e8c-8ba8-4cf8-bae3-1a19d62562ff"
+storage_version_token = "1790647781517628"
+content_type = "image/png"

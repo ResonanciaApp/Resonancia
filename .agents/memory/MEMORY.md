@@ -152,3 +152,4 @@
 - [Activación de tareas propuestas](task-activation.md) — cambiar a Build y ejecutar por chat no activa un borrador; el cierre requiere una tarea asignada en progreso
 - [Camino de crecimiento](growth-journey.md) — preview: solo Semilla activa; imágenes circulares alineadas con bordes fundidos; al activar niveles usar días acumulados no consecutivos
 - [Edición de imágenes en el runtime](image-processing-runtime.md) — Pillow anuncia versión pero falla al importar _imaging; usar ImageMagick para procesar PNGs aquí
+- [Assets nuevos y Metro](expo-new-assets-metro.md) — generar el PNG antes de referenciarlo con require; si Metro cachea el error de archivo ausente, reiniciar tras crearlo
