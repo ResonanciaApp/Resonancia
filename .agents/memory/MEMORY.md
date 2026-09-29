@@ -150,3 +150,4 @@
 - [Movimiento de Mi muro](muro-motion-scope.md) — solo la + rebota angularmente; formulario entra sin sobrepaso, y la simetría del signo cambia la percepción de las vueltas
 - [Negrita editorial de Sabiduría diaria](daily-wisdom-bold.md) — la frase sigue siendo texto plano; la negrita selectiva solo afecta el primer slide del hero, no detalle ni compartir
 - [Activación de tareas propuestas](task-activation.md) — cambiar a Build y ejecutar por chat no activa un borrador; el cierre requiere una tarea asignada en progreso
+- [Camino de crecimiento](growth-journey.md) — niveles por días activos acumulados no consecutivos; conservar alfa radial al sustituir imágenes para evitar rectángulos
