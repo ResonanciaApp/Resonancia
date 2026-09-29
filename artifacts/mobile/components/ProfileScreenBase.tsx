@@ -86,7 +86,7 @@ import { MoonCrescentIcon } from "@/components/MoonCrescentIcon";
 import { SleepReminderSheet } from "@/components/SleepReminderSheet";
 import { FilledSunIcon } from "@/components/FilledSunIcon";
 import { useMixerPanel } from "@/context/MixerPanelContext";
-import { CARD_TEXT_ABOVE, CARD_TEXT_BELOW, MEMBERSHIP_AURORA } from "@/constants/colors";
+import { CARD_TEXT_ABOVE, CARD_TEXT_BELOW, MEMBERSHIP_AURORA, POSITIONED_DAY_GRADIENT } from "@/constants/colors";
 
 const SHOW_PROFILE_HISTORY = true;
 const SHOW_PROFILE_PRACTICE_CARDS = false;
@@ -1289,7 +1289,7 @@ export function ProfileScreenBase({
         </View>
 
         {/* ── Profile Card ── */}
-          <View style={styles.profileCard}>
+          <View style={[styles.profileCard, dedicated && styles.dedicatedProfileCard]}>
           <View style={styles.profileIdentityRow}>
             {/* Avatar */}
             <Pressable
@@ -1331,15 +1331,12 @@ export function ProfileScreenBase({
                 {username}{lastName ? ` ${lastName}` : ""}
               </Text>
 
-              {email ? (
-                <Text
-                  style={[styles.emailText, { color: CARD_TEXT_BELOW }]}
-                  numberOfLines={1}
-                  ellipsizeMode="tail"
-                >
-                  {email}
+              {dedicated && (
+                <Text style={styles.profileLevelText}>
+                  <Text style={{ color: POSITIONED_DAY_GRADIENT[0] }}>Nivel 1: </Text>
+                  <Text style={{ color: colors.foreground }}>Semilla</Text>
                 </Text>
-              ) : null}
+              )}
 
               {location ? (
                 <View style={styles.locationRow}>
@@ -2445,6 +2442,7 @@ const styles = StyleSheet.create({
     gap: 0,
     transform: [{ translateY: -5 }],
   },
+  dedicatedProfileCard: { marginTop: 35 },
   wisdomSection: {
     marginBottom: 28,
   },
@@ -2496,7 +2494,7 @@ const styles = StyleSheet.create({
     borderRadius: 55.5,
   },
   userName: { fontFamily: "Manrope", fontSize: 20, fontWeight: "700", textAlign: "center" },
-  emailText: { fontFamily: "Manrope", fontSize: 12, textAlign: "center" },
+  profileLevelText: { fontFamily: "Manrope", fontSize: 12, fontWeight: "700", textAlign: "center", marginTop: 2 },
   locationRow: { flexDirection: "row", alignItems: "center", justifyContent: "center", gap: 4 },
   locationText: { fontFamily: "Manrope", fontSize: 12 },
   bioText: { fontFamily: "Manrope", fontSize: 13, lineHeight: 19, textAlign: "center", paddingHorizontal: 8, fontStyle: "italic" },

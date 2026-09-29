@@ -277,10 +277,13 @@ export default function ProgresoScreen() {
               sectionHorizontalPadding={20}
               sectionTopPadding={16}
               sectionBottomPadding={19}
-              sectionMarginBottom={20}
+              sectionMarginBottom={0}
               canonicalVerticalInsets
             />
           </View>
+        </View>
+        <View style={styles.journeyGap} pointerEvents="none">
+          <View style={styles.journeyDivider} />
         </View>
         <GrowthJourney
           visibleThrough={visibleThrough}
@@ -362,6 +365,9 @@ const styles = StyleSheet.create({
     marginTop: 95,
     position: "relative",
   },
+  // Original spacing (20 + 18) plus 35px; divider centered between both blocks.
+  journeyGap: { height: 73, justifyContent: "center", paddingHorizontal: 36 },
+  journeyDivider: { height: 1, backgroundColor: "rgba(255,255,255,0.05)" },
   introDivider: {
     position: "absolute",
     top: -24,

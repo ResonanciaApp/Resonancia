@@ -145,10 +145,17 @@ export function GrowthJourney({
   onTimelineLayout: (event: LayoutChangeEvent) => void;
 }) {
   const reduceMotion = useReducedMotion();
+  const colors = useColors();
   // Visual preview: Semilla is the only active stage until progression is enabled.
 
   return (
     <View style={styles.section} onLayout={onLayout}>
+      <View style={styles.sectionHeading}>
+        <Text style={styles.sectionEyebrow}>PRIMERA ETAPA</Text>
+        <Text style={[styles.sectionTitle, { color: colors.foreground }]} accessibilityRole="header">
+          Florecimiento
+        </Text>
+      </View>
       <View style={styles.timeline} onLayout={onTimelineLayout}>
         {growthLevels.map((level, index) => (
           <GrowthRow
@@ -167,9 +174,18 @@ export function GrowthJourney({
 const styles = StyleSheet.create({
   section: {
     marginHorizontal: 16,
-    marginTop: 18,
     paddingBottom: 12,
   },
+  sectionHeading: { alignItems: "center", marginBottom: 8 },
+  sectionEyebrow: {
+    fontFamily: "Manrope",
+    fontSize: 11,
+    fontWeight: "700",
+    letterSpacing: 1.2,
+    color: GROWTH_COLORS.line,
+    marginBottom: 5,
+  },
+  sectionTitle: { fontFamily: "Manrope", fontSize: 23, fontWeight: "700", lineHeight: 30 },
   timeline: { position: "relative" },
   row: { height: GROWTH_ROW_HEIGHT, position: "relative", justifyContent: "center" },
   lineBase: {
