@@ -1,7 +1,7 @@
 import { Feather } from "@expo/vector-icons";
 import { LinearGradient } from "expo-linear-gradient";
 import { router, useFocusEffect } from "expo-router";
-import React, { useCallback, useEffect, useMemo, useRef, useState } from "react";
+import React, { useCallback, useMemo, useRef, useState } from "react";
 import {
   Platform,
   Pressable,
@@ -30,9 +30,8 @@ import { ProgressMirrorSections } from "@/components/ProgressMirrorSections";
 import { GROWTH_ROW_HEIGHT, GrowthJourney } from "@/components/GrowthJourney";
 import { CinematicFadeSlide } from "@/components/CinematicFadeSlide";
 import { getPositionedDayGradient } from "@/components/StreakWeekRow";
-import { usePlayer } from "@/context/PlayerContext";
 import { useSceneTheme } from "@/context/SceneThemeContext";
-import { growthLevelIndex, growthLevels } from "@/data/growthLevels";
+import { growthLevels } from "@/data/growthLevels";
 import { useColors } from "@/hooks/useColors";
 import { useStreak } from "@/hooks/useStreak";
 
@@ -80,16 +79,11 @@ export default function ProgresoScreen() {
   const insets = useSafeAreaInsets();
   const { width: viewportWidth } = useWindowDimensions();
   const { theme } = useSceneTheme();
-  const { weekFlags, totalActiveDays } = useStreak();
-  const { lastLocalStat } = usePlayer();
+  const { weekFlags } = useStreak();
   const growthTopRef = useRef<number | null>(null);
   const timelineTopRef = useRef<number | null>(null);
   const viewportBottomRef = useRef(0);
-  const lastLevelRef = useRef(growthLevelIndex(totalActiveDays));
-  const lastLocalSeqRef = useRef(lastLocalStat?.seq);
-  const pendingPracticeRef = useRef<{ time: number; level: number } | null>(null);
   const [visibleThrough, setVisibleThrough] = useState(-1);
-  const [unlockedIndex, setUnlockedIndex] = useState(-1);
   const completedWeekDays = weekFlags.filter(Boolean).length;
   const ringGradient = useMemo(() => getPositionedDayGradient(theme.gradient), [theme.gradient]);
   const reduceMotion = useReducedMotion();
@@ -120,26 +114,6 @@ export default function ProgresoScreen() {
   const bottomPad = Platform.OS === "web" ? 34 : insets.bottom;
   const bgColors = theme.gradient as unknown as [string, string, ...string[]];
   const heroHeight = Math.min(410, Math.max(340, viewportWidth * 0.98)) - 75 + DESCRIPTION_SHIFT;
-
-  useEffect(() => {
-    const nextLevel = growthLevelIndex(totalActiveDays);
-    if (lastLocalStat && lastLocalStat.seq !== lastLocalSeqRef.current) {
-      pendingPracticeRef.current = { time: Date.now(), level: lastLevelRef.current };
-    }
-    if (
-      nextLevel > lastLevelRef.current &&
-      pendingPracticeRef.current &&
-      Date.now() - pendingPracticeRef.current.time < 30_000 &&
-      nextLevel > pendingPracticeRef.current.level
-    ) {
-      setUnlockedIndex(nextLevel);
-      pendingPracticeRef.current = null;
-    }
-    // Server and cloud hydration can change this number, but must not trigger
-    // a new-level celebration without a fresh practice event on this device.
-    lastLevelRef.current = nextLevel;
-    lastLocalSeqRef.current = lastLocalStat?.seq;
-  }, [totalActiveDays, lastLocalStat?.seq]);
 
   const revealVisibleLevels = useCallback(() => {
     if (growthTopRef.current === null || timelineTopRef.current === null) return;
@@ -309,9 +283,7 @@ export default function ProgresoScreen() {
           </View>
         </View>
         <GrowthJourney
-          totalActiveDays={totalActiveDays}
           visibleThrough={visibleThrough}
-          unlockedIndex={unlockedIndex}
           onLayout={(event) => {
             growthTopRef.current = event.nativeEvent.layout.y;
             revealVisibleLevels();

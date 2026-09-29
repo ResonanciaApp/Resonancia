@@ -6,12 +6,11 @@ import Animated, {
   useReducedMotion,
   useSharedValue,
   withDelay,
-  withSequence,
   withTiming,
 } from "react-native-reanimated";
 
 import { MEMBERSHIP_AURORA, POSITIONED_DAY_GRADIENT } from "@/constants/colors";
-import { growthLevels, growthLevelIndex, type GrowthLevel } from "@/data/growthLevels";
+import { growthLevels, type GrowthLevel } from "@/data/growthLevels";
 import { useColors } from "@/hooks/useColors";
 
 export const GROWTH_ROW_HEIGHT = 205;
@@ -21,10 +20,10 @@ const GROWTH_COLORS = {
   current: MEMBERSHIP_AURORA.premium.accent,
   muted: "rgba(196,194,222,0.8)",
   inactiveLine: "rgba(174,161,237,0.28)",
-  card: "rgba(0,0,0,0.20)",
+  nodeFill: "rgba(0,0,0,0.20)",
 } as const;
 
-type Status = "unlocked" | "current" | "locked";
+type Status = "current" | "locked";
 
 function GrowthLevelImage({
   level,
@@ -54,20 +53,16 @@ function GrowthRow({
   index,
   status,
   visible,
-  unlock,
 }: {
   level: GrowthLevel;
   index: number;
   status: Status;
   visible: boolean;
-  unlock: boolean;
 }) {
   const colors = useColors();
   const reduceMotion = useReducedMotion();
   const entrance = useSharedValue(reduceMotion ? 1 : 0);
   const textEntrance = useSharedValue(reduceMotion ? 1 : 0);
-  const lineLight = useSharedValue(status === "unlocked" ? 1 : 0);
-  const pulse = useSharedValue(0);
 
   useEffect(() => {
     if (!visible) return;
@@ -80,68 +75,38 @@ function GrowthRow({
     }
   }, [entrance, textEntrance, reduceMotion, visible]);
 
-  useEffect(() => {
-    lineLight.value = reduceMotion
-      ? (status === "unlocked" ? 1 : 0)
-      : withTiming(status === "unlocked" ? 1 : 0, { duration: 750 });
-  }, [lineLight, reduceMotion, status]);
-
-  useEffect(() => {
-    if (!unlock || !visible || reduceMotion) return;
-    pulse.value = withDelay(
-      120,
-      withSequence(
-        withTiming(1, { duration: 340, easing: Easing.out(Easing.cubic) }),
-        withTiming(0, { duration: 400, easing: Easing.inOut(Easing.quad) }),
-      ),
-    );
-  }, [pulse, reduceMotion, unlock, visible]);
-
   const imageEntranceStyle = useAnimatedStyle(() => ({
     // Keep the illustration visible even when a native ScrollView delays (or
     // skips) a visibility callback. Entrance motion should never gate content.
     opacity: 0.8 + entrance.value * 0.2,
     transform: [
       { translateY: (1 - entrance.value) * 16 },
-      { scale: 0.94 + entrance.value * 0.06 + pulse.value * 0.035 },
+      { scale: 0.94 + entrance.value * 0.06 },
     ],
   }));
   const copyEntranceStyle = useAnimatedStyle(() => ({
     opacity: 0.8 + textEntrance.value * 0.2,
     transform: [{ translateY: (1 - textEntrance.value) * 9 }],
   }));
-  const litLineStyle = useAnimatedStyle(() => ({ opacity: lineLight.value }));
-  const nodeStyle = useAnimatedStyle(() => ({
-    transform: [{ scale: 1 + pulse.value * 0.22 }],
-  }));
-
   return (
     <View
       style={styles.row}
       accessible
-      accessibilityLabel={`Nivel ${index + 1}, ${level.name}, ${level.startDay} a ${level.endDay} días de práctica, ${status === "current" ? "nivel actual" : status === "unlocked" ? "desbloqueado" : "por desbloquear"}. ${level.story}`}
+      accessibilityLabel={`Nivel ${index + 1}, ${level.name}, ${level.startDay} a ${level.endDay} días de práctica, ${status === "current" ? "nivel actual" : "por desbloquear"}. ${level.story}`}
     >
       {index < growthLevels.length - 1 && (
-        <>
-          <View style={styles.lineBase} pointerEvents="none" />
-          <Animated.View
-            style={[styles.lineLit, { backgroundColor: GROWTH_COLORS.line }, litLineStyle]}
-            pointerEvents="none"
-          />
-        </>
+        <View style={styles.lineBase} pointerEvents="none" />
       )}
-      <Animated.View
+      <View
         pointerEvents="none"
         style={[
           styles.node,
           {
-            borderColor: status === "locked" ? GROWTH_COLORS.inactiveLine
-              : status === "current" ? GROWTH_COLORS.current : GROWTH_COLORS.line,
-            backgroundColor: status === "current" ? GROWTH_COLORS.current : GROWTH_COLORS.card,
-            shadowColor: status === "current" ? GROWTH_COLORS.current : GROWTH_COLORS.line,
-            shadowOpacity: status === "locked" ? 0 : status === "current" ? 0.8 : 0.3,
+            borderColor: status === "current" ? GROWTH_COLORS.current : GROWTH_COLORS.inactiveLine,
+            backgroundColor: status === "current" ? GROWTH_COLORS.current : GROWTH_COLORS.nodeFill,
+            shadowColor: GROWTH_COLORS.current,
+            shadowOpacity: status === "current" ? 0.8 : 0,
           },
-          nodeStyle,
         ]}
       />
       <Animated.View
@@ -153,7 +118,7 @@ function GrowthRow({
       >
         <GrowthLevelImage level={level} status={status} />
       </Animated.View>
-      <Animated.View style={[styles.copy, copyEntranceStyle]}>
+      <Animated.View style={[styles.copy, status === "locked" && styles.lockedCopy, copyEntranceStyle]}>
         <Text style={[styles.eyebrow, { color: status === "locked" ? GROWTH_COLORS.muted : GROWTH_COLORS.line }]}>
           NIVEL {index + 1}
         </Text>
@@ -174,21 +139,17 @@ function GrowthRow({
 }
 
 export function GrowthJourney({
-  totalActiveDays,
   visibleThrough,
-  unlockedIndex,
   onLayout,
   onTimelineLayout,
 }: {
-  totalActiveDays: number;
   visibleThrough: number;
-  unlockedIndex: number;
   onLayout: (event: LayoutChangeEvent) => void;
   onTimelineLayout: (event: LayoutChangeEvent) => void;
 }) {
   const colors = useColors();
   const reduceMotion = useReducedMotion();
-  const current = growthLevelIndex(totalActiveDays);
+  // Visual preview: Semilla is the only active stage until progression is enabled.
 
   return (
     <View style={styles.section} onLayout={onLayout}>
@@ -202,9 +163,8 @@ export function GrowthJourney({
             key={level.id}
             level={level}
             index={index}
-            status={index < current ? "unlocked" : index === current ? "current" : "locked"}
+            status={index === 0 ? "current" : "locked"}
             visible={reduceMotion || index <= visibleThrough}
-            unlock={index === unlockedIndex}
           />
         ))}
       </View>
@@ -215,22 +175,14 @@ export function GrowthJourney({
 const styles = StyleSheet.create({
   section: {
     marginHorizontal: 16,
-    marginTop: 4,
-    backgroundColor: GROWTH_COLORS.card,
-    borderWidth: 1,
-    borderColor: "rgba(255,255,255,0.055)",
-    borderRadius: 22,
-    paddingHorizontal: 13,
-    paddingTop: 22,
+    marginTop: 18,
     paddingBottom: 12,
-    overflow: "hidden",
   },
   title: {
     fontFamily: "Manrope",
     fontSize: 17,
     fontWeight: "700",
     textAlign: "center",
-    paddingHorizontal: 8,
   },
   subtitle: {
     fontFamily: "Manrope",
@@ -239,7 +191,6 @@ const styles = StyleSheet.create({
     textAlign: "center",
     marginTop: 7,
     marginBottom: 24,
-    paddingHorizontal: 13,
   },
   timeline: { position: "relative" },
   row: { height: GROWTH_ROW_HEIGHT, position: "relative", justifyContent: "center" },
@@ -250,13 +201,6 @@ const styles = StyleSheet.create({
     width: 2,
     height: GROWTH_ROW_HEIGHT,
     backgroundColor: GROWTH_COLORS.inactiveLine,
-  },
-  lineLit: {
-    position: "absolute",
-    left: 9,
-    top: GROWTH_ROW_HEIGHT / 2,
-    width: 2,
-    height: GROWTH_ROW_HEIGHT,
   },
   node: {
     position: "absolute",
@@ -273,13 +217,13 @@ const styles = StyleSheet.create({
   },
   art: {
     position: "absolute",
-    left: 17,
+    left: 7,
     top: 24,
     width: 153,
     height: 153,
   },
-  artOdd: { left: 14 },
-  artEven: { left: 21 },
+  artOdd: { left: 4 },
+  artEven: { left: 11 },
   imageWrap: { flex: 1 },
   levelImage: { width: "100%", height: "100%" },
   lockedImage: { opacity: 0.44 },
@@ -289,6 +233,7 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     paddingRight: 1,
   },
+  lockedCopy: { opacity: 0.55 },
   eyebrow: {
     fontFamily: "Manrope",
     fontSize: 9,
