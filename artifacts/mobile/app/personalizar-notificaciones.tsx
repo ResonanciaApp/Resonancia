@@ -7,7 +7,6 @@ import {
 import { useQueryClient } from "@tanstack/react-query";
 import { Image as ExpoImage } from "expo-image";
 import * as Haptics from "expo-haptics";
-import { LinearGradient } from "expo-linear-gradient";
 import { router, Stack } from "expo-router";
 import React, { useEffect, useMemo, useRef, useState } from "react";
 import {
@@ -25,7 +24,7 @@ import { useSafeAreaInsets } from "react-native-safe-area-context";
 
 import { useBackOverride } from "@/context/BackOverrideContext";
 import { useNotifications } from "@/context/NotificationsContext";
-import { NOTIFICATIONS_GRADIENT } from "@/constants/colors";
+import { useSceneTheme } from "@/context/SceneThemeContext";
 import { useColors } from "@/hooks/useColors";
 import { SavedConfirmationBanner } from "@/components/SavedConfirmationBanner";
 import { SessionBadgeGlass } from "@/components/SessionDurationBadge";
@@ -178,6 +177,8 @@ function readOptions(value: unknown): PreferenceOption[] {
 
 export default function PersonalizarNotificacionesScreen() {
   const colors = useColors();
+  const { theme } = useSceneTheme();
+  const backgroundColor = theme.gradient[2] ?? theme.gradient[1];
   const insets = useSafeAreaInsets();
   const { width: windowWidth } = useWindowDimensions();
   const backOverride = useBackOverride();
@@ -303,13 +304,8 @@ export default function PersonalizarNotificacionesScreen() {
 
   return (
     <>
-      <Stack.Screen options={{ contentStyle: { backgroundColor: NOTIFICATIONS_GRADIENT[0] } }} />
-      <LinearGradient
-        style={[styles.root, { backgroundColor: NOTIFICATIONS_GRADIENT[0] }]}
-        colors={NOTIFICATIONS_GRADIENT}
-        start={{ x: 0, y: 0 }}
-        end={{ x: 0, y: 1 }}
-      >
+      <Stack.Screen options={{ contentStyle: { backgroundColor } }} />
+      <View style={[styles.root, { backgroundColor }]}>
         <StatusBar hidden />
         <View style={styles.contentShift}>
           <View style={[styles.stickyHeader, { paddingTop: topPad + 4 }]}>
@@ -470,7 +466,7 @@ export default function PersonalizarNotificacionesScreen() {
           bottom={114}
           title="Notificaciones guardadas correctamente"
         />
-      </LinearGradient>
+      </View>
     </>
   );
 }

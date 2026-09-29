@@ -1,0 +1,222 @@
+TU CAMINO DE CRECIMIENTO
+
+Quiero agregar debajo de la sección de racha, en la pantalla “Tu progreso”, una nueva sección llamada “Tu camino de crecimiento”.
+
+La idea es transformar el sistema de rachas en una experiencia visual de progresión: cada 7 días de racha acumulada el usuario desbloquea un nuevo nivel, y visualmente una semilla va evolucionando hasta convertirse en una flor completamente desarrollada.
+
+Concepto
+
+La sección debe sentirse como un viaje de crecimiento personal, no como una lista de niveles o una tabla de logros.
+
+El usuario debe poder hacer scroll vertical y descubrir progresivamente las diferentes etapas de crecimiento.
+
+La estructura visual debe ser una línea de tiempo vertical que conecta los 8 niveles.
+
+Cada nivel debe tener:
+
+Un nodo circular sobre la línea de tiempo.
+Una imagen de la etapa de crecimiento generada por IA.
+Número de nivel.
+Nombre del nivel.
+Rango de días.
+Una breve frase de storytelling.
+Estados visuales: desbloqueado, actual y bloqueado.
+Los 8 niveles
+Semilla — 0–7 días
+“Todo gran cambio comienza con una intención.”
+Brote — 8–14 días
+“Tu práctica comienza a echar raíces.”
+Crecimiento — 15–21 días
+“Tu disciplina se fortalece y comienzas a crecer.”
+Desarrollo — 22–28 días
+“La práctica comienza a integrarse en tu vida.”
+Enraizamiento — 29–35 días
+“Tu práctica se vuelve más sólida y estable.”
+Vegetación — 36–42 días
+“Tu bienestar crece y comienza a expandirse.”
+Floración — 43–49 días
+“Tu dedicación florece y llena tu vida de luz.”
+Expansión — 50–56 días
+“Tu práctica se expande y transforma tu energía.”
+Estructura visual
+
+Después de la tarjeta de racha actual / racha más larga, agregar:
+
+TU CAMINO DE CRECIMIENTO
+
+Debajo:
+
+“Cada 7 días de práctica alcanzas un nuevo nivel y tu semilla se transforma.”
+
+Luego comienza la timeline.
+
+La timeline debe ocupar todo el ancho disponible, pero mantener suficiente espacio para que cada nivel se sienta como un momento importante.
+
+Usar una línea vertical fina y elegante que conecte todos los niveles.
+
+La línea debe tener un efecto sutil de iluminación/glow en las partes desbloqueadas.
+
+Cada nodo representa un nivel.
+
+Layout de cada nivel
+
+Alternar ligeramente la composición para evitar que se vea repetitiva.
+
+Ejemplo:
+
+       ●
+       │
+ [ IMAGEN ]     Nivel 1
+                SEMILLA
+                0–7 días
+                Todo gran cambio comienza
+                con una intención.
+       │
+       ●
+       │
+       │       [ IMAGEN ]
+       │       Nivel 2
+       │       BROTE
+       │       8–14 días
+       │       Tu práctica comienza
+       │       a echar raíces.
+       ●
+
+No hacer una timeline excesivamente compleja. Debe sentirse orgánica, elegante y contemplativa.
+
+Imágenes generadas por IA
+
+NO crear ilustraciones con CSS.
+
+Cada nivel tendrá una imagen independiente generada por IA.
+
+Crear un componente reutilizable:
+
+GrowthLevelImage
+
+que reciba:
+
+level
+image
+status
+
+Las imágenes deben representar visualmente la evolución:
+
+Nivel 1 → semilla bajo tierra
+Nivel 2 → pequeño brote
+Nivel 3 → planta joven
+Nivel 4 → planta más desarrollada
+Nivel 5 → planta con raíces visibles y fuertes
+Nivel 6 → vegetación abundante
+Nivel 7 → planta/flor en floración
+Nivel 8 → flor completamente abierta y luminosa
+
+Todas las imágenes deben mantener la misma dirección artística, iluminación y lenguaje visual para que parezcan parte de una misma historia.
+
+No colocar texto dentro de las imágenes.
+
+Estados
+NIVEL ACTUAL
+
+Debe tener mayor protagonismo visual.
+
+Imagen más luminosa.
+Nodo iluminado.
+Glow sutil alrededor de la imagen.
+Nombre en blanco.
+Línea conectada con mayor luminosidad.
+Puede tener una pequeña animación ambiental muy sutil.
+NIVELES DESBLOQUEADOS
+
+Mostrar normalmente.
+
+Imagen visible.
+Nodo iluminado.
+Colores normales.
+Storytelling visible.
+NIVELES BLOQUEADOS
+
+No ocultarlos completamente.
+
+Mostrar al usuario hacia dónde puede llegar.
+
+Imagen con menor saturación/brillo.
+Opacidad aproximadamente 35–50%.
+Nodo más oscuro.
+Línea apagada.
+Mantener nombre y número de nivel visibles.
+Opcionalmente mostrar un pequeño icono de candado.
+
+Esto debe generar sensación de “todavía me queda camino por recorrer”.
+
+Animación
+
+Cuando el usuario desbloquee un nuevo nivel:
+
+El nodo correspondiente aparece con un pequeño pulso.
+La línea se ilumina progresivamente hasta ese nivel.
+La imagen aparece mediante fade + scale suave.
+El glow aumenta ligeramente y luego vuelve a su estado normal.
+El texto aparece después de la imagen.
+
+Duración aproximada: 600–900 ms.
+
+La animación debe ser elegante y lenta, no gamificada de manera agresiva.
+
+Scroll storytelling
+
+Quiero que el scroll sea parte de la experiencia.
+
+A medida que el usuario baja:
+
+La línea vertical debe permanecer visualmente conectada.
+Cada nivel entra progresivamente en escena.
+La imagen puede hacer un pequeño fade/translate al entrar al viewport.
+El nivel actual puede tener un glow ligeramente mayor.
+Evitar animaciones constantes o excesivas.
+
+La sensación debe ser:
+
+“Estoy recorriendo mi propio proceso de crecimiento.”
+
+Diseño visual
+
+Mantener exactamente el lenguaje visual existente de Resonancia:
+
+Fondo azul índigo/púrpura oscuro.
+Cards oscuras translúcidas.
+Bordes muy sutiles.
+Esquinas redondeadas.
+Tipografía limpia.
+Glow muy suave.
+Contraste alto.
+Mucho espacio negativo.
+Nada excesivamente infantil.
+Nada que parezca un sistema tradicional de puntos o achievements.
+
+Debe sentirse premium, espiritual, moderno y contemplativo.
+
+Importante
+
+No modificar la sección existente de racha.
+
+El nuevo componente debe comenzar debajo de ella.
+
+La sección debe ser modular y fácilmente editable para poder cambiar posteriormente:
+
+nombres de niveles
+cantidad de días
+textos
+imágenes
+colores
+animaciones
+
+Crear los datos de los niveles en una estructura independiente, por ejemplo:
+
+growthLevels[]
+
+para que el componente no tenga información hardcodeada dentro de la UI.
+
+El nivel actual debe calcularse automáticamente según los días de racha acumulados.
+
+La timeline debe funcionar correctamente con cualquier cantidad de días y debe quedar preparada para futuras ampliaciones.

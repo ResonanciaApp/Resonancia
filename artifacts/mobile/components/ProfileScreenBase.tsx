@@ -2440,7 +2440,7 @@ const styles = StyleSheet.create({
     paddingTop: 24,
     paddingBottom: 6,
     alignItems: "stretch",
-    marginTop: 30,
+    marginTop: 15,
     marginBottom: 16,
     gap: 0,
     transform: [{ translateY: -5 }],

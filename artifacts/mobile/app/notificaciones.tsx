@@ -13,7 +13,7 @@ import {
 import { LinearGradient } from "expo-linear-gradient";
 import { Image } from "expo-image";
 import { router } from "expo-router";
-import React, { useEffect, useMemo, useRef, useState } from "react";
+import React, { useEffect, useMemo, useRef } from "react";
 import {
   ActivityIndicator,
   Alert,
@@ -25,6 +25,7 @@ import {
   StatusBar,
   StyleSheet,
   Text,
+  useWindowDimensions,
   View,
 } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
@@ -136,33 +137,27 @@ function groupNotifications(list: Notification[]): GroupedNotification[] {
 
 function SwipeDeleteRow({
   children,
-  read,
   onDelete,
 }: {
-  children: React.ReactNode;
-  read: boolean;
+  children: (deleteRow: () => void) => React.ReactNode;
   onDelete: () => Promise<void>;
 }) {
   const offset = useRef(new Animated.Value(0)).current;
-  const [deleting, setDeleting] = useState(false);
+  const { width } = useWindowDimensions();
   const deletingRef = useRef(false);
-  const readRef = useRef(read);
   const deleteRef = useRef(onDelete);
-  readRef.current = read;
   deleteRef.current = onDelete;
 
   const reset = () => Animated.spring(offset, { toValue: 0, useNativeDriver: true }).start();
   const remove = () => {
-    if (!readRef.current || deletingRef.current) return;
+    if (deletingRef.current) return;
     deletingRef.current = true;
-    setDeleting(true);
-    Animated.timing(offset, { toValue: -110, duration: 160, useNativeDriver: true }).start();
+    Animated.timing(offset, { toValue: -width, duration: 220, useNativeDriver: true }).start();
     deleteRef.current().catch(() => {
       Alert.alert("No se pudo eliminar", "Inténtalo de nuevo.");
       reset();
     }).finally(() => {
       deletingRef.current = false;
-      setDeleting(false);
     });
   };
   const removeRef = useRef(remove);
@@ -170,34 +165,25 @@ function SwipeDeleteRow({
 
   const pan = useMemo(() => PanResponder.create({
     onMoveShouldSetPanResponder: (_, gesture) =>
-      readRef.current && !deletingRef.current &&
+      !deletingRef.current &&
       gesture.dx < -12 && Math.abs(gesture.dx) > Math.abs(gesture.dy) * 1.4,
     onPanResponderMove: (_, gesture) => {
       offset.setValue(Math.max(-140, Math.min(0, gesture.dx)));
     },
     onPanResponderRelease: (_, gesture) => {
-      if (gesture.dx < -85) removeRef.current();
+      if (gesture.dx < -85 || (gesture.dx < -30 && gesture.vx < -0.8)) removeRef.current();
       else Animated.spring(offset, { toValue: 0, useNativeDriver: true }).start();
     },
     onPanResponderTerminate: () => {
-      Animated.spring(offset, { toValue: 0, useNativeDriver: true }).start();
+      if (!deletingRef.current) reset();
     },
   }), [offset]);
 
   return (
-    <View
-      style={styles.swipeWrapper}
-      accessibilityActions={read ? [{ name: "delete", label: "Eliminar notificación" }] : undefined}
-      onAccessibilityAction={(event) => {
-        if (event.nativeEvent.actionName === "delete") removeRef.current();
-      }}
-    >
-      <View style={styles.swipeBackdrop} pointerEvents="none">
-        <Feather name="trash-2" size={19} color="#FFFFFF" />
-        <Text style={styles.swipeLabel}>Eliminar</Text>
-      </View>
+    <View style={styles.swipeWrapper}>
+      <View style={styles.swipeBackdrop} pointerEvents="none" />
       <Animated.View {...pan.panHandlers} style={{ transform: [{ translateX: offset }] }}>
-        {children}
+        {children(removeRef.current)}
       </Animated.View>
     </View>
   );
@@ -346,11 +332,15 @@ export default function NotificacionesScreen() {
               return (
                 <SwipeDeleteRow
                   key={n.type === "dm" ? `dm-${actorId}` : `n-${n.id}`}
-                  read={!n.groupHasUnread}
                   onDelete={() => removeNotification(n.id)}
                 >
+                {(deleteRow) => (
                 <Pressable
                   onPress={() => openNotification(n)}
+                  accessibilityActions={[{ name: "delete", label: "Borrar notificación" }]}
+                  onAccessibilityAction={(event) => {
+                    if (event.nativeEvent.actionName === "delete") deleteRow();
+                  }}
                   style={({ pressed }) => [
                     styles.row,
                     {
@@ -401,6 +391,7 @@ export default function NotificacionesScreen() {
                     <GoldGradient style={styles.dot} />
                   )}
                 </Pressable>
+                )}
                 </SwipeDeleteRow>
               );
             })}
@@ -474,20 +465,15 @@ const styles = StyleSheet.create({
   },
   swipeBackdrop: {
     ...StyleSheet.absoluteFillObject,
-    backgroundColor: "#81363A",
-    alignItems: "flex-end",
-    justifyContent: "center",
-    paddingRight: 22,
-    gap: 3,
+    backgroundColor: "rgba(0,0,0,0.28)",
   },
-  swipeLabel: { fontFamily: "Manrope", fontSize: 11, fontWeight: "700", color: "#FFFFFF" },
   row: {
     flexDirection: "row",
     alignItems: "center",
     gap: 12,
     borderRadius: 16,
     borderWidth: 0,
-    backgroundColor: "rgba(0,0,0,0.22)",
+    backgroundColor: "rgba(0,0,0,0.28)",
     paddingHorizontal: 14,
     paddingVertical: 14,
   },
