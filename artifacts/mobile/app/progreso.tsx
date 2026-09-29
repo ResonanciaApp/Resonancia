@@ -38,9 +38,9 @@ const RING_SIZE = 131;
 const RING_STROKE = 9;
 const RING_RADIUS = (RING_SIZE - RING_STROKE) / 2;
 const RING_CIRCUMFERENCE = 2 * Math.PI * RING_RADIUS;
-const RING_ENTRANCE_DELAY = 250;
-const DESCRIPTION_ENTRANCE_DELAY = 1600;
-const STREAK_SECTION_ENTRANCE_DELAY = 2700;
+const RING_ENTRANCE_DELAY = 100;
+const DESCRIPTION_ENTRANCE_DELAY = 600;
+const STREAK_SECTION_ENTRANCE_DELAY = 1150;
 const AnimatedCircle = Animated.createAnimatedComponent(Circle);
 
 function StreakCountDigit({
