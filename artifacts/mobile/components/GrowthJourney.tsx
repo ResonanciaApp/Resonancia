@@ -194,7 +194,7 @@ const styles = StyleSheet.create({
   },
   art: {
     position: "absolute",
-    left: 14,
+    left: 25,
     top: 34,
     width: 133,
     height: 133,
