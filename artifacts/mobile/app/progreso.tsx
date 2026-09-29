@@ -1,7 +1,7 @@
 import { Feather } from "@expo/vector-icons";
 import { LinearGradient } from "expo-linear-gradient";
 import { router, useFocusEffect } from "expo-router";
-import React, { useCallback, useMemo, useState } from "react";
+import React, { useCallback, useMemo } from "react";
 import {
   Platform,
   Pressable,
@@ -17,9 +17,9 @@ import Svg, { Circle, Defs, LinearGradient as SvgLinearGradient, Stop } from "re
 import Animated, {
   cancelAnimation,
   Easing,
-  runOnJS,
+  type SharedValue,
   useAnimatedProps,
-  useAnimatedReaction,
+  useAnimatedStyle,
   useReducedMotion,
   useSharedValue,
   withDelay,
@@ -41,6 +41,35 @@ const RING_CIRCUMFERENCE = 2 * Math.PI * RING_RADIUS;
 const RING_ENTRANCE_DELAY = 1150;
 const AnimatedCircle = Animated.createAnimatedComponent(Circle);
 
+function StreakCountDigit({
+  day,
+  lastDay,
+  progress,
+  color,
+}: {
+  day: number;
+  lastDay: number;
+  progress: SharedValue<number>;
+  color: string;
+}) {
+  const fadeStyle = useAnimatedStyle(() => {
+    const value = progress.value;
+    const fadeIn = day === 0 ? 1 : Math.max(0, Math.min(1, (value - day + 0.25) / 0.25));
+    const fadeOut = day === lastDay ? 1 : Math.max(0, Math.min(1, (day + 0.7 - value) / 0.2));
+    return { opacity: Math.min(fadeIn, fadeOut) };
+  }, [day, lastDay]);
+
+  return (
+    <Animated.Text
+      accessible={false}
+      importantForAccessibility="no"
+      style={[styles.streakIntroCount, styles.streakDigit, { color }, fadeStyle]}
+    >
+      {day}
+    </Animated.Text>
+  );
+}
+
 export default function ProgresoScreen() {
   const colors = useColors();
   const insets = useSafeAreaInsets();
@@ -51,35 +80,22 @@ export default function ProgresoScreen() {
   const ringGradient = useMemo(() => getPositionedDayGradient(theme.gradient), [theme.gradient]);
   const reduceMotion = useReducedMotion();
   const animatedDays = useSharedValue(reduceMotion ? completedWeekDays : 0);
-  const [displayedDays, setDisplayedDays] = useState(reduceMotion ? completedWeekDays : 0);
   const ringProps = useAnimatedProps(() => ({
     strokeDashoffset: RING_CIRCUMFERENCE *
       (1 - Math.max(0, Math.min(1, (reduceMotion ? completedWeekDays : animatedDays.value) / 7))),
   }));
 
-  useAnimatedReaction(
-    () => Math.min(completedWeekDays, Math.floor(animatedDays.value + 0.0001)),
-    (days, previousDays) => {
-      if (!reduceMotion && days !== previousDays) runOnJS(setDisplayedDays)(days);
-    },
-    [completedWeekDays, reduceMotion],
-  );
-
   useFocusEffect(useCallback(() => {
     cancelAnimation(animatedDays);
     if (reduceMotion || completedWeekDays === 0) {
       animatedDays.value = completedWeekDays;
-      setDisplayedDays(completedWeekDays);
     } else {
       animatedDays.value = 0;
-      setDisplayedDays(0);
       animatedDays.value = withDelay(
         RING_ENTRANCE_DELAY,
         withTiming(completedWeekDays, {
-          duration: 1500,
-          easing: Easing.inOut(Easing.quad),
-        }, (finished) => {
-          if (finished) runOnJS(setDisplayedDays)(completedWeekDays);
+          duration: Math.max(1000, completedWeekDays * 300),
+          easing: Easing.linear,
         }),
       );
     }
@@ -181,9 +197,23 @@ export default function ProgresoScreen() {
                       accessible
                       accessibilityLabel={`${completedWeekDays} ${completedWeekDays === 1 ? "día" : "días"}`}
                     >
-                      <Text style={[styles.streakIntroCount, { color: colors.foreground }]}>
-                        {reduceMotion ? completedWeekDays : displayedDays}
-                      </Text>
+                      {reduceMotion ? (
+                        <Text style={[styles.streakIntroCount, { color: colors.foreground }]}>
+                          {completedWeekDays}
+                        </Text>
+                      ) : (
+                        <View style={styles.streakDigitSlot}>
+                          {Array.from({ length: completedWeekDays + 1 }, (_, day) => (
+                            <StreakCountDigit
+                              key={day}
+                              day={day}
+                              lastDay={completedWeekDays}
+                              progress={animatedDays}
+                              color={colors.foreground}
+                            />
+                          ))}
+                        </View>
+                      )}
                       <Text style={[styles.streakIntroUnit, { color: colors.foreground }]}>Días</Text>
                     </View>
                   </View>
@@ -327,6 +357,16 @@ const styles = StyleSheet.create({
     letterSpacing: -0.5,
     textAlign: "center",
     transform: [{ translateY: 4 }],
+  },
+  streakDigitSlot: {
+    width: 64,
+    height: 60,
+  },
+  streakDigit: {
+    position: "absolute",
+    top: 0,
+    left: 0,
+    right: 0,
   },
   streakIntroUnit: {
     fontFamily: "Manrope",
