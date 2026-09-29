@@ -1,7 +1,7 @@
 import { Feather } from "@expo/vector-icons";
 import { LinearGradient } from "expo-linear-gradient";
-import { router } from "expo-router";
-import React, { useMemo } from "react";
+import { router, useFocusEffect } from "expo-router";
+import React, { useCallback, useMemo, useState } from "react";
 import {
   Platform,
   Pressable,
@@ -14,6 +14,17 @@ import {
 } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import Svg, { Circle, Defs, LinearGradient as SvgLinearGradient, Stop } from "react-native-svg";
+import Animated, {
+  cancelAnimation,
+  Easing,
+  runOnJS,
+  useAnimatedProps,
+  useAnimatedReaction,
+  useReducedMotion,
+  useSharedValue,
+  withDelay,
+  withTiming,
+} from "react-native-reanimated";
 
 import { ProgressMirrorSections } from "@/components/ProgressMirrorSections";
 import { CinematicFadeSlide } from "@/components/CinematicFadeSlide";
@@ -27,6 +38,8 @@ const RING_SIZE = 131;
 const RING_STROKE = 9;
 const RING_RADIUS = (RING_SIZE - RING_STROKE) / 2;
 const RING_CIRCUMFERENCE = 2 * Math.PI * RING_RADIUS;
+const RING_ENTRANCE_DELAY = 1150;
+const AnimatedCircle = Animated.createAnimatedComponent(Circle);
 
 export default function ProgresoScreen() {
   const colors = useColors();
@@ -36,7 +49,42 @@ export default function ProgresoScreen() {
   const { weekFlags } = useStreak();
   const completedWeekDays = weekFlags.filter(Boolean).length;
   const ringGradient = useMemo(() => getPositionedDayGradient(theme.gradient), [theme.gradient]);
-  const ringProgress = Math.min(completedWeekDays / 7, 1);
+  const reduceMotion = useReducedMotion();
+  const animatedDays = useSharedValue(reduceMotion ? completedWeekDays : 0);
+  const [displayedDays, setDisplayedDays] = useState(reduceMotion ? completedWeekDays : 0);
+  const ringProps = useAnimatedProps(() => ({
+    strokeDashoffset: RING_CIRCUMFERENCE *
+      (1 - Math.max(0, Math.min(1, (reduceMotion ? completedWeekDays : animatedDays.value) / 7))),
+  }));
+
+  useAnimatedReaction(
+    () => Math.min(completedWeekDays, Math.floor(animatedDays.value + 0.0001)),
+    (days, previousDays) => {
+      if (!reduceMotion && days !== previousDays) runOnJS(setDisplayedDays)(days);
+    },
+    [completedWeekDays, reduceMotion],
+  );
+
+  useFocusEffect(useCallback(() => {
+    cancelAnimation(animatedDays);
+    if (reduceMotion || completedWeekDays === 0) {
+      animatedDays.value = completedWeekDays;
+      setDisplayedDays(completedWeekDays);
+    } else {
+      animatedDays.value = 0;
+      setDisplayedDays(0);
+      animatedDays.value = withDelay(
+        RING_ENTRANCE_DELAY,
+        withTiming(completedWeekDays, {
+          duration: 1500,
+          easing: Easing.inOut(Easing.quad),
+        }, (finished) => {
+          if (finished) runOnJS(setDisplayedDays)(completedWeekDays);
+        }),
+      );
+    }
+    return () => cancelAnimation(animatedDays);
+  }, [animatedDays, completedWeekDays, reduceMotion]));
 
   const topPad = Platform.OS === "web" ? 67 : Math.max(insets.top, 40);
   const bottomPad = Platform.OS === "web" ? 34 : insets.bottom;
@@ -81,7 +129,7 @@ export default function ProgresoScreen() {
               <View style={styles.heroCopyOffset}>
                 <CinematicFadeSlide
                   replayKey="progress-streak-count"
-                  delay={1150}
+                  delay={RING_ENTRANCE_DELAY}
                   duration={1200}
                   scaleFrom={0.9}
                   translateYFrom={14}
@@ -104,7 +152,8 @@ export default function ProgresoScreen() {
                           ))}
                         </SvgLinearGradient>
                       </Defs>
-                      <Circle
+                      <AnimatedCircle
+                        animatedProps={ringProps}
                         cx={RING_SIZE / 2}
                         cy={RING_SIZE / 2}
                         r={RING_RADIUS}
@@ -121,16 +170,16 @@ export default function ProgresoScreen() {
                         strokeLinecap="round"
                         fill="none"
                         strokeDasharray={`${RING_CIRCUMFERENCE}`}
-                        strokeDashoffset={RING_CIRCUMFERENCE * (1 - Math.max(ringProgress, 0.06))}
                         transform={`rotate(-90 ${RING_SIZE / 2} ${RING_SIZE / 2})`}
                       />
                     </Svg>
                     <View
                       style={styles.streakCountCircle}
+                      accessible
                       accessibilityLabel={`${completedWeekDays} ${completedWeekDays === 1 ? "día" : "días"}`}
                     >
                       <Text style={[styles.streakIntroCount, { color: colors.foreground }]}>
-                        {completedWeekDays}
+                        {reduceMotion ? completedWeekDays : displayedDays}
                       </Text>
                       <Text style={[styles.streakIntroUnit, { color: colors.foreground }]}>Días</Text>
                     </View>
