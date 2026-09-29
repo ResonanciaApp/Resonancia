@@ -72,6 +72,7 @@ import {
 } from "@/components/BibliotecaScreen";
 import { ProgressMirrorSections } from "@/components/ProgressMirrorSections";
 import { ProfileSettingsSections } from "@/components/ProfileSettingsSections";
+import { SessionBadgeGlass } from "@/components/SessionDurationBadge";
 import { useCoverPresetCatalog } from "@/lib/cover-preset-catalog";
 import {
   gradientColors,
@@ -1308,6 +1309,7 @@ export function ProfileScreenBase({
               )}
               {isPremium && (
                 <View pointerEvents="none" style={styles.avatarPremiumBadge}>
+                  <SessionBadgeGlass showBlackTint={false} showWhiteTint />
                   <MaterialCommunityIcons name="star" size={24} color={MEMBERSHIP_AURORA.premium.accent} />
                 </View>
               )}
@@ -2465,6 +2467,8 @@ const styles = StyleSheet.create({
     top: -6.5,
     width: 31,
     height: 31,
+    borderRadius: 15.5,
+    overflow: "hidden",
     alignItems: "center",
     justifyContent: "center",
   },
@@ -2473,7 +2477,7 @@ const styles = StyleSheet.create({
     height: 111,
     borderRadius: 55.5,
     borderWidth: 3,
-    borderColor: "rgba(255,255,255,0.057)",
+    borderColor: "rgba(255,255,255,0.25)",
     alignItems: "center",
     justifyContent: "center",
   },
@@ -2482,7 +2486,7 @@ const styles = StyleSheet.create({
     height: 111,
     borderRadius: 55.5,
     borderWidth: 3,
-    borderColor: "rgba(255,255,255,0.057)",
+    borderColor: "rgba(255,255,255,0.25)",
   },
   userName: { fontFamily: "Manrope", fontSize: 20, fontWeight: "700", textAlign: "center" },
   emailText: { fontFamily: "Manrope", fontSize: 12, textAlign: "center" },
