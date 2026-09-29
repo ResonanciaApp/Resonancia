@@ -135,44 +135,47 @@ export default function ProgresoScreen() {
                   translateYFrom={14}
                 >
                   <View style={styles.streakCountWrap}>
-                    <Svg
-                      pointerEvents="none"
-                      width={RING_SIZE}
-                      height={RING_SIZE}
-                      style={styles.streakProgressRing}
-                    >
-                      <Defs>
-                        <SvgLinearGradient id="positioned-day-progress" x1="0%" y1="0%" x2="0%" y2="100%">
-                          {ringGradient.map((color, index) => (
-                            <Stop
-                              key={index}
-                              offset={`${(theme.gradientLocations?.[index] ?? index / (ringGradient.length - 1)) * 100}%`}
-                              stopColor={color}
-                            />
-                          ))}
-                        </SvgLinearGradient>
-                      </Defs>
-                      <AnimatedCircle
-                        animatedProps={ringProps}
-                        cx={RING_SIZE / 2}
-                        cy={RING_SIZE / 2}
-                        r={RING_RADIUS}
-                        stroke="rgba(255,255,255,0.16)"
-                        strokeWidth={RING_STROKE}
-                        fill="none"
-                      />
-                      <Circle
-                        cx={RING_SIZE / 2}
-                        cy={RING_SIZE / 2}
-                        r={RING_RADIUS}
-                        stroke="url(#positioned-day-progress)"
-                        strokeWidth={RING_STROKE}
-                        strokeLinecap="round"
-                        fill="none"
-                        strokeDasharray={`${RING_CIRCUMFERENCE}`}
-                        transform={`rotate(-90 ${RING_SIZE / 2} ${RING_SIZE / 2})`}
-                      />
-                    </Svg>
+                    {completedWeekDays > 0 && (
+                      <Svg
+                        pointerEvents="none"
+                        width={RING_SIZE}
+                        height={RING_SIZE}
+                        style={styles.streakProgressRing}
+                      >
+                        <Defs>
+                          <SvgLinearGradient id="positioned-day-progress" x1="0%" y1="0%" x2="0%" y2="100%">
+                            {ringGradient.map((color, index) => (
+                              <Stop
+                                key={index}
+                                offset={`${(theme.gradientLocations?.[index] ?? index / (ringGradient.length - 1)) * 100}%`}
+                                stopColor={color}
+                              />
+                            ))}
+                          </SvgLinearGradient>
+                        </Defs>
+                        <Circle
+                          cx={RING_SIZE / 2}
+                          cy={RING_SIZE / 2}
+                          r={RING_RADIUS}
+                          stroke="rgba(255,255,255,0.16)"
+                          strokeWidth={RING_STROKE}
+                          fill="none"
+                        />
+                        <AnimatedCircle
+                          animatedProps={ringProps}
+                          cx={RING_SIZE / 2}
+                          cy={RING_SIZE / 2}
+                          r={RING_RADIUS}
+                          stroke="url(#positioned-day-progress)"
+                          strokeWidth={RING_STROKE}
+                          strokeLinecap="round"
+                          fill="none"
+                          strokeDasharray={`${RING_CIRCUMFERENCE} ${RING_CIRCUMFERENCE}`}
+                          strokeDashoffset={RING_CIRCUMFERENCE}
+                          transform={`rotate(-90 ${RING_SIZE / 2} ${RING_SIZE / 2})`}
+                        />
+                      </Svg>
+                    )}
                     <View
                       style={styles.streakCountCircle}
                       accessible
