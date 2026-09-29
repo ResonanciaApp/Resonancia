@@ -26,10 +26,10 @@ import Animated, {
   withTiming,
 } from "react-native-reanimated";
 
-import { ProgressMirrorSections } from "@/components/ProgressMirrorSections";
+import { ProgressMirrorSections, STREAK_WEEK_START_OFFSET_MS } from "@/components/ProgressMirrorSections";
 import { GROWTH_ROW_HEIGHT, GrowthJourney } from "@/components/GrowthJourney";
 import { CinematicFadeSlide } from "@/components/CinematicFadeSlide";
-import { getPositionedDayGradient } from "@/components/StreakWeekRow";
+import { getPositionedDayGradient, STREAK_WEEK_ENTRANCE_END_OFFSET_MS } from "@/components/StreakWeekRow";
 import { useSceneTheme } from "@/context/SceneThemeContext";
 import { ascentLevels, growthLevels } from "@/data/growthLevels";
 import { useColors } from "@/hooks/useColors";
@@ -43,6 +43,10 @@ const RING_CIRCUMFERENCE = 2 * Math.PI * RING_RADIUS;
 const RING_ENTRANCE_DELAY = 100;
 const DESCRIPTION_ENTRANCE_DELAY = 600;
 const STREAK_SECTION_ENTRANCE_DELAY = 1150;
+const JOURNEY_DIVIDER_ENTRANCE_DELAY =
+  STREAK_SECTION_ENTRANCE_DELAY + STREAK_WEEK_START_OFFSET_MS +
+  STREAK_WEEK_ENTRANCE_END_OFFSET_MS + 100;
+const JOURNEY_DIVIDER_ENTRANCE_DURATION = 540;
 const AnimatedCircle = Animated.createAnimatedComponent(Circle);
 
 function StreakCountDigit({
@@ -82,12 +86,15 @@ export default function ProgresoScreen() {
   const { weekFlags } = useStreak();
   const growthTopRef = useRef<number | null>(null);
   const timelineTopRef = useRef<number | null>(null);
+  const secondDividerTopRef = useRef<number | null>(null);
+  const secondHeadingTopRef = useRef<number | null>(null);
   const secondTimelineTopRef = useRef<number | null>(null);
   const viewportBottomRef = useRef(0);
-  const [visibleThrough, setVisibleThrough] = useState(-1);
+  const [visibleStep, setVisibleStep] = useState(-1);
+  const reduceMotion = useReducedMotion();
+  const [journeyReady, setJourneyReady] = useState(reduceMotion);
   const completedWeekDays = weekFlags.filter(Boolean).length;
   const ringGradient = useMemo(() => getPositionedDayGradient(theme.gradient), [theme.gradient]);
-  const reduceMotion = useReducedMotion();
   const animatedDays = useSharedValue(reduceMotion ? completedWeekDays : 0);
   const ringProps = useAnimatedProps(() => ({
     strokeDashoffset: RING_CIRCUMFERENCE *
@@ -111,26 +118,41 @@ export default function ProgresoScreen() {
     return () => cancelAnimation(animatedDays);
   }, [animatedDays, completedWeekDays, reduceMotion]));
 
+  const onJourneyDividerComplete = useCallback(() => setJourneyReady(true), []);
+
   const topPad = Platform.OS === "web" ? 67 : Math.max(insets.top, 40);
   const bottomPad = Platform.OS === "web" ? 34 : insets.bottom;
   const bgColors = theme.gradient as unknown as [string, string, ...string[]];
   const heroHeight = Math.min(410, Math.max(340, viewportWidth * 0.98)) - 75 + DESCRIPTION_SHIFT;
 
   const revealVisibleLevels = useCallback(() => {
-    if (growthTopRef.current === null || timelineTopRef.current === null) return;
+    if (growthTopRef.current === null || viewportBottomRef.current <= 0) return;
     const bottom = viewportBottomRef.current - growthTopRef.current;
-    let revealed = Math.min(
-      growthLevels.length - 1,
-      Math.floor((bottom - timelineTopRef.current) / GROWTH_ROW_HEIGHT),
-    );
+    // Eyebrow, title, then each row: keep the reveal order across both stages.
+    let revealed = bottom >= 0 ? 1 : -1;
+    if (timelineTopRef.current !== null) {
+      const firstRow = Math.min(
+        growthLevels.length - 1,
+        Math.floor((bottom - timelineTopRef.current) / GROWTH_ROW_HEIGHT),
+      );
+      if (firstRow >= 0) revealed = Math.max(revealed, 2 + firstRow);
+    }
+    if (secondDividerTopRef.current !== null && bottom >= secondDividerTopRef.current) {
+      revealed = Math.max(revealed, 2 + growthLevels.length);
+    }
+    if (secondHeadingTopRef.current !== null && bottom >= secondHeadingTopRef.current) {
+      revealed = Math.max(revealed, 5 + growthLevels.length);
+    }
     if (secondTimelineTopRef.current !== null) {
       const secondRevealed = Math.min(
         ascentLevels.length - 1,
         Math.floor((bottom - secondTimelineTopRef.current) / GROWTH_ROW_HEIGHT),
       );
-      if (secondRevealed >= 0) revealed = growthLevels.length + secondRevealed;
+      if (secondRevealed >= 0) {
+        revealed = Math.max(revealed, 6 + growthLevels.length + secondRevealed);
+      }
     }
-    setVisibleThrough((previous) => revealed > previous ? revealed : previous);
+    setVisibleStep((previous) => revealed > previous ? revealed : previous);
   }, []);
 
   return (
@@ -289,16 +311,32 @@ export default function ProgresoScreen() {
           </View>
         </View>
         <View style={styles.journeyGap} pointerEvents="none">
-          <View style={styles.journeyDivider} />
+          <CinematicFadeSlide
+            replayKey="progress-journey-divider"
+            delay={JOURNEY_DIVIDER_ENTRANCE_DELAY}
+            duration={JOURNEY_DIVIDER_ENTRANCE_DURATION}
+            translateYFrom={8}
+            onComplete={onJourneyDividerComplete}
+          >
+            <View style={styles.journeyDivider} />
+          </CinematicFadeSlide>
         </View>
         <GrowthJourney
-          visibleThrough={visibleThrough}
+          visibleStep={journeyReady ? visibleStep : -1}
           onLayout={(event) => {
             growthTopRef.current = event.nativeEvent.layout.y;
             revealVisibleLevels();
           }}
           onTimelineLayout={(event) => {
             timelineTopRef.current = event.nativeEvent.layout.y;
+            revealVisibleLevels();
+          }}
+          onSecondDividerLayout={(event) => {
+            secondDividerTopRef.current = event.nativeEvent.layout.y;
+            revealVisibleLevels();
+          }}
+          onSecondHeadingLayout={(event) => {
+            secondHeadingTopRef.current = event.nativeEvent.layout.y;
             revealVisibleLevels();
           }}
           onSecondTimelineLayout={(event) => {

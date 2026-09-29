@@ -90,6 +90,12 @@ export function ProfileSettingsSections({
       hideTitle: true,
       rows: [
         {
+          icon: "sliders",
+          label: "Personalizar notificaciones",
+          description: "Elige el contenido que quieres recibir",
+          onPress: () => router.push("/personalizar-notificaciones" as never),
+        },
+        {
           icon: "bell",
           label: "Recordatorios de práctica",
           description: "Mañana, tarde y noche",

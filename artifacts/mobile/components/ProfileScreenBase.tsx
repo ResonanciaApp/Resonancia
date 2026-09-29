@@ -1261,21 +1261,6 @@ export function ProfileScreenBase({
           </View>
           <View style={styles.profileHeaderActions}>
             <Pressable
-              onPress={() => router.push("/personalizar-notificaciones")}
-              hitSlop={8}
-              style={({ pressed }) => [styles.gearBtn, styles.notificationBellButton, { opacity: pressed ? 0.68 : 1 }]}
-              accessibilityRole="button"
-              accessibilityLabel="Personalizar notificaciones"
-              testID="profile-open-notification-preferences"
-            >
-              <MaterialCommunityIcons
-                name="bell-outline"
-                size={23}
-                color={colors.foreground}
-                style={styles.notificationBellIcon}
-              />
-            </Pressable>
-            <Pressable
               onPress={() => router.push("/configuracion-ajustes")}
               hitSlop={8}
               style={({ pressed }) => [styles.gearBtn, { opacity: pressed ? 0.68 : 1 }]}
@@ -2016,16 +2001,10 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     backgroundColor: "rgba(0,0,0,0.22)",
   },
-  notificationBellButton: {
-    transform: [{ translateX: -2 }, { translateY: -2 }],
-  },
   profileHeaderActions: {
     flexDirection: "row",
     alignItems: "center",
     gap: 6,
-  },
-  notificationBellIcon: {
-    transform: [{ translateX: 0 }, { translateY: -1 }],
   },
   giftIcon: {
     width: 35,

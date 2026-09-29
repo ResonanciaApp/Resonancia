@@ -12,6 +12,7 @@ type Props = {
   children: React.ReactNode;
   delay?: number;
   duration?: number;
+  onComplete?: () => void;
   replayKey: string | number;
   scaleFrom?: number;
   style?: StyleProp<ViewStyle>;
@@ -27,6 +28,7 @@ export function CinematicFadeSlide({
   children,
   delay = 0,
   duration = 3000,
+  onComplete,
   replayKey,
   scaleFrom = 1,
   style,
@@ -48,6 +50,7 @@ export function CinematicFadeSlide({
       scale.setValue(1);
       translateY.setValue(0);
       setIsAvailable(true);
+      onComplete?.();
       return;
     }
 
@@ -89,7 +92,9 @@ export function CinematicFadeSlide({
       }),
     ]);
 
-    animation.start();
+    animation.start(({ finished }) => {
+      if (finished) onComplete?.();
+    });
     return () => {
       clearTimeout(availabilityTimer);
       animation.stop();
@@ -99,6 +104,7 @@ export function CinematicFadeSlide({
     delay,
     duration,
     opacity,
+    onComplete,
     reduceMotion,
     replayKey,
     scale,

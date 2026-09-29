@@ -16,6 +16,7 @@ import { computeActiveDays, computeMaxStreak } from "@/utils/stats";
 import { PREMIUM_STAR_GRADIENT } from "@/constants/colors";
 
 const SECTION_BACKGROUND = "rgba(0,0,0,0.22)";
+export const STREAK_WEEK_START_OFFSET_MS = 650;
 
 export function ProgressMirrorSections({
   showSectionBorders = true,
@@ -123,7 +124,7 @@ export function ProgressMirrorSections({
   };
 
   const synchronizedStreakDelay = syncStreakStatsWithWeek && showStreakWeek
-    ? entranceBaseDelay + 650
+    ? entranceBaseDelay + STREAK_WEEK_START_OFFSET_MS
     : null;
 
   const filterControl = (
@@ -265,7 +266,7 @@ export function ProgressMirrorSections({
         <StreakWeekRow
           animateEntrance={animateEntrance}
           entranceReplayKey={`${entranceReplayKey}:week`}
-          entranceBaseDelay={entranceBaseDelay + 650}
+          entranceBaseDelay={entranceBaseDelay + STREAK_WEEK_START_OFFSET_MS}
         />
       </Animated.View>
     </Pressable>
