@@ -1,6 +1,5 @@
-import { Image } from "expo-image";
 import React, { useEffect } from "react";
-import { StyleSheet, Text, View, type LayoutChangeEvent } from "react-native";
+import { Image, StyleSheet, Text, View, type LayoutChangeEvent } from "react-native";
 import Animated, {
   Easing,
   useAnimatedStyle,
@@ -40,8 +39,9 @@ function GrowthLevelImage({
     <View style={[styles.imageWrap, status === "locked" && styles.lockedImage]} importantForAccessibility="no">
       <Image
         source={level.image}
-        contentFit="contain"
+        resizeMode="contain"
         style={styles.levelImage}
+        onError={(event) => console.warn(`[GrowthJourney] No se pudo cargar ${level.id}: ${event.nativeEvent.error}`)}
         accessibilityElementsHidden
         importantForAccessibility="no"
       />
@@ -98,19 +98,20 @@ function GrowthRow({
   }, [pulse, reduceMotion, unlock, visible]);
 
   const imageEntranceStyle = useAnimatedStyle(() => ({
-    opacity: entrance.value,
+    // Keep the illustration visible even when a native ScrollView delays (or
+    // skips) a visibility callback. Entrance motion should never gate content.
+    opacity: 0.8 + entrance.value * 0.2,
     transform: [
       { translateY: (1 - entrance.value) * 16 },
       { scale: 0.94 + entrance.value * 0.06 + pulse.value * 0.035 },
     ],
   }));
   const copyEntranceStyle = useAnimatedStyle(() => ({
-    opacity: textEntrance.value,
+    opacity: 0.8 + textEntrance.value * 0.2,
     transform: [{ translateY: (1 - textEntrance.value) * 9 }],
   }));
   const litLineStyle = useAnimatedStyle(() => ({ opacity: lineLight.value }));
   const nodeStyle = useAnimatedStyle(() => ({
-    opacity: entrance.value,
     transform: [{ scale: 1 + pulse.value * 0.22 }],
   }));
 
