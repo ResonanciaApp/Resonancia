@@ -20,7 +20,6 @@ const GROWTH_COLORS = {
   current: MEMBERSHIP_AURORA.premium.accent,
   muted: "rgba(196,194,222,0.8)",
   inactiveLine: "rgba(174,161,237,0.28)",
-  nodeFill: "rgba(0,0,0,0.20)",
 } as const;
 
 type Status = "current" | "locked";
@@ -32,13 +31,11 @@ function GrowthLevelImage({
   level: GrowthLevel;
   status: Status;
 }) {
-  // All eight local PNGs have a baked-in radial alpha fade. The translucent
-  // pixels reveal the actual screen background rather than a tinted rectangle.
   return (
     <View style={[styles.imageWrap, status === "locked" && styles.lockedImage]} importantForAccessibility="no">
       <Image
         source={level.image}
-        resizeMode="contain"
+        resizeMode="cover"
         style={styles.levelImage}
         onError={(event) => console.warn(`[GrowthJourney] No se pudo cargar ${level.id}: ${event.nativeEvent.error}`)}
         accessibilityElementsHidden
@@ -102,8 +99,9 @@ function GrowthRow({
         style={[
           styles.node,
           {
-            borderColor: status === "current" ? GROWTH_COLORS.current : GROWTH_COLORS.inactiveLine,
-            backgroundColor: status === "current" ? GROWTH_COLORS.current : GROWTH_COLORS.nodeFill,
+            borderWidth: status === "current" ? 2 : 0,
+            borderColor: GROWTH_COLORS.current,
+            backgroundColor: status === "current" ? GROWTH_COLORS.current : GROWTH_COLORS.inactiveLine,
             shadowColor: GROWTH_COLORS.current,
             shadowOpacity: status === "current" ? 0.8 : 0,
           },
@@ -147,16 +145,11 @@ export function GrowthJourney({
   onLayout: (event: LayoutChangeEvent) => void;
   onTimelineLayout: (event: LayoutChangeEvent) => void;
 }) {
-  const colors = useColors();
   const reduceMotion = useReducedMotion();
   // Visual preview: Semilla is the only active stage until progression is enabled.
 
   return (
     <View style={styles.section} onLayout={onLayout}>
-      <Text style={[styles.title, { color: colors.foreground }]}>Tu camino de crecimiento</Text>
-      <Text style={[styles.subtitle, { color: colors.mutedForeground }]}>
-        Cada 7 días de práctica alcanzas un nuevo nivel y tu semilla se transforma.
-      </Text>
       <View style={styles.timeline} onLayout={onTimelineLayout}>
         {growthLevels.map((level, index) => (
           <GrowthRow
@@ -178,20 +171,6 @@ const styles = StyleSheet.create({
     marginTop: 18,
     paddingBottom: 12,
   },
-  title: {
-    fontFamily: "Manrope",
-    fontSize: 17,
-    fontWeight: "700",
-    textAlign: "center",
-  },
-  subtitle: {
-    fontFamily: "Manrope",
-    fontSize: 12,
-    lineHeight: 18,
-    textAlign: "center",
-    marginTop: 7,
-    marginBottom: 24,
-  },
   timeline: { position: "relative" },
   row: { height: GROWTH_ROW_HEIGHT, position: "relative", justifyContent: "center" },
   lineBase: {
@@ -208,7 +187,6 @@ const styles = StyleSheet.create({
     top: GROWTH_ROW_HEIGHT / 2 - 8,
     width: 18,
     height: 18,
-    borderWidth: 2,
     borderRadius: 9,
     shadowOffset: { width: 0, height: 0 },
     shadowRadius: 8,
@@ -217,18 +195,18 @@ const styles = StyleSheet.create({
   },
   art: {
     position: "absolute",
-    left: 7,
-    top: 24,
-    width: 153,
-    height: 153,
+    left: 17,
+    top: 34,
+    width: 133,
+    height: 133,
   },
-  artOdd: { left: 4 },
-  artEven: { left: 11 },
-  imageWrap: { flex: 1 },
+  artOdd: { left: 14 },
+  artEven: { left: 21 },
+  imageWrap: { flex: 1, borderRadius: 21, overflow: "hidden" },
   levelImage: { width: "100%", height: "100%" },
   lockedImage: { opacity: 0.44 },
   copy: {
-    marginLeft: 151,
+    marginLeft: 166,
     flex: 1,
     justifyContent: "center",
     paddingRight: 1,

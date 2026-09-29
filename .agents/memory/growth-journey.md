@@ -3,11 +3,11 @@ name: Camino de crecimiento
 description: Criterio de progreso y tratamiento visual acordados para la línea de tiempo botánica de Tu progreso.
 ---
 
-Cuando se active el progreso funcional, los niveles del camino deberán depender del total de días **activos acumulados**, no de la racha actual ni de la mayor racha. Un nivel alcanzado no debe retroceder cuando se corta una racha. Las ocho imágenes deben tener bordes con transparencia radial para fundirse con el fondo real; no sustituirlas por fotos rectangulares opacas.
+Cuando se active el progreso funcional, los niveles del camino deberán depender del total de días **activos acumulados**, no de la racha actual ni de la mayor racha. Un nivel alcanzado no debe retroceder cuando se corta una racha. El arte ahora se muestra cuadrado, opaco y recortado con esquinas redondeadas de radio 21, sin difuminado radial.
 
-**Why:** El usuario escogió explícitamente los días acumulados aunque no sean consecutivos entre tres opciones, y pidió que las plantas parecieran emerger del ambiente, no ocho fotos pegadas.
+**Why:** El usuario escogió explícitamente los días acumulados aunque no sean consecutivos entre tres opciones. Después cambió la dirección visual de arte integrado con desvanecido a imagen cuadrada sin difuminado.
 
-**How to apply:** Al ampliar rangos o cambiar arte, mantener la métrica de días activos canónicos y el desvanecido alfa radial de los PNG (o un equivalente real en móvil) antes de integrarlos en la timeline.
+**How to apply:** Al ampliar rangos o cambiar arte, mantener la métrica de días activos canónicos para cuando se active el progreso; no volver a aplicar máscara radial a las imágenes salvo nueva indicación.
 
 La visibilidad de las ilustraciones no debe depender por completo de un callback de scroll ni arrancar desde opacidad cero en iOS. El movimiento de entrada puede añadir un matiz, pero el arte local debe mostrarse incluso si ese callback se retrasa.
 
