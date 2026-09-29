@@ -1333,8 +1333,8 @@ export function ProfileScreenBase({
 
               {dedicated && (
                 <Text style={styles.profileLevelText}>
-                  <Text style={{ color: POSITIONED_DAY_GRADIENT[0] }}>Nivel 1: </Text>
-                  <Text style={{ color: colors.foreground }}>Semilla</Text>
+                  <Text style={{ color: POSITIONED_DAY_GRADIENT[0] }}>Nivel 0: </Text>
+                  <Text style={{ color: colors.foreground }}>Intención</Text>
                 </Text>
               )}
 

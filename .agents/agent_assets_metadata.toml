@@ -3195,3 +3195,17 @@ mtime_ms = 1790647608643
 storage_uri = "gcs://replit-rams-assets-worf/rams/assets/repl:5427b858-8852-4aed-954b-cd80d9fa4b6b/81f935f1-66e8-4795-829d-e27b8ce08cd7/ff942e8c-8ba8-4cf8-bae3-1a19d62562ff"
 storage_version_token = "1790647781517628"
 content_type = "image/png"
+
+[[outputs]]
+id = "qC0xIsgUxSbZSobOfencp"
+uri = "file://attached_assets/generated_images/ascenso-preview.png"
+type = "image"
+title = "El ascenso — ocho vistas"
+description = "Del sendero en el bosque a una vista por encima de las nubes, en orden de lectura."
+logical_id = "bb5806b2-c4dd-481c-86f6-79205bdb01fb"
+content_hash = "sha256:250066e3647b7973d3e1f5da2a6ab7eca13a44792aa55b947b9091d8335e28bf"
+size = 259813
+mtime_ms = 1790648454473
+storage_uri = "gcs://replit-rams-assets-worf/rams/assets/repl:5427b858-8852-4aed-954b-cd80d9fa4b6b/bb5806b2-c4dd-481c-86f6-79205bdb01fb/9a997e23-1ecf-447d-9d8b-3f4d5f0dfa1b"
+storage_version_token = "1790648489255907"
+content_type = "image/png"

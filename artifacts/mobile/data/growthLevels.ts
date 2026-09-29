@@ -22,8 +22,21 @@ export const growthLevels: readonly GrowthLevel[] = [
   { id: "expansion", name: "Expansión", startDay: 50, endDay: 56, story: "Tu práctica se expande y transforma tu energía.", image: require("../assets/images/growth/08-expansion.png") },
 ];
 
+export const ascentLevels: readonly GrowthLevel[] = [
+  { id: "ascenso-inicio", name: "Inicio", startDay: 57, endDay: 63, story: "Das el primer paso hacia un horizonte nuevo.", image: require("../assets/images/growth/ascenso-01-inicio.png") },
+  { id: "ascenso-sendero", name: "Sendero", startDay: 64, endDay: 70, story: "Encuentras tu ritmo entre árboles y caminos.", image: require("../assets/images/growth/ascenso-02-sendero.png") },
+  { id: "ascenso-ascenso", name: "Ascenso", startDay: 71, endDay: 77, story: "Cada paso te lleva más allá de lo conocido.", image: require("../assets/images/growth/ascenso-03-ascenso.png") },
+  { id: "ascenso-altura", name: "Altura", startDay: 78, endDay: 84, story: "Desde arriba, reconoces cuánto has avanzado.", image: require("../assets/images/growth/ascenso-04-altura.png") },
+  { id: "ascenso-mirador", name: "Mirador", startDay: 85, endDay: 91, story: "Te detienes a mirar el camino recorrido.", image: require("../assets/images/growth/ascenso-05-mirador.png") },
+  { id: "ascenso-cumbre", name: "Cumbre", startDay: 92, endDay: 98, story: "Llegas alto sin perder lo que te trajo aquí.", image: require("../assets/images/growth/ascenso-06-cumbre.png") },
+  { id: "ascenso-horizonte", name: "Horizonte", startDay: 99, endDay: 105, story: "Descubres que siempre hay más por explorar.", image: require("../assets/images/growth/ascenso-07-horizonte.png") },
+  { id: "ascenso-trascendencia", name: "Trascendencia", startDay: 106, endDay: 112, story: "Tu mirada se abre más allá de la montaña.", image: require("../assets/images/growth/ascenso-08-trascendencia.png") },
+];
+
+export const allGrowthLevels: readonly GrowthLevel[] = [...growthLevels, ...ascentLevels];
+
 export function growthLevelIndex(days: number): number {
   const safeDays = Number.isFinite(days) ? Math.max(0, Math.floor(days)) : 0;
-  const next = growthLevels.findIndex((level) => safeDays <= level.endDay);
-  return next === -1 ? growthLevels.length - 1 : next;
+  const next = allGrowthLevels.findIndex((level) => safeDays <= level.endDay);
+  return next === -1 ? allGrowthLevels.length - 1 : next;
 }

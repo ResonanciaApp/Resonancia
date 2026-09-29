@@ -10,7 +10,7 @@ import Animated, {
 } from "react-native-reanimated";
 
 import { MEMBERSHIP_AURORA, POSITIONED_DAY_GRADIENT } from "@/constants/colors";
-import { growthLevels, type GrowthLevel } from "@/data/growthLevels";
+import { ascentLevels, growthLevels, type GrowthLevel } from "@/data/growthLevels";
 import { useColors } from "@/hooks/useColors";
 
 export const GROWTH_ROW_HEIGHT = 205;
@@ -22,7 +22,7 @@ const GROWTH_COLORS = {
   inactiveLine: "rgba(174,161,237,0.28)",
 } as const;
 
-type Status = "previous" | "current" | "locked";
+type Status = "current" | "locked";
 
 function GrowthLevelImage({
   level,
@@ -47,12 +47,14 @@ function GrowthLevelImage({
 
 function GrowthRow({
   level,
-  index,
+  number,
+  hasNext,
   status,
   visible,
 }: {
   level: GrowthLevel;
-  index: number;
+  number: number;
+  hasNext: boolean;
   status: Status;
   visible: boolean;
 }) {
@@ -92,9 +94,9 @@ function GrowthRow({
     <View
       style={styles.row}
       accessible
-      accessibilityLabel={`Nivel ${index}, ${level.name}, ${dayLabel} de práctica, ${status === "current" ? "nivel actual" : status === "previous" ? "etapa previa" : "por desbloquear"}. ${level.story}`}
+      accessibilityLabel={`Nivel ${number}, ${level.name}, ${dayLabel} de práctica, ${status === "current" ? "nivel actual" : "por desbloquear"}. ${level.story}`}
     >
-      {index < growthLevels.length - 1 && (
+      {hasNext && (
         <View style={styles.lineBase} pointerEvents="none" />
       )}
       <View
@@ -104,9 +106,7 @@ function GrowthRow({
           {
             borderWidth: status === "current" ? 2 : 0,
             borderColor: GROWTH_COLORS.current,
-            backgroundColor: status === "current"
-              ? GROWTH_COLORS.current
-              : status === "previous" ? GROWTH_COLORS.line : GROWTH_COLORS.inactiveLine,
+            backgroundColor: status === "current" ? GROWTH_COLORS.current : GROWTH_COLORS.inactiveLine,
             shadowColor: GROWTH_COLORS.current,
             shadowOpacity: status === "current" ? 0.8 : 0,
           },
@@ -122,7 +122,7 @@ function GrowthRow({
       </Animated.View>
       <Animated.View style={[styles.copy, status === "locked" && styles.lockedCopy, copyEntranceStyle]}>
         <Text style={[styles.eyebrow, { color: status === "locked" ? GROWTH_COLORS.muted : GROWTH_COLORS.line }]}>
-          NIVEL {index}
+          NIVEL {number}
         </Text>
         <Text style={[styles.name, { color: status === "locked" ? GROWTH_COLORS.muted : colors.foreground }]}>
           {level.name}
@@ -144,14 +144,16 @@ export function GrowthJourney({
   visibleThrough,
   onLayout,
   onTimelineLayout,
+  onSecondTimelineLayout,
 }: {
   visibleThrough: number;
   onLayout: (event: LayoutChangeEvent) => void;
   onTimelineLayout: (event: LayoutChangeEvent) => void;
+  onSecondTimelineLayout: (event: LayoutChangeEvent) => void;
 }) {
   const reduceMotion = useReducedMotion();
   const colors = useColors();
-  // Visual preview: Semilla is the only active stage until progression is enabled.
+  // Visual preview: Intención is the only active level until progression is enabled.
 
   return (
     <View style={styles.section} onLayout={onLayout}>
@@ -166,9 +168,28 @@ export function GrowthJourney({
           <GrowthRow
             key={level.id}
             level={level}
-            index={index}
-            status={index === 0 ? "previous" : index === 1 ? "current" : "locked"}
+            number={index}
+            hasNext={index < growthLevels.length - 1}
+            status={index === 0 ? "current" : "locked"}
             visible={reduceMotion || index <= visibleThrough}
+          />
+        ))}
+      </View>
+      <View style={[styles.sectionHeading, styles.secondStageHeading]}>
+        <Text style={styles.sectionEyebrow}>SEGUNDA ETAPA</Text>
+        <Text style={[styles.sectionTitle, { color: colors.foreground }]} accessibilityRole="header">
+          El ascenso
+        </Text>
+      </View>
+      <View style={styles.timeline} onLayout={onSecondTimelineLayout}>
+        {ascentLevels.map((level, index) => (
+          <GrowthRow
+            key={level.id}
+            level={level}
+            number={index + 1}
+            hasNext={index < ascentLevels.length - 1}
+            status="locked"
+            visible={reduceMotion || growthLevels.length + index <= visibleThrough}
           />
         ))}
       </View>
@@ -182,6 +203,7 @@ const styles = StyleSheet.create({
     paddingBottom: 12,
   },
   sectionHeading: { alignItems: "center", marginBottom: 8 },
+  secondStageHeading: { marginTop: 42 },
   sectionEyebrow: {
     fontFamily: "Manrope",
     fontSize: 11,

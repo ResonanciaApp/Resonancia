@@ -15,8 +15,8 @@ La visibilidad de las ilustraciones no debe depender por completo de un callback
 
 **How to apply:** Mantener una opacidad base visible y preferir el cargador nativo para PNG locales del recorrido. Si vuelve a faltar arte en un dispositivo, comprobar eventos de error de carga antes de atribuirlo al diseño.
 
-Por ahora, mostrar **solo Semilla activa** y los niveles siguientes apagados, sin importar los días registrados. Este es un estado temporal para evaluar el diseño, no un cambio de criterio para el futuro.
+Por ahora, mostrar **solo Intención (nivel 0) activa**, con el punto dorado; Semilla y todos los niveles siguientes quedan apagados, sin importar los días registrados. Este es un estado temporal para evaluar el diseño, no un cambio de criterio para el futuro.
 
-**Why:** El usuario confirmó explícitamente que están probando el diseño, no la funcionalidad todavía, y pidió el punto dorado en Semilla aunque la cuenta pudiera alcanzar Expansión.
+**Why:** El usuario confirmó explícitamente que están probando el diseño, no la funcionalidad todavía; después corrigió la vista previa para trasladar el punto dorado de Semilla a Intención.
 
 **How to apply:** No reconectar las etapas a estadísticas hasta que se apruebe la dirección visual y el usuario pida activar el progreso. En ese momento usar los días activos acumulados no consecutivos acordados, sin tomar la racha como sustituto.

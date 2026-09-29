@@ -31,7 +31,7 @@ import { GROWTH_ROW_HEIGHT, GrowthJourney } from "@/components/GrowthJourney";
 import { CinematicFadeSlide } from "@/components/CinematicFadeSlide";
 import { getPositionedDayGradient } from "@/components/StreakWeekRow";
 import { useSceneTheme } from "@/context/SceneThemeContext";
-import { growthLevels } from "@/data/growthLevels";
+import { ascentLevels, growthLevels } from "@/data/growthLevels";
 import { useColors } from "@/hooks/useColors";
 import { useStreak } from "@/hooks/useStreak";
 
@@ -82,6 +82,7 @@ export default function ProgresoScreen() {
   const { weekFlags } = useStreak();
   const growthTopRef = useRef<number | null>(null);
   const timelineTopRef = useRef<number | null>(null);
+  const secondTimelineTopRef = useRef<number | null>(null);
   const viewportBottomRef = useRef(0);
   const [visibleThrough, setVisibleThrough] = useState(-1);
   const completedWeekDays = weekFlags.filter(Boolean).length;
@@ -117,13 +118,18 @@ export default function ProgresoScreen() {
 
   const revealVisibleLevels = useCallback(() => {
     if (growthTopRef.current === null || timelineTopRef.current === null) return;
-    const revealed = Math.min(
+    const bottom = viewportBottomRef.current - growthTopRef.current;
+    let revealed = Math.min(
       growthLevels.length - 1,
-      Math.floor(
-        (viewportBottomRef.current - growthTopRef.current - timelineTopRef.current) /
-          GROWTH_ROW_HEIGHT,
-      ),
+      Math.floor((bottom - timelineTopRef.current) / GROWTH_ROW_HEIGHT),
     );
+    if (secondTimelineTopRef.current !== null) {
+      const secondRevealed = Math.min(
+        ascentLevels.length - 1,
+        Math.floor((bottom - secondTimelineTopRef.current) / GROWTH_ROW_HEIGHT),
+      );
+      if (secondRevealed >= 0) revealed = growthLevels.length + secondRevealed;
+    }
     setVisibleThrough((previous) => revealed > previous ? revealed : previous);
   }, []);
 
@@ -293,6 +299,10 @@ export default function ProgresoScreen() {
           }}
           onTimelineLayout={(event) => {
             timelineTopRef.current = event.nativeEvent.layout.y;
+            revealVisibleLevels();
+          }}
+          onSecondTimelineLayout={(event) => {
+            secondTimelineTopRef.current = event.nativeEvent.layout.y;
             revealVisibleLevels();
           }}
         />
