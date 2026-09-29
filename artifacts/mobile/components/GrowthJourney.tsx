@@ -110,7 +110,6 @@ function GrowthRow({
       <Animated.View
         style={[
           styles.art,
-          index % 2 === 0 ? styles.artOdd : styles.artEven,
           imageEntranceStyle,
         ]}
       >
@@ -195,14 +194,12 @@ const styles = StyleSheet.create({
   },
   art: {
     position: "absolute",
-    left: 17,
+    left: 14,
     top: 34,
     width: 133,
     height: 133,
   },
-  artOdd: { left: 14 },
-  artEven: { left: 21 },
-  imageWrap: { flex: 1, borderRadius: 21, overflow: "hidden" },
+  imageWrap: { flex: 1, borderRadius: 67, overflow: "hidden" },
   levelImage: { width: "100%", height: "100%" },
   lockedImage: { opacity: 0.44 },
   copy: {

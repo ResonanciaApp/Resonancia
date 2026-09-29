@@ -3,11 +3,11 @@ name: Camino de crecimiento
 description: Criterio de progreso y tratamiento visual acordados para la línea de tiempo botánica de Tu progreso.
 ---
 
-Cuando se active el progreso funcional, los niveles del camino deberán depender del total de días **activos acumulados**, no de la racha actual ni de la mayor racha. Un nivel alcanzado no debe retroceder cuando se corta una racha. El arte ahora se muestra cuadrado, opaco y recortado con esquinas redondeadas de radio 21, sin difuminado radial.
+Cuando se active el progreso funcional, los niveles del camino deberán depender del total de días **activos acumulados**, no de la racha actual ni de la mayor racha. Un nivel alcanzado no debe retroceder cuando se corta una racha. El arte se muestra circular, alineado en una columna y fundido en el fondo con alfa radial suave en los bordes; no dejar marcos cuadrados visibles.
 
-**Why:** El usuario escogió explícitamente los días acumulados aunque no sean consecutivos entre tres opciones. Después cambió la dirección visual de arte integrado con desvanecido a imagen cuadrada sin difuminado.
+**Why:** El usuario escogió explícitamente los días acumulados aunque no sean consecutivos entre tres opciones. Tras probar imágenes cuadradas opacas, pidió volver a difuminar los bordes, alinear todas las imágenes y finalmente hacerlas circulares.
 
-**How to apply:** Al ampliar rangos o cambiar arte, mantener la métrica de días activos canónicos para cuando se active el progreso; no volver a aplicar máscara radial a las imágenes salvo nueva indicación.
+**How to apply:** Al ampliar rangos o cambiar arte, mantener la métrica de días activos canónicos para cuando se active el progreso; conservar la forma circular, el desvanecido radial y la alineación común salvo nueva indicación.
 
 La visibilidad de las ilustraciones no debe depender por completo de un callback de scroll ni arrancar desde opacidad cero en iOS. El movimiento de entrada puede añadir un matiz, pero el arte local debe mostrarse incluso si ese callback se retrasa.
 
