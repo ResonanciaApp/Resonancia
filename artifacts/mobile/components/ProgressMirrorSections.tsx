@@ -406,12 +406,14 @@ export function ProgressMirrorSections({
               <Stat
                 icon={
                   longestStreakIconColor ? (
-                    <MaterialCommunityIcons
-                      name="spa"
-                      size={18}
-                      color={longestStreakIconColor}
-                      style={[styles.goldenLotusIcon, { textShadowColor: `${longestStreakIconColor}CC` }]}
-                    />
+                    <MaskedView maskElement={<MaterialCommunityIcons name="spa" size={18} color="#FFFFFF" />}>
+                      <MaterialCommunityIcons
+                        name="spa"
+                        size={18}
+                        color={longestStreakIconColor}
+                        style={[styles.goldenLotusIcon, { textShadowColor: `${longestStreakIconColor}CC` }]}
+                      />
+                    </MaskedView>
                   ) : (
                     <MaskedView maskElement={<MaterialCommunityIcons name="spa" size={18} color="#FFFFFF" />}>
                       <LinearGradient

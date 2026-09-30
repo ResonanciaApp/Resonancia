@@ -78,13 +78,11 @@ function CollectionPill({
   icon,
   onPress,
   backgroundColor,
-  borderColor,
 }: {
   label: string;
   icon: string;
   onPress: () => void;
   backgroundColor?: string;
-  borderColor?: string;
 }) {
   const scale = useRef(new Animated.Value(1)).current;
 
@@ -118,7 +116,6 @@ function CollectionPill({
         style={[
           styles.pill,
           backgroundColor ? { backgroundColor } : null,
-          borderColor ? { borderColor } : null,
           { transform: [{ scale }] },
         ]}
       >
@@ -160,7 +157,6 @@ export default function SonidosScreen() {
         ? "rgba(191,207,255,0.1)"
         : "rgba(181,211,255,0.1)";
   const inactiveTabSurface = "rgba(0,0,0,0.22)";
-  const inactiveTabBorder = "rgba(241,224,255,0.25)";
   const slideX = useRef(new Animated.Value(W)).current;
   const stickyHeaderOpacity = useRef(new Animated.Value(0)).current;
   const stickyBorderOpacity = useRef(new Animated.Value(0)).current;
@@ -395,7 +391,6 @@ export default function SonidosScreen() {
                   icon={collection.icon}
                   onPress={() => openCategory(`/sound-tag/${collection.id}`)}
                   backgroundColor={inactiveTabSurface}
-                  borderColor={inactiveTabBorder}
                 />
               ))}
             </ScrollView>
@@ -639,8 +634,6 @@ const styles = StyleSheet.create({
     alignItems: "center",
     justifyContent: "center",
     backgroundColor: "rgba(0,0,0,0.22)",
-    borderWidth: 1.2,
-    borderColor: "rgba(241,224,255,0.25)",
     overflow: "hidden",
   },
   sonidosTabsHeader: {
@@ -677,8 +670,6 @@ const styles = StyleSheet.create({
     gap: 12,
     overflow: "hidden",
     backgroundColor: "rgba(0,0,0,0.22)",
-    borderWidth: 1.2,
-    borderColor: "rgba(241,224,255,0.25)",
   },
   pillText: {
     fontFamily: "Manrope",

@@ -353,7 +353,7 @@ function Inicio2LotusStreak({ lightBackground = false }: { lightBackground?: boo
     <View
       style={[
         styles.inicio2HeroLotusContent,
-        { backgroundColor: "rgba(0,0,0,0.35)" },
+        { backgroundColor: "rgba(0,0,0,0.25)" },
         lightBackground && styles.inicio3HeroLotusSurface,
       ]}
     >
@@ -365,7 +365,7 @@ function Inicio2LotusStreak({ lightBackground = false }: { lightBackground?: boo
       >
         {currentStreak}
       </Text>
-      <MaterialCommunityIcons name="spa" size={22} color="#FFFFFF" />
+      <MaterialCommunityIcons name="spa" size={22} color={MEMBERSHIP_AURORA.premium.accent} />
     </View>
   );
 }
@@ -2008,7 +2008,7 @@ const Inicio2HeroStatic = React.memo(function Inicio2HeroStatic({
               {isInicio3 ? (
                 <View style={[styles.inicio3ProfileLotusContent, styles.inicio3HeroLotusSurface]}>
                   <Text style={styles.inicio3ProfileLotusCount}>{currentStreak}</Text>
-                  <MaterialCommunityIcons name="spa" size={21} color="#A8A8A8" />
+                  <MaterialCommunityIcons name="spa" size={21} color={MEMBERSHIP_AURORA.premium.accent} />
                 </View>
               ) : (
                 <Inicio2LotusStreak />
@@ -3762,7 +3762,7 @@ const styles = StyleSheet.create({
   inicio3HeroLotusSurface: {
     height: 39,
     borderRadius: 19.5,
-    backgroundColor: "rgba(0,0,0,0.35)",
+    backgroundColor: "rgba(0,0,0,0.25)",
     borderWidth: 1,
     borderColor: "rgba(255,255,255,0.2)",
   },
