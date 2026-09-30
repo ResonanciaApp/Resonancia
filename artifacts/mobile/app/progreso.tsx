@@ -258,18 +258,20 @@ export default function ProgresoScreen() {
                   animateEntrance
                   entranceReplayKey="progress-sections"
                   entranceBaseDelay={0}
-                  syncStreakStatsWithWeek
                   showSectionBorders={false}
                   showPersonalStats={false}
                   showCalendar={false}
+                  separateStreakHistory
+                  weeklySectionBackgroundColor="transparent"
+                  streakHistoryTopPadding={17}
                   longestStreakLabel="RACHA ACUMULADA"
                   longestStreakIconColor={MEMBERSHIP_AURORA.premium.accent}
-                  sectionBackgroundColor="rgba(0,0,0,0.2)"
+                  sectionBackgroundColor="rgba(0,0,0,0.22)"
                   sectionHorizontalPadding={20}
-                  sectionTopPadding={16}
-                  sectionBottomPadding={19}
+                  sectionTopPadding={21}
+                  sectionBottomPadding={15}
                   sectionMarginBottom={0}
-                  canonicalVerticalInsets
+                  streakMarginBottom={21}
                 />
               </View>
             </View>

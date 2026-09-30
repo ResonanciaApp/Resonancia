@@ -1,5 +1,5 @@
 import { Router, type IRouter } from "express";
-import { and, desc, eq, gte, sql } from "drizzle-orm";
+import { and, desc, eq, gte, lte, sql } from "drizzle-orm";
 import {
   db,
   playbackHistoryTable,
@@ -15,6 +15,11 @@ import {
   SetMyProgressBody,
 } from "@workspace/api-zod";
 import { requireAuth } from "../middlewares/requireAuth";
+import {
+  getCompletedWeekStarts,
+  localDateKey,
+  normalizeStreakTimeZone,
+} from "../lib/completedStreakWeeks";
 
 const router: IRouter = Router();
 
@@ -45,26 +50,22 @@ function dayKeyInTz(isoString: string | Date, tz: string): string {
 }
 
 function todayInTz(tz: string): string {
-  return dayKeyInTz(new Date().toISOString(), tz);
+  return localDateKey(new Date(), tz);
 }
 
 /** Lunes de la semana actual en la zona horaria dada, como "YYYY-MM-DD". */
 function mondayOfCurrentWeek(tz: string): string {
-  const now = new Date();
-  const localStr = now.toLocaleString("en-US", { timeZone: tz });
-  const localDate = new Date(localStr);
-  const dow = localDate.getDay(); // 0=Dom
-  const daysFromMonday = dow === 0 ? 6 : dow - 1;
-  const monday = new Date(now);
-  monday.setDate(now.getDate() - daysFromMonday);
-  return dayKeyInTz(monday.toISOString(), tz);
+  const [year, month, day] = todayInTz(tz).split("-").map(Number);
+  const weekday = new Date(Date.UTC(year, month - 1, day)).getUTCDay();
+  const daysFromMonday = weekday === 0 ? 6 : weekday - 1;
+  return addDays(todayInTz(tz), -daysFromMonday);
 }
 
 /** Añade N días a una fecha "YYYY-MM-DD" y devuelve otra "YYYY-MM-DD". */
 function addDays(dateStr: string, n: number): string {
   const [y, m, d] = dateStr.split("-").map(Number);
-  const date = new Date(y, m - 1, d + n);
-  return `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, "0")}-${String(date.getDate()).padStart(2, "0")}`;
+  const date = new Date(Date.UTC(y, m - 1, d + n));
+  return `${date.getUTCFullYear()}-${String(date.getUTCMonth() + 1).padStart(2, "0")}-${String(date.getUTCDate()).padStart(2, "0")}`;
 }
 
 type DayAgg = { minutes: number; completed: boolean };
@@ -236,9 +237,11 @@ router.post("/me/plays", requireAuth, async (req, res) => {
 
 router.get("/me/streak", requireAuth, async (req, res) => {
   const me = req.currentUser!;
-  const tz = typeof req.query.tz === "string" && req.query.tz ? req.query.tz : "UTC";
+  const requestedTz = typeof req.query.tz === "string" && req.query.tz ? req.query.tz : "UTC";
+  const tz = normalizeStreakTimeZone(requestedTz);
 
   try {
+    const now = new Date();
     const rows = await db
       .select({
         minutes: playbackHistoryTable.minutes,
@@ -246,12 +249,37 @@ router.get("/me/streak", requireAuth, async (req, res) => {
         playedAt: playbackHistoryTable.playedAt,
       })
       .from(playbackHistoryTable)
-      .where(eq(playbackHistoryTable.userId, me.id))
+      .where(
+        and(
+          eq(playbackHistoryTable.userId, me.id),
+          lte(playbackHistoryTable.playedAt, now),
+        ),
+      )
       .orderBy(desc(playbackHistoryTable.playedAt))
       .limit(PLAYS_LIMIT);
 
+    const timezoneLocalDay = sql<string>`to_char(${playbackHistoryTable.playedAt} AT TIME ZONE ${tz}, 'YYYY-MM-DD')`;
+    const historicDailyAggregates = await db
+      .select({
+        localDay: timezoneLocalDay,
+        minutes: sql<number>`sum(${playbackHistoryTable.minutes})::float8`,
+        completed: sql<boolean>`bool_or(${playbackHistoryTable.completed})`,
+      })
+      .from(playbackHistoryTable)
+      .where(
+        and(
+          eq(playbackHistoryTable.userId, me.id),
+          lte(playbackHistoryTable.playedAt, now),
+        ),
+      )
+      // Group by the selected expression without rebinding its timezone parameter.
+      .groupBy(sql`1`);
+
     const result = computeStreakServer(rows, tz);
-    res.json(result);
+    res.json({
+      ...result,
+      completedWeekStarts: getCompletedWeekStarts(historicDailyAggregates, tz, now),
+    });
   } catch (err) {
     req.log.error(err);
     res.status(500).json({ error: "Error al calcular la racha" });

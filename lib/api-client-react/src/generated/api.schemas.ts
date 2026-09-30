@@ -672,6 +672,8 @@ export interface StreakResponse {
   todayIndex: number;
   /** Total de días distintos con meta cumplida (histórico) */
   totalActiveDays: number;
+  /** Lunes de semanas históricas completas (lunes-domingo) con la meta cumplida los siete días */
+  completedWeekStarts: string[];
 }
 
 export interface PlaybackEventList {

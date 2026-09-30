@@ -74,6 +74,9 @@ import {
 } from "@/components/BibliotecaScreen";
 import { ProgressMirrorSections } from "@/components/ProgressMirrorSections";
 import { ProfileSettingsSections } from "@/components/ProfileSettingsSections";
+import { ProfileIntentionPill } from "@/components/ProfileIntentionPill";
+import { ProfileDownloadsSection } from "@/components/ProfileDownloadsSection";
+import { GrowthJourneySheet } from "@/components/GrowthJourneySheet";
 import { SessionBadgeGlass } from "@/components/SessionDurationBadge";
 import { useCoverPresetCatalog } from "@/lib/cover-preset-catalog";
 import {
@@ -97,7 +100,7 @@ const PROFILE_SECTION_GAP = 21;
 const PROFILE_CARD_BOTTOM_PADDING = 6;
 const PROFILE_CARD_BOTTOM_MARGIN = 16;
 const PROFILE_CARD_Y_OFFSET = -5;
-const PROFILE_PROGRESS_TOP_MARGIN = 15;
+const PROFILE_PROGRESS_TOP_MARGIN = -10;
 const PROFILE_WEEK_TOP_PADDING = 21;
 
 function resizeImageForWeb(uri: string, maxSize: number): Promise<string> {
@@ -252,13 +255,7 @@ export function ProfileScreenBase({
   initialLibraryTab?: LibraryTab | null;
 }) {
   const colors = useColors();
-  const [profileDescriptionBottom, setProfileDescriptionBottom] = useState<number | null>(null);
-  const [profileDetailsHeight, setProfileDetailsHeight] = useState(0);
-  const descriptionTrailingHeight = Math.max(0, profileDetailsHeight - (profileDescriptionBottom ?? profileDetailsHeight));
-  const descriptionToWeekGap = descriptionTrailingHeight
-    + PROFILE_CARD_BOTTOM_PADDING + PROFILE_CARD_BOTTOM_MARGIN - PROFILE_CARD_Y_OFFSET
-    + PROFILE_PROGRESS_TOP_MARGIN + PROFILE_WEEK_TOP_PADDING;
-  const profileDividerTop = PROFILE_WEEK_TOP_PADDING - descriptionToWeekGap / 2 - 0.5;
+  const [growthJourneyOpen, setGrowthJourneyOpen] = useState(false);
   const { isPremium } = usePremium();
   const { openMixer } = useMixerPanel();
   const { history } = usePlayerBrowse();
@@ -1166,6 +1163,20 @@ export function ProfileScreenBase({
             >
               Perfil
             </Animated.Text>
+            <Pressable
+              onPress={() => router.push("/configuracion-ajustes")}
+              hitSlop={8}
+              style={({ pressed }) => [
+                styles.gearBtn,
+                styles.profileStickySettingsButton,
+                { opacity: pressed ? 0.68 : 1 },
+              ]}
+              accessibilityRole="button"
+              accessibilityLabel="Abrir ajustes"
+              testID="profile-sticky-open-settings"
+            >
+              <Feather name="settings" size={21} color={colors.foreground} />
+            </Pressable>
           </View>
         </Animated.View>
       )}
@@ -1312,13 +1323,12 @@ export function ProfileScreenBase({
             </Pressable>
 
             {/* Name + details */}
-            <Pressable
-              onPress={() => router.push("/mi-perfil")}
-              style={styles.profileDetails}
-              onLayout={dedicated ? (event) => setProfileDetailsHeight(event.nativeEvent.layout.height) : undefined}
-              accessibilityRole="button"
-              accessibilityLabel="Abrir Mi cuenta"
-            >
+            <View style={styles.profileDetails}>
+              <Pressable
+                onPress={() => router.push("/mi-perfil")}
+                accessibilityRole="button"
+                accessibilityLabel="Abrir Mi cuenta"
+              >
               <Text
                 style={[styles.userName, { color: colors.foreground }]}
                 numberOfLines={1}
@@ -1326,31 +1336,34 @@ export function ProfileScreenBase({
               >
                 {username}{lastName ? ` ${lastName}` : ""}
               </Text>
+              </Pressable>
 
               {dedicated && (
                 <>
-                  <View style={styles.profileIntentionPill}>
-                    <Text style={[styles.profileIntentionDays, { color: colors.foreground }]}>0 Días: Intención</Text>
-                  </View>
+                  <ProfileIntentionPill
+                    onPress={() => setGrowthJourneyOpen(true)}
+                    style={styles.profileIntentionPill}
+                    textStyle={[styles.profileIntentionDays, { color: colors.foreground }]}
+                  />
+                  <Pressable onPress={() => router.push("/mi-perfil")} accessibilityRole="button" accessibilityLabel="Abrir Mi cuenta">
                   <Text
                     style={[styles.profileIntentionDescription, { color: colors.mutedForeground }]}
-                    onLayout={(event) => {
-                      const { y, height } = event.nativeEvent.layout;
-                      setProfileDescriptionBottom(y + height);
-                    }}
                   >
                     Todo gran cambio comienza con el primer paso.{"\n"}¡Bienvenido a Resonancia!
                   </Text>
+                  </Pressable>
                 </>
               )}
 
               {location ? (
+                <Pressable onPress={() => router.push("/mi-perfil")} accessibilityRole="button" accessibilityLabel="Abrir Mi cuenta">
                 <View style={styles.locationRow}>
                   <Feather name="map-pin" size={12} color={secondaryAccent} />
                   <Text style={[styles.locationText, { color: secondaryAccent }]}>{location}</Text>
                 </View>
+                </Pressable>
               ) : null}
-            </Pressable>
+            </View>
           </View>
         </View>
 
@@ -1367,22 +1380,17 @@ export function ProfileScreenBase({
         {dedicated && (
           <>
             <View style={styles.profileProgressSection}>
-              <View
-                pointerEvents="none"
-                testID="profile-description-week-divider"
-                style={[styles.profileProgressDivider, { top: profileDividerTop }]}
-              />
               <ProgressMirrorSections
                 showSectionBorders={false}
-                showPersonalStats
+                showPersonalStats={false}
                 showCalendar
+                showCalendarCompletedCount
                 streakTitle="Tu progreso semanal"
                 separateStreakHistory
                 weeklySectionBackgroundColor="transparent"
                 streakHistoryTopPadding={17}
                 longestStreakLabel="RACHA ACUMULADA"
                 longestStreakIconColor={MEMBERSHIP_AURORA.premium.accent}
-                personalStatsFilterBelowTitle
                 sectionBackgroundColor="rgba(0,0,0,0.22)"
                 sectionHorizontalPadding={20}
                 sectionTopPadding={PROFILE_WEEK_TOP_PADDING}
@@ -1444,6 +1452,11 @@ export function ProfileScreenBase({
               })()}
             </View>
             )}
+
+            <ProfileDownloadsSection
+              linkColor={secondaryAccent}
+              descriptionColor={profileDescriptionColor}
+            />
 
             {SHOW_PROFILE_PRACTICE_CARDS && (
             <>
@@ -1900,6 +1913,9 @@ export function ProfileScreenBase({
 
       {SHOW_PROFILE_PRACTICE_CARDS && (
       <>
+      {dedicated && (
+        <GrowthJourneySheet visible={growthJourneyOpen} onClose={() => setGrowthJourneyOpen(false)} />
+      )}
       <SleepReminderSheet
         variant="morning"
         visible={morningReminderVisible}
@@ -2005,6 +2021,11 @@ const styles = StyleSheet.create({
     fontWeight: "800",
     letterSpacing: 0.2,
     textAlign: "left",
+  },
+  profileStickySettingsButton: {
+    position: "absolute",
+    right: 16,
+    top: 7,
   },
   stickyHeaderBorder: {
     position: "absolute",
@@ -2453,7 +2474,7 @@ const styles = StyleSheet.create({
     gap: 0,
     transform: [{ translateY: PROFILE_CARD_Y_OFFSET }],
   },
-  dedicatedProfileCard: { marginTop: 35 },
+  dedicatedProfileCard: { marginTop: 18 },
   wisdomSection: {
     marginBottom: 28,
   },
@@ -2475,9 +2496,9 @@ const styles = StyleSheet.create({
     position: "absolute",
     top: -3,
     left: -3,
-    width: 132,
-    height: 132,
-    borderRadius: 66,
+    width: 112,
+    height: 112,
+    borderRadius: 56,
     borderWidth: 3,
     borderColor: "rgba(255,255,255,0.25)",
   },
@@ -2493,16 +2514,16 @@ const styles = StyleSheet.create({
     justifyContent: "center",
   },
   avatarCircle: {
-    width: 126,
-    height: 126,
-    borderRadius: 63,
+    width: 106,
+    height: 106,
+    borderRadius: 53,
     alignItems: "center",
     justifyContent: "center",
   },
   avatarImage: {
-    width: 126,
-    height: 126,
-    borderRadius: 63,
+    width: 106,
+    height: 106,
+    borderRadius: 53,
   },
   userName: { fontFamily: "Manrope", fontSize: 20, fontWeight: "700", textAlign: "center", marginTop: 4 },
   profileIntentionPill: {
@@ -2551,13 +2572,6 @@ const styles = StyleSheet.create({
   profileProgressSection: {
     marginTop: PROFILE_PROGRESS_TOP_MARGIN,
     marginBottom: PROFILE_SECTION_GAP,
-  },
-  profileProgressDivider: {
-    position: "absolute",
-    left: 0,
-    right: 0,
-    height: 1,
-    backgroundColor: "rgba(255,255,255,0.065)",
   },
   practiceReminderSection: {
     paddingHorizontal: 16,

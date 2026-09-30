@@ -4,6 +4,10 @@ export type CompletedHistoryEntry = {
   categoryLabel?: string;
 };
 
+export function formatCompletedSessionCount(count: number): string {
+  return count === 1 ? "1 sesión completada" : `${count} sesiones completadas`;
+}
+
 function localDayKey(date: Date): string {
   return `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, "0")}-${String(date.getDate()).padStart(2, "0")}`;
 }

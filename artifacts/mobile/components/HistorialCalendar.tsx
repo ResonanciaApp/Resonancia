@@ -12,8 +12,8 @@ import { useSceneTheme } from "@/context/SceneThemeContext";
 import { isIndigoThemeId } from "@/config/scene-themes";
 import { useColors } from "@/hooks/useColors";
 import { dayKey } from "@/utils/stats";
-import { WIDGET_GREEN_SOLID } from "@/constants/colors";
-import { dedupeCompletedHistoryByDay } from "@/lib/history-calendar";
+import { CARD_TEXT_BELOW, WIDGET_GREEN_SOLID } from "@/constants/colors";
+import { dedupeCompletedHistoryByDay, formatCompletedSessionCount } from "@/lib/history-calendar";
 import { SessionDurationBadge } from "@/components/SessionDurationBadge";
 import { CinematicFadeSlide } from "@/components/CinematicFadeSlide";
 
@@ -230,6 +230,7 @@ function formatSelectedDate(date: Date, today: Date): string {
 export function HistorialCalendar({
   containerPadding = 0,
   embedded = false,
+  showCompletedSessionCount = false,
   backgroundColor,
   outlined = false,
   cardHorizontalPadding,
@@ -241,6 +242,7 @@ export function HistorialCalendar({
 }: {
   containerPadding?: number;
   embedded?: boolean;
+  showCompletedSessionCount?: boolean;
   backgroundColor?: string;
   outlined?: boolean;
   cardHorizontalPadding?: number;
@@ -442,9 +444,20 @@ export function HistorialCalendar({
           delay={entranceBaseDelay + 360 + weeks.length * 150}
         >
         <View style={styles.embeddedSummary}>
-          <Text style={[styles.embeddedDateLabel, { color: calendarAccent }]}>
-            {formatSelectedDate(selectedDate, today)}
-          </Text>
+          <View style={showCompletedSessionCount && dayEntries.length > 0 ? styles.embeddedDateSummary : undefined}>
+            <Text style={[
+              styles.embeddedDateLabel,
+              showCompletedSessionCount && dayEntries.length > 0 && styles.embeddedDateLabelWithCount,
+              { color: calendarAccent },
+            ]}>
+              {formatSelectedDate(selectedDate, today)}
+            </Text>
+            {showCompletedSessionCount && dayEntries.length > 0 && (
+              <Text testID="profile-calendar-completed-count" style={styles.embeddedCompletedCount}>
+                {formatCompletedSessionCount(dayEntries.length)}
+              </Text>
+            )}
+          </View>
           {dayEntries.length === 0 ? (
             <Text style={[styles.embeddedEmptyText, { color: "#F9F9F9" }]}>
               {isSameDay(selectedDate, today)
@@ -705,6 +718,23 @@ const styles = StyleSheet.create({
     fontWeight: "700",
     letterSpacing: 1.1,
     marginBottom: 16,
+  },
+  embeddedDateSummary: {
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "space-between",
+    flexWrap: "wrap",
+    columnGap: 12,
+    rowGap: 4,
+    marginBottom: 16,
+  },
+  embeddedDateLabelWithCount: { marginBottom: 0 },
+  embeddedCompletedCount: {
+    fontFamily: "Manrope",
+    fontSize: 12,
+    lineHeight: 17,
+    fontWeight: "400",
+    color: CARD_TEXT_BELOW,
   },
   embeddedEmptyText: {
     fontFamily: "Manrope",

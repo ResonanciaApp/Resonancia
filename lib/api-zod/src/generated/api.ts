@@ -3850,13 +3850,17 @@ export const GetMyStreakQueryParams = zod.object({
   "tz": zod.coerce.string().optional().describe('IANA timezone name (e.g. America\/Santiago). Defaults to UTC.')
 })
 
+export const getMyStreakResponseCompletedWeekStartsItemRegExp = new RegExp('^\\d{4}-\\d{2}-\\d{2}$');
+
+
 export const GetMyStreakResponse = zod.object({
   "currentStreak": zod.number().describe('Días consecutivos actuales con la meta cumplida'),
   "maxStreak": zod.number().describe('Racha máxima histórica'),
   "weekFlags": zod.array(zod.boolean()).describe('Lun-Dom de la semana actual (true = meta cumplida)'),
   "weekCount": zod.number().describe('Días de la semana actual con meta cumplida'),
   "todayIndex": zod.number().describe('Índice (0-6) del día de hoy en weekFlags'),
-  "totalActiveDays": zod.number().describe('Total de días distintos con meta cumplida (histórico)')
+  "totalActiveDays": zod.number().describe('Total de días distintos con meta cumplida (histórico)'),
+  "completedWeekStarts": zod.array(zod.string().regex(getMyStreakResponseCompletedWeekStartsItemRegExp)).describe('Lunes de semanas históricas completas (lunes-domingo) con la meta cumplida los siete días')
 })
 
 

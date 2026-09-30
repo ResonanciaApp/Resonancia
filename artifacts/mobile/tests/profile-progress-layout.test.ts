@@ -16,6 +16,9 @@ const NativeView = ({ children, testID, style }: NativeProps) => {
     "data-testid": testID,
     "data-background": resolved.backgroundColor,
     "data-padding-top": resolved.paddingTop,
+    "data-padding-bottom": resolved.paddingBottom,
+    "data-padding-horizontal": resolved.paddingHorizontal,
+    "data-min-height": resolved.minHeight,
   }, children);
 };
 const Passthrough = ({ children }: NativeProps) => React.createElement(React.Fragment, null, children);
@@ -35,7 +38,8 @@ const mocks: Record<string, unknown> = {
   "@react-native-masked-view/masked-view": Passthrough,
   "expo-linear-gradient": { LinearGradient: Passthrough },
   "@/components/HistorialCalendar": {
-    HistorialCalendar: () => React.createElement("div", { "data-testid": "calendar" }),
+    HistorialCalendar: ({ showCompletedSessionCount }: { showCompletedSessionCount?: boolean }) =>
+      React.createElement("div", { "data-testid": "calendar", "data-completed-count": !!showCompletedSessionCount }),
   },
   "@/components/CinematicFadeSlide": { CinematicFadeSlide: Passthrough },
   "@/components/StreakWeekRow": {
@@ -44,7 +48,7 @@ const mocks: Record<string, unknown> = {
   "@/context/PlayerContext": { usePlayer: () => ({ statEvents: [] }) },
   "@/context/SceneThemeContext": { useSceneTheme: () => ({ theme: { accent: "#BE9650", gradient: ["#060A0F"] } }) },
   "@/hooks/useDayRollover": { useDayRollover: () => "2026-09-30" },
-  "@/hooks/useStreak": { useStreak: () => ({ currentStreak: 3 }) },
+  "@/hooks/useStreak": { useStreak: () => ({ currentStreak: 3, weekCount: 4, completedWeeks: 2 }) },
   "@/hooks/useColors": { useColors: () => ({ foreground: "#FFF", accent: "#BE9650" }) },
   "@/utils/stats": { computeActiveDays: () => 0, computeMaxStreak: () => 9 },
   "@/constants/colors": { PREMIUM_STAR_GRADIENT: ["#FFF", "#BE9650"] },
@@ -73,16 +77,69 @@ test("Perfil separates week-only progress from the titled streak history", () =>
   assert.match(html.slice(historyIndex), /Historial de rachas/);
   assert.match(html.slice(historyIndex), /RACHA MÁS LARGA/);
   assert.match(html.slice(historyIndex), /RACHA ACUMULADA/);
-  assert.doesNotMatch(html, /RACHA ACTUAL/);
+  const actualIndex = html.indexOf("RACHA ACTUAL");
+  const completedIndex = html.indexOf("RACHAS COMPLETADAS");
+  assert.ok(actualIndex > historyIndex);
+  assert.ok(completedIndex > actualIndex);
+  assert.ok(html.indexOf("RACHA MÁS LARGA") > completedIndex);
+  assert.ok(html.indexOf("RACHA ACUMULADA") > html.indexOf("RACHA MÁS LARGA"));
+  assert.match(html.slice(historyIndex, actualIndex), /<div>4<\/div>/);
+  assert.match(html.slice(actualIndex, completedIndex), /<div>2<\/div>/);
   assert.ok(html.indexOf("Mis estadísticas") > historyIndex);
   assert.ok(html.indexOf('data-testid="calendar"') > html.indexOf("Mis estadísticas"));
 });
 
-test("Tu progreso keeps its existing stats and does not acquire the Perfil history", () => {
+test("compact callers keep their existing stats unless they opt into the full history", () => {
   const html = render({ showPersonalStats: false, showCalendar: false, longestStreakLabel: "RACHA ACUMULADA" });
   assert.match(html, /RACHA ACTUAL/);
   assert.match(html, /RACHA ACUMULADA/);
   assert.doesNotMatch(html, /Historial de rachas|profile-streak-history/);
+  assert.doesNotMatch(html, /RACHAS COMPLETADAS/);
+});
+
+test("Tu progreso separates the weekly circles and mirrors the full Perfil streak history", () => {
+  const progressSource = readFileSync(new URL("../app/progreso.tsx", import.meta.url), "utf8");
+  const usage = progressSource.match(/<ProgressMirrorSections[\s\S]*?\/>/)?.[0] ?? "";
+  assert.match(usage, /separateStreakHistory/);
+  assert.match(usage, /weeklySectionBackgroundColor="transparent"/);
+  assert.match(usage, /streakHistoryTopPadding=\{17\}/);
+  assert.match(usage, /showPersonalStats=\{false\}/);
+  assert.match(usage, /showCalendar=\{false\}/);
+  const html = render({
+    separateStreakHistory: true,
+    showPersonalStats: false,
+    showCalendar: false,
+    weeklySectionBackgroundColor: "transparent",
+    sectionHorizontalPadding: 20,
+    streakHistoryTopPadding: 17,
+    sectionBottomPadding: 15,
+    longestStreakLabel: "RACHA ACUMULADA",
+    longestStreakIconColor: "#BE9650",
+  });
+  const historyIndex = html.indexOf('data-testid="profile-streak-history"');
+  const week = html.slice(0, historyIndex);
+  const history = html.slice(historyIndex);
+  assert.match(week, /seven-week-days/);
+  assert.match(week, /data-background="transparent"/);
+  assert.doesNotMatch(week, /RACHA|Historial de rachas/);
+  assert.match(history, /Historial de rachas/);
+  for (const label of ["RACHA ACTUAL", "RACHAS COMPLETADAS", "RACHA MÁS LARGA", "RACHA ACUMULADA"]) {
+    assert.match(history, new RegExp(label));
+  }
+  assert.doesNotMatch(history, /seven-week-days|Mis estadísticas|data-testid="calendar"/);
+  assert.match(history, /data-padding-top="17"/);
+  assert.match(history, /data-padding-bottom="15"/);
+  assert.match(history, /data-padding-horizontal="20"/);
+});
+
+test("Intención has the same content insets as the streak history, without the old forced height", () => {
+  const growthSource = readFileSync(new URL("../components/GrowthJourney.tsx", import.meta.url), "utf8");
+  const previewStyle = growthSource.match(/previewCard:\s*\{([\s\S]*?)\n  \},/)?.[1] ?? "";
+  assert.match(previewStyle, /paddingHorizontal: 20/);
+  assert.match(previewStyle, /paddingTop: 17/);
+  assert.match(previewStyle, /paddingBottom: 15/);
+  assert.doesNotMatch(previewStyle, /minHeight|height:|paddingVertical/);
+  assert.match(growthSource, /previewArt: \{ width: 100, height: 100 \}/);
 });
 
 test("Perfil removes only the weekly background and reduces history top padding by four", () => {
@@ -99,4 +156,51 @@ test("Perfil removes only the weekly background and reduces history top padding 
   assert.match(weekly, /data-padding-top="21"/);
   assert.match(history, /data-background="rgba\(0,0,0,0.22\)"/);
   assert.match(history, /data-padding-top="17"/);
+});
+
+test("Perfil hides personal stats and the divider above the week while retaining history and calendar", () => {
+  const profileSource = readFileSync(new URL("../components/ProfileScreenBase.tsx", import.meta.url), "utf8");
+  assert.match(profileSource, /showPersonalStats=\{false\}/);
+  assert.doesNotMatch(profileSource, /profile-description-week-divider|profileProgressDivider/);
+  const html = render({
+    separateStreakHistory: true, showPersonalStats: false, showCalendar: true, showCalendarCompletedCount: true,
+  });
+  assert.doesNotMatch(html, /Mis estadísticas|MINUTOS TOTALES|DÍAS ACTIVOS/);
+  assert.match(html, /Historial de rachas/);
+  assert.match(html, /RACHA ACTUAL/);
+  assert.match(html, /RACHAS COMPLETADAS/);
+  assert.match(html, /RACHA MÁS LARGA/);
+  assert.match(html, /seven-week-days/);
+  assert.match(html, /data-testid="calendar"/);
+  assert.match(html, /data-completed-count="true"/);
+  assert.match(profileSource, /showCalendarCompletedCount/);
+});
+
+test("settings statistics contain the existing stats and range filter without streaks or calendar", () => {
+  const html = render({ showPersonalStats: true, showStreakSection: false, showCalendar: false });
+  assert.match(html, /Mis estadísticas/);
+  assert.match(html, /MINUTOS TOTALES/);
+  assert.match(html, /DÍAS ACTIVOS/);
+  assert.match(html, /Últimos 30 días/);
+  assert.doesNotMatch(html, /RACHA|Historial de rachas|seven-week-days|data-testid="calendar"/);
+  const settingsSource = readFileSync(new URL("../components/ProfileSettingsSections.tsx", import.meta.url), "utf8");
+  const statisticsIndex = settingsSource.indexOf('testID="settings-personal-statistics"');
+  assert.ok(statisticsIndex > 0);
+  assert.match(settingsSource.slice(statisticsIndex), /Estadísticas personales/);
+  assert.ok(statisticsIndex < settingsSource.indexOf("{visibleSections.map"));
+  assert.match(settingsSource.slice(statisticsIndex), /showStreakSection=\{false\}/);
+  assert.match(settingsSource, /label: "Personalizar notificaciones"/);
+});
+
+test("Perfil keeps settings accessible in its sticky header and reduces the avatar by 20px", () => {
+  const source = readFileSync(new URL("../components/ProfileScreenBase.tsx", import.meta.url), "utf8");
+  const headerStart = source.indexOf("<View style={styles.profileStickyHeaderRow}>");
+  const header = source.slice(headerStart, source.indexOf("</View>", headerStart));
+  assert.match(header, /testID="profile-sticky-open-settings"/);
+  assert.match(header, /onPress=\{\(\) => router.push\("\/configuracion-ajustes"\)\}/);
+  assert.match(header, /<Feather name="settings" size=\{21\}/);
+  assert.match(header, /accessibilityLabel="Abrir ajustes"/);
+  assert.match(source, /avatarCircle:\s*\{\s*width: 106,\s*height: 106,\s*borderRadius: 53/);
+  assert.match(source, /avatarImage:\s*\{\s*width: 106,\s*height: 106,\s*borderRadius: 53/);
+  assert.match(source, /avatarOuterBorder:\s*\{[\s\S]*?width: 112,\s*height: 112,\s*borderRadius: 56/);
 });

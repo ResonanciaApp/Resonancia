@@ -281,9 +281,9 @@ export function GrowthJourney() {
 const styles = StyleSheet.create({
   previewCard: {
     marginHorizontal: 16,
-    paddingHorizontal: 14,
-    paddingVertical: 16,
-    minHeight: 148,
+    paddingHorizontal: 20,
+    paddingTop: 17,
+    paddingBottom: 15,
     borderRadius: 19,
     backgroundColor: "rgba(0,0,0,0.22)",
     flexDirection: "row",

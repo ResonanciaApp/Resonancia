@@ -12,6 +12,7 @@ import {
 
 import { CategoryAtmosphericCard } from "@/components/CategoryAtmosphericCard";
 import { CinematicFadeSlide } from "@/components/CinematicFadeSlide";
+import { usePressScaleAnimation } from "@/hooks/usePressScaleAnimation";
 import { SessionRow } from "@/components/SessionRow";
 import type { Session } from "@/data/sessions";
 import { useColors } from "@/hooks/useColors";
@@ -73,25 +74,7 @@ export function DailyRecommendationsSection({
   const recommendations = sessions.slice(0, 3);
   const themeAccent = theme.accent ?? colors.accent;
   const [animationCycle, setAnimationCycle] = React.useState(0);
-  const buttonScale = React.useRef(new Animated.Value(1)).current;
-
-  const animateButtonPress = React.useCallback((pressed: boolean) => {
-    buttonScale.stopAnimation();
-    if (pressed) {
-      Animated.timing(buttonScale, {
-        toValue: 0.97,
-        duration: 90,
-        useNativeDriver: true,
-      }).start();
-      return;
-    }
-    Animated.spring(buttonScale, {
-      toValue: 1,
-      tension: 180,
-      friction: 14,
-      useNativeDriver: true,
-    }).start();
-  }, [buttonScale]);
+  const { scale: buttonScale, animatePress: animateButtonPress } = usePressScaleAnimation();
 
   const refreshRecommendations = React.useCallback(() => {
     if (!onRefreshRecommendations) return;

@@ -144,6 +144,37 @@ export function computeTotalActiveDays(events: StatEventLike[]): number {
   return n;
 }
 
+/** Semanas Lun-Dom con siete días activos, sin duplicar días ni incluir eventos futuros. */
+export function computeCompletedWeekStarts(events: StatEventLike[], now = new Date()): string[] {
+  const byDay = aggByDay(events.filter((event) => {
+    const time = new Date(event.playedAt).getTime();
+    return Number.isFinite(time) && time <= now.getTime();
+  }));
+  const weeks = new Map<string, number>();
+  for (const [key, agg] of byDay) {
+    if (!aggIsActive(agg)) continue;
+    const [year, month, date] = key.split("-").map(Number);
+    const monday = dayKey(startOfWeek(new Date(year, month - 1, date)));
+    weeks.set(monday, (weeks.get(monday) ?? 0) + 1);
+  }
+  return [...weeks].filter(([, count]) => count === 7).map(([key]) => key).sort();
+}
+
+/** Unión por identidad semanal, no por suma de contadores local/remoto. */
+export function mergeCompletedWeekStarts(
+  localWeeks: readonly string[],
+  remoteWeeks: readonly string[],
+  weekFlags: readonly boolean[],
+  now = new Date(),
+): string[] {
+  const weeks = new Set([...remoteWeeks, ...localWeeks]);
+  // El domingo puede completarse localmente antes del siguiente fetch del servidor.
+  if (now.getDay() === 0 && weekFlags.length === 7 && weekFlags.every(Boolean)) {
+    weeks.add(dayKey(startOfWeek(now)));
+  }
+  return [...weeks].sort();
+}
+
 /** Días distintos con al menos un evento (estadística de uso, no racha). */
 export function computeActiveDays(events: StatEventLike[]): number {
   return new Set(events.map((e) => dayKey(new Date(e.playedAt)))).size;

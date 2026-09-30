@@ -13,6 +13,7 @@ import {
 } from "react-native";
 
 import { MilestoneCards } from "@/components/MilestoneCards";
+import { ProgressMirrorSections } from "@/components/ProgressMirrorSections";
 import { isIndigoThemeId } from "@/config/scene-themes";
 import { MEMBERSHIP_AURORA } from "@/constants/colors";
 import type { SceneId } from "@/context/AmbientPlayerContext";
@@ -203,6 +204,24 @@ export function ProfileSettingsSections({
               </>
             )}
           </View>
+        </View>
+      )}
+      {placement === "settings" && (
+        <View testID="settings-personal-statistics" style={[styles.section, styles.compactSection]}>
+          <Text style={[styles.sectionTitle, { color: foreground }]}>
+            Estadísticas personales
+          </Text>
+          <ProgressMirrorSections
+            showPersonalStats
+            showStreakSection={false}
+            showCalendar={false}
+            showSectionBorders={false}
+            personalStatsFilterBelowTitle
+            sectionBackgroundColor={cardBackground}
+            sectionHorizontalPadding={20}
+            sectionVerticalPadding={16}
+            sectionMarginBottom={0}
+          />
         </View>
       )}
       {visibleSections.map((section, index) => (

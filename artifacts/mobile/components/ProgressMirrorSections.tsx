@@ -24,11 +24,13 @@ const CONTENT_ENTRANCE_DURATION_MS = 1200;
 export function ProgressMirrorSections({
   showSectionBorders = true,
   showPersonalStats = true,
+  showStreakSection = true,
   sectionBackgroundColor = SECTION_BACKGROUND,
   mergeStatsAndStreak = false,
   personalStatsFilterBelowTitle = false,
   personalStatsFilterColor,
   showCalendar = true,
+  showCalendarCompletedCount = false,
   animateEntrance = false,
   entranceReplayKey = "progress-mirror",
   entranceBaseDelay = 0,
@@ -57,11 +59,13 @@ export function ProgressMirrorSections({
 }: {
   showSectionBorders?: boolean;
   showPersonalStats?: boolean;
+  showStreakSection?: boolean;
   sectionBackgroundColor?: string;
   mergeStatsAndStreak?: boolean;
   personalStatsFilterBelowTitle?: boolean;
   personalStatsFilterColor?: string;
   showCalendar?: boolean;
+  showCalendarCompletedCount?: boolean;
   animateEntrance?: boolean;
   entranceReplayKey?: string | number;
   entranceBaseDelay?: number;
@@ -91,7 +95,7 @@ export function ProgressMirrorSections({
   const colors = useColors();
   const { theme } = useSceneTheme();
   const { statEvents } = usePlayer();
-  const { currentStreak } = useStreak();
+  const { currentStreak, weekCount, completedWeeks } = useStreak();
   const todayKey = useDayRollover();
   const [statsRangeDays, setStatsRangeDays] = useState<7 | 30 | 90>(30);
   const [statsFilterOpen, setStatsFilterOpen] = useState(false);
@@ -338,6 +342,30 @@ export function ProgressMirrorSections({
       <View style={styles.streakTitleRow}>
         <Text style={[styles.streakTitle, { color: colors.foreground }]}>Historial de rachas</Text>
       </View>
+      <View testID="profile-streak-history-weekly" style={[styles.statsValues, styles.statsValuesNoTitle]}>
+        <View style={styles.statEntranceSlot}>
+          <Stat
+            icon={<MaterialCommunityIcons name="spa" size={18} color="#F9F9F9" />}
+            value={weekCount}
+            label="RACHA ACTUAL"
+            accent={accent}
+            onPress={onStreakTitlePress}
+            edgeAligned={canonicalVerticalInsets}
+          />
+        </View>
+        <View style={styles.statDivider} />
+        <View style={styles.statEntranceSlot}>
+          <Stat
+            icon={<Feather name="check-circle" size={18} color="#F9F9F9" />}
+            value={completedWeeks}
+            label="RACHAS COMPLETADAS"
+            accent={accent}
+            onPress={onStreakTitlePress}
+            edgeAligned={canonicalVerticalInsets}
+          />
+        </View>
+      </View>
+      <View style={styles.sectionDivider} />
       <View style={[styles.statsValues, styles.statsValuesNoTitle]}>
         <View style={styles.statEntranceSlot}>
           <Stat
@@ -498,7 +526,7 @@ export function ProgressMirrorSections({
 
   return (
     <>
-      {mergeStatsAndStreak && showPersonalStats ? (
+      {showStreakSection && mergeStatsAndStreak && showPersonalStats ? (
         <SectionEntrance
           animated={animateEntrance}
           replayKey={`${entranceReplayKey}:combined-progress`}
@@ -512,14 +540,14 @@ export function ProgressMirrorSections({
         </SectionEntrance>
       ) : (
         <>
-          <SectionEntrance
+          {showStreakSection && <SectionEntrance
             animated={animateEntrance}
             replayKey={`${entranceReplayKey}:streak`}
             delay={entranceBaseDelay}
           >
             {streakContent}
-          </SectionEntrance>
-          {streakHistoryContent ? (
+          </SectionEntrance>}
+          {showStreakSection && streakHistoryContent ? (
             <SectionEntrance
               animated={animateEntrance}
               replayKey={`${entranceReplayKey}:streak-history`}
@@ -528,7 +556,7 @@ export function ProgressMirrorSections({
               {streakHistoryContent}
             </SectionEntrance>
           ) : null}
-          {showPersonalStats && (!chainPersonalStatsAfterWeek || !showStreakWeek || weekEntranceDone) ? (
+          {showPersonalStats && (!chainPersonalStatsAfterWeek || !showStreakSection || !showStreakWeek || weekEntranceDone) ? (
             <SectionEntrance
               animated={animateEntrance}
               replayKey={`${entranceReplayKey}:personal`}
@@ -548,6 +576,7 @@ export function ProgressMirrorSections({
         >
           <HistorialCalendar
             embedded
+            showCompletedSessionCount={showCalendarCompletedCount}
             outlined={showSectionBorders}
             backgroundColor={sectionBackgroundColor}
             cardHorizontalPadding={sectionHorizontalPadding}
