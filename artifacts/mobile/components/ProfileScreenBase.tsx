@@ -1315,10 +1315,12 @@ export function ProfileScreenBase({
               </Text>
 
               {dedicated && (
-                <Text style={styles.profileLevelText}>
-                  <Text style={{ color: "#F9F9F9" }}>Nivel 0: </Text>
-                  <Text style={{ color: "#F0F0F0" }}>Intención</Text>
-                </Text>
+                <>
+                  <View style={styles.profileIntentionPill}>
+                    <Text style={[styles.profileIntentionDays, { color: colors.foreground }]}>0 días</Text>
+                  </View>
+                  <Text style={[styles.profileLevelText, { color: "#F0F0F0" }]}>Intención</Text>
+                </>
               )}
 
               {location ? (
@@ -2474,6 +2476,14 @@ const styles = StyleSheet.create({
     borderRadius: 55.5,
   },
   userName: { fontFamily: "Manrope", fontSize: 20, fontWeight: "700", textAlign: "center" },
+  profileIntentionPill: {
+    alignSelf: "center",
+    backgroundColor: "rgba(151,128,231,0.20)",
+    borderRadius: 12,
+    paddingHorizontal: 9,
+    paddingVertical: 4,
+  },
+  profileIntentionDays: { fontFamily: "Manrope", fontSize: 10, fontWeight: "600" },
   profileLevelText: { fontFamily: "Manrope", fontSize: 12, fontWeight: "400", textAlign: "center", marginTop: 2 },
   locationRow: { flexDirection: "row", alignItems: "center", justifyContent: "center", gap: 4 },
   locationText: { fontFamily: "Manrope", fontSize: 12 },
