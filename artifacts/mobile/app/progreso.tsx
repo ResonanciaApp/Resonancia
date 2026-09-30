@@ -1,7 +1,7 @@
 import { Feather } from "@expo/vector-icons";
 import { LinearGradient } from "expo-linear-gradient";
 import { router, useFocusEffect } from "expo-router";
-import React, { useCallback, useMemo, useRef, useState } from "react";
+import React, { useCallback, useMemo, useState } from "react";
 import {
   Platform,
   Pressable,
@@ -31,11 +31,11 @@ import {
   PERSONAL_STATS_ENTRANCE_END_OFFSET_MS,
   STREAK_WEEK_START_OFFSET_MS,
 } from "@/components/ProgressMirrorSections";
-import { GROWTH_ROW_HEIGHT, GrowthJourney } from "@/components/GrowthJourney";
+import { GrowthJourney } from "@/components/GrowthJourney";
 import { CinematicFadeSlide } from "@/components/CinematicFadeSlide";
 import { getPositionedDayGradient, STREAK_WEEK_ENTRANCE_END_OFFSET_MS } from "@/components/StreakWeekRow";
 import { useSceneTheme } from "@/context/SceneThemeContext";
-import { ascentLevels, growthLevels } from "@/data/growthLevels";
+import { growthLevels } from "@/data/growthLevels";
 import { useColors } from "@/hooks/useColors";
 import { useStreak } from "@/hooks/useStreak";
 
@@ -90,13 +90,6 @@ export default function ProgresoScreen() {
   const { width: viewportWidth } = useWindowDimensions();
   const { theme } = useSceneTheme();
   const { weekFlags } = useStreak();
-  const growthTopRef = useRef<number | null>(null);
-  const timelineTopRef = useRef<number | null>(null);
-  const secondDividerTopRef = useRef<number | null>(null);
-  const secondHeadingTopRef = useRef<number | null>(null);
-  const secondTimelineTopRef = useRef<number | null>(null);
-  const viewportBottomRef = useRef(0);
-  const [visibleStep, setVisibleStep] = useState(-1);
   const reduceMotion = useReducedMotion();
   const [journeyReady, setJourneyReady] = useState(reduceMotion);
   const completedWeekDays = weekFlags.filter(Boolean).length;
@@ -131,36 +124,6 @@ export default function ProgresoScreen() {
   const bgColors = theme.gradient as unknown as [string, string, ...string[]];
   const heroHeight = Math.min(410, Math.max(340, viewportWidth * 0.98)) - 75 + DESCRIPTION_SHIFT;
 
-  const revealVisibleLevels = useCallback(() => {
-    if (growthTopRef.current === null || viewportBottomRef.current <= 0) return;
-    const bottom = viewportBottomRef.current - growthTopRef.current;
-    // Eyebrow, title, then each row: keep the reveal order across both stages.
-    let revealed = bottom >= 0 ? 1 : -1;
-    if (timelineTopRef.current !== null) {
-      const firstRow = Math.min(
-        growthLevels.length - 1,
-        Math.floor((bottom - timelineTopRef.current) / GROWTH_ROW_HEIGHT),
-      );
-      if (firstRow >= 0) revealed = Math.max(revealed, 2 + firstRow);
-    }
-    if (secondDividerTopRef.current !== null && bottom >= secondDividerTopRef.current) {
-      revealed = Math.max(revealed, 2 + growthLevels.length);
-    }
-    if (secondHeadingTopRef.current !== null && bottom >= secondHeadingTopRef.current) {
-      revealed = Math.max(revealed, 5 + growthLevels.length);
-    }
-    if (secondTimelineTopRef.current !== null) {
-      const secondRevealed = Math.min(
-        ascentLevels.length - 1,
-        Math.floor((bottom - secondTimelineTopRef.current) / GROWTH_ROW_HEIGHT),
-      );
-      if (secondRevealed >= 0) {
-        revealed = Math.max(revealed, 6 + growthLevels.length + secondRevealed);
-      }
-    }
-    setVisibleStep((previous) => revealed > previous ? revealed : previous);
-  }, []);
-
   return (
     <LinearGradient
       style={styles.root}
@@ -173,16 +136,6 @@ export default function ProgresoScreen() {
         showsVerticalScrollIndicator={false}
         contentContainerStyle={{ paddingBottom: bottomPad + 32 }}
         bounces={false}
-        scrollEventThrottle={32}
-        onLayout={(event) => {
-          viewportBottomRef.current = event.nativeEvent.layout.height;
-          revealVisibleLevels();
-        }}
-        onScroll={(event) => {
-          viewportBottomRef.current =
-            event.nativeEvent.contentOffset.y + event.nativeEvent.layoutMeasurement.height;
-          revealVisibleLevels();
-        }}
       >
         <View style={[styles.header, { paddingTop: topPad + 8 }]}>
           <Pressable
@@ -330,29 +283,7 @@ export default function ProgresoScreen() {
             <View style={styles.journeyDivider} />
           </CinematicFadeSlide>
         </View>
-        <GrowthJourney
-          visibleStep={journeyReady ? visibleStep : -1}
-          onLayout={(event) => {
-            growthTopRef.current = event.nativeEvent.layout.y;
-            revealVisibleLevels();
-          }}
-          onTimelineLayout={(event) => {
-            timelineTopRef.current = event.nativeEvent.layout.y;
-            revealVisibleLevels();
-          }}
-          onSecondDividerLayout={(event) => {
-            secondDividerTopRef.current = event.nativeEvent.layout.y;
-            revealVisibleLevels();
-          }}
-          onSecondHeadingLayout={(event) => {
-            secondHeadingTopRef.current = event.nativeEvent.layout.y;
-            revealVisibleLevels();
-          }}
-          onSecondTimelineLayout={(event) => {
-            secondTimelineTopRef.current = event.nativeEvent.layout.y;
-            revealVisibleLevels();
-          }}
-        />
+        <GrowthJourney visibleStep={journeyReady ? 5 + growthLevels.length : -1} />
       </ScrollView>
     </LinearGradient>
   );

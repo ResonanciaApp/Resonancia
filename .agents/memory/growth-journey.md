@@ -26,3 +26,9 @@ La entrada del recorrido debe respetar este orden completo: termina **toda** la 
 **Why:** El usuario corrigió que el encabezado del recorrido se adelantaba a elementos todavía en animación dentro de «Racha actual» y rompía el orden de lectura de arriba hacia abajo.
 
 **How to apply:** Si cambia la duración o el escalonamiento de la semana o de las estadísticas, conservar sincronizada la entrada del bloque siguiente con el final de esa secuencia. No dejar que el scroll dispare el título del recorrido antes de que concluya la animación anterior.
+
+Mis estadísticas y Florecimiento deben entrar en secuencia vertical sin que el usuario tenga que desplazar la pantalla para disparar la animación. El recorrido comienza al terminar el divisor que sigue a las estadísticas y sus niveles se muestran en cadena, incluso si quedan fuera del área visible; el scroll solo sirve para recorrer el contenido. Al expandir El ascenso, sus niveles siguen la misma secuencia automática.
+
+**Why:** El usuario pidió explícitamente que las secciones aparecieran sin necesidad de scroll y que Mis estadísticas y Florecimiento conservaran el orden de arriba hacia abajo.
+
+**How to apply:** No volver a condicionar la aparición de títulos o niveles a eventos de scroll ni a mediciones de visibilidad; conservar la espera por la entrada anterior para no adelantar Florecimiento a Mis estadísticas.

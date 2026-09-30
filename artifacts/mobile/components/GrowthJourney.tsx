@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { Image, Pressable, StyleSheet, Text, View, type LayoutChangeEvent } from "react-native";
+import { Image, Pressable, StyleSheet, Text, View } from "react-native";
 import Animated, {
   Easing,
   useAnimatedStyle,
@@ -79,8 +79,7 @@ function GrowthRow({
   }, [entrance, textEntrance, reduceMotion, visible]);
 
   const imageEntranceStyle = useAnimatedStyle(() => ({
-    // Keep the illustration visible even when a native ScrollView delays (or
-    // skips) a visibility callback. Entrance motion should never gate content.
+    // La ilustración no depende de que termine la secuencia de entrada.
     opacity: 0.8 + entrance.value * 0.2,
     transform: [
       { translateY: (1 - entrance.value) * 16 },
@@ -155,14 +154,12 @@ function GrowthStageHeading({
   eyebrowVisible,
   titleVisible,
   second,
-  onLayout,
 }: {
   eyebrow: string;
   title: string;
   eyebrowVisible: boolean;
   titleVisible: boolean;
   second?: boolean;
-  onLayout?: (event: LayoutChangeEvent) => void;
 }) {
   const colors = useColors();
   const reduceMotion = useReducedMotion();
@@ -196,10 +193,7 @@ function GrowthStageHeading({
   }));
 
   return (
-    <View
-      style={[styles.sectionHeading, second && styles.secondStageHeading]}
-      onLayout={onLayout}
-    >
+    <View style={[styles.sectionHeading, second && styles.secondStageHeading]}>
       <Animated.Text style={[styles.sectionEyebrow, eyebrowEntrance]}>{eyebrow}</Animated.Text>
       <Animated.Text
         style={[styles.sectionTitle, { color: colors.foreground }, titleEntrance]}
@@ -247,35 +241,28 @@ function UpcomingPrompt({ visible, onPress }: { visible: boolean; onPress: () =>
 
 export function GrowthJourney({
   visibleStep,
-  onLayout,
-  onTimelineLayout,
-  onSecondDividerLayout,
-  onSecondHeadingLayout,
-  onSecondTimelineLayout,
 }: {
   visibleStep: number;
-  onLayout: (event: LayoutChangeEvent) => void;
-  onTimelineLayout: (event: LayoutChangeEvent) => void;
-  onSecondDividerLayout: (event: LayoutChangeEvent) => void;
-  onSecondHeadingLayout: (event: LayoutChangeEvent) => void;
-  onSecondTimelineLayout: (event: LayoutChangeEvent) => void;
 }) {
   const reduceMotion = useReducedMotion();
   const [animatedStep, setAnimatedStep] = useState(-1);
   const [ascentExpanded, setAscentExpanded] = useState(false);
-  const playedStep = reduceMotion ? visibleStep : animatedStep;
+  const targetStep = ascentExpanded && visibleStep >= 0
+    ? 5 + growthLevels.length + ascentLevels.length
+    : visibleStep;
+  const playedStep = reduceMotion ? targetStep : animatedStep;
   const dividerVisible = playedStep >= 2 + growthLevels.length;
   const dividerProgress = useSharedValue(reduceMotion ? 1 : 0);
   // Visual preview: Intención is the only active level until progression is enabled.
 
   useEffect(() => {
-    if (reduceMotion || animatedStep >= visibleStep) return;
+    if (reduceMotion || animatedStep >= targetStep) return;
     const timer = setTimeout(
-      () => setAnimatedStep((current) => Math.min(current + 1, visibleStep)),
+      () => setAnimatedStep((current) => Math.min(current + 1, targetStep)),
       animatedStep < 0 ? 0 : CHAIN_STEP_MS,
     );
     return () => clearTimeout(timer);
-  }, [animatedStep, reduceMotion, visibleStep]);
+  }, [animatedStep, reduceMotion, targetStep]);
 
   useEffect(() => {
     if (dividerVisible) {
@@ -288,14 +275,14 @@ export function GrowthJourney({
   }));
 
   return (
-    <View style={styles.section} onLayout={onLayout}>
+    <View style={styles.section}>
       <GrowthStageHeading
         eyebrow="PRIMERA ETAPA"
         title="Florecimiento"
         eyebrowVisible={playedStep >= 0}
         titleVisible={playedStep >= 1}
       />
-      <View style={styles.timeline} onLayout={onTimelineLayout}>
+      <View style={styles.timeline}>
         {growthLevels.map((level, index) => (
           <GrowthRow
             key={level.id}
@@ -307,7 +294,7 @@ export function GrowthJourney({
           />
         ))}
       </View>
-      <View style={styles.stageDividerGap} onLayout={onSecondDividerLayout} pointerEvents="none">
+      <View style={styles.stageDividerGap} pointerEvents="none">
         <Animated.View style={[styles.stageDivider, dividerEntrance]} />
       </View>
       <GrowthStageHeading
@@ -316,10 +303,9 @@ export function GrowthJourney({
         eyebrowVisible={playedStep >= 3 + growthLevels.length}
         titleVisible={playedStep >= 4 + growthLevels.length}
         second
-        onLayout={onSecondHeadingLayout}
       />
       {ascentExpanded ? (
-        <View style={styles.timeline} onLayout={onSecondTimelineLayout}>
+        <View style={styles.timeline}>
           {ascentLevels.map((level, index) => (
             <GrowthRow
               key={level.id}

@@ -150,6 +150,6 @@
 - [Movimiento de Mi muro](muro-motion-scope.md) — solo la + rebota angularmente; formulario entra sin sobrepaso, y la simetría del signo cambia la percepción de las vueltas
 - [Negrita editorial de Sabiduría diaria](daily-wisdom-bold.md) — la frase sigue siendo texto plano; la negrita selectiva solo afecta el primer slide del hero, no detalle ni compartir
 - [Activación de tareas propuestas](task-activation.md) — cambiar a Build y ejecutar por chat no activa un borrador; el cierre requiere una tarea asignada en progreso
-- [Camino de crecimiento](growth-journey.md) — preview: solo Semilla activa; imágenes circulares alineadas con bordes fundidos; al activar niveles usar días acumulados no consecutivos
+- [Camino de crecimiento](growth-journey.md) — solo Intención activa; entrada automática tras estadísticas sin scroll; al activar niveles usar días acumulados
 - [Edición de imágenes en el runtime](image-processing-runtime.md) — Pillow anuncia versión pero falla al importar _imaging; usar ImageMagick para procesar PNGs aquí
 - [Assets nuevos y Metro](expo-new-assets-metro.md) — generar el PNG antes de referenciarlo con require; si Metro cachea el error de archivo ausente, reiniciar tras crearlo
