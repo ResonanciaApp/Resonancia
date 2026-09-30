@@ -159,6 +159,26 @@ test("Perfil removes only the weekly background and reduces history top padding 
   assert.match(history, /data-padding-top="17"/);
 });
 
+test("Perfil and Tu progreso extend weekly circles to the outer margins without widening history contents", () => {
+  for (const path of ["../components/ProfileScreenBase.tsx", "../app/progreso.tsx"]) {
+    const source = readFileSync(new URL(path, import.meta.url), "utf8");
+    assert.match(source, /weeklySectionHorizontalPadding=\{0\}/);
+    assert.match(source, /sectionHorizontalPadding=\{20\}/);
+  }
+  const html = render({
+    separateStreakHistory: true,
+    showSectionBorders: false,
+    sectionHorizontalPadding: 20,
+    weeklySectionHorizontalPadding: 0,
+    showPersonalStats: false,
+    showCalendar: false,
+  });
+  const weekly = html.match(/<div[^>]*data-testid="profile-weekly-progress"[^>]*>/)?.[0] ?? "";
+  const history = html.match(/<div[^>]*data-testid="profile-streak-history"[^>]*>/)?.[0] ?? "";
+  assert.match(weekly, /data-padding-horizontal="0"/);
+  assert.match(history, /data-padding-horizontal="20"/);
+});
+
 test("Perfil hides the intention description and leaves exactly 20px from the pill to the weekly circles", () => {
   const profileSource = readFileSync(new URL("../components/ProfileScreenBase.tsx", import.meta.url), "utf8");
   assert.doesNotMatch(profileSource, /profileIntentionDescription|Todo gran cambio comienza con el primer paso|Bienvenido a Resonancia/);

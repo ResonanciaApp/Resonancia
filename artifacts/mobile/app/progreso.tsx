@@ -261,6 +261,7 @@ export default function ProgresoScreen() {
                   showCalendar={false}
                   separateStreakHistory
                   weeklySectionBackgroundColor="transparent"
+                  weeklySectionHorizontalPadding={0}
                   streakHistoryTopPadding={17}
                   longestStreakLabel="RACHA ACUMULADA"
                   longestStreakIconColor={MEMBERSHIP_AURORA.premium.accent}

@@ -41,6 +41,7 @@ export function ProgressMirrorSections({
   streakTitle,
   separateStreakHistory = false,
   weeklySectionBackgroundColor,
+  weeklySectionHorizontalPadding,
   streakHistoryTopPadding,
   longestStreakLabel = "RACHA MÁS LARGA",
   longestStreakIconColor,
@@ -76,6 +77,7 @@ export function ProgressMirrorSections({
   streakTitle?: string;
   separateStreakHistory?: boolean;
   weeklySectionBackgroundColor?: string;
+  weeklySectionHorizontalPadding?: number;
   streakHistoryTopPadding?: number;
   longestStreakLabel?: string;
   longestStreakIconColor?: string;
@@ -418,6 +420,9 @@ export function ProgressMirrorSections({
             mergeStatsAndStreak && styles.mergedInnerSection,
             weeklySectionBackgroundColor !== undefined && {
               backgroundColor: weeklySectionBackgroundColor,
+            },
+            weeklySectionHorizontalPadding !== undefined && {
+              paddingHorizontal: weeklySectionHorizontalPadding,
             },
           ]}
         >

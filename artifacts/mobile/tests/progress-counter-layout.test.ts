@@ -97,6 +97,8 @@ test("description and ESTA SEMANA precede the counter, with 20px above and 15px 
   assert.match(html, /data-testid="progress-week-title"[^>]*data-margin-top="12"/);
   assert.match(html, /data-margin-top="15"/);
   assert.equal(mirrorProps.sectionTopPadding, 0);
+  assert.equal(mirrorProps.weeklySectionHorizontalPadding, 0);
+  assert.equal(mirrorProps.sectionHorizontalPadding, 20);
   assert.equal(mirrorProps.separateStreakHistory, true);
   assert.equal(mirrorProps.streakHistoryTopPadding, 17);
   assert.equal(mirrorProps.streakMarginBottom, 11);

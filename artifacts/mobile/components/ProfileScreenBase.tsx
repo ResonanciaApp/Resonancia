@@ -1382,6 +1382,7 @@ export function ProfileScreenBase({
                 streakTitle="Tu progreso semanal"
                 separateStreakHistory
                 weeklySectionBackgroundColor="transparent"
+                weeklySectionHorizontalPadding={0}
                 streakHistoryTopPadding={17}
                 longestStreakLabel="RACHA ACUMULADA"
                 longestStreakIconColor={MEMBERSHIP_AURORA.premium.accent}
