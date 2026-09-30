@@ -1320,7 +1320,7 @@ export function ProfileScreenBase({
                     <Text style={[styles.profileIntentionDays, { color: colors.foreground }]}>0 Días: Intención</Text>
                   </View>
                   <Text style={[styles.profileIntentionDescription, { color: colors.mutedForeground }]}>
-                    Todo gran cambio comienza con el primer paso. ¡Bienvenido a Resonancia!
+                    Todo gran cambio comienza con el primer paso.{"\n"}¡Bienvenido a Resonancia!
                   </Text>
                 </>
               )}
