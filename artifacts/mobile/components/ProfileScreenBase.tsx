@@ -2477,9 +2477,10 @@ const styles = StyleSheet.create({
     height: 111,
     borderRadius: 55.5,
   },
-  userName: { fontFamily: "Manrope", fontSize: 20, fontWeight: "700", textAlign: "center" },
+  userName: { fontFamily: "Manrope", fontSize: 20, fontWeight: "700", textAlign: "center", marginTop: 4 },
   profileIntentionPill: {
     alignSelf: "center",
+    marginTop: 7,
     backgroundColor: "rgba(151,128,231,0.20)",
     borderRadius: 12,
     paddingHorizontal: 9,
