@@ -27,6 +27,12 @@ Por ahora, mostrar **solo Intención (nivel 0) activa**, con el punto dorado; Se
 
 **How to apply:** No reconectar las etapas a estadísticas hasta que se apruebe la dirección visual y el usuario pida activar el progreso. En ese momento usar los días activos acumulados no consecutivos acordados, sin tomar la racha como sustituto ni cambiar a dorado la píldora de días.
 
+En la ayuda de Tu camino, «tap bar» significa el tirador superior de la hoja, no la barra inferior de navegación.
+
+**Why:** El usuario lo aclaró explícitamente al elegir «la barrita superior para cerrar o arrastrar la ventana».
+
+**How to apply:** Mantener ese tirador funcional tanto por toque como por arrastre hacia abajo; no añadir las pestañas de navegación dentro de esta ayuda.
+
 La entrada en «Tu progreso» tiene dos fases: primero termina el contador de días (incluidos sus dígitos), después arrancan **juntas** la descripción, Racha actual e Intención. «Mis estadísticas» no se muestra en Tu progreso, aunque permanece en Perfil. El contenido de Intención se revela con desvanecido y desplazamiento escalonado, no queda estático mientras entra la tarjeta. Las secciones tienen la separación de Perfil (21 px), sin divisor sobre la tarjeta. El recorrido completo vive dentro de una ventana casi a pantalla completa que entra desde abajo como el temporizador de Ambientales.
 
 **Why:** El usuario corrigió el orden de entrada anterior, decidió que la pantalla principal mostrara solo Intención, pidió retirar la línea divisora e igualar las separaciones de Perfil. Tras probar una entrada de las tarjetas posterior a la descripción, pidió que descripción y tarjetas comenzaran simultáneamente. También retiró «Mis estadísticas» solo de Tu progreso.

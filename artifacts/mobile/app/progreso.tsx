@@ -9,7 +9,6 @@ import {
   StatusBar,
   StyleSheet,
   Text,
-  useWindowDimensions,
   View,
 } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
@@ -37,8 +36,8 @@ import { useSceneTheme } from "@/context/SceneThemeContext";
 import { useColors } from "@/hooks/useColors";
 import { useStreak } from "@/hooks/useStreak";
 
-const DESCRIPTION_SHIFT = 18;
-const RING_SIZE = 131;
+const COUNT_SIZE = 100;
+const RING_SIZE = 118;
 const RING_STROKE = 9;
 const RING_RADIUS = (RING_SIZE - RING_STROKE) / 2;
 const RING_CIRCUMFERENCE = 2 * Math.PI * RING_RADIUS;
@@ -77,7 +76,6 @@ function StreakCountDigit({
 export default function ProgresoScreen() {
   const colors = useColors();
   const insets = useSafeAreaInsets();
-  const { width: viewportWidth } = useWindowDimensions();
   const { theme } = useSceneTheme();
   const { weekFlags } = useStreak();
   const reduceMotion = useReducedMotion();
@@ -122,7 +120,6 @@ export default function ProgresoScreen() {
   const topPad = Platform.OS === "web" ? 67 : Math.max(insets.top, 40);
   const bottomPad = Platform.OS === "web" ? 34 : insets.bottom;
   const bgColors = theme.gradient as unknown as [string, string, ...string[]];
-  const heroHeight = Math.min(410, Math.max(340, viewportWidth * 0.98)) - 75 + DESCRIPTION_SHIFT;
 
   return (
     <LinearGradient
@@ -155,10 +152,17 @@ export default function ProgresoScreen() {
           <View style={styles.headerSpacer} />
         </View>
 
-        <View style={[styles.heroContainer, { width: viewportWidth, height: heroHeight }]}>
-          <View style={[styles.heroOverlay, { paddingTop: topPad + 5 }]}>
-            <View style={styles.heroAnimatedContent}>
-              <View style={styles.heroCopyOffset}>
+        <View style={[styles.heroContainer, { paddingTop: topPad + 90 }]}>
+                <CinematicFadeSlide
+                  replayKey="progress-intro-description"
+                  active={descriptionStarted}
+                  duration={600}
+                  style={styles.heroAnimatedContent}
+                >
+                  <Text style={styles.streakIntroDescription} testID="progress-intro-description">
+                    Medita al menos 3 días a la semana y transforma todos los aspectos de tu vida
+                  </Text>
+                </CinematicFadeSlide>
                 <CinematicFadeSlide
                   replayKey="progress-streak-count"
                   delay={RING_ENTRANCE_DELAY}
@@ -166,8 +170,15 @@ export default function ProgresoScreen() {
                   scaleFrom={0.9}
                   translateYFrom={14}
                   onComplete={onCountEntranceComplete}
+                  style={styles.heroAnimatedContent}
                 >
-                  <View style={styles.streakCountWrap}>
+                  <Text style={[styles.weekTitle, { color: colors.foreground }]} testID="progress-week-title">
+                    ESTA SEMANA
+                  </Text>
+                  <View
+                    style={[styles.streakCountWrap, completedWeekDays > 0 && styles.streakCountWithRing]}
+                    testID="progress-day-counter"
+                  >
                     {completedWeekDays > 0 && (
                       <Svg
                         pointerEvents="none"
@@ -211,6 +222,7 @@ export default function ProgresoScreen() {
                     )}
                     <View
                       style={styles.streakCountCircle}
+                      testID="progress-days-background"
                       accessible
                       accessibilityLabel={`${completedWeekDays} ${completedWeekDays === 1 ? "día" : "días"}`}
                     >
@@ -235,25 +247,11 @@ export default function ProgresoScreen() {
                     </View>
                   </View>
                 </CinematicFadeSlide>
-                <CinematicFadeSlide
-                  replayKey="progress-intro-description"
-                  active={descriptionStarted}
-                  duration={600}
-                  style={styles.heroAnimatedContent}
-                >
-                  <Text style={styles.streakIntroDescription}>
-                    Medita al menos 3 días a la semana y transforma todos los aspectos de tu vida
-                  </Text>
-                </CinematicFadeSlide>
-              </View>
-            </View>
-          </View>
         </View>
 
         {descriptionStarted && (
           <>
             <View style={styles.content}>
-              <View style={styles.sectionsOffset}>
                 <ProgressMirrorSections
                   animateEntrance
                   entranceReplayKey="progress-sections"
@@ -268,12 +266,11 @@ export default function ProgresoScreen() {
                   longestStreakIconColor={MEMBERSHIP_AURORA.premium.accent}
                   sectionBackgroundColor="rgba(0,0,0,0.22)"
                   sectionHorizontalPadding={20}
-                  sectionTopPadding={21}
+                  sectionTopPadding={0}
                   sectionBottomPadding={15}
                   sectionMarginBottom={0}
                   streakMarginBottom={21}
                 />
-              </View>
             </View>
             <View style={styles.journeyGap} pointerEvents="none" />
             <CinematicFadeSlide
@@ -330,32 +327,16 @@ const styles = StyleSheet.create({
   },
   headerSpacer: { width: 43, height: 43 },
   heroContainer: {
-    position: "relative",
-  },
-  heroOverlay: {
-    ...StyleSheet.absoluteFillObject,
-    zIndex: 2,
     alignItems: "center",
     paddingHorizontal: 20,
-    transform: [{ translateY: -55 }],
   },
   heroAnimatedContent: {
     width: "100%",
     alignItems: "center",
   },
-  heroCopyOffset: {
-    width: "100%",
-    alignItems: "center",
-    transform: [{ translateY: 155 }],
-  },
   content: {
     paddingHorizontal: 16,
-    marginTop: -55,
-    paddingTop: 12,
-  },
-  sectionsOffset: {
-    marginTop: 95,
-    position: "relative",
+    marginTop: 15,
   },
   journeyGap: { height: 21 },
   introDivider: {
@@ -370,18 +351,31 @@ const styles = StyleSheet.create({
   },
   streakCountWrap: {
     position: "relative",
+    width: COUNT_SIZE,
+    height: COUNT_SIZE,
     alignItems: "center",
     justifyContent: "center",
   },
+  streakCountWithRing: { width: RING_SIZE, height: RING_SIZE },
+  weekTitle: {
+    fontFamily: "Manrope",
+    fontSize: 12,
+    lineHeight: 18,
+    fontWeight: "700",
+    letterSpacing: 1.1,
+    textAlign: "center",
+    marginTop: 12,
+    marginBottom: 20,
+  },
   streakProgressRing: {
     position: "absolute",
-    top: -9,
-    left: -9,
+    top: 0,
+    left: 0,
   },
   streakCountCircle: {
-    width: 113,
-    height: 113,
-    borderRadius: 56.5,
+    width: COUNT_SIZE,
+    height: COUNT_SIZE,
+    borderRadius: COUNT_SIZE / 2,
     backgroundColor: "rgba(255,255,255,0.1)",
     overflow: "hidden",
     alignItems: "center",
@@ -389,8 +383,8 @@ const styles = StyleSheet.create({
   },
   streakIntroCount: {
     fontFamily: "Manrope",
-    fontSize: 53,
-    lineHeight: 60,
+    fontSize: 46,
+    lineHeight: 53,
     fontWeight: "800",
     letterSpacing: -0.5,
     textAlign: "center",
@@ -398,7 +392,7 @@ const styles = StyleSheet.create({
   },
   streakDigitSlot: {
     width: 64,
-    height: 60,
+    height: 53,
   },
   streakDigit: {
     position: "absolute",
@@ -422,7 +416,7 @@ const styles = StyleSheet.create({
     fontSize: 13,
     lineHeight: 22,
     fontWeight: "500",
-    marginTop: 14 + DESCRIPTION_SHIFT,
+    marginBottom: 16,
     textAlign: "center",
     maxWidth: "85%",
     textShadowColor: "rgba(0,0,0,0.5)",

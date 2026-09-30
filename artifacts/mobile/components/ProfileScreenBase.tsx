@@ -100,8 +100,11 @@ const PROFILE_SECTION_GAP = 21;
 const PROFILE_CARD_BOTTOM_PADDING = 6;
 const PROFILE_CARD_BOTTOM_MARGIN = 16;
 const PROFILE_CARD_Y_OFFSET = -5;
-const PROFILE_PROGRESS_TOP_MARGIN = -10;
 const PROFILE_WEEK_TOP_PADDING = 21;
+const PROFILE_PILL_WEEK_GAP = 20;
+const PROFILE_PROGRESS_TOP_MARGIN =
+  PROFILE_PILL_WEEK_GAP - PROFILE_CARD_BOTTOM_PADDING - PROFILE_CARD_BOTTOM_MARGIN
+  - PROFILE_WEEK_TOP_PADDING + PROFILE_CARD_Y_OFFSET;
 
 function resizeImageForWeb(uri: string, maxSize: number): Promise<string> {
   return new Promise((resolve, reject) => {
@@ -1338,23 +1341,6 @@ export function ProfileScreenBase({
               </Text>
               </Pressable>
 
-              {dedicated && (
-                <>
-                  <ProfileIntentionPill
-                    onPress={() => setGrowthJourneyOpen(true)}
-                    style={styles.profileIntentionPill}
-                    textStyle={[styles.profileIntentionDays, { color: colors.foreground }]}
-                  />
-                  <Pressable onPress={() => router.push("/mi-perfil")} accessibilityRole="button" accessibilityLabel="Abrir Mi cuenta">
-                  <Text
-                    style={[styles.profileIntentionDescription, { color: colors.mutedForeground }]}
-                  >
-                    Todo gran cambio comienza con el primer paso.{"\n"}¡Bienvenido a Resonancia!
-                  </Text>
-                  </Pressable>
-                </>
-              )}
-
               {location ? (
                 <Pressable onPress={() => router.push("/mi-perfil")} accessibilityRole="button" accessibilityLabel="Abrir Mi cuenta">
                 <View style={styles.locationRow}>
@@ -1363,6 +1349,14 @@ export function ProfileScreenBase({
                 </View>
                 </Pressable>
               ) : null}
+
+              {dedicated && (
+                <ProfileIntentionPill
+                  onPress={() => setGrowthJourneyOpen(true)}
+                  style={styles.profileIntentionPill}
+                  textStyle={[styles.profileIntentionDays, { color: colors.foreground }]}
+                />
+              )}
             </View>
           </View>
         </View>
@@ -1396,6 +1390,7 @@ export function ProfileScreenBase({
                 sectionTopPadding={PROFILE_WEEK_TOP_PADDING}
                 sectionBottomPadding={15}
                 sectionMarginBottom={PROFILE_SECTION_GAP}
+                streakMarginBottom={PROFILE_SECTION_GAP - 12}
                 onStreakTitlePress={() => router.push("/progreso" as never)}
               />
             </View>
@@ -2537,7 +2532,6 @@ const styles = StyleSheet.create({
     paddingVertical: 4,
   },
   profileIntentionDays: { fontFamily: "Manrope", fontSize: 10, fontWeight: "600" },
-  profileIntentionDescription: { fontFamily: "Manrope", fontSize: 11, lineHeight: 16, textAlign: "center", marginTop: 7 },
   locationRow: { flexDirection: "row", alignItems: "center", justifyContent: "center", gap: 4 },
   locationText: { fontFamily: "Manrope", fontSize: 12 },
   bioText: { fontFamily: "Manrope", fontSize: 13, lineHeight: 19, textAlign: "center", paddingHorizontal: 8, fontStyle: "italic" },

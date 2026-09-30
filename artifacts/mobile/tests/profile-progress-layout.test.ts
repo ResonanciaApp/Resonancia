@@ -19,6 +19,7 @@ const NativeView = ({ children, testID, style }: NativeProps) => {
     "data-padding-bottom": resolved.paddingBottom,
     "data-padding-horizontal": resolved.paddingHorizontal,
     "data-min-height": resolved.minHeight,
+    "data-margin-bottom": resolved.marginBottom,
   }, children);
 };
 const Passthrough = ({ children }: NativeProps) => React.createElement(React.Fragment, null, children);
@@ -156,6 +157,49 @@ test("Perfil removes only the weekly background and reduces history top padding 
   assert.match(weekly, /data-padding-top="21"/);
   assert.match(history, /data-background="rgba\(0,0,0,0.22\)"/);
   assert.match(history, /data-padding-top="17"/);
+});
+
+test("Perfil hides the intention description and leaves exactly 20px from the pill to the weekly circles", () => {
+  const profileSource = readFileSync(new URL("../components/ProfileScreenBase.tsx", import.meta.url), "utf8");
+  assert.doesNotMatch(profileSource, /profileIntentionDescription|Todo gran cambio comienza con el primer paso|Bienvenido a Resonancia/);
+  assert.match(profileSource, /profileProgressSection:\s*\{\s*marginTop: PROFILE_PROGRESS_TOP_MARGIN,/);
+  assert.match(profileSource, /const PROFILE_SECTION_GAP = 21;/);
+  const constants = [
+    "PROFILE_PILL_WEEK_GAP",
+    "PROFILE_CARD_BOTTOM_PADDING",
+    "PROFILE_CARD_BOTTOM_MARGIN",
+    "PROFILE_WEEK_TOP_PADDING",
+    "PROFILE_CARD_Y_OFFSET",
+  ];
+  const values = constants.map((name) => Number(profileSource.match(new RegExp(`const ${name} = (-?\\d+);`))?.[1]));
+  assert.ok(values.every(Number.isFinite));
+  const marginExpression = profileSource.match(/const PROFILE_PROGRESS_TOP_MARGIN\s*=\s*([\s\S]*?);/)?.[1];
+  assert.ok(marginExpression);
+  const margin = new Function(...constants, `return (${marginExpression});`)(...values);
+  const [gap, padding, cardMargin, weekPadding, cardOffset] = values;
+  assert.equal(gap, 20);
+  assert.equal(padding + cardMargin + margin + weekPadding - cardOffset, 20);
+  const detailsStart = profileSource.indexOf("<View style={styles.profileDetails}>");
+  const locationIndex = profileSource.indexOf("{location ? (", detailsStart);
+  const pillIndex = profileSource.indexOf("<ProfileIntentionPill", detailsStart);
+  assert.ok(locationIndex > detailsStart && pillIndex > locationIndex, "optional location stays above the pill");
+});
+
+test("Perfil raises streak history and the following sections 12px without moving the weekly circles", () => {
+  const source = readFileSync(new URL("../components/ProfileScreenBase.tsx", import.meta.url), "utf8");
+  assert.match(source, /streakMarginBottom=\{PROFILE_SECTION_GAP - 12\}/);
+  assert.match(source, /sectionMarginBottom=\{PROFILE_SECTION_GAP\}/);
+  const html = render({
+    separateStreakHistory: true,
+    sectionMarginBottom: 21,
+    streakMarginBottom: 9,
+    showPersonalStats: false,
+    showCalendar: true,
+  });
+  const weekly = html.match(/<div[^>]*data-testid="profile-weekly-progress"[^>]*>/)?.[0] ?? "";
+  const history = html.match(/<div[^>]*data-testid="profile-streak-history"[^>]*>/)?.[0] ?? "";
+  assert.match(weekly, /data-margin-bottom="9"/);
+  assert.match(history, /data-margin-bottom="21"/);
 });
 
 test("Perfil hides personal stats and the divider above the week while retaining history and calendar", () => {

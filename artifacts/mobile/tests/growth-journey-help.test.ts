@@ -1,0 +1,217 @@
+import assert from "node:assert/strict";
+import { readFileSync } from "node:fs";
+import { URL } from "node:url";
+import test from "node:test";
+import React from "react";
+import { renderToStaticMarkup } from "react-dom/server";
+import ts from "typescript";
+
+function load(path: string, imports: Record<string, unknown>) {
+  const compiled = ts.transpileModule(readFileSync(new URL(path, import.meta.url), "utf8"), {
+    compilerOptions: { module: ts.ModuleKind.CommonJS, jsx: ts.JsxEmit.React, esModuleInterop: true },
+  }).outputText;
+  const module = { exports: {} };
+  new Function("require", "module", "exports", compiled)((name: string) => {
+    assert.ok(name in imports, `Missing mock: ${name}`);
+    return imports[name];
+  }, module, module.exports);
+  return module.exports as Record<string, any>;
+}
+
+function hooks() {
+  const states: any[] = [];
+  const refs: any[] = [];
+  let stateIndex = 0;
+  let refIndex = 0;
+  return {
+    reset: () => { stateIndex = 0; refIndex = 0; },
+    react: {
+      ...React,
+      useState(initial: unknown) {
+        const index = stateIndex++;
+        if (!(index in states)) states[index] = initial;
+        return [states[index], (next: any) => {
+          states[index] = typeof next === "function" ? next(states[index]) : next;
+        }];
+      },
+      useRef(initial: unknown) {
+        const index = refIndex++;
+        refs[index] ??= { current: initial };
+        return refs[index];
+      },
+      useEffect: (effect: () => unknown) => effect(),
+      useCallback: (callback: unknown) => callback,
+      useMemo: (factory: () => unknown) => factory(),
+    },
+  };
+}
+
+const flatten = (style: any): Record<string, any> =>
+  Array.isArray(style) ? Object.assign({}, ...style.map(flatten)) : style ?? {};
+
+function uiHarness() {
+  const h = hooks();
+  const presses = new Map<string, any>();
+  const layouts: any[] = [];
+  const springs: any[] = [];
+  let modalClose = () => {};
+  let pan: any;
+  let motion: any;
+  let helpProps: any;
+  const Native = (props: any) => {
+    const style = flatten([props.style, props.contentContainerStyle]);
+    if (props.onLayout) layouts.push(props.onLayout);
+    return React.createElement("div", {
+      "data-testid": props.testID,
+      "data-height": style.height,
+      "data-padding-top": style.paddingTop,
+      "data-color": style.color,
+      "data-background": style.backgroundColor,
+      "data-pointer-events": props.pointerEvents,
+    }, props.children);
+  };
+  const native = {
+    View: Native, Text: Native, ScrollView: Native,
+    Pressable: (props: any) => {
+      if (props.testID) presses.set(props.testID, props);
+      return React.createElement(Native, props);
+    },
+    Modal: (props: any) => { modalClose = props.onRequestClose; return React.createElement(Native, props); },
+    Animated: {
+      View: Native,
+      spring: (_: any, options: any) => ({ start: () => springs.push(options) }),
+    },
+    PanResponder: { create: (handlers: any) => { pan = handlers; return { panHandlers: {} }; } },
+    Platform: { OS: "ios" },
+    useWindowDimensions: () => ({ width: 400, height: 800 }),
+    StyleSheet: { create: (value: any) => value, absoluteFill: {} },
+  };
+  const imports = {
+    react: h.react, "react-native": native,
+    "@expo/vector-icons": { Feather: (props: any) => React.createElement("i", { "data-icon": props.name }) },
+    "expo-linear-gradient": { LinearGradient: Native },
+    "react-native-safe-area-context": { useSafeAreaInsets: () => ({ top: 40, bottom: 20 }) },
+    "@/context/SceneThemeContext": { useSceneTheme: () => ({ theme: { gradient: ["#060A0F", "#111122"] } }) },
+    "@/hooks/useColors": { useColors: () => ({ foreground: "#FBFBFB" }) },
+    "@/constants/colors": { NAVIGATION_HELP_ICON_COLOR: "#F9F9F9" },
+    "@/components/GrowthJourney": { GrowthJourney: () => React.createElement("div", null, "PRIMERA ETAPA") },
+    "@/components/GrowthJourneyHelpSheet": { GrowthJourneyHelpSheet: (props: any) => {
+      helpProps = props;
+      return React.createElement("div", { "data-help-visible": String(props.visible) });
+    } },
+    "@/hooks/useGrowthJourneySheetMotion": {
+      GROWTH_SHEET_SPRING: { tension: 55, friction: 8, useNativeDriver: true },
+      useGrowthJourneySheetMotion: (visible: boolean) => {
+        motion = { rendered: visible, sheetY: { value: 0, stopAnimation() {}, setValue(n: number) { this.value = n; } }, backdropOpacity: 0 };
+        return motion;
+      },
+    },
+  };
+  return {
+    ...h, imports, presses, layouts, springs,
+    get pan() { return pan; }, get motion() { return motion; }, get help() { return helpProps; },
+    back: () => modalClose(),
+  };
+}
+
+test("Tu camino keeps its controls and raises the entire timeline another 60px", () => {
+  const h = uiHarness();
+  const { GrowthJourneySheet } = load("../components/GrowthJourneySheet.tsx", h.imports);
+  let closes = 0;
+  const render = (visible = true) => {
+    h.reset();
+    return renderToStaticMarkup(GrowthJourneySheet({ visible, onClose: () => closes++ }));
+  };
+  const html = render();
+  assert.ok(html.indexOf('data-testid="growth-journey-close"') < html.indexOf("Tu camino"));
+  assert.ok(html.indexOf("Tu camino") < html.indexOf('data-testid="growth-journey-help"'));
+  assert.match(html, /data-color="#F9F9F9">\?/);
+  assert.equal(h.presses.get("growth-journey-help").style.backgroundColor, "rgba(0,0,0,0.28)");
+  assert.doesNotMatch(html, /trending-up|Cada día de racha|descriptionDivider/);
+  assert.match(html, /data-padding-top="110"/); // 60px above the previous 170px inset
+  h.help.onDescriptionLayout(46);
+  assert.match(render(), /data-padding-top="87"/); // 60px above the previous 147px inset
+  h.presses.get("growth-journey-help").onPress();
+  render();
+  assert.equal(h.help.visible, true);
+  h.back();
+  render();
+  assert.equal(h.help.visible, false);
+  assert.equal(closes, 0);
+  h.presses.get("growth-journey-close").onPress();
+  assert.equal(closes, 1);
+  h.presses.get("growth-journey-help").onPress();
+  render(false);
+  render();
+  assert.equal(h.help.visible, false);
+});
+
+test("help uses half the screen, shows the original icon above its description, and dismisses by tap or drag", () => {
+  const h = uiHarness();
+  const { GrowthJourneyHelpSheet } = load("../components/GrowthJourneyHelpSheet.tsx", h.imports);
+  let closes = 0;
+  let measured = 0;
+  const render = (visible: boolean) => {
+    h.reset();
+    return renderToStaticMarkup(GrowthJourneyHelpSheet({
+      visible, onClose: () => closes++, onDescriptionLayout: (height: number) => measured = height,
+    }));
+  };
+  const html = render(true);
+  assert.match(html, /data-testid="growth-help-sheet" data-height="400"/);
+  assert.ok(html.indexOf("trending-up") < html.indexOf("Cada día de racha lograda en Resonancia"));
+  assert.match(html, /te acerca más a ti mismo y a tu florecimiento espiritual/);
+  h.layouts[0]({ nativeEvent: { layout: { height: 69 } } });
+  assert.equal(measured, 69);
+  assert.equal(h.pan.onMoveShouldSetPanResponder(null, { dx: 30, dy: 10 }), false);
+  assert.equal(h.pan.onMoveShouldSetPanResponder(null, { dx: 0, dy: 20 }), true);
+  h.pan.onPanResponderMove(null, { dy: 32 });
+  assert.equal(h.motion.sheetY.value, 32);
+  h.pan.onPanResponderRelease(null, { dy: 32, vy: 0 });
+  assert.equal(closes, 0);
+  assert.deepEqual(h.springs[0], { toValue: 0, tension: 55, friction: 8, useNativeDriver: true });
+  h.pan.onPanResponderRelease(null, { dy: 90, vy: 0 });
+  h.presses.get("growth-help-handle").onPress();
+  h.presses.get("growth-help-backdrop").onPress();
+  assert.equal(closes, 3);
+  assert.match(render(false), /data-pointer-events="none"/);
+  const source = readFileSync(new URL("../components/GrowthJourneyHelpSheet.tsx", import.meta.url), "utf8");
+  assert.doesNotMatch(source, /<Modal/);
+});
+
+test("both sheets share the original spring entrance, backdrop fade and animated exit", () => {
+  const h = hooks();
+  const animations: any[] = [];
+  const animation = (kind: string, value: any, options: any) => {
+    animations.push({ kind, options });
+    return { start() {}, stop() {} };
+  };
+  const { useGrowthJourneySheetMotion } = load("../hooks/useGrowthJourneySheetMotion.ts", {
+    react: h.react,
+    "react-native": { Animated: {
+      Value: class { constructor(public value: number) {} stopAnimation() {} setValue(n: number) { this.value = n; } },
+      spring: (value: any, options: any) => animation("spring", value, options),
+      timing: (value: any, options: any) => animation("timing", value, options),
+      parallel: () => ({ start(callback?: any) { callback?.({ finished: true }); }, stop() {} }),
+    } },
+  });
+  const oldFrame = globalThis.requestAnimationFrame;
+  const oldCancel = globalThis.cancelAnimationFrame;
+  globalThis.requestAnimationFrame = callback => { callback(0); return 1; };
+  globalThis.cancelAnimationFrame = () => {};
+  try {
+    h.reset();
+    useGrowthJourneySheetMotion(true, 400);
+    h.reset();
+    useGrowthJourneySheetMotion(false, 400);
+    assert.deepEqual(animations, [
+      { kind: "spring", options: { toValue: 0, tension: 55, friction: 8, useNativeDriver: true } },
+      { kind: "timing", options: { toValue: 0.62, duration: 500, useNativeDriver: true } },
+      { kind: "timing", options: { toValue: 480, duration: 500, useNativeDriver: true } },
+      { kind: "timing", options: { toValue: 0, duration: 460, useNativeDriver: true } },
+    ]);
+  } finally {
+    globalThis.requestAnimationFrame = oldFrame;
+    globalThis.cancelAnimationFrame = oldCancel;
+  }
+});

@@ -1,6 +1,6 @@
 import { Feather } from "@expo/vector-icons";
 import { LinearGradient } from "expo-linear-gradient";
-import React, { useEffect, useRef, useState } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import {
   Animated,
   Modal,
@@ -15,8 +15,16 @@ import {
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 
 import { GrowthJourney } from "@/components/GrowthJourney";
+import { GrowthJourneyHelpSheet } from "@/components/GrowthJourneyHelpSheet";
+import { NAVIGATION_HELP_ICON_COLOR } from "@/constants/colors";
 import { useSceneTheme } from "@/context/SceneThemeContext";
 import { useColors } from "@/hooks/useColors";
+import { useGrowthJourneySheetMotion } from "@/hooks/useGrowthJourneySheetMotion";
+
+// Former intro: icon (45 + 56), paragraph top (20), divider (30 + 1 + 29).
+// Retain its measured height minus the requested rise, keeping the timeline in flow.
+const FORMER_INTRO_FIXED_HEIGHT = 181;
+const FIRST_STAGE_RISE = 140;
 
 export function GrowthJourneySheet({
   visible,
@@ -33,50 +41,13 @@ export function GrowthJourneySheet({
     height - 8,
     Math.max(400, height - Math.max(insets.top, Platform.OS === "web" ? 40 : 0) - 12),
   );
-  const [rendered, setRendered] = useState(visible);
-  const sheetY = useRef(new Animated.Value(sheetHeight + 80)).current;
-  const backdropOpacity = useRef(new Animated.Value(0)).current;
-
+  const { rendered, sheetY, backdropOpacity } = useGrowthJourneySheetMotion(visible, sheetHeight);
+  const [helpVisible, setHelpVisible] = useState(false);
+  const [descriptionHeight, setDescriptionHeight] = useState(69);
+  const closeHelp = useCallback(() => setHelpVisible(false), []);
   useEffect(() => {
-    sheetY.stopAnimation();
-    backdropOpacity.stopAnimation();
-    if (visible) {
-      setRendered(true);
-      sheetY.setValue(sheetHeight + 80);
-      backdropOpacity.setValue(0);
-      const frame = requestAnimationFrame(() => {
-        Animated.parallel([
-          Animated.spring(sheetY, {
-            toValue: 0,
-            tension: 55,
-            friction: 8,
-            useNativeDriver: true,
-          }),
-          Animated.timing(backdropOpacity, {
-            toValue: 0.62,
-            duration: 500,
-            useNativeDriver: true,
-          }),
-        ]).start();
-      });
-      return () => cancelAnimationFrame(frame);
-    }
-
-    Animated.parallel([
-      Animated.timing(sheetY, {
-        toValue: sheetHeight + 80,
-        duration: 500,
-        useNativeDriver: true,
-      }),
-      Animated.timing(backdropOpacity, {
-        toValue: 0,
-        duration: 460,
-        useNativeDriver: true,
-      }),
-    ]).start(({ finished }) => {
-      if (finished) setRendered(false);
-    });
-  }, [visible, sheetHeight, sheetY, backdropOpacity]);
+    if (!visible) closeHelp();
+  }, [visible, closeHelp]);
 
   if (!rendered) return null;
 
@@ -85,7 +56,7 @@ export function GrowthJourneySheet({
       visible={rendered}
       transparent
       animationType="none"
-      onRequestClose={onClose}
+      onRequestClose={helpVisible ? closeHelp : onClose}
       statusBarTranslucent
     >
       <View style={styles.modalRoot}>
@@ -109,6 +80,8 @@ export function GrowthJourneySheet({
             },
           ]}
           accessibilityViewIsModal
+          accessibilityElementsHidden={helpVisible}
+          importantForAccessibility={helpVisible ? "no-hide-descendants" : "auto"}
         >
           <LinearGradient
             pointerEvents="none"
@@ -118,33 +91,44 @@ export function GrowthJourneySheet({
           />
           <View style={styles.handle} />
           <View style={styles.header}>
-            <View style={styles.headerSpacer} />
-            <Text style={[styles.title, { color: colors.foreground }]}>Tu camino</Text>
             <Pressable
               onPress={onClose}
               style={styles.closeButton}
               hitSlop={8}
               accessibilityRole="button"
               accessibilityLabel="Cerrar"
+              testID="growth-journey-close"
             >
               <Feather name="x" size={22} color={colors.foreground} />
+            </Pressable>
+            <Text style={[styles.title, { color: colors.foreground }]}>Tu camino</Text>
+            <Pressable
+              onPress={() => setHelpVisible(true)}
+              style={styles.closeButton}
+              hitSlop={8}
+              accessibilityRole="button"
+              accessibilityLabel="Información de Tu camino"
+              testID="growth-journey-help"
+            >
+              <Text style={[styles.questionMark, { color: NAVIGATION_HELP_ICON_COLOR }]}>?</Text>
             </Pressable>
           </View>
           <ScrollView
             style={styles.scroll}
-            contentContainerStyle={styles.scrollContent}
+            contentContainerStyle={[
+              styles.scrollContent,
+              { paddingTop: FORMER_INTRO_FIXED_HEIGHT + descriptionHeight - FIRST_STAGE_RISE },
+            ]}
             showsVerticalScrollIndicator={false}
           >
-            <View style={styles.progressIcon} accessible={false}>
-              <Feather name="trending-up" size={26} color={colors.foreground} />
-            </View>
-            <Text style={[styles.journeyDescription, { color: colors.foreground }]}>
-              Cada día de racha lograda en Resonancia te acerca más a ti mismo y a tu florecimiento espiritual.
-            </Text>
-            <View style={styles.descriptionDivider} pointerEvents="none" />
             <GrowthJourney />
           </ScrollView>
         </Animated.View>
+        <GrowthJourneyHelpSheet
+          visible={visible && helpVisible}
+          onClose={closeHelp}
+          onDescriptionLayout={setDescriptionHeight}
+        />
       </View>
     </Modal>
   );
@@ -184,8 +168,8 @@ const styles = StyleSheet.create({
     alignItems: "center",
     justifyContent: "space-between",
   },
-  headerSpacer: { width: 43 },
   title: { fontFamily: "Manrope", fontSize: 20, lineHeight: 42, fontWeight: "700" },
+  questionMark: { fontFamily: "Manrope", fontSize: 24, lineHeight: 30, fontWeight: "500" },
   closeButton: {
     width: 43,
     height: 43,
@@ -198,29 +182,4 @@ const styles = StyleSheet.create({
   },
   scroll: { flex: 1 },
   scrollContent: { paddingBottom: 32 },
-  progressIcon: {
-    width: 56,
-    height: 56,
-    borderRadius: 28,
-    backgroundColor: "rgba(255,255,255,0.1)",
-    alignSelf: "center",
-    alignItems: "center",
-    justifyContent: "center",
-    marginTop: 45,
-  },
-  journeyDescription: {
-    marginHorizontal: 25,
-    marginTop: 20,
-    textAlign: "center",
-    fontFamily: "Manrope",
-    fontSize: 15,
-    lineHeight: 23,
-  },
-  descriptionDivider: {
-    height: 1,
-    marginHorizontal: 25,
-    marginTop: 30,
-    marginBottom: 29,
-    backgroundColor: "rgba(255,255,255,0.16)",
-  },
 });
