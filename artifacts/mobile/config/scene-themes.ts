@@ -43,7 +43,7 @@ export const SCENE_THEMES: Record<VisualThemeId, SceneTheme> = {
   tibet: {
     id: "tibet",
     label: "Universo",
-    gradient: ["#0B1438", "#101C46", "#172653", "#202C5D", "#293266", "#30366B"],
+    gradient: ["#1E2550", "#262E64", "#31397A", "#302D6F", "#29245E", "#1F1944"],
     solid: "#0B1438",
   },
   indigo2: {
