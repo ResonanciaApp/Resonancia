@@ -135,9 +135,13 @@ export function GrowthJourneySheet({
             contentContainerStyle={styles.scrollContent}
             showsVerticalScrollIndicator={false}
           >
+            <View style={styles.progressIcon} accessible={false}>
+              <Feather name="trending-up" size={26} color={colors.foreground} />
+            </View>
             <Text style={[styles.journeyDescription, { color: colors.foreground }]}>
               Cada día de racha lograda en Resonancia te acerca más a ti mismo y a tu florecimiento espiritual.
             </Text>
+            <View style={styles.descriptionDivider} pointerEvents="none" />
             <GrowthJourney />
           </ScrollView>
         </Animated.View>
@@ -194,12 +198,29 @@ const styles = StyleSheet.create({
   },
   scroll: { flex: 1 },
   scrollContent: { paddingBottom: 32 },
+  progressIcon: {
+    width: 56,
+    height: 56,
+    borderRadius: 28,
+    backgroundColor: "rgba(255,255,255,0.1)",
+    alignSelf: "center",
+    alignItems: "center",
+    justifyContent: "center",
+    marginTop: 45,
+  },
   journeyDescription: {
     marginHorizontal: 25,
-    marginTop: 45,
-    marginBottom: 60,
+    marginTop: 20,
+    textAlign: "center",
     fontFamily: "Manrope",
     fontSize: 15,
     lineHeight: 23,
+  },
+  descriptionDivider: {
+    height: 1,
+    marginHorizontal: 25,
+    marginTop: 30,
+    marginBottom: 29,
+    backgroundColor: "rgba(255,255,255,0.16)",
   },
 });
