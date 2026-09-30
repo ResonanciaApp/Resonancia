@@ -1063,10 +1063,10 @@ export function MixerSheet() {
         <Animated.View style={[styles.modalOverlay, { opacity: saveOverlayOpacity }]}>
           <Pressable style={StyleSheet.absoluteFill} onPress={cancelSave} />
           <Pressable
-            style={[styles.modalCard, { backgroundColor: theme.gradient[theme.gradient.length - 1] }]}
+            style={[styles.modalCard, { backgroundColor: theme.gradient[0] }]}
             onPress={(e) => e.stopPropagation()}
           >
-            <Text style={[styles.modalTitle, { color: "#FFFFFF" }]}>Nombra tu mezcla</Text>
+            <Text style={[styles.modalTitle, { color: "#F9F9F9" }]}>Nombra tu mezcla</Text>
 
             <View style={[styles.modalInput, { backgroundColor: palette.inputBg }]}>
               <Animated.View
@@ -1092,7 +1092,7 @@ export function MixerSheet() {
                 style={[styles.modalBtn, { overflow: "hidden" }]}
               >
                 <GoldGradientFill />
-                <Text style={[styles.modalBtnText, { color: colors.primaryForeground, fontWeight: "700" }]}>
+                <Text style={[styles.modalBtnText, { color: theme.gradient[0], fontWeight: "700" }]}>
                   {saveMode === "update" ? "Actualizar" : "Guardar"}
                 </Text>
               </Pressable>
