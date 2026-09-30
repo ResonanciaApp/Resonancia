@@ -120,7 +120,8 @@ export function GrowthJourneySheet({
         >
           <LinearGradient
             pointerEvents="none"
-            colors={theme.gradient.slice(0, 3) as [string, string, string]}
+            colors={theme.gradient as unknown as [string, string, ...string[]]}
+            locations={theme.gradientLocations as unknown as [number, number, ...number[]] | undefined}
             style={StyleSheet.absoluteFill}
           />
           <View style={styles.handle} />
@@ -187,5 +188,5 @@ const styles = StyleSheet.create({
   title: { fontFamily: "Manrope", fontSize: 18, fontWeight: "600" },
   closeButton: { width: 38, height: 38, alignItems: "center", justifyContent: "center" },
   scroll: { flex: 1 },
-  scrollContent: { paddingTop: 12, paddingBottom: 32 },
+  scrollContent: { paddingTop: 37, paddingBottom: 32 },
 });

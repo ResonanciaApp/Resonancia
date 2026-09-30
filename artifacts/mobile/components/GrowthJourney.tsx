@@ -246,29 +246,19 @@ export function GrowthJourney({
 }) {
   const reduceMotion = useReducedMotion();
   const [animatedStep, setAnimatedStep] = useState(-1);
-  const playedStep = reduceMotion ? visibleStep : animatedStep;
-  const dividerVisible = playedStep >= 2 + growthLevels.length;
-  const dividerProgress = useSharedValue(reduceMotion ? 1 : 0);
+  const [ascentExpanded, setAscentExpanded] = useState(false);
+  const sequenceEnd = ascentExpanded ? visibleStep : 5 + growthLevels.length;
+  const playedStep = reduceMotion ? sequenceEnd : animatedStep;
   // Visual preview: Intención is the only active level until progression is enabled.
 
   useEffect(() => {
-    if (reduceMotion || animatedStep >= visibleStep) return;
+    if (reduceMotion || animatedStep >= sequenceEnd) return;
     const timer = setTimeout(
-      () => setAnimatedStep((current) => Math.min(current + 1, visibleStep)),
+      () => setAnimatedStep((current) => Math.min(current + 1, sequenceEnd)),
       animatedStep < 0 ? 0 : CHAIN_STEP_MS,
     );
     return () => clearTimeout(timer);
-  }, [animatedStep, reduceMotion, visibleStep]);
-
-  useEffect(() => {
-    if (dividerVisible) {
-      dividerProgress.value = reduceMotion ? 1 : withTiming(1, { duration: 520 });
-    }
-  }, [dividerProgress, dividerVisible, reduceMotion]);
-
-  const dividerEntrance = useAnimatedStyle(() => ({
-    opacity: dividerProgress.value,
-  }));
+  }, [animatedStep, reduceMotion, sequenceEnd]);
 
   return (
     <View style={styles.section}>
@@ -290,9 +280,7 @@ export function GrowthJourney({
           />
         ))}
       </View>
-      <View style={styles.stageDividerGap} pointerEvents="none">
-        <Animated.View style={[styles.stageDivider, dividerEntrance]} />
-      </View>
+      <View style={styles.stageGap} pointerEvents="none" />
       <GrowthStageHeading
         eyebrow="SEGUNDA ETAPA"
         title="El ascenso"
@@ -300,18 +288,31 @@ export function GrowthJourney({
         titleVisible={playedStep >= 4 + growthLevels.length}
         second
       />
-      <View style={styles.timeline}>
-        {ascentLevels.map((level, index) => (
-          <GrowthRow
-            key={level.id}
-            level={level}
-            number={index + 1}
-            hasNext={index < ascentLevels.length - 1}
-            status="locked"
-            visible={playedStep >= 6 + growthLevels.length + index}
-          />
-        ))}
-      </View>
+      <Pressable
+        onPress={() => setAscentExpanded((expanded) => !expanded)}
+        style={styles.ascentToggle}
+        accessibilityRole="button"
+        accessibilityLabel={ascentExpanded ? "Ocultar niveles de El ascenso" : "Próximamente, mostrar niveles de El ascenso"}
+        accessibilityState={{ expanded: ascentExpanded }}
+        testID="growth-ascent-toggle"
+      >
+        <Text style={styles.ascentToggleText}>{ascentExpanded ? "Ocultar niveles" : "Próximamente"}</Text>
+        <Feather name={ascentExpanded ? "chevron-up" : "chevron-down"} size={16} color={GROWTH_COLORS.line} />
+      </Pressable>
+      {ascentExpanded && (
+        <View style={styles.timeline}>
+          {ascentLevels.map((level, index) => (
+            <GrowthRow
+              key={level.id}
+              level={level}
+              number={index + 1}
+              hasNext={index < ascentLevels.length - 1}
+              status="locked"
+              visible={playedStep >= 6 + growthLevels.length + index}
+            />
+          ))}
+        </View>
+      )}
     </View>
   );
 }
@@ -337,8 +338,27 @@ const styles = StyleSheet.create({
   },
   sectionHeading: { alignItems: "center", marginBottom: 8 },
   secondStageHeading: { marginBottom: 0 },
-  stageDividerGap: { height: 73, justifyContent: "center", marginHorizontal: 20 },
-  stageDivider: { height: 1, backgroundColor: "rgba(255,255,255,0.05)" },
+  stageGap: { height: 73 },
+  ascentToggle: {
+    alignSelf: "center",
+    marginTop: 18,
+    marginBottom: 10,
+    paddingHorizontal: 18,
+    height: 36,
+    borderRadius: 18,
+    flexDirection: "row",
+    alignItems: "center",
+    gap: 6,
+    backgroundColor: "rgba(0,0,0,0.22)",
+    borderWidth: 1,
+    borderColor: GROWTH_COLORS.inactiveLine,
+  },
+  ascentToggleText: {
+    fontFamily: "Manrope",
+    fontSize: 12,
+    fontWeight: "600",
+    color: GROWTH_COLORS.line,
+  },
   sectionEyebrow: {
     fontFamily: "Manrope",
     fontSize: 11,

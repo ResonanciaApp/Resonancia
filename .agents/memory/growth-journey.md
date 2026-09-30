@@ -21,14 +21,14 @@ Por ahora, mostrar **solo Intención (nivel 0) activa**, con el punto dorado; Se
 
 **How to apply:** No reconectar las etapas a estadísticas hasta que se apruebe la dirección visual y el usuario pida activar el progreso. En ese momento usar los días activos acumulados no consecutivos acordados, sin tomar la racha como sustituto.
 
-La entrada en «Tu progreso» debe respetar este orden: termina **toda** la sección de racha (incluido el último día de la fila semanal), aparece «Mis estadísticas» con sus cifras, entra el divisor y solo entonces aparece la tarjeta del nivel 0. El recorrido completo (Florecimiento y El ascenso) vive dentro de una ventana casi a pantalla completa que sube desde abajo al pulsar esa tarjeta.
+La entrada en «Tu progreso» debe respetar este orden: termina **toda** la sección de racha (incluido el último día de la fila semanal), aparece «Mis estadísticas» con sus cifras y solo entonces aparece la tarjeta del nivel 0. Las secciones tienen la separación de Perfil (21 px), sin divisor sobre la tarjeta. El recorrido completo vive dentro de una ventana casi a pantalla completa que sube desde abajo al pulsar esa tarjeta.
 
-**Why:** El usuario corrigió el orden de entrada anterior y luego decidió que la pantalla principal mostrara solo Intención; pidió el recorrido completo dentro de una ventana con la entrada del temporizador Ambiental.
+**Why:** El usuario corrigió el orden de entrada anterior, decidió que la pantalla principal mostrara solo Intención y pidió retirar la línea divisora e igualar las separaciones de Perfil.
 
-**How to apply:** Si cambia la duración de la semana o las estadísticas, sincronizar el divisor y la tarjeta con el final de esa secuencia. Mantener el recorrido detallado en la ventana y no volver a mostrarlo completo bajo las estadísticas.
+**How to apply:** Si cambia la duración de la semana o las estadísticas, sincronizar la entrada de la tarjeta con el final de esa secuencia sin reintroducir el divisor. Mantener el recorrido detallado en la ventana y no volver a mostrarlo completo bajo las estadísticas.
 
-Dentro de la ventana, los encabezados y niveles de ambas etapas deben entrar en secuencia vertical sin depender del scroll; desplazarse solo sirve para recorrer el contenido.
+Dentro de la ventana, usar el degradado completo del tema. Florecimiento y sus niveles entran en secuencia vertical sin depender del scroll; «El ascenso» muestra primero solo el encabezado y el botón «Próximamente», que despliega sus niveles al pulsarlo. No hay divisor arriba de la segunda etapa.
 
-**Why:** El usuario pidió que las secciones aparecieran sin necesidad de scroll y ahora quiere ver ambas etapas en la misma vista desplegada.
+**Why:** El usuario pidió el fondo completo del tema y que la segunda etapa quedara plegada inicialmente pero disponible para explorar al pulsar, sin la línea anterior.
 
-**How to apply:** No condicionar títulos o niveles del recorrido a eventos de scroll ni a mediciones de visibilidad; animarlos automáticamente al abrir la ventana, manteniendo solo Intención como nivel activo hasta que se solicite la funcionalidad.
+**How to apply:** No condicionar títulos o niveles del recorrido a eventos de scroll ni a mediciones de visibilidad; animar Florecimiento al abrir y los niveles de El ascenso al expandirlo, manteniendo solo Intención como nivel activo hasta que se solicite la funcionalidad.

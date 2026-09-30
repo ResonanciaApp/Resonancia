@@ -49,10 +49,10 @@ const DESCRIPTION_ENTRANCE_DELAY = 600;
 const STREAK_SECTION_ENTRANCE_DELAY = 1150;
 const PERSONAL_STATS_ENTRANCE_OFFSET_MS =
   STREAK_WEEK_START_OFFSET_MS + STREAK_WEEK_ENTRANCE_END_OFFSET_MS + 100;
-const JOURNEY_DIVIDER_ENTRANCE_DELAY =
+const JOURNEY_PREVIEW_ENTRANCE_DELAY =
   STREAK_SECTION_ENTRANCE_DELAY + PERSONAL_STATS_ENTRANCE_OFFSET_MS +
   PERSONAL_STATS_ENTRANCE_END_OFFSET_MS + 100;
-const JOURNEY_DIVIDER_ENTRANCE_DURATION = 540;
+const JOURNEY_PREVIEW_WAIT_MS = 540;
 const AnimatedCircle = Animated.createAnimatedComponent(Circle);
 
 function StreakCountDigit({
@@ -118,7 +118,7 @@ export default function ProgresoScreen() {
     return () => cancelAnimation(animatedDays);
   }, [animatedDays, completedWeekDays, reduceMotion]));
 
-  const onJourneyDividerComplete = useCallback(() => setJourneyReady(true), []);
+  const onJourneyTransitionComplete = useCallback(() => setJourneyReady(true), []);
 
   const topPad = Platform.OS === "web" ? 67 : Math.max(insets.top, 40);
   const bottomPad = Platform.OS === "web" ? 34 : insets.bottom;
@@ -268,22 +268,20 @@ export default function ProgresoScreen() {
               sectionTopPadding={16}
               sectionBottomPadding={19}
               sectionMarginBottom={0}
-              personalStatsMarginTop={14}
+              personalStatsMarginTop={21}
               canonicalVerticalInsets
             />
           </View>
         </View>
-        <View style={styles.journeyGap} pointerEvents="none">
-          <CinematicFadeSlide
-            replayKey="progress-journey-divider"
-            delay={JOURNEY_DIVIDER_ENTRANCE_DELAY}
-            duration={JOURNEY_DIVIDER_ENTRANCE_DURATION}
-            translateYFrom={8}
-            onComplete={onJourneyDividerComplete}
-          >
-            <View style={styles.journeyDivider} />
-          </CinematicFadeSlide>
-        </View>
+        <CinematicFadeSlide
+          replayKey="progress-journey-transition"
+          delay={JOURNEY_PREVIEW_ENTRANCE_DELAY}
+          duration={JOURNEY_PREVIEW_WAIT_MS}
+          translateYFrom={0}
+          onComplete={onJourneyTransitionComplete}
+        >
+          <View style={styles.journeyGap} pointerEvents="none" />
+        </CinematicFadeSlide>
         {journeyReady && (
           <CinematicFadeSlide
             replayKey="progress-level-zero-preview"
@@ -365,9 +363,7 @@ const styles = StyleSheet.create({
     marginTop: 95,
     position: "relative",
   },
-  // Original spacing (20 + 18) plus 35px; divider centered between both blocks.
-  journeyGap: { height: 73, justifyContent: "center", paddingHorizontal: 36 },
-  journeyDivider: { height: 1, backgroundColor: "rgba(255,255,255,0.05)" },
+  journeyGap: { height: 21 },
   introDivider: {
     position: "absolute",
     top: -24,
