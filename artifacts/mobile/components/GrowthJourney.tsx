@@ -1,3 +1,4 @@
+import { Feather } from "@expo/vector-icons";
 import React, { useEffect, useState } from "react";
 import { Image, Pressable, StyleSheet, Text, View } from "react-native";
 import Animated, {
@@ -43,6 +44,39 @@ function GrowthLevelImage({
         importantForAccessibility="no"
       />
     </View>
+  );
+}
+
+export function GrowthLevelPreviewCard({ onPress }: { onPress: () => void }) {
+  const colors = useColors();
+  const level = growthLevels[0];
+  const dayLabel = level.startDay === level.endDay
+    ? `${level.startDay} días`
+    : `${level.startDay}–${level.endDay} días`;
+
+  return (
+    <Pressable
+      onPress={onPress}
+      style={styles.previewCard}
+      accessibilityRole="button"
+      accessibilityLabel={`Nivel 0, ${level.name}. Abrir camino de crecimiento`}
+      testID="growth-level-zero-preview"
+    >
+      <View style={styles.previewArt}>
+        <GrowthLevelImage level={level} status="current" />
+      </View>
+      <View style={styles.previewCopy}>
+        <Text style={[styles.eyebrow, { color: GROWTH_COLORS.line }]}>NIVEL 0</Text>
+        <Text style={[styles.name, { color: colors.foreground }]}>{level.name}</Text>
+        <View style={[styles.dayPill, styles.currentPill]}>
+          <Text style={[styles.days, { color: colors.foreground }]}>{dayLabel}</Text>
+        </View>
+        <Text style={[styles.previewStory, { color: colors.mutedForeground }]}>
+          {level.story}
+        </Text>
+      </View>
+      <Feather name="chevron-right" size={18} color={colors.foreground} />
+    </Pressable>
   );
 }
 
@@ -205,40 +239,6 @@ function GrowthStageHeading({
   );
 }
 
-function UpcomingPrompt({ visible, onPress }: { visible: boolean; onPress: () => void }) {
-  const reduceMotion = useReducedMotion();
-  const progress = useSharedValue(reduceMotion ? 1 : 0);
-
-  useEffect(() => {
-    if (visible) {
-      progress.value = reduceMotion ? 1 : withTiming(1, {
-        duration: 520,
-        easing: Easing.out(Easing.cubic),
-      });
-    }
-  }, [progress, reduceMotion, visible]);
-
-  const entrance = useAnimatedStyle(() => ({
-    opacity: progress.value,
-    transform: [{ translateY: (1 - progress.value) * 11 }],
-  }));
-
-  return (
-    <Animated.View style={entrance}>
-      <Pressable
-        onPress={onPress}
-        style={styles.upcomingButton}
-        accessibilityRole="button"
-        accessibilityLabel="Próximamente. Mostrar los niveles de El ascenso"
-        accessibilityState={{ expanded: false }}
-        testID="growth-ascent-reveal"
-      >
-        <Text style={styles.upcomingText}>Próximamente...</Text>
-      </Pressable>
-    </Animated.View>
-  );
-}
-
 export function GrowthJourney({
   visibleStep,
 }: {
@@ -246,23 +246,19 @@ export function GrowthJourney({
 }) {
   const reduceMotion = useReducedMotion();
   const [animatedStep, setAnimatedStep] = useState(-1);
-  const [ascentExpanded, setAscentExpanded] = useState(false);
-  const targetStep = ascentExpanded && visibleStep >= 0
-    ? 5 + growthLevels.length + ascentLevels.length
-    : visibleStep;
-  const playedStep = reduceMotion ? targetStep : animatedStep;
+  const playedStep = reduceMotion ? visibleStep : animatedStep;
   const dividerVisible = playedStep >= 2 + growthLevels.length;
   const dividerProgress = useSharedValue(reduceMotion ? 1 : 0);
   // Visual preview: Intención is the only active level until progression is enabled.
 
   useEffect(() => {
-    if (reduceMotion || animatedStep >= targetStep) return;
+    if (reduceMotion || animatedStep >= visibleStep) return;
     const timer = setTimeout(
-      () => setAnimatedStep((current) => Math.min(current + 1, targetStep)),
+      () => setAnimatedStep((current) => Math.min(current + 1, visibleStep)),
       animatedStep < 0 ? 0 : CHAIN_STEP_MS,
     );
     return () => clearTimeout(timer);
-  }, [animatedStep, reduceMotion, targetStep]);
+  }, [animatedStep, reduceMotion, visibleStep]);
 
   useEffect(() => {
     if (dividerVisible) {
@@ -304,30 +300,37 @@ export function GrowthJourney({
         titleVisible={playedStep >= 4 + growthLevels.length}
         second
       />
-      {ascentExpanded ? (
-        <View style={styles.timeline}>
-          {ascentLevels.map((level, index) => (
-            <GrowthRow
-              key={level.id}
-              level={level}
-              number={index + 1}
-              hasNext={index < ascentLevels.length - 1}
-              status="locked"
-              visible={playedStep >= 6 + growthLevels.length + index}
-            />
-          ))}
-        </View>
-      ) : (
-        <UpcomingPrompt
-          visible={playedStep >= 5 + growthLevels.length}
-          onPress={() => setAscentExpanded(true)}
-        />
-      )}
+      <View style={styles.timeline}>
+        {ascentLevels.map((level, index) => (
+          <GrowthRow
+            key={level.id}
+            level={level}
+            number={index + 1}
+            hasNext={index < ascentLevels.length - 1}
+            status="locked"
+            visible={playedStep >= 6 + growthLevels.length + index}
+          />
+        ))}
+      </View>
     </View>
   );
 }
 
 const styles = StyleSheet.create({
+  previewCard: {
+    marginHorizontal: 16,
+    paddingHorizontal: 14,
+    paddingVertical: 16,
+    minHeight: 148,
+    borderRadius: 19,
+    backgroundColor: "rgba(0,0,0,0.22)",
+    flexDirection: "row",
+    alignItems: "center",
+    gap: 12,
+  },
+  previewArt: { width: 100, height: 100 },
+  previewCopy: { flex: 1, minWidth: 0 },
+  previewStory: { fontFamily: "Manrope", fontSize: 11, lineHeight: 16 },
   section: {
     marginHorizontal: 16,
     paddingBottom: 12,
@@ -336,14 +339,6 @@ const styles = StyleSheet.create({
   secondStageHeading: { marginBottom: 0 },
   stageDividerGap: { height: 73, justifyContent: "center", marginHorizontal: 20 },
   stageDivider: { height: 1, backgroundColor: "rgba(255,255,255,0.05)" },
-  upcomingButton: { alignSelf: "center", minHeight: 48, justifyContent: "center", paddingHorizontal: 16 },
-  upcomingText: {
-    fontFamily: "Manrope",
-    fontSize: 14,
-    fontWeight: "600",
-    color: GROWTH_COLORS.line,
-    textDecorationLine: "underline",
-  },
   sectionEyebrow: {
     fontFamily: "Manrope",
     fontSize: 11,

@@ -31,11 +31,11 @@ import {
   PERSONAL_STATS_ENTRANCE_END_OFFSET_MS,
   STREAK_WEEK_START_OFFSET_MS,
 } from "@/components/ProgressMirrorSections";
-import { GrowthJourney } from "@/components/GrowthJourney";
+import { GrowthLevelPreviewCard } from "@/components/GrowthJourney";
+import { GrowthJourneySheet } from "@/components/GrowthJourneySheet";
 import { CinematicFadeSlide } from "@/components/CinematicFadeSlide";
 import { getPositionedDayGradient, STREAK_WEEK_ENTRANCE_END_OFFSET_MS } from "@/components/StreakWeekRow";
 import { useSceneTheme } from "@/context/SceneThemeContext";
-import { growthLevels } from "@/data/growthLevels";
 import { useColors } from "@/hooks/useColors";
 import { useStreak } from "@/hooks/useStreak";
 
@@ -92,6 +92,7 @@ export default function ProgresoScreen() {
   const { weekFlags } = useStreak();
   const reduceMotion = useReducedMotion();
   const [journeyReady, setJourneyReady] = useState(reduceMotion);
+  const [journeyOpen, setJourneyOpen] = useState(false);
   const completedWeekDays = weekFlags.filter(Boolean).length;
   const ringGradient = useMemo(() => getPositionedDayGradient(theme.gradient), [theme.gradient]);
   const animatedDays = useSharedValue(reduceMotion ? completedWeekDays : 0);
@@ -283,8 +284,19 @@ export default function ProgresoScreen() {
             <View style={styles.journeyDivider} />
           </CinematicFadeSlide>
         </View>
-        <GrowthJourney visibleStep={journeyReady ? 5 + growthLevels.length : -1} />
+        {journeyReady && (
+          <CinematicFadeSlide
+            replayKey="progress-level-zero-preview"
+            delay={0}
+            duration={700}
+            scaleFrom={0.98}
+            translateYFrom={12}
+          >
+            <GrowthLevelPreviewCard onPress={() => setJourneyOpen(true)} />
+          </CinematicFadeSlide>
+        )}
       </ScrollView>
+      <GrowthJourneySheet visible={journeyOpen} onClose={() => setJourneyOpen(false)} />
     </LinearGradient>
   );
 }

@@ -21,14 +21,14 @@ Por ahora, mostrar **solo Intención (nivel 0) activa**, con el punto dorado; Se
 
 **How to apply:** No reconectar las etapas a estadísticas hasta que se apruebe la dirección visual y el usuario pida activar el progreso. En ese momento usar los días activos acumulados no consecutivos acordados, sin tomar la racha como sustituto.
 
-La entrada del recorrido debe respetar este orden completo: termina **toda** la sección de racha (incluido el último día de la fila semanal), aparece «Mis estadísticas» con sus cifras y, cuando termina, entra el divisor de la primera etapa. Solo al concluir ese divisor aparecen «PRIMERA ETAPA», «Florecimiento» y luego los niveles en cadena.
+La entrada en «Tu progreso» debe respetar este orden: termina **toda** la sección de racha (incluido el último día de la fila semanal), aparece «Mis estadísticas» con sus cifras, entra el divisor y solo entonces aparece la tarjeta del nivel 0. El recorrido completo (Florecimiento y El ascenso) vive dentro de una ventana casi a pantalla completa que sube desde abajo al pulsar esa tarjeta.
 
-**Why:** El usuario corrigió que el encabezado del recorrido se adelantaba a elementos todavía en animación dentro de «Racha actual» y rompía el orden de lectura de arriba hacia abajo.
+**Why:** El usuario corrigió el orden de entrada anterior y luego decidió que la pantalla principal mostrara solo Intención; pidió el recorrido completo dentro de una ventana con la entrada del temporizador Ambiental.
 
-**How to apply:** Si cambia la duración o el escalonamiento de la semana o de las estadísticas, conservar sincronizada la entrada del bloque siguiente con el final de esa secuencia. No dejar que el scroll dispare el título del recorrido antes de que concluya la animación anterior.
+**How to apply:** Si cambia la duración de la semana o las estadísticas, sincronizar el divisor y la tarjeta con el final de esa secuencia. Mantener el recorrido detallado en la ventana y no volver a mostrarlo completo bajo las estadísticas.
 
-Mis estadísticas y Florecimiento deben entrar en secuencia vertical sin que el usuario tenga que desplazar la pantalla para disparar la animación. El recorrido comienza al terminar el divisor que sigue a las estadísticas y sus niveles se muestran en cadena, incluso si quedan fuera del área visible; el scroll solo sirve para recorrer el contenido. Al expandir El ascenso, sus niveles siguen la misma secuencia automática.
+Dentro de la ventana, los encabezados y niveles de ambas etapas deben entrar en secuencia vertical sin depender del scroll; desplazarse solo sirve para recorrer el contenido.
 
-**Why:** El usuario pidió explícitamente que las secciones aparecieran sin necesidad de scroll y que Mis estadísticas y Florecimiento conservaran el orden de arriba hacia abajo.
+**Why:** El usuario pidió que las secciones aparecieran sin necesidad de scroll y ahora quiere ver ambas etapas en la misma vista desplegada.
 
-**How to apply:** No volver a condicionar la aparición de títulos o niveles a eventos de scroll ni a mediciones de visibilidad; conservar la espera por la entrada anterior para no adelantar Florecimiento a Mis estadísticas.
+**How to apply:** No condicionar títulos o niveles del recorrido a eventos de scroll ni a mediciones de visibilidad; animarlos automáticamente al abrir la ventana, manteniendo solo Intención como nivel activo hasta que se solicite la funcionalidad.
