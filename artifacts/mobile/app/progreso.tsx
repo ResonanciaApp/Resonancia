@@ -26,7 +26,11 @@ import Animated, {
   withTiming,
 } from "react-native-reanimated";
 
-import { ProgressMirrorSections, STREAK_WEEK_START_OFFSET_MS } from "@/components/ProgressMirrorSections";
+import {
+  ProgressMirrorSections,
+  PERSONAL_STATS_ENTRANCE_END_OFFSET_MS,
+  STREAK_WEEK_START_OFFSET_MS,
+} from "@/components/ProgressMirrorSections";
 import { GROWTH_ROW_HEIGHT, GrowthJourney } from "@/components/GrowthJourney";
 import { CinematicFadeSlide } from "@/components/CinematicFadeSlide";
 import { getPositionedDayGradient, STREAK_WEEK_ENTRANCE_END_OFFSET_MS } from "@/components/StreakWeekRow";
@@ -43,9 +47,11 @@ const RING_CIRCUMFERENCE = 2 * Math.PI * RING_RADIUS;
 const RING_ENTRANCE_DELAY = 100;
 const DESCRIPTION_ENTRANCE_DELAY = 600;
 const STREAK_SECTION_ENTRANCE_DELAY = 1150;
+const PERSONAL_STATS_ENTRANCE_OFFSET_MS =
+  STREAK_WEEK_START_OFFSET_MS + STREAK_WEEK_ENTRANCE_END_OFFSET_MS + 100;
 const JOURNEY_DIVIDER_ENTRANCE_DELAY =
-  STREAK_SECTION_ENTRANCE_DELAY + STREAK_WEEK_START_OFFSET_MS +
-  STREAK_WEEK_ENTRANCE_END_OFFSET_MS + 100;
+  STREAK_SECTION_ENTRANCE_DELAY + PERSONAL_STATS_ENTRANCE_OFFSET_MS +
+  PERSONAL_STATS_ENTRANCE_END_OFFSET_MS + 100;
 const JOURNEY_DIVIDER_ENTRANCE_DURATION = 540;
 const AnimatedCircle = Animated.createAnimatedComponent(Circle);
 
@@ -297,15 +303,18 @@ export default function ProgresoScreen() {
               animateEntrance
               entranceReplayKey="progress-sections"
               entranceBaseDelay={STREAK_SECTION_ENTRANCE_DELAY}
+              personalStatsEntranceOffsetMs={PERSONAL_STATS_ENTRANCE_OFFSET_MS}
               syncStreakStatsWithWeek
               showSectionBorders={false}
-              showPersonalStats={false}
+              showPersonalStats
               showCalendar={false}
+              personalStatsFilterBelowTitle
               sectionBackgroundColor="rgba(0,0,0,0.2)"
               sectionHorizontalPadding={20}
               sectionTopPadding={16}
               sectionBottomPadding={19}
               sectionMarginBottom={0}
+              personalStatsMarginTop={14}
               canonicalVerticalInsets
             />
           </View>

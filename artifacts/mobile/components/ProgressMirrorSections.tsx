@@ -17,6 +17,12 @@ import { PREMIUM_STAR_GRADIENT } from "@/constants/colors";
 
 const SECTION_BACKGROUND = "rgba(0,0,0,0.22)";
 export const STREAK_WEEK_START_OFFSET_MS = 650;
+const PERSONAL_STATS_HEADER_OFFSET_MS = 420;
+const PERSONAL_STATS_MINUTES_OFFSET_MS = 660;
+const PERSONAL_STATS_FINAL_OFFSET_MS = 810;
+const CONTENT_ENTRANCE_DURATION_MS = 1200;
+export const PERSONAL_STATS_ENTRANCE_END_OFFSET_MS =
+  PERSONAL_STATS_FINAL_OFFSET_MS + CONTENT_ENTRANCE_DURATION_MS;
 
 export function ProgressMirrorSections({
   showSectionBorders = true,
@@ -29,6 +35,7 @@ export function ProgressMirrorSections({
   animateEntrance = false,
   entranceReplayKey = "progress-mirror",
   entranceBaseDelay = 0,
+  personalStatsEntranceOffsetMs,
   syncStreakStatsWithWeek = false,
   streakTitle,
   onStreakTitlePress,
@@ -40,6 +47,7 @@ export function ProgressMirrorSections({
   sectionBottomPadding,
   sectionVerticalPadding,
   sectionMarginBottom,
+  personalStatsMarginTop,
   streakMarginBottom,
   canonicalVerticalInsets = false,
 }: {
@@ -53,6 +61,7 @@ export function ProgressMirrorSections({
   animateEntrance?: boolean;
   entranceReplayKey?: string | number;
   entranceBaseDelay?: number;
+  personalStatsEntranceOffsetMs?: number;
   syncStreakStatsWithWeek?: boolean;
   streakTitle?: string;
   onStreakTitlePress?: () => void;
@@ -64,6 +73,7 @@ export function ProgressMirrorSections({
   sectionBottomPadding?: number;
   sectionVerticalPadding?: number;
   sectionMarginBottom?: number;
+  personalStatsMarginTop?: number;
   streakMarginBottom?: number;
   canonicalVerticalInsets?: boolean;
 }) {
@@ -126,6 +136,7 @@ export function ProgressMirrorSections({
   const synchronizedStreakDelay = syncStreakStatsWithWeek && showStreakWeek
     ? entranceBaseDelay + STREAK_WEEK_START_OFFSET_MS
     : null;
+  const personalStatsEntranceDelay = entranceBaseDelay + (personalStatsEntranceOffsetMs ?? 500);
 
   const filterControl = (
     <View style={[
@@ -191,6 +202,9 @@ export function ProgressMirrorSections({
         sectionMarginBottom !== undefined && {
           marginBottom: sectionMarginBottom,
         },
+        !mergeStatsAndStreak && personalStatsMarginTop !== undefined && {
+          marginTop: personalStatsMarginTop,
+        },
         mergeStatsAndStreak && styles.mergedInnerSection,
         mergeStatsAndStreak && styles.mergedPersonalStatsSection,
       ]}
@@ -198,7 +212,7 @@ export function ProgressMirrorSections({
       <ContentEntrance
         animated={animateEntrance}
         replayKey={`${entranceReplayKey}:personal-header`}
-        delay={entranceBaseDelay + 920}
+        delay={personalStatsEntranceDelay + PERSONAL_STATS_HEADER_OFFSET_MS}
       >
         <View style={[
           styles.personalStatsHeader,
@@ -215,7 +229,7 @@ export function ProgressMirrorSections({
           <ContentEntrance
             animated={animateEntrance}
             replayKey={`${entranceReplayKey}:personal-minutes`}
-            delay={entranceBaseDelay + 1160}
+            delay={personalStatsEntranceDelay + PERSONAL_STATS_MINUTES_OFFSET_MS}
           >
             <Stat
               icon={<Feather name="clock" size={18} color="#F9F9F9" />}
@@ -230,7 +244,7 @@ export function ProgressMirrorSections({
         <ContentEntrance
           animated={animateEntrance}
           replayKey={`${entranceReplayKey}:personal-divider-stat`}
-          delay={entranceBaseDelay + 1310}
+          delay={personalStatsEntranceDelay + PERSONAL_STATS_FINAL_OFFSET_MS}
         >
           <View style={styles.statDivider} />
         </ContentEntrance>
@@ -238,7 +252,7 @@ export function ProgressMirrorSections({
           <ContentEntrance
             animated={animateEntrance}
             replayKey={`${entranceReplayKey}:personal-days`}
-            delay={entranceBaseDelay + 1310}
+            delay={personalStatsEntranceDelay + PERSONAL_STATS_FINAL_OFFSET_MS}
           >
             <Stat
               icon={<Feather name="calendar" size={18} color="#F9F9F9" />}
@@ -437,7 +451,7 @@ export function ProgressMirrorSections({
             <SectionEntrance
               animated={animateEntrance}
               replayKey={`${entranceReplayKey}:personal`}
-              delay={entranceBaseDelay + 500}
+              delay={personalStatsEntranceDelay}
             >
               {personalStatsContent}
             </SectionEntrance>
@@ -511,7 +525,7 @@ function ContentEntrance({
     <CinematicFadeSlide
       replayKey={replayKey}
       delay={delay}
-      duration={1200}
+      duration={CONTENT_ENTRANCE_DURATION_MS}
       scaleFrom={0.97}
       translateYFrom={14}
     >
