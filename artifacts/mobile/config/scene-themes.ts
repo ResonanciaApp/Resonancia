@@ -40,9 +40,8 @@ export const SCENE_THEMES: Record<"indigo2" | "tibet", SceneTheme> = {
   tibet: {
     id: "tibet",
     label: "Universo",
-    // Degradado original de Universo con saturación ×1,05.
-    gradient: ["#2D1C54", "#261F5A", "#1F255D", "#1E2A65"],
-    solid: "#1E2A65",
+    gradient: ["#0B1438", "#101C46", "#172653", "#202C5D", "#293266", "#30366B"],
+    solid: "#30366B",
   },
   indigo2: {
     id: "indigo2",
