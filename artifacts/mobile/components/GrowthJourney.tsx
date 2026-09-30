@@ -372,6 +372,8 @@ const styles = StyleSheet.create({
   dayPill: {
     alignSelf: "flex-start",
     backgroundColor: "rgba(151,128,231,0.20)",
+    borderWidth: 1,
+    borderColor: "rgba(255,255,255,0.10)",
     borderRadius: 12,
     paddingHorizontal: 9,
     paddingVertical: 4,
