@@ -153,5 +153,3 @@
 - [Camino de crecimiento](growth-journey.md) — preview: solo Semilla activa; imágenes circulares alineadas con bordes fundidos; al activar niveles usar días acumulados no consecutivos
 - [Edición de imágenes en el runtime](image-processing-runtime.md) — Pillow anuncia versión pero falla al importar _imaging; usar ImageMagick para procesar PNGs aquí
 - [Assets nuevos y Metro](expo-new-assets-metro.md) — generar el PNG antes de referenciarlo con require; si Metro cachea el error de archivo ausente, reiniciar tras crearlo
-- [Expo HMR y tema visual](expo-theme-hmr-context.md) — al editar la paleta, Fast Refresh puede mostrar un error de contexto aunque el provider siga en el árbol; comprobar con carga limpia
-- [Porcentajes de color del tema](theme-color-percentages.md) — al ajustar la paleta por %, usar saturación HSL relativa y contraste RGB alrededor del punto medio; redondear al final
