@@ -1317,7 +1317,7 @@ export function ProfileScreenBase({
               {dedicated && (
                 <>
                   <View style={styles.profileIntentionPill}>
-                    <Text style={[styles.profileIntentionDays, { color: colors.foreground }]}>0 Días: Intención</Text>
+                    <Text style={styles.profileIntentionDays}>0 Días: Intención</Text>
                   </View>
                   <Text style={[styles.profileIntentionDescription, { color: colors.mutedForeground }]}>
                     Todo gran cambio comienza con una intención
@@ -2481,12 +2481,12 @@ const styles = StyleSheet.create({
   profileIntentionPill: {
     alignSelf: "center",
     marginTop: 7,
-    backgroundColor: "rgba(151,128,231,0.20)",
+    backgroundColor: "#F9F9F9",
     borderRadius: 12,
     paddingHorizontal: 9,
     paddingVertical: 4,
   },
-  profileIntentionDays: { fontFamily: "Manrope", fontSize: 10, fontWeight: "600" },
+  profileIntentionDays: { fontFamily: "Manrope", fontSize: 10, fontWeight: "600", color: "#060A0F" },
   profileIntentionDescription: { fontFamily: "Manrope", fontSize: 11, lineHeight: 16, textAlign: "center", marginTop: 7 },
   locationRow: { flexDirection: "row", alignItems: "center", justifyContent: "center", gap: 4 },
   locationText: { fontFamily: "Manrope", fontSize: 12 },
