@@ -37,6 +37,7 @@ export function ProgressMirrorSections({
   chainPersonalStatsAfterWeek = false,
   onPersonalStatsComplete,
   streakTitle,
+  separateStreakHistory = false,
   longestStreakLabel = "RACHA MÁS LARGA",
   longestStreakIconColor,
   onStreakTitlePress,
@@ -67,6 +68,7 @@ export function ProgressMirrorSections({
   chainPersonalStatsAfterWeek?: boolean;
   onPersonalStatsComplete?: () => void;
   streakTitle?: string;
+  separateStreakHistory?: boolean;
   longestStreakLabel?: string;
   longestStreakIconColor?: string;
   onStreakTitlePress?: () => void;
@@ -297,8 +299,70 @@ export function ProgressMirrorSections({
     </Pressable>
   ) : null;
 
+  const longestStreakIcon = longestStreakIconColor ? (
+    <MaskedView maskElement={<MaterialCommunityIcons name="spa" size={18} color="#FFFFFF" />}>
+      <MaterialCommunityIcons
+        name="spa"
+        size={18}
+        color={longestStreakIconColor}
+        style={[styles.goldenLotusIcon, { textShadowColor: `${longestStreakIconColor}CC` }]}
+      />
+    </MaskedView>
+  ) : (
+    <MaskedView maskElement={<MaterialCommunityIcons name="spa" size={18} color="#FFFFFF" />}>
+      <LinearGradient colors={PREMIUM_STAR_GRADIENT} start={{ x: 0, y: 0 }} end={{ x: 0, y: 1 }}>
+        <MaterialCommunityIcons name="spa" size={18} color="transparent" />
+      </LinearGradient>
+    </MaskedView>
+  );
+
+  const streakHistoryContent = separateStreakHistory ? (
+    <View
+      testID="profile-streak-history"
+      style={[
+        styles.streakSection,
+        !showSectionBorders && styles.borderlessSection,
+        {
+          backgroundColor: sectionBackgroundColor,
+          paddingHorizontal: sectionHorizontalPadding ?? 16,
+          paddingTop: sectionTopPadding ?? 20,
+          paddingBottom: sectionBottomPadding ?? 16,
+          marginBottom: sectionMarginBottom ?? 12,
+        },
+      ]}
+    >
+      <View style={styles.streakTitleRow}>
+        <Text style={[styles.streakTitle, { color: colors.foreground }]}>Historial de rachas</Text>
+      </View>
+      <View style={[styles.statsValues, styles.statsValuesNoTitle]}>
+        <View style={styles.statEntranceSlot}>
+          <Stat
+            icon={<MaterialCommunityIcons name="spa" size={18} color="#F9F9F9" />}
+            value={maxStreak}
+            label="RACHA MÁS LARGA"
+            accent={accent}
+            onPress={onStreakTitlePress}
+            edgeAligned={canonicalVerticalInsets}
+          />
+        </View>
+        <View style={styles.statDivider} />
+        <View style={styles.statEntranceSlot}>
+          <Stat
+            icon={longestStreakIcon}
+            value={maxStreak}
+            label={longestStreakLabel}
+            accent={accent}
+            onPress={onStreakTitlePress}
+            edgeAligned={canonicalVerticalInsets}
+          />
+        </View>
+      </View>
+    </View>
+  ) : null;
+
   const streakContent = (
         <View
+          testID={separateStreakHistory ? "profile-weekly-progress" : undefined}
           style={[
             styles.streakSection,
             streakTitle && styles.titledStreakSection,
@@ -327,7 +391,7 @@ export function ProgressMirrorSections({
               ? { transform: [{ translateY: streakContentTranslateY }] }
               : undefined}
           >
-          {streakTitle ? (
+          {streakTitle && !separateStreakHistory ? (
             <ContentEntrance
               animated={animateEntrance}
               replayKey={`${entranceReplayKey}:streak-title`}
@@ -368,16 +432,16 @@ export function ProgressMirrorSections({
            {showStreakWeek ? (
             <>
               {streakWeekRow}
-              <ContentEntrance
+              {!separateStreakHistory && <ContentEntrance
                 animated={animateEntrance}
                 replayKey={`${entranceReplayKey}:streak-divider`}
                 delay={synchronizedStreakDelay ?? entranceBaseDelay + 1720}
               >
                 <View style={styles.sectionDivider} />
-              </ContentEntrance>
+              </ContentEntrance>}
             </>
           ) : null}
-          <View style={[styles.statsValues, styles.statsValuesNoTitle]}>
+          {!separateStreakHistory && <View style={[styles.statsValues, styles.statsValuesNoTitle]}>
             <View style={styles.statEntranceSlot}>
               <ContentEntrance
                 animated={animateEntrance}
@@ -411,28 +475,7 @@ export function ProgressMirrorSections({
                   entranceBaseDelay + (showPersonalStats ? 1610 : showStreakWeek ? 2070 : 800)}
               >
               <Stat
-                icon={
-                  longestStreakIconColor ? (
-                    <MaskedView maskElement={<MaterialCommunityIcons name="spa" size={18} color="#FFFFFF" />}>
-                      <MaterialCommunityIcons
-                        name="spa"
-                        size={18}
-                        color={longestStreakIconColor}
-                        style={[styles.goldenLotusIcon, { textShadowColor: `${longestStreakIconColor}CC` }]}
-                      />
-                    </MaskedView>
-                  ) : (
-                    <MaskedView maskElement={<MaterialCommunityIcons name="spa" size={18} color="#FFFFFF" />}>
-                      <LinearGradient
-                        colors={PREMIUM_STAR_GRADIENT}
-                        start={{ x: 0, y: 0 }}
-                        end={{ x: 0, y: 1 }}
-                      >
-                        <MaterialCommunityIcons name="spa" size={18} color="transparent" />
-                      </LinearGradient>
-                    </MaskedView>
-                  )
-                }
+                 icon={longestStreakIcon}
                 value={maxStreak}
                 label={longestStreakLabel}
                 accent={accent}
@@ -441,7 +484,7 @@ export function ProgressMirrorSections({
               />
               </ContentEntrance>
             </View>
-          </View>
+          </View>}
           </View>
         </View>
   );
@@ -469,6 +512,15 @@ export function ProgressMirrorSections({
           >
             {streakContent}
           </SectionEntrance>
+          {streakHistoryContent ? (
+            <SectionEntrance
+              animated={animateEntrance}
+              replayKey={`${entranceReplayKey}:streak-history`}
+              delay={entranceBaseDelay}
+            >
+              {streakHistoryContent}
+            </SectionEntrance>
+          ) : null}
           {showPersonalStats && (!chainPersonalStatsAfterWeek || !showStreakWeek || weekEntranceDone) ? (
             <SectionEntrance
               animated={animateEntrance}

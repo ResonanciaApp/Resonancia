@@ -1353,6 +1353,7 @@ export function ProfileScreenBase({
                 showPersonalStats
                 showCalendar
                 streakTitle="Tu progreso semanal"
+                separateStreakHistory
                 longestStreakLabel="RACHA ACUMULADA"
                 longestStreakIconColor={MEMBERSHIP_AURORA.premium.accent}
                 personalStatsFilterBelowTitle
