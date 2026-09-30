@@ -19,6 +19,7 @@ import type { SceneId } from "@/context/AmbientPlayerContext";
 import { useBrightness } from "@/context/BrightnessContext";
 import { useGeometrixPanel } from "@/context/GeometrixPanelContext";
 import { usePremium } from "@/context/PremiumContext";
+import { useSceneTheme } from "@/context/SceneThemeContext";
 import { useColors } from "@/hooks/useColors";
 
 type FeatherName = React.ComponentProps<typeof Feather>["name"];
@@ -66,6 +67,7 @@ export function ProfileSettingsSections({
   const { isPremium: isPremiumDev, setPremium: setPremiumDev } = usePremium();
   const { primary } = useColors();
   const { brightMode, setBrightMode } = useBrightness();
+  const { setActiveScene } = useSceneTheme();
   const isIndigo = isIndigoThemeId(sceneId);
   const isIndigo2 = sceneId === "indigo2";
   const themeAccent = isIndigo2 ? accent : isIndigo ? "#AAAAC4" : accent;
@@ -104,9 +106,17 @@ export function ProfileSettingsSections({
         { icon: "zap", label: "Racha", toggle: true },
         { icon: "smile", label: "Registro diario estado de ánimo", toggle: true },
         {
+          icon: "layers",
+          label: "Escenas",
+          description: isIndigo2 ? "Índigo 2" : "Universo",
+          toggle: true,
+          toggleValue: isIndigo2,
+          onToggle: (enabled) => setActiveScene(enabled ? "indigo2" : "tibet"),
+        },
+        {
           icon: brightMode ? "sun" : "moon",
           label: "Luz / Noche",
-          description: brightMode ? "Luz · Índigo 2 con 3,5 % más brillo" : "Noche · Índigo 2 original",
+          description: `${brightMode ? "Luz · 3,5 % más brillo" : "Noche · tonos originales"} · ${isIndigo2 ? "Índigo 2" : "Universo"}`,
           toggle: true,
           toggleValue: brightMode,
           onToggle: setBrightMode,

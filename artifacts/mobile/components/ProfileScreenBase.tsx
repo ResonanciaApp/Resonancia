@@ -1070,7 +1070,6 @@ export function ProfileScreenBase({
       >
         <LinearGradient
           colors={[bgFrom[0], bgFrom[1], ...bgFrom.slice(2)]}
-          locations={activeTheme.gradientLocations}
           style={StyleSheet.absoluteFill}
           start={{ x: 0, y: 0 }}
           end={{ x: 0, y: 1 }}
@@ -1083,7 +1082,6 @@ export function ProfileScreenBase({
       >
         <LinearGradient
           colors={[bgTo[0], bgTo[1], ...bgTo.slice(2)]}
-          locations={activeTheme.gradientLocations}
           style={StyleSheet.absoluteFill}
           start={{ x: 0, y: 0 }}
           end={{ x: 0, y: 1 }}

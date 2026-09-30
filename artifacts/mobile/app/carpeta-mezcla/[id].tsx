@@ -27,7 +27,6 @@ import { MixCover } from "@/app/mi-mezcla/[id]";
 import { EqualizerBars } from "@/components/EqualizerBars";
 import { useLibraryReturnBack } from "@/hooks/useLibraryReturnBack";
 
-const BG_FALLBACK = ["#340D1A", "#190913"] as const;
 const GOLD = "#F9F9F9";
 const TEXT = "#FAF0EE";
 const MUTED = "#c2c2c2";
@@ -37,8 +36,8 @@ export default function CarpetaMezclaDetailScreen() {
   const { id, fromLibrary } = useLocalSearchParams<{ id: string; fromLibrary?: string }>();
   const goBack = useLibraryReturnBack(fromLibrary);
   const insets = useSafeAreaInsets();
-  const { theme: sceneTheme, activeSceneId } = useSceneTheme();
-  const BG = activeSceneId === "tibet" ? sceneTheme.gradient : BG_FALLBACK;
+  const { theme: sceneTheme } = useSceneTheme();
+  const BG = sceneTheme.gradient;
   const topPad = Platform.OS === "web" ? 67 : insets.top;
   const bottomPad = Platform.OS === "web" ? 34 : insets.bottom;
 
@@ -101,7 +100,7 @@ export default function CarpetaMezclaDetailScreen() {
   };
 
   return (
-    <LinearGradient style={styles.root} colors={BG} locations={[0, 0.5, 1]}>
+    <LinearGradient style={styles.root} colors={BG}>
       <StatusBar hidden />
 
       {/* Header */}

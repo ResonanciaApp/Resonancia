@@ -33,7 +33,8 @@ import { TabBarVisibilityProvider } from "@/context/TabBarVisibilityContext";
 import { ErrorBoundary } from "@/components/ErrorBoundary";
 import { SacredBackground } from "@/components/SacredBackground";
 import { AmbientPlayerProvider } from "@/context/AmbientPlayerContext";
-import { SceneThemeProvider, useSceneTheme } from "@/context/SceneThemeContext";
+import { SceneThemeProvider, loadPersistedSceneId, useSceneTheme } from "@/context/SceneThemeContext";
+import type { VisualThemeId } from "@/config/scene-themes";
 import { BrightnessProvider, loadPersistedBrightMode } from "@/context/BrightnessContext";
 import { CatalogProvider } from "@/context/CatalogContext";
 import { MoodQuotesProvider } from "@/context/MoodQuotesContext";
@@ -490,19 +491,23 @@ export default function RootLayout() {
     }
   }, [fontsLoaded, fontError]);
 
-  // Carga Luz/Noche antes del primer render para evitar un destello de Noche.
+  // Carga el tema visual y Luz/Noche antes del primer render para evitar destellos.
   const [initialBrightMode, setInitialBrightMode] = React.useState<boolean | null>(null);
+  const [initialSceneId, setInitialSceneId] = React.useState<VisualThemeId | null>(null);
   useEffect(() => {
     let cancelled = false;
     loadPersistedBrightMode().then((enabled) => {
       if (!cancelled) setInitialBrightMode(enabled);
+    });
+    loadPersistedSceneId().then((id) => {
+      if (!cancelled) setInitialSceneId(id);
     });
     return () => {
       cancelled = true;
     };
   }, []);
 
-  const themeReady = initialBrightMode !== null;
+  const themeReady = initialBrightMode !== null && initialSceneId !== null;
 
   useEffect(() => {
     if ((fontsLoaded || fontError) && themeReady) {
@@ -518,7 +523,7 @@ export default function RootLayout() {
     void initializePracticeNotifications();
   }, []);
 
-  if (!themeReady) return null;
+  if (initialBrightMode === null || initialSceneId === null) return null;
 
   return (
     <ClerkProvider
@@ -553,7 +558,7 @@ export default function RootLayout() {
                         <FoldersPlaylistsProvider>
                         <VideosProvider>
                         <DiarioFavoritesProvider>
-                          <SceneThemeProvider>
+                          <SceneThemeProvider initialSceneId={initialSceneId}>
                           <GeoUniverseProvider>
                           <RachaProvider>
                           <IntencionDiariaProvider>
