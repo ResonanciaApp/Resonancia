@@ -385,10 +385,10 @@ function TabLayoutInner() {
 
   return (
     <View style={{ flex: 1, backgroundColor: bg }}>
-      {activeSceneId === "indigo2" && <SacredBackground variant="gradient" noImage />}
+      <SacredBackground variant="gradient" noImage />
       <Animated.View style={{ flex: 1, transform: [{ translateX: bgParallaxX }] }}>
       <Tabs
-        screenOptions={{ headerShown: false, sceneStyle: { backgroundColor: activeSceneId === "indigo2" ? "transparent" : bg } }}
+        screenOptions={{ headerShown: false, sceneStyle: { backgroundColor: "transparent" } }}
         tabBar={(props) => <TabBarPropsBridge props={props} onProps={setBarProps} />}
       >
         <Tabs.Screen name="index"          options={{ href: null }} />

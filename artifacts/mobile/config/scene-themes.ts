@@ -1,4 +1,4 @@
-/** Tema visual único de la app; las escenas de audio son independientes. */
+/** Tema visual principal de la app; las escenas de audio son independientes. */
 import type { SceneId } from "@/context/AmbientPlayerContext";
 
 export type SceneTheme = {
@@ -36,7 +36,14 @@ export type SceneTheme = {
   }>;
 };
 
-export const SCENE_THEMES: Record<"indigo2", SceneTheme> = {
+export const SCENE_THEMES: Record<"indigo2" | "tibet", SceneTheme> = {
+  tibet: {
+    id: "tibet",
+    label: "Universo",
+    // Degradado original de Universo con saturación ×1,05.
+    gradient: ["#2D1C54", "#261F5A", "#1F255D", "#1E2A65"],
+    solid: "#1E2A65",
+  },
   indigo2: {
     id: "indigo2",
     label: "Indigo 2",
@@ -50,7 +57,7 @@ export const SCENE_THEMES: Record<"indigo2", SceneTheme> = {
   },
 };
 
-export const DEFAULT_THEME_ID: SceneId = "indigo2";
+export const DEFAULT_THEME_ID = "tibet" satisfies SceneId;
 
 /** Resonancia hereda exactamente las reglas visuales especiales de Índigo. */
 export function isIndigoThemeId(id: SceneId): boolean {

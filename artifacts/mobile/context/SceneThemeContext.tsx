@@ -1,6 +1,6 @@
 import React, { createContext, useContext, useMemo } from "react";
 
-import { SCENE_THEMES, type SceneTheme } from "@/config/scene-themes";
+import { DEFAULT_THEME_ID, SCENE_THEMES, type SceneTheme } from "@/config/scene-themes";
 import type { SceneId } from "@/context/AmbientPlayerContext";
 import { brightenThemeColor, useBrightness } from "@/context/BrightnessContext";
 
@@ -15,7 +15,7 @@ const SceneThemeContext = createContext<SceneThemeCtx | null>(null);
 export function SceneThemeProvider({ children }: { children: React.ReactNode }) {
   const { brightMode } = useBrightness();
   const theme = useMemo<SceneTheme>(() => {
-    const base = SCENE_THEMES.indigo2;
+    const base = SCENE_THEMES[DEFAULT_THEME_ID];
     if (!brightMode) return base;
     return {
       ...base,
@@ -24,7 +24,7 @@ export function SceneThemeProvider({ children }: { children: React.ReactNode }) 
     };
   }, [brightMode]);
 
-  const value = useMemo<SceneThemeCtx>(() => ({ activeSceneId: "indigo2", theme }), [theme]);
+  const value = useMemo<SceneThemeCtx>(() => ({ activeSceneId: DEFAULT_THEME_ID, theme }), [theme]);
   return <SceneThemeContext.Provider value={value}>{children}</SceneThemeContext.Provider>;
 }
 

@@ -8,12 +8,8 @@ import { useSceneTheme } from "@/context/SceneThemeContext";
 type SacredBackgroundProps = {
   /**
    * Modo de fondo:
-    * - "solid" (default): plano, salvo Índigo 2 que usa su degradado global.
-   *   Si no se pasa `solidColor`, pinta el color sólido del tema de Escena
-   *   activo (Task #82) — así las pantallas que ya usan este componente sin
-   *   color propio reaccionan automáticamente al cambiar de Escena. Las
-   *   pantallas que SÍ pasan `solidColor` (identidad de categoría) conservan
-   *   su color explícito por ahora — la migración de esas es progresiva.
+   * - "solid" (default): usa el degradado visual global salvo que se pase
+   *   `solidColor` (p. ej. para conservar la identidad de una categoría).
    * - "texture": textura + glow dorado + viñeta (look original, legacy).
    * - "gradient": degradado del tema de Escena activo (`theme.gradient`),
    *   el mismo look que usa Inicio (`LinearGradient` de arriba a abajo).
@@ -44,9 +40,9 @@ export function SacredBackground({
         }))
       : undefined;
 
-  // Las pantallas con fondo de tema heredan el degradado de Índigo 2.
+  // Las pantallas con fondo de tema heredan el degradado global.
   // Un solidColor explícito conserva la identidad propia de la pantalla.
-  const resolvedVariant = variant === "solid" && solidColor == null && theme.id === "indigo2"
+  const resolvedVariant = variant === "solid" && solidColor == null
     ? "gradient"
     : variant;
 
