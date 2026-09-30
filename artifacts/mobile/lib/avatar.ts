@@ -3,7 +3,7 @@
  * cargable por <Image>.
  * ─────────────────────────────────────────────────────────────────
  * - null/"" → null (el caller muestra la inicial como fallback).
- * - data:/http(s): → se devuelve tal cual.
+ * - URI absoluta (http(s), data, file, content, blob...) → se conserva.
  * - objectPath de storage ("/objects/...") → ruta de serving del API
  *   ("/api/storage/objects/...") usando EXPO_PUBLIC_API_URL.
  */
@@ -12,7 +12,7 @@ export function resolveAvatarUrl(path: string | null | undefined): string | null
   // Older editorial uploads stored /api/storage//objects/... .
   // Normalize only our storage prefix, never the slashes in https://.
   path = path.replace(/\/api\/storage\/+(?=objects\/)/, "/api/storage/");
-  if (/^(https?:|data:)/i.test(path)) return path;
+   if (/^[a-z][a-z\d+.-]*:/i.test(path)) return path;
 
   const base = (process.env.EXPO_PUBLIC_API_URL ?? "").replace(/\/+$/, "");
   const servingPath = path.startsWith("/objects/")

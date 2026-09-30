@@ -9,6 +9,13 @@ export type ProfileAvatarCandidate<T> = {
   source: T;
 };
 
+/** A new URI per selection invalidates image caches and avatar sync markers. */
+export function buildLocalAvatarFilename(uri: string, uniqueId: string): string {
+  const path = uri.split(/[?#]/, 1)[0];
+  const extension = path.match(/\.([a-z0-9]{1,8})$/i)?.[1] ?? "jpg";
+  return `profile_photo_${uniqueId}.${extension}`;
+}
+
 export function resolveProfileAvatarSource<T>(
   profile: ProfileAvatarRecord,
   catalog: ProfileAvatarCandidate<T>[],
@@ -29,7 +36,7 @@ export function resolveProfileAvatarSource<T>(
 function resolveAvatarUrl(path: string | null | undefined): string | null {
   if (!path) return null;
   const normalized = path.replace(/\/api\/storage\/+(?=objects\/)/, "/api/storage/");
-  if (/^(https?:|data:)/i.test(normalized)) return normalized;
+   if (/^[a-z][a-z\d+.-]*:/i.test(normalized)) return normalized;
   const base = (process.env.EXPO_PUBLIC_API_URL ?? "").replace(/\/+$/, "");
   const servingPath = normalized.startsWith("/objects/")
     ? normalized.replace(/^\/objects\//, "/api/storage/objects/")

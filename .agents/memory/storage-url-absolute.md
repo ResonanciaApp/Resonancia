@@ -1,30 +1,18 @@
 ---
 name: Object Storage — URLs absolutas en React Native
-description: Las URLs relativas de Object Storage no funcionan en RN; usar EXPO_PUBLIC_API_URL como base.
+description: Distinguir rutas remotas de Object Storage de fotos locales y mantener una identidad nueva por selección de avatar.
 ---
 
 ## Regla
 
-En React Native, `<Image source={{ uri: "/api/storage/objects/..." }}>` **no funciona** (URL relativa). Siempre construir URL absoluta.
+En React Native, las rutas relativas de Object Storage necesitan una URL absoluta del API. Las URI del dispositivo o navegador (file, content, ph, assets-library, blob y data) no son rutas del servidor y deben conservarse.
 
-**Why:** RN no tiene contexto de "dominio base" como un browser; la URL relativa se interpreta literalmente y falla.
+**Why:** RN no tiene dominio base como un browser. En sentido contrario, añadir el dominio a una foto local rompe su carga; esto puede afectar solo a Inicio y al drawer mientras Perfil muestra correctamente la foto por usarla directamente.
 
-## Patrón correcto (igual que avatar.ts)
+**How to apply:** Antes de resolver una imagen o audio, distinguir URI absoluta de ruta remota relativa. No cambiar la prioridad local del avatar para ocultar una ruta inválida: la foto debe mostrarse sin esperar la subida.
 
-```ts
-const API_BASE = (process.env.EXPO_PUBLIC_API_URL ?? "").replace(/\/+$/, "");
+Cada selección de una foto de avatar debe tener una identidad de archivo nueva, incluso si reemplaza otra imagen con la misma extensión.
 
-function resolveStorageUrl(objectPath: string): string {
-  const servingPath = objectPath.startsWith("/objects/")
-    ? objectPath.replace(/^\/objects\//, "/api/storage/objects/")
-    : objectPath.startsWith("/") ? objectPath : `/${objectPath}`;
-  return `${API_BASE}${servingPath}`;
-}
-```
+**Why:** Sobrescribir el mismo archivo conserva su URI; esto puede mantener píxeles viejos en la caché y hacer que la sincronización considere la foto ya enviada. El problema no se limita a un refresco visual.
 
-## Aplica a
-
-- Thumbnails de videos (`useVideos.ts`)
-- Avatares de usuario (`lib/avatar.ts`) — ya usa este patrón
-- Sonidos remotos (`lib/remoteSoundMap.ts`) — ya usa este patrón
-- Cualquier `<Image>` o `<Audio>` que venga de objectPath del servidor
+**How to apply:** Mantener identidad nueva por selección al cambiar el almacenamiento de fotos; no volver a un destino fijo ni resolverlo únicamente desactivando la caché.

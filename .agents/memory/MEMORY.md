@@ -5,7 +5,7 @@
 - [Expo Router tab-group back nav](expo-router-tab-group-back-nav.md) — detail screens under app/(tabs)/ break back nav (resolves to Inicio); put them at app root like mezcla/[id], artista/[id]
 - [Favoritos folders hide from flat list](favoritos-folder-hides-flat-list.md) — excepción deliberada: sesión en una carpeta de Favoritos desaparece de la lista plana (a diferencia de Playlist/Mezclas donde no se oculta)
 - [Nested folders pattern](nested-folders-pattern.md) — subFolderIds + helpers + unified action sheet shared across Playlist/Mezclas/Favoritos; cycle-prevention via descendant-exclusion in move picker
-- [Storage URL absolute (RN)](storage-url-absolute.md) — URLs relativas /api/storage/… no funcionan en RN; siempre prepend EXPO_PUBLIC_API_URL; patrón en avatar.ts/remoteSoundMap.ts
+- [Storage URLs y fotos locales](storage-url-absolute.md) — solo rutas remotas relativas llevan base del API; preservar URI locales y dar identidad nueva a cada foto seleccionada
 - [Chip fontWeight shift](chip-fontweight-shift.md) — cambiar fontWeight al seleccionar un chip empuja los adyacentes; solo cambiar color; paddingHorizontal va en contentContainerStyle no en el View padre
 - [Slide decks](slide-decks.md) — tres artifacts slides distintos: resonancia-deck (Brochure), resonancia-pitch (Pitch Inversionistas), resonancia-plantilla (Invitación); no mezclarlos
 - [Pitch financial coherence](pitch-financial-coherence.md) — cifras del modelo (ronda/equity/uso de fondos/valle/stakes) viven en 6+ slides hardcodeadas; cambiar una = propagar a todas o se contradicen

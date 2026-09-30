@@ -1,5 +1,6 @@
 import { Feather, MaterialCommunityIcons } from "@expo/vector-icons";
 import AsyncStorage from "@react-native-async-storage/async-storage";
+import { randomUUID } from "expo-crypto";
 import { File as FSFile, Paths } from "expo-file-system";
 import { Image } from "expo-image";
 import * as Haptics from "expo-haptics";
@@ -60,6 +61,7 @@ import { getSessionById } from "@/data/sessions";
 import { getExpansorById } from "@/data/expansores";
 import { uploadLocalFile } from "@/lib/upload";
 import { resolveAvatarUrl } from "@/lib/avatar";
+import { buildLocalAvatarFilename } from "@/lib/profile-avatar-logic";
 import { removeLocalAccountData } from "@/lib/accountData";
 import { useGeometrixCreations } from "@/hooks/useGeometrixCreations";
 import { InvitarSheet } from "@/components/InvitarSheet";
@@ -660,7 +662,6 @@ export function ProfileScreenBase({
     });
     if (!result.canceled && result.assets[0]) {
       const tempUri = result.assets[0].uri;
-      setAvatarPresetId(null);
       if (Platform.OS === "web") {
         try {
           const dataUrl = await resizeImageForWeb(tempUri, 320);
@@ -670,9 +671,8 @@ export function ProfileScreenBase({
         }
       } else {
         try {
-          const ext = tempUri.split(".").pop()?.split("?")[0] ?? "jpg";
           const src = new FSFile(tempUri);
-          const dest = new FSFile(Paths.document, `profile_photo.${ext}`);
+          const dest = new FSFile(Paths.document, buildLocalAvatarFilename(tempUri, randomUUID()));
           src.copy(dest);
           setPhotoUri(dest.uri);
         } catch {
