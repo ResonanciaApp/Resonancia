@@ -94,6 +94,11 @@ const SHOW_PROFILE_HISTORY = true;
 const SHOW_PROFILE_PRACTICE_CARDS = false;
 // Separación entre los bloques de progreso en Perfil.
 const PROFILE_SECTION_GAP = 21;
+const PROFILE_CARD_BOTTOM_PADDING = 6;
+const PROFILE_CARD_BOTTOM_MARGIN = 16;
+const PROFILE_CARD_Y_OFFSET = -5;
+const PROFILE_PROGRESS_TOP_MARGIN = 15;
+const PROFILE_WEEK_TOP_PADDING = 21;
 
 function resizeImageForWeb(uri: string, maxSize: number): Promise<string> {
   return new Promise((resolve, reject) => {
@@ -247,6 +252,13 @@ export function ProfileScreenBase({
   initialLibraryTab?: LibraryTab | null;
 }) {
   const colors = useColors();
+  const [profileDescriptionBottom, setProfileDescriptionBottom] = useState<number | null>(null);
+  const [profileDetailsHeight, setProfileDetailsHeight] = useState(0);
+  const descriptionTrailingHeight = Math.max(0, profileDetailsHeight - (profileDescriptionBottom ?? profileDetailsHeight));
+  const descriptionToWeekGap = descriptionTrailingHeight
+    + PROFILE_CARD_BOTTOM_PADDING + PROFILE_CARD_BOTTOM_MARGIN - PROFILE_CARD_Y_OFFSET
+    + PROFILE_PROGRESS_TOP_MARGIN + PROFILE_WEEK_TOP_PADDING;
+  const profileDividerTop = PROFILE_WEEK_TOP_PADDING - descriptionToWeekGap / 2 - 0.5;
   const { isPremium } = usePremium();
   const { openMixer } = useMixerPanel();
   const { history } = usePlayerBrowse();
@@ -1303,6 +1315,7 @@ export function ProfileScreenBase({
             <Pressable
               onPress={() => router.push("/mi-perfil")}
               style={styles.profileDetails}
+              onLayout={dedicated ? (event) => setProfileDetailsHeight(event.nativeEvent.layout.height) : undefined}
               accessibilityRole="button"
               accessibilityLabel="Abrir Mi cuenta"
             >
@@ -1319,7 +1332,13 @@ export function ProfileScreenBase({
                   <View style={styles.profileIntentionPill}>
                     <Text style={[styles.profileIntentionDays, { color: colors.foreground }]}>0 Días: Intención</Text>
                   </View>
-                  <Text style={[styles.profileIntentionDescription, { color: colors.mutedForeground }]}>
+                  <Text
+                    style={[styles.profileIntentionDescription, { color: colors.mutedForeground }]}
+                    onLayout={(event) => {
+                      const { y, height } = event.nativeEvent.layout;
+                      setProfileDescriptionBottom(y + height);
+                    }}
+                  >
                     Todo gran cambio comienza con el primer paso.{"\n"}¡Bienvenido a Resonancia!
                   </Text>
                 </>
@@ -1348,18 +1367,25 @@ export function ProfileScreenBase({
         {dedicated && (
           <>
             <View style={styles.profileProgressSection}>
+              <View
+                pointerEvents="none"
+                testID="profile-description-week-divider"
+                style={[styles.profileProgressDivider, { top: profileDividerTop }]}
+              />
               <ProgressMirrorSections
                 showSectionBorders={false}
                 showPersonalStats
                 showCalendar
                 streakTitle="Tu progreso semanal"
                 separateStreakHistory
+                weeklySectionBackgroundColor="transparent"
+                streakHistoryTopPadding={17}
                 longestStreakLabel="RACHA ACUMULADA"
                 longestStreakIconColor={MEMBERSHIP_AURORA.premium.accent}
                 personalStatsFilterBelowTitle
                 sectionBackgroundColor="rgba(0,0,0,0.22)"
                 sectionHorizontalPadding={20}
-                sectionTopPadding={21}
+                sectionTopPadding={PROFILE_WEEK_TOP_PADDING}
                 sectionBottomPadding={15}
                 sectionMarginBottom={PROFILE_SECTION_GAP}
                 onStreakTitlePress={() => router.push("/progreso" as never)}
@@ -2420,12 +2446,12 @@ const styles = StyleSheet.create({
   profileCard: {
     borderRadius: 19,
     paddingTop: 24,
-    paddingBottom: 6,
+    paddingBottom: PROFILE_CARD_BOTTOM_PADDING,
     alignItems: "stretch",
     marginTop: 15,
-    marginBottom: 16,
+    marginBottom: PROFILE_CARD_BOTTOM_MARGIN,
     gap: 0,
-    transform: [{ translateY: -5 }],
+    transform: [{ translateY: PROFILE_CARD_Y_OFFSET }],
   },
   dedicatedProfileCard: { marginTop: 35 },
   wisdomSection: {
@@ -2523,8 +2549,15 @@ const styles = StyleSheet.create({
 
   // Progreso semanal compacto
   profileProgressSection: {
-    marginTop: 15,
+    marginTop: PROFILE_PROGRESS_TOP_MARGIN,
     marginBottom: PROFILE_SECTION_GAP,
+  },
+  profileProgressDivider: {
+    position: "absolute",
+    left: 0,
+    right: 0,
+    height: 1,
+    backgroundColor: "rgba(255,255,255,0.065)",
   },
   practiceReminderSection: {
     paddingHorizontal: 16,

@@ -3,11 +3,11 @@ name: Progreso visible en Perfil
 description: Orden actual del progreso en Perfil y su relación con Tu progreso.
 ---
 
-Perfil separa la semana del historial de rachas. La primera tarjeta contiene solo los siete círculos y los días de la semana, sin título interior, cifras ni divisor. Debajo va «Historial de rachas», con el título dentro y las cifras de «Racha más larga» y «Racha acumulada»; «Racha actual» no aparece en Perfil. Después permanecen «Mis estadísticas», el calendario y el historial de sesiones.
+Perfil separa la semana del historial de rachas. Los siete círculos y días van sin fondo, título interior ni cifras. Una línea blanca tenue se centra entre la descripción de identidad y los círculos, no dentro de una tarjeta semanal. Debajo va «Historial de rachas», con fondo, título dentro y cifras de «Racha más larga» y «Racha acumulada»; «Racha actual» no aparece en Perfil. Después permanecen «Mis estadísticas», el calendario y el historial de sesiones.
 
-**Why:** El usuario pidió simplificar la semana a sus círculos y días, y trasladar las cifras a una sección separada de historial, reemplazando «Racha actual» por «Racha más larga». El cambio se limita a Perfil, no a Tu progreso.
+**Why:** El usuario pidió simplificar la semana a sus círculos y días, y trasladar las cifras a un historial separado; después retiró el fondo semanal y pidió el divisor entre descripción y días. El cambio se limita a Perfil, no a Tu progreso.
 
-**How to apply:** Mantener semana e historial como tarjetas separadas en Perfil, con la distancia estándar entre secciones. No trasladar esta distribución a Tu progreso ni devolver la tarjeta completa de Intención a Perfil. Bajo el nombre sigue la identidad compacta «0 Días: Intención»; la tarjeta que abre Tu camino permanece solo en Tu progreso.
+**How to apply:** Mantener la semana sin fondo y el historial en su propia tarjeta. Al cambiar el espaciado de la identidad, recalcular el centro del divisor respecto de la descripción y los círculos, no respecto de los contenedores externos. No trasladar esta distribución a Tu progreso ni devolver la tarjeta completa de Intención a Perfil. Bajo el nombre sigue la identidad compacta «0 Días: Intención»; la tarjeta que abre Tu camino permanece solo en Tu progreso.
 
 La etiqueta «Racha acumulada» y el loto dorado coinciden en Perfil y Tu progreso. Son una vista previa de diseño: por ahora, la cifra conserva el cálculo anterior de la racha más larga; no convertirla aún en un total acumulado. En el historial de Perfil, ambas cifras pueden coincidir durante esta vista previa.
 

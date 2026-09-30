@@ -6,9 +6,18 @@ import React from "react";
 import { renderToStaticMarkup } from "react-dom/server";
 import ts from "typescript";
 
-type NativeProps = { children?: React.ReactNode; testID?: string };
-const NativeView = ({ children, testID }: NativeProps) =>
-  React.createElement("div", { "data-testid": testID }, children);
+type NativeProps = { children?: React.ReactNode; testID?: string; style?: unknown };
+const flattenStyle = (style: unknown): Record<string, unknown> => Array.isArray(style)
+  ? Object.assign({}, ...style.map(flattenStyle))
+  : style && typeof style === "object" ? style as Record<string, unknown> : {};
+const NativeView = ({ children, testID, style }: NativeProps) => {
+  const resolved = flattenStyle(style);
+  return React.createElement("div", {
+    "data-testid": testID,
+    "data-background": resolved.backgroundColor,
+    "data-padding-top": resolved.paddingTop,
+  }, children);
+};
 const Passthrough = ({ children }: NativeProps) => React.createElement(React.Fragment, null, children);
 const Icon = () => React.createElement("i");
 const source = readFileSync(new URL("../components/ProgressMirrorSections.tsx", import.meta.url), "utf8");
@@ -74,4 +83,20 @@ test("Tu progreso keeps its existing stats and does not acquire the Perfil histo
   assert.match(html, /RACHA ACTUAL/);
   assert.match(html, /RACHA ACUMULADA/);
   assert.doesNotMatch(html, /Historial de rachas|profile-streak-history/);
+});
+
+test("Perfil removes only the weekly background and reduces history top padding by four", () => {
+  const html = render({
+    separateStreakHistory: true,
+    sectionBackgroundColor: "rgba(0,0,0,0.22)",
+    sectionTopPadding: 21,
+    streakHistoryTopPadding: 17,
+    weeklySectionBackgroundColor: "transparent",
+  });
+  const weekly = html.match(/<div[^>]*data-testid="profile-weekly-progress"[^>]*>/)?.[0] ?? "";
+  const history = html.match(/<div[^>]*data-testid="profile-streak-history"[^>]*>/)?.[0] ?? "";
+  assert.match(weekly, /data-background="transparent"/);
+  assert.match(weekly, /data-padding-top="21"/);
+  assert.match(history, /data-background="rgba\(0,0,0,0.22\)"/);
+  assert.match(history, /data-padding-top="17"/);
 });
