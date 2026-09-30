@@ -7,13 +7,7 @@ Perfil muestra los siete días de la semana dentro del fondo de la tarjeta de ra
 
 **Why:** El usuario quiso recuperar estadísticas, calendario e Historial debajo de la racha. Tras probar la semana fuera de la tarjeta, pidió devolver los siete días al interior como estaban antes. Después de probar Intención entre calendario e Historial, pidió retirarla de Perfil.
 
-**How to apply:** Al cambiar el bloque de Perfil, conservar la semana y el divisor dentro de la tarjeta de racha; no devolver la tarjeta completa de Intención a Perfil. Bajo el nombre, su identidad compacta apila la píldora «0 días» sin loto, la etiqueta literal `"Intención"` y la frase breve, sin «Nivel 0»; la tarjeta que abre Tu camino sigue solo en Tu progreso.
-
-La palabra «Intención» bajo la píldora en Perfil comparte tamaño y peso con el título «Intención» del banner de Tu progreso; los espacios de cada superficie pueden seguir siendo distintos.
-
-**Why:** El usuario pidió explícitamente que las dos etiquetas se vieran con la misma jerarquía tipográfica.
-
-**How to apply:** Si cambia la tipografía del título del banner, mantener la paridad en la etiqueta de Perfil sin copiar los márgenes de la tarjeta.
+**How to apply:** Al cambiar el bloque de Perfil, conservar la semana y el divisor dentro de la tarjeta de racha; no devolver la tarjeta completa de Intención a Perfil. Bajo el nombre, su identidad compacta muestra solo la píldora «0 Días: Intención» (todo con el mismo tamaño y peso, sin loto ni título aparte) y la frase breve debajo; la tarjeta que abre Tu camino sigue solo en Tu progreso.
 
 La etiqueta «Racha acumulada» y el loto dorado coinciden en Perfil y Tu progreso. Son una vista previa de diseño: por ahora, la cifra conserva el cálculo anterior de la racha más larga; no convertirla aún en un total acumulado.
 
