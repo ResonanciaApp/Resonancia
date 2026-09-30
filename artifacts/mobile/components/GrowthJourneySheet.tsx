@@ -127,7 +127,7 @@ export function GrowthJourneySheet({
               accessibilityRole="button"
               accessibilityLabel="Cerrar"
             >
-              <Feather name="x" size={24} color={colors.foreground} />
+              <Feather name="x" size={22} color={colors.foreground} />
             </Pressable>
           </View>
           <ScrollView
@@ -180,15 +180,24 @@ const styles = StyleSheet.create({
     alignItems: "center",
     justifyContent: "space-between",
   },
-  headerSpacer: { width: 38 },
+  headerSpacer: { width: 43 },
   title: { fontFamily: "Manrope", fontSize: 20, lineHeight: 42, fontWeight: "700" },
-  closeButton: { width: 38, height: 38, alignItems: "center", justifyContent: "center" },
+  closeButton: {
+    width: 43,
+    height: 43,
+    borderRadius: 21.5,
+    backgroundColor: "rgba(0,0,0,0.28)",
+    borderWidth: 1,
+    borderColor: "rgba(255,255,255,0.2)",
+    alignItems: "center",
+    justifyContent: "center",
+  },
   scroll: { flex: 1 },
   scrollContent: { paddingBottom: 32 },
   journeyDescription: {
     marginHorizontal: 25,
-    marginTop: 20,
-    marginBottom: 35,
+    marginTop: 45,
+    marginBottom: 60,
     fontFamily: "Manrope",
     fontSize: 15,
     lineHeight: 23,

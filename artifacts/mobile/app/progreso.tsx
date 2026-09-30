@@ -32,6 +32,7 @@ import { GrowthLevelPreviewCard } from "@/components/GrowthJourney";
 import { GrowthJourneySheet } from "@/components/GrowthJourneySheet";
 import { CinematicFadeSlide } from "@/components/CinematicFadeSlide";
 import { getPositionedDayGradient } from "@/components/StreakWeekRow";
+import { MEMBERSHIP_AURORA } from "@/constants/colors";
 import { useSceneTheme } from "@/context/SceneThemeContext";
 import { useColors } from "@/hooks/useColors";
 import { useStreak } from "@/hooks/useStreak";
@@ -83,11 +84,9 @@ export default function ProgresoScreen() {
   const [countEntranceDone, setCountEntranceDone] = useState(reduceMotion);
   const [countValueDone, setCountValueDone] = useState(reduceMotion);
   const [descriptionStarted, setDescriptionStarted] = useState(reduceMotion);
-  const [descriptionDone, setDescriptionDone] = useState(reduceMotion);
   const [journeyOpen, setJourneyOpen] = useState(false);
   const onCountEntranceComplete = useCallback(() => setCountEntranceDone(true), []);
   const onCountValueComplete = useCallback(() => setCountValueDone(true), []);
-  const onDescriptionComplete = useCallback(() => setDescriptionDone(true), []);
   useEffect(() => {
     if (countEntranceDone && countValueDone) setDescriptionStarted(true);
   }, [countEntranceDone, countValueDone]);
@@ -239,9 +238,8 @@ export default function ProgresoScreen() {
                 <CinematicFadeSlide
                   replayKey="progress-intro-description"
                   active={descriptionStarted}
-                  duration={1200}
+                  duration={600}
                   style={styles.heroAnimatedContent}
-                  onComplete={onDescriptionComplete}
                 >
                   <Text style={styles.streakIntroDescription}>
                     Medita al menos 3 días a la semana y transforma todos los aspectos de tu vida
@@ -252,7 +250,7 @@ export default function ProgresoScreen() {
           </View>
         </View>
 
-        {descriptionDone && (
+        {descriptionStarted && (
           <>
             <View style={styles.content}>
               <View style={styles.sectionsOffset}>
@@ -260,18 +258,17 @@ export default function ProgresoScreen() {
                   animateEntrance
                   entranceReplayKey="progress-sections"
                   entranceBaseDelay={0}
-                  personalStatsEntranceOffsetMs={0}
                   syncStreakStatsWithWeek
                   showSectionBorders={false}
-                  showPersonalStats
+                  showPersonalStats={false}
                   showCalendar={false}
-                  personalStatsFilterBelowTitle
+                  longestStreakLabel="RACHA ACUMULADA"
+                  longestStreakIconColor={MEMBERSHIP_AURORA.premium.accent}
                   sectionBackgroundColor="rgba(0,0,0,0.2)"
                   sectionHorizontalPadding={20}
                   sectionTopPadding={16}
                   sectionBottomPadding={19}
                   sectionMarginBottom={0}
-                  personalStatsMarginTop={21}
                   canonicalVerticalInsets
                 />
               </View>

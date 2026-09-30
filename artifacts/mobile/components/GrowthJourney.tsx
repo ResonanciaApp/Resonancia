@@ -82,13 +82,7 @@ function GrowthLevelImage({ level }: { level: GrowthLevel }) {
   );
 }
 
-export function GrowthLevelPreviewCard({
-  onPress,
-  animateContent = true,
-}: {
-  onPress: () => void;
-  animateContent?: boolean;
-}) {
+export function GrowthLevelPreviewCard({ onPress }: { onPress: () => void }) {
   const colors = useColors();
   const level = growthLevels[0];
   const dayLabel = level.startDay === level.endDay
@@ -103,25 +97,25 @@ export function GrowthLevelPreviewCard({
       accessibilityLabel={`${level.name}, ${dayLabel}. Abrir camino de crecimiento`}
       testID="growth-level-zero-preview"
     >
-      <PreviewContentEntrance animated={animateContent} replayKey="intention-art" delay={420} style={styles.previewArt}>
+      <PreviewContentEntrance replayKey="intention-art" delay={420} style={styles.previewArt}>
         <GrowthLevelImage level={level} />
       </PreviewContentEntrance>
       <View style={styles.previewCopy}>
-        <PreviewContentEntrance animated={animateContent} replayKey="intention-days" delay={420}>
+        <PreviewContentEntrance replayKey="intention-days" delay={420}>
           <View style={styles.dayPill}>
             <Text style={[styles.days, { color: colors.foreground }]}>{dayLabel}</Text>
           </View>
         </PreviewContentEntrance>
-        <PreviewContentEntrance animated={animateContent} replayKey="intention-name" delay={660}>
+        <PreviewContentEntrance replayKey="intention-name" delay={660}>
           <Text style={[styles.name, { color: colors.foreground }]}>{level.name}</Text>
         </PreviewContentEntrance>
-        <PreviewContentEntrance animated={animateContent} replayKey="intention-story" delay={810}>
+        <PreviewContentEntrance replayKey="intention-story" delay={810}>
           <Text style={[styles.previewStory, { color: colors.mutedForeground }]}>
             {level.story}
           </Text>
         </PreviewContentEntrance>
       </View>
-      <PreviewContentEntrance animated={animateContent} replayKey="intention-chevron" delay={810}>
+      <PreviewContentEntrance replayKey="intention-chevron" delay={810}>
         <Feather name="chevron-right" size={18} color={colors.foreground} />
       </PreviewContentEntrance>
     </Pressable>
@@ -129,19 +123,16 @@ export function GrowthLevelPreviewCard({
 }
 
 function PreviewContentEntrance({
-  animated,
   children,
   delay,
   replayKey,
   style,
 }: {
-  animated: boolean;
   children: React.ReactNode;
   delay: number;
   replayKey: string;
   style?: { width: number; height: number };
 }) {
-  if (!animated) return <View style={style}>{children}</View>;
   return (
     <CinematicFadeSlide
       replayKey={replayKey}
