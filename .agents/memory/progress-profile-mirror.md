@@ -20,3 +20,9 @@ El loto de «Racha acumulada» debe conservar su brillo difuminado clásico, per
 **Why:** El usuario aclaró que no quería quitar el brillo cuadrado original: quería corregir el clipping para que solo se viera dentro de la flor.
 
 **How to apply:** Mantener el efecto difuminado en el contenido y aplicar una máscara con la forma del glifo; si cambia el icono o su tamaño, ajustar máscara y contenido juntos.
+
+El loto de la píldora de racha en Inicio debe compartir el blanco del loto de «Racha actual» en Perfil, no el dorado de «Racha acumulada».
+
+**Why:** El usuario corrigió la elección anterior del dorado: ambas superficies representan la racha actual.
+
+**How to apply:** Al ajustar el color del loto de racha actual, mantener Inicio y Perfil en sintonía sin trasladar allí el tratamiento dorado de la racha acumulada.
