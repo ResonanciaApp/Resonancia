@@ -16,7 +16,6 @@ import { useSafeAreaInsets } from "react-native-safe-area-context";
 
 import { GrowthJourney } from "@/components/GrowthJourney";
 import { useSceneTheme } from "@/context/SceneThemeContext";
-import { ascentLevels, growthLevels } from "@/data/growthLevels";
 import { useColors } from "@/hooks/useColors";
 
 export function GrowthJourneySheet({
@@ -34,9 +33,8 @@ export function GrowthJourneySheet({
     height - 8,
     Math.max(400, height - Math.max(insets.top, Platform.OS === "web" ? 40 : 0) - 12),
   );
-  const travel = height + 80;
   const [rendered, setRendered] = useState(visible);
-  const sheetY = useRef(new Animated.Value(travel)).current;
+  const sheetY = useRef(new Animated.Value(sheetHeight + 80)).current;
   const backdropOpacity = useRef(new Animated.Value(0)).current;
 
   useEffect(() => {
@@ -44,7 +42,7 @@ export function GrowthJourneySheet({
     backdropOpacity.stopAnimation();
     if (visible) {
       setRendered(true);
-      sheetY.setValue(travel);
+      sheetY.setValue(sheetHeight + 80);
       backdropOpacity.setValue(0);
       const frame = requestAnimationFrame(() => {
         Animated.parallel([
@@ -61,16 +59,12 @@ export function GrowthJourneySheet({
           }),
         ]).start();
       });
-      return () => {
-        cancelAnimationFrame(frame);
-        sheetY.stopAnimation();
-        backdropOpacity.stopAnimation();
-      };
+      return () => cancelAnimationFrame(frame);
     }
 
-    const exit = Animated.parallel([
+    Animated.parallel([
       Animated.timing(sheetY, {
-        toValue: travel,
+        toValue: sheetHeight + 80,
         duration: 500,
         useNativeDriver: true,
       }),
@@ -79,12 +73,10 @@ export function GrowthJourneySheet({
         duration: 460,
         useNativeDriver: true,
       }),
-    ]);
-    exit.start(({ finished }) => {
+    ]).start(({ finished }) => {
       if (finished) setRendered(false);
     });
-    return () => exit.stop();
-  }, [visible, travel, sheetY, backdropOpacity]);
+  }, [visible, sheetHeight, sheetY, backdropOpacity]);
 
   if (!rendered) return null;
 
@@ -103,7 +95,7 @@ export function GrowthJourneySheet({
           accessibilityLabel="Cerrar camino de crecimiento"
         >
           <Animated.View
-            style={[StyleSheet.absoluteFill, { backgroundColor: "#000000", opacity: backdropOpacity }]}
+            style={[StyleSheet.absoluteFill, styles.backdrop, { opacity: backdropOpacity }]}
           />
         </Pressable>
         <Animated.View
@@ -143,7 +135,10 @@ export function GrowthJourneySheet({
             contentContainerStyle={styles.scrollContent}
             showsVerticalScrollIndicator={false}
           >
-            <GrowthJourney visibleStep={5 + growthLevels.length + ascentLevels.length} />
+            <Text style={[styles.journeyDescription, { color: colors.foreground }]}>
+              Cada día de racha lograda en Resonancia te acerca más a ti mismo y a tu florecimiento espiritual.
+            </Text>
+            <GrowthJourney />
           </ScrollView>
         </Animated.View>
       </View>
@@ -153,6 +148,7 @@ export function GrowthJourneySheet({
 
 const styles = StyleSheet.create({
   modalRoot: { flex: 1 },
+  backdrop: { backgroundColor: "#000000" },
   sheet: {
     position: "absolute",
     left: 0,
@@ -185,8 +181,16 @@ const styles = StyleSheet.create({
     justifyContent: "space-between",
   },
   headerSpacer: { width: 38 },
-  title: { fontFamily: "Manrope", fontSize: 18, fontWeight: "600" },
+  title: { fontFamily: "Manrope", fontSize: 20, lineHeight: 42, fontWeight: "700" },
   closeButton: { width: 38, height: 38, alignItems: "center", justifyContent: "center" },
   scroll: { flex: 1 },
-  scrollContent: { paddingTop: 37, paddingBottom: 32 },
+  scrollContent: { paddingBottom: 32 },
+  journeyDescription: {
+    marginHorizontal: 25,
+    marginTop: 20,
+    marginBottom: 35,
+    fontFamily: "Manrope",
+    fontSize: 15,
+    lineHeight: 23,
+  },
 });

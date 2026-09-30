@@ -3,11 +3,11 @@ name: Membresía Aurora jade-gold
 description: Insignia del avatar en Perfil y acentos Premium de las demás superficies.
 ---
 
-La tarjeta principal de Perfil muestra avatar, nombre y datos personales, sin sección «Tu Premium» ni divisor bajo el usuario para ningún estado de membresía. Solo los miembros Premium llevan una estrella dorada sin fondo en la esquina superior izquierda del avatar. No recuperar Premium Plus ni «Prueba Premium» en esa tarjeta.
+La tarjeta principal de Perfil muestra avatar, nombre y datos personales, sin sección «Tu Premium» ni divisor bajo el usuario para ningún estado de membresía. Solo los miembros Premium llevan una estrella dorada sobre una placa circular translúcida en la esquina superior izquierda del avatar. El avatar de Inicio muestra la misma insignia para Premium, también en Inicio 3. No recuperar Premium Plus ni «Prueba Premium» en la tarjeta de Perfil.
 
-**Why:** Aunque antes se mostró «Tu Premium» bajo el usuario solo para miembros, el usuario pidió quitar esa sección y su divisor también para cuentas Premium, y conservar la estrella reubicada en la esquina superior izquierda del avatar. Después pidió retirar expresamente el círculo de fondo sin mover ni recolorear la estrella.
+**Why:** Aunque antes se mostró «Tu Premium» bajo el usuario solo para miembros, el usuario pidió quitar esa sección y su divisor también para cuentas Premium, y conservar la estrella reubicada en la esquina superior izquierda del avatar. El tratamiento de fondo cambió posteriormente en la implementación de Perfil; el usuario pidió explícitamente llevar esa estrella con su fondo al avatar de Inicio.
 
-**How to apply:** No reintroducir una sección de membresía dentro de la tarjeta del usuario. Mantener la estrella del avatar sin placa de fondo solo si la cuenta tiene Premium; las cuentas sin Premium no la muestran. El acceso «Tu Premium» del drawer sigue siendo independiente. No extender la insignia a otros avatares por analogía.
+**How to apply:** No reintroducir una sección de membresía dentro de la tarjeta del usuario. Mantener la estrella y su placa circular solo si la cuenta tiene Premium, tanto en Perfil como en Inicio; las cuentas sin Premium no la muestran. El acceso «Tu Premium» del drawer sigue siendo independiente. No extender la insignia a otros avatares por analogía.
 
 El amarillo sólido de Premium sigue en «Plan Premium» de Sonidos y Descubrir, en solo «Premium» del banner inferior de Inicio y en «Tu Premium» del drawer para miembros o solo «Premium» para no miembros. «Prueba» y «Gratis» de Inicio no cambian; en el drawer «Prueba» sigue blanco. El loto de «Racha más larga» conserva el degradado.
 

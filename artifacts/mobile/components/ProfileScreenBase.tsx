@@ -71,6 +71,8 @@ import {
   type LibHeaderActions,
 } from "@/components/BibliotecaScreen";
 import { ProgressMirrorSections } from "@/components/ProgressMirrorSections";
+import { GrowthLevelPreviewCard } from "@/components/GrowthJourney";
+import { GrowthJourneySheet } from "@/components/GrowthJourneySheet";
 import { ProfileSettingsSections } from "@/components/ProfileSettingsSections";
 import { SessionBadgeGlass } from "@/components/SessionDurationBadge";
 import { useCoverPresetCatalog } from "@/lib/cover-preset-catalog";
@@ -286,6 +288,7 @@ export function ProfileScreenBase({
   const [libActions, setLibActions] = useState<LibHeaderActions | null>(null);
   const [morningReminderVisible, setMorningReminderVisible] = useState(false);
   const [sleepReminderVisible, setSleepReminderVisible] = useState(false);
+  const [journeyOpen, setJourneyOpen] = useState(false);
   const profileScrollRef = useRef<ScrollView>(null);
   const navigation = useNavigation();
   useEffect(() => {
@@ -1361,6 +1364,13 @@ export function ProfileScreenBase({
               />
             </View>
 
+            <View style={styles.profileIntentionSection}>
+              <GrowthLevelPreviewCard
+                animateContent={false}
+                onPress={() => setJourneyOpen(true)}
+              />
+            </View>
+
             {SHOW_PROFILE_HISTORY && (
             <View style={[styles.outlinedProfileSection, styles.profileHistorySection]}>
               <View style={styles.profileHistoryHeader}>
@@ -1659,6 +1669,13 @@ export function ProfileScreenBase({
 
       {!dedicated && <BibliotecaScreen embedded initialTab={initialLibraryTab} onHeaderActions={setLibActions} />}
       </View>
+
+      {dedicated && (
+        <GrowthJourneySheet
+          visible={journeyOpen}
+          onClose={() => setJourneyOpen(false)}
+        />
+      )}
 
       {/* ── Invitar Sheet ── */}
       <InvitarSheet
@@ -2508,6 +2525,9 @@ const styles = StyleSheet.create({
   // Progreso semanal compacto
   profileProgressSection: {
     marginTop: 15,
+    marginBottom: PROFILE_SECTION_GAP,
+  },
+  profileIntentionSection: {
     marginBottom: PROFILE_SECTION_GAP,
   },
   practiceReminderSection: {

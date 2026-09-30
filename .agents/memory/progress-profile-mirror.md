@@ -3,11 +3,11 @@ name: Progreso visible en Perfil
 description: Orden actual del progreso en Perfil y su relación con Tu progreso.
 ---
 
-Perfil muestra los siete días de la semana dentro del fondo de la tarjeta de racha, seguidos por un divisor y las cifras. Debajo van «Mis estadísticas», el calendario de Tu progreso y, después, Historial con las últimas sesiones escuchadas. La tarjeta lleva su propio título «Tu progreso semanal»; no necesita duplicar un encabezado externo «Tu progreso» ni «Ver todo».
+Perfil muestra los siete días de la semana dentro del fondo de la tarjeta de racha, seguidos por un divisor y las cifras. Debajo van «Mis estadísticas», el calendario de Tu progreso, la tarjeta de Intención y, después, Historial con las últimas sesiones escuchadas. La tarjeta lleva su propio título «Tu progreso semanal»; no necesita duplicar un encabezado externo «Tu progreso» ni «Ver todo». Separar calendario, Intención e Historial por la distancia estándar entre secciones.
 
-**Why:** El usuario quiso recuperar estadísticas, calendario e Historial debajo de la racha. Tras probar la semana fuera de la tarjeta, pidió devolver los siete días al interior como estaban antes.
+**Why:** El usuario quiso recuperar estadísticas, calendario e Historial debajo de la racha. Tras probar la semana fuera de la tarjeta, pidió devolver los siete días al interior como estaban antes. Después pidió incorporar Intención entre calendario e Historial con separación estándar.
 
-**How to apply:** Al cambiar el bloque de Perfil, conservar la semana y el divisor dentro de la tarjeta de racha; reutilizar los datos y controles compartidos con Tu progreso sin alterar allí su disposición.
+**How to apply:** Al cambiar el bloque de Perfil, conservar la semana y el divisor dentro de la tarjeta de racha; reutilizar la tarjeta de Intención y su acceso a Tu camino, sin alterar la disposición de Tu progreso.
 
 La etiqueta «Racha acumulada» en Perfil es solo una vista previa de diseño. Por ahora, su cifra conserva el cálculo anterior de la racha más larga; no convertirla aún en un total acumulado.
 

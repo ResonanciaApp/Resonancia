@@ -1,7 +1,7 @@
 import { Feather, MaterialCommunityIcons } from "@expo/vector-icons";
 import MaskedView from "@react-native-masked-view/masked-view";
 import { LinearGradient } from "expo-linear-gradient";
-import React, { useMemo, useRef, useState } from "react";
+import React, { useCallback, useMemo, useRef, useState } from "react";
 import { Animated, Pressable, StyleSheet, Text, View } from "react-native";
 
 import { HistorialCalendar } from "@/components/HistorialCalendar";
@@ -21,9 +21,6 @@ const PERSONAL_STATS_HEADER_OFFSET_MS = 420;
 const PERSONAL_STATS_MINUTES_OFFSET_MS = 660;
 const PERSONAL_STATS_FINAL_OFFSET_MS = 810;
 const CONTENT_ENTRANCE_DURATION_MS = 1200;
-export const PERSONAL_STATS_ENTRANCE_END_OFFSET_MS =
-  PERSONAL_STATS_FINAL_OFFSET_MS + CONTENT_ENTRANCE_DURATION_MS;
-
 export function ProgressMirrorSections({
   showSectionBorders = true,
   showPersonalStats = true,
@@ -37,6 +34,8 @@ export function ProgressMirrorSections({
   entranceBaseDelay = 0,
   personalStatsEntranceOffsetMs,
   syncStreakStatsWithWeek = false,
+  chainPersonalStatsAfterWeek = false,
+  onPersonalStatsComplete,
   streakTitle,
   longestStreakLabel = "RACHA MÁS LARGA",
   longestStreakIconColor,
@@ -65,6 +64,8 @@ export function ProgressMirrorSections({
   entranceBaseDelay?: number;
   personalStatsEntranceOffsetMs?: number;
   syncStreakStatsWithWeek?: boolean;
+  chainPersonalStatsAfterWeek?: boolean;
+  onPersonalStatsComplete?: () => void;
   streakTitle?: string;
   longestStreakLabel?: string;
   longestStreakIconColor?: string;
@@ -88,6 +89,8 @@ export function ProgressMirrorSections({
   const todayKey = useDayRollover();
   const [statsRangeDays, setStatsRangeDays] = useState<7 | 30 | 90>(30);
   const [statsFilterOpen, setStatsFilterOpen] = useState(false);
+  const [weekEntranceDone, setWeekEntranceDone] = useState(false);
+  const onWeekEntranceComplete = useCallback(() => setWeekEntranceDone(true), []);
   const weekBlink = useRef(new Animated.Value(1)).current;
   const streakPressRunning = useRef(false);
   const accent = theme.accent ?? colors.accent;
@@ -140,7 +143,9 @@ export function ProgressMirrorSections({
   const synchronizedStreakDelay = syncStreakStatsWithWeek && showStreakWeek
     ? entranceBaseDelay + STREAK_WEEK_START_OFFSET_MS
     : null;
-  const personalStatsEntranceDelay = entranceBaseDelay + (personalStatsEntranceOffsetMs ?? 500);
+  const personalStatsEntranceDelay = chainPersonalStatsAfterWeek
+    ? 0
+    : entranceBaseDelay + (personalStatsEntranceOffsetMs ?? 500);
 
   const filterControl = (
     <View style={[
@@ -216,7 +221,7 @@ export function ProgressMirrorSections({
       <ContentEntrance
         animated={animateEntrance}
         replayKey={`${entranceReplayKey}:personal-header`}
-        delay={personalStatsEntranceDelay + PERSONAL_STATS_HEADER_OFFSET_MS}
+        delay={personalStatsEntranceDelay + (chainPersonalStatsAfterWeek ? 0 : PERSONAL_STATS_HEADER_OFFSET_MS)}
       >
         <View style={[
           styles.personalStatsHeader,
@@ -257,6 +262,7 @@ export function ProgressMirrorSections({
             animated={animateEntrance}
             replayKey={`${entranceReplayKey}:personal-days`}
             delay={personalStatsEntranceDelay + PERSONAL_STATS_FINAL_OFFSET_MS}
+            onComplete={onPersonalStatsComplete}
           >
             <Stat
               icon={<Feather name="calendar" size={18} color="#F9F9F9" />}
@@ -285,6 +291,7 @@ export function ProgressMirrorSections({
           animateEntrance={animateEntrance}
           entranceReplayKey={`${entranceReplayKey}:week`}
           entranceBaseDelay={entranceBaseDelay + STREAK_WEEK_START_OFFSET_MS}
+          onEntranceComplete={chainPersonalStatsAfterWeek ? onWeekEntranceComplete : undefined}
         />
       </Animated.View>
     </Pressable>
@@ -462,7 +469,7 @@ export function ProgressMirrorSections({
           >
             {streakContent}
           </SectionEntrance>
-          {showPersonalStats ? (
+          {showPersonalStats && (!chainPersonalStatsAfterWeek || !showStreakWeek || weekEntranceDone) ? (
             <SectionEntrance
               animated={animateEntrance}
               replayKey={`${entranceReplayKey}:personal`}
@@ -528,11 +535,13 @@ function ContentEntrance({
   children,
   delay,
   replayKey,
+  onComplete,
 }: {
   animated: boolean;
   children: React.ReactNode;
   delay: number;
   replayKey: string | number;
+  onComplete?: () => void;
 }) {
   if (!animated) return <>{children}</>;
 
@@ -543,6 +552,7 @@ function ContentEntrance({
       duration={CONTENT_ENTRANCE_DURATION_MS}
       scaleFrom={0.97}
       translateYFrom={14}
+      onComplete={onComplete}
     >
       {children}
     </CinematicFadeSlide>

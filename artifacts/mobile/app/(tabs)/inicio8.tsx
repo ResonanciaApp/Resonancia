@@ -73,7 +73,7 @@ import {
 import { SessionRow } from "@/components/SessionRow";
 import { EqualizerBars } from "@/components/EqualizerBars";
 import { SessionCarousel, CoverCarousel } from "@/components/SessionCarousel";
-import { SessionDurationBadge } from "@/components/SessionDurationBadge";
+import { SessionBadgeGlass, SessionDurationBadge } from "@/components/SessionDurationBadge";
 import { PremiumBadge } from "@/components/PremiumBadge";
 import { HomeReflectionWallSection, type HomeReflectionWallHandle } from "@/components/HomeReflectionWallSection";
 import { ReflectionSavedBanner } from "@/components/ReflectionSavedBanner";
@@ -1933,15 +1933,16 @@ const Inicio2HeroStatic = React.memo(function Inicio2HeroStatic({
                 <Text style={styles.inicio2HeroAvatarInitial}>{initial}</Text>
               </View>
             )}
-            {isPremium && !isInicio3 && (
+            {isPremium && (
               <View
                 pointerEvents="none"
                 style={styles.inicio2HeroPremiumBadge}
                 accessibilityElementsHidden
               >
+                <SessionBadgeGlass showBlackTint={false} showWhiteTint />
                 <MaterialCommunityIcons
                   name="star"
-                  size={20}
+                  size={13}
                   color={MEMBERSHIP_AURORA.premium.accent}
                 />
               </View>
@@ -3669,11 +3670,12 @@ const styles = StyleSheet.create({
   },
   inicio2HeroPremiumBadge: {
     position: "absolute",
-    top: -5,
-    left: -5,
-    width: 22,
-    height: 22,
-    borderRadius: 11,
+    top: -1.5,
+    left: -1.5,
+    width: 15,
+    height: 15,
+    borderRadius: 7.5,
+    overflow: "hidden",
     alignItems: "center",
     justifyContent: "center",
   },

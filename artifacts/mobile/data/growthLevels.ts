@@ -1,12 +1,10 @@
-import type { ImageSourcePropType } from "react-native";
-
 export type GrowthLevel = {
   id: string;
   name: string;
   startDay: number;
   endDay: number;
   story: string;
-  image: ImageSourcePropType;
+  image: number;
 };
 
 // Intención precedes the first active day; the remaining ranges are editorial.

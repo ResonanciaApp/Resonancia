@@ -1,7 +1,7 @@
 import { Feather } from "@expo/vector-icons";
 import { LinearGradient } from "expo-linear-gradient";
 import { router, useFocusEffect } from "expo-router";
-import React, { useCallback, useMemo, useState } from "react";
+import React, { useCallback, useEffect, useMemo, useState } from "react";
 import {
   Platform,
   Pressable,
@@ -17,6 +17,7 @@ import Svg, { Circle, Defs, LinearGradient as SvgLinearGradient, Stop } from "re
 import Animated, {
   cancelAnimation,
   Easing,
+  runOnJS,
   type SharedValue,
   useAnimatedProps,
   useAnimatedStyle,
@@ -26,15 +27,11 @@ import Animated, {
   withTiming,
 } from "react-native-reanimated";
 
-import {
-  ProgressMirrorSections,
-  PERSONAL_STATS_ENTRANCE_END_OFFSET_MS,
-  STREAK_WEEK_START_OFFSET_MS,
-} from "@/components/ProgressMirrorSections";
+import { ProgressMirrorSections } from "@/components/ProgressMirrorSections";
 import { GrowthLevelPreviewCard } from "@/components/GrowthJourney";
 import { GrowthJourneySheet } from "@/components/GrowthJourneySheet";
 import { CinematicFadeSlide } from "@/components/CinematicFadeSlide";
-import { getPositionedDayGradient, STREAK_WEEK_ENTRANCE_END_OFFSET_MS } from "@/components/StreakWeekRow";
+import { getPositionedDayGradient } from "@/components/StreakWeekRow";
 import { useSceneTheme } from "@/context/SceneThemeContext";
 import { useColors } from "@/hooks/useColors";
 import { useStreak } from "@/hooks/useStreak";
@@ -45,14 +42,6 @@ const RING_STROKE = 9;
 const RING_RADIUS = (RING_SIZE - RING_STROKE) / 2;
 const RING_CIRCUMFERENCE = 2 * Math.PI * RING_RADIUS;
 const RING_ENTRANCE_DELAY = 100;
-const DESCRIPTION_ENTRANCE_DELAY = 600;
-const STREAK_SECTION_ENTRANCE_DELAY = 1150;
-const PERSONAL_STATS_ENTRANCE_OFFSET_MS =
-  STREAK_WEEK_START_OFFSET_MS + STREAK_WEEK_ENTRANCE_END_OFFSET_MS + 100;
-const JOURNEY_PREVIEW_ENTRANCE_DELAY =
-  STREAK_SECTION_ENTRANCE_DELAY + PERSONAL_STATS_ENTRANCE_OFFSET_MS +
-  PERSONAL_STATS_ENTRANCE_END_OFFSET_MS + 100;
-const JOURNEY_PREVIEW_WAIT_MS = 540;
 const AnimatedCircle = Animated.createAnimatedComponent(Circle);
 
 function StreakCountDigit({
@@ -91,8 +80,17 @@ export default function ProgresoScreen() {
   const { theme } = useSceneTheme();
   const { weekFlags } = useStreak();
   const reduceMotion = useReducedMotion();
-  const [journeyReady, setJourneyReady] = useState(reduceMotion);
+  const [countEntranceDone, setCountEntranceDone] = useState(reduceMotion);
+  const [countValueDone, setCountValueDone] = useState(reduceMotion);
+  const [descriptionStarted, setDescriptionStarted] = useState(reduceMotion);
+  const [descriptionDone, setDescriptionDone] = useState(reduceMotion);
   const [journeyOpen, setJourneyOpen] = useState(false);
+  const onCountEntranceComplete = useCallback(() => setCountEntranceDone(true), []);
+  const onCountValueComplete = useCallback(() => setCountValueDone(true), []);
+  const onDescriptionComplete = useCallback(() => setDescriptionDone(true), []);
+  useEffect(() => {
+    if (countEntranceDone && countValueDone) setDescriptionStarted(true);
+  }, [countEntranceDone, countValueDone]);
   const completedWeekDays = weekFlags.filter(Boolean).length;
   const ringGradient = useMemo(() => getPositionedDayGradient(theme.gradient), [theme.gradient]);
   const animatedDays = useSharedValue(reduceMotion ? completedWeekDays : 0);
@@ -105,20 +103,22 @@ export default function ProgresoScreen() {
     cancelAnimation(animatedDays);
     if (reduceMotion || completedWeekDays === 0) {
       animatedDays.value = completedWeekDays;
+      setCountValueDone(true);
     } else {
+      setCountValueDone(false);
       animatedDays.value = 0;
       animatedDays.value = withDelay(
         RING_ENTRANCE_DELAY,
         withTiming(completedWeekDays, {
           duration: Math.max(1000, completedWeekDays * 300),
           easing: Easing.linear,
+        }, (finished) => {
+          if (finished) runOnJS(onCountValueComplete)();
         }),
       );
     }
     return () => cancelAnimation(animatedDays);
-  }, [animatedDays, completedWeekDays, reduceMotion]));
-
-  const onJourneyTransitionComplete = useCallback(() => setJourneyReady(true), []);
+  }, [animatedDays, completedWeekDays, onCountValueComplete, reduceMotion]));
 
   const topPad = Platform.OS === "web" ? 67 : Math.max(insets.top, 40);
   const bottomPad = Platform.OS === "web" ? 34 : insets.bottom;
@@ -136,7 +136,6 @@ export default function ProgresoScreen() {
       <ScrollView
         showsVerticalScrollIndicator={false}
         contentContainerStyle={{ paddingBottom: bottomPad + 32 }}
-        bounces={false}
       >
         <View style={[styles.header, { paddingTop: topPad + 8 }]}>
           <Pressable
@@ -167,6 +166,7 @@ export default function ProgresoScreen() {
                   duration={1200}
                   scaleFrom={0.9}
                   translateYFrom={14}
+                  onComplete={onCountEntranceComplete}
                 >
                   <View style={styles.streakCountWrap}>
                     {completedWeekDays > 0 && (
@@ -238,9 +238,10 @@ export default function ProgresoScreen() {
                 </CinematicFadeSlide>
                 <CinematicFadeSlide
                   replayKey="progress-intro-description"
-                  delay={DESCRIPTION_ENTRANCE_DELAY}
-                  duration={3000}
+                  active={descriptionStarted}
+                  duration={1200}
                   style={styles.heroAnimatedContent}
+                  onComplete={onDescriptionComplete}
                 >
                   <Text style={styles.streakIntroDescription}>
                     Medita al menos 3 días a la semana y transforma todos los aspectos de tu vida
@@ -251,47 +252,41 @@ export default function ProgresoScreen() {
           </View>
         </View>
 
-        <View style={styles.content}>
-          <View style={styles.sectionsOffset}>
-            <ProgressMirrorSections
-              animateEntrance
-              entranceReplayKey="progress-sections"
-              entranceBaseDelay={STREAK_SECTION_ENTRANCE_DELAY}
-              personalStatsEntranceOffsetMs={PERSONAL_STATS_ENTRANCE_OFFSET_MS}
-              syncStreakStatsWithWeek
-              showSectionBorders={false}
-              showPersonalStats
-              showCalendar={false}
-              personalStatsFilterBelowTitle
-              sectionBackgroundColor="rgba(0,0,0,0.2)"
-              sectionHorizontalPadding={20}
-              sectionTopPadding={16}
-              sectionBottomPadding={19}
-              sectionMarginBottom={0}
-              personalStatsMarginTop={21}
-              canonicalVerticalInsets
-            />
-          </View>
-        </View>
-        <CinematicFadeSlide
-          replayKey="progress-journey-transition"
-          delay={JOURNEY_PREVIEW_ENTRANCE_DELAY}
-          duration={JOURNEY_PREVIEW_WAIT_MS}
-          translateYFrom={0}
-          onComplete={onJourneyTransitionComplete}
-        >
-          <View style={styles.journeyGap} pointerEvents="none" />
-        </CinematicFadeSlide>
-        {journeyReady && (
-          <CinematicFadeSlide
-            replayKey="progress-level-zero-preview"
-            delay={0}
-            duration={700}
-            scaleFrom={0.98}
-            translateYFrom={12}
-          >
-            <GrowthLevelPreviewCard onPress={() => setJourneyOpen(true)} />
-          </CinematicFadeSlide>
+        {descriptionDone && (
+          <>
+            <View style={styles.content}>
+              <View style={styles.sectionsOffset}>
+                <ProgressMirrorSections
+                  animateEntrance
+                  entranceReplayKey="progress-sections"
+                  entranceBaseDelay={0}
+                  personalStatsEntranceOffsetMs={0}
+                  syncStreakStatsWithWeek
+                  showSectionBorders={false}
+                  showPersonalStats
+                  showCalendar={false}
+                  personalStatsFilterBelowTitle
+                  sectionBackgroundColor="rgba(0,0,0,0.2)"
+                  sectionHorizontalPadding={20}
+                  sectionTopPadding={16}
+                  sectionBottomPadding={19}
+                  sectionMarginBottom={0}
+                  personalStatsMarginTop={21}
+                  canonicalVerticalInsets
+                />
+              </View>
+            </View>
+            <View style={styles.journeyGap} pointerEvents="none" />
+            <CinematicFadeSlide
+              replayKey="progress-level-zero-preview"
+              delay={0}
+              duration={1100}
+              scaleFrom={0.985}
+              translateYFrom={12}
+            >
+              <GrowthLevelPreviewCard onPress={() => setJourneyOpen(true)} />
+            </CinematicFadeSlide>
+          </>
         )}
       </ScrollView>
       <GrowthJourneySheet visible={journeyOpen} onClose={() => setJourneyOpen(false)} />

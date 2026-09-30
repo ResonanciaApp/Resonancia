@@ -11,8 +11,6 @@ import { useStreak } from "@/hooks/useStreak";
 const DAY_INITIALS = ["L", "M", "M", "J", "V", "S", "D"];
 const DAY_ENTRANCE_STEP_MS = 140;
 const DAY_ENTRANCE_DURATION_MS = 1200;
-export const STREAK_WEEK_ENTRANCE_END_OFFSET_MS =
-  (DAY_INITIALS.length - 1) * DAY_ENTRANCE_STEP_MS + DAY_ENTRANCE_DURATION_MS;
 // Conserva la luminosidad especial del anillo sin cambiar la dirección cromática del tema.
 const RING_BRIGHTNESS_OFFSET = 125;
 const RING_BRIGHTNESS_GAIN = 1.21;
@@ -37,11 +35,13 @@ export function StreakWeekRow({
   entranceReplayKey = "streak-week",
   entranceBaseDelay = 0,
   smallLabels = false,
+  onEntranceComplete,
 }: {
   animateEntrance?: boolean;
   entranceReplayKey?: string | number;
   entranceBaseDelay?: number;
   smallLabels?: boolean;
+  onEntranceComplete?: () => void;
 } = {}) {
   const { weekFlags, todayIndex } = useStreak();
   const { theme } = useSceneTheme();
@@ -118,6 +118,7 @@ export function StreakWeekRow({
             duration={DAY_ENTRANCE_DURATION_MS}
             scaleFrom={0.9}
             translateYFrom={14}
+            onComplete={index === DAY_INITIALS.length - 1 ? onEntranceComplete : undefined}
           >
             {content}
           </CinematicFadeSlide>
