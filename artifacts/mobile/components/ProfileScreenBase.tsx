@@ -2487,7 +2487,7 @@ const styles = StyleSheet.create({
     paddingVertical: 4,
   },
   profileIntentionDays: { fontFamily: "Manrope", fontSize: 10, fontWeight: "600" },
-  profileIntentionDescription: { fontFamily: "Manrope", fontSize: 11, lineHeight: 16, textAlign: "center" },
+  profileIntentionDescription: { fontFamily: "Manrope", fontSize: 11, lineHeight: 16, textAlign: "center", marginTop: 7 },
   locationRow: { flexDirection: "row", alignItems: "center", justifyContent: "center", gap: 4 },
   locationText: { fontFamily: "Manrope", fontSize: 12 },
   bioText: { fontFamily: "Manrope", fontSize: 13, lineHeight: 19, textAlign: "center", paddingHorizontal: 8, fontStyle: "italic" },
