@@ -1316,23 +1316,21 @@ export function ProfileScreenBase({
 
               {dedicated && (
                 <>
-                  <View style={styles.profileIntentionRow}>
-                    <View style={styles.profileIntentionPill}>
-                      <MaskedView maskElement={<MaterialCommunityIcons name="spa" size={13} color="#FFFFFF" />}>
-                        <MaterialCommunityIcons
-                          name="spa"
-                          size={13}
-                          color={MEMBERSHIP_AURORA.premium.accent}
-                          style={[
-                            styles.profileIntentionLotus,
-                            { textShadowColor: `${MEMBERSHIP_AURORA.premium.accent}CC` },
-                          ]}
-                        />
-                      </MaskedView>
-                      <Text style={[styles.profileIntentionDays, { color: colors.foreground }]}>0 días</Text>
-                    </View>
-                    <Text style={[styles.profileLevelText, { color: "#F0F0F0" }]}>Intención</Text>
+                  <View style={styles.profileIntentionPill}>
+                    <MaskedView maskElement={<MaterialCommunityIcons name="spa" size={13} color="#FFFFFF" />}>
+                      <MaterialCommunityIcons
+                        name="spa"
+                        size={13}
+                        color={MEMBERSHIP_AURORA.premium.accent}
+                        style={[
+                          styles.profileIntentionLotus,
+                          { textShadowColor: `${MEMBERSHIP_AURORA.premium.accent}CC` },
+                        ]}
+                      />
+                    </MaskedView>
+                    <Text style={[styles.profileIntentionDays, { color: colors.foreground }]}>0 días</Text>
                   </View>
+                  <Text style={[styles.profileLevelText, { color: "#F0F0F0" }]}>Intención</Text>
                   <Text style={[styles.profileIntentionDescription, { color: colors.mutedForeground }]}>
                     Todo gran cambio comienza con una intención
                   </Text>
@@ -2492,7 +2490,6 @@ const styles = StyleSheet.create({
     borderRadius: 55.5,
   },
   userName: { fontFamily: "Manrope", fontSize: 20, fontWeight: "700", textAlign: "center" },
-  profileIntentionRow: { flexDirection: "row", alignItems: "center", justifyContent: "center", gap: 8 },
   profileIntentionPill: {
     alignSelf: "center",
     flexDirection: "row",
