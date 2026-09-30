@@ -99,6 +99,8 @@ test("description and ESTA SEMANA precede the counter, with 20px above and 15px 
   assert.equal(mirrorProps.sectionTopPadding, 0);
   assert.equal(mirrorProps.separateStreakHistory, true);
   assert.equal(mirrorProps.streakHistoryTopPadding, 17);
+  assert.equal(mirrorProps.streakMarginBottom, 11);
+  assert.equal(mirrorProps.sectionMarginBottom, 0);
   assert.equal(mirrorProps.showPersonalStats, false);
   assert.equal(mirrorProps.showCalendar, false);
   assert.doesNotMatch(source, /heroHeight|heroCopyOffset|heroOverlay|sectionsOffset/);

@@ -269,7 +269,7 @@ export default function ProgresoScreen() {
                   sectionTopPadding={0}
                   sectionBottomPadding={15}
                   sectionMarginBottom={0}
-                  streakMarginBottom={21}
+                  streakMarginBottom={11}
                 />
             </View>
             <View style={styles.journeyGap} pointerEvents="none" />
