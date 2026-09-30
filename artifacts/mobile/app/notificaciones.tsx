@@ -465,7 +465,7 @@ const styles = StyleSheet.create({
   },
   swipeBackdrop: {
     ...StyleSheet.absoluteFillObject,
-    backgroundColor: "rgba(0,0,0,0.28)",
+    backgroundColor: "rgba(0,0,0,0.26)",
   },
   row: {
     flexDirection: "row",
@@ -473,7 +473,7 @@ const styles = StyleSheet.create({
     gap: 12,
     borderRadius: 16,
     borderWidth: 0,
-    backgroundColor: "rgba(0,0,0,0.28)",
+    backgroundColor: "rgba(0,0,0,0.26)",
     paddingHorizontal: 14,
     paddingVertical: 14,
   },

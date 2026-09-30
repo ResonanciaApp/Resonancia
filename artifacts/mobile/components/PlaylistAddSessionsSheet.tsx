@@ -19,6 +19,7 @@ import {
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 
 import { useCatalog } from "@/context/CatalogContext";
+import { FavoriteTabIcon } from "@/components/FavoriteTabIcon";
 import { useFoldersPlaylists } from "@/context/FoldersPlaylistsContext";
 import { usePlayer } from "@/context/PlayerContext";
 import { useSceneTheme } from "@/context/SceneThemeContext";
@@ -40,10 +41,12 @@ const TEXT = "#F9F9F9";
 const MUTED = "#C2C2C2";
 
 function FavoriteTab({
+  id,
   selected,
   label,
   onPress,
 }: {
+  id: FavoriteCollectionTabId;
   selected: boolean;
   label: string;
   onPress: () => void;
@@ -57,6 +60,7 @@ function FavoriteTab({
         { opacity: pressed ? 0.75 : 1 },
       ]}
     >
+      <FavoriteTabIcon id={id} color={selected ? "#060A0F" : "#F4F4F4"} />
       <Text style={[styles.tabText, selected && styles.tabTextSelected]} numberOfLines={1}>
         {label}
       </Text>
@@ -240,6 +244,7 @@ export function PlaylistAddSessionsSheet({
             {tabs.map((tab) => (
               <FavoriteTab
                 key={tab.id}
+                id={tab.id}
                 selected={activeTab === tab.id}
                 label={tab.label}
                 onPress={() => setActiveTab(tab.id)}
@@ -344,6 +349,8 @@ const styles = StyleSheet.create({
     paddingHorizontal: H_PAD,
   },
   tab: {
+    flexDirection: "row",
+    gap: 7,
     height: 46,
     paddingHorizontal: 16,
     borderRadius: 23,

@@ -18,6 +18,7 @@ import { LinearGradient } from "expo-linear-gradient";
 import { Image } from "expo-image";
 
 import { SessionCarousel } from "@/components/SessionCarousel";
+import { FavoriteTabIcon } from "@/components/FavoriteTabIcon";
 import { EditorialPlaylistCarousel } from "@/components/EditorialPlaylistCarousel";
 import { VideoCard } from "@/components/VideoCard";
 import { VideoActionsSheet } from "@/components/VideoActionsSheet";
@@ -46,9 +47,10 @@ const H_PAD = 14;
 const { width: W, height: H } = Dimensions.get("window");
 const CAROUSEL_CARD_W = Math.round((W - H_PAD - 14) / 1.9);
 function FavPill({
-  sel, label, indigo2BackgroundColor, onPress,
+  sel, id, label, indigo2BackgroundColor, onPress,
 }: {
   sel: boolean;
+  id: FavoriteCollectionTabId;
   label: string;
   indigo2BackgroundColor?: Animated.AnimatedInterpolation<string | number>;
   onPress: () => void;
@@ -72,6 +74,7 @@ function FavPill({
             { opacity: pressed ? 0.7 : 1 },
           ]}
         >
+          <FavoriteTabIcon id={id} color={selectedTextColor} />
           <Text style={[styles.pillText, { color: selectedTextColor }]} numberOfLines={1}>
             {label}
           </Text>
@@ -486,6 +489,7 @@ export default function FavoritosTodosScreen() {
                 <FavPill
                   key={tab.id}
                   sel={activeTab === tab.id}
+                  id={tab.id}
                   label={tab.label}
                    indigo2BackgroundColor={indigo2TabsBackgroundColor}
                   onPress={() => setActiveTab(tab.id)}
@@ -782,8 +786,10 @@ const styles = StyleSheet.create({
     flexDirection: "row",
   },
   pill: {
+    flexDirection: "row",
     alignItems: "center",
     justifyContent: "center",
+    gap: 7,
     height: 46,
     paddingHorizontal: 16,
     borderRadius: 23,
