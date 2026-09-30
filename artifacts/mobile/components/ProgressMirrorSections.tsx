@@ -33,8 +33,6 @@ export function ProgressMirrorSections({
   streakTitle,
   onStreakTitlePress,
   showStreakWeek = true,
-  weekOutsideStreak = false,
-  longestStreakInPersonalStats = false,
   showStreakViewAll = false,
   streakContentTranslateY = 0,
   sectionHorizontalPadding,
@@ -59,8 +57,6 @@ export function ProgressMirrorSections({
   streakTitle?: string;
   onStreakTitlePress?: () => void;
   showStreakWeek?: boolean;
-  weekOutsideStreak?: boolean;
-  longestStreakInPersonalStats?: boolean;
   showStreakViewAll?: boolean;
   streakContentTranslateY?: number;
   sectionHorizontalPadding?: number;
@@ -177,27 +173,6 @@ export function ProgressMirrorSections({
     </View>
   );
 
-  const longestStreakStat = (
-    <Stat
-      icon={
-        <MaskedView maskElement={<MaterialCommunityIcons name="spa" size={18} color="#FFFFFF" />}>
-          <LinearGradient
-            colors={PREMIUM_STAR_GRADIENT}
-            start={{ x: 0, y: 0 }}
-            end={{ x: 0, y: 1 }}
-          >
-            <MaterialCommunityIcons name="spa" size={18} color="transparent" />
-          </LinearGradient>
-        </MaskedView>
-      }
-      value={maxStreak}
-      label="RACHA MÁS LARGA"
-      accent={accent}
-      onPress={onStreakTitlePress}
-      edgeAligned={canonicalVerticalInsets}
-    />
-  );
-
   const personalStatsContent = showPersonalStats ? (
     <View
       style={[
@@ -275,22 +250,6 @@ export function ProgressMirrorSections({
           </ContentEntrance>
         </View>
       </View>
-      {longestStreakInPersonalStats && (
-        <>
-          <View style={styles.sectionDivider} />
-          <View style={[styles.statsValues, styles.statsValuesNoTitle]}>
-            <View style={styles.statEntranceSlot}>
-              <ContentEntrance
-                animated={animateEntrance}
-                replayKey={`${entranceReplayKey}:personal-longest`}
-                delay={entranceBaseDelay + 1460}
-              >
-                {longestStreakStat}
-              </ContentEntrance>
-            </View>
-          </View>
-        </>
-      )}
     </View>
   ) : null;
 
@@ -381,7 +340,7 @@ export function ProgressMirrorSections({
               </View>
             </ContentEntrance>
           ) : null}
-           {showStreakWeek && !weekOutsideStreak ? (
+           {showStreakWeek ? (
             <>
               {streakWeekRow}
               <ContentEntrance
@@ -411,28 +370,41 @@ export function ProgressMirrorSections({
               />
               </ContentEntrance>
             </View>
-            {!longestStreakInPersonalStats && (
-              <>
-                <ContentEntrance
-                  animated={animateEntrance}
-                  replayKey={`${entranceReplayKey}:streak-divider-stat`}
-                  delay={synchronizedStreakDelay ??
-                    entranceBaseDelay + (showPersonalStats ? 1610 : showStreakWeek ? 2070 : 800)}
-                >
-                  <View style={styles.statDivider} />
-                </ContentEntrance>
-                <View style={styles.statEntranceSlot}>
-                  <ContentEntrance
-                    animated={animateEntrance}
-                    replayKey={`${entranceReplayKey}:streak-longest`}
-                    delay={synchronizedStreakDelay ??
-                      entranceBaseDelay + (showPersonalStats ? 1610 : showStreakWeek ? 2070 : 800)}
-                  >
-                    {longestStreakStat}
-                  </ContentEntrance>
-                </View>
-              </>
-            )}
+            <ContentEntrance
+              animated={animateEntrance}
+              replayKey={`${entranceReplayKey}:streak-divider-stat`}
+              delay={synchronizedStreakDelay ??
+                entranceBaseDelay + (showPersonalStats ? 1610 : showStreakWeek ? 2070 : 800)}
+            >
+              <View style={styles.statDivider} />
+            </ContentEntrance>
+            <View style={styles.statEntranceSlot}>
+              <ContentEntrance
+                animated={animateEntrance}
+                replayKey={`${entranceReplayKey}:streak-longest`}
+                delay={synchronizedStreakDelay ??
+                  entranceBaseDelay + (showPersonalStats ? 1610 : showStreakWeek ? 2070 : 800)}
+              >
+              <Stat
+                icon={
+                  <MaskedView maskElement={<MaterialCommunityIcons name="spa" size={18} color="#FFFFFF" />}>
+                    <LinearGradient
+                      colors={PREMIUM_STAR_GRADIENT}
+                      start={{ x: 0, y: 0 }}
+                      end={{ x: 0, y: 1 }}
+                    >
+                      <MaterialCommunityIcons name="spa" size={18} color="transparent" />
+                    </LinearGradient>
+                  </MaskedView>
+                }
+                value={maxStreak}
+                label="RACHA MÁS LARGA"
+                accent={accent}
+                onPress={onStreakTitlePress}
+                edgeAligned={canonicalVerticalInsets}
+              />
+              </ContentEntrance>
+            </View>
           </View>
           </View>
         </View>
@@ -454,26 +426,10 @@ export function ProgressMirrorSections({
         </SectionEntrance>
       ) : (
         <>
-          {showStreakWeek && weekOutsideStreak && (
-            <SectionEntrance
-              animated={animateEntrance}
-              replayKey={`${entranceReplayKey}:standalone-week`}
-              delay={entranceBaseDelay}
-            >
-              <View style={[
-                styles.weekOutsideCard,
-                sectionHorizontalPadding !== undefined && {
-                  paddingHorizontal: sectionHorizontalPadding,
-                },
-              ]}>
-                {streakWeekRow}
-              </View>
-            </SectionEntrance>
-          )}
           <SectionEntrance
             animated={animateEntrance}
             replayKey={`${entranceReplayKey}:streak`}
-            delay={entranceBaseDelay + (weekOutsideStreak ? STREAK_WEEK_START_OFFSET_MS : 0)}
+            delay={entranceBaseDelay}
           >
             {streakContent}
           </SectionEntrance>
@@ -608,10 +564,6 @@ function Stat({
 }
 
 const styles = StyleSheet.create({
-  weekOutsideCard: {
-    paddingTop: 16,
-    marginBottom: 22,
-  },
   mergedSection: {
     borderRadius: 19,
     borderWidth: 1,

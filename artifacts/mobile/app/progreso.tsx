@@ -299,17 +299,13 @@ export default function ProgresoScreen() {
               entranceBaseDelay={STREAK_SECTION_ENTRANCE_DELAY}
               syncStreakStatsWithWeek
               showSectionBorders={false}
-              showPersonalStats
+              showPersonalStats={false}
               showCalendar={false}
-              weekOutsideStreak
-              longestStreakInPersonalStats
-              personalStatsFilterBelowTitle
               sectionBackgroundColor="rgba(0,0,0,0.2)"
               sectionHorizontalPadding={20}
               sectionTopPadding={16}
               sectionBottomPadding={19}
               sectionMarginBottom={0}
-              streakMarginBottom={12}
               canonicalVerticalInsets
             />
           </View>
