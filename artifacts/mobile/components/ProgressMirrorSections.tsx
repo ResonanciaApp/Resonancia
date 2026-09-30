@@ -38,6 +38,8 @@ export function ProgressMirrorSections({
   personalStatsEntranceOffsetMs,
   syncStreakStatsWithWeek = false,
   streakTitle,
+  longestStreakLabel = "RACHA MÁS LARGA",
+  longestStreakIconColor,
   onStreakTitlePress,
   showStreakWeek = true,
   showStreakViewAll = false,
@@ -64,6 +66,8 @@ export function ProgressMirrorSections({
   personalStatsEntranceOffsetMs?: number;
   syncStreakStatsWithWeek?: boolean;
   streakTitle?: string;
+  longestStreakLabel?: string;
+  longestStreakIconColor?: string;
   onStreakTitlePress?: () => void;
   showStreakWeek?: boolean;
   showStreakViewAll?: boolean;
@@ -401,18 +405,27 @@ export function ProgressMirrorSections({
               >
               <Stat
                 icon={
-                  <MaskedView maskElement={<MaterialCommunityIcons name="spa" size={18} color="#FFFFFF" />}>
-                    <LinearGradient
-                      colors={PREMIUM_STAR_GRADIENT}
-                      start={{ x: 0, y: 0 }}
-                      end={{ x: 0, y: 1 }}
-                    >
-                      <MaterialCommunityIcons name="spa" size={18} color="transparent" />
-                    </LinearGradient>
-                  </MaskedView>
+                  longestStreakIconColor ? (
+                    <MaterialCommunityIcons
+                      name="spa"
+                      size={18}
+                      color={longestStreakIconColor}
+                      style={[styles.goldenLotusIcon, { textShadowColor: `${longestStreakIconColor}CC` }]}
+                    />
+                  ) : (
+                    <MaskedView maskElement={<MaterialCommunityIcons name="spa" size={18} color="#FFFFFF" />}>
+                      <LinearGradient
+                        colors={PREMIUM_STAR_GRADIENT}
+                        start={{ x: 0, y: 0 }}
+                        end={{ x: 0, y: 1 }}
+                      >
+                        <MaterialCommunityIcons name="spa" size={18} color="transparent" />
+                      </LinearGradient>
+                    </MaskedView>
+                  )
                 }
                 value={maxStreak}
-                label="RACHA MÁS LARGA"
+                label={longestStreakLabel}
                 accent={accent}
                 onPress={onStreakTitlePress}
                 edgeAligned={canonicalVerticalInsets}
@@ -732,6 +745,10 @@ const styles = StyleSheet.create({
     alignItems: "center",
     justifyContent: "center",
     flexShrink: 0,
+  },
+  goldenLotusIcon: {
+    textShadowOffset: { width: 0, height: 0 },
+    textShadowRadius: 8,
   },
   statCopy: { flex: 1, minWidth: 0 },
   statCopyEdgeAligned: { alignSelf: "flex-end" },

@@ -86,7 +86,7 @@ import { MoonCrescentIcon } from "@/components/MoonCrescentIcon";
 import { SleepReminderSheet } from "@/components/SleepReminderSheet";
 import { FilledSunIcon } from "@/components/FilledSunIcon";
 import { useMixerPanel } from "@/context/MixerPanelContext";
-import { CARD_TEXT_ABOVE, CARD_TEXT_BELOW, MEMBERSHIP_AURORA, POSITIONED_DAY_GRADIENT } from "@/constants/colors";
+import { CARD_TEXT_ABOVE, CARD_TEXT_BELOW, MEMBERSHIP_AURORA } from "@/constants/colors";
 
 const SHOW_PROFILE_HISTORY = true;
 const SHOW_PROFILE_PRACTICE_CARDS = false;
@@ -1316,8 +1316,8 @@ export function ProfileScreenBase({
 
               {dedicated && (
                 <Text style={styles.profileLevelText}>
-                  <Text style={{ color: POSITIONED_DAY_GRADIENT[0] }}>Nivel 0: </Text>
-                  <Text style={{ color: colors.foreground }}>Intención</Text>
+                  <Text style={{ color: "#F9F9F9" }}>Nivel 0: </Text>
+                  <Text style={{ color: "#F0F0F0" }}>Intención</Text>
                 </Text>
               )}
 
@@ -1348,6 +1348,9 @@ export function ProfileScreenBase({
                 showSectionBorders={false}
                 showPersonalStats
                 showCalendar
+                streakTitle="Tu progreso semanal"
+                longestStreakLabel="RACHA ACUMULADA"
+                longestStreakIconColor={MEMBERSHIP_AURORA.premium.accent}
                 personalStatsFilterBelowTitle
                 sectionBackgroundColor="rgba(0,0,0,0.22)"
                 sectionHorizontalPadding={20}
@@ -2471,7 +2474,7 @@ const styles = StyleSheet.create({
     borderRadius: 55.5,
   },
   userName: { fontFamily: "Manrope", fontSize: 20, fontWeight: "700", textAlign: "center" },
-  profileLevelText: { fontFamily: "Manrope", fontSize: 12, fontWeight: "700", textAlign: "center", marginTop: 2 },
+  profileLevelText: { fontFamily: "Manrope", fontSize: 12, fontWeight: "400", textAlign: "center", marginTop: 2 },
   locationRow: { flexDirection: "row", alignItems: "center", justifyContent: "center", gap: 4 },
   locationText: { fontFamily: "Manrope", fontSize: 12 },
   bioText: { fontFamily: "Manrope", fontSize: 13, lineHeight: 19, textAlign: "center", paddingHorizontal: 8, fontStyle: "italic" },
