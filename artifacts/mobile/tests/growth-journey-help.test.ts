@@ -114,7 +114,7 @@ function uiHarness() {
   };
 }
 
-test("Tu camino keeps its controls and raises the entire timeline another 60px", () => {
+test("Tu camino keeps its controls and raises the entire timeline another 44px", () => {
   const h = uiHarness();
   const { GrowthJourneySheet } = load("../components/GrowthJourneySheet.tsx", h.imports);
   let closes = 0;
@@ -128,9 +128,9 @@ test("Tu camino keeps its controls and raises the entire timeline another 60px",
   assert.match(html, /data-color="#F9F9F9">\?/);
   assert.equal(h.presses.get("growth-journey-help").style.backgroundColor, "rgba(0,0,0,0.28)");
   assert.doesNotMatch(html, /trending-up|Cada día de racha|descriptionDivider/);
-  assert.match(html, /data-padding-top="110"/); // 60px above the previous 170px inset
+  assert.match(html, /data-padding-top="66"/); // 44px above the previous 110px inset
   h.help.onDescriptionLayout(46);
-  assert.match(render(), /data-padding-top="87"/); // 60px above the previous 147px inset
+  assert.match(render(), /data-padding-top="43"/); // 44px above the previous 87px inset
   h.presses.get("growth-journey-help").onPress();
   render();
   assert.equal(h.help.visible, true);

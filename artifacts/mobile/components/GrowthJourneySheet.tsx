@@ -24,7 +24,7 @@ import { useGrowthJourneySheetMotion } from "@/hooks/useGrowthJourneySheetMotion
 // Former intro: icon (45 + 56), paragraph top (20), divider (30 + 1 + 29).
 // Retain its measured height minus the requested rise, keeping the timeline in flow.
 const FORMER_INTRO_FIXED_HEIGHT = 181;
-const FIRST_STAGE_RISE = 140;
+const FIRST_STAGE_RISE = 184;
 
 export function GrowthJourneySheet({
   visible,

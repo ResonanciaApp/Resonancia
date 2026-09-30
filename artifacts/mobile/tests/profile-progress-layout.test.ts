@@ -23,7 +23,18 @@ const NativeView = ({ children, testID, style }: NativeProps) => {
   }, children);
 };
 const Passthrough = ({ children }: NativeProps) => React.createElement(React.Fragment, null, children);
-const Icon = () => React.createElement("i");
+const Icon = ({ name, color, style, size }: { name?: string; color?: string; style?: unknown; size?: number }) => {
+  const resolved = flattenStyle(style);
+  const offset = resolved.textShadowOffset as { width: number; height: number } | undefined;
+  return React.createElement("i", {
+    "data-icon": name,
+    "data-color": color,
+    "data-size": size,
+    "data-glow-color": resolved.textShadowColor,
+    "data-glow-radius": resolved.textShadowRadius,
+    "data-glow-offset": offset ? `${offset.width},${offset.height}` : undefined,
+  });
+};
 const source = readFileSync(new URL("../components/ProgressMirrorSections.tsx", import.meta.url), "utf8");
 const compiled = ts.transpileModule(source, {
   compilerOptions: { module: ts.ModuleKind.CommonJS, jsx: ts.JsxEmit.React, esModuleInterop: true },
@@ -88,6 +99,21 @@ test("Perfil separates week-only progress from the titled streak history", () =>
   assert.match(html.slice(actualIndex, completedIndex), /<div>2<\/div>/);
   assert.ok(html.indexOf("Mis estadísticas") > historyIndex);
   assert.ok(html.indexOf('data-testid="calendar"') > html.indexOf("Mis estadísticas"));
+});
+
+test("longest streak has a violet lotus with the same glow as the accumulated streak gold lotus", () => {
+  const html = render({
+    separateStreakHistory: true,
+    showPersonalStats: false,
+    showCalendar: false,
+    longestStreakLabel: "RACHA ACUMULADA",
+    longestStreakIconColor: "#E7B95C",
+  });
+  const longestLabel = html.indexOf("RACHA MÁS LARGA");
+  const gold = html.slice(longestLabel);
+  assert.match(html.slice(0, longestLabel), /data-icon="spa" data-color="#C9A6FF" data-size="18" data-glow-color="#C9A6FFCC" data-glow-radius="8" data-glow-offset="0,0"/);
+  assert.match(gold, /data-icon="spa" data-color="#E7B95C" data-size="18" data-glow-color="#E7B95CCC" data-glow-radius="8" data-glow-offset="0,0"/);
+  assert.match(gold, /RACHA ACUMULADA/);
 });
 
 test("compact callers keep their existing stats unless they opt into the full history", () => {
