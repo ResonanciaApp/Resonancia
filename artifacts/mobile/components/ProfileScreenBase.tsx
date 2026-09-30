@@ -1316,10 +1316,26 @@ export function ProfileScreenBase({
 
               {dedicated && (
                 <>
-                  <View style={styles.profileIntentionPill}>
-                    <Text style={[styles.profileIntentionDays, { color: colors.foreground }]}>0 días</Text>
+                  <View style={styles.profileIntentionRow}>
+                    <View style={styles.profileIntentionPill}>
+                      <MaskedView maskElement={<MaterialCommunityIcons name="spa" size={13} color="#FFFFFF" />}>
+                        <MaterialCommunityIcons
+                          name="spa"
+                          size={13}
+                          color={MEMBERSHIP_AURORA.premium.accent}
+                          style={[
+                            styles.profileIntentionLotus,
+                            { textShadowColor: `${MEMBERSHIP_AURORA.premium.accent}CC` },
+                          ]}
+                        />
+                      </MaskedView>
+                      <Text style={[styles.profileIntentionDays, { color: colors.foreground }]}>0 días</Text>
+                    </View>
+                    <Text style={[styles.profileLevelText, { color: "#F0F0F0" }]}>Intención</Text>
                   </View>
-                  <Text style={[styles.profileLevelText, { color: "#F0F0F0" }]}>Intención</Text>
+                  <Text style={[styles.profileIntentionDescription, { color: colors.mutedForeground }]}>
+                    Todo gran cambio comienza con una intención
+                  </Text>
                 </>
               )}
 
@@ -2476,15 +2492,21 @@ const styles = StyleSheet.create({
     borderRadius: 55.5,
   },
   userName: { fontFamily: "Manrope", fontSize: 20, fontWeight: "700", textAlign: "center" },
+  profileIntentionRow: { flexDirection: "row", alignItems: "center", justifyContent: "center", gap: 8 },
   profileIntentionPill: {
     alignSelf: "center",
+    flexDirection: "row",
+    alignItems: "center",
+    gap: 4,
     backgroundColor: "rgba(151,128,231,0.20)",
     borderRadius: 12,
     paddingHorizontal: 9,
     paddingVertical: 4,
   },
+  profileIntentionLotus: { textShadowOffset: { width: 0, height: 0 }, textShadowRadius: 8 },
   profileIntentionDays: { fontFamily: "Manrope", fontSize: 10, fontWeight: "600" },
-  profileLevelText: { fontFamily: "Manrope", fontSize: 12, fontWeight: "400", textAlign: "center", marginTop: 2 },
+  profileLevelText: { fontFamily: "Manrope", fontSize: 15, fontWeight: "700", lineHeight: 20, textAlign: "center" },
+  profileIntentionDescription: { fontFamily: "Manrope", fontSize: 11, lineHeight: 16, textAlign: "center" },
   locationRow: { flexDirection: "row", alignItems: "center", justifyContent: "center", gap: 4 },
   locationText: { fontFamily: "Manrope", fontSize: 12 },
   bioText: { fontFamily: "Manrope", fontSize: 13, lineHeight: 19, textAlign: "center", paddingHorizontal: 8, fontStyle: "italic" },
