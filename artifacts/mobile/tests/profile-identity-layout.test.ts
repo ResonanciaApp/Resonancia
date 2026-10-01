@@ -107,7 +107,7 @@ test("avatar, name-and-pill block and chevron share a vertically centered row, r
   assert.match(source, /avatarWrapper: \{[^}]*marginTop: 3, marginBottom: 3/);
   assert.match(html, /data-testid="profile-identity-row" data-direction="row" data-align="center"/);
   const membership = readFileSync(new URL("../components/ProfileMembershipBanner.tsx", import.meta.url), "utf8");
-  assert.match(membership, /chevron: \{ width: 32,/);
+  assert.match(membership, /chevron: \{\s*width: 32,/);
   assert.match(membership, /row: \{[\s\S]*?paddingHorizontal: 20/);
   assert.match(source, /profileIdentityRow: \{[\s\S]*?paddingHorizontal: 20/);
   assert.match(source, /<Feather name="chevron-right" size=\{24\}/);

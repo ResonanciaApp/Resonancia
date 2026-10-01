@@ -46,8 +46,8 @@ const styles = StyleSheet.create({
     height: 1,
     width: "100%",
     backgroundColor: "rgba(181,211,255,0.05)",
-    marginTop: 20,
-    marginBottom: 4,
+    marginTop: 15,
+    marginBottom: 9,
   },
   row: {
     flexDirection: "row",
@@ -75,5 +75,11 @@ const styles = StyleSheet.create({
   },
   title: { fontFamily: "Manrope", fontSize: 14, fontWeight: "700", letterSpacing: -0.5 },
   subtitle: { fontFamily: "Manrope", fontSize: 12, lineHeight: 16, marginTop: 2 },
-  chevron: { width: 32, height: 44, alignItems: "center", justifyContent: "center" },
+  chevron: {
+    width: 32,
+    height: 44,
+    alignItems: "center",
+    justifyContent: "center",
+    transform: [{ translateY: 3.5 }],
+  },
 });

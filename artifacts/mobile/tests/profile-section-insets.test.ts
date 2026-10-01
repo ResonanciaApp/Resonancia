@@ -49,7 +49,7 @@ test("user section preserves 20px above the centered avatar outline, with no ext
   assert.equal(row.minHeight ?? 0, 0);
   assert.equal(row.alignItems, "flex-end");
   assert.equal(style("ProfileMembershipBanner", "copy").transform, undefined);
-  assert.equal(style("ProfileMembershipBanner", "chevron").transform, undefined);
+  assert.deepEqual(style("ProfileMembershipBanner", "chevron").transform, [{ translateY: 3.5 }]);
   assert.match(source, /<ProfileMembershipBanner isPremium=\{isPremium\}/);
 });
 

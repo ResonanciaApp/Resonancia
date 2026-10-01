@@ -7,25 +7,44 @@ import { renderToStaticMarkup } from "react-dom/server";
 import ts from "typescript";
 
 const source = readFileSync(new URL("../components/ProfileMembershipBanner.tsx", import.meta.url), "utf8");
-test("only the Premium star is raised 3px without changing banner layout", () => {
+test("Premium divider moves up 5px while preserving the banner's position", () => {
+  const divider = source.match(/divider:\s*\{([\s\S]*?)\n  \},/)?.[1] ?? "";
+  const top = Number(divider.match(/marginTop: (\d+)/)?.[1]);
+  const bottom = Number(divider.match(/marginBottom: (\d+)/)?.[1]);
+  const height = Number(divider.match(/height: (\d+)/)?.[1]);
+  assert.equal(top, 20 - 5);
+  assert.equal(bottom, 4 + 5);
+  assert.equal(top + height + bottom, 20 + 1 + 4);
+});
+test("the Premium star remains raised 3px without changing banner layout", () => {
   const icon = source.match(/icon:\s*\{([\s\S]*?)\n  \},/)?.[1] ?? "";
   assert.match(icon, /transform: \[\{ translateY: -3 \}\]/);
-  assert.equal((source.match(/translateY/g) ?? []).length, 1);
+  assert.equal((source.match(/translateY/g) ?? []).length, 2);
 });
 let press: (() => void) | undefined;
 let offers = 0;
 let route = "";
 const Native = (props: any) => {
   if (props.onPress) press = props.onPress;
+  const style = Object.assign({}, ...(
+    Array.isArray(props.style) ? props.style :
+      [typeof props.style === "function" ? props.style({ pressed: false }) : props.style]
+  ));
   return React.createElement("div", {
     "data-testid": props.testID,
     "data-icon": props.name,
     "aria-label": props.accessibilityLabel,
+    "data-height": style.height,
+    "data-translate-y": style.transform?.find((item: any) => "translateY" in item)?.translateY,
   }, props.children);
 };
+let bannerStyles: Record<string, any>;
 const mocks: Record<string, unknown> = {
   react: React,
-  "react-native": { Pressable: Native, View: Native, Text: Native, StyleSheet: { create: (styles: unknown) => styles } },
+  "react-native": { Pressable: Native, View: Native, Text: Native, StyleSheet: { create: (styles: Record<string, any>) => {
+    bannerStyles = styles;
+    return styles;
+  } } },
   "@expo/vector-icons": { Feather: Native, MaterialCommunityIcons: Native },
   "@/constants/colors": { CARD_TEXT_BELOW: "#AAA", MEMBERSHIP_AURORA: { premium: { accent: "#E7B95C", glow: "#E7B95C" } } },
   "@/lib/premiumGate": { openPremiumPlans: () => { offers++; } },
@@ -42,6 +61,21 @@ new Function("require", "module", "exports", compiled)((name: string) => {
 const { ProfileMembershipBanner } = module.exports as {
   ProfileMembershipBanner: React.ComponentType<{ isPremium: boolean; foregroundColor: string }>;
 };
+
+test("Tu Premium and Prueba Premium chevrons share the star's vertical center without moving the copy", () => {
+  for (const isPremium of [true, false]) {
+    const html = renderToStaticMarkup(React.createElement(ProfileMembershipBanner, { isPremium, foregroundColor: "#FFF" }));
+    assert.match(html, /data-height="31" data-translate-y="-3"/);
+    assert.match(html, /data-height="44" data-translate-y="3.5"/);
+    assert.equal(bannerStyles.row.alignItems, "flex-end");
+    const centerFromBottom = (style: Record<string, any>) =>
+      -style.height / 2 + style.transform.reduce((sum: number, item: any) => sum + (item.translateY ?? 0), 0);
+    assert.equal(centerFromBottom(bannerStyles.icon), centerFromBottom(bannerStyles.chevron));
+    assert.equal(bannerStyles.chevron.height, 44);
+    assert.equal(bannerStyles.copy.transform, undefined);
+    assert.equal(bannerStyles.row.transform, undefined);
+  }
+});
 
 test("free users see Prueba Premium and open the existing plans offer directly", () => {
   offers = 0;
