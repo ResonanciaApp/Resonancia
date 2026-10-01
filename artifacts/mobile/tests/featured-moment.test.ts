@@ -1,8 +1,20 @@
 import assert from "node:assert/strict";
 import test from "node:test";
+import { readFileSync } from "node:fs";
+import { URL } from "node:url";
 
 import { resolveFeaturedMoment } from "../data/featured-moment.ts";
 import type { Session } from "../data/sessions.ts";
+
+test("Para este momento uses the shared sleep-session duration clock on Inicio and Descubrir", () => {
+  for (const screen of ["inicio8", "explore"]) {
+    const source = readFileSync(new URL(`../app/(tabs)/${screen}.tsx`, import.meta.url), "utf8");
+    const badge = source.match(/<SessionDurationBadge\s+label=\{featuredMoment\.durationLabel\}[^>]*\/>/)?.[0];
+    assert.ok(badge, `Missing featured duration badge on ${screen}`);
+    assert.match(badge, /\bshowClock\b/);
+    assert.match(badge, /\bwhiteGlass\b/);
+  }
+});
 
 function session(
   id: string,

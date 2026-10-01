@@ -410,7 +410,7 @@ export const SessionCarousel = React.memo(function SessionCarousel({
   showCategoryPillTopLeft = false,
   showCategoryAboveCardTitle = false,
   whiteMetadataGlass = false,
-  showDurationClock = false,
+  showDurationClock = true,
   soundPreview,
 }: SessionCarouselProps) {
   const colors = useColors();
@@ -838,6 +838,7 @@ export const SessionCarousel = React.memo(function SessionCarousel({
                     {!isEditorialPresentation && durationInsideWithMeta && effectiveShowDurationBadge && (
                       <SessionDurationBadge
                         label={s.durationLabel}
+                        showClock={showDurationClock}
                         style={[
                           styles.durBadge,
                           !effectiveShowAuthor && styles.durBadgeLower,
@@ -849,6 +850,7 @@ export const SessionCarousel = React.memo(function SessionCarousel({
                     {!isEditorialPresentation && categoryGridPresentation && effectiveShowDurationBadge && (
                       <SessionDurationBadge
                         label={s.durationLabel}
+                        showClock={showDurationClock}
                         style={[styles.durBadge, styles.categoryDurationBadge, durationBadgeStyle]}
                         textStyle={styles.durText}
                       />
@@ -923,6 +925,7 @@ export const SessionCarousel = React.memo(function SessionCarousel({
                     ) : !showAmbientalTitleOnly && effectiveShowDurationBadge && effectiveOverlayDurationTopLeft ? (
                       <SessionDurationBadge
                         label={s.durationLabel}
+                        showClock={showDurationClock}
                         style={[
                           styles.durBadge,
                           styles.sleepOverlayDurationTopLeft,
@@ -975,6 +978,7 @@ export const SessionCarousel = React.memo(function SessionCarousel({
                        {!showAmbientalTitleOnly && effectiveShowDurationBadge && !effectiveOverlayDurationTopLeft ? (
                         <SessionDurationBadge
                           label={s.durationLabel}
+                          showClock={showDurationClock}
                           style={[
                             styles.durBadge,
                             styles.sleepOverlayDurationInline,

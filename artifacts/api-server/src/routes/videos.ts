@@ -5,6 +5,7 @@ import { db, catalogVideosTable, type CatalogVideo } from "@workspace/db";
 import { requireAuth } from "../middlewares/requireAuth";
 import { requireRole } from "../middlewares/requireRole";
 import { optionalVideoThemeSchema } from "../lib/videoTheme";
+import { resolveVideoDuration } from "../lib/videoDuration";
 
 const router: IRouter = Router();
 
@@ -133,7 +134,7 @@ router.get("/videos", async (req, res) => {
 
         return serializeVideo({
           ...video,
-          durationLabel: detectedDuration ?? "",
+          durationLabel: resolveVideoDuration(detectedDuration, video.durationLabel),
         });
       }),
     );
@@ -173,7 +174,7 @@ router.get("/videos/:id", async (req, res) => {
     }
     res.json(serializeVideo({
       ...video,
-      durationLabel: detectedDuration ?? "",
+      durationLabel: resolveVideoDuration(detectedDuration, video.durationLabel),
     }));
   } catch (err) {
     req.log.error({ err }, "error getting video");

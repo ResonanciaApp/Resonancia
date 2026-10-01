@@ -217,7 +217,8 @@ export function VideoCard({
         {locked && <LockStar />}
         {whiteDurationGlass ? (
           <SessionDurationBadge
-            label={video.durationLabel}
+            label={video.durationLabel.trim() || "Duración pendiente"}
+            showClock
             whiteGlass
             style={styles.durBadgeGlass}
             textStyle={{ color: CARD_TEXT_ABOVE }}

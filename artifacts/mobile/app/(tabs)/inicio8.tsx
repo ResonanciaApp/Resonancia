@@ -3123,6 +3123,7 @@ export default function HomeScreen2({
                 />
                 <SessionDurationBadge
                   label={featuredMoment.durationLabel}
+                  showClock
                   whiteGlass
                   style={styles.featuredMomentDuration}
                 />

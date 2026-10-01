@@ -680,6 +680,7 @@ export function ExploreScreen({
                     />
                     <SessionDurationBadge
                       label={featuredMoment.durationLabel}
+                      showClock
                       whiteGlass
                       style={styles.featuredMomentDuration}
                     />
@@ -783,6 +784,7 @@ export function ExploreScreen({
                     <PremiumBadge session={session} size={22} top={16} left={16} />
                     <SessionDurationBadge
                       label={session.durationLabel}
+                      showClock
                       whiteGlass
                       style={styles.categoryDurationBadge}
                     />
@@ -813,6 +815,7 @@ export function ExploreScreen({
               <EditorialPlaylistCarousel
                 title={carousel.title}
                 playlists={carousel.playlists}
+                showDurationClock
                 showPremiumBadge
                 stackTypeAboveDuration
                 onPress={(playlist) =>
