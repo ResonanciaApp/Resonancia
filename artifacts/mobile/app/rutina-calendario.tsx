@@ -17,6 +17,7 @@ import { useSafeAreaInsets } from "react-native-safe-area-context";
 
 import { SacredBackground } from "@/components/SacredBackground";
 import { RoutineCompletionBanner } from "@/components/RoutineCompletionBanner";
+import { RoutineGradientFill } from "@/components/RoutineGradientFill";
 import {
   getRoutineActivityCategory,
   getRoutineDateKey,
@@ -145,7 +146,9 @@ function CalendarActivityRow({
       <Reanimated.View
         pointerEvents="none"
         style={[styles.completionOverlay, completionOverlayStyle]}
-      />
+      >
+        <RoutineGradientFill />
+      </Reanimated.View>
       <View style={styles.activityCopy}>
         {category ? (
           <Text style={[styles.category, { color: "#B5B5B5" }]}>
@@ -587,11 +590,11 @@ function RutinaCalendarioScreenContent() {
           styles.addActivity,
           {
             bottom: bottomPad + 38,
-            backgroundColor: "#276FC2",
             opacity: pressed ? 0.78 : 1,
           },
         ]}
       >
+        <RoutineGradientFill style={{ borderRadius: 18 }} />
         <Feather name="plus" size={19} color="#FFFFFF" />
         <Text style={styles.addActivityText}>Añadir actividad</Text>
       </Pressable>
@@ -713,7 +716,6 @@ const styles = StyleSheet.create({
   },
   completionOverlay: {
     ...StyleSheet.absoluteFillObject,
-    backgroundColor: "#276FC2",
   },
   activityCopy: {
     flex: 1,

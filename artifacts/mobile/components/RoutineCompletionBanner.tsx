@@ -3,6 +3,7 @@ import { Feather } from "@expo/vector-icons";
 import { Animated, Easing, Pressable, StyleSheet, Text, View } from "react-native";
 
 import { SessionBadgeGlass } from "@/components/SessionDurationBadge";
+import { RoutineGradientFill } from "@/components/RoutineGradientFill";
 import { useRoutineCompletionBanner } from "@/context/RoutineCompletionBannerContext";
 
 const ENTRY_DISTANCE = 86;
@@ -11,7 +12,6 @@ const COUNT_DURATION = 350;
 const HOLD_DURATION = 1800;
 const EXIT_DURATION = 320;
 const INTERRUPT_EXIT_DURATION = 160;
-const COUNTER_SURFACE = "#276FC2";
 
 type Props = {
   bottom: number;
@@ -286,6 +286,7 @@ export function RoutineCompletionBanner({
           <>
             <Animated.View style={[styles.wave, waveStyle]} />
             <View style={styles.counter}>
+              <RoutineGradientFill />
               <>
                 <Animated.Text style={[styles.counterNumber, oldNumberStyle]}>
                   {activeEvent.previousCount}
@@ -388,7 +389,6 @@ const styles = StyleSheet.create({
     width: 38,
     height: 38,
     borderRadius: 19,
-    backgroundColor: COUNTER_SURFACE,
     alignItems: "center",
     justifyContent: "center",
     overflow: "hidden",
