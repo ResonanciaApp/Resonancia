@@ -11,10 +11,10 @@ const compiled = ts.transpileModule(source, {
 const exports = {} as typeof import("../config/scene-themes");
 new Function("exports", compiled)(exports);
 
-test("Índigo 2 uses the seven reference colors vertically, with matching uniform stops", () => {
+test("Índigo 2 uses the seven requested colors vertically at the exact specified percentages", () => {
   const theme = exports.SCENE_THEMES.indigo2;
-  assert.deepEqual(theme.gradient, ["#212C6B", "#1E285E", "#1D2158", "#1F1D58", "#251D57", "#2B1C59", "#2D1C59"]);
-  assert.deepEqual(theme.gradientLocations, [0, 1 / 6, 2 / 6, 3 / 6, 4 / 6, 5 / 6, 1]);
+  assert.deepEqual(theme.gradient, ["#1C2B59", "#1C2458", "#1D2158", "#221D57", "#221C59", "#2B1C59", "#2E1D60"]);
+  assert.deepEqual(theme.gradientLocations, [0, 0.167, 0.333, 0.5, 0.667, 0.833, 1]);
   assert.equal(theme.gradientLocations?.length, theme.gradient.length);
   assert.equal(theme.solid, theme.gradient[0]);
   assert.deepEqual(theme.gradientStart, { x: 0.5, y: 0 });
