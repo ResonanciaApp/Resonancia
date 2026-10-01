@@ -36,6 +36,7 @@ import { useReflectionCategories } from "@/constants/reflectionCategories";
 import { useAuth } from "@/context/AuthContext";
 import { usePremium } from "@/context/PremiumContext";
 import { FREE_REFLECTIONS_LIMIT, showPremiumGate } from "@/lib/premiumGate";
+import { REGISTER_BUTTON_ENABLED_BACKGROUND } from "@/constants/colors";
 
 const DEFAULT_PLACEHOLDER = "¿Qué sientes compartir hoy?";
 const REGISTER_BUTTON_BACKGROUND = "rgba(184, 117, 240, 0.2)";
@@ -715,31 +716,15 @@ export function InnerSpaceCard({
           accessibilityRole="button"
           style={[
             styles.submitButton,
-            { backgroundColor: "#F9F9F9" },
+            { backgroundColor: isSubmitDisabled ? REGISTER_BUTTON_BACKGROUND : REGISTER_BUTTON_ENABLED_BACKGROUND },
             isSubmitDisabled && { opacity: 0.5 },
           ]}
           disabled={isSubmitDisabled}
           onPress={saveMessage}
         >
-          <MaskedView
-            pointerEvents="none"
-            style={{ opacity: 0.99 * REFLECTION_WALL_BORDER_BRIGHTNESS }}
-            maskElement={
-              <Text accessible={false} style={[styles.submitText, { color: "#FFFFFF" }]}>
-                {createMutation.isPending ? "Registrando..." : "REGISTRAR"}
-              </Text>
-            }
-          >
-            <LinearGradient
-              colors={REFLECTION_WALL_BORDER_GRADIENT}
-              start={REFLECTION_WALL_BORDER_START}
-              end={REFLECTION_WALL_BORDER_END}
-            >
-              <Text accessible={false} style={[styles.submitText, { opacity: 0 }]}>
-                {createMutation.isPending ? "Registrando..." : "REGISTRAR"}
-              </Text>
-            </LinearGradient>
-          </MaskedView>
+          <Text style={[styles.submitText, { color: isSubmitDisabled ? "#D4B8F4" : "#F9F9F9" }]}>
+            {createMutation.isPending ? "Registrando..." : "REGISTRAR"}
+          </Text>
         </Pressable>
       </View>
           </Animated.View>

@@ -155,7 +155,7 @@ test("the wall renders all seven reference stops horizontally, with 5% more brig
   assert.equal(resolve(wall.props.maskElement.props.style).borderRadius, 24);
 });
 
-test("Registrar uses a white surface and the wall-border gradient for its label in every button state", () => {
+test("Registrar preserves its original translucent violet surface and plain label in every button state", () => {
   const contents = source("../components/InnerSpaceCard.tsx");
   const ast = ts.createSourceFile("InnerSpaceCard.tsx", contents, ts.ScriptTarget.Latest, true, ts.ScriptKind.TSX);
   let button: ts.JsxElement | undefined;
@@ -180,29 +180,25 @@ test("Registrar uses a white surface and the wall-border gradient for its label 
   };
   const saveMessage = () => {};
   const scope = {
-    React, Pressable: "button", Text: "span", MaskedView: "mask", LinearGradient: "gradient",
-    styles, saveMessage, REFLECTION_WALL_BORDER_GRADIENT,
-    REFLECTION_WALL_BORDER_START, REFLECTION_WALL_BORDER_END, REFLECTION_WALL_BORDER_BRIGHTNESS,
+    React, Pressable: "button", Text: "span", styles, saveMessage,
+    REGISTER_BUTTON_BACKGROUND: "rgba(184, 117, 240, 0.2)",
+    REGISTER_BUTTON_ENABLED_BACKGROUND: "rgba(184, 117, 240, 0.45)",
   };
   const renderButton = new Function(...Object.keys(scope), "isSubmitDisabled", "createMutation", compiled);
   for (const [disabled, pending] of [[false, false], [true, false], [true, true]]) {
     const element = renderButton(...Object.values(scope), disabled, { isPending: pending }) as React.ReactElement<any>;
     const background = element.props.style.find((entry: any) => entry?.backgroundColor)?.backgroundColor;
-    assert.equal(background, "#F9F9F9");
+    assert.equal(background, disabled ? scope.REGISTER_BUTTON_BACKGROUND : scope.REGISTER_BUTTON_ENABLED_BACKGROUND);
     assert.equal(element.props.disabled, disabled);
     assert.equal(element.props.onPress, saveMessage);
     assert.equal(element.props.accessibilityLabel, "Registrar");
-    const mask = element.props.children as React.ReactElement<any>;
-    assert.equal(mask.props.pointerEvents, "none");
-    assert.equal(mask.props.maskElement.props.children, pending ? "Registrando..." : "REGISTRAR");
-    const gradient = mask.props.children as React.ReactElement<any>;
-    assert.deepEqual(gradient.props.colors, REFLECTION_WALL_BORDER_GRADIENT);
-    assert.deepEqual(gradient.props.start, REFLECTION_WALL_BORDER_START);
-    assert.deepEqual(gradient.props.end, REFLECTION_WALL_BORDER_END);
-    assert.equal(mask.props.style.opacity, 0.99 * REFLECTION_WALL_BORDER_BRIGHTNESS);
-    assert.equal(gradient.props.children.props.children, mask.props.maskElement.props.children);
+    const label = element.props.children as React.ReactElement<any>;
+    assert.equal(label.type, "span");
+    assert.equal(label.props.children, pending ? "Registrando..." : "REGISTRAR");
+    assert.equal(label.props.style.find((entry: any) => entry?.color)?.color, disabled ? "#D4B8F4" : "#F9F9F9");
+    assert.equal(element.props.style.find((entry: any) => entry?.opacity)?.opacity, disabled ? 0.5 : undefined);
   }
-  assert.doesNotMatch(contents, /REGISTER_BUTTON_ENABLED_BACKGROUND/);
+  assert.doesNotMatch(button.getText(ast), /MaskedView|LinearGradient/);
 });
 
 test("Perfil wall description matches Intención typography and centers the plus with both header lines", () => {
