@@ -1351,18 +1351,6 @@ export function ProfileScreenBase({
               </Text>
               </Pressable>
 
-              {dedicated && email ? (
-                <Text
-                  testID="profile-identity-email"
-                  style={[styles.profileEmail, { color: colors.mutedForeground }]}
-                  numberOfLines={1}
-                  ellipsizeMode="middle"
-                  selectable
-                >
-                  {email}
-                </Text>
-              ) : null}
-
               {location ? (
                 <Pressable onPress={() => router.push("/mi-perfil")} accessibilityRole="button" accessibilityLabel="Abrir Mi cuenta">
                 <View style={styles.locationRow}>
@@ -2554,7 +2542,6 @@ const styles = StyleSheet.create({
     borderRadius: 53,
   },
   userName: { fontFamily: "Manrope", fontSize: 20, fontWeight: "700", textAlign: "center", marginTop: 4 },
-  profileEmail: { fontFamily: "Manrope", fontSize: 12, lineHeight: 17, width: "100%", textAlign: "center" },
   profileIntentionPill: {
     alignSelf: "center",
     marginTop: 7,

@@ -68,16 +68,15 @@ const render = (props: Record<string, unknown> = {}) => {
   return renderToStaticMarkup(React.createElement(Identity, props));
 };
 
-test("Perfil centers avatar above name while retaining email between name and intention", () => {
+test("Perfil centers avatar above name and intention without showing email", () => {
   const html = render({ email: "example@example.com", location: "Ubicación" });
   assert.match(html, /data-testid="profile-identity-row" data-direction="column" data-align="center"/);
   assert.match(html, /data-testid="profile-identity-details" data-align="center"/);
   const avatar = html.indexOf('data-testid="profile-identity-avatar"');
   const name = html.indexOf("Resonador");
-  const email = html.indexOf('data-testid="profile-identity-email"');
   const pill = html.indexOf('data-testid="profile-intention-pill"');
-  assert.ok(avatar < name && name < email && email < pill);
-  assert.match(html, /data-testid="profile-identity-email"[^>]*data-text-align="center" data-lines="1" data-ellipsis="middle">example@example.com/);
+  assert.ok(avatar < name && name < pill);
+  assert.doesNotMatch(html, /profile-identity-email|example@example\.com/);
   assert.match(html, /data-testid="profile-intention-pill"[^>]*data-self-align="center"/);
 });
 
