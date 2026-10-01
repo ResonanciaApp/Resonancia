@@ -494,7 +494,7 @@ export function InnerSpaceCard({
       {canonicalVerticalInsets && (
         <DiscoverSearchBorder
           borderRadius={24}
-          brightness={0.9 * 0.97}
+          brightness={0.9603}
           colors={MOOD_HISTORY_GRADIENT}
           start={MOOD_HISTORY_GRADIENT_START}
           end={MOOD_HISTORY_GRADIENT_END}

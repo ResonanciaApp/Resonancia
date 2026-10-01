@@ -55,10 +55,10 @@ test("InnerSpaceCard keeps Home defaults and opts profile into a single 18px-ins
   assert.match(card, /styles\.sectionTitle,\s*\{ color: colors\.foreground \}/);
 });
 
-test("only the profile wall uses the complete mood-history gradient with 3% less brightness", () => {
+test("only the profile wall uses the complete mood-history gradient with 10% more brightness", () => {
   const card = source("../components/InnerSpaceCard.tsx");
   const border = source("../components/DiscoverSearchBorder.tsx");
-  assert.match(card, /canonicalVerticalInsets && \(\s*<DiscoverSearchBorder[\s\S]*?borderRadius=\{24\}[\s\S]*?brightness=\{0\.9 \* 0\.97\}[\s\S]*?colors=\{MOOD_HISTORY_GRADIENT\}[\s\S]*?start=\{MOOD_HISTORY_GRADIENT_START\}[\s\S]*?end=\{MOOD_HISTORY_GRADIENT_END\}/);
+  assert.match(card, /canonicalVerticalInsets && \(\s*<DiscoverSearchBorder[\s\S]*?borderRadius=\{24\}[\s\S]*?brightness=\{0\.9603\}[\s\S]*?colors=\{MOOD_HISTORY_GRADIENT\}[\s\S]*?start=\{MOOD_HISTORY_GRADIENT_START\}[\s\S]*?end=\{MOOD_HISTORY_GRADIENT_END\}/);
   assert.match(border, /borderWidth = 2/);
   assert.match(border, /brightness = 1/);
   assert.match(border, /opacity: 0\.99 \* brightness/);
@@ -94,17 +94,19 @@ test("the wall border retains all seven mood-history stops and direction while D
     return mocks[name];
   }, module, module.exports);
   const original = module.exports.DiscoverSearchBorder({});
-  const previous = module.exports.DiscoverSearchBorder({ borderRadius: 24, brightness: 0.9 });
+  const previous = module.exports.DiscoverSearchBorder({ borderRadius: 24, brightness: 0.9 * 0.97 });
   const wall = module.exports.DiscoverSearchBorder({
     borderRadius: 24,
-    brightness: 0.9 * 0.97,
+    brightness: 0.9603,
     colors: MOOD_HISTORY_GRADIENT,
     start: MOOD_HISTORY_GRADIENT_START,
     end: MOOD_HISTORY_GRADIENT_END,
   });
   const resolve = (styles: Record<string, unknown>[]) => Object.assign({}, ...styles);
   assert.equal(resolve(original.props.style).opacity, 0.99);
-  assert.equal(resolve(wall.props.style).opacity, (resolve(previous.props.style).opacity as number) * 0.97);
+  assert.ok(Math.abs(
+    (resolve(wall.props.style).opacity as number) - (resolve(previous.props.style).opacity as number) * 1.1,
+  ) < 1e-12);
   assert.equal(wall.props.pointerEvents, "none");
   assert.deepEqual(wall.props.children.props.colors, MOOD_HISTORY_GRADIENT);
   assert.deepEqual(wall.props.children.props.start, MOOD_HISTORY_GRADIENT_START);
