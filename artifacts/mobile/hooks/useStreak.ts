@@ -36,12 +36,13 @@ export interface StreakData {
 export function useStreak(): StreakData {
   const { isSignedIn } = useAuth();
   const tz = Intl.DateTimeFormat().resolvedOptions().timeZone;
+  const todayKey = useDayRollover();
 
   const serverQuery = useGetMyStreak(
     { tz },
     {
       query: {
-        queryKey: getGetMyStreakQueryOptions({ tz }).queryKey,
+        queryKey: [...getGetMyStreakQueryOptions({ tz }).queryKey, todayKey],
         enabled: !!isSignedIn,
         staleTime: 5 * 60_000,
       },
@@ -49,7 +50,6 @@ export function useStreak(): StreakData {
   );
 
   const { statEvents } = usePlayer();
-  const todayKey = useDayRollover();
 
   const local = useMemo(() => {
     const { flags, weekCount, todayIndex } = computeWeekFlags(statEvents);

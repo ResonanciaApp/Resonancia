@@ -77,6 +77,7 @@ import { ProfileSettingsSections } from "@/components/ProfileSettingsSections";
 import { ProfileIntentionPill } from "@/components/ProfileIntentionPill";
 import { ProfileDownloadsSection } from "@/components/ProfileDownloadsSection";
 import { GrowthJourneySheet } from "@/components/GrowthJourneySheet";
+import { GrowthLevelPreviewCard } from "@/components/GrowthJourney";
 import { SessionBadgeGlass } from "@/components/SessionDurationBadge";
 import { useCoverPresetCatalog } from "@/lib/cover-preset-catalog";
 import {
@@ -1408,9 +1409,14 @@ export function ProfileScreenBase({
                 longestStreakIconColor={MEMBERSHIP_AURORA.premium.accent}
                 sectionBackgroundColor="rgba(0,0,0,0.22)"
                 sectionHorizontalPadding={20}
-                sectionTopPadding={PROFILE_WEEK_TOP_PADDING}
+                sectionTopPadding={PROFILE_WEEK_TOP_PADDING - 5}
                 sectionBottomPadding={15}
                 sectionMarginBottom={PROFILE_SECTION_GAP}
+                afterStreakHistory={
+                  <View testID="profile-growth-intention" style={{ marginBottom: PROFILE_SECTION_GAP }}>
+                    <GrowthLevelPreviewCard embedded onPress={() => setGrowthJourneyOpen(true)} />
+                  </View>
+                }
                 onStreakTitlePress={() => router.push("/progreso" as never)}
               />
             </View>
@@ -1926,11 +1932,11 @@ export function ProfileScreenBase({
         </Pressable>
       </Modal>
 
-      {SHOW_PROFILE_PRACTICE_CARDS && (
-      <>
       {dedicated && (
         <GrowthJourneySheet visible={growthJourneyOpen} onClose={() => setGrowthJourneyOpen(false)} />
       )}
+      {SHOW_PROFILE_PRACTICE_CARDS && (
+      <>
       <SleepReminderSheet
         variant="morning"
         visible={morningReminderVisible}

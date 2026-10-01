@@ -3,23 +3,29 @@ name: Progreso visible en Perfil
 description: Orden actual del progreso en Perfil y su relación con Tu progreso.
 ---
 
-Perfil y Tu progreso comparten las cifras del historial de rachas, pero el tratamiento de la semana se decide por superficie. Perfil muestra una sección con fondo y título «Esta semana»; Tu progreso conserva los siete días sin fondo ni título interior. Debajo va el historial completo de cuatro cifras. Solo Perfil conserva después el calendario y el historial de sesiones.
+Perfil conserva la semana, el historial completo de cuatro cifras, Intención, el calendario y el historial de sesiones. Tu progreso muestra la semana en curso y sus sesiones completadas, sin historial de rachas ni tarjeta de Intención. Los tratamientos de ambas superficies son independientes.
 
-**Why:** El usuario pidió reutilizar el historial completo en Tu progreso, pero posteriormente pidió volver a dar fondo y título a la semana únicamente en Perfil. Compartir los datos no autoriza a propagar ese cambio visual a ambas pantallas.
+**Why:** El usuario redefinió Tu progreso como seguimiento de la semana actual, mientras Perfil conserva el resumen y los accesos personales. Compartir componentes y datos no autoriza a propagar cambios visuales entre ambas pantallas.
 
-**How to apply:** Configurar el tratamiento semanal por pantalla y mantener el historial en su propia tarjeta. En Perfil, igualar la separación semana/historial a la separación historial/calendario. No reintroducir «Mis estadísticas» en Perfil ni añadir calendario o historial de sesiones a Tu progreso. La identidad compacta «0 Días: Intención» de Perfil y la tarjeta de Tu progreso conservan sus accesos a Tu camino.
+**How to apply:** Configurar cada superficie por separado. En Perfil, conservar la separación uniforme entre sus tarjetas. En Tu progreso, filtrar completadas de lunes a domingo local; al cambiar de semana, renovar la vista sin borrar actividad histórica. Si no hay completadas visibles, ocultar separador, título y cards. No reintroducir «Mis estadísticas» en Perfil.
 
-En Tu progreso, Intención conserva contenido y acceso a Tu camino, pero su tarjeta debe ser compacta y respetar la misma distancia entre borde y contenido que el historial de rachas.
+En Tu progreso, «cards horizontales» describe cada fila, no la dirección de la lista: van una debajo de otra, sin carrusel ni scroll propio.
+
+**Why:** El usuario distinguió explícitamente el formato de la card del desplazamiento del conjunto.
+
+**How to apply:** Mantener una columna dentro del scroll general de la pantalla; no introducir otro ScrollView para las completadas.
+
+En Perfil, Intención conserva contenido y acceso a Tu camino, pero su tarjeta debe ser compacta y respetar la misma distancia entre borde y contenido que el historial de rachas.
 
 **Why:** El usuario pidió reducir su altura y hacer coherentes los espacios interiores de ambas tarjetas, no reducir el arte ni cambiar el recorrido.
 
 **How to apply:** Mantener los insets del historial como referencia para la tarjeta de Intención; no forzar una altura que introduzca espacio vacío adicional.
 
-La píldora «0 Días: Intención» de Perfil abre directamente la misma ventana «Tu camino» que Tu progreso. El toque no debe abrir Mi cuenta y usa el mismo feedback de reducción/rebote que actualizar recomendaciones de Inicio.
+La píldora «0 Días: Intención» y la tarjeta de Intención de Perfil abren directamente la misma ventana canónica «Tu camino». El toque en la píldora no debe abrir Mi cuenta y usa el mismo feedback de reducción/rebote que actualizar recomendaciones de Inicio.
 
-**Why:** El usuario pidió un acceso directo desde la identidad compacta, sin reintroducir la tarjeta de Intención ni pasar por la introducción de Tu progreso.
+**Why:** El usuario pidió primero el acceso directo desde la identidad compacta y después añadir también la tarjeta de Tu progreso debajo del historial de rachas. Son dos entradas al mismo recorrido, no dos versiones independientes.
 
-**How to apply:** Reutilizar la ventana canónica del recorrido y el feedback de pulsación; al cerrar, conservar Perfil como pantalla de origen. La cifra sigue siendo una vista previa, no activar los niveles por este acceso nuevo.
+**How to apply:** Reutilizar la misma tarjeta y la ventana canónica del recorrido; al cerrar, conservar Perfil como pantalla de origen. La cifra sigue siendo una vista previa, no activar los niveles por estos accesos.
 
 Descargas tiene su propio bloque inmediatamente debajo de Historial en Perfil. Su propósito es mostrar las copias guardadas en el dispositivo, no repetir lo escuchado o los favoritos.
 
@@ -39,17 +45,17 @@ El calendario de Perfil muestra junto a la fecha la cantidad de sesiones complet
 
 **How to apply:** Conservar singular/plural, contar las sesiones del día seleccionado y no extender este resumen a otros calendarios sin solicitud.
 
-En el historial compartido por Perfil y Tu progreso, «Racha actual» cuenta los días activos de la semana actual de lunes a domingo (0–7), aunque no sean consecutivos. «Rachas completadas» cuenta exclusivamente semanas calendario con sus siete días activos; siete días acumulados entre distintas semanas no forman una racha completada.
+En el historial de Perfil, «Racha actual» cuenta los días activos de la semana actual de lunes a domingo (0–7), aunque no sean consecutivos. «Rachas completadas» cuenta exclusivamente semanas calendario con sus siete días activos; siete días acumulados entre distintas semanas no forman una racha completada.
 
-**Why:** El usuario definió esas cifras para Perfil y después pidió reutilizar la sección completa en Tu progreso. Inicio conserva su racha consecutiva.
+**Why:** El usuario definió esas cifras para Perfil; Inicio conserva su racha consecutiva. Tu progreso muestra los días de la semana, pero ya no presenta el historial completo.
 
 **How to apply:** Usar los mismos días activos de los siete círculos. Unir semanas completas remotas y locales por su fecha de lunes, no sumar contadores ni limitar el historial a la retención móvil. Conservar el significado consecutivo de la racha actual en las demás superficies.
 
-La etiqueta «Racha acumulada» y el loto dorado coinciden en Perfil y Tu progreso. Son una vista previa de diseño: por ahora, la cifra conserva el cálculo anterior de la racha más larga; no convertirla aún en un total acumulado. En el historial de Perfil, ambas cifras pueden coincidir durante esta vista previa.
+La etiqueta «Racha acumulada» y el loto dorado de Perfil son una vista previa de diseño: por ahora, la cifra conserva el cálculo anterior de la racha más larga; no convertirla aún en un total acumulado. Ambas cifras pueden coincidir durante esta vista previa.
 
-**Why:** El usuario pidió explícitamente cambiar el diseño y el texto, pero dejar la funcionalidad intacta hasta una petición posterior; después extendió el mismo texto y color de loto a Tu progreso.
+**Why:** El usuario pidió explícitamente cambiar el diseño y el texto, pero dejar la funcionalidad intacta hasta una petición posterior.
 
-**How to apply:** Mantener la etiqueta y el tratamiento del loto sincronizados entre Perfil y Tu progreso sin alterar las estadísticas ni la fuente del valor. Cuando se pida implementar «Racha acumulada», definir primero qué se acumula y durante qué período.
+**How to apply:** Conservar la etiqueta y el tratamiento del loto en Perfil sin alterar las estadísticas ni la fuente del valor. Cuando se pida implementar «Racha acumulada», definir primero qué se acumula y durante qué período.
 
 El loto de «Racha acumulada» debe conservar su brillo difuminado clásico, pero el efecto debe recortarse a la silueta de la flor. No reemplazarlo por un halo circular detrás del ícono.
 

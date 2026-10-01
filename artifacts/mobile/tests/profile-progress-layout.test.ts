@@ -124,16 +124,17 @@ test("compact callers keep their existing stats unless they opt into the full hi
   assert.doesNotMatch(html, /RACHAS COMPLETADAS/);
 });
 
-test("Tu progreso separates the weekly circles and mirrors the full Perfil streak history", () => {
+test("Tu progreso keeps weekly circles without streak history, calendar or Intención", () => {
   const progressSource = readFileSync(new URL("../app/progreso.tsx", import.meta.url), "utf8");
   const usage = progressSource.match(/<ProgressMirrorSections[\s\S]*?\/>/)?.[0] ?? "";
   assert.match(usage, /separateStreakHistory/);
   assert.match(usage, /weeklySectionBackgroundColor="transparent"/);
-  assert.match(usage, /streakHistoryTopPadding=\{17\}/);
+  assert.match(usage, /showStreakHistory=\{false\}/);
   assert.match(usage, /showPersonalStats=\{false\}/);
   assert.match(usage, /showCalendar=\{false\}/);
   const html = render({
     separateStreakHistory: true,
+    showStreakHistory: false,
     showPersonalStats: false,
     showCalendar: false,
     weeklySectionBackgroundColor: "transparent",
@@ -143,20 +144,11 @@ test("Tu progreso separates the weekly circles and mirrors the full Perfil strea
     longestStreakLabel: "RACHA ACUMULADA",
     longestStreakIconColor: "#BE9650",
   });
-  const historyIndex = html.indexOf('data-testid="profile-streak-history"');
-  const week = html.slice(0, historyIndex);
-  const history = html.slice(historyIndex);
-  assert.match(week, /seven-week-days/);
-  assert.match(week, /data-background="transparent"/);
-  assert.doesNotMatch(week, /RACHA|Historial de rachas/);
-  assert.match(history, /Historial de rachas/);
-  for (const label of ["RACHA ACTUAL", "RACHAS COMPLETADAS", "RACHA MÁS LARGA", "RACHA ACUMULADA"]) {
-    assert.match(history, new RegExp(label));
-  }
-  assert.doesNotMatch(history, /seven-week-days|Mis estadísticas|data-testid="calendar"/);
-  assert.match(history, /data-padding-top="17"/);
-  assert.match(history, /data-padding-bottom="15"/);
-  assert.match(history, /data-padding-horizontal="20"/);
+  assert.match(html, /seven-week-days/);
+  assert.match(html, /data-background="transparent"/);
+  assert.doesNotMatch(html, /RACHA|Historial de rachas|profile-streak-history|Mis estadísticas|data-testid="calendar"/);
+  assert.doesNotMatch(progressSource, /GrowthLevelPreviewCard|GrowthJourneySheet/);
+  assert.match(progressSource, /<WeeklyCompletedSessions \/>/);
 });
 
 test("Intención has the same content insets as the streak history, without the old forced height", () => {
@@ -165,22 +157,31 @@ test("Intención has the same content insets as the streak history, without the 
   assert.match(previewStyle, /paddingHorizontal: 20/);
   assert.match(previewStyle, /paddingTop: 17/);
   assert.match(previewStyle, /paddingBottom: 15/);
+  assert.match(growthSource, /embeddedPreviewCard: \{ marginHorizontal: 0 \}/);
+  assert.match(growthSource, /style=\{\[styles\.previewCard, embedded && styles\.embeddedPreviewCard\]\}/);
   assert.doesNotMatch(previewStyle, /minHeight|height:|paddingVertical/);
   assert.match(growthSource, /previewArt: \{ width: 100, height: 100 \}/);
 });
 
-test("Perfil removes only the weekly background and reduces history top padding by four", () => {
+test("Perfil reduces Esta semana height by 5px from the top while retaining other section insets", () => {
+  const source = readFileSync(new URL("../components/ProfileScreenBase.tsx", import.meta.url), "utf8");
+  assert.match(source, /sectionTopPadding=\{PROFILE_WEEK_TOP_PADDING - 5\}/);
+  const basePadding = Number(source.match(/const PROFILE_WEEK_TOP_PADDING = (\d+);/)?.[1]);
   const html = render({
     separateStreakHistory: true,
     sectionBackgroundColor: "rgba(0,0,0,0.22)",
-    sectionTopPadding: 21,
+    sectionTopPadding: basePadding - 5,
+    sectionBottomPadding: 15,
+    sectionHorizontalPadding: 20,
     streakHistoryTopPadding: 17,
-    weeklySectionBackgroundColor: "transparent",
+    weeklySectionBackgroundColor: "rgba(0,0,0,0.22)",
   });
   const weekly = html.match(/<div[^>]*data-testid="profile-weekly-progress"[^>]*>/)?.[0] ?? "";
   const history = html.match(/<div[^>]*data-testid="profile-streak-history"[^>]*>/)?.[0] ?? "";
-  assert.match(weekly, /data-background="transparent"/);
-  assert.match(weekly, /data-padding-top="21"/);
+  assert.match(weekly, /data-background="rgba\(0,0,0,0.22\)"/);
+  assert.match(weekly, /data-padding-top="16"/);
+  assert.match(weekly, /data-padding-bottom="15"/);
+  assert.match(weekly, /data-padding-horizontal="20"/);
   assert.match(history, /data-background="rgba\(0,0,0,0.22\)"/);
   assert.match(history, /data-padding-top="17"/);
 });
@@ -260,6 +261,87 @@ test("Perfil gives Esta semana its own background and matches weekly/history and
   assert.ok(title >= 0 && title < days && days < historyIndex);
   assert.ok(html.indexOf('data-testid="calendar"') > historyIndex);
   assert.doesNotMatch(html.slice(0, historyIndex), /RACHA ACTUAL|RACHAS COMPLETADAS/);
+});
+
+test("Perfil puts the same Intención preview after streak history and before calendar, opening Tu camino", () => {
+  const profileSource = readFileSync(new URL("../components/ProfileScreenBase.tsx", import.meta.url), "utf8");
+  assert.match(profileSource, /import \{ GrowthLevelPreviewCard \} from "@\/components\/GrowthJourney"/);
+  const ast = ts.createSourceFile("ProfileScreenBase.tsx", profileSource, ts.ScriptTarget.Latest, true, ts.ScriptKind.TSX);
+  let slot: ts.Expression | undefined;
+  let journeySheet: ts.JsxSelfClosingElement | undefined;
+  function visit(node: ts.Node) {
+    if (ts.isJsxAttribute(node) && node.name.getText(ast) === "afterStreakHistory"
+      && node.initializer && ts.isJsxExpression(node.initializer)) slot = node.initializer.expression;
+    if (ts.isJsxSelfClosingElement(node) && node.tagName.getText(ast) === "GrowthJourneySheet") journeySheet = node;
+    ts.forEachChild(node, visit);
+  }
+  visit(ast);
+  assert.ok(slot, "Profile passes its real preview JSX to the post-history slot");
+  assert.ok(journeySheet, "Profile mounts the Tu camino window");
+  let sheetExpression: ts.Expression | undefined;
+  for (let parent: ts.Node | undefined = journeySheet.parent; parent; parent = parent.parent) {
+    if (ts.isJsxExpression(parent) && parent.expression) {
+      sheetExpression ??= parent.expression;
+      if (ts.isBinaryExpression(parent.expression)
+        && parent.expression.operatorToken.kind === ts.SyntaxKind.AmpersandAmpersandToken) {
+        assert.notEqual(parent.expression.left.getText(ast), "SHOW_PROFILE_PRACTICE_CARDS",
+          "Tu camino must not be hidden with disabled practice cards");
+      }
+    }
+  }
+  assert.ok(sheetExpression);
+  const gap = Number(profileSource.match(/const PROFILE_SECTION_GAP = (\d+);/)?.[1]);
+  assert.equal(gap, 21);
+  const compiled = ts.transpileModule(`
+    function buildSlot(setGrowthJourneyOpen) {
+      const PROFILE_SECTION_GAP = ${gap};
+      return (${slot.getText(ast)});
+    }
+  `, { compilerOptions: { module: ts.ModuleKind.CommonJS, jsx: ts.JsxEmit.React } }).outputText;
+  let pressPreview: (() => void) | undefined;
+  let journeyOpen = false;
+  const Preview = ({ onPress, embedded }: { onPress: () => void; embedded?: boolean }) => {
+    pressPreview = onPress;
+    return React.createElement("div", { "data-testid": "growth-level-zero-preview", "data-embedded": embedded }, "Intención");
+  };
+  const buildSlot = new Function("React", "View", "GrowthLevelPreviewCard", `${compiled}\nreturn buildSlot;`)(React, NativeView, Preview);
+  const html = render({
+    separateStreakHistory: true,
+    showPersonalStats: false,
+    showCalendar: true,
+    sectionMarginBottom: gap,
+    afterStreakHistory: buildSlot((open: boolean) => { journeyOpen = open; }),
+  });
+  const history = html.indexOf('data-testid="profile-streak-history"');
+  const intention = html.indexOf('data-testid="profile-growth-intention"');
+  const calendar = html.indexOf('data-testid="calendar"');
+  assert.ok(history >= 0 && history < intention && intention < calendar);
+  assert.match(html, /data-testid="profile-growth-intention" data-margin-bottom="21"/);
+  assert.match(html, /growth-level-zero-preview" data-embedded="true">Intención/);
+  assert.ok(pressPreview);
+  pressPreview();
+  assert.equal(journeyOpen, true);
+  const sheetCompiled = ts.transpileModule(`
+    function buildSheet(dedicated, growthJourneyOpen, setGrowthJourneyOpen) {
+      const SHOW_PROFILE_PRACTICE_CARDS = false;
+      return (${sheetExpression.getText(ast)});
+    }
+  `, { compilerOptions: { module: ts.ModuleKind.CommonJS, jsx: ts.JsxEmit.React } }).outputText;
+  let closeSheet: (() => void) | undefined;
+  const Sheet = ({ visible, onClose }: { visible: boolean; onClose: () => void }) => {
+    closeSheet = onClose;
+    return visible ? React.createElement("div", { "data-testid": "tu-camino-window" }, "Tu camino") : null;
+  };
+  const buildSheet = new Function("React", "GrowthJourneySheet", `${sheetCompiled}\nreturn buildSheet;`)(React, Sheet);
+  const setJourneyOpen = (open: boolean) => { journeyOpen = open; };
+  assert.match(renderToStaticMarkup(buildSheet(true, journeyOpen, setJourneyOpen)), /tu-camino-window">Tu camino/);
+  assert.equal(renderToStaticMarkup(buildSheet(false, true, setJourneyOpen)), "");
+  assert.ok(closeSheet);
+  closeSheet();
+  assert.equal(journeyOpen, false);
+  assert.equal(renderToStaticMarkup(buildSheet(true, journeyOpen, setJourneyOpen)), "");
+  assert.match(profileSource, /GrowthJourneySheet visible=\{growthJourneyOpen\}/);
+  assert.doesNotMatch(render({ separateStreakHistory: true, showCalendar: false }), /profile-growth-intention/);
 });
 
 test("Perfil hides personal stats and the divider above the week while retaining history and calendar", () => {

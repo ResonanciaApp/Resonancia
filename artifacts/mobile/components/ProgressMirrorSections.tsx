@@ -41,6 +41,8 @@ export function ProgressMirrorSections({
   onPersonalStatsComplete,
   streakTitle,
   separateStreakHistory = false,
+  showStreakHistory = true,
+  afterStreakHistory,
   weeklySectionBackgroundColor,
   weeklySectionHorizontalPadding,
   weeklySectionTitle,
@@ -78,6 +80,8 @@ export function ProgressMirrorSections({
   onPersonalStatsComplete?: () => void;
   streakTitle?: string;
   separateStreakHistory?: boolean;
+  showStreakHistory?: boolean;
+  afterStreakHistory?: React.ReactNode;
   weeklySectionBackgroundColor?: string;
   weeklySectionHorizontalPadding?: number;
   weeklySectionTitle?: string;
@@ -572,14 +576,17 @@ export function ProgressMirrorSections({
           >
             {streakContent}
           </SectionEntrance>}
-          {showStreakSection && streakHistoryContent ? (
-            <SectionEntrance
-              animated={animateEntrance}
-              replayKey={`${entranceReplayKey}:streak-history`}
-              delay={entranceBaseDelay}
-            >
-              {streakHistoryContent}
-            </SectionEntrance>
+          {showStreakSection && showStreakHistory && streakHistoryContent ? (
+            <>
+              <SectionEntrance
+                animated={animateEntrance}
+                replayKey={`${entranceReplayKey}:streak-history`}
+                delay={entranceBaseDelay}
+              >
+                {streakHistoryContent}
+              </SectionEntrance>
+              {afterStreakHistory}
+            </>
           ) : null}
           {showPersonalStats && (!chainPersonalStatsAfterWeek || !showStreakSection || !showStreakWeek || weekEntranceDone) ? (
             <SectionEntrance

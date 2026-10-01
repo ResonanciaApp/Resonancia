@@ -27,11 +27,9 @@ import Animated, {
 } from "react-native-reanimated";
 
 import { ProgressMirrorSections } from "@/components/ProgressMirrorSections";
-import { GrowthLevelPreviewCard } from "@/components/GrowthJourney";
-import { GrowthJourneySheet } from "@/components/GrowthJourneySheet";
+import { WeeklyCompletedSessions } from "@/components/WeeklyCompletedSessions";
 import { CinematicFadeSlide } from "@/components/CinematicFadeSlide";
 import { getPositionedDayGradient } from "@/components/StreakWeekRow";
-import { MEMBERSHIP_AURORA } from "@/constants/colors";
 import { useSceneTheme } from "@/context/SceneThemeContext";
 import { useColors } from "@/hooks/useColors";
 import { useStreak } from "@/hooks/useStreak";
@@ -82,7 +80,6 @@ export default function ProgresoScreen() {
   const [countEntranceDone, setCountEntranceDone] = useState(reduceMotion);
   const [countValueDone, setCountValueDone] = useState(reduceMotion);
   const [descriptionStarted, setDescriptionStarted] = useState(reduceMotion);
-  const [journeyOpen, setJourneyOpen] = useState(false);
   const onCountEntranceComplete = useCallback(() => setCountEntranceDone(true), []);
   const onCountValueComplete = useCallback(() => setCountValueDone(true), []);
   useEffect(() => {
@@ -259,12 +256,10 @@ export default function ProgresoScreen() {
                   showSectionBorders={false}
                   showPersonalStats={false}
                   showCalendar={false}
+                  showStreakHistory={false}
                   separateStreakHistory
                   weeklySectionBackgroundColor="transparent"
                   weeklySectionHorizontalPadding={0}
-                  streakHistoryTopPadding={17}
-                  longestStreakLabel="RACHA ACUMULADA"
-                  longestStreakIconColor={MEMBERSHIP_AURORA.premium.accent}
                   sectionBackgroundColor="rgba(0,0,0,0.22)"
                   sectionHorizontalPadding={20}
                   sectionTopPadding={0}
@@ -272,21 +267,11 @@ export default function ProgresoScreen() {
                   sectionMarginBottom={0}
                   streakMarginBottom={11}
                 />
+                <WeeklyCompletedSessions />
             </View>
-            <View style={styles.journeyGap} pointerEvents="none" />
-            <CinematicFadeSlide
-              replayKey="progress-level-zero-preview"
-              delay={0}
-              duration={1100}
-              scaleFrom={0.985}
-              translateYFrom={12}
-            >
-              <GrowthLevelPreviewCard onPress={() => setJourneyOpen(true)} />
-            </CinematicFadeSlide>
           </>
         )}
       </ScrollView>
-      <GrowthJourneySheet visible={journeyOpen} onClose={() => setJourneyOpen(false)} />
     </LinearGradient>
   );
 }
@@ -339,7 +324,6 @@ const styles = StyleSheet.create({
     paddingHorizontal: 16,
     marginTop: 15,
   },
-  journeyGap: { height: 21 },
   introDivider: {
     position: "absolute",
     top: -24,

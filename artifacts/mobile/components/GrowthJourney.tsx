@@ -82,7 +82,7 @@ function GrowthLevelImage({ level }: { level: GrowthLevel }) {
   );
 }
 
-export function GrowthLevelPreviewCard({ onPress }: { onPress: () => void }) {
+export function GrowthLevelPreviewCard({ onPress, embedded = false }: { onPress: () => void; embedded?: boolean }) {
   const colors = useColors();
   const level = growthLevels[0];
   const dayLabel = level.startDay === level.endDay
@@ -92,7 +92,7 @@ export function GrowthLevelPreviewCard({ onPress }: { onPress: () => void }) {
   return (
     <Pressable
       onPress={onPress}
-      style={styles.previewCard}
+      style={[styles.previewCard, embedded && styles.embeddedPreviewCard]}
       accessibilityRole="button"
       accessibilityLabel={`${level.name}, ${dayLabel}. Abrir camino de crecimiento`}
       testID="growth-level-zero-preview"
@@ -291,6 +291,7 @@ const styles = StyleSheet.create({
     gap: 12,
   },
   previewArt: { width: 100, height: 100 },
+  embeddedPreviewCard: { marginHorizontal: 0 },
   previewCopy: { flex: 1, minWidth: 0 },
   previewStory: { fontFamily: "Manrope", fontSize: 11, lineHeight: 16 },
   section: {

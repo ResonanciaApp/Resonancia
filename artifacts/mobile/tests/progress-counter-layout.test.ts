@@ -73,6 +73,7 @@ function renderProgress(days: number, reducedMotion: boolean) {
     } },
     "@/components/GrowthJourney": { GrowthLevelPreviewCard: Native },
     "@/components/GrowthJourneySheet": { GrowthJourneySheet: () => null },
+    "@/components/WeeklyCompletedSessions": { WeeklyCompletedSessions: () => null },
   };
   const compiled = ts.transpileModule(source, {
     compilerOptions: { module: ts.ModuleKind.CommonJS, jsx: ts.JsxEmit.React, esModuleInterop: true },
@@ -100,7 +101,7 @@ test("description and ESTA SEMANA precede the counter, with 20px above and 15px 
   assert.equal(mirrorProps.weeklySectionHorizontalPadding, 0);
   assert.equal(mirrorProps.sectionHorizontalPadding, 20);
   assert.equal(mirrorProps.separateStreakHistory, true);
-  assert.equal(mirrorProps.streakHistoryTopPadding, 17);
+  assert.equal(mirrorProps.showStreakHistory, false);
   assert.equal(mirrorProps.streakMarginBottom, 11);
   assert.equal(mirrorProps.sectionMarginBottom, 0);
   assert.equal(mirrorProps.showPersonalStats, false);
