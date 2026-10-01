@@ -377,7 +377,7 @@ export function ProgressMirrorSections({
           <Stat
             icon={<MaterialCommunityIcons name="spa" size={18} color="#F9F9F9" />}
             value={weekCount}
-            label="RACHA SEMANAL ACTUAL"
+            label="RACHA ACTUAL"
             accent={accent}
             onPress={onStreakTitlePress}
             edgeAligned={canonicalVerticalInsets}

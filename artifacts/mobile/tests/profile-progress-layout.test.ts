@@ -99,7 +99,7 @@ test("Perfil separates week-only progress from the titled streak history", () =>
   assert.match(html.slice(historyIndex), /Historial de rachas/);
   assert.match(html.slice(historyIndex), /RACHA MÁS LARGA/);
   assert.match(html.slice(historyIndex), /RACHA ACUMULADA/);
-  const actualIndex = html.indexOf("RACHA SEMANAL ACTUAL");
+  const actualIndex = html.indexOf("RACHA ACTUAL");
   const accumulatedIndex = html.indexOf("RACHA ACUMULADA");
   const longestIndex = html.indexOf("RACHA MÁS LARGA");
   const completedIndex = html.indexOf("RACHAS COMPLETADAS");
@@ -297,7 +297,7 @@ test("Perfil gives Esta semana its own background and matches weekly/history and
   const historyIndex = html.indexOf('data-testid="profile-streak-history"');
   assert.ok(title >= 0 && title < days && days < historyIndex);
   assert.ok(html.indexOf('data-testid="calendar"') > historyIndex);
-  assert.doesNotMatch(html.slice(0, historyIndex), /RACHA SEMANAL ACTUAL|RACHAS COMPLETADAS/);
+  assert.doesNotMatch(html.slice(0, historyIndex), /RACHA ACTUAL|RACHAS COMPLETADAS/);
 });
 
 test("Perfil puts the same Intención preview after streak history and before calendar, opening Tu camino", () => {
@@ -390,7 +390,8 @@ test("Perfil hides personal stats and the divider above the week while retaining
   });
   assert.doesNotMatch(html, /Mis estadísticas|MINUTOS TOTALES|DÍAS ACTIVOS/);
   assert.match(html, /Historial de rachas/);
-  assert.match(html, /RACHA SEMANAL ACTUAL/);
+  assert.match(html, /RACHA ACTUAL/);
+  assert.doesNotMatch(html, /RACHA SEMANAL ACTUAL/);
   assert.match(html, /RACHAS COMPLETADAS/);
   assert.match(html, /RACHA MÁS LARGA/);
   assert.match(html, /seven-week-days/);
