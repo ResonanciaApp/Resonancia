@@ -230,9 +230,9 @@ test("Perfil raises Esta semana and all following content 12px without changing 
   assert.equal(gap, 60 - 12);
   assert.equal(padding + cardMargin + margin + weekPadding - cardOffset, 48);
   const detailsStart = profileSource.indexOf('testID="profile-identity-details"');
-  const locationIndex = profileSource.indexOf("{location ? (", detailsStart);
+  const emailIndex = profileSource.indexOf('testID="profile-identity-email"', detailsStart);
   const pillIndex = profileSource.indexOf("<ProfileIntentionPill", detailsStart);
-  assert.ok(locationIndex > detailsStart && pillIndex > locationIndex, "optional location stays above the pill");
+  assert.ok(emailIndex > detailsStart && pillIndex > emailIndex, "email stays above the pill");
 });
 
 test("Perfil gives Esta semana its own background and matches weekly/history and history/calendar gaps", () => {
@@ -378,7 +378,7 @@ test("settings statistics contain the existing stats and range filter without st
   assert.match(settingsSource, /label: "Personalizar notificaciones"/);
 });
 
-test("Perfil keeps settings accessible in its sticky header and reduces the avatar by 20px", () => {
+test("Perfil keeps settings accessible in its sticky header and uses the compact 96-point avatar", () => {
   const source = readFileSync(new URL("../components/ProfileScreenBase.tsx", import.meta.url), "utf8");
   const headerStart = source.indexOf("<View style={styles.profileStickyHeaderRow}>");
   const header = source.slice(headerStart, source.indexOf("</View>", headerStart));
@@ -396,7 +396,7 @@ test("Perfil keeps settings accessible in its sticky header and reduces the avat
     assert.ok(reference, `Descubrir defines ${property}`);
     assert.equal(titleStyle.match(pattern)?.[1], reference, `sticky title matches Descubrir: ${property}`);
   }
-  assert.match(source, /avatarCircle:\s*\{\s*width: 106,\s*height: 106,\s*borderRadius: 53/);
-  assert.match(source, /avatarImage:\s*\{\s*width: 106,\s*height: 106,\s*borderRadius: 53/);
-  assert.match(source, /avatarOuterBorder:\s*\{[\s\S]*?width: 112,\s*height: 112,\s*borderRadius: 56/);
+  assert.match(source, /avatarCircle:\s*\{\s*width: 96,\s*height: 96,\s*borderRadius: 48/);
+  assert.match(source, /avatarImage:\s*\{\s*width: 96,\s*height: 96,\s*borderRadius: 48/);
+  assert.match(source, /avatarOuterBorder:\s*\{[\s\S]*?width: 102,\s*height: 102,\s*borderRadius: 51/);
 });

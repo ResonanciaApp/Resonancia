@@ -68,23 +68,27 @@ const render = (props: Record<string, unknown> = {}) => {
   return renderToStaticMarkup(React.createElement(Identity, props));
 };
 
-test("Perfil centers avatar above name and intention without showing email", () => {
+test("Perfil places avatar left and stacks name, email and intention on its right", () => {
   const html = render({ email: "example@example.com", location: "Ubicación" });
-  assert.match(html, /data-testid="profile-identity-row" data-direction="column" data-align="center"/);
-  assert.match(html, /data-testid="profile-identity-details" data-align="center"/);
+  assert.match(html, /data-testid="profile-identity-row" data-direction="row" data-align="center"/);
+  assert.match(html, /data-testid="profile-identity-details" data-align="flex-start"[^>]*data-flex="1" data-min-width="0"/);
   const avatar = html.indexOf('data-testid="profile-identity-avatar"');
   const name = html.indexOf("Resonador");
+  const email = html.indexOf("example@example.com");
   const pill = html.indexOf('data-testid="profile-intention-pill"');
-  assert.ok(avatar < name && name < pill);
-  assert.doesNotMatch(html, /profile-identity-email|example@example\.com/);
-  assert.match(html, /data-testid="profile-intention-pill"[^>]*data-self-align="center"/);
+  assert.ok(avatar < name && name < email && email < pill);
+  assert.match(html, /data-testid="profile-identity-email"[^>]*data-text-align="left"[^>]*data-lines="1" data-ellipsis="tail"/);
+  assert.doesNotMatch(html, /Ubicación|data-icon="map-pin"/);
+  assert.match(html, /data-testid="profile-intention-pill"[^>]*data-self-align="flex-start"/);
+  assert.match(source, /dedicatedProfileCard: \{[^}]*backgroundColor: "rgba\(0,0,0,0.22\)"/);
+  assert.match(source, /avatarImage:\s*\{\s*width: 96,\s*height: 96,\s*borderRadius: 48/);
+  assert.match(source, /avatarCircle:\s*\{\s*width: 96,\s*height: 96,\s*borderRadius: 48/);
 });
 
-test("missing email is not replaced with a fake address, and other profile variants stay centered", () => {
+test("missing email is not replaced with a fake address and intention remains dedicated to Perfil", () => {
   assert.doesNotMatch(render(), /profile-identity-email|@/);
   const other = render({ dedicated: false, email: "example@example.com" });
-  assert.match(other, /data-testid="profile-identity-details" data-align="center"/);
-  assert.doesNotMatch(other, /profile-identity-email|profile-intention-pill|data-direction="row"/);
+  assert.doesNotMatch(other, /profile-intention-pill/);
 });
 
 test("avatar still opens Mi cuenta, intention opens Tu camino, and Premium badge stays visible", () => {

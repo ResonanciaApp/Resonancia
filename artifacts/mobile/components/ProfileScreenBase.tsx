@@ -98,7 +98,7 @@ const SHOW_PROFILE_HISTORY = true;
 const SHOW_PROFILE_PRACTICE_CARDS = false;
 // Separación entre los bloques de progreso en Perfil.
 const PROFILE_SECTION_GAP = 21;
-const PROFILE_CARD_BOTTOM_PADDING = 6;
+const PROFILE_CARD_BOTTOM_PADDING = 20;
 const PROFILE_CARD_BOTTOM_MARGIN = 16;
 const PROFILE_CARD_Y_OFFSET = -5;
 const PROFILE_WEEK_TOP_PADDING = 21;
@@ -1341,6 +1341,7 @@ export function ProfileScreenBase({
                 onPress={() => router.push("/mi-perfil")}
                 accessibilityRole="button"
                 accessibilityLabel="Abrir Mi cuenta"
+                style={{ maxWidth: "100%" }}
               >
               <Text
                 style={[styles.userName, { color: colors.foreground }]}
@@ -1351,13 +1352,15 @@ export function ProfileScreenBase({
               </Text>
               </Pressable>
 
-              {location ? (
-                <Pressable onPress={() => router.push("/mi-perfil")} accessibilityRole="button" accessibilityLabel="Abrir Mi cuenta">
-                <View style={styles.locationRow}>
-                  <Feather name="map-pin" size={12} color={secondaryAccent} />
-                  <Text style={[styles.locationText, { color: secondaryAccent }]}>{location}</Text>
-                </View>
-                </Pressable>
+              {email ? (
+                <Text
+                  testID="profile-identity-email"
+                  style={[styles.profileEmail, { color: colors.mutedForeground }]}
+                  numberOfLines={1}
+                  ellipsizeMode="tail"
+                >
+                  {email}
+                </Text>
               ) : null}
 
               {dedicated && (
@@ -2481,7 +2484,7 @@ const styles = StyleSheet.create({
   // Profile card
   profileCard: {
     borderRadius: 19,
-    paddingTop: 24,
+    paddingTop: 20,
     paddingBottom: PROFILE_CARD_BOTTOM_PADDING,
     alignItems: "stretch",
     marginTop: 15,
@@ -2489,7 +2492,7 @@ const styles = StyleSheet.create({
     gap: 0,
     transform: [{ translateY: PROFILE_CARD_Y_OFFSET }],
   },
-  dedicatedProfileCard: { marginTop: 18 },
+  dedicatedProfileCard: { marginTop: 18, backgroundColor: "rgba(0,0,0,0.22)" },
   wisdomSection: {
     marginBottom: 28,
   },
@@ -2500,21 +2503,21 @@ const styles = StyleSheet.create({
     marginBottom: 17,
   },
   profileIdentityRow: {
-    flexDirection: "column",
+    flexDirection: "row",
     alignItems: "center",
     width: "100%",
-    gap: 12,
+    gap: 16,
     paddingHorizontal: 16,
   },
-  profileDetails: { width: "100%", alignItems: "center", gap: 6 },
+  profileDetails: { flex: 1, minWidth: 0, alignItems: "flex-start", gap: 6 },
   avatarWrapper: { position: "relative", marginBottom: 0, flexShrink: 0 },
   avatarOuterBorder: {
     position: "absolute",
     top: -3,
     left: -3,
-    width: 112,
-    height: 112,
-    borderRadius: 56,
+    width: 102,
+    height: 102,
+    borderRadius: 51,
     borderWidth: 3,
     borderColor: "rgba(255,255,255,0.25)",
   },
@@ -2530,20 +2533,21 @@ const styles = StyleSheet.create({
     justifyContent: "center",
   },
   avatarCircle: {
-    width: 106,
-    height: 106,
-    borderRadius: 53,
+    width: 96,
+    height: 96,
+    borderRadius: 48,
     alignItems: "center",
     justifyContent: "center",
   },
   avatarImage: {
-    width: 106,
-    height: 106,
-    borderRadius: 53,
+    width: 96,
+    height: 96,
+    borderRadius: 48,
   },
-  userName: { fontFamily: "Manrope", fontSize: 20, fontWeight: "700", textAlign: "center", marginTop: 4 },
+  userName: { fontFamily: "Manrope", fontSize: 20, fontWeight: "700", textAlign: "left", marginTop: 4 },
+  profileEmail: { fontFamily: "Manrope", fontSize: 12, textAlign: "left", maxWidth: "100%" },
   profileIntentionPill: {
-    alignSelf: "center",
+    alignSelf: "flex-start",
     marginTop: 7,
     backgroundColor: "rgba(151,128,231,0.20)",
     borderWidth: 1,
