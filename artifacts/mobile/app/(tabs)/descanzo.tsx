@@ -121,7 +121,6 @@ function SleepPill({
 }
 
 const H_PAD = 16;
-const SLEEP_DURATION_TINT = "rgba(55,59,65,0.28)";
 const HERO_H = 220;
 const { width: W, height: H } = Dimensions.get("window");
 const SLEEP_CAROUSEL_CARD_W = Math.round(
@@ -416,7 +415,6 @@ export default function DescansoScreen() {
           sleepMetadataBelow
           categoryGridPresentation
           whiteMetadataGlass
-          durationBadgeTint={SLEEP_DURATION_TINT}
           showDurationClock
           sleepBelowMetadataStyle={{ marginTop: 3, transform: [{ translateX: 3 }] }}
           trailingPeek={20}
@@ -434,7 +432,6 @@ export default function DescansoScreen() {
       ) : item.playlist ? (
         <EditorialPlaylistCarousel
           title={item.playlist.title}
-          durationBadgeTint={SLEEP_DURATION_TINT}
           playlists={item.playlist.playlists}
           style={{
             marginTop: index === 0 ? 33 : 26,
@@ -567,7 +564,6 @@ export default function DescansoScreen() {
                   }}
                   disableAmbientalVariant
                   whiteMetadataGlass
-                  durationBadgeTint={SLEEP_DURATION_TINT}
                   showDurationClock
                   trailingPeek={20}
                   cardWidth={FEATURED_SLEEP_CARD_W}

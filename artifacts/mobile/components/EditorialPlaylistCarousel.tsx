@@ -38,7 +38,6 @@ export function EditorialPlaylistCarousel({
   gridLayout = false,
   titleLift = 0,
   showDurationClock = false,
-  durationBadgeTint,
 }: {
   title: string;
   playlists: EditorialPlaylist[];
@@ -49,7 +48,6 @@ export function EditorialPlaylistCarousel({
   gridLayout?: boolean;
   titleLift?: number;
   showDurationClock?: boolean;
-  durationBadgeTint?: string;
 }) {
   const { isPremium } = usePremium();
   if (playlists.length === 0) return null;
@@ -113,7 +111,6 @@ export function EditorialPlaylistCarousel({
           ) : null}
           <SessionDurationBadge
             label={playlist.durationLabel}
-            tintColor={durationBadgeTint}
             showClock={showDurationClock}
             style={styles.duration}
             whiteGlass
