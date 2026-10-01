@@ -2070,9 +2070,10 @@ export function BibliotecaScreen({
     ? { style: styles.root }
     : {
         style: styles.root,
-        colors: ["#340D1A", "#190913"] as const,
-        start: { x: 0, y: 0 },
-        end: { x: 0, y: 1 },
+        colors: sceneTheme.gradient as [string, string, ...string[]],
+        locations: sceneTheme.gradientLocations,
+        start: sceneTheme.gradientStart,
+        end: sceneTheme.gradientEnd,
       };
 
   return (

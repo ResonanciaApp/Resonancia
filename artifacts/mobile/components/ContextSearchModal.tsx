@@ -49,6 +49,7 @@ type ContextSearchModalProps = {
   visible: boolean;
   matchDiscoverSearchBar?: boolean;
   thirdStopBackground?: boolean;
+  fullThemeBackground?: boolean;
   onClose: () => void;
   items: ContextSearchItem[];
   placeholder: string;
@@ -73,6 +74,7 @@ export function ContextSearchModal({
   visible,
   matchDiscoverSearchBar = false,
   thirdStopBackground = false,
+  fullThemeBackground = false,
   onClose,
   items,
   placeholder,
@@ -203,6 +205,7 @@ export function ContextSearchModal({
   const backgroundColor = thirdStopBackground
     ? (theme.gradient[2] ?? theme.gradient[1])
     : theme.gradient[0];
+  const showThemeGradient = fullThemeBackground || (theme.id === "tibet" && !thirdStopBackground);
   const searchBarSurface =
     matchDiscoverSearchBar
       ? DISCOVER_SEARCH_SURFACE
@@ -222,9 +225,12 @@ export function ContextSearchModal({
     >
       <KeyboardAvoidingView style={styles.root} behavior="padding" keyboardVerticalOffset={0}>
         <View style={[StyleSheet.absoluteFillObject, { backgroundColor }]}>
-          {theme.id === "tibet" && !thirdStopBackground && (
+          {showThemeGradient && (
             <LinearGradient
               colors={theme.gradient as [string, string, ...string[]]}
+              locations={fullThemeBackground ? theme.gradientLocations : undefined}
+              start={fullThemeBackground ? theme.gradientStart : undefined}
+              end={fullThemeBackground ? theme.gradientEnd : undefined}
               style={StyleSheet.absoluteFill}
               pointerEvents="none"
             />
@@ -236,7 +242,7 @@ export function ContextSearchModal({
             styles.header,
             {
               paddingTop: insets.top + 14,
-              backgroundColor: theme.id === "tibet" && !thirdStopBackground ? "transparent" : backgroundColor,
+              backgroundColor: showThemeGradient ? "transparent" : backgroundColor,
             },
           ]}
         >

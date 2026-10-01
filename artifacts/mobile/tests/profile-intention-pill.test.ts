@@ -57,7 +57,9 @@ const render = (onPress = () => {}) => renderToStaticMarkup(React.createElement(
 test("the Intención pill opens Tu camino and stops the Mi cuenta parent action", () => {
   let opens = 0;
   let stopped = false;
-  assert.match(render(() => opens++), /0 Días: Intención/);
+  const html = render(() => opens++);
+  assert.match(html, />Intención</);
+  assert.doesNotMatch(html, /0 Días:/);
   pressProps.onPress?.({ stopPropagation: () => { stopped = true; } });
   assert.equal(opens, 1);
   assert.equal(stopped, true);

@@ -3,11 +3,17 @@ name: Fondo global de Índigo 2
 description: Alcance compartido y referencia visual confirmada para los colores del fondo de Índigo 2.
 ---
 
-Índigo 2 usa un degradado temático compartido en toda la app. El primer tono también es el color sólido base; el fondo visible NO debe quedar plano. Biblioteca, Descargas, Diario, Notificaciones e Historial usan los cuatro primeros tonos del tema. Los tonos elegidos se distribuyen a lo largo de cada pantalla. El fondo predeterminado del Mezclador de sonidos y sus vistas inmersivas también usan cuatro tonos; los fondos personalizados se respetan.
+Los buscadores de Descubrir, Sonidos y Dormir usan el degradado completo del tema activo, no la selección reducida de otras superficies.
 
-**Why:** Cambiar solo el valor `solid` no alteró el fondo visible, porque la mayoría de pantallas dibujan los stops del tema. El usuario ha enviado referencias con secuencias de colores distintas; cuando los porcentajes están recortados o no son legibles, se distribuyen los tonos uniformemente de arriba abajo, sin inventar posiciones. También pidió expresamente que las cinco superficies indicadas usaran los cuatro primeros tonos.
+**Why:** El usuario pidió expresamente todos los tonos en estas tres pantallas; la regla de cuatro tonos de otras vistas no debe propagarse a los buscadores.
 
-**How to apply:** Tratar la definición del tema como fuente única para fondos de pantalla; si cambia el número de tonos, actualizar también las posiciones en igual cantidad. Aplicar el recorte específico de cada superficie sin truncar el tema global ni cambiar Perfil. Al cambiar el fondo predeterminado del Mezclador, revisar también sus vistas inmersivas: tienen una definición propia y pueden conservar tonos antiguos. Los fondos explícitos de cards, sheets o identidades particulares no se modifican sin solicitud específica.
+**How to apply:** Conservar todas las posiciones y la dirección del tema, con el encabezado transparente para no ocultar el comienzo del degradado. No extender este cambio a otros buscadores sin solicitud.
+
+Índigo 2 usa un degradado temático compartido en toda la app. El primer tono también es el color sólido base; el fondo visible NO debe quedar plano. Biblioteca, Descargas, Diario, Notificaciones e Historial usan el degradado completo del tema activo, tanto en rutas como al abrirse desde el menú. El fondo predeterminado del Mezclador de sonidos y sus vistas inmersivas sigue usando cuatro tonos; los fondos personalizados se respetan.
+
+**Why:** Cambiar solo el valor `solid` no altera el fondo visible si la pantalla dibuja los stops del tema. El usuario amplió expresamente el tratamiento completo de los buscadores a estas cinco superficies; esa petición reemplaza su reducción anterior a cuatro tonos, pero no modifica el Mezclador.
+
+**How to apply:** Tratar la definición del tema como fuente única para fondos de pantalla; conservar todos sus colores, posiciones y dirección en las superficies de degradado completo. En Biblioteca, comprobar también el contenedor de su overlay. Los fondos explícitos de cards, formularios y sheets conservan sus reglas propias; no cambiar Perfil ni el Mezclador por esta petición.
 
 Historial estado de ánimo conserva un degradado editorial propio, ligeramente diagonal, independiente del tema global.
 
