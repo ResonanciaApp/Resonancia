@@ -163,14 +163,15 @@ test("Intención has the same content insets as the streak history, without the 
   assert.match(growthSource, /previewArt: \{ width: 100, height: 100 \}/);
 });
 
-test("Perfil reduces Esta semana height by 5px from the top while retaining other section insets", () => {
+test("Perfil uses 15px above Esta semana and below the day labels without changing history insets", () => {
   const source = readFileSync(new URL("../components/ProfileScreenBase.tsx", import.meta.url), "utf8");
-  assert.match(source, /sectionTopPadding=\{PROFILE_WEEK_TOP_PADDING - 5\}/);
+  assert.match(source, /sectionTopPadding=\{PROFILE_WEEK_TOP_PADDING\}/);
+  assert.match(source, /sectionBottomPadding=\{15\}/);
   const basePadding = Number(source.match(/const PROFILE_WEEK_TOP_PADDING = (\d+);/)?.[1]);
   const html = render({
     separateStreakHistory: true,
     sectionBackgroundColor: "rgba(0,0,0,0.22)",
-    sectionTopPadding: basePadding - 5,
+    sectionTopPadding: basePadding,
     sectionBottomPadding: 15,
     sectionHorizontalPadding: 20,
     streakHistoryTopPadding: 17,
@@ -179,7 +180,7 @@ test("Perfil reduces Esta semana height by 5px from the top while retaining othe
   const weekly = html.match(/<div[^>]*data-testid="profile-weekly-progress"[^>]*>/)?.[0] ?? "";
   const history = html.match(/<div[^>]*data-testid="profile-streak-history"[^>]*>/)?.[0] ?? "";
   assert.match(weekly, /data-background="rgba\(0,0,0,0.22\)"/);
-  assert.match(weekly, /data-padding-top="16"/);
+  assert.match(weekly, /data-padding-top="15"/);
   assert.match(weekly, /data-padding-bottom="15"/);
   assert.match(weekly, /data-padding-horizontal="20"/);
   assert.match(history, /data-background="rgba\(0,0,0,0.22\)"/);

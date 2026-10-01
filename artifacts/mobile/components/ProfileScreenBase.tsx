@@ -99,7 +99,7 @@ const SHOW_PROFILE_PRACTICE_CARDS = false;
 // Separación entre los bloques de progreso en Perfil.
 const PROFILE_SECTION_GAP = 21;
 const PROFILE_CARD_BOTTOM_PADDING = 8;
-const PROFILE_WEEK_TOP_PADDING = 21;
+const PROFILE_WEEK_TOP_PADDING = 15;
 
 function resizeImageForWeb(uri: string, maxSize: number): Promise<string> {
   return new Promise((resolve, reject) => {
@@ -1390,7 +1390,7 @@ export function ProfileScreenBase({
                 longestStreakIconColor={MEMBERSHIP_AURORA.premium.accent}
                 sectionBackgroundColor="rgba(0,0,0,0.22)"
                 sectionHorizontalPadding={20}
-                sectionTopPadding={PROFILE_WEEK_TOP_PADDING - 5}
+                sectionTopPadding={PROFILE_WEEK_TOP_PADDING}
                 sectionBottomPadding={15}
                 sectionMarginBottom={PROFILE_SECTION_GAP}
                 afterStreakHistory={
