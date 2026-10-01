@@ -21,7 +21,7 @@ En Perfil, Intención conserva contenido y acceso a Tu camino, pero su tarjeta d
 
 **How to apply:** Mantener los insets del historial como referencia para la tarjeta de Intención; no forzar una altura que introduzca espacio vacío adicional.
 
-La píldora «Intención» y la tarjeta de Intención de Perfil abren directamente la misma ventana canónica «Tu camino». El toque en la píldora no debe abrir Mi cuenta y usa el mismo feedback de reducción/rebote que actualizar recomendaciones de Inicio.
+La píldora de Intención y la tarjeta de Intención de Perfil abren directamente la misma ventana canónica «Tu camino». El toque en la píldora no debe abrir Mi cuenta y usa el mismo feedback de reducción/rebote que actualizar recomendaciones de Inicio.
 
 **Why:** El usuario pidió primero el acceso directo desde la identidad compacta y después añadir también la tarjeta de Tu progreso debajo del historial de rachas. Son dos entradas al mismo recorrido, no dos versiones independientes.
 

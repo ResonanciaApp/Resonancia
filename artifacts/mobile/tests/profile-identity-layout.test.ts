@@ -58,7 +58,7 @@ const Native = (props: any) => {
     "data-icon": props.name,
   }, props.children);
 };
-const Pill = (props: any) => React.createElement(Native, { ...props, testID: "profile-intention-pill" }, "Intención");
+const Pill = (props: any) => React.createElement(Native, { ...props, testID: "profile-intention-pill" }, "0 Días: Intención");
 const Identity = new Function(
   "React", "View", "Pressable", "Text", "Feather", "MaterialCommunityIcons", "Image", "SessionBadgeGlass", "ProfileIntentionPill",
   `${compiled}\nreturn Identity;`,

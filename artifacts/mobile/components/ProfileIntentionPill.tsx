@@ -17,7 +17,7 @@ export function ProfileIntentionPill({
       <Pressable
         testID="profile-intention-pill"
         accessibilityRole="button"
-        accessibilityLabel="Intención. Abrir Tu camino"
+        accessibilityLabel="0 Días: Intención. Abrir Tu camino"
         onPressIn={() => animatePress(true)}
         onPressOut={() => animatePress(false)}
         onPress={(event) => {
@@ -26,7 +26,10 @@ export function ProfileIntentionPill({
         }}
         style={({ pressed }) => [style, pressed && { opacity: 0.78 }]}
       >
-        <Text style={textStyle}>Intención</Text>
+        <Text style={textStyle}>
+          <Text style={{ fontWeight: "700" }}>0 Días</Text>
+          {": Intención"}
+        </Text>
       </Pressable>
     </Animated.View>
   );

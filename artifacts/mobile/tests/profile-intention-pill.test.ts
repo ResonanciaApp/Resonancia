@@ -7,6 +7,7 @@ import { renderToStaticMarkup } from "react-dom/server";
 import ts from "typescript";
 
 type PressProps = {
+  accessibilityLabel?: string;
   children?: React.ReactNode;
   onPress?: (event: { stopPropagation: () => void }) => void;
   onPressIn?: () => void;
@@ -30,7 +31,8 @@ const native = {
       start: () => animations.push({ kind: "spring", options }),
     }),
   },
-  Text: Native,
+  Text: ({ children, style }: { children?: React.ReactNode; style?: { fontWeight?: string } }) =>
+    React.createElement("span", { "data-font-weight": style?.fontWeight }, children),
   Pressable: (props: PressProps) => {
     pressProps = props;
     return React.createElement("button", null, props.children);
@@ -58,8 +60,8 @@ test("the Intención pill opens Tu camino and stops the Mi cuenta parent action"
   let opens = 0;
   let stopped = false;
   const html = render(() => opens++);
-  assert.match(html, />Intención</);
-  assert.doesNotMatch(html, /0 Días:/);
+  assert.match(html, /<span data-font-weight="700">0 Días<\/span>: Intención/);
+  assert.equal(pressProps.accessibilityLabel, "0 Días: Intención. Abrir Tu camino");
   pressProps.onPress?.({ stopPropagation: () => { stopped = true; } });
   assert.equal(opens, 1);
   assert.equal(stopped, true);
