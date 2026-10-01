@@ -56,7 +56,6 @@ const INICIO3_SECTIONS: { title: string | null; items: MenuItem[] }[] = [
       { id: "library", label: "Biblioteca", icon: "book", mciIcon: "bookshelf", route: "__biblioteca_overlay" },
       { id: "history", label: "Historial", icon: "clock", mciIcon: "history", route: "__overlay:/historial" },
       { id: "downloads", label: "Descargas", icon: "download", mciIcon: "download-outline", route: "__overlay:/descargas" },
-      { id: "journal", label: "Diario", icon: "edit-3", mciIcon: "book-open-page-variant-outline", route: "__overlay:/diario" },
       { id: "notifications", label: "Notificaciones", icon: "bell", mciIcon: "bell-outline", route: "__overlay:/notificaciones" },
     ],
   },
@@ -603,7 +602,7 @@ const styles = StyleSheet.create({
   inicio3SectionDivider: {
     height: 1,
     marginTop: 24,
-    marginBottom: 25,
+    marginBottom: 10,
   },
   inicio3SectionTitle: {
     fontFamily: "Manrope",

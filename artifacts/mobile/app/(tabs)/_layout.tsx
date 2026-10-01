@@ -28,12 +28,12 @@ import { CategoryOverlayProvider, useCategoryOverlay } from "@/context/CategoryO
 import { CategoryOverlay } from "@/components/CategoryOverlay";
 import { SacredBackground } from "@/components/SacredBackground";
 import { WIDGET_GREEN_SOLID } from "@/constants/colors";
-import { TAB_BAR_BLUR_INTENSITY, TAB_BAR_GLASS_OVERLAY } from "@/constants/tab-bar";
+import { TAB_BAR_BLUR_INTENSITY, TAB_BAR_GLASS_OVERLAY, TAB_BAR_INACTIVE_COLOR } from "@/constants/tab-bar";
 import { RoutineCompletionBanner } from "@/components/RoutineCompletionBanner";
 import { RoutineCompletionBannerProvider } from "@/context/RoutineCompletionBannerContext";
 
 const ACTIVE_COLOR   = "#FFFFFF";
-const INACTIVE_COLOR = "#CFDAFF";
+const INACTIVE_COLOR = TAB_BAR_INACTIVE_COLOR;
 const INDIGO2_COLOR  = "#DEDEDE";
 const GRAD_END       = "#F9F9F9";
 

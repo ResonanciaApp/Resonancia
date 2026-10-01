@@ -93,6 +93,7 @@ const PillTab = memo(function PillTab({
         onPress();
       }}
       style={[styles.pillTab, sel && styles.pillTabSel]}
+      hitSlop={{ top: 2.5, bottom: 2.5 }}
     >
       <View style={styles.pillTabLabelWrap}>
         <Text
@@ -701,7 +702,7 @@ export default function MezcladorScreen() {
                 ].map((row, i) => (
                   <View key={i} style={{ flexDirection: "row", gap: 11 }}>
                     {row.map((tab) => (
-                      <View key={tab.id}>
+                      <View key={tab.id} style={styles.pillTabSlot}>
                         <PillTab
                           tab={tab}
                           sel={mainTab === tab.id}
@@ -929,18 +930,19 @@ const styles = StyleSheet.create({
     position: "absolute",
     left: 0,
     right: 0,
-    bottom: 0,
+    bottom: 3,
     height: 1,
     backgroundColor: "rgba(255,255,255,0.07)",
   },
   pillRow:        { flexGrow: 0, marginTop: -12, backgroundColor: "transparent" },
   pillRowContent: { flexDirection: "row", gap: 8, paddingHorizontal: 15, paddingTop: 12, paddingBottom: 6 },
+  pillTabSlot: { height: 35, justifyContent: "center" },
   pillTab: {
     flexDirection: "row",
     alignItems: "center",
     gap: 9,
     paddingHorizontal: 13,
-    height: 35,
+    height: 30,
     borderRadius: 17.5,
     overflow: "hidden",
     backgroundColor: "transparent",
