@@ -101,7 +101,7 @@ const PROFILE_CARD_BOTTOM_PADDING = 6;
 const PROFILE_CARD_BOTTOM_MARGIN = 16;
 const PROFILE_CARD_Y_OFFSET = -5;
 const PROFILE_WEEK_TOP_PADDING = 21;
-const PROFILE_PILL_WEEK_GAP = 35;
+const PROFILE_PILL_WEEK_GAP = 60;
 const PROFILE_PROGRESS_TOP_MARGIN =
   PROFILE_PILL_WEEK_GAP - PROFILE_CARD_BOTTOM_PADDING - PROFILE_CARD_BOTTOM_MARGIN
   - PROFILE_WEEK_TOP_PADDING + PROFILE_CARD_Y_OFFSET;
@@ -1398,10 +1398,10 @@ export function ProfileScreenBase({
                 showPersonalStats={false}
                 showCalendar
                 showCalendarCompletedCount
-                streakTitle="Tu progreso semanal"
+                weeklySectionTitle="Esta semana"
                 separateStreakHistory
-                weeklySectionBackgroundColor="transparent"
-                weeklySectionHorizontalPadding={0}
+                weeklySectionBackgroundColor="rgba(0,0,0,0.22)"
+                weeklySectionHorizontalPadding={20}
                 streakHistoryTopPadding={17}
                 longestStreakLabel="RACHA ACUMULADA"
                 longestStreakIconColor={MEMBERSHIP_AURORA.premium.accent}
@@ -1410,7 +1410,6 @@ export function ProfileScreenBase({
                 sectionTopPadding={PROFILE_WEEK_TOP_PADDING}
                 sectionBottomPadding={15}
                 sectionMarginBottom={PROFILE_SECTION_GAP}
-                streakMarginBottom={PROFILE_SECTION_GAP - 12}
                 onStreakTitlePress={() => router.push("/progreso" as never)}
               />
             </View>

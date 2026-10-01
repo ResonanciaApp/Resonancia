@@ -185,27 +185,30 @@ test("Perfil removes only the weekly background and reduces history top padding 
   assert.match(history, /data-padding-top="17"/);
 });
 
-test("Perfil and Tu progreso extend weekly circles to the outer margins without widening history contents", () => {
-  for (const path of ["../components/ProfileScreenBase.tsx", "../app/progreso.tsx"]) {
+test("Perfil aligns weekly circles with the section inset while Tu progreso keeps its full-width row", () => {
+  for (const [path, padding] of [
+    ["../components/ProfileScreenBase.tsx", 20],
+    ["../app/progreso.tsx", 0],
+  ] as const) {
     const source = readFileSync(new URL(path, import.meta.url), "utf8");
-    assert.match(source, /weeklySectionHorizontalPadding=\{0\}/);
+    assert.match(source, new RegExp(`weeklySectionHorizontalPadding=\\{${padding}\\}`));
     assert.match(source, /sectionHorizontalPadding=\{20\}/);
+    const html = render({
+      separateStreakHistory: true,
+      showSectionBorders: false,
+      sectionHorizontalPadding: 20,
+      weeklySectionHorizontalPadding: padding,
+      showPersonalStats: false,
+      showCalendar: false,
+    });
+    const weekly = html.match(/<div[^>]*data-testid="profile-weekly-progress"[^>]*>/)?.[0] ?? "";
+    const history = html.match(/<div[^>]*data-testid="profile-streak-history"[^>]*>/)?.[0] ?? "";
+    assert.match(weekly, new RegExp(`data-padding-horizontal="${padding}"`));
+    assert.match(history, /data-padding-horizontal="20"/);
   }
-  const html = render({
-    separateStreakHistory: true,
-    showSectionBorders: false,
-    sectionHorizontalPadding: 20,
-    weeklySectionHorizontalPadding: 0,
-    showPersonalStats: false,
-    showCalendar: false,
-  });
-  const weekly = html.match(/<div[^>]*data-testid="profile-weekly-progress"[^>]*>/)?.[0] ?? "";
-  const history = html.match(/<div[^>]*data-testid="profile-streak-history"[^>]*>/)?.[0] ?? "";
-  assert.match(weekly, /data-padding-horizontal="0"/);
-  assert.match(history, /data-padding-horizontal="20"/);
 });
 
-test("Perfil lowers weekly circles and following content 15px, increasing the pill gap from 20px to 35px", () => {
+test("Perfil lowers Esta semana and all following content another 25px without changing section gaps", () => {
   const profileSource = readFileSync(new URL("../components/ProfileScreenBase.tsx", import.meta.url), "utf8");
   assert.doesNotMatch(profileSource, /profileIntentionDescription|Todo gran cambio comienza con el primer paso|Bienvenido a Resonancia/);
   assert.match(profileSource, /profileProgressSection:\s*\{\s*marginTop: PROFILE_PROGRESS_TOP_MARGIN,/);
@@ -223,29 +226,40 @@ test("Perfil lowers weekly circles and following content 15px, increasing the pi
   assert.ok(marginExpression);
   const margin = new Function(...constants, `return (${marginExpression});`)(...values);
   const [gap, padding, cardMargin, weekPadding, cardOffset] = values;
-  assert.equal(gap, 20 + 15);
-  assert.equal(padding + cardMargin + margin + weekPadding - cardOffset, 35);
+  assert.equal(gap, 35 + 25);
+  assert.equal(padding + cardMargin + margin + weekPadding - cardOffset, 60);
   const detailsStart = profileSource.indexOf('testID="profile-identity-details"');
   const locationIndex = profileSource.indexOf("{location ? (", detailsStart);
   const pillIndex = profileSource.indexOf("<ProfileIntentionPill", detailsStart);
   assert.ok(locationIndex > detailsStart && pillIndex > locationIndex, "optional location stays above the pill");
 });
 
-test("Perfil raises streak history and the following sections 12px without moving the weekly circles", () => {
+test("Perfil gives Esta semana its own background and matches weekly/history and history/calendar gaps", () => {
   const source = readFileSync(new URL("../components/ProfileScreenBase.tsx", import.meta.url), "utf8");
-  assert.match(source, /streakMarginBottom=\{PROFILE_SECTION_GAP - 12\}/);
+  assert.match(source, /weeklySectionTitle="Esta semana"/);
+  assert.match(source, /weeklySectionBackgroundColor="rgba\(0,0,0,0.22\)"/);
+  assert.doesNotMatch(source, /streakMarginBottom=\{PROFILE_SECTION_GAP - 12\}/);
   assert.match(source, /sectionMarginBottom=\{PROFILE_SECTION_GAP\}/);
   const html = render({
     separateStreakHistory: true,
+    weeklySectionTitle: "Esta semana",
+    weeklySectionBackgroundColor: "rgba(0,0,0,0.22)",
+    sectionBackgroundColor: "rgba(0,0,0,0.22)",
     sectionMarginBottom: 21,
-    streakMarginBottom: 9,
     showPersonalStats: false,
     showCalendar: true,
   });
   const weekly = html.match(/<div[^>]*data-testid="profile-weekly-progress"[^>]*>/)?.[0] ?? "";
   const history = html.match(/<div[^>]*data-testid="profile-streak-history"[^>]*>/)?.[0] ?? "";
-  assert.match(weekly, /data-margin-bottom="9"/);
+  assert.match(weekly, /data-background="rgba\(0,0,0,0.22\)"/);
+  assert.match(weekly, /data-margin-bottom="21"/);
   assert.match(history, /data-margin-bottom="21"/);
+  const title = html.indexOf("Esta semana");
+  const days = html.indexOf('data-testid="seven-week-days"');
+  const historyIndex = html.indexOf('data-testid="profile-streak-history"');
+  assert.ok(title >= 0 && title < days && days < historyIndex);
+  assert.ok(html.indexOf('data-testid="calendar"') > historyIndex);
+  assert.doesNotMatch(html.slice(0, historyIndex), /RACHA ACTUAL|RACHAS COMPLETADAS/);
 });
 
 test("Perfil hides personal stats and the divider above the week while retaining history and calendar", () => {

@@ -3,11 +3,11 @@ name: Progreso visible en Perfil
 description: Orden actual del progreso en Perfil y su relación con Tu progreso.
 ---
 
-Perfil separa la semana del historial de rachas. Los siete círculos y días van sin fondo, título interior, cifras ni línea divisora encima. Debajo va «Historial de rachas», con fondo y título dentro: arriba «Racha actual» a la izquierda y «Rachas completadas» a la derecha; abajo «Racha más larga» y «Racha acumulada». Después permanecen el calendario y el historial de sesiones, sin la sección «Mis estadísticas» en Perfil.
+Perfil y Tu progreso comparten las cifras del historial de rachas, pero el tratamiento de la semana se decide por superficie. Perfil muestra una sección con fondo y título «Esta semana»; Tu progreso conserva los siete días sin fondo ni título interior. Debajo va el historial completo de cuatro cifras. Solo Perfil conserva después el calendario y el historial de sesiones.
 
-**Why:** El usuario quiere Perfil simplificado: semana sin fondo ni divisor superior, rachas agrupadas en su propia sección y sin el módulo «Mis estadísticas». Después pidió llevar a Tu progreso los círculos separados y el historial completo de cuatro cifras.
+**Why:** El usuario pidió reutilizar el historial completo en Tu progreso, pero posteriormente pidió volver a dar fondo y título a la semana únicamente en Perfil. Compartir los datos no autoriza a propagar ese cambio visual a ambas pantallas.
 
-**How to apply:** Mantener la semana sin fondo y el historial en su propia tarjeta tanto en Perfil como en Tu progreso. No reintroducir «Mis estadísticas» en Perfil ni retirar el calendario o el historial de sesiones; esos últimos bloques no se añaden a Tu progreso. Bajo el nombre de Perfil sigue la identidad compacta «0 Días: Intención»; la tarjeta que abre Tu camino permanece solo en Tu progreso.
+**How to apply:** Configurar el tratamiento semanal por pantalla y mantener el historial en su propia tarjeta. En Perfil, igualar la separación semana/historial a la separación historial/calendario. No reintroducir «Mis estadísticas» en Perfil ni añadir calendario o historial de sesiones a Tu progreso. La identidad compacta «0 Días: Intención» de Perfil y la tarjeta de Tu progreso conservan sus accesos a Tu camino.
 
 En Tu progreso, Intención conserva contenido y acceso a Tu camino, pero su tarjeta debe ser compacta y respetar la misma distancia entre borde y contenido que el historial de rachas.
 

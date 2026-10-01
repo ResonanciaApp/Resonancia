@@ -43,6 +43,7 @@ export function ProgressMirrorSections({
   separateStreakHistory = false,
   weeklySectionBackgroundColor,
   weeklySectionHorizontalPadding,
+  weeklySectionTitle,
   streakHistoryTopPadding,
   longestStreakLabel = "RACHA MÁS LARGA",
   longestStreakIconColor,
@@ -79,6 +80,7 @@ export function ProgressMirrorSections({
   separateStreakHistory?: boolean;
   weeklySectionBackgroundColor?: string;
   weeklySectionHorizontalPadding?: number;
+  weeklySectionTitle?: string;
   streakHistoryTopPadding?: number;
   longestStreakLabel?: string;
   longestStreakIconColor?: string;
@@ -406,6 +408,7 @@ export function ProgressMirrorSections({
     </View>
   ) : null;
 
+  const displayedStreakTitle = separateStreakHistory ? weeklySectionTitle : streakTitle;
   const streakContent = (
         <View
           testID={separateStreakHistory ? "profile-weekly-progress" : undefined}
@@ -443,26 +446,31 @@ export function ProgressMirrorSections({
               ? { transform: [{ translateY: streakContentTranslateY }] }
               : undefined}
           >
-          {streakTitle && !separateStreakHistory ? (
+          {displayedStreakTitle ? (
             <ContentEntrance
               animated={animateEntrance}
               replayKey={`${entranceReplayKey}:streak-title`}
               delay={entranceBaseDelay + 420}
             >
-              <View style={styles.streakTitleRow}>
+              <View style={[
+                styles.streakTitleRow,
+                separateStreakHistory && weeklySectionHorizontalPadding === 0 && {
+                  paddingHorizontal: sectionHorizontalPadding ?? 16,
+                },
+              ]}>
                 {onStreakTitlePress ? (
                   <Pressable
                     onPress={onStreakTitlePress}
                     accessibilityRole="button"
-                    accessibilityLabel={`Abrir ${streakTitle}`}
+                    accessibilityLabel={`Abrir ${displayedStreakTitle}`}
                   >
                     <Text style={[styles.streakTitle, { color: colors.foreground }]}>
-                      {streakTitle}
+                      {displayedStreakTitle}
                     </Text>
                   </Pressable>
                 ) : (
                   <Text style={[styles.streakTitle, { color: colors.foreground }]}>
-                    {streakTitle}
+                    {displayedStreakTitle}
                   </Text>
                 )}
                 {showStreakViewAll && onStreakTitlePress ? (
