@@ -59,7 +59,6 @@ import { useGreetingVisible } from "@/context/GreetingVisibleContext";
 import { useDrawer } from "@/context/DrawerContext";
 import { useCategoryOverlay } from "@/context/CategoryOverlayContext";
 import { getWeeklyPhrase } from "@/data/greeting-phrases";
-import { resolveFeaturedMoment } from "@/data/featured-moment";
 import { GlowRing } from "@/components/GlowRing";
 import { HeroCornerBorder } from "@/components/HeroCornerBorder";
 import { MoodPickerSheet } from "@/components/MoodPickerSheet";
@@ -81,6 +80,7 @@ import { useAmbientPlayer, AMBIENT_SCENES } from "@/context/AmbientPlayerContext
 import { useSceneTheme } from "@/context/SceneThemeContext";
 import { isIndigoThemeId } from "@/config/scene-themes";
 import { useCatalog } from "@/context/CatalogContext";
+import { useFeaturedMoment } from "@/hooks/useFeaturedMoment";
 import { useFoldersPlaylists } from "@/context/FoldersPlaylistsContext";
 import { useMixer } from "@/context/MixerContext";
 import { useMixerPanel } from "@/context/MixerPanelContext";
@@ -92,7 +92,6 @@ import { TEMAS } from "@/data/temas";
 import {
   getGetPopularSessionsQueryKey,
   useGetHeroSessionSlides,
-  useGetPinnedFeatured,
   useGetPopularSessions,
   useGetSceneAnimations,
 } from "@workspace/api-client-react";
@@ -2379,26 +2378,9 @@ export default function HomeScreen2({
     setShuffleBgColor(`rgba(${vary(r0)},${vary(g0)},${vary(b0)},0.92)`);
   }, [activeTheme]);
 
-  const {
-    version: catalogVersion,
-    status: catalogStatus,
-  } = useCatalog();
-  const {
-    data: pinnedFeaturedData,
-    refetch: refetchPinnedFeatured,
-  } = useGetPinnedFeatured();
-  useFocusEffect(
-    useCallback(() => {
-      void refetchPinnedFeatured();
-    }, [refetchPinnedFeatured]),
-  );
-
-  const featuredMoment = React.useMemo(() => {
-    return resolveFeaturedMoment(
-      SESSIONS,
-      pinnedFeaturedData?.session?.id,
-    );
-  }, [pinnedFeaturedData, catalogVersion]);
+  const { version: catalogVersion } = useCatalog();
+  const { session: featuredMoment, statusMessage: featuredMomentStatus } =
+    useFeaturedMoment();
 
   const [actionsSession, setActionsSession] = useState<Session | null>(null);
   const [recoOffset, setRecoOffset] = useState(0);
@@ -3064,7 +3046,7 @@ export default function HomeScreen2({
             onRefreshRecommendations={commitDailyRecommendations}
           />
         )}
-        {isInicio2 && featuredMoment && (
+        {isInicio2 && (
           <View
             style={{
               paddingHorizontal: GRID_PAD,
@@ -3075,6 +3057,7 @@ export default function HomeScreen2({
             <Text style={[styles.sectionTitle, { fontSize: 17, marginBottom: 17 }]}>
               Para este momento
             </Text>
+            {featuredMoment ? (
             <Pressable
               onPress={() => {
                 if (featuredMoment.isPremium && !isPremium) {
@@ -3171,9 +3154,17 @@ export default function HomeScreen2({
                 );
               })()}
             </Pressable>
+            ) : (
+              <Text style={styles.featuredMomentStatus}>
+                {featuredMomentStatus ?? "Actualizando selección diaria…"}
+              </Text>
+            )}
+            {featuredMoment && featuredMomentStatus ? (
+              <Text style={styles.featuredMomentStatus}>{featuredMomentStatus}</Text>
+            ) : null}
           </View>
         )}
-        {variant === "inicio3" && featuredMoment && (
+        {variant === "inicio3" && isInicio2 && (
           <View style={styles.inicio3SectionDivider} />
         )}
         {isInicio2 && (
@@ -4780,6 +4771,13 @@ const styles = StyleSheet.create({
     position: "absolute",
     left: 12,
     bottom: 12,
+  },
+  featuredMomentStatus: {
+    color: CARD_TEXT_BELOW,
+    fontFamily: "Manrope",
+    fontSize: 13,
+    marginTop: 8,
+    marginBottom: 10,
   },
   heroMetaText: { fontFamily: "Manrope", fontSize: 11, lineHeight: 14, color: "#F4F4F4", marginBottom: 6 },
   heroTitle: { fontFamily: "Manrope", fontSize: 15, fontWeight: "700", lineHeight: 20, color: "#FBFBFB", marginBottom: 4 },

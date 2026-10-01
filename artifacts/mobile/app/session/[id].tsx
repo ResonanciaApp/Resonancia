@@ -33,6 +33,7 @@ import { useStreakCelebration } from "@/context/StreakCelebrationContext";
 import { useTabBarVisibility } from "@/context/TabBarVisibilityContext";
 import { useGetSessionPlayCount, getGetSessionPlayCountQueryKey } from "@workspace/api-client-react";
 import { getSessionById, getSonidosVisibleSessions } from "@/data/sessions";
+import { getTemporaryFeaturedMomentSession } from "@/lib/featured-moment-session";
 import { getGuide, getGuideById } from "@/data/guides";
 import { useResonadores } from "@/hooks/useResonadores";
 import { getMeditationBackgroundSounds } from "@/data/sounds";
@@ -127,7 +128,9 @@ export default function SessionDetailScreen({ id: idProp }: { id?: string } = {}
   const bottomPad = Platform.OS === "web" ? 34 : insets.bottom;
   const topPad = Platform.OS === "web" ? 67 : insets.top;
 
-  const session = getSessionById(id ?? "");
+  const session =
+    getTemporaryFeaturedMomentSession(id ?? "") ??
+    getSessionById(id ?? "");
 
   useEffect(() => {
     preserveTabBarHiddenRef.current = false;

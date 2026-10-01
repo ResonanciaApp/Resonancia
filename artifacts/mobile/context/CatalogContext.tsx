@@ -65,6 +65,10 @@ type CatalogContextValue = {
   homeEditorialPlaylists: EditorialPlaylist[];
   /** Definiciones publicadas de carruseles (los slugs se resuelven al renderizar). */
   editorialPlaylistCarousels: PlaylistCarouselSnapshot[];
+  /** IDs present in the latest applied server snapshot (not bundled offline IDs). */
+  catalogSessionIds: ReadonlySet<string> | null;
+  /** Timestamp of the most recently fetched server snapshot (0 for local cache). */
+  catalogSnapshotFetchedAt: number;
 };
 
 const CatalogContext = createContext<CatalogContextValue>({
@@ -73,6 +77,8 @@ const CatalogContext = createContext<CatalogContextValue>({
   editorialPlaylists: PLAYLISTS,
   homeEditorialPlaylists: HOME_PLAYLISTS,
   editorialPlaylistCarousels: PLAYLIST_CAROUSELS,
+  catalogSessionIds: null,
+  catalogSnapshotFetchedAt: 0,
 });
 
 type CatalogSnapshot = {
@@ -110,6 +116,8 @@ function hydrate(snapshot: CatalogSnapshot): void {
 export function CatalogProvider({ children }: { children: ReactNode }) {
   const [status, setStatus] = useState<CatalogStatus>("bundled");
   const [version, setVersion] = useState(0);
+  const [catalogSessionIds, setCatalogSessionIds] = useState<ReadonlySet<string> | null>(null);
+  const [catalogSnapshotFetchedAt, setCatalogSnapshotFetchedAt] = useState(0);
   const lastSignature = useRef<string | null>(null);
   const remoteApplied = useRef(false);
 
@@ -126,6 +134,7 @@ export function CatalogProvider({ children }: { children: ReactNode }) {
         const signature = JSON.stringify(parsed);
         if (signature === lastSignature.current) return;
         hydrate(parsed);
+        setCatalogSessionIds(new Set(parsed.sessions.map((session) => session.id)));
         lastSignature.current = signature;
         if (!cancelled) {
           setStatus("cached");
@@ -141,7 +150,7 @@ export function CatalogProvider({ children }: { children: ReactNode }) {
   }, []);
 
   // 2) Traer el catálogo fresco del servidor.
-  const { data } = useGetCatalog();
+  const { data, dataUpdatedAt } = useGetCatalog();
 
   useEffect(() => {
     if (!data?.categories || !data?.sessions) return;
@@ -152,16 +161,19 @@ export function CatalogProvider({ children }: { children: ReactNode }) {
     const signature = JSON.stringify(snapshot);
     if (signature === lastSignature.current) {
       setStatus("remote");
+      setCatalogSnapshotFetchedAt(dataUpdatedAt);
       return;
     }
     hydrate(snapshot);
+    setCatalogSessionIds(new Set(snapshot.sessions.map((session) => session.id)));
     lastSignature.current = signature;
     setStatus("remote");
+    setCatalogSnapshotFetchedAt(dataUpdatedAt);
     setVersion((v) => v + 1);
     AsyncStorage.setItem(CACHE_KEY, signature).catch(() => {
       // Si falla el guardado del cache, el próximo arranque usa lo bundleado.
     });
-  }, [data]);
+  }, [data, dataUpdatedAt]);
 
   return (
     <CatalogContext.Provider
@@ -171,6 +183,8 @@ export function CatalogProvider({ children }: { children: ReactNode }) {
         editorialPlaylists: PLAYLISTS,
         homeEditorialPlaylists: HOME_PLAYLISTS,
         editorialPlaylistCarousels: PLAYLIST_CAROUSELS,
+        catalogSessionIds,
+        catalogSnapshotFetchedAt,
       }}
     >
       {children}

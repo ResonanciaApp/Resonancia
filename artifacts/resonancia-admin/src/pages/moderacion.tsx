@@ -9,8 +9,6 @@ import {
   useHideSubmission,
   useUnhideSubmission,
   useDeleteSubmission,
-  useGetPinnedFeatured,
-  useSetPinnedFeatured,
   useRequestUploadUrl,
   useAddAdminSessionAudio,
   useDeleteAdminSessionAudio,
@@ -105,147 +103,6 @@ function resolveImageUrl(raw: string | null | undefined): string | null {
   // Paths relativos de Object Storage → pasar por el proxy API
   if (raw.startsWith("/objects/")) return `/api/storage${raw}`;
   return raw;
-}
-
-// ─── Destacada de hoy ────────────────────────────────────────────────────────
-
-function DestacadaDeHoy() {
-  const qc = useQueryClient();
-  const { data, isLoading } = useGetPinnedFeatured();
-  const pinMutation = useSetPinnedFeatured({
-    mutation: {
-      onSuccess: () => {
-        toast.success("Sesión destacada actualizada.");
-        qc.invalidateQueries({ queryKey: ["getPinnedFeatured"] });
-        qc.invalidateQueries();
-        setPickerOpen(false);
-        setSearch("");
-      },
-      onError: () => toast.error("No se pudo actualizar la sesión destacada."),
-    },
-  });
-
-  const [pickerOpen, setPickerOpen] = useState(false);
-  const [search, setSearch] = useState("");
-
-  const { data: publishedData, isLoading: loadingSessions } = useGetPendingSubmissions(
-    { status: "published" },
-    { query: { queryKey: getGetPendingSubmissionsQueryKey({ status: "published" }), enabled: pickerOpen } },
-  );
-
-  const filtered = (publishedData?.submissions ?? []).filter((s) =>
-    s.title.toLowerCase().includes(search.toLowerCase()) ||
-    s.categoryLabel?.toLowerCase().includes(search.toLowerCase()),
-  );
-
-  const current = data?.session ?? null;
-
-  return (
-    <Card>
-      <CardContent className="pt-5 space-y-3">
-        <div className="flex items-center justify-between gap-2">
-          <div>
-            <p className="font-semibold text-sm">Destacada de hoy</p>
-            <p className="text-xs text-muted-foreground">
-              Sesión fijada manualmente en la pantalla de inicio de la app.
-            </p>
-          </div>
-          <div className="flex gap-2 shrink-0">
-            {current && (
-              <Button
-                variant="outline"
-                size="sm"
-                disabled={pinMutation.isPending}
-                onClick={() => pinMutation.mutate({ data: { sessionId: null } })}
-              >
-                Limpiar
-              </Button>
-            )}
-            <Button size="sm" onClick={() => setPickerOpen(true)}>
-              {current ? "Cambiar" : "Seleccionar"}
-            </Button>
-          </div>
-        </div>
-
-        {isLoading ? (
-          <p className="text-xs text-muted-foreground">Cargando…</p>
-        ) : current ? (
-          <div className="flex items-center gap-3 rounded-md border px-3 py-2 bg-muted/30">
-            {resolveImageUrl(current.imageUrl) && (
-              <img
-                src={resolveImageUrl(current.imageUrl)!}
-                alt={current.title}
-                className="w-10 h-10 rounded object-cover shrink-0"
-              />
-            )}
-            <div className="min-w-0">
-              <p className="text-sm font-medium truncate">{current.title}</p>
-              <p className="text-xs text-muted-foreground truncate">
-                {current.categoryLabel} · {current.durationLabel}
-              </p>
-            </div>
-            <Badge variant="default" className="ml-auto shrink-0">Pinneada</Badge>
-          </div>
-        ) : (
-          <p className="text-xs text-muted-foreground italic">
-            Ninguna sesión seleccionada — se mostrará la sesión aleatoria del día.
-          </p>
-        )}
-      </CardContent>
-
-      <Dialog open={pickerOpen} onOpenChange={setPickerOpen}>
-        <DialogContent className="max-w-lg">
-          <DialogHeader>
-            <DialogTitle>Elegir "Destacada de hoy"</DialogTitle>
-          </DialogHeader>
-          <Input
-            placeholder="Buscar por título o categoría…"
-            value={search}
-            onChange={(e) => setSearch(e.target.value)}
-            autoFocus
-          />
-          <ScrollArea className="h-80 pr-2">
-            {loadingSessions ? (
-              <p className="text-sm text-muted-foreground py-4 text-center">Cargando sesiones…</p>
-            ) : filtered.length === 0 ? (
-              <p className="text-sm text-muted-foreground py-4 text-center">Sin resultados.</p>
-            ) : (
-              <div className="space-y-1 pt-1">
-                {filtered.map((s) => (
-                  <button
-                    key={s.id}
-                    className="w-full flex items-center gap-3 rounded-md px-3 py-2 text-left hover:bg-accent transition-colors"
-                    onClick={() => pinMutation.mutate({ data: { sessionId: s.id } })}
-                    disabled={pinMutation.isPending}
-                  >
-                    {resolveImageUrl(s.imageUrl) && (
-                      <img
-                        src={resolveImageUrl(s.imageUrl)!}
-                        alt={s.title}
-                        className="w-9 h-9 rounded object-cover shrink-0"
-                      />
-                    )}
-                    <div className="min-w-0 flex-1">
-                      <p className="text-sm font-medium truncate">{s.title}</p>
-                      <p className="text-xs text-muted-foreground truncate">
-                        {s.categoryLabel} · {s.durationLabel}
-                      </p>
-                    </div>
-                    {current?.id === s.id && (
-                      <Badge variant="secondary" className="shrink-0">Actual</Badge>
-                    )}
-                  </button>
-                ))}
-              </div>
-            )}
-          </ScrollArea>
-          <DialogFooter>
-            <Button variant="outline" onClick={() => setPickerOpen(false)}>Cancelar</Button>
-          </DialogFooter>
-        </DialogContent>
-      </Dialog>
-    </Card>
-  );
 }
 
 // ─── Gestión editorial de sesiones ───────────────────────────────────────────
@@ -348,7 +205,6 @@ function EditDialog({
   const [duration, setDuration] = useState(String(submission.duration ?? ""));
   const [description, setDescription] = useState(submission.description ?? "");
   const [isPremium, setIsPremium] = useState(submission.isPremium);
-  const [isFeatured, setIsFeatured] = useState(submission.isFeatured);
   const [isFeaturedCategory, setIsFeaturedCategory] = useState(submission.isFeaturedCategory);
   const [isFeaturedSleep, setIsFeaturedSleep] = useState(submission.isFeaturedSleep);
   const [isNew, setIsNew] = useState(submission.isNew);
@@ -823,10 +679,6 @@ function EditDialog({
                 <Switch id="edit-premium" checked={isPremium} onCheckedChange={setIsPremium} />
               </div>
               <div className="flex items-center justify-between">
-                <Label htmlFor="edit-featured">Destacada en Inicio</Label>
-                <Switch id="edit-featured" checked={isFeatured} onCheckedChange={setIsFeatured} />
-              </div>
-              <div className="flex items-center justify-between">
                 <Label htmlFor="edit-featured-category">Destacada en su categoría</Label>
                 <Switch id="edit-featured-category" checked={isFeaturedCategory} onCheckedChange={setIsFeaturedCategory} />
               </div>
@@ -1114,7 +966,6 @@ function EditDialog({
                   ...(duration && !isNaN(dur) ? { duration: dur } : {}),
                   ...(description.trim() ? { description: description.trim() } : {}),
                   isPremium,
-                  isFeatured,
                   isFeaturedCategory,
                   isFeaturedSleep: descansoTags.length > 0 && isFeaturedSleep,
                   isNew,
@@ -1284,6 +1135,11 @@ function SubmissionCard({ submission, isModerator }: { submission: Submission; i
               onClick={() => setEditOpen(true)}
             >
               Editar
+            </Button>
+            <Button size="sm" variant="outline" asChild>
+              <Link href={`/para-este-momento?sessionId=${encodeURIComponent(submission.id)}`}>
+                Para este momento
+              </Link>
             </Button>
             {!isModerator && (
               <Button
@@ -1699,8 +1555,6 @@ export default function SesionesListaPage({ isModerator }: { isModerator?: boole
           </Button>
         )}
       </div>
-
-      <DestacadaDeHoy />
 
       <Tabs value={tab} onValueChange={handleTabChange}>
         <div className="flex flex-wrap items-center gap-3">

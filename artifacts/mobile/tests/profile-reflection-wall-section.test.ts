@@ -21,6 +21,32 @@ function source(path: string) {
   return readFileSync(new URL(path, import.meta.url), "utf8");
 }
 
+test("Mi muro keeps the same prompt before and after selecting any category tab", () => {
+  const contents = source("../components/InnerSpaceCard.tsx");
+  const ast = ts.createSourceFile("InnerSpaceCard.tsx", contents, ts.ScriptTarget.Latest, true, ts.ScriptKind.TSX);
+  const declarations = new Map<string, ts.Expression>();
+  function visit(node: ts.Node) {
+    if (ts.isVariableDeclaration(node) && node.initializer) {
+      declarations.set(node.name.getText(ast), node.initializer);
+    }
+    ts.forEachChild(node, visit);
+  }
+  visit(ast);
+  const defaultPrompt = declarations.get("DEFAULT_PLACEHOLDER");
+  const desiredPrompt = declarations.get("desiredPlaceholder");
+  assert.ok(defaultPrompt && desiredPrompt);
+  const resolve = new Function("category", ts.transpileModule(
+    `const DEFAULT_PLACEHOLDER = ${defaultPrompt.getText(ast)}; return ${desiredPrompt.getText(ast)};`,
+    { compilerOptions: { target: ts.ScriptTarget.ES2022 } },
+  ).outputText);
+  for (const category of [null, "gratitude", "clarity", "calm", "purpose", "acceptance", "new-category"]) {
+    assert.equal(resolve(category), "¿Qué sientes compartir hoy?");
+  }
+  assert.doesNotMatch(contents, /CATEGORY_PLACEHOLDERS|Ej: /);
+  assert.match(contents, /useState\(DEFAULT_PLACEHOLDER\)/);
+  assert.match(contents, /settlePlaceholder\(DEFAULT_PLACEHOLDER\)/);
+});
+
 function style(file: string, name: string, values: Record<string, unknown> = {}): Record<string, unknown> {
   const contents = source(`../components/${file}.tsx`);
   const ast = ts.createSourceFile(file, contents, ts.ScriptTarget.Latest, true, ts.ScriptKind.TSX);
@@ -127,6 +153,56 @@ test("the wall renders all seven reference stops horizontally, with 5% more brig
   assert.deepEqual(original.props.children.props.end, { x: 1, y: 1 });
   assert.equal(resolve(wall.props.maskElement.props.style).borderWidth, 2);
   assert.equal(resolve(wall.props.maskElement.props.style).borderRadius, 24);
+});
+
+test("Registrar uses a white surface and the wall-border gradient for its label in every button state", () => {
+  const contents = source("../components/InnerSpaceCard.tsx");
+  const ast = ts.createSourceFile("InnerSpaceCard.tsx", contents, ts.ScriptTarget.Latest, true, ts.ScriptKind.TSX);
+  let button: ts.JsxElement | undefined;
+  function visit(node: ts.Node) {
+    if (ts.isJsxElement(node) && node.openingElement.tagName.getText(ast) === "Pressable") {
+      const testID = node.openingElement.attributes.properties.find((prop) =>
+        ts.isJsxAttribute(prop) && prop.name.getText(ast) === "testID",
+      );
+      if (testID && ts.isJsxAttribute(testID) && testID.initializer
+        && ts.isStringLiteral(testID.initializer) && testID.initializer.text === "save-reflection") button = node;
+    }
+    ts.forEachChild(node, visit);
+  }
+  visit(ast);
+  assert.ok(button);
+  const compiled = ts.transpileModule(`return (${button.getText(ast)});`, {
+    compilerOptions: { jsx: ts.JsxEmit.React, target: ts.ScriptTarget.ES2022 },
+  }).outputText;
+  const styles = {
+    submitButton: style("InnerSpaceCard", "submitButton"),
+    submitText: style("InnerSpaceCard", "submitText"),
+  };
+  const saveMessage = () => {};
+  const scope = {
+    React, Pressable: "button", Text: "span", MaskedView: "mask", LinearGradient: "gradient",
+    styles, saveMessage, REFLECTION_WALL_BORDER_GRADIENT,
+    REFLECTION_WALL_BORDER_START, REFLECTION_WALL_BORDER_END, REFLECTION_WALL_BORDER_BRIGHTNESS,
+  };
+  const renderButton = new Function(...Object.keys(scope), "isSubmitDisabled", "createMutation", compiled);
+  for (const [disabled, pending] of [[false, false], [true, false], [true, true]]) {
+    const element = renderButton(...Object.values(scope), disabled, { isPending: pending }) as React.ReactElement<any>;
+    const background = element.props.style.find((entry: any) => entry?.backgroundColor)?.backgroundColor;
+    assert.equal(background, "#F9F9F9");
+    assert.equal(element.props.disabled, disabled);
+    assert.equal(element.props.onPress, saveMessage);
+    assert.equal(element.props.accessibilityLabel, "Registrar");
+    const mask = element.props.children as React.ReactElement<any>;
+    assert.equal(mask.props.pointerEvents, "none");
+    assert.equal(mask.props.maskElement.props.children, pending ? "Registrando..." : "REGISTRAR");
+    const gradient = mask.props.children as React.ReactElement<any>;
+    assert.deepEqual(gradient.props.colors, REFLECTION_WALL_BORDER_GRADIENT);
+    assert.deepEqual(gradient.props.start, REFLECTION_WALL_BORDER_START);
+    assert.deepEqual(gradient.props.end, REFLECTION_WALL_BORDER_END);
+    assert.equal(mask.props.style.opacity, 0.99 * REFLECTION_WALL_BORDER_BRIGHTNESS);
+    assert.equal(gradient.props.children.props.children, mask.props.maskElement.props.children);
+  }
+  assert.doesNotMatch(contents, /REGISTER_BUTTON_ENABLED_BACKGROUND/);
 });
 
 test("Perfil wall description matches Intención typography and centers the plus with both header lines", () => {

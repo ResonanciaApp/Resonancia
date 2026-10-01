@@ -1,4 +1,5 @@
 import { useEffect, useRef, useState } from "react";
+import { Link } from "wouter";
 import { toast } from "sonner";
 import { useQueryClient } from "@tanstack/react-query";
 import {
@@ -183,13 +184,9 @@ export default function SessionForm({ mode, initial, onSaved }: SessionFormProps
 
   // Extras solo en edición
   const [sortOrder, setSortOrder] = useState(initial?.sortOrder != null ? String(initial.sortOrder) : "");
-  const [isFeatured, setIsFeatured] = useState(initial?.isFeatured ?? false);
   const [isFeaturedCategory, setIsFeaturedCategory] = useState(initial?.isFeaturedCategory ?? false);
   const [isFeaturedSleep, setIsFeaturedSleep] = useState(initial?.isFeaturedSleep ?? false);
   const [isNew, setIsNew] = useState(initial?.isNew ?? false);
-  const [isPinnedFeatured, setIsPinnedFeatured] = useState(initial?.isPinnedFeatured ?? false);
-  const canPinInHome =
-    isEdit && initial?.status === "published" && !isPlaceholder;
 
   // Toggles mutuamente excluyentes (reproductor directo vs miniplayer directo)
   const handleSkipDetail = (v: boolean) => {
@@ -538,11 +535,9 @@ export default function SessionForm({ mode, initial, onSaved }: SessionFormProps
         skipDetail,
         skipMiniPlayer,
         isLoop: categoryId === "ambientales" && isLoop,
-        isFeatured,
         isFeaturedCategory,
         isFeaturedSleep: descansoTags.length > 0 && isFeaturedSleep,
         isNew,
-        isPinnedFeatured: canPinInHome && isPinnedFeatured,
         themeTag: persistedThemeTags,
         temaTag,
         moodIds,
@@ -1311,38 +1306,19 @@ export default function SessionForm({ mode, initial, onSaved }: SessionFormProps
                   placeholder="0"
                 />
               </Field>
-              <div className="space-y-1">
-                <div className="flex items-center gap-3">
-                  <Switch id="isFeatured" checked={isFeatured} onCheckedChange={setIsFeatured} />
-                  <Label htmlFor="isFeatured" className="cursor-pointer">Destacada en Inicio</Label>
-                </div>
-                <p className="text-xs text-muted-foreground">
-                  La incluye en la rotación diaria de “Para este momento” cuando no hay una sesión fijada.
-                </p>
-              </div>
               <div className="flex items-center gap-3">
                 <Switch id="isNew" checked={isNew} onCheckedChange={setIsNew} />
                 <Label htmlFor="isNew" className="cursor-pointer">Marcar como nueva</Label>
               </div>
               <div className="space-y-1">
-                <div className="flex items-center gap-3">
-                  <Switch
-                    id="isPinnedFeatured"
-                    checked={canPinInHome && isPinnedFeatured}
-                    onCheckedChange={setIsPinnedFeatured}
-                    disabled={!canPinInHome}
-                  />
-                  <Label
-                    htmlFor="isPinnedFeatured"
-                    className={canPinInHome ? "cursor-pointer" : "cursor-not-allowed opacity-60"}
-                  >
-                    Mostrar hoy en “Para este momento”
-                  </Label>
-                </div>
+                <Button type="button" variant="outline" asChild>
+                  <Link href={`/para-este-momento?sessionId=${encodeURIComponent(initial!.id)}`}>
+                    Elegir para “Para este momento”
+                  </Link>
+                </Button>
                 <p className="text-xs text-muted-foreground">
-                  {canPinInHome
-                    ? "Reemplaza la rotación diaria y quita cualquier fijación anterior."
-                    : "Solo puede fijarse una sesión publicada que no sea placeholder."}
+                  La selección del día se administra en su propia sección. Solo admite sesiones
+                  publicadas y reproducibles, excepto Música.
                 </p>
               </div>
             </>

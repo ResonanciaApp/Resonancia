@@ -34,7 +34,8 @@ import {
   Sun,
   Images,
   MessageSquare,
-  BookOpen
+  BookOpen,
+  Sunrise
 } from "lucide-react";
 import { Toaster } from "@/components/ui/sonner";
 import { queryClient } from "@/lib/queryClient";
@@ -64,6 +65,7 @@ import EmocionPage from "@/pages/emocion";
 import FraseDelDiaPage from "@/pages/frase-del-dia";
 import InspiracionDiariaPage from "@/pages/inspiracion-diaria";
 import SaludoInicioPage from "@/pages/saludo-inicio";
+import ParaEsteMomentoPage from "@/pages/para-este-momento";
 import CategoriasReflexionPage from "@/pages/categorias-reflexion";
 
 const clerkPubKey = publishableKeyFromHost(
@@ -176,7 +178,7 @@ function AccessDenied() {
   );
 }
 
-const MODERATOR_NAV_HREFS = ["/sesiones"];
+const MODERATOR_NAV_HREFS = ["/sesiones", "/para-este-momento"];
 
 const NAV_SECTIONS = [
   {
@@ -194,6 +196,7 @@ const NAV_SECTIONS = [
       { href: "/categorias", label: "Categorías", icon: FolderTree },
       { href: "/sesiones", label: "Sesiones", icon: AudioLines },
       { href: "/sesiones/nueva", label: "Nueva sesión", icon: PlusCircle },
+      { href: "/para-este-momento", label: "Para este momento", icon: Sunrise },
       { href: "/sonidos", label: "Sonidos Mezclador", icon: Music2 },
       { href: "/playlists", label: "Playlists", icon: Library },
       { href: "/guiadores-vivo", label: "Sesiones en vivo", icon: Radio },
@@ -361,6 +364,7 @@ function AdminGate() {
           <Route path="/sesiones">
             <SesionesListaPage isModerator />
           </Route>
+          <Route path="/para-este-momento" component={ParaEsteMomentoPage} />
           <Route path="/">
             <Redirect to="/sesiones" />
           </Route>
@@ -386,6 +390,7 @@ function AdminGate() {
         <Route path="/sesiones">
           <SesionesListaPage />
         </Route>
+        <Route path="/para-este-momento" component={ParaEsteMomentoPage} />
         <Route path="/playlists" component={PlaylistsPage} />
         <Route path="/sonidos" component={SonidosPage} />
         <Route path="/geometrix" component={GeometrixPage} />

@@ -9,6 +9,7 @@
     "./seed": "./src/seed/catalog-data.ts"
   },
   "scripts": {
+    "migrate:featured-moment": "node ./scripts/migrate-featured-moment.mjs",
     "capacity:report": "node ./scripts/capacity-report.mjs",
     "migrate:editorial": "node ./scripts/migrate-editorial-playlists.mjs",
     "test:migrate:editorial": "node ./scripts/editorial-playlist-migration-fixture.mjs",

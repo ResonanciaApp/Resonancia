@@ -113,7 +113,7 @@ test("Perfil separates week-only progress from the titled streak history", () =>
   assert.ok(html.indexOf('data-testid="calendar"') > html.indexOf("Mis estadísticas"));
 });
 
-test("longest streak has a violet lotus with the same glow as the accumulated streak gold lotus", () => {
+test("longest streak uses two white mountains while accumulated streak keeps its gold lotus", () => {
   const html = render({
     separateStreakHistory: true,
     showPersonalStats: false,
@@ -124,23 +124,25 @@ test("longest streak has a violet lotus with the same glow as the accumulated st
   const longestLabel = html.indexOf("RACHA MÁS LARGA");
   const accumulatedLabel = html.indexOf("RACHA ACUMULADA");
   const gold = html.slice(0, accumulatedLabel + "RACHA ACUMULADA".length);
-  assert.match(html.slice(accumulatedLabel, longestLabel), /data-icon="spa" data-color="#C9A6FF" data-size="18" data-glow-color="#C9A6FFCC" data-glow-radius="8" data-glow-offset="0,0"/);
+  const longestSection = html.slice(accumulatedLabel, longestLabel);
+  assert.match(longestSection, /data-icon="image-filter-hdr" data-color="#F9F9F9" data-size="18"/);
+  assert.match(longestSection, /<div>9<\/div>/);
+  assert.doesNotMatch(longestSection, /data-icon="spa"|data-glow-color/);
   assert.match(gold, /data-icon="spa" data-color="#E7B95C" data-size="18" data-glow-color="#E7B95CCC" data-glow-radius="8" data-glow-offset="0,0"/);
   assert.match(gold, /RACHA ACUMULADA/);
 });
 
-test("completed streaks use the same 18px lotus in solid reference turquoise, preserving the count", () => {
+test("completed streaks restore the white circle checkmark, preserving the count", () => {
   const html = render({
     separateStreakHistory: true,
     showPersonalStats: false,
     showCalendar: false,
   });
-  const section = html.slice(html.indexOf('data-testid="completed-streak-lotus"'), html.indexOf("RACHAS COMPLETADAS"));
-  assert.match(section, /data-icon="spa" data-color="#FFFFFF" data-size="18"/);
-  assert.match(section, /data-icon="spa" data-color="#50AFB0" data-size="18"/);
+  const section = html.slice(html.indexOf("RACHA MÁS LARGA"), html.indexOf("RACHAS COMPLETADAS"));
+  assert.match(section, /data-icon="check-circle" data-color="#F9F9F9" data-size="18"/);
   assert.doesNotMatch(section, /data-gradient|data-color="transparent"/);
   assert.match(section, /<div>2<\/div>/);
-  assert.doesNotMatch(html, /data-icon="check-circle"/);
+  assert.doesNotMatch(section, /data-icon="spa"|data-glow-color/);
 });
 
 test("compact callers keep their existing stats unless they opt into the full history", () => {

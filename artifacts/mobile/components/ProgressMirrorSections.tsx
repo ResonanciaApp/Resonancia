@@ -16,8 +16,6 @@ import { computeActiveDays, computeMaxStreak } from "@/utils/stats";
 import { PREMIUM_STAR_GRADIENT } from "@/constants/colors";
 
 const SECTION_BACKGROUND = "rgba(0,0,0,0.22)";
-const VIOLET_LOTUS_COLOR = "#C9A6FF";
-const COMPLETED_STREAK_LOTUS_COLOR = "#50AFB0";
 export const STREAK_WEEK_START_OFFSET_MS = 650;
 const PERSONAL_STATS_HEADER_OFFSET_MS = 420;
 const PERSONAL_STATS_MINUTES_OFFSET_MS = 660;
@@ -318,23 +316,11 @@ export function ProgressMirrorSections({
   ) : null;
 
   const completedStreakIcon = (
-    <MaskedView
-      testID="completed-streak-lotus"
-      maskElement={<MaterialCommunityIcons name="spa" size={18} color="#FFFFFF" />}
-    >
-      <MaterialCommunityIcons name="spa" size={18} color={COMPLETED_STREAK_LOTUS_COLOR} />
-    </MaskedView>
+    <Feather name="check-circle" size={18} color="#F9F9F9" />
   );
 
   const longestHistoryStreakIcon = (
-    <MaskedView maskElement={<MaterialCommunityIcons name="spa" size={18} color="#FFFFFF" />}>
-      <MaterialCommunityIcons
-        name="spa"
-        size={18}
-        color={VIOLET_LOTUS_COLOR}
-        style={[styles.goldenLotusIcon, { textShadowColor: `${VIOLET_LOTUS_COLOR}CC` }]}
-      />
-    </MaskedView>
+    <MaterialCommunityIcons name="image-filter-hdr" size={18} color="#F9F9F9" />
   );
 
   const longestStreakIcon = longestStreakIconColor ? (

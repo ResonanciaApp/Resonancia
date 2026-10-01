@@ -1,4 +1,4 @@
-import { Router, type IRouter } from "express";
+import { Router, type IRouter, type Request, type Response } from "express";
 import { randomUUID } from "node:crypto";
 import { and, asc, desc, eq, gte, inArray, ne, or, sql } from "drizzle-orm";
 import {
@@ -37,7 +37,11 @@ import {
   canUserReferenceObject,
 } from "../lib/objectAccess";
 import { getCatalogReadiness } from "../lib/catalogReadiness";
-import { resolvePinnedFeaturedValue } from "../lib/pinnedFeatured";
+import {
+  getFeaturedMoment,
+  setFeaturedMomentManual,
+} from "../lib/featuredMomentService";
+import { editorialDate } from "../lib/featuredMomentEngine";
 import { loadPlaylistCarousels } from "../lib/playlistCarousels";
 import { getSleepCarouselProjection } from "../lib/sleepCarouselOrder";
 import { getSoundCarouselProjection } from "../lib/soundCarouselOrder";
@@ -545,90 +549,92 @@ router.get("/catalog/playlists/:slug", async (req, res) => {
   });
 });
 
-// GET /catalog/pinned-featured — sesión "Destacada de hoy" elegida por el admin.
-router.get("/catalog/pinned-featured", async (req, res) => {
-  const row = await db
-    .select()
-    .from(catalogSessionsTable)
-    .where(
-      and(
-        eq(catalogSessionsTable.isPinnedFeatured, true),
-        eq(catalogSessionsTable.status, "published"),
-        ne(catalogSessionsTable.categoryId, RETIRED_REFLEXIONES_ID),
-      ),
-    )
-    .limit(1);
+function serializeFeaturedMoment(snapshot: Awaited<ReturnType<typeof getFeaturedMoment>>) {
+  return {
+    date: snapshot.date,
+    timezone: snapshot.timezone,
+    nextChangeAt: snapshot.nextChangeAt,
+    source: snapshot.source,
+    session: snapshot.session
+      ? serializeSession(snapshot.session.session, snapshot.session.audioFiles)
+      : null,
+    automaticSessionId: snapshot.automaticSessionId,
+    eligibleCount: snapshot.eligibleCount,
+    revision: snapshot.revision,
+    manualMigrated: snapshot.manualMigrated,
+  };
+}
 
-  if (!row.length) {
-    res.json({ session: null });
-    return;
-  }
-
-  const session = row[0];
-  const audioFiles = await db
-    .select()
-    .from(catalogAudioFilesTable)
-    .where(eq(catalogAudioFilesTable.sessionId, session.id))
-    .orderBy(asc(catalogAudioFilesTable.id));
-
-  res.json({ session: serializeSession(session, audioFiles) });
+router.get("/catalog/featured-moment", async (_req, res) => {
+  const snapshot = await getFeaturedMoment();
+  res.json(serializeFeaturedMoment(snapshot));
 });
 
-// PUT /admin/pinned-featured — fija (o limpia) la sesión "Destacada de hoy".
-router.put(
-  "/admin/pinned-featured",
-  requireAuth,
-  requireRole("admin", "moderador"),
-  async (req, res) => {
-    const { sessionId } = req.body as { sessionId: string | null };
+router.get("/admin/featured-moment", requireAuth, requireRole("admin", "moderador"), async (_req, res) => {
+  const snapshot = await getFeaturedMoment({ admin: true });
+  res.json({
+    ...serializeFeaturedMoment(snapshot),
+    candidates: snapshot.candidates.map((candidate) =>
+      serializeSession(candidate.session, candidate.audioFiles),
+    ),
+  });
+});
 
-    if (sessionId != null && (typeof sessionId !== "string" || !sessionId.trim())) {
-      res.status(400).json({ error: "sessionId inválido" });
-      return;
-    }
-
-    const outcome = await db.transaction(async (tx) => {
-      await tx.execute(
-        sql`select pg_advisory_xact_lock(hashtext('catalog_pinned_featured'))`,
-      );
-
-      if (sessionId != null) {
-        const found = await tx
-          .select({ id: catalogSessionsTable.id })
-          .from(catalogSessionsTable)
-          .where(
-            and(
-              eq(catalogSessionsTable.id, sessionId),
-              eq(catalogSessionsTable.status, "published"),
-              ne(catalogSessionsTable.categoryId, RETIRED_REFLEXIONES_ID),
-              eq(catalogSessionsTable.isPlaceholder, false),
-            ),
-          )
-          .limit(1);
-        if (!found.length) return { kind: "not-found" as const };
-      }
-
-      await tx
-        .update(catalogSessionsTable)
-        .set({ isPinnedFeatured: false })
-        .where(eq(catalogSessionsTable.isPinnedFeatured, true));
-
-      if (sessionId != null) {
-        await tx
-          .update(catalogSessionsTable)
-          .set({ isPinnedFeatured: true })
-          .where(eq(catalogSessionsTable.id, sessionId));
-      }
-      return { kind: "updated" as const };
-    });
-
-    if (outcome.kind === "not-found") {
-      res.status(404).json({ error: "Sesión no encontrada o no publicada" });
-      return;
-    }
-
+async function updateFeaturedMoment(
+  req: Request,
+  res: Response,
+  compatibility = false,
+) {
+  const body = req.body as { sessionId?: unknown; date?: unknown };
+  if (body.sessionId !== null && (typeof body.sessionId !== "string" || !body.sessionId.trim())) {
+    res.status(400).json({ error: "sessionId inválido" });
+    return;
+  }
+  const today = editorialDate(new Date());
+  const date = compatibility && body.date === undefined ? today : body.date;
+  if (typeof date !== "string" || !/^\d{4}-\d{2}-\d{2}$/.test(date)) {
+    res.status(400).json({ error: "date debe tener formato YYYY-MM-DD" });
+    return;
+  }
+  const outcome = await setFeaturedMomentManual({
+    sessionId: body.sessionId as string | null,
+    date,
+  });
+  if ("kind" in outcome && outcome.kind === "stale-date") {
+    res.status(409).json({ error: "La fecha editorial cambió; actualizá y volvé a intentar", date: today });
+    return;
+  }
+  if ("kind" in outcome && outcome.kind === "not-eligible") {
+    res.status(404).json({ error: "La sesión no está publicada o no es reproducible para Para este momento" });
+    return;
+  }
+  if (compatibility) {
     res.json({ ok: true });
-  },
+    return;
+  }
+  res.json({
+    ...serializeFeaturedMoment(outcome as Awaited<ReturnType<typeof getFeaturedMoment>>),
+    candidates: (outcome as Awaited<ReturnType<typeof getFeaturedMoment>>).candidates.map((candidate) =>
+      serializeSession(candidate.session, candidate.audioFiles),
+    ),
+  });
+}
+
+router.put("/admin/featured-moment", requireAuth, requireRole("admin", "moderador"), (req, res) =>
+  updateFeaturedMoment(req, res),
+);
+
+// Compatibility aliases share exactly the dated selection and eligibility logic.
+router.get("/catalog/pinned-featured", async (_req, res) => {
+  const snapshot = await getFeaturedMoment();
+  res.json({
+    session: snapshot.session
+      ? serializeSession(snapshot.session.session, snapshot.session.audioFiles)
+      : null,
+  });
+});
+router.put("/admin/pinned-featured", requireAuth, requireRole("admin", "moderador"), (req, res) =>
+  updateFeaturedMoment(req, res, true),
 );
 
 // GET /catalog/sessions/:id/plays — conteo global de reproducciones de una sesión
@@ -1159,6 +1165,12 @@ router.patch(
       return;
     }
     const data = parsed.data;
+    if (data.isPinnedFeatured === true) {
+      res.status(409).json({
+        error: "isPinnedFeatured está obsoleto; usá PUT /admin/featured-moment con una fecha editorial",
+      });
+      return;
+    }
     if (hasInvalidDescansoTags(data.descansoTags)) {
       res.status(400).json({ error: "Colección de Dormir inválida" });
       return;
@@ -1228,7 +1240,6 @@ router.patch(
           role: g.role,
           instagram: g.instagram ?? undefined,
         })) ?? null;
-    if (data.isPinnedFeatured !== undefined) updates.isPinnedFeatured = data.isPinnedFeatured;
     if (data.isLoop !== undefined) updates.isLoop = data.isLoop;
     if (data.imageObjectPath !== undefined) {
       if (data.imageObjectPath != null) {
@@ -1251,15 +1262,6 @@ router.patch(
 
     try {
       const outcome = await db.transaction(async (tx) => {
-        if (
-          data.isPinnedFeatured !== undefined ||
-          data.isPlaceholder === true
-        ) {
-          await tx.execute(
-            sql`select pg_advisory_xact_lock(hashtext('catalog_pinned_featured'))`,
-          );
-        }
-
         const [current] = await tx
           .select()
           .from(catalogSessionsTable)
@@ -1333,29 +1335,6 @@ router.patch(
             }
           }
         }
-        const pinnedChange = resolvePinnedFeaturedValue({
-          currentValue: current.isPinnedFeatured,
-          requestedValue: data.isPinnedFeatured,
-          status: candidate.status,
-          isPlaceholder: candidate.isPlaceholder,
-        });
-        if (!pinnedChange.valid) {
-          return { kind: "not-pinnable" as const };
-        }
-        candidate.isPinnedFeatured = pinnedChange.value;
-        if (
-          data.isPinnedFeatured !== undefined ||
-          pinnedChange.value !== current.isPinnedFeatured
-        ) {
-          updates.isPinnedFeatured = pinnedChange.value;
-        }
-        if (data.isPinnedFeatured === true) {
-          await tx
-            .update(catalogSessionsTable)
-            .set({ isPinnedFeatured: false })
-            .where(eq(catalogSessionsTable.isPinnedFeatured, true));
-        }
-
         const [updated] = await tx
           .update(catalogSessionsTable)
           .set(updates)
@@ -1380,12 +1359,6 @@ router.patch(
       }
       if (outcome.kind === "missing-subcategory") {
         res.status(400).json({ error: outcome.reason });
-        return;
-      }
-      if (outcome.kind === "not-pinnable") {
-        res.status(409).json({
-          error: "Solo una sesión publicada y no placeholder puede fijarse en Inicio",
-        });
         return;
       }
       if (outcome.kind === "authors-not-published") {

@@ -34,6 +34,7 @@ export * from "./favorites";
 export * from "./session-progress";
 export * from "./catalog-categories";
 export * from "./catalog-sessions";
+export * from "./featured-moment";
 export * from "./catalog-audio-files";
 export * from "./uploads";
 export * from "./follows";

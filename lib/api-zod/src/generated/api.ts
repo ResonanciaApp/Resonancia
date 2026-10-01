@@ -3610,7 +3610,434 @@ export const GetCatalogPlaylistResponse = zod.object({
 
 
 /**
- * @summary Sesión "Destacada de hoy" elegida manualmente por el admin (o null)
+ * @summary Selección diaria global de Para este momento
+ */
+export const getFeaturedMomentResponseSessionOneIsPlaceholderDefault = false;
+export const getFeaturedMomentResponseSessionOneSkipDetailDefault = false;
+export const getFeaturedMomentResponseSessionOneSkipMiniPlayerDefault = false;
+export const getFeaturedMomentResponseSessionOneIsLoopDefault = false;
+export const getFeaturedMomentResponseSessionOneIsPinnedFeaturedDefault = false;
+export const getFeaturedMomentResponseSessionOneMoodIdsMax = 18;
+
+
+export const getFeaturedMomentResponseSessionOneGuideIdsMax = 4;
+
+
+
+export const GetFeaturedMomentResponse = zod.object({
+  "date": zod.string().describe('Día editorial YYYY-MM-DD en America\/Santiago'),
+  "timezone": zod.string(),
+  "nextChangeAt": zod.coerce.date(),
+  "source": zod.enum(['automatic', 'manual', 'empty']),
+  "session": zod.union([zod.object({
+  "id": zod.string(),
+  "title": zod.string(),
+  "subtitle": zod.string(),
+  "categoryId": zod.string(),
+  "categoryLabel": zod.string(),
+  "duration": zod.number(),
+  "durationLabel": zod.string(),
+  "description": zod.string(),
+  "benefits": zod.array(zod.string()),
+  "instruments": zod.array(zod.string()),
+  "imageKey": zod.string().nullish(),
+  "imageUrl": zod.string().nullish(),
+  "isFeatured": zod.boolean(),
+  "isFeaturedCategory": zod.boolean(),
+  "isFeaturedSleep": zod.boolean(),
+  "isNew": zod.boolean(),
+  "isPremium": zod.boolean(),
+  "isPlaceholder": zod.boolean().default(getFeaturedMomentResponseSessionOneIsPlaceholderDefault),
+  "skipDetail": zod.boolean().default(getFeaturedMomentResponseSessionOneSkipDetailDefault),
+  "skipMiniPlayer": zod.boolean().default(getFeaturedMomentResponseSessionOneSkipMiniPlayerDefault),
+  "isLoop": zod.boolean().default(getFeaturedMomentResponseSessionOneIsLoopDefault),
+  "isPinnedFeatured": zod.boolean().default(getFeaturedMomentResponseSessionOneIsPinnedFeaturedDefault),
+  "frequency": zod.string().nullish(),
+  "soundTag": zod.string().nullish(),
+  "meditationTag": zod.string().nullish(),
+  "ancestralTag": zod.string().nullish(),
+  "sabiduriaTag": zod.string().nullish(),
+  "podcastTag": zod.string().nullish(),
+  "sonidosTag": zod.string().nullish(),
+  "sonidosTags": zod.array(zod.string()).optional(),
+  "descansoTag": zod.string().nullish(),
+  "descansoTags": zod.array(zod.string()).optional(),
+  "themeTag": zod.array(zod.string()).nullish(),
+  "temaTag": zod.array(zod.string()).nullish(),
+  "moodIds": zod.array(zod.enum(['estresado', 'ansioso', 'cansado', 'inepto', 'triste', 'solo', 'deprimido', 'desmotivado', 'enojado', 'adolorido', 'agradecido', 'emocionado', 'lleno-de-amor', 'feliz', 'en-paz', 'esperanzado', 'contento', 'presente'])).max(getFeaturedMomentResponseSessionOneMoodIdsMax).optional(),
+  "sleepTag": zod.string().nullish(),
+  "voiceTag": zod.enum(['Guiada', 'Sin voz']).nullish(),
+  "guideId": zod.string().nullish(),
+  "guideIds": zod.array(zod.string().min(1)).max(getFeaturedMomentResponseSessionOneGuideIdsMax).optional(),
+  "artistId": zod.string().nullish(),
+  "guests": zod.array(zod.object({
+  "name": zod.string(),
+  "role": zod.string(),
+  "instagram": zod.string().nullish()
+})).nullish(),
+  "playerDescription": zod.string().nullish(),
+  "status": zod.enum(['draft', 'pending', 'published', 'rejected']),
+  "sortOrder": zod.number(),
+  "audioFiles": zod.array(zod.object({
+  "id": zod.number(),
+  "sessionId": zod.string().nullish(),
+  "role": zod.enum(['main', 'voice', 'ambient', 'base', 'sound']),
+  "assetKey": zod.string().nullish(),
+  "url": zod.string().nullish(),
+  "name": zod.string(),
+  "contentType": zod.string().nullish(),
+  "sizeBytes": zod.number().nullish(),
+  "durationSeconds": zod.number().nullish(),
+  "isLoop": zod.boolean(),
+  "createdAt": zod.coerce.date()
+}))
+}),zod.null()]),
+  "automaticSessionId": zod.string().nullable(),
+  "eligibleCount": zod.number(),
+  "revision": zod.string(),
+  "manualMigrated": zod.boolean()
+})
+
+
+/**
+ * @summary Selección diaria y sesiones elegibles, para administradores y moderadores
+ */
+export const getAdminFeaturedMomentResponseOneSessionOneIsPlaceholderDefault = false;
+export const getAdminFeaturedMomentResponseOneSessionOneSkipDetailDefault = false;
+export const getAdminFeaturedMomentResponseOneSessionOneSkipMiniPlayerDefault = false;
+export const getAdminFeaturedMomentResponseOneSessionOneIsLoopDefault = false;
+export const getAdminFeaturedMomentResponseOneSessionOneIsPinnedFeaturedDefault = false;
+export const getAdminFeaturedMomentResponseOneSessionOneMoodIdsMax = 18;
+
+
+export const getAdminFeaturedMomentResponseOneSessionOneGuideIdsMax = 4;
+
+export const getAdminFeaturedMomentResponseTwoCandidatesItemIsPlaceholderDefault = false;
+export const getAdminFeaturedMomentResponseTwoCandidatesItemSkipDetailDefault = false;
+export const getAdminFeaturedMomentResponseTwoCandidatesItemSkipMiniPlayerDefault = false;
+export const getAdminFeaturedMomentResponseTwoCandidatesItemIsLoopDefault = false;
+export const getAdminFeaturedMomentResponseTwoCandidatesItemIsPinnedFeaturedDefault = false;
+export const getAdminFeaturedMomentResponseTwoCandidatesItemMoodIdsMax = 18;
+
+
+export const getAdminFeaturedMomentResponseTwoCandidatesItemGuideIdsMax = 4;
+
+
+
+export const GetAdminFeaturedMomentResponse = zod.object({
+  "date": zod.string().describe('Día editorial YYYY-MM-DD en America\/Santiago'),
+  "timezone": zod.string(),
+  "nextChangeAt": zod.coerce.date(),
+  "source": zod.enum(['automatic', 'manual', 'empty']),
+  "session": zod.union([zod.object({
+  "id": zod.string(),
+  "title": zod.string(),
+  "subtitle": zod.string(),
+  "categoryId": zod.string(),
+  "categoryLabel": zod.string(),
+  "duration": zod.number(),
+  "durationLabel": zod.string(),
+  "description": zod.string(),
+  "benefits": zod.array(zod.string()),
+  "instruments": zod.array(zod.string()),
+  "imageKey": zod.string().nullish(),
+  "imageUrl": zod.string().nullish(),
+  "isFeatured": zod.boolean(),
+  "isFeaturedCategory": zod.boolean(),
+  "isFeaturedSleep": zod.boolean(),
+  "isNew": zod.boolean(),
+  "isPremium": zod.boolean(),
+  "isPlaceholder": zod.boolean().default(getAdminFeaturedMomentResponseOneSessionOneIsPlaceholderDefault),
+  "skipDetail": zod.boolean().default(getAdminFeaturedMomentResponseOneSessionOneSkipDetailDefault),
+  "skipMiniPlayer": zod.boolean().default(getAdminFeaturedMomentResponseOneSessionOneSkipMiniPlayerDefault),
+  "isLoop": zod.boolean().default(getAdminFeaturedMomentResponseOneSessionOneIsLoopDefault),
+  "isPinnedFeatured": zod.boolean().default(getAdminFeaturedMomentResponseOneSessionOneIsPinnedFeaturedDefault),
+  "frequency": zod.string().nullish(),
+  "soundTag": zod.string().nullish(),
+  "meditationTag": zod.string().nullish(),
+  "ancestralTag": zod.string().nullish(),
+  "sabiduriaTag": zod.string().nullish(),
+  "podcastTag": zod.string().nullish(),
+  "sonidosTag": zod.string().nullish(),
+  "sonidosTags": zod.array(zod.string()).optional(),
+  "descansoTag": zod.string().nullish(),
+  "descansoTags": zod.array(zod.string()).optional(),
+  "themeTag": zod.array(zod.string()).nullish(),
+  "temaTag": zod.array(zod.string()).nullish(),
+  "moodIds": zod.array(zod.enum(['estresado', 'ansioso', 'cansado', 'inepto', 'triste', 'solo', 'deprimido', 'desmotivado', 'enojado', 'adolorido', 'agradecido', 'emocionado', 'lleno-de-amor', 'feliz', 'en-paz', 'esperanzado', 'contento', 'presente'])).max(getAdminFeaturedMomentResponseOneSessionOneMoodIdsMax).optional(),
+  "sleepTag": zod.string().nullish(),
+  "voiceTag": zod.enum(['Guiada', 'Sin voz']).nullish(),
+  "guideId": zod.string().nullish(),
+  "guideIds": zod.array(zod.string().min(1)).max(getAdminFeaturedMomentResponseOneSessionOneGuideIdsMax).optional(),
+  "artistId": zod.string().nullish(),
+  "guests": zod.array(zod.object({
+  "name": zod.string(),
+  "role": zod.string(),
+  "instagram": zod.string().nullish()
+})).nullish(),
+  "playerDescription": zod.string().nullish(),
+  "status": zod.enum(['draft', 'pending', 'published', 'rejected']),
+  "sortOrder": zod.number(),
+  "audioFiles": zod.array(zod.object({
+  "id": zod.number(),
+  "sessionId": zod.string().nullish(),
+  "role": zod.enum(['main', 'voice', 'ambient', 'base', 'sound']),
+  "assetKey": zod.string().nullish(),
+  "url": zod.string().nullish(),
+  "name": zod.string(),
+  "contentType": zod.string().nullish(),
+  "sizeBytes": zod.number().nullish(),
+  "durationSeconds": zod.number().nullish(),
+  "isLoop": zod.boolean(),
+  "createdAt": zod.coerce.date()
+}))
+}),zod.null()]),
+  "automaticSessionId": zod.string().nullable(),
+  "eligibleCount": zod.number(),
+  "revision": zod.string(),
+  "manualMigrated": zod.boolean()
+}).and(zod.object({
+  "candidates": zod.array(zod.object({
+  "id": zod.string(),
+  "title": zod.string(),
+  "subtitle": zod.string(),
+  "categoryId": zod.string(),
+  "categoryLabel": zod.string(),
+  "duration": zod.number(),
+  "durationLabel": zod.string(),
+  "description": zod.string(),
+  "benefits": zod.array(zod.string()),
+  "instruments": zod.array(zod.string()),
+  "imageKey": zod.string().nullish(),
+  "imageUrl": zod.string().nullish(),
+  "isFeatured": zod.boolean(),
+  "isFeaturedCategory": zod.boolean(),
+  "isFeaturedSleep": zod.boolean(),
+  "isNew": zod.boolean(),
+  "isPremium": zod.boolean(),
+  "isPlaceholder": zod.boolean().default(getAdminFeaturedMomentResponseTwoCandidatesItemIsPlaceholderDefault),
+  "skipDetail": zod.boolean().default(getAdminFeaturedMomentResponseTwoCandidatesItemSkipDetailDefault),
+  "skipMiniPlayer": zod.boolean().default(getAdminFeaturedMomentResponseTwoCandidatesItemSkipMiniPlayerDefault),
+  "isLoop": zod.boolean().default(getAdminFeaturedMomentResponseTwoCandidatesItemIsLoopDefault),
+  "isPinnedFeatured": zod.boolean().default(getAdminFeaturedMomentResponseTwoCandidatesItemIsPinnedFeaturedDefault),
+  "frequency": zod.string().nullish(),
+  "soundTag": zod.string().nullish(),
+  "meditationTag": zod.string().nullish(),
+  "ancestralTag": zod.string().nullish(),
+  "sabiduriaTag": zod.string().nullish(),
+  "podcastTag": zod.string().nullish(),
+  "sonidosTag": zod.string().nullish(),
+  "sonidosTags": zod.array(zod.string()).optional(),
+  "descansoTag": zod.string().nullish(),
+  "descansoTags": zod.array(zod.string()).optional(),
+  "themeTag": zod.array(zod.string()).nullish(),
+  "temaTag": zod.array(zod.string()).nullish(),
+  "moodIds": zod.array(zod.enum(['estresado', 'ansioso', 'cansado', 'inepto', 'triste', 'solo', 'deprimido', 'desmotivado', 'enojado', 'adolorido', 'agradecido', 'emocionado', 'lleno-de-amor', 'feliz', 'en-paz', 'esperanzado', 'contento', 'presente'])).max(getAdminFeaturedMomentResponseTwoCandidatesItemMoodIdsMax).optional(),
+  "sleepTag": zod.string().nullish(),
+  "voiceTag": zod.enum(['Guiada', 'Sin voz']).nullish(),
+  "guideId": zod.string().nullish(),
+  "guideIds": zod.array(zod.string().min(1)).max(getAdminFeaturedMomentResponseTwoCandidatesItemGuideIdsMax).optional(),
+  "artistId": zod.string().nullish(),
+  "guests": zod.array(zod.object({
+  "name": zod.string(),
+  "role": zod.string(),
+  "instagram": zod.string().nullish()
+})).nullish(),
+  "playerDescription": zod.string().nullish(),
+  "status": zod.enum(['draft', 'pending', 'published', 'rejected']),
+  "sortOrder": zod.number(),
+  "audioFiles": zod.array(zod.object({
+  "id": zod.number(),
+  "sessionId": zod.string().nullish(),
+  "role": zod.enum(['main', 'voice', 'ambient', 'base', 'sound']),
+  "assetKey": zod.string().nullish(),
+  "url": zod.string().nullish(),
+  "name": zod.string(),
+  "contentType": zod.string().nullish(),
+  "sizeBytes": zod.number().nullish(),
+  "durationSeconds": zod.number().nullish(),
+  "isLoop": zod.boolean(),
+  "createdAt": zod.coerce.date()
+}))
+}))
+}))
+
+
+/**
+ * @summary Elegir la sesión de hoy o recuperar la selección automática
+ */
+export const setAdminFeaturedMomentBodyDateRegExp = new RegExp('^\\d{4}-\\d{2}-\\d{2}$');
+
+
+export const SetAdminFeaturedMomentBody = zod.object({
+  "sessionId": zod.string().nullable().describe('ID elegible para hoy; null para volver a la selección automática estable'),
+  "date": zod.string().regex(setAdminFeaturedMomentBodyDateRegExp).describe('Fecha editorial del estado que está editando el usuario')
+})
+
+export const setAdminFeaturedMomentResponseOneSessionOneIsPlaceholderDefault = false;
+export const setAdminFeaturedMomentResponseOneSessionOneSkipDetailDefault = false;
+export const setAdminFeaturedMomentResponseOneSessionOneSkipMiniPlayerDefault = false;
+export const setAdminFeaturedMomentResponseOneSessionOneIsLoopDefault = false;
+export const setAdminFeaturedMomentResponseOneSessionOneIsPinnedFeaturedDefault = false;
+export const setAdminFeaturedMomentResponseOneSessionOneMoodIdsMax = 18;
+
+
+export const setAdminFeaturedMomentResponseOneSessionOneGuideIdsMax = 4;
+
+export const setAdminFeaturedMomentResponseTwoCandidatesItemIsPlaceholderDefault = false;
+export const setAdminFeaturedMomentResponseTwoCandidatesItemSkipDetailDefault = false;
+export const setAdminFeaturedMomentResponseTwoCandidatesItemSkipMiniPlayerDefault = false;
+export const setAdminFeaturedMomentResponseTwoCandidatesItemIsLoopDefault = false;
+export const setAdminFeaturedMomentResponseTwoCandidatesItemIsPinnedFeaturedDefault = false;
+export const setAdminFeaturedMomentResponseTwoCandidatesItemMoodIdsMax = 18;
+
+
+export const setAdminFeaturedMomentResponseTwoCandidatesItemGuideIdsMax = 4;
+
+
+
+export const SetAdminFeaturedMomentResponse = zod.object({
+  "date": zod.string().describe('Día editorial YYYY-MM-DD en America\/Santiago'),
+  "timezone": zod.string(),
+  "nextChangeAt": zod.coerce.date(),
+  "source": zod.enum(['automatic', 'manual', 'empty']),
+  "session": zod.union([zod.object({
+  "id": zod.string(),
+  "title": zod.string(),
+  "subtitle": zod.string(),
+  "categoryId": zod.string(),
+  "categoryLabel": zod.string(),
+  "duration": zod.number(),
+  "durationLabel": zod.string(),
+  "description": zod.string(),
+  "benefits": zod.array(zod.string()),
+  "instruments": zod.array(zod.string()),
+  "imageKey": zod.string().nullish(),
+  "imageUrl": zod.string().nullish(),
+  "isFeatured": zod.boolean(),
+  "isFeaturedCategory": zod.boolean(),
+  "isFeaturedSleep": zod.boolean(),
+  "isNew": zod.boolean(),
+  "isPremium": zod.boolean(),
+  "isPlaceholder": zod.boolean().default(setAdminFeaturedMomentResponseOneSessionOneIsPlaceholderDefault),
+  "skipDetail": zod.boolean().default(setAdminFeaturedMomentResponseOneSessionOneSkipDetailDefault),
+  "skipMiniPlayer": zod.boolean().default(setAdminFeaturedMomentResponseOneSessionOneSkipMiniPlayerDefault),
+  "isLoop": zod.boolean().default(setAdminFeaturedMomentResponseOneSessionOneIsLoopDefault),
+  "isPinnedFeatured": zod.boolean().default(setAdminFeaturedMomentResponseOneSessionOneIsPinnedFeaturedDefault),
+  "frequency": zod.string().nullish(),
+  "soundTag": zod.string().nullish(),
+  "meditationTag": zod.string().nullish(),
+  "ancestralTag": zod.string().nullish(),
+  "sabiduriaTag": zod.string().nullish(),
+  "podcastTag": zod.string().nullish(),
+  "sonidosTag": zod.string().nullish(),
+  "sonidosTags": zod.array(zod.string()).optional(),
+  "descansoTag": zod.string().nullish(),
+  "descansoTags": zod.array(zod.string()).optional(),
+  "themeTag": zod.array(zod.string()).nullish(),
+  "temaTag": zod.array(zod.string()).nullish(),
+  "moodIds": zod.array(zod.enum(['estresado', 'ansioso', 'cansado', 'inepto', 'triste', 'solo', 'deprimido', 'desmotivado', 'enojado', 'adolorido', 'agradecido', 'emocionado', 'lleno-de-amor', 'feliz', 'en-paz', 'esperanzado', 'contento', 'presente'])).max(setAdminFeaturedMomentResponseOneSessionOneMoodIdsMax).optional(),
+  "sleepTag": zod.string().nullish(),
+  "voiceTag": zod.enum(['Guiada', 'Sin voz']).nullish(),
+  "guideId": zod.string().nullish(),
+  "guideIds": zod.array(zod.string().min(1)).max(setAdminFeaturedMomentResponseOneSessionOneGuideIdsMax).optional(),
+  "artistId": zod.string().nullish(),
+  "guests": zod.array(zod.object({
+  "name": zod.string(),
+  "role": zod.string(),
+  "instagram": zod.string().nullish()
+})).nullish(),
+  "playerDescription": zod.string().nullish(),
+  "status": zod.enum(['draft', 'pending', 'published', 'rejected']),
+  "sortOrder": zod.number(),
+  "audioFiles": zod.array(zod.object({
+  "id": zod.number(),
+  "sessionId": zod.string().nullish(),
+  "role": zod.enum(['main', 'voice', 'ambient', 'base', 'sound']),
+  "assetKey": zod.string().nullish(),
+  "url": zod.string().nullish(),
+  "name": zod.string(),
+  "contentType": zod.string().nullish(),
+  "sizeBytes": zod.number().nullish(),
+  "durationSeconds": zod.number().nullish(),
+  "isLoop": zod.boolean(),
+  "createdAt": zod.coerce.date()
+}))
+}),zod.null()]),
+  "automaticSessionId": zod.string().nullable(),
+  "eligibleCount": zod.number(),
+  "revision": zod.string(),
+  "manualMigrated": zod.boolean()
+}).and(zod.object({
+  "candidates": zod.array(zod.object({
+  "id": zod.string(),
+  "title": zod.string(),
+  "subtitle": zod.string(),
+  "categoryId": zod.string(),
+  "categoryLabel": zod.string(),
+  "duration": zod.number(),
+  "durationLabel": zod.string(),
+  "description": zod.string(),
+  "benefits": zod.array(zod.string()),
+  "instruments": zod.array(zod.string()),
+  "imageKey": zod.string().nullish(),
+  "imageUrl": zod.string().nullish(),
+  "isFeatured": zod.boolean(),
+  "isFeaturedCategory": zod.boolean(),
+  "isFeaturedSleep": zod.boolean(),
+  "isNew": zod.boolean(),
+  "isPremium": zod.boolean(),
+  "isPlaceholder": zod.boolean().default(setAdminFeaturedMomentResponseTwoCandidatesItemIsPlaceholderDefault),
+  "skipDetail": zod.boolean().default(setAdminFeaturedMomentResponseTwoCandidatesItemSkipDetailDefault),
+  "skipMiniPlayer": zod.boolean().default(setAdminFeaturedMomentResponseTwoCandidatesItemSkipMiniPlayerDefault),
+  "isLoop": zod.boolean().default(setAdminFeaturedMomentResponseTwoCandidatesItemIsLoopDefault),
+  "isPinnedFeatured": zod.boolean().default(setAdminFeaturedMomentResponseTwoCandidatesItemIsPinnedFeaturedDefault),
+  "frequency": zod.string().nullish(),
+  "soundTag": zod.string().nullish(),
+  "meditationTag": zod.string().nullish(),
+  "ancestralTag": zod.string().nullish(),
+  "sabiduriaTag": zod.string().nullish(),
+  "podcastTag": zod.string().nullish(),
+  "sonidosTag": zod.string().nullish(),
+  "sonidosTags": zod.array(zod.string()).optional(),
+  "descansoTag": zod.string().nullish(),
+  "descansoTags": zod.array(zod.string()).optional(),
+  "themeTag": zod.array(zod.string()).nullish(),
+  "temaTag": zod.array(zod.string()).nullish(),
+  "moodIds": zod.array(zod.enum(['estresado', 'ansioso', 'cansado', 'inepto', 'triste', 'solo', 'deprimido', 'desmotivado', 'enojado', 'adolorido', 'agradecido', 'emocionado', 'lleno-de-amor', 'feliz', 'en-paz', 'esperanzado', 'contento', 'presente'])).max(setAdminFeaturedMomentResponseTwoCandidatesItemMoodIdsMax).optional(),
+  "sleepTag": zod.string().nullish(),
+  "voiceTag": zod.enum(['Guiada', 'Sin voz']).nullish(),
+  "guideId": zod.string().nullish(),
+  "guideIds": zod.array(zod.string().min(1)).max(setAdminFeaturedMomentResponseTwoCandidatesItemGuideIdsMax).optional(),
+  "artistId": zod.string().nullish(),
+  "guests": zod.array(zod.object({
+  "name": zod.string(),
+  "role": zod.string(),
+  "instagram": zod.string().nullish()
+})).nullish(),
+  "playerDescription": zod.string().nullish(),
+  "status": zod.enum(['draft', 'pending', 'published', 'rejected']),
+  "sortOrder": zod.number(),
+  "audioFiles": zod.array(zod.object({
+  "id": zod.number(),
+  "sessionId": zod.string().nullish(),
+  "role": zod.enum(['main', 'voice', 'ambient', 'base', 'sound']),
+  "assetKey": zod.string().nullish(),
+  "url": zod.string().nullish(),
+  "name": zod.string(),
+  "contentType": zod.string().nullish(),
+  "sizeBytes": zod.number().nullish(),
+  "durationSeconds": zod.number().nullish(),
+  "isLoop": zod.boolean(),
+  "createdAt": zod.coerce.date()
+}))
+}))
+}))
+
+
+/**
+ * @deprecated
+ * @summary Compatibilidad de Para este momento; usar featured-moment
  */
 export const getPinnedFeaturedResponseSessionOneIsPlaceholderDefault = false;
 export const getPinnedFeaturedResponseSessionOneSkipDetailDefault = false;
@@ -3692,7 +4119,8 @@ export const GetPinnedFeaturedResponse = zod.object({
 
 
 /**
- * @summary Fijar (o limpiar) la sesión "Destacada de hoy" — solo admin
+ * @deprecated
+ * @summary Compatibilidad de elección solo por hoy; usar admin/featured-moment
  */
 export const SetPinnedFeaturedBody = zod.object({
   "sessionId": zod.string().nullable().describe('ID de la sesión a pinear como Destacada de hoy. null para limpiar.')

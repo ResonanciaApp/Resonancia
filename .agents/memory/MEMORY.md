@@ -64,7 +64,7 @@
 - [Header divider full-bleed](header-border-full-bleed.md) — divider inside a padded header must be normal-flow + negative marginHorizontal, not absolute inside a padded child, to reach screen edge
 - [Action sheet theme hierarchy](action-sheet-theme-hierarchy.md) — Biblioteca: acciones con tercer stop; menú + y Agrega Resonador con último; otras superficies conservan su regla
 - [Destacados por superficie](featured-category-flag.md) — Inicio, categoría y Dormir son destinos independientes; Dormir exige pertenencia a una colección
-- [Para este momento](home-featured-selection.md) — “Destacada en Inicio” rota diariamente; “Mostrar hoy” fija una única sesión de cualquier categoría
+- [Para este momento](home-featured-selection.md) — día chileno compartido; vistas previas no consumen el ciclo y una manual expuesta cuenta solo para su propio ID
 - [Session tap three-state](session-tap-three-state.md) — prioridad skipMiniPlayer > skipDetail > detalle, duplicada en ~22 sitios incl. onPress inline de carruseles (SessionCard no los cubre)
 - [Catalog create vs edit field parity](catalog-create-vs-edit-fields.md) — INSERT de creación y PATCH de edición enumeran campos por separado; omitir uno lo pierde en silencio ("funciona al editar, no al crear")
 - [Biblioteca overlay sobre drawer](biblioteca-drawer-overlay.md) — "Biblioteca" del menú no navega: overlay deslizante sobre el drawer (queda abierto debajo); patrón para pantallas "sobre el menú"

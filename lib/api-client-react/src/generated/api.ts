@@ -92,6 +92,9 @@ import type {
   ExploreSectionsUpdate,
   FavoritesInput,
   FavoritesList,
+  FeaturedMomentAdminResponse,
+  FeaturedMomentInput,
+  FeaturedMomentResponse,
   FollowCounts,
   FollowedUser,
   FriendRequest,
@@ -9198,6 +9201,231 @@ export function useGetCatalogPlaylist<TData = Awaited<ReturnType<typeof getCatal
 
 
 
+export const getGetFeaturedMomentUrl = () => {
+
+
+
+
+  return `/api/catalog/featured-moment`
+}
+
+/**
+ * @summary Selección diaria global de Para este momento
+ */
+export const getFeaturedMoment = async ( options?: RequestInit): Promise<FeaturedMomentResponse> => {
+
+  return customFetch<FeaturedMomentResponse>(getGetFeaturedMomentUrl(),
+  {
+    ...options,
+    method: 'GET'
+
+
+  }
+);}
+
+
+
+
+
+export const getGetFeaturedMomentQueryKey = () => {
+    return [
+    `/api/catalog/featured-moment`
+    ] as const;
+    }
+
+
+export const getGetFeaturedMomentQueryOptions = <TData = Awaited<ReturnType<typeof getFeaturedMoment>>, TError = ErrorType<unknown>>( options?: { query?:UseQueryOptions<Awaited<ReturnType<typeof getFeaturedMoment>>, TError, TData>, request?: SecondParameter<typeof customFetch>}
+) => {
+
+const {query: queryOptions, request: requestOptions} = options ?? {};
+
+  const queryKey =  queryOptions?.queryKey ?? getGetFeaturedMomentQueryKey();
+
+
+
+    const queryFn: QueryFunction<Awaited<ReturnType<typeof getFeaturedMoment>>> = ({ signal }) => getFeaturedMoment({ signal, ...requestOptions });
+
+
+
+
+
+   return  { queryKey, queryFn, ...queryOptions} as UseQueryOptions<Awaited<ReturnType<typeof getFeaturedMoment>>, TError, TData> & { queryKey: QueryKey }
+}
+
+export type GetFeaturedMomentQueryResult = NonNullable<Awaited<ReturnType<typeof getFeaturedMoment>>>
+export type GetFeaturedMomentQueryError = ErrorType<unknown>
+
+
+/**
+ * @summary Selección diaria global de Para este momento
+ */
+
+export function useGetFeaturedMoment<TData = Awaited<ReturnType<typeof getFeaturedMoment>>, TError = ErrorType<unknown>>(
+  options?: { query?:UseQueryOptions<Awaited<ReturnType<typeof getFeaturedMoment>>, TError, TData>, request?: SecondParameter<typeof customFetch>}
+
+ ):  UseQueryResult<TData, TError> & { queryKey: QueryKey } {
+
+  const queryOptions = getGetFeaturedMomentQueryOptions(options)
+
+  const query = useQuery(queryOptions) as  UseQueryResult<TData, TError> & { queryKey: QueryKey };
+
+  return { ...query, queryKey: queryOptions.queryKey };
+}
+
+
+
+
+
+
+
+export const getGetAdminFeaturedMomentUrl = () => {
+
+
+
+
+  return `/api/admin/featured-moment`
+}
+
+/**
+ * @summary Selección diaria y sesiones elegibles, para administradores y moderadores
+ */
+export const getAdminFeaturedMoment = async ( options?: RequestInit): Promise<FeaturedMomentAdminResponse> => {
+
+  return customFetch<FeaturedMomentAdminResponse>(getGetAdminFeaturedMomentUrl(),
+  {
+    ...options,
+    method: 'GET'
+
+
+  }
+);}
+
+
+
+
+
+export const getGetAdminFeaturedMomentQueryKey = () => {
+    return [
+    `/api/admin/featured-moment`
+    ] as const;
+    }
+
+
+export const getGetAdminFeaturedMomentQueryOptions = <TData = Awaited<ReturnType<typeof getAdminFeaturedMoment>>, TError = ErrorType<void>>( options?: { query?:UseQueryOptions<Awaited<ReturnType<typeof getAdminFeaturedMoment>>, TError, TData>, request?: SecondParameter<typeof customFetch>}
+) => {
+
+const {query: queryOptions, request: requestOptions} = options ?? {};
+
+  const queryKey =  queryOptions?.queryKey ?? getGetAdminFeaturedMomentQueryKey();
+
+
+
+    const queryFn: QueryFunction<Awaited<ReturnType<typeof getAdminFeaturedMoment>>> = ({ signal }) => getAdminFeaturedMoment({ signal, ...requestOptions });
+
+
+
+
+
+   return  { queryKey, queryFn, ...queryOptions} as UseQueryOptions<Awaited<ReturnType<typeof getAdminFeaturedMoment>>, TError, TData> & { queryKey: QueryKey }
+}
+
+export type GetAdminFeaturedMomentQueryResult = NonNullable<Awaited<ReturnType<typeof getAdminFeaturedMoment>>>
+export type GetAdminFeaturedMomentQueryError = ErrorType<void>
+
+
+/**
+ * @summary Selección diaria y sesiones elegibles, para administradores y moderadores
+ */
+
+export function useGetAdminFeaturedMoment<TData = Awaited<ReturnType<typeof getAdminFeaturedMoment>>, TError = ErrorType<void>>(
+  options?: { query?:UseQueryOptions<Awaited<ReturnType<typeof getAdminFeaturedMoment>>, TError, TData>, request?: SecondParameter<typeof customFetch>}
+
+ ):  UseQueryResult<TData, TError> & { queryKey: QueryKey } {
+
+  const queryOptions = getGetAdminFeaturedMomentQueryOptions(options)
+
+  const query = useQuery(queryOptions) as  UseQueryResult<TData, TError> & { queryKey: QueryKey };
+
+  return { ...query, queryKey: queryOptions.queryKey };
+}
+
+
+
+
+
+
+
+export const getSetAdminFeaturedMomentUrl = () => {
+
+
+
+
+  return `/api/admin/featured-moment`
+}
+
+/**
+ * @summary Elegir la sesión de hoy o recuperar la selección automática
+ */
+export const setAdminFeaturedMoment = async (featuredMomentInput: FeaturedMomentInput, options?: RequestInit): Promise<FeaturedMomentAdminResponse> => {
+
+  return customFetch<FeaturedMomentAdminResponse>(getSetAdminFeaturedMomentUrl(),
+  {
+    ...options,
+    method: 'PUT',
+    headers: { 'Content-Type': 'application/json', ...options?.headers },
+    body: JSON.stringify(
+      featuredMomentInput,)
+  }
+);}
+
+
+
+
+export const getSetAdminFeaturedMomentMutationOptions = <TError = ErrorType<void>,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof setAdminFeaturedMoment>>, TError,{data: BodyType<FeaturedMomentInput>}, TContext>, request?: SecondParameter<typeof customFetch>}
+): UseMutationOptions<Awaited<ReturnType<typeof setAdminFeaturedMoment>>, TError,{data: BodyType<FeaturedMomentInput>}, TContext> => {
+
+const mutationKey = ['setAdminFeaturedMoment'];
+const {mutation: mutationOptions, request: requestOptions} = options ?
+      options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey ?
+      options
+      : {...options, mutation: {...options.mutation, mutationKey}}
+      : {mutation: { mutationKey, }, request: undefined};
+
+
+
+
+      const mutationFn: MutationFunction<Awaited<ReturnType<typeof setAdminFeaturedMoment>>, {data: BodyType<FeaturedMomentInput>}> = (props) => {
+          const {data} = props ?? {};
+
+          return  setAdminFeaturedMoment(data,requestOptions)
+        }
+
+
+
+
+
+
+  return  { mutationFn, ...mutationOptions }}
+
+    export type SetAdminFeaturedMomentMutationResult = NonNullable<Awaited<ReturnType<typeof setAdminFeaturedMoment>>>
+    export type SetAdminFeaturedMomentMutationBody = BodyType<FeaturedMomentInput>
+    export type SetAdminFeaturedMomentMutationError = ErrorType<void>
+
+    /**
+ * @summary Elegir la sesión de hoy o recuperar la selección automática
+ */
+export const useSetAdminFeaturedMoment = <TError = ErrorType<void>,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof setAdminFeaturedMoment>>, TError,{data: BodyType<FeaturedMomentInput>}, TContext>, request?: SecondParameter<typeof customFetch>}
+ ): UseMutationResult<
+        Awaited<ReturnType<typeof setAdminFeaturedMoment>>,
+        TError,
+        {data: BodyType<FeaturedMomentInput>},
+        TContext
+      > => {
+      return useMutation(getSetAdminFeaturedMomentMutationOptions(options));
+    }
+
 export const getGetPinnedFeaturedUrl = () => {
 
 
@@ -9207,7 +9435,8 @@ export const getGetPinnedFeaturedUrl = () => {
 }
 
 /**
- * @summary Sesión "Destacada de hoy" elegida manualmente por el admin (o null)
+ * @deprecated
+ * @summary Compatibilidad de Para este momento; usar featured-moment
  */
 export const getPinnedFeatured = async ( options?: RequestInit): Promise<PinnedFeaturedResponse> => {
 
@@ -9254,7 +9483,8 @@ export type GetPinnedFeaturedQueryError = ErrorType<unknown>
 
 
 /**
- * @summary Sesión "Destacada de hoy" elegida manualmente por el admin (o null)
+ * @deprecated
+ * @summary Compatibilidad de Para este momento; usar featured-moment
  */
 
 export function useGetPinnedFeatured<TData = Awaited<ReturnType<typeof getPinnedFeatured>>, TError = ErrorType<unknown>>(
@@ -9284,7 +9514,8 @@ export const getSetPinnedFeaturedUrl = () => {
 }
 
 /**
- * @summary Fijar (o limpiar) la sesión "Destacada de hoy" — solo admin
+ * @deprecated
+ * @summary Compatibilidad de elección solo por hoy; usar admin/featured-moment
  */
 export const setPinnedFeatured = async (setPinnedFeaturedBody: SetPinnedFeaturedBody, options?: RequestInit): Promise<SetPinnedFeatured200> => {
 
@@ -9333,7 +9564,8 @@ const {mutation: mutationOptions, request: requestOptions} = options ?
     export type SetPinnedFeaturedMutationError = ErrorType<void>
 
     /**
- * @summary Fijar (o limpiar) la sesión "Destacada de hoy" — solo admin
+ * @deprecated
+ * @summary Compatibilidad de elección solo por hoy; usar admin/featured-moment
  */
 export const useSetPinnedFeatured = <TError = ErrorType<void>,
     TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof setPinnedFeatured>>, TError,{data: BodyType<SetPinnedFeaturedBody>}, TContext>, request?: SecondParameter<typeof customFetch>}

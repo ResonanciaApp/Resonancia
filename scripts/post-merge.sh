@@ -7,4 +7,5 @@ pnpm install --frozen-lockfile
 # surface/order invariant is introduced. Production schema changes are
 # applied by the Publish flow, never here.
 DB_MIGRATION_ENV=development pnpm --filter @workspace/db migrate:editorial
+DB_MIGRATION_ENV=development pnpm --filter @workspace/db migrate:featured-moment
 pnpm --filter db push

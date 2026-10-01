@@ -36,15 +36,7 @@ import { useReflectionCategories } from "@/constants/reflectionCategories";
 import { useAuth } from "@/context/AuthContext";
 import { usePremium } from "@/context/PremiumContext";
 import { FREE_REFLECTIONS_LIMIT, showPremiumGate } from "@/lib/premiumGate";
-import { REGISTER_BUTTON_ENABLED_BACKGROUND } from "@/constants/colors";
 
-const CATEGORY_PLACEHOLDERS: Partial<Record<ReflectionCategory, string>> = {
-  gratitude: "Ej: Hoy siento gratitud por...",
-  clarity: "Ej: Ahora veo con claridad que...",
-  calm: "Ej: La calma llega a mi vida cuando...",
-  purpose: "Ej: Me conecto con mi propósito cuando...",
-  acceptance: "Ej: Cuando acepto lo que sucede, la vida...",
-};
 const DEFAULT_PLACEHOLDER = "¿Qué sientes compartir hoy?";
 const REGISTER_BUTTON_BACKGROUND = "rgba(184, 117, 240, 0.2)";
 // La + se repite visualmente cada 90°: 270° son tres ciclos perceptibles.
@@ -218,9 +210,7 @@ export function InnerSpaceCard({
     }
   });
 
-  const desiredPlaceholder = category
-    ? CATEGORY_PLACEHOLDERS[category] ?? DEFAULT_PLACEHOLDER
-    : DEFAULT_PLACEHOLDER;
+  const desiredPlaceholder = DEFAULT_PLACEHOLDER;
   const messageIsEmpty = message.length === 0;
 
   useEffect(() => {
@@ -725,15 +715,31 @@ export function InnerSpaceCard({
           accessibilityRole="button"
           style={[
             styles.submitButton,
-            { backgroundColor: isSubmitDisabled ? REGISTER_BUTTON_BACKGROUND : REGISTER_BUTTON_ENABLED_BACKGROUND },
+            { backgroundColor: "#F9F9F9" },
             isSubmitDisabled && { opacity: 0.5 },
           ]}
           disabled={isSubmitDisabled}
           onPress={saveMessage}
         >
-          <Text style={[styles.submitText, { color: isSubmitDisabled ? "#D4B8F4" : "#F9F9F9" }]}>
-            {createMutation.isPending ? "Registrando..." : "REGISTRAR"}
-          </Text>
+          <MaskedView
+            pointerEvents="none"
+            style={{ opacity: 0.99 * REFLECTION_WALL_BORDER_BRIGHTNESS }}
+            maskElement={
+              <Text accessible={false} style={[styles.submitText, { color: "#FFFFFF" }]}>
+                {createMutation.isPending ? "Registrando..." : "REGISTRAR"}
+              </Text>
+            }
+          >
+            <LinearGradient
+              colors={REFLECTION_WALL_BORDER_GRADIENT}
+              start={REFLECTION_WALL_BORDER_START}
+              end={REFLECTION_WALL_BORDER_END}
+            >
+              <Text accessible={false} style={[styles.submitText, { opacity: 0 }]}>
+                {createMutation.isPending ? "Registrando..." : "REGISTRAR"}
+              </Text>
+            </LinearGradient>
+          </MaskedView>
         </Pressable>
       </View>
           </Animated.View>

@@ -1,12 +1,14 @@
 ---
-name: Selección de Para este momento
-description: Diferencia entre la rotación de Inicio y la sesión fijada manualmente
+name: Selección diaria de Para este momento
+description: Consumo del ciclo editorial, reservas de Admin y elecciones manuales del día chileno
 ---
 
-“Destacada en Inicio” incorpora una sesión publicada y no-placeholder a la rotación diaria de “Para este momento”. La selección puede pertenecer a cualquier categoría.
+La selección es editorial y global: Inicio y Descubrir deben compartir el mismo día de America/Santiago, no una elección personalizada por teléfono. Música está excluida deliberadamente por ahora, no por una limitación del reproductor.
 
-“Mostrar hoy en Para este momento” reemplaza esa rotación con una única sesión fijada. Fijar otra sesión reemplaza la anterior; ocultar la sesión o convertirla en placeholder elimina la fijación.
+La vista previa de Admin puede reservar una automática, pero no debe consumirla como si el público la hubiese recibido. Si se usa una manual durante todo ese día, la automática no expuesta vuelve al ciclo pendiente. Quitar la manual antes de terminar el día recupera esa misma reserva, no otro sorteo.
 
-**Why:** antes el Admin permitía fijar cualquier sesión, pero móvil ignoraba silenciosamente las que no eran meditaciones guiadas. Además, el formulario no garantizaba una sola fijación.
+Una manual recibida públicamente cuenta como vista para su propio ID dentro del ciclo, nunca para las otras candidatas. Si era la última pendiente, el siguiente ciclo debe evitar repetirla inmediatamente, aunque no haya sido una selección automática.
 
-**How to apply:** todos los escritores de la fijación deben usar la misma exclusión mutua del servidor. Inicio debe refrescar la selección al recuperar foco y usar la rotación solo cuando no exista una fijación válida.
+**Why:** abrir Admin antes de elegir una manual genera una reserva automática invisible para los usuarios; consumirla perdería una sesión sin mostrarla. No contar la manual mostrada puede repetirla al día siguiente cuando queda sola en la cola.
+
+**How to apply:** conservar la separación entre reserva, exposición pública y elección manual al cambiar la gestión editorial. Priorizar evitar la última sesión realmente mostrada; con dos candidatas, puede ser imposible evitar también la última automática anterior.

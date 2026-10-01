@@ -1,5 +1,5 @@
 import { Feather, MaterialCommunityIcons } from "@expo/vector-icons";
-import { router, useFocusEffect } from "expo-router";
+import { router } from "expo-router";
 import { openPremiumPlans } from "@/lib/premiumGate";
 import React, { useState, useMemo, useRef } from "react";
 import {
@@ -33,13 +33,13 @@ import {
 } from "@/data/sessions";
 import { getArtist } from "@/data/artists";
 import { getGuide } from "@/data/guides";
-import { resolveFeaturedMoment } from "@/data/featured-moment";
 import { getEditorialPlaylistCarouselsForSurface } from "@/data/playlists";
 import { isChakraTag } from "@/data/chakras";
 import { TAG_CARDS, slugifyThemeTag } from "@/data/tags";
 import { usePremium } from "@/context/PremiumContext";
 import { usePlayerBrowse } from "@/context/PlayerContext";
 import { useAmbientalDuration } from "@/context/AmbientalDurationContext";
+import { useFeaturedMoment } from "@/hooks/useFeaturedMoment";
 import { useDrawer } from "@/context/DrawerContext";
 import { useCatalog } from "@/context/CatalogContext";
 import { useCategoryOverlay } from "@/context/CategoryOverlayContext";
@@ -54,7 +54,6 @@ import { useResonadores } from "@/hooks/useResonadores";
 import {
   useGetPopularSessions,
   getGetPopularSessionsQueryKey,
-  useGetPinnedFeatured,
 } from "@workspace/api-client-react";
 import {
   CONTENT_CAROUSEL_GAP,
@@ -337,19 +336,8 @@ export function ExploreScreen({
     () => getEditorialPlaylistCarouselsForSurface("discover"),
     [catalogVersion],
   );
-  const {
-    data: pinnedFeaturedData,
-    refetch: refetchPinnedFeatured,
-  } = useGetPinnedFeatured();
-  useFocusEffect(
-    React.useCallback(() => {
-      void refetchPinnedFeatured();
-    }, [refetchPinnedFeatured]),
-  );
-  const featuredMoment = React.useMemo(
-    () => resolveFeaturedMoment(SESSIONS, pinnedFeaturedData?.session?.id),
-    [catalogVersion, pinnedFeaturedData],
-  );
+  const { session: featuredMoment, statusMessage: featuredMomentStatus } =
+    useFeaturedMoment();
 
   const ancestralesSessions = React.useMemo(
     () => SESSIONS.filter(s => s.categoryId === "sonidos-ancestrales").slice(0, 10),
@@ -653,10 +641,10 @@ export function ExploreScreen({
 
           <View style={[styles.sectionDivider, styles.categoryBlocksDivider]} />
 
-          {featuredMoment && (
-            <>
-              <View style={styles.featuredMomentSection}>
-                <Text style={styles.sectionTitle}>Para este momento</Text>
+          <>
+            <View style={styles.featuredMomentSection}>
+              <Text style={styles.sectionTitle}>Para este momento</Text>
+              {featuredMoment ? (
                 <Pressable
                   onPress={() => {
                     handleSessionPress(featuredMoment);
@@ -743,10 +731,17 @@ export function ExploreScreen({
                     );
                   })()}
                 </Pressable>
-              </View>
-              <View style={styles.sectionDivider} />
-            </>
-          )}
+              ) : (
+                <Text style={styles.featuredMomentStatus}>
+                  {featuredMomentStatus ?? "Actualizando selección diaria…"}
+                </Text>
+              )}
+              {featuredMoment && featuredMomentStatus ? (
+                <Text style={styles.featuredMomentStatus}>{featuredMomentStatus}</Text>
+              ) : null}
+            </View>
+            <View style={styles.sectionDivider} />
+          </>
 
           <ResonadoresBanner onPress={() => router.push("/equipo" as never)} />
 
@@ -1132,6 +1127,13 @@ const styles = StyleSheet.create({
     paddingHorizontal: H_PAD,
     marginTop: 0,
     marginBottom: SECTION_GAP,
+  },
+  featuredMomentStatus: {
+    color: CARD_TEXT_BELOW,
+    fontFamily: "Manrope",
+    fontSize: 13,
+    marginTop: 8,
+    marginBottom: 10,
   },
   heroImageContainer: {
     width: "100%",

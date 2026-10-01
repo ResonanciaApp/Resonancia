@@ -2165,6 +2165,42 @@ export interface SearchTrendsResponse {
   terms: SearchTrend[];
 }
 
+export type FeaturedMomentResponseSource = typeof FeaturedMomentResponseSource[keyof typeof FeaturedMomentResponseSource];
+
+
+export const FeaturedMomentResponseSource = {
+  automatic: 'automatic',
+  manual: 'manual',
+  empty: 'empty',
+} as const;
+
+export interface FeaturedMomentResponse {
+  /** Día editorial YYYY-MM-DD en America/Santiago */
+  date: string;
+  timezone: string;
+  nextChangeAt: string;
+  source: FeaturedMomentResponseSource;
+  session: CatalogSession | null;
+  automaticSessionId: string | null;
+  eligibleCount: number;
+  revision: string;
+  manualMigrated: boolean;
+}
+
+export type FeaturedMomentAdminResponse = FeaturedMomentResponse & {
+  candidates: CatalogSession[];
+};
+
+export interface FeaturedMomentInput {
+  /** ID elegible para hoy; null para volver a la selección automática estable */
+  sessionId: string | null;
+  /**
+     * Fecha editorial del estado que está editando el usuario
+     * @pattern ^\d{4}-\d{2}-\d{2}$
+     */
+  date: string;
+}
+
 export interface PinnedFeaturedResponse {
   session: CatalogSession | null;
 }

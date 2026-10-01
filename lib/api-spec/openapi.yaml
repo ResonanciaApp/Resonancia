@@ -2129,11 +2129,67 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/ErrorResponse"
+  /catalog/featured-moment:
+    get:
+      operationId: getFeaturedMoment
+      tags: [catalog]
+      summary: Selección diaria global de Para este momento
+      responses:
+        "200":
+          description: Sesión del día editorial de Chile, estable para todos los clientes
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/FeaturedMomentResponse"
+  /admin/featured-moment:
+    get:
+      operationId: getAdminFeaturedMoment
+      tags: [admin]
+      summary: Selección diaria y sesiones elegibles, para administradores y moderadores
+      responses:
+        "200":
+          description: Estado diario y catálogo elegible sin Música
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/FeaturedMomentAdminResponse"
+        "401":
+          description: Autenticación requerida
+        "403":
+          description: Rol editorial requerido
+    put:
+      operationId: setAdminFeaturedMoment
+      tags: [admin]
+      summary: Elegir la sesión de hoy o recuperar la selección automática
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/FeaturedMomentInput"
+      responses:
+        "200":
+          description: Estado actualizado para el día solicitado
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/FeaturedMomentAdminResponse"
+        "400":
+          description: Solicitud inválida o sesión no elegible
+        "401":
+          description: Autenticación requerida
+        "403":
+          description: Rol editorial requerido
+        "409":
+          description: El día editorial cambió; actualizar antes de elegir
+        "404":
+          description: La sesión ya no es elegible para Para este momento
   /catalog/pinned-featured:
     get:
       operationId: getPinnedFeatured
       tags: [catalog]
-      summary: Sesión "Destacada de hoy" elegida manualmente por el admin (o null)
+      deprecated: true
+      summary: Compatibilidad de Para este momento; usar featured-moment
       responses:
         "200":
           description: Sesión destacada pinned, o null si no hay ninguna seleccionada
@@ -2145,7 +2201,8 @@ paths:
     put:
       operationId: setPinnedFeatured
       tags: [admin]
-      summary: Fijar (o limpiar) la sesión "Destacada de hoy" — solo admin
+      deprecated: true
+      summary: Compatibilidad de elección solo por hoy; usar admin/featured-moment
       requestBody:
         required: true
         content:
@@ -7346,6 +7403,56 @@ components:
           items:
             $ref: "#/components/schemas/SearchTrend"
       required: [terms]
+    FeaturedMomentResponse:
+      type: object
+      required: [date, timezone, nextChangeAt, source, session, automaticSessionId, eligibleCount, revision, manualMigrated]
+      properties:
+        date:
+          type: string
+          description: Día editorial YYYY-MM-DD en America/Santiago
+        timezone:
+          type: string
+        nextChangeAt:
+          type: string
+          format: date-time
+        source:
+          type: string
+          enum: [automatic, manual, empty]
+        session:
+          oneOf:
+            - $ref: "#/components/schemas/CatalogSession"
+            - type: "null"
+        automaticSessionId:
+          type: string
+          nullable: true
+        eligibleCount:
+          type: integer
+        revision:
+          type: string
+        manualMigrated:
+          type: boolean
+    FeaturedMomentAdminResponse:
+      allOf:
+        - $ref: "#/components/schemas/FeaturedMomentResponse"
+        - type: object
+          required: [candidates]
+          properties:
+            candidates:
+              type: array
+              items:
+                $ref: "#/components/schemas/CatalogSession"
+    FeaturedMomentInput:
+      type: object
+      required: [sessionId, date]
+      properties:
+        sessionId:
+          type: string
+          nullable: true
+          description: ID elegible para hoy; null para volver a la selección automática estable
+        date:
+          type: string
+          pattern: '^\d{4}-\d{2}-\d{2}$'
+          description: Fecha editorial del estado que está editando el usuario
     PinnedFeaturedResponse:
       type: object
       properties:
