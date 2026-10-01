@@ -209,7 +209,7 @@ test("Perfil aligns weekly circles with the section inset while Tu progreso keep
   }
 });
 
-test("Perfil lowers Esta semana and all following content another 25px without changing section gaps", () => {
+test("Perfil raises Esta semana and all following content 12px without changing section gaps", () => {
   const profileSource = readFileSync(new URL("../components/ProfileScreenBase.tsx", import.meta.url), "utf8");
   assert.doesNotMatch(profileSource, /profileIntentionDescription|Todo gran cambio comienza con el primer paso|Bienvenido a Resonancia/);
   assert.match(profileSource, /profileProgressSection:\s*\{\s*marginTop: PROFILE_PROGRESS_TOP_MARGIN,/);
@@ -227,8 +227,8 @@ test("Perfil lowers Esta semana and all following content another 25px without c
   assert.ok(marginExpression);
   const margin = new Function(...constants, `return (${marginExpression});`)(...values);
   const [gap, padding, cardMargin, weekPadding, cardOffset] = values;
-  assert.equal(gap, 35 + 25);
-  assert.equal(padding + cardMargin + margin + weekPadding - cardOffset, 60);
+  assert.equal(gap, 60 - 12);
+  assert.equal(padding + cardMargin + margin + weekPadding - cardOffset, 48);
   const detailsStart = profileSource.indexOf('testID="profile-identity-details"');
   const locationIndex = profileSource.indexOf("{location ? (", detailsStart);
   const pillIndex = profileSource.indexOf("<ProfileIntentionPill", detailsStart);

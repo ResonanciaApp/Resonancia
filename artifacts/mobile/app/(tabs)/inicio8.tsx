@@ -3725,14 +3725,14 @@ const styles = StyleSheet.create({
     textShadowRadius: 4,
   },
   inicio3HeroGreetingName: {
-    fontSize: 20,
-    lineHeight: 25,
+    fontSize: 18,
+    lineHeight: 23,
   },
   inicio3HeroDecree: {
     color: CARD_TEXT_BELOW,
     fontFamily: "Manrope",
-    fontSize: 15,
-    lineHeight: 19,
+    fontSize: 13,
+    lineHeight: 17,
     fontWeight: "600",
     letterSpacing: 0.2,
     textShadowColor: "rgba(0,0,0,0.55)",
