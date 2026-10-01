@@ -25,6 +25,18 @@ function fixture() {
 
 function harness() {
   const query = { data: fixture() as any, isLoading: false, isError: false, isFetching: false };
+  const inventory = {
+    data: fixture().candidates.map(c => ({ ...c, status: "published", isPlaceholder: false })) as any[],
+    isLoading: false, isError: false, isFetching: false,
+    refetch: () => Promise.resolve(),
+  };
+  const taxonomy = {
+    data: { categories: [
+      { id: "meditaciones-guiadas", label: "Meditaciones" }, { id: "ambientales", label: "Ambientales" },
+      { id: "historias", label: "Historias" }, { id: "charlas", label: "Reflexiones" },
+    ] },
+    isLoading: false, isError: false, isFetching: false, refetch: () => Promise.resolve(),
+  };
   const state: unknown[] = [];
   const effects: (() => unknown)[] = [];
   const saves: { variables: any; callbacks: any }[] = [];
@@ -46,7 +58,7 @@ function harness() {
       useMemo: (compute: () => unknown) => compute(),
       useEffect: (effect: () => unknown) => { effects.push(effect); },
     },
-    "@tanstack/react-query": { useQueryClient: () => queryClient },
+    "@tanstack/react-query": { useQueryClient: () => queryClient, useQuery: () => inventory },
     "@workspace/api-client-react": {
       useGetAdminFeaturedMoment: () => ({
         ...query, refetch: () => { refreshes++; return Promise.resolve(); },
@@ -57,6 +69,8 @@ function harness() {
       }),
       getGetAdminFeaturedMomentQueryKey: () => ["/admin/featured-moment"],
       getGetFeaturedMomentQueryKey: () => ["/catalog/featured-moment"],
+      useGetSubmissionFilterOptions: () => taxonomy,
+      getGetSubmissionFilterOptionsQueryKey: () => ["/catalog/submissions/filter-options"],
     },
     "@/components/ui/button": { Button: "button" },
     "@/components/ui/input": { Input: "input" },
@@ -79,7 +93,7 @@ function harness() {
     effects.length = 0;
     return module.exports.default();
   };
-  return { query, render, saves, effects, invalidations, notices, get refreshes() { return refreshes; } };
+  return { query, inventory, taxonomy, render, saves, effects, invalidations, notices, get refreshes() { return refreshes; } };
 }
 
 function elements(tree: unknown): React.ReactElement<any>[] {
@@ -161,7 +175,7 @@ test("returning to automatic sends null and the same displayed editorial date", 
   assert.deepEqual(h.saves[0].variables, { data: { sessionId: null, date: "2026-10-01" } });
 });
 
-test("load, server-error, and zero-candidate states are distinct and retry is wired", () => {
+test("load, server-error, and zero-candidate states are distinct and inventory stays visible", () => {
   const h = harness();
   h.query.isLoading = true;
   assert.ok(byId(h.render(), "loading-para-este-momento"));
@@ -172,7 +186,60 @@ test("load, server-error, and zero-candidate states are distinct and retry is wi
   h.query.isError = false;
   h.query.data = { ...fixture(), source: "empty", session: null, candidates: [], eligibleCount: 0 };
   assert.ok(byId(h.render(), "empty-candidates"));
-  assert.equal(elements(h.render()).some((e) => e.props["data-testid"] === "button-choose"), false);
+  assert.equal(byId(h.render(), "option-session-a").props.disabled, true);
+  assert.equal(byId(h.render(), "button-choose").props.disabled, true);
+  h.inventory.data = [];
+  assert.ok(byId(h.render(), "empty-inventory"));
+});
+
+test("all inventory rows appear, while incomplete sessions cannot be selected for today", () => {
+  const h = harness();
+  h.inventory.data.push(
+    { ...fixture().candidates[0], id: "story", title: "Historia", categoryId: "historias", categoryLabel: "Historias", status: "draft", isPlaceholder: false },
+    { ...fixture().candidates[0], id: "reflection", title: "Reflexión", categoryId: "charlas", categoryLabel: "Reflexiones", status: "published", isPlaceholder: true },
+  );
+  let tree = h.render();
+  assert.equal(elements(tree).filter(e => e.props["data-testid"]?.startsWith("option-session-")).length, 4);
+  assert.equal(byId(tree, "option-session-story").props.disabled, true);
+  assert.equal(byId(tree, "option-session-reflection").props.disabled, true);
+  assert.equal(byId(tree, "option-session-b").props.disabled, false);
+  byId(tree, "select-category").props.onChange({ target: { value: "charlas" } });
+  tree = h.render();
+  assert.equal(elements(tree).filter(e => e.props["data-testid"]?.startsWith("option-session-")).length, 1);
+  assert.ok(byId(tree, "option-session-reflection"));
+  assert.equal(byId(tree, "button-choose").props.disabled, true);
+  assert.equal(h.saves.length, 0);
+});
+
+test("empty Historias and Reflexiones are category options, not silently missing filters", () => {
+  const h = harness();
+  const options = elements(byId(h.render(), "select-category")).filter(e => e.type === "option");
+  assert.deepEqual(options.find(e => e.props.value === "historias")?.props.children, ["Historias", " (", 0, ")"]);
+  assert.deepEqual(options.find(e => e.props.value === "charlas")?.props.children, ["Reflexiones", " (", 0, ")"]);
+  byId(h.render(), "select-category").props.onChange({ target: { value: "historias" } });
+  assert.match(byId(h.render(), "empty-inventory").props.children, /todavía no tiene sesiones registradas/);
+});
+
+test("eligible Historias and active Reflexiones can be selected and saved", () => {
+  for (const categoryId of ["historias", "charlas"]) {
+    const h = harness();
+    const candidate = { ...fixture().candidates[0], id: categoryId, categoryId };
+    h.query.data.candidates.push(candidate);
+    h.inventory.data.push({ ...candidate, status: "published", isPlaceholder: false });
+    byId(h.render(), `option-session-${categoryId}`).props.onClick();
+    byId(h.render(), "button-choose").props.onClick();
+    assert.equal(h.saves[0].variables.data.sessionId, categoryId);
+  }
+});
+
+test("a failed inventory or taxonomy request is explicit and cannot masquerade as an empty category", () => {
+  const h = harness();
+  h.inventory.isError = true;
+  assert.ok(byId(h.render(), "button-retry"));
+  assert.equal(elements(h.render()).some(e => e.props["data-testid"] === "select-category"), false);
+  h.inventory.isError = false;
+  h.taxonomy.isError = true;
+  assert.ok(byId(h.render(), "button-retry"));
 });
 
 test("legacy controls are removed and quick links open the one dedicated management surface", () => {

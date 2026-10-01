@@ -15,6 +15,12 @@ const session = {
 } as CatalogSession;
 
 describe("featured moment eligibility", () => {
+  it.each(["historias", "charlas"])("includes ready published sessions in %s", (categoryId) => {
+    expect(isFeaturedMomentEligible(
+      { ...session, categoryId },
+      [{ role: "main", url: "https://example.com/audio.mp3", assetKey: null }],
+    )).toBe(true);
+  });
   it("requires an actual reproducible main/base remote or known bundled track", () => {
     expect(isFeaturedMomentEligible(session, [])).toBe(false);
     expect(isFeaturedMomentEligible(session, [

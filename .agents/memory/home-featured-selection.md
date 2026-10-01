@@ -12,3 +12,9 @@ Una manual recibida públicamente cuenta como vista para su propio ID dentro del
 **Why:** abrir Admin antes de elegir una manual genera una reserva automática invisible para los usuarios; consumirla perdería una sesión sin mostrarla. No contar la manual mostrada puede repetirla al día siguiente cuando queda sola en la cola.
 
 **How to apply:** conservar la separación entre reserva, exposición pública y elección manual al cambiar la gestión editorial. Priorizar evitar la última sesión realmente mostrada; con dos candidatas, puede ser imposible evitar también la última automática anterior.
+
+El selector de Admin debe mostrar el inventario editorial completo, no solo las sesiones aptas para destacar. Las categorías oficiales deben seguir visibles aunque estén vacías; las sesiones no aptas muestran su motivo y no se pueden elegir.
+
+**Why:** ocultar borradores, placeholders y sesiones sin audio hizo que el usuario interpretara la lista de candidatas como un catálogo incompleto, especialmente en Historias y Reflexiones.
+
+**How to apply:** separar la consulta del inventario privado del pool reproducible del ciclo. No ampliar la elegibilidad pública para resolver un problema de visibilidad ni fabricar contenido para llenar categorías vacías.

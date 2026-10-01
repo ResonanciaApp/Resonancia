@@ -1,10 +1,13 @@
 import { useEffect, useMemo, useState } from "react";
-import { useQueryClient } from "@tanstack/react-query";
+import { useQuery, useQueryClient } from "@tanstack/react-query";
 import {
   useGetAdminFeaturedMoment,
   getGetAdminFeaturedMomentQueryKey,
   useSetAdminFeaturedMoment,
   getGetFeaturedMomentQueryKey,
+  getAdminSessions,
+  useGetSubmissionFilterOptions,
+  getGetSubmissionFilterOptionsQueryKey,
 } from "@workspace/api-client-react";
 import type { FeaturedMomentAdminResponse } from "@workspace/api-client-react";
 import { Button } from "@/components/ui/button";
@@ -17,6 +20,9 @@ import {
   resolveDeepLink,
   buildSaveInput,
   isStaleDayError,
+  loadSessionInventory,
+  inventoryCategories,
+  ineligibleReason,
 } from "@/lib/featured-moment";
 import { Search, RotateCcw, Check, AlertTriangle, Sun } from "lucide-react";
 
@@ -36,6 +42,15 @@ export default function ParaEsteMomentoPage() {
         refetchOnWindowFocus: true,
       },
     });
+  const inventoryQuery = useQuery({
+    queryKey: ["featured-moment-session-inventory"],
+    queryFn: ({ signal }) => loadSessionInventory(params => getAdminSessions(params, { signal })),
+    refetchInterval: 60_000,
+    refetchOnWindowFocus: true,
+  });
+  const categoryQuery = useGetSubmissionFilterOptions({
+    query: { queryKey: getGetSubmissionFilterOptionsQueryKey(), refetchInterval: 60_000, refetchOnWindowFocus: true },
+  });
   const mutation = useSetAdminFeaturedMoment();
   const [search, setSearch] = useState("");
   const [category, setCategory] = useState("all");
@@ -62,19 +77,18 @@ export default function ParaEsteMomentoPage() {
     if (link.kind === "selected") setSelectedId(link.id);
     else if (link.kind === "ineligible")
       setDeepLinkNote(
-        "La sesión indicada no es elegible hoy (sin audio, inactiva o de la categoría Música).",
+        "La sesión indicada todavía no se puede elegir para hoy. Revisa su estado y el aviso junto a ella en el catálogo.",
       );
   }, [data, deepLinkDone]);
 
   const categories = useMemo(() => {
-    const m = new Map<string, string>();
-    (data?.candidates ?? []).forEach((c) => m.set(c.categoryId, c.categoryLabel));
-    return [...m.entries()];
-  }, [data]);
+    return inventoryCategories(inventoryQuery.data ?? [], categoryQuery.data?.categories ?? []);
+  }, [inventoryQuery.data, categoryQuery.data]);
+  const eligibleIds = useMemo(() => new Set(data?.candidates.map(c => c.id) ?? []), [data]);
 
   const filtered = useMemo(
-    () => filterCandidates(data?.candidates ?? [], search, category),
-    [data, search, category],
+    () => filterCandidates(inventoryQuery.data ?? [], search, category),
+    [inventoryQuery.data, search, category],
   );
 
   const applyResponse = (res: FeaturedMomentAdminResponse) => {
@@ -112,7 +126,7 @@ export default function ParaEsteMomentoPage() {
   const busy = mutation.isPending;
   const selected = data?.candidates.find((c) => c.id === selectedId) ?? null;
 
-  if (isLoading) {
+  if (isLoading || inventoryQuery.isLoading || categoryQuery.isLoading) {
     return (
       <div className="space-y-4 max-w-5xl" data-testid="loading-para-este-momento">
         <Skeleton className="h-9 w-64" />
@@ -122,17 +136,21 @@ export default function ParaEsteMomentoPage() {
     );
   }
 
-  if (isError || !data) {
+  if (isError || !data || inventoryQuery.isError || categoryQuery.isError) {
     return (
       <div className="max-w-xl border border-destructive/40 rounded-xl p-6 space-y-3" role="alert">
         <div className="flex items-center gap-2 font-semibold">
           <AlertTriangle className="w-4 h-4 text-destructive" />
-          No se pudo cargar la selección diaria
+          No se pudo cargar la selección diaria o el catálogo
         </div>
         <p className="text-sm text-muted-foreground">
           El servidor no respondió. Esto no significa que no haya sesiones.
         </p>
-        <Button onClick={() => void refetch()} disabled={isFetching} data-testid="button-retry">
+        <Button onClick={() => {
+          void refetch();
+          void inventoryQuery.refetch();
+          void categoryQuery.refetch();
+        }} disabled={isFetching || inventoryQuery.isFetching || categoryQuery.isFetching} data-testid="button-retry">
           Reintentar
         </Button>
       </div>
@@ -206,11 +224,11 @@ export default function ParaEsteMomentoPage() {
         </div>
       )}
 
-      {data.candidates.length === 0 ? (
+      {data.eligibleCount === 0 && (
         <div className="border border-dashed border-border rounded-xl p-8 text-center text-sm text-muted-foreground" data-testid="empty-candidates">
-          No hay sesiones elegibles. Publica sesiones con audio fuera de la categoría Música.
+          No hay sesiones listas para destacar. El catálogo completo sigue visible abajo; publica sesiones finales con audio fuera de Música.
         </div>
-      ) : (
+      )}
         <section className="space-y-3" aria-label="Selector de sesión">
           <div className="flex flex-col sm:flex-row gap-2">
             <div className="relative flex-1">
@@ -232,17 +250,27 @@ export default function ParaEsteMomentoPage() {
               data-testid="select-category"
             >
               <option value="all">Todas las categorías</option>
-              {categories.map(([id, label]) => (
+              {categories.map(({ id, label, count }) => (
                 <option key={id} value={id}>
-                  {label}
+                  {label} ({count})
                 </option>
               ))}
             </select>
           </div>
 
-          <div className="border border-border rounded-xl divide-y divide-border max-h-[420px] overflow-auto" role="listbox" aria-label="Sesiones elegibles">
+          <p className="text-xs text-muted-foreground" data-testid="text-inventory-count">
+            {filtered.length} de {inventoryQuery.data?.length ?? 0} sesiones del catálogo · {data.eligibleCount} listas para elegir.
+            Las demás muestran por qué todavía no pueden destacarse.
+          </p>
+          <div className="border border-border rounded-xl divide-y divide-border max-h-[420px] overflow-auto" role="listbox" aria-label="Todas las sesiones del catálogo">
             {filtered.length === 0 && (
-              <p className="p-4 text-sm text-muted-foreground">Ninguna sesión coincide.</p>
+              <p className="p-4 text-sm text-muted-foreground" data-testid="empty-inventory">
+                {(inventoryQuery.data?.length ?? 0) === 0
+                  ? "No hay sesiones registradas en el catálogo."
+                  : !search.trim() && category !== "all"
+                    ? "Esta categoría todavía no tiene sesiones registradas en el catálogo."
+                    : "Ninguna sesión coincide."}
+              </p>
             )}
             {filtered.map((c) => (
               <button
@@ -250,8 +278,10 @@ export default function ParaEsteMomentoPage() {
                 type="button"
                 role="option"
                 aria-selected={c.id === selectedId}
+                 aria-disabled={!eligibleIds.has(c.id)}
+                 disabled={!eligibleIds.has(c.id) || busy}
                 onClick={() => setSelectedId(c.id)}
-                className={`w-full flex items-center gap-3 px-3 py-2 text-left transition-colors ${
+                 className={`w-full flex items-center gap-3 px-3 py-2 text-left transition-colors disabled:cursor-not-allowed ${
                   c.id === selectedId ? "bg-primary/10" : "hover:bg-secondary"
                 }`}
                 data-testid={`option-session-${c.id}`}
@@ -266,6 +296,11 @@ export default function ParaEsteMomentoPage() {
                   <span className="block text-xs text-muted-foreground">
                     {c.categoryLabel} · {c.durationLabel}
                   </span>
+                  {ineligibleReason(c, eligibleIds) && (
+                    <span className="block text-xs text-amber-300 mt-1">
+                      {ineligibleReason(c, eligibleIds)}
+                    </span>
+                  )}
                 </span>
                 {c.id === selectedId && <Check className="w-4 h-4 text-primary" />}
               </button>
@@ -280,7 +315,6 @@ export default function ParaEsteMomentoPage() {
             {busy ? "Guardando..." : "Elegir para hoy"}
           </Button>
         </section>
-      )}
     </div>
   );
 }

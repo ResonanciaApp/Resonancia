@@ -1584,7 +1584,7 @@ router.get(
         .select()
         .from(catalogSessionsTable)
         .where(where)
-        .orderBy(desc(catalogSessionsTable.createdAt))
+        .orderBy(desc(catalogSessionsTable.createdAt), asc(catalogSessionsTable.id))
         .limit(pageSize)
         .offset((page - 1) * pageSize);
 
