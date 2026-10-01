@@ -5,6 +5,11 @@ import { URL } from "node:url";
 import React from "react";
 import * as JSXRuntime from "react/jsx-runtime";
 import ts from "typescript";
+import {
+  MOOD_HISTORY_GRADIENT,
+  MOOD_HISTORY_GRADIENT_START,
+  MOOD_HISTORY_GRADIENT_END,
+} from "../constants/moodHistoryGradient.ts";
 
 function source(path: string) {
   return readFileSync(new URL(path, import.meta.url), "utf8");
@@ -50,19 +55,26 @@ test("InnerSpaceCard keeps Home defaults and opts profile into a single 18px-ins
   assert.match(card, /styles\.sectionTitle,\s*\{ color: colors\.foreground \}/);
 });
 
-test("only the profile wall reuses Discover's two-pixel gradient border at 90% brightness", () => {
+test("only the profile wall uses the complete mood-history gradient with 3% less brightness", () => {
   const card = source("../components/InnerSpaceCard.tsx");
   const border = source("../components/DiscoverSearchBorder.tsx");
-  assert.match(card, /canonicalVerticalInsets && \(\s*<DiscoverSearchBorder borderRadius=\{24\} brightness=\{0\.9\} \/>/);
+  assert.match(card, /canonicalVerticalInsets && \(\s*<DiscoverSearchBorder[\s\S]*?borderRadius=\{24\}[\s\S]*?brightness=\{0\.9 \* 0\.97\}[\s\S]*?colors=\{MOOD_HISTORY_GRADIENT\}[\s\S]*?start=\{MOOD_HISTORY_GRADIENT_START\}[\s\S]*?end=\{MOOD_HISTORY_GRADIENT_END\}/);
   assert.match(border, /borderWidth = 2/);
   assert.match(border, /brightness = 1/);
   assert.match(border, /opacity: 0\.99 \* brightness/);
-  assert.match(border, /colors=\{SEARCH_BORDER_GRADIENT\}/);
+  assert.match(border, /colors = SEARCH_BORDER_GRADIENT/);
   assert.match(border, /pointerEvents="none"/);
   assert.equal(style("InnerSpaceCard", "container", { INNER_SPACE_CARD_BOTTOM_MARGIN: 32 }).borderColor, "rgba(255,255,255,0.1)");
+  const history = source("../app/historial-emociones.tsx");
+  assert.match(history, /colors=\{MOOD_HISTORY_GRADIENT\}/);
+  assert.match(history, /start=\{MOOD_HISTORY_GRADIENT_START\}/);
+  assert.match(history, /end=\{MOOD_HISTORY_GRADIENT_END\}/);
+  assert.deepEqual(MOOD_HISTORY_GRADIENT, ["#074B4C", "#24414F", "#2E3955", "#363459", "#493453", "#57334F", "#5B3D25"]);
+  assert.deepEqual(MOOD_HISTORY_GRADIENT_START, { x: 0.35, y: 0 });
+  assert.deepEqual(MOOD_HISTORY_GRADIENT_END, { x: 0.65, y: 1 });
 });
 
-test("the shared border retains its gradient and width while reducing opacity by exactly 10%", () => {
+test("the wall border retains all seven mood-history stops and direction while Discover keeps its original border", () => {
   const compiled = ts.transpileModule(source("../components/DiscoverSearchBorder.tsx"), {
     compilerOptions: { module: ts.ModuleKind.CommonJS, jsx: ts.JsxEmit.ReactJSX, esModuleInterop: true },
   }).outputText;
@@ -82,12 +94,24 @@ test("the shared border retains its gradient and width while reducing opacity by
     return mocks[name];
   }, module, module.exports);
   const original = module.exports.DiscoverSearchBorder({});
-  const wall = module.exports.DiscoverSearchBorder({ borderRadius: 24, brightness: 0.9 });
+  const previous = module.exports.DiscoverSearchBorder({ borderRadius: 24, brightness: 0.9 });
+  const wall = module.exports.DiscoverSearchBorder({
+    borderRadius: 24,
+    brightness: 0.9 * 0.97,
+    colors: MOOD_HISTORY_GRADIENT,
+    start: MOOD_HISTORY_GRADIENT_START,
+    end: MOOD_HISTORY_GRADIENT_END,
+  });
   const resolve = (styles: Record<string, unknown>[]) => Object.assign({}, ...styles);
   assert.equal(resolve(original.props.style).opacity, 0.99);
-  assert.equal(resolve(wall.props.style).opacity, 0.99 * 0.9);
+  assert.equal(resolve(wall.props.style).opacity, (resolve(previous.props.style).opacity as number) * 0.97);
   assert.equal(wall.props.pointerEvents, "none");
-  assert.deepEqual(wall.props.children.props.colors, original.props.children.props.colors);
+  assert.deepEqual(wall.props.children.props.colors, MOOD_HISTORY_GRADIENT);
+  assert.deepEqual(wall.props.children.props.start, MOOD_HISTORY_GRADIENT_START);
+  assert.deepEqual(wall.props.children.props.end, MOOD_HISTORY_GRADIENT_END);
+  assert.equal(original.props.children.props.colors.length, 2);
+  assert.deepEqual(original.props.children.props.start, { x: 0, y: 0 });
+  assert.deepEqual(original.props.children.props.end, { x: 1, y: 1 });
   assert.equal(resolve(wall.props.maskElement.props.style).borderWidth, 2);
   assert.equal(resolve(wall.props.maskElement.props.style).borderRadius, 24);
 });

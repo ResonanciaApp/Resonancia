@@ -19,10 +19,16 @@ export function DiscoverSearchBorder({
   borderRadius = 999,
   borderWidth = 2,
   brightness = 1,
+  colors = SEARCH_BORDER_GRADIENT,
+  start = { x: 0, y: 0 },
+  end = { x: 1, y: 1 },
 }: {
   borderRadius?: number;
   borderWidth?: number;
   brightness?: number;
+  colors?: [string, string, ...string[]];
+  start?: { x: number; y: number };
+  end?: { x: number; y: number };
 }) {
   return (
     <MaskedView
@@ -31,9 +37,9 @@ export function DiscoverSearchBorder({
       maskElement={<View style={[styles.mask, { borderRadius, borderWidth }]} />}
     >
       <LinearGradient
-        colors={SEARCH_BORDER_GRADIENT}
-        start={{ x: 0, y: 0 }}
-        end={{ x: 1, y: 1 }}
+        colors={colors}
+        start={start}
+        end={end}
         style={StyleSheet.absoluteFill}
       />
     </MaskedView>

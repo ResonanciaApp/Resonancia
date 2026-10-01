@@ -14,6 +14,11 @@ import Reanimated, {
 } from "react-native-reanimated";
 import { useColors } from "@/hooks/useColors";
 import { DiscoverSearchBorder } from "@/components/DiscoverSearchBorder";
+import {
+  MOOD_HISTORY_GRADIENT,
+  MOOD_HISTORY_GRADIENT_START,
+  MOOD_HISTORY_GRADIENT_END,
+} from "@/constants/moodHistoryGradient";
 import { useSceneTheme } from "@/context/SceneThemeContext";
 import {
   getListMyReflectionsQueryKey,
@@ -487,7 +492,13 @@ export function InnerSpaceCard({
     <>
     <View style={[styles.container, canonicalVerticalInsets && styles.canonicalVerticalInsets]}>
       {canonicalVerticalInsets && (
-        <DiscoverSearchBorder borderRadius={24} brightness={0.9} />
+        <DiscoverSearchBorder
+          borderRadius={24}
+          brightness={0.9 * 0.97}
+          colors={MOOD_HISTORY_GRADIENT}
+          start={MOOD_HISTORY_GRADIENT_START}
+          end={MOOD_HISTORY_GRADIENT_END}
+        />
       )}
       <View style={styles.header}>
         <View style={[styles.headerCopy, canonicalVerticalInsets && styles.canonicalHeaderCopy]}>

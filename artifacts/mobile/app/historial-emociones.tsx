@@ -18,16 +18,11 @@ import { buildMoodCalendarRange } from "@/data/mood-calendar";
 import { useSceneTheme } from "@/context/SceneThemeContext";
 import { getLibraryTabSurface } from "@/components/BibliotecaScreen";
 import { MoodCalendar } from "@/components/MoodCalendar";
-
-const HISTORY_GRADIENT: [string, string, ...string[]] = [
-  "#074B4C",
-  "#24414F",
-  "#2E3955",
-  "#363459",
-  "#493453",
-  "#57334F",
-  "#5B3D25",
-];
+import {
+  MOOD_HISTORY_GRADIENT,
+  MOOD_HISTORY_GRADIENT_START,
+  MOOD_HISTORY_GRADIENT_END,
+} from "@/constants/moodHistoryGradient";
 
 export default function HistorialEmocionesScreen() {
   const insets = useSafeAreaInsets();
@@ -56,9 +51,9 @@ export default function HistorialEmocionesScreen() {
 
   return (
     <LinearGradient
-      colors={HISTORY_GRADIENT}
-      start={{ x: 0.35, y: 0 }}
-      end={{ x: 0.65, y: 1 }}
+      colors={MOOD_HISTORY_GRADIENT}
+      start={MOOD_HISTORY_GRADIENT_START}
+      end={MOOD_HISTORY_GRADIENT_END}
       style={styles.root}
     >
       <View style={[styles.header, { paddingTop: topPad + 4 }]}>
