@@ -58,7 +58,7 @@ const styles = StyleSheet.create({
     paddingVertical: 6,
   },
   icon: {
-    width: 54,
+    width: 31,
     height: 54,
     borderRadius: 27,
     alignItems: "center",
@@ -73,9 +73,9 @@ const styles = StyleSheet.create({
     minWidth: 0,
     flex: 1,
     paddingRight: 3,
-    transform: [{ translateX: -8 }, { translateY: -2 }],
+    transform: [{ translateY: -2 }],
   },
   title: { fontFamily: "Manrope", fontSize: 14, fontWeight: "700", letterSpacing: -0.5 },
   subtitle: { fontFamily: "Manrope", fontSize: 12, lineHeight: 16, marginTop: 2 },
-  chevron: { width: 32, height: 44, alignItems: "center", justifyContent: "center", transform: [{ translateX: 7 }] },
+  chevron: { width: 32, height: 44, alignItems: "center", justifyContent: "center" },
 });

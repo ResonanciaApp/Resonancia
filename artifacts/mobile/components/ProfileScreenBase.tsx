@@ -2495,7 +2495,7 @@ const styles = StyleSheet.create({
     alignItems: "center",
     width: "100%",
     gap: 16,
-    paddingHorizontal: 16,
+    paddingHorizontal: 20,
   },
   profileDetails: { flex: 1, minWidth: 0, alignItems: "flex-start", gap: 6 },
   avatarWrapper: { position: "relative", marginBottom: 0, flexShrink: 0 },

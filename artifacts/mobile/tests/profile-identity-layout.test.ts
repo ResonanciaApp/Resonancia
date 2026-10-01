@@ -83,6 +83,8 @@ test("Perfil places avatar left and stacks name, email and intention on its righ
   assert.match(source, /dedicatedProfileCard: \{[^}]*backgroundColor: "rgba\(0,0,0,0.22\)"/);
   assert.match(source, /avatarImage:\s*\{\s*width: 96,\s*height: 96,\s*borderRadius: 48/);
   assert.match(source, /avatarCircle:\s*\{\s*width: 96,\s*height: 96,\s*borderRadius: 48/);
+  const rowStyle = source.match(/profileIdentityRow: \{([\s\S]*?)\n  \},/)?.[1] ?? "";
+  assert.match(rowStyle, /paddingHorizontal: 20/);
 });
 
 test("missing email is not replaced with a fake address and intention remains dedicated to Perfil", () => {

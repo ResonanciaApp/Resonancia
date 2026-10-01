@@ -81,3 +81,12 @@ test("banner and identity share the same user-section background", () => {
   assert.match(profile, /marginBottom: PROFILE_SECTION_GAP/);
   assert.doesNotMatch(source, /backgroundColor:.*0,0,0/);
 });
+
+test("Premium star and copy align with the standard section margin without horizontal offsets", () => {
+  const rowStyle = source.match(/  row: \{([\s\S]*?)\n  \},/)?.[1] ?? "";
+  const iconStyle = source.match(/  icon: \{([\s\S]*?)\n  \},/)?.[1] ?? "";
+  assert.match(rowStyle, /paddingHorizontal: 20/);
+  assert.match(iconStyle, /width: 31/);
+  assert.match(source, /name="star" size=\{31\}/);
+  assert.doesNotMatch(source, /translateX/);
+});
