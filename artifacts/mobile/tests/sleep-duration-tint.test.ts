@@ -39,8 +39,8 @@ const render = (props = {}) => renderToStaticMarkup(React.createElement(
 
 test("sleep duration tint replaces white or black glass tint, preserving blur, clock and white text", () => {
   for (const whiteGlass of [false, true]) {
-    const html = render({ whiteGlass, tintColor: "rgba(55,59,65,0.82)" });
-    assert.match(html, /data-background="rgba\(55,59,65,0\.82\)"/);
+    const html = render({ whiteGlass, tintColor: "rgba(55,59,65,0.28)" });
+    assert.match(html, /data-background="rgba\(55,59,65,0\.28\)"/);
     assert.doesNotMatch(html, /data-background="rgba\(0,0,0,0\.20\)"|data-background="rgba\(255,255,255,0\.15\)"/);
     assert.match(html, /data-blur="true"/);
     assert.match(html, /data-icon="clock"/);
@@ -58,7 +58,7 @@ test("Dormir opts every session and playlist carousel into the same dark lead-gr
   const carousels = sleep.match(/<(?:SessionCarousel|EditorialPlaylistCarousel)\b[\s\S]*?\/>/g) ?? [];
   assert.equal(carousels.length, 3);
   for (const carousel of carousels) assert.match(carousel, /durationBadgeTint=\{SLEEP_DURATION_TINT\}/);
-  assert.match(sleep, /const SLEEP_DURATION_TINT = "rgba\(55,59,65,0\.82\)"/);
+  assert.match(sleep, /const SLEEP_DURATION_TINT = "rgba\(55,59,65,0\.28\)"/);
   for (const path of ["../components/SessionCarousel.tsx", "../components/EditorialPlaylistCarousel.tsx"]) {
     const badges = source(path).match(/<SessionDurationBadge\b[\s\S]*?\/>/g) ?? [];
     assert.ok(badges.length);

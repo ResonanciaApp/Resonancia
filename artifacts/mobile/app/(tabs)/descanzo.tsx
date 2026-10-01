@@ -121,7 +121,7 @@ function SleepPill({
 }
 
 const H_PAD = 16;
-const SLEEP_DURATION_TINT = "rgba(55,59,65,0.82)";
+const SLEEP_DURATION_TINT = "rgba(55,59,65,0.28)";
 const HERO_H = 220;
 const { width: W, height: H } = Dimensions.get("window");
 const SLEEP_CAROUSEL_CARD_W = Math.round(
