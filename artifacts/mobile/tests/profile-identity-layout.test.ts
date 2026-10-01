@@ -71,7 +71,7 @@ const render = (props: Record<string, unknown> = {}) => {
 
 test("Perfil places avatar left with name and intention on its right, without the email", () => {
   const html = render({ email: "example@example.com", location: "Ubicación" });
-  assert.match(html, /data-testid="profile-identity-row" data-direction="row" data-align="flex-start"/);
+  assert.match(html, /data-testid="profile-identity-row" data-direction="row" data-align="center"/);
   assert.match(html, /data-testid="profile-identity-details" data-align="flex-start"[^>]*data-flex="1" data-min-width="0"/);
   const avatar = html.indexOf('data-testid="profile-identity-avatar"');
   const name = html.indexOf("Resonador");
@@ -81,19 +81,31 @@ test("Perfil places avatar left with name and intention on its right, without th
   assert.doesNotMatch(html, /Ubicación|data-icon="map-pin"/);
   assert.match(html, /data-testid="profile-intention-pill"[^>]*data-self-align="flex-start"/);
   assert.match(source, /dedicatedProfileCard: \{[^}]*backgroundColor: "rgba\(0,0,0,0.22\)"/);
-  assert.match(source, /avatarImage:\s*\{\s*width: 81,\s*height: 81,\s*borderRadius: 40\.5/);
-  assert.match(source, /avatarCircle:\s*\{\s*width: 81,\s*height: 81,\s*borderRadius: 40\.5/);
-  assert.match(source, /avatarOuterBorder:\s*\{\s*position: "absolute",\s*top: -3,\s*left: -3,\s*width: 87,\s*height: 87,\s*borderRadius: 43\.5,\s*borderWidth: 3/);
+  assert.match(source, /avatarImage:\s*\{\s*width: 93,\s*height: 93,\s*borderRadius: 46\.5/);
+  assert.match(source, /avatarCircle:\s*\{\s*width: 93,\s*height: 93,\s*borderRadius: 46\.5/);
+  assert.match(source, /avatarOuterBorder:\s*\{\s*position: "absolute",\s*top: -3,\s*left: -3,\s*width: 99,\s*height: 99,\s*borderRadius: 49\.5,\s*borderWidth: 3/);
   const rowStyle = source.match(/profileIdentityRow: \{([\s\S]*?)\n  \},/)?.[1] ?? "";
   assert.match(rowStyle, /paddingHorizontal: 20/);
 });
 
-test("the name chevron is centered in the title row and shares the Premium chevron's right column", () => {
+test("avatar, name-and-pill block and chevron share a vertically centered row, retaining the Premium chevron's right column", () => {
   const html = render();
   assert.match(html, /data-testid="profile-identity-name" data-direction="row" data-align="center"/);
   assert.match(html, /data-testid="profile-identity-chevron"[^>]*data-align="center"[^>]*data-width="32"/);
   assert.equal((html.match(/data-icon="chevron-right"/g) ?? []).length, 1);
   assert.match(source, /profileNameRow: \{ width: "100%", flexDirection: "row", alignItems: "center"/);
+  const children = identity!.children.filter(ts.isJsxElement).map(child =>
+    child.openingElement.attributes.properties.find(attribute =>
+      ts.isJsxAttribute(attribute) && attribute.name.getText(ast) === "testID",
+    )?.getText(ast),
+  );
+  assert.deepEqual(children, [
+    'testID="profile-identity-avatar"',
+    'testID="profile-identity-details"',
+    'testID="profile-identity-chevron"',
+  ]);
+  assert.match(source, /avatarWrapper: \{[^}]*marginTop: 3, marginBottom: 3/);
+  assert.match(html, /data-testid="profile-identity-row" data-direction="row" data-align="center"/);
   const membership = readFileSync(new URL("../components/ProfileMembershipBanner.tsx", import.meta.url), "utf8");
   assert.match(membership, /chevron: \{ width: 32,/);
   assert.match(membership, /row: \{[\s\S]*?paddingHorizontal: 20/);
@@ -102,11 +114,15 @@ test("the name chevron is centered in the title row and shares the Premium chevr
   assert.match(membership, /<Feather name="chevron-right" size=\{24\}/);
 });
 
-test("the name and chevron row opens the same Mi cuenta screen as the avatar", () => {
+test("the name and independently centered chevron each open Mi cuenta", () => {
   let route = "";
   render({ onNavigate: (next: string) => route = next });
   assert.ok(presses.has("profile-identity-name"));
   presses.get("profile-identity-name")?.();
+  assert.equal(route, "/mi-perfil");
+  route = "";
+  assert.ok(presses.has("profile-identity-chevron"));
+  presses.get("profile-identity-chevron")?.();
   assert.equal(route, "/mi-perfil");
 });
 

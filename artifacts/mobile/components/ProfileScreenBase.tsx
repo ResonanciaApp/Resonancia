@@ -1344,9 +1344,6 @@ export function ProfileScreenBase({
               >
                 {username}{lastName ? ` ${lastName}` : ""}
               </Text>
-              <View testID="profile-identity-chevron" pointerEvents="none" style={styles.profileNameChevron}>
-                <Feather name="chevron-right" size={24} color={colors.foreground} />
-              </View>
               </Pressable>
 
               {dedicated && (
@@ -1357,6 +1354,16 @@ export function ProfileScreenBase({
                 />
               )}
             </View>
+            <Pressable
+              onPress={() => router.push("/mi-perfil")}
+              testID="profile-identity-chevron"
+              accessibilityRole="button"
+              accessibilityLabel="Abrir Mi cuenta"
+              hitSlop={8}
+              style={styles.profileNameChevron}
+            >
+              <Feather name="chevron-right" size={24} color={colors.foreground} />
+            </Pressable>
           </View>
           <ProfileMembershipBanner isPremium={isPremium} foregroundColor={colors.foreground} />
         </View>
@@ -2440,34 +2447,34 @@ const styles = StyleSheet.create({
   },
   profileIdentityRow: {
     flexDirection: "row",
-    alignItems: "flex-start",
+    alignItems: "center",
     width: "100%",
     gap: 16,
     paddingHorizontal: 20,
   },
   profileDetails: { flex: 1, minWidth: 0, alignItems: "flex-start", gap: 6 },
-  avatarWrapper: { position: "relative", marginTop: 3, marginBottom: 0, flexShrink: 0 },
+  avatarWrapper: { position: "relative", marginTop: 3, marginBottom: 3, flexShrink: 0 },
   avatarOuterBorder: {
     position: "absolute",
     top: -3,
     left: -3,
-    width: 87,
-    height: 87,
-    borderRadius: 43.5,
+    width: 99,
+    height: 99,
+    borderRadius: 49.5,
     borderWidth: 3,
     borderColor: "rgba(255,255,255,0.25)",
   },
   avatarCircle: {
-    width: 81,
-    height: 81,
-    borderRadius: 40.5,
+    width: 93,
+    height: 93,
+    borderRadius: 46.5,
     alignItems: "center",
     justifyContent: "center",
   },
   avatarImage: {
-    width: 81,
-    height: 81,
-    borderRadius: 40.5,
+    width: 93,
+    height: 93,
+    borderRadius: 46.5,
   },
   userName: { fontFamily: "Manrope", fontSize: 20, fontWeight: "700", textAlign: "left", marginTop: 0 },
   profileNameRow: { width: "100%", flexDirection: "row", alignItems: "center", gap: 12 },

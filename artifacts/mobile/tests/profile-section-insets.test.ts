@@ -33,16 +33,17 @@ function verticalInsets(styles: Record<string, any>) {
   };
 }
 
-test("user section has 20px above the name and avatar outline, with no extra banner bottom padding", () => {
+test("user section preserves 20px above the centered avatar outline, with no extra banner bottom padding", () => {
   const source = readFileSync(new URL("../components/ProfileScreenBase.tsx", import.meta.url), "utf8");
   const bottom = Number(source.match(/const PROFILE_CARD_BOTTOM_PADDING = (\d+);/)?.[1]);
   const card = style("ProfileScreenBase", "profileCard", { PROFILE_CARD_BOTTOM_PADDING: bottom, PROFILE_SECTION_GAP: 21 });
   assert.deepEqual(verticalInsets(card), { top: 20, bottom: 20 });
-  assert.equal(style("ProfileScreenBase", "profileIdentityRow").alignItems, "flex-start");
+  assert.equal(style("ProfileScreenBase", "profileIdentityRow").alignItems, "center");
   assert.equal(style("ProfileScreenBase", "userName").marginTop, 0);
   const avatar = style("ProfileScreenBase", "avatarWrapper");
   const border = style("ProfileScreenBase", "avatarOuterBorder");
   assert.equal(card.paddingTop + avatar.marginTop + border.top, 20);
+  assert.equal(avatar.marginTop, avatar.marginBottom);
   const row = style("ProfileMembershipBanner", "row");
   assert.equal(row.paddingVertical, 0);
   assert.equal(row.minHeight ?? 0, 0);
