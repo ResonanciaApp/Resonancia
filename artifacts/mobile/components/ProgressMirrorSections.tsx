@@ -17,6 +17,15 @@ import { PREMIUM_STAR_GRADIENT } from "@/constants/colors";
 
 const SECTION_BACKGROUND = "rgba(0,0,0,0.22)";
 const VIOLET_LOTUS_COLOR = "#C9A6FF";
+const COMPLETED_STREAK_LOTUS_GRADIENT: [string, string, ...string[]] = [
+  "#405EA8",
+  "#4C5FB8",
+  "#625CC5",
+  "#7B5BC5",
+  "#9563B9",
+  "#B17A9E",
+  "#C6A06E",
+];
 export const STREAK_WEEK_START_OFFSET_MS = 650;
 const PERSONAL_STATS_HEADER_OFFSET_MS = 420;
 const PERSONAL_STATS_MINUTES_OFFSET_MS = 660;
@@ -316,6 +325,21 @@ export function ProgressMirrorSections({
     </Pressable>
   ) : null;
 
+  const completedStreakIcon = (
+    <MaskedView
+      testID="completed-streak-lotus"
+      maskElement={<MaterialCommunityIcons name="spa" size={18} color="#FFFFFF" />}
+    >
+      <LinearGradient
+        colors={COMPLETED_STREAK_LOTUS_GRADIENT}
+        start={{ x: 0, y: 0.5 }}
+        end={{ x: 1, y: 0.5 }}
+      >
+        <MaterialCommunityIcons name="spa" size={18} color="transparent" />
+      </LinearGradient>
+    </MaskedView>
+  );
+
   const longestHistoryStreakIcon = (
     <MaskedView maskElement={<MaterialCommunityIcons name="spa" size={18} color="#FFFFFF" />}>
       <MaterialCommunityIcons
@@ -376,7 +400,7 @@ export function ProgressMirrorSections({
         <View style={styles.statDivider} />
         <View style={styles.statEntranceSlot}>
           <Stat
-            icon={<Feather name="check-circle" size={18} color="#F9F9F9" />}
+            icon={completedStreakIcon}
             value={completedWeeks}
             label="RACHAS COMPLETADAS"
             accent={accent}

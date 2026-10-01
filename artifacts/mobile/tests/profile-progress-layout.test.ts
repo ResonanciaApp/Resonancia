@@ -24,6 +24,15 @@ const NativeView = ({ children, testID, style }: NativeProps) => {
   }, children);
 };
 const Passthrough = ({ children }: NativeProps) => React.createElement(React.Fragment, null, children);
+const Mask = ({ children, maskElement, testID }: NativeProps & { maskElement?: React.ReactNode }) =>
+  React.createElement("div", { "data-testid": testID }, maskElement, children);
+const Gradient = ({ children, colors, start, end }: NativeProps & {
+  colors?: string[]; start?: { x: number; y: number }; end?: { x: number; y: number };
+}) => React.createElement("div", {
+  "data-gradient": colors?.join(","),
+  "data-start": start ? `${start.x},${start.y}` : undefined,
+  "data-end": end ? `${end.x},${end.y}` : undefined,
+}, children);
 const Icon = ({ name, color, style, size }: { name?: string; color?: string; style?: unknown; size?: number }) => {
   const resolved = flattenStyle(style);
   const offset = resolved.textShadowOffset as { width: number; height: number } | undefined;
@@ -48,8 +57,8 @@ const mocks: Record<string, unknown> = {
     Animated: { View: NativeView, Value: class { constructor(_value: number) {} } },
   },
   "@expo/vector-icons": { Feather: Icon, MaterialCommunityIcons: Icon },
-  "@react-native-masked-view/masked-view": Passthrough,
-  "expo-linear-gradient": { LinearGradient: Passthrough },
+  "@react-native-masked-view/masked-view": Mask,
+  "expo-linear-gradient": { LinearGradient: Gradient },
   "@/components/HistorialCalendar": {
     HistorialCalendar: ({ showCompletedSessionCount, canonicalVerticalInsets }: { showCompletedSessionCount?: boolean; canonicalVerticalInsets?: boolean }) =>
       React.createElement("div", { "data-testid": "calendar", "data-completed-count": !!showCompletedSessionCount, "data-canonical-insets": !!canonicalVerticalInsets }),
@@ -115,6 +124,21 @@ test("longest streak has a violet lotus with the same glow as the accumulated st
   assert.match(html.slice(0, longestLabel), /data-icon="spa" data-color="#C9A6FF" data-size="18" data-glow-color="#C9A6FFCC" data-glow-radius="8" data-glow-offset="0,0"/);
   assert.match(gold, /data-icon="spa" data-color="#E7B95C" data-size="18" data-glow-color="#E7B95CCC" data-glow-radius="8" data-glow-offset="0,0"/);
   assert.match(gold, /RACHA ACUMULADA/);
+});
+
+test("completed streaks use the same 18px lotus silhouette with all seven reference colors, preserving the count", () => {
+  const html = render({
+    separateStreakHistory: true,
+    showPersonalStats: false,
+    showCalendar: false,
+  });
+  const section = html.slice(html.indexOf('data-testid="completed-streak-lotus"'), html.indexOf("RACHAS COMPLETADAS"));
+  assert.match(section, /data-icon="spa" data-color="#FFFFFF" data-size="18"/);
+  assert.match(section, /data-icon="spa" data-color="transparent" data-size="18"/);
+  assert.match(section, /data-gradient="#405EA8,#4C5FB8,#625CC5,#7B5BC5,#9563B9,#B17A9E,#C6A06E"/);
+  assert.match(section, /data-start="0,0.5" data-end="1,0.5"/);
+  assert.match(section, /<div>2<\/div>/);
+  assert.doesNotMatch(html, /data-icon="check-circle"/);
 });
 
 test("compact callers keep their existing stats unless they opt into the full history", () => {

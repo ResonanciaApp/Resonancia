@@ -68,9 +68,3 @@ El loto de la píldora de racha en Inicio conserva el blanco del tratamiento cl�
 **Why:** El usuario corrigió la elección anterior del dorado: ambas superficies representan la racha actual.
 
 **How to apply:** Al ajustar el loto de Inicio o de «Racha actual» en Perfil, conservar el blanco; no trasladar allí el tratamiento dorado de la racha acumulada.
-
-La separación entre la identidad de Perfil y la semana se mide desde la píldora visible, no desde el borde del avatar.
-
-**Why:** En una identidad horizontal, el avatar puede ser más alto que el bloque de nombre, correo y píldora. Centrar ambos bloques verticalmente añade espacio debajo de la píldora y rompe la separación solicitada, aunque los márgenes exteriores no cambien.
-
-**How to apply:** Mantener el borde inferior de la píldora alineado con el final del bloque de identidad, o compensar la diferencia mediante una medición real. No perder las acciones independientes de Mi cuenta y Tu camino al reorganizar la identidad.
