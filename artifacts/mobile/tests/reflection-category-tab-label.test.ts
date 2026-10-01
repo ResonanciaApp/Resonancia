@@ -98,11 +98,11 @@ test("Todos shares the same selected white/bold label as the category filters", 
   assert.match(html, /data-color="#FFFFFF" data-weight="700">Todos/);
 });
 
-test("Todos keeps its existing wall gradient, brightness and 2px stroke", () => {
+test("Todos keeps its existing wall gradient and brightness with a 1px stroke", () => {
   const html = renderToStaticMarkup(React.createElement(ReflectionCategoryTabBorder));
   assert.match(html, new RegExp(`data-gradient="${REFLECTION_WALL_BORDER_GRADIENT.join(",")}"`));
   assert.match(html, /data-start="0,0.5" data-end="1,0.5"/);
-  assert.match(html, /data-radius="999" data-width="2"/);
+  assert.match(html, /data-radius="999" data-width="1"/);
   assert.ok(html.includes(`data-brightness="${REFLECTION_WALL_BORDER_BRIGHTNESS}"`));
 });
 
@@ -111,7 +111,7 @@ test("category borders use their exact editorial color without affecting layout 
     const html = renderToStaticMarkup(React.createElement(ReflectionCategoryTabBorder, { color }));
     assert.ok(html.includes(`data-border-color="${color}"`));
     assert.match(html, /data-position="absolute"/);
-    assert.match(html, /data-border-width="2" data-border-radius="999" data-pointer="none"/);
+    assert.match(html, /data-border-width="1" data-border-radius="999" data-pointer="none"/);
     assert.doesNotMatch(html, /data-gradient/);
   }
 });

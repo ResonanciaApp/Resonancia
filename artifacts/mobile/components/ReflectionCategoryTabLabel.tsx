@@ -14,7 +14,7 @@ export const ReflectionCategoryTabBorder = React.memo(function ReflectionCategor
   return (
     <DiscoverSearchBorder
       borderRadius={999}
-      borderWidth={2}
+      borderWidth={1}
       brightness={REFLECTION_WALL_BORDER_BRIGHTNESS}
       colors={REFLECTION_WALL_BORDER_GRADIENT}
       start={REFLECTION_WALL_BORDER_START}
@@ -54,7 +54,7 @@ export const ReflectionCategoryTabLabel = React.memo(function ReflectionCategory
 });
 
 const styles = StyleSheet.create({
-  categoryBorder: { ...StyleSheet.absoluteFillObject, borderRadius: 999, borderWidth: 2 },
+  categoryBorder: { ...StyleSheet.absoluteFillObject, borderRadius: 999, borderWidth: 1 },
   widthReserve: { color: "transparent", fontWeight: "700" },
   visibleLayer: { ...StyleSheet.absoluteFillObject, justifyContent: "center" },
   visibleText: { textAlign: "center" },
