@@ -101,7 +101,7 @@ const PROFILE_CARD_BOTTOM_PADDING = 6;
 const PROFILE_CARD_BOTTOM_MARGIN = 16;
 const PROFILE_CARD_Y_OFFSET = -5;
 const PROFILE_WEEK_TOP_PADDING = 21;
-const PROFILE_PILL_WEEK_GAP = 20;
+const PROFILE_PILL_WEEK_GAP = 35;
 const PROFILE_PROGRESS_TOP_MARGIN =
   PROFILE_PILL_WEEK_GAP - PROFILE_CARD_BOTTOM_PADDING - PROFILE_CARD_BOTTOM_MARGIN
   - PROFILE_WEEK_TOP_PADDING + PROFILE_CARD_Y_OFFSET;
@@ -1299,11 +1299,15 @@ export function ProfileScreenBase({
 
         {/* ── Profile Card ── */}
           <View style={[styles.profileCard, dedicated && styles.dedicatedProfileCard]}>
-          <View style={styles.profileIdentityRow}>
+          <View
+            testID="profile-identity-row"
+            style={styles.profileIdentityRow}
+          >
             {/* Avatar */}
             <Pressable
               onPress={() => router.push("/mi-perfil")}
               style={styles.avatarWrapper}
+              testID="profile-identity-avatar"
               accessibilityRole="button"
               accessibilityLabel="Abrir Mi cuenta"
             >
@@ -1326,7 +1330,10 @@ export function ProfileScreenBase({
             </Pressable>
 
             {/* Name + details */}
-            <View style={styles.profileDetails}>
+            <View
+              testID="profile-identity-details"
+              style={styles.profileDetails}
+            >
               <Pressable
                 onPress={() => router.push("/mi-perfil")}
                 accessibilityRole="button"
@@ -1340,6 +1347,18 @@ export function ProfileScreenBase({
                 {username}{lastName ? ` ${lastName}` : ""}
               </Text>
               </Pressable>
+
+              {dedicated && email ? (
+                <Text
+                  testID="profile-identity-email"
+                  style={[styles.profileEmail, { color: colors.mutedForeground }]}
+                  numberOfLines={1}
+                  ellipsizeMode="middle"
+                  selectable
+                >
+                  {email}
+                </Text>
+              ) : null}
 
               {location ? (
                 <Pressable onPress={() => router.push("/mi-perfil")} accessibilityRole="button" accessibilityLabel="Abrir Mi cuenta">
@@ -2481,13 +2500,14 @@ const styles = StyleSheet.create({
     marginBottom: 17,
   },
   profileIdentityRow: {
+    flexDirection: "column",
     alignItems: "center",
     width: "100%",
     gap: 12,
     paddingHorizontal: 16,
   },
   profileDetails: { width: "100%", alignItems: "center", gap: 6 },
-  avatarWrapper: { position: "relative", marginBottom: 0 },
+  avatarWrapper: { position: "relative", marginBottom: 0, flexShrink: 0 },
   avatarOuterBorder: {
     position: "absolute",
     top: -3,
@@ -2522,6 +2542,7 @@ const styles = StyleSheet.create({
     borderRadius: 53,
   },
   userName: { fontFamily: "Manrope", fontSize: 20, fontWeight: "700", textAlign: "center", marginTop: 4 },
+  profileEmail: { fontFamily: "Manrope", fontSize: 12, lineHeight: 17, width: "100%", textAlign: "center" },
   profileIntentionPill: {
     alignSelf: "center",
     marginTop: 7,

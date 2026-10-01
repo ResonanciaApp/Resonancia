@@ -205,7 +205,7 @@ test("Perfil and Tu progreso extend weekly circles to the outer margins without 
   assert.match(history, /data-padding-horizontal="20"/);
 });
 
-test("Perfil hides the intention description and leaves exactly 20px from the pill to the weekly circles", () => {
+test("Perfil lowers weekly circles and following content 15px, increasing the pill gap from 20px to 35px", () => {
   const profileSource = readFileSync(new URL("../components/ProfileScreenBase.tsx", import.meta.url), "utf8");
   assert.doesNotMatch(profileSource, /profileIntentionDescription|Todo gran cambio comienza con el primer paso|Bienvenido a Resonancia/);
   assert.match(profileSource, /profileProgressSection:\s*\{\s*marginTop: PROFILE_PROGRESS_TOP_MARGIN,/);
@@ -223,9 +223,9 @@ test("Perfil hides the intention description and leaves exactly 20px from the pi
   assert.ok(marginExpression);
   const margin = new Function(...constants, `return (${marginExpression});`)(...values);
   const [gap, padding, cardMargin, weekPadding, cardOffset] = values;
-  assert.equal(gap, 20);
-  assert.equal(padding + cardMargin + margin + weekPadding - cardOffset, 20);
-  const detailsStart = profileSource.indexOf("<View style={styles.profileDetails}>");
+  assert.equal(gap, 20 + 15);
+  assert.equal(padding + cardMargin + margin + weekPadding - cardOffset, 35);
+  const detailsStart = profileSource.indexOf('testID="profile-identity-details"');
   const locationIndex = profileSource.indexOf("{location ? (", detailsStart);
   const pillIndex = profileSource.indexOf("<ProfileIntentionPill", detailsStart);
   assert.ok(locationIndex > detailsStart && pillIndex > locationIndex, "optional location stays above the pill");

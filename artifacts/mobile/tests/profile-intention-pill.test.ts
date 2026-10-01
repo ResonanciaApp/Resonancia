@@ -62,7 +62,7 @@ test("the Intención pill opens Tu camino and stops the Mi cuenta parent action"
   assert.equal(opens, 1);
   assert.equal(stopped, true);
   const profile = readFileSync(new URL("../components/ProfileScreenBase.tsx", import.meta.url), "utf8");
-  assert.match(profile, /<View style=\{styles\.profileDetails\}>/);
+  assert.match(profile, /testID="profile-identity-details"/);
   assert.match(profile, /onPress=\{\(\) => setGrowthJourneyOpen\(true\)\}/);
   assert.match(profile, /GrowthJourneySheet visible=\{growthJourneyOpen\} onClose=\{\(\) => setGrowthJourneyOpen\(false\)\}/);
 });
