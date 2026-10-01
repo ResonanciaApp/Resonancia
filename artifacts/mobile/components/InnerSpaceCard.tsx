@@ -601,7 +601,7 @@ export function InnerSpaceCard({
               ]}
               onPress={() => toggleCategory(cat.id as ReflectionCategory)}
             >
-              <Text style={[styles.gridLabel, { color: category === cat.id ? colors.foreground : "#E0E0E0" }]}>{cat.label}</Text>
+              <Text style={[styles.gridLabel, { color: category === cat.id ? cat.color : "#E0E0E0" }]}>{cat.label}</Text>
             </Pressable>
           ))}
         </ScrollView>
@@ -669,6 +669,13 @@ export function InnerSpaceCard({
           }}
           textAlignVertical="top"
         />
+        <Text
+          testID="reflection-character-count"
+          pointerEvents="none"
+          style={[styles.characterCounter, { color: colors.mutedForeground }]}
+        >
+          {message.length}/300
+        </Text>
       </Pressable>
       {saveError && (
         <View>
@@ -808,6 +815,7 @@ const styles = StyleSheet.create({
     paddingTop: 18,
   },
   categoriesMask: {
+    marginTop: 15,
     marginBottom: 20,
     marginHorizontal: -20,
   },
@@ -832,7 +840,7 @@ const styles = StyleSheet.create({
   },
   selectedGridItem: {
     borderColor: "rgba(255,255,255,0.45)",
-    backgroundColor: "rgba(0,0,0,0.22)",
+    backgroundColor: "#F9F9F9",
     shadowOpacity: 0.22,
     shadowRadius: 8,
   },
@@ -848,15 +856,14 @@ const styles = StyleSheet.create({
     borderRadius: 16,
     padding: 12,
     paddingTop: 16,
-    // Reserva el espacio del contador retirado; el borde baja 12 px menos
-    // y la fila de acciones conserva su posición anterior.
+    // Reserva espacio para el contador sin superponerlo al texto.
     paddingBottom: 34,
     marginBottom: 20,
     borderWidth: 1,
     borderColor: "rgba(255,255,255,0.05)",
   },
   input: {
-    minHeight: 53,
+    minHeight: 93,
     fontSize: 15,
     lineHeight: 21,
     transform: [{ translateY: -5 }],
@@ -866,6 +873,13 @@ const styles = StyleSheet.create({
     top: 19,
     left: 12,
     right: 12,
+  },
+  characterCounter: {
+    position: "absolute",
+    right: 12,
+    bottom: 10,
+    fontSize: 12,
+    lineHeight: 16,
   },
   inputPlaceholderText: {
     fontSize: 15,

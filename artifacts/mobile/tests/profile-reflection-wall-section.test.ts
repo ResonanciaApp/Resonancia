@@ -153,6 +153,82 @@ test("Home forwards the opt-in title/insets and subtracts the selected card marg
   assert.match(home, /canonicalVerticalInsets=\{canonicalVerticalInsets\}/);
 });
 
+test("wall composer grows 40px and lowers the category row 15px in normal flow", () => {
+  assert.equal(style("InnerSpaceCard", "input").minHeight, 53 + 40);
+  assert.equal(style("InnerSpaceCard", "categoriesMask").marginTop, 15);
+  assert.equal(style("InnerSpaceCard", "categoriesMask").marginBottom, 20);
+  assert.equal(style("InnerSpaceCard", "inputContainer").paddingBottom, 34);
+  const card = source("../components/InnerSpaceCard.tsx");
+  assert.ok(card.indexOf("style={styles.categoriesMask}") < card.indexOf("styles.inputContainer"));
+  assert.match(card, /updateContentHeight\(18 \+ y \+ height\)/);
+});
+
+test("wall character counter renders the current length at the lower-right without taking input space", () => {
+  const card = source("../components/InnerSpaceCard.tsx");
+  const ast = ts.createSourceFile("InnerSpaceCard.tsx", card, ts.ScriptTarget.Latest, true, ts.ScriptKind.TSX);
+  let counter: ts.JsxElement | undefined;
+  function visit(node: ts.Node) {
+    if (ts.isJsxElement(node) && node.openingElement.tagName.getText(ast) === "Text"
+      && node.getText(ast).includes('testID="reflection-character-count"')) counter = node;
+    ts.forEachChild(node, visit);
+  }
+  visit(ast);
+  assert.ok(counter);
+  const counterStyle = style("InnerSpaceCard", "characterCounter");
+  assert.equal(counterStyle.position, "absolute");
+  assert.equal(counterStyle.right, 12);
+  assert.equal(counterStyle.bottom, 10);
+  const compiled = ts.transpileModule(`return (${counter.getText(ast)});`, {
+    compilerOptions: { jsx: ts.JsxEmit.React },
+  }).outputText;
+  const render = new Function("React", "Text", "message", "styles", "colors", compiled);
+  for (const length of [0, 17, 300]) {
+    const element = render(React, () => null, "x".repeat(length),
+      { characterCounter: counterStyle }, { mutedForeground: "#AAA" });
+    assert.equal(element.props.children.join(""), `${length}/300`);
+    assert.equal(element.props.pointerEvents, "none");
+  }
+  assert.match(card, /maxLength=\{300\}/);
+});
+
+test("selected wall categories have an F9F9F9 background and their own editorial text color without font shifts", () => {
+  const card = source("../components/InnerSpaceCard.tsx");
+  const ast = ts.createSourceFile("InnerSpaceCard.tsx", card, ts.ScriptTarget.Latest, true, ts.ScriptKind.TSX);
+  let chip: ts.JsxElement | undefined;
+  function visit(node: ts.Node) {
+    if (ts.isJsxElement(node) && node.openingElement.tagName.getText(ast) === "Pressable"
+      && node.getText(ast).includes('testID={`category-${cat.id}`}')) chip = node;
+    ts.forEachChild(node, visit);
+  }
+  visit(ast);
+  assert.ok(chip);
+  const selectedStyle = style("InnerSpaceCard", "selectedGridItem");
+  assert.equal(selectedStyle.backgroundColor, "#F9F9F9");
+  assert.equal(selectedStyle.fontWeight, undefined);
+  const compiled = ts.transpileModule(`return (${chip.getText(ast)});`, {
+    compilerOptions: { jsx: ts.JsxEmit.React },
+  }).outputText;
+  const render = new Function("React", "Pressable", "Text", "cat", "category", "styles",
+    "selectedCategoryShadow", "toggleCategory", compiled);
+  const styles = {
+    gridItem: style("InnerSpaceCard", "gridItem"),
+    selectedGridItem: selectedStyle,
+    gridLabel: style("InnerSpaceCard", "gridLabel"),
+    pressedCategory: style("InnerSpaceCard", "pressedCategory"),
+  };
+  for (const cat of [{ id: "gratitude", label: "Gratitud", color: "#F075B3" },
+    { id: "calm", label: "Calma", color: "#50AFB0" },
+    { id: "custom", label: "Editorial", color: "#477FBD" }]) {
+    const active = render(React, () => null, () => null, cat, cat.id, styles, "#F075B3", () => {});
+    assert.equal(Object.assign({}, ...active.props.style({ pressed: false })).backgroundColor, "#F9F9F9");
+    assert.equal(Object.assign({}, ...active.props.children.props.style).color, cat.color);
+    const inactive = render(React, () => null, () => null, cat, null, styles, "#F075B3", () => {});
+    assert.equal(Object.assign({}, ...inactive.props.children.props.style).color, "#E0E0E0");
+    assert.equal(Object.assign({}, ...active.props.children.props.style).fontWeight,
+      Object.assign({}, ...inactive.props.children.props.style).fontWeight);
+  }
+});
+
 test("Perfil replays the existing saved banner after every successful save and Ver opens the wall above the tab bar", () => {
   const profile = source("../components/ProfileScreenBase.tsx");
   const ast = ts.createSourceFile("ProfileScreenBase.tsx", profile, ts.ScriptTarget.Latest, true, ts.ScriptKind.TSX);

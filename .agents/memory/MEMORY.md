@@ -88,7 +88,7 @@
 - [Readiness editorial del catálogo](catalog-readiness-placeholders.md) — placeholders explícitos permanecen visibles; finales exigen audio reproducible y validación transaccional
 - [Contenido remoto de Descubrir](discover-remote-content-cache.md) — secciones y Top 5 conservan la última respuesta válida; un fallo transitorio nunca debe vaciar contenido ya recibido
 - [Slides editoriales del hero](hero-editorial-slides-cache.md) — una caída de la API no debe sustituir slides publicados por imágenes de ejemplo; conservar última configuración válida
-- [Ticket de Mi Rutina](routine-ticket-behavior.md) — solo el ticket completa; confirmación visual breve antes de salir de Inicio; el tap restante abre detalle
+- [Ticket de Mi Rutina](routine-ticket-behavior.md) — solo el ticket completa; feedback breve y transición continua a Rutina completa; el resto abre detalle
 - [Flujo emocional local](mood-checkin-local.md) — guarda check-ins completos localmente; cierre usa cinco tipos fijos con reservas inmutables porque el catálogo muta sesiones en sitio
 - [Handoff entre Modal nativos](native-modal-handoff.md) — nunca abrir un segundo Modal con un timeout estimado; esperar cierre real + siguiente frame para evitar fallos intermitentes en iOS
 - [Membresía Aurora jade-gold](membership-aurora-jade.md) — Perfil: banner Prueba/Tu Premium con estrella y divisor; avatar sin estrella; insignia de Inicio solo Premium

@@ -126,7 +126,7 @@ test("longest streak has a violet lotus with the same glow as the accumulated st
   assert.match(gold, /RACHA ACUMULADA/);
 });
 
-test("completed streaks use the same 18px lotus silhouette with all seven reference colors, preserving the count", () => {
+test("completed streaks use the same 18px lotus in solid reference pink, preserving the count", () => {
   const html = render({
     separateStreakHistory: true,
     showPersonalStats: false,
@@ -134,9 +134,8 @@ test("completed streaks use the same 18px lotus silhouette with all seven refere
   });
   const section = html.slice(html.indexOf('data-testid="completed-streak-lotus"'), html.indexOf("RACHAS COMPLETADAS"));
   assert.match(section, /data-icon="spa" data-color="#FFFFFF" data-size="18"/);
-  assert.match(section, /data-icon="spa" data-color="transparent" data-size="18"/);
-  assert.match(section, /data-gradient="#405EA8,#4C5FB8,#625CC5,#7B5BC5,#9563B9,#B17A9E,#C6A06E"/);
-  assert.match(section, /data-start="0,0.5" data-end="1,0.5"/);
+  assert.match(section, /data-icon="spa" data-color="#B17A9E" data-size="18"/);
+  assert.doesNotMatch(section, /data-gradient|data-color="transparent"/);
   assert.match(section, /<div>2<\/div>/);
   assert.doesNotMatch(html, /data-icon="check-circle"/);
 });

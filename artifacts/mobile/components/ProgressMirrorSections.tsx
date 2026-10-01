@@ -17,15 +17,7 @@ import { PREMIUM_STAR_GRADIENT } from "@/constants/colors";
 
 const SECTION_BACKGROUND = "rgba(0,0,0,0.22)";
 const VIOLET_LOTUS_COLOR = "#C9A6FF";
-const COMPLETED_STREAK_LOTUS_GRADIENT: [string, string, ...string[]] = [
-  "#405EA8",
-  "#4C5FB8",
-  "#625CC5",
-  "#7B5BC5",
-  "#9563B9",
-  "#B17A9E",
-  "#C6A06E",
-];
+const COMPLETED_STREAK_LOTUS_COLOR = "#B17A9E";
 export const STREAK_WEEK_START_OFFSET_MS = 650;
 const PERSONAL_STATS_HEADER_OFFSET_MS = 420;
 const PERSONAL_STATS_MINUTES_OFFSET_MS = 660;
@@ -330,13 +322,7 @@ export function ProgressMirrorSections({
       testID="completed-streak-lotus"
       maskElement={<MaterialCommunityIcons name="spa" size={18} color="#FFFFFF" />}
     >
-      <LinearGradient
-        colors={COMPLETED_STREAK_LOTUS_GRADIENT}
-        start={{ x: 0, y: 0.5 }}
-        end={{ x: 1, y: 0.5 }}
-      >
-        <MaterialCommunityIcons name="spa" size={18} color="transparent" />
-      </LinearGradient>
+      <MaterialCommunityIcons name="spa" size={18} color={COMPLETED_STREAK_LOTUS_COLOR} />
     </MaskedView>
   );
 

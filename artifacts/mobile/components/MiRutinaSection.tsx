@@ -34,6 +34,7 @@ import { useRoutineTheme } from "@/hooks/useRoutineTheme";
 import { useRoutineCompletionBanner } from "@/context/RoutineCompletionBannerContext";
 import { CARD_TEXT_ABOVE } from "@/constants/colors";
 import { RoutineGradientFill } from "@/components/RoutineGradientFill";
+import { RoutineCompletionTransition } from "@/components/RoutineCompletionTransition";
 
 type Props = {
   style?: StyleProp<ViewStyle>;
@@ -389,6 +390,7 @@ export function MiRutinaSection({ style, cardBackgroundColor }: Props) {
 
   useEffect(() => {
     if (previousActivityIdsKey.current === todayActivityIdsKey) return;
+    if (todayActivityIds.length === 0) return;
     previousActivityIdsKey.current = todayActivityIdsKey;
     const currentOrder = orderSV.value;
     const mergedOrder = currentOrder.filter((id) => todayActivityIds.includes(id));
@@ -398,6 +400,7 @@ export function MiRutinaSection({ style, cardBackgroundColor }: Props) {
     orderSV.value = mergedOrder;
   }, [orderSV, todayActivityIds, todayActivityIdsKey]);
   useEffect(() => {
+    if (todayActivities.length === 0) return;
     listHeight.value = withTiming(
       todayActivities.length * ROUTINE_SLOT_HEIGHT,
       { duration: 350 },
@@ -515,15 +518,6 @@ export function MiRutinaSection({ style, cardBackgroundColor }: Props) {
   );
   const showCompleteState =
     isHydrated && todayActivities.length === 0 && hasScheduledToday;
-  const completeFade = useSharedValue(0);
-  useEffect(() => {
-    completeFade.value = showCompleteState
-      ? withTiming(1, { duration: 300 })
-      : 0;
-  }, [completeFade, showCompleteState]);
-  const completeFadeStyle = useAnimatedStyle(() => ({
-    opacity: completeFade.value,
-  }));
 
   return (
     <View style={[styles.section, style]} testID="mi-rutina-section">
@@ -553,8 +547,36 @@ export function MiRutinaSection({ style, cardBackgroundColor }: Props) {
         </View>
       </View>
 
-      <View style={showCompleteState ? styles.completeStateSlot : undefined}>
-        {!isHydrated ? null : todayActivities.length > 0 ? (
+      <RoutineCompletionTransition
+        key={dateKey}
+        complete={showCompleteState}
+        completedContent={
+          <View style={styles.completeState}>
+            <View style={styles.completeCopy}>
+              <Text style={styles.completeTitle}>
+                Rutina completa
+              </Text>
+              <Text style={styles.completeSubtitle}>
+                ¡Hasta mañana!
+              </Text>
+            </View>
+            <Pressable
+              onPress={openCreate}
+              accessibilityRole="button"
+              accessibilityLabel="Añadir una actividad"
+              testID="mi-rutina-complete-add-button"
+              style={({ pressed }) => [
+                styles.completeAddButton,
+                { opacity: pressed ? 0.78 : 1 },
+              ]}
+            >
+              <Feather name="plus" size={14} color="#060A0F" />
+              <Text style={styles.completeAddButtonText}>Añadir una actividad</Text>
+            </Pressable>
+          </View>
+        }
+      >
+        {isHydrated && todayActivities.length > 0 ? (
           <Reanimated.View style={[styles.activityList, listHeightStyle]}>
             {todayActivities.map(({ activity, occurrenceIndex, itemId }, index) => (
               <ActivityRow
@@ -577,34 +599,7 @@ export function MiRutinaSection({ style, cardBackgroundColor }: Props) {
               />
             ))}
           </Reanimated.View>
-        ) : hasScheduledToday ? (
-          <Reanimated.View style={[styles.completeState, completeFadeStyle]}>
-            <View style={styles.completeCopy}>
-              <Text style={styles.completeTitle}>
-                Rutina completa
-              </Text>
-              <Text style={styles.completeSubtitle}>
-                ¡Hasta mañana!
-              </Text>
-            </View>
-            <Pressable
-              onPress={openCreate}
-              accessibilityRole="button"
-              accessibilityLabel="Añadir una actividad"
-              testID="mi-rutina-complete-add-button"
-              style={({ pressed }) => [
-                styles.completeAddButton,
-                { opacity: pressed ? 0.78 : 1 },
-              ]}
-            >
-              <Feather name="plus" size={14} color="#060A0F" />
-              <Text style={styles.completeAddButtonText}>Añadir una actividad</Text>
-            </Pressable>
-          </Reanimated.View>
         ) : null}
-      </View>
-
-      {!(isHydrated && todayActivities.length === 0 && hasScheduledToday) ? (
         <Pressable
           onPress={openCreate}
           accessibilityRole="button"
@@ -623,7 +618,7 @@ export function MiRutinaSection({ style, cardBackgroundColor }: Props) {
             Añadir una actividad
           </Text>
         </Pressable>
-      ) : null}
+      </RoutineCompletionTransition>
 
     </View>
   );
@@ -735,9 +730,6 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     paddingHorizontal: 16,
     paddingVertical: 18,
-  },
-  completeStateSlot: {
-    minHeight: 156,
   },
   completeCopy: {
     alignItems: "center",
