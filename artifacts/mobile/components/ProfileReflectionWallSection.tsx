@@ -16,16 +16,16 @@ type Props = {
   scrollRef: React.RefObject<Pick<ScrollView, "scrollTo" | "getNativeScrollRef"> | null>;
   getScrollY: () => number;
   onComposingChange: (composing: boolean) => void;
+  onMessageSaved: () => void;
   style?: StyleProp<ViewStyle>;
 };
-
-const onMessageSaved = () => {};
 
 export const ProfileReflectionWallSection = forwardRef<HomeReflectionWallHandle, Props>(
   function ProfileReflectionWallSection({
     scrollRef,
     getScrollY,
     onComposingChange,
+    onMessageSaved,
     style,
   }, ref) {
     return (

@@ -75,6 +75,7 @@ import { ProfileSettingsSections } from "@/components/ProfileSettingsSections";
 import { ProfileIntentionPill } from "@/components/ProfileIntentionPill";
 import { ProfileMembershipBanner } from "@/components/ProfileMembershipBanner";
 import { ProfileReflectionWallSection } from "@/components/ProfileReflectionWallSection";
+import { ReflectionSavedBanner } from "@/components/ReflectionSavedBanner";
 import type { HomeReflectionWallHandle } from "@/components/HomeReflectionWallSection";
 import { GrowthJourneySheet } from "@/components/GrowthJourneySheet";
 import { GrowthLevelPreviewCard } from "@/components/GrowthJourney";
@@ -293,6 +294,11 @@ export function ProfileScreenBase({
   const profileScrollYRef = useRef(0);
   const profileWallRef = useRef<HomeReflectionWallHandle>(null);
   const [profileWallComposing, setProfileWallComposing] = useState(false);
+  const [profileReflectionSavedTrigger, setProfileReflectionSavedTrigger] = useState(0);
+  const handleProfileReflectionSaved = useCallback(() => {
+    setProfileReflectionSavedTrigger((current) => current + 1);
+  }, []);
+  const profileReflectionBannerBottom = 58 + (Platform.OS === "web" ? 8 : insets.bottom) + 15;
   const getProfileScrollY = useCallback(() => profileScrollYRef.current, []);
   const navigation = useNavigation();
   useEffect(() => {
@@ -1413,6 +1419,7 @@ export function ProfileScreenBase({
               scrollRef={profileScrollRef}
               getScrollY={getProfileScrollY}
               onComposingChange={setProfileWallComposing}
+              onMessageSaved={handleProfileReflectionSaved}
             />
 
             {SHOW_PROFILE_PRACTICE_CARDS && (
@@ -1660,6 +1667,14 @@ export function ProfileScreenBase({
 
       {!dedicated && <BibliotecaScreen embedded initialTab={initialLibraryTab} onHeaderActions={setLibActions} />}
       </View>
+
+      {dedicated && (
+        <ReflectionSavedBanner
+          trigger={profileReflectionSavedTrigger}
+          bottom={profileReflectionBannerBottom}
+          onPress={() => router.push("/mi-espacio-interior")}
+        />
+      )}
 
       {/* ── Invitar Sheet ── */}
       <InvitarSheet

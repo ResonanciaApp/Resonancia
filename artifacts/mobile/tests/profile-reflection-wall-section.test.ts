@@ -153,6 +153,78 @@ test("Home forwards the opt-in title/insets and subtracts the selected card marg
   assert.match(home, /canonicalVerticalInsets=\{canonicalVerticalInsets\}/);
 });
 
+test("Perfil replays the existing saved banner after every successful save and Ver opens the wall above the tab bar", () => {
+  const profile = source("../components/ProfileScreenBase.tsx");
+  const ast = ts.createSourceFile("ProfileScreenBase.tsx", profile, ts.ScriptTarget.Latest, true, ts.ScriptKind.TSX);
+  let trigger: ts.VariableDeclaration | undefined;
+  let handler: ts.VariableDeclaration | undefined;
+  let bottom: ts.VariableDeclaration | undefined;
+  let wall: ts.JsxSelfClosingElement | undefined;
+  let banner: ts.JsxExpression | undefined;
+  function visit(node: ts.Node) {
+    if (ts.isVariableDeclaration(node)) {
+      if (node.name.getText(ast) === "[profileReflectionSavedTrigger, setProfileReflectionSavedTrigger]") trigger = node;
+      if (node.name.getText(ast) === "handleProfileReflectionSaved") handler = node;
+      if (node.name.getText(ast) === "profileReflectionBannerBottom") bottom = node;
+    }
+    if (ts.isJsxSelfClosingElement(node) && node.tagName.getText(ast) === "ProfileReflectionWallSection") wall = node;
+    if (ts.isJsxExpression(node) && node.expression?.getText(ast).startsWith("dedicated &&")
+      && node.expression.getText(ast).includes("<ReflectionSavedBanner")) banner = node;
+    ts.forEachChild(node, visit);
+  }
+  visit(ast);
+  assert.ok(trigger && handler && bottom && wall && banner);
+  assert.ok(profile.indexOf(banner.getText(ast)) > profile.lastIndexOf("</KeyboardAwareScrollViewCompat>"));
+  const compiled = ts.transpileModule(`
+    function Surface(dedicated) {
+      const ${trigger.getText(ast)};
+      const ${handler.getText(ast)};
+      const ${bottom.getText(ast)};
+      const profileWallRef = { current: null }, profileScrollRef = { current: null };
+      const getProfileScrollY = () => 0, setProfileWallComposing = () => {};
+      return <>${wall.getText(ast)}${banner.getText(ast)}</>;
+    }
+  `, { compilerOptions: { module: ts.ModuleKind.CommonJS, jsx: ts.JsxEmit.React } }).outputText;
+  let count = 0;
+  let route = "";
+  const Surface = new Function("React", "useState", "useCallback", "Platform", "insets", "router",
+    "ProfileReflectionWallSection", "ReflectionSavedBanner", `${compiled}; return Surface;`)(
+      React,
+      () => [count, (update: (current: number) => number) => { count = update(count); }],
+      (callback: () => void) => callback,
+      { OS: "ios" }, { bottom: 34 },
+      { push: (next: string) => { route = next; } },
+      () => null, () => null,
+    );
+  const first = Surface(true).props.children;
+  assert.equal(first[1].props.trigger, 0);
+  first[0].props.onMessageSaved();
+  const second = Surface(true).props.children;
+  assert.equal(second[1].props.trigger, 1);
+  assert.equal(second[1].props.bottom, 58 + 34 + 15);
+  second[0].props.onMessageSaved();
+  assert.equal(Surface(true).props.children[1].props.trigger, 2);
+  second[1].props.onPress();
+  assert.equal(route, "/mi-espacio-interior");
+  assert.equal(Surface(false).props.children[1], false);
+});
+
+test("saving failures cannot trigger the registered-message banner", () => {
+  const card = source("../components/InnerSpaceCard.tsx");
+  const ast = ts.createSourceFile("InnerSpaceCard.tsx", card, ts.ScriptTarget.Latest, true, ts.ScriptKind.TSX);
+  let success = "", error = "";
+  function visit(node: ts.Node) {
+    if (ts.isPropertyAssignment(node) && node.name.getText(ast) === "onSuccess") success = node.initializer.getText(ast);
+    if (ts.isPropertyAssignment(node) && node.name.getText(ast) === "onError") error = node.initializer.getText(ast);
+    ts.forEachChild(node, visit);
+  }
+  visit(ast);
+  assert.match(success, /onMessageSaved\?\.\(\)/);
+  assert.match(error, /setSaveError/);
+  assert.doesNotMatch(error, /onMessageSaved/);
+  assert.match(source("../components/HomeReflectionWallSection.tsx"), /onMessageSaved=\{onMessageSaved\}/);
+});
+
 test("Profile wrapper forwards composer inputs/ref, uses the profile heading and keeps its 21px outer gap", () => {
   const wrapperSource = source("../components/ProfileReflectionWallSection.tsx");
   const compiled = ts.transpileModule(wrapperSource, {
@@ -180,12 +252,15 @@ test("Profile wrapper forwards composer inputs/ref, uses the profile heading and
   const scrollRef = { current: null };
   const getScrollY = () => 47;
   const onComposingChange = (_composing: boolean) => {};
+  let savedCount = 0;
+  const onMessageSaved = () => { savedCount++; };
   const forwardedHandle = { current: null };
   const suppliedStyle = { marginTop: 9 };
   const wrapper = module.exports.ProfileReflectionWallSection.render({
     scrollRef,
     getScrollY,
     onComposingChange,
+    onMessageSaved,
     style: suppliedStyle,
   }, forwardedHandle) as React.ReactElement<Record<string, any>>;
   const element = wrapper.props.children as React.ReactElement<Record<string, any>>;
@@ -199,5 +274,7 @@ test("Profile wrapper forwards composer inputs/ref, uses the profile heading and
   assert.equal(element.props.ref, forwardedHandle);
   assert.equal(element.props.style, undefined, "the gap sits outside the measured Home section");
   assert.equal(typeof element.props.onMessageSaved, "function");
+  assert.equal(element.props.onMessageSaved, onMessageSaved);
   element.props.onMessageSaved();
+  assert.equal(savedCount, 1);
 });
