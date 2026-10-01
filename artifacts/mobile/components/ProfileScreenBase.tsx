@@ -98,7 +98,7 @@ const SHOW_PROFILE_HISTORY = true;
 const SHOW_PROFILE_PRACTICE_CARDS = false;
 // Separación entre los bloques de progreso en Perfil.
 const PROFILE_SECTION_GAP = 21;
-const PROFILE_CARD_BOTTOM_PADDING = 8;
+const PROFILE_CARD_BOTTOM_PADDING = 15;
 const PROFILE_WEEK_TOP_PADDING = 15;
 
 function resizeImageForWeb(uri: string, maxSize: number): Promise<string> {
@@ -1385,7 +1385,7 @@ export function ProfileScreenBase({
                 separateStreakHistory
                 weeklySectionBackgroundColor="rgba(0,0,0,0.22)"
                 weeklySectionHorizontalPadding={20}
-                streakHistoryTopPadding={17}
+                streakHistoryTopPadding={15}
                 longestStreakLabel="RACHA ACUMULADA"
                 longestStreakIconColor={MEMBERSHIP_AURORA.premium.accent}
                 sectionBackgroundColor="rgba(0,0,0,0.22)"
@@ -1393,9 +1393,10 @@ export function ProfileScreenBase({
                 sectionTopPadding={PROFILE_WEEK_TOP_PADDING}
                 sectionBottomPadding={15}
                 sectionMarginBottom={PROFILE_SECTION_GAP}
+                canonicalVerticalInsets
                 afterStreakHistory={
                   <View testID="profile-growth-intention" style={{ marginBottom: PROFILE_SECTION_GAP }}>
-                    <GrowthLevelPreviewCard embedded onPress={() => setGrowthJourneyOpen(true)} />
+                    <GrowthLevelPreviewCard embedded canonicalVerticalInsets onPress={() => setGrowthJourneyOpen(true)} />
                   </View>
                 }
                 onStreakTitlePress={() => router.push("/progreso" as never)}
@@ -2473,7 +2474,7 @@ const styles = StyleSheet.create({
   // Profile card
   profileCard: {
     borderRadius: 19,
-    paddingTop: 20,
+    paddingTop: 15,
     paddingBottom: PROFILE_CARD_BOTTOM_PADDING,
     alignItems: "stretch",
     marginTop: 15,
@@ -2492,13 +2493,13 @@ const styles = StyleSheet.create({
   },
   profileIdentityRow: {
     flexDirection: "row",
-    alignItems: "center",
+    alignItems: "flex-start",
     width: "100%",
     gap: 16,
     paddingHorizontal: 20,
   },
   profileDetails: { flex: 1, minWidth: 0, alignItems: "flex-start", gap: 6 },
-  avatarWrapper: { position: "relative", marginBottom: 0, flexShrink: 0 },
+  avatarWrapper: { position: "relative", marginTop: 3, marginBottom: 0, flexShrink: 0 },
   avatarOuterBorder: {
     position: "absolute",
     top: -3,
@@ -2521,7 +2522,7 @@ const styles = StyleSheet.create({
     height: 96,
     borderRadius: 48,
   },
-  userName: { fontFamily: "Manrope", fontSize: 20, fontWeight: "700", textAlign: "left", marginTop: 4 },
+  userName: { fontFamily: "Manrope", fontSize: 20, fontWeight: "700", textAlign: "left", marginTop: 0 },
   profileEmail: { fontFamily: "Manrope", fontSize: 12, textAlign: "left", maxWidth: "100%" },
   profileIntentionPill: {
     alignSelf: "flex-start",
@@ -2662,6 +2663,7 @@ const styles = StyleSheet.create({
     padding: 16,
   },
   profileHistorySection: {
+    paddingVertical: 15,
     marginBottom: 32,
   },
   profileHistoryHeader: {

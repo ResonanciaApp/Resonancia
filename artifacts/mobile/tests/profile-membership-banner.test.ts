@@ -76,7 +76,7 @@ test("banner and identity share the same user-section background", () => {
   visit(ast);
   assert.match(section, /testID="profile-identity-row"/);
   assert.match(section, /<ProfileMembershipBanner isPremium=\{isPremium\} foregroundColor=\{colors.foreground\}/);
-  assert.match(profile, /const PROFILE_CARD_BOTTOM_PADDING = 8;/);
+  assert.match(profile, /const PROFILE_CARD_BOTTOM_PADDING = 15;/);
   assert.match(profile, /paddingBottom: PROFILE_CARD_BOTTOM_PADDING/);
   assert.match(profile, /marginBottom: PROFILE_SECTION_GAP/);
   assert.doesNotMatch(source, /backgroundColor:.*0,0,0/);

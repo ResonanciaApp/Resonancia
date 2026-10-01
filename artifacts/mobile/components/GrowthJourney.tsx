@@ -82,17 +82,57 @@ function GrowthLevelImage({ level }: { level: GrowthLevel }) {
   );
 }
 
-export function GrowthLevelPreviewCard({ onPress, embedded = false }: { onPress: () => void; embedded?: boolean }) {
+export function GrowthLevelPreviewCard({
+  onPress,
+  embedded = false,
+  canonicalVerticalInsets = false,
+}: {
+  onPress: () => void;
+  embedded?: boolean;
+  canonicalVerticalInsets?: boolean;
+}) {
   const colors = useColors();
   const level = growthLevels[0];
   const dayLabel = level.startDay === level.endDay
     ? `${level.startDay} días`
     : `${level.startDay}–${level.endDay} días`;
 
+  const dayPill = (
+    <PreviewContentEntrance key="intention-days" replayKey="intention-days" delay={420}>
+      <View style={styles.dayPill}>
+        <Text style={[styles.days, { color: colors.foreground }]}>{dayLabel}</Text>
+      </View>
+    </PreviewContentEntrance>
+  );
+  const name = (
+    <PreviewContentEntrance key="intention-name" replayKey="intention-name" delay={660}>
+      <Text
+        style={[
+          styles.name,
+          canonicalVerticalInsets && styles.canonicalPreviewName,
+          { color: colors.foreground },
+        ]}
+      >
+        {level.name}
+      </Text>
+    </PreviewContentEntrance>
+  );
+  const story = (
+    <PreviewContentEntrance key="intention-story" replayKey="intention-story" delay={810}>
+      <Text style={[styles.previewStory, { color: colors.mutedForeground }]}>
+        {level.story}
+      </Text>
+    </PreviewContentEntrance>
+  );
+
   return (
     <Pressable
       onPress={onPress}
-      style={[styles.previewCard, embedded && styles.embeddedPreviewCard]}
+      style={[
+        styles.previewCard,
+        embedded && styles.embeddedPreviewCard,
+        canonicalVerticalInsets && styles.canonicalPreviewVerticalInsets,
+      ]}
       accessibilityRole="button"
       accessibilityLabel={`${level.name}, ${dayLabel}. Abrir camino de crecimiento`}
       testID="growth-level-zero-preview"
@@ -100,20 +140,25 @@ export function GrowthLevelPreviewCard({ onPress, embedded = false }: { onPress:
       <PreviewContentEntrance replayKey="intention-art" delay={420} style={styles.previewArt}>
         <GrowthLevelImage level={level} />
       </PreviewContentEntrance>
-      <View style={styles.previewCopy}>
-        <PreviewContentEntrance replayKey="intention-days" delay={420}>
-          <View style={styles.dayPill}>
-            <Text style={[styles.days, { color: colors.foreground }]}>{dayLabel}</Text>
-          </View>
-        </PreviewContentEntrance>
-        <PreviewContentEntrance replayKey="intention-name" delay={660}>
-          <Text style={[styles.name, { color: colors.foreground }]}>{level.name}</Text>
-        </PreviewContentEntrance>
-        <PreviewContentEntrance replayKey="intention-story" delay={810}>
-          <Text style={[styles.previewStory, { color: colors.mutedForeground }]}>
-            {level.story}
-          </Text>
-        </PreviewContentEntrance>
+      <View
+        style={[
+          styles.previewCopy,
+          canonicalVerticalInsets && styles.canonicalPreviewCopy,
+        ]}
+      >
+        {canonicalVerticalInsets ? (
+          <>
+            {name}
+            {dayPill}
+            {story}
+          </>
+        ) : (
+          <>
+            {dayPill}
+            {name}
+            {story}
+          </>
+        )}
       </View>
       <PreviewContentEntrance replayKey="intention-chevron" delay={810}>
         <Feather name="chevron-right" size={18} color={colors.foreground} />
@@ -292,6 +337,9 @@ const styles = StyleSheet.create({
   },
   previewArt: { width: 100, height: 100 },
   embeddedPreviewCard: { marginHorizontal: 0 },
+  canonicalPreviewVerticalInsets: { paddingTop: 15, paddingBottom: 15, alignItems: "flex-start" },
+  canonicalPreviewCopy: { minHeight: 100, alignSelf: "stretch", justifyContent: "space-between" },
+  canonicalPreviewName: { marginBottom: 0 },
   previewCopy: { flex: 1, minWidth: 0 },
   previewStory: { fontFamily: "Manrope", fontSize: 11, lineHeight: 16 },
   section: {

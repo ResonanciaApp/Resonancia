@@ -70,7 +70,7 @@ const render = (props: Record<string, unknown> = {}) => {
 
 test("Perfil places avatar left and stacks name, email and intention on its right", () => {
   const html = render({ email: "example@example.com", location: "Ubicación" });
-  assert.match(html, /data-testid="profile-identity-row" data-direction="row" data-align="center"/);
+  assert.match(html, /data-testid="profile-identity-row" data-direction="row" data-align="flex-start"/);
   assert.match(html, /data-testid="profile-identity-details" data-align="flex-start"[^>]*data-flex="1" data-min-width="0"/);
   const avatar = html.indexOf('data-testid="profile-identity-avatar"');
   const name = html.indexOf("Resonador");

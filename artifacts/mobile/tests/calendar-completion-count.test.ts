@@ -12,8 +12,23 @@ type Props = { children?: React.ReactNode; testID?: string; style?: unknown };
 const flattenStyle = (style: unknown): Record<string, unknown> => Array.isArray(style)
   ? Object.assign({}, ...style.map(flattenStyle))
   : style && typeof style === "object" ? style as Record<string, unknown> : {};
-const Native = ({ children, testID, style }: Props) =>
-  React.createElement("div", { "data-testid": testID, "data-color": flattenStyle(style).color }, children);
+const Native = ({ children, testID, style }: Props) => {
+  const resolvedStyle = flattenStyle(
+    typeof style === "function"
+      ? (style as (state: { pressed: boolean }) => unknown)({ pressed: false })
+      : style,
+  );
+  return React.createElement("div", {
+    "data-testid": testID,
+    "data-color": resolvedStyle.color,
+    "data-background": resolvedStyle.backgroundColor,
+    "data-height": resolvedStyle.height,
+    "data-line-height": resolvedStyle.lineHeight,
+    "data-padding-top": resolvedStyle.paddingTop,
+    "data-padding-bottom": resolvedStyle.paddingBottom,
+    "data-padding-vertical": resolvedStyle.paddingVertical,
+  }, children);
+};
 const Icon = () => React.createElement("i");
 const Passthrough = ({ children }: Props) => React.createElement(React.Fragment, null, children);
 let events: Array<{ sessionId: string; playedAt: string; completed: boolean }> = [];
@@ -35,7 +50,7 @@ const mocks: Record<string, unknown> = {
   }) },
   "@/data/artists": { getArtist: () => ({ name: "Autor" }) },
   "@/data/guides": { getGuide: () => ({ name: "Guía" }) },
-  "@/data/sessions": { getSessionById: (id: string) => ({
+  "@/data/sessions": { getSessionById: (id: string) => id === "missing" ? undefined : ({
     id, title: `Card ${id}`, image: {}, durationLabel: "3 min", categoryLabel: "Meditación",
   }) },
   "@/context/SceneThemeContext": { useSceneTheme: () => ({ activeSceneId: "indigo2" }) },
@@ -56,8 +71,12 @@ new Function("require", "module", "exports", compiled)((name: string) => {
   if (!(name in mocks)) throw new Error(`Missing calendar test mock: ${name}`);
   return mocks[name];
 }, componentModule, componentModule.exports);
-const render = (enabled = true) => renderToStaticMarkup(
-  React.createElement(componentModule.exports.HistorialCalendar, { embedded: true, showCompletedSessionCount: enabled }),
+const render = (enabled = true, props: Record<string, unknown> = {}) => renderToStaticMarkup(
+  React.createElement(componentModule.exports.HistorialCalendar, {
+    embedded: true,
+    showCompletedSessionCount: enabled,
+    ...props,
+  }),
 );
 const completed = (sessionId: string) => ({ sessionId, playedAt: new Date().toISOString(), completed: true });
 
@@ -89,4 +108,36 @@ test("empty days and other calendar consumers keep their existing presentation",
   events = [completed("Prueba 33")];
   assert.doesNotMatch(render(false), /profile-calendar-completed-count|1 sesión completada/);
   assert.match(render(false), /Card Prueba 33/);
+});
+
+test("canonical embedded calendar insets are 15px and replace supplied vertical padding", () => {
+  events = [completed("Prueba 33")];
+  const profileHtml = render(true, { canonicalVerticalInsets: true, cardVerticalPadding: 29 });
+  assert.match(profileHtml, /data-background="rgba\(191,207,255,0\.096\)" data-padding-top="15" data-padding-bottom="15"/);
+  assert.match(profileHtml, /data-padding-bottom="0"/);
+  assert.match(profileHtml, /data-height="18"/);
+  assert.match(profileHtml, /data-line-height="18"/);
+
+  const defaultHtml = render(true);
+  assert.match(defaultHtml, /data-background="rgba\(191,207,255,0\.096\)" data-padding-vertical="16"/);
+  assert.match(defaultHtml, /data-height="30"/);
+  assert.doesNotMatch(defaultHtml, /data-line-height="18"/);
+
+  const nonEmbeddedHtml = render(true, { embedded: false, canonicalVerticalInsets: true });
+  assert.match(nonEmbeddedHtml, /data-padding-vertical="16"/);
+  assert.match(nonEmbeddedHtml, /data-height="30"/);
+});
+
+test("canonical calendar bottom inset aligns to the last rendered event, not an unavailable event", () => {
+  const midday = new Date();
+  midday.setHours(12, 0, 0, 0);
+  events = [
+    { ...completed("Prueba 33"), playedAt: new Date(midday.getTime() + 60_000).toISOString() },
+    { ...completed("missing"), playedAt: midday.toISOString() },
+  ];
+
+  const html = render(true, { canonicalVerticalInsets: true });
+  assert.match(html, /Card Prueba 33/);
+  assert.doesNotMatch(html, /Card missing/);
+  assert.match(html, /data-padding-bottom="0"/);
 });

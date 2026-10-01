@@ -18,6 +18,7 @@ const NativeView = ({ children, testID, style }: NativeProps) => {
     "data-padding-top": resolved.paddingTop,
     "data-padding-bottom": resolved.paddingBottom,
     "data-padding-horizontal": resolved.paddingHorizontal,
+    "data-self-align": resolved.alignSelf,
     "data-min-height": resolved.minHeight,
     "data-margin-bottom": resolved.marginBottom,
   }, children);
@@ -50,8 +51,8 @@ const mocks: Record<string, unknown> = {
   "@react-native-masked-view/masked-view": Passthrough,
   "expo-linear-gradient": { LinearGradient: Passthrough },
   "@/components/HistorialCalendar": {
-    HistorialCalendar: ({ showCompletedSessionCount }: { showCompletedSessionCount?: boolean }) =>
-      React.createElement("div", { "data-testid": "calendar", "data-completed-count": !!showCompletedSessionCount }),
+    HistorialCalendar: ({ showCompletedSessionCount, canonicalVerticalInsets }: { showCompletedSessionCount?: boolean; canonicalVerticalInsets?: boolean }) =>
+      React.createElement("div", { "data-testid": "calendar", "data-completed-count": !!showCompletedSessionCount, "data-canonical-insets": !!canonicalVerticalInsets }),
   },
   "@/components/CinematicFadeSlide": { CinematicFadeSlide: Passthrough },
   "@/components/StreakWeekRow": {
@@ -139,7 +140,7 @@ test("Tu progreso keeps weekly circles without streak history, calendar or Inten
     showCalendar: false,
     weeklySectionBackgroundColor: "transparent",
     sectionHorizontalPadding: 20,
-    streakHistoryTopPadding: 17,
+    streakHistoryTopPadding: 15,
     sectionBottomPadding: 15,
     longestStreakLabel: "RACHA ACUMULADA",
     longestStreakIconColor: "#BE9650",
@@ -158,7 +159,7 @@ test("Intención has the same content insets as the streak history, without the 
   assert.match(previewStyle, /paddingTop: 17/);
   assert.match(previewStyle, /paddingBottom: 15/);
   assert.match(growthSource, /embeddedPreviewCard: \{ marginHorizontal: 0 \}/);
-  assert.match(growthSource, /style=\{\[styles\.previewCard, embedded && styles\.embeddedPreviewCard\]\}/);
+  assert.match(growthSource, /styles\.previewCard,\s+embedded && styles\.embeddedPreviewCard,\s+canonicalVerticalInsets && styles\.canonicalPreviewVerticalInsets/);
   assert.doesNotMatch(previewStyle, /minHeight|height:|paddingVertical/);
   assert.match(growthSource, /previewArt: \{ width: 100, height: 100 \}/);
 });
@@ -174,7 +175,7 @@ test("Perfil uses 15px above Esta semana and below the day labels without changi
     sectionTopPadding: basePadding,
     sectionBottomPadding: 15,
     sectionHorizontalPadding: 20,
-    streakHistoryTopPadding: 17,
+    streakHistoryTopPadding: 15,
     weeklySectionBackgroundColor: "rgba(0,0,0,0.22)",
   });
   const weekly = html.match(/<div[^>]*data-testid="profile-weekly-progress"[^>]*>/)?.[0] ?? "";
@@ -184,7 +185,26 @@ test("Perfil uses 15px above Esta semana and below the day labels without changi
   assert.match(weekly, /data-padding-bottom="15"/);
   assert.match(weekly, /data-padding-horizontal="20"/);
   assert.match(history, /data-background="rgba\(0,0,0,0.22\)"/);
-  assert.match(history, /data-padding-top="17"/);
+  assert.match(history, /data-padding-top="15"/);
+  assert.match(history, /data-padding-bottom="15"/);
+});
+
+test("Perfil aligns all four history labels to the bottom inset and passes canonical insets to calendar", () => {
+  const source = readFileSync(new URL("../components/ProfileScreenBase.tsx", import.meta.url), "utf8");
+  assert.match(source, /streakHistoryTopPadding=\{15\}/);
+  assert.match(source, /sectionMarginBottom=\{PROFILE_SECTION_GAP\}\s+canonicalVerticalInsets/);
+  const html = render({
+    showPersonalStats: false,
+    separateStreakHistory: true,
+    weeklySectionTitle: "Esta semana",
+    sectionTopPadding: 15,
+    sectionBottomPadding: 15,
+    streakHistoryTopPadding: 15,
+    canonicalVerticalInsets: true,
+    showCalendar: true,
+  });
+  assert.equal((html.match(/data-self-align="flex-end"/g) ?? []).length, 4);
+  assert.match(html, /data-testid="calendar"[^>]*data-canonical-insets="true"/);
 });
 
 test("Perfil aligns weekly circles with the section inset while Tu progreso keeps its full-width row", () => {

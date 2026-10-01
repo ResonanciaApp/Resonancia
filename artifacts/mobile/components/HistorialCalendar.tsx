@@ -315,6 +315,14 @@ export function HistorialCalendar({
       .filter((e) => isSameDay(new Date(e.playedAt), selectedDate))
       .sort((a, b) => new Date(b.playedAt).getTime() - new Date(a.playedAt).getTime());
   }, [entries, selectedDate]);
+  const lastVisibleDayEntryIndex = useMemo(() => {
+    if (!canonicalVerticalInsets) return dayEntries.length - 1;
+    for (let i = dayEntries.length - 1; i >= 0; i--) {
+      const entry = dayEntries[i];
+      if (entry && getSessionById(entry.sessionId)) return i;
+    }
+    return -1;
+  }, [canonicalVerticalInsets, dayEntries]);
 
   const goPrevMonth = () => {
     const next = new Date(viewMonth.getFullYear(), viewMonth.getMonth() - 1, 1);
@@ -340,6 +348,7 @@ export function HistorialCalendar({
   };
 
   const p = containerPadding;
+  const canonicalEmbeddedInsets = canonicalVerticalInsets && embedded;
 
   return (
     <View style={embedded ? styles.embeddedCalendar : undefined}>
@@ -361,6 +370,7 @@ export function HistorialCalendar({
           cardVerticalPadding !== undefined && {
             paddingVertical: cardVerticalPadding,
           },
+          canonicalVerticalInsets && embedded && styles.canonicalCalendarVerticalInsets,
           p ? { marginHorizontal: p } : undefined,
         ]}
       >
@@ -370,19 +380,28 @@ export function HistorialCalendar({
           delay={entranceBaseDelay}
         >
         <View style={styles.calendarNav}>
-          <Pressable onPress={goPrevMonth} hitSlop={10} style={styles.navBtn}>
+          <Pressable
+            onPress={goPrevMonth}
+            hitSlop={10}
+            style={[styles.navBtn, canonicalEmbeddedInsets && styles.canonicalEmbeddedNavButton]}
+          >
             <Feather name="chevron-left" size={18} color={colors.foreground} />
           </Pressable>
           <Text
             style={[
               styles.monthLabel,
               embedded && styles.embeddedMonthLabel,
+              canonicalEmbeddedInsets && styles.canonicalEmbeddedMonthLabel,
               { color: colors.foreground },
             ]}
           >
             {monthLabel}
           </Text>
-          <Pressable onPress={goNextMonth} hitSlop={10} style={styles.navBtn}>
+          <Pressable
+            onPress={goNextMonth}
+            hitSlop={10}
+            style={[styles.navBtn, canonicalEmbeddedInsets && styles.canonicalEmbeddedNavButton]}
+          >
             <Feather name="chevron-right" size={18} color={colors.foreground} />
           </Pressable>
         </View>
@@ -475,7 +494,7 @@ export function HistorialCalendar({
                   style={({ pressed }) => [
                     styles.embeddedEntryRow,
                     canonicalVerticalInsets &&
-                      i === dayEntries.length - 1 &&
+                      i === lastVisibleDayEntryIndex &&
                       styles.embeddedEntryRowAtCardEdge,
                     { opacity: pressed ? 0.75 : 1 },
                   ]}
@@ -635,6 +654,10 @@ const styles = StyleSheet.create({
     paddingVertical: 16,
     paddingHorizontal: 14,
   },
+  canonicalCalendarVerticalInsets: {
+    paddingTop: 15,
+    paddingBottom: 15,
+  },
   outlinedCalendarCard: {
     borderWidth: 1,
     borderColor: "rgba(255,255,255,0.2)",
@@ -646,6 +669,7 @@ const styles = StyleSheet.create({
     gap: 16,
     marginBottom: 14,
   },
+  canonicalEmbeddedNavButton: { height: 18 },
   navBtn: {
     width: 30,
     height: 30,
@@ -654,6 +678,7 @@ const styles = StyleSheet.create({
   },
   monthLabel: { fontFamily: "Manrope", fontSize: 15, fontWeight: "700", minWidth: 100, textAlign: "center" },
   embeddedMonthLabel: { fontSize: 13 },
+  canonicalEmbeddedMonthLabel: { lineHeight: 18 },
   weekRow: {
     flexDirection: "row",
     marginBottom: 6,
