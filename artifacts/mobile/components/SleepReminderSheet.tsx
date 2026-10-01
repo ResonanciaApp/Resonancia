@@ -181,6 +181,7 @@ export function SleepReminderSheet({
         <Animated.View
           style={[
             styles.sheet,
+            isMorning && styles.morningSheetBorder,
             {
               paddingBottom: Math.max(insets.bottom, 18) + 18,
               transform: [{ translateY }],
@@ -322,7 +323,6 @@ export function SleepReminderSheet({
             )}
           </Pressable>
           </ScrollView>
-           {!isMorning && <View pointerEvents="none" style={styles.sheetOutline} />}
         </Animated.View>
       </View>
     </Modal>
@@ -370,22 +370,11 @@ const styles = StyleSheet.create({
     borderTopRightRadius: 32,
     paddingHorizontal: 24,
     paddingTop: 12,
+  },
+  morningSheetBorder: {
     borderWidth: 1,
     borderBottomWidth: 0,
     borderColor: "rgba(255,255,255,0.10)",
-  },
-  sheetOutline: {
-    position: "absolute",
-    top: 1,
-    left: 1,
-    right: 1,
-    bottom: 0,
-    borderTopLeftRadius: 31,
-    borderTopRightRadius: 31,
-    borderTopWidth: 1,
-    borderLeftWidth: 1,
-    borderRightWidth: 1,
-    borderColor: "rgba(255,255,255,0.26)",
   },
   handle: {
     alignSelf: "center",
