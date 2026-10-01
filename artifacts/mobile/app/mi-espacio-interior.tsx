@@ -14,6 +14,7 @@ import { useAuth } from "@/context/AuthContext";
 import { usePremium } from "@/context/PremiumContext";
 import { useDrawer } from "@/context/DrawerContext";
 import { ReflectionShare } from "@/components/ReflectionShare";
+import { ReflectionCategoryTabBorder, ReflectionCategoryTabLabel } from "@/components/ReflectionCategoryTabLabel";
 import { CinematicFadeSlide } from "@/components/CinematicFadeSlide";
 import { canShareReflection } from "@/lib/reflection-story-logic";
 
@@ -757,6 +758,7 @@ function PremiumInnerSpaceScreen() {
           <Pressable
             testID="filter-all"
             accessibilityLabel="Filtrar por Todos"
+            accessibilityState={{ selected: filter === "all" }}
             style={[
               styles.filterPill,
               filter === "all" ? styles.filterPillSelected : styles.filterPillInactive,
@@ -767,7 +769,8 @@ function PremiumInnerSpaceScreen() {
               setFilter("all");
             }}
           >
-            <Text style={[styles.filterText, { color: filter === "all" ? "#060A0F" : "#F9F9F9" }]}>Todos</Text>
+            {filter === "all" && <ReflectionCategoryTabBorder />}
+            <ReflectionCategoryTabLabel label="Todos" selected={filter === "all"} textStyle={styles.filterText} />
           </Pressable>
            {reflectionCategoryOptions.map(cat => {
             const isActive = filter === cat.id;
@@ -776,6 +779,7 @@ function PremiumInnerSpaceScreen() {
                 key={cat.id}
                 testID={`filter-${cat.id}`}
                 accessibilityLabel={`Filtrar por ${cat.label}`}
+                accessibilityState={{ selected: isActive }}
                 style={[
                   styles.filterPill,
                   isActive ? styles.filterPillSelected : styles.filterPillInactive,
@@ -786,7 +790,12 @@ function PremiumInnerSpaceScreen() {
                   setFilter(cat.id as ReflectionCategory);
                 }}
               >
-                <Text style={[styles.filterText, { color: isActive ? "#060A0F" : "#F9F9F9" }]}>{cat.label}</Text>
+                {isActive && <ReflectionCategoryTabBorder color={cat.color} />}
+                <ReflectionCategoryTabLabel
+                  label={cat.label}
+                  selected={isActive}
+                  textStyle={styles.filterText}
+                />
               </Pressable>
             );
           })}
@@ -963,7 +972,7 @@ const styles = StyleSheet.create({
     borderColor: "rgba(255,255,255,0.2)",
   },
   filterPillSelected: {
-    backgroundColor: "#F9F9F9",
+    backgroundColor: "rgba(0,0,0,0.28)",
     borderColor: "transparent",
   },
   filterText: {

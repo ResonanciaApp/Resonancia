@@ -1,0 +1,61 @@
+import React from "react";
+import { StyleSheet, Text, View, type StyleProp, type TextStyle } from "react-native";
+
+import { DiscoverSearchBorder } from "@/components/DiscoverSearchBorder";
+import {
+  REFLECTION_WALL_BORDER_GRADIENT,
+  REFLECTION_WALL_BORDER_START,
+  REFLECTION_WALL_BORDER_END,
+  REFLECTION_WALL_BORDER_BRIGHTNESS,
+} from "@/constants/reflectionWallBorder";
+
+export const ReflectionCategoryTabBorder = React.memo(function ReflectionCategoryTabBorder({ color }: { color?: string }) {
+  if (color) return <View pointerEvents="none" style={[styles.categoryBorder, { borderColor: color }]} />;
+  return (
+    <DiscoverSearchBorder
+      borderRadius={999}
+      borderWidth={2}
+      brightness={REFLECTION_WALL_BORDER_BRIGHTNESS}
+      colors={REFLECTION_WALL_BORDER_GRADIENT}
+      start={REFLECTION_WALL_BORDER_START}
+      end={REFLECTION_WALL_BORDER_END}
+    />
+  );
+});
+
+export const ReflectionCategoryTabLabel = React.memo(function ReflectionCategoryTabLabel({
+  label,
+  selected,
+  textStyle,
+}: {
+  label: string;
+  selected: boolean;
+  textStyle: StyleProp<TextStyle>;
+}) {
+  const color = selected ? "#FFFFFF" : "#E0E0E0";
+
+  return (
+    <View pointerEvents="none">
+      <Text
+        accessible={false}
+        accessibilityElementsHidden
+        importantForAccessibility="no-hide-descendants"
+        style={[textStyle, styles.widthReserve]}
+      >
+        {label}
+      </Text>
+      <View style={styles.visibleLayer} pointerEvents="none">
+        <Text style={[textStyle, styles.visibleText, { color, fontWeight: selected ? "700" : "500" }]}>
+          {label}
+        </Text>
+      </View>
+    </View>
+  );
+});
+
+const styles = StyleSheet.create({
+  categoryBorder: { ...StyleSheet.absoluteFillObject, borderRadius: 999, borderWidth: 2 },
+  widthReserve: { color: "transparent", fontWeight: "700" },
+  visibleLayer: { ...StyleSheet.absoluteFillObject, justifyContent: "center" },
+  visibleText: { textAlign: "center" },
+});

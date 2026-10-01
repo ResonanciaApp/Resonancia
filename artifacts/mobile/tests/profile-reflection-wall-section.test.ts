@@ -191,7 +191,7 @@ test("wall character counter renders the current length at the lower-right witho
   assert.match(card, /maxLength=\{300\}/);
 });
 
-test("selected wall categories have an F9F9F9 background and their own editorial text color without font shifts", () => {
+test("selected wall categories use black at 28%, the wall border and the stable bold label", () => {
   const card = source("../components/InnerSpaceCard.tsx");
   const ast = ts.createSourceFile("InnerSpaceCard.tsx", card, ts.ScriptTarget.Latest, true, ts.ScriptKind.TSX);
   let chip: ts.JsxElement | undefined;
@@ -203,13 +203,15 @@ test("selected wall categories have an F9F9F9 background and their own editorial
   visit(ast);
   assert.ok(chip);
   const selectedStyle = style("InnerSpaceCard", "selectedGridItem");
-  assert.equal(selectedStyle.backgroundColor, "#F9F9F9");
+  assert.equal(selectedStyle.backgroundColor, "rgba(0,0,0,0.28)");
+  assert.equal(selectedStyle.borderColor, "transparent");
+  assert.equal(selectedStyle.opacity, undefined);
   assert.equal(selectedStyle.fontWeight, undefined);
   const compiled = ts.transpileModule(`return (${chip.getText(ast)});`, {
     compilerOptions: { jsx: ts.JsxEmit.React },
   }).outputText;
-  const render = new Function("React", "Pressable", "Text", "cat", "category", "styles",
-    "selectedCategoryShadow", "toggleCategory", compiled);
+  const render = new Function("React", "Pressable", "ReflectionCategoryTabBorder", "ReflectionCategoryTabLabel",
+    "cat", "category", "styles", "toggleCategory", compiled);
   const styles = {
     gridItem: style("InnerSpaceCard", "gridItem"),
     selectedGridItem: selectedStyle,
@@ -219,13 +221,16 @@ test("selected wall categories have an F9F9F9 background and their own editorial
   for (const cat of [{ id: "gratitude", label: "Gratitud", color: "#F075B3" },
     { id: "calm", label: "Calma", color: "#50AFB0" },
     { id: "custom", label: "Editorial", color: "#477FBD" }]) {
-    const active = render(React, () => null, () => null, cat, cat.id, styles, "#F075B3", () => {});
-    assert.equal(Object.assign({}, ...active.props.style({ pressed: false })).backgroundColor, "#F9F9F9");
-    assert.equal(Object.assign({}, ...active.props.children.props.style).color, cat.color);
-    const inactive = render(React, () => null, () => null, cat, null, styles, "#F075B3", () => {});
-    assert.equal(Object.assign({}, ...inactive.props.children.props.style).color, "#E0E0E0");
-    assert.equal(Object.assign({}, ...active.props.children.props.style).fontWeight,
-      Object.assign({}, ...inactive.props.children.props.style).fontWeight);
+    const active = render(React, () => null, () => null, () => null, cat, cat.id, styles, () => {});
+    assert.equal(Object.assign({}, ...active.props.style({ pressed: false })).backgroundColor, "rgba(0,0,0,0.28)");
+    assert.ok(active.props.children[0], "selected tab has the shared wall border");
+    assert.equal(active.props.children[0].props.color, cat.color);
+    assert.equal(active.props.children[1].props.selected, true);
+    assert.equal(active.props.accessibilityState.selected, true);
+    const inactive = render(React, () => null, () => null, () => null, cat, null, styles, () => {});
+    assert.equal(inactive.props.children[0], false, "inactive tab does not gain a gradient border");
+    assert.equal(inactive.props.children[1].props.selected, false);
+    assert.equal(active.props.children[1].props.textStyle, inactive.props.children[1].props.textStyle);
   }
 });
 

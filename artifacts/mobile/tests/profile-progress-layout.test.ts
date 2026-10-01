@@ -99,14 +99,16 @@ test("Perfil separates week-only progress from the titled streak history", () =>
   assert.match(html.slice(historyIndex), /Historial de rachas/);
   assert.match(html.slice(historyIndex), /RACHA MÁS LARGA/);
   assert.match(html.slice(historyIndex), /RACHA ACUMULADA/);
-  const actualIndex = html.indexOf("RACHA ACTUAL");
+  const actualIndex = html.indexOf("RACHA SEMANAL ACTUAL");
+  const accumulatedIndex = html.indexOf("RACHA ACUMULADA");
+  const longestIndex = html.indexOf("RACHA MÁS LARGA");
   const completedIndex = html.indexOf("RACHAS COMPLETADAS");
   assert.ok(actualIndex > historyIndex);
-  assert.ok(completedIndex > actualIndex);
-  assert.ok(html.indexOf("RACHA MÁS LARGA") > completedIndex);
-  assert.ok(html.indexOf("RACHA ACUMULADA") > html.indexOf("RACHA MÁS LARGA"));
+  assert.ok(accumulatedIndex > actualIndex);
+  assert.ok(longestIndex > accumulatedIndex);
+  assert.ok(completedIndex > longestIndex);
   assert.match(html.slice(historyIndex, actualIndex), /<div>4<\/div>/);
-  assert.match(html.slice(actualIndex, completedIndex), /<div>2<\/div>/);
+  assert.match(html.slice(longestIndex, completedIndex), /<div>2<\/div>/);
   assert.ok(html.indexOf("Mis estadísticas") > historyIndex);
   assert.ok(html.indexOf('data-testid="calendar"') > html.indexOf("Mis estadísticas"));
 });
@@ -120,13 +122,14 @@ test("longest streak has a violet lotus with the same glow as the accumulated st
     longestStreakIconColor: "#E7B95C",
   });
   const longestLabel = html.indexOf("RACHA MÁS LARGA");
-  const gold = html.slice(longestLabel);
-  assert.match(html.slice(0, longestLabel), /data-icon="spa" data-color="#C9A6FF" data-size="18" data-glow-color="#C9A6FFCC" data-glow-radius="8" data-glow-offset="0,0"/);
+  const accumulatedLabel = html.indexOf("RACHA ACUMULADA");
+  const gold = html.slice(0, accumulatedLabel + "RACHA ACUMULADA".length);
+  assert.match(html.slice(accumulatedLabel, longestLabel), /data-icon="spa" data-color="#C9A6FF" data-size="18" data-glow-color="#C9A6FFCC" data-glow-radius="8" data-glow-offset="0,0"/);
   assert.match(gold, /data-icon="spa" data-color="#E7B95C" data-size="18" data-glow-color="#E7B95CCC" data-glow-radius="8" data-glow-offset="0,0"/);
   assert.match(gold, /RACHA ACUMULADA/);
 });
 
-test("completed streaks use the same 18px lotus in solid reference pink, preserving the count", () => {
+test("completed streaks use the same 18px lotus in solid reference turquoise, preserving the count", () => {
   const html = render({
     separateStreakHistory: true,
     showPersonalStats: false,
@@ -134,7 +137,7 @@ test("completed streaks use the same 18px lotus in solid reference pink, preserv
   });
   const section = html.slice(html.indexOf('data-testid="completed-streak-lotus"'), html.indexOf("RACHAS COMPLETADAS"));
   assert.match(section, /data-icon="spa" data-color="#FFFFFF" data-size="18"/);
-  assert.match(section, /data-icon="spa" data-color="#B17A9E" data-size="18"/);
+  assert.match(section, /data-icon="spa" data-color="#50AFB0" data-size="18"/);
   assert.doesNotMatch(section, /data-gradient|data-color="transparent"/);
   assert.match(section, /<div>2<\/div>/);
   assert.doesNotMatch(html, /data-icon="check-circle"/);
@@ -294,7 +297,7 @@ test("Perfil gives Esta semana its own background and matches weekly/history and
   const historyIndex = html.indexOf('data-testid="profile-streak-history"');
   assert.ok(title >= 0 && title < days && days < historyIndex);
   assert.ok(html.indexOf('data-testid="calendar"') > historyIndex);
-  assert.doesNotMatch(html.slice(0, historyIndex), /RACHA ACTUAL|RACHAS COMPLETADAS/);
+  assert.doesNotMatch(html.slice(0, historyIndex), /RACHA SEMANAL ACTUAL|RACHAS COMPLETADAS/);
 });
 
 test("Perfil puts the same Intención preview after streak history and before calendar, opening Tu camino", () => {
@@ -387,7 +390,7 @@ test("Perfil hides personal stats and the divider above the week while retaining
   });
   assert.doesNotMatch(html, /Mis estadísticas|MINUTOS TOTALES|DÍAS ACTIVOS/);
   assert.match(html, /Historial de rachas/);
-  assert.match(html, /RACHA ACTUAL/);
+  assert.match(html, /RACHA SEMANAL ACTUAL/);
   assert.match(html, /RACHAS COMPLETADAS/);
   assert.match(html, /RACHA MÁS LARGA/);
   assert.match(html, /seven-week-days/);

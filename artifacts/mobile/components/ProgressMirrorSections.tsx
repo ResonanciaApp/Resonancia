@@ -17,7 +17,7 @@ import { PREMIUM_STAR_GRADIENT } from "@/constants/colors";
 
 const SECTION_BACKGROUND = "rgba(0,0,0,0.22)";
 const VIOLET_LOTUS_COLOR = "#C9A6FF";
-const COMPLETED_STREAK_LOTUS_COLOR = "#B17A9E";
+const COMPLETED_STREAK_LOTUS_COLOR = "#50AFB0";
 export const STREAK_WEEK_START_OFFSET_MS = 650;
 const PERSONAL_STATS_HEADER_OFFSET_MS = 420;
 const PERSONAL_STATS_MINUTES_OFFSET_MS = 660;
@@ -377,7 +377,7 @@ export function ProgressMirrorSections({
           <Stat
             icon={<MaterialCommunityIcons name="spa" size={18} color="#F9F9F9" />}
             value={weekCount}
-            label="RACHA ACTUAL"
+            label="RACHA SEMANAL ACTUAL"
             accent={accent}
             onPress={onStreakTitlePress}
             edgeAligned={canonicalVerticalInsets}
@@ -386,9 +386,9 @@ export function ProgressMirrorSections({
         <View style={styles.statDivider} />
         <View style={styles.statEntranceSlot}>
           <Stat
-            icon={completedStreakIcon}
-            value={completedWeeks}
-            label="RACHAS COMPLETADAS"
+            icon={longestStreakIcon}
+            value={maxStreak}
+            label={longestStreakLabel}
             accent={accent}
             onPress={onStreakTitlePress}
             edgeAligned={canonicalVerticalInsets}
@@ -410,9 +410,9 @@ export function ProgressMirrorSections({
         <View style={styles.statDivider} />
         <View style={styles.statEntranceSlot}>
           <Stat
-            icon={longestStreakIcon}
-            value={maxStreak}
-            label={longestStreakLabel}
+            icon={completedStreakIcon}
+            value={completedWeeks}
+            label="RACHAS COMPLETADAS"
             accent={accent}
             onPress={onStreakTitlePress}
             edgeAligned={canonicalVerticalInsets}

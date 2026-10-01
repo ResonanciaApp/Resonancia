@@ -14,6 +14,7 @@ import Reanimated, {
 } from "react-native-reanimated";
 import { useColors } from "@/hooks/useColors";
 import { DiscoverSearchBorder } from "@/components/DiscoverSearchBorder";
+import { ReflectionCategoryTabBorder, ReflectionCategoryTabLabel } from "@/components/ReflectionCategoryTabLabel";
 import {
   REFLECTION_WALL_BORDER_GRADIENT,
   REFLECTION_WALL_BORDER_START,
@@ -125,7 +126,6 @@ export function InnerSpaceCard({
     isCatalogError,
     isCatalogEmpty,
   } = useReflectionCategories();
-  const selectedCategoryShadow = reflectionCategoryOptions.find((cat) => cat.id === "gratitude")?.color ?? "#F075B3";
   const freeQuotaParams = { limit: FREE_REFLECTIONS_LIMIT + 1 };
   const { data: freeQuotaData, isLoading: freeQuotaLoading } = useListMyReflections(
     freeQuotaParams,
@@ -593,15 +593,20 @@ export function InnerSpaceCard({
               testID={`category-${cat.id}`}
               accessibilityLabel={`Categoría ${cat.label}`}
               accessibilityRole="button"
+              accessibilityState={{ selected: category === cat.id }}
               style={({ pressed }) => [
                 styles.gridItem,
                  category === cat.id && styles.selectedGridItem,
-                 category === cat.id && { shadowColor: selectedCategoryShadow },
                 pressed && styles.pressedCategory,
               ]}
               onPress={() => toggleCategory(cat.id as ReflectionCategory)}
             >
-              <Text style={[styles.gridLabel, { color: category === cat.id ? cat.color : "#E0E0E0" }]}>{cat.label}</Text>
+              {category === cat.id && <ReflectionCategoryTabBorder color={cat.color} />}
+              <ReflectionCategoryTabLabel
+                label={cat.label}
+                selected={category === cat.id}
+                textStyle={styles.gridLabel}
+              />
             </Pressable>
           ))}
         </ScrollView>
@@ -839,10 +844,8 @@ const styles = StyleSheet.create({
     borderColor: "rgba(255,255,255,0.1)",
   },
   selectedGridItem: {
-    borderColor: "rgba(255,255,255,0.45)",
-    backgroundColor: "#F9F9F9",
-    shadowOpacity: 0.22,
-    shadowRadius: 8,
+    borderColor: "transparent",
+    backgroundColor: "rgba(0,0,0,0.28)",
   },
   pressedCategory: {
     transform: [{ scale: 0.97 }],
