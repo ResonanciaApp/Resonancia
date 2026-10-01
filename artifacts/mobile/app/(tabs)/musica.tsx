@@ -695,7 +695,7 @@ export default function MezcladorScreen() {
               style={styles.pillRow}
               contentContainerStyle={styles.pillRowContent}
             >
-              <View style={{ gap: 12 }}>
+              <View style={{ gap: 5 }}>
                 {[
                   tabs.slice(0, Math.ceil(tabs.length / 2)),
                   tabs.slice(Math.ceil(tabs.length / 2)),
