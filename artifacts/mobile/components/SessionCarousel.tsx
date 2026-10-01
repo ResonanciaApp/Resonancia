@@ -225,6 +225,7 @@ type SessionCarouselProps = {
   cardHeightAdjustment?: number;
   cardWidthAdjustment?: number;
   durationBadgeStyle?: StyleProp<ViewStyle>;
+  durationBadgeTint?: string;
   premiumBadgeStyle?: StyleProp<ImageStyle>;
   sleepBelowTitleStyle?: StyleProp<TextStyle>;
   sleepBelowMetadataStyle?: StyleProp<ViewStyle>;
@@ -345,6 +346,7 @@ export const SessionCarousel = React.memo(function SessionCarousel({
   cardHeightAdjustment = 0,
   cardWidthAdjustment = 0,
   durationBadgeStyle,
+  durationBadgeTint,
   premiumBadgeStyle,
   sleepBelowTitleStyle,
   sleepBelowMetadataStyle,
@@ -838,6 +840,7 @@ export const SessionCarousel = React.memo(function SessionCarousel({
                     {!isEditorialPresentation && durationInsideWithMeta && effectiveShowDurationBadge && (
                       <SessionDurationBadge
                         label={s.durationLabel}
+                        tintColor={durationBadgeTint}
                         showClock={showDurationClock}
                         style={[
                           styles.durBadge,
@@ -850,6 +853,7 @@ export const SessionCarousel = React.memo(function SessionCarousel({
                     {!isEditorialPresentation && categoryGridPresentation && effectiveShowDurationBadge && (
                       <SessionDurationBadge
                         label={s.durationLabel}
+                        tintColor={durationBadgeTint}
                         showClock={showDurationClock}
                         style={[styles.durBadge, styles.categoryDurationBadge, durationBadgeStyle]}
                         textStyle={styles.durText}
@@ -884,6 +888,7 @@ export const SessionCarousel = React.memo(function SessionCarousel({
                       (!effectiveShowMetaBelow || durationInsideWithMeta) && (
                       <SessionDurationBadge
                         label={s.durationLabel}
+                        tintColor={durationBadgeTint}
                         whiteGlass={whiteMetadataGlass}
                         showClock={showDurationClock}
                         style={[
@@ -925,6 +930,7 @@ export const SessionCarousel = React.memo(function SessionCarousel({
                     ) : !showAmbientalTitleOnly && effectiveShowDurationBadge && effectiveOverlayDurationTopLeft ? (
                       <SessionDurationBadge
                         label={s.durationLabel}
+                        tintColor={durationBadgeTint}
                         showClock={showDurationClock}
                         style={[
                           styles.durBadge,
@@ -966,6 +972,7 @@ export const SessionCarousel = React.memo(function SessionCarousel({
                        {!showAmbientalTitleOnly && effectiveShowDurationBadge && showSleepCategoryPillWithInlineDuration ? (
                         <SessionDurationBadge
                           label={s.durationLabel}
+                          tintColor={durationBadgeTint}
                            showClock
                           style={[
                             styles.durBadge,
@@ -978,6 +985,7 @@ export const SessionCarousel = React.memo(function SessionCarousel({
                        {!showAmbientalTitleOnly && effectiveShowDurationBadge && !effectiveOverlayDurationTopLeft ? (
                         <SessionDurationBadge
                           label={s.durationLabel}
+                          tintColor={durationBadgeTint}
                           showClock={showDurationClock}
                           style={[
                             styles.durBadge,

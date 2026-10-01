@@ -17,6 +17,7 @@ type Props = {
   textStyle?: StyleProp<TextStyle>;
   showClock?: boolean;
   whiteGlass?: boolean;
+  tintColor?: string;
 };
 
 /**
@@ -30,13 +31,16 @@ export function SessionDurationBadge({
   textStyle,
   showClock = false,
   whiteGlass = false,
+  tintColor,
 }: Props) {
   const displayLabel = label.replace(/\bmin\b/gi, "min");
 
   return (
     <View pointerEvents="none" style={[styles.root, style, styles.rounded]}>
-      <SessionBadgeGlass showBlackTint={!whiteGlass} />
-      {whiteGlass ? <View style={[StyleSheet.absoluteFill, styles.whiteTint]} /> : null}
+      <SessionBadgeGlass showBlackTint={!whiteGlass && !tintColor} />
+      {tintColor ? (
+        <View style={[StyleSheet.absoluteFill, { backgroundColor: tintColor }]} />
+      ) : whiteGlass ? <View style={[StyleSheet.absoluteFill, styles.whiteTint]} /> : null}
       <View style={styles.content}>
         {showClock && <MaterialCommunityIcons name="clock" size={12} color="#F9F9F9" />}
         <Text style={[styles.text, textStyle]}>{displayLabel}</Text>
