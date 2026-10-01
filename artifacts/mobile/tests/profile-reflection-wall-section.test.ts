@@ -10,6 +10,12 @@ import {
   MOOD_HISTORY_GRADIENT_START,
   MOOD_HISTORY_GRADIENT_END,
 } from "../constants/moodHistoryGradient.ts";
+import {
+  REFLECTION_WALL_BORDER_GRADIENT,
+  REFLECTION_WALL_BORDER_START,
+  REFLECTION_WALL_BORDER_END,
+  REFLECTION_WALL_BORDER_BRIGHTNESS,
+} from "../constants/reflectionWallBorder.ts";
 
 function source(path: string) {
   return readFileSync(new URL(path, import.meta.url), "utf8");
@@ -55,10 +61,10 @@ test("InnerSpaceCard keeps Home defaults and opts profile into a single 18px-ins
   assert.match(card, /styles\.sectionTitle,\s*\{ color: colors\.foreground \}/);
 });
 
-test("only the profile wall uses the complete mood-history gradient with 10% more brightness", () => {
+test("only the profile wall uses the reference Aurora gradient with 5% more brightness", () => {
   const card = source("../components/InnerSpaceCard.tsx");
   const border = source("../components/DiscoverSearchBorder.tsx");
-  assert.match(card, /canonicalVerticalInsets && \(\s*<DiscoverSearchBorder[\s\S]*?borderRadius=\{24\}[\s\S]*?brightness=\{0\.9603\}[\s\S]*?colors=\{MOOD_HISTORY_GRADIENT\}[\s\S]*?start=\{MOOD_HISTORY_GRADIENT_START\}[\s\S]*?end=\{MOOD_HISTORY_GRADIENT_END\}/);
+  assert.match(card, /canonicalVerticalInsets && \(\s*<DiscoverSearchBorder[\s\S]*?borderRadius=\{24\}[\s\S]*?brightness=\{REFLECTION_WALL_BORDER_BRIGHTNESS\}[\s\S]*?colors=\{REFLECTION_WALL_BORDER_GRADIENT\}[\s\S]*?start=\{REFLECTION_WALL_BORDER_START\}[\s\S]*?end=\{REFLECTION_WALL_BORDER_END\}/);
   assert.match(border, /borderWidth = 2/);
   assert.match(border, /brightness = 1/);
   assert.match(border, /opacity: 0\.99 \* brightness/);
@@ -72,9 +78,13 @@ test("only the profile wall uses the complete mood-history gradient with 10% mor
   assert.deepEqual(MOOD_HISTORY_GRADIENT, ["#074B4C", "#24414F", "#2E3955", "#363459", "#493453", "#57334F", "#5B3D25"]);
   assert.deepEqual(MOOD_HISTORY_GRADIENT_START, { x: 0.35, y: 0 });
   assert.deepEqual(MOOD_HISTORY_GRADIENT_END, { x: 0.65, y: 1 });
+  assert.deepEqual(REFLECTION_WALL_BORDER_GRADIENT, ["#4D6FA8", "#5D79C0", "#756EC1", "#916BB5", "#AE719E", "#C18A82", "#D0A66F"]);
+  assert.deepEqual(REFLECTION_WALL_BORDER_START, { x: 0, y: 0.5 });
+  assert.deepEqual(REFLECTION_WALL_BORDER_END, { x: 1, y: 0.5 });
+  assert.equal(REFLECTION_WALL_BORDER_BRIGHTNESS, 0.9603 * 1.05);
 });
 
-test("the wall border retains all seven mood-history stops and direction while Discover keeps its original border", () => {
+test("the wall renders all seven reference stops horizontally, with 5% more brightness, without changing Discover", () => {
   const compiled = ts.transpileModule(source("../components/DiscoverSearchBorder.tsx"), {
     compilerOptions: { module: ts.ModuleKind.CommonJS, jsx: ts.JsxEmit.ReactJSX, esModuleInterop: true },
   }).outputText;
@@ -94,23 +104,24 @@ test("the wall border retains all seven mood-history stops and direction while D
     return mocks[name];
   }, module, module.exports);
   const original = module.exports.DiscoverSearchBorder({});
-  const previous = module.exports.DiscoverSearchBorder({ borderRadius: 24, brightness: 0.9 * 0.97 });
+  const previous = module.exports.DiscoverSearchBorder({ borderRadius: 24, brightness: 0.9603 });
   const wall = module.exports.DiscoverSearchBorder({
     borderRadius: 24,
-    brightness: 0.9603,
-    colors: MOOD_HISTORY_GRADIENT,
-    start: MOOD_HISTORY_GRADIENT_START,
-    end: MOOD_HISTORY_GRADIENT_END,
+    brightness: REFLECTION_WALL_BORDER_BRIGHTNESS,
+    colors: REFLECTION_WALL_BORDER_GRADIENT,
+    start: REFLECTION_WALL_BORDER_START,
+    end: REFLECTION_WALL_BORDER_END,
   });
   const resolve = (styles: Record<string, unknown>[]) => Object.assign({}, ...styles);
   assert.equal(resolve(original.props.style).opacity, 0.99);
   assert.ok(Math.abs(
-    (resolve(wall.props.style).opacity as number) - (resolve(previous.props.style).opacity as number) * 1.1,
+    (resolve(wall.props.style).opacity as number) - (resolve(previous.props.style).opacity as number) * 1.05,
   ) < 1e-12);
   assert.equal(wall.props.pointerEvents, "none");
-  assert.deepEqual(wall.props.children.props.colors, MOOD_HISTORY_GRADIENT);
-  assert.deepEqual(wall.props.children.props.start, MOOD_HISTORY_GRADIENT_START);
-  assert.deepEqual(wall.props.children.props.end, MOOD_HISTORY_GRADIENT_END);
+  assert.ok((resolve(wall.props.style).opacity as number) <= 1);
+  assert.deepEqual(wall.props.children.props.colors, REFLECTION_WALL_BORDER_GRADIENT);
+  assert.deepEqual(wall.props.children.props.start, REFLECTION_WALL_BORDER_START);
+  assert.deepEqual(wall.props.children.props.end, REFLECTION_WALL_BORDER_END);
   assert.equal(original.props.children.props.colors.length, 2);
   assert.deepEqual(original.props.children.props.start, { x: 0, y: 0 });
   assert.deepEqual(original.props.children.props.end, { x: 1, y: 1 });

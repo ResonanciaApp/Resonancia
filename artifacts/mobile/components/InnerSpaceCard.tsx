@@ -15,10 +15,11 @@ import Reanimated, {
 import { useColors } from "@/hooks/useColors";
 import { DiscoverSearchBorder } from "@/components/DiscoverSearchBorder";
 import {
-  MOOD_HISTORY_GRADIENT,
-  MOOD_HISTORY_GRADIENT_START,
-  MOOD_HISTORY_GRADIENT_END,
-} from "@/constants/moodHistoryGradient";
+  REFLECTION_WALL_BORDER_GRADIENT,
+  REFLECTION_WALL_BORDER_START,
+  REFLECTION_WALL_BORDER_END,
+  REFLECTION_WALL_BORDER_BRIGHTNESS,
+} from "@/constants/reflectionWallBorder";
 import { useSceneTheme } from "@/context/SceneThemeContext";
 import {
   getListMyReflectionsQueryKey,
@@ -494,10 +495,10 @@ export function InnerSpaceCard({
       {canonicalVerticalInsets && (
         <DiscoverSearchBorder
           borderRadius={24}
-          brightness={0.9603}
-          colors={MOOD_HISTORY_GRADIENT}
-          start={MOOD_HISTORY_GRADIENT_START}
-          end={MOOD_HISTORY_GRADIENT_END}
+          brightness={REFLECTION_WALL_BORDER_BRIGHTNESS}
+          colors={REFLECTION_WALL_BORDER_GRADIENT}
+          start={REFLECTION_WALL_BORDER_START}
+          end={REFLECTION_WALL_BORDER_END}
         />
       )}
       <View style={styles.header}>
