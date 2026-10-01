@@ -75,9 +75,7 @@ import { EqualizerBars } from "@/components/EqualizerBars";
 import { SessionCarousel, CoverCarousel } from "@/components/SessionCarousel";
 import { SessionBadgeGlass, SessionDurationBadge } from "@/components/SessionDurationBadge";
 import { PremiumBadge } from "@/components/PremiumBadge";
-import { HomeReflectionWallSection, type HomeReflectionWallHandle } from "@/components/HomeReflectionWallSection";
-import { ReflectionSavedBanner } from "@/components/ReflectionSavedBanner";
-import { INNER_SPACE_CARD_BOTTOM_MARGIN } from "@/components/InnerSpaceCard";
+import { MiRutinaSection } from "@/components/MiRutinaSection";
 import { Image as ExpoImage } from "expo-image";
 import { useAmbientPlayer, AMBIENT_SCENES } from "@/context/AmbientPlayerContext";
 import { useSceneTheme } from "@/context/SceneThemeContext";
@@ -2585,13 +2583,6 @@ export default function HomeScreen2({
   const scrollYRef = useRef(0);
   const inicio3ScrollY = useSharedValue(0);
   const homeScrollRef = useRef<React.ElementRef<typeof RAnimated.ScrollView>>(null);
-  const wallSectionRef = useRef<HomeReflectionWallHandle>(null);
-  const [composingReflection, setComposingReflection] = useState(false);
-  const [reflectionSavedTrigger, setReflectionSavedTrigger] = useState(0);
-  const getHomeScrollY = useCallback(
-    () => variant === "inicio3" ? inicio3ScrollY.value : scrollYRef.current,
-    [inicio3ScrollY, variant],
-  );
 
   const searchBtnAnim = useRef(new Animated.Value(0)).current;
   const giftScaleAnim = useRef(new Animated.Value(1)).current;
@@ -2914,7 +2905,7 @@ export default function HomeScreen2({
         ref={homeScrollRef}
         style={styles.scroll}
         contentContainerStyle={{
-          paddingBottom: 160 + bottomPad + (composingReflection ? 440 : 0),
+          paddingBottom: 160 + bottomPad,
           paddingTop: isInicio2 ? 0 : topPad + 38,
         }}
         showsVerticalScrollIndicator={false}
@@ -2923,8 +2914,6 @@ export default function HomeScreen2({
             ? handleInicio3Scroll
             : handleMainScroll
         }
-        onScrollBeginDrag={() => wallSectionRef.current?.cancelPendingScroll()}
-        onMomentumScrollEnd={() => wallSectionRef.current?.finishPendingScroll()}
         keyboardShouldPersistTaps="handled"
         scrollEventThrottle={16}
       >
@@ -3355,19 +3344,7 @@ export default function HomeScreen2({
           <View style={styles.inicio3SectionDivider} />
         )}
         {isInicio2 && (
-          <>
-            <View style={{ marginHorizontal: GRID_PAD }}>
-              <Text style={styles.sectionTitle}>Mi muro expansivo</Text>
-            </View>
-            <HomeReflectionWallSection
-              ref={wallSectionRef}
-              scrollRef={homeScrollRef}
-              getScrollY={getHomeScrollY}
-              onComposingChange={setComposingReflection}
-              onMessageSaved={() => setReflectionSavedTrigger((value) => value + 1)}
-              style={{ marginHorizontal: GRID_PAD }}
-            />
-          </>
+          <MiRutinaSection style={{ marginHorizontal: GRID_PAD, marginBottom: 32 }} />
         )}
         {isInicio2 && variant !== "inicio3" && (
           <View style={{ paddingTop: INICIO2_SECTION_GAP }}>
@@ -3495,14 +3472,6 @@ export default function HomeScreen2({
         onOpenMoodPicker={() => setMoodSheetVisible(true)}
       />
       </Animated.View>{/* fin contenido desvanecible */}
-
-      {isInicio2 && (
-        <ReflectionSavedBanner
-          trigger={reflectionSavedTrigger}
-          bottom={58 + bottomPad + 15}
-          onPress={() => router.push("/mi-espacio-interior")}
-        />
-      )}
 
       <EscenasAnimSheet
         visible={!isInicio2 && animSheetOpen}
@@ -4522,7 +4491,7 @@ const styles = StyleSheet.create({
     height: StyleSheet.hairlineWidth,
     marginHorizontal: GRID_PAD,
     // La tarjeta ya deja 32 px: completar 36 px hasta la línea y dejar otros 36 px después.
-    marginTop: 36 - INNER_SPACE_CARD_BOTTOM_MARGIN,
+    marginTop: 4,
     marginBottom: 36,
     backgroundColor: SECTION_DIVIDER_COLOR,
   },

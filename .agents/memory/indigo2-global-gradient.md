@@ -3,9 +3,9 @@ name: Fondo global de Índigo 2
 description: Alcance compartido y referencia visual confirmada para los colores del fondo de Índigo 2.
 ---
 
-Los buscadores de Descubrir, Sonidos y Dormir usan el degradado completo del tema activo, no la selección reducida de otras superficies.
+Los buscadores de Descubrir, Sonidos, Dormir y las lupas de categorías (incluidas sus colecciones y temáticas) usan el degradado completo del tema activo, no la selección reducida de otras superficies.
 
-**Why:** El usuario pidió expresamente todos los tonos en estas tres pantallas; la regla de cuatro tonos de otras vistas no debe propagarse a los buscadores.
+**Why:** El usuario pidió expresamente todos los tonos en Descubrir, Sonidos y Dormir, y el 2026-10-01 amplió esa regla a las lupas de categorías; la regla de cuatro tonos de otras vistas no debe propagarse a estos buscadores.
 
 **How to apply:** Conservar todas las posiciones y la dirección del tema, con el encabezado transparente para no ocultar el comienzo del degradado. No extender este cambio a otros buscadores sin solicitud.
 

@@ -477,6 +477,7 @@ export default function MeditacionesGuiadasScreen() {
 
       <ContextSearchModal
         visible={searchVisible}
+        fullThemeBackground
         onClose={() => setSearchVisible(false)}
         items={searchItems}
         scope="discover"

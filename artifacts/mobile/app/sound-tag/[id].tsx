@@ -252,6 +252,7 @@ export default function SoundTagDetailScreen({ id: idProp }: { id?: string } = {
       )}
       <ContextSearchModal
         visible={searchVisible}
+        fullThemeBackground
         onClose={() => setSearchVisible(false)}
         items={searchItems}
         placeholder={`Buscar en ${tag.label}...`}

@@ -52,16 +52,21 @@ test("user section has 20px above the name and avatar outline, with no extra ban
   assert.match(source, /<ProfileMembershipBanner isPremium=\{isPremium\}/);
 });
 
-test("history uses exactly 18px above its header and below empty text or the last card", () => {
-  const resolved = {
-    ...style("ProfileScreenBase", "outlinedProfileSection"),
-    ...style("ProfileScreenBase", "profileHistorySection"),
-  };
-  assert.deepEqual(verticalInsets(resolved), { top: 18, bottom: 18 });
-  for (const name of ["profileHistoryCards", "profileHistoryCard"]) {
-    const child = style("ProfileScreenBase", name);
-    assert.equal((child.paddingBottom ?? child.paddingVertical ?? child.padding ?? 0) + (child.marginBottom ?? 0), 0);
-  }
+test("Perfil replaces history and downloads with the expandable wall after its progress/calendar section", () => {
+  const source = readFileSync(new URL("../components/ProfileScreenBase.tsx", import.meta.url), "utf8");
+  assert.doesNotMatch(source, /ProfileDownloadsSection|profileHistorySection|>Historial<\/Text>/);
+  assert.ok(source.indexOf("<ProfileReflectionWallSection") > source.indexOf("<ProgressMirrorSections"));
+  assert.match(source, /<ProfileReflectionWallSection\s+ref=\{profileWallRef\}\s+scrollRef=\{profileScrollRef\}\s+getScrollY=\{getProfileScrollY\}\s+onComposingChange=\{setProfileWallComposing\}/);
+});
+
+test("Perfil connects wall composition to scroll completion, drag cancellation and keyboard space", () => {
+  const source = readFileSync(new URL("../components/ProfileScreenBase.tsx", import.meta.url), "utf8");
+  assert.match(source, /profileScrollYRef\.current = event\.nativeEvent\.contentOffset\.y;/);
+  assert.match(source, /handleHeaderScroll\(event\);/);
+  assert.match(source, /onScrollBeginDrag=\{\(\) => profileWallRef\.current\?\.cancelPendingScroll\(\)\}/);
+  assert.match(source, /onMomentumScrollEnd=\{\(\) => profileWallRef\.current\?\.finishPendingScroll\(\)\}/);
+  assert.match(source, /paddingBottom: 160 \+ bottomPad \+ \(profileWallComposing \? 440 : 0\)/);
+  assert.match(source, /enabled=\{!profileWallComposing\}/);
 });
 
 test("downloads uses exactly 18px above its header and below loading, empty, unsupported or populated content", () => {

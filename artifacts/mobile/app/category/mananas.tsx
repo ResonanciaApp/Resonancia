@@ -585,6 +585,7 @@ export default function MananasScreen() {
       />
       <ContextSearchModal
         visible={searchVisible}
+        fullThemeBackground
         onClose={() => setSearchVisible(false)}
         items={searchItems}
         scope="sleep"

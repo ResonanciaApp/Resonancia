@@ -34,6 +34,8 @@ type Props = {
   onComposingChange: (composing: boolean) => void;
   onMessageSaved: () => void;
   style?: StyleProp<ViewStyle>;
+  sectionTitle?: string;
+  canonicalVerticalInsets?: boolean;
 };
 
 export const HomeReflectionWallSection = forwardRef<HomeReflectionWallHandle, Props>(
@@ -43,6 +45,8 @@ export const HomeReflectionWallSection = forwardRef<HomeReflectionWallHandle, Pr
     onComposingChange,
     onMessageSaved,
     style,
+    sectionTitle,
+    canonicalVerticalInsets = false,
   }, ref) {
     const { wallComposeRequest, consumeWallComposeRequest } = useDrawer();
     const sectionRef = useRef<View>(null);
@@ -56,6 +60,7 @@ export const HomeReflectionWallSection = forwardRef<HomeReflectionWallHandle, Pr
     const composeTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
     const interactionRef = useRef<ReturnType<typeof InteractionManager.runAfterInteractions> | null>(null);
     const lastKeyboardHeightRef = useRef(0);
+    const bottomMargin = canonicalVerticalInsets ? 0 : INNER_SPACE_CARD_BOTTOM_MARGIN;
 
     const clearComposeTimer = useCallback(() => {
       if (composeTimerRef.current) clearTimeout(composeTimerRef.current);
@@ -116,7 +121,7 @@ export const HomeReflectionWallSection = forwardRef<HomeReflectionWallHandle, Pr
             if (!composePendingRef.current) return;
             const keyboardHeight = lastKeyboardHeightRef.current || KEYBOARD_ESTIMATE;
             const expandedHeight = cardHeight > 220 ? cardHeight : 390;
-            const cardBottom = cardY + expandedHeight - INNER_SPACE_CARD_BOTTOM_MARGIN;
+            const cardBottom = cardY + expandedHeight - bottomMargin;
             const visibleBottom = viewportY + viewportHeight - keyboardHeight - KEYBOARD_GAP;
             const target = Math.max(0, getScrollY() + cardBottom - visibleBottom);
             if (Math.abs(target - getScrollY()) < 3) {
@@ -134,6 +139,7 @@ export const HomeReflectionWallSection = forwardRef<HomeReflectionWallHandle, Pr
     }, [
       cancelPendingScroll,
       clearComposeTimer,
+      bottomMargin,
       finishComposeScroll,
       getScrollY,
       layoutReady,
@@ -185,7 +191,7 @@ export const HomeReflectionWallSection = forwardRef<HomeReflectionWallHandle, Pr
         autoScrollPendingRef.current = false;
         measureSectionAndViewport((cardY, height, viewportY, viewportHeight) => {
           const cardBottom = cardY + Math.max(height, collapsedHeightRef.current + expandedHeight)
-            - INNER_SPACE_CARD_BOTTOM_MARGIN;
+            - bottomMargin;
           const missingSpace = cardBottom - (viewportY + viewportHeight - 96);
           if (missingSpace >= 2) {
             scrollRef.current?.scrollTo({
@@ -210,6 +216,8 @@ export const HomeReflectionWallSection = forwardRef<HomeReflectionWallHandle, Pr
           onMessageSaved={onMessageSaved}
           onExpandStart={beginAutoScroll}
           onExpandComplete={finishAutoScroll}
+          sectionTitle={sectionTitle}
+          canonicalVerticalInsets={canonicalVerticalInsets}
         />
       </View>
     );

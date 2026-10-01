@@ -690,6 +690,7 @@ export default function SonidosAncestalesScreen() {
 
       <ContextSearchModal
         visible={searchVisible}
+        fullThemeBackground
         onClose={() => setSearchVisible(false)}
         items={searchItems}
         scope="sounds"

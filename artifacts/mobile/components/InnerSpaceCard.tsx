@@ -13,6 +13,7 @@ import Reanimated, {
   withTiming,
 } from "react-native-reanimated";
 import { useColors } from "@/hooks/useColors";
+import { DiscoverSearchBorder } from "@/components/DiscoverSearchBorder";
 import { useSceneTheme } from "@/context/SceneThemeContext";
 import {
   getListMyReflectionsQueryKey,
@@ -61,6 +62,8 @@ const HALO_COLORS = [
 export function InnerSpaceCard({
   focusRequest = 0,
   keepKeyboardOnCategories = false,
+  sectionTitle,
+  canonicalVerticalInsets = false,
   onComposeRequested,
   onInputBlur,
   onMessageSaved,
@@ -69,6 +72,8 @@ export function InnerSpaceCard({
 }: {
   focusRequest?: number;
   keepKeyboardOnCategories?: boolean;
+  sectionTitle?: string;
+  canonicalVerticalInsets?: boolean;
   onComposeRequested?: () => void;
   onInputBlur?: () => void;
   onMessageSaved?: () => void;
@@ -480,10 +485,20 @@ export function InnerSpaceCard({
 
   return (
     <>
-    <View style={styles.container}>
+    <View style={[styles.container, canonicalVerticalInsets && styles.canonicalVerticalInsets]}>
+      {canonicalVerticalInsets && (
+        <DiscoverSearchBorder borderRadius={24} brightness={0.9} />
+      )}
       <View style={styles.header}>
-        <View style={styles.headerCopy}>
-          <Text style={[styles.headerTitle, { color: colors.foreground }]}>Registra y comparte tu viaje</Text>
+        <View style={[styles.headerCopy, canonicalVerticalInsets && styles.canonicalHeaderCopy]}>
+          {sectionTitle ? (
+            <Text style={[styles.sectionTitle, { color: colors.foreground }]}>{sectionTitle}</Text>
+          ) : null}
+          <Text style={[
+            styles.headerTitle,
+            canonicalVerticalInsets && styles.canonicalHeaderDescription,
+            { color: colors.foreground },
+          ]}>Registra y comparte tu viaje</Text>
         </View>
         <Pressable
           style={styles.infoButton}
@@ -718,6 +733,18 @@ const styles = StyleSheet.create({
     marginBottom: INNER_SPACE_CARD_BOTTOM_MARGIN,
     overflow: "hidden",
   },
+  canonicalVerticalInsets: {
+    paddingTop: 18,
+    paddingBottom: 18,
+    marginBottom: 0,
+    borderColor: "transparent",
+  },
+  sectionTitle: {
+    fontFamily: "Manrope",
+    fontSize: 16,
+    fontWeight: "800",
+    marginBottom: 4,
+  },
   header: {
     flexDirection: "row",
     alignItems: "center",
@@ -727,6 +754,15 @@ const styles = StyleSheet.create({
   headerCopy: {
     flex: 1,
     minWidth: 0,
+  },
+  canonicalHeaderCopy: {
+    minHeight: 44,
+    justifyContent: "space-between",
+  },
+  canonicalHeaderDescription: {
+    fontSize: 11,
+    lineHeight: 16,
+    fontWeight: "400",
   },
   headerTitle: {
     fontFamily: "Manrope",

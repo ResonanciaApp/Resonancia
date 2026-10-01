@@ -285,6 +285,7 @@ export default function SleepTagDetailScreen({ id: idProp }: { id?: string } = {
       </Animated.View>
       <ContextSearchModal
         visible={searchVisible}
+        fullThemeBackground
         onClose={() => setSearchVisible(false)}
         items={searchItems}
         placeholder={`Buscar en ${tag.label}...`}

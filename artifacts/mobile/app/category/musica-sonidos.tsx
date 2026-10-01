@@ -468,6 +468,7 @@ export default function MusicaSonidosScreen() {
 
       <ContextSearchModal
         visible={searchVisible}
+        fullThemeBackground
         onClose={() => setSearchVisible(false)}
         items={searchItems}
         scope="sounds"

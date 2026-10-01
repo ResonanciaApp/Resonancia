@@ -56,6 +56,7 @@ const Native = (props: any) => {
     "data-lines": props.numberOfLines,
     "data-ellipsis": props.ellipsizeMode,
     "data-icon": props.name,
+    "data-width": style.width,
   }, props.children);
 };
 const Pill = (props: any) => React.createElement(Native, { ...props, testID: "profile-intention-pill" }, "0 Días: Intención");
@@ -68,23 +69,45 @@ const render = (props: Record<string, unknown> = {}) => {
   return renderToStaticMarkup(React.createElement(Identity, props));
 };
 
-test("Perfil places avatar left and stacks name, email and intention on its right", () => {
+test("Perfil places avatar left with name and intention on its right, without the email", () => {
   const html = render({ email: "example@example.com", location: "Ubicación" });
   assert.match(html, /data-testid="profile-identity-row" data-direction="row" data-align="flex-start"/);
   assert.match(html, /data-testid="profile-identity-details" data-align="flex-start"[^>]*data-flex="1" data-min-width="0"/);
   const avatar = html.indexOf('data-testid="profile-identity-avatar"');
   const name = html.indexOf("Resonador");
-  const email = html.indexOf("example@example.com");
   const pill = html.indexOf('data-testid="profile-intention-pill"');
-  assert.ok(avatar < name && name < email && email < pill);
-  assert.match(html, /data-testid="profile-identity-email"[^>]*data-text-align="left"[^>]*data-lines="1" data-ellipsis="tail"/);
+  assert.ok(avatar < name && name < pill);
+  assert.doesNotMatch(html, /profile-identity-email|example@example\.com/);
   assert.doesNotMatch(html, /Ubicación|data-icon="map-pin"/);
   assert.match(html, /data-testid="profile-intention-pill"[^>]*data-self-align="flex-start"/);
   assert.match(source, /dedicatedProfileCard: \{[^}]*backgroundColor: "rgba\(0,0,0,0.22\)"/);
-  assert.match(source, /avatarImage:\s*\{\s*width: 96,\s*height: 96,\s*borderRadius: 48/);
-  assert.match(source, /avatarCircle:\s*\{\s*width: 96,\s*height: 96,\s*borderRadius: 48/);
+  assert.match(source, /avatarImage:\s*\{\s*width: 81,\s*height: 81,\s*borderRadius: 40\.5/);
+  assert.match(source, /avatarCircle:\s*\{\s*width: 81,\s*height: 81,\s*borderRadius: 40\.5/);
+  assert.match(source, /avatarOuterBorder:\s*\{\s*position: "absolute",\s*top: -3,\s*left: -3,\s*width: 87,\s*height: 87,\s*borderRadius: 43\.5,\s*borderWidth: 3/);
   const rowStyle = source.match(/profileIdentityRow: \{([\s\S]*?)\n  \},/)?.[1] ?? "";
   assert.match(rowStyle, /paddingHorizontal: 20/);
+});
+
+test("the name chevron is centered in the title row and shares the Premium chevron's right column", () => {
+  const html = render();
+  assert.match(html, /data-testid="profile-identity-name" data-direction="row" data-align="center"/);
+  assert.match(html, /data-testid="profile-identity-chevron"[^>]*data-align="center"[^>]*data-width="32"/);
+  assert.equal((html.match(/data-icon="chevron-right"/g) ?? []).length, 1);
+  assert.match(source, /profileNameRow: \{ width: "100%", flexDirection: "row", alignItems: "center"/);
+  const membership = readFileSync(new URL("../components/ProfileMembershipBanner.tsx", import.meta.url), "utf8");
+  assert.match(membership, /chevron: \{ width: 32,/);
+  assert.match(membership, /row: \{[\s\S]*?paddingHorizontal: 20/);
+  assert.match(source, /profileIdentityRow: \{[\s\S]*?paddingHorizontal: 20/);
+  assert.match(source, /<Feather name="chevron-right" size=\{24\}/);
+  assert.match(membership, /<Feather name="chevron-right" size=\{24\}/);
+});
+
+test("the name and chevron row opens the same Mi cuenta screen as the avatar", () => {
+  let route = "";
+  render({ onNavigate: (next: string) => route = next });
+  assert.ok(presses.has("profile-identity-name"));
+  presses.get("profile-identity-name")?.();
+  assert.equal(route, "/mi-perfil");
 });
 
 test("missing email is not replaced with a fake address and intention remains dedicated to Perfil", () => {

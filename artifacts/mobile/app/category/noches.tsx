@@ -540,6 +540,7 @@ export default function NochesScreen() {
       </Animated.View>
       <ContextSearchModal
         visible={searchVisible}
+        fullThemeBackground
         onClose={() => setSearchVisible(false)}
         items={searchItems}
         scope="sleep"

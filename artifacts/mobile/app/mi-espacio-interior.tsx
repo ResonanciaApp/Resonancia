@@ -715,7 +715,7 @@ function PremiumInnerSpaceScreen() {
           style={styles.emptyButton}
           onPress={() => {
             requestWallCompose();
-            router.replace("/(tabs)/inicio3");
+              router.replace("/(tabs)/profile");
           }}
         >
           <Text style={styles.emptyButtonText}>Escribir mi primera reflexión</Text>

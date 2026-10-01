@@ -99,22 +99,32 @@ export function GrowthLevelPreviewCard({
 
   const dayPill = (
     <PreviewContentEntrance key="intention-days" replayKey="intention-days" delay={420}>
-      <View style={styles.dayPill}>
+      <View style={[styles.dayPill, canonicalVerticalInsets && styles.canonicalPreviewPill]}>
         <Text style={[styles.days, { color: colors.foreground }]}>{dayLabel}</Text>
       </View>
     </PreviewContentEntrance>
   );
+  const nameText = (
+    <Text
+      style={[
+        styles.name,
+        canonicalVerticalInsets && styles.canonicalPreviewName,
+        { color: colors.foreground },
+      ]}
+    >
+      {level.name}
+    </Text>
+  );
   const name = (
     <PreviewContentEntrance key="intention-name" replayKey="intention-name" delay={660}>
-      <Text
-        style={[
-          styles.name,
-          canonicalVerticalInsets && styles.canonicalPreviewName,
-          { color: colors.foreground },
-        ]}
-      >
-        {level.name}
-      </Text>
+      {canonicalVerticalInsets ? (
+        <View testID="profile-intention-title-row" style={styles.canonicalPreviewTitleRow}>
+          {nameText}
+          <PreviewContentEntrance replayKey="intention-chevron" delay={810}>
+            <Feather name="chevron-right" size={18} color={colors.foreground} />
+          </PreviewContentEntrance>
+        </View>
+      ) : nameText}
     </PreviewContentEntrance>
   );
   const story = (
@@ -146,23 +156,15 @@ export function GrowthLevelPreviewCard({
           canonicalVerticalInsets && styles.canonicalPreviewCopy,
         ]}
       >
-        {canonicalVerticalInsets ? (
-          <>
-            {name}
-            {dayPill}
-            {story}
-          </>
-        ) : (
-          <>
-            {dayPill}
-            {name}
-            {story}
-          </>
-        )}
+        {dayPill}
+        {name}
+        {story}
       </View>
-      <PreviewContentEntrance replayKey="intention-chevron" delay={810}>
-        <Feather name="chevron-right" size={18} color={colors.foreground} />
-      </PreviewContentEntrance>
+      {!canonicalVerticalInsets && (
+        <PreviewContentEntrance replayKey="intention-chevron" delay={810}>
+          <Feather name="chevron-right" size={18} color={colors.foreground} />
+        </PreviewContentEntrance>
+      )}
     </Pressable>
   );
 }
@@ -339,7 +341,9 @@ const styles = StyleSheet.create({
   embeddedPreviewCard: { marginHorizontal: 0 },
   canonicalPreviewVerticalInsets: { paddingTop: 18, paddingBottom: 18, alignItems: "flex-start" },
   canonicalPreviewCopy: { minHeight: 100, alignSelf: "stretch", justifyContent: "space-between" },
-  canonicalPreviewName: { marginBottom: 0 },
+  canonicalPreviewName: { flex: 1, marginBottom: 0 },
+  canonicalPreviewPill: { marginBottom: 0 },
+  canonicalPreviewTitleRow: { flexDirection: "row", alignItems: "center", gap: 12 },
   previewCopy: { flex: 1, minWidth: 0 },
   previewStory: { fontFamily: "Manrope", fontSize: 11, lineHeight: 16 },
   section: {

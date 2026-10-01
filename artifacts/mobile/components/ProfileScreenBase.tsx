@@ -56,8 +56,6 @@ import { usePremium } from "@/context/PremiumContext";
 import { useAuth } from "@/context/AuthContext";
 import type { LibraryTab } from "@/context/DrawerContext";
 import { useColors } from "@/hooks/useColors";
-import { usePlayerBrowse } from "@/context/PlayerContext";
-import { getSessionById } from "@/data/sessions";
 import { getExpansorById } from "@/data/expansores";
 import { uploadLocalFile } from "@/lib/upload";
 import { resolveAvatarUrl } from "@/lib/avatar";
@@ -76,7 +74,8 @@ import { ProgressMirrorSections } from "@/components/ProgressMirrorSections";
 import { ProfileSettingsSections } from "@/components/ProfileSettingsSections";
 import { ProfileIntentionPill } from "@/components/ProfileIntentionPill";
 import { ProfileMembershipBanner } from "@/components/ProfileMembershipBanner";
-import { ProfileDownloadsSection } from "@/components/ProfileDownloadsSection";
+import { ProfileReflectionWallSection } from "@/components/ProfileReflectionWallSection";
+import type { HomeReflectionWallHandle } from "@/components/HomeReflectionWallSection";
 import { GrowthJourneySheet } from "@/components/GrowthJourneySheet";
 import { GrowthLevelPreviewCard } from "@/components/GrowthJourney";
 import { useCoverPresetCatalog } from "@/lib/cover-preset-catalog";
@@ -92,9 +91,8 @@ import { MoonCrescentIcon } from "@/components/MoonCrescentIcon";
 import { SleepReminderSheet } from "@/components/SleepReminderSheet";
 import { FilledSunIcon } from "@/components/FilledSunIcon";
 import { useMixerPanel } from "@/context/MixerPanelContext";
-import { CARD_TEXT_ABOVE, CARD_TEXT_BELOW, MEMBERSHIP_AURORA } from "@/constants/colors";
+import { CARD_TEXT_BELOW, MEMBERSHIP_AURORA } from "@/constants/colors";
 
-const SHOW_PROFILE_HISTORY = true;
 const SHOW_PROFILE_PRACTICE_CARDS = false;
 // Separación entre los bloques de progreso en Perfil.
 const PROFILE_SECTION_GAP = 21;
@@ -256,7 +254,6 @@ export function ProfileScreenBase({
   const [growthJourneyOpen, setGrowthJourneyOpen] = useState(false);
   const { isPremium } = usePremium();
   const { openMixer } = useMixerPanel();
-  const { history } = usePlayerBrowse();
   const { theme: activeTheme, activeSceneId } = useSceneTheme();
   const insets = useSafeAreaInsets();
   const { email, logout } = useAuth();
@@ -278,9 +275,6 @@ export function ProfileScreenBase({
   const libraryHeaderButtonBackground = getLibraryTabSurface(activeSceneId);
   const resourceBlockBorder = "rgba(255,255,255,0.1)";
   const secondaryAccent = activeTheme.accent ?? colors.accent;
-  const profileDescriptionColor = activeSceneId === "indigo2"
-    ? "#F0F0F0"
-    : secondaryAccent;
   const expansorData = expansorId ? getExpansorById(expansorId) : undefined;
   const { data: me, refetch: refetchMe } = useGetMe({ query: { queryKey: getGetMeQueryKey(), staleTime: 0 } });
   const selectedAvatarPresetId = avatarPresetId;
@@ -296,6 +290,10 @@ export function ProfileScreenBase({
   const [morningReminderVisible, setMorningReminderVisible] = useState(false);
   const [sleepReminderVisible, setSleepReminderVisible] = useState(false);
   const profileScrollRef = useRef<ScrollView>(null);
+  const profileScrollYRef = useRef(0);
+  const profileWallRef = useRef<HomeReflectionWallHandle>(null);
+  const [profileWallComposing, setProfileWallComposing] = useState(false);
+  const getProfileScrollY = useCallback(() => profileScrollYRef.current, []);
   const navigation = useNavigation();
   useEffect(() => {
     const tabNavigation = navigation as unknown as {
@@ -1264,15 +1262,22 @@ export function ProfileScreenBase({
         scrollRef={profileScrollRef}
         style={styles.scroll}
         contentContainerStyle={{
-          paddingBottom: 160 + bottomPad,
+          paddingBottom: 160 + bottomPad + (profileWallComposing ? 440 : 0),
           paddingTop: topPad + 2,
           paddingHorizontal: 16,
         }}
         showsVerticalScrollIndicator={false}
         scrollEnabled={scrollEnabled}
-        onScroll={handleHeaderScroll}
+        onScroll={(event) => {
+          profileScrollYRef.current = event.nativeEvent.contentOffset.y;
+          handleHeaderScroll(event);
+          profileWallRef.current?.finishPendingScroll();
+        }}
+        onScrollBeginDrag={() => profileWallRef.current?.cancelPendingScroll()}
+        onMomentumScrollEnd={() => profileWallRef.current?.finishPendingScroll()}
         scrollEventThrottle={16}
         keyboardShouldPersistTaps="handled"
+        enabled={!profileWallComposing}
         bottomOffset={165}
         disableScrollOnKeyboardHide
       >
@@ -1327,29 +1332,22 @@ export function ProfileScreenBase({
             >
               <Pressable
                 onPress={() => router.push("/mi-perfil")}
+                testID="profile-identity-name"
                 accessibilityRole="button"
                 accessibilityLabel="Abrir Mi cuenta"
-                style={{ maxWidth: "100%" }}
+                style={styles.profileNameRow}
               >
               <Text
-                style={[styles.userName, { color: colors.foreground }]}
+                style={[styles.userName, styles.profileNameText, { color: colors.foreground }]}
                 numberOfLines={1}
                 ellipsizeMode="tail"
               >
                 {username}{lastName ? ` ${lastName}` : ""}
               </Text>
+              <View testID="profile-identity-chevron" pointerEvents="none" style={styles.profileNameChevron}>
+                <Feather name="chevron-right" size={24} color={colors.foreground} />
+              </View>
               </Pressable>
-
-              {email ? (
-                <Text
-                  testID="profile-identity-email"
-                  style={[styles.profileEmail, { color: colors.mutedForeground }]}
-                  numberOfLines={1}
-                  ellipsizeMode="tail"
-                >
-                  {email}
-                </Text>
-              ) : null}
 
               {dedicated && (
                 <ProfileIntentionPill
@@ -1403,62 +1401,11 @@ export function ProfileScreenBase({
               />
             </View>
 
-            {SHOW_PROFILE_HISTORY && (
-            <View style={[styles.outlinedProfileSection, styles.profileHistorySection]}>
-              <View style={styles.profileHistoryHeader}>
-                <Text style={[styles.profileHistoryTitle, { color: colors.foreground }]}>Historial</Text>
-                <Pressable
-                  onPress={() => router.push("/historial" as never)}
-                  accessibilityRole="button"
-                  accessibilityLabel="Ver todo el historial"
-                  hitSlop={8}
-                >
-                  <Text style={[styles.profileHistoryLink, { color: secondaryAccent }]}>Ver todo</Text>
-                </Pressable>
-              </View>
-              {(() => {
-                const recentSessions = [...history]
-                  .sort((a, b) => Date.parse(b.playedAt) - Date.parse(a.playedAt))
-                  .flatMap((entry, index) => {
-                    const session = getSessionById(entry.sessionId);
-                    return session ? [{ session, key: `${entry.sessionId}:${entry.playedAt}:${index}` }] : [];
-                  })
-                  .slice(0, 3);
-                return recentSessions.length > 0 ? (
-                  <View style={styles.profileHistoryCards}>
-                    {recentSessions.map(({ session, key }) => (
-                      <Pressable
-                        key={key}
-                        onPress={() => router.push(`/session/${session.id}` as never)}
-                        style={styles.profileHistoryCard}
-                        accessibilityRole="button"
-                        accessibilityLabel={`Abrir ${session.title}`}
-                      >
-                        <View>
-                          <Image source={session.image as never} style={styles.profileHistoryImage} contentFit="cover" />
-                          <Text style={[styles.profileHistoryDuration, { color: CARD_TEXT_ABOVE }]}>{session.durationLabel}</Text>
-                        </View>
-                        <View style={styles.profileHistorySessionCopy}>
-                          <Text style={[styles.profileHistorySessionTitle, { color: colors.foreground }]} numberOfLines={2}>
-                            {session.title}
-                          </Text>
-                          <Text style={[styles.profileHistoryCategory, { color: CARD_TEXT_BELOW }]} numberOfLines={1}>
-                            {session.categoryLabel || "Contenido"}
-                          </Text>
-                        </View>
-                      </Pressable>
-                    ))}
-                  </View>
-                ) : (
-                  <Text style={{ color: profileDescriptionColor, fontSize: 13 }}>Aquí aparecerá lo que escuches.</Text>
-                );
-              })()}
-            </View>
-            )}
-
-            <ProfileDownloadsSection
-              linkColor={secondaryAccent}
-              descriptionColor={profileDescriptionColor}
+            <ProfileReflectionWallSection
+              ref={profileWallRef}
+              scrollRef={profileScrollRef}
+              getScrollY={getProfileScrollY}
+              onComposingChange={setProfileWallComposing}
             />
 
             {SHOW_PROFILE_PRACTICE_CARDS && (
@@ -2504,26 +2451,28 @@ const styles = StyleSheet.create({
     position: "absolute",
     top: -3,
     left: -3,
-    width: 102,
-    height: 102,
-    borderRadius: 51,
+    width: 87,
+    height: 87,
+    borderRadius: 43.5,
     borderWidth: 3,
     borderColor: "rgba(255,255,255,0.25)",
   },
   avatarCircle: {
-    width: 96,
-    height: 96,
-    borderRadius: 48,
+    width: 81,
+    height: 81,
+    borderRadius: 40.5,
     alignItems: "center",
     justifyContent: "center",
   },
   avatarImage: {
-    width: 96,
-    height: 96,
-    borderRadius: 48,
+    width: 81,
+    height: 81,
+    borderRadius: 40.5,
   },
   userName: { fontFamily: "Manrope", fontSize: 20, fontWeight: "700", textAlign: "left", marginTop: 0 },
-  profileEmail: { fontFamily: "Manrope", fontSize: 12, textAlign: "left", maxWidth: "100%" },
+  profileNameRow: { width: "100%", flexDirection: "row", alignItems: "center", gap: 12 },
+  profileNameText: { flex: 1, minWidth: 0 },
+  profileNameChevron: { width: 32, alignItems: "center", justifyContent: "center" },
   profileIntentionPill: {
     alignSelf: "flex-start",
     marginTop: 7,
@@ -2655,70 +2604,6 @@ const styles = StyleSheet.create({
     paddingHorizontal: 16,
     paddingTop: 17,
     paddingBottom: 16,
-  },
-  outlinedProfileSection: {
-    borderRadius: 14,
-    borderWidth: 0,
-    backgroundColor: "rgba(0,0,0,0.22)",
-    padding: 16,
-  },
-  profileHistorySection: {
-    paddingVertical: 18,
-    marginBottom: 32,
-  },
-  profileHistoryHeader: {
-    flexDirection: "row",
-    justifyContent: "space-between",
-    alignItems: "center",
-    marginBottom: 12,
-  },
-  profileHistoryTitle: {
-    fontFamily: "Manrope",
-    fontSize: 16,
-    fontWeight: "800",
-  },
-  profileHistoryLink: {
-    fontFamily: "Manrope",
-    fontSize: 13,
-    fontWeight: "700",
-  },
-  profileHistoryCards: {
-    marginTop: 7,
-    gap: 16,
-  },
-  profileHistoryCard: {
-    flexDirection: "row",
-    alignItems: "center",
-    gap: 12,
-  },
-  profileHistorySessionCopy: {
-    flex: 1,
-    minWidth: 0,
-    gap: 4,
-  },
-  profileHistoryImage: {
-    width: 68,
-    height: 68,
-    borderRadius: 10,
-  },
-  profileHistoryDuration: {
-    position: "absolute",
-    bottom: 4,
-    right: 4,
-    color: "#FFFFFF",
-    fontSize: 10,
-    backgroundColor: "rgba(0,0,0,0.62)",
-    paddingHorizontal: 4,
-    borderRadius: 4,
-  },
-  profileHistorySessionTitle: {
-    fontFamily: "Manrope",
-    fontSize: 14,
-    fontWeight: "700",
-  },
-  profileHistoryCategory: {
-    fontFamily: "Manrope",
-    fontSize: 12,
   },
   profileProgressHeader: {
     flexDirection: "row",

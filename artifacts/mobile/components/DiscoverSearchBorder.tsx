@@ -18,14 +18,16 @@ const SEARCH_BORDER_GRADIENT: [string, string] = [
 export function DiscoverSearchBorder({
   borderRadius = 999,
   borderWidth = 2,
+  brightness = 1,
 }: {
   borderRadius?: number;
   borderWidth?: number;
+  brightness?: number;
 }) {
   return (
     <MaskedView
       pointerEvents="none"
-      style={styles.gradient}
+      style={[styles.gradient, { opacity: 0.99 * brightness }]}
       maskElement={<View style={[styles.mask, { borderRadius, borderWidth }]} />}
     >
       <LinearGradient

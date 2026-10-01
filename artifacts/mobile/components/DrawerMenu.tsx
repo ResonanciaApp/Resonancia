@@ -227,7 +227,7 @@ export function DrawerMenu() {
       markInstantNav();
       onClose();
       requestWallCompose();
-      router.push("/(tabs)/inicio3" as never);
+      router.push("/(tabs)/profile" as never);
       return;
     }
     if (route.startsWith("__overlay:")) {

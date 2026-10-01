@@ -330,6 +330,7 @@ export default function CategoryScreen({ categoryId }: { categoryId?: string } =
 
       <ContextSearchModal
         visible={searchVisible}
+        fullThemeBackground
         onClose={() => setSearchVisible(false)}
         items={searchItems}
         placeholder={`Buscar en ${title}...`}

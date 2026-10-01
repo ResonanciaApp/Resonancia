@@ -13,16 +13,20 @@ type NativeProps = {
   onPress?: () => void;
   style?: unknown;
   testID?: string;
+  name?: string;
 };
 const flattenStyle = (style: unknown): Record<string, unknown> => Array.isArray(style)
   ? Object.assign({}, ...style.map(flattenStyle))
   : style && typeof style === "object" ? style as Record<string, unknown> : {};
 let capturedOnPress: (() => void) | undefined;
-const Native = ({ accessibilityLabel, accessibilityRole, children, onPress, style, testID }: NativeProps) => {
+const Native = ({ accessibilityLabel, accessibilityRole, children, onPress, style, testID, name }: NativeProps) => {
   const resolvedStyle = flattenStyle(style);
   if (testID === "growth-level-zero-preview") capturedOnPress = onPress;
   return React.createElement("div", {
     "data-testid": testID,
+    "data-icon": name,
+    "data-direction": resolvedStyle.flexDirection,
+    "data-align": resolvedStyle.alignItems,
     "data-accessibility-role": accessibilityRole,
     "data-accessibility-label": accessibilityLabel,
     "data-height": resolvedStyle.height,
@@ -87,8 +91,8 @@ test("GrowthLevelPreviewCard opts into exact 18px profile insets without changin
   const profileHtml = render({ embedded: true, canonicalVerticalInsets: true });
   assert.match(profileHtml, /data-testid="growth-level-zero-preview"[^>]*data-padding-top="18" data-padding-bottom="18"/);
   const profileContent = profileHtml.slice(profileHtml.indexOf(">") + 1);
-  assert.ok(profileContent.indexOf("Intención") < profileContent.indexOf("0 días"));
-  assert.ok(profileContent.indexOf("0 días") < profileContent.indexOf("Una práctica que comienza hoy."));
+  assert.ok(profileContent.indexOf("0 días") < profileContent.indexOf("Intención"));
+  assert.ok(profileContent.indexOf("Intención") < profileContent.indexOf("Una práctica que comienza hoy."));
   assert.match(profileHtml, /data-min-height="100" data-self-align="stretch" data-justify-content="space-between"/);
   assert.doesNotMatch(profileHtml, /data-height="100"[^>]*data-justify-content="space-between"/);
   assert.match(profileHtml, /data-margin-bottom="0"/);
@@ -98,6 +102,17 @@ test("GrowthLevelPreviewCard opts into exact 18px profile insets without changin
   const defaultContent = defaultHtml.slice(defaultHtml.indexOf(">") + 1);
   assert.ok(defaultContent.indexOf("0 días") < defaultContent.indexOf("Intención"));
   assert.doesNotMatch(defaultHtml, /data-min-height="100" data-self-align="stretch"/);
+});
+
+test("Perfil removes both inner bottom margins for equal gaps and places its single chevron in the title row", () => {
+  const html = render({ embedded: true, canonicalVerticalInsets: true });
+  assert.match(html, /data-testid="profile-intention-title-row"[^>]*data-direction="row" data-align="center"/);
+  assert.equal((html.match(/data-icon="chevron-right"/g) ?? []).length, 1);
+  assert.equal((html.match(/data-margin-bottom="0"/g) ?? []).length, 2);
+  const rowAt = html.indexOf('data-testid="profile-intention-title-row"');
+  const chevronAt = html.indexOf('data-icon="chevron-right"');
+  assert.ok(chevronAt > rowAt && chevronAt < html.indexOf("Una práctica que comienza hoy."));
+  assert.doesNotMatch(render(), /profile-intention-title-row/);
 });
 
 test("the preview remains an accessible actionable button with the same day label", () => {

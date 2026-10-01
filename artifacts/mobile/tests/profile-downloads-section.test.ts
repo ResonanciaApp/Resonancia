@@ -59,11 +59,10 @@ const fixture = (id: string): SessionFixture => ({
   id, title: `Sesión ${id}`, image: "cover.png", durationLabel: "5 min", categoryLabel: "Meditación",
 });
 
-test("Descargas is directly after Historial in the dedicated Profile content", () => {
+test("Descargas is no longer inserted into Perfil; its standalone content remains available", () => {
   const profile = readFileSync(new URL("../components/ProfileScreenBase.tsx", import.meta.url), "utf8");
-  const insertion = profile.indexOf("<ProfileDownloadsSection");
-  assert.ok(insertion > profile.indexOf(">Historial</Text>"));
-  assert.ok(insertion < profile.indexOf("{SHOW_PROFILE_PRACTICE_CARDS &&"));
+  assert.doesNotMatch(profile, /<ProfileDownloadsSection|>Historial<\/Text>/);
+  assert.match(profile, /<ProfileReflectionWallSection/);
 });
 
 test("empty, loading, and unsupported states reserve the section without fake cards", () => {

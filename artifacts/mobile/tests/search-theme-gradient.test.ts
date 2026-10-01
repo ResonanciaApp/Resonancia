@@ -82,3 +82,24 @@ test("Descubrir, Sonidos and Dormir all opt into the complete theme gradient", (
     assert.doesNotMatch(usage, /\bthirdStopBackground\b/, filename);
   }
 });
+
+test("all category magnifying-glass searches, including collection/tag screens, use the complete theme gradient", () => {
+  const screens = [
+    "category/[id]",
+    "category/meditaciones-guiadas",
+    "category/musica-sonidos",
+    "category/mananas",
+    "category/noches",
+    "category/sonidos-ancestrales",
+    "category-tag/[category]/[tag]",
+    "sleep-tag/[id]",
+    "sound-tag/[id]",
+  ];
+  for (const screen of screens) {
+    const caller = readFileSync(new URL(`../app/${screen}.tsx`, import.meta.url), "utf8");
+    const usage = caller.match(/<ContextSearchModal[\s\S]*?\/>/)?.[0];
+    assert.ok(usage, screen);
+    assert.match(usage, /\bfullThemeBackground\b/, screen);
+    assert.doesNotMatch(usage, /\bthirdStopBackground\b/, screen);
+  }
+});
