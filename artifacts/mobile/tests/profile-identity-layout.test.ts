@@ -80,7 +80,7 @@ test("Perfil places avatar left with name and intention on its right, without th
   assert.doesNotMatch(html, /profile-identity-email|example@example\.com/);
   assert.doesNotMatch(html, /Ubicación|data-icon="map-pin"/);
   assert.match(html, /data-testid="profile-intention-pill"[^>]*data-self-align="flex-start"/);
-  assert.match(source, /dedicatedProfileCard: \{[^}]*backgroundColor: "rgba\(0,0,0,0.22\)"/);
+  assert.doesNotMatch(source.match(/dedicatedProfileCard: \{([^}]*)\}/)?.[1] ?? "", /backgroundColor/);
   assert.match(source, /avatarImage:\s*\{\s*width: 93,\s*height: 93,\s*borderRadius: 46\.5/);
   assert.match(source, /avatarCircle:\s*\{\s*width: 93,\s*height: 93,\s*borderRadius: 46\.5/);
   assert.match(source, /avatarOuterBorder:\s*\{\s*position: "absolute",\s*top: -3,\s*left: -3,\s*width: 99,\s*height: 99,\s*borderRadius: 49\.5,\s*borderWidth: 3/);

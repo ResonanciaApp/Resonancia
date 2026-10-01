@@ -2450,7 +2450,7 @@ const styles = StyleSheet.create({
     marginBottom: PROFILE_SECTION_GAP,
     gap: 0,
   },
-  dedicatedProfileCard: { marginTop: 18, backgroundColor: "rgba(0,0,0,0.22)" },
+  dedicatedProfileCard: { marginTop: 18 },
   wisdomSection: {
     marginBottom: 28,
   },
