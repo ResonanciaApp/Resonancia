@@ -62,6 +62,15 @@ test("calendar completion and add button use the same fill while preserving anim
   assert.doesNotMatch(calendar, /#276FC2/);
 });
 
+test("Inicio routine cards also use the shared gradient when completed, preserving the check animation", () => {
+  const routine = source("../components/MiRutinaSection.tsx");
+  assert.match(routine, /styles\.completionOverlay,\s*completionOverlayStyle,[\s\S]*?<RoutineGradientFill \/>[\s\S]*?<\/Reanimated\.View>/);
+  assert.match(routine, /opacity: completionProgress\.value/);
+  assert.match(routine, /withTiming\(completing \? 1 : 0, \{ duration: 500 \}\)/);
+  assert.match(routine, /onPress=\{completeFromTicket\}/);
+  assert.doesNotMatch(routine, /#276FC2/);
+});
+
 test("completion counter uses the gradient inside its clipped circle without changing its numbers", () => {
   const banner = source("../components/RoutineCompletionBanner.tsx");
   assert.equal((banner.match(/<RoutineGradientFill\b/g) ?? []).length, 1);

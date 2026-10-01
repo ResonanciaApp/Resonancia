@@ -33,6 +33,7 @@ import { useDayRollover } from "@/hooks/useDayRollover";
 import { useRoutineTheme } from "@/hooks/useRoutineTheme";
 import { useRoutineCompletionBanner } from "@/context/RoutineCompletionBannerContext";
 import { CARD_TEXT_ABOVE } from "@/constants/colors";
+import { RoutineGradientFill } from "@/components/RoutineGradientFill";
 
 type Props = {
   style?: StyleProp<ViewStyle>;
@@ -243,10 +244,11 @@ const ActivityRow = React.memo(function ActivityRow({
             pointerEvents="none"
             style={[
               styles.completionOverlay,
-              { backgroundColor: "#276FC2" },
               completionOverlayStyle,
             ]}
-          />
+          >
+            <RoutineGradientFill />
+          </Reanimated.View>
           <Pressable
             onPress={() => onOpen(activity.id, occurrenceIndex)}
             disabled={completing}
