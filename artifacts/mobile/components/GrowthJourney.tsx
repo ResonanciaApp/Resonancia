@@ -337,7 +337,7 @@ const styles = StyleSheet.create({
   },
   previewArt: { width: 100, height: 100 },
   embeddedPreviewCard: { marginHorizontal: 0 },
-  canonicalPreviewVerticalInsets: { paddingTop: 15, paddingBottom: 15, alignItems: "flex-start" },
+  canonicalPreviewVerticalInsets: { paddingTop: 18, paddingBottom: 18, alignItems: "flex-start" },
   canonicalPreviewCopy: { minHeight: 100, alignSelf: "stretch", justifyContent: "space-between" },
   canonicalPreviewName: { marginBottom: 0 },
   previewCopy: { flex: 1, minWidth: 0 },

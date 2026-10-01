@@ -7,6 +7,11 @@ import { renderToStaticMarkup } from "react-dom/server";
 import ts from "typescript";
 
 const source = readFileSync(new URL("../components/ProfileMembershipBanner.tsx", import.meta.url), "utf8");
+test("only the Premium star is raised 3px without changing banner layout", () => {
+  const icon = source.match(/icon:\s*\{([\s\S]*?)\n  \},/)?.[1] ?? "";
+  assert.match(icon, /transform: \[\{ translateY: -3 \}\]/);
+  assert.equal((source.match(/translateY/g) ?? []).length, 1);
+});
 let press: (() => void) | undefined;
 let offers = 0;
 let route = "";
@@ -76,7 +81,7 @@ test("banner and identity share the same user-section background", () => {
   visit(ast);
   assert.match(section, /testID="profile-identity-row"/);
   assert.match(section, /<ProfileMembershipBanner isPremium=\{isPremium\} foregroundColor=\{colors.foreground\}/);
-  assert.match(profile, /const PROFILE_CARD_BOTTOM_PADDING = 15;/);
+  assert.match(profile, /const PROFILE_CARD_BOTTOM_PADDING = 20;/);
   assert.match(profile, /paddingBottom: PROFILE_CARD_BOTTOM_PADDING/);
   assert.match(profile, /marginBottom: PROFILE_SECTION_GAP/);
   assert.doesNotMatch(source, /backgroundColor:.*0,0,0/);

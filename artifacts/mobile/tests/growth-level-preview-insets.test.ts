@@ -83,9 +83,9 @@ const render = (props: Record<string, unknown> = {}) => renderToStaticMarkup(
   React.createElement(componentModule.exports.GrowthLevelPreviewCard, { onPress: () => {}, ...props }),
 );
 
-test("GrowthLevelPreviewCard opts into exact 15px profile insets without changing other callers", () => {
+test("GrowthLevelPreviewCard opts into exact 18px profile insets without changing other callers", () => {
   const profileHtml = render({ embedded: true, canonicalVerticalInsets: true });
-  assert.match(profileHtml, /data-testid="growth-level-zero-preview"[^>]*data-padding-top="15" data-padding-bottom="15"/);
+  assert.match(profileHtml, /data-testid="growth-level-zero-preview"[^>]*data-padding-top="18" data-padding-bottom="18"/);
   const profileContent = profileHtml.slice(profileHtml.indexOf(">") + 1);
   assert.ok(profileContent.indexOf("Intención") < profileContent.indexOf("0 días"));
   assert.ok(profileContent.indexOf("0 días") < profileContent.indexOf("Una práctica que comienza hoy."));

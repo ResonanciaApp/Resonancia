@@ -110,10 +110,10 @@ test("empty days and other calendar consumers keep their existing presentation",
   assert.match(render(false), /Card Prueba 33/);
 });
 
-test("canonical embedded calendar insets are 15px and replace supplied vertical padding", () => {
+test("canonical embedded calendar insets are 18px and replace supplied vertical padding", () => {
   events = [completed("Prueba 33")];
   const profileHtml = render(true, { canonicalVerticalInsets: true, cardVerticalPadding: 29 });
-  assert.match(profileHtml, /data-background="rgba\(191,207,255,0\.096\)" data-padding-top="15" data-padding-bottom="15"/);
+  assert.match(profileHtml, /data-background="rgba\(191,207,255,0\.096\)" data-padding-top="18" data-padding-bottom="18"/);
   assert.match(profileHtml, /data-padding-bottom="0"/);
   assert.match(profileHtml, /data-height="18"/);
   assert.match(profileHtml, /data-line-height="18"/);

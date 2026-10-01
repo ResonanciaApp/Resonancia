@@ -98,8 +98,8 @@ const SHOW_PROFILE_HISTORY = true;
 const SHOW_PROFILE_PRACTICE_CARDS = false;
 // Separación entre los bloques de progreso en Perfil.
 const PROFILE_SECTION_GAP = 21;
-const PROFILE_CARD_BOTTOM_PADDING = 15;
-const PROFILE_WEEK_TOP_PADDING = 15;
+const PROFILE_CARD_BOTTOM_PADDING = 20;
+const PROFILE_WEEK_TOP_PADDING = 18;
 
 function resizeImageForWeb(uri: string, maxSize: number): Promise<string> {
   return new Promise((resolve, reject) => {
@@ -1385,13 +1385,13 @@ export function ProfileScreenBase({
                 separateStreakHistory
                 weeklySectionBackgroundColor="rgba(0,0,0,0.22)"
                 weeklySectionHorizontalPadding={20}
-                streakHistoryTopPadding={15}
+                streakHistoryTopPadding={18}
                 longestStreakLabel="RACHA ACUMULADA"
                 longestStreakIconColor={MEMBERSHIP_AURORA.premium.accent}
                 sectionBackgroundColor="rgba(0,0,0,0.22)"
                 sectionHorizontalPadding={20}
                 sectionTopPadding={PROFILE_WEEK_TOP_PADDING}
-                sectionBottomPadding={15}
+                sectionBottomPadding={18}
                 sectionMarginBottom={PROFILE_SECTION_GAP}
                 canonicalVerticalInsets
                 afterStreakHistory={
@@ -2474,7 +2474,7 @@ const styles = StyleSheet.create({
   // Profile card
   profileCard: {
     borderRadius: 19,
-    paddingTop: 15,
+    paddingTop: 20,
     paddingBottom: PROFILE_CARD_BOTTOM_PADDING,
     alignItems: "stretch",
     marginTop: 15,
@@ -2663,7 +2663,7 @@ const styles = StyleSheet.create({
     padding: 16,
   },
   profileHistorySection: {
-    paddingVertical: 15,
+    paddingVertical: 18,
     marginBottom: 32,
   },
   profileHistoryHeader: {

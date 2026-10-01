@@ -655,8 +655,8 @@ const styles = StyleSheet.create({
     paddingHorizontal: 14,
   },
   canonicalCalendarVerticalInsets: {
-    paddingTop: 15,
-    paddingBottom: 15,
+    paddingTop: 18,
+    paddingBottom: 18,
   },
   outlinedCalendarCard: {
     borderWidth: 1,

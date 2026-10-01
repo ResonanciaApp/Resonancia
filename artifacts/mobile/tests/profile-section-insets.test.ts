@@ -33,16 +33,16 @@ function verticalInsets(styles: Record<string, any>) {
   };
 }
 
-test("user section has 15px above the name and avatar outline, with no extra banner bottom padding", () => {
+test("user section has 20px above the name and avatar outline, with no extra banner bottom padding", () => {
   const source = readFileSync(new URL("../components/ProfileScreenBase.tsx", import.meta.url), "utf8");
   const bottom = Number(source.match(/const PROFILE_CARD_BOTTOM_PADDING = (\d+);/)?.[1]);
   const card = style("ProfileScreenBase", "profileCard", { PROFILE_CARD_BOTTOM_PADDING: bottom, PROFILE_SECTION_GAP: 21 });
-  assert.deepEqual(verticalInsets(card), { top: 15, bottom: 15 });
+  assert.deepEqual(verticalInsets(card), { top: 20, bottom: 20 });
   assert.equal(style("ProfileScreenBase", "profileIdentityRow").alignItems, "flex-start");
   assert.equal(style("ProfileScreenBase", "userName").marginTop, 0);
   const avatar = style("ProfileScreenBase", "avatarWrapper");
   const border = style("ProfileScreenBase", "avatarOuterBorder");
-  assert.equal(card.paddingTop + avatar.marginTop + border.top, 15);
+  assert.equal(card.paddingTop + avatar.marginTop + border.top, 20);
   const row = style("ProfileMembershipBanner", "row");
   assert.equal(row.paddingVertical, 0);
   assert.equal(row.minHeight ?? 0, 0);
@@ -52,20 +52,20 @@ test("user section has 15px above the name and avatar outline, with no extra ban
   assert.match(source, /<ProfileMembershipBanner isPremium=\{isPremium\}/);
 });
 
-test("history uses exactly 15px above its header and below empty text or the last card", () => {
+test("history uses exactly 18px above its header and below empty text or the last card", () => {
   const resolved = {
     ...style("ProfileScreenBase", "outlinedProfileSection"),
     ...style("ProfileScreenBase", "profileHistorySection"),
   };
-  assert.deepEqual(verticalInsets(resolved), { top: 15, bottom: 15 });
+  assert.deepEqual(verticalInsets(resolved), { top: 18, bottom: 18 });
   for (const name of ["profileHistoryCards", "profileHistoryCard"]) {
     const child = style("ProfileScreenBase", name);
     assert.equal((child.paddingBottom ?? child.paddingVertical ?? child.padding ?? 0) + (child.marginBottom ?? 0), 0);
   }
 });
 
-test("downloads uses exactly 15px above its header and below loading, empty, unsupported or populated content", () => {
-  assert.deepEqual(verticalInsets(style("ProfileDownloadsSection", "section")), { top: 15, bottom: 15 });
+test("downloads uses exactly 18px above its header and below loading, empty, unsupported or populated content", () => {
+  assert.deepEqual(verticalInsets(style("ProfileDownloadsSection", "section")), { top: 18, bottom: 18 });
   for (const name of ["description", "cards", "card"]) {
     const child = style("ProfileDownloadsSection", name);
     assert.equal((child.paddingBottom ?? child.paddingVertical ?? child.padding ?? 0) + (child.marginBottom ?? 0), 0);

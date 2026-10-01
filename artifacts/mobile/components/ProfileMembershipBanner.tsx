@@ -59,6 +59,7 @@ const styles = StyleSheet.create({
   icon: {
     width: 31,
     height: 31,
+    transform: [{ translateY: -3 }],
     borderRadius: 15.5,
     alignItems: "center",
     justifyContent: "center",
