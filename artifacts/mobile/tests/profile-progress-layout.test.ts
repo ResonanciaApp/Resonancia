@@ -304,6 +304,16 @@ test("Perfil keeps settings accessible in its sticky header and reduces the avat
   assert.match(header, /onPress=\{\(\) => router.push\("\/configuracion-ajustes"\)\}/);
   assert.match(header, /<Feather name="settings" size=\{21\}/);
   assert.match(header, /accessibilityLabel="Abrir ajustes"/);
+  assert.match(header, /pointerEvents="none"/);
+  const titleStyle = source.match(/profileStickyHeaderTitle:\s*\{([\s\S]*?)\n  \},/)?.[1] ?? "";
+  const discover = readFileSync(new URL("../app/(tabs)/explore.tsx", import.meta.url), "utf8");
+  const discoverTitleStyle = discover.match(/stickyTitle:\s*\{([\s\S]*?)\n  \},/)?.[1] ?? "";
+  for (const property of ["position", "left", "right", "top", "fontFamily", "fontSize", "lineHeight", "fontWeight", "letterSpacing", "textAlign"]) {
+    const pattern = new RegExp(`${property}:\\s*([^,\\n]+)`);
+    const reference = discoverTitleStyle.match(pattern)?.[1];
+    assert.ok(reference, `Descubrir defines ${property}`);
+    assert.equal(titleStyle.match(pattern)?.[1], reference, `sticky title matches Descubrir: ${property}`);
+  }
   assert.match(source, /avatarCircle:\s*\{\s*width: 106,\s*height: 106,\s*borderRadius: 53/);
   assert.match(source, /avatarImage:\s*\{\s*width: 106,\s*height: 106,\s*borderRadius: 53/);
   assert.match(source, /avatarOuterBorder:\s*\{[\s\S]*?width: 112,\s*height: 112,\s*borderRadius: 56/);

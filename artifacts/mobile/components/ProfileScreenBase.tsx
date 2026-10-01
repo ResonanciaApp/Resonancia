@@ -1151,6 +1151,7 @@ export function ProfileScreenBase({
         >
           <View style={styles.profileStickyHeaderRow}>
             <Animated.Text
+              pointerEvents="none"
               style={[
                 styles.profileStickyHeaderTitle,
                 {
@@ -2030,11 +2031,16 @@ const styles = StyleSheet.create({
     paddingBottom: 6,
   },
   profileStickyHeaderTitle: {
+    position: "absolute",
+    left: 0,
+    right: 0,
+    top: 16,
     fontFamily: "Manrope",
     fontSize: 18,
+    lineHeight: 22,
     fontWeight: "800",
     letterSpacing: 0.2,
-    textAlign: "left",
+    textAlign: "center",
   },
   profileStickySettingsButton: {
     position: "absolute",
