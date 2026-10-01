@@ -209,26 +209,15 @@ test("Perfil aligns weekly circles with the section inset while Tu progreso keep
   }
 });
 
-test("Perfil raises Esta semana and all following content 12px without changing section gaps", () => {
+test("Perfil uses the standard section gap after the user card without legacy offsets", () => {
   const profileSource = readFileSync(new URL("../components/ProfileScreenBase.tsx", import.meta.url), "utf8");
   assert.doesNotMatch(profileSource, /profileIntentionDescription|Todo gran cambio comienza con el primer paso|Bienvenido a Resonancia/);
-  assert.match(profileSource, /profileProgressSection:\s*\{\s*marginTop: PROFILE_PROGRESS_TOP_MARGIN,/);
+  assert.match(profileSource, /profileProgressSection:\s*\{\s*marginTop: 0,/);
   assert.match(profileSource, /const PROFILE_SECTION_GAP = 21;/);
-  const constants = [
-    "PROFILE_PILL_WEEK_GAP",
-    "PROFILE_CARD_BOTTOM_PADDING",
-    "PROFILE_CARD_BOTTOM_MARGIN",
-    "PROFILE_WEEK_TOP_PADDING",
-    "PROFILE_CARD_Y_OFFSET",
-  ];
-  const values = constants.map((name) => Number(profileSource.match(new RegExp(`const ${name} = (-?\\d+);`))?.[1]));
-  assert.ok(values.every(Number.isFinite));
-  const marginExpression = profileSource.match(/const PROFILE_PROGRESS_TOP_MARGIN\s*=\s*([\s\S]*?);/)?.[1];
-  assert.ok(marginExpression);
-  const margin = new Function(...constants, `return (${marginExpression});`)(...values);
-  const [gap, padding, cardMargin, weekPadding, cardOffset] = values;
-  assert.equal(gap, 60 - 12);
-  assert.equal(padding + cardMargin + margin + weekPadding - cardOffset, 48);
+  const cardStyle = profileSource.match(/  profileCard: \{([\s\S]*?)\n  \},/)?.[1] ?? "";
+  assert.match(cardStyle, /marginBottom: PROFILE_SECTION_GAP/);
+  assert.doesNotMatch(cardStyle, /transform/);
+  assert.doesNotMatch(profileSource, /PROFILE_PILL_WEEK_GAP|PROFILE_CARD_Y_OFFSET|PROFILE_PROGRESS_TOP_MARGIN/);
   const detailsStart = profileSource.indexOf('testID="profile-identity-details"');
   const emailIndex = profileSource.indexOf('testID="profile-identity-email"', detailsStart);
   const pillIndex = profileSource.indexOf("<ProfileIntentionPill", detailsStart);

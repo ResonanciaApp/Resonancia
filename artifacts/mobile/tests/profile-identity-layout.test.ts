@@ -91,7 +91,7 @@ test("missing email is not replaced with a fake address and intention remains de
   assert.doesNotMatch(other, /profile-intention-pill/);
 });
 
-test("avatar still opens Mi cuenta, intention opens Tu camino, and Premium badge stays visible", () => {
+test("avatar opens Mi cuenta and intention opens Tu camino without an avatar star", () => {
   let route = "";
   let journey = false;
   const html = render({ isPremium: true, onNavigate: (next: string) => route = next, onJourney: (open: boolean) => journey = open });
@@ -99,5 +99,6 @@ test("avatar still opens Mi cuenta, intention opens Tu camino, and Premium badge
   presses.get("profile-intention-pill")?.();
   assert.equal(route, "/mi-perfil");
   assert.equal(journey, true);
-  assert.match(html, /data-icon="star"/);
+  assert.doesNotMatch(html, /data-icon="star"/);
+  assert.doesNotMatch(source, /avatarPremiumBadge/);
 });

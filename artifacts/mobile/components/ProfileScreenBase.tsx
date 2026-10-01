@@ -75,10 +75,10 @@ import {
 import { ProgressMirrorSections } from "@/components/ProgressMirrorSections";
 import { ProfileSettingsSections } from "@/components/ProfileSettingsSections";
 import { ProfileIntentionPill } from "@/components/ProfileIntentionPill";
+import { ProfileMembershipBanner } from "@/components/ProfileMembershipBanner";
 import { ProfileDownloadsSection } from "@/components/ProfileDownloadsSection";
 import { GrowthJourneySheet } from "@/components/GrowthJourneySheet";
 import { GrowthLevelPreviewCard } from "@/components/GrowthJourney";
-import { SessionBadgeGlass } from "@/components/SessionDurationBadge";
 import { useCoverPresetCatalog } from "@/lib/cover-preset-catalog";
 import {
   gradientColors,
@@ -98,14 +98,8 @@ const SHOW_PROFILE_HISTORY = true;
 const SHOW_PROFILE_PRACTICE_CARDS = false;
 // Separación entre los bloques de progreso en Perfil.
 const PROFILE_SECTION_GAP = 21;
-const PROFILE_CARD_BOTTOM_PADDING = 20;
-const PROFILE_CARD_BOTTOM_MARGIN = 16;
-const PROFILE_CARD_Y_OFFSET = -5;
+const PROFILE_CARD_BOTTOM_PADDING = 8;
 const PROFILE_WEEK_TOP_PADDING = 21;
-const PROFILE_PILL_WEEK_GAP = 48;
-const PROFILE_PROGRESS_TOP_MARGIN =
-  PROFILE_PILL_WEEK_GAP - PROFILE_CARD_BOTTOM_PADDING - PROFILE_CARD_BOTTOM_MARGIN
-  - PROFILE_WEEK_TOP_PADDING + PROFILE_CARD_Y_OFFSET;
 
 function resizeImageForWeb(uri: string, maxSize: number): Promise<string> {
   return new Promise((resolve, reject) => {
@@ -1301,7 +1295,7 @@ export function ProfileScreenBase({
         </View>
 
         {/* ── Profile Card ── */}
-          <View style={[styles.profileCard, dedicated && styles.dedicatedProfileCard]}>
+          <View testID="profile-user-section" style={[styles.profileCard, dedicated && styles.dedicatedProfileCard]}>
           <View
             testID="profile-identity-row"
             style={styles.profileIdentityRow}
@@ -1324,12 +1318,6 @@ export function ProfileScreenBase({
                 </View>
               )}
               <View pointerEvents="none" style={styles.avatarOuterBorder} />
-              {isPremium && (
-                <View pointerEvents="none" style={styles.avatarPremiumBadge}>
-                  <SessionBadgeGlass showBlackTint={false} showWhiteTint />
-                  <MaterialCommunityIcons name="star" size={24} color={MEMBERSHIP_AURORA.premium.accent} />
-                </View>
-              )}
             </Pressable>
 
             {/* Name + details */}
@@ -1372,6 +1360,7 @@ export function ProfileScreenBase({
               )}
             </View>
           </View>
+          <ProfileMembershipBanner isPremium={isPremium} foregroundColor={colors.foreground} />
         </View>
 
         {false && (
@@ -2488,9 +2477,8 @@ const styles = StyleSheet.create({
     paddingBottom: PROFILE_CARD_BOTTOM_PADDING,
     alignItems: "stretch",
     marginTop: 15,
-    marginBottom: PROFILE_CARD_BOTTOM_MARGIN,
+    marginBottom: PROFILE_SECTION_GAP,
     gap: 0,
-    transform: [{ translateY: PROFILE_CARD_Y_OFFSET }],
   },
   dedicatedProfileCard: { marginTop: 18, backgroundColor: "rgba(0,0,0,0.22)" },
   wisdomSection: {
@@ -2520,17 +2508,6 @@ const styles = StyleSheet.create({
     borderRadius: 51,
     borderWidth: 3,
     borderColor: "rgba(255,255,255,0.25)",
-  },
-  avatarPremiumBadge: {
-    position: "absolute",
-    left: -6.5,
-    top: -6.5,
-    width: 31,
-    height: 31,
-    borderRadius: 15.5,
-    overflow: "hidden",
-    alignItems: "center",
-    justifyContent: "center",
   },
   avatarCircle: {
     width: 96,
@@ -2589,7 +2566,7 @@ const styles = StyleSheet.create({
 
   // Progreso semanal compacto
   profileProgressSection: {
-    marginTop: PROFILE_PROGRESS_TOP_MARGIN,
+    marginTop: 0,
     marginBottom: PROFILE_SECTION_GAP,
   },
   practiceReminderSection: {
