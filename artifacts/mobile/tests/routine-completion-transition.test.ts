@@ -206,8 +206,10 @@ test("adding a task to a complete routine settles immediately without a 350ms he
   h.render(true);
   const returned = h.render(false, "Nueva tarea · Añadir actividad");
   assert.equal(h.animations.size, 0);
+  assert.equal((returned.props as any).style.height, undefined);
   assert.match(renderToStaticMarkup(returned), /Nueva tarea/);
   const settled = h.render(false);
+  assert.equal((settled.props as any).style.height, undefined);
   assert.equal((settled.props as any).children[0].props.style.opacity, 1);
   assert.equal((settled.props as any).children[1].props.style[1].opacity, 0);
 });

@@ -73,6 +73,9 @@ export function RoutineCompletionTransition({
   }, [animateToPending, complete, progress, releasePending]);
 
   const shellStyle = useAnimatedStyle(() => {
+    // Pending rows own their normal-flow height. A cached measured height can
+    // momentarily clip a new row and move the following sections on a later frame.
+    if (!complete && !animateToPending) return {};
     if (pendingHeight.value <= 0 && progress.value === 0) return {};
     const from = pendingHeight.value || completeHeight.value;
     return {

@@ -1,12 +1,15 @@
 import React, { useEffect, useRef, useState } from "react";
 import { Feather } from "@expo/vector-icons";
-import { Animated, Easing, Pressable, StyleSheet, Text, View } from "react-native";
+import { BlurView } from "expo-blur";
+import * as Haptics from "expo-haptics";
+import { Animated, Easing, Platform, Pressable, StyleSheet, Text, View } from "react-native";
 
-import { SessionBadgeGlass } from "@/components/SessionDurationBadge";
+import { TAB_BAR_BLUR_INTENSITY, TAB_BAR_GLASS_OVERLAY } from "@/constants/tab-bar";
 import { RoutineGradientFill } from "@/components/RoutineGradientFill";
 import { useRoutineCompletionBanner } from "@/context/RoutineCompletionBannerContext";
 
 const ENTRY_DISTANCE = 86;
+const ENTRY_DELAY = 500;
 const ENTRY_DURATION = 380;
 const COUNT_DURATION = 350;
 const HOLD_DURATION = 1800;
@@ -31,12 +34,13 @@ export function RoutineCompletionBanner({
   const { activeEvent, hasPendingCompletion, dismissActiveEvent, emotionWidgetOpacity } =
     useRoutineCompletionBanner();
   const translateY = useRef(new Animated.Value(entryDistance)).current;
-  const opacity = useRef(new Animated.Value(1)).current;
+  const opacity = useRef(new Animated.Value(0)).current;
   const countProgress = useRef(new Animated.Value(0)).current;
   const waveProgress = useRef(new Animated.Value(0)).current;
   const startedEventIdRef = useRef<number | null>(null);
   const committedEventIdRef = useRef<number | null>(null);
   const holdTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const entryTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const [subtitleCount, setSubtitleCount] = useState(0);
 
   useEffect(() => {
@@ -72,12 +76,12 @@ export function RoutineCompletionBanner({
     waveProgress.stopAnimation();
     emotionWidgetOpacity.stopAnimation();
     translateY.setValue(entryDistance);
-    opacity.setValue(1);
+    opacity.setValue(0);
     countProgress.setValue(0);
     waveProgress.setValue(0);
     setSubtitleCount(activeEvent.kind === "completed" ? activeEvent.previousCount : 0);
 
-    Animated.parallel([
+    const entryAnimation = Animated.parallel([
       Animated.timing(translateY, {
         toValue: enteredOffset,
         duration: ENTRY_DURATION,
@@ -90,7 +94,8 @@ export function RoutineCompletionBanner({
         easing: Easing.out(Easing.cubic),
         useNativeDriver: true,
       }),
-    ]).start(({ finished: entered }) => {
+    ]);
+    const handleEntryFinished = ({ finished: entered }: { finished: boolean }) => {
       if (!entered) return;
       if (activeEvent.kind === "added") {
         committedEventIdRef.current = activeEvent.id;
@@ -170,9 +175,23 @@ export function RoutineCompletionBanner({
           });
         }, HOLD_DURATION);
       });
-    });
+    };
+    entryTimerRef.current = setTimeout(() => {
+      entryTimerRef.current = null;
+      opacity.setValue(1);
+      if (Platform.OS !== "web") {
+        void Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium).catch((error) => {
+          console.warn("No se pudo activar la vibración del aviso de rutina", error);
+        });
+      }
+      entryAnimation.start(handleEntryFinished);
+    }, ENTRY_DELAY);
 
     return () => {
+      if (entryTimerRef.current) {
+        clearTimeout(entryTimerRef.current);
+        entryTimerRef.current = null;
+      }
       if (holdTimerRef.current) {
         clearTimeout(holdTimerRef.current);
         holdTimerRef.current = null;
@@ -208,6 +227,10 @@ export function RoutineCompletionBanner({
     if (holdTimerRef.current) {
       clearTimeout(holdTimerRef.current);
       holdTimerRef.current = null;
+    }
+    if (entryTimerRef.current) {
+      clearTimeout(entryTimerRef.current);
+      entryTimerRef.current = null;
     }
     translateY.stopAnimation();
     opacity.stopAnimation();
@@ -299,7 +322,17 @@ export function RoutineCompletionBanner({
       ]}
     >
       <View pointerEvents="none" style={styles.glassSurface}>
-        <SessionBadgeGlass showBlackTint={false} showWhiteTint />
+        <BlurView
+          pointerEvents="none"
+          tint="dark"
+          intensity={TAB_BAR_BLUR_INTENSITY}
+          experimentalBlurMethod="dimezisBlurView"
+          style={StyleSheet.absoluteFill}
+        />
+        <View
+          pointerEvents="none"
+          style={[StyleSheet.absoluteFill, { backgroundColor: TAB_BAR_GLASS_OVERLAY }]}
+        />
       </View>
       <View style={[styles.copy, activeEvent.kind === "added" && styles.addedCopy]}>
         {activeEvent.kind === "added" ? (
@@ -356,8 +389,8 @@ export function RoutineCompletionBanner({
 const styles = StyleSheet.create({
   banner: {
     position: "absolute",
-    left: 14,
-    right: 14,
+    left: 39,
+    right: 39,
     height: 56,
     borderRadius: 18,
     borderWidth: StyleSheet.hairlineWidth,

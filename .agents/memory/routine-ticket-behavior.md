@@ -17,10 +17,13 @@ ligar el tiempo de permanencia a la duración del popup.
 
 Al regresar a Inicio después de añadir una actividad, la rutina debe tener su altura
 definitiva sin una transición estructural; la salida de «Rutina completa» hacia tareas
-pendientes tampoco debe animar el alto.
+pendientes tampoco debe animar el alto. La nueva card debe ocupar espacio hacia abajo:
+mantener ancladas la parte superior de la rutina y las cards anteriores, desplazando solo
+el contenido inferior. No iniciar la card nueva en el lugar de la primera.
 
 **Why:** El usuario pidió retirar el desplazamiento vertical brusco que percibía al volver
-desde «Añadir una actividad», no quitar los avisos ni la transición al completar tareas.
+desde «Añadir una actividad» y precisó que la inserción debe empujar hacia abajo, no
+hacia arriba; no pidió quitar los avisos ni la transición al completar tareas.
 
 **How to apply:** Resolver inmediatamente los aumentos de altura y la vuelta a pendientes.
 Conservar la animación de finalización y el parallax intencional de Inicio; no corregir este
@@ -29,8 +32,12 @@ retorno eliminando animaciones de navegación o del encabezado de forma global.
 Los avisos «Actividad añadida» y «Actividad finalizada» coordinan su entrada y salida
 con el widget emocional flotante entero: emoji, +, su fondo y el vidrio del widget.
 El widget vuelve a aparecer durante la salida del aviso, no después de retirarlo.
+La espera previa del aviso no debe adelantar el fade del widget ni la vibración:
+ambos empiezan con la entrada visual real. Su vidrio sigue el tratamiento del tab bar
+horizontal, no el de las insignias blancas de sesión.
 
-**Why:** El usuario pidió explícitamente que las animaciones sucedieran al unísono.
+**Why:** El usuario pidió explícitamente que las animaciones sucedieran al unísono y
+después añadió una espera previa y vibración al aparecer, manteniendo ese vínculo.
 
 **How to apply:** Iniciar los fades contrarios en las mismas fases de animación del
 aviso, también en una interrupción; no sincronizarlos con un timeout independiente

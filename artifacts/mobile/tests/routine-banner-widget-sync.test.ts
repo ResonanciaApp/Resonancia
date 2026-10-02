@@ -3,6 +3,7 @@ import { readFileSync } from "node:fs";
 import test from "node:test";
 import React from "react";
 import ts from "typescript";
+import { TAB_BAR_BLUR_INTENSITY, TAB_BAR_GLASS_OVERLAY } from "../constants/tab-bar.ts";
 
 const source = (path: string) => readFileSync(new URL(path, import.meta.url), "utf8");
 const compile = (text: string) => ts.transpileModule(text, {
@@ -18,7 +19,9 @@ function harness(kind: "added" | "completed") {
   }
   const widgetOpacity = new Value(1);
   const started: any[] = [];
-  const timers = new Map<number, () => void>();
+  const timers = new Map<number, { callback: () => void; at: number }>();
+  const haptics: string[] = [];
+  let clock = 0;
   let timerId = 0;
   let dismissals = 0;
   let refIndex = 0;
@@ -34,7 +37,7 @@ function harness(kind: "added" | "completed") {
   };
   const Native = (props: any) => React.createElement("div", props, props.children);
   const Animated = {
-    Value, View: Native,
+    Value, View: Native, Text: Native,
     timing(target: Value, config: any) {
       const animation: any = { target, config, start: (callback: any) => {
         animation.callback = callback;
@@ -69,10 +72,16 @@ function harness(kind: "added" | "completed") {
     "react-native": {
       Animated, Easing: { out: (x: unknown) => x, in: (x: unknown) => x, inOut: (x: unknown) => x, cubic: "cubic", quad: "quad" },
       Pressable: Native, Text: Native, View: Native,
+      Platform: { OS: "ios" },
       StyleSheet: { create: (styles: unknown) => styles, absoluteFillObject: {}, hairlineWidth: 1 },
     },
     "@expo/vector-icons": { Feather: Native },
-    "@/components/SessionDurationBadge": { SessionBadgeGlass: Native },
+    "expo-blur": { BlurView: Native },
+    "expo-haptics": {
+      ImpactFeedbackStyle: { Medium: "medium" },
+      impactAsync: (style: string) => { haptics.push(style); return Promise.resolve(); },
+    },
+    "@/constants/tab-bar": { TAB_BAR_BLUR_INTENSITY, TAB_BAR_GLASS_OVERLAY },
     "@/components/RoutineGradientFill": { RoutineGradientFill: Native },
     "@/context/RoutineCompletionBannerContext": { useRoutineCompletionBanner: () => context },
   };
@@ -80,21 +89,33 @@ function harness(kind: "added" | "completed") {
   new Function("require", "module", "exports", "setTimeout", "clearTimeout", compile(source("../components/RoutineCompletionBanner.tsx")))(
     (name: string) => { assert.ok(name in imports, `Missing mock ${name}`); return imports[name]; },
     module, module.exports,
-    (callback: () => void) => { timers.set(++timerId, callback); return timerId; },
+    (callback: () => void, delay: number) => { timers.set(++timerId, { callback, at: clock + delay }); return timerId; },
     (id: number) => timers.delete(id),
   );
   const render = (visible = true) => {
     refIndex = 0; effectIndex = 0;
-    module.exports.RoutineCompletionBanner({ bottom: 80, visible });
+    const element = module.exports.RoutineCompletionBanner({ bottom: 80, visible });
     pendingEffects.splice(0).forEach(effect => effect());
+    return element;
   };
   const finish = (animation: any) => {
     for (const child of animation.children ?? [animation]) child.target.setValue(child.config.toValue);
     animation.callback?.({ finished: true });
   };
-  return { context, widgetOpacity, started, render, finish,
+  const advance = (ms: number) => {
+    const until = clock + ms;
+    let next = [...timers.entries()].sort((a, b) => a[1].at - b[1].at)[0];
+    while (next && next[1].at <= until) {
+      timers.delete(next[0]);
+      clock = next[1].at;
+      next[1].callback();
+      next = [...timers.entries()].sort((a, b) => a[1].at - b[1].at)[0];
+    }
+    clock = until;
+  };
+  return { context, widgetOpacity, started, render, finish, advance, haptics,
     dismissals: () => dismissals,
-    hold: () => { const callbacks = [...timers.values()]; timers.clear(); callbacks.forEach(callback => callback()); },
+    hold: () => advance(1800),
   };
 }
 
@@ -102,6 +123,7 @@ for (const kind of ["added", "completed"] as const) {
   test(`${kind}: widget fade shares the banner's entry and exit animation groups`, () => {
     const h = harness(kind);
     h.render();
+    h.advance(500);
     const entry = h.started[0];
     const fade = entry.children.find((animation: any) => animation.target === h.widgetOpacity);
     assert.equal(fade.config.toValue, 0);
@@ -124,6 +146,7 @@ for (const kind of ["added", "completed"] as const) {
 test("queued completion interruption restores the widget in the same 160ms fade", () => {
   const h = harness("completed");
   h.render();
+  h.advance(500);
   h.finish(h.started[0]);
   h.context.hasPendingCompletion = true;
   h.render();
@@ -139,11 +162,70 @@ test("hiding the banner or clearing its event cannot leave the widget transparen
   for (const clear of [false, true]) {
     const h = harness("added");
     h.render();
+    h.advance(500);
     h.finish(h.started[0]);
     if (clear) h.context.activeEvent = null;
     h.render(clear);
     assert.equal(h.widgetOpacity.value, 1);
   }
+});
+
+for (const kind of ["added", "completed"] as const) {
+  test(`${kind}: waits 500ms hidden, then gives one medium impact as the widget and banner transition together`, () => {
+    const h = harness(kind);
+    const banner = h.render();
+    assert.equal(banner.props.style[1].opacity.value, 0);
+    assert.equal(h.widgetOpacity.value, 1);
+    h.advance(499);
+    assert.equal(h.started.length, 0);
+    assert.deepEqual(h.haptics, []);
+    h.advance(1);
+    assert.equal(banner.props.style[1].opacity.value, 1);
+    assert.equal(h.started.length, 1);
+    assert.deepEqual(h.haptics, ["medium"]);
+    h.render();
+    h.advance(500);
+    assert.deepEqual(h.haptics, ["medium"]);
+  });
+
+  test(`${kind}: shares the tab bar's purple dark blur and is exactly 50px narrower`, () => {
+    const h = harness(kind);
+    const banner = h.render();
+    const style = banner.props.style[0];
+    assert.equal(style.left, style.right);
+    assert.equal(style.left + style.right - 28, 50);
+    const [blur, overlay] = banner.props.children[0].props.children;
+    assert.equal(blur.props.tint, "dark");
+    assert.equal(blur.props.intensity, TAB_BAR_BLUR_INTENSITY);
+    assert.equal(blur.props.experimentalBlurMethod, "dimezisBlurView");
+    assert.equal(overlay.props.style[1].backgroundColor, TAB_BAR_GLASS_OVERLAY);
+  });
+}
+
+test("hiding or dismissing a banner during its delay cancels entry and vibration", () => {
+  for (const clear of [false, true]) {
+    const h = harness("added");
+    h.render();
+    h.advance(499);
+    if (clear) h.context.activeEvent = null;
+    h.render(clear);
+    h.advance(1000);
+    assert.equal(h.started.length, 0);
+    assert.deepEqual(h.haptics, []);
+    assert.equal(h.widgetOpacity.value, 1);
+  }
+});
+
+test("a queued completion cancels the earlier delayed entrance without an impact", () => {
+  const h = harness("completed");
+  h.render();
+  h.advance(450);
+  h.context.hasPendingCompletion = true;
+  h.render();
+  h.advance(500);
+  assert.deepEqual(h.haptics, []);
+  assert.equal(h.started.length, 1);
+  assert.ok(h.started[0].children.every((animation: any) => animation.config.duration === 160));
 });
 
 test("emoji, plus, plus background and widget glass all share one native opacity wrapper", () => {

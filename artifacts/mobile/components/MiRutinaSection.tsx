@@ -157,7 +157,9 @@ const ActivityRow = React.memo(function ActivityRow({
       const ownSlot = sharedOrder.value.indexOf(activityId);
       const origin = sharedDragOriginSlot.value;
       const destination = sharedInsertAt.value;
-      let effectiveSlot = ownSlot;
+      // A new row renders before the shared order has incorporated its ID.
+      // Keep its reserved slot instead of briefly moving it up to slot zero.
+      let effectiveSlot = ownSlot < 0 ? initialIndex : ownSlot;
       if (sharedDraggingId.value !== "" && origin >= 0 && destination >= 0) {
         if (destination <= origin) {
           if (ownSlot >= destination && ownSlot < origin) effectiveSlot = ownSlot + 1;
@@ -172,8 +174,11 @@ const ActivityRow = React.memo(function ActivityRow({
     },
     (current, previous) => {
       if (current.dragging) return;
+      if (previous === null) {
+        settledY.value = current.target;
+        return;
+      }
       if (
-        previous === null ||
         previous.dragging ||
         previous.target !== current.target
       ) {
