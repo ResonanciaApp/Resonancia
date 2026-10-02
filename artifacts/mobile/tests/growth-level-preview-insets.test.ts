@@ -17,12 +17,14 @@ type NativeProps = {
   color?: string;
   source?: number;
   stopOpacity?: number;
+  pointerEvents?: string;
+  accessibilityState?: { disabled?: boolean };
 };
 const flattenStyle = (style: unknown): Record<string, unknown> => Array.isArray(style)
   ? Object.assign({}, ...style.map(flattenStyle))
   : style && typeof style === "object" ? style as Record<string, unknown> : {};
 let capturedOnPress: (() => void) | undefined;
-const Native = ({ accessibilityLabel, accessibilityRole, children, onPress, style, testID, name, color, source, stopOpacity }: NativeProps) => {
+const Native = ({ accessibilityLabel, accessibilityRole, children, onPress, style, testID, name, color, source, stopOpacity, pointerEvents, accessibilityState }: NativeProps) => {
   const resolvedStyle = flattenStyle(style);
   if (testID === "growth-level-zero-preview") capturedOnPress = onPress;
   return React.createElement("div", {
@@ -36,6 +38,9 @@ const Native = ({ accessibilityLabel, accessibilityRole, children, onPress, styl
     "data-transform": resolvedStyle.transform ? JSON.stringify(resolvedStyle.transform) : undefined,
     "data-filter": resolvedStyle.filter,
     "data-source": source,
+    "data-opacity": resolvedStyle.opacity,
+    "data-pointer-events": pointerEvents,
+    "data-disabled": accessibilityState?.disabled,
     "data-stop-opacity": stopOpacity,
     "data-padding-vertical": resolvedStyle.paddingVertical,
     "data-direction": resolvedStyle.flexDirection,
@@ -57,6 +62,7 @@ const compiled = ts.transpileModule(
 ).outputText;
 const mocks: Record<string, unknown> = {
   "../assets/images/growth/00-intencion-profile.png": 2,
+  "../assets/images/growth/semilla-reward-chest.png": 3,
   react: React,
   "react-native": {
     Image: Native,
@@ -101,6 +107,36 @@ const GrowthRow = new Function("require", "module", "exports", `${compiled}\nret
 const render = (props: Record<string, unknown> = {}) => renderToStaticMarkup(
   React.createElement(componentModule.exports.GrowthLevelPreviewCard, { onPress: () => {}, ...props }),
 );
+
+test("Semilla displays the supplied dimmed chest and disabled gift copy below its story, with no reward on other levels", () => {
+  const semilla = {
+    id: "semilla", name: "Semilla", startDay: 1, endDay: 7,
+    image: 1, story: "Tu primer paso abre un espacio para crecer.",
+  };
+  const html = renderToStaticMarkup(React.createElement(GrowthRow, {
+    level: semilla, hasNext: true, status: "locked", florecimiento: true,
+  }));
+  const reward = html.match(/<div[^>]*data-testid="semilla-reward"[^>]*>/)?.[0];
+  assert.ok(reward);
+  assert.match(reward, /data-direction="row"/);
+  assert.match(reward, /data-pointer-events="none"/);
+  assert.match(reward, /data-disabled="true"/);
+  const chest = html.match(/<div[^>]*data-testid="semilla-reward-chest"[^>]*>/)?.[0];
+  assert.ok(chest);
+  assert.match(chest, /data-source="3"/);
+  assert.match(chest, /data-opacity="0.8"/);
+  assert.match(chest, /data-height="44"/);
+  assert.match(html, /data-opacity="0.55"/);
+  assert.ok(html.indexOf(`>${semilla.story}</div>`) < html.indexOf('data-testid="semilla-reward"'));
+  assert.ok(html.indexOf('data-testid="semilla-reward-chest"') < html.indexOf(">Desbloquea tu cofre de regalos</div>"));
+  assert.doesNotMatch(html, /data-accessibility-role="button"/);
+  for (const id of ["intencion", "brote", "ascenso-inicio"]) {
+    const other = renderToStaticMarkup(React.createElement(GrowthRow, {
+      level: { ...semilla, id }, hasNext: false, status: id === "intencion" ? "current" : "locked",
+    }));
+    assert.doesNotMatch(other, /semilla-reward|Desbloquea tu cofre de regalos/);
+  }
+});
 
 test("Profile intention has a small faint background glow and brightened RGB artwork, without a wrapper filter", () => {
   const html = render({ canonicalVerticalInsets: true });

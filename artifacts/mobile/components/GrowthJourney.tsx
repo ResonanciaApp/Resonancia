@@ -11,6 +11,7 @@ import { useColors } from "@/hooks/useColors";
 
 export const GROWTH_ROW_HEIGHT = 205;
 const PROFILE_INTENTION_IMAGE = require("../assets/images/growth/00-intencion-profile.png");
+const SEMILLA_REWARD_CHEST = require("../assets/images/growth/semilla-reward-chest.png");
 
 const GROWTH_COLORS = {
   line: POSITIONED_DAY_GRADIENT[0],
@@ -246,7 +247,7 @@ function GrowthRow({
     <View
       style={styles.row}
       accessible
-      accessibilityLabel={`${level.name}, ${dayLabel} de práctica, ${status === "current" ? "etapa actual" : "por desbloquear"}. ${level.story}`}
+      accessibilityLabel={`${level.name}, ${dayLabel} de práctica, ${status === "current" ? "etapa actual" : "por desbloquear"}. ${level.story}${level.id === "semilla" ? " Desbloquea tu cofre de regalos, por desbloquear." : ""}`}
     >
       {hasNext && (
         <View style={styles.lineBase} pointerEvents="none" />
@@ -289,6 +290,26 @@ function GrowthRow({
         <Text style={[styles.story, { color: status === "locked" ? GROWTH_COLORS.muted : colors.mutedForeground }]}>
           {level.story}
         </Text>
+        {level.id === "semilla" && (
+          <View
+            testID="semilla-reward"
+            style={styles.reward}
+            pointerEvents="none"
+            accessibilityState={{ disabled: true }}
+          >
+            <Image
+              testID="semilla-reward-chest"
+              source={SEMILLA_REWARD_CHEST}
+              resizeMode="contain"
+              style={styles.rewardChest}
+              accessibilityElementsHidden
+              importantForAccessibility="no"
+            />
+            <Text style={[styles.rewardText, { color: GROWTH_COLORS.muted }]}>
+              Desbloquea tu cofre de regalos
+            </Text>
+          </View>
+        )}
       </View>
     </View>
   );
@@ -469,6 +490,9 @@ const styles = StyleSheet.create({
     paddingRight: 1,
   },
   lockedCopy: { opacity: 0.55 },
+  reward: { flexDirection: "row", alignItems: "center", gap: 8, marginTop: 12 },
+  rewardChest: { width: 44, height: 44, opacity: 0.8 },
+  rewardText: { flex: 1, fontFamily: "Manrope", fontSize: 11, lineHeight: 16 },
   name: { fontFamily: "Manrope", fontSize: 15, fontWeight: "700", lineHeight: 20, marginBottom: 6 },
   dayPill: {
     alignSelf: "flex-start",
