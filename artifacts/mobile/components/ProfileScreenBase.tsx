@@ -2525,7 +2525,7 @@ const styles = StyleSheet.create({
     height: 83,
     borderRadius: 41.5,
   },
-  userName: { fontFamily: "Manrope", fontSize: 27, fontWeight: "700", textAlign: "left", marginTop: 0 },
+  userName: { fontFamily: "Manrope", fontSize: 24, fontWeight: "700", textAlign: "left", marginTop: 0 },
   profileNameRow: { width: "100%", flexDirection: "row", alignItems: "center", gap: 12, paddingRight: 46 },
   profileNameText: { flex: 1, minWidth: 0 },
   profileNameChevron: {
@@ -2582,7 +2582,7 @@ const styles = StyleSheet.create({
 
   // Progreso semanal compacto
   profileProgressSection: {
-    marginTop: 0,
+    marginTop: 6,
     marginBottom: PROFILE_SECTION_GAP,
   },
   practiceReminderSection: {

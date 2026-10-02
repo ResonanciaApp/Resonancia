@@ -53,7 +53,7 @@ test("user section preserves 20px above the centered avatar outline, with no ext
   assert.match(source, /<ProfileMembershipBanner isPremium=\{isPremium\}/);
 });
 
-test("compact identity preview hides the whole Premium banner and leaves exactly 25px from the avatar outline to the weekly background", () => {
+test("compact identity preview keeps Premium hidden and adds 6px to the previous 25px avatar-to-week gap", () => {
   const source = readFileSync(new URL("../components/ProfileScreenBase.tsx", import.meta.url), "utf8");
   assert.match(source, /const SHOW_PROFILE_IDENTITY_EXTRAS = false;/);
   assert.match(source, /SHOW_PROFILE_IDENTITY_EXTRAS && <ProfileMembershipBanner/);
@@ -61,7 +61,10 @@ test("compact identity preview hides the whole Premium banner and leaves exactly
   const bottom = Number(source.match(/const PROFILE_CARD_BOTTOM_PADDING = (\d+);/)?.[1]);
   const card = style("ProfileScreenBase", "profileCard", { PROFILE_CARD_BOTTOM_PADDING: bottom, PROFILE_SECTION_GAP: 21 });
   const preview = style("ProfileScreenBase", "profileIdentityPreviewCard");
-  assert.equal(card.paddingBottom + preview.marginBottom, 25);
+  const progress = style("ProfileScreenBase", "profileProgressSection", { PROFILE_SECTION_GAP: 21 });
+  assert.equal(progress.marginTop, 6);
+  assert.equal(progress.transform, undefined);
+  assert.equal(card.paddingBottom + preview.marginBottom + progress.marginTop, 25 + 6);
   const border = style("ProfileScreenBase", "avatarOuterBorder");
   const avatar = style("ProfileScreenBase", "avatarWrapper");
   const image = style("ProfileScreenBase", "avatarImage");
@@ -82,8 +85,8 @@ test("avatar outline meets the left margin and the chevron reaches the profile r
   }
 });
 
-test("username grows by 7 points and the pill moves 4px closer without changing the avatar or hiding its Premium badge", () => {
-  assert.equal(style("ProfileScreenBase", "userName").fontSize, 20 + 7);
+test("username uses 24 points and the pill stays 4px closer without changing the avatar or hiding its Premium badge", () => {
+  assert.equal(style("ProfileScreenBase", "userName").fontSize, 24);
   const details = style("ProfileScreenBase", "profileDetails");
   const pill = style("ProfileScreenBase", "profileIntentionPill");
   assert.equal(details.gap + pill.marginTop, (6 + 7) - 4);
