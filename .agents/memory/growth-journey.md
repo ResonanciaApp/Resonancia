@@ -55,4 +55,4 @@ Semilla, Crecimiento, Vegetación y Expansión muestran el mismo candado relleno
 
 **Why:** El usuario pidió reducir el candado anterior seis puntos, cambiar el trazo por relleno y extender el candado y texto a los tres niveles que tenían cofres. Después aportó una referencia del banner horizontal con tres avatares IA.
 
-**How to apply:** Mantener los cuatro avisos desactivados hasta que se pida implementar recompensas; no añadir avisos a los demás niveles. Los avatares conservan su brillo, sin heredar la opacidad de la descripción bloqueada. Dejar crecer la píldora en el flujo si el texto se envuelve.
+**How to apply:** Mantener los cuatro avisos desactivados hasta que se pida implementar recompensas; no añadir avisos a los demás niveles. El usuario pidió después apagar también los avatares: deben compartir la atenuación de las demás imágenes bloqueadas, no permanecer brillantes. Dejar crecer la píldora en el flujo si el texto se envuelve.

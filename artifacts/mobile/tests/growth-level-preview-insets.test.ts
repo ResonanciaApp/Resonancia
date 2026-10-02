@@ -176,6 +176,7 @@ test("Crecimiento, Vegetación and Expansión share Semilla's small filled lock 
     assert.ok(html.indexOf(`>${story}</div>`) < html.indexOf(`data-testid="${id}-reward"`));
     assert.doesNotMatch(html, /Regalitos sorpresa|Desbloquea tu cofre de regalos|data-accessibility-role="button"/);
     const banner = html.slice(html.indexOf(`data-testid="${id}-reward"`));
+    assert.match(banner, /data-opacity="0.44"/);
     for (const image of [4, 5, 6]) assert.match(banner, new RegExp(`data-source="${image}"`));
     assert.equal((banner.match(/data-border-radius="18" data-border-width="1.5" data-border-color="rgba\(214,176,92,0.75\)"/g) ?? []).length, 3);
     assert.doesNotMatch(banner, /data-opacity="0.55"/);

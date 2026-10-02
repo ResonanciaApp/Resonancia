@@ -330,7 +330,7 @@ function GrowthRow({
             importantForAccessibility="no"
           />
           <Text style={styles.rewardText}>Desbloquea 50 avatares nuevos</Text>
-          <View style={styles.rewardAvatars} importantForAccessibility="no">
+          <View style={[styles.rewardAvatars, status === "locked" && styles.lockedArt]} importantForAccessibility="no">
             {REWARD_AVATARS.map((m, i) => (
               <RewardAvatar key={i} module={m} first={i === 0} />
             ))}
