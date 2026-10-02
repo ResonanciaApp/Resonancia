@@ -52,6 +52,8 @@ const Native = ({ accessibilityLabel, accessibilityRole, children, onPress, styl
     "data-height": resolvedStyle.height,
     "data-width": resolvedStyle.width,
     "data-border-radius": resolvedStyle.borderRadius,
+    "data-border-width": resolvedStyle.borderWidth,
+    "data-border-color": resolvedStyle.borderColor,
     "data-min-height": resolvedStyle.minHeight,
     "data-self-align": resolvedStyle.alignSelf,
     "data-justify-content": resolvedStyle.justifyContent,
@@ -67,6 +69,9 @@ const compiled = ts.transpileModule(
 const mocks: Record<string, unknown> = {
   "../assets/images/growth/00-intencion-profile-square.png": 2,
   "../assets/images/growth/semilla-reward-chest.png": 3,
+  "../assets/images/growth/reward-avatar-moon.png": 4,
+  "../assets/images/growth/reward-avatar-lotus.png": 5,
+  "../assets/images/growth/reward-avatar-temple.png": 6,
   react: React,
   "react-native": {
     Image: Native,
@@ -112,7 +117,7 @@ const render = (props: Record<string, unknown> = {}) => renderToStaticMarkup(
   React.createElement(componentModule.exports.GrowthLevelPreviewCard, { onPress: () => {}, ...props }),
 );
 
-test("Semilla replaces its chest with a same-size dimmed closed lock and disabled avatar-unlock copy", () => {
+test("Semilla displays a filled lock and three AI avatars in a disabled horizontal pill", () => {
   const semilla = {
     id: "semilla", name: "Semilla", startDay: 1, endDay: 7,
     image: 1, story: "Tu primer paso abre un espacio para crecer.",
@@ -125,12 +130,13 @@ test("Semilla replaces its chest with a same-size dimmed closed lock and disable
   assert.match(reward, /data-direction="row"/);
   assert.match(reward, /data-pointer-events="none"/);
   assert.match(reward, /data-disabled="true"/);
+  assert.match(reward, /data-border-radius="999"/);
   const lock = html.match(/<div[^>]*data-testid="semilla-reward-lock"[^>]*>/)?.[0];
   assert.ok(lock);
   assert.match(lock, /data-icon="lock"/);
   const source = readFileSync(new URL("../components/GrowthJourney.tsx", import.meta.url), "utf8");
   assert.match(source, /<MaterialCommunityIcons\s+testID=\{`\$\{level.id\}-reward-lock`\}\s+name="lock"\s+size=\{16\}/);
-  assert.match(lock, /data-opacity="0.8"/);
+  assert.doesNotMatch(lock, /data-opacity=/);
   assert.match(lock, /data-height="16"/);
   assert.match(html, /data-color="#8C8C8C"[^>]*>Desbloquea 50 avatares nuevos/);
   assert.doesNotMatch(html, /semilla-reward-chest|data-source="3"/);
@@ -158,17 +164,34 @@ test("Crecimiento, Vegetación and Expansión share Semilla's small filled lock 
     assert.ok(reward, id);
     assert.match(reward, /data-pointer-events="none"/);
     assert.match(reward, /data-disabled="true"/);
+    assert.match(reward, /data-border-radius="999"/);
     const lock = html.match(new RegExp(`<div[^>]*data-testid="${id}-reward-lock"[^>]*>`))?.[0];
     assert.ok(lock, id);
     assert.match(lock, /data-icon="lock"/);
-    assert.match(lock, /data-opacity="0.8"/);
+    assert.doesNotMatch(lock, /data-opacity=/);
     assert.match(lock, /data-height="16"/);
     assert.match(html, /data-color="#8C8C8C"[^>]*>Desbloquea 50 avatares nuevos/);
     assert.doesNotMatch(html, /reward-chest|data-source="3"/);
     assert.match(html, /data-opacity="0.55"/);
     assert.ok(html.indexOf(`>${story}</div>`) < html.indexOf(`data-testid="${id}-reward"`));
     assert.doesNotMatch(html, /Regalitos sorpresa|Desbloquea tu cofre de regalos|data-accessibility-role="button"/);
+    const banner = html.slice(html.indexOf(`data-testid="${id}-reward"`));
+    for (const image of [4, 5, 6]) assert.match(banner, new RegExp(`data-source="${image}"`));
+    assert.equal((banner.match(/data-border-radius="18" data-border-width="1.5" data-border-color="rgba\(214,176,92,0.75\)"/g) ?? []).length, 3);
+    assert.doesNotMatch(banner, /data-opacity="0.55"/);
   }
+});
+
+test("reward pills grow in normal flow and preserve nonreward and profile preview sizing", () => {
+  const source = readFileSync(new URL("../components/GrowthJourney.tsx", import.meta.url), "utf8");
+  assert.match(source, /rewardRow: \{ height: "auto", minHeight: GROWTH_ROW_HEIGHT/);
+  assert.match(source, /rewardLine: \{ height: "100%" \}/);
+  const pill = source.match(/reward: \{([\s\S]*?)\n  \},/)?.[1] ?? "";
+  assert.doesNotMatch(pill, /position: "absolute"|height:/);
+  assert.match(pill, /marginLeft: 25/);
+  assert.match(source, /rewardText: \{ flex: 1, flexShrink: 1/);
+  assert.match(source, /row: \{ height: GROWTH_ROW_HEIGHT/);
+  assert.match(source, /previewArt: \{ width: 100, height: 100 \}/);
 });
 
 test("Profile intention uses square artwork with 18px corners and no glow or gradient", () => {

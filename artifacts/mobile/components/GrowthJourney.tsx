@@ -216,6 +216,39 @@ function PreviewContentEntrance({
   );
 }
 
+const REWARD_AVATARS: number[] = [
+  require("../assets/images/growth/reward-avatar-moon.png"),
+  require("../assets/images/growth/reward-avatar-lotus.png"),
+  require("../assets/images/growth/reward-avatar-temple.png"),
+];
+
+function RewardAvatar({ module, first }: { module: number; first: boolean }) {
+  const [localUri, setLocalUri] = useState(() => growthImageUris.get(module) ?? null);
+  useEffect(() => {
+    if (Platform.OS === "web") return;
+    let mounted = true;
+    loadGrowthImage(module)
+      .then((uri) => { if (mounted) setLocalUri(uri); })
+      .catch((error) => console.warn(`[GrowthJourney] No se pudo cargar el avatar de recompensa: ${String(error)}`));
+    return () => { mounted = false; };
+  }, [module]);
+  const source = Platform.OS === "web" ? module : localUri ? { uri: localUri } : null;
+  return (
+    <View style={[styles.rewardAvatar, !first && styles.rewardAvatarOverlap]}>
+      {source && (
+        <Image
+          source={source}
+          resizeMode="cover"
+          style={styles.levelImage}
+          accessibilityElementsHidden
+          importantForAccessibility="no"
+          onError={(event) => console.warn(`[GrowthJourney] No se pudo mostrar el avatar de recompensa: ${event.nativeEvent.error}`)}
+        />
+      )}
+    </View>
+  );
+}
+
 function GrowthRow({
   level,
   hasNext,
@@ -231,14 +264,15 @@ function GrowthRow({
   const dayLabel = level.startDay === level.endDay
     ? `${level.startDay} días`
     : `${level.startDay}–${level.endDay} días`;
+  const reward = REWARD_LEVEL_IDS.has(level.id);
   return (
     <View
-      style={styles.row}
+      style={[styles.row, reward && styles.rewardRow]}
       accessible
       accessibilityLabel={`${level.name}, ${dayLabel} de práctica, ${status === "current" ? "etapa actual" : "por desbloquear"}. ${level.story}${REWARD_LEVEL_IDS.has(level.id) ? " Desbloquea 50 avatares nuevos, por desbloquear." : ""}`}
     >
       {hasNext && (
-        <View style={styles.lineBase} pointerEvents="none" />
+        <View style={[styles.lineBase, reward && styles.rewardLine]} pointerEvents="none" />
       )}
       <View
         pointerEvents="none"
@@ -256,7 +290,7 @@ function GrowthRow({
       <View style={[styles.art, status === "locked" && styles.lockedArt]}>
         <GrowthLevelImage level={level} />
       </View>
-      <View style={[styles.copy, status === "locked" && styles.lockedCopy]}>
+      <View style={[styles.copy, reward && styles.rewardCopy, status === "locked" && styles.lockedCopy]}>
         <View style={[styles.dayPill, florecimiento && styles.bloomDayPill]}>
           {florecimiento && (
             <MaterialCommunityIcons
@@ -278,28 +312,31 @@ function GrowthRow({
         <Text style={[styles.story, { color: status === "locked" ? GROWTH_COLORS.muted : colors.mutedForeground }]}>
           {level.story}
         </Text>
-        {REWARD_LEVEL_IDS.has(level.id) && (
-          <View
-            testID={`${level.id}-reward`}
-            style={styles.reward}
-            pointerEvents="none"
-            accessibilityState={{ disabled: true }}
-          >
-                <MaterialCommunityIcons
-                  testID={`${level.id}-reward-lock`}
-                  name="lock"
-                  size={16}
-                  color={GROWTH_COLORS.muted}
-                  style={styles.rewardLock}
-                  accessibilityElementsHidden
-                  importantForAccessibility="no"
-                />
-                <Text style={styles.rewardText}>
-                  Desbloquea 50 avatares nuevos
-                </Text>
-          </View>
-        )}
       </View>
+      {reward && (
+        <View
+          testID={`${level.id}-reward`}
+          style={styles.reward}
+          pointerEvents="none"
+          accessibilityState={{ disabled: true }}
+        >
+          <MaterialCommunityIcons
+            testID={`${level.id}-reward-lock`}
+            name="lock"
+            size={16}
+            color="#8C8C8C"
+            style={styles.rewardLock}
+            accessibilityElementsHidden
+            importantForAccessibility="no"
+          />
+          <Text style={styles.rewardText}>Desbloquea 50 avatares nuevos</Text>
+          <View style={styles.rewardAvatars} importantForAccessibility="no">
+            {REWARD_AVATARS.map((m, i) => (
+              <RewardAvatar key={i} module={m} first={i === 0} />
+            ))}
+          </View>
+        </View>
+      )}
     </View>
   );
 }
@@ -478,9 +515,36 @@ const styles = StyleSheet.create({
     paddingRight: 1,
   },
   lockedCopy: { opacity: 0.55 },
-  reward: { flexDirection: "row", alignItems: "center", gap: 8, marginTop: 12 },
-  rewardLock: { width: 16, height: 16, opacity: 0.8 },
-  rewardText: { flex: 1, fontFamily: "Manrope", fontSize: 11, lineHeight: 16, color: "#8C8C8C" },
+  rewardRow: { height: "auto", minHeight: GROWTH_ROW_HEIGHT, justifyContent: "flex-start", paddingBottom: 20 },
+  rewardLine: { height: "100%" },
+  rewardCopy: { flex: 0, height: GROWTH_ROW_HEIGHT - 26 },
+  reward: {
+    marginLeft: 25,
+    minHeight: 52,
+    borderRadius: 999,
+    paddingVertical: 8,
+    paddingLeft: 16,
+    paddingRight: 10,
+    flexDirection: "row",
+    alignItems: "center",
+    gap: 10,
+    backgroundColor: "rgba(151,128,231,0.10)",
+    borderWidth: 1,
+    borderColor: GROWTH_COLORS.inactiveLine,
+  },
+  rewardLock: { width: 16, height: 16 },
+  rewardText: { flex: 1, flexShrink: 1, fontFamily: "Manrope", fontSize: 11, lineHeight: 16, color: "#8C8C8C" },
+  rewardAvatars: { flexDirection: "row", alignItems: "center" },
+  rewardAvatar: {
+    width: 36,
+    height: 36,
+    borderRadius: 18,
+    overflow: "hidden",
+    borderWidth: 1.5,
+    borderColor: "rgba(214,176,92,0.75)",
+    backgroundColor: "rgba(0,0,0,0.3)",
+  },
+  rewardAvatarOverlap: { marginLeft: -10 },
   name: { fontFamily: "Manrope", fontSize: 15, fontWeight: "700", lineHeight: 20, marginBottom: 6 },
   dayPill: {
     alignSelf: "flex-start",

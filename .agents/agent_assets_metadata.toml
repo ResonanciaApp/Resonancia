@@ -3209,3 +3209,45 @@ mtime_ms = 1790648454473
 storage_uri = "gcs://replit-rams-assets-worf/rams/assets/repl:5427b858-8852-4aed-954b-cd80d9fa4b6b/bb5806b2-c4dd-481c-86f6-79205bdb01fb/9a997e23-1ecf-447d-9d8b-3f4d5f0dfa1b"
 storage_version_token = "1790648489255907"
 content_type = "image/png"
+
+[[outputs]]
+id = "WabIVT7V3vN2x9NjQAl9P"
+uri = "file://attached_assets/generated_images/reward-avatar-moon.png"
+type = "image"
+title = "Avatar · Luna"
+description = "Imagen creada con IA para el banner de avatares de Tu camino."
+logical_id = "1c145a17-0f12-42cc-a1b2-248b4428cd4d"
+content_hash = "sha256:9b532770cee715e7cfb1ba46f5c94a9e15811555e2b6caea7991184f090d1529"
+size = 1593604
+mtime_ms = 1790985127669
+storage_uri = "gcs://replit-rams-assets-worf/rams/assets/repl:5427b858-8852-4aed-954b-cd80d9fa4b6b/1c145a17-0f12-42cc-a1b2-248b4428cd4d/c5fe2098-9107-4f32-8498-ffb11202af96"
+storage_version_token = "1790985334685838"
+content_type = "image/png"
+
+[[outputs]]
+id = "FvF8mjEnR9h_bMu2yoJB9"
+uri = "file://attached_assets/generated_images/reward-avatar-lotus.png"
+type = "image"
+title = "Avatar · Loto"
+description = "Imagen creada con IA para el banner de avatares de Tu camino."
+logical_id = "095581d5-7904-4238-bf8e-4a0250f08189"
+content_hash = "sha256:0f011fd96afe2bb1812efa64e1833807e811b3042526216f2ee6135c4b2ff1cc"
+size = 1473158
+mtime_ms = 1790985127593
+storage_uri = "gcs://replit-rams-assets-worf/rams/assets/repl:5427b858-8852-4aed-954b-cd80d9fa4b6b/095581d5-7904-4238-bf8e-4a0250f08189/1ce60f5f-e5a0-4a25-847e-d9d280ec8a68"
+storage_version_token = "1790985335835083"
+content_type = "image/png"
+
+[[outputs]]
+id = "9tPN_ZE33ewqMOX87_FHU"
+uri = "file://attached_assets/generated_images/reward-avatar-temple.png"
+type = "image"
+title = "Avatar · Templo"
+description = "Imagen creada con IA para el banner de avatares de Tu camino."
+logical_id = "713c9fd4-3667-4b31-aeef-53acac08994d"
+content_hash = "sha256:e1be927751dc5fac1156517ab298984c1100d5b2bb53a9d85ae66bffb5322445"
+size = 1570191
+mtime_ms = 1790985127905
+storage_uri = "gcs://replit-rams-assets-worf/rams/assets/repl:5427b858-8852-4aed-954b-cd80d9fa4b6b/713c9fd4-3667-4b31-aeef-53acac08994d/3d6fa616-179a-4252-a8b9-004750655eb8"
+storage_version_token = "1790985337017312"
+content_type = "image/png"

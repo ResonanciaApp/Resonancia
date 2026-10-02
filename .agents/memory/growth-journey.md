@@ -51,8 +51,8 @@ La ventana que se abre desde Intención en Perfil («Tu camino») debe abrirse a
 
 **How to apply:** Conservar el recorrido y los niveles apagados. La ayuda sigue siendo un panel interno de la misma ventana nativa; no convertirla en un segundo Modal.
 
-Semilla, Crecimiento, Vegetación y Expansión muestran el mismo candado relleno de 16 puntos y «Desbloquea 50 avatares nuevos» en #8C8C8C, sin cofres.
+Semilla, Crecimiento, Vegetación y Expansión muestran el mismo candado relleno de 16 puntos y «Desbloquea 50 avatares nuevos» en #8C8C8C, sin cofres. El aviso es una píldora horizontal bajo el arte y la descripción, con tres avatares IA circulares superpuestos a la derecha y borde dorado sutil.
 
-**Why:** El usuario pidió reducir el candado anterior seis puntos, cambiar el trazo por relleno y extender el candado y texto a los tres niveles que tenían cofres.
+**Why:** El usuario pidió reducir el candado anterior seis puntos, cambiar el trazo por relleno y extender el candado y texto a los tres niveles que tenían cofres. Después aportó una referencia del banner horizontal con tres avatares IA.
 
-**How to apply:** Mantener los cuatro avisos desactivados hasta que se pida implementar recompensas; no añadir avisos a los demás niveles.
+**How to apply:** Mantener los cuatro avisos desactivados hasta que se pida implementar recompensas; no añadir avisos a los demás niveles. Los avatares conservan su brillo, sin heredar la opacidad de la descripción bloqueada. Dejar crecer la píldora en el flujo si el texto se envuelve.
