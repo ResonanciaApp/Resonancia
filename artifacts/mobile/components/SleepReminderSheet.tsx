@@ -20,7 +20,12 @@ import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { FilledSunIcon } from "@/components/FilledSunIcon";
 import { SCENE_THEMES } from "@/config/scene-themes";
 import { useSceneTheme } from "@/context/SceneThemeContext";
-import { SLEEP_REMINDER_NIGHT_GRADIENT } from "@/constants/colors";
+import {
+  SLEEP_REMINDER_NIGHT_GRADIENT,
+  SLEEP_REMINDER_CARD_BACKGROUND,
+  SLEEP_REMINDER_CONTINUE_BACKGROUND,
+  SLEEP_REMINDER_CONTINUE_FOREGROUND,
+} from "@/constants/colors";
 import {
   formatPracticeNotificationTimeLocal,
   loadPracticeNotificationSettings,
@@ -314,17 +319,10 @@ export function SleepReminderSheet({
             accessibilityRole="button"
             accessibilityLabel="Guardar recordatorio"
           >
-            {!isMorning && (
-              <LinearGradient
-                pointerEvents="none"
-                colors={["#321F5E", "#4D318F"]}
-                style={StyleSheet.absoluteFill}
-              />
-            )}
             {saving ? (
-              <ActivityIndicator color="#FFFFFF" />
+              <ActivityIndicator color={isMorning ? "#FFFFFF" : SLEEP_REMINDER_CONTINUE_FOREGROUND} />
             ) : (
-              <Text style={styles.continueText}>Continuar</Text>
+              <Text style={[styles.continueText, !isMorning && styles.nightContinueText]}>Continuar</Text>
             )}
           </Pressable>
           </ScrollView>
@@ -439,7 +437,7 @@ const styles = StyleSheet.create({
     borderColor: "rgba(255,255,255,0.10)",
   },
   nightReminderCard: {
-    backgroundColor: "rgba(255,255,255,0.10)",
+    backgroundColor: SLEEP_REMINDER_CARD_BACKGROUND,
   },
   morningReminderCard: {
     backgroundColor: "rgba(20,18,32,0.36)",
@@ -547,7 +545,7 @@ const styles = StyleSheet.create({
     height: 58,
     borderRadius: 29,
     marginTop: 18,
-    backgroundColor: "#321F5E",
+    backgroundColor: SLEEP_REMINDER_CONTINUE_BACKGROUND,
     overflow: "hidden",
     alignItems: "center",
     justifyContent: "center",
@@ -562,6 +560,9 @@ const styles = StyleSheet.create({
     fontWeight: "800",
     textTransform: "uppercase",
     letterSpacing: 0.4,
+  },
+  nightContinueText: {
+    color: SLEEP_REMINDER_CONTINUE_FOREGROUND,
   },
   pressed: {
     opacity: 0.8,

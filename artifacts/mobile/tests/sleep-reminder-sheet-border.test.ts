@@ -4,7 +4,12 @@ import test from "node:test";
 import { URL } from "node:url";
 import ts from "typescript";
 import { SCENE_THEMES } from "../config/scene-themes.ts";
-import { SLEEP_REMINDER_NIGHT_GRADIENT } from "../constants/colors.ts";
+import {
+  SLEEP_REMINDER_NIGHT_GRADIENT,
+  SLEEP_REMINDER_CARD_BACKGROUND,
+  SLEEP_REMINDER_CONTINUE_BACKGROUND,
+  SLEEP_REMINDER_CONTINUE_FOREGROUND,
+} from "../constants/colors.ts";
 
 const source = readFileSync(new URL("../components/SleepReminderSheet.tsx", import.meta.url), "utf8");
 
@@ -23,6 +28,21 @@ test("the morning reminder keeps its existing border without applying it to slee
   assert.ok(border);
   assert.match(border, /borderWidth: 1/);
   assert.match(border, /borderBottomWidth: 0/);
+});
+
+test("sleep reminder uses a 28% black card and solid periwinkle Continue with dark indigo text, preserving morning colors", () => {
+  assert.equal(SLEEP_REMINDER_CARD_BACKGROUND, "rgba(0,0,0,0.28)");
+  assert.equal(SLEEP_REMINDER_CONTINUE_BACKGROUND, "#94A6FF");
+  assert.equal(SLEEP_REMINDER_CONTINUE_FOREGROUND, "#0B0A26");
+  assert.match(source, /nightReminderCard: \{\s*backgroundColor: SLEEP_REMINDER_CARD_BACKGROUND/);
+  assert.match(source, /continueButton: \{[\s\S]*?backgroundColor: SLEEP_REMINDER_CONTINUE_BACKGROUND/);
+  assert.match(source, /nightContinueText: \{\s*color: SLEEP_REMINDER_CONTINUE_FOREGROUND/);
+  assert.match(source, /!isMorning && styles\.nightContinueText/);
+  assert.match(source, /ActivityIndicator color=\{isMorning \? "#FFFFFF" : SLEEP_REMINDER_CONTINUE_FOREGROUND\}/);
+  assert.doesNotMatch(source, /colors=\{\["#321F5E", "#4D318F"\]\}/);
+  assert.match(source, /morningContinueButton: \{\s*backgroundColor: "#C96D68"/);
+  assert.match(source, /continueText: \{\s*color: "#FFFFFF"/);
+  assert.match(source, /morningReminderCard: \{\s*backgroundColor: "rgba\(20,18,32,0.36\)"/);
 });
 
 test("Indigo 2 sleep reminder matches the Universo duration gradient without changing morning or other themes", () => {
