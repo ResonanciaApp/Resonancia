@@ -95,10 +95,12 @@ import { useMixerPanel } from "@/context/MixerPanelContext";
 import { CARD_TEXT_BELOW, MEMBERSHIP_AURORA } from "@/constants/colors";
 
 const SHOW_PROFILE_PRACTICE_CARDS = false;
+const SHOW_PROFILE_MEMBERSHIP_BANNER = false;
 // Separación entre los bloques de progreso en Perfil.
 const PROFILE_SECTION_GAP = 21;
 const PROFILE_CARD_BOTTOM_PADDING = 20;
-const PROFILE_WEEK_TOP_PADDING = 18;
+const PROFILE_WEEK_TOP_PADDING = 0;
+const PROFILE_AVATAR_WEEK_GAP = 35;
 
 function resizeImageForWeb(uri: string, maxSize: number): Promise<string> {
   return new Promise((resolve, reject) => {
@@ -1371,7 +1373,9 @@ export function ProfileScreenBase({
               <Feather name="chevron-right" size={24} color={colors.foreground} />
             </Pressable>
           </View>
-          <ProfileMembershipBanner isPremium={isPremium} foregroundColor={colors.foreground} />
+          {SHOW_PROFILE_MEMBERSHIP_BANNER && (
+            <ProfileMembershipBanner isPremium={isPremium} foregroundColor={colors.foreground} />
+          )}
         </View>
 
         {false && (
@@ -1395,10 +1399,10 @@ export function ProfileScreenBase({
                 separateStreakHistory
                 showStreakHistoryTitle={false}
                 showStreakHistoryInfo={false}
-                weeklySectionBackgroundColor="rgba(0,0,0,0.22)"
+                weeklySectionBackgroundColor="transparent"
                 weeklySectionHorizontalPadding={20}
                 streakHistoryTopPadding={18}
-                streakHistoryDividerOffsetY={-3}
+                showStreakHistoryDivider={false}
                 longestStreakLabel="RACHA ACUMULADA"
                 longestStreakIconColor={MEMBERSHIP_AURORA.premium.accent}
                 sectionBackgroundColor="rgba(0,0,0,0.22)"
@@ -2452,7 +2456,11 @@ const styles = StyleSheet.create({
     marginBottom: PROFILE_SECTION_GAP,
     gap: 0,
   },
-  dedicatedProfileCard: { marginTop: 18 },
+  dedicatedProfileCard: {
+    marginTop: 18,
+    // El borde exterior del avatar termina al final de la fila.
+    marginBottom: PROFILE_AVATAR_WEEK_GAP - PROFILE_CARD_BOTTOM_PADDING - PROFILE_WEEK_TOP_PADDING,
+  },
   wisdomSection: {
     marginBottom: 28,
   },
