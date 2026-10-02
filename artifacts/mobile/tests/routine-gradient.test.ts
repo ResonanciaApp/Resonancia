@@ -77,6 +77,6 @@ test("completion counter uses the gradient inside its clipped circle without cha
   assert.match(banner, /<View style=\{styles\.counter\}>\s*<RoutineGradientFill \/>/);
   assert.match(banner, /activeEvent\.previousCount/);
   assert.match(banner, /activeEvent\.nextCount/);
-  assert.match(banner, /counter: \{[\s\S]*?borderRadius: 19,[\s\S]*?overflow: "hidden"/);
+  assert.match(banner, /counter: \{[\s\S]*?borderRadius: COUNTER_SIZE \/ 2,[\s\S]*?overflow: "hidden"/);
   assert.doesNotMatch(banner, /COUNTER_SURFACE|#276FC2/);
 });

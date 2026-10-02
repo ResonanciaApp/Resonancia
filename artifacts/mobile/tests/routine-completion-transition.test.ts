@@ -224,3 +224,33 @@ test("disabling the return-to-pending animation preserves the last-task completi
   assert.equal((midway.props as any).children[0].props.style.opacity, 0.5);
   assert.equal((midway.props as any).children[1].props.style[1].opacity, 0.5);
 });
+
+test("returning to pending explicitly clears the last native height as more cards are added", () => {
+  const h = harness(true, false);
+  // Native animated props retain keys omitted from subsequent style updates.
+  const nativeStyle: { height?: number } = {};
+  const apply = (element: any) => {
+    Object.assign(nativeStyle, element.props.style);
+    return element;
+  };
+  apply(h.render(true));
+  assert.equal(nativeStyle.height, 156);
+
+  for (const cards of [1, 2, 3, 6, 10]) {
+    const pending = apply(h.render(false, `${cards} tareas · Añadir actividad`));
+    assert.ok(Object.hasOwn(pending.props.style, "height"), "Must clear height, not omit it");
+    assert.equal(nativeStyle.height, undefined, "Routine must use its children's full layout height");
+    pending.props.children[0].props.onLayout({
+      nativeEvent: { layout: { height: cards * 83 + 78 } },
+    });
+    apply(h.render(false));
+    assert.equal(nativeStyle.height, undefined, "Measurements must not re-freeze the growing routine");
+  }
+
+  apply(h.render(true));
+  h.finish();
+  apply(h.render(true));
+  assert.equal(nativeStyle.height, 156);
+  apply(h.render(false));
+  assert.equal(nativeStyle.height, undefined, "The next completed-to-pending cycle must also clear height");
+});

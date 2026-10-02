@@ -39,6 +39,7 @@ import { RoutineCompletionTransition } from "@/components/RoutineCompletionTrans
 type Props = {
   style?: StyleProp<ViewStyle>;
   cardBackgroundColor?: string;
+  titleSize?: number;
 };
 
 const ROUTINE_CARD_HEIGHT = 74;
@@ -320,7 +321,7 @@ const ActivityRow = React.memo(function ActivityRow({
   );
 });
 
-export function MiRutinaSection({ style, cardBackgroundColor }: Props) {
+export function MiRutinaSection({ style, cardBackgroundColor, titleSize = 17 }: Props) {
   const colors = useColors();
   const routineTheme = useRoutineTheme();
   const { announceActivityAdded, announceCompletion } = useRoutineCompletionBanner();
@@ -531,7 +532,7 @@ export function MiRutinaSection({ style, cardBackgroundColor }: Props) {
   return (
     <View style={[styles.section, style]} testID="mi-rutina-section">
       <View style={styles.headerRow}>
-        <Text style={[styles.title, { color: colors.foreground }]}>Mi rutina expansiva</Text>
+        <Text style={[styles.title, { color: colors.foreground, fontSize: titleSize }]}>Mi rutina expansiva</Text>
         <View style={styles.headerActions}>
           <Pressable
             onPress={openCalendar}

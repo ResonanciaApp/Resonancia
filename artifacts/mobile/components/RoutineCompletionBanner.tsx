@@ -10,11 +10,13 @@ import { useRoutineCompletionBanner } from "@/context/RoutineCompletionBannerCon
 
 const ENTRY_DISTANCE = 86;
 const ENTRY_DELAY = 500;
+const ADDED_ENTRY_DELAY = 900;
 const ENTRY_DURATION = 380;
 const COUNT_DURATION = 350;
 const HOLD_DURATION = 1800;
 const EXIT_DURATION = 320;
 const INTERRUPT_EXIT_DURATION = 160;
+const COUNTER_SIZE = 32;
 
 type Props = {
   bottom: number;
@@ -81,17 +83,26 @@ export function RoutineCompletionBanner({
     waveProgress.setValue(0);
     setSubtitleCount(activeEvent.kind === "completed" ? activeEvent.previousCount : 0);
 
+    const entryEasing = activeEvent.kind === "added"
+      ? Easing.inOut(Easing.cubic)
+      : Easing.out(Easing.cubic);
     const entryAnimation = Animated.parallel([
+      Animated.timing(opacity, {
+        toValue: 1,
+        duration: ENTRY_DURATION,
+        easing: entryEasing,
+        useNativeDriver: true,
+      }),
       Animated.timing(translateY, {
         toValue: enteredOffset,
         duration: ENTRY_DURATION,
-        easing: Easing.out(Easing.cubic),
+        easing: entryEasing,
         useNativeDriver: true,
       }),
       Animated.timing(emotionWidgetOpacity, {
         toValue: 0,
         duration: ENTRY_DURATION,
-        easing: Easing.out(Easing.cubic),
+        easing: entryEasing,
         useNativeDriver: true,
       }),
     ]);
@@ -178,14 +189,13 @@ export function RoutineCompletionBanner({
     };
     entryTimerRef.current = setTimeout(() => {
       entryTimerRef.current = null;
-      opacity.setValue(1);
       if (Platform.OS !== "web") {
         void Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium).catch((error) => {
           console.warn("No se pudo activar la vibración del aviso de rutina", error);
         });
       }
       entryAnimation.start(handleEntryFinished);
-    }, ENTRY_DELAY);
+    }, activeEvent.kind === "added" ? ADDED_ENTRY_DELAY : ENTRY_DELAY);
 
     return () => {
       if (entryTimerRef.current) {
@@ -442,23 +452,23 @@ const styles = StyleSheet.create({
     marginTop: 3,
   },
   counterWrap: {
-    width: 42,
-    height: 42,
+    width: COUNTER_SIZE + 4,
+    height: COUNTER_SIZE + 4,
     alignItems: "center",
     justifyContent: "center",
   },
   wave: {
     position: "absolute",
-    width: 38,
-    height: 38,
-    borderRadius: 19,
+    width: COUNTER_SIZE,
+    height: COUNTER_SIZE,
+    borderRadius: COUNTER_SIZE / 2,
     borderWidth: 1,
     borderColor: "#F9F9F9",
   },
   counter: {
-    width: 38,
-    height: 38,
-    borderRadius: 19,
+    width: COUNTER_SIZE,
+    height: COUNTER_SIZE,
+    borderRadius: COUNTER_SIZE / 2,
     alignItems: "center",
     justifyContent: "center",
     overflow: "hidden",
@@ -466,9 +476,9 @@ const styles = StyleSheet.create({
   counterNumber: {
     color: "#F9F9F9",
     fontFamily: "Manrope",
-    fontSize: 15,
+    fontSize: 14,
     fontWeight: "700",
-    lineHeight: 20,
+    lineHeight: 18,
   },
   nextNumber: {
     position: "absolute",

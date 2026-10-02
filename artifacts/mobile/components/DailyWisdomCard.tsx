@@ -1,7 +1,7 @@
 import { Feather } from "@expo/vector-icons";
 import { LinearGradient } from "expo-linear-gradient";
 import React from "react";
-import { Pressable, Share, StyleSheet, Text, View } from "react-native";
+import { Pressable, Share, StyleSheet, Text, View, type StyleProp, type ViewStyle } from "react-native";
 
 import { DAILY_QUOTE_PALETTE_COLORS } from "@/constants/daily-quote-palettes";
 import { DailyQuoteDecorationLayer } from "@/components/DailyQuoteDecoration";
@@ -11,9 +11,11 @@ import { useRoutineTheme } from "@/hooks/useRoutineTheme";
 export function DailyWisdomCard({
   backgroundColor,
   decorativeGradient = false,
+  style,
 }: {
   backgroundColor?: string;
   decorativeGradient?: boolean;
+  style?: StyleProp<ViewStyle>;
 }) {
   const routineTheme = useRoutineTheme();
   const { quote } = useQuoteOfTheDay();
@@ -34,6 +36,7 @@ export function DailyWisdomCard({
       style={[
         styles.card,
         { backgroundColor: backgroundColor ?? routineTheme.surface },
+        style,
       ]}
       testID="inicio2-daily-wisdom"
     >

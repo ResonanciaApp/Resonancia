@@ -8,6 +8,8 @@ import {
   StyleSheet,
   Text,
   View,
+  type StyleProp,
+  type ViewStyle,
 } from "react-native";
 
 import {
@@ -43,7 +45,10 @@ function AuthorAvatar({ uri, name }: { uri?: string | null; name?: string | null
   );
 }
 
-export function AlmaCommunitySection() {
+export function AlmaCommunitySection({ titleSize = 18, style }: {
+  titleSize?: number;
+  style?: StyleProp<ViewStyle>;
+}) {
   const colors = useColors();
   const { sentMessageIds } = useUserProfile();
 
@@ -58,13 +63,13 @@ export function AlmaCommunitySection() {
   const hasPublished = sentMessageIds.some((id) => allMessages.some((message) => message.id === id));
 
   return (
-    <View style={styles.section}>
+    <View style={[styles.section, style]}>
       {/* Header */}
       <View style={styles.headerRow}>
         <Text style={[styles.caption, { color: colors.primary }]}>
           Muro de agradecimiento
         </Text>
-        <Text style={[styles.title, { color: colors.foreground }]}>
+        <Text style={[styles.title, { color: colors.foreground, fontSize: titleSize }]}>
           ¿Por qué estás agradecido(a) hoy?
         </Text>
       </View>

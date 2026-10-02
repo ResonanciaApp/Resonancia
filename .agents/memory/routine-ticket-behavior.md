@@ -35,9 +35,12 @@ El widget vuelve a aparecer durante la salida del aviso, no después de retirarl
 La espera previa del aviso no debe adelantar el fade del widget ni la vibración:
 ambos empiezan con la entrada visual real. Su vidrio sigue el tratamiento del tab bar
 horizontal, no el de las insignias blancas de sesión.
+Las esperas de añadida y finalizada son independientes: añadida necesita más margen
+para no competir con el regreso a Inicio y la incorporación de la nueva card.
 
 **Why:** El usuario pidió explícitamente que las animaciones sucedieran al unísono y
-después añadió una espera previa y vibración al aparecer, manteniendo ese vínculo.
+añadió una espera previa y vibración al aparecer, manteniendo ese vínculo. También
+pidió separar la entrada de añadida del movimiento de la pantalla al volver de crear.
 
 **How to apply:** Iniciar los fades contrarios en las mismas fases de animación del
 aviso, también en una interrupción; no sincronizarlos con un timeout independiente

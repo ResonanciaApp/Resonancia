@@ -70,7 +70,7 @@ function harness(kind: "added" | "completed") {
       },
     },
     "react-native": {
-      Animated, Easing: { out: (x: unknown) => x, in: (x: unknown) => x, inOut: (x: unknown) => x, cubic: "cubic", quad: "quad" },
+      Animated, Easing: { out: (x: unknown) => `out(${x})`, in: (x: unknown) => `in(${x})`, inOut: (x: unknown) => `inOut(${x})`, cubic: "cubic", quad: "quad" },
       Pressable: Native, Text: Native, View: Native,
       Platform: { OS: "ios" },
       StyleSheet: { create: (styles: unknown) => styles, absoluteFillObject: {}, hairlineWidth: 1 },
@@ -123,7 +123,7 @@ for (const kind of ["added", "completed"] as const) {
   test(`${kind}: widget fade shares the banner's entry and exit animation groups`, () => {
     const h = harness(kind);
     h.render();
-    h.advance(500);
+    h.advance(kind === "added" ? 900 : 500);
     const entry = h.started[0];
     const fade = entry.children.find((animation: any) => animation.target === h.widgetOpacity);
     assert.equal(fade.config.toValue, 0);
@@ -162,7 +162,7 @@ test("hiding the banner or clearing its event cannot leave the widget transparen
   for (const clear of [false, true]) {
     const h = harness("added");
     h.render();
-    h.advance(500);
+    h.advance(900);
     h.finish(h.started[0]);
     if (clear) h.context.activeEvent = null;
     h.render(clear);
@@ -171,21 +171,32 @@ test("hiding the banner or clearing its event cannot leave the widget transparen
 });
 
 for (const kind of ["added", "completed"] as const) {
-  test(`${kind}: waits 500ms hidden, then gives one medium impact as the widget and banner transition together`, () => {
+  const delay = kind === "added" ? 900 : 500;
+  test(`${kind}: waits ${delay}ms hidden, then gives one medium impact as the widget and banner transition together`, () => {
     const h = harness(kind);
     const banner = h.render();
     assert.equal(banner.props.style[1].opacity.value, 0);
     assert.equal(h.widgetOpacity.value, 1);
-    h.advance(499);
+    h.advance(delay - 1);
     assert.equal(h.started.length, 0);
     assert.deepEqual(h.haptics, []);
     h.advance(1);
-    assert.equal(banner.props.style[1].opacity.value, 1);
+    assert.equal(banner.props.style[1].opacity.value, 0, "Entry must fade in, not become opaque in one frame");
     assert.equal(h.started.length, 1);
+    const fade = h.started[0].children.find((animation: any) =>
+      animation.target === banner.props.style[1].opacity);
+    assert.equal(fade.config.toValue, 1);
+    assert.equal(fade.config.duration, 380);
+    assert.equal(fade.config.useNativeDriver, true);
+    assert.equal(fade.config.easing, kind === "added" ? "inOut(cubic)" : "out(cubic)");
+    assert.ok(h.started[0].children.every((animation: any) =>
+      animation.config.easing === fade.config.easing));
     assert.deepEqual(h.haptics, ["medium"]);
     h.render();
     h.advance(500);
     assert.deepEqual(h.haptics, ["medium"]);
+    h.finish(h.started[0]);
+    assert.equal(banner.props.style[1].opacity.value, 1);
   });
 
   test(`${kind}: shares the tab bar's purple dark blur and is exactly 50px narrower`, () => {
@@ -206,7 +217,7 @@ test("hiding or dismissing a banner during its delay cancels entry and vibration
   for (const clear of [false, true]) {
     const h = harness("added");
     h.render();
-    h.advance(499);
+    h.advance(899);
     if (clear) h.context.activeEvent = null;
     h.render(clear);
     h.advance(1000);
@@ -214,6 +225,20 @@ test("hiding or dismissing a banner during its delay cancels entry and vibration
     assert.deepEqual(h.haptics, []);
     assert.equal(h.widgetOpacity.value, 1);
   }
+});
+
+test("the blue gradient counter and its halo use a smaller 32px circle", () => {
+  const h = harness("completed");
+  const banner = h.render();
+  const [halo, counter] = banner.props.children[2].props.children.props.children;
+  assert.equal(counter.props.style.width, 32);
+  assert.equal(counter.props.style.height, 32);
+  assert.equal(counter.props.style.borderRadius, 16);
+  assert.equal(counter.props.style.overflow, "hidden");
+  assert.equal(halo.props.style[0].width, 32);
+  assert.equal(halo.props.style[0].height, 32);
+  assert.equal(banner.props.children[2].props.style.width, 36);
+  assert.equal(banner.props.children[2].props.style.height, 36);
 });
 
 test("a queued completion cancels the earlier delayed entrance without an impact", () => {

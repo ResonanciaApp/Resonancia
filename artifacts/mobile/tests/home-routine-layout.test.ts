@@ -26,12 +26,12 @@ test("Inicio mounts the existing functional routine in the former wall slot, wit
     receivedStyle = style;
     return React.createElement("div", { "data-testid": "mi-rutina-section" }, "Mi rutina expansiva");
   };
-  const render = new Function("React", "MiRutinaSection", "GRID_PAD", "isInicio2", compiled);
+  const render = new Function("React", "MiRutinaSection", "GRID_PAD", "isInicio2", "sectionTitleSize", compiled);
   const gridPad = Number(home.match(/const GRID_PAD = (\d+);/)?.[1]);
   assert.ok(Number.isFinite(gridPad));
-  assert.match(renderToStaticMarkup(render(React, Routine, gridPad, true)), /Mi rutina expansiva/);
+  assert.match(renderToStaticMarkup(render(React, Routine, gridPad, true, 20)), /Mi rutina expansiva/);
   assert.deepEqual(receivedStyle, { marginHorizontal: gridPad, marginBottom: 32 });
-  assert.equal(render(React, Routine, gridPad, false), null);
+  assert.equal(render(React, Routine, gridPad, false, 20), null);
 });
 
 test("wall-writing shortcuts now target Perfil and retain the compose request", () => {

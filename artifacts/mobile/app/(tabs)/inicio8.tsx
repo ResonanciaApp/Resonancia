@@ -143,6 +143,7 @@ const { width, height } = Dimensions.get("window");
 const GRID_GAP = 12;
 const GRID_PAD = 16;
 const INICIO2_SECTION_GAP = 53;
+const INICIO3_SECTION_EXTRA_GAP = 5;
 const SECTION_DIVIDER_COLOR = "rgba(255,255,255,0.12)";
 const INICIO3_VERTICAL_LIFT = 11;
 const INICIO3_SESSION_CARD_WIDTH = Math.round(
@@ -2144,6 +2145,7 @@ export default function HomeScreen2({
   variant?: InicioVariant;
 } = {}) {
   const isInicio2 = variant === "copy" || variant === "inicio3";
+  const sectionTitleSize = variant === "inicio3" ? 20 : 17;
   const colors = useColors();
   const insets = useSafeAreaInsets();
   const {
@@ -3062,7 +3064,7 @@ export default function HomeScreen2({
               marginBottom: INICIO2_SECTION_GAP,
             }}
           >
-            <Text style={[styles.sectionTitle, { fontSize: 17, marginBottom: 17 }]}>
+            <Text style={[styles.sectionTitle, { fontSize: sectionTitleSize, marginBottom: 17 }]}>
               Para este momento
             </Text>
             {featuredMoment ? (
@@ -3173,7 +3175,7 @@ export default function HomeScreen2({
           </View>
         )}
         {variant === "inicio3" && isInicio2 && (
-          <View style={styles.inicio3SectionDivider} />
+          <View style={styles.inicio3SectionSpacer} />
         )}
         {isInicio2 && (
           <SessionCarousel
@@ -3187,14 +3189,14 @@ export default function HomeScreen2({
             allowOversizedCardWidth={variant === "inicio3"}
             squareTitleOnlyBelow
             sleepBelowMetadataStyle={variant === "inicio3" ? { marginTop: 5 } : undefined}
-            titleSize={17}
+            titleSize={sectionTitleSize}
             titleSpacing={17}
             onViewAll={handleViewAllRecent}
             viewAllColor={carouselViewAllColor}
             eagerRender
           />
         )}
-        {variant === "inicio3" && <View style={styles.inicio3SectionDivider} />}
+        {variant === "inicio3" && <View style={styles.inicio3SectionSpacer} />}
         {isInicio2 && (
           <SessionCarousel
             title="Mis favoritos"
@@ -3211,13 +3213,13 @@ export default function HomeScreen2({
             whiteMetadataGlass
             showDurationClock
             durationBadgeStyle={{ top: "auto", bottom: 8, left: 8 }}
-            titleSize={17}
+            titleSize={sectionTitleSize}
             titleSpacing={17}
             onViewAll={handleViewAllFavorites}
             viewAllColor={carouselViewAllColor}
           />
         )}
-        {variant === "inicio3" && <View style={styles.inicio3SectionDivider} />}
+        {variant === "inicio3" && <View style={styles.inicio3SectionSpacer} />}
         {variant === "inicio3" && videos.length > 0 && (
           <View
             style={{
@@ -3233,7 +3235,7 @@ export default function HomeScreen2({
                 marginBottom: 17,
               }}
             >
-              <Text style={[styles.sectionTitle, { marginBottom: 0 }]}>
+              <Text style={[styles.sectionTitle, { fontSize: sectionTitleSize, marginBottom: 0 }]}>
                 Videos destacados
               </Text>
               <Pressable hitSlop={8} onPress={() => openCategory("/videos")}>
@@ -3270,11 +3272,11 @@ export default function HomeScreen2({
           </View>
         )}
         {variant === "inicio3" && videos.length > 0 && (
-          <View style={styles.inicio3SectionDivider} />
+          <View style={styles.inicio3SectionSpacer} />
         )}
         {isInicio2 && SHOW_CONTINUE_LISTENING && continueSession && (
           <View style={styles.continueSection} testID="inicio2-continue-listening">
-            <Text style={[styles.sectionTitle, styles.continueSectionTitle]}>
+            <Text style={[styles.sectionTitle, styles.continueSectionTitle, { fontSize: sectionTitleSize }]}>
               Seguir escuchando
             </Text>
             <Pressable
@@ -3340,10 +3342,10 @@ export default function HomeScreen2({
           </View>
         )}
         {variant === "inicio3" && SHOW_CONTINUE_LISTENING && continueSession && (
-          <View style={styles.inicio3SectionDivider} />
+          <View style={styles.inicio3SectionSpacer} />
         )}
         {isInicio2 && (
-          <MiRutinaSection style={{ marginHorizontal: GRID_PAD, marginBottom: 32 }} />
+          <MiRutinaSection titleSize={sectionTitleSize} style={{ marginHorizontal: GRID_PAD, marginBottom: 32 }} />
         )}
         {isInicio2 && variant !== "inicio3" && (
           <View style={{ paddingTop: INICIO2_SECTION_GAP }}>
@@ -3370,22 +3372,30 @@ export default function HomeScreen2({
           </View>
         )}
         {isInicio2 && variant === "inicio3" && (
-          <View style={styles.inicio3LowerStandaloneDivider} />
+          <View style={styles.inicio3LowerStandaloneSpacer} />
         )}
         {isInicio2 && (
           <View>
             <DailyWisdomCard
               backgroundColor="rgba(0,0,0,0.25)"
               decorativeGradient={variant === "inicio3"}
+              style={variant === "inicio3" ? { marginBottom: 53 + INICIO3_SECTION_EXTRA_GAP } : undefined}
             />
           </View>
         )}
-        {isInicio2 && isPremium && <AlmaCommunitySection />}
+        {isInicio2 && isPremium && (
+          <AlmaCommunitySection
+            titleSize={variant === "inicio3" ? 21 : 18}
+            style={variant === "inicio3" ? { marginBottom: 28 + INICIO3_SECTION_EXTRA_GAP } : undefined}
+          />
+        )}
         {/* ── BANNER PREMIUM ── */}
         <View
           style={{
             marginTop: (variant === "inicio3" ? 0 : -25) - (isPremium ? 17 : 20),
-            marginBottom: isInicio2 ? INICIO2_SECTION_GAP : SECTION_GAP,
+            marginBottom: isInicio2
+              ? INICIO2_SECTION_GAP + (variant === "inicio3" ? INICIO3_SECTION_EXTRA_GAP : 0)
+              : SECTION_GAP,
           }}
         >
           <PremiumBanner />
@@ -4478,12 +4488,11 @@ const styles = StyleSheet.create({
     height: StyleSheet.hairlineWidth,
     backgroundColor: SECTION_DIVIDER_COLOR,
   },
-  inicio3SectionDivider: {
+  inicio3SectionSpacer: {
     height: StyleSheet.hairlineWidth,
     marginHorizontal: GRID_PAD,
     marginTop: -27,
-    marginBottom: 26,
-    backgroundColor: SECTION_DIVIDER_COLOR,
+    marginBottom: 26 + INICIO3_SECTION_EXTRA_GAP,
   },
   inicio3StandaloneDivider: {
     height: StyleSheet.hairlineWidth,
@@ -4492,13 +4501,12 @@ const styles = StyleSheet.create({
     marginBottom: 26,
     backgroundColor: SECTION_DIVIDER_COLOR,
   },
-  inicio3LowerStandaloneDivider: {
+  inicio3LowerStandaloneSpacer: {
     height: StyleSheet.hairlineWidth,
     marginHorizontal: GRID_PAD,
-    // La tarjeta ya deja 32 px: completar 36 px hasta la línea y dejar otros 36 px después.
+    // Preserve the previous gap without a visible line, then add the requested 5px.
     marginTop: 4,
-    marginBottom: 36,
-    backgroundColor: SECTION_DIVIDER_COLOR,
+    marginBottom: 36 + INICIO3_SECTION_EXTRA_GAP,
   },
   inicio3LowerSectionDivider: {
     height: StyleSheet.hairlineWidth,
