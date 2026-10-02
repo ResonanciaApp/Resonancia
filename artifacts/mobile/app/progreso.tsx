@@ -150,6 +150,16 @@ export default function ProgresoScreen() {
 
         <View style={[styles.heroContainer, { paddingTop: topPad + 90 }]}>
                 <CinematicFadeSlide
+                  replayKey="progress-intro-description"
+                  active={descriptionStarted}
+                  duration={600}
+                  style={styles.heroAnimatedContent}
+                >
+                  <Text style={styles.streakIntroDescription} testID="progress-intro-description">
+                    Medita al menos 3 días a la semana y transforma todos los aspectos de tu vida
+                  </Text>
+                </CinematicFadeSlide>
+                <CinematicFadeSlide
                   replayKey="progress-streak-count"
                   delay={RING_ENTRANCE_DELAY}
                   duration={1200}
@@ -256,18 +266,6 @@ export default function ProgresoScreen() {
                   sectionMarginBottom={0}
                   streakMarginBottom={0}
                 />
-                <View style={styles.descriptionBelowWeek} testID="progress-description-below-week">
-                  <CinematicFadeSlide
-                    replayKey="progress-intro-description"
-                    active={descriptionStarted}
-                    duration={600}
-                    style={styles.heroAnimatedContent}
-                  >
-                    <Text style={styles.streakIntroDescription} testID="progress-intro-description">
-                      Medita al menos 3 días a la semana y transforma todos los aspectos de tu vida
-                    </Text>
-                  </CinematicFadeSlide>
-                </View>
             </View>
           </>
         )}
@@ -324,7 +322,6 @@ const styles = StyleSheet.create({
     paddingHorizontal: 16,
     marginTop: 15,
   },
-  descriptionBelowWeek: { marginTop: 50, alignItems: "center" },
   streakCountWrap: {
     position: "relative",
     width: COUNT_SIZE,

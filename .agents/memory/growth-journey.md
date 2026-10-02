@@ -33,9 +33,9 @@ En la ayuda de Tu camino, «tap bar» significa el tirador superior de la hoja, 
 
 **How to apply:** Mantener ese tirador funcional tanto por toque como por arrastre hacia abajo; no añadir las pestañas de navegación dentro de esta ayuda.
 
-La entrada en «Tu progreso» espera a que termine el contador de días (incluidos sus dígitos) antes de mostrar los siete días y el mensaje de práctica. El mensaje va debajo de la semana, no por encima del contador. Tu progreso no muestra Intención ni sesiones completadas; esos cambios no deben alterar la tarjeta de Intención de Perfil ni su entrada escalonada.
+La entrada en «Tu progreso» espera a que termine el contador de días (incluidos sus dígitos) antes de mostrar los siete días y el mensaje de práctica. El mensaje conserva su lugar anterior por encima de «Esta semana» y del contador. Tu progreso no muestra Intención ni sesiones completadas; esos cambios no deben alterar la tarjeta de Intención de Perfil ni su entrada escalonada.
 
-**Why:** El usuario mantuvo la entrada posterior al contador, pero luego simplificó Tu progreso a la semana y colocó explícitamente el mensaje debajo de sus siete días. Las indicaciones antiguas sobre tarjetas en esa pantalla quedaron reemplazadas.
+**Why:** El usuario simplificó Tu progreso y luego devolvió el mensaje a su ubicación anterior, sin pedir restaurar las secciones retiradas ni cambiar la secuencia de entrada.
 
 **How to apply:** Conservar la secuencia del contador y la separación entre superficies. Intención y el recorrido se acceden desde Perfil; no reintroducirlos en Tu progreso al reutilizar componentes.
 

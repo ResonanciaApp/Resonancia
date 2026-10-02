@@ -87,14 +87,14 @@ function renderProgress(days: number, reducedMotion: boolean) {
   return { html, mirrorProps };
 }
 
-test("Tu progreso shows its counter and seven days before the description, with exactly 50px after the weekly row", () => {
+test("Tu progreso restores the description above ESTA SEMANA and its counter without restoring completed sessions or dividers", () => {
   const { html, mirrorProps } = renderProgress(4, true);
   const description = html.indexOf('data-testid="progress-intro-description"');
   const title = html.indexOf('data-testid="progress-week-title"');
   const counter = html.indexOf('data-testid="progress-day-counter"');
   const week = html.indexOf('data-testid="weekly-circles"');
-  assert.ok(title >= 0 && title < counter && counter < week && week < description);
-  assert.match(html, /data-testid="progress-description-below-week"[^>]*data-margin-top="50"/);
+  assert.ok(description >= 0 && description < title && title < counter && counter < week);
+  assert.doesNotMatch(html, /progress-description-below-week/);
   assert.match(html, /data-testid="progress-week-title"[^>]*data-margin-bottom="20"[^>]*>ESTA SEMANA/);
   assert.match(html, /data-testid="progress-week-title"[^>]*data-margin-top="12"/);
   assert.match(html, /data-margin-top="15"/);

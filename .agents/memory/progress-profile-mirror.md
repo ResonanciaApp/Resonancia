@@ -3,9 +3,9 @@ name: Progreso visible en Perfil
 description: Orden actual del progreso en Perfil y su relación con Tu progreso.
 ---
 
-Perfil conserva la semana, el historial completo de cuatro cifras, Intención, el calendario y el historial de sesiones. Tu progreso muestra el contador, la semana en curso y el mensaje de práctica debajo de los siete días, sin sesiones completadas, divisores, historial de rachas ni tarjeta de Intención. Los tratamientos de ambas superficies son independientes.
+Perfil conserva la semana, el historial completo de cuatro cifras, Intención, el calendario y el historial de sesiones. Tu progreso muestra el mensaje de práctica encima de «Esta semana» y del contador, seguido de los siete días, sin sesiones completadas, divisores, historial de rachas ni tarjeta de Intención. Los tratamientos de ambas superficies son independientes.
 
-**Why:** El usuario redefinió Tu progreso como seguimiento de la semana actual y después retiró explícitamente la sección de sesiones completadas y su divisor, moviendo el mensaje debajo de la semana. Perfil conserva el resumen y los accesos personales; compartir componentes no autoriza a propagar esos cambios entre pantallas.
+**Why:** El usuario retiró la sección de sesiones completadas y su divisor, pero después devolvió únicamente el mensaje a su ubicación anterior por encima del contador. Esa corrección no revierte los otros cambios; Perfil conserva sus accesos personales.
 
 **How to apply:** Configurar cada superficie por separado. Retirar las completadas de Tu progreso no autoriza a borrar actividad histórica, ni a ocultar el historial o el calendario de Perfil. No reintroducir «Mis estadísticas» en Perfil.
 
