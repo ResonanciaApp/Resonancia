@@ -14,17 +14,21 @@ type NativeProps = {
   style?: unknown;
   testID?: string;
   name?: string;
+  color?: string;
 };
 const flattenStyle = (style: unknown): Record<string, unknown> => Array.isArray(style)
   ? Object.assign({}, ...style.map(flattenStyle))
   : style && typeof style === "object" ? style as Record<string, unknown> : {};
 let capturedOnPress: (() => void) | undefined;
-const Native = ({ accessibilityLabel, accessibilityRole, children, onPress, style, testID, name }: NativeProps) => {
+const Native = ({ accessibilityLabel, accessibilityRole, children, onPress, style, testID, name, color }: NativeProps) => {
   const resolvedStyle = flattenStyle(style);
   if (testID === "growth-level-zero-preview") capturedOnPress = onPress;
   return React.createElement("div", {
     "data-testid": testID,
     "data-icon": name,
+    "data-color": color,
+    "data-position": resolvedStyle.position,
+    "data-padding-vertical": resolvedStyle.paddingVertical,
     "data-direction": resolvedStyle.flexDirection,
     "data-align": resolvedStyle.alignItems,
     "data-accessibility-role": accessibilityRole,
@@ -52,7 +56,7 @@ const mocks: Record<string, unknown> = {
     Text: Native,
     View: Native,
   },
-  "@expo/vector-icons": { Feather: Native },
+  "@expo/vector-icons": { Feather: Native, MaterialCommunityIcons: Native },
   "expo-asset": { Asset: { fromModule: () => ({ localUri: null, downloadAsync: async () => {} }) } },
   "@/constants/colors": {
     MEMBERSHIP_AURORA: { premium: { accent: "#BE9650" } },
@@ -78,7 +82,7 @@ const mocks: Record<string, unknown> = {
   },
 };
 const componentModule = { exports: {} as { GrowthLevelPreviewCard: React.ComponentType<Record<string, unknown>> } };
-new Function("require", "module", "exports", compiled)((name: string) => {
+const GrowthRow = new Function("require", "module", "exports", `${compiled}\nreturn GrowthRow;`)((name: string) => {
   if (!(name in mocks)) throw new Error(`Missing growth preview test mock: ${name}`);
   return mocks[name];
 }, componentModule, componentModule.exports);
@@ -123,4 +127,22 @@ test("the preview remains an accessible actionable button with the same day labe
   assert.equal(presses, 1);
   assert.match(render(), /data-accessibility-role="button"/);
   assert.match(render(), /Intención, 0 días\. Abrir camino de crecimiento/);
+});
+
+test("Florecimiento pills put a golden lotus before streak days and add exactly 3px without changing ascent or the preview", () => {
+  for (const status of ["current", "locked"]) {
+    for (const [startDay, endDay, label] of [[0, 0, "0 días"], [1, 7, "1–7 días"], [43, 49, "43–49 días"]] as const) {
+      const level = { id: "test", name: "Etapa", startDay, endDay, image: 1, story: "Descripción." };
+      const html = renderToStaticMarkup(React.createElement(GrowthRow, { level, hasNext: false, status, florecimiento: true }));
+      assert.match(html, /data-icon="spa" data-color="#BE9650" data-position="absolute"/);
+      assert.match(html, /data-padding-vertical="5.5"/);
+      assert.ok(html.indexOf('data-icon="spa"') < html.lastIndexOf(`${label} de racha`));
+      assert.ok(html.includes(`${label} de racha`));
+      const ascent = renderToStaticMarkup(React.createElement(GrowthRow, { level, hasNext: false, status }));
+      assert.doesNotMatch(ascent, /data-icon="spa"|de racha/);
+      assert.match(ascent, /data-padding-vertical="4"/);
+    }
+  }
+  assert.equal((5.5 - 4) * 2, 3);
+  assert.doesNotMatch(render(), /data-icon="spa"|de racha|data-padding-vertical="5.5"/);
 });

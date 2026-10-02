@@ -1,4 +1,4 @@
-import { Feather } from "@expo/vector-icons";
+import { Feather, MaterialCommunityIcons } from "@expo/vector-icons";
 import { Asset } from "expo-asset";
 import React, { useEffect, useState } from "react";
 import { Image, Platform, Pressable, StyleSheet, Text, View } from "react-native";
@@ -198,10 +198,12 @@ function GrowthRow({
   level,
   hasNext,
   status,
+  florecimiento = false,
 }: {
   level: GrowthLevel;
   hasNext: boolean;
   status: Status;
+  florecimiento?: boolean;
 }) {
   const colors = useColors();
   const dayLabel = level.startDay === level.endDay
@@ -211,7 +213,7 @@ function GrowthRow({
     <View
       style={styles.row}
       accessible
-      accessibilityLabel={`${level.name}, ${dayLabel} de práctica, ${status === "current" ? "etapa actual" : "por desbloquear"}. ${level.story}`}
+      accessibilityLabel={`${level.name}, ${dayLabel} ${florecimiento ? "de racha" : "de práctica"}, ${status === "current" ? "etapa actual" : "por desbloquear"}. ${level.story}`}
     >
       {hasNext && (
         <View style={styles.lineBase} pointerEvents="none" />
@@ -233,9 +235,19 @@ function GrowthRow({
         <GrowthLevelImage level={level} />
       </View>
       <View style={[styles.copy, status === "locked" && styles.lockedCopy]}>
-        <View style={styles.dayPill}>
+        <View style={[styles.dayPill, florecimiento && styles.bloomDayPill]}>
+          {florecimiento && (
+            <MaterialCommunityIcons
+              name="spa"
+              size={12}
+              color={GROWTH_COLORS.current}
+              style={styles.bloomLotus}
+              accessibilityElementsHidden
+              importantForAccessibility="no"
+            />
+          )}
           <Text style={[styles.days, { color: status === "locked" ? GROWTH_COLORS.muted : colors.foreground }]}>
-            {dayLabel}
+            {dayLabel}{florecimiento ? " de racha" : ""}
           </Text>
         </View>
         <Text style={[styles.name, { color: status === "locked" ? GROWTH_COLORS.muted : colors.foreground }]}>
@@ -289,6 +301,7 @@ export function GrowthJourney() {
             level={level}
             hasNext={index < growthLevels.length - 1}
             status={index === 0 ? "current" : "locked"}
+            florecimiento
           />
         ))}
       </View>
@@ -433,5 +446,13 @@ const styles = StyleSheet.create({
     marginBottom: 7,
   },
   days: { fontFamily: "Manrope", fontSize: 10, fontWeight: "600" },
+  bloomDayPill: { paddingVertical: 5.5, paddingLeft: 25 },
+  bloomLotus: {
+    position: "absolute",
+    left: 9,
+    top: "50%",
+    lineHeight: 12,
+    transform: [{ translateY: -6 }],
+  },
   story: { fontFamily: "Manrope", fontSize: 11, lineHeight: 16 },
 });
