@@ -8,7 +8,11 @@ import { SCENE_THEMES } from "../config/scene-themes.ts";
 const source = readFileSync(new URL("../components/AmbientalDurationSheet.tsx", import.meta.url), "utf8");
 const ast = ts.createSourceFile("AmbientalDurationSheet.tsx", source, ts.ScriptTarget.Latest, true, ts.ScriptKind.TSX);
 let gradientExpression: ts.Expression | undefined;
+let sheetGradientExpression: ts.Expression | undefined;
 function visit(node: ts.Node) {
+  if (ts.isVariableDeclaration(node) && node.name.getText(ast) === "sheetGradient") {
+    sheetGradientExpression = node.initializer;
+  }
   if (ts.isJsxSelfClosingElement(node) && node.tagName.getText(ast) === "LinearGradient") {
     const attribute = node.attributes.properties.find(property =>
       ts.isJsxAttribute(property) && property.name.getText(ast) === "colors",
@@ -22,19 +26,33 @@ function visit(node: ts.Node) {
 }
 visit(ast);
 assert.ok(gradientExpression, "Duration sheet defines its gradient colors");
-const colorsFor = new Function("theme", ts.transpileModule(`return ${gradientExpression.getText(ast)};`, {
+assert.equal(gradientExpression.getText(ast), "sheetGradient");
+assert.ok(sheetGradientExpression);
+const resolveColors = new Function("theme", "SCENE_THEMES", ts.transpileModule(`return ${sheetGradientExpression.getText(ast)};`, {
   compilerOptions: { target: ts.ScriptTarget.ES2022 },
 }).outputText);
-const backgroundExpression = source.match(/backgroundColor:\s*(theme\.gradient\[\d+\])/)?.[1];
+type ThemePalette = { id: string; gradient: readonly string[] };
+const colorsFor = (theme: ThemePalette) => resolveColors(theme, SCENE_THEMES);
+const backgroundExpression = source.match(/backgroundColor:\s*(sheetGradient\[\d+\])/)?.[1];
 assert.ok(backgroundExpression);
-const backgroundFor = new Function("theme", `return ${backgroundExpression};`);
+const resolveBackground = new Function("sheetGradient", `return ${backgroundExpression};`);
+const backgroundFor = (theme: ThemePalette) => resolveBackground(colorsFor(theme));
 
-test("Ambiental duration sheet uses only the second and third active theme stops", () => {
+test("Ambiental duration sheet preserves the active theme stops outside Indigo 2", () => {
   for (const theme of Object.values(SCENE_THEMES)) {
+    if (theme.id === "indigo2") continue;
     assert.deepEqual(colorsFor(theme), [theme.gradient[1], theme.gradient[2]]);
     assert.equal(backgroundFor(theme), theme.gradient[1]);
     const changedTheme = { ...theme, gradient: theme.gradient.map(color => `${color}-changed`) };
     assert.deepEqual(colorsFor(changedTheme), [changedTheme.gradient[1], changedTheme.gradient[2]]);
     assert.equal(backgroundFor(changedTheme), changedTheme.gradient[1]);
   }
+});
+
+test("Indigo 2 duration sheet uses the Universo violet gradient without altering global theme colors", () => {
+  assert.deepEqual(colorsFor(SCENE_THEMES.indigo2), ["#332261", "#2E2468"]);
+  assert.equal(backgroundFor(SCENE_THEMES.indigo2), "#332261");
+  assert.deepEqual(colorsFor(SCENE_THEMES.indigo2), colorsFor(SCENE_THEMES.tibet));
+  assert.equal(SCENE_THEMES.indigo2.gradient[1], "#20285A");
+  assert.equal(SCENE_THEMES.indigo2.gradient[2], "#21255A");
 });

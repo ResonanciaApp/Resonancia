@@ -13,6 +13,7 @@ import {
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 
 import { useSceneTheme } from "@/context/SceneThemeContext";
+import { SCENE_THEMES } from "@/config/scene-themes";
 import { useColors } from "@/hooks/useColors";
 import { FREE_TIMER_MAX_MINUTES, showPremiumGate } from "@/lib/premiumGate";
 import { REGISTER_BUTTON_ENABLED_BACKGROUND } from "@/constants/colors";
@@ -112,6 +113,9 @@ export function AmbientalDurationSheet({
 }: Props) {
   const colors = useColors();
   const { theme } = useSceneTheme();
+  const sheetGradient: [string, string] = theme.id === "indigo2"
+    ? [SCENE_THEMES.tibet.gradient[1], SCENE_THEMES.tibet.gradient[2]]
+    : [theme.gradient[1], theme.gradient[2]];
   const insets = useSafeAreaInsets();
   const [rendered, setRendered] = useState(visible);
   const [customMode, setCustomMode] = useState(false);
@@ -251,7 +255,7 @@ export function AmbientalDurationSheet({
           style={[
             styles.sheet,
             {
-              backgroundColor: theme.gradient[1],
+              backgroundColor: sheetGradient[0],
               paddingBottom: Math.max(insets.bottom, 16),
               transform: [{ translateY: sheetY }],
             },
@@ -260,7 +264,7 @@ export function AmbientalDurationSheet({
         >
           <LinearGradient
             pointerEvents="none"
-            colors={[theme.gradient[1], theme.gradient[2]]}
+            colors={sheetGradient}
             style={StyleSheet.absoluteFill}
           />
           <View style={styles.handle} />
