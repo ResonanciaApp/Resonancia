@@ -86,13 +86,17 @@ test("Perfil places avatar left with name and intention on its right, without th
   assert.match(source, /avatarCircle:\s*\{\s*width: 83,\s*height: 83,\s*borderRadius: 41\.5/);
   assert.match(source, /avatarOuterBorder:\s*\{\s*position: "absolute",\s*top: -3,\s*left: -3,\s*width: 89,\s*height: 89,\s*borderRadius: 44\.5,\s*borderWidth: 3/);
   const rowStyle = source.match(/profileIdentityRow: \{([\s\S]*?)\n  \},/)?.[1] ?? "";
-  assert.match(rowStyle, /paddingHorizontal: 20/);
+  assert.match(rowStyle, /paddingLeft: 3/);
+  assert.match(rowStyle, /paddingRight: 0/);
 });
 
-test("the compact preview keeps avatar and name-and-pill centered and hides the identity chevron without deleting it", () => {
+test("the compact preview keeps the avatar at the left margin and restores a centered chevron between the name and pill", () => {
   const html = render();
   assert.match(html, /data-testid="profile-identity-name" data-direction="row" data-align="center"/);
-  assert.doesNotMatch(html, /profile-identity-chevron|data-icon="chevron-right"/);
+  assert.match(html, /data-testid="profile-identity-chevron"[^>]*data-align="center"[^>]*data-width="38"/);
+  assert.equal((html.match(/data-icon="chevron-right"/g) ?? []).length, 1);
+  assert.ok(html.indexOf("Resonador") < html.indexOf('data-testid="profile-identity-chevron"'));
+  assert.ok(html.indexOf('data-testid="profile-identity-chevron"') < html.indexOf('data-testid="profile-intention-pill"'));
   assert.match(source, /profileNameRow: \{ width: "100%", flexDirection: "row", alignItems: "center"/);
   const children = identity!.children.filter(ts.isJsxElement).map(child =>
     child.openingElement.attributes.properties.find(attribute =>
@@ -108,19 +112,22 @@ test("the compact preview keeps avatar and name-and-pill centered and hides the 
   const membership = readFileSync(new URL("../components/ProfileMembershipBanner.tsx", import.meta.url), "utf8");
   assert.match(membership, /chevron: \{\s*width: 32,/);
   assert.match(membership, /row: \{[\s\S]*?paddingHorizontal: 20/);
-  assert.match(source, /profileIdentityRow: \{[\s\S]*?paddingHorizontal: 20/);
+  assert.match(source, /profileIdentityRow: \{[\s\S]*?paddingLeft: 3,\s*paddingRight: 0/);
   assert.match(source, /<Feather name="chevron-right" size=\{24\}/);
   assert.match(membership, /<Feather name="chevron-right" size=\{24\}/);
 });
 
-test("name and avatar still open Mi cuenta while the hidden chevron is not actionable", () => {
+test("name, avatar and restored chevron open Mi cuenta", () => {
   let route = "";
   render({ onNavigate: (next: string) => route = next });
   assert.ok(presses.has("profile-identity-name"));
   presses.get("profile-identity-name")?.();
   assert.equal(route, "/mi-perfil");
   route = "";
-  assert.equal(presses.has("profile-identity-chevron"), false);
+  assert.ok(presses.has("profile-identity-chevron"));
+  presses.get("profile-identity-chevron")?.();
+  assert.equal(route, "/mi-perfil");
+  route = "";
   assert.ok(presses.has("profile-identity-avatar"));
   presses.get("profile-identity-avatar")?.();
   assert.equal(route, "/mi-perfil");

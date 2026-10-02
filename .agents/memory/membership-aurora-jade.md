@@ -3,9 +3,9 @@ name: Membresía Aurora jade-gold
 description: Insignia del avatar en Perfil y acentos Premium de las demás superficies.
 ---
 
-El banner de membresía de Perfil, con su divisor, descripción y chevron, está temporalmente oculto para evaluar una vista compacta; también se oculta el chevron de Mi cuenta del bloque de usuario. Conservarlos, no eliminarlos. Al restaurar el banner, gratuitos muestran «Prueba Premium» y miembros «Tu Premium», con estrella a la izquierda; no recuperar Premium Plus.
+El banner de membresía de Perfil, con su divisor, descripción y chevron, está temporalmente oculto para evaluar una vista compacta. Conservarlo, no eliminarlo. El chevron de Mi cuenta sí está restaurado y su última posición solicitada es el margen lateral derecho, no la columna del último círculo de la racha; el avatar se alinea con el margen lateral izquierdo. Al restaurar el banner, gratuitos muestran «Prueba Premium» y miembros «Tu Premium», con estrella a la izquierda; no recuperar Premium Plus.
 
-**Why:** Tras recuperar el banner, el usuario pidió esconderlo para ver cómo queda el diseño, no borrar su implementación. La prueba incluye 25 px entre el borde inferior del avatar y el inicio del fondo de los siete días de racha.
+**Why:** El usuario pidió esconder el banner para evaluar el diseño, pero luego recuperó por separado la estrella del avatar y el chevron de Mi cuenta. No confundir esas peticiones con volver a mostrar el banner. La prueba conserva 25 px entre el avatar y el inicio del fondo de los siete días.
 
 **How to apply:** No reactivar los elementos ocultos hasta que el usuario lo pida. Al restaurarlos, integrar el banner al bloque de usuario, no como tarjeta independiente. La estrella Premium con fondo de vidrio sobre el avatar de Perfil sí está restaurada, solo para miembros, por petición posterior del usuario; no implica recuperar el banner. La insignia de Inicio y el acceso Premium del drawer son independientes de esta prueba.
 

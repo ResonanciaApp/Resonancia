@@ -68,6 +68,29 @@ test("compact identity preview hides the whole Premium banner and leaves exactly
   assert.equal(image.height + avatar.marginBottom, border.top + border.height);
 });
 
+test("avatar outline meets the left margin and the chevron reaches the profile right margin at different widths", () => {
+  const row = style("ProfileScreenBase", "profileIdentityRow");
+  const border = style("ProfileScreenBase", "avatarOuterBorder");
+  const chevron = style("ProfileScreenBase", "profileNameChevron");
+  assert.equal(row.paddingLeft + border.left, 0);
+  assert.equal(chevron.position, "absolute");
+  assert.equal(chevron.top, "50%");
+  assert.equal(chevron.marginTop + chevron.height / 2, 0);
+  for (const width of [320, 375, 402, 768]) {
+    const chevronRight = width - 16 - row.paddingRight - chevron.right;
+    assert.equal(chevronRight, width - 16);
+  }
+});
+
+test("username grows by 7 points and the pill moves 4px closer without changing the avatar or hiding its Premium badge", () => {
+  assert.equal(style("ProfileScreenBase", "userName").fontSize, 20 + 7);
+  const details = style("ProfileScreenBase", "profileDetails");
+  const pill = style("ProfileScreenBase", "profileIntentionPill");
+  assert.equal(details.gap + pill.marginTop, (6 + 7) - 4);
+  assert.equal(style("ProfileScreenBase", "avatarImage").width, 83);
+  assert.equal(style("ProfileScreenBase", "profileIdentityPreviewCard").marginBottom, 5);
+});
+
 test("the avatar block moves up 20px in normal flow, carrying subsequent sections without changing the weekly gap", () => {
   const card = style("ProfileScreenBase", "dedicatedProfileCard");
   assert.equal(card.marginTop, 18 - 20);

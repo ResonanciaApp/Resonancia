@@ -1364,6 +1364,17 @@ export function ProfileScreenBase({
               </Text>
               </Pressable>
 
+              <Pressable
+                onPress={() => router.push("/mi-perfil")}
+                testID="profile-identity-chevron"
+                accessibilityRole="button"
+                accessibilityLabel="Abrir Mi cuenta"
+                hitSlop={8}
+                style={styles.profileNameChevron}
+              >
+                <Feather name="chevron-right" size={24} color={colors.foreground} />
+              </Pressable>
+
               {dedicated && (
                 <ProfileIntentionPill
                   onPress={() => setGrowthJourneyOpen(true)}
@@ -1372,16 +1383,6 @@ export function ProfileScreenBase({
                 />
               )}
             </View>
-            {SHOW_PROFILE_IDENTITY_EXTRAS && <Pressable
-              onPress={() => router.push("/mi-perfil")}
-              testID="profile-identity-chevron"
-              accessibilityRole="button"
-              accessibilityLabel="Abrir Mi cuenta"
-              hitSlop={8}
-              style={styles.profileNameChevron}
-            >
-              <Feather name="chevron-right" size={24} color={colors.foreground} />
-            </Pressable>}
           </View>
           {SHOW_PROFILE_IDENTITY_EXTRAS && <ProfileMembershipBanner isPremium={isPremium} foregroundColor={colors.foreground} />}
         </View>
@@ -2486,7 +2487,8 @@ const styles = StyleSheet.create({
     alignItems: "center",
     width: "100%",
     gap: 16,
-    paddingHorizontal: 20,
+    paddingLeft: 3,
+    paddingRight: 0,
   },
   profileDetails: { flex: 1, minWidth: 0, alignItems: "flex-start", gap: 6 },
   avatarWrapper: { position: "relative", marginTop: 3, marginBottom: 3, flexShrink: 0 },
@@ -2523,13 +2525,23 @@ const styles = StyleSheet.create({
     height: 83,
     borderRadius: 41.5,
   },
-  userName: { fontFamily: "Manrope", fontSize: 20, fontWeight: "700", textAlign: "left", marginTop: 0 },
-  profileNameRow: { width: "100%", flexDirection: "row", alignItems: "center", gap: 12 },
+  userName: { fontFamily: "Manrope", fontSize: 27, fontWeight: "700", textAlign: "left", marginTop: 0 },
+  profileNameRow: { width: "100%", flexDirection: "row", alignItems: "center", gap: 12, paddingRight: 46 },
   profileNameText: { flex: 1, minWidth: 0 },
-  profileNameChevron: { width: 32, alignItems: "center", justifyContent: "center" },
+  profileNameChevron: {
+    position: "absolute",
+    right: 0,
+    top: "50%",
+    marginTop: -19,
+    width: 38,
+    height: 38,
+    alignItems: "center",
+    justifyContent: "center",
+  },
   profileIntentionPill: {
     alignSelf: "flex-start",
-    marginTop: 7,
+    marginRight: 46,
+    marginTop: 3,
     backgroundColor: "rgba(151,128,231,0.20)",
     borderWidth: 1,
     borderColor: "rgba(255,255,255,0.10)",
