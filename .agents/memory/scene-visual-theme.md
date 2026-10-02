@@ -8,3 +8,14 @@ El tema visual de la app móvil se elige entre Universo (predeterminado) e Índi
 **Why:** El usuario pidió retirar otros temas visuales y conservar las escenas de audio como funcionalidad independiente. Después pidió restaurar solo Universo e Índigo 2 como alternativas visuales. Cambiar la escena de audio no debe cambiar el fondo. Algunas superficies sin degradado muestran texto claro, así que un sólido de respaldo pálido quitaría legibilidad. La implementación previa de «modo brillante» combinaba cambios de saturación/luminosidad con un overlay adicional; acumular esos efectos no representaba un único aumento controlado. Posteriormente pidió reducir el aclarado de Luz de 7 % a 3,5 %.
 
 **How to apply:** Si se añade una pantalla u hoja temática, consumir la paleta visual compartida para su fondo; no inferir el tema desde la escena de audio ni añadir otros temas seleccionables sin pedirlo. Si cambia el degradado a uno de extremo claro, verificar por separado la legibilidad del color sólido de respaldo. No aclarar textos, iconos ni imágenes editoriales mediante un overlay de pantalla completa. Los fondos de marca explícitos son excepciones editoriales, no otros temas seleccionables.
+
+Universo conserva un respaldo sólido oscuro al sustituir su degradado por una
+paleta más luminosa; no copiar automáticamente el primer stop al fondo sólido.
+
+**Why:** Los colores de una referencia de degradado no definen necesariamente las
+superficies sólidas, que muestran texto claro y necesitan mantener su contraste.
+Índigo 2 tiene su propia regla y no debe homogeneizarse por este cambio.
+
+**How to apply:** Aplicar las paletas de referencia al degradado compartido y
+conservar el sólido, los acentos y las excepciones editoriales salvo petición
+explícita. Mantener el aclarado de Luz separado de la paleta base de Noche.

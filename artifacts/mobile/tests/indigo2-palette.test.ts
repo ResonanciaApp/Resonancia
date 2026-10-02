@@ -32,8 +32,12 @@ test("Índigo 2 keeps its seven vertical stops and applies 4% HSL desaturation t
   assert.equal(theme.accent, "#E8E8E8");
 });
 
-test("the palette update does not change Universo or the default visual theme", () => {
+test("Universo uses the supplied seven-color vertical gradient and retains its dark solid fallback", () => {
   assert.equal(exports.DEFAULT_THEME_ID, "tibet");
-  assert.deepEqual(exports.SCENE_THEMES.tibet.gradient, ["#262355", "#2A2460", "#282565", "#232C60", "#262F6B", "#283175"]);
+  assert.deepEqual(exports.SCENE_THEMES.tibet.gradient, ["#15689A", "#1B5E95", "#24528F", "#2A468C", "#2D3E89", "#2D3686", "#2C2F82"]);
+  assert.deepEqual(exports.SCENE_THEMES.tibet.gradientLocations, [0, 0.167, 0.333, 0.5, 0.667, 0.833, 1]);
+  assert.equal(exports.SCENE_THEMES.tibet.gradientLocations?.length, exports.SCENE_THEMES.tibet.gradient.length);
+  assert.deepEqual(exports.SCENE_THEMES.tibet.gradientStart, { x: 0.5, y: 0 });
+  assert.deepEqual(exports.SCENE_THEMES.tibet.gradientEnd, { x: 0.5, y: 1 });
   assert.equal(exports.SCENE_THEMES.tibet.solid, "#0B1438");
 });
