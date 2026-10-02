@@ -251,7 +251,7 @@ export function AmbientalDurationSheet({
           style={[
             styles.sheet,
             {
-              backgroundColor: theme.gradient[0],
+              backgroundColor: theme.gradient[1],
               paddingBottom: Math.max(insets.bottom, 16),
               transform: [{ translateY: sheetY }],
             },
@@ -260,7 +260,7 @@ export function AmbientalDurationSheet({
         >
           <LinearGradient
             pointerEvents="none"
-            colors={theme.gradient.slice(0, 3) as [string, string, string]}
+            colors={[theme.gradient[1], theme.gradient[2]]}
             style={StyleSheet.absoluteFill}
           />
           <View style={styles.handle} />
