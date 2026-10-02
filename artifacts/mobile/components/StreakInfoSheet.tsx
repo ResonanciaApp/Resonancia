@@ -114,7 +114,7 @@ export function StreakInfoSheet({
         end={theme.gradientEnd}
         style={styles.root}
       >
-        <View style={[styles.artwork, { height: artworkHeight }]} pointerEvents="none">
+        <View testID="streak-info-artwork" style={[styles.artwork, { height: artworkHeight }]} pointerEvents="none">
           <MaskedView
             style={StyleSheet.absoluteFill}
             maskElement={
@@ -150,7 +150,9 @@ export function StreakInfoSheet({
         <ScrollView
           ref={scrollRef}
           showsVerticalScrollIndicator={false}
-          bounces={false}
+          bounces
+          alwaysBounceVertical
+          overScrollMode="always"
           contentInsetAdjustmentBehavior="never"
           automaticallyAdjustContentInsets={false}
           testID="streak-info-scroll"
@@ -168,7 +170,7 @@ export function StreakInfoSheet({
               >
                 <Feather name="arrow-left" size={23} color={WHITE} />
               </Pressable>
-              <Text style={styles.pageTitle} accessibilityRole="header">Sistema de rachas</Text>
+              <Text testID="streak-info-title" style={styles.pageTitle} accessibilityRole="header">Sistema de rachas</Text>
               <View style={styles.headerSpacer} />
             </View>
             <View style={styles.heroText}>
@@ -224,7 +226,7 @@ export function StreakInfoSheet({
 
 const styles = StyleSheet.create({
   root: { flex: 1 },
-  artwork: { position: "absolute", top: 0, left: 0, right: 0 },
+  artwork: { position: "absolute", top: -80, left: 0, right: 0 },
   header: {
     paddingHorizontal: 20,
     flexDirection: "row",
@@ -246,8 +248,11 @@ const styles = StyleSheet.create({
     flex: 1,
     marginHorizontal: 8,
     fontFamily: "Manrope",
-    fontSize: 17,
-    color: WHITE,
+    fontSize: 18,
+    lineHeight: 21,
+    fontWeight: "700",
+    letterSpacing: 0.2,
+    color: STREAK_INFO_COLORS.pageTitle,
     textAlign: "center",
   },
   heroText: { paddingHorizontal: 28, paddingTop: 21, alignItems: "center" },

@@ -24,6 +24,9 @@ type Props = {
   replayKey?: string;
   source?: unknown;
   contentContainerStyle?: unknown;
+  bounces?: boolean;
+  alwaysBounceVertical?: boolean;
+  overScrollMode?: string;
 };
 const flatten = (style: unknown): Record<string, any> => Array.isArray(style)
   ? Object.assign({}, ...style.map(flatten))
@@ -45,8 +48,8 @@ function harness({
   let closeButton: (() => void) | undefined;
   let closes = 0;
   const nodes = new Map<string, Props>();
-  const Native = ({ children, style, testID, accessibilityLabel, accessibilityRole, onPress, name, color, replayKey, contentContainerStyle }: Props) => {
-    if (testID) nodes.set(testID, { style, contentContainerStyle });
+  const Native = ({ children, style, testID, accessibilityLabel, accessibilityRole, onPress, name, color, replayKey, contentContainerStyle, bounces, alwaysBounceVertical, overScrollMode }: Props) => {
+    if (testID) nodes.set(testID, { style, contentContainerStyle, bounces, alwaysBounceVertical, overScrollMode });
     if (testID === "streak-info-close") closeButton = onPress;
     const resolved = flatten(style);
     return React.createElement("div", {
@@ -217,4 +220,29 @@ test("Perfil connects the information locally while preserving its weekly naviga
   assert.match(profile, /StreakInfoSheet visible=\{streakInfoOpen\} onClose=\{\(\) => setStreakInfoOpen\(false\)\}/);
   assert.match(profile, /useFocusEffect\(useCallback\(\(\) => \(\) => setStreakInfoOpen\(false\), \[\]\)\)/);
   assert.doesNotMatch(profile, /router\.push\("\/tipos-de-rachas/);
+});
+
+test("vertical overscroll is enabled at both ends and artwork moves up exactly 80px without shifting the content", () => {
+  const h = harness();
+  h.render(true);
+  const scroll = h.nodes.get("streak-info-scroll")!;
+  assert.equal(scroll.bounces, true);
+  assert.equal(scroll.alwaysBounceVertical, true);
+  assert.equal(scroll.overScrollMode, "always");
+  assert.equal(flatten(h.nodes.get("streak-info-artwork")!.style).top, -80);
+  assert.equal(flatten(h.nodes.get("streak-info-cards")!.style).marginTop, 50);
+  assert.equal(flatten(h.nodes.get("streak-info-hero")!.style).top, undefined);
+});
+
+test("Sistema de rachas title matches Historial typography", () => {
+  const h = harness();
+  h.render(true);
+  const actual = flatten(h.nodes.get("streak-info-title")!.style);
+  const historySource = readFileSync(new URL("../app/historial.tsx", import.meta.url), "utf8");
+  const historyTitle = historySource.match(/stickyTitleLibraryTab:\s*(\{[^}]*\})/);
+  assert.ok(historyTitle);
+  const expected = new Function(`return (${historyTitle[1]});`)();
+  for (const key of ["fontFamily", "fontSize", "lineHeight", "fontWeight", "letterSpacing", "color", "textAlign"]) {
+    assert.equal(actual[key], expected[key], key);
+  }
 });

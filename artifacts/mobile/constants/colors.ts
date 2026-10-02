@@ -48,6 +48,7 @@ export const SLEEP_REMINDER_CONTINUE_BACKGROUND = "#94A6FF";
 export const SLEEP_REMINDER_CONTINUE_FOREGROUND = "#0B0A26";
 export const STREAK_INFO_COLORS = {
   foreground: "#F9F9F9",
+  pageTitle: "#FBFBFB",
   fallbackBackground: "#0B1438",
   subtitle: "rgba(249,249,249,0.82)",
   description: "rgba(249,249,249,0.74)",
