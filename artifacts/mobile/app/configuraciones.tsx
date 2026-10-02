@@ -37,7 +37,7 @@ import { useColors } from "@/hooks/useColors";
 import { FREE_TIMER_MAX_MINUTES, showPremiumGate } from "@/lib/premiumGate";
 import { useNotifications } from "@/context/NotificationsContext";
 import { useSceneTheme } from "@/context/SceneThemeContext";
-import { isIndigoThemeId } from "@/config/scene-themes";
+import { isIndigo2ThemeId, isIndigoThemeId } from "@/config/scene-themes";
 import { deleteMyAccount, exportMyAccountData } from "@workspace/api-client-react";
 import { removeLocalAccountData } from "@/lib/accountData";
 import { clearInspirationAccountData } from "@/context/InspirationContext";
@@ -87,15 +87,15 @@ export default function ConfiguracionesScreen() {
   const settingsCardBackground =
     activeSceneId === "tibet"
       ? "rgba(0,0,0,0.15)"
-      : isIndigoThemeId(activeSceneId)
-        ? "rgba(181,211,255,0.057)"
-        : activeSceneId === "indigo2"
-          ? "rgba(191,207,255,0.096)"
+      : isIndigo2ThemeId(activeSceneId)
+        ? "rgba(191,207,255,0.096)"
+        : isIndigoThemeId(activeSceneId)
+          ? "rgba(181,211,255,0.057)"
           : "rgba(181,211,255,0.057)";
-  const settingsBorderColor = isIndigoThemeId(activeSceneId)
-    ? "rgba(170,170,196,0.16)"
-    : activeSceneId === "indigo2"
-      ? "rgba(255,255,255,0.08)"
+  const settingsBorderColor = isIndigo2ThemeId(activeSceneId)
+    ? "rgba(255,255,255,0.08)"
+    : isIndigoThemeId(activeSceneId)
+      ? "rgba(170,170,196,0.16)"
       : "rgba(255,255,255,0.1)";
   const settingsGradientLocations =
     activeTheme.gradientLocations?.length === activeTheme.gradient.length

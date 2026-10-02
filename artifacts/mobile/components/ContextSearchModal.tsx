@@ -23,6 +23,7 @@ import { DiscoverSearchBorder } from "@/components/DiscoverSearchBorder";
 import { DISCOVER_SEARCH_SURFACE } from "@/constants/colors";
 import { PremiumPlansSurface, usePremiumPlansModalHost } from "@/components/PremiumPlansOverlay";
 import { useSceneTheme } from "@/context/SceneThemeContext";
+import { isIndigo2ThemeId } from "@/config/scene-themes";
 import {
   SEARCH_DURATION_RANGES,
   type SearchDurationRangeId,
@@ -209,7 +210,7 @@ export function ContextSearchModal({
   const searchBarSurface =
     matchDiscoverSearchBar
       ? DISCOVER_SEARCH_SURFACE
-      : activeSceneId === "indigo2"
+      : isIndigo2ThemeId(activeSceneId)
         ? "rgba(21,13,46,0.7)"
         : activeSceneId === "resonancia"
           ? "rgba(9,11,23,0.7)"

@@ -1,5 +1,6 @@
 import { useSceneTheme } from "@/context/SceneThemeContext";
 import { useColors } from "@/hooks/useColors";
+import { isIndigo2ThemeId } from "@/config/scene-themes";
 
 type RoutineThemeTokens = {
   background: string;
@@ -56,12 +57,14 @@ const ROUTINE_SCENE_SURFACES = {
 export function useRoutineTheme(): RoutineThemeTokens {
   const colors = useColors();
   const { activeSceneId, theme } = useSceneTheme();
-  const scene = ROUTINE_SCENE_SURFACES[activeSceneId];
+  const scene = ROUTINE_SCENE_SURFACES[
+    isIndigo2ThemeId(activeSceneId) ? "indigo2" : activeSceneId as keyof typeof ROUTINE_SCENE_SURFACES
+  ];
 
   return {
     background: theme.solid,
     surface:
-      activeSceneId === "indigo2" || activeSceneId === "indigo3"
+      isIndigo2ThemeId(activeSceneId) || activeSceneId === "indigo3"
         ? "rgba(21,13,46,0.45)"
         : activeSceneId === "resonancia"
           ? "rgba(9,11,23,0.45)"

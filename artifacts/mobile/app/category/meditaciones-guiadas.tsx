@@ -34,7 +34,7 @@ import { useSceneTheme } from "@/context/SceneThemeContext";
 import { useCategoryOverlay } from "@/context/CategoryOverlayContext";
 import { hexToRgba } from "@/utils/color";
 import { useBackOverride } from "@/context/BackOverrideContext";
-import { isIndigoThemeId } from "@/config/scene-themes";
+import { isIndigo2ThemeId, isIndigoThemeId } from "@/config/scene-themes";
 import { getCategorySessionTags } from "@/data/category-tabs";
 import { ContextSearchModal, type ContextSearchItem } from "@/components/ContextSearchModal";
 import { PremiumPlansSurface, usePremiumPlansModalHost } from "@/components/PremiumPlansOverlay";
@@ -267,7 +267,7 @@ export default function MeditacionesGuiadasScreen() {
   const [stickyHeaderHeight, setStickyHeaderHeight] = useState(0);
   const stickyBorderOpacity = useRef(new Animated.Value(0)).current;
   const stickyBorderActiveRef = useRef(false);
-  const useDiscoverStickyStyle = isIndigoThemeId(theme.id) || theme.id === "indigo2";
+  const useDiscoverStickyStyle = isIndigo2ThemeId(theme.id) || isIndigoThemeId(theme.id);
 
   const PAGE_SIZE = 20;
   const [visibleCount, setVisibleCount] = useState(PAGE_SIZE);

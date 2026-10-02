@@ -1,11 +1,13 @@
 /** Temas visuales de la app; las escenas de audio son independientes. */
 import type { SceneId } from "@/context/AmbientPlayerContext";
 
-export type VisualThemeId = "tibet" | "indigo2";
+export type VisualThemeId = "tibet" | "indigo2" | "cloudy" | "cloudy2";
+export type ThemeSceneId = SceneId | VisualThemeId;
+export const VISUAL_THEME_IDS = ["tibet", "indigo2", "cloudy", "cloudy2"] as const;
 export const SCENE_THEME_STORAGE_KEY = "@active_theme_scene";
 
 export type SceneTheme = {
-  id: SceneId;
+  id: ThemeSceneId;
   label: string;
   /** Degradado de fondo (mínimo 2 stops) usado en pantallas con LinearGradient de raíz. */
   gradient: readonly [string, string, ...string[]];
@@ -39,6 +41,17 @@ export type SceneTheme = {
   }>;
 };
 
+const INDIGO2_THEME: SceneTheme = {
+  id: "indigo2",
+  label: "Indigo 2",
+  gradient: ["#202F5B", "#20285A", "#21255A", "#262159", "#26205B", "#2F205B", "#322161"],
+  gradientLocations: [0, 0.167, 0.333, 0.5, 0.667, 0.833, 1],
+  gradientStart: { x: 0.5, y: 0 },
+  gradientEnd: { x: 0.5, y: 1 },
+  solid: "#202F5B",
+  accent: "#E8E8E8",
+};
+
 export const SCENE_THEMES: Record<VisualThemeId, SceneTheme> = {
   tibet: {
     id: "tibet",
@@ -49,21 +62,35 @@ export const SCENE_THEMES: Record<VisualThemeId, SceneTheme> = {
     gradientEnd: { x: 0.5, y: 1 },
     solid: "#0B1438",
   },
-  indigo2: {
-    id: "indigo2",
-    label: "Indigo 2",
-    gradient: ["#1D2C58", "#1D2557", "#1E2257", "#231E56", "#231D58", "#2C1D58", "#2F1E5F"],
-    gradientLocations: [0, 0.167, 0.333, 0.5, 0.667, 0.833, 1],
-    gradientStart: { x: 0.5, y: 0 },
-    gradientEnd: { x: 0.5, y: 1 },
-    solid: "#1D2C58",
-    accent: "#E8E8E8",
+  indigo2: INDIGO2_THEME,
+  cloudy: {
+    ...INDIGO2_THEME,
+    id: "cloudy",
+    label: "Cloudy",
+    gradient: ["#2D2F7C", "#2D3981", "#2D4085", "#2A4687", "#25528C", "#1F5D92", "#166494"],
+    solid: "#2D2F7C",
+  },
+  cloudy2: {
+    ...INDIGO2_THEME,
+    id: "cloudy2",
+    label: "Cloudy 2",
+    gradient: ["#165794", "#1E5492", "#254B8D", "#2A4687", "#2D4085", "#2D3981", "#2D2F7C"],
+    solid: "#165794",
   },
 };
 
 export const DEFAULT_THEME_ID = "tibet" satisfies VisualThemeId;
 
 /** Resonancia hereda exactamente las reglas visuales especiales de Índigo. */
-export function isIndigoThemeId(id: SceneId): boolean {
+export function isIndigoThemeId(id: ThemeSceneId): boolean {
   return id === "indigo" || id === "resonancia";
+}
+
+/** Los temas Cloudy conservan las reglas de Índigo 2, no su paleta. */
+export function isIndigo2ThemeId(id: ThemeSceneId): boolean {
+  return id === "indigo2" || id === "cloudy" || id === "cloudy2";
+}
+
+export function isVisualThemeId(id: unknown): id is VisualThemeId {
+  return typeof id === "string" && Object.prototype.hasOwnProperty.call(SCENE_THEMES, id);
 }

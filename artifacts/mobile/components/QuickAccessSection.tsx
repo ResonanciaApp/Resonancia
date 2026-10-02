@@ -16,7 +16,7 @@ import { useDrawer } from "@/context/DrawerContext";
 import { useCategoryOverlay } from "@/context/CategoryOverlayContext";
 import { useMixerPanel } from "@/context/MixerPanelContext";
 import { useSceneTheme } from "@/context/SceneThemeContext";
-import { isIndigoThemeId } from "@/config/scene-themes";
+import { isIndigo2ThemeId, isIndigoThemeId } from "@/config/scene-themes";
 import { useColors } from "@/hooks/useColors";
 import { WIDGET_GREEN_SOLID } from "@/constants/colors";
 
@@ -282,11 +282,11 @@ export function QuickAccessSection({
   const cardBackground = cardBackgroundColor ?? (
     activeSceneId === "tibet"
       ? "rgba(0,0,0,0.15)"
-      : isIndigoThemeId(activeSceneId)
-        ? "rgba(181,211,255,0.057)"
-        : activeSceneId === "indigo2"
-          ? "rgba(191,207,255,0.096)"
-        : "rgba(181,211,255,0.057)"
+      : isIndigo2ThemeId(activeSceneId)
+        ? "rgba(191,207,255,0.096)"
+        : isIndigoThemeId(activeSceneId)
+          ? "rgba(181,211,255,0.057)"
+          : "rgba(181,211,255,0.057)"
   );
 
   const handlePress = useCallback((id: AccessId) => {

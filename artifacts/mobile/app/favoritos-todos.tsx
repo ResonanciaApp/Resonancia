@@ -31,7 +31,7 @@ import { getSessionById, type Session } from "@/data/sessions";
 import { type VideoItem } from "@/data/videos";
 import { useColors } from "@/hooks/useColors";
 import { useVideos } from "@/hooks/useVideos";
-import { isIndigoThemeId } from "@/config/scene-themes";
+import { isIndigo2ThemeId, isIndigoThemeId } from "@/config/scene-themes";
 import { PLAYLISTS, type EditorialPlaylist } from "@/data/playlists";
 import { useCatalog } from "@/context/CatalogContext";
 import { buildVisibleFavoriteTabs, FAVORITE_COLLECTION_TABS, resolveSavedEditorialFavorites, type FavoriteCollectionTabId } from "@/lib/favorites-home-helpers";
@@ -66,8 +66,8 @@ function FavPill({
             styles.pill,
             theme.id === "tibet" && styles.pillTibet,
             isIndigoThemeId(theme.id) && styles.pillIndigo,
-            !sel && theme.id === "indigo2" && styles.pillIndigo2Inactive,
-            !sel && theme.id === "indigo2" && indigo2BackgroundColor && {
+            !sel && isIndigo2ThemeId(theme.id) && styles.pillIndigo2Inactive,
+            !sel && isIndigo2ThemeId(theme.id) && indigo2BackgroundColor && {
               backgroundColor: indigo2BackgroundColor,
             },
             sel && styles.pillSel,

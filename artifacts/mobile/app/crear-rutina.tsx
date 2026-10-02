@@ -29,7 +29,7 @@ import {
 } from "@/context/RutinaContext";
 import { useColors } from "@/hooks/useColors";
 import { SacredBackground } from "@/components/SacredBackground";
-import { isIndigoThemeId } from "@/config/scene-themes";
+import { isIndigo2ThemeId } from "@/config/scene-themes";
 import { useSceneTheme } from "@/context/SceneThemeContext";
 import { markRoutineAdditionTransition } from "@/lib/routineCompletionTransition";
 
@@ -71,11 +71,9 @@ export default function CrearRutinaScreen() {
   const suggestionSurface =
     activeSceneId === "tibet"
       ? "rgba(0,0,0,0.07)"
-      : activeSceneId === "indigo2"
+      : isIndigo2ThemeId(activeSceneId)
         ? "rgba(191,207,255,0.07)"
-        : isIndigoThemeId(activeSceneId)
-          ? "rgba(181,211,255,0.07)"
-          : "rgba(181,211,255,0.07)";
+        : "rgba(181,211,255,0.07)";
   const tabAccentColor = activeTheme.accent ?? colors.primary;
   const suggestionsFadeStyle = useAnimatedStyle(() => ({
     opacity: 1 - suggestionTransition.value,

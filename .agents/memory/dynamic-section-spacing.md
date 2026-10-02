@@ -22,10 +22,12 @@ no distinguían entre omitir la propiedad y eliminarla explícitamente.
 contenido variable, incluidos varios aumentos y un segundo ciclo de completado.
 Las pruebas deben modelar que el nodo nativo conserva las propiedades omitidas.
 
-Retirar las líneas decorativas entre secciones de Inicio o Descubrir no implica eliminar el
+Retirar las líneas decorativas entre secciones no implica eliminar el
 espacio que reservaban. Conservar el gap anterior como espacio transparente y
 sumar la separación extra solicitada desde el bloque indicado: «Para este momento»
-en Inicio y los seis bloques de categorías en Descubrir.
+en Inicio, los seis bloques de categorías en Descubrir y el primer carrusel en
+Dormir y Sonidos, y también en categorías y sus secciones internas.
+Los banners intercalados también conservan su separación.
 
 **Why:** El usuario pidió quitar las líneas y aumentar la separación a la vez;
 colapsar su espacio produciría el resultado contrario.
@@ -33,3 +35,5 @@ colapsar su espacio produciría el resultado contrario.
 **How to apply:** Comparar la suma de márgenes y altura del separador anterior con
 el espacio nuevo. Mantener sin cambios la separación anterior a ese bloque y la
 tipografía interna de las cards al ajustar solo títulos de sección.
+Las pantallas internas que muestran una sola cuadrícula no necesitan carruseles
+nuevos para cumplir esta regla; mantener su estructura y sus títulos de página.

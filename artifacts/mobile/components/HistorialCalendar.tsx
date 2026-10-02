@@ -9,7 +9,7 @@ import { getArtist } from "@/data/artists";
 import { getGuide } from "@/data/guides";
 import { getSessionById } from "@/data/sessions";
 import { useSceneTheme } from "@/context/SceneThemeContext";
-import { isIndigoThemeId } from "@/config/scene-themes";
+import { isIndigo2ThemeId, isIndigoThemeId } from "@/config/scene-themes";
 import { useColors } from "@/hooks/useColors";
 import { dayKey } from "@/utils/stats";
 import { CARD_TEXT_BELOW, WIDGET_GREEN_SOLID } from "@/constants/colors";
@@ -254,14 +254,14 @@ export function HistorialCalendar({
 }) {
   const colors = useColors();
   const { activeSceneId } = useSceneTheme();
-  const calendarAccent = activeSceneId === "indigo2" ? colors.accent : colors.mutedForeground;
+  const calendarAccent = isIndigo2ThemeId(activeSceneId) ? colors.accent : colors.mutedForeground;
   const { history, statEvents, isFavorite, toggleFavorite, playSession } = usePlayer();
-  const calendarBackground = isIndigoThemeId(activeSceneId)
-    ? "rgba(181,211,255,0.057)"
-    : activeSceneId === "tibet"
-      ? "rgba(0,0,0,0.15)"
-      : activeSceneId === "indigo2"
-        ? "rgba(191,207,255,0.096)"
+  const calendarBackground = isIndigo2ThemeId(activeSceneId)
+    ? "rgba(191,207,255,0.096)"
+    : isIndigoThemeId(activeSceneId)
+      ? "rgba(181,211,255,0.057)"
+      : activeSceneId === "tibet"
+        ? "rgba(0,0,0,0.15)"
         : "rgba(181,211,255,0.057)";
 
   const today = useMemo(() => new Date(), []);

@@ -1,7 +1,6 @@
 import { Feather, MaterialCommunityIcons } from "@expo/vector-icons";
 import { useSceneTheme } from "@/context/SceneThemeContext";
-import { isIndigoThemeId } from "@/config/scene-themes";
-import type { SceneId } from "@/context/AmbientPlayerContext";
+import { isIndigo2ThemeId, isIndigoThemeId, type ThemeSceneId } from "@/config/scene-themes";
 import MaskedView from "@react-native-masked-view/masked-view";
 import { GoldGradient, GoldGradientFill } from "@/components/GoldGradient";
 import { router, useFocusEffect } from "expo-router";
@@ -79,7 +78,7 @@ const soundCountText = (count: number) => `${count} sonido${count === 1 ? "" : "
 const playlistSubtitle = (count: number) => `Playlist · ${sessionCountText(count)}`;
 const mixSubtitle = (count: number) => `Mezcla · ${soundCountText(count)}`;
 
-export function getLibraryTabSurface(_sceneId: SceneId): string {
+export function getLibraryTabSurface(_sceneId: ThemeSceneId): string {
   return "rgba(0,0,0,0.22)";
 }
 
@@ -193,7 +192,7 @@ function LibChip({
             styles.chip,
             theme.id === "tibet" && styles.chipTibet,
             isIndigoThemeId(theme.id) && styles.chipIndigo,
-            !sel && theme.id === "indigo2" && styles.chipIndigo2Inactive,
+            !sel && isIndigo2ThemeId(theme.id) && styles.chipIndigo2Inactive,
             sel && styles.chipSel,
             sel && { backgroundColor: WIDGET_GREEN_SOLID },
             { opacity: pressed ? 0.7 : 1 },
@@ -1174,7 +1173,7 @@ export function BibliotecaScreen({
   const iconPlaceholderColor = "#fefefe";
   const libraryTabSurface = getLibraryTabSurface(activeSceneId);
   const addResSearchSurface =
-    activeSceneId === "indigo2"
+    isIndigo2ThemeId(activeSceneId)
       ? "rgba(21,13,46,0.7)"
       : activeSceneId === "resonancia"
         ? "rgba(9,11,23,0.7)"

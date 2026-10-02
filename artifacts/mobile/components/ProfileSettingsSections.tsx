@@ -14,9 +14,9 @@ import {
 
 import { MilestoneCards } from "@/components/MilestoneCards";
 import { ProgressMirrorSections } from "@/components/ProgressMirrorSections";
-import { isIndigoThemeId } from "@/config/scene-themes";
+import { DEFAULT_THEME_ID, SCENE_THEMES, isIndigoThemeId, isIndigo2ThemeId, isVisualThemeId, type ThemeSceneId } from "@/config/scene-themes";
+import { VisualThemeSwatches } from "@/components/VisualThemeSwatches";
 import { MEMBERSHIP_AURORA } from "@/constants/colors";
-import type { SceneId } from "@/context/AmbientPlayerContext";
 import { useBrightness } from "@/context/BrightnessContext";
 import { useGeometrixPanel } from "@/context/GeometrixPanelContext";
 import { usePremium } from "@/context/PremiumContext";
@@ -32,6 +32,7 @@ type MenuRow = {
   description?: string;
   accent?: boolean;
   toggle?: boolean;
+  themePicker?: boolean;
   toggleValue?: boolean;
   onToggle?: (value: boolean) => void;
   onPress?: () => void;
@@ -46,7 +47,7 @@ type MenuSection = {
 
 type ProfileSettingsSectionsProps = {
   placement?: "profile" | "settings";
-  sceneId: SceneId;
+  sceneId: ThemeSceneId;
   foreground: string;
   mutedForeground: string;
   accent: string;
@@ -68,9 +69,10 @@ export function ProfileSettingsSections({
   const { isPremium: isPremiumDev, setPremium: setPremiumDev } = usePremium();
   const { primary } = useColors();
   const { brightMode, setBrightMode } = useBrightness();
-  const { setActiveScene } = useSceneTheme();
+  const { activeSceneId, setActiveScene } = useSceneTheme();
   const isIndigo = isIndigoThemeId(sceneId);
-  const isIndigo2 = sceneId === "indigo2";
+  const isIndigo2 = isIndigo2ThemeId(sceneId);
+  const selectedThemeLabel = SCENE_THEMES[isVisualThemeId(sceneId) ? sceneId : DEFAULT_THEME_ID].label;
   const themeAccent = isIndigo2 ? accent : isIndigo ? "#AAAAC4" : accent;
   const dividerColor = isIndigo
     ? "rgba(170,170,196,0.14)"
@@ -109,15 +111,12 @@ export function ProfileSettingsSections({
         {
           icon: "layers",
           label: "Escenas",
-          description: isIndigo2 ? "Índigo 2" : "Universo",
-          toggle: true,
-          toggleValue: isIndigo2,
-          onToggle: (enabled) => setActiveScene(enabled ? "indigo2" : "tibet"),
+          themePicker: true,
         },
         {
           icon: brightMode ? "sun" : "moon",
           label: "Luz / Noche",
-          description: `${brightMode ? "Luz · 3,5 % más brillo" : "Noche · tonos originales"} · ${isIndigo2 ? "Índigo 2" : "Universo"}`,
+          description: `${brightMode ? "Luz · 3,5 % más brillo" : "Noche · tonos originales"} · ${selectedThemeLabel}`,
           toggle: true,
           toggleValue: brightMode,
           onToggle: setBrightMode,
@@ -240,6 +239,26 @@ export function ProfileSettingsSections({
           <View style={[styles.card, { backgroundColor: cardBackground }]}>
             {section.rows.map((row, index) => {
               const rowColor = row.accent ? "#D8B56A" : foreground;
+              if (row.themePicker) {
+                return (
+                  <View key={row.label}>
+                    {index > 0 && <View style={[styles.divider, { backgroundColor: dividerColor }]} />}
+                    <View style={styles.row}>
+                      <View style={styles.iconBox}>
+                        <Feather name={row.icon} size={20} color="#F9F9F9" />
+                      </View>
+                      <Text style={[styles.rowLabel, { color: foreground }]}>{row.label}</Text>
+                    </View>
+                    <VisualThemeSwatches
+                      activeId={activeSceneId}
+                      onSelect={setActiveScene}
+                      foreground={foreground}
+                      accent={themeAccent}
+                      brightMode={brightMode}
+                    />
+                  </View>
+                );
+              }
               return (
                 <React.Fragment key={row.label}>
                   {index > 0 && <View style={[styles.divider, { backgroundColor: dividerColor }]} />}

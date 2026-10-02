@@ -33,7 +33,7 @@ import { catalogImage, useCoverPresetCatalog } from "@/lib/cover-preset-catalog"
 import { useProfileAvatarSource } from "@/lib/profile-avatar";
 import { useColors } from "@/hooks/useColors";
 import { useSceneTheme } from "@/context/SceneThemeContext";
-import { isIndigoThemeId } from "@/config/scene-themes";
+import { isIndigo2ThemeId, isIndigoThemeId } from "@/config/scene-themes";
 import { useCategoryOverlay } from "@/context/CategoryOverlayContext";
 import { useAuth } from "@/context/AuthContext";
 import { WIDGET_GREEN_SOLID } from "@/constants/colors";
@@ -147,7 +147,7 @@ export function CommunityMixesCarousel() {
           onPress={() => router.push("/mezclas-comunidad" as never)}
           style={({ pressed }) => ({ opacity: pressed ? 0.6 : 1 })}
         >
-          <Text style={[styles.verTodas, { color: theme.id === "indigo2" ? WIDGET_GREEN_SOLID : colors.primary }]}>Ver todos</Text>
+          <Text style={[styles.verTodas, { color: isIndigo2ThemeId(theme.id) ? WIDGET_GREEN_SOLID : colors.primary }]}>Ver todos</Text>
         </Pressable>
       </View>
 
@@ -248,6 +248,7 @@ export function MixRow({
       style={({ pressed }) => [
         styles.row,
         activeSceneId === "tibet" && { backgroundColor: "rgba(0,0,0,0.15)" },
+        isIndigo2ThemeId(activeSceneId) && { backgroundColor: "rgba(191,207,255,0.096)" },
         isIndigoThemeId(activeSceneId) && { backgroundColor: "rgba(181,211,255,0.057)" },
         { opacity: pressed ? 0.6 : 1 },
       ]}

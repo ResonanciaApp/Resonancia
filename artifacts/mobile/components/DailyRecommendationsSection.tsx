@@ -17,6 +17,7 @@ import { SessionRow } from "@/components/SessionRow";
 import type { Session } from "@/data/sessions";
 import { useColors } from "@/hooks/useColors";
 import { useSceneTheme } from "@/context/SceneThemeContext";
+import { isIndigo2ThemeId } from "@/config/scene-themes";
 
 type Props = {
   sessions: Session[];
@@ -90,7 +91,7 @@ export function DailyRecommendationsSection({
         <Text style={[styles.title, { color: colors.foreground }]}>
           Recomendaciones diarias
         </Text>
-        <Text style={[styles.date, inicio3Compact && styles.inicio3DateLowered, { color: theme.id === "indigo2" ? colors.accent : colors.mutedForeground }]}>
+        <Text style={[styles.date, inicio3Compact && styles.inicio3DateLowered, { color: isIndigo2ThemeId(theme.id) ? colors.accent : colors.mutedForeground }]}>
           {formatDailyDate(dayKey)}
         </Text>
       </View>
@@ -128,11 +129,11 @@ export function DailyRecommendationsSection({
                   titleFontSize={inicio3Compact ? 16.5 : undefined}
                   titleFontWeight={inicio3Compact ? "600" : undefined}
                   authorColor={CARD_TEXT_BELOW}
-                  authorFontSize={theme.id === "indigo2" ? 10 : 11}
+                  authorFontSize={isIndigo2ThemeId(theme.id) ? 10 : 11}
                   chevronColor={
                     inicio3Compact
                       ? "#F9F9F9"
-                      : theme.id === "indigo2"
+                      : isIndigo2ThemeId(theme.id)
                         ? themeAccent
                         : undefined
                   }

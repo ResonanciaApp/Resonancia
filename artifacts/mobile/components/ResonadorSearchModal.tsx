@@ -20,6 +20,7 @@ import { LinearGradient } from "expo-linear-gradient";
 import type { Resonador } from "@/data/resonadores";
 import { useColors } from "@/hooks/useColors";
 import { useSceneTheme } from "@/context/SceneThemeContext";
+import { isIndigo2ThemeId } from "@/config/scene-themes";
 import {
   filterResonadores,
   type ResonadorModalityFilter,
@@ -120,7 +121,7 @@ export function ResonadorSearchModal({
     router.push(`/resonador-perfil/${item.id}` as never);
   };
   const searchBarSurface =
-    activeSceneId === "indigo2"
+    isIndigo2ThemeId(activeSceneId)
       ? "rgba(21,13,46,0.70)"
       : activeSceneId === "resonancia"
         ? "rgba(9,11,23,0.70)"

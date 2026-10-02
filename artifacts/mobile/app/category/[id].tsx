@@ -30,7 +30,7 @@ import { CATEGORIES } from "@/data/categories";
 import { getCategoryPopularSearchTerms } from "@/data/category-search";
 import { getCategorySessionTags, getCategoryTabs } from "@/data/category-tabs";
 import { getSessionsByCategory, type Session } from "@/data/sessions";
-import { isIndigoThemeId } from "@/config/scene-themes";
+import { isIndigo2ThemeId, isIndigoThemeId } from "@/config/scene-themes";
 
 const { height: SCREEN_HEIGHT } = Dimensions.get("window");
 import { useSoundPreview } from "@/hooks/useSoundPreview";
@@ -161,7 +161,7 @@ export default function CategoryScreen({ categoryId }: { categoryId?: string } =
       useNativeDriver: true,
     }).start();
   }, [stickyBorderOpacity]);
-  const useDiscoverStickyStyle = isIndigoThemeId(theme.id) || theme.id === "indigo2";
+  const useDiscoverStickyStyle = isIndigo2ThemeId(theme.id) || isIndigoThemeId(theme.id);
 
   const profileSectionBackground = "rgba(0,0,0,0.22)";
   const title = category?.title ?? "Categoría";

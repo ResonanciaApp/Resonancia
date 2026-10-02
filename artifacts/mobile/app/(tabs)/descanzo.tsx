@@ -31,7 +31,7 @@ import { PremiumPlansSurface, usePremiumPlansModalHost } from "@/components/Prem
 import { usePlayerBrowse } from "@/context/PlayerContext";
 import { useAmbientalDuration } from "@/context/AmbientalDurationContext";
 import { usePremium } from "@/context/PremiumContext";
-import { isIndigoThemeId } from "@/config/scene-themes";
+import { isIndigo2ThemeId, isIndigoThemeId } from "@/config/scene-themes";
 import { useSceneTheme } from "@/context/SceneThemeContext";
 import { useBackOverride } from "@/context/BackOverrideContext";
 import { useCategoryOverlay } from "@/context/CategoryOverlayContext";
@@ -45,6 +45,7 @@ import { resolveSleepCarouselOrder } from "@/lib/editorial-playlist-helpers";
 import { CONTENT_CAROUSEL_GAP } from "@/constants/carousel";
 import { collectSupercategoryFeaturedSessions } from "@/data/supercategory-editorial-tags";
 
+const SECTION_EXTRA_GAP = 5;
 const AnimatedPressable = Animated.createAnimatedComponent(Pressable);
 
 function SleepPill({
@@ -106,7 +107,7 @@ function SleepPill({
           styles.sleepPill,
           theme.id === "tibet" && styles.sleepPillTibet,
           isIndigoThemeId(theme.id) && styles.sleepPillIndigo,
-          !sel && theme.id === "indigo2" && styles.sleepPillIndigo2Inactive,
+          !sel && isIndigo2ThemeId(theme.id) && styles.sleepPillIndigo2Inactive,
           sel && styles.sleepPillSel,
         ]}
       >
@@ -184,11 +185,9 @@ export default function DescansoScreen() {
   const bgGradient = sceneTheme.gradient;
   const indigoSurface = sceneTheme.id === "tibet"
     ? "rgba(0,0,0,0.1)"
-    : isIndigoThemeId(sceneTheme.id)
-      ? "rgba(181,211,255,0.1)"
-      : sceneTheme.id === "indigo2"
-        ? "rgba(191,207,255,0.1)"
-        : "rgba(181,211,255,0.1)";
+    : isIndigo2ThemeId(sceneTheme.id)
+      ? "rgba(191,207,255,0.1)"
+      : "rgba(181,211,255,0.1)";
 
   const [searchVisible, setSearchVisible] = useState(false);
   const [sleepReminderVisible, setSleepReminderVisible] = useState(false);
@@ -389,15 +388,16 @@ export default function DescansoScreen() {
   const renderSleepCarousel = (
     item: (typeof orderedSleepCarousels)[number],
     index: number,
-  ) => (
+  ) => {
+    const followsPremiumBanner = !isPremium
+      && featuredSleepSessions.length === 0
+      && index === 1;
+    const carouselMarginTop = index === 0 ? 33 : 26 + (followsPremiumBanner ? SECTION_EXTRA_GAP : 0);
+    return (
     <React.Fragment key={item.key}>
       {index > 0
-      && !(
-        !isPremium
-        && featuredSleepSessions.length === 0
-        && index === 1
-      ) ? (
-        <View style={styles.sectionDivider} />
+      && !followsPremiumBanner ? (
+        <View style={styles.sectionSpacer} />
       ) : null}
       {item.session ? (
         <SessionCarousel
@@ -406,7 +406,7 @@ export default function DescansoScreen() {
           isPremium={isPremium}
           onPress={handleSessionTap}
           style={{
-            marginTop: index === 0 ? 33 : 26,
+            marginTop: carouselMarginTop,
             marginBottom: 0,
             paddingHorizontal: H_PAD,
           }}
@@ -421,7 +421,7 @@ export default function DescansoScreen() {
           cardWidth={SLEEP_CAROUSEL_CARD_W}
           allowOversizedCardWidth
           cardBorderRadius={16}
-          titleSize={17}
+          titleSize={19}
           hideCategoryAboveTitle
           showSleepCategoryPillWithInlineDuration
           ambientalTitleOnly
@@ -432,9 +432,10 @@ export default function DescansoScreen() {
       ) : item.playlist ? (
         <EditorialPlaylistCarousel
           title={item.playlist.title}
+          titleSize={19}
           playlists={item.playlist.playlists}
           style={{
-            marginTop: index === 0 ? 33 : 26,
+            marginTop: carouselMarginTop,
             marginBottom: 0,
           }}
           onPress={(playlist) =>
@@ -443,10 +444,13 @@ export default function DescansoScreen() {
         />
       ) : null}
       {!isPremium && featuredSleepSessions.length === 0 && index === 0 ? (
-        <PremiumBanner sleepVariant />
+        <View style={styles.sectionExtraSpacing}>
+          <PremiumBanner sleepVariant />
+        </View>
       ) : null}
     </React.Fragment>
-  );
+    );
+  };
 
   return (
     <LinearGradient
@@ -550,7 +554,7 @@ export default function DescansoScreen() {
             {featuredSleepSessions.length > 0 ? (
               <>
                 {orderedSleepCarousels.length > 0 ? (
-                  <View style={styles.sectionDivider} />
+                  <View style={styles.sectionSpacer} />
                 ) : null}
                 <SessionCarousel
                   title="Contenido destacado"
@@ -570,11 +574,13 @@ export default function DescansoScreen() {
                   cardHeight={FEATURED_SLEEP_CARD_H}
                   allowOversizedCardWidth
                   cardBorderRadius={16}
-                  titleSize={17}
+                  titleSize={19}
                   hideCategoryAboveTitle
                 />
                 {!isPremium ? (
-                  <PremiumBanner sleepVariant />
+                  <View style={styles.sectionExtraSpacing}>
+                    <PremiumBanner sleepVariant />
+                  </View>
                 ) : null}
               </>
             ) : null}
@@ -846,11 +852,11 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     alignItems: "center",
   },
-  sectionDivider: {
+  sectionExtraSpacing: { paddingTop: SECTION_EXTRA_GAP },
+  sectionSpacer: {
     height: StyleSheet.hairlineWidth,
     marginHorizontal: H_PAD,
-    marginTop: 26,
-    backgroundColor: "rgba(255,255,255,0.12)",
+    marginTop: 26 + SECTION_EXTRA_GAP,
   },
   sleepPillBorder: {},
   sleepPillBorderSel: {},

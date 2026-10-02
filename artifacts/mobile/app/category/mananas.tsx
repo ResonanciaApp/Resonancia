@@ -35,7 +35,7 @@ import type { Session } from "@/data/sessions";
 import { useColors } from "@/hooks/useColors";
 import { LinearGradient } from "expo-linear-gradient";
 import { useSceneTheme } from "@/context/SceneThemeContext";
-import { isIndigoThemeId } from "@/config/scene-themes";
+import { isIndigo2ThemeId, isIndigoThemeId } from "@/config/scene-themes";
 import {
   CONTENT_CAROUSEL_HEIGHT_SCALE,
   getContentCarouselCardWidth,
@@ -166,7 +166,7 @@ const TABS: ActiveTab[] = ["Todos", "Audios", "Videos", "Maestros"];
 export default function MananasScreen() {
   const colors = useColors();
   const { theme } = useSceneTheme();
-  const isIndigoTheme = isIndigoThemeId(theme.id) || theme.id === "indigo2";
+  const isIndigoTheme = isIndigoThemeId(theme.id) || isIndigo2ThemeId(theme.id);
   const insets = useSafeAreaInsets();
   const { history, playSession } = usePlayer();
   const { isPremium } = usePremium();
@@ -466,7 +466,7 @@ export default function MananasScreen() {
                         <FeaturedCard key={`feat-${s.id}`} session={s} />
                       ))}
                     </ScrollView>
-                    <View style={{ height: 1, backgroundColor: "rgba(255,255,255,0.06)", marginHorizontal: H_PAD, marginTop: 20 }} />
+                    <View style={styles.featuredSpacer} />
                   </>
                 )}
                 {false && recentInCategory.length > 0 && (
@@ -520,7 +520,7 @@ export default function MananasScreen() {
                   </View>
                 )}
 
-                <Text style={[styles.sectionTitle, { color: colors.foreground, paddingHorizontal: H_PAD, marginBottom: 10 }]}>
+                <Text style={[styles.sectionTitle, { color: colors.foreground, paddingHorizontal: H_PAD, marginTop: 5, marginBottom: 10 }]}>
                   Recientes
                 </Text>
                 {filteredSessions.length === 0 ? (
@@ -666,7 +666,8 @@ const styles = StyleSheet.create({
     overflow: "hidden", borderRadius: 1,
   },
 
-  sectionTitle: { fontFamily: "Manrope", fontSize: 20, fontWeight: "700", letterSpacing: 0.5, marginBottom: 0 },
+  sectionTitle: { fontFamily: "Manrope", fontSize: 22, fontWeight: "700", letterSpacing: 0.5, marginBottom: 0 },
+  featuredSpacer: { height: 1, marginHorizontal: H_PAD, marginTop: 25 },
   recentPlaceholder: {
     flexDirection: "row", alignItems: "center", gap: 14,
     borderRadius: 14, padding: 16, marginBottom: 28,

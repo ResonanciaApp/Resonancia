@@ -1,12 +1,11 @@
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import React, { createContext, useCallback, useContext, useMemo, useState } from "react";
 
-import { DEFAULT_THEME_ID, SCENE_THEME_STORAGE_KEY, SCENE_THEMES, type SceneTheme, type VisualThemeId } from "@/config/scene-themes";
-import type { SceneId } from "@/context/AmbientPlayerContext";
+import { DEFAULT_THEME_ID, SCENE_THEME_STORAGE_KEY, SCENE_THEMES, isVisualThemeId, type SceneTheme, type ThemeSceneId, type VisualThemeId } from "@/config/scene-themes";
 import { brightenThemeColor, useBrightness } from "@/context/BrightnessContext";
 
 type SceneThemeCtx = {
-  activeSceneId: SceneId;
+  activeSceneId: ThemeSceneId;
   theme: SceneTheme;
   setActiveScene: (id: VisualThemeId) => void;
 };
@@ -17,7 +16,7 @@ const SceneThemeContext = createContext<SceneThemeCtx | null>(null);
 export async function loadPersistedSceneId(): Promise<VisualThemeId> {
   try {
     const saved = await AsyncStorage.getItem(SCENE_THEME_STORAGE_KEY);
-    if (saved === "tibet" || saved === "indigo2") return saved;
+    if (isVisualThemeId(saved)) return saved;
   } catch (error) {
     console.warn("[theme] No se pudo leer el tema guardado", error);
   }

@@ -59,7 +59,7 @@
 - [Category overlay stack](category-overlay-stack.md) — pantallas con tab bar visible abren vía openCategory (pila de overlays bajo la barra), nunca router.push; useCategoryOverlayOptional en componentes compartidos
 - [Dormir multi-tag](descanso-4tabs-restructure.md) — supercategoría dinámica con 8 tags canónicos; sesiones multi-tag salen en varios carruseles pero se deduplican en la cola
 - [Buscador de Inicio como Descubrir](inicio-inline-search.md) — Inicio 3 usa barra completa y el mismo ContextSearchModal de Descubrir, con recientes, populares y filtros de duración
-- [Temas visuales](scene-visual-theme.md) — selector Universo/Índigo 2; Luz mezcla fondos con blanco al 3,5 %, Noche original; escenas sonoras independientes
+- [Temas visuales](scene-visual-theme.md) — Universo/Índigo 2/Cloudy/Cloudy 2 por swatches; familia Índigo 2 comparte estilos; Luz aclara fondos al 3,5 %; audio independiente
 - [Sticky header divider per-tab scroll](sticky-header-divider-per-tab-scroll.md) — divisor scroll-triggered debe cablearse a onScroll compartido en TODOS los ScrollView bajo el header, no solo la pestaña default
 - [Header divider full-bleed](header-border-full-bleed.md) — divider inside a padded header must be normal-flow + negative marginHorizontal, not absolute inside a padded child, to reach screen edge
 - [Action sheet theme hierarchy](action-sheet-theme-hierarchy.md) — Biblioteca: acciones con tercer stop; menú + y Agrega Resonador con último; otras superficies conservan su regla

@@ -39,7 +39,7 @@ import { useSceneTheme } from "@/context/SceneThemeContext";
 import { useBackOverride } from "@/context/BackOverrideContext";
 import { useCategoryOverlayOptional } from "@/context/CategoryOverlayContext";
 import { hexToRgba } from "@/utils/color";
-import { isIndigoThemeId } from "@/config/scene-themes";
+import { isIndigo2ThemeId, isIndigoThemeId } from "@/config/scene-themes";
 import { getCategorySessionTags } from "@/data/category-tabs";
 import { ContextSearchModal, type ContextSearchItem } from "@/components/ContextSearchModal";
 
@@ -283,7 +283,7 @@ export default function MusicaSonidosScreen() {
   const [stickyHeaderHeight, setStickyHeaderHeight] = useState(0);
   const stickyBorderOpacity = useRef(new Animated.Value(0)).current;
   const stickyBorderActiveRef = useRef(false);
-  const useDiscoverStickyStyle = isIndigoThemeId(theme.id) || theme.id === "indigo2";
+  const useDiscoverStickyStyle = isIndigo2ThemeId(theme.id) || isIndigoThemeId(theme.id);
 
   const PAGE_SIZE = 20;
   const [visibleCount, setVisibleCount] = useState(PAGE_SIZE);
@@ -381,13 +381,13 @@ export default function MusicaSonidosScreen() {
             allowOversizedCardWidth
             cardBorderRadius={16}
             hideCategoryAboveTitle
-            titleSize={17}
+            titleSize={19}
           />
         ) : null}
         {musicCollections.map((collection, index) => (
           <React.Fragment key={collection.id}>
             {featuredSessions.length > 0 || index > 0 ? (
-              <View style={styles.sectionDivider} />
+              <View style={styles.sectionSpacer} />
             ) : null}
             <SessionCarousel
               title={collection.label}
@@ -416,7 +416,7 @@ export default function MusicaSonidosScreen() {
               ambientalTitleOnly
               sleepOverlayMetadataStyle={{ transform: [{ translateX: 3 }, { translateY: -1 }] }}
               overlayGradientLocations={[0.18, 0.48, 1]}
-              titleSize={17}
+              titleSize={19}
               onViewAll={() => openMusicCollection(collection.id)}
             />
           </React.Fragment>
@@ -639,11 +639,10 @@ const styles = StyleSheet.create({
   featuredTitle: { fontFamily: "Manrope", fontSize: 17, fontWeight: "700", color: TEXT, paddingHorizontal: H_PAD, marginTop: 30 },
   featuredRow: { paddingHorizontal: H_PAD, gap: 13, paddingTop: 21 },
   carouselSections: { marginTop: -3 },
-  sectionDivider: {
+  sectionSpacer: {
     height: StyleSheet.hairlineWidth,
     marginHorizontal: H_PAD,
-    marginTop: 26,
-    backgroundColor: "rgba(249,249,249,0.18)",
+    marginTop: 31,
   },
   emptyState: { alignItems: "center", paddingTop: 80, paddingHorizontal: H_PAD },
   loadMoreFooter: { alignItems: "center", paddingVertical: 20 },

@@ -54,7 +54,10 @@ const mocks: Record<string, unknown> = {
     id, title: `Card ${id}`, image: {}, durationLabel: "3 min", categoryLabel: "Meditación",
   }) },
   "@/context/SceneThemeContext": { useSceneTheme: () => ({ activeSceneId: "indigo2" }) },
-  "@/config/scene-themes": { isIndigoThemeId: () => false },
+  "@/config/scene-themes": {
+    isIndigoThemeId: () => false,
+    isIndigo2ThemeId: (id: string) => id === "indigo2" || id === "cloudy",
+  },
   "@/hooks/useColors": { useColors: () => ({ foreground: "#FFF", mutedForeground: "#AAA", accent: "#BE9650" }) },
   "@/utils/stats": { dayKey },
   "@/constants/colors": { CARD_TEXT_BELOW: belowColor, WIDGET_GREEN_SOLID: "#008877" },

@@ -21,7 +21,7 @@ import { LinearGradient } from "expo-linear-gradient";
 import { SacredBackground } from "@/components/SacredBackground";
 import { DiscoverSearchBorder } from "@/components/DiscoverSearchBorder";
 import { CARD_TEXT_ABOVE, CARD_TEXT_BELOW, DISCOVER_SEARCH_SURFACE } from "@/constants/colors";
-import { isIndigoThemeId, type SceneTheme } from "@/config/scene-themes";
+import { isIndigo2ThemeId, isIndigoThemeId, type SceneTheme } from "@/config/scene-themes";
 import { useSceneTheme } from "@/context/SceneThemeContext";
 import { useColors } from "@/hooks/useColors";
 import { SessionDurationBadge } from "@/components/SessionDurationBadge";
@@ -239,11 +239,11 @@ function DiscoverPill({
           styles.discoverPill,
           sceneId === "tibet" && styles.discoverPillTibet,
           isIndigoThemeId(sceneId) && styles.discoverPillIndigo,
-          sceneId === "indigo2" && styles.discoverPillIndigo2,
+          isIndigo2ThemeId(sceneId) && styles.discoverPillIndigo2,
           { transform: [{ scale }] },
         ]}
       >
-        {sceneId === "indigo2" && indigo2BackgroundColor && (
+        {isIndigo2ThemeId(sceneId) && indigo2BackgroundColor && (
           <Animated.View
             pointerEvents="none"
             style={[StyleSheet.absoluteFill, { backgroundColor: indigo2BackgroundColor }]}
@@ -326,7 +326,7 @@ export function ExploreScreen({
   const durationSurfaceColor =
     activeSceneId === "tibet"
       ? "rgba(0,0,0,0.14)"
-      : activeSceneId === "indigo2"
+      : isIndigo2ThemeId(activeSceneId)
         ? "rgba(0,0,0,0.22)"
         : isIndigoThemeId(activeSceneId)
           ? "rgba(181,211,255,0.14)"

@@ -30,7 +30,7 @@ import { useCatalog } from "@/context/CatalogContext";
 import { useSceneTheme } from "@/context/SceneThemeContext";
 import { getArtist } from "@/data/artists";
 import { getGuide } from "@/data/guides";
-import { isIndigoThemeId } from "@/config/scene-themes";
+import { isIndigo2ThemeId, isIndigoThemeId } from "@/config/scene-themes";
 
 const H_PAD   = 14;
 const CARD_GAP = 12;
@@ -253,7 +253,7 @@ export default function NochesScreen() {
   const indigo2ChipsSurfaceAnim = useRef(new Animated.Value(0)).current;
   const [stickyActive,  setStickyActive]  = useState(false);
   const [chipsOffsetY,  setChipsOffsetY]  = useState(9999);
-  const isIndigoTheme = isIndigoThemeId(theme.id) || theme.id === "indigo2";
+  const isIndigoTheme = isIndigoThemeId(theme.id) || isIndigo2ThemeId(theme.id);
   const indigo2ChipBackgroundColor = indigo2ChipsSurfaceAnim.interpolate({
     inputRange: [0, 1],
     outputRange: ["rgba(191,207,255,0.096)", "rgba(191,207,255,0.096)"],
@@ -345,7 +345,7 @@ export default function NochesScreen() {
                   onLongPress={() => setSelectedSession(s)} onOptions={() => setSelectedSession(s)} />
               ))}
             </ScrollView>
-            <View style={styles.featuredDivider} />
+            <View style={styles.featuredSpacer} />
           </>
         )}
         {false && activeTab === null && recentInCategory.length > 0 && (
@@ -598,9 +598,9 @@ const styles = StyleSheet.create({
   chipText: { fontFamily: "Manrope", fontSize: 11, fontWeight: "700", color: TEXT, textAlign: "center" },
   chipTextSel: { fontFamily: "Manrope", color: "#060A0F", fontWeight: "600" },
 
-  featuredTitle: { fontFamily: "Manrope", fontSize: 19, fontWeight: "700", color: TEXT, paddingHorizontal: H_PAD, marginTop: 10 },
+  featuredTitle: { fontFamily: "Manrope", fontSize: 21, fontWeight: "700", color: TEXT, paddingHorizontal: H_PAD, marginTop: 10 },
   featuredRow: { paddingHorizontal: H_PAD, gap: 13, paddingTop: 21 },
-  featuredDivider: { height: 1, backgroundColor: "rgba(255,255,255,0.06)", marginHorizontal: H_PAD, marginTop: 20 },
+  featuredSpacer: { height: 1, marginHorizontal: H_PAD, marginTop: 25 },
 
   sessionGrid: { flexDirection: "row", flexWrap: "wrap", gap: CARD_GAP, paddingHorizontal: H_PAD, marginTop: 18, marginBottom: 6 },
   loadMoreFooter: { alignItems: "center", paddingVertical: 20 },

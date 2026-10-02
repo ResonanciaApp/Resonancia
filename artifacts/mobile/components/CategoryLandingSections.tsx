@@ -78,16 +78,16 @@ export function CategoryLandingSections({
             cardHeight={featuredCardHeight}
             allowOversizedCardWidth
             cardBorderRadius={16}
-            titleSize={17}
+            titleSize={19}
             hideCategoryAboveTitle
             soundPreview={soundPreview}
           />
-          {collections.length > 0 ? <View style={styles.sectionDivider} /> : null}
+          {collections.length > 0 ? <View style={styles.sectionSpacer} /> : null}
         </>
       ) : null}
       {collections.map((collection, index) => (
         <React.Fragment key={collection.tag}>
-          {index > 0 ? <View style={styles.sectionDivider} /> : null}
+          {index > 0 ? <View style={styles.sectionSpacer} /> : null}
           <SessionCarousel
             title={collection.tag}
             sessions={collection.sessions}
@@ -109,7 +109,7 @@ export function CategoryLandingSections({
             trailingPeek={20}
             cardWidth={cardWidth}
             cardBorderRadius={16}
-            titleSize={17}
+            titleSize={19}
             hideCategoryAboveTitle={categoryId !== "ambientales"}
             showSleepCategoryPillWithInlineDuration={categoryId !== "ambientales"}
             ambientalTitleOnly={categoryId === "ambientales"}
@@ -123,10 +123,9 @@ export function CategoryLandingSections({
 }
 
 const styles = StyleSheet.create({
-  sectionDivider: {
+  sectionSpacer: {
     height: StyleSheet.hairlineWidth,
     marginHorizontal: H_PAD,
-    marginTop: 26,
-    backgroundColor: "rgba(255,255,255,0.12)",
+    marginTop: 31,
   },
 });

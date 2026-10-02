@@ -43,7 +43,7 @@ import {
 } from "@/data/sessions";
 import { useColors } from "@/hooks/useColors";
 import { useSoundPreview } from "@/hooks/useSoundPreview";
-import { isIndigoThemeId } from "@/config/scene-themes";
+import { isIndigo2ThemeId } from "@/config/scene-themes";
 import {
   CONTENT_CAROUSEL_GAP,
   CONTENT_CAROUSEL_HEIGHT_SCALE,
@@ -54,6 +54,7 @@ import { SOUND_CAROUSEL_ORDER } from "@/data/sound-carousel-order";
 import { resolveSoundCarouselOrder } from "@/lib/editorial-playlist-helpers";
 
 const H_PAD = 16;
+const SECTION_EXTRA_GAP = 5;
 const { width: W, height: SCREEN_HEIGHT } = Dimensions.get("window");
 const RECENT_CARD_W = getTwoCardCarouselCardWidth(W, H_PAD);
 const COMPACT_CARD_W = getTwoCardCarouselCardWidth(W, 14, 45);
@@ -151,9 +152,7 @@ export default function SonidosScreen() {
   const bottomPad = Platform.OS === "web" ? 34 : insets.bottom;
   const indigoSurface = theme.id === "tibet"
     ? "rgba(0,0,0,0.1)"
-    : isIndigoThemeId(theme.id)
-      ? "rgba(181,211,255,0.1)"
-      : theme.id === "indigo2"
+    : isIndigo2ThemeId(theme.id)
         ? "rgba(191,207,255,0.1)"
         : "rgba(181,211,255,0.1)";
   const inactiveTabSurface = "rgba(0,0,0,0.22)";
@@ -430,7 +429,7 @@ export default function SonidosScreen() {
                 style={[styles.carousel, styles.recentCarousel]}
                 cardWidth={RECENT_CARD_W}
                 allowOversizedCardWidth
-                titleSize={17}
+                titleSize={19}
                 titleOffset={10}
                 titleSpacing={17}
                 squareCards
@@ -439,7 +438,7 @@ export default function SonidosScreen() {
             )}
             {orderedCollections.map((collection, index) => (
               <React.Fragment key={collection.id}>
-                {index > 0 ? <View style={styles.sectionDivider} /> : null}
+                {index > 0 ? <View style={styles.sectionSpacer} /> : null}
                 <SessionCarousel
                   title={collection.label}
                   sessions={collection.sessions.slice(0, 5)}
@@ -447,7 +446,7 @@ export default function SonidosScreen() {
                   onPress={openSession}
                   style={[
                     styles.carousel,
-                    index === 0 ? styles.firstCarousel : styles.carouselAfterDivider,
+                    index === 0 ? styles.firstCarousel : styles.carouselAfterSpacer,
                   ]}
                  presentation="editorial"
                   cardVariant="ambiental"
@@ -461,12 +460,12 @@ export default function SonidosScreen() {
                    progress: soundPreview.progress,
                    onToggle: soundPreview.toggle,
                  }}
-                titleSize={17}
+                titleSize={19}
                   onViewAll={() => openCategory(`/sound-tag/${collection.id}`)}
                 />
                 {index === 1 && !isPremium ? (
                   <>
-                    <View style={styles.sectionDivider} />
+                    <View style={styles.sectionSpacer} />
                     <SoundPremiumBanner />
                   </>
                 ) : null}
@@ -689,12 +688,11 @@ const styles = StyleSheet.create({
     paddingHorizontal: H_PAD,
   },
   firstCarousel: { marginTop: 33 },
-  carouselAfterDivider: { marginTop: 26 },
-  sectionDivider: {
+  carouselAfterSpacer: { marginTop: 26 },
+  sectionSpacer: {
     height: StyleSheet.hairlineWidth,
     marginHorizontal: H_PAD,
-    marginTop: 26,
-    backgroundColor: "rgba(255,255,255,0.12)",
+    marginTop: 26 + SECTION_EXTRA_GAP,
   },
   premiumBanner: {
     minHeight: 110,

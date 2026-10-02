@@ -387,6 +387,7 @@ export default function ThemeTagScreen({
                 <SessionCarousel
                   key={label}
                   title={label}
+                  titleSize={19}
                   sessions={labelSessions.slice(0, 6)}
                   isPremium={isPremium}
                   onPress={openSession}
@@ -399,6 +400,7 @@ export default function ThemeTagScreen({
                   style={[
                     styles.internalCarousel,
                     index === 0 && styles.firstInternalCarousel,
+                    index > 0 && styles.followingInternalCarousel,
                   ]}
                   cardWidth={HOME_FAVORITES_CARD_WIDTH}
                   allowOversizedCardWidth
@@ -646,6 +648,7 @@ const styles = StyleSheet.create({
   internalCarousel: {
     marginBottom: 0,
   },
+  followingInternalCarousel: { paddingTop: 5 },
   firstInternalCarousel: {
     transform: [{ translateY: -6 }],
     marginTop: 23,

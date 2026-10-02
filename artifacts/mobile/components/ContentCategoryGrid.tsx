@@ -24,7 +24,7 @@ import { useCategoryOverlay } from "@/context/CategoryOverlayContext";
 import { useGeometrixPanel } from "@/context/GeometrixPanelContext";
 import { useMixerPanel } from "@/context/MixerPanelContext";
 import { useSceneTheme } from "@/context/SceneThemeContext";
-import { isIndigoThemeId } from "@/config/scene-themes";
+import { isIndigo2ThemeId, isIndigoThemeId } from "@/config/scene-themes";
 import { PressScale } from "@/components/PressScale";
 import {
   CONTENT_CATEGORIES,
@@ -196,13 +196,13 @@ export function ContentCategoryGrid({
   const isDiscoverGrid = hiddenIds.includes("__mezcla__") && hiddenIds.includes("__geometrix__");
   const catBlockBg = activeSceneId === "tibet"
     ? "rgba(0,0,0,0.15)"
-    : isIndigoThemeId(activeSceneId) && isDiscoverGrid
-      ? "rgba(181,211,255,0.057)"
-      : activeSceneId === "indigo2" && isDiscoverGrid
-        ? "rgba(0,0,0,0.22)"
-      : isIndigoThemeId(activeSceneId)
-        ? "rgba(255,255,255,0.04)"
-        : CARD_BG;
+    : isIndigo2ThemeId(activeSceneId) && isDiscoverGrid
+      ? "rgba(0,0,0,0.22)"
+      : isIndigoThemeId(activeSceneId) && isDiscoverGrid
+        ? "rgba(181,211,255,0.057)"
+        : isIndigoThemeId(activeSceneId)
+          ? "rgba(255,255,255,0.04)"
+          : CARD_BG;
   const visibleCategories = CONTENT_CATEGORIES.filter(
     (category) => !hiddenIds.includes(category.id),
   );

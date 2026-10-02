@@ -23,6 +23,7 @@ import {
   useTabBarVisibility,
 } from "@/context/TabBarVisibilityContext";
 import { useSceneTheme } from "@/context/SceneThemeContext";
+import { isIndigo2ThemeId } from "@/config/scene-themes";
 import { useDrawer } from "@/context/DrawerContext";
 import { CategoryOverlayProvider, useCategoryOverlay } from "@/context/CategoryOverlayContext";
 import { CategoryOverlay } from "@/components/CategoryOverlay";
@@ -172,7 +173,7 @@ function CustomTabBar({ state, navigation, descriptors }: TabBarProps) {
 
   const { hidden, showMenu, revealHandleHidden } = useTabBarVisibility();
   const { activeSceneId } = useSceneTheme();
-  const indigo2Mode = activeSceneId === "indigo2";
+  const indigo2Mode = isIndigo2ThemeId(activeSceneId);
   const tabBarBackground = getTabBarBackground(activeSceneId);
   const translateY    = useRef(new Animated.Value(0)).current;
   const handleOpacity = useRef(new Animated.Value(0)).current;

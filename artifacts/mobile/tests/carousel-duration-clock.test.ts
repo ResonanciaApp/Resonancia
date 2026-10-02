@@ -36,5 +36,9 @@ test("Descubrir enables the shared clock on editorial playlist duration pills", 
   assert.match(badge, /showClock=\{showDurationClock\}/);
   assert.match(badge, /\bwhiteGlass\b/);
   const discover = readFileSync(new URL("../app/(tabs)/explore.tsx", import.meta.url), "utf8");
-  assert.match(discover, /<EditorialPlaylistCarousel\s+title=\{carousel\.title\}\s+playlists=\{carousel\.playlists\}\s+showDurationClock\b/);
+  const element = discover.match(/<EditorialPlaylistCarousel\b[\s\S]*?\/>/)?.[0];
+  assert.ok(element);
+  assert.match(element, /title=\{carousel\.title\}/);
+  assert.match(element, /playlists=\{carousel\.playlists\}/);
+  assert.match(element, /\bshowDurationClock\b/);
 });

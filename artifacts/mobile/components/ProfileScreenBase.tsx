@@ -50,7 +50,7 @@ import { useQueryClient } from "@tanstack/react-query";
 import { QuickAccessGrid } from "@/components/QuickAccessGrid";
 import { SacredBackground } from "@/components/SacredBackground";
 import { useSceneTheme } from "@/context/SceneThemeContext";
-import { isIndigoThemeId } from "@/config/scene-themes";
+import { isIndigo2ThemeId, isIndigoThemeId } from "@/config/scene-themes";
 import { useUserProfile } from "@/context/UserProfileContext";
 import { usePremium } from "@/context/PremiumContext";
 import { useAuth } from "@/context/AuthContext";
@@ -1188,7 +1188,7 @@ export function ProfileScreenBase({
         <View
           style={[styles.stickyHeader, { paddingTop: asTab ? topPad + 4 : topPad + 2 }]}
         >
-          {!isIndigoThemeId(activeSceneId) && activeSceneId !== "indigo2" && (
+          {!isIndigoThemeId(activeSceneId) && !isIndigo2ThemeId(activeSceneId) && (
             <Animated.View collapsable={false} style={[styles.stickyHeaderBorder, { opacity: headerBorderAnim }]} />
           )}
           <View style={[
