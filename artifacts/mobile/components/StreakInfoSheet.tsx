@@ -173,7 +173,7 @@ export function StreakInfoSheet({
               <Text testID="streak-info-title" style={styles.pageTitle} accessibilityRole="header">Sistema de rachas</Text>
               <View style={styles.headerSpacer} />
             </View>
-            <View style={styles.heroText}>
+            <View testID="streak-info-description" style={styles.heroText}>
               <CinematicFadeSlide
                 active={visible}
                 replayKey={`hero:${cycle}`}
@@ -255,7 +255,7 @@ const styles = StyleSheet.create({
     color: STREAK_INFO_COLORS.pageTitle,
     textAlign: "center",
   },
-  heroText: { paddingHorizontal: 28, paddingTop: 21, alignItems: "center" },
+  heroText: { paddingHorizontal: 28, paddingTop: 56, alignItems: "center" },
   subtitle: {
     fontFamily: "Manrope",
     fontSize: 15,
