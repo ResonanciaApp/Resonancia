@@ -318,15 +318,14 @@ test("Perfil uses the standard section gap after the user card without legacy of
   assert.doesNotMatch(profileSource, /testID="profile-identity-email"/);
 });
 
-test("Perfil gives Esta semana its own background and matches weekly/history and history/calendar gaps", () => {
+test("Perfil shows seven days with their original background, without a title, and preserves weekly/history/calendar gaps", () => {
   const source = readFileSync(new URL("../components/ProfileScreenBase.tsx", import.meta.url), "utf8");
-  assert.match(source, /weeklySectionTitle="Esta semana"/);
+  assert.doesNotMatch(source, /weeklySectionTitle="Esta semana"/);
   assert.match(source, /weeklySectionBackgroundColor="rgba\(0,0,0,0.22\)"/);
   assert.doesNotMatch(source, /streakMarginBottom=\{PROFILE_SECTION_GAP - 12\}/);
   assert.match(source, /sectionMarginBottom=\{PROFILE_SECTION_GAP\}/);
   const html = render({
     separateStreakHistory: true,
-    weeklySectionTitle: "Esta semana",
     weeklySectionBackgroundColor: "rgba(0,0,0,0.22)",
     sectionBackgroundColor: "rgba(0,0,0,0.22)",
     sectionMarginBottom: 21,
@@ -336,12 +335,13 @@ test("Perfil gives Esta semana its own background and matches weekly/history and
   const weekly = html.match(/<div[^>]*data-testid="profile-weekly-progress"[^>]*>/)?.[0] ?? "";
   const history = html.match(/<div[^>]*data-testid="profile-streak-history"[^>]*>/)?.[0] ?? "";
   assert.match(weekly, /data-background="rgba\(0,0,0,0.22\)"/);
+  assert.match(history, /data-background="rgba\(0,0,0,0.22\)"/);
   assert.match(weekly, /data-margin-bottom="21"/);
   assert.match(history, /data-margin-bottom="21"/);
-  const title = html.indexOf("Esta semana");
+  assert.doesNotMatch(html, /Esta semana/);
   const days = html.indexOf('data-testid="seven-week-days"');
   const historyIndex = html.indexOf('data-testid="profile-streak-history"');
-  assert.ok(title >= 0 && title < days && days < historyIndex);
+  assert.ok(days >= 0 && days < historyIndex);
   assert.ok(html.indexOf('data-testid="calendar"') > historyIndex);
   assert.doesNotMatch(html.slice(0, historyIndex), /RACHA ACTUAL|RACHAS COMPLETADAS/);
 });
