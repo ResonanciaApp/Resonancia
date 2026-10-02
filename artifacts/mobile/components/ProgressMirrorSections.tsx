@@ -43,6 +43,7 @@ export function ProgressMirrorSections({
   showStreakHistory = true,
   showStreakHistoryTitle = true,
   showStreakHistoryInfo = true,
+  onStreakHistoryPress,
   afterStreakHistory,
   weeklySectionBackgroundColor,
   weeklySectionHorizontalPadding,
@@ -85,6 +86,7 @@ export function ProgressMirrorSections({
   showStreakHistory?: boolean;
   showStreakHistoryTitle?: boolean;
   showStreakHistoryInfo?: boolean;
+  onStreakHistoryPress?: () => void;
   afterStreakHistory?: React.ReactNode;
   weeklySectionBackgroundColor?: string;
   weeklySectionHorizontalPadding?: number;
@@ -346,9 +348,13 @@ export function ProgressMirrorSections({
     </MaskedView>
   );
 
+  const StreakHistoryContainer = onStreakHistoryPress ? Pressable : View;
   const streakHistoryContent = separateStreakHistory ? (
-    <View
+    <StreakHistoryContainer
       testID="profile-streak-history"
+      onPress={onStreakHistoryPress}
+      accessibilityRole={onStreakHistoryPress ? "button" : undefined}
+      accessibilityLabel={onStreakHistoryPress ? "Explicar los tipos de rachas" : undefined}
       style={[
         styles.streakSection,
         !showSectionBorders && styles.borderlessSection,
@@ -385,7 +391,7 @@ export function ProgressMirrorSections({
             value={weekCount}
             label="RACHA ACTUAL"
             accent={accent}
-            onPress={onStreakTitlePress}
+            onPress={onStreakHistoryPress ? undefined : onStreakTitlePress}
             edgeAligned={canonicalVerticalInsets}
           />
         </View>
@@ -396,7 +402,7 @@ export function ProgressMirrorSections({
             value={maxStreak}
             label={longestStreakLabel}
             accent={accent}
-            onPress={onStreakTitlePress}
+            onPress={onStreakHistoryPress ? undefined : onStreakTitlePress}
             edgeAligned={canonicalVerticalInsets}
           />
         </View>
@@ -412,7 +418,7 @@ export function ProgressMirrorSections({
             value={maxStreak}
             label="RACHA MÁS LARGA"
             accent={accent}
-            onPress={onStreakTitlePress}
+            onPress={onStreakHistoryPress ? undefined : onStreakTitlePress}
             edgeAligned={canonicalVerticalInsets}
           />
         </View>
@@ -423,12 +429,12 @@ export function ProgressMirrorSections({
             value={completedWeeks}
             label="RACHAS COMPLETADAS"
             accent={accent}
-            onPress={onStreakTitlePress}
+            onPress={onStreakHistoryPress ? undefined : onStreakTitlePress}
             edgeAligned={canonicalVerticalInsets}
           />
         </View>
       </View>
-    </View>
+    </StreakHistoryContainer>
   ) : null;
 
   const displayedStreakTitle = separateStreakHistory ? weeklySectionTitle : streakTitle;

@@ -6,14 +6,18 @@ import React from "react";
 import { renderToStaticMarkup } from "react-dom/server";
 import ts from "typescript";
 
-type NativeProps = { children?: React.ReactNode; testID?: string; style?: unknown; disabled?: boolean; accessibilityLabel?: string };
+type NativeProps = { children?: React.ReactNode; testID?: string; style?: unknown; disabled?: boolean; accessibilityLabel?: string; accessibilityRole?: string; onPress?: () => void };
+const capturedPresses = new Map<string, (() => void) | undefined>();
 const flattenStyle = (style: unknown): Record<string, unknown> => Array.isArray(style)
   ? Object.assign({}, ...style.map(flattenStyle))
   : style && typeof style === "object" ? style as Record<string, unknown> : {};
-const NativeView = ({ children, testID, style, disabled, accessibilityLabel }: NativeProps) => {
+const NativeView = ({ children, testID, style, disabled, accessibilityLabel, accessibilityRole, onPress }: NativeProps) => {
+  if (testID) capturedPresses.set(testID, onPress);
   const resolved = flattenStyle(style);
   return React.createElement("div", {
     "data-testid": testID,
+    "data-role": accessibilityRole,
+    "data-action-label": accessibilityLabel,
     "data-background": resolved.backgroundColor,
     "data-disabled": disabled,
     "data-label": testID === "profile-streak-history-info" ? accessibilityLabel : undefined,
@@ -140,7 +144,7 @@ test("Perfil separates week-only progress from the titled streak history", () =>
   assert.ok(historyIndex > html.indexOf('data-testid="profile-weekly-progress"'));
   const weeklyContent = html.slice(0, historyIndex);
   assert.match(weeklyContent, /seven-week-days/);
-  assert.doesNotMatch(weeklyContent, /RACHA|Tu progreso semanal|Historial de rachas/);
+  assert.doesNotMatch(weeklyContent, />RACHA|>Tu progreso semanal|>Historial de rachas/);
   assert.match(html.slice(historyIndex), /Historial de rachas/);
   assert.match(html.slice(historyIndex), /RACHA MÁS LARGA/);
   assert.match(html.slice(historyIndex), /RACHA ACUMULADA/);
@@ -345,6 +349,34 @@ test("Perfil shows seven days with their original background, without a title, a
   assert.ok(days >= 0 && days < historyIndex);
   assert.ok(html.indexOf('data-testid="calendar"') > historyIndex);
   assert.doesNotMatch(html.slice(0, historyIndex), /RACHA ACTUAL|RACHAS COMPLETADAS/);
+});
+
+test("the full history opens its information once, leaves stat values unchanged, and has no nested progress buttons", () => {
+  let infoOpens = 0, progressOpens = 0;
+  const props = {
+    separateStreakHistory: true,
+    showStreakHistoryTitle: false,
+    showStreakHistoryInfo: false,
+    onStreakTitlePress: () => progressOpens++,
+    showPersonalStats: false,
+    longestStreakLabel: "RACHA ACUMULADA",
+  };
+  const previousHtml = render(props);
+  const html = render({ ...props, onStreakHistoryPress: () => infoOpens++ });
+  const history = html.slice(html.indexOf('data-testid="profile-streak-history"'));
+  assert.match(history, /data-role="button" data-action-label="Explicar los tipos de rachas"/);
+  assert.doesNotMatch(history, /Abrir Tu progreso/);
+  for (const label of ["RACHA ACTUAL", "RACHA ACUMULADA", "RACHA MÁS LARGA", "RACHAS COMPLETADAS"]) {
+    assert.ok(history.includes(label));
+    assert.ok(previousHtml.includes(label));
+  }
+  assert.ok(capturedPresses.get("profile-streak-history"));
+  capturedPresses.get("profile-streak-history")!();
+  assert.equal(infoOpens, 1);
+  assert.equal(progressOpens, 0);
+  render(props);
+  assert.equal(capturedPresses.get("profile-streak-history"), undefined);
+  assert.match(previousHtml, /Abrir Tu progreso/);
 });
 
 test("Perfil raises only the horizontal streak divider by 3px without changing layout spacing", () => {

@@ -90,6 +90,7 @@ import { GeometrixOverlay } from "@/components/GeometrixToggle";
 import { KeyboardAwareScrollViewCompat } from "@/components/KeyboardAwareScrollViewCompat";
 import { MoonCrescentIcon } from "@/components/MoonCrescentIcon";
 import { SleepReminderSheet } from "@/components/SleepReminderSheet";
+import { StreakInfoSheet } from "@/components/StreakInfoSheet";
 import { FilledSunIcon } from "@/components/FilledSunIcon";
 import { useMixerPanel } from "@/context/MixerPanelContext";
 import { CARD_TEXT_BELOW, MEMBERSHIP_AURORA } from "@/constants/colors";
@@ -253,6 +254,8 @@ export function ProfileScreenBase({
 }) {
   const colors = useColors();
   const [growthJourneyOpen, setGrowthJourneyOpen] = useState(false);
+  const [streakInfoOpen, setStreakInfoOpen] = useState(false);
+  useFocusEffect(useCallback(() => () => setStreakInfoOpen(false), []));
   const { isPremium } = usePremium();
   const { openMixer } = useMixerPanel();
   const { theme: activeTheme, activeSceneId } = useSceneTheme();
@@ -1395,6 +1398,7 @@ export function ProfileScreenBase({
                 separateStreakHistory
                 showStreakHistoryTitle={false}
                 showStreakHistoryInfo={false}
+                onStreakHistoryPress={() => setStreakInfoOpen(true)}
                 weeklySectionBackgroundColor="rgba(0,0,0,0.22)"
                 weeklySectionHorizontalPadding={20}
                 streakHistoryTopPadding={18}
@@ -1887,6 +1891,9 @@ export function ProfileScreenBase({
 
       {dedicated && (
         <GrowthJourneySheet visible={growthJourneyOpen} onClose={() => setGrowthJourneyOpen(false)} />
+      )}
+      {dedicated && (
+        <StreakInfoSheet visible={streakInfoOpen} onClose={() => setStreakInfoOpen(false)} />
       )}
       {SHOW_PROFILE_PRACTICE_CARDS && (
       <>

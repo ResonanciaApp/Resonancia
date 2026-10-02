@@ -26,6 +26,10 @@ The content (title, tabs) lives in the normal content tree ON TOP of this bg lay
 - `marginBottom`/negative-margin bleed with an inner clip View → unreliable in Yoga when children are all absolutely positioned.
 - Tweaking only the overlay rgba stops → never fixes a mismatch that is really with the *background*.
 
-**Why not MaskedView:** would let the image dissolve into the live gradient, but `@react-native-masked-view/masked-view` isn't installed and it's overkill — ending the overlay at the exact root color is simpler and exact.
+**Alternative for dynamic gradients:** an alpha mask can dissolve the artwork directly into the live root gradient without calculating the color at its lower edge.
+
+**Why:** When the complete theme has arbitrary stops/directions, or text-driven content height changes independently of the artwork, matching a solid fade endpoint creates fragile position-dependent seams.
+
+**How to apply:** Keep the full theme gradient at the root and mask only the decorative artwork, not the scrolling content. Let text and spacing use normal flow rather than reserving the artwork's fixed height.
 
 **How to apply:** Whenever a top image must blend into a screen with a full-height gradient background, don't make the hero its own background — move the image into the root bg layer and fade it to the root gradient's exact color at the image's bottom Y. Position px offsets (title nudges, "N px above title") via fractional `locations` tuned on the target device, since the overlay height is `"50%"`.
