@@ -121,11 +121,20 @@ test("banner and identity share the same user-section background", () => {
   assert.doesNotMatch(source, /backgroundColor:.*0,0,0/);
 });
 
-test("Premium star and copy align with the standard section margin without horizontal offsets", () => {
+test("trial star and copy use the parent's screen margins without a second inset", () => {
   const rowStyle = source.match(/  row: \{([\s\S]*?)\n  \},/)?.[1] ?? "";
   const iconStyle = source.match(/  icon: \{([\s\S]*?)\n  \},/)?.[1] ?? "";
-  assert.match(rowStyle, /paddingHorizontal: 20/);
+  assert.match(rowStyle, /paddingHorizontal: 0/);
   assert.match(iconStyle, /width: 31/);
   assert.match(source, /name="star" size=\{31\}/);
   assert.doesNotMatch(source, /translateX/);
+  assert.equal(bannerStyles.chevron.alignItems, "flex-end");
+  for (const screenWidth of [320, 375, 402, 768]) {
+    const screenMargin = 16;
+    const starLeft = screenMargin + bannerStyles.row.paddingHorizontal;
+    const chevronRight = screenWidth - screenMargin - bannerStyles.row.paddingHorizontal;
+    assert.equal(starLeft, screenMargin);
+    assert.equal(chevronRight, screenWidth - screenMargin);
+    assert.equal(starLeft + bannerStyles.icon.width + bannerStyles.row.gap, 60);
+  }
 });

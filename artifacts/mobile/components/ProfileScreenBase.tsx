@@ -2533,7 +2533,7 @@ const styles = StyleSheet.create({
     marginTop: -19,
     width: 38,
     height: 38,
-    alignItems: "center",
+    alignItems: "flex-end",
     justifyContent: "center",
   },
   profileIntentionPill: {

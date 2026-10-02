@@ -9,6 +9,12 @@ En Perfil, las cuentas gratuitas deben ver «Prueba Premium» debajo del bloque 
 
 **How to apply:** Mantener el banner de prueba integrado al bloque de usuario para cuentas gratuitas, no como tarjeta independiente. Conservar el diseño compacto y la estrella del avatar para miembros Premium, sin recuperar «Tu Premium» debajo del usuario. La insignia de Inicio y el acceso Premium del drawer son independientes de esta regla.
 
+En cuentas gratuitas, la estrella y el contenido de «Prueba Premium» usan el margen lateral izquierdo del perfil; el chevron llega al margen lateral derecho, sin una sangría adicional dentro del banner.
+
+**Why:** El usuario pidió expresamente alinear ambos extremos con los márgenes de la pantalla cuando está sin Premium.
+
+**How to apply:** Heredar los márgenes del contenedor de Perfil y no sumar padding horizontal propio al banner. Mantener la separación entre estrella y texto y la alineación vertical existente.
+
 El amarillo sólido de Premium sigue en «Plan Premium» de Sonidos y Descubrir, en solo «Premium» del banner inferior de Inicio y en «Tu Premium» del drawer para miembros o solo «Premium» para no miembros. «Prueba» y «Gratis» de Inicio no cambian; en el drawer «Prueba» sigue blanco. El loto de «Racha más larga» conserva el degradado.
 
 **Why:** Tras comparar el degradado más luminoso de los textos con el amarillo de la estrella que antes aparecía en Perfil, el usuario pidió extender ese amarillo sólido exacto a estas palabras; después precisó que «Tu» del drawer también debía coincidir.

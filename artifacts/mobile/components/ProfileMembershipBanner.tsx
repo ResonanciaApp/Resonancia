@@ -53,7 +53,7 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     alignItems: "flex-end",
     gap: 13,
-    paddingHorizontal: 20,
+    paddingHorizontal: 0,
     paddingVertical: 0,
   },
   icon: {
@@ -78,7 +78,7 @@ const styles = StyleSheet.create({
   chevron: {
     width: 32,
     height: 44,
-    alignItems: "center",
+    alignItems: "flex-end",
     justifyContent: "center",
     transform: [{ translateY: 3.5 }],
   },

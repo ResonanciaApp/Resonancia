@@ -76,6 +76,7 @@ test("avatar outline meets the left margin and the chevron reaches the profile r
   const chevron = style("ProfileScreenBase", "profileNameChevron");
   assert.equal(row.paddingLeft + border.left, 0);
   assert.equal(chevron.position, "absolute");
+  assert.equal(chevron.alignItems, "flex-end");
   assert.equal(chevron.top, "50%");
   assert.equal(chevron.marginTop + chevron.height / 2, 0);
   for (const width of [320, 375, 402, 768]) {

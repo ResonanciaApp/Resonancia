@@ -115,7 +115,7 @@ test("Perfil places avatar left with name and intention on its right, without th
 test("the compact preview keeps the avatar at the left margin and restores a centered chevron between the name and pill", () => {
   const html = render();
   assert.match(html, /data-testid="profile-identity-name" data-direction="row" data-align="center"/);
-  assert.match(html, /data-testid="profile-identity-chevron"[^>]*data-align="center"[^>]*data-width="38"/);
+  assert.match(html, /data-testid="profile-identity-chevron"[^>]*data-align="flex-end"[^>]*data-width="38"/);
   assert.equal((html.match(/data-icon="chevron-right"/g) ?? []).length, 1);
   assert.ok(html.indexOf("Resonador") < html.indexOf('data-testid="profile-identity-chevron"'));
   assert.ok(html.indexOf('data-testid="profile-identity-chevron"') < html.indexOf('data-testid="profile-intention-pill"'));
@@ -133,7 +133,7 @@ test("the compact preview keeps the avatar at the left margin and restores a cen
   assert.match(html, /data-testid="profile-identity-row" data-direction="row" data-align="center"/);
   const membership = readFileSync(new URL("../components/ProfileMembershipBanner.tsx", import.meta.url), "utf8");
   assert.match(membership, /chevron: \{\s*width: 32,/);
-  assert.match(membership, /row: \{[\s\S]*?paddingHorizontal: 20/);
+  assert.match(membership, /row: \{[\s\S]*?paddingHorizontal: 0/);
   assert.match(source, /profileIdentityRow: \{[\s\S]*?paddingLeft: 3,\s*paddingRight: 0/);
   assert.match(source, /<Feather name="chevron-right" size=\{24\}/);
   assert.match(membership, /<Feather name="chevron-right" size=\{24\}/);
