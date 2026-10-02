@@ -92,7 +92,7 @@ test("free users see Prueba Premium below their identity, while Premium users re
   assert.match(premium, /data-testid="profile-user-section"[^>]*data-margin-bottom="5"/);
 });
 
-test("Perfil places avatar left with name and intention on its right, without the email", () => {
+test("Perfil shows the account email below the name and above intention, beside the avatar", () => {
   const html = render({ email: "example@example.com", location: "Ubicación" });
   assert.match(html, /data-testid="profile-identity-row" data-direction="row" data-align="center"/);
   assert.match(html, /data-testid="profile-identity-details" data-align="flex-start"[^>]*data-flex="1" data-min-width="0"/);
@@ -100,7 +100,10 @@ test("Perfil places avatar left with name and intention on its right, without th
   const name = html.indexOf("Resonador");
   const pill = html.indexOf('data-testid="profile-intention-pill"');
   assert.ok(avatar < name && name < pill);
-  assert.doesNotMatch(html, /profile-identity-email|example@example\.com/);
+  const email = html.indexOf('data-testid="profile-identity-email"');
+  assert.ok(name < email && email < pill);
+  assert.match(html, /example@example\.com/);
+  assert.match(html, /data-testid="profile-identity-email"[^>]*data-lines="1" data-ellipsis="tail"/);
   assert.doesNotMatch(html, /Ubicación|data-icon="map-pin"/);
   assert.match(html, /data-testid="profile-intention-pill"[^>]*data-self-align="flex-start"/);
   assert.doesNotMatch(source.match(/dedicatedProfileCard: \{([^}]*)\}/)?.[1] ?? "", /backgroundColor/);
@@ -110,6 +113,14 @@ test("Perfil places avatar left with name and intention on its right, without th
   const rowStyle = source.match(/profileIdentityRow: \{([\s\S]*?)\n  \},/)?.[1] ?? "";
   assert.match(rowStyle, /paddingLeft: 3/);
   assert.match(rowStyle, /paddingRight: 0/);
+});
+
+test("Perfil omits the email row when the account has no email, including Premium accounts", () => {
+  for (const isPremium of [false, true]) {
+    assert.doesNotMatch(render({ email: null, isPremium }), /profile-identity-email/);
+    assert.doesNotMatch(render({ email: "", isPremium }), /profile-identity-email/);
+    assert.match(render({ email: "example@example.com", isPremium }), /profile-identity-email/);
+  }
 });
 
 test("the profile chevron aligns with the username row instead of the combined name and pill", () => {

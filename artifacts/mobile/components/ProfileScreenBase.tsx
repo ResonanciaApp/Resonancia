@@ -1375,6 +1375,17 @@ export function ProfileScreenBase({
               </Pressable>
               </View>
 
+              {!!email && (
+                <Text
+                  testID="profile-identity-email"
+                  style={[styles.profileEmail, { color: colors.mutedForeground }]}
+                  numberOfLines={1}
+                  ellipsizeMode="tail"
+                >
+                  {email}
+                </Text>
+              )}
+
               {dedicated && (
                 <ProfileIntentionPill
                   onPress={() => setGrowthJourneyOpen(true)}
@@ -2528,6 +2539,7 @@ const styles = StyleSheet.create({
   userName: { fontFamily: "Manrope", fontSize: 24, fontWeight: "700", textAlign: "left", marginTop: 0 },
   profileNameRow: { width: "100%", flexDirection: "row", alignItems: "center", gap: 12, paddingRight: 46 },
   profileNameText: { flex: 1, minWidth: 0 },
+  profileEmail: { fontFamily: "Manrope", fontSize: 12, lineHeight: 17, width: "100%", paddingRight: 46 },
   profileNameChevron: {
     position: "absolute",
     right: 0,
