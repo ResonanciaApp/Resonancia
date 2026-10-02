@@ -3,11 +3,11 @@ name: Membresía Aurora jade-gold
 description: Insignia del avatar en Perfil y acentos Premium de las demás superficies.
 ---
 
-La tarjeta principal de Perfil vuelve a incluir el banner de membresía bajo los datos del usuario, dentro del mismo fondo y separado por una línea divisora, con estrella a la izquierda. Para usuarios gratuitos muestra «Prueba Premium»; para miembros, «Tu Premium». No recuperar Premium Plus.
+El banner de membresía de Perfil, con su divisor, descripción y chevron, está temporalmente oculto para evaluar una vista compacta; también se oculta el chevron de Mi cuenta del bloque de usuario. Conservarlos, no eliminarlos. Al restaurar el banner, gratuitos muestran «Prueba Premium» y miembros «Tu Premium», con estrella a la izquierda; no recuperar Premium Plus.
 
-**Why:** El 2026-10-01 el usuario pidió recuperar explícitamente el banner que se había retirado, para ambos estados de membresía, y posteriormente quitar la estrella del avatar de Perfil. Estas peticiones reemplazan las restricciones anteriores de esa superficie.
+**Why:** Tras recuperar el banner, el usuario pidió esconderlo para ver cómo queda el diseño, no borrar su implementación. La prueba incluye 25 px entre el borde inferior del avatar y el inicio del fondo de los siete días de racha.
 
-**How to apply:** Mantener el banner integrado al fondo del usuario, no como tarjeta independiente. Su estrella aparece para ambos estados; el avatar de Perfil no lleva estrella. La insignia del avatar de Inicio sigue siendo exclusiva de Premium y no cambia por analogía. El acceso del drawer sigue siendo independiente.
+**How to apply:** No reactivar los elementos ocultos hasta que el usuario lo pida. Al restaurarlos, integrar el banner al bloque de usuario, no como tarjeta independiente. La estrella Premium con fondo de vidrio sobre el avatar de Perfil sí está restaurada, solo para miembros, por petición posterior del usuario; no implica recuperar el banner. La insignia de Inicio y el acceso Premium del drawer son independientes de esta prueba.
 
 El amarillo sólido de Premium sigue en «Plan Premium» de Sonidos y Descubrir, en solo «Premium» del banner inferior de Inicio y en «Tu Premium» del drawer para miembros o solo «Premium» para no miembros. «Prueba» y «Gratis» de Inicio no cambian; en el drawer «Prueba» sigue blanco. El loto de «Racha más larga» conserva el degradado.
 

@@ -53,6 +53,21 @@ test("user section preserves 20px above the centered avatar outline, with no ext
   assert.match(source, /<ProfileMembershipBanner isPremium=\{isPremium\}/);
 });
 
+test("compact identity preview hides the whole Premium banner and leaves exactly 25px from the avatar outline to the weekly background", () => {
+  const source = readFileSync(new URL("../components/ProfileScreenBase.tsx", import.meta.url), "utf8");
+  assert.match(source, /const SHOW_PROFILE_IDENTITY_EXTRAS = false;/);
+  assert.match(source, /SHOW_PROFILE_IDENTITY_EXTRAS && <ProfileMembershipBanner/);
+  assert.match(source, /!SHOW_PROFILE_IDENTITY_EXTRAS && styles\.profileIdentityPreviewCard/);
+  const bottom = Number(source.match(/const PROFILE_CARD_BOTTOM_PADDING = (\d+);/)?.[1]);
+  const card = style("ProfileScreenBase", "profileCard", { PROFILE_CARD_BOTTOM_PADDING: bottom, PROFILE_SECTION_GAP: 21 });
+  const preview = style("ProfileScreenBase", "profileIdentityPreviewCard");
+  assert.equal(card.paddingBottom + preview.marginBottom, 25);
+  const border = style("ProfileScreenBase", "avatarOuterBorder");
+  const avatar = style("ProfileScreenBase", "avatarWrapper");
+  const image = style("ProfileScreenBase", "avatarImage");
+  assert.equal(image.height + avatar.marginBottom, border.top + border.height);
+});
+
 test("Perfil replaces history and downloads with the expandable wall after its progress/calendar section", () => {
   const source = readFileSync(new URL("../components/ProfileScreenBase.tsx", import.meta.url), "utf8");
   assert.doesNotMatch(source, /ProfileDownloadsSection|profileHistorySection|>Historial<\/Text>/);

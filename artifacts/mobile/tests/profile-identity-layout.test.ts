@@ -28,6 +28,7 @@ const styleProperties = styles.properties.filter(property =>
     && /^(profileIdentityRow|dedicatedProfileIdentityRow|profileDetails|dedicatedProfileDetails|avatar.*|userName|profileName.*|profileEmail|profileLocationLeft|profileIntention.*|locationRow|locationText)$/.test(property.name.getText(ast)),
 );
 const compiled = ts.transpileModule(`
+  const SHOW_PROFILE_IDENTITY_EXTRAS = ${source.match(/const SHOW_PROFILE_IDENTITY_EXTRAS = (true|false);/)?.[1]};
   const styles = { ${styleProperties.map(property => property.getText(ast)).join(",")} };
   function Identity(props) {
     const { dedicated = true, email = null, location = "", isPremium = false } = props;
@@ -88,11 +89,10 @@ test("Perfil places avatar left with name and intention on its right, without th
   assert.match(rowStyle, /paddingHorizontal: 20/);
 });
 
-test("avatar, name-and-pill block and chevron share a vertically centered row, retaining the Premium chevron's right column", () => {
+test("the compact preview keeps avatar and name-and-pill centered and hides the identity chevron without deleting it", () => {
   const html = render();
   assert.match(html, /data-testid="profile-identity-name" data-direction="row" data-align="center"/);
-  assert.match(html, /data-testid="profile-identity-chevron"[^>]*data-align="center"[^>]*data-width="32"/);
-  assert.equal((html.match(/data-icon="chevron-right"/g) ?? []).length, 1);
+  assert.doesNotMatch(html, /profile-identity-chevron|data-icon="chevron-right"/);
   assert.match(source, /profileNameRow: \{ width: "100%", flexDirection: "row", alignItems: "center"/);
   const children = identity!.children.filter(ts.isJsxElement).map(child =>
     child.openingElement.attributes.properties.find(attribute =>
@@ -102,7 +102,6 @@ test("avatar, name-and-pill block and chevron share a vertically centered row, r
   assert.deepEqual(children, [
     'testID="profile-identity-avatar"',
     'testID="profile-identity-details"',
-    'testID="profile-identity-chevron"',
   ]);
   assert.match(source, /avatarWrapper: \{[^}]*marginTop: 3, marginBottom: 3/);
   assert.match(html, /data-testid="profile-identity-row" data-direction="row" data-align="center"/);
@@ -114,15 +113,16 @@ test("avatar, name-and-pill block and chevron share a vertically centered row, r
   assert.match(membership, /<Feather name="chevron-right" size=\{24\}/);
 });
 
-test("the name and independently centered chevron each open Mi cuenta", () => {
+test("name and avatar still open Mi cuenta while the hidden chevron is not actionable", () => {
   let route = "";
   render({ onNavigate: (next: string) => route = next });
   assert.ok(presses.has("profile-identity-name"));
   presses.get("profile-identity-name")?.();
   assert.equal(route, "/mi-perfil");
   route = "";
-  assert.ok(presses.has("profile-identity-chevron"));
-  presses.get("profile-identity-chevron")?.();
+  assert.equal(presses.has("profile-identity-chevron"), false);
+  assert.ok(presses.has("profile-identity-avatar"));
+  presses.get("profile-identity-avatar")?.();
   assert.equal(route, "/mi-perfil");
 });
 
@@ -132,7 +132,7 @@ test("missing email is not replaced with a fake address and intention remains de
   assert.doesNotMatch(other, /profile-intention-pill/);
 });
 
-test("avatar opens Mi cuenta and intention opens Tu camino without an avatar star", () => {
+test("Premium restores the previous star and glass background over the avatar without changing its navigation", () => {
   let route = "";
   let journey = false;
   const html = render({ isPremium: true, onNavigate: (next: string) => route = next, onJourney: (open: boolean) => journey = open });
@@ -140,6 +140,9 @@ test("avatar opens Mi cuenta and intention opens Tu camino without an avatar sta
   presses.get("profile-intention-pill")?.();
   assert.equal(route, "/mi-perfil");
   assert.equal(journey, true);
-  assert.doesNotMatch(html, /data-icon="star"/);
-  assert.doesNotMatch(source, /avatarPremiumBadge/);
+  assert.match(html, /data-testid="profile-avatar-premium-badge"/);
+  assert.match(html, /data-icon="star"/);
+  assert.match(source, /<SessionBadgeGlass showBlackTint=\{false\} showWhiteTint \/>/);
+  assert.match(source, /avatarPremiumBadge:\s*\{\s*position: "absolute",\s*left: -6\.5,\s*top: -6\.5,\s*width: 31,\s*height: 31,\s*borderRadius: 15\.5,\s*overflow: "hidden"/);
+  assert.doesNotMatch(render({ isPremium: false }), /profile-avatar-premium-badge|data-icon="star"/);
 });

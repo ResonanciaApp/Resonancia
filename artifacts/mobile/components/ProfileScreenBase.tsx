@@ -74,6 +74,7 @@ import { ProgressMirrorSections } from "@/components/ProgressMirrorSections";
 import { ProfileSettingsSections } from "@/components/ProfileSettingsSections";
 import { ProfileIntentionPill } from "@/components/ProfileIntentionPill";
 import { ProfileMembershipBanner } from "@/components/ProfileMembershipBanner";
+import { SessionBadgeGlass } from "@/components/SessionDurationBadge";
 import { ProfileReflectionWallSection } from "@/components/ProfileReflectionWallSection";
 import { ReflectionSavedBanner } from "@/components/ReflectionSavedBanner";
 import type { HomeReflectionWallHandle } from "@/components/HomeReflectionWallSection";
@@ -96,6 +97,8 @@ import { useMixerPanel } from "@/context/MixerPanelContext";
 import { CARD_TEXT_BELOW, MEMBERSHIP_AURORA } from "@/constants/colors";
 
 const SHOW_PROFILE_PRACTICE_CARDS = false;
+// Vista previa compacta: conservar estos elementos para poder recuperarlos.
+const SHOW_PROFILE_IDENTITY_EXTRAS = false;
 // Separación entre los bloques de progreso en Perfil.
 const PROFILE_SECTION_GAP = 21;
 const PROFILE_CARD_BOTTOM_PADDING = 20;
@@ -1309,7 +1312,7 @@ export function ProfileScreenBase({
         </View>
 
         {/* ── Profile Card ── */}
-          <View testID="profile-user-section" style={[styles.profileCard, dedicated && styles.dedicatedProfileCard]}>
+          <View testID="profile-user-section" style={[styles.profileCard, dedicated && styles.dedicatedProfileCard, !SHOW_PROFILE_IDENTITY_EXTRAS && styles.profileIdentityPreviewCard]}>
           <View
             testID="profile-identity-row"
             style={styles.profileIdentityRow}
@@ -1332,6 +1335,12 @@ export function ProfileScreenBase({
                 </View>
               )}
               <View pointerEvents="none" style={styles.avatarOuterBorder} />
+              {isPremium && (
+                <View testID="profile-avatar-premium-badge" pointerEvents="none" style={styles.avatarPremiumBadge}>
+                  <SessionBadgeGlass showBlackTint={false} showWhiteTint />
+                  <MaterialCommunityIcons name="star" size={24} color={MEMBERSHIP_AURORA.premium.accent} />
+                </View>
+              )}
             </Pressable>
 
             {/* Name + details */}
@@ -1363,7 +1372,7 @@ export function ProfileScreenBase({
                 />
               )}
             </View>
-            <Pressable
+            {SHOW_PROFILE_IDENTITY_EXTRAS && <Pressable
               onPress={() => router.push("/mi-perfil")}
               testID="profile-identity-chevron"
               accessibilityRole="button"
@@ -1372,9 +1381,9 @@ export function ProfileScreenBase({
               style={styles.profileNameChevron}
             >
               <Feather name="chevron-right" size={24} color={colors.foreground} />
-            </Pressable>
+            </Pressable>}
           </View>
-          <ProfileMembershipBanner isPremium={isPremium} foregroundColor={colors.foreground} />
+          {SHOW_PROFILE_IDENTITY_EXTRAS && <ProfileMembershipBanner isPremium={isPremium} foregroundColor={colors.foreground} />}
         </View>
 
         {false && (
@@ -2460,6 +2469,8 @@ const styles = StyleSheet.create({
     gap: 0,
   },
   dedicatedProfileCard: { marginTop: 18 },
+  // 20 px de padding inferior + 5 px de separación = 25 px hasta el fondo semanal.
+  profileIdentityPreviewCard: { marginBottom: 5 },
   wisdomSection: {
     marginBottom: 28,
   },
@@ -2487,6 +2498,17 @@ const styles = StyleSheet.create({
     borderRadius: 49.5,
     borderWidth: 3,
     borderColor: "rgba(255,255,255,0.25)",
+  },
+  avatarPremiumBadge: {
+    position: "absolute",
+    left: -6.5,
+    top: -6.5,
+    width: 31,
+    height: 31,
+    borderRadius: 15.5,
+    overflow: "hidden",
+    alignItems: "center",
+    justifyContent: "center",
   },
   avatarCircle: {
     width: 93,
