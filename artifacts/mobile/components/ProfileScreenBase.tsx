@@ -1392,7 +1392,6 @@ export function ProfileScreenBase({
                 showPersonalStats={false}
                 showCalendar
                 showCalendarCompletedCount
-                weeklySectionTitle="Esta semana"
                 separateStreakHistory
                 showStreakHistoryTitle={false}
                 showStreakHistoryInfo={false}
