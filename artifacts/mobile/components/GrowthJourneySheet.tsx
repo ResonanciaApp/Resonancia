@@ -25,6 +25,8 @@ import { useGrowthJourneySheetMotion } from "@/hooks/useGrowthJourneySheetMotion
 // Retain its measured height minus the requested rise, keeping the timeline in flow.
 const FORMER_INTRO_FIXED_HEIGHT = 181;
 const FIRST_STAGE_RISE = 184;
+const FIRST_STAGE_DROP = 60;
+const JOURNEY_INTRO = "No florecemos para convertirnos en alguien diferente, sino para revelar lo que siempre estuvo allí. En cada etapa del camino, la vida nos invita a abrirnos un poco más, hasta descubrir que la verdadera transformación ocurre cuando comenzamos a habitar plenamente nuestro propio ser";
 
 export function GrowthJourneySheet({
   visible,
@@ -115,12 +117,20 @@ export function GrowthJourneySheet({
           </View>
           <ScrollView
             style={styles.scroll}
-            contentContainerStyle={[
-              styles.scrollContent,
-              { paddingTop: FORMER_INTRO_FIXED_HEIGHT + descriptionHeight - FIRST_STAGE_RISE },
-            ]}
+            contentContainerStyle={styles.scrollContent}
             showsVerticalScrollIndicator={false}
           >
+            <View
+              testID="growth-journey-intro"
+              style={[
+                styles.intro,
+                { minHeight: FORMER_INTRO_FIXED_HEIGHT + descriptionHeight - FIRST_STAGE_RISE + FIRST_STAGE_DROP },
+              ]}
+            >
+              <Text style={[styles.introText, { color: colors.mutedForeground }]}>
+                {JOURNEY_INTRO}
+              </Text>
+            </View>
             <GrowthJourney />
           </ScrollView>
         </Animated.View>
@@ -182,4 +192,6 @@ const styles = StyleSheet.create({
   },
   scroll: { flex: 1 },
   scrollContent: { paddingBottom: 32 },
+  intro: { justifyContent: "center", paddingHorizontal: 24, paddingVertical: 6 },
+  introText: { fontFamily: "Manrope", fontSize: 11, lineHeight: 16, textAlign: "center" },
 });

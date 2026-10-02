@@ -100,6 +100,16 @@ export function GrowthLevelPreviewCard({
   const dayPill = (
     <PreviewContentEntrance key="intention-days" replayKey="intention-days" delay={420}>
       <View style={[styles.dayPill, canonicalVerticalInsets && styles.canonicalPreviewPill]}>
+        {canonicalVerticalInsets && (
+          <MaterialCommunityIcons
+            name="spa"
+            size={12}
+            color={GROWTH_COLORS.current}
+            style={styles.bloomLotus}
+            accessibilityElementsHidden
+            importantForAccessibility="no"
+          />
+        )}
         <Text style={[styles.days, { color: colors.foreground }]}>{dayLabel}</Text>
       </View>
     </PreviewContentEntrance>
@@ -355,7 +365,7 @@ const styles = StyleSheet.create({
   canonicalPreviewVerticalInsets: { paddingTop: 18, paddingBottom: 18, alignItems: "flex-start" },
   canonicalPreviewCopy: { minHeight: 100, alignSelf: "stretch", justifyContent: "space-between" },
   canonicalPreviewName: { flex: 1, marginBottom: 0 },
-  canonicalPreviewPill: { marginBottom: 0 },
+  canonicalPreviewPill: { marginBottom: 0, flexDirection: "row", alignItems: "center", gap: 4 },
   canonicalPreviewTitleRow: { flexDirection: "row", alignItems: "center", gap: 12 },
   previewCopy: { flex: 1, minWidth: 0 },
   previewStory: { fontFamily: "Manrope", fontSize: 11, lineHeight: 16 },

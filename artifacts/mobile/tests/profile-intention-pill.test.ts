@@ -18,6 +18,7 @@ let pressProps: PressProps = {};
 const animations: Array<{ kind: string; options: Record<string, unknown> }> = [];
 const Native = ({ children }: { children?: React.ReactNode }) => React.createElement("div", null, children);
 const native = {
+  StyleSheet: { create: (styles: unknown) => styles },
   Animated: {
     View: Native,
     Value: class {
@@ -53,6 +54,12 @@ const sharedImports = { react: React, "react-native": native };
 const pressHook = load("../hooks/usePressScaleAnimation.ts", sharedImports);
 const { ProfileIntentionPill } = load("../components/ProfileIntentionPill.tsx", {
   ...sharedImports, "@/hooks/usePressScaleAnimation": pressHook,
+  "@/constants/colors": { MEMBERSHIP_AURORA: { premium: { accent: "#BE9650" } } },
+  "@expo/vector-icons": {
+    MaterialCommunityIcons: (props: any) => React.createElement("i", {
+      "data-icon": props.name, "data-color": props.color, "data-size": props.size,
+    }),
+  },
 }) as { ProfileIntentionPill: React.ComponentType<{ onPress: () => void }> };
 const render = (onPress = () => {}) => renderToStaticMarkup(React.createElement(ProfileIntentionPill, { onPress }));
 
@@ -61,6 +68,11 @@ test("the Intención pill opens Tu camino and stops the Mi cuenta parent action"
   let stopped = false;
   const html = render(() => opens++);
   assert.match(html, /<span data-font-weight="700">0 Días<\/span>: Intención/);
+  assert.match(html, /data-icon="spa" data-color="#BE9650" data-size="12"/);
+  assert.ok(html.indexOf('data-icon="spa"') < html.indexOf("0 Días"));
+  assert.deepEqual(pressProps.style?.({ pressed: false })[1], {
+    flexDirection: "row", alignItems: "center", gap: 4,
+  });
   assert.equal(pressProps.accessibilityLabel, "0 Días: Intención. Abrir Tu camino");
   pressProps.onPress?.({ stopPropagation: () => { stopped = true; } });
   assert.equal(opens, 1);

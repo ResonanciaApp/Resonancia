@@ -1,5 +1,7 @@
+import { MaterialCommunityIcons } from "@expo/vector-icons";
 import React from "react";
-import { Animated, Pressable, Text, type StyleProp, type TextStyle, type ViewStyle } from "react-native";
+import { Animated, Pressable, StyleSheet, Text, type StyleProp, type TextStyle, type ViewStyle } from "react-native";
+import { MEMBERSHIP_AURORA } from "@/constants/colors";
 import { usePressScaleAnimation } from "@/hooks/usePressScaleAnimation";
 
 export function ProfileIntentionPill({
@@ -24,8 +26,16 @@ export function ProfileIntentionPill({
           event.stopPropagation();
           onPress();
         }}
-        style={({ pressed }) => [style, pressed && { opacity: 0.78 }]}
+        style={({ pressed }) => [style, styles.content, pressed && { opacity: 0.78 }]}
       >
+        <MaterialCommunityIcons
+          name="spa"
+          size={12}
+          color={MEMBERSHIP_AURORA.premium.accent}
+          style={styles.lotus}
+          accessibilityElementsHidden
+          importantForAccessibility="no"
+        />
         <Text style={textStyle}>
           <Text style={{ fontWeight: "700" }}>0 Días</Text>
           {": Intención"}
@@ -34,3 +44,8 @@ export function ProfileIntentionPill({
     </Animated.View>
   );
 }
+
+const styles = StyleSheet.create({
+  content: { flexDirection: "row", alignItems: "center", gap: 4 },
+  lotus: { lineHeight: 12, includeFontPadding: false },
+});

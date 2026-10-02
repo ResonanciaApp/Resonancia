@@ -119,6 +119,15 @@ test("Perfil removes both inner bottom margins for equal gaps and places its sin
   assert.doesNotMatch(render(), /profile-intention-title-row/);
 });
 
+test("Perfil's Intención day pill has a small centered golden lotus, without changing other preview callers", () => {
+  const html = render({ embedded: true, canonicalVerticalInsets: true });
+  assert.match(html, /data-icon="spa" data-color="#BE9650"/);
+  assert.match(html, /data-direction="row" data-align="center"/);
+  assert.ok(html.indexOf('data-icon="spa"') < html.lastIndexOf("0 días"));
+  assert.doesNotMatch(html, /de racha|data-padding-vertical="5.5"/);
+  assert.doesNotMatch(render(), /data-icon="spa"/);
+});
+
 test("the preview remains an accessible actionable button with the same day label", () => {
   let presses = 0;
   render({ onPress: () => presses++ });
