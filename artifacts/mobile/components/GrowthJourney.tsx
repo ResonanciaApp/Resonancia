@@ -213,7 +213,7 @@ function GrowthRow({
     <View
       style={styles.row}
       accessible
-      accessibilityLabel={`${level.name}, ${dayLabel} ${florecimiento ? "de racha" : "de práctica"}, ${status === "current" ? "etapa actual" : "por desbloquear"}. ${level.story}`}
+      accessibilityLabel={`${level.name}, ${dayLabel} de práctica, ${status === "current" ? "etapa actual" : "por desbloquear"}. ${level.story}`}
     >
       {hasNext && (
         <View style={styles.lineBase} pointerEvents="none" />
@@ -247,7 +247,7 @@ function GrowthRow({
             />
           )}
           <Text style={[styles.days, { color: status === "locked" ? GROWTH_COLORS.muted : colors.foreground }]}>
-            {dayLabel}{florecimiento ? " de racha" : ""}
+            {dayLabel}
           </Text>
         </View>
         <Text style={[styles.name, { color: status === "locked" ? GROWTH_COLORS.muted : colors.foreground }]}>
@@ -446,13 +446,10 @@ const styles = StyleSheet.create({
     marginBottom: 7,
   },
   days: { fontFamily: "Manrope", fontSize: 10, fontWeight: "600" },
-  bloomDayPill: { paddingVertical: 5.5, paddingLeft: 25 },
+  bloomDayPill: { paddingVertical: 5.5, flexDirection: "row", alignItems: "center", gap: 4 },
   bloomLotus: {
-    position: "absolute",
-    left: 9,
-    top: "50%",
     lineHeight: 12,
-    transform: [{ translateY: -6 }],
+    includeFontPadding: false,
   },
   story: { fontFamily: "Manrope", fontSize: 11, lineHeight: 16 },
 });

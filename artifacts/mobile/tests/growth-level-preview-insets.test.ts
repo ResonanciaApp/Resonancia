@@ -129,15 +129,19 @@ test("the preview remains an accessible actionable button with the same day labe
   assert.match(render(), /Intención, 0 días\. Abrir camino de crecimiento/);
 });
 
-test("Florecimiento pills put a golden lotus before streak days and add exactly 3px without changing ascent or the preview", () => {
+test("Florecimiento pills center the golden lotus beside days, omit streak wording and preserve the extra 3px padding", () => {
   for (const status of ["current", "locked"]) {
     for (const [startDay, endDay, label] of [[0, 0, "0 días"], [1, 7, "1–7 días"], [43, 49, "43–49 días"]] as const) {
       const level = { id: "test", name: "Etapa", startDay, endDay, image: 1, story: "Descripción." };
       const html = renderToStaticMarkup(React.createElement(GrowthRow, { level, hasNext: false, status, florecimiento: true }));
-      assert.match(html, /data-icon="spa" data-color="#BE9650" data-position="absolute"/);
+      assert.match(html, /data-icon="spa" data-color="#BE9650"/);
+      assert.doesNotMatch(html, /de racha/);
+      const lotus = html.match(/<div[^>]*data-icon="spa"[^>]*>/)?.[0] ?? "";
+      assert.doesNotMatch(lotus, /data-position="absolute"/);
+      assert.match(html, /data-direction="row" data-align="center"/);
       assert.match(html, /data-padding-vertical="5.5"/);
-      assert.ok(html.indexOf('data-icon="spa"') < html.lastIndexOf(`${label} de racha`));
-      assert.ok(html.includes(`${label} de racha`));
+      assert.ok(html.indexOf('data-icon="spa"') < html.lastIndexOf(label));
+      assert.ok(html.includes(label));
       const ascent = renderToStaticMarkup(React.createElement(GrowthRow, { level, hasNext: false, status }));
       assert.doesNotMatch(ascent, /data-icon="spa"|de racha/);
       assert.match(ascent, /data-padding-vertical="4"/);

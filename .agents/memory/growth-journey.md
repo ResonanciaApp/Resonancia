@@ -7,12 +7,6 @@ Cuando se active el progreso funcional, los niveles del camino deberán depender
 
 **Why:** El usuario escogió explícitamente los días acumulados aunque no sean consecutivos entre tres opciones. Tras probar imágenes cuadradas opacas, pidió difuminar y alinear las imágenes del timeline; luego pidió que la portada de Intención volviera a coincidir con ellas, sin borde.
 
-El rótulo «días de racha» en las píldoras de Florecimiento es una indicación visual, no una nueva definición de la métrica de avance.
-
-**Why:** esa petición especificó el loto dorado, el texto y el aumento de altura de la píldora, sin pedir cambiar la progresión funcional.
-
-**How to apply:** no inferir días consecutivos a partir del rótulo; conservar el criterio acumulado hasta que el usuario cambie explícitamente la regla de avance.
-
 **How to apply:** Al ampliar rangos o cambiar arte, mantener la métrica de días activos canónicos para cuando se active el progreso; usar el mismo arte con desvanecido radial para la portada de Intención y su fila del timeline.
 
 La visibilidad de las ilustraciones no debe depender de un callback de scroll ni de animaciones en iOS. Mostrar las imágenes locales a tamaño explícito; la imagen de la etapa actual queda encendida y las demás apagadas, sin ocultarlas por completo. El punto también distingue la etapa actual.
