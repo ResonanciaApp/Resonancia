@@ -18,6 +18,8 @@ import {
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 
 import { FilledSunIcon } from "@/components/FilledSunIcon";
+import { SCENE_THEMES } from "@/config/scene-themes";
+import { useSceneTheme } from "@/context/SceneThemeContext";
 import { SLEEP_REMINDER_NIGHT_GRADIENT } from "@/constants/colors";
 import {
   formatPracticeNotificationTimeLocal,
@@ -43,6 +45,7 @@ export function SleepReminderSheet({
   onSaved,
   variant = "sleep",
 }: SleepReminderSheetProps) {
+  const { theme } = useSceneTheme();
   const isMorning = variant === "morning";
   const slot = isMorning ? "manana" : "noche";
   const insets = useSafeAreaInsets();
@@ -163,7 +166,9 @@ export function SleepReminderSheet({
   const timeLabel = formatPracticeNotificationTimeLocal(draft.hour, draft.minute);
   const gradient = isMorning
     ? ["#C96D68", "#855269", "#443044"] as const
-    : SLEEP_REMINDER_NIGHT_GRADIENT;
+    : theme.id === "indigo2"
+      ? [SCENE_THEMES.tibet.gradient[1], SCENE_THEMES.tibet.gradient[2]] as const
+      : SLEEP_REMINDER_NIGHT_GRADIENT;
   return (
     <Modal
       transparent

@@ -25,6 +25,7 @@ const NativeView = ({ children, testID, style, disabled, accessibilityLabel }: N
     "data-self-align": resolved.alignSelf,
     "data-min-height": resolved.minHeight,
     "data-margin-bottom": resolved.marginBottom,
+    "data-transform": resolved.transform ? JSON.stringify(resolved.transform) : undefined,
   }, children);
 };
 const Passthrough = ({ children }: NativeProps) => React.createElement(React.Fragment, null, children);
@@ -344,6 +345,15 @@ test("Perfil shows seven days with their original background, without a title, a
   assert.ok(days >= 0 && days < historyIndex);
   assert.ok(html.indexOf('data-testid="calendar"') > historyIndex);
   assert.doesNotMatch(html.slice(0, historyIndex), /RACHA ACTUAL|RACHAS COMPLETADAS/);
+});
+
+test("Perfil raises only the horizontal streak divider by 3px without changing layout spacing", () => {
+  const profileSource = readFileSync(new URL("../components/ProfileScreenBase.tsx", import.meta.url), "utf8");
+  assert.match(profileSource, /streakHistoryDividerOffsetY=\{-3\}/);
+  const props = { separateStreakHistory: true, showPersonalStats: false };
+  const divider = (html: string) => html.match(/<div[^>]*data-testid="profile-streak-history-divider"[^>]*>/)?.[0] ?? "";
+  assert.match(divider(render({ ...props, streakHistoryDividerOffsetY: -3 })), /translateY&quot;:-3/);
+  assert.match(divider(render(props)), /translateY&quot;:0/);
 });
 
 test("Perfil puts the same Intención preview after streak history and before calendar, opening Tu camino", () => {
