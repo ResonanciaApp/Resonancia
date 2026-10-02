@@ -82,9 +82,9 @@ test("Perfil places avatar left with name and intention on its right, without th
   assert.doesNotMatch(html, /Ubicación|data-icon="map-pin"/);
   assert.match(html, /data-testid="profile-intention-pill"[^>]*data-self-align="flex-start"/);
   assert.doesNotMatch(source.match(/dedicatedProfileCard: \{([^}]*)\}/)?.[1] ?? "", /backgroundColor/);
-  assert.match(source, /avatarImage:\s*\{\s*width: 93,\s*height: 93,\s*borderRadius: 46\.5/);
-  assert.match(source, /avatarCircle:\s*\{\s*width: 93,\s*height: 93,\s*borderRadius: 46\.5/);
-  assert.match(source, /avatarOuterBorder:\s*\{\s*position: "absolute",\s*top: -3,\s*left: -3,\s*width: 99,\s*height: 99,\s*borderRadius: 49\.5,\s*borderWidth: 3/);
+  assert.match(source, /avatarImage:\s*\{\s*width: 83,\s*height: 83,\s*borderRadius: 41\.5/);
+  assert.match(source, /avatarCircle:\s*\{\s*width: 83,\s*height: 83,\s*borderRadius: 41\.5/);
+  assert.match(source, /avatarOuterBorder:\s*\{\s*position: "absolute",\s*top: -3,\s*left: -3,\s*width: 89,\s*height: 89,\s*borderRadius: 44\.5,\s*borderWidth: 3/);
   const rowStyle = source.match(/profileIdentityRow: \{([\s\S]*?)\n  \},/)?.[1] ?? "";
   assert.match(rowStyle, /paddingHorizontal: 20/);
 });

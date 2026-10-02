@@ -68,6 +68,16 @@ test("compact identity preview hides the whole Premium banner and leaves exactly
   assert.equal(image.height + avatar.marginBottom, border.top + border.height);
 });
 
+test("the avatar block moves up 20px in normal flow, carrying subsequent sections without changing the weekly gap", () => {
+  const card = style("ProfileScreenBase", "dedicatedProfileCard");
+  assert.equal(card.marginTop, 18 - 20);
+  assert.equal(card.transform, undefined);
+  const avatar = style("ProfileScreenBase", "avatarImage");
+  assert.equal(avatar.width, 93 - 10);
+  assert.equal(avatar.height, 93 - 10);
+  assert.equal(style("ProfileScreenBase", "profileIdentityPreviewCard").marginBottom, 5);
+});
+
 test("Perfil replaces history and downloads with the expandable wall after its progress/calendar section", () => {
   const source = readFileSync(new URL("../components/ProfileScreenBase.tsx", import.meta.url), "utf8");
   assert.doesNotMatch(source, /ProfileDownloadsSection|profileHistorySection|>Historial<\/Text>/);

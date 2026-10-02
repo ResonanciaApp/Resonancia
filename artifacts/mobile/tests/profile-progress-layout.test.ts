@@ -504,7 +504,7 @@ test("settings statistics contain the existing stats and range filter without st
   assert.match(settingsSource, /label: "Personalizar notificaciones"/);
 });
 
-test("Perfil keeps settings accessible in its sticky header and uses the 93-point avatar", () => {
+test("Perfil keeps settings accessible in its sticky header and uses the 83-point avatar", () => {
   const source = readFileSync(new URL("../components/ProfileScreenBase.tsx", import.meta.url), "utf8");
   const headerStart = source.indexOf("<View style={styles.profileStickyHeaderRow}>");
   const header = source.slice(headerStart, source.indexOf("</View>", headerStart));
@@ -522,7 +522,7 @@ test("Perfil keeps settings accessible in its sticky header and uses the 93-poin
     assert.ok(reference, `Descubrir defines ${property}`);
     assert.equal(titleStyle.match(pattern)?.[1], reference, `sticky title matches Descubrir: ${property}`);
   }
-  assert.match(source, /avatarCircle:\s*\{\s*width: 93,\s*height: 93,\s*borderRadius: 46\.5/);
-  assert.match(source, /avatarImage:\s*\{\s*width: 93,\s*height: 93,\s*borderRadius: 46\.5/);
-  assert.match(source, /avatarOuterBorder:\s*\{[\s\S]*?width: 99,\s*height: 99,\s*borderRadius: 49\.5/);
+  assert.match(source, /avatarCircle:\s*\{\s*width: 83,\s*height: 83,\s*borderRadius: 41\.5/);
+  assert.match(source, /avatarImage:\s*\{\s*width: 83,\s*height: 83,\s*borderRadius: 41\.5/);
+  assert.match(source, /avatarOuterBorder:\s*\{[\s\S]*?width: 89,\s*height: 89,\s*borderRadius: 44\.5/);
 });
