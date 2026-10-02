@@ -63,6 +63,12 @@ El loto de «Racha acumulada» debe conservar su brillo difuminado clásico, per
 
 **How to apply:** Mantener el efecto difuminado en el contenido y aplicar una máscara con la forma del glifo; si cambia el icono o su tamaño, ajustar máscara y contenido juntos.
 
+En «Tu progreso», los siete días entran individualmente de lunes a domingo, escalonados en cascada; no sustituir esa secuencia por la aparición simultánea de toda la fila.
+
+**Why:** El usuario pidió restaurar la entrada escalonada anterior, sin cambiar el contador ni el texto.
+
+**How to apply:** Conservar independiente la animación individual de la semana de la entrada conjunta del resto del contenido; no trasladar este cambio automáticamente a Perfil.
+
 El loto de la píldora de racha en Inicio conserva el blanco del tratamiento clásico de la racha actual, no el dorado de «Racha acumulada».
 
 **Why:** El usuario corrigió la elección anterior del dorado: ambas superficies representan la racha actual.

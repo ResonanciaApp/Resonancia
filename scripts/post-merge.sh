@@ -8,4 +8,5 @@ pnpm install --frozen-lockfile
 # applied by the Publish flow, never here.
 DB_MIGRATION_ENV=development pnpm --filter @workspace/db migrate:editorial
 DB_MIGRATION_ENV=development pnpm --filter @workspace/db migrate:featured-moment
+DB_MIGRATION_ENV=development pnpm --filter @workspace/db migrate:presence
 pnpm --filter db push

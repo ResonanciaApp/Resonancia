@@ -155,3 +155,4 @@
 - [Edición de imágenes en el runtime](image-processing-runtime.md) — Pillow anuncia versión pero falla al importar _imaging; usar ImageMagick para procesar PNGs aquí
 - [Assets nuevos y Metro](expo-new-assets-metro.md) — generar el PNG antes de referenciarlo con require; si Metro cachea el error de archivo ausente, reiniciar tras crearlo
 - [Rebote en los bordes](scroll-edge-bounce.md) — en Sistema de rachas, no bloquear arriba/abajo también exige rebote elástico, no solo eliminar franjas fijas
+- [Usuarios conectados](community-presence-semantics.md) — presencia general en primer plano, no solo meditación; total independiente de fotos y sin relleno ficticio

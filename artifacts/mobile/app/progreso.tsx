@@ -244,6 +244,7 @@ export default function ProgresoScreen() {
               >
                 <ProgressMirrorSections
                   animateEntrance={false}
+                  animateWeekEntrance
                   entranceReplayKey="progress-sections"
                   entranceBaseDelay={0}
                   showSectionBorders={false}

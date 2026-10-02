@@ -54,6 +54,7 @@ import Svg, {
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 
 import { GreetingHeader } from "@/components/GreetingHeader";
+import { ConnectedCommunitySection } from "@/components/ConnectedCommunitySection";
 import { useGreeting } from "@/hooks/useGreeting";
 import { useGreetingVisible } from "@/context/GreetingVisibleContext";
 import { useDrawer } from "@/context/DrawerContext";
@@ -2574,6 +2575,7 @@ export default function HomeScreen2({
   const searchOpenRef = useRef(false);
   const scrollYRef = useRef(0);
   const inicio3ScrollY = useSharedValue(0);
+  const communityContentY = useSharedValue(0);
   const homeScrollRef = useRef<React.ElementRef<typeof RAnimated.ScrollView>>(null);
 
   const searchBtnAnim = useRef(new Animated.Value(0)).current;
@@ -3037,6 +3039,7 @@ export default function HomeScreen2({
 
         <View
           style={isInicio2 && styles.inicio2ContentPanel}
+          onLayout={(event) => { communityContentY.value = event.nativeEvent.layout.y; }}
         >
         {isInicio2 && variant !== "inicio3" && (
           <View
@@ -3472,6 +3475,9 @@ export default function HomeScreen2({
             onPlaySession={playSession}
             openCategory={openCategory}
           />
+        )}
+        {variant === "inicio3" && (
+          <ConnectedCommunitySection scrollY={inicio3ScrollY} contentY={communityContentY} focused={tabFocused} />
         )}
         </View>
       </RAnimated.ScrollView>

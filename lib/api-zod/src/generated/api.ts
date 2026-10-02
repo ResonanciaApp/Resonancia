@@ -8,6 +8,42 @@
 import * as zod from 'zod';
 
 
+/**
+ * @summary Active unique accounts and a bounded sample of shareable profile photos
+ */
+export const getCommunityPresenceResponseCountMin = 0;
+
+export const getCommunityPresenceResponseAvatarsMax = 24;
+
+
+
+export const GetCommunityPresenceResponse = zod.object({
+  "count": zod.number().min(getCommunityPresenceResponseCountMin),
+  "updatedAt": zod.coerce.date(),
+  "avatars": zod.array(zod.object({
+  "id": zod.string(),
+  "avatarUrl": zod.string().nullable(),
+  "avatarPresetId": zod.string().nullable()
+})).max(getCommunityPresenceResponseAvatarsMax)
+})
+
+
+/**
+ * @summary Renew this device foreground presence
+ */
+export const HeartbeatCommunityPresenceBody = zod.object({
+  "sessionId": zod.string().uuid()
+})
+
+
+/**
+ * @summary Retire this foreground lease without removing other devices
+ */
+export const LeaveCommunityPresenceBody = zod.object({
+  "sessionId": zod.string().uuid()
+})
+
+
 export const ListCoverPresetsQueryParams = zod.object({
   "scope": zod.enum(['mix', 'playlist', 'profile', 'reflection-story'])
 })

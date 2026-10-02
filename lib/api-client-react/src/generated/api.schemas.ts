@@ -5,6 +5,26 @@
  * API specification
  * OpenAPI spec version: 0.1.0
  */
+export interface CommunityPresenceSession {
+  sessionId: string;
+}
+
+export type CommunityPresenceSummaryAvatarsItem = {
+  id: string;
+  /** @nullable */
+  avatarUrl: string | null;
+  /** @nullable */
+  avatarPresetId: string | null;
+};
+
+export interface CommunityPresenceSummary {
+  /** @minimum 0 */
+  count: number;
+  updatedAt: string;
+  /** @maxItems 24 */
+  avatars: CommunityPresenceSummaryAvatarsItem[];
+}
+
 /**
  * @maxLength 40
  * @pattern ^[a-z][a-z0-9-]{0,39}$

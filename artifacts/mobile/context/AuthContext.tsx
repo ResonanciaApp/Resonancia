@@ -1,4 +1,5 @@
 import { useAuth as useClerkAuth, useClerk, useUser } from "@clerk/expo";
+import { retireCommunityPresence } from "@/lib/community-presence-lifecycle";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import React, {
   createContext,
@@ -105,6 +106,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   );
 
   const logout = useCallback(async () => {
+    await retireCommunityPresence();
     setLocalState(DEFAULT);
     await AsyncStorage.removeItem(AUTH_KEY);
     if (clerkSignedIn) {

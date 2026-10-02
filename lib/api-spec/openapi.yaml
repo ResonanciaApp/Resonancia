@@ -39,6 +39,58 @@ tags:
   - name: greeting
     description: Global greeting shown on Inicio
 paths:
+  /community/presence:
+    get:
+      operationId: getCommunityPresence
+      tags: [community-presence]
+      summary: Active unique accounts and a bounded sample of shareable profile photos
+      responses:
+        '200':
+          description: Foreground presence within the last 90 seconds
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CommunityPresenceSummary'
+        '401':
+          description: Authentication required
+        '503':
+          description: Presence temporarily unavailable
+  /community/presence/heartbeat:
+    post:
+      operationId: heartbeatCommunityPresence
+      tags: [community-presence]
+      summary: Renew this device foreground presence
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CommunityPresenceSession'
+      responses:
+        '204':
+          description: Presence received
+        '400':
+          description: Invalid session identifier
+        '401':
+          description: Authentication required
+  /community/presence/leave:
+    post:
+      operationId: leaveCommunityPresence
+      tags: [community-presence]
+      summary: Retire this foreground lease without removing other devices
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CommunityPresenceSession'
+      responses:
+        '204':
+          description: Lease retired
+        '400':
+          description: Invalid session identifier
+        '401':
+          description: Authentication required
   /cover-presets:
     get:
       operationId: listCoverPresets
@@ -5166,6 +5218,36 @@ paths:
         "404": {description: Reflection story not found}
 components:
   schemas:
+    CommunityPresenceSession:
+      type: object
+      required: [sessionId]
+      properties:
+        sessionId:
+          type: string
+          format: uuid
+    CommunityPresenceSummary:
+      type: object
+      required: [count, updatedAt, avatars]
+      properties:
+        count:
+          type: integer
+          minimum: 0
+        updatedAt:
+          type: string
+          format: date-time
+        avatars:
+          type: array
+          maxItems: 24
+          items:
+            type: object
+            required: [id, avatarUrl, avatarPresetId]
+            properties:
+              id:
+                type: string
+              avatarUrl:
+                type: [string, 'null']
+              avatarPresetId:
+                type: [string, 'null']
     ReflectionCategory:
       type: string
       pattern: "^[a-z][a-z0-9-]{0,39}$"

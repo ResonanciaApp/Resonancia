@@ -55,6 +55,8 @@ import type {
   CatalogResponse,
   CatalogVideo,
   CommunityMessage,
+  CommunityPresenceSession,
+  CommunityPresenceSummary,
   Conversation,
   CoverPreset,
   CoverPresetInput,
@@ -268,6 +270,225 @@ type AwaitedInput<T> = PromiseLike<T> | T;
 type SecondParameter<T extends (...args: never) => unknown> = Parameters<T>[1];
 
 
+
+export const getGetCommunityPresenceUrl = () => {
+
+
+
+
+  return `/api/community/presence`
+}
+
+/**
+ * @summary Active unique accounts and a bounded sample of shareable profile photos
+ */
+export const getCommunityPresence = async ( options?: RequestInit): Promise<CommunityPresenceSummary> => {
+
+  return customFetch<CommunityPresenceSummary>(getGetCommunityPresenceUrl(),
+  {
+    ...options,
+    method: 'GET'
+
+
+  }
+);}
+
+
+
+
+
+export const getGetCommunityPresenceQueryKey = () => {
+    return [
+    `/api/community/presence`
+    ] as const;
+    }
+
+
+export const getGetCommunityPresenceQueryOptions = <TData = Awaited<ReturnType<typeof getCommunityPresence>>, TError = ErrorType<void>>( options?: { query?:UseQueryOptions<Awaited<ReturnType<typeof getCommunityPresence>>, TError, TData>, request?: SecondParameter<typeof customFetch>}
+) => {
+
+const {query: queryOptions, request: requestOptions} = options ?? {};
+
+  const queryKey =  queryOptions?.queryKey ?? getGetCommunityPresenceQueryKey();
+
+
+
+    const queryFn: QueryFunction<Awaited<ReturnType<typeof getCommunityPresence>>> = ({ signal }) => getCommunityPresence({ signal, ...requestOptions });
+
+
+
+
+
+   return  { queryKey, queryFn, ...queryOptions} as UseQueryOptions<Awaited<ReturnType<typeof getCommunityPresence>>, TError, TData> & { queryKey: QueryKey }
+}
+
+export type GetCommunityPresenceQueryResult = NonNullable<Awaited<ReturnType<typeof getCommunityPresence>>>
+export type GetCommunityPresenceQueryError = ErrorType<void>
+
+
+/**
+ * @summary Active unique accounts and a bounded sample of shareable profile photos
+ */
+
+export function useGetCommunityPresence<TData = Awaited<ReturnType<typeof getCommunityPresence>>, TError = ErrorType<void>>(
+  options?: { query?:UseQueryOptions<Awaited<ReturnType<typeof getCommunityPresence>>, TError, TData>, request?: SecondParameter<typeof customFetch>}
+
+ ):  UseQueryResult<TData, TError> & { queryKey: QueryKey } {
+
+  const queryOptions = getGetCommunityPresenceQueryOptions(options)
+
+  const query = useQuery(queryOptions) as  UseQueryResult<TData, TError> & { queryKey: QueryKey };
+
+  return { ...query, queryKey: queryOptions.queryKey };
+}
+
+
+
+
+
+
+
+export const getHeartbeatCommunityPresenceUrl = () => {
+
+
+
+
+  return `/api/community/presence/heartbeat`
+}
+
+/**
+ * @summary Renew this device foreground presence
+ */
+export const heartbeatCommunityPresence = async (communityPresenceSession: CommunityPresenceSession, options?: RequestInit): Promise<void> => {
+
+  return customFetch<void>(getHeartbeatCommunityPresenceUrl(),
+  {
+    ...options,
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json', ...options?.headers },
+    body: JSON.stringify(
+      communityPresenceSession,)
+  }
+);}
+
+
+
+
+export const getHeartbeatCommunityPresenceMutationOptions = <TError = ErrorType<void>,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof heartbeatCommunityPresence>>, TError,{data: BodyType<CommunityPresenceSession>}, TContext>, request?: SecondParameter<typeof customFetch>}
+): UseMutationOptions<Awaited<ReturnType<typeof heartbeatCommunityPresence>>, TError,{data: BodyType<CommunityPresenceSession>}, TContext> => {
+
+const mutationKey = ['heartbeatCommunityPresence'];
+const {mutation: mutationOptions, request: requestOptions} = options ?
+      options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey ?
+      options
+      : {...options, mutation: {...options.mutation, mutationKey}}
+      : {mutation: { mutationKey, }, request: undefined};
+
+
+
+
+      const mutationFn: MutationFunction<Awaited<ReturnType<typeof heartbeatCommunityPresence>>, {data: BodyType<CommunityPresenceSession>}> = (props) => {
+          const {data} = props ?? {};
+
+          return  heartbeatCommunityPresence(data,requestOptions)
+        }
+
+
+
+
+
+
+  return  { mutationFn, ...mutationOptions }}
+
+    export type HeartbeatCommunityPresenceMutationResult = NonNullable<Awaited<ReturnType<typeof heartbeatCommunityPresence>>>
+    export type HeartbeatCommunityPresenceMutationBody = BodyType<CommunityPresenceSession>
+    export type HeartbeatCommunityPresenceMutationError = ErrorType<void>
+
+    /**
+ * @summary Renew this device foreground presence
+ */
+export const useHeartbeatCommunityPresence = <TError = ErrorType<void>,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof heartbeatCommunityPresence>>, TError,{data: BodyType<CommunityPresenceSession>}, TContext>, request?: SecondParameter<typeof customFetch>}
+ ): UseMutationResult<
+        Awaited<ReturnType<typeof heartbeatCommunityPresence>>,
+        TError,
+        {data: BodyType<CommunityPresenceSession>},
+        TContext
+      > => {
+      return useMutation(getHeartbeatCommunityPresenceMutationOptions(options));
+    }
+
+export const getLeaveCommunityPresenceUrl = () => {
+
+
+
+
+  return `/api/community/presence/leave`
+}
+
+/**
+ * @summary Retire this foreground lease without removing other devices
+ */
+export const leaveCommunityPresence = async (communityPresenceSession: CommunityPresenceSession, options?: RequestInit): Promise<void> => {
+
+  return customFetch<void>(getLeaveCommunityPresenceUrl(),
+  {
+    ...options,
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json', ...options?.headers },
+    body: JSON.stringify(
+      communityPresenceSession,)
+  }
+);}
+
+
+
+
+export const getLeaveCommunityPresenceMutationOptions = <TError = ErrorType<void>,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof leaveCommunityPresence>>, TError,{data: BodyType<CommunityPresenceSession>}, TContext>, request?: SecondParameter<typeof customFetch>}
+): UseMutationOptions<Awaited<ReturnType<typeof leaveCommunityPresence>>, TError,{data: BodyType<CommunityPresenceSession>}, TContext> => {
+
+const mutationKey = ['leaveCommunityPresence'];
+const {mutation: mutationOptions, request: requestOptions} = options ?
+      options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey ?
+      options
+      : {...options, mutation: {...options.mutation, mutationKey}}
+      : {mutation: { mutationKey, }, request: undefined};
+
+
+
+
+      const mutationFn: MutationFunction<Awaited<ReturnType<typeof leaveCommunityPresence>>, {data: BodyType<CommunityPresenceSession>}> = (props) => {
+          const {data} = props ?? {};
+
+          return  leaveCommunityPresence(data,requestOptions)
+        }
+
+
+
+
+
+
+  return  { mutationFn, ...mutationOptions }}
+
+    export type LeaveCommunityPresenceMutationResult = NonNullable<Awaited<ReturnType<typeof leaveCommunityPresence>>>
+    export type LeaveCommunityPresenceMutationBody = BodyType<CommunityPresenceSession>
+    export type LeaveCommunityPresenceMutationError = ErrorType<void>
+
+    /**
+ * @summary Retire this foreground lease without removing other devices
+ */
+export const useLeaveCommunityPresence = <TError = ErrorType<void>,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof leaveCommunityPresence>>, TError,{data: BodyType<CommunityPresenceSession>}, TContext>, request?: SecondParameter<typeof customFetch>}
+ ): UseMutationResult<
+        Awaited<ReturnType<typeof leaveCommunityPresence>>,
+        TError,
+        {data: BodyType<CommunityPresenceSession>},
+        TContext
+      > => {
+      return useMutation(getLeaveCommunityPresenceMutationOptions(options));
+    }
 
 export const getListCoverPresetsUrl = (params: ListCoverPresetsParams,) => {
   const normalizedParams = new URLSearchParams();

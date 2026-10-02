@@ -32,6 +32,7 @@ export function ProgressMirrorSections({
   showCalendar = true,
   showCalendarCompletedCount = false,
   animateEntrance = false,
+  animateWeekEntrance = animateEntrance,
   entranceReplayKey = "progress-mirror",
   entranceBaseDelay = 0,
   personalStatsEntranceOffsetMs,
@@ -75,6 +76,7 @@ export function ProgressMirrorSections({
   showCalendar?: boolean;
   showCalendarCompletedCount?: boolean;
   animateEntrance?: boolean;
+  animateWeekEntrance?: boolean;
   entranceReplayKey?: string | number;
   entranceBaseDelay?: number;
   personalStatsEntranceOffsetMs?: number;
@@ -314,7 +316,7 @@ export function ProgressMirrorSections({
     >
       <Animated.View style={{ opacity: weekBlink }}>
         <StreakWeekRow
-          animateEntrance={animateEntrance}
+          animateEntrance={animateWeekEntrance}
           entranceReplayKey={`${entranceReplayKey}:week`}
           entranceBaseDelay={entranceBaseDelay + STREAK_WEEK_START_OFFSET_MS}
           onEntranceComplete={chainPersonalStatsAfterWeek ? onWeekEntranceComplete : undefined}

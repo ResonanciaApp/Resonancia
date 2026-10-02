@@ -95,7 +95,7 @@ function renderProgress(days: number, reducedMotion: boolean, entranceComplete =
   return { html, mirrorProps, entrances, rerender };
 }
 
-test("all seven circles and the description enter together immediately when the counter and background entrance completes", () => {
+test("the weekly row mounts with the description after the counter entrance, with individual day cascading enabled", () => {
   for (const days of [0, 4, 7]) {
     const h = renderProgress(days, false, false);
     assert.equal(h.entrances.get("progress-intro-description").active, false);
@@ -116,6 +116,7 @@ test("all seven circles and the description enter together immediately when the 
     assert.equal(circles.delay ?? 0, 0);
   }
   assert.equal(renderProgress(7, false).mirrorProps.animateEntrance, false);
+  assert.equal(renderProgress(7, false).mirrorProps.animateWeekEntrance, true);
   assert.doesNotMatch(source, /countValueDone|onCountValueComplete/);
 });
 

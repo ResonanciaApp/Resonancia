@@ -72,4 +72,5 @@ export * from "./reflection-categories";
 export * from "./reflection-stories";
 export * from "./daily-quotes";
 export * from "./greeting";
+export * from "./community-presence";
 

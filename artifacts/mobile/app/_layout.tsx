@@ -71,6 +71,7 @@ import { RutinaProvider } from "@/context/RutinaContext";
 import { PremiumProvider } from "@/context/PremiumContext";
 import { UserProfileProvider } from "@/context/UserProfileContext";
 import { ProfileSync } from "@/components/ProfileSync";
+import { CommunityPresenceTracker } from "@/components/CommunityPresenceTracker";
 import { NotificationsProvider } from "@/context/NotificationsContext";
 import { DownloadProvider } from "@/context/DownloadContext";
 
@@ -541,6 +542,7 @@ export default function RootLayout() {
               <CatalogProvider>
               <MoodQuotesProvider>
               <AuthProvider>
+                <CommunityPresenceTracker />
               <InspirationProvider>
                 <NotificationsProvider>
                 <PremiumProvider>
