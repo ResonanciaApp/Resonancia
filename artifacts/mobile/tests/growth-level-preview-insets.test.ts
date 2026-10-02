@@ -108,7 +108,7 @@ const render = (props: Record<string, unknown> = {}) => renderToStaticMarkup(
   React.createElement(componentModule.exports.GrowthLevelPreviewCard, { onPress: () => {}, ...props }),
 );
 
-test("Semilla displays only the supplied dimmed disabled chest below its story, with no reward on other levels", () => {
+test("Semilla retains only the supplied dimmed disabled chest below its story", () => {
   const semilla = {
     id: "semilla", name: "Semilla", startDay: 1, endDay: 7,
     image: 1, story: "Tu primer paso abre un espacio para crecer.",
@@ -130,11 +130,33 @@ test("Semilla displays only the supplied dimmed disabled chest below its story, 
   assert.ok(html.indexOf(`>${semilla.story}</div>`) < html.indexOf('data-testid="semilla-reward"'));
   assert.doesNotMatch(html, /Regalitos sorpresa|Desbloquea tu cofre de regalos/);
   assert.doesNotMatch(html, /data-accessibility-role="button"/);
-  for (const id of ["intencion", "brote", "ascenso-inicio"]) {
+  for (const id of ["intencion", "brote", "desarrollo", "enraizamiento", "floracion", "ascenso-inicio"]) {
     const other = renderToStaticMarkup(React.createElement(GrowthRow, {
       level: { ...semilla, id }, hasNext: false, status: id === "intencion" ? "current" : "locked",
     }));
-    assert.doesNotMatch(other, /semilla-reward|Regalitos sorpresa/);
+    assert.doesNotMatch(other, /data-testid="[^"]*-reward|Regalitos sorpresa/);
+  }
+});
+
+test("Crecimiento, Vegetación and Expansión display the same small disabled chest without a title", () => {
+  for (const [id, name] of [["crecimiento", "Crecimiento"], ["vegetacion", "Vegetación"], ["expansion", "Expansión"]]) {
+    const story = `Descripción de ${name}.`;
+    const html = renderToStaticMarkup(React.createElement(GrowthRow, {
+      level: { id, name, startDay: 15, endDay: 21, image: 1, story },
+      hasNext: id !== "expansion", status: "locked", florecimiento: true,
+    }));
+    const reward = html.match(new RegExp(`<div[^>]*data-testid="${id}-reward"[^>]*>`))?.[0];
+    assert.ok(reward, id);
+    assert.match(reward, /data-pointer-events="none"/);
+    assert.match(reward, /data-disabled="true"/);
+    const chest = html.match(new RegExp(`<div[^>]*data-testid="${id}-reward-chest"[^>]*>`))?.[0];
+    assert.ok(chest, id);
+    assert.match(chest, /data-source="3"/);
+    assert.match(chest, /data-opacity="0.8"/);
+    assert.match(chest, /data-height="22"/);
+    assert.match(html, /data-opacity="0.55"/);
+    assert.ok(html.indexOf(`>${story}</div>`) < html.indexOf(`data-testid="${id}-reward"`));
+    assert.doesNotMatch(html, /Regalitos sorpresa|Desbloquea tu cofre de regalos|data-accessibility-role="button"/);
   }
 });
 

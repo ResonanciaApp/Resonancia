@@ -11,7 +11,8 @@ import { useColors } from "@/hooks/useColors";
 
 export const GROWTH_ROW_HEIGHT = 205;
 const PROFILE_INTENTION_IMAGE = require("../assets/images/growth/00-intencion-profile.png");
-const SEMILLA_REWARD_CHEST = require("../assets/images/growth/semilla-reward-chest.png");
+const GROWTH_REWARD_CHEST = require("../assets/images/growth/semilla-reward-chest.png");
+const REWARD_LEVEL_IDS = new Set(["semilla", "crecimiento", "vegetacion", "expansion"]);
 
 const GROWTH_COLORS = {
   line: POSITIONED_DAY_GRADIENT[0],
@@ -247,7 +248,7 @@ function GrowthRow({
     <View
       style={styles.row}
       accessible
-      accessibilityLabel={`${level.name}, ${dayLabel} de práctica, ${status === "current" ? "etapa actual" : "por desbloquear"}. ${level.story}${level.id === "semilla" ? " Cofre por desbloquear." : ""}`}
+      accessibilityLabel={`${level.name}, ${dayLabel} de práctica, ${status === "current" ? "etapa actual" : "por desbloquear"}. ${level.story}${REWARD_LEVEL_IDS.has(level.id) ? " Cofre por desbloquear." : ""}`}
     >
       {hasNext && (
         <View style={styles.lineBase} pointerEvents="none" />
@@ -290,16 +291,16 @@ function GrowthRow({
         <Text style={[styles.story, { color: status === "locked" ? GROWTH_COLORS.muted : colors.mutedForeground }]}>
           {level.story}
         </Text>
-        {level.id === "semilla" && (
+        {REWARD_LEVEL_IDS.has(level.id) && (
           <View
-            testID="semilla-reward"
+            testID={`${level.id}-reward`}
             style={styles.reward}
             pointerEvents="none"
             accessibilityState={{ disabled: true }}
           >
             <Image
-              testID="semilla-reward-chest"
-              source={SEMILLA_REWARD_CHEST}
+              testID={`${level.id}-reward-chest`}
+              source={GROWTH_REWARD_CHEST}
               resizeMode="contain"
               style={styles.rewardChest}
               accessibilityElementsHidden
