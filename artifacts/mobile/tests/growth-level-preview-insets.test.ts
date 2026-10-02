@@ -30,7 +30,7 @@ const Native = ({ accessibilityLabel, accessibilityRole, children, onPress, styl
   return React.createElement("div", {
     "data-testid": testID,
     "data-icon": name,
-    "data-color": color,
+    "data-color": color ?? resolvedStyle.color,
     "data-position": resolvedStyle.position,
     "data-font-size": resolvedStyle.fontSize,
     "data-line-height": resolvedStyle.lineHeight,
@@ -128,8 +128,11 @@ test("Semilla replaces its chest with a same-size dimmed closed lock and disable
   const lock = html.match(/<div[^>]*data-testid="semilla-reward-lock"[^>]*>/)?.[0];
   assert.ok(lock);
   assert.match(lock, /data-icon="lock"/);
+  const source = readFileSync(new URL("../components/GrowthJourney.tsx", import.meta.url), "utf8");
+  assert.match(source, /<MaterialCommunityIcons\s+testID=\{`\$\{level.id\}-reward-lock`\}\s+name="lock"\s+size=\{16\}/);
   assert.match(lock, /data-opacity="0.8"/);
-  assert.match(lock, /data-height="22"/);
+  assert.match(lock, /data-height="16"/);
+  assert.match(html, /data-color="#8C8C8C"[^>]*>Desbloquea 50 avatares nuevos/);
   assert.doesNotMatch(html, /semilla-reward-chest|data-source="3"/);
   assert.match(html, /data-opacity="0.55"/);
   assert.ok(html.indexOf(`>${semilla.story}</div>`) < html.indexOf('data-testid="semilla-reward"'));
@@ -144,7 +147,7 @@ test("Semilla replaces its chest with a same-size dimmed closed lock and disable
   }
 });
 
-test("Crecimiento, Vegetación and Expansión display the same small disabled chest without a title", () => {
+test("Crecimiento, Vegetación and Expansión share Semilla's small filled lock and gray avatar-unlock text, without chests", () => {
   for (const [id, name] of [["crecimiento", "Crecimiento"], ["vegetacion", "Vegetación"], ["expansion", "Expansión"]]) {
     const story = `Descripción de ${name}.`;
     const html = renderToStaticMarkup(React.createElement(GrowthRow, {
@@ -155,11 +158,13 @@ test("Crecimiento, Vegetación and Expansión display the same small disabled ch
     assert.ok(reward, id);
     assert.match(reward, /data-pointer-events="none"/);
     assert.match(reward, /data-disabled="true"/);
-    const chest = html.match(new RegExp(`<div[^>]*data-testid="${id}-reward-chest"[^>]*>`))?.[0];
-    assert.ok(chest, id);
-    assert.match(chest, /data-source="3"/);
-    assert.match(chest, /data-opacity="0.8"/);
-    assert.match(chest, /data-height="22"/);
+    const lock = html.match(new RegExp(`<div[^>]*data-testid="${id}-reward-lock"[^>]*>`))?.[0];
+    assert.ok(lock, id);
+    assert.match(lock, /data-icon="lock"/);
+    assert.match(lock, /data-opacity="0.8"/);
+    assert.match(lock, /data-height="16"/);
+    assert.match(html, /data-color="#8C8C8C"[^>]*>Desbloquea 50 avatares nuevos/);
+    assert.doesNotMatch(html, /reward-chest|data-source="3"/);
     assert.match(html, /data-opacity="0.55"/);
     assert.ok(html.indexOf(`>${story}</div>`) < html.indexOf(`data-testid="${id}-reward"`));
     assert.doesNotMatch(html, /Regalitos sorpresa|Desbloquea tu cofre de regalos|data-accessibility-role="button"/);

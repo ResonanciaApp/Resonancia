@@ -49,4 +49,10 @@ La ventana que se abre desde Intención en Perfil («Tu camino») debe abrirse a
 
 **Why:** El usuario reemplazó explícitamente la dirección anterior de apertura como el temporizador Ambiental por una ventana completa como la de rachas.
 
-**How to apply:** Conservar el recorrido, los cofres y los niveles apagados. La ayuda sigue siendo un panel interno de la misma ventana nativa; no convertirla en un segundo Modal.
+**How to apply:** Conservar el recorrido y los niveles apagados. La ayuda sigue siendo un panel interno de la misma ventana nativa; no convertirla en un segundo Modal.
+
+Semilla, Crecimiento, Vegetación y Expansión muestran el mismo candado relleno de 16 puntos y «Desbloquea 50 avatares nuevos» en #8C8C8C, sin cofres.
+
+**Why:** El usuario pidió reducir el candado anterior seis puntos, cambiar el trazo por relleno y extender el candado y texto a los tres niveles que tenían cofres.
+
+**How to apply:** Mantener los cuatro avisos desactivados hasta que se pida implementar recompensas; no añadir avisos a los demás niveles.

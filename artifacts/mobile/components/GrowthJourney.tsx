@@ -10,7 +10,6 @@ import { useColors } from "@/hooks/useColors";
 
 export const GROWTH_ROW_HEIGHT = 205;
 const PROFILE_INTENTION_IMAGE = require("../assets/images/growth/00-intencion-profile-square.png");
-const GROWTH_REWARD_CHEST = require("../assets/images/growth/semilla-reward-chest.png");
 const REWARD_LEVEL_IDS = new Set(["semilla", "crecimiento", "vegetacion", "expansion"]);
 
 const GROWTH_COLORS = {
@@ -236,7 +235,7 @@ function GrowthRow({
     <View
       style={styles.row}
       accessible
-      accessibilityLabel={`${level.name}, ${dayLabel} de práctica, ${status === "current" ? "etapa actual" : "por desbloquear"}. ${level.story}${level.id === "semilla" ? " Desbloquea 50 avatares nuevos, por desbloquear." : REWARD_LEVEL_IDS.has(level.id) ? " Cofre por desbloquear." : ""}`}
+      accessibilityLabel={`${level.name}, ${dayLabel} de práctica, ${status === "current" ? "etapa actual" : "por desbloquear"}. ${level.story}${REWARD_LEVEL_IDS.has(level.id) ? " Desbloquea 50 avatares nuevos, por desbloquear." : ""}`}
     >
       {hasNext && (
         <View style={styles.lineBase} pointerEvents="none" />
@@ -286,31 +285,18 @@ function GrowthRow({
             pointerEvents="none"
             accessibilityState={{ disabled: true }}
           >
-            {level.id === "semilla" ? (
-              <>
-                <Feather
-                  testID="semilla-reward-lock"
+                <MaterialCommunityIcons
+                  testID={`${level.id}-reward-lock`}
                   name="lock"
-                  size={22}
+                  size={16}
                   color={GROWTH_COLORS.muted}
-                  style={styles.rewardChest}
+                  style={styles.rewardLock}
                   accessibilityElementsHidden
                   importantForAccessibility="no"
                 />
-                <Text style={[styles.rewardText, { color: GROWTH_COLORS.muted }]}>
+                <Text style={styles.rewardText}>
                   Desbloquea 50 avatares nuevos
                 </Text>
-              </>
-            ) : (
-              <Image
-                testID={`${level.id}-reward-chest`}
-                source={GROWTH_REWARD_CHEST}
-                resizeMode="contain"
-                style={styles.rewardChest}
-                accessibilityElementsHidden
-                importantForAccessibility="no"
-              />
-            )}
           </View>
         )}
       </View>
@@ -493,8 +479,8 @@ const styles = StyleSheet.create({
   },
   lockedCopy: { opacity: 0.55 },
   reward: { flexDirection: "row", alignItems: "center", gap: 8, marginTop: 12 },
-  rewardChest: { width: 22, height: 22, opacity: 0.8 },
-  rewardText: { flex: 1, fontFamily: "Manrope", fontSize: 11, lineHeight: 16 },
+  rewardLock: { width: 16, height: 16, opacity: 0.8 },
+  rewardText: { flex: 1, fontFamily: "Manrope", fontSize: 11, lineHeight: 16, color: "#8C8C8C" },
   name: { fontFamily: "Manrope", fontSize: 15, fontWeight: "700", lineHeight: 20, marginBottom: 6 },
   dayPill: {
     alignSelf: "flex-start",
