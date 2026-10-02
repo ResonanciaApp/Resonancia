@@ -50,6 +50,8 @@ const Native = ({ accessibilityLabel, accessibilityRole, children, onPress, styl
     "data-accessibility-role": accessibilityRole,
     "data-accessibility-label": accessibilityLabel,
     "data-height": resolvedStyle.height,
+    "data-width": resolvedStyle.width,
+    "data-border-radius": resolvedStyle.borderRadius,
     "data-min-height": resolvedStyle.minHeight,
     "data-self-align": resolvedStyle.alignSelf,
     "data-justify-content": resolvedStyle.justifyContent,
@@ -63,7 +65,7 @@ const compiled = ts.transpileModule(
   { compilerOptions: { module: ts.ModuleKind.CommonJS, jsx: ts.JsxEmit.React, esModuleInterop: true } },
 ).outputText;
 const mocks: Record<string, unknown> = {
-  "../assets/images/growth/00-intencion-profile.png": 2,
+  "../assets/images/growth/00-intencion-profile-square.png": 2,
   "../assets/images/growth/semilla-reward-chest.png": 3,
   react: React,
   "react-native": {
@@ -164,15 +166,20 @@ test("Crecimiento, Vegetación and Expansión display the same small disabled ch
   }
 });
 
-test("Profile intention has a small faint background glow and brightened RGB artwork, without a wrapper filter", () => {
+test("Profile intention uses square artwork with 18px corners and no glow or gradient", () => {
   const html = render({ canonicalVerticalInsets: true });
   const glow = html.indexOf('data-testid="profile-intention-glow"');
   const image = html.indexOf('data-testid="profile-intention-image"');
-  assert.ok(glow >= 0 && image > glow);
+  assert.equal(glow, -1);
+  assert.ok(image >= 0);
   assert.match(html, /data-source="2"/);
   assert.doesNotMatch(html, /data-filter/);
   const stops = [...html.matchAll(/data-stop-opacity="([^"]+)"/g)].map(match => Number(match[1]));
-  assert.deepEqual(stops, [0.065, 0.025, 0.005, 0]);
+  assert.deepEqual(stops, []);
+  assert.match(html, /data-testid="profile-intention-image"[^>]*data-height="100%" data-width="100%" data-border-radius="18"/);
+  const source = readFileSync(new URL("../components/GrowthJourney.tsx", import.meta.url), "utf8");
+  assert.match(source, /previewArt: \{ width: 100, height: 100 \}/);
+  assert.match(render(), /data-border-radius="67"/);
   assert.match(render(), /data-source="1"/);
   assert.doesNotMatch(render(), /profile-intention-glow|profile-intention-image|brightness/);
 });

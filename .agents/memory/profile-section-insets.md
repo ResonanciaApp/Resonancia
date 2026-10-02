@@ -20,3 +20,9 @@ El banner de Intención en Perfil tiene una excepción deliberada: su fondo se r
 **Why:** El usuario pidió reducir únicamente el alto del fondo y alinear el conjunto. Su última indicación coloca la píldora encima del título, reemplazando la disposición horizontal sin cambiar el resto de la tarjeta.
 
 **How to apply:** No normalizar de nuevo este banner a los márgenes generales ni propagar sus ajustes al camino de crecimiento o a otras portadas de Intención. Mantener el chevron a la derecha del conjunto completo, no solo del título.
+
+La imagen de Intención en el banner de Perfil debe ser cuadrada, opaca y con esquinas de 18 px, sin halo ni desvanecido añadido.
+
+**Why:** El usuario reemplazó el tratamiento circular difuminado por esta dirección explícita.
+
+**How to apply:** Aplicar solo al banner de Perfil; las imágenes del Camino de crecimiento conservan su tratamiento propio. Revisar también la transparencia del archivo, no solo los estilos.

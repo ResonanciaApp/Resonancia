@@ -1,8 +1,7 @@
 import { Feather, MaterialCommunityIcons } from "@expo/vector-icons";
 import { Asset } from "expo-asset";
-import React, { useEffect, useId, useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Image, Platform, Pressable, StyleSheet, Text, View } from "react-native";
-import Svg, { Circle, Defs, RadialGradient, Stop } from "react-native-svg";
 
 import { MEMBERSHIP_AURORA, POSITIONED_DAY_GRADIENT } from "@/constants/colors";
 import { CinematicFadeSlide } from "@/components/CinematicFadeSlide";
@@ -10,7 +9,7 @@ import { ascentLevels, growthLevels, type GrowthLevel } from "@/data/growthLevel
 import { useColors } from "@/hooks/useColors";
 
 export const GROWTH_ROW_HEIGHT = 205;
-const PROFILE_INTENTION_IMAGE = require("../assets/images/growth/00-intencion-profile.png");
+const PROFILE_INTENTION_IMAGE = require("../assets/images/growth/00-intencion-profile-square.png");
 const GROWTH_REWARD_CHEST = require("../assets/images/growth/semilla-reward-chest.png");
 const REWARD_LEVEL_IDS = new Set(["semilla", "crecimiento", "vegetacion", "expansion"]);
 
@@ -74,7 +73,7 @@ function GrowthLevelImage({ level, profilePreview = false }: { level: GrowthLeve
   return (
     <View
       testID={profilePreview ? "profile-intention-image" : undefined}
-      style={styles.imageWrap}
+      style={[styles.imageWrap, profilePreview && styles.profileImageWrap]}
       importantForAccessibility="no"
     >
       {source && (
@@ -101,7 +100,6 @@ export function GrowthLevelPreviewCard({
   canonicalVerticalInsets?: boolean;
 }) {
   const colors = useColors();
-  const glowId = `intention-glow-${useId().replace(/:/g, "")}`;
   const level = growthLevels[0];
   const dayLabel = level.startDay === level.endDay
     ? `${level.startDay} días`
@@ -161,21 +159,6 @@ export function GrowthLevelPreviewCard({
       testID="growth-level-zero-preview"
     >
       <PreviewContentEntrance replayKey="intention-art" delay={420} style={styles.previewArt}>
-        {canonicalVerticalInsets && (
-          <View pointerEvents="none" style={styles.intentionGlow} importantForAccessibility="no">
-            <Svg testID="profile-intention-glow" width="100%" height="100%" viewBox="0 0 160 160">
-              <Defs>
-                <RadialGradient id={glowId} cx="50%" cy="50%" r="50%">
-                  <Stop offset="0%" stopColor={GROWTH_COLORS.current} stopOpacity={0.065} />
-                  <Stop offset="45%" stopColor={GROWTH_COLORS.current} stopOpacity={0.025} />
-                  <Stop offset="75%" stopColor={GROWTH_COLORS.current} stopOpacity={0.005} />
-                  <Stop offset="100%" stopColor={GROWTH_COLORS.current} stopOpacity={0} />
-                </RadialGradient>
-              </Defs>
-              <Circle cx={80} cy={80} r={80} fill={`url(#${glowId})`} />
-            </Svg>
-          </View>
-        )}
         <GrowthLevelImage level={level} profilePreview={canonicalVerticalInsets} />
       </PreviewContentEntrance>
       <View
@@ -425,7 +408,6 @@ const styles = StyleSheet.create({
     gap: 12,
   },
   previewArt: { width: 100, height: 100 },
-  intentionGlow: { position: "absolute", width: 130, height: 130, left: -15, top: -15 },
   embeddedPreviewCard: { marginHorizontal: 0 },
   canonicalPreviewVerticalInsets: { paddingTop: 16, paddingBottom: 16, marginVertical: 2, alignItems: "center" },
   canonicalPreviewCopy: { minHeight: 100, justifyContent: "center", gap: 6 },
@@ -501,6 +483,7 @@ const styles = StyleSheet.create({
   },
   lockedArt: { opacity: 0.44 },
   imageWrap: { width: "100%", height: "100%", borderRadius: 67, overflow: "hidden" },
+  profileImageWrap: { borderRadius: 18 },
   levelImage: { width: "100%", height: "100%" },
   copy: {
     marginLeft: 166,
