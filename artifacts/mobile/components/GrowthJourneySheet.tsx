@@ -22,7 +22,7 @@ import { useColors } from "@/hooks/useColors";
 // Retain its measured height minus the requested rise, keeping the timeline in flow.
 const FORMER_INTRO_FIXED_HEIGHT = 181;
 const FIRST_STAGE_RISE = 184;
-const FIRST_STAGE_DROP = 60;
+const FIRST_STAGE_DROP = 24;
 
 export function GrowthJourneySheet({
   visible,
