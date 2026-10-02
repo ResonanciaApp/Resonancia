@@ -13,7 +13,7 @@ import { useDayRollover } from "@/hooks/useDayRollover";
 import { useStreak } from "@/hooks/useStreak";
 import { useColors } from "@/hooks/useColors";
 import { computeActiveDays, computeMaxStreak } from "@/utils/stats";
-import { PREMIUM_STAR_GRADIENT } from "@/constants/colors";
+import { PREMIUM_STAR_GRADIENT, STREAK_HISTORY_INFO_ICON_COLOR } from "@/constants/colors";
 
 const SECTION_BACKGROUND = "rgba(0,0,0,0.22)";
 export const STREAK_WEEK_START_OFFSET_MS = 650;
@@ -365,7 +365,7 @@ export function ProgressMirrorSections({
           accessibilityLabel="Información de rachas, próximamente"
           accessibilityState={{ disabled: true }}
         >
-          <Feather name="chevron-right" size={18} color={colors.foreground} />
+          <Feather name="more-horizontal" size={20} color={STREAK_HISTORY_INFO_ICON_COLOR} />
         </Pressable>
       </View>
       <View testID="profile-streak-history-weekly" style={[styles.statsValues, styles.statsValuesNoTitle]}>

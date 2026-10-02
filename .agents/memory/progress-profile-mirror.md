@@ -69,9 +69,9 @@ El loto de la píldora de racha en Inicio conserva el blanco del tratamiento cl�
 
 **How to apply:** Al ajustar el loto de Inicio o de «Racha actual» en Perfil, conservar el blanco; no trasladar allí el tratamiento dorado de la racha acumulada.
 
-El chevron pequeño del título «Historial de rachas» en Perfil está reservado para una próxima pantalla informativa sobre las rachas, no para un menú de acciones sobre los datos.
+Los tres puntos del título «Historial de rachas» en Perfil están reservados para una próxima pantalla informativa sobre las rachas, no para un menú de acciones sobre los datos.
 
-**Why:** El usuario definió explícitamente ese destino futuro y luego cambió los tres puntos por un chevron como el de Intención.
+**Why:** El usuario definió explícitamente ese destino futuro y, tras probar un chevron, pidió recuperar los tres puntos.
 
 **How to apply:** Cuando se habilite, explicar los criterios reales de cada cifra sin modificar las estadísticas ni activar el cálculo acumulado que sigue pendiente de definición.
 
