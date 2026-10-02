@@ -68,6 +68,7 @@ export const SCENE_THEMES: Record<VisualThemeId, SceneTheme> = {
     id: "cloudy",
     label: "Cloudy",
     gradient: ["#2D2F7C", "#2D3981", "#2D4085", "#2A4687", "#25528C", "#1F5D92", "#166494"],
+    gradientLocations: [0, 0.167, 0.333, 0.5, 0.667, 0.833, 1],
     solid: "#2D2F7C",
   },
   cloudy2: {
@@ -75,6 +76,7 @@ export const SCENE_THEMES: Record<VisualThemeId, SceneTheme> = {
     id: "cloudy2",
     label: "Cloudy 2",
     gradient: ["#165794", "#1E5492", "#254B8D", "#2A4687", "#2D4085", "#2D3981", "#2D2F7C"],
+    gradientLocations: [0, 0.167, 0.333, 0.5, 0.667, 0.833, 1],
     solid: "#165794",
   },
 };
