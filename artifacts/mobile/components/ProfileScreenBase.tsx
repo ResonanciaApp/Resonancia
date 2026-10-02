@@ -2580,7 +2580,7 @@ const styles = StyleSheet.create({
 
   // Progreso semanal compacto
   profileProgressSection: {
-    marginTop: 6,
+    marginTop: 21,
     marginBottom: PROFILE_SECTION_GAP,
   },
   practiceReminderSection: {

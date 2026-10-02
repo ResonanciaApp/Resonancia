@@ -61,9 +61,9 @@ test("Premium members keep the compact identity layout while free users recover 
   const card = style("ProfileScreenBase", "profileCard", { PROFILE_CARD_BOTTOM_PADDING: bottom, PROFILE_SECTION_GAP: 21 });
   const preview = style("ProfileScreenBase", "profileIdentityPreviewCard");
   const progress = style("ProfileScreenBase", "profileProgressSection", { PROFILE_SECTION_GAP: 21 });
-  assert.equal(progress.marginTop, 6);
+  assert.equal(progress.marginTop, 6 + 15);
   assert.equal(progress.transform, undefined);
-  assert.equal(card.paddingBottom + preview.marginBottom + progress.marginTop, 25 + 6);
+  assert.equal(card.paddingBottom + preview.marginBottom + progress.marginTop, 25 + 6 + 15);
   const border = style("ProfileScreenBase", "avatarOuterBorder");
   const avatar = style("ProfileScreenBase", "avatarWrapper");
   const image = style("ProfileScreenBase", "avatarImage");
