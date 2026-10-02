@@ -119,7 +119,7 @@ function uiHarness() {
   };
 }
 
-test("Tu camino preserves its controls and raises Primera etapa and the whole journey by 36px", () => {
+test("Tu camino preserves its controls and raises Primera etapa and the whole journey by 53px", () => {
   const h = uiHarness();
   const { GrowthJourneySheet } = load("../components/GrowthJourneySheet.tsx", h.imports);
   let closes = 0;
@@ -150,9 +150,9 @@ test("Tu camino preserves its controls and raises Primera etapa and the whole jo
   assert.doesNotMatch(html, /trending-up|Cada día de racha|descriptionDivider/);
   assert.doesNotMatch(html, /No florecemos|growth-journey-intro/);
   assert.ok(html.indexOf("Tu camino") < html.indexOf("PRIMERA ETAPA"));
-  assert.match(html, /data-padding-top="90"/); // previous 126px minus 36px
+  assert.match(html, /data-padding-top="73"/); // previous 90px minus 17px
   h.help.onDescriptionLayout(46);
-  assert.match(render(), /data-padding-top="67"/); // previous 103px minus 36px
+  assert.match(render(), /data-padding-top="50"/); // previous 67px minus 17px
   h.presses.get("growth-journey-help").onPress();
   render();
   assert.equal(h.help.visible, true);
