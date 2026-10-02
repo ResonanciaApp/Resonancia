@@ -44,7 +44,7 @@ export type SceneTheme = {
 const INDIGO2_THEME: SceneTheme = {
   id: "indigo2",
   label: "Indigo 2",
-  gradient: ["#24335E", "#242C5D", "#25295D", "#2A255C", "#2A245E", "#33245E", "#362564"],
+  gradient: ["#24335E", "#242C5D", "#25295D", "#2A245E", "#2A255C", "#33245E", "#362564"],
   gradientLocations: [0, 0.167, 0.333, 0.5, 0.667, 0.833, 1],
   gradientStart: { x: 0.5, y: 0 },
   gradientEnd: { x: 0.5, y: 1 },

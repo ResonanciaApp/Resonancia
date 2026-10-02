@@ -17,6 +17,14 @@ const brighten = (hex: string) => "#" + hex.slice(1).match(/../g)!.map(channel =
   Math.round(parseInt(channel, 16) * 0.965 + 255 * 0.035).toString(16).padStart(2, "0"),
 ).join("").toUpperCase();
 
+test("Índigo 2 uses the chosen seven-stop order without changing positions or direction", () => {
+  const { indigo2 } = themes.SCENE_THEMES;
+  assert.deepEqual(indigo2.gradient, ["#24335E", "#242C5D", "#25295D", "#2A245E", "#2A255C", "#33245E", "#362564"]);
+  assert.deepEqual(indigo2.gradientLocations, [0, 0.167, 0.333, 0.5, 0.667, 0.833, 1]);
+  assert.deepEqual(indigo2.gradientStart, { x: 0.5, y: 0 });
+  assert.deepEqual(indigo2.gradientEnd, { x: 0.5, y: 1 });
+});
+
 test("Cloudy has all seven exact reference stops in order and inherits Indigo 2 metadata", () => {
   const { cloudy, indigo2 } = themes.SCENE_THEMES;
   assert.deepEqual(cloudy.gradient, colors);
