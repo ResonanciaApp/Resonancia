@@ -1407,8 +1407,8 @@ export function ProfileScreenBase({
                 showStreakHistoryTitle={false}
                 showStreakHistoryInfo={false}
                 onStreakHistoryPress={() => setStreakInfoOpen(true)}
-                weeklySectionBackgroundColor="transparent"
-                weeklySectionHorizontalPadding={0}
+                weeklySectionBackgroundColor="rgba(0,0,0,0.22)"
+                weeklySectionHorizontalPadding={20}
                 streakHistoryTopPadding={18}
                 streakHistoryDividerOffsetY={-3}
                 longestStreakLabel="RACHA ACUMULADA"
@@ -2580,7 +2580,7 @@ const styles = StyleSheet.create({
 
   // Progreso semanal compacto
   profileProgressSection: {
-    marginTop: -14,
+    marginTop: 6,
     marginBottom: PROFILE_SECTION_GAP,
   },
   practiceReminderSection: {

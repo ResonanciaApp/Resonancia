@@ -81,18 +81,6 @@ Perfil no muestra el título «Historial de rachas» ni los tres puntos de infor
 
 **How to apply:** Mantener independiente el encabezado de Perfil de otras pantallas que comparten el bloque. No reintroducir el título ni los puntos sin una nueva petición, ni modificar las estadísticas por estos cambios de presentación.
 
-La fila de los siete días de Perfil va sin fondo y ocupa todo el ancho disponible, sin el inset horizontal interno de las tarjetas.
-
-**Why:** El usuario pidió quitar el fondo de esa racha semanal y dejar los siete días «full width».
-
-**How to apply:** Aplicar solo a la fila semanal; conservar el fondo, los márgenes y las cifras del historial y las otras secciones de Perfil.
-
-Los siete días de Perfil se suben 20 px respecto de su ubicación anterior y arrastran el contenido posterior, conservando las separaciones entre bloques.
-
-**Why:** El usuario pidió «Sube los 7 dias 20 px y arrastra» después de retirar su fondo.
-
-**How to apply:** Reducir el espacio ocupado antes del conjunto, no usar una transformación visual que deje el hueco original ni modificar Tu progreso.
-
 La imagen de Intención en Perfil lleva solo un resplandor pequeño y tenue que sale del fondo; nunca un anillo o un borde luminoso.
 
 **Why:** El usuario rechazó la variante anterior por mostrar un anillo blanco y reiteró que el efecto debía ser sutil. Esa variante aplicaba un filtro de brillo al contenedor del PNG transparente.

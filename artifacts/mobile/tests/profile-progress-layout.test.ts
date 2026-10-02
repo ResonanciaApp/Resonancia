@@ -284,9 +284,9 @@ test("Perfil aligns all four history labels to the bottom inset and passes canon
   assert.match(html, /data-testid="calendar"[^>]*data-canonical-insets="true"/);
 });
 
-test("Perfil and Tu progreso keep full-width weekly circles without changing history insets", () => {
+test("Perfil aligns weekly circles with the section inset while Tu progreso keeps its full-width row", () => {
   for (const [path, padding] of [
-    ["../components/ProfileScreenBase.tsx", 0],
+    ["../components/ProfileScreenBase.tsx", 20],
     ["../app/progreso.tsx", 0],
   ] as const) {
     const source = readFileSync(new URL(path, import.meta.url), "utf8");
@@ -307,10 +307,10 @@ test("Perfil and Tu progreso keep full-width weekly circles without changing his
   }
 });
 
-test("Perfil raises its weekly section and following content 20px while preserving section gaps", () => {
+test("Perfil preserves the standard section gap and the requested extra 6px before its weekly section", () => {
   const profileSource = readFileSync(new URL("../components/ProfileScreenBase.tsx", import.meta.url), "utf8");
   assert.doesNotMatch(profileSource, /profileIntentionDescription|Todo gran cambio comienza con el primer paso|Bienvenido a Resonancia/);
-  assert.match(profileSource, /profileProgressSection:\s*\{\s*marginTop: -14,/);
+  assert.match(profileSource, /profileProgressSection:\s*\{\s*marginTop: 6,/);
   assert.match(profileSource, /const PROFILE_SECTION_GAP = 21;/);
   const cardStyle = profileSource.match(/  profileCard: \{([\s\S]*?)\n  \},/)?.[1] ?? "";
   assert.match(cardStyle, /marginBottom: PROFILE_SECTION_GAP/);
@@ -323,17 +323,15 @@ test("Perfil raises its weekly section and following content 20px while preservi
   assert.doesNotMatch(profileSource, /testID="profile-identity-email"/);
 });
 
-test("Perfil shows seven full-width days without a background or title and preserves weekly/history/calendar gaps", () => {
+test("Perfil shows seven days with their original background, without a title, and preserves weekly/history/calendar gaps", () => {
   const source = readFileSync(new URL("../components/ProfileScreenBase.tsx", import.meta.url), "utf8");
   assert.doesNotMatch(source, /weeklySectionTitle="Esta semana"/);
-  assert.match(source, /weeklySectionBackgroundColor="transparent"/);
-  assert.match(source, /weeklySectionHorizontalPadding=\{0\}/);
+  assert.match(source, /weeklySectionBackgroundColor="rgba\(0,0,0,0.22\)"/);
   assert.doesNotMatch(source, /streakMarginBottom=\{PROFILE_SECTION_GAP - 12\}/);
   assert.match(source, /sectionMarginBottom=\{PROFILE_SECTION_GAP\}/);
   const html = render({
     separateStreakHistory: true,
-    weeklySectionBackgroundColor: "transparent",
-    weeklySectionHorizontalPadding: 0,
+    weeklySectionBackgroundColor: "rgba(0,0,0,0.22)",
     sectionBackgroundColor: "rgba(0,0,0,0.22)",
     sectionMarginBottom: 21,
     showPersonalStats: false,
@@ -341,8 +339,7 @@ test("Perfil shows seven full-width days without a background or title and prese
   });
   const weekly = html.match(/<div[^>]*data-testid="profile-weekly-progress"[^>]*>/)?.[0] ?? "";
   const history = html.match(/<div[^>]*data-testid="profile-streak-history"[^>]*>/)?.[0] ?? "";
-  assert.match(weekly, /data-background="transparent"/);
-  assert.match(weekly, /data-padding-horizontal="0"/);
+  assert.match(weekly, /data-background="rgba\(0,0,0,0.22\)"/);
   assert.match(history, /data-background="rgba\(0,0,0,0.22\)"/);
   assert.match(weekly, /data-margin-bottom="21"/);
   assert.match(history, /data-margin-bottom="21"/);
