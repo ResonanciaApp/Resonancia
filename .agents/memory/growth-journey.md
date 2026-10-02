@@ -33,11 +33,11 @@ En la ayuda de Tu camino, «tap bar» significa el tirador superior de la hoja, 
 
 **How to apply:** Mantener ese tirador funcional tanto por toque como por arrastre hacia abajo; no añadir las pestañas de navegación dentro de esta ayuda.
 
-La entrada en «Tu progreso» tiene dos fases: primero termina el contador de días (incluidos sus dígitos), después arrancan **juntas** la descripción, Racha actual e Intención. «Mis estadísticas» no se muestra en Tu progreso, aunque permanece en Perfil. El contenido de Intención se revela con desvanecido y desplazamiento escalonado, no queda estático mientras entra la tarjeta. Las secciones tienen la separación de Perfil (21 px), sin divisor sobre la tarjeta. El recorrido completo vive dentro de una ventana casi a pantalla completa que entra desde abajo como el temporizador de Ambientales.
+La entrada en «Tu progreso» espera a que termine el contador de días (incluidos sus dígitos) antes de mostrar los siete días y el mensaje de práctica. El mensaje va debajo de la semana, no por encima del contador. Tu progreso no muestra Intención ni sesiones completadas; esos cambios no deben alterar la tarjeta de Intención de Perfil ni su entrada escalonada.
 
-**Why:** El usuario corrigió el orden de entrada anterior, decidió que la pantalla principal mostrara solo Intención, pidió retirar la línea divisora e igualar las separaciones de Perfil. Tras probar una entrada de las tarjetas posterior a la descripción, pidió que descripción y tarjetas comenzaran simultáneamente. También retiró «Mis estadísticas» solo de Tu progreso.
+**Why:** El usuario mantuvo la entrada posterior al contador, pero luego simplificó Tu progreso a la semana y colocó explícitamente el mensaje debajo de sus siete días. Las indicaciones antiguas sobre tarjetas en esa pantalla quedaron reemplazadas.
 
-**How to apply:** Esperar a que termine el contador antes de empezar la descripción; montar las dos tarjetas al mismo tiempo que comienza la descripción, sin depender de su finalización ni del último día semanal. Revelar también el contenido de Intención. Mantener el recorrido detallado en la ventana, no debajo de las tarjetas; animar solo la ventana al abrir y cerrar.
+**How to apply:** Conservar la secuencia del contador y la separación entre superficies. Intención y el recorrido se acceden desde Perfil; no reintroducirlos en Tu progreso al reutilizar componentes.
 
 Dentro de la ventana, usar el degradado completo del tema. Florecimiento y sus niveles se muestran sin animación ni espera; «El ascenso» muestra primero solo el encabezado y el botón «Próximamente», que despliega sus niveles sin animación al pulsarlo. No hay divisor arriba de la segunda etapa. En todas las filas, la píldora de días va encima del título; no mostrar etiquetas «Nivel».
 

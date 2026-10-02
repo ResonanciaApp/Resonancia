@@ -27,7 +27,6 @@ import Animated, {
 } from "react-native-reanimated";
 
 import { ProgressMirrorSections } from "@/components/ProgressMirrorSections";
-import { WeeklyCompletedSessions } from "@/components/WeeklyCompletedSessions";
 import { CinematicFadeSlide } from "@/components/CinematicFadeSlide";
 import { getPositionedDayGradient } from "@/components/StreakWeekRow";
 import { useSceneTheme } from "@/context/SceneThemeContext";
@@ -151,16 +150,6 @@ export default function ProgresoScreen() {
 
         <View style={[styles.heroContainer, { paddingTop: topPad + 90 }]}>
                 <CinematicFadeSlide
-                  replayKey="progress-intro-description"
-                  active={descriptionStarted}
-                  duration={600}
-                  style={styles.heroAnimatedContent}
-                >
-                  <Text style={styles.streakIntroDescription} testID="progress-intro-description">
-                    Medita al menos 3 días a la semana y transforma todos los aspectos de tu vida
-                  </Text>
-                </CinematicFadeSlide>
-                <CinematicFadeSlide
                   replayKey="progress-streak-count"
                   delay={RING_ENTRANCE_DELAY}
                   duration={1200}
@@ -263,11 +252,22 @@ export default function ProgresoScreen() {
                   sectionBackgroundColor="rgba(0,0,0,0.22)"
                   sectionHorizontalPadding={20}
                   sectionTopPadding={0}
-                  sectionBottomPadding={15}
+                  sectionBottomPadding={0}
                   sectionMarginBottom={0}
-                  streakMarginBottom={11}
+                  streakMarginBottom={0}
                 />
-                <WeeklyCompletedSessions />
+                <View style={styles.descriptionBelowWeek} testID="progress-description-below-week">
+                  <CinematicFadeSlide
+                    replayKey="progress-intro-description"
+                    active={descriptionStarted}
+                    duration={600}
+                    style={styles.heroAnimatedContent}
+                  >
+                    <Text style={styles.streakIntroDescription} testID="progress-intro-description">
+                      Medita al menos 3 días a la semana y transforma todos los aspectos de tu vida
+                    </Text>
+                  </CinematicFadeSlide>
+                </View>
             </View>
           </>
         )}
@@ -324,16 +324,7 @@ const styles = StyleSheet.create({
     paddingHorizontal: 16,
     marginTop: 15,
   },
-  introDivider: {
-    position: "absolute",
-    top: -24,
-    left: 0,
-    right: 0,
-  },
-  introDividerLine: {
-    height: 1,
-    backgroundColor: "rgba(255,255,255,0.1)",
-  },
+  descriptionBelowWeek: { marginTop: 50, alignItems: "center" },
   streakCountWrap: {
     position: "relative",
     width: COUNT_SIZE,

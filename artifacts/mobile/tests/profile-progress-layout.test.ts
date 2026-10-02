@@ -226,7 +226,7 @@ test("Tu progreso keeps weekly circles without streak history, calendar or Inten
   assert.match(html, /data-background="transparent"/);
   assert.doesNotMatch(html, /RACHA|Historial de rachas|profile-streak-history|Mis estadísticas|data-testid="calendar"/);
   assert.doesNotMatch(progressSource, /GrowthLevelPreviewCard|GrowthJourneySheet/);
-  assert.match(progressSource, /<WeeklyCompletedSessions \/>/);
+  assert.doesNotMatch(progressSource, /WeeklyCompletedSessions|introDivider/);
 });
 
 test("Intención has the same content insets as the streak history, without the old forced height", () => {

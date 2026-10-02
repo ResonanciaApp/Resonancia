@@ -186,8 +186,8 @@ export function GrowthLevelPreviewCard({
       >
         {canonicalVerticalInsets ? (
           <View testID="profile-intention-title-row" style={styles.canonicalPreviewTitleRow}>
-            {dayPill}
             {name}
+            {dayPill}
           </View>
         ) : (
           <>

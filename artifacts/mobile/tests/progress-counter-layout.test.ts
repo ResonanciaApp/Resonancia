@@ -87,13 +87,14 @@ function renderProgress(days: number, reducedMotion: boolean) {
   return { html, mirrorProps };
 }
 
-test("description and ESTA SEMANA precede the counter, with 20px above and 15px below", () => {
+test("Tu progreso shows its counter and seven days before the description, with exactly 50px after the weekly row", () => {
   const { html, mirrorProps } = renderProgress(4, true);
   const description = html.indexOf('data-testid="progress-intro-description"');
   const title = html.indexOf('data-testid="progress-week-title"');
   const counter = html.indexOf('data-testid="progress-day-counter"');
   const week = html.indexOf('data-testid="weekly-circles"');
-  assert.ok(description >= 0 && description < title && title < counter && counter < week);
+  assert.ok(title >= 0 && title < counter && counter < week && week < description);
+  assert.match(html, /data-testid="progress-description-below-week"[^>]*data-margin-top="50"/);
   assert.match(html, /data-testid="progress-week-title"[^>]*data-margin-bottom="20"[^>]*>ESTA SEMANA/);
   assert.match(html, /data-testid="progress-week-title"[^>]*data-margin-top="12"/);
   assert.match(html, /data-margin-top="15"/);
@@ -102,11 +103,14 @@ test("description and ESTA SEMANA precede the counter, with 20px above and 15px 
   assert.equal(mirrorProps.sectionHorizontalPadding, 20);
   assert.equal(mirrorProps.separateStreakHistory, true);
   assert.equal(mirrorProps.showStreakHistory, false);
-  assert.equal(mirrorProps.streakMarginBottom, 11);
+  assert.equal(mirrorProps.streakMarginBottom, 0);
+  assert.equal(mirrorProps.sectionBottomPadding, 0);
   assert.equal(mirrorProps.sectionMarginBottom, 0);
   assert.equal(mirrorProps.showPersonalStats, false);
   assert.equal(mirrorProps.showCalendar, false);
   assert.doesNotMatch(source, /heroHeight|heroCopyOffset|heroOverlay|sectionsOffset/);
+  assert.doesNotMatch(source, /WeeklyCompletedSessions|introDivider/);
+  assert.doesNotMatch(html, /Sesiones completadas|weekly-completed-sessions/);
 });
 
 test("counter background and ring shrink another 7px without changing the number size", () => {

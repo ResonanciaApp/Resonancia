@@ -1,6 +1,5 @@
 import { Feather, MaterialCommunityIcons } from "@expo/vector-icons";
 import MaskedView from "@react-native-masked-view/masked-view";
-import { Image } from "expo-image";
 import { LinearGradient } from "expo-linear-gradient";
 import React, { useEffect, useRef, useState } from "react";
 import {
@@ -10,7 +9,6 @@ import {
   ScrollView,
   StyleSheet,
   Text,
-  useWindowDimensions,
   View,
 } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
@@ -23,7 +21,6 @@ const WHITE = STREAK_INFO_COLORS.foreground;
 const GOLD = MEMBERSHIP_AURORA.premium.accent;
 const DURATION = 1400;
 const BASE_DELAY = 150;
-const HERO_IMAGE = require("../assets/images/streak-practice-landscape.jpg");
 
 type IconKind = "current" | "accumulated" | "longest" | "completed";
 
@@ -78,7 +75,6 @@ export function StreakInfoSheet({
   onClose: () => void;
 }) {
   const insets = useSafeAreaInsets();
-  const { width } = useWindowDimensions();
   const { theme } = useSceneTheme();
   const scrollRef = useRef<ScrollView>(null);
   const [cycle, setCycle] = useState(0);
@@ -94,7 +90,6 @@ export function StreakInfoSheet({
 
   const topPad = Platform.OS === "web" ? 67 : Math.max(insets.top, 40);
   const bottomPad = Platform.OS === "web" ? 34 : insets.bottom;
-  const artworkHeight = Math.max(width * 1.1, 470);
 
   return (
     <Modal
@@ -114,39 +109,6 @@ export function StreakInfoSheet({
         end={theme.gradientEnd}
         style={styles.root}
       >
-        <View testID="streak-info-artwork" style={[styles.artwork, { height: artworkHeight }]} pointerEvents="none">
-          <MaskedView
-            style={StyleSheet.absoluteFill}
-            maskElement={
-              <LinearGradient
-                colors={[
-                  STREAK_INFO_COLORS.imageMaskTransparent,
-                  STREAK_INFO_COLORS.imageMaskOpaque,
-                  STREAK_INFO_COLORS.imageMaskOpaque,
-                  STREAK_INFO_COLORS.imageMaskTransparent,
-                ]}
-                locations={[0, 0.2, 0.65, 1]}
-                style={styles.root}
-              />
-            }
-          >
-            <CinematicFadeSlide
-              active={visible}
-              replayKey={`bg:${cycle}`}
-              duration={DURATION * 1.5}
-              scaleFrom={1.06}
-              translateYFrom={0}
-              style={StyleSheet.absoluteFill}
-            >
-              <Image
-                source={HERO_IMAGE}
-                style={StyleSheet.absoluteFill}
-                contentFit="cover"
-                contentPosition="bottom"
-              />
-            </CinematicFadeSlide>
-          </MaskedView>
-        </View>
         <ScrollView
           ref={scrollRef}
           showsVerticalScrollIndicator={false}
@@ -226,7 +188,6 @@ export function StreakInfoSheet({
 
 const styles = StyleSheet.create({
   root: { flex: 1 },
-  artwork: { position: "absolute", top: -130, left: 0, right: 0 },
   header: {
     paddingHorizontal: 20,
     flexDirection: "row",

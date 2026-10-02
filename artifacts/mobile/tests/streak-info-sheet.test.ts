@@ -150,6 +150,8 @@ test("streak sheet is hidden when closed and has exactly four ordered explanator
     "Semanas de lunes a domingo en las que completaste los 7 días activos",
   ]) assert.ok(html.includes(description));
   assert.match(html, /al escuchar al menos 3 minutos o completar una sesión/);
+  assert.doesNotMatch(html, /<img|streak-info-artwork/);
+  assert.doesNotMatch(source, /HERO_IMAGE|expo-image|styles\.artwork/);
 });
 
 test("UI close and Android back return to the parent; reopening resets scroll and entrance keys", () => {
@@ -228,14 +230,14 @@ test("Perfil connects the information locally while preserving its weekly naviga
   assert.doesNotMatch(profile, /router\.push\("\/tipos-de-rachas/);
 });
 
-test("vertical overscroll is enabled at both ends and artwork moves up exactly 130px without shifting the content", () => {
+test("vertical overscroll remains enabled at both ends after removing the hero image without shifting content", () => {
   const h = harness();
   h.render(true);
   const scroll = h.nodes.get("streak-info-scroll")!;
   assert.equal(scroll.bounces, true);
   assert.equal(scroll.alwaysBounceVertical, true);
   assert.equal(scroll.overScrollMode, "always");
-  assert.equal(flatten(h.nodes.get("streak-info-artwork")!.style).top, -130);
+  assert.equal(h.nodes.has("streak-info-artwork"), false);
   assert.equal(flatten(h.nodes.get("streak-info-cards")!.style).marginTop, 50);
   assert.equal(flatten(h.nodes.get("streak-info-hero")!.style).top, undefined);
 });

@@ -3,17 +3,11 @@ name: Progreso visible en Perfil
 description: Orden actual del progreso en Perfil y su relación con Tu progreso.
 ---
 
-Perfil conserva la semana, el historial completo de cuatro cifras, Intención, el calendario y el historial de sesiones. Tu progreso muestra la semana en curso y sus sesiones completadas, sin historial de rachas ni tarjeta de Intención. Los tratamientos de ambas superficies son independientes.
+Perfil conserva la semana, el historial completo de cuatro cifras, Intención, el calendario y el historial de sesiones. Tu progreso muestra el contador, la semana en curso y el mensaje de práctica debajo de los siete días, sin sesiones completadas, divisores, historial de rachas ni tarjeta de Intención. Los tratamientos de ambas superficies son independientes.
 
-**Why:** El usuario redefinió Tu progreso como seguimiento de la semana actual, mientras Perfil conserva el resumen y los accesos personales. Compartir componentes y datos no autoriza a propagar cambios visuales entre ambas pantallas.
+**Why:** El usuario redefinió Tu progreso como seguimiento de la semana actual y después retiró explícitamente la sección de sesiones completadas y su divisor, moviendo el mensaje debajo de la semana. Perfil conserva el resumen y los accesos personales; compartir componentes no autoriza a propagar esos cambios entre pantallas.
 
-**How to apply:** Configurar cada superficie por separado. En Perfil, conservar la separación uniforme entre sus tarjetas. En Tu progreso, filtrar completadas de lunes a domingo local; al cambiar de semana, renovar la vista sin borrar actividad histórica. Si no hay completadas visibles, ocultar separador, título y cards. No reintroducir «Mis estadísticas» en Perfil.
-
-En Tu progreso, «cards horizontales» describe cada fila, no la dirección de la lista: van una debajo de otra, sin carrusel ni scroll propio.
-
-**Why:** El usuario distinguió explícitamente el formato de la card del desplazamiento del conjunto.
-
-**How to apply:** Mantener una columna dentro del scroll general de la pantalla; no introducir otro ScrollView para las completadas.
+**How to apply:** Configurar cada superficie por separado. Retirar las completadas de Tu progreso no autoriza a borrar actividad histórica, ni a ocultar el historial o el calendario de Perfil. No reintroducir «Mis estadísticas» en Perfil.
 
 En Perfil, Intención conserva contenido y acceso a Tu camino, pero su tarjeta debe ser compacta y respetar la misma distancia entre borde y contenido que el historial de rachas.
 
