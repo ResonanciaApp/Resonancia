@@ -11,7 +11,7 @@ const compiled = ts.transpileModule(source, {
 const exports = {} as typeof import("../config/scene-themes");
 new Function("exports", compiled)(exports);
 
-test("Índigo 2 keeps its seven vertical stops, 4% HSL desaturation and 1.5% white brightening", () => {
+test("Índigo 2 keeps its seven vertical stops and desaturation with 2% additional white brightening", () => {
   const theme = exports.SCENE_THEMES.indigo2;
   const original = ["#1C2B59", "#1C2458", "#1D2158", "#221D57", "#221C59", "#2B1C59", "#2E1D60"];
   const desaturated = original.map((hex) => {
@@ -28,8 +28,14 @@ test("Índigo 2 keeps its seven vertical stops, 4% HSL desaturation and 1.5% whi
         .toString(16).padStart(2, "0"),
     ).join("").toUpperCase(),
   );
-  assert.deepEqual(theme.gradient, brightened);
-  assert.deepEqual(theme.gradient, ["#202F5B", "#20285A", "#21255A", "#262159", "#26205B", "#2F205B", "#322161"]);
+  const additionallyBrightened = brightened.map((hex) =>
+    "#" + hex.slice(1).match(/../g)!.map(channel =>
+      Math.round(parseInt(channel, 16) * 0.98 + 255 * 0.02)
+        .toString(16).padStart(2, "0"),
+    ).join("").toUpperCase(),
+  );
+  assert.deepEqual(theme.gradient, additionallyBrightened);
+  assert.deepEqual(theme.gradient, ["#24335E", "#242C5D", "#25295D", "#2A255C", "#2A245E", "#33245E", "#362564"]);
   assert.deepEqual(theme.gradientLocations, [0, 0.167, 0.333, 0.5, 0.667, 0.833, 1]);
   assert.equal(theme.gradientLocations?.length, theme.gradient.length);
   assert.equal(theme.solid, theme.gradient[0]);
