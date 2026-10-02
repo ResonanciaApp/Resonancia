@@ -5,6 +5,7 @@ import test from "node:test";
 import React from "react";
 import ts from "typescript";
 import { TAB_BAR_BLUR_INTENSITY, TAB_BAR_GLASS_OVERLAY } from "../constants/tab-bar.ts";
+import { CONFIRMATION_ENTRY_DELAY_MS } from "../constants/confirmation-banner.ts";
 
 const source = (path: string) => readFileSync(new URL(path, import.meta.url), "utf8");
 const compile = (text: string) => ts.transpileModule(text, {
@@ -83,6 +84,7 @@ function harness(kind: "added" | "completed") {
       impactAsync: (style: string) => { haptics.push(style); return Promise.resolve(); },
     },
     "@/constants/tab-bar": { TAB_BAR_BLUR_INTENSITY, TAB_BAR_GLASS_OVERLAY },
+    "@/constants/confirmation-banner": { CONFIRMATION_ENTRY_DELAY_MS },
     "@/components/RoutineGradientFill": { RoutineGradientFill: Native },
     "@/context/RoutineCompletionBannerContext": { useRoutineCompletionBanner: () => context },
   };

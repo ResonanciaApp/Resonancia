@@ -5,12 +5,13 @@ import * as Haptics from "expo-haptics";
 import { Animated, Easing, Platform, Pressable, StyleSheet, Text, View } from "react-native";
 
 import { TAB_BAR_BLUR_INTENSITY, TAB_BAR_GLASS_OVERLAY } from "@/constants/tab-bar";
+import { CONFIRMATION_ENTRY_DELAY_MS } from "@/constants/confirmation-banner";
 import { RoutineGradientFill } from "@/components/RoutineGradientFill";
 import { useRoutineCompletionBanner } from "@/context/RoutineCompletionBannerContext";
 
 const ENTRY_DISTANCE = 86;
 const ENTRY_DELAY = 500;
-const ADDED_ENTRY_DELAY = 900;
+const ADDED_ENTRY_DELAY = CONFIRMATION_ENTRY_DELAY_MS;
 const ENTRY_DURATION = 380;
 const COUNT_DURATION = 350;
 const HOLD_DURATION = 1800;

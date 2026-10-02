@@ -1,8 +1,12 @@
 import { Feather } from "@expo/vector-icons";
-import React, { useEffect, useRef, useState } from "react";
-import { Animated, Easing, Pressable, StyleSheet, Text, View } from "react-native";
+import { useFocusEffect } from "expo-router";
+import { BlurView } from "expo-blur";
+import * as Haptics from "expo-haptics";
+import React, { useCallback, useRef, useState } from "react";
+import { Animated, Easing, Platform, Pressable, StyleSheet, Text, View } from "react-native";
 
-import { SessionBadgeGlass } from "@/components/SessionDurationBadge";
+import { TAB_BAR_BLUR_INTENSITY, TAB_BAR_GLASS_OVERLAY } from "@/constants/tab-bar";
+import { CONFIRMATION_ENTRY_DELAY_MS } from "@/constants/confirmation-banner";
 
 const ENTRY_DISTANCE = 86;
 const ENTRY_DURATION = 380;
@@ -19,53 +23,83 @@ export function ReflectionSavedBanner({
   onPress: () => void;
 }) {
   const [visible, setVisible] = useState(false);
+  const shownTriggerRef = useRef(0);
   const translateY = useRef(new Animated.Value(ENTRY_DISTANCE)).current;
-  const opacity = useRef(new Animated.Value(1)).current;
+  const opacity = useRef(new Animated.Value(0)).current;
+  const entryTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const holdTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
-  useEffect(() => {
-    if (trigger <= 0) return;
+  useFocusEffect(useCallback(() => {
+    if (trigger <= 0 || shownTriggerRef.current === trigger) return;
+    if (entryTimerRef.current) clearTimeout(entryTimerRef.current);
     if (holdTimerRef.current) clearTimeout(holdTimerRef.current);
     translateY.stopAnimation();
     opacity.stopAnimation();
     translateY.setValue(ENTRY_DISTANCE);
-    opacity.setValue(1);
-    setVisible(true);
+    opacity.setValue(0);
+    setVisible(false);
 
-    Animated.timing(translateY, {
-      toValue: 0,
-      duration: ENTRY_DURATION,
-      easing: Easing.out(Easing.cubic),
-      useNativeDriver: true,
-    }).start(({ finished }) => {
-      if (!finished) return;
-      holdTimerRef.current = setTimeout(() => {
-        holdTimerRef.current = null;
-        Animated.parallel([
-          Animated.timing(translateY, {
-            toValue: ENTRY_DISTANCE,
-            duration: EXIT_DURATION,
-            easing: Easing.in(Easing.cubic),
-            useNativeDriver: true,
-          }),
-          Animated.timing(opacity, {
-            toValue: 0,
-            duration: EXIT_DURATION,
-            easing: Easing.out(Easing.quad),
-            useNativeDriver: true,
-          }),
-        ]).start(({ finished: exited }) => {
-          if (exited) setVisible(false);
+    const entryAnimation = Animated.parallel([
+      Animated.timing(translateY, {
+        toValue: 0,
+        duration: ENTRY_DURATION,
+        easing: Easing.inOut(Easing.cubic),
+        useNativeDriver: true,
+      }),
+      Animated.timing(opacity, {
+        toValue: 1,
+        duration: ENTRY_DURATION,
+        easing: Easing.inOut(Easing.cubic),
+        useNativeDriver: true,
+      }),
+    ]);
+    entryTimerRef.current = setTimeout(() => {
+      entryTimerRef.current = null;
+      shownTriggerRef.current = trigger;
+      setVisible(true);
+      if (Platform.OS !== "web") {
+        void Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium).catch((error) => {
+          console.warn("No se pudo activar la vibración del aviso del muro", error);
         });
-      }, HOLD_DURATION);
-    });
+      }
+      entryAnimation.start(({ finished }) => {
+        if (!finished) return;
+        holdTimerRef.current = setTimeout(() => {
+          holdTimerRef.current = null;
+          Animated.parallel([
+            Animated.timing(translateY, {
+              toValue: ENTRY_DISTANCE,
+              duration: EXIT_DURATION,
+              easing: Easing.in(Easing.cubic),
+              useNativeDriver: true,
+            }),
+            Animated.timing(opacity, {
+              toValue: 0,
+              duration: EXIT_DURATION,
+              easing: Easing.out(Easing.quad),
+              useNativeDriver: true,
+            }),
+          ]).start(({ finished: exited }) => {
+            if (exited) setVisible(false);
+          });
+        }, HOLD_DURATION);
+      });
+    }, CONFIRMATION_ENTRY_DELAY_MS);
 
     return () => {
-      if (holdTimerRef.current) clearTimeout(holdTimerRef.current);
+      setVisible(false);
+      if (entryTimerRef.current) {
+        clearTimeout(entryTimerRef.current);
+        entryTimerRef.current = null;
+      }
+      if (holdTimerRef.current) {
+        clearTimeout(holdTimerRef.current);
+        holdTimerRef.current = null;
+      }
       translateY.stopAnimation();
       opacity.stopAnimation();
     };
-  }, [opacity, translateY, trigger]);
+  }, [opacity, translateY, trigger]));
 
   if (!visible) return null;
 
@@ -89,13 +123,23 @@ export function ReflectionSavedBanner({
         style={({ pressed }) => [styles.pressable, pressed && styles.pressed]}
       >
         <View pointerEvents="none" style={styles.glassSurface}>
-          <SessionBadgeGlass showBlackTint={false} showWhiteTint />
+          <BlurView
+            pointerEvents="none"
+            tint="dark"
+            intensity={TAB_BAR_BLUR_INTENSITY}
+            experimentalBlurMethod="dimezisBlurView"
+            style={StyleSheet.absoluteFill}
+          />
+          <View
+            pointerEvents="none"
+            style={[StyleSheet.absoluteFill, { backgroundColor: TAB_BAR_GLASS_OVERLAY }]}
+          />
         </View>
         <View style={styles.titleRow}>
           <View style={styles.checkSurface}>
             <Feather name="check" size={17} color="#F9F9F9" />
           </View>
-          <Text style={styles.title}>Mensaje registrado en muro</Text>
+          <Text style={styles.title}>Mensaje registrado</Text>
         </View>
         <Text style={styles.action}>Ver</Text>
       </Pressable>
@@ -106,8 +150,8 @@ export function ReflectionSavedBanner({
 const styles = StyleSheet.create({
   banner: {
     position: "absolute",
-    left: 14,
-    right: 14,
+    left: 36.5,
+    right: 36.5,
     height: 56,
     borderRadius: 18,
     borderWidth: StyleSheet.hairlineWidth,
