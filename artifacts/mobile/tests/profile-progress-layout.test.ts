@@ -103,6 +103,31 @@ test("Profile history reserves right-aligned gray dots for future streak informa
   assert.doesNotMatch(render({ separateStreakHistory: false }), /profile-streak-history-info/);
 });
 
+test("History title can be hidden independently of its information control", () => {
+  const profileSource = readFileSync(new URL("../components/ProfileScreenBase.tsx", import.meta.url), "utf8");
+  assert.match(profileSource, /showStreakHistoryTitle=\{false\}/);
+  const html = render({ separateStreakHistory: true, showStreakHistoryTitle: false, showCalendar: false });
+  assert.doesNotMatch(html, /Historial de rachas/);
+  assert.match(html, /profile-streak-history-info/);
+  assert.match(html, /data-justify-content="flex-end"/);
+  assert.match(html, /RACHA ACTUAL/);
+  assert.match(html, /RACHAS COMPLETADAS/);
+  assert.match(render({ separateStreakHistory: true, showCalendar: false }), /Historial de rachas/);
+});
+
+test("Perfil retains streak figures without a heading or information dots", () => {
+  const profileSource = readFileSync(new URL("../components/ProfileScreenBase.tsx", import.meta.url), "utf8");
+  assert.match(profileSource, /showStreakHistoryTitle=\{false\}/);
+  assert.match(profileSource, /showStreakHistoryInfo=\{false\}/);
+  const html = render({
+    separateStreakHistory: true, showStreakHistoryTitle: false, showStreakHistoryInfo: false, showCalendar: false,
+  });
+  assert.doesNotMatch(html, /Historial de rachas|profile-streak-history-info|more-horizontal/);
+  assert.match(html, /profile-streak-history-weekly/);
+  assert.match(html, /RACHA ACTUAL/);
+  assert.match(html, /RACHAS COMPLETADAS/);
+});
+
 test("Perfil separates week-only progress from the titled streak history", () => {
   const html = render({
     separateStreakHistory: true,

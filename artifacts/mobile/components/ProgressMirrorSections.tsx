@@ -41,6 +41,8 @@ export function ProgressMirrorSections({
   streakTitle,
   separateStreakHistory = false,
   showStreakHistory = true,
+  showStreakHistoryTitle = true,
+  showStreakHistoryInfo = true,
   afterStreakHistory,
   weeklySectionBackgroundColor,
   weeklySectionHorizontalPadding,
@@ -80,6 +82,8 @@ export function ProgressMirrorSections({
   streakTitle?: string;
   separateStreakHistory?: boolean;
   showStreakHistory?: boolean;
+  showStreakHistoryTitle?: boolean;
+  showStreakHistoryInfo?: boolean;
   afterStreakHistory?: React.ReactNode;
   weeklySectionBackgroundColor?: string;
   weeklySectionHorizontalPadding?: number;
@@ -355,9 +359,12 @@ export function ProgressMirrorSections({
         },
       ]}
     >
-      <View style={styles.streakTitleRow}>
-        <Text style={[styles.streakTitle, { color: colors.foreground }]}>Historial de rachas</Text>
-        <Pressable
+      {(showStreakHistoryTitle || showStreakHistoryInfo) && (
+      <View style={[styles.streakTitleRow, !showStreakHistoryTitle && { justifyContent: "flex-end" }]}>
+        {showStreakHistoryTitle && (
+          <Text style={[styles.streakTitle, { color: colors.foreground }]}>Historial de rachas</Text>
+        )}
+        {showStreakHistoryInfo && <Pressable
           testID="profile-streak-history-info"
           style={styles.streakHistoryInfo}
           disabled
@@ -366,8 +373,9 @@ export function ProgressMirrorSections({
           accessibilityState={{ disabled: true }}
         >
           <Feather name="more-horizontal" size={20} color={STREAK_HISTORY_INFO_ICON_COLOR} />
-        </Pressable>
+        </Pressable>}
       </View>
+      )}
       <View testID="profile-streak-history-weekly" style={[styles.statsValues, styles.statsValuesNoTitle]}>
         <View style={styles.statEntranceSlot}>
           <Stat

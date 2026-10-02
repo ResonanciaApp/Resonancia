@@ -1394,6 +1394,8 @@ export function ProfileScreenBase({
                 showCalendarCompletedCount
                 weeklySectionTitle="Esta semana"
                 separateStreakHistory
+                showStreakHistoryTitle={false}
+                showStreakHistoryInfo={false}
                 weeklySectionBackgroundColor="rgba(0,0,0,0.22)"
                 weeklySectionHorizontalPadding={20}
                 streakHistoryTopPadding={18}

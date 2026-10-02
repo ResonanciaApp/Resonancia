@@ -69,11 +69,11 @@ El loto de la píldora de racha en Inicio conserva el blanco del tratamiento cl�
 
 **How to apply:** Al ajustar el loto de Inicio o de «Racha actual» en Perfil, conservar el blanco; no trasladar allí el tratamiento dorado de la racha acumulada.
 
-Los tres puntos del título «Historial de rachas» en Perfil están reservados para una próxima pantalla informativa sobre las rachas, no para un menú de acciones sobre los datos.
+Perfil no muestra el título «Historial de rachas» ni los tres puntos de información; conserva las cifras sin una fila de encabezado vacía.
 
-**Why:** El usuario definió explícitamente ese destino futuro y, tras probar un chevron, pidió recuperar los tres puntos.
+**Why:** El usuario pidió retirar primero el título y después también los tres puntos de ese bloque en Perfil, reemplazando la dirección anterior de conservar el acceso informativo.
 
-**How to apply:** Cuando se habilite, explicar los criterios reales de cada cifra sin modificar las estadísticas ni activar el cálculo acumulado que sigue pendiente de definición.
+**How to apply:** Mantener independiente el encabezado de Perfil de otras pantallas que comparten el bloque. No reintroducir el título ni los puntos sin una nueva petición, ni modificar las estadísticas por estos cambios de presentación.
 
 La imagen de Intención en Perfil lleva solo un resplandor pequeño y tenue que sale del fondo; nunca un anillo o un borde luminoso.
 
