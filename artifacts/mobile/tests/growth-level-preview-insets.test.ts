@@ -182,7 +182,7 @@ test("GrowthLevelPreviewCard reduces the profile background by 2px at each edge 
   assert.match(profileHtml, /data-testid="growth-level-zero-preview"[^>]*data-padding-top="16" data-padding-bottom="16"/);
   assert.match(profileHtml, /data-margin-vertical="2"/);
   const profileContent = profileHtml.slice(profileHtml.indexOf(">") + 1);
-  assert.ok(profileContent.indexOf("Intención") < profileContent.indexOf("0 días"));
+  assert.ok(profileContent.indexOf("0 días") < profileContent.indexOf("Intención"));
   assert.ok(profileContent.indexOf("Intención") < profileContent.indexOf("Una práctica que comienza hoy."));
   assert.match(profileHtml, /data-min-height="100"[^>]*data-justify-content="center"/);
   assert.doesNotMatch(profileHtml, /data-justify-content="space-between"|data-self-align="stretch"/);
@@ -204,9 +204,9 @@ test("Perfil retains its larger Intención title and aligns the pill and descrip
   assert.doesNotMatch(defaultHtml, /data-transform=/);
 });
 
-test("Perfil puts Intención to the left of its pill, centers the text beside its image, and aligns a single trailing chevron", () => {
+test("Perfil stacks the pill above Intención, centers the text beside its image, and aligns a single trailing chevron", () => {
   const html = render({ embedded: true, canonicalVerticalInsets: true });
-  assert.match(html, /data-testid="profile-intention-title-row"[^>]*data-direction="row" data-align="center"/);
+  assert.match(html, /data-testid="profile-intention-title-row"[^>]*data-direction="column" data-align="flex-start"/);
   assert.equal((html.match(/data-icon="chevron-right"/g) ?? []).length, 1);
   assert.equal((html.match(/data-margin-bottom="0"/g) ?? []).length, 2);
   const rowAt = html.indexOf('data-testid="profile-intention-title-row"');
@@ -214,13 +214,14 @@ test("Perfil puts Intención to the left of its pill, centers the text beside it
   const pillAt = html.lastIndexOf("0 días");
   const nameAt = html.indexOf(">Intención</div>", rowAt);
   const storyAt = html.indexOf(">Una práctica que comienza hoy.</div>");
-  assert.ok(rowAt < nameAt && nameAt < pillAt && pillAt < storyAt && storyAt < chevronAt);
+  assert.ok(rowAt < pillAt && pillAt < nameAt && nameAt < storyAt && storyAt < chevronAt);
   const card = html.match(/<div[^>]*data-testid="growth-level-zero-preview"[^>]*>/)?.[0];
   assert.ok(card);
   assert.match(card, /data-direction="row" data-align="center"/);
   const titleRow = html.match(/<div[^>]*data-testid="profile-intention-title-row"[^>]*>/)?.[0];
   assert.ok(titleRow);
-  assert.match(titleRow, /data-gap="8" data-wrap="wrap"/);
+  assert.match(titleRow, /data-gap="6"/);
+  assert.doesNotMatch(titleRow, /data-wrap=/);
   assert.match(html, /data-testid="profile-intention-chevron"/);
   assert.doesNotMatch(render(), /profile-intention-title-row/);
 });

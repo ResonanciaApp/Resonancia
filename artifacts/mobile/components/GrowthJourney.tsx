@@ -186,8 +186,8 @@ export function GrowthLevelPreviewCard({
       >
         {canonicalVerticalInsets ? (
           <View testID="profile-intention-title-row" style={styles.canonicalPreviewTitleRow}>
-            {name}
             {dayPill}
+            {name}
           </View>
         ) : (
           <>
@@ -431,7 +431,7 @@ const styles = StyleSheet.create({
   canonicalPreviewCopy: { minHeight: 100, justifyContent: "center", gap: 6 },
   canonicalPreviewName: { marginBottom: 0, fontSize: 18, lineHeight: 23 },
   canonicalPreviewPill: { marginBottom: 0, alignSelf: "center", flexDirection: "row", alignItems: "center", gap: 4 },
-  canonicalPreviewTitleRow: { flexDirection: "row", alignItems: "center", flexWrap: "wrap", gap: 8 },
+  canonicalPreviewTitleRow: { flexDirection: "column", alignItems: "flex-start", gap: 6 },
   previewCopy: { flex: 1, minWidth: 0 },
   previewStory: { fontFamily: "Manrope", fontSize: 11, lineHeight: 16 },
   section: {
