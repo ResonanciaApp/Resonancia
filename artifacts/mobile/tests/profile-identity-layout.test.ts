@@ -112,9 +112,13 @@ test("Perfil places avatar left with name and intention on its right, without th
   assert.match(rowStyle, /paddingRight: 0/);
 });
 
-test("the compact preview keeps the avatar at the left margin and restores a centered chevron between the name and pill", () => {
+test("the profile chevron aligns with the username row instead of the combined name and pill", () => {
   const html = render();
-  assert.match(html, /data-testid="profile-identity-name" data-direction="row" data-align="center"/);
+  assert.match(html, /data-testid="profile-identity-title-row" data-direction="row" data-align="center"/);
+  const titleRow = source.match(/<View testID="profile-identity-title-row"[\s\S]*?<\/View>/)?.[0] ?? "";
+  assert.match(titleRow, /testID="profile-identity-name"/);
+  assert.match(titleRow, /testID="profile-identity-chevron"/);
+  assert.doesNotMatch(titleRow, /ProfileIntentionPill/);
   assert.match(html, /data-testid="profile-identity-chevron"[^>]*data-align="flex-end"[^>]*data-width="38"/);
   assert.equal((html.match(/data-icon="chevron-right"/g) ?? []).length, 1);
   assert.ok(html.indexOf("Resonador") < html.indexOf('data-testid="profile-identity-chevron"'));

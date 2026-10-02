@@ -1346,15 +1346,16 @@ export function ProfileScreenBase({
               testID="profile-identity-details"
               style={styles.profileDetails}
             >
+              <View testID="profile-identity-title-row" style={styles.profileNameRow}>
               <Pressable
                 onPress={() => router.push("/mi-perfil")}
                 testID="profile-identity-name"
                 accessibilityRole="button"
                 accessibilityLabel="Abrir Mi cuenta"
-                style={styles.profileNameRow}
+                style={styles.profileNameText}
               >
               <Text
-                style={[styles.userName, styles.profileNameText, { color: colors.foreground }]}
+                style={[styles.userName, { color: colors.foreground }]}
                 numberOfLines={1}
                 ellipsizeMode="tail"
               >
@@ -1372,6 +1373,7 @@ export function ProfileScreenBase({
               >
                 <Feather name="chevron-right" size={24} color={colors.foreground} />
               </Pressable>
+              </View>
 
               {dedicated && (
                 <ProfileIntentionPill
