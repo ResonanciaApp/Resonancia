@@ -57,11 +57,11 @@ La etiqueta «Racha acumulada» y el loto dorado de Perfil son una vista previa 
 
 **How to apply:** Conservar la etiqueta y el tratamiento del loto en Perfil sin alterar las estadísticas ni la fuente del valor. Cuando se pida implementar «Racha acumulada», definir primero qué se acumula y durante qué período.
 
-Las explicaciones de los cuatro tipos de rachas deben describir sus cifras reales, aunque difieran de las definiciones de una imagen de referencia. «Racha acumulada» debe aclarar que todavía refleja el mismo récord que «Racha más larga».
+La explicación editorial de «Racha acumulada» describe el total desde el comienzo, pero ese texto no autoriza por sí solo a cambiar el cálculo de la cifra ni a asumir que ya existe un contador acumulado real.
 
-**Why:** El usuario eligió expresamente explicar los cálculos existentes en la ventana informativa, no cambiar las métricas para adoptar las definiciones de la referencia.
+**Why:** El usuario reemplazó después las explicaciones por textos exactos, definiendo «Racha acumulada» como total de días. Esa solicitud fue de títulos y descripciones, no de estadísticas; reemplaza la dirección editorial anterior que explicitaba el récord duplicado.
 
-**How to apply:** Mantener sincronizadas las explicaciones con el significado de cada cifra; no presentar días consecutivos como definición de la semana actual ni afirmar que el récord es un total acumulado.
+**How to apply:** Respetar el texto elegido y tratar la implementación del contador real como un cambio funcional separado. No afirmar que ya se cambió el cálculo al editar la descripción.
 
 El loto de «Racha acumulada» debe conservar su brillo difuminado clásico, pero el efecto debe recortarse a la silueta de la flor. No reemplazarlo por un halo circular detrás del ícono.
 

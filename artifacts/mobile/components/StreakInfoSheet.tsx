@@ -32,23 +32,23 @@ const STREAK_DEFINITIONS: { id: IconKind; title: string; description: string }[]
     id: "current",
     title: "Racha actual",
     description:
-      "Días activos de esta semana, de lunes a domingo. Puedes sumar hasta 7, aunque no sean consecutivos.",
+      "Días activos de esta semana, de lunes a domingo. No necesariamente tienen que ser consecutivos",
   },
   {
     id: "accumulated",
     title: "Racha acumulada",
     description:
-      "Actualmente muestra tu mejor racha de días consecutivos, igual que Racha más larga; no representa el total de días practicados.",
+      "Total de días que has sumado de racha desde que comenzaste",
   },
   {
     id: "longest",
     title: "Racha más larga",
-    description: "Tu mejor secuencia de días activos consecutivos registrada en la app.",
+    description: "Tu mejor secuencia de dias de racha consecutiva en la App",
   },
   {
     id: "completed",
     title: "Rachas completadas",
-    description: "Semanas de lunes a domingo en las que completaste los 7 días activos.",
+    description: "Semanas de lunes a domingo en las que completaste los 7 días activos",
   },
 ];
 
@@ -168,6 +168,8 @@ export function StreakInfoSheet({
               >
                 <Feather name="arrow-left" size={23} color={WHITE} />
               </Pressable>
+              <Text style={styles.pageTitle} accessibilityRole="header">Sistema de rachas</Text>
+              <View style={styles.headerSpacer} />
             </View>
             <View style={styles.heroText}>
               <CinematicFadeSlide
@@ -238,6 +240,15 @@ const styles = StyleSheet.create({
     alignItems: "center",
     justifyContent: "center",
     backgroundColor: STREAK_INFO_COLORS.navigationBackground,
+  },
+  headerSpacer: { width: 43 },
+  pageTitle: {
+    flex: 1,
+    marginHorizontal: 8,
+    fontFamily: "Manrope",
+    fontSize: 17,
+    color: WHITE,
+    textAlign: "center",
   },
   heroText: { paddingHorizontal: 28, paddingTop: 21, alignItems: "center" },
   subtitle: {

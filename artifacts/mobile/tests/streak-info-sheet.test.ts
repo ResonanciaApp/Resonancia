@@ -133,11 +133,14 @@ test("streak sheet is hidden when closed and has exactly four ordered explanator
   const ids = ["current", "accumulated", "longest", "completed"].map(id => html.indexOf(`streak-info-card-${id}`));
   assert.ok(ids.every((position, index) => position >= 0 && (index === 0 || position > ids[index - 1])));
   assert.doesNotMatch(html, /Tipos de rachas|Tu camino de práctica/);
+  assert.match(html, /data-role="header">Sistema de rachas/);
   assert.match(html, /Existen diferentes tipos de rachas que te muestran tu compromiso/);
-  assert.match(html, /aunque no sean consecutivos/);
-  assert.match(html, /igual que Racha más larga; no representa el total de días practicados/);
-  assert.match(html, /mejor secuencia de días activos consecutivos registrada/);
-  assert.match(html, /Semanas de lunes a domingo en las que completaste los 7 días activos/);
+  for (const description of [
+    "Días activos de esta semana, de lunes a domingo. No necesariamente tienen que ser consecutivos",
+    "Total de días que has sumado de racha desde que comenzaste",
+    "Tu mejor secuencia de dias de racha consecutiva en la App",
+    "Semanas de lunes a domingo en las que completaste los 7 días activos",
+  ]) assert.ok(html.includes(description));
   assert.match(html, /al escuchar al menos 3 minutos o completar una sesión/);
 });
 
