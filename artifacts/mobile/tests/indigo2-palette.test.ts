@@ -32,9 +32,19 @@ test("Índigo 2 keeps its seven vertical stops and applies 4% HSL desaturation t
   assert.equal(theme.accent, "#E8E8E8");
 });
 
-test("Universo uses the supplied seven-color vertical gradient and retains its dark solid fallback", () => {
+test("Universo reverses all seven supplied colors and reduces HSL saturation by 5%", () => {
+  const original = ["#0F2E72", "#1A2D70", "#202A6E", "#23286C", "#2D226A", "#322063", "#371A61"];
+  const reversedAndDesaturated = original.slice().reverse().map((hex) => {
+    const rgb = hex.slice(1).match(/../g)!.map(channel => parseInt(channel, 16));
+    const lightness = (Math.min(...rgb) + Math.max(...rgb)) / 2;
+    // Saturation × 0.95, preserving hue and lightness before 8-bit rounding.
+    return "#" + rgb.map(channel =>
+      Math.round(lightness + (channel - lightness) * 0.95).toString(16).padStart(2, "0"),
+    ).join("").toUpperCase();
+  });
   assert.equal(exports.DEFAULT_THEME_ID, "tibet");
-  assert.deepEqual(exports.SCENE_THEMES.tibet.gradient, ["#0F2E72", "#1A2D70", "#202A6E", "#23286C", "#2D226A", "#322063", "#371A61"]);
+  assert.deepEqual(exports.SCENE_THEMES.tibet.gradient, reversedAndDesaturated);
+  assert.deepEqual(exports.SCENE_THEMES.tibet.gradient, ["#371C5F", "#332261", "#2E2468", "#252A6A", "#222B6C", "#1C2E6E", "#112F70"]);
   assert.deepEqual(exports.SCENE_THEMES.tibet.gradientLocations, [0, 0.167, 0.333, 0.5, 0.667, 0.833, 1]);
   assert.equal(exports.SCENE_THEMES.tibet.gradientLocations?.length, exports.SCENE_THEMES.tibet.gradient.length);
   assert.deepEqual(exports.SCENE_THEMES.tibet.gradientStart, { x: 0.5, y: 0 });
