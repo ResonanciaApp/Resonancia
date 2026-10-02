@@ -30,6 +30,7 @@ const CARD_HEIGHT = CARD_WIDTH;
 
 export function EditorialPlaylistCarousel({
   title,
+  titleSize = 17,
   playlists,
   onPress,
   style,
@@ -40,6 +41,7 @@ export function EditorialPlaylistCarousel({
   showDurationClock = false,
 }: {
   title: string;
+  titleSize?: number;
   playlists: EditorialPlaylist[];
   onPress?: (playlist: EditorialPlaylist) => void;
   style?: StyleProp<ViewStyle>;
@@ -140,7 +142,7 @@ export function EditorialPlaylistCarousel({
   return (
     <View style={[styles.section, style]}>
       <View style={styles.titleRow}>
-        <Text style={styles.title}>{title}</Text>
+        <Text style={[styles.title, { fontSize: titleSize }]}>{title}</Text>
       </View>
       {gridLayout ? (
         <View style={styles.gridContent}>{cards}</View>

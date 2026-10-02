@@ -74,6 +74,7 @@ const { width, height: SCREEN_HEIGHT } = Dimensions.get("window");
 const H_PAD = 16;
 const GAP = 16;
 const SECTION_GAP = 53;
+const SECTION_EXTRA_GAP = 5;
 const MONTHLY_SOUND_THERAPY_HERO_HEIGHT = 220;
 const EXPLORE_SECTIONS_CACHE_KEY = "cdc_explore_sections_v1";
 
@@ -639,7 +640,7 @@ export function ExploreScreen({
             />
           </View>
 
-          <View style={[styles.sectionDivider, styles.categoryBlocksDivider]} />
+          <View style={[styles.sectionSpacer, styles.categoryBlocksSpacer]} />
 
           <>
             <View style={styles.featuredMomentSection}>
@@ -740,12 +741,12 @@ export function ExploreScreen({
                 <Text style={styles.featuredMomentStatus}>{featuredMomentStatus}</Text>
               ) : null}
             </View>
-            <View style={styles.sectionDivider} />
+            <View style={styles.sectionSpacer} />
           </>
 
           <ResonadoresBanner onPress={() => router.push("/equipo" as never)} />
 
-          <View style={styles.sectionDivider} />
+          <View style={styles.sectionSpacer} />
 
           <View style={styles.newInResonanceSection}>
             <View style={styles.newInResonanceHeader}>
@@ -803,12 +804,13 @@ export function ExploreScreen({
             </ScrollView>
           </View>
 
-          <View style={styles.sectionDivider} />
+          <View style={styles.sectionSpacer} />
 
           {editorialDiscoverCarousels.map((carousel) => (
             <React.Fragment key={carousel.id}>
               <EditorialPlaylistCarousel
                 title={carousel.title}
+                titleSize={19}
                 playlists={carousel.playlists}
                 showDurationClock
                 showPremiumBadge
@@ -817,7 +819,7 @@ export function ExploreScreen({
                   openCategory(`/editorial-playlist/${encodeURIComponent(playlist.id)}`)
                 }
               />
-              <View style={styles.sectionDivider} />
+              <View style={styles.sectionSpacer} />
             </React.Fragment>
           ))}
 
@@ -852,7 +854,7 @@ export function ExploreScreen({
             </ScrollView>
           </View>
 
-          <View style={styles.sectionDivider} />
+          <View style={styles.sectionSpacer} />
 
           <View style={styles.otherThemesSection}>
             <View style={styles.otherThemesHeader}>
@@ -1122,7 +1124,7 @@ const styles = StyleSheet.create({
 
   section:      { paddingHorizontal: H_PAD, marginBottom: SECTION_GAP },
   sectionRow:   { flexDirection: "row", alignItems: "baseline", justifyContent: "space-between", marginBottom: 17 },
-  sectionTitle: { fontFamily: "Manrope", fontSize: 17, fontWeight: "700", letterSpacing: 0.3, color: "#FBFBFB", marginBottom: 17 },
+  sectionTitle: { fontFamily: "Manrope", fontSize: 19, fontWeight: "700", letterSpacing: 0.3, color: "#FBFBFB", marginBottom: 17 },
   featuredMomentSection: {
     paddingHorizontal: H_PAD,
     marginTop: 0,
@@ -1197,14 +1199,13 @@ const styles = StyleSheet.create({
     color: "#F4F4F4",
     marginTop: 2,
   },
-  sectionDivider: {
+  sectionSpacer: {
     height: StyleSheet.hairlineWidth,
     marginHorizontal: H_PAD,
     marginTop: -27,
-    marginBottom: 26,
-    backgroundColor: "rgba(255,255,255,0.12)",
+    marginBottom: 26 + SECTION_EXTRA_GAP,
   },
-  categoryBlocksDivider: {
+  categoryBlocksSpacer: {
     marginTop: -24,
   },
   popularSection: {

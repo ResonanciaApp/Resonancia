@@ -32,10 +32,10 @@ function style(name: string) {
   return evaluate(property.initializer.getText(ast), bindings);
 }
 
-test("Inicio section titles grow by three points without changing other home variants", () => {
+test("Inicio section title sizing remains scoped to the active home variant", () => {
   const declaration = find(node => ts.isVariableDeclaration(node)
     && node.name.getText(ast) === "sectionTitleSize") as ts.VariableDeclaration;
-  assert.equal(evaluate(declaration.initializer!.getText(ast), { variant: "inicio3" }), 20);
+  assert.equal(evaluate(declaration.initializer!.getText(ast), { variant: "inicio3" }), 19);
   assert.equal(evaluate(declaration.initializer!.getText(ast), { variant: "copy" }), 17);
   assert.equal(evaluate(declaration.initializer!.getText(ast), { variant: "original" }), 17);
   assert.match(home, /Para este momento/);
@@ -47,9 +47,15 @@ test("Inicio section titles grow by three points without changing other home var
       && node.getText(ast).includes("squareTitle")) as ts.JsxSelfClosingElement;
     assert.match(carousel.getText(ast), /titleSize=\{sectionTitleSize\}/);
   }
-  assert.match(home, /titleSize=\{variant === "inicio3" \? 21 : 18\}/);
+  assert.match(home, /titleSize=\{variant === "inicio3" \? 20 : 18\}/);
   assert.match(read("../components/MiRutinaSection.tsx"), /fontSize: titleSize/);
   assert.match(read("../components/AlmaCommunitySection.tsx"), /fontSize: titleSize/);
+});
+
+test("daily recommendations independently increase from 17 to 19 points", () => {
+  const recommendations = read("../components/DailyRecommendationsSection.tsx");
+  assert.match(recommendations, /title: \{[\s\S]*?fontSize: 19,/);
+  assert.match(home, /<DailyRecommendationsSection[\s\S]*?inicio3Compact/);
 });
 
 test("section spacers remove visible dividers and add exactly five pixels to the existing gaps", () => {

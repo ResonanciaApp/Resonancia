@@ -22,9 +22,10 @@ no distinguían entre omitir la propiedad y eliminarla explícitamente.
 contenido variable, incluidos varios aumentos y un segundo ciclo de completado.
 Las pruebas deben modelar que el nodo nativo conserva las propiedades omitidas.
 
-Retirar las líneas decorativas entre secciones de Inicio no implica eliminar el
+Retirar las líneas decorativas entre secciones de Inicio o Descubrir no implica eliminar el
 espacio que reservaban. Conservar el gap anterior como espacio transparente y
-sumar la separación extra solicitada desde «Para este momento» hacia abajo.
+sumar la separación extra solicitada desde el bloque indicado: «Para este momento»
+en Inicio y los seis bloques de categorías en Descubrir.
 
 **Why:** El usuario pidió quitar las líneas y aumentar la separación a la vez;
 colapsar su espacio produciría el resultado contrario.

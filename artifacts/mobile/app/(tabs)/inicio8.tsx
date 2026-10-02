@@ -2145,7 +2145,7 @@ export default function HomeScreen2({
   variant?: InicioVariant;
 } = {}) {
   const isInicio2 = variant === "copy" || variant === "inicio3";
-  const sectionTitleSize = variant === "inicio3" ? 20 : 17;
+  const sectionTitleSize = variant === "inicio3" ? 19 : 17;
   const colors = useColors();
   const insets = useSafeAreaInsets();
   const {
@@ -3385,7 +3385,7 @@ export default function HomeScreen2({
         )}
         {isInicio2 && isPremium && (
           <AlmaCommunitySection
-            titleSize={variant === "inicio3" ? 21 : 18}
+            titleSize={variant === "inicio3" ? 20 : 18}
             style={variant === "inicio3" ? { marginBottom: 28 + INICIO3_SECTION_EXTRA_GAP } : undefined}
           />
         )}

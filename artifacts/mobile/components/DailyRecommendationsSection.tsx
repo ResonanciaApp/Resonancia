@@ -183,7 +183,7 @@ const styles = StyleSheet.create({
   title: {
     flexShrink: 1,
     fontFamily: "Manrope",
-    fontSize: 17,
+    fontSize: 19,
     fontWeight: "700",
     letterSpacing: 0.2,
   },
