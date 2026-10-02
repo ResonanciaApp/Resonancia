@@ -270,10 +270,10 @@ const styles = StyleSheet.create({
     textShadowRadius: 4,
   },
   cardText: { flex: 1, gap: 4 },
-  cardTitle: { fontFamily: "Manrope", fontSize: 17, color: WHITE },
+  cardTitle: { fontFamily: "Manrope", fontSize: 16, fontWeight: "700", color: WHITE },
   cardDesc: {
     fontFamily: "Manrope",
-    fontSize: 14,
+    fontSize: 13,
     lineHeight: 20,
     color: STREAK_INFO_COLORS.description,
   },
