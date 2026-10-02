@@ -30,6 +30,10 @@ const Native = ({ accessibilityLabel, accessibilityRole, children, onPress, styl
     "data-icon": name,
     "data-color": color,
     "data-position": resolvedStyle.position,
+    "data-font-size": resolvedStyle.fontSize,
+    "data-line-height": resolvedStyle.lineHeight,
+    "data-margin-vertical": resolvedStyle.marginVertical,
+    "data-transform": resolvedStyle.transform ? JSON.stringify(resolvedStyle.transform) : undefined,
     "data-filter": resolvedStyle.filter,
     "data-source": source,
     "data-stop-opacity": stopOpacity,
@@ -111,9 +115,10 @@ test("Profile intention has a small faint background glow and brightened RGB art
   assert.doesNotMatch(render(), /profile-intention-glow|profile-intention-image|brightness/);
 });
 
-test("GrowthLevelPreviewCard opts into exact 18px profile insets without changing other callers", () => {
+test("GrowthLevelPreviewCard reduces the profile background by 2px at each edge without changing other callers", () => {
   const profileHtml = render({ embedded: true, canonicalVerticalInsets: true });
-  assert.match(profileHtml, /data-testid="growth-level-zero-preview"[^>]*data-padding-top="18" data-padding-bottom="18"/);
+  assert.match(profileHtml, /data-testid="growth-level-zero-preview"[^>]*data-padding-top="16" data-padding-bottom="16"/);
+  assert.match(profileHtml, /data-margin-vertical="2"/);
   const profileContent = profileHtml.slice(profileHtml.indexOf(">") + 1);
   assert.ok(profileContent.indexOf("0 días") < profileContent.indexOf("Intención"));
   assert.ok(profileContent.indexOf("Intención") < profileContent.indexOf("Una práctica que comienza hoy."));
@@ -126,6 +131,16 @@ test("GrowthLevelPreviewCard opts into exact 18px profile insets without changin
   const defaultContent = defaultHtml.slice(defaultHtml.indexOf(">") + 1);
   assert.ok(defaultContent.indexOf("0 días") < defaultContent.indexOf("Intención"));
   assert.doesNotMatch(defaultHtml, /data-min-height="100" data-self-align="stretch"/);
+});
+
+test("Perfil enlarges Intención by 3 points, lowers its pill 2px and raises its description 2px", () => {
+  const html = render({ embedded: true, canonicalVerticalInsets: true });
+  assert.match(html, /<div[^>]*data-font-size="18"[^>]*data-line-height="23"[^>]*>Intención<\/div>/);
+  assert.match(html, /data-transform="\[\{&quot;translateY&quot;:2\}\]"/);
+  assert.match(html, /<div[^>]*data-transform="\[\{&quot;translateY&quot;:-2\}\]"[^>]*>Una práctica que comienza hoy\.<\/div>/);
+  const defaultHtml = render();
+  assert.match(defaultHtml, /data-font-size="15"[^>]*data-line-height="20"/);
+  assert.doesNotMatch(defaultHtml, /data-transform=/);
 });
 
 test("Perfil removes both inner bottom margins for equal gaps and places its single chevron in the title row", () => {

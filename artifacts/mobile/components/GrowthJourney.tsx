@@ -147,7 +147,7 @@ export function GrowthLevelPreviewCard({
   );
   const story = (
     <PreviewContentEntrance key="intention-story" replayKey="intention-story" delay={810}>
-      <Text style={[styles.previewStory, { color: colors.mutedForeground }]}>
+      <Text style={[styles.previewStory, canonicalVerticalInsets && styles.canonicalPreviewStory, { color: colors.mutedForeground }]}>
         {level.story}
       </Text>
     </PreviewContentEntrance>
@@ -386,10 +386,11 @@ const styles = StyleSheet.create({
   previewArt: { width: 100, height: 100 },
   intentionGlow: { position: "absolute", width: 130, height: 130, left: -15, top: -15 },
   embeddedPreviewCard: { marginHorizontal: 0 },
-  canonicalPreviewVerticalInsets: { paddingTop: 18, paddingBottom: 18, alignItems: "flex-start" },
+  canonicalPreviewVerticalInsets: { paddingTop: 16, paddingBottom: 16, marginVertical: 2, alignItems: "flex-start" },
   canonicalPreviewCopy: { minHeight: 100, alignSelf: "stretch", justifyContent: "space-between" },
-  canonicalPreviewName: { flex: 1, marginBottom: 0 },
-  canonicalPreviewPill: { marginBottom: 0, flexDirection: "row", alignItems: "center", gap: 4 },
+  canonicalPreviewName: { flex: 1, marginBottom: 0, fontSize: 18, lineHeight: 23 },
+  canonicalPreviewPill: { marginBottom: 0, flexDirection: "row", alignItems: "center", gap: 4, transform: [{ translateY: 2 }] },
+  canonicalPreviewStory: { transform: [{ translateY: -2 }] },
   canonicalPreviewTitleRow: { flexDirection: "row", alignItems: "center", gap: 12 },
   previewCopy: { flex: 1, minWidth: 0 },
   previewStory: { fontFamily: "Manrope", fontSize: 11, lineHeight: 16 },
