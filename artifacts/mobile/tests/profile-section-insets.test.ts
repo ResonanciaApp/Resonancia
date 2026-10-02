@@ -53,28 +53,6 @@ test("user section preserves 20px above the centered avatar outline, with no ext
   assert.match(source, /<ProfileMembershipBanner isPremium=\{isPremium\}/);
 });
 
-test("Perfil hides membership and places the seven-day circles exactly 35px below the avatar outline", () => {
-  const source = readFileSync(new URL("../components/ProfileScreenBase.tsx", import.meta.url), "utf8");
-  assert.match(source, /const SHOW_PROFILE_MEMBERSHIP_BANNER = false;/);
-  assert.match(source, /\{SHOW_PROFILE_MEMBERSHIP_BANNER && \(\s*<ProfileMembershipBanner/);
-  const value = (name: string) => Number(source.match(new RegExp(`const ${name} = (\\d+);`))?.[1]);
-  const values = {
-    PROFILE_AVATAR_WEEK_GAP: value("PROFILE_AVATAR_WEEK_GAP"),
-    PROFILE_CARD_BOTTOM_PADDING: value("PROFILE_CARD_BOTTOM_PADDING"),
-    PROFILE_WEEK_TOP_PADDING: value("PROFILE_WEEK_TOP_PADDING"),
-    PROFILE_SECTION_GAP: value("PROFILE_SECTION_GAP"),
-  };
-  const card = style("ProfileScreenBase", "profileCard", values);
-  const dedicated = style("ProfileScreenBase", "dedicatedProfileCard", values);
-  const avatar = style("ProfileScreenBase", "avatarWrapper");
-  const border = style("ProfileScreenBase", "avatarOuterBorder");
-  const image = style("ProfileScreenBase", "avatarImage");
-  const outerExtension = border.top + border.height - image.height;
-  const avatarToRowBottom = avatar.marginBottom - outerExtension;
-  assert.equal(avatarToRowBottom + card.paddingBottom + dedicated.marginBottom + values.PROFILE_WEEK_TOP_PADDING, 35);
-  assert.equal(style("ProfileScreenBase", "profileProgressSection", values).marginTop, 0);
-});
-
 test("Perfil replaces history and downloads with the expandable wall after its progress/calendar section", () => {
   const source = readFileSync(new URL("../components/ProfileScreenBase.tsx", import.meta.url), "utf8");
   assert.doesNotMatch(source, /ProfileDownloadsSection|profileHistorySection|>Historial<\/Text>/);

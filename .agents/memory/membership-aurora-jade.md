@@ -3,11 +3,11 @@ name: Membresía Aurora jade-gold
 description: Insignia del avatar en Perfil y acentos Premium de las demás superficies.
 ---
 
-El banner de membresía bajo el usuario de Perfil está oculto, sin reservar espacio para su estrella, texto ni divisor. Su diseño se conserva para una eventual recuperación explícita: «Prueba Premium» para gratuitos y «Tu Premium» para miembros. No recuperar Premium Plus.
+La tarjeta principal de Perfil vuelve a incluir el banner de membresía bajo los datos del usuario, dentro del mismo fondo y separado por una línea divisora, con estrella a la izquierda. Para usuarios gratuitos muestra «Prueba Premium»; para miembros, «Tu Premium». No recuperar Premium Plus.
 
-**Why:** El usuario volvió a pedir ocultar «Tu Premium / Gestiona tu suscripción y beneficios» bajo el usuario. Esta dirección reemplaza la petición anterior de mostrar el banner; no elimina la membresía ni sus accesos en otras superficies.
+**Why:** El 2026-10-01 el usuario pidió recuperar explícitamente el banner que se había retirado, para ambos estados de membresía, y posteriormente quitar la estrella del avatar de Perfil. Estas peticiones reemplazan las restricciones anteriores de esa superficie.
 
-**How to apply:** No reintroducir el banner en Perfil sin una nueva petición. El avatar de Perfil sigue sin estrella. La insignia del avatar de Inicio sigue siendo exclusiva de Premium y no cambia por analogía. El acceso del drawer sigue siendo independiente.
+**How to apply:** Mantener el banner integrado al fondo del usuario, no como tarjeta independiente. Su estrella aparece para ambos estados; el avatar de Perfil no lleva estrella. La insignia del avatar de Inicio sigue siendo exclusiva de Premium y no cambia por analogía. El acceso del drawer sigue siendo independiente.
 
 El amarillo sólido de Premium sigue en «Plan Premium» de Sonidos y Descubrir, en solo «Premium» del banner inferior de Inicio y en «Tu Premium» del drawer para miembros o solo «Premium» para no miembros. «Prueba» y «Gratis» de Inicio no cambian; en el drawer «Prueba» sigue blanco. El loto de «Racha más larga» conserva el degradado.
 

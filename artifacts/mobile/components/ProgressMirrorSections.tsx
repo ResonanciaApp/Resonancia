@@ -48,7 +48,7 @@ export function ProgressMirrorSections({
   weeklySectionHorizontalPadding,
   weeklySectionTitle,
   streakHistoryTopPadding,
-  showStreakHistoryDivider = true,
+  streakHistoryDividerOffsetY = 0,
   longestStreakLabel = "RACHA MÁS LARGA",
   longestStreakIconColor,
   onStreakTitlePress,
@@ -90,7 +90,7 @@ export function ProgressMirrorSections({
   weeklySectionHorizontalPadding?: number;
   weeklySectionTitle?: string;
   streakHistoryTopPadding?: number;
-  showStreakHistoryDivider?: boolean;
+  streakHistoryDividerOffsetY?: number;
   longestStreakLabel?: string;
   longestStreakIconColor?: string;
   onStreakTitlePress?: () => void;
@@ -401,10 +401,10 @@ export function ProgressMirrorSections({
           />
         </View>
       </View>
-      {showStreakHistoryDivider && <View
+      <View
         testID="profile-streak-history-divider"
-        style={styles.sectionDivider}
-      />}
+        style={[styles.sectionDivider, { transform: [{ translateY: streakHistoryDividerOffsetY }] }]}
+      />
       <View style={[styles.statsValues, styles.statsValuesNoTitle]}>
         <View style={styles.statEntranceSlot}>
           <Stat
