@@ -382,6 +382,7 @@ export function MiRutinaSection({ style, cardBackgroundColor }: Props) {
   const todayActivityIdsKey = todayActivityIds.join(",");
   const orderSV = useSharedValue<string[]>(todayActivityIds);
   const listHeight = useSharedValue(todayActivities.length * ROUTINE_SLOT_HEIGHT);
+  const previousActivityCount = useRef(todayActivities.length);
   const draggingId = useSharedValue("");
   const dragOriginSlot = useSharedValue(-1);
   const dragDeltaY = useSharedValue(0);
@@ -400,11 +401,14 @@ export function MiRutinaSection({ style, cardBackgroundColor }: Props) {
     orderSV.value = mergedOrder;
   }, [orderSV, todayActivityIds, todayActivityIdsKey]);
   useEffect(() => {
+    const previousCount = previousActivityCount.current;
+    previousActivityCount.current = todayActivities.length;
     if (todayActivities.length === 0) return;
-    listHeight.value = withTiming(
-      todayActivities.length * ROUTINE_SLOT_HEIGHT,
-      { duration: 350 },
-    );
+    const nextHeight = todayActivities.length * ROUTINE_SLOT_HEIGHT;
+    // Added rows must already have their final height when returning from creation.
+    listHeight.value = todayActivities.length > previousCount
+      ? nextHeight
+      : withTiming(nextHeight, { duration: 350 });
   }, [listHeight, todayActivities.length]);
   const listHeightStyle = useAnimatedStyle(() => ({
     height: listHeight.value,
@@ -550,6 +554,7 @@ export function MiRutinaSection({ style, cardBackgroundColor }: Props) {
       <RoutineCompletionTransition
         key={dateKey}
         complete={showCompleteState}
+        animateToPending={false}
         completedContent={
           <View style={styles.completeState}>
             <View style={styles.completeCopy}>

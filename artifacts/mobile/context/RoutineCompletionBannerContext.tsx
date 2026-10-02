@@ -1,4 +1,5 @@
 import React, { createContext, useCallback, useContext, useMemo, useRef, useState } from "react";
+import { Animated } from "react-native";
 
 import {
   enqueueRoutineCompletion,
@@ -11,6 +12,7 @@ export type { RoutineCompletionBannerEvent } from "@/lib/routineCompletionQueue"
 type RoutineCompletionBannerContextValue = {
   activeEvent: RoutineCompletionBannerEvent | null;
   hasPendingCompletion: boolean;
+  emotionWidgetOpacity: Animated.Value;
   announceCompletion: (previousCount: number, nextCount: number) => void;
   announceActivityAdded: () => void;
   dismissActiveEvent: () => void;
@@ -26,6 +28,7 @@ export function RoutineCompletionBannerProvider({
 }) {
   const [queue, setQueue] = useState<RoutineCompletionBannerEvent[]>([]);
   const nextIdRef = useRef(1);
+  const emotionWidgetOpacity = useRef(new Animated.Value(1)).current;
 
   const announceCompletion = useCallback((previousCount: number, nextCount: number) => {
     if (nextCount <= previousCount) return;
@@ -56,11 +59,12 @@ export function RoutineCompletionBannerProvider({
     () => ({
       activeEvent: queue[0] ?? null,
       hasPendingCompletion: hasPendingRoutineCompletion(queue),
+      emotionWidgetOpacity,
       announceCompletion,
       announceActivityAdded,
       dismissActiveEvent,
     }),
-    [announceActivityAdded, announceCompletion, dismissActiveEvent, queue],
+    [announceActivityAdded, announceCompletion, dismissActiveEvent, emotionWidgetOpacity, queue],
   );
 
   return (

@@ -57,6 +57,7 @@ import { GreetingHeader } from "@/components/GreetingHeader";
 import { useGreeting } from "@/hooks/useGreeting";
 import { useGreetingVisible } from "@/context/GreetingVisibleContext";
 import { useDrawer } from "@/context/DrawerContext";
+import { useRoutineCompletionBanner } from "@/context/RoutineCompletionBannerContext";
 import { useCategoryOverlay } from "@/context/CategoryOverlayContext";
 import { getWeeklyPhrase } from "@/data/greeting-phrases";
 import { GlowRing } from "@/components/GlowRing";
@@ -2071,43 +2072,50 @@ function InicioEmotionWidget({
   borderColor?: string;
   onOpenMoodPicker: () => void;
 }) {
+  const { activeEvent, emotionWidgetOpacity } = useRoutineCompletionBanner();
   return (
-    <Pressable
-      onPress={onOpenMoodPicker}
-      accessibilityRole="button"
-      accessibilityLabel="Agregar emoción"
-      testID="inicio-add-emotion"
-      style={({ pressed }) => [
-        styles.inicio2HeroEmotionWidget,
-        {
-          right: 18,
-          bottom,
-           backgroundColor: "transparent",
-          opacity: pressed ? 0.82 : 1,
-          borderWidth: borderColor ? 2 : 0,
-          borderColor: borderColor ?? "transparent",
-        },
-      ]}
+    <Animated.View
+      testID="inicio-emotion-widget-fade"
+      pointerEvents={activeEvent ? "none" : "auto"}
+      accessibilityElementsHidden={!!activeEvent}
+      importantForAccessibility={activeEvent ? "no-hide-descendants" : "auto"}
+      style={[styles.inicio2HeroEmotionWidget, { right: 18, bottom, opacity: emotionWidgetOpacity }]}
     >
-      <BlurView
-        pointerEvents="none"
-        intensity={38}
-        tint="light"
-        experimentalBlurMethod="dimezisBlurView"
-        style={styles.inicio2HeroEmotionGlass}
-      />
-      <Text style={styles.inicio2HeroEmotionEmoji}>😌</Text>
-      <View style={styles.inicio2HeroEmotionAdd}>
-        <LinearGradient
+      <Pressable
+        onPress={onOpenMoodPicker}
+        accessibilityRole="button"
+        accessibilityLabel="Agregar emoción"
+        testID="inicio-add-emotion"
+        style={({ pressed }) => [
+          styles.inicio2HeroEmotionPressable,
+          {
+            backgroundColor: "transparent",
+            opacity: pressed ? 0.82 : 1,
+            borderWidth: borderColor ? 2 : 0,
+            borderColor: borderColor ?? "transparent",
+          },
+        ]}
+      >
+        <BlurView
           pointerEvents="none"
-          colors={["#532FA8", "#372FA8"]}
-          start={{ x: 0.5, y: 0 }}
-          end={{ x: 0.5, y: 1 }}
-          style={StyleSheet.absoluteFill}
+          intensity={38}
+          tint="light"
+          experimentalBlurMethod="dimezisBlurView"
+          style={styles.inicio2HeroEmotionGlass}
         />
-        <Text style={styles.inicio2HeroEmotionAddText}>+</Text>
-      </View>
-    </Pressable>
+        <Text style={styles.inicio2HeroEmotionEmoji}>😌</Text>
+        <View style={styles.inicio2HeroEmotionAdd}>
+          <LinearGradient
+            pointerEvents="none"
+            colors={["#532FA8", "#372FA8"]}
+            start={{ x: 0.5, y: 0 }}
+            end={{ x: 0.5, y: 1 }}
+            style={StyleSheet.absoluteFill}
+          />
+          <Text style={styles.inicio2HeroEmotionAddText}>+</Text>
+        </View>
+      </Pressable>
+    </Animated.View>
   );
 }
 
@@ -3780,6 +3788,12 @@ const styles = StyleSheet.create({
   inicio2HeroEmotionEmoji: {
     fontSize: 31,
     lineHeight: 38,
+  },
+  inicio2HeroEmotionPressable: {
+    ...StyleSheet.absoluteFillObject,
+    borderRadius: 33.5,
+    alignItems: "center",
+    justifyContent: "center",
   },
   inicio2HeroEmotionGlass: {
     ...StyleSheet.absoluteFillObject,

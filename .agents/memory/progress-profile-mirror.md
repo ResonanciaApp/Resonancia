@@ -68,3 +68,15 @@ El loto de la píldora de racha en Inicio conserva el blanco del tratamiento cl�
 **Why:** El usuario corrigió la elección anterior del dorado: ambas superficies representan la racha actual.
 
 **How to apply:** Al ajustar el loto de Inicio o de «Racha actual» en Perfil, conservar el blanco; no trasladar allí el tratamiento dorado de la racha acumulada.
+
+El chevron pequeño del título «Historial de rachas» en Perfil está reservado para una próxima pantalla informativa sobre las rachas, no para un menú de acciones sobre los datos.
+
+**Why:** El usuario definió explícitamente ese destino futuro y luego cambió los tres puntos por un chevron como el de Intención.
+
+**How to apply:** Cuando se habilite, explicar los criterios reales de cada cifra sin modificar las estadísticas ni activar el cálculo acumulado que sigue pendiente de definición.
+
+La imagen de Intención en Perfil lleva solo un resplandor pequeño y tenue que sale del fondo; nunca un anillo o un borde luminoso.
+
+**Why:** El usuario rechazó la variante anterior por mostrar un anillo blanco y reiteró que el efecto debía ser sutil. Esa variante aplicaba un filtro de brillo al contenedor del PNG transparente.
+
+**How to apply:** Para ajustar el brillo, modificar únicamente el RGB del arte conservando su alfa radial, sin filtrar el contenedor. Mantener el resplandor como una capa independiente detrás de la imagen y preservar las otras superficies.

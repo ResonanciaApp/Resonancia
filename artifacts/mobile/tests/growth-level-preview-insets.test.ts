@@ -15,12 +15,14 @@ type NativeProps = {
   testID?: string;
   name?: string;
   color?: string;
+  source?: number;
+  stopOpacity?: number;
 };
 const flattenStyle = (style: unknown): Record<string, unknown> => Array.isArray(style)
   ? Object.assign({}, ...style.map(flattenStyle))
   : style && typeof style === "object" ? style as Record<string, unknown> : {};
 let capturedOnPress: (() => void) | undefined;
-const Native = ({ accessibilityLabel, accessibilityRole, children, onPress, style, testID, name, color }: NativeProps) => {
+const Native = ({ accessibilityLabel, accessibilityRole, children, onPress, style, testID, name, color, source, stopOpacity }: NativeProps) => {
   const resolvedStyle = flattenStyle(style);
   if (testID === "growth-level-zero-preview") capturedOnPress = onPress;
   return React.createElement("div", {
@@ -28,6 +30,9 @@ const Native = ({ accessibilityLabel, accessibilityRole, children, onPress, styl
     "data-icon": name,
     "data-color": color,
     "data-position": resolvedStyle.position,
+    "data-filter": resolvedStyle.filter,
+    "data-source": source,
+    "data-stop-opacity": stopOpacity,
     "data-padding-vertical": resolvedStyle.paddingVertical,
     "data-direction": resolvedStyle.flexDirection,
     "data-align": resolvedStyle.alignItems,
@@ -47,6 +52,7 @@ const compiled = ts.transpileModule(
   { compilerOptions: { module: ts.ModuleKind.CommonJS, jsx: ts.JsxEmit.React, esModuleInterop: true } },
 ).outputText;
 const mocks: Record<string, unknown> = {
+  "../assets/images/growth/00-intencion-profile.png": 2,
   react: React,
   "react-native": {
     Image: Native,
@@ -57,6 +63,7 @@ const mocks: Record<string, unknown> = {
     View: Native,
   },
   "@expo/vector-icons": { Feather: Native, MaterialCommunityIcons: Native },
+  "react-native-svg": { __esModule: true, default: Native, Circle: Native, Defs: Native, RadialGradient: Native, Stop: Native },
   "expo-asset": { Asset: { fromModule: () => ({ localUri: null, downloadAsync: async () => {} }) } },
   "@/constants/colors": {
     MEMBERSHIP_AURORA: { premium: { accent: "#BE9650" } },
@@ -90,6 +97,19 @@ const GrowthRow = new Function("require", "module", "exports", `${compiled}\nret
 const render = (props: Record<string, unknown> = {}) => renderToStaticMarkup(
   React.createElement(componentModule.exports.GrowthLevelPreviewCard, { onPress: () => {}, ...props }),
 );
+
+test("Profile intention has a small faint background glow and brightened RGB artwork, without a wrapper filter", () => {
+  const html = render({ canonicalVerticalInsets: true });
+  const glow = html.indexOf('data-testid="profile-intention-glow"');
+  const image = html.indexOf('data-testid="profile-intention-image"');
+  assert.ok(glow >= 0 && image > glow);
+  assert.match(html, /data-source="2"/);
+  assert.doesNotMatch(html, /data-filter/);
+  const stops = [...html.matchAll(/data-stop-opacity="([^"]+)"/g)].map(match => Number(match[1]));
+  assert.deepEqual(stops, [0.065, 0.025, 0.005, 0]);
+  assert.match(render(), /data-source="1"/);
+  assert.doesNotMatch(render(), /profile-intention-glow|profile-intention-image|brightness/);
+});
 
 test("GrowthLevelPreviewCard opts into exact 18px profile insets without changing other callers", () => {
   const profileHtml = render({ embedded: true, canonicalVerticalInsets: true });

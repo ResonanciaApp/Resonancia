@@ -6,15 +6,19 @@ import React from "react";
 import { renderToStaticMarkup } from "react-dom/server";
 import ts from "typescript";
 
-type NativeProps = { children?: React.ReactNode; testID?: string; style?: unknown };
+type NativeProps = { children?: React.ReactNode; testID?: string; style?: unknown; disabled?: boolean; accessibilityLabel?: string };
 const flattenStyle = (style: unknown): Record<string, unknown> => Array.isArray(style)
   ? Object.assign({}, ...style.map(flattenStyle))
   : style && typeof style === "object" ? style as Record<string, unknown> : {};
-const NativeView = ({ children, testID, style }: NativeProps) => {
+const NativeView = ({ children, testID, style, disabled, accessibilityLabel }: NativeProps) => {
   const resolved = flattenStyle(style);
   return React.createElement("div", {
     "data-testid": testID,
     "data-background": resolved.backgroundColor,
+    "data-disabled": disabled,
+    "data-label": testID === "profile-streak-history-info" ? accessibilityLabel : undefined,
+    "data-align-items": resolved.alignItems,
+    "data-justify-content": resolved.justifyContent,
     "data-padding-top": resolved.paddingTop,
     "data-padding-bottom": resolved.paddingBottom,
     "data-padding-horizontal": resolved.paddingHorizontal,
@@ -83,6 +87,20 @@ new Function("require", "module", "exports", compiled)((name: string) => {
 
 const render = (props: Record<string, unknown>) =>
   renderToStaticMarkup(React.createElement(componentModule.exports.ProgressMirrorSections, props));
+
+test("Profile history reserves a small right-aligned chevron for future streak information", () => {
+  const html = render({ separateStreakHistory: true, showCalendar: false });
+  const title = html.indexOf("Historial de rachas");
+  const info = html.indexOf('data-testid="profile-streak-history-info"');
+  const weekly = html.indexOf('data-testid="profile-streak-history-weekly"');
+  assert.ok(title >= 0 && title < info && info < weekly);
+  assert.match(html, /data-align-items="center" data-justify-content="space-between"/);
+  assert.match(html.slice(info, weekly), /data-disabled="true"/);
+  assert.match(html.slice(info, weekly), /data-align-items="flex-end"/);
+  assert.match(html.slice(info, weekly), /data-icon="chevron-right"/);
+  assert.match(html.slice(info, weekly), /Información de rachas, próximamente/);
+  assert.doesNotMatch(render({ separateStreakHistory: false }), /profile-streak-history-info/);
+});
 
 test("Perfil separates week-only progress from the titled streak history", () => {
   const html = render({

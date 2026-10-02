@@ -1,0 +1,172 @@
+import assert from "node:assert/strict";
+import { readFileSync } from "node:fs";
+import test from "node:test";
+import React from "react";
+import ts from "typescript";
+
+const source = (path: string) => readFileSync(new URL(path, import.meta.url), "utf8");
+const compile = (text: string) => ts.transpileModule(text, {
+  compilerOptions: { module: ts.ModuleKind.CommonJS, jsx: ts.JsxEmit.React, esModuleInterop: true },
+}).outputText;
+
+function harness(kind: "added" | "completed") {
+  class Value {
+    constructor(public value: number) {}
+    setValue(value: number) { this.value = value; }
+    stopAnimation() {}
+    interpolate() { return this; }
+  }
+  const widgetOpacity = new Value(1);
+  const started: any[] = [];
+  const timers = new Map<number, () => void>();
+  let timerId = 0;
+  let dismissals = 0;
+  let refIndex = 0;
+  let effectIndex = 0;
+  const refs: any[] = [];
+  const effects: any[] = [];
+  const pendingEffects: (() => void)[] = [];
+  const context: any = {
+    activeEvent: kind === "added" ? { id: 1, kind } : { id: 1, kind, previousCount: 1, nextCount: 2 },
+    hasPendingCompletion: false,
+    emotionWidgetOpacity: widgetOpacity,
+    dismissActiveEvent: () => { dismissals++; },
+  };
+  const Native = (props: any) => React.createElement("div", props, props.children);
+  const Animated = {
+    Value, View: Native,
+    timing(target: Value, config: any) {
+      const animation: any = { target, config, start: (callback: any) => {
+        animation.callback = callback;
+        started.push(animation);
+      } };
+      return animation;
+    },
+    parallel(children: any[]) {
+      const animation: any = { children, start: (callback: any) => {
+        animation.callback = callback;
+        started.push(animation);
+      } };
+      return animation;
+    },
+  };
+  const imports: any = {
+    react: {
+      ...React,
+      useRef(initial: unknown) { return refs[refIndex++] ??= { current: initial }; },
+      useState: (initial: unknown) => [initial, () => {}],
+      useEffect(effect: () => void, deps: unknown[]) {
+        const index = effectIndex++;
+        const previous = effects[index];
+        if (!previous || deps.some((value, i) => !Object.is(value, previous.deps[i]))) {
+          pendingEffects.push(() => {
+            previous?.cleanup?.();
+            effects[index] = { deps, cleanup: effect() };
+          });
+        }
+      },
+    },
+    "react-native": {
+      Animated, Easing: { out: (x: unknown) => x, in: (x: unknown) => x, inOut: (x: unknown) => x, cubic: "cubic", quad: "quad" },
+      Pressable: Native, Text: Native, View: Native,
+      StyleSheet: { create: (styles: unknown) => styles, absoluteFillObject: {}, hairlineWidth: 1 },
+    },
+    "@expo/vector-icons": { Feather: Native },
+    "@/components/SessionDurationBadge": { SessionBadgeGlass: Native },
+    "@/components/RoutineGradientFill": { RoutineGradientFill: Native },
+    "@/context/RoutineCompletionBannerContext": { useRoutineCompletionBanner: () => context },
+  };
+  const module: any = { exports: {} };
+  new Function("require", "module", "exports", "setTimeout", "clearTimeout", compile(source("../components/RoutineCompletionBanner.tsx")))(
+    (name: string) => { assert.ok(name in imports, `Missing mock ${name}`); return imports[name]; },
+    module, module.exports,
+    (callback: () => void) => { timers.set(++timerId, callback); return timerId; },
+    (id: number) => timers.delete(id),
+  );
+  const render = (visible = true) => {
+    refIndex = 0; effectIndex = 0;
+    module.exports.RoutineCompletionBanner({ bottom: 80, visible });
+    pendingEffects.splice(0).forEach(effect => effect());
+  };
+  const finish = (animation: any) => {
+    for (const child of animation.children ?? [animation]) child.target.setValue(child.config.toValue);
+    animation.callback?.({ finished: true });
+  };
+  return { context, widgetOpacity, started, render, finish,
+    dismissals: () => dismissals,
+    hold: () => { const callbacks = [...timers.values()]; timers.clear(); callbacks.forEach(callback => callback()); },
+  };
+}
+
+for (const kind of ["added", "completed"] as const) {
+  test(`${kind}: widget fade shares the banner's entry and exit animation groups`, () => {
+    const h = harness(kind);
+    h.render();
+    const entry = h.started[0];
+    const fade = entry.children.find((animation: any) => animation.target === h.widgetOpacity);
+    assert.equal(fade.config.toValue, 0);
+    assert.ok(entry.children.every((animation: any) => animation.config.duration === 380 && animation.config.useNativeDriver));
+    h.finish(entry);
+    assert.equal(h.widgetOpacity.value, 0);
+    if (kind === "completed") h.finish(h.started[1]); // count, then hold
+    assert.equal(h.widgetOpacity.value, 0);
+    h.hold();
+    const exit = h.started.at(-1);
+    assert.equal(exit.children.find((animation: any) => animation.target === h.widgetOpacity).config.toValue, 1);
+    assert.ok(exit.children.every((animation: any) => animation.config.duration === 320 && animation.config.useNativeDriver));
+    assert.equal(h.dismissals(), 0);
+    h.finish(exit);
+    assert.equal(h.widgetOpacity.value, 1);
+    assert.equal(h.dismissals(), 1);
+  });
+}
+
+test("queued completion interruption restores the widget in the same 160ms fade", () => {
+  const h = harness("completed");
+  h.render();
+  h.finish(h.started[0]);
+  h.context.hasPendingCompletion = true;
+  h.render();
+  const exit = h.started.at(-1);
+  assert.equal(exit.children.length, 2);
+  assert.ok(exit.children.every((animation: any) => animation.config.duration === 160));
+  h.finish(exit);
+  assert.equal(h.widgetOpacity.value, 1);
+  assert.equal(h.dismissals(), 1);
+});
+
+test("hiding the banner or clearing its event cannot leave the widget transparent", () => {
+  for (const clear of [false, true]) {
+    const h = harness("added");
+    h.render();
+    h.finish(h.started[0]);
+    if (clear) h.context.activeEvent = null;
+    h.render(clear);
+    assert.equal(h.widgetOpacity.value, 1);
+  }
+});
+
+test("emoji, plus, plus background and widget glass all share one native opacity wrapper", () => {
+  const home = source("../app/(tabs)/inicio8.tsx");
+  const ast = ts.createSourceFile("inicio8.tsx", home, ts.ScriptTarget.Latest, true, ts.ScriptKind.TSX);
+  const widget = ast.statements.find(node => ts.isFunctionDeclaration(node) && node.name?.text === "InicioEmotionWidget");
+  assert.ok(widget);
+  const opacity = { native: true };
+  const context: any = { activeEvent: null, emotionWidgetOpacity: opacity };
+  const Native = () => null;
+  const styles: any = { inicio2HeroEmotionWidget: { width: 67, height: 67, position: "absolute" } };
+  const build = new Function("React", "Animated", "Pressable", "BlurView", "Text", "View", "LinearGradient", "StyleSheet", "styles", "useRoutineCompletionBanner",
+    `${compile(widget.getText(ast))}\nreturn InicioEmotionWidget;`)(
+    React, { View: Native }, Native, Native, Native, Native, Native, { absoluteFill: {} }, styles, () => context,
+  );
+  const root = build({ bottom: 100, onOpenMoodPicker: () => {} });
+  assert.equal(root.props.style[1].opacity, opacity);
+  assert.equal(root.props.pointerEvents, "auto");
+  const [glass, emoji, plusBackground] = root.props.children.props.children;
+  assert.equal(glass.props.intensity, 38);
+  assert.equal(emoji.props.children, "😌");
+  assert.equal(plusBackground.props.children[1].props.children, "+");
+  assert.deepEqual(plusBackground.props.children[0].props.colors, ["#532FA8", "#372FA8"]);
+  context.activeEvent = { kind: "added" };
+  assert.equal(build({ bottom: 100 }).props.pointerEvents, "none");
+});

@@ -14,10 +14,12 @@ const COMPLETE_MIN_HEIGHT = 156;
 
 export function RoutineCompletionTransition({
   complete,
+  animateToPending = true,
   children,
   completedContent,
 }: {
   complete: boolean;
+  animateToPending?: boolean;
   children: React.ReactNode;
   completedContent: React.ReactNode;
 }) {
@@ -51,7 +53,7 @@ export function RoutineCompletionTransition({
   useEffect(() => {
     const generation = ++generationRef.current;
     cancelAnimation(progress);
-    if (!focusedRef.current) {
+    if (!focusedRef.current || (!complete && !animateToPending)) {
       progress.value = complete ? 1 : 0;
       setRetainPending(!complete);
     } else {
@@ -68,7 +70,7 @@ export function RoutineCompletionTransition({
       ++generationRef.current;
       cancelAnimation(progress);
     };
-  }, [complete, progress, releasePending]);
+  }, [animateToPending, complete, progress, releasePending]);
 
   const shellStyle = useAnimatedStyle(() => {
     if (pendingHeight.value <= 0 && progress.value === 0) return {};

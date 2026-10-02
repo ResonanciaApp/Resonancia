@@ -357,6 +357,16 @@ export function ProgressMirrorSections({
     >
       <View style={styles.streakTitleRow}>
         <Text style={[styles.streakTitle, { color: colors.foreground }]}>Historial de rachas</Text>
+        <Pressable
+          testID="profile-streak-history-info"
+          style={styles.streakHistoryInfo}
+          disabled
+          accessibilityRole="button"
+          accessibilityLabel="Información de rachas, próximamente"
+          accessibilityState={{ disabled: true }}
+        >
+          <Feather name="chevron-right" size={18} color={colors.foreground} />
+        </Pressable>
       </View>
       <View testID="profile-streak-history-weekly" style={[styles.statsValues, styles.statsValuesNoTitle]}>
         <View style={styles.statEntranceSlot}>
@@ -766,6 +776,7 @@ const styles = StyleSheet.create({
     fontSize: 16,
     fontWeight: "600",
   },
+  streakHistoryInfo: { width: 24, height: 24, alignItems: "flex-end", justifyContent: "center" },
   streakViewAll: {
     fontFamily: "Manrope",
     fontSize: 12,

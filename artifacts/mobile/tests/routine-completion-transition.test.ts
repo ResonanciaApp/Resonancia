@@ -12,7 +12,7 @@ const compiled = ts.transpileModule(source("../components/RoutineCompletionTrans
 }).outputText;
 type Animation = { target: number; duration: number; callback?: (finished: boolean) => void };
 
-function harness(initialComplete = false) {
+function harness(initialComplete = false, animateToPending = true) {
   const slots: any[] = [];
   let cursor = 0;
   let focused = true;
@@ -93,7 +93,7 @@ function harness(initialComplete = false) {
   const render = (complete = initialComplete, label = "Última tarea · Añadir actividad") => {
     cursor = 0;
     const element = module.exports.RoutineCompletionTransition({
-      complete, children: React.createElement("span", null, label),
+      complete, animateToPending, children: React.createElement("span", null, label),
       completedContent: React.createElement("span", null, "Rutina completa · ¡Hasta mañana!"),
     });
     const next = effects;
@@ -191,11 +191,34 @@ test("already completed routines reserve their final height without an initial b
   assert.equal((initial.props as any).children[1].props.style[1].opacity, 1);
 });
 
-test("routine integration freezes outgoing row height/order and keeps the 1500ms hold and day reset", () => {
+test("routine integration freezes outgoing rows, settles added tasks without a reverse transition, and keeps completion timing", () => {
   const routine = source("../components/MiRutinaSection.tsx");
   assert.match(routine, /if \(todayActivityIds\.length === 0\) return/);
   assert.match(routine, /if \(todayActivities\.length === 0\) return/);
   assert.match(routine, /COMPLETION_EXIT_DELAY = 1500/);
   assert.match(routine, /<RoutineCompletionTransition\s+key=\{dateKey\}\s+complete=\{showCompleteState\}/);
+  assert.match(routine, /animateToPending=\{false\}/);
   assert.doesNotMatch(routine, /completeFade|completeStateSlot/);
+});
+
+test("adding a task to a complete routine settles immediately without a 350ms height transition", () => {
+  const h = harness(true, false);
+  h.render(true);
+  const returned = h.render(false, "Nueva tarea · Añadir actividad");
+  assert.equal(h.animations.size, 0);
+  assert.match(renderToStaticMarkup(returned), /Nueva tarea/);
+  const settled = h.render(false);
+  assert.equal((settled.props as any).children[0].props.style.opacity, 1);
+  assert.equal((settled.props as any).children[1].props.style[1].opacity, 0);
+});
+
+test("disabling the return-to-pending animation preserves the last-task completion fade", () => {
+  const h = harness(false, false);
+  h.measure(h.render(false));
+  h.render(true);
+  assert.equal([...h.animations.values()][0].duration, 350);
+  h.advance(0.5);
+  const midway = h.render(true);
+  assert.equal((midway.props as any).children[0].props.style.opacity, 0.5);
+  assert.equal((midway.props as any).children[1].props.style[1].opacity, 0.5);
 });

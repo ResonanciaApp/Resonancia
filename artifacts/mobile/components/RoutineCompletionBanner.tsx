@@ -28,7 +28,7 @@ export function RoutineCompletionBanner({
   enteredOffset = 0,
   onAddedPress,
 }: Props) {
-  const { activeEvent, hasPendingCompletion, dismissActiveEvent } =
+  const { activeEvent, hasPendingCompletion, dismissActiveEvent, emotionWidgetOpacity } =
     useRoutineCompletionBanner();
   const translateY = useRef(new Animated.Value(entryDistance)).current;
   const opacity = useRef(new Animated.Value(1)).current;
@@ -54,7 +54,11 @@ export function RoutineCompletionBanner({
   }, [activeEvent, dismissActiveEvent, visible]);
 
   useEffect(() => {
-    if (!activeEvent || !visible) return;
+    if (!activeEvent || !visible) {
+      emotionWidgetOpacity.stopAnimation();
+      emotionWidgetOpacity.setValue(1);
+      return;
+    }
 
     if (holdTimerRef.current) {
       clearTimeout(holdTimerRef.current);
@@ -66,24 +70,39 @@ export function RoutineCompletionBanner({
     opacity.stopAnimation();
     countProgress.stopAnimation();
     waveProgress.stopAnimation();
+    emotionWidgetOpacity.stopAnimation();
     translateY.setValue(entryDistance);
     opacity.setValue(1);
     countProgress.setValue(0);
     waveProgress.setValue(0);
     setSubtitleCount(activeEvent.kind === "completed" ? activeEvent.previousCount : 0);
 
-    Animated.timing(translateY, {
-      toValue: enteredOffset,
-      duration: ENTRY_DURATION,
-      easing: Easing.out(Easing.cubic),
-      useNativeDriver: true,
-    }).start(({ finished: entered }) => {
+    Animated.parallel([
+      Animated.timing(translateY, {
+        toValue: enteredOffset,
+        duration: ENTRY_DURATION,
+        easing: Easing.out(Easing.cubic),
+        useNativeDriver: true,
+      }),
+      Animated.timing(emotionWidgetOpacity, {
+        toValue: 0,
+        duration: ENTRY_DURATION,
+        easing: Easing.out(Easing.cubic),
+        useNativeDriver: true,
+      }),
+    ]).start(({ finished: entered }) => {
       if (!entered) return;
       if (activeEvent.kind === "added") {
         committedEventIdRef.current = activeEvent.id;
         holdTimerRef.current = setTimeout(() => {
           holdTimerRef.current = null;
           Animated.parallel([
+            Animated.timing(emotionWidgetOpacity, {
+              toValue: 1,
+              duration: EXIT_DURATION,
+              easing: Easing.out(Easing.quad),
+              useNativeDriver: true,
+            }),
             Animated.timing(translateY, {
               toValue: entryDistance,
               duration: EXIT_DURATION,
@@ -124,6 +143,12 @@ export function RoutineCompletionBanner({
         holdTimerRef.current = setTimeout(() => {
           holdTimerRef.current = null;
           Animated.parallel([
+            Animated.timing(emotionWidgetOpacity, {
+              toValue: 1,
+              duration: EXIT_DURATION,
+              easing: Easing.out(Easing.quad),
+              useNativeDriver: true,
+            }),
             Animated.timing(translateY, {
               toValue: entryDistance,
               duration: EXIT_DURATION,
@@ -156,6 +181,7 @@ export function RoutineCompletionBanner({
       opacity.stopAnimation();
       countProgress.stopAnimation();
       waveProgress.stopAnimation();
+      emotionWidgetOpacity.stopAnimation();
     };
   }, [
     activeEvent,
@@ -163,6 +189,7 @@ export function RoutineCompletionBanner({
     dismissActiveEvent,
     entryDistance,
     enteredOffset,
+    emotionWidgetOpacity,
     opacity,
     translateY,
     visible,
@@ -186,12 +213,21 @@ export function RoutineCompletionBanner({
     opacity.stopAnimation();
     countProgress.stopAnimation();
     waveProgress.stopAnimation();
-    Animated.timing(opacity, {
-      toValue: 0,
-      duration: INTERRUPT_EXIT_DURATION,
-      easing: Easing.out(Easing.quad),
-      useNativeDriver: true,
-    }).start(({ finished }) => {
+    emotionWidgetOpacity.stopAnimation();
+    Animated.parallel([
+      Animated.timing(opacity, {
+        toValue: 0,
+        duration: INTERRUPT_EXIT_DURATION,
+        easing: Easing.out(Easing.quad),
+        useNativeDriver: true,
+      }),
+      Animated.timing(emotionWidgetOpacity, {
+        toValue: 1,
+        duration: INTERRUPT_EXIT_DURATION,
+        easing: Easing.out(Easing.quad),
+        useNativeDriver: true,
+      }),
+    ]).start(({ finished }) => {
       if (!finished || startedEventIdRef.current !== activeEvent.id) return;
       startedEventIdRef.current = null;
       committedEventIdRef.current = null;
@@ -201,6 +237,7 @@ export function RoutineCompletionBanner({
     activeEvent,
     countProgress,
     dismissActiveEvent,
+    emotionWidgetOpacity,
     hasPendingCompletion,
     opacity,
     translateY,

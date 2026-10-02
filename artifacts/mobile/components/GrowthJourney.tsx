@@ -1,7 +1,8 @@
 import { Feather, MaterialCommunityIcons } from "@expo/vector-icons";
 import { Asset } from "expo-asset";
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useId, useState } from "react";
 import { Image, Platform, Pressable, StyleSheet, Text, View } from "react-native";
+import Svg, { Circle, Defs, RadialGradient, Stop } from "react-native-svg";
 
 import { MEMBERSHIP_AURORA, POSITIONED_DAY_GRADIENT } from "@/constants/colors";
 import { CinematicFadeSlide } from "@/components/CinematicFadeSlide";
@@ -9,6 +10,7 @@ import { ascentLevels, growthLevels, type GrowthLevel } from "@/data/growthLevel
 import { useColors } from "@/hooks/useColors";
 
 export const GROWTH_ROW_HEIGHT = 205;
+const PROFILE_INTENTION_IMAGE = require("../assets/images/growth/00-intencion-profile.png");
 
 const GROWTH_COLORS = {
   line: POSITIONED_DAY_GRADIENT[0],
@@ -51,23 +53,28 @@ function loadGrowthImage(module: number): Promise<string> {
   return load;
 }
 
-function GrowthLevelImage({ level }: { level: GrowthLevel }) {
-  const [localUri, setLocalUri] = useState(() => growthImageUris.get(level.image) ?? null);
+function GrowthLevelImage({ level, profilePreview = false }: { level: GrowthLevel; profilePreview?: boolean }) {
+  const imageModule = profilePreview ? PROFILE_INTENTION_IMAGE : level.image;
+  const [localUri, setLocalUri] = useState(() => growthImageUris.get(imageModule) ?? null);
 
   useEffect(() => {
     if (Platform.OS === "web") return;
     let mounted = true;
-    loadGrowthImage(level.image)
+    loadGrowthImage(imageModule)
       .then((uri) => {
         if (mounted) setLocalUri(uri);
       })
       .catch((error) => console.warn(`[GrowthJourney] No se pudo descargar ${level.id}: ${String(error)}`));
     return () => { mounted = false; };
-  }, [level.id, level.image]);
+  }, [level.id, imageModule]);
 
-  const source = Platform.OS === "web" ? level.image : localUri ? { uri: localUri } : null;
+  const source = Platform.OS === "web" ? imageModule : localUri ? { uri: localUri } : null;
   return (
-    <View style={styles.imageWrap} importantForAccessibility="no">
+    <View
+      testID={profilePreview ? "profile-intention-image" : undefined}
+      style={styles.imageWrap}
+      importantForAccessibility="no"
+    >
       {source && (
         <Image
           source={source}
@@ -92,6 +99,7 @@ export function GrowthLevelPreviewCard({
   canonicalVerticalInsets?: boolean;
 }) {
   const colors = useColors();
+  const glowId = `intention-glow-${useId().replace(/:/g, "")}`;
   const level = growthLevels[0];
   const dayLabel = level.startDay === level.endDay
     ? `${level.startDay} días`
@@ -158,7 +166,22 @@ export function GrowthLevelPreviewCard({
       testID="growth-level-zero-preview"
     >
       <PreviewContentEntrance replayKey="intention-art" delay={420} style={styles.previewArt}>
-        <GrowthLevelImage level={level} />
+        {canonicalVerticalInsets && (
+          <View pointerEvents="none" style={styles.intentionGlow} importantForAccessibility="no">
+            <Svg testID="profile-intention-glow" width="100%" height="100%" viewBox="0 0 160 160">
+              <Defs>
+                <RadialGradient id={glowId} cx="50%" cy="50%" r="50%">
+                  <Stop offset="0%" stopColor={GROWTH_COLORS.current} stopOpacity={0.065} />
+                  <Stop offset="45%" stopColor={GROWTH_COLORS.current} stopOpacity={0.025} />
+                  <Stop offset="75%" stopColor={GROWTH_COLORS.current} stopOpacity={0.005} />
+                  <Stop offset="100%" stopColor={GROWTH_COLORS.current} stopOpacity={0} />
+                </RadialGradient>
+              </Defs>
+              <Circle cx={80} cy={80} r={80} fill={`url(#${glowId})`} />
+            </Svg>
+          </View>
+        )}
+        <GrowthLevelImage level={level} profilePreview={canonicalVerticalInsets} />
       </PreviewContentEntrance>
       <View
         style={[
@@ -361,6 +384,7 @@ const styles = StyleSheet.create({
     gap: 12,
   },
   previewArt: { width: 100, height: 100 },
+  intentionGlow: { position: "absolute", width: 130, height: 130, left: -15, top: -15 },
   embeddedPreviewCard: { marginHorizontal: 0 },
   canonicalPreviewVerticalInsets: { paddingTop: 18, paddingBottom: 18, alignItems: "flex-start" },
   canonicalPreviewCopy: { minHeight: 100, alignSelf: "stretch", justifyContent: "space-between" },
