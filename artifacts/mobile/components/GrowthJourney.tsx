@@ -247,7 +247,7 @@ function GrowthRow({
     <View
       style={styles.row}
       accessible
-      accessibilityLabel={`${level.name}, ${dayLabel} de práctica, ${status === "current" ? "etapa actual" : "por desbloquear"}. ${level.story}${level.id === "semilla" ? " Regalitos sorpresa, por desbloquear." : ""}`}
+      accessibilityLabel={`${level.name}, ${dayLabel} de práctica, ${status === "current" ? "etapa actual" : "por desbloquear"}. ${level.story}${level.id === "semilla" ? " Cofre por desbloquear." : ""}`}
     >
       {hasNext && (
         <View style={styles.lineBase} pointerEvents="none" />
@@ -305,9 +305,6 @@ function GrowthRow({
               accessibilityElementsHidden
               importantForAccessibility="no"
             />
-            <Text style={[styles.rewardText, { color: GROWTH_COLORS.muted }]}>
-              Regalitos sorpresa
-            </Text>
           </View>
         )}
       </View>
@@ -492,7 +489,6 @@ const styles = StyleSheet.create({
   lockedCopy: { opacity: 0.55 },
   reward: { flexDirection: "row", alignItems: "center", gap: 8, marginTop: 12 },
   rewardChest: { width: 22, height: 22, opacity: 0.8 },
-  rewardText: { flex: 1, fontFamily: "Manrope", fontSize: 11, lineHeight: 16 },
   name: { fontFamily: "Manrope", fontSize: 15, fontWeight: "700", lineHeight: 20, marginBottom: 6 },
   dayPill: {
     alignSelf: "flex-start",

@@ -108,7 +108,7 @@ const render = (props: Record<string, unknown> = {}) => renderToStaticMarkup(
   React.createElement(componentModule.exports.GrowthLevelPreviewCard, { onPress: () => {}, ...props }),
 );
 
-test("Semilla displays the supplied dimmed chest and disabled gift copy below its story, with no reward on other levels", () => {
+test("Semilla displays only the supplied dimmed disabled chest below its story, with no reward on other levels", () => {
   const semilla = {
     id: "semilla", name: "Semilla", startDay: 1, endDay: 7,
     image: 1, story: "Tu primer paso abre un espacio para crecer.",
@@ -128,8 +128,7 @@ test("Semilla displays the supplied dimmed chest and disabled gift copy below it
   assert.match(chest, /data-height="22"/);
   assert.match(html, /data-opacity="0.55"/);
   assert.ok(html.indexOf(`>${semilla.story}</div>`) < html.indexOf('data-testid="semilla-reward"'));
-  assert.ok(html.indexOf('data-testid="semilla-reward-chest"') < html.indexOf(">Regalitos sorpresa</div>"));
-  assert.doesNotMatch(html, /Desbloquea tu cofre de regalos/);
+  assert.doesNotMatch(html, /Regalitos sorpresa|Desbloquea tu cofre de regalos/);
   assert.doesNotMatch(html, /data-accessibility-role="button"/);
   for (const id of ["intencion", "brote", "ascenso-inicio"]) {
     const other = renderToStaticMarkup(React.createElement(GrowthRow, {
