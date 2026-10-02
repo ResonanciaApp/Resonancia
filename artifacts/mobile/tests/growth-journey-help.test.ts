@@ -117,7 +117,7 @@ function uiHarness() {
   };
 }
 
-test("Tu camino keeps its controls, lowers Primera etapa 60px and centers the exact intro above it", () => {
+test("Tu camino removes the intro while preserving controls and the 60px Primera etapa offset", () => {
   const h = uiHarness();
   const { GrowthJourneySheet } = load("../components/GrowthJourneySheet.tsx", h.imports);
   let closes = 0;
@@ -131,14 +131,11 @@ test("Tu camino keeps its controls, lowers Primera etapa 60px and centers the ex
   assert.match(html, /data-color="#F9F9F9">\?/);
   assert.equal(h.presses.get("growth-journey-help").style.backgroundColor, "rgba(0,0,0,0.28)");
   assert.doesNotMatch(html, /trending-up|Cada día de racha|descriptionDivider/);
-  const intro = "No florecemos para convertirnos en alguien diferente, sino para revelar lo que siempre estuvo allí. En cada etapa del camino, la vida nos invita a abrirnos un poco más, hasta descubrir que la verdadera transformación ocurre cuando comenzamos a habitar plenamente nuestro propio ser";
-  assert.ok(html.includes(intro));
-  assert.ok(html.indexOf("Tu camino") < html.indexOf(intro));
-  assert.ok(html.indexOf(intro) < html.indexOf("PRIMERA ETAPA"));
-  assert.match(html, /data-testid="growth-journey-intro"[^>]*data-min-height="126" data-justify-content="center"/); // prior 66px + 60px
-  assert.match(html, /data-text-align="center"/);
+  assert.doesNotMatch(html, /No florecemos|growth-journey-intro/);
+  assert.ok(html.indexOf("Tu camino") < html.indexOf("PRIMERA ETAPA"));
+  assert.match(html, /data-padding-top="126"/); // prior 66px + 60px
   h.help.onDescriptionLayout(46);
-  assert.match(render(), /data-min-height="103"/); // prior 43px + 60px
+  assert.match(render(), /data-padding-top="103"/); // prior 43px + 60px
   h.presses.get("growth-journey-help").onPress();
   render();
   assert.equal(h.help.visible, true);
