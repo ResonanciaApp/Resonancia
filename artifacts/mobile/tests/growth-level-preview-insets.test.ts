@@ -45,6 +45,8 @@ const Native = ({ accessibilityLabel, accessibilityRole, children, onPress, styl
     "data-padding-vertical": resolvedStyle.paddingVertical,
     "data-direction": resolvedStyle.flexDirection,
     "data-align": resolvedStyle.alignItems,
+    "data-gap": resolvedStyle.gap,
+    "data-wrap": resolvedStyle.flexWrap,
     "data-accessibility-role": accessibilityRole,
     "data-accessibility-label": accessibilityLabel,
     "data-height": resolvedStyle.height,
@@ -108,7 +110,7 @@ const render = (props: Record<string, unknown> = {}) => renderToStaticMarkup(
   React.createElement(componentModule.exports.GrowthLevelPreviewCard, { onPress: () => {}, ...props }),
 );
 
-test("Semilla retains only the supplied dimmed disabled chest below its story", () => {
+test("Semilla replaces its chest with a same-size dimmed closed lock and disabled avatar-unlock copy", () => {
   const semilla = {
     id: "semilla", name: "Semilla", startDay: 1, endDay: 7,
     image: 1, story: "Tu primer paso abre un espacio para crecer.",
@@ -121,13 +123,15 @@ test("Semilla retains only the supplied dimmed disabled chest below its story", 
   assert.match(reward, /data-direction="row"/);
   assert.match(reward, /data-pointer-events="none"/);
   assert.match(reward, /data-disabled="true"/);
-  const chest = html.match(/<div[^>]*data-testid="semilla-reward-chest"[^>]*>/)?.[0];
-  assert.ok(chest);
-  assert.match(chest, /data-source="3"/);
-  assert.match(chest, /data-opacity="0.8"/);
-  assert.match(chest, /data-height="22"/);
+  const lock = html.match(/<div[^>]*data-testid="semilla-reward-lock"[^>]*>/)?.[0];
+  assert.ok(lock);
+  assert.match(lock, /data-icon="lock"/);
+  assert.match(lock, /data-opacity="0.8"/);
+  assert.match(lock, /data-height="22"/);
+  assert.doesNotMatch(html, /semilla-reward-chest|data-source="3"/);
   assert.match(html, /data-opacity="0.55"/);
   assert.ok(html.indexOf(`>${semilla.story}</div>`) < html.indexOf('data-testid="semilla-reward"'));
+  assert.ok(html.indexOf('data-testid="semilla-reward-lock"') < html.indexOf(">Desbloquea 50 avatares nuevos</div>"));
   assert.doesNotMatch(html, /Regalitos sorpresa|Desbloquea tu cofre de regalos/);
   assert.doesNotMatch(html, /data-accessibility-role="button"/);
   for (const id of ["intencion", "brote", "desarrollo", "enraizamiento", "floracion", "ascenso-inicio"]) {
@@ -180,8 +184,8 @@ test("GrowthLevelPreviewCard reduces the profile background by 2px at each edge 
   const profileContent = profileHtml.slice(profileHtml.indexOf(">") + 1);
   assert.ok(profileContent.indexOf("0 días") < profileContent.indexOf("Intención"));
   assert.ok(profileContent.indexOf("Intención") < profileContent.indexOf("Una práctica que comienza hoy."));
-  assert.match(profileHtml, /data-min-height="100" data-self-align="stretch" data-justify-content="space-between"/);
-  assert.doesNotMatch(profileHtml, /data-height="100"[^>]*data-justify-content="space-between"/);
+  assert.match(profileHtml, /data-min-height="100"[^>]*data-justify-content="center"/);
+  assert.doesNotMatch(profileHtml, /data-justify-content="space-between"|data-self-align="stretch"/);
   assert.match(profileHtml, /data-margin-bottom="0"/);
 
   const defaultHtml = render();
@@ -191,24 +195,33 @@ test("GrowthLevelPreviewCard reduces the profile background by 2px at each edge 
   assert.doesNotMatch(defaultHtml, /data-min-height="100" data-self-align="stretch"/);
 });
 
-test("Perfil enlarges Intención by 3 points, lowers its pill 2px and raises its description 2px", () => {
+test("Perfil retains its larger Intención title and aligns the pill and description without vertical offsets", () => {
   const html = render({ embedded: true, canonicalVerticalInsets: true });
   assert.match(html, /<div[^>]*data-font-size="18"[^>]*data-line-height="23"[^>]*>Intención<\/div>/);
-  assert.match(html, /data-transform="\[\{&quot;translateY&quot;:2\}\]"/);
-  assert.match(html, /<div[^>]*data-transform="\[\{&quot;translateY&quot;:-2\}\]"[^>]*>Una práctica que comienza hoy\.<\/div>/);
+  assert.doesNotMatch(html, /data-transform=/);
   const defaultHtml = render();
   assert.match(defaultHtml, /data-font-size="15"[^>]*data-line-height="20"/);
   assert.doesNotMatch(defaultHtml, /data-transform=/);
 });
 
-test("Perfil removes both inner bottom margins for equal gaps and places its single chevron in the title row", () => {
+test("Perfil puts the pill to the left of Intención, centers the text beside its image, and aligns a single trailing chevron", () => {
   const html = render({ embedded: true, canonicalVerticalInsets: true });
   assert.match(html, /data-testid="profile-intention-title-row"[^>]*data-direction="row" data-align="center"/);
   assert.equal((html.match(/data-icon="chevron-right"/g) ?? []).length, 1);
   assert.equal((html.match(/data-margin-bottom="0"/g) ?? []).length, 2);
   const rowAt = html.indexOf('data-testid="profile-intention-title-row"');
   const chevronAt = html.indexOf('data-icon="chevron-right"');
-  assert.ok(chevronAt > rowAt && chevronAt < html.indexOf("Una práctica que comienza hoy."));
+  const pillAt = html.lastIndexOf("0 días");
+  const nameAt = html.indexOf(">Intención</div>", rowAt);
+  const storyAt = html.indexOf(">Una práctica que comienza hoy.</div>");
+  assert.ok(rowAt < pillAt && pillAt < nameAt && nameAt < storyAt && storyAt < chevronAt);
+  const card = html.match(/<div[^>]*data-testid="growth-level-zero-preview"[^>]*>/)?.[0];
+  assert.ok(card);
+  assert.match(card, /data-direction="row" data-align="center"/);
+  const titleRow = html.match(/<div[^>]*data-testid="profile-intention-title-row"[^>]*>/)?.[0];
+  assert.ok(titleRow);
+  assert.match(titleRow, /data-gap="8" data-wrap="wrap"/);
+  assert.match(html, /data-testid="profile-intention-chevron"/);
   assert.doesNotMatch(render(), /profile-intention-title-row/);
 });
 

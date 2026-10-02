@@ -137,19 +137,12 @@ export function GrowthLevelPreviewCard({
   );
   const name = (
     <PreviewContentEntrance key="intention-name" replayKey="intention-name" delay={660}>
-      {canonicalVerticalInsets ? (
-        <View testID="profile-intention-title-row" style={styles.canonicalPreviewTitleRow}>
-          {nameText}
-          <PreviewContentEntrance replayKey="intention-chevron" delay={810}>
-            <Feather name="chevron-right" size={18} color={colors.foreground} />
-          </PreviewContentEntrance>
-        </View>
-      ) : nameText}
+      {nameText}
     </PreviewContentEntrance>
   );
   const story = (
     <PreviewContentEntrance key="intention-story" replayKey="intention-story" delay={810}>
-      <Text style={[styles.previewStory, canonicalVerticalInsets && styles.canonicalPreviewStory, { color: colors.mutedForeground }]}>
+      <Text style={[styles.previewStory, { color: colors.mutedForeground }]}>
         {level.story}
       </Text>
     </PreviewContentEntrance>
@@ -191,15 +184,27 @@ export function GrowthLevelPreviewCard({
           canonicalVerticalInsets && styles.canonicalPreviewCopy,
         ]}
       >
-        {dayPill}
-        {name}
+        {canonicalVerticalInsets ? (
+          <View testID="profile-intention-title-row" style={styles.canonicalPreviewTitleRow}>
+            {dayPill}
+            {name}
+          </View>
+        ) : (
+          <>
+            {dayPill}
+            {name}
+          </>
+        )}
         {story}
       </View>
-      {!canonicalVerticalInsets && (
-        <PreviewContentEntrance replayKey="intention-chevron" delay={810}>
-          <Feather name="chevron-right" size={18} color={colors.foreground} />
-        </PreviewContentEntrance>
-      )}
+      <PreviewContentEntrance replayKey="intention-chevron" delay={810}>
+        <Feather
+          testID={canonicalVerticalInsets ? "profile-intention-chevron" : undefined}
+          name="chevron-right"
+          size={18}
+          color={colors.foreground}
+        />
+      </PreviewContentEntrance>
     </Pressable>
   );
 }
@@ -248,7 +253,7 @@ function GrowthRow({
     <View
       style={styles.row}
       accessible
-      accessibilityLabel={`${level.name}, ${dayLabel} de práctica, ${status === "current" ? "etapa actual" : "por desbloquear"}. ${level.story}${REWARD_LEVEL_IDS.has(level.id) ? " Cofre por desbloquear." : ""}`}
+      accessibilityLabel={`${level.name}, ${dayLabel} de práctica, ${status === "current" ? "etapa actual" : "por desbloquear"}. ${level.story}${level.id === "semilla" ? " Desbloquea 50 avatares nuevos, por desbloquear." : REWARD_LEVEL_IDS.has(level.id) ? " Cofre por desbloquear." : ""}`}
     >
       {hasNext && (
         <View style={styles.lineBase} pointerEvents="none" />
@@ -298,14 +303,31 @@ function GrowthRow({
             pointerEvents="none"
             accessibilityState={{ disabled: true }}
           >
-            <Image
-              testID={`${level.id}-reward-chest`}
-              source={GROWTH_REWARD_CHEST}
-              resizeMode="contain"
-              style={styles.rewardChest}
-              accessibilityElementsHidden
-              importantForAccessibility="no"
-            />
+            {level.id === "semilla" ? (
+              <>
+                <Feather
+                  testID="semilla-reward-lock"
+                  name="lock"
+                  size={22}
+                  color={GROWTH_COLORS.muted}
+                  style={styles.rewardChest}
+                  accessibilityElementsHidden
+                  importantForAccessibility="no"
+                />
+                <Text style={[styles.rewardText, { color: GROWTH_COLORS.muted }]}>
+                  Desbloquea 50 avatares nuevos
+                </Text>
+              </>
+            ) : (
+              <Image
+                testID={`${level.id}-reward-chest`}
+                source={GROWTH_REWARD_CHEST}
+                resizeMode="contain"
+                style={styles.rewardChest}
+                accessibilityElementsHidden
+                importantForAccessibility="no"
+              />
+            )}
           </View>
         )}
       </View>
@@ -405,12 +427,11 @@ const styles = StyleSheet.create({
   previewArt: { width: 100, height: 100 },
   intentionGlow: { position: "absolute", width: 130, height: 130, left: -15, top: -15 },
   embeddedPreviewCard: { marginHorizontal: 0 },
-  canonicalPreviewVerticalInsets: { paddingTop: 16, paddingBottom: 16, marginVertical: 2, alignItems: "flex-start" },
-  canonicalPreviewCopy: { minHeight: 100, alignSelf: "stretch", justifyContent: "space-between" },
-  canonicalPreviewName: { flex: 1, marginBottom: 0, fontSize: 18, lineHeight: 23 },
-  canonicalPreviewPill: { marginBottom: 0, flexDirection: "row", alignItems: "center", gap: 4, transform: [{ translateY: 2 }] },
-  canonicalPreviewStory: { transform: [{ translateY: -2 }] },
-  canonicalPreviewTitleRow: { flexDirection: "row", alignItems: "center", gap: 12 },
+  canonicalPreviewVerticalInsets: { paddingTop: 16, paddingBottom: 16, marginVertical: 2, alignItems: "center" },
+  canonicalPreviewCopy: { minHeight: 100, justifyContent: "center", gap: 6 },
+  canonicalPreviewName: { marginBottom: 0, fontSize: 18, lineHeight: 23 },
+  canonicalPreviewPill: { marginBottom: 0, alignSelf: "center", flexDirection: "row", alignItems: "center", gap: 4 },
+  canonicalPreviewTitleRow: { flexDirection: "row", alignItems: "center", flexWrap: "wrap", gap: 8 },
   previewCopy: { flex: 1, minWidth: 0 },
   previewStory: { fontFamily: "Manrope", fontSize: 11, lineHeight: 16 },
   section: {
@@ -490,6 +511,7 @@ const styles = StyleSheet.create({
   lockedCopy: { opacity: 0.55 },
   reward: { flexDirection: "row", alignItems: "center", gap: 8, marginTop: 12 },
   rewardChest: { width: 22, height: 22, opacity: 0.8 },
+  rewardText: { flex: 1, fontFamily: "Manrope", fontSize: 11, lineHeight: 16 },
   name: { fontFamily: "Manrope", fontSize: 15, fontWeight: "700", lineHeight: 20, marginBottom: 6 },
   dayPill: {
     alignSelf: "flex-start",
