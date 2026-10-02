@@ -418,7 +418,10 @@ test("Profile wrapper forwards composer inputs/ref, uses the profile heading and
   }, forwardedHandle) as React.ReactElement<Record<string, any>>;
   const element = wrapper.props.children as React.ReactElement<Record<string, any>>;
 
-  assert.deepEqual(wrapper.props.style, [{ marginTop: 16, marginBottom: 21 }, suppliedStyle]);
+  assert.deepEqual(wrapper.props.style, [{ marginTop: 0, marginBottom: 21 }, suppliedStyle]);
+  const profileSource = source("../components/ProfileScreenBase.tsx");
+  assert.match(profileSource, /const PROFILE_SECTION_GAP = 21;/);
+  assert.match(profileSource, /profileProgressSection:\s*\{[^}]*marginBottom: PROFILE_SECTION_GAP/);
   assert.equal(element.props.scrollRef, scrollRef);
   assert.equal(element.props.getScrollY, getScrollY);
   assert.equal(element.props.onComposingChange, onComposingChange);
