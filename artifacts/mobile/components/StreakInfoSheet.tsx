@@ -55,19 +55,19 @@ const STREAK_DEFINITIONS: { id: IconKind; title: string; description: string }[]
 const FOOTNOTE = "Un día cuenta como activo al escuchar al menos 3 minutos o completar una sesión.";
 
 function StreakIcon({ kind }: { kind: IconKind }) {
-  if (kind === "current") return <MaterialCommunityIcons name="spa" size={26} color={WHITE} />;
+  if (kind === "current") return <MaterialCommunityIcons name="spa" size={30} color={WHITE} />;
   if (kind === "accumulated") return (
-    <MaskedView maskElement={<MaterialCommunityIcons name="spa" size={26} color={WHITE} />}>
+    <MaskedView maskElement={<MaterialCommunityIcons name="spa" size={30} color={WHITE} />}>
       <MaterialCommunityIcons
         name="spa"
-        size={26}
+        size={30}
         color={GOLD}
         style={styles.goldenLotus}
       />
     </MaskedView>
   );
-  if (kind === "longest") return <MaterialCommunityIcons name="image-filter-hdr" size={26} color={WHITE} />;
-  return <Feather name="check-circle" size={24} color={WHITE} />;
+  if (kind === "longest") return <MaterialCommunityIcons name="image-filter-hdr" size={30} color={WHITE} />;
+  return <Feather name="check-circle" size={28} color={WHITE} />;
 }
 
 export function StreakInfoSheet({

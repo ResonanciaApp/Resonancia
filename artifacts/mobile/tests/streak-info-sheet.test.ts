@@ -21,6 +21,7 @@ type Props = {
   end?: { x: number; y: number };
   name?: string;
   color?: string;
+  size?: number;
   replayKey?: string;
   source?: unknown;
   contentContainerStyle?: unknown;
@@ -48,7 +49,7 @@ function harness({
   let closeButton: (() => void) | undefined;
   let closes = 0;
   const nodes = new Map<string, Props>();
-  const Native = ({ children, style, testID, accessibilityLabel, accessibilityRole, onPress, name, color, replayKey, contentContainerStyle, bounces, alwaysBounceVertical, overScrollMode }: Props) => {
+  const Native = ({ children, style, testID, accessibilityLabel, accessibilityRole, onPress, name, color, size, replayKey, contentContainerStyle, bounces, alwaysBounceVertical, overScrollMode }: Props) => {
     if (testID) nodes.set(testID, { style, contentContainerStyle, bounces, alwaysBounceVertical, overScrollMode });
     if (testID === "streak-info-close") closeButton = onPress;
     const resolved = flatten(style);
@@ -58,6 +59,7 @@ function harness({
       "data-role": accessibilityRole,
       "data-icon": name,
       "data-color": color,
+      "data-size": size,
       "data-background": resolved.backgroundColor,
       "data-height": resolved.height,
       "data-padding-top": resolved.paddingTop,
@@ -171,10 +173,10 @@ test("sheet uses all gradient colors, locations and direction from every theme a
     if (theme.gradientLocations) assert.ok(html.includes(`data-gradient-locations="${theme.gradientLocations.join("|")}"`));
     if (theme.gradientStart) assert.ok(html.includes(`data-gradient-start="${JSON.stringify(theme.gradientStart).replace(/"/g, "&quot;")}"`));
     if (theme.gradientEnd) assert.ok(html.includes(`data-gradient-end="${JSON.stringify(theme.gradientEnd).replace(/"/g, "&quot;")}"`));
-    assert.match(html, /data-icon="spa" data-color="#F9F9F9"/);
-    assert.ok(html.includes(`data-icon="spa" data-color="${MEMBERSHIP_AURORA.premium.accent}"`));
-    assert.match(html, /data-icon="image-filter-hdr" data-color="#F9F9F9"/);
-    assert.match(html, /data-icon="check-circle" data-color="#F9F9F9"/);
+    assert.match(html, /data-icon="spa" data-color="#F9F9F9" data-size="30"/);
+    assert.ok(html.includes(`data-icon="spa" data-color="${MEMBERSHIP_AURORA.premium.accent}" data-size="30"`));
+    assert.match(html, /data-icon="image-filter-hdr" data-color="#F9F9F9" data-size="30"/);
+    assert.match(html, /data-icon="check-circle" data-color="#F9F9F9" data-size="28"/);
   }
 });
 
