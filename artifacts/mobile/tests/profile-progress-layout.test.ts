@@ -307,10 +307,10 @@ test("Perfil aligns weekly circles with the section inset while Tu progreso keep
   }
 });
 
-test("Perfil uses the standard section gap after the user card without legacy offsets", () => {
+test("Perfil preserves the standard section gap and the requested extra 6px before its weekly section", () => {
   const profileSource = readFileSync(new URL("../components/ProfileScreenBase.tsx", import.meta.url), "utf8");
   assert.doesNotMatch(profileSource, /profileIntentionDescription|Todo gran cambio comienza con el primer paso|Bienvenido a Resonancia/);
-  assert.match(profileSource, /profileProgressSection:\s*\{\s*marginTop: 0,/);
+  assert.match(profileSource, /profileProgressSection:\s*\{\s*marginTop: 6,/);
   assert.match(profileSource, /const PROFILE_SECTION_GAP = 21;/);
   const cardStyle = profileSource.match(/  profileCard: \{([\s\S]*?)\n  \},/)?.[1] ?? "";
   assert.match(cardStyle, /marginBottom: PROFILE_SECTION_GAP/);

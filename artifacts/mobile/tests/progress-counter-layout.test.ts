@@ -10,9 +10,10 @@ const source = readFileSync(new URL("../app/progreso.tsx", import.meta.url), "ut
 const flatten = (style: any): Record<string, any> =>
   Array.isArray(style) ? Object.assign({}, ...style.map(flatten)) : style ?? {};
 
-function renderProgress(days: number, reducedMotion: boolean) {
-  let stateIndex = 0;
+function renderProgress(days: number, reducedMotion: boolean, entranceComplete = true) {
+  let secondaryVisible = reducedMotion || entranceComplete;
   let mirrorProps: any;
+  const entrances = new Map<string, any>();
   const Native = (props: any) => {
     const style = flatten(props.style);
     return React.createElement("div", {
@@ -48,8 +49,7 @@ function renderProgress(days: number, reducedMotion: boolean) {
   const imports: Record<string, any> = {
     react: {
       ...React,
-      // Render the completed entrance phase, preserving both digit variants.
-      useState: (initial: any) => [stateIndex++ < 3 ? true : initial, () => {}],
+      useState: () => [secondaryVisible, (next: boolean) => { secondaryVisible = next; }],
     },
     "react-native": {
       View: Native, Text: Native, Pressable: Native, ScrollView: Native, StatusBar: () => null,
@@ -66,7 +66,10 @@ function renderProgress(days: number, reducedMotion: boolean) {
     "@/context/SceneThemeContext": { useSceneTheme: () => ({ theme: { gradient: ["#060A0F", "#111122"] } }) },
     "@/constants/colors": { MEMBERSHIP_AURORA: { premium: { accent: "#BE9650" } } },
     "@/components/StreakWeekRow": { getPositionedDayGradient: (colors: any) => colors },
-    "@/components/CinematicFadeSlide": { CinematicFadeSlide: Native },
+    "@/components/CinematicFadeSlide": { CinematicFadeSlide: (props: any) => {
+      entrances.set(props.replayKey, props);
+      return React.createElement(Native, props);
+    } },
     "@/components/ProgressMirrorSections": { ProgressMirrorSections: (props: any) => {
       mirrorProps = props;
       return React.createElement("div", { "data-testid": "weekly-circles", "data-padding-top": props.sectionTopPadding }, "seven days");
@@ -83,9 +86,45 @@ function renderProgress(days: number, reducedMotion: boolean) {
     assert.ok(name in imports, `Missing mock: ${name}`);
     return imports[name];
   }, module, module.exports);
-  const html = renderToStaticMarkup(React.createElement(module.exports.default));
-  return { html, mirrorProps };
+  const rerender = () => {
+    entrances.clear();
+    mirrorProps = undefined;
+    return renderToStaticMarkup(React.createElement(module.exports.default));
+  };
+  const html = rerender();
+  return { html, mirrorProps, entrances, rerender };
 }
+
+test("all seven circles and the description enter together immediately when the counter and background entrance completes", () => {
+  for (const days of [0, 4, 7]) {
+    const h = renderProgress(days, false, false);
+    assert.equal(h.entrances.get("progress-intro-description").active, false);
+    assert.equal(h.entrances.has("progress-week-circles"), false);
+    assert.doesNotMatch(h.html, /weekly-circles/);
+    assert.match(h.html, /progress-days-background/);
+    const counter = h.entrances.get("progress-streak-count");
+    assert.equal(counter.duration, 1200);
+    counter.onComplete();
+    const html = h.rerender();
+    assert.match(html, /weekly-circles/);
+    const description = h.entrances.get("progress-intro-description");
+    const circles = h.entrances.get("progress-week-circles");
+    assert.equal(description.active, true);
+    assert.equal(circles.active, true);
+    assert.equal(description.duration, circles.duration);
+    assert.equal(description.delay ?? 0, 0);
+    assert.equal(circles.delay ?? 0, 0);
+  }
+  assert.equal(renderProgress(7, false).mirrorProps.animateEntrance, false);
+  assert.doesNotMatch(source, /countValueDone|onCountValueComplete/);
+});
+
+test("reduced motion shows the description and weekly circles immediately", () => {
+  const h = renderProgress(7, true, false);
+  assert.equal(h.entrances.get("progress-intro-description").active, true);
+  assert.equal(h.entrances.get("progress-week-circles").active, true);
+  assert.match(h.html, /weekly-circles/);
+});
 
 test("Tu progreso restores the description above ESTA SEMANA and its counter without restoring completed sessions or dividers", () => {
   const { html, mirrorProps } = renderProgress(4, true);

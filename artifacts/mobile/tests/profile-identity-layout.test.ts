@@ -9,6 +9,7 @@ import ts from "typescript";
 const source = readFileSync(new URL("../components/ProfileScreenBase.tsx", import.meta.url), "utf8");
 const ast = ts.createSourceFile("ProfileScreenBase.tsx", source, ts.ScriptTarget.Latest, true, ts.ScriptKind.TSX);
 let identity: ts.JsxElement | undefined;
+let userSection: ts.JsxElement | undefined;
 let styles: ts.ObjectLiteralExpression | undefined;
 function visit(node: ts.Node) {
   if (ts.isJsxElement(node) && node.openingElement.attributes.properties.some(
@@ -16,19 +17,25 @@ function visit(node: ts.Node) {
       && attribute.initializer && ts.isStringLiteral(attribute.initializer)
       && attribute.initializer.text === "profile-identity-row",
   )) identity = node;
+  if (ts.isJsxElement(node) && node.openingElement.attributes.properties.some(
+    attribute => ts.isJsxAttribute(attribute) && attribute.name.getText(ast) === "testID"
+      && attribute.initializer && ts.isStringLiteral(attribute.initializer)
+      && attribute.initializer.text === "profile-user-section",
+  )) userSection = node;
   if (ts.isVariableDeclaration(node) && node.name.getText(ast) === "styles"
     && node.initializer && ts.isCallExpression(node.initializer)
     && ts.isObjectLiteralExpression(node.initializer.arguments[0])) styles = node.initializer.arguments[0];
   ts.forEachChild(node, visit);
 }
 visit(ast);
-assert.ok(identity && styles);
+assert.ok(identity && userSection && styles);
 const styleProperties = styles.properties.filter(property =>
   ts.isPropertyAssignment(property)
-    && /^(profileIdentityRow|dedicatedProfileIdentityRow|profileDetails|dedicatedProfileDetails|avatar.*|userName|profileName.*|profileEmail|profileLocationLeft|profileIntention.*|locationRow|locationText)$/.test(property.name.getText(ast)),
+    && /^(profileCard|dedicatedProfileCard|profileIdentityPreviewCard|profileIdentityRow|dedicatedProfileIdentityRow|profileDetails|dedicatedProfileDetails|avatar.*|userName|profileName.*|profileEmail|profileLocationLeft|profileIntention.*|locationRow|locationText)$/.test(property.name.getText(ast)),
 );
 const compiled = ts.transpileModule(`
-  const SHOW_PROFILE_IDENTITY_EXTRAS = ${source.match(/const SHOW_PROFILE_IDENTITY_EXTRAS = (true|false);/)?.[1]};
+  const PROFILE_CARD_BOTTOM_PADDING = ${source.match(/const PROFILE_CARD_BOTTOM_PADDING = (\d+);/)?.[1]};
+  const PROFILE_SECTION_GAP = ${source.match(/const PROFILE_SECTION_GAP = (\d+);/)?.[1]};
   const styles = { ${styleProperties.map(property => property.getText(ast)).join(",")} };
   function Identity(props) {
     const { dedicated = true, email = null, location = "", isPremium = false } = props;
@@ -37,7 +44,7 @@ const compiled = ts.transpileModule(`
     const secondaryAccent = "#BE9650", MEMBERSHIP_AURORA = { premium: { accent: "#E7B95C" } };
     const router = { push: props.onNavigate || (() => {}) };
     const setGrowthJourneyOpen = props.onJourney || (() => {});
-    return ${identity.getText(ast)};
+    return ${userSection.getText(ast)};
   }
 `, { compilerOptions: { jsx: ts.JsxEmit.React, module: ts.ModuleKind.CommonJS } }).outputText;
 const flatten = (style: any): any => Array.isArray(style)
@@ -58,17 +65,32 @@ const Native = (props: any) => {
     "data-ellipsis": props.ellipsizeMode,
     "data-icon": props.name,
     "data-width": style.width,
+    "data-margin-bottom": style.marginBottom,
   }, props.children);
 };
 const Pill = (props: any) => React.createElement(Native, { ...props, testID: "profile-intention-pill" }, "0 Días: Intención");
+const Membership = () => React.createElement(Native, { testID: "profile-premium-banner" }, "Prueba Premium");
 const Identity = new Function(
-  "React", "View", "Pressable", "Text", "Feather", "MaterialCommunityIcons", "Image", "SessionBadgeGlass", "ProfileIntentionPill",
+  "React", "View", "Pressable", "Text", "Feather", "MaterialCommunityIcons", "Image", "SessionBadgeGlass", "ProfileIntentionPill", "ProfileMembershipBanner",
   `${compiled}\nreturn Identity;`,
-)(React, Native, Native, Native, Native, Native, Native, Native, Pill);
+)(React, Native, Native, Native, Native, Native, Native, Native, Pill, Membership);
 const render = (props: Record<string, unknown> = {}) => {
   presses.clear();
   return renderToStaticMarkup(React.createElement(Identity, props));
 };
+
+test("free users see Prueba Premium below their identity, while Premium users retain only the avatar star and compact layout", () => {
+  const free = render({ isPremium: false });
+  assert.match(free, /profile-premium-banner/);
+  assert.match(free, /Prueba Premium/);
+  assert.ok(free.indexOf('data-testid="profile-premium-banner"') > free.indexOf('data-testid="profile-intention-pill"'));
+  assert.doesNotMatch(free, /profile-avatar-premium-badge/);
+  assert.match(free, /data-testid="profile-user-section"[^>]*data-margin-bottom="21"/);
+  const premium = render({ isPremium: true });
+  assert.doesNotMatch(premium, /profile-premium-banner|Prueba Premium/);
+  assert.match(premium, /profile-avatar-premium-badge/);
+  assert.match(premium, /data-testid="profile-user-section"[^>]*data-margin-bottom="5"/);
+});
 
 test("Perfil places avatar left with name and intention on its right, without the email", () => {
   const html = render({ email: "example@example.com", location: "Ubicación" });

@@ -97,8 +97,6 @@ import { useMixerPanel } from "@/context/MixerPanelContext";
 import { CARD_TEXT_BELOW, MEMBERSHIP_AURORA } from "@/constants/colors";
 
 const SHOW_PROFILE_PRACTICE_CARDS = false;
-// Vista previa compacta: conservar estos elementos para poder recuperarlos.
-const SHOW_PROFILE_IDENTITY_EXTRAS = false;
 // Separación entre los bloques de progreso en Perfil.
 const PROFILE_SECTION_GAP = 21;
 const PROFILE_CARD_BOTTOM_PADDING = 20;
@@ -1312,7 +1310,7 @@ export function ProfileScreenBase({
         </View>
 
         {/* ── Profile Card ── */}
-          <View testID="profile-user-section" style={[styles.profileCard, dedicated && styles.dedicatedProfileCard, !SHOW_PROFILE_IDENTITY_EXTRAS && styles.profileIdentityPreviewCard]}>
+          <View testID="profile-user-section" style={[styles.profileCard, dedicated && styles.dedicatedProfileCard, isPremium && styles.profileIdentityPreviewCard]}>
           <View
             testID="profile-identity-row"
             style={styles.profileIdentityRow}
@@ -1384,7 +1382,7 @@ export function ProfileScreenBase({
               )}
             </View>
           </View>
-          {SHOW_PROFILE_IDENTITY_EXTRAS && <ProfileMembershipBanner isPremium={isPremium} foregroundColor={colors.foreground} />}
+          {!isPremium && <ProfileMembershipBanner isPremium={isPremium} foregroundColor={colors.foreground} />}
         </View>
 
         {false && (

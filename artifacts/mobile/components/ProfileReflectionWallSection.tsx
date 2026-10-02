@@ -46,6 +46,7 @@ export const ProfileReflectionWallSection = forwardRef<HomeReflectionWallHandle,
 
 const styles = StyleSheet.create({
   section: {
+    marginTop: 16,
     marginBottom: 21,
   },
 });

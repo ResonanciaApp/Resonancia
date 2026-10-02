@@ -144,7 +144,7 @@ test("streak sheet is hidden when closed and has exactly four ordered explanator
   assert.doesNotMatch(html, /data-icon="arrow-left"/);
   assert.match(html, /Existen diferentes tipos de rachas que te muestran tu compromiso/);
   for (const description of [
-    "Días activos de esta semana, de lunes a domingo. No necesariamente tienen que ser consecutivos",
+    "Dias activos de esta semana, no necesariamente tienen que ser consecutivos",
     "Total de días que has sumado de racha desde que comenzaste",
     "Tu mejor secuencia de dias de racha consecutiva en la App",
     "Semanas de lunes a domingo en las que completaste los 7 días activos",

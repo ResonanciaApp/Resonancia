@@ -53,11 +53,10 @@ test("user section preserves 20px above the centered avatar outline, with no ext
   assert.match(source, /<ProfileMembershipBanner isPremium=\{isPremium\}/);
 });
 
-test("compact identity preview keeps Premium hidden and adds 6px to the previous 25px avatar-to-week gap", () => {
+test("Premium members keep the compact identity layout while free users recover their trial banner", () => {
   const source = readFileSync(new URL("../components/ProfileScreenBase.tsx", import.meta.url), "utf8");
-  assert.match(source, /const SHOW_PROFILE_IDENTITY_EXTRAS = false;/);
-  assert.match(source, /SHOW_PROFILE_IDENTITY_EXTRAS && <ProfileMembershipBanner/);
-  assert.match(source, /!SHOW_PROFILE_IDENTITY_EXTRAS && styles\.profileIdentityPreviewCard/);
+  assert.match(source, /!isPremium && <ProfileMembershipBanner/);
+  assert.match(source, /isPremium && styles\.profileIdentityPreviewCard/);
   const bottom = Number(source.match(/const PROFILE_CARD_BOTTOM_PADDING = (\d+);/)?.[1]);
   const card = style("ProfileScreenBase", "profileCard", { PROFILE_CARD_BOTTOM_PADDING: bottom, PROFILE_SECTION_GAP: 21 });
   const preview = style("ProfileScreenBase", "profileIdentityPreviewCard");

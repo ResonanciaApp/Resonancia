@@ -29,7 +29,7 @@ const STREAK_DEFINITIONS: { id: IconKind; title: string; description: string }[]
     id: "current",
     title: "Racha actual",
     description:
-      "Días activos de esta semana, de lunes a domingo. No necesariamente tienen que ser consecutivos",
+      "Dias activos de esta semana, no necesariamente tienen que ser consecutivos",
   },
   {
     id: "accumulated",

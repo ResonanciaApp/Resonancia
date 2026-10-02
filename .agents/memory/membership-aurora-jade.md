@@ -3,11 +3,11 @@ name: Membresía Aurora jade-gold
 description: Insignia del avatar en Perfil y acentos Premium de las demás superficies.
 ---
 
-El banner de membresía de Perfil, con su divisor, descripción y chevron, está temporalmente oculto para evaluar una vista compacta. Conservarlo, no eliminarlo. El chevron de Mi cuenta sí está restaurado y su última posición solicitada es el margen lateral derecho, no la columna del último círculo de la racha; el avatar se alinea con el margen lateral izquierdo. Al restaurar el banner, gratuitos muestran «Prueba Premium» y miembros «Tu Premium», con estrella a la izquierda; no recuperar Premium Plus.
+En Perfil, las cuentas gratuitas deben ver «Prueba Premium» debajo del bloque de usuario. Para miembros Premium, el banner queda oculto y la membresía se indica solo con la estrella de vidrio sobre el avatar. El chevron de Mi cuenta permanece al margen lateral derecho; el avatar se alinea con el margen lateral izquierdo.
 
-**Why:** El usuario pidió esconder el banner para evaluar el diseño, pero luego recuperó por separado la estrella del avatar y el chevron de Mi cuenta. No confundir esas peticiones con volver a mostrar el banner. Posteriormente pidió bajar la semana y todo lo que sigue, sin mover el avatar; la separación anterior de 25 px ya no es fija.
+**Why:** El usuario aclaró que ocultar el banner era solo para miembros Premium, no para cuentas gratuitas. La estrella del avatar evita repetir la membresía en un banner. También pidió bajar la semana y todo lo que sigue sin mover el avatar; la separación anterior de 25 px ya no es fija.
 
-**How to apply:** No reactivar los elementos ocultos hasta que el usuario lo pida. Al restaurarlos, integrar el banner al bloque de usuario, no como tarjeta independiente. La estrella Premium con fondo de vidrio sobre el avatar de Perfil sí está restaurada, solo para miembros, por petición posterior del usuario; no implica recuperar el banner. La insignia de Inicio y el acceso Premium del drawer son independientes de esta prueba.
+**How to apply:** Mantener el banner de prueba integrado al bloque de usuario para cuentas gratuitas, no como tarjeta independiente. Conservar el diseño compacto y la estrella del avatar para miembros Premium, sin recuperar «Tu Premium» debajo del usuario. La insignia de Inicio y el acceso Premium del drawer son independientes de esta regla.
 
 El amarillo sólido de Premium sigue en «Plan Premium» de Sonidos y Descubrir, en solo «Premium» del banner inferior de Inicio y en «Tu Premium» del drawer para miembros o solo «Premium» para no miembros. «Prueba» y «Gratis» de Inicio no cambian; en el drawer «Prueba» sigue blanco. El loto de «Racha más larga» conserva el degradado.
 

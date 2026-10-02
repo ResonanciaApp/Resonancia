@@ -1,7 +1,7 @@
 import { Feather } from "@expo/vector-icons";
 import { LinearGradient } from "expo-linear-gradient";
 import { router, useFocusEffect } from "expo-router";
-import React, { useCallback, useEffect, useMemo, useState } from "react";
+import React, { useCallback, useMemo, useState } from "react";
 import {
   Platform,
   Pressable,
@@ -16,7 +16,6 @@ import Svg, { Circle, Defs, LinearGradient as SvgLinearGradient, Stop } from "re
 import Animated, {
   cancelAnimation,
   Easing,
-  runOnJS,
   type SharedValue,
   useAnimatedProps,
   useAnimatedStyle,
@@ -76,14 +75,8 @@ export default function ProgresoScreen() {
   const { theme } = useSceneTheme();
   const { weekFlags } = useStreak();
   const reduceMotion = useReducedMotion();
-  const [countEntranceDone, setCountEntranceDone] = useState(reduceMotion);
-  const [countValueDone, setCountValueDone] = useState(reduceMotion);
   const [descriptionStarted, setDescriptionStarted] = useState(reduceMotion);
-  const onCountEntranceComplete = useCallback(() => setCountEntranceDone(true), []);
-  const onCountValueComplete = useCallback(() => setCountValueDone(true), []);
-  useEffect(() => {
-    if (countEntranceDone && countValueDone) setDescriptionStarted(true);
-  }, [countEntranceDone, countValueDone]);
+  const onCountEntranceComplete = useCallback(() => setDescriptionStarted(true), []);
   const completedWeekDays = weekFlags.filter(Boolean).length;
   const ringGradient = useMemo(() => getPositionedDayGradient(theme.gradient), [theme.gradient]);
   const animatedDays = useSharedValue(reduceMotion ? completedWeekDays : 0);
@@ -96,22 +89,18 @@ export default function ProgresoScreen() {
     cancelAnimation(animatedDays);
     if (reduceMotion || completedWeekDays === 0) {
       animatedDays.value = completedWeekDays;
-      setCountValueDone(true);
     } else {
-      setCountValueDone(false);
       animatedDays.value = 0;
       animatedDays.value = withDelay(
         RING_ENTRANCE_DELAY,
         withTiming(completedWeekDays, {
           duration: Math.max(1000, completedWeekDays * 300),
           easing: Easing.linear,
-        }, (finished) => {
-          if (finished) runOnJS(onCountValueComplete)();
         }),
       );
     }
     return () => cancelAnimation(animatedDays);
-  }, [animatedDays, completedWeekDays, onCountValueComplete, reduceMotion]));
+  }, [animatedDays, completedWeekDays, reduceMotion]));
 
   const topPad = Platform.OS === "web" ? 67 : Math.max(insets.top, 40);
   const bottomPad = Platform.OS === "web" ? 34 : insets.bottom;
@@ -248,8 +237,13 @@ export default function ProgresoScreen() {
         {descriptionStarted && (
           <>
             <View style={styles.content}>
+              <CinematicFadeSlide
+                replayKey="progress-week-circles"
+                active={descriptionStarted}
+                duration={600}
+              >
                 <ProgressMirrorSections
-                  animateEntrance
+                  animateEntrance={false}
                   entranceReplayKey="progress-sections"
                   entranceBaseDelay={0}
                   showSectionBorders={false}
@@ -266,6 +260,7 @@ export default function ProgresoScreen() {
                   sectionMarginBottom={0}
                   streakMarginBottom={0}
                 />
+              </CinematicFadeSlide>
             </View>
           </>
         )}
