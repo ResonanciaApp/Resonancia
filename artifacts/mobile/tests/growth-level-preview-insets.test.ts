@@ -125,16 +125,17 @@ test("Semilla displays the supplied dimmed chest and disabled gift copy below it
   assert.ok(chest);
   assert.match(chest, /data-source="3"/);
   assert.match(chest, /data-opacity="0.8"/);
-  assert.match(chest, /data-height="44"/);
+  assert.match(chest, /data-height="22"/);
   assert.match(html, /data-opacity="0.55"/);
   assert.ok(html.indexOf(`>${semilla.story}</div>`) < html.indexOf('data-testid="semilla-reward"'));
-  assert.ok(html.indexOf('data-testid="semilla-reward-chest"') < html.indexOf(">Desbloquea tu cofre de regalos</div>"));
+  assert.ok(html.indexOf('data-testid="semilla-reward-chest"') < html.indexOf(">Regalitos sorpresa</div>"));
+  assert.doesNotMatch(html, /Desbloquea tu cofre de regalos/);
   assert.doesNotMatch(html, /data-accessibility-role="button"/);
   for (const id of ["intencion", "brote", "ascenso-inicio"]) {
     const other = renderToStaticMarkup(React.createElement(GrowthRow, {
       level: { ...semilla, id }, hasNext: false, status: id === "intencion" ? "current" : "locked",
     }));
-    assert.doesNotMatch(other, /semilla-reward|Desbloquea tu cofre de regalos/);
+    assert.doesNotMatch(other, /semilla-reward|Regalitos sorpresa/);
   }
 });
 
