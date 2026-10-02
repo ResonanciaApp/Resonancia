@@ -94,9 +94,9 @@ test("username uses 24 points and the pill stays 4px closer without changing the
   assert.equal(style("ProfileScreenBase", "profileIdentityPreviewCard").marginBottom, 5);
 });
 
-test("the avatar block moves up 20px in normal flow, carrying subsequent sections without changing the weekly gap", () => {
+test("the avatar block moves down 10px in normal flow, carrying subsequent sections without changing the weekly gap", () => {
   const card = style("ProfileScreenBase", "dedicatedProfileCard");
-  assert.equal(card.marginTop, 18 - 20);
+  assert.equal(card.marginTop, -2 + 10);
   assert.equal(card.transform, undefined);
   const avatar = style("ProfileScreenBase", "avatarImage");
   assert.equal(avatar.width, 93 - 10);

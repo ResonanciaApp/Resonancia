@@ -2467,8 +2467,8 @@ const styles = StyleSheet.create({
     marginBottom: PROFILE_SECTION_GAP,
     gap: 0,
   },
-  // Subir todo el bloque en el flujo, para que las secciones siguientes lo acompañen.
-  dedicatedProfileCard: { marginTop: -2 },
+  // Desplazar el bloque en el flujo para que las secciones siguientes lo acompañen.
+  dedicatedProfileCard: { marginTop: 8 },
   // 20 px de padding inferior + 5 px de separación = 25 px hasta el fondo semanal.
   profileIdentityPreviewCard: { marginBottom: 5 },
   wisdomSection: {
