@@ -1407,8 +1407,8 @@ export function ProfileScreenBase({
                 showStreakHistoryTitle={false}
                 showStreakHistoryInfo={false}
                 onStreakHistoryPress={() => setStreakInfoOpen(true)}
-                weeklySectionBackgroundColor="rgba(0,0,0,0.22)"
-                weeklySectionHorizontalPadding={20}
+                weeklySectionBackgroundColor="transparent"
+                weeklySectionHorizontalPadding={0}
                 streakHistoryTopPadding={18}
                 streakHistoryDividerOffsetY={-3}
                 longestStreakLabel="RACHA ACUMULADA"
