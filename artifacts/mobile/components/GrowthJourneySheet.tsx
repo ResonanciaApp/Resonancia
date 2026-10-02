@@ -1,15 +1,13 @@
 import { Feather } from "@expo/vector-icons";
 import { LinearGradient } from "expo-linear-gradient";
-import React, { useCallback, useEffect, useState } from "react";
+import React, { useCallback, useEffect, useRef, useState } from "react";
 import {
-  Animated,
   Modal,
   Platform,
   Pressable,
   ScrollView,
   StyleSheet,
   Text,
-  useWindowDimensions,
   View,
 } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
@@ -19,7 +17,6 @@ import { GrowthJourneyHelpSheet } from "@/components/GrowthJourneyHelpSheet";
 import { NAVIGATION_HELP_ICON_COLOR } from "@/constants/colors";
 import { useSceneTheme } from "@/context/SceneThemeContext";
 import { useColors } from "@/hooks/useColors";
-import { useGrowthJourneySheetMotion } from "@/hooks/useGrowthJourneySheetMotion";
 
 // Former intro: icon (45 + 56), paragraph top (20), divider (30 + 1 + 29).
 // Retain its measured height minus the requested rise, keeping the timeline in flow.
@@ -34,64 +31,57 @@ export function GrowthJourneySheet({
   visible: boolean;
   onClose: () => void;
 }) {
-  const { height } = useWindowDimensions();
   const insets = useSafeAreaInsets();
   const colors = useColors();
   const { theme } = useSceneTheme();
-  const sheetHeight = Math.min(
-    height - 8,
-    Math.max(400, height - Math.max(insets.top, Platform.OS === "web" ? 40 : 0) - 12),
-  );
-  const { rendered, sheetY, backdropOpacity } = useGrowthJourneySheetMotion(visible, sheetHeight);
+  const scrollRef = useRef<ScrollView>(null);
   const [helpVisible, setHelpVisible] = useState(false);
   const [descriptionHeight, setDescriptionHeight] = useState(69);
   const closeHelp = useCallback(() => setHelpVisible(false), []);
   useEffect(() => {
     if (!visible) closeHelp();
+    else scrollRef.current?.scrollTo({ y: 0, animated: false });
   }, [visible, closeHelp]);
 
-  if (!rendered) return null;
+  if (!visible) return null;
+
+  const topPad = Platform.OS === "web" ? 67 : Math.max(insets.top, 40);
+  const bottomPad = Platform.OS === "web" ? 34 : insets.bottom;
 
   return (
     <Modal
-      visible={rendered}
-      transparent
-      animationType="none"
+      visible
+      transparent={false}
+      animationType="slide"
       onRequestClose={helpVisible ? closeHelp : onClose}
       statusBarTranslucent
+      navigationBarTranslucent
+      testID="growth-journey-modal"
     >
-      <View style={styles.modalRoot}>
-        <Pressable
-          style={StyleSheet.absoluteFill}
-          onPress={onClose}
-          accessibilityLabel="Cerrar camino de crecimiento"
-        >
-          <Animated.View
-            style={[StyleSheet.absoluteFill, styles.backdrop, { opacity: backdropOpacity }]}
-          />
-        </Pressable>
-        <Animated.View
-          style={[
-            styles.sheet,
-            {
-              height: sheetHeight,
-              backgroundColor: theme.gradient[0],
-              paddingBottom: Math.max(insets.bottom, 16),
-              transform: [{ translateY: sheetY }],
-            },
-          ]}
+      <LinearGradient
+        colors={theme.gradient as unknown as [string, string, ...string[]]}
+        locations={theme.gradientLocations as unknown as [number, number, ...number[]] | undefined}
+        start={theme.gradientStart}
+        end={theme.gradientEnd}
+        style={styles.modalRoot}
+        testID="growth-journey-background"
+      >
+        <ScrollView
+          ref={scrollRef}
+          style={styles.scroll}
+          contentContainerStyle={{ paddingBottom: bottomPad + 32 }}
+          showsVerticalScrollIndicator={false}
+          bounces
+          alwaysBounceVertical
+          overScrollMode="always"
+          contentInsetAdjustmentBehavior="never"
+          automaticallyAdjustContentInsets={false}
           accessibilityViewIsModal
           accessibilityElementsHidden={helpVisible}
           importantForAccessibility={helpVisible ? "no-hide-descendants" : "auto"}
+          testID="growth-journey-scroll"
         >
-          <LinearGradient
-            pointerEvents="none"
-            colors={theme.gradient as unknown as [string, string, ...string[]]}
-            locations={theme.gradientLocations as unknown as [number, number, ...number[]] | undefined}
-            style={StyleSheet.absoluteFill}
-          />
-          <View style={styles.handle} />
-          <View style={styles.header}>
+          <View style={[styles.header, { marginTop: topPad + 8 }]}>
             <Pressable
               onPress={onClose}
               style={styles.closeButton}
@@ -114,54 +104,22 @@ export function GrowthJourneySheet({
               <Text style={[styles.questionMark, { color: NAVIGATION_HELP_ICON_COLOR }]}>?</Text>
             </Pressable>
           </View>
-          <ScrollView
-            style={styles.scroll}
-            contentContainerStyle={[
-              styles.scrollContent,
-              { paddingTop: FORMER_INTRO_FIXED_HEIGHT + descriptionHeight - FIRST_STAGE_RISE + FIRST_STAGE_DROP },
-            ]}
-            showsVerticalScrollIndicator={false}
-          >
+          <View style={{ paddingTop: FORMER_INTRO_FIXED_HEIGHT + descriptionHeight - FIRST_STAGE_RISE + FIRST_STAGE_DROP }}>
             <GrowthJourney />
-          </ScrollView>
-        </Animated.View>
+          </View>
+        </ScrollView>
         <GrowthJourneyHelpSheet
           visible={visible && helpVisible}
           onClose={closeHelp}
           onDescriptionLayout={setDescriptionHeight}
         />
-      </View>
+      </LinearGradient>
     </Modal>
   );
 }
 
 const styles = StyleSheet.create({
   modalRoot: { flex: 1 },
-  backdrop: { backgroundColor: "#000000" },
-  sheet: {
-    position: "absolute",
-    left: 0,
-    right: 0,
-    bottom: 0,
-    borderTopLeftRadius: 28,
-    borderTopRightRadius: 28,
-    overflow: "hidden",
-    zIndex: 2,
-    elevation: 12,
-    shadowColor: "#000",
-    shadowOffset: { width: 0, height: -8 },
-    shadowOpacity: 0.28,
-    shadowRadius: 18,
-  },
-  handle: {
-    alignSelf: "center",
-    width: 48,
-    height: 5,
-    borderRadius: 3,
-    backgroundColor: "rgba(255,255,255,0.28)",
-    marginTop: 12,
-    marginBottom: 8,
-  },
   header: {
     height: 48,
     marginHorizontal: 20,
@@ -182,5 +140,4 @@ const styles = StyleSheet.create({
     justifyContent: "center",
   },
   scroll: { flex: 1 },
-  scrollContent: { paddingBottom: 32 },
 });

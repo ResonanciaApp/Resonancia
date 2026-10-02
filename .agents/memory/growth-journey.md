@@ -41,6 +41,12 @@ La entrada en «Tu progreso» tiene dos fases: primero termina el contador de d�
 
 Dentro de la ventana, usar el degradado completo del tema. Florecimiento y sus niveles se muestran sin animación ni espera; «El ascenso» muestra primero solo el encabezado y el botón «Próximamente», que despliega sus niveles sin animación al pulsarlo. No hay divisor arriba de la segunda etapa. En todas las filas, la píldora de días va encima del título; no mostrar etiquetas «Nivel».
 
-**Why:** El usuario pidió el fondo completo del tema, la segunda etapa plegada inicialmente y eliminó las animaciones de los niveles y las etiquetas numéricas. Después pidió que la ventana volviera a abrirse como la del temporizador Ambiental, sin reanimar las filas.
+**Why:** El usuario pidió el fondo completo del tema, la segunda etapa plegada inicialmente y eliminó las animaciones de los niveles y las etiquetas numéricas. Los cambios de apertura no deben reintroducir animaciones de las filas.
 
 **How to apply:** No condicionar títulos o niveles del recorrido a eventos de scroll ni a mediciones de visibilidad; mostrarlos inmediatamente al abrir o expandir, manteniendo solo Intención como nivel activo hasta que se solicite la funcionalidad.
+
+La ventana que se abre desde Intención en Perfil («Tu camino») debe abrirse a pantalla completa, como Sistema de rachas, no como un panel parcial de temporizador.
+
+**Why:** El usuario reemplazó explícitamente la dirección anterior de apertura como el temporizador Ambiental por una ventana completa como la de rachas.
+
+**How to apply:** Conservar el recorrido, los cofres y los niveles apagados. La ayuda sigue siendo un panel interno de la misma ventana nativa; no convertirla en un segundo Modal.

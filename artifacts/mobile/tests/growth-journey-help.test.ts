@@ -52,6 +52,7 @@ const flatten = (style: any): Record<string, any> =>
 function uiHarness() {
   const h = hooks();
   const presses = new Map<string, any>();
+  const nodes = new Map<string, any>();
   const layouts: any[] = [];
   const springs: any[] = [];
   let modalClose = () => {};
@@ -59,6 +60,7 @@ function uiHarness() {
   let motion: any;
   let helpProps: any;
   const Native = (props: any) => {
+    if (props.testID) nodes.set(props.testID, props);
     const style = flatten([props.style, props.contentContainerStyle]);
     if (props.onLayout) layouts.push(props.onLayout);
     return React.createElement("div", {
@@ -111,7 +113,7 @@ function uiHarness() {
     },
   };
   return {
-    ...h, imports, presses, layouts, springs,
+    ...h, imports, presses, nodes, layouts, springs,
     get pan() { return pan; }, get motion() { return motion; }, get help() { return helpProps; },
     back: () => modalClose(),
   };
@@ -126,6 +128,21 @@ test("Tu camino removes the intro while preserving controls and the 60px Primera
     return renderToStaticMarkup(GrowthJourneySheet({ visible, onClose: () => closes++ }));
   };
   const html = render();
+  const modal = h.nodes.get("growth-journey-modal");
+  assert.equal(modal.visible, true);
+  assert.equal(modal.transparent, false);
+  assert.equal(modal.animationType, "slide");
+  assert.equal(modal.statusBarTranslucent, true);
+  assert.equal(modal.navigationBarTranslucent, true);
+  const background = h.nodes.get("growth-journey-background");
+  assert.equal(flatten(background.style).flex, 1);
+  assert.deepEqual(background.colors, ["#060A0F", "#111122"]);
+  const scroll = h.nodes.get("growth-journey-scroll");
+  assert.equal(scroll.bounces, true);
+  assert.equal(scroll.alwaysBounceVertical, true);
+  assert.equal(scroll.overScrollMode, "always");
+  assert.equal(scroll.contentInsetAdjustmentBehavior, "never");
+  assert.equal(flatten(scroll.contentContainerStyle).paddingBottom, 52);
   assert.ok(html.indexOf('data-testid="growth-journey-close"') < html.indexOf("Tu camino"));
   assert.ok(html.indexOf("Tu camino") < html.indexOf('data-testid="growth-journey-help"'));
   assert.match(html, /data-color="#F9F9F9">\?/);
@@ -146,9 +163,14 @@ test("Tu camino removes the intro while preserving controls and the 60px Primera
   h.presses.get("growth-journey-close").onPress();
   assert.equal(closes, 1);
   h.presses.get("growth-journey-help").onPress();
-  render(false);
+  assert.equal(render(false), "");
   render();
   assert.equal(h.help.visible, false);
+  const source = readFileSync(new URL("../components/GrowthJourneySheet.tsx", import.meta.url), "utf8");
+  assert.doesNotMatch(source, /useGrowthJourneySheetMotion|styles\.handle|styles\.sheet|styles\.backdrop/);
+  assert.match(source, /start=\{theme\.gradientStart\}/);
+  assert.match(source, /end=\{theme\.gradientEnd\}/);
+  assert.match(source, /locations=\{theme\.gradientLocations/);
 });
 
 test("help uses half the screen, shows the original icon above its description, and dismisses by tap or drag", () => {
@@ -184,7 +206,7 @@ test("help uses half the screen, shows the original icon above its description, 
   assert.doesNotMatch(source, /<Modal/);
 });
 
-test("both sheets share the original spring entrance, backdrop fade and animated exit", () => {
+test("the help overlay retains its original spring entrance, backdrop fade and animated exit", () => {
   const h = hooks();
   const animations: any[] = [];
   const animation = (kind: string, value: any, options: any) => {

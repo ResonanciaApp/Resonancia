@@ -139,6 +139,9 @@ test("streak sheet is hidden when closed and has exactly four ordered explanator
   assert.ok(ids.every((position, index) => position >= 0 && (index === 0 || position > ids[index - 1])));
   assert.doesNotMatch(html, /Tipos de rachas|Tu camino de práctica/);
   assert.match(html, /data-role="header">Sistema de rachas/);
+  assert.match(html, /data-label="Cerrar sistema de rachas"/);
+  assert.match(html, /data-icon="x" data-color="#F9F9F9" data-size="23"/);
+  assert.doesNotMatch(html, /data-icon="arrow-left"/);
   assert.match(html, /Existen diferentes tipos de rachas que te muestran tu compromiso/);
   for (const description of [
     "Días activos de esta semana, de lunes a domingo. No necesariamente tienen que ser consecutivos",

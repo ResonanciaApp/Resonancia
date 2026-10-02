@@ -165,10 +165,10 @@ export function StreakInfoSheet({
                 style={styles.headerButton}
                 hitSlop={8}
                 accessibilityRole="button"
-                accessibilityLabel="Volver al perfil"
+                accessibilityLabel="Cerrar sistema de rachas"
                 testID="streak-info-close"
               >
-                <Feather name="arrow-left" size={23} color={WHITE} />
+                <Feather name="x" size={23} color={WHITE} />
               </Pressable>
               <Text testID="streak-info-title" style={styles.pageTitle} accessibilityRole="header">Sistema de rachas</Text>
               <View style={styles.headerSpacer} />
