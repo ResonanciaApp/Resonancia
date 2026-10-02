@@ -23,7 +23,7 @@ const WHITE = STREAK_INFO_COLORS.foreground;
 const GOLD = MEMBERSHIP_AURORA.premium.accent;
 const DURATION = 1400;
 const BASE_DELAY = 150;
-const HERO_IMAGE = require("../assets/images/streak-practice-lotus.jpg");
+const HERO_IMAGE = require("../assets/images/streak-practice-landscape.jpg");
 
 type IconKind = "current" | "accumulated" | "longest" | "completed";
 
@@ -226,7 +226,7 @@ export function StreakInfoSheet({
 
 const styles = StyleSheet.create({
   root: { flex: 1 },
-  artwork: { position: "absolute", top: -80, left: 0, right: 0 },
+  artwork: { position: "absolute", top: -130, left: 0, right: 0 },
   header: {
     paddingHorizontal: 20,
     flexDirection: "row",

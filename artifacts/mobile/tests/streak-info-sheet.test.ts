@@ -100,14 +100,14 @@ function harness({
       StyleSheet: { create: (value: unknown) => value, absoluteFill: {} },
     },
     "react-native-safe-area-context": { useSafeAreaInsets: () => ({ top: 24, bottom: 20 }) },
-    "expo-image": { Image: (props: Props) => { assert.ok(props.source); return React.createElement("img", { alt: "Loto sobre agua" }); } },
+    "expo-image": { Image: (props: Props) => { assert.ok(props.source); return React.createElement("img", { alt: "Cielo y montañas sobre el lago" }); } },
     "expo-linear-gradient": { LinearGradient: Gradient },
     "@expo/vector-icons": { Feather: Native, MaterialCommunityIcons: Native },
     "@react-native-masked-view/masked-view": Native,
     "@/components/CinematicFadeSlide": { CinematicFadeSlide: Native },
     "@/context/SceneThemeContext": { useSceneTheme: () => ({ theme }) },
     "@/constants/colors": { MEMBERSHIP_AURORA, STREAK_INFO_COLORS },
-    "../assets/images/streak-practice-lotus.jpg": 1,
+    "../assets/images/streak-practice-landscape.jpg": 1,
   };
   const module: any = { exports: {} };
   new Function("require", "module", "exports", compiled)((name: string) => {
@@ -222,14 +222,14 @@ test("Perfil connects the information locally while preserving its weekly naviga
   assert.doesNotMatch(profile, /router\.push\("\/tipos-de-rachas/);
 });
 
-test("vertical overscroll is enabled at both ends and artwork moves up exactly 80px without shifting the content", () => {
+test("vertical overscroll is enabled at both ends and artwork moves up exactly 130px without shifting the content", () => {
   const h = harness();
   h.render(true);
   const scroll = h.nodes.get("streak-info-scroll")!;
   assert.equal(scroll.bounces, true);
   assert.equal(scroll.alwaysBounceVertical, true);
   assert.equal(scroll.overScrollMode, "always");
-  assert.equal(flatten(h.nodes.get("streak-info-artwork")!.style).top, -80);
+  assert.equal(flatten(h.nodes.get("streak-info-artwork")!.style).top, -130);
   assert.equal(flatten(h.nodes.get("streak-info-cards")!.style).marginTop, 50);
   assert.equal(flatten(h.nodes.get("streak-info-hero")!.style).top, undefined);
 });
