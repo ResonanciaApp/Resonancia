@@ -130,7 +130,8 @@ test("Semilla displays a filled lock and three AI avatars in a disabled horizont
   assert.match(reward, /data-direction="row"/);
   assert.match(reward, /data-pointer-events="none"/);
   assert.match(reward, /data-disabled="true"/);
-  assert.match(reward, /data-border-radius="999"/);
+  assert.match(reward, /data-border-radius="12"/);
+  assert.doesNotMatch(reward, /data-border-width|data-border-color/);
   const lock = html.match(/<div[^>]*data-testid="semilla-reward-lock"[^>]*>/)?.[0];
   assert.ok(lock);
   assert.match(lock, /data-icon="lock"/);
@@ -164,7 +165,8 @@ test("Crecimiento, Vegetación and Expansión share Semilla's small filled lock 
     assert.ok(reward, id);
     assert.match(reward, /data-pointer-events="none"/);
     assert.match(reward, /data-disabled="true"/);
-    assert.match(reward, /data-border-radius="999"/);
+    assert.match(reward, /data-border-radius="12"/);
+    assert.doesNotMatch(reward, /data-border-width|data-border-color/);
     const lock = html.match(new RegExp(`<div[^>]*data-testid="${id}-reward-lock"[^>]*>`))?.[0];
     assert.ok(lock, id);
     assert.match(lock, /data-icon="lock"/);
@@ -178,7 +180,7 @@ test("Crecimiento, Vegetación and Expansión share Semilla's small filled lock 
     const banner = html.slice(html.indexOf(`data-testid="${id}-reward"`));
     assert.match(banner, /data-opacity="0.44"/);
     for (const image of [4, 5, 6]) assert.match(banner, new RegExp(`data-source="${image}"`));
-    assert.equal((banner.match(/data-border-radius="18" data-border-width="1.5" data-border-color="rgba\(214,176,92,0.75\)"/g) ?? []).length, 3);
+    assert.equal((banner.match(/data-height="32" data-width="32" data-border-radius="16" data-border-width="1.5" data-border-color="rgba\(214,176,92,0.75\)"/g) ?? []).length, 3);
     assert.doesNotMatch(banner, /data-opacity="0.55"/);
   }
 });
@@ -190,6 +192,11 @@ test("reward pills grow in normal flow and preserve nonreward and profile previe
   const pill = source.match(/reward: \{([\s\S]*?)\n  \},/)?.[1] ?? "";
   assert.doesNotMatch(pill, /position: "absolute"|height:/);
   assert.match(pill, /marginLeft: 25/);
+  assert.match(pill, /backgroundColor: "rgba\(0,0,0,0.22\)"/);
+  assert.doesNotMatch(pill, /borderWidth|borderColor/);
+  assert.match(pill, /minHeight: 50/);
+  // Previous rendered height was 36px artwork + 16px padding + 2px border = 54px.
+  assert.equal(36 + 8 * 2 + 2 - 50, 4);
   assert.match(source, /rewardText: \{ flex: 1, flexShrink: 1/);
   assert.match(source, /row: \{ height: GROWTH_ROW_HEIGHT/);
   assert.match(source, /previewArt: \{ width: 100, height: 100 \}/);
