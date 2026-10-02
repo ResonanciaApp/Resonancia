@@ -1817,7 +1817,7 @@ const Inicio2HeroStatic = React.memo(function Inicio2HeroStatic({
   // El hero reserva su alto en el flujo, así que moverlo desplaza también el contenido siguiente.
   const inicio3WeekShift = 2;
   const inicio3WeekDownshift = 33;
-  const inicio3ProfileHeaderLift = 0;
+  const inicio3ProfileHeaderLift = 35;
   const inicio3HeroShift = 10 - 70 - 25;
   const inicio3HeroDownshift = 70;
   const inicio3HeroTopTrim = 25 + 80;
@@ -1826,7 +1826,8 @@ const Inicio2HeroStatic = React.memo(function Inicio2HeroStatic({
   const inicio3HeroLayoutTop =
     topInset +
     165 -
-    INICIO3_VERTICAL_LIFT +
+    INICIO3_VERTICAL_LIFT -
+    inicio3ProfileHeaderLift +
     12 +
     inicio3WeekShift +
     inicio3HeroShift +
@@ -2023,7 +2024,7 @@ const Inicio2HeroStatic = React.memo(function Inicio2HeroStatic({
           <RAnimated.View
             style={[
               styles.inicio3StreakRow,
-              { top: topInset + 68 - INICIO3_VERTICAL_LIFT + inicio3WeekShift - 12 + inicio3WeekDownshift },
+              { top: topInset + 68 - INICIO3_VERTICAL_LIFT - inicio3ProfileHeaderLift + inicio3WeekShift - 12 + inicio3WeekDownshift },
               slowHeaderStyle,
             ]}
             testID="inicio3-streak-row"
@@ -3641,6 +3642,9 @@ const styles = StyleSheet.create({
     borderColor: "rgba(255,255,255,0.1)",
   },
   inicio3HeroAvatarBorder: {
+    width: 22,
+    height: 22,
+    borderRadius: 11,
     borderWidth: 2,
     borderColor: "rgba(255,255,255,0.5)",
   },

@@ -33,6 +33,43 @@ function style(name: string) {
   return evaluate(property.initializer.getText(ast), bindings);
 }
 
+test("Inicio 3 reduces the avatar another 10 points to 22 and lifts its header, week, hero and following content another 15px", () => {
+  const base = style("inicio2HeroAvatar");
+  const fallback = style("inicio2HeroAvatarFallback");
+  const compact = style("inicio3HeroAvatarBorder");
+  assert.equal(compact.width, 22);
+  assert.equal(compact.height, 22);
+  assert.equal(32 - compact.width, 10);
+  assert.equal(base.width - compact.width, 20);
+  assert.equal(base.height - compact.height, 20);
+  assert.equal(fallback.width - compact.width, 20);
+  assert.equal(fallback.height - compact.height, 20);
+  assert.equal(compact.borderRadius, compact.width / 2);
+  const liftNode = find(node => ts.isVariableDeclaration(node) && node.name.getText(ast) === "inicio3ProfileHeaderLift") as ts.VariableDeclaration;
+  assert.equal(evaluate(liftNode.initializer!.getText(ast), bindings), 35);
+  const geometry = (lift: number) => {
+    const values: Record<string, unknown> = {
+      ...bindings, topInset: 67, INICIO2_HERO_HEIGHT: 465,
+      INICIO3_VERTICAL_LIFT: 11, inicio3ProfileHeaderLift: lift,
+    };
+    for (const name of ["inicio3WeekShift", "inicio3HeroShift", "inicio3HeroDownshift", "inicio3HeroHeight", "inicio3HeroLayoutTop", "inicio3HeroTop"]) {
+      const node = find(candidate => ts.isVariableDeclaration(candidate) && candidate.name.getText(ast) === name) as ts.VariableDeclaration;
+      values[name] = evaluate(node.initializer!.getText(ast), values);
+    }
+    return values;
+  };
+  const before = geometry(20);
+  const after = geometry(35);
+  assert.equal(Number(after.inicio3HeroLayoutTop) - Number(before.inicio3HeroLayoutTop), -15);
+  assert.equal(Number(after.inicio3HeroTop) - Number(before.inicio3HeroTop), -15);
+  assert.equal(after.inicio3HeroHeight, before.inicio3HeroHeight);
+  assert.match(home, /height: inicio3HeroLayoutTop \+ inicio3HeroHeight \+ 16/);
+  assert.match(home, /10 - INICIO3_VERTICAL_LIFT - inicio3ProfileHeaderLift/);
+  assert.match(home, /top: topInset \+ 2 - inicio3ProfileHeaderLift/);
+  assert.match(home, /top: topInset \+ 68 - INICIO3_VERTICAL_LIFT - inicio3ProfileHeaderLift/);
+  assert.match(home, /translateY: y \* 0\.52/);
+});
+
 test("Inicio section title sizing remains scoped to the active home variant", () => {
   const declaration = find(node => ts.isVariableDeclaration(node)
     && node.name.getText(ast) === "sectionTitleSize") as ts.VariableDeclaration;

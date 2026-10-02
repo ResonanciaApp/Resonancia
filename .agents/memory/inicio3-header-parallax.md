@@ -7,6 +7,12 @@ El avatar, las acciones laterales y la fila semanal de Inicio 3 deben conservar 
 
 Al acortar el carrusel hero de Inicio 3 por arriba, dejar ese espacio arriba como fondo visible: desplazar el borde superior hacia abajo y conservar fijo el borde inferior y el alto del contenedor exterior. Es distinto de trasladar el hero entero: cuando se pida subir el hero y «arrastrar todo», mover a la vez su posición y el espacio que reserva en el flujo para que el contenido inferior suba con él, sin desplazar el avatar ni la fila semanal.
 
+Cuando la petición es subir el **avatar** y «arrastrar todo», sí se mueve el encabezado completo: avatar, saludo, acciones, semana, hero y contenido posterior. No aplicar aquí la excepción de preservar el encabezado que corresponde a mover únicamente el hero.
+
+**Why:** El usuario distinguió después la subida del avatar con todo el contenido de la petición anterior centrada solo en el hero.
+
+**How to apply:** Mantener el parallax compartido y mover también el espacio reservado para el hero; no usar un desplazamiento meramente visual que deje un hueco en el contenido inferior. Limitar estos ajustes a Inicio 3.
+
 **Why:** El usuario confirmó que este parallax es intencional. No es el sticky header que pidió retirar; eliminar la compensación de scroll cambió el diseño equivocado. Primero pidió expresamente conservar arriba el hueco liberado al achicar el hero y después pidió subir el hero junto con todo el contenido que viene debajo.
 
 **How to apply:** Al optimizar el hero, aislar renders de React y mantener el movimiento en el hilo de UI. No retirar el estilo compartido ni cambiar su factor sin una solicitud explícita. Si se recorta por arriba, conservar el borde inferior; si se traslada todo el bloque, cambiar tanto la posición del carrusel como el espacio vertical reservado para él, sin tocar los elementos flotantes del encabezado.
