@@ -218,7 +218,7 @@ function PreviewContentEntrance({
 
 const REWARD_AVATAR = require("../assets/images/growth/reward-avatar-lotus.png");
 
-function RewardAvatar({ module }: { module: number }) {
+function RewardAvatar({ module, levelId }: { module: number; levelId: string }) {
   const [localUri, setLocalUri] = useState(() => growthImageUris.get(module) ?? null);
   useEffect(() => {
     if (Platform.OS === "web") return;
@@ -230,7 +230,7 @@ function RewardAvatar({ module }: { module: number }) {
   }, [module]);
   const source = Platform.OS === "web" ? module : localUri ? { uri: localUri } : null;
   return (
-    <View style={styles.rewardAvatar}>
+    <View testID={`${levelId}-reward-avatar`} style={styles.rewardAvatar}>
       {source && (
         <Image
           source={source}
@@ -241,6 +241,17 @@ function RewardAvatar({ module }: { module: number }) {
           onError={(event) => console.warn(`[GrowthJourney] No se pudo mostrar el avatar de recompensa: ${event.nativeEvent.error}`)}
         />
       )}
+      <View testID={`${levelId}-reward-overlay`} pointerEvents="none" style={styles.rewardAvatarOverlay}>
+        <MaterialCommunityIcons
+          testID={`${levelId}-reward-lock`}
+          name="lock"
+          size={13}
+          color={GROWTH_COLORS.muted}
+          style={styles.rewardLock}
+          accessibilityElementsHidden
+          importantForAccessibility="no"
+        />
+      </View>
     </View>
   );
 }
@@ -313,23 +324,20 @@ function GrowthRow({
       {reward && (
         <View
           testID={`${level.id}-reward`}
-          style={styles.reward}
+          style={[styles.reward, status === "locked" && styles.lockedCopy]}
           pointerEvents="none"
           accessibilityState={{ disabled: true }}
         >
-          <MaterialCommunityIcons
-            testID={`${level.id}-reward-lock`}
-            name="lock"
-            size={16}
-            color="#8C8C8C"
-            style={styles.rewardLock}
-            accessibilityElementsHidden
-            importantForAccessibility="no"
-          />
-          <Text style={styles.rewardText}>Desbloquea 50 avatares nuevos</Text>
-          <View style={[styles.rewardAvatars, status === "locked" && styles.lockedArt]} importantForAccessibility="no">
-            <RewardAvatar module={REWARD_AVATAR} />
-          </View>
+          <RewardAvatar module={REWARD_AVATAR} levelId={level.id} />
+          <Text
+            style={[styles.rewardText, { color: status === "locked" ? GROWTH_COLORS.muted : colors.mutedForeground }]}
+            numberOfLines={2}
+            adjustsFontSizeToFit
+            minimumFontScale={0.75}
+            ellipsizeMode="tail"
+          >
+            Desbloquea 50 avatares nuevos
+          </Text>
         </View>
       )}
       </View>
@@ -519,24 +527,31 @@ const styles = StyleSheet.create({
     alignSelf: "stretch",
     marginTop: 12,
     minHeight: 50,
-    borderRadius: 12,
     paddingVertical: 8,
-    paddingHorizontal: 8,
     flexDirection: "row",
     alignItems: "center",
     gap: 6,
-    backgroundColor: "rgba(0,0,0,0.22)",
   },
-  rewardLock: { width: 16, height: 16 },
-  rewardText: { flex: 1, flexShrink: 1, fontFamily: "Manrope", fontSize: 11, lineHeight: 16, color: "#8C8C8C" },
-  rewardAvatars: { flexDirection: "row", alignItems: "center" },
+  rewardLock: { position: "absolute", left: 3, top: 3, width: 13, height: 13 },
+  rewardText: { flex: 1, flexShrink: 1, minWidth: 0, fontFamily: "Manrope", fontSize: 11, lineHeight: 16 },
+  rewardAvatarOverlay: {
+    position: "absolute",
+    top: 0,
+    left: 0,
+    right: 0,
+    bottom: 0,
+    backgroundColor: "rgba(0,0,0,0.22)",
+    alignItems: "center",
+    justifyContent: "center",
+  },
   rewardAvatar: {
-    width: 32,
-    height: 32,
-    borderRadius: 16,
+    width: 35,
+    height: 35,
+    flexShrink: 0,
+    borderRadius: 17.5,
     overflow: "hidden",
     borderWidth: 1.5,
-    borderColor: "rgba(214,176,92,0.75)",
+    borderColor: "rgba(214,176,92,0.1)",
     backgroundColor: "rgba(0,0,0,0.3)",
   },
   name: { fontFamily: "Manrope", fontSize: 15, fontWeight: "700", lineHeight: 20, marginBottom: 6 },
