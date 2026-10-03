@@ -43,7 +43,10 @@ test("creativity points show the exact title, zero-of-100 bar and question mark 
   const profile = readFileSync(new URL("../components/ProfileScreenBase.tsx", import.meta.url), "utf8");
   const intentionTitleSize = Number(profile.match(/GrowthLevelPreviewCard[^>]*titleFontSize=\{(\d+)\}/)?.[1]);
   assert.equal(intentionTitleSize, 15);
-  assert.equal(componentStyles.title.fontSize, intentionTitleSize);
+  assert.equal(componentStyles.title.fontSize, 16);
+  const progress = readFileSync(new URL("../components/ProgressMirrorSections.tsx", import.meta.url), "utf8");
+  const weeklyTitleSize = Number(progress.match(/streakTitle:\s*\{[^}]*fontSize:\s*(\d+)/)?.[1]);
+  assert.equal(componentStyles.title.fontSize, weeklyTitleSize);
   for (const props of captured.values()) {
     assert.equal(props.onPress, undefined);
     assert.equal(props.onValueChange, undefined);

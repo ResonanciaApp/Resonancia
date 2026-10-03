@@ -49,7 +49,7 @@ const styles = StyleSheet.create({
     paddingVertical: 18,
   },
   header: { flexDirection: "row", alignItems: "center", gap: 12 },
-  title: { flex: 1, fontFamily: "Manrope", fontSize: 15, fontWeight: "600" },
+  title: { flex: 1, fontFamily: "Manrope", fontSize: 16, fontWeight: "600" },
   info: {
     width: 25,
     height: 25,
