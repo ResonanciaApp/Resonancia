@@ -167,7 +167,9 @@ test("Perfil shows titled seven-day progress on black, preserving history, Inten
   const profile = readFileSync(new URL("../components/ProfileScreenBase.tsx", import.meta.url), "utf8");
   const usage = profile.match(/<ProgressMirrorSections[\s\S]*?canonicalVerticalInsets/)?.[0] ?? "";
   assert.match(usage, /showStreakWeek\s/);
-  assert.match(usage, /weeklySectionTitle="Tu progreso esta semana"/);
+  assert.match(usage, /weeklySectionTitle="Tu progreso semanal"/);
+  assert.match(usage, /weeklySectionHorizontalPadding=\{20\}/);
+  assert.match(usage, /weeklySectionTitleHorizontalPadding=\{0\}/);
   assert.match(usage, /weeklySectionBackgroundColor="rgba\(0,0,0,0.16\)"/);
   assert.match(usage, /separateStreakHistory/);
   const html = render({
@@ -175,7 +177,9 @@ test("Perfil shows titled seven-day progress on black, preserving history, Inten
     showStreakWeek: true,
     showPersonalStats: false,
     showCalendar: true,
-    weeklySectionTitle: "Tu progreso esta semana",
+    weeklySectionTitle: "Tu progreso semanal",
+    weeklySectionHorizontalPadding: 20,
+    weeklySectionTitleHorizontalPadding: 0,
     weeklySectionBackgroundColor: "rgba(0,0,0,0.16)",
     longestStreakLabel: "RACHA ACUMULADA",
     afterStreakHistory: React.createElement("div", { "data-testid": "profile-growth-intention" }, "Intención"),
@@ -183,7 +187,11 @@ test("Perfil shows titled seven-day progress on black, preserving history, Inten
   assert.match(html, /seven-week-days/);
   const weekly = html.match(/<div[^>]*data-testid="profile-weekly-progress"[^>]*>/)?.[0] ?? "";
   assert.match(weekly, /data-background="rgba\(0,0,0,0.16\)"/);
-  assert.ok(html.indexOf("Tu progreso esta semana") < html.indexOf('data-testid="seven-week-days"'));
+  assert.ok(html.indexOf("Tu progreso semanal") < html.indexOf('data-testid="seven-week-days"'));
+  assert.doesNotMatch(html, /Tu progreso esta semana/);
+  assert.match(weekly, /data-padding-horizontal="20"/);
+  const title = html.match(/<div[^>]*data-testid="profile-weekly-title"[^>]*>/)?.[0] ?? "";
+  assert.match(title, /data-padding-horizontal="0"/);
   for (const content of ["profile-streak-history", "RACHA ACTUAL", "RACHA ACUMULADA", "RACHA MÁS LARGA", "RACHAS COMPLETADAS", "profile-growth-intention", 'data-testid="calendar"']) {
     assert.ok(html.includes(content), `Missing preserved content: ${content}`);
   }
@@ -198,7 +206,7 @@ test("Perfil aligns its weekly title with the lateral margin without changing hi
       separateStreakHistory: true,
       showPersonalStats: false,
       showCalendar: false,
-      weeklySectionTitle: "Tu progreso esta semana",
+      weeklySectionTitle: "Tu progreso semanal",
       weeklySectionHorizontalPadding: 0,
       weeklySectionTitleHorizontalPadding: padding,
       sectionHorizontalPadding: 20,
@@ -337,9 +345,9 @@ test("Perfil centers number-and-label groups on their icons in all four history 
   assert.match(html, /data-testid="calendar"[^>]*data-canonical-insets="true"/);
 });
 
-test("Perfil and Tu progreso use full-width weekly rows while history preserves its inset", () => {
+test("Perfil aligns its seven days with the section's lateral insets while Tu progreso stays full-width", () => {
   for (const [path, padding] of [
-    ["../components/ProfileScreenBase.tsx", 0],
+    ["../components/ProfileScreenBase.tsx", 20],
     ["../app/progreso.tsx", 0],
   ] as const) {
     const source = readFileSync(new URL(path, import.meta.url), "utf8");
@@ -380,13 +388,13 @@ test("Perfil moves streak history and all following content down 6px in normal f
 test("Perfil titles its black weekly block and preserves weekly/history/calendar gaps", () => {
   const source = readFileSync(new URL("../components/ProfileScreenBase.tsx", import.meta.url), "utf8");
   assert.doesNotMatch(source, /weeklySectionTitle="Esta semana"/);
-  assert.match(source, /weeklySectionTitle="Tu progreso esta semana"/);
+  assert.match(source, /weeklySectionTitle="Tu progreso semanal"/);
   assert.match(source, /weeklySectionBackgroundColor="rgba\(0,0,0,0.16\)"/);
   assert.doesNotMatch(source, /streakMarginBottom=\{PROFILE_SECTION_GAP - 12\}/);
   assert.match(source, /sectionMarginBottom=\{PROFILE_SECTION_GAP\}/);
   const html = render({
     separateStreakHistory: true,
-    weeklySectionTitle: "Tu progreso esta semana",
+    weeklySectionTitle: "Tu progreso semanal",
     weeklySectionBackgroundColor: "rgba(0,0,0,0.16)",
     sectionBackgroundColor: "rgba(0,0,0,0.22)",
     sectionMarginBottom: 21,
@@ -400,7 +408,7 @@ test("Perfil titles its black weekly block and preserves weekly/history/calendar
   assert.match(weekly, /data-margin-bottom="21"/);
   assert.match(history, /data-margin-bottom="21"/);
   assert.doesNotMatch(html, /Esta semana/);
-  assert.match(html, /Tu progreso esta semana/);
+  assert.match(html, /Tu progreso semanal/);
   const days = html.indexOf('data-testid="seven-week-days"');
   const historyIndex = html.indexOf('data-testid="profile-streak-history"');
   assert.ok(days >= 0 && days < historyIndex);

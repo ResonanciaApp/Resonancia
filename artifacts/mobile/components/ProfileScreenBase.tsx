@@ -1441,10 +1441,10 @@ export function ProfileScreenBase({
                 showStreakHistoryTitle={false}
                 showStreakHistoryInfo={false}
                 onStreakHistoryPress={() => setStreakInfoOpen(true)}
-                weeklySectionTitle="Tu progreso esta semana"
+                weeklySectionTitle="Tu progreso semanal"
                 weeklySectionTitleHorizontalPadding={0}
                 weeklySectionBackgroundColor="rgba(0,0,0,0.16)"
-                weeklySectionHorizontalPadding={0}
+                weeklySectionHorizontalPadding={20}
                 streakHistoryTopPadding={18}
                 streakHistoryDividerOffsetY={0}
                 longestStreakLabel="RACHA ACUMULADA"
