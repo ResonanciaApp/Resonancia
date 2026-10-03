@@ -295,7 +295,7 @@ export function AmbientalDurationSheet({
                         styles.preset,
                         {
                           backgroundColor: selected
-                            ? "rgba(0,0,0,0.28)"
+                            ? "rgba(0,0,0,0.16)"
                             : "rgba(255,255,255,0.1)",
                           borderColor: selected
                             ? "rgba(249,249,249,0.8)"
@@ -340,7 +340,7 @@ export function AmbientalDurationSheet({
                     styles.preset,
                     {
                       backgroundColor: customMode
-                        ? "rgba(0,0,0,0.28)"
+                        ? "rgba(0,0,0,0.16)"
                         : "rgba(255,255,255,0.1)",
                       borderColor: "transparent",
                     },

@@ -162,7 +162,7 @@ export default function MusicaInfoScreen() {
 const info = StyleSheet.create({
   progressTrack:{ position:"absolute", left:20, right:20, height:2, backgroundColor:"rgba(255,255,255,0.15)", borderRadius:1, zIndex:10 },
   progressFill: { height:2, borderRadius:1 },
-  closeBtn:     { position:"absolute", right:16, zIndex:11, width:43, height:43, borderRadius:21.5, borderWidth:1, borderColor:"rgba(255,255,255,0.2)", backgroundColor:"rgba(0,0,0,0.22)", alignItems:"center", justifyContent:"center" },
+  closeBtn:     { position:"absolute", right:16, zIndex:11, width:43, height:43, borderRadius:21.5, borderWidth:0, borderColor:"transparent", backgroundColor:"rgba(0,0,0,0.16)", alignItems:"center", justifyContent:"center" },
   heroContent:  { position:"absolute", bottom:0, left:0, right:0, paddingHorizontal:24 },
   heroCat:      { fontFamily: "Manrope", fontSize:11, fontWeight:"700", letterSpacing:2, color:GOLD, marginBottom:10 },
   heroTitle:    { fontFamily: "Manrope", fontSize:38, fontWeight:"900", color:"#fff", letterSpacing:0.3, lineHeight:44, marginBottom:12 },

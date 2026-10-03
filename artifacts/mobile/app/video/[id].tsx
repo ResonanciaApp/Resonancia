@@ -200,7 +200,7 @@ export default function VideoPlayerScreen() {
         <BackPill
           onPress={() => router.back()}
           size={28}
-          bgColor="rgba(0,0,0,0.22)"
+          bgColor="rgba(0,0,0,0.16)"
           borderColor="rgba(241,224,255,0.25)"
           borderWidth={1.2}
           iconOffsetX={-1}

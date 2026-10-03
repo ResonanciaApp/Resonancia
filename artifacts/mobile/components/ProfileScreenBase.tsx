@@ -276,7 +276,7 @@ export function ProfileScreenBase({
   } = useUserProfile();
   const profileCatalog = useCoverPresetCatalog("profile");
 
-  const resourceBlockBackground = "rgba(0,0,0,0.22)";
+  const resourceBlockBackground = "rgba(0,0,0,0.16)";
   const libraryHeaderButtonBackground = getLibraryTabSurface(activeSceneId);
   const resourceBlockBorder = "rgba(255,255,255,0.1)";
   const secondaryAccent = activeTheme.accent ?? colors.accent;
@@ -836,7 +836,7 @@ export function ProfileScreenBase({
               foreground={colors.foreground}
               mutedForeground={colors.mutedForeground}
               accent={secondaryAccent}
-              cardBackground="rgba(0,0,0,0.22)"
+              cardBackground="rgba(0,0,0,0.16)"
               onLogout={handleProfileLogout}
             />
           </ScrollView>
@@ -1239,7 +1239,7 @@ export function ProfileScreenBase({
                   <View
                     style={[
                       styles.libraryTabBackBtn,
-                      { backgroundColor: libraryHeaderButtonBackground, opacity: pressed ? 0.7 : 1 },
+                      { backgroundColor: "rgba(0,0,0,0.16)", opacity: pressed ? 0.7 : 1 },
                     ]}
                   >
                     <Feather name="chevron-left" size={28} color="#FBFBFB" style={{ transform: [{ translateX: -1 }] }} />
@@ -1266,7 +1266,7 @@ export function ProfileScreenBase({
               <Pressable
                 onPress={libActions.onSearch}
                 hitSlop={10}
-                style={[styles.libActionBtn, { backgroundColor: libraryHeaderButtonBackground }]}
+                style={[styles.libActionBtn, { backgroundColor: "rgba(0,0,0,0.16)" }]}
                 accessibilityRole="button"
                 accessibilityLabel="Buscar en Biblioteca"
               >
@@ -1279,7 +1279,7 @@ export function ProfileScreenBase({
               <Pressable
                 onPress={libActions.onAdd}
                 hitSlop={10}
-                style={[styles.libActionBtn, { backgroundColor: libraryHeaderButtonBackground }]}
+                style={[styles.libActionBtn, { backgroundColor: "rgba(0,0,0,0.16)" }]}
                 accessibilityRole="button"
                 accessibilityLabel="Crear en Biblioteca"
               >
@@ -2073,11 +2073,11 @@ const styles = StyleSheet.create({
     height: 43,
     borderRadius: 21.5,
     transform: [{ translateX: 1 }, { translateY: -2 }],
-    borderWidth: 1.2,
-    borderColor: "rgba(241,224,255,0.25)",
+    borderWidth: 0,
+    borderColor: "transparent",
     alignItems: "center",
     justifyContent: "center",
-    backgroundColor: "rgba(0,0,0,0.22)",
+    backgroundColor: "rgba(0,0,0,0.16)",
   },
   profileHeaderActions: {
     flexDirection: "row",
@@ -2133,9 +2133,10 @@ const styles = StyleSheet.create({
   libraryTabBackBtn: {
     width: 40,
     height: 40,
+    backgroundColor: "rgba(0,0,0,0.16)",
     borderRadius: 20,
-    borderWidth: 1.2,
-    borderColor: "rgba(241,224,255,0.25)",
+    borderWidth: 0,
+    borderColor: "transparent",
     alignItems: "center",
     justifyContent: "center",
   },
@@ -2169,9 +2170,9 @@ const styles = StyleSheet.create({
     width: 43,
     height: 43,
     borderRadius: 21.5,
-    borderWidth: 1,
-    borderColor: "rgba(255,255,255,0.2)",
-    backgroundColor: "rgba(0,0,0,0.22)",
+    borderWidth: 0,
+    borderColor: "transparent",
+    backgroundColor: "rgba(0,0,0,0.16)",
     alignItems: "center",
     justifyContent: "center",
   },
@@ -2261,9 +2262,9 @@ const styles = StyleSheet.create({
     width: 43,
     height: 43,
     borderRadius: 21.5,
-    borderWidth: 1,
-    borderColor: "rgba(255,255,255,0.2)",
-    backgroundColor: "rgba(0,0,0,0.22)",
+    borderWidth: 0,
+    borderColor: "transparent",
+    backgroundColor: "rgba(0,0,0,0.16)",
     alignItems: "center",
     justifyContent: "center",
   },
@@ -2291,7 +2292,7 @@ const styles = StyleSheet.create({
     borderRadius: 21,
     borderWidth: 1,
     borderColor: "rgba(255,255,255,0.2)",
-    backgroundColor: "rgba(0,0,0,0.22)",
+    backgroundColor: "rgba(0,0,0,0.16)",
   },
   accountCoverUploadText: {
     fontFamily: "Manrope",
@@ -2336,7 +2337,7 @@ const styles = StyleSheet.create({
     color: "#AAAAC4",
   },
   accountFieldValueBox: {
-    backgroundColor: "rgba(0,0,0,0.22)",
+    backgroundColor: "rgba(0,0,0,0.16)",
     height: 48,
     borderRadius: 17,
     paddingHorizontal: 14,
@@ -2353,7 +2354,7 @@ const styles = StyleSheet.create({
     height: 48,
     paddingHorizontal: 14,
     paddingVertical: 0,
-    backgroundColor: "rgba(0,0,0,0.22)",
+    backgroundColor: "rgba(0,0,0,0.16)",
     borderRadius: 17,
     borderWidth: 0,
   },
@@ -2428,9 +2429,10 @@ const styles = StyleSheet.create({
   libActionBtn: {
     width: 43,
     height: 43,
+    backgroundColor: "rgba(0,0,0,0.16)",
     borderRadius: 21.5,
-    borderWidth: 1,
-    borderColor: "rgba(255,255,255,0.2)",
+    borderWidth: 0,
+    borderColor: "transparent",
     justifyContent: "center",
     alignItems: "center",
   },
@@ -2471,7 +2473,7 @@ const styles = StyleSheet.create({
   registrosCard: {
     borderRadius: 16,
     overflow: "hidden",
-    backgroundColor: "rgba(0,0,0,0.22)",
+    backgroundColor: "rgba(0,0,0,0.16)",
   },
   registrosRow: {
     flexDirection: "row",
@@ -2593,7 +2595,7 @@ const styles = StyleSheet.create({
   followCountDivider: { width: 1, height: 28 },
 
   // Plan card
-  planCard: { borderRadius: 18, paddingHorizontal: 16, paddingVertical: 14, flexDirection: "row", alignItems: "center", gap: 14, marginBottom: 10, backgroundColor: "rgba(0,0,0,0.22)" },
+  planCard: { borderRadius: 18, paddingHorizontal: 16, paddingVertical: 14, flexDirection: "row", alignItems: "center", gap: 14, marginBottom: 10, backgroundColor: "rgba(0,0,0,0.16)" },
   planIconWrap: { width: 40, height: 40, borderRadius: 20, alignItems: "center", justifyContent: "center" },
   planTitle: { fontFamily: "Manrope", fontSize: 15, fontWeight: "700", marginBottom: 2 },
   planSub: { fontFamily: "Manrope", fontSize: 12 },
@@ -2686,7 +2688,7 @@ const styles = StyleSheet.create({
     borderRadius: 14,
     borderWidth: 1,
     borderColor: "rgba(255,255,255,0.2)",
-    backgroundColor: "rgba(0,0,0,0.22)",
+    backgroundColor: "rgba(0,0,0,0.16)",
     paddingHorizontal: 16,
     paddingTop: 17,
     paddingBottom: 16,
@@ -2725,7 +2727,7 @@ const styles = StyleSheet.create({
   profileNotificationsCard: {
     minHeight: 66,
     borderRadius: 17,
-    backgroundColor: "rgba(0,0,0,0.22)",
+    backgroundColor: "rgba(0,0,0,0.16)",
     paddingHorizontal: 15,
     paddingVertical: 12,
     flexDirection: "row",
@@ -2758,7 +2760,7 @@ const styles = StyleSheet.create({
     borderRadius: 17,
     borderWidth: 1,
     borderColor: "rgba(255,255,255,0.2)",
-    backgroundColor: "rgba(0,0,0,0.22)",
+    backgroundColor: "rgba(0,0,0,0.16)",
     padding: 16,
     marginTop: 12,
     marginBottom: 12,
@@ -2886,7 +2888,7 @@ const styles = StyleSheet.create({
   // Membresía
   membershipRow: {
     borderRadius: 18,
-    backgroundColor: "rgba(0,0,0,0.22)",
+    backgroundColor: "rgba(0,0,0,0.16)",
     borderWidth: 1,
     padding: 16,
     flexDirection: "row",
@@ -2904,7 +2906,7 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     alignItems: "center",
     borderRadius: 14,
-    backgroundColor: "rgba(0,0,0,0.22)",
+    backgroundColor: "rgba(0,0,0,0.16)",
     padding: 10,
     gap: 12,
     marginBottom: 10,
@@ -2918,7 +2920,7 @@ const styles = StyleSheet.create({
   menuCard: {
     borderRadius: 18,
     overflow: "hidden",
-    backgroundColor: "rgba(0,0,0,0.22)",
+    backgroundColor: "rgba(0,0,0,0.16)",
   },
   streakStatsDivider: {
     height: 1,
@@ -3000,7 +3002,7 @@ const styles = StyleSheet.create({
     paddingBottom: 12,
     paddingHorizontal: 8,
     borderRadius: 18,
-    backgroundColor: "rgba(0,0,0,0.22)",
+    backgroundColor: "rgba(0,0,0,0.16)",
     alignItems: "center",
     justifyContent: "center",
     gap: 8,
@@ -3123,7 +3125,7 @@ const styles = StyleSheet.create({
   dvLightboxImage: { width: "100%", height: "80%" },
   dvLightboxClose: {
     position: "absolute", right: 18, width: 38, height: 38, borderRadius: 19,
-    backgroundColor: "rgba(255,255,255,0.12)", alignItems: "center", justifyContent: "center",
+    backgroundColor: "rgba(0,0,0,0.16)", alignItems: "center", justifyContent: "center",
   },
   dvEmptyPrompt: {
     flexDirection: "row", alignItems: "center", gap: 8,

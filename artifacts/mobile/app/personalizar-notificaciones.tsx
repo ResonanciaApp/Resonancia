@@ -27,7 +27,6 @@ import { useNotifications } from "@/context/NotificationsContext";
 import { useSceneTheme } from "@/context/SceneThemeContext";
 import { useColors } from "@/hooks/useColors";
 import { SavedConfirmationBanner } from "@/components/SavedConfirmationBanner";
-import { SessionBadgeGlass } from "@/components/SessionDurationBadge";
 
 type PreferenceOption = {
   id: string;
@@ -135,7 +134,7 @@ function NotificationCategoryCard({
           height,
           borderWidth: selected ? 1.5 : 1,
           borderColor: selected ? "rgba(255,255,255,0.57)" : "rgba(241,224,255,0.25)",
-          backgroundColor: selected ? "rgba(0,0,0,0.22)" : "transparent",
+          backgroundColor: selected ? "rgba(0,0,0,0.16)" : "transparent",
         },
         { opacity: pressed ? 0.76 : 1 },
       ]}
@@ -339,11 +338,6 @@ export default function PersonalizarNotificacionesScreen() {
                       { opacity: pressed ? 0.7 : 1 },
                     ]}
                   >
-                    {unreadCount > 0 && (
-                      <View pointerEvents="none" style={styles.notificationCountGlass}>
-                        <SessionBadgeGlass showBlackTint={false} showWhiteTint />
-                      </View>
-                    )}
                     <Text
                       style={[
                         styles.notificationCountText,
@@ -491,11 +485,11 @@ const styles = StyleSheet.create({
     width: 43,
     height: 43,
     borderRadius: 21.5,
-    borderWidth: 1.2,
-    borderColor: "rgba(241,224,255,0.25)",
+    borderWidth: 0,
+    borderColor: "transparent",
     alignItems: "center",
     justifyContent: "center",
-    backgroundColor: "rgba(0,0,0,0.22)",
+    backgroundColor: "rgba(0,0,0,0.16)",
   },
   notificationCountHitArea: {
     position: "absolute",
@@ -511,20 +505,16 @@ const styles = StyleSheet.create({
   notificationCountButton: {
     width: 43,
     height: 43,
+    backgroundColor: "rgba(0,0,0,0.16)",
     borderRadius: 21.5,
-    borderWidth: 1.2,
-    borderColor: "rgba(241,224,255,0.25)",
+    borderWidth: 0,
+    borderColor: "transparent",
     alignItems: "center",
     justifyContent: "center",
     overflow: "hidden",
   },
   notificationCountButtonInactive: {
-    backgroundColor: "rgba(0,0,0,0.22)",
-  },
-  notificationCountGlass: {
-    ...StyleSheet.absoluteFillObject,
-    borderRadius: 21.5,
-    overflow: "hidden",
+    backgroundColor: "rgba(0,0,0,0.16)",
   },
   notificationCountText: {
     color: "#F9F9F9",
@@ -573,7 +563,7 @@ const styles = StyleSheet.create({
     borderRadius: 23,
     justifyContent: "center",
     alignItems: "center",
-    backgroundColor: "rgba(0,0,0,0.22)",
+    backgroundColor: "rgba(0,0,0,0.16)",
     overflow: "hidden",
   },
   categoryIcon: { height: 32, alignItems: "center", justifyContent: "center", marginBottom: 5 },
@@ -592,7 +582,7 @@ const styles = StyleSheet.create({
     alignItems: "center",
     gap: 7,
   },
-  pillSelected: { borderColor: "#F9F9F9", backgroundColor: "rgba(0,0,0,0.22)" },
+  pillSelected: { borderColor: "#F9F9F9", backgroundColor: "rgba(0,0,0,0.16)" },
   pillLabel: { color: "rgba(255,255,255,0.82)", fontFamily: "Manrope", fontSize: 13 },
   pillLabelSelected: { color: "#F9F9F9" },
   error: { color: "#FFB4B4", fontFamily: "Manrope", fontSize: 13, textAlign: "center", marginTop: 4 },

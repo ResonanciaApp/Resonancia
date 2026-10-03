@@ -138,7 +138,7 @@ function CalendarActivityRow({
       style={({ pressed }) => [
         styles.activityRow,
         {
-          backgroundColor: "rgba(0,0,0,0.22)",
+          backgroundColor: "rgba(0,0,0,0.16)",
           opacity: pressed && !completed ? 0.72 : 1,
         },
       ]}
@@ -507,7 +507,7 @@ function RutinaCalendarioScreenContent() {
                         {
                           backgroundColor: selected
                             ? "#F9F9F9"
-                            : "rgba(0,0,0,0.22)",
+                            : "rgba(0,0,0,0.16)",
                           borderColor:
                             isToday && !selected
                               ? "#FFFFFF"
@@ -648,9 +648,9 @@ const styles = StyleSheet.create({
     width: 43,
     height: 43,
     borderRadius: 21.5,
-    borderWidth: 1,
-    borderColor: "rgba(255,255,255,0.2)",
-    backgroundColor: "rgba(0,0,0,0.22)",
+    borderWidth: 0,
+    borderColor: "transparent",
+    backgroundColor: "rgba(0,0,0,0.16)",
     alignItems: "center",
     justifyContent: "center",
     zIndex: 2,

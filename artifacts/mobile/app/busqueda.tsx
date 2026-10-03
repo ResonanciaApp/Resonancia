@@ -143,7 +143,7 @@ function FilterSheet({
                     style={({ pressed }) => [
                       sheetStyles.option,
                       {
-                        backgroundColor: "rgba(0,0,0,0.22)",
+                        backgroundColor: "rgba(0,0,0,0.16)",
                         opacity: pressed ? 0.75 : 1,
                       },
                     ]}
@@ -273,7 +273,7 @@ export default function BusquedaScreen({ tiempo: tiempoProp }: { tiempo?: string
           style={({ pressed }) => [
             styles.filterPill,
             {
-              backgroundColor: "rgba(0,0,0,0.22)",
+              backgroundColor: "rgba(0,0,0,0.16)",
               opacity: pressed ? 0.75 : 1,
             },
           ]}
@@ -407,7 +407,7 @@ const styles = StyleSheet.create({
     borderRadius: 999,
     borderWidth: 1,
     borderColor: "rgba(249,249,249,0.8)",
-    backgroundColor: "rgba(0,0,0,0.22)",
+    backgroundColor: "rgba(0,0,0,0.16)",
     paddingHorizontal: 18,
     height: 45,
   },

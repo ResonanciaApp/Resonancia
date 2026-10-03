@@ -417,9 +417,9 @@ const styles = StyleSheet.create({
     borderRadius: 21.5,
     alignItems: "center",
     justifyContent: "center",
-    borderWidth: 1,
-    borderColor: "rgba(255,255,255,.14)",
-    backgroundColor: "rgba(10,12,18,.22)",
+    borderWidth: 0,
+    borderColor: "transparent",
+    backgroundColor: "rgba(0,0,0,0.16)",
   },
   circleButtonPlaceholder: {
     width: 43,

@@ -100,7 +100,7 @@ export default function GeometrixAprendeDetalleScreen() {
       {/* Header */}
       <View style={styles.header}>
         <Pressable
-          style={[styles.backBtn, { borderColor: colors.primary + "30" }]}
+          style={[styles.backBtn, { borderColor: "transparent" }]}
           onPress={() => router.back()}
           hitSlop={8}
         >
@@ -193,7 +193,7 @@ export default function GeometrixAprendeDetalleScreen() {
 const styles = StyleSheet.create({
   root: { flex: 1 },
   header: { flexDirection: "row", alignItems: "center", paddingHorizontal: 20, paddingTop: 8, paddingBottom: 8, gap: 8 },
-  backBtn: { width: 36, height: 36, borderRadius: 18, borderWidth: 1, alignItems: "center", justifyContent: "center", marginRight: 4 },
+  backBtn: { width: 36, height: 36, backgroundColor: "rgba(0,0,0,0.16)", borderRadius: 18, borderWidth: 0, alignItems: "center", justifyContent: "center", marginRight: 4 },
   iconBtn: { width: 34, height: 34, borderRadius: 17, borderWidth: 1, alignItems: "center", justifyContent: "center" },
   headerTitle: { fontFamily: "Manrope", flex: 1, fontSize: 14 },
   scroll: { paddingTop: 0 },

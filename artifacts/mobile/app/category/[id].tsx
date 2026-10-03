@@ -163,7 +163,7 @@ export default function CategoryScreen({ categoryId }: { categoryId?: string } =
   }, [stickyBorderOpacity]);
   const useDiscoverStickyStyle = isIndigo2ThemeId(theme.id) || isIndigoThemeId(theme.id);
 
-  const profileSectionBackground = "rgba(0,0,0,0.22)";
+  const profileSectionBackground = "rgba(0,0,0,0.16)";
   const title = category?.title ?? "Categoría";
 
   const goBack = backOverride ?? (() => router.back());
@@ -311,7 +311,7 @@ export default function CategoryScreen({ categoryId }: { categoryId?: string } =
           style={({ pressed }) => [
             styles.backBtn,
             {
-              backgroundColor: profileSectionBackground,
+              backgroundColor: "rgba(0,0,0,0.16)",
               opacity: pressed ? 0.7 : 1,
               top: topPad + 4,
             },
@@ -364,9 +364,9 @@ const styles = StyleSheet.create({
     width: 43,
     height: 43,
     borderRadius: 21.5,
-    borderWidth: 1,
-    borderColor: "rgba(255,255,255,0.2)",
-    backgroundColor: "rgba(0,0,0,0.22)",
+    borderWidth: 0,
+    borderColor: "transparent",
+    backgroundColor: "rgba(0,0,0,0.16)",
     alignItems: "center",
     justifyContent: "center",
   },
@@ -382,11 +382,11 @@ const styles = StyleSheet.create({
     width: 43,
     height: 43,
     borderRadius: 21.5,
-    borderWidth: 1,
-    borderColor: "rgba(255,255,255,0.2)",
+    borderWidth: 0,
+    borderColor: "transparent",
     alignItems: "center",
     justifyContent: "center",
-    backgroundColor: "rgba(0,0,0,0.22)",
+    backgroundColor: "rgba(0,0,0,0.16)",
   },
   chipsArea: {
     paddingTop: 10,
@@ -414,12 +414,12 @@ const styles = StyleSheet.create({
     gap: 12,
     alignItems: "center",
     justifyContent: "center",
-    backgroundColor: "rgba(0,0,0,0.22)",
+    backgroundColor: "rgba(0,0,0,0.16)",
   },
-  chipTibet: { backgroundColor: "rgba(0,0,0,0.22)" },
-  chipIndigo: { backgroundColor: "rgba(0,0,0,0.22)" },
+  chipTibet: { backgroundColor: "rgba(0,0,0,0.16)" },
+  chipIndigo: { backgroundColor: "rgba(0,0,0,0.16)" },
   chipIndigo2Inactive: {
-    backgroundColor: "rgba(0,0,0,0.22)",
+    backgroundColor: "rgba(0,0,0,0.16)",
     borderColor: "rgba(241,224,255,0.25)",
   },
   chipSelected: {

@@ -43,7 +43,7 @@ export const POSITIONED_DAY_GRADIENT = ["#9380E7", "#9EA5EF"] as const;
 export const EDITORIAL_PLAYLIST_GRADIENT = ["#363459", "#231E53", "#2B1E53", "#2E1E53"] as const;
 export const NOTIFICATIONS_GRADIENT = ["#231E53", "#2B1E53"] as const;
 export const SLEEP_REMINDER_NIGHT_GRADIENT = ["#0B0A26", "#08071C", "#070514"] as const;
-export const SLEEP_REMINDER_CARD_BACKGROUND = "rgba(0,0,0,0.28)";
+export const SLEEP_REMINDER_CARD_BACKGROUND = "rgba(0,0,0,0.16)";
 export const SLEEP_REMINDER_CONTINUE_BACKGROUND = "#94A6FF";
 export const SLEEP_REMINDER_CONTINUE_FOREGROUND = "#0B0A26";
 export const STREAK_INFO_COLORS = {
@@ -53,12 +53,12 @@ export const STREAK_INFO_COLORS = {
   subtitle: "rgba(249,249,249,0.82)",
   description: "rgba(249,249,249,0.74)",
   footnote: "rgba(249,249,249,0.6)",
-  cardBackground: "rgba(0,0,0,0.22)",
+  cardBackground: "rgba(0,0,0,0.16)",
   imageMaskOpaque: "#FFFFFF",
   imageMaskTransparent: "#FFFFFF00",
   iconBackground: "rgba(255,255,255,0.1)",
-  navigationBackground: "rgba(0,0,0,0.28)",
-  navigationBorder: "rgba(255,255,255,0.2)",
+  navigationBackground: "rgba(0,0,0,0.16)",
+  navigationBorder: "transparent",
 } as const;
 export const PREMIUM_STAR_GRADIENT = ["#FFD848", "#FCC200", "#F6BA00"] as const;
 

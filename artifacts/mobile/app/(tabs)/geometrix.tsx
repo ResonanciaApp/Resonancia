@@ -6972,9 +6972,9 @@ const styles = StyleSheet.create({
     borderRadius: 21.5,
     alignItems: "center",
     justifyContent: "center",
-    backgroundColor: "rgba(0,0,0,0.22)",
-    borderWidth: 1,
-    borderColor: "rgba(255,255,255,0.2)",
+    backgroundColor: "rgba(0,0,0,0.16)",
+    borderWidth: 0,
+    borderColor: "transparent",
   },
   catScroll: {
     flex: 1,

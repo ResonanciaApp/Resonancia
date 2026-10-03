@@ -483,7 +483,7 @@ export default function ChatScreen({ userIdOverride }: { userIdOverride?: number
               hitSlop={10}
               style={[
                 styles.iconBtn,
-                { backgroundColor: "rgba(255,255,255,0.075)", borderColor: "rgba(255,255,255,0.1)" },
+                { backgroundColor: "rgba(0,0,0,0.16)", borderColor: "transparent" },
               ]}
             >
               <Feather name="plus" size={18} color={colors.accent} />
@@ -1298,8 +1298,9 @@ const styles = StyleSheet.create({
   iconBtn: {
     width: 36,
     height: 36,
+    backgroundColor: "rgba(0,0,0,0.16)",
     borderRadius: 18,
-    borderWidth: 1,
+    borderWidth: 0,
     alignItems: "center",
     justifyContent: "center",
   },

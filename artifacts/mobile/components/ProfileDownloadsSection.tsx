@@ -94,7 +94,7 @@ export function ProfileDownloadsSection({
 }
 
 const styles = StyleSheet.create({
-  section: { borderRadius: 14, backgroundColor: "rgba(0,0,0,0.22)", padding: 16, paddingVertical: 18, marginBottom: 32 },
+  section: { borderRadius: 14, backgroundColor: "rgba(0,0,0,0.16)", padding: 16, paddingVertical: 18, marginBottom: 32 },
   header: { flexDirection: "row", justifyContent: "space-between", alignItems: "center", marginBottom: 12 },
   title: { fontFamily: "Manrope", fontSize: 16, fontWeight: "800" },
   link: { fontFamily: "Manrope", fontSize: 13, fontWeight: "700" },

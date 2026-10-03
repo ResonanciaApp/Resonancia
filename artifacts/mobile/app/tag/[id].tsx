@@ -270,7 +270,7 @@ export default function ThemeTagScreen({
                   style={[
                     styles.internalBackBtn,
                     {
-                      backgroundColor: "rgba(0,0,0,0.22)",
+                      backgroundColor: "rgba(0,0,0,0.16)",
                       opacity: pressed ? 0.7 : 1,
                     },
                   ]}
@@ -338,7 +338,7 @@ export default function ThemeTagScreen({
                   styles.heroBackBtn,
                   {
                     top: topPad + 8,
-                    backgroundColor: "rgba(0,0,0,0.22)",
+                    backgroundColor: "rgba(0,0,0,0.16)",
                     opacity: pressed ? 0.7 : 1,
                   },
                 ]}
@@ -494,7 +494,7 @@ export default function ThemeTagScreen({
           style={({ pressed }) => [
             styles.backBtn,
             {
-              backgroundColor: "rgba(0,0,0,0.22)",
+              backgroundColor: "rgba(0,0,0,0.16)",
               opacity: pressed ? 0.7 : 1,
                top: topPad - 4,
             },
@@ -523,9 +523,10 @@ const styles = StyleSheet.create({
     left: H_PAD,
     width: 43,
     height: 43,
+    backgroundColor: "rgba(0,0,0,0.16)",
     borderRadius: 21.5,
-    borderWidth: 1.2,
-    borderColor: "rgba(241,224,255,0.25)",
+    borderWidth: 0,
+    borderColor: "transparent",
     alignItems: "center",
     justifyContent: "center",
   },
@@ -557,7 +558,7 @@ const styles = StyleSheet.create({
     borderColor: "rgba(255,255,255,0.20)",
     alignItems: "center",
     justifyContent: "center",
-    backgroundColor: "rgba(0,0,0,0.22)",
+    backgroundColor: "rgba(0,0,0,0.16)",
   },
   pageDescription: {
     fontFamily: "Manrope",
@@ -587,9 +588,10 @@ const styles = StyleSheet.create({
   internalBackBtn: {
     width: 43,
     height: 43,
+    backgroundColor: "rgba(0,0,0,0.16)",
     borderRadius: 21.5,
-    borderWidth: 1.2,
-    borderColor: "rgba(241,224,255,0.25)",
+    borderWidth: 0,
+    borderColor: "transparent",
     alignItems: "center",
     justifyContent: "center",
   },
@@ -626,9 +628,10 @@ const styles = StyleSheet.create({
     left: H_PAD,
     width: 43,
     height: 43,
+    backgroundColor: "rgba(0,0,0,0.16)",
     borderRadius: 21.5,
-    borderWidth: 1.2,
-    borderColor: "rgba(241,224,255,0.25)",
+    borderWidth: 0,
+    borderColor: "transparent",
     alignItems: "center",
     justifyContent: "center",
   },

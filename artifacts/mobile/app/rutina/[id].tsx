@@ -110,7 +110,7 @@ export default function RutinaDetailScreen() {
   const insets = useSafeAreaInsets();
   const routineTheme = useRoutineTheme();
   const { theme: activeTheme } = useSceneTheme();
-  const actionBackground = "rgba(0,0,0,0.22)";
+  const actionBackground = "rgba(0,0,0,0.16)";
   const todayKey = useDayRollover();
   const {
     isHydrated,

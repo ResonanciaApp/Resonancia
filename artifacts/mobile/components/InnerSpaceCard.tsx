@@ -704,7 +704,7 @@ const styles = StyleSheet.create({
     borderRadius: 24,
     borderWidth: 1,
     borderColor: "rgba(255,255,255,0.1)",
-    backgroundColor: "rgba(0,0,0,0.22)",
+    backgroundColor: "rgba(0,0,0,0.16)",
     paddingHorizontal: 20,
     paddingTop: 12,
     paddingBottom: 16,
@@ -790,7 +790,7 @@ const styles = StyleSheet.create({
   },
   selectedGridItem: {
     borderColor: "transparent",
-    backgroundColor: "rgba(0,0,0,0.28)",
+    backgroundColor: "rgba(0,0,0,0.16)",
   },
   pressedCategory: {
     transform: [{ scale: 0.97 }],

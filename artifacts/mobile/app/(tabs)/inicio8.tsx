@@ -54,7 +54,6 @@ import Svg, {
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 
 import { GreetingHeader } from "@/components/GreetingHeader";
-import { ConnectedCommunitySection } from "@/components/ConnectedCommunitySection";
 import { useGreeting } from "@/hooks/useGreeting";
 import { useGreetingVisible } from "@/context/GreetingVisibleContext";
 import { useDrawer } from "@/context/DrawerContext";
@@ -2575,7 +2574,6 @@ export default function HomeScreen2({
   const searchOpenRef = useRef(false);
   const scrollYRef = useRef(0);
   const inicio3ScrollY = useSharedValue(0);
-  const communityContentY = useSharedValue(0);
   const homeScrollRef = useRef<React.ElementRef<typeof RAnimated.ScrollView>>(null);
 
   const searchBtnAnim = useRef(new Animated.Value(0)).current;
@@ -3037,10 +3035,7 @@ export default function HomeScreen2({
           />
         )}
 
-        <View
-          style={isInicio2 && styles.inicio2ContentPanel}
-          onLayout={(event) => { communityContentY.value = event.nativeEvent.layout.y; }}
-        >
+        <View style={isInicio2 && styles.inicio2ContentPanel}>
         {isInicio2 && variant !== "inicio3" && (
           <View
             style={[
@@ -3476,9 +3471,6 @@ export default function HomeScreen2({
             openCategory={openCategory}
           />
         )}
-        {variant === "inicio3" && (
-          <ConnectedCommunitySection scrollY={inicio3ScrollY} contentY={communityContentY} focused={tabFocused} />
-        )}
         </View>
       </RAnimated.ScrollView>
 
@@ -3749,9 +3741,9 @@ const styles = StyleSheet.create({
   inicio3HeroLotusSurface: {
     height: 39,
     borderRadius: 19.5,
-    backgroundColor: "rgba(0,0,0,0.25)",
-    borderWidth: 1,
-    borderColor: "rgba(255,255,255,0.2)",
+    backgroundColor: "rgba(0,0,0,0.16)",
+    borderWidth: 0,
+    borderColor: "transparent",
   },
   inicio3HeroRightActions: {
     flexDirection: "row",
@@ -4255,11 +4247,11 @@ const styles = StyleSheet.create({
     width: 43,
     height: 43,
     borderRadius: 21.5,
-    borderWidth: 1,
-    borderColor: "rgba(255,255,255,0.2)",
+    borderWidth: 0,
+    borderColor: "transparent",
     alignItems: "center",
     justifyContent: "center",
-    backgroundColor: "rgba(0,0,0,0.34)",
+    backgroundColor: "rgba(0,0,0,0.16)",
   },
   universeBtnIcon: {
     width: 28,

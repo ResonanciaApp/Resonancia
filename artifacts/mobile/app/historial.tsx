@@ -24,7 +24,7 @@ export default function HistorialScreen() {
 
   const topPad = Platform.OS === "web" ? 67 : Math.max(insets.top, 40);
   const bottomPad = insets.bottom + 24;
-  const libraryHeaderButtonBackground = "rgba(0,0,0,0.22)";
+  const libraryHeaderButtonBackground = "rgba(0,0,0,0.16)";
 
   return (
     <>
@@ -52,7 +52,7 @@ export default function HistorialScreen() {
                 <View
                   style={[
                     styles.libraryTabBackBtn,
-                    { backgroundColor: libraryHeaderButtonBackground, opacity: pressed ? 0.7 : 1 },
+                    { backgroundColor: "rgba(0,0,0,0.16)", opacity: pressed ? 0.7 : 1 },
                   ]}
                 >
                   <Feather name="chevron-left" size={28} color="#FBFBFB" style={{ transform: [{ translateX: -1 }] }} />
@@ -72,7 +72,7 @@ export default function HistorialScreen() {
           }}
           showsVerticalScrollIndicator={false}
         >
-          <HistorialCalendar backgroundColor="rgba(0,0,0,0.22)" />
+          <HistorialCalendar backgroundColor="rgba(0,0,0,0.16)" />
         </ScrollView>
       </View>
     </LinearGradient>
@@ -106,9 +106,10 @@ const styles = StyleSheet.create({
   libraryTabBackBtn: {
     width: 43,
     height: 43,
+    backgroundColor: "rgba(0,0,0,0.16)",
     borderRadius: 21.5,
-    borderWidth: 1.2,
-    borderColor: "rgba(241,224,255,0.25)",
+    borderWidth: 0,
+    borderColor: "transparent",
     alignItems: "center",
     justifyContent: "center",
   },

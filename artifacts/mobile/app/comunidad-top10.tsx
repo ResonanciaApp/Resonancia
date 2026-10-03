@@ -87,7 +87,7 @@ const styles = StyleSheet.create({
   scroll: { flex: 1 },
   headerTop: { marginBottom: 14 },
   backBtn: {
-    width: 36, height: 36, borderRadius: 18, borderWidth: 1,
+    width: 36, height: 36, backgroundColor: "rgba(0,0,0,0.16)", borderRadius: 18, borderWidth: 0,
     alignItems: "center", justifyContent: "center",
   },
   header: { marginBottom: 20 },

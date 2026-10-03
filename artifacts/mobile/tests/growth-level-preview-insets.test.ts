@@ -253,7 +253,7 @@ test("Crecimiento, Vegetación and Expansión share Semilla's small filled lock 
     assert.ok(banner.indexOf(`data-testid="${id}-reward-lock"`) < banner.indexOf(">Desbloquea 50\navatares nuevos"));
     if (id !== "expansion") assert.match(banner, /data-lines="2" data-auto-size="true"/);
     else assert.doesNotMatch(banner, /data-lines=/);
-    assert.match(banner, /data-background="rgba\(0,0,0,0.22\)"/);
+    assert.match(banner, /data-background="rgba\(0,0,0,0.16\)"/);
     assert.match(banner, /data-opacity="0.55"/);
     assert.match(banner, /data-source="5"/);
     assert.doesNotMatch(banner, /data-source="[46]"/);
@@ -355,7 +355,7 @@ test("reward pills grow in normal flow and preserve nonreward and profile previe
   // Content inset cancels the lock's outward offset: its left edge matches the description.
   assert.match(source, /rewardLock: \{ position: "absolute", left: -3,/);
   assert.match(copy.getText(ast), /testID=\{`\$\{level.id\}-reward-content`\} style=\{styles.rewardContent\}/);
-  assert.match(source, /rewardAvatarOverlay: \{[\s\S]*?position: "absolute"[\s\S]*?backgroundColor: "rgba\(0,0,0,0.22\)"/);
+  assert.match(source, /rewardAvatarOverlay: \{[\s\S]*?position: "absolute"[\s\S]*?backgroundColor: "rgba\(0,0,0,0.16\)"/);
   assert.match(pill, /minHeight: 50/);
   // Previous rendered height was 36px artwork + 16px padding + 2px border = 54px.
   assert.equal(36 + 8 * 2 + 2 - 50, 4);
@@ -454,7 +454,7 @@ test("the preview remains an accessible actionable button with the same day labe
 
 test("Perfil can use a 16% black section background without changing other Intención cards", () => {
   assert.match(render({ canonicalVerticalInsets: true, backgroundColor: "rgba(0,0,0,0.16)" }), /data-background="rgba\(0,0,0,0.16\)"/);
-  assert.match(render(), /data-background="rgba\(0,0,0,0.22\)"/);
+  assert.match(render(), /data-background="rgba\(0,0,0,0.16\)"/);
 });
 
 test("Florecimiento pills center the golden lotus beside days, omit streak wording and preserve the extra 3px padding", () => {

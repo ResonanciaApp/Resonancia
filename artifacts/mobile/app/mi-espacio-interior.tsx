@@ -925,9 +925,9 @@ const styles = StyleSheet.create({
     width: 43,
     height: 43,
     borderRadius: 21.5,
-    borderWidth: 1,
-    borderColor: "rgba(255,255,255,0.2)",
-    backgroundColor: "rgba(0,0,0,0.22)",
+    borderWidth: 0,
+    borderColor: "transparent",
+    backgroundColor: "rgba(0,0,0,0.16)",
     justifyContent: 'center',
     alignItems: 'center',
   },
@@ -935,9 +935,9 @@ const styles = StyleSheet.create({
     width: 43,
     height: 43,
     borderRadius: 21.5,
-    borderWidth: 1,
-    borderColor: "rgba(255,255,255,0.2)",
-    backgroundColor: "rgba(0,0,0,0.22)",
+    borderWidth: 0,
+    borderColor: "transparent",
+    backgroundColor: "rgba(0,0,0,0.16)",
     justifyContent: "center",
     alignItems: "center",
   },
@@ -968,11 +968,11 @@ const styles = StyleSheet.create({
     gap: 8,
   },
   filterPillInactive: {
-    backgroundColor: "rgba(0,0,0,0.22)",
+    backgroundColor: "rgba(0,0,0,0.16)",
     borderColor: "rgba(255,255,255,0.2)",
   },
   filterPillSelected: {
-    backgroundColor: "rgba(0,0,0,0.28)",
+    backgroundColor: "rgba(0,0,0,0.16)",
     borderColor: "transparent",
   },
   filterText: {
@@ -1023,7 +1023,7 @@ const styles = StyleSheet.create({
   reflectionCard: {
     width: "100%",
     borderRadius: 16,
-    backgroundColor: "rgba(0,0,0,0.22)",
+    backgroundColor: "rgba(0,0,0,0.16)",
     padding: 16,
   },
   reflectionCardEntrance: {

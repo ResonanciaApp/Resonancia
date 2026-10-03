@@ -371,7 +371,7 @@ export default function SonidosAncestalesScreen() {
   const { version } = useCatalog();
   const { activeSceneId, theme } = useSceneTheme();
   const backOverride = useBackOverride();
-  const profileSectionBackground = "rgba(0,0,0,0.22)";
+  const profileSectionBackground = "rgba(0,0,0,0.16)";
 
   // TABS dinámicas: un chip por cada ancestralTag distinto en las sesiones
   const TABS = useMemo(() => {
@@ -669,7 +669,7 @@ export default function SonidosAncestalesScreen() {
           style={({ pressed }) => [
             styles.backBtn,
             {
-              backgroundColor: profileSectionBackground,
+              backgroundColor: "rgba(0,0,0,0.16)",
               opacity: pressed ? 0.7 : 1,
               top: topPad + 4,
             },
@@ -740,8 +740,8 @@ const styles = StyleSheet.create({
   root: { flex: 1, backgroundColor: "#0B0811" },
 
   header: { paddingHorizontal: H_PAD, paddingBottom: 10, minHeight: 48, flexDirection: "row", alignItems: "center", justifyContent: "center" },
-  backBtn: { position: "absolute", left: H_PAD, width: 43, height: 43, borderRadius: 21.5, borderWidth: 1.2, borderColor: "rgba(241,224,255,0.25)", backgroundColor: "rgba(0,0,0,0.22)", alignItems: "center", justifyContent: "center" },
-  modalBackBtn: { width: 43, height: 43, borderRadius: 21.5, borderWidth: 1.2, borderColor: "rgba(241,224,255,0.25)", backgroundColor: "rgba(0,0,0,0.22)", alignItems: "center", justifyContent: "center" },
+  backBtn: { position: "absolute", left: H_PAD, width: 43, height: 43, borderRadius: 21.5, borderWidth: 0, borderColor: "transparent", backgroundColor: "rgba(0,0,0,0.16)", alignItems: "center", justifyContent: "center" },
+  modalBackBtn: { width: 43, height: 43, borderRadius: 21.5, borderWidth: 0, borderColor: "transparent", backgroundColor: "rgba(0,0,0,0.16)", alignItems: "center", justifyContent: "center" },
   pageTitle: { fontFamily: "Manrope", fontSize: 18, lineHeight: 24, fontWeight: "700", color: TEXT, letterSpacing: 0.2 },
   stickyHeader: { position: "absolute", top: 0, left: 0, right: 0, zIndex: 20, minHeight: 48, paddingHorizontal: H_PAD, paddingBottom: 6, alignItems: "center", justifyContent: "center", overflow: "visible" },
   stickyGradientClip: { ...StyleSheet.absoluteFillObject, overflow: "hidden" },
@@ -752,7 +752,7 @@ const styles = StyleSheet.create({
   stickyTitleCol: { flex: 1, alignItems: "center" },
   stickyTitle: { fontFamily: "Manrope", fontSize: 18, lineHeight: 21, fontWeight: "700", color: TEXT, letterSpacing: 0.2, textAlign: "center" },
   headerBtn: { width: 45, height: 45, alignItems: "center", justifyContent: "center" },
-  headerSearchButton: { width: 43, height: 43, borderRadius: 21.5, borderWidth: 1.2, borderColor: "rgba(241,224,255,0.25)", alignItems: "center", justifyContent: "center", backgroundColor: "rgba(0,0,0,0.22)" },
+  headerSearchButton: { width: 43, height: 43, borderRadius: 21.5, borderWidth: 0, borderColor: "transparent", alignItems: "center", justifyContent: "center", backgroundColor: "rgba(0,0,0,0.16)" },
   headerTitleCol: { flex: 1, alignItems: "center" },
   headerTitle: { fontFamily: "Manrope", fontSize: 18, fontWeight: "400", color: "#FBFBFB", letterSpacing: 0.2, textAlign: "center", includeFontPadding: false, textAlignVertical: "center" },
   headerSubtitle: { fontFamily: "Manrope", fontSize: 11, color: "#f7f7f7", letterSpacing: 0.3, marginTop: 1, opacity: 0.7 },
@@ -824,7 +824,7 @@ const styles = StyleSheet.create({
   qsThumb: { width: 54, height: 54, borderRadius: 10 },
   qsTitle: { fontFamily: "Manrope", fontSize: 15, fontWeight: "700", color: TEXT, marginBottom: 2 },
   qsSub: { fontFamily: "Manrope", fontSize: 12, color: MUTED },
-  qsClose: { width: 43, height: 43, borderRadius: 21.5, borderWidth: 1, borderColor: "rgba(255,255,255,0.2)", backgroundColor: "rgba(0,0,0,0.22)", alignItems: "center", justifyContent: "center" },
+  qsClose: { width: 43, height: 43, borderRadius: 21.5, borderWidth: 0, borderColor: "transparent", backgroundColor: "rgba(0,0,0,0.16)", alignItems: "center", justifyContent: "center" },
   qsDivider: { height: 0, marginBottom: 6 },
   qsSepDivider: { height: StyleSheet.hairlineWidth, backgroundColor: "#3D0E16", marginVertical: 4 },
   qsRow: { flexDirection: "row", alignItems: "center", paddingVertical: 14, gap: 14 },

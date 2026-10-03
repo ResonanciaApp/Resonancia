@@ -147,7 +147,7 @@ export default function CarpetaDetailScreen() {
 
       {/* Header */}
       <View style={[styles.header, { paddingTop: topPad + 8 }]}>
-        <BackPill onPress={goBack} size={28} bgColor="rgba(0,0,0,0.22)" iconOffsetX={-1} style={{ marginLeft: 10 }} />
+        <BackPill onPress={goBack} size={28} bgColor="rgba(0,0,0,0.16)" iconOffsetX={-1} style={{ marginLeft: 10 }} />
         {renaming ? (
           <TextInput
             style={styles.renameInput}

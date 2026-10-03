@@ -221,7 +221,7 @@ const styles = StyleSheet.create({
     transform: [{ translateY: 3 }],
   },
   recommendationCard: {
-    backgroundColor: "rgba(0,0,0,0.22)",
+    backgroundColor: "rgba(0,0,0,0.16)",
     borderWidth: 1,
     borderColor: "rgba(255,255,255,0.1)",
     transform: [{ translateX: 1 }],
@@ -246,9 +246,9 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     paddingVertical: 14,
     borderRadius: 20,
-    borderWidth: 1,
-    borderColor: "rgba(255,255,255,0.3)",
-    backgroundColor: "rgba(0,0,0,0.22)",
+    borderWidth: 0,
+    borderColor: "transparent",
+    backgroundColor: "rgba(0,0,0,0.16)",
   },
   inicio3RefreshButton: {
     marginHorizontal: 16,

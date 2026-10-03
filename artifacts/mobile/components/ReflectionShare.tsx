@@ -440,7 +440,7 @@ const styles = StyleSheet.create({
   },
   storyShade: {
     ...StyleSheet.absoluteFillObject,
-    backgroundColor: "rgba(0,0,0,0.22)",
+    backgroundColor: "rgba(0,0,0,0.16)",
   },
   verticalGuide: {
     position: "absolute",
@@ -500,9 +500,9 @@ const styles = StyleSheet.create({
     borderRadius: 21.5,
     alignItems: "center",
     justifyContent: "center",
-    backgroundColor: "rgba(255,255,255,0.10)",
-    borderWidth: StyleSheet.hairlineWidth,
-    borderColor: "rgba(255,255,255,0.18)",
+    backgroundColor: "rgba(0,0,0,0.16)",
+    borderWidth: 0,
+    borderColor: "transparent",
     transform: [{ translateX: -1 }],
   },
   resetButtonPressed: {

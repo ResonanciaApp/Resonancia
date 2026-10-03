@@ -260,9 +260,9 @@ const styles = StyleSheet.create({
     borderRadius: 21.5,
     alignItems: "center",
     justifyContent: "center",
-    backgroundColor: "rgba(0,0,0,0.22)",
-    borderWidth: 1,
-    borderColor: "rgba(255,255,255,0.1)",
+    backgroundColor: "rgba(0,0,0,0.16)",
+    borderWidth: 0,
+    borderColor: "transparent",
     transform: [{ translateY: 0 }],
   },
   stickySearchButton: {

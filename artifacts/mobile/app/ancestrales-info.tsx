@@ -364,8 +364,8 @@ const styles = StyleSheet.create({
   closeBtn: {
     position: "absolute", right: 18, zIndex: 20,
      width: 43, height: 43, borderRadius: 21.5,
-     borderWidth: 1, borderColor: "rgba(255,255,255,0.2)",
-     backgroundColor: "rgba(0,0,0,0.22)",
+     borderWidth: 0, borderColor: "transparent",
+     backgroundColor: "rgba(0,0,0,0.16)",
     alignItems: "center", justifyContent: "center",
   },
 

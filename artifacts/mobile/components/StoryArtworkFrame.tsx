@@ -107,7 +107,7 @@ const styles = StyleSheet.create({
   },
   storyShade: {
     ...StyleSheet.absoluteFillObject,
-    backgroundColor: "rgba(0,0,0,0.22)",
+    backgroundColor: "rgba(0,0,0,0.16)",
   },
   storyQuoteRegion: {
     position: "absolute",

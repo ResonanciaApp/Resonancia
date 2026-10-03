@@ -79,7 +79,7 @@ const playlistSubtitle = (count: number) => `Playlist · ${sessionCountText(coun
 const mixSubtitle = (count: number) => `Mezcla · ${soundCountText(count)}`;
 
 export function getLibraryTabSurface(_sceneId: ThemeSceneId): string {
-  return "rgba(0,0,0,0.22)";
+  return "rgba(0,0,0,0.16)";
 }
 
 type LibTab = "playlists" | "mezclas" | "carpetas" | "geometrix" | "historial" | "favoritos" | "resonadores";
@@ -397,7 +397,7 @@ function UserPlaylistRow({ pl, onPress, onLongPress }: { pl: UserPlaylist; onPre
   const playlistCatalog = useCoverPresetCatalog("playlist");
   return (
     <Pressable onPress={onPress} onLongPress={onLongPress} delayLongPress={600} style={({ pressed }) => [styles.row, { opacity: pressed ? 0.8 : 1 }]}>
-      <View style={[styles.userPlCover, { backgroundColor: "rgba(0,0,0,0.22)" }]}>
+      <View style={[styles.userPlCover, { backgroundColor: "rgba(0,0,0,0.16)" }]}>
         {getDefaultPlaylistCover(pl.id) && !pl.coverUri && !pl.coverType ? (
           <Image source={getDefaultPlaylistCover(pl.id)} style={styles.userPlCover} contentFit="cover" />
         ) : pl.coverType === "geometrix" && pl.coverGeometryId ? (
@@ -1421,7 +1421,7 @@ export function BibliotecaScreen({
                       style={({ pressed }) => [{ width: cellW, opacity: pressed ? 0.8 : 1 }]}
                       onPress={() => openPlaylistPanel(pl.id)}
                     >
-                      <View style={[styles.gridThumb, { width: cellW, height: cellW, backgroundColor: "rgba(0,0,0,0.22)", alignItems: "center", justifyContent: "center", overflow: "hidden" }]}>
+                      <View style={[styles.gridThumb, { width: cellW, height: cellW, backgroundColor: "rgba(0,0,0,0.16)", alignItems: "center", justifyContent: "center", overflow: "hidden" }]}>
                         {pl.coverType === "geometrix" && pl.coverGeometryId ? (
                           <SacredGlyph id={pl.coverGeometryId as GeometryId} color={GOLD} size={Math.round(cellW * 1.28)} strokeWidth={1.2} opacity={1} />
                         ) : pl.coverType === "creation" && pl.coverCreationId ? (
@@ -1626,7 +1626,7 @@ export function BibliotecaScreen({
              {displayPl.map((pl) => (
                  <Pressable key={pl.id} style={({ pressed }) => [{ width: cellW, opacity: pressed ? 0.8 : 1 }]}
                    onPress={() => openPlaylistPanel(pl.id)}>
-                   <View style={[styles.gridThumb, { width: cellW, height: cellW, backgroundColor: "rgba(0,0,0,0.22)", alignItems: "center", justifyContent: "center", overflow: "hidden" }]}>
+                   <View style={[styles.gridThumb, { width: cellW, height: cellW, backgroundColor: "rgba(0,0,0,0.16)", alignItems: "center", justifyContent: "center", overflow: "hidden" }]}>
                      {pl.coverType === "geometrix" && pl.coverGeometryId ? (
                        <SacredGlyph id={pl.coverGeometryId as GeometryId} color={GOLD} size={Math.round(cellW * 1.28)} strokeWidth={1.2} opacity={1} />
                      ) : pl.coverType === "creation" && pl.coverCreationId ? (
@@ -2275,7 +2275,7 @@ export function BibliotecaScreen({
                         style={[
                           styles.addResonadorIcon,
                           styles.addResFollowButton,
-                          { backgroundColor: isFollowed ? "#F9F9F9" : "rgba(0,0,0,0.22)" },
+                          { backgroundColor: isFollowed ? "#F9F9F9" : "rgba(0,0,0,0.16)" },
                         ]}
                       >
                         <Feather name={isFollowed ? "check" : "plus"} size={18} color={isFollowed ? "#060A0F" : TEXT} />
@@ -2351,7 +2351,7 @@ const styles = StyleSheet.create({
     height: 48,
     paddingHorizontal: 10,
     borderRadius: 100,
-    backgroundColor: "rgba(0,0,0,0.22)",
+    backgroundColor: "rgba(0,0,0,0.16)",
     borderWidth: 1,
     borderColor: "rgba(255,255,255,0.1)",
   },
@@ -2370,9 +2370,9 @@ const styles = StyleSheet.create({
     borderRadius: 21.5,
     justifyContent: "center",
     alignItems: "center",
-    backgroundColor: "rgba(0,0,0,0.22)",
-    borderWidth: 1.2,
-    borderColor: "rgba(241,224,255,0.25)",
+    backgroundColor: "rgba(0,0,0,0.16)",
+    borderWidth: 0,
+    borderColor: "transparent",
   },
   animCloseBtn: { position: "absolute", left: H_PAD - 10, top: 0, bottom: 0, justifyContent: "center", zIndex: 3 },
   chipRowScroller: { flex: 1, transform: [{ translateY: 4 }] },
@@ -2409,15 +2409,15 @@ const styles = StyleSheet.create({
     borderRadius: 27,
     gap: 12,
     overflow: "hidden",
-    backgroundColor: "rgba(0,0,0,0.22)",
+    backgroundColor: "rgba(0,0,0,0.16)",
     borderWidth: 1.2,
     borderColor: "rgba(241,224,255,0.25)",
     justifyContent: "center",
   },
-  chipTibet: { backgroundColor: "rgba(0,0,0,0.22)" },
-  chipIndigo: { backgroundColor: "rgba(0,0,0,0.22)" },
+  chipTibet: { backgroundColor: "rgba(0,0,0,0.16)" },
+  chipIndigo: { backgroundColor: "rgba(0,0,0,0.16)" },
   chipIndigo2Inactive: {
-    backgroundColor: "rgba(0,0,0,0.22)",
+    backgroundColor: "rgba(0,0,0,0.16)",
   },
   chipSel: {},
   chipText: { fontFamily: "Manrope", fontSize: 13, fontWeight: "600", color: "#FBFBFB", textAlign: "center" },
@@ -2656,9 +2656,9 @@ const styles = StyleSheet.create({
     borderRadius: 21.5,
     alignItems: "center",
     justifyContent: "center",
-    backgroundColor: "rgba(0,0,0,0.22)",
-    borderWidth: 1,
-    borderColor: "rgba(255,255,255,0.2)",
+    backgroundColor: "rgba(0,0,0,0.16)",
+    borderWidth: 0,
+    borderColor: "transparent",
   },
   modalCloseBtn: {
     width: 43,
@@ -2666,9 +2666,9 @@ const styles = StyleSheet.create({
     borderRadius: 21.5,
     alignItems: "center",
     justifyContent: "center",
-    backgroundColor: "rgba(0,0,0,0.22)",
-    borderWidth: 1,
-    borderColor: "rgba(255,255,255,0.2)",
+    backgroundColor: "rgba(0,0,0,0.16)",
+    borderWidth: 0,
+    borderColor: "transparent",
   },
   nameCardTitle: {
     fontFamily: "Manrope",

@@ -48,7 +48,7 @@ const styles = StyleSheet.create({
     paddingBottom: 22,
     borderWidth: StyleSheet.hairlineWidth,
     borderColor: "rgba(255,255,255,0.15)",
-    backgroundColor: "rgba(0,0,0,0.22)",
+    backgroundColor: "rgba(0,0,0,0.16)",
   },
   author: {
     fontFamily: "Manrope",

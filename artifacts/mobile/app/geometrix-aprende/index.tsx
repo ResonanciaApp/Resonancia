@@ -76,14 +76,14 @@ export default function GeometrixAprendeScreen() {
       {/* Header */}
       <View style={styles.header}>
         <Pressable
-          style={[styles.backBtn, { borderColor: colors.primary + "30" }]}
+          style={[styles.backBtn, { borderColor: "transparent" }]}
           onPress={() => router.back()}
           hitSlop={8}
         >
           <Feather name="arrow-left" size={18} color={colors.foreground} />
         </Pressable>
         <Text style={[styles.title, { color: colors.foreground }]}>Aprende</Text>
-        <Pressable style={[styles.iconBtn, { borderColor: colors.primary + "30" }]} hitSlop={8}>
+        <Pressable style={[styles.iconBtn, { borderColor: "transparent" }]} hitSlop={8}>
           <Feather name="search" size={17} color={colors.primary} />
         </Pressable>
       </View>
@@ -156,8 +156,8 @@ export default function GeometrixAprendeScreen() {
 const styles = StyleSheet.create({
   root: { flex: 1 },
   header: { flexDirection: "row", alignItems: "center", paddingHorizontal: 20, paddingTop: 8, paddingBottom: 12, gap: 12 },
-  backBtn: { width: 36, height: 36, borderRadius: 18, borderWidth: 1, alignItems: "center", justifyContent: "center" },
-  iconBtn: { width: 36, height: 36, borderRadius: 18, borderWidth: 1, alignItems: "center", justifyContent: "center" },
+  backBtn: { width: 36, height: 36, backgroundColor: "rgba(0,0,0,0.16)", borderRadius: 18, borderWidth: 0, alignItems: "center", justifyContent: "center" },
+  iconBtn: { width: 36, height: 36, backgroundColor: "rgba(0,0,0,0.16)", borderRadius: 18, borderWidth: 0, alignItems: "center", justifyContent: "center" },
   title: { fontFamily: "Manrope", flex: 1, fontSize: 20, fontWeight: "700" },
   intro: { fontFamily: "Manrope", fontSize: 13, lineHeight: 20, paddingHorizontal: 22, marginBottom: 16 },
   divider: { height: 1, marginHorizontal: 20, marginBottom: 16 },

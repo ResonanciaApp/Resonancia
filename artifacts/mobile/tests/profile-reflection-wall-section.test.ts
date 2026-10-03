@@ -276,7 +276,7 @@ test("selected wall categories use black at 28%, the wall border and the stable 
   visit(ast);
   assert.ok(chip);
   const selectedStyle = style("InnerSpaceCard", "selectedGridItem");
-  assert.equal(selectedStyle.backgroundColor, "rgba(0,0,0,0.28)");
+  assert.equal(selectedStyle.backgroundColor, "rgba(0,0,0,0.16)");
   assert.equal(selectedStyle.borderColor, "transparent");
   assert.equal(selectedStyle.opacity, undefined);
   assert.equal(selectedStyle.fontWeight, undefined);
@@ -295,7 +295,7 @@ test("selected wall categories use black at 28%, the wall border and the stable 
     { id: "calm", label: "Calma", color: "#50AFB0" },
     { id: "custom", label: "Editorial", color: "#477FBD" }]) {
     const active = render(React, () => null, () => null, () => null, cat, cat.id, styles, () => {});
-    assert.equal(Object.assign({}, ...active.props.style({ pressed: false })).backgroundColor, "rgba(0,0,0,0.28)");
+    assert.equal(Object.assign({}, ...active.props.style({ pressed: false })).backgroundColor, "rgba(0,0,0,0.16)");
     assert.ok(active.props.children[0], "selected tab has the shared wall border");
     assert.equal(active.props.children[0].props.color, cat.color);
     assert.equal(active.props.children[1].props.selected, true);

@@ -58,17 +58,14 @@ test("presence runs outside Inicio, stops on background/logout and resumes with 
   }
 });
 
-test("integration appends the block only to Inicio 3 and retires presence before removing Clerk authentication", () => {
+test("Inicio no longer mounts the connected-people section or its scroll tracking, while app-wide presence remains intact", () => {
   const home = readFileSync(new URL("../app/(tabs)/inicio8.tsx", import.meta.url), "utf8");
-  assert.match(home, /variant === "inicio3" && \(\s*<ConnectedCommunitySection/);
-  assert.ok(home.indexOf("<ConnectedCommunitySection") > home.lastIndexOf("<AlmaCommunitySection"));
-  assert.ok(home.indexOf("<ConnectedCommunitySection") < home.indexOf("</RAnimated.ScrollView>"));
+  assert.doesNotMatch(home, /ConnectedCommunitySection|ConnectedCommunityCard|communityContentY|home-connected-community|useGetCommunityPresence/);
+  assert.match(home, /<AlmaCommunitySection/);
+  assert.match(home, /const inicio3ScrollY = useSharedValue\(0\)/);
+  const layout = readFileSync(new URL("../app/_layout.tsx", import.meta.url), "utf8");
+  assert.match(layout, /<CommunityPresenceTracker \/>/);
   const auth = readFileSync(new URL("../context/AuthContext.tsx", import.meta.url), "utf8");
   const logout = auth.slice(auth.indexOf("const logout ="));
   assert.ok(logout.indexOf("await retireCommunityPresence()") < logout.indexOf("await signOut()"));
-  const section = readFileSync(new URL("../components/ConnectedCommunitySection.tsx", import.meta.url), "utf8");
-  assert.match(section, /const active = visible && focused && foreground/);
-  assert.match(section, /refetchInterval: active \? 15_000 : false/);
-  assert.match(section, /query\.isError/);
-  assert.match(section, /count=\{data\?\.count \?\? null\}/);
 });

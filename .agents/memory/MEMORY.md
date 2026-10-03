@@ -23,29 +23,16 @@
 - [Skip-flags only-if-true](skip-flags-only-if-true.md) — snapshot solo aplica skipDetail/skipMiniPlayer/isLoop si remoto true (false clobbea defaults de categoría); miniplayer trigger ANTES del return isLoop; form admin bloquea solo hidratación inicial
 - [voiceTag three-state caption](voice-tag-three-state.md) — caption de voz: undefined=fallback VOICE_MAP, null=DB vacío, string=admin; fase 1 de applyCatalogSnapshot NO debe clobbear undefined→null
 - [Tab bar overlay padding](tab-bar-overlay-padding.md) — la tab bar de (tabs) es overlay absoluto; pantallas con contenido al fondo deben reservar tabBarHeight (recalcular fórmula de _layout.tsx)
-- [Tab bar hide on Geometrix](tab-bar-hide-geometrix.md) — menú inferior se esconde en Geometrix vía contexto compartido + pestañita para recuperarlo (es la única navegación entre tabs: no atrapar al usuario)
+- [Geometrix: decisiones y restricciones](geometrix-guide.md) — navegación, foco, zoom, capas, gestos, carrusel, ajustes e historial; consultar las notas antes de cambiarlo
 - [Tab-screen audio focus cleanup](tab-screen-audio-focus-cleanup.md) — audio propio de una tab debe pararse con useFocusEffect (las tabs quedan montadas; el cleanup de unmount no corre al cambiar de tab)
-- [Geometrix landing focus gate](geometrix-landing-focus-gate.md) — landing queda montado al blur; loops infinitos ahí = lag global; gatear por tabFocused + cancelAnimation en cleanup
 - [SVG gradient import clash](svg-gradient-import-clash.md) — react-native-svg LinearGradient choca con expo-linear-gradient (mismo nombre); aliasear + sanear useId (quitar ":") + colors refs estables para memo
-- [Geometrix zoom = render size](geometrix-zoom-vector.md) — escalar geometrías plegando la magnificación confirmada en el size real del SVG (no transform scale) → vector nítido + trazo constante; transform solo lleva respiración + delta de pinch en vivo
 - [Card/module background](card-module-background.md) — fondo estándar de cards/módulos = tinte dorado translúcido rgba(190,150,80,0.05) (#BE9650 5%); token card/darkChocolate en mobile/constants/colors.ts; no migrar hardcodes a ciegas
-- [Fondos negros translúcidos](black-surface-opacity.md) — superficies negras antes al 28 % ahora van al 22 %; no extender el cambio a bordes, sombras ni excepciones locales
+- [Fondos negros translúcidos](black-surface-opacity.md) — antiguos 22/28 % pasan al 16 %; excepción: banner Resonadores de Descubrir al 28 %; conservar otros bordes y sombras
 - [SacredGlyph box-fill sizing](sacred-glyph-fill.md) — contenido ≈0.78×size (extent 39 horneado); EXTENT maps NO se usan; para cubrir un cover sin esquinas vacías: size = diagonal/0.78 (no solo ancho)
 - [Modal bottom sheet rounded corners](modal-bottom-sheet-rounded-corners.md) — backdrop flex:1 NO cubre las esquinas cortadas; usar absoluteFill + container justifyContent:"flex-end"
 - [Reanimated drag-reorder sin ghost](reanimated-layout-toggle-ghost.md) — modelo FLIP: DOM estable + translateX por orderSV/slotSV; reorder atómico en worklet de soltado (sin layout commit → sin flicker); NO reintroducir el reorder-on-release con dragSettling
-- [Geometrix panel overlay](geometrix-panel-overlay.md) — Geometrix abre como panel deslizante estilo Mezclador vía openGeometrix(params); NUNCA navegar a la ruta /(tabs)/geometrix
-- [Geometrix carousel selection](geometrix-carousel-selection.md) — orden del carrusel DERIVADO de active+activatingIds (no mutar prevOrder con gate global de pending); deselect siempre vuelve al natural; glow solo en seleccionadas; auto-scroll con rAF
-- [Geometrix instance-id model](geometrix-instance-ids.md) — capa = instance id (string); base==GeometryId, duplicado=`base::uniq`; baseOf() para glifo/meta, id completo para settings/estado; Duplicar = defaults frescos a la derecha
-- [Geometrix rotation cardinal/microlag](geometrix-rotation-cardinal.md) — gesto alta frecuencia: cero runOnJS/estado React por frame; ReText + 1 reacción UI-thread única escritora del SV cardinal
-- [Geometrix live-rotation sync effect dep](geometrix-rotation-sync-effect.md) — el effect que sincroniza liveRot debe depender del escalar manualAngle, no de getSettings; el commit de zoom del pinch simultáneo lo pisaba ("gira y vuelve")
-- [Geometrix settings sheet](geometrix-settings-sheet.md) — preview deriva del alto MEDIDO del sheet (fijar alto = preview fijo); "modificado/restablecer" excluye transformaciones por gesto (TRANSFORM_KEYS) y compara settings fusionados
 - [Reanimated slider oscillator](reanimated-slider-oscillator.md) — loop start/stop deps deben ser boolean on/off (no la amplitud analógica) o cada tick del slider colapsa el barrido; amplitud vive en el worklet
 - [RN overlay effect gotchas](rn-overlay-effect-gotchas.md) — hitSlop se recorta al padre; siblings solapados y SVG decorativos roban gestos; envolver SVG en View pointerEvents none
-- [Geometrix carousel microlag](geometrix-carousel-microlag.md) — parámetros fijos del carrusel (HOLD/FLIP/gap) y modelo FLIP: DOM estable + translateX por slot; gap 180ms para evitar lag de arrastre; NO tocar layout animations
-- [Geometrix Hold mode](geometrix-hold-mode.md) — toggle manito aplica gestos a TODAS las capas; bifurca en holdModeSV dentro del worklet; commitHold* usa setSettings funcional sobre active[]; rotationGesture.enabled usa estado React (holdMode) no SV
-- [Geometrix undo (Atrás)](geometrix-undo-history.md) — pila de snapshots {active,settings,master,hiddenIds}; restaurar por setState revierte gestos (props ganan en reposo); debounce agrupa ráfagas; hiddenIds cleanup debe mantener ref estable; reset en load/new NO en clearCanvas
-- [Geometrix category filter](geometrix-category-filter.md) — carrusel renderiza solo la categoría activa (evita montar 44 tiles → lag); reordenar dentro de una categoría permuta solo sus slots en `active` (z-order global), nunca splice al final
-- [Geometrix trazo fino vs relleno](geometrix-thin-stroke.md) — "fino" (strokeMode) solo escala stroke-width; mosaicos de relleno (c/k/r-asset) no cambian; geometryType es metadato no usado en render; admin gatea "Trazo" por SVG real
 - [Hero como fondo único](hero-fade-bg-match.md) — imagen hero + bg degradado leídos como "dos fondos": fix = meter la imagen EN la capa de fondo raíz y desvanecerla al color EXACTO del degradado raíz a la Y del borde (mismo degradado continuo debajo, sin costura); top fade desde #4A0C0C opaco→transparente; offsets px vía locations
 - [BPM mix-bus limiter](bpm-mixbus-limiter.md) — apilar 3+ loops satura el master (clipping); fix = WaveShaper soft-clip (la lib NO trae compresor); createWaveShaper() = 0 args, curva/oversample por propiedad
 - [Animated layout-prop slide fails under Fabric](animated-left-fabric.md) — animar `left`/posición con JS driver no renderiza en New Arch; usar `translateX` nativo con left estático (width JS + transform nativo conviven)
@@ -131,7 +118,7 @@
 - [Publicación al editar Inspiración](inspiration-admin-publish-edit.md) — en una inspiración publicada, la acción principal guarda y republica; borrador queda como opción secundaria explícita
 - [Detalle diario de Inspiración](inspiration-detail-layout.md) — fondo fullscreen y contenido continuo; controles flotantes, sin header/footer ni sección Mis notas dentro del detalle
 - [Hero secundario en Admin Inspiración](admin-inspiration-hero-hierarchy.md) — Hero de Inicio va debajo del editor principal y plegado por defecto; nunca como tercera columna que comprima el contenido diario
-- [Controles circulares de navegación](circular-navigation-controls.md) — chevron/X/lupa independientes usan superficie 43×43 negra 28% con borde blanco 20%; no aplicar a indicadores ni acciones locales
+- [Controles circulares de navegación](circular-navigation-controls.md) — chevron/X/lupa/tres puntos y similares: negro 16% sin borde en toda la app; preservar tamaños y elementos decorativos
 - [Instagram Stories requiere Meta App ID](instagram-stories-meta-app-id.md) — source_application usa el ID numérico público de Meta, no el bundle ID; además declarar scheme iOS y package query Android
 - [Fondos de historias de reflexión](reflection-story-backgrounds.md) — Mi viaje interior conserva 100 slots permanentes; borrar restaura el fondo incluido y nunca reduce ni renumera el catálogo
 - [Galería de historias iniciadas](reflection-story-gallery.md) — registra al confirmar “Abrir Instagram”, no al completar publicación; snapshot visual reconstruible e idempotencia por intento
@@ -155,5 +142,6 @@
 - [Edición de imágenes en el runtime](image-processing-runtime.md) — Pillow anuncia versión pero falla al importar _imaging; usar ImageMagick para procesar PNGs aquí
 - [Assets nuevos y Metro](expo-new-assets-metro.md) — generar el PNG antes de referenciarlo con require; si Metro cachea el error de archivo ausente, reiniciar tras crearlo
 - [Rebote en los bordes](scroll-edge-bounce.md) — en Sistema de rachas, no bloquear arriba/abajo también exige rebote elástico, no solo eliminar franjas fijas
-- [Usuarios conectados](community-presence-semantics.md) — presencia general en primer plano, no solo meditación; total independiente de fotos y sin relleno ficticio
+- [Usuarios conectados](community-presence-semantics.md) — sección eliminada de Inicio por sospecha de lag; preservar presencia global real en primer plano
 - [Descripción de Mi cuenta](profile-account-description.md) — reemplaza la píldora bajo el usuario en Perfil; texto opcional guardado en Mi cuenta, máximo dos líneas
+- [Banner del Mezclador en Sonidos](sound-mixer-banner.md) — recuperado de Dormir, solo en Sonidos tras el tercer carrusel visible; abre el panel actual para gratuitos y Premium

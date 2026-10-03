@@ -275,7 +275,7 @@ function FavoriteThemeCollections({
         style={[
           styles.themeCollectionCard,
           {
-            backgroundColor: THEME_CARD_BACKGROUND_BY_SLUG[collection.id] ?? "rgba(0,0,0,0.22)",
+            backgroundColor: THEME_CARD_BACKGROUND_BY_SLUG[collection.id] ?? "rgba(0,0,0,0.16)",
           },
         ]}
       >
@@ -334,7 +334,7 @@ export default function FavoritosTodosScreen() {
   const bottomPad = Platform.OS === "web" ? 34 : insets.bottom;
   const stickyHeaderHeight = topPad + 126;
   const [actionsVideo, setActionsVideo] = useState<VideoItem | null>(null);
-  const libraryHeaderButtonBackground = "rgba(0,0,0,0.22)";
+  const libraryHeaderButtonBackground = "rgba(0,0,0,0.16)";
 
   const [activeTab, setActiveTab] = useState<FavoriteCollectionTabId>(params.tab === "inspiraciones" ? "inspiraciones" : "all");
   const titleProgress = useRef(new Animated.Value(0)).current;
@@ -342,7 +342,7 @@ export default function FavoritosTodosScreen() {
   const compactRef = useRef(false);
   const indigo2TabsBackgroundColor = indigo2TabsSurfaceAnim.interpolate({
     inputRange: [0, 1],
-    outputRange: ["rgba(0,0,0,0.22)", "rgba(0,0,0,0.22)"],
+    outputRange: ["rgba(0,0,0,0.16)", "rgba(0,0,0,0.16)"],
   });
   const handleScroll = useCallback((event: { nativeEvent: { contentOffset: { y: number } } }) => {
     const compact = event.nativeEvent.contentOffset.y > 0.5;
@@ -469,7 +469,7 @@ export default function FavoritosTodosScreen() {
                 <View
                   style={[
                     styles.libraryTabBackBtn,
-                    { backgroundColor: libraryHeaderButtonBackground, opacity: pressed ? 0.7 : 1 },
+                    { backgroundColor: "rgba(0,0,0,0.16)", opacity: pressed ? 0.7 : 1 },
                   ]}
                 >
                   <Feather name="chevron-left" size={28} color="#FBFBFB" style={{ transform: [{ translateX: -1 }] }} />
@@ -737,9 +737,10 @@ const styles = StyleSheet.create({
   libraryTabBackBtn: {
     width: 43,
     height: 43,
+    backgroundColor: "rgba(0,0,0,0.16)",
     borderRadius: 21.5,
-    borderWidth: 1.2,
-    borderColor: "rgba(241,224,255,0.25)",
+    borderWidth: 0,
+    borderColor: "transparent",
     alignItems: "center",
     justifyContent: "center",
   },

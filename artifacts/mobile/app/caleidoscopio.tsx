@@ -577,7 +577,7 @@ export default function Caleidoscopio() {
 const styles = StyleSheet.create({
   root:             { flex: 1 },
   topBar:           { position: "absolute", top: 0, left: 0, right: 0, flexDirection: "row", alignItems: "center", justifyContent: "space-between", paddingHorizontal: 16, paddingBottom: 12, zIndex: 20 },
-  iconBtn:          { width: 38, height: 38, borderRadius: 19, backgroundColor: "rgba(74,12,12,0.08)", alignItems: "center", justifyContent: "center", borderWidth: 1, borderColor: "rgba(61,14,22,0.40)" },
+  iconBtn:          { width: 38, height: 38, borderRadius: 19, backgroundColor: "rgba(0,0,0,0.16)", alignItems: "center", justifyContent: "center", borderWidth: 0, borderColor: "transparent" },
   topCenter:        { alignItems: "center", flex: 1, paddingHorizontal: 8 },
   topTitle:         { fontFamily: "Manrope", color: "#FAF0EE", fontSize: 15, fontWeight: "600", letterSpacing: 0.3 },
   topSub:           { fontFamily: "Manrope", color: "#c2c2c2", fontSize: 11, marginTop: 1 },

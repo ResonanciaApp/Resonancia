@@ -126,5 +126,5 @@ test("composer and message filters share the category label and keep filtering h
   assert.match(wall, /<ReflectionCategoryTabLabel[\s\S]*?selected=\{isActive\}/);
   assert.match(wall, /setFilter\(cat\.id as ReflectionCategory\)/);
   assert.match(wall, /setFilter\("all"\)/);
-  assert.match(wall, /filterPillSelected: \{\s*backgroundColor: "rgba\(0,0,0,0\.28\)"/);
+  assert.match(wall, /filterPillSelected: \{\s*backgroundColor: "rgba\(0,0,0,0\.16\)"/);
 });

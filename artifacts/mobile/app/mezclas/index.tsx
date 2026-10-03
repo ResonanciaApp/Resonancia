@@ -233,7 +233,7 @@ const styles = StyleSheet.create({
     paddingBottom: 18,
   },
   backBtn: {
-    width: 36, height: 36, borderRadius: 18,
+    width: 36, height: 36, backgroundColor: "rgba(0,0,0,0.16)", borderRadius: 18,
     alignItems: "center", justifyContent: "center",
   },
   pageTitle: { fontFamily: "Manrope", fontSize: 20, fontWeight: "700", letterSpacing: -0.4, color: "#FFFFFF" },

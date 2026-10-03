@@ -167,8 +167,9 @@ const styles = StyleSheet.create({
   backBtn: {
     width: 36,
     height: 36,
+    backgroundColor: "rgba(0,0,0,0.16)",
     borderRadius: 18,
-    borderWidth: 1,
+    borderWidth: 0,
     alignItems: "center",
     justifyContent: "center",
   },

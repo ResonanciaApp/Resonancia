@@ -15,7 +15,7 @@ import { useColors } from "@/hooks/useColors";
 import { computeActiveDays, computeMaxStreak } from "@/utils/stats";
 import { PREMIUM_STAR_GRADIENT, STREAK_HISTORY_INFO_ICON_COLOR } from "@/constants/colors";
 
-const SECTION_BACKGROUND = "rgba(0,0,0,0.22)";
+const SECTION_BACKGROUND = "rgba(0,0,0,0.16)";
 export const STREAK_WEEK_START_OFFSET_MS = 650;
 const PERSONAL_STATS_HEADER_OFFSET_MS = 420;
 const PERSONAL_STATS_MINUTES_OFFSET_MS = 660;

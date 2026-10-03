@@ -59,7 +59,7 @@ export default function HistorialEmocionesScreen() {
       <View style={[styles.header, { paddingTop: topPad + 4 }]}>
         <Pressable
           onPress={() => router.back()}
-          style={[styles.backButton, { backgroundColor: getLibraryTabSurface(activeSceneId) }]}
+          style={[styles.backButton, { backgroundColor: "rgba(0,0,0,0.16)" }]}
           hitSlop={8}
           accessibilityRole="button"
           accessibilityLabel="Volver"
@@ -119,9 +119,9 @@ const styles = StyleSheet.create({
     width: 43,
     height: 43,
     borderRadius: 21.5,
-    borderWidth: 1.2,
-    borderColor: "rgba(241,224,255,0.25)",
-    backgroundColor: "rgba(0,0,0,0.22)",
+    borderWidth: 0,
+    borderColor: "transparent",
+    backgroundColor: "rgba(0,0,0,0.16)",
     alignItems: "center",
     justifyContent: "center",
   },
@@ -169,7 +169,7 @@ const styles = StyleSheet.create({
     alignItems: "center",
     justifyContent: "center",
     marginBottom: 18,
-    backgroundColor: "rgba(0,0,0,0.22)",
+    backgroundColor: "rgba(0,0,0,0.16)",
   },
   emptyTitle: {
     fontFamily: "Manrope",

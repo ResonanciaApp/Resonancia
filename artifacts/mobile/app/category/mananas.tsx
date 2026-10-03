@@ -621,8 +621,8 @@ const styles = StyleSheet.create({
   backBtn: {
     alignSelf: "flex-start",
     width: 43, height: 43, borderRadius: 21.5,
-    borderWidth: 1.2, borderColor: "rgba(241,224,255,0.25)",
-    backgroundColor: "rgba(0,0,0,0.22)",
+    borderWidth: 0, borderColor: "transparent",
+    backgroundColor: "rgba(0,0,0,0.16)",
     alignItems: "center", justifyContent: "center",
     marginBottom: 16,
   },
@@ -633,7 +633,7 @@ const styles = StyleSheet.create({
     marginBottom: 12,
   },
   titleRow: { flexDirection: "row", alignItems: "center", gap: 14 },
-  headerSearchButton: { width: 43, height: 43, borderRadius: 21.5, borderWidth: 1.2, borderColor: "rgba(241,224,255,0.25)", alignItems: "center", justifyContent: "center", backgroundColor: "rgba(0,0,0,0.22)" },
+  headerSearchButton: { width: 43, height: 43, borderRadius: 21.5, borderWidth: 0, borderColor: "transparent", alignItems: "center", justifyContent: "center", backgroundColor: "rgba(0,0,0,0.16)" },
   noResults: { fontFamily: "Manrope", fontSize: 14, textAlign: "center", paddingVertical: 24 },
   pageTitle: { fontFamily: "Manrope", fontSize: 19, fontWeight: "700", letterSpacing: 0.2, marginTop: -15, marginBottom: 4, textAlign: "center" },
   pageSub: { fontFamily: "Manrope", fontSize: 13, lineHeight: 19, textAlign: "center" },
@@ -649,7 +649,7 @@ const styles = StyleSheet.create({
     flexDirection: "row", alignItems: "center",
     justifyContent: "space-between", marginBottom: 18,
   },
-  detailBackBtn: { width: 43, height: 43, borderRadius: 21.5, borderWidth: 1.2, borderColor: "rgba(241,224,255,0.25)", backgroundColor: "rgba(0,0,0,0.22)", alignItems: "center", justifyContent: "center" },
+  detailBackBtn: { width: 43, height: 43, borderRadius: 21.5, borderWidth: 0, borderColor: "transparent", backgroundColor: "rgba(0,0,0,0.16)", alignItems: "center", justifyContent: "center" },
   iconBtn: { width: 40, height: 40, alignItems: "center", justifyContent: "center" },
   detailTitle: {
     fontFamily: "Manrope",

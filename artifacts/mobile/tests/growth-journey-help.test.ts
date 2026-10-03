@@ -154,7 +154,7 @@ test("Tu camino preserves its controls and raises Primera etapa and the whole jo
   assert.ok(html.indexOf('data-testid="growth-journey-close"') < html.indexOf("Tu camino"));
   assert.ok(html.indexOf("Tu camino") < html.indexOf('data-testid="growth-journey-help"'));
   assert.match(html, /data-color="#F9F9F9">\?/);
-  assert.equal(h.presses.get("growth-journey-help").style.backgroundColor, "rgba(0,0,0,0.28)");
+  assert.equal(h.presses.get("growth-journey-help").style.backgroundColor, "rgba(0,0,0,0.16)");
   assert.doesNotMatch(html, /trending-up|Cada día de racha|descriptionDivider/);
   assert.doesNotMatch(html, /No florecemos|growth-journey-intro/);
   assert.ok(html.indexOf("Tu camino") < html.indexOf("PRIMERA ETAPA"));

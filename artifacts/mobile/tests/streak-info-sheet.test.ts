@@ -185,14 +185,14 @@ test("sheet uses all gradient colors, locations and direction from every theme a
   }
 });
 
-test("cards are exactly 50px after the description in normal flow, with black 22-percent backgrounds and no borders", () => {
+test("cards are exactly 50px after the description in normal flow, with black 16-percent backgrounds and no borders", () => {
   const h = harness();
   h.render(true);
   assert.equal(flatten(h.nodes.get("streak-info-description")!.style).paddingTop, 56);
   assert.equal(flatten(h.nodes.get("streak-info-cards")!.style).marginTop, 50);
   for (const id of ["current", "accumulated", "longest", "completed"]) {
     const style = flatten(h.nodes.get(`streak-info-card-${id}`)!.style);
-    assert.equal(style.backgroundColor, "rgba(0,0,0,0.22)");
+    assert.equal(style.backgroundColor, "rgba(0,0,0,0.16)");
     assert.equal(style.borderWidth ?? 0, 0);
     assert.equal(style.borderColor, undefined);
   }

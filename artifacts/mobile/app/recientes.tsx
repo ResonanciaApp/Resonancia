@@ -58,7 +58,7 @@ export default function RecientesScreen() {
           <Pressable
             onPress={() => (router.canGoBack() ? router.back() : router.replace("/(tabs)/profile" as never))}
             hitSlop={10}
-            style={[styles.backBtn, { backgroundColor: colors.card, borderColor: colors.border }]}
+            style={[styles.backBtn, { backgroundColor: "rgba(0,0,0,0.16)", borderColor: "transparent" }]}
           >
             <Feather name="chevron-left" size={20} color={colors.foreground} />
           </Pressable>
@@ -110,7 +110,7 @@ const styles = StyleSheet.create({
   scroll: { flex: 1 },
   headerTop: { marginBottom: 14 },
   backBtn: {
-    width: 36, height: 36, borderRadius: 18, borderWidth: 1,
+    width: 36, height: 36, backgroundColor: "rgba(0,0,0,0.16)", borderRadius: 18, borderWidth: 0,
     alignItems: "center", justifyContent: "center",
   },
   header: { marginBottom: 20 },

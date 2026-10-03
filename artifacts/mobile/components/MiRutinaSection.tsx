@@ -244,7 +244,7 @@ const ActivityRow = React.memo(function ActivityRow({
         <Reanimated.View
           style={[
             styles.activityCard,
-            { backgroundColor: cardBackgroundColor ?? routineTheme.surface },
+            { backgroundColor: cardBackgroundColor ?? "rgba(0,0,0,0.16)" },
           ]}
         >
           <Reanimated.View

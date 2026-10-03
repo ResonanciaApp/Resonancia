@@ -38,7 +38,7 @@ function Corner({ position }: { position: "tl" | "tr" | "bl" | "br" }) {
 function CardBack() {
   return (
     <LinearGradient
-      colors={["rgba(0,0,0,0.22)", "rgba(0,0,0,0.22)"]}
+      colors={["rgba(0,0,0,0.16)", "rgba(0,0,0,0.16)"]}
       start={{ x: 0, y: 0 }}
       end={{ x: 1, y: 1 }}
       style={styles.cardFace}
@@ -59,7 +59,7 @@ function CardBack() {
 function CardFront({ message }: { message: string }) {
   return (
     <LinearGradient
-      colors={["rgba(0,0,0,0.22)", "rgba(0,0,0,0.22)"]}
+      colors={["rgba(0,0,0,0.16)", "rgba(0,0,0,0.16)"]}
       start={{ x: 0, y: 0 }}
       end={{ x: 1, y: 1 }}
       style={styles.cardFace}
@@ -266,7 +266,7 @@ const styles = StyleSheet.create({
     borderRadius: 100,
     borderWidth: 1,
     borderColor: "rgba(255,255,255,0.18)",
-    backgroundColor: "rgba(0,0,0,0.22)",
+    backgroundColor: "rgba(0,0,0,0.16)",
     alignItems: "center",
     justifyContent: "center",
   },

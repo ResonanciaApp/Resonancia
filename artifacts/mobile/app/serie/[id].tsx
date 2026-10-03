@@ -107,7 +107,7 @@ export default function SerieScreen() {
             hitSlop={10}
             style={({ pressed }) => [
               styles.heroBack,
-              { top: topPad + 8, backgroundColor: "rgba(24,17,12,0.55)", opacity: pressed ? 0.7 : 1 },
+              { top: topPad + 8, backgroundColor: "rgba(0,0,0,0.16)", opacity: pressed ? 0.7 : 1 },
             ]}
           >
             <Feather name="arrow-left" size={18} color="#FFFFFF" />
@@ -206,6 +206,7 @@ const styles = StyleSheet.create({
     left: H_PAD,
     width: 36,
     height: 36,
+    backgroundColor: "rgba(0,0,0,0.16)",
     borderRadius: 18,
     alignItems: "center",
     justifyContent: "center",

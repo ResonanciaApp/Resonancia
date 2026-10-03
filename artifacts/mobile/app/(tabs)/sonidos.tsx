@@ -26,6 +26,7 @@ import { GeoUniverseBackground } from "@/components/GeoUniverseBackground";
 import { SessionCarousel } from "@/components/SessionCarousel";
 import { SessionDurationBadge } from "@/components/SessionDurationBadge";
 import { SoundPremiumBanner } from "@/components/SoundPremiumBanner";
+import { SoundMixerBanner } from "@/components/SoundMixerBanner";
 import { SESSION_CARD_METADATA_HEIGHT_SCALE } from "@/components/SessionCardMetadataOverlay";
 import { useCatalog } from "@/context/CatalogContext";
 import { usePlayer } from "@/context/PlayerContext";
@@ -155,7 +156,7 @@ export default function SonidosScreen() {
     : isIndigo2ThemeId(theme.id)
         ? "rgba(191,207,255,0.1)"
         : "rgba(181,211,255,0.1)";
-  const inactiveTabSurface = "rgba(0,0,0,0.22)";
+  const inactiveTabSurface = "rgba(0,0,0,0.16)";
   const slideX = useRef(new Animated.Value(W)).current;
   const stickyHeaderOpacity = useRef(new Animated.Value(0)).current;
   const stickyBorderOpacity = useRef(new Animated.Value(0)).current;
@@ -450,7 +451,7 @@ export default function SonidosScreen() {
                   ]}
                  presentation="editorial"
                   cardVariant="ambiental"
-                  ambientalCardBackground="rgba(0,0,0,0.22)"
+                  ambientalCardBackground="rgba(0,0,0,0.16)"
                  ambientalTitleOnly
                  cardWidth={AMBIENTAL_CAROUSEL_CARD_W}
                  allowOversizedCardWidth
@@ -467,6 +468,12 @@ export default function SonidosScreen() {
                   <>
                     <View style={styles.sectionSpacer} />
                     <SoundPremiumBanner />
+                  </>
+                ) : null}
+                {index === 2 ? (
+                  <>
+                    <View style={styles.sectionSpacer} />
+                    <SoundMixerBanner />
                   </>
                 ) : null}
               </React.Fragment>
@@ -632,9 +639,9 @@ const styles = StyleSheet.create({
     borderRadius: 21.5,
     alignItems: "center",
     justifyContent: "center",
-    backgroundColor: "rgba(0,0,0,0.22)",
-    borderWidth: 1.2,
-    borderColor: "rgba(241,224,255,0.25)",
+    backgroundColor: "rgba(0,0,0,0.16)",
+    borderWidth: 0,
+    borderColor: "transparent",
     overflow: "hidden",
   },
   sonidosTabsHeader: {
@@ -672,7 +679,7 @@ const styles = StyleSheet.create({
     borderColor: "rgba(241,224,255,0.25)",
     gap: 12,
     overflow: "hidden",
-    backgroundColor: "rgba(0,0,0,0.22)",
+    backgroundColor: "rgba(0,0,0,0.16)",
   },
   pillText: {
     fontFamily: "Manrope",
@@ -786,9 +793,9 @@ const styles = StyleSheet.create({
     width: 43,
     height: 43,
     borderRadius: 21.5,
-    borderWidth: 1.2,
-    borderColor: "rgba(241,224,255,0.25)",
-    backgroundColor: "rgba(0,0,0,0.22)",
+    borderWidth: 0,
+    borderColor: "transparent",
+    backgroundColor: "rgba(0,0,0,0.16)",
     alignItems: "center",
     justifyContent: "center",
   },

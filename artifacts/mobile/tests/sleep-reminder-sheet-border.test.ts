@@ -30,8 +30,8 @@ test("the morning reminder keeps its existing border without applying it to slee
   assert.match(border, /borderBottomWidth: 0/);
 });
 
-test("sleep reminder uses a 28% black card and solid periwinkle Continue with dark indigo text, preserving morning colors", () => {
-  assert.equal(SLEEP_REMINDER_CARD_BACKGROUND, "rgba(0,0,0,0.28)");
+test("sleep reminder uses a 16% black card and solid periwinkle Continue with dark indigo text, preserving morning colors", () => {
+  assert.equal(SLEEP_REMINDER_CARD_BACKGROUND, "rgba(0,0,0,0.16)");
   assert.equal(SLEEP_REMINDER_CONTINUE_BACKGROUND, "#94A6FF");
   assert.equal(SLEEP_REMINDER_CONTINUE_FOREGROUND, "#0B0A26");
   assert.match(source, /nightReminderCard: \{\s*backgroundColor: SLEEP_REMINDER_CARD_BACKGROUND/);

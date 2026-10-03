@@ -632,11 +632,6 @@ export default function PlayerScreen() {
             accessibilityRole="button"
             accessibilityLabel="Cerrar reproductor"
           >
-            {Platform.OS !== "web" ? (
-              <BlurView intensity={22} tint="dark" style={StyleSheet.absoluteFill} />
-            ) : (
-              <View style={[StyleSheet.absoluteFill, { backgroundColor: "rgba(0,0,0,0.38)" }]} />
-            )}
             <Feather name="x" size={22} color="#FBFBFB" />
           </Pressable>
         </View>
@@ -1168,12 +1163,13 @@ const styles = StyleSheet.create({
   topCircleBtn: {
     width: 40,
     height: 40,
+    backgroundColor: "rgba(0,0,0,0.16)",
     borderRadius: 20,
     overflow: "hidden",
     alignItems: "center",
     justifyContent: "center",
-    borderWidth: 1,
-    borderColor: "rgba(255,255,255,0.15)",
+    borderWidth: 0,
+    borderColor: "transparent",
   },
   downloadProgressText: {
     color: "#FBFBFB",
@@ -1320,9 +1316,9 @@ const styles = StyleSheet.create({
     width: 46,
     height: 46,
     borderRadius: 23,
-    backgroundColor: "rgba(255,255,255,0.10)",
-    borderWidth: 1,
-    borderColor: "rgba(255,255,255,0.18)",
+    backgroundColor: "rgba(0,0,0,0.16)",
+    borderWidth: 0,
+    borderColor: "transparent",
     alignItems: "center",
     justifyContent: "center",
   },

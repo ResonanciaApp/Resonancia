@@ -25,26 +25,26 @@ export function BackPill({
   size = 22,
   hitSlop = 10,
   bgColor,
-  borderColor,
-  borderWidth,
   standardSurface = false,
   iconOffsetX,
 }: BackPillProps) {
   return (
-    <PressableScale onPress={onPress} containerStyle={style} hitSlop={hitSlop}>
+    <PressableScale
+      onPress={onPress}
+      containerStyle={[
+        style,
+        { borderWidth: 0, borderColor: "transparent" },
+        (bgColor || standardSurface) && {
+          backgroundColor: "rgba(0,0,0,0.16)",
+          borderRadius: standardSurface ? 21.5 : 19,
+        },
+      ]}
+      hitSlop={hitSlop}
+    >
       <View
         style={[
           styles.base,
           standardSurface && styles.standardSurface,
-          bgColor ? {
-            backgroundColor: bgColor,
-            borderRadius: standardSurface ? 21.5 : 19,
-          } : undefined,
-          (borderWidth || standardSurface) ? {
-            borderWidth: borderWidth ?? 1,
-            borderColor: borderColor ?? "rgba(255,255,255,0.2)",
-          } : undefined,
-          standardSurface && !bgColor ? { backgroundColor: "rgba(0,0,0,0.22)" } : undefined,
         ]}
       >
         <View style={iconOffsetX ? { transform: [{ translateX: iconOffsetX }] } : undefined}>

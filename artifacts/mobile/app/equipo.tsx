@@ -294,7 +294,7 @@ export default function EquipoScreen() {
             onPress={backOverride ?? (() => router.back())}
             standardSurface
             size={28}
-            bgColor="rgba(0,0,0,0.22)"
+            bgColor="rgba(0,0,0,0.16)"
             borderWidth={1}
             borderColor="rgba(255,255,255,0.20)"
             iconOffsetX={-1}
@@ -387,7 +387,7 @@ const styles = StyleSheet.create({
     borderRadius: 16,
     borderWidth: 1,
     borderColor: "rgba(255,255,255,0.2)",
-    backgroundColor: "rgba(0,0,0,0.22)",
+    backgroundColor: "rgba(0,0,0,0.16)",
     alignItems: "center",
     justifyContent: "center",
   },
@@ -431,7 +431,7 @@ const styles = StyleSheet.create({
     borderRadius: 27,
     alignItems: "center",
     justifyContent: "center",
-    backgroundColor: "rgba(0,0,0,0.22)",
+    backgroundColor: "rgba(0,0,0,0.16)",
     borderWidth: 1,
     borderColor: "rgba(255,255,255,0.2)",
     overflow: "hidden",

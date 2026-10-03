@@ -269,7 +269,7 @@ function TabMisGrupos({
         <View style={styles.sectionHeader}>
           <Text style={[styles.sectionTitle, { color: "#F9F9F9" }]}>Grupos que gestiono</Text>
           <Pressable onPress={onCreatePress} hitSlop={8}>
-            <View style={[styles.addBtn, { backgroundColor: "rgba(0,0,0,0.22)", overflow: "hidden", borderColor: "rgba(255,255,255,0.1)" }]}>
+            <View style={[styles.addBtn, { backgroundColor: "rgba(0,0,0,0.16)", overflow: "hidden", borderColor: "rgba(255,255,255,0.1)" }]}>
               <Feather name="plus" size={20} color={"#F9F9F9"} />
             </View>
           </Pressable>
@@ -374,7 +374,7 @@ function TabTablon({ colors }: { colors: ReturnType<typeof useColors> }) {
       {FEED_POSTS.map((post) => (
         <View
           key={post.id}
-          style={[styles.feedCard, { backgroundColor: "rgba(0,0,0,0.22)", overflow: "hidden", borderColor: "rgba(255,255,255,0.1)" }]}
+          style={[styles.feedCard, { backgroundColor: "rgba(0,0,0,0.16)", overflow: "hidden", borderColor: "rgba(255,255,255,0.1)" }]}
         >
           {/* Post header */}
           <View style={styles.feedHeader}>
@@ -560,9 +560,9 @@ const styles = StyleSheet.create({
     width: 43,
     height: 43,
     borderRadius: 21.5,
-    borderWidth: 1,
-    borderColor: "rgba(255,255,255,0.2)",
-    backgroundColor: "rgba(0,0,0,0.22)",
+    borderWidth: 0,
+    borderColor: "transparent",
+    backgroundColor: "rgba(0,0,0,0.16)",
     alignItems: "center",
     justifyContent: "center",
   },

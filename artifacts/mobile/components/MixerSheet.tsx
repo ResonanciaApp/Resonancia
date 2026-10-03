@@ -90,7 +90,7 @@ function formatTimer(seconds: number): string {
 type SaveMode = "new" | "update";
 
 /** Superficie negra translúcida y sobria (botones guardar / temporizador). */
-const TRANSLUCENT_SURFACE = "rgba(0,0,0,0.22)";
+const TRANSLUCENT_SURFACE = "rgba(0,0,0,0.16)";
 
 /** Degradé negro sobrio (miniatura sin imagen + fondo de la hoja). */
 const DARK_GRADIENT = ["#27070E", "#1B060F"] as const;
@@ -1262,9 +1262,9 @@ const styles = StyleSheet.create({
     alignItems: "center",
     justifyContent: "center",
     borderRadius: 21.5,
-    backgroundColor: "rgba(0,0,0,0.22)",
-    borderWidth: 1,
-    borderColor: "rgba(255,255,255,0.2)",
+    backgroundColor: "rgba(0,0,0,0.16)",
+    borderWidth: 0,
+    borderColor: "transparent",
   },
   headerPillBtn: { width: 40, height: 40, alignItems: "center", justifyContent: "center" },
   caption: { fontFamily: "Manrope", fontSize: 10, letterSpacing: 1.8, textTransform: "uppercase", marginBottom: 4, fontWeight: "400" },
