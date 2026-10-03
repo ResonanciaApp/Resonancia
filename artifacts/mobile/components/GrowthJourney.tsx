@@ -113,6 +113,7 @@ export function GrowthLevelPreviewCard({
   titleFontSize?: number;
 }) {
   const colors = useColors();
+  const { theme } = useSceneTheme();
   const level = growthLevels[0];
   const dayLabel = level.startDay === level.endDay
     ? `${level.startDay} días`
@@ -120,7 +121,14 @@ export function GrowthLevelPreviewCard({
 
   const dayPill = (
     <PreviewContentEntrance key="intention-days" replayKey="intention-days" delay={420}>
-      <View style={[styles.dayPill, canonicalVerticalInsets && styles.canonicalPreviewPill]}>
+      <View
+        testID="intention-preview-day-pill"
+        style={[
+          styles.dayPill,
+          canonicalVerticalInsets && styles.canonicalPreviewPill,
+          canonicalVerticalInsets && theme.id === "cloudy" && { backgroundColor: "rgba(0,0,0,0.16)" },
+        ]}
+      >
         {canonicalVerticalInsets && (
           <MaterialCommunityIcons
             name="spa"

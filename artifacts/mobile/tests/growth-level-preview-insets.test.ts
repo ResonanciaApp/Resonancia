@@ -35,6 +35,7 @@ const Native = ({ accessibilityLabel, accessibilityRole, children, onPress, styl
     "data-testid": testID,
     "data-icon": name,
     "data-color": color ?? resolvedStyle.color,
+    "data-background": resolvedStyle.backgroundColor,
     "data-position": resolvedStyle.position,
     "data-font-size": resolvedStyle.fontSize,
     "data-line-height": resolvedStyle.lineHeight,
@@ -153,6 +154,26 @@ const GrowthRow = new Function("require", "module", "exports", `${compiled}\nret
 const render = (props: Record<string, unknown> = {}) => renderToStaticMarkup(
   React.createElement(componentModule.exports.GrowthLevelPreviewCard, { onPress: () => {}, ...props }),
 );
+
+test("Only Cloudy's Perfil intention day pill uses black at 16% opacity", () => {
+  const sceneMock = mocks["@/context/SceneThemeContext"] as { useSceneTheme: () => { theme: { id: string } } };
+  try {
+    for (const id of ["cloudy", "cloudy2", "indigo2", "tibet"]) {
+      sceneMock.useSceneTheme = () => ({ theme: { id } });
+      for (const canonicalVerticalInsets of [true, false]) {
+        const html = render({ canonicalVerticalInsets });
+        const pill = html.match(/<div[^>]*data-testid="intention-preview-day-pill"[^>]*>/)?.[0];
+        assert.ok(pill);
+        const expected = id === "cloudy" && canonicalVerticalInsets
+          ? "rgba(0,0,0,0.16)" : "rgba(151,128,231,0.20)";
+        assert.ok(pill.includes(`data-background="${expected}"`));
+        assert.ok(!pill.includes("data-opacity="), "Only background alpha should change, not the whole pill");
+      }
+    }
+  } finally {
+    sceneMock.useSceneTheme = () => ({ theme: { id: "tibet" } });
+  }
+});
 
 test("Cloudy uses BDBDBD for both stage labels without changing other themes or stage titles", () => {
   const sceneMock = mocks["@/context/SceneThemeContext"] as { useSceneTheme: () => { theme: { id: string } } };
