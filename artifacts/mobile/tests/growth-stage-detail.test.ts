@@ -31,6 +31,7 @@ let top = 24;
 let platform = "ios";
 const flat = (value: any): any => Array.isArray(value) ? Object.assign({}, ...value.map(flat)) : value ?? {};
 function Native(props: any) {
+  if (props.replayKey === "hero") nodes.set("growth-stage-detail-hero-image", props);
   if (props.testID) nodes.set(props.testID, props);
   if (props.testID && props.onPress) presses.set(props.testID, props);
   const style = flat([props.style, props.contentContainerStyle]);
@@ -108,6 +109,8 @@ test("the detail shares the streak screen's theme, safe-area spacing, circular c
       assert.equal(nodes.get("growth-stage-detail").locations, locations);
       assert.equal(nodes.get("growth-detail-hero-artwork").size, viewport);
       assert.equal(nodes.get("growth-detail-hero-artwork").height, viewportHeight);
+      assert.equal(flat(nodes.get("growth-stage-detail-hero-layer").style).top, -80);
+      assert.equal(flat(nodes.get("growth-stage-detail-hero-layer").style).bottom, 80);
       assert.match(html, new RegExp(`data-top-padding="${Math.max(inset, 40) + 8}"`));
       const scroll = nodes.get("growth-stage-detail-scroll");
       assert.equal(scroll.bounces, true);
@@ -149,6 +152,11 @@ test("the unmasked hero fills the viewport with exactly the mood completion grad
   assert.deepEqual(gradient.locations, [0.3, 0.7, 1 - 55 / 812, 1]);
   assert.deepEqual(gradient.colors, ["#060A0F00", "#060A0F4d", "#060A0F", "#060A0F"]);
   assert.equal(gradient.pointerEvents, "none");
+  assert.equal(flat(hero.style).backgroundColor, gradient.colors.at(-1), "the area below the shifted hero must match the opaque gradient ending");
+  const layer = nodes.get("growth-stage-detail-hero-layer");
+  const children = React.Children.toArray(layer.children) as React.ReactElement<any>[];
+  assert.ok(children.some(child => child.props.replayKey === "hero"), "the image is inside the shifted layer");
+  assert.ok(children.some(child => child.props.testID === "growth-stage-detail-hero-gradient"), "the gradient moves in that same layer");
   const source = readFileSync(new URL("../components/GrowthStageDetail.tsx", import.meta.url), "utf8");
   assert.doesNotMatch(source, /MaskedView|maskElement|growth-stage-detail-hero-fade/);
 });

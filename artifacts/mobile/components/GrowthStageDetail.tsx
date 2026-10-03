@@ -43,7 +43,8 @@ export function GrowthStageDetail({
   const bottomPad = Platform.OS === "web" ? 34 : insets.bottom;
   const heroSize = Math.round(width);
   const heroHeight = height;
-  const heroGradient = getMoodHeroGradient(theme.gradient[0] || "#080910", heroHeight);
+  const fadeColor = theme.gradient[0] || "#080910";
+  const heroGradient = getMoodHeroGradient(fadeColor, heroHeight);
 
   return (
     <LinearGradient
@@ -54,24 +55,26 @@ export function GrowthStageDetail({
       end={theme.gradientEnd}
       style={styles.root}
     >
-      <View testID="growth-stage-detail-background-hero" pointerEvents="none" style={[styles.heroBackground, { width: heroSize, height: heroHeight }]}>
-        <CinematicFadeSlide
-          active
-          replayKey="hero"
-          delay={0}
-          duration={DURATION}
-          scaleFrom={1.06}
-          translateYFrom={0}
-          style={StyleSheet.absoluteFill}
-        >
-          <GrowthLevelImage level={level} size={heroSize} height={heroHeight} sourceModule={FULL_HERO_IMAGE} />
-        </CinematicFadeSlide>
-        <LinearGradient
-          testID="growth-stage-detail-hero-gradient"
-          {...heroGradient}
-          style={StyleSheet.absoluteFill}
-          pointerEvents="none"
-        />
+      <View testID="growth-stage-detail-background-hero" pointerEvents="none" style={[styles.heroBackground, { width: heroSize, height: heroHeight, backgroundColor: fadeColor }]}>
+        <View testID="growth-stage-detail-hero-layer" style={[StyleSheet.absoluteFill, styles.heroLayer]}>
+          <CinematicFadeSlide
+            active
+            replayKey="hero"
+            delay={0}
+            duration={DURATION}
+            scaleFrom={1.06}
+            translateYFrom={0}
+            style={StyleSheet.absoluteFill}
+          >
+            <GrowthLevelImage level={level} size={heroSize} height={heroHeight} sourceModule={FULL_HERO_IMAGE} />
+          </CinematicFadeSlide>
+          <LinearGradient
+            testID="growth-stage-detail-hero-gradient"
+            {...heroGradient}
+            style={StyleSheet.absoluteFill}
+            pointerEvents="none"
+          />
+        </View>
       </View>
       <ScrollView
         showsVerticalScrollIndicator={false}
@@ -126,6 +129,7 @@ export function GrowthStageDetail({
 const styles = StyleSheet.create({
   root: { ...StyleSheet.absoluteFillObject },
   heroBackground: { position: "absolute", top: 0, left: 0, overflow: "hidden" },
+  heroLayer: { top: -80, bottom: 80 },
   header: {
     position: "absolute",
     top: 0,
