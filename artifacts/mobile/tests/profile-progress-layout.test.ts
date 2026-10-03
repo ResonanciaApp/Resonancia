@@ -163,24 +163,27 @@ test("Perfil separates week-only progress from the titled streak history", () =>
   assert.ok(html.indexOf('data-testid="calendar"') > html.indexOf("Mis estadísticas"));
 });
 
-test("Perfil shows the seven-day section without its background, preserving history, Intención and calendar", () => {
+test("Perfil shows titled seven-day progress on black, preserving history, Intención and calendar", () => {
   const profile = readFileSync(new URL("../components/ProfileScreenBase.tsx", import.meta.url), "utf8");
   const usage = profile.match(/<ProgressMirrorSections[\s\S]*?canonicalVerticalInsets/)?.[0] ?? "";
   assert.match(usage, /showStreakWeek\s/);
-  assert.match(usage, /weeklySectionBackgroundColor="transparent"/);
+  assert.match(usage, /weeklySectionTitle="Tu progreso esta semana"/);
+  assert.match(usage, /weeklySectionBackgroundColor="rgba\(0,0,0,0.16\)"/);
   assert.match(usage, /separateStreakHistory/);
   const html = render({
     separateStreakHistory: true,
     showStreakWeek: true,
     showPersonalStats: false,
     showCalendar: true,
-    weeklySectionBackgroundColor: "transparent",
+    weeklySectionTitle: "Tu progreso esta semana",
+    weeklySectionBackgroundColor: "rgba(0,0,0,0.16)",
     longestStreakLabel: "RACHA ACUMULADA",
     afterStreakHistory: React.createElement("div", { "data-testid": "profile-growth-intention" }, "Intención"),
   });
   assert.match(html, /seven-week-days/);
   const weekly = html.match(/<div[^>]*data-testid="profile-weekly-progress"[^>]*>/)?.[0] ?? "";
-  assert.match(weekly, /data-background="transparent"/);
+  assert.match(weekly, /data-background="rgba\(0,0,0,0.16\)"/);
+  assert.ok(html.indexOf("Tu progreso esta semana") < html.indexOf('data-testid="seven-week-days"'));
   for (const content of ["profile-streak-history", "RACHA ACTUAL", "RACHA ACUMULADA", "RACHA MÁS LARGA", "RACHAS COMPLETADAS", "profile-growth-intention", 'data-testid="calendar"']) {
     assert.ok(html.includes(content), `Missing preserved content: ${content}`);
   }
@@ -353,15 +356,17 @@ test("Perfil moves streak history and all following content down 6px in normal f
   assert.doesNotMatch(profileSource, /testID="profile-identity-email"/);
 });
 
-test("Perfil shows seven days without a background or title and preserves weekly/history/calendar gaps", () => {
+test("Perfil titles its black weekly block and preserves weekly/history/calendar gaps", () => {
   const source = readFileSync(new URL("../components/ProfileScreenBase.tsx", import.meta.url), "utf8");
   assert.doesNotMatch(source, /weeklySectionTitle="Esta semana"/);
-  assert.match(source, /weeklySectionBackgroundColor="transparent"/);
+  assert.match(source, /weeklySectionTitle="Tu progreso esta semana"/);
+  assert.match(source, /weeklySectionBackgroundColor="rgba\(0,0,0,0.16\)"/);
   assert.doesNotMatch(source, /streakMarginBottom=\{PROFILE_SECTION_GAP - 12\}/);
   assert.match(source, /sectionMarginBottom=\{PROFILE_SECTION_GAP\}/);
   const html = render({
     separateStreakHistory: true,
-    weeklySectionBackgroundColor: "transparent",
+    weeklySectionTitle: "Tu progreso esta semana",
+    weeklySectionBackgroundColor: "rgba(0,0,0,0.16)",
     sectionBackgroundColor: "rgba(0,0,0,0.22)",
     sectionMarginBottom: 21,
     showPersonalStats: false,
@@ -369,11 +374,12 @@ test("Perfil shows seven days without a background or title and preserves weekly
   });
   const weekly = html.match(/<div[^>]*data-testid="profile-weekly-progress"[^>]*>/)?.[0] ?? "";
   const history = html.match(/<div[^>]*data-testid="profile-streak-history"[^>]*>/)?.[0] ?? "";
-  assert.match(weekly, /data-background="transparent"/);
+  assert.match(weekly, /data-background="rgba\(0,0,0,0.16\)"/);
   assert.match(history, /data-background="rgba\(0,0,0,0.22\)"/);
   assert.match(weekly, /data-margin-bottom="21"/);
   assert.match(history, /data-margin-bottom="21"/);
   assert.doesNotMatch(html, /Esta semana/);
+  assert.match(html, /Tu progreso esta semana/);
   const days = html.indexOf('data-testid="seven-week-days"');
   const historyIndex = html.indexOf('data-testid="profile-streak-history"');
   assert.ok(days >= 0 && days < historyIndex);

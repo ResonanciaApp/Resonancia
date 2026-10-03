@@ -1441,7 +1441,8 @@ export function ProfileScreenBase({
                 showStreakHistoryTitle={false}
                 showStreakHistoryInfo={false}
                 onStreakHistoryPress={() => setStreakInfoOpen(true)}
-                weeklySectionBackgroundColor="transparent"
+                weeklySectionTitle="Tu progreso esta semana"
+                weeklySectionBackgroundColor="rgba(0,0,0,0.16)"
                 weeklySectionHorizontalPadding={0}
                 streakHistoryTopPadding={18}
                 streakHistoryDividerOffsetY={0}
