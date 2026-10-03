@@ -175,6 +175,38 @@ test("Only Cloudy's Perfil intention day pill uses black at 16% opacity", () => 
   }
 });
 
+test("Cloudy's Tu camino day pills use black at 16% in both timelines, preserving other themes", () => {
+  const sceneMock = mocks["@/context/SceneThemeContext"] as { useSceneTheme: () => { theme: { id: string } } };
+  const levelsModule = { exports: {} as { growthLevels: any[]; ascentLevels: any[] } };
+  const levelsSource = readFileSync(new URL("../data/growthLevels.ts", import.meta.url), "utf8");
+  new Function("require", "exports", ts.transpileModule(levelsSource, {
+    compilerOptions: { module: ts.ModuleKind.CommonJS },
+  }).outputText)(() => 1, levelsModule.exports);
+  try {
+    for (const id of ["cloudy", "cloudy2", "indigo2", "tibet"]) {
+      sceneMock.useSceneTheme = () => ({ theme: { id } });
+      for (const [florecimiento, levels] of [
+        [true, levelsModule.exports.growthLevels],
+        [false, levelsModule.exports.ascentLevels],
+      ] as const) {
+        for (const level of levels) {
+          const html = renderToStaticMarkup(React.createElement(GrowthRow, {
+            level, florecimiento, hasNext: true,
+            status: level.id === "intencion" ? "current" : "locked",
+          }));
+          const pill = html.match(new RegExp(`<div[^>]*data-testid="${level.id}-day-pill"[^>]*>`))?.[0];
+          assert.ok(pill);
+          const expected = id === "cloudy" ? "rgba(0,0,0,0.16)" : "rgba(151,128,231,0.20)";
+          assert.ok(pill.includes(`data-background="${expected}"`), `${id} / ${level.id}`);
+          assert.ok(!pill.includes("data-opacity="));
+        }
+      }
+    }
+  } finally {
+    sceneMock.useSceneTheme = () => ({ theme: { id: "tibet" } });
+  }
+});
+
 test("Cloudy uses BDBDBD for both stage labels without changing other themes or stage titles", () => {
   const sceneMock = mocks["@/context/SceneThemeContext"] as { useSceneTheme: () => { theme: { id: string } } };
   for (const id of ["cloudy", "cloudy2", "indigo2", "tibet"]) {

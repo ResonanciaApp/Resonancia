@@ -325,6 +325,7 @@ function GrowthRow({
   onPress?: () => void;
 }) {
   const colors = useColors();
+  const { theme } = useSceneTheme();
   const dayLabel = level.startDay === level.endDay
     ? `${level.startDay} días`
     : `${level.startDay}–${level.endDay} días`;
@@ -356,7 +357,14 @@ function GrowthRow({
       </View>
       <View testID={`${level.id}-copy`} style={[styles.copy, reward && styles.rewardCopy]}>
         <View style={status === "locked" && styles.lockedCopy}>
-        <View style={[styles.dayPill, florecimiento && styles.bloomDayPill]}>
+        <View
+          testID={`${level.id}-day-pill`}
+          style={[
+            styles.dayPill,
+            florecimiento && styles.bloomDayPill,
+            theme.id === "cloudy" && { backgroundColor: "rgba(0,0,0,0.16)" },
+          ]}
+        >
           {florecimiento && (
             <MaterialCommunityIcons
               name="spa"
