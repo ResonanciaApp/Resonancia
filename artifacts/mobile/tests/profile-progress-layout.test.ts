@@ -287,11 +287,12 @@ test("Perfil uses 18px above Esta semana and below the day labels, matching hist
   assert.match(history, /data-padding-bottom="18"/);
 });
 
-test("Perfil aligns all four history labels to the bottom inset and passes canonical insets to calendar", () => {
+test("Perfil centers number-and-label groups on their icons in all four history cells, without changing other surfaces or calendar insets", () => {
   const source = readFileSync(new URL("../components/ProfileScreenBase.tsx", import.meta.url), "utf8");
   assert.match(source, /streakHistoryTopPadding=\{18\}/);
   assert.match(source, /sectionMarginBottom=\{PROFILE_SECTION_GAP\}\s+canonicalVerticalInsets/);
-  const html = render({
+  assert.match(source, /separateStreakHistory\s+centerStreakHistoryCopy/);
+  const props = {
     showPersonalStats: false,
     separateStreakHistory: true,
     weeklySectionTitle: "Esta semana",
@@ -300,8 +301,11 @@ test("Perfil aligns all four history labels to the bottom inset and passes canon
     streakHistoryTopPadding: 18,
     canonicalVerticalInsets: true,
     showCalendar: true,
-  });
-  assert.equal((html.match(/data-self-align="flex-end"/g) ?? []).length, 4);
+  };
+  const html = render({ ...props, centerStreakHistoryCopy: true });
+  assert.equal((html.match(/data-self-align="flex-end"/g) ?? []).length, 0);
+  assert.equal((html.match(/data-align-items="center"[^>]*data-min-height="46"/g) ?? []).length, 4);
+  assert.equal((render(props).match(/data-self-align="flex-end"/g) ?? []).length, 4);
   assert.match(html, /data-testid="calendar"[^>]*data-canonical-insets="true"/);
 });
 

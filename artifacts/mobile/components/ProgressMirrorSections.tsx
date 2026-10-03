@@ -41,6 +41,7 @@ export function ProgressMirrorSections({
   onPersonalStatsComplete,
   streakTitle,
   separateStreakHistory = false,
+  centerStreakHistoryCopy = false,
   showStreakHistory = true,
   showStreakHistoryTitle = true,
   showStreakHistoryInfo = true,
@@ -85,6 +86,7 @@ export function ProgressMirrorSections({
   onPersonalStatsComplete?: () => void;
   streakTitle?: string;
   separateStreakHistory?: boolean;
+  centerStreakHistoryCopy?: boolean;
   showStreakHistory?: boolean;
   showStreakHistoryTitle?: boolean;
   showStreakHistoryInfo?: boolean;
@@ -394,7 +396,7 @@ export function ProgressMirrorSections({
             label="RACHA ACTUAL"
             accent={accent}
             onPress={onStreakHistoryPress ? undefined : onStreakTitlePress}
-            edgeAligned={canonicalVerticalInsets}
+            edgeAligned={canonicalVerticalInsets && !centerStreakHistoryCopy}
           />
         </View>
         <View style={styles.statDivider} />
@@ -405,7 +407,7 @@ export function ProgressMirrorSections({
             label={longestStreakLabel}
             accent={accent}
             onPress={onStreakHistoryPress ? undefined : onStreakTitlePress}
-            edgeAligned={canonicalVerticalInsets}
+            edgeAligned={canonicalVerticalInsets && !centerStreakHistoryCopy}
           />
         </View>
       </View>
@@ -421,7 +423,7 @@ export function ProgressMirrorSections({
             label="RACHA MÁS LARGA"
             accent={accent}
             onPress={onStreakHistoryPress ? undefined : onStreakTitlePress}
-            edgeAligned={canonicalVerticalInsets}
+            edgeAligned={canonicalVerticalInsets && !centerStreakHistoryCopy}
           />
         </View>
         <View style={styles.statDivider} />
@@ -432,7 +434,7 @@ export function ProgressMirrorSections({
             label="RACHAS COMPLETADAS"
             accent={accent}
             onPress={onStreakHistoryPress ? undefined : onStreakTitlePress}
-            edgeAligned={canonicalVerticalInsets}
+            edgeAligned={canonicalVerticalInsets && !centerStreakHistoryCopy}
           />
         </View>
       </View>

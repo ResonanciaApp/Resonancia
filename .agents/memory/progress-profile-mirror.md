@@ -9,6 +9,12 @@ La sección de los siete días de Perfil está oculta junto con su fondo y el es
 
 **How to apply:** Mantener esta decisión exclusiva de Perfil; conservar la fila semanal en Inicio y donde corresponda en Tu progreso. Ocultar solo el contenido dejando una tarjeta vacía no cumple la petición.
 
+En los cuatro espacios del historial de rachas de Perfil, el número y su título forman un conjunto centrado verticalmente respecto de su icono; no van anclados al borde inferior.
+
+**Why:** El usuario pidió alinear el número y el título de los cuatro espacios con el centro de su icono correspondiente.
+
+**How to apply:** Conservar las dos filas, los iconos a la izquierda y los insets de la tarjeta; no extender este ajuste a otras estadísticas compartidas ni cambiar las cifras.
+
 Perfil conserva el historial completo de cuatro cifras, Intención, el calendario y el historial de sesiones. Tu progreso muestra el mensaje de práctica encima de «Esta semana» y del contador, seguido de los siete días, sin sesiones completadas, divisores, historial de rachas ni tarjeta de Intención. Los tratamientos de ambas superficies son independientes.
 
 **Why:** El usuario retiró la sección de sesiones completadas y su divisor, pero después devolvió únicamente el mensaje a su ubicación anterior por encima del contador. Esa corrección no revierte los otros cambios; Perfil conserva sus accesos personales.

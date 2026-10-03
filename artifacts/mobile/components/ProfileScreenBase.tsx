@@ -1436,6 +1436,7 @@ export function ProfileScreenBase({
                 showCalendar
                 showCalendarCompletedCount
                 separateStreakHistory
+                centerStreakHistoryCopy
                 showStreakHistoryTitle={false}
                 showStreakHistoryInfo={false}
                 onStreakHistoryPress={() => setStreakInfoOpen(true)}
