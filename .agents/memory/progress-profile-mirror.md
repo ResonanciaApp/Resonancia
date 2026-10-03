@@ -15,11 +15,29 @@ En los cuatro espacios del historial de rachas de Perfil, el número y su títul
 
 **How to apply:** Conservar las dos filas, los iconos a la izquierda y los insets de la tarjeta; no extender este ajuste a otras estadísticas compartidas ni cambiar las cifras.
 
-Perfil conserva el historial completo de cuatro cifras, Intención, el calendario y el historial de sesiones. Tu progreso muestra el mensaje de práctica encima de «Esta semana» y del contador, seguido de los siete días, sin sesiones completadas, divisores, historial de rachas ni tarjeta de Intención. Los tratamientos de ambas superficies son independientes.
+La raya horizontal de las rachas de Perfil debe estar en el centro de su tarjeta, sin compensación hacia arriba.
+
+**Why:** El usuario pidió que estuviera justo en la mitad y confirmó bajarla para centrarla; la alineación de los textos no autoriza a desplazar también esta raya.
+
+**How to apply:** Conservar márgenes simétricos alrededor del divisor y comprobar el centro respecto de la tarjeta completa, sin mover sus filas ni el contenido posterior.
+
+Perfil conserva el historial completo de cuatro cifras, puntos de creatividad expansiva, Intención y después el calendario, seguido del contenido personal restante. Tu progreso muestra el mensaje de práctica encima de «Esta semana» y del contador, seguido de los siete días, sin sesiones completadas, divisores, historial de rachas ni tarjeta de Intención. Los tratamientos de ambas superficies son independientes.
 
 **Why:** El usuario retiró la sección de sesiones completadas y su divisor, pero después devolvió únicamente el mensaje a su ubicación anterior por encima del contador. Esa corrección no revierte los otros cambios; Perfil conserva sus accesos personales.
 
 **How to apply:** Configurar cada superficie por separado. Retirar las completadas de Tu progreso no autoriza a borrar actividad histórica, ni a ocultar el historial o el calendario de Perfil. No reintroducir «Mis estadísticas» en Perfil.
+
+Intención precede al calendario en Perfil; puntos de creatividad expansiva conserva su posición anterior a ambas.
+
+**Why:** Después de añadir puntos, el usuario volvió a pedir intercambiar únicamente Intención y calendario. No solicitó mover puntos ni cambiar las acciones.
+
+**How to apply:** Conservar las separaciones entre rachas, puntos, Intención, calendario y el contenido posterior. No propagar este orden a otras pantallas compartidas.
+
+“Puntos creatividad expansiva” queda debajo de las rachas de Perfil. Por ahora es solo visual: barra en 0/100 y símbolo de ayuda, sin cálculo de puntos ni acciones.
+
+**Why:** El usuario aportó una referencia de la barra y pidió crear únicamente la sección; dejó su funcionamiento para después.
+
+**How to apply:** No vincular puntos a sesiones, rachas ni actividad, y no inventar reglas o explicaciones. La funcionalidad requiere una petición posterior; preservar el orden rachas, puntos, Intención, calendario.
 
 En Perfil, Intención conserva contenido y acceso a Tu camino, pero su tarjeta debe ser compacta y respetar la misma distancia entre borde y contenido que el historial de rachas.
 

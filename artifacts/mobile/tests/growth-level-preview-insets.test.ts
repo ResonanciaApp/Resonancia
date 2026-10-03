@@ -402,7 +402,10 @@ test("GrowthLevelPreviewCard adds 4px above and below Perfil only, preserving th
   assert.doesNotMatch(defaultHtml, /data-min-height="100" data-self-align="stretch"/);
 });
 
-test("Perfil retains its larger Intención title and aligns the pill and description without vertical offsets", () => {
+test("Intención supports a 3-point smaller title in Perfil without changing default sizes or spacing", () => {
+  const compact = render({ embedded: true, canonicalVerticalInsets: true, titleFontSize: 15 });
+  assert.match(compact, /<div[^>]*data-font-size="15"[^>]*data-line-height="23"[^>]*>Intención<\/div>/);
+  assert.match(render(), /<div[^>]*data-font-size="15"[^>]*data-line-height="20"[^>]*>Intención<\/div>/);
   const html = render({ embedded: true, canonicalVerticalInsets: true });
   assert.match(html, /<div[^>]*data-font-size="18"[^>]*data-line-height="23"[^>]*>Intención<\/div>/);
   assert.doesNotMatch(html, /data-transform=/);

@@ -29,6 +29,7 @@ const NativeView = ({ children, testID, style, disabled, accessibilityLabel, acc
     "data-self-align": resolved.alignSelf,
     "data-min-height": resolved.minHeight,
     "data-margin-bottom": resolved.marginBottom,
+    "data-margin-top": resolved.marginTop,
     "data-transform": resolved.transform ? JSON.stringify(resolved.transform) : undefined,
   }, children);
 };
@@ -405,29 +406,50 @@ test("the full history opens its information once, leaves stat values unchanged,
   assert.match(previousHtml, /Abrir Tu progreso/);
 });
 
-test("Perfil raises only the horizontal streak divider by 3px without changing layout spacing", () => {
+test("Perfil lowers the streak divider by 3px to its centered position without changing layout spacing", () => {
   const profileSource = readFileSync(new URL("../components/ProfileScreenBase.tsx", import.meta.url), "utf8");
-  assert.match(profileSource, /streakHistoryDividerOffsetY=\{-3\}/);
+  assert.match(profileSource, /streakHistoryDividerOffsetY=\{0\}/);
   const props = { separateStreakHistory: true, showPersonalStats: false };
   const divider = (html: string) => html.match(/<div[^>]*data-testid="profile-streak-history-divider"[^>]*>/)?.[0] ?? "";
   assert.match(divider(render({ ...props, streakHistoryDividerOffsetY: -3 })), /translateY&quot;:-3/);
   assert.match(divider(render(props)), /translateY&quot;:0/);
+  assert.match(divider(render({ ...props, streakHistoryDividerOffsetY: 0 })), /translateY&quot;:0/);
+  assert.match(source, /sectionDivider:\s*\{\s*height: 1,\s*width: "100%",\s*marginVertical: 16,/);
 });
 
-test("Perfil puts the same Intención preview after streak history and before calendar, opening Tu camino", () => {
+test("Perfil keeps creativity points in place while Intención moves before calendar", () => {
+  const profile = readFileSync(new URL("../components/ProfileScreenBase.tsx", import.meta.url), "utf8");
+  assert.match(profile, /beforeCalendar=\{\s*<>\s*<CreativityPointsSection style=\{\{ marginBottom: PROFILE_SECTION_GAP \}\} \/>/);
+  assert.equal((profile.match(/<CreativityPointsSection /g) ?? []).length, 1);
+  const html = render({
+    separateStreakHistory: true,
+    showStreakWeek: false,
+    showPersonalStats: false,
+    showCalendar: true,
+    beforeCalendar: React.createElement(React.Fragment, null,
+      React.createElement("div", { "data-testid": "profile-creativity-points" }),
+      React.createElement("div", { "data-testid": "profile-growth-intention" })),
+  });
+  const positions = ["profile-streak-history", "profile-creativity-points", "profile-growth-intention", "calendar"]
+    .map(id => html.indexOf(`data-testid="${id}"`));
+  assert.ok(positions.every((position, index) => position >= 0 && (index === 0 || position > positions[index - 1])));
+  assert.doesNotMatch(render({ showCalendar: false, beforeCalendar: React.createElement("div", { "data-testid": "profile-creativity-points" }) }), /profile-creativity-points/);
+});
+
+test("Perfil swaps calendar and Intención, preserving section gaps and the Tu camino action", () => {
   const profileSource = readFileSync(new URL("../components/ProfileScreenBase.tsx", import.meta.url), "utf8");
   assert.match(profileSource, /import \{ GrowthLevelPreviewCard \} from "@\/components\/GrowthJourney"/);
   const ast = ts.createSourceFile("ProfileScreenBase.tsx", profileSource, ts.ScriptTarget.Latest, true, ts.ScriptKind.TSX);
   let slot: ts.Expression | undefined;
   let journeySheet: ts.JsxSelfClosingElement | undefined;
   function visit(node: ts.Node) {
-    if (ts.isJsxAttribute(node) && node.name.getText(ast) === "afterStreakHistory"
+    if (ts.isJsxAttribute(node) && node.name.getText(ast) === "beforeCalendar"
       && node.initializer && ts.isJsxExpression(node.initializer)) slot = node.initializer.expression;
     if (ts.isJsxSelfClosingElement(node) && node.tagName.getText(ast) === "GrowthJourneySheet") journeySheet = node;
     ts.forEachChild(node, visit);
   }
   visit(ast);
-  assert.ok(slot, "Profile passes its real preview JSX to the post-history slot");
+  assert.ok(slot, "Profile passes its real preview JSX to the pre-calendar slot");
   assert.ok(journeySheet, "Profile mounts the Tu camino window");
   let sheetExpression: ts.Expression | undefined;
   for (let parent: ts.Node | undefined = journeySheet.parent; parent; parent = parent.parent) {
@@ -451,24 +473,26 @@ test("Perfil puts the same Intención preview after streak history and before ca
   `, { compilerOptions: { module: ts.ModuleKind.CommonJS, jsx: ts.JsxEmit.React } }).outputText;
   let pressPreview: (() => void) | undefined;
   let journeyOpen = false;
-  const Preview = ({ onPress, embedded }: { onPress: () => void; embedded?: boolean }) => {
+  const Preview = ({ onPress, embedded, titleFontSize }: { onPress: () => void; embedded?: boolean; titleFontSize?: number }) => {
     pressPreview = onPress;
-    return React.createElement("div", { "data-testid": "growth-level-zero-preview", "data-embedded": embedded }, "Intención");
+    return React.createElement("div", { "data-testid": "growth-level-zero-preview", "data-embedded": embedded, "data-title-size": titleFontSize }, "Intención");
   };
-  const buildSlot = new Function("React", "View", "GrowthLevelPreviewCard", `${compiled}\nreturn buildSlot;`)(React, NativeView, Preview);
+  const Points = () => React.createElement("div", { "data-testid": "profile-creativity-points" });
+  const buildSlot = new Function("React", "View", "GrowthLevelPreviewCard", "CreativityPointsSection", `${compiled}\nreturn buildSlot;`)(React, NativeView, Preview, Points);
   const html = render({
     separateStreakHistory: true,
     showPersonalStats: false,
     showCalendar: true,
     sectionMarginBottom: gap,
-    afterStreakHistory: buildSlot((open: boolean) => { journeyOpen = open; }),
+    beforeCalendar: buildSlot((open: boolean) => { journeyOpen = open; }),
   });
   const history = html.indexOf('data-testid="profile-streak-history"');
   const intention = html.indexOf('data-testid="profile-growth-intention"');
   const calendar = html.indexOf('data-testid="calendar"');
-  assert.ok(history >= 0 && history < intention && intention < calendar);
+  const points = html.indexOf('data-testid="profile-creativity-points"');
+  assert.ok(history >= 0 && history < points && points < intention && intention < calendar);
   assert.match(html, /data-testid="profile-growth-intention" data-margin-bottom="21"/);
-  assert.match(html, /growth-level-zero-preview" data-embedded="true">Intención/);
+  assert.match(html, /growth-level-zero-preview" data-embedded="true" data-title-size="15">Intención/);
   assert.ok(pressPreview);
   pressPreview();
   assert.equal(journeyOpen, true);

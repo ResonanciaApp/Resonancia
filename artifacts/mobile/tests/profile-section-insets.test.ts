@@ -98,9 +98,9 @@ test("username keeps 24 points and the new description leaves avatar and Premium
   assert.equal(style("ProfileScreenBase", "profileIdentityPreviewCard").marginBottom, 5);
 });
 
-test("the avatar block moves down 10px in normal flow, carrying subsequent sections without changing the weekly gap", () => {
+test("the user section moves up 7px in normal flow, carrying subsequent sections without changing their gaps", () => {
   const card = style("ProfileScreenBase", "dedicatedProfileCard");
-  assert.equal(card.marginTop, -2 + 10);
+  assert.equal(card.marginTop, 8 - 7);
   assert.equal(card.transform, undefined);
   const avatar = style("ProfileScreenBase", "avatarImage");
   assert.equal(avatar.width, 83 - 8);

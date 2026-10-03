@@ -47,6 +47,8 @@ export function ProgressMirrorSections({
   showStreakHistoryInfo = true,
   onStreakHistoryPress,
   afterStreakHistory,
+  beforeCalendar,
+  afterCalendar,
   weeklySectionBackgroundColor,
   weeklySectionHorizontalPadding,
   weeklySectionTitle,
@@ -92,6 +94,8 @@ export function ProgressMirrorSections({
   showStreakHistoryInfo?: boolean;
   onStreakHistoryPress?: () => void;
   afterStreakHistory?: React.ReactNode;
+  beforeCalendar?: React.ReactNode;
+  afterCalendar?: React.ReactNode;
   weeklySectionBackgroundColor?: string;
   weeklySectionHorizontalPadding?: number;
   weeklySectionTitle?: string;
@@ -630,6 +634,8 @@ export function ProgressMirrorSections({
       )}
 
       {showCalendar ? (
+        <>
+        {beforeCalendar}
         <SectionEntrance
           animated={animateEntrance}
           replayKey={`${entranceReplayKey}:calendar`}
@@ -648,6 +654,8 @@ export function ProgressMirrorSections({
             entranceBaseDelay={entranceBaseDelay + (showPersonalStats ? 1450 : 950)}
           />
         </SectionEntrance>
+        {afterCalendar}
+        </>
       ) : null}
     </>
   );

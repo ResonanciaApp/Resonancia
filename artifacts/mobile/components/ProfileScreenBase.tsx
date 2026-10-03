@@ -71,6 +71,7 @@ import {
   type LibHeaderActions,
 } from "@/components/BibliotecaScreen";
 import { ProgressMirrorSections } from "@/components/ProgressMirrorSections";
+import { CreativityPointsSection } from "@/components/CreativityPointsSection";
 import { ProfileSettingsSections } from "@/components/ProfileSettingsSections";
 import { limitProfileDescriptionLines } from "@/lib/profileDescription";
 import { ProfileMembershipBanner } from "@/components/ProfileMembershipBanner";
@@ -1443,7 +1444,7 @@ export function ProfileScreenBase({
                 weeklySectionBackgroundColor="rgba(0,0,0,0.16)"
                 weeklySectionHorizontalPadding={20}
                 streakHistoryTopPadding={18}
-                streakHistoryDividerOffsetY={-3}
+                streakHistoryDividerOffsetY={0}
                 longestStreakLabel="RACHA ACUMULADA"
                 longestStreakIconColor={MEMBERSHIP_AURORA.premium.accent}
                 sectionBackgroundColor="rgba(0,0,0,0.16)"
@@ -1452,10 +1453,13 @@ export function ProfileScreenBase({
                 sectionBottomPadding={18}
                 sectionMarginBottom={PROFILE_SECTION_GAP}
                 canonicalVerticalInsets
-                afterStreakHistory={
-                  <View testID="profile-growth-intention" style={{ marginBottom: PROFILE_SECTION_GAP }}>
-                    <GrowthLevelPreviewCard embedded canonicalVerticalInsets backgroundColor="rgba(0,0,0,0.16)" onPress={() => setGrowthJourneyOpen(true)} />
-                  </View>
+                beforeCalendar={
+                  <>
+                    <CreativityPointsSection style={{ marginBottom: PROFILE_SECTION_GAP }} />
+                    <View testID="profile-growth-intention" style={{ marginBottom: PROFILE_SECTION_GAP }}>
+                      <GrowthLevelPreviewCard embedded canonicalVerticalInsets titleFontSize={15} backgroundColor="rgba(0,0,0,0.16)" onPress={() => setGrowthJourneyOpen(true)} />
+                    </View>
+                  </>
                 }
                 onStreakTitlePress={() => router.push("/progreso" as never)}
               />
@@ -2505,7 +2509,7 @@ const styles = StyleSheet.create({
     gap: 0,
   },
   // Desplazar el bloque en el flujo para que las secciones siguientes lo acompañen.
-  dedicatedProfileCard: { marginTop: 8 },
+  dedicatedProfileCard: { marginTop: 1 },
   // 20 px de padding inferior + 5 px de separación = 25 px hasta el fondo semanal.
   profileIdentityPreviewCard: { marginBottom: 5 },
   wisdomSection: {

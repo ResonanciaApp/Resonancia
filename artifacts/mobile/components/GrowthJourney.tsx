@@ -103,11 +103,13 @@ export function GrowthLevelPreviewCard({
   embedded = false,
   canonicalVerticalInsets = false,
   backgroundColor,
+  titleFontSize,
 }: {
   onPress: () => void;
   embedded?: boolean;
   canonicalVerticalInsets?: boolean;
   backgroundColor?: string;
+  titleFontSize?: number;
 }) {
   const colors = useColors();
   const level = growthLevels[0];
@@ -137,6 +139,7 @@ export function GrowthLevelPreviewCard({
       style={[
         styles.name,
         canonicalVerticalInsets && styles.canonicalPreviewName,
+        titleFontSize !== undefined && { fontSize: titleFontSize },
         { color: colors.foreground },
       ]}
     >
