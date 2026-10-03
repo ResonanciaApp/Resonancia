@@ -29,3 +29,12 @@ la referencia ni añadir audio.
 
 **How to apply:** Tratar los tres como una familia visual para las excepciones de
 estilo, conservando la identidad, la selección persistida y el degradado propio.
+
+Los ajustes pedidos como «4 % más de saturación y 2 % más de contraste» se refieren
+a Índigo 2, no a Dormir (el usuario corrigió ese nombre). Se aplican a sus fondos,
+sin modificar Cloudy, Cloudy 2, Universo ni los acentos.
+
+**Why:** El usuario aclaró el tema destinatario después de mencionar Dormir.
+
+**How to apply:** Mantener la modificación acotada a la paleta de Índigo 2;
+no propagarla a otros temas que comparten sus reglas visuales.

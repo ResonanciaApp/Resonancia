@@ -53,6 +53,6 @@ test("Indigo 2 duration sheet uses the Universo violet gradient without altering
   assert.deepEqual(colorsFor(SCENE_THEMES.indigo2), ["#332261", "#2E2468"]);
   assert.equal(backgroundFor(SCENE_THEMES.indigo2), "#332261");
   assert.deepEqual(colorsFor(SCENE_THEMES.indigo2), colorsFor(SCENE_THEMES.tibet));
-  assert.equal(SCENE_THEMES.indigo2.gradient[1], "#242C5D");
-  assert.equal(SCENE_THEMES.indigo2.gradient[2], "#25295D");
+  assert.equal(SCENE_THEMES.indigo2.gradient[1], "#21295D");
+  assert.equal(SCENE_THEMES.indigo2.gradient[2], "#22265D");
 });
