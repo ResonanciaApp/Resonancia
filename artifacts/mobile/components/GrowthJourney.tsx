@@ -230,7 +230,8 @@ function RewardAvatar({ module, levelId }: { module: number; levelId: string }) 
   }, [module]);
   const source = Platform.OS === "web" ? module : localUri ? { uri: localUri } : null;
   return (
-    <View testID={`${levelId}-reward-avatar`} style={styles.rewardAvatar}>
+    <View testID={`${levelId}-reward-avatar`} style={styles.rewardAvatarFrame}>
+      <View style={styles.rewardAvatar}>
       {source && (
         <Image
           source={source}
@@ -241,7 +242,8 @@ function RewardAvatar({ module, levelId }: { module: number; levelId: string }) 
           onError={(event) => console.warn(`[GrowthJourney] No se pudo mostrar el avatar de recompensa: ${event.nativeEvent.error}`)}
         />
       )}
-      <View testID={`${levelId}-reward-overlay`} pointerEvents="none" style={styles.rewardAvatarOverlay}>
+      <View testID={`${levelId}-reward-overlay`} pointerEvents="none" style={styles.rewardAvatarOverlay} />
+      </View>
         <MaterialCommunityIcons
           testID={`${levelId}-reward-lock`}
           name="lock"
@@ -251,7 +253,6 @@ function RewardAvatar({ module, levelId }: { module: number; levelId: string }) 
           accessibilityElementsHidden
           importantForAccessibility="no"
         />
-      </View>
     </View>
   );
 }
@@ -336,7 +337,7 @@ function GrowthRow({
             minimumFontScale={0.75}
             ellipsizeMode="tail"
           >
-            Desbloquea 50 avatares nuevos
+            {"Desbloquea 50\navatares nuevos"}
           </Text>
         </View>
       )}
@@ -527,12 +528,16 @@ const styles = StyleSheet.create({
     alignSelf: "stretch",
     marginTop: 12,
     minHeight: 50,
+    borderWidth: 2,
+    borderColor: "rgba(255,255,255,0.1)",
+    borderRadius: 12,
     paddingVertical: 8,
+    paddingHorizontal: 8,
     flexDirection: "row",
     alignItems: "center",
     gap: 6,
   },
-  rewardLock: { position: "absolute", left: 3, top: 3, width: 13, height: 13 },
+  rewardLock: { position: "absolute", left: -3, top: -3, width: 13, height: 13 },
   rewardText: { flex: 1, flexShrink: 1, minWidth: 0, fontFamily: "Manrope", fontSize: 11, lineHeight: 16 },
   rewardAvatarOverlay: {
     position: "absolute",
@@ -544,6 +549,7 @@ const styles = StyleSheet.create({
     alignItems: "center",
     justifyContent: "center",
   },
+  rewardAvatarFrame: { width: 35, height: 35, flexShrink: 0, position: "relative" },
   rewardAvatar: {
     width: 35,
     height: 35,
@@ -551,7 +557,7 @@ const styles = StyleSheet.create({
     borderRadius: 17.5,
     overflow: "hidden",
     borderWidth: 1.5,
-    borderColor: "rgba(214,176,92,0.1)",
+    borderColor: "rgba(255,255,255,0.2)",
     backgroundColor: "rgba(0,0,0,0.3)",
   },
   name: { fontFamily: "Manrope", fontSize: 15, fontWeight: "700", lineHeight: 20, marginBottom: 6 },

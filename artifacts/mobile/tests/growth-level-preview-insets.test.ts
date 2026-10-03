@@ -135,20 +135,21 @@ test("Semilla displays a filled lock and one lotus avatar in a disabled horizont
   assert.match(reward, /data-direction="row"/);
   assert.match(reward, /data-pointer-events="none"/);
   assert.match(reward, /data-disabled="true"/);
-  assert.doesNotMatch(reward, /data-border-width|data-border-color|data-background|data-border-radius/);
+  assert.match(reward, /data-border-radius="12" data-border-width="2" data-border-color="rgba\(255,255,255,0.1\)"/);
+  assert.doesNotMatch(reward, /data-background/);
   const lock = html.match(/<div[^>]*data-testid="semilla-reward-lock"[^>]*>/)?.[0];
   assert.ok(lock);
   assert.match(lock, /data-icon="lock"/);
   const source = readFileSync(new URL("../components/GrowthJourney.tsx", import.meta.url), "utf8");
   assert.match(source, /<MaterialCommunityIcons\s+testID=\{`\$\{levelId\}-reward-lock`\}\s+name="lock"\s+size=\{13\}/);
-  assert.match(source, /rewardLock: \{ position: "absolute", left: 3, top: 3, width: 13, height: 13 \}/);
+  assert.match(source, /rewardLock: \{ position: "absolute", left: -3, top: -3, width: 13, height: 13 \}/);
   assert.doesNotMatch(lock, /data-opacity=/);
   assert.match(lock, /data-height="13"/);
-  assert.match(html, /data-color="rgba\(196,194,222,0.8\)"[^>]*>Desbloquea 50 avatares nuevos/);
+  assert.match(html, /data-color="rgba\(196,194,222,0.8\)"[^>]*>Desbloquea 50\navatares nuevos/);
   assert.doesNotMatch(html, /semilla-reward-chest|data-source="3"/);
   assert.match(html, /data-opacity="0.55"/);
   assert.ok(html.indexOf(`>${semilla.story}</div>`) < html.indexOf('data-testid="semilla-reward"'));
-  assert.ok(html.indexOf('data-testid="semilla-reward-lock"') < html.indexOf(">Desbloquea 50 avatares nuevos</div>"));
+  assert.ok(html.indexOf('data-testid="semilla-reward-lock"') < html.indexOf(">Desbloquea 50\navatares nuevos</div>"));
   assert.doesNotMatch(html, /Regalitos sorpresa|Desbloquea tu cofre de regalos/);
   assert.doesNotMatch(html, /data-accessibility-role="button"/);
   for (const id of ["intencion", "brote", "desarrollo", "enraizamiento", "floracion", "ascenso-inicio"]) {
@@ -170,27 +171,28 @@ test("Crecimiento, Vegetación and Expansión share Semilla's small filled lock 
     assert.ok(reward, id);
     assert.match(reward, /data-pointer-events="none"/);
     assert.match(reward, /data-disabled="true"/);
-    assert.doesNotMatch(reward, /data-border-width|data-border-color|data-background|data-border-radius/);
+    assert.match(reward, /data-border-radius="12" data-border-width="2" data-border-color="rgba\(255,255,255,0.1\)"/);
+    assert.doesNotMatch(reward, /data-background/);
     const lock = html.match(new RegExp(`<div[^>]*data-testid="${id}-reward-lock"[^>]*>`))?.[0];
     assert.ok(lock, id);
     assert.match(lock, /data-icon="lock"/);
     assert.doesNotMatch(lock, /data-opacity=/);
     assert.match(lock, /data-height="13"/);
-    assert.match(html, /data-color="rgba\(196,194,222,0.8\)"[^>]*>Desbloquea 50 avatares nuevos/);
+    assert.match(html, /data-color="rgba\(196,194,222,0.8\)"[^>]*>Desbloquea 50\navatares nuevos/);
     assert.doesNotMatch(html, /reward-chest|data-source="3"/);
     assert.match(html, /data-opacity="0.55"/);
     assert.ok(html.indexOf(`>${story}</div>`) < html.indexOf(`data-testid="${id}-reward"`));
     assert.doesNotMatch(html, /Regalitos sorpresa|Desbloquea tu cofre de regalos|data-accessibility-role="button"/);
     const banner = html.slice(html.indexOf(`data-testid="${id}-reward"`));
     assert.ok(banner.indexOf(`data-testid="${id}-reward-avatar"`) < banner.indexOf(`data-testid="${id}-reward-lock"`));
-    assert.ok(banner.indexOf(`data-testid="${id}-reward-lock"`) < banner.indexOf(">Desbloquea 50 avatares nuevos"));
+    assert.ok(banner.indexOf(`data-testid="${id}-reward-lock"`) < banner.indexOf(">Desbloquea 50\navatares nuevos"));
     assert.match(banner, /data-lines="2" data-auto-size="true"/);
     assert.match(banner, /data-background="rgba\(0,0,0,0.22\)"/);
     assert.match(banner, /data-opacity="0.55"/);
     assert.match(banner, /data-source="5"/);
     assert.doesNotMatch(banner, /data-source="[46]"/);
     assert.match(reward, /data-opacity="0.55"/);
-    assert.equal((banner.match(/data-height="35" data-width="35" data-border-radius="17.5" data-border-width="1.5" data-border-color="rgba\(214,176,92,0.1\)"/g) ?? []).length, 1);
+    assert.equal((banner.match(/data-height="35" data-width="35" data-border-radius="17.5" data-border-width="1.5" data-border-color="rgba\(255,255,255,0.2\)"/g) ?? []).length, 1);
   }
 });
 
@@ -233,7 +235,9 @@ test("reward pills grow in normal flow and preserve nonreward and profile previe
   assert.ok(copy);
   assert.match(copy.getText(ast), /testID=\{`\$\{level.id\}-reward`\}/);
   assert.ok(copy.getText(ast).indexOf("{level.story}") < copy.getText(ast).indexOf('testID={`${level.id}-reward`}'));
-  assert.doesNotMatch(pill, /backgroundColor|borderWidth|borderColor|borderRadius/);
+  assert.doesNotMatch(pill, /backgroundColor/);
+  assert.match(pill, /borderWidth: 2/);
+  assert.match(pill, /borderColor: "rgba\(255,255,255,0.1\)"/);
   assert.match(source, /rewardAvatarOverlay: \{[\s\S]*?position: "absolute"[\s\S]*?backgroundColor: "rgba\(0,0,0,0.22\)"/);
   assert.match(pill, /minHeight: 50/);
   // Previous rendered height was 36px artwork + 16px padding + 2px border = 54px.
