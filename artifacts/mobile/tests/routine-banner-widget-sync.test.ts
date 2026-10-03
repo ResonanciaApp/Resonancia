@@ -277,6 +277,13 @@ test("emoji, plus, plus background and widget glass all share one native opacity
   assert.equal(emoji.props.children, "😌");
   assert.equal(plusBackground.props.children[1].props.children, "+");
   assert.deepEqual(plusBackground.props.children[0].props.colors, ["#532FA8", "#372FA8"]);
+  const cloudy = build({ bottom: 100, plusBackgroundGradient: ["#2D2F7C", "#2D3981"], onOpenMoodPicker: () => {} });
+  const cloudyGradient = cloudy.props.children.props.children[2].props.children[0];
+  assert.deepEqual(cloudyGradient.props.colors, ["#2D2F7C", "#2D3981"]);
+  assert.deepEqual(cloudyGradient.props.start, { x: 0.5, y: 0 });
+  assert.deepEqual(cloudyGradient.props.end, { x: 0.5, y: 1 });
+  assert.match(home, /plusBackgroundGradient=\{activeTheme\.id === "cloudy" \? CLOUDY_WIDGET_PLUS_GRADIENT : undefined\}/);
+  assert.match(source("../constants/colors.ts"), /CLOUDY_WIDGET_PLUS_GRADIENT = \["#2D2F7C", "#2D3981"\]/);
   context.activeEvent = { kind: "added" };
   assert.equal(build({ bottom: 100 }).props.pointerEvents, "none");
 });

@@ -115,6 +115,7 @@ import { useColors } from "@/hooks/useColors";
 import {
   CARD_TEXT_ABOVE,
   CARD_TEXT_BELOW,
+  CLOUDY_WIDGET_PLUS_GRADIENT,
   MEMBERSHIP_AURORA,
   WIDGET_GREEN_SOLID,
 } from "@/constants/colors";
@@ -2053,10 +2054,12 @@ const Inicio2HeroStatic = React.memo(function Inicio2HeroStatic({
 function InicioEmotionWidget({
   bottom,
   borderColor,
+  plusBackgroundGradient,
   onOpenMoodPicker,
 }: {
   bottom: number;
   borderColor?: string;
+  plusBackgroundGradient?: readonly [string, string];
   onOpenMoodPicker: () => void;
 }) {
   const { activeEvent, emotionWidgetOpacity } = useRoutineCompletionBanner();
@@ -2094,7 +2097,7 @@ function InicioEmotionWidget({
         <View style={styles.inicio2HeroEmotionAdd}>
           <LinearGradient
             pointerEvents="none"
-            colors={["#532FA8", "#372FA8"]}
+            colors={plusBackgroundGradient ?? ["#532FA8", "#372FA8"]}
             start={{ x: 0.5, y: 0 }}
             end={{ x: 0.5, y: 1 }}
             style={StyleSheet.absoluteFill}
@@ -3462,6 +3465,7 @@ export default function HomeScreen2({
 
       <InicioEmotionWidget
         bottom={emotionWidgetBottom}
+        plusBackgroundGradient={activeTheme.id === "cloudy" ? CLOUDY_WIDGET_PLUS_GRADIENT : undefined}
         onOpenMoodPicker={() => setMoodSheetVisible(true)}
       />
       </Animated.View>{/* fin contenido desvanecible */}
