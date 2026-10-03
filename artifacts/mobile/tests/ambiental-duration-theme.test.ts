@@ -69,11 +69,12 @@ test("Cloudy selected preset and custom duration use 30% black; other themes kee
   assert.match(source, /backgroundColor: customMode\s*\? selectedPresetBackground/);
 });
 
-test("Cloudy wall brightens blue-purple stops by 5% and leaves pink-orange stops unchanged", () => {
+test("Cloudy wall adds 3% brightness to the prior blue-purple stops and keeps warm stops unchanged", () => {
   assert.deepEqual(CLOUDY_REFLECTION_WALL_BORDER_GRADIENT.slice(4), REFLECTION_WALL_BORDER_GRADIENT.slice(4));
   for (let i = 0; i < 4; i++) {
-    const expected = "#" + REFLECTION_WALL_BORDER_GRADIENT[i].slice(1).match(/../g)!.map(channel =>
-      Math.round(parseInt(channel, 16) * 1.05).toString(16).padStart(2, "0"),
+    const priorStops = ["#5175B0", "#627FCA", "#7B74CB", "#9870BE"];
+    const expected = "#" + priorStops[i].slice(1).match(/../g)!.map(channel =>
+      Math.round(parseInt(channel, 16) * 1.03).toString(16).padStart(2, "0"),
     ).join("").toUpperCase();
     assert.equal(CLOUDY_REFLECTION_WALL_BORDER_GRADIENT[i], expected);
   }

@@ -3,7 +3,7 @@ import { Asset } from "expo-asset";
 import React, { useEffect, useState } from "react";
 import { Image, Platform, Pressable, StyleSheet, Text, View } from "react-native";
 
-import { MEMBERSHIP_AURORA, POSITIONED_DAY_GRADIENT } from "@/constants/colors";
+import { CLOUDY_GROWTH_STAGE_LABEL_COLOR, MEMBERSHIP_AURORA, POSITIONED_DAY_GRADIENT } from "@/constants/colors";
 import { CinematicFadeSlide } from "@/components/CinematicFadeSlide";
 import { DiscoverSearchBorder } from "@/components/DiscoverSearchBorder";
 import {
@@ -15,6 +15,7 @@ import {
 import { ReflectionWallPlusIcon } from "@/components/ReflectionWallPlusIcon";
 import { ascentLevels, growthLevels, type GrowthLevel } from "@/data/growthLevels";
 import { useColors } from "@/hooks/useColors";
+import { useSceneTheme } from "@/context/SceneThemeContext";
 
 export const GROWTH_ROW_HEIGHT = 205;
 // Original Tu camino artwork and radial alpha, with RGB brightened by 4% for Perfil only.
@@ -430,9 +431,10 @@ function GrowthStageHeading({
   second?: boolean;
 }) {
   const colors = useColors();
+  const { theme } = useSceneTheme();
   return (
     <View style={[styles.sectionHeading, second && styles.secondStageHeading]}>
-      <Text style={styles.sectionEyebrow}>{eyebrow}</Text>
+      <Text style={[styles.sectionEyebrow, theme.id === "cloudy" && { color: CLOUDY_GROWTH_STAGE_LABEL_COLOR }]}>{eyebrow}</Text>
       <Text
         style={[styles.sectionTitle, { color: colors.foreground }]}
         accessibilityRole="header"

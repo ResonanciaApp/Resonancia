@@ -33,6 +33,7 @@ const colors = {
 
 export const WIDGET_GREEN_SOLID = "#F9F9F9";
 export const CLOUDY_WIDGET_PLUS_GRADIENT = ["#2D2F7C", "#2D3981"] as const;
+export const CLOUDY_GROWTH_STAGE_LABEL_COLOR = "#BDBDBD";
 export const REGISTER_BUTTON_ENABLED_BACKGROUND = "rgba(184, 117, 240, 0.45)";
 export const CARD_TEXT_ABOVE = "#D1D1D1";
 export const CARD_TEXT_BELOW = "#EBF2FF";

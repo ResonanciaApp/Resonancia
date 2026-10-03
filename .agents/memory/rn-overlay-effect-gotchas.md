@@ -5,6 +5,14 @@ description: Touch-target (hitSlop) clipping and resting-state pitfalls when lay
 
 # RN overlay effect gotchas
 
+## Transparent borders still inset absolute decorations
+
+A transparent parent border still occupies layout space. A full-fill gradient border can therefore sit inside the background rather than on its outer edge.
+
+**Why:** The Cloudy wall showed a thin strip of background outside its decorative border even though that border used an absolute-fill overlay.
+
+**How to apply:** When aligning a decorative border to a surface, inspect the parent's border width as well as the overlay radius. Removing that width should preserve the content's original inset through padding; avoid changing shared border rendering across unrelated surfaces.
+
 Lessons from building the Geometrix header audio button (glow + expanding-wave behind a Pressable).
 
 ## hitSlop is clipped to the direct parent's bounds

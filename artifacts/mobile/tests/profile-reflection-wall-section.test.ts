@@ -69,6 +69,18 @@ function style(file: string, name: string, values: Record<string, unknown> = {})
   return new Function(...Object.keys(values), compiled)(...Object.values(values)) as Record<string, unknown>;
 }
 
+test("Cloudy wall removes the parent border inset while preserving its content coordinates", () => {
+  const container = style("InnerSpaceCard", "container", { INNER_SPACE_CARD_BOTTOM_MARGIN: 32 });
+  const canonical = style("InnerSpaceCard", "canonicalVerticalInsets");
+  const flush = style("InnerSpaceCard", "cloudyFlushBorder");
+  assert.equal(flush.borderWidth, 0);
+  for (const padding of ["paddingHorizontal", "paddingTop", "paddingBottom"]) {
+    const before = Number(canonical[padding] ?? container[padding]) + Number(container.borderWidth);
+    assert.equal(flush[padding], before);
+  }
+  assert.match(source("../components/InnerSpaceCard.tsx"), /canonicalVerticalInsets && theme\.id === "cloudy" && styles\.cloudyFlushBorder/);
+});
+
 test("InnerSpaceCard keeps Home defaults and opts profile into a single 18px-inset card title", () => {
   const defaults = style("InnerSpaceCard", "container", { INNER_SPACE_CARD_BOTTOM_MARGIN: 32 });
   assert.equal(defaults.paddingHorizontal, 20);
@@ -83,7 +95,7 @@ test("InnerSpaceCard keeps Home defaults and opts profile into a single 18px-ins
   const titleAt = card.indexOf("{sectionTitle ? (");
   const headerAt = card.indexOf("<View style={styles.header}>");
   assert.ok(titleAt > headerAt && titleAt < card.indexOf('style={styles.infoButton}'), "heading and description share the same header row with the plus");
-  assert.match(card, /style=\{\[styles\.container,\s*canonicalVerticalInsets && styles\.canonicalVerticalInsets,\s*sectionBackgroundColor !== undefined && \{ backgroundColor: sectionBackgroundColor \}\]\}/);
+  assert.match(card, /style=\{\[styles\.container,\s*canonicalVerticalInsets && styles\.canonicalVerticalInsets,\s*canonicalVerticalInsets && theme\.id === "cloudy" && styles\.cloudyFlushBorder,\s*sectionBackgroundColor !== undefined && \{ backgroundColor: sectionBackgroundColor \}\]\}/);
   assert.match(source("../components/ProfileReflectionWallSection.tsx"), /sectionBackgroundColor="rgba\(0,0,0,0.16\)"/);
   assert.match(card, /styles\.sectionTitle,\s*\{ color: colors\.foreground \}/);
 });

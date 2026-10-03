@@ -480,7 +480,7 @@ export function InnerSpaceCard({
 
   return (
     <>
-    <View style={[styles.container, canonicalVerticalInsets && styles.canonicalVerticalInsets, sectionBackgroundColor !== undefined && { backgroundColor: sectionBackgroundColor }]}>
+    <View style={[styles.container, canonicalVerticalInsets && styles.canonicalVerticalInsets, canonicalVerticalInsets && theme.id === "cloudy" && styles.cloudyFlushBorder, sectionBackgroundColor !== undefined && { backgroundColor: sectionBackgroundColor }]}>
       {canonicalVerticalInsets && (
         <DiscoverSearchBorder
           borderRadius={24}
@@ -717,6 +717,13 @@ const styles = StyleSheet.create({
     paddingBottom: 18,
     marginBottom: 0,
     borderColor: "transparent",
+  },
+  cloudyFlushBorder: {
+    borderWidth: 0,
+    // Replace the removed border's space so text and control positions stay unchanged.
+    paddingHorizontal: 21,
+    paddingTop: 19,
+    paddingBottom: 19,
   },
   sectionTitle: {
     fontFamily: "Manrope",

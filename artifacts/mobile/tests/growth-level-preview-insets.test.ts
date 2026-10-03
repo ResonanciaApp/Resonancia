@@ -79,6 +79,7 @@ new Function("exports", ts.transpileModule(
   { compilerOptions: { module: ts.ModuleKind.CommonJS } },
 ).outputText)(wallBorderConstants);
 const mocks: Record<string, unknown> = {
+  "@/context/SceneThemeContext": { useSceneTheme: () => ({ theme: { id: "tibet" } }) },
   "../assets/images/growth/00-intencion-profile-bright.png": 2,
   "../assets/images/growth/semilla-reward-chest.png": 3,
   "../assets/images/growth/reward-avatar-moon.png": 4,
@@ -98,6 +99,7 @@ const mocks: Record<string, unknown> = {
   "react-native-svg": { __esModule: true, default: Native, Circle: Native, Defs: Native, RadialGradient: Native, Stop: Native },
   "expo-asset": { Asset: { fromModule: () => ({ localUri: null, downloadAsync: async () => {} }) } },
   "@/constants/colors": {
+    CLOUDY_GROWTH_STAGE_LABEL_COLOR: "#BDBDBD",
     MEMBERSHIP_AURORA: { premium: { accent: "#BE9650" } },
     POSITIONED_DAY_GRADIENT: ["#C9A6FF"],
   },
@@ -151,6 +153,21 @@ const GrowthRow = new Function("require", "module", "exports", `${compiled}\nret
 const render = (props: Record<string, unknown> = {}) => renderToStaticMarkup(
   React.createElement(componentModule.exports.GrowthLevelPreviewCard, { onPress: () => {}, ...props }),
 );
+
+test("Cloudy uses BDBDBD for both stage labels without changing other themes or stage titles", () => {
+  const sceneMock = mocks["@/context/SceneThemeContext"] as { useSceneTheme: () => { theme: { id: string } } };
+  for (const id of ["cloudy", "cloudy2", "indigo2", "tibet"]) {
+    sceneMock.useSceneTheme = () => ({ theme: { id } });
+    const html = renderToStaticMarkup(React.createElement(componentModule.exports.GrowthJourney));
+    const expected = id === "cloudy" ? "#BDBDBD" : "#C9A6FF";
+    for (const label of ["PRIMERA ETAPA", "SEGUNDA ETAPA"]) {
+      assert.match(html, new RegExp(`data-color="${expected.replace(/[()]/g, "\\$&")}"[^>]*>${label}`));
+    }
+    assert.match(html, /Florecimiento/);
+    assert.match(html, /El ascenso/);
+  }
+  sceneMock.useSceneTheme = () => ({ theme: { id: "tibet" } });
+});
 
 test("only Intención opens a stage detail, without activating progression or linking other stages", () => {
   let opened = 0;

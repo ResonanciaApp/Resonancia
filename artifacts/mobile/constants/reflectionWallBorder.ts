@@ -9,12 +9,12 @@ export const REFLECTION_WALL_BORDER_GRADIENT: [string, string, ...string[]] = [
 ];
 
 export const REFLECTION_WALL_BORDER_START = { x: 0, y: 0.5 };
-/** Cloudy: +5% RGB brightness on blue/purple stops only; warm stops unchanged. */
+/** Cloudy: original +5% RGB brightness, then another +3%; warm stops unchanged. */
 export const CLOUDY_REFLECTION_WALL_BORDER_GRADIENT: [string, string, ...string[]] = [
-  "#5175B0",
-  "#627FCA",
-  "#7B74CB",
-  "#9870BE",
+  "#5379B5",
+  "#6583D0",
+  "#7F77D1",
+  "#9D73C4",
   ...REFLECTION_WALL_BORDER_GRADIENT.slice(4),
 ];
 export const REFLECTION_WALL_BORDER_END = { x: 1, y: 0.5 };
