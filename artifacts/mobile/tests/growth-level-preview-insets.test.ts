@@ -217,10 +217,11 @@ test("reward pills grow in normal flow and preserve nonreward and profile previe
   assert.match(source, /rewardLine: \{ height: "100%" \}/);
   const pill = source.match(/reward: \{([\s\S]*?)\n  \},/)?.[1] ?? "";
   assert.doesNotMatch(pill, /position: "absolute"|height:/);
-  assert.match(pill, /width: "100%"/);
+  assert.doesNotMatch(pill, /width:/);
   assert.match(pill, /alignSelf: "stretch"/);
   assert.match(pill, /marginTop: 12/);
-  assert.doesNotMatch(pill, /marginLeft|marginRight/);
+  assert.doesNotMatch(pill, /marginLeft/);
+  assert.match(pill, /marginRight: 35/);
   assert.match(source, /rewardCopy: \{ flex: 0, paddingTop: 34 \}/);
   const ast = ts.createSourceFile("GrowthJourney.tsx", source, ts.ScriptTarget.Latest, true, ts.ScriptKind.TSX);
   let copy: ts.JsxElement | undefined;

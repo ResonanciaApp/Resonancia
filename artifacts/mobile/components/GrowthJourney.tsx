@@ -524,8 +524,8 @@ const styles = StyleSheet.create({
   rewardLine: { height: "100%" },
   rewardCopy: { flex: 0, paddingTop: 34 },
   reward: {
-    width: "100%",
     alignSelf: "stretch",
+    marginRight: 35,
     marginTop: 12,
     minHeight: 50,
     borderWidth: 1,

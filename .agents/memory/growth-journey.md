@@ -51,7 +51,7 @@ La ventana que se abre desde Intención en Perfil («Tu camino») debe abrirse a
 
 **How to apply:** Conservar el recorrido y los niveles apagados. La ayuda sigue siendo un panel interno de la misma ventana nativa; no convertirla en un segundo Modal.
 
-Semilla, Crecimiento, Vegetación y Expansión muestran «Desbloquea 50 avatares nuevos» con el mismo color y atenuación de la descripción, sin cofres. El aviso va justo debajo de la descripción, limitado al ancho de su columna, sin fondo y con borde blanco de 1 px al 10 %. El loto a la izquierda tiene borde blanco al 20 %, overlay negro al 22 % y candado relleno de 13 puntos sobresaliendo de la esquina superior izquierda. El texto a la derecha se divide en «Desbloquea 50» y «avatares nuevos».
+Semilla, Crecimiento, Vegetación y Expansión muestran «Desbloquea 50 avatares nuevos» con el mismo color y atenuación de la descripción, sin cofres. El aviso va justo debajo de la descripción, alineado a la izquierda de su columna y con 35 px adicionales libres a la derecha, sin fondo y con borde blanco de 1 px al 10 %. El loto a la izquierda tiene borde blanco al 20 %, overlay negro al 22 % y candado relleno de 13 puntos sobresaliendo de la esquina superior izquierda. El texto a la derecha se divide en «Desbloquea 50» y «avatares nuevos».
 
 **Why:** El usuario eligió mantener solo el loto, eliminar el fondo y limitar el banner al ancho de la descripción. Reiteró que todo debe estar apagado fuera de la etapa actual. Su última revisión reemplaza el borde dorado por blanco, añade un borde exterior tenue, fija dos líneas de texto y pide sacar más el candado hacia la esquina.
 
