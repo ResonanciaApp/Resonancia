@@ -42,7 +42,7 @@ test("Dormir, Sonidos and general category tabs use 16% black without changing s
   assert.match(sleep, /sleepPill: \{[\s\S]*?backgroundColor: "rgba\(0,0,0,0\.16\)"/);
   assert.match(sleep, /colors=\{\["#784576", "#50326E"\]\}/);
   assert.match(source("app/(tabs)/sonidos.tsx"), /inactiveTabSurface = "rgba\(0,0,0,0\.16\)"/);
-  assert.match(source("app/(tabs)/sonidos.tsx"), /pill: \{[^}]*borderWidth: 1\.2,[^}]*borderColor: "rgba\(232,204,255,0\.16\)"/);
+  assert.match(source("app/(tabs)/sonidos.tsx"), /pill: \{[^}]*borderWidth: 1\.2,[^}]*borderColor: "rgba\(241,224,255,0\.25\)"/);
   for (const file of ["components/SupercategoryFilterTabs.tsx", "app/category/[id].tsx"]) {
     assert.match(source(file), /chip: \{[\s\S]*?backgroundColor: "rgba\(0,0,0,0\.16\)"/);
     assert.match(source(file), /chipSelected: \{[\s\S]*?backgroundColor: "#F9F9F9"/);
