@@ -192,8 +192,24 @@ test("reward pills grow in normal flow and preserve nonreward and profile previe
   assert.match(source, /rewardLine: \{ height: "100%" \}/);
   const pill = source.match(/reward: \{([\s\S]*?)\n  \},/)?.[1] ?? "";
   assert.doesNotMatch(pill, /position: "absolute"|height:/);
-  assert.match(pill, /marginLeft: 25/);
-  assert.match(pill, /marginRight: 30/);
+  assert.match(pill, /width: "100%"/);
+  assert.match(pill, /alignSelf: "stretch"/);
+  assert.match(pill, /marginTop: 12/);
+  assert.doesNotMatch(pill, /marginLeft|marginRight/);
+  assert.match(source, /rewardCopy: \{ flex: 0, paddingTop: 34 \}/);
+  const ast = ts.createSourceFile("GrowthJourney.tsx", source, ts.ScriptTarget.Latest, true, ts.ScriptKind.TSX);
+  let copy: ts.JsxElement | undefined;
+  function visit(node: ts.Node) {
+    if (ts.isJsxElement(node) && node.openingElement.attributes.properties.some(
+      attr => ts.isJsxAttribute(attr) && attr.name.getText(ast) === "testID"
+        && attr.initializer?.getText(ast) === '{`${level.id}-copy`}',
+    )) copy = node;
+    ts.forEachChild(node, visit);
+  }
+  visit(ast);
+  assert.ok(copy);
+  assert.match(copy.getText(ast), /testID=\{`\$\{level.id\}-reward`\}/);
+  assert.ok(copy.getText(ast).indexOf("{level.story}") < copy.getText(ast).indexOf('testID={`${level.id}-reward`}'));
   assert.match(pill, /backgroundColor: "rgba\(0,0,0,0.22\)"/);
   assert.doesNotMatch(pill, /borderWidth|borderColor/);
   assert.match(pill, /minHeight: 50/);

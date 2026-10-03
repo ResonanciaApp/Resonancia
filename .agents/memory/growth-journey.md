@@ -51,8 +51,8 @@ La ventana que se abre desde Intención en Perfil («Tu camino») debe abrirse a
 
 **How to apply:** Conservar el recorrido y los niveles apagados. La ayuda sigue siendo un panel interno de la misma ventana nativa; no convertirla en un segundo Modal.
 
-Semilla, Crecimiento, Vegetación y Expansión muestran el mismo candado relleno de 16 puntos y «Desbloquea 50 avatares nuevos» en #8C8C8C, sin cofres. El aviso es una píldora horizontal bajo el arte y la descripción: fondo negro al 22 %, sin borde y radio de 12 px. A la derecha conserva solo el avatar IA circular de loto, con borde dorado sutil.
+Semilla, Crecimiento, Vegetación y Expansión muestran el mismo candado relleno de 16 puntos y «Desbloquea 50 avatares nuevos» en #8C8C8C, sin cofres. El aviso es una píldora horizontal justo debajo de la descripción, alineada y limitada al ancho de su columna hasta el margen derecho: fondo negro al 22 %, sin borde y radio de 12 px. A la derecha conserva solo el avatar IA circular de loto, con borde dorado sutil.
 
-**Why:** El usuario pidió reducir el candado anterior seis puntos, cambiar el trazo por relleno y extender el candado y texto a los tres niveles que tenían cofres. Después aportó una referencia del banner horizontal con tres avatares IA, reemplazó la cápsula púrpura con borde por el fondo negro de radio 12 y finalmente eligió mantener solo el loto.
+**Why:** El usuario pidió reducir el candado anterior seis puntos, cambiar el trazo por relleno y extender el candado y texto a los tres niveles que tenían cofres. Después aportó una referencia del banner horizontal con tres avatares IA, reemplazó la cápsula púrpura con borde por el fondo negro de radio 12, eligió mantener solo el loto y pidió limitar el banner al ancho de la descripción.
 
 **How to apply:** Mantener los cuatro avisos desactivados hasta que se pida implementar recompensas; no añadir avisos a los demás niveles. El usuario pidió después apagar también los avatares: deben compartir la atenuación de las demás imágenes bloqueadas, no permanecer brillantes. Dejar crecer la píldora en el flujo si el texto se envuelve.

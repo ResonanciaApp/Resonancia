@@ -286,7 +286,8 @@ function GrowthRow({
       <View style={[styles.art, status === "locked" && styles.lockedArt]}>
         <GrowthLevelImage level={level} />
       </View>
-      <View style={[styles.copy, reward && styles.rewardCopy, status === "locked" && styles.lockedCopy]}>
+      <View testID={`${level.id}-copy`} style={[styles.copy, reward && styles.rewardCopy]}>
+        <View style={status === "locked" && styles.lockedCopy}>
         <View style={[styles.dayPill, florecimiento && styles.bloomDayPill]}>
           {florecimiento && (
             <MaterialCommunityIcons
@@ -308,7 +309,7 @@ function GrowthRow({
         <Text style={[styles.story, { color: status === "locked" ? GROWTH_COLORS.muted : colors.mutedForeground }]}>
           {level.story}
         </Text>
-      </View>
+        </View>
       {reward && (
         <View
           testID={`${level.id}-reward`}
@@ -331,6 +332,7 @@ function GrowthRow({
           </View>
         </View>
       )}
+      </View>
     </View>
   );
 }
@@ -511,18 +513,18 @@ const styles = StyleSheet.create({
   lockedCopy: { opacity: 0.55 },
   rewardRow: { height: "auto", minHeight: GROWTH_ROW_HEIGHT, justifyContent: "flex-start", paddingBottom: 20 },
   rewardLine: { height: "100%" },
-  rewardCopy: { flex: 0, height: GROWTH_ROW_HEIGHT - 26 },
+  rewardCopy: { flex: 0, paddingTop: 34 },
   reward: {
-    marginLeft: 25,
-    marginRight: 30,
+    width: "100%",
+    alignSelf: "stretch",
+    marginTop: 12,
     minHeight: 50,
     borderRadius: 12,
     paddingVertical: 8,
-    paddingLeft: 16,
-    paddingRight: 10,
+    paddingHorizontal: 8,
     flexDirection: "row",
     alignItems: "center",
-    gap: 10,
+    gap: 6,
     backgroundColor: "rgba(0,0,0,0.22)",
   },
   rewardLock: { width: 16, height: 16 },
