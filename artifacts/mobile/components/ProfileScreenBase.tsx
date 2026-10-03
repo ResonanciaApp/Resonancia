@@ -2606,7 +2606,7 @@ const styles = StyleSheet.create({
 
   // Ajustar el margen en el flujo desplaza también todas las secciones posteriores.
   profileProgressSection: {
-    marginTop: -4,
+    marginTop: 2,
     marginBottom: PROFILE_SECTION_GAP,
   },
   practiceReminderSection: {
