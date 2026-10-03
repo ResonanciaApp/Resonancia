@@ -12,7 +12,7 @@ import {
   REFLECTION_WALL_BORDER_END,
   REFLECTION_WALL_BORDER_BRIGHTNESS,
 } from "@/constants/reflectionWallBorder";
-import { REFLECTION_STORY_COVER_PRESETS } from "@/data/default-reflection-story-covers";
+import { ReflectionWallPlusIcon } from "@/components/ReflectionWallPlusIcon";
 import { ascentLevels, growthLevels, type GrowthLevel } from "@/data/growthLevels";
 import { useColors } from "@/hooks/useColors";
 
@@ -225,7 +225,6 @@ function PreviewContentEntrance({
 }
 
 const REWARD_AVATAR = require("../assets/images/growth/reward-avatar-lotus.png");
-const WALL_REWARD_COVERS = REFLECTION_STORY_COVER_PRESETS.slice(0, 3);
 const WALL_REWARD_TEXT = "Comparte sin sello de agua en Mi muro expansivo";
 
 function RewardArtwork({ module }: { module: number }) {
@@ -274,32 +273,15 @@ function RewardAvatar({ module, levelId }: { module: number; levelId: string }) 
 function WallRewardIcon() {
   return (
     <View testID="expansion-wall-reward-icon" style={styles.wallRewardIcon}>
-      <Feather name="plus" size={11} color={GROWTH_COLORS.muted} style={styles.wallRewardPlus} />
-      {WALL_REWARD_COVERS.map((cover, index) => {
-        const size = [21, 27, 35][index];
-        return (
-          <View
-            key={cover.id}
-            testID={`expansion-wall-reward-cover-${index}`}
-            style={[styles.wallRewardCover, { width: size, height: size, borderRadius: size / 2, left: 11 + index * 9, top: (35 - size) / 2 }]}
-          >
-            <View style={[styles.wallRewardImageClip, { borderRadius: size / 2 }]}>
-              <RewardArtwork module={cover.source} />
-              <View pointerEvents="none" style={styles.rewardAvatarOverlay} />
-            </View>
-            {index === 2 && (
-              <DiscoverSearchBorder
-                borderRadius={size / 2}
-                borderWidth={2}
-                brightness={REFLECTION_WALL_BORDER_BRIGHTNESS}
-                colors={REFLECTION_WALL_BORDER_GRADIENT}
-                start={REFLECTION_WALL_BORDER_START}
-                end={REFLECTION_WALL_BORDER_END}
-              />
-            )}
-          </View>
-        );
-      })}
+      <ReflectionWallPlusIcon size={44} />
+      <DiscoverSearchBorder
+        borderRadius={22}
+        borderWidth={2}
+        brightness={REFLECTION_WALL_BORDER_BRIGHTNESS}
+        colors={REFLECTION_WALL_BORDER_GRADIENT}
+        start={REFLECTION_WALL_BORDER_START}
+        end={REFLECTION_WALL_BORDER_END}
+      />
       <MaterialCommunityIcons
         testID="expansion-wall-reward-lock"
         name="lock"
@@ -607,10 +589,7 @@ const styles = StyleSheet.create({
   },
   rewardContent: { flexDirection: "row", alignItems: "center", maxWidth: "100%", flexShrink: 1, paddingLeft: 3, gap: 6 },
   wallReward: { marginTop: 0 },
-  wallRewardIcon: { width: 64, height: 35, flexShrink: 0, position: "relative" },
-  wallRewardPlus: { position: "absolute", left: 0, top: 12 },
-  wallRewardCover: { position: "absolute" },
-  wallRewardImageClip: { width: "100%", height: "100%", overflow: "hidden" },
+  wallRewardIcon: { width: 44, height: 44, flexShrink: 0, position: "relative", alignItems: "center", justifyContent: "center" },
   rewardLock: { position: "absolute", left: -3, top: -3, width: 13, height: 13 },
   rewardText: { flexShrink: 1, minWidth: 0, fontFamily: "Manrope", fontSize: 11, lineHeight: 16 },
   rewardAvatarOverlay: {

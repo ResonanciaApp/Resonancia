@@ -14,6 +14,7 @@ import Reanimated, {
 } from "react-native-reanimated";
 import { useColors } from "@/hooks/useColors";
 import { DiscoverSearchBorder } from "@/components/DiscoverSearchBorder";
+import { ReflectionWallPlusIcon, WALL_PLUS_HALO_SIZES as HALO_SIZES } from "@/components/ReflectionWallPlusIcon";
 import { ReflectionCategoryTabBorder, ReflectionCategoryTabLabel } from "@/components/ReflectionCategoryTabLabel";
 import {
   REFLECTION_WALL_BORDER_GRADIENT,
@@ -52,12 +53,6 @@ const PLUS_ROTATION_STOPS = [
 const PANEL_DURATION = 620;
 const SCREEN_SETTLE_DURATION = 650;
 export const INNER_SPACE_CARD_BOTTOM_MARGIN = 32;
-const HALO_SIZES = [44, 34, 24] as const;
-const HALO_COLORS = [
-  "rgba(255, 255, 255, 0.06)",
-  "rgba(255, 255, 255, 0.10)",
-  "rgba(255, 255, 255, 0.15)",
-] as const;
 
 export function InnerSpaceCard({
   focusRequest = 0,
@@ -511,41 +506,7 @@ export function InnerSpaceCard({
           accessibilityState={{ expanded }}
           testID="reflection-wall-toggle"
         >
-          {haloValues.map((value, index) => (
-            <Animated.View
-              key={HALO_SIZES[index]}
-              pointerEvents="none"
-              style={[
-                styles.halo,
-                {
-                  width: HALO_SIZES[index],
-                  height: HALO_SIZES[index],
-                  borderRadius: HALO_SIZES[index] / 2,
-                  top: (43 - HALO_SIZES[index]) / 2,
-                  left: (43 - HALO_SIZES[index]) / 2,
-                  backgroundColor: HALO_COLORS[index],
-                  opacity: value,
-                   transform: [{ scale: value.interpolate(
-                     index === HALO_SIZES.length - 1 && !expanded
-                       ? { inputRange: [0, 0.88, 1], outputRange: [0.1, 1.07, 1] }
-                       : { inputRange: [0, 1], outputRange: [0.1, 1] },
-                   ) }],
-                },
-              ]}
-            />
-          ))}
-          <Animated.View
-            collapsable={false}
-            style={[
-              styles.plusGlyph,
-              { transform: [{ rotate: plusSpin.interpolate({
-                inputRange: [-300, 0, 300],
-                outputRange: ["-300deg", "0deg", "300deg"],
-              }) }] },
-            ]}
-          >
-            <Feather name="plus" size={25} color="#E5F7FF" />
-          </Animated.View>
+          <ReflectionWallPlusIcon spin={plusSpin} haloValues={haloValues} expanded={expanded} />
         </Pressable>
       </View>
       <Reanimated.View
@@ -787,15 +748,6 @@ const styles = StyleSheet.create({
   infoButton: {
     width: 43,
     height: 43,
-    alignItems: "center",
-    justifyContent: "center",
-  },
-  halo: {
-    position: "absolute",
-  },
-  plusGlyph: {
-    width: 28,
-    height: 28,
     alignItems: "center",
     justifyContent: "center",
   },

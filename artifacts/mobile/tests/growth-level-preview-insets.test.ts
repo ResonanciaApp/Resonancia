@@ -84,6 +84,7 @@ const mocks: Record<string, unknown> = {
   "../assets/images/growth/reward-avatar-temple.png": 6,
   react: React,
   "react-native": {
+    Animated: { View: Native },
     Image: Native,
     Platform: { OS: "web" },
     Pressable: Native,
@@ -103,9 +104,6 @@ const mocks: Record<string, unknown> = {
       React.createElement(React.Fragment, null, children),
   },
   "@/constants/reflectionWallBorder": wallBorderConstants,
-  "@/data/default-reflection-story-covers": {
-    REFLECTION_STORY_COVER_PRESETS: [7, 8, 9].map((source) => ({ id: `cover-${source}`, source })),
-  },
   "@/components/DiscoverSearchBorder": {
     DiscoverSearchBorder: ({ borderWidth, borderRadius, colors, brightness, start, end }: {
       borderWidth: number; borderRadius: number; colors: string[]; brightness: number; start: unknown; end: unknown;
@@ -133,6 +131,15 @@ const mocks: Record<string, unknown> = {
     useColors: () => ({ foreground: "#FFF", mutedForeground: "#AAA" }),
   },
 };
+const wallPlusModule = { exports: {} as { ReflectionWallPlusIcon: React.ComponentType<Record<string, unknown>> } };
+new Function("require", "module", "exports", ts.transpileModule(
+  readFileSync(new URL("../components/ReflectionWallPlusIcon.tsx", import.meta.url), "utf8"),
+  { compilerOptions: { module: ts.ModuleKind.CommonJS, jsx: ts.JsxEmit.React, esModuleInterop: true } },
+).outputText)((name: string) => {
+  if (!(name in mocks)) throw new Error(`Missing wall plus test mock: ${name}`);
+  return mocks[name];
+}, wallPlusModule, wallPlusModule.exports);
+mocks["@/components/ReflectionWallPlusIcon"] = wallPlusModule.exports;
 const componentModule = { exports: {} as { GrowthLevelPreviewCard: React.ComponentType<Record<string, unknown>> } };
 const GrowthRow = new Function("require", "module", "exports", `${compiled}\nreturn GrowthRow;`)((name: string) => {
   if (!(name in mocks)) throw new Error(`Missing growth preview test mock: ${name}`);
@@ -233,7 +240,7 @@ test("all reward visuals are dimmed together only outside the current stage, wit
   }
 });
 
-test("Expansion shows the full avatar phrase and a separate locked wall achievement with plus and three covers", () => {
+test("Expansion shows the full avatar phrase and the actual wall plus with three translucent white halos, not photos", () => {
   const source = readFileSync(new URL("../components/GrowthJourney.tsx", import.meta.url), "utf8");
   assert.match(source, /numberOfLines=\{level.id === "expansion" \? undefined : 2\}/);
   for (const id of ["semilla", "crecimiento", "vegetacion", "expansion"]) {
@@ -253,18 +260,30 @@ test("Expansion shows the full avatar phrase and a separate locked wall achievem
     assert.match(wall, /data-testid="expansion-wall-reward-lock" data-icon="lock"/);
     assert.match(wall, /data-icon="plus"/);
     assert.match(wall, />Comparte sin sello de agua en Mi muro expansivo</);
-    for (const module of [7, 8, 9]) assert.match(wall, new RegExp(`data-source="${module}"`));
-    for (const [index, size] of [[0, 21], [1, 27], [2, 35]]) {
-      assert.match(wall, new RegExp(`data-testid="expansion-wall-reward-cover-${index}"[^>]*data-height="${size}" data-width="${size}"`));
+    assert.doesNotMatch(wall, /data-source=|reward-cover/);
+    for (const [size, opacity] of [[44, "0.06"], [34, "0.10"], [24, "0.15"]]) {
+      assert.match(wall, new RegExp(`data-background="rgba\\(255, 255, 255, ${opacity}\\)"[^>]*data-height="${size}" data-width="${size}"`));
     }
     assert.equal((wall.match(/data-wall-border-width="2"/g) ?? []).length, 1);
-    assert.ok(wall.indexOf('data-testid="expansion-wall-reward-cover-2"') < wall.indexOf('data-wall-border-width="2"'));
-    assert.match(wall, /data-wall-border-radius="17.5"/);
+    assert.match(wall, /data-wall-border-radius="22"/);
     const palette = JSON.stringify(wallBorderConstants.REFLECTION_WALL_BORDER_GRADIENT).replaceAll('"', "&quot;");
     assert.ok(wall.includes(`data-wall-border-colors="${palette}"`));
     assert.match(wall, /data-wall-border-brightness="1.008315"/);
     assert.doesNotMatch(wall, /data-lines=/);
   }
+});
+
+test("Profile and the wall achievement reuse the same plus artwork while Profile keeps control of its original rotation", () => {
+  const wallSource = readFileSync(new URL("../components/InnerSpaceCard.tsx", import.meta.url), "utf8");
+  const journeySource = readFileSync(new URL("../components/GrowthJourney.tsx", import.meta.url), "utf8");
+  assert.match(wallSource, /<ReflectionWallPlusIcon spin=\{plusSpin\} haloValues=\{haloValues\} expanded=\{expanded\}/);
+  assert.match(wallSource, /Animated.sequence\(PLUS_ROTATION_STOPS.map/);
+  assert.match(journeySource, /<ReflectionWallPlusIcon size=\{44\}/);
+  const html = renderToStaticMarkup(React.createElement(wallPlusModule.exports.ReflectionWallPlusIcon, {
+    spin: { interpolate: () => "270deg" },
+  }));
+  assert.match(html, /data-transform="\[\{&quot;rotate&quot;:&quot;270deg&quot;\}\]"/);
+  assert.match(html, /data-icon="plus"/);
 });
 
 test("reward pills grow in normal flow and preserve nonreward and profile preview sizing", () => {
