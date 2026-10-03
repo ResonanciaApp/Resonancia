@@ -329,6 +329,7 @@ function GrowthRow({
           pointerEvents="none"
           accessibilityState={{ disabled: true }}
         >
+          <View testID={`${level.id}-reward-content`} style={styles.rewardContent}>
           <RewardAvatar module={REWARD_AVATAR} levelId={level.id} />
           <Text
             style={[styles.rewardText, { color: status === "locked" ? GROWTH_COLORS.muted : colors.mutedForeground }]}
@@ -339,6 +340,7 @@ function GrowthRow({
           >
             {"Desbloquea 50\navatares nuevos"}
           </Text>
+          </View>
         </View>
       )}
       </View>
@@ -535,10 +537,11 @@ const styles = StyleSheet.create({
     paddingHorizontal: 8,
     flexDirection: "row",
     alignItems: "center",
-    gap: 6,
+    justifyContent: "center",
   },
+  rewardContent: { flexDirection: "row", alignItems: "center", maxWidth: "100%", flexShrink: 1, gap: 6 },
   rewardLock: { position: "absolute", left: -3, top: -3, width: 13, height: 13 },
-  rewardText: { flex: 1, flexShrink: 1, minWidth: 0, fontFamily: "Manrope", fontSize: 11, lineHeight: 16 },
+  rewardText: { flexShrink: 1, minWidth: 0, fontFamily: "Manrope", fontSize: 11, lineHeight: 16 },
   rewardAvatarOverlay: {
     position: "absolute",
     top: 0,

@@ -239,11 +239,14 @@ test("reward pills grow in normal flow and preserve nonreward and profile previe
   assert.doesNotMatch(pill, /backgroundColor/);
   assert.match(pill, /borderWidth: 1/);
   assert.match(pill, /borderColor: "rgba\(255,255,255,0.1\)"/);
+  assert.match(pill, /justifyContent: "center"/);
+  assert.match(source, /rewardContent: \{ flexDirection: "row", alignItems: "center", maxWidth: "100%", flexShrink: 1, gap: 6 \}/);
+  assert.match(copy.getText(ast), /testID=\{`\$\{level.id\}-reward-content`\} style=\{styles.rewardContent\}/);
   assert.match(source, /rewardAvatarOverlay: \{[\s\S]*?position: "absolute"[\s\S]*?backgroundColor: "rgba\(0,0,0,0.22\)"/);
   assert.match(pill, /minHeight: 50/);
   // Previous rendered height was 36px artwork + 16px padding + 2px border = 54px.
   assert.equal(36 + 8 * 2 + 2 - 50, 4);
-  assert.match(source, /rewardText: \{ flex: 1, flexShrink: 1/);
+  assert.match(source, /rewardText: \{ flexShrink: 1/);
   assert.match(source, /row: \{ height: GROWTH_ROW_HEIGHT/);
   assert.match(source, /previewArt: \{ width: 100, height: 100 \}/);
 });
