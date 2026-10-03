@@ -27,6 +27,7 @@
 - [Tab-screen audio focus cleanup](tab-screen-audio-focus-cleanup.md) — audio propio de una tab debe pararse con useFocusEffect (las tabs quedan montadas; el cleanup de unmount no corre al cambiar de tab)
 - [SVG gradient import clash](svg-gradient-import-clash.md) — react-native-svg LinearGradient choca con expo-linear-gradient (mismo nombre); aliasear + sanear useId (quitar ":") + colors refs estables para memo
 - [Card/module background](card-module-background.md) — fondo estándar de cards/módulos = tinte dorado translúcido rgba(190,150,80,0.05) (#BE9650 5%); token card/darkChocolate en mobile/constants/colors.ts; no migrar hardcodes a ciegas
+- [Fondos editoriales translúcidos](translucent-editorial-backgrounds.md) — la opacidad elegida se compone una sola vez sobre el tema; crear una opción no implica seleccionarla
 - [Fondos negros translúcidos](black-surface-opacity.md) — antiguos 22/28 % pasan al 16 %; excepción: banner Resonadores de Descubrir al 28 %; conservar otros bordes y sombras
 - [SacredGlyph box-fill sizing](sacred-glyph-fill.md) — contenido ≈0.78×size (extent 39 horneado); EXTENT maps NO se usan; para cubrir un cover sin esquinas vacías: size = diagonal/0.78 (no solo ancho)
 - [Modal bottom sheet rounded corners](modal-bottom-sheet-rounded-corners.md) — backdrop flex:1 NO cubre las esquinas cortadas; usar absoluteFill + container justifyContent:"flex-end"

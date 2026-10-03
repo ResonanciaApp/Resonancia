@@ -44,7 +44,7 @@ export const dailyQuoteSettingsTable = pgTable("daily_quote_settings", {
   updatedAt: timestamp("updated_at", { withTimezone: true }).notNull().defaultNow(),
 }, (t) => [
   check("daily_quote_settings_id_check", sql`${t.id} = 1`),
-  check("daily_quote_settings_palette_check", sql`${t.paletteId} in ('jade', 'violet', 'ocean', 'ruby', 'amber', 'original')`),
+  check("daily_quote_settings_palette_check", sql`${t.paletteId} in ('jade', 'violet', 'ocean', 'ruby', 'amber', 'original', 'black16')`),
   check("daily_quote_settings_decoration_check", sql`${t.decorationId} in ('circles', 'vesica', 'seed', 'flower', 'metatron')`),
   check("daily_quote_settings_revision_check", sql`${t.revision} > 0`),
 ]);

@@ -37,6 +37,7 @@ export function DailyWisdomCard({
         styles.card,
         { backgroundColor: backgroundColor ?? routineTheme.surface },
         style,
+        quote.paletteId === "black16" && { backgroundColor: "transparent" },
       ]}
       testID="inicio2-daily-wisdom"
     >

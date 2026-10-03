@@ -33,7 +33,7 @@ export default function QuoteOfTheDay() {
       colors={DAILY_QUOTE_PALETTE_COLORS[quote.paletteId]}
       start={{ x: 0, y: 0 }}
       end={{ x: 1, y: 1 }}
-      style={styles.card}
+      style={[styles.card, quote.paletteId === "black16" && { backgroundColor: "transparent" }]}
     >
       {/* Autor arriba-izquierda + ··· arriba-derecha */}
       <View style={styles.header}>

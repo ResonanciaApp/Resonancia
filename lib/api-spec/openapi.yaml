@@ -6374,7 +6374,7 @@ components:
         assignedAt: {type: string, format: date-time}
     DailyQuotePalette:
       type: string
-      enum: [jade, violet, ocean, ruby, amber, original]
+      enum: [jade, violet, ocean, ruby, amber, original, black16]
     DailyQuoteDecoration:
       type: string
       enum: [circles, vesica, seed, flower, metatron]

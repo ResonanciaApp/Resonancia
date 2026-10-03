@@ -1206,6 +1206,7 @@ export const DailyQuotePalette = {
   ruby: 'ruby',
   amber: 'amber',
   original: 'original',
+  black16: 'black16',
 } as const;
 
 export type DailyQuoteDecoration = typeof DailyQuoteDecoration[keyof typeof DailyQuoteDecoration];

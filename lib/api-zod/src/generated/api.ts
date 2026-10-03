@@ -1865,7 +1865,7 @@ export const GetQuoteOfTheDayResponse = zod.object({
   "cycle": zod.number(),
   "assignedAt": zod.coerce.date()
 }).and(zod.object({
-  "paletteId": zod.enum(['jade', 'violet', 'ocean', 'ruby', 'amber', 'original']),
+  "paletteId": zod.enum(['jade', 'violet', 'ocean', 'ruby', 'amber', 'original', 'black16']),
   "decorationId": zod.enum(['circles', 'vesica', 'seed', 'flower', 'metatron']),
   "decorationsEnabled": zod.boolean()
 }))
@@ -1974,7 +1974,7 @@ export const CreateAdminDailyQuoteBody = zod.object({
 
 
 export const GetAdminDailyQuoteSettingsResponse = zod.object({
-  "paletteId": zod.enum(['jade', 'violet', 'ocean', 'ruby', 'amber', 'original']),
+  "paletteId": zod.enum(['jade', 'violet', 'ocean', 'ruby', 'amber', 'original', 'black16']),
   "decorationId": zod.enum(['circles', 'vesica', 'seed', 'flower', 'metatron']),
   "decorationsEnabled": zod.boolean(),
   "revision": zod.number().min(1),
@@ -1983,7 +1983,7 @@ export const GetAdminDailyQuoteSettingsResponse = zod.object({
 
 
 export const UpdateAdminDailyQuoteSettingsBody = zod.object({
-  "paletteId": zod.enum(['jade', 'violet', 'ocean', 'ruby', 'amber', 'original']).optional(),
+  "paletteId": zod.enum(['jade', 'violet', 'ocean', 'ruby', 'amber', 'original', 'black16']).optional(),
   "decorationId": zod.enum(['circles', 'vesica', 'seed', 'flower', 'metatron']).optional(),
   "decorationsEnabled": zod.boolean().optional()
 })
@@ -1992,7 +1992,7 @@ export const UpdateAdminDailyQuoteSettingsBody = zod.object({
 
 
 export const UpdateAdminDailyQuoteSettingsResponse = zod.object({
-  "paletteId": zod.enum(['jade', 'violet', 'ocean', 'ruby', 'amber', 'original']),
+  "paletteId": zod.enum(['jade', 'violet', 'ocean', 'ruby', 'amber', 'original', 'black16']),
   "decorationId": zod.enum(['circles', 'vesica', 'seed', 'flower', 'metatron']),
   "decorationsEnabled": zod.boolean(),
   "revision": zod.number().min(1),

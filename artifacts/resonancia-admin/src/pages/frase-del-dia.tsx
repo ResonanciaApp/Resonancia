@@ -101,6 +101,7 @@ const DAILY_QUOTE_PALETTES: Array<{
   { id: "ruby", name: "Rubí sereno", description: "Vino oscuro y rosa mineral", colors: ["#280711", "#81425B"] },
   { id: "amber", name: "Ámbar profundo", description: "Chocolate oscuro y cobre", colors: ["#271307", "#94642E"] },
   { id: "original", name: "Original", description: "Violeta y coral del fondo anterior", colors: ["#4A285F", "#A85F62"] },
+  { id: "black16", name: "Negro 16 %", description: "Negro con 0,16 de opacidad", colors: ["rgba(0,0,0,0.16)", "rgba(0,0,0,0.16)"] },
 ];
 
 const DAILY_QUOTE_DECORATIONS: Array<{
@@ -431,7 +432,7 @@ export default function FraseDelDiaPage() {
             <CardTitle className="text-lg">Fondo de la Frase del día</CardTitle>
           </div>
           <CardDescription>
-            Selecciona el degradado premium que se mostrará detrás de la frase en la app.
+            Selecciona el fondo que se mostrará detrás de la frase en la app.
           </CardDescription>
         </CardHeader>
         <CardContent className="pt-6">

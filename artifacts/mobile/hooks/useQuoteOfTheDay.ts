@@ -56,7 +56,8 @@ function parseAssignment(value: unknown, today: string): QuoteOfTheDay | null {
       assignment.paletteId === "ocean" ||
       assignment.paletteId === "ruby" ||
       assignment.paletteId === "amber" ||
-      assignment.paletteId === "original"
+      assignment.paletteId === "original" ||
+      assignment.paletteId === "black16"
         ? assignment.paletteId
         : "jade",
     decorationId:
