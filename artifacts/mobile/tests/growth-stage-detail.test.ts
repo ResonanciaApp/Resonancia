@@ -111,6 +111,8 @@ test("the detail shares the streak screen's theme, safe-area spacing, circular c
       assert.equal(nodes.get("growth-detail-hero-artwork").height, viewportHeight);
       assert.equal(flat(nodes.get("growth-stage-detail-hero-layer").style).top, -230);
       assert.equal(flat(nodes.get("growth-stage-detail-hero-layer").style).bottom, 230);
+      assert.equal(flat(nodes.get("growth-stage-detail-hero-image").style).top, 80);
+      assert.equal(flat(nodes.get("growth-stage-detail-hero-image").style).bottom, -80);
       assert.equal(nodes.get("growth-stage-detail-scroll").contentContainerStyle.paddingTop, viewportHeight * 0.7 - 200);
       assert.match(html, new RegExp(`data-top-padding="${Math.max(inset, 40) + 8}"`));
       const scroll = nodes.get("growth-stage-detail-scroll");

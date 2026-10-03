@@ -64,7 +64,7 @@ export function GrowthStageDetail({
             duration={DURATION}
             scaleFrom={1.06}
             translateYFrom={0}
-            style={StyleSheet.absoluteFill}
+            style={[StyleSheet.absoluteFill, styles.heroImageOffset]}
           >
             <GrowthLevelImage level={level} size={heroSize} height={heroHeight} sourceModule={FULL_HERO_IMAGE} />
           </CinematicFadeSlide>
@@ -130,6 +130,7 @@ const styles = StyleSheet.create({
   root: { ...StyleSheet.absoluteFillObject },
   heroBackground: { position: "absolute", top: 0, left: 0, overflow: "hidden" },
   heroLayer: { top: -230, bottom: 230 },
+  heroImageOffset: { top: 80, bottom: -80 },
   header: {
     position: "absolute",
     top: 0,
