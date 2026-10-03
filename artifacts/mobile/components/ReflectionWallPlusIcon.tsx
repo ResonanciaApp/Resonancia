@@ -13,18 +13,21 @@ const HALO_COLORS = [
 // The real control owns the animation; the disabled preview stays still.
 export function ReflectionWallPlusIcon({
   size = 43,
+  scale = 1,
   spin,
   haloValues,
   expanded = false,
 }: {
   size?: number;
+  scale?: number;
   spin?: Animated.Value;
   haloValues?: readonly Animated.Value[];
   expanded?: boolean;
 }) {
   return (
     <>
-      {WALL_PLUS_HALO_SIZES.map((diameter, index) => {
+      {WALL_PLUS_HALO_SIZES.map((baseDiameter, index) => {
+        const diameter = baseDiameter * scale;
         const value = haloValues?.[index];
         return (
           <Animated.View
@@ -56,13 +59,14 @@ export function ReflectionWallPlusIcon({
         collapsable={false}
         style={[
           styles.plusGlyph,
+          { width: 28 * scale, height: 28 * scale },
           spin && { transform: [{ rotate: spin.interpolate({
             inputRange: [-300, 0, 300],
             outputRange: ["-300deg", "0deg", "300deg"],
           }) }] },
         ]}
       >
-        <Feather name="plus" size={25} color="#E5F7FF" />
+        <Feather name="plus" size={25 * scale} color="#E5F7FF" />
       </Animated.View>
     </>
   );

@@ -31,14 +31,14 @@ visit(ast);
 assert.ok(identity && userSection && styles);
 const styleProperties = styles.properties.filter(property =>
   ts.isPropertyAssignment(property)
-    && /^(profileCard|dedicatedProfileCard|profileIdentityPreviewCard|profileIdentityRow|dedicatedProfileIdentityRow|profileDetails|dedicatedProfileDetails|avatar.*|userName|profileName.*|profileEmail|profileLocationLeft|profileIntention.*|locationRow|locationText)$/.test(property.name.getText(ast)),
+    && /^(profileCard|dedicatedProfileCard|profileIdentityPreviewCard|profileIdentityRow|dedicatedProfileIdentityRow|profileDetails|profileDescription|dedicatedProfileDetails|avatar.*|userName|profileName.*|profileEmail|profileLocationLeft|profileIntention.*|locationRow|locationText)$/.test(property.name.getText(ast)),
 );
 const compiled = ts.transpileModule(`
   const PROFILE_CARD_BOTTOM_PADDING = ${source.match(/const PROFILE_CARD_BOTTOM_PADDING = (\d+);/)?.[1]};
   const PROFILE_SECTION_GAP = ${source.match(/const PROFILE_SECTION_GAP = (\d+);/)?.[1]};
   const styles = { ${styleProperties.map(property => property.getText(ast)).join(",")} };
   function Identity(props) {
-    const { dedicated = true, email = null, location = "", isPremium = false } = props;
+    const { dedicated = true, email = null, location = "", isPremium = false, description = "" } = props;
     const username = "Resonador", lastName = "", photoUri = null, selectedProfilePreset = null;
     const colors = { foreground: "#FFFFFF", mutedForeground: "#AAAAAA", secondary: "#060A0F", primary: "#BE9650" };
     const secondaryAccent = "#BE9650", MEMBERSHIP_AURORA = { premium: { accent: "#E7B95C" } };
@@ -83,7 +83,7 @@ test("free users see Prueba Premium below their identity, while Premium users re
   const free = render({ isPremium: false });
   assert.match(free, /profile-premium-banner/);
   assert.match(free, /Prueba Premium/);
-  assert.ok(free.indexOf('data-testid="profile-premium-banner"') > free.indexOf('data-testid="profile-intention-pill"'));
+  assert.ok(free.indexOf('data-testid="profile-premium-banner"') > free.indexOf('data-testid="profile-identity-details"'));
   assert.doesNotMatch(free, /profile-avatar-premium-badge/);
   assert.match(free, /data-testid="profile-user-section"[^>]*data-margin-bottom="21"/);
   const premium = render({ isPremium: true });
@@ -92,17 +92,18 @@ test("free users see Prueba Premium below their identity, while Premium users re
   assert.match(premium, /data-testid="profile-user-section"[^>]*data-margin-bottom="5"/);
 });
 
-test("Perfil places the name and intention beside the avatar without showing the email", () => {
-  const html = render({ email: "example@example.com", location: "Ubicación" });
+test("Perfil places the saved description below the username without the old pill or email", () => {
+  const html = render({ email: "example@example.com", location: "Ubicación", description: "Mi descripción" });
   assert.match(html, /data-testid="profile-identity-row" data-direction="row" data-align="center"/);
   assert.match(html, /data-testid="profile-identity-details" data-align="flex-start"[^>]*data-flex="1" data-min-width="0"/);
   const avatar = html.indexOf('data-testid="profile-identity-avatar"');
   const name = html.indexOf("Resonador");
-  const pill = html.indexOf('data-testid="profile-intention-pill"');
-  assert.ok(avatar < name && name < pill);
+  const description = html.indexOf('data-testid="profile-identity-description"');
+  assert.ok(avatar < name && name < description);
+  assert.doesNotMatch(html, /profile-intention-pill/);
   assert.doesNotMatch(html, /profile-identity-email|example@example\.com/);
   assert.doesNotMatch(html, /Ubicación|data-icon="map-pin"/);
-  assert.match(html, /data-testid="profile-intention-pill"[^>]*data-self-align="flex-start"/);
+  assert.match(html, /data-testid="profile-identity-description"[^>]*data-text-align="left" data-lines="2" data-ellipsis="tail"[^>]*>Mi descripción/);
   assert.doesNotMatch(source.match(/dedicatedProfileCard: \{([^}]*)\}/)?.[1] ?? "", /backgroundColor/);
   assert.match(source, /avatarImage:\s*\{\s*width: 83,\s*height: 83,\s*borderRadius: 41\.5/);
   assert.match(source, /avatarCircle:\s*\{\s*width: 83,\s*height: 83,\s*borderRadius: 41\.5/);
@@ -120,8 +121,8 @@ test("Perfil hides the email for both free and Premium accounts, whether present
   }
 });
 
-test("the profile chevron aligns with the username row instead of the combined name and pill", () => {
-  const html = render();
+test("the profile chevron stays aligned with the username, not the description", () => {
+  const html = render({ description: "Mi descripción" });
   assert.match(html, /data-testid="profile-identity-title-row" data-direction="row" data-align="center"/);
   const titleRow = source.match(/<View testID="profile-identity-title-row"[\s\S]*?<\/View>/)?.[0] ?? "";
   assert.match(titleRow, /testID="profile-identity-name"/);
@@ -130,7 +131,7 @@ test("the profile chevron aligns with the username row instead of the combined n
   assert.match(html, /data-testid="profile-identity-chevron"[^>]*data-align="flex-end"[^>]*data-width="38"/);
   assert.equal((html.match(/data-icon="chevron-right"/g) ?? []).length, 1);
   assert.ok(html.indexOf("Resonador") < html.indexOf('data-testid="profile-identity-chevron"'));
-  assert.ok(html.indexOf('data-testid="profile-identity-chevron"') < html.indexOf('data-testid="profile-intention-pill"'));
+  assert.ok(html.indexOf('data-testid="profile-identity-chevron"') < html.indexOf('data-testid="profile-identity-description"'));
   assert.match(source, /profileNameRow: \{ width: "100%", flexDirection: "row", alignItems: "center"/);
   const children = identity!.children.filter(ts.isJsxElement).map(child =>
     child.openingElement.attributes.properties.find(attribute =>
@@ -167,8 +168,9 @@ test("name, avatar and restored chevron open Mi cuenta", () => {
   assert.equal(route, "/mi-perfil");
 });
 
-test("missing email is not replaced with a fake address and intention remains dedicated to Perfil", () => {
+test("missing email and an empty description do not get placeholder content", () => {
   assert.doesNotMatch(render(), /profile-identity-email|@/);
+  assert.doesNotMatch(render({ description: "   " }), /profile-identity-description/);
   const other = render({ dedicated: false, email: "example@example.com" });
   assert.doesNotMatch(other, /profile-intention-pill/);
 });
@@ -180,7 +182,8 @@ test("Premium restores the previous star and glass background over the avatar wi
   presses.get("profile-identity-avatar")?.();
   presses.get("profile-intention-pill")?.();
   assert.equal(route, "/mi-perfil");
-  assert.equal(journey, true);
+  assert.equal(journey, false);
+  assert.doesNotMatch(html, /profile-intention-pill/);
   assert.match(html, /data-testid="profile-avatar-premium-badge"/);
   assert.match(html, /data-icon="star"/);
   assert.match(source, /<SessionBadgeGlass showBlackTint=\{false\} showWhiteTint \/>/);

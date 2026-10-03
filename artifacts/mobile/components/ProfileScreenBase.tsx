@@ -72,7 +72,7 @@ import {
 } from "@/components/BibliotecaScreen";
 import { ProgressMirrorSections } from "@/components/ProgressMirrorSections";
 import { ProfileSettingsSections } from "@/components/ProfileSettingsSections";
-import { ProfileIntentionPill } from "@/components/ProfileIntentionPill";
+import { limitProfileDescriptionLines } from "@/lib/profileDescription";
 import { ProfileMembershipBanner } from "@/components/ProfileMembershipBanner";
 import { SessionBadgeGlass } from "@/components/SessionDurationBadge";
 import { ProfileReflectionWallSection } from "@/components/ProfileReflectionWallSection";
@@ -523,6 +523,7 @@ export function ProfileScreenBase({
   const [editLocation, setEditLocationLocal] = useState(location);
   const [editDesc, setEditDesc] = useState(description);
   const [accountName, setAccountName] = useState(username);
+  const [accountDescription, setAccountDescription] = useState(description);
   const [accountAction, setAccountAction] = useState<"delete" | null>(null);
   const [accountPhotoPickerVisible, setAccountPhotoPickerVisible] = useState(false);
   const [accountPhotoLibraryPending, setAccountPhotoLibraryPending] = useState(false);
@@ -530,10 +531,16 @@ export function ProfileScreenBase({
   const accountToastY = useRef(new Animated.Value(12)).current;
 
   useEffect(() => {
-    if (accountMode) setAccountName(username);
-  }, [accountMode, username]);
+    if (accountMode) {
+      setAccountName(username);
+      setAccountDescription(limitProfileDescriptionLines(description));
+    }
+  }, [accountMode, username, description]);
 
-  const accountSaveDisabled = Boolean(accountAction) || accountName.trim() === username.trim();
+  const accountSaveDisabled = Boolean(accountAction) || (
+    accountName.trim() === username.trim()
+    && accountDescription.trim() === description.trim()
+  );
 
   const openEdit = () => {
     setEditNombre(username);
@@ -556,7 +563,7 @@ export function ProfileScreenBase({
 
   const saveAccount = () => {
     if (accountSaveDisabled) return;
-    updateProfile({ username: accountName });
+    updateProfile({ username: accountName, description: limitProfileDescriptionLines(accountDescription).trim() });
     Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success);
     accountToastOpacity.stopAnimation();
     accountToastY.stopAnimation();
@@ -926,6 +933,25 @@ export function ProfileScreenBase({
                   autoCapitalize="words"
                   returnKeyType="done"
                 />
+              </View>
+
+              <View testID="account-description-section" style={styles.accountField}>
+                <Text style={styles.accountFieldLabel}>Descripción</Text>
+                <TextInput
+                  testID="account-description-input"
+                  value={accountDescription}
+                  onChangeText={(text) => setAccountDescription(limitProfileDescriptionLines(text))}
+                  placeholder="Una breve descripción sobre ti"
+                  placeholderTextColor={colors.mutedForeground}
+                  style={[styles.accountNameInput, styles.accountDescriptionInput, { color: colors.foreground }]}
+                  multiline
+                  numberOfLines={2}
+                  textAlignVertical="top"
+                  accessibilityLabel="Descripción de tu perfil"
+                />
+                <Text style={[styles.accountDescriptionHint, { color: colors.mutedForeground }]}>
+                  Se mostrará en un máximo de 2 líneas en tu perfil.
+                </Text>
               </View>
 
               <Pressable
@@ -1375,12 +1401,15 @@ export function ProfileScreenBase({
               </Pressable>
               </View>
 
-              {dedicated && (
-                <ProfileIntentionPill
-                  onPress={() => setGrowthJourneyOpen(true)}
-                  style={styles.profileIntentionPill}
-                  textStyle={[styles.profileIntentionDays, { color: colors.foreground }]}
-                />
+              {description.trim() !== "" && (
+                <Text
+                  testID="profile-identity-description"
+                  style={[styles.profileDescription, { color: colors.mutedForeground }]}
+                  numberOfLines={2}
+                  ellipsizeMode="tail"
+                >
+                  {description}
+                </Text>
               )}
             </View>
           </View>
@@ -2328,6 +2357,8 @@ const styles = StyleSheet.create({
     borderRadius: 17,
     borderWidth: 0,
   },
+  accountDescriptionInput: { height: 72, paddingVertical: 12, lineHeight: 22 },
+  accountDescriptionHint: { fontFamily: "Manrope", fontSize: 11, lineHeight: 16 },
   accountSaveButton: {
     height: 52,
     borderRadius: 999,
@@ -2538,18 +2569,7 @@ const styles = StyleSheet.create({
     alignItems: "flex-end",
     justifyContent: "center",
   },
-  profileIntentionPill: {
-    alignSelf: "flex-start",
-    marginRight: 46,
-    marginTop: 3,
-    backgroundColor: "rgba(151,128,231,0.20)",
-    borderWidth: 1,
-    borderColor: "rgba(255,255,255,0.10)",
-    borderRadius: 12,
-    paddingHorizontal: 9,
-    paddingVertical: 4,
-  },
-  profileIntentionDays: { fontFamily: "Manrope", fontSize: 10, fontWeight: "600" },
+  profileDescription: { fontFamily: "Manrope", fontSize: 12, lineHeight: 18, textAlign: "left", alignSelf: "stretch", marginRight: 50 },
   locationRow: { flexDirection: "row", alignItems: "center", justifyContent: "center", gap: 4 },
   locationText: { fontFamily: "Manrope", fontSize: 12 },
   bioText: { fontFamily: "Manrope", fontSize: 13, lineHeight: 19, textAlign: "center", paddingHorizontal: 8, fontStyle: "italic" },

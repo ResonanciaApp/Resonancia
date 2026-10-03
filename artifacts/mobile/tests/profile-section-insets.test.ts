@@ -85,11 +85,14 @@ test("avatar outline meets the left margin and the chevron reaches the profile r
   }
 });
 
-test("username uses 24 points and the pill stays 4px closer without changing the avatar or hiding its Premium badge", () => {
+test("username keeps 24 points and the new description leaves avatar and Premium spacing unchanged", () => {
   assert.equal(style("ProfileScreenBase", "userName").fontSize, 24);
   const details = style("ProfileScreenBase", "profileDetails");
-  const pill = style("ProfileScreenBase", "profileIntentionPill");
-  assert.equal(details.gap + pill.marginTop, (6 + 7) - 4);
+  assert.equal(details.gap, 6);
+  assert.equal(style("ProfileScreenBase", "profileDescription").lineHeight, 18);
+  assert.equal(style("ProfileScreenBase", "profileDescription").alignSelf, "stretch");
+  assert.equal(style("ProfileScreenBase", "profileDescription").marginRight, 50);
+  assert.equal(style("ProfileScreenBase", "profileDescription").paddingRight, undefined);
   assert.equal(style("ProfileScreenBase", "avatarImage").width, 83);
   assert.equal(style("ProfileScreenBase", "profileIdentityPreviewCard").marginBottom, 5);
 });

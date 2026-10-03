@@ -156,3 +156,4 @@
 - [Assets nuevos y Metro](expo-new-assets-metro.md) — generar el PNG antes de referenciarlo con require; si Metro cachea el error de archivo ausente, reiniciar tras crearlo
 - [Rebote en los bordes](scroll-edge-bounce.md) — en Sistema de rachas, no bloquear arriba/abajo también exige rebote elástico, no solo eliminar franjas fijas
 - [Usuarios conectados](community-presence-semantics.md) — presencia general en primer plano, no solo meditación; total independiente de fotos y sin relleno ficticio
+- [Descripción de Mi cuenta](profile-account-description.md) — reemplaza la píldora bajo el usuario en Perfil; texto opcional guardado en Mi cuenta, máximo dos líneas

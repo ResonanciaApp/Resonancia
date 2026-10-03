@@ -273,9 +273,9 @@ function RewardAvatar({ module, levelId }: { module: number; levelId: string }) 
 function WallRewardIcon() {
   return (
     <View testID="expansion-wall-reward-icon" style={styles.wallRewardIcon}>
-      <ReflectionWallPlusIcon size={44} />
+      <ReflectionWallPlusIcon size={35} scale={35 / 44} />
       <DiscoverSearchBorder
-        borderRadius={22}
+        borderRadius={17.5}
         borderWidth={2}
         brightness={REFLECTION_WALL_BORDER_BRIGHTNESS}
         colors={REFLECTION_WALL_BORDER_GRADIENT}
@@ -589,7 +589,7 @@ const styles = StyleSheet.create({
   },
   rewardContent: { flexDirection: "row", alignItems: "center", maxWidth: "100%", flexShrink: 1, paddingLeft: 3, gap: 6 },
   wallReward: { marginTop: 0 },
-  wallRewardIcon: { width: 44, height: 44, flexShrink: 0, position: "relative", alignItems: "center", justifyContent: "center" },
+  wallRewardIcon: { width: 35, height: 35, flexShrink: 0, position: "relative", alignItems: "center", justifyContent: "center" },
   rewardLock: { position: "absolute", left: -3, top: -3, width: 13, height: 13 },
   rewardText: { flexShrink: 1, minWidth: 0, fontFamily: "Manrope", fontSize: 11, lineHeight: 16 },
   rewardAvatarOverlay: {

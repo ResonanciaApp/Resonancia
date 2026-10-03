@@ -262,10 +262,12 @@ test("Expansion shows the full avatar phrase and the actual wall plus with three
     assert.match(wall, />Comparte sin sello de agua en Mi muro expansivo</);
     assert.doesNotMatch(wall, /data-source=|reward-cover/);
     for (const [size, opacity] of [[44, "0.06"], [34, "0.10"], [24, "0.15"]]) {
-      assert.match(wall, new RegExp(`data-background="rgba\\(255, 255, 255, ${opacity}\\)"[^>]*data-height="${size}" data-width="${size}"`));
+      const scaled = Number(size) * (35 / 44);
+      assert.match(wall, new RegExp(`data-background="rgba\\(255, 255, 255, ${opacity}\\)"[^>]*data-height="${scaled}" data-width="${scaled}"`));
     }
     assert.equal((wall.match(/data-wall-border-width="2"/g) ?? []).length, 1);
-    assert.match(wall, /data-wall-border-radius="22"/);
+    assert.match(wall, /data-wall-border-radius="17.5"/);
+    assert.match(wall, /data-testid="expansion-wall-reward-icon"[^>]*data-height="35" data-width="35"/);
     const palette = JSON.stringify(wallBorderConstants.REFLECTION_WALL_BORDER_GRADIENT).replaceAll('"', "&quot;");
     assert.ok(wall.includes(`data-wall-border-colors="${palette}"`));
     assert.match(wall, /data-wall-border-brightness="1.008315"/);
@@ -278,7 +280,7 @@ test("Profile and the wall achievement reuse the same plus artwork while Profile
   const journeySource = readFileSync(new URL("../components/GrowthJourney.tsx", import.meta.url), "utf8");
   assert.match(wallSource, /<ReflectionWallPlusIcon spin=\{plusSpin\} haloValues=\{haloValues\} expanded=\{expanded\}/);
   assert.match(wallSource, /Animated.sequence\(PLUS_ROTATION_STOPS.map/);
-  assert.match(journeySource, /<ReflectionWallPlusIcon size=\{44\}/);
+  assert.match(journeySource, /<ReflectionWallPlusIcon size=\{35\} scale=\{35 \/ 44\}/);
   const html = renderToStaticMarkup(React.createElement(wallPlusModule.exports.ReflectionWallPlusIcon, {
     spin: { interpolate: () => "270deg" },
   }));
