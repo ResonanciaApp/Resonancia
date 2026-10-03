@@ -4,6 +4,7 @@ import { URL } from "node:url";
 import test from "node:test";
 import ts from "typescript";
 import { SCENE_THEMES } from "../config/scene-themes.ts";
+import { CLOUDY_REFLECTION_WALL_BORDER_GRADIENT, REFLECTION_WALL_BORDER_GRADIENT } from "../constants/reflectionWallBorder.ts";
 
 const source = readFileSync(new URL("../components/AmbientalDurationSheet.tsx", import.meta.url), "utf8");
 const ast = ts.createSourceFile("AmbientalDurationSheet.tsx", source, ts.ScriptTarget.Latest, true, ts.ScriptKind.TSX);
@@ -55,4 +56,27 @@ test("Indigo 2 duration sheet uses the Universo violet gradient without altering
   assert.deepEqual(colorsFor(SCENE_THEMES.indigo2), colorsFor(SCENE_THEMES.tibet));
   assert.equal(SCENE_THEMES.indigo2.gradient[1], "#21295D");
   assert.equal(SCENE_THEMES.indigo2.gradient[2], "#22265D");
+});
+
+test("Cloudy selected preset and custom duration use 30% black; other themes keep 16%", () => {
+  const expression = source.match(/const selectedPresetBackground = (.*);/)?.[1];
+  assert.ok(expression);
+  const resolve = new Function("theme", `return ${expression};`);
+  for (const theme of Object.values(SCENE_THEMES)) {
+    assert.equal(resolve(theme), theme.id === "cloudy" ? "rgba(0,0,0,0.3)" : "rgba(0,0,0,0.16)");
+  }
+  assert.match(source, /backgroundColor: selected\s*\? selectedPresetBackground/);
+  assert.match(source, /backgroundColor: customMode\s*\? selectedPresetBackground/);
+});
+
+test("Cloudy wall brightens blue-purple stops by 5% and leaves pink-orange stops unchanged", () => {
+  assert.deepEqual(CLOUDY_REFLECTION_WALL_BORDER_GRADIENT.slice(4), REFLECTION_WALL_BORDER_GRADIENT.slice(4));
+  for (let i = 0; i < 4; i++) {
+    const expected = "#" + REFLECTION_WALL_BORDER_GRADIENT[i].slice(1).match(/../g)!.map(channel =>
+      Math.round(parseInt(channel, 16) * 1.05).toString(16).padStart(2, "0"),
+    ).join("").toUpperCase();
+    assert.equal(CLOUDY_REFLECTION_WALL_BORDER_GRADIENT[i], expected);
+  }
+  const wall = readFileSync(new URL("../components/InnerSpaceCard.tsx", import.meta.url), "utf8");
+  assert.match(wall, /colors=\{theme\.id === "cloudy" \? CLOUDY_REFLECTION_WALL_BORDER_GRADIENT : REFLECTION_WALL_BORDER_GRADIENT\}/);
 });

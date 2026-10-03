@@ -56,7 +56,9 @@ test("Indigo 2 sleep reminder matches the Universo duration gradient without cha
   for (const theme of Object.values(SCENE_THEMES)) {
     assert.deepEqual(
       gradientFor(false, theme, SCENE_THEMES, SLEEP_REMINDER_NIGHT_GRADIENT),
-      theme.id === "indigo2" ? ["#332261", "#2E2468"] : SLEEP_REMINDER_NIGHT_GRADIENT,
+      theme.id === "indigo2" ? ["#332261", "#2E2468"]
+        : theme.id === "cloudy" ? [theme.gradient[1], theme.gradient[2]]
+        : SLEEP_REMINDER_NIGHT_GRADIENT,
     );
     assert.deepEqual(
       gradientFor(true, theme, SCENE_THEMES, SLEEP_REMINDER_NIGHT_GRADIENT),

@@ -18,6 +18,7 @@ import { ReflectionWallPlusIcon, WALL_PLUS_HALO_SIZES as HALO_SIZES } from "@/co
 import { ReflectionCategoryTabBorder, ReflectionCategoryTabLabel } from "@/components/ReflectionCategoryTabLabel";
 import {
   REFLECTION_WALL_BORDER_GRADIENT,
+  CLOUDY_REFLECTION_WALL_BORDER_GRADIENT,
   REFLECTION_WALL_BORDER_START,
   REFLECTION_WALL_BORDER_END,
   REFLECTION_WALL_BORDER_BRIGHTNESS,
@@ -484,7 +485,7 @@ export function InnerSpaceCard({
         <DiscoverSearchBorder
           borderRadius={24}
           brightness={REFLECTION_WALL_BORDER_BRIGHTNESS}
-          colors={REFLECTION_WALL_BORDER_GRADIENT}
+          colors={theme.id === "cloudy" ? CLOUDY_REFLECTION_WALL_BORDER_GRADIENT : REFLECTION_WALL_BORDER_GRADIENT}
           start={REFLECTION_WALL_BORDER_START}
           end={REFLECTION_WALL_BORDER_END}
         />

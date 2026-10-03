@@ -91,7 +91,7 @@ test("InnerSpaceCard keeps Home defaults and opts profile into a single 18px-ins
 test("only the profile wall uses the reference Aurora gradient with 5% more brightness", () => {
   const card = source("../components/InnerSpaceCard.tsx");
   const border = source("../components/DiscoverSearchBorder.tsx");
-  assert.match(card, /canonicalVerticalInsets && \(\s*<DiscoverSearchBorder[\s\S]*?borderRadius=\{24\}[\s\S]*?brightness=\{REFLECTION_WALL_BORDER_BRIGHTNESS\}[\s\S]*?colors=\{REFLECTION_WALL_BORDER_GRADIENT\}[\s\S]*?start=\{REFLECTION_WALL_BORDER_START\}[\s\S]*?end=\{REFLECTION_WALL_BORDER_END\}/);
+  assert.match(card, /canonicalVerticalInsets && \(\s*<DiscoverSearchBorder[\s\S]*?borderRadius=\{24\}[\s\S]*?brightness=\{REFLECTION_WALL_BORDER_BRIGHTNESS\}[\s\S]*?colors=\{theme.id === "cloudy" \? CLOUDY_REFLECTION_WALL_BORDER_GRADIENT : REFLECTION_WALL_BORDER_GRADIENT\}[\s\S]*?start=\{REFLECTION_WALL_BORDER_START\}[\s\S]*?end=\{REFLECTION_WALL_BORDER_END\}/);
   assert.match(border, /borderWidth = 2/);
   assert.match(border, /brightness = 1/);
   assert.match(border, /opacity: 0\.99 \* brightness/);
