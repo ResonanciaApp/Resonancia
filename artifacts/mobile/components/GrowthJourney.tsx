@@ -61,7 +61,7 @@ function loadGrowthImage(module: number): Promise<string> {
   return load;
 }
 
-function GrowthLevelImage({ level, profilePreview = false }: { level: GrowthLevel; profilePreview?: boolean }) {
+export function GrowthLevelImage({ level, profilePreview = false, size }: { level: GrowthLevel; profilePreview?: boolean; size?: number }) {
   const imageModule = profilePreview ? PROFILE_INTENTION_IMAGE : level.image;
   const [localUri, setLocalUri] = useState(() => growthImageUris.get(imageModule) ?? null);
 
@@ -80,7 +80,7 @@ function GrowthLevelImage({ level, profilePreview = false }: { level: GrowthLeve
   return (
     <View
       testID={profilePreview ? "profile-intention-image" : undefined}
-      style={[styles.imageWrap, profilePreview && styles.profileImageWrap]}
+      style={[styles.imageWrap, profilePreview && styles.profileImageWrap, size !== undefined && { width: size, height: size, borderRadius: 0 }]}
       importantForAccessibility="no"
     >
       {source && (
@@ -300,21 +300,23 @@ function GrowthRow({
   hasNext,
   status,
   florecimiento = false,
+  onPress,
 }: {
   level: GrowthLevel;
   hasNext: boolean;
   status: Status;
   florecimiento?: boolean;
+  onPress?: () => void;
 }) {
   const colors = useColors();
   const dayLabel = level.startDay === level.endDay
     ? `${level.startDay} días`
     : `${level.startDay}–${level.endDay} días`;
   const reward = REWARD_LEVEL_IDS.has(level.id);
-  return (
+  const content = (
     <View
       style={[styles.row, reward && styles.rewardRow]}
-      accessible
+      accessible={!onPress}
       accessibilityLabel={`${level.name}, ${dayLabel} de práctica, ${status === "current" ? "etapa actual" : "por desbloquear"}. ${level.story}${REWARD_LEVEL_IDS.has(level.id) ? " Desbloquea 50 avatares nuevos, por desbloquear." : ""}${level.id === "expansion" ? ` ${WALL_REWARD_TEXT}, por desbloquear.` : ""}`}
     >
       {hasNext && (
@@ -399,6 +401,16 @@ function GrowthRow({
       </View>
     </View>
   );
+  return onPress ? (
+    <Pressable
+      onPress={onPress}
+      accessibilityRole="button"
+      accessibilityLabel={`Ver detalle de ${level.name}`}
+      testID={`growth-stage-${level.id}-open`}
+    >
+      {content}
+    </Pressable>
+  ) : content;
 }
 
 function GrowthStageHeading({
@@ -424,7 +436,7 @@ function GrowthStageHeading({
   );
 }
 
-export function GrowthJourney() {
+export function GrowthJourney({ onIntentionPress }: { onIntentionPress?: () => void } = {}) {
   const [ascentExpanded, setAscentExpanded] = useState(false);
   // Visual preview: Intención is the only active level until progression is enabled.
 
@@ -442,6 +454,7 @@ export function GrowthJourney() {
             hasNext={index < growthLevels.length - 1}
             status={index === 0 ? "current" : "locked"}
             florecimiento
+            onPress={level.id === "intencion" ? onIntentionPress : undefined}
           />
         ))}
       </View>

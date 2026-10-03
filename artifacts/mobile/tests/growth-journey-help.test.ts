@@ -59,6 +59,7 @@ function uiHarness() {
   let pan: any;
   let motion: any;
   let helpProps: any;
+  let detailProps: any;
   const Native = (props: any) => {
     if (props.testID) nodes.set(props.testID, props);
     const style = flatten([props.style, props.contentContainerStyle]);
@@ -99,7 +100,13 @@ function uiHarness() {
     "@/context/SceneThemeContext": { useSceneTheme: () => ({ theme: { gradient: ["#060A0F", "#111122"] } }) },
     "@/hooks/useColors": { useColors: () => ({ foreground: "#FBFBFB" }) },
     "@/constants/colors": { NAVIGATION_HELP_ICON_COLOR: "#F9F9F9" },
-    "@/components/GrowthJourney": { GrowthJourney: () => React.createElement("div", null, "PRIMERA ETAPA") },
+    "@/components/GrowthJourney": { GrowthJourney: (props: any) => React.createElement(
+      native.Pressable, { testID: "test-open-intention", onPress: props.onIntentionPress }, "PRIMERA ETAPA",
+    ) },
+    "@/components/GrowthStageDetail": { GrowthStageDetail: (props: any) => {
+      detailProps = props;
+      return React.createElement(Native, { testID: "growth-stage-detail" });
+    } },
     "@/components/GrowthJourneyHelpSheet": { GrowthJourneyHelpSheet: (props: any) => {
       helpProps = props;
       return React.createElement("div", { "data-help-visible": String(props.visible) });
@@ -115,6 +122,7 @@ function uiHarness() {
   return {
     ...h, imports, presses, nodes, layouts, springs,
     get pan() { return pan; }, get motion() { return motion; }, get help() { return helpProps; },
+    get detail() { return detailProps; },
     back: () => modalClose(),
   };
 }
@@ -171,6 +179,45 @@ test("Tu camino preserves its controls and raises Primera etapa and the whole jo
   assert.match(source, /start=\{theme\.gradientStart\}/);
   assert.match(source, /end=\{theme\.gradientEnd\}/);
   assert.match(source, /locations=\{theme\.gradientLocations/);
+});
+
+test("Intención opens inside the same Modal; close and back preserve Tu camino, and help closes first", () => {
+  const h = uiHarness();
+  const { GrowthJourneySheet } = load("../components/GrowthJourneySheet.tsx", h.imports);
+  let closes = 0;
+  const render = (visible = true) => {
+    h.reset();
+    return renderToStaticMarkup(GrowthJourneySheet({ visible, onClose: () => closes++ }));
+  };
+  assert.doesNotMatch(render(), /data-testid="growth-stage-detail"/);
+  h.presses.get("test-open-intention").onPress();
+  let html = render();
+  assert.match(html, /data-testid="growth-stage-detail"/);
+  assert.equal((html.match(/data-testid="growth-journey-modal"/g) ?? []).length, 1);
+  assert.equal(h.nodes.get("growth-journey-scroll").pointerEvents, "none");
+  assert.equal(h.nodes.get("growth-journey-scroll").accessibilityElementsHidden, true);
+  h.detail.onHelp();
+  render();
+  assert.equal(h.help.visible, true);
+  assert.equal(h.detail.helpVisible, true);
+  h.back();
+  html = render();
+  assert.equal(h.help.visible, false);
+  assert.match(html, /data-testid="growth-stage-detail"/);
+  assert.equal(closes, 0);
+  h.back();
+  assert.doesNotMatch(render(), /data-testid="growth-stage-detail"/);
+  assert.equal(closes, 0);
+  h.presses.get("test-open-intention").onPress();
+  render();
+  h.detail.onClose();
+  assert.doesNotMatch(render(), /data-testid="growth-stage-detail"/);
+  h.back();
+  assert.equal(closes, 1);
+  h.presses.get("test-open-intention").onPress();
+  render();
+  render(false);
+  assert.doesNotMatch(render(), /data-testid="growth-stage-detail"/);
 });
 
 test("help uses half the screen, shows the original icon above its description, and dismisses by tap or drag", () => {

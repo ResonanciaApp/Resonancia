@@ -62,3 +62,9 @@ Expansión añade un segundo logro debajo del aviso de avatares: «Comparte sin 
 **Why:** El usuario pidió este logro específicamente para Expansión y señaló que se cortaba la frase junto al loto. Corrigió explícitamente la interpretación de «tres fondos»: quería la + que gira en Perfil con sus tres círculos blancos con opacidad, no imágenes. El borde corresponde a la sección real del muro, no a un color dorado genérico.
 
 **How to apply:** Mantenerlo como aviso visual apagado, sin activar todavía la recompensa ni cambiar la exportación de historias. No repetirlo en otras etapas. Reutilizar el arte del control real para evitar aproximaciones; conservar su giro original en Perfil, sin introducir loops en el logro bloqueado. El usuario pidió que en Expansión la + y sus tres círculos tengan el mismo tamaño exterior que el loto: reducir el conjunto proporcionalmente, sin achicar el control original de Perfil. Permitir que ambas frases crezcan sin recorte y que la fila aumente de alto en el flujo normal.
+
+Los detalles de Florecimiento deben usar la plantilla de Sistema de rachas, con el hero original de cada etapa. La referencia de Semilla entregada por el usuario define la composición, no la imagen ni los textos de Intención.
+
+**Why:** El usuario pidió empezar únicamente por Intención antes de replicar el diseño a las demás etapas. La referencia muestra una etapa distinta, pero el hero y el contenido deben corresponder a la que se abre.
+
+**How to apply:** Mantener el fondo del tema, la navegación circular, los insets y el scroll elástico de Sistema de rachas; usar el arte de la etapa como hero sin alterar el recorte de sus imágenes en Perfil o en el recorrido. Abrir el detalle desde Tu camino y volver al mismo recorrido conservando su scroll. Añadir nuevos detalles solo cuando el usuario pida replicarlos; esto no autoriza activar progreso ni recompensas.

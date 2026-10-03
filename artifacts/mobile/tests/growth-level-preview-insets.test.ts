@@ -26,9 +26,11 @@ const flattenStyle = (style: unknown): Record<string, unknown> => Array.isArray(
   ? Object.assign({}, ...style.map(flattenStyle))
   : style && typeof style === "object" ? style as Record<string, unknown> : {};
 let capturedOnPress: (() => void) | undefined;
+let capturedIntentionPress: (() => void) | undefined;
 const Native = ({ accessibilityLabel, accessibilityRole, children, onPress, style, testID, name, color, source, stopOpacity, pointerEvents, accessibilityState, numberOfLines, adjustsFontSizeToFit }: NativeProps) => {
   const resolvedStyle = flattenStyle(style);
   if (testID === "growth-level-zero-preview") capturedOnPress = onPress;
+  if (testID === "growth-stage-intencion-open") capturedIntentionPress = onPress;
   return React.createElement("div", {
     "data-testid": testID,
     "data-icon": name,
@@ -140,7 +142,7 @@ new Function("require", "module", "exports", ts.transpileModule(
   return mocks[name];
 }, wallPlusModule, wallPlusModule.exports);
 mocks["@/components/ReflectionWallPlusIcon"] = wallPlusModule.exports;
-const componentModule = { exports: {} as { GrowthLevelPreviewCard: React.ComponentType<Record<string, unknown>> } };
+const componentModule = { exports: {} as Record<string, React.ComponentType<Record<string, unknown>>> };
 const GrowthRow = new Function("require", "module", "exports", `${compiled}\nreturn GrowthRow;`)((name: string) => {
   if (!(name in mocks)) throw new Error(`Missing growth preview test mock: ${name}`);
   return mocks[name];
@@ -149,6 +151,38 @@ const GrowthRow = new Function("require", "module", "exports", `${compiled}\nret
 const render = (props: Record<string, unknown> = {}) => renderToStaticMarkup(
   React.createElement(componentModule.exports.GrowthLevelPreviewCard, { onPress: () => {}, ...props }),
 );
+
+test("only Intención opens a stage detail, without activating progression or linking other stages", () => {
+  let opened = 0;
+  const html = renderToStaticMarkup(React.createElement(componentModule.exports.GrowthJourney, {
+    onIntentionPress: () => opened++,
+  }));
+  assert.match(html, /data-testid="growth-stage-intencion-open"/);
+  assert.match(html, /Ver detalle de Intención/);
+  capturedIntentionPress?.();
+  assert.equal(opened, 1);
+  for (const id of ["semilla", "brote", "crecimiento", "desarrollo", "enraizamiento", "vegetacion", "floracion", "expansion"]) {
+    const row = renderToStaticMarkup(React.createElement(GrowthRow, {
+      level: { id, name: id, startDay: 1, endDay: 7, image: 1, story: "Descripción." },
+      hasNext: true, status: "locked", florecimiento: true,
+    }));
+    assert.doesNotMatch(row, /growth-stage-.+-open/);
+  }
+  const source = readFileSync(new URL("../components/GrowthJourney.tsx", import.meta.url), "utf8");
+  assert.match(source, /onPress=\{level.id === "intencion" \? onIntentionPress : undefined\}/);
+  assert.match(source, /status=\{index === 0 \? "current" : "locked"\}/);
+});
+
+test("the detail hero uses full square art while default timeline and profile corners are unchanged", () => {
+  const image = (props: Record<string, unknown> = {}) => renderToStaticMarkup(React.createElement(componentModule.exports.GrowthLevelImage, {
+    level: { id: "intencion", name: "Intención", image: 1 }, ...props,
+  }));
+  const detail = image({ size: 375 });
+  assert.match(detail, /data-height="375" data-width="375" data-border-radius="0"/);
+  assert.match(detail, /data-source="1"/);
+  assert.match(image(), /data-height="100%" data-width="100%" data-border-radius="67"/);
+  assert.match(image({ profilePreview: true }), /data-border-radius="18"/);
+});
 
 test("Semilla displays a filled lock and one lotus avatar in a disabled horizontal pill", () => {
   const semilla = {
