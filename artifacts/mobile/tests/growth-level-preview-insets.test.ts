@@ -135,7 +135,7 @@ test("Semilla displays a filled lock and one lotus avatar in a disabled horizont
   assert.match(reward, /data-direction="row"/);
   assert.match(reward, /data-pointer-events="none"/);
   assert.match(reward, /data-disabled="true"/);
-  assert.match(reward, /data-border-radius="12" data-border-width="1" data-border-color="rgba\(255,255,255,0.1\)"/);
+  assert.doesNotMatch(reward, /data-border-radius|data-border-width|data-border-color/);
   assert.doesNotMatch(reward, /data-background/);
   const lock = html.match(/<div[^>]*data-testid="semilla-reward-lock"[^>]*>/)?.[0];
   assert.ok(lock);
@@ -171,7 +171,7 @@ test("Crecimiento, Vegetación and Expansión share Semilla's small filled lock 
     assert.ok(reward, id);
     assert.match(reward, /data-pointer-events="none"/);
     assert.match(reward, /data-disabled="true"/);
-    assert.match(reward, /data-border-radius="12" data-border-width="1" data-border-color="rgba\(255,255,255,0.1\)"/);
+    assert.doesNotMatch(reward, /data-border-radius|data-border-width|data-border-color/);
     assert.doesNotMatch(reward, /data-background/);
     const lock = html.match(new RegExp(`<div[^>]*data-testid="${id}-reward-lock"[^>]*>`))?.[0];
     assert.ok(lock, id);
@@ -220,8 +220,7 @@ test("reward pills grow in normal flow and preserve nonreward and profile previe
   assert.doesNotMatch(pill, /width:/);
   assert.match(pill, /alignSelf: "stretch"/);
   assert.match(pill, /marginTop: 12/);
-  assert.doesNotMatch(pill, /marginLeft/);
-  assert.match(pill, /marginRight: 35/);
+  assert.doesNotMatch(pill, /marginLeft|marginRight|paddingHorizontal/);
   assert.match(source, /rewardCopy: \{ flex: 0, paddingTop: 34 \}/);
   const ast = ts.createSourceFile("GrowthJourney.tsx", source, ts.ScriptTarget.Latest, true, ts.ScriptKind.TSX);
   let copy: ts.JsxElement | undefined;
@@ -236,11 +235,11 @@ test("reward pills grow in normal flow and preserve nonreward and profile previe
   assert.ok(copy);
   assert.match(copy.getText(ast), /testID=\{`\$\{level.id\}-reward`\}/);
   assert.ok(copy.getText(ast).indexOf("{level.story}") < copy.getText(ast).indexOf('testID={`${level.id}-reward`}'));
-  assert.doesNotMatch(pill, /backgroundColor/);
-  assert.match(pill, /borderWidth: 1/);
-  assert.match(pill, /borderColor: "rgba\(255,255,255,0.1\)"/);
-  assert.match(pill, /justifyContent: "center"/);
-  assert.match(source, /rewardContent: \{ flexDirection: "row", alignItems: "center", maxWidth: "100%", flexShrink: 1, gap: 6 \}/);
+  assert.doesNotMatch(pill, /backgroundColor|borderWidth|borderColor|borderRadius/);
+  assert.match(pill, /justifyContent: "flex-start"/);
+  assert.match(source, /rewardContent: \{ flexDirection: "row", alignItems: "center", maxWidth: "100%", flexShrink: 1, paddingLeft: 3, gap: 6 \}/);
+  // Content inset cancels the lock's outward offset: its left edge matches the description.
+  assert.match(source, /rewardLock: \{ position: "absolute", left: -3,/);
   assert.match(copy.getText(ast), /testID=\{`\$\{level.id\}-reward-content`\} style=\{styles.rewardContent\}/);
   assert.match(source, /rewardAvatarOverlay: \{[\s\S]*?position: "absolute"[\s\S]*?backgroundColor: "rgba\(0,0,0,0.22\)"/);
   assert.match(pill, /minHeight: 50/);
