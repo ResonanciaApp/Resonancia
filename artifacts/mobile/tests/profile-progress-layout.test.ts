@@ -313,9 +313,9 @@ test("Perfil centers number-and-label groups on their icons in all four history 
   assert.match(html, /data-testid="calendar"[^>]*data-canonical-insets="true"/);
 });
 
-test("Perfil aligns weekly circles with the section inset while Tu progreso keeps its full-width row", () => {
+test("Perfil and Tu progreso use full-width weekly rows while history preserves its inset", () => {
   for (const [path, padding] of [
-    ["../components/ProfileScreenBase.tsx", 20],
+    ["../components/ProfileScreenBase.tsx", 0],
     ["../app/progreso.tsx", 0],
   ] as const) {
     const source = readFileSync(new URL(path, import.meta.url), "utf8");
