@@ -190,6 +190,27 @@ test("Perfil shows titled seven-day progress on black, preserving history, Inten
   assert.doesNotMatch(html, /Mis estadísticas/);
 });
 
+test("Perfil aligns its weekly title with the lateral margin without changing history or other callers", () => {
+  const profile = readFileSync(new URL("../components/ProfileScreenBase.tsx", import.meta.url), "utf8");
+  assert.match(profile, /weeklySectionTitleHorizontalPadding=\{0\}/);
+  for (const padding of [undefined, 0]) {
+    const html = render({
+      separateStreakHistory: true,
+      showPersonalStats: false,
+      showCalendar: false,
+      weeklySectionTitle: "Tu progreso esta semana",
+      weeklySectionHorizontalPadding: 0,
+      weeklySectionTitleHorizontalPadding: padding,
+      sectionHorizontalPadding: 20,
+    });
+    const title = html.match(/<div[^>]*data-testid="profile-weekly-title"[^>]*>/)?.[0] ?? "";
+    const history = html.match(/<div[^>]*data-testid="profile-streak-history"[^>]*>/)?.[0] ?? "";
+    assert.match(title, new RegExp(`data-padding-horizontal="${padding ?? 20}"`));
+    assert.match(history, /data-padding-horizontal="20"/);
+    assert.match(html, /seven-week-days/);
+  }
+});
+
 test("longest streak uses two white mountains while accumulated streak keeps its gold lotus", () => {
   const html = render({
     separateStreakHistory: true,

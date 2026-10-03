@@ -7,7 +7,7 @@ Perfil muestra los siete días de la racha bajo el título «Tu progreso esta se
 
 **Why:** Después de recuperar los siete días y ampliarlos a todo el ancho, el usuario pidió añadir ese título y devolverles el fondo negro. La última solicitud reemplaza la decisión de mantener el bloque transparente.
 
-**How to apply:** Mantener título y fila semanal dentro del mismo bloque negro en Perfil, conservando el ancho de los días y los márgenes generales de pantalla. No cambiar la tarjeta de estadísticas, Inicio o Tu progreso.
+**How to apply:** Mantener título y fila semanal dentro del mismo bloque negro en Perfil, conservando el ancho de los días y los márgenes generales de pantalla. El título se alinea con el margen lateral de Perfil, sin inset adicional, por petición posterior del usuario. No cambiar la tarjeta de estadísticas, Inicio o Tu progreso.
 
 En los cuatro espacios del historial de rachas de Perfil, el número y su título forman un conjunto centrado verticalmente respecto de su icono; no van anclados al borde inferior.
 

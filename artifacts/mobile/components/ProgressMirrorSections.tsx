@@ -52,6 +52,7 @@ export function ProgressMirrorSections({
   weeklySectionBackgroundColor,
   weeklySectionHorizontalPadding,
   weeklySectionTitle,
+  weeklySectionTitleHorizontalPadding,
   streakHistoryTopPadding,
   streakHistoryDividerOffsetY = 0,
   longestStreakLabel = "RACHA MÁS LARGA",
@@ -99,6 +100,7 @@ export function ProgressMirrorSections({
   weeklySectionBackgroundColor?: string;
   weeklySectionHorizontalPadding?: number;
   weeklySectionTitle?: string;
+  weeklySectionTitleHorizontalPadding?: number;
   streakHistoryTopPadding?: number;
   streakHistoryDividerOffsetY?: number;
   longestStreakLabel?: string;
@@ -489,10 +491,13 @@ export function ProgressMirrorSections({
               replayKey={`${entranceReplayKey}:streak-title`}
               delay={entranceBaseDelay + 420}
             >
-              <View style={[
+              <View testID={separateStreakHistory ? "profile-weekly-title" : undefined} style={[
                 styles.streakTitleRow,
                 separateStreakHistory && weeklySectionHorizontalPadding === 0 && {
                   paddingHorizontal: sectionHorizontalPadding ?? 16,
+                },
+                weeklySectionTitleHorizontalPadding !== undefined && {
+                  paddingHorizontal: weeklySectionTitleHorizontalPadding,
                 },
               ]}>
                 {onStreakTitlePress ? (
