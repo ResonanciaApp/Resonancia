@@ -528,7 +528,7 @@ const styles = StyleSheet.create({
     alignSelf: "stretch",
     marginTop: 12,
     minHeight: 50,
-    borderWidth: 2,
+    borderWidth: 1,
     borderColor: "rgba(255,255,255,0.1)",
     borderRadius: 12,
     paddingVertical: 8,

@@ -135,7 +135,7 @@ test("Semilla displays a filled lock and one lotus avatar in a disabled horizont
   assert.match(reward, /data-direction="row"/);
   assert.match(reward, /data-pointer-events="none"/);
   assert.match(reward, /data-disabled="true"/);
-  assert.match(reward, /data-border-radius="12" data-border-width="2" data-border-color="rgba\(255,255,255,0.1\)"/);
+  assert.match(reward, /data-border-radius="12" data-border-width="1" data-border-color="rgba\(255,255,255,0.1\)"/);
   assert.doesNotMatch(reward, /data-background/);
   const lock = html.match(/<div[^>]*data-testid="semilla-reward-lock"[^>]*>/)?.[0];
   assert.ok(lock);
@@ -171,7 +171,7 @@ test("Crecimiento, Vegetación and Expansión share Semilla's small filled lock 
     assert.ok(reward, id);
     assert.match(reward, /data-pointer-events="none"/);
     assert.match(reward, /data-disabled="true"/);
-    assert.match(reward, /data-border-radius="12" data-border-width="2" data-border-color="rgba\(255,255,255,0.1\)"/);
+    assert.match(reward, /data-border-radius="12" data-border-width="1" data-border-color="rgba\(255,255,255,0.1\)"/);
     assert.doesNotMatch(reward, /data-background/);
     const lock = html.match(new RegExp(`<div[^>]*data-testid="${id}-reward-lock"[^>]*>`))?.[0];
     assert.ok(lock, id);
@@ -236,7 +236,7 @@ test("reward pills grow in normal flow and preserve nonreward and profile previe
   assert.match(copy.getText(ast), /testID=\{`\$\{level.id\}-reward`\}/);
   assert.ok(copy.getText(ast).indexOf("{level.story}") < copy.getText(ast).indexOf('testID={`${level.id}-reward`}'));
   assert.doesNotMatch(pill, /backgroundColor/);
-  assert.match(pill, /borderWidth: 2/);
+  assert.match(pill, /borderWidth: 1/);
   assert.match(pill, /borderColor: "rgba\(255,255,255,0.1\)"/);
   assert.match(source, /rewardAvatarOverlay: \{[\s\S]*?position: "absolute"[\s\S]*?backgroundColor: "rgba\(0,0,0,0.22\)"/);
   assert.match(pill, /minHeight: 50/);
