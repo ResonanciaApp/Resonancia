@@ -7,7 +7,13 @@ En Perfil, las cuentas gratuitas deben ver «Prueba Premium» debajo del bloque 
 
 **Why:** El usuario aclaró que ocultar el banner era solo para miembros Premium, no para cuentas gratuitas. La estrella del avatar evita repetir la membresía en un banner. Solicitó alinear el chevron con el título del usuario. También pidió bajar la semana y todo lo que sigue sin mover el avatar; la separación anterior de 25 px ya no es fija.
 
-**How to apply:** Mantener el banner de prueba integrado al bloque de usuario para cuentas gratuitas, no como tarjeta independiente. Conservar el diseño compacto y la estrella del avatar para miembros Premium, sin recuperar «Tu Premium» debajo del usuario. La insignia de Inicio y el acceso Premium del drawer son independientes de esta regla.
+**How to apply:** Mantener el banner de prueba integrado al bloque de usuario para cuentas gratuitas, no como tarjeta independiente. Conservar el diseño compacto y la estrella del avatar para miembros Premium, sin recuperar «Tu Premium» debajo del usuario. El acceso Premium del drawer es independiente de esta regla.
+
+Inicio no muestra estrella de membresía sobre el avatar, tampoco para usuarios Premium. Perfil conserva su estrella y el drawer no cambia.
+
+**Why:** El usuario pidió quitar la estrella del avatar específicamente en Inicio.
+
+**How to apply:** No volver a añadir la insignia al header de Inicio por analogía con Perfil; preservar foto, inicial, borde y apertura del menú.
 
 En cuentas gratuitas, la estrella y el contenido de «Prueba Premium» usan el margen lateral izquierdo del perfil; el chevron llega al margen lateral derecho, sin una sangría adicional dentro del banner.
 

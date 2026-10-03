@@ -73,7 +73,7 @@ import {
 import { SessionRow } from "@/components/SessionRow";
 import { EqualizerBars } from "@/components/EqualizerBars";
 import { SessionCarousel, CoverCarousel } from "@/components/SessionCarousel";
-import { SessionBadgeGlass, SessionDurationBadge } from "@/components/SessionDurationBadge";
+import { SessionDurationBadge } from "@/components/SessionDurationBadge";
 import { PremiumBadge } from "@/components/PremiumBadge";
 import { MiRutinaSection } from "@/components/MiRutinaSection";
 import { Image as ExpoImage } from "expo-image";
@@ -1932,20 +1932,6 @@ const Inicio2HeroStatic = React.memo(function Inicio2HeroStatic({
                 <Text style={styles.inicio2HeroAvatarInitial}>{initial}</Text>
               </View>
             )}
-            {isPremium && (
-              <View
-                pointerEvents="none"
-                style={styles.inicio2HeroPremiumBadge}
-                accessibilityElementsHidden
-              >
-                <SessionBadgeGlass showBlackTint={false} showWhiteTint />
-                <MaterialCommunityIcons
-                  name="star"
-                  size={13}
-                  color={MEMBERSHIP_AURORA.premium.accent}
-                />
-              </View>
-            )}
           </Pressable>
           <Pressable
             onPress={onOpenDrawer}
@@ -3644,17 +3630,6 @@ const styles = StyleSheet.create({
   },
   inicio2HeroAvatarButton: {
     position: "relative",
-  },
-  inicio2HeroPremiumBadge: {
-    position: "absolute",
-    top: -1.5,
-    left: -1.5,
-    width: 15,
-    height: 15,
-    borderRadius: 7.5,
-    overflow: "hidden",
-    alignItems: "center",
-    justifyContent: "center",
   },
   inicio2HeroAvatarFallback: {
     width: 42,
