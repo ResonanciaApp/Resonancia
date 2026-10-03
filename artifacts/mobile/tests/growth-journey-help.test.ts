@@ -181,7 +181,7 @@ test("Tu camino preserves its controls and raises Primera etapa and the whole jo
   assert.match(source, /locations=\{theme\.gradientLocations/);
 });
 
-test("Intención opens inside the same Modal; close and back preserve Tu camino, and help closes first", () => {
+test("Intención opens inside the same Modal; close and back preserve Tu camino, with no detail help", () => {
   const h = uiHarness();
   const { GrowthJourneySheet } = load("../components/GrowthJourneySheet.tsx", h.imports);
   let closes = 0;
@@ -196,15 +196,8 @@ test("Intención opens inside the same Modal; close and back preserve Tu camino,
   assert.equal((html.match(/data-testid="growth-journey-modal"/g) ?? []).length, 1);
   assert.equal(h.nodes.get("growth-journey-scroll").pointerEvents, "none");
   assert.equal(h.nodes.get("growth-journey-scroll").accessibilityElementsHidden, true);
-  h.detail.onHelp();
-  render();
-  assert.equal(h.help.visible, true);
-  assert.equal(h.detail.helpVisible, true);
-  h.back();
-  html = render();
   assert.equal(h.help.visible, false);
-  assert.match(html, /data-testid="growth-stage-detail"/);
-  assert.equal(closes, 0);
+  assert.equal(h.detail.onHelp, undefined);
   h.back();
   assert.doesNotMatch(render(), /data-testid="growth-stage-detail"/);
   assert.equal(closes, 0);

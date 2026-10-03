@@ -1,5 +1,6 @@
 import { Feather } from "@expo/vector-icons";
 import { Image } from "expo-image";
+import { getMoodHeroGradient } from "@/utils/moodHeroGradient";
 import { router } from "expo-router";
 import { openPremiumPlans } from "@/lib/premiumGate";
 import { PremiumPlansSurface, usePremiumPlansModalHost } from "@/components/PremiumPlansOverlay";
@@ -206,15 +207,6 @@ function formatShortDate(iso: string) {
     day: "numeric",
     month: "short",
   });
-}
-
-function colorWithOpacity(color: string, opacity: number): string {
-  const match = color.match(/^#([0-9a-f]{6})$/i);
-  if (!match) return color;
-  const alpha = Math.round(Math.max(0, Math.min(1, opacity)) * 255)
-    .toString(16)
-    .padStart(2, "0");
-  return `#${match[1]}${alpha}`;
 }
 
 export function MoodPickerSheet({
@@ -433,7 +425,7 @@ export function MoodPickerSheet({
     : undefined;
   const moodQuote = completionQuote ?? (firstMood ? getQuoteForMood(firstMood.id) : undefined);
   const moodHeroHeight = Math.min(410, Math.max(340, viewportWidth * 0.98));
-  const fadeSolidStart = 1 - 55 / moodHeroHeight;
+  const heroGradient = getMoodHeroGradient(fadeColor, moodHeroHeight);
 
   return (
     <Modal
@@ -646,13 +638,7 @@ export function MoodPickerSheet({
                   />
                 </CinematicFadeSlide>
                 <LinearGradient
-                  colors={[
-                    colorWithOpacity(fadeColor, 0),
-                    colorWithOpacity(fadeColor, 0.3),
-                    fadeColor,
-                    fadeColor,
-                  ]}
-                  locations={[0.3, 0.7, fadeSolidStart, 1]}
+                  {...heroGradient}
                   style={StyleSheet.absoluteFill}
                   pointerEvents="none"
                 />

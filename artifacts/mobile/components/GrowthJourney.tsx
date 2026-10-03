@@ -17,7 +17,8 @@ import { ascentLevels, growthLevels, type GrowthLevel } from "@/data/growthLevel
 import { useColors } from "@/hooks/useColors";
 
 export const GROWTH_ROW_HEIGHT = 205;
-const PROFILE_INTENTION_IMAGE = require("../assets/images/growth/00-intencion-profile-square.png");
+// Original Tu camino artwork and radial alpha, with RGB brightened by 4% for Perfil only.
+const PROFILE_INTENTION_IMAGE = require("../assets/images/growth/00-intencion-profile-bright.png");
 const REWARD_LEVEL_IDS = new Set(["semilla", "crecimiento", "vegetacion", "expansion"]);
 
 const GROWTH_COLORS = {
@@ -61,8 +62,8 @@ function loadGrowthImage(module: number): Promise<string> {
   return load;
 }
 
-export function GrowthLevelImage({ level, profilePreview = false, size }: { level: GrowthLevel; profilePreview?: boolean; size?: number }) {
-  const imageModule = profilePreview ? PROFILE_INTENTION_IMAGE : level.image;
+export function GrowthLevelImage({ level, profilePreview = false, size, height, sourceModule }: { level: GrowthLevel; profilePreview?: boolean; size?: number; height?: number; sourceModule?: number }) {
+  const imageModule = sourceModule ?? (profilePreview ? PROFILE_INTENTION_IMAGE : level.image);
   const [localUri, setLocalUri] = useState(() => growthImageUris.get(imageModule) ?? null);
 
   useEffect(() => {
@@ -80,7 +81,7 @@ export function GrowthLevelImage({ level, profilePreview = false, size }: { leve
   return (
     <View
       testID={profilePreview ? "profile-intention-image" : undefined}
-      style={[styles.imageWrap, profilePreview && styles.profileImageWrap, size !== undefined && { width: size, height: size, borderRadius: 0 }]}
+      style={[styles.imageWrap, profilePreview && styles.profileImageWrap, size !== undefined && { width: size, height: height ?? size, borderRadius: 0 }]}
       importantForAccessibility="no"
     >
       {source && (
@@ -101,10 +102,12 @@ export function GrowthLevelPreviewCard({
   onPress,
   embedded = false,
   canonicalVerticalInsets = false,
+  backgroundColor,
 }: {
   onPress: () => void;
   embedded?: boolean;
   canonicalVerticalInsets?: boolean;
+  backgroundColor?: string;
 }) {
   const colors = useColors();
   const level = growthLevels[0];
@@ -160,6 +163,7 @@ export function GrowthLevelPreviewCard({
         styles.previewCard,
         embedded && styles.embeddedPreviewCard,
         canonicalVerticalInsets && styles.canonicalPreviewVerticalInsets,
+        backgroundColor !== undefined && { backgroundColor },
       ]}
       accessibilityRole="button"
       accessibilityLabel={`${level.name}, ${dayLabel}. Abrir camino de crecimiento`}
@@ -505,11 +509,11 @@ const styles = StyleSheet.create({
   },
   previewArt: { width: 100, height: 100 },
   embeddedPreviewCard: { marginHorizontal: 0 },
-  canonicalPreviewVerticalInsets: { paddingTop: 16, paddingBottom: 16, marginVertical: 2, alignItems: "center" },
-  canonicalPreviewCopy: { minHeight: 100, justifyContent: "center", gap: 6 },
+  canonicalPreviewVerticalInsets: { paddingTop: 20, paddingBottom: 20, marginVertical: 2, alignItems: "center" },
+  canonicalPreviewCopy: { minHeight: 100, justifyContent: "center", gap: 10 },
   canonicalPreviewName: { marginBottom: 0, fontSize: 18, lineHeight: 23 },
   canonicalPreviewPill: { marginBottom: 0, alignSelf: "center", flexDirection: "row", alignItems: "center", gap: 4 },
-  canonicalPreviewTitleRow: { flexDirection: "column", alignItems: "flex-start", gap: 6 },
+  canonicalPreviewTitleRow: { flexDirection: "column", alignItems: "flex-start", gap: 10 },
   previewCopy: { flex: 1, minWidth: 0 },
   previewStory: { fontFamily: "Manrope", fontSize: 11, lineHeight: 16 },
   section: {
@@ -579,7 +583,7 @@ const styles = StyleSheet.create({
   },
   lockedArt: { opacity: 0.44 },
   imageWrap: { width: "100%", height: "100%", borderRadius: 67, overflow: "hidden" },
-  profileImageWrap: { borderRadius: 18 },
+  profileImageWrap: { borderRadius: 67 },
   levelImage: { width: "100%", height: "100%" },
   copy: {
     marginLeft: 166,

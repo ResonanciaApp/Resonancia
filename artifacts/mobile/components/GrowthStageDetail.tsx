@@ -1,5 +1,4 @@
 import { Feather, MaterialCommunityIcons } from "@expo/vector-icons";
-import MaskedView from "@react-native-masked-view/masked-view";
 import { LinearGradient } from "expo-linear-gradient";
 import React from "react";
 import {
@@ -18,34 +17,33 @@ import { GrowthLevelImage } from "@/components/GrowthJourney";
 import { MEMBERSHIP_AURORA, STREAK_INFO_COLORS } from "@/constants/colors";
 import { useSceneTheme } from "@/context/SceneThemeContext";
 import { growthLevels } from "@/data/growthLevels";
+import { getMoodHeroGradient } from "@/utils/moodHeroGradient";
 
 const WHITE = STREAK_INFO_COLORS.foreground;
 const GOLD = MEMBERSHIP_AURORA.premium.accent;
 const DURATION = 1400;
 const BASE_DELAY = 150;
+// Unmasked original artwork; Perfil and Tu camino retain their radial-alpha assets.
+const FULL_HERO_IMAGE = require("../assets/images/growth/00-intencion-profile-square.png");
 
 const level = growthLevels[0];
-const EYEBROW = "PRIMERA ETAPA";
 const DAY_LABEL = "0 días";
 const EXPLANATION =
   "Antes del primer día hay un momento de decisión. No necesitas hacer nada todavía: solo reconocer que quieres darte un espacio de calma y volver a él, a tu ritmo.";
-const AFFIRMATION = "Elegir comenzar ya es parte de tu práctica.";
 
 export function GrowthStageDetail({
   onClose,
-  onHelp,
-  helpVisible = false,
 }: {
   onClose: () => void;
-  onHelp: () => void;
-  helpVisible?: boolean;
 }) {
   const insets = useSafeAreaInsets();
   const { theme } = useSceneTheme();
-  const { width } = useWindowDimensions();
+  const { width, height } = useWindowDimensions();
   const topPad = Platform.OS === "web" ? 67 : Math.max(insets.top, 40);
   const bottomPad = Platform.OS === "web" ? 34 : insets.bottom;
   const heroSize = Math.round(width);
+  const heroHeight = height;
+  const heroGradient = getMoodHeroGradient(theme.gradient[0] || "#080910", heroHeight);
 
   return (
     <LinearGradient
@@ -55,10 +53,26 @@ export function GrowthStageDetail({
       start={theme.gradientStart}
       end={theme.gradientEnd}
       style={styles.root}
-      pointerEvents={helpVisible ? "none" : "auto"}
-      accessibilityElementsHidden={helpVisible}
-      importantForAccessibility={helpVisible ? "no-hide-descendants" : "auto"}
     >
+      <View testID="growth-stage-detail-background-hero" pointerEvents="none" style={[styles.heroBackground, { width: heroSize, height: heroHeight }]}>
+        <CinematicFadeSlide
+          active
+          replayKey="hero"
+          delay={0}
+          duration={DURATION}
+          scaleFrom={1.06}
+          translateYFrom={0}
+          style={StyleSheet.absoluteFill}
+        >
+          <GrowthLevelImage level={level} size={heroSize} height={heroHeight} sourceModule={FULL_HERO_IMAGE} />
+        </CinematicFadeSlide>
+        <LinearGradient
+          testID="growth-stage-detail-hero-gradient"
+          {...heroGradient}
+          style={StyleSheet.absoluteFill}
+          pointerEvents="none"
+        />
+      </View>
       <ScrollView
         showsVerticalScrollIndicator={false}
         bounces
@@ -67,62 +81,16 @@ export function GrowthStageDetail({
         contentInsetAdjustmentBehavior="never"
         automaticallyAdjustContentInsets={false}
         testID="growth-stage-detail-scroll"
-        contentContainerStyle={{ paddingBottom: bottomPad + 28 }}
+        contentContainerStyle={{ paddingTop: heroHeight * heroGradient.locations[1], paddingBottom: bottomPad + 28 }}
       >
-        <View style={[styles.header, { paddingTop: topPad + 8 }]}>
-          <Pressable
-            onPress={onClose}
-            disabled={helpVisible}
-            style={styles.headerButton}
-            hitSlop={8}
-            accessibilityRole="button"
-            accessibilityLabel="Volver a Tu camino"
-            testID="growth-stage-detail-close"
-          >
-            <Feather name="x" size={23} color={WHITE} />
-          </Pressable>
-          <View style={styles.titleWrap}>
-            <Text style={styles.eyebrow}>{EYEBROW}</Text>
-            <MaterialCommunityIcons name="spa" size={18} color={GOLD} style={styles.lotus} />
-          </View>
-          <Pressable
-            onPress={onHelp}
-            disabled={helpVisible}
-            style={styles.headerButton}
-            hitSlop={8}
-            accessibilityRole="button"
-            accessibilityLabel="Ayuda"
-            testID="growth-stage-detail-help"
-          >
-            <Text style={styles.questionMark}>?</Text>
-          </Pressable>
-        </View>
-
         <CinematicFadeSlide active replayKey="stage" delay={BASE_DELAY} duration={DURATION}>
-          <View style={styles.titleBlock}>
+          <View testID="growth-stage-detail-title-block" style={styles.titleBlock}>
             <Text style={styles.stageName} accessibilityRole="header">{level.name}</Text>
             <View style={styles.dayPill}>
               <MaterialCommunityIcons name="spa" size={14} color={GOLD} />
               <Text style={styles.days}>{DAY_LABEL}</Text>
             </View>
           </View>
-        </CinematicFadeSlide>
-
-        <CinematicFadeSlide active replayKey="hero" delay={BASE_DELAY + 300} duration={DURATION}>
-          <MaskedView
-            style={{ width: heroSize, height: heroSize, marginTop: 8 }}
-            maskElement={
-              <LinearGradient
-                colors={["#FFFFFF00", "#FFFFFF", "#FFFFFF", "#FFFFFF00"]}
-                locations={[0, 0.12, 0.72, 1]}
-                style={StyleSheet.absoluteFill}
-              />
-            }
-          >
-            <View style={{ width: heroSize, height: heroSize }}>
-              <GrowthLevelImage level={level} size={heroSize} />
-            </View>
-          </MaskedView>
         </CinematicFadeSlide>
 
         <CinematicFadeSlide active replayKey="copy" delay={BASE_DELAY + 700} duration={DURATION}>
@@ -133,27 +101,45 @@ export function GrowthStageDetail({
           </View>
         </CinematicFadeSlide>
 
-        <CinematicFadeSlide active replayKey="aff" delay={BASE_DELAY + 1000} duration={DURATION}>
-          <View style={styles.affirmation} accessible accessibilityLabel={AFFIRMATION}>
-            <View style={styles.affirmationIcon}>
-              <MaterialCommunityIcons name="spa" size={18} color={GOLD} />
-            </View>
-            <Text style={styles.affirmationText}>{AFFIRMATION}</Text>
-          </View>
-        </CinematicFadeSlide>
       </ScrollView>
+      <View testID="growth-stage-detail-fixed-header" style={[styles.header, { paddingTop: topPad + 8 }]}>
+        <Pressable
+          onPress={onClose}
+          style={styles.headerButton}
+          hitSlop={8}
+          accessibilityRole="button"
+          accessibilityLabel="Volver a Tu camino"
+          testID="growth-stage-detail-close"
+        >
+          <Feather name="x" size={23} color={WHITE} />
+        </Pressable>
+        <View testID="growth-stage-detail-header-label" style={styles.headerLabel} accessibilityRole="header">
+          <Text style={styles.headerLabelText}>Primera etapa</Text>
+          <Text style={styles.headerLabelText}>Florecimiento</Text>
+        </View>
+        <View pointerEvents="none" style={styles.headerSpacer} />
+      </View>
     </LinearGradient>
   );
 }
 
 const styles = StyleSheet.create({
   root: { ...StyleSheet.absoluteFillObject },
+  heroBackground: { position: "absolute", top: 0, left: 0, overflow: "hidden" },
   header: {
+    position: "absolute",
+    top: 0,
+    left: 0,
+    right: 0,
+    zIndex: 10,
     paddingHorizontal: 20,
     flexDirection: "row",
     alignItems: "center",
     justifyContent: "space-between",
   },
+  headerLabel: { flex: 1, alignItems: "center" },
+  headerLabelText: { fontFamily: "Manrope", fontSize: 11, lineHeight: 14, fontWeight: "500", color: WHITE, textAlign: "center" },
+  headerSpacer: { width: 43 },
   headerButton: {
     width: 43,
     height: 43,
@@ -164,18 +150,7 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     backgroundColor: STREAK_INFO_COLORS.navigationBackground,
   },
-  titleWrap: { flex: 1, alignItems: "center", marginHorizontal: 8, gap: 4 },
-  questionMark: { fontFamily: "Manrope", fontSize: 24, lineHeight: 30, fontWeight: "500", color: WHITE },
-  eyebrow: {
-    fontFamily: "Manrope",
-    fontSize: 11,
-    fontWeight: "700",
-    letterSpacing: 1.2,
-    color: STREAK_INFO_COLORS.subtitle,
-    textAlign: "center",
-  },
-  lotus: { lineHeight: 18, includeFontPadding: false },
-  titleBlock: { alignItems: "center", marginTop: 22, gap: 14 },
+  titleBlock: { alignItems: "center", marginTop: 0, gap: 8 },
   stageName: {
     fontFamily: "CormorantGaramond",
     fontSize: 44,
@@ -195,7 +170,7 @@ const styles = StyleSheet.create({
     borderColor: "rgba(255,255,255,0.18)",
   },
   days: { fontFamily: "Manrope", fontSize: 14, fontWeight: "600", color: WHITE },
-  copy: { paddingHorizontal: 28, alignItems: "center", marginTop: -28 },
+  copy: { paddingHorizontal: 28, alignItems: "center", marginTop: 15 },
   quote: {
     fontFamily: "CormorantGaramond",
     fontSize: 27,
@@ -209,38 +184,6 @@ const styles = StyleSheet.create({
     fontSize: 15,
     lineHeight: 23,
     color: STREAK_INFO_COLORS.subtitle,
-    textAlign: "center",
-  },
-  affirmation: {
-    marginHorizontal: 20,
-    marginTop: 44,
-    paddingTop: 30,
-    paddingBottom: 26,
-    paddingHorizontal: 24,
-    borderRadius: 22,
-    borderWidth: 1,
-    borderColor: "rgba(255,255,255,0.2)",
-    backgroundColor: STREAK_INFO_COLORS.cardBackground,
-    alignItems: "center",
-  },
-  affirmationIcon: {
-    position: "absolute",
-    top: -17,
-    width: 34,
-    height: 34,
-    borderRadius: 17,
-    alignItems: "center",
-    justifyContent: "center",
-    borderWidth: 1,
-    borderColor: "rgba(255,255,255,0.2)",
-    backgroundColor: STREAK_INFO_COLORS.fallbackBackground,
-  },
-  affirmationText: {
-    fontFamily: "CormorantGaramond",
-    fontStyle: "italic",
-    fontSize: 22,
-    lineHeight: 29,
-    color: GOLD,
     textAlign: "center",
   },
 });

@@ -318,15 +318,16 @@ test("Perfil moves its weekly section and following content down another 15px in
   assert.doesNotMatch(profileSource, /PROFILE_PILL_WEEK_GAP|PROFILE_CARD_Y_OFFSET|PROFILE_PROGRESS_TOP_MARGIN/);
   const detailsStart = profileSource.indexOf('testID="profile-identity-details"');
   const nameIndex = profileSource.indexOf('testID="profile-identity-name"', detailsStart);
-  const pillIndex = profileSource.indexOf("<ProfileIntentionPill", detailsStart);
-  assert.ok(nameIndex > detailsStart && pillIndex > nameIndex, "the name stays above the pill");
+  const descriptionIndex = profileSource.indexOf('testID="profile-identity-description"', detailsStart);
+  assert.ok(nameIndex > detailsStart && descriptionIndex > nameIndex, "the name stays above the saved account description");
+  assert.doesNotMatch(profileSource, /<ProfileIntentionPill/);
   assert.doesNotMatch(profileSource, /testID="profile-identity-email"/);
 });
 
 test("Perfil shows seven days with their original background, without a title, and preserves weekly/history/calendar gaps", () => {
   const source = readFileSync(new URL("../components/ProfileScreenBase.tsx", import.meta.url), "utf8");
   assert.doesNotMatch(source, /weeklySectionTitle="Esta semana"/);
-  assert.match(source, /weeklySectionBackgroundColor="rgba\(0,0,0,0.22\)"/);
+  assert.match(source, /weeklySectionBackgroundColor="rgba\(0,0,0,0.16\)"/);
   assert.doesNotMatch(source, /streakMarginBottom=\{PROFILE_SECTION_GAP - 12\}/);
   assert.match(source, /sectionMarginBottom=\{PROFILE_SECTION_GAP\}/);
   const html = render({

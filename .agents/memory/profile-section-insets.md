@@ -21,8 +21,8 @@ El banner de Intención en Perfil tiene una excepción deliberada: su fondo se r
 
 **How to apply:** No normalizar de nuevo este banner a los márgenes generales ni propagar sus ajustes al camino de crecimiento o a otras portadas de Intención. Mantener el chevron a la derecha del conjunto completo, no solo del título.
 
-La imagen de Intención en el banner de Perfil debe ser cuadrada, opaca y con esquinas de 18 px, sin halo ni desvanecido añadido.
+La imagen de Intención en el banner de Perfil usa el arte circular difuminado de Tu camino, con un 4 % más de brillo y el alfa original intacto.
 
-**Why:** El usuario reemplazó el tratamiento circular difuminado por esta dirección explícita.
+**Why:** El usuario pidió volver al mismo arte de Tu camino después de probar la portada cuadrada. También pidió separar la píldora y la descripción 4 px más del título y añadir 4 px de espacio arriba y abajo.
 
-**How to apply:** Aplicar solo al banner de Perfil; las imágenes del Camino de crecimiento conservan su tratamiento propio. Revisar también la transparencia del archivo, no solo los estilos.
+**How to apply:** Aplicar el brillo y los espacios solo al banner de Perfil; el arte de Tu camino conserva su brillo original. No recuperar el recorte cuadrado ni cambiar el alfa para simular brillo.

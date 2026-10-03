@@ -38,6 +38,7 @@ export const ProfileReflectionWallSection = forwardRef<HomeReflectionWallHandle,
           onMessageSaved={onMessageSaved}
           sectionTitle="Mi muro expansivo"
           canonicalVerticalInsets
+          sectionBackgroundColor="rgba(0,0,0,0.16)"
         />
       </View>
     );

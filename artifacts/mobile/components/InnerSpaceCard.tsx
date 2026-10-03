@@ -59,6 +59,7 @@ export function InnerSpaceCard({
   keepKeyboardOnCategories = false,
   sectionTitle,
   canonicalVerticalInsets = false,
+  sectionBackgroundColor,
   onComposeRequested,
   onInputBlur,
   onMessageSaved,
@@ -69,6 +70,7 @@ export function InnerSpaceCard({
   keepKeyboardOnCategories?: boolean;
   sectionTitle?: string;
   canonicalVerticalInsets?: boolean;
+  sectionBackgroundColor?: string;
   onComposeRequested?: () => void;
   onInputBlur?: () => void;
   onMessageSaved?: () => void;
@@ -477,7 +479,7 @@ export function InnerSpaceCard({
 
   return (
     <>
-    <View style={[styles.container, canonicalVerticalInsets && styles.canonicalVerticalInsets]}>
+    <View style={[styles.container, canonicalVerticalInsets && styles.canonicalVerticalInsets, sectionBackgroundColor !== undefined && { backgroundColor: sectionBackgroundColor }]}>
       {canonicalVerticalInsets && (
         <DiscoverSearchBorder
           borderRadius={24}

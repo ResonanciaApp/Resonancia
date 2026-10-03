@@ -79,7 +79,7 @@ new Function("exports", ts.transpileModule(
   { compilerOptions: { module: ts.ModuleKind.CommonJS } },
 ).outputText)(wallBorderConstants);
 const mocks: Record<string, unknown> = {
-  "../assets/images/growth/00-intencion-profile-square.png": 2,
+  "../assets/images/growth/00-intencion-profile-bright.png": 2,
   "../assets/images/growth/semilla-reward-chest.png": 3,
   "../assets/images/growth/reward-avatar-moon.png": 4,
   "../assets/images/growth/reward-avatar-lotus.png": 5,
@@ -181,7 +181,10 @@ test("the detail hero uses full square art while default timeline and profile co
   assert.match(detail, /data-height="375" data-width="375" data-border-radius="0"/);
   assert.match(detail, /data-source="1"/);
   assert.match(image(), /data-height="100%" data-width="100%" data-border-radius="67"/);
-  assert.match(image({ profilePreview: true }), /data-border-radius="18"/);
+  assert.match(image({ profilePreview: true }), /data-border-radius="67"/);
+  const fullHero = image({ size: 402, height: 874, sourceModule: 2 });
+  assert.match(fullHero, /data-height="874" data-width="402" data-border-radius="0"/);
+  assert.match(fullHero, /data-source="2"/);
 });
 
 test("Semilla displays a filled lock and one lotus avatar in a disabled horizontal pill", () => {
@@ -361,7 +364,7 @@ test("reward pills grow in normal flow and preserve nonreward and profile previe
   assert.match(source, /previewArt: \{ width: 100, height: 100 \}/);
 });
 
-test("Profile intention uses square artwork with 18px corners and no glow or gradient", () => {
+test("Profile intention restores the circular Tu camino artwork with its radial fade and brighter profile variant", () => {
   const html = render({ canonicalVerticalInsets: true });
   const glow = html.indexOf('data-testid="profile-intention-glow"');
   const image = html.indexOf('data-testid="profile-intention-image"');
@@ -371,7 +374,7 @@ test("Profile intention uses square artwork with 18px corners and no glow or gra
   assert.doesNotMatch(html, /data-filter/);
   const stops = [...html.matchAll(/data-stop-opacity="([^"]+)"/g)].map(match => Number(match[1]));
   assert.deepEqual(stops, []);
-  assert.match(html, /data-testid="profile-intention-image"[^>]*data-height="100%" data-width="100%" data-border-radius="18"/);
+  assert.match(html, /data-testid="profile-intention-image"[^>]*data-height="100%" data-width="100%" data-border-radius="67"/);
   const source = readFileSync(new URL("../components/GrowthJourney.tsx", import.meta.url), "utf8");
   assert.match(source, /previewArt: \{ width: 100, height: 100 \}/);
   assert.match(render(), /data-border-radius="67"/);
@@ -379,9 +382,9 @@ test("Profile intention uses square artwork with 18px corners and no glow or gra
   assert.doesNotMatch(render(), /profile-intention-glow|profile-intention-image|brightness/);
 });
 
-test("GrowthLevelPreviewCard reduces the profile background by 2px at each edge without changing other callers", () => {
+test("GrowthLevelPreviewCard adds 4px above and below Perfil only, preserving the other callers", () => {
   const profileHtml = render({ embedded: true, canonicalVerticalInsets: true });
-  assert.match(profileHtml, /data-testid="growth-level-zero-preview"[^>]*data-padding-top="16" data-padding-bottom="16"/);
+  assert.match(profileHtml, /data-testid="growth-level-zero-preview"[^>]*data-padding-top="20" data-padding-bottom="20"/);
   assert.match(profileHtml, /data-margin-vertical="2"/);
   const profileContent = profileHtml.slice(profileHtml.indexOf(">") + 1);
   assert.ok(profileContent.indexOf("0 días") < profileContent.indexOf("Intención"));
@@ -389,6 +392,8 @@ test("GrowthLevelPreviewCard reduces the profile background by 2px at each edge 
   assert.match(profileHtml, /data-min-height="100"[^>]*data-justify-content="center"/);
   assert.doesNotMatch(profileHtml, /data-justify-content="space-between"|data-self-align="stretch"/);
   assert.match(profileHtml, /data-margin-bottom="0"/);
+  assert.match(profileHtml, /data-gap="10"[^>]*data-min-height="100"/);
+  assert.equal((20 - 16) * 2, 8);
 
   const defaultHtml = render();
   assert.match(defaultHtml, /data-testid="growth-level-zero-preview"[^>]*data-padding-top="17" data-padding-bottom="15"/);
@@ -422,7 +427,7 @@ test("Perfil stacks the pill above Intención, centers the text beside its image
   assert.match(card, /data-direction="row" data-align="center"/);
   const titleRow = html.match(/<div[^>]*data-testid="profile-intention-title-row"[^>]*>/)?.[0];
   assert.ok(titleRow);
-  assert.match(titleRow, /data-gap="6"/);
+  assert.match(titleRow, /data-gap="10"/);
   assert.doesNotMatch(titleRow, /data-wrap=/);
   assert.match(html, /data-testid="profile-intention-chevron"/);
   assert.doesNotMatch(render(), /profile-intention-title-row/);
@@ -445,6 +450,11 @@ test("the preview remains an accessible actionable button with the same day labe
   assert.equal(presses, 1);
   assert.match(render(), /data-accessibility-role="button"/);
   assert.match(render(), /Intención, 0 días\. Abrir camino de crecimiento/);
+});
+
+test("Perfil can use a 16% black section background without changing other Intención cards", () => {
+  assert.match(render({ canonicalVerticalInsets: true, backgroundColor: "rgba(0,0,0,0.16)" }), /data-background="rgba\(0,0,0,0.16\)"/);
+  assert.match(render(), /data-background="rgba\(0,0,0,0.22\)"/);
 });
 
 test("Florecimiento pills center the golden lotus beside days, omit streak wording and preserve the extra 3px padding", () => {

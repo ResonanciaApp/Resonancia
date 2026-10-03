@@ -9,6 +9,12 @@ Cuando se active el progreso funcional, los niveles del camino deberán depender
 
 **How to apply:** Al ampliar rangos o cambiar arte, mantener la métrica de días activos canónicos para cuando se active el progreso; usar el mismo arte con desvanecido radial para la portada de Intención y su fila del timeline.
 
+El banner de Intención en Perfil también debe conservar el arte circular y el alfa radial de Tu camino, no una portada cuadrada opaca. Su aumento de brillo del 4 % es exclusivo de Perfil y no debe alterar el desvanecido ni el arte de las demás superficies.
+
+**Why:** El usuario pidió volver a usar exactamente la imagen de Tu camino en Perfil, con un 4 % más de brillo, además de separar la píldora y la descripción del título.
+
+**How to apply:** Mantener intacto el alfa al ajustar el brillo; no simularlo añadiendo un halo, un fondo claro ni un overlay que cambie la transparencia. Los ajustes de espaciado del banner son locales a Perfil, no a las filas de Tu camino ni al detalle de Intención.
+
 La visibilidad de las ilustraciones no debe depender de un callback de scroll ni de animaciones en iOS. Mostrar las imágenes locales a tamaño explícito; la imagen de la etapa actual queda encendida y las demás apagadas, sin ocultarlas por completo. El punto también distingue la etapa actual.
 
 **Why:** El usuario vio la línea de tiempo sin imágenes en su iPhone aunque la vista web sí las mostraba; después pidió recuperar el tratamiento apagado de las imágenes pendientes, reservando el brillo para la etapa actual.
@@ -68,3 +74,9 @@ Los detalles de Florecimiento deben usar la plantilla de Sistema de rachas, con 
 **Why:** El usuario pidió empezar únicamente por Intención antes de replicar el diseño a las demás etapas. La referencia muestra una etapa distinta, pero el hero y el contenido deben corresponder a la que se abre.
 
 **How to apply:** Mantener el fondo del tema, la navegación circular, los insets y el scroll elástico de Sistema de rachas; usar el arte de la etapa como hero sin alterar el recorte de sus imágenes en Perfil o en el recorrido. Abrir el detalle desde Tu camino y volver al mismo recorrido conservando su scroll. Añadir nuevos detalles solo cuando el usuario pida replicarlos; esto no autoriza activar progreso ni recompensas.
+
+En el detalle de Intención, el hero ocupa toda la pantalla y usa el arte opaco original, sin máscara ni alfa radial. Encima lleva el mismo degradado superpuesto de la pantalla final del registro emocional de Inicio. El título y la píldora quedan bajo la parte principal del arte, en la transición hacia el fondo, con 15 px entre píldora y descripción.
+
+**Why:** El usuario revisó la composición y pidió hero fullscreen sin difuminado propio, el degradado de emociones y los textos abajo. Reintrodujo la etiqueta de etapa en la cabecera, no como un bloque sobre el título.
+
+**How to apply:** Mantener fijas fuera del scroll la X con su fondo circular y la etiqueta pequeña de dos líneas «Primera etapa / Florecimiento», alineadas verticalmente. El fondo también queda fijo; título, píldora y textos sí desplazan juntos al hacer scroll. Conservar el loto solo en la píldora, sin ayuda ni banner de «Elegir comenzar». No propagar el arte opaco a Perfil o Tu camino, que conservan su imagen radial.

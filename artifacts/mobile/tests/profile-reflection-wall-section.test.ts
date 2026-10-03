@@ -83,7 +83,8 @@ test("InnerSpaceCard keeps Home defaults and opts profile into a single 18px-ins
   const titleAt = card.indexOf("{sectionTitle ? (");
   const headerAt = card.indexOf("<View style={styles.header}>");
   assert.ok(titleAt > headerAt && titleAt < card.indexOf('style={styles.infoButton}'), "heading and description share the same header row with the plus");
-  assert.match(card, /style=\{\[styles\.container,\s*canonicalVerticalInsets && styles\.canonicalVerticalInsets\]\}/);
+  assert.match(card, /style=\{\[styles\.container,\s*canonicalVerticalInsets && styles\.canonicalVerticalInsets,\s*sectionBackgroundColor !== undefined && \{ backgroundColor: sectionBackgroundColor \}\]\}/);
+  assert.match(source("../components/ProfileReflectionWallSection.tsx"), /sectionBackgroundColor="rgba\(0,0,0,0.16\)"/);
   assert.match(card, /styles\.sectionTitle,\s*\{ color: colors\.foreground \}/);
 });
 

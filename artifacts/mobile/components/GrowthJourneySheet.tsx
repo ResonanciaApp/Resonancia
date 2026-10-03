@@ -117,8 +117,6 @@ export function GrowthJourneySheet({
         {intentionDetailVisible && (
           <GrowthStageDetail
             onClose={() => setIntentionDetailVisible(false)}
-            onHelp={() => setHelpVisible(true)}
-            helpVisible={helpVisible}
           />
         )}
         <GrowthJourneyHelpSheet

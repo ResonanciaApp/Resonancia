@@ -1438,13 +1438,13 @@ export function ProfileScreenBase({
                 showStreakHistoryTitle={false}
                 showStreakHistoryInfo={false}
                 onStreakHistoryPress={() => setStreakInfoOpen(true)}
-                weeklySectionBackgroundColor="rgba(0,0,0,0.22)"
+                weeklySectionBackgroundColor="rgba(0,0,0,0.16)"
                 weeklySectionHorizontalPadding={20}
                 streakHistoryTopPadding={18}
                 streakHistoryDividerOffsetY={-3}
                 longestStreakLabel="RACHA ACUMULADA"
                 longestStreakIconColor={MEMBERSHIP_AURORA.premium.accent}
-                sectionBackgroundColor="rgba(0,0,0,0.22)"
+                sectionBackgroundColor="rgba(0,0,0,0.16)"
                 sectionHorizontalPadding={20}
                 sectionTopPadding={PROFILE_WEEK_TOP_PADDING}
                 sectionBottomPadding={18}
@@ -1452,7 +1452,7 @@ export function ProfileScreenBase({
                 canonicalVerticalInsets
                 afterStreakHistory={
                   <View testID="profile-growth-intention" style={{ marginBottom: PROFILE_SECTION_GAP }}>
-                    <GrowthLevelPreviewCard embedded canonicalVerticalInsets onPress={() => setGrowthJourneyOpen(true)} />
+                    <GrowthLevelPreviewCard embedded canonicalVerticalInsets backgroundColor="rgba(0,0,0,0.16)" onPress={() => setGrowthJourneyOpen(true)} />
                   </View>
                 }
                 onStreakTitlePress={() => router.push("/progreso" as never)}
@@ -2609,7 +2609,7 @@ const styles = StyleSheet.create({
     paddingHorizontal: 16,
     paddingVertical: 16,
     borderRadius: 19,
-    backgroundColor: "rgba(0,0,0,0.22)",
+    backgroundColor: "rgba(0,0,0,0.16)",
     flexDirection: "row",
     alignItems: "center",
     justifyContent: "space-between",
@@ -2632,7 +2632,7 @@ const styles = StyleSheet.create({
     paddingHorizontal: 12,
     paddingVertical: 18,
     borderRadius: 19,
-    backgroundColor: "rgba(0,0,0,0.22)",
+    backgroundColor: "rgba(0,0,0,0.16)",
     alignItems: "center",
     justifyContent: "center",
   },
