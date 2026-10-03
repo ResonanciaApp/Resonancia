@@ -84,7 +84,7 @@ export function GrowthStageDetail({
         contentInsetAdjustmentBehavior="never"
         automaticallyAdjustContentInsets={false}
         testID="growth-stage-detail-scroll"
-        contentContainerStyle={{ paddingTop: heroHeight * heroGradient.locations[1], paddingBottom: bottomPad + 28 }}
+        contentContainerStyle={{ paddingTop: Math.max(0, heroHeight * heroGradient.locations[1] - 200), paddingBottom: bottomPad + 28 }}
       >
         <CinematicFadeSlide active replayKey="stage" delay={BASE_DELAY} duration={DURATION}>
           <View testID="growth-stage-detail-title-block" style={styles.titleBlock}>
@@ -129,7 +129,7 @@ export function GrowthStageDetail({
 const styles = StyleSheet.create({
   root: { ...StyleSheet.absoluteFillObject },
   heroBackground: { position: "absolute", top: 0, left: 0, overflow: "hidden" },
-  heroLayer: { top: -80, bottom: 80 },
+  heroLayer: { top: -230, bottom: 230 },
   header: {
     position: "absolute",
     top: 0,

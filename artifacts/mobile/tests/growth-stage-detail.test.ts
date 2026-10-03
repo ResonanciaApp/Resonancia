@@ -109,8 +109,9 @@ test("the detail shares the streak screen's theme, safe-area spacing, circular c
       assert.equal(nodes.get("growth-stage-detail").locations, locations);
       assert.equal(nodes.get("growth-detail-hero-artwork").size, viewport);
       assert.equal(nodes.get("growth-detail-hero-artwork").height, viewportHeight);
-      assert.equal(flat(nodes.get("growth-stage-detail-hero-layer").style).top, -80);
-      assert.equal(flat(nodes.get("growth-stage-detail-hero-layer").style).bottom, 80);
+      assert.equal(flat(nodes.get("growth-stage-detail-hero-layer").style).top, -230);
+      assert.equal(flat(nodes.get("growth-stage-detail-hero-layer").style).bottom, 230);
+      assert.equal(nodes.get("growth-stage-detail-scroll").contentContainerStyle.paddingTop, viewportHeight * 0.7 - 200);
       assert.match(html, new RegExp(`data-top-padding="${Math.max(inset, 40) + 8}"`));
       const scroll = nodes.get("growth-stage-detail-scroll");
       assert.equal(scroll.bounces, true);
@@ -163,7 +164,7 @@ test("the unmasked hero fills the viewport with exactly the mood completion grad
 
 test("Intención and its pill sit below the main artwork at the tinted transition, with description 15px away", () => {
   render();
-  assert.equal(nodes.get("growth-stage-detail-scroll").contentContainerStyle.paddingTop, 812 * 0.7);
+  assert.equal(nodes.get("growth-stage-detail-scroll").contentContainerStyle.paddingTop, 812 * 0.7 - 200);
   const block = flat(nodes.get("growth-stage-detail-title-block").style);
   assert.equal(block.gap, 8);
   assert.equal(block.transform, undefined);
