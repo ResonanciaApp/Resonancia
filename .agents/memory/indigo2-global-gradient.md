@@ -20,3 +20,9 @@ Historial estado de ánimo conserva un degradado editorial propio, ligeramente d
 **Why:** El usuario eligió una paleta específica para esa ventana después de ajustar por separado la opacidad de las tarjetas de calendario.
 
 **How to apply:** Cambios al tema global no deben reemplazar el fondo de Historial estado de ánimo ni alterar el negro translúcido de sus calendarios.
+
+Los incrementos porcentuales de brillo de Índigo 2 se aplican una sola vez como mezcla con blanco sobre la paleta vigente, manteniendo la estructura del degradado. No afectan acentos, textos, iconos ni otros temas.
+
+**Why:** Es la convención de brillo del proyecto; el usuario pidió un aumento adicional del 2,5 % solo para Índigo 2, no cambiar el brillo del dispositivo ni activar el modo claro.
+
+**How to apply:** Partir de los colores actuales, no reconstruir una paleta histórica. Actualizar conjuntamente stops y color sólido, sin añadir un overlay que aclare el contenido.

@@ -11,31 +11,17 @@ const compiled = ts.transpileModule(source, {
 const exports = {} as typeof import("../config/scene-themes");
 new Function("exports", compiled)(exports);
 
-test("Índigo 2 keeps its seven vertical stops and desaturation with 2% additional white brightening", () => {
+test("Índigo 2 brightens its current seven stops once by a 2.5% white mix", () => {
   const theme = exports.SCENE_THEMES.indigo2;
-  const original = ["#1C2B59", "#1C2458", "#1D2158", "#221D57", "#221C59", "#2B1C59", "#2E1D60"];
-  const desaturated = original.map((hex) => {
-    const rgb = hex.slice(1).match(/../g)!.map(channel => parseInt(channel, 16));
-    const lightness = (Math.min(...rgb) + Math.max(...rgb)) / 2;
-    // HSL saturation × 0.96 at the same hue/lightness, rounded to 8-bit RGB.
-    return "#" + rgb.map(channel =>
-      Math.round(lightness + (channel - lightness) * 0.96).toString(16).padStart(2, "0"),
-    ).join("").toUpperCase();
-  });
-  const brightened = desaturated.map((hex) =>
+  const previous = ["#21315F", "#21295D", "#22265D", "#27215F", "#27225C", "#31215F", "#342265"];
+  const brightened = previous.map((hex) =>
     "#" + hex.slice(1).match(/../g)!.map(channel =>
-      Math.round(parseInt(channel, 16) * 0.985 + 255 * 0.015)
+      Math.round(parseInt(channel, 16) * 0.975 + 255 * 0.025)
         .toString(16).padStart(2, "0"),
     ).join("").toUpperCase(),
   );
-  const additionallyBrightened = brightened.map((hex) =>
-    "#" + hex.slice(1).match(/../g)!.map(channel =>
-      Math.round(parseInt(channel, 16) * 0.98 + 255 * 0.02)
-        .toString(16).padStart(2, "0"),
-    ).join("").toUpperCase(),
-  );
-  assert.deepEqual(theme.gradient, additionallyBrightened);
-  assert.deepEqual(theme.gradient, ["#24335E", "#242C5D", "#25295D", "#2A255C", "#2A245E", "#33245E", "#362564"]);
+  assert.deepEqual(theme.gradient, brightened);
+  assert.deepEqual(theme.gradient, ["#273663", "#272E61", "#282B61", "#2C2763", "#2C2860", "#362763", "#392869"]);
   assert.deepEqual(theme.gradientLocations, [0, 0.167, 0.333, 0.5, 0.667, 0.833, 1]);
   assert.equal(theme.gradientLocations?.length, theme.gradient.length);
   assert.equal(theme.solid, theme.gradient[0]);
