@@ -328,10 +328,10 @@ test("Perfil aligns weekly circles with the section inset while Tu progreso keep
   }
 });
 
-test("Perfil moves its weekly section and following content down another 15px in normal flow", () => {
+test("Perfil moves streak history and all following content up another 10px in normal flow, preserving section gaps", () => {
   const profileSource = readFileSync(new URL("../components/ProfileScreenBase.tsx", import.meta.url), "utf8");
   assert.doesNotMatch(profileSource, /profileIntentionDescription|Todo gran cambio comienza con el primer paso|Bienvenido a Resonancia/);
-  assert.match(profileSource, /profileProgressSection:\s*\{\s*marginTop: 21,/);
+  assert.match(profileSource, /profileProgressSection:\s*\{\s*marginTop: -4,/);
   assert.match(profileSource, /const PROFILE_SECTION_GAP = 21;/);
   const cardStyle = profileSource.match(/  profileCard: \{([\s\S]*?)\n  \},/)?.[1] ?? "";
   assert.match(cardStyle, /marginBottom: PROFILE_SECTION_GAP/);
@@ -526,7 +526,7 @@ test("settings statistics contain the existing stats and range filter without st
   assert.match(settingsSource, /label: "Personalizar notificaciones"/);
 });
 
-test("Perfil keeps settings accessible in its sticky header and uses the 83-point avatar", () => {
+test("Perfil keeps settings accessible in its sticky header and uses the 75-point avatar", () => {
   const source = readFileSync(new URL("../components/ProfileScreenBase.tsx", import.meta.url), "utf8");
   const headerStart = source.indexOf("<View style={styles.profileStickyHeaderRow}>");
   const header = source.slice(headerStart, source.indexOf("</View>", headerStart));
@@ -544,7 +544,7 @@ test("Perfil keeps settings accessible in its sticky header and uses the 83-poin
     assert.ok(reference, `Descubrir defines ${property}`);
     assert.equal(titleStyle.match(pattern)?.[1], reference, `sticky title matches Descubrir: ${property}`);
   }
-  assert.match(source, /avatarCircle:\s*\{\s*width: 83,\s*height: 83,\s*borderRadius: 41\.5/);
-  assert.match(source, /avatarImage:\s*\{\s*width: 83,\s*height: 83,\s*borderRadius: 41\.5/);
-  assert.match(source, /avatarOuterBorder:\s*\{[\s\S]*?width: 89,\s*height: 89,\s*borderRadius: 44\.5/);
+  assert.match(source, /avatarCircle:\s*\{\s*width: 75,\s*height: 75,\s*borderRadius: 37\.5/);
+  assert.match(source, /avatarImage:\s*\{\s*width: 75,\s*height: 75,\s*borderRadius: 37\.5/);
+  assert.match(source, /avatarOuterBorder:\s*\{[\s\S]*?width: 81,\s*height: 81,\s*borderRadius: 40\.5/);
 });

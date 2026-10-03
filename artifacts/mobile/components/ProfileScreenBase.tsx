@@ -2530,9 +2530,9 @@ const styles = StyleSheet.create({
     position: "absolute",
     top: -3,
     left: -3,
-    width: 89,
-    height: 89,
-    borderRadius: 44.5,
+    width: 81,
+    height: 81,
+    borderRadius: 40.5,
     borderWidth: 3,
     borderColor: "rgba(255,255,255,0.25)",
   },
@@ -2548,16 +2548,16 @@ const styles = StyleSheet.create({
     justifyContent: "center",
   },
   avatarCircle: {
-    width: 83,
-    height: 83,
-    borderRadius: 41.5,
+    width: 75,
+    height: 75,
+    borderRadius: 37.5,
     alignItems: "center",
     justifyContent: "center",
   },
   avatarImage: {
-    width: 83,
-    height: 83,
-    borderRadius: 41.5,
+    width: 75,
+    height: 75,
+    borderRadius: 37.5,
   },
   userName: { fontFamily: "Manrope", fontSize: 24, fontWeight: "700", textAlign: "left", marginTop: 0 },
   profileNameRow: { width: "100%", flexDirection: "row", alignItems: "center", gap: 12, paddingRight: 46 },
@@ -2603,9 +2603,9 @@ const styles = StyleSheet.create({
   planMejorar: { flexDirection: "row", alignItems: "center", gap: 2 },
   planMejorarText: { fontFamily: "Manrope", fontSize: 14, fontWeight: "700" },
 
-  // Progreso semanal compacto
+  // Ajustar el margen en el flujo desplaza también todas las secciones posteriores.
   profileProgressSection: {
-    marginTop: 21,
+    marginTop: -4,
     marginBottom: PROFILE_SECTION_GAP,
   },
   practiceReminderSection: {

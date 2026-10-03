@@ -61,9 +61,10 @@ test("Premium members keep the compact identity layout while free users recover 
   const card = style("ProfileScreenBase", "profileCard", { PROFILE_CARD_BOTTOM_PADDING: bottom, PROFILE_SECTION_GAP: 21 });
   const preview = style("ProfileScreenBase", "profileIdentityPreviewCard");
   const progress = style("ProfileScreenBase", "profileProgressSection", { PROFILE_SECTION_GAP: 21 });
-  assert.equal(progress.marginTop, 6 + 15);
+  assert.equal(progress.marginTop, 21 - 15 - 10);
   assert.equal(progress.transform, undefined);
-  assert.equal(card.paddingBottom + preview.marginBottom + progress.marginTop, 25 + 6 + 15);
+  assert.equal(progress.marginBottom, 21);
+  assert.equal(card.paddingBottom + preview.marginBottom + progress.marginTop, 25 + 21 - 15 - 10);
   const border = style("ProfileScreenBase", "avatarOuterBorder");
   const avatar = style("ProfileScreenBase", "avatarWrapper");
   const image = style("ProfileScreenBase", "avatarImage");
@@ -93,7 +94,7 @@ test("username keeps 24 points and the new description leaves avatar and Premium
   assert.equal(style("ProfileScreenBase", "profileDescription").alignSelf, "stretch");
   assert.equal(style("ProfileScreenBase", "profileDescription").marginRight, 50);
   assert.equal(style("ProfileScreenBase", "profileDescription").paddingRight, undefined);
-  assert.equal(style("ProfileScreenBase", "avatarImage").width, 83);
+  assert.equal(style("ProfileScreenBase", "avatarImage").width, 75);
   assert.equal(style("ProfileScreenBase", "profileIdentityPreviewCard").marginBottom, 5);
 });
 
@@ -102,8 +103,8 @@ test("the avatar block moves down 10px in normal flow, carrying subsequent secti
   assert.equal(card.marginTop, -2 + 10);
   assert.equal(card.transform, undefined);
   const avatar = style("ProfileScreenBase", "avatarImage");
-  assert.equal(avatar.width, 93 - 10);
-  assert.equal(avatar.height, 93 - 10);
+  assert.equal(avatar.width, 83 - 8);
+  assert.equal(avatar.height, 83 - 8);
   assert.equal(style("ProfileScreenBase", "profileIdentityPreviewCard").marginBottom, 5);
 });
 

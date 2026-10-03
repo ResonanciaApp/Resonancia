@@ -9,9 +9,9 @@ Todas las secciones de Perfil deben tener 18 px desde el borde superior hasta el
 
 **How to apply:** Auditar también el centrado, los tamaños mínimos, las transformaciones y los paddings de hijos: pueden sumar espacio aunque la tarjeta tenga el padding correcto. Incluir estados vacíos y con contenido. En componentes compartidos, usar una opción exclusiva de Perfil para no modificar otras pantallas.
 
-Los desplazamientos verticales solicitados en Perfil, tanto del bloque de avatar y usuario como de la sección semanal de racha, deben desplazar también todo el contenido posterior, conservando las separaciones entre secciones.
+Los desplazamientos verticales solicitados en Perfil, tanto del bloque de avatar y usuario como del historial de rachas, deben desplazar también todo el contenido posterior, conservando las separaciones entre secciones.
 
-**Why:** El usuario aclaró «hacia abajo y empuja todo» para el avatar y repitió «empuja todo» para los siete días de racha; no quería desplazamientos visuales aislados.
+**Why:** El usuario aclaró «hacia abajo y empuja todo» para el avatar y repitió «empuja todo» para los siete días de racha; no quería desplazamientos visuales aislados. Después de ocultar los siete días, pidió subir el historial de rachas y «arrastra todas», confirmando que la regla también aplica hacia arriba.
 
 **How to apply:** Ajustar su posición en el flujo normal, no mediante una transformación que deje las secciones siguientes en el mismo lugar.
 
