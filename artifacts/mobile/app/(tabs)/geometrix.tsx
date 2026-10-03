@@ -4208,7 +4208,7 @@ export default function GeometrixScreen() {
                 <Pressable
                   key={c.id}
                   onPress={() => setActiveCategory(c.id)}
-                  style={[styles.catChip, isIndigoThemeId(sceneTheme.id) ? styles.catChipIndigo : null, on ? styles.catChipOn : null]}
+                  style={[styles.catChip, isIndigoThemeId(sceneTheme.id) ? styles.catChipIndigo : null, on ? styles.catChipOn : { backgroundColor: "rgba(0,0,0,0.16)" }]}
                   accessibilityRole="button"
                   accessibilityState={{ selected: on }}
                   accessibilityLabel={`Filtrar geometrías: ${c.label}`}

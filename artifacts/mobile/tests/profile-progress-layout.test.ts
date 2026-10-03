@@ -583,12 +583,25 @@ test("settings statistics contain the existing stats and range filter without st
   assert.match(html, /DÍAS ACTIVOS/);
   assert.match(html, /Últimos 30 días/);
   assert.doesNotMatch(html, /RACHA|Historial de rachas|seven-week-days|data-testid="calendar"/);
+  const panelContent = render({
+    showPersonalStats: true, showPersonalStatsTitle: false,
+    showStreakSection: false, showCalendar: false, personalStatsFilterBelowTitle: true,
+  });
+  assert.doesNotMatch(panelContent, /Mis estadísticas/);
+  assert.match(panelContent, /MINUTOS TOTALES/);
+  assert.match(panelContent, /DÍAS ACTIVOS/);
+  assert.match(panelContent, /Últimos 30 días/);
   const settingsSource = readFileSync(new URL("../components/ProfileSettingsSections.tsx", import.meta.url), "utf8");
-  const statisticsIndex = settingsSource.indexOf('testID="settings-personal-statistics"');
+  const statisticsIndex = settingsSource.indexOf('label: "Mis estadísticas"');
   assert.ok(statisticsIndex > 0);
-  assert.match(settingsSource.slice(statisticsIndex), /Estadísticas personales/);
-  assert.ok(statisticsIndex < settingsSource.indexOf("{visibleSections.map"));
-  assert.match(settingsSource.slice(statisticsIndex), /showStreakSection=\{false\}/);
+  assert.ok(statisticsIndex < settingsSource.indexOf('label: "Personalizar notificaciones"'));
+  assert.match(settingsSource, /onPress: \(\) => setStatisticsOpen\(true\)/);
+  assert.doesNotMatch(settingsSource, /settings-personal-statistics|<ProgressMirrorSections/);
+  const panelSource = readFileSync(new URL("../components/SettingsStatisticsPanel.tsx", import.meta.url), "utf8");
+  assert.match(panelSource, /showStreakSection=\{false\}/);
+  assert.match(panelSource, /showCalendar=\{false\}/);
+  assert.match(panelSource, /personalStatsFilterBelowTitle/);
+  assert.match(panelSource, /showPersonalStatsTitle=\{false\}/);
   assert.match(settingsSource, /label: "Personalizar notificaciones"/);
 });
 

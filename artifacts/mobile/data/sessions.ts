@@ -340,23 +340,6 @@ export const SESSIONS: Session[] = [
     isNew: true,
   },
   {
-    id: "29",
-    title: "Prueba Maestra 1",
-    subtitle: "Cuencos Tibetanos",
-    categoryId: "sonidos-ancestrales",
-    categoryLabel: "Sonoterapia",
-    duration: 20,
-    durationLabel: "20 min",
-    description: "Esta es una prueba maestra.",
-    benefits: ["Relajación profunda", "Calma interior", "Vibración ancestral", "Presencia plena"],
-    instruments: ["Cuencos Tibetanos"],
-    image: require("@/assets/images/sessions/ancestral-instrumentos.jpg"),
-    ancestralTag: "Cuencos Tibetanos" as const,
-    themeTag: ["Para la ansiedad"] as const,
-    sleepTag: "Sonidos Binaurales" as const,
-    isNew: true,
-  },
-  {
     id: "31",
     isPremium: true,
     title: "Selva Enteógena",
@@ -1229,6 +1212,8 @@ for (let index = SESSIONS.length - 1; index >= 0; index -= 1) {
 // snapshots para distinguirlo de las sesiones que se agregan dinámicamente
 // desde el servidor y poder retirar estas últimas cuando dejan de publicarse.
 const BUNDLED_SESSION_IDS = new Set(SESSIONS.map((session) => session.id));
+// Permanently removed test content must not return from a cached snapshot.
+const RETIRED_SESSION_IDS = new Set(["29"]);
 
 export function getSessionsByCategory(categoryId: string): Session[] {
   return SESSIONS.filter((s) => s.categoryId === categoryId);
@@ -1606,7 +1591,9 @@ function resolveObjectPath(path: string | null | undefined): string | undefined 
  */
 export function applyCatalogSnapshot(remote: CatalogSessionSnapshot[]): void {
   // Keep retired editorial content out of both cached and fresh snapshots.
-  const byId = new Map(remote.filter((s) => s.categoryId !== "reflexiones").map((s) => [s.id, s]));
+  const byId = new Map(remote.filter((s) =>
+    s.categoryId !== "reflexiones" && !RETIRED_SESSION_IDS.has(s.id)
+  ).map((s) => [s.id, s]));
   const normalizeGuideIds = (guideIds: string[] | null | undefined, guideId: string | null | undefined): string[] => {
     const candidates = guideIds?.length ? guideIds : guideId ? [guideId] : [];
     return Array.from(new Set(candidates.map((id) => id.trim()).filter(Boolean))).slice(0, 4);

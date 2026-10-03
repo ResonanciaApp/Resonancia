@@ -564,7 +564,7 @@ function RutinaCalendarioScreenContent() {
           <View
             style={[
               styles.emptyState,
-              { backgroundColor: routineTheme.surface, borderColor: routineTheme.divider },
+              { backgroundColor: "rgba(0,0,0,0.16)", borderColor: routineTheme.divider },
             ]}
           >
             <Feather

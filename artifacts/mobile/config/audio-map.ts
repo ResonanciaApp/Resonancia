@@ -22,7 +22,6 @@ const BUNDLED_AUDIO_MAP: Record<BundledAudioSessionId, ReturnType<typeof require
   "21": require("@/assets/audio/rio_orilla_mar.wav"),
   "22": require("@/assets/audio/rio_orilla_mar.wav"),
   "28": require("@/assets/audio/sesion_cuencos_mix.mp3"),
-  "29": require("@/assets/audio/prueba1.mp3"),
   "30": require("@/assets/audio/prueba1.mp3"),
   "test-ambiental-01": require("@/assets/audio/rio_orilla_mar.wav"),
   "test-ambiental-02": require("@/assets/audio/pajaros_ambiente.mp3"),
@@ -45,7 +44,6 @@ export const LOOP_SESSIONS = new Set(["20", "21", "22"]);
  */
 export const VOICE_MAP: Record<string, ReturnType<typeof require> | undefined> = {
   "28": require("@/assets/audio/meditacion_voz_profunda.mp3"),
-  "29": require("@/assets/audio/voz.mp3"),
 };
 
 /**

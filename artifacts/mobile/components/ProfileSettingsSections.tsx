@@ -13,8 +13,8 @@ import {
 } from "react-native";
 
 import { MilestoneCards } from "@/components/MilestoneCards";
-import { ProgressMirrorSections } from "@/components/ProgressMirrorSections";
-import { DEFAULT_THEME_ID, SCENE_THEMES, isIndigoThemeId, isIndigo2ThemeId, isVisualThemeId, type ThemeSceneId } from "@/config/scene-themes";
+import { SettingsStatisticsPanel } from "@/components/SettingsStatisticsPanel";
+import { isIndigoThemeId, isIndigo2ThemeId, type ThemeSceneId } from "@/config/scene-themes";
 import { VisualThemeSwatches } from "@/components/VisualThemeSwatches";
 import { MEMBERSHIP_AURORA } from "@/constants/colors";
 import { useBrightness } from "@/context/BrightnessContext";
@@ -65,14 +65,14 @@ export function ProfileSettingsSections({
   onLogout,
 }: ProfileSettingsSectionsProps) {
   const [milestonesOpen, setMilestonesOpen] = useState(false);
+  const [statisticsOpen, setStatisticsOpen] = useState(false);
   const { openGeometrix } = useGeometrixPanel();
   const { isPremium: isPremiumDev, setPremium: setPremiumDev } = usePremium();
   const { primary } = useColors();
-  const { brightMode, setBrightMode } = useBrightness();
+  const { brightMode } = useBrightness();
   const { activeSceneId, setActiveScene } = useSceneTheme();
   const isIndigo = isIndigoThemeId(sceneId);
   const isIndigo2 = isIndigo2ThemeId(sceneId);
-  const selectedThemeLabel = SCENE_THEMES[isVisualThemeId(sceneId) ? sceneId : DEFAULT_THEME_ID].label;
   const themeAccent = isIndigo2 ? accent : isIndigo ? "#AAAAC4" : accent;
   const dividerColor = isIndigo
     ? "rgba(170,170,196,0.14)"
@@ -94,6 +94,11 @@ export function ProfileSettingsSections({
       title: "Preferencias",
       hideTitle: true,
       rows: [
+        ...(placement === "settings" ? [{
+          icon: "bar-chart-2" as const,
+          label: "Mis estadísticas",
+          onPress: () => setStatisticsOpen(true),
+        }] : []),
         {
           icon: "sliders",
           label: "Personalizar notificaciones",
@@ -112,14 +117,6 @@ export function ProfileSettingsSections({
           icon: "layers",
           label: "Escenas",
           themePicker: true,
-        },
-        {
-          icon: brightMode ? "sun" : "moon",
-          label: "Luz / Noche",
-          description: `${brightMode ? "Luz · 3,5 % más brillo" : "Noche · tonos originales"} · ${selectedThemeLabel}`,
-          toggle: true,
-          toggleValue: brightMode,
-          onToggle: setBrightMode,
         },
         { icon: "flag", label: "Hitos", value: milestonesOpen ? "Ocultar" : undefined, onPress: toggleMilestones },
         { icon: "help-circle", label: "Ayuda y Soporte", onPress: () => router.push("/ayuda" as never) },
@@ -205,24 +202,6 @@ export function ProfileSettingsSections({
           </View>
         </View>
       )}
-      {placement === "settings" && (
-        <View testID="settings-personal-statistics" style={[styles.section, styles.compactSection]}>
-          <Text style={[styles.sectionTitle, { color: foreground }]}>
-            Estadísticas personales
-          </Text>
-          <ProgressMirrorSections
-            showPersonalStats
-            showStreakSection={false}
-            showCalendar={false}
-            showSectionBorders={false}
-            personalStatsFilterBelowTitle
-            sectionBackgroundColor={cardBackground}
-            sectionHorizontalPadding={20}
-            sectionVerticalPadding={16}
-            sectionMarginBottom={0}
-          />
-        </View>
-      )}
       {visibleSections.map((section, index) => (
         <View key={section.title} style={[styles.section, index < visibleSections.length - 1 && styles.compactSection]}>
           {!section.hideTitle && (
@@ -247,15 +226,14 @@ export function ProfileSettingsSections({
                       <View style={styles.iconBox}>
                         <Feather name={row.icon} size={20} color="#F9F9F9" />
                       </View>
-                      <Text style={[styles.rowLabel, { color: foreground }]}>{row.label}</Text>
+                      <Text style={[styles.rowLabel, styles.rowCopy, { color: foreground }]}>{row.label}</Text>
+                      <VisualThemeSwatches
+                        activeId={activeSceneId}
+                        onSelect={setActiveScene}
+                        accent={themeAccent}
+                        brightMode={brightMode}
+                      />
                     </View>
-                    <VisualThemeSwatches
-                      activeId={activeSceneId}
-                      onSelect={setActiveScene}
-                      foreground={foreground}
-                      accent={themeAccent}
-                      brightMode={brightMode}
-                    />
                   </View>
                 );
               }
@@ -314,6 +292,9 @@ export function ProfileSettingsSections({
 
       {placement === "settings" && (
         <>
+          {statisticsOpen && (
+            <SettingsStatisticsPanel onClose={() => setStatisticsOpen(false)} />
+          )}
           <Pressable
             onPress={() => openGeometrix()}
             accessibilityRole="button"

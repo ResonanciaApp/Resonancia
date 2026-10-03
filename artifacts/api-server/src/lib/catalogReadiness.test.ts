@@ -13,6 +13,11 @@ const session = {
 };
 
 describe("getCatalogReadiness", () => {
+  it("rechaza el bundle retirado de Prueba Maestra 1", () => {
+    expect(getCatalogReadiness({ ...session, id: "29" }, [
+      { role: "main", url: null, assetKey: "bundle:29" },
+    ]).ready).toBe(false);
+  });
   it("acepta una sesión final con pista principal remota", () => {
     expect(
       getCatalogReadiness(session, [

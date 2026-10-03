@@ -532,37 +532,6 @@ export const SEED_SESSIONS: InsertCatalogSession[] = [
     "descansoTags": ["Sonidos para dormir"]
   },
   {
-    "id": "29",
-    "title": "Prueba Maestra 1",
-    "subtitle": "Cuencos Tibetanos",
-    "categoryId": "sonidos-ancestrales",
-    "categoryLabel": "Sonoterapia",
-    "duration": 20,
-    "durationLabel": "20 min",
-    "description": "Esta es una prueba maestra.",
-    "benefits": [
-      "Relajación profunda",
-      "Calma interior",
-      "Vibración ancestral",
-      "Presencia plena"
-    ],
-    "instruments": [
-      "Cuencos Tibetanos"
-    ],
-    "imageKey": "ancestral-instrumentos.jpg",
-    "isFeatured": false,
-    "isNew": true,
-    "isPremium": false,
-    "status": "published",
-    "sortOrder": 18,
-    "ancestralTag": "Cuencos Tibetanos",
-    "themeTag": [
-      "Para la ansiedad"
-    ],
-    "sleepTag": "Sonidos Binaurales",
-    "descansoTags": ["Música para dormir"]
-  },
-  {
     "id": "31",
     "title": "Selva Enteógena",
     "subtitle": "Música Enteógena",
@@ -816,22 +785,6 @@ export const SEED_AUDIO_FILES: InsertCatalogAudioFile[] = [
     "role": "voice",
     "assetKey": "meditacion_voz_profunda.mp3",
     "name": "meditacion_voz_profunda.mp3",
-    "contentType": "audio/mpeg",
-    "isLoop": false
-  },
-  {
-    "sessionId": "29",
-    "role": "main",
-    "assetKey": "prueba1.mp3",
-    "name": "prueba1.mp3",
-    "contentType": "audio/mpeg",
-    "isLoop": false
-  },
-  {
-    "sessionId": "29",
-    "role": "voice",
-    "assetKey": "voz.mp3",
-    "name": "voz.mp3",
     "contentType": "audio/mpeg",
     "isLoop": false
   },

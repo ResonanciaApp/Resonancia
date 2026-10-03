@@ -124,7 +124,7 @@ test("Cloudy themes retain exact base stops in Noche and the existing single 3.5
   }
 });
 
-test("Four accessible swatches select distinct IDs and preview each theme rather than reusing Indigo's colors", () => {
+test("Settings offers only Indigo 2 and Cloudy as accessible 38px circles inline on the right, with border-only selection", () => {
   const exported: any = {};
   new Function("exports", "require", compile(read("../components/VisualThemeSwatches.tsx")))(
     exported,
@@ -139,25 +139,45 @@ test("Four accessible swatches select distinct IDs and preview each theme rather
     },
   );
   const selected: string[] = [];
+  const available = ["indigo2", "cloudy"];
   for (const activeId of themes.VISUAL_THEME_IDS) {
     const root = exported.VisualThemeSwatches({
       activeId, onSelect: (id: string) => selected.push(id), foreground: "#fff", accent: "#eee", brightMode: false,
     });
     assert.equal(root.props.accessibilityRole, "radiogroup");
     const buttons = root.props.children;
-    assert.equal(buttons.length, 4);
-    assert.equal(buttons.filter((button: any) => button.props.accessibilityState.checked).length, 1);
+    assert.equal(buttons.length, 2);
+    assert.equal(root.props.style.flexDirection, "row");
+    assert.equal(root.props.style.alignItems, "center");
+    assert.equal(root.props.style.paddingHorizontal, undefined);
+    assert.equal(root.props.style.paddingBottom, undefined);
+    assert.equal(buttons.filter((button: any) => button.props.accessibilityState.checked).length, available.includes(activeId) ? 1 : 0);
     buttons.forEach((button: any, index: number) => {
       assert.equal(button.props.accessibilityRole, "radio");
-      assert.equal(button.props.accessibilityState.checked, themes.VISUAL_THEME_IDS[index] === activeId);
-      assert.deepEqual(button.props.children[0].props.colors, themes.SCENE_THEMES[themes.VISUAL_THEME_IDS[index]].gradient);
+      assert.equal(button.props.accessibilityState.checked, available[index] === activeId);
+      const style = Object.assign({}, ...button.props.style({ pressed: false }));
+      assert.equal(style.width, 38);
+      assert.equal(style.height, 38);
+      assert.equal(style.borderRadius, 19);
+      assert.equal(style.borderColor, available[index] === activeId ? "#eee" : "rgba(255,255,255,0.16)");
+      assert.equal(style.backgroundColor, undefined);
+      assert.equal(button.props.hitSlop, 5);
+      assert.equal(button.props.accessibilityLabel, index === 0 ? "Índigo 2" : "Cloudy");
+      const swatch = React.Children.toArray(button.props.children)[0] as React.ReactElement<any>;
+      assert.deepEqual(swatch.props.colors, themes.SCENE_THEMES[available[index]].gradient);
+      assert.equal(React.Children.count(swatch.props.children), 0, "Selection has no checkmark or additional background");
+      assert.equal(React.Children.count(button.props.children), 1, "No label or other element outside the circle");
       button.props.onPress();
     });
   }
-  assert.deepEqual(selected, Array.from({ length: 4 }, () => [...themes.VISUAL_THEME_IDS]).flat());
+  assert.deepEqual(selected, Array.from({ length: 4 }, () => available).flat());
   const settings = read("../components/ProfileSettingsSections.tsx");
   assert.match(settings, /label: "Escenas",\s+themePicker: true/);
   assert.match(settings, /onSelect=\{setActiveScene\}/);
+  assert.match(settings, /<Text style=\{\[styles.rowLabel, styles.rowCopy, \{ color: foreground \}\]\}>\{row.label\}<\/Text>\s+<VisualThemeSwatches[\s\S]*?\/>\s+<\/View>/);
+  assert.doesNotMatch(settings, /Luz \/ Noche|setBrightMode/);
+  assert.ok(settings.indexOf('label: "Escenas"') > settings.indexOf('label: "Registro diario estado de ánimo"'));
+  assert.ok(settings.indexOf('label: "Escenas"') < settings.indexOf('label: "Hitos"'));
   for (const path of ["../app/configuraciones.tsx", "../components/ProfileScreenBase.tsx"]) {
     assert.match(read(path), /<ProfileSettingsSections/);
   }

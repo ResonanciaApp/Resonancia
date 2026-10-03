@@ -9,7 +9,6 @@ export const BUNDLED_AUDIO_SESSION_IDS = [
   "21",
   "22",
   "28",
-  "29",
   "30",
   "test-ambiental-01",
   "test-ambiental-02",

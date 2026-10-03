@@ -5,7 +5,6 @@ import type { CatalogAudioFile, CatalogSession } from "@workspace/db";
 const SERVER_BUNDLED_AUDIO_SESSION_IDS = new Set([
   "1",
   "28",
-  "29",
   "30",
 ]);
 

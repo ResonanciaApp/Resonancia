@@ -24,6 +24,7 @@ const CONTENT_ENTRANCE_DURATION_MS = 1200;
 export function ProgressMirrorSections({
   showSectionBorders = true,
   showPersonalStats = true,
+  showPersonalStatsTitle = true,
   showStreakSection = true,
   sectionBackgroundColor = SECTION_BACKGROUND,
   mergeStatsAndStreak = false,
@@ -72,6 +73,7 @@ export function ProgressMirrorSections({
 }: {
   showSectionBorders?: boolean;
   showPersonalStats?: boolean;
+  showPersonalStatsTitle?: boolean;
   showStreakSection?: boolean;
   sectionBackgroundColor?: string;
   mergeStatsAndStreak?: boolean;
@@ -263,9 +265,11 @@ export function ProgressMirrorSections({
           styles.personalStatsHeader,
           (personalStatsFilterBelowTitle || mergeStatsAndStreak) && styles.personalStatsHeaderStacked,
         ]}>
-          <Text style={[styles.personalStatsTitle, { color: colors.foreground }]}>
-            Mis estadísticas
-          </Text>
+          {showPersonalStatsTitle && (
+            <Text style={[styles.personalStatsTitle, { color: colors.foreground }]}>
+              Mis estadísticas
+            </Text>
+          )}
           {filterControl}
         </View>
       </ContentEntrance>

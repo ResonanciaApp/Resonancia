@@ -1035,18 +1035,18 @@ const styles = StyleSheet.create({
     borderRadius: 27,
     gap: 12,
     overflow: "hidden",
-    backgroundColor: "rgba(181,211,255,0.057)",
+    backgroundColor: "rgba(0,0,0,0.16)",
     borderWidth: 1,
     borderColor: "rgba(255,255,255,0.1)",
   },
   discoverPillTibet: {
-    backgroundColor: "rgba(0,0,0,0.15)",
+    backgroundColor: "rgba(0,0,0,0.16)",
   },
   discoverPillIndigo: {
-    backgroundColor: "rgba(181,211,255,0.057)",
+    backgroundColor: "rgba(0,0,0,0.16)",
   },
   discoverPillIndigo2: {
-    backgroundColor: "rgba(191,207,255,0.096)",
+    backgroundColor: "rgba(0,0,0,0.16)",
     borderColor: "rgba(255,255,255,0.04)",
   },
   discoverPillText: {

@@ -31,7 +31,8 @@ new Function("require", "module", "exports", ts.transpileModule(source, {
 
 test("creativity points show the exact title, zero-of-100 bar and question mark without functional controls", () => {
   const html = renderToStaticMarkup(React.createElement(module.exports.CreativityPointsSection, { style: { marginBottom: 21 } }));
-  assert.match(html, /Puntos creatividad expansiva/);
+  assert.match(html, /Puntos creatividad/);
+  assert.doesNotMatch(html, /creatividad expansiva/);
   assert.match(html, />0<\/div>\/100/);
   assert.match(html, />\?<\/div>/);
   const bar = captured.get("creativity-points-bar");

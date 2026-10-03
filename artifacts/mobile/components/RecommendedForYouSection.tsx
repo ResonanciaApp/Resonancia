@@ -21,7 +21,6 @@ import {
 } from "@/data/sessions";
 import type { Mood } from "@/data/moods";
 import { useSceneTheme } from "@/context/SceneThemeContext";
-import { isIndigo2ThemeId, isIndigoThemeId } from "@/config/scene-themes";
 import { useColors } from "@/hooks/useColors";
 import { usePremium } from "@/context/PremiumContext";
 
@@ -51,7 +50,7 @@ export function RecommendedForYouSection({
   onPress,
   marginBottom = 0,
 }: Props) {
-  const { activeSceneId, theme } = useSceneTheme();
+  const { theme } = useSceneTheme();
   const colors = useColors();
   const { isPremium } = usePremium();
   const [activeTabId, setActiveTabId] = useState<RecommendationTabId>(
@@ -148,13 +147,7 @@ export function RecommendedForYouSection({
 
   if (!hasRecommendations) return null;
 
-  const tabBackground = activeSceneId === "tibet"
-    ? "rgba(0,0,0,0.1)"
-    : isIndigo2ThemeId(activeSceneId)
-      ? "rgba(191,207,255,0.1)"
-      : isIndigoThemeId(activeSceneId)
-        ? "rgba(181,211,255,0.1)"
-        : "rgba(181,211,255,0.1)";
+  const tabBackground = "rgba(0,0,0,0.16)";
   return (
     <View
       style={[styles.root, { marginBottom }]}

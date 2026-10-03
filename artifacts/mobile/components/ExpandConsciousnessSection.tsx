@@ -166,7 +166,7 @@ const styles = StyleSheet.create({
     borderRadius: 22,
     borderWidth: 1,
     borderColor: "rgba(249,249,249,0.42)",
-    backgroundColor: "transparent",
+    backgroundColor: "rgba(0,0,0,0.16)",
   },
   tabSelected: {
     borderColor: "#78221E",

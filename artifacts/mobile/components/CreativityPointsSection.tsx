@@ -11,13 +11,13 @@ export function CreativityPointsSection({ style }: { style?: StyleProp<ViewStyle
     <View testID="profile-creativity-points" style={[styles.card, style]}>
       <View style={styles.header}>
         <Text style={[styles.title, { color: colors.foreground }]}>
-          Puntos creatividad expansiva
+          Puntos creatividad
         </Text>
         <View
           testID="creativity-points-info"
           accessible
           accessibilityRole="image"
-          accessibilityLabel="Información sobre puntos de creatividad expansiva, próximamente"
+          accessibilityLabel="Información sobre puntos creatividad, próximamente"
           style={styles.info}
         >
           <Text style={styles.question}>?</Text>
@@ -27,7 +27,7 @@ export function CreativityPointsSection({ style }: { style?: StyleProp<ViewStyle
         <View
           testID="creativity-points-bar"
           accessibilityRole="progressbar"
-          accessibilityLabel="Puntos creatividad expansiva"
+          accessibilityLabel="Puntos creatividad"
           accessibilityValue={{ min: 0, max: 100, now: 0, text: "0 de 100 puntos" }}
           style={styles.track}
         >

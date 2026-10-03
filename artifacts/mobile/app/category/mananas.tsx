@@ -430,7 +430,7 @@ export default function MananasScreen() {
                   key={tab}
                   onLayout={(e) => onTabLayout(idx, e)}
                   onPress={() => selectTab(tab, idx)}
-                  style={styles.tabItem}
+                  style={[styles.tabItem, tab !== activeTab && { backgroundColor: "rgba(0,0,0,0.16)" }]}
                 >
                   <Text style={[
                     styles.tabLabel,

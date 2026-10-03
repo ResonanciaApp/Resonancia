@@ -47,7 +47,7 @@
 - [Category overlay stack](category-overlay-stack.md) — pantallas con tab bar visible abren vía openCategory (pila de overlays bajo la barra), nunca router.push; useCategoryOverlayOptional en componentes compartidos
 - [Dormir multi-tag](descanso-4tabs-restructure.md) — supercategoría dinámica con 8 tags canónicos; sesiones multi-tag salen en varios carruseles pero se deduplican en la cola
 - [Buscador de Inicio como Descubrir](inicio-inline-search.md) — Inicio 3 usa barra completa y el mismo ContextSearchModal de Descubrir, con recientes, populares y filtros de duración
-- [Temas visuales](scene-visual-theme.md) — Universo/Índigo 2/Cloudy/Cloudy 2 por swatches; familia Índigo 2 comparte estilos; Luz aclara fondos al 3,5 %; audio independiente
+- [Temas visuales](scene-visual-theme.md) — Escenas: Índigo 2/Cloudy en círculos 38 × 38 a la derecha del título; selección solo por borde; sin Luz/Noche; audio independiente
 - [Sticky header divider per-tab scroll](sticky-header-divider-per-tab-scroll.md) — divisor scroll-triggered debe cablearse a onScroll compartido en TODOS los ScrollView bajo el header, no solo la pestaña default
 - [Header divider full-bleed](header-border-full-bleed.md) — divider inside a padded header must be normal-flow + negative marginHorizontal, not absolute inside a padded child, to reach screen edge
 - [Action sheet theme hierarchy](action-sheet-theme-hierarchy.md) — Biblioteca: acciones con tercer stop; menú + y Agrega Resonador con último; otras superficies conservan su regla
@@ -86,6 +86,7 @@
 - [Bajas remotas del catálogo](catalog-remote-deletions.md) — un cache móvil viejo puede resucitar sesiones DB-only; snapshots frescos deben podar entradas remotas ausentes
 - [Rendimiento del drag de Mi Rutina](routine-drag-performance.md) — animar cambios de slot una sola vez, memoizar filas/gestos y limpiar estados transitorios al perder foco
 - [Sticky headers Índigo](indigo-sticky-headers.md) — navegación y Perfil comparten vidrio puro; tabs y barra inferior respetan las superficies de Índigo 2
+- [Tabs no seleccionados](inactive-tab-background.md) — negro al 16 % en todos los temas; conservar seleccionados y no variar el fondo al hacer scroll
 - [Animated drivers no se mezclan por View](animated-driver-view-mixing.md) — separar en capas los estilos JS (color) y native (transform), aunque usen Animated.Value distintos
 - [Carruseles anidados en Dormir](nested-carousel-clipping.md) — no usar clipping ni virtualización vertical; igualar Sonidos y evitar PanResponder/toggles de fondo durante scroll
 - [Drizzle y aritmética timestamptz](drizzle-timestamptz-arithmetic.md) — parámetros Date en SQL crudo pueden tiparse como interval; castear ISO explícitamente a timestamptz antes de restar intervalos
@@ -99,6 +100,7 @@
 - [Drawer único de Inicio](single-home-drawer.md) — el drawer ya no tiene modo legado; toda apertura usa la estructura de Inicio 3 y debe limpiar el desplazamiento residual del gesto
 - [Parallax del header de Inicio 3](inicio3-header-parallax.md) — avatar, acciones y fila semanal conservan desplazamiento lento conjunto; optimizar renders sin quitar ni alterar este efecto
 - [Historial de rachas](progress-profile-mirror.md) — Perfil y Tu progreso comparten cuatro cifras; actual semanal 0–7 y completadas Lun–Dom; Inicio conserva la racha consecutiva
+- [Mis estadísticas en Ajustes](settings-statistics-window.md) — menú encima de notificaciones; ventana lateral con filtro, minutos totales y días activos, sin rachas ni calendario
 - [Dos controles Añadir actividad](routine-add-controls.md) — el bloque inferior de Mi rutina y la píldora del estado Rutina completa tienen diseños deliberadamente distintos
 - [Aviso único al añadir rutina](routine-addition-banner-once.md) — la transición desde calendario lleva el ID creado y lo reconoce globalmente; Inicio no debe volver a mostrar “Actividad añadida”
 - [Etiquetas editoriales por categoría](category-specific-editorial-tags.md) — no mezclar themeTag históricos: categorías nuevas usan prefijo interno; Admin codifica y Mobile decodifica

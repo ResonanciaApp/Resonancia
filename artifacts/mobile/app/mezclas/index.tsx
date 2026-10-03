@@ -253,7 +253,7 @@ const styles = StyleSheet.create({
     paddingHorizontal: 16,
     paddingVertical: 8,
     alignItems: "center",
-    backgroundColor: "transparent",
+    backgroundColor: "rgba(0,0,0,0.16)",
   },
   tabBlockSel: {
     borderColor: "transparent",

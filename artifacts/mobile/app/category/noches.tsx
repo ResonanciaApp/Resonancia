@@ -256,7 +256,7 @@ export default function NochesScreen() {
   const isIndigoTheme = isIndigoThemeId(theme.id) || isIndigo2ThemeId(theme.id);
   const indigo2ChipBackgroundColor = indigo2ChipsSurfaceAnim.interpolate({
     inputRange: [0, 1],
-    outputRange: ["rgba(191,207,255,0.096)", "rgba(191,207,255,0.096)"],
+    outputRange: ["rgba(0,0,0,0.16)", "rgba(0,0,0,0.16)"],
   });
   useEffect(() => {
     Animated.timing(stickyHeaderOpacity, {
@@ -590,10 +590,10 @@ const styles = StyleSheet.create({
   chipRowWrapper: { position: "relative" },
   chipRow: { flexGrow: 0 },
   chipRowContent: { flexDirection: "row", gap: 8, paddingVertical: 2, paddingHorizontal: H_PAD },
-  chip: { height: 31, paddingHorizontal: 14, borderRadius: 999, overflow: "hidden", alignItems: "center", justifyContent: "center", backgroundColor: "rgba(0,0,0,0.21)", borderWidth: 1.2, borderColor: "rgba(241,224,255,0.25)" },
-  chipTibet: { backgroundColor: "rgba(0,0,0,0.21)" },
-  chipIndigo: { backgroundColor: "rgba(0,0,0,0.21)" },
-  chipIndigo2Inactive: { backgroundColor: "rgba(0,0,0,0.21)", borderColor: "rgba(241,224,255,0.25)" },
+  chip: { height: 31, paddingHorizontal: 14, borderRadius: 999, overflow: "hidden", alignItems: "center", justifyContent: "center", backgroundColor: "rgba(0,0,0,0.16)", borderWidth: 1.2, borderColor: "rgba(241,224,255,0.25)" },
+  chipTibet: { backgroundColor: "rgba(0,0,0,0.16)" },
+  chipIndigo: { backgroundColor: "rgba(0,0,0,0.16)" },
+  chipIndigo2Inactive: { backgroundColor: "rgba(0,0,0,0.16)", borderColor: "rgba(241,224,255,0.25)" },
   chipSel: { backgroundColor: "#F9F9F9", borderWidth: 0 },
   chipText: { fontFamily: "Manrope", fontSize: 11, fontWeight: "700", color: TEXT, textAlign: "center" },
   chipTextSel: { fontFamily: "Manrope", color: "#060A0F", fontWeight: "600" },

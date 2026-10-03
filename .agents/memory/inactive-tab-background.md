@@ -1,0 +1,10 @@
+---
+name: Fondo de tabs no seleccionados
+description: Regla visual común para tabs de contenido y filtros en todos los temas.
+---
+
+Todos los tabs de contenido no seleccionados usan negro al 16 % (`rgba(0,0,0,0.16)`) en todos los temas. Esta regla incluye categorías principales, pantallas internas y filtros equivalentes de otras superficies.
+
+**Why:** El usuario pidió unificar todos los tabs no seleccionados al 16 % para todos los temas, no solo Cloudy. Sustituye las reglas anteriores de fondos coloreados, transparentes o con distinta opacidad.
+
+**How to apply:** Preservar los diseños de los tabs seleccionados, textos, iconos y bordes. No volver a variar el fondo de un tab inactivo según el tema o el scroll del sticky header. La barra inferior de navegación es una superficie distinta; esta regla no autoriza cambiar su diseño.
