@@ -216,13 +216,9 @@ function PreviewContentEntrance({
   );
 }
 
-const REWARD_AVATARS: number[] = [
-  require("../assets/images/growth/reward-avatar-moon.png"),
-  require("../assets/images/growth/reward-avatar-lotus.png"),
-  require("../assets/images/growth/reward-avatar-temple.png"),
-];
+const REWARD_AVATAR = require("../assets/images/growth/reward-avatar-lotus.png");
 
-function RewardAvatar({ module, first }: { module: number; first: boolean }) {
+function RewardAvatar({ module }: { module: number }) {
   const [localUri, setLocalUri] = useState(() => growthImageUris.get(module) ?? null);
   useEffect(() => {
     if (Platform.OS === "web") return;
@@ -234,7 +230,7 @@ function RewardAvatar({ module, first }: { module: number; first: boolean }) {
   }, [module]);
   const source = Platform.OS === "web" ? module : localUri ? { uri: localUri } : null;
   return (
-    <View style={[styles.rewardAvatar, !first && styles.rewardAvatarOverlap]}>
+    <View style={styles.rewardAvatar}>
       {source && (
         <Image
           source={source}
@@ -331,9 +327,7 @@ function GrowthRow({
           />
           <Text style={styles.rewardText}>Desbloquea 50 avatares nuevos</Text>
           <View style={[styles.rewardAvatars, status === "locked" && styles.lockedArt]} importantForAccessibility="no">
-            {REWARD_AVATARS.map((m, i) => (
-              <RewardAvatar key={i} module={m} first={i === 0} />
-            ))}
+            <RewardAvatar module={REWARD_AVATAR} />
           </View>
         </View>
       )}
@@ -520,6 +514,7 @@ const styles = StyleSheet.create({
   rewardCopy: { flex: 0, height: GROWTH_ROW_HEIGHT - 26 },
   reward: {
     marginLeft: 25,
+    marginRight: 30,
     minHeight: 50,
     borderRadius: 12,
     paddingVertical: 8,
@@ -542,7 +537,6 @@ const styles = StyleSheet.create({
     borderColor: "rgba(214,176,92,0.75)",
     backgroundColor: "rgba(0,0,0,0.3)",
   },
-  rewardAvatarOverlap: { marginLeft: -10 },
   name: { fontFamily: "Manrope", fontSize: 15, fontWeight: "700", lineHeight: 20, marginBottom: 6 },
   dayPill: {
     alignSelf: "flex-start",

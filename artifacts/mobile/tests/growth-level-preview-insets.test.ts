@@ -117,7 +117,7 @@ const render = (props: Record<string, unknown> = {}) => renderToStaticMarkup(
   React.createElement(componentModule.exports.GrowthLevelPreviewCard, { onPress: () => {}, ...props }),
 );
 
-test("Semilla displays a filled lock and three AI avatars in a disabled horizontal pill", () => {
+test("Semilla displays a filled lock and one lotus avatar in a disabled horizontal pill", () => {
   const semilla = {
     id: "semilla", name: "Semilla", startDay: 1, endDay: 7,
     image: 1, story: "Tu primer paso abre un espacio para crecer.",
@@ -179,8 +179,9 @@ test("Crecimiento, Vegetación and Expansión share Semilla's small filled lock 
     assert.doesNotMatch(html, /Regalitos sorpresa|Desbloquea tu cofre de regalos|data-accessibility-role="button"/);
     const banner = html.slice(html.indexOf(`data-testid="${id}-reward"`));
     assert.match(banner, /data-opacity="0.44"/);
-    for (const image of [4, 5, 6]) assert.match(banner, new RegExp(`data-source="${image}"`));
-    assert.equal((banner.match(/data-height="32" data-width="32" data-border-radius="16" data-border-width="1.5" data-border-color="rgba\(214,176,92,0.75\)"/g) ?? []).length, 3);
+    assert.match(banner, /data-source="5"/);
+    assert.doesNotMatch(banner, /data-source="[46]"/);
+    assert.equal((banner.match(/data-height="32" data-width="32" data-border-radius="16" data-border-width="1.5" data-border-color="rgba\(214,176,92,0.75\)"/g) ?? []).length, 1);
     assert.doesNotMatch(banner, /data-opacity="0.55"/);
   }
 });
@@ -192,6 +193,7 @@ test("reward pills grow in normal flow and preserve nonreward and profile previe
   const pill = source.match(/reward: \{([\s\S]*?)\n  \},/)?.[1] ?? "";
   assert.doesNotMatch(pill, /position: "absolute"|height:/);
   assert.match(pill, /marginLeft: 25/);
+  assert.match(pill, /marginRight: 30/);
   assert.match(pill, /backgroundColor: "rgba\(0,0,0,0.22\)"/);
   assert.doesNotMatch(pill, /borderWidth|borderColor/);
   assert.match(pill, /minHeight: 50/);
