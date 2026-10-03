@@ -163,21 +163,24 @@ test("Perfil separates week-only progress from the titled streak history", () =>
   assert.ok(html.indexOf('data-testid="calendar"') > html.indexOf("Mis estadísticas"));
 });
 
-test("Perfil hides the seven-day section and its whole background, preserving history, Intención and calendar", () => {
+test("Perfil shows the seven-day section without its background, preserving history, Intención and calendar", () => {
   const profile = readFileSync(new URL("../components/ProfileScreenBase.tsx", import.meta.url), "utf8");
   const usage = profile.match(/<ProgressMirrorSections[\s\S]*?canonicalVerticalInsets/)?.[0] ?? "";
-  assert.match(usage, /showStreakWeek=\{false\}/);
+  assert.match(usage, /showStreakWeek\s/);
+  assert.match(usage, /weeklySectionBackgroundColor="transparent"/);
   assert.match(usage, /separateStreakHistory/);
   const html = render({
     separateStreakHistory: true,
-    showStreakWeek: false,
+    showStreakWeek: true,
     showPersonalStats: false,
     showCalendar: true,
-    weeklySectionBackgroundColor: "rgba(0,0,0,0.16)",
+    weeklySectionBackgroundColor: "transparent",
     longestStreakLabel: "RACHA ACUMULADA",
     afterStreakHistory: React.createElement("div", { "data-testid": "profile-growth-intention" }, "Intención"),
   });
-  assert.doesNotMatch(html, /profile-weekly-progress|seven-week-days/);
+  assert.match(html, /seven-week-days/);
+  const weekly = html.match(/<div[^>]*data-testid="profile-weekly-progress"[^>]*>/)?.[0] ?? "";
+  assert.match(weekly, /data-background="transparent"/);
   for (const content of ["profile-streak-history", "RACHA ACTUAL", "RACHA ACUMULADA", "RACHA MÁS LARGA", "RACHAS COMPLETADAS", "profile-growth-intention", 'data-testid="calendar"']) {
     assert.ok(html.includes(content), `Missing preserved content: ${content}`);
   }
@@ -350,15 +353,15 @@ test("Perfil moves streak history and all following content down 6px in normal f
   assert.doesNotMatch(profileSource, /testID="profile-identity-email"/);
 });
 
-test("Perfil shows seven days with their original background, without a title, and preserves weekly/history/calendar gaps", () => {
+test("Perfil shows seven days without a background or title and preserves weekly/history/calendar gaps", () => {
   const source = readFileSync(new URL("../components/ProfileScreenBase.tsx", import.meta.url), "utf8");
   assert.doesNotMatch(source, /weeklySectionTitle="Esta semana"/);
-  assert.match(source, /weeklySectionBackgroundColor="rgba\(0,0,0,0.16\)"/);
+  assert.match(source, /weeklySectionBackgroundColor="transparent"/);
   assert.doesNotMatch(source, /streakMarginBottom=\{PROFILE_SECTION_GAP - 12\}/);
   assert.match(source, /sectionMarginBottom=\{PROFILE_SECTION_GAP\}/);
   const html = render({
     separateStreakHistory: true,
-    weeklySectionBackgroundColor: "rgba(0,0,0,0.22)",
+    weeklySectionBackgroundColor: "transparent",
     sectionBackgroundColor: "rgba(0,0,0,0.22)",
     sectionMarginBottom: 21,
     showPersonalStats: false,
@@ -366,7 +369,7 @@ test("Perfil shows seven days with their original background, without a title, a
   });
   const weekly = html.match(/<div[^>]*data-testid="profile-weekly-progress"[^>]*>/)?.[0] ?? "";
   const history = html.match(/<div[^>]*data-testid="profile-streak-history"[^>]*>/)?.[0] ?? "";
-  assert.match(weekly, /data-background="rgba\(0,0,0,0.22\)"/);
+  assert.match(weekly, /data-background="transparent"/);
   assert.match(history, /data-background="rgba\(0,0,0,0.22\)"/);
   assert.match(weekly, /data-margin-bottom="21"/);
   assert.match(history, /data-margin-bottom="21"/);

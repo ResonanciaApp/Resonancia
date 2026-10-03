@@ -1433,7 +1433,7 @@ export function ProfileScreenBase({
               <ProgressMirrorSections
                 showSectionBorders={false}
                 showPersonalStats={false}
-                showStreakWeek={false}
+                showStreakWeek
                 showCalendar
                 showCalendarCompletedCount
                 separateStreakHistory
@@ -1441,7 +1441,7 @@ export function ProfileScreenBase({
                 showStreakHistoryTitle={false}
                 showStreakHistoryInfo={false}
                 onStreakHistoryPress={() => setStreakInfoOpen(true)}
-                weeklySectionBackgroundColor="rgba(0,0,0,0.16)"
+                weeklySectionBackgroundColor="transparent"
                 weeklySectionHorizontalPadding={20}
                 streakHistoryTopPadding={18}
                 streakHistoryDividerOffsetY={0}
