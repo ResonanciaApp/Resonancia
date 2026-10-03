@@ -5,6 +5,14 @@ import { Image, Platform, Pressable, StyleSheet, Text, View } from "react-native
 
 import { MEMBERSHIP_AURORA, POSITIONED_DAY_GRADIENT } from "@/constants/colors";
 import { CinematicFadeSlide } from "@/components/CinematicFadeSlide";
+import { DiscoverSearchBorder } from "@/components/DiscoverSearchBorder";
+import {
+  REFLECTION_WALL_BORDER_GRADIENT,
+  REFLECTION_WALL_BORDER_START,
+  REFLECTION_WALL_BORDER_END,
+  REFLECTION_WALL_BORDER_BRIGHTNESS,
+} from "@/constants/reflectionWallBorder";
+import { REFLECTION_STORY_COVER_PRESETS } from "@/data/default-reflection-story-covers";
 import { ascentLevels, growthLevels, type GrowthLevel } from "@/data/growthLevels";
 import { useColors } from "@/hooks/useColors";
 
@@ -217,8 +225,10 @@ function PreviewContentEntrance({
 }
 
 const REWARD_AVATAR = require("../assets/images/growth/reward-avatar-lotus.png");
+const WALL_REWARD_COVERS = REFLECTION_STORY_COVER_PRESETS.slice(0, 3);
+const WALL_REWARD_TEXT = "Comparte sin sello de agua en Mi muro expansivo";
 
-function RewardAvatar({ module, levelId }: { module: number; levelId: string }) {
+function RewardArtwork({ module }: { module: number }) {
   const [localUri, setLocalUri] = useState(() => growthImageUris.get(module) ?? null);
   useEffect(() => {
     if (Platform.OS === "web") return;
@@ -229,19 +239,23 @@ function RewardAvatar({ module, levelId }: { module: number; levelId: string }) 
     return () => { mounted = false; };
   }, [module]);
   const source = Platform.OS === "web" ? module : localUri ? { uri: localUri } : null;
+  return source ? (
+    <Image
+      source={source}
+      resizeMode="cover"
+      style={styles.levelImage}
+      accessibilityElementsHidden
+      importantForAccessibility="no"
+      onError={(event) => console.warn(`[GrowthJourney] No se pudo mostrar el avatar de recompensa: ${event.nativeEvent.error}`)}
+    />
+  ) : null;
+}
+
+function RewardAvatar({ module, levelId }: { module: number; levelId: string }) {
   return (
     <View testID={`${levelId}-reward-avatar`} style={styles.rewardAvatarFrame}>
       <View style={styles.rewardAvatar}>
-      {source && (
-        <Image
-          source={source}
-          resizeMode="cover"
-          style={styles.levelImage}
-          accessibilityElementsHidden
-          importantForAccessibility="no"
-          onError={(event) => console.warn(`[GrowthJourney] No se pudo mostrar el avatar de recompensa: ${event.nativeEvent.error}`)}
-        />
-      )}
+      <RewardArtwork module={module} />
       <View testID={`${levelId}-reward-overlay`} pointerEvents="none" style={styles.rewardAvatarOverlay} />
       </View>
         <MaterialCommunityIcons
@@ -253,6 +267,48 @@ function RewardAvatar({ module, levelId }: { module: number; levelId: string }) 
           accessibilityElementsHidden
           importantForAccessibility="no"
         />
+    </View>
+  );
+}
+
+function WallRewardIcon() {
+  return (
+    <View testID="expansion-wall-reward-icon" style={styles.wallRewardIcon}>
+      <Feather name="plus" size={11} color={GROWTH_COLORS.muted} style={styles.wallRewardPlus} />
+      {WALL_REWARD_COVERS.map((cover, index) => {
+        const size = [21, 27, 35][index];
+        return (
+          <View
+            key={cover.id}
+            testID={`expansion-wall-reward-cover-${index}`}
+            style={[styles.wallRewardCover, { width: size, height: size, borderRadius: size / 2, left: 11 + index * 9, top: (35 - size) / 2 }]}
+          >
+            <View style={[styles.wallRewardImageClip, { borderRadius: size / 2 }]}>
+              <RewardArtwork module={cover.source} />
+              <View pointerEvents="none" style={styles.rewardAvatarOverlay} />
+            </View>
+            {index === 2 && (
+              <DiscoverSearchBorder
+                borderRadius={size / 2}
+                borderWidth={2}
+                brightness={REFLECTION_WALL_BORDER_BRIGHTNESS}
+                colors={REFLECTION_WALL_BORDER_GRADIENT}
+                start={REFLECTION_WALL_BORDER_START}
+                end={REFLECTION_WALL_BORDER_END}
+              />
+            )}
+          </View>
+        );
+      })}
+      <MaterialCommunityIcons
+        testID="expansion-wall-reward-lock"
+        name="lock"
+        size={13}
+        color={GROWTH_COLORS.muted}
+        style={styles.rewardLock}
+        accessibilityElementsHidden
+        importantForAccessibility="no"
+      />
     </View>
   );
 }
@@ -277,7 +333,7 @@ function GrowthRow({
     <View
       style={[styles.row, reward && styles.rewardRow]}
       accessible
-      accessibilityLabel={`${level.name}, ${dayLabel} de práctica, ${status === "current" ? "etapa actual" : "por desbloquear"}. ${level.story}${REWARD_LEVEL_IDS.has(level.id) ? " Desbloquea 50 avatares nuevos, por desbloquear." : ""}`}
+      accessibilityLabel={`${level.name}, ${dayLabel} de práctica, ${status === "current" ? "etapa actual" : "por desbloquear"}. ${level.story}${REWARD_LEVEL_IDS.has(level.id) ? " Desbloquea 50 avatares nuevos, por desbloquear." : ""}${level.id === "expansion" ? ` ${WALL_REWARD_TEXT}, por desbloquear.` : ""}`}
     >
       {hasNext && (
         <View style={[styles.lineBase, reward && styles.rewardLine]} pointerEvents="none" />
@@ -333,13 +389,28 @@ function GrowthRow({
           <RewardAvatar module={REWARD_AVATAR} levelId={level.id} />
           <Text
             style={[styles.rewardText, { color: status === "locked" ? GROWTH_COLORS.muted : colors.mutedForeground }]}
-            numberOfLines={2}
-            adjustsFontSizeToFit
+            numberOfLines={level.id === "expansion" ? undefined : 2}
+            adjustsFontSizeToFit={level.id !== "expansion"}
             minimumFontScale={0.75}
             ellipsizeMode="tail"
           >
             {"Desbloquea 50\navatares nuevos"}
           </Text>
+          </View>
+        </View>
+      )}
+      {level.id === "expansion" && (
+        <View
+          testID="expansion-wall-reward"
+          style={[styles.reward, styles.wallReward, status === "locked" && styles.lockedCopy]}
+          pointerEvents="none"
+          accessibilityState={{ disabled: true }}
+        >
+          <View style={styles.rewardContent}>
+            <WallRewardIcon />
+            <Text style={[styles.rewardText, { color: status === "locked" ? GROWTH_COLORS.muted : colors.mutedForeground }]}>
+              {WALL_REWARD_TEXT}
+            </Text>
           </View>
         </View>
       )}
@@ -535,6 +606,11 @@ const styles = StyleSheet.create({
     justifyContent: "flex-start",
   },
   rewardContent: { flexDirection: "row", alignItems: "center", maxWidth: "100%", flexShrink: 1, paddingLeft: 3, gap: 6 },
+  wallReward: { marginTop: 0 },
+  wallRewardIcon: { width: 64, height: 35, flexShrink: 0, position: "relative" },
+  wallRewardPlus: { position: "absolute", left: 0, top: 12 },
+  wallRewardCover: { position: "absolute" },
+  wallRewardImageClip: { width: "100%", height: "100%", overflow: "hidden" },
   rewardLock: { position: "absolute", left: -3, top: -3, width: 13, height: 13 },
   rewardText: { flexShrink: 1, minWidth: 0, fontFamily: "Manrope", fontSize: 11, lineHeight: 16 },
   rewardAvatarOverlay: {

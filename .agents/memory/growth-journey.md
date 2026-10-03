@@ -56,3 +56,9 @@ Semilla, Crecimiento, Vegetación y Expansión muestran «Desbloquea 50 avatares
 **Why:** El usuario eligió mantener solo el loto, eliminar el fondo y limitar el banner al ancho de la descripción. Reiteró que todo debe estar apagado fuera de la etapa actual. Tras probar la píldora y su centrado, pidió quitarla, devolver el conjunto a la izquierda y alinear el candado con la descripción.
 
 **How to apply:** Mantener los cuatro avisos desactivados hasta que se pida implementar recompensas; no añadir avisos a los demás niveles. Atenuar todo el aviso de una etapa no actual, incluidos texto, imagen, candado y borde; ningún adorno debe quedar brillante. Aplicar la atenuación una sola vez para no oscurecer doblemente la imagen. El overlay negro pertenece al círculo, no a la fila. No restaurar la píldora ni centrar el conjunto; respetar la alineación izquierda del candado con la descripción.
+
+Expansión añade un segundo logro debajo del aviso de avatares: «Comparte sin sello de agua en Mi muro expansivo». Su icono reúne la +, tres fondos del muro en círculos de tamaño creciente y un candado como el del loto; el último círculo lleva borde de 2 px con el mismo degradado de Mi muro expansivo. En esta etapa debe verse toda la frase de avatares, aunque requiera más de dos líneas.
+
+**Why:** El usuario pidió este logro específicamente para Expansión y señaló que se cortaba la frase junto al loto. El borde debe corresponder a la sección real del muro, no a un color dorado genérico.
+
+**How to apply:** Mantenerlo como aviso visual apagado, sin activar todavía la recompensa ni cambiar la exportación de historias. No repetirlo en otras etapas. Permitir que ambas frases crezcan sin recorte y que la fila aumente de alto en el flujo normal.

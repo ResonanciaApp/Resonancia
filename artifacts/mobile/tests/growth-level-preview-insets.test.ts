@@ -71,6 +71,11 @@ const compiled = ts.transpileModule(
   readFileSync(new URL("../components/GrowthJourney.tsx", import.meta.url), "utf8"),
   { compilerOptions: { module: ts.ModuleKind.CommonJS, jsx: ts.JsxEmit.React, esModuleInterop: true } },
 ).outputText;
+const wallBorderConstants: Record<string, unknown> = {};
+new Function("exports", ts.transpileModule(
+  readFileSync(new URL("../constants/reflectionWallBorder.ts", import.meta.url), "utf8"),
+  { compilerOptions: { module: ts.ModuleKind.CommonJS } },
+).outputText)(wallBorderConstants);
 const mocks: Record<string, unknown> = {
   "../assets/images/growth/00-intencion-profile-square.png": 2,
   "../assets/images/growth/semilla-reward-chest.png": 3,
@@ -96,6 +101,22 @@ const mocks: Record<string, unknown> = {
   "@/components/CinematicFadeSlide": {
     CinematicFadeSlide: ({ children }: { children?: React.ReactNode }) =>
       React.createElement(React.Fragment, null, children),
+  },
+  "@/constants/reflectionWallBorder": wallBorderConstants,
+  "@/data/default-reflection-story-covers": {
+    REFLECTION_STORY_COVER_PRESETS: [7, 8, 9].map((source) => ({ id: `cover-${source}`, source })),
+  },
+  "@/components/DiscoverSearchBorder": {
+    DiscoverSearchBorder: ({ borderWidth, borderRadius, colors, brightness, start, end }: {
+      borderWidth: number; borderRadius: number; colors: string[]; brightness: number; start: unknown; end: unknown;
+    }) => React.createElement("div", {
+      "data-wall-border-width": borderWidth,
+      "data-wall-border-radius": borderRadius,
+      "data-wall-border-colors": JSON.stringify(colors),
+      "data-wall-border-brightness": brightness,
+      "data-wall-border-start": JSON.stringify(start),
+      "data-wall-border-end": JSON.stringify(end),
+    }),
   },
   "@/data/growthLevels": {
     ascentLevels: [],
@@ -186,7 +207,8 @@ test("Crecimiento, Vegetación and Expansión share Semilla's small filled lock 
     const banner = html.slice(html.indexOf(`data-testid="${id}-reward"`));
     assert.ok(banner.indexOf(`data-testid="${id}-reward-avatar"`) < banner.indexOf(`data-testid="${id}-reward-lock"`));
     assert.ok(banner.indexOf(`data-testid="${id}-reward-lock"`) < banner.indexOf(">Desbloquea 50\navatares nuevos"));
-    assert.match(banner, /data-lines="2" data-auto-size="true"/);
+    if (id !== "expansion") assert.match(banner, /data-lines="2" data-auto-size="true"/);
+    else assert.doesNotMatch(banner, /data-lines=/);
     assert.match(banner, /data-background="rgba\(0,0,0,0.22\)"/);
     assert.match(banner, /data-opacity="0.55"/);
     assert.match(banner, /data-source="5"/);
@@ -203,11 +225,45 @@ test("all reward visuals are dimmed together only outside the current stage, wit
         level: { id, name: id, startDay: 1, endDay: 7, image: 1, story: "Descripción." },
         hasNext: false, status, florecimiento: true,
       }));
-      const banner = html.slice(html.indexOf(`data-testid="${id}-reward"`));
+      const banner = html.slice(html.indexOf(`data-testid="${id}-reward"`)).split('data-testid="expansion-wall-reward"')[0];
       assert.equal((banner.match(/data-opacity="0.55"/g) ?? []).length, status === "locked" ? 1 : 0);
       const avatar = banner.slice(banner.indexOf(`data-testid="${id}-reward-avatar"`));
       assert.doesNotMatch(avatar, /data-opacity=/);
     }
+  }
+});
+
+test("Expansion shows the full avatar phrase and a separate locked wall achievement with plus and three covers", () => {
+  const source = readFileSync(new URL("../components/GrowthJourney.tsx", import.meta.url), "utf8");
+  assert.match(source, /numberOfLines=\{level.id === "expansion" \? undefined : 2\}/);
+  for (const id of ["semilla", "crecimiento", "vegetacion", "expansion"]) {
+    const html = renderToStaticMarkup(React.createElement(GrowthRow, {
+      level: { id, name: id, startDay: 50, endDay: 56, image: 1, story: "Descripción." },
+      hasNext: false, status: "locked",
+    }));
+    if (id !== "expansion") {
+      assert.doesNotMatch(html, /expansion-wall-reward|Comparte sin sello/);
+      continue;
+    }
+    assert.match(html, /Desbloquea 50\navatares nuevos/);
+    assert.ok(html.indexOf(">Desbloquea 50\navatares nuevos") < html.indexOf('data-testid="expansion-wall-reward"'));
+    const wall = html.slice(html.indexOf('data-testid="expansion-wall-reward"'));
+    assert.match(wall, /data-opacity="0.55"/);
+    assert.match(wall, /data-pointer-events="none" data-disabled="true"/);
+    assert.match(wall, /data-testid="expansion-wall-reward-lock" data-icon="lock"/);
+    assert.match(wall, /data-icon="plus"/);
+    assert.match(wall, />Comparte sin sello de agua en Mi muro expansivo</);
+    for (const module of [7, 8, 9]) assert.match(wall, new RegExp(`data-source="${module}"`));
+    for (const [index, size] of [[0, 21], [1, 27], [2, 35]]) {
+      assert.match(wall, new RegExp(`data-testid="expansion-wall-reward-cover-${index}"[^>]*data-height="${size}" data-width="${size}"`));
+    }
+    assert.equal((wall.match(/data-wall-border-width="2"/g) ?? []).length, 1);
+    assert.ok(wall.indexOf('data-testid="expansion-wall-reward-cover-2"') < wall.indexOf('data-wall-border-width="2"'));
+    assert.match(wall, /data-wall-border-radius="17.5"/);
+    const palette = JSON.stringify(wallBorderConstants.REFLECTION_WALL_BORDER_GRADIENT).replaceAll('"', "&quot;");
+    assert.ok(wall.includes(`data-wall-border-colors="${palette}"`));
+    assert.match(wall, /data-wall-border-brightness="1.008315"/);
+    assert.doesNotMatch(wall, /data-lines=/);
   }
 });
 
