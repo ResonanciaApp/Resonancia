@@ -3,7 +3,13 @@ name: Progreso visible en Perfil
 description: Orden actual del progreso en Perfil y su relación con Tu progreso.
 ---
 
-Perfil conserva la semana, el historial completo de cuatro cifras, Intención, el calendario y el historial de sesiones. Tu progreso muestra el mensaje de práctica encima de «Esta semana» y del contador, seguido de los siete días, sin sesiones completadas, divisores, historial de rachas ni tarjeta de Intención. Los tratamientos de ambas superficies son independientes.
+La sección de los siete días de Perfil está oculta junto con su fondo y el espacio que ocupaba. Historial de rachas, Intención y calendario permanecen visibles.
+
+**Why:** El usuario pidió esconder específicamente los siete días y su fondo en Perfil, no borrar las rachas ni cambiar otras pantallas.
+
+**How to apply:** Mantener esta decisión exclusiva de Perfil; conservar la fila semanal en Inicio y donde corresponda en Tu progreso. Ocultar solo el contenido dejando una tarjeta vacía no cumple la petición.
+
+Perfil conserva el historial completo de cuatro cifras, Intención, el calendario y el historial de sesiones. Tu progreso muestra el mensaje de práctica encima de «Esta semana» y del contador, seguido de los siete días, sin sesiones completadas, divisores, historial de rachas ni tarjeta de Intención. Los tratamientos de ambas superficies son independientes.
 
 **Why:** El usuario retiró la sección de sesiones completadas y su divisor, pero después devolvió únicamente el mensaje a su ubicación anterior por encima del contador. Esa corrección no revierte los otros cambios; Perfil conserva sus accesos personales.
 

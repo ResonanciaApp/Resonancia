@@ -596,7 +596,7 @@ export function ProgressMirrorSections({
         </SectionEntrance>
       ) : (
         <>
-          {showStreakSection && <SectionEntrance
+          {showStreakSection && (!separateStreakHistory || showStreakWeek) && <SectionEntrance
             animated={animateEntrance}
             replayKey={`${entranceReplayKey}:streak`}
             delay={entranceBaseDelay}

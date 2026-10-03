@@ -162,6 +162,27 @@ test("Perfil separates week-only progress from the titled streak history", () =>
   assert.ok(html.indexOf('data-testid="calendar"') > html.indexOf("Mis estadísticas"));
 });
 
+test("Perfil hides the seven-day section and its whole background, preserving history, Intención and calendar", () => {
+  const profile = readFileSync(new URL("../components/ProfileScreenBase.tsx", import.meta.url), "utf8");
+  const usage = profile.match(/<ProgressMirrorSections[\s\S]*?canonicalVerticalInsets/)?.[0] ?? "";
+  assert.match(usage, /showStreakWeek=\{false\}/);
+  assert.match(usage, /separateStreakHistory/);
+  const html = render({
+    separateStreakHistory: true,
+    showStreakWeek: false,
+    showPersonalStats: false,
+    showCalendar: true,
+    weeklySectionBackgroundColor: "rgba(0,0,0,0.16)",
+    longestStreakLabel: "RACHA ACUMULADA",
+    afterStreakHistory: React.createElement("div", { "data-testid": "profile-growth-intention" }, "Intención"),
+  });
+  assert.doesNotMatch(html, /profile-weekly-progress|seven-week-days/);
+  for (const content of ["profile-streak-history", "RACHA ACTUAL", "RACHA ACUMULADA", "RACHA MÁS LARGA", "RACHAS COMPLETADAS", "profile-growth-intention", 'data-testid="calendar"']) {
+    assert.ok(html.includes(content), `Missing preserved content: ${content}`);
+  }
+  assert.doesNotMatch(html, /Mis estadísticas/);
+});
+
 test("longest streak uses two white mountains while accumulated streak keeps its gold lotus", () => {
   const html = render({
     separateStreakHistory: true,
