@@ -81,7 +81,9 @@ test("the restored banner keeps its visual details and opens the real mixer pane
   assert.match(html, /data-icon="chevron-right"/);
   assert.equal(pressProps.accessibilityRole, "button");
   const idle = flatten(pressProps.style({ pressed: false }));
-  assert.equal(idle.backgroundColor, "rgba(0,0,0,0.16)");
+   assert.equal(idle.backgroundColor, "rgba(0,0,0,0.28)");
+   const resonadoresSource = source("components/ResonadoresBanner.tsx");
+   assert.ok(resonadoresSource.includes(`backgroundColor: "${idle.backgroundColor}"`));
   assert.equal(idle.minHeight, 110);
   assert.equal(idle.borderRadius, 16);
   assert.equal(flatten(pressProps.style({ pressed: true })).opacity, 0.82);

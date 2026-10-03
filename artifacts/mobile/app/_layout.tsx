@@ -1,4 +1,5 @@
 import "@/lib/fix-http-assets";
+import "@/lib/configure-scroll";
 import { Asset } from "expo-asset";
 import * as Font from "expo-font";
 import { useFonts } from "expo-font";

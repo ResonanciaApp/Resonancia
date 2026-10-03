@@ -54,3 +54,8 @@ export function useSceneTheme() {
   if (!ctx) throw new Error("useSceneTheme must be inside SceneThemeProvider");
   return ctx;
 }
+
+/** Safe for themed primitives rendered above the provider (e.g. error UI). */
+export function useSceneThemeOptional() {
+  return useContext(SceneThemeContext);
+}
