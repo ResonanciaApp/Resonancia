@@ -53,12 +53,12 @@ export function DrawerSceneCards({ activeId, onSelect }: Props) {
             >
               <View style={styles.iconWrap} pointerEvents="none">
                 {s.id === "indigo2" ? (
-                  <MoonCrescentIcon size={23} color={selected ? s.iconColor : "#BFBFBF"} />
+                  <MoonCrescentIcon size={23} color={selected ? s.iconColor : "#A8A8A8"} />
                 ) : (
-                  <MaterialCommunityIcons name="white-balance-sunny" size={23} color={selected ? s.iconColor : "#BFBFBF"} />
+                  <MaterialCommunityIcons name="white-balance-sunny" size={23} color={selected ? s.iconColor : "#A8A8A8"} />
                 )}
               </View>
-              <Text style={[styles.label, { color: selected ? "#FFFFFF" : "#BFBFBF" }]} numberOfLines={1}>{s.title}</Text>
+              <Text style={[styles.label, { color: selected ? "#FFFFFF" : "#A8A8A8" }]} numberOfLines={1}>{s.title}</Text>
             </Pressable>
           );
         })}
