@@ -1,10 +1,10 @@
 import React from "react";
-import { StyleSheet, Text, View, type StyleProp, type ViewStyle } from "react-native";
+import { Pressable, StyleSheet, Text, View, type StyleProp, type ViewStyle } from "react-native";
 
 import { useColors } from "@/hooks/useColors";
 
-/** Visual placeholder only: no scoring, persistence, dragging or help action yet. */
-export function CreativityPointsSection({ style }: { style?: StyleProp<ViewStyle> }) {
+/** Informational only: scoring and persistence are not enabled. */
+export function CreativityPointsSection({ style, onInfoPress }: { style?: StyleProp<ViewStyle>; onInfoPress: () => void }) {
   const colors = useColors();
 
   return (
@@ -13,15 +13,17 @@ export function CreativityPointsSection({ style }: { style?: StyleProp<ViewStyle
         <Text style={[styles.title, { color: colors.foreground }]}>
           Puntos creatividad
         </Text>
-        <View
+        <Pressable
           testID="creativity-points-info"
           accessible
-          accessibilityRole="image"
-          accessibilityLabel="Información sobre puntos creatividad, próximamente"
+          accessibilityRole="button"
+          accessibilityLabel="Información sobre puntos creatividad"
+          onPress={onInfoPress}
+          hitSlop={10}
           style={styles.info}
         >
           <Text style={styles.question}>?</Text>
-        </View>
+        </Pressable>
       </View>
       <View style={styles.progressRow}>
         <View

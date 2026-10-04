@@ -33,11 +33,11 @@ Intención precede al calendario en Perfil; puntos de creatividad expansiva cons
 
 **How to apply:** Conservar las separaciones entre rachas, puntos, Intención, calendario y el contenido posterior. No propagar este orden a otras pantallas compartidas.
 
-“Puntos creatividad expansiva” queda debajo de las rachas de Perfil. Por ahora es solo visual: barra en 0/100 y símbolo de ayuda, sin cálculo de puntos ni acciones.
+“Puntos creatividad” queda debajo de las rachas de Perfil. La barra sigue siendo solo visual, en 0/100; la ayuda sí abre una ventana informativa. Su texto sobre puntuación de atención plena es provisional y no define reglas reales de puntuación.
 
-**Why:** El usuario aportó una referencia de la barra y pidió crear únicamente la sección; dejó su funcionamiento para después.
+**Why:** El usuario dejó el funcionamiento de los puntos para después. Luego pidió activar la ayuda con el título y la descripción de su referencia «por mientras», usando la animación y los fondos del temporizador Ambiental.
 
-**How to apply:** No vincular puntos a sesiones, rachas ni actividad, y no inventar reglas o explicaciones. La funcionalidad requiere una petición posterior; preservar el orden rachas, puntos, Intención, calendario.
+**How to apply:** No vincular puntos a sesiones, rachas ni actividad ni implementar las reglas que menciona el texto provisional. El cálculo requiere una petición posterior. Conservar el texto entregado hasta que el usuario pida reemplazarlo y mantener la ayuda visualmente coherente con el temporizador Ambiental, incluida su excepción de color para Índigo 2.
 
 En Perfil, Intención conserva contenido y acceso a Tu camino, pero su tarjeta debe ser compacta y respetar la misma distancia entre borde y contenido que el historial de rachas.
 

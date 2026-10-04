@@ -72,6 +72,7 @@ import {
 } from "@/components/BibliotecaScreen";
 import { ProgressMirrorSections } from "@/components/ProgressMirrorSections";
 import { CreativityPointsSection } from "@/components/CreativityPointsSection";
+import { CreativityPointsInfoSheet } from "@/components/CreativityPointsInfoSheet";
 import { ProfileSettingsSections } from "@/components/ProfileSettingsSections";
 import { limitProfileDescriptionLines } from "@/lib/profileDescription";
 import { ProfileMembershipBanner } from "@/components/ProfileMembershipBanner";
@@ -257,7 +258,9 @@ export function ProfileScreenBase({
   const colors = useColors();
   const [growthJourneyOpen, setGrowthJourneyOpen] = useState(false);
   const [streakInfoOpen, setStreakInfoOpen] = useState(false);
+  const [creativityInfoOpen, setCreativityInfoOpen] = useState(false);
   useFocusEffect(useCallback(() => () => setStreakInfoOpen(false), []));
+  useFocusEffect(useCallback(() => () => setCreativityInfoOpen(false), []));
   const { isPremium } = usePremium();
   const { openMixer } = useMixerPanel();
   const { theme: activeTheme, activeSceneId } = useSceneTheme();
@@ -1457,7 +1460,7 @@ export function ProfileScreenBase({
                 canonicalVerticalInsets
                 beforeCalendar={
                   <>
-                    <CreativityPointsSection style={{ marginBottom: PROFILE_SECTION_GAP }} />
+                    <CreativityPointsSection style={{ marginBottom: PROFILE_SECTION_GAP }} onInfoPress={() => setCreativityInfoOpen(true)} />
                     <View testID="profile-growth-intention" style={{ marginBottom: PROFILE_SECTION_GAP }}>
                       <GrowthLevelPreviewCard embedded canonicalVerticalInsets titleFontSize={15} backgroundColor="rgba(0,0,0,0.16)" onPress={() => setGrowthJourneyOpen(true)} />
                     </View>
@@ -1942,6 +1945,7 @@ export function ProfileScreenBase({
       {dedicated && (
         <StreakInfoSheet visible={streakInfoOpen} onClose={() => setStreakInfoOpen(false)} />
       )}
+      <CreativityPointsInfoSheet visible={creativityInfoOpen} onClose={() => setCreativityInfoOpen(false)} />
       {SHOW_PROFILE_PRACTICE_CARDS && (
       <>
       <SleepReminderSheet

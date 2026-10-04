@@ -739,7 +739,57 @@ export function ExploreScreen({
             <View style={styles.sectionSpacer} />
           </>
 
+          {editorialDiscoverCarousels.map((carousel) => (
+            <React.Fragment key={carousel.id}>
+              <EditorialPlaylistCarousel
+                title={carousel.title}
+                titleSize={19}
+                playlists={carousel.playlists}
+                showDurationClock
+                showPremiumBadge
+                stackTypeAboveDuration
+                onPress={(playlist) =>
+                  openCategory(`/editorial-playlist/${encodeURIComponent(playlist.id)}`)
+                }
+              />
+              <View style={styles.sectionSpacer} />
+            </React.Fragment>
+          ))}
+
           <ResonadoresBanner onPress={() => router.push("/equipo" as never)} />
+
+          <View style={styles.sectionSpacer} />
+
+          <View style={styles.durationSection}>
+            <Text style={[styles.sectionTitle, { paddingHorizontal: H_PAD }]}>
+              Explora según tu tiempo
+            </Text>
+            <ScrollView
+              horizontal
+              showsHorizontalScrollIndicator={false}
+              contentContainerStyle={styles.durationRow}
+            >
+              {DURATION_SLOTS.map((slot) => (
+                <Pressable
+                  key={slot.label}
+                  onPress={() =>
+                    openCategory(`/busqueda?tiempo=${encodeURIComponent(slot.label)}`)
+                  }
+                  accessibilityRole="button"
+                  accessibilityLabel={slot.displayLabel}
+                  style={({ pressed }) => [
+                    styles.durationCard,
+                    {
+                      backgroundColor: "rgba(0,0,0,0.16)",
+                      opacity: pressed ? 0.72 : 1,
+                    },
+                  ]}
+                >
+                  <Text style={styles.durationCardText}>{slot.displayLabel}</Text>
+                </Pressable>
+              ))}
+            </ScrollView>
+          </View>
 
           <View style={styles.sectionSpacer} />
 
@@ -801,56 +851,6 @@ export function ExploreScreen({
 
           <View style={styles.sectionSpacer} />
 
-          {editorialDiscoverCarousels.map((carousel) => (
-            <React.Fragment key={carousel.id}>
-              <EditorialPlaylistCarousel
-                title={carousel.title}
-                titleSize={19}
-                playlists={carousel.playlists}
-                showDurationClock
-                showPremiumBadge
-                stackTypeAboveDuration
-                onPress={(playlist) =>
-                  openCategory(`/editorial-playlist/${encodeURIComponent(playlist.id)}`)
-                }
-              />
-              <View style={styles.sectionSpacer} />
-            </React.Fragment>
-          ))}
-
-          <View style={styles.durationSection}>
-            <Text style={[styles.sectionTitle, { paddingHorizontal: H_PAD }]}>
-              Explora según tu tiempo
-            </Text>
-            <ScrollView
-              horizontal
-              showsHorizontalScrollIndicator={false}
-              contentContainerStyle={styles.durationRow}
-            >
-              {DURATION_SLOTS.map((slot) => (
-                <Pressable
-                  key={slot.label}
-                  onPress={() =>
-                    openCategory(`/busqueda?tiempo=${encodeURIComponent(slot.label)}`)
-                  }
-                  accessibilityRole="button"
-                  accessibilityLabel={slot.displayLabel}
-                  style={({ pressed }) => [
-                    styles.durationCard,
-                    {
-                      backgroundColor: "rgba(0,0,0,0.16)",
-                      opacity: pressed ? 0.72 : 1,
-                    },
-                  ]}
-                >
-                  <Text style={styles.durationCardText}>{slot.displayLabel}</Text>
-                </Pressable>
-              ))}
-            </ScrollView>
-          </View>
-
-          <View style={styles.sectionSpacer} />
-
           <View style={styles.otherThemesSection}>
             <View style={styles.otherThemesHeader}>
               <Text style={[styles.sectionTitle, { marginBottom: 0 }]}>
@@ -895,10 +895,10 @@ export function ExploreScreen({
                         pointerEvents="none"
                         style={styles.themeGridVioletOverlay}
                       />
-                      <Text style={styles.themeGridLabel} numberOfLines={2}>
-                        {card.label}
-                      </Text>
                     </View>
+                    <Text style={styles.themeGridLabel} numberOfLines={2}>
+                      {card.label}
+                    </Text>
                   </PressScale>
                 );
               })}
@@ -1425,11 +1425,11 @@ const styles = StyleSheet.create({
   themeGrid: {
     flexDirection: "row",
     flexWrap: "wrap",
-    columnGap: 7,
-    rowGap: 9,
+    columnGap: 16,
+    rowGap: 12,
   },
   themeGridCard: {
-    width: (width - H_PAD * 2 - 7) / 2,
+    width: (width - H_PAD * 2 - 16) / 2,
   },
   themeGridImageWrap: {
     width: "100%",
@@ -1440,20 +1440,14 @@ const styles = StyleSheet.create({
     justifyContent: "center",
   },
   themeGridLabel: {
-    position: "absolute",
-    left: 12,
-    right: 12,
+    marginTop: 8,
     fontFamily: "Manrope",
     color: "#FFFFFF",
     fontSize: 14,
     lineHeight: 18,
     fontWeight: "700",
     letterSpacing: 0.2,
-    textAlign: "center",
-    textShadowColor: "rgba(0,0,0,0.5)",
-    textShadowOffset: { width: 0, height: 1 },
-    textShadowRadius: 4,
-    zIndex: 2,
+    textAlign: "left",
   },
   themeGridVioletOverlay: {
     ...StyleSheet.absoluteFillObject,
