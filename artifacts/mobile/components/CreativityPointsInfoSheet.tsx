@@ -23,12 +23,15 @@ export function CreativityPointsInfoSheet({ visible, onClose }: { visible: boole
   const sheetY = useRef(new Animated.Value(maxHeight + 80)).current;
   const backdropOpacity = useRef(new Animated.Value(0)).current;
   const generation = useRef(0);
+  const sheetHeight = useRef(0);
+  const pendingOpening = useRef<(() => void) | null>(null);
 
   useEffect(() => {
     const token = ++generation.current;
     let frame: number | undefined;
     const cleanup = () => {
       generation.current++;
+      pendingOpening.current = null;
       if (frame !== undefined) cancelAnimationFrame(frame);
       sheetY.stopAnimation();
       backdropOpacity.stopAnimation();
@@ -39,13 +42,19 @@ export function CreativityPointsInfoSheet({ visible, onClose }: { visible: boole
       backdropOpacity.stopAnimation();
       sheetY.setValue(maxHeight + 80);
       backdropOpacity.setValue(0);
-      frame = requestAnimationFrame(() => {
-        if (token !== generation.current) return;
-        Animated.parallel([
-          Animated.spring(sheetY, { toValue: 0, ...DURATION_SHEET_OPEN_SPRING, useNativeDriver: true }),
-          Animated.timing(backdropOpacity, { toValue: 0.62, duration: DURATION_SHEET_OPEN_BACKDROP_MS, useNativeDriver: true }),
-        ]).start();
-      });
+      const open = () => {
+        frame = requestAnimationFrame(() => {
+          if (token !== generation.current) return;
+          // Igual que el temporizador: partir justo debajo del panel, no de la pantalla.
+          sheetY.setValue(sheetHeight.current + 80);
+          Animated.parallel([
+            Animated.spring(sheetY, { toValue: 0, ...DURATION_SHEET_OPEN_SPRING, useNativeDriver: true }),
+            Animated.timing(backdropOpacity, { toValue: 0.62, duration: DURATION_SHEET_OPEN_BACKDROP_MS, useNativeDriver: true }),
+          ]).start();
+        });
+      };
+      if (sheetHeight.current > 0) open();
+      else pendingOpening.current = open;
     } else if (rendered) {
       Animated.parallel([
         Animated.timing(sheetY, { toValue: maxHeight + 80, duration: 500, useNativeDriver: true }),
@@ -73,6 +82,14 @@ export function CreativityPointsInfoSheet({ visible, onClose }: { visible: boole
         </Pressable>
         <Animated.View
           testID="creativity-info-sheet"
+          onLayout={(event) => {
+            sheetHeight.current = event.nativeEvent.layout.height;
+            if (sheetHeight.current > 0 && pendingOpening.current) {
+              const open = pendingOpening.current;
+              pendingOpening.current = null;
+              open();
+            }
+          }}
           style={[styles.sheet, { maxHeight, backgroundColor: sheetGradient[0], transform: [{ translateY: sheetY }] }]}
           accessibilityViewIsModal
         >

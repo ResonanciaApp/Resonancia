@@ -1151,7 +1151,7 @@ const styles = StyleSheet.create({
   },
   heroTitle: {
     fontFamily: "Manrope",
-    fontSize: 14,
+    fontSize: 15,
     fontWeight: "600",
     lineHeight: 18,
     color: "#FBFBFB",
@@ -1176,7 +1176,7 @@ const styles = StyleSheet.create({
   },
   heroAuthor: {
     fontFamily: "Manrope",
-    fontSize: 12,
+    fontSize: 11,
     color: "#F4F4F4",
     marginTop: 2,
   },

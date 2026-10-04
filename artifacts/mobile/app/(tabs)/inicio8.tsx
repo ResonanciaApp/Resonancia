@@ -4759,7 +4759,7 @@ const styles = StyleSheet.create({
     bottom: 12,
   },
   heroMetaText: { fontFamily: "Manrope", fontSize: 11, lineHeight: 14, color: "#F4F4F4", marginBottom: 6 },
-  heroTitle: { fontFamily: "Manrope", fontSize: 14, fontWeight: "600", lineHeight: 18, color: "#FBFBFB", marginBottom: 4 },
+  heroTitle: { fontFamily: "Manrope", fontSize: 15, fontWeight: "600", lineHeight: 18, color: "#FBFBFB", marginBottom: 4 },
   heroAvatar: { width: 48, height: 48, borderRadius: 24, backgroundColor: "rgba(181,211,255,0.057)" },
   heroAvatarFallback: {
     alignItems: "center",
@@ -4772,7 +4772,7 @@ const styles = StyleSheet.create({
     fontSize: 17,
     fontWeight: "700",
   },
-  heroAuthor: { fontFamily: "Manrope", fontSize: 12, color: "#F4F4F4", marginTop: 2 },
+  heroAuthor: { fontFamily: "Manrope", fontSize: 11, color: "#F4F4F4", marginTop: 2 },
   heroBtn: {
     width: 46,
     height: 46,

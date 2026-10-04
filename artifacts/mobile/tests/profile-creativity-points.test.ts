@@ -18,7 +18,7 @@ const Native = (props: any) => {
 };
 const mocks: Record<string, any> = {
   react: React,
-  "react-native": { StyleSheet: { create: (value: any) => { componentStyles = value; return value; } }, Text: Native, View: Native },
+  "react-native": { StyleSheet: { create: (value: any) => { componentStyles = value; return value; } }, Text: Native, View: Native, Pressable: Native },
   "@/hooks/useColors": { useColors: () => ({ foreground: "#F9F9F9", accent: "#BE9650" }) },
 };
 const module = { exports: {} as { CreativityPointsSection: React.ComponentType<any> } };
@@ -29,8 +29,9 @@ new Function("require", "module", "exports", ts.transpileModule(source, {
   return mocks[name];
 }, module, module.exports);
 
-test("creativity points show the exact title, zero-of-100 bar and question mark without functional controls", () => {
-  const html = renderToStaticMarkup(React.createElement(module.exports.CreativityPointsSection, { style: { marginBottom: 21 } }));
+test("creativity points show the exact title and zero-of-100 bar with only the help button interactive", () => {
+  let helpRequests = 0;
+  const html = renderToStaticMarkup(React.createElement(module.exports.CreativityPointsSection, { style: { marginBottom: 21 }, onInfoPress: () => helpRequests++ }));
   assert.match(html, /Puntos creatividad/);
   assert.doesNotMatch(html, /creatividad expansiva/);
   assert.match(html, />0<\/div>\/100/);
@@ -38,7 +39,9 @@ test("creativity points show the exact title, zero-of-100 bar and question mark 
   const bar = captured.get("creativity-points-bar");
   assert.equal(bar.accessibilityRole, "progressbar");
   assert.deepEqual(bar.accessibilityValue, { min: 0, max: 100, now: 0, text: "0 de 100 puntos" });
-  assert.equal(captured.get("creativity-points-info").accessibilityRole, "image");
+  assert.equal(captured.get("creativity-points-info").accessibilityRole, "button");
+  captured.get("creativity-points-info").onPress();
+  assert.equal(helpRequests, 1);
   assert.equal(flatten(captured.get("creativity-points-info").style).opacity, 0.7);
   assert.equal(flatten(captured.get("creativity-points-value").style).fontSize, 13);
   const profile = readFileSync(new URL("../components/ProfileScreenBase.tsx", import.meta.url), "utf8");
@@ -49,7 +52,7 @@ test("creativity points show the exact title, zero-of-100 bar and question mark 
   const weeklyTitleSize = Number(progress.match(/streakTitle:\s*\{[^}]*fontSize:\s*(\d+)/)?.[1]);
   assert.equal(componentStyles.title.fontSize, weeklyTitleSize);
   for (const props of captured.values()) {
-    assert.equal(props.onPress, undefined);
+    if (props.testID !== "creativity-points-info") assert.equal(props.onPress, undefined);
     assert.equal(props.onValueChange, undefined);
   }
   const card = flatten(captured.get("profile-creativity-points").style);
@@ -58,5 +61,5 @@ test("creativity points show the exact title, zero-of-100 bar and question mark 
   assert.equal(card.paddingHorizontal, 20);
   assert.equal(card.marginBottom, 21);
   assert.equal(flatten(bar.style).flex, 1);
-  assert.doesNotMatch(source, /useState|useEffect|AsyncStorage|usePlayer|useStreak|onPress=|Slider/);
+  assert.doesNotMatch(source, /useState|useEffect|AsyncStorage|usePlayer|useStreak|Slider/);
 });

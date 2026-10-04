@@ -19,14 +19,12 @@ function style(path: string, name: string): Record<string, unknown> {
 }
 const sleepTitle = style("../components/SessionCarousel.tsx", "editorialTitle");
 
-test("objective, new-session, playlist and featured-moment card titles match Dormir without changing section headings", () => {
+test("objective, new-session and playlist card titles match Dormir without changing section headings", () => {
   assert.equal(sleepTitle.fontSize, 14);
   assert.equal(sleepTitle.fontWeight, "600");
   for (const [path, name] of [
     ["../app/(tabs)/explore.tsx", "themeGridLabel"],
     ["../app/(tabs)/explore.tsx", "newInResonanceTitle"],
-    ["../app/(tabs)/explore.tsx", "heroTitle"],
-    ["../app/(tabs)/inicio8.tsx", "heroTitle"],
     ["../components/EditorialPlaylistCarousel.tsx", "cardTitle"],
     ["../components/SessionCard.tsx", "editorialTitle"],
   ]) {
@@ -39,6 +37,19 @@ test("objective, new-session, playlist and featured-moment card titles match Dor
   assert.equal(section.fontSize, 19);
   assert.equal(section.fontWeight, "700");
   assert.equal(style("../app/(tabs)/explore.tsx", "themeGridLabel").textAlign, "left");
+});
+
+test("Para este momento titles are one point larger and authors match subtitles on Inicio and Descubrir", () => {
+  for (const path of ["../app/(tabs)/inicio8.tsx", "../app/(tabs)/explore.tsx"]) {
+    const title = style(path, "heroTitle");
+    const author = style(path, "heroAuthor");
+    const subtitle = style(path, "heroMetaText");
+    assert.equal(title.fontSize, 15);
+    assert.equal(title.fontWeight, "600");
+    assert.equal(title.lineHeight, 18);
+    assert.equal(subtitle.fontSize, 11);
+    assert.equal(author.fontSize, subtitle.fontSize);
+  }
 });
 
 test("featured videos match Dormir while other video cards retain their existing default typography", () => {

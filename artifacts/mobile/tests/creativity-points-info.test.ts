@@ -16,7 +16,7 @@ const compile = (text: string) => ts.transpileModule(text, {
 const flatten = (style: any): any => Array.isArray(style)
   ? Object.assign({}, ...style.map(flatten)) : style ?? {};
 
-function harness(theme = SCENE_THEMES.indigo2) {
+function harness(theme = SCENE_THEMES.indigo2, measuredHeight = 480) {
   const states: any[] = [], refs: any[] = [], effects: any[] = [];
   let stateIndex = 0, refIndex = 0, effectIndex = 0, dirty = false, closes = 0;
   const nodes = new Map<string, any>();
@@ -25,6 +25,9 @@ function harness(theme = SCENE_THEMES.indigo2) {
   const batches: { animations: any[]; finish?: (result: { finished: boolean }) => void }[] = [];
   const Native = (props: any) => {
     if (props.testID) nodes.set(props.testID, props);
+    if (props.testID === "creativity-info-sheet") {
+      props.onLayout?.({ nativeEvent: { layout: { height: measuredHeight } } });
+    }
     return React.createElement("div", { "data-testid": props.testID }, props.children);
   };
   class Value {
@@ -124,6 +127,7 @@ test("opening uses the timer spring and backdrop fade; closing waits for the ani
   const h = harness();
   h.render(true);
   const opening = h.batches.at(-1)!;
+  assert.equal(opening.animations[0].value.value, 480 + 80);
   assert.deepEqual(opening.animations[0].options, { toValue: 0, ...DURATION_SHEET_OPEN_SPRING, useNativeDriver: true });
   assert.deepEqual(opening.animations[1].options, { toValue: 0.62, duration: DURATION_SHEET_OPEN_BACKDROP_MS, useNativeDriver: true });
   assert.notEqual(h.render(false), "");
@@ -136,6 +140,21 @@ test("opening uses the timer spring and backdrop fade; closing waits for the ani
   h.render(false);
   h.batches.at(-1)!.finish!({ finished: true });
   assert.equal(h.render(false), "");
+});
+
+test("opening starts below the actual panel on different heights and waits for layout", () => {
+  for (const height of [320, 480, 700]) {
+    const h = harness(SCENE_THEMES.indigo2, height);
+    h.render(true);
+    assert.equal(h.batches.at(-1)!.animations[0].value.value, height + 80);
+  }
+  const h = harness(SCENE_THEMES.indigo2, 0);
+  h.render(true);
+  assert.equal(h.batches.length, 0);
+  h.render(false);
+  h.nodes.get("creativity-info-sheet").onLayout({ nativeEvent: { layout: { height: 480 } } });
+  h.render(false);
+  assert.ok(h.batches.every(batch => batch.animations.every(animation => animation.kind !== "spring")));
 });
 
 test("close button, outside tap and Android back all invoke close", () => {
