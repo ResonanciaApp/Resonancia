@@ -523,7 +523,7 @@ export function AmbientalDurationSheet({
               accessibilityLabel="Cancelar selección de duración"
               testID="ambiental-duration-cancel"
             >
-              <Text style={[styles.cancelButtonText, { color: colors.foreground }]}>
+              <Text testID="ambiental-duration-cancel-label" style={styles.startButtonText}>
                 Cancelar
               </Text>
             </Pressable>
@@ -705,10 +705,5 @@ const styles = StyleSheet.create({
     alignItems: "center",
     justifyContent: "center",
     marginTop: CONTROL_GAP,
-  },
-  cancelButtonText: {
-    fontFamily: "Manrope",
-    fontSize: 16,
-    fontWeight: "700",
   },
 });

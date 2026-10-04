@@ -58,7 +58,7 @@ function harness() {
   return { transition, values, jobs, phases, advance, get phase() { return phase; } };
 }
 
-test("four circles shrink sequentially +/20/10/5 at 270 ms, grow 130 px over 460 ms, then wait and fade", () => {
+test("four circles shrink sequentially +/20/10/5 at 270 ms, grow 115 px over 460 ms, then wait and fade", () => {
   const h = harness();
   assert.equal(h.transition.start(341, false), true);
   assert.equal(h.transition.start(341, false), false);
@@ -81,7 +81,7 @@ test("four circles shrink sequentially +/20/10/5 at 270 ms, grow 130 px over 460
   assert.equal(h.jobs[4].start, 1080);
   assert.equal(SHEET_EXPAND_MS, 460);
   assert.equal(h.jobs[4].config.duration, 460);
-  assert.equal(h.jobs[4].config.toValue, 341 + 130);
+  assert.equal(h.jobs[4].config.toValue, 341 + 115);
   assert.equal(h.jobs[4].config.useNativeDriver, false);
   h.advance(SHEET_EXPAND_MS - 1);
   assert.equal(h.phase, "expanding");
@@ -92,7 +92,7 @@ test("four circles shrink sequentially +/20/10/5 at 270 ms, grow 130 px over 460
   assert.equal(h.jobs[5].config.useNativeDriver, true, "Move with a native transform, not a Fabric layout animation");
   h.advance(1);
   assert.equal(h.phase, "revealing");
-  assert.equal(h.values.sheetHeight.value, 471);
+  assert.equal(h.values.sheetHeight.value, 456);
   assert.equal(h.jobs[6].start, 1080 + SHEET_EXPAND_MS);
   assert.equal(h.jobs[6].config.duration, MANUAL_FADE_MS);
   assert.equal(h.jobs[6].config.useNativeDriver, true);
@@ -123,7 +123,7 @@ test("Cancel reverses the exact sequence: fade out, wait, contract, then grow 5/
   assert.equal(h.jobs[0].config.delay, undefined, "The fade-out starts immediately");
   h.advance(MANUAL_FADE_MS - 1);
   assert.equal(h.phase, "hiding");
-  assert.equal(h.values.sheetHeight.value, 471);
+  assert.equal(h.values.sheetHeight.value, 456);
   h.advance(1);
   assert.equal(h.values.manualOpacity.value, 0);
   assert.equal(h.phase, "contracting");
@@ -181,7 +181,7 @@ test("closing during any reverse stage stops it and ignores stale callbacks afte
     h.transition.start(350, true);
     oldJob.callback({ finished: true });
     assert.equal(h.phase, "manual");
-    assert.equal(h.values.sheetHeight.value, 480);
+    assert.equal(h.values.sheetHeight.value, 465);
   }
 });
 
@@ -255,7 +255,7 @@ test("unexpected interruption restores presets, and reduced motion reaches the s
       old.callback({ finished: true });
     } else assert.equal(h.jobs.length, 0);
     assert.equal(h.phase, "manual");
-    assert.equal(h.values.sheetHeight.value, 480);
+    assert.equal(h.values.sheetHeight.value, 465);
     assert.equal(h.values.manualOpacity.value, 1);
     assert.equal(h.values.startShift.value, -MANUAL_START_SHIFT);
     assert.deepEqual(h.values.circleOpacities.map(v => v.value), [0, 0, 0, 0]);
@@ -360,7 +360,7 @@ test("actual sheet UI measures its baseline, blocks stale start presses, locks h
     assert.equal(panelTop + localButtonY + translatedY, viewportHeight - 341 + 240 - shift, "Start moves into the previous Cancel slot");
     get("start-anchor").onLayout({ nativeEvent: { layout: { y: localButtonY, height: 50 } } });
   }
-  assert.equal(c.h.values.sheetHeight.value, 341 + 130);
+  assert.equal(c.h.values.sheetHeight.value, 341 + 115);
   assert.ok(get("cancel"), "Cancel appears inside the locked height, not as an extra height increase");
   assert.equal(flattened(get("cancel").style({ pressed: false })).backgroundColor, "rgba(249,249,249,0.6)");
   c.h.advance(180);
@@ -377,11 +377,13 @@ test("actual sheet UI measures its baseline, blocks stale start presses, locks h
   assert.equal(cancelStyle.height, finalStartStyle.height, "Cancel matches the measured Start height");
   assert.equal(cancelStyle.borderRadius, c.styles.startButton.borderRadius);
   assert.equal(c.styles.startButtonText.fontWeight, "800");
+  assert.deepEqual(get("cancel-label").style, c.styles.startButtonText,
+    "Cancel uses the identical font, size, weight, spacing and color as Start");
   assert.equal(900 - cancelAnchor.bottom - cancelStyle.height, 900 - 341 + 240,
     "Cancel occupies the initial Start position");
   const timerStyle = flattened(get("manual").style);
   const titleBottom = 38 + 24 + 20;
-  const startTop = 471 - finalStartStyle.bottom - finalStartStyle.height + finalStartStyle.transform[0].translateY.value;
+  const startTop = 456 - finalStartStyle.bottom - finalStartStyle.height + finalStartStyle.transform[0].translateY.value;
   assert.equal(timerStyle.top + timerStyle.height / 2, (titleBottom + startTop) / 2,
     "The timer is centered exactly between the title and Start");
   assert.equal(timerStyle.top - titleBottom, startTop - timerStyle.top - timerStyle.height);

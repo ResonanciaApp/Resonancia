@@ -5,7 +5,7 @@ description: Jerarquía visual del selector manual y revisión de la anterior ac
 
 El temporizador Ambiental crece desde su borde superior. En modo manual, Empezar sesión va arriba y Cancelar debajo; el reloj queda centrado en el espacio entre el título y Empezar sesión.
 
-Durante la transición desde +, Empezar sesión conserva su color normal aunque esté bloqueado. Cancelar debe tener las mismas dimensiones que Empezar sesión.
+Durante la transición desde +, Empezar sesión conserva su color normal aunque esté bloqueado. Cancelar debe tener las mismas dimensiones y el mismo estilo de texto que Empezar sesión.
 
 Cancelar deshace el modo manual dentro de la misma ventana: invierte la secuencia completa y vuelve a las duraciones predefinidas. No equivale a cerrar el selector.
 
