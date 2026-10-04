@@ -133,7 +133,7 @@ export default function SonidosScreen() {
   const ambientalCarouselCardWidth = getExactTwoCardCarouselCardWidth(
     viewportWidth,
     H_PAD,
-    20,
+    10,
     H_PAD - CONTENT_CAROUSEL_HORIZONTAL_PADDING,
   );
   const insets = useSafeAreaInsets();
@@ -461,7 +461,7 @@ export default function SonidosScreen() {
                   ambientalCardBackground="rgba(0,0,0,0.16)"
                  ambientalTitleOnly
                  cardWidth={ambientalCarouselCardWidth}
-                 trailingPeek={20}
+                 trailingPeek={10}
                  allowOversizedCardWidth
                  soundPreview={{
                    activeId: soundPreview.activeId,
