@@ -13,7 +13,7 @@ test("daily rollover changes the server cache key so the previous week cannot st
   const mocks: Record<string, unknown> = {
     react: { useMemo: (calculate: () => unknown) => calculate() },
     "@/context/AuthContext": { useAuth: () => ({ isSignedIn: true }) },
-    "@/context/PlayerContext": { usePlayer: () => ({ statEvents: [] }) },
+    "@/context/PlayerContext": { usePlayerStats: () => ({ statEvents: [] }) },
     "@/hooks/useDayRollover": { useDayRollover: () => today },
     "@workspace/api-client-react": {
       getGetMyStreakQueryOptions: (params: unknown) => ({ queryKey: ["/me/streak", params] }),

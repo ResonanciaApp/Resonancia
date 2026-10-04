@@ -12,7 +12,7 @@
 import { useMemo } from "react";
 import { useAuth } from "@/context/AuthContext";
 import { getGetMyStreakQueryOptions, useGetMyStreak } from "@workspace/api-client-react";
-import { usePlayer } from "@/context/PlayerContext";
+import { usePlayerStats } from "@/context/PlayerContext";
 import {
   computeCurrentStreak,
   computeMaxStreak,
@@ -49,7 +49,7 @@ export function useStreak(): StreakData {
     },
   );
 
-  const { statEvents } = usePlayer();
+  const { statEvents } = usePlayerStats();
 
   const local = useMemo(() => {
     const { flags, weekCount, todayIndex } = computeWeekFlags(statEvents);

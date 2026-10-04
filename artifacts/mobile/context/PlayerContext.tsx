@@ -142,6 +142,10 @@ type PlayerBrowseContextType = Pick<
   "currentSession" | "history" | "playSession"
 >;
 const PlayerBrowseContext = createContext<PlayerBrowseContextType | null>(null);
+const PlayerHomeContext = createContext<Pick<PlayerContextType,
+  "playSession" | "history" | "favorites" | "sessionProgress" | "getSessionProgress"
+> | null>(null);
+const PlayerStatsContext = createContext<Pick<PlayerContextType, "statEvents"> | null>(null);
 
 const FAVORITES_KEY = "@resonance_favorites";
 const HISTORY_KEY = "@resonance_history";
@@ -2017,8 +2021,15 @@ export function PlayerProvider({ children }: { children: React.ReactNode }) {
     () => ({ currentSession, history, playSession }),
     [currentSession, history, playSession],
   );
+  const homeValue = React.useMemo(
+    () => ({ playSession, history, favorites, sessionProgress, getSessionProgress }),
+    [playSession, history, favorites, sessionProgress, getSessionProgress],
+  );
+  const statsValue = React.useMemo(() => ({ statEvents }), [statEvents]);
 
   return (
+    <PlayerStatsContext.Provider value={statsValue}>
+    <PlayerHomeContext.Provider value={homeValue}>
     <PlayerBrowseContext.Provider value={browseValue}>
       <PlayerContext.Provider
         value={{
@@ -2073,12 +2084,27 @@ export function PlayerProvider({ children }: { children: React.ReactNode }) {
         {children}
       </PlayerContext.Provider>
     </PlayerBrowseContext.Provider>
+    </PlayerHomeContext.Provider>
+    </PlayerStatsContext.Provider>
   );
 }
 
 export function usePlayer() {
   const ctx = useContext(PlayerContext);
   if (!ctx) throw new Error("usePlayer must be used within PlayerProvider");
+  return ctx;
+}
+
+/** Home needs saved progress, not every playback position or sleep-timer tick. */
+export function usePlayerHome() {
+  const ctx = useContext(PlayerHomeContext);
+  if (!ctx) throw new Error("usePlayerHome must be used within PlayerProvider");
+  return ctx;
+}
+
+export function usePlayerStats() {
+  const ctx = useContext(PlayerStatsContext);
+  if (!ctx) throw new Error("usePlayerStats must be used within PlayerProvider");
   return ctx;
 }
 

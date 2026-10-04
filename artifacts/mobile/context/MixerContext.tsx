@@ -235,6 +235,9 @@ type MixerContextType = {
 };
 
 const MixerContext = createContext<MixerContextType | null>(null);
+const MixerLibraryContext = createContext<Pick<MixerContextType,
+  "presets" | "loadPreset" | "openSheet" | "setSleepTimer"
+> | null>(null);
 
 export function MixerProvider({ children }: { children: React.ReactNode }) {
   useCoverPresetCatalog("mix");
@@ -277,6 +280,25 @@ export function MixerProvider({ children }: { children: React.ReactNode }) {
   };
   const [breathingIds, setBreathingIds] = useState<string[]>([]);
   const breatheStateRef = useRef<Map<string, BreathState>>(new Map());
+  const breathingTimerRef = useRef<ReturnType<typeof setInterval> | null>(null);
+  const resetBreathing = useCallback(() => {
+    if (breathingTimerRef.current !== null) clearInterval(breathingTimerRef.current);
+    breathingTimerRef.current = null;
+    breatheStateRef.current.clear();
+    setBreathingIds((ids) => ids.length ? [] : ids);
+  }, []);
+  // Volume ticks must not restart the loop; only membership changes matter.
+  const activeSoundIdsKey = JSON.stringify(activeSounds.map((sound) => sound.id));
+  useEffect(() => {
+    const activeIds = new Set<string>(JSON.parse(activeSoundIdsKey));
+    for (const id of breatheStateRef.current.keys()) {
+      if (!activeIds.has(id)) breatheStateRef.current.delete(id);
+    }
+    setBreathingIds((ids) => {
+      const next = ids.filter((id) => activeIds.has(id));
+      return next.length === ids.length ? ids : next;
+    });
+  }, [activeSoundIdsKey]);
 
   const setMasterVolume = useCallback((v: number) => {
     const clamped = Math.max(0, Math.min(1, v));
@@ -1625,12 +1647,19 @@ export function MixerProvider({ children }: { children: React.ReactNode }) {
 
   /** Aplica volumen de respiración al audio + slider SIN modificar baseVolumesRef. */
   const applyBreathVolume = useCallback((id: string, vol: number) => {
+    if (!isPlayingRef.current || !activeSoundsRef.current.some((sound) => sound.id === id)) return;
     const clamped = Math.max(0, Math.min(1, vol));
     const def = getCatalogSoundById(id);
     if (def?.bpm !== undefined || (def?.category === "binaural" && binauralEngineActiveRef.current.has(id))) {
       bpmAudioEngine.setVolume(id, clamped);
     }
-    setActiveSounds((prev) => prev.map((s) => s.id === id ? { ...s, volume: clamped } : s));
+    setActiveSounds((prev) => {
+      const index = prev.findIndex((sound) => sound.id === id);
+      if (index < 0 || prev[index].volume === clamped) return prev;
+      const next = [...prev];
+      next[index] = { ...prev[index], volume: clamped };
+      return next;
+    });
   }, []);
 
   const toggleBreathe = useCallback((id: string) => {
@@ -1664,13 +1693,17 @@ export function MixerProvider({ children }: { children: React.ReactNode }) {
   /** Oscilador orgánico: 3 senos con períodos y fases independientes por sonido.
    *  Profundidad máxima ±28 % del base (w1·0.5 + w2·0.3 + w3·0.2 = 1.0 → ×0.28). */
   useEffect(() => {
-    if (breathingIds.length === 0) return;
+    const activeIds = new Set<string>(JSON.parse(activeSoundIdsKey));
+    const playableBreathingIds = breathingIds.filter((id) => activeIds.has(id));
+    if (!isPlaying || playableBreathingIds.length === 0) return;
     const TICK_MS = 32; // ~30 fps — suave sin lag visible
     const DEPTH   = 0.28; // swing máximo ±28 % (< 50 % cap)
     const W1 = 0.50, W2 = 0.30, W3 = 0.20; // pesos que suman 1.0
 
     const timer = setInterval(() => {
-      breathingIds.forEach((soundId) => {
+      if (breathingTimerRef.current !== timer || !isPlayingRef.current) return;
+      playableBreathingIds.forEach((soundId) => {
+        if (!activeSoundsRef.current.some((sound) => sound.id === soundId)) return;
         const s = breatheStateRef.current.get(soundId);
         if (!s) return;
         // Avanzar fases
@@ -1683,8 +1716,12 @@ export function MixerProvider({ children }: { children: React.ReactNode }) {
         applyBreathVolume(soundId, s.base * (1 + DEPTH * combined));
       });
     }, TICK_MS);
-    return () => clearInterval(timer);
-  }, [breathingIds, applyBreathVolume]);
+    breathingTimerRef.current = timer;
+    return () => {
+      clearInterval(timer);
+      if (breathingTimerRef.current === timer) breathingTimerRef.current = null;
+    };
+  }, [breathingIds, applyBreathVolume, isPlaying, activeSoundIdsKey]);
 
 
   const moveSound = useCallback((id: string, direction: "up" | "down") => {
@@ -1768,6 +1805,7 @@ export function MixerProvider({ children }: { children: React.ReactNode }) {
   }, [applyPlaying]);
 
   const stopAll = useCallback(() => {
+    resetBreathing();
     presetLoadGenerationRef.current += 1;
     // Liberar el BPM activo y detener el motor nativo.
     bpmValueRef.current = null;
@@ -1868,7 +1906,7 @@ export function MixerProvider({ children }: { children: React.ReactNode }) {
       }
     };
     fadeRafRef.current = requestAnimationFrame(step);
-  }, [clearSleepTimer, clearLockScreen, releaseEngineAnchor]);
+  }, [clearSleepTimer, clearLockScreen, releaseEngineAnchor, resetBreathing]);
   stopAllRef.current = stopAll;
 
   const openSheet = useCallback(() => setIsSheetOpen(true), []);
@@ -2021,6 +2059,7 @@ export function MixerProvider({ children }: { children: React.ReactNode }) {
 
   const loadPreset = useCallback(
     (preset: MixPreset) => {
+      resetBreathing();
       const loadGeneration = ++presetLoadGenerationRef.current;
       // Mezcla, sesión y audio de chat son mutuamente excluyentes (comparten Now Playing).
       stopSessionPlayback();
@@ -2163,6 +2202,7 @@ export function MixerProvider({ children }: { children: React.ReactNode }) {
       ensureEngineAnchor,
       releaseEngineAnchor,
       syncLockScreen,
+      resetBreathing,
     ],
   );
 
@@ -2325,7 +2365,13 @@ export function MixerProvider({ children }: { children: React.ReactNode }) {
     [activeSounds],
   );
 
+  const libraryValue = React.useMemo(
+    () => ({ presets, loadPreset, openSheet, setSleepTimer }),
+    [presets, loadPreset, openSheet, setSleepTimer],
+  );
+
   return (
+    <MixerLibraryContext.Provider value={libraryValue}>
     <MixerContext.Provider
       value={{
         activeSounds,
@@ -2383,11 +2429,19 @@ export function MixerProvider({ children }: { children: React.ReactNode }) {
     >
       {children}
     </MixerContext.Provider>
+    </MixerLibraryContext.Provider>
   );
 }
 
 export function useMixer() {
   const ctx = useContext(MixerContext);
   if (!ctx) throw new Error("useMixer debe usarse dentro de <MixerProvider>");
+  return ctx;
+}
+
+/** Library/actions consumers must not subscribe to 32 ms volume modulation. */
+export function useMixerLibrary() {
+  const ctx = useContext(MixerLibraryContext);
+  if (!ctx) throw new Error("useMixerLibrary debe usarse dentro de <MixerProvider>");
   return ctx;
 }

@@ -83,11 +83,11 @@ import { isIndigoThemeId } from "@/config/scene-themes";
 import { useCatalog } from "@/context/CatalogContext";
 import { useFeaturedMoment } from "@/hooks/useFeaturedMoment";
 import { useFoldersPlaylists } from "@/context/FoldersPlaylistsContext";
-import { useMixer } from "@/context/MixerContext";
+import { useMixerLibrary } from "@/context/MixerContext";
 import { useMixerPanel } from "@/context/MixerPanelContext";
 // voiceLabel no usado en hero
 import { getSoundImage } from "@/config/sound-images";
-import { usePlayer } from "@/context/PlayerContext";
+import { usePlayerBrowse, usePlayerHome } from "@/context/PlayerContext";
 import { useAmbientalDuration } from "@/context/AmbientalDurationContext";
 import { TEMAS } from "@/data/temas";
 import {
@@ -1499,7 +1499,7 @@ function Inicio3HeroPager({
       .catch((error) => console.warn("No se pudo guardar el caché de slides del hero", error));
   }, [configuredHero]);
   const { isPremium } = usePremium();
-  const { playSession } = usePlayer();
+  const { playSession } = usePlayerBrowse();
   const { openCategory } = useCategoryOverlay();
   const { openForSession } = useAmbientalDuration();
   const { openMixer } = useMixerPanel();
@@ -2139,14 +2139,11 @@ export default function HomeScreen2({
   const insets = useSafeAreaInsets();
   const {
     playSession,
-    currentSession,
-    isPlaying,
-    pauseResume,
     history,
     favorites,
     sessionProgress,
     getSessionProgress,
-  } = usePlayer();
+  } = usePlayerHome();
   const { previewFlow: previewStreakFlow } = useStreakCelebration();
 
   const todayKey = useDayRollover();
@@ -2155,7 +2152,7 @@ export default function HomeScreen2({
   const { videos } = useVideos();
   const { resonadores } = useResonadores();
   const { playlists } = useFoldersPlaylists();
-  const { presets, loadPreset, openSheet } = useMixer();
+  const { presets, loadPreset, openSheet } = useMixerLibrary();
   const { openMixer } = useMixerPanel();
   const { openCategory } = useCategoryOverlay();
   const { openForSession } = useAmbientalDuration();

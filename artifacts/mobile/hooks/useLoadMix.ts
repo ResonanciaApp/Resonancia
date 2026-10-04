@@ -11,7 +11,7 @@
 import { useCallback } from "react";
 import { Alert } from "react-native";
 
-import { useMixer, type MixPreset } from "@/context/MixerContext";
+import { useMixerLibrary, type MixPreset } from "@/context/MixerContext";
 import { usePremium } from "@/context/PremiumContext";
 import { useSounds } from "@/context/SoundsContext";
 import { hasSoundFile } from "@/data/sounds";
@@ -20,7 +20,7 @@ import { openPremiumPlans } from "@/lib/premiumGate";
 
 export function useLoadMix() {
   const { isPremium } = usePremium();
-  const { loadPreset } = useMixer();
+  const { loadPreset } = useMixerLibrary();
   const { sounds: catalogSounds } = useSounds();
 
   return useCallback(
