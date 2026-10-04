@@ -5,6 +5,7 @@ import { URL } from "node:url";
 import React from "react";
 import { renderToStaticMarkup } from "react-dom/server";
 import ts from "typescript";
+import * as wallBorderConstants from "../constants/reflectionWallBorder.ts";
 
 type NativeProps = {
   accessibilityLabel?: string;
@@ -73,11 +74,6 @@ const compiled = ts.transpileModule(
   readFileSync(new URL("../components/GrowthJourney.tsx", import.meta.url), "utf8"),
   { compilerOptions: { module: ts.ModuleKind.CommonJS, jsx: ts.JsxEmit.React, esModuleInterop: true } },
 ).outputText;
-const wallBorderConstants: Record<string, unknown> = {};
-new Function("exports", ts.transpileModule(
-  readFileSync(new URL("../constants/reflectionWallBorder.ts", import.meta.url), "utf8"),
-  { compilerOptions: { module: ts.ModuleKind.CommonJS } },
-).outputText)(wallBorderConstants);
 const mocks: Record<string, unknown> = {
   "@/context/SceneThemeContext": { useSceneTheme: () => ({ theme: { id: "tibet" } }) },
   "../assets/images/growth/00-intencion-profile-bright.png": 2,
@@ -375,7 +371,7 @@ test("Expansion shows the full avatar phrase and the actual wall plus with three
     assert.match(wall, /data-testid="expansion-wall-reward-icon"[^>]*data-height="35" data-width="35"/);
     const palette = JSON.stringify(wallBorderConstants.REFLECTION_WALL_BORDER_GRADIENT).replaceAll('"', "&quot;");
     assert.ok(wall.includes(`data-wall-border-colors="${palette}"`));
-    assert.match(wall, /data-wall-border-brightness="1.008315"/);
+    assert.match(wall, /data-wall-border-brightness="1"/);
     assert.doesNotMatch(wall, /data-lines=/);
   }
 });
