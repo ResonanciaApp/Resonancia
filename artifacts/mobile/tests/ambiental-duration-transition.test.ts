@@ -274,6 +274,7 @@ function componentHarness() {
   const captured = new Map<string, any>();
   const gates: string[] = [];
   const starts: number[] = [];
+  const haptics: string[] = [];
   let closes = 0;
   let stateIndex = 0;
   let stateOverrides: any[] = [];
@@ -291,6 +292,10 @@ function componentHarness() {
     },
     "@expo/vector-icons": { Feather: Native },
     "expo-linear-gradient": { LinearGradient: Native },
+    "expo-haptics": {
+      ImpactFeedbackStyle: { Soft: "soft" },
+      impactAsync: async (style: string) => { haptics.push(style); },
+    },
     "react-native-safe-area-context": { useSafeAreaInsets: () => ({ bottom: 34 }) },
     "@/context/SceneThemeContext": { useSceneTheme: () => ({ theme: { id: "cloudy", gradient: ["#2D2F7C", "#2D3981", "#2D4085"] } }) },
     "@/config/scene-themes": { SCENE_THEMES: { tibet: { gradient: ["#371C5F", "#332261", "#2E2468"] } } },
@@ -302,7 +307,7 @@ function componentHarness() {
     "@/lib/premiumGate": { FREE_TIMER_MAX_MINUTES: 20, showPremiumGate: (message: string) => gates.push(message) },
     "@/constants/colors": { REGISTER_BUTTON_ENABLED_BACKGROUND: "#BE9650" },
     "@/components/PremiumPlansOverlay": { PremiumPlansSurface: Native, usePremiumPlansModalHost: () => ({ visible: false }) },
-    "react-native-svg": { __esModule: true, default: Native, Path: Native },
+    "react-native-svg": { __esModule: true, default: Native, Line: Native, Path: Native },
   };
   const exported: any = {};
   new Function("exports", "require", ts.transpileModule(source, {
@@ -320,8 +325,52 @@ function componentHarness() {
       onStart: (minutes: number) => starts.push(minutes),
     }));
   };
-  return { h, render, captured, baselineHeight, gates, starts, styles: componentStyles, get closes() { return closes; } };
+  return { h, render, captured, baselineHeight, gates, starts, haptics, styles: componentStyles, get closes() { return closes; } };
 }
+
+test("5/10/20/+ each give one Soft impact; blocked or repeated transition presses do not vibrate", () => {
+  const c = componentHarness();
+  c.render();
+  c.baselineHeight.current = 341;
+  const get = (id: string) => c.captured.get(`ambiental-duration-${id}`);
+  for (const minutes of [5, 10, 20]) {
+    get(String(minutes)).onPress();
+  }
+  assert.deepEqual(c.haptics, ["soft", "soft", "soft"]);
+  get("custom").onPress();
+  assert.deepEqual(c.haptics, ["soft", "soft", "soft", "soft"]);
+  get("custom").onPress();
+  for (const minutes of [5, 10, 20]) get(String(minutes)).onPress();
+  assert.equal(c.haptics.length, 4);
+  c.h.advance(4 * CIRCLE_SHRINK_MS + SHEET_EXPAND_MS + MANUAL_REVEAL_DELAY_MS + MANUAL_FADE_MS);
+  c.render();
+  get("cancel").onPress();
+  c.render();
+  get("custom").onPress();
+  get("5").onPress();
+  assert.equal(c.haptics.length, 4, "No additional impacts from Cancel or blocked controls during reversal");
+});
+
+test("the + has twelve subtle clock ticks that do not intercept taps or alter its dimensions", () => {
+  const c = componentHarness();
+  c.render();
+  const dial = c.captured.get("ambiental-duration-clock-dial");
+  assert.equal(dial.pointerEvents, "none");
+  assert.equal(dial.accessibilityElementsHidden, true);
+  assert.equal(dial.importantForAccessibility, "no-hide-descendants");
+  assert.equal(c.styles.preset.width, CIRCLE_DIAMETER);
+  assert.equal(c.styles.preset.height, CIRCLE_DIAMETER);
+  for (let index = 0; index < 12; index++) {
+    const tick = c.captured.get(`ambiental-duration-clock-tick-${index}`);
+    assert.ok(tick);
+    assert.equal(tick.opacity, index % 3 === 0 ? 0.28 : 0.16);
+    assert.ok(Math.abs(Math.hypot(tick.x2 - tick.x1, tick.y2 - tick.y1) - (index % 3 === 0 ? 7 : 3)) < 0.0001);
+    assert.ok(Math.abs(Math.hypot(tick.x2 - 38, tick.y2 - 38) - 30) < 0.0001);
+  }
+  c.baselineHeight.current = 341;
+  c.captured.get("ambiental-duration-custom").onPress();
+  assert.equal(c.h.phase, "shrinking");
+});
 
 test("actual sheet UI measures its baseline, blocks stale start presses, locks height and reveals manual controls only at completion", () => {
   const c = componentHarness();

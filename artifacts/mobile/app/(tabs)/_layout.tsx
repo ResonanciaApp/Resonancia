@@ -29,7 +29,7 @@ import { CategoryOverlayProvider, useCategoryOverlay } from "@/context/CategoryO
 import { CategoryOverlay } from "@/components/CategoryOverlay";
 import { SacredBackground } from "@/components/SacredBackground";
 import { WIDGET_GREEN_SOLID } from "@/constants/colors";
-import { TAB_BAR_BLUR_INTENSITY, TAB_BAR_GLASS_OVERLAY, TAB_BAR_INACTIVE_COLOR } from "@/constants/tab-bar";
+import { TAB_BAR_BLUR_INTENSITY, TAB_BAR_GLASS_OVERLAY, TAB_BAR_INACTIVE_COLOR, getTabBarInactiveColor } from "@/constants/tab-bar";
 import { RoutineCompletionBanner } from "@/components/RoutineCompletionBanner";
 import { RoutineCompletionBannerProvider } from "@/context/RoutineCompletionBannerContext";
 
@@ -95,12 +95,14 @@ function TabItem({
   onPress,
   tibetMode = false,
   lightNeutralColors = false,
+  inactiveColor = INACTIVE_COLOR,
 }: {
   route: { key: string; name: string };
   isFocused: boolean;
   onPress: () => void;
   tibetMode?: boolean;
   lightNeutralColors?: boolean;
+  inactiveColor?: string;
 }) {
   const conf = TAB_CONFIG[route.name];
   if (!conf) return null;
@@ -112,7 +114,7 @@ function TabItem({
   const tOffset    = [{ translateY: iconOffset }];
 
   const activeCol   = ACTIVE_COLOR;
-  const inactiveCol = INACTIVE_COLOR;
+  const inactiveCol = inactiveColor;
 
   const makeIcon = useCallback((active: boolean) => {
     const color  = active ? activeCol : inactiveCol;
@@ -173,6 +175,7 @@ function CustomTabBar({ state, navigation, descriptors }: TabBarProps) {
 
   const { hidden, showMenu, revealHandleHidden } = useTabBarVisibility();
   const { activeSceneId } = useSceneTheme();
+  const inactiveColor = getTabBarInactiveColor(activeSceneId);
   const indigo2Mode = isIndigo2ThemeId(activeSceneId);
   const tabBarBackground = getTabBarBackground(activeSceneId);
   const translateY    = useRef(new Animated.Value(0)).current;
@@ -303,6 +306,7 @@ function CustomTabBar({ state, navigation, descriptors }: TabBarProps) {
                 route={route}
                 isFocused={isFocused}
                 onPress={onPress}
+                inactiveColor={inactiveColor}
                 tibetMode={activeSceneId === "tibet"}
                 lightNeutralColors={
                   indigo2Mode || activeSceneId === "resonancia"

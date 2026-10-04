@@ -1,5 +1,6 @@
 import { Feather } from "@expo/vector-icons";
 import { LinearGradient } from "expo-linear-gradient";
+import * as Haptics from "expo-haptics";
 import React, { useEffect, useMemo, useRef, useState } from "react";
 import {
   Animated,
@@ -20,7 +21,7 @@ import { CIRCLE_DIAMETER, MANUAL_HEIGHT_INCREASE, CANCEL_BUTTON_HEIGHT as CANCEL
 import { FREE_TIMER_MAX_MINUTES, showPremiumGate } from "@/lib/premiumGate";
 import { REGISTER_BUTTON_ENABLED_BACKGROUND } from "@/constants/colors";
 import { PremiumPlansSurface, usePremiumPlansModalHost } from "@/components/PremiumPlansOverlay";
-import Svg, { Path } from "react-native-svg";
+import Svg, { Line, Path } from "react-native-svg";
 
 const SHEET_HEIGHT = 320;
 const WHEEL_ROW_HEIGHT = 44;
@@ -30,6 +31,12 @@ const PRESETS = [5, 10, 20] as const;
 const MAX_CUSTOM_HOURS = 8;
 const MINUTES = Array.from({ length: 60 }, (_, index) => index);
 const HOURS = Array.from({ length: MAX_CUSTOM_HOURS + 1 }, (_, index) => index);
+
+function pulseTimerButton() {
+  void Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Soft).catch(error => {
+    console.warn("[ambiental-duration] Haptic feedback unavailable", error);
+  });
+}
 
 type WheelPickerProps = {
   values: number[];
@@ -237,7 +244,9 @@ export function AmbientalDurationSheet({
     : undefined;
   const enterCustomMode = () => {
     if (visible && startButtonLayout.current && titleLayout.current) {
-      transition.start(baselineHeight.current, reducedMotion.current);
+      if (transition.start(baselineHeight.current, reducedMotion.current)) {
+        pulseTimerButton();
+      }
     }
   };
   const closeSheet = () => {
@@ -354,7 +363,10 @@ export function AmbientalDurationSheet({
                     <Pressable
                       disabled={!presetsInteractive}
                       onPress={() => {
-                        if (transition.getPhase() === "presets") setSelectedPreset(minutes);
+                        if (visible && transition.getPhase() === "presets") {
+                          pulseTimerButton();
+                          setSelectedPreset(minutes);
+                        }
                       }}
                       style={[
                         styles.preset,
@@ -422,6 +434,36 @@ export function AmbientalDurationSheet({
                   accessibilityLabel="Elegir una duración personalizada"
                   testID="ambiental-duration-custom"
                 >
+                  <View
+                    testID="ambiental-duration-clock-dial"
+                    pointerEvents="none"
+                    accessibilityElementsHidden
+                    importantForAccessibility="no-hide-descendants"
+                    style={StyleSheet.absoluteFillObject}
+                  >
+                    <Svg width="100%" height="100%" viewBox={`0 0 ${CIRCLE_DIAMETER} ${CIRCLE_DIAMETER}`}>
+                      {Array.from({ length: 12 }, (_, index) => {
+                        const angle = index * Math.PI / 6 - Math.PI / 2;
+                        const major = index % 3 === 0;
+                        const innerRadius = major ? 23 : 27;
+                        const center = CIRCLE_DIAMETER / 2;
+                        return (
+                          <Line
+                            key={index}
+                            testID={`ambiental-duration-clock-tick-${index}`}
+                            x1={center + Math.cos(angle) * innerRadius}
+                            y1={center + Math.sin(angle) * innerRadius}
+                            x2={center + Math.cos(angle) * 30}
+                            y2={center + Math.sin(angle) * 30}
+                            stroke="#F4F4F4"
+                            strokeWidth={major ? 1 : 0.8}
+                            strokeLinecap="round"
+                            opacity={major ? 0.28 : 0.16}
+                          />
+                        );
+                      })}
+                    </Svg>
+                  </View>
                   <Feather name="plus" size={34} color="#F4F4F4" />
                 </Pressable>
                 </Animated.View>
