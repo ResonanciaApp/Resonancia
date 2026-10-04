@@ -1,7 +1,7 @@
-import { Feather, MaterialCommunityIcons } from "@expo/vector-icons";
+import { MaterialCommunityIcons } from "@expo/vector-icons";
 import { MoonCrescentIcon } from "@/components/MoonCrescentIcon";
 import React from "react";
-import { Alert, Pressable, StyleSheet, Text, View } from "react-native";
+import { Pressable, StyleSheet, Text, View } from "react-native";
 
 type SceneId = "cloudy" | "indigo2";
 
@@ -27,28 +27,11 @@ const SCENES: {
   },
 ];
 
-function showBrief() {
-  Alert.alert(
-    "Escena",
-    "La escena cambia solo la apariencia de la app: colores y fondos. No modifica el sonido, tus sesiones ni tu contenido.",
-    [{ text: "Entendido" }],
-  );
-}
-
 export function DrawerSceneCards({ activeId, onSelect }: Props) {
   return (
     <View>
       <View style={styles.header}>
         <Text style={styles.title}>Escena</Text>
-        <Pressable
-          onPress={showBrief}
-          hitSlop={12}
-          accessibilityRole="button"
-          accessibilityLabel="Información sobre escenas"
-          testID="drawer-scene-info"
-        >
-          <Feather name="info" size={14} color="rgba(255,255,255,0.58)" />
-        </Pressable>
       </View>
       <View style={styles.list} accessibilityRole="radiogroup" accessibilityLabel="Escena">
         {SCENES.map((s) => {

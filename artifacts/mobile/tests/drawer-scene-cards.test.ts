@@ -11,14 +11,12 @@ const compile = (source: string) => ts.transpileModule(source, {
   compilerOptions: { module: ts.ModuleKind.CommonJS, target: ts.ScriptTarget.ES2022, jsx: ts.JsxEmit.React },
 }).outputText;
 const exports: any = {};
-let infoShown = false;
 new Function("exports", "require", compile(read("../components/DrawerSceneCards.tsx")))(
   exports, (name: string) => {
     if (name === "react") return { ...React, default: React };
     if (name === "react-native") return {
       View: "view", Pressable: "pressable", Text: "text",
       StyleSheet: { create: (styles: unknown) => styles, absoluteFill: {}, hairlineWidth: 1 },
-      Alert: { alert: () => { infoShown = true; } },
     };
     if (name === "@expo/vector-icons") return { Feather: "icon", MaterialCommunityIcons: "icon" };
     if (name === "@/components/MoonCrescentIcon") return { MoonCrescentIcon: "moon-crescent" };
@@ -69,8 +67,7 @@ test("minimal Día/Noche rows use matching menu sizes and only the selected icon
     }
     radios.forEach(radio => radio.props.onPress());
     assert.deepEqual(calls, ["cloudy", "indigo2"].filter(id => id !== active));
-    nodes.find(node => node.props.testID === "drawer-scene-info").props.onPress();
-    assert.ok(infoShown);
+    assert.equal(nodes.some(node => node.props.testID === "drawer-scene-info" || node.props.name === "info"), false);
   }
 });
 
