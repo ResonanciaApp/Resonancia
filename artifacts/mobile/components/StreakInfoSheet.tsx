@@ -29,7 +29,7 @@ const STREAK_DEFINITIONS: { id: IconKind; title: string; description: string }[]
     id: "current",
     title: "Racha actual",
     description:
-      "Dias activos de esta semana, no necesariamente tienen que ser consecutivos",
+      "Días activos de esta semana, no necesariamente consecutivos.",
   },
   {
     id: "accumulated",
@@ -151,24 +151,29 @@ export function StreakInfoSheet({
           </View>
 
           <View testID="streak-info-cards" style={styles.cards}>
-            {STREAK_DEFINITIONS.map((item, i) => (
-              <CinematicFadeSlide
-                key={item.id}
-                active={visible}
-                replayKey={`card:${cycle}`}
-                delay={BASE_DELAY + 400 + i * 180}
-                duration={DURATION}
-              >
-                <View testID={`streak-info-card-${item.id}`} style={styles.card} accessible accessibilityLabel={`${item.title}. ${item.description}`}>
-                  <View style={styles.iconWrap}>
-                    <StreakIcon kind={item.id} />
-                  </View>
-                  <View style={styles.cardText}>
-                    <Text style={styles.cardTitle}>{item.title}</Text>
-                    <Text style={styles.cardDesc}>{item.description}</Text>
-                  </View>
-                </View>
-              </CinematicFadeSlide>
+            {[STREAK_DEFINITIONS.slice(0, 2), STREAK_DEFINITIONS.slice(2)].map((row, rowIndex) => (
+              <View key={rowIndex} testID={`streak-info-row-${rowIndex}`} style={styles.cardRow}>
+                {row.map((item, i) => (
+                  <CinematicFadeSlide
+                    key={item.id}
+                    active={visible}
+                    replayKey={`card:${cycle}`}
+                    delay={BASE_DELAY + 400 + (rowIndex * 2 + i) * 180}
+                    duration={DURATION}
+                    style={styles.cardColumn}
+                  >
+                    <View testID={`streak-info-card-${item.id}`} style={styles.card} accessible accessibilityLabel={`${item.title}. ${item.description}`}>
+                      <View style={styles.iconWrap}>
+                        <StreakIcon kind={item.id} />
+                      </View>
+                      <View style={styles.cardText}>
+                        <Text style={styles.cardTitle}>{item.title}</Text>
+                        <Text style={styles.cardDesc}>{item.description}</Text>
+                      </View>
+                    </View>
+                  </CinematicFadeSlide>
+                ))}
+              </View>
             ))}
             <CinematicFadeSlide
               active={visible}
@@ -225,9 +230,13 @@ const styles = StyleSheet.create({
     textAlign: "center",
   },
   cards: { paddingHorizontal: 20, marginTop: 50, gap: 14 },
+  cardRow: { flexDirection: "row", alignItems: "stretch", gap: 14 },
+  cardColumn: { flex: 1, minWidth: 0 },
   card: {
-    flexDirection: "row",
+    flex: 1,
+    flexDirection: "column",
     alignItems: "center",
+    justifyContent: "center",
     gap: 16,
     padding: 18,
     borderRadius: 22,
@@ -246,12 +255,13 @@ const styles = StyleSheet.create({
     textShadowOffset: { width: 0, height: 0 },
     textShadowRadius: 4,
   },
-  cardText: { flex: 1, gap: 4 },
-  cardTitle: { fontFamily: "Manrope", fontSize: 16, fontWeight: "700", color: WHITE },
+  cardText: { width: "100%", alignItems: "center", gap: 4 },
+  cardTitle: { fontFamily: "Manrope", fontSize: 16, fontWeight: "700", color: WHITE, textAlign: "center" },
   cardDesc: {
     fontFamily: "Manrope",
     fontSize: 13,
     lineHeight: 20,
+    textAlign: "center",
     color: STREAK_INFO_COLORS.description,
   },
   footnote: {

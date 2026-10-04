@@ -50,7 +50,7 @@ function harness({
   let closes = 0;
   const nodes = new Map<string, Props>();
   const Native = ({ children, style, testID, accessibilityLabel, accessibilityRole, onPress, name, color, size, replayKey, contentContainerStyle, bounces, alwaysBounceVertical, overScrollMode }: Props) => {
-    if (testID) nodes.set(testID, { style, contentContainerStyle, bounces, alwaysBounceVertical, overScrollMode });
+    if (testID) nodes.set(testID, { children, style, contentContainerStyle, bounces, alwaysBounceVertical, overScrollMode });
     if (testID === "streak-info-close") closeButton = onPress;
     const resolved = flatten(style);
     return React.createElement("div", {
@@ -144,7 +144,7 @@ test("streak sheet is hidden when closed and has exactly four ordered explanator
   assert.doesNotMatch(html, /data-icon="arrow-left"/);
   assert.match(html, /Existen diferentes tipos de rachas que te muestran tu compromiso/);
   for (const description of [
-    "Dias activos de esta semana, no necesariamente tienen que ser consecutivos",
+    "Días activos de esta semana, no necesariamente consecutivos.",
     "Total de días que has sumado de racha desde que comenzaste",
     "Tu mejor secuencia de dias de racha consecutiva en la App",
     "Semanas de lunes a domingo en las que completaste los 7 días activos",
@@ -199,6 +199,40 @@ test("cards are exactly 50px after the description in normal flow, with black 16
   const heroStyle = flatten(h.nodes.get("streak-info-hero")!.style);
   assert.equal(heroStyle.height, undefined);
   assert.equal(heroStyle.minHeight, undefined);
+});
+
+test("four vertically centered cards form exactly two equal-width columns and two rows", () => {
+  for (const width of [320, 375, 402, 768]) {
+    const h = harness({ width });
+    h.render(true);
+    const expectedRows = [["current", "accumulated"], ["longest", "completed"]];
+    assert.equal([...h.nodes.keys()].filter(id => id.startsWith("streak-info-row-")).length, 2);
+    for (const [index, ids] of expectedRows.entries()) {
+      const row = h.nodes.get(`streak-info-row-${index}`)!;
+      const rowStyle = flatten(row.style);
+      assert.equal(rowStyle.flexDirection, "row");
+      assert.equal(rowStyle.alignItems, "stretch");
+      const columns = React.Children.toArray(row.children) as React.ReactElement<Props>[];
+      assert.equal(columns.length, 2);
+      for (const [columnIndex, column] of columns.entries()) {
+        assert.equal(flatten(column.props.style).flex, 1);
+        assert.equal(flatten(column.props.style).minWidth, 0);
+        const card = column.props.children as React.ReactElement<Props>;
+        assert.equal(card.props.testID, `streak-info-card-${ids[columnIndex]}`);
+        const cardStyle = flatten(card.props.style);
+        assert.equal(cardStyle.flexDirection, "column");
+        assert.equal(cardStyle.alignItems, "center");
+        assert.equal(cardStyle.justifyContent, "center");
+        const [icon, text] = React.Children.toArray(card.props.children) as React.ReactElement<Props>[];
+        assert.equal(flatten(icon.props.style).width, 56);
+        assert.equal(flatten(text.props.style).alignItems, "center");
+        for (const label of React.Children.toArray(text.props.children) as React.ReactElement<Props>[]) {
+          assert.equal(flatten(label.props.style).textAlign, "center");
+        }
+      }
+      assert.ok((width - 40 - Number(rowStyle.gap)) / 2 > 0);
+    }
+  }
 });
 
 test("sheet scrolls edge to edge without fixed headers or footers, retaining content-only safe insets and natural text scaling", () => {
