@@ -240,49 +240,19 @@ function PreviewContentEntrance({
   );
 }
 
-const REWARD_AVATAR = require("../assets/images/growth/reward-avatar-lotus.png");
 const WALL_REWARD_TEXT = "Comparte sin sello de agua en Mi muro expansivo";
 
-function RewardArtwork({ module }: { module: number }) {
-  const [localUri, setLocalUri] = useState(() => growthImageUris.get(module) ?? null);
-  useEffect(() => {
-    if (Platform.OS === "web") return;
-    let mounted = true;
-    loadGrowthImage(module)
-      .then((uri) => { if (mounted) setLocalUri(uri); })
-      .catch((error) => console.warn(`[GrowthJourney] No se pudo cargar el avatar de recompensa: ${String(error)}`));
-    return () => { mounted = false; };
-  }, [module]);
-  const source = Platform.OS === "web" ? module : localUri ? { uri: localUri } : null;
-  return source ? (
-    <Image
-      source={source}
-      resizeMode="cover"
-      style={styles.levelImage}
+function RewardLock({ levelId }: { levelId: string }) {
+  return (
+    <MaterialCommunityIcons
+      testID={`${levelId}-reward-lock`}
+      name="lock"
+      size={16}
+      color={GROWTH_COLORS.muted}
+      style={styles.avatarRewardLock}
       accessibilityElementsHidden
       importantForAccessibility="no"
-      onError={(event) => console.warn(`[GrowthJourney] No se pudo mostrar el avatar de recompensa: ${event.nativeEvent.error}`)}
     />
-  ) : null;
-}
-
-function RewardAvatar({ module, levelId }: { module: number; levelId: string }) {
-  return (
-    <View testID={`${levelId}-reward-avatar`} style={styles.rewardAvatarFrame}>
-      <View style={styles.rewardAvatar}>
-      <RewardArtwork module={module} />
-      <View testID={`${levelId}-reward-overlay`} pointerEvents="none" style={styles.rewardAvatarOverlay} />
-      </View>
-        <MaterialCommunityIcons
-          testID={`${levelId}-reward-lock`}
-          name="lock"
-          size={13}
-          color={GROWTH_COLORS.muted}
-          style={styles.rewardLock}
-          accessibilityElementsHidden
-          importantForAccessibility="no"
-        />
-    </View>
   );
 }
 
@@ -393,16 +363,16 @@ function GrowthRow({
           pointerEvents="none"
           accessibilityState={{ disabled: true }}
         >
-          <View testID={`${level.id}-reward-content`} style={styles.rewardContent}>
-          <RewardAvatar module={REWARD_AVATAR} levelId={level.id} />
+          <View testID={`${level.id}-reward-content`} style={[styles.rewardContent, styles.avatarRewardContent]}>
+          <RewardLock levelId={level.id} />
           <Text
             style={[styles.rewardText, { color: status === "locked" ? GROWTH_COLORS.muted : colors.mutedForeground }]}
-            numberOfLines={level.id === "expansion" ? undefined : 2}
-            adjustsFontSizeToFit={level.id !== "expansion"}
-            minimumFontScale={0.75}
+            numberOfLines={1}
+            adjustsFontSizeToFit
+            minimumFontScale={0.6}
             ellipsizeMode="tail"
           >
-            {"Desbloquea 50\navatares nuevos"}
+            {"Desbloquea 50 avatares nuevos"}
           </Text>
           </View>
         </View>
@@ -626,31 +596,12 @@ const styles = StyleSheet.create({
     justifyContent: "flex-start",
   },
   rewardContent: { flexDirection: "row", alignItems: "center", maxWidth: "100%", flexShrink: 1, paddingLeft: 3, gap: 6 },
+  avatarRewardContent: { paddingLeft: 0, flexWrap: "nowrap" },
+  avatarRewardLock: { width: 16, height: 16, lineHeight: 16, includeFontPadding: false, flexShrink: 0 },
   wallReward: { marginTop: 0 },
   wallRewardIcon: { width: 35, height: 35, flexShrink: 0, position: "relative", alignItems: "center", justifyContent: "center" },
   rewardLock: { position: "absolute", left: -3, top: -3, width: 13, height: 13 },
   rewardText: { flexShrink: 1, minWidth: 0, fontFamily: "Manrope", fontSize: 11, lineHeight: 16 },
-  rewardAvatarOverlay: {
-    position: "absolute",
-    top: 0,
-    left: 0,
-    right: 0,
-    bottom: 0,
-    backgroundColor: "rgba(0,0,0,0.16)",
-    alignItems: "center",
-    justifyContent: "center",
-  },
-  rewardAvatarFrame: { width: 35, height: 35, flexShrink: 0, position: "relative" },
-  rewardAvatar: {
-    width: 35,
-    height: 35,
-    flexShrink: 0,
-    borderRadius: 17.5,
-    overflow: "hidden",
-    borderWidth: 1.5,
-    borderColor: "rgba(255,255,255,0.2)",
-    backgroundColor: "rgba(0,0,0,0.3)",
-  },
   name: { fontFamily: "Manrope", fontSize: 15, fontWeight: "700", lineHeight: 20, marginBottom: 6 },
   dayPill: {
     alignSelf: "flex-start",

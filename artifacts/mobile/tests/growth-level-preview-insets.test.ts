@@ -48,7 +48,6 @@ const Native = ({ accessibilityLabel, accessibilityRole, children, onPress, styl
     "data-disabled": accessibilityState?.disabled,
     "data-lines": numberOfLines,
     "data-auto-size": adjustsFontSizeToFit,
-    "data-background": resolvedStyle.backgroundColor,
     "data-stop-opacity": stopOpacity,
     "data-padding-vertical": resolvedStyle.paddingVertical,
     "data-direction": resolvedStyle.flexDirection,
@@ -257,7 +256,7 @@ test("the detail hero uses full square art while default timeline and profile co
   assert.match(fullHero, /data-source="2"/);
 });
 
-test("Semilla displays a filled lock and one lotus avatar in a disabled horizontal pill", () => {
+test("Semilla displays only a larger inline filled lock and a one-line avatar reward", () => {
   const semilla = {
     id: "semilla", name: "Semilla", startDay: 1, endDay: 7,
     image: 1, story: "Tu primer paso abre un espacio para crecer.",
@@ -276,15 +275,17 @@ test("Semilla displays a filled lock and one lotus avatar in a disabled horizont
   assert.ok(lock);
   assert.match(lock, /data-icon="lock"/);
   const source = readFileSync(new URL("../components/GrowthJourney.tsx", import.meta.url), "utf8");
-  assert.match(source, /<MaterialCommunityIcons\s+testID=\{`\$\{levelId\}-reward-lock`\}\s+name="lock"\s+size=\{13\}/);
-  assert.match(source, /rewardLock: \{ position: "absolute", left: -3, top: -3, width: 13, height: 13 \}/);
+  assert.match(source, /<MaterialCommunityIcons\s+testID=\{`\$\{levelId\}-reward-lock`\}\s+name="lock"\s+size=\{16\}/);
+  assert.match(lock, /data-line-height="16"/);
   assert.doesNotMatch(lock, /data-opacity=/);
-  assert.match(lock, /data-height="13"/);
-  assert.match(html, /data-color="rgba\(196,194,222,0.8\)"[^>]*>Desbloquea 50\navatares nuevos/);
+  assert.match(lock, /data-height="16" data-width="16"/);
+  assert.doesNotMatch(lock, /data-position="absolute"/);
+  assert.match(html, /data-color="rgba\(196,194,222,0.8\)"[^>]*data-lines="1" data-auto-size="true"[^>]*>Desbloquea 50 avatares nuevos/);
   assert.doesNotMatch(html, /semilla-reward-chest|data-source="3"/);
   assert.match(html, /data-opacity="0.55"/);
   assert.ok(html.indexOf(`>${semilla.story}</div>`) < html.indexOf('data-testid="semilla-reward"'));
-  assert.ok(html.indexOf('data-testid="semilla-reward-lock"') < html.indexOf(">Desbloquea 50\navatares nuevos</div>"));
+  assert.ok(html.indexOf('data-testid="semilla-reward-lock"') < html.indexOf(">Desbloquea 50 avatares nuevos</div>"));
+  assert.doesNotMatch(html, /semilla-reward-avatar|semilla-reward-overlay|data-source="5"/);
   assert.doesNotMatch(html, /Regalitos sorpresa|Desbloquea tu cofre de regalos/);
   assert.doesNotMatch(html, /data-accessibility-role="button"/);
   for (const id of ["intencion", "brote", "desarrollo", "enraizamiento", "floracion", "ascenso-inicio"]) {
@@ -295,7 +296,7 @@ test("Semilla displays a filled lock and one lotus avatar in a disabled horizont
   }
 });
 
-test("Crecimiento, Vegetación and Expansión share Semilla's small filled lock and gray avatar-unlock text, without chests", () => {
+test("all reward stages share the 16-point inline lock and single-line text without avatar artwork", () => {
   for (const [id, name] of [["crecimiento", "Crecimiento"], ["vegetacion", "Vegetación"], ["expansion", "Expansión"]]) {
     const story = `Descripción de ${name}.`;
     const html = renderToStaticMarkup(React.createElement(GrowthRow, {
@@ -312,27 +313,25 @@ test("Crecimiento, Vegetación and Expansión share Semilla's small filled lock 
     assert.ok(lock, id);
     assert.match(lock, /data-icon="lock"/);
     assert.doesNotMatch(lock, /data-opacity=/);
-    assert.match(lock, /data-height="13"/);
-    assert.match(html, /data-color="rgba\(196,194,222,0.8\)"[^>]*>Desbloquea 50\navatares nuevos/);
+    assert.match(lock, /data-height="16" data-width="16"/);
+    assert.doesNotMatch(lock, /data-position="absolute"/);
+    assert.match(html, /data-color="rgba\(196,194,222,0.8\)"[^>]*>Desbloquea 50 avatares nuevos/);
     assert.doesNotMatch(html, /reward-chest|data-source="3"/);
     assert.match(html, /data-opacity="0.55"/);
     assert.ok(html.indexOf(`>${story}</div>`) < html.indexOf(`data-testid="${id}-reward"`));
     assert.doesNotMatch(html, /Regalitos sorpresa|Desbloquea tu cofre de regalos|data-accessibility-role="button"/);
     const banner = html.slice(html.indexOf(`data-testid="${id}-reward"`));
-    assert.ok(banner.indexOf(`data-testid="${id}-reward-avatar"`) < banner.indexOf(`data-testid="${id}-reward-lock"`));
-    assert.ok(banner.indexOf(`data-testid="${id}-reward-lock"`) < banner.indexOf(">Desbloquea 50\navatares nuevos"));
-    if (id !== "expansion") assert.match(banner, /data-lines="2" data-auto-size="true"/);
-    else assert.doesNotMatch(banner, /data-lines=/);
-    assert.match(banner, /data-background="rgba\(0,0,0,0.16\)"/);
+    assert.ok(banner.indexOf(`data-testid="${id}-reward-lock"`) < banner.indexOf(">Desbloquea 50 avatares nuevos"));
+    assert.match(banner, /data-lines="1" data-auto-size="true"/);
+    assert.match(banner, new RegExp(`data-testid="${id}-reward-content"[^>]*data-direction="row" data-align="center" data-gap="6" data-wrap="nowrap"`));
     assert.match(banner, /data-opacity="0.55"/);
-    assert.match(banner, /data-source="5"/);
-    assert.doesNotMatch(banner, /data-source="[46]"/);
+    assert.doesNotMatch(banner, /reward-avatar|reward-overlay|data-source="[456]"/);
     assert.match(reward, /data-opacity="0.55"/);
-    assert.equal((banner.match(/data-height="35" data-width="35" data-border-radius="17.5" data-border-width="1.5" data-border-color="rgba\(255,255,255,0.2\)"/g) ?? []).length, 1);
+    assert.equal((banner.match(/data-height="35" data-width="35" data-border-radius="17.5" data-border-width="1.5" data-border-color="rgba\(255,255,255,0.2\)"/g) ?? []).length, 0);
   }
 });
 
-test("all reward visuals are dimmed together only outside the current stage, without double-dimming the image", () => {
+test("all reward locks and text are dimmed together only outside the current stage", () => {
   for (const id of ["semilla", "crecimiento", "vegetacion", "expansion"]) {
     for (const status of ["current", "locked"]) {
       const html = renderToStaticMarkup(React.createElement(GrowthRow, {
@@ -341,15 +340,14 @@ test("all reward visuals are dimmed together only outside the current stage, wit
       }));
       const banner = html.slice(html.indexOf(`data-testid="${id}-reward"`)).split('data-testid="expansion-wall-reward"')[0];
       assert.equal((banner.match(/data-opacity="0.55"/g) ?? []).length, status === "locked" ? 1 : 0);
-      const avatar = banner.slice(banner.indexOf(`data-testid="${id}-reward-avatar"`));
-      assert.doesNotMatch(avatar, /data-opacity=/);
+       assert.doesNotMatch(banner, /reward-avatar|reward-overlay/);
     }
   }
 });
 
 test("Expansion shows the full avatar phrase and the actual wall plus with three translucent white halos, not photos", () => {
   const source = readFileSync(new URL("../components/GrowthJourney.tsx", import.meta.url), "utf8");
-  assert.match(source, /numberOfLines=\{level.id === "expansion" \? undefined : 2\}/);
+  assert.match(source, /numberOfLines=\{1\}\s+adjustsFontSizeToFit\s+minimumFontScale=\{0\.6\}/);
   for (const id of ["semilla", "crecimiento", "vegetacion", "expansion"]) {
     const html = renderToStaticMarkup(React.createElement(GrowthRow, {
       level: { id, name: id, startDay: 50, endDay: 56, image: 1, story: "Descripción." },
@@ -359,8 +357,8 @@ test("Expansion shows the full avatar phrase and the actual wall plus with three
       assert.doesNotMatch(html, /expansion-wall-reward|Comparte sin sello/);
       continue;
     }
-    assert.match(html, /Desbloquea 50\navatares nuevos/);
-    assert.ok(html.indexOf(">Desbloquea 50\navatares nuevos") < html.indexOf('data-testid="expansion-wall-reward"'));
+    assert.match(html, /Desbloquea 50 avatares nuevos/);
+    assert.ok(html.indexOf(">Desbloquea 50 avatares nuevos") < html.indexOf('data-testid="expansion-wall-reward"'));
     const wall = html.slice(html.indexOf('data-testid="expansion-wall-reward"'));
     assert.match(wall, /data-opacity="0.55"/);
     assert.match(wall, /data-pointer-events="none" data-disabled="true"/);
@@ -422,10 +420,11 @@ test("reward pills grow in normal flow and preserve nonreward and profile previe
   assert.doesNotMatch(pill, /backgroundColor|borderWidth|borderColor|borderRadius/);
   assert.match(pill, /justifyContent: "flex-start"/);
   assert.match(source, /rewardContent: \{ flexDirection: "row", alignItems: "center", maxWidth: "100%", flexShrink: 1, paddingLeft: 3, gap: 6 \}/);
-  // Content inset cancels the lock's outward offset: its left edge matches the description.
-  assert.match(source, /rewardLock: \{ position: "absolute", left: -3,/);
-  assert.match(copy.getText(ast), /testID=\{`\$\{level.id\}-reward-content`\} style=\{styles.rewardContent\}/);
-  assert.match(source, /rewardAvatarOverlay: \{[\s\S]*?position: "absolute"[\s\S]*?backgroundColor: "rgba\(0,0,0,0.16\)"/);
+  // The avatar lock now stays in normal flow, with no inset from the description.
+  assert.match(source, /avatarRewardContent: \{ paddingLeft: 0, flexWrap: "nowrap" \}/);
+  assert.match(copy.getText(ast), /testID=\{`\$\{level.id\}-reward-content`\} style=\{\[styles.rewardContent, styles.avatarRewardContent\]\}/);
+  assert.doesNotMatch(source, /rewardAvatarOverlay|RewardArtwork|RewardAvatar|REWARD_AVATAR/);
+  assert.match(source, /avatarRewardLock: \{ width: 16, height: 16, lineHeight: 16, includeFontPadding: false, flexShrink: 0 \}/);
   assert.match(pill, /minHeight: 50/);
   // Previous rendered height was 36px artwork + 16px padding + 2px border = 54px.
   assert.equal(36 + 8 * 2 + 2 - 50, 4);
