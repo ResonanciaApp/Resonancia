@@ -11,6 +11,7 @@ import {
   MOOD_HISTORY_GRADIENT_END,
 } from "../constants/moodHistoryGradient.ts";
 import {
+  REFLECTION_WALL_BORDER_BASE_GRADIENT,
   REFLECTION_WALL_BORDER_GRADIENT,
   REFLECTION_WALL_BORDER_START,
   REFLECTION_WALL_BORDER_END,
@@ -100,7 +101,7 @@ test("InnerSpaceCard keeps Home defaults and opts profile into a single 18px-ins
   assert.match(card, /styles\.sectionTitle,\s*\{ color: colors\.foreground \}/);
 });
 
-test("the profile wall brightens the mood-history colors by 20% without changing the history background or direction", () => {
+test("the profile wall uses the nine supplied colors with 25% more brightness without changing the history background or direction", () => {
   const card = source("../components/InnerSpaceCard.tsx");
   const border = source("../components/DiscoverSearchBorder.tsx");
   assert.match(card, /canonicalVerticalInsets && \(\s*<DiscoverSearchBorder[\s\S]*?borderRadius=\{24\}[\s\S]*?brightness=\{REFLECTION_WALL_BORDER_BRIGHTNESS\}[\s\S]*?colors=\{theme.id === "cloudy" \? CLOUDY_REFLECTION_WALL_BORDER_GRADIENT : REFLECTION_WALL_BORDER_GRADIENT\}[\s\S]*?start=\{REFLECTION_WALL_BORDER_START\}[\s\S]*?end=\{REFLECTION_WALL_BORDER_END\}/);
@@ -117,13 +118,14 @@ test("the profile wall brightens the mood-history colors by 20% without changing
   assert.deepEqual(MOOD_HISTORY_GRADIENT, ["#074B4C", "#24414F", "#2E3955", "#363459", "#493453", "#57334F", "#5B3D25"]);
   assert.deepEqual(MOOD_HISTORY_GRADIENT_START, { x: 0.35, y: 0 });
   assert.deepEqual(MOOD_HISTORY_GRADIENT_END, { x: 0.65, y: 1 });
-  assert.deepEqual(REFLECTION_WALL_BORDER_GRADIENT, ["#085A5B", "#2B4E5F", "#374466", "#413E6B", "#583E64", "#683D5F", "#6D492C"]);
+  assert.deepEqual(REFLECTION_WALL_BORDER_BASE_GRADIENT, ["#4D97A8", "#4D8EA8", "#4D77A8", "#4D70A8", "#5D6EC0", "#756EC1", "#916BB5", "#C18A82", "#D0A66F"]);
+  assert.deepEqual(REFLECTION_WALL_BORDER_GRADIENT, ["#60BDD2", "#60B2D2", "#6095D2", "#608CD2", "#748AF0", "#928AF1", "#B586E2", "#F1ADA3", "#FFD08B"]);
   assert.equal(REFLECTION_WALL_BORDER_START, MOOD_HISTORY_GRADIENT_START);
   assert.equal(REFLECTION_WALL_BORDER_END, MOOD_HISTORY_GRADIENT_END);
   assert.equal(REFLECTION_WALL_BORDER_BRIGHTNESS, 1);
 });
 
-test("the wall renders all seven brightened stops without changing Discover or increasing border opacity", () => {
+test("the wall renders all nine brightened stops without changing Discover or increasing border opacity", () => {
   const compiled = ts.transpileModule(source("../components/DiscoverSearchBorder.tsx"), {
     compilerOptions: { module: ts.ModuleKind.CommonJS, jsx: ts.JsxEmit.ReactJSX, esModuleInterop: true },
   }).outputText;

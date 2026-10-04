@@ -4,8 +4,7 @@ import { URL } from "node:url";
 import test from "node:test";
 import ts from "typescript";
 import { SCENE_THEMES } from "../config/scene-themes.ts";
-import { CLOUDY_REFLECTION_WALL_BORDER_GRADIENT, REFLECTION_WALL_BORDER_GRADIENT } from "../constants/reflectionWallBorder.ts";
-import { MOOD_HISTORY_GRADIENT } from "../constants/moodHistoryGradient.ts";
+import { CLOUDY_REFLECTION_WALL_BORDER_GRADIENT, REFLECTION_WALL_BORDER_BASE_GRADIENT, REFLECTION_WALL_BORDER_GRADIENT } from "../constants/reflectionWallBorder.ts";
 
 const source = readFileSync(new URL("../components/AmbientalDurationSheet.tsx", import.meta.url), "utf8");
 const ast = ts.createSourceFile("AmbientalDurationSheet.tsx", source, ts.ScriptTarget.Latest, true, ts.ScriptKind.TSX);
@@ -76,14 +75,15 @@ test("selected duration circles use 30% black in Cloudy and Indigo 2 without cha
   assert.match(source, /backgroundColor: customMode\s*\? selectedCustomBackground/);
 });
 
-test("Cloudy and Indigo wall borders share mood-history colors with 20% brighter RGB channels", () => {
+test("Cloudy and Indigo wall borders share the supplied palette with 25% brighter RGB channels", () => {
   assert.equal(CLOUDY_REFLECTION_WALL_BORDER_GRADIENT, REFLECTION_WALL_BORDER_GRADIENT);
-  assert.notEqual(REFLECTION_WALL_BORDER_GRADIENT, MOOD_HISTORY_GRADIENT);
-  for (let i = 0; i < MOOD_HISTORY_GRADIENT.length; i++) {
+  assert.notEqual(REFLECTION_WALL_BORDER_GRADIENT, REFLECTION_WALL_BORDER_BASE_GRADIENT);
+  assert.equal(REFLECTION_WALL_BORDER_GRADIENT.length, 9);
+  for (let i = 0; i < REFLECTION_WALL_BORDER_BASE_GRADIENT.length; i++) {
     for (const channel of [1, 3, 5]) {
       assert.equal(
         parseInt(REFLECTION_WALL_BORDER_GRADIENT[i].slice(channel, channel + 2), 16),
-        Math.min(255, Math.round(parseInt(MOOD_HISTORY_GRADIENT[i].slice(channel, channel + 2), 16) * 1.2)),
+        Math.min(255, Math.round(parseInt(REFLECTION_WALL_BORDER_BASE_GRADIENT[i].slice(channel, channel + 2), 16) * 1.25)),
       );
     }
   }
