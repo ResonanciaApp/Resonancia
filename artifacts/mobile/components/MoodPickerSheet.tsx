@@ -1,5 +1,6 @@
 import { Feather } from "@expo/vector-icons";
 import { Image } from "expo-image";
+import * as Haptics from "expo-haptics";
 import { getMoodHeroGradient } from "@/utils/moodHeroGradient";
 import { router } from "expo-router";
 import { openPremiumPlans } from "@/lib/premiumGate";
@@ -320,6 +321,11 @@ export function MoodPickerSheet({
 
   function toggleMood(moodId: MoodId) {
     if (!historyReady || isDailyCheckInLocked) return;
+    if (Platform.OS !== "web" && selected[0] !== moodId) {
+      void Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Soft).catch((error) => {
+        console.warn("[MoodPickerSheet] No se pudo emitir la háptica suave:", error);
+      });
+    }
     setSelected((current) => current[0] === moodId ? [] : [moodId]);
   }
 
