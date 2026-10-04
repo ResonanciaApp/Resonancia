@@ -338,7 +338,7 @@ export function ExploreScreen({
     () => getEditorialPlaylistCarouselsForSurface("discover"),
     [catalogVersion],
   );
-  const { session: featuredMoment, statusMessage: featuredMomentStatus } =
+  const { session: featuredMoment } =
     useFeaturedMoment();
 
   const ancestralesSessions = React.useMemo(
@@ -727,13 +727,6 @@ export function ExploreScreen({
                     );
                   })()}
                 </Pressable>
-              ) : (
-                <Text style={styles.featuredMomentStatus}>
-                  {featuredMomentStatus ?? "Actualizando selección diaria…"}
-                </Text>
-              )}
-              {featuredMoment && featuredMomentStatus ? (
-                <Text style={styles.featuredMomentStatus}>{featuredMomentStatus}</Text>
               ) : null}
             </View>
             <View style={styles.sectionSpacer} />
@@ -745,9 +738,9 @@ export function ExploreScreen({
                 title={carousel.title}
                 titleSize={19}
                 playlists={carousel.playlists}
+                editorialTextPlacement="below-title"
                 showDurationClock
                 showPremiumBadge
-                stackTypeAboveDuration
                 onPress={(playlist) =>
                   openCategory(`/editorial-playlist/${encodeURIComponent(playlist.id)}`)
                 }
@@ -1124,13 +1117,6 @@ const styles = StyleSheet.create({
     paddingHorizontal: H_PAD,
     marginTop: 0,
     marginBottom: SECTION_GAP,
-  },
-  featuredMomentStatus: {
-    color: CARD_TEXT_BELOW,
-    fontFamily: "Manrope",
-    fontSize: 13,
-    marginTop: 8,
-    marginBottom: 10,
   },
   heroImageContainer: {
     width: "100%",

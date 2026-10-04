@@ -281,7 +281,10 @@ export function InnerSpaceCard({
       );
       return;
     }
-    if (inputActive) return;
+    if (inputActive) {
+      inputRef.current?.focus();
+      return;
+    }
     if (onComposeRequested) {
       onComposeRequested();
       return;
@@ -616,6 +619,7 @@ export function InnerSpaceCard({
         <TextInput
           ref={inputRef}
           editable={inputActive}
+          showSoftInputOnFocus
           pointerEvents={inputActive ? "auto" : "none"}
           onBlur={() => {
             setInputActive(false);

@@ -131,7 +131,7 @@
 - [Drizzle push y datos de Inspiraciones](drizzle-push-inspirations.md) — `push` puede pedir truncar Inspiraciones por un índice único ajeno al cambio; no usar `push-force` sin resolver los duplicados
 - [Entitlement RevenueCat desconocido](revenuecat-entitlement-unknown.md) — error/carga/no-configurado nunca equivale a free; conservar último entitlement verificado solo hasta su expiración real
 - [Transiciones desde el drawer](drawer-destination-transition.md) — destinos del menú usan un progreso único para ventana+drawer; aperturas desde otros orígenes conservan su animación normal
-- [Etiquetas libres de playlists](playlist-free-editorial-labels.md) — Tipo editorial admite texto libre; `none` oculta la píldora y los slugs históricos conservan su etiqueta traducida
+- [Etiquetas libres de playlists](playlist-free-editorial-labels.md) — texto editorial libre; `none` oculta el texto, sea píldora o descripción; slugs históricos conservan su traducción
 - [Reflexiones conserva el ID charlas](reflexiones-charlas-id.md) — la categoría visible Reflexiones usa el ID técnico `charlas`; no confundir con diario/reflexiones personales
 - [Temáticas Chakra retiradas](chakra-editorial-scope.md) — ocultar Chakra solo de Otras temáticas; Geometrix y la colección Sonidos para Chakras son independientes
 - [Gate Premium global y modales nativos](premium-gate-modal-hosts.md) — todo bloqueo free abre directamente la oferta de 3 planes; dentro de Modal se hospeda en esa misma ventana nativa

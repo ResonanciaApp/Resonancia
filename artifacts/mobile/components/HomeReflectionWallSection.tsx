@@ -7,7 +7,6 @@ import React, {
   useState,
 } from "react";
 import {
-  InteractionManager,
   Keyboard,
   Platform,
   ScrollView,
@@ -60,7 +59,7 @@ export const HomeReflectionWallSection = forwardRef<HomeReflectionWallHandle, Pr
     const composePendingRef = useRef(false);
     const composeTargetRef = useRef<number | null>(null);
     const composeTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
-    const interactionRef = useRef<ReturnType<typeof InteractionManager.runAfterInteractions> | null>(null);
+    const composeFrameRef = useRef<number | null>(null);
     const lastKeyboardHeightRef = useRef(0);
     const bottomMargin = canonicalVerticalInsets ? 0 : INNER_SPACE_CARD_BOTTOM_MARGIN;
 
@@ -74,7 +73,8 @@ export const HomeReflectionWallSection = forwardRef<HomeReflectionWallHandle, Pr
       if (!composePendingRef.current) return;
       composePendingRef.current = false;
       composeTargetRef.current = null;
-      interactionRef.current?.cancel();
+      if (composeFrameRef.current !== null) cancelAnimationFrame(composeFrameRef.current);
+      composeFrameRef.current = null;
       clearComposeTimer();
       onComposingChange(false);
     }, [clearComposeTimer, onComposingChange]);
@@ -111,13 +111,19 @@ export const HomeReflectionWallSection = forwardRef<HomeReflectionWallHandle, Pr
     }, [scrollRef]);
 
     const requestCompose = useCallback(() => {
-      if (!layoutReady) return;
+      if (!layoutReady) {
+        setFocusRequest((value) => value + 1);
+        return;
+      }
       cancelPendingScroll();
       composePendingRef.current = true;
       onComposingChange(true);
+      // También cubre medidas nativas que no responden: el toque nunca pierde el foco.
+      composeTimerRef.current = setTimeout(finishComposeScroll, 1200);
       // El espacio de scroll se añade antes de medir y antes de enfocar el teclado.
-      interactionRef.current = InteractionManager.runAfterInteractions(() => {
-        requestAnimationFrame(() => {
+      composeFrameRef.current = requestAnimationFrame(() => {
+        composeFrameRef.current = requestAnimationFrame(() => {
+          composeFrameRef.current = null;
           if (!composePendingRef.current) return;
           measureSectionAndViewport((cardY, cardHeight, viewportY, viewportHeight) => {
             if (!composePendingRef.current) return;
@@ -175,7 +181,8 @@ export const HomeReflectionWallSection = forwardRef<HomeReflectionWallHandle, Pr
       return () => {
         show.remove();
         hide.remove();
-        interactionRef.current?.cancel();
+        if (composeFrameRef.current !== null) cancelAnimationFrame(composeFrameRef.current);
+        composeFrameRef.current = null;
         clearComposeTimer();
       };
     }, [clearComposeTimer, onComposingChange]);

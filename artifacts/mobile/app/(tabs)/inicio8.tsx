@@ -2376,7 +2376,7 @@ export default function HomeScreen2({
   }, [activeTheme]);
 
   const { version: catalogVersion } = useCatalog();
-  const { session: featuredMoment, statusMessage: featuredMomentStatus } =
+  const { session: featuredMoment } =
     useFeaturedMoment();
 
   const [actionsSession, setActionsSession] = useState<Session | null>(null);
@@ -3144,13 +3144,6 @@ export default function HomeScreen2({
                 );
               })()}
             </Pressable>
-            ) : (
-              <Text style={styles.featuredMomentStatus}>
-                {featuredMomentStatus ?? "Actualizando selección diaria…"}
-              </Text>
-            )}
-            {featuredMoment && featuredMomentStatus ? (
-              <Text style={styles.featuredMomentStatus}>{featuredMomentStatus}</Text>
             ) : null}
           </View>
         )}
@@ -4764,13 +4757,6 @@ const styles = StyleSheet.create({
     position: "absolute",
     left: 12,
     bottom: 12,
-  },
-  featuredMomentStatus: {
-    color: CARD_TEXT_BELOW,
-    fontFamily: "Manrope",
-    fontSize: 13,
-    marginTop: 8,
-    marginBottom: 10,
   },
   heroMetaText: { fontFamily: "Manrope", fontSize: 11, lineHeight: 14, color: "#F4F4F4", marginBottom: 6 },
   heroTitle: { fontFamily: "Manrope", fontSize: 14, fontWeight: "600", lineHeight: 18, color: "#FBFBFB", marginBottom: 4 },

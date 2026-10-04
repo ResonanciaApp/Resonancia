@@ -12,7 +12,7 @@ import {
   type ViewStyle,
 } from "react-native";
 
-import { CARD_TEXT_ABOVE } from "@/constants/colors";
+import { CARD_TEXT_ABOVE, CARD_TEXT_BELOW } from "@/constants/colors";
 import { BLUR_PLACEHOLDER, IMAGE_TRANSITION } from "@/constants/imagePlaceholder";
 import type { EditorialPlaylist } from "@/data/playlists";
 import {
@@ -28,6 +28,14 @@ const CARD_WIDTH = Math.round(
 );
 const CARD_HEIGHT = CARD_WIDTH;
 
+function editorialLabel(type: string): string | null {
+  if (type === "none") return null;
+  if (type === "meditative") return "Meditativa";
+  if (type === "relaxation") return "Relajación";
+  if (type === "ritual") return "Ritual";
+  return type || null;
+}
+
 export function EditorialPlaylistCarousel({
   title,
   titleSize = 17,
@@ -39,6 +47,7 @@ export function EditorialPlaylistCarousel({
   gridLayout = false,
   titleLift = 0,
   showDurationClock = false,
+  editorialTextPlacement = "cover",
 }: {
   title: string;
   titleSize?: number;
@@ -50,6 +59,7 @@ export function EditorialPlaylistCarousel({
   gridLayout?: boolean;
   titleLift?: number;
   showDurationClock?: boolean;
+  editorialTextPlacement?: "cover" | "below-title";
 }) {
   const { isPremium } = usePremium();
   if (playlists.length === 0) return null;
@@ -91,7 +101,7 @@ export function EditorialPlaylistCarousel({
             colors={["rgba(0,0,0,0.02)", "rgba(0,0,0,0.08)", "rgba(0,0,0,0.42)"]}
             style={StyleSheet.absoluteFill}
           />
-          {playlist.editorialType !== "none" ? (
+          {editorialTextPlacement === "cover" && editorialLabel(playlist.editorialType) ? (
             <View
               style={[
                 styles.typePill,
@@ -101,13 +111,7 @@ export function EditorialPlaylistCarousel({
               <SessionBadgeGlass showBlackTint={false} />
               <View style={styles.whitePillTint} />
               <Text style={[styles.typeText, { color: CARD_TEXT_ABOVE }]}>
-                {playlist.editorialType === "meditative"
-                  ? "Meditativa"
-                  : playlist.editorialType === "relaxation"
-                    ? "Relajación"
-                    : playlist.editorialType === "ritual"
-                      ? "Ritual"
-                      : playlist.editorialType}
+                {editorialLabel(playlist.editorialType)}
               </Text>
             </View>
           ) : null}
@@ -136,6 +140,18 @@ export function EditorialPlaylistCarousel({
       >
         {playlist.title}
       </Text>
+      {editorialTextPlacement === "below-title" && editorialLabel(playlist.editorialType) ? (
+        <Text
+          testID={`editorial-playlist-description-${playlist.id}`}
+          style={[
+            styles.cardDescription,
+            titleLift !== 0 && { transform: [{ translateY: -titleLift }] },
+          ]}
+          numberOfLines={2}
+        >
+          {editorialLabel(playlist.editorialType)}
+        </Text>
+      ) : null}
     </PressScale>
   ));
 
@@ -288,5 +304,13 @@ const styles = StyleSheet.create({
     lineHeight: 18,
     fontWeight: "600",
     marginTop: 3,
+  },
+  cardDescription: {
+    fontFamily: "Manrope",
+    fontSize: 10,
+    lineHeight: 15,
+    fontWeight: "500",
+    color: CARD_TEXT_BELOW,
+    marginTop: 4,
   },
 });

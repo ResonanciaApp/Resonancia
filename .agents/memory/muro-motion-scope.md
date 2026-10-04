@@ -20,3 +20,9 @@ Al tocar el campo para escribir, la secuencia deseada es distinta de la apertura
 **Why:** El usuario observó que el scroll previo a foco apenas subía y el ajuste automático al abrir el teclado producía un segundo movimiento brusco. Incrementar la separación del teclado en varias ocasiones no resolvió la secuencia porque solo aumentaba el segundo movimiento. Confirmó que completar el scroll antes de mostrar el teclado y suprimir el ajuste automático funciona, pero la primera reserva conservadora subía demasiado la tarjeta.
 
 **How to apply:** Para escribir, calcular el destino del scroll desde el borde visible real de la tarjeta (no sumar su margen inferior ni imponer una altura mínima si ya está desplegada); el objetivo pedido es dejar 15 px hasta el borde superior del teclado. Usar la altura medida del teclado cuando se conozca y solo una estimación inicial si aún no apareció. Dar espacio de scroll suficiente antes de enfocar, esperar a que termine el desplazamiento nativo y suspender el ajuste automático del teclado durante esa escritura; conservar el espacio extra hasta que termine de ocultarse el teclado para evitar saltos al cerrar.
+
+La activación de escritura no debe depender del fin global de las interacciones o de una respuesta indefinida de las mediciones nativas.
+
+**Why:** El usuario reportó que tocar el campo no abría el teclado. En una pantalla con animaciones, esperar reposo global puede bloquear la solicitud; un respaldo limitado al final del scroll tampoco cubre una medición que nunca responde.
+
+**How to apply:** Conservar el desplazamiento previo normal, pero garantizar una salida de la solicitud completa desde antes de medir. Cancelar esa salida si el usuario empieza a arrastrar, cambia de pantalla o se desmonta la sección, para no abrir el teclado después.
