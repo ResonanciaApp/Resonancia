@@ -11,17 +11,21 @@ const compiled = ts.transpileModule(source, {
 const exports = {} as typeof import("../config/scene-themes");
 new Function("exports", compiled)(exports);
 
-test("Índigo 2 brightens its current seven stops once by a 2.5% white mix", () => {
+test("Índigo 2 increases saturation 3%, reduces brightness 2%, and increases contrast 1% once", () => {
   const theme = exports.SCENE_THEMES.indigo2;
-  const previous = ["#21315F", "#21295D", "#22265D", "#27215F", "#27225C", "#31215F", "#342265"];
-  const brightened = previous.map((hex) =>
-    "#" + hex.slice(1).match(/../g)!.map(channel =>
-      Math.round(parseInt(channel, 16) * 0.975 + 255 * 0.025)
-        .toString(16).padStart(2, "0"),
-    ).join("").toUpperCase(),
-  );
-  assert.deepEqual(theme.gradient, brightened);
-  assert.deepEqual(theme.gradient, ["#273663", "#272E61", "#282B61", "#2C2763", "#2C2860", "#362763", "#392869"]);
+  const previous = ["#273663", "#272E61", "#282B61", "#2C2763", "#2C2860", "#362763", "#392869"];
+  const adjusted = previous.map((hex) => {
+    const rgb = hex.slice(1).match(/../g)!.map(channel => parseInt(channel, 16));
+    const lightness = (Math.min(...rgb) + Math.max(...rgb)) / 2;
+    return "#" + rgb.map(channel => {
+      const saturated = lightness + (channel - lightness) * 1.03;
+      const darker = saturated * 0.98;
+      const contrasted = 127.5 + (darker - 127.5) * 1.01;
+      return Math.round(Math.max(0, Math.min(255, contrasted))).toString(16).padStart(2, "0");
+    }).join("").toUpperCase();
+  });
+  assert.deepEqual(theme.gradient, adjusted);
+  assert.deepEqual(theme.gradient, ["#243462", "#242C60", "#252960", "#2A2462", "#2A255F", "#342462", "#372568"]);
   assert.deepEqual(theme.gradientLocations, [0, 0.167, 0.333, 0.5, 0.667, 0.833, 1]);
   assert.equal(theme.gradientLocations?.length, theme.gradient.length);
   assert.equal(theme.solid, theme.gradient[0]);

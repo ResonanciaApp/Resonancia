@@ -17,10 +17,10 @@ const brighten = (hex: string) => "#" + hex.slice(1).match(/../g)!.map(channel =
   Math.round(parseInt(channel, 16) * 0.965 + 255 * 0.035).toString(16).padStart(2, "0"),
 ).join("").toUpperCase();
 
-test("Índigo 2 keeps its adjusted palette with 2.5% additional brightness, evenly spaced vertically", () => {
+test("Índigo 2 keeps its latest saturation, brightness and contrast adjustment, evenly spaced vertically", () => {
   const { indigo2 } = themes.SCENE_THEMES;
-  assert.deepEqual(indigo2.gradient, ["#273663", "#272E61", "#282B61", "#2C2763", "#2C2860", "#362763", "#392869"]);
-  assert.equal(indigo2.solid, "#273663");
+  assert.deepEqual(indigo2.gradient, ["#243462", "#242C60", "#252960", "#2A2462", "#2A255F", "#342462", "#372568"]);
+  assert.equal(indigo2.solid, "#243462");
   assert.equal(indigo2.accent, "#E8E8E8");
   assert.deepEqual(indigo2.gradientLocations, [0, 0.167, 0.333, 0.5, 0.667, 0.833, 1]);
   assert.deepEqual(indigo2.gradientStart, { x: 0.5, y: 0 });

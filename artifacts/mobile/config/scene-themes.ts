@@ -44,12 +44,12 @@ export type SceneTheme = {
 const INDIGO2_THEME: SceneTheme = {
   id: "indigo2",
   label: "Indigo 2",
-  // Previous saturation/contrast palette brightened once with a 2.5% white mix.
-  gradient: ["#273663", "#272E61", "#282B61", "#2C2763", "#2C2860", "#362763", "#392869"],
+  // Current palette: HSL saturation ×1.03, 2% black mix, contrast ×1.01 around mid-gray.
+  gradient: ["#243462", "#242C60", "#252960", "#2A2462", "#2A255F", "#342462", "#372568"],
   gradientLocations: [0, 0.167, 0.333, 0.5, 0.667, 0.833, 1],
   gradientStart: { x: 0.5, y: 0 },
   gradientEnd: { x: 0.5, y: 1 },
-  solid: "#273663",
+  solid: "#243462",
   accent: "#E8E8E8",
 };
 

@@ -54,8 +54,8 @@ test("Indigo 2 duration sheet uses the Universo violet gradient without altering
   assert.deepEqual(colorsFor(SCENE_THEMES.indigo2), ["#332261", "#2E2468"]);
   assert.equal(backgroundFor(SCENE_THEMES.indigo2), "#332261");
   assert.deepEqual(colorsFor(SCENE_THEMES.indigo2), colorsFor(SCENE_THEMES.tibet));
-  assert.equal(SCENE_THEMES.indigo2.gradient[1], "#272E61");
-  assert.equal(SCENE_THEMES.indigo2.gradient[2], "#282B61");
+  assert.equal(SCENE_THEMES.indigo2.gradient[1], "#242C60");
+  assert.equal(SCENE_THEMES.indigo2.gradient[2], "#252960");
 });
 
 test("Cloudy selected preset and custom duration use 30% black; other themes keep 16%", () => {
