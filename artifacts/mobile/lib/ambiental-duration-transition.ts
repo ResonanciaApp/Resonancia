@@ -1,6 +1,9 @@
 export const CIRCLE_DIAMETER = 76;
 export const CIRCLE_SHRINK_MS = 350;
-export const MANUAL_HEIGHT_INCREASE = 95;
+export const MANUAL_HEIGHT_INCREASE = 130;
+export const CANCEL_BUTTON_HEIGHT = 54;
+export const DURATION_CONTROL_GAP = 12;
+export const MANUAL_START_SHIFT = CANCEL_BUTTON_HEIGHT + DURATION_CONTROL_GAP;
 export const SHEET_EXPAND_MS = 280;
 export const MANUAL_REVEAL_DELAY_MS = 200;
 export const MANUAL_FADE_MS = 180;
@@ -22,6 +25,7 @@ export type DurationAnimationValues<T extends Value = Value> = {
   scales: T[];
   circleOpacities: T[];
   sheetHeight: T;
+  startShift: T;
   manualOpacity: T;
 };
 
@@ -56,6 +60,7 @@ export function createDurationTransition<T extends Value>({
     values.scales.forEach(value => value.setValue(1));
     values.circleOpacities.forEach(value => value.setValue(1));
     values.manualOpacity.setValue(0);
+    values.startShift.setValue(0);
     changePhase("presets");
   };
   const finishImmediately = () => {
@@ -64,6 +69,7 @@ export function createDurationTransition<T extends Value>({
     values.scales.forEach(value => value.setValue(1 / CIRCLE_DIAMETER));
     values.circleOpacities.forEach(value => value.setValue(0));
     values.sheetHeight.setValue(expandedHeight);
+    values.startShift.setValue(-MANUAL_START_SHIFT);
     values.manualOpacity.setValue(1);
     changePhase("manual");
   };
@@ -79,6 +85,7 @@ export function createDurationTransition<T extends Value>({
       return true;
     }
     const animate = (value: T, config: TimingConfig, next: () => void) => {
+      if (token !== generation || !active) return;
       const animation = timing(value, config);
       animations.add(animation);
       animation.start(({ finished }) => {
@@ -102,10 +109,18 @@ export function createDurationTransition<T extends Value>({
     };
     const expand = () => {
       changePhase("expanding");
+      let completed = 0;
+      const finishExpansion = () => {
+        if (++completed === 2) reveal();
+      };
       animate(values.sheetHeight, {
         toValue: expandedHeight, duration: SHEET_EXPAND_MS,
         useNativeDriver: false, easing: expandEasing,
-      }, reveal);
+      }, finishExpansion);
+      animate(values.startShift, {
+        toValue: -MANUAL_START_SHIFT, duration: SHEET_EXPAND_MS,
+        useNativeDriver: true, easing: expandEasing,
+      }, finishExpansion);
     };
     const shrink = (index: number) => {
       animate(values.scales[index], {

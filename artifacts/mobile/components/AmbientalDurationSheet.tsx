@@ -16,7 +16,7 @@ import { useSceneTheme } from "@/context/SceneThemeContext";
 import { SCENE_THEMES } from "@/config/scene-themes";
 import { useColors } from "@/hooks/useColors";
 import { useAmbientalDurationTransition } from "@/hooks/useAmbientalDurationTransition";
-import { CIRCLE_DIAMETER, MANUAL_HEIGHT_INCREASE } from "@/lib/ambiental-duration-transition";
+import { CIRCLE_DIAMETER, MANUAL_HEIGHT_INCREASE, CANCEL_BUTTON_HEIGHT as CANCEL_HEIGHT, DURATION_CONTROL_GAP as CONTROL_GAP } from "@/lib/ambiental-duration-transition";
 import { FREE_TIMER_MAX_MINUTES, showPremiumGate } from "@/lib/premiumGate";
 import { REGISTER_BUTTON_ENABLED_BACKGROUND } from "@/constants/colors";
 import { PremiumPlansSurface, usePremiumPlansModalHost } from "@/components/PremiumPlansOverlay";
@@ -25,6 +25,7 @@ import Svg, { Path } from "react-native-svg";
 const SHEET_HEIGHT = 320;
 const WHEEL_ROW_HEIGHT = 44;
 const WHEEL_HEIGHT = 132;
+const TITLE_OFFSET_Y = 20;
 const PRESETS = [5, 10, 20] as const;
 const MAX_CUSTOM_HOURS = 8;
 const MINUTES = Array.from({ length: 60 }, (_, index) => index);
@@ -121,7 +122,7 @@ export function AmbientalDurationSheet({
     : [theme.gradient[1], theme.gradient[2]];
   const insets = useSafeAreaInsets();
   const [rendered, setRendered] = useState(visible);
-  const { phase, values, transition, baselineHeight, startButtonLayout, reducedMotion } = useAmbientalDurationTransition();
+  const { phase, values, transition, baselineHeight, startButtonLayout, titleLayout, reducedMotion } = useAmbientalDurationTransition();
   const customMode = phase === "revealing" || phase === "manual";
   const presetsInteractive = visible && phase === "presets";
   const manualInteractive = visible && phase === "manual";
@@ -212,22 +213,31 @@ export function AmbientalDurationSheet({
   const customTotalMinutes = customHours * 60 + customMinutes;
   const selectedMinutes = customMode ? customTotalMinutes : selectedPreset;
   const canStart = visible && selectedMinutes > 0 && (phase === "presets" || phase === "manual");
-  // A constant distance from the bottom cancels the panel's upward height growth.
+  // Swap the two control slots while the panel grows, without moving the lower slot.
   const startBottom = startButtonLayout.current && baselineHeight.current > 0
     ? baselineHeight.current - startButtonLayout.current.y - startButtonLayout.current.height
     : undefined;
-  const pinnedStartStyle = phase !== "presets" && startBottom !== undefined
+  const startAnchorStyle = phase !== "presets" && startBottom !== undefined
     ? {
         position: "absolute" as const,
         left: 0,
         right: 0,
         bottom: startBottom,
+        transform: [{ translateY: values.startShift }],
         height: startButtonLayout.current!.height,
         marginTop: 0,
       }
     : undefined;
+  const manualStartTop = startButtonLayout.current
+    ? startButtonLayout.current.y + MANUAL_HEIGHT_INCREASE - CANCEL_HEIGHT - CONTROL_GAP
+    : undefined;
+  const manualTimerTop = titleLayout.current && manualStartTop !== undefined
+    ? (titleLayout.current.y + titleLayout.current.height + TITLE_OFFSET_Y + manualStartTop) / 2 - WHEEL_HEIGHT / 2
+    : undefined;
   const enterCustomMode = () => {
-    if (visible && startButtonLayout.current) transition.start(baselineHeight.current, reducedMotion.current);
+    if (visible && startButtonLayout.current && titleLayout.current) {
+      transition.start(baselineHeight.current, reducedMotion.current);
+    }
   };
   const closeSheet = () => {
     transition.cancel();
@@ -304,6 +314,13 @@ export function AmbientalDurationSheet({
           >
           <View style={styles.handle} />
           <Text
+            testID="ambiental-duration-title"
+            onLayout={(event) => {
+              if (transition.getPhase() === "presets" && event.nativeEvent.layout.height > 0) {
+                const { y, height } = event.nativeEvent.layout;
+                titleLayout.current = { y, height };
+              }
+            }}
             style={[styles.title, { color: colors.foreground }]}
             accessibilityLabel={
               sessionTitle
@@ -407,13 +424,14 @@ export function AmbientalDurationSheet({
                 </View>
               </View>
             </View>
+          </View>
 
             <Animated.View
               testID="ambiental-duration-manual"
               pointerEvents={manualInteractive ? "auto" : "none"}
               accessibilityElementsHidden={!manualInteractive}
               importantForAccessibility={manualInteractive ? "auto" : "no-hide-descendants"}
-              style={[styles.customArea, { opacity: customOpacity }]}
+              style={[styles.customArea, { top: manualTimerTop, opacity: customOpacity }]}
             >
               <View style={styles.wheelsRow}>
                 <WheelPicker
@@ -436,20 +454,22 @@ export function AmbientalDurationSheet({
                 />
               </View>
             </Animated.View>
-          </View>
 
-          <Pressable
+          <Animated.View
+            testID="ambiental-duration-start-anchor"
+            style={[styles.startAnchor, startAnchorStyle]}
             onLayout={(event) => {
               if (transition.getPhase() === "presets" && event.nativeEvent.layout.height > 0) {
                 const { y, height } = event.nativeEvent.layout;
                 startButtonLayout.current = { y, height };
               }
             }}
+          >
+          <Pressable
             onPress={handleStart}
             disabled={!canStart}
             style={({ pressed }) => [
               styles.startButton,
-              pinnedStartStyle,
               {
                 opacity: !canStart ? 0.45 : pressed ? 0.78 : 1,
               },
@@ -474,6 +494,7 @@ export function AmbientalDurationSheet({
               <Text style={styles.startButtonText}>Empezar sesión</Text>
             </View>
           </Pressable>
+          </Animated.View>
 
           {customMode && (
             <Animated.View testID="ambiental-duration-cancel-anchor" style={{
@@ -481,7 +502,7 @@ export function AmbientalDurationSheet({
               position: "absolute",
               left: 0,
               right: 0,
-              bottom: (startBottom ?? Math.max(insets.bottom, 16)) + (startButtonLayout.current?.height ?? 0) + 12,
+              bottom: (startBottom ?? Math.max(insets.bottom, 16)) + (startButtonLayout.current?.height ?? 0) - CANCEL_HEIGHT,
             }}>
             <Pressable
               onPress={closeSheet}
@@ -548,7 +569,7 @@ const styles = StyleSheet.create({
     textAlign: "center",
     marginTop: 10,
     marginBottom: 10,
-    transform: [{ translateY: 20 }],
+    transform: [{ translateY: TITLE_OFFSET_Y }],
   },
   contentArea: {
     minHeight: 110,
@@ -588,7 +609,10 @@ const styles = StyleSheet.create({
     fontWeight: "600",
   },
   customArea: {
-    ...StyleSheet.absoluteFillObject,
+    position: "absolute",
+    left: 0,
+    right: 0,
+    height: WHEEL_HEIGHT,
     justifyContent: "center",
   },
   wheelsRow: {
@@ -628,21 +652,23 @@ const styles = StyleSheet.create({
   wheelNumber: {
     color: "#F9F9F9",
     fontFamily: "Manrope",
-    fontSize: 22,
+    fontSize: 17,
     fontWeight: "700",
   },
   wheelSuffix: {
     color: "#F9F9F9",
     fontFamily: "Manrope",
-    fontSize: 17,
+    fontSize: 12,
     fontWeight: "600",
+  },
+  startAnchor: {
+    marginTop: 26,
   },
   startButton: {
     alignItems: "center",
     justifyContent: "center",
     paddingVertical: 15,
     borderRadius: 30,
-    marginTop: 26,
     overflow: "hidden",
     shadowColor: "#8769e9",
     shadowOffset: { width: 0, height: 4 },
@@ -668,11 +694,11 @@ const styles = StyleSheet.create({
     color: "#F9F9F9",
   },
   cancelButton: {
-    height: 54,
+    height: CANCEL_HEIGHT,
     borderRadius: 28,
     alignItems: "center",
     justifyContent: "center",
-    marginTop: 12,
+    marginTop: CONTROL_GAP,
   },
   cancelButtonText: {
     fontFamily: "Manrope",

@@ -8,6 +8,7 @@ import ts from "typescript";
 import {
   createDurationTransition, CIRCLE_DIAMETER, CIRCLE_SHRINK_MS,
   MANUAL_HEIGHT_INCREASE, SHEET_EXPAND_MS, MANUAL_FADE_MS, MANUAL_REVEAL_DELAY_MS,
+  CANCEL_BUTTON_HEIGHT, DURATION_CONTROL_GAP, MANUAL_START_SHIFT,
   type DurationPhase,
 } from "../lib/ambiental-duration-transition.ts";
 
@@ -25,6 +26,7 @@ function harness() {
     scales: Array.from({ length: 4 }, (_, i) => new Value(1, `circle-${i}`)),
     circleOpacities: Array.from({ length: 4 }, () => new Value(1)),
     sheetHeight: new Value(320, "height"),
+    startShift: new Value(0, "startShift"),
     manualOpacity: new Value(0, "manual"),
   };
   const transition = createDurationTransition({
@@ -56,7 +58,7 @@ function harness() {
   return { transition, values, jobs, phases, advance, get phase() { return phase; } };
 }
 
-test("four circles shrink sequentially +/20/10/5 at 350 ms, grow 95 px, wait 200 ms, then fade the clock", () => {
+test("four circles shrink sequentially +/20/10/5 at 350 ms, grow 130 px, wait 200 ms, then fade the clock", () => {
   const h = harness();
   assert.equal(h.transition.start(341, false), true);
   assert.equal(h.transition.start(341, false), false);
@@ -77,18 +79,22 @@ test("four circles shrink sequentially +/20/10/5 at 350 ms, grow 95 px, wait 200
   assert.equal(h.phase, "expanding");
   assert.equal(h.values.manualOpacity.value, 0);
   assert.equal(h.jobs[4].start, 1400);
-  assert.equal(h.jobs[4].config.toValue, 341 + 95);
+  assert.equal(h.jobs[4].config.toValue, 341 + 130);
   assert.equal(h.jobs[4].config.useNativeDriver, false);
   h.advance(SHEET_EXPAND_MS - 1);
   assert.equal(h.phase, "expanding");
-  assert.equal(h.jobs.length, 5);
+  assert.equal(h.jobs.length, 6);
+  assert.equal(h.jobs[5].value, h.values.startShift);
+  assert.equal(h.jobs[5].config.toValue, -MANUAL_START_SHIFT);
+  assert.equal(h.jobs[5].config.duration, SHEET_EXPAND_MS);
+  assert.equal(h.jobs[5].config.useNativeDriver, true, "Move with a native transform, not a Fabric layout animation");
   h.advance(1);
   assert.equal(h.phase, "revealing");
-  assert.equal(h.values.sheetHeight.value, 436);
-  assert.equal(h.jobs[5].start, 1400 + SHEET_EXPAND_MS);
-  assert.equal(h.jobs[5].config.duration, MANUAL_FADE_MS);
-  assert.equal(h.jobs[5].config.useNativeDriver, true);
-  assert.equal(h.jobs[5].config.delay, 200);
+  assert.equal(h.values.sheetHeight.value, 471);
+  assert.equal(h.jobs[6].start, 1400 + SHEET_EXPAND_MS);
+  assert.equal(h.jobs[6].config.duration, MANUAL_FADE_MS);
+  assert.equal(h.jobs[6].config.useNativeDriver, true);
+  assert.equal(h.jobs[6].config.delay, 200);
   h.advance(MANUAL_REVEAL_DELAY_MS);
   assert.equal(h.values.manualOpacity.value, 0);
   assert.equal(h.transition.isTransitioning(), true);
@@ -118,6 +124,7 @@ test("close at every stage cancels the sequence, ignores late completions and re
     assert.deepEqual(h.values.scales.map(v => v.value), [1, 1, 1, 1]);
     assert.deepEqual(h.values.circleOpacities.map(v => v.value), [1, 1, 1, 1]);
     assert.equal(h.values.manualOpacity.value, 0);
+    assert.equal(h.values.startShift.value, 0);
     assert.equal(h.transition.start(367, false), true);
     oldJob.callback({ finished: true });
     assert.equal(h.phase, "shrinking");
@@ -143,8 +150,9 @@ test("unexpected interruption restores presets, and reduced motion reaches the s
       old.callback({ finished: true });
     } else assert.equal(h.jobs.length, 0);
     assert.equal(h.phase, "manual");
-    assert.equal(h.values.sheetHeight.value, 445);
+    assert.equal(h.values.sheetHeight.value, 480);
     assert.equal(h.values.manualOpacity.value, 1);
+    assert.equal(h.values.startShift.value, -MANUAL_START_SHIFT);
     assert.deepEqual(h.values.circleOpacities.map(v => v.value), [0, 0, 0, 0]);
   }
   assert.equal(harness().transition.start(0, false), false, "Wait for actual layout measurement");
@@ -157,12 +165,14 @@ function componentHarness() {
   const h = harness();
   const baselineHeight = { current: 0 };
   const startButtonLayout = { current: { y: 218, height: 54 } };
+  const titleLayout = { current: { y: 38, height: 24 } };
   const captured = new Map<string, any>();
   const gates: string[] = [];
   const starts: number[] = [];
   let closes = 0;
   let stateIndex = 0;
   let stateOverrides: any[] = [];
+  let componentStyles: any;
   function Native(props: any) {
     if (props.testID) captured.set(props.testID, props);
     return React.createElement("div", null, props.children);
@@ -172,7 +182,7 @@ function componentHarness() {
     "react-native": {
       Animated: { Value, View: Native },
       Modal: Native, Pressable: Native, ScrollView: Native, View: Native, Text: Native,
-      StyleSheet: { create: (styles: any) => styles, absoluteFill: {}, absoluteFillObject: {} },
+      StyleSheet: { create: (styles: any) => { componentStyles = styles; return styles; }, absoluteFill: {}, absoluteFillObject: {} },
     },
     "@expo/vector-icons": { Feather: Native },
     "expo-linear-gradient": { LinearGradient: Native },
@@ -181,9 +191,9 @@ function componentHarness() {
     "@/config/scene-themes": { SCENE_THEMES: { tibet: { gradient: ["#371C5F", "#332261", "#2E2468"] } } },
     "@/hooks/useColors": { useColors: () => ({ foreground: "#fff", muted: "#444" }) },
     "@/hooks/useAmbientalDurationTransition": { useAmbientalDurationTransition: () => ({
-      phase: h.phase, values: h.values, transition: h.transition, baselineHeight, startButtonLayout, reducedMotion: { current: false },
+      phase: h.phase, values: h.values, transition: h.transition, baselineHeight, startButtonLayout, titleLayout, reducedMotion: { current: false },
     }) },
-    "@/lib/ambiental-duration-transition": { CIRCLE_DIAMETER, MANUAL_HEIGHT_INCREASE },
+    "@/lib/ambiental-duration-transition": { CIRCLE_DIAMETER, MANUAL_HEIGHT_INCREASE, CANCEL_BUTTON_HEIGHT, DURATION_CONTROL_GAP },
     "@/lib/premiumGate": { FREE_TIMER_MAX_MINUTES: 20, showPremiumGate: (message: string) => gates.push(message) },
     "@/constants/colors": { REGISTER_BUTTON_ENABLED_BACKGROUND: "#BE9650" },
     "@/components/PremiumPlansOverlay": { PremiumPlansSurface: Native, usePremiumPlansModalHost: () => ({ visible: false }) },
@@ -205,7 +215,7 @@ function componentHarness() {
       onStart: (minutes: number) => starts.push(minutes),
     }));
   };
-  return { h, render, captured, baselineHeight, gates, starts, get closes() { return closes; } };
+  return { h, render, captured, baselineHeight, gates, starts, styles: componentStyles, get closes() { return closes; } };
 }
 
 test("actual sheet UI measures its baseline, blocks stale start presses, locks height and reveals manual controls only at completion", () => {
@@ -213,7 +223,8 @@ test("actual sheet UI measures its baseline, blocks stale start presses, locks h
   c.render();
   const get = (id: string) => c.captured.get(`ambiental-duration-${id}`);
   get("sheet-height").onLayout({ nativeEvent: { layout: { height: 341 } } });
-  get("start").onLayout({ nativeEvent: { layout: { y: 240, height: 50 } } });
+  get("start-anchor").onLayout({ nativeEvent: { layout: { y: 240, height: 50 } } });
+  get("title").onLayout({ nativeEvent: { layout: { y: 38, height: 24 } } });
   assert.equal(c.baselineHeight.current, 341);
   const staleStart = get("start").onPress;
   get("custom").onPress();
@@ -228,7 +239,7 @@ test("actual sheet UI measures its baseline, blocks stale start presses, locks h
     assert.equal(get("custom").disabled, true);
     assert.equal(get("manual").pointerEvents, "none");
     assert.equal(flattened(get("sheet-height").style).height, c.h.values.sheetHeight);
-    const startStyle = flattened(get("start").style({ pressed: false }));
+    const startStyle = flattened(get("start-anchor").style);
     assert.equal(startStyle.position, "absolute");
     assert.equal(startStyle.bottom, 51);
     assert.equal(startStyle.height, 50);
@@ -237,26 +248,62 @@ test("actual sheet UI measures its baseline, blocks stale start presses, locks h
     const panelHeight = c.h.values.sheetHeight.value;
     const panelTop = viewportHeight - panelHeight;
     const localButtonY = panelHeight - startStyle.bottom - startStyle.height;
-    assert.equal(panelTop + localButtonY, viewportHeight - 341 + 240, "Expansion must not move Start on screen");
-    get("start").onLayout({ nativeEvent: { layout: { y: localButtonY, height: 50 } } });
+    const translatedY = startStyle.transform[0].translateY.value;
+    const shift = c.h.values.sheetHeight.value === 341 ? 0 : 66;
+    assert.equal(panelTop + localButtonY + translatedY, viewportHeight - 341 + 240 - shift, "Start moves into the previous Cancel slot");
+    get("start-anchor").onLayout({ nativeEvent: { layout: { y: localButtonY, height: 50 } } });
   }
-  assert.equal(c.h.values.sheetHeight.value, 341 + 95);
+  assert.equal(c.h.values.sheetHeight.value, 341 + 130);
   assert.ok(get("cancel"), "Cancel appears inside the locked height, not as an extra height increase");
   assert.equal(flattened(get("cancel").style({ pressed: false })).backgroundColor, "rgba(249,249,249,0.6)");
   c.h.advance(180);
   c.render();
   assert.equal(get("manual").pointerEvents, "auto");
   assert.equal(get("start").disabled, false);
-  const finalStartStyle = flattened(get("start").style({ pressed: false }));
+  const finalStartStyle = flattened(get("start-anchor").style);
   assert.equal(finalStartStyle.bottom, 51, "Growing-layout events must not overwrite the original anchor");
+  assert.equal(finalStartStyle.transform[0].translateY.value, -66);
   const cancelAnchor = flattened(get("cancel-anchor").style);
   assert.equal(cancelAnchor.position, "absolute");
-  assert.equal(cancelAnchor.bottom, finalStartStyle.bottom + finalStartStyle.height + 12,
-    "Cancel sits above the fixed Start button with no overlap");
+  assert.equal(cancelAnchor.bottom, 47);
+  assert.equal(900 - cancelAnchor.bottom - c.styles.cancelButton.height, 900 - 341 + 240,
+    "Cancel occupies the initial Start position");
+  const timerStyle = flattened(get("manual").style);
+  const titleBottom = 38 + 24 + 20;
+  const startTop = 471 - finalStartStyle.bottom - finalStartStyle.height + finalStartStyle.transform[0].translateY.value;
+  assert.equal(timerStyle.top + timerStyle.height / 2, (titleBottom + startTop) / 2,
+    "The timer is centered exactly between the title and Start");
+  assert.equal(timerStyle.top - titleBottom, startTop - timerStyle.top - timerStyle.height);
+  assert.equal(c.styles.wheelNumber.fontSize, 17);
+  assert.equal(c.styles.wheelSuffix.fontSize, 12);
   get("start").onPress();
   assert.deepEqual(c.starts, [10]);
   get("cancel").onPress();
   assert.equal(c.closes, 1);
+});
+
+test("Start moves smoothly only during expansion and stays separate from the lower Cancel slot", () => {
+  const c = componentHarness();
+  c.render();
+  const get = (id: string) => c.captured.get(`ambiental-duration-${id}`);
+  get("sheet-height").onLayout({ nativeEvent: { layout: { height: 341 } } });
+  get("start-anchor").onLayout({ nativeEvent: { layout: { y: 240, height: 50 } } });
+  get("custom").onPress();
+  c.h.advance(1400);
+  c.render();
+  assert.equal(flattened(get("start-anchor").style).transform[0].translateY.value, 0);
+  c.h.values.sheetHeight.setValue(341 + 65);
+  c.h.values.startShift.setValue(-33);
+  c.render();
+  assert.equal(flattened(get("start-anchor").style).transform[0].translateY.value, -33);
+  c.h.advance(280 + 200 + 180);
+  c.render();
+  const startStyle = flattened(get("start-anchor").style);
+  const cancelStyle = flattened(get("cancel-anchor").style);
+  assert.equal(startStyle.transform[0].translateY.value, -66);
+  const startBottomOnScreen = 900 - startStyle.bottom + startStyle.transform[0].translateY.value;
+  const cancelTopOnScreen = 900 - cancelStyle.bottom - c.styles.cancelButton.height;
+  assert.ok(cancelTopOnScreen > startBottomOnScreen, "Cancel is below Start without overlap");
 });
 
 test("manual validation, eight-hour cap, free Premium gate and preset slot geometry remain intact", () => {

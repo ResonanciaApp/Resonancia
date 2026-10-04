@@ -7,10 +7,12 @@ export function useAmbientalDurationTransition() {
   const reducedMotion = useRef(false);
   const baselineHeight = useRef(0);
   const startButtonLayout = useRef<{ y: number; height: number } | null>(null);
+  const titleLayout = useRef<{ y: number; height: number } | null>(null);
   const [values] = useState(() => ({
     scales: Array.from({ length: 4 }, () => new Animated.Value(1)),
     circleOpacities: Array.from({ length: 4 }, () => new Animated.Value(1)),
     sheetHeight: new Animated.Value(320),
+    startShift: new Animated.Value(0),
     manualOpacity: new Animated.Value(0),
   }));
   const transition = useMemo(() => createDurationTransition({
@@ -42,5 +44,5 @@ export function useAmbientalDurationTransition() {
     };
   }, [transition]);
 
-  return { phase, values, transition, baselineHeight, startButtonLayout, reducedMotion };
+  return { phase, values, transition, baselineHeight, startButtonLayout, titleLayout, reducedMotion };
 }
