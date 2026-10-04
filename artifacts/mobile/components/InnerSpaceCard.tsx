@@ -18,6 +18,7 @@ import { ReflectionWallPlusIcon, WALL_PLUS_HALO_SIZES as HALO_SIZES } from "@/co
 import { ReflectionCategoryTabBorder, ReflectionCategoryTabLabel } from "@/components/ReflectionCategoryTabLabel";
 import {
   REFLECTION_WALL_BORDER_GRADIENT,
+  REFLECTION_WALL_BORDER_LOCATIONS,
   CLOUDY_REFLECTION_WALL_BORDER_GRADIENT,
   REFLECTION_WALL_BORDER_START,
   REFLECTION_WALL_BORDER_END,
@@ -486,6 +487,7 @@ export function InnerSpaceCard({
           borderRadius={24}
           brightness={REFLECTION_WALL_BORDER_BRIGHTNESS}
           colors={theme.id === "cloudy" ? CLOUDY_REFLECTION_WALL_BORDER_GRADIENT : REFLECTION_WALL_BORDER_GRADIENT}
+          locations={REFLECTION_WALL_BORDER_LOCATIONS}
           start={REFLECTION_WALL_BORDER_START}
           end={REFLECTION_WALL_BORDER_END}
         />

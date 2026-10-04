@@ -20,6 +20,7 @@ export function DiscoverSearchBorder({
   borderWidth = 2,
   brightness = 1,
   colors = SEARCH_BORDER_GRADIENT,
+  locations,
   start = { x: 0, y: 0 },
   end = { x: 1, y: 1 },
 }: {
@@ -27,6 +28,7 @@ export function DiscoverSearchBorder({
   borderWidth?: number;
   brightness?: number;
   colors?: [string, string, ...string[]];
+  locations?: [number, number, ...number[]];
   start?: { x: number; y: number };
   end?: { x: number; y: number };
 }) {
@@ -38,6 +40,7 @@ export function DiscoverSearchBorder({
     >
       <LinearGradient
         colors={colors}
+        locations={locations}
         start={start}
         end={end}
         style={StyleSheet.absoluteFill}
