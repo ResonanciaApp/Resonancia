@@ -15,6 +15,8 @@ import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { useSceneTheme } from "@/context/SceneThemeContext";
 import { SCENE_THEMES } from "@/config/scene-themes";
 import { useColors } from "@/hooks/useColors";
+import { useAmbientalDurationTransition } from "@/hooks/useAmbientalDurationTransition";
+import { CIRCLE_DIAMETER, MANUAL_HEIGHT_INCREASE } from "@/lib/ambiental-duration-transition";
 import { FREE_TIMER_MAX_MINUTES, showPremiumGate } from "@/lib/premiumGate";
 import { REGISTER_BUTTON_ENABLED_BACKGROUND } from "@/constants/colors";
 import { PremiumPlansSurface, usePremiumPlansModalHost } from "@/components/PremiumPlansOverlay";
@@ -119,32 +121,43 @@ export function AmbientalDurationSheet({
     : [theme.gradient[1], theme.gradient[2]];
   const insets = useSafeAreaInsets();
   const [rendered, setRendered] = useState(visible);
-  const [customMode, setCustomMode] = useState(false);
+  const { phase, values, transition, baselineHeight, reducedMotion } = useAmbientalDurationTransition();
+  const customMode = phase === "revealing" || phase === "manual";
+  const presetsInteractive = visible && phase === "presets";
+  const manualInteractive = visible && phase === "manual";
   const [selectedPreset, setSelectedPreset] = useState<number>(10);
   const [customHours, setCustomHours] = useState(0);
   const [customMinutes, setCustomMinutes] = useState(10);
   const sheetY = useRef(new Animated.Value(SHEET_HEIGHT + 80)).current;
   const backdropOpacity = useRef(new Animated.Value(0)).current;
-  const presetsOpacity = useRef(new Animated.Value(1)).current;
-  const customOpacity = useRef(new Animated.Value(0)).current;
+  const customOpacity = values.manualOpacity;
+  const dismissedRef = useRef(onDismissed);
+  dismissedRef.current = onDismissed;
+  const visibilityGeneration = useRef(0);
   const premiumPlans = usePremiumPlansModalHost(rendered);
 
   useEffect(() => {
+    const token = ++visibilityGeneration.current;
+    let frame: number | undefined;
+    const cleanup = () => {
+      visibilityGeneration.current++;
+      if (frame !== undefined) cancelAnimationFrame(frame);
+      transition.cancel();
+      sheetY.stopAnimation();
+      backdropOpacity.stopAnimation();
+    };
     if (visible) {
       setRendered(true);
-      setCustomMode(false);
+      transition.reset();
       setSelectedPreset(10);
       setCustomHours(0);
       setCustomMinutes(10);
       sheetY.stopAnimation();
       backdropOpacity.stopAnimation();
-      presetsOpacity.stopAnimation();
-      customOpacity.stopAnimation();
       sheetY.setValue(SHEET_HEIGHT + 80);
       backdropOpacity.setValue(0);
-      presetsOpacity.setValue(1);
-      customOpacity.setValue(0);
-      requestAnimationFrame(() => {
+      frame = requestAnimationFrame(() => {
+        if (token !== visibilityGeneration.current) return;
         Animated.parallel([
           Animated.spring(sheetY, {
             toValue: 0,
@@ -159,14 +172,15 @@ export function AmbientalDurationSheet({
           }),
         ]).start();
       });
-      return;
+      return cleanup;
     }
 
+    transition.cancel();
     sheetY.stopAnimation();
     backdropOpacity.stopAnimation();
     Animated.parallel([
       Animated.timing(sheetY, {
-        toValue: SHEET_HEIGHT + 80,
+        toValue: Math.max(SHEET_HEIGHT, baselineHeight.current) + MANUAL_HEIGHT_INCREASE + 80,
         duration: 500,
         useNativeDriver: true,
       }),
@@ -175,17 +189,20 @@ export function AmbientalDurationSheet({
         duration: 460,
         useNativeDriver: true,
       }),
-    ]).start(() => {
+    ]).start(({ finished }) => {
+      if (!finished || token !== visibilityGeneration.current) return;
       setRendered(false);
-      requestAnimationFrame(() => onDismissed?.());
+      frame = requestAnimationFrame(() => {
+        if (token === visibilityGeneration.current) dismissedRef.current?.();
+      });
     });
+    return cleanup;
   }, [
     visible,
     sheetY,
     backdropOpacity,
-    presetsOpacity,
-    customOpacity,
-    onDismissed,
+    transition,
+    baselineHeight,
   ]);
 
   const minuteValues = useMemo(
@@ -194,22 +211,13 @@ export function AmbientalDurationSheet({
   );
   const customTotalMinutes = customHours * 60 + customMinutes;
   const selectedMinutes = customMode ? customTotalMinutes : selectedPreset;
-  const canStart = selectedMinutes > 0;
+  const canStart = visible && selectedMinutes > 0 && (phase === "presets" || phase === "manual");
   const enterCustomMode = () => {
-    setCustomMode(true);
-    Animated.parallel([
-      Animated.timing(presetsOpacity, {
-        toValue: 0,
-        duration: 180,
-        useNativeDriver: true,
-      }),
-      Animated.timing(customOpacity, {
-        toValue: 1,
-        duration: 220,
-        delay: 70,
-        useNativeDriver: true,
-      }),
-    ]).start();
+    if (visible) transition.start(baselineHeight.current, reducedMotion.current);
+  };
+  const closeSheet = () => {
+    transition.cancel();
+    onClose();
   };
 
   const handleHoursChange = (hours: number) => {
@@ -218,7 +226,7 @@ export function AmbientalDurationSheet({
   };
 
   const handleStart = () => {
-    if (!canStart) return;
+    if (!canStart || transition.isTransitioning()) return;
     if (!isPremium && selectedMinutes > FREE_TIMER_MAX_MINUTES) {
       showPremiumGate(
         `El temporizador gratuito llega hasta ${FREE_TIMER_MAX_MINUTES} minutos. Hazte Premium para usar sesiones más largas.`,
@@ -235,13 +243,13 @@ export function AmbientalDurationSheet({
       visible={rendered}
       transparent
       animationType="none"
-      onRequestClose={premiumPlans.visible ? premiumPlans.close : onClose}
+      onRequestClose={premiumPlans.visible ? premiumPlans.close : closeSheet}
       statusBarTranslucent
     >
       <View style={styles.modalRoot}>
         <Pressable
           style={StyleSheet.absoluteFill}
-          onPress={onClose}
+          onPress={closeSheet}
           accessibilityLabel="Cerrar selector de duración"
         >
           <Animated.View
@@ -257,7 +265,6 @@ export function AmbientalDurationSheet({
             styles.sheet,
             {
               backgroundColor: sheetGradient[0],
-              paddingBottom: Math.max(insets.bottom, 16),
               transform: [{ translateY: sheetY }],
             },
           ]}
@@ -268,6 +275,19 @@ export function AmbientalDurationSheet({
             colors={sheetGradient}
             style={StyleSheet.absoluteFill}
           />
+          <Animated.View
+            testID="ambiental-duration-sheet-height"
+            onLayout={(event) => {
+              if (transition.getPhase() === "presets" && event.nativeEvent.layout.height > 0) {
+                baselineHeight.current = event.nativeEvent.layout.height;
+              }
+            }}
+            style={{
+              minHeight: SHEET_HEIGHT,
+              height: phase === "presets" ? undefined : values.sheetHeight,
+              paddingBottom: Math.max(insets.bottom, 16),
+            }}
+          >
           <View style={styles.handle} />
           <Text
             style={[styles.title, { color: colors.foreground }]}
@@ -281,17 +301,26 @@ export function AmbientalDurationSheet({
           </Text>
 
           <View style={styles.contentArea}>
-            <Animated.View
-              pointerEvents={customMode ? "none" : "auto"}
-              style={[styles.presetsArea, { opacity: presetsOpacity }]}
+            <View
+              pointerEvents={presetsInteractive ? "auto" : "none"}
+              accessibilityElementsHidden={!presetsInteractive}
+              importantForAccessibility={presetsInteractive ? "auto" : "no-hide-descendants"}
+              style={styles.presetsArea}
             >
               <View style={styles.presetRow}>
-                {PRESETS.map((minutes) => {
+                {PRESETS.map((minutes, index) => {
                   const selected = !customMode && selectedPreset === minutes;
                   return (
+                    <View key={minutes} style={styles.circleSlot}>
+                    <Animated.View
+                      testID={`ambiental-duration-circle-${minutes}`}
+                      style={{ opacity: values.circleOpacities[index], transform: [{ scale: values.scales[index] }] }}
+                    >
                     <Pressable
-                      key={minutes}
-                      onPress={() => setSelectedPreset(minutes)}
+                      disabled={!presetsInteractive}
+                      onPress={() => {
+                        if (transition.getPhase() === "presets") setSelectedPreset(minutes);
+                      }}
                       style={[
                         styles.preset,
                         {
@@ -333,9 +362,17 @@ export function AmbientalDurationSheet({
                         min
                       </Text>
                     </Pressable>
+                    </Animated.View>
+                    </View>
                   );
                 })}
+                <View style={styles.circleSlot}>
+                <Animated.View
+                  testID="ambiental-duration-circle-plus"
+                  style={{ opacity: values.circleOpacities[3], transform: [{ scale: values.scales[3] }] }}
+                >
                 <Pressable
+                  disabled={!presetsInteractive}
                   onPress={enterCustomMode}
                   style={[
                     styles.preset,
@@ -352,11 +389,16 @@ export function AmbientalDurationSheet({
                 >
                   <Feather name="plus" size={34} color="#F4F4F4" />
                 </Pressable>
+                </Animated.View>
+                </View>
               </View>
-            </Animated.View>
+            </View>
 
             <Animated.View
-              pointerEvents={customMode ? "auto" : "none"}
+              testID="ambiental-duration-manual"
+              pointerEvents={manualInteractive ? "auto" : "none"}
+              accessibilityElementsHidden={!manualInteractive}
+              importantForAccessibility={manualInteractive ? "auto" : "no-hide-descendants"}
               style={[styles.customArea, { opacity: customOpacity }]}
             >
               <View style={styles.wheelsRow}>
@@ -364,14 +406,18 @@ export function AmbientalDurationSheet({
                   values={HOURS}
                   selectedValue={customHours}
                   suffix="horas"
-                  onChange={handleHoursChange}
+                  onChange={(hours) => {
+                    if (transition.getPhase() === "manual") handleHoursChange(hours);
+                  }}
                   testID="ambiental-duration-hours"
                 />
                 <WheelPicker
                   values={minuteValues}
                   selectedValue={customMinutes}
                   suffix="minutos"
-                  onChange={setCustomMinutes}
+                  onChange={(minutes) => {
+                    if (transition.getPhase() === "manual") setCustomMinutes(minutes);
+                  }}
                   testID="ambiental-duration-minutes"
                 />
               </View>
@@ -409,12 +455,13 @@ export function AmbientalDurationSheet({
           </Pressable>
 
           {customMode && (
+            <Animated.View style={{ opacity: customOpacity }}>
             <Pressable
-              onPress={onClose}
+              onPress={closeSheet}
               style={({ pressed }) => [
                 styles.cancelButton,
                 {
-                  backgroundColor: colors.muted,
+                  backgroundColor: "rgba(249,249,249,0.6)",
                   opacity: pressed ? 0.78 : 1,
                 },
               ]}
@@ -426,7 +473,9 @@ export function AmbientalDurationSheet({
                 Cancelar
               </Text>
             </Pressable>
+            </Animated.View>
           )}
+          </Animated.View>
         </Animated.View>
         {premiumPlans.visible ? <PremiumPlansSurface onClose={premiumPlans.close} /> : null}
       </View>
@@ -488,13 +537,17 @@ const styles = StyleSheet.create({
     transform: [{ translateY: 18 }],
   },
   preset: {
-    width: 76,
-    height: 76,
+    width: CIRCLE_DIAMETER,
+    height: CIRCLE_DIAMETER,
     borderRadius: 38,
     borderWidth: 1.5,
     overflow: "hidden",
     alignItems: "center",
     justifyContent: "center",
+  },
+  circleSlot: {
+    width: CIRCLE_DIAMETER,
+    height: CIRCLE_DIAMETER,
   },
   presetValue: {
     fontFamily: "Manrope",
