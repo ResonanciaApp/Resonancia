@@ -3245,6 +3245,7 @@ export default function HomeScreen2({
                   key={video.id}
                   video={video}
                   width={INICIO3_VIDEO_CARD_WIDTH}
+                  titleFontSize={14}
                   whiteDurationGlass
                 />
               ))}
@@ -4772,7 +4773,7 @@ const styles = StyleSheet.create({
     marginBottom: 10,
   },
   heroMetaText: { fontFamily: "Manrope", fontSize: 11, lineHeight: 14, color: "#F4F4F4", marginBottom: 6 },
-  heroTitle: { fontFamily: "Manrope", fontSize: 15, fontWeight: "700", lineHeight: 20, color: "#FBFBFB", marginBottom: 4 },
+  heroTitle: { fontFamily: "Manrope", fontSize: 14, fontWeight: "600", lineHeight: 18, color: "#FBFBFB", marginBottom: 4 },
   heroAvatar: { width: 48, height: 48, borderRadius: 24, backgroundColor: "rgba(181,211,255,0.057)" },
   heroAvatarFallback: {
     alignItems: "center",

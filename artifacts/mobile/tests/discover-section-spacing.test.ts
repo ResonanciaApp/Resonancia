@@ -108,10 +108,10 @@ test("all editorial playlist sections precede the Resonadores banner, keeping th
   assert.match(playlists.getText(ast), /openCategory\(`\/editorial-playlist\/\$\{encodeURIComponent\(playlist\.id\)\}`\)/);
 });
 
-test("objective cards have exactly 16px between columns and 12px between rows, without overflowing", () => {
+test("objective cards have exactly 16px between columns and rows, without overflowing", () => {
   const grid = style("themeGrid");
   assert.equal(grid.columnGap, 16);
-  assert.equal(grid.rowGap, 12);
+  assert.equal(grid.rowGap, 16);
   for (const width of [320, 375, 402, 768]) {
     const card = style("themeGridCard", width);
     assert.equal(card.width * 2 + grid.columnGap + 16 * 2, width);

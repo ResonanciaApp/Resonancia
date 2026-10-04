@@ -21,6 +21,7 @@ type Props = {
   borderColor?: string;
   onOptionsPress?: () => void;
   whiteDurationGlass?: boolean;
+  titleFontSize?: number;
 };
 
 function LockStar() {
@@ -52,6 +53,7 @@ export function VideoCard({
   borderColor,
   onOptionsPress,
   whiteDurationGlass = false,
+  titleFontSize = 13,
 }: Props) {
   const colors = useColors();
   const { isPremium } = usePremium();
@@ -229,7 +231,7 @@ export function VideoCard({
           </View>
         )}
       </View>
-      <Text style={[styles.cardTitle, { color: colors.foreground }]} numberOfLines={2}>
+      <Text style={[styles.cardTitle, { color: colors.foreground, fontSize: titleFontSize }]} numberOfLines={2}>
         {video.title}
       </Text>
       {video.author && (
