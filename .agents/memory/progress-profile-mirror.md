@@ -3,11 +3,11 @@ name: Progreso visible en Perfil
 description: Orden actual del progreso en Perfil y su relación con Tu progreso.
 ---
 
-Perfil muestra los siete días de la racha bajo el título «Tu progreso semanal», sobre el fondo negro translúcido del bloque. Título y días respetan los mismos márgenes laterales interiores de la sección. Historial de rachas, Intención y calendario permanecen visibles con sus tratamientos independientes.
+Perfil muestra los siete días de la racha sin título ni fondo. Conserva sus márgenes laterales interiores. Historial de rachas, Intención y calendario permanecen visibles con sus tratamientos independientes.
 
-**Why:** El usuario pidió justificar tanto los días como el título al margen lateral de la sección y renombrar el título a «Tu progreso semanal». Esta solicitud reemplaza la alineación previa del título al margen exterior de Perfil.
+**Why:** El usuario pidió retirar el fondo y el título del bloque de siete días, reemplazando el tratamiento anterior de «Tu progreso semanal» sobre negro. También pidió subirlo 15 px «y arrastra», y luego bajarlo 10 px «y no empujes».
 
-**How to apply:** Mantener título y fila semanal dentro del mismo bloque negro en Perfil y alineados al mismo margen interior; evitar sumar un segundo margen dentro del título. Conservar la separación uniforme entre lunes y domingo. No cambiar la tarjeta de estadísticas, Inicio o Tu progreso.
+**How to apply:** El ajuste hacia arriba pertenece al flujo y mueve también las secciones siguientes; la compensación hacia abajo es solo visual para los días, no para el historial ni el calendario. Mantener la separación uniforme entre lunes y domingo. No recuperar el título o el fondo ni propagar estos cambios a Inicio o Tu progreso.
 
 En los cuatro espacios del historial de rachas de Perfil, el número y su título forman un conjunto centrado verticalmente respecto de su icono; no van anclados al borde inferior.
 

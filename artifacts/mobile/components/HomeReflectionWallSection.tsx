@@ -24,7 +24,7 @@ const KEYBOARD_GAP = 15;
 
 export type HomeReflectionWallHandle = {
   cancelPendingScroll: () => void;
-  finishPendingScroll: () => void;
+  finishPendingScroll: (scrollEnded?: boolean) => void;
 };
 
 type Props = {
@@ -57,6 +57,7 @@ export const HomeReflectionWallSection = forwardRef<HomeReflectionWallHandle, Pr
     const collapsedHeightRef = useRef(0);
     const autoScrollPendingRef = useRef(false);
     const composePendingRef = useRef(false);
+    const composeStartedAtRef = useRef(0);
     const composeTargetRef = useRef<number | null>(null);
     const composeTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
     const composeFrameRef = useRef<number | null>(null);
@@ -79,20 +80,33 @@ export const HomeReflectionWallSection = forwardRef<HomeReflectionWallHandle, Pr
       onComposingChange(false);
     }, [clearComposeTimer, onComposingChange]);
 
-    const finishComposeScroll = useCallback(() => {
+    const finishComposeScroll = useCallback((reason = "ready") => {
       if (!composePendingRef.current) return;
+      if (typeof __DEV__ !== "undefined" && __DEV__) {
+        console.info("[reflection-wall-keyboard] scroll-ready", {
+          reason,
+          waitMs: Date.now() - composeStartedAtRef.current,
+          target: composeTargetRef.current,
+          scrollY: getScrollY(),
+        });
+      }
       composePendingRef.current = false;
       composeTargetRef.current = null;
       clearComposeTimer();
       setFocusRequest((value) => value + 1);
-    }, [clearComposeTimer]);
+    }, [clearComposeTimer, getScrollY]);
 
-    const finishPendingScroll = useCallback(() => {
+    const finishPendingScroll = useCallback((scrollEnded = false) => {
       const target = composeTargetRef.current;
-      if (target !== null && Math.abs(getScrollY() - target) < 3) {
-        clearComposeTimer();
-        composeTimerRef.current = setTimeout(finishComposeScroll, 80);
+      if (!composePendingRef.current || target === null) return;
+      if (scrollEnded || Math.abs(getScrollY() - target) < 3) {
+        finishComposeScroll(scrollEnded ? "scroll-end" : "target-reached");
+        return;
       }
+      // También reconoce un destino limitado por el scroll nativo: esperar
+      // reposo tras el último evento, no el respaldo largo ni una Y imposible.
+      clearComposeTimer();
+      composeTimerRef.current = setTimeout(() => finishComposeScroll("scroll-stopped"), 80);
     }, [clearComposeTimer, finishComposeScroll, getScrollY]);
 
     useImperativeHandle(ref, () => ({ cancelPendingScroll, finishPendingScroll }), [
@@ -111,15 +125,19 @@ export const HomeReflectionWallSection = forwardRef<HomeReflectionWallHandle, Pr
     }, [scrollRef]);
 
     const requestCompose = useCallback(() => {
+      // onPressIn, onFocus y nuevos toques pertenecen a la misma apertura.
+      // Reiniciar aquí el scroll/timeout prolonga la espera con cada solicitud.
+      if (composePendingRef.current) return;
       if (!layoutReady) {
         setFocusRequest((value) => value + 1);
         return;
       }
       cancelPendingScroll();
       composePendingRef.current = true;
+      composeStartedAtRef.current = Date.now();
       onComposingChange(true);
       // También cubre medidas nativas que no responden: el toque nunca pierde el foco.
-      composeTimerRef.current = setTimeout(finishComposeScroll, 1200);
+      composeTimerRef.current = setTimeout(() => finishComposeScroll("measurement-timeout"), 1200);
       // El espacio de scroll se añade antes de medir y antes de enfocar el teclado.
       composeFrameRef.current = requestAnimationFrame(() => {
         composeFrameRef.current = requestAnimationFrame(() => {
@@ -140,7 +158,7 @@ export const HomeReflectionWallSection = forwardRef<HomeReflectionWallHandle, Pr
             scrollRef.current?.scrollTo({ y: target, animated: true });
             // Respaldo si la plataforma no informa el final del scroll programático.
             clearComposeTimer();
-            composeTimerRef.current = setTimeout(finishComposeScroll, 900);
+            composeTimerRef.current = setTimeout(() => finishComposeScroll("scroll-timeout"), 900);
           });
         });
       });
@@ -181,6 +199,8 @@ export const HomeReflectionWallSection = forwardRef<HomeReflectionWallHandle, Pr
       return () => {
         show.remove();
         hide.remove();
+        composePendingRef.current = false;
+        composeTargetRef.current = null;
         if (composeFrameRef.current !== null) cancelAnimationFrame(composeFrameRef.current);
         composeFrameRef.current = null;
         clearComposeTimer();

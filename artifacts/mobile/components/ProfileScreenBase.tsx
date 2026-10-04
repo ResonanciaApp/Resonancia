@@ -1314,7 +1314,7 @@ export function ProfileScreenBase({
           profileWallRef.current?.finishPendingScroll();
         }}
         onScrollBeginDrag={() => profileWallRef.current?.cancelPendingScroll()}
-        onMomentumScrollEnd={() => profileWallRef.current?.finishPendingScroll()}
+        onMomentumScrollEnd={() => profileWallRef.current?.finishPendingScroll(true)}
         scrollEventThrottle={16}
         keyboardShouldPersistTaps="handled"
         enabled={!profileWallComposing}
@@ -1444,10 +1444,9 @@ export function ProfileScreenBase({
                 showStreakHistoryTitle={false}
                 showStreakHistoryInfo={false}
                 onStreakHistoryPress={() => setStreakInfoOpen(true)}
-                weeklySectionTitle="Tu progreso semanal"
-                weeklySectionTitleHorizontalPadding={0}
-                weeklySectionBackgroundColor="rgba(0,0,0,0.16)"
+                weeklySectionBackgroundColor="transparent"
                 weeklySectionHorizontalPadding={20}
+                streakContentTranslateY={10}
                 streakHistoryTopPadding={18}
                 streakHistoryDividerOffsetY={0}
                 longestStreakLabel="RACHA ACUMULADA"
@@ -2616,7 +2615,7 @@ const styles = StyleSheet.create({
 
   // Ajustar el margen en el flujo desplaza también todas las secciones posteriores.
   profileProgressSection: {
-    marginTop: 2,
+    marginTop: 2 - 15,
     marginBottom: PROFILE_SECTION_GAP,
   },
   practiceReminderSection: {

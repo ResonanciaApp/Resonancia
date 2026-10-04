@@ -16,6 +16,7 @@ function fixture(measureResponds = true, layoutReady = true) {
   let composing = false;
   let scrollY = 0;
   let requestedY: number | undefined;
+  let scrollRequests = 0;
   let stateIndex = 0;
   let nextId = 1;
   const frames = new Map<number, () => void>();
@@ -60,7 +61,7 @@ function fixture(measureResponds = true, layoutReady = true) {
   const element = loaded.exports.HomeReflectionWallSection.render({
     scrollRef: { current: {
       getNativeScrollRef: () => ({ measureInWindow: (cb: Function) => cb(0, 0, 402, 800) }),
-      scrollTo: ({ y }: { y: number }) => { requestedY = y; },
+       scrollTo: ({ y }: { y: number }) => { requestedY = y; scrollRequests++; },
     } },
     getScrollY: () => scrollY,
     onComposingChange: (value: boolean) => { composing = value; },
@@ -86,10 +87,15 @@ function fixture(measureResponds = true, layoutReady = true) {
     handle,
     runFrames, fireTimers,
     finishScroll: () => { scrollY = requestedY!; handle.current.finishPendingScroll(); },
+    scrollToY: (y: number, ended = false) => {
+      scrollY = y;
+      handle.current.finishPendingScroll(ended);
+    },
     dispose: () => cleanup.forEach(callback => callback()),
     get focus() { return focus; },
     get composing() { return composing; },
     get requestedY() { return requestedY; },
+    get scrollRequests() { return scrollRequests; },
   };
 }
 
@@ -102,10 +108,56 @@ test("a field tap schedules composition without waiting for unrelated animations
   assert.equal(f.requestedY, 150);
   assert.equal(f.focus, 0);
   f.finishScroll();
+  assert.equal(f.focus, 1, "arrival opens the keyboard without an extra settling delay");
   f.fireTimers(80);
   assert.equal(f.focus, 1);
   f.fireTimers(900);
   f.fireTimers(1200);
+  assert.equal(f.focus, 1);
+  f.dispose();
+});
+
+test("native focus and repeated taps share one scroll without restarting the keyboard deadline", () => {
+  const f = fixture();
+  f.request();
+  f.request(); // Native onFocus following onPressIn.
+  f.runFrames();
+  for (let tap = 0; tap < 5; tap++) {
+    f.request();
+    f.runFrames();
+  }
+  assert.equal(f.scrollRequests, 1);
+  assert.equal(f.composing, true);
+  assert.equal(f.focus, 0);
+  f.fireTimers(900);
+  assert.equal(f.focus, 1, "the original fallback still completes despite repeated taps");
+  f.dispose();
+});
+
+test("a native scroll end completes even when its destination was clamped", () => {
+  const f = fixture();
+  f.request();
+  f.runFrames();
+  assert.equal(f.requestedY, 150);
+  f.scrollToY(110, true);
+  assert.equal(f.focus, 1);
+  f.fireTimers(900);
+  assert.equal(f.focus, 1);
+  f.dispose();
+  const profile = readFileSync(new URL("../components/ProfileScreenBase.tsx", import.meta.url), "utf8");
+  assert.match(profile, /onMomentumScrollEnd=\{\(\) => profileWallRef\.current\?\.finishPendingScroll\(true\)\}/);
+});
+
+test("a scroll that stops short opens after brief inactivity, not the long fallback", () => {
+  const f = fixture();
+  f.request();
+  f.runFrames();
+  f.scrollToY(60);
+  assert.equal(f.focus, 0, "the keyboard stays hidden while scrolling");
+  f.scrollToY(110);
+  f.fireTimers(80);
+  assert.equal(f.focus, 1);
+  f.fireTimers(900);
   assert.equal(f.focus, 1);
   f.dispose();
 });
@@ -129,12 +181,16 @@ test("manual dragging and unmount cancel the pending keyboard request", () => {
   for (const cancel of ["drag", "unmount"]) {
     const f = fixture();
     f.request();
+    f.runFrames();
+    f.scrollToY(60);
     if (cancel === "drag") {
       f.handle.current.cancelPendingScroll();
       assert.equal(f.composing, false);
     } else f.dispose();
     f.runFrames();
     f.fireTimers(1200);
+    f.fireTimers(80);
+    f.fireTimers(900);
     assert.equal(f.focus, 0);
   }
 });
