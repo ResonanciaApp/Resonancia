@@ -58,15 +58,21 @@ test("Indigo 2 duration sheet uses the Universo violet gradient without altering
   assert.equal(SCENE_THEMES.indigo2.gradient[2], "#252960");
 });
 
-test("Cloudy selected preset and custom duration use 30% black; other themes keep 16%", () => {
+test("selected duration circles use 30% black in Cloudy and Indigo 2 without changing the + or other themes", () => {
   const expression = source.match(/const selectedPresetBackground = (.*);/)?.[1];
   assert.ok(expression);
   const resolve = new Function("theme", `return ${expression};`);
   for (const theme of Object.values(SCENE_THEMES)) {
-    assert.equal(resolve(theme), theme.id === "cloudy" ? "rgba(0,0,0,0.3)" : "rgba(0,0,0,0.16)");
+    assert.equal(resolve(theme), theme.id === "cloudy" || theme.id === "indigo2" ? "rgba(0,0,0,0.3)" : "rgba(0,0,0,0.16)");
   }
   assert.match(source, /backgroundColor: selected\s*\? selectedPresetBackground/);
-  assert.match(source, /backgroundColor: customMode\s*\? selectedPresetBackground/);
+  const customExpression = source.match(/const selectedCustomBackground = (.*);/)?.[1];
+  assert.ok(customExpression);
+  const resolveCustom = new Function("theme", `return ${customExpression};`);
+  for (const theme of Object.values(SCENE_THEMES)) {
+    assert.equal(resolveCustom(theme), theme.id === "cloudy" ? "rgba(0,0,0,0.3)" : "rgba(0,0,0,0.16)");
+  }
+  assert.match(source, /backgroundColor: customMode\s*\? selectedCustomBackground/);
 });
 
 test("Cloudy wall adds 3% brightness to the prior blue-purple stops and keeps warm stops unchanged", () => {

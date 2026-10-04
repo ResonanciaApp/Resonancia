@@ -124,7 +124,8 @@ export function AmbientalDurationSheet({
 }: Props) {
   const colors = useColors();
   const { theme } = useSceneTheme();
-  const selectedPresetBackground = theme.id === "cloudy" ? "rgba(0,0,0,0.3)" : "rgba(0,0,0,0.16)";
+  const selectedPresetBackground = theme.id === "cloudy" || theme.id === "indigo2" ? "rgba(0,0,0,0.3)" : "rgba(0,0,0,0.16)";
+  const selectedCustomBackground = theme.id === "cloudy" ? "rgba(0,0,0,0.3)" : "rgba(0,0,0,0.16)";
   const sheetGradient: [string, string] = theme.id === "indigo2"
     ? [SCENE_THEMES.tibet.gradient[1], SCENE_THEMES.tibet.gradient[2]]
     : [theme.gradient[1], theme.gradient[2]];
@@ -425,7 +426,7 @@ export function AmbientalDurationSheet({
                     styles.preset,
                     {
                       backgroundColor: customMode
-                        ? selectedPresetBackground
+                        ? selectedCustomBackground
                         : "rgba(255,255,255,0.1)",
                       borderColor: "transparent",
                     },
