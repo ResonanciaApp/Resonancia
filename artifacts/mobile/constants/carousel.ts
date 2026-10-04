@@ -1,8 +1,22 @@
 export const CONTENT_CAROUSEL_GAP = 14;
+export const CONTENT_CAROUSEL_HORIZONTAL_PADDING = 14;
 export const CONTENT_CAROUSEL_NEXT_RATIO = 0.1;
 export const CONTENT_CAROUSEL_SIZE_SCALE = 1.05 * 1.04;
 export const CONTENT_CAROUSEL_HEIGHT_SCALE = 0.85 * 1.15 * 0.97;
 export const CONTENT_CAROUSEL_TRAILING_PEEK = 10;
+
+/** Two complete cards plus an exact peek, accounting for the list's right inset. */
+export function getExactTwoCardCarouselCardWidth(
+  viewportWidth: number,
+  horizontalPadding: number,
+  trailingPeek: number,
+  rightInset = 0,
+): number {
+  return Math.max(
+    1,
+    (viewportWidth - horizontalPadding - rightInset - CONTENT_CAROUSEL_GAP * 2 - trailingPeek) / 2,
+  );
+}
 
 /**
  * Ancho de las cards de contenido para mostrar dos completas y el 10% de la

@@ -70,13 +70,14 @@ import { PressScale } from "@/components/PressScale";
 import { openPremiumPlans } from "@/lib/premiumGate";
 import {
   CONTENT_CAROUSEL_GAP,
+  CONTENT_CAROUSEL_HORIZONTAL_PADDING,
   CONTENT_CAROUSEL_HEIGHT_SCALE,
   getContentCarouselCardWidth,
   getTwoCardCarouselCardWidth,
 } from "@/constants/carousel";
 
 const CARD_W = 150;
-const GRID_PAD = 14;
+const GRID_PAD = CONTENT_CAROUSEL_HORIZONTAL_PADDING;
 const SECTION_GAP = 53;
 const NEON_VIOLET = "#A970FF";
 const AnimatedCircle = Animated.createAnimatedComponent(Circle);

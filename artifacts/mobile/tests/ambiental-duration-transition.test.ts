@@ -11,6 +11,7 @@ import {
   CANCEL_BUTTON_HEIGHT, DURATION_CONTROL_GAP, MANUAL_START_SHIFT,
   type DurationPhase,
 } from "../lib/ambiental-duration-transition.ts";
+import { DURATION_SHEET_OPEN_SPRING, DURATION_SHEET_OPEN_BACKDROP_MS } from "../lib/ambiental-duration-opening.ts";
 
 class Value {
   constructor(public value: number, public name = "") {}
@@ -304,6 +305,7 @@ function componentHarness() {
       phase: h.phase, values: h.values, transition: h.transition, baselineHeight, startButtonLayout, titleLayout, reducedMotion: { current: false },
     }) },
     "@/lib/ambiental-duration-transition": { CIRCLE_DIAMETER, MANUAL_HEIGHT_INCREASE, CANCEL_BUTTON_HEIGHT, DURATION_CONTROL_GAP },
+    "@/lib/ambiental-duration-opening": { DURATION_SHEET_OPEN_SPRING, DURATION_SHEET_OPEN_BACKDROP_MS },
     "@/lib/premiumGate": { FREE_TIMER_MAX_MINUTES: 20, showPremiumGate: (message: string) => gates.push(message) },
     "@/constants/colors": { REGISTER_BUTTON_ENABLED_BACKGROUND: "#BE9650" },
     "@/components/PremiumPlansOverlay": { PremiumPlansSurface: Native, usePremiumPlansModalHost: () => ({ visible: false }) },

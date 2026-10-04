@@ -16,6 +16,7 @@ import {
   StyleSheet,
   Text,
   View,
+  useWindowDimensions,
 } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { SymbolView } from "expo-symbols";
@@ -47,8 +48,10 @@ import { useSoundPreview } from "@/hooks/useSoundPreview";
 import { isIndigo2ThemeId } from "@/config/scene-themes";
 import {
   CONTENT_CAROUSEL_GAP,
+  CONTENT_CAROUSEL_HORIZONTAL_PADDING,
   CONTENT_CAROUSEL_HEIGHT_SCALE,
   getTwoCardCarouselCardWidth,
+  getExactTwoCardCarouselCardWidth,
 } from "@/constants/carousel";
 import { MEMBERSHIP_AURORA, WIDGET_GREEN_SOLID } from "@/constants/colors";
 import { SOUND_CAROUSEL_ORDER } from "@/data/sound-carousel-order";
@@ -66,9 +69,6 @@ const COMPACT_CARD_H =
       CONTENT_CAROUSEL_HEIGHT_SCALE,
   ) - 25;
 const AMBIENTAL_CARD_W = (W - 20 * 2 - 12) / 2;
-const AMBIENTAL_CAROUSEL_CARD_W = Math.round(
-  (W - H_PAD - CONTENT_CAROUSEL_GAP) / 1.9,
-);
 const AMBIENTAL_CARD_H = Math.round(
   (AMBIENTAL_CARD_W + 50) * SESSION_CARD_METADATA_HEIGHT_SCALE,
 );
@@ -129,6 +129,13 @@ function CollectionPill({
 }
 
 export default function SonidosScreen() {
+  const { width: viewportWidth } = useWindowDimensions();
+  const ambientalCarouselCardWidth = getExactTwoCardCarouselCardWidth(
+    viewportWidth,
+    H_PAD,
+    20,
+    H_PAD - CONTENT_CAROUSEL_HORIZONTAL_PADDING,
+  );
   const insets = useSafeAreaInsets();
   const colors = useColors();
   const { theme } = useSceneTheme();
@@ -453,7 +460,8 @@ export default function SonidosScreen() {
                   cardVariant="ambiental"
                   ambientalCardBackground="rgba(0,0,0,0.16)"
                  ambientalTitleOnly
-                 cardWidth={AMBIENTAL_CAROUSEL_CARD_W}
+                 cardWidth={ambientalCarouselCardWidth}
+                 trailingPeek={20}
                  allowOversizedCardWidth
                  soundPreview={{
                    activeId: soundPreview.activeId,

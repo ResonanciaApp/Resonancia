@@ -17,6 +17,7 @@ import { useSceneTheme } from "@/context/SceneThemeContext";
 import { SCENE_THEMES } from "@/config/scene-themes";
 import { useColors } from "@/hooks/useColors";
 import { useAmbientalDurationTransition } from "@/hooks/useAmbientalDurationTransition";
+import { DURATION_SHEET_OPEN_SPRING, DURATION_SHEET_OPEN_BACKDROP_MS } from "@/lib/ambiental-duration-opening";
 import { CIRCLE_DIAMETER, MANUAL_HEIGHT_INCREASE, CANCEL_BUTTON_HEIGHT as CANCEL_HEIGHT, DURATION_CONTROL_GAP as CONTROL_GAP } from "@/lib/ambiental-duration-transition";
 import { FREE_TIMER_MAX_MINUTES, showPremiumGate } from "@/lib/premiumGate";
 import { REGISTER_BUTTON_ENABLED_BACKGROUND } from "@/constants/colors";
@@ -169,13 +170,12 @@ export function AmbientalDurationSheet({
         Animated.parallel([
           Animated.spring(sheetY, {
             toValue: 0,
-            tension: 55,
-            friction: 8,
+            ...DURATION_SHEET_OPEN_SPRING,
             useNativeDriver: true,
           }),
           Animated.timing(backdropOpacity, {
             toValue: 0.62,
-            duration: 500,
+            duration: DURATION_SHEET_OPEN_BACKDROP_MS,
             useNativeDriver: true,
           }),
         ]).start();
