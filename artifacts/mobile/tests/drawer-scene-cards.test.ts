@@ -31,7 +31,7 @@ function all(node: any): any[] {
   return [node, ...React.Children.toArray((node.props as any).children).flatMap(all)];
 }
 
-test("minimal Día/Noche rows use matching menu sizes and only the selected icon changes color", () => {
+test("minimal Día/Noche rows retain menu sizes and dim the inactive icon and title to #BFBFBF", () => {
   for (const active of ["cloudy", "indigo2", "tibet"]) {
     const calls: string[] = [];
     const nodes = all(exports.DrawerSceneCards({ activeId: active, onSelect: (id: string) => calls.push(id) }));
@@ -44,8 +44,8 @@ test("minimal Día/Noche rows use matching menu sizes and only the selected icon
     assert.equal(radios[1].props.accessibilityLabel, "Noche");
     const sun = nodes.find(node => node.props.name === "white-balance-sunny");
     const moon = nodes.find(node => node.type === "moon-crescent");
-    assert.equal(sun.props.color, active === "cloudy" ? "#BE9650" : "#F9F9F9");
-    assert.equal(moon.props.color, active === "indigo2" ? "#B6A1E5" : "#F9F9F9");
+    assert.equal(sun.props.color, active === "cloudy" ? "#BE9650" : "#BFBFBF");
+    assert.equal(moon.props.color, active === "indigo2" ? "#B6A1E5" : "#BFBFBF");
     assert.equal(sun.props.size, 23);
     assert.equal(moon.props.size, 23);
     assert.equal(nodes.find(node => node.props.accessibilityRole === "radiogroup").props.style.marginTop, 10);
@@ -61,8 +61,10 @@ test("minimal Día/Noche rows use matching menu sizes and only the selected icon
     for (const radio of radios) {
       const text = all(radio).filter(node => node.type === "text");
       assert.equal(text.length, 1);
-      assert.equal(text[0].props.style.fontSize, 14);
-      assert.equal(text[0].props.style.fontWeight, "500");
+      const textStyle = Object.assign({}, ...text[0].props.style);
+      assert.equal(textStyle.fontSize, 14);
+      assert.equal(textStyle.fontWeight, "500");
+      assert.equal(textStyle.color, radio.props.accessibilityState.selected ? "#FFFFFF" : "#BFBFBF");
       assert.equal(radio.props.style({ pressed: false })[0].backgroundColor, undefined);
     }
     radios.forEach(radio => radio.props.onPress());

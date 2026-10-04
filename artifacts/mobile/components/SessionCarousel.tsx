@@ -36,6 +36,12 @@ const AMBIENTAL_IMAGE_EXTRA_DROP = 17;
 const AMBIENTAL_IMAGE_LIFT = 5;
 const AMBIENTAL_TITLE_EXTRA_DROP = 4;
 const AMBIENTAL_PLAY_BUTTON_GROWTH = 4;
+const AMBIENTAL_IMAGE_SIZE_REDUCTION = 12;
+const AMBIENTAL_TITLE_NO_SHADOW: TextStyle = {
+  textShadowColor: "transparent",
+  textShadowOffset: { width: 0, height: 0 },
+  textShadowRadius: 0,
+};
 const CANONICAL_AMBIENTAL_METADATA_STYLE: ViewStyle = {
   transform: [{ translateY: -2 }],
 };
@@ -204,7 +210,7 @@ const AmbientalCardTitle = React.memo(function AmbientalCardTitle({
         },
       ]}
     >
-      <Text style={[styles.sleepOverlayTitle, styles.ambientalCardTitle]} numberOfLines={numberOfLines}>
+      <Text style={[styles.sleepOverlayTitle, styles.ambientalCardTitle, AMBIENTAL_TITLE_NO_SHADOW]} numberOfLines={numberOfLines}>
         {title}
       </Text>
     </View>
@@ -551,7 +557,7 @@ export const SessionCarousel = React.memo(function SessionCarousel({
     Math.min(
       (cw + 1) * ambientalFillScale + 15,
       ambientalImageBottom * ambientalFillScale + 15,
-    ) * 0.9 * 1.05;
+    ) * 0.9 * 1.05 - AMBIENTAL_IMAGE_SIZE_REDUCTION;
   const ambientalFilledImageWidth = ambientalFilledImageDiameter;
   const ambientalFilledImageHeight = ambientalFilledImageDiameter;
   const ambientalFilledImageLeft = (cw - ambientalFilledImageWidth) / 2;
@@ -1000,6 +1006,7 @@ export const SessionCarousel = React.memo(function SessionCarousel({
                             sleepOverlayTitleStyle,
                             styles.ambientalTitleMatchSleep,
                             ambientalTitleOnlyTitleStyle,
+                            AMBIENTAL_TITLE_NO_SHADOW,
                             {
                               height: 42,
                                textAlignVertical: "top",
@@ -1018,6 +1025,7 @@ export const SessionCarousel = React.memo(function SessionCarousel({
                             sleepOverlayTitleStyle,
                             showAmbientalTitleOnly && styles.ambientalTitleMatchSleep,
                             showAmbientalTitleOnly && ambientalTitleOnlyTitleStyle,
+                            isAmbiental && AMBIENTAL_TITLE_NO_SHADOW,
                           ]}
                           numberOfLines={2}
                         >

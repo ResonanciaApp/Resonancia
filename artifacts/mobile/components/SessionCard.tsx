@@ -312,7 +312,7 @@ export function SessionCard({ session, width = 200, horizontal = false, tint, ca
             />
             {isEditorial && sleepEditorialContent ? (
               <View pointerEvents="none" style={styles.sleepEditorialMetadata}>
-                <Text style={styles.sleepEditorialTitle} numberOfLines={2}>{session.title}</Text>
+                <Text style={[styles.sleepEditorialTitle, styles.ambientalTitleNoShadow]} numberOfLines={2}>{session.title}</Text>
               </View>
             ) : isEditorial && (
               <>
@@ -323,7 +323,7 @@ export function SessionCard({ session, width = 200, horizontal = false, tint, ca
                   pointerEvents="none"
                 />
                 <View pointerEvents="none" style={styles.editorialMetadata}>
-                  <Text style={styles.editorialTitle} numberOfLines={2}>{session.title}</Text>
+                  <Text style={[styles.editorialTitle, styles.ambientalTitleNoShadow]} numberOfLines={2}>{session.title}</Text>
                 </View>
               </>
             )}
@@ -435,6 +435,7 @@ export function SessionCard({ session, width = 200, horizontal = false, tint, ca
                 style={[
                   styles.cardTitle,
                   styles.ambientalCardTitle,
+                   styles.ambientalTitleNoShadow,
                   { color: "#F9F9F9" },
                 ]}
                 numberOfLines={2}
@@ -498,6 +499,11 @@ const styles = StyleSheet.create({
   ambientalImage: {
     position: "absolute",
     overflow: "hidden",
+  },
+  ambientalTitleNoShadow: {
+    textShadowColor: "transparent",
+    textShadowOffset: { width: 0, height: 0 },
+    textShadowRadius: 0,
   },
   ambientalTitle: {
     position: "absolute",
