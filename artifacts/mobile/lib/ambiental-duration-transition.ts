@@ -1,11 +1,10 @@
 export const CIRCLE_DIAMETER = 76;
-export const CIRCLE_SHRINK_MS = 220;
+export const CIRCLE_SHRINK_MS = 270;
 export const MANUAL_HEIGHT_INCREASE = 130;
 export const CANCEL_BUTTON_HEIGHT = 54;
 export const DURATION_CONTROL_GAP = 12;
 export const MANUAL_START_SHIFT = CANCEL_BUTTON_HEIGHT + DURATION_CONTROL_GAP;
-// 25% lower speed: the previous duration divided by 0.75.
-export const SHEET_EXPAND_MS = Math.round(280 / 0.75);
+export const SHEET_EXPAND_MS = 460;
 export const MANUAL_REVEAL_DELAY_MS = 200;
 export const MANUAL_FADE_MS = 180;
 export type DurationPhase = "presets" | "shrinking" | "expanding" | "revealing" | "manual";

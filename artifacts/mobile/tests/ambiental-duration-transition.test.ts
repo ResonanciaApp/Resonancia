@@ -58,16 +58,16 @@ function harness() {
   return { transition, values, jobs, phases, advance, get phase() { return phase; } };
 }
 
-test("four circles shrink sequentially +/20/10/5 at 220 ms, grow 130 px at 25% lower speed, then wait and fade", () => {
+test("four circles shrink sequentially +/20/10/5 at 270 ms, grow 130 px over 460 ms, then wait and fade", () => {
   const h = harness();
   assert.equal(h.transition.start(341, false), true);
   assert.equal(h.transition.start(341, false), false);
   for (const index of [3, 2, 1, 0]) {
     assert.equal(h.jobs.at(-1).value, h.values.scales[index]);
-    assert.equal(h.jobs.at(-1).config.duration, 220);
+    assert.equal(h.jobs.at(-1).config.duration, 270);
     assert.equal(h.jobs.at(-1).config.useNativeDriver, true);
     assert.equal(h.jobs.at(-1).config.toValue * CIRCLE_DIAMETER, 1);
-    h.advance(219);
+    h.advance(269);
     assert.equal(h.values.circleOpacities[index].value, 1);
     assert.equal(h.phase, "shrinking");
     h.advance(1);
@@ -75,12 +75,12 @@ test("four circles shrink sequentially +/20/10/5 at 220 ms, grow 130 px at 25% l
     assert.equal(h.values.circleOpacities[index].value, 0);
     for (let pending = 0; pending < index; pending++) assert.equal(h.values.scales[pending].value, 1);
   }
-  assert.deepEqual(h.jobs.slice(0, 4).map(job => job.start), [0, 220, 440, 660]);
+  assert.deepEqual(h.jobs.slice(0, 4).map(job => job.start), [0, 270, 540, 810]);
   assert.equal(h.phase, "expanding");
   assert.equal(h.values.manualOpacity.value, 0);
-  assert.equal(h.jobs[4].start, 880);
-  assert.equal(SHEET_EXPAND_MS, 373);
-  assert.ok(Math.abs(280 / SHEET_EXPAND_MS - 0.75) < 0.001);
+  assert.equal(h.jobs[4].start, 1080);
+  assert.equal(SHEET_EXPAND_MS, 460);
+  assert.equal(h.jobs[4].config.duration, 460);
   assert.equal(h.jobs[4].config.toValue, 341 + 130);
   assert.equal(h.jobs[4].config.useNativeDriver, false);
   h.advance(SHEET_EXPAND_MS - 1);
@@ -93,7 +93,7 @@ test("four circles shrink sequentially +/20/10/5 at 220 ms, grow 130 px at 25% l
   h.advance(1);
   assert.equal(h.phase, "revealing");
   assert.equal(h.values.sheetHeight.value, 471);
-  assert.equal(h.jobs[6].start, 880 + SHEET_EXPAND_MS);
+  assert.equal(h.jobs[6].start, 1080 + SHEET_EXPAND_MS);
   assert.equal(h.jobs[6].config.duration, MANUAL_FADE_MS);
   assert.equal(h.jobs[6].config.useNativeDriver, true);
   assert.equal(h.jobs[6].config.delay, 200);
@@ -110,7 +110,7 @@ test("four circles shrink sequentially +/20/10/5 at 220 ms, grow 130 px at 25% l
 });
 
 test("close at every stage cancels the sequence, ignores late completions and reopens cleanly", () => {
-  for (const elapsed of [100, 300, 550, 750, 1000, 1300, 1500]) {
+  for (const elapsed of [100, 300, 550, 850, 1200, 1600, 1800]) {
     const h = harness();
     h.transition.start(320, false);
     h.advance(elapsed);
@@ -234,7 +234,7 @@ test("actual sheet UI measures its baseline, blocks stale start presses, locks h
   staleStart();
   assert.equal(c.h.jobs.length, 1);
   assert.equal(c.starts.length, 0);
-  for (const elapsed of [220, 220, 220, 220, SHEET_EXPAND_MS, 200]) {
+  for (const elapsed of [270, 270, 270, 270, SHEET_EXPAND_MS, 200]) {
     c.h.advance(elapsed);
     c.render();
     assert.equal(get("start").disabled, true);
