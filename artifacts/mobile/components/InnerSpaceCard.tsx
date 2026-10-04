@@ -1,5 +1,5 @@
 import React, { useState, useRef, useEffect, useLayoutEffect } from "react";
-import { View, Text, TextInput, Pressable, ScrollView, StyleSheet, Animated, Easing } from "react-native";
+import { View, Text, TextInput, Pressable, ScrollView, StyleSheet, Animated, Easing, Keyboard } from "react-native";
 import MaskedView from "@react-native-masked-view/masked-view";
 import { LinearGradient } from "expo-linear-gradient";
 import * as Haptics from "expo-haptics";
@@ -276,7 +276,20 @@ export function InnerSpaceCard({
     outgoingPlaceholderOpacity,
   ]);
 
+  const traceWriting = (stage: string) => {
+    if (typeof __DEV__ !== "undefined" && __DEV__) {
+      console.info("[reflection-wall-keyboard]", stage, {
+        active: inputActive,
+        expanded: expandedRef.current,
+        quotaReached: freeLimitReached,
+        nativeFocused: inputRef.current?.isFocused() ?? false,
+        keyboardVisible: KeyboardController.isVisible(),
+      });
+    }
+  };
+
   const requestInputFocus = () => {
+    traceWriting("touch");
     if (freeLimitReached) {
       showPremiumGate(
         `Ya publicaste tus ${FREE_REFLECTIONS_LIMIT} entradas gratuitas. Con Premium puedes seguir sumando reflexiones a tu viaje interior.`,
@@ -332,6 +345,7 @@ export function InnerSpaceCard({
   };
 
   const focusInput = () => {
+    traceWriting("activate");
     setInputActive(true);
     setInputFocusVersion((value) => value + 1);
   };
@@ -342,6 +356,7 @@ export function InnerSpaceCard({
       frame = requestAnimationFrame(() => {
         const input = inputRef.current;
         if (!input || !expandedRef.current) return;
+        traceWriting("focus-command");
         // focus() es un no-op si Android mantiene el foco después de ocultar el teclado.
         if (input.isFocused() && !KeyboardController.isVisible()) {
           KeyboardController.setFocusTo("current");
@@ -352,6 +367,14 @@ export function InnerSpaceCard({
     });
     return () => cancelAnimationFrame(frame);
   }, [inputActive, inputFocusVersion, freeLimitReached]);
+
+  useEffect(() => {
+    if (typeof __DEV__ === "undefined" || !__DEV__ || !inputActive) return;
+    const subscription = Keyboard.addListener("keyboardDidShow", () => {
+      traceWriting("keyboard-shown");
+    });
+    return () => subscription.remove();
+  }, [inputActive]);
 
   const updateContentHeight = (height: number) => {
     if (height <= 0 || height === contentHeightRef.current) return;
@@ -647,9 +670,14 @@ export function InnerSpaceCard({
           testID="reflection-writing-input"
           ref={inputRef}
           editable={!freeLimitReached}
-          showSoftInputOnFocus
-          pointerEvents={inputActive ? "auto" : "none"}
+          showSoftInputOnFocus={inputActive}
+          onPressIn={requestInputFocus}
+          onFocus={() => {
+            traceWriting("native-focus");
+            if (!inputActive) requestInputFocus();
+          }}
           onBlur={() => {
+            traceWriting("native-blur");
             setInputActive(false);
             onInputBlur?.();
           }}

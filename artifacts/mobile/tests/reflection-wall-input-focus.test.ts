@@ -26,7 +26,7 @@ function fixture(quota = 0) {
       if (nodes.get("reflection-writing-input").editable === false || focused) return;
       focusCalls++;
       focused = true;
-      keyboardVisible = true;
+      keyboardVisible = nodes.get("reflection-writing-input").showSoftInputOnFocus;
     },
     blur: () => { focused = false; keyboardVisible = false; },
     isFocused: () => focused,
@@ -135,7 +135,17 @@ function fixture(quota = 0) {
   return {
     nodes, render,
     open: () => { nodes.get("reflection-wall-toggle").onPress(); render(); },
-    tap: () => { nodes.get("reflection-writing-box").onPress(); render(); },
+    tap: () => {
+      const input = nodes.get("reflection-writing-input");
+      assert.notEqual(input.pointerEvents, "none", "the writing field must receive native taps");
+      input.onPressIn();
+      // Native TextInput receives the touch directly; its caret can focus before the IME opens.
+      if (input.editable) {
+        nativeInput.focus();
+        input.onFocus();
+      }
+      render();
+    },
     finishPanel: () => { panelCompletions.shift()!(true); render(); },
     flushFrames: () => {
       for (let i = 0; i < 2; i++) {
@@ -146,29 +156,33 @@ function fixture(quota = 0) {
     dispose: () => effects.forEach(entry => entry.cleanup?.()),
     get focusCalls() { return focusCalls; },
     get restored() { return restored; },
+    get keyboardVisible() { return keyboardVisible; },
     get gates() { return gates; },
     get composeRequests() { return composeRequests; },
   };
 }
 
-test("an expanded field focuses after the parent scroll, even while decorative animations are unfinished", () => {
+test("the native field receives taps and reveals its keyboard only after the parent scroll", () => {
   const f = fixture();
   f.open();
   f.tap();
   f.flushFrames();
-  assert.equal(f.composeRequests, 1);
-  assert.equal(f.focusCalls, 0);
-  assert.equal(f.nodes.get("reflection-writing-input").pointerEvents, "none");
+  assert.ok(f.composeRequests > 0);
+  assert.equal(f.focusCalls, 1, "native caret focuses directly without the software keyboard");
+  assert.equal(f.keyboardVisible, false);
+  assert.equal(f.nodes.get("reflection-writing-input").showSoftInputOnFocus, false);
   assert.equal(f.nodes.get("reflection-writing-input").editable, true);
   f.render({ focusRequest: 1 });
   f.flushFrames();
-  assert.equal(f.nodes.get("reflection-writing-input").pointerEvents, "auto");
+  assert.notEqual(f.nodes.get("reflection-writing-input").pointerEvents, "none");
   assert.equal(f.nodes.get("reflection-writing-input").showSoftInputOnFocus, true);
   assert.equal(f.focusCalls, 1);
+  assert.equal(f.keyboardVisible, true);
+  const priorRestorations = f.restored;
   f.hideKeyboardKeepingFocus();
   f.tap();
   f.flushFrames();
-  assert.equal(f.restored, 1);
+  assert.equal(f.restored, priorRestorations + 1);
   f.dispose();
 });
 

@@ -145,7 +145,9 @@ test("early taps still request focus and the native text input explicitly enable
   assert.equal(f.focus, 1);
   f.dispose();
   const card = readFileSync(new URL("../components/InnerSpaceCard.tsx", import.meta.url), "utf8");
-  assert.match(card, /editable=\{!freeLimitReached\}\s+showSoftInputOnFocus/);
+  assert.match(card, /editable=\{!freeLimitReached\}\s+showSoftInputOnFocus=\{inputActive\}/);
+  assert.match(card, /onPressIn=\{requestInputFocus\}/);
+  assert.doesNotMatch(card, /pointerEvents=\{inputActive \? "auto" : "none"\}/);
   assert.match(card, /if \(inputActive\) \{\s*focusInput\(\);/);
   assert.doesNotMatch(source, /InteractionManager|runAfterInteractions/);
 });

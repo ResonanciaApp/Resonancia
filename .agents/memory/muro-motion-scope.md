@@ -29,6 +29,6 @@ La activación de escritura no debe depender del fin global de las interacciones
 
 La escritura debe depender del panel disponible y del input nativo listo, no del fin del giro decorativo de la “+”. Una solicitud de foco emitida no demuestra que el teclado se abrió.
 
-**Why:** El usuario volvió a reportar el fallo en Perfil después de corregir la espera del scroll. Las comprobaciones anteriores terminaban en la solicitud de foco, sin recorrer la activación real del TextInput. React Native puede ignorar el foco de un input no editable o ya enfocado con el teclado oculto.
+**Why:** El usuario volvió a reportar el fallo en Perfil después de corregir la espera del scroll y después de corregir el foco programático. Las comprobaciones anteriores terminaban en la solicitud de foco o simulaban el toque del contenedor, sin recorrer el toque nativo sobre el TextInput. React Native puede ignorar el foco de un input no editable o ya enfocado con el teclado oculto.
 
-**How to apply:** Verificar la cadena completa desde el toque hasta el input, incluso si la animación decorativa nunca termina. Conservar el scroll previo y el límite gratuito; activar el foco tras el commit del campo y contemplar la restauración del teclado cuando el sistema conserva el foco.
+**How to apply:** Verificar la cadena completa desde el toque sobre el campo hasta el teclado, incluso si la animación decorativa nunca termina. No confundir cursor enfocado con teclado visible ni bloquear los toques nativos para retrasar el teclado. Conservar el scroll previo y el límite gratuito; contemplar la restauración del teclado cuando el sistema conserva el foco. Las pruebas simuladas y la compilación no confirman el resultado en el teléfono.
