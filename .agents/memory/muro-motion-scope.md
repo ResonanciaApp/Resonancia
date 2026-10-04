@@ -26,3 +26,9 @@ La activación de escritura no debe depender del fin global de las interacciones
 **Why:** El usuario reportó que tocar el campo no abría el teclado. En una pantalla con animaciones, esperar reposo global puede bloquear la solicitud; un respaldo limitado al final del scroll tampoco cubre una medición que nunca responde.
 
 **How to apply:** Conservar el desplazamiento previo normal, pero garantizar una salida de la solicitud completa desde antes de medir. Cancelar esa salida si el usuario empieza a arrastrar, cambia de pantalla o se desmonta la sección, para no abrir el teclado después.
+
+La escritura debe depender del panel disponible y del input nativo listo, no del fin del giro decorativo de la “+”. Una solicitud de foco emitida no demuestra que el teclado se abrió.
+
+**Why:** El usuario volvió a reportar el fallo en Perfil después de corregir la espera del scroll. Las comprobaciones anteriores terminaban en la solicitud de foco, sin recorrer la activación real del TextInput. React Native puede ignorar el foco de un input no editable o ya enfocado con el teclado oculto.
+
+**How to apply:** Verificar la cadena completa desde el toque hasta el input, incluso si la animación decorativa nunca termina. Conservar el scroll previo y el límite gratuito; activar el foco tras el commit del campo y contemplar la restauración del teclado cuando el sistema conserva el foco.

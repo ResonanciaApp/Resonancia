@@ -4,6 +4,7 @@ import MaskedView from "@react-native-masked-view/masked-view";
 import { LinearGradient } from "expo-linear-gradient";
 import * as Haptics from "expo-haptics";
 import { Feather } from "@expo/vector-icons";
+import { KeyboardController } from "react-native-keyboard-controller";
 import Reanimated, {
   Easing as ReanimatedEasing,
   runOnJS,
@@ -93,6 +94,7 @@ export function InnerSpaceCard({
   const [displayedPlaceholder, setDisplayedPlaceholder] = useState(DEFAULT_PLACEHOLDER);
   const [incomingPlaceholder, setIncomingPlaceholder] = useState<string | null>(null);
   const [inputActive, setInputActive] = useState(false);
+  const [inputFocusVersion, setInputFocusVersion] = useState(0);
   const [expanded, setExpanded] = useState(false);
   const expandedRef = useRef(false);
   const animatingRef = useRef(false);
@@ -282,15 +284,14 @@ export function InnerSpaceCard({
       return;
     }
     if (inputActive) {
-      inputRef.current?.focus();
+      focusInput();
       return;
     }
     if (onComposeRequested) {
       onComposeRequested();
       return;
     }
-    setInputActive(true);
-    requestAnimationFrame(() => inputRef.current?.focus());
+    focusInput();
   };
 
   const isSubmitDisabled =
@@ -332,8 +333,25 @@ export function InnerSpaceCard({
 
   const focusInput = () => {
     setInputActive(true);
-    requestAnimationFrame(() => requestAnimationFrame(() => inputRef.current?.focus()));
+    setInputFocusVersion((value) => value + 1);
   };
+
+  useLayoutEffect(() => {
+    if (!inputActive || freeLimitReached) return;
+    let frame = requestAnimationFrame(() => {
+      frame = requestAnimationFrame(() => {
+        const input = inputRef.current;
+        if (!input || !expandedRef.current) return;
+        // focus() es un no-op si Android mantiene el foco después de ocultar el teclado.
+        if (input.isFocused() && !KeyboardController.isVisible()) {
+          KeyboardController.setFocusTo("current");
+        } else {
+          input.focus();
+        }
+      });
+    });
+    return () => cancelAnimationFrame(frame);
+  }, [inputActive, inputFocusVersion, freeLimitReached]);
 
   const updateContentHeight = (height: number) => {
     if (height <= 0 || height === contentHeightRef.current) return;
@@ -448,11 +466,19 @@ export function InnerSpaceCard({
       });
     };
 
+    const focusAfterPanelOpening = () => {
+      if (expandedRef.current && focusAfterExpandRef.current) {
+        focusAfterExpandRef.current = false;
+        focusInput();
+      }
+    };
+
     clipHeight.value = withTiming(opening ? panelTargetHeight : 0, {
       duration: PANEL_DURATION,
       easing: opening ? ReanimatedEasing.out(ReanimatedEasing.cubic) : ReanimatedEasing.inOut(ReanimatedEasing.quad),
     }, (finished) => {
       if (!finished) return;
+      if (opening) runOnJS(focusAfterPanelOpening)();
       if (opening && followScroll && onExpandComplete) {
         runOnJS(onExpandComplete)(panelTargetHeight);
       }
@@ -476,7 +502,7 @@ export function InnerSpaceCard({
     if (!expandedRef.current) {
       if (animatingRef.current) queuedOpenRef.current = true;
       else animateExpansion(true);
-    } else if (!animatingRef.current) {
+    } else {
       focusAfterExpandRef.current = false;
       focusInput();
     }
@@ -580,6 +606,7 @@ export function InnerSpaceCard({
        )}
 
       <Pressable
+        testID="reflection-writing-box"
         style={[styles.inputContainer, { backgroundColor: "rgba(0,0,0,0.2)" }, saveError && { borderColor: colors.destructive }]}
         onPress={requestInputFocus}
       >
@@ -617,8 +644,9 @@ export function InnerSpaceCard({
           ) : null}
         </Animated.View>
         <TextInput
+          testID="reflection-writing-input"
           ref={inputRef}
-          editable={inputActive}
+          editable={!freeLimitReached}
           showSoftInputOnFocus
           pointerEvents={inputActive ? "auto" : "none"}
           onBlur={() => {
