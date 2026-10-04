@@ -123,7 +123,7 @@ export function AmbientalDurationSheet({
   const insets = useSafeAreaInsets();
   const [rendered, setRendered] = useState(visible);
   const { phase, values, transition, baselineHeight, startButtonLayout, titleLayout, reducedMotion } = useAmbientalDurationTransition();
-  const customMode = phase === "revealing" || phase === "manual";
+  const customMode = phase === "revealing" || phase === "manual" || phase === "hiding";
   const presetsInteractive = visible && phase === "presets";
   const manualInteractive = visible && phase === "manual";
   const [selectedPreset, setSelectedPreset] = useState<number>(10);
@@ -243,6 +243,9 @@ export function AmbientalDurationSheet({
   const closeSheet = () => {
     transition.cancel();
     onClose();
+  };
+  const cancelCustomMode = () => {
+    if (visible) transition.reverse(reducedMotion.current);
   };
 
   const handleHoursChange = (hours: number) => {
@@ -506,7 +509,8 @@ export function AmbientalDurationSheet({
               bottom: startBottom ?? Math.max(insets.bottom, 16),
             }}>
             <Pressable
-              onPress={closeSheet}
+              onPress={cancelCustomMode}
+              disabled={!manualInteractive}
               style={({ pressed }) => [
                 styles.cancelButton,
                 {

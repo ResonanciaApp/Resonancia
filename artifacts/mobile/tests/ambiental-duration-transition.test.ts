@@ -109,6 +109,109 @@ test("four circles shrink sequentially +/20/10/5 at 270 ms, grow 130 px over 460
   assert.equal(h.transition.start(341, false), false);
 });
 
+test("Cancel reverses the exact sequence: fade out, wait, contract, then grow 5/10/20/+ sequentially", () => {
+  const h = harness();
+  assert.equal(h.transition.reverse(false), false);
+  h.transition.start(341, true);
+  assert.equal(h.transition.reverse(false), true);
+  assert.equal(h.transition.reverse(false), false);
+  assert.equal(h.transition.start(341, false), false);
+  assert.equal(h.phase, "hiding");
+  assert.equal(h.jobs[0].value, h.values.manualOpacity);
+  assert.equal(h.jobs[0].config.toValue, 0);
+  assert.equal(h.jobs[0].config.duration, MANUAL_FADE_MS);
+  assert.equal(h.jobs[0].config.delay, undefined, "The fade-out starts immediately");
+  h.advance(MANUAL_FADE_MS - 1);
+  assert.equal(h.phase, "hiding");
+  assert.equal(h.values.sheetHeight.value, 471);
+  h.advance(1);
+  assert.equal(h.values.manualOpacity.value, 0);
+  assert.equal(h.phase, "contracting");
+  for (const job of h.jobs.slice(1)) {
+    assert.equal(job.config.duration, SHEET_EXPAND_MS);
+    assert.equal(job.config.delay, MANUAL_REVEAL_DELAY_MS);
+  }
+  assert.equal(h.jobs[1].value, h.values.sheetHeight);
+  assert.equal(h.jobs[1].config.toValue, 341);
+  assert.equal(h.jobs[1].config.useNativeDriver, false);
+  assert.equal(h.jobs[2].value, h.values.startShift);
+  assert.equal(h.jobs[2].config.toValue, 0);
+  assert.equal(h.jobs[2].config.useNativeDriver, true);
+  h.advance(MANUAL_REVEAL_DELAY_MS + SHEET_EXPAND_MS - 1);
+  assert.equal(h.phase, "contracting");
+  assert.deepEqual(h.values.circleOpacities.map(v => v.value), [0, 0, 0, 0]);
+  h.advance(1);
+  assert.equal(h.values.sheetHeight.value, 341);
+  assert.equal(h.values.startShift.value, 0);
+  for (const index of [0, 1, 2, 3]) {
+    assert.equal(h.phase, "restoring");
+    assert.equal(h.jobs.at(-1).value, h.values.scales[index]);
+    assert.equal(h.jobs.at(-1).config.toValue, 1);
+    assert.equal(h.jobs.at(-1).config.duration, CIRCLE_SHRINK_MS);
+    assert.equal(h.jobs.at(-1).config.useNativeDriver, true);
+    assert.equal(h.values.circleOpacities[index].value, 1);
+    for (let future = index + 1; future < 4; future++) {
+      assert.equal(h.values.circleOpacities[future].value, 0);
+    }
+    h.advance(CIRCLE_SHRINK_MS - 1);
+    assert.equal(h.values.scales[index].value, 1 / CIRCLE_DIAMETER);
+    assert.equal(h.transition.isTransitioning(), true);
+    h.advance(1);
+    assert.equal(h.values.scales[index].value, 1);
+  }
+  assert.equal(h.phase, "presets");
+  assert.equal(h.transition.isTransitioning(), false);
+  assert.deepEqual(h.values.circleOpacities.map(v => v.value), [1, 1, 1, 1]);
+  assert.equal(h.transition.start(341, false), true, "The + can be used again");
+});
+
+test("closing during any reverse stage stops it and ignores stale callbacks after reopening", () => {
+  for (const elapsed of [100, 250, 600, 900, 1150, 1450, 1750]) {
+    const h = harness();
+    h.transition.start(341, true);
+    h.transition.reverse(false);
+    h.advance(elapsed);
+    const oldJob = h.jobs.at(-1);
+    h.transition.cancel();
+    const count = h.jobs.length;
+    oldJob.callback({ finished: true });
+    h.advance(10000);
+    assert.equal(h.jobs.length, count);
+    h.transition.reset();
+    h.transition.start(350, true);
+    oldJob.callback({ finished: true });
+    assert.equal(h.phase, "manual");
+    assert.equal(h.values.sheetHeight.value, 480);
+  }
+});
+
+test("reverse handles reduced motion and interruptions by restoring presets, not reopening the timer", () => {
+  for (const elapsed of [undefined, 100, 500, 900, 1500]) {
+    const h = harness();
+    h.transition.start(341, true);
+    h.transition.reverse(elapsed === undefined);
+    if (elapsed !== undefined) {
+      h.advance(elapsed);
+      const oldJob = h.jobs.at(-1);
+      h.transition.finishImmediately();
+      oldJob.callback({ finished: true });
+    } else assert.equal(h.jobs.length, 0);
+    assert.equal(h.phase, "presets");
+    assert.equal(h.values.sheetHeight.value, 341);
+    assert.equal(h.values.manualOpacity.value, 0);
+    assert.equal(h.values.startShift.value, 0);
+    assert.deepEqual(h.values.scales.map(v => v.value), [1, 1, 1, 1]);
+    assert.deepEqual(h.values.circleOpacities.map(v => v.value), [1, 1, 1, 1]);
+    assert.equal(h.transition.isTransitioning(), false);
+  }
+  const interrupted = harness();
+  interrupted.transition.start(341, true);
+  interrupted.transition.reverse(false);
+  interrupted.jobs[0].callback({ finished: false });
+  assert.equal(interrupted.phase, "presets");
+  assert.equal(interrupted.values.sheetHeight.value, 341);
+});
+
 test("close at every stage cancels the sequence, ignores late completions and reopens cleanly", () => {
   for (const elapsed of [100, 300, 550, 850, 1200, 1600, 1800]) {
     const h = harness();
@@ -287,7 +390,35 @@ test("actual sheet UI measures its baseline, blocks stale start presses, locks h
   get("start").onPress();
   assert.deepEqual(c.starts, [10]);
   get("cancel").onPress();
-  assert.equal(c.closes, 1);
+  assert.equal(c.closes, 0, "Cancel returns to presets without dismissing the sheet");
+  c.render();
+  assert.equal(get("cancel").disabled, true);
+  const reverseJobs = c.h.jobs.length;
+  get("cancel").onPress();
+  assert.equal(c.h.jobs.length, reverseJobs, "Repeated Cancel presses cannot start overlapping sequences");
+  for (const elapsed of [MANUAL_FADE_MS, MANUAL_REVEAL_DELAY_MS, SHEET_EXPAND_MS, 270, 270, 270]) {
+    c.h.advance(elapsed);
+    c.render();
+    assert.equal(get("start").disabled, true);
+    assert.equal(flattened(get("start").style({ pressed: false })).opacity, 1);
+    assert.equal(get("custom").disabled, true);
+    assert.equal(get("manual").pointerEvents, "none");
+    get("start").onPress();
+  }
+  assert.deepEqual(c.starts, [10], "No session starts during the reverse transition");
+  c.h.advance(270);
+  c.render();
+  assert.equal(c.closes, 0);
+  assert.equal(c.h.phase, "presets");
+  assert.equal(get("cancel"), undefined);
+  assert.equal(get("start").disabled, false);
+  assert.equal(get("custom").disabled, false);
+  assert.equal(flattened(get("sheet-height").style).height, undefined);
+  assert.equal(flattened(get("start-anchor").style).position, undefined);
+  get("start").onPress();
+  assert.deepEqual(c.starts, [10, 10]);
+  get("custom").onPress();
+  assert.equal(c.h.phase, "shrinking");
 });
 
 test("Start moves smoothly only during expansion and stays separate from the lower Cancel slot", () => {
