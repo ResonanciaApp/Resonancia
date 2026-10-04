@@ -6,6 +6,7 @@ import { StreakWeekRow } from "@/components/StreakWeekRow";
 import { useStreakCelebration } from "@/context/StreakCelebrationContext";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { LinearGradient } from "expo-linear-gradient";
+import { SceneThemeBackground } from "@/components/SceneThemeBackground";
 import { BlurView } from "expo-blur";
 import { SymbolView } from "expo-symbols";
 import { router, useFocusEffect, useRouter } from "expo-router";
@@ -2787,12 +2788,7 @@ export default function HomeScreen2({
       style={[styles.root, { backgroundColor: activeTheme.gradient[activeTheme.gradient.length - 1] as string }]}
     >
       {/* ── Fondo degradado del tema ── */}
-      <LinearGradient
-        colors={activeTheme.gradient as unknown as [string, string, ...string[]]}
-        locations={activeTheme.gradientLocations}
-        style={StyleSheet.absoluteFill}
-        pointerEvents="none"
-      />
+      <SceneThemeBackground />
 
       {/* ── Todo el contenido se desvanece en modo inmersivo ── */}
       <Animated.View style={{ flex: 1, opacity: contentOpacity }} pointerEvents={immersive ? "none" : "auto"}>

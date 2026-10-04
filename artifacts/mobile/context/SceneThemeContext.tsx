@@ -11,9 +11,12 @@ type SceneThemeCtx = {
 };
 
 const SceneThemeContext = createContext<SceneThemeCtx | null>(null);
+// Native writes can complete asynchronously; serialize choices so the last tap wins.
+let pendingThemeWrite: Promise<void> = Promise.resolve();
 
 /** La elección visual es independiente de la escena sonora. */
 export async function loadPersistedSceneId(): Promise<VisualThemeId> {
+  await pendingThemeWrite;
   try {
     const saved = await AsyncStorage.getItem(SCENE_THEME_STORAGE_KEY);
     if (isVisualThemeId(saved)) return saved;
@@ -31,7 +34,7 @@ export function SceneThemeProvider({ children, initialSceneId = DEFAULT_THEME_ID
   const [activeSceneId, setActiveSceneId] = useState<VisualThemeId>(initialSceneId);
   const setActiveScene = useCallback((id: VisualThemeId) => {
     setActiveSceneId(id);
-    AsyncStorage.setItem(SCENE_THEME_STORAGE_KEY, id).catch((error) => {
+    pendingThemeWrite = pendingThemeWrite.then(() => AsyncStorage.setItem(SCENE_THEME_STORAGE_KEY, id)).catch((error) => {
       console.warn("[theme] No se pudo guardar el tema", error);
     });
   }, []);

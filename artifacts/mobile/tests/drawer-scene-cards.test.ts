@@ -1,0 +1,239 @@
+import test from "node:test";
+import assert from "node:assert/strict";
+import { readFileSync } from "node:fs";
+import { URL } from "node:url";
+import React from "react";
+import ts from "typescript";
+import { blendThemePalette, scheduleSceneThemeHaptics, SCENE_THEME_FADE_MS } from "../lib/scene-theme-transition.ts";
+
+const read = (path: string) => readFileSync(new URL(path, import.meta.url), "utf8");
+const compile = (source: string) => ts.transpileModule(source, {
+  compilerOptions: { module: ts.ModuleKind.CommonJS, target: ts.ScriptTarget.ES2022, jsx: ts.JsxEmit.React },
+}).outputText;
+const exports: any = {};
+let infoShown = false;
+new Function("exports", "require", compile(read("../components/DrawerSceneCards.tsx")))(
+  exports, (name: string) => {
+    if (name === "react") return { ...React, default: React };
+    if (name === "react-native") return {
+      View: "view", Pressable: "pressable", Text: "text",
+      StyleSheet: { create: (styles: unknown) => styles, absoluteFill: {}, hairlineWidth: 1 },
+      Alert: { alert: () => { infoShown = true; } },
+    };
+    if (name === "@expo/vector-icons") return { Feather: "icon", MaterialCommunityIcons: "icon" };
+    if (name === "expo-image") return { Image: "image" };
+    if (name === "expo-linear-gradient") return { LinearGradient: "gradient" };
+    if (name.endsWith(".jpg")) return name;
+    throw new Error(name);
+  },
+);
+function all(node: any): any[] {
+  if (!React.isValidElement(node)) return [];
+  return [node, ...React.Children.toArray((node.props as any).children).flatMap(all)];
+}
+
+test("Día selects Cloudy and Noche selects Índigo 2; exactly one check and selected taps do nothing", () => {
+  for (const active of ["cloudy", "indigo2", "tibet"]) {
+    const calls: string[] = [];
+    const nodes = all(exports.DrawerSceneCards({ activeId: active, onSelect: (id: string) => calls.push(id) }));
+    const radios = nodes.filter(node => node.props.accessibilityRole === "radio");
+    assert.equal(radios.length, 2);
+    assert.deepEqual(radios.map(radio => radio.props.accessibilityState.selected),
+      [active === "cloudy", active === "indigo2"]);
+    assert.equal(nodes.filter(node => node.props.name === "check").length, active === "tibet" ? 0 : 1);
+    assert.equal(radios[0].props.accessibilityLabel, "Día, Luminoso y energizante");
+    assert.equal(radios[1].props.accessibilityLabel, "Noche, Sereno y contemplativo");
+    radios.forEach(radio => radio.props.onPress());
+    assert.deepEqual(calls, ["cloudy", "indigo2"].filter(id => id !== active));
+    nodes.find(node => node.props.testID === "drawer-scene-info").props.onPress();
+    assert.ok(infoShown);
+  }
+  for (const name of ["day", "night"]) {
+    assert.ok(readFileSync(new URL(`../assets/images/scene-${name}.jpg`, import.meta.url)).length < 100_000);
+  }
+});
+
+test("crossfade snapshots the visible color on interruption and retains exact final palettes", () => {
+  assert.equal(SCENE_THEME_FADE_MS, 600);
+  const start = ["#000000", "#204060"];
+  const end = ["#ffffff", "#6080a0"];
+  const halfway = blendThemePalette(start, end, 0.5);
+  assert.deepEqual(halfway, ["#808080", "#406080"]);
+  const newTarget = ["#112233", "#8899aa"];
+  assert.deepEqual(blendThemePalette(halfway, newTarget, 0), halfway);
+  assert.deepEqual(blendThemePalette(halfway, newTarget, 1), newTarget);
+  assert.deepEqual(blendThemePalette(start, end, 5), end);
+});
+
+test("extended soft pattern has three spaced impacts and cancellation blocks queued callbacks", () => {
+  const queued = new Map<number, () => void>();
+  let id = 0;
+  let hits = 0;
+  const delays: number[] = [];
+  const stop = scheduleSceneThemeHaptics(() => hits++,
+    ((fn: () => void, delay: number) => { delays.push(delay); queued.set(++id, fn); return id; }) as any,
+    ((timer: number) => queued.delete(timer)) as any);
+  assert.deepEqual(delays, [0, 200, 400]);
+  const stale = [...queued.values()];
+  stale[0]();
+  assert.equal(hits, 1);
+  stop();
+  assert.equal(queued.size, 0);
+  stale.slice(1).forEach(fn => fn());
+  assert.equal(hits, 1);
+  let completeHits = 0;
+  const complete: (() => void)[] = [];
+  scheduleSceneThemeHaptics(() => completeHits++, ((fn: () => void) => complete.push(fn)) as any);
+  complete.forEach(fn => fn());
+  assert.equal(completeHits, 3);
+});
+
+test("drawer and every screen that opens it crossfade backgrounds without changing audio or tab haptics", () => {
+  const drawer = read("../components/DrawerMenu.tsx");
+  assert.match(drawer, /<DrawerSceneCards activeId=\{activeSceneId\} onSelect=\{selectVisualTheme\}/);
+  assert.match(drawer, /if \(id === activeSceneId\) return/);
+  assert.match(drawer, /if \(!visible\) cancelThemeHaptics.current\?\.\(\)/);
+  assert.match(drawer, /ImpactFeedbackStyle.Soft/);
+  assert.match(drawer, /if \(ND\)/);
+  assert.doesNotMatch(read("../components/ProfileSettingsSections.tsx"), /themePicker|label: "Escenas"/);
+  for (const path of ["../components/DrawerMenu.tsx", "../app/(tabs)/inicio8.tsx", "../app/(tabs)/explore.tsx", "../app/(tabs)/musica.tsx"]) {
+    assert.match(read(path), /<SceneThemeBackground/);
+  }
+  const background = read("../components/SceneThemeBackground.tsx");
+  assert.match(background, /useNativeDriver: true/);
+  assert.match(background, /blendThemePalette\(current.from, current.to, visibleOpacity\)/);
+  assert.match(background, /generation.current !== token/);
+  assert.match(background, /reduceMotionChanged/);
+  assert.doesNotMatch(background, /setInterval|children/);
+});
+
+test("real background effects interrupt from the displayed palette and reduced motion settles immediately", () => {
+  const states: any[] = [], refs: any[] = [], effects: any[] = [];
+  let stateIndex = 0, refIndex = 0, effectIndex = 0, dirty = false;
+  let target = ["#000000", "#204060"];
+  let reduceListener: (value: boolean) => void = () => {};
+  const pending: any[] = [];
+  const animationOptions: any[] = [];
+  const register = (fn: () => any, deps: any[]) => {
+    const index = effectIndex++;
+    const previous = effects[index];
+    if (!previous || deps.some((value, i) => !Object.is(value, previous.deps[i]))) {
+      pending.push(() => {
+        previous?.cleanup?.();
+        effects[index] = { deps, cleanup: fn() };
+      });
+    }
+  };
+  const fakeReact = {
+    ...React,
+    useState: (initial: any) => {
+      const index = stateIndex++;
+      if (!(index in states)) states[index] = typeof initial === "function" ? initial() : initial;
+      return [states[index], (value: any) => {
+        if (!Object.is(value, states[index])) { states[index] = value; dirty = true; }
+      }];
+    },
+    useRef: (initial: any) => {
+      const index = refIndex++;
+      return refs[index] ?? (refs[index] = { current: initial });
+    },
+    useEffect: register,
+    useLayoutEffect: register,
+  };
+  class Value {
+    value: number;
+    constructor(value: number) { this.value = value; }
+    setValue(value: number) { this.value = value; }
+    stopAnimation(callback?: (value: number) => void) { callback?.(this.value); }
+  }
+  const background: any = {};
+  new Function("exports", "require", compile(read("../components/SceneThemeBackground.tsx")))(
+    background, (name: string) => {
+      if (name === "react") return { ...fakeReact, default: fakeReact };
+      if (name === "@/context/SceneThemeContext") return { useSceneTheme: () => ({ theme: { gradient: target } }) };
+      if (name === "@/lib/scene-theme-transition") return { blendThemePalette, SCENE_THEME_FADE_MS };
+      if (name === "expo-linear-gradient") return { LinearGradient: "gradient" };
+      if (name === "react-native") return {
+        View: "view", StyleSheet: { absoluteFill: {} }, Easing: { ease: "ease", inOut: () => "ease" },
+        AccessibilityInfo: {
+          isReduceMotionEnabled: () => Promise.resolve(false),
+          addEventListener: (_name: string, fn: any) => { reduceListener = fn; return { remove() {} }; },
+        },
+        Animated: { Value, View: "animated",
+          timing: (_value: any, options: any) => {
+            animationOptions.push(options);
+            return { start() {}, stop() {} };
+          },
+        },
+      };
+      throw new Error(name);
+    },
+  );
+  function render() {
+    let cycles = 0;
+    do {
+      dirty = false;
+      stateIndex = refIndex = effectIndex = 0;
+      background.SceneThemeBackground();
+      pending.splice(0).forEach(fn => fn());
+      assert.ok(++cycles < 10);
+    } while (dirty);
+  }
+  render();
+  target = ["#ffffff", "#6080a0"];
+  render();
+  assert.equal(animationOptions.at(-1).duration, 600);
+  assert.equal(animationOptions.at(-1).useNativeDriver, true);
+  refs[1].current.value = 0.5; // Actual native opacity at an interrupted frame.
+  target = ["#112233", "#8899aa"];
+  render();
+  assert.deepEqual(refs[0].current.from, ["#808080", "#406080"]);
+  assert.deepEqual(refs[0].current.to, target);
+  reduceListener(true);
+  render();
+  assert.deepEqual(refs[0].current.from, target);
+  assert.equal(refs[1].current.value, 1);
+  effects.forEach(effect => effect.cleanup?.());
+});
+
+test("rapid selections serialize native storage writes so the last choice survives reload", async () => {
+  let scene = "indigo2", stored = scene;
+  const writes: { id: string; finish: () => void }[] = [];
+  const provider: any = {};
+  const themes: any = {};
+  new Function("exports", compile(read("../config/scene-themes.ts")))(themes);
+  const fakeReact = {
+    ...React, createContext: () => ({ Provider: "provider" }),
+    useState: () => [scene, (next: string) => { scene = next; }],
+    useCallback: (fn: any) => fn, useMemo: (fn: any) => fn(),
+  };
+  new Function("exports", "require", compile(read("../context/SceneThemeContext.tsx")))(
+    provider, (name: string) => {
+      if (name === "react") return { ...fakeReact, default: fakeReact };
+      if (name === "@/config/scene-themes") return themes;
+      if (name === "@/context/BrightnessContext") return { useBrightness: () => ({ brightMode: false }) };
+      if (name === "@react-native-async-storage/async-storage") return { default: {
+        getItem: async () => stored,
+        setItem: (_key: string, id: string) => new Promise<void>(resolve => {
+          writes.push({ id, finish: () => { stored = id; resolve(); } });
+        }),
+      } };
+      throw new Error(name);
+    },
+  );
+  const value = provider.SceneThemeProvider({ children: null }).props.value;
+  value.setActiveScene("cloudy");
+  value.setActiveScene("indigo2");
+  value.setActiveScene("cloudy");
+  const flush = () => new Promise(resolve => setTimeout(resolve, 0));
+  await flush();
+  assert.deepEqual(writes.map(write => write.id), ["cloudy"]);
+  writes[0].finish();
+  await flush();
+  assert.deepEqual(writes.map(write => write.id), ["cloudy", "indigo2"]);
+  writes[1].finish();
+  await flush();
+  writes[2].finish();
+  assert.equal(await provider.loadPersistedSceneId(), "cloudy");
+  assert.equal(scene, "cloudy");
+});

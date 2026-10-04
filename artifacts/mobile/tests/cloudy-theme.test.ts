@@ -124,7 +124,7 @@ test("Cloudy themes retain exact base stops in Noche and the existing single 3.5
   }
 });
 
-test("Settings offers only Indigo 2 and Cloudy as accessible 38px circles inline on the right, with border-only selection", () => {
+test("Legacy swatches remain valid but settings no longer expose a visual scene picker", () => {
   const exported: any = {};
   new Function("exports", "require", compile(read("../components/VisualThemeSwatches.tsx")))(
     exported,
@@ -172,12 +172,8 @@ test("Settings offers only Indigo 2 and Cloudy as accessible 38px circles inline
   }
   assert.deepEqual(selected, Array.from({ length: 4 }, () => available).flat());
   const settings = read("../components/ProfileSettingsSections.tsx");
-  assert.match(settings, /label: "Escenas",\s+themePicker: true/);
-  assert.match(settings, /onSelect=\{setActiveScene\}/);
-  assert.match(settings, /<Text style=\{\[styles.rowLabel, styles.rowCopy, \{ color: foreground \}\]\}>\{row.label\}<\/Text>\s+<VisualThemeSwatches[\s\S]*?\/>\s+<\/View>/);
+  assert.doesNotMatch(settings, /label: "Escenas"|themePicker|VisualThemeSwatches/);
   assert.doesNotMatch(settings, /Luz \/ Noche|setBrightMode/);
-  assert.ok(settings.indexOf('label: "Escenas"') > settings.indexOf('label: "Registro diario estado de ánimo"'));
-  assert.ok(settings.indexOf('label: "Escenas"') < settings.indexOf('label: "Hitos"'));
   for (const path of ["../app/configuraciones.tsx", "../components/ProfileScreenBase.tsx"]) {
     assert.match(read(path), /<ProfileSettingsSections/);
   }

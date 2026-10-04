@@ -15,12 +15,9 @@ import {
 import { MilestoneCards } from "@/components/MilestoneCards";
 import { SettingsStatisticsPanel } from "@/components/SettingsStatisticsPanel";
 import { isIndigoThemeId, isIndigo2ThemeId, type ThemeSceneId } from "@/config/scene-themes";
-import { VisualThemeSwatches } from "@/components/VisualThemeSwatches";
 import { MEMBERSHIP_AURORA } from "@/constants/colors";
-import { useBrightness } from "@/context/BrightnessContext";
 import { useGeometrixPanel } from "@/context/GeometrixPanelContext";
 import { usePremium } from "@/context/PremiumContext";
-import { useSceneTheme } from "@/context/SceneThemeContext";
 import { useColors } from "@/hooks/useColors";
 
 type FeatherName = React.ComponentProps<typeof Feather>["name"];
@@ -32,7 +29,6 @@ type MenuRow = {
   description?: string;
   accent?: boolean;
   toggle?: boolean;
-  themePicker?: boolean;
   toggleValue?: boolean;
   onToggle?: (value: boolean) => void;
   onPress?: () => void;
@@ -69,8 +65,6 @@ export function ProfileSettingsSections({
   const { openGeometrix } = useGeometrixPanel();
   const { isPremium: isPremiumDev, setPremium: setPremiumDev } = usePremium();
   const { primary } = useColors();
-  const { brightMode } = useBrightness();
-  const { activeSceneId, setActiveScene } = useSceneTheme();
   const isIndigo = isIndigoThemeId(sceneId);
   const isIndigo2 = isIndigo2ThemeId(sceneId);
   const themeAccent = isIndigo2 ? accent : isIndigo ? "#AAAAC4" : accent;
@@ -113,11 +107,6 @@ export function ProfileSettingsSections({
         },
         { icon: "zap", label: "Racha", toggle: true },
         { icon: "smile", label: "Registro diario estado de ánimo", toggle: true },
-        {
-          icon: "layers",
-          label: "Escenas",
-          themePicker: true,
-        },
         { icon: "flag", label: "Hitos", value: milestonesOpen ? "Ocultar" : undefined, onPress: toggleMilestones },
         { icon: "help-circle", label: "Ayuda y Soporte", onPress: () => router.push("/ayuda" as never) },
       ],
@@ -218,25 +207,6 @@ export function ProfileSettingsSections({
           <View style={[styles.card, { backgroundColor: cardBackground }]}>
             {section.rows.map((row, index) => {
               const rowColor = row.accent ? "#D8B56A" : foreground;
-              if (row.themePicker) {
-                return (
-                  <View key={row.label}>
-                    {index > 0 && <View style={[styles.divider, { backgroundColor: dividerColor }]} />}
-                    <View style={styles.row}>
-                      <View style={styles.iconBox}>
-                        <Feather name={row.icon} size={20} color="#F9F9F9" />
-                      </View>
-                      <Text style={[styles.rowLabel, styles.rowCopy, { color: foreground }]}>{row.label}</Text>
-                      <VisualThemeSwatches
-                        activeId={activeSceneId}
-                        onSelect={setActiveScene}
-                        accent={themeAccent}
-                        brightMode={brightMode}
-                      />
-                    </View>
-                  </View>
-                );
-              }
               return (
                 <React.Fragment key={row.label}>
                   {index > 0 && <View style={[styles.divider, { backgroundColor: dividerColor }]} />}

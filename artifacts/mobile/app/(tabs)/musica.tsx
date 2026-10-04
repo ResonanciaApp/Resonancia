@@ -1,6 +1,7 @@
 import { Feather, MaterialCommunityIcons } from "@expo/vector-icons";
 import { BlurView } from "expo-blur";
 import { LinearGradient } from "expo-linear-gradient";
+import { SceneThemeBackground } from "@/components/SceneThemeBackground";
 import { router, useFocusEffect } from "expo-router";
 import { openPremiumPlans } from "@/lib/premiumGate";
 import { useMixerPanel } from "@/context/MixerPanelContext";
@@ -641,12 +642,7 @@ export default function MezcladorScreen() {
 
   return (
     <View style={[styles.root, { backgroundColor: theme.solid }]}>
-      <LinearGradient
-        colors={theme.gradient as [string, string, ...string[]]}
-        style={StyleSheet.absoluteFill}
-        start={{ x: 0, y: 0 }}
-        end={{ x: 0, y: 1 }}
-      />
+      <SceneThemeBackground />
       <StatusBar hidden />
 
       <View style={styles.inner}>

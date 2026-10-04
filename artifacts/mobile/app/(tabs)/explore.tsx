@@ -18,6 +18,7 @@ import { BLUR_PLACEHOLDER, IMAGE_TRANSITION } from "@/constants/imagePlaceholder
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { LinearGradient } from "expo-linear-gradient";
+import { SceneThemeBackground } from "@/components/SceneThemeBackground";
 import { SacredBackground } from "@/components/SacredBackground";
 import { DiscoverSearchBorder } from "@/components/DiscoverSearchBorder";
 import { CARD_TEXT_ABOVE, CARD_TEXT_BELOW, DISCOVER_SEARCH_SURFACE } from "@/constants/colors";
@@ -542,13 +543,7 @@ export function ExploreScreen({
 
   return (
     <View style={[styles.root, { backgroundColor: activeTheme.gradient[0] as string }]}>
-      <LinearGradient
-        colors={activeTheme.gradient}
-        locations={activeTheme.gradientLocations}
-        start={activeTheme.gradientStart}
-        end={activeTheme.gradientEnd}
-        style={styles.rootGradient}
-      />
+      <SceneThemeBackground />
       <StatusBar hidden />
 
       <Animated.View

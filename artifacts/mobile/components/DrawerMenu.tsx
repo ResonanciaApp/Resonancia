@@ -1,7 +1,10 @@
 import { Feather } from "@expo/vector-icons";
 import { useUser } from "@clerk/expo";
 import { Image } from "expo-image";
-import { LinearGradient } from "expo-linear-gradient";
+import * as Haptics from "expo-haptics";
+import { DrawerSceneCards } from "@/components/DrawerSceneCards";
+import { SceneThemeBackground } from "@/components/SceneThemeBackground";
+import { scheduleSceneThemeHaptics } from "@/lib/scene-theme-transition";
 
 import { router } from "expo-router";
 import React from "react";
@@ -89,7 +92,24 @@ export function DrawerMenu() {
   const { user: clerkUser } = useUser();
   const { username, lastName } = useUserProfile();
   const avatarSource = useCurrentUserAvatarSource();
-  const { theme: activeTheme } = useSceneTheme();
+  const { activeSceneId, setActiveScene } = useSceneTheme();
+  const cancelThemeHaptics = React.useRef<(() => void) | null>(null);
+  React.useEffect(() => {
+    if (!visible) cancelThemeHaptics.current?.();
+    return () => { cancelThemeHaptics.current?.(); };
+  }, [visible]);
+  const selectVisualTheme = (id: "cloudy" | "indigo2") => {
+    if (id === activeSceneId) return;
+    cancelThemeHaptics.current?.();
+    setActiveScene(id);
+    if (ND) {
+      cancelThemeHaptics.current = scheduleSceneThemeHaptics(() => {
+        void Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Soft).catch((error) => {
+          console.warn("[theme] No se pudo ejecutar la háptica suave", error);
+        });
+      });
+    }
+  };
   const { unreadCount } = useNotifications();
   const { isPremium, hydrated: premiumHydrated } = usePremium();
   const { openMixer } = useMixerPanel();
@@ -274,12 +294,8 @@ export function DrawerMenu() {
           },
         ]}
       >
-        <LinearGradient
-          style={styles.drawerInner}
-          colors={[...activeTheme.gradient] as [string, string, ...string[]]}
-          start={{ x: 0, y: 0 }}
-          end={{ x: 0, y: 1 }}
-        >
+        <View style={styles.drawerInner}>
+          <SceneThemeBackground />
           <Pressable
             onPress={onClose}
             style={[
@@ -450,8 +466,9 @@ export function DrawerMenu() {
               ))}
             </View>
 
+            <DrawerSceneCards activeId={activeSceneId} onSelect={selectVisualTheme} />
           </ScrollView>
-        </LinearGradient>
+        </View>
       </Animated.View>
     </View>
   );
