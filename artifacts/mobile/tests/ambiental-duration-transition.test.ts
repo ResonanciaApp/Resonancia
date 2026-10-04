@@ -58,16 +58,16 @@ function harness() {
   return { transition, values, jobs, phases, advance, get phase() { return phase; } };
 }
 
-test("four circles shrink sequentially +/20/10/5 at 350 ms, grow 130 px, wait 200 ms, then fade the clock", () => {
+test("four circles shrink sequentially +/20/10/5 at 220 ms, grow 130 px at 25% lower speed, then wait and fade", () => {
   const h = harness();
   assert.equal(h.transition.start(341, false), true);
   assert.equal(h.transition.start(341, false), false);
   for (const index of [3, 2, 1, 0]) {
     assert.equal(h.jobs.at(-1).value, h.values.scales[index]);
-    assert.equal(h.jobs.at(-1).config.duration, 350);
+    assert.equal(h.jobs.at(-1).config.duration, 220);
     assert.equal(h.jobs.at(-1).config.useNativeDriver, true);
     assert.equal(h.jobs.at(-1).config.toValue * CIRCLE_DIAMETER, 1);
-    h.advance(349);
+    h.advance(219);
     assert.equal(h.values.circleOpacities[index].value, 1);
     assert.equal(h.phase, "shrinking");
     h.advance(1);
@@ -75,10 +75,12 @@ test("four circles shrink sequentially +/20/10/5 at 350 ms, grow 130 px, wait 20
     assert.equal(h.values.circleOpacities[index].value, 0);
     for (let pending = 0; pending < index; pending++) assert.equal(h.values.scales[pending].value, 1);
   }
-  assert.deepEqual(h.jobs.slice(0, 4).map(job => job.start), [0, 350, 700, 1050]);
+  assert.deepEqual(h.jobs.slice(0, 4).map(job => job.start), [0, 220, 440, 660]);
   assert.equal(h.phase, "expanding");
   assert.equal(h.values.manualOpacity.value, 0);
-  assert.equal(h.jobs[4].start, 1400);
+  assert.equal(h.jobs[4].start, 880);
+  assert.equal(SHEET_EXPAND_MS, 373);
+  assert.ok(Math.abs(280 / SHEET_EXPAND_MS - 0.75) < 0.001);
   assert.equal(h.jobs[4].config.toValue, 341 + 130);
   assert.equal(h.jobs[4].config.useNativeDriver, false);
   h.advance(SHEET_EXPAND_MS - 1);
@@ -91,7 +93,7 @@ test("four circles shrink sequentially +/20/10/5 at 350 ms, grow 130 px, wait 20
   h.advance(1);
   assert.equal(h.phase, "revealing");
   assert.equal(h.values.sheetHeight.value, 471);
-  assert.equal(h.jobs[6].start, 1400 + SHEET_EXPAND_MS);
+  assert.equal(h.jobs[6].start, 880 + SHEET_EXPAND_MS);
   assert.equal(h.jobs[6].config.duration, MANUAL_FADE_MS);
   assert.equal(h.jobs[6].config.useNativeDriver, true);
   assert.equal(h.jobs[6].config.delay, 200);
@@ -108,7 +110,7 @@ test("four circles shrink sequentially +/20/10/5 at 350 ms, grow 130 px, wait 20
 });
 
 test("close at every stage cancels the sequence, ignores late completions and reopens cleanly", () => {
-  for (const elapsed of [100, 400, 800, 1200, 1450, 1700, 1900]) {
+  for (const elapsed of [100, 300, 550, 750, 1000, 1300, 1500]) {
     const h = harness();
     h.transition.start(320, false);
     h.advance(elapsed);
@@ -232,10 +234,12 @@ test("actual sheet UI measures its baseline, blocks stale start presses, locks h
   staleStart();
   assert.equal(c.h.jobs.length, 1);
   assert.equal(c.starts.length, 0);
-  for (const elapsed of [350, 350, 350, 350, 280, 200]) {
+  for (const elapsed of [220, 220, 220, 220, SHEET_EXPAND_MS, 200]) {
     c.h.advance(elapsed);
     c.render();
     assert.equal(get("start").disabled, true);
+    assert.equal(flattened(get("start").style({ pressed: false })).opacity, 1,
+      "Start remains fully colored while interactions are disabled during the transition");
     assert.equal(get("custom").disabled, true);
     assert.equal(get("manual").pointerEvents, "none");
     assert.equal(flattened(get("sheet-height").style).height, c.h.values.sheetHeight);
@@ -265,8 +269,12 @@ test("actual sheet UI measures its baseline, blocks stale start presses, locks h
   assert.equal(finalStartStyle.transform[0].translateY.value, -66);
   const cancelAnchor = flattened(get("cancel-anchor").style);
   assert.equal(cancelAnchor.position, "absolute");
-  assert.equal(cancelAnchor.bottom, 47);
-  assert.equal(900 - cancelAnchor.bottom - c.styles.cancelButton.height, 900 - 341 + 240,
+  assert.equal(cancelAnchor.bottom, 51);
+  const cancelStyle = flattened(get("cancel").style({ pressed: false }));
+  assert.equal(cancelStyle.height, finalStartStyle.height, "Cancel matches the measured Start height");
+  assert.equal(cancelStyle.borderRadius, c.styles.startButton.borderRadius);
+  assert.equal(c.styles.startButtonText.fontWeight, "800");
+  assert.equal(900 - cancelAnchor.bottom - cancelStyle.height, 900 - 341 + 240,
     "Cancel occupies the initial Start position");
   const timerStyle = flattened(get("manual").style);
   const titleBottom = 38 + 24 + 20;
@@ -289,20 +297,21 @@ test("Start moves smoothly only during expansion and stays separate from the low
   get("sheet-height").onLayout({ nativeEvent: { layout: { height: 341 } } });
   get("start-anchor").onLayout({ nativeEvent: { layout: { y: 240, height: 50 } } });
   get("custom").onPress();
-  c.h.advance(1400);
+  c.h.advance(4 * CIRCLE_SHRINK_MS);
   c.render();
   assert.equal(flattened(get("start-anchor").style).transform[0].translateY.value, 0);
   c.h.values.sheetHeight.setValue(341 + 65);
   c.h.values.startShift.setValue(-33);
   c.render();
   assert.equal(flattened(get("start-anchor").style).transform[0].translateY.value, -33);
-  c.h.advance(280 + 200 + 180);
+  c.h.advance(SHEET_EXPAND_MS + 200 + 180);
   c.render();
   const startStyle = flattened(get("start-anchor").style);
   const cancelStyle = flattened(get("cancel-anchor").style);
   assert.equal(startStyle.transform[0].translateY.value, -66);
   const startBottomOnScreen = 900 - startStyle.bottom + startStyle.transform[0].translateY.value;
-  const cancelTopOnScreen = 900 - cancelStyle.bottom - c.styles.cancelButton.height;
+  const cancelButtonStyle = flattened(get("cancel").style({ pressed: false }));
+  const cancelTopOnScreen = 900 - cancelStyle.bottom - cancelButtonStyle.height;
   assert.ok(cancelTopOnScreen > startBottomOnScreen, "Cancel is below Start without overlap");
 });
 
@@ -319,6 +328,8 @@ test("manual validation, eight-hour cap, free Premium gate and preset slot geome
   assert.deepEqual(c.starts, [480]);
   c.render(true, [true, 10, 0, 0]);
   assert.equal(c.captured.get("ambiental-duration-start").disabled, true);
+  assert.equal(flattened(c.captured.get("ambiental-duration-start").style({ pressed: false })).opacity, 0.45,
+    "A zero-duration selection still keeps its validation feedback");
   assert.match(source, /customHours === MAX_CUSTOM_HOURS \? \[0\] : MINUTES/);
   assert.match(source, /if \(hours === MAX_CUSTOM_HOURS\) setCustomMinutes\(0\)/);
   assert.match(source, /circleSlot:\s*\{\s*width: CIRCLE_DIAMETER,\s*height: CIRCLE_DIAMETER/);

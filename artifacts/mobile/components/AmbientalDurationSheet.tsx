@@ -217,6 +217,7 @@ export function AmbientalDurationSheet({
   const startBottom = startButtonLayout.current && baselineHeight.current > 0
     ? baselineHeight.current - startButtonLayout.current.y - startButtonLayout.current.height
     : undefined;
+  const cancelHeight = startButtonLayout.current?.height ?? CANCEL_HEIGHT;
   const startAnchorStyle = phase !== "presets" && startBottom !== undefined
     ? {
         position: "absolute" as const,
@@ -471,7 +472,7 @@ export function AmbientalDurationSheet({
             style={({ pressed }) => [
               styles.startButton,
               {
-                opacity: !canStart ? 0.45 : pressed ? 0.78 : 1,
+                opacity: phase === "manual" && selectedMinutes === 0 ? 0.45 : pressed && canStart ? 0.78 : 1,
               },
             ]}
             accessibilityRole="button"
@@ -502,7 +503,7 @@ export function AmbientalDurationSheet({
               position: "absolute",
               left: 0,
               right: 0,
-              bottom: (startBottom ?? Math.max(insets.bottom, 16)) + (startButtonLayout.current?.height ?? 0) - CANCEL_HEIGHT,
+              bottom: startBottom ?? Math.max(insets.bottom, 16),
             }}>
             <Pressable
               onPress={closeSheet}
@@ -510,6 +511,7 @@ export function AmbientalDurationSheet({
                 styles.cancelButton,
                 {
                   backgroundColor: "rgba(249,249,249,0.6)",
+                  height: cancelHeight,
                   opacity: pressed ? 0.78 : 1,
                 },
               ]}
@@ -689,13 +691,13 @@ const styles = StyleSheet.create({
   startButtonText: {
     fontFamily: "Manrope",
     fontSize: 13,
-    fontWeight: "700",
+    fontWeight: "800",
     letterSpacing: 0.5,
     color: "#F9F9F9",
   },
   cancelButton: {
     height: CANCEL_HEIGHT,
-    borderRadius: 28,
+    borderRadius: 30,
     alignItems: "center",
     justifyContent: "center",
     marginTop: CONTROL_GAP,
