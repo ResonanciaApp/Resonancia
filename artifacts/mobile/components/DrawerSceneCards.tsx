@@ -1,4 +1,5 @@
 import { Feather, MaterialCommunityIcons } from "@expo/vector-icons";
+import { MoonCrescentIcon } from "@/components/MoonCrescentIcon";
 import React from "react";
 import { Alert, Pressable, StyleSheet, Text, View } from "react-native";
 
@@ -12,19 +13,16 @@ type Props = {
 const SCENES: {
   id: SceneId;
   title: string;
-  icon: React.ComponentProps<typeof MaterialCommunityIcons>["name"];
   iconColor: string;
 }[] = [
   {
     id: "cloudy",
     title: "Día",
-    icon: "white-balance-sunny",
     iconColor: "#BE9650",
   },
   {
     id: "indigo2",
     title: "Noche",
-    icon: "moon-waning-crescent",
     iconColor: "#B6A1E5",
   },
 ];
@@ -52,7 +50,7 @@ export function DrawerSceneCards({ activeId, onSelect }: Props) {
           <Feather name="info" size={14} color="rgba(255,255,255,0.58)" />
         </Pressable>
       </View>
-      <View accessibilityRole="radiogroup" accessibilityLabel="Escena">
+      <View style={styles.list} accessibilityRole="radiogroup" accessibilityLabel="Escena">
         {SCENES.map((s) => {
           const selected = s.id === activeId;
           return (
@@ -70,8 +68,12 @@ export function DrawerSceneCards({ activeId, onSelect }: Props) {
                 pressed && { opacity: 0.85 },
               ]}
             >
-              <View style={styles.iconWrap}>
-                <MaterialCommunityIcons name={s.icon} size={23} color={selected ? s.iconColor : "#F9F9F9"} />
+              <View style={styles.iconWrap} pointerEvents="none">
+                {s.id === "indigo2" ? (
+                  <MoonCrescentIcon size={23} color={selected ? s.iconColor : "#F9F9F9"} />
+                ) : (
+                  <MaterialCommunityIcons name="white-balance-sunny" size={23} color={selected ? s.iconColor : "#F9F9F9"} />
+                )}
               </View>
               <Text style={styles.label} numberOfLines={1}>{s.title}</Text>
             </Pressable>
@@ -83,7 +85,7 @@ export function DrawerSceneCards({ activeId, onSelect }: Props) {
 }
 
 const styles = StyleSheet.create({
-  header: { flexDirection: "row", alignItems: "center", gap: 8, paddingHorizontal: 2, marginBottom: 4, marginTop: 20, paddingTop: 18, borderTopWidth: StyleSheet.hairlineWidth, borderTopColor: "rgba(255,255,255,0.10)" },
+  header: { flexDirection: "row", alignItems: "center", gap: 8, paddingHorizontal: 2, marginBottom: 4, marginTop: 80, paddingTop: 18, borderTopWidth: StyleSheet.hairlineWidth, borderTopColor: "rgba(255,255,255,0.10)" },
   title: {
     fontFamily: "Manrope",
     color: "rgba(255,255,255,0.58)",
@@ -100,6 +102,7 @@ const styles = StyleSheet.create({
     borderRadius: 10,
     gap: 14,
   },
-  iconWrap: { width: 26, alignItems: "center" },
+  list: { marginTop: 10, gap: 2 },
+  iconWrap: { width: 26, height: 26, alignItems: "center", justifyContent: "center" },
   label: { fontFamily: "Manrope", color: "#FFFFFF", fontSize: 14, fontWeight: "500", letterSpacing: 0.2 },
 });

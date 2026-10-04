@@ -7,6 +7,12 @@ El usuario reemplazó el selector de ajustes por opciones minimalistas en el dra
 
 **Why:** El 2026-10-04 trasladó Escenas al drawer y luego pidió sustituir las tarjetas ilustradas por sol/luna con títulos Día/Noche y selección únicamente mediante el color del icono. Esta última dirección reemplaza los banners luminosos con check, sin autorizar cambios de paleta ni audio.
 
+La luna debe ser la misma silueta del banner del Mezclador de sonidos en Sonidos, no el glifo lunar de la fuente de iconos. La separación del título Escena a Día sigue la de Herramientas al Mezclador; el bloque de Escena tiene una separación extra de 60 px respecto a la primera versión minimalista.
+
+**Why:** El usuario corrigió explícitamente la silueta y alineación de la luna y pidió estos espacios para el drawer.
+
+**How to apply:** Conservar estas elecciones en el drawer; no trasladar ese margen adicional a otras secciones ni modificar el banner original al ajustar el selector.
+
 **How to apply:** No restituir el selector de ajustes ni interpretar Día como un modo claro genérico. No reintroducir Universo ni Cloudy 2 como tarjetas sin petición. Retirar opciones no autoriza borrar preferencias o forzar un tema. Transicionar solo superficies de fondo, no textos ni contenido editorial. La háptica extendida de estas tarjetas no modifica la regla de un solo Soft del tab bar; no prometer duración continua exacta con una API de impactos discretos.
 
 Universo conserva un respaldo sólido oscuro al sustituir su degradado por una

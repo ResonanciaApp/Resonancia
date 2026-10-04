@@ -21,6 +21,7 @@ new Function("exports", "require", compile(read("../components/DrawerSceneCards.
       Alert: { alert: () => { infoShown = true; } },
     };
     if (name === "@expo/vector-icons") return { Feather: "icon", MaterialCommunityIcons: "icon" };
+    if (name === "@/components/MoonCrescentIcon") return { MoonCrescentIcon: "moon-crescent" };
     if (name === "expo-image") return { Image: "image" };
     if (name === "expo-linear-gradient") return { LinearGradient: "gradient" };
     if (name.endsWith(".jpg")) return name;
@@ -44,11 +45,21 @@ test("minimal Día/Noche rows use matching menu sizes and only the selected icon
     assert.equal(radios[0].props.accessibilityLabel, "Día");
     assert.equal(radios[1].props.accessibilityLabel, "Noche");
     const sun = nodes.find(node => node.props.name === "white-balance-sunny");
-    const moon = nodes.find(node => node.props.name === "moon-waning-crescent");
+    const moon = nodes.find(node => node.type === "moon-crescent");
     assert.equal(sun.props.color, active === "cloudy" ? "#BE9650" : "#F9F9F9");
     assert.equal(moon.props.color, active === "indigo2" ? "#B6A1E5" : "#F9F9F9");
     assert.equal(sun.props.size, 23);
     assert.equal(moon.props.size, 23);
+    assert.equal(nodes.find(node => node.props.accessibilityRole === "radiogroup").props.style.marginTop, 10);
+    assert.equal(nodes.find(node => node.props.accessibilityRole === "radiogroup").props.style.gap, 2);
+    const sectionHeader = nodes.find(node => node.props.style?.borderTopWidth === 1);
+    assert.equal(sectionHeader.props.style.marginTop, 80, "Entire divider/header block moves down 60px from 20px");
+    for (const radio of radios) {
+      const iconBox = all(radio).find(node => node.props.style?.width === 26);
+      assert.equal(iconBox.props.style.height, 26);
+      assert.equal(iconBox.props.style.justifyContent, "center");
+      assert.equal(iconBox.props.pointerEvents, "none");
+    }
     for (const radio of radios) {
       const text = all(radio).filter(node => node.type === "text");
       assert.equal(text.length, 1);
@@ -60,6 +71,13 @@ test("minimal Día/Noche rows use matching menu sizes and only the selected icon
     assert.deepEqual(calls, ["cloudy", "indigo2"].filter(id => id !== active));
     nodes.find(node => node.props.testID === "drawer-scene-info").props.onPress();
     assert.ok(infoShown);
+  }
+});
+
+test("Noche reuses the exact crescent from the Sonidos mixer banner", () => {
+  for (const path of ["../components/DrawerSceneCards.tsx", "../components/SoundMixerBanner.tsx"]) {
+    assert.match(read(path), /import \{ MoonCrescentIcon \} from "@\/components\/MoonCrescentIcon"/);
+    assert.match(read(path), /<MoonCrescentIcon/);
   }
 });
 
