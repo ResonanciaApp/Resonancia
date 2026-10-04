@@ -121,7 +121,7 @@ export function AmbientalDurationSheet({
     : [theme.gradient[1], theme.gradient[2]];
   const insets = useSafeAreaInsets();
   const [rendered, setRendered] = useState(visible);
-  const { phase, values, transition, baselineHeight, reducedMotion } = useAmbientalDurationTransition();
+  const { phase, values, transition, baselineHeight, startButtonLayout, reducedMotion } = useAmbientalDurationTransition();
   const customMode = phase === "revealing" || phase === "manual";
   const presetsInteractive = visible && phase === "presets";
   const manualInteractive = visible && phase === "manual";
@@ -212,8 +212,22 @@ export function AmbientalDurationSheet({
   const customTotalMinutes = customHours * 60 + customMinutes;
   const selectedMinutes = customMode ? customTotalMinutes : selectedPreset;
   const canStart = visible && selectedMinutes > 0 && (phase === "presets" || phase === "manual");
+  // A constant distance from the bottom cancels the panel's upward height growth.
+  const startBottom = startButtonLayout.current && baselineHeight.current > 0
+    ? baselineHeight.current - startButtonLayout.current.y - startButtonLayout.current.height
+    : undefined;
+  const pinnedStartStyle = phase !== "presets" && startBottom !== undefined
+    ? {
+        position: "absolute" as const,
+        left: 0,
+        right: 0,
+        bottom: startBottom,
+        height: startButtonLayout.current!.height,
+        marginTop: 0,
+      }
+    : undefined;
   const enterCustomMode = () => {
-    if (visible) transition.start(baselineHeight.current, reducedMotion.current);
+    if (visible && startButtonLayout.current) transition.start(baselineHeight.current, reducedMotion.current);
   };
   const closeSheet = () => {
     transition.cancel();
@@ -425,10 +439,17 @@ export function AmbientalDurationSheet({
           </View>
 
           <Pressable
+            onLayout={(event) => {
+              if (transition.getPhase() === "presets" && event.nativeEvent.layout.height > 0) {
+                const { y, height } = event.nativeEvent.layout;
+                startButtonLayout.current = { y, height };
+              }
+            }}
             onPress={handleStart}
             disabled={!canStart}
             style={({ pressed }) => [
               styles.startButton,
+              pinnedStartStyle,
               {
                 opacity: !canStart ? 0.45 : pressed ? 0.78 : 1,
               },
@@ -455,7 +476,13 @@ export function AmbientalDurationSheet({
           </Pressable>
 
           {customMode && (
-            <Animated.View style={{ opacity: customOpacity }}>
+            <Animated.View testID="ambiental-duration-cancel-anchor" style={{
+              opacity: customOpacity,
+              position: "absolute",
+              left: 0,
+              right: 0,
+              bottom: (startBottom ?? Math.max(insets.bottom, 16)) + (startButtonLayout.current?.height ?? 0) + 12,
+            }}>
             <Pressable
               onPress={closeSheet}
               style={({ pressed }) => [

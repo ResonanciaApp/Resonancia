@@ -156,6 +156,7 @@ const flattened = (style: any): any => Array.isArray(style)
 function componentHarness() {
   const h = harness();
   const baselineHeight = { current: 0 };
+  const startButtonLayout = { current: { y: 218, height: 54 } };
   const captured = new Map<string, any>();
   const gates: string[] = [];
   const starts: number[] = [];
@@ -180,7 +181,7 @@ function componentHarness() {
     "@/config/scene-themes": { SCENE_THEMES: { tibet: { gradient: ["#371C5F", "#332261", "#2E2468"] } } },
     "@/hooks/useColors": { useColors: () => ({ foreground: "#fff", muted: "#444" }) },
     "@/hooks/useAmbientalDurationTransition": { useAmbientalDurationTransition: () => ({
-      phase: h.phase, values: h.values, transition: h.transition, baselineHeight, reducedMotion: { current: false },
+      phase: h.phase, values: h.values, transition: h.transition, baselineHeight, startButtonLayout, reducedMotion: { current: false },
     }) },
     "@/lib/ambiental-duration-transition": { CIRCLE_DIAMETER, MANUAL_HEIGHT_INCREASE },
     "@/lib/premiumGate": { FREE_TIMER_MAX_MINUTES: 20, showPremiumGate: (message: string) => gates.push(message) },
@@ -212,6 +213,7 @@ test("actual sheet UI measures its baseline, blocks stale start presses, locks h
   c.render();
   const get = (id: string) => c.captured.get(`ambiental-duration-${id}`);
   get("sheet-height").onLayout({ nativeEvent: { layout: { height: 341 } } });
+  get("start").onLayout({ nativeEvent: { layout: { y: 240, height: 50 } } });
   assert.equal(c.baselineHeight.current, 341);
   const staleStart = get("start").onPress;
   get("custom").onPress();
@@ -226,6 +228,17 @@ test("actual sheet UI measures its baseline, blocks stale start presses, locks h
     assert.equal(get("custom").disabled, true);
     assert.equal(get("manual").pointerEvents, "none");
     assert.equal(flattened(get("sheet-height").style).height, c.h.values.sheetHeight);
+    const startStyle = flattened(get("start").style({ pressed: false }));
+    assert.equal(startStyle.position, "absolute");
+    assert.equal(startStyle.bottom, 51);
+    assert.equal(startStyle.height, 50);
+    assert.equal(startStyle.marginTop, 0);
+    const viewportHeight = 900;
+    const panelHeight = c.h.values.sheetHeight.value;
+    const panelTop = viewportHeight - panelHeight;
+    const localButtonY = panelHeight - startStyle.bottom - startStyle.height;
+    assert.equal(panelTop + localButtonY, viewportHeight - 341 + 240, "Expansion must not move Start on screen");
+    get("start").onLayout({ nativeEvent: { layout: { y: localButtonY, height: 50 } } });
   }
   assert.equal(c.h.values.sheetHeight.value, 341 + 95);
   assert.ok(get("cancel"), "Cancel appears inside the locked height, not as an extra height increase");
@@ -234,6 +247,12 @@ test("actual sheet UI measures its baseline, blocks stale start presses, locks h
   c.render();
   assert.equal(get("manual").pointerEvents, "auto");
   assert.equal(get("start").disabled, false);
+  const finalStartStyle = flattened(get("start").style({ pressed: false }));
+  assert.equal(finalStartStyle.bottom, 51, "Growing-layout events must not overwrite the original anchor");
+  const cancelAnchor = flattened(get("cancel-anchor").style);
+  assert.equal(cancelAnchor.position, "absolute");
+  assert.equal(cancelAnchor.bottom, finalStartStyle.bottom + finalStartStyle.height + 12,
+    "Cancel sits above the fixed Start button with no overlap");
   get("start").onPress();
   assert.deepEqual(c.starts, [10]);
   get("cancel").onPress();

@@ -6,6 +6,7 @@ export function useAmbientalDurationTransition() {
   const [phase, setPhase] = useState<DurationPhase>("presets");
   const reducedMotion = useRef(false);
   const baselineHeight = useRef(0);
+  const startButtonLayout = useRef<{ y: number; height: number } | null>(null);
   const [values] = useState(() => ({
     scales: Array.from({ length: 4 }, () => new Animated.Value(1)),
     circleOpacities: Array.from({ length: 4 }, () => new Animated.Value(1)),
@@ -41,5 +42,5 @@ export function useAmbientalDurationTransition() {
     };
   }, [transition]);
 
-  return { phase, values, transition, baselineHeight, reducedMotion };
+  return { phase, values, transition, baselineHeight, startButtonLayout, reducedMotion };
 }
