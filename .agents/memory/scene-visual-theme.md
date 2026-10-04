@@ -3,9 +3,9 @@ name: Temas visuales y escenas sonoras
 description: Selector reducido a Índigo 2/Cloudy y separación entre tema visual y audio.
 ---
 
-El usuario reemplazó el selector de círculos de los ajustes por tarjetas en el drawer: Día representa Cloudy y Noche representa Índigo 2, no dos niveles de brillo del mismo tema. Quiere paisaje IA con sol/luna, selección blanca luminosa con check, entrada de color en crossfade y sensación háptica suave prolongada al triple. La escena sonora sigue siendo independiente. La preferencia visual se conserva localmente y se resuelve antes de mostrar la app; los respaldos sólidos deben mantener contraste con texto claro.
+El usuario reemplazó el selector de ajustes por opciones minimalistas en el drawer: Día representa Cloudy y Noche representa Índigo 2, no dos niveles de brillo. Solo icono y título, con el mismo tamaño que las filas del menú; sin banners, imágenes, descripciones ni check. Día seleccionado colorea el sol dorado; Noche seleccionada colorea la luna morada suave; el otro icono conserva el color normal del menú. Mantener crossfade y háptica suave extendida. La escena sonora sigue siendo independiente; la preferencia visual se conserva localmente y los sólidos mantienen contraste con texto claro.
 
-**Why:** El 2026-10-04 pidió explícitamente trasladar Escenas desde Configuraciones y ajustes al drawer, con una referencia de dos tarjetas Día/Noche. Esta petición reemplaza su dirección anterior de círculos con selección solo por borde y no autoriza cambiar las paletas ni añadir audio.
+**Why:** El 2026-10-04 trasladó Escenas al drawer y luego pidió sustituir las tarjetas ilustradas por sol/luna con títulos Día/Noche y selección únicamente mediante el color del icono. Esta última dirección reemplaza los banners luminosos con check, sin autorizar cambios de paleta ni audio.
 
 **How to apply:** No restituir el selector de ajustes ni interpretar Día como un modo claro genérico. No reintroducir Universo ni Cloudy 2 como tarjetas sin petición. Retirar opciones no autoriza borrar preferencias o forzar un tema. Transicionar solo superficies de fondo, no textos ni contenido editorial. La háptica extendida de estas tarjetas no modifica la regla de un solo Soft del tab bar; no prometer duración continua exacta con una API de impactos discretos.
 

@@ -32,7 +32,7 @@ function all(node: any): any[] {
   return [node, ...React.Children.toArray((node.props as any).children).flatMap(all)];
 }
 
-test("Día selects Cloudy and Noche selects Índigo 2; exactly one check and selected taps do nothing", () => {
+test("minimal Día/Noche rows use matching menu sizes and only the selected icon changes color", () => {
   for (const active of ["cloudy", "indigo2", "tibet"]) {
     const calls: string[] = [];
     const nodes = all(exports.DrawerSceneCards({ activeId: active, onSelect: (id: string) => calls.push(id) }));
@@ -40,16 +40,26 @@ test("Día selects Cloudy and Noche selects Índigo 2; exactly one check and sel
     assert.equal(radios.length, 2);
     assert.deepEqual(radios.map(radio => radio.props.accessibilityState.selected),
       [active === "cloudy", active === "indigo2"]);
-    assert.equal(nodes.filter(node => node.props.name === "check").length, active === "tibet" ? 0 : 1);
-    assert.equal(radios[0].props.accessibilityLabel, "Día, Luminoso y energizante");
-    assert.equal(radios[1].props.accessibilityLabel, "Noche, Sereno y contemplativo");
+    assert.equal(nodes.filter(node => node.props.name === "check" || node.type === "image" || node.type === "gradient").length, 0);
+    assert.equal(radios[0].props.accessibilityLabel, "Día");
+    assert.equal(radios[1].props.accessibilityLabel, "Noche");
+    const sun = nodes.find(node => node.props.name === "white-balance-sunny");
+    const moon = nodes.find(node => node.props.name === "moon-waning-crescent");
+    assert.equal(sun.props.color, active === "cloudy" ? "#BE9650" : "#F9F9F9");
+    assert.equal(moon.props.color, active === "indigo2" ? "#B6A1E5" : "#F9F9F9");
+    assert.equal(sun.props.size, 23);
+    assert.equal(moon.props.size, 23);
+    for (const radio of radios) {
+      const text = all(radio).filter(node => node.type === "text");
+      assert.equal(text.length, 1);
+      assert.equal(text[0].props.style.fontSize, 14);
+      assert.equal(text[0].props.style.fontWeight, "500");
+      assert.equal(radio.props.style({ pressed: false })[0].backgroundColor, undefined);
+    }
     radios.forEach(radio => radio.props.onPress());
     assert.deepEqual(calls, ["cloudy", "indigo2"].filter(id => id !== active));
     nodes.find(node => node.props.testID === "drawer-scene-info").props.onPress();
     assert.ok(infoShown);
-  }
-  for (const name of ["day", "night"]) {
-    assert.ok(readFileSync(new URL(`../assets/images/scene-${name}.jpg`, import.meta.url)).length < 100_000);
   }
 });
 
