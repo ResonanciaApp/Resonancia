@@ -9,11 +9,11 @@ Cuando se active el progreso funcional, los niveles del camino deberán depender
 
 **How to apply:** Al ampliar rangos o cambiar arte, mantener la métrica de días activos canónicos para cuando se active el progreso; usar el mismo arte con desvanecido radial para la portada de Intención y su fila del timeline.
 
-El banner de Intención en Perfil también debe conservar el arte circular y el alfa radial de Tu camino, no una portada cuadrada opaca. Su aumento de brillo del 4 % es exclusivo de Perfil y no debe alterar el desvanecido ni el arte de las demás superficies.
+Perfil muestra «Tu camino» con «Ver todo» al margen derecho, sin descripción ni chevron y con la píldora debajo del título. La imagen es cuadrada opaca, radio 21 y borde blanco exterior de 3 px al 25 %. Conserva el brillo extra del 4 % exclusivo de Perfil.
 
-**Why:** El usuario pidió volver a usar exactamente la imagen de Tu camino en Perfil, con un 4 % más de brillo, además de separar la píldora y la descripción del título.
+**Why:** El usuario reemplazó explícitamente el tratamiento circular difuminado de Perfil por la imagen cuadrada con borde y simplificó el texto y el acceso al recorrido.
 
-**How to apply:** Mantener intacto el alfa al ajustar el brillo; no simularlo añadiendo un halo, un fondo claro ni un overlay que cambie la transparencia. Los ajustes de espaciado del banner son locales a Perfil, no a las filas de Tu camino ni al detalle de Intención.
+**How to apply:** Mantener las ilustraciones circulares del timeline y el detalle de Intención independientes. «Ver todo» abre el mismo recorrido que la tarjeta.
 
 La visibilidad de las ilustraciones no debe depender de un callback de scroll ni de animaciones en iOS. Mostrar las imágenes locales a tamaño explícito; la imagen de la etapa actual queda encendida y las demás apagadas, sin ocultarlas por completo. El punto también distingue la etapa actual.
 
