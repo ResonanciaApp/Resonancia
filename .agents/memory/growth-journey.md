@@ -27,11 +27,17 @@ Las imágenes de las etapas en Perfil y Tu camino son supericonos PNG transparen
 
 **How to apply:** Mantener el mismo icono en Perfil y su fila del recorrido, con transparencia real entre el símbolo y su órbita; no añadir un disco de fondo. Esta sustitución no modifica el hero fullscreen del detalle de Intención ni activa el progreso.
 
-Intención tiene un símbolo deliberadamente más simple que las demás etapas: una chispa dorada de cuatro puntas dentro de una circunferencia fina, sin hojas, gemas ni adornos.
+Intención debe tener un detalle intermedio: estrella dorada de ocho puntas con volumen sutil, acentos violetas y órbita fina, sin el follaje ni la ornamentación del primer diseño.
 
-**Why:** Tras recibir el conjunto de supericonos, el usuario pidió simplificar específicamente Intención.
+**Why:** El usuario pidió simplificar el primer icono, pero rechazó como demasiado simple la chispa plana de cuatro puntas.
 
-**How to apply:** Conservar esa sencillez al renovar el conjunto; no volver a la estrella ornamentada del primer diseño ni simplificar las otras etapas sin pedirlo.
+**How to apply:** Mantener un término medio entre la estrella ornamentada inicial y un símbolo plano mínimo; no simplificar las otras etapas sin pedirlo.
+
+En la pantalla de Tu camino, la imagen de la etapa actual debe tener el mismo tamaño que las demás. El estado actual se distingue por luminosidad y el punto, nunca aumentando el icono.
+
+**Why:** El usuario pidió explícitamente que la etapa donde está posicionado no se vea más grande.
+
+**How to apply:** Usar dimensiones y escala comunes para las imágenes de las filas, sin agrandar por estado actual. El tamaño menor de la portada de Perfil es independiente.
 
 La visibilidad de las ilustraciones no debe depender de un callback de scroll ni de animaciones en iOS. Mostrar las imágenes locales a tamaño explícito; la imagen de la etapa actual queda encendida y las demás apagadas, sin ocultarlas por completo. El punto también distingue la etapa actual.
 

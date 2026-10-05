@@ -11,6 +11,7 @@ import { useColors } from "@/hooks/useColors";
 import { useSceneTheme } from "@/context/SceneThemeContext";
 
 export const GROWTH_ROW_HEIGHT = 205;
+const GROWTH_STAGE_ICON_SIZE = 133;
 const REWARD_LEVEL_IDS = new Set(["semilla", "crecimiento", "vegetacion", "expansion"]);
 
 const GROWTH_COLORS = {
@@ -304,7 +305,7 @@ function GrowthRow({
           },
         ]}
       />
-      <View style={[styles.art, status === "locked" && styles.lockedArt]}>
+      <View testID={`${level.id}-stage-art`} style={[styles.art, status === "locked" && styles.lockedArt]}>
         <GrowthLevelImage level={level} />
       </View>
       <View testID={`${level.id}-copy`} style={[styles.copy, reward && styles.rewardCopy]}>
@@ -557,8 +558,8 @@ const styles = StyleSheet.create({
     position: "absolute",
     left: 40,
     top: 34,
-    width: 133,
-    height: 133,
+    width: GROWTH_STAGE_ICON_SIZE,
+    height: GROWTH_STAGE_ICON_SIZE,
   },
   lockedArt: { opacity: 0.44 },
   imageWrap: { width: "100%", height: "100%", borderRadius: 67, overflow: "hidden" },

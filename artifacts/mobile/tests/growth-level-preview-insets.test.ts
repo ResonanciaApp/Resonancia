@@ -296,6 +296,19 @@ test("Cloudy uses BDBDBD for both stage labels without changing other themes or 
   sceneMock.useSceneTheme = () => ({ theme: { id: "tibet", gradient: TEST_GRADIENT } });
 });
 
+test("current and locked stage icons have identical dimensions in Tu camino", () => {
+  const levels = mocks["@/data/growthLevels"].growthLevels;
+  levels.push({ ...levels[0], id: "semilla", name: "Semilla", startDay: 1, endDay: 7 });
+  try {
+    const html = renderToStaticMarkup(React.createElement(componentModule.exports.GrowthJourney));
+    for (const id of ["intencion", "semilla"]) {
+      assert.match(html, new RegExp(`data-testid="${id}-stage-art"[^>]*data-height="133" data-width="133"`));
+    }
+  } finally {
+    levels.pop();
+  }
+});
+
 test("only Intención opens a stage detail, without activating progression or linking other stages", () => {
   let opened = 0;
   const html = renderToStaticMarkup(React.createElement(componentModule.exports.GrowthJourney, {

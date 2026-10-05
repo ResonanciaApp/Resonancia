@@ -3293,3 +3293,17 @@ mtime_ms = 1791239484147
 storage_uri = "gcs://replit-rams-assets-worf/rams/assets/repl:5427b858-8852-4aed-954b-cd80d9fa4b6b/0f7d0688-2807-4565-a33e-2145f4a32a17/12981a9d-ce58-43e2-b6ee-12a2e0649b63"
 storage_version_token = "1791239540432691"
 content_type = "image/png"
+
+[[outputs]]
+id = "iAOpQ_XRPkq3DtscFnXSO"
+uri = "file://artifacts/mobile/assets/images/growth/icons/00-intencion-balanced.png"
+type = "image"
+title = "Intención — icono ajustado"
+description = "Estrella dorada de ocho puntas, detalles violetas y órbita fina. PNG transparente."
+logical_id = "ee2e8fd9-335d-4a0c-94c0-b98fcc06b7a9"
+content_hash = "sha256:ce2fddbd4ca7bd2472734129fb934cdb44515319800593f6ed00c818a4e92fcd"
+size = 140510
+mtime_ms = 1791239629247
+storage_uri = "gcs://replit-rams-assets-worf/rams/assets/repl:5427b858-8852-4aed-954b-cd80d9fa4b6b/ee2e8fd9-335d-4a0c-94c0-b98fcc06b7a9/bff0ab10-3bb1-4cb9-aaa4-0cc911460d2a"
+storage_version_token = "1791239661751387"
+content_type = "image/png"
