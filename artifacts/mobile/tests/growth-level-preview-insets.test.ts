@@ -173,12 +173,14 @@ test("Perfil adds Tu camino above Intención with the creativity-points heading 
   assert.doesNotMatch(render(), /profile-growth-section-title|>Tu camino</);
 });
 
-test("Tu camino places Ver todo at the right inset, offsets only pill/story, removes its chevron and reduces bottom height 3px", () => {
+test("Perfil Tu camino keeps only the stage title and description, preserving Ver todo and its insets", () => {
   let opened = false;
   const html = render({ embedded: true, canonicalVerticalInsets: true, sectionTitle: "Tu camino", onPress: () => { opened = true; } });
   assert.match(html, /data-testid="profile-growth-view-all"[^>]*data-accessibility-role="button"[^>]*>[\s\S]*?Ver todo/);
   assert.match(html, /data-justify-content="space-between"/);
-  assert.match(html, /data-testid="intention-preview-day-pill"[^>]*data-transform="\[\{&quot;translateY&quot;:3\}\]"/);
+  assert.doesNotMatch(html, /intention-preview-day-pill|data-icon="spa"|>0 días</);
+  assert.match(html, />Intención</);
+  assert.match(html, /Una práctica que comienza hoy\./);
   assert.match(html, /data-testid="profile-intention-description"[^>]*data-transform="\[\{&quot;translateY&quot;:-3\}\]"/);
   assert.doesNotMatch(html, /profile-intention-chevron|data-icon="chevron-right"/);
   assert.match(html, /data-testid="growth-level-zero-preview"[^>]*data-padding-top="18" data-padding-bottom="17"/);
@@ -186,6 +188,8 @@ test("Tu camino places Ver todo at the right inset, offsets only pill/story, rem
   capturedViewAllPress();
   assert.equal(opened, true);
   const original = render({ embedded: true, canonicalVerticalInsets: true });
+  assert.match(original, /intention-preview-day-pill/);
+  assert.match(original, />0 días</);
   assert.match(original, /profile-intention-chevron/);
   assert.match(original, /data-padding-top="20" data-padding-bottom="20"/);
   assert.doesNotMatch(original, /profile-growth-view-all|profile-intention-description|translateY&quot;:3|translateY&quot;:-3/);

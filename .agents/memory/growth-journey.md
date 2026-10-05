@@ -9,11 +9,11 @@ En Perfil, la sección del banner de Intención se titula «Tu camino», con la 
 
 **How to apply:** Limitar este encabezado a Perfil; conservar el arte, la información de la etapa y la apertura de Tu camino. «Ver todo» queda al margen derecho del encabezado y sustituye al chevron del cuerpo.
 
-La píldora del banner de Perfil baja 3 px y su descripción sube 3 px, sin mover el título de la etapa ni el arte; el borde inferior del fondo sube 3 px.
+El banner de Intención en Perfil no muestra la píldora de días encima del nombre: su texto se limita al título de la etapa y su descripción. Conserva el arte y el encabezado Tu camino con Ver todo.
 
-**Why:** El usuario pidió estos ajustes por separado después de añadir el título Tu camino y la acción Ver todo.
+**Why:** Después de ajustar la posición de la píldora, el usuario pidió retirarla de Tu camino en Perfil y dejar solo el título y la descripción.
 
-**How to apply:** Conservar desplazamientos locales del contenido y reducir solo el espacio inferior del banner, sin extenderlos a otras portadas del camino.
+**How to apply:** No restaurar la píldora en Perfil; conservarla en las demás portadas y etapas del camino. Mantener los ajustes independientes de descripción y espacio inferior de Perfil.
 
 Cuando se active el progreso funcional, los niveles del camino deberán depender del total de días **activos acumulados**, no de la racha actual ni de la mayor racha. Un nivel alcanzado no debe retroceder cuando se corta una racha. El arte del timeline y la portada de Intención en «Tu progreso» se muestran circulares y fundidos en el fondo con alfa radial suave en los bordes; no dejar marcos cuadrados ni borde blanco visible.
 

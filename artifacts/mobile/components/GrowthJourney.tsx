@@ -129,7 +129,6 @@ export function GrowthLevelPreviewCard({
           styles.dayPill,
           canonicalVerticalInsets && styles.canonicalPreviewPill,
           canonicalVerticalInsets && theme.id === "cloudy" && { backgroundColor: "rgba(0,0,0,0.16)" },
-          sectionTitle && styles.titledPreviewPill,
         ]}
       >
         {canonicalVerticalInsets && (
@@ -184,12 +183,12 @@ export function GrowthLevelPreviewCard({
       >
         {canonicalVerticalInsets ? (
           <View testID="profile-intention-title-row" style={styles.canonicalPreviewTitleRow}>
-            {dayPill}
+            {!sectionTitle && dayPill}
             {name}
           </View>
         ) : (
           <>
-            {dayPill}
+            {!sectionTitle && dayPill}
             {name}
           </>
         )}
@@ -526,7 +525,6 @@ const styles = StyleSheet.create({
   previewSectionHeader: { flexDirection: "row", alignItems: "center", justifyContent: "space-between", minHeight: 25 },
   previewSectionTitle: { fontFamily: "Manrope", fontSize: 16, fontWeight: "600" },
   previewViewAll: { fontFamily: "Manrope", fontSize: 13, fontWeight: "400" },
-  titledPreviewPill: { transform: [{ translateY: 3 }] },
   titledPreviewStory: { transform: [{ translateY: -3 }] },
   previewContentRow: { flexDirection: "row", alignItems: "center", gap: 12 },
   canonicalPreviewVerticalInsets: { paddingTop: 20, paddingBottom: 20, marginVertical: 2, alignItems: "center" },
