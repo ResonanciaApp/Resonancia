@@ -164,7 +164,7 @@ export function GrowthLevelPreviewCard({
 
   const previewContent = (
     <>
-      <PreviewContentEntrance replayKey="intention-art" delay={420} style={styles.previewArt}>
+      <PreviewContentEntrance replayKey="intention-art" delay={420} style={[styles.previewArt, sectionTitle && styles.profilePreviewArt]}>
         <GrowthLevelImage level={level} profilePreview={canonicalVerticalInsets} />
       </PreviewContentEntrance>
       <View
@@ -479,6 +479,7 @@ const styles = StyleSheet.create({
     gap: 12,
   },
   previewArt: { width: 100, height: 100 },
+  profilePreviewArt: { width: 96, height: 96 },
   embeddedPreviewCard: { marginHorizontal: 0 },
   titledPreviewCard: { flexDirection: "column", alignItems: "stretch", paddingTop: 18, paddingBottom: 17 },
   previewSectionHeader: { flexDirection: "row", alignItems: "center", justifyContent: "space-between", minHeight: 25 },

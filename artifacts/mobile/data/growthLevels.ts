@@ -9,7 +9,7 @@ export type GrowthLevel = {
 
 // Intención precedes the first active day; the remaining ranges are editorial.
 export const growthLevels: readonly GrowthLevel[] = [
-  { id: "intencion", name: "Intención", startDay: 0, endDay: 0, story: "Todo gran cambio comienza con una intención.", image: require("../assets/images/growth/icons/00-intencion.png") },
+  { id: "intencion", name: "Intención", startDay: 0, endDay: 0, story: "Todo gran cambio comienza con una intención.", image: require("../assets/images/growth/icons/00-intencion-simple.png") },
   { id: "semilla", name: "Semilla", startDay: 1, endDay: 7, story: "Tu primer paso abre un espacio para crecer.", image: require("../assets/images/growth/icons/01-semilla.png") },
   { id: "brote", name: "Brote", startDay: 8, endDay: 14, story: "Tu práctica comienza a echar raíces.", image: require("../assets/images/growth/icons/02-brote.png") },
   { id: "crecimiento", name: "Crecimiento", startDay: 15, endDay: 21, story: "Tu disciplina se fortalece y comienzas a crecer.", image: require("../assets/images/growth/icons/03-crecimiento.png") },

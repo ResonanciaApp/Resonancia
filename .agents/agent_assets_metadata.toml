@@ -3279,3 +3279,17 @@ mtime_ms = 1791239220363
 storage_uri = "gcs://replit-rams-assets-worf/rams/assets/repl:5427b858-8852-4aed-954b-cd80d9fa4b6b/2f423330-f02a-4180-ba45-df662d4769a5/0149a939-f86a-4bff-9af6-1ed93323f4fe"
 storage_version_token = "1791239279154348"
 content_type = "application/octet-stream"
+
+[[outputs]]
+id = "xxCz2A5KCTxQi5uZVsI5i"
+uri = "file://artifacts/mobile/assets/images/growth/icons/00-intencion-simple.png"
+type = "image"
+title = "Intención — icono simplificado"
+description = "Estrella dorada de cuatro puntas y círculo fino, con fondo transparente."
+logical_id = "0f7d0688-2807-4565-a33e-2145f4a32a17"
+content_hash = "sha256:e57b3b1ebf5ee8b5aa30196e578726730b5a569425b11332d8dfaf64d4c593ef"
+size = 63220
+mtime_ms = 1791239484147
+storage_uri = "gcs://replit-rams-assets-worf/rams/assets/repl:5427b858-8852-4aed-954b-cd80d9fa4b6b/0f7d0688-2807-4565-a33e-2145f4a32a17/12981a9d-ce58-43e2-b6ee-12a2e0649b63"
+storage_version_token = "1791239540432691"
+content_type = "image/png"

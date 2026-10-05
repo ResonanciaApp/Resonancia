@@ -608,6 +608,16 @@ test("Profile intention uses the same transparent stage icon as Tu camino withou
   assert.doesNotMatch(render(), /profile-intention-glow|profile-intention-image|brightness/);
 });
 
+test("only Perfil's Tu camino shrinks the intention icon by four points", () => {
+  const profile = render({ embedded: true, canonicalVerticalInsets: true, sectionTitle: "Tu camino", titleFontSize: 19 });
+  assert.match(profile, /data-font-size="19"[^>]*>Intención/);
+  // The entrance mock omits its animated wrapper; check its sizing contract.
+  const source = readFileSync(new URL("../components/GrowthJourney.tsx", import.meta.url), "utf8");
+  assert.match(source, /style=\{\[styles\.previewArt, sectionTitle && styles\.profilePreviewArt\]\}/);
+  assert.match(source, /profilePreviewArt: \{ width: 96, height: 96 \}/);
+  assert.match(source, /previewArt: \{ width: 100, height: 100 \}/);
+});
+
 test("GrowthLevelPreviewCard adds 4px above and below Perfil only, preserving the other callers", () => {
   const profileHtml = render({ embedded: true, canonicalVerticalInsets: true });
   assert.match(profileHtml, /data-testid="growth-level-zero-preview"[^>]*data-padding-top="20" data-padding-bottom="20"/);
