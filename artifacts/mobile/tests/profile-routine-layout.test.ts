@@ -26,7 +26,7 @@ test("Perfil mounts the existing functional routine immediately below Mi muro, o
   assert.ok(ts.isJsxFragment(routine.parent));
   const siblings = routine.parent.children.filter(node => !ts.isJsxText(node));
   assert.equal(siblings[siblings.indexOf(wall) + 1], routine);
-  assert.match(wall.getText(ast), /style=\{\{ marginTop: 30 \}\}/);
+  assert.match(wall.getText(ast), /style=\{\{ marginTop: 25 \}\}/);
   assert.match(routine.getText(ast), /marginTop: 25/);
   assert.doesNotMatch(routine.getText(ast), /translateY/, "the extra 25px belong to normal layout flow");
   const gate = routine.parent.parent;
@@ -40,6 +40,12 @@ test("Perfil mounts the existing functional routine immediately below Mi muro, o
     return React.createElement("div", { "data-testid": "mi-rutina-section" }, "Mi rutina expansiva");
   };
   const gap = Number(profile.match(/const PROFILE_SECTION_GAP = (\d+);/)?.[1]);
+  const wallTop = Number(wall.getText(ast).match(/marginTop: (\d+)/)?.[1]);
+  const routineTop = Number(routine.getText(ast).match(/marginTop: (\d+)/)?.[1]);
+  const wallSource = readFileSync(new URL("../components/ProfileReflectionWallSection.tsx", import.meta.url), "utf8");
+  const wallBottom = Number(wallSource.match(/marginBottom: (\d+)/)?.[1]);
+  assert.match(profile, /profileProgressSection:\s*\{[^}]*marginBottom: PROFILE_SECTION_GAP/);
+  assert.equal(gap + wallTop, wallBottom + routineTop, "calendar-to-wall and wall-to-routine gaps must be identical");
   const compiled = ts.transpileModule(`return dedicated ? (${routine.getText(ast)}) : null;`, {
     compilerOptions: { jsx: ts.JsxEmit.React },
   }).outputText;
@@ -51,5 +57,5 @@ test("Perfil mounts the existing functional routine immediately below Mi muro, o
   const tabs = readFileSync(new URL("../app/(tabs)/_layout.tsx", import.meta.url), "utf8");
   assert.match(tabs, /<RoutineCompletionBannerProvider>[\s\S]*?<TabLayoutInner \/>[\s\S]*?<\/RoutineCompletionBannerProvider>/);
   const home = readFileSync(new URL("../app/(tabs)/inicio8.tsx", import.meta.url), "utf8");
-  assert.equal((home.match(/<MiRutinaSection /g) ?? []).length, 1, "inserting it in Perfil must not remove it from Inicio");
+  assert.equal((home.match(/<MiRutinaSection /g) ?? []).length, 0, "the routine now belongs in Perfil rather than Inicio");
 });

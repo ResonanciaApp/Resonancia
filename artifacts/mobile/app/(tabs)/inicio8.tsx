@@ -76,7 +76,6 @@ import { EqualizerBars } from "@/components/EqualizerBars";
 import { SessionCarousel, CoverCarousel } from "@/components/SessionCarousel";
 import { SessionDurationBadge } from "@/components/SessionDurationBadge";
 import { PremiumBadge } from "@/components/PremiumBadge";
-import { MiRutinaSection } from "@/components/MiRutinaSection";
 import { Image as ExpoImage } from "expo-image";
 import { useAmbientPlayer, AMBIENT_SCENES } from "@/context/AmbientPlayerContext";
 import { useSceneTheme } from "@/context/SceneThemeContext";
@@ -3318,9 +3317,6 @@ export default function HomeScreen2({
         {variant === "inicio3" && SHOW_CONTINUE_LISTENING && continueSession && (
           <View style={styles.inicio3SectionSpacer} />
         )}
-        {isInicio2 && (
-          <MiRutinaSection titleSize={sectionTitleSize} style={{ marginHorizontal: GRID_PAD, marginBottom: 32 }} />
-        )}
         {isInicio2 && variant !== "inicio3" && (
           <View style={{ paddingTop: INICIO2_SECTION_GAP }}>
             <SessionCarousel
@@ -3344,9 +3340,6 @@ export default function HomeScreen2({
               durationBadgeStyle={{ top: "auto", bottom: 8, left: 8 }}
             />
           </View>
-        )}
-        {isInicio2 && variant === "inicio3" && (
-          <View style={styles.inicio3LowerStandaloneSpacer} />
         )}
         {isInicio2 && (
           <View>
@@ -4464,13 +4457,6 @@ const styles = StyleSheet.create({
     marginTop: 26,
     marginBottom: 26,
     backgroundColor: SECTION_DIVIDER_COLOR,
-  },
-  inicio3LowerStandaloneSpacer: {
-    height: StyleSheet.hairlineWidth,
-    marginHorizontal: GRID_PAD,
-    // Preserve the previous gap without a visible line, then add the requested 5px.
-    marginTop: 4,
-    marginBottom: 36 + INICIO3_SECTION_EXTRA_GAP,
   },
   inicio3LowerSectionDivider: {
     height: StyleSheet.hairlineWidth,

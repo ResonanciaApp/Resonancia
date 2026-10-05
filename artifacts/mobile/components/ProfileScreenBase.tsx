@@ -1480,7 +1480,7 @@ export function ProfileScreenBase({
               getScrollY={getProfileScrollY}
               onComposingChange={setProfileWallComposing}
               onMessageSaved={handleProfileReflectionSaved}
-              style={{ marginTop: 30 }}
+              style={{ marginTop: 25 }}
             />
 
             <MiRutinaSection style={{ marginHorizontal: 0, marginTop: 25, marginBottom: PROFILE_SECTION_GAP }} />

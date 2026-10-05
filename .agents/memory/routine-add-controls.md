@@ -11,8 +11,14 @@ Las cards de actividades de “Mi rutina expansiva” usan fondo negro al 16 %, 
 
 **Why:** El usuario pidió ese fondo para las cards de actividades, no para el calendario, los controles de añadir ni el estado “Rutina completa”.
 
-**How to apply:** Limitar esta superficie a las actividades de Inicio; no propagarla a los tokens compartidos del calendario ni a los estados vacíos.
+**How to apply:** Limitar esta superficie a las cards de actividades de Mi rutina expansiva; no propagarla a los tokens compartidos del calendario ni a los estados vacíos.
 
 **Why:** El usuario pidió cambiar únicamente el color de la píldora del estado “Rutina completa”; aplicar ese tratamiento al bloque inferior fue una interpretación incorrecta.
 
 **How to apply:** Tratar ambos controles y la card contenedora como piezas independientes. Los cambios solicitados para la píldora de “Rutina completa” no deben propagarse al bloque grande situado debajo de las actividades ni a su contenedor, y viceversa.
+
+Mi rutina expansiva pertenece a Perfil, debajo de Mi muro expansivo, y no se muestra en Inicio. Las actividades y sus controles siguen disponibles en Perfil.
+
+**Why:** El usuario pidió insertar la sección en Perfil y luego eliminarla explícitamente de Inicio, no borrar las actividades.
+
+**How to apply:** Al modificar Inicio, no volver a montar allí la sección; al trabajar en Perfil, conservar el acceso funcional a la rutina.

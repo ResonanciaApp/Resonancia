@@ -15,11 +15,11 @@ Los desplazamientos verticales solicitados en Perfil, tanto del bloque de avatar
 
 **How to apply:** Usar el flujo normal para «arrastra» o «empuja». Aplicar solo a la sección indicada una compensación visual cuando diga «no empujes», sin trasladarla al contenido posterior. Consultar la regla específica de los siete días en las notas de progreso de Perfil.
 
-El banner de Intención en Perfil tiene una excepción deliberada: su fondo se recorta simétricamente sin reducir el espacio ocupado entre secciones. La píldora va encima del título Intención; píldora, título y descripción forman un conjunto centrado verticalmente junto a la imagen y el chevron.
+En Perfil, la separación exterior entre Calendario y Mi muro expansivo debe ser igual a la separación entre Mi muro expansivo y Mi rutina expansiva.
 
-**Why:** El usuario pidió reducir únicamente el alto del fondo y alinear el conjunto. Su última indicación coloca la píldora encima del título, reemplazando la disposición horizontal sin cambiar el resto de la tarjeta.
+**Why:** El usuario pidió usar la distancia de Mi rutina respecto al muro como referencia para separar el muro del calendario.
 
-**How to apply:** No normalizar de nuevo este banner a los márgenes generales ni propagar sus ajustes al camino de crecimiento o a otras portadas de Intención. Mantener el chevron a la derecha del conjunto completo, no solo del título.
+**How to apply:** Comparar la suma de los márgenes exteriores de ambos lados del espacio, no solo el margen superior de cada sección. Mantener los ajustes exclusivos de Perfil.
 
 La imagen de Intención en el banner de Perfil usa el arte circular difuminado de Tu camino, con un 4 % más de brillo y el alfa original intacto.
 

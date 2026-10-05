@@ -40,7 +40,7 @@ test("Inicio section title sizing remains scoped to the active home variant", ()
   assert.equal(evaluate(declaration.initializer!.getText(ast), { variant: "copy" }), 17);
   assert.equal(evaluate(declaration.initializer!.getText(ast), { variant: "original" }), 17);
   assert.match(home, /Para este momento/);
-  assert.match(home, /<MiRutinaSection titleSize=\{sectionTitleSize\}/);
+  assert.doesNotMatch(home, /MiRutinaSection/, "Mi rutina expansiva is shown in Perfil, not Inicio");
   for (const name of ["Sesiones recientes", "Mis favoritos"]) {
     const carousel = find(node => ts.isJsxSelfClosingElement(node)
       && node.tagName.getText(ast) === "SessionCarousel"
@@ -49,7 +49,6 @@ test("Inicio section title sizing remains scoped to the active home variant", ()
     assert.match(carousel.getText(ast), /titleSize=\{sectionTitleSize\}/);
   }
   assert.match(home, /titleSize=\{variant === "inicio3" \? 20 : 18\}/);
-  assert.match(read("../components/MiRutinaSection.tsx"), /fontSize: titleSize/);
   assert.match(read("../components/AlmaCommunitySection.tsx"), /fontSize: titleSize/);
 });
 
@@ -62,7 +61,6 @@ test("daily recommendations independently increase from 17 to 19 points", () => 
 test("section spacers remove visible dividers and add exactly five pixels to the existing gaps", () => {
   for (const [name, previousTop, previousBottom] of [
     ["inicio3SectionSpacer", -27, 26],
-    ["inicio3LowerStandaloneSpacer", 4, 36],
   ] as const) {
     const spacer = style(name);
     assert.equal(spacer.backgroundColor, undefined);
@@ -72,6 +70,8 @@ test("section spacers remove visible dividers and add exactly five pixels to the
     assert.equal(Math.round((after - before) * 1000) / 1000, 5);
   }
   assert.doesNotMatch(home, /style=\{styles\.inicio3(?:Section|LowerStandalone)Divider\}/);
+  assert.doesNotMatch(home, /inicio3LowerStandaloneSpacer/, "Frase del día must not keep a second gap after removing Mi rutina from Inicio");
+  assert.match(home, /videos\.length > 0 && \(\s*<View style=\{styles\.inicio3SectionSpacer\} \/>/);
   assert.match(home, /marginTop: variant === "inicio3" \? -8 : 0/);
 });
 
