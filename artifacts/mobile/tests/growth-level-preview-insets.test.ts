@@ -150,6 +150,27 @@ const render = (props: Record<string, unknown> = {}) => renderToStaticMarkup(
   React.createElement(componentModule.exports.GrowthLevelPreviewCard, { onPress: () => {}, ...props }),
 );
 
+test("Perfil adds Tu camino above Intención with the creativity-points heading style, preserving navigation and other callers", () => {
+  let opened = false;
+  const html = render({ embedded: true, canonicalVerticalInsets: true, sectionTitle: "Tu camino", titleFontSize: 15, onPress: () => { opened = true; } });
+  assert.match(html, /data-testid="profile-growth-section-title"[^>]*data-color="#FFF"[^>]*data-font-size="16"[^>]*data-accessibility-role="header"[^>]*>Tu camino/);
+  assert.ok(html.indexOf(">Tu camino<") < html.indexOf(">Intención<"));
+  assert.match(html, /data-direction="row" data-align="center" data-gap="12"/);
+  assert.ok(capturedOnPress);
+  capturedOnPress();
+  assert.equal(opened, true);
+  const literalStyle = (file: string, name: string) => {
+    const source = readFileSync(new URL(`../components/${file}.tsx`, import.meta.url), "utf8");
+    const literal = source.match(new RegExp(`${name}: (\\{[^\\n]+\\})`))?.[1];
+    assert.ok(literal);
+    return new Function(`return (${literal});`)();
+  };
+  const title = literalStyle("GrowthJourney", "previewSectionTitle");
+  const pointsTitle = literalStyle("CreativityPointsSection", "title");
+  for (const property of ["fontFamily", "fontSize", "fontWeight"]) assert.equal(title[property], pointsTitle[property]);
+  assert.doesNotMatch(render(), /profile-growth-section-title|>Tu camino</);
+});
+
 test("Only Cloudy's Perfil intention day pill uses black at 16% opacity", () => {
   const sceneMock = mocks["@/context/SceneThemeContext"] as { useSceneTheme: () => { theme: { id: string } } };
   try {

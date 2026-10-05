@@ -498,6 +498,7 @@ test("Perfil keeps creativity points in place while Intención moves before cale
 test("Perfil swaps calendar and Intención, preserving section gaps and the Tu camino action", () => {
   const profileSource = readFileSync(new URL("../components/ProfileScreenBase.tsx", import.meta.url), "utf8");
   assert.match(profileSource, /import \{ GrowthLevelPreviewCard \} from "@\/components\/GrowthJourney"/);
+  assert.match(profileSource, /<GrowthLevelPreviewCard[^>]*sectionTitle="Tu camino"/);
   const ast = ts.createSourceFile("ProfileScreenBase.tsx", profileSource, ts.ScriptTarget.Latest, true, ts.ScriptKind.TSX);
   let slot: ts.Expression | undefined;
   let journeySheet: ts.JsxSelfClosingElement | undefined;

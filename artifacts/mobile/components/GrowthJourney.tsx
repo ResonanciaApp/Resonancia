@@ -105,12 +105,14 @@ export function GrowthLevelPreviewCard({
   canonicalVerticalInsets = false,
   backgroundColor,
   titleFontSize,
+  sectionTitle,
 }: {
   onPress: () => void;
   embedded?: boolean;
   canonicalVerticalInsets?: boolean;
   backgroundColor?: string;
   titleFontSize?: number;
+  sectionTitle?: string;
 }) {
   const colors = useColors();
   const { theme } = useSceneTheme();
@@ -168,19 +170,8 @@ export function GrowthLevelPreviewCard({
     </PreviewContentEntrance>
   );
 
-  return (
-    <Pressable
-      onPress={onPress}
-      style={[
-        styles.previewCard,
-        embedded && styles.embeddedPreviewCard,
-        canonicalVerticalInsets && styles.canonicalPreviewVerticalInsets,
-        backgroundColor !== undefined && { backgroundColor },
-      ]}
-      accessibilityRole="button"
-      accessibilityLabel={`${level.name}, ${dayLabel}. Abrir camino de crecimiento`}
-      testID="growth-level-zero-preview"
-    >
+  const previewContent = (
+    <>
       <PreviewContentEntrance replayKey="intention-art" delay={420} style={styles.previewArt}>
         <GrowthLevelImage level={level} profilePreview={canonicalVerticalInsets} />
       </PreviewContentEntrance>
@@ -211,6 +202,33 @@ export function GrowthLevelPreviewCard({
           color={colors.foreground}
         />
       </PreviewContentEntrance>
+    </>
+  );
+
+  return (
+    <Pressable
+      onPress={onPress}
+      style={[
+        styles.previewCard,
+        embedded && styles.embeddedPreviewCard,
+        canonicalVerticalInsets && styles.canonicalPreviewVerticalInsets,
+        sectionTitle && styles.titledPreviewCard,
+        backgroundColor !== undefined && { backgroundColor },
+      ]}
+      accessibilityRole="button"
+      accessibilityLabel={`${sectionTitle ? `${sectionTitle}. ` : ""}${level.name}, ${dayLabel}. Abrir camino de crecimiento`}
+      testID="growth-level-zero-preview"
+    >
+      {sectionTitle ? (
+        <>
+          <View style={styles.previewSectionHeader}>
+            <Text testID="profile-growth-section-title" accessibilityRole="header" style={[styles.previewSectionTitle, { color: colors.foreground }]}>
+              {sectionTitle}
+            </Text>
+          </View>
+          <View style={styles.previewContentRow}>{previewContent}</View>
+        </>
+      ) : previewContent}
     </Pressable>
   );
 }
@@ -500,6 +518,10 @@ const styles = StyleSheet.create({
   },
   previewArt: { width: 100, height: 100 },
   embeddedPreviewCard: { marginHorizontal: 0 },
+  titledPreviewCard: { flexDirection: "column", alignItems: "stretch", paddingTop: 18 },
+  previewSectionHeader: { flexDirection: "row", alignItems: "center", minHeight: 25 },
+  previewSectionTitle: { fontFamily: "Manrope", fontSize: 16, fontWeight: "600" },
+  previewContentRow: { flexDirection: "row", alignItems: "center", gap: 12 },
   canonicalPreviewVerticalInsets: { paddingTop: 20, paddingBottom: 20, marginVertical: 2, alignItems: "center" },
   canonicalPreviewCopy: { minHeight: 100, justifyContent: "center", gap: 10 },
   canonicalPreviewName: { marginBottom: 0, fontSize: 18, lineHeight: 23 },

@@ -3,6 +3,12 @@ name: Camino de crecimiento
 description: Criterio de progreso y tratamiento visual acordados para la línea de tiempo botánica de Tu progreso.
 ---
 
+En Perfil, la sección del banner de Intención se titula «Tu camino», con la misma tipografía y alineación del encabezado de Puntos creatividad. El nombre de la etapa «Intención» permanece dentro del banner.
+
+**Why:** El usuario pidió añadir el título de sección tomando Puntos creatividad como referencia, no renombrar la etapa.
+
+**How to apply:** Limitar este encabezado a Perfil; conservar el arte, la información de la etapa y la apertura de Tu camino.
+
 Cuando se active el progreso funcional, los niveles del camino deberán depender del total de días **activos acumulados**, no de la racha actual ni de la mayor racha. Un nivel alcanzado no debe retroceder cuando se corta una racha. El arte del timeline y la portada de Intención en «Tu progreso» se muestran circulares y fundidos en el fondo con alfa radial suave en los bordes; no dejar marcos cuadrados ni borde blanco visible.
 
 **Why:** El usuario escogió explícitamente los días acumulados aunque no sean consecutivos entre tres opciones. Tras probar imágenes cuadradas opacas, pidió difuminar y alinear las imágenes del timeline; luego pidió que la portada de Intención volviera a coincidir con ellas, sin borde.
