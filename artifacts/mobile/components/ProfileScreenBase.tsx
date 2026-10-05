@@ -2583,7 +2583,7 @@ const styles = StyleSheet.create({
     alignItems: "flex-end",
     justifyContent: "center",
   },
-  profileDescription: { fontFamily: "Manrope", fontSize: 12, lineHeight: 18, textAlign: "left", alignSelf: "stretch", marginRight: 50 },
+  profileDescription: { fontFamily: "Manrope", fontSize: 12, lineHeight: 18, textAlign: "left", alignSelf: "stretch", marginRight: 50, transform: [{ translateX: 1 }] },
   locationRow: { flexDirection: "row", alignItems: "center", justifyContent: "center", gap: 4 },
   locationText: { fontFamily: "Manrope", fontSize: 12 },
   bioText: { fontFamily: "Manrope", fontSize: 13, lineHeight: 19, textAlign: "center", paddingHorizontal: 8, fontStyle: "italic" },
