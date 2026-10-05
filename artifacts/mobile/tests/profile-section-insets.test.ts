@@ -94,7 +94,7 @@ test("username keeps 24 points and the new description leaves avatar and Premium
   assert.equal(style("ProfileScreenBase", "profileDescription").alignSelf, "stretch");
   assert.equal(style("ProfileScreenBase", "profileDescription").marginRight, 50);
   assert.equal(style("ProfileScreenBase", "profileDescription").paddingRight, undefined);
-  assert.deepEqual(style("ProfileScreenBase", "profileDescription").transform, [{ translateX: 1 }]);
+  assert.deepEqual(style("ProfileScreenBase", "profileDescription").transform, [{ translateX: 1 }, { translateY: -4 }]);
   assert.equal(style("ProfileScreenBase", "avatarImage").width, 75);
   assert.equal(style("ProfileScreenBase", "profileIdentityPreviewCard").marginBottom, 5);
 });
