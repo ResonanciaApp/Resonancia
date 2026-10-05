@@ -8,6 +8,21 @@ import ts from "typescript";
 import * as wallBorderConstants from "../constants/reflectionWallBorder.ts";
 
 const TEST_GRADIENT = ["#060A0F", "#111122"] as const;
+
+test("all 17 stages reference generated square PNG icons with an alpha channel", () => {
+  const source = readFileSync(new URL("../data/growthLevels.ts", import.meta.url), "utf8");
+  const paths = [...source.matchAll(/require\("(\.\.\/assets\/images\/growth\/icons\/[^"]+\.png)"\)/g)].map(match => match[1]);
+  assert.equal(paths.length, 17);
+  assert.equal(new Set(paths).size, 17);
+  for (const path of paths) {
+    const png = readFileSync(new URL(path, new URL("../data/growthLevels.ts", import.meta.url)));
+    assert.equal(png.subarray(1, 4).toString(), "PNG", path);
+    assert.equal(png.readUInt32BE(16), 512, `${path} width`);
+    assert.equal(png.readUInt32BE(20), 512, `${path} height`);
+    assert.ok([4, 6].includes(png[25]), `${path} must have an alpha channel`);
+  }
+});
+
 type NativeProps = {
   accessibilityLabel?: string;
   accessibilityRole?: string;
@@ -86,7 +101,6 @@ const compiled = ts.transpileModule(
 ).outputText;
 const mocks: Record<string, unknown> = {
   "@/context/SceneThemeContext": { useSceneTheme: () => ({ theme: { id: "tibet", gradient: TEST_GRADIENT } }) },
-  "../assets/images/growth/00-intencion-profile-bright.png": 2,
   "../assets/images/growth/semilla-reward-chest.png": 3,
   "../assets/images/growth/reward-avatar-moon.png": 4,
   "../assets/images/growth/reward-avatar-lotus.png": 5,
@@ -576,13 +590,13 @@ test("reward pills grow in normal flow and preserve nonreward and profile previe
   assert.match(source, /previewArt: \{ width: 100, height: 100 \}/);
 });
 
-test("Profile intention restores the circular Tu camino artwork with its radial fade and brighter profile variant", () => {
+test("Profile intention uses the same transparent stage icon as Tu camino without extra glow or filters", () => {
   const html = render({ canonicalVerticalInsets: true });
   const glow = html.indexOf('data-testid="profile-intention-glow"');
   const image = html.indexOf('data-testid="profile-intention-image"');
   assert.equal(glow, -1);
   assert.ok(image >= 0);
-  assert.match(html, /data-source="2"/);
+  assert.match(html, /data-source="1"/);
   assert.doesNotMatch(html, /data-filter/);
   const stops = [...html.matchAll(/data-stop-opacity="([^"]+)"/g)].map(match => Number(match[1]));
   assert.deepEqual(stops, []);

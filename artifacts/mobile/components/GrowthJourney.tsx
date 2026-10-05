@@ -11,8 +11,6 @@ import { useColors } from "@/hooks/useColors";
 import { useSceneTheme } from "@/context/SceneThemeContext";
 
 export const GROWTH_ROW_HEIGHT = 205;
-// Original Tu camino artwork and radial alpha, with RGB brightened by 4% for Perfil only.
-const PROFILE_INTENTION_IMAGE = require("../assets/images/growth/00-intencion-profile-bright.png");
 const REWARD_LEVEL_IDS = new Set(["semilla", "crecimiento", "vegetacion", "expansion"]);
 
 const GROWTH_COLORS = {
@@ -58,7 +56,7 @@ function loadGrowthImage(module: number): Promise<string> {
 }
 
 export function GrowthLevelImage({ level, profilePreview = false, size, height, sourceModule }: { level: GrowthLevel; profilePreview?: boolean; size?: number; height?: number; sourceModule?: number }) {
-  const imageModule = sourceModule ?? (profilePreview ? PROFILE_INTENTION_IMAGE : level.image);
+  const imageModule = sourceModule ?? level.image;
   const [localUri, setLocalUri] = useState(() => growthImageUris.get(imageModule) ?? null);
 
   useEffect(() => {
@@ -82,7 +80,7 @@ export function GrowthLevelImage({ level, profilePreview = false, size, height, 
       {source && (
         <Image
           source={source}
-          resizeMode="cover"
+          resizeMode={sourceModule !== undefined ? "cover" : "contain"}
           style={styles.levelImage}
           onError={(event) => console.warn(`[GrowthJourney] No se pudo cargar ${level.id}: ${event.nativeEvent.error}`)}
           accessibilityElementsHidden

@@ -15,17 +15,17 @@ El banner de Intención en Perfil no muestra la píldora de días encima del nom
 
 **How to apply:** No restaurar la píldora en Perfil; conservarla en las demás portadas y etapas del camino. Mantener los ajustes independientes de descripción y espacio inferior de Perfil.
 
-Cuando se active el progreso funcional, los niveles del camino deberán depender del total de días **activos acumulados**, no de la racha actual ni de la mayor racha. Un nivel alcanzado no debe retroceder cuando se corta una racha. El arte del timeline y la portada de Intención en «Tu progreso» se muestran circulares y fundidos en el fondo con alfa radial suave en los bordes; no dejar marcos cuadrados ni borde blanco visible.
+Cuando se active el progreso funcional, los niveles del camino deberán depender del total de días **activos acumulados**, no de la racha actual ni de la mayor racha. Un nivel alcanzado no debe retroceder cuando se corta una racha.
 
-**Why:** El usuario escogió explícitamente los días acumulados aunque no sean consecutivos entre tres opciones. Tras probar imágenes cuadradas opacas, pidió difuminar y alinear las imágenes del timeline; luego pidió que la portada de Intención volviera a coincidir con ellas, sin borde.
+**Why:** El usuario escogió explícitamente los días acumulados aunque no sean consecutivos entre tres opciones.
 
-**How to apply:** Al ampliar rangos o cambiar arte, mantener la métrica de días activos canónicos para cuando se active el progreso; usar el mismo arte con desvanecido radial para la portada de Intención y su fila del timeline.
+**How to apply:** Al ampliar rangos o cambiar arte, mantener la métrica de días activos canónicos para cuando se active el progreso.
 
-El banner de Intención en Perfil también debe conservar el arte circular y el alfa radial de Tu camino, no una portada cuadrada opaca. Su aumento de brillo del 4 % es exclusivo de Perfil y no debe alterar el desvanecido ni el arte de las demás superficies.
+Las imágenes de las etapas en Perfil y Tu camino son supericonos PNG transparentes: símbolos dorados con detalles jade/violeta y órbita circular fina, siguiendo la referencia del 2026-10-05. Esta dirección reemplaza el arte anterior con alfa radial y su variante de brillo exclusiva de Perfil.
 
-**Why:** El usuario pidió volver a usar exactamente la imagen de Tu camino en Perfil, con un 4 % más de brillo, además de separar la píldora y la descripción del título.
+**Why:** El usuario pidió cambiar las imágenes de las etapas por supericonos con fondo transparente como los de su referencia, generarlos e integrarlos.
 
-**How to apply:** Mantener intacto el alfa al ajustar el brillo; no simularlo añadiendo un halo, un fondo claro ni un overlay que cambie la transparencia. Los ajustes de espaciado del banner son locales a Perfil, no a las filas de Tu camino ni al detalle de Intención.
+**How to apply:** Mantener el mismo icono en Perfil y su fila del recorrido, con transparencia real entre el símbolo y su órbita; no añadir un disco de fondo. Esta sustitución no modifica el hero fullscreen del detalle de Intención ni activa el progreso.
 
 La visibilidad de las ilustraciones no debe depender de un callback de scroll ni de animaciones en iOS. Mostrar las imágenes locales a tamaño explícito; la imagen de la etapa actual queda encendida y las demás apagadas, sin ocultarlas por completo. El punto también distingue la etapa actual.
 
@@ -115,4 +115,4 @@ En el detalle de Intención, el hero ocupa toda la pantalla y usa el arte opaco 
 
 **Why:** El usuario revisó la composición y pidió hero fullscreen sin difuminado propio, el degradado de emociones y los textos abajo. Reintrodujo la etiqueta de etapa en la cabecera, no como un bloque sobre el título. Al subir el hero, aclaró que su degradado debe acompañarlo: mover solo el arte hizo visible el borde inferior.
 
-**How to apply:** Mantener fijas fuera del scroll la X con su fondo circular y la etiqueta pequeña de dos líneas «Primera etapa / Florecimiento», alineadas verticalmente. El fondo también queda fijo; título, píldora y textos sí desplazan juntos al hacer scroll. Recolocar arte y degradado como una unidad por defecto; si el usuario pide explícitamente mover solo la imagen, conservar el degradado y ajustar el arte dentro de esa unidad. Prolongar el color sólido de cierre hasta el borde de pantalla para evitar una costura al subirlos. Conservar el loto solo en la píldora, sin ayuda ni banner de «Elegir comenzar». No propagar el arte opaco a Perfil o Tu camino, que conservan su imagen radial.
+**How to apply:** Mantener fijas fuera del scroll la X con su fondo circular y la etiqueta pequeña de dos líneas «Primera etapa / Florecimiento», alineadas verticalmente. El fondo también queda fijo; título, píldora y textos sí desplazan juntos al hacer scroll. Recolocar arte y degradado como una unidad por defecto; si el usuario pide explícitamente mover solo la imagen, conservar el degradado y ajustar el arte dentro de esa unidad. Prolongar el color sólido de cierre hasta el borde de pantalla para evitar una costura al subirlos. Conservar el loto solo en la píldora, sin ayuda ni banner de «Elegir comenzar». No propagar el arte opaco a Perfil o Tu camino, que usan los supericonos transparentes.

@@ -3251,3 +3251,31 @@ mtime_ms = 1790985127905
 storage_uri = "gcs://replit-rams-assets-worf/rams/assets/repl:5427b858-8852-4aed-954b-cd80d9fa4b6b/713c9fd4-3667-4b31-aeef-53acac08994d/3d6fa616-179a-4252-a8b9-004750655eb8"
 storage_version_token = "1790985337017312"
 content_type = "image/png"
+
+[[outputs]]
+id = "JxXHTLBfCBOAK8HKiOVGb"
+uri = "file://attached_assets/generated_images/growth-icons-preview.jpg"
+type = "image"
+title = "Nuevos iconos de Tu camino"
+description = "Vista conjunta de los 17 iconos sobre fondo Índigo. Los PNG originales tienen fondo transparente."
+logical_id = "4030d4df-2dcd-41a3-8ee3-4dfe67d41e12"
+content_hash = "sha256:838b53130c589f1bad76749c22e3c831d841a8a5740b1fad1a0d6df5aefc3ef6"
+size = 288999
+mtime_ms = 1791239132927
+storage_uri = "gcs://replit-rams-assets-worf/rams/assets/repl:5427b858-8852-4aed-954b-cd80d9fa4b6b/4030d4df-2dcd-41a3-8ee3-4dfe67d41e12/bde4e063-5e09-4938-8230-3b65a5d18910"
+storage_version_token = "1791239277784318"
+content_type = "image/jpeg"
+
+[[outputs]]
+id = "EiZYxdzlPT2owNhBI5Vh5"
+uri = "file://attached_assets/resonancia-iconos-etapas.zip"
+type = "unspecified"
+title = "17 iconos PNG transparentes"
+description = "Descarga de todos los iconos de Florecimiento y El ascenso, en PNG de 512 × 512."
+logical_id = "2f423330-f02a-4180-ba45-df662d4769a5"
+content_hash = "sha256:c6b7e297542eb727a747bd5f87d7aba0e6be9e143899e396220d500500d3ed11"
+size = 3122791
+mtime_ms = 1791239220363
+storage_uri = "gcs://replit-rams-assets-worf/rams/assets/repl:5427b858-8852-4aed-954b-cd80d9fa4b6b/2f423330-f02a-4180-ba45-df662d4769a5/0149a939-f86a-4bff-9af6-1ed93323f4fe"
+storage_version_token = "1791239279154348"
+content_type = "application/octet-stream"
