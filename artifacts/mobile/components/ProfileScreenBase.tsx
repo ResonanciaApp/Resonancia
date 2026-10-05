@@ -1455,7 +1455,7 @@ export function ProfileScreenBase({
                 streakHistoryTopPadding={18}
                 streakHistoryDividerOffsetY={0}
                 longestStreakLabel="RACHA ACUMULADA"
-                longestStreakIconColor={activeTheme.id === "cloudy" ? "#8247BD" : MEMBERSHIP_AURORA.premium.accent}
+                longestStreakIconColor={MEMBERSHIP_AURORA.premium.accent}
                 sectionBackgroundColor="rgba(0,0,0,0.16)"
                 sectionHorizontalPadding={20}
                 sectionTopPadding={PROFILE_WEEK_TOP_PADDING}
