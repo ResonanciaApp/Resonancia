@@ -1445,7 +1445,7 @@ export function ProfileScreenBase({
                 showStreakHistoryInfo={false}
                 onStreakHistoryPress={() => setStreakInfoOpen(true)}
                 weeklySectionBackgroundColor="transparent"
-                weeklySectionHorizontalPadding={0}
+                weeklySectionHorizontalPadding={5}
                 streakContentTranslateY={10}
                 streakMarginBottom={PROFILE_SECTION_GAP + 20}
                 streakHistoryTopPadding={18}

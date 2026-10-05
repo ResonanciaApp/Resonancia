@@ -168,7 +168,7 @@ test("Perfil shows seven days without a title or background, preserving history,
   const usage = profile.match(/<ProgressMirrorSections[\s\S]*?canonicalVerticalInsets/)?.[0] ?? "";
   assert.match(usage, /showStreakWeek\s/);
   assert.doesNotMatch(usage, /weeklySectionTitle=/);
-  assert.match(usage, /weeklySectionHorizontalPadding=\{0\}/);
+  assert.match(usage, /weeklySectionHorizontalPadding=\{5\}/);
   assert.match(usage, /weeklySectionBackgroundColor="transparent"/);
   assert.match(usage, /streakContentTranslateY=\{10\}/);
   assert.match(usage, /separateStreakHistory/);
@@ -177,7 +177,7 @@ test("Perfil shows seven days without a title or background, preserving history,
     showStreakWeek: true,
     showPersonalStats: false,
     showCalendar: true,
-    weeklySectionHorizontalPadding: 0,
+    weeklySectionHorizontalPadding: 5,
     weeklySectionBackgroundColor: "transparent",
     streakContentTranslateY: 10,
     longestStreakLabel: "RACHA ACUMULADA",
@@ -188,7 +188,7 @@ test("Perfil shows seven days without a title or background, preserving history,
   assert.match(weekly, /data-background="transparent"/);
   assert.doesNotMatch(html, /profile-weekly-title|>Tu progreso semanal</);
   assert.doesNotMatch(html, /Tu progreso esta semana/);
-  assert.match(weekly, /data-padding-horizontal="0"/);
+  assert.match(weekly, /data-padding-horizontal="5"/);
   for (const content of ["profile-streak-history", "RACHA ACTUAL", "RACHA ACUMULADA", "RACHA MÁS LARGA", "RACHAS COMPLETADAS", "profile-growth-intention", 'data-testid="calendar"']) {
     assert.ok(html.includes(content), `Missing preserved content: ${content}`);
   }
@@ -340,9 +340,9 @@ test("Perfil centers number-and-label groups on their icons in all four history 
   assert.match(html, /data-testid="calendar"[^>]*data-canonical-insets="true"/);
 });
 
-test("Perfil and Tu progreso align seven days with their outer lateral margins while history keeps its insets", () => {
+test("Perfil narrows its seven-day row by 10px total while Tu progreso and history keep their spacing", () => {
   for (const [path, padding] of [
-    ["../components/ProfileScreenBase.tsx", 0],
+    ["../components/ProfileScreenBase.tsx", 5],
     ["../app/progreso.tsx", 0],
   ] as const) {
     const source = readFileSync(new URL(path, import.meta.url), "utf8");
