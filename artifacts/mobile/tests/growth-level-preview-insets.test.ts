@@ -476,7 +476,7 @@ test("a single timeline line connects node centers even when reward rows have di
   }
 });
 
-test("every timeline stage keeps its copy 30px right and its artwork 15px left while preserving nodes", () => {
+test("every timeline stage keeps its copy position and moves its artwork 30px right from the previous offset while preserving nodes", () => {
   const levelsModule = { exports: {} as { growthLevels: any[]; ascentLevels: any[] } };
   const levelsSource = readFileSync(new URL("../data/growthLevels.ts", import.meta.url), "utf8");
   new Function("require", "exports", ts.transpileModule(levelsSource, {
@@ -507,7 +507,7 @@ test("every timeline stage keeps its copy 30px right and its artwork 15px left w
       const node = html.match(new RegExp(`<div[^>]*data-testid="${level.id}-stage-node"[^>]*>`))?.[0];
       assert.ok(node);
       assert.match(node, /data-left="1"/);
-      assert.ok(html.includes(`data-left="${25 - 15}" data-top="34"`));
+      assert.ok(html.includes(`data-left="${10 + 30}" data-top="34"`));
     }
   }
   const source = readFileSync(new URL("../components/GrowthJourney.tsx", import.meta.url), "utf8");
