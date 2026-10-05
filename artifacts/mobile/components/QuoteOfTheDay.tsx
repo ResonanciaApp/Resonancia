@@ -1,34 +1,20 @@
-import { useState } from "react";
-import { View, Text, Pressable, StyleSheet, Share, Modal } from "react-native";
+import { View, Text, Pressable, StyleSheet } from "react-native";
 import { Feather } from "@expo/vector-icons";
 import { LinearGradient } from "expo-linear-gradient";
 import { useQuoteOfTheDay } from "@/hooks/useQuoteOfTheDay";
 import { DAILY_QUOTE_PALETTE_COLORS } from "@/constants/daily-quote-palettes";
+import { DailyQuoteShareSheet } from "@/components/DailyQuoteShareSheet";
+import { useDailyQuoteShare } from "@/hooks/useDailyQuoteShare";
 
-const GOLD  = "#F9F9F9";
+const GOLD = "#F9F9F9";
 const WHITE = "#FFFFFF";
 const MUTED = "#c2c2c2";
 export default function QuoteOfTheDay() {
   const { quote } = useQuoteOfTheDay();
-  const [menuVisible, setMenuVisible] = useState(false);
-
-  const shareMessage = `"${quote.text}"\n\n— ${quote.author}\n\nVía RESONANCIA`;
-
-  async function handleSendFriend() {
-    setMenuVisible(false);
-    try {
-      await Share.share({ message: shareMessage });
-    } catch { /* ignore */ }
-  }
-
-  async function handleShare() {
-    setMenuVisible(false);
-    try {
-      await Share.share({ message: shareMessage });
-    } catch { /* ignore */ }
-  }
+  const sharing = useDailyQuoteShare(quote);
 
   return (
+    <>
     <LinearGradient
       colors={DAILY_QUOTE_PALETTE_COLORS[quote.paletteId]}
       start={{ x: 0, y: 0 }}
@@ -39,7 +25,9 @@ export default function QuoteOfTheDay() {
       <View style={styles.header}>
         <Text style={styles.author}>{quote.author}</Text>
         <Pressable
-          onPress={() => setMenuVisible(true)}
+          onPress={sharing.open}
+          accessibilityRole="button"
+          accessibilityLabel="Compartir frase del día"
           hitSlop={12}
           style={({ pressed }) => ({ opacity: pressed ? 0.6 : 1 })}
         >
@@ -51,34 +39,9 @@ export default function QuoteOfTheDay() {
         "{quote.text}"
       </Text>
 
-      {/* Mini menú */}
-      <Modal
-        transparent
-        visible={menuVisible}
-        animationType="fade"
-        onRequestClose={() => setMenuVisible(false)}
-      >
-        <Pressable style={styles.menuBackdrop} onPress={() => setMenuVisible(false)}>
-          <View style={styles.menuSheet}>
-            <Pressable
-              style={({ pressed }) => [styles.menuItem, { opacity: pressed ? 0.7 : 1 }]}
-              onPress={handleSendFriend}
-            >
-              <Feather name="send" size={16} color={GOLD} />
-              <Text style={styles.menuItemText}>Enviar a un amigo</Text>
-            </Pressable>
-            <View style={styles.menuDivider} />
-            <Pressable
-              style={({ pressed }) => [styles.menuItem, { opacity: pressed ? 0.7 : 1 }]}
-              onPress={handleShare}
-            >
-              <Feather name="share-2" size={16} color={GOLD} />
-              <Text style={styles.menuItemText}>Compartir</Text>
-            </Pressable>
-          </View>
-        </Pressable>
-      </Modal>
     </LinearGradient>
+    <DailyQuoteShareSheet {...sharing.sheetProps} />
+    </>
   );
 }
 
@@ -110,34 +73,5 @@ const styles = StyleSheet.create({
     lineHeight: 26,
     color: WHITE,
     textAlign: "left",
-  },
-  menuBackdrop: {
-    flex: 1,
-    backgroundColor: "rgba(0,0,0,0.45)",
-    justifyContent: "flex-end",
-  },
-  menuSheet: {
-    backgroundColor: "#1E0A12",
-    borderTopLeftRadius: 18,
-    borderTopRightRadius: 18,
-    paddingHorizontal: 20,
-    paddingTop: 16,
-    paddingBottom: 36,
-  },
-  menuItem: {
-    flexDirection: "row",
-    alignItems: "center",
-    gap: 14,
-    paddingVertical: 16,
-  },
-  menuItemText: {
-    fontFamily: "Manrope",
-    fontSize: 16,
-    color: "#FAF0EE",
-    fontWeight: "500",
-  },
-  menuDivider: {
-    height: StyleSheet.hairlineWidth,
-    backgroundColor: "rgba(190,150,80,0.2)",
   },
 });

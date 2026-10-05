@@ -29,6 +29,8 @@ const mocks: Record<string, any> = {
   "@/components/DailyQuoteDecoration": { DailyQuoteDecorationLayer: () => null },
   "@/hooks/useQuoteOfTheDay": { useQuoteOfTheDay: () => ({ quote: { paletteId, text: "Frase", author: "Autor", decorationsEnabled: false } }) },
   "@/hooks/useRoutineTheme": { useRoutineTheme: () => ({ accent: "#FFF", surface: "#123456" }) },
+  "@/hooks/useDailyQuoteShare": { useDailyQuoteShare: () => ({ open: () => {}, sheetProps: { visible: false } }) },
+  "@/components/DailyQuoteShareSheet": { DailyQuoteShareSheet: () => null },
 };
 function load(path: string) {
   const module = { exports: {} as Record<string, React.ComponentType<any>> };

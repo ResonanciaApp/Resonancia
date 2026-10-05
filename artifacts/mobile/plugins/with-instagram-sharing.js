@@ -1,14 +1,12 @@
 const { withAndroidManifest, withInfoPlist } = require("@expo/config-plugins");
 
-const INSTAGRAM_PACKAGE = "com.instagram.android";
-const INSTAGRAM_STORIES_SCHEME = "instagram-stories";
+const SHARE_PACKAGES = ["com.instagram.android", "com.whatsapp", "com.facebook.orca"];
+const SHARE_SCHEMES = ["instagram-stories", "instagram", "whatsapp"];
 
 function withInstagramSharing(config) {
   config = withInfoPlist(config, (result) => {
     const schemes = result.modResults.LSApplicationQueriesSchemes ?? [];
-    if (!schemes.includes(INSTAGRAM_STORIES_SCHEME)) {
-      result.modResults.LSApplicationQueriesSchemes = [...schemes, INSTAGRAM_STORIES_SCHEME];
-    }
+    result.modResults.LSApplicationQueriesSchemes = [...new Set([...schemes, ...SHARE_SCHEMES])];
     return result;
   });
 
@@ -17,9 +15,11 @@ function withInstagramSharing(config) {
     const queries = manifest.queries ?? [{}];
     const firstQuery = queries[0] ?? {};
     const packages = firstQuery.package ?? [];
-    if (!packages.some((entry) => entry.$?.["android:name"] === INSTAGRAM_PACKAGE)) {
-      firstQuery.package = [...packages, { $: { "android:name": INSTAGRAM_PACKAGE } }];
-    }
+    firstQuery.package = [
+      ...packages,
+      ...SHARE_PACKAGES.filter((name) => !packages.some((entry) => entry.$?.["android:name"] === name))
+        .map((name) => ({ $: { "android:name": name } })),
+    ];
     queries[0] = firstQuery;
     manifest.queries = queries;
     return result;

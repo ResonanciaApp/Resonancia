@@ -32,7 +32,9 @@
         "NSCameraUsageDescription": "RESONANCIA usa la cámara para que puedas sacarte una foto de perfil.",
         "ITSAppUsesNonExemptEncryption": false,
         "LSApplicationQueriesSchemes": [
-          "instagram-stories"
+          "instagram-stories",
+          "instagram",
+          "whatsapp"
         ]
       }
     },

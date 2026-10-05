@@ -1,12 +1,14 @@
 import { Feather } from "@expo/vector-icons";
 import { LinearGradient } from "expo-linear-gradient";
 import React from "react";
-import { Pressable, Share, StyleSheet, Text, View, type StyleProp, type ViewStyle } from "react-native";
+import { Pressable, StyleSheet, Text, View, type StyleProp, type ViewStyle } from "react-native";
 
 import { DAILY_QUOTE_PALETTE_COLORS } from "@/constants/daily-quote-palettes";
 import { DailyQuoteDecorationLayer } from "@/components/DailyQuoteDecoration";
 import { useQuoteOfTheDay } from "@/hooks/useQuoteOfTheDay";
 import { useRoutineTheme } from "@/hooks/useRoutineTheme";
+import { useDailyQuoteShare } from "@/hooks/useDailyQuoteShare";
+import { DailyQuoteShareSheet } from "@/components/DailyQuoteShareSheet";
 
 export function DailyWisdomCard({
   backgroundColor,
@@ -20,18 +22,10 @@ export function DailyWisdomCard({
   const routineTheme = useRoutineTheme();
   const { quote } = useQuoteOfTheDay();
   const accent = routineTheme.accent;
-
-  const shareQuote = async () => {
-    try {
-      await Share.share({
-        message: `“${quote.text}”\n\n— ${quote.author}\n\nVía RESONANCIA`,
-      });
-    } catch {
-      // Cerrar la hoja de compartir no requiere feedback.
-    }
-  };
+  const sharing = useDailyQuoteShare(quote);
 
   return (
+    <>
     <View
       style={[
         styles.card,
@@ -54,7 +48,7 @@ export function DailyWisdomCard({
       <Text style={[styles.author, { color: accent }]}>{quote.author}</Text>
       <Text style={styles.quote}>{quote.text}</Text>
       <Pressable
-        onPress={shareQuote}
+        onPress={sharing.open}
         accessibilityRole="button"
         accessibilityLabel="Compartir frase del día"
         hitSlop={10}
@@ -63,6 +57,8 @@ export function DailyWisdomCard({
         <Feather name="share" size={23} color={accent} />
       </Pressable>
     </View>
+    <DailyQuoteShareSheet {...sharing.sheetProps} />
+    </>
   );
 }
 
