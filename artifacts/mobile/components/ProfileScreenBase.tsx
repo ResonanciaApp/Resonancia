@@ -78,6 +78,7 @@ import { limitProfileDescriptionLines } from "@/lib/profileDescription";
 import { ProfileMembershipBanner } from "@/components/ProfileMembershipBanner";
 import { SessionBadgeGlass } from "@/components/SessionDurationBadge";
 import { ProfileReflectionWallSection } from "@/components/ProfileReflectionWallSection";
+import { MiRutinaSection } from "@/components/MiRutinaSection";
 import { ReflectionSavedBanner } from "@/components/ReflectionSavedBanner";
 import type { HomeReflectionWallHandle } from "@/components/HomeReflectionWallSection";
 import { GrowthJourneySheet } from "@/components/GrowthJourneySheet";
@@ -1479,7 +1480,10 @@ export function ProfileScreenBase({
               getScrollY={getProfileScrollY}
               onComposingChange={setProfileWallComposing}
               onMessageSaved={handleProfileReflectionSaved}
+              style={{ marginTop: 30 }}
             />
+
+            <MiRutinaSection style={{ marginHorizontal: 0, marginBottom: PROFILE_SECTION_GAP }} />
 
             {SHOW_PROFILE_PRACTICE_CARDS && (
             <>
