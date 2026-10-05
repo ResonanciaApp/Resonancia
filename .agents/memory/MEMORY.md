@@ -75,6 +75,7 @@
 - [Private object reference grants](private-object-reference-grants.md) — una ruta privada referenciada no concede acceso por sí sola; exigir propiedad del upload o rol editorial antes de compartir/publicar
 - [Readiness editorial del catálogo](catalog-readiness-placeholders.md) — placeholders explícitos permanecen visibles; finales exigen audio reproducible y validación transaccional
 - [Contenido remoto de Descubrir](discover-remote-content-cache.md) — secciones y Top 5 conservan la última respuesta válida; un fallo transitorio nunca debe vaciar contenido ya recibido
+- [Orden editorial de Descubrir](discover-editorial-order.md) — categorías → duración → novedades; Para este momento oculto solo aquí, no en Inicio
 - [Slides editoriales del hero](hero-editorial-slides-cache.md) — una caída de la API no debe sustituir slides publicados por imágenes de ejemplo; conservar última configuración válida
 - [Ticket de Mi Rutina](routine-ticket-behavior.md) — solo el ticket completa; feedback breve y transición continua a Rutina completa; el resto abre detalle
 - [Flujo emocional local](mood-checkin-local.md) — guarda check-ins completos localmente; cierre usa cinco tipos fijos con reservas inmutables porque el catálogo muta sesiones en sitio
