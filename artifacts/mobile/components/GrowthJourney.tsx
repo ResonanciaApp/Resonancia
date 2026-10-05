@@ -305,7 +305,7 @@ function GrowthRow({
           },
         ]}
       />
-      <View testID={`${level.id}-stage-art`} style={styles.art}>
+      <View testID={`${level.id}-stage-art`} style={[styles.art, florecimiento && styles.bloomArt]}>
         <GrowthLevelImage level={level} dimmed={status === "locked"} />
       </View>
       <View testID={`${level.id}-copy`} style={[styles.copy, reward && styles.rewardCopy]}>
@@ -388,7 +388,7 @@ function GrowthStageHeading({
   const { theme } = useSceneTheme();
   return (
     <View style={[styles.sectionHeading, second && styles.secondStageHeading]}>
-      <Text style={[styles.sectionEyebrow, theme.id === "cloudy" && { color: CLOUDY_GROWTH_STAGE_LABEL_COLOR }]}>{eyebrow}</Text>
+      <Text style={[styles.sectionEyebrow, theme.id === "cloudy" && { color: second ? CLOUDY_GROWTH_STAGE_LABEL_COLOR : "#B5EFFF" }]}>{eyebrow}</Text>
       <Text
         style={[styles.sectionTitle, { color: colors.foreground }]}
         accessibilityRole="header"
@@ -562,6 +562,7 @@ const styles = StyleSheet.create({
     height: GROWTH_STAGE_ICON_SIZE,
   },
   lockedArt: { opacity: 0.44 },
+  bloomArt: { width: GROWTH_STAGE_ICON_SIZE + 4, height: GROWTH_STAGE_ICON_SIZE + 4, left: 38, top: 32 },
   imageWrap: { width: "100%", height: "100%", borderRadius: 67, overflow: "hidden" },
   stageIconSurface: { backgroundColor: "rgba(255,255,255,0.07)" },
   profileImageWrap: { borderRadius: 67 },

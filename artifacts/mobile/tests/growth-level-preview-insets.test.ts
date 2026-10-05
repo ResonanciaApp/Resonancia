@@ -290,14 +290,15 @@ test("Cloudy's Tu camino day pills use black at 16% in both timelines, preservin
   }
 });
 
-test("Cloudy uses BDBDBD for both stage labels without changing other themes or stage titles", () => {
+test("Cloudy uses B5EFFF only for Primera etapa without changing other themes or the second stage", () => {
   const sceneMock = mocks["@/context/SceneThemeContext"] as { useSceneTheme: () => { theme: { id: string } } };
   for (const id of ["cloudy", "cloudy2", "indigo2", "tibet"]) {
     sceneMock.useSceneTheme = () => ({ theme: { id, gradient: TEST_GRADIENT } });
     const html = renderToStaticMarkup(React.createElement(componentModule.exports.GrowthJourney));
     const expected = id === "cloudy" ? "#BDBDBD" : "#C9A6FF";
     for (const label of ["PRIMERA ETAPA", "SEGUNDA ETAPA"]) {
-      assert.match(html, new RegExp(`data-color="${expected.replace(/[()]/g, "\\$&")}"[^>]*>${label}`));
+      const labelColor = id === "cloudy" && label === "PRIMERA ETAPA" ? "#B5EFFF" : expected;
+      assert.match(html, new RegExp(`data-color="${labelColor.replace(/[()]/g, "\\$&")}"[^>]*>${label}`));
     }
     assert.match(html, /Florecimiento/);
     assert.match(html, /El ascenso/);
@@ -311,7 +312,7 @@ test("current and locked stage icons have identical dimensions in Tu camino", ()
   try {
     const html = renderToStaticMarkup(React.createElement(componentModule.exports.GrowthJourney));
     for (const id of ["intencion", "semilla"]) {
-      assert.match(html, new RegExp(`data-testid="${id}-stage-art"[^>]*data-height="133" data-width="133"`));
+      assert.match(html, new RegExp(`data-testid="${id}-stage-art"[^>]*data-height="137" data-width="137"`));
     }
   } finally {
     levels.pop();
@@ -588,7 +589,10 @@ test("every timeline stage keeps its copy position and moves its artwork 30px ri
       const node = html.match(new RegExp(`<div[^>]*data-testid="${level.id}-stage-node"[^>]*>`))?.[0];
       assert.ok(node);
       assert.match(node, /data-left="1"/);
-      assert.ok(html.includes(`data-left="${10 + 30}" data-top="34"`));
+      assert.ok(html.includes(`data-left="${florecimiento ? 38 : 40}" data-top="${florecimiento ? 32 : 34}"`));
+      const art = html.match(new RegExp(`<div[^>]*data-testid="${level.id}-stage-art"[^>]*>`))?.[0];
+      assert.ok(art);
+      assert.match(art, new RegExp(`data-height="${florecimiento ? 137 : 133}" data-width="${florecimiento ? 137 : 133}"`));
     }
   }
   const source = readFileSync(new URL("../components/GrowthJourney.tsx", import.meta.url), "utf8");
