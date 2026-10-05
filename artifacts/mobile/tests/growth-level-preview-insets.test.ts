@@ -28,12 +28,10 @@ const flattenStyle = (style: unknown): Record<string, unknown> => Array.isArray(
   : style && typeof style === "object" ? style as Record<string, unknown> : {};
 let capturedOnPress: (() => void) | undefined;
 let capturedIntentionPress: (() => void) | undefined;
-let capturedViewAllPress: (() => void) | undefined;
 const Native = ({ accessibilityLabel, accessibilityRole, children, onPress, style, testID, name, color, source, stopOpacity, pointerEvents, accessibilityState, numberOfLines, adjustsFontSizeToFit }: NativeProps) => {
   const resolvedStyle = flattenStyle(style);
   if (testID === "growth-level-zero-preview") capturedOnPress = onPress;
   if (testID === "growth-stage-intencion-open") capturedIntentionPress = onPress;
-  if (testID === "profile-growth-view-all") capturedViewAllPress = onPress;
   return React.createElement("div", {
     "data-testid": testID,
     "data-icon": name,
@@ -78,7 +76,7 @@ const compiled = ts.transpileModule(
 ).outputText;
 const mocks: Record<string, unknown> = {
   "@/context/SceneThemeContext": { useSceneTheme: () => ({ theme: { id: "tibet" } }) },
-  "../assets/images/growth/00-intencion-profile-square-bright.png": 2,
+  "../assets/images/growth/00-intencion-profile-bright.png": 2,
   "../assets/images/growth/semilla-reward-chest.png": 3,
   "../assets/images/growth/reward-avatar-moon.png": 4,
   "../assets/images/growth/reward-avatar-lotus.png": 5,
@@ -102,8 +100,8 @@ const mocks: Record<string, unknown> = {
     POSITIONED_DAY_GRADIENT: ["#C9A6FF"],
   },
   "@/components/CinematicFadeSlide": {
-    CinematicFadeSlide: ({ children, style }: { children?: React.ReactNode; style?: unknown }) =>
-      style ? React.createElement(Native, { style }, children) : React.createElement(React.Fragment, null, children),
+    CinematicFadeSlide: ({ children }: { children?: React.ReactNode }) =>
+      React.createElement(React.Fragment, null, children),
   },
   "@/constants/reflectionWallBorder": wallBorderConstants,
   "@/components/DiscoverSearchBorder": {
@@ -240,7 +238,7 @@ test("only Intención opens a stage detail, without activating progression or li
   assert.match(source, /status=\{index === 0 \? "current" : "locked"\}/);
 });
 
-test("the detail hero and timeline keep their own corners while Perfil uses radius 21", () => {
+test("the detail hero uses full square art while default timeline and profile corners are unchanged", () => {
   const image = (props: Record<string, unknown> = {}) => renderToStaticMarkup(React.createElement(componentModule.exports.GrowthLevelImage, {
     level: { id: "intencion", name: "Intención", image: 1 }, ...props,
   }));
@@ -248,7 +246,7 @@ test("the detail hero and timeline keep their own corners while Perfil uses radi
   assert.match(detail, /data-height="375" data-width="375" data-border-radius="0"/);
   assert.match(detail, /data-source="1"/);
   assert.match(image(), /data-height="100%" data-width="100%" data-border-radius="67"/);
-  assert.match(image({ profilePreview: true }), /data-border-radius="21"/);
+  assert.match(image({ profilePreview: true }), /data-border-radius="67"/);
   const fullHero = image({ size: 402, height: 874, sourceModule: 2 });
   assert.match(fullHero, /data-height="874" data-width="402" data-border-radius="0"/);
   assert.match(fullHero, /data-source="2"/);
@@ -431,7 +429,7 @@ test("reward pills grow in normal flow and preserve nonreward and profile previe
   assert.match(source, /previewArt: \{ width: 100, height: 100 \}/);
 });
 
-test("Perfil uses square opaque artwork, radius 21, and an exterior white border at 25 percent", () => {
+test("Profile intention restores the circular Tu camino artwork with its radial fade and brighter profile variant", () => {
   const html = render({ canonicalVerticalInsets: true });
   const glow = html.indexOf('data-testid="profile-intention-glow"');
   const image = html.indexOf('data-testid="profile-intention-image"');
@@ -441,13 +439,9 @@ test("Perfil uses square opaque artwork, radius 21, and an exterior white border
   assert.doesNotMatch(html, /data-filter/);
   const stops = [...html.matchAll(/data-stop-opacity="([^"]+)"/g)].map(match => Number(match[1]));
   assert.deepEqual(stops, []);
-  assert.match(html, /data-testid="profile-intention-image"[^>]*data-height="100%" data-width="100%" data-border-radius="21"/);
-  assert.match(html, /data-testid="profile-intention-image-border"[^>]*data-pointer-events="none"[^>]*data-border-radius="24" data-border-width="3" data-border-color="rgba\(255,255,255,0.25\)"/);
-  assert.match(html, /data-height="106" data-width="106"/);
+  assert.match(html, /data-testid="profile-intention-image"[^>]*data-height="100%" data-width="100%" data-border-radius="67"/);
   const source = readFileSync(new URL("../components/GrowthJourney.tsx", import.meta.url), "utf8");
   assert.match(source, /previewArt: \{ width: 100, height: 100 \}/);
-  assert.match(source, /PROFILE_INTENTION_IMAGE = require\("\.\.\/assets\/images\/growth\/00-intencion-profile-square-bright.png"\)/);
-  assert.match(source, /profileImageBorder: \{ position: "absolute", top: -3, bottom: -3, left: -3, right: -3/);
   assert.match(render(), /data-border-radius="67"/);
   assert.match(render(), /data-source="1"/);
   assert.doesNotMatch(render(), /profile-intention-glow|profile-intention-image|brightness/);
@@ -458,10 +452,10 @@ test("GrowthLevelPreviewCard adds 4px above and below Perfil only, preserving th
   assert.match(profileHtml, /data-testid="growth-level-zero-preview"[^>]*data-padding-top="20" data-padding-bottom="20"/);
   assert.match(profileHtml, /data-margin-vertical="2"/);
   const profileContent = profileHtml.slice(profileHtml.indexOf(">") + 1);
-  assert.ok(profileContent.indexOf(">Tu camino</div>") < profileContent.indexOf(">0 días</div>"));
-  assert.doesNotMatch(profileContent, /Una práctica que comienza hoy/);
+  assert.ok(profileContent.indexOf("0 días") < profileContent.indexOf("Intención"));
+  assert.ok(profileContent.indexOf("Intención") < profileContent.indexOf("Una práctica que comienza hoy."));
   assert.match(profileHtml, /data-min-height="100"[^>]*data-justify-content="center"/);
-  assert.doesNotMatch(profileHtml, /data-self-align="stretch"/);
+  assert.doesNotMatch(profileHtml, /data-justify-content="space-between"|data-self-align="stretch"/);
   assert.match(profileHtml, /data-margin-bottom="0"/);
   assert.match(profileHtml, /data-gap="10"[^>]*data-min-height="100"/);
   assert.equal((20 - 16) * 2, 8);
@@ -473,52 +467,38 @@ test("GrowthLevelPreviewCard adds 4px above and below Perfil only, preserving th
   assert.doesNotMatch(defaultHtml, /data-min-height="100" data-self-align="stretch"/);
 });
 
-test("Tu camino preserves the compact title size in Perfil while other cards keep Intención", () => {
+test("Intención supports a 3-point smaller title in Perfil without changing default sizes or spacing", () => {
   const compact = render({ embedded: true, canonicalVerticalInsets: true, titleFontSize: 15 });
-  assert.match(compact, /<div[^>]*data-font-size="15"[^>]*data-line-height="23"[^>]*>Tu camino<\/div>/);
+  assert.match(compact, /<div[^>]*data-font-size="15"[^>]*data-line-height="23"[^>]*>Intención<\/div>/);
   assert.match(render(), /<div[^>]*data-font-size="15"[^>]*data-line-height="20"[^>]*>Intención<\/div>/);
   const html = render({ embedded: true, canonicalVerticalInsets: true });
-  assert.match(html, /<div[^>]*data-font-size="18"[^>]*data-line-height="23"[^>]*>Tu camino<\/div>/);
+  assert.match(html, /<div[^>]*data-font-size="18"[^>]*data-line-height="23"[^>]*>Intención<\/div>/);
   assert.doesNotMatch(html, /data-transform=/);
   const defaultHtml = render();
   assert.match(defaultHtml, /data-font-size="15"[^>]*data-line-height="20"/);
   assert.doesNotMatch(defaultHtml, /data-transform=/);
 });
 
-test("Perfil places its pill below Tu camino and Ver todo at the right edge, without description or chevron", () => {
+test("Perfil stacks the pill above Intención, centers the text beside its image, and aligns a single trailing chevron", () => {
   const html = render({ embedded: true, canonicalVerticalInsets: true });
-  assert.match(html, /data-testid="profile-intention-title-row"[^>]*data-direction="row" data-align="center"/);
-  assert.equal((html.match(/data-icon="chevron-right"/g) ?? []).length, 0);
+  assert.match(html, /data-testid="profile-intention-title-row"[^>]*data-direction="column" data-align="flex-start"/);
+  assert.equal((html.match(/data-icon="chevron-right"/g) ?? []).length, 1);
   assert.equal((html.match(/data-margin-bottom="0"/g) ?? []).length, 2);
   const rowAt = html.indexOf('data-testid="profile-intention-title-row"');
-  const viewAllAt = html.indexOf('data-testid="profile-growth-view-all"');
+  const chevronAt = html.indexOf('data-icon="chevron-right"');
   const pillAt = html.lastIndexOf("0 días");
-  const nameAt = html.indexOf(">Tu camino</div>", rowAt);
+  const nameAt = html.indexOf(">Intención</div>", rowAt);
   const storyAt = html.indexOf(">Una práctica que comienza hoy.</div>");
-  assert.ok(rowAt < nameAt && nameAt < viewAllAt && viewAllAt < pillAt);
-  assert.equal(storyAt, -1);
-  assert.match(html, />Ver todo<\/div>/);
+  assert.ok(rowAt < pillAt && pillAt < nameAt && nameAt < storyAt && storyAt < chevronAt);
   const card = html.match(/<div[^>]*data-testid="growth-level-zero-preview"[^>]*>/)?.[0];
   assert.ok(card);
   assert.match(card, /data-direction="row" data-align="center"/);
   const titleRow = html.match(/<div[^>]*data-testid="profile-intention-title-row"[^>]*>/)?.[0];
   assert.ok(titleRow);
-  assert.match(titleRow, /data-gap="8"[^>]*data-justify-content="space-between"/);
+  assert.match(titleRow, /data-gap="10"/);
   assert.doesNotMatch(titleRow, /data-wrap=/);
-  assert.doesNotMatch(html, /profile-intention-chevron/);
+  assert.match(html, /data-testid="profile-intention-chevron"/);
   assert.doesNotMatch(render(), /profile-intention-title-row/);
-  assert.match(render(), /Una práctica que comienza hoy/);
-  assert.match(render(), /data-icon="chevron-right"/);
-});
-
-test("Ver todo opens the same journey as the Perfil card", () => {
-  let opens = 0;
-  render({ canonicalVerticalInsets: true, onPress: () => opens++ });
-  assert.ok(capturedViewAllPress);
-  capturedViewAllPress();
-  assert.equal(opens, 1);
-  capturedOnPress?.();
-  assert.equal(opens, 2);
 });
 
 test("Perfil's Intención day pill has a small centered golden lotus, without changing other preview callers", () => {

@@ -1,7 +1,7 @@
 import { Feather, MaterialCommunityIcons } from "@expo/vector-icons";
 import { Asset } from "expo-asset";
 import React, { useEffect, useState } from "react";
-import { Image, Platform, Pressable, StyleSheet, Text, View, type StyleProp, type ViewStyle } from "react-native";
+import { Image, Platform, Pressable, StyleSheet, Text, View } from "react-native";
 
 import { CLOUDY_GROWTH_STAGE_LABEL_COLOR, MEMBERSHIP_AURORA, POSITIONED_DAY_GRADIENT } from "@/constants/colors";
 import { CinematicFadeSlide } from "@/components/CinematicFadeSlide";
@@ -18,8 +18,8 @@ import { useColors } from "@/hooks/useColors";
 import { useSceneTheme } from "@/context/SceneThemeContext";
 
 export const GROWTH_ROW_HEIGHT = 205;
-// Opaque square artwork, with RGB brightened by 4% for Perfil only.
-const PROFILE_INTENTION_IMAGE = require("../assets/images/growth/00-intencion-profile-square-bright.png");
+// Original Tu camino artwork and radial alpha, with RGB brightened by 4% for Perfil only.
+const PROFILE_INTENTION_IMAGE = require("../assets/images/growth/00-intencion-profile-bright.png");
 const REWARD_LEVEL_IDS = new Set(["semilla", "crecimiento", "vegetacion", "expansion"]);
 
 const GROWTH_COLORS = {
@@ -89,13 +89,12 @@ export function GrowthLevelImage({ level, profilePreview = false, size, height, 
         <Image
           source={source}
           resizeMode="cover"
-          style={[styles.levelImage, profilePreview && styles.profileLevelImage]}
+          style={styles.levelImage}
           onError={(event) => console.warn(`[GrowthJourney] No se pudo cargar ${level.id}: ${event.nativeEvent.error}`)}
           accessibilityElementsHidden
           importantForAccessibility="no"
         />
       )}
-      {profilePreview && <View testID="profile-intention-image-border" pointerEvents="none" style={styles.profileImageBorder} />}
     </View>
   );
 }
@@ -153,7 +152,7 @@ export function GrowthLevelPreviewCard({
         { color: colors.foreground },
       ]}
     >
-      {canonicalVerticalInsets ? "Tu camino" : level.name}
+      {level.name}
     </Text>
   );
   const name = (
@@ -179,10 +178,10 @@ export function GrowthLevelPreviewCard({
         backgroundColor !== undefined && { backgroundColor },
       ]}
       accessibilityRole="button"
-      accessibilityLabel={`${canonicalVerticalInsets ? "Tu camino" : level.name}, ${dayLabel}. Abrir camino de crecimiento`}
+      accessibilityLabel={`${level.name}, ${dayLabel}. Abrir camino de crecimiento`}
       testID="growth-level-zero-preview"
     >
-      <PreviewContentEntrance replayKey="intention-art" delay={420} style={[styles.previewArt, canonicalVerticalInsets && styles.profilePreviewArt]}>
+      <PreviewContentEntrance replayKey="intention-art" delay={420} style={styles.previewArt}>
         <GrowthLevelImage level={level} profilePreview={canonicalVerticalInsets} />
       </PreviewContentEntrance>
       <View
@@ -193,16 +192,8 @@ export function GrowthLevelPreviewCard({
       >
         {canonicalVerticalInsets ? (
           <View testID="profile-intention-title-row" style={styles.canonicalPreviewTitleRow}>
+            {dayPill}
             {name}
-            <Pressable
-              testID="profile-growth-view-all"
-              onPress={onPress}
-              hitSlop={8}
-              accessibilityRole="button"
-              accessibilityLabel="Ver todo el camino de crecimiento"
-            >
-              <Text style={[styles.canonicalPreviewViewAllText, { color: colors.foreground }]}>Ver todo</Text>
-            </Pressable>
           </View>
         ) : (
           <>
@@ -210,16 +201,16 @@ export function GrowthLevelPreviewCard({
             {name}
           </>
         )}
-        {canonicalVerticalInsets ? dayPill : story}
+        {story}
       </View>
-      {!canonicalVerticalInsets && <PreviewContentEntrance replayKey="intention-chevron" delay={810}>
+      <PreviewContentEntrance replayKey="intention-chevron" delay={810}>
         <Feather
           testID={canonicalVerticalInsets ? "profile-intention-chevron" : undefined}
           name="chevron-right"
           size={18}
           color={colors.foreground}
         />
-      </PreviewContentEntrance>}
+      </PreviewContentEntrance>
     </Pressable>
   );
 }
@@ -233,7 +224,7 @@ function PreviewContentEntrance({
   children: React.ReactNode;
   delay: number;
   replayKey: string;
-  style?: StyleProp<ViewStyle>;
+  style?: { width: number; height: number };
 }) {
   return (
     <CinematicFadeSlide
@@ -508,14 +499,12 @@ const styles = StyleSheet.create({
     gap: 12,
   },
   previewArt: { width: 100, height: 100 },
-  profilePreviewArt: { width: 106, height: 106, padding: 3 },
   embeddedPreviewCard: { marginHorizontal: 0 },
   canonicalPreviewVerticalInsets: { paddingTop: 20, paddingBottom: 20, marginVertical: 2, alignItems: "center" },
   canonicalPreviewCopy: { minHeight: 100, justifyContent: "center", gap: 10 },
   canonicalPreviewName: { marginBottom: 0, fontSize: 18, lineHeight: 23 },
-  canonicalPreviewPill: { marginBottom: 0, alignSelf: "flex-start", flexDirection: "row", alignItems: "center", gap: 4 },
-  canonicalPreviewTitleRow: { flexDirection: "row", alignItems: "center", justifyContent: "space-between", gap: 8 },
-  canonicalPreviewViewAllText: { fontFamily: "Manrope", fontSize: 13, lineHeight: 18, fontWeight: "600" },
+  canonicalPreviewPill: { marginBottom: 0, alignSelf: "center", flexDirection: "row", alignItems: "center", gap: 4 },
+  canonicalPreviewTitleRow: { flexDirection: "column", alignItems: "flex-start", gap: 10 },
   previewCopy: { flex: 1, minWidth: 0 },
   previewStory: { fontFamily: "Manrope", fontSize: 11, lineHeight: 16 },
   section: {
@@ -585,9 +574,7 @@ const styles = StyleSheet.create({
   },
   lockedArt: { opacity: 0.44 },
   imageWrap: { width: "100%", height: "100%", borderRadius: 67, overflow: "hidden" },
-  profileImageWrap: { borderRadius: 21, overflow: "visible" },
-  profileLevelImage: { borderRadius: 21 },
-  profileImageBorder: { position: "absolute", top: -3, bottom: -3, left: -3, right: -3, borderRadius: 24, borderWidth: 3, borderColor: "rgba(255,255,255,0.25)" },
+  profileImageWrap: { borderRadius: 67 },
   levelImage: { width: "100%", height: "100%" },
   copy: {
     marginLeft: 166,

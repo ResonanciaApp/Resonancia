@@ -117,3 +117,8 @@ Perfil no muestra el título «Historial de rachas» ni los tres puntos de infor
 
 **How to apply:** Mantener independiente el encabezado de Perfil de otras pantallas que comparten el bloque. No reintroducir el título ni los puntos sin una nueva petición, ni modificar las estadísticas por estos cambios de presentación.
 
+La imagen de Intención en Perfil lleva solo un resplandor pequeño y tenue que sale del fondo; nunca un anillo o un borde luminoso.
+
+**Why:** El usuario rechazó la variante anterior por mostrar un anillo blanco y reiteró que el efecto debía ser sutil. Esa variante aplicaba un filtro de brillo al contenedor del PNG transparente.
+
+**How to apply:** Para ajustar el brillo, modificar únicamente el RGB del arte conservando su alfa radial, sin filtrar el contenedor. Mantener el resplandor como una capa independiente detrás de la imagen y preservar las otras superficies.
