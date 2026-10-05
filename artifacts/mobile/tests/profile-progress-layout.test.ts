@@ -212,15 +212,15 @@ test("other callers retain optional weekly-title alignment without changing hist
   }
 });
 
-test("Perfil accumulated streak uses B5EFFF with its existing glow while longest streak keeps white mountains", () => {
+test("Perfil accumulated streak uses gold with its existing glow while longest streak keeps white mountains", () => {
   const profileSource = readFileSync(new URL("../components/ProfileScreenBase.tsx", import.meta.url), "utf8");
-  assert.match(profileSource, /longestStreakLabel="RACHA ACUMULADA"\s+longestStreakIconColor="#B5EFFF"/);
+  assert.match(profileSource, /longestStreakLabel="RACHA ACUMULADA"\s+longestStreakIconColor=\{MEMBERSHIP_AURORA\.premium\.accent\}/);
   const html = render({
     separateStreakHistory: true,
     showPersonalStats: false,
     showCalendar: false,
     longestStreakLabel: "RACHA ACUMULADA",
-    longestStreakIconColor: "#B5EFFF",
+    longestStreakIconColor: "#E7B95C",
   });
   const longestLabel = html.indexOf("RACHA MÁS LARGA");
   const accumulatedLabel = html.indexOf("RACHA ACUMULADA");
@@ -229,7 +229,7 @@ test("Perfil accumulated streak uses B5EFFF with its existing glow while longest
   assert.match(longestSection, /data-icon="image-filter-hdr" data-color="#F9F9F9" data-size="18"/);
   assert.match(longestSection, /<div>9<\/div>/);
   assert.doesNotMatch(longestSection, /data-icon="spa"|data-glow-color/);
-  assert.match(gold, /data-icon="spa" data-color="#B5EFFF" data-size="18" data-glow-color="#B5EFFFCC" data-glow-radius="8" data-glow-offset="0,0"/);
+  assert.match(gold, /data-icon="spa" data-color="#E7B95C" data-size="18" data-glow-color="#E7B95CCC" data-glow-radius="8" data-glow-offset="0,0"/);
   assert.match(gold, /RACHA ACUMULADA/);
 });
 
