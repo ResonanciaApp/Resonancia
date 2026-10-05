@@ -30,6 +30,7 @@ import { useCatalog } from "@/context/CatalogContext";
 import { useFoldersPlaylists } from "@/context/FoldersPlaylistsContext";
 import { usePlayer } from "@/context/PlayerContext";
 import { usePremium } from "@/context/PremiumContext";
+import { useSceneTheme } from "@/context/SceneThemeContext";
 import {
   fetchEditorialPlaylist,
   EditorialPlaylistFetchError,
@@ -64,6 +65,11 @@ export default function EditorialPlaylistScreen({ slug: slugProp }: EditorialPla
   const params = useLocalSearchParams<{ slug?: string | string[] }>();
   const slug = slugProp ?? resolveSlug(params.slug);
   const insets = useSafeAreaInsets();
+  const { theme, activeSceneId } = useSceneTheme();
+  const playlistBackground = activeSceneId === "cloudy"
+    ? { colors: theme.gradient, locations: theme.gradientLocations, start: theme.gradientStart, end: theme.gradientEnd }
+    : { colors: EDITORIAL_PLAYLIST_GRADIENT };
+  const playlistBackgroundColor = activeSceneId === "cloudy" ? theme.solid : EDITORIAL_PLAYLIST_GRADIENT[0];
   const { version: catalogVersion } = useCatalog();
   const { isPremium } = usePremium();
   const {
@@ -307,8 +313,8 @@ export default function EditorialPlaylistScreen({ slug: slugProp }: EditorialPla
 
   if (!playlist) {
     return (
-      <View style={[styles.root, { backgroundColor: EDITORIAL_PLAYLIST_GRADIENT[0] }]}>
-        <LinearGradient colors={EDITORIAL_PLAYLIST_GRADIENT} style={StyleSheet.absoluteFill} />
+      <View style={[styles.root, { backgroundColor: playlistBackgroundColor }]}>
+        <LinearGradient {...playlistBackground} style={StyleSheet.absoluteFill} />
         <View style={styles.empty}>
           <Feather name="list" size={42} color={COLORS.muted} />
           <Text style={styles.emptyTitle}>Selección no disponible</Text>
@@ -327,8 +333,8 @@ export default function EditorialPlaylistScreen({ slug: slugProp }: EditorialPla
   const coverSource = playlist.coverUrl ? { uri: playlist.coverUrl } : null;
 
   return (
-    <View style={[styles.root, { backgroundColor: EDITORIAL_PLAYLIST_GRADIENT[0] }]}>
-      <LinearGradient colors={EDITORIAL_PLAYLIST_GRADIENT} style={StyleSheet.absoluteFill} />
+    <View style={[styles.root, { backgroundColor: playlistBackgroundColor }]}>
+      <LinearGradient {...playlistBackground} style={StyleSheet.absoluteFill} />
       <StatusBar hidden />
       <ScrollView
         showsVerticalScrollIndicator={false}

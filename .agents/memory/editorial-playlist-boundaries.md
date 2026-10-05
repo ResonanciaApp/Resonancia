@@ -15,9 +15,9 @@ Las cards del carrusel deben conservar el diseño previamente aprobado: portada 
 
 **How to apply:** Mantener dimensiones, tipografía y tiras grises al cambiar la fuente de datos; el nuevo diseño de detalle no se extiende a las cards.
 
-El fondo del detalle de playlists editoriales meditativas y musicales es una elección propia, distinta del tema global Índigo 2; no extenderla a playlists privadas ni a las portadas de carrusel.
+El fondo del detalle de playlists editoriales meditativas y musicales conserva su elección propia en Noche y otros temas; únicamente Día (Cloudy) usa el fondo completo del tema activo. No extenderlo a playlists privadas ni a las portadas de carrusel.
 
-**Why:** El usuario pidió el degradado de su referencia específicamente para las playlists «que creamos nosotros», no un cambio de tema para toda la app.
+**Why:** El usuario pidió el degradado de su referencia específicamente para las playlists «que creamos nosotros», no un cambio de tema para toda la app. Luego solicitó el fondo del tema solo en Cloudy para los detalles meditativos y musicales.
 
 **How to apply:** Mantener la separación visual entre detalle editorial y superficies personales cuando se retoquen fondos o se unifiquen componentes.
 
