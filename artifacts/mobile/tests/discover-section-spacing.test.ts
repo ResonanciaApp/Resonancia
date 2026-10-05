@@ -64,23 +64,30 @@ test("spacing begins after the six category blocks without changing the grid's i
   assert.match(source, /styles\.sectionSpacer, styles\.categoryBlocksSpacer/);
 });
 
-test("Explore by time follows the Resonadores banner with the standard spacing and appears only once", () => {
+test("Explore by time follows Para este momento with standard spacing and appears only once", () => {
   let banner: ts.JsxSelfClosingElement | undefined;
+  let duration: ts.JsxElement | undefined;
   function visit(node: ts.Node) {
     if (ts.isJsxSelfClosingElement(node) && node.tagName.getText(ast) === "ResonadoresBanner") banner = node;
+    if (ts.isJsxElement(node) && node.openingElement.attributes.getText(ast) === "style={styles.durationSection}") duration = node;
     ts.forEachChild(node, visit);
   }
   visit(ast);
+  assert.ok(duration);
+  assert.ok(ts.isJsxFragment(duration.parent));
+  const sectionSiblings = duration.parent.children.filter(node => ts.isJsxElement(node) || ts.isJsxSelfClosingElement(node));
+  const durationIndex = sectionSiblings.indexOf(duration);
+  assert.ok(sectionSiblings[durationIndex - 2].getText(ast).startsWith("<View style={styles.featuredMomentSection}>"));
+  assert.equal(sectionSiblings[durationIndex - 1].getText(ast), "<View style={styles.sectionSpacer} />");
+  assert.equal(sectionSiblings[durationIndex + 1].getText(ast), "<View style={styles.sectionSpacer} />");
+  assert.match(duration.getText(ast), /openCategory\(`\/busqueda\?tiempo=\$\{encodeURIComponent\(slot\.label\)\}`\)/);
   assert.ok(banner);
   assert.ok(ts.isJsxElement(banner.parent));
   const siblings = banner.parent.children.filter(node => ts.isJsxElement(node) || ts.isJsxSelfClosingElement(node));
   const index = siblings.indexOf(banner);
   assert.equal(siblings[index + 1].getText(ast), "<View style={styles.sectionSpacer} />");
-  assert.ok(siblings[index + 2].getText(ast).startsWith("<View style={styles.durationSection}>"));
-  assert.equal(siblings[index + 3].getText(ast), "<View style={styles.sectionSpacer} />");
-  assert.ok(siblings[index + 4].getText(ast).startsWith("<View style={styles.newInResonanceSection}>"));
+  assert.ok(siblings[index + 2].getText(ast).startsWith("<View style={styles.newInResonanceSection}>"));
   assert.equal((source.match(/style=\{styles\.durationSection\}/g) ?? []).length, 1);
-  assert.match(siblings[index + 2].getText(ast), /openCategory\(`\/busqueda\?tiempo=\$\{encodeURIComponent\(slot\.label\)\}`\)/);
   assert.equal(style("durationSection").marginBottom, style("newInResonanceSection").marginBottom);
 });
 
