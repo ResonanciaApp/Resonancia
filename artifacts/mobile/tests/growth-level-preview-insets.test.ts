@@ -7,6 +7,7 @@ import { renderToStaticMarkup } from "react-dom/server";
 import ts from "typescript";
 import * as wallBorderConstants from "../constants/reflectionWallBorder.ts";
 
+const TEST_GRADIENT = ["#060A0F", "#111122"] as const;
 type NativeProps = {
   accessibilityLabel?: string;
   accessibilityRole?: string;
@@ -49,6 +50,7 @@ const Native = ({ accessibilityLabel, accessibilityRole, children, onPress, styl
     "data-line-height": resolvedStyle.lineHeight,
     "data-margin-vertical": resolvedStyle.marginVertical,
     "data-margin-left": resolvedStyle.marginLeft,
+    "data-margin-top": resolvedStyle.marginTop,
     "data-transform": resolvedStyle.transform ? JSON.stringify(resolvedStyle.transform) : undefined,
     "data-filter": resolvedStyle.filter,
     "data-source": source,
@@ -83,7 +85,7 @@ const compiled = ts.transpileModule(
   { compilerOptions: { module: ts.ModuleKind.CommonJS, jsx: ts.JsxEmit.React, esModuleInterop: true } },
 ).outputText;
 const mocks: Record<string, unknown> = {
-  "@/context/SceneThemeContext": { useSceneTheme: () => ({ theme: { id: "tibet" } }) },
+  "@/context/SceneThemeContext": { useSceneTheme: () => ({ theme: { id: "tibet", gradient: TEST_GRADIENT } }) },
   "../assets/images/growth/00-intencion-profile-bright.png": 2,
   "../assets/images/growth/semilla-reward-chest.png": 3,
   "../assets/images/growth/reward-avatar-moon.png": 4,
@@ -148,6 +150,18 @@ new Function("require", "module", "exports", ts.transpileModule(
   return mocks[name];
 }, wallPlusModule, wallPlusModule.exports);
 mocks["@/components/ReflectionWallPlusIcon"] = wallPlusModule.exports;
+const streakModule = { exports: {} as { getPositionedDayGradient: (gradient: readonly [string, string, ...string[]]) => string[] } };
+new Function("require", "module", "exports", ts.transpileModule(
+  readFileSync(new URL("../components/StreakWeekRow.tsx", import.meta.url), "utf8"),
+  { compilerOptions: { module: ts.ModuleKind.CommonJS, jsx: ts.JsxEmit.React, esModuleInterop: true } },
+).outputText)((name: string) => {
+  if (name === "@react-native-masked-view/masked-view") return { __esModule: true, default: Native };
+  if (name === "expo-linear-gradient") return { LinearGradient: Native };
+  if (name === "@/hooks/useStreak") return { useStreak: () => ({ weekFlags: [], todayIndex: 0 }) };
+  if (!(name in mocks)) throw new Error(`Missing positioned day test mock: ${name}`);
+  return mocks[name];
+}, streakModule, streakModule.exports);
+mocks["@/components/StreakWeekRow"] = streakModule.exports;
 const componentModule = { exports: {} as Record<string, React.ComponentType<Record<string, unknown>>> };
 const { GrowthRow, GrowthTimeline } = new Function("require", "module", "exports", `${compiled}\nreturn { GrowthRow, GrowthTimeline };`)((name: string) => {
   if (!(name in mocks)) throw new Error(`Missing growth preview test mock: ${name}`);
@@ -205,7 +219,7 @@ test("Only Cloudy's Perfil intention day pill uses black at 16% opacity", () => 
   const sceneMock = mocks["@/context/SceneThemeContext"] as { useSceneTheme: () => { theme: { id: string } } };
   try {
     for (const id of ["cloudy", "cloudy2", "indigo2", "tibet"]) {
-      sceneMock.useSceneTheme = () => ({ theme: { id } });
+      sceneMock.useSceneTheme = () => ({ theme: { id, gradient: TEST_GRADIENT } });
       for (const canonicalVerticalInsets of [true, false]) {
         const html = render({ canonicalVerticalInsets });
         const pill = html.match(/<div[^>]*data-testid="intention-preview-day-pill"[^>]*>/)?.[0];
@@ -217,7 +231,7 @@ test("Only Cloudy's Perfil intention day pill uses black at 16% opacity", () => 
       }
     }
   } finally {
-    sceneMock.useSceneTheme = () => ({ theme: { id: "tibet" } });
+    sceneMock.useSceneTheme = () => ({ theme: { id: "tibet", gradient: TEST_GRADIENT } });
   }
 });
 
@@ -230,7 +244,7 @@ test("Cloudy's Tu camino day pills use black at 16% in both timelines, preservin
   }).outputText)(() => 1, levelsModule.exports);
   try {
     for (const id of ["cloudy", "cloudy2", "indigo2", "tibet"]) {
-      sceneMock.useSceneTheme = () => ({ theme: { id } });
+      sceneMock.useSceneTheme = () => ({ theme: { id, gradient: TEST_GRADIENT } });
       for (const [florecimiento, levels] of [
         [true, levelsModule.exports.growthLevels],
         [false, levelsModule.exports.ascentLevels],
@@ -249,14 +263,14 @@ test("Cloudy's Tu camino day pills use black at 16% in both timelines, preservin
       }
     }
   } finally {
-    sceneMock.useSceneTheme = () => ({ theme: { id: "tibet" } });
+    sceneMock.useSceneTheme = () => ({ theme: { id: "tibet", gradient: TEST_GRADIENT } });
   }
 });
 
 test("Cloudy uses BDBDBD for both stage labels without changing other themes or stage titles", () => {
   const sceneMock = mocks["@/context/SceneThemeContext"] as { useSceneTheme: () => { theme: { id: string } } };
   for (const id of ["cloudy", "cloudy2", "indigo2", "tibet"]) {
-    sceneMock.useSceneTheme = () => ({ theme: { id } });
+    sceneMock.useSceneTheme = () => ({ theme: { id, gradient: TEST_GRADIENT } });
     const html = renderToStaticMarkup(React.createElement(componentModule.exports.GrowthJourney));
     const expected = id === "cloudy" ? "#BDBDBD" : "#C9A6FF";
     for (const label of ["PRIMERA ETAPA", "SEGUNDA ETAPA"]) {
@@ -265,7 +279,7 @@ test("Cloudy uses BDBDBD for both stage labels without changing other themes or 
     assert.match(html, /Florecimiento/);
     assert.match(html, /El ascenso/);
   }
-  sceneMock.useSceneTheme = () => ({ theme: { id: "tibet" } });
+  sceneMock.useSceneTheme = () => ({ theme: { id: "tibet", gradient: TEST_GRADIENT } });
 });
 
 test("only Intención opens a stage detail, without activating progression or linking other stages", () => {
@@ -392,7 +406,7 @@ test("all reward locks and text are dimmed together only outside the current sta
   }
 });
 
-test("Expansion shows the full avatar phrase and the actual wall plus with three translucent white halos, not photos", () => {
+test("Expansion keeps its avatar reward but removes the entire watermark achievement, including accessible text and artwork", () => {
   const source = readFileSync(new URL("../components/GrowthJourney.tsx", import.meta.url), "utf8");
   assert.match(source, /numberOfLines=\{1\}\s+adjustsFontSizeToFit\s+minimumFontScale=\{0\.6\}/);
   for (const id of ["semilla", "crecimiento", "vegetacion", "expansion"]) {
@@ -400,44 +414,50 @@ test("Expansion shows the full avatar phrase and the actual wall plus with three
       level: { id, name: id, startDay: 50, endDay: 56, image: 1, story: "Descripción." },
       hasNext: false, status: "locked",
     }));
-    if (id !== "expansion") {
-      assert.doesNotMatch(html, /expansion-wall-reward|Comparte sin sello/);
-      continue;
-    }
+    assert.doesNotMatch(html, /expansion-wall-reward|Comparte sin sello/);
     assert.match(html, /Desbloquea 50 avatares nuevos/);
-    assert.ok(html.indexOf(">Desbloquea 50 avatares nuevos") < html.indexOf('data-testid="expansion-wall-reward"'));
-    const wall = html.slice(html.indexOf('data-testid="expansion-wall-reward"'));
-    assert.match(wall, /data-opacity="0.55"/);
-    assert.match(wall, /data-pointer-events="none" data-disabled="true"/);
-    assert.match(wall, /data-testid="expansion-wall-reward-lock" data-icon="lock"/);
-    assert.match(wall, /data-icon="plus"/);
-    assert.match(wall, />Comparte sin sello de agua en Mi muro expansivo</);
-    assert.doesNotMatch(wall, /data-source=|reward-cover/);
-    for (const [size, opacity] of [[44, "0.06"], [34, "0.10"], [24, "0.15"]]) {
-      const scaled = Number(size) * (35 / 44);
-      assert.match(wall, new RegExp(`data-background="rgba\\(255, 255, 255, ${opacity}\\)"[^>]*data-height="${scaled}" data-width="${scaled}"`));
-    }
-    assert.equal((wall.match(/data-wall-border-width="2"/g) ?? []).length, 1);
-    assert.match(wall, /data-wall-border-radius="17.5"/);
-    assert.match(wall, /data-testid="expansion-wall-reward-icon"[^>]*data-height="35" data-width="35"/);
-    const palette = JSON.stringify(wallBorderConstants.REFLECTION_WALL_BORDER_GRADIENT).replaceAll('"', "&quot;");
-    assert.ok(wall.includes(`data-wall-border-colors="${palette}"`));
-    assert.match(wall, /data-wall-border-brightness="1"/);
-    assert.doesNotMatch(wall, /data-lines=/);
+    assert.match(html, new RegExp(`data-testid="${id}-reward-lock"`));
   }
+  assert.doesNotMatch(source, /WALL_REWARD_TEXT|WallRewardIcon|expansion-wall-reward|wallReward:|wallRewardIcon:|rewardLock:/);
 });
 
-test("Profile and the wall achievement reuse the same plus artwork while Profile keeps control of its original rotation", () => {
+test("Profile keeps the original wall plus artwork and rotation independently of the removed timeline achievement", () => {
   const wallSource = readFileSync(new URL("../components/InnerSpaceCard.tsx", import.meta.url), "utf8");
   const journeySource = readFileSync(new URL("../components/GrowthJourney.tsx", import.meta.url), "utf8");
   assert.match(wallSource, /<ReflectionWallPlusIcon spin=\{plusSpin\} haloValues=\{haloValues\} expanded=\{expanded\}/);
   assert.match(wallSource, /Animated.sequence\(PLUS_ROTATION_STOPS.map/);
-  assert.match(journeySource, /<ReflectionWallPlusIcon size=\{35\} scale=\{35 \/ 44\}/);
+  assert.doesNotMatch(journeySource, /ReflectionWallPlusIcon/);
   const html = renderToStaticMarkup(React.createElement(wallPlusModule.exports.ReflectionWallPlusIcon, {
     spin: { interpolate: () => "270deg" },
   }));
   assert.match(html, /data-transform="\[\{&quot;rotate&quot;:&quot;270deg&quot;\}\]"/);
   assert.match(html, /data-icon="plus"/);
+});
+
+test("all avatar reward rows move up 10px together and use the positioned day's theme-derived border hue", () => {
+  const sceneMock = mocks["@/context/SceneThemeContext"] as { useSceneTheme: () => { theme: { id: string; gradient: readonly [string, string] } } };
+  const originalTheme = sceneMock.useSceneTheme;
+  try {
+    for (const gradient of [TEST_GRADIENT, ["#211247", "#38254C"] as const]) {
+      sceneMock.useSceneTheme = () => ({ theme: { id: "indigo2", gradient } });
+      for (const id of ["semilla", "crecimiento", "vegetacion", "expansion"]) {
+        for (const status of ["locked", "current"]) {
+          const html = renderToStaticMarkup(React.createElement(GrowthRow, {
+            level: { id, name: id, startDay: 1, endDay: 7, image: 1, story: "Descripción." }, status, florecimiento: true,
+          }));
+          const reward = html.match(new RegExp(`<div[^>]*data-testid="${id}-reward"[^>]*>`))?.[0];
+          const lock = html.match(new RegExp(`<div[^>]*data-testid="${id}-reward-lock"[^>]*>`))?.[0];
+          assert.ok(reward);
+          assert.ok(lock);
+          assert.ok(reward.includes(`data-margin-top="${12 - 10}"`));
+          assert.ok(lock.includes(`data-color="${streakModule.exports.getPositionedDayGradient(gradient)[0]}"`));
+          assert.match(html, /Desbloquea 50 avatares nuevos/);
+        }
+      }
+    }
+  } finally {
+    sceneMock.useSceneTheme = originalTheme;
+  }
 });
 
 test("the current stage node uses opaque luminous violet while locked nodes keep the same translucent hue", () => {
@@ -502,7 +522,7 @@ test("every timeline stage keeps its copy position and moves its artwork 30px ri
         assert.ok(copyContent.includes(`data-testid="${level.id}-reward-lock"`));
       }
       if (level.id === "expansion") {
-        assert.ok(copyContent.includes('data-testid="expansion-wall-reward"'));
+        assert.ok(!copyContent.includes('data-testid="expansion-wall-reward"'));
       }
       const node = html.match(new RegExp(`<div[^>]*data-testid="${level.id}-stage-node"[^>]*>`))?.[0];
       assert.ok(node);
@@ -524,7 +544,7 @@ test("reward pills grow in normal flow and preserve nonreward and profile previe
   assert.doesNotMatch(pill, /position: "absolute"|height:/);
   assert.doesNotMatch(pill, /width:/);
   assert.match(pill, /alignSelf: "stretch"/);
-  assert.match(pill, /marginTop: 12/);
+  assert.match(pill, /marginTop: 2/);
   assert.doesNotMatch(pill, /marginLeft|marginRight|paddingHorizontal/);
   assert.match(source, /rewardCopy: \{ flex: 0, paddingTop: 34 \}/);
   const ast = ts.createSourceFile("GrowthJourney.tsx", source, ts.ScriptTarget.Latest, true, ts.ScriptKind.TSX);

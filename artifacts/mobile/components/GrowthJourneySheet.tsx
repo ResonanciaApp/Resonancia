@@ -1,4 +1,5 @@
-import { Feather } from "@expo/vector-icons";
+import { Feather, MaterialCommunityIcons } from "@expo/vector-icons";
+import MaskedView from "@react-native-masked-view/masked-view";
 import { LinearGradient } from "expo-linear-gradient";
 import React, { useCallback, useEffect, useRef, useState } from "react";
 import {
@@ -15,7 +16,7 @@ import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { GrowthJourney } from "@/components/GrowthJourney";
 import { GrowthJourneyHelpSheet } from "@/components/GrowthJourneyHelpSheet";
 import { GrowthStageDetail } from "@/components/GrowthStageDetail";
-import { NAVIGATION_HELP_ICON_COLOR } from "@/constants/colors";
+import { MEMBERSHIP_AURORA } from "@/constants/colors";
 import { useSceneTheme } from "@/context/SceneThemeContext";
 import { useColors } from "@/hooks/useColors";
 
@@ -107,7 +108,20 @@ export function GrowthJourneySheet({
               accessibilityLabel="Información de Tu camino"
               testID="growth-journey-help"
             >
-              <Text style={[styles.questionMark, { color: NAVIGATION_HELP_ICON_COLOR }]}>?</Text>
+              <MaskedView
+                maskElement={<MaterialCommunityIcons name="spa" size={24} color={colors.foreground} />}
+                pointerEvents="none"
+                accessibilityElementsHidden
+                importantForAccessibility="no-hide-descendants"
+              >
+                <MaterialCommunityIcons
+                  testID="growth-journey-help-lotus"
+                  name="spa"
+                  size={24}
+                  color={MEMBERSHIP_AURORA.premium.accent}
+                  style={styles.goldenLotus}
+                />
+              </MaskedView>
             </Pressable>
           </View>
           <View style={{ paddingTop: FORMER_INTRO_FIXED_HEIGHT + descriptionHeight - FIRST_STAGE_RISE + FIRST_STAGE_DROP }}>
@@ -139,7 +153,11 @@ const styles = StyleSheet.create({
     justifyContent: "space-between",
   },
   title: { fontFamily: "Manrope", fontSize: 20, lineHeight: 42, fontWeight: "700" },
-  questionMark: { fontFamily: "Manrope", fontSize: 24, lineHeight: 30, fontWeight: "500" },
+  goldenLotus: {
+    textShadowColor: `${MEMBERSHIP_AURORA.premium.accent}CC`,
+    textShadowOffset: { width: 0, height: 0 },
+    textShadowRadius: 4,
+  },
   closeButton: {
     width: 43,
     height: 43,

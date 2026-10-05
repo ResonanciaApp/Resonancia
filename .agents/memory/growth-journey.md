@@ -63,6 +63,12 @@ En la ayuda de Tu camino, «tap bar» significa el tirador superior de la hoja, 
 
 **How to apply:** Mantener ese tirador funcional tanto por toque como por arrastre hacia abajo; no añadir las pestañas de navegación dentro de esta ayuda.
 
+El botón de información del recorrido usa el loto dorado de Racha acumulada en lugar del signo «?». Sigue abriendo la misma ayuda; no representa activar progreso.
+
+**Why:** El usuario pidió ese icono específico para Tu camino, manteniendo su referencia a la racha acumulada.
+
+**How to apply:** Conservar la silueta `spa`, el acento dorado y su brillo suave, junto con el área circular y la etiqueta accesible de información. No añadir este botón al detalle de Intención.
+
 En «Tu progreso», los siete círculos y la descripción entran juntos inmediatamente al terminar la entrada del contador con su fondo; no esperar a que acabe de contar la cifra ni escalonar cada círculo. El mensaje conserva su lugar por encima de «Esta semana» y del contador. Tu progreso no muestra Intención ni sesiones completadas; no alterar la tarjeta de Intención de Perfil ni su entrada escalonada.
 
 **Why:** El usuario devolvió el mensaje a su ubicación anterior y luego pidió sincronizarlo con los siete círculos justo después de la entrada del contador y del fondo. Esa petición reemplaza la espera anterior a los dígitos y la cascada de días.
@@ -87,11 +93,17 @@ Los avisos de avatares de Semilla, Crecimiento, Vegetación y Expansión son men
 
 **How to apply:** Mantener los cuatro avisos desactivados hasta que se pida implementar recompensas; no añadir avisos a los demás niveles. Atenuar candado y texto juntos una sola vez fuera de la etapa actual. Conservar la alineación izquierda con la descripción y adaptar el texto a una sola línea sin reintroducir arte.
 
-Expansión añade un segundo logro debajo del aviso de avatares: «Comparte sin sello de agua en Mi muro expansivo». Su icono es la misma + del banner de Mi muro expansivo de Perfil, rodeada por sus tres círculos blancos translúcidos concéntricos, no tres fotos ni fondos de historias. Conserva su candado superpuesto y el borde con el degradado real del muro. La simplificación del aviso de avatares no autoriza retirar este arte del muro.
+Expansión conserva únicamente el aviso de avatares. No mostrar el antiguo logro «Comparte sin sello de agua en Mi muro expansivo», su icono, su candado ni su texto accesible.
 
-**Why:** El usuario pidió este logro específicamente para Expansión y señaló que se cortaba la frase junto al loto. Corrigió explícitamente la interpretación de «tres fondos»: quería la + que gira en Perfil con sus tres círculos blancos con opacidad, no imágenes. El borde corresponde a la sección real del muro, no a un color dorado genérico.
+**Why:** El usuario retiró explícitamente toda esa parte de Expansión después de probarla. La petición reemplaza el diseño anterior con el icono de la + del muro.
 
-**How to apply:** Mantenerlo como aviso visual apagado, sin activar todavía la recompensa ni cambiar la exportación de historias. No repetirlo en otras etapas. Reutilizar el arte del control real para evitar aproximaciones; conservar su giro original en Perfil, sin introducir loops en el logro bloqueado ni achicar el control original de Perfil. Permitir que la frase del muro crezca sin recorte y que su fila aumente de alto en el flujo normal; la frase de avatares conserva su regla independiente de una sola línea.
+**How to apply:** La eliminación se limita al recorrido; no retirar la + real de Perfil ni modificar la exportación de historias. Mantener el aviso de avatares alineado con la descripción, con texto completo en una sola línea.
+
+Los candados de los avisos de avatares toman el color del borde del día posicionado en Inicio, derivado del tema actual, no un morado fijo.
+
+**Why:** El usuario pidió igualar ese borde; el anillo de Inicio aclara el degradado del tema y no usa directamente el token morado de las píldoras.
+
+**How to apply:** Reutilizar el mismo cálculo cromático del anillo, conservando la atenuación conjunta de candado y texto en etapas bloqueadas.
 
 Los detalles de Florecimiento deben usar la plantilla de Sistema de rachas, con el hero original de cada etapa. La referencia de Semilla entregada por el usuario define la composición, no la imagen ni los textos de Intención.
 

@@ -5,14 +5,7 @@ import { Image, Platform, Pressable, StyleSheet, Text, View } from "react-native
 
 import { CLOUDY_GROWTH_STAGE_LABEL_COLOR, MEMBERSHIP_AURORA, POSITIONED_DAY_GRADIENT } from "@/constants/colors";
 import { CinematicFadeSlide } from "@/components/CinematicFadeSlide";
-import { DiscoverSearchBorder } from "@/components/DiscoverSearchBorder";
-import {
-  REFLECTION_WALL_BORDER_GRADIENT,
-  REFLECTION_WALL_BORDER_START,
-  REFLECTION_WALL_BORDER_END,
-  REFLECTION_WALL_BORDER_BRIGHTNESS,
-} from "@/constants/reflectionWallBorder";
-import { ReflectionWallPlusIcon } from "@/components/ReflectionWallPlusIcon";
+import { getPositionedDayGradient } from "@/components/StreakWeekRow";
 import { ascentLevels, growthLevels, type GrowthLevel } from "@/data/growthLevels";
 import { useColors } from "@/hooks/useColors";
 import { useSceneTheme } from "@/context/SceneThemeContext";
@@ -262,44 +255,17 @@ function PreviewContentEntrance({
   );
 }
 
-const WALL_REWARD_TEXT = "Comparte sin sello de agua en Mi muro expansivo";
-
-function RewardLock({ levelId }: { levelId: string }) {
+function RewardLock({ levelId, color }: { levelId: string; color: string }) {
   return (
     <MaterialCommunityIcons
       testID={`${levelId}-reward-lock`}
       name="lock"
       size={16}
-      color={GROWTH_COLORS.muted}
+      color={color}
       style={styles.avatarRewardLock}
       accessibilityElementsHidden
       importantForAccessibility="no"
     />
-  );
-}
-
-function WallRewardIcon() {
-  return (
-    <View testID="expansion-wall-reward-icon" style={styles.wallRewardIcon}>
-      <ReflectionWallPlusIcon size={35} scale={35 / 44} />
-      <DiscoverSearchBorder
-        borderRadius={17.5}
-        borderWidth={2}
-        brightness={REFLECTION_WALL_BORDER_BRIGHTNESS}
-        colors={REFLECTION_WALL_BORDER_GRADIENT}
-        start={REFLECTION_WALL_BORDER_START}
-        end={REFLECTION_WALL_BORDER_END}
-      />
-      <MaterialCommunityIcons
-        testID="expansion-wall-reward-lock"
-        name="lock"
-        size={13}
-        color={GROWTH_COLORS.muted}
-        style={styles.rewardLock}
-        accessibilityElementsHidden
-        importantForAccessibility="no"
-      />
-    </View>
   );
 }
 
@@ -324,7 +290,7 @@ function GrowthRow({
     <View
       style={[styles.row, reward && styles.rewardRow]}
       accessible={!onPress}
-      accessibilityLabel={`${level.name}, ${dayLabel} de práctica, ${status === "current" ? "etapa actual" : "por desbloquear"}. ${level.story}${REWARD_LEVEL_IDS.has(level.id) ? " Desbloquea 50 avatares nuevos, por desbloquear." : ""}${level.id === "expansion" ? ` ${WALL_REWARD_TEXT}, por desbloquear.` : ""}`}
+      accessibilityLabel={`${level.name}, ${dayLabel} de práctica, ${status === "current" ? "etapa actual" : "por desbloquear"}. ${level.story}${REWARD_LEVEL_IDS.has(level.id) ? " Desbloquea 50 avatares nuevos, por desbloquear." : ""}`}
     >
       <View
         testID={`${level.id}-stage-node`}
@@ -382,7 +348,7 @@ function GrowthRow({
           accessibilityState={{ disabled: true }}
         >
           <View testID={`${level.id}-reward-content`} style={[styles.rewardContent, styles.avatarRewardContent]}>
-          <RewardLock levelId={level.id} />
+          <RewardLock levelId={level.id} color={getPositionedDayGradient(theme.gradient)[0]} />
           <Text
             style={[styles.rewardText, { color: status === "locked" ? GROWTH_COLORS.muted : colors.mutedForeground }]}
             numberOfLines={1}
@@ -392,21 +358,6 @@ function GrowthRow({
           >
             {"Desbloquea 50 avatares nuevos"}
           </Text>
-          </View>
-        </View>
-      )}
-      {level.id === "expansion" && (
-        <View
-          testID="expansion-wall-reward"
-          style={[styles.reward, styles.wallReward, status === "locked" && styles.lockedCopy]}
-          pointerEvents="none"
-          accessibilityState={{ disabled: true }}
-        >
-          <View style={styles.rewardContent}>
-            <WallRewardIcon />
-            <Text style={[styles.rewardText, { color: status === "locked" ? GROWTH_COLORS.muted : colors.mutedForeground }]}>
-              {WALL_REWARD_TEXT}
-            </Text>
           </View>
         </View>
       )}
@@ -625,7 +576,7 @@ const styles = StyleSheet.create({
   rewardCopy: { flex: 0, paddingTop: 34 },
   reward: {
     alignSelf: "stretch",
-    marginTop: 12,
+    marginTop: 2,
     minHeight: 50,
     paddingVertical: 8,
     flexDirection: "row",
@@ -635,9 +586,6 @@ const styles = StyleSheet.create({
   rewardContent: { flexDirection: "row", alignItems: "center", maxWidth: "100%", flexShrink: 1, paddingLeft: 3, gap: 6 },
   avatarRewardContent: { paddingLeft: 0, flexWrap: "nowrap" },
   avatarRewardLock: { width: 16, height: 16, lineHeight: 16, includeFontPadding: false, flexShrink: 0 },
-  wallReward: { marginTop: 0 },
-  wallRewardIcon: { width: 35, height: 35, flexShrink: 0, position: "relative", alignItems: "center", justifyContent: "center" },
-  rewardLock: { position: "absolute", left: -3, top: -3, width: 13, height: 13 },
   rewardText: { flexShrink: 1, minWidth: 0, fontFamily: "Manrope", fontSize: 11, lineHeight: 16 },
   name: { fontFamily: "Manrope", fontSize: 15, fontWeight: "700", lineHeight: 20, marginBottom: 6 },
   dayPill: {

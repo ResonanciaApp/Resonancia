@@ -94,12 +94,20 @@ function uiHarness() {
   };
   const imports = {
     react: h.react, "react-native": native,
-    "@expo/vector-icons": { Feather: (props: any) => React.createElement("i", { "data-icon": props.name }) },
+     "@expo/vector-icons": {
+       Feather: (props: any) => React.createElement("i", { "data-icon": props.name }),
+       MaterialCommunityIcons: (props: any) => React.createElement("i", {
+         "data-testid": props.testID, "data-icon": props.name, "data-color": props.color,
+         "data-size": props.size, "data-shadow-color": props.style?.textShadowColor,
+         "data-shadow-radius": props.style?.textShadowRadius,
+       }),
+     },
+     "@react-native-masked-view/masked-view": { __esModule: true, default: Native },
     "expo-linear-gradient": { LinearGradient: Native },
     "react-native-safe-area-context": { useSafeAreaInsets: () => ({ top: 40, bottom: 20 }) },
     "@/context/SceneThemeContext": { useSceneTheme: () => ({ theme: { gradient: ["#060A0F", "#111122"] } }) },
     "@/hooks/useColors": { useColors: () => ({ foreground: "#FBFBFB" }) },
-    "@/constants/colors": { NAVIGATION_HELP_ICON_COLOR: "#F9F9F9" },
+    "@/constants/colors": { NAVIGATION_HELP_ICON_COLOR: "#F9F9F9", MEMBERSHIP_AURORA: { premium: { accent: "#BE9650" } } },
     "@/components/GrowthJourney": { GrowthJourney: (props: any) => React.createElement(
       native.Pressable, { testID: "test-open-intention", onPress: props.onIntentionPress }, "PRIMERA ETAPA",
     ) },
@@ -153,11 +161,15 @@ test("Tu camino preserves its controls and raises Primera etapa and the whole jo
   assert.equal(flatten(scroll.contentContainerStyle).paddingBottom, 52);
   assert.ok(html.indexOf('data-testid="growth-journey-close"') < html.indexOf("Tu camino"));
   assert.ok(html.indexOf("Tu camino") < html.indexOf('data-testid="growth-journey-help"'));
-  assert.match(html, /data-color="#F9F9F9">\?/);
+  assert.match(html, /data-testid="growth-journey-help-lotus" data-icon="spa" data-color="#BE9650"/);
   assert.equal(h.presses.get("growth-journey-help").style.backgroundColor, "rgba(0,0,0,0.16)");
   assert.doesNotMatch(html, /trending-up|Cada día de racha|descriptionDivider/);
   assert.doesNotMatch(html, /No florecemos|growth-journey-intro/);
   assert.ok(html.indexOf("Tu camino") < html.indexOf("PRIMERA ETAPA"));
+  assert.match(html, /data-testid="growth-journey-help-lotus" data-icon="spa" data-color="#BE9650" data-size="24" data-shadow-color="#BE9650CC" data-shadow-radius="4"/);
+  assert.equal(h.presses.get("growth-journey-help").accessibilityLabel, "Información de Tu camino");
+  assert.equal(h.presses.get("growth-journey-help").style.width, 43);
+  assert.doesNotMatch(html, />\?</);
   assert.match(html, /data-padding-top="73"/); // previous 90px minus 17px
   h.help.onDescriptionLayout(46);
   assert.match(render(), /data-padding-top="50"/); // previous 67px minus 17px
