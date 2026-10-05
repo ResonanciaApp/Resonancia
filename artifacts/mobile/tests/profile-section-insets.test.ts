@@ -86,6 +86,33 @@ test("avatar outline meets the left margin and the chevron reaches the profile r
   }
 });
 
+test("Premium lowers the streak section 30px in normal flow while free users keep its current position", () => {
+  const source = readFileSync(new URL("../components/ProfileScreenBase.tsx", import.meta.url), "utf8");
+  const ast = ts.createSourceFile("ProfileScreenBase.tsx", source, ts.ScriptTarget.Latest, true, ts.ScriptKind.TSX);
+  let expression: ts.Expression | undefined;
+  function visit(node: ts.Node) {
+    if (ts.isJsxAttribute(node) && node.name.getText(ast) === "style"
+      && node.initializer && ts.isJsxExpression(node.initializer)
+      && node.initializer.expression?.getText(ast).includes("styles.profileProgressSection")) {
+      expression = node.initializer.expression;
+    }
+    ts.forEachChild(node, visit);
+  }
+  visit(ast);
+  assert.ok(expression);
+  const base = style("ProfileScreenBase", "profileProgressSection", { PROFILE_SECTION_GAP: 21 });
+  const compiled = ts.transpileModule(`return (${expression.getText(ast)});`, {
+    compilerOptions: { target: ts.ScriptTarget.ES2022 },
+  }).outputText;
+  const evaluate = new Function("isPremium", "styles", compiled);
+  const resolve = (isPremium: boolean) => Object.assign({}, ...evaluate(isPremium, { profileProgressSection: base }));
+  assert.deepEqual(resolve(false), base);
+  assert.deepEqual(resolve(true), { ...base, marginTop: base.marginTop + 30 });
+  assert.equal(resolve(true).transform, undefined);
+  assert.deepEqual(resolve(false), base, "switching to free leaves no residual offset");
+  assert.equal(base.marginTop, -13, "the shared baseline must not be mutated");
+});
+
 test("username keeps 24 points and the new description leaves avatar and Premium spacing unchanged", () => {
   assert.equal(style("ProfileScreenBase", "userName").fontSize, 24);
   const details = style("ProfileScreenBase", "profileDetails");

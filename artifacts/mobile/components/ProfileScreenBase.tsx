@@ -1432,7 +1432,10 @@ export function ProfileScreenBase({
         {/* ── Progreso, propósito y rutina (solo en el Perfil dedicado) ── */}
         {dedicated && (
           <>
-            <View style={styles.profileProgressSection}>
+            <View style={[
+              styles.profileProgressSection,
+              isPremium && { marginTop: styles.profileProgressSection.marginTop + 30 },
+            ]}>
               <ProgressMirrorSections
                 showSectionBorders={false}
                 showPersonalStats={false}
