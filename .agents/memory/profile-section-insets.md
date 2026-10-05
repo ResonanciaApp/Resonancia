@@ -15,14 +15,14 @@ Los desplazamientos verticales solicitados en Perfil, tanto del bloque de avatar
 
 **How to apply:** Usar el flujo normal para «arrastra» o «empuja». Aplicar solo a la sección indicada una compensación visual cuando diga «no empujes», sin trasladarla al contenido posterior. Consultar la regla específica de los siete días en las notas de progreso de Perfil.
 
-El banner de Intención en Perfil tiene una excepción deliberada: su fondo se recorta simétricamente sin reducir el espacio ocupado entre secciones. La píldora va encima del título Intención; píldora, título y descripción forman un conjunto centrado verticalmente junto a la imagen y el chevron.
+La sección de Intención en Perfil lleva el encabezado «Tu camino», con la misma tipografía que «Puntos creatividad», y «Ver todo» al margen derecho. La card conserva «Intención»; su píldora va debajo, sin descripción ni chevron.
 
-**Why:** El usuario pidió reducir únicamente el alto del fondo y alinear el conjunto. Su última indicación coloca la píldora encima del título, reemplazando la disposición horizontal sin cambiar el resto de la tarjeta.
+**Why:** El usuario reemplazó el diseño anterior: pidió un encabezado de sección y que Ver todo sustituyera el chevron, manteniendo el nombre de la card.
 
-**How to apply:** No normalizar de nuevo este banner a los márgenes generales ni propagar sus ajustes al camino de crecimiento o a otras portadas de Intención. Mantener el chevron a la derecha del conjunto completo, no solo del título.
+**How to apply:** Ver todo y la card abren el camino actual. La píldora crece 2 puntos totales de ancho y alto, no 2 por lado. Conservar los insets propios de esta sección y no propagar el rediseño a la ventana de crecimiento.
 
-La imagen de Intención en el banner de Perfil usa el arte circular difuminado de Tu camino, con un 4 % más de brillo y el alfa original intacto.
+La imagen de Intención en Perfil usa la portada cuadrada opaca, sin difuminado; va 10 puntos más pequeña, con radio 27 y borde blanco de 3 px al 25 %.
 
-**Why:** El usuario pidió volver al mismo arte de Tu camino después de probar la portada cuadrada. También pidió separar la píldora y la descripción 4 px más del título y añadir 4 px de espacio arriba y abajo.
+**Why:** El usuario pidió expresamente abandonar el arte circular difuminado para este nuevo tratamiento de Perfil.
 
-**How to apply:** Aplicar el brillo y los espacios solo al banner de Perfil; el arte de Tu camino conserva su brillo original. No recuperar el recorte cuadrado ni cambiar el alfa para simular brillo.
+**How to apply:** Mantener el arte de las etapas de Tu camino independiente; no quitar su alfa radial ni sustituir sus imágenes al ajustar esta portada de Perfil.
