@@ -27,7 +27,8 @@ test("Perfil mounts the existing functional routine immediately below Mi muro, o
   const siblings = routine.parent.children.filter(node => !ts.isJsxText(node));
   assert.equal(siblings[siblings.indexOf(wall) + 1], routine);
   assert.match(wall.getText(ast), /style=\{\{ marginTop: 30 \}\}/);
-  assert.doesNotMatch(routine.getText(ast), /marginTop|translateY/, "the routine follows the wall's 30px shift without an additional 30px offset");
+  assert.match(routine.getText(ast), /marginTop: 25/);
+  assert.doesNotMatch(routine.getText(ast), /translateY/, "the extra 25px belong to normal layout flow");
   const gate = routine.parent.parent;
   assert.ok(ts.isParenthesizedExpression(gate));
   assert.ok(ts.isBinaryExpression(gate.parent));
@@ -44,7 +45,7 @@ test("Perfil mounts the existing functional routine immediately below Mi muro, o
   }).outputText;
   const render = new Function("React", "MiRutinaSection", "PROFILE_SECTION_GAP", "dedicated", compiled);
   assert.match(renderToStaticMarkup(render(React, Routine, gap, true)), /Mi rutina expansiva/);
-  assert.deepEqual(receivedStyle, { marginHorizontal: 0, marginBottom: gap });
+  assert.deepEqual(receivedStyle, { marginHorizontal: 0, marginTop: 25, marginBottom: gap });
   assert.equal(render(React, Routine, gap, false), null);
 
   const tabs = readFileSync(new URL("../app/(tabs)/_layout.tsx", import.meta.url), "utf8");

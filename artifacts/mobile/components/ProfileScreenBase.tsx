@@ -1483,7 +1483,7 @@ export function ProfileScreenBase({
               style={{ marginTop: 30 }}
             />
 
-            <MiRutinaSection style={{ marginHorizontal: 0, marginBottom: PROFILE_SECTION_GAP }} />
+            <MiRutinaSection style={{ marginHorizontal: 0, marginTop: 25, marginBottom: PROFILE_SECTION_GAP }} />
 
             {SHOW_PROFILE_PRACTICE_CARDS && (
             <>
