@@ -23,8 +23,8 @@ test("mixer, breathing exercises and mood register follow notifications in the s
   assert.match(sections, /title: null/);
   const ids = Array.from(sections.matchAll(/id: "([^"]+)"/g), match => match[1]);
   assert.deepEqual(ids.slice(ids.indexOf("notifications")), ["notifications", "mixer", "breathing", "mood-register"]);
-  assert.match(sections, /id: "mixer"[^}]*route: "__mixer"/);
-  assert.match(sections, /id: "breathing"[^}]*route: "\/respiracion"/);
+  assert.match(sections, /id: "mixer", label: "Mezclador"[^}]*route: "__mixer"/);
+  assert.match(sections, /id: "breathing", label: "Respiración"[^}]*route: "\/respiracion"/);
   assert.match(sections, /id: "mood-register"[^}]*route: "__mood_picker"/);
   assert.match(source, /itemGroup: \{ gap: 2, marginTop: 10 \}/);
   assert.match(source, /section\.items\.map\(\(item\) => \([\s\S]*?style=\{styles\.item\}/);

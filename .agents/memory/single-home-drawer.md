@@ -9,7 +9,7 @@ El drawer global debe tener una sola estructura: la correspondiente a Inicio 3. 
 
 **How to apply:** Toda superficie debe abrir el drawer sin indicar variantes. Al comenzar una apertura, cancelar y restablecer cualquier desplazamiento residual del gesto antes de mostrar el panel.
 
-Mezclador de sonidos, Ejercicios de respiración y Registro de ánimo continúan directamente debajo de Notificaciones, sin título «Herramientas» ni separación de grupo.
+Mezclador, Respiración y Registro de ánimo continúan directamente debajo de Notificaciones, sin título «Herramientas» ni separación de grupo.
 
 **Why:** El usuario pidió eliminar ese título y aplicar a esas tres acciones la misma distancia estándar que al resto de menús.
 
