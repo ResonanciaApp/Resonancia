@@ -85,27 +85,38 @@ test("Explore by time follows Para este momento with standard spacing and appear
   assert.ok(ts.isJsxElement(banner.parent));
   const siblings = banner.parent.children.filter(node => ts.isJsxElement(node) || ts.isJsxSelfClosingElement(node));
   const index = siblings.indexOf(banner);
+  assert.ok(siblings[index - 2].getText(ast).startsWith("<View style={styles.newInResonanceSection}>"));
+  assert.equal(siblings[index - 1].getText(ast), "<View style={styles.sectionSpacer} />");
   assert.equal(siblings[index + 1].getText(ast), "<View style={styles.sectionSpacer} />");
-  assert.ok(siblings[index + 2].getText(ast).startsWith("<View style={styles.newInResonanceSection}>"));
+  assert.ok(siblings[index + 2].getText(ast).startsWith("<View style={styles.otherThemesSection}>"));
+  assert.match(banner.getText(ast), /router\.push\("\/equipo" as never\)/);
   assert.equal((source.match(/style=\{styles\.durationSection\}/g) ?? []).length, 1);
   assert.equal(style("durationSection").marginBottom, style("newInResonanceSection").marginBottom);
 });
 
-test("all editorial playlist sections precede the Resonadores banner, keeping their standard separators", () => {
+test("editorial playlists precede Nuevo en Resonancia, then the Resonadores banner, keeping standard separators", () => {
   let playlists: ts.JsxExpression | undefined;
   let banner: ts.JsxSelfClosingElement | undefined;
+  let newSessions: ts.JsxElement | undefined;
   function visit(node: ts.Node) {
     if (ts.isJsxExpression(node) && node.expression?.getText(ast).startsWith("editorialDiscoverCarousels.map(")) playlists = node;
     if (ts.isJsxSelfClosingElement(node) && node.tagName.getText(ast) === "ResonadoresBanner") banner = node;
+    if (ts.isJsxElement(node) && node.openingElement.attributes.getText(ast) === "style={styles.newInResonanceSection}") newSessions = node;
     ts.forEachChild(node, visit);
   }
   visit(ast);
-  assert.ok(playlists && banner);
+  assert.ok(playlists && banner && newSessions);
   assert.equal(playlists.parent, banner.parent);
+  assert.equal(newSessions.parent, banner.parent);
   assert.ok(ts.isJsxElement(banner.parent));
   const siblings = banner.parent.children.filter(node => !ts.isJsxText(node));
-  const index = siblings.indexOf(banner);
+  const index = siblings.indexOf(newSessions);
   assert.equal(siblings[index - 1], playlists);
+  assert.equal(siblings[index + 1].getText(ast), "<View style={styles.sectionSpacer} />");
+  assert.equal(siblings[index + 2], banner);
+  assert.equal((source.match(/<ResonadoresBanner /g) ?? []).length, 1);
+  assert.equal((source.match(/style=\{styles\.newInResonanceSection\}/g) ?? []).length, 1);
+  assert.match(newSessions.getText(ast), /onPress=\{\(\) => handleSessionPress\(session\)\}/);
   const preceding = siblings[index - 2];
   assert.ok(ts.isJsxFragment(preceding));
   const previousElements = preceding.children.filter(node => !ts.isJsxText(node));

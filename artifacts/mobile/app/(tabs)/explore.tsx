@@ -780,10 +780,6 @@ export function ExploreScreen({
             </React.Fragment>
           ))}
 
-          <ResonadoresBanner onPress={() => router.push("/equipo" as never)} />
-
-          <View style={styles.sectionSpacer} />
-
           <View style={styles.newInResonanceSection}>
             <View style={styles.newInResonanceHeader}>
               <Text style={[styles.sectionTitle, { marginBottom: 0 }]}>
@@ -839,6 +835,10 @@ export function ExploreScreen({
               ))}
             </ScrollView>
           </View>
+
+          <View style={styles.sectionSpacer} />
+
+          <ResonadoresBanner onPress={() => router.push("/equipo" as never)} />
 
           <View style={styles.sectionSpacer} />
 
