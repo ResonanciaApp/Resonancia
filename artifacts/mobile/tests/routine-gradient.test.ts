@@ -11,8 +11,10 @@ const compiled = ts.transpileModule(source("../components/RoutineGradientFill.ts
   compilerOptions: { module: ts.ModuleKind.CommonJS, jsx: ts.JsxEmit.React, esModuleInterop: true },
 }).outputText;
 const module = { exports: {} as { RoutineGradientFill: React.ComponentType<{ style?: object }> } };
+let themeId = "indigo2";
 const mocks: Record<string, unknown> = {
   react: React,
+  "@/context/SceneThemeContext": { useSceneTheme: () => ({ theme: { id: themeId } }) },
   "react-native": { StyleSheet: { absoluteFillObject: { position: "absolute", top: 0, right: 0, bottom: 0, left: 0 } } },
   "expo-linear-gradient": {
     LinearGradient: ({ colors, start, end, pointerEvents, style }: {
@@ -36,9 +38,10 @@ new Function("require", "module", "exports", compiled)((name: string) => {
   return mocks[name];
 }, module, module.exports);
 
-test("routine gradient renders all four reference colors horizontally without intercepting taps", () => {
+test("routine gradient renders only the two updated reference colors horizontally without intercepting taps", () => {
   const html = renderToStaticMarkup(React.createElement(module.exports.RoutineGradientFill));
-  assert.match(html, /data-colors="#4265B5,#477FBD,#4A99BC,#50AFB0"/);
+  assert.match(html, /data-colors="#477FBD,#4A99BC"/);
+  assert.doesNotMatch(html, /#4265B5|#50AFB0/);
   assert.match(html, /data-start="0,0.5" data-end="1,0.5"/);
   assert.match(html, /data-pointer-events="none" data-position="absolute"/);
 });
@@ -48,6 +51,21 @@ test("the floating add button gradient preserves its 18px rounded corners", () =
     style: { borderRadius: 18 },
   }));
   assert.match(html, /data-radius="18"/);
+});
+
+test("only Cloudy uses the purple gradient, preserving direction, opacity and other themes", () => {
+  try {
+    for (const id of ["cloudy", "cloudy2", "indigo2", "tibet", "profundo"]) {
+      themeId = id;
+      const html = renderToStaticMarkup(React.createElement(module.exports.RoutineGradientFill));
+      assert.ok(html.includes(`data-colors="${id === "cloudy" ? "#8247BD,#6C4ABC" : "#477FBD,#4A99BC"}"`));
+      assert.match(html, /data-start="0,0.5" data-end="1,0.5"/);
+      assert.match(html, /data-pointer-events="none" data-position="absolute"/);
+      assert.doesNotMatch(html, /rgba|#4265B5|#50AFB0/);
+    }
+  } finally {
+    themeId = "indigo2";
+  }
 });
 
 test("calendar completion and add button use the same fill while preserving animation and navigation", () => {
