@@ -33,6 +33,12 @@ La visibilidad de las ilustraciones no debe depender de un callback de scroll ni
 
 **How to apply:** Mantener el arte presente desde el primer render, con atenuación solo por estado bloqueado, y preferir el cargador nativo para PNG locales del recorrido. Si vuelve a faltar arte en un dispositivo, comprobar eventos de error de carga antes de atribuirlo al diseño.
 
+El punto de la etapa actual conserva el mismo morado de los puntos pendientes, pero opaco y luminoso; esta petición no cambia el dorado de los lotos ni las recompensas. El recorrido debe ser una línea continua por etapa, del centro del primer punto al del último.
+
+**Why:** El usuario rechazó el punto dorado y señaló uniones desparejas junto a Brote, Desarrollo y Floración. Las filas con recompensas crecen en altura y no deben producir cortes ni acumulaciones de opacidad en la línea.
+
+**How to apply:** Mantener la longitud del recorrido ligada al layout real, no a alturas fijas por fila. Conservar las alturas variables, los bloqueos y el progreso previsto; no unir las dos etapas a través de sus encabezados.
+
 En desarrollo, todas las imágenes del recorrido disparadas a la vez por el túnel de Metro pueden fallar con «The request timed out» aunque los PNG existan y el servidor devuelva 200. Cargarlas de forma ordenada y mostrar la copia local descargada.
 
 **Why:** Los registros del iPhone mostraron timeouts simultáneos para las fotos del timeline; comprobar los archivos y una descarga directa confirmó que no eran rutas rotas.

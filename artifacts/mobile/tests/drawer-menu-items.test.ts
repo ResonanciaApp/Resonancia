@@ -14,11 +14,19 @@ test("the drawer hides Diario without removing its screen or neighboring menu it
   assert.ok(existsSync(new URL("../app/diario.tsx", import.meta.url)));
 });
 
-test("Herramientas and its items move up 15 px by reducing only the gap above the heading", () => {
+test("mixer, breathing exercises and mood register follow notifications in the same standard-spaced menu group, without Herramientas", () => {
   const source = readFileSync(new URL("../components/DrawerMenu.tsx", import.meta.url), "utf8");
-  const divider = source.match(/inicio3SectionDivider: \{([\s\S]*?)\n  \},/)?.[1];
-  assert.ok(divider);
-  assert.match(divider, /marginTop: 24/);
-  assert.match(divider, /marginBottom: 10/);
-  assert.match(source, /sectionIndex > 0 && <View style=\{styles\.inicio3SectionDivider\}/);
+  const sections = source.match(/const INICIO3_SECTIONS[\s\S]*?\n\];/)?.[0];
+  assert.ok(sections);
+  assert.doesNotMatch(sections, /Herramientas/);
+  assert.equal((sections.match(/items: \[/g) ?? []).length, 1);
+  assert.match(sections, /title: null/);
+  const ids = Array.from(sections.matchAll(/id: "([^"]+)"/g), match => match[1]);
+  assert.deepEqual(ids.slice(ids.indexOf("notifications")), ["notifications", "mixer", "breathing", "mood-register"]);
+  assert.match(sections, /id: "mixer"[^}]*route: "__mixer"/);
+  assert.match(sections, /id: "breathing"[^}]*route: "\/respiracion"/);
+  assert.match(sections, /id: "mood-register"[^}]*route: "__mood_picker"/);
+  assert.match(source, /itemGroup: \{ gap: 2, marginTop: 10 \}/);
+  assert.match(source, /section\.items\.map\(\(item\) => \([\s\S]*?style=\{styles\.item\}/);
+  assert.match(source, /item: \{[\s\S]*?paddingVertical: 6\.5,/);
 });

@@ -40,6 +40,11 @@ const Native = ({ accessibilityLabel, accessibilityRole, children, onPress, styl
     "data-color": color ?? resolvedStyle.color,
     "data-background": resolvedStyle.backgroundColor,
     "data-position": resolvedStyle.position,
+    "data-left": resolvedStyle.left,
+    "data-top": resolvedStyle.top,
+    "data-bottom": resolvedStyle.bottom,
+    "data-shadow-color": resolvedStyle.shadowColor,
+    "data-shadow-opacity": resolvedStyle.shadowOpacity,
     "data-font-size": resolvedStyle.fontSize,
     "data-line-height": resolvedStyle.lineHeight,
     "data-margin-vertical": resolvedStyle.marginVertical,
@@ -143,7 +148,7 @@ new Function("require", "module", "exports", ts.transpileModule(
 }, wallPlusModule, wallPlusModule.exports);
 mocks["@/components/ReflectionWallPlusIcon"] = wallPlusModule.exports;
 const componentModule = { exports: {} as Record<string, React.ComponentType<Record<string, unknown>>> };
-const GrowthRow = new Function("require", "module", "exports", `${compiled}\nreturn GrowthRow;`)((name: string) => {
+const { GrowthRow, GrowthTimeline } = new Function("require", "module", "exports", `${compiled}\nreturn { GrowthRow, GrowthTimeline };`)((name: string) => {
   if (!(name in mocks)) throw new Error(`Missing growth preview test mock: ${name}`);
   return mocks[name];
 }, componentModule, componentModule.exports);
@@ -434,10 +439,46 @@ test("Profile and the wall achievement reuse the same plus artwork while Profile
   assert.match(html, /data-icon="plus"/);
 });
 
+test("the current stage node uses opaque luminous violet while locked nodes keep the same translucent hue", () => {
+  for (const status of ["current", "locked"]) {
+    const html = renderToStaticMarkup(React.createElement(GrowthRow, {
+      level: { id: "intencion", name: "Intención", startDay: 0, endDay: 0, image: 1, story: "Inicio" },
+      status,
+    }));
+    const node = html.match(/<div[^>]*data-testid="intencion-stage-node"[^>]*>/)?.[0];
+    assert.ok(node);
+    assert.ok(node.includes(`data-background="${status === "current" ? "rgb(174,161,237)" : "rgba(174,161,237,0.28)"}"`));
+    assert.match(node, /data-shadow-color="rgb\(174,161,237\)"/);
+    assert.ok(node.includes(`data-shadow-opacity="${status === "current" ? 0.8 : 0}"`));
+    assert.doesNotMatch(node, /data-opacity=|#BE9650/);
+  }
+});
+
+test("a single timeline line connects node centers even when reward rows have different heights", () => {
+  for (const heights of [[205, 205, 205], [205, 271, 205, 301, 205, 340]]) {
+    const rows = heights.map((height, index) => React.createElement(Native, {
+      key: index, testID: `sample-stage-${index}`, style: { height },
+    }));
+    const timeline = GrowthTimeline({ children: rows });
+    const [track, lastRow] = timeline.props.children;
+    const [line, prefixRows] = track.props.children;
+    assert.equal(line.props.testID, "growth-timeline-line");
+    assert.equal(prefixRows.length, heights.length - 1);
+    assert.equal(lastRow.props.testID, `sample-stage-${heights.length - 1}`);
+    const trackHeight = heights.slice(0, -1).reduce((total, height) => total + height, 0);
+    assert.equal(line.props.style.top, 103.5);
+    assert.equal(trackHeight - line.props.style.bottom, trackHeight + 103.5);
+    assert.equal(line.props.style.left + line.props.style.width / 2, 10);
+    assert.equal(line.props.style.height, undefined, "line length comes from the shared track, not a fixed row height");
+    const html = renderToStaticMarkup(timeline);
+    assert.equal((html.match(/data-testid="growth-timeline-line"/g) ?? []).length, 1);
+  }
+});
+
 test("reward pills grow in normal flow and preserve nonreward and profile preview sizing", () => {
   const source = readFileSync(new URL("../components/GrowthJourney.tsx", import.meta.url), "utf8");
   assert.match(source, /rewardRow: \{ height: "auto", minHeight: GROWTH_ROW_HEIGHT/);
-  assert.match(source, /rewardLine: \{ height: "100%" \}/);
+  assert.doesNotMatch(source, /rewardLine/);
   const pill = source.match(/reward: \{([\s\S]*?)\n  \},/)?.[1] ?? "";
   assert.doesNotMatch(pill, /position: "absolute"|height:/);
   assert.doesNotMatch(pill, /width:/);

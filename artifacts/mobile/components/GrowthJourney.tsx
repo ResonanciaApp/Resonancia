@@ -27,6 +27,7 @@ const GROWTH_COLORS = {
   current: MEMBERSHIP_AURORA.premium.accent,
   muted: "rgba(196,194,222,0.8)",
   inactiveLine: "rgba(174,161,237,0.28)",
+  activeNode: "rgb(174,161,237)",
 } as const;
 
 type Status = "current" | "locked";
@@ -304,13 +305,11 @@ function WallRewardIcon() {
 
 function GrowthRow({
   level,
-  hasNext,
   status,
   florecimiento = false,
   onPress,
 }: {
   level: GrowthLevel;
-  hasNext: boolean;
   status: Status;
   florecimiento?: boolean;
   onPress?: () => void;
@@ -327,18 +326,16 @@ function GrowthRow({
       accessible={!onPress}
       accessibilityLabel={`${level.name}, ${dayLabel} de práctica, ${status === "current" ? "etapa actual" : "por desbloquear"}. ${level.story}${REWARD_LEVEL_IDS.has(level.id) ? " Desbloquea 50 avatares nuevos, por desbloquear." : ""}${level.id === "expansion" ? ` ${WALL_REWARD_TEXT}, por desbloquear.` : ""}`}
     >
-      {hasNext && (
-        <View style={[styles.lineBase, reward && styles.rewardLine]} pointerEvents="none" />
-      )}
       <View
+        testID={`${level.id}-stage-node`}
         pointerEvents="none"
         style={[
           styles.node,
           {
             borderWidth: status === "current" ? 2 : 0,
-            borderColor: GROWTH_COLORS.current,
-            backgroundColor: status === "current" ? GROWTH_COLORS.current : GROWTH_COLORS.inactiveLine,
-            shadowColor: GROWTH_COLORS.current,
+            borderColor: GROWTH_COLORS.activeNode,
+            backgroundColor: status === "current" ? GROWTH_COLORS.activeNode : GROWTH_COLORS.inactiveLine,
+            shadowColor: GROWTH_COLORS.activeNode,
             shadowOpacity: status === "current" ? 0.8 : 0,
           },
         ]}
@@ -452,6 +449,21 @@ function GrowthStageHeading({
   );
 }
 
+function GrowthTimeline({ children }: { children: React.ReactNode }) {
+  const rows = React.Children.toArray(children);
+  return (
+    <View style={styles.timeline}>
+      <View style={styles.timeline}>
+        {rows.length > 1 && (
+          <View testID="growth-timeline-line" style={styles.lineBase} pointerEvents="none" />
+        )}
+        {rows.slice(0, -1)}
+      </View>
+      {rows[rows.length - 1]}
+    </View>
+  );
+}
+
 export function GrowthJourney({ onIntentionPress }: { onIntentionPress?: () => void } = {}) {
   const [ascentExpanded, setAscentExpanded] = useState(false);
   // Visual preview: Intención is the only active level until progression is enabled.
@@ -462,18 +474,17 @@ export function GrowthJourney({ onIntentionPress }: { onIntentionPress?: () => v
         eyebrow="PRIMERA ETAPA"
         title="Florecimiento"
       />
-      <View style={styles.timeline}>
+      <GrowthTimeline>
         {growthLevels.map((level, index) => (
           <GrowthRow
             key={level.id}
             level={level}
-            hasNext={index < growthLevels.length - 1}
             status={index === 0 ? "current" : "locked"}
             florecimiento
             onPress={level.id === "intencion" ? onIntentionPress : undefined}
           />
         ))}
-      </View>
+      </GrowthTimeline>
       <View style={styles.stageGap} pointerEvents="none" />
       <GrowthStageHeading
         eyebrow="SEGUNDA ETAPA"
@@ -492,16 +503,15 @@ export function GrowthJourney({ onIntentionPress }: { onIntentionPress?: () => v
         <Feather name={ascentExpanded ? "chevron-up" : "chevron-down"} size={16} color={GROWTH_COLORS.line} />
       </Pressable>
       {ascentExpanded && (
-        <View style={styles.timeline}>
-          {ascentLevels.map((level, index) => (
+        <GrowthTimeline>
+          {ascentLevels.map((level) => (
             <GrowthRow
               key={level.id}
               level={level}
-              hasNext={index < ascentLevels.length - 1}
               status="locked"
             />
           ))}
-        </View>
+        </GrowthTimeline>
       )}
     </View>
   );
@@ -575,9 +585,10 @@ const styles = StyleSheet.create({
   lineBase: {
     position: "absolute",
     left: 9,
-    top: GROWTH_ROW_HEIGHT / 2,
+    // The track contains all but the last row. Extend to that row's node center.
+    top: GROWTH_ROW_HEIGHT / 2 + 1,
+    bottom: -(GROWTH_ROW_HEIGHT / 2 + 1),
     width: 2,
-    height: GROWTH_ROW_HEIGHT,
     backgroundColor: GROWTH_COLORS.inactiveLine,
   },
   node: {
@@ -611,7 +622,6 @@ const styles = StyleSheet.create({
   },
   lockedCopy: { opacity: 0.55 },
   rewardRow: { height: "auto", minHeight: GROWTH_ROW_HEIGHT, justifyContent: "flex-start", paddingBottom: 20 },
-  rewardLine: { height: "100%" },
   rewardCopy: { flex: 0, paddingTop: 34 },
   reward: {
     alignSelf: "stretch",
