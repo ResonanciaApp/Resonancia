@@ -16,4 +16,10 @@ Action sheets ("..." 3-dot menus) follow a leveled convention for background col
 
 Para el selector Ambiental, el usuario eligió explícitamente la mezcla entre ambos stops frente a las alternativas de usar solo el segundo o solo el tercero. No uniformar esta ventana con los fondos lisos de Biblioteca.
 
+Las ventanas Categoría y Tiempo de Búsqueda desde «Explora según tu tiempo» comparten el fondo del selector de duración. Sus opciones son negras al 19 % solo en Cloudy y al 16 % en Índigo 2.
+
+**Why:** El usuario pidió igualar esas dos ventanas al temporizador de cada tema, no al menú de acciones de Biblioteca.
+
+**How to apply:** Conservar también la excepción del temporizador en Índigo 2; la selección de una opción no debe blanquear el fondo de sus píldoras.
+
 **How to apply:** distinguir las acciones de pulsación larga (tercer stop) de las ventanas de creación y el menú “+” (último stop); fuera de Biblioteca, revisar la convención local antes de cambiar el fondo.

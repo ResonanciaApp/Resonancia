@@ -14,7 +14,6 @@ import {
   StatusBar,
   StyleSheet,
   Text,
-  TextInput,
   useWindowDimensions,
   View,
 } from "react-native";
@@ -28,6 +27,7 @@ import { usePremium } from "@/context/PremiumContext";
 import { usePlayer } from "@/context/PlayerContext";
 import { useSceneTheme } from "@/context/SceneThemeContext";
 import { useCategoryOverlayOptional } from "@/context/CategoryOverlayContext";
+import { SCENE_THEMES } from "@/config/scene-themes";
 
 const { width } = Dimensions.get("window");
 const H_PAD = 20;
@@ -98,7 +98,6 @@ function FilterSheet({
   onSelect,
   onClear,
   onClose,
-  gradient,
 }: {
   visible: boolean;
   title: string;
@@ -107,13 +106,13 @@ function FilterSheet({
   onSelect: (v: string) => void;
   onClear: () => void;
   onClose: () => void;
-  gradient: readonly [string, string, ...string[]];
 }) {
   const insets = useSafeAreaInsets();
-  const sheetGradient: [string, string] = [
-    gradient[gradient.length - 2],
-    gradient[gradient.length - 1],
-  ];
+  const { theme } = useSceneTheme();
+  const sheetGradient: [string, string] = theme.id === "indigo2"
+    ? [SCENE_THEMES.tibet.gradient[1], SCENE_THEMES.tibet.gradient[2]]
+    : [theme.gradient[1], theme.gradient[2]];
+  const optionBackground = theme.id === "cloudy" ? "rgba(0,0,0,0.19)" : "rgba(0,0,0,0.16)";
   return (
     <Modal visible={visible} transparent animationType="fade" onRequestClose={onClose}>
       <View style={StyleSheet.absoluteFill}>
@@ -143,7 +142,7 @@ function FilterSheet({
                     style={({ pressed }) => [
                       sheetStyles.option,
                       {
-                        backgroundColor: "rgba(0,0,0,0.16)",
+                        backgroundColor: optionBackground,
                         opacity: pressed ? 0.75 : 1,
                       },
                     ]}
@@ -187,32 +186,23 @@ export default function BusquedaScreen({ tiempo: tiempoProp }: { tiempo?: string
   const tc = useMemo(() => deriveThemeColors(theme.gradient), [theme.gradient]);
 
   const initialDur = DURATION_SLOTS.find((s) => s.label === tiempo)?.label ?? null;
-  const [q, setQ] = useState("");
   const [selectedCat, setSelectedCat] = useState<CategoryLabel | null>(null);
   const [selectedDur, setSelectedDur] = useState<DurSlotLabel | null>(initialDur);
   const [catSheetOpen, setCatSheetOpen] = useState(false);
   const [durSheetOpen, setDurSheetOpen] = useState(false);
 
-  const hasFilters = q.trim().length > 0 || selectedCat !== null || selectedDur !== null;
+  const hasFilters = selectedCat !== null || selectedDur !== null;
 
   const results = useMemo(() => {
     if (!hasFilters) return [] as Session[];
-    const term = q.trim().toLowerCase();
     const catId = CATEGORY_OPTIONS.find((c) => c.label === selectedCat)?.categoryId;
     const slot = DURATION_SLOTS.find((s) => s.label === selectedDur);
     return SESSIONS.filter((s) => {
       if (catId && s.categoryId !== catId) return false;
       if (slot && !(s.duration >= slot.min && s.duration <= slot.max)) return false;
-      if (term) {
-        const hit =
-          s.title.toLowerCase().includes(term) ||
-          s.categoryLabel.toLowerCase().includes(term) ||
-          (s.subtitle ?? "").toLowerCase().includes(term);
-        if (!hit) return false;
-      }
       return true;
     });
-  }, [q, selectedCat, selectedDur, hasFilters]);
+  }, [selectedCat, selectedDur, hasFilters]);
 
   function handleSessionPress(s: Session) {
     const locked = s.isPremium && !isPremium;
@@ -224,7 +214,6 @@ export default function BusquedaScreen({ tiempo: tiempoProp }: { tiempo?: string
   }
 
   function clearAll() {
-    setQ("");
     setSelectedCat(null);
     setSelectedDur(null);
   }
@@ -245,30 +234,10 @@ export default function BusquedaScreen({ tiempo: tiempoProp }: { tiempo?: string
         <View style={styles.backBtn} />
       </View>
 
-      {/* Barra de búsqueda */}
-      <View style={styles.searchWrap}>
-        <View style={styles.searchBox}>
-          <Feather name="search" size={16} color="#F4F4F4" />
-          <TextInput
-            style={styles.searchInput}
-            placeholder="Buscar sesiones, músicas, sonidos..."
-            placeholderTextColor="rgba(244,244,244,0.5)"
-            value={q}
-            onChangeText={setQ}
-            returnKeyType="search"
-            autoCorrect={false}
-          />
-          {q.length > 0 && (
-            <Pressable onPress={() => setQ("")} hitSlop={10}>
-              <Feather name="x" size={15} color="rgba(242,231,228,0.6)" />
-            </Pressable>
-          )}
-        </View>
-      </View>
-
       {/* Pills de filtro + Limpiar todo */}
       <View style={styles.filterRow}>
         <Pressable
+          testID="search-category-filter"
           onPress={() => setCatSheetOpen(true)}
           style={({ pressed }) => [
             styles.filterPill,
@@ -284,12 +253,13 @@ export default function BusquedaScreen({ tiempo: tiempoProp }: { tiempo?: string
           <Feather name="chevron-down" size={14} color="#F9F9F9" />
         </Pressable>
         <Pressable
+          testID="search-duration-filter"
           onPress={() => setDurSheetOpen(true)}
           style={({ pressed }) => [
             styles.filterPill,
             {
-              borderWidth: 1,
-              borderColor: selectedDur ? tc.accent : "rgba(80,42,247,0.1)",
+              borderWidth: selectedDur ? 0 : 1,
+              borderColor: "rgba(80,42,247,0.1)",
               backgroundColor: selectedDur ? tc.pillActiveBg : "rgba(255,255,255,0.03)",
               opacity: pressed ? 0.75 : 1,
             },
@@ -310,13 +280,14 @@ export default function BusquedaScreen({ tiempo: tiempoProp }: { tiempo?: string
 
       {/* Resultados */}
       {!hasFilters ? (
-        <View style={styles.empty}>
-          <Feather name="headphones" size={48} color={tc.accent} style={{ marginBottom: 16 }} />
+        <View testID="search-initial-placeholder" style={[styles.empty, styles.initialPlaceholderOffset]}>
+          <Feather name="headphones" size={48} color="#F9F9F9" style={{ marginBottom: 16 }} />
           <Text style={styles.emptyTitle}>Encuentra tus sesiones favoritas</Text>
-          <Text style={styles.emptySub}>Busca por texto o filtra por categoría y tiempo</Text>
+          <Text style={styles.emptySub}>Filtra por categoría y tiempo</Text>
         </View>
       ) : (
         <FlatList
+          showsVerticalScrollIndicator={false}
           data={results}
           keyExtractor={(s) => s.id}
           numColumns={2}
@@ -327,7 +298,7 @@ export default function BusquedaScreen({ tiempo: tiempoProp }: { tiempo?: string
             <View style={[styles.empty, { width: windowWidth - H_PAD * 2 }]}>
               <Feather name="search" size={36} color="rgba(242,231,228,0.45)" style={{ marginBottom: 12 }} />
               <Text style={styles.emptyTitle}>Sin resultados</Text>
-              <Text style={styles.emptySub}>Intenta con otro término o cambia los filtros</Text>
+              <Text style={styles.emptySub}>Prueba con otra categoría o duración</Text>
             </View>
           }
           renderItem={({ item }) => {
@@ -363,7 +334,6 @@ export default function BusquedaScreen({ tiempo: tiempoProp }: { tiempo?: string
         onSelect={(v) => setSelectedCat(v as CategoryLabel)}
         onClear={() => setSelectedCat(null)}
         onClose={() => setCatSheetOpen(false)}
-        gradient={theme.gradient}
       />
       <FilterSheet
         visible={durSheetOpen}
@@ -373,7 +343,6 @@ export default function BusquedaScreen({ tiempo: tiempoProp }: { tiempo?: string
         onSelect={(v) => setSelectedDur(v as DurSlotLabel)}
         onClear={() => setSelectedDur(null)}
         onClose={() => setDurSheetOpen(false)}
-        gradient={theme.gradient}
       />
     </LinearGradient>
   );
@@ -399,20 +368,6 @@ const styles = StyleSheet.create({
     textAlign: "center",
   },
 
-  searchWrap: { paddingHorizontal: H_PAD, paddingTop: 8, paddingBottom: 4 },
-  searchBox: {
-    flexDirection: "row",
-    alignItems: "center",
-    gap: 10,
-    borderRadius: 999,
-    borderWidth: 1,
-    borderColor: "rgba(249,249,249,0.8)",
-    backgroundColor: "rgba(0,0,0,0.16)",
-    paddingHorizontal: 18,
-    height: 45,
-  },
-  searchInput: { fontFamily: "Manrope", flex: 1, fontSize: 15, fontWeight: "300", color: "#FBFBFB", padding: 0 },
-
   filterRow: {
     flexDirection: "row",
     alignItems: "center",
@@ -424,15 +379,16 @@ const styles = StyleSheet.create({
   filterPill: {
     flexDirection: "row",
     alignItems: "center",
-    gap: 6,
-    borderRadius: 999,
-    paddingHorizontal: 14,
-    height: 36,
+    gap: 12,
+    borderRadius: 27,
+    paddingHorizontal: 16,
+    height: 51,
   },
   filterPillText: { fontFamily: "Manrope", fontSize: 13, fontWeight: "600" },
   clearAllText: { fontFamily: "Manrope", fontSize: 13, fontWeight: "600" },
 
   empty: { flex: 1, alignItems: "center", justifyContent: "center", paddingHorizontal: 32, paddingBottom: 80 },
+  initialPlaceholderOffset: { transform: [{ translateY: -80 }] },
   emptyTitle: { fontFamily: "Manrope", fontSize: 18, fontWeight: "700", color: "#FBFBFB", textAlign: "center", marginBottom: 10 },
   emptySub: { fontFamily: "Manrope", fontSize: 14, color: "rgba(242,231,228,0.45)", textAlign: "center", lineHeight: 20 },
 

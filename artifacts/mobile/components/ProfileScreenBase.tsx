@@ -1436,7 +1436,7 @@ export function ProfileScreenBase({
               <ProgressMirrorSections
                 showSectionBorders={false}
                 showPersonalStats={false}
-                showStreakWeek
+                showStreakWeek={false}
                 showCalendar
                 showCalendarCompletedCount
                 separateStreakHistory

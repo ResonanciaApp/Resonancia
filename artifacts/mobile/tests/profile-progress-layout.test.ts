@@ -163,10 +163,10 @@ test("Perfil separates week-only progress from the titled streak history", () =>
   assert.ok(html.indexOf('data-testid="calendar"') > html.indexOf("Mis estadísticas"));
 });
 
-test("Perfil shows seven days without a title or background, preserving history, Intención and calendar", () => {
+test("Perfil hides its seven-day section completely, preserving history, Intención and calendar", () => {
   const profile = readFileSync(new URL("../components/ProfileScreenBase.tsx", import.meta.url), "utf8");
   const usage = profile.match(/<ProgressMirrorSections[\s\S]*?canonicalVerticalInsets/)?.[0] ?? "";
-  assert.match(usage, /showStreakWeek\s/);
+  assert.match(usage, /showStreakWeek=\{false\}/);
   assert.doesNotMatch(usage, /weeklySectionTitle=/);
   assert.match(usage, /weeklySectionHorizontalPadding=\{5\}/);
   assert.match(usage, /weeklySectionBackgroundColor="transparent"/);
@@ -174,7 +174,7 @@ test("Perfil shows seven days without a title or background, preserving history,
   assert.match(usage, /separateStreakHistory/);
   const html = render({
     separateStreakHistory: true,
-    showStreakWeek: true,
+    showStreakWeek: false,
     showPersonalStats: false,
     showCalendar: true,
     weeklySectionHorizontalPadding: 5,
@@ -183,16 +183,14 @@ test("Perfil shows seven days without a title or background, preserving history,
     longestStreakLabel: "RACHA ACUMULADA",
     afterStreakHistory: React.createElement("div", { "data-testid": "profile-growth-intention" }, "Intención"),
   });
-  assert.match(html, /seven-week-days/);
-  const weekly = html.match(/<div[^>]*data-testid="profile-weekly-progress"[^>]*>/)?.[0] ?? "";
-  assert.match(weekly, /data-background="transparent"/);
+  assert.doesNotMatch(html, /seven-week-days|profile-weekly-progress/);
   assert.doesNotMatch(html, /profile-weekly-title|>Tu progreso semanal</);
   assert.doesNotMatch(html, /Tu progreso esta semana/);
-  assert.match(weekly, /data-padding-horizontal="5"/);
   for (const content of ["profile-streak-history", "RACHA ACTUAL", "RACHA ACUMULADA", "RACHA MÁS LARGA", "RACHAS COMPLETADAS", "profile-growth-intention", 'data-testid="calendar"']) {
     assert.ok(html.includes(content), `Missing preserved content: ${content}`);
   }
   assert.doesNotMatch(html, /Mis estadísticas/);
+  assert.match(render({ separateStreakHistory: true, showCalendar: false }), /seven-week-days/);
 });
 
 test("other callers retain optional weekly-title alignment without changing history", () => {

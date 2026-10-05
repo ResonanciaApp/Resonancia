@@ -3,11 +3,11 @@ name: Progreso visible en Perfil
 description: Orden actual del progreso en Perfil y su relación con Tu progreso.
 ---
 
-Perfil muestra los siete días de la racha sin título ni fondo, centrados con 5 px adicionales por lado respecto del margen lateral de Perfil. Historial de rachas, Intención y calendario permanecen visibles con sus tratamientos independientes.
+Perfil oculta la sección de los siete días, sin reservar su espacio. Historial de rachas, Intención y calendario permanecen visibles con sus tratamientos independientes. Inicio y Tu progreso conservan sus siete días.
 
-**Why:** El usuario pidió retirar el fondo y el título del bloque de siete días, reemplazando el tratamiento anterior de «Tu progreso semanal» sobre negro. También pidió subirlo 15 px «y arrastra», y luego bajarlo 10 px «y no empujes». Tras alinearlos al margen lateral, precisó que no debían ser full width: reducir el ancho 10 px en total, no por lado.
+**Why:** Después de ajustar el fondo, el título, la posición y el ancho de los días, el usuario pidió esconder esa sección específicamente en Perfil.
 
-**How to apply:** El ajuste hacia arriba pertenece al flujo y mueve también las secciones siguientes; la compensación hacia abajo es solo visual para los días, no para el historial ni el calendario. Mantener la separación uniforme entre lunes y domingo. No recuperar el título o el fondo ni propagar estos cambios a Inicio o Tu progreso.
+**How to apply:** No recuperar la fila de días en Perfil al reutilizar el componente de progreso. Ocultar esa fila no autoriza retirar el historial de rachas ni propagar el cambio a Inicio o Tu progreso.
 
 En los cuatro espacios del historial de rachas de Perfil, el número y su título forman un conjunto centrado verticalmente respecto de su icono; no van anclados al borde inferior.
 
