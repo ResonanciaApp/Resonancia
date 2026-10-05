@@ -285,6 +285,8 @@ function GrowthRow({
     ? `${level.startDay} días`
     : `${level.startDay}–${level.endDay} días`;
   const reward = REWARD_LEVEL_IDS.has(level.id);
+  const nodeColor = theme.id === "cloudy" ? "#B5EFFF" : GROWTH_COLORS.activeNode;
+  const inactiveNodeColor = theme.id === "cloudy" ? "rgba(181,239,255,0.28)" : GROWTH_COLORS.inactiveLine;
   const content = (
     <View
       style={[styles.row, reward && styles.rewardRow]}
@@ -298,9 +300,9 @@ function GrowthRow({
           styles.node,
           {
             borderWidth: status === "current" ? 2 : 0,
-            borderColor: GROWTH_COLORS.activeNode,
-            backgroundColor: status === "current" ? GROWTH_COLORS.activeNode : GROWTH_COLORS.inactiveLine,
-            shadowColor: GROWTH_COLORS.activeNode,
+            borderColor: nodeColor,
+            backgroundColor: status === "current" ? nodeColor : inactiveNodeColor,
+            shadowColor: nodeColor,
             shadowOpacity: status === "current" ? 0.8 : 0,
           },
         ]}
@@ -400,12 +402,13 @@ function GrowthStageHeading({
 }
 
 function GrowthTimeline({ children }: { children: React.ReactNode }) {
+  const { theme } = useSceneTheme();
   const rows = React.Children.toArray(children);
   return (
     <View style={styles.timeline}>
       <View style={styles.timeline}>
         {rows.length > 1 && (
-          <View testID="growth-timeline-line" style={styles.lineBase} pointerEvents="none" />
+          <View testID="growth-timeline-line" style={[styles.lineBase, theme.id === "cloudy" && { backgroundColor: "rgba(181,239,255,0.28)" }]} pointerEvents="none" />
         )}
         {rows.slice(0, -1)}
       </View>

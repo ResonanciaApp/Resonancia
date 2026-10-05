@@ -537,6 +537,34 @@ test("the current stage node uses opaque luminous violet while locked nodes keep
   }
 });
 
+test("Cloudy timeline circles and line use B5EFFF while preserving active and locked opacities", () => {
+  const sceneMock = mocks["@/context/SceneThemeContext"];
+  try {
+    for (const id of ["cloudy", "cloudy2", "indigo2", "tibet"]) {
+      sceneMock.useSceneTheme = () => ({ theme: { id, gradient: TEST_GRADIENT } });
+      for (const status of ["current", "locked"]) {
+        const html = renderToStaticMarkup(React.createElement(GrowthRow, {
+          level: mocks["@/data/growthLevels"].growthLevels[0], status, florecimiento: true,
+        }));
+        const node = html.match(/<div[^>]*data-testid="intencion-stage-node"[^>]*>/)?.[0];
+        assert.ok(node);
+        const active = id === "cloudy" ? "#B5EFFF" : "rgb(174,161,237)";
+        const inactive = id === "cloudy" ? "rgba(181,239,255,0.28)" : "rgba(174,161,237,0.28)";
+        assert.ok(node.includes(`data-background="${status === "current" ? active : inactive}"`));
+        assert.ok(node.includes(`data-shadow-color="${active}"`));
+        assert.ok(node.includes(`data-shadow-opacity="${status === "current" ? 0.8 : 0}"`));
+      }
+      const timeline = GrowthTimeline({ children: [React.createElement(Native, { key: 1 }), React.createElement(Native, { key: 2 })] });
+      const html = renderToStaticMarkup(timeline);
+      const line = html.match(/<div[^>]*data-testid="growth-timeline-line"[^>]*>/)?.[0];
+      assert.ok(line);
+      assert.ok(line.includes(`data-background="${id === "cloudy" ? "rgba(181,239,255,0.28)" : "rgba(174,161,237,0.28)"}"`));
+    }
+  } finally {
+    sceneMock.useSceneTheme = () => ({ theme: { id: "tibet", gradient: TEST_GRADIENT } });
+  }
+});
+
 test("a single timeline line connects node centers even when reward rows have different heights", () => {
   for (const heights of [[205, 205, 205], [205, 271, 205, 301, 205, 340]]) {
     const rows = heights.map((height, index) => React.createElement(Native, {
@@ -549,10 +577,11 @@ test("a single timeline line connects node centers even when reward rows have di
     assert.equal(prefixRows.length, heights.length - 1);
     assert.equal(lastRow.props.testID, `sample-stage-${heights.length - 1}`);
     const trackHeight = heights.slice(0, -1).reduce((total, height) => total + height, 0);
-    assert.equal(line.props.style.top, 103.5);
-    assert.equal(trackHeight - line.props.style.bottom, trackHeight + 103.5);
-    assert.equal(line.props.style.left + line.props.style.width / 2, 10);
-    assert.equal(line.props.style.height, undefined, "line length comes from the shared track, not a fixed row height");
+    const lineStyle = flattenStyle(line.props.style);
+    assert.equal(lineStyle.top, 103.5);
+    assert.equal(trackHeight - Number(lineStyle.bottom), trackHeight + 103.5);
+    assert.equal(Number(lineStyle.left) + Number(lineStyle.width) / 2, 10);
+    assert.equal(lineStyle.height, undefined, "line length comes from the shared track, not a fixed row height");
     const html = renderToStaticMarkup(timeline);
     assert.equal((html.match(/data-testid="growth-timeline-line"/g) ?? []).length, 1);
   }
