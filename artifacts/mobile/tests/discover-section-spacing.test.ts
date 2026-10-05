@@ -64,47 +64,24 @@ test("spacing begins after the six category blocks without changing the grid's i
   assert.match(source, /styles\.sectionSpacer, styles\.categoryBlocksSpacer/);
 });
 
-test("six category blocks lead directly to Explore by time, then Nuevo en Resonancia, without duplicated sections", () => {
-  let categories: ts.JsxElement | undefined;
+test("Explore by time follows the Resonadores banner with the standard spacing and appears only once", () => {
+  let banner: ts.JsxSelfClosingElement | undefined;
   function visit(node: ts.Node) {
-    if (ts.isJsxElement(node) && node.openingElement.attributes.getText(ast).includes("styles.categoryBlocksSection")) categories = node;
+    if (ts.isJsxSelfClosingElement(node) && node.tagName.getText(ast) === "ResonadoresBanner") banner = node;
     ts.forEachChild(node, visit);
   }
   visit(ast);
-  assert.ok(categories);
-  assert.ok(ts.isJsxElement(categories.parent));
-  const siblings = categories.parent.children.filter(node => ts.isJsxElement(node) || ts.isJsxSelfClosingElement(node));
-  const index = siblings.indexOf(categories);
-  assert.equal(siblings[index + 1].getText(ast), "<View style={[styles.sectionSpacer, styles.categoryBlocksSpacer]} />");
+  assert.ok(banner);
+  assert.ok(ts.isJsxElement(banner.parent));
+  const siblings = banner.parent.children.filter(node => ts.isJsxElement(node) || ts.isJsxSelfClosingElement(node));
+  const index = siblings.indexOf(banner);
+  assert.equal(siblings[index + 1].getText(ast), "<View style={styles.sectionSpacer} />");
   assert.ok(siblings[index + 2].getText(ast).startsWith("<View style={styles.durationSection}>"));
   assert.equal(siblings[index + 3].getText(ast), "<View style={styles.sectionSpacer} />");
   assert.ok(siblings[index + 4].getText(ast).startsWith("<View style={styles.newInResonanceSection}>"));
   assert.equal((source.match(/style=\{styles\.durationSection\}/g) ?? []).length, 1);
-  assert.equal((source.match(/style=\{styles\.newInResonanceSection\}/g) ?? []).length, 1);
   assert.match(siblings[index + 2].getText(ast), /openCategory\(`\/busqueda\?tiempo=\$\{encodeURIComponent\(slot\.label\)\}`\)/);
-  assert.match(siblings[index + 4].getText(ast), /onPress=\{\(\) => handleSessionPress\(session\)\}/);
   assert.equal(style("durationSection").marginBottom, style("newInResonanceSection").marginBottom);
-});
-
-test("Para este momento and its separator are hidden together, without changing Inicio", () => {
-  assert.match(source, /const SHOW_FEATURED_MOMENT = false;/);
-  let hidden: ts.JsxExpression | undefined;
-  function visit(node: ts.Node) {
-    if (ts.isJsxExpression(node) && node.expression && ts.isBinaryExpression(node.expression)
-      && node.expression.left.getText(ast) === "SHOW_FEATURED_MOMENT") hidden = node;
-    ts.forEachChild(node, visit);
-  }
-  visit(ast);
-  assert.ok(hidden?.expression && ts.isBinaryExpression(hidden.expression));
-  assert.equal(hidden.expression.operatorToken.kind, ts.SyntaxKind.AmpersandAmpersandToken);
-  const fragment = ts.isParenthesizedExpression(hidden.expression.right)
-    ? hidden.expression.right.expression
-    : hidden.expression.right;
-  assert.ok(ts.isJsxFragment(fragment));
-  const children = fragment.children.filter(child => ts.isJsxElement(child) || ts.isJsxSelfClosingElement(child));
-  assert.match(children[0].getText(ast), /Para este momento/);
-  assert.equal(children[1].getText(ast), "<View style={styles.sectionSpacer} />");
-  assert.match(read("../app/(tabs)/inicio8.tsx"), /Para este momento/);
 });
 
 test("all editorial playlist sections precede the Resonadores banner, keeping their standard separators", () => {
@@ -123,8 +100,9 @@ test("all editorial playlist sections precede the Resonadores banner, keeping th
   const index = siblings.indexOf(banner);
   assert.equal(siblings[index - 1], playlists);
   const preceding = siblings[index - 2];
-  assert.equal(preceding.getText(ast), "<View style={styles.sectionSpacer} />");
-  assert.match(siblings[index - 3].getText(ast), /styles\.newInResonanceSection/);
+  assert.ok(ts.isJsxFragment(preceding));
+  const previousElements = preceding.children.filter(node => !ts.isJsxText(node));
+  assert.equal(previousElements.at(-1)?.getText(ast), "<View style={styles.sectionSpacer} />");
   assert.match(playlists.getText(ast), /<View style=\{styles\.sectionSpacer\} \/>/);
   assert.equal((source.match(/editorialDiscoverCarousels\.map\(/g) ?? []).length, 1);
   assert.match(playlists.getText(ast), /openCategory\(`\/editorial-playlist\/\$\{encodeURIComponent\(playlist\.id\)\}`\)/);

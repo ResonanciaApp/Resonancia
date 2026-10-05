@@ -76,7 +76,6 @@ const H_PAD = 16;
 const GAP = 16;
 const SECTION_GAP = 53;
 const SECTION_EXTRA_GAP = 5;
-const SHOW_FEATURED_MOMENT = false;
 const MONTHLY_SOUND_THERAPY_HERO_HEIGHT = 220;
 const EXPLORE_SECTIONS_CACHE_KEY = "cdc_explore_sections_v1";
 
@@ -638,7 +637,6 @@ export function ExploreScreen({
 
           <View style={[styles.sectionSpacer, styles.categoryBlocksSpacer]} />
 
-          {SHOW_FEATURED_MOMENT && (
           <>
             <View style={styles.featuredMomentSection}>
               <Text style={styles.sectionTitle}>Para este momento</Text>
@@ -733,7 +731,27 @@ export function ExploreScreen({
             </View>
             <View style={styles.sectionSpacer} />
           </>
-          )}
+
+          {editorialDiscoverCarousels.map((carousel) => (
+            <React.Fragment key={carousel.id}>
+              <EditorialPlaylistCarousel
+                title={carousel.title}
+                titleSize={19}
+                playlists={carousel.playlists}
+                editorialTextPlacement="below-title"
+                showDurationClock
+                showPremiumBadge
+                onPress={(playlist) =>
+                  openCategory(`/editorial-playlist/${encodeURIComponent(playlist.id)}`)
+                }
+              />
+              <View style={styles.sectionSpacer} />
+            </React.Fragment>
+          ))}
+
+          <ResonadoresBanner onPress={() => router.push("/equipo" as never)} />
+
+          <View style={styles.sectionSpacer} />
 
           <View style={styles.durationSection}>
             <Text style={[styles.sectionTitle, { paddingHorizontal: H_PAD }]}>
@@ -823,27 +841,6 @@ export function ExploreScreen({
               ))}
             </ScrollView>
           </View>
-
-          <View style={styles.sectionSpacer} />
-
-          {editorialDiscoverCarousels.map((carousel) => (
-            <React.Fragment key={carousel.id}>
-              <EditorialPlaylistCarousel
-                title={carousel.title}
-                titleSize={19}
-                playlists={carousel.playlists}
-                editorialTextPlacement="below-title"
-                showDurationClock
-                showPremiumBadge
-                onPress={(playlist) =>
-                  openCategory(`/editorial-playlist/${encodeURIComponent(playlist.id)}`)
-                }
-              />
-              <View style={styles.sectionSpacer} />
-            </React.Fragment>
-          ))}
-
-          <ResonadoresBanner onPress={() => router.push("/equipo" as never)} />
 
           <View style={styles.sectionSpacer} />
 
