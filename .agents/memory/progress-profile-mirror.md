@@ -11,9 +11,9 @@ Perfil muestra los siete días de la racha sin título ni fondo, alineados al ma
 
 En los cuatro espacios del historial de rachas de Perfil, el número y su título forman un conjunto centrado verticalmente respecto de su icono; no van anclados al borde inferior.
 
-**Why:** El usuario pidió alinear el número y el título de los cuatro espacios con el centro de su icono correspondiente.
+**Why:** El usuario pidió alinear el número y el título de los cuatro espacios con el centro de su icono correspondiente. Después pidió bajar la sección de rachas 20 px, independientemente de la fila de siete días.
 
-**How to apply:** Conservar las dos filas, los iconos a la izquierda y los insets de la tarjeta; no extender este ajuste a otras estadísticas compartidas ni cambiar las cifras.
+**How to apply:** Conservar las dos filas, los iconos a la izquierda y los insets de la tarjeta; no extender este ajuste a otras estadísticas compartidas ni cambiar las cifras. El desplazamiento del historial pertenece al flujo y lleva el contenido posterior, sin mover los siete días.
 
 La raya horizontal de las rachas de Perfil debe estar en el centro de su tarjeta, sin compensación hacia arriba.
 

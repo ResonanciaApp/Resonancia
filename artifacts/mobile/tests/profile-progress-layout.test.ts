@@ -416,6 +416,29 @@ test("Perfil pulls all following sections up 15px and lowers only the seven days
   assert.doesNotMatch(html.slice(0, historyIndex), /RACHA ACTUAL|RACHAS COMPLETADAS/);
 });
 
+test("Perfil lowers history and following sections 20px without moving the seven days or changing card insets", () => {
+  const profile = readFileSync(new URL("../components/ProfileScreenBase.tsx", import.meta.url), "utf8");
+  assert.match(profile, /streakMarginBottom=\{PROFILE_SECTION_GAP \+ 20\}/);
+  const props = {
+    separateStreakHistory: true,
+    showPersonalStats: false,
+    showCalendar: true,
+    weeklySectionBackgroundColor: "transparent",
+    weeklySectionHorizontalPadding: 0,
+    streakContentTranslateY: 10,
+    streakHistoryTopPadding: 18,
+    sectionMarginBottom: 21,
+    sectionBottomPadding: 18,
+  };
+  const previous = render(props);
+  const adjusted = render({ ...props, streakMarginBottom: 21 + 20 });
+  assert.equal(adjusted, previous.replace('data-margin-bottom="21"', 'data-margin-bottom="41"'));
+  const history = adjusted.match(/<div[^>]*data-testid="profile-streak-history"[^>]*>/)?.[0] ?? "";
+  assert.match(history, /data-margin-bottom="21"/);
+  assert.match(history, /data-padding-top="18"/);
+  assert.match(history, /data-padding-bottom="18"/);
+});
+
 test("the full history opens its information once, leaves stat values unchanged, and has no nested progress buttons", () => {
   let infoOpens = 0, progressOpens = 0;
   const props = {

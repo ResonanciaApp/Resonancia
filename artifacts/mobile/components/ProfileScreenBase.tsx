@@ -1447,6 +1447,7 @@ export function ProfileScreenBase({
                 weeklySectionBackgroundColor="transparent"
                 weeklySectionHorizontalPadding={0}
                 streakContentTranslateY={10}
+                streakMarginBottom={PROFILE_SECTION_GAP + 20}
                 streakHistoryTopPadding={18}
                 streakHistoryDividerOffsetY={0}
                 longestStreakLabel="RACHA ACUMULADA"
