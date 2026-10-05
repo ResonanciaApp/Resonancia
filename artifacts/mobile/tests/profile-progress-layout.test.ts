@@ -214,7 +214,7 @@ test("other callers retain optional weekly-title alignment without changing hist
 
 test("Perfil accumulated streak uses gold with its existing glow while longest streak keeps white mountains", () => {
   const profileSource = readFileSync(new URL("../components/ProfileScreenBase.tsx", import.meta.url), "utf8");
-  assert.match(profileSource, /longestStreakLabel="RACHA ACUMULADA"\s+longestStreakIconColor=\{MEMBERSHIP_AURORA\.premium\.accent\}/);
+  assert.match(profileSource, /longestStreakLabel="RACHA ACUMULADA"\s+longestStreakIconColor=\{activeTheme\.id === "cloudy" \? "#8247BD" : MEMBERSHIP_AURORA\.premium\.accent\}/);
   const html = render({
     separateStreakHistory: true,
     showPersonalStats: false,
@@ -231,6 +231,17 @@ test("Perfil accumulated streak uses gold with its existing glow while longest s
   assert.doesNotMatch(longestSection, /data-icon="spa"|data-glow-color/);
   assert.match(gold, /data-icon="spa" data-color="#E7B95C" data-size="18" data-glow-color="#E7B95CCC" data-glow-radius="8" data-glow-offset="0,0"/);
   assert.match(gold, /RACHA ACUMULADA/);
+});
+
+test("Cloudy accumulated streak lotus uses 8247BD without changing its size or glow opacity", () => {
+  const html = render({
+    separateStreakHistory: true,
+    showPersonalStats: false,
+    showCalendar: false,
+    longestStreakLabel: "RACHA ACUMULADA",
+    longestStreakIconColor: "#8247BD",
+  });
+  assert.match(html, /data-icon="spa" data-color="#8247BD" data-size="18" data-glow-color="#8247BDCC" data-glow-radius="8" data-glow-offset="0,0"/);
 });
 
 test("completed streaks restore the white circle checkmark, preserving the count", () => {
