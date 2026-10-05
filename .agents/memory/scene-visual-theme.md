@@ -7,7 +7,7 @@ El usuario reemplazó el selector de ajustes por opciones minimalistas en el dra
 
 **Why:** El 2026-10-04 trasladó Escenas al drawer y luego pidió sustituir las tarjetas ilustradas por sol/luna con títulos Día/Noche y selección mediante color. Posteriormente fijó explícitamente #A8A8A8 tanto para el icono como para el texto de la opción inactiva. Esta dirección reemplaza los banners luminosos con check, sin autorizar cambios de paleta ni audio.
 
-La luna debe ser la misma silueta del banner del Mezclador de sonidos en Sonidos, no el glifo lunar de la fuente de iconos. La separación del título Escena a Día sigue la de Herramientas al Mezclador; el bloque de Escena tiene una separación extra de 60 px respecto a la primera versión minimalista.
+La luna debe ser la misma silueta del banner del Mezclador de sonidos en Sonidos, no el glifo lunar de la fuente de iconos. La separación del título Escena a Día sigue el ritmo de los menús del drawer. El espacio ampliado antes de la línea de Escena es deliberado: al desplazarla, su título y las opciones Día/Noche deben acompañarla en el flujo, sin mover los menús anteriores.
 
 **Why:** El usuario corrigió explícitamente la silueta y alineación de la luna y pidió estos espacios para el drawer.
 

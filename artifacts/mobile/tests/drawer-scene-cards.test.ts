@@ -51,7 +51,7 @@ test("minimal Día/Noche rows retain menu sizes and dim the inactive icon and ti
     assert.equal(nodes.find(node => node.props.accessibilityRole === "radiogroup").props.style.marginTop, 10);
     assert.equal(nodes.find(node => node.props.accessibilityRole === "radiogroup").props.style.gap, 2);
     const sectionHeader = nodes.find(node => node.props.style?.borderTopWidth === 1);
-    assert.equal(sectionHeader.props.style.marginTop, 80, "Entire divider/header block moves down 60px from 20px");
+    assert.equal(sectionHeader.props.style.marginTop, 80 + 70, "Divider, Escena heading and all following options move down another 70px in layout flow");
     for (const radio of radios) {
       const iconBox = all(radio).find(node => node.props.style?.width === 26);
       assert.equal(iconBox.props.style.height, 26);
