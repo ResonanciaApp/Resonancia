@@ -1366,7 +1366,7 @@ export function ProfileScreenBase({
               {isPremium && (
                 <View testID="profile-avatar-premium-badge" pointerEvents="none" style={styles.avatarPremiumBadge}>
                   <SessionBadgeGlass showBlackTint={false} showWhiteTint />
-                  <MaterialCommunityIcons name="star" size={24} color={MEMBERSHIP_AURORA.premium.accent} />
+                  <MaterialCommunityIcons name="star" size={19} color={MEMBERSHIP_AURORA.premium.accent} />
                 </View>
               )}
             </Pressable>
@@ -2549,11 +2549,11 @@ const styles = StyleSheet.create({
   },
   avatarPremiumBadge: {
     position: "absolute",
-    left: -6.5,
-    top: -6.5,
-    width: 31,
-    height: 31,
-    borderRadius: 15.5,
+    left: -4,
+    top: -4,
+    width: 26,
+    height: 26,
+    borderRadius: 13,
     overflow: "hidden",
     alignItems: "center",
     justifyContent: "center",

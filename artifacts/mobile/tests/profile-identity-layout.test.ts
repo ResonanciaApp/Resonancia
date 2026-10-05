@@ -175,7 +175,7 @@ test("missing email and an empty description do not get placeholder content", ()
   assert.doesNotMatch(other, /profile-intention-pill/);
 });
 
-test("Premium restores the previous star and glass background over the avatar without changing its navigation", () => {
+test("Premium star and glass shrink by 5 points each, retaining their center and avatar navigation", () => {
   let route = "";
   let journey = false;
   const html = render({ isPremium: true, onNavigate: (next: string) => route = next, onJourney: (open: boolean) => journey = open });
@@ -187,6 +187,8 @@ test("Premium restores the previous star and glass background over the avatar wi
   assert.match(html, /data-testid="profile-avatar-premium-badge"/);
   assert.match(html, /data-icon="star"/);
   assert.match(source, /<SessionBadgeGlass showBlackTint=\{false\} showWhiteTint \/>/);
-  assert.match(source, /avatarPremiumBadge:\s*\{\s*position: "absolute",\s*left: -6\.5,\s*top: -6\.5,\s*width: 31,\s*height: 31,\s*borderRadius: 15\.5,\s*overflow: "hidden"/);
+  assert.match(source, /<MaterialCommunityIcons name="star" size=\{19\} color=\{MEMBERSHIP_AURORA\.premium\.accent\} \/>/);
+  assert.match(source, /avatarPremiumBadge:\s*\{\s*position: "absolute",\s*left: -4,\s*top: -4,\s*width: 26,\s*height: 26,\s*borderRadius: 13,\s*overflow: "hidden"/);
+  assert.equal(-4 + 26 / 2, -6.5 + 31 / 2, "badge center remains unchanged");
   assert.doesNotMatch(render({ isPremium: false }), /profile-avatar-premium-badge|data-icon="star"/);
 });
