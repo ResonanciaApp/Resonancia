@@ -154,6 +154,7 @@ const styles = StyleSheet.create({
   },
   title: { fontFamily: "Manrope", fontSize: 20, lineHeight: 42, fontWeight: "700" },
   goldenLotus: {
+    opacity: 0.5,
     textShadowColor: `${MEMBERSHIP_AURORA.premium.accent}CC`,
     textShadowOffset: { width: 0, height: 0 },
     textShadowRadius: 4,

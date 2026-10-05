@@ -67,7 +67,7 @@ El botón de información del recorrido usa el loto dorado de Racha acumulada en
 
 **Why:** El usuario pidió ese icono específico para Tu camino, manteniendo su referencia a la racha acumulada.
 
-**How to apply:** Conservar la silueta `spa`, el acento dorado y su brillo suave, junto con el área circular y la etiqueta accesible de información. No añadir este botón al detalle de Intención.
+**How to apply:** Conservar la silueta `spa`, el acento dorado y su brillo suave. El usuario pidió el loto de este botón al 50 % de opacidad, sin atenuar el fondo circular ni otros lotos. Preservar su etiqueta accesible de información. No añadir este botón al detalle de Intención.
 
 En «Tu progreso», los siete círculos y la descripción entran juntos inmediatamente al terminar la entrada del contador con su fondo; no esperar a que acabe de contar la cifra ni escalonar cada círculo. El mensaje conserva su lugar por encima de «Esta semana» y del contador. Tu progreso no muestra Intención ni sesiones completadas; no alterar la tarjeta de Intención de Perfil ni su entrada escalonada.
 

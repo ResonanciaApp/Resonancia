@@ -100,6 +100,7 @@ function uiHarness() {
          "data-testid": props.testID, "data-icon": props.name, "data-color": props.color,
          "data-size": props.size, "data-shadow-color": props.style?.textShadowColor,
          "data-shadow-radius": props.style?.textShadowRadius,
+         "data-opacity": props.style?.opacity,
        }),
      },
      "@react-native-masked-view/masked-view": { __esModule: true, default: Native },
@@ -167,6 +168,8 @@ test("Tu camino preserves its controls and raises Primera etapa and the whole jo
   assert.doesNotMatch(html, /No florecemos|growth-journey-intro/);
   assert.ok(html.indexOf("Tu camino") < html.indexOf("PRIMERA ETAPA"));
   assert.match(html, /data-testid="growth-journey-help-lotus" data-icon="spa" data-color="#BE9650" data-size="24" data-shadow-color="#BE9650CC" data-shadow-radius="4"/);
+  assert.match(html, /data-testid="growth-journey-help-lotus"[^>]*data-opacity="0.5"/);
+  assert.equal(h.presses.get("growth-journey-help").style.opacity, undefined);
   assert.equal(h.presses.get("growth-journey-help").accessibilityLabel, "Información de Tu camino");
   assert.equal(h.presses.get("growth-journey-help").style.width, 43);
   assert.doesNotMatch(html, />\?</);
