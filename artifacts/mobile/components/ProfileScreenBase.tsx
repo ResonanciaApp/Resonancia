@@ -1434,7 +1434,7 @@ export function ProfileScreenBase({
           <>
             <View style={[
               styles.profileProgressSection,
-              isPremium && { marginTop: styles.profileProgressSection.marginTop + 30 },
+              isPremium && { marginTop: styles.profileProgressSection.marginTop + 15 },
             ]}>
               <ProgressMirrorSections
                 showSectionBorders={false}

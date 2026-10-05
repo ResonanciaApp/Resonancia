@@ -86,7 +86,7 @@ test("avatar outline meets the left margin and the chevron reaches the profile r
   }
 });
 
-test("Premium lowers the streak section 30px in normal flow while free users keep its current position", () => {
+test("Premium streak section stays 15px below the baseline after moving up 15px in normal flow, without changing free users", () => {
   const source = readFileSync(new URL("../components/ProfileScreenBase.tsx", import.meta.url), "utf8");
   const ast = ts.createSourceFile("ProfileScreenBase.tsx", source, ts.ScriptTarget.Latest, true, ts.ScriptKind.TSX);
   let expression: ts.Expression | undefined;
@@ -107,7 +107,7 @@ test("Premium lowers the streak section 30px in normal flow while free users kee
   const evaluate = new Function("isPremium", "styles", compiled);
   const resolve = (isPremium: boolean) => Object.assign({}, ...evaluate(isPremium, { profileProgressSection: base }));
   assert.deepEqual(resolve(false), base);
-  assert.deepEqual(resolve(true), { ...base, marginTop: base.marginTop + 30 });
+  assert.deepEqual(resolve(true), { ...base, marginTop: base.marginTop + 15 });
   assert.equal(resolve(true).transform, undefined);
   assert.deepEqual(resolve(false), base, "switching to free leaves no residual offset");
   assert.equal(base.marginTop, -13, "the shared baseline must not be mutated");

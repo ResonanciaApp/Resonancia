@@ -9,9 +9,9 @@ Perfil oculta la sección de los siete días, sin reservar su espacio. Historial
 
 **How to apply:** No recuperar la fila de días en Perfil al reutilizar el componente de progreso. Ocultar esa fila no autoriza retirar el historial de rachas ni propagar el cambio a Inicio o Tu progreso.
 
-En Perfil, el historial de rachas de usuarios Premium va 30 px más abajo respecto de su posición base; los gratuitos mantienen esa posición base.
+En Perfil, el historial de rachas de usuarios Premium va 15 px más abajo respecto de su posición base; los gratuitos mantienen esa posición base.
 
-**Why:** El usuario pidió expresamente bajar las rachas solo cuando el usuario es Premium, dejando intacta la posición de los gratuitos.
+**Why:** El usuario pidió bajar las rachas 30 px solo para Premium y luego subirlas 15 px «y arrastra», manteniendo intacta la posición de los gratuitos.
 
 **How to apply:** El espacio adicional pertenece al flujo, conservando las separaciones con las secciones posteriores. No trasladar el avatar ni conservar el desplazamiento al cambiar a una cuenta gratuita.
 
