@@ -398,6 +398,10 @@ export default function DescansoScreen() {
       {index > 0
       && !followsPremiumBanner ? (
         <View style={styles.sectionSpacer} />
+      ) : followsPremiumBanner ? (
+        <View style={styles.bannerDividerGap}>
+          <View pointerEvents="none" style={styles.bannerSectionDivider} />
+        </View>
       ) : null}
       {item.session ? (
         <SessionCarousel
@@ -445,6 +449,7 @@ export default function DescansoScreen() {
       ) : null}
       {!isPremium && featuredSleepSessions.length === 0 && index === 0 ? (
         <View style={styles.sectionExtraSpacing}>
+          <View pointerEvents="none" style={styles.bannerSectionDivider} />
           <PremiumBanner sleepVariant />
         </View>
       ) : null}
@@ -579,6 +584,7 @@ export default function DescansoScreen() {
                 />
                 {!isPremium ? (
                   <View style={styles.sectionExtraSpacing}>
+                    <View pointerEvents="none" style={styles.bannerSectionDivider} />
                     <PremiumBanner sleepVariant />
                   </View>
                 ) : null}
@@ -856,7 +862,18 @@ const styles = StyleSheet.create({
   sectionSpacer: {
     height: StyleSheet.hairlineWidth,
     marginHorizontal: H_PAD,
-    marginTop: 26 + SECTION_EXTRA_GAP,
+    marginTop: 26 + SECTION_EXTRA_GAP / 2,
+    marginBottom: SECTION_EXTRA_GAP / 2,
+    backgroundColor: "rgba(255,255,255,0.12)",
+  },
+  bannerDividerGap: { height: 0, position: "relative" },
+  bannerSectionDivider: {
+    position: "absolute",
+    top: (26 + SECTION_EXTRA_GAP - StyleSheet.hairlineWidth) / 2,
+    left: H_PAD,
+    right: H_PAD,
+    height: StyleSheet.hairlineWidth,
+    backgroundColor: "rgba(255,255,255,0.12)",
   },
   sleepPillBorder: {},
   sleepPillBorderSel: {},

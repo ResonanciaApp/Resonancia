@@ -26,6 +26,7 @@ function evaluate(expression: string, values: Record<string, unknown>) {
 const bindings = {
   GRID_PAD: 18, StyleSheet: { hairlineWidth: 0.333 },
   INICIO3_SECTION_EXTRA_GAP: 5,
+  SECTION_DIVIDER_COLOR: "rgba(255,255,255,0.12)",
 };
 function style(name: string) {
   const property = find(node => ts.isPropertyAssignment(node)
@@ -58,20 +59,28 @@ test("daily recommendations independently increase from 17 to 19 points", () => 
   assert.match(home, /<DailyRecommendationsSection[\s\S]*?inicio3Compact/);
 });
 
-test("section spacers remove visible dividers and add exactly five pixels to the existing gaps", () => {
-  for (const [name, previousTop, previousBottom] of [
-    ["inicio3SectionSpacer", -27, 26],
-  ] as const) {
-    const spacer = style(name);
-    assert.equal(spacer.backgroundColor, undefined);
-    assert.equal(spacer.borderWidth, undefined);
-    const before = previousTop + previousBottom + bindings.StyleSheet.hairlineWidth;
-    const after = spacer.marginTop + spacer.marginBottom + spacer.height;
-    assert.equal(Math.round((after - before) * 1000) / 1000, 5);
-  }
+test("Inicio 3 shows centered dividers in existing section gaps without changing their height", () => {
+  const divider = style("inicio3SectionSpacer");
+  assert.equal(divider.backgroundColor, bindings.SECTION_DIVIDER_COLOR);
+  assert.equal(divider.borderWidth, undefined);
+  const previousGap = 53 - 27 + 26 + bindings.INICIO3_SECTION_EXTRA_GAP + bindings.StyleSheet.hairlineWidth;
+  const currentGap = 53 + divider.marginTop + divider.marginBottom + divider.height;
+  assert.equal(currentGap, previousGap);
+  assert.equal(53 + divider.marginTop, divider.marginBottom, "the line sits halfway between the two sections");
+  assert.equal((home.match(/style=\{styles\.inicio3SectionSpacer\}/g) ?? []).length, 5);
   assert.doesNotMatch(home, /style=\{styles\.inicio3(?:Section|LowerStandalone)Divider\}/);
   assert.doesNotMatch(home, /inicio3LowerStandaloneSpacer/, "Frase del día must not keep a second gap after removing Mi rutina from Inicio");
   assert.match(home, /videos\.length > 0 && \(\s*<View style=\{styles\.inicio3SectionSpacer\} \/>/);
+  for (const name of ["inicio3QuoteDivider"]) {
+    const line = style(name);
+    assert.equal(line.position, "absolute");
+    assert.equal(line.backgroundColor, divider.backgroundColor);
+    assert.equal(line.height, divider.height);
+    assert.equal(line.left, bindings.GRID_PAD);
+    assert.equal(line.right, bindings.GRID_PAD);
+  }
+  assert.doesNotMatch(home, /inicio3FeaturedDivider|inicio3PremiumDivider/, "No lines above Para este momento or below Muro de agradecimiento");
+  assert.match(home, /bottom: isPremium \? 29 : 39/);
   assert.match(home, /marginTop: variant === "inicio3" \? -8 : 0/);
 });
 

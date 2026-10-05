@@ -3342,12 +3342,18 @@ export default function HomeScreen2({
           </View>
         )}
         {isInicio2 && (
-          <View>
+          <View style={variant === "inicio3" ? styles.inicio3QuoteDividerWrap : undefined}>
             <DailyWisdomCard
               backgroundColor="rgba(0,0,0,0.25)"
               decorativeGradient={variant === "inicio3"}
               style={variant === "inicio3" ? { marginBottom: 53 + INICIO3_SECTION_EXTRA_GAP } : undefined}
             />
+            {variant === "inicio3" && (
+              <View
+                pointerEvents="none"
+                style={[styles.inicio3QuoteDivider, { bottom: isPremium ? 29 : 39 }]}
+              />
+            )}
           </View>
         )}
         {isInicio2 && isPremium && (
@@ -4448,8 +4454,17 @@ const styles = StyleSheet.create({
   inicio3SectionSpacer: {
     height: StyleSheet.hairlineWidth,
     marginHorizontal: GRID_PAD,
-    marginTop: -27,
-    marginBottom: 26 + INICIO3_SECTION_EXTRA_GAP,
+    marginTop: -24.5,
+    marginBottom: 23.5 + INICIO3_SECTION_EXTRA_GAP,
+    backgroundColor: SECTION_DIVIDER_COLOR,
+  },
+  inicio3QuoteDividerWrap: { position: "relative" },
+  inicio3QuoteDivider: {
+    position: "absolute",
+    left: GRID_PAD,
+    right: GRID_PAD,
+    height: StyleSheet.hairlineWidth,
+    backgroundColor: SECTION_DIVIDER_COLOR,
   },
   inicio3StandaloneDivider: {
     height: StyleSheet.hairlineWidth,

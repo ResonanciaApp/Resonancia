@@ -707,7 +707,9 @@ const styles = StyleSheet.create({
   sectionSpacer: {
     height: StyleSheet.hairlineWidth,
     marginHorizontal: H_PAD,
-    marginTop: 26 + SECTION_EXTRA_GAP,
+    marginTop: 26 + SECTION_EXTRA_GAP / 2,
+    marginBottom: SECTION_EXTRA_GAP / 2,
+    backgroundColor: "rgba(255,255,255,0.12)",
   },
   premiumBanner: {
     minHeight: 110,

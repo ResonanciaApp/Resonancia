@@ -43,3 +43,9 @@ el espacio nuevo. Mantener sin cambios la separación anterior a ese bloque y la
 tipografía interna de las cards al ajustar solo títulos de sección.
 Las pantallas internas que muestran una sola cuadrícula no necesitan carruseles
 nuevos para cumplir esta regla; mantener su estructura y sus títulos de página.
+
+Las líneas divisoras entre secciones son visibles en Inicio 3, Descubrir, Dormir y Sonidos, centradas en el hueco ya existente sin añadir altura. En Inicio no debe haber línea encima de Para este momento ni debajo del Muro de agradecimiento. En Descubrir empiezan debajo de los seis bloques de categorías, no dentro de ellos.
+
+**Why:** El usuario pidió restaurar las líneas en estas cuatro pantallas, ubicarlas justo a la mitad de cada separación y retirar expresamente dos de Inicio, después de haberlas quitado en una revisión anterior.
+
+**How to apply:** Considerar el margen de la sección anterior y el de la siguiente al colocar una línea; atender a las ramas con o sin videos y a los bloques Premium. Mantener los gaps normales, incluida la eliminación del espacio duplicado sobre Frase del día.

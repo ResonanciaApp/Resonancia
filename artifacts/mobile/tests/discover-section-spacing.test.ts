@@ -39,12 +39,11 @@ test("the active Descubrir route uses 19-point section titles, including editori
   assert.match(editorial, /styles\.title, \{ fontSize: titleSize \}/);
 });
 
-test("all section separators become transparent spacers with exactly five extra pixels", () => {
+test("Descubrir restores centered visible separators without changing existing gaps", () => {
   const spacer = style("sectionSpacer");
-  assert.equal(spacer.backgroundColor, undefined);
+  assert.equal(spacer.backgroundColor, "rgba(255,255,255,0.12)");
   assert.equal(spacer.borderWidth, undefined);
-  assert.equal(spacer.marginTop, -27);
-  assert.equal(spacer.marginBottom, 31);
+  assert.equal(53 + spacer.marginTop, spacer.marginBottom);
   const previousGap = -27 + 26 + 0.333;
   const newGap = spacer.marginTop + spacer.marginBottom + spacer.height;
   assert.equal(Math.round((newGap - previousGap) * 1000) / 1000, 5);
@@ -56,8 +55,8 @@ test("all section separators become transparent spacers with exactly five extra 
 test("spacing begins after the six category blocks without changing the grid's internal gaps", () => {
   const spacer = style("sectionSpacer");
   const categorySpacer = style("categoryBlocksSpacer");
-  assert.equal(categorySpacer.marginTop, -24);
-  const newGap = categorySpacer.marginTop + spacer.marginBottom + spacer.height;
+  assert.equal(53 + categorySpacer.marginTop, categorySpacer.marginBottom);
+  const newGap = categorySpacer.marginTop + categorySpacer.marginBottom + spacer.height;
   const previousGap = -24 + 26 + 0.333;
   assert.equal(Math.round((newGap - previousGap) * 1000) / 1000, 5);
   assert.match(source, /<ContentCategoryGrid\s+marginTop=\{0\}\s+marginBottom=\{0\}/);
@@ -86,7 +85,9 @@ test("Explore by time follows Para este momento with standard spacing and appear
   const siblings = banner.parent.children.filter(node => ts.isJsxElement(node) || ts.isJsxSelfClosingElement(node));
   const index = siblings.indexOf(banner);
   assert.ok(siblings[index - 2].getText(ast).startsWith("<View style={styles.newInResonanceSection}>"));
-  assert.equal(siblings[index - 1].getText(ast), "<View style={styles.sectionSpacer} />");
+  assert.equal(siblings[index - 1].getText(ast), "<View style={[styles.sectionSpacer, styles.resonadoresSpacer]} />");
+  const bannerSpacer = style("resonadoresSpacer");
+  assert.equal(53 + bannerSpacer.marginTop, bannerSpacer.marginBottom + 3);
   assert.equal(siblings[index + 1].getText(ast), "<View style={styles.sectionSpacer} />");
   assert.ok(siblings[index + 2].getText(ast).startsWith("<View style={styles.otherThemesSection}>"));
   assert.match(banner.getText(ast), /router\.push\("\/equipo" as never\)/);
@@ -112,7 +113,7 @@ test("editorial playlists precede Nuevo en Resonancia, then the Resonadores bann
   const siblings = banner.parent.children.filter(node => !ts.isJsxText(node));
   const index = siblings.indexOf(newSessions);
   assert.equal(siblings[index - 1], playlists);
-  assert.equal(siblings[index + 1].getText(ast), "<View style={styles.sectionSpacer} />");
+  assert.equal(siblings[index + 1].getText(ast), "<View style={[styles.sectionSpacer, styles.resonadoresSpacer]} />");
   assert.equal(siblings[index + 2], banner);
   assert.equal((source.match(/<ResonadoresBanner /g) ?? []).length, 1);
   assert.equal((source.match(/style=\{styles\.newInResonanceSection\}/g) ?? []).length, 1);

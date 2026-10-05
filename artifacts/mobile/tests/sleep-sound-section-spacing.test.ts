@@ -37,14 +37,14 @@ for (const [name, source, titleCount] of [["Dormir", sleep, 3], ["Sonidos", soun
     assert.equal((source.match(/titleSize=\{19\}/g) ?? []).length, titleCount);
     assert.doesNotMatch(source, /titleSize=\{17\}/);
   });
-  test(`${name}: transparent spacers preserve the original gap and add five pixels`, () => {
+  test(`${name}: visible dividers are centered and preserve the existing gap`, () => {
     const spacer = style(source, "sectionSpacer");
-    assert.equal(spacer.backgroundColor, undefined);
+    assert.equal(spacer.backgroundColor, "rgba(255,255,255,0.12)");
     assert.equal(spacer.borderWidth, undefined);
-    assert.equal(spacer.marginTop, 31);
+    assert.equal(spacer.marginTop, 26 + spacer.marginBottom);
     assert.equal(spacer.height, 0.333);
     const oldGap = 26 + 0.333 + 26;
-    const newGap = spacer.marginTop + spacer.height + 26;
+    const newGap = spacer.marginTop + spacer.height + spacer.marginBottom + 26;
     assert.equal(Math.round((newGap - oldGap) * 1000) / 1000, 5);
     assert.doesNotMatch(source, /styles\.sectionDivider/);
   });
@@ -58,6 +58,8 @@ function sleepCarousel(isPremium: boolean, hasFeatured: boolean) {
     SECTION_EXTRA_GAP: 5, H_PAD: 16, SLEEP_CAROUSEL_CARD_W: 160,
     styles: {
       sectionSpacer: style(sleep, "sectionSpacer"),
+      bannerDividerGap: style(sleep, "bannerDividerGap"),
+      bannerSectionDivider: style(sleep, "bannerSectionDivider"),
       sectionExtraSpacing: style(sleep, "sectionExtraSpacing"),
     },
     SessionCarousel: "session-carousel", EditorialPlaylistCarousel: "playlist-carousel",
@@ -79,7 +81,7 @@ test("Dormir preserves the first carousel offset for both sessions and playlists
   }
 });
 
-test("Dormir adds five pixels on both sides of the free-user banner without introducing a missing separator", () => {
+test("Dormir keeps centered dividers on both sides of the free-user banner without moving sections", () => {
   for (const playlist of [false, true]) {
     const item = playlist
       ? { key: "playlist", playlist: { title: "Playlist", playlists: [] } }
@@ -88,16 +90,19 @@ test("Dormir adds five pixels on both sides of the free-user banner without intr
     const first = render(item, 0);
     assert.equal(first.props.children[2].props.style.paddingTop, 5);
     const second = render(item, 1);
-    assert.equal(second.props.children[0], null);
+    assert.equal(second.props.children[0].props.style.height, 0);
+    const line = second.props.children[0].props.children.props.style;
+    assert.equal(line.top + line.height / 2, 31 / 2);
+    assert.equal(line.backgroundColor, "rgba(255,255,255,0.12)");
     assert.equal(second.props.children[1].props.style.marginTop, 31);
     const withFeatured = sleepCarousel(false, true)(item, 1);
     assert.ok(withFeatured.props.children[0]);
     assert.equal(withFeatured.props.children[1].props.style.marginTop, 26);
   }
-  assert.match(sleep, /!isPremium \? \(\s*<View style=\{styles\.sectionExtraSpacing\}>\s*<PremiumBanner sleepVariant/);
+  assert.match(sleep, /!isPremium \? \(\s*<View style=\{styles\.sectionExtraSpacing\}>\s*<View pointerEvents="none" style=\{styles\.bannerSectionDivider\} \/>\s*<PremiumBanner sleepVariant/);
 });
 
-test("Sonidos preserves the first carousel position and keeps the banner between transparent spacers", () => {
+test("Sonidos preserves the first carousel position and keeps dividers around banners", () => {
   assert.equal(style(sound, "firstCarousel").marginTop, 33);
   assert.equal(style(sound, "carouselAfterSpacer").marginTop, 26);
   assert.match(sound, /index === 1 && !isPremium[\s\S]*?styles\.sectionSpacer[\s\S]*?<SoundPremiumBanner/);

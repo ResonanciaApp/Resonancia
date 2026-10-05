@@ -836,7 +836,7 @@ export function ExploreScreen({
             </ScrollView>
           </View>
 
-          <View style={styles.sectionSpacer} />
+          <View style={[styles.sectionSpacer, styles.resonadoresSpacer]} />
 
           <ResonadoresBanner onPress={() => router.push("/equipo" as never)} />
 
@@ -1181,11 +1181,17 @@ const styles = StyleSheet.create({
   sectionSpacer: {
     height: StyleSheet.hairlineWidth,
     marginHorizontal: H_PAD,
-    marginTop: -27,
-    marginBottom: 26 + SECTION_EXTRA_GAP,
+    marginTop: -24.5,
+    marginBottom: 23.5 + SECTION_EXTRA_GAP,
+    backgroundColor: "rgba(255,255,255,0.12)",
   },
   categoryBlocksSpacer: {
-    marginTop: -24,
+    marginTop: -23,
+    marginBottom: 25 + SECTION_EXTRA_GAP,
+  },
+  resonadoresSpacer: {
+    marginTop: -23,
+    marginBottom: 22 + SECTION_EXTRA_GAP,
   },
   popularSection: {
     marginTop: 0,
