@@ -605,7 +605,7 @@ const styles = StyleSheet.create({
   },
   art: {
     position: "absolute",
-    left: 25,
+    left: 10,
     top: 34,
     width: 133,
     height: 133,
