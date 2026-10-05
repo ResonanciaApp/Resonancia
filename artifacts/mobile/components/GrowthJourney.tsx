@@ -615,7 +615,7 @@ const styles = StyleSheet.create({
   profileImageWrap: { borderRadius: 67 },
   levelImage: { width: "100%", height: "100%" },
   copy: {
-    marginLeft: 166,
+    marginLeft: 196,
     flex: 1,
     justifyContent: "center",
     paddingRight: 1,

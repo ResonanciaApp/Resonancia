@@ -45,11 +45,17 @@ En desarrollo, todas las imágenes del recorrido disparadas a la vez por el tún
 
 **How to apply:** Si se agregan ilustraciones o vuelve a faltar arte, distinguir un timeout de red de un archivo inexistente; evitar que el timeline inicie todas las descargas remotas al mismo tiempo.
 
-Por ahora, mostrar **solo Intención (nivel 0) activa**, con el punto dorado; Semilla y todos los niveles siguientes quedan apagados, sin importar los días registrados. La píldora de días conserva el morado de las demás píldoras incluso para la etapa activa; solo el punto indica la posición en dorado. Este es un estado temporal para evaluar el diseño, no un cambio de criterio para el futuro.
+Por ahora, mostrar **solo Intención (nivel 0) activa**, con el punto morado opaco y luminoso; Semilla y todos los niveles siguientes quedan apagados, sin importar los días registrados. La píldora de días conserva el morado de las demás píldoras incluso para la etapa activa. Este es un estado temporal para evaluar el diseño, no un cambio de criterio para el futuro.
 
 **Why:** El usuario confirmó explícitamente que están probando el diseño, no la funcionalidad todavía; corrigió la vista previa para trasladar el punto dorado de Semilla a Intención y pidió que la píldora activa nunca cambiara a dorado.
 
 **How to apply:** No reconectar las etapas a estadísticas hasta que se apruebe la dirección visual y el usuario pida activar el progreso. En ese momento usar los días activos acumulados no consecutivos acordados, sin tomar la racha como sustituto ni cambiar a dorado la píldora de días.
+
+En el recorrido, píldora, título, descripción y avisos de recompensa son un único bloque textual por nivel. Sus desplazamientos horizontales no deben mover las ilustraciones, los puntos ni la línea.
+
+**Why:** El usuario pidió desplazar juntos esos elementos a la derecha, incluyendo el candado con texto en las etapas que lo tienen.
+
+**How to apply:** Limitar estos ajustes a las filas de Tu camino, sin propagarlos a la portada de Perfil ni a los detalles individuales. Conservar la alineación compartida de descripción y recompensas y adaptar el ancho disponible sin recortar texto.
 
 En la ayuda de Tu camino, «tap bar» significa el tirador superior de la hoja, no la barra inferior de navegación.
 

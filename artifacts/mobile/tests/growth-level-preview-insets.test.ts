@@ -48,6 +48,7 @@ const Native = ({ accessibilityLabel, accessibilityRole, children, onPress, styl
     "data-font-size": resolvedStyle.fontSize,
     "data-line-height": resolvedStyle.lineHeight,
     "data-margin-vertical": resolvedStyle.marginVertical,
+    "data-margin-left": resolvedStyle.marginLeft,
     "data-transform": resolvedStyle.transform ? JSON.stringify(resolvedStyle.transform) : undefined,
     "data-filter": resolvedStyle.filter,
     "data-source": source,
@@ -473,6 +474,46 @@ test("a single timeline line connects node centers even when reward rows have di
     const html = renderToStaticMarkup(timeline);
     assert.equal((html.match(/data-testid="growth-timeline-line"/g) ?? []).length, 1);
   }
+});
+
+test("every timeline stage shifts its pill, title, description and rewards 30px right without moving the artwork or nodes", () => {
+  const levelsModule = { exports: {} as { growthLevels: any[]; ascentLevels: any[] } };
+  const levelsSource = readFileSync(new URL("../data/growthLevels.ts", import.meta.url), "utf8");
+  new Function("require", "exports", ts.transpileModule(levelsSource, {
+    compilerOptions: { module: ts.ModuleKind.CommonJS },
+  }).outputText)(() => 1, levelsModule.exports);
+  for (const [florecimiento, levels] of [
+    [true, levelsModule.exports.growthLevels],
+    [false, levelsModule.exports.ascentLevels],
+  ] as const) {
+    for (const level of levels) {
+      const html = renderToStaticMarkup(React.createElement(GrowthRow, {
+        level, florecimiento, status: level.id === "intencion" ? "current" : "locked",
+      }));
+      const copy = html.match(new RegExp(`<div[^>]*data-testid="${level.id}-copy"[^>]*>`))?.[0];
+      assert.ok(copy);
+      assert.ok(copy.includes(`data-margin-left="${166 + 30}"`), level.id);
+      const copyContent = html.slice(html.indexOf(copy));
+      assert.ok(copyContent.includes(`data-testid="${level.id}-day-pill"`));
+      assert.ok(copyContent.includes(`>${level.name}</div>`));
+      assert.ok(copyContent.includes(`>${level.story}</div>`));
+      if (["semilla", "crecimiento", "vegetacion", "expansion"].includes(level.id)) {
+        assert.ok(copyContent.includes(`data-testid="${level.id}-reward"`));
+        assert.ok(copyContent.includes(`data-testid="${level.id}-reward-lock"`));
+      }
+      if (level.id === "expansion") {
+        assert.ok(copyContent.includes('data-testid="expansion-wall-reward"'));
+      }
+      const node = html.match(new RegExp(`<div[^>]*data-testid="${level.id}-stage-node"[^>]*>`))?.[0];
+      assert.ok(node);
+      assert.match(node, /data-left="1"/);
+      assert.ok(html.includes('data-left="25" data-top="34"'));
+    }
+  }
+  const source = readFileSync(new URL("../components/GrowthJourney.tsx", import.meta.url), "utf8");
+  assert.match(source, /copy: \{\s+marginLeft: 196,\s+flex: 1,/);
+  assert.match(source, /lineBase: \{\s+position: "absolute",\s+left: 9,/);
+  assert.match(source, /rewardCopy: \{ flex: 0, paddingTop: 34 \}/);
 });
 
 test("reward pills grow in normal flow and preserve nonreward and profile preview sizing", () => {
