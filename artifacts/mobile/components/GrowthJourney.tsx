@@ -129,6 +129,7 @@ export function GrowthLevelPreviewCard({
           styles.dayPill,
           canonicalVerticalInsets && styles.canonicalPreviewPill,
           canonicalVerticalInsets && theme.id === "cloudy" && { backgroundColor: "rgba(0,0,0,0.16)" },
+          sectionTitle && styles.titledPreviewPill,
         ]}
       >
         {canonicalVerticalInsets && (
@@ -164,7 +165,7 @@ export function GrowthLevelPreviewCard({
   );
   const story = (
     <PreviewContentEntrance key="intention-story" replayKey="intention-story" delay={810}>
-      <Text style={[styles.previewStory, { color: colors.mutedForeground }]}>
+      <Text testID={sectionTitle ? "profile-intention-description" : undefined} style={[styles.previewStory, sectionTitle && styles.titledPreviewStory, { color: colors.mutedForeground }]}>
         {level.story}
       </Text>
     </PreviewContentEntrance>
@@ -194,14 +195,14 @@ export function GrowthLevelPreviewCard({
         )}
         {story}
       </View>
-      <PreviewContentEntrance replayKey="intention-chevron" delay={810}>
+      {!sectionTitle && <PreviewContentEntrance replayKey="intention-chevron" delay={810}>
         <Feather
           testID={canonicalVerticalInsets ? "profile-intention-chevron" : undefined}
           name="chevron-right"
           size={18}
           color={colors.foreground}
         />
-      </PreviewContentEntrance>
+      </PreviewContentEntrance>}
     </>
   );
 
@@ -225,6 +226,9 @@ export function GrowthLevelPreviewCard({
             <Text testID="profile-growth-section-title" accessibilityRole="header" style={[styles.previewSectionTitle, { color: colors.foreground }]}>
               {sectionTitle}
             </Text>
+            <Pressable testID="profile-growth-view-all" onPress={onPress} hitSlop={10} accessibilityRole="button" accessibilityLabel="Ver todo Tu camino">
+              <Text style={[styles.previewViewAll, { color: colors.foreground }]}>Ver todo</Text>
+            </Pressable>
           </View>
           <View style={styles.previewContentRow}>{previewContent}</View>
         </>
@@ -518,9 +522,12 @@ const styles = StyleSheet.create({
   },
   previewArt: { width: 100, height: 100 },
   embeddedPreviewCard: { marginHorizontal: 0 },
-  titledPreviewCard: { flexDirection: "column", alignItems: "stretch", paddingTop: 18 },
-  previewSectionHeader: { flexDirection: "row", alignItems: "center", minHeight: 25 },
+  titledPreviewCard: { flexDirection: "column", alignItems: "stretch", paddingTop: 18, paddingBottom: 17 },
+  previewSectionHeader: { flexDirection: "row", alignItems: "center", justifyContent: "space-between", minHeight: 25 },
   previewSectionTitle: { fontFamily: "Manrope", fontSize: 16, fontWeight: "600" },
+  previewViewAll: { fontFamily: "Manrope", fontSize: 13, fontWeight: "400" },
+  titledPreviewPill: { transform: [{ translateY: 3 }] },
+  titledPreviewStory: { transform: [{ translateY: -3 }] },
   previewContentRow: { flexDirection: "row", alignItems: "center", gap: 12 },
   canonicalPreviewVerticalInsets: { paddingTop: 20, paddingBottom: 20, marginVertical: 2, alignItems: "center" },
   canonicalPreviewCopy: { minHeight: 100, justifyContent: "center", gap: 10 },

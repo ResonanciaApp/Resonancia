@@ -39,9 +39,9 @@ Intención precede al calendario en Perfil; puntos de creatividad expansiva cons
 
 **How to apply:** Conservar las separaciones entre rachas, puntos, Intención, calendario y el contenido posterior. No propagar este orden a otras pantallas compartidas.
 
-“Puntos creatividad” queda debajo de las rachas de Perfil. La barra sigue siendo solo visual, en 0/100; la ayuda sí abre una ventana informativa. Su texto sobre puntuación de atención plena es provisional y no define reglas reales de puntuación.
+“Puntos creatividad” queda debajo de las rachas de Perfil. Toda la sección abre la ventana informativa y no muestra «?». La barra sigue siendo solo visual, en 0/100. El texto sobre puntuación de atención plena es provisional y no define reglas reales de puntuación.
 
-**Why:** El usuario dejó el funcionamiento de los puntos para después. Luego pidió activar la ayuda con el título y la descripción de su referencia «por mientras», usando la animación y los fondos del temporizador Ambiental.
+**Why:** El usuario dejó el funcionamiento de los puntos para después. Luego pidió activar la ayuda con el título y la descripción de su referencia «por mientras», usando la animación y los fondos del temporizador Ambiental. Finalmente sustituyó el «?» por la pulsación de cualquier parte de la sección, sin cambiar la ventana.
 
 **How to apply:** No vincular puntos a sesiones, rachas ni actividad ni implementar las reglas que menciona el texto provisional. El cálculo requiere una petición posterior. Conservar el texto entregado hasta que el usuario pida reemplazarlo y mantener la ayuda visualmente coherente con el temporizador Ambiental, incluida su excepción de color para Índigo 2.
 

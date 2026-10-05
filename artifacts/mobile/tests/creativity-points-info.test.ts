@@ -167,7 +167,7 @@ test("close button, outside tap and Android back all invoke close", () => {
   assert.equal(h.nodes.get("creativity-info-modal").animationType, "none");
 });
 
-test("Perfil opens the help window from the existing question mark without enabling scoring", () => {
+test("Perfil opens the same help window from any part of the card without a question mark or scoring", () => {
   const exports: any = {};
   const SectionNative = "view";
   new Function("exports", "require", compile(read("../components/CreativityPointsSection.tsx")))(
@@ -185,7 +185,11 @@ test("Perfil opens the help window from the existing question mark without enabl
     return [node, ...React.Children.toArray((node.props as any).children).flatMap(all)];
   }
   const nodes = all(tree);
-  const help = nodes.find(node => node.props.testID === "creativity-points-info");
+  const help = nodes.find(node => node.props.testID === "profile-creativity-points");
+  assert.equal(help.type, "button");
+  assert.equal(nodes.some(node => node.props.testID === "creativity-points-info" || node.props.children === "?"), false);
+  assert.ok(React.Children.toArray(help.props.children).every((node: any) => node.props.pointerEvents === "none"),
+    "title, bar and counter must let all taps reach the card");
   assert.equal(help.props.accessibilityRole, "button");
   help.props.onPress();
   assert.equal(calls, 1);

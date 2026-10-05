@@ -29,20 +29,21 @@ new Function("require", "module", "exports", ts.transpileModule(source, {
   return mocks[name];
 }, module, module.exports);
 
-test("creativity points show the exact title and zero-of-100 bar with only the help button interactive", () => {
+test("the whole creativity card opens help without a question mark, retaining its title, size and visual-only bar", () => {
   let helpRequests = 0;
   const html = renderToStaticMarkup(React.createElement(module.exports.CreativityPointsSection, { style: { marginBottom: 21 }, onInfoPress: () => helpRequests++ }));
   assert.match(html, /Puntos creatividad/);
   assert.doesNotMatch(html, /creatividad expansiva/);
   assert.match(html, />0<\/div>\/100/);
-  assert.match(html, />\?<\/div>/);
+  assert.doesNotMatch(html, />\?<\/div>|creativity-points-info/);
   const bar = captured.get("creativity-points-bar");
   assert.equal(bar.accessibilityRole, "progressbar");
   assert.deepEqual(bar.accessibilityValue, { min: 0, max: 100, now: 0, text: "0 de 100 puntos" });
-  assert.equal(captured.get("creativity-points-info").accessibilityRole, "button");
-  captured.get("creativity-points-info").onPress();
+  assert.equal(captured.get("profile-creativity-points").accessibilityRole, "button");
+  assert.equal(captured.get("profile-creativity-points").accessibilityLabel, "Información sobre puntos creatividad");
+  captured.get("profile-creativity-points").onPress();
   assert.equal(helpRequests, 1);
-  assert.equal(flatten(captured.get("creativity-points-info").style).opacity, 0.7);
+  assert.equal(componentStyles.header.minHeight, 25);
   assert.equal(flatten(captured.get("creativity-points-value").style).fontSize, 13);
   const profile = readFileSync(new URL("../components/ProfileScreenBase.tsx", import.meta.url), "utf8");
   const intentionTitleSize = Number(profile.match(/GrowthLevelPreviewCard[^>]*titleFontSize=\{(\d+)\}/)?.[1]);
@@ -52,7 +53,7 @@ test("creativity points show the exact title and zero-of-100 bar with only the h
   const weeklyTitleSize = Number(progress.match(/streakTitle:\s*\{[^}]*fontSize:\s*(\d+)/)?.[1]);
   assert.equal(componentStyles.title.fontSize, weeklyTitleSize);
   for (const props of captured.values()) {
-    if (props.testID !== "creativity-points-info") assert.equal(props.onPress, undefined);
+    if (props.testID !== "profile-creativity-points") assert.equal(props.onPress, undefined);
     assert.equal(props.onValueChange, undefined);
   }
   const card = flatten(captured.get("profile-creativity-points").style);

@@ -8,24 +8,20 @@ export function CreativityPointsSection({ style, onInfoPress }: { style?: StyleP
   const colors = useColors();
 
   return (
-    <View testID="profile-creativity-points" style={[styles.card, style]}>
-      <View style={styles.header}>
+    <Pressable
+      testID="profile-creativity-points"
+      style={[styles.card, style]}
+      onPress={onInfoPress}
+      accessible
+      accessibilityRole="button"
+      accessibilityLabel="Información sobre puntos creatividad"
+    >
+      <View pointerEvents="none" style={styles.header}>
         <Text style={[styles.title, { color: colors.foreground }]}>
           Puntos creatividad
         </Text>
-        <Pressable
-          testID="creativity-points-info"
-          accessible
-          accessibilityRole="button"
-          accessibilityLabel="Información sobre puntos creatividad"
-          onPress={onInfoPress}
-          hitSlop={10}
-          style={styles.info}
-        >
-          <Text style={styles.question}>?</Text>
-        </Pressable>
       </View>
-      <View style={styles.progressRow}>
+      <View pointerEvents="none" style={styles.progressRow}>
         <View
           testID="creativity-points-bar"
           accessibilityRole="progressbar"
@@ -39,7 +35,7 @@ export function CreativityPointsSection({ style, onInfoPress }: { style?: StyleP
           <Text style={{ color: colors.accent }}>0</Text>/100
         </Text>
       </View>
-    </View>
+    </Pressable>
   );
 }
 
@@ -50,18 +46,8 @@ const styles = StyleSheet.create({
     paddingHorizontal: 20,
     paddingVertical: 18,
   },
-  header: { flexDirection: "row", alignItems: "center", gap: 12 },
+  header: { flexDirection: "row", alignItems: "center", gap: 12, minHeight: 25 },
   title: { flex: 1, fontFamily: "Manrope", fontSize: 16, fontWeight: "600" },
-  info: {
-    width: 25,
-    height: 25,
-    borderRadius: 12.5,
-    backgroundColor: "#B3B3B3",
-    opacity: 0.7,
-    alignItems: "center",
-    justifyContent: "center",
-  },
-  question: { fontFamily: "Manrope", fontSize: 19, lineHeight: 24, fontWeight: "700", color: "#060A0F" },
   progressRow: { flexDirection: "row", alignItems: "center", gap: 12, marginTop: 14 },
   track: {
     flex: 1,

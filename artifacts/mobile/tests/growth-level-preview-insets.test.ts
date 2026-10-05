@@ -27,10 +27,12 @@ const flattenStyle = (style: unknown): Record<string, unknown> => Array.isArray(
   ? Object.assign({}, ...style.map(flattenStyle))
   : style && typeof style === "object" ? style as Record<string, unknown> : {};
 let capturedOnPress: (() => void) | undefined;
+let capturedViewAllPress: (() => void) | undefined;
 let capturedIntentionPress: (() => void) | undefined;
 const Native = ({ accessibilityLabel, accessibilityRole, children, onPress, style, testID, name, color, source, stopOpacity, pointerEvents, accessibilityState, numberOfLines, adjustsFontSizeToFit }: NativeProps) => {
   const resolvedStyle = flattenStyle(style);
   if (testID === "growth-level-zero-preview") capturedOnPress = onPress;
+  if (testID === "profile-growth-view-all") capturedViewAllPress = onPress;
   if (testID === "growth-stage-intencion-open") capturedIntentionPress = onPress;
   return React.createElement("div", {
     "data-testid": testID,
@@ -169,6 +171,24 @@ test("Perfil adds Tu camino above Intención with the creativity-points heading 
   const pointsTitle = literalStyle("CreativityPointsSection", "title");
   for (const property of ["fontFamily", "fontSize", "fontWeight"]) assert.equal(title[property], pointsTitle[property]);
   assert.doesNotMatch(render(), /profile-growth-section-title|>Tu camino</);
+});
+
+test("Tu camino places Ver todo at the right inset, offsets only pill/story, removes its chevron and reduces bottom height 3px", () => {
+  let opened = false;
+  const html = render({ embedded: true, canonicalVerticalInsets: true, sectionTitle: "Tu camino", onPress: () => { opened = true; } });
+  assert.match(html, /data-testid="profile-growth-view-all"[^>]*data-accessibility-role="button"[^>]*>[\s\S]*?Ver todo/);
+  assert.match(html, /data-justify-content="space-between"/);
+  assert.match(html, /data-testid="intention-preview-day-pill"[^>]*data-transform="\[\{&quot;translateY&quot;:3\}\]"/);
+  assert.match(html, /data-testid="profile-intention-description"[^>]*data-transform="\[\{&quot;translateY&quot;:-3\}\]"/);
+  assert.doesNotMatch(html, /profile-intention-chevron|data-icon="chevron-right"/);
+  assert.match(html, /data-testid="growth-level-zero-preview"[^>]*data-padding-top="18" data-padding-bottom="17"/);
+  assert.ok(capturedViewAllPress);
+  capturedViewAllPress();
+  assert.equal(opened, true);
+  const original = render({ embedded: true, canonicalVerticalInsets: true });
+  assert.match(original, /profile-intention-chevron/);
+  assert.match(original, /data-padding-top="20" data-padding-bottom="20"/);
+  assert.doesNotMatch(original, /profile-growth-view-all|profile-intention-description|translateY&quot;:3|translateY&quot;:-3/);
 });
 
 test("Only Cloudy's Perfil intention day pill uses black at 16% opacity", () => {
