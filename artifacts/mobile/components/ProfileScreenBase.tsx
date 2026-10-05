@@ -1466,7 +1466,7 @@ export function ProfileScreenBase({
                   <>
                     <CreativityPointsSection style={{ marginBottom: PROFILE_SECTION_GAP }} onInfoPress={() => setCreativityInfoOpen(true)} />
                     <View testID="profile-growth-intention" style={{ marginBottom: PROFILE_SECTION_GAP }}>
-                      <GrowthLevelPreviewCard embedded canonicalVerticalInsets sectionTitle="Tu camino" titleFontSize={15} backgroundColor="rgba(0,0,0,0.16)" onPress={() => setGrowthJourneyOpen(true)} />
+                      <GrowthLevelPreviewCard embedded canonicalVerticalInsets sectionTitle="Tu camino" titleFontSize={19} backgroundColor="rgba(0,0,0,0.16)" onPress={() => setGrowthJourneyOpen(true)} />
                     </View>
                   </>
                 }
