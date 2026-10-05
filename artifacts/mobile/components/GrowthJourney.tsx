@@ -1,7 +1,7 @@
 import { Feather, MaterialCommunityIcons } from "@expo/vector-icons";
 import { Asset } from "expo-asset";
 import React, { useEffect, useState } from "react";
-import { Image, Platform, Pressable, StyleSheet, Text, View, type StyleProp, type ViewStyle } from "react-native";
+import { Image, Platform, Pressable, StyleSheet, Text, View } from "react-native";
 
 import { CLOUDY_GROWTH_STAGE_LABEL_COLOR, MEMBERSHIP_AURORA, POSITIONED_DAY_GRADIENT } from "@/constants/colors";
 import { CinematicFadeSlide } from "@/components/CinematicFadeSlide";
@@ -18,8 +18,8 @@ import { useColors } from "@/hooks/useColors";
 import { useSceneTheme } from "@/context/SceneThemeContext";
 
 export const GROWTH_ROW_HEIGHT = 205;
-// Perfil uses the opaque square artwork; timeline images keep their radial fade.
-const PROFILE_INTENTION_IMAGE = require("../assets/images/growth/00-intencion-profile-square.png");
+// Original Tu camino artwork and radial alpha, with RGB brightened by 4% for Perfil only.
+const PROFILE_INTENTION_IMAGE = require("../assets/images/growth/00-intencion-profile-bright.png");
 const REWARD_LEVEL_IDS = new Set(["semilla", "crecimiento", "vegetacion", "expansion"]);
 
 const GROWTH_COLORS = {
@@ -168,15 +168,20 @@ export function GrowthLevelPreviewCard({
     </PreviewContentEntrance>
   );
 
-  const cardStyle = [
-    styles.previewCard,
-    embedded && styles.embeddedPreviewCard,
-    canonicalVerticalInsets && styles.canonicalPreviewVerticalInsets,
-    backgroundColor !== undefined && { backgroundColor },
-  ];
-  const previewContent = (
-    <>
-      <PreviewContentEntrance replayKey="intention-art" delay={420} style={[styles.previewArt, canonicalVerticalInsets && styles.profilePreviewArt]}>
+  return (
+    <Pressable
+      onPress={onPress}
+      style={[
+        styles.previewCard,
+        embedded && styles.embeddedPreviewCard,
+        canonicalVerticalInsets && styles.canonicalPreviewVerticalInsets,
+        backgroundColor !== undefined && { backgroundColor },
+      ]}
+      accessibilityRole="button"
+      accessibilityLabel={`${level.name}, ${dayLabel}. Abrir camino de crecimiento`}
+      testID="growth-level-zero-preview"
+    >
+      <PreviewContentEntrance replayKey="intention-art" delay={420} style={styles.previewArt}>
         <GrowthLevelImage level={level} profilePreview={canonicalVerticalInsets} />
       </PreviewContentEntrance>
       <View
@@ -187,8 +192,8 @@ export function GrowthLevelPreviewCard({
       >
         {canonicalVerticalInsets ? (
           <View testID="profile-intention-title-row" style={styles.canonicalPreviewTitleRow}>
-            {name}
             {dayPill}
+            {name}
           </View>
         ) : (
           <>
@@ -196,56 +201,16 @@ export function GrowthLevelPreviewCard({
             {name}
           </>
         )}
-        {!canonicalVerticalInsets && story}
+        {story}
       </View>
-      {!canonicalVerticalInsets && <PreviewContentEntrance replayKey="intention-chevron" delay={810}>
+      <PreviewContentEntrance replayKey="intention-chevron" delay={810}>
         <Feather
           testID={canonicalVerticalInsets ? "profile-intention-chevron" : undefined}
           name="chevron-right"
           size={18}
           color={colors.foreground}
         />
-      </PreviewContentEntrance>}
-    </>
-  );
-
-  if (canonicalVerticalInsets) {
-    return (
-      <View testID="profile-growth-section" style={cardStyle}>
-        <View testID="profile-growth-header" style={styles.profileSectionHeader}>
-          <Text testID="profile-growth-section-title" style={[styles.profileSectionTitle, { color: colors.foreground }]}>Tu camino</Text>
-          <Pressable
-            testID="profile-growth-view-all"
-            onPress={onPress}
-            accessibilityRole="button"
-            accessibilityLabel="Ver todo Tu camino"
-            hitSlop={10}
-          >
-            <Text style={[styles.profileViewAll, { color: colors.foreground }]}>Ver todo</Text>
-          </Pressable>
-        </View>
-        <Pressable
-          testID="growth-level-zero-preview"
-          onPress={onPress}
-          style={styles.profilePreviewRow}
-          accessibilityRole="button"
-          accessibilityLabel={`${level.name}, ${dayLabel}. Abrir camino de crecimiento`}
-        >
-          {previewContent}
-        </Pressable>
-      </View>
-    );
-  }
-
-  return (
-    <Pressable
-      onPress={onPress}
-      style={cardStyle}
-      accessibilityRole="button"
-      accessibilityLabel={`${level.name}, ${dayLabel}. Abrir camino de crecimiento`}
-      testID="growth-level-zero-preview"
-    >
-      {previewContent}
+      </PreviewContentEntrance>
     </Pressable>
   );
 }
@@ -259,7 +224,7 @@ function PreviewContentEntrance({
   children: React.ReactNode;
   delay: number;
   replayKey: string;
-  style?: StyleProp<ViewStyle>;
+  style?: { width: number; height: number };
 }) {
   return (
     <CinematicFadeSlide
@@ -534,16 +499,11 @@ const styles = StyleSheet.create({
     gap: 12,
   },
   previewArt: { width: 100, height: 100 },
-  profilePreviewArt: { width: 90, height: 90 },
-  profileSectionHeader: { flexDirection: "row", alignItems: "center", gap: 12 },
-  profileSectionTitle: { flex: 1, fontFamily: "Manrope", fontSize: 16, fontWeight: "600" },
-  profileViewAll: { fontFamily: "Manrope", fontSize: 13, fontWeight: "600" },
-  profilePreviewRow: { flexDirection: "row", alignItems: "center", gap: 12 },
   embeddedPreviewCard: { marginHorizontal: 0 },
-  canonicalPreviewVerticalInsets: { paddingTop: 20, paddingBottom: 20, marginVertical: 2, flexDirection: "column", alignItems: "stretch", gap: 14 },
-  canonicalPreviewCopy: { minHeight: 90, justifyContent: "center", gap: 10 },
+  canonicalPreviewVerticalInsets: { paddingTop: 20, paddingBottom: 20, marginVertical: 2, alignItems: "center" },
+  canonicalPreviewCopy: { minHeight: 100, justifyContent: "center", gap: 10 },
   canonicalPreviewName: { marginBottom: 0, fontSize: 18, lineHeight: 23 },
-  canonicalPreviewPill: { marginBottom: 0, alignSelf: "flex-start", flexDirection: "row", alignItems: "center", gap: 4, paddingHorizontal: 10, paddingVertical: 5, borderRadius: 13 },
+  canonicalPreviewPill: { marginBottom: 0, alignSelf: "center", flexDirection: "row", alignItems: "center", gap: 4 },
   canonicalPreviewTitleRow: { flexDirection: "column", alignItems: "flex-start", gap: 10 },
   previewCopy: { flex: 1, minWidth: 0 },
   previewStory: { fontFamily: "Manrope", fontSize: 11, lineHeight: 16 },
@@ -614,7 +574,7 @@ const styles = StyleSheet.create({
   },
   lockedArt: { opacity: 0.44 },
   imageWrap: { width: "100%", height: "100%", borderRadius: 67, overflow: "hidden" },
-  profileImageWrap: { borderRadius: 27, borderWidth: 3, borderColor: "rgba(255,255,255,0.25)" },
+  profileImageWrap: { borderRadius: 67 },
   levelImage: { width: "100%", height: "100%" },
   copy: {
     marginLeft: 166,
