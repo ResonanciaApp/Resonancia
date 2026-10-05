@@ -21,17 +21,17 @@ Cuando se active el progreso funcional, los niveles del camino deberán depender
 
 **How to apply:** Al ampliar rangos o cambiar arte, mantener la métrica de días activos canónicos para cuando se active el progreso.
 
-Las imágenes de las etapas en Perfil y Tu camino son supericonos PNG transparentes: símbolos dorados con detalles jade/violeta y órbita circular fina, siguiendo la referencia del 2026-10-05. Esta dirección reemplaza el arte anterior con alfa radial y su variante de brillo exclusiva de Perfil.
+Florecimiento usa ilustraciones PNG transparentes suaves y luminosas: hojas translúcidas verdes/azules, acentos violetas y luz dorada, sin el fondo circular blanco. El ascenso conserva sus símbolos dorados sin aro exterior y su fondo circular blanco al 7 %.
 
-**Why:** El usuario pidió cambiar las imágenes de las etapas por supericonos con fondo transparente como los de su referencia, generarlos e integrarlos.
+**Why:** Tras retirar los aros y añadir círculos blancos al 7 %, el usuario pidió generar imágenes nuevas solo para la primera etapa, Florecimiento, con una nueva referencia botánica luminosa y sin el fondo blanco.
 
-**How to apply:** Mantener el mismo icono en Perfil y su fila del recorrido, con transparencia real entre el símbolo y su órbita; no añadir un disco de fondo. Esta sustitución no modifica el hero fullscreen del detalle de Intención ni activa el progreso.
+**How to apply:** Mantener la misma ilustración en Perfil y su fila del recorrido. No trasladar el nuevo estilo ni retirar el círculo de El ascenso sin una petición posterior. Donde permanezca el fondo blanco al 7 %, su opacidad es independiente de la atenuación del símbolo bloqueado. Esta sustitución no modifica el hero fullscreen del detalle de Intención ni activa el progreso.
 
-Intención debe tener un detalle intermedio: estrella dorada de ocho puntas con volumen sutil, acentos violetas y órbita fina, sin el follaje ni la ornamentación del primer diseño.
+Intención pertenece al nuevo conjunto luminoso de Florecimiento; su dirección visual es una esfera cálida de luz con elementos botánicos y energía violeta suave, no la estrella metálica anterior.
 
-**Why:** El usuario pidió simplificar el primer icono, pero rechazó como demasiado simple la chispa plana de cuatro puntas.
+**Why:** La petición de renovar toda la primera etapa con la nueva referencia sustituye las iteraciones anteriores del símbolo de Intención.
 
-**How to apply:** Mantener un término medio entre la estrella ornamentada inicial y un símbolo plano mínimo; no simplificar las otras etapas sin pedirlo.
+**How to apply:** Mantener la coherencia con las ilustraciones translúcidas de Florecimiento; no restaurar la estrella anterior ni el fondo circular blanco en Perfil.
 
 En la pantalla de Tu camino, la imagen de la etapa actual debe tener el mismo tamaño que las demás. El estado actual se distingue por luminosidad y el punto, nunca aumentando el icono.
 

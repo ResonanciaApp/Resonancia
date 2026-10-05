@@ -9,6 +9,15 @@ import * as wallBorderConstants from "../constants/reflectionWallBorder.ts";
 
 const TEST_GRADIENT = ["#060A0F", "#111122"] as const;
 
+test("only the nine Florecimiento images use the new soft luminous collection", () => {
+  const source = readFileSync(new URL("../data/growthLevels.ts", import.meta.url), "utf8");
+  const firstStage = source.split("export const ascentLevels")[0];
+  const secondStage = source.split("export const ascentLevels")[1].split("export const allGrowthLevels")[0];
+  assert.equal([...firstStage.matchAll(/icons\/florecimiento-soft\//g)].length, 9);
+  assert.equal([...secondStage.matchAll(/icons\/ringless\/ascenso-/g)].length, 8);
+  assert.doesNotMatch(secondStage, /florecimiento-soft/);
+});
+
 test("all 17 stages reference generated square PNG icons with an alpha channel", () => {
   const source = readFileSync(new URL("../data/growthLevels.ts", import.meta.url), "utf8");
   const paths = [...source.matchAll(/require\("(\.\.\/assets\/images\/growth\/icons\/[^"]+\.png)"\)/g)].map(match => match[1]);
@@ -307,6 +316,31 @@ test("current and locked stage icons have identical dimensions in Tu camino", ()
   } finally {
     levels.pop();
   }
+});
+
+test("Florecimiento has no white background; El ascenso preserves its 7% circle independently of symbol opacity", () => {
+  const image = (props: Record<string, unknown> = {}) => renderToStaticMarkup(React.createElement(componentModule.exports.GrowthLevelImage, {
+    level: { id: "intencion", name: "Intención", image: 1 }, ...props,
+  }));
+  for (const props of [{}, { dimmed: true }, { profilePreview: true }]) {
+    const html = image(props);
+    const wrapper = html.slice(0, html.indexOf(">") + 1);
+    assert.doesNotMatch(wrapper, /data-background/);
+    assert.match(wrapper, /data-border-radius="67"/);
+    assert.doesNotMatch(wrapper, /data-opacity|data-border-width|data-border-color/);
+  }
+  for (const id of ["intencion", "semilla", "brote", "crecimiento", "desarrollo", "enraizamiento", "vegetacion", "floracion", "expansion"]) {
+    assert.doesNotMatch(image({ level: { id, name: id, image: 1 } }), /data-background/);
+  }
+  for (const dimmed of [false, true]) {
+    const html = image({ level: { id: "ascenso-inicio", name: "Inicio", image: 1 }, dimmed });
+    const wrapper = html.slice(0, html.indexOf(">") + 1);
+    assert.match(wrapper, /data-background="rgba\(255,255,255,0.07\)"/);
+    assert.doesNotMatch(wrapper, /data-opacity/);
+  }
+  assert.match(image({ dimmed: true }), /data-source="1" data-opacity="0.44"/);
+  assert.doesNotMatch(image(), /data-opacity/);
+  assert.doesNotMatch(image({ size: 402, height: 874, sourceModule: 2 }), /data-background|data-opacity/);
 });
 
 test("only Intención opens a stage detail, without activating progression or linking other stages", () => {

@@ -3307,3 +3307,31 @@ mtime_ms = 1791239629247
 storage_uri = "gcs://replit-rams-assets-worf/rams/assets/repl:5427b858-8852-4aed-954b-cd80d9fa4b6b/ee2e8fd9-335d-4a0c-94c0-b98fcc06b7a9/bff0ab10-3bb1-4cb9-aaa4-0cc911460d2a"
 storage_version_token = "1791239661751387"
 content_type = "image/png"
+
+[[outputs]]
+id = "xzfBNKs973l_2xmcSC4pY"
+uri = "file://attached_assets/generated_images/growth-white-circle-preview.jpg"
+type = "image"
+title = "Etapas sin aro, con fondo blanco al 7 %"
+description = "Vista conjunta de los 17 símbolos con el nuevo fondo circular translúcido."
+logical_id = "771f3c3d-df42-40ab-88b0-5e55338ea535"
+content_hash = "sha256:0bb4fb569faa3e3506f9bf7274a7395c0906a85920aabb283ff810700f490d6e"
+size = 197586
+mtime_ms = 1791240143879
+storage_uri = "gcs://replit-rams-assets-worf/rams/assets/repl:5427b858-8852-4aed-954b-cd80d9fa4b6b/771f3c3d-df42-40ab-88b0-5e55338ea535/a1b0d7af-0222-4286-a2e9-d0f1ab99a69b"
+storage_version_token = "1791240150209822"
+content_type = "image/jpeg"
+
+[[outputs]]
+id = "8zUXc0ef7PGQCUWrbBnrJ"
+uri = "file://attached_assets/generated_images/florecimiento-soft-preview.jpg"
+type = "image"
+title = "Florecimiento — nuevas imágenes"
+description = "Las nueve ilustraciones nuevas sobre Índigo para ver su estilo. Los PNG tienen fondo transparente y la app no añade el círculo blanco."
+logical_id = "e282cbe1-0193-4c32-a95f-a3e0db9fc43e"
+content_hash = "sha256:42f0780c73be1c914efac812d1e71a57047dd987095d3a6c8f55db2c7e5ef10f"
+size = 105842
+mtime_ms = 1791240244779
+storage_uri = "gcs://replit-rams-assets-worf/rams/assets/repl:5427b858-8852-4aed-954b-cd80d9fa4b6b/e282cbe1-0193-4c32-a95f-a3e0db9fc43e/4780dda0-977b-4b9f-8452-9c73dd6bf01a"
+storage_version_token = "1791240326054350"
+content_type = "image/jpeg"

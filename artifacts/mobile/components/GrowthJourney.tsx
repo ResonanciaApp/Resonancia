@@ -56,7 +56,7 @@ function loadGrowthImage(module: number): Promise<string> {
   return load;
 }
 
-export function GrowthLevelImage({ level, profilePreview = false, size, height, sourceModule }: { level: GrowthLevel; profilePreview?: boolean; size?: number; height?: number; sourceModule?: number }) {
+export function GrowthLevelImage({ level, profilePreview = false, dimmed = false, size, height, sourceModule }: { level: GrowthLevel; profilePreview?: boolean; dimmed?: boolean; size?: number; height?: number; sourceModule?: number }) {
   const imageModule = sourceModule ?? level.image;
   const [localUri, setLocalUri] = useState(() => growthImageUris.get(imageModule) ?? null);
 
@@ -75,14 +75,14 @@ export function GrowthLevelImage({ level, profilePreview = false, size, height, 
   return (
     <View
       testID={profilePreview ? "profile-intention-image" : undefined}
-      style={[styles.imageWrap, profilePreview && styles.profileImageWrap, size !== undefined && { width: size, height: height ?? size, borderRadius: 0 }]}
+      style={[styles.imageWrap, sourceModule === undefined && level.id.startsWith("ascenso-") && styles.stageIconSurface, profilePreview && styles.profileImageWrap, size !== undefined && { width: size, height: height ?? size, borderRadius: 0 }]}
       importantForAccessibility="no"
     >
       {source && (
         <Image
           source={source}
           resizeMode={sourceModule !== undefined ? "cover" : "contain"}
-          style={styles.levelImage}
+          style={[styles.levelImage, dimmed && styles.lockedArt]}
           onError={(event) => console.warn(`[GrowthJourney] No se pudo cargar ${level.id}: ${event.nativeEvent.error}`)}
           accessibilityElementsHidden
           importantForAccessibility="no"
@@ -305,8 +305,8 @@ function GrowthRow({
           },
         ]}
       />
-      <View testID={`${level.id}-stage-art`} style={[styles.art, status === "locked" && styles.lockedArt]}>
-        <GrowthLevelImage level={level} />
+      <View testID={`${level.id}-stage-art`} style={styles.art}>
+        <GrowthLevelImage level={level} dimmed={status === "locked"} />
       </View>
       <View testID={`${level.id}-copy`} style={[styles.copy, reward && styles.rewardCopy]}>
         <View style={status === "locked" && styles.lockedCopy}>
@@ -563,6 +563,7 @@ const styles = StyleSheet.create({
   },
   lockedArt: { opacity: 0.44 },
   imageWrap: { width: "100%", height: "100%", borderRadius: 67, overflow: "hidden" },
+  stageIconSurface: { backgroundColor: "rgba(255,255,255,0.07)" },
   profileImageWrap: { borderRadius: 67 },
   levelImage: { width: "100%", height: "100%" },
   copy: {
