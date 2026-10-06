@@ -3,7 +3,7 @@ import { Asset } from "expo-asset";
 import React, { useEffect, useState } from "react";
 import { Image, Platform, Pressable, StyleSheet, Text, View } from "react-native";
 
-import { CLOUDY_GROWTH_STAGE_LABEL_COLOR, MEMBERSHIP_AURORA, POSITIONED_DAY_GRADIENT } from "@/constants/colors";
+import { CLOUDY_GROWTH_DAY_PILL_BACKGROUND, CLOUDY_GROWTH_STAGE_LABEL_COLOR, MEMBERSHIP_AURORA, POSITIONED_DAY_GRADIENT } from "@/constants/colors";
 import { CinematicFadeSlide } from "@/components/CinematicFadeSlide";
 import { getPositionedDayGradient } from "@/components/StreakWeekRow";
 import { ascentLevels, growthLevels, type GrowthLevel } from "@/data/growthLevels";
@@ -317,7 +317,7 @@ function GrowthRow({
           style={[
             styles.dayPill,
             florecimiento && styles.bloomDayPill,
-            theme.id === "cloudy" && { backgroundColor: "rgba(0,0,0,0.16)" },
+            theme.id === "cloudy" && { backgroundColor: CLOUDY_GROWTH_DAY_PILL_BACKGROUND },
           ]}
         >
           {florecimiento && (

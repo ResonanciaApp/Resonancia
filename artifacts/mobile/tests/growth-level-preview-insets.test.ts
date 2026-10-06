@@ -128,6 +128,7 @@ const mocks: Record<string, unknown> = {
   "react-native-svg": { __esModule: true, default: Native, Circle: Native, Defs: Native, RadialGradient: Native, Stop: Native },
   "expo-asset": { Asset: { fromModule: () => ({ localUri: null, downloadAsync: async () => {} }) } },
   "@/constants/colors": {
+    CLOUDY_GROWTH_DAY_PILL_BACKGROUND: "rgba(128,171,231,0.20)",
     CLOUDY_GROWTH_STAGE_LABEL_COLOR: "#BDBDBD",
     MEMBERSHIP_AURORA: { premium: { accent: "#BE9650" } },
     POSITIONED_DAY_GRADIENT: ["#C9A6FF"],
@@ -258,7 +259,7 @@ test("Only Cloudy's Perfil intention day pill uses black at 16% opacity", () => 
   }
 });
 
-test("Cloudy's Tu camino day pills use black at 16% in both timelines, preserving other themes", () => {
+test("Cloudy's Tu camino day pills use a more sky-blue Indigo tint in both timelines, preserving other themes", () => {
   const sceneMock = mocks["@/context/SceneThemeContext"] as { useSceneTheme: () => { theme: { id: string } } };
   const levelsModule = { exports: {} as { growthLevels: any[]; ascentLevels: any[] } };
   const levelsSource = readFileSync(new URL("../data/growthLevels.ts", import.meta.url), "utf8");
@@ -279,7 +280,7 @@ test("Cloudy's Tu camino day pills use black at 16% in both timelines, preservin
           }));
           const pill = html.match(new RegExp(`<div[^>]*data-testid="${level.id}-day-pill"[^>]*>`))?.[0];
           assert.ok(pill);
-          const expected = id === "cloudy" ? "rgba(0,0,0,0.16)" : "rgba(151,128,231,0.20)";
+          const expected = id === "cloudy" ? "rgba(128,171,231,0.20)" : "rgba(151,128,231,0.20)";
           assert.ok(pill.includes(`data-background="${expected}"`), `${id} / ${level.id}`);
           assert.ok(!pill.includes("data-opacity="));
         }
