@@ -21,17 +21,17 @@ Cuando se active el progreso funcional, los niveles del camino deberán depender
 
 **How to apply:** Al ampliar rangos o cambiar arte, mantener la métrica de días activos canónicos para cuando se active el progreso.
 
-Florecimiento usa las nueve ilustraciones botánicas entregadas por el usuario en una grilla 3×3: brotes verdes y lotos rosados, sin el fondo blanco. Se asignan en orden de lectura, de Intención a Expansión. El ascenso conserva sus símbolos dorados sin aro exterior y su fondo circular blanco al 7 %.
+Florecimiento usa una serie coherente de ilustraciones botánicas generadas con IA: hojas verde oliva con nervaduras doradas, tallos y raíces luminosos, tierra compacta y lotos marfil/dorados en las últimas etapas. Los fondos deben ser transparentes, sin un círculo sólido detrás. El ascenso conserva sus símbolos dorados sin aro exterior y su fondo circular blanco al 7 %.
 
-**Why:** El usuario pidió reemplazar las imágenes de las etapas por las ilustraciones que adjuntó, quitándoles el fondo. Esta dirección reemplaza las anteriores imágenes luminosas generadas.
+**Why:** Después de probar las ilustraciones de brotes y lotos rosados adjuntas, el usuario pidió crear otras con IA inspiradas en su nueva referencia de una planta dorada con raíces visibles. Esta dirección reemplaza la grilla pastel anterior.
 
 **How to apply:** Mantener la misma ilustración en Perfil y su fila del recorrido. No trasladar el nuevo estilo ni retirar el círculo de El ascenso sin una petición posterior. Donde permanezca el fondo blanco al 7 %, su opacidad es independiente de la atenuación del símbolo bloqueado. Esta sustitución no modifica el hero fullscreen del detalle de Intención ni activa el progreso.
 
-Intención usa el primer brote de la grilla del usuario, con sus dos hojas y su base de tierra; no recuperar la esfera luminosa ni la estrella metálica anterior.
+Intención representa una semilla dorada abriéndose, con un pequeño brote y sus primeras raíces; no recuperar la esfera luminosa, la estrella metálica ni el brote plano de la grilla pastel anterior.
 
-**Why:** La petición de usar las ilustraciones adjuntas sustituye las iteraciones anteriores del símbolo de Intención.
+**Why:** La nueva serie representa una progresión botánica desde la semilla hasta el loto expandido, con el estilo verde oliva y dorado de la última referencia.
 
-**How to apply:** Usar el mismo brote transparente en Perfil y en el recorrido, sin regenerar una interpretación distinta ni restaurar el fondo circular blanco.
+**How to apply:** Usar la misma semilla transparente en Perfil y en el recorrido, sin restaurar el fondo circular blanco ni mezclar las series anteriores.
 
 En la pantalla de Tu camino, la imagen de la etapa actual debe tener el mismo tamaño que las demás. El estado actual se distingue por luminosidad y el punto, nunca aumentando el icono.
 

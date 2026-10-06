@@ -3349,3 +3349,31 @@ mtime_ms = 1791315489228
 storage_uri = "gcs://replit-rams-assets-worf/rams/assets/repl:5427b858-8852-4aed-954b-cd80d9fa4b6b/f5ff11c6-3d0a-485f-ad45-0ff00d55e623/df34e71b-80e7-4bd3-83cf-a1808a2f3961"
 storage_version_token = "1791315663617779"
 content_type = "image/png"
+
+[[outputs]]
+id = "UnczIzFzrWmF3chn5IgI0"
+uri = "file://attached_assets/generated_images/camino-dorado-transparente.png"
+type = "image"
+title = "Tu camino — nueve ilustraciones IA transparentes"
+description = "Serie completa en PNG con transparencia real: semilla, crecimiento y lotos, con hojas verde oliva y raíces doradas."
+logical_id = "b0c6f44b-70f2-4d86-81e6-7e543469a702"
+content_hash = "sha256:51d93ff0830e6f0205edf6be382d3e175f9f96d5de875a39d8206b1bb88b7cfe"
+size = 1298281
+mtime_ms = 1791316277183
+storage_uri = "gcs://replit-rams-assets-worf/rams/assets/repl:5427b858-8852-4aed-954b-cd80d9fa4b6b/b0c6f44b-70f2-4d86-81e6-7e543469a702/defd3504-c378-4cd4-9040-55cd43762ced"
+storage_version_token = "1791316350127659"
+content_type = "image/png"
+
+[[outputs]]
+id = "w-7fPGEQ06eu-r731hURp"
+uri = "file://attached_assets/generated_images/camino-dorado-vista-previa.png"
+type = "image"
+title = "Vista previa sobre azul marino"
+description = "Las nuevas ilustraciones tal como se ven sobre el fondo oscuro, en el orden aplicado a Florecimiento."
+logical_id = "15b1ca7f-e188-47c5-9ecc-775fb979d534"
+content_hash = "sha256:3522893415b5363af80f0485a476812356963aeff3bc354eaefc9bfd53c6735c"
+size = 803916
+mtime_ms = 1791316190023
+storage_uri = "gcs://replit-rams-assets-worf/rams/assets/repl:5427b858-8852-4aed-954b-cd80d9fa4b6b/15b1ca7f-e188-47c5-9ecc-775fb979d534/bf3be544-6cde-45db-b1a0-02fa2ebb1a60"
+storage_version_token = "1791316352175384"
+content_type = "image/png"
