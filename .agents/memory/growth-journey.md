@@ -21,17 +21,17 @@ Cuando se active el progreso funcional, los niveles del camino deberán depender
 
 **How to apply:** Al ampliar rangos o cambiar arte, mantener la métrica de días activos canónicos para cuando se active el progreso.
 
-Florecimiento conserva las ilustraciones botánicas pastel generadas con IA, con brotes, raíces claras y lotos rosados/lilas. Ahora llevan difuminado circular hacia la transparencia y se ven un poco más pequeñas, tanto en Perfil como en el recorrido, sin el marco cuadrado blanco. El ascenso conserva sus símbolos dorados sin aro exterior y su fondo circular blanco al 7 %.
+Florecimiento conserva las ilustraciones botánicas pastel generadas con IA, con brotes, raíces claras y lotos rosados/lilas, ahora aisladas sobre transparencia sin su fondo pastel. Mantener el tamaño reducido y el tratamiento suave ya acordado en Perfil y el recorrido, sin marco cuadrado blanco. El ascenso conserva sus símbolos dorados sin aro exterior y su fondo circular blanco al 7 %.
 
-**Why:** Tras probar las imágenes pastel cuadradas con borde, el usuario pidió aplicarles difuminado circular y achicarlas un poco. No pidió regenerar las ilustraciones ni cambiar sus colores.
+**Why:** Después del difuminado circular y la reducción de tamaño, el usuario pidió dejar solo los elementos y quitar el fondo, enfatizando «no cambies nada». No regenerar el arte, modificar colores ni reencuadrar los elementos al recortarlos.
 
 **How to apply:** Mantener la misma ilustración en Perfil y su fila del recorrido. No trasladar el nuevo estilo ni retirar el círculo de El ascenso sin una petición posterior. Donde permanezca el fondo blanco al 7 %, su opacidad es independiente de la atenuación del símbolo bloqueado. Esta sustitución no modifica el hero fullscreen del detalle de Intención ni activa el progreso.
 
-Intención representa una semilla clara abriéndose, con un pequeño brote y sus primeras raíces sobre su fondo pastel; no recuperar la esfera luminosa ni la estrella metálica.
+Intención representa una semilla clara abriéndose, con un pequeño brote y sus primeras raíces sobre transparencia; no recuperar la esfera luminosa ni la estrella metálica.
 
 **Why:** La nueva serie mantiene la progresión botánica desde la semilla hasta el loto expandido, pero el usuario sustituyó la intensidad dorada por una paleta más suave.
 
-**How to apply:** Usar la misma ilustración pastel con su difuminado circular en Perfil y en el recorrido, sin restaurar el marco cuadrado ni mezclar las series anteriores.
+**How to apply:** Usar la misma ilustración pastel sin fondo en Perfil y en el recorrido, sin restaurar el círculo pastel, el marco cuadrado ni mezclar las series anteriores.
 
 En la pantalla de Tu camino, la imagen de la etapa actual debe tener el mismo tamaño que las demás. El estado actual se distingue por luminosidad y el punto, nunca aumentando el icono.
 

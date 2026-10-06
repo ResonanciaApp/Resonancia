@@ -3405,3 +3405,17 @@ mtime_ms = 1791317432923
 storage_uri = "gcs://replit-rams-assets-worf/rams/assets/repl:5427b858-8852-4aed-954b-cd80d9fa4b6b/094d9c4d-b8de-4989-ac79-15ab4fee93dd/19d5c9d6-69d4-4698-a24b-07d9181c4819"
 storage_version_token = "1791317583029866"
 content_type = "image/png"
+
+[[outputs]]
+id = "uh89TfoFoQaE4mM7mQHum"
+uri = "file://attached_assets/generated_images/camino-pastel-elementos-vista-previa.png"
+type = "image"
+title = "Las nueve imágenes sin fondo"
+description = "Solo los elementos botánicos originales, con transparencia real. Se conservaron sus colores, posición y tamaño actuales."
+logical_id = "5557595d-e9b7-4ac9-ac12-c641c2154b28"
+content_hash = "sha256:732c4dc4baa35ff3ba1a461caf8bb2ac17844dceda2fb6b5814007059717ed73"
+size = 232738
+mtime_ms = 1791318002952
+storage_uri = "gcs://replit-rams-assets-worf/rams/assets/repl:5427b858-8852-4aed-954b-cd80d9fa4b6b/5557595d-e9b7-4ac9-ac12-c641c2154b28/4a3bc637-9f63-4ae2-88b1-261133244f8b"
+storage_version_token = "1791318134642855"
+content_type = "image/png"

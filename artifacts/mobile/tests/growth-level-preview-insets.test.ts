@@ -17,11 +17,11 @@ test("the complete journey moves down 15px without changing timeline and row geo
   assert.match(source, /row: \{ height: GROWTH_ROW_HEIGHT, position: "relative", justifyContent: "center" \}/);
 });
 
-test("only the nine Florecimiento images use the pastel circular-fade collection", () => {
+test("only the nine Florecimiento images use the background-free pastel botanical collection", () => {
   const source = readFileSync(new URL("../data/growthLevels.ts", import.meta.url), "utf8");
   const firstStage = source.split("export const ascentLevels")[0];
   const secondStage = source.split("export const ascentLevels")[1].split("export const allGrowthLevels")[0];
-  assert.equal([...firstStage.matchAll(/icons\/florecimiento-pastel-difuminado\//g)].length, 9);
+  assert.equal([...firstStage.matchAll(/icons\/florecimiento-pastel-elementos\//g)].length, 9);
   assert.equal([...secondStage.matchAll(/icons\/ringless\/ascenso-/g)].length, 8);
   assert.doesNotMatch(secondStage, /florecimiento-pastel/);
 });
