@@ -9,6 +9,12 @@ El bloqueo de avatares es editorial y manual desde Admin. No activa desbloqueos 
 
 **How to apply:** Mantener la disponibilidad editorial independiente de las promesas visuales de recompensas de Tu camino hasta que el usuario pida conectar ambas.
 
+La visión futura del producto es desbloquear grupos de avatares de Perfil al avanzar de etapa en Tu camino, y darles usos personales y sociales después de desbloquearlos.
+
+**Why:** El usuario describió explícitamente este objetivo al pedir ideas para aprovechar la colección, no solo para editar su foto.
+
+**How to apply:** Tenerlo presente al diseñar recompensas e identidad. Esta exploración no autoriza implementar desbloqueos automáticos ni activar el progreso; el control editorial actual permanece hasta una petición de implementación.
+
 Un bloqueo impide nuevas elecciones, pero conserva un avatar que el usuario ya tenía confirmado. No sustituirlo ni borrarlo retroactivamente.
 
 **Why:** El alcance presentado al usuario conserva las elecciones existentes para evitar cambios involuntarios de identidad.
