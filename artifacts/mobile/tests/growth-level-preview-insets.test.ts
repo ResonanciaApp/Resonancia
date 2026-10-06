@@ -17,18 +17,18 @@ test("the complete journey moves down 15px without changing timeline and row geo
   assert.match(source, /row: \{ height: GROWTH_ROW_HEIGHT, position: "relative", justifyContent: "center" \}/);
 });
 
-test("only the nine Florecimiento images use the background-free pastel botanical collection", () => {
+test("Tu camino restores the original nine growth illustrations and eight ascent landscapes", () => {
   const source = readFileSync(new URL("../data/growthLevels.ts", import.meta.url), "utf8");
   const firstStage = source.split("export const ascentLevels")[0];
   const secondStage = source.split("export const ascentLevels")[1].split("export const allGrowthLevels")[0];
-  assert.equal([...firstStage.matchAll(/icons\/florecimiento-pastel-elementos\//g)].length, 9);
-  assert.equal([...secondStage.matchAll(/icons\/ringless\/ascenso-/g)].length, 8);
-  assert.doesNotMatch(secondStage, /florecimiento-pastel/);
+  assert.equal([...firstStage.matchAll(/growth\/\d\d-[^"]+\.png/g)].length, 9);
+  assert.equal([...secondStage.matchAll(/growth\/ascenso-/g)].length, 8);
+  assert.doesNotMatch(source, /growth\/icons\//);
 });
 
 test("all stages reference 512px PNGs with alpha for faded backgrounds or transparent icons", () => {
   const source = readFileSync(new URL("../data/growthLevels.ts", import.meta.url), "utf8");
-  const paths = [...source.matchAll(/require\("(\.\.\/assets\/images\/growth\/icons\/[^"]+\.png)"\)/g)].map(match => match[1]);
+  const paths = [...source.matchAll(/require\("(\.\.\/assets\/images\/growth\/[^"]+\.png)"\)/g)].map(match => match[1]);
   assert.equal(paths.length, 17);
   assert.equal(new Set(paths).size, 17);
   for (const path of paths) {
@@ -701,7 +701,7 @@ test("reward pills grow in normal flow and preserve nonreward and profile previe
   assert.match(source, /previewArt: \{ width: 100, height: 100 \}/);
 });
 
-test("Profile intention uses the same smaller pastel circular image as Tu camino without extra glow or filters", () => {
+test("Profile intention uses the same smaller circular image as Tu camino without extra glow or filters", () => {
   const html = render({ canonicalVerticalInsets: true });
   const glow = html.indexOf('data-testid="profile-intention-glow"');
   const image = html.indexOf('data-testid="profile-intention-image"');

@@ -21,17 +21,17 @@ Cuando se active el progreso funcional, los niveles del camino deberán depender
 
 **How to apply:** Al ampliar rangos o cambiar arte, mantener la métrica de días activos canónicos para cuando se active el progreso.
 
-Florecimiento conserva las ilustraciones botánicas pastel generadas con IA, con brotes, raíces claras y lotos rosados/lilas, ahora aisladas sobre transparencia sin su fondo pastel. Mantener el tamaño reducido y el tratamiento suave ya acordado en Perfil y el recorrido, sin marco cuadrado blanco. El ascenso conserva sus símbolos dorados sin aro exterior y su fondo circular blanco al 7 %.
+Tu camino vuelve a la primera serie generada: ilustraciones oscuras botánicas para Florecimiento y paisajes para El ascenso. Mantener los tamaños y estados actuales; no regenerar ni sustituir estos originales por los símbolos dorados o la serie pastel.
 
-**Why:** Después del difuminado circular y la reducción de tamaño, el usuario pidió dejar solo los elementos y quitar el fondo, enfatizando «no cambies nada». No regenerar el arte, modificar colores ni reencuadrar los elementos al recortarlos.
+**Why:** El 2026-10-06 el usuario pidió «en tu camino, pone nuevamente las primeras imágenes que generaste para esta sección», reemplazando la dirección pastel anterior.
 
-**How to apply:** Mantener la misma ilustración en Perfil y su fila del recorrido. No trasladar el nuevo estilo ni retirar el círculo de El ascenso sin una petición posterior. Donde permanezca el fondo blanco al 7 %, su opacidad es independiente de la atenuación del símbolo bloqueado. Esta sustitución no modifica el hero fullscreen del detalle de Intención ni activa el progreso.
+**How to apply:** Usar los originales en la portada de Perfil y el recorrido. La restauración se limita a las imágenes: no modifica el hero fullscreen del detalle de Intención ni activa el progreso o las recompensas.
 
-Intención representa una semilla clara abriéndose, con un pequeño brote y sus primeras raíces sobre transparencia; no recuperar la esfera luminosa ni la estrella metálica.
+Intención vuelve a su ilustración original de luz dorada sobre tierra oscura; no usar la estrella metálica ni la semilla pastel en la portada o el recorrido.
 
-**Why:** La nueva serie mantiene la progresión botánica desde la semilla hasta el loto expandido, pero el usuario sustituyó la intensidad dorada por una paleta más suave.
+**Why:** Forma parte de la restauración de la primera serie solicitada el 2026-10-06.
 
-**How to apply:** Usar la misma ilustración pastel sin fondo en Perfil y en el recorrido, sin restaurar el círculo pastel, el marco cuadrado ni mezclar las series anteriores.
+**How to apply:** Mantener la misma imagen original en Perfil y el recorrido; preservar por separado el hero del detalle.
 
 En la pantalla de Tu camino, la imagen de la etapa actual debe tener el mismo tamaño que las demás. El estado actual se distingue por luminosidad y el punto, nunca aumentando el icono.
 
@@ -127,4 +127,4 @@ En el detalle de Intención, el hero ocupa toda la pantalla y usa el arte opaco 
 
 **Why:** El usuario revisó la composición y pidió hero fullscreen sin difuminado propio, el degradado de emociones y los textos abajo. Reintrodujo la etiqueta de etapa en la cabecera, no como un bloque sobre el título. Al subir el hero, aclaró que su degradado debe acompañarlo: mover solo el arte hizo visible el borde inferior.
 
-**How to apply:** Mantener fijas fuera del scroll la X con su fondo circular y la etiqueta pequeña de dos líneas «Primera etapa / Florecimiento», alineadas verticalmente. El fondo también queda fijo; título, píldora y textos sí desplazan juntos al hacer scroll. Recolocar arte y degradado como una unidad por defecto; si el usuario pide explícitamente mover solo la imagen, conservar el degradado y ajustar el arte dentro de esa unidad. Prolongar el color sólido de cierre hasta el borde de pantalla para evitar una costura al subirlos. Conservar el loto solo en la píldora, sin ayuda ni banner de «Elegir comenzar». No propagar el arte opaco a Perfil o Tu camino, que usan los supericonos transparentes.
+**How to apply:** Mantener fijas fuera del scroll la X con su fondo circular y la etiqueta pequeña de dos líneas «Primera etapa / Florecimiento», alineadas verticalmente. El fondo también queda fijo; título, píldora y textos sí desplazan juntos al hacer scroll. Recolocar arte y degradado como una unidad por defecto; si el usuario pide explícitamente mover solo la imagen, conservar el degradado y ajustar el arte dentro de esa unidad. Prolongar el color sólido de cierre hasta el borde de pantalla para evitar una costura al subirlos. Conservar el loto solo en la píldora, sin ayuda ni banner de «Elegir comenzar». No propagar el arte opaco del detalle a Perfil o Tu camino.
