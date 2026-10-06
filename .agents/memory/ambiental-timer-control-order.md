@@ -14,3 +14,9 @@ Cancelar deshace el modo manual dentro de la misma ventana: invierte la secuenci
 El usuario pidió explícitamente que Cancelar reproduzca «exactamente el proceso contrario», sin cerrar la ventana.
 
 **How to apply:** Al ajustar esta hoja, mantener ese orden y el centrado del reloj. La apertura y el cierre del panel son movimientos independientes de la expansión y su reversa interna; no conectar Cancelar al cierre general.
+
+Cuando el usuario se refiera a la «ventana del temporizador», revisar también el selector de duración Ambiental, no solo la ventana titulada literalmente Temporizador.
+
+**Why:** Una petición sobre el fondo de Cloudy se aplicó inicialmente solo a la ventana con ese título, pero el usuario indicó que la ventana que estaba usando seguía sin cambiar.
+
+**How to apply:** Comprobar las entradas de duración y sueño antes de limitar un cambio al título literal. Los filtros de búsqueda y la información de puntos son superficies independientes: no heredan automáticamente un cambio de fondo del temporizador.

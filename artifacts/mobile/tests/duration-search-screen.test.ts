@@ -136,13 +136,14 @@ test("category and time pills match Dormir tab height, horizontal padding, gap a
   }
 });
 
-test("both filter sheets match the themed timer and every option has the requested black opacity", () => {
-  const timerSource = read("../components/AmbientalDurationSheet.tsx");
+test("both filter sheets preserve their two-stop backgrounds independently of the Cloudy timer and retain option opacity", () => {
   for (const id of ["cloudy", "indigo2", "cloudy2", "tibet"] as const) {
     for (const filter of ["search-category-filter", "search-duration-filter"]) {
       reset(id);
       press(filter);
-      const expected = evaluateExpression(timerSource, "sheetGradient", { theme: SCENE_THEMES[id], SCENE_THEMES });
+      const expected = id === "indigo2"
+        ? [SCENE_THEMES.tibet.gradient[1], SCENE_THEMES.tibet.gradient[2]]
+        : [SCENE_THEMES[id].gradient[1], SCENE_THEMES[id].gradient[2]];
       assert.deepEqual(gradients.at(-1).colors, expected);
       const options = filter === "search-category-filter"
         ? ["Meditaciones", "Sonoterapia", "Música", "Dormir", "Historias", "Reflexiones"]

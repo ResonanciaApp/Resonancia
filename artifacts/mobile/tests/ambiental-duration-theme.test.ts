@@ -39,15 +39,23 @@ assert.ok(backgroundExpression);
 const resolveBackground = new Function("sheetGradient", `return ${backgroundExpression};`);
 const backgroundFor = (theme: ThemePalette) => resolveBackground(colorsFor(theme));
 
-test("Ambiental duration sheet preserves the active theme stops outside Indigo 2", () => {
+test("Ambiental duration sheet preserves the active theme stops outside Indigo 2 and Cloudy", () => {
   for (const theme of Object.values(SCENE_THEMES)) {
-    if (theme.id === "indigo2") continue;
+    if (theme.id === "indigo2" || theme.id === "cloudy") continue;
     assert.deepEqual(colorsFor(theme), [theme.gradient[1], theme.gradient[2]]);
     assert.equal(backgroundFor(theme), theme.gradient[1]);
     const changedTheme = { ...theme, gradient: theme.gradient.map(color => `${color}-changed`) };
     assert.deepEqual(colorsFor(changedTheme), [changedTheme.gradient[1], changedTheme.gradient[2]]);
     assert.equal(backgroundFor(changedTheme), changedTheme.gradient[1]);
   }
+});
+
+test("Cloudy duration selector uses the first four stops across its whole background", () => {
+  assert.deepEqual(colorsFor(SCENE_THEMES.cloudy), SCENE_THEMES.cloudy.gradient.slice(0, 4));
+  assert.equal(backgroundFor(SCENE_THEMES.cloudy), SCENE_THEMES.cloudy.gradient[0]);
+  assert.match(source, /locations=\{theme\.id === "cloudy" \? \[0, 1 \/ 3, 2 \/ 3, 1\] : undefined\}/);
+  assert.match(source, /start=\{theme\.id === "cloudy" \? theme\.gradientStart : undefined\}/);
+  assert.match(source, /end=\{theme\.id === "cloudy" \? theme\.gradientEnd : undefined\}/);
 });
 
 test("Indigo 2 duration sheet uses the Universo violet gradient without altering global theme colors", () => {

@@ -103,11 +103,11 @@ function harness(theme = SCENE_THEMES.indigo2, measuredHeight = 480) {
   };
 }
 
-test("the information window copies the supplied title and description and matches the timer background in every theme", () => {
-  const timer = read("../components/AmbientalDurationSheet.tsx");
-  const gradientExpression = timer.match(/const sheetGradient: \[string, string\] = ([\s\S]*?);/)?.[1];
-  assert.ok(gradientExpression);
-  const timerColors = new Function("theme", "SCENE_THEMES", `return (${gradientExpression});`);
+test("the information window copies the supplied text and preserves its two-stop background independently of the Cloudy timer", () => {
+  const timerColors = (theme: typeof SCENE_THEMES[keyof typeof SCENE_THEMES], palettes: typeof SCENE_THEMES) =>
+    theme.id === "indigo2"
+      ? [palettes.tibet.gradient[1], palettes.tibet.gradient[2]]
+      : [theme.gradient[1], theme.gradient[2]];
   for (const theme of Object.values(SCENE_THEMES)) {
     const h = harness(theme);
     assert.equal(h.render(false), "");

@@ -126,9 +126,11 @@ export function AmbientalDurationSheet({
   const { theme } = useSceneTheme();
   const selectedPresetBackground = theme.id === "cloudy" || theme.id === "indigo2" ? "rgba(0,0,0,0.3)" : "rgba(0,0,0,0.16)";
   const selectedCustomBackground = theme.id === "cloudy" ? "rgba(0,0,0,0.3)" : "rgba(0,0,0,0.16)";
-  const sheetGradient: [string, string] = theme.id === "indigo2"
-    ? [SCENE_THEMES.tibet.gradient[1], SCENE_THEMES.tibet.gradient[2]]
-    : [theme.gradient[1], theme.gradient[2]];
+  const sheetGradient: [string, string, ...string[]] = theme.id === "cloudy"
+    ? [theme.gradient[0], theme.gradient[1], theme.gradient[2], theme.gradient[3]]
+    : theme.id === "indigo2"
+      ? [SCENE_THEMES.tibet.gradient[1], SCENE_THEMES.tibet.gradient[2]]
+      : [theme.gradient[1], theme.gradient[2]];
   const insets = useSafeAreaInsets();
   const [rendered, setRendered] = useState(visible);
   const { phase, values, transition, baselineHeight, startButtonLayout, titleLayout, reducedMotion } = useAmbientalDurationTransition();
@@ -311,6 +313,9 @@ export function AmbientalDurationSheet({
           <LinearGradient
             pointerEvents="none"
             colors={sheetGradient}
+            locations={theme.id === "cloudy" ? [0, 1 / 3, 2 / 3, 1] : undefined}
+            start={theme.id === "cloudy" ? theme.gradientStart : undefined}
+            end={theme.id === "cloudy" ? theme.gradientEnd : undefined}
             style={StyleSheet.absoluteFill}
           />
           <Animated.View
