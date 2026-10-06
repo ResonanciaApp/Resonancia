@@ -3377,3 +3377,17 @@ mtime_ms = 1791316190023
 storage_uri = "gcs://replit-rams-assets-worf/rams/assets/repl:5427b858-8852-4aed-954b-cd80d9fa4b6b/15b1ca7f-e188-47c5-9ecc-775fb979d534/bf3be544-6cde-45db-b1a0-02fa2ebb1a60"
 storage_version_token = "1791316352175384"
 content_type = "image/png"
+
+[[outputs]]
+id = "11aUZrhbSaaflLUsFYlaG"
+uri = "file://attached_assets/generated_images/camino-pastel-cuadrado-vista-previa.png"
+type = "image"
+title = "Tu camino — nuevas imágenes pastel"
+description = "Vista de las nueve etapas con fondos cuadrados y borde blanco de 3 px al 20 % de opacidad."
+logical_id = "a3d0013e-38b9-49cb-be2e-8bbd884117a7"
+content_hash = "sha256:32679db1373a7ff886ea54ec8d0b0fec859351aa571e918d20262fc1c4ef5199"
+size = 362556
+mtime_ms = 1791316952575
+storage_uri = "gcs://replit-rams-assets-worf/rams/assets/repl:5427b858-8852-4aed-954b-cd80d9fa4b6b/a3d0013e-38b9-49cb-be2e-8bbd884117a7/c4863464-e317-4d8e-9984-f63023ad1d31"
+storage_version_token = "1791317119200389"
+content_type = "image/png"

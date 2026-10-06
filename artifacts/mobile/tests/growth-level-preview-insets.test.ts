@@ -17,26 +17,26 @@ test("the complete journey moves down 15px without changing timeline and row geo
   assert.match(source, /row: \{ height: GROWTH_ROW_HEIGHT, position: "relative", justifyContent: "center" \}/);
 });
 
-test("only the nine Florecimiento images use the golden AI botanical collection", () => {
+test("only the nine Florecimiento images use the pastel square AI collection", () => {
   const source = readFileSync(new URL("../data/growthLevels.ts", import.meta.url), "utf8");
   const firstStage = source.split("export const ascentLevels")[0];
   const secondStage = source.split("export const ascentLevels")[1].split("export const allGrowthLevels")[0];
-  assert.equal([...firstStage.matchAll(/icons\/florecimiento-dorado\//g)].length, 9);
+  assert.equal([...firstStage.matchAll(/icons\/florecimiento-pastel\//g)].length, 9);
   assert.equal([...secondStage.matchAll(/icons\/ringless\/ascenso-/g)].length, 8);
-  assert.doesNotMatch(secondStage, /florecimiento-dorado/);
+  assert.doesNotMatch(secondStage, /florecimiento-pastel/);
 });
 
-test("all 17 stages reference generated square PNG icons with an alpha channel", () => {
+test("all stages reference square PNGs, with opaque pastel backgrounds and transparent ascent icons", () => {
   const source = readFileSync(new URL("../data/growthLevels.ts", import.meta.url), "utf8");
   const paths = [...source.matchAll(/require\("(\.\.\/assets\/images\/growth\/icons\/[^"]+\.png)"\)/g)].map(match => match[1]);
   assert.equal(paths.length, 17);
   assert.equal(new Set(paths).size, 17);
-  for (const path of paths) {
+  for (const [index, path] of paths.entries()) {
     const png = readFileSync(new URL(path, new URL("../data/growthLevels.ts", import.meta.url)));
     assert.equal(png.subarray(1, 4).toString(), "PNG", path);
     assert.equal(png.readUInt32BE(16), 512, `${path} width`);
     assert.equal(png.readUInt32BE(20), 512, `${path} height`);
-    assert.ok([4, 6].includes(png[25]), `${path} must have an alpha channel`);
+    assert.ok((index < 9 ? [2, 6] : [4, 6]).includes(png[25]), `${path} must use the appropriate PNG channels`);
   }
 });
 
@@ -328,7 +328,7 @@ test("current and locked stage icons have identical dimensions in Tu camino", ()
   }
 });
 
-test("Florecimiento has no white background; El ascenso preserves its 7% circle independently of symbol opacity", () => {
+test("Florecimiento frames remain undimmed; El ascenso preserves its 7% circle independently of symbol opacity", () => {
   const image = (props: Record<string, unknown> = {}) => renderToStaticMarkup(React.createElement(componentModule.exports.GrowthLevelImage, {
     level: { id: "intencion", name: "Intención", image: 1 }, ...props,
   }));
@@ -336,8 +336,8 @@ test("Florecimiento has no white background; El ascenso preserves its 7% circle 
     const html = image(props);
     const wrapper = html.slice(0, html.indexOf(">") + 1);
     assert.doesNotMatch(wrapper, /data-background/);
-    assert.match(wrapper, /data-border-radius="67"/);
-    assert.doesNotMatch(wrapper, /data-opacity|data-border-width|data-border-color/);
+    assert.match(wrapper, /data-border-radius="0" data-border-width="3" data-border-color="rgba\(255,255,255,0.2\)"/);
+    assert.doesNotMatch(wrapper, /data-opacity/);
   }
   for (const id of ["intencion", "semilla", "brote", "crecimiento", "desarrollo", "enraizamiento", "vegetacion", "floracion", "expansion"]) {
     assert.doesNotMatch(image({ level: { id, name: id, image: 1 } }), /data-background/);
@@ -374,18 +374,37 @@ test("only Intención opens a stage detail, without activating progression or li
   assert.match(source, /status=\{index === 0 \? "current" : "locked"\}/);
 });
 
-test("the detail hero uses full square art while default timeline and profile corners are unchanged", () => {
+test("the detail hero stays unframed while timeline and profile use the new square frames", () => {
   const image = (props: Record<string, unknown> = {}) => renderToStaticMarkup(React.createElement(componentModule.exports.GrowthLevelImage, {
     level: { id: "intencion", name: "Intención", image: 1 }, ...props,
   }));
   const detail = image({ size: 375 });
   assert.match(detail, /data-height="375" data-width="375" data-border-radius="0"/);
   assert.match(detail, /data-source="1"/);
-  assert.match(image(), /data-height="100%" data-width="100%" data-border-radius="67"/);
-  assert.match(image({ profilePreview: true }), /data-border-radius="67"/);
+  assert.match(image(), /data-height="100%" data-width="100%" data-border-radius="0" data-border-width="3" data-border-color="rgba\(255,255,255,0.2\)"/);
+  assert.match(image({ profilePreview: true }), /data-border-radius="0" data-border-width="3"/);
   const fullHero = image({ size: 402, height: 874, sourceModule: 2 });
   assert.match(fullHero, /data-height="874" data-width="402" data-border-radius="0"/);
   assert.match(fullHero, /data-source="2"/);
+  assert.doesNotMatch(fullHero, /data-border-width|data-border-color/);
+});
+
+test("all nine pastel stages use a 3px white 20% square frame without changing ascent", () => {
+  for (const id of ["intencion", "semilla", "brote", "crecimiento", "desarrollo", "enraizamiento", "vegetacion", "floracion", "expansion"]) {
+    for (const profilePreview of [false, true]) {
+      const html = renderToStaticMarkup(React.createElement(componentModule.exports.GrowthLevelImage, {
+        level: { id, name: id, image: 1 }, profilePreview, dimmed: id !== "intencion",
+      }));
+      assert.match(html, /data-border-radius="0" data-border-width="3" data-border-color="rgba\(255,255,255,0.2\)"/);
+      if (id !== "intencion") assert.match(html, /data-opacity="0.44"/);
+    }
+  }
+  const ascent = renderToStaticMarkup(React.createElement(componentModule.exports.GrowthLevelImage, {
+    level: { id: "ascenso-inicio", name: "Inicio", image: 1 },
+  }));
+  assert.match(ascent, /data-background="rgba\(255,255,255,0.07\)"/);
+  assert.match(ascent, /data-border-radius="67"/);
+  assert.doesNotMatch(ascent, /data-border-width="3"/);
 });
 
 test("Semilla displays only a larger inline filled lock and a one-line avatar reward", () => {
@@ -680,7 +699,7 @@ test("reward pills grow in normal flow and preserve nonreward and profile previe
   assert.match(source, /previewArt: \{ width: 100, height: 100 \}/);
 });
 
-test("Profile intention uses the same transparent stage icon as Tu camino without extra glow or filters", () => {
+test("Profile intention uses the same pastel square stage image as Tu camino without extra glow or filters", () => {
   const html = render({ canonicalVerticalInsets: true });
   const glow = html.indexOf('data-testid="profile-intention-glow"');
   const image = html.indexOf('data-testid="profile-intention-image"');
@@ -690,10 +709,10 @@ test("Profile intention uses the same transparent stage icon as Tu camino withou
   assert.doesNotMatch(html, /data-filter/);
   const stops = [...html.matchAll(/data-stop-opacity="([^"]+)"/g)].map(match => Number(match[1]));
   assert.deepEqual(stops, []);
-  assert.match(html, /data-testid="profile-intention-image"[^>]*data-height="100%" data-width="100%" data-border-radius="67"/);
+  assert.match(html, /data-testid="profile-intention-image"[^>]*data-height="100%" data-width="100%" data-border-radius="0" data-border-width="3" data-border-color="rgba\(255,255,255,0.2\)"/);
   const source = readFileSync(new URL("../components/GrowthJourney.tsx", import.meta.url), "utf8");
   assert.match(source, /previewArt: \{ width: 100, height: 100 \}/);
-  assert.match(render(), /data-border-radius="67"/);
+  assert.match(render(), /data-border-radius="0" data-border-width="3"/);
   assert.match(render(), /data-source="1"/);
   assert.doesNotMatch(render(), /profile-intention-glow|profile-intention-image|brightness/);
 });

@@ -21,17 +21,17 @@ Cuando se active el progreso funcional, los niveles del camino deberán depender
 
 **How to apply:** Al ampliar rangos o cambiar arte, mantener la métrica de días activos canónicos para cuando se active el progreso.
 
-Florecimiento usa una serie coherente de ilustraciones botánicas generadas con IA: hojas verde oliva con nervaduras doradas, tallos y raíces luminosos, tierra compacta y lotos marfil/dorados en las últimas etapas. Los fondos deben ser transparentes, sin un círculo sólido detrás. El ascenso conserva sus símbolos dorados sin aro exterior y su fondo circular blanco al 7 %.
+Florecimiento usa ilustraciones botánicas generadas con IA en colores pastel suaves y luminosos, con brotes, raíces claras y lotos rosados/lilas. Los fondos son cuadrados y opacos, con borde blanco de 3 px al 20 % de opacidad, tanto en Perfil como en el recorrido. El ascenso conserva sus símbolos dorados sin aro exterior y su fondo circular blanco al 7 %.
 
-**Why:** Después de probar las ilustraciones de brotes y lotos rosados adjuntas, el usuario pidió crear otras con IA inspiradas en su nueva referencia de una planta dorada con raíces visibles. Esta dirección reemplaza la grilla pastel anterior.
+**Why:** El usuario pidió regenerar la serie con colores más pastel, suaves y energéticos, sobre fondos cuadrados con ese borde exacto. Esta indicación reemplaza la versión dorada transparente anterior.
 
 **How to apply:** Mantener la misma ilustración en Perfil y su fila del recorrido. No trasladar el nuevo estilo ni retirar el círculo de El ascenso sin una petición posterior. Donde permanezca el fondo blanco al 7 %, su opacidad es independiente de la atenuación del símbolo bloqueado. Esta sustitución no modifica el hero fullscreen del detalle de Intención ni activa el progreso.
 
-Intención representa una semilla dorada abriéndose, con un pequeño brote y sus primeras raíces; no recuperar la esfera luminosa, la estrella metálica ni el brote plano de la grilla pastel anterior.
+Intención representa una semilla clara abriéndose, con un pequeño brote y sus primeras raíces sobre su fondo pastel; no recuperar la esfera luminosa ni la estrella metálica.
 
-**Why:** La nueva serie representa una progresión botánica desde la semilla hasta el loto expandido, con el estilo verde oliva y dorado de la última referencia.
+**Why:** La nueva serie mantiene la progresión botánica desde la semilla hasta el loto expandido, pero el usuario sustituyó la intensidad dorada por una paleta más suave.
 
-**How to apply:** Usar la misma semilla transparente en Perfil y en el recorrido, sin restaurar el fondo circular blanco ni mezclar las series anteriores.
+**How to apply:** Usar la misma imagen cuadrada con su borde en Perfil y en el recorrido, sin restaurar el recorte circular ni mezclar las series anteriores.
 
 En la pantalla de Tu camino, la imagen de la etapa actual debe tener el mismo tamaño que las demás. El estado actual se distingue por luminosidad y el punto, nunca aumentando el icono.
 

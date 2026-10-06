@@ -21,8 +21,8 @@ En Perfil, la separación exterior entre el último módulo de progreso y Mi mur
 
 **How to apply:** Comparar la suma de los márgenes exteriores de ambos lados del espacio, no solo el margen superior de cada sección. Mantener los ajustes exclusivos de Perfil.
 
-La imagen de Intención en el banner de Perfil usa el arte circular difuminado de Tu camino, con un 4 % más de brillo y el alfa original intacto.
+Los espacios adicionales del banner de Intención son exclusivos de Perfil: separar la descripción 4 px más del título y añadir 4 px arriba y abajo.
 
-**Why:** El usuario pidió volver al mismo arte de Tu camino después de probar la portada cuadrada. También pidió separar la píldora y la descripción 4 px más del título y añadir 4 px de espacio arriba y abajo.
+**Why:** El usuario pidió estos ajustes de espaciado por separado de los cambios de ilustración. La dirección visual vigente de las imágenes está documentada en las notas de Tu camino.
 
-**How to apply:** Aplicar el brillo y los espacios solo al banner de Perfil; el arte de Tu camino conserva su brillo original. No recuperar el recorte cuadrado ni cambiar el alfa para simular brillo.
+**How to apply:** Mantener esos ajustes propios de Perfil al reemplazar las imágenes, sin propagarlos a las filas del recorrido.
