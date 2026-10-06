@@ -100,6 +100,7 @@ test("actual avatar grid disables locked cards and overlays exact white 40% plus
       assert.equal(layer.props.pointerEvents, "none");
       assert.equal(layer.props.children[0].props.name, "lock");
       assert.equal(layer.props.children[0].props.size, 16);
+      assert.equal(layer.props.children[0].props.color, "#F9F9F9");
     }
   }
 });

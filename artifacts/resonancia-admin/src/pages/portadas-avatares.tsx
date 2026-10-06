@@ -367,7 +367,7 @@ function ScopeSection({
                   )}
                   {scope.value === "profile" && preset.isLocked && (
                     <div className="pointer-events-none absolute inset-0 flex items-center justify-center" style={{ backgroundColor: "rgba(255,255,255,0.4)" }}>
-                      <LockKeyhole className="h-4 w-4 text-slate-900" aria-hidden="true" />
+                      <LockKeyhole className="h-4 w-4 text-[#F9F9F9]" aria-hidden="true" />
                     </div>
                   )}
                 </div>
@@ -394,7 +394,7 @@ function ScopeSection({
                       disabled={isMutating || dirty || lockingId !== null}
                       onClick={() => void handleToggleLock(preset)}
                     >
-                      {lockingId === preset.id ? <Loader2 className="h-4 w-4 animate-spin" /> : preset.isLocked ? <LockKeyhole className="h-4 w-4" /> : <UnlockKeyhole className="h-4 w-4" />}
+                      {lockingId === preset.id ? <Loader2 className="h-4 w-4 animate-spin" /> : preset.isLocked ? <LockKeyhole className="h-4 w-4 text-[#F9F9F9]" /> : <UnlockKeyhole className="h-4 w-4" />}
                     </Button>
                   )}
                   <label className={`inline-flex h-8 cursor-pointer items-center justify-center rounded-md px-3 text-xs font-medium transition-colors hover:bg-secondary hover:text-foreground ${isMutating || dirty ? 'pointer-events-none opacity-50 text-muted-foreground' : 'text-muted-foreground'}`}>

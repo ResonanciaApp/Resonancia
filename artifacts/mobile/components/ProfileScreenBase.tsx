@@ -1122,7 +1122,7 @@ export function ProfileScreenBase({
                       />
                       {preset.isLocked && (
                         <View pointerEvents="none" style={[StyleSheet.absoluteFill, styles.accountAvatarLockedOverlay]}>
-                          <MaterialCommunityIcons name="lock" size={16} color="#060A0F" accessibilityElementsHidden importantForAccessibility="no" />
+                          <MaterialCommunityIcons name="lock" size={16} color="#F9F9F9" accessibilityElementsHidden importantForAccessibility="no" />
                         </View>
                       )}
                     </Pressable>
