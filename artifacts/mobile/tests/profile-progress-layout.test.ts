@@ -478,7 +478,7 @@ test("Perfil lowers the streak divider by 3px to its centered position without c
   assert.match(source, /sectionDivider:\s*\{\s*height: 1,\s*width: "100%",\s*marginVertical: 16,/);
 });
 
-test("Perfil keeps creativity points in place while Intención moves before calendar", () => {
+test("Perfil keeps creativity points in place while Tu camino moves after calendar", () => {
   const profile = readFileSync(new URL("../components/ProfileScreenBase.tsx", import.meta.url), "utf8");
   assert.match(profile, /beforeCalendar=\{\s*<>\s*<CreativityPointsSection style=\{\{ marginBottom: PROFILE_SECTION_GAP \}\} onInfoPress=\{\(\) => setCreativityInfoOpen\(true\)\} \/>/);
   assert.equal((profile.match(/<CreativityPointsSection /g) ?? []).length, 1);
@@ -488,13 +488,17 @@ test("Perfil keeps creativity points in place while Intención moves before cale
     showPersonalStats: false,
     showCalendar: true,
     beforeCalendar: React.createElement(React.Fragment, null,
-      React.createElement("div", { "data-testid": "profile-creativity-points" }),
-      React.createElement("div", { "data-testid": "profile-growth-intention" })),
+      React.createElement("div", { "data-testid": "profile-creativity-points" })),
+    afterCalendar: React.createElement("div", { "data-testid": "profile-growth-intention" }),
   });
-  const positions = ["profile-streak-history", "profile-creativity-points", "profile-growth-intention", "calendar"]
+  const positions = ["profile-streak-history", "profile-creativity-points", "calendar", "profile-growth-intention"]
     .map(id => html.indexOf(`data-testid="${id}"`));
   assert.ok(positions.every((position, index) => position >= 0 && (index === 0 || position > positions[index - 1])));
-  assert.doesNotMatch(render({ showCalendar: false, beforeCalendar: React.createElement("div", { "data-testid": "profile-creativity-points" }) }), /profile-creativity-points/);
+  assert.doesNotMatch(render({
+    showCalendar: false,
+    beforeCalendar: React.createElement("div", { "data-testid": "profile-creativity-points" }),
+    afterCalendar: React.createElement("div", { "data-testid": "profile-growth-intention" }),
+  }), /profile-creativity-points|profile-growth-intention/);
 });
 
 test("Perfil swaps calendar and Intención, preserving section gaps and the Tu camino action", () => {
@@ -505,13 +509,13 @@ test("Perfil swaps calendar and Intención, preserving section gaps and the Tu c
   let slot: ts.Expression | undefined;
   let journeySheet: ts.JsxSelfClosingElement | undefined;
   function visit(node: ts.Node) {
-    if (ts.isJsxAttribute(node) && node.name.getText(ast) === "beforeCalendar"
+    if (ts.isJsxAttribute(node) && node.name.getText(ast) === "afterCalendar"
       && node.initializer && ts.isJsxExpression(node.initializer)) slot = node.initializer.expression;
     if (ts.isJsxSelfClosingElement(node) && node.tagName.getText(ast) === "GrowthJourneySheet") journeySheet = node;
     ts.forEachChild(node, visit);
   }
   visit(ast);
-  assert.ok(slot, "Profile passes its real preview JSX to the pre-calendar slot");
+  assert.ok(slot, "Profile passes its real preview JSX to the post-calendar slot");
   assert.ok(journeySheet, "Profile mounts the Tu camino window");
   let sheetExpression: ts.Expression | undefined;
   for (let parent: ts.Node | undefined = journeySheet.parent; parent; parent = parent.parent) {
@@ -546,15 +550,16 @@ test("Perfil swaps calendar and Intención, preserving section gaps and the Tu c
     showPersonalStats: false,
     showCalendar: true,
     sectionMarginBottom: gap,
-    beforeCalendar: buildSlot((open: boolean) => { journeyOpen = open; }),
+    beforeCalendar: React.createElement(Points),
+    afterCalendar: buildSlot((open: boolean) => { journeyOpen = open; }),
   });
   const history = html.indexOf('data-testid="profile-streak-history"');
   const intention = html.indexOf('data-testid="profile-growth-intention"');
   const calendar = html.indexOf('data-testid="calendar"');
   const points = html.indexOf('data-testid="profile-creativity-points"');
-  assert.ok(history >= 0 && history < points && points < intention && intention < calendar);
+  assert.ok(history >= 0 && history < points && points < calendar && calendar < intention);
   assert.match(html, /data-testid="profile-growth-intention" data-margin-bottom="21"/);
-  assert.match(html, /growth-level-zero-preview" data-embedded="true" data-title-size="15">Intención/);
+  assert.match(html, /growth-level-zero-preview" data-embedded="true" data-title-size="19">Intención/);
   assert.ok(pressPreview);
   pressPreview();
   assert.equal(journeyOpen, true);

@@ -1499,10 +1499,12 @@ export function ProfileScreenBase({
                 beforeCalendar={
                   <>
                     <CreativityPointsSection style={{ marginBottom: PROFILE_SECTION_GAP }} onInfoPress={() => setCreativityInfoOpen(true)} />
-                    <View testID="profile-growth-intention" style={{ marginBottom: PROFILE_SECTION_GAP }}>
-                      <GrowthLevelPreviewCard embedded canonicalVerticalInsets sectionTitle="Tu camino" titleFontSize={19} backgroundColor="rgba(0,0,0,0.16)" onPress={() => setGrowthJourneyOpen(true)} />
-                    </View>
                   </>
+                }
+                afterCalendar={
+                  <View testID="profile-growth-intention" style={{ marginBottom: PROFILE_SECTION_GAP }}>
+                    <GrowthLevelPreviewCard embedded canonicalVerticalInsets sectionTitle="Tu camino" titleFontSize={19} backgroundColor="rgba(0,0,0,0.16)" onPress={() => setGrowthJourneyOpen(true)} />
+                  </View>
                 }
                 onStreakTitlePress={() => router.push("/progreso" as never)}
               />
