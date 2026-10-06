@@ -3447,3 +3447,17 @@ mtime_ms = 1791328526956
 storage_uri = "gcs://replit-rams-assets-worf/rams/assets/repl:5427b858-8852-4aed-954b-cd80d9fa4b6b/a6d12bc3-e0a0-4d24-9d15-df8c2aa14b9c/2387e74f-efbf-4914-9254-7d3293d851e1"
 storage_version_token = "1791328649282943"
 content_type = "image/png"
+
+[[outputs]]
+id = "N-UEJD4a19fxBdJmurQ4H"
+uri = "file://attached_assets/processed/profile-avatar-portraits/preview.png"
+type = "image"
+title = "30 nuevos avatares de Perfil"
+description = "512 × 512, recorte circular transparente y WebP sin pérdida. Añadidos sin modificar los 89 anteriores."
+logical_id = "5a9d9662-75f3-4962-a602-84aaa1b3cc26"
+content_hash = "sha256:8b2d19ea15b1451324a9366751a7855a0adb49512135d9567b0f1b204b904a86"
+size = 1541222
+mtime_ms = 1791329484108
+storage_uri = "gcs://replit-rams-assets-worf/rams/assets/repl:5427b858-8852-4aed-954b-cd80d9fa4b6b/5a9d9662-75f3-4962-a602-84aaa1b3cc26/0133fae6-358f-4746-a087-63079ebdf831"
+storage_version_token = "1791329529429304"
+content_type = "image/png"

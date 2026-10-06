@@ -8,7 +8,13 @@ import { db, pool, coverPresetsTable, uploadsTable, usersTable } from "@workspac
 import { ObjectStorageService } from "../src/lib/objectStorage";
 
 const root = fileURLToPath(new URL("../../../", import.meta.url));
-const directory = "attached_assets/processed/profile-avatar-characters";
+const directoryIndex = process.argv.indexOf("--directory");
+const directory = directoryIndex === -1
+  ? "attached_assets/processed/profile-avatar-characters"
+  : process.argv[directoryIndex + 1];
+if (!directory || !/^attached_assets\/processed\/[a-z0-9-]+$/.test(directory)) {
+  throw new Error("Expected a prepared avatar directory under attached_assets/processed.");
+}
 const storage = new ObjectStorageService();
 const created: string[] = [];
 let committed = false;
