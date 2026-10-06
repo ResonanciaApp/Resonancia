@@ -45,7 +45,7 @@ function AuthorAvatar({ uri, name }: { uri?: string | null; name?: string | null
   );
 }
 
-export function AlmaCommunitySection({ titleSize = 18, style }: {
+export function AlmaCommunitySection({ titleSize = 17, style }: {
   titleSize?: number;
   style?: StyleProp<ViewStyle>;
 }) {
@@ -70,7 +70,7 @@ export function AlmaCommunitySection({ titleSize = 18, style }: {
           Muro de agradecimiento
         </Text>
         <Text style={[styles.title, { color: colors.foreground, fontSize: titleSize }]}>
-          ¿Por qué estás agradecido(a) hoy?
+          {"¿Por qué estás agradecido(a)\nhoy?"}
         </Text>
       </View>
 
@@ -157,7 +157,7 @@ const styles = StyleSheet.create({
     marginBottom: 24,
   },
   caption: { fontFamily: "Manrope", fontSize: 10, fontWeight: "400", letterSpacing: 1.4, textTransform: "uppercase", marginBottom: 6 },
-  title: { fontFamily: "Manrope", fontSize: 18, fontWeight: "700", letterSpacing: 0.2, textAlign: "center" },
+  title: { fontFamily: "Manrope", fontSize: 17, fontWeight: "700", letterSpacing: 0.2, textAlign: "center", width: "100%", maxWidth: 300 },
   subtitle: { fontFamily: "Manrope", fontSize: 12, marginTop: 4, lineHeight: 16, textAlign: "center" },
 
   composeTap: {

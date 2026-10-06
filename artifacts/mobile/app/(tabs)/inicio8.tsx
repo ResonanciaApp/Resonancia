@@ -3358,7 +3358,7 @@ export default function HomeScreen2({
         )}
         {isInicio2 && isPremium && (
           <AlmaCommunitySection
-            titleSize={variant === "inicio3" ? 20 : 18}
+            titleSize={variant === "inicio3" ? 19 : 17}
             style={variant === "inicio3" ? { marginBottom: 28 + INICIO3_SECTION_EXTRA_GAP } : undefined}
           />
         )}
