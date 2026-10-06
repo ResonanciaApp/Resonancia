@@ -54,3 +54,16 @@ el usuario percibe como parpadeo; animar únicamente el mensaje final no lo resu
 
 **How to apply:** Coordinar la continuidad visual y el espacio ocupado sin posponer
 el registro real de la tarea ni convertir la representación saliente en tareas pendientes.
+
+Al devolver un contenedor animado de altura fija a flujo natural, no confiar en
+`height: undefined`: la actualización nativa puede ignorarla. Usar un valor explícito
+como `auto` y probar también la retención de propiedades nativas.
+
+**Why:** Una prueba que aplicaba estilos con Object.assign daba por borrada la altura,
+pero el usuario seguía viendo que Perfil no crecía al añadir cards y el botón quedaba
+bajo la barra inferior. Esa simulación no representaba los updates nativos que ignoran
+undefined.
+
+**How to apply:** En regresiones de alto dinámico, simular que undefined no modifica
+la última propiedad nativa y comprobar varios ciclos de completa a pendientes,
+incluyendo listas de tres o más actividades.

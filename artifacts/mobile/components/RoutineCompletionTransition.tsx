@@ -75,10 +75,10 @@ export function RoutineCompletionTransition({
   const shellStyle = useAnimatedStyle(() => {
     // Pending rows own their normal-flow height. A cached measured height can
     // momentarily clip a new row and move the following sections on a later frame.
-    // Reanimated keeps the last native height if the key is simply omitted.
-    // Explicitly clear it so growing rows and the add button push siblings down.
-    if (!complete && !animateToPending) return { height: undefined };
-    if (pendingHeight.value <= 0 && progress.value === 0) return { height: undefined };
+    // Native animated updates can ignore undefined and keep the last fixed height.
+    // Send Yoga an explicit "auto" so new rows and the add button grow the scroll.
+    if (!complete && !animateToPending) return { height: "auto" as const };
+    if (pendingHeight.value <= 0 && progress.value === 0) return { height: "auto" as const };
     const from = pendingHeight.value || completeHeight.value;
     return {
       height: from + (completeHeight.value - from) * progress.value,
