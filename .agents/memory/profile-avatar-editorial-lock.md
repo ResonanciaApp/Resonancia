@@ -14,3 +14,9 @@ Un bloqueo impide nuevas elecciones, pero conserva un avatar que el usuario ya t
 **Why:** El alcance presentado al usuario conserva las elecciones existentes para evitar cambios involuntarios de identidad.
 
 **How to apply:** Distinguir una nueva asignación de la conservación del mismo avatar al actualizar otros datos. Una elección rechazada no debe quedar guardada localmente como pendiente.
+
+Al recortar avatares editoriales desde una lámina, todos deben tener el mismo tamaño y una máscara circular real, con el exterior transparente. No basta con que la ilustración parezca redonda.
+
+**Why:** El usuario pidió expresamente avatares «100% redondos» aunque la imagen original no lo sea, y todos del mismo tamaño.
+
+**How to apply:** Recortar sin deformar el dibujo, aplicar la misma máscara circular a todas las imágenes y comprobar que sus dimensiones y canales alfa coincidan antes de reemplazar los slots.
