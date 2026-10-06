@@ -25,6 +25,7 @@ import { GoldGradient, GoldGradientFill } from "@/components/GoldGradient";
 const GOLD = "#F9F9F9";
 
 type Props = {
+  librarySurface?: boolean;
   itemId: string | null;
   itemKind: "session" | "folder" | null;
   visible: boolean;
@@ -65,11 +66,13 @@ function ActionRow({
   );
 }
 
-export function FavoriteActionsSheet({ itemId, itemKind, visible, onClose }: Props) {
+export function FavoriteActionsSheet({ itemId, itemKind, visible, onClose, librarySurface = false }: Props) {
   const colors = useColors();
   const insets = useSafeAreaInsets();
   const { theme } = useSceneTheme();
-  const sheetSolid = theme.gradient[2] ?? theme.gradient[1] ?? theme.gradient[0];
+  const sheetSolid = librarySurface && theme.id === "cloudy"
+    ? theme.gradient[theme.gradient.length - 1]
+    : theme.gradient[2] ?? theme.gradient[1] ?? theme.gradient[0];
   const sheetGradient = [sheetSolid, sheetSolid] as [string, string];
   const { toggleFavorite } = usePlayer();
   const {

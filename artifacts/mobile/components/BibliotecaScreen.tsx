@@ -56,6 +56,7 @@ import { baseOf, type GeometryId } from "@/data/geometries";
 import { gradientColors, type GeometrixCreation } from "@/data/geometrix-creations";
 import { CreationCoverPreview } from "@/components/CreationCoverPreview";
 import { PlaylistActionsSheet } from "@/components/PlaylistActionsSheet";
+import { LibraryCreationBackground } from "@/components/LibraryCreationBackground";
 import {
   getDefaultPlaylistCover,
 } from "@/data/default-playlist-covers";
@@ -708,6 +709,7 @@ function NombreCarpetaModal({ visible, onClose, bgColor }: { visible: boolean; o
     >
       <KeyboardAvoidingView behavior={Platform.OS === "ios" ? "padding" : "height"} style={{ flex: 1 }}>
         <View style={[styles.nameCard, { backgroundColor: bgColor }]}>
+          <LibraryCreationBackground />
           <Pressable style={styles.nameCloseBtn} onPress={onClose} hitSlop={12}>
             <Feather name="x" size={22} color={TEXT} />
           </Pressable>
@@ -772,6 +774,7 @@ function NombrePlaylistModal({ visible, onClose, bgColor }: { visible: boolean; 
     >
       <KeyboardAvoidingView behavior={Platform.OS === "ios" ? "padding" : "height"} style={{ flex: 1 }}>
         <View style={[styles.nameCard, { backgroundColor: bgColor }]}>
+          <LibraryCreationBackground />
           <Pressable style={styles.nameCloseBtn} onPress={onClose} hitSlop={12}>
             <Feather name="x" size={22} color={TEXT} />
           </Pressable>
@@ -836,6 +839,7 @@ function NombreCarpetaMezclaModal({ visible, onClose, bgColor }: { visible: bool
     >
       <KeyboardAvoidingView behavior={Platform.OS === "ios" ? "padding" : "height"} style={{ flex: 1 }}>
         <View style={[styles.nameCard, { backgroundColor: bgColor }]}>
+          <LibraryCreationBackground />
           <Pressable style={styles.nameCloseBtn} onPress={onClose} hitSlop={12}>
             <Feather name="x" size={22} color={TEXT} />
           </Pressable>
@@ -899,6 +903,7 @@ function NombreCarpetaFavModal({ visible, onClose, bgColor }: { visible: boolean
     >
       <KeyboardAvoidingView behavior={Platform.OS === "ios" ? "padding" : "height"} style={{ flex: 1 }}>
         <View style={[styles.nameCard, { backgroundColor: bgColor }]}>
+          <LibraryCreationBackground />
           <Pressable style={styles.nameCloseBtn} onPress={onClose} hitSlop={12}>
             <Feather name="x" size={22} color={TEXT} />
           </Pressable>
@@ -978,6 +983,7 @@ function CreateSheet({ visible, onClose, onCreatePlaylist, onCreateCarpeta, onGo
     <Modal visible={visible} animationType="slide" transparent onRequestClose={onClose}>
       <Pressable style={[StyleSheet.absoluteFill, styles.sheetBackdrop]} onPress={onClose} />
       <View style={[styles.sheet, { backgroundColor: sheetColor }]}>
+        <LibraryCreationBackground />
         <View style={styles.sheetHandle} />
         <Text style={styles.sheetTitle}>¿Qué quieres crear?</Text>
         {ITEMS.map((it) => (
@@ -1170,6 +1176,7 @@ export function BibliotecaScreen({
   const { open: openDrawer, openLibraryMix } = useDrawer();
   const { activeSceneId, theme: sceneTheme } = useSceneTheme();
   const librarySheetColor = sceneTheme.gradient[sceneTheme.gradient.length - 1];
+  const [resonadorToUnfollow, setResonadorToUnfollow] = useState<{ id: string; name?: string } | null>(null);
   const iconPlaceholderColor = "#fefefe";
   const libraryTabSurface = getLibraryTabSurface(activeSceneId);
   const addResSearchSurface =
@@ -1312,6 +1319,10 @@ export function BibliotecaScreen({
     if (!followedIds.includes(id)) saveFollowed([id, ...followedIds]);
   };
   const unfollowResonador = (id: string, name?: string) => {
+    if (sceneTheme.id === "cloudy") {
+      setResonadorToUnfollow({ id, name });
+      return;
+    }
     Alert.alert(
       "Dejar de seguir",
       `¿Querés dejar de seguir a ${name ?? "este resonador"}?`,
@@ -2183,12 +2194,14 @@ export function BibliotecaScreen({
       <NombreCarpetaMezclaModal visible={nombreCarpetaMezclaVisible} onClose={() => setNombreCarpetaMezclaVisible(false)} bgColor={librarySheetColor} />
       <NombreCarpetaFavModal visible={nombreCarpetaFavVisible} onClose={() => setNombreCarpetaFavVisible(false)} bgColor={librarySheetColor} />
       <PlaylistActionsSheet
+        librarySurface
         itemId={actionsItemId}
         itemKind={actionsItemKind}
         visible={actionsItemId !== null}
         onClose={() => { setActionsItemId(null); setActionsItemKind(null); }}
       />
       <FavoriteActionsSheet
+        librarySurface
         itemId={favActionsItemId}
         itemKind={favActionsItemKind}
         visible={favActionsItemId !== null}
@@ -2211,6 +2224,45 @@ export function BibliotecaScreen({
         onSelect={setSort}
         onClose={() => setSortVisible(false)}
       />
+      <Modal
+        visible={resonadorToUnfollow !== null}
+        transparent
+        animationType="slide"
+        onRequestClose={() => setResonadorToUnfollow(null)}
+      >
+        <Pressable
+          style={[StyleSheet.absoluteFill, styles.sheetBackdrop]}
+          onPress={() => setResonadorToUnfollow(null)}
+          accessibilityLabel="Cerrar acciones del resonador"
+        />
+        <View style={[styles.sheet, { backgroundColor: librarySheetColor }]}>
+          <View style={styles.sheetHandle} />
+          <Text style={styles.sheetTitle}>Dejar de seguir</Text>
+          <Text style={[styles.addResonadorLabel, { marginBottom: 20 }]}>
+            {`¿Querés dejar de seguir a ${resonadorToUnfollow?.name ?? "este resonador"}?`}
+          </Text>
+          <Pressable
+            style={styles.sheetRow}
+            accessibilityRole="button"
+            accessibilityLabel="Dejar de seguir al resonador"
+            onPress={() => {
+              if (!resonadorToUnfollow) return;
+              saveFollowed(followedIds.filter((id) => id !== resonadorToUnfollow.id));
+              setResonadorToUnfollow(null);
+            }}
+          >
+            <Feather name="user-minus" size={21} color={TEXT} />
+            <Text style={styles.addResonadorLabel}>Eliminar</Text>
+          </Pressable>
+          <Pressable
+            style={styles.sheetRow}
+            accessibilityRole="button"
+            onPress={() => setResonadorToUnfollow(null)}
+          >
+            <Text style={styles.addResonadorLabel}>Cancelar</Text>
+          </Pressable>
+        </View>
+      </Modal>
 
       {/* ── Modal Agregar Resonador ── */}
       <Modal
@@ -2226,6 +2278,7 @@ export function BibliotecaScreen({
             style={{ flex: 1, justifyContent: "flex-end" }}
           >
            <View style={[styles.addResModalSheet, { backgroundColor: librarySheetColor }]}>
+             <LibraryCreationBackground style={{ borderTopLeftRadius: 22, borderTopRightRadius: 22 }} />
             <View style={styles.addResModalHeader}>
               <Text style={styles.addResModalTitle}>Agrega Resonador</Text>
               <Pressable

@@ -1,4 +1,5 @@
 import { Feather } from "@expo/vector-icons";
+import { LinearGradient } from "expo-linear-gradient";
 import React from "react";
 import {
   Modal,
@@ -14,6 +15,7 @@ import { usePlayer } from "@/context/PlayerContext";
 import { usePremium } from "@/context/PremiumContext";
 import { PremiumPlansSurface, usePremiumPlansModalHost } from "@/components/PremiumPlansOverlay";
 import { useColors } from "@/hooks/useColors";
+import { useSceneTheme } from "@/context/SceneThemeContext";
 import { FREE_TIMER_MAX_MINUTES, showPremiumGate } from "@/lib/premiumGate";
 
 // ─── Timer options ────────────────────────────────────────────────────────────
@@ -38,6 +40,10 @@ type Props = {
 
 export function TimerSheet({ visible, onClose, sleepTimerRemaining: propRemaining, setSleepTimer: propSetTimer }: Props) {
   const colors = useColors();
+  const { theme } = useSceneTheme();
+  const timerGradient = theme.id === "cloudy"
+    ? theme.gradient.slice(0, 4) as [string, string, string, string]
+    : null;
   const { sleepTimerRemaining: playerRemaining, setSleepTimer: playerSetTimer } = usePlayer();
   const { isPremium } = usePremium();
   const insets = useSafeAreaInsets();
@@ -73,6 +79,16 @@ export function TimerSheet({ visible, onClose, sleepTimerRemaining: propRemainin
 
       {/* Sheet */}
       <View style={[styles.sheet, { paddingBottom: insets.bottom + 16 }]}>
+        {timerGradient && (
+          <LinearGradient
+            colors={timerGradient}
+            locations={[0, 1 / 3, 2 / 3, 1]}
+            start={theme.gradientStart}
+            end={theme.gradientEnd}
+            pointerEvents="none"
+            style={[StyleSheet.absoluteFill, { borderTopLeftRadius: 20, borderTopRightRadius: 20 }]}
+          />
+        )}
         {/* Handle */}
         <View style={styles.handle} />
 
