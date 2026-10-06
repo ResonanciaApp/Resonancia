@@ -3391,3 +3391,17 @@ mtime_ms = 1791316952575
 storage_uri = "gcs://replit-rams-assets-worf/rams/assets/repl:5427b858-8852-4aed-954b-cd80d9fa4b6b/a3d0013e-38b9-49cb-be2e-8bbd884117a7/c4863464-e317-4d8e-9984-f63023ad1d31"
 storage_version_token = "1791317119200389"
 content_type = "image/png"
+
+[[outputs]]
+id = "i4WKsBILJhW8dba6u8_YC"
+uri = "file://attached_assets/generated_images/camino-pastel-difuminado-vista-previa.png"
+type = "image"
+title = "Imágenes pastel con difuminado circular"
+description = "Las mismas nueve ilustraciones, con bordes que se desvanecen hacia la transparencia y un tamaño visual 10 % menor."
+logical_id = "094d9c4d-b8de-4989-ac79-15ab4fee93dd"
+content_hash = "sha256:402ef92308cde0c8c0d67cf8d4a61d5f19dcf526b8fb3fd755a1b8d729c07507"
+size = 429792
+mtime_ms = 1791317432923
+storage_uri = "gcs://replit-rams-assets-worf/rams/assets/repl:5427b858-8852-4aed-954b-cd80d9fa4b6b/094d9c4d-b8de-4989-ac79-15ab4fee93dd/19d5c9d6-69d4-4698-a24b-07d9181c4819"
+storage_version_token = "1791317583029866"
+content_type = "image/png"

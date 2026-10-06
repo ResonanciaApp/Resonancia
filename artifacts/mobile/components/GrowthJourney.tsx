@@ -58,7 +58,7 @@ function loadGrowthImage(module: number): Promise<string> {
 
 export function GrowthLevelImage({ level, profilePreview = false, dimmed = false, size, height, sourceModule }: { level: GrowthLevel; profilePreview?: boolean; dimmed?: boolean; size?: number; height?: number; sourceModule?: number }) {
   const imageModule = sourceModule ?? level.image;
-  const squareStage = sourceModule === undefined && !level.id.startsWith("ascenso-");
+  const fadedStage = sourceModule === undefined && !level.id.startsWith("ascenso-");
   const [localUri, setLocalUri] = useState(() => growthImageUris.get(imageModule) ?? null);
 
   useEffect(() => {
@@ -76,14 +76,14 @@ export function GrowthLevelImage({ level, profilePreview = false, dimmed = false
   return (
     <View
       testID={profilePreview ? "profile-intention-image" : undefined}
-      style={[styles.imageWrap, sourceModule === undefined && level.id.startsWith("ascenso-") && styles.stageIconSurface, profilePreview && styles.profileImageWrap, squareStage && styles.squareStageSurface, size !== undefined && { width: size, height: height ?? size, borderRadius: 0 }]}
+      style={[styles.imageWrap, sourceModule === undefined && level.id.startsWith("ascenso-") && styles.stageIconSurface, profilePreview && styles.profileImageWrap, size !== undefined && { width: size, height: height ?? size, borderRadius: 0 }]}
       importantForAccessibility="no"
     >
       {source && (
         <Image
           source={source}
-          resizeMode={sourceModule !== undefined || squareStage ? "cover" : "contain"}
-          style={[styles.levelImage, dimmed && styles.lockedArt]}
+          resizeMode={sourceModule !== undefined ? "cover" : "contain"}
+          style={[styles.levelImage, fadedStage && styles.fadedStageImage, dimmed && styles.lockedArt]}
           onError={(event) => console.warn(`[GrowthJourney] No se pudo cargar ${level.id}: ${event.nativeEvent.error}`)}
           accessibilityElementsHidden
           importantForAccessibility="no"
@@ -572,7 +572,7 @@ const styles = StyleSheet.create({
   bloomArt: { width: GROWTH_STAGE_ICON_SIZE + 4, height: GROWTH_STAGE_ICON_SIZE + 4, left: 38, top: 32 },
   imageWrap: { width: "100%", height: "100%", borderRadius: 67, overflow: "hidden" },
   stageIconSurface: { backgroundColor: "rgba(255,255,255,0.07)" },
-  squareStageSurface: { borderRadius: 0, borderWidth: 3, borderColor: "rgba(255,255,255,0.2)" },
+  fadedStageImage: { transform: [{ scale: 0.9 }] },
   profileImageWrap: { borderRadius: 67 },
   levelImage: { width: "100%", height: "100%" },
   copy: {
