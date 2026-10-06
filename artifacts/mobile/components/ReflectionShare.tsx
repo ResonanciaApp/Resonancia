@@ -7,6 +7,7 @@ import Animated, {
   runOnJS,
   useAnimatedStyle,
   useSharedValue,
+  type SharedValue,
 } from "react-native-reanimated";
 import { useQueryClient } from "@tanstack/react-query";
 
@@ -15,6 +16,8 @@ import { createMyReflectionStory, type ReflectionStoryInput } from "@workspace/a
 import { StoryShareModal, STORY_WIDTH } from "./StoryShareModal";
 import { StoryArtworkFrame, STORY_QUOTE_TOP, STORY_QUOTE_HEIGHT } from "./StoryArtworkFrame";
 import { useCoverPresetCatalogState } from "@/lib/cover-preset-catalog";
+import { useReflectionGalleryExpansion } from "@/hooks/useReflectionGalleryExpansion";
+import { REFLECTION_GALLERY_HEIGHT } from "@/lib/reflection-gallery-layout";
 import {
   canShareReflection,
   clampReflectionStoryComposition,
@@ -43,8 +46,10 @@ function InteractiveReflectionArtwork({
   composition,
   onCompositionChange,
   onFailure,
+  displayScale,
 }: ReflectionArtworkProps & {
   onCompositionChange: (composition: ReflectionStoryComposition) => void;
+  displayScale?: SharedValue<number>;
 }) {
   const height = width * 16 / 9;
   const backgroundScale = useSharedValue(composition.backgroundScale);
@@ -96,17 +101,19 @@ function InteractiveReflectionArtwork({
         startBackgroundY.value = backgroundY.value;
       })
       .onUpdate((event) => {
+        const visibleWidth = width * (displayScale?.value ?? 1);
+        const visibleHeight = height * (displayScale?.value ?? 1);
         const offsetLimit = (backgroundScale.value - 1) / 2;
         const nextX = Math.min(
           offsetLimit,
-          Math.max(-offsetLimit, startBackgroundX.value + event.translationX / width),
+          Math.max(-offsetLimit, startBackgroundX.value + event.translationX / visibleWidth),
         );
-        backgroundX.value = Math.abs(nextX * width) < 8 ? 0 : nextX;
+        backgroundX.value = Math.abs(nextX * visibleWidth) < 8 ? 0 : nextX;
         const nextY = Math.min(
           offsetLimit,
-          Math.max(-offsetLimit, startBackgroundY.value + event.translationY / height),
+          Math.max(-offsetLimit, startBackgroundY.value + event.translationY / visibleHeight),
         );
-        backgroundY.value = Math.abs(nextY * height) < 8 ? 0 : nextY;
+        backgroundY.value = Math.abs(nextY * visibleHeight) < 8 ? 0 : nextY;
       })
       .onFinalize(() => {
         guideOpacity.value = 0;
@@ -118,6 +125,7 @@ function InteractiveReflectionArtwork({
       backgroundY,
       guideOpacity,
       height,
+      displayScale,
       startBackgroundX,
       startBackgroundY,
       width,
@@ -159,22 +167,24 @@ function InteractiveReflectionArtwork({
         startTextY.value = textY.value;
       })
       .onUpdate((event) => {
+        const visibleWidth = width * (displayScale?.value ?? 1);
+        const visibleHeight = height * (displayScale?.value ?? 1);
         const nextX = Math.min(
           REFLECTION_STORY_TEXT_X_LIMIT,
-          Math.max(-REFLECTION_STORY_TEXT_X_LIMIT, startTextX.value + event.translationX / width),
+          Math.max(-REFLECTION_STORY_TEXT_X_LIMIT, startTextX.value + event.translationX / visibleWidth),
         );
-        textX.value = Math.abs(nextX * width) < 8 ? 0 : nextX;
+        textX.value = Math.abs(nextX * visibleWidth) < 8 ? 0 : nextX;
         const nextY = Math.min(
           REFLECTION_STORY_TEXT_Y_LIMIT,
-          Math.max(-REFLECTION_STORY_TEXT_Y_LIMIT, startTextY.value + event.translationY / height),
+          Math.max(-REFLECTION_STORY_TEXT_Y_LIMIT, startTextY.value + event.translationY / visibleHeight),
         );
-        textY.value = Math.abs(nextY * height) < 8 ? 0 : nextY;
+        textY.value = Math.abs(nextY * visibleHeight) < 8 ? 0 : nextY;
       })
       .onFinalize(() => {
         guideOpacity.value = 0;
         commitComposition();
       }),
-    [guideOpacity, height, startTextX, startTextY, textX, textY, width],
+    [guideOpacity, height, startTextX, startTextY, textX, textY, width, displayScale],
   );
 
   const backgroundGesture = useMemo(
@@ -252,6 +262,10 @@ function InteractiveReflectionArtwork({
 }
 
 export function ReflectionShare({ reflection, onClose }: { reflection: Reflection; onClose: () => void }) {
+  const { expanded, toggle, heightReduction } = useReflectionGalleryExpansion();
+  const gallerySizeStyle = useAnimatedStyle(() => ({
+    height: REFLECTION_GALLERY_HEIGHT + heightReduction.value,
+  }));
   const qc = useQueryClient();
   const idempotencyState = useRef({ hash: "", key: "" });
   const { items: catalog, hydrated } = useCoverPresetCatalogState("reflection-story");
@@ -344,6 +358,7 @@ export function ReflectionShare({ reflection, onClose }: { reflection: Reflectio
       showGenericShare={false}
       previewScale={0.8}
       previewOffsetY={-20}
+      previewHeightReduction={heightReduction}
       closeOnLeft
       titleFontSize={15}
       titleOffsetY={-15}
@@ -360,7 +375,7 @@ export function ReflectionShare({ reflection, onClose }: { reflection: Reflectio
           <Feather name="rotate-ccw" size={25} color="#F9F9F9" />
         </Pressable>
       ) : undefined}
-      renderArtwork={(width, isExport, callbacks) => {
+      renderArtwork={(width, isExport, callbacks, previewContext) => {
         const handleFailure = () => {
           if (selectedItem?.fallbackSource && !selectedUsesFallback) {
             setFailedRemoteIds((current) => new Set(current).add(selectedItem.id));
@@ -384,12 +399,25 @@ export function ReflectionShare({ reflection, onClose }: { reflection: Reflectio
             bgImageSource={selectedImageSource}
             composition={composition}
             onCompositionChange={updateComposition}
+            displayScale={previewContext?.displayScale}
             onFailure={handleFailure}
           />
         );
       }}
     >
-      <View style={styles.galleryContainer}>
+      <Animated.View style={[styles.galleryContainer, gallerySizeStyle]}>
+        <View style={styles.galleryControls}>
+          <Pressable
+            onPress={toggle}
+            accessibilityRole="button"
+            accessibilityLabel={expanded ? "Reducir grilla de fondos" : "Ampliar grilla de fondos"}
+            accessibilityState={{ expanded }}
+            hitSlop={6}
+            style={({ pressed }) => [styles.galleryToggle, pressed && { opacity: 0.65 }]}
+          >
+            <Feather name={expanded ? "chevrons-down" : "chevrons-up"} size={19} color="#F9F9F9" />
+          </Pressable>
+        </View>
         <ScrollView contentContainerStyle={styles.galleryContent} showsVerticalScrollIndicator={false}>
           {catalog.map((item) => {
             const isSelected = selectedBgId === item.id;
@@ -428,7 +456,7 @@ export function ReflectionShare({ reflection, onClose }: { reflection: Reflectio
             );
           })}
         </ScrollView>
-      </View>
+      </Animated.View>
     </StoryShareModal>
   );
 }
@@ -488,11 +516,24 @@ const styles = StyleSheet.create({
     textShadowRadius: 5,
   },
   galleryContainer: {
-    height: 180,
+    height: REFLECTION_GALLERY_HEIGHT,
     marginBottom: 20,
     backgroundColor: "rgba(0,0,0,0.2)",
     borderRadius: 12,
     padding: 8,
+  },
+  galleryControls: {
+    height: 36,
+    alignItems: "flex-end",
+    justifyContent: "flex-start",
+  },
+  galleryToggle: {
+    width: 30,
+    height: 30,
+    borderRadius: 15,
+    backgroundColor: "rgba(0,0,0,0.16)",
+    alignItems: "center",
+    justifyContent: "center",
   },
   resetButton: {
     width: 43,

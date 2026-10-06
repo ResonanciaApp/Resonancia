@@ -17,6 +17,8 @@ import { useSafeAreaInsets } from "react-native-safe-area-context";
 import ViewShot, { releaseCapture } from "react-native-view-shot";
 import * as Sharing from "expo-sharing";
 import * as Font from "expo-font";
+import Animated, { useAnimatedStyle, useDerivedValue, useSharedValue, type SharedValue } from "react-native-reanimated";
+import { fitReflectionPreviewWidth, reflectionPreviewLayout, REFLECTION_GALLERY_EXPANSION } from "@/lib/reflection-gallery-layout";
 
 export const STORY_WIDTH = 1080;
 export const STORY_HEIGHT = 1920;
@@ -25,7 +27,8 @@ const INSTAGRAM_SOURCE_APP = process.env.EXPO_PUBLIC_META_APP_ID?.trim();
 export interface StoryShareModalProps {
   title?: string;
   onClose: () => void;
-  renderArtwork: (width: number, isExport: boolean, callbacks: { onReady?: () => void, onFailure?: () => void, onLogoReady?: () => void }) => React.ReactNode;
+  renderArtwork: (width: number, isExport: boolean, callbacks: { onReady?: () => void, onFailure?: () => void, onLogoReady?: () => void }, previewContext?: { displayScale: SharedValue<number> }) => React.ReactNode;
+  previewHeightReduction?: SharedValue<number>;
   makeWebImage?: () => Promise<Blob>;
   checkConstraints?: () => void;
   onBeforeInstagramShare?: () => Promise<void>;
@@ -61,6 +64,7 @@ export function StoryShareModal({
   showGenericShare = true,
   previewScale = 1,
   previewOffsetY = 0,
+  previewHeightReduction,
   closeOnLeft = false,
   headerLeftAction,
   headerRightAction,
@@ -91,7 +95,21 @@ export function StoryShareModal({
   const reservedHeight = children
     ? (showGenericShare ? 420 : 350)
     : (showGenericShare ? 320 : 250);
-  const previewWidth = Math.min(width - 72, Math.max(220, (height - reservedHeight) * 9 / 16)) * previewScale;
+  const defaultPreviewWidth = Math.min(width - 72, Math.max(220, (height - reservedHeight) * 9 / 16)) * previewScale;
+  const [previewAreaHeight, setPreviewAreaHeight] = useState<number | null>(null);
+  const previewWidth = previewHeightReduction
+    ? fitReflectionPreviewWidth(defaultPreviewWidth, previewAreaHeight)
+    : defaultPreviewWidth;
+  const noReduction = useSharedValue(0);
+  const reduction = previewHeightReduction ?? noReduction;
+  const displayScale = useDerivedValue(() => reflectionPreviewLayout(previewWidth, reduction.value).scale);
+  const previewSizeStyle = useAnimatedStyle(() => ({
+    width: previewWidth * displayScale.value,
+    height: previewWidth * 16 / 9 * displayScale.value,
+  }));
+  const previewScaleStyle = useAnimatedStyle(() => ({
+    transform: [{ scale: displayScale.value }],
+  }));
   const topInset = Platform.OS === "web" ? 67 : insets.top;
   const bottomInset = Platform.OS === "web" ? 34 : insets.bottom;
 
@@ -273,6 +291,11 @@ export function StoryShareModal({
     );
   };
 
+  const previewCallbacks = {
+    onReady: () => undefined,
+    onFailure: () => setError("No se pudo cargar la vista previa. Elige otro fondo o vuelve a intentar."),
+    onLogoReady: () => undefined,
+  };
   const content = (
     <View
         style={[
@@ -339,18 +362,25 @@ export function StoryShareModal({
         </View>
 
         <View
+          onLayout={previewHeightReduction ? event => {
+            const extra = previewHeightReduction.value;
+            // Measure only at rest, never set React state on every animation frame.
+            if (extra !== 0 && extra !== REFLECTION_GALLERY_EXPANSION) return;
+            const baselineHeight = event.nativeEvent.layout.height + extra;
+            setPreviewAreaHeight(current => current === null || Math.abs(current - baselineHeight) > 1 ? baselineHeight : current);
+          } : undefined}
           style={[
             styles.previewArea,
             previewOffsetY !== 0 && { transform: [{ translateY: previewOffsetY }] },
           ]}
         >
-          {renderArtwork(previewWidth, false, {
-            onReady: () => undefined,
-            onFailure: () => {
-              setError("No se pudo cargar la vista previa. Elige otro fondo o vuelve a intentar.");
-            },
-            onLogoReady: () => undefined,
-          })}
+          {previewHeightReduction ? (
+            <Animated.View style={[styles.previewSizeFrame, previewSizeStyle]}>
+              <Animated.View style={[{ width: previewWidth, height: previewWidth * 16 / 9 }, previewScaleStyle]}>
+                {renderArtwork(previewWidth, false, previewCallbacks, { displayScale })}
+              </Animated.View>
+            </Animated.View>
+          ) : renderArtwork(previewWidth, false, previewCallbacks)}
         </View>
 
         {children}
@@ -509,6 +539,11 @@ const styles = StyleSheet.create({
     alignItems: "center",
     justifyContent: "center",
     paddingVertical: 12,
+  },
+  previewSizeFrame: {
+    alignItems: "center",
+    justifyContent: "center",
+    overflow: "hidden",
   },
   error: {
     color: "#FFB9B2",
