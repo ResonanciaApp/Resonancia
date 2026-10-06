@@ -27,6 +27,12 @@ Al recortar avatares editoriales desde una lámina, todos deben tener el mismo t
 
 **How to apply:** Recortar sin deformar el dibujo, aplicar la misma máscara circular a todas las imágenes y comprobar que sus dimensiones y canales alfa coincidan antes de reemplazar los slots.
 
+Para optimizar estos avatares editoriales, usar WebP sin pérdida de calidad, no compresión visual con calidad reducida.
+
+**Why:** El usuario eligió la opción intermedia de la comparación: WebP sin pérdida, en lugar del PNG original o WebP con calidad 85.
+
+**How to apply:** Conservar resolución, máscara y píxeles RGBA exactos; verificar la imagen decodificada antes de publicar. No pasar a compresión con pérdida sin una nueva indicación del usuario.
+
 Una ampliación de capacidad del catálogo debe cubrir también el contrato de reordenación y su rango temporal, no solo el contador del Admin y la creación.
 
 **Why:** Al ampliar Perfil, el orden seguía limitado a una colección pequeña y un desplazamiento temporal fijo colisionaba con posiciones ya ocupadas.

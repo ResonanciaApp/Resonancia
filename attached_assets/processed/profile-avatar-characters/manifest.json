@@ -1,0 +1,514 @@
+{
+  "images": [
+    {
+      "number": 1,
+      "filePath": "attached_assets/processed/profile-avatar-characters/avatar-01.webp",
+      "sheet": 1,
+      "row": 1,
+      "column": 1,
+      "crop": {
+        "x": 134,
+        "y": 155,
+        "side": 549
+      },
+      "width": 512,
+      "height": 512,
+      "pixelHash": "53b70ef87903ce1a3ae0c7205068d6ad2c1224f187c84928ff98f87ec340e44e",
+      "sizeBytes": 165252,
+      "contentType": "image/webp"
+    },
+    {
+      "number": 2,
+      "filePath": "attached_assets/processed/profile-avatar-characters/avatar-02.webp",
+      "sheet": 1,
+      "row": 1,
+      "column": 2,
+      "crop": {
+        "x": 796,
+        "y": 155,
+        "side": 549
+      },
+      "width": 512,
+      "height": 512,
+      "pixelHash": "0f59f0ba05760c3d637512e95155605243c6c4e5acf43f461e8c8c2eec295f55",
+      "sizeBytes": 180760,
+      "contentType": "image/webp"
+    },
+    {
+      "number": 3,
+      "filePath": "attached_assets/processed/profile-avatar-characters/avatar-03.webp",
+      "sheet": 1,
+      "row": 1,
+      "column": 3,
+      "crop": {
+        "x": 1457,
+        "y": 155,
+        "side": 549
+      },
+      "width": 512,
+      "height": 512,
+      "pixelHash": "040c6c96957c15586077e1d5343710ff82ddb42b6147ee316a18c4aa5e2b591a",
+      "sizeBytes": 169178,
+      "contentType": "image/webp"
+    },
+    {
+      "number": 4,
+      "filePath": "attached_assets/processed/profile-avatar-characters/avatar-04.webp",
+      "sheet": 1,
+      "row": 1,
+      "column": 4,
+      "crop": {
+        "x": 2121,
+        "y": 155,
+        "side": 549
+      },
+      "width": 512,
+      "height": 512,
+      "pixelHash": "864482ec2eb432f3f97bc8b9c18f531cc4df24c15bf2845eead63ecb19fa2951",
+      "sizeBytes": 170106,
+      "contentType": "image/webp"
+    },
+    {
+      "number": 5,
+      "filePath": "attached_assets/processed/profile-avatar-characters/avatar-05.webp",
+      "sheet": 1,
+      "row": 1,
+      "column": 5,
+      "crop": {
+        "x": 2784,
+        "y": 155,
+        "side": 549
+      },
+      "width": 512,
+      "height": 512,
+      "pixelHash": "4e06db4c8a62c172cc759d608a079cf1cbcdc1f66afa255b0771f41442e97fca",
+      "sizeBytes": 164324,
+      "contentType": "image/webp"
+    },
+    {
+      "number": 6,
+      "filePath": "attached_assets/processed/profile-avatar-characters/avatar-06.webp",
+      "sheet": 1,
+      "row": 1,
+      "column": 6,
+      "crop": {
+        "x": 3448,
+        "y": 155,
+        "side": 549
+      },
+      "width": 512,
+      "height": 512,
+      "pixelHash": "67f0c2b9691aebbfa84d2b60812fa60ec32f30bbb474b68487b3b7e89f6dbc6b",
+      "sizeBytes": 180826,
+      "contentType": "image/webp"
+    },
+    {
+      "number": 7,
+      "filePath": "attached_assets/processed/profile-avatar-characters/avatar-07.webp",
+      "sheet": 1,
+      "row": 2,
+      "column": 1,
+      "crop": {
+        "x": 133,
+        "y": 749,
+        "side": 554
+      },
+      "width": 512,
+      "height": 512,
+      "pixelHash": "87b59023ab85ab56da3f388ca6cc7ab18b746e83cbe0ff71b7494bb0772fac64",
+      "sizeBytes": 179860,
+      "contentType": "image/webp"
+    },
+    {
+      "number": 8,
+      "filePath": "attached_assets/processed/profile-avatar-characters/avatar-08.webp",
+      "sheet": 1,
+      "row": 2,
+      "column": 2,
+      "crop": {
+        "x": 795,
+        "y": 749,
+        "side": 554
+      },
+      "width": 512,
+      "height": 512,
+      "pixelHash": "1de16270583ba4b8ed8e83b697c95e5a18b7e72418bb57083bcd97aca3cfa9c7",
+      "sizeBytes": 156658,
+      "contentType": "image/webp"
+    },
+    {
+      "number": 9,
+      "filePath": "attached_assets/processed/profile-avatar-characters/avatar-09.webp",
+      "sheet": 1,
+      "row": 2,
+      "column": 3,
+      "crop": {
+        "x": 1457,
+        "y": 749,
+        "side": 554
+      },
+      "width": 512,
+      "height": 512,
+      "pixelHash": "881ed0b5cb09997d33128ca414c456c946e100895cafa6849a03cdd02c7b3807",
+      "sizeBytes": 158892,
+      "contentType": "image/webp"
+    },
+    {
+      "number": 10,
+      "filePath": "attached_assets/processed/profile-avatar-characters/avatar-10.webp",
+      "sheet": 1,
+      "row": 2,
+      "column": 4,
+      "crop": {
+        "x": 2119,
+        "y": 749,
+        "side": 554
+      },
+      "width": 512,
+      "height": 512,
+      "pixelHash": "9f8ef3dfc0e2b0998780d4a2db46b0b183fb1332532ebaa77c78091393d2abf4",
+      "sizeBytes": 156192,
+      "contentType": "image/webp"
+    },
+    {
+      "number": 11,
+      "filePath": "attached_assets/processed/profile-avatar-characters/avatar-11.webp",
+      "sheet": 1,
+      "row": 2,
+      "column": 5,
+      "crop": {
+        "x": 2783,
+        "y": 749,
+        "side": 554
+      },
+      "width": 512,
+      "height": 512,
+      "pixelHash": "6f218c69550f5780ae58328986c1229e9e8a16f053d5b6656b56a13b26ffa0b2",
+      "sizeBytes": 160734,
+      "contentType": "image/webp"
+    },
+    {
+      "number": 12,
+      "filePath": "attached_assets/processed/profile-avatar-characters/avatar-12.webp",
+      "sheet": 1,
+      "row": 2,
+      "column": 6,
+      "crop": {
+        "x": 3446,
+        "y": 749,
+        "side": 554
+      },
+      "width": 512,
+      "height": 512,
+      "pixelHash": "35739cd22c629e79586c5230f4d9561792872a5adccd1ee15c24df4394885c35",
+      "sizeBytes": 190168,
+      "contentType": "image/webp"
+    },
+    {
+      "number": 13,
+      "filePath": "attached_assets/processed/profile-avatar-characters/avatar-13.webp",
+      "sheet": 1,
+      "row": 3,
+      "column": 1,
+      "crop": {
+        "x": 134,
+        "y": 1352,
+        "side": 554
+      },
+      "width": 512,
+      "height": 512,
+      "pixelHash": "7108ec40f41b4bbb168a28b9a596d9b85e9a227d85e4176fdabf0b0638079f2b",
+      "sizeBytes": 187460,
+      "contentType": "image/webp"
+    },
+    {
+      "number": 14,
+      "filePath": "attached_assets/processed/profile-avatar-characters/avatar-14.webp",
+      "sheet": 1,
+      "row": 3,
+      "column": 2,
+      "crop": {
+        "x": 797,
+        "y": 1352,
+        "side": 554
+      },
+      "width": 512,
+      "height": 512,
+      "pixelHash": "752bfd053ad913fdfbac94398db0fcfb03a3de3d8aecf8bd521ac1130566c847",
+      "sizeBytes": 170874,
+      "contentType": "image/webp"
+    },
+    {
+      "number": 15,
+      "filePath": "attached_assets/processed/profile-avatar-characters/avatar-15.webp",
+      "sheet": 1,
+      "row": 3,
+      "column": 3,
+      "crop": {
+        "x": 1457,
+        "y": 1352,
+        "side": 554
+      },
+      "width": 512,
+      "height": 512,
+      "pixelHash": "d02d45c977d355359e9d93ddf5b1a2c30f1f8661b9a55049c09e7383c72dd15d",
+      "sizeBytes": 164158,
+      "contentType": "image/webp"
+    },
+    {
+      "number": 16,
+      "filePath": "attached_assets/processed/profile-avatar-characters/avatar-16.webp",
+      "sheet": 1,
+      "row": 3,
+      "column": 4,
+      "crop": {
+        "x": 2119,
+        "y": 1352,
+        "side": 554
+      },
+      "width": 512,
+      "height": 512,
+      "pixelHash": "9b7e3be1c59ba733f36c1f8b3ef00b166e6023bcfcca38ab4a6b6944474a4b96",
+      "sizeBytes": 199764,
+      "contentType": "image/webp"
+    },
+    {
+      "number": 17,
+      "filePath": "attached_assets/processed/profile-avatar-characters/avatar-17.webp",
+      "sheet": 1,
+      "row": 3,
+      "column": 5,
+      "crop": {
+        "x": 2786,
+        "y": 1352,
+        "side": 554
+      },
+      "width": 512,
+      "height": 512,
+      "pixelHash": "0562275500ce787d6389ae7e7800815d67b0c72f36110ec9691490703110487b",
+      "sizeBytes": 181376,
+      "contentType": "image/webp"
+    },
+    {
+      "number": 18,
+      "filePath": "attached_assets/processed/profile-avatar-characters/avatar-18.webp",
+      "sheet": 1,
+      "row": 3,
+      "column": 6,
+      "crop": {
+        "x": 3447,
+        "y": 1352,
+        "side": 554
+      },
+      "width": 512,
+      "height": 512,
+      "pixelHash": "9ace3559b5df65b75fb57cb3cdfa961432c5573f85d578bef44b204f945627ae",
+      "sizeBytes": 163808,
+      "contentType": "image/webp"
+    },
+    {
+      "number": 19,
+      "filePath": "attached_assets/processed/profile-avatar-characters/avatar-19.webp",
+      "sheet": 1,
+      "row": 4,
+      "column": 1,
+      "crop": {
+        "x": 131,
+        "y": 1971,
+        "side": 559
+      },
+      "width": 512,
+      "height": 512,
+      "pixelHash": "545dcf9cfb289cbd5fac12e090f75ddad269488994cd362bbb35396c184181ef",
+      "sizeBytes": 176886,
+      "contentType": "image/webp"
+    },
+    {
+      "number": 20,
+      "filePath": "attached_assets/processed/profile-avatar-characters/avatar-20.webp",
+      "sheet": 1,
+      "row": 4,
+      "column": 2,
+      "crop": {
+        "x": 794,
+        "y": 1971,
+        "side": 559
+      },
+      "width": 512,
+      "height": 512,
+      "pixelHash": "97d0f6fbe43c7947b31c7709482bdfae05eaa30d98eb7821d0a6ad55208b327c",
+      "sizeBytes": 188880,
+      "contentType": "image/webp"
+    },
+    {
+      "number": 21,
+      "filePath": "attached_assets/processed/profile-avatar-characters/avatar-21.webp",
+      "sheet": 1,
+      "row": 4,
+      "column": 3,
+      "crop": {
+        "x": 1455,
+        "y": 1971,
+        "side": 559
+      },
+      "width": 512,
+      "height": 512,
+      "pixelHash": "603e91d090df59252088e2b171fa17d6e25f03f001431e3500e759f2a0e44476",
+      "sizeBytes": 184146,
+      "contentType": "image/webp"
+    },
+    {
+      "number": 22,
+      "filePath": "attached_assets/processed/profile-avatar-characters/avatar-22.webp",
+      "sheet": 1,
+      "row": 4,
+      "column": 4,
+      "crop": {
+        "x": 2116,
+        "y": 1971,
+        "side": 559
+      },
+      "width": 512,
+      "height": 512,
+      "pixelHash": "b1990862f61901916c3ed566c0c4c85a7332961f03561b16822cd497b06c9e82",
+      "sizeBytes": 139900,
+      "contentType": "image/webp"
+    },
+    {
+      "number": 23,
+      "filePath": "attached_assets/processed/profile-avatar-characters/avatar-23.webp",
+      "sheet": 1,
+      "row": 4,
+      "column": 5,
+      "crop": {
+        "x": 2778,
+        "y": 1971,
+        "side": 559
+      },
+      "width": 512,
+      "height": 512,
+      "pixelHash": "80f21d62d76597d0f9b5d48aa49711ec2863270402af8a307eeaf2dfedbb2008",
+      "sizeBytes": 183836,
+      "contentType": "image/webp"
+    },
+    {
+      "number": 24,
+      "filePath": "attached_assets/processed/profile-avatar-characters/avatar-24.webp",
+      "sheet": 1,
+      "row": 4,
+      "column": 6,
+      "crop": {
+        "x": 3444,
+        "y": 1971,
+        "side": 559
+      },
+      "width": 512,
+      "height": 512,
+      "pixelHash": "985e9a079799a99c18b65b4518eff3c2236d9034eba5027d68bce2a2e8662109",
+      "sizeBytes": 184360,
+      "contentType": "image/webp"
+    },
+    {
+      "number": 25,
+      "filePath": "attached_assets/processed/profile-avatar-characters/avatar-25.webp",
+      "sheet": 1,
+      "row": 5,
+      "column": 1,
+      "crop": {
+        "x": 131,
+        "y": 2594,
+        "side": 558
+      },
+      "width": 512,
+      "height": 512,
+      "pixelHash": "755328ba6e615a1cdb9c6702d2eddb7b8aeaa3416db73e3c36d452d6f263327f",
+      "sizeBytes": 185074,
+      "contentType": "image/webp"
+    },
+    {
+      "number": 26,
+      "filePath": "attached_assets/processed/profile-avatar-characters/avatar-26.webp",
+      "sheet": 1,
+      "row": 5,
+      "column": 2,
+      "crop": {
+        "x": 795,
+        "y": 2594,
+        "side": 558
+      },
+      "width": 512,
+      "height": 512,
+      "pixelHash": "73bc761668321ff3069e98b9973047dd7b69f779645ef16f4490a65969ca9c38",
+      "sizeBytes": 184036,
+      "contentType": "image/webp"
+    },
+    {
+      "number": 27,
+      "filePath": "attached_assets/processed/profile-avatar-characters/avatar-27.webp",
+      "sheet": 1,
+      "row": 5,
+      "column": 3,
+      "crop": {
+        "x": 1457,
+        "y": 2594,
+        "side": 558
+      },
+      "width": 512,
+      "height": 512,
+      "pixelHash": "3887577a0aba0500e7997ddc27cd31c75d580143c3e0960978d1fc0b6be53206",
+      "sizeBytes": 167216,
+      "contentType": "image/webp"
+    },
+    {
+      "number": 28,
+      "filePath": "attached_assets/processed/profile-avatar-characters/avatar-28.webp",
+      "sheet": 1,
+      "row": 5,
+      "column": 4,
+      "crop": {
+        "x": 2118,
+        "y": 2594,
+        "side": 558
+      },
+      "width": 512,
+      "height": 512,
+      "pixelHash": "80767e0213ae4f422fed632d272aa114b8f5b1d0f6daebf625a8b4d88b0a3e4e",
+      "sizeBytes": 180510,
+      "contentType": "image/webp"
+    },
+    {
+      "number": 29,
+      "filePath": "attached_assets/processed/profile-avatar-characters/avatar-29.webp",
+      "sheet": 1,
+      "row": 5,
+      "column": 5,
+      "crop": {
+        "x": 2781,
+        "y": 2594,
+        "side": 558
+      },
+      "width": 512,
+      "height": 512,
+      "pixelHash": "e9e42db398138c093fa67910b96cad2f4d357af86f8e88089b9cbddd557bbd1a",
+      "sizeBytes": 178206,
+      "contentType": "image/webp"
+    },
+    {
+      "number": 30,
+      "filePath": "attached_assets/processed/profile-avatar-characters/avatar-30.webp",
+      "sheet": 1,
+      "row": 5,
+      "column": 6,
+      "crop": {
+        "x": 3443,
+        "y": 2594,
+        "side": 558
+      },
+      "width": 512,
+      "height": 512,
+      "pixelHash": "5173264270f3352fafac555244a0ce7f9d7b46d7049036cdc716a0fe849b69fe",
+      "sizeBytes": 186066,
+      "contentType": "image/webp"
+    }
+  ]
+}

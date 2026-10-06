@@ -1,12 +1,23 @@
 import { execFileSync } from "node:child_process";
-import { mkdirSync, writeFileSync } from "node:fs";
-import { resolve } from "node:path";
+import { createHash } from "node:crypto";
+import { mkdirSync, mkdtempSync, readFileSync, rmSync, writeFileSync } from "node:fs";
+import { tmpdir } from "node:os";
+import { join, resolve } from "node:path";
 
-const outputDir = "attached_assets/processed/profile-avatar-catalog";
-const sheets = [
+const args = process.argv.slice(2);
+const option = (name) => args.includes(name) ? args[args.indexOf(name) + 1] : undefined;
+const outputDir = option("--output") ?? "attached_assets/processed/profile-avatar-catalog";
+const sheets = option("--sheet") ? [option("--sheet")] : [
   "attached_assets/image_1791323663792.png",
   "attached_assets/image_(1)_1791323663793.png",
 ];
+const losslessWebp = args.includes("--lossless-webp");
+const rowCentered = args.includes("--row-centered");
+const temporary = losslessWebp ? mkdtempSync(join(tmpdir(), "profile-avatar-crops-")) : null;
+const median = (values) => {
+  const sorted = [...values].sort((a, b) => a - b);
+  return (sorted[Math.floor((sorted.length - 1) / 2)] + sorted[Math.floor(sorted.length / 2)]) / 2;
+};
 mkdirSync(outputDir, { recursive: true });
 const mask = resolve(outputDir, "circle-mask.png");
 const magick = (...args) => execFileSync("magick", args, { encoding: "utf8", maxBuffer: 1024 * 1024 });
@@ -29,20 +40,36 @@ for (const [sheetIndex, sheet] of sheets.entries()) {
     if (Math.max(...cells.map(c => c.centerY)) - Math.min(...cells.map(c => c.centerY)) > 40) {
       throw new Error(`Invalid row grouping in sheet ${sheetIndex + 1}`);
     }
+    // Ignore connected decorations protruding above/below the circular backgrounds.
+    const rowDiameter = Math.round(median(cells.map(cell => cell.height)));
+    const rowCenterY = median(cells.map(cell => cell.centerY));
     for (const [column, cell] of cells.entries()) {
       // An inscribed square/circle trims only the uneven outer rim; scaling stays uniform.
-      const side = Math.min(cell.width, cell.height) - 4;
+      const side = (rowCentered ? Math.min(rowDiameter, cell.width) : Math.min(cell.width, cell.height)) - 4;
       const x = cell.x + Math.floor((cell.width - side) / 2);
-      const y = cell.y + Math.floor((cell.height - side) / 2);
+      const y = rowCentered ? Math.floor(rowCenterY - side / 2) : cell.y + Math.floor((cell.height - side) / 2);
       const number = images.length + 1;
-      const filePath = `${outputDir}/avatar-${String(number).padStart(2, "0")}.png`;
+      const filename = `avatar-${String(number).padStart(2, "0")}`;
+      const pngPath = losslessWebp ? join(temporary, `${filename}.png`) : `${outputDir}/${filename}.png`;
+      const filePath = `${outputDir}/${filename}.${losslessWebp ? "webp" : "png"}`;
       magick(sheet, "-crop", `${side}x${side}+${x}+${y}`, "+repage",
         "-resize", "512x512", mask, "-compose", "CopyOpacity", "-composite",
-        "-compose", "Over", `PNG32:${filePath}`);
+        "-compose", "Over", `PNG32:${pngPath}`);
+      let pixelHash;
+      if (losslessWebp) {
+        magick(pngPath, "-define", "webp:lossless=true", "-define", "webp:exact=true",
+          "-define", "webp:method=6", filePath);
+        const decodedHash = path => createHash("sha256").update(execFileSync("magick",
+          [path, "-depth", "8", "RGBA:-"], { maxBuffer: 2 * 1024 * 1024 })).digest("hex");
+        pixelHash = decodedHash(pngPath);
+        if (pixelHash !== decodedHash(filePath)) throw new Error(`Lossless verification failed for avatar ${number}`);
+      }
       images.push({ number, filePath, sheet: sheetIndex + 1, row: row + 1, column: column + 1,
-        crop: { x, y, side }, width: 512, height: 512 });
+        crop: { x, y, side }, width: 512, height: 512,
+        ...(losslessWebp ? { pixelHash, sizeBytes: readFileSync(filePath).length, contentType: "image/webp" } : {}) });
     }
   }
 }
 writeFileSync(`${outputDir}/manifest.json`, JSON.stringify({ images }, null, 2));
+if (temporary) rmSync(temporary, { recursive: true, force: true });
 console.log(`Prepared ${images.length} circular avatars, all 512×512.`);
