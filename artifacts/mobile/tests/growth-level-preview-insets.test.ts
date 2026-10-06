@@ -9,6 +9,14 @@ import * as wallBorderConstants from "../constants/reflectionWallBorder.ts";
 
 const TEST_GRADIENT = ["#060A0F", "#111122"] as const;
 
+test("the complete journey moves down 15px without changing timeline and row geometry", () => {
+  const source = readFileSync(new URL("../components/GrowthJourney.tsx", import.meta.url), "utf8");
+  assert.match(source, /section: \{\s*marginHorizontal: 16,\s*marginTop: 15,\s*paddingBottom: 12/);
+  assert.match(source, /<View style=\{styles\.section\}>[\s\S]*?<GrowthStageHeading[\s\S]*?<GrowthTimeline>/);
+  assert.match(source, /timeline: \{ position: "relative" \}/);
+  assert.match(source, /row: \{ height: GROWTH_ROW_HEIGHT, position: "relative", justifyContent: "center" \}/);
+});
+
 test("only the nine Florecimiento images use the new soft luminous collection", () => {
   const source = readFileSync(new URL("../data/growthLevels.ts", import.meta.url), "utf8");
   const firstStage = source.split("export const ascentLevels")[0];
@@ -513,6 +521,7 @@ test("all avatar reward rows move up 10px together and use the positioned day's 
           assert.ok(reward);
           assert.ok(lock);
           assert.ok(reward.includes(`data-margin-top="${12 - 10}"`));
+          assert.ok(reward.includes('data-transform="[{&quot;translateY&quot;:-4}]"'));
           assert.ok(lock.includes(`data-color="${streakModule.exports.getPositionedDayGradient(gradient)[0]}"`));
           assert.match(html, /Desbloquea 50 avatares nuevos/);
         }
@@ -790,7 +799,7 @@ test("Florecimiento pills center the golden lotus beside days, omit streak wordi
       assert.match(html, /data-padding-vertical="4"/);
       assert.match(html, /data-testid="test-day-pill"[^>]*data-margin-bottom="10"/);
       for (const field of ["title", "description"]) {
-        assert.match(html, new RegExp(`data-testid="test-stage-${field}"[^>]*data-transform="\\[\\{&quot;translateY&quot;:6\\}\\]"`));
+        assert.match(html, new RegExp(`data-testid="test-stage-${field}"[^>]*data-transform="\\[\\{&quot;translateY&quot;:2\\}\\]"`));
       }
       assert.ok(html.indexOf('data-icon="spa"') < html.lastIndexOf(label));
       assert.ok(html.includes(label));

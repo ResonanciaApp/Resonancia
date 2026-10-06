@@ -502,6 +502,7 @@ const styles = StyleSheet.create({
   previewStory: { fontFamily: "Manrope", fontSize: 11, lineHeight: 16 },
   section: {
     marginHorizontal: 16,
+    marginTop: 15,
     paddingBottom: 12,
   },
   sectionHeading: { alignItems: "center", marginBottom: 8 },
@@ -583,6 +584,7 @@ const styles = StyleSheet.create({
   rewardCopy: { flex: 0, paddingTop: 34 },
   reward: {
     alignSelf: "stretch",
+    transform: [{ translateY: -4 }],
     marginTop: 2,
     minHeight: 50,
     paddingVertical: 8,
@@ -610,7 +612,7 @@ const styles = StyleSheet.create({
   // Keep the copy block's total height unchanged when shortening the pill.
   timelineDayPill: { paddingVertical: 2.5, marginBottom: 10 },
   timelineBloomDayPill: { paddingVertical: 4 },
-  timelineTextOffset: { transform: [{ translateY: 6 }] },
+  timelineTextOffset: { transform: [{ translateY: 2 }] },
   bloomLotus: {
     lineHeight: 12,
     includeFontPadding: false,
