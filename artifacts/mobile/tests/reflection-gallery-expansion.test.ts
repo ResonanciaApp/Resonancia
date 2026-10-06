@@ -213,3 +213,38 @@ test("el control está fuera de la grilla y solo este flujo usa los nuevos fondo
   assert.match(modal, /lightActionButtons && styles.actionTextSoftDark,\s*instagramActionTextStyle/);
   assert.match(source("../app/_layout.tsx"), /Manrope650: require\("\.\.\/assets\/fonts\/Manrope650\.ttf"\)/);
 });
+
+test("el contenedor del chevron no desplaza ni reduce el hero y conserva sus límites táctiles", () => {
+  const share = source("../components/ReflectionShare.tsx");
+  const ast = ts.createSourceFile("ReflectionShare.tsx", share, ts.ScriptTarget.Latest, true, ts.ScriptKind.TSX);
+  const styles: Record<string, Record<string, number | string>> = {};
+  const visit = (node: ts.Node) => {
+    if (ts.isPropertyAssignment(node) && ["gallerySection", "galleryControls", "galleryContainer"].includes(node.name.getText(ast))) {
+      styles[node.name.getText(ast)] = runInNewContext(`(${node.initializer.getText(ast)})`, { REFLECTION_GALLERY_HEIGHT });
+    }
+    ts.forEachChild(node, visit);
+  };
+  visit(ast);
+  const { gallerySection: section, galleryControls: controls, galleryContainer: gallery } = styles;
+  assert.equal(controls.position, "absolute");
+  assert.equal(controls.top, 0);
+  assert.ok(Number(section.paddingTop) >= Number(controls.height));
+  assert.equal(Number(section.paddingTop) + Number(section.marginTop), 0);
+  for (const delta of [0, 30, 60, 120]) {
+    const originalOccupiedHeight = REFLECTION_GALLERY_HEIGHT + delta + 20;
+    const occupiedHeight = Number(section.paddingTop) + Number(section.marginTop)
+      + Number(gallery.height) + delta + Number(section.marginBottom);
+    assert.equal(occupiedHeight, originalOccupiedHeight);
+    for (const availableHeight of [450, 600, 750]) {
+      const originalArea = availableHeight - originalOccupiedHeight;
+      const currentArea = availableHeight - occupiedHeight;
+      const originalPreview = reflectionPreviewLayout(fitReflectionPreviewWidth(235.8, originalArea + delta), delta);
+      const currentPreview = reflectionPreviewLayout(fitReflectionPreviewWidth(235.8, currentArea + delta), delta);
+      assert.deepEqual(currentPreview, originalPreview);
+      close((currentArea - currentPreview.height) / 2, (originalArea - originalPreview.height) / 2);
+    }
+  }
+  assert.match(share, /style=\{styles\.gallerySection\} pointerEvents="box-none"/);
+  assert.match(share, /style=\{styles\.galleryControls\} pointerEvents="box-none"/);
+  assert.match(share, /previewOffsetY=\{-20\}/);
+});

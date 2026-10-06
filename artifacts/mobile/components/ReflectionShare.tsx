@@ -407,8 +407,8 @@ export function ReflectionShare({ reflection, onClose }: { reflection: Reflectio
         );
       }}
     >
-      <View style={styles.gallerySection}>
-        <View style={styles.galleryControls}>
+      <View style={styles.gallerySection} pointerEvents="box-none">
+        <View style={styles.galleryControls} pointerEvents="box-none">
           <Pressable
             onPress={toggle}
             accessibilityRole="button"
@@ -527,11 +527,18 @@ const styles = StyleSheet.create({
     padding: 8,
   },
   gallerySection: {
+    // Keep the external control inside touchable bounds without consuming
+    // preview space: its padding and negative margin cancel each other.
+    paddingTop: 48,
+    marginTop: -48,
     marginBottom: 20,
   },
   galleryControls: {
+    position: "absolute",
+    top: 0,
+    right: 0,
+    zIndex: 1,
     height: 44,
-    marginBottom: 4,
     alignItems: "flex-end",
     justifyContent: "center",
   },
