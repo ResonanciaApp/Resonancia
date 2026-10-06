@@ -317,6 +317,8 @@ function GrowthRow({
           style={[
             styles.dayPill,
             florecimiento && styles.bloomDayPill,
+            styles.timelineDayPill,
+            florecimiento && styles.timelineBloomDayPill,
             theme.id === "cloudy" && { backgroundColor: CLOUDY_GROWTH_DAY_PILL_BACKGROUND },
           ]}
         >
@@ -334,10 +336,10 @@ function GrowthRow({
             {dayLabel}
           </Text>
         </View>
-        <Text style={[styles.name, { color: status === "locked" ? GROWTH_COLORS.muted : colors.foreground }]}>
+        <Text testID={`${level.id}-stage-title`} style={[styles.name, styles.timelineTextOffset, { color: status === "locked" ? GROWTH_COLORS.muted : colors.foreground }]}>
           {level.name}
         </Text>
-        <Text style={[styles.story, { color: status === "locked" ? GROWTH_COLORS.muted : colors.mutedForeground }]}>
+        <Text testID={`${level.id}-stage-description`} style={[styles.story, styles.timelineTextOffset, { color: status === "locked" ? GROWTH_COLORS.muted : colors.mutedForeground }]}>
           {level.story}
         </Text>
         </View>
@@ -605,6 +607,10 @@ const styles = StyleSheet.create({
   },
   days: { fontFamily: "Manrope", fontSize: 10, fontWeight: "600" },
   bloomDayPill: { paddingVertical: 5.5, flexDirection: "row", alignItems: "center", gap: 4 },
+  // Keep the copy block's total height unchanged when shortening the pill.
+  timelineDayPill: { paddingVertical: 2.5, marginBottom: 10 },
+  timelineBloomDayPill: { paddingVertical: 4 },
+  timelineTextOffset: { transform: [{ translateY: 6 }] },
   bloomLotus: {
     lineHeight: 12,
     includeFontPadding: false,

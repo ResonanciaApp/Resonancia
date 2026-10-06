@@ -787,14 +787,19 @@ test("Florecimiento pills center the golden lotus beside days, omit streak wordi
       const lotus = html.match(/<div[^>]*data-icon="spa"[^>]*>/)?.[0] ?? "";
       assert.doesNotMatch(lotus, /data-position="absolute"/);
       assert.match(html, /data-direction="row" data-align="center"/);
-      assert.match(html, /data-padding-vertical="5.5"/);
+      assert.match(html, /data-padding-vertical="4"/);
+      assert.match(html, /data-testid="test-day-pill"[^>]*data-margin-bottom="10"/);
+      for (const field of ["title", "description"]) {
+        assert.match(html, new RegExp(`data-testid="test-stage-${field}"[^>]*data-transform="\\[\\{&quot;translateY&quot;:6\\}\\]"`));
+      }
       assert.ok(html.indexOf('data-icon="spa"') < html.lastIndexOf(label));
       assert.ok(html.includes(label));
       const ascent = renderToStaticMarkup(React.createElement(GrowthRow, { level, hasNext: false, status }));
       assert.doesNotMatch(ascent, /data-icon="spa"|de racha/);
-      assert.match(ascent, /data-padding-vertical="4"/);
+      assert.match(ascent, /data-padding-vertical="2.5"/);
     }
   }
   assert.equal((5.5 - 4) * 2, 3);
+  assert.equal((4 - 2.5) * 2, 3);
   assert.doesNotMatch(render(), /data-icon="spa"|de racha|data-padding-vertical="5.5"/);
 });
