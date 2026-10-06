@@ -18,6 +18,8 @@ import {
   Loader2,
   Trash2,
   Upload,
+  LockKeyhole,
+  UnlockKeyhole,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { toast } from "sonner";
@@ -120,8 +122,27 @@ function ScopeSection({
   const [dirty, setDirty] = useState(false);
   const [uploading, setUploading] = useState(false);
   const [expanded, setExpanded] = useState(false);
+  const [lockingId, setLockingId] = useState<string | null>(null);
+  const lockingRef = useRef(false);
   
   const dragIdx = useRef<number | null>(null);
+
+  async function handleToggleLock(preset: CoverPreset) {
+    if (lockingRef.current || isMutating || dirty) return;
+    lockingRef.current = true;
+    setLockingId(preset.id);
+    try {
+      const updated = await updatePreset.mutateAsync({ id: preset.id, data: { isLocked: !preset.isLocked } });
+      setPresets((current) => current.map((item) => item.id === updated.id ? updated : item));
+      await query.refetch();
+      toast.success(updated.isLocked ? "Avatar bloqueado" : "Avatar desbloqueado");
+    } catch {
+      toast.error("No se pudo cambiar el bloqueo del avatar");
+    } finally {
+      lockingRef.current = false;
+      setLockingId(null);
+    }
+  }
 
   useEffect(() => {
     if (!query.data || dirty) return;
@@ -316,7 +337,7 @@ function ScopeSection({
             return (
               <div
                 key={preset.id}
-                draggable
+                draggable={!isMutating && lockingId === null}
                 onDragStart={() => {
                   dragIdx.current = index;
                 }}
@@ -332,7 +353,7 @@ function ScopeSection({
                   {index + 1}
                 </span>
                 
-                <div className="h-12 w-12 shrink-0 overflow-hidden rounded-md border border-border bg-secondary">
+                <div className="relative h-12 w-12 shrink-0 overflow-hidden rounded-md border border-border bg-secondary">
                   {previewUrl(preset.objectPath, preset.builtinKey) ? (
                     <img
                       src={previewUrl(preset.objectPath, preset.builtinKey)!}
@@ -342,6 +363,11 @@ function ScopeSection({
                   ) : (
                     <div className="flex h-full w-full items-center justify-center">
                       <ImageIcon className="h-5 w-5 text-muted-foreground" />
+                    </div>
+                  )}
+                  {scope.value === "profile" && preset.isLocked && (
+                    <div className="pointer-events-none absolute inset-0 flex items-center justify-center" style={{ backgroundColor: "rgba(255,255,255,0.4)" }}>
+                      <LockKeyhole className="h-4 w-4 text-slate-900" aria-hidden="true" />
                     </div>
                   )}
                 </div>
@@ -356,6 +382,21 @@ function ScopeSection({
                 </div>
 
                   <div className="flex shrink-0 items-center gap-2">
+                  {scope.value === "profile" && (
+                    <Button
+                      type="button"
+                      variant="ghost"
+                      size="sm"
+                      className="h-8 px-2"
+                      aria-label={preset.isLocked ? `Desbloquear ${preset.label}` : `Bloquear ${preset.label}`}
+                      title={preset.isLocked ? "Desbloquear avatar" : "Bloquear avatar"}
+                      aria-pressed={!!preset.isLocked}
+                      disabled={isMutating || dirty || lockingId !== null}
+                      onClick={() => void handleToggleLock(preset)}
+                    >
+                      {lockingId === preset.id ? <Loader2 className="h-4 w-4 animate-spin" /> : preset.isLocked ? <LockKeyhole className="h-4 w-4" /> : <UnlockKeyhole className="h-4 w-4" />}
+                    </Button>
+                  )}
                   <label className={`inline-flex h-8 cursor-pointer items-center justify-center rounded-md px-3 text-xs font-medium transition-colors hover:bg-secondary hover:text-foreground ${isMutating || dirty ? 'pointer-events-none opacity-50 text-muted-foreground' : 'text-muted-foreground'}`}>
                     <input
                       type="file"

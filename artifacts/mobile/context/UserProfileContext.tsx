@@ -44,6 +44,9 @@ interface ProfileUpdate {
   lastName?: string;
   location?: string;
   description?: string;
+  /** Restore the last server-confirmed avatar after a rejected offline choice. */
+  avatarPresetId?: string | null;
+  photoUri?: string | null;
 }
 
 interface UserProfileContextValue extends UserProfile {
@@ -112,6 +115,8 @@ export function UserProfileProvider({ children }: { children: React.ReactNode })
         ...(fields.lastName !== undefined ? { lastName: fields.lastName.trim() } : {}),
         ...(fields.location !== undefined ? { location: fields.location.trim() } : {}),
         ...(fields.description !== undefined ? { description: fields.description.trim() } : {}),
+        ...(fields.avatarPresetId !== undefined ? { avatarPresetId: fields.avatarPresetId } : {}),
+        ...(fields.photoUri !== undefined ? { photoUri: fields.photoUri } : {}),
       });
     },
     [profile, persist],

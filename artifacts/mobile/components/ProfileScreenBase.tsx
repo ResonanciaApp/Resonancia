@@ -44,6 +44,7 @@ import {
   getGetMyExpansorProfileQueryKey,
   useUpdateMyExpansorProfile,
   deleteMyAccount,
+  updateMe,
   type ExpansorProfile,
 } from "@workspace/api-client-react";
 import { useQueryClient } from "@tanstack/react-query";
@@ -83,7 +84,7 @@ import { ReflectionSavedBanner } from "@/components/ReflectionSavedBanner";
 import type { HomeReflectionWallHandle } from "@/components/HomeReflectionWallSection";
 import { GrowthJourneySheet } from "@/components/GrowthJourneySheet";
 import { GrowthLevelPreviewCard } from "@/components/GrowthJourney";
-import { useCoverPresetCatalog } from "@/lib/cover-preset-catalog";
+import { useCoverPresetCatalogState } from "@/lib/cover-preset-catalog";
 import {
   gradientColors,
   type GeoSettings,
@@ -279,7 +280,9 @@ export function ProfileScreenBase({
     setPhotoUri,
     setAvatarPresetId,
   } = useUserProfile();
-  const profileCatalog = useCoverPresetCatalog("profile");
+  const { items: profileCatalog, refresh: refreshProfileCatalog } = useCoverPresetCatalogState("profile");
+  const [savingAvatar, setSavingAvatar] = useState(false);
+  const savingAvatarRef = useRef(false);
 
   const resourceBlockBackground = "rgba(0,0,0,0.16)";
   const libraryHeaderButtonBackground = getLibraryTabSurface(activeSceneId);
@@ -709,9 +712,29 @@ export function ProfileScreenBase({
     }
   };
 
-  const pickAccountAvatarPreset = (preset: (typeof profileCatalog)[number]) => {
-    setAvatarPresetId(preset.key.startsWith("profile:") ? preset.key : `profile:${preset.key}`);
+  const pickAccountAvatarPreset = async (preset: (typeof profileCatalog)[number]) => {
+    if (preset.isLocked || savingAvatarRef.current) return;
+    savingAvatarRef.current = true;
+    setSavingAvatar(true);
+    try {
+      // Confirm before persisting locally so a freshly locked avatar cannot
+      // become a pending offline selection.
+      const saved = await updateMe({ avatarPresetId: preset.id });
+      qc.setQueryData(getGetMeQueryKey(), saved);
+      setAvatarPresetId(saved.avatarPresetId ?? null);
+      void qc.invalidateQueries();
+    } catch {
+      Alert.alert("Avatar no disponible", "No se pudo elegir este avatar. Puede estar bloqueado o no haber conexión.");
+      await refreshProfileCatalog();
+    } finally {
+      savingAvatarRef.current = false;
+      setSavingAvatar(false);
+    }
   };
+
+  useEffect(() => {
+    if (accountPhotoPickerVisible) void refreshProfileCatalog();
+  }, [accountPhotoPickerVisible, refreshProfileCatalog]);
 
   useEffect(() => {
     if (
@@ -1083,8 +1106,9 @@ export function ProfileScreenBase({
                     <Pressable
                       onPress={() => void pickAccountAvatarPreset(preset)}
                       accessibilityRole="button"
-                      accessibilityLabel={`Avatar: ${preset.label}`}
-                      accessibilityState={{ selected }}
+                      accessibilityLabel={`Avatar: ${preset.label}${preset.isLocked ? ", bloqueado" : ""}`}
+                      accessibilityState={{ selected, disabled: !!preset.isLocked || savingAvatar }}
+                      disabled={!!preset.isLocked || savingAvatar}
                       style={({ pressed }) => [
                         styles.accountCoverPresetFrame,
                         selected && styles.accountCoverPresetFrameSelected,
@@ -1096,6 +1120,11 @@ export function ProfileScreenBase({
                         style={styles.accountCoverPresetPhoto}
                         contentFit="cover"
                       />
+                      {preset.isLocked && (
+                        <View pointerEvents="none" style={[StyleSheet.absoluteFill, styles.accountAvatarLockedOverlay]}>
+                          <MaterialCommunityIcons name="lock" size={16} color="#060A0F" accessibilityElementsHidden importantForAccessibility="no" />
+                        </View>
+                      )}
                     </Pressable>
                   );
                 }}
@@ -2340,6 +2369,16 @@ const styles = StyleSheet.create({
   },
   accountCoverPresetFrameSelected: {
     borderColor: "#F9F9F9",
+  },
+  accountAvatarLockedOverlay: {
+    top: 4,
+    bottom: 4,
+    left: 4,
+    right: 4,
+    borderRadius: 27.5,
+    backgroundColor: "rgba(255,255,255,0.4)",
+    alignItems: "center",
+    justifyContent: "center",
   },
   accountCoverPresetPhoto: {
     flex: 1,

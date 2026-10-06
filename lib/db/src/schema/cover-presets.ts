@@ -1,5 +1,5 @@
 import { sql } from "drizzle-orm";
-import { pgEnum, pgTable, text, integer, timestamp, uniqueIndex, check } from "drizzle-orm/pg-core";
+import { pgEnum, pgTable, text, integer, boolean, timestamp, uniqueIndex, check } from "drizzle-orm/pg-core";
 import { createInsertSchema } from "drizzle-zod";
 import { z } from "zod/v4";
 
@@ -28,6 +28,7 @@ export const coverPresetsTable = pgTable(
     scope: coverPresetScopeEnum("scope").notNull(),
     key: text("key").notNull(),
     label: text("label").notNull(),
+    isLocked: boolean("is_locked").notNull().default(false),
     objectPath: text("object_path"),
     builtinKey: text("builtin_key"),
     sortOrder: integer("sort_order").notNull().default(0),

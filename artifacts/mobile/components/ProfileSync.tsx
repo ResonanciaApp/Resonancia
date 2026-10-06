@@ -17,6 +17,7 @@ import { useEffect, useRef } from "react";
 
 import {
   getGetMeQueryKey,
+  getMe,
   getGetSharedMixesQueryKey,
   useGetMe,
   useUpdateMe,
@@ -48,7 +49,9 @@ function avatarMeta(uri: string): { contentType: string; fileName: string } {
 
 export function ProfileSync() {
   const { isSignedIn } = useAuth();
-  const { username, location, photoUri, avatarPresetId, profileLoaded } = useUserProfile();
+  const { username, location, photoUri, avatarPresetId, profileLoaded, updateProfile } = useUserProfile();
+  const latestAvatarPresetId = useRef(avatarPresetId);
+  latestAvatarPresetId.current = avatarPresetId;
   const queryClient = useQueryClient();
 
   const { data: me } = useGetMe({
@@ -150,8 +153,15 @@ export function ProfileSync() {
           await AsyncStorage.removeItem(markerKey);
           queryClient.invalidateQueries({ queryKey: getGetMeQueryKey() });
           queryClient.invalidateQueries({ queryKey: getGetSharedMixesQueryKey() });
-        } catch {
-          // reintentamos en el próximo arranque
+        } catch (error) {
+          if ((error as { data?: { code?: string } }).data?.code === "AVATAR_LOCKED") {
+            const current = await getMe().catch(() => null);
+            if (current && latestAvatarPresetId.current === avatarPresetId) {
+              updateProfile({ avatarPresetId: current.avatarPresetId ?? null, photoUri: current.avatarUrl ?? null });
+              queryClient.setQueryData(getGetMeQueryKey(), current);
+            }
+          }
+          // Transient failures retain the offline choice for the next sync.
         } finally {
           avatarSyncing.current = false;
         }

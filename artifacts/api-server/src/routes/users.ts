@@ -79,20 +79,6 @@ router.patch("/me", requireAuth, async (req, res) => {
     res.status(403).json({ error: "No podés usar un archivo que no te pertenece" });
     return;
   }
-  if (parsed.data.avatarPresetId !== undefined && parsed.data.avatarPresetId !== null) {
-    const [preset] = await db
-      .select({ id: coverPresetsTable.id })
-      .from(coverPresetsTable)
-      .where(and(
-        eq(coverPresetsTable.id, parsed.data.avatarPresetId),
-        eq(coverPresetsTable.scope, "profile"),
-      ))
-      .limit(1);
-    if (!preset) {
-      res.status(400).json({ error: "La portada de perfil no existe" });
-      return;
-    }
-  }
   const updates: Partial<typeof usersTable.$inferInsert> = {};
   if (parsed.data.username !== undefined) updates.username = parsed.data.username;
   if (parsed.data.displayName !== undefined) updates.displayName = parsed.data.displayName;
@@ -111,13 +97,32 @@ router.patch("/me", requireAuth, async (req, res) => {
   }
 
   try {
-    const [updated] = await db
-      .update(usersTable)
-      .set(updates)
-      .where(eq(usersTable.id, me.id))
-      .returning();
+    const updated = await db.transaction(async (tx) => {
+      const [currentUser] = await tx.select().from(usersTable)
+        .where(eq(usersTable.id, me.id)).for("update");
+      if (parsed.data.avatarPresetId !== undefined && parsed.data.avatarPresetId !== null) {
+        // Hold the preset row through assignment so an admin lock cannot race
+        // between validation and saving. Existing selections remain valid.
+        const [preset] = await tx.select().from(coverPresetsTable)
+          .where(and(eq(coverPresetsTable.id, parsed.data.avatarPresetId), eq(coverPresetsTable.scope, "profile")))
+          .limit(1).for("update");
+        if (!preset) throw new Error("avatar_missing");
+        if (preset.isLocked && currentUser.avatarPresetId !== preset.id) throw new Error("avatar_locked");
+      }
+      const [saved] = await tx.update(usersTable).set(updates)
+        .where(eq(usersTable.id, me.id)).returning();
+      return saved;
+    });
     res.json(toProfile(updated));
   } catch (err: unknown) {
+    if (err instanceof Error && err.message === "avatar_locked") {
+      res.status(403).json({ error: "Este avatar está bloqueado", code: "AVATAR_LOCKED" });
+      return;
+    }
+    if (err instanceof Error && err.message === "avatar_missing") {
+      res.status(400).json({ error: "La portada de perfil no existe" });
+      return;
+    }
     const code = (err as { code?: string })?.code;
     if (code === "23505") {
       res.status(409).json({ error: "Ese nombre de usuario ya está en uso" });

@@ -153,3 +153,4 @@
 - [Títulos de cards](card-title-alignment.md) — títulos debajo de la imagen y alineados al borde izquierdo; Ambientales de Sonidos conservan su excepción centrada
 - [Velocidad de apertura de paneles](sheet-opening-geometry.md) — igualar el resorte no basta: comparar el recorrido visible desde la altura real del panel
 - [Compartir Frase del día](daily-quote-sharing.md) — tarjeta con marca y autor; no inventar enlaces; Messenger iOS comparte PNG mediante la hoja del sistema
+- [Bloqueo editorial de avatares](profile-avatar-editorial-lock.md) — manual y solo Perfil; bloquea nuevas elecciones, conserva las ya confirmadas y no conecta recompensas automáticamente

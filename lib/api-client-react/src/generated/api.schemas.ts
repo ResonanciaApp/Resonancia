@@ -3348,6 +3348,8 @@ export interface CoverPreset {
   key: string;
   label: string;
   sortOrder: number;
+  /** Bloqueo editorial; solo aplica a avatares de Perfil. */
+  isLocked?: boolean;
   source: CoverPresetSource;
   /** @nullable */
   builtinKey?: string | null;
@@ -3382,6 +3384,8 @@ export interface CoverPresetInput {
 }
 
 export interface CoverPresetUpdate {
+  /** Bloquear o desbloquear un avatar de Perfil. */
+  isLocked?: boolean;
   /**
      * @minLength 1
      * @maxLength 120

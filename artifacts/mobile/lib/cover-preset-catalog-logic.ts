@@ -2,6 +2,7 @@ export type CatalogRecord = {
   id: string;
   key: string;
   label: string;
+  isLocked?: boolean;
   builtinKey?: string | null;
   objectPath?: string | null;
 };

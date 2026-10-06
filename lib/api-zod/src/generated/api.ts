@@ -56,6 +56,7 @@ export const ListCoverPresetsResponse = zod.object({
   "key": zod.string(),
   "label": zod.string(),
   "sortOrder": zod.number(),
+  "isLocked": zod.boolean().optional().describe('Bloqueo editorial; solo aplica a avatares de Perfil.'),
   "source": zod.enum(['builtin', 'object']),
   "builtinKey": zod.string().nullish(),
   "objectPath": zod.string().nullish(),
@@ -77,6 +78,7 @@ export const ListAdminCoverPresetsResponse = zod.object({
   "key": zod.string(),
   "label": zod.string(),
   "sortOrder": zod.number(),
+  "isLocked": zod.boolean().optional().describe('Bloqueo editorial; solo aplica a avatares de Perfil.'),
   "source": zod.enum(['builtin', 'object']),
   "builtinKey": zod.string().nullish(),
   "objectPath": zod.string().nullish(),
@@ -118,6 +120,7 @@ export const ReorderAdminCoverPresetsResponse = zod.object({
   "key": zod.string(),
   "label": zod.string(),
   "sortOrder": zod.number(),
+  "isLocked": zod.boolean().optional().describe('Bloqueo editorial; solo aplica a avatares de Perfil.'),
   "source": zod.enum(['builtin', 'object']),
   "builtinKey": zod.string().nullish(),
   "objectPath": zod.string().nullish(),
@@ -145,6 +148,7 @@ export const updateAdminCoverPresetBodyObjectPathRegExp = new RegExp('^\/objects
 
 
 export const UpdateAdminCoverPresetBody = zod.object({
+  "isLocked": zod.boolean().optional().describe('Bloquear o desbloquear un avatar de Perfil.'),
   "label": zod.string().min(1).max(updateAdminCoverPresetBodyLabelMax).optional(),
   "objectPath": zod.string().regex(updateAdminCoverPresetBodyObjectPathRegExp).nullish()
 })
@@ -155,6 +159,7 @@ export const UpdateAdminCoverPresetResponse = zod.object({
   "key": zod.string(),
   "label": zod.string(),
   "sortOrder": zod.number(),
+  "isLocked": zod.boolean().optional().describe('Bloqueo editorial; solo aplica a avatares de Perfil.'),
   "source": zod.enum(['builtin', 'object']),
   "builtinKey": zod.string().nullish(),
   "objectPath": zod.string().nullish(),

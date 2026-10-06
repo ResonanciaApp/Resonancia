@@ -14,6 +14,21 @@ const item = (id: string): ResolvedCatalogRecord<string> => ({
   source: `source:${id}`,
 });
 
+test("locked avatars keep their flag when resolving images, caching, and recovering offline", () => {
+  const raw = { id: "profile:one", key: "one", label: "One", isLocked: true };
+  for (const resolved of [
+    resolveCatalogRecord(raw, "builtin", undefined),
+    resolveCatalogRecord(raw, undefined, "remote"),
+  ]) {
+    assert.ok(resolved);
+    assert.equal(resolved.isLocked, true);
+    const cached = JSON.parse(JSON.stringify([resolved]));
+    assert.equal(authoritativeSnapshot(null, cached, [item("bootstrap")])[0].isLocked, true);
+    const unlocked = { ...resolved, isLocked: false };
+    assert.equal(authoritativeSnapshot([unlocked], cached, [item("bootstrap")])[0].isLocked, false);
+  }
+});
+
 test("uses bundled bootstrap until a valid remote snapshot arrives", () => {
   const bootstrap = [item("one"), item("two")];
   assert.deepEqual(authoritativeSnapshot(null, [], bootstrap), bootstrap);

@@ -4,7 +4,7 @@ import {
   type CoverPreset,
   type CoverPresetScope,
 } from "@workspace/api-client-react";
-import { useEffect, useMemo, useState } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
 
 import {
   PLAYLIST_COVER_PRESETS,
@@ -23,6 +23,7 @@ export type CoverCatalogItem = {
   id: string;
   key: string;
   label: string;
+  isLocked?: boolean;
   source: number | { uri: string };
   fallbackSource?: number;
   builtinKey?: string | null;
@@ -54,6 +55,7 @@ function bundledRawCatalog(scope: CoverCatalogScope): CoverPreset[] {
       ? String(index + 1).padStart(2, "0")
       : preset.id,
     label: preset.label,
+    isLocked: false,
     sortOrder: index,
     source: "builtin",
     builtinKey: scope === "reflection-story"
@@ -134,9 +136,14 @@ export function useCoverPresetCatalog(scope: CoverCatalogScope): CoverCatalogIte
 export function useCoverPresetCatalogState(scope: CoverCatalogScope): {
   items: CoverCatalogItem[];
   hydrated: boolean;
+  refresh: () => Promise<void>;
 } {
   const [version, setVersion] = useState(0);
   const [hydrated, setHydrated] = useState(false);
+  const refreshCatalog = useCallback(async () => {
+    await refresh(scope);
+    setVersion((value) => value + 1);
+  }, [scope]);
   useEffect(() => {
     let active = true;
     setHydrated(false);
@@ -162,7 +169,7 @@ export function useCoverPresetCatalogState(scope: CoverCatalogScope): {
     void version;
     return resolveCoverCatalog(memoryCatalog.get(scope) ?? bundledRawCatalog(scope), scope);
   }, [scope, version]);
-  return { items, hydrated };
+  return { items, hydrated, refresh: refreshCatalog };
 }
 
 export function resetCoverPresetCatalogForTests(): void {

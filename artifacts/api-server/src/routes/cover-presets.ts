@@ -39,6 +39,7 @@ function serializePreset(preset: CoverPreset) {
     scope: preset.scope,
     key: preset.key,
     label: preset.label,
+    isLocked: preset.isLocked,
     sortOrder: preset.sortOrder,
     source: preset.objectPath ? "object" as const : "builtin" as const,
     builtinKey: preset.builtinKey ?? null,
@@ -300,6 +301,9 @@ router.patch("/admin/cover-presets/:id", requireAuth, requireRole("admin"), asyn
       await tx.execute(sql`select pg_advisory_xact_lock(hashtextextended(${params.data.id}, 402))`);
       let [current] = await tx.select().from(coverPresetsTable).where(eq(coverPresetsTable.id, params.data.id)).limit(1);
       if (!current) throw new Error("not_found");
+      if (parsed.data.isLocked !== undefined && current.scope !== "profile") {
+        throw new Error("lock_scope");
+      }
       if (typeof parsed.data.objectPath === "string" && parsed.data.objectPath !== current.objectPath) {
         await lockObjectPaths(tx, [current.objectPath ?? "", parsed.data.objectPath]);
       }
@@ -316,6 +320,7 @@ router.patch("/admin/cover-presets/:id", requireAuth, requireRole("admin"), asyn
         }
       }
       const [updated] = await tx.update(coverPresetsTable).set({
+        ...(parsed.data.isLocked === undefined ? {} : { isLocked: parsed.data.isLocked }),
         ...(parsed.data.label === undefined ? {} : { label: parsed.data.label.trim() }),
         ...(parsed.data.objectPath === undefined ? {} : { objectPath: parsed.data.objectPath, builtinKey: null }),
         updatedAt: new Date(),
@@ -336,6 +341,10 @@ router.patch("/admin/cover-presets/:id", requireAuth, requireRole("admin"), asyn
   } catch (err) {
     if (typeof parsed.data.objectPath === "string") {
       await cleanupUnclaimedObject(parsed.data.objectPath, me.id, req.log);
+    }
+    if (err instanceof Error && err.message === "lock_scope") {
+      res.status(400).json({ error: "Solo se pueden bloquear avatares de Perfil" });
+      return;
     }
     if (err instanceof Error && err.message === "not_found") {
       res.status(404).json({ error: "Portada no encontrada" });

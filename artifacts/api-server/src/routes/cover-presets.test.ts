@@ -213,6 +213,62 @@ describe("cover preset catalog security and profile identity", () => {
     await db.delete(uploadsTable).where(eq(uploadsTable.id, upload.id));
   });
 
+  it("locks profile avatars, protects admin writes, and rejects new assignments until unlocked", async () => {
+    const existing = await db.select().from(coverPresetsTable).where(eq(coverPresetsTable.scope, "profile"));
+    const [preset] = await db.insert(coverPresetsTable).values({
+      id: `profile:lock-${suffix}`,
+      scope: "profile", key: `lock-${suffix}`, label: "Lock fixture",
+      builtinKey: "cosmic-nebula",
+      sortOrder: Math.max(-1, ...existing.map((row) => row.sortOrder)) + 1,
+    }).returning();
+    const endpoint = `/api/admin/cover-presets/${preset.id}`;
+    try {
+      expect(preset.isLocked).toBe(false);
+      authAs(null);
+      expect((await request(app).patch(endpoint).send({ isLocked: true })).status).toBe(401);
+      authAs(regular);
+      expect((await request(app).patch(endpoint).send({ isLocked: true })).status).toBe(403);
+      authAs(admin);
+      const locked = await request(app).patch(endpoint).send({ isLocked: true });
+      expect(locked.status).toBe(200);
+      expect(locked.body.isLocked).toBe(true);
+      expect(locked.body.builtinKey).toBe(preset.builtinKey);
+      const list = await request(app).get("/api/cover-presets?scope=profile");
+      expect(list.body.presets.find((row: { id: string }) => row.id === preset.id).isLocked).toBe(true);
+      authAs(regular);
+      const rejected = await request(app).patch("/api/me").send({ avatarPresetId: preset.id });
+      expect(rejected.status).toBe(403);
+      expect(rejected.body.code).toBe("AVATAR_LOCKED");
+      expect((await request(app).get("/api/me")).body.avatarPresetId).not.toBe(preset.id);
+      authAs(admin);
+      expect((await request(app).patch(endpoint).send({ isLocked: false })).body.isLocked).toBe(false);
+      authAs(regular);
+      expect((await request(app).patch("/api/me").send({ avatarPresetId: preset.id })).status).toBe(200);
+      authAs(admin);
+      expect((await request(app).patch(endpoint).send({ isLocked: true })).status).toBe(200);
+      authAs(regular);
+      // Locking never revokes an existing avatar or blocks other profile edits.
+      expect((await request(app).get("/api/me")).body.avatarPresetId).toBe(preset.id);
+      expect((await request(app).patch("/api/me").send({ avatarPresetId: preset.id, displayName: "Still my avatar" })).status).toBe(200);
+      expect((await request(app).patch("/api/me").send({ avatarPresetId: null })).status).toBe(200);
+      expect((await request(app).patch("/api/me").send({ avatarPresetId: preset.id })).status).toBe(403);
+    } finally {
+      await db.update(usersTable).set({ avatarPresetId: null }).where(eq(usersTable.id, regular.id));
+      await db.delete(coverPresetsTable).where(eq(coverPresetsTable.id, preset.id));
+    }
+  });
+
+  it("rejects locking non-profile catalogs without changing their images", async () => {
+    authAs(admin);
+    for (const scope of ["mix", "playlist", "reflection-story"]) {
+      const list = await request(app).get(`/api/admin/cover-presets?scope=${scope}`);
+      const preset = list.body.presets[0];
+      expect((await request(app).patch(`/api/admin/cover-presets/${preset.id}`).send({ isLocked: true })).status).toBe(400);
+      const refreshed = await request(app).get(`/api/cover-presets?scope=${scope}`);
+      expect(refreshed.body.presets[0]).toEqual(preset);
+    }
+  });
+
   it("persists and serializes a stable profile preset identity", async () => {
     authAs(regular);
     const response = await request(app).patch("/api/me").send({ avatarPresetId: "profile:cosmic-nebula" });

@@ -9178,6 +9178,9 @@ components:
           type: string
         sortOrder:
           type: integer
+        isLocked:
+          type: boolean
+          description: Bloqueo editorial; solo aplica a avatares de Perfil.
         source:
           type: string
           enum: [builtin, object]
@@ -9221,6 +9224,9 @@ components:
     CoverPresetUpdate:
       type: object
       properties:
+        isLocked:
+          type: boolean
+          description: Bloquear o desbloquear un avatar de Perfil.
         label:
           type: string
           minLength: 1
