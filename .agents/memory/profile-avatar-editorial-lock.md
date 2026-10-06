@@ -20,3 +20,15 @@ Al recortar avatares editoriales desde una lámina, todos deben tener el mismo t
 **Why:** El usuario pidió expresamente avatares «100% redondos» aunque la imagen original no lo sea, y todos del mismo tamaño.
 
 **How to apply:** Recortar sin deformar el dibujo, aplicar la misma máscara circular a todas las imágenes y comprobar que sus dimensiones y canales alfa coincidan antes de reemplazar los slots.
+
+Una ampliación de capacidad del catálogo debe cubrir también el contrato de reordenación y su rango temporal, no solo el contador del Admin y la creación.
+
+**Why:** Al ampliar Perfil, el orden seguía limitado a una colección pequeña y un desplazamiento temporal fijo colisionaba con posiciones ya ocupadas.
+
+**How to apply:** Probar el guardado del orden con la capacidad máxima y reservar posiciones temporales por encima del máximo ocupado, manteniendo intactas las restricciones de otros catálogos.
+
+Las pruebas de capacidad con avatares temporales deben limpiar sus fixtures incluso cuando falle una aserción, y comprobar después el catálogo que sirve la API real.
+
+**Why:** Una prueba fallida dejó imágenes temporales visibles; una limpieza informada por otra consulta no bastó para demostrar que la API ya servía el catálogo correcto.
+
+**How to apply:** Registrar todos los IDs temporales para limpieza incondicional y verificar el número y la identidad de los avatares desde el endpoint usado por Admin y Mobile.

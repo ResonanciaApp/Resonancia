@@ -94,7 +94,7 @@ export default function PortadasAvataresPage() {
         <h1 className="text-2xl font-bold">Portadas y avatares</h1>
         <p className="mt-1 text-sm text-muted-foreground">
           Administrá las imágenes predeterminadas que los usuarios pueden elegir.
-            Podés subir hasta 50 opciones por categoría. Mi viaje interior mantiene 100 posiciones fijas.
+            Perfil permite hasta 200 avatares. Mezclas y Playlists permiten 50 opciones cada una. Mi viaje interior mantiene 100 posiciones fijas.
         </p>
       </div>
 
@@ -156,7 +156,7 @@ function ScopeSection({
   }, [query.error, scope.label]);
 
   const isFixedSlots = scope.value === "reflection-story";
-  const maxSlots = isFixedSlots ? 100 : 50;
+  const maxSlots = isFixedSlots ? 100 : scope.value === "profile" ? 200 : 50;
   const maxReached = presets.length >= maxSlots;
 
   const isMutating = uploading || createPreset.isPending || updatePreset.isPending || deletePreset.isPending || reorderPresets.isPending || cleanupUpload.isPending;

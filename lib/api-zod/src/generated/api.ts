@@ -103,7 +103,7 @@ export const CreateAdminCoverPresetBody = zod.object({
 })
 
 
-export const reorderAdminCoverPresetsBodyIdsMax = 50;
+export const reorderAdminCoverPresetsBodyIdsMax = 200;
 
 
 

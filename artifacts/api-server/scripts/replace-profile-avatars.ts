@@ -1,9 +1,10 @@
 /**
  * Manual development-only editorial import. Never runs at startup or publish.
- * Usage: NODE_ENV=development tsx scripts/replace-profile-avatars.ts <manifest> --apply
+ * Usage: NODE_ENV=development tsx scripts/replace-profile-avatars.ts <manifest> --apply [--append]
  */
 import { readFile, writeFile } from "node:fs/promises";
 import { resolve } from "node:path";
+import { randomUUID } from "node:crypto";
 import { and, asc, eq, sql } from "drizzle-orm";
 import { db, coverPresetsTable, uploadsTable, usersTable } from "@workspace/db";
 import { ObjectStorageService } from "../src/lib/objectStorage";
@@ -12,6 +13,7 @@ const service = new ObjectStorageService();
 const staged: { objectPath: string; file: string; label: string; size: number }[] = [];
 let phase = "checking development target";
 let committed = false;
+const append = process.argv.includes("--append");
 try {
   if (process.env.NODE_ENV !== "development" || !process.argv.includes("--apply")) {
     throw new Error("Explicit development mode and --apply required");
@@ -19,12 +21,18 @@ try {
   const manifestPath = process.argv[2];
   if (!manifestPath) throw new Error("Manifest required");
   const manifest = JSON.parse(await readFile(resolve(manifestPath), "utf8")) as { file: string; label: string }[];
-  if (!Array.isArray(manifest) || manifest.length !== 26 || new Set(manifest.map((item) => item.file)).size !== 26) {
-    throw new Error("Exactly 26 unique cropped files required");
+  if (!Array.isArray(manifest) || manifest.length === 0 || (!append && manifest.length !== 26) ||
+    new Set(manifest.map((item) => item.file)).size !== manifest.length) {
+    throw new Error("A unique cropped-image manifest is required");
   }
   const original = await db.select().from(coverPresetsTable)
     .where(eq(coverPresetsTable.scope, "profile")).orderBy(asc(coverPresetsTable.sortOrder));
-  if (original.length !== 26) throw new Error("Exactly 26 occupied profile slots required");
+  if ((!append && original.length !== 26) || (append && original.length + manifest.length > 200)) {
+    throw new Error("Unexpected profile slot count or avatar capacity exceeded");
+  }
+  if (append && manifest.some((item) => original.some((slot) => slot.label === item.label))) {
+    throw new Error("This labeled batch has already been imported");
+  }
   const [owner] = await db.select({ id: usersTable.id }).from(usersTable)
     .where(eq(usersTable.role, "admin")).orderBy(asc(usersTable.id)).limit(1);
   if (!owner) throw new Error("An existing administrator is required");
@@ -52,12 +60,12 @@ try {
     }
   }
 
-  phase = "atomically replacing the 26 profile slots";
+  phase = append ? "atomically appending profile slots" : "atomically replacing the 26 profile slots";
   await db.transaction(async (tx) => {
     await tx.execute(sql`select pg_advisory_xact_lock(hashtextextended('profile', 402))`);
     const current = await tx.select().from(coverPresetsTable).where(eq(coverPresetsTable.scope, "profile"))
       .orderBy(asc(coverPresetsTable.sortOrder)).for("update");
-    if (current.length !== 26 || current.some((row, index) =>
+    if (current.length !== original.length || current.some((row, index) =>
       row.id !== original[index].id || row.sortOrder !== original[index].sortOrder ||
       row.objectPath !== original[index].objectPath || row.builtinKey !== original[index].builtinKey ||
       row.label !== original[index].label)) {
@@ -72,14 +80,25 @@ try {
         name: `profile-avatar-${String(index + 1).padStart(2, "0")}.png`,
         contentType: "image/png", sizeBytes: asset.size,
       });
-      await tx.update(coverPresetsTable).set({
-        label: asset.label, objectPath: asset.objectPath, builtinKey: null, updatedAt: new Date(),
-      }).where(eq(coverPresetsTable.id, current[index].id));
+      if (append) {
+        const key = `custom-${randomUUID()}`;
+        await tx.insert(coverPresetsTable).values({
+          id: `profile:${key}`, scope: "profile", key, label: asset.label,
+          objectPath: asset.objectPath, builtinKey: null, isLocked: false,
+          sortOrder: Math.max(-1, ...current.map((row) => row.sortOrder)) + index + 1,
+        });
+      } else {
+        await tx.update(coverPresetsTable).set({
+          label: asset.label, objectPath: asset.objectPath, builtinKey: null, updatedAt: new Date(),
+        }).where(eq(coverPresetsTable.id, current[index].id));
+      }
       // Deliberately preserve IDs, keys, ordering and the current lock state.
     }
   });
   committed = true;
-  console.log("Replaced all 26 profile avatar images; identities, order and locks preserved.");
+  console.log(append
+    ? `Added ${staged.length} avatars; all previous images, identities, order and locks preserved.`
+    : "Replaced all 26 profile avatar images; identities, order and locks preserved.");
 } catch {
   if (!committed) {
     for (const asset of staged) await service.deleteObjectEntity(asset.objectPath).catch(() => {});

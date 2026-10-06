@@ -31,6 +31,7 @@ const router: IRouter = Router();
 const objectStorageService = new ObjectStorageService();
 const REFLECTION_STORY_SCOPE = "reflection-story" as const;
 const DEFAULT_COVER_PRESET_LIMIT = 50;
+const PROFILE_AVATAR_PRESET_LIMIT = 200;
 const REFLECTION_STORY_PRESET_LIMIT = 100;
 
 function serializePreset(preset: CoverPreset) {
@@ -83,7 +84,8 @@ function parseScope(value: unknown) {
     : undefined;
 }
 
-function scopeLimit(scope: (typeof COVER_PRESET_SCOPES)[number]) {
+export function scopeLimit(scope: (typeof COVER_PRESET_SCOPES)[number]) {
+  if (scope === "profile") return PROFILE_AVATAR_PRESET_LIMIT;
   return scope === REFLECTION_STORY_SCOPE ? REFLECTION_STORY_PRESET_LIMIT : DEFAULT_COVER_PRESET_LIMIT;
 }
 
@@ -219,8 +221,9 @@ router.put("/admin/cover-presets/order", requireAuth, requireRole("admin"), asyn
       if (rows.length !== parsed.data.ids.length || parsed.data.ids.some((id) => !ids.has(id))) {
         throw new Error("order");
       }
-      for (const row of rows) {
-        await tx.update(coverPresetsTable).set({ sortOrder: row.sortOrder + 100 }).where(eq(coverPresetsTable.id, row.id));
+      const stagingStart = Math.max(-1, ...rows.map((row) => row.sortOrder)) + 1;
+      for (const [index, row] of rows.entries()) {
+        await tx.update(coverPresetsTable).set({ sortOrder: stagingStart + index }).where(eq(coverPresetsTable.id, row.id));
       }
       for (const [sortOrder, id] of parsed.data.ids.entries()) {
         await tx.update(coverPresetsTable).set({ sortOrder, updatedAt: new Date() }).where(eq(coverPresetsTable.id, id));

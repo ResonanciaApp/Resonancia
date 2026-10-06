@@ -61,6 +61,13 @@ test("actual Admin cards show toggle only for Profile and exact white overlay on
   }
 });
 
+test("Admin counter expands only Profile to 200 slots", () => {
+  for (const [scope, limit] of [["profile", 200], ["mix", 50], ["playlist", 50], ["reflection-story", 100]] as const) {
+    const h = render(scope, false);
+    assert.ok(h.nodes.some((node) => node.props?.children?.includes(limit)));
+  }
+});
+
 test("Admin toggles persist the inverse state and block duplicate requests before render", async () => {
   for (const locked of [true, false]) {
     const requests: any[] = [];

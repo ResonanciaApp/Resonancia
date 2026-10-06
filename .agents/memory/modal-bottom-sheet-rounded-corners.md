@@ -27,6 +27,14 @@ Un bottom sheet dentro de `<Modal transparent>` necesita:
 
 **Cómo aplicar:** todo bottom sheet con `borderTopRadius` dentro de Modal transparent debe usar este patrón. El `absoluteFill` en el backdrop garantiza cobertura sin importar la altura del sheet.
 
+## Catálogos largos dentro de un panel
+
+Los paneles de altura automática con listas `flex: 1` necesitan una altura de panel acotada; un `minHeight` por sí solo no limita el crecimiento.
+
+**Why:** Al ampliar el catálogo de avatares, el panel creció por encima de la pantalla y ocultó el título, el avatar principal y la acción de subir una foto. Parecía abrir al final de la lista aunque el problema era la geometría del panel.
+
+**How to apply:** Reservar espacio no flexible para el hero y las acciones, dejar el resto a la lista desplazable y reiniciar su posición al mostrarse el selector. La apertura del selector de avatares debe empezar siempre en la primera fila, no en la última posición visitada.
+
 ## Qué NO funciona
 
 - `borderRadius` en `LinearGradient` con `absoluteFill` — puede generar artefactos blancos en esquinas (redundante si el parent tiene `overflow: "hidden"`).

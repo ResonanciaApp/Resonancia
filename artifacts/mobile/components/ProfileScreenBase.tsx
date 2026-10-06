@@ -534,6 +534,7 @@ export function ProfileScreenBase({
   const [accountDescription, setAccountDescription] = useState(description);
   const [accountAction, setAccountAction] = useState<"delete" | null>(null);
   const [accountPhotoPickerVisible, setAccountPhotoPickerVisible] = useState(false);
+  const accountAvatarGridRef = useRef<FlatList<(typeof profileCatalog)[number]>>(null);
   const [accountPhotoLibraryPending, setAccountPhotoLibraryPending] = useState(false);
   const accountToastOpacity = useRef(new Animated.Value(0)).current;
   const accountToastY = useRef(new Animated.Value(12)).current;
@@ -1029,6 +1030,7 @@ export function ProfileScreenBase({
             visible={accountPhotoPickerVisible}
             animationType="slide"
             transparent
+            onShow={() => accountAvatarGridRef.current?.scrollToOffset({ offset: 0, animated: false })}
             onRequestClose={() => setAccountPhotoPickerVisible(false)}
             onDismiss={() => {
               if (!accountPhotoLibraryPending) return;
@@ -1093,6 +1095,7 @@ export function ProfileScreenBase({
                 <Text style={styles.accountCoverUploadText}>Elegir una foto</Text>
               </Pressable>
               <FlatList
+                ref={accountAvatarGridRef}
                 style={styles.accountCoverPresetGrid}
                  data={profileCatalog}
                 keyExtractor={(preset) => preset.id}
@@ -2275,7 +2278,7 @@ const styles = StyleSheet.create({
     left: 0,
     right: 0,
     bottom: 0,
-    minHeight: "62%",
+    height: "85%",
     borderTopLeftRadius: 22,
     borderTopRightRadius: 22,
     paddingHorizontal: 20,
@@ -2317,8 +2320,8 @@ const styles = StyleSheet.create({
     justifyContent: "center",
   },
   accountCoverPreviewSlot: {
-    flex: 1,
-    minHeight: 170,
+    height: 170,
+    flexShrink: 0,
     alignItems: "center",
     justifyContent: "center",
   },

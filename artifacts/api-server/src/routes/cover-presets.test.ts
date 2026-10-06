@@ -24,7 +24,7 @@ vi.mock("../lib/communityActivity", () => ({ recordCommunityEvent: vi.fn(async (
 
 import { coverPresetsTable, db, uploadsTable, usersTable, type User } from "@workspace/db";
 import { eq, inArray } from "drizzle-orm";
-import coverPresetsRouter, { reflectionStoryBuiltinKey } from "./cover-presets";
+import coverPresetsRouter, { reflectionStoryBuiltinKey, scopeLimit } from "./cover-presets";
 import usersRouter from "./users";
 
 function buildApp(): Express {
@@ -43,6 +43,7 @@ const app = buildApp();
 const suffix = `${Date.now()}_${Math.floor(Math.random() * 1e6)}`;
 let admin: User;
 let regular: User;
+const temporaryPresetIds: string[] = [];
 
 function authAs(user: User | null) {
   authState.clerkUserId = user?.clerkUserId ?? null;
@@ -69,6 +70,9 @@ describe("cover preset catalog security and profile identity", () => {
   afterEach(() => authAs(null));
 
   afterAll(async () => {
+    if (temporaryPresetIds.length) {
+      await db.delete(coverPresetsTable).where(inArray(coverPresetsTable.id, temporaryPresetIds));
+    }
     await db.delete(uploadsTable).where(eq(uploadsTable.userId, admin.id));
     await db.delete(usersTable).where(inArray(usersTable.id, [admin.id, regular.id]));
   });
@@ -105,10 +109,47 @@ describe("cover preset catalog security and profile identity", () => {
     await db.delete(uploadsTable).where(eq(uploadsTable.id, audio.id));
   });
 
-  it("enforces the 50-image collection limit and cleans failed claims", async () => {
+  it("limits profile to 200 without expanding other catalogs", () => {
+    expect(scopeLimit("profile")).toBe(200);
+    expect(scopeLimit("playlist")).toBe(50);
+    expect(scopeLimit("mix")).toBe(50);
+    expect(scopeLimit("reflection-story")).toBe(100);
+  });
+
+  it("allows admins to add an avatar beyond the old 50-slot boundary", async () => {
+    authAs(admin);
+    const existing = await db.select().from(coverPresetsTable).where(eq(coverPresetsTable.scope, "profile"));
+    const fillers = Array.from({ length: Math.max(0, 50 - existing.length) }, (_, index) => ({
+      id: `profile:above50-fill-${suffix}-${index}`,
+      scope: "profile" as const,
+      key: `above50-fill-${suffix}-${index}`,
+      label: "Boundary fixture",
+      builtinKey: "cosmic-nebula",
+      sortOrder: Math.max(-1, ...existing.map((row) => row.sortOrder)) + index + 1,
+    }));
+    const key = `above50-${suffix}`;
+    const path = `/objects/above50-${suffix}`;
+    const [upload] = await db.insert(uploadsTable).values({
+      userId: admin.id, objectPath: path, name: "avatar.jpg", contentType: "image/jpeg", sizeBytes: 100,
+    }).returning();
+    try {
+      if (fillers.length) await db.insert(coverPresetsTable).values(fillers);
+      const created = await request(app).post("/api/admin/cover-presets").send({
+        scope: "profile", key, label: "Beyond fifty", objectPath: path,
+      });
+      expect(created.status).toBe(201);
+      expect(created.body.id).toBe(`profile:${key}`);
+      expect(created.body.isLocked).toBe(false);
+    } finally {
+      await db.delete(coverPresetsTable).where(inArray(coverPresetsTable.id, [...fillers.map((row) => row.id), `profile:${key}`]));
+      await db.delete(uploadsTable).where(eq(uploadsTable.id, upload.id));
+    }
+  });
+
+  it("enforces the 200-image avatar limit and cleans failed claims", async () => {
     authAs(admin);
     const existingProfiles = await db.select().from(coverPresetsTable).where(eq(coverPresetsTable.scope, "profile"));
-    const rows = Array.from({ length: Math.max(0, 50 - existingProfiles.length) }, (_, index) => ({
+    const rows = Array.from({ length: Math.max(0, 200 - existingProfiles.length) }, (_, index) => ({
       id: `profile:limit-${suffix}-${index}`,
       scope: "profile" as const,
       key: `limit-${suffix}-${index}`,
@@ -117,6 +158,7 @@ describe("cover preset catalog security and profile identity", () => {
       builtinKey: null,
       sortOrder: Math.max(-1, ...existingProfiles.map((row) => row.sortOrder)) + index + 1,
     }));
+    temporaryPresetIds.push(...rows.map((row) => row.id));
     await db.delete(coverPresetsTable).where(inArray(coverPresetsTable.id, rows.map((row) => row.id)));
     await db.insert(coverPresetsTable).values(rows.map((row) => ({ ...row, sortOrder: row.sortOrder })));
     const [upload] = await db.insert(uploadsTable).values({
@@ -131,6 +173,12 @@ describe("cover preset catalog security and profile identity", () => {
       label: "Over limit",
       objectPath: upload.objectPath,
     })).status).toBe(409);
+    // The create limit and reorder payload limit must agree: all 200 slots
+    // must remain manageable from Admin after the catalog grows past fifty.
+    const order = [...existingProfiles, ...rows].sort((a, b) => a.sortOrder - b.sortOrder).map((row) => row.id);
+    expect((await request(app).put("/api/admin/cover-presets/order").send({
+      scope: "profile", ids: order,
+    })).status).toBe(200);
     await request(app).delete("/api/admin/cover-presets/upload").send({ objectPath: upload.objectPath });
     expect(storageState.deleteObjectEntity).toHaveBeenCalledWith(upload.objectPath);
     await db.delete(coverPresetsTable).where(inArray(coverPresetsTable.id, rows.map((row) => row.id)));

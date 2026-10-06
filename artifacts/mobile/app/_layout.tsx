@@ -444,6 +444,7 @@ export default function RootLayout() {
   // Android falla en silencio y los íconos quedan como cajitas (tofu).
   const [fontsLoaded, fontError] = useFonts({
     Manrope: require("../assets/fonts/Manrope.ttf"),
+    Manrope550: require("../assets/fonts/Manrope550.ttf"),
     CormorantGaramond: CormorantGaramond_500Medium,
     ...Feather.font,
     ...MaterialCommunityIcons.font,

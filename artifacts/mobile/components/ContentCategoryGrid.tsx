@@ -220,7 +220,7 @@ export function ContentCategoryGrid({
     const cardWidth = Math.floor(
       (windowWidth - GRID_PAD * 2 - DISCOVER_GRID_GAP * 2) / 3,
     );
-    const cardHeight = Math.round(cardWidth * 0.66) + 2;
+    const cardHeight = Math.round(cardWidth * 0.66) + 2 - 8;
 
     return (
       <View
@@ -243,7 +243,7 @@ export function ContentCategoryGrid({
                   <View style={[styles.discoverCardImage, { height: cardHeight, backgroundColor: catBlockBg }]}>
                     <View pointerEvents="none" style={styles.discoverCardContent}>
                       <View style={styles.discoverCardIcon}>
-                        {renderCategoryIcon(category, false, true, -2, isSoundsShortcut)}
+                         {renderCategoryIcon(category, false, true, -5, isSoundsShortcut)}
                       </View>
                       <Text style={styles.discoverCardTitle} numberOfLines={2}>
                         {category.id === "meditaciones-guiadas" ? "Meditación" : categoryLabel}
@@ -448,17 +448,17 @@ const styles = StyleSheet.create({
     paddingHorizontal: 12,
   },
   discoverCardIcon: {
-    height: 32,
+    height: 29,
     alignItems: "center",
     justifyContent: "center",
-    marginBottom: 5,
+    marginBottom: 0,
   },
   discoverCardTitle: {
     color: "#FBFBFB",
-    fontFamily: "Manrope",
-    fontSize: 12,
-    lineHeight: 17,
-    fontWeight: "500",
+    fontFamily: "Manrope550",
+    fontSize: 11,
+    lineHeight: 16,
+    includeFontPadding: false,
     textAlign: "center",
   },
   watercolorHorizontalContent: {

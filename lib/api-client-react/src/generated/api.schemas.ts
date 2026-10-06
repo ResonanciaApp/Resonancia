@@ -3402,7 +3402,7 @@ export interface CoverPresetOrderInput {
   scope: CoverPresetScope;
   /**
      * @minItems 1
-     * @maxItems 50
+     * @maxItems 200
      */
   ids: string[];
 }
