@@ -3335,3 +3335,17 @@ mtime_ms = 1791240244779
 storage_uri = "gcs://replit-rams-assets-worf/rams/assets/repl:5427b858-8852-4aed-954b-cd80d9fa4b6b/e282cbe1-0193-4c32-a95f-a3e0db9fc43e/4780dda0-977b-4b9f-8452-9c73dd6bf01a"
 storage_version_token = "1791240326054350"
 content_type = "image/jpeg"
+
+[[outputs]]
+id = "ZunLQnFPTWtOye1V5-EwI"
+uri = "file://attached_assets/camino-etapas-vista-previa.png"
+type = "image"
+title = "Nuevas ilustraciones de Tu camino"
+description = "Las nueve ilustraciones separadas y sin fondo, mostradas sobre azul marino en el orden aplicado a Florecimiento."
+logical_id = "f5ff11c6-3d0a-485f-ad45-0ff00d55e623"
+content_hash = "sha256:e4dae0cc3ef19f39675dd48e8afd4dcf0e9b436d24e35eeb421264a101b3f508"
+size = 649408
+mtime_ms = 1791315489228
+storage_uri = "gcs://replit-rams-assets-worf/rams/assets/repl:5427b858-8852-4aed-954b-cd80d9fa4b6b/f5ff11c6-3d0a-485f-ad45-0ff00d55e623/df34e71b-80e7-4bd3-83cf-a1808a2f3961"
+storage_version_token = "1791315663617779"
+content_type = "image/png"

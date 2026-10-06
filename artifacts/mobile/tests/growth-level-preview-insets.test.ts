@@ -17,13 +17,13 @@ test("the complete journey moves down 15px without changing timeline and row geo
   assert.match(source, /row: \{ height: GROWTH_ROW_HEIGHT, position: "relative", justifyContent: "center" \}/);
 });
 
-test("only the nine Florecimiento images use the new soft luminous collection", () => {
+test("only the nine Florecimiento images use the supplied botanical illustrations", () => {
   const source = readFileSync(new URL("../data/growthLevels.ts", import.meta.url), "utf8");
   const firstStage = source.split("export const ascentLevels")[0];
   const secondStage = source.split("export const ascentLevels")[1].split("export const allGrowthLevels")[0];
-  assert.equal([...firstStage.matchAll(/icons\/florecimiento-soft\//g)].length, 9);
+  assert.equal([...firstStage.matchAll(/icons\/florecimiento-botanico\//g)].length, 9);
   assert.equal([...secondStage.matchAll(/icons\/ringless\/ascenso-/g)].length, 8);
-  assert.doesNotMatch(secondStage, /florecimiento-soft/);
+  assert.doesNotMatch(secondStage, /florecimiento-botanico/);
 });
 
 test("all 17 stages reference generated square PNG icons with an alpha channel", () => {
