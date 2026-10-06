@@ -6,6 +6,24 @@ import ts from "typescript";
 
 const source = readFileSync(new URL("../components/ProfileScreenBase.tsx", import.meta.url), "utf8");
 const ast = ts.createSourceFile("profile.tsx", source, ts.ScriptTarget.Latest, true, ts.ScriptKind.TSX);
+test("avatar hero uses the same image transition as playlist covers without remounting on selection", () => {
+  const heroes: ts.JsxSelfClosingElement[] = [];
+  function visit(node: ts.Node) {
+    if (ts.isJsxSelfClosingElement(node) && node.tagName.getText(ast) === "Image"
+      && node.attributes.getText(ast).includes("styles.accountCoverPreview")) heroes.push(node);
+    ts.forEachChild(node, visit);
+  }
+  visit(ast);
+  assert.equal(heroes.length, 2); // Editorial avatar and uploaded photo.
+  for (const hero of heroes) {
+    assert.match(hero.attributes.getText(ast), /transition=\{IMAGE_TRANSITION\}/);
+    assert.equal(hero.attributes.properties.some((attribute) => ts.isJsxAttribute(attribute) && attribute.name.getText(ast) === "key"), false);
+  }
+  assert.match(source, /import \{ IMAGE_TRANSITION \} from "@\/constants\/imagePlaceholder"/);
+  const playlist = readFileSync(new URL("../app/playlist/[id].tsx", import.meta.url), "utf8");
+  assert.match(playlist, /style=\{modalStyles.selectedPreview\}[\s\S]*?transition=\{IMAGE_TRANSITION\}/);
+});
+
 function findStyle(name: string) {
   let expression: ts.Expression | undefined;
   function visit(node: ts.Node) {

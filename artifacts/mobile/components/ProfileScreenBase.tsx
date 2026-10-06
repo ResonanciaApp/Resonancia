@@ -57,6 +57,7 @@ import { usePremium } from "@/context/PremiumContext";
 import { useAuth } from "@/context/AuthContext";
 import type { LibraryTab } from "@/context/DrawerContext";
 import { useColors } from "@/hooks/useColors";
+import { IMAGE_TRANSITION } from "@/constants/imagePlaceholder";
 import { getExpansorById } from "@/data/expansores";
 import { uploadLocalFile } from "@/lib/upload";
 import { resolveAvatarUrl } from "@/lib/avatar";
@@ -1069,9 +1070,10 @@ export function ProfileScreenBase({
                     source={selectedProfilePreset.source}
                     style={styles.accountCoverPreview}
                     contentFit="cover"
+                    transition={IMAGE_TRANSITION}
                   />
                 ) : photoUri ? (
-                  <Image source={{ uri: photoUri }} style={styles.accountCoverPreview} contentFit="cover" />
+                  <Image source={{ uri: photoUri }} style={styles.accountCoverPreview} contentFit="cover" transition={IMAGE_TRANSITION} />
                 ) : (
                   <View
                     style={[
