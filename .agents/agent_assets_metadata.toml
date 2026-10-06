@@ -3419,3 +3419,17 @@ mtime_ms = 1791318002952
 storage_uri = "gcs://replit-rams-assets-worf/rams/assets/repl:5427b858-8852-4aed-954b-cd80d9fa4b6b/5557595d-e9b7-4ac9-ac12-c641c2154b28/4a3bc637-9f63-4ae2-88b1-261133244f8b"
 storage_version_token = "1791318134642855"
 content_type = "image/png"
+
+[[outputs]]
+id = "RmYJwkIfyGwGn7AVXLUGS"
+uri = "file://attached_assets/processed/profile-avatar-catalog/preview.png"
+type = "image"
+title = "Las 60 ilustraciones recortadas"
+description = "Vista de las dos láminas, recortadas en orden de lectura, todas de 512×512, sin deformación y con máscara circular idéntica y exterior transparente."
+logical_id = "ca10e405-3e7f-45da-bd48-202dccb56237"
+content_hash = "sha256:65aff9151f319f228da9312986efe048b82b965b582c18a800bb6c59b12611f4"
+size = 3209074
+mtime_ms = 1791324234664
+storage_uri = "gcs://replit-rams-assets-worf/rams/assets/repl:5427b858-8852-4aed-954b-cd80d9fa4b6b/ca10e405-3e7f-45da-bd48-202dccb56237/2f1a887c-e9e9-4fd9-a607-97c3aca9e4b2"
+storage_version_token = "1791324714921711"
+content_type = "image/png"

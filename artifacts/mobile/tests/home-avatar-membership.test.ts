@@ -18,3 +18,17 @@ test("Perfil retains its independent Premium avatar badge", () => {
   const profile = readFileSync(new URL("../components/ProfileScreenBase.tsx", import.meta.url), "utf8");
   assert.match(profile, /testID="profile-avatar-premium-badge"/);
 });
+
+test("Inicio uses the same avatar border color as Perfil without changing its thickness", () => {
+  const home = readFileSync(new URL("../app/(tabs)/inicio8.tsx", import.meta.url), "utf8");
+  const profile = readFileSync(new URL("../components/ProfileScreenBase.tsx", import.meta.url), "utf8");
+  const homeBorder = home.match(/inicio3HeroAvatarBorder:\s*\{([^}]+)\}/)?.[1];
+  const profileBorder = profile.match(/avatarOuterBorder:\s*\{([^}]+)\}/)?.[1];
+  assert.ok(homeBorder);
+  assert.ok(profileBorder);
+  assert.equal(
+    homeBorder.match(/borderColor:\s*"([^"]+)"/)?.[1],
+    profileBorder.match(/borderColor:\s*"([^"]+)"/)?.[1],
+  );
+  assert.match(homeBorder, /borderWidth:\s*2\b/);
+});

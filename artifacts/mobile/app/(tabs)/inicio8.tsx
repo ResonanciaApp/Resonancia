@@ -3616,7 +3616,7 @@ const styles = StyleSheet.create({
   },
   inicio3HeroAvatarBorder: {
     borderWidth: 2,
-    borderColor: "rgba(255,255,255,0.5)",
+    borderColor: "rgba(255,255,255,0.25)",
   },
   inicio2HeroAvatarButton: {
     position: "relative",

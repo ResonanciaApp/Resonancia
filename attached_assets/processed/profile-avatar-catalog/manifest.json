@@ -1,0 +1,844 @@
+{
+  "images": [
+    {
+      "number": 1,
+      "filePath": "attached_assets/processed/profile-avatar-catalog/avatar-01.png",
+      "sheet": 1,
+      "row": 1,
+      "column": 1,
+      "crop": {
+        "x": 100,
+        "y": 97,
+        "side": 587
+      },
+      "width": 512,
+      "height": 512
+    },
+    {
+      "number": 2,
+      "filePath": "attached_assets/processed/profile-avatar-catalog/avatar-02.png",
+      "sheet": 1,
+      "row": 1,
+      "column": 2,
+      "crop": {
+        "x": 762,
+        "y": 94,
+        "side": 589
+      },
+      "width": 512,
+      "height": 512
+    },
+    {
+      "number": 3,
+      "filePath": "attached_assets/processed/profile-avatar-catalog/avatar-03.png",
+      "sheet": 1,
+      "row": 1,
+      "column": 3,
+      "crop": {
+        "x": 1424,
+        "y": 94,
+        "side": 591
+      },
+      "width": 512,
+      "height": 512
+    },
+    {
+      "number": 4,
+      "filePath": "attached_assets/processed/profile-avatar-catalog/avatar-04.png",
+      "sheet": 1,
+      "row": 1,
+      "column": 4,
+      "crop": {
+        "x": 2087,
+        "y": 94,
+        "side": 592
+      },
+      "width": 512,
+      "height": 512
+    },
+    {
+      "number": 5,
+      "filePath": "attached_assets/processed/profile-avatar-catalog/avatar-05.png",
+      "sheet": 1,
+      "row": 1,
+      "column": 5,
+      "crop": {
+        "x": 2754,
+        "y": 94,
+        "side": 588
+      },
+      "width": 512,
+      "height": 512
+    },
+    {
+      "number": 6,
+      "filePath": "attached_assets/processed/profile-avatar-catalog/avatar-06.png",
+      "sheet": 1,
+      "row": 1,
+      "column": 6,
+      "crop": {
+        "x": 3414,
+        "y": 95,
+        "side": 587
+      },
+      "width": 512,
+      "height": 512
+    },
+    {
+      "number": 7,
+      "filePath": "attached_assets/processed/profile-avatar-catalog/avatar-07.png",
+      "sheet": 1,
+      "row": 2,
+      "column": 1,
+      "crop": {
+        "x": 98,
+        "y": 723,
+        "side": 591
+      },
+      "width": 512,
+      "height": 512
+    },
+    {
+      "number": 8,
+      "filePath": "attached_assets/processed/profile-avatar-catalog/avatar-08.png",
+      "sheet": 1,
+      "row": 2,
+      "column": 2,
+      "crop": {
+        "x": 760,
+        "y": 723,
+        "side": 592
+      },
+      "width": 512,
+      "height": 512
+    },
+    {
+      "number": 9,
+      "filePath": "attached_assets/processed/profile-avatar-catalog/avatar-09.png",
+      "sheet": 1,
+      "row": 2,
+      "column": 3,
+      "crop": {
+        "x": 1421,
+        "y": 723,
+        "side": 593
+      },
+      "width": 512,
+      "height": 512
+    },
+    {
+      "number": 10,
+      "filePath": "attached_assets/processed/profile-avatar-catalog/avatar-10.png",
+      "sheet": 1,
+      "row": 2,
+      "column": 4,
+      "crop": {
+        "x": 2090,
+        "y": 726,
+        "side": 588
+      },
+      "width": 512,
+      "height": 512
+    },
+    {
+      "number": 11,
+      "filePath": "attached_assets/processed/profile-avatar-catalog/avatar-11.png",
+      "sheet": 1,
+      "row": 2,
+      "column": 5,
+      "crop": {
+        "x": 2751,
+        "y": 725,
+        "side": 589
+      },
+      "width": 512,
+      "height": 512
+    },
+    {
+      "number": 12,
+      "filePath": "attached_assets/processed/profile-avatar-catalog/avatar-12.png",
+      "sheet": 1,
+      "row": 2,
+      "column": 6,
+      "crop": {
+        "x": 3414,
+        "y": 726,
+        "side": 588
+      },
+      "width": 512,
+      "height": 512
+    },
+    {
+      "number": 13,
+      "filePath": "attached_assets/processed/profile-avatar-catalog/avatar-13.png",
+      "sheet": 1,
+      "row": 3,
+      "column": 1,
+      "crop": {
+        "x": 100,
+        "y": 1357,
+        "side": 589
+      },
+      "width": 512,
+      "height": 512
+    },
+    {
+      "number": 14,
+      "filePath": "attached_assets/processed/profile-avatar-catalog/avatar-14.png",
+      "sheet": 1,
+      "row": 3,
+      "column": 2,
+      "crop": {
+        "x": 759,
+        "y": 1354,
+        "side": 592
+      },
+      "width": 512,
+      "height": 512
+    },
+    {
+      "number": 15,
+      "filePath": "attached_assets/processed/profile-avatar-catalog/avatar-15.png",
+      "sheet": 1,
+      "row": 3,
+      "column": 3,
+      "crop": {
+        "x": 1424,
+        "y": 1355,
+        "side": 591
+      },
+      "width": 512,
+      "height": 512
+    },
+    {
+      "number": 16,
+      "filePath": "attached_assets/processed/profile-avatar-catalog/avatar-16.png",
+      "sheet": 1,
+      "row": 3,
+      "column": 4,
+      "crop": {
+        "x": 2088,
+        "y": 1357,
+        "side": 589
+      },
+      "width": 512,
+      "height": 512
+    },
+    {
+      "number": 17,
+      "filePath": "attached_assets/processed/profile-avatar-catalog/avatar-17.png",
+      "sheet": 1,
+      "row": 3,
+      "column": 5,
+      "crop": {
+        "x": 2753,
+        "y": 1357,
+        "side": 589
+      },
+      "width": 512,
+      "height": 512
+    },
+    {
+      "number": 18,
+      "filePath": "attached_assets/processed/profile-avatar-catalog/avatar-18.png",
+      "sheet": 1,
+      "row": 3,
+      "column": 6,
+      "crop": {
+        "x": 3411,
+        "y": 1357,
+        "side": 589
+      },
+      "width": 512,
+      "height": 512
+    },
+    {
+      "number": 19,
+      "filePath": "attached_assets/processed/profile-avatar-catalog/avatar-19.png",
+      "sheet": 1,
+      "row": 4,
+      "column": 1,
+      "crop": {
+        "x": 100,
+        "y": 1989,
+        "side": 589
+      },
+      "width": 512,
+      "height": 512
+    },
+    {
+      "number": 20,
+      "filePath": "attached_assets/processed/profile-avatar-catalog/avatar-20.png",
+      "sheet": 1,
+      "row": 4,
+      "column": 2,
+      "crop": {
+        "x": 759,
+        "y": 1989,
+        "side": 592
+      },
+      "width": 512,
+      "height": 512
+    },
+    {
+      "number": 21,
+      "filePath": "attached_assets/processed/profile-avatar-catalog/avatar-21.png",
+      "sheet": 1,
+      "row": 4,
+      "column": 3,
+      "crop": {
+        "x": 1424,
+        "y": 1989,
+        "side": 592
+      },
+      "width": 512,
+      "height": 512
+    },
+    {
+      "number": 22,
+      "filePath": "attached_assets/processed/profile-avatar-catalog/avatar-22.png",
+      "sheet": 1,
+      "row": 4,
+      "column": 4,
+      "crop": {
+        "x": 2086,
+        "y": 1989,
+        "side": 595
+      },
+      "width": 512,
+      "height": 512
+    },
+    {
+      "number": 23,
+      "filePath": "attached_assets/processed/profile-avatar-catalog/avatar-23.png",
+      "sheet": 1,
+      "row": 4,
+      "column": 5,
+      "crop": {
+        "x": 2747,
+        "y": 1986,
+        "side": 598
+      },
+      "width": 512,
+      "height": 512
+    },
+    {
+      "number": 24,
+      "filePath": "attached_assets/processed/profile-avatar-catalog/avatar-24.png",
+      "sheet": 1,
+      "row": 4,
+      "column": 6,
+      "crop": {
+        "x": 3411,
+        "y": 1989,
+        "side": 592
+      },
+      "width": 512,
+      "height": 512
+    },
+    {
+      "number": 25,
+      "filePath": "attached_assets/processed/profile-avatar-catalog/avatar-25.png",
+      "sheet": 1,
+      "row": 5,
+      "column": 1,
+      "crop": {
+        "x": 102,
+        "y": 2624,
+        "side": 592
+      },
+      "width": 512,
+      "height": 512
+    },
+    {
+      "number": 26,
+      "filePath": "attached_assets/processed/profile-avatar-catalog/avatar-26.png",
+      "sheet": 1,
+      "row": 5,
+      "column": 2,
+      "crop": {
+        "x": 760,
+        "y": 2624,
+        "side": 592
+      },
+      "width": 512,
+      "height": 512
+    },
+    {
+      "number": 27,
+      "filePath": "attached_assets/processed/profile-avatar-catalog/avatar-27.png",
+      "sheet": 1,
+      "row": 5,
+      "column": 3,
+      "crop": {
+        "x": 1428,
+        "y": 2626,
+        "side": 586
+      },
+      "width": 512,
+      "height": 512
+    },
+    {
+      "number": 28,
+      "filePath": "attached_assets/processed/profile-avatar-catalog/avatar-28.png",
+      "sheet": 1,
+      "row": 5,
+      "column": 4,
+      "crop": {
+        "x": 2090,
+        "y": 2624,
+        "side": 590
+      },
+      "width": 512,
+      "height": 512
+    },
+    {
+      "number": 29,
+      "filePath": "attached_assets/processed/profile-avatar-catalog/avatar-29.png",
+      "sheet": 1,
+      "row": 5,
+      "column": 5,
+      "crop": {
+        "x": 2749,
+        "y": 2624,
+        "side": 592
+      },
+      "width": 512,
+      "height": 512
+    },
+    {
+      "number": 30,
+      "filePath": "attached_assets/processed/profile-avatar-catalog/avatar-30.png",
+      "sheet": 1,
+      "row": 5,
+      "column": 6,
+      "crop": {
+        "x": 3408,
+        "y": 2621,
+        "side": 595
+      },
+      "width": 512,
+      "height": 512
+    },
+    {
+      "number": 31,
+      "filePath": "attached_assets/processed/profile-avatar-catalog/avatar-31.png",
+      "sheet": 2,
+      "row": 1,
+      "column": 1,
+      "crop": {
+        "x": 48,
+        "y": 79,
+        "side": 575
+      },
+      "width": 512,
+      "height": 512
+    },
+    {
+      "number": 32,
+      "filePath": "attached_assets/processed/profile-avatar-catalog/avatar-32.png",
+      "sheet": 2,
+      "row": 1,
+      "column": 2,
+      "crop": {
+        "x": 731,
+        "y": 78,
+        "side": 575
+      },
+      "width": 512,
+      "height": 512
+    },
+    {
+      "number": 33,
+      "filePath": "attached_assets/processed/profile-avatar-catalog/avatar-33.png",
+      "sheet": 2,
+      "row": 1,
+      "column": 3,
+      "crop": {
+        "x": 1414,
+        "y": 78,
+        "side": 576
+      },
+      "width": 512,
+      "height": 512
+    },
+    {
+      "number": 34,
+      "filePath": "attached_assets/processed/profile-avatar-catalog/avatar-34.png",
+      "sheet": 2,
+      "row": 1,
+      "column": 4,
+      "crop": {
+        "x": 2102,
+        "y": 78,
+        "side": 576
+      },
+      "width": 512,
+      "height": 512
+    },
+    {
+      "number": 35,
+      "filePath": "attached_assets/processed/profile-avatar-catalog/avatar-35.png",
+      "sheet": 2,
+      "row": 1,
+      "column": 5,
+      "crop": {
+        "x": 2790,
+        "y": 78,
+        "side": 576
+      },
+      "width": 512,
+      "height": 512
+    },
+    {
+      "number": 36,
+      "filePath": "attached_assets/processed/profile-avatar-catalog/avatar-36.png",
+      "sheet": 2,
+      "row": 1,
+      "column": 6,
+      "crop": {
+        "x": 3469,
+        "y": 75,
+        "side": 581
+      },
+      "width": 512,
+      "height": 512
+    },
+    {
+      "number": 37,
+      "filePath": "attached_assets/processed/profile-avatar-catalog/avatar-37.png",
+      "sheet": 2,
+      "row": 2,
+      "column": 1,
+      "crop": {
+        "x": 49,
+        "y": 723,
+        "side": 578
+      },
+      "width": 512,
+      "height": 512
+    },
+    {
+      "number": 38,
+      "filePath": "attached_assets/processed/profile-avatar-catalog/avatar-38.png",
+      "sheet": 2,
+      "row": 2,
+      "column": 2,
+      "crop": {
+        "x": 728,
+        "y": 716,
+        "side": 583
+      },
+      "width": 512,
+      "height": 512
+    },
+    {
+      "number": 39,
+      "filePath": "attached_assets/processed/profile-avatar-catalog/avatar-39.png",
+      "sheet": 2,
+      "row": 2,
+      "column": 3,
+      "crop": {
+        "x": 1419,
+        "y": 722,
+        "side": 579
+      },
+      "width": 512,
+      "height": 512
+    },
+    {
+      "number": 40,
+      "filePath": "attached_assets/processed/profile-avatar-catalog/avatar-40.png",
+      "sheet": 2,
+      "row": 2,
+      "column": 4,
+      "crop": {
+        "x": 2103,
+        "y": 723,
+        "side": 580
+      },
+      "width": 512,
+      "height": 512
+    },
+    {
+      "number": 41,
+      "filePath": "attached_assets/processed/profile-avatar-catalog/avatar-41.png",
+      "sheet": 2,
+      "row": 2,
+      "column": 5,
+      "crop": {
+        "x": 2787,
+        "y": 719,
+        "side": 582
+      },
+      "width": 512,
+      "height": 512
+    },
+    {
+      "number": 42,
+      "filePath": "attached_assets/processed/profile-avatar-catalog/avatar-42.png",
+      "sheet": 2,
+      "row": 2,
+      "column": 6,
+      "crop": {
+        "x": 3470,
+        "y": 722,
+        "side": 579
+      },
+      "width": 512,
+      "height": 512
+    },
+    {
+      "number": 43,
+      "filePath": "attached_assets/processed/profile-avatar-catalog/avatar-43.png",
+      "sheet": 2,
+      "row": 3,
+      "column": 1,
+      "crop": {
+        "x": 52,
+        "y": 1364,
+        "side": 579
+      },
+      "width": 512,
+      "height": 512
+    },
+    {
+      "number": 44,
+      "filePath": "attached_assets/processed/profile-avatar-catalog/avatar-44.png",
+      "sheet": 2,
+      "row": 3,
+      "column": 2,
+      "crop": {
+        "x": 733,
+        "y": 1364,
+        "side": 579
+      },
+      "width": 512,
+      "height": 512
+    },
+    {
+      "number": 45,
+      "filePath": "attached_assets/processed/profile-avatar-catalog/avatar-45.png",
+      "sheet": 2,
+      "row": 3,
+      "column": 3,
+      "crop": {
+        "x": 1416,
+        "y": 1361,
+        "side": 582
+      },
+      "width": 512,
+      "height": 512
+    },
+    {
+      "number": 46,
+      "filePath": "attached_assets/processed/profile-avatar-catalog/avatar-46.png",
+      "sheet": 2,
+      "row": 3,
+      "column": 4,
+      "crop": {
+        "x": 2103,
+        "y": 1364,
+        "side": 579
+      },
+      "width": 512,
+      "height": 512
+    },
+    {
+      "number": 47,
+      "filePath": "attached_assets/processed/profile-avatar-catalog/avatar-47.png",
+      "sheet": 2,
+      "row": 3,
+      "column": 5,
+      "crop": {
+        "x": 2788,
+        "y": 1362,
+        "side": 580
+      },
+      "width": 512,
+      "height": 512
+    },
+    {
+      "number": 48,
+      "filePath": "attached_assets/processed/profile-avatar-catalog/avatar-48.png",
+      "sheet": 2,
+      "row": 3,
+      "column": 6,
+      "crop": {
+        "x": 3469,
+        "y": 1363,
+        "side": 579
+      },
+      "width": 512,
+      "height": 512
+    },
+    {
+      "number": 49,
+      "filePath": "attached_assets/processed/profile-avatar-catalog/avatar-49.png",
+      "sheet": 2,
+      "row": 4,
+      "column": 1,
+      "crop": {
+        "x": 48,
+        "y": 2008,
+        "side": 579
+      },
+      "width": 512,
+      "height": 512
+    },
+    {
+      "number": 50,
+      "filePath": "attached_assets/processed/profile-avatar-catalog/avatar-50.png",
+      "sheet": 2,
+      "row": 4,
+      "column": 2,
+      "crop": {
+        "x": 734,
+        "y": 2008,
+        "side": 579
+      },
+      "width": 512,
+      "height": 512
+    },
+    {
+      "number": 51,
+      "filePath": "attached_assets/processed/profile-avatar-catalog/avatar-51.png",
+      "sheet": 2,
+      "row": 4,
+      "column": 3,
+      "crop": {
+        "x": 1412,
+        "y": 2008,
+        "side": 579
+      },
+      "width": 512,
+      "height": 512
+    },
+    {
+      "number": 52,
+      "filePath": "attached_assets/processed/profile-avatar-catalog/avatar-52.png",
+      "sheet": 2,
+      "row": 4,
+      "column": 4,
+      "crop": {
+        "x": 2101,
+        "y": 2005,
+        "side": 582
+      },
+      "width": 512,
+      "height": 512
+    },
+    {
+      "number": 53,
+      "filePath": "attached_assets/processed/profile-avatar-catalog/avatar-53.png",
+      "sheet": 2,
+      "row": 4,
+      "column": 5,
+      "crop": {
+        "x": 2787,
+        "y": 2008,
+        "side": 577
+      },
+      "width": 512,
+      "height": 512
+    },
+    {
+      "number": 54,
+      "filePath": "attached_assets/processed/profile-avatar-catalog/avatar-54.png",
+      "sheet": 2,
+      "row": 4,
+      "column": 6,
+      "crop": {
+        "x": 3468,
+        "y": 2006,
+        "side": 579
+      },
+      "width": 512,
+      "height": 512
+    },
+    {
+      "number": 55,
+      "filePath": "attached_assets/processed/profile-avatar-catalog/avatar-55.png",
+      "sheet": 2,
+      "row": 5,
+      "column": 1,
+      "crop": {
+        "x": 48,
+        "y": 2656,
+        "side": 582
+      },
+      "width": 512,
+      "height": 512
+    },
+    {
+      "number": 56,
+      "filePath": "attached_assets/processed/profile-avatar-catalog/avatar-56.png",
+      "sheet": 2,
+      "row": 5,
+      "column": 2,
+      "crop": {
+        "x": 730,
+        "y": 2656,
+        "side": 584
+      },
+      "width": 512,
+      "height": 512
+    },
+    {
+      "number": 57,
+      "filePath": "attached_assets/processed/profile-avatar-catalog/avatar-57.png",
+      "sheet": 2,
+      "row": 5,
+      "column": 3,
+      "crop": {
+        "x": 1416,
+        "y": 2656,
+        "side": 582
+      },
+      "width": 512,
+      "height": 512
+    },
+    {
+      "number": 58,
+      "filePath": "attached_assets/processed/profile-avatar-catalog/avatar-58.png",
+      "sheet": 2,
+      "row": 5,
+      "column": 4,
+      "crop": {
+        "x": 2097,
+        "y": 2656,
+        "side": 582
+      },
+      "width": 512,
+      "height": 512
+    },
+    {
+      "number": 59,
+      "filePath": "attached_assets/processed/profile-avatar-catalog/avatar-59.png",
+      "sheet": 2,
+      "row": 5,
+      "column": 5,
+      "crop": {
+        "x": 2784,
+        "y": 2656,
+        "side": 582
+      },
+      "width": 512,
+      "height": 512
+    },
+    {
+      "number": 60,
+      "filePath": "attached_assets/processed/profile-avatar-catalog/avatar-60.png",
+      "sheet": 2,
+      "row": 5,
+      "column": 6,
+      "crop": {
+        "x": 3465,
+        "y": 2656,
+        "side": 582
+      },
+      "width": 512,
+      "height": 512
+    }
+  ]
+}

@@ -15,6 +15,12 @@ Un bloqueo impide nuevas elecciones, pero conserva un avatar que el usuario ya t
 
 **How to apply:** Distinguir una nueva asignación de la conservación del mismo avatar al actualizar otros datos. Una elección rechazada no debe quedar guardada localmente como pendiente.
 
+Reemplazar el catálogo editorial no debe cambiar los avatares ya confirmados ni dejar sus imágenes inaccesibles. Conservar los objetos anteriores y su acceso de lectura previamente público, aunque ya no estén en el selector.
+
+**Why:** El acceso a una imagen editorial puede depender exclusivamente de su referencia en el catálogo. Al reemplazar esa referencia, conservar el archivo y la URL del usuario no basta: la lectura puede quedar denegada.
+
+**How to apply:** Antes de sustituir o retirar avatares publicados, preservar su acceso legítimo y comprobar también una URL anterior después del cambio. Limitar este tratamiento a imágenes editoriales que ya eran públicas; nunca conceder acceso a cualquier objeto privado por una referencia arbitraria.
+
 Al recortar avatares editoriales desde una lámina, todos deben tener el mismo tamaño y una máscara circular real, con el exterior transparente. No basta con que la ilustración parezca redonda.
 
 **Why:** El usuario pidió expresamente avatares «100% redondos» aunque la imagen original no lo sea, y todos del mismo tamaño.

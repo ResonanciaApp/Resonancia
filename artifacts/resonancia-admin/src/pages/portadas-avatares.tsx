@@ -353,7 +353,7 @@ function ScopeSection({
                   {index + 1}
                 </span>
                 
-                <div className="relative h-12 w-12 shrink-0 overflow-hidden rounded-md border border-border bg-secondary">
+                <div className={`relative h-12 w-12 shrink-0 overflow-hidden border border-border bg-secondary ${scope.value === "profile" ? "rounded-full" : "rounded-md"}`}>
                   {previewUrl(preset.objectPath, preset.builtinKey) ? (
                     <img
                       src={previewUrl(preset.objectPath, preset.builtinKey)!}
