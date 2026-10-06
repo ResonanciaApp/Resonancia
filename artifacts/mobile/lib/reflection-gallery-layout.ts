@@ -1,5 +1,5 @@
 export const REFLECTION_GALLERY_HEIGHT = 180;
-export const REFLECTION_GALLERY_EXPANSION = 80;
+export const REFLECTION_GALLERY_EXPANSION = 120;
 
 /** Resize only the viewport; the composition and 1080×1920 export stay unchanged. */
 export function reflectionPreviewLayout(baseWidth: number, heightReduction: number) {

@@ -365,6 +365,8 @@ export function ReflectionShare({ reflection, onClose }: { reflection: Reflectio
       headerControlsOffsetY={-15}
       lightInstagramButton
       compactFooter
+      closeButtonBackgroundColor="rgba(255,255,255,0.1)"
+      instagramActionTextStyle={styles.instagramActionText}
       headerRightAction={compositionIsModified ? (
         <Pressable
           accessibilityRole="button"
@@ -405,19 +407,21 @@ export function ReflectionShare({ reflection, onClose }: { reflection: Reflectio
         );
       }}
     >
-      <Animated.View style={[styles.galleryContainer, gallerySizeStyle]}>
+      <View style={styles.gallerySection}>
         <View style={styles.galleryControls}>
           <Pressable
             onPress={toggle}
             accessibilityRole="button"
             accessibilityLabel={expanded ? "Reducir grilla de fondos" : "Ampliar grilla de fondos"}
             accessibilityState={{ expanded }}
-            hitSlop={6}
-            style={({ pressed }) => [styles.galleryToggle, pressed && { opacity: 0.65 }]}
+            style={({ pressed }) => [styles.galleryToggleButton, pressed && { opacity: 0.65 }]}
           >
-            <Feather name={expanded ? "chevrons-down" : "chevrons-up"} size={19} color="#F9F9F9" />
+            <View style={styles.galleryToggle}>
+              <Feather name={expanded ? "chevrons-down" : "chevrons-up"} size={19} color="#F9F9F9" />
+            </View>
           </Pressable>
         </View>
+      <Animated.View style={[styles.galleryContainer, gallerySizeStyle]}>
         <ScrollView contentContainerStyle={styles.galleryContent} showsVerticalScrollIndicator={false}>
           {catalog.map((item) => {
             const isSelected = selectedBgId === item.id;
@@ -457,6 +461,7 @@ export function ReflectionShare({ reflection, onClose }: { reflection: Reflectio
           })}
         </ScrollView>
       </Animated.View>
+      </View>
     </StoryShareModal>
   );
 }
@@ -517,21 +522,30 @@ const styles = StyleSheet.create({
   },
   galleryContainer: {
     height: REFLECTION_GALLERY_HEIGHT,
-    marginBottom: 20,
     backgroundColor: "rgba(0,0,0,0.2)",
     borderRadius: 12,
     padding: 8,
   },
+  gallerySection: {
+    marginBottom: 20,
+  },
   galleryControls: {
-    height: 36,
+    height: 44,
+    marginBottom: 4,
     alignItems: "flex-end",
-    justifyContent: "flex-start",
+    justifyContent: "center",
+  },
+  galleryToggleButton: {
+    width: 44,
+    height: 44,
+    alignItems: "center",
+    justifyContent: "center",
   },
   galleryToggle: {
     width: 30,
     height: 30,
     borderRadius: 15,
-    backgroundColor: "rgba(0,0,0,0.16)",
+    backgroundColor: "rgba(255,255,255,0.1)",
     alignItems: "center",
     justifyContent: "center",
   },
@@ -545,6 +559,11 @@ const styles = StyleSheet.create({
     borderWidth: 0,
     borderColor: "transparent",
     transform: [{ translateX: -1 }],
+  },
+  instagramActionText: {
+    fontSize: 13,
+    fontFamily: "Manrope650",
+    fontWeight: "400",
   },
   resetButtonPressed: {
     opacity: 0.65,

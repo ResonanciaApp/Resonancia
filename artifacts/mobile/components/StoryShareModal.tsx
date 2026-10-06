@@ -11,6 +11,8 @@ import {
   TurboModuleRegistry,
   useWindowDimensions,
   View,
+  type StyleProp,
+  type TextStyle,
 } from "react-native";
 import { Feather, FontAwesome } from "@expo/vector-icons";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
@@ -47,6 +49,8 @@ export interface StoryShareModalProps {
   lightInstagramButton?: boolean;
   lightActionButtons?: boolean;
   compactFooter?: boolean;
+  closeButtonBackgroundColor?: string;
+  instagramActionTextStyle?: StyleProp<TextStyle>;
   embedded?: boolean;
   children?: React.ReactNode;
 }
@@ -74,6 +78,8 @@ export function StoryShareModal({
   lightInstagramButton = false,
   lightActionButtons = false,
   compactFooter = false,
+  closeButtonBackgroundColor,
+  instagramActionTextStyle,
   embedded = false,
   children,
 }: StoryShareModalProps) {
@@ -320,6 +326,7 @@ export function StoryShareModal({
                 onPress={onClose}
                 style={({ pressed }) => [
                   styles.closeButton,
+                  closeButtonBackgroundColor && { backgroundColor: closeButtonBackgroundColor },
                   pressed && styles.pressed,
                 ]}
               >
@@ -354,7 +361,11 @@ export function StoryShareModal({
               accessibilityRole="button"
               accessibilityLabel="Cerrar"
               onPress={onClose}
-              style={({ pressed }) => [styles.closeButton, pressed && styles.pressed]}
+              style={({ pressed }) => [
+                styles.closeButton,
+                closeButtonBackgroundColor && { backgroundColor: closeButtonBackgroundColor },
+                pressed && styles.pressed,
+              ]}
             >
               <Feather name="x" size={25} color="#F9F9F9" />
             </Pressable>
@@ -416,6 +427,7 @@ export function StoryShareModal({
                     styles.actionText,
                     lightInstagramButton && styles.actionTextDark,
                     lightActionButtons && styles.actionTextSoftDark,
+                    instagramActionTextStyle,
                   ]}
                 >
                   Compartir en tus historias

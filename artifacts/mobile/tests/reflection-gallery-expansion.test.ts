@@ -16,7 +16,7 @@ import { clampReflectionStoryComposition } from "../lib/reflection-story-logic.t
 const close = (actual: number, expected: number) => assert.ok(Math.abs(actual - expected) < 1e-8);
 const source = (relativePath: string) => readFileSync(new URL(relativePath, import.meta.url), "utf8");
 
-test("grilla y hero intercambian exactamente 80 px manteniendo footer y proporción", () => {
+test("grilla y hero intercambian exactamente 120 px manteniendo footer y proporción", () => {
   const baseWidth = 235.8;
   const baseline = reflectionPreviewLayout(baseWidth, 0);
   const footerY = 700;
@@ -30,26 +30,26 @@ test("grilla y hero intercambian exactamente 80 px manteniendo footer y proporci
     close(preview.scale, preview.width / baseWidth);
     close(footerY - galleryHeight - (heroTop + preview.height), 20);
   }
-  assert.equal(REFLECTION_GALLERY_HEIGHT + REFLECTION_GALLERY_EXPANSION, 260);
+  assert.equal(REFLECTION_GALLERY_HEIGHT + REFLECTION_GALLERY_EXPANSION, 300);
   assert.deepEqual(reflectionPreviewLayout(baseWidth, 0), baseline);
 });
 
 test("el hero se ajusta a teléfonos pequeños y tablets sin alterar otros modales", () => {
   assert.equal(fitReflectionPreviewWidth(235.8, null), 235.8);
-  for (const available of [140, 240, 450, 700]) {
+  for (const available of [180, 240, 450, 700]) {
     const width = fitReflectionPreviewWidth(400, available);
     const compact = reflectionPreviewLayout(width, 0);
-    const expanded = reflectionPreviewLayout(width, 80);
+    const expanded = reflectionPreviewLayout(width, 120);
     assert.ok(compact.height <= available - 24 + 1e-8);
     assert.ok(expanded.height > 0);
-    close(compact.height - expanded.height, 80);
+    close(compact.height - expanded.height, 120);
   }
 });
 
 test("el escalado visual no modifica la receta ni la composición exportada", () => {
   const recipe = { backgroundScale: 2, backgroundX: 0.12, backgroundY: -0.15, textX: 0.02, textY: -0.03 };
   const exported = clampReflectionStoryComposition(recipe);
-  for (const delta of [0, 20, 40, 80, 40, 0]) {
+  for (const delta of [0, 20, 60, 120, 40, 0]) {
     const viewport = reflectionPreviewLayout(230, delta);
     assert.deepEqual(clampReflectionStoryComposition(recipe), exported);
     // Pan events arrive in screen points; normalize by the actually displayed dimensions.
@@ -123,7 +123,7 @@ test("el botón alterna y revierte desde el progreso actual usando la curva Ambi
   assert.equal(instance.expanded, false);
   instance.hook.toggle();
   assert.equal(instance.expanded, true);
-  assert.equal(instance.timings[0].to, 80);
+  assert.equal(instance.timings[0].to, 120);
   assert.equal(instance.timings[0].duration, SHEET_EXPAND_MS);
   close(instance.timings[0].easing(0.25), 0.125);
   close(instance.timings[0].easing(0.75), 0.875);
@@ -135,7 +135,7 @@ test("el botón alterna y revierte desde el progreso actual usando la curva Ambi
   instance.progress.value = 19;
   instance.hook.toggle();
   assert.equal(instance.timings[2].from, 19);
-  assert.equal(instance.timings[2].to, 80);
+  assert.equal(instance.timings[2].to, 120);
   instance.unmount();
 });
 
@@ -144,7 +144,7 @@ test("Reducir movimiento completa la transición y una lectura vieja no pisa la 
   instance.hook.toggle();
   instance.progress.value = 32;
   instance.changePreference(true);
-  assert.equal(instance.progress.value, 80);
+  assert.equal(instance.progress.value, 120);
   instance.preference(false);
   await Promise.resolve();
   instance.hook.toggle();
@@ -186,4 +186,30 @@ test("solo este compositor activa el tamaño animado; captura y catálogo perman
   assert.match(modal, /width: STORY_WIDTH,\s*height: STORY_HEIGHT/);
   assert.match(modal, /: renderArtwork\(previewWidth, false, previewCallbacks\)/);
   assert.doesNotMatch(share, /key=\{expanded|setComposition\(.*expanded/);
+});
+
+test("el control está fuera de la grilla y solo este flujo usa los nuevos fondos y tipografía", () => {
+  const share = source("../components/ReflectionShare.tsx");
+  const modal = source("../components/StoryShareModal.tsx");
+  const ast = ts.createSourceFile("ReflectionShare.tsx", share, ts.ScriptTarget.Latest, true, ts.ScriptKind.TSX);
+  let found = false;
+  const visit = (node: ts.Node) => {
+    if (ts.isJsxElement(node) && node.openingElement.attributes.getText(ast).includes("styles.gallerySection")) {
+      const elements = node.children.filter(ts.isJsxElement);
+      assert.equal(elements.length, 2);
+      assert.match(elements[0].openingElement.attributes.getText(ast), /styles.galleryControls/);
+      assert.match(elements[1].openingElement.attributes.getText(ast), /styles.galleryContainer/);
+      assert.match(elements[0].getText(ast), /onPress=\{toggle\}/);
+      assert.doesNotMatch(elements[1].getText(ast), /onPress=\{toggle\}/);
+      found = true;
+    }
+    ts.forEachChild(node, visit);
+  };
+  visit(ast);
+  assert.ok(found);
+  assert.match(share, /closeButtonBackgroundColor="rgba\(255,255,255,0\.1\)"/);
+  assert.match(share, /galleryToggle: \{[^}]*backgroundColor: "rgba\(255,255,255,0\.1\)"/);
+  assert.match(share, /instagramActionText: \{[^}]*fontSize: 13,[^}]*fontFamily: "Manrope650"/);
+  assert.match(modal, /lightActionButtons && styles.actionTextSoftDark,\s*instagramActionTextStyle/);
+  assert.match(source("../app/_layout.tsx"), /Manrope650: require\("\.\.\/assets\/fonts\/Manrope650\.ttf"\)/);
 });
