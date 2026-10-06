@@ -27,6 +27,12 @@ Tu camino vuelve a la primera serie generada: ilustraciones oscuras botánicas p
 
 **How to apply:** Usar los originales en la portada de Perfil y el recorrido. La restauración se limita a las imágenes: no modifica el hero fullscreen del detalle de Intención ni activa el progreso o las recompensas.
 
+La serie original conserva un aclarado suave del 5 %, sin cambiar su transparencia, recorte ni la atenuación de las etapas pendientes.
+
+**Why:** El usuario confirmó que las imágenes originales «están buenas» y pidió aclararlas un 5 % porque se veían un poco apagadas.
+
+**How to apply:** Conservar ese ajuste al reutilizar esta serie; no confundirlo con aumentar la opacidad de las etapas bloqueadas ni con cambiar el hero independiente.
+
 Intención vuelve a su ilustración original de luz dorada sobre tierra oscura; no usar la estrella metálica ni la semilla pastel en la portada o el recorrido.
 
 **Why:** Forma parte de la restauración de la primera serie solicitada el 2026-10-06.
