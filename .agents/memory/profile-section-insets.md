@@ -15,9 +15,9 @@ Los desplazamientos verticales solicitados en Perfil, tanto del bloque de avatar
 
 **How to apply:** Usar el flujo normal para «arrastra» o «empuja». Aplicar solo a la sección indicada una compensación visual cuando diga «no empujes», sin trasladarla al contenido posterior. Consultar la regla específica de los siete días en las notas de progreso de Perfil.
 
-En Perfil, la separación exterior entre Calendario y Mi muro expansivo debe ser igual a la separación entre Mi muro expansivo y Mi rutina expansiva.
+En Perfil, la separación exterior entre el último módulo de progreso y Mi muro expansivo debe ser igual a la separación entre Mi muro expansivo y Mi rutina expansiva.
 
-**Why:** El usuario pidió usar la distancia de Mi rutina respecto al muro como referencia para separar el muro del calendario.
+**Why:** El usuario pidió usar la distancia de Mi rutina respecto al muro como referencia para separar el muro del calendario. Tras intercambiar Calendario y Tu camino, esa referencia corresponde a Tu camino, que ahora es el último módulo antes del muro.
 
 **How to apply:** Comparar la suma de los márgenes exteriores de ambos lados del espacio, no solo el margen superior de cada sección. Mantener los ajustes exclusivos de Perfil.
 
