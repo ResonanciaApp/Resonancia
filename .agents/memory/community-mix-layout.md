@@ -3,9 +3,9 @@ name: Distribución de Mezclas comunidad
 description: Jerarquía editorial vigente de las cards y alcance de la simulación de avatares.
 ---
 
-Las cards de Mezclas comunidad conservan avatar y botón de favoritos a los lados; el texto tiene tres líneas: cantidad de sonidos, título y nombre del autor, separadas por 4 px. No muestran editorial.
+Las cards de Mezclas comunidad conservan avatar y botón de favoritos a los lados; el texto tiene dos líneas: título y nombre del usuario, separadas por 4 px. No muestran cantidad de sonidos ni editorial.
 
-**Why:** El usuario reemplazó expresamente el diseño anterior de dos líneas por sonidos arriba del título y autor debajo. No restaurar las propuestas anteriores.
+**Why:** Tras probar tres líneas, el usuario pidió quitar los sonidos y dejar solo el nombre de usuario como dato bajo el título. No restaurar las propuestas anteriores.
 
 **How to apply:** Mantener esta jerarquía y las acciones de autor, mezcla y favoritos separadas en Descubrir y Creaciones. La ubicación vigente es al final de Descubrir, debajo de Explora por objetivo; no restaurar la ubicación anterior bajo Explora por contenido.
 

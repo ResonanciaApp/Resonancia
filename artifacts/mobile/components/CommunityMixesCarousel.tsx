@@ -320,9 +320,6 @@ export function MixRow({
         )}
       </Pressable>
       <View style={styles.rowName}>
-        <Text style={styles.rowMeta} numberOfLines={1}>
-          {mix.sounds.length} sonidos
-        </Text>
         <Text style={[styles.mixName, { color: colors.foreground, lineHeight: 16 }]} numberOfLines={1}>
           {mix.name}
         </Text>
@@ -608,7 +605,7 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     alignItems: "center",
     gap: 8,
-    paddingVertical: 6,
+    paddingVertical: 10,
     minHeight: 57,
     height: 57,
     paddingHorizontal: 12,

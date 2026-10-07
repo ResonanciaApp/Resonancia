@@ -18,21 +18,21 @@ test("Descubrir renders Mezclas comunidad", () => {
   assert.match(explore, /<CommunityMixesCarousel \/>\s*\{\s*\/\* ── Descubre algo nuevo/);
 });
 
-test("mix row keeps separate actions and stacks sounds, title and author with four-pixel gaps", () => {
+test("mix row shows only title and username with a four-pixel gap and separate actions", () => {
   const row = carousel.slice(carousel.indexOf("export function MixRow"), carousel.indexOf("// ── Celda de grilla"));
-  const order = ["community-mix-author-", "{mix.sounds.length} sonidos", "{mix.name}", "{mix.author.displayName}", "AnimatedHeart", "count={mix.likes"]
+  const order = ["community-mix-author-", "{mix.name}", "{mix.author.displayName}", "AnimatedHeart", "count={mix.likes"]
     .map((t) => row.indexOf(t));
   // Ignore the author's earlier accessibility label when checking text order.
-  order[3] = row.indexOf("{mix.author.displayName}", order[2]);
+  order[2] = row.indexOf("{mix.author.displayName}", order[1]);
   assert.ok(order.every((i, n) => i > 0 && (n === 0 || i > order[n - 1])), order.join());
-  assert.doesNotMatch(row, /categoryLabel|mix\.category/);
+  assert.doesNotMatch(row, /categoryLabel|mix\.category|mix\.sounds|sonidos/);
   assert.match(carousel, /rowName: \{.*gap: 4/);
   assert.doesNotMatch(row, /marginTop: 6/);
-  assert.equal((row.match(/numberOfLines=\{1\}/g) ?? []).length, 3);
+  assert.equal((row.match(/numberOfLines=\{1\}/g) ?? []).length, 2);
   assert.match(carousel, /minHeight: 57/);
-  assert.match(carousel, /paddingVertical: 6/);
-  // Three lines and two gaps fit without increasing the 57px card height.
-  assert.ok(10 + 16 + 10 + 4 * 2 + 6 * 2 <= 57);
+  assert.match(carousel, /paddingVertical: 10/);
+  // Text and avatar fit without changing the 57px card height.
+  assert.ok(Math.max(16 + 10 + 4, 37) + 10 * 2 <= 57);
   assert.match(row, /rgba\(0,0,0,0\.16\)/);
   assert.match(row, /activeSceneId === "cloudy".*rgba\(0,0,0,0\.19\)/);
   assert.match(carousel, /heartFill = "#F9F9F9"/);
