@@ -167,3 +167,12 @@ test("public profile shows name, days pill then stage, with friendship and vibra
   assert.match(profile, /disabled=\{vibration\.isPending\}/);
   assert.match(profile, /Vibración enviada/);
 });
+
+test("all public-profile action buttons share a 40px height and the requested theme surfaces", () => {
+  assert.match(profile, /actionSurface: \{\s*height: 40,\s*minHeight: 40/);
+  assert.equal((profile.match(/styles\.actionSurface/g) ?? []).length, 3);
+  assert.equal((profile.match(/^\s+actionThemeStyle,/gm) ?? []).length, 3);
+  assert.match(profile, /isIndigo2ThemeId\(theme\.id\)\s*\? \{ backgroundColor: "rgba\(0,0,0,0\.16\)" \}/);
+  assert.match(profile, /theme\.id === "cloudy"\s*\? \{ backgroundColor: "rgba\(0,0,0,0\.19\)" \}/);
+  assert.doesNotMatch(profile, /height: 34/);
+});

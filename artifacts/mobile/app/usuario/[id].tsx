@@ -33,6 +33,7 @@ import { growthLevels } from "@/data/growthLevels";
 import { useColors } from "@/hooks/useColors";
 import { useSceneTheme } from "@/context/SceneThemeContext";
 import { SceneThemeBackground } from "@/components/SceneThemeBackground";
+import { isIndigo2ThemeId } from "@/config/scene-themes";
 
 const H_PAD = 20;
 // Product rule: only Intención is active; never derive the stage from day count.
@@ -48,6 +49,11 @@ function initialsFor(name: string): string {
 export default function UsuarioScreen() {
   const colors = useColors();
   const { theme } = useSceneTheme();
+  const actionThemeStyle = isIndigo2ThemeId(theme.id)
+    ? { backgroundColor: "rgba(0,0,0,0.16)" }
+    : theme.id === "cloudy"
+      ? { backgroundColor: "rgba(0,0,0,0.19)" }
+      : undefined;
   const insets = useSafeAreaInsets();
   const { id } = useLocalSearchParams<{ id: string }>();
   const userId = Number(id);
@@ -218,6 +224,8 @@ export default function UsuarioScreen() {
                   onPress={() => addFriend.mutate({ data: { addresseeId: userId } })}
                   style={({ pressed }) => [
                     styles.actionButton,
+                    styles.actionSurface,
+                    actionThemeStyle,
                     { opacity: isFriend || pendingOutgoing || addFriend.isPending ? 0.6 : pressed ? 0.75 : 1 },
                   ]}
                 >
@@ -234,6 +242,8 @@ export default function UsuarioScreen() {
                   onPress={() => vibration.mutate({ userId })}
                   style={({ pressed }) => [
                     styles.actionButton,
+                    styles.actionSurface,
+                    actionThemeStyle,
                     { opacity: vibration.isPending ? 0.6 : pressed ? 0.75 : 1 },
                   ]}
                 >
@@ -256,7 +266,12 @@ export default function UsuarioScreen() {
             <Pressable
               testID="public-profile-message"
               onPress={() => router.push(`/chat/${profile.id}` as never)}
-              style={({ pressed }) => [styles.messagePill, { opacity: pressed ? 0.75 : 1 }]}
+              style={({ pressed }) => [
+                styles.messagePill,
+                styles.actionSurface,
+                actionThemeStyle,
+                { opacity: pressed ? 0.75 : 1 },
+              ]}
             >
               <Feather name="message-circle" size={13} color="#FFFFFF" />
               <Text style={styles.messagePillText}>Enviar mensaje</Text>
@@ -314,6 +329,11 @@ const styles = StyleSheet.create({
   longDesc: { fontFamily: "Manrope", fontSize: 14, lineHeight: 21, textAlign: "center", marginTop: 12, paddingHorizontal: 4 },
   actionsSection: { alignSelf: "stretch", gap: 8, marginTop: 18 },
   actionsRow: { flexDirection: "row", gap: 8 },
+  actionSurface: {
+    height: 40,
+    minHeight: 40,
+    backgroundColor: "rgba(255,255,255,0.07)",
+  },
   actionButton: {
     flex: 1,
     flexDirection: "row",
@@ -322,9 +342,7 @@ const styles = StyleSheet.create({
     gap: 6,
     paddingHorizontal: 8,
     paddingVertical: 10,
-    minHeight: 40,
     borderRadius: 20,
-    backgroundColor: "rgba(255,255,255,0.07)",
   },
   actionText: { fontFamily: "Manrope", fontSize: 12, fontWeight: "600", flexShrink: 1, textAlign: "center" },
   feedback: { fontFamily: "Manrope", fontSize: 12, textAlign: "center" },
@@ -336,8 +354,6 @@ const styles = StyleSheet.create({
     alignSelf: "stretch",
     marginTop: 18,
     borderRadius: 20,
-    height: 34,
-    backgroundColor: "rgba(255,255,255,0.07)",
   },
   messagePillText: { fontFamily: "Manrope", fontSize: 13, color: "#FFFFFF", letterSpacing: 0.1 },
 });
