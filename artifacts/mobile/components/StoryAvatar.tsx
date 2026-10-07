@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { Image } from "expo-image";
+import { View, StyleSheet } from "react-native";
 import { useAuth } from "@clerk/expo";
 import type { ProfileAvatarSource } from "@/lib/profile-avatar";
 
@@ -31,6 +32,8 @@ export function StoryAvatar({ source, scale, onReady, onFailure }: {
   const imageSource = protectedUri && typeof source === "object" && credentials
     ? { ...source, headers: { Authorization: `Bearer ${credentials.token}` } } : source;
   return (
+    <View style={{ width: 124 * scale, height: 124 * scale, borderRadius: 62 * scale,
+      flexShrink: 0, overflow: "hidden" }}>
     <Image
       key={JSON.stringify(source)}
       testID="reflection-story-avatar"
@@ -38,8 +41,12 @@ export function StoryAvatar({ source, scale, onReady, onFailure }: {
       contentFit="cover"
       onLoad={onReady}
       onError={onFailure}
-      style={{ width: 124 * scale, height: 124 * scale, borderRadius: 62 * scale,
-        marginTop: 24 * scale, flexShrink: 0 }}
+      style={StyleSheet.absoluteFillObject}
     />
+    <View pointerEvents="none" style={[StyleSheet.absoluteFillObject, {
+      backgroundColor: "rgba(0,0,0,0.2)", borderWidth: 1, borderColor: "rgba(255,255,255,0.4)",
+      borderRadius: 62 * scale,
+    }]} />
+    </View>
   );
 }

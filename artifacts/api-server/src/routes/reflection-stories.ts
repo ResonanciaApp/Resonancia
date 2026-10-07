@@ -81,11 +81,16 @@ router.post("/me/reflection-stories", requireAuth, async (req, res) => {
   const input = parsed.data;
   const message = input.message.trim();
   const backgroundOffsetLimit = (input.backgroundScale - 1) / 2;
+  const avatarX = input.avatarX ?? null;
+  const avatarY = input.avatarY ?? null;
   if (
     countGraphemes(message) > 160
     || message.length === 0
     || Math.abs(input.backgroundX) > backgroundOffsetLimit
     || Math.abs(input.backgroundY) > backgroundOffsetLimit
+    || ((avatarX === null) !== (avatarY === null))
+    || (avatarX !== null && (!input.avatarImagePath || avatarX < 62 / 1080 || avatarX > 1 - 62 / 1080))
+    || (avatarY !== null && (avatarY < 62 / 1920 || avatarY > 1 - 62 / 1920))
   ) {
     res.status(400).json({ error: "La composición no es válida" });
     return;
@@ -123,6 +128,8 @@ router.post("/me/reflection-stories", requireAuth, async (req, res) => {
       textX: input.textX,
       textY: input.textY,
       avatarImagePath: input.avatarImagePath ?? null,
+      avatarX,
+      avatarY,
     }).returning();
     res.status(201).json(dto(row));
   } catch (error) {

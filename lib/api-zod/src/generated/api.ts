@@ -7723,6 +7723,12 @@ export const listMyReflectionStoriesResponseItemsItemBackgroundPresetKeyMax = 12
 
 export const listMyReflectionStoriesResponseItemsItemAvatarImagePathMax = 2048;
 
+export const listMyReflectionStoriesResponseItemsItemAvatarXMin = 0;
+export const listMyReflectionStoriesResponseItemsItemAvatarXMax = 1;
+
+export const listMyReflectionStoriesResponseItemsItemAvatarYMin = 0;
+export const listMyReflectionStoriesResponseItemsItemAvatarYMax = 1;
+
 export const listMyReflectionStoriesResponseItemsItemBackgroundScaleMax = 3;
 
 export const listMyReflectionStoriesResponseItemsItemBackgroundXMin = -1;
@@ -7747,6 +7753,8 @@ export const ListMyReflectionStoriesResponse = zod.object({
   "category": zod.string().max(listMyReflectionStoriesResponseItemsItemCategoryMax).regex(listMyReflectionStoriesResponseItemsItemCategoryRegExp),
   "backgroundPresetKey": zod.string().min(1).max(listMyReflectionStoriesResponseItemsItemBackgroundPresetKeyMax),
   "avatarImagePath": zod.string().max(listMyReflectionStoriesResponseItemsItemAvatarImagePathMax).nullish(),
+  "avatarX": zod.number().min(listMyReflectionStoriesResponseItemsItemAvatarXMin).max(listMyReflectionStoriesResponseItemsItemAvatarXMax).nullish(),
+  "avatarY": zod.number().min(listMyReflectionStoriesResponseItemsItemAvatarYMin).max(listMyReflectionStoriesResponseItemsItemAvatarYMax).nullish(),
   "backgroundScale": zod.number().min(1).max(listMyReflectionStoriesResponseItemsItemBackgroundScaleMax),
   "backgroundX": zod.number().min(listMyReflectionStoriesResponseItemsItemBackgroundXMin).max(listMyReflectionStoriesResponseItemsItemBackgroundXMax),
   "backgroundY": zod.number().min(listMyReflectionStoriesResponseItemsItemBackgroundYMin).max(listMyReflectionStoriesResponseItemsItemBackgroundYMax),
@@ -7766,6 +7774,12 @@ export const CreateMyReflectionStoryHeader = zod.object({
   "Idempotency-Key": zod.string().min(1).max(createMyReflectionStoryHeaderIdempotencyKeyMax)
 })
 
+
+export const createMyReflectionStoryBodyAvatarXMin = 0;
+export const createMyReflectionStoryBodyAvatarXMax = 1;
+
+export const createMyReflectionStoryBodyAvatarYMin = 0;
+export const createMyReflectionStoryBodyAvatarYMax = 1;
 
 export const createMyReflectionStoryBodyCategoryMax = 40;
 
@@ -7795,6 +7809,8 @@ export const createMyReflectionStoryBodyTextYMax = 0.2604166667;
 
 export const CreateMyReflectionStoryBody = zod.object({
   "message": zod.string().min(1),
+  "avatarX": zod.number().min(createMyReflectionStoryBodyAvatarXMin).max(createMyReflectionStoryBodyAvatarXMax).nullish(),
+  "avatarY": zod.number().min(createMyReflectionStoryBodyAvatarYMin).max(createMyReflectionStoryBodyAvatarYMax).nullish(),
   "category": zod.string().max(createMyReflectionStoryBodyCategoryMax).regex(createMyReflectionStoryBodyCategoryRegExp),
   "backgroundPresetKey": zod.string().min(1).max(createMyReflectionStoryBodyBackgroundPresetKeyMax),
   "avatarImagePath": zod.string().max(createMyReflectionStoryBodyAvatarImagePathMax).regex(createMyReflectionStoryBodyAvatarImagePathRegExp).nullish(),
@@ -7813,6 +7829,12 @@ export const createMyReflectionStoryResponseCategoryRegExp = new RegExp('^[a-z][
 export const createMyReflectionStoryResponseBackgroundPresetKeyMax = 120;
 
 export const createMyReflectionStoryResponseAvatarImagePathMax = 2048;
+
+export const createMyReflectionStoryResponseAvatarXMin = 0;
+export const createMyReflectionStoryResponseAvatarXMax = 1;
+
+export const createMyReflectionStoryResponseAvatarYMin = 0;
+export const createMyReflectionStoryResponseAvatarYMax = 1;
 
 export const createMyReflectionStoryResponseBackgroundScaleMax = 3;
 
@@ -7837,6 +7859,8 @@ export const CreateMyReflectionStoryResponse = zod.object({
   "category": zod.string().max(createMyReflectionStoryResponseCategoryMax).regex(createMyReflectionStoryResponseCategoryRegExp),
   "backgroundPresetKey": zod.string().min(1).max(createMyReflectionStoryResponseBackgroundPresetKeyMax),
   "avatarImagePath": zod.string().max(createMyReflectionStoryResponseAvatarImagePathMax).nullish(),
+  "avatarX": zod.number().min(createMyReflectionStoryResponseAvatarXMin).max(createMyReflectionStoryResponseAvatarXMax).nullish(),
+  "avatarY": zod.number().min(createMyReflectionStoryResponseAvatarYMin).max(createMyReflectionStoryResponseAvatarYMax).nullish(),
   "backgroundScale": zod.number().min(1).max(createMyReflectionStoryResponseBackgroundScaleMax),
   "backgroundX": zod.number().min(createMyReflectionStoryResponseBackgroundXMin).max(createMyReflectionStoryResponseBackgroundXMax),
   "backgroundY": zod.number().min(createMyReflectionStoryResponseBackgroundYMin).max(createMyReflectionStoryResponseBackgroundYMax),
@@ -7858,6 +7882,12 @@ export const getMyReflectionStoryResponseCategoryRegExp = new RegExp('^[a-z][a-z
 export const getMyReflectionStoryResponseBackgroundPresetKeyMax = 120;
 
 export const getMyReflectionStoryResponseAvatarImagePathMax = 2048;
+
+export const getMyReflectionStoryResponseAvatarXMin = 0;
+export const getMyReflectionStoryResponseAvatarXMax = 1;
+
+export const getMyReflectionStoryResponseAvatarYMin = 0;
+export const getMyReflectionStoryResponseAvatarYMax = 1;
 
 export const getMyReflectionStoryResponseBackgroundScaleMax = 3;
 
@@ -7882,6 +7912,8 @@ export const GetMyReflectionStoryResponse = zod.object({
   "category": zod.string().max(getMyReflectionStoryResponseCategoryMax).regex(getMyReflectionStoryResponseCategoryRegExp),
   "backgroundPresetKey": zod.string().min(1).max(getMyReflectionStoryResponseBackgroundPresetKeyMax),
   "avatarImagePath": zod.string().max(getMyReflectionStoryResponseAvatarImagePathMax).nullish(),
+  "avatarX": zod.number().min(getMyReflectionStoryResponseAvatarXMin).max(getMyReflectionStoryResponseAvatarXMax).nullish(),
+  "avatarY": zod.number().min(getMyReflectionStoryResponseAvatarYMin).max(getMyReflectionStoryResponseAvatarYMax).nullish(),
   "backgroundScale": zod.number().min(1).max(getMyReflectionStoryResponseBackgroundScaleMax),
   "backgroundX": zod.number().min(getMyReflectionStoryResponseBackgroundXMin).max(getMyReflectionStoryResponseBackgroundXMax),
   "backgroundY": zod.number().min(getMyReflectionStoryResponseBackgroundYMin).max(getMyReflectionStoryResponseBackgroundYMax),

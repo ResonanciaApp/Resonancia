@@ -80,6 +80,8 @@ export default function GalleryDetailScreen() {
       textX: story.textX,
       textY: story.textY,
       avatarImagePath: story.avatarImagePath ?? null,
+      avatarX: story.avatarX ?? null,
+      avatarY: story.avatarY ?? null,
     };
     idempotencyState.current = getStableIdempotencyKey(payload, idempotencyState.current);
     try {
@@ -183,6 +185,7 @@ export default function GalleryDetailScreen() {
         return (
           <StoryArtworkFrame
             avatarSource={resolveProfileAvatarSource({ avatarUrl: story.avatarImagePath }, [])}
+            avatarPosition={story.avatarX != null && story.avatarY != null ? { x: story.avatarX, y: story.avatarY } : undefined}
             message={story.message}
             width={width}
             bgImageSource={selectedImageSource}

@@ -2,7 +2,8 @@ import assert from "node:assert/strict";
 import { readFileSync } from "node:fs";
 import { fileURLToPath, URL } from "node:url";
 import test from "node:test";
-import { reflectionAvatarObjectPath, getStableIdempotencyKey } from "../lib/reflection-story-logic.ts";
+import { reflectionAvatarObjectPath, getStableIdempotencyKey, clampReflectionStoryAvatarPosition,
+  REFLECTION_STORY_AVATAR_X_MIN, REFLECTION_STORY_AVATAR_Y_MIN } from "../lib/reflection-story-logic.ts";
 
 const base = "https://app.example.invalid";
 
@@ -28,9 +29,26 @@ test("preview and export share avatar geometry and wait for both images", () => 
   const exportFrame = read("../components/StoryArtworkFrame.tsx");
   const preview = read("../components/ReflectionShare.tsx");
   assert.match(exportFrame, /<StoryAvatar source=\{avatarSource\} scale=\{exportScale\}/);
-  assert.match(preview, /<StoryAvatar source=\{avatarSource\} scale=\{width \/ STORY_WIDTH\}/);
+  assert.match(preview, /<StoryAvatarLayer source=\{avatarSource\} width=\{width\}/);
+  assert.match(exportFrame, /<StoryAvatarLayer source=\{avatarSource\} width=\{width\}/);
+  const layer = read("../components/StoryAvatarLayer.tsx");
+  assert.match(layer, /event\.translationX \/ \(width \* visibleScale\)/);
+  assert.match(layer, /event\.translationY \/ \(height \* visibleScale\)/);
+  assert.doesNotMatch(layer, /textX|textY|backgroundX|backgroundY/);
   assert.match(exportFrame, /loadedBackground === backgroundKey && \(!avatarSource \|\| loadedAvatar === avatarKey\)/);
   assert.match(preview, /JSON\.stringify\(includedAvatar\)/);
   assert.match(read("../app/galeria-reflexiones/index.tsx"), /avatarUrl: item\.avatarImagePath/);
   assert.match(read("../app/galeria-reflexiones/[id].tsx"), /avatarImagePath: story\.avatarImagePath/);
+  assert.match(read("../app/galeria-reflexiones/[id].tsx"), /avatarX: story\.avatarX/);
+  assert.match(read("../components/StoryAvatar.tsx"), /borderWidth: 1, borderColor: "rgba\(255,255,255,0\.4\)"/);
+  assert.match(read("../components/StoryAvatar.tsx"), /backgroundColor: "rgba\(0,0,0,0\.2\)"/);
+});
+
+test("free avatar movement keeps the full circle inside the image and changes the capture recipe", () => {
+  assert.deepEqual(clampReflectionStoryAvatarPosition({ x: -100, y: 100 }), {
+    x: REFLECTION_STORY_AVATAR_X_MIN, y: 1 - REFLECTION_STORY_AVATAR_Y_MIN,
+  });
+  assert.deepEqual(clampReflectionStoryAvatarPosition({ x: 0.25, y: 0.75 }), { x: 0.25, y: 0.75 });
+  const initial = getStableIdempotencyKey({ avatarX: 0.5, avatarY: 0.66 }, { hash: "", key: "" });
+  assert.notEqual(getStableIdempotencyKey({ avatarX: 0.25, avatarY: 0.75 }, initial).key, initial.key);
 });

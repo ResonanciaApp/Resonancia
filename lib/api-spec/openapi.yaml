@@ -5340,6 +5340,8 @@ components:
         category: {$ref: "#/components/schemas/ReflectionCategory"}
         backgroundPresetKey: {type: string, minLength: 1, maxLength: 120}
         avatarImagePath: {type: ["string", "null"], maxLength: 2048}
+        avatarX: {type: ["number", "null"], minimum: 0, maximum: 1}
+        avatarY: {type: ["number", "null"], minimum: 0, maximum: 1}
         backgroundScale: {type: number, minimum: 1, maximum: 3}
         backgroundX: {type: number, minimum: -1, maximum: 1}
         backgroundY: {type: number, minimum: -1, maximum: 1}
@@ -5351,6 +5353,8 @@ components:
       required: [message, category, backgroundPresetKey, backgroundScale, backgroundX, backgroundY, textX, textY]
       properties:
         message: {type: string, minLength: 1}
+        avatarX: {type: ["number", "null"], minimum: 0, maximum: 1}
+        avatarY: {type: ["number", "null"], minimum: 0, maximum: 1}
         category: {$ref: "#/components/schemas/ReflectionCategory"}
         backgroundPresetKey: {type: string, minLength: 1, maxLength: 120}
         avatarImagePath:

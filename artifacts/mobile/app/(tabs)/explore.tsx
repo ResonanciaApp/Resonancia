@@ -637,6 +637,8 @@ export function ExploreScreen({
           </View>
 
           <View style={[styles.sectionSpacer, styles.categoryBlocksSpacer]} />
+          <CommunityMixesCarousel />
+          <View style={styles.sectionSpacer} />
 
           <>
             <View style={styles.featuredMomentSection}>
@@ -836,10 +838,6 @@ export function ExploreScreen({
               ))}
             </ScrollView>
           </View>
-
-          <View style={styles.sectionSpacer} />
-
-          <CommunityMixesCarousel />
 
           <View style={[styles.sectionSpacer, styles.resonadoresSpacer]} />
 

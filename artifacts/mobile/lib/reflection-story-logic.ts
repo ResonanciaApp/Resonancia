@@ -3,6 +3,18 @@ export const REFLECTION_STORY_MIN_BACKGROUND_SCALE = 1;
 export const REFLECTION_STORY_MAX_BACKGROUND_SCALE = 3;
 export const REFLECTION_STORY_TEXT_X_LIMIT = 100 / 1080;
 export const REFLECTION_STORY_TEXT_Y_LIMIT = 500 / 1920;
+export const REFLECTION_STORY_AVATAR_SIZE = 124;
+export const REFLECTION_STORY_AVATAR_X_MIN = 62 / 1080;
+export const REFLECTION_STORY_AVATAR_Y_MIN = 62 / 1920;
+export type ReflectionStoryAvatarPosition = { x: number; y: number };
+export const DEFAULT_REFLECTION_STORY_AVATAR_POSITION: ReflectionStoryAvatarPosition = { x: 0.5, y: 0.66 };
+
+export function clampReflectionStoryAvatarPosition(position: ReflectionStoryAvatarPosition): ReflectionStoryAvatarPosition {
+  return {
+    x: clamp(position.x, REFLECTION_STORY_AVATAR_X_MIN, 1 - REFLECTION_STORY_AVATAR_X_MIN),
+    y: clamp(position.y, REFLECTION_STORY_AVATAR_Y_MIN, 1 - REFLECTION_STORY_AVATAR_Y_MIN),
+  };
+}
 
 export type ReflectionStoryComposition = {
   backgroundScale: number;

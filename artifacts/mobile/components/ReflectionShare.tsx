@@ -20,7 +20,7 @@ import { useReflectionGalleryExpansion } from "@/hooks/useReflectionGalleryExpan
 import { REFLECTION_GALLERY_HEIGHT } from "@/lib/reflection-gallery-layout";
 import { useCurrentUserAvatarSource, type ProfileAvatarSource } from "@/lib/profile-avatar";
 import { prepareReflectionAvatar } from "@/lib/reflection-story-avatar";
-import { StoryAvatar } from "./StoryAvatar";
+import { StoryAvatarLayer } from "./StoryAvatarLayer";
 import {
   canShareReflection,
   clampReflectionStoryComposition,
@@ -31,6 +31,9 @@ import {
   REFLECTION_STORY_TEXT_X_LIMIT,
   REFLECTION_STORY_TEXT_Y_LIMIT,
   type ReflectionStoryComposition,
+  type ReflectionStoryAvatarPosition,
+  DEFAULT_REFLECTION_STORY_AVATAR_POSITION,
+  clampReflectionStoryAvatarPosition,
 } from "@/lib/reflection-story-logic";
 
 type ReflectionArtworkProps = {
@@ -39,6 +42,8 @@ type ReflectionArtworkProps = {
   bgImageSource: number | { uri: string } | undefined;
   composition: ReflectionStoryComposition;
   avatarSource?: ProfileAvatarSource;
+  avatarPosition: ReflectionStoryAvatarPosition;
+  onAvatarPositionChange: (position: ReflectionStoryAvatarPosition) => void;
   onReady?: () => void;
   onFailure?: () => void;
   onAvatarFailure?: () => void;
@@ -50,6 +55,8 @@ function InteractiveReflectionArtwork({
   bgImageSource,
   composition,
   avatarSource,
+  avatarPosition,
+  onAvatarPositionChange,
   onCompositionChange,
   onFailure,
   onAvatarFailure,
@@ -262,9 +269,11 @@ function InteractiveReflectionArtwork({
           >
             {reflection.message.trim()}
           </Text>
-          <StoryAvatar source={avatarSource} scale={width / STORY_WIDTH} onFailure={onAvatarFailure ?? onFailure} />
         </Animated.View>
       </GestureDetector>
+      {avatarSource && <StoryAvatarLayer source={avatarSource} width={width}
+        position={avatarPosition} onPositionChange={onAvatarPositionChange}
+        displayScale={displayScale} onFailure={onAvatarFailure ?? onFailure} />}
     </View>
   );
 }
@@ -272,6 +281,8 @@ function InteractiveReflectionArtwork({
 export function ReflectionShare({ reflection, onClose }: { reflection: Reflection; onClose: () => void }) {
   const currentAvatarSource = useCurrentUserAvatarSource();
   const [includedAvatar, setIncludedAvatar] = useState<ProfileAvatarSource>();
+  const [avatarPosition, setAvatarPosition] = useState(DEFAULT_REFLECTION_STORY_AVATAR_POSITION);
+  const updateAvatarPosition = (position: ReflectionStoryAvatarPosition) => setAvatarPosition(clampReflectionStoryAvatarPosition(position));
   const preparedAvatar = useRef<{ key: string; promise: Promise<string> } | undefined>(undefined);
   const { expanded, toggle, heightReduction } = useReflectionGalleryExpansion();
   const gallerySizeStyle = useAnimatedStyle(() => ({
@@ -314,6 +325,7 @@ export function ReflectionShare({ reflection, onClose }: { reflection: Reflectio
   };
   const resetComposition = () => {
     setComposition(DEFAULT_REFLECTION_STORY_COMPOSITION);
+    setAvatarPosition(DEFAULT_REFLECTION_STORY_AVATAR_POSITION);
   };
 
   const handleBeforeInstagramShare = async () => {
@@ -330,6 +342,8 @@ export function ReflectionShare({ reflection, onClose }: { reflection: Reflectio
       }
       const payload: ReflectionStoryInput = {
         avatarImagePath,
+        avatarX: includedAvatar ? avatarPosition.x : null,
+        avatarY: includedAvatar ? avatarPosition.y : null,
         message: reflection.message,
         category: reflection.category,
         backgroundPresetKey: selectedItem?.key ?? "01",
@@ -359,7 +373,9 @@ export function ReflectionShare({ reflection, onClose }: { reflection: Reflectio
     || Math.abs(composition.backgroundX) > 0.0001
     || Math.abs(composition.backgroundY) > 0.0001
     || Math.abs(composition.textX) > 0.0001
-    || Math.abs(composition.textY) > 0.0001;
+    || Math.abs(composition.textY) > 0.0001
+    || (!!includedAvatar && (Math.abs(avatarPosition.x - DEFAULT_REFLECTION_STORY_AVATAR_POSITION.x) > 0.0001
+      || Math.abs(avatarPosition.y - DEFAULT_REFLECTION_STORY_AVATAR_POSITION.y) > 0.0001));
 
   return (
     <StoryShareModal
@@ -371,6 +387,8 @@ export function ReflectionShare({ reflection, onClose }: { reflection: Reflectio
         selectedBgId ?? "initial",
         selectedUsesFallback ? "fallback" : "primary",
         JSON.stringify(includedAvatar) ?? "no-avatar",
+        avatarPosition.x.toFixed(6),
+        avatarPosition.y.toFixed(6),
         composition.backgroundScale.toFixed(4),
         composition.backgroundX.toFixed(4),
         composition.backgroundY.toFixed(4),
@@ -407,10 +425,12 @@ export function ReflectionShare({ reflection, onClose }: { reflection: Reflectio
           disabled={!currentAvatarSource}
           onPress={() => setIncludedAvatar(current => current ? undefined : currentAvatarSource)}
           style={{ width: 43, height: 43, borderRadius: 22, overflow: "hidden",
-            borderWidth: includedAvatar ? 2 : 0, borderColor: "#BE9650",
-            backgroundColor: "rgba(0,0,0,0.16)" }}>
+            backgroundColor: "transparent" }}>
           {currentAvatarSource ? <Image source={currentAvatarSource}
             contentFit="cover" style={{ width: "100%", height: "100%" }} /> : null}
+          {includedAvatar && <View pointerEvents="none" style={[StyleSheet.absoluteFillObject,
+            { backgroundColor: "rgba(0,0,0,0.2)", borderWidth: 1,
+              borderColor: "rgba(255,255,255,0.4)", borderRadius: 22 }]} />}
         </Pressable>
       </View>}
       renderArtwork={(width, isExport, callbacks, previewContext) => {
@@ -428,6 +448,7 @@ export function ReflectionShare({ reflection, onClose }: { reflection: Reflectio
             bgImageSource={selectedImageSource}
             composition={composition}
             avatarSource={includedAvatar}
+            avatarPosition={avatarPosition}
             onAvatarFailure={callbacks.onFailure}
             onReady={callbacks.onReady}
             onFailure={handleFailure}
@@ -439,6 +460,8 @@ export function ReflectionShare({ reflection, onClose }: { reflection: Reflectio
             bgImageSource={selectedImageSource}
             composition={composition}
             avatarSource={includedAvatar}
+            avatarPosition={avatarPosition}
+            onAvatarPositionChange={updateAvatarPosition}
             onAvatarFailure={callbacks.onFailure}
             onCompositionChange={updateComposition}
             displayScale={previewContext?.displayScale}

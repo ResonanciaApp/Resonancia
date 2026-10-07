@@ -4,6 +4,8 @@ import { Image } from "expo-image";
 import type { ReflectionStoryComposition } from "@/lib/reflection-story-logic";
 import type { ProfileAvatarSource } from "@/lib/profile-avatar";
 import { StoryAvatar } from "./StoryAvatar";
+import { StoryAvatarLayer } from "./StoryAvatarLayer";
+import type { ReflectionStoryAvatarPosition } from "@/lib/reflection-story-logic";
 
 export const STORY_WIDTH = 1080;
 export const STORY_QUOTE_TOP = 610;
@@ -15,6 +17,7 @@ export type ReflectionArtworkProps = {
   bgImageSource: number | { uri: string } | undefined;
   composition: ReflectionStoryComposition;
   avatarSource?: ProfileAvatarSource;
+  avatarPosition?: ReflectionStoryAvatarPosition;
   onReady?: () => void;
   onFailure?: () => void;
   onAvatarFailure?: () => void;
@@ -26,6 +29,7 @@ export function StoryArtworkFrame({
   bgImageSource,
   composition,
   avatarSource,
+  avatarPosition,
   onReady,
   onFailure,
   onAvatarFailure,
@@ -109,9 +113,14 @@ export function StoryArtworkFrame({
         >
           {message.trim()}
         </Text>
-        <StoryAvatar source={avatarSource} scale={exportScale}
-          onReady={() => setLoadedAvatar(avatarKey)} onFailure={onAvatarFailure ?? onFailure} />
+        {!avatarPosition && avatarSource && <View style={{ marginTop: 24 * exportScale }}>
+          <StoryAvatar source={avatarSource} scale={exportScale}
+            onReady={() => setLoadedAvatar(avatarKey)} onFailure={onAvatarFailure ?? onFailure} />
+        </View>}
       </View>
+      {avatarPosition && avatarSource && <StoryAvatarLayer source={avatarSource} width={width}
+        position={avatarPosition} onReady={() => setLoadedAvatar(avatarKey)}
+        onFailure={onAvatarFailure ?? onFailure} />}
     </View>
   );
 }

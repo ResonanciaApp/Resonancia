@@ -29,7 +29,6 @@ import {
   useReportSharedMix,
 } from "@workspace/api-client-react";
 import type { SharedMix } from "@workspace/api-client-react";
-import { MIX_CATEGORIES } from "@/data/mix-categories";
 import { getMixImage } from "@/config/mix-images";
 import { catalogImage, useCoverPresetCatalog } from "@/lib/cover-preset-catalog";
 
@@ -219,8 +218,7 @@ function AnimatedHeart({ favorited, onPress, count, mixId }: {
   favorited: boolean; onPress: () => void; count: number; mixId: number;
 }) {
   const scale = useRef(new Animated.Value(1)).current;
-  const { theme: heartTheme } = useSceneTheme();
-  const heartFill = heartTheme.id === "tibet" ? "#F9F9F9" : "#BEA3E6";
+  const heartFill = "#F9F9F9";
 
   const handlePress = () => {
     onPress();
@@ -272,7 +270,6 @@ export function MixRow({
   const avatarSource = useProfileAvatarSource(mix.author);
   const initial = mix.author.displayName?.trim()?.[0]?.toUpperCase() ?? "·";
 
-  const categoryLabel = MIX_CATEGORIES.find((c) => c.id === mix.category)?.label;
   return (
     <Pressable
       testID={`community-mix-row-${mix.id}`}
@@ -280,8 +277,9 @@ export function MixRow({
       style={({ pressed }) => [
         styles.row,
         activeSceneId === "tibet" && { backgroundColor: "rgba(0,0,0,0.15)" },
-        isIndigo2ThemeId(activeSceneId) && { backgroundColor: "rgba(191,207,255,0.096)" },
         isIndigoThemeId(activeSceneId) && { backgroundColor: "rgba(181,211,255,0.057)" },
+        isIndigo2ThemeId(activeSceneId) && { backgroundColor: "rgba(0,0,0,0.16)" },
+        activeSceneId === "cloudy" && { backgroundColor: "rgba(0,0,0,0.19)" },
         { opacity: pressed ? 0.6 : 1 },
       ]}
     >
@@ -301,17 +299,14 @@ export function MixRow({
           </View>
         )}
       </Pressable>
-      <Text style={[styles.mixName, styles.rowName, { color: colors.foreground }]} numberOfLines={1}>
-        {mix.name}
-      </Text>
-      <Text style={[styles.mixCreator, styles.rowCount, { color: colors.mutedForeground }]} numberOfLines={1}>
-        {mix.sounds.length} sonidos
-      </Text>
-      {categoryLabel ? (
-        <Text style={[styles.mixCreator, styles.rowCategory, { color: colors.mutedForeground }]} numberOfLines={1}>
-          {categoryLabel}
+      <View style={styles.rowName}>
+        <Text style={[styles.mixName, { color: colors.foreground, lineHeight: 16 }]} numberOfLines={1}>
+          {mix.name}
         </Text>
-      ) : null}
+        <Text style={[styles.mixCreator, { color: colors.mutedForeground, marginTop: 6, lineHeight: 12 }]} numberOfLines={1}>
+          {mix.sounds.length} sonidos
+        </Text>
+      </View>
        <AnimatedHeart count={mix.likes ?? 0} mixId={mix.id}
          favorited={favorited ?? false} onPress={onHeartPress ?? (() => {})} />
     </Pressable>
@@ -590,7 +585,9 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     alignItems: "center",
     gap: 8,
-    paddingVertical: 10,
+    paddingVertical: 11.5,
+    minHeight: 57,
+    height: 57,
     paddingHorizontal: 12,
     borderRadius: 18,
     backgroundColor: "rgba(255,255,255,0.045)",

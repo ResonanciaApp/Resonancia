@@ -145,6 +145,18 @@ export interface ReflectionStory {
      */
   avatarImagePath?: string | null;
   /**
+     * @minimum 0
+     * @maximum 1
+     * @nullable
+     */
+  avatarX?: number | null;
+  /**
+     * @minimum 0
+     * @maximum 1
+     * @nullable
+     */
+  avatarY?: number | null;
+  /**
      * @minimum 1
      * @maximum 3
      */
@@ -175,6 +187,18 @@ export interface ReflectionStory {
 export interface ReflectionStoryInput {
   /** @minLength 1 */
   message: string;
+  /**
+     * @minimum 0
+     * @maximum 1
+     * @nullable
+     */
+  avatarX?: number | null;
+  /**
+     * @minimum 0
+     * @maximum 1
+     * @nullable
+     */
+  avatarY?: number | null;
   category: ReflectionCategory;
   /**
      * @minLength 1

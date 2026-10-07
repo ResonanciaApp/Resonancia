@@ -14,3 +14,9 @@ Las historias deben conservar la imagen concreta del avatar, no resolver el avat
 **Why:** Cambiar el avatar de Perfil o editar su catálogo no debe alterar una historia anterior. La receta también es una referencia de retención para evitar que una limpieza editorial borre una imagen todavía utilizada.
 
 **How to apply:** Persistir una ruta de imagen estable; subir primero las imágenes locales o externas y validar propiedad o acceso público antes de referenciarlas. No conceder lectura pública por aparecer en una receta privada. Esperar la carga del avatar y del fondo antes de capturar.
+
+El avatar es una capa movible independiente: no queda unido al bloque de la frase ni al fondo.
+
+**Why:** El usuario corrigió expresamente la colocación fija debajo de la frase: la persona debe poder elegir cualquier ubicación dentro de la imagen.
+
+**How to apply:** Mantener posición normalizada propia en vista previa, captura y receta guardada. Reservar el diseño antiguo debajo de la frase solo para historias previas sin coordenadas.

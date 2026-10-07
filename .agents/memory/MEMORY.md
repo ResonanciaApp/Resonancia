@@ -11,8 +11,7 @@
 - [Pitch financial coherence](pitch-financial-coherence.md) — cifras del modelo (ronda/equity/uso de fondos/valle/stakes) viven en 6+ slides hardcodeadas; cambiar una = propagar a todas o se contradicen
 - [Navy + gold palette (rebrand)](warm-theme.md) — marca migrada de café/bronce a azul marina #060A0F + dorado #BE9650; mapeo de reemplazo + slides hardcodean hex inline (no usan CSS vars); mockups de decks pendientes
 - [MixerSheet al guardar](mixer-sheet-fade.md) — guardar cierra solo el popup, conserva “Tu mezcla”, pausa sin vaciar sonidos y confirma con toast; el fade global queda solo para cierres reales
-- [expo-audio lock-screen player](expo-audio-lockscreen.md) — persistent player + .replace() shares one status listener; guard session switches (switchingRef, pause old track) or stale position bleeds across sessions
-- [Crossfade B-entry click fix](crossfade-b-entry-click.md) — fade de entrada de B requiere setInterval a 16ms, NO Date.now() inline en el listener (iOS ticks cada ~200ms → bEntry ya vale 1 en el primer tick siguiente)
+- [Audio móvil](audio-engine-notes.md) — decisiones y restricciones del motor BPM, loops, desfase, limitador y pantalla bloqueada
 - [iOS 26 Hermes PAC crash](ios26-hermes-pac-crash.md) — EXC_BAD_ACCESS on JS thread on physical iOS 26 devices; prebuilt Hermes fails PAC → fix = buildReactNativeFromSource (Xcode 26)
 - [Listen-time stats](listen-time-stats.md) — stat minutes = wall-clock accumulator gated on isPlaying, NEVER elapsed/position (seek corrupts position; loop interval ticks while paused)
 - [Profile name sync to server](profile-name-sync.md) — username local (AsyncStorage) NO se sincroniza solo; ProfileSync empuja a displayName del server o las features sociales muestran el ID de Clerk
@@ -35,12 +34,7 @@
 - [Reanimated slider oscillator](reanimated-slider-oscillator.md) — loop start/stop deps deben ser boolean on/off (no la amplitud analógica) o cada tick del slider colapsa el barrido; amplitud vive en el worklet
 - [RN overlay effect gotchas](rn-overlay-effect-gotchas.md) — hitSlop se recorta al padre; siblings solapados y SVG decorativos roban gestos; envolver SVG en View pointerEvents none
 - [Hero como fondo único](hero-fade-bg-match.md) — imagen hero + bg degradado leídos como "dos fondos": fix = meter la imagen EN la capa de fondo raíz y desvanecerla al color EXACTO del degradado raíz a la Y del borde (mismo degradado continuo debajo, sin costura); top fade desde #4A0C0C opaco→transparente; offsets px vía locations
-- [BPM mix-bus limiter](bpm-mixbus-limiter.md) — apilar 3+ loops satura el master (clipping); fix = WaveShaper soft-clip (la lib NO trae compresor); createWaveShaper() = 0 args, curva/oversample por propiedad
 - [Animated layout-prop slide fails under Fabric](animated-left-fabric.md) — animar `left`/posición con JS driver no renderiza en New Arch; usar `translateX` nativo con left estático (width JS + transform nativo conviven)
-- [Mixer "tiempo" phase offset](mixer-phase-offset.md) — offset de loop BPM = LAG por beats `[0,.125,.25,.375]` (no cuartos); solo audible al combinar ≥2 capas; runtime-only (no se persiste); offset 0 = no-op; tocar las 4 rutas en lockstep
-- [BPM gapless loop engine](bpm-gapless-loop.md) — loops "bpm" del Mezclador en react-native-audio-api (resto en expo-audio); expo dueño único de AVAudioSession; loopEnd musical; play() async cancelable; necesita rebuild del dev client; historial de enfoques expo-audio que fallaron
-- [Session loops via gapless engine](session-loop-engine.md) — LOOP_SESSIONS suenan por bpmAudioEngine (voz external `session:<id>` directo a destination); main expo-audio = ancla MUDA lock-screen; crossfade JS eliminado
-- [BPM engine only — sin fallback expo](bpm-engine-only.md) — bpmSystemRef/bpmClockRef/bpmTickRef/scheduler JS eliminados; bpmAudioEngine es la única ruta BPM; init() dedup con _initPromise; toggleSound/loadPreset esperan init async si el motor no está listo
 - [EAS iOS CocoaPods modular headers](eas-ios-modular-headers.md) — AppCheckCore (RevenueCat/Clerk) exige modular_headers en GoogleUtilities+RecaptchaInterop; fix = expo-build-properties ios.extraPods con modular_headers:true (NO plugin custom: falla silencioso)
 - [iOS deployment target 17.0 — Clerk](ios-deployment-target-clerk.md) — @clerk/expo ≥3.7 exige iOS 17; bajar el target omite ClerkExpo pod → SPM nil crash + "no such module ClerkExpo"
 - [ErrorFallback no context hooks](error-fallback-no-hooks.md) — ErrorBoundary vive encima de SceneThemeProvider/AuthProvider; ErrorFallback debe usar colores hardcoded (#060A0F/#BE9650) — ningún hook de contexto es seguro ahí
@@ -152,6 +146,7 @@
 - [Usuarios conectados](community-presence-semantics.md) — sección eliminada de Inicio por sospecha de lag; preservar presencia global real en primer plano
 - [Descripción de Mi cuenta](profile-account-description.md) — reemplaza la píldora bajo el usuario en Perfil; texto opcional guardado en Mi cuenta, máximo dos líneas
 - [Calendario del perfil público](public-profile-activity-calendar.md) — acumulación con día chileno fijo y todo el historial; no cambia según la zona del visitante
+- [Distribución de Mezclas comunidad](community-mix-layout.md) — nombre y sonidos en dos líneas, sin editorial; reemplaza la propuesta inicial de una sola línea
 - [Banner del Mezclador en Sonidos](sound-mixer-banner.md) — recuperado de Dormir, solo en Sonidos tras el tercer carrusel visible; abre el panel actual para gratuitos y Premium
 - [Títulos de cards](card-title-alignment.md) — títulos debajo de la imagen y alineados al borde izquierdo; Ambientales de Sonidos conservan su excepción centrada
 - [Velocidad de apertura de paneles](sheet-opening-geometry.md) — igualar el resorte no basta: comparar el recorrido visible desde la altura real del panel

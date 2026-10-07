@@ -151,6 +151,7 @@ export default function GalleryScreen() {
       >
         <StoryArtworkFrame
           avatarSource={resolveProfileAvatarSource({ avatarUrl: item.avatarImagePath }, [])}
+          avatarPosition={item.avatarX != null && item.avatarY != null ? { x: item.avatarX, y: item.avatarY } : undefined}
           message={item.message}
           width={cardWidth}
           bgImageSource={bgImageSource}

@@ -165,6 +165,27 @@ describe("private reflection stories API", () => {
         .set("Idempotency-Key", "invalid-path").send({ ...body, avatarImagePath }).expect(400);
     }
   });
+
+  it("round-trips freely positioned avatars and keeps old stories without coordinates", async () => {
+    const created = await request(app).post("/api/me/reflection-stories").set("Idempotency-Key", "position")
+      .send({ ...body, avatarImagePath: "/objects/uploads/avatar", avatarX: 0.25, avatarY: 0.75 }).expect(201);
+    const read = await request(app).get(`/api/me/reflection-stories/${created.body.id}`).expect(200);
+    expect(read.body.avatarX).toBe(0.25);
+    expect(read.body.avatarY).toBe(0.75);
+    const legacy = await request(app).post("/api/me/reflection-stories").set("Idempotency-Key", "old-position")
+      .send({ ...body, avatarImagePath: "/objects/uploads/avatar" }).expect(201);
+    expect(legacy.body.avatarX).toBeNull();
+    expect(legacy.body.avatarY).toBeNull();
+  });
+
+  it("rejects missing coordinate pairs, coordinates without an avatar and circles outside the image", async () => {
+    for (const coordinates of [{ avatarX: 0.5 }, { avatarX: 0, avatarY: 0.5 }, { avatarX: 0.5, avatarY: 1 }]) {
+      await request(app).post("/api/me/reflection-stories").set("Idempotency-Key", "bad-position")
+        .send({ ...body, avatarImagePath: "/objects/uploads/avatar", ...coordinates }).expect(400);
+    }
+    await request(app).post("/api/me/reflection-stories").set("Idempotency-Key", "no-avatar-position")
+      .send({ ...body, avatarX: 0.25, avatarY: 0.75 }).expect(400);
+  });
   it("persists snapshots, paginates newest first, and gets only the owner item", async () => {
     const created = await request(app).post("/api/me/reflection-stories").set("Idempotency-Key", "one").send(body).expect(201);
     const second = await request(app).post("/api/me/reflection-stories").set("Idempotency-Key", "two").send({ ...body, message: "Segunda" }).expect(201);
