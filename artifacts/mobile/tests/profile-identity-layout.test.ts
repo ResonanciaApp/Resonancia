@@ -122,8 +122,8 @@ test("Perfil places the saved description below the username without the old pil
   assert.doesNotMatch(html, /Ubicación|data-icon="map-pin"/);
   assert.match(html, /data-testid="profile-identity-description"[^>]*data-text-align="left" data-lines="2" data-ellipsis="tail"[^>]*>Mi descripción/);
   assert.doesNotMatch(source.match(/dedicatedProfileCard: \{([^}]*)\}/)?.[1] ?? "", /backgroundColor/);
-  assert.match(source, /avatarImage:\s*\{\s*width: 109,\s*height: 109,\s*borderRadius: 54\.5/);
-  assert.match(source, /avatarCircle:\s*\{\s*width: 109,\s*height: 109,\s*borderRadius: 54\.5/);
+  assert.match(source, /avatarImage:\s*\{\s*width: 124,\s*height: 124,\s*borderRadius: 62/);
+  assert.match(source, /avatarCircle:\s*\{\s*width: 124,\s*height: 124,\s*borderRadius: 62/);
   assert.doesNotMatch(source, /avatarOuterBorder/);
   const rowStyle = source.match(/profileIdentityRow: \{([\s\S]*?)\n  \},/)?.[1] ?? "";
   assert.match(rowStyle, /paddingLeft: 3/);
@@ -198,10 +198,10 @@ test("Premium membership overlays the bottom-right avatar corner without changin
   assert.equal(route, "/mi-perfil");
   assert.equal(journey, false);
   assert.doesNotMatch(html, /profile-intention-pill/);
-  assert.match(html, /data-testid="profile-avatar-premium-badge"[^>]*data-width="22"[^>]*data-height="22"[^>]*data-radius="11"[^>]*data-position="absolute"[^>]*data-right="0"[^>]*data-bottom="0"[^>]*data-pointer-events="none"/);
-  assert.equal((html.match(/data-icon="star" data-icon-size="15"/g) ?? []).length, 1);
+  assert.match(html, /data-testid="profile-avatar-premium-badge"[^>]*data-width="32"[^>]*data-height="32"[^>]*data-radius="16"[^>]*data-position="absolute"[^>]*data-right="0"[^>]*data-bottom="0"[^>]*data-pointer-events="none"/);
+  assert.equal((html.match(/data-icon="star" data-icon-size="25"/g) ?? []).length, 1);
   assert.match(source, /<SessionBadgeGlass showBlackTint=\{false\} showWhiteTint \/>/);
-  assert.match(source, /<MaterialCommunityIcons name="star" size=\{15\} color=\{MEMBERSHIP_AURORA\.premium\.accent\} \/>/);
+  assert.match(source, /<MaterialCommunityIcons name="star" size=\{25\} color=\{MEMBERSHIP_AURORA\.premium\.accent\} \/>/);
   const avatarStart = source.indexOf('testID="profile-identity-avatar"');
   const avatarContent = source.slice(avatarStart, source.indexOf("</Pressable>", avatarStart));
   assert.ok(avatarContent.includes('testID="profile-avatar-premium-badge"'));

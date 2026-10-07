@@ -1409,7 +1409,7 @@ export function ProfileScreenBase({
               {isPremium && (
                 <View testID="profile-avatar-premium-badge" pointerEvents="none" style={styles.avatarPremiumBadge}>
                   <SessionBadgeGlass showBlackTint={false} showWhiteTint />
-                  <MaterialCommunityIcons name="star" size={15} color={MEMBERSHIP_AURORA.premium.accent} />
+                  <MaterialCommunityIcons name="star" size={25} color={MEMBERSHIP_AURORA.premium.accent} />
                 </View>
               )}
             </Pressable>
@@ -2562,24 +2562,24 @@ const styles = StyleSheet.create({
     right: 0,
     bottom: 0,
     zIndex: 1,
-    width: 22,
-    height: 22,
-    borderRadius: 11,
+    width: 32,
+    height: 32,
+    borderRadius: 16,
     overflow: "hidden",
     alignItems: "center",
     justifyContent: "center",
   },
   avatarCircle: {
-    width: 109,
-    height: 109,
-    borderRadius: 54.5,
+    width: 124,
+    height: 124,
+    borderRadius: 62,
     alignItems: "center",
     justifyContent: "center",
   },
   avatarImage: {
-    width: 109,
-    height: 109,
-    borderRadius: 54.5,
+    width: 124,
+    height: 124,
+    borderRadius: 62,
   },
   userName: { fontFamily: "Manrope", fontSize: 24, fontWeight: "700", textAlign: "left", marginTop: 0 },
   profileNameRow: { width: "100%", flexDirection: "row", alignItems: "center" },
