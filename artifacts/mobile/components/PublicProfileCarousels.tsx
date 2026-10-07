@@ -65,6 +65,7 @@ export function PublicProfileCarousels({ userId }: { userId: number }) {
 
   return (
     <View style={styles.root} onLayout={event => setViewportWidth(event.nativeEvent.layout.width)}>
+      <View testID="public-profile-mixes-divider" pointerEvents="none" style={[styles.divider, { backgroundColor: colors.foreground }]} />
       <Text style={[styles.heading, { color: colors.foreground }]}>Sus mezclas</Text>
       {status(mixes.isPending, mixes.isError && !mixItems.length, !mixItems.length,
         () => mixes.refetch(), "Todavía no hay mezclas compartidas.")}
@@ -105,7 +106,8 @@ export function PublicProfileCarousels({ userId }: { userId: number }) {
           );
         }}
       />
-      <Text style={[styles.heading, styles.reflectionsHeading, { color: colors.foreground }]}>Sus reflexiones</Text>
+      <View testID="public-profile-reflections-divider" pointerEvents="none" style={[styles.divider, styles.betweenDivider, { backgroundColor: colors.foreground }]} />
+      <Text style={[styles.heading, { color: colors.foreground }]}>Sus reflexiones</Text>
       {status(stories.isPending, stories.isError && !storyItems.length, !storyItems.length,
         () => stories.refetch(), "Todavía no hay reflexiones públicas.")}
       <FlatList<ReflectionStory>
@@ -152,7 +154,8 @@ function Separator() { return <View style={{ width: PROFILE_CAROUSEL_GAP }} />; 
 const styles = StyleSheet.create({
   root: { marginTop: 12 },
   heading: { fontFamily: "Manrope", fontSize: 18, fontWeight: "700", marginHorizontal: PROFILE_CAROUSEL_INSET, marginBottom: 14 },
-  reflectionsHeading: { marginTop: 28 },
+  divider: { height: StyleSheet.hairlineWidth, marginHorizontal: PROFILE_CAROUSEL_INSET, marginBottom: 20, opacity: 0.12 },
+  betweenDivider: { marginTop: 24 },
   carousel: { paddingHorizontal: PROFILE_CAROUSEL_INSET },
   squareCover: { aspectRatio: 1, borderRadius: PROFILE_CAROUSEL_RADIUS, overflow: "hidden", alignItems: "center", justifyContent: "center" },
   storyCover: { borderRadius: PROFILE_CAROUSEL_RADIUS, overflow: "hidden" },

@@ -34,6 +34,12 @@ test("the profile preserves its actions and places both real-data carousels afte
   assert.match(carousels, /\{item\.name\}/);
   assert.match(carousels, /<StoryArtworkFrame/);
   assert.match(carousels, /composition=\{item\}/);
+  const topDivider = carousels.indexOf('testID="public-profile-mixes-divider"');
+  const mixesHeading = carousels.indexOf(">Sus mezclas</Text>");
+  const betweenDivider = carousels.indexOf('testID="public-profile-reflections-divider"');
+  const reflectionsHeading = carousels.indexOf(">Sus reflexiones</Text>");
+  assert.ok(topDivider < mixesHeading && mixesHeading < betweenDivider && betweenDivider < reflectionsHeading);
+  assert.match(carousels, /divider: \{ height: StyleSheet\.hairlineWidth, marginHorizontal: PROFILE_CAROUSEL_INSET/);
   assert.match(gallery, /useSetMyReflectionStoryVisibility/);
   assert.match(gallery, /isPublic: !story\.isPublic/);
   assert.match(gallery, /Otros usuarios podrán ver esta historia/);
