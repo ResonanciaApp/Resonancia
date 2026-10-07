@@ -88,8 +88,12 @@ test("Explore by time follows Para este momento with standard spacing and appear
   assert.equal(siblings[index - 1].getText(ast), "<View style={[styles.sectionSpacer, styles.resonadoresSpacer]} />");
   const bannerSpacer = style("resonadoresSpacer");
   assert.equal(53 + bannerSpacer.marginTop, bannerSpacer.marginBottom + 3);
-  assert.equal(53 + bannerSpacer.marginTop, 37.5);
-  assert.equal(bannerSpacer.marginBottom + 3, 37.5);
+  const standardSpacer = style("sectionSpacer");
+  assert.equal(bannerSpacer.marginTop, standardSpacer.marginTop);
+  assert.equal(bannerSpacer.marginBottom + 3, standardSpacer.marginBottom);
+  const communitySpacer = style("communityDivider");
+  assert.equal(communitySpacer.marginTop, standardSpacer.marginTop);
+  assert.equal(communitySpacer.marginBottom + 18, standardSpacer.marginBottom);
   assert.equal(siblings[index + 1].getText(ast), "<View style={[styles.sectionSpacer, styles.communityDivider]} />");
   assert.ok(siblings[index + 2].getText(ast).startsWith("<CommunityMixesCarousel"));
   assert.match(banner.getText(ast), /router\.push\("\/equipo" as never\)/);

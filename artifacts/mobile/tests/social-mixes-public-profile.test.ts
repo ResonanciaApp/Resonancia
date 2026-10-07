@@ -111,16 +111,20 @@ test("preview uses hydrated Profile avatars, stays stable on rerenders, and is d
   assert.match(carousel, /const avatarSource = previewAvatarSource \?\? realAvatarSource/);
 });
 
-test("community divider is vertically centered without moving the adjacent sections", () => {
+test("community divider matches the upper sections including its header inset", () => {
   assert.match(explore, /styles.sectionSpacer, styles.communityDivider\]\} \/>\s*<CommunityMixesCarousel/);
   const gap = Number(explore.match(/const SECTION_GAP = ([\d.]+)/)?.[1]);
   const extra = Number(explore.match(/const SECTION_EXTRA_GAP = ([\d.]+)/)?.[1]);
   const sectionPadding = Number(carousel.match(/section: \{ paddingHorizontal: \d+, paddingTop: ([\d.]+)/)?.[1]);
   const style = explore.slice(explore.indexOf("communityDivider: {"), explore.indexOf("communityDivider: {") + 260);
   const top = Number(style.match(/marginTop: (-?[\d.]+)/)?.[1]);
-  const bottom = Number(style.match(/marginBottom: ([\d.]+) \+ SECTION_EXTRA_GAP/)?.[1]);
+  assert.match(style, /marginBottom: 23\.5 \+ SECTION_EXTRA_GAP - 18/);
+  const bottom = Number(style.match(/marginBottom: ([\d.]+) \+ SECTION_EXTRA_GAP/)?.[1]) - sectionPadding;
   assert.equal(gap + top, bottom + extra + sectionPadding);
-  assert.equal(gap + top + bottom + extra + sectionPadding, 75);
+  const standardStyle = explore.slice(explore.indexOf("sectionSpacer: {"), explore.indexOf("sectionSpacer: {") + 260);
+  const standardTop = Number(standardStyle.match(/marginTop: (-?[\d.]+)/)?.[1]);
+  const standardBottom = Number(standardStyle.match(/marginBottom: ([\d.]+) \+ SECTION_EXTRA_GAP/)?.[1]);
+  assert.equal(gap + top + bottom + extra + sectionPadding, gap + standardTop + standardBottom + extra);
 });
 
 test("playlists precede New in Resonancia with remaining Discover sections in place", () => {

@@ -1194,14 +1194,14 @@ const styles = StyleSheet.create({
     marginBottom: 25 + SECTION_EXTRA_GAP,
   },
   resonadoresSpacer: {
-    // Match the community separator: 37.5px on each side, including the banner's 3px top margin.
-    marginTop: -15.5,
-    marginBottom: 29.5 + SECTION_EXTRA_GAP,
+    // Same gap as the upper sections; compensate only the banner's own top margin.
+    marginTop: -24.5,
+    marginBottom: 23.5 + SECTION_EXTRA_GAP - 3,
   },
   communityDivider: {
-    // 53 - 15.5 = 37.5 above; 14.5 + 5 + the community header's 18 = 37.5 below.
-    marginTop: -15.5,
-    marginBottom: 14.5 + SECTION_EXTRA_GAP,
+    // Same gap as the upper sections; compensate the community header's own top padding.
+    marginTop: -24.5,
+    marginBottom: 23.5 + SECTION_EXTRA_GAP - 18,
   },
   popularSection: {
     marginTop: 0,
