@@ -837,10 +837,6 @@ export function ExploreScreen({
             </React.Fragment>
           ))}
 
-          <View style={[styles.sectionSpacer, styles.resonadoresSpacer]} />
-
-          <ResonadoresBanner onPress={() => router.push("/equipo" as never)} />
-
           <View style={styles.sectionSpacer} />
 
           <View style={styles.otherThemesSection}>
@@ -896,6 +892,9 @@ export function ExploreScreen({
               })}
             </View>
           </View>
+
+          <View style={[styles.sectionSpacer, styles.resonadoresSpacer]} />
+          <ResonadoresBanner onPress={() => router.push("/equipo" as never)} />
 
           <View style={[styles.sectionSpacer, styles.communityDivider]} />
           <CommunityMixesCarousel />

@@ -44,6 +44,7 @@
 - [Buscador de Inicio como Descubrir](inicio-inline-search.md) — Inicio 3 usa barra completa y el mismo ContextSearchModal de Descubrir, con recientes, populares y filtros de duración
 - [Temas visuales](scene-visual-theme.md) — drawer minimalista: Día=Cloudy, sol dorado; Noche=Índigo 2, luna morada; sin banners/check/descripciones; conserva crossfade y háptica
 - [Sticky header divider per-tab scroll](sticky-header-divider-per-tab-scroll.md) — divisor scroll-triggered debe cablearse a onScroll compartido en TODOS los ScrollView bajo el header, no solo la pestaña default
+- [Pruebas del orden editorial](editorial-layout-tests.md) — no revertir secciones ajenas al pedido para satisfacer expectativas antiguas de Descubrir
 - [Header divider full-bleed](header-border-full-bleed.md) — divider inside a padded header must be normal-flow + negative marginHorizontal, not absolute inside a padded child, to reach screen edge
 - [Action sheet theme hierarchy](action-sheet-theme-hierarchy.md) — Biblioteca: acciones con tercer stop; menú + y Agrega Resonador con último; otras superficies conservan su regla
 - [Destacados por superficie](featured-category-flag.md) — Inicio, categoría y Dormir son destinos independientes; Dormir exige pertenencia a una colección

@@ -47,7 +47,7 @@ test("Descubrir restores centered visible separators without changing existing g
   const previousGap = -27 + 26 + 0.333;
   const newGap = spacer.marginTop + spacer.marginBottom + spacer.height;
   assert.equal(Math.round((newGap - previousGap) * 1000) / 1000, 5);
-  assert.equal((source.match(/styles\.sectionSpacer/g) ?? []).length, 6);
+  assert.equal((source.match(/styles\.sectionSpacer/g) ?? []).length, 7);
   assert.doesNotMatch(source, /styles\.(sectionDivider|categoryBlocksDivider)/);
   assert.equal(style("stickyDivider").backgroundColor, "rgba(255,255,255,0.07)");
 });
@@ -84,18 +84,18 @@ test("Explore by time follows Para este momento with standard spacing and appear
   assert.ok(ts.isJsxElement(banner.parent));
   const siblings = banner.parent.children.filter(node => ts.isJsxElement(node) || ts.isJsxSelfClosingElement(node));
   const index = siblings.indexOf(banner);
-  assert.ok(siblings[index - 2].getText(ast).startsWith("<View style={styles.newInResonanceSection}>"));
+  assert.ok(siblings[index - 2].getText(ast).startsWith("<View style={styles.otherThemesSection}>"));
   assert.equal(siblings[index - 1].getText(ast), "<View style={[styles.sectionSpacer, styles.resonadoresSpacer]} />");
   const bannerSpacer = style("resonadoresSpacer");
   assert.equal(53 + bannerSpacer.marginTop, bannerSpacer.marginBottom + 3);
-  assert.equal(siblings[index + 1].getText(ast), "<View style={styles.sectionSpacer} />");
-  assert.ok(siblings[index + 2].getText(ast).startsWith("<View style={styles.otherThemesSection}>"));
+  assert.equal(siblings[index + 1].getText(ast), "<View style={[styles.sectionSpacer, styles.communityDivider]} />");
+  assert.ok(siblings[index + 2].getText(ast).startsWith("<CommunityMixesCarousel"));
   assert.match(banner.getText(ast), /router\.push\("\/equipo" as never\)/);
   assert.equal((source.match(/style=\{styles\.durationSection\}/g) ?? []).length, 1);
   assert.equal(style("durationSection").marginBottom, style("newInResonanceSection").marginBottom);
 });
 
-test("editorial playlists precede Nuevo en Resonancia, then the Resonadores banner, keeping standard separators", () => {
+test("Nuevo en Resonancia precedes editorial playlists and the relocated Resonadores banner", () => {
   let playlists: ts.JsxExpression | undefined;
   let banner: ts.JsxSelfClosingElement | undefined;
   let newSessions: ts.JsxElement | undefined;
@@ -110,15 +110,17 @@ test("editorial playlists precede Nuevo en Resonancia, then the Resonadores bann
   assert.equal(playlists.parent, banner.parent);
   assert.equal(newSessions.parent, banner.parent);
   assert.ok(ts.isJsxElement(banner.parent));
-  const siblings = banner.parent.children.filter(node => !ts.isJsxText(node));
+  const siblings = banner.parent.children.filter(node => !ts.isJsxText(node)
+    && (!ts.isJsxExpression(node) || node.expression !== undefined));
   const index = siblings.indexOf(newSessions);
-  assert.equal(siblings[index - 1], playlists);
-  assert.equal(siblings[index + 1].getText(ast), "<View style={[styles.sectionSpacer, styles.resonadoresSpacer]} />");
-  assert.equal(siblings[index + 2], banner);
+  assert.ok(newSessions.getStart(ast) < playlists.getStart(ast));
+  assert.ok(playlists.getStart(ast) < banner.getStart(ast));
+  const bannerIndex = siblings.indexOf(banner);
+  assert.equal(siblings[bannerIndex - 1].getText(ast), "<View style={[styles.sectionSpacer, styles.resonadoresSpacer]} />");
   assert.equal((source.match(/<ResonadoresBanner /g) ?? []).length, 1);
   assert.equal((source.match(/style=\{styles\.newInResonanceSection\}/g) ?? []).length, 1);
   assert.match(newSessions.getText(ast), /onPress=\{\(\) => handleSessionPress\(session\)\}/);
-  const preceding = siblings[index - 2];
+  const preceding = siblings[index - 1];
   assert.ok(ts.isJsxFragment(preceding));
   const previousElements = preceding.children.filter(node => !ts.isJsxText(node));
   assert.equal(previousElements.at(-1)?.getText(ast), "<View style={styles.sectionSpacer} />");

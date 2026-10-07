@@ -128,8 +128,8 @@ test("New in Resonancia precedes playlists with remaining Discover sections in p
     "Explora según tu tiempo",
     "<View style={styles.newInResonanceSection}>",
     "{editorialDiscoverCarousels.map",
-    "<ResonadoresBanner",
     "Explora por objetivo",
+    "<ResonadoresBanner",
     "<CommunityMixesCarousel",
   ].map(marker => explore.indexOf(marker));
   assert.ok(positions.every((position, index) =>
