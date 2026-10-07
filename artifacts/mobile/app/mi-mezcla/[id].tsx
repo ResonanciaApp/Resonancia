@@ -50,19 +50,21 @@ export function MixCover({
   size = 120,
   radius = 16,
   showSoundStack = true,
+  allowDefaultImage = true,
   placeholderBackgroundColor,
 }: {
   mix: Pick<MixPreset, "image" | "coverUri" | "coverGeometryId" | "coverCreationId" | "sounds">;
   size?: number;
   radius?: number;
   showSoundStack?: boolean;
+  allowDefaultImage?: boolean;
   placeholderBackgroundColor?: string;
 }) {
   const catalog = useCoverPresetCatalog("mix");
   const img = mix.image
     ? catalog.find((item) => item.key === mix.image || item.id === mix.image)?.source
       ?? catalogImage("mix", mix.image)
-      ?? getMixImage(mix.image)
+      ?? getMixImage(mix.image, allowDefaultImage)
     : undefined;
   const containerStyle = {
     width: size,

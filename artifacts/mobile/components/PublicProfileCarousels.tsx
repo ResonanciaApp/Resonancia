@@ -1,6 +1,8 @@
 import React, { useCallback, useState } from "react";
 import { ActivityIndicator, FlatList, Pressable, StyleSheet, Text, View, useWindowDimensions } from "react-native";
-import { Image } from "expo-image";
+import { MixCover } from "@/app/mi-mezcla/[id]";
+import { useMixer } from "@/context/MixerContext";
+import { resolveAvatarUrl } from "@/lib/avatar";
 import { router, useFocusEffect } from "expo-router";
 import { useInfiniteQuery, useQueryClient } from "@tanstack/react-query";
 import {
@@ -10,8 +12,7 @@ import {
 } from "@workspace/api-client-react";
 import { useAuth } from "@/context/AuthContext";
 import { useColors } from "@/hooks/useColors";
-import { getMixImage } from "@/config/mix-images";
-import { catalogImage, useCoverPresetCatalog } from "@/lib/cover-preset-catalog";
+import { useCoverPresetCatalog } from "@/lib/cover-preset-catalog";
 import { resolveProfileAvatarSource } from "@/lib/profile-avatar-logic";
 import { StoryArtworkFrame } from "@/components/StoryArtworkFrame";
 import {
@@ -29,7 +30,7 @@ export function PublicProfileCarousels({ userId }: { userId: number }) {
   }, []));
   const { clerkUserId, isSignedIn } = useAuth();
   const qc = useQueryClient();
-  const mixCatalog = useCoverPresetCatalog("mix");
+  const { presets } = useMixer();
   const storyCatalog = useCoverPresetCatalog("reflection-story");
   const cardWidth = publicProfileCardWidth(viewportWidth);
   const enabled = focused && isSignedIn && Number.isInteger(userId) && userId > 0;
@@ -85,11 +86,14 @@ export function PublicProfileCarousels({ userId }: { userId: number }) {
         ListFooterComponent={mixes.isFetchingNextPage ? <ActivityIndicator color={colors.primary} /> :
           mixes.isFetchNextPageError ? <Pressable onPress={() => mixes.fetchNextPage()}><Text style={{ color: colors.foreground }}>Reintentar</Text></Pressable> : null}
         renderItem={({ item }) => {
-          const image = item.image ? mixCatalog.find(p => p.key === item.image || p.id === item.image)?.source
-            ?? catalogImage("mix", item.image)
-            ?? (/^(https?:\/\/|\/)/.test(item.image)
-              ? resolveProfileAvatarSource({ avatarUrl: item.image }, [])
-              : getMixImage(item.image)) : undefined;
+          const signature = (sounds: { id: string }[]) => [...new Set(sounds.map(s => s.id))].sort().join(",");
+          const matches = item.isMine ? presets.filter(p => signature(p.sounds) === signature(item.sounds)) : [];
+          const original = matches.find(p => p.name === item.name) ?? (matches.length === 1 ? matches[0] : undefined);
+          const cover = original ?? {
+            image: item.image ?? undefined, sounds: item.sounds,
+            coverUri: item.image && /^(https?:\/\/|\/)/.test(item.image)
+              ? resolveAvatarUrl(item.image) ?? undefined : undefined,
+          };
           return (
             <Pressable accessibilityRole="button" accessibilityLabel={`Abrir mezcla ${item.name}`}
               style={({ pressed }) => [{ width: cardWidth, opacity: pressed ? 0.75 : 1 }]}
@@ -97,10 +101,8 @@ export function PublicProfileCarousels({ userId }: { userId: number }) {
                 qc.setQueryData([...getGetSharedMixQueryKey(item.id), clerkUserId], item);
                 router.push(`/mezcla/${item.id}` as never);
               }}>
-              <View style={[styles.squareCover, { width: cardWidth, backgroundColor: colors.card }]}>
-                {image ? <Image source={image} style={StyleSheet.absoluteFill} contentFit="cover" />
-                  : <Text style={[styles.missingCover, { color: colors.mutedForeground }]}>Sin portada</Text>}
-              </View>
+              <MixCover mix={cover} size={cardWidth} radius={PROFILE_CAROUSEL_RADIUS}
+                showSoundStack={false} allowDefaultImage={false} />
               <Text numberOfLines={2} style={[styles.mixTitle, { color: colors.foreground }]}>{item.name}</Text>
             </Pressable>
           );

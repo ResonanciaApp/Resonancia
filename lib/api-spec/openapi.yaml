@@ -6163,7 +6163,7 @@ components:
           maxLength: 120
         image:
           type: string
-          maxLength: 60
+          maxLength: 2048
         category:
           type: string
           enum: [dormir, trabajar, motivarme, concentracion, paz_interior, magico]

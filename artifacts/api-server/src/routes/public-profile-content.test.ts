@@ -14,7 +14,10 @@ vi.mock("../middlewares/requireAuth", () => ({
 vi.mock("@clerk/express", () => ({
   getAuth: () => ({ userId: auth.user?.clerkUserId }), clerkClient: {},
 }));
-vi.mock("../lib/objectAccess", () => ({ canUserReferenceObject: async () => auth.avatarAllowed }));
+vi.mock("../lib/objectAccess", () => ({
+  canUserReferenceObject: async () => auth.avatarAllowed,
+  validateOwnedCompletedImageUpload: async () => auth.avatarAllowed ? { ok: true } : { ok: false, reason: "ownership" },
+}));
 vi.mock("../lib/push", () => ({ sendPushToUsers: vi.fn(async () => {}) }));
 import storiesRouter from "./reflection-stories";
 import mixesRouter from "./mixes";
@@ -53,6 +56,27 @@ afterEach(async () => {
 afterAll(async () => { if (userIds.length) await db.delete(usersTable).where(inArray(usersTable.id, userIds)); });
 
 describe("public profile content privacy", () => {
+  it("shares the actual uploaded photo and updates an existing shared mix without duplicating it", async () => {
+    const body = { name: "Foto elegida", category: "dormir",
+      image: "/objects/uploads/my-original-cover", sounds: [{ id: "rain", volume: 0.5 }, { id: "wind", volume: 0.7 }] };
+    const first = await request(app).post("/api/mixes").send(body).expect(201);
+    expect(first.body.image).toBe(body.image);
+    const image = "/objects/uploads/my-updated-cover";
+    const updated = await request(app).post("/api/mixes").send({ ...body, image }).expect(200);
+    expect(updated.body).toMatchObject({ id: first.body.id, image });
+    await request(app).post("/api/mixes").send({ ...body, image }).expect(409);
+    expect(await db.select().from(sharedMixesTable).where(eq(sharedMixesTable.authorId, owner.id))).toHaveLength(1);
+  });
+  it("does not publish another person's upload or a device-only photo URI", async () => {
+    const body = { name: "Portada privada", category: "dormir",
+      sounds: [{ id: "rain", volume: 0.5 }, { id: "wind", volume: 0.7 }] };
+    auth.avatarAllowed = false;
+    await request(app).post("/api/mixes").send({ ...body, image: "/objects/uploads/somebody-elses-photo" }).expect(400);
+    for (const image of ["file:///photo.jpg", "blob:local-photo", "data:image/png;base64,abc", "https://example.com/private.jpg"]) {
+      await request(app).post("/api/mixes").send({ ...body, image }).expect(400);
+    }
+    expect(await db.select().from(sharedMixesTable).where(eq(sharedMixesTable.authorId, owner.id))).toHaveLength(0);
+  });
   it("keeps new and historical snapshots private until the author opts in", async () => {
     const story = await createStory();
     expect(story.isPublic).toBe(false);

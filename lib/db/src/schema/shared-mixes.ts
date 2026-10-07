@@ -55,7 +55,9 @@ export const insertSharedMixSchema = createInsertSchema(sharedMixesTable)
   .extend({
     name: z.string().min(1).max(40),
     description: z.string().max(120).optional(),
-    image: z.string().max(60).optional(),
+    image: z.string().max(2048).refine(value =>
+      !/^(?:file:|content:|blob:|data:|https?:)/i.test(value),
+      "La portada debe ser un identificador o una imagen subida").optional(),
     category: z.enum(SHARED_MIX_CATEGORIES),
     sounds: z
       .array(z.object({ id: z.string().min(1).max(40), volume: z.number().min(0).max(1) }))

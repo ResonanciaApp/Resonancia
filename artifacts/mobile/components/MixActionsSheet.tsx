@@ -33,6 +33,7 @@ import { useSafeAreaInsets } from "react-native-safe-area-context";
 
 import { useQueryClient } from "@tanstack/react-query";
 import { useShareMix, getGetSharedMixesQueryKey } from "@workspace/api-client-react";
+import { uploadLocalFile } from "@/lib/upload";
 import { getSoundImage } from "@/config/sound-images";
 import { type MixFolder, type MixPreset, useMixer } from "@/context/MixerContext";
 import {
@@ -148,6 +149,8 @@ export function MixActionsSheet({
   } = useFoldersPlaylists();
   const queryClient = useQueryClient();
   const shareMixMutation = useShareMix();
+  const [preparingCover, setPreparingCover] = useState(false);
+  const coverPreparationRef = useRef(false);
 
   const [toastVisible, setToastVisible] = useState(false);
   const [toastMsg, setToastMsg] = useState("");
@@ -241,10 +244,10 @@ export function MixActionsSheet({
     }
   };
 
-  const handleShareToCommunity = () => {
+  const handleShareToCommunity = async () => {
     if (!mix) return;
-    if (shareMixMutation.isPending) return;
-    if (!mix.categoryChosen) {
+    if (shareMixMutation.isPending || coverPreparationRef.current) return;
+    if (!mix.categoryChosen && !mix.coverUri) {
       Alert.alert(
         "Elige una imagen primero",
         "Abre \"Ver / editar detalles\" y selecciona una de las imágenes de la grilla para poder compartir tu mezcla.",
@@ -258,12 +261,29 @@ export function MixActionsSheet({
       );
       return;
     }
+    let image = mix.image ?? "";
+    if (mix.coverUri) {
+      coverPreparationRef.current = true;
+      setPreparingCover(true);
+      try {
+        const png = /\.png(?:\?|$)/i.test(mix.coverUri);
+        image = mix.coverUri.startsWith("/objects/") ? mix.coverUri
+          : await uploadLocalFile(mix.coverUri, png ? "image/png" : "image/jpeg",
+            `mix-cover-${Date.now()}.${png ? "png" : "jpg"}`, 0);
+      } catch {
+        Alert.alert("No se pudo subir la portada", "Tu mezcla no se compartió. Inténtalo nuevamente.");
+        return;
+      } finally {
+        coverPreparationRef.current = false;
+        setPreparingCover(false);
+      }
+    }
     shareMixMutation.mutate(
       {
         data: {
           name: mix.name,
           description: mix.description ?? "",
-          image: mix.image ?? "",
+          image,
           category: mix.category as never,
           sounds: mix.sounds.slice(0, 10).map((s) => ({ id: s.id, volume: s.volume })),
         },
@@ -379,7 +399,7 @@ export function MixActionsSheet({
                   <>
                     <ActionRow
                       icon="users"
-                      label={shareMixMutation.isPending ? "Compartiendo..." : "Compartir con la comunidad"}
+                      label={shareMixMutation.isPending || preparingCover ? "Compartiendo..." : "Compartir con la comunidad"}
                       onPress={handleShareToCommunity}
                       colors={colors}
                     />

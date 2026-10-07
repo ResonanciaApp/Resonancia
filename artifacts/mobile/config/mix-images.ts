@@ -24,9 +24,9 @@ const MIX_IMAGE_MAP: Record<string, ImageSourcePropType> = {
 /** Galería temporal: reutiliza las 25 portadas de playlists. */
 export const MIX_IMAGE_GALLERY: string[] = PLAYLIST_COVER_PRESETS.map((preset) => preset.id);
 
-export function getMixImage(key?: string): ImageSourcePropType | undefined {
+export function getMixImage(key?: string, allowFallback = true): ImageSourcePropType | undefined {
   if (!key) return undefined;
-  return MIX_IMAGE_MAP[key] ?? MIX_IMAGE_MAP[DEFAULT_MIX_IMAGE_KEY];
+  return MIX_IMAGE_MAP[key] ?? (allowFallback ? MIX_IMAGE_MAP[DEFAULT_MIX_IMAGE_KEY] : undefined);
 }
 
 /** Formatea una key para mostrarla como etiqueta legible.

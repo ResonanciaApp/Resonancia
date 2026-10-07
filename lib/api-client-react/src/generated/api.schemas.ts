@@ -938,7 +938,7 @@ export interface SharedMixInput {
   name: string;
   /** @maxLength 120 */
   description?: string;
-  /** @maxLength 60 */
+  /** @maxLength 2048 */
   image?: string;
   category: SharedMixInputCategory;
   /**

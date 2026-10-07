@@ -29,6 +29,7 @@ export async function isObjectReferenced({
       EXISTS (SELECT 1 FROM cover_presets WHERE object_path = ${objectPath} ${coverPresetExclusion})
       OR EXISTS (SELECT 1 FROM users WHERE avatar_url = ${objectPath})
       OR EXISTS (SELECT 1 FROM reflection_stories WHERE avatar_image_path = ${objectPath})
+      OR EXISTS (SELECT 1 FROM shared_mixes WHERE image = ${objectPath})
       OR EXISTS (SELECT 1 FROM catalog_sessions WHERE image_url = ${objectPath})
       OR EXISTS (SELECT 1 FROM catalog_sessions WHERE image_key = ${objectPath})
       OR EXISTS (SELECT 1 FROM catalog_audio_files WHERE url = ${objectPath})
@@ -191,6 +192,12 @@ export async function resolveObjectReadAccess({
           WHERE story.is_public = true
             AND story.avatar_image_path = ${objectPath}
             AND (image_upload.user_id = story.user_id OR uploader.role IN ('admin', 'moderador'))
+        )
+        OR EXISTS (
+          SELECT 1 FROM shared_mixes mix
+          JOIN uploads cover_upload ON cover_upload.object_path = mix.image
+          WHERE mix.hidden = false AND mix.image = ${objectPath}
+            AND cover_upload.user_id = mix.author_id
         )
       ) AS is_public,
       EXISTS (

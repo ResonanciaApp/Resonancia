@@ -31,6 +31,7 @@ import {
 import type { SharedMix } from "@workspace/api-client-react";
 import { getMixImage } from "@/config/mix-images";
 import { catalogImage, useCoverPresetCatalog, useCoverPresetCatalogState } from "@/lib/cover-preset-catalog";
+import { resolveAvatarUrl } from "@/lib/avatar";
 
 import { useProfileAvatarSource } from "@/lib/profile-avatar";
 import { getTopCommunityMixes, selectRandomCommunityAvatars } from "@/lib/community-mixes-ranking";
@@ -383,9 +384,10 @@ function MixGridCell({
 function MixCover({ image }: { image?: string | null }) {
   const catalog = useCoverPresetCatalog("mix");
   const resolvedImg = image
-    ? catalog.find((item) => item.key === image || item.id === image)?.source
+    ? (/^(https?:\/\/|\/)/.test(image) ? { uri: resolveAvatarUrl(image) ?? image } : undefined)
+      ?? catalog.find((item) => item.key === image || item.id === image)?.source
       ?? catalogImage("mix", image)
-      ?? getMixImage(image)
+      ?? getMixImage(image, false)
     : undefined;
 
   return (

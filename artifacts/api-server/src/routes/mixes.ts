@@ -20,6 +20,7 @@ import {
 import { requireAuth } from "../middlewares/requireAuth";
 import { sendPushToUsers } from "../lib/push";
 import { recordCommunityEvent } from "../lib/communityActivity";
+import { validateOwnedCompletedImageUpload } from "../lib/objectAccess";
 
 const router: IRouter = Router();
 const PAGE_SIZE = 20;
@@ -291,6 +292,13 @@ router.post("/mixes", requireAuth, async (req, res) => {
   }
 
   const me = req.currentUser!;
+  if (parsed.data.image?.startsWith("/")) {
+    const cover = await validateOwnedCompletedImageUpload({ objectPath: parsed.data.image, userId: me.id });
+    if (!cover.ok) {
+      res.status(400).json({ error: "La portada debe ser una imagen subida por ti y disponible." });
+      return;
+    }
+  }
   // Firma normalizada del set de sonidos (ids ordenados) para detectar duplicados.
   const soundSignature = [...new Set(parsed.data.sounds.map((s) => s.id))]
     .sort()
@@ -298,24 +306,31 @@ router.post("/mixes", requireAuth, async (req, res) => {
 
   try {
     const mine = await db
-      .select({ id: sharedMixesTable.id, sounds: sharedMixesTable.sounds })
+      .select({ id: sharedMixesTable.id, sounds: sharedMixesTable.sounds, image: sharedMixesTable.image })
       .from(sharedMixesTable)
       .where(eq(sharedMixesTable.authorId, me.id));
 
-    if (mine.length >= MAX_MIXES_PER_USER) {
-      res.status(409).json({
-        error: `Alcanzaste el máximo de ${MAX_MIXES_PER_USER} mezclas compartidas. Eliminá alguna para compartir otra.`,
-      });
-      return;
-    }
-
-    const isDuplicate = mine.some((m) => {
+    const duplicate = mine.find((m) => {
       const sig = [...new Set((m.sounds ?? []).map((s) => s.id))].sort().join(",");
       return sig === soundSignature;
     });
-    if (isDuplicate) {
+    if (duplicate && parsed.data.image && parsed.data.image !== duplicate.image) {
+      const [updated] = await db.update(sharedMixesTable).set({ image: parsed.data.image })
+        .where(and(eq(sharedMixesTable.id, duplicate.id), eq(sharedMixesTable.authorId, me.id))).returning();
+      const [liked] = await db.select({ id: sharedMixLikesTable.id }).from(sharedMixLikesTable)
+        .where(and(eq(sharedMixLikesTable.mixId, duplicate.id), eq(sharedMixLikesTable.userId, me.id))).limit(1);
+      res.json(serialize(updated, me, !!liked, me.id));
+      return;
+    }
+    if (duplicate) {
       res.status(409).json({
         error: "Ya compartiste una mezcla con estos mismos sonidos.",
+      });
+      return;
+    }
+    if (mine.length >= MAX_MIXES_PER_USER) {
+      res.status(409).json({
+        error: `Alcanzaste el máximo de ${MAX_MIXES_PER_USER} mezclas compartidas. Eliminá alguna para compartir otra.`,
       });
       return;
     }

@@ -31,6 +31,9 @@ test("the profile preserves its actions and places both real-data carousels afte
   assert.match(carousels, /listUserReflectionStories\(userId/);
   assert.equal((carousels.match(/horizontal/g) ?? []).length, 2);
   assert.match(carousels, /item\.image/);
+  assert.match(carousels, /<MixCover mix=\{cover\}/);
+  assert.match(carousels, /showSoundStack=\{false\} allowDefaultImage=\{false\}/);
+  assert.match(carousels, /item\.isMine \? presets\.filter/);
   assert.match(carousels, /\{item\.name\}/);
   assert.match(carousels, /<StoryArtworkFrame/);
   assert.match(carousels, /composition=\{item\}/);
