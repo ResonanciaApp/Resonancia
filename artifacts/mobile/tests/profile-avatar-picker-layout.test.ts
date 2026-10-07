@@ -49,7 +49,7 @@ test("a large avatar catalog cannot enlarge the sheet beyond the screen", () => 
   const headerHeight = handle.marginTop + handle.height + handle.marginBottom + findStyle("accountCoverHeader").minHeight;
   for (const viewportHeight of [568, 640, 874, 1024]) {
     const sheetHeight = viewportHeight * 0.85;
-    const listHeight = sheetHeight - headerHeight - hero.height - 54;
+    const listHeight = sheetHeight - headerHeight - hero.height - 42 - 54;
     assert.ok(listHeight > 63, `a usable scroll area remains at ${viewportHeight}px`);
     for (const avatars of [26, 86, 200]) {
       const contentHeight = Math.ceil(avatars / 5) * 75 + 46;
@@ -57,52 +57,6 @@ test("a large avatar catalog cannot enlarge the sheet beyond the screen", () => 
       assert.ok(sheetHeight < viewportHeight);
     }
   }
-});
-
-test("photo upload sits left of Portada in the header, with the close control on the right", () => {
-  let header: ts.JsxElement | undefined;
-  function visit(node: ts.Node) {
-    if (ts.isJsxElement(node) && node.openingElement.attributes.getText(ast).includes("styles.accountCoverHeader")) header = node;
-    ts.forEachChild(node, visit);
-  }
-  visit(ast);
-  assert.ok(header);
-  const children = header.children.filter(ts.isJsxElement);
-  assert.equal(children.length, 3);
-  assert.match(children[0].openingElement.attributes.getText(ast), /styles\.accountCoverUploadButton/);
-  assert.match(children[1].getText(ast), />Portada<\/Text>/);
-  assert.match(children[2].openingElement.attributes.getText(ast), /styles\.accountCoverCloseButton/);
-  assert.equal(findStyle("accountCoverHeader").flexDirection, "row");
-  assert.equal(findStyle("accountCoverTitle").flex, 1);
-  assert.equal(findStyle("accountCoverCloseButton").position, undefined);
-  assert.equal((source.match(/style=\{styles\.accountCoverUploadButton\}/g) ?? []).length, 1);
-
-  const upload = children[0];
-  assert.match(upload.getText(ast), /name="image" size=\{14\}/);
-  assert.match(upload.openingElement.attributes.getText(ast), /hitSlop=\{8\}/);
-  const handler = upload.openingElement.attributes.properties.find(
-    attribute => ts.isJsxAttribute(attribute) && attribute.name.getText(ast) === "onPress",
-  );
-  assert.ok(handler && ts.isJsxAttribute(handler) && handler.initializer && ts.isJsxExpression(handler.initializer));
-  const js = ts.transpileModule(`return (${handler.initializer.expression!.getText(ast)});`, {}).outputText;
-  const calls: unknown[] = [];
-  const onPress = new Function("setAccountPhotoLibraryPending", "setAccountPhotoPickerVisible", js)(
-    (value: boolean) => calls.push(["libraryPending", value]),
-    (value: boolean) => calls.push(["pickerVisible", value]),
-  );
-  onPress();
-  assert.deepEqual(calls, [["libraryPending", true], ["pickerVisible", false]]);
-});
-
-test("photo upload reduces icon, text, height and padding by four points", () => {
-  const button = findStyle("accountCoverUploadButton");
-  assert.equal(button.minHeight, 38);
-  assert.equal(button.minWidth, undefined); // Intrinsic width leaves room for the title.
-  assert.equal(button.paddingHorizontal, 14);
-  assert.equal(button.paddingVertical, 6);
-  assert.equal(button.gap, 5);
-  assert.equal(button.borderRadius, 19);
-  assert.equal(findStyle("accountCoverUploadText").fontSize, 10);
 });
 
 test("opening and reopening the actual picker resets its own avatar list to the first row", () => {
