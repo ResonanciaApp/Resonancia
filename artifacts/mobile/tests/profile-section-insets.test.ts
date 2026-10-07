@@ -33,7 +33,7 @@ function verticalInsets(styles: Record<string, any>) {
   };
 }
 
-test("user section preserves 20px above the centered avatar outline, with no extra banner bottom padding", () => {
+test("user section preserves its padding and avatar placement with the outline over the image", () => {
   const source = readFileSync(new URL("../components/ProfileScreenBase.tsx", import.meta.url), "utf8");
   const bottom = Number(source.match(/const PROFILE_CARD_BOTTOM_PADDING = (\d+);/)?.[1]);
   const card = style("ProfileScreenBase", "profileCard", { PROFILE_CARD_BOTTOM_PADDING: bottom, PROFILE_SECTION_GAP: 21 });
@@ -42,7 +42,8 @@ test("user section preserves 20px above the centered avatar outline, with no ext
   assert.equal(style("ProfileScreenBase", "userName").marginTop, 0);
   const avatar = style("ProfileScreenBase", "avatarWrapper");
   const border = style("ProfileScreenBase", "avatarOuterBorder");
-  assert.equal(card.paddingTop + avatar.marginTop + border.top, 20);
+  assert.equal(card.paddingTop + avatar.marginTop + border.top, 23);
+  assert.equal(avatar.marginTop, 3);
   assert.equal(avatar.marginTop, avatar.marginBottom);
   const row = style("ProfileMembershipBanner", "row");
   assert.equal(row.paddingVertical, 0);
@@ -68,14 +69,28 @@ test("Premium members keep the compact identity layout while free users recover 
   const border = style("ProfileScreenBase", "avatarOuterBorder");
   const avatar = style("ProfileScreenBase", "avatarWrapper");
   const image = style("ProfileScreenBase", "avatarImage");
-  assert.equal(image.height + avatar.marginBottom, border.top + border.height);
+  assert.equal(image.height, border.top + border.height);
+  assert.equal(avatar.marginBottom, 3);
 });
 
-test("avatar outline meets the left margin and the chevron reaches the profile right margin at different widths", () => {
+test("avatar outline matches the image bounds and the chevron reaches the profile right margin at different widths", () => {
   const row = style("ProfileScreenBase", "profileIdentityRow");
   const border = style("ProfileScreenBase", "avatarOuterBorder");
   const chevron = style("ProfileScreenBase", "profileNameChevron");
-  assert.equal(row.paddingLeft + border.left, 0);
+  const image = style("ProfileScreenBase", "avatarImage");
+  assert.equal(row.paddingLeft, 3);
+  assert.equal(border.left, 0);
+  assert.equal(border.top, 0);
+  assert.equal(border.width, image.width);
+  assert.equal(border.height, image.height);
+  assert.equal(border.borderRadius, image.borderRadius);
+  assert.equal(border.borderWidth, 3);
+  assert.equal(border.zIndex, 1);
+  const source = readFileSync(new URL("../components/ProfileScreenBase.tsx", import.meta.url), "utf8");
+  const avatarStart = source.indexOf('testID="profile-identity-avatar"');
+  const avatarContent = source.slice(avatarStart, source.indexOf("</Pressable>", avatarStart));
+  assert.ok(avatarContent.indexOf("styles.avatarOuterBorder") > avatarContent.indexOf("styles.avatarCircle"));
+  assert.match(avatarContent, /<View pointerEvents="none" style=\{styles\.avatarOuterBorder\}/);
   assert.equal(chevron.position, "absolute");
   assert.equal(chevron.alignItems, "flex-end");
   assert.equal(chevron.top, "50%");

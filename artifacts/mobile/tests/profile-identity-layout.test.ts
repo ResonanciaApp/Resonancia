@@ -115,7 +115,7 @@ test("Perfil places the saved description below the username without the old pil
   assert.doesNotMatch(source.match(/dedicatedProfileCard: \{([^}]*)\}/)?.[1] ?? "", /backgroundColor/);
   assert.match(source, /avatarImage:\s*\{\s*width: 75,\s*height: 75,\s*borderRadius: 37\.5/);
   assert.match(source, /avatarCircle:\s*\{\s*width: 75,\s*height: 75,\s*borderRadius: 37\.5/);
-  assert.match(source, /avatarOuterBorder:\s*\{\s*position: "absolute",\s*top: -3,\s*left: -3,\s*width: 81,\s*height: 81,\s*borderRadius: 40\.5,\s*borderWidth: 3/);
+  assert.match(source, /avatarOuterBorder:\s*\{\s*position: "absolute",\s*top: 0,\s*left: 0,\s*width: 75,\s*height: 75,\s*borderRadius: 37\.5,\s*borderWidth: 3/);
   const rowStyle = source.match(/profileIdentityRow: \{([\s\S]*?)\n  \},/)?.[1] ?? "";
   assert.match(rowStyle, /paddingLeft: 3/);
   assert.match(rowStyle, /paddingRight: 0/);

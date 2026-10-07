@@ -662,5 +662,5 @@ test("Perfil keeps settings accessible in its sticky header and uses the 75-poin
   }
   assert.match(source, /avatarCircle:\s*\{\s*width: 75,\s*height: 75,\s*borderRadius: 37\.5/);
   assert.match(source, /avatarImage:\s*\{\s*width: 75,\s*height: 75,\s*borderRadius: 37\.5/);
-  assert.match(source, /avatarOuterBorder:\s*\{[\s\S]*?width: 81,\s*height: 81,\s*borderRadius: 40\.5/);
+  assert.match(source, /avatarOuterBorder:\s*\{[\s\S]*?width: 75,\s*height: 75,\s*borderRadius: 37\.5/);
 });

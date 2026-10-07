@@ -26,3 +26,9 @@ Los espacios adicionales del banner de Intención son exclusivos de Perfil: sepa
 **Why:** El usuario pidió estos ajustes de espaciado por separado de los cambios de ilustración. La dirección visual vigente de las imágenes está documentada en las notas de Tu camino.
 
 **How to apply:** Mantener esos ajustes propios de Perfil al reemplazar las imágenes, sin propagarlos a las filas del recorrido.
+
+El borde del avatar de Perfil debe superponerse al perímetro de la imagen, no quedar por fuera. Este ajuste no debe mover ni redimensionar la imagen ni modificar otras pantallas.
+
+**Why:** El usuario observó espacios de fondo entre algunos avatares y su borde y pidió cubrirlos con el borde, no editar las imágenes.
+
+**How to apply:** Conservar la colocación del avatar y las separaciones del bloque de usuario al modificar el contorno; no recuperar el borde exterior para satisfacer expectativas antiguas de espaciado.
