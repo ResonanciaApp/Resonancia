@@ -4,6 +4,7 @@ import {
   useToggleSharedMixLike,
   type SharedMixesPage,
 } from "@workspace/api-client-react";
+import { patchSharedMixesCache, type SharedMixesCache } from "@/lib/community-mixes-pagination";
 
 /**
  * Parche de like compartido para TODAS las variantes cacheadas de la lista de
@@ -24,12 +25,9 @@ export function useMixLike() {
 
   const patchAll = useCallback(
     (mixId: number, patch: (m: SharedMixesPage["mixes"][number]) => SharedMixesPage["mixes"][number]) => {
-      queryClient.setQueriesData<SharedMixesPage>(
+      queryClient.setQueriesData<SharedMixesCache>(
         { queryKey: MIXES_KEY_PREFIX },
-        (prev) => {
-          if (!prev || !Array.isArray(prev.mixes)) return prev;
-          return { ...prev, mixes: prev.mixes.map((m) => (m.id === mixId ? patch(m) : m)) };
-        },
+        (prev) => patchSharedMixesCache(prev, mixId, patch),
       );
     },
     [queryClient],

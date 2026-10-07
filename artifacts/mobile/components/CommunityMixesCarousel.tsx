@@ -288,6 +288,7 @@ export function MixRow({
     <Pressable
       testID={`community-mix-row-${mix.id}`}
       onPress={onPress}
+      onLongPress={onDotsPress}
       style={({ pressed }) => [
         styles.row,
         activeSceneId === "tibet" && { backgroundColor: "rgba(0,0,0,0.15)" },

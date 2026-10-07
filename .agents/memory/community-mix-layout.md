@@ -14,3 +14,9 @@ Los avatares para comparar estas cards se eligen al azar del mismo catálogo car
 **Why:** El usuario pidió expresamente «solo para ver cómo se vería», simulando distintos usuarios, y corrigió el uso de retratos: se refería a los avatares de Perfil cargados recientemente.
 
 **How to apply:** Mantener cualquier sustitución de avatares limitada a la vista de desarrollo; no guardar fotos simuladas en perfiles, cachés de usuarios ni datos compartidos, ni mostrarlas en producción.
+
+En Creaciones, «Bases» significa las reglas para compartir creaciones, no las mezclas base del Mezclador.
+
+**Why:** El usuario aclaró expresamente el destino del botón cuando se le ofrecieron ambas interpretaciones.
+
+**How to apply:** Conservar este significado al cambiar el botón o su contenido; no conectarlo al Mezclador.
