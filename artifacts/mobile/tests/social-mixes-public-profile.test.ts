@@ -142,7 +142,7 @@ test("playlists precede New in Resonancia with remaining Discover sections in pl
   assert.match(explore, /<React.Fragment key=\{carousel.id\}>\s*<View style=\{styles.sectionSpacer\} \/>\s*<EditorialPlaylistCarousel/);
 });
 
-test("public profile shows name, days pill then stage, with friendship and vibration actions", () => {
+test("public profile preserves avatar, name, days, stage and optional description", () => {
   assert.match(profile, /<SceneThemeBackground \/>/);
   assert.doesNotMatch(profile, /BG_GRADIENT|topCategoryLabel/);
   const order = ["styles.avatarWrapper", "public-profile-name", "public-profile-accumulated-pill", "public-profile-stage", "public-profile-long-description"]
@@ -156,38 +156,26 @@ test("public profile shows name, days pill then stage, with friendship and vibra
   assert.match(profile, /\{totalActiveDays\} días/);
   assert.match(profile, /avatarImage: \{ width: 117, height: 117, borderRadius: 58\.5 \}/);
   assert.match(profile, /longDescription \? \(/);
-  assert.match(profile, /\/chat\//);
   assert.doesNotMatch(profile, /followersCount|followingCount|Racha acumulada|memberSince|Miembro desde|profile\.location|@\{profile\.username\}/);
   assert.doesNotMatch(profile, /isExpansor|Expansor|useGetExpansorProfile|useFollowUser|useUnfollowUser|useGetUserFollowing/);
-  assert.match(profile, /public-profile-add-friend/);
-  assert.match(profile, /addFriend\.mutate\(\{ data: \{ addresseeId: userId \} \}\)/);
-  assert.match(profile, /pending_outgoing/);
-  assert.match(profile, /pending_incoming/);
-  assert.match(profile, /Agregar a amigos/);
-  assert.match(profile, /name=\{isFriend \? "user-check" : "user-plus"\}/);
-  assert.match(profile, /public-profile-vibration/);
-  assert.match(profile, /vibration\.mutate\(\{ userId \}\)/);
-  assert.match(profile, /name="radio"/);
-  assert.match(profile, /disabled=\{vibration\.isPending\}/);
-  assert.match(profile, /Vibración enviada/);
 });
 
-test("all public-profile action buttons share a 40px height and the requested theme surfaces", () => {
-  assert.match(profile, /actionSurface: \{\s*height: 40,\s*minHeight: 40/);
-  assert.equal((profile.match(/styles\.actionSurface/g) ?? []).length, 3);
-  assert.equal((profile.match(/^\s+actionThemeStyle,/gm) ?? []).length, 3);
-  assert.match(profile, /isIndigo2ThemeId\(theme\.id\)\s*\? \{ backgroundColor: "rgba\(0,0,0,0\.16\)" \}/);
-  assert.match(profile, /theme\.id === "cloudy"\s*\? \{ backgroundColor: "rgba\(0,0,0,0\.19\)" \}/);
-  assert.doesNotMatch(profile, /height: 34/);
+test("public profile has no friendship, messaging or vibration controls for any relationship", () => {
+  assert.doesNotMatch(profile, /public-profile-(add-friend|message|vibration)/);
+  assert.doesNotMatch(profile, /Agregar a amigos|Aceptar amistad|Enviar mensaje|Vibración/);
+  assert.doesNotMatch(profile, /useGetFriends|useGetMe|useSendFriendRequest|useSendUserVibration/);
+  assert.doesNotMatch(profile, /friendshipStatus|isFriend|pendingOutgoing|\/chat\//);
+  assert.equal((profile.match(/<Pressable\b/g) ?? []).length, 1);
+  assert.match(profile, /<Pressable onPress=\{\(\) => router.back\(\)\}/);
 });
 
-test("public-profile action spacing and vibration confirmation reuse the routine banner", () => {
+test("public profile removes shared sections, dividers and obsolete vibration feedback", () => {
   assert.match(profile, /name="chevron-left"/);
   assert.doesNotMatch(profile, /name="arrow-left"/);
-  assert.match(profile, /actionsSection: \{[^\n]*marginTop: 28/);
-  assert.match(profile, /messagePill: \{[^}]*marginTop: 6/);
-  assert.match(profile, /<RoutineCompletionBannerProvider key=\{id\}>/);
-  assert.match(profile, /onSuccess: announceActivityAdded/);
-  assert.match(profile, /<RoutineCompletionBanner\s+bottom=\{bottomPad \+ 22\}\s+visible=\{isFocused\}\s+addedTitle="Vibración enviada"\s+showAddedAction=\{false\}/);
-  assert.doesNotMatch(profile, /vibration\.isSuccess|styles\.feedback/);
+  assert.doesNotMatch(profile, /PublicProfileCarousels|Sus mezclas|Sus reflexiones|divider|hairlineWidth/);
+  assert.doesNotMatch(profile, /RoutineCompletionBanner|announceActivityAdded|actionsSection|messagePill/);
+  assert.match(profile, /useGetPublicUserProfile\(userId/);
+  assert.match(profile, /enabled: Number\.isInteger\(userId\) && userId > 0/);
+  assert.match(profile, /if \(isLoading\)/);
+  assert.match(profile, /if \(isError \|\| !profile\)/);
 });

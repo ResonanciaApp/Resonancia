@@ -19,14 +19,13 @@ test("both carousels show two complete cards and exactly ten pixels of the third
   assert.equal(PROFILE_CAROUSEL_RADIUS, 18);
 });
 
-test("the profile preserves its actions and places both real-data carousels after them", () => {
+test("public profile omits carousels without deleting shared content or gallery visibility", () => {
   const readSource = (path: string) => readFileSync(resolve(dirname(fileURLToPath(import.meta.url)), path), "utf8");
   const profile = readSource("../app/usuario/[id].tsx");
   const carousels = readSource("../components/PublicProfileCarousels.tsx");
   const gallery = readSource("../app/galeria-reflexiones/[id].tsx");
-  assert.match(profile, /\(isFriend \|\| pendingOutgoing\) && \{ backgroundColor: "rgba\(255,255,255,0\.10\)" \}/);
   assert.match(profile, /longDesc: \{[^\n]*marginTop: 20/);
-  assert.ok(profile.indexOf("<PublicProfileCarousels") > profile.indexOf("public-profile-message"));
+  assert.doesNotMatch(profile, /PublicProfileCarousels|public-profile-message/);
   assert.match(carousels, /getSharedMixes\(\{ author: userId, page: pageParam \}\)/);
   assert.match(carousels, /listUserReflectionStories\(userId/);
   assert.equal((carousels.match(/horizontal/g) ?? []).length, 2);

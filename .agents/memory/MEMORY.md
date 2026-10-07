@@ -148,7 +148,7 @@
 - [Usuarios conectados](community-presence-semantics.md) — sección eliminada de Inicio por sospecha de lag; preservar presencia global real en primer plano
 - [Descripción de Mi cuenta](profile-account-description.md) — reemplaza la píldora bajo el usuario en Perfil; texto opcional guardado en Mi cuenta, máximo dos líneas
 - [Calendario del perfil público](public-profile-activity-calendar.md) — acumulación con día chileno fijo y todo el historial; no cambia según la zona del visitante
-- [Alcance del perfil público](public-profile-scope.md) — días antes de etapa; sin seguidores ni Expansores; amistad y Vibración como acciones simples
+- [Alcance del perfil público](public-profile-scope.md) — avatar, nombre, días, etapa y descripción; sin acciones sociales, mezclas, reflexiones ni divisores
 - [Distribución de Mezclas comunidad](community-mix-layout.md) — título y usuario en dos líneas con separación de 4 px; sin sonidos ni editorial
 - [Banner del Mezclador en Sonidos](sound-mixer-banner.md) — recuperado de Dormir, solo en Sonidos tras el tercer carrusel visible; abre el panel actual para gratuitos y Premium
 - [Títulos de cards](card-title-alignment.md) — títulos debajo de la imagen y alineados al borde izquierdo; Ambientales de Sonidos conservan su excepción centrada
