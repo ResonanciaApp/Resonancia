@@ -105,11 +105,14 @@ export const CreateAdminCoverPresetBody = zod.object({
 
 export const reorderAdminCoverPresetsBodyIdsMax = 200;
 
+export const reorderAdminCoverPresetsBodyExpectedIdsMax = 200;
+
 
 
 export const ReorderAdminCoverPresetsBody = zod.object({
   "scope": zod.enum(['mix', 'playlist', 'profile', 'reflection-story']),
-  "ids": zod.array(zod.string()).min(1).max(reorderAdminCoverPresetsBodyIdsMax)
+  "ids": zod.array(zod.string()).min(1).max(reorderAdminCoverPresetsBodyIdsMax),
+  "expectedIds": zod.array(zod.string()).max(reorderAdminCoverPresetsBodyExpectedIdsMax).optional().describe('Optional last-read order; reject atomically if the current catalog differs.')
 })
 
 export const ReorderAdminCoverPresetsResponse = zod.object({

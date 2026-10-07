@@ -737,7 +737,7 @@ export const reorderAdminCoverPresets = async (coverPresetOrderInput: CoverPrese
 
 
 
-export const getReorderAdminCoverPresetsMutationOptions = <TError = ErrorType<unknown>,
+export const getReorderAdminCoverPresetsMutationOptions = <TError = ErrorType<void>,
     TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof reorderAdminCoverPresets>>, TError,{data: BodyType<CoverPresetOrderInput>}, TContext>, request?: SecondParameter<typeof customFetch>}
 ): UseMutationOptions<Awaited<ReturnType<typeof reorderAdminCoverPresets>>, TError,{data: BodyType<CoverPresetOrderInput>}, TContext> => {
 
@@ -766,9 +766,9 @@ const {mutation: mutationOptions, request: requestOptions} = options ?
 
     export type ReorderAdminCoverPresetsMutationResult = NonNullable<Awaited<ReturnType<typeof reorderAdminCoverPresets>>>
     export type ReorderAdminCoverPresetsMutationBody = BodyType<CoverPresetOrderInput>
-    export type ReorderAdminCoverPresetsMutationError = ErrorType<unknown>
+    export type ReorderAdminCoverPresetsMutationError = ErrorType<void>
 
-    export const useReorderAdminCoverPresets = <TError = ErrorType<unknown>,
+    export const useReorderAdminCoverPresets = <TError = ErrorType<void>,
     TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof reorderAdminCoverPresets>>, TError,{data: BodyType<CoverPresetOrderInput>}, TContext>, request?: SecondParameter<typeof customFetch>}
  ): UseMutationResult<
         Awaited<ReturnType<typeof reorderAdminCoverPresets>>,

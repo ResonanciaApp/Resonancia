@@ -3458,6 +3458,11 @@ export interface CoverPresetOrderInput {
      * @maxItems 200
      */
   ids: string[];
+  /**
+     * Optional last-read order; reject atomically if the current catalog differs.
+     * @maxItems 200
+     */
+  expectedIds?: string[];
 }
 
 export interface CoverPresetUploadCleanup {

@@ -1,4 +1,5 @@
 import { useState, useRef, useEffect } from "react";
+import { useQueryClient } from "@tanstack/react-query";
 import {
   useListAdminCoverPresets,
   useCreateAdminCoverPreset,
@@ -7,6 +8,8 @@ import {
   useReorderAdminCoverPresets,
   useCleanupAdminCoverPresetUpload,
   useRequestUploadUrl,
+  getListAdminCoverPresetsQueryKey,
+  getListCoverPresetsQueryKey,
   type CoverPresetScope,
   type CoverPreset,
 } from "@workspace/api-client-react";
@@ -23,6 +26,8 @@ import {
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { toast } from "sonner";
+import { ProfileAvatarOrderControls } from "@/components/ProfileAvatarOrderControls";
+import { movePresetBlock, presetCatalogSignature, samePresetOrder } from "@/lib/cover-preset-order";
 
 // Import builtin mobile assets using Vite's glob import
 const builtinModules = import.meta.glob(
@@ -105,12 +110,13 @@ export default function PortadasAvataresPage() {
   );
 }
 
-function ScopeSection({
+export function ScopeSection({
   scope,
 }: {
   scope: { value: CoverPresetScope; label: string; description: string };
 }) {
   const query = useListAdminCoverPresets({ scope: scope.value });
+  const queryClient = useQueryClient();
   const createPreset = useCreateAdminCoverPreset();
   const updatePreset = useUpdateAdminCoverPreset();
   const deletePreset = useDeleteAdminCoverPreset();
@@ -124,6 +130,13 @@ function ScopeSection({
   const [expanded, setExpanded] = useState(false);
   const [lockingId, setLockingId] = useState<string | null>(null);
   const lockingRef = useRef(false);
+  const baselineRef = useRef<CoverPreset[]>([]);
+  const savingRef = useRef(false);
+  const [selectedIds, setSelectedIds] = useState<Set<string>>(new Set());
+  const [movePosition, setMovePosition] = useState("");
+  const [moveError, setMoveError] = useState<string | null>(null);
+  const [checkingOrder, setCheckingOrder] = useState(false);
+  const [orderConflict, setOrderConflict] = useState(false);
   
   const dragIdx = useRef<number | null>(null);
 
@@ -147,6 +160,8 @@ function ScopeSection({
   useEffect(() => {
     if (!query.data || dirty) return;
     setPresets(query.data.presets);
+    baselineRef.current = query.data.presets;
+    setSelectedIds(current => new Set([...current].filter(id => query.data!.presets.some(item => item.id === id))));
   }, [dirty, query.data]);
 
   useEffect(() => {
@@ -156,13 +171,15 @@ function ScopeSection({
   }, [query.error, scope.label]);
 
   const isFixedSlots = scope.value === "reflection-story";
+  const isProfile = scope.value === "profile";
   const maxSlots = isFixedSlots ? 100 : scope.value === "profile" ? 200 : 50;
   const maxReached = presets.length >= maxSlots;
 
-  const isMutating = uploading || createPreset.isPending || updatePreset.isPending || deletePreset.isPending || reorderPresets.isPending || cleanupUpload.isPending;
+  const isMutating = checkingOrder || uploading || createPreset.isPending || updatePreset.isPending || deletePreset.isPending || reorderPresets.isPending || cleanupUpload.isPending;
   const isUploadDisabled = maxReached || isMutating || dirty;
 
   function onDragEnter(index: number) {
+    if (isMutating || orderConflict || selectedIds.size > 0) return;
     if (dragIdx.current === null || dragIdx.current === index) return;
     setPresets((current) => {
       const next = [...current];
@@ -174,20 +191,72 @@ function ScopeSection({
     setDirty(true);
   }
 
+  function clearSelection() {
+    setSelectedIds(new Set());
+    setMovePosition("");
+    setMoveError(null);
+  }
+
+  function moveSelection() {
+    if (isMutating || orderConflict) return;
+    const result = movePresetBlock(presets, selectedIds, movePosition);
+    if (result.error) {
+      setMoveError(result.error);
+      return;
+    }
+    setPresets(result.presets);
+    setDirty(!samePresetOrder(result.presets, baselineRef.current));
+    clearSelection();
+  }
+
+  function cancelOrder() {
+    if (isMutating) return;
+    setPresets(query.data?.presets ?? baselineRef.current);
+    setDirty(false);
+    setOrderConflict(false);
+    clearSelection();
+  }
+
   async function saveOrder() {
+    if (isMutating || savingRef.current || orderConflict) return;
+    savingRef.current = true;
+    setCheckingOrder(true);
     try {
+      if (isProfile) {
+        const fresh = await query.refetch();
+        if (fresh.error || !fresh.data) throw new Error("Catalog could not be checked");
+        if (presetCatalogSignature(fresh.data.presets) !== presetCatalogSignature(baselineRef.current)) {
+          setOrderConflict(true);
+          toast.error("El catálogo cambió. Cancela este orden para cargar la versión actual y vuelve a aplicar el movimiento.");
+          return;
+        }
+      }
       const ids = presets.map((p) => p.id);
-      await reorderPresets.mutateAsync({
+      const saved = await reorderPresets.mutateAsync({
         data: {
           scope: scope.value,
           ids,
+          ...(isProfile ? { expectedIds: baselineRef.current.map(item => item.id) } : {}),
         },
       });
+      queryClient.setQueryData(getListAdminCoverPresetsQueryKey({ scope: scope.value }), saved);
+      baselineRef.current = saved.presets;
+      setPresets(saved.presets);
+      clearSelection();
       setDirty(false);
       toast.success("Orden guardado");
-      void query.refetch();
-    } catch {
-      toast.error("No se pudo guardar el orden");
+      void queryClient.invalidateQueries({ queryKey: getListCoverPresetsQueryKey({ scope: scope.value }) });
+    } catch (error) {
+      if (isProfile && error && typeof error === "object" && "status" in error && error.status === 409) {
+        setOrderConflict(true);
+        await query.refetch();
+        toast.error("El catálogo cambió. Cancela este orden para cargar la versión actual.");
+      } else {
+        toast.error("No se pudo guardar el orden");
+      }
+    } finally {
+      savingRef.current = false;
+      setCheckingOrder(false);
     }
   }
 
@@ -321,6 +390,23 @@ function ScopeSection({
             </div>
           )}
 
+          {isProfile && presets.length > 0 && (
+            <ProfileAvatarOrderControls
+              count={selectedIds.size}
+              total={presets.length}
+              position={movePosition}
+              error={moveError}
+              disabled={isMutating || orderConflict}
+              onPositionChange={value => { setMovePosition(value); setMoveError(null); }}
+              onClear={clearSelection}
+              onMove={moveSelection}
+            />
+          )}
+          {orderConflict && (
+            <p role="alert" className="mb-4 rounded-lg border border-destructive/40 p-3 text-sm">
+              El catálogo cambió en otro lugar. Tu propuesta sigue visible. Pulsa Cancelar para cargar el catálogo actual antes de volver a ordenar.
+            </p>
+          )}
           {query.isLoading ? (
             <div className="flex h-32 items-center justify-center">
               <Loader2 className="h-6 w-6 animate-spin text-muted-foreground" />
@@ -331,14 +417,20 @@ function ScopeSection({
               <p className="text-sm text-muted-foreground">No hay imágenes configuradas.</p>
             </div>
           ) : (
-            <div className="space-y-2">
+            <div
+              className={isProfile ? "flex gap-3 overflow-x-auto pb-3" : "space-y-2"}
+              tabIndex={isProfile ? 0 : undefined}
+              role={isProfile ? "region" : undefined}
+              aria-label={isProfile ? "Lista horizontal de avatares de Perfil" : undefined}
+            >
           {presets.map((preset, index) => {
             const isBuiltin = preset.source === "builtin" && !preset.objectPath;
             return (
               <div
                 key={preset.id}
-                draggable={!isMutating && lockingId === null}
+                draggable={!isMutating && !orderConflict && selectedIds.size === 0 && lockingId === null}
                 onDragStart={() => {
+                  if (isMutating || orderConflict || selectedIds.size > 0) return;
                   dragIdx.current = index;
                 }}
                 onDragEnter={() => onDragEnter(index)}
@@ -346,18 +438,47 @@ function ScopeSection({
                   dragIdx.current = null;
                 }}
                 onDragOver={(e) => e.preventDefault()}
-                className="flex items-center gap-4 rounded-lg border bg-card px-4 py-3 transition-colors hover:bg-secondary/20"
+                className={isProfile
+                  ? `flex w-52 shrink-0 flex-col items-center gap-3 rounded-lg border bg-card p-3 transition-colors ${selectedIds.has(preset.id) ? "border-primary ring-2 ring-primary/40" : "hover:bg-secondary/20"}`
+                  : "flex items-center gap-4 rounded-lg border bg-card px-4 py-3 transition-colors hover:bg-secondary/20"}
               >
+                {isProfile && (
+                  <label className="flex w-full cursor-pointer items-center justify-between gap-2 text-sm">
+                    <span>Posición {index + 1}</span>
+                    <input
+                      type="checkbox"
+                      aria-label={`Seleccionar ${preset.label}, posición ${index + 1}`}
+                      checked={selectedIds.has(preset.id)}
+                      disabled={isMutating || orderConflict}
+                      className="h-4 w-4 accent-primary"
+                      onChange={event => {
+                        const checked = event.target.checked;
+                        dragIdx.current = null;
+                        setSelectedIds(current => {
+                          const next = new Set(current);
+                          if (checked) next.add(preset.id); else next.delete(preset.id);
+                          return next;
+                        });
+                        setMoveError(null);
+                      }}
+                    />
+                  </label>
+                )}
+                {!isProfile && (
+                  <>
                 <GripVertical className="h-5 w-5 shrink-0 cursor-grab text-muted-foreground active:cursor-grabbing" />
                 <span className="w-5 shrink-0 text-right text-xs text-muted-foreground">
                   {index + 1}
                 </span>
+                  </>
+                )}
                 
-                <div className={`relative h-12 w-12 shrink-0 overflow-hidden border border-border bg-secondary ${scope.value === "profile" ? "rounded-full" : "rounded-md"}`}>
+                <div className={`relative shrink-0 overflow-hidden border border-border bg-secondary ${isProfile ? "h-20 w-20 rounded-full" : "h-12 w-12 rounded-md"}`}>
                   {previewUrl(preset.objectPath, preset.builtinKey) ? (
                     <img
                       src={previewUrl(preset.objectPath, preset.builtinKey)!}
                       alt={preset.label}
+                      loading={isProfile ? "lazy" : undefined}
                       className="h-full w-full object-cover"
                     />
                   ) : (
@@ -372,7 +493,7 @@ function ScopeSection({
                   )}
                 </div>
 
-                <div className="flex-1">
+                <div className={isProfile ? "min-w-0 w-full flex-1 break-words text-center" : "flex-1"}>
                   <p className="text-sm font-medium">{preset.label}</p>
                   {isBuiltin && (
                     <span className="mt-1 inline-flex items-center rounded-sm bg-primary/10 px-2 py-0.5 text-[10px] font-medium text-primary">
@@ -381,7 +502,7 @@ function ScopeSection({
                   )}
                 </div>
 
-                  <div className="flex shrink-0 items-center gap-2">
+                  <div className={`flex shrink-0 items-center ${isProfile ? "gap-1" : "gap-2"}`}>
                   {scope.value === "profile" && (
                     <Button
                       type="button"
@@ -436,20 +557,17 @@ function ScopeSection({
                   type="button"
                   variant="outline"
                   size="sm"
-                  onClick={() => {
-                    setPresets(query.data?.presets || []);
-                    setDirty(false);
-                  }}
-                  disabled={reorderPresets.isPending}
+                  onClick={cancelOrder}
+                  disabled={isMutating}
                 >
                   Cancelar
                 </Button>
                 <Button
                   size="sm"
-                  onClick={() => void saveOrder()}
-                  disabled={reorderPresets.isPending}
+                  onClick={saveOrder}
+                  disabled={isMutating || orderConflict}
                 >
-                  {reorderPresets.isPending ? (
+                  {isMutating ? (
                     <Loader2 className="mr-2 h-4 w-4 animate-spin" />
                   ) : null}
                   Guardar orden

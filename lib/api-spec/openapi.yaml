@@ -160,6 +160,8 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/CoverPresetList"
+        "409":
+          description: Catalog order changed since the supplied expected order
   /admin/cover-presets/upload:
     delete:
       operationId: cleanupAdminCoverPresetUpload
@@ -9379,6 +9381,12 @@ components:
         ids:
           type: array
           minItems: 1
+          maxItems: 200
+          items:
+            type: string
+        expectedIds:
+          type: array
+          description: Optional last-read order; reject atomically if the current catalog differs.
           maxItems: 200
           items:
             type: string

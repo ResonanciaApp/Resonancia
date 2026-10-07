@@ -206,7 +206,14 @@ router.put("/admin/cover-presets/order", requireAuth, requireRole("admin"), asyn
   try {
     const result = await db.transaction(async (tx) => {
       await tx.execute(sql`select pg_advisory_xact_lock(hashtextextended(${parsed.data.scope}, 402))`);
-      const rows = await tx.select().from(coverPresetsTable).where(eq(coverPresetsTable.scope, parsed.data.scope));
+      const rows = await tx.select().from(coverPresetsTable).where(eq(coverPresetsTable.scope, parsed.data.scope))
+        .orderBy(asc(coverPresetsTable.sortOrder), asc(coverPresetsTable.id));
+      if (parsed.data.expectedIds && (
+        parsed.data.expectedIds.length !== rows.length
+        || rows.some((row, index) => row.id !== parsed.data.expectedIds![index])
+      )) {
+        throw new Error("stale_order");
+      }
       if (
         parsed.data.scope === REFLECTION_STORY_SCOPE
         && (
@@ -235,6 +242,10 @@ router.put("/admin/cover-presets/order", requireAuth, requireRole("admin"), asyn
     });
     res.json(result);
   } catch (err) {
+    if (err instanceof Error && err.message === "stale_order") {
+      res.status(409).json({ error: "El catálogo cambió. Recarga el orden antes de volver a guardar." });
+      return;
+    }
     if (err instanceof Error && err.message === "duplicates") {
       res.status(400).json({ error: "El orden no puede contener IDs duplicados" });
       return;

@@ -95,6 +95,20 @@ describe("cover preset catalog security and profile identity", () => {
     expect((await request(app).put("/api/admin/cover-presets/order").send({ scope: "playlist", ids: ids.slice(1) })).status).toBe(400);
   });
 
+  it("rejects a stale expected avatar order without changing cards or locks", async () => {
+    authAs(admin);
+    const before = await request(app).get("/api/admin/cover-presets?scope=profile");
+    expect(before.status).toBe(200);
+    const ids = before.body.presets.map((preset: { id: string }) => preset.id);
+    const staleIds = ids.length > 1 ? [...ids].reverse() : ["not-current"];
+    const rejected = await request(app).put("/api/admin/cover-presets/order").send({
+      scope: "profile", ids, expectedIds: staleIds,
+    });
+    expect(rejected.status).toBe(409);
+    const after = await request(app).get("/api/admin/cover-presets?scope=profile");
+    expect(after.body).toEqual(before.body);
+  });
+
   it("rejects arbitrary, non-owned, and non-image upload paths", async () => {
     authAs(admin);
     expect((await request(app).post("/api/admin/cover-presets").send({ scope: "mix", label: "Bad", objectPath: "/objects/not-uploaded" })).status).toBe(403);

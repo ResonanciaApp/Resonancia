@@ -143,6 +143,7 @@
 - [Camino de crecimiento](growth-journey.md) — solo Intención activa; entrada automática tras estadísticas sin scroll; al activar niveles usar días acumulados
 - [Edición de imágenes en el runtime](image-processing-runtime.md) — Pillow anuncia versión pero falla al importar _imaging; usar ImageMagick para procesar PNGs aquí
 - [Assets nuevos y Metro](expo-new-assets-metro.md) — generar el PNG antes de referenciarlo con require; si Metro cachea el error de archivo ausente, reiniciar tras crearlo
+- [Metro y generación compartida](metro-shared-generation.md) — la limpieza temporal del codegen puede romper la recarga de Expo; terminar la generación antes de reiniciar consumidores
 - [Rebote en los bordes](scroll-edge-bounce.md) — en Sistema de rachas, no bloquear arriba/abajo también exige rebote elástico, no solo eliminar franjas fijas
 - [Inercia global del scroll](native-scroll-inertia.md) — menos desplazamiento al soltar; arrastre normal y tasas explícitas intactas; React 19 exige defaults en la clase nativa, no en el wrapper
 - [Usuarios conectados](community-presence-semantics.md) — sección eliminada de Inicio por sospecha de lag; preservar presencia global real en primer plano
