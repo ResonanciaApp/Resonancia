@@ -123,11 +123,11 @@ test("community divider is vertically centered without moving the adjacent secti
   assert.equal(gap + top + bottom + extra + sectionPadding, 75);
 });
 
-test("New in Resonancia precedes playlists with remaining Discover sections in place", () => {
+test("playlists precede New in Resonancia with remaining Discover sections in place", () => {
   const positions = [
     "Explora según tu tiempo",
-    "<View style={styles.newInResonanceSection}>",
     "{editorialDiscoverCarousels.map",
+    "<View style={styles.newInResonanceSection}>",
     "Explora por objetivo",
     "<ResonadoresBanner",
     "<CommunityMixesCarousel",

@@ -19,7 +19,7 @@ En Perfil, Mi muro expansivo y Mi rutina expansiva conservan la misma separació
 
 **Why:** El usuario pidió usar la distancia entre Mi rutina y el muro como referencia para separarlas del progreso. Intercambiar el orden de esas secciones no implica cambiar sus separaciones.
 
-**How to apply:** Comparar la suma de los márgenes exteriores de ambos lados del espacio, no solo el margen superior de cada sección. Mantener los ajustes exclusivos de Perfil.
+**How to apply:** Usar la distancia exterior real entre Tu camino y Mi rutina como referencia para separar Mi rutina de Mi muro. Contar los márgenes de sus contenedores, no solo el margen superior de cada sección. Mantener los ajustes exclusivos de Perfil.
 
 Los espacios adicionales del banner de Intención son exclusivos de Perfil: separar la descripción 4 px más del título y añadir 4 px arriba y abajo.
 

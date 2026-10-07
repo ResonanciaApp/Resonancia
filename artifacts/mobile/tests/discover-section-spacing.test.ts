@@ -78,7 +78,7 @@ test("Explore by time follows Para este momento with standard spacing and appear
   const durationIndex = sectionSiblings.indexOf(duration);
   assert.ok(sectionSiblings[durationIndex - 2].getText(ast).startsWith("<View style={styles.featuredMomentSection}>"));
   assert.equal(sectionSiblings[durationIndex - 1].getText(ast), "<View style={styles.sectionSpacer} />");
-  assert.equal(sectionSiblings[durationIndex + 1].getText(ast), "<View style={styles.sectionSpacer} />");
+  assert.equal(sectionSiblings.at(-1), duration);
   assert.match(duration.getText(ast), /openCategory\(`\/busqueda\?tiempo=\$\{encodeURIComponent\(slot\.label\)\}`\)/);
   assert.ok(banner);
   assert.ok(ts.isJsxElement(banner.parent));
@@ -88,6 +88,8 @@ test("Explore by time follows Para este momento with standard spacing and appear
   assert.equal(siblings[index - 1].getText(ast), "<View style={[styles.sectionSpacer, styles.resonadoresSpacer]} />");
   const bannerSpacer = style("resonadoresSpacer");
   assert.equal(53 + bannerSpacer.marginTop, bannerSpacer.marginBottom + 3);
+  assert.equal(53 + bannerSpacer.marginTop, 37.5);
+  assert.equal(bannerSpacer.marginBottom + 3, 37.5);
   assert.equal(siblings[index + 1].getText(ast), "<View style={[styles.sectionSpacer, styles.communityDivider]} />");
   assert.ok(siblings[index + 2].getText(ast).startsWith("<CommunityMixesCarousel"));
   assert.match(banner.getText(ast), /router\.push\("\/equipo" as never\)/);
@@ -95,7 +97,7 @@ test("Explore by time follows Para este momento with standard spacing and appear
   assert.equal(style("durationSection").marginBottom, style("newInResonanceSection").marginBottom);
 });
 
-test("Nuevo en Resonancia precedes editorial playlists and the relocated Resonadores banner", () => {
+test("editorial playlists precede Nuevo en Resonancia without duplicate separators", () => {
   let playlists: ts.JsxExpression | undefined;
   let banner: ts.JsxSelfClosingElement | undefined;
   let newSessions: ts.JsxElement | undefined;
@@ -113,7 +115,7 @@ test("Nuevo en Resonancia precedes editorial playlists and the relocated Resonad
   const siblings = banner.parent.children.filter(node => !ts.isJsxText(node)
     && (!ts.isJsxExpression(node) || node.expression !== undefined));
   const index = siblings.indexOf(newSessions);
-  assert.ok(newSessions.getStart(ast) < playlists.getStart(ast));
+  assert.ok(playlists.getStart(ast) < newSessions.getStart(ast));
   assert.ok(playlists.getStart(ast) < banner.getStart(ast));
   const bannerIndex = siblings.indexOf(banner);
   assert.equal(siblings[bannerIndex - 1].getText(ast), "<View style={[styles.sectionSpacer, styles.resonadoresSpacer]} />");
@@ -121,9 +123,8 @@ test("Nuevo en Resonancia precedes editorial playlists and the relocated Resonad
   assert.equal((source.match(/style=\{styles\.newInResonanceSection\}/g) ?? []).length, 1);
   assert.match(newSessions.getText(ast), /onPress=\{\(\) => handleSessionPress\(session\)\}/);
   const preceding = siblings[index - 1];
-  assert.ok(ts.isJsxFragment(preceding));
-  const previousElements = preceding.children.filter(node => !ts.isJsxText(node));
-  assert.equal(previousElements.at(-1)?.getText(ast), "<View style={styles.sectionSpacer} />");
+  assert.equal(preceding.getText(ast), "<View style={styles.sectionSpacer} />");
+  assert.equal(siblings[index - 2], playlists);
   assert.match(playlists.getText(ast), /<View style=\{styles\.sectionSpacer\} \/>/);
   assert.equal((source.match(/editorialDiscoverCarousels\.map\(/g) ?? []).length, 1);
   assert.match(playlists.getText(ast), /openCategory\(`\/editorial-playlist\/\$\{encodeURIComponent\(playlist\.id\)\}`\)/);

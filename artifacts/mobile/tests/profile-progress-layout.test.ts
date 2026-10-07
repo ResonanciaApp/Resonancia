@@ -560,7 +560,7 @@ test("Perfil swaps calendar and Intención, preserving section gaps and the Tu c
   assert.ok(history >= 0 && history < points && points < calendar && calendar < intention);
   assert.match(html, /data-testid="profile-growth-intention" data-margin-top="21"/);
   assert.doesNotMatch(html, /data-testid="profile-growth-intention"[^>]*data-margin-bottom=/);
-  assert.match(profileSource, /<ProfileReflectionWallSection[\s\S]*?style=\{\{ marginTop: 25, marginBottom: PROFILE_SECTION_GAP \}\}/);
+  assert.match(profileSource, /<ProfileReflectionWallSection[\s\S]*?style=\{\{ marginTop: PROFILE_SECTION_GAP \+ 25, marginBottom: PROFILE_SECTION_GAP \}\}/);
   assert.match(profileSource, /<MiRutinaSection style=\{\{ marginHorizontal: 0, marginTop: 25 \}\}/);
   assert.ok(profileSource.indexOf("<MiRutinaSection") < profileSource.indexOf("<ProfileReflectionWallSection"),
     "Mi rutina expansiva precedes Mi muro expansivo");

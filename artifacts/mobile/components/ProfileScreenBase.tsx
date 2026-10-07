@@ -1518,7 +1518,7 @@ export function ProfileScreenBase({
               getScrollY={getProfileScrollY}
               onComposingChange={setProfileWallComposing}
               onMessageSaved={handleProfileReflectionSaved}
-              style={{ marginTop: 25, marginBottom: PROFILE_SECTION_GAP }}
+              style={{ marginTop: PROFILE_SECTION_GAP + 25, marginBottom: PROFILE_SECTION_GAP }}
             />
 
             {SHOW_PROFILE_PRACTICE_CARDS && (

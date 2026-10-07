@@ -761,8 +761,26 @@ export function ExploreScreen({
                 ))}
               </ScrollView>
             </View>
-            <View style={styles.sectionSpacer} />
           </>
+
+          {editorialDiscoverCarousels.map((carousel) => (
+            <React.Fragment key={carousel.id}>
+              <View style={styles.sectionSpacer} />
+              <EditorialPlaylistCarousel
+                title={carousel.title}
+                titleSize={19}
+                playlists={carousel.playlists}
+                editorialTextPlacement="below-title"
+                showDurationClock
+                showPremiumBadge
+                onPress={(playlist) =>
+                  openCategory(`/editorial-playlist/${encodeURIComponent(playlist.id)}`)
+                }
+              />
+            </React.Fragment>
+          ))}
+
+          <View style={styles.sectionSpacer} />
 
           <View style={styles.newInResonanceSection}>
             <View style={styles.newInResonanceHeader}>
@@ -819,23 +837,6 @@ export function ExploreScreen({
               ))}
             </ScrollView>
           </View>
-
-          {editorialDiscoverCarousels.map((carousel) => (
-            <React.Fragment key={carousel.id}>
-              <View style={styles.sectionSpacer} />
-              <EditorialPlaylistCarousel
-                title={carousel.title}
-                titleSize={19}
-                playlists={carousel.playlists}
-                editorialTextPlacement="below-title"
-                showDurationClock
-                showPremiumBadge
-                onPress={(playlist) =>
-                  openCategory(`/editorial-playlist/${encodeURIComponent(playlist.id)}`)
-                }
-              />
-            </React.Fragment>
-          ))}
 
           <View style={styles.sectionSpacer} />
 
@@ -1193,8 +1194,9 @@ const styles = StyleSheet.create({
     marginBottom: 25 + SECTION_EXTRA_GAP,
   },
   resonadoresSpacer: {
-    marginTop: -23,
-    marginBottom: 22 + SECTION_EXTRA_GAP,
+    // Match the community separator: 37.5px on each side, including the banner's 3px top margin.
+    marginTop: -15.5,
+    marginBottom: 29.5 + SECTION_EXTRA_GAP,
   },
   communityDivider: {
     // 53 - 15.5 = 37.5 above; 14.5 + 5 + the community header's 18 = 37.5 below.
