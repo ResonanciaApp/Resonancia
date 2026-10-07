@@ -1,0 +1,1279 @@
+{
+  "images": [
+    {
+      "number": 1,
+      "filePath": "attached_assets/processed/profile-avatar-new-characters/avatar-01.webp",
+      "sheet": 1,
+      "row": 1,
+      "column": 1,
+      "crop": {
+        "x": 163,
+        "y": 203,
+        "side": 708
+      },
+      "width": 512,
+      "height": 512,
+      "pixelHash": "25f216e39790da1f761f22e55c1030ac2b007800075dc67dbb276dd26e0fb82f",
+      "sizeBytes": 167176,
+      "contentType": "image/webp"
+    },
+    {
+      "number": 2,
+      "filePath": "attached_assets/processed/profile-avatar-new-characters/avatar-02.webp",
+      "sheet": 1,
+      "row": 1,
+      "column": 2,
+      "crop": {
+        "x": 926,
+        "y": 200,
+        "side": 711
+      },
+      "width": 512,
+      "height": 512,
+      "pixelHash": "3ac07061cfc90e1492b7bb4cc4b832a5338e195b582abb2cfae6db585d8286ac",
+      "sizeBytes": 185338,
+      "contentType": "image/webp"
+    },
+    {
+      "number": 3,
+      "filePath": "attached_assets/processed/profile-avatar-new-characters/avatar-03.webp",
+      "sheet": 1,
+      "row": 1,
+      "column": 3,
+      "crop": {
+        "x": 1694,
+        "y": 201,
+        "side": 711
+      },
+      "width": 512,
+      "height": 512,
+      "pixelHash": "a9455e04818cfa4833410467070ae392114c098bf1463535fcef68421026f91f",
+      "sizeBytes": 172218,
+      "contentType": "image/webp"
+    },
+    {
+      "number": 4,
+      "filePath": "attached_assets/processed/profile-avatar-new-characters/avatar-04.webp",
+      "sheet": 1,
+      "row": 1,
+      "column": 4,
+      "crop": {
+        "x": 2457,
+        "y": 205,
+        "side": 711
+      },
+      "width": 512,
+      "height": 512,
+      "pixelHash": "34b280ba52b7ad7a93db0fb9ebc59bd0cdaf17fba537fa2e5a14f61d42eee055",
+      "sizeBytes": 181040,
+      "contentType": "image/webp"
+    },
+    {
+      "number": 5,
+      "filePath": "attached_assets/processed/profile-avatar-new-characters/avatar-05.webp",
+      "sheet": 1,
+      "row": 1,
+      "column": 5,
+      "crop": {
+        "x": 3225,
+        "y": 205,
+        "side": 706
+      },
+      "width": 512,
+      "height": 512,
+      "pixelHash": "f228fdf09caa6b091f96718857ca31c852e9e811e69c087d9aac66ae8e06a901",
+      "sizeBytes": 175514,
+      "contentType": "image/webp"
+    },
+    {
+      "number": 6,
+      "filePath": "attached_assets/processed/profile-avatar-new-characters/avatar-06.webp",
+      "sheet": 1,
+      "row": 2,
+      "column": 1,
+      "crop": {
+        "x": 159,
+        "y": 962,
+        "side": 713
+      },
+      "width": 512,
+      "height": 512,
+      "pixelHash": "c86b7828b36c36c2631fbd381740b2cd17842a65523c83782becdf170f77c5f8",
+      "sizeBytes": 186450,
+      "contentType": "image/webp"
+    },
+    {
+      "number": 7,
+      "filePath": "attached_assets/processed/profile-avatar-new-characters/avatar-07.webp",
+      "sheet": 1,
+      "row": 2,
+      "column": 2,
+      "crop": {
+        "x": 926,
+        "y": 957,
+        "side": 715
+      },
+      "width": 512,
+      "height": 512,
+      "pixelHash": "02b603af4d955510444285a31661b8af87674fd42b25ae20e606cd181c0c52d9",
+      "sizeBytes": 168446,
+      "contentType": "image/webp"
+    },
+    {
+      "number": 8,
+      "filePath": "attached_assets/processed/profile-avatar-new-characters/avatar-08.webp",
+      "sheet": 1,
+      "row": 2,
+      "column": 3,
+      "crop": {
+        "x": 1696,
+        "y": 960,
+        "side": 710
+      },
+      "width": 512,
+      "height": 512,
+      "pixelHash": "68d27d75e9db487692f0974661dc1d6390318ece58266be7a31964a2bbccdbe0",
+      "sizeBytes": 183482,
+      "contentType": "image/webp"
+    },
+    {
+      "number": 9,
+      "filePath": "attached_assets/processed/profile-avatar-new-characters/avatar-09.webp",
+      "sheet": 1,
+      "row": 2,
+      "column": 4,
+      "crop": {
+        "x": 2457,
+        "y": 960,
+        "side": 713
+      },
+      "width": 512,
+      "height": 512,
+      "pixelHash": "630e6a13604743017e42266607f651d4cd2884bfc9d17f65ef0d375e01b13bfc",
+      "sizeBytes": 180362,
+      "contentType": "image/webp"
+    },
+    {
+      "number": 10,
+      "filePath": "attached_assets/processed/profile-avatar-new-characters/avatar-10.webp",
+      "sheet": 1,
+      "row": 2,
+      "column": 5,
+      "crop": {
+        "x": 3224,
+        "y": 968,
+        "side": 711
+      },
+      "width": 512,
+      "height": 512,
+      "pixelHash": "72fc828a86688d91fce363c7157fd6f89c35f418d912facb0654df08b1e3e423",
+      "sizeBytes": 174774,
+      "contentType": "image/webp"
+    },
+    {
+      "number": 11,
+      "filePath": "attached_assets/processed/profile-avatar-new-characters/avatar-11.webp",
+      "sheet": 1,
+      "row": 3,
+      "column": 1,
+      "crop": {
+        "x": 160,
+        "y": 1725,
+        "side": 707
+      },
+      "width": 512,
+      "height": 512,
+      "pixelHash": "36160499fd5c2ad3af089eaf2b98e499ab9d20f1a07000ed4c03e7f07c2e195f",
+      "sizeBytes": 171076,
+      "contentType": "image/webp"
+    },
+    {
+      "number": 12,
+      "filePath": "attached_assets/processed/profile-avatar-new-characters/avatar-12.webp",
+      "sheet": 1,
+      "row": 3,
+      "column": 2,
+      "crop": {
+        "x": 927,
+        "y": 1726,
+        "side": 706
+      },
+      "width": 512,
+      "height": 512,
+      "pixelHash": "5f715d99d23e4fe6be41cece9339127307271d4f0b1544ed3b9a42d70e21cfde",
+      "sizeBytes": 188976,
+      "contentType": "image/webp"
+    },
+    {
+      "number": 13,
+      "filePath": "attached_assets/processed/profile-avatar-new-characters/avatar-13.webp",
+      "sheet": 1,
+      "row": 3,
+      "column": 3,
+      "crop": {
+        "x": 1692,
+        "y": 1720,
+        "side": 712
+      },
+      "width": 512,
+      "height": 512,
+      "pixelHash": "b383a45af52d47d3140954fad26fd4fcfe73a70a3057031453ab7a605e6cb00f",
+      "sizeBytes": 178158,
+      "contentType": "image/webp"
+    },
+    {
+      "number": 14,
+      "filePath": "attached_assets/processed/profile-avatar-new-characters/avatar-14.webp",
+      "sheet": 1,
+      "row": 3,
+      "column": 4,
+      "crop": {
+        "x": 2460,
+        "y": 1725,
+        "side": 710
+      },
+      "width": 512,
+      "height": 512,
+      "pixelHash": "13b0ebab73d82d7819b7ad97de43835fd3a0f4f5a1c3db8bbd98b1d448c838dc",
+      "sizeBytes": 150124,
+      "contentType": "image/webp"
+    },
+    {
+      "number": 15,
+      "filePath": "attached_assets/processed/profile-avatar-new-characters/avatar-15.webp",
+      "sheet": 1,
+      "row": 3,
+      "column": 5,
+      "crop": {
+        "x": 3227,
+        "y": 1725,
+        "side": 709
+      },
+      "width": 512,
+      "height": 512,
+      "pixelHash": "28314266af9b57f4dc1163eef30fa4fbfe695062e79ed40b16f694bd86809fb1",
+      "sizeBytes": 171490,
+      "contentType": "image/webp"
+    },
+    {
+      "number": 16,
+      "filePath": "attached_assets/processed/profile-avatar-new-characters/avatar-16.webp",
+      "sheet": 1,
+      "row": 4,
+      "column": 1,
+      "crop": {
+        "x": 158,
+        "y": 2484,
+        "side": 712
+      },
+      "width": 512,
+      "height": 512,
+      "pixelHash": "c7e08d9ccd0e8d7d2d8b5b0358fd3d2531ae038cfbcb052ec333714d8df23868",
+      "sizeBytes": 174662,
+      "contentType": "image/webp"
+    },
+    {
+      "number": 17,
+      "filePath": "attached_assets/processed/profile-avatar-new-characters/avatar-17.webp",
+      "sheet": 1,
+      "row": 4,
+      "column": 2,
+      "crop": {
+        "x": 928,
+        "y": 2482,
+        "side": 712
+      },
+      "width": 512,
+      "height": 512,
+      "pixelHash": "a86d2baae4dee499c662e8dff2e1aaa7cf24f67019f3647e5ccadc30eb583345",
+      "sizeBytes": 154938,
+      "contentType": "image/webp"
+    },
+    {
+      "number": 18,
+      "filePath": "attached_assets/processed/profile-avatar-new-characters/avatar-18.webp",
+      "sheet": 1,
+      "row": 4,
+      "column": 3,
+      "crop": {
+        "x": 1691,
+        "y": 2480,
+        "side": 712
+      },
+      "width": 512,
+      "height": 512,
+      "pixelHash": "76070ca6691b013d7264d763cef9e41edbf6002d01a4e6d91bd735ea56a15f4a",
+      "sizeBytes": 179628,
+      "contentType": "image/webp"
+    },
+    {
+      "number": 19,
+      "filePath": "attached_assets/processed/profile-avatar-new-characters/avatar-19.webp",
+      "sheet": 1,
+      "row": 4,
+      "column": 4,
+      "crop": {
+        "x": 2460,
+        "y": 2481,
+        "side": 714
+      },
+      "width": 512,
+      "height": 512,
+      "pixelHash": "6299ad369ca62a76ddaac21d496ef0381972380d31600d1304651f60f20fcdb3",
+      "sizeBytes": 192352,
+      "contentType": "image/webp"
+    },
+    {
+      "number": 20,
+      "filePath": "attached_assets/processed/profile-avatar-new-characters/avatar-20.webp",
+      "sheet": 1,
+      "row": 4,
+      "column": 5,
+      "crop": {
+        "x": 3228,
+        "y": 2481,
+        "side": 715
+      },
+      "width": 512,
+      "height": 512,
+      "pixelHash": "d2fa9027f5c6ee9439db4981d07872abfb898eb8ff687f7cf753fa4370264828",
+      "sizeBytes": 164656,
+      "contentType": "image/webp"
+    },
+    {
+      "number": 21,
+      "filePath": "attached_assets/processed/profile-avatar-new-characters/avatar-21.webp",
+      "sheet": 1,
+      "row": 5,
+      "column": 1,
+      "crop": {
+        "x": 159,
+        "y": 3244,
+        "side": 712
+      },
+      "width": 512,
+      "height": 512,
+      "pixelHash": "9af5436375e87f75a9163e4ba6147f4b7267d5741313bd91bd8db464326a6f26",
+      "sizeBytes": 174404,
+      "contentType": "image/webp"
+    },
+    {
+      "number": 22,
+      "filePath": "attached_assets/processed/profile-avatar-new-characters/avatar-22.webp",
+      "sheet": 1,
+      "row": 5,
+      "column": 2,
+      "crop": {
+        "x": 929,
+        "y": 3240,
+        "side": 713
+      },
+      "width": 512,
+      "height": 512,
+      "pixelHash": "b09d6fddd868da97e087bf58e3042acf43500a8c1d009293e416e1a278f4ec6d",
+      "sizeBytes": 178488,
+      "contentType": "image/webp"
+    },
+    {
+      "number": 23,
+      "filePath": "attached_assets/processed/profile-avatar-new-characters/avatar-23.webp",
+      "sheet": 1,
+      "row": 5,
+      "column": 3,
+      "crop": {
+        "x": 1694,
+        "y": 3240,
+        "side": 711
+      },
+      "width": 512,
+      "height": 512,
+      "pixelHash": "92083091755ea11cb0df3f7988d89cdfe036d919fb2d3b2f9a9ebb3f504664f1",
+      "sizeBytes": 186100,
+      "contentType": "image/webp"
+    },
+    {
+      "number": 24,
+      "filePath": "attached_assets/processed/profile-avatar-new-characters/avatar-24.webp",
+      "sheet": 1,
+      "row": 5,
+      "column": 4,
+      "crop": {
+        "x": 2462,
+        "y": 3240,
+        "side": 712
+      },
+      "width": 512,
+      "height": 512,
+      "pixelHash": "9129b43491aa39a53387bdb1d7225832ad9f16682b7b218c7275118eb27e9ee9",
+      "sizeBytes": 172164,
+      "contentType": "image/webp"
+    },
+    {
+      "number": 25,
+      "filePath": "attached_assets/processed/profile-avatar-new-characters/avatar-25.webp",
+      "sheet": 1,
+      "row": 5,
+      "column": 5,
+      "crop": {
+        "x": 3228,
+        "y": 3238,
+        "side": 716
+      },
+      "width": 512,
+      "height": 512,
+      "pixelHash": "a911e26b50b66e1941056d6cad6b487af606527328b545cd07b142ff17dfb4af",
+      "sizeBytes": 173274,
+      "contentType": "image/webp"
+    },
+    {
+      "number": 26,
+      "filePath": "attached_assets/processed/profile-avatar-new-characters/avatar-26.webp",
+      "sheet": 2,
+      "row": 1,
+      "column": 1,
+      "crop": {
+        "x": 157,
+        "y": 172,
+        "side": 700
+      },
+      "width": 512,
+      "height": 512,
+      "pixelHash": "2a0268bccd3fd0df601cfbed6f153bbbc0dcd85a52697bf8e8264eeaa313bb04",
+      "sizeBytes": 167038,
+      "contentType": "image/webp"
+    },
+    {
+      "number": 27,
+      "filePath": "attached_assets/processed/profile-avatar-new-characters/avatar-27.webp",
+      "sheet": 2,
+      "row": 1,
+      "column": 2,
+      "crop": {
+        "x": 924,
+        "y": 172,
+        "side": 703
+      },
+      "width": 512,
+      "height": 512,
+      "pixelHash": "9669e36e67b9f95d2b2a424400debf6f8afc70f3c177728d296ed366d354c0c3",
+      "sizeBytes": 178508,
+      "contentType": "image/webp"
+    },
+    {
+      "number": 28,
+      "filePath": "attached_assets/processed/profile-avatar-new-characters/avatar-28.webp",
+      "sheet": 2,
+      "row": 1,
+      "column": 3,
+      "crop": {
+        "x": 1698,
+        "y": 172,
+        "side": 700
+      },
+      "width": 512,
+      "height": 512,
+      "pixelHash": "9e615dd607fe974deca7c99c07210f43a969ea509e2f3f9e4000ac94ad82c9eb",
+      "sizeBytes": 185504,
+      "contentType": "image/webp"
+    },
+    {
+      "number": 29,
+      "filePath": "attached_assets/processed/profile-avatar-new-characters/avatar-29.webp",
+      "sheet": 2,
+      "row": 1,
+      "column": 4,
+      "crop": {
+        "x": 2466,
+        "y": 172,
+        "side": 703
+      },
+      "width": 512,
+      "height": 512,
+      "pixelHash": "52549ee5811c8049cc02b810513eab4e5c173c7362ef4330fb3557f6c9009300",
+      "sizeBytes": 180720,
+      "contentType": "image/webp"
+    },
+    {
+      "number": 30,
+      "filePath": "attached_assets/processed/profile-avatar-new-characters/avatar-30.webp",
+      "sheet": 2,
+      "row": 1,
+      "column": 5,
+      "crop": {
+        "x": 3236,
+        "y": 172,
+        "side": 703
+      },
+      "width": 512,
+      "height": 512,
+      "pixelHash": "6d54349d6d3e3bfe3907c5d2ef5447609790c9aa4214ceea9a50aded56e1cb44",
+      "sizeBytes": 175914,
+      "contentType": "image/webp"
+    },
+    {
+      "number": 31,
+      "filePath": "attached_assets/processed/profile-avatar-new-characters/avatar-31.webp",
+      "sheet": 2,
+      "row": 2,
+      "column": 1,
+      "crop": {
+        "x": 154,
+        "y": 932,
+        "side": 704
+      },
+      "width": 512,
+      "height": 512,
+      "pixelHash": "39e73f397e1222c0bf35466a1450e551be19f5a21e1f54ea4202426ec4959126",
+      "sizeBytes": 188228,
+      "contentType": "image/webp"
+    },
+    {
+      "number": 32,
+      "filePath": "attached_assets/processed/profile-avatar-new-characters/avatar-32.webp",
+      "sheet": 2,
+      "row": 2,
+      "column": 2,
+      "crop": {
+        "x": 924,
+        "y": 932,
+        "side": 704
+      },
+      "width": 512,
+      "height": 512,
+      "pixelHash": "35c44ba78dfddbf6e9a1e9b8fc1ce3e9a1fb044f5d5d9484f75c3c1a9b6f4353",
+      "sizeBytes": 190050,
+      "contentType": "image/webp"
+    },
+    {
+      "number": 33,
+      "filePath": "attached_assets/processed/profile-avatar-new-characters/avatar-33.webp",
+      "sheet": 2,
+      "row": 2,
+      "column": 3,
+      "crop": {
+        "x": 1697,
+        "y": 936,
+        "side": 700
+      },
+      "width": 512,
+      "height": 512,
+      "pixelHash": "3cc03c7d2739a68fba1f7ee942a0e679eb322b392f9f2faadfd8c08f312abe59",
+      "sizeBytes": 192180,
+      "contentType": "image/webp"
+    },
+    {
+      "number": 34,
+      "filePath": "attached_assets/processed/profile-avatar-new-characters/avatar-34.webp",
+      "sheet": 2,
+      "row": 2,
+      "column": 4,
+      "crop": {
+        "x": 2467,
+        "y": 932,
+        "side": 703
+      },
+      "width": 512,
+      "height": 512,
+      "pixelHash": "10177850cdc8cbef4ee9ba8244695c3968cc3f7ed3de2c8d81dfd15995cefefe",
+      "sizeBytes": 186328,
+      "contentType": "image/webp"
+    },
+    {
+      "number": 35,
+      "filePath": "attached_assets/processed/profile-avatar-new-characters/avatar-35.webp",
+      "sheet": 2,
+      "row": 2,
+      "column": 5,
+      "crop": {
+        "x": 3238,
+        "y": 933,
+        "side": 702
+      },
+      "width": 512,
+      "height": 512,
+      "pixelHash": "6c715b890599730eeb417f8a0c0d19d4b013946b082f2df7c67e653f21f6c026",
+      "sizeBytes": 178486,
+      "contentType": "image/webp"
+    },
+    {
+      "number": 36,
+      "filePath": "attached_assets/processed/profile-avatar-new-characters/avatar-36.webp",
+      "sheet": 2,
+      "row": 3,
+      "column": 1,
+      "crop": {
+        "x": 157,
+        "y": 1696,
+        "side": 703
+      },
+      "width": 512,
+      "height": 512,
+      "pixelHash": "59444e903315a0a3a80adb9cf3264b54683568c61b248c6c92df6c7b19079fc2",
+      "sizeBytes": 175402,
+      "contentType": "image/webp"
+    },
+    {
+      "number": 37,
+      "filePath": "attached_assets/processed/profile-avatar-new-characters/avatar-37.webp",
+      "sheet": 2,
+      "row": 3,
+      "column": 2,
+      "crop": {
+        "x": 924,
+        "y": 1693,
+        "side": 708
+      },
+      "width": 512,
+      "height": 512,
+      "pixelHash": "da5afe1619fd72dc4238765fb77b9dc7ae179ba09307854d9223f61a1f449bf9",
+      "sizeBytes": 192450,
+      "contentType": "image/webp"
+    },
+    {
+      "number": 38,
+      "filePath": "attached_assets/processed/profile-avatar-new-characters/avatar-38.webp",
+      "sheet": 2,
+      "row": 3,
+      "column": 3,
+      "crop": {
+        "x": 1695,
+        "y": 1692,
+        "side": 705
+      },
+      "width": 512,
+      "height": 512,
+      "pixelHash": "a7fd4970ea268d3d88b9103f01ce18f7f2e43625740c474dbff6d92d895c79f3",
+      "sizeBytes": 174530,
+      "contentType": "image/webp"
+    },
+    {
+      "number": 39,
+      "filePath": "attached_assets/processed/profile-avatar-new-characters/avatar-39.webp",
+      "sheet": 2,
+      "row": 3,
+      "column": 4,
+      "crop": {
+        "x": 2465,
+        "y": 1692,
+        "side": 707
+      },
+      "width": 512,
+      "height": 512,
+      "pixelHash": "d85d7b0ffdd2f9db210808c8f6f8d59da28113670652d43e8c04793378c554df",
+      "sizeBytes": 155118,
+      "contentType": "image/webp"
+    },
+    {
+      "number": 40,
+      "filePath": "attached_assets/processed/profile-avatar-new-characters/avatar-40.webp",
+      "sheet": 2,
+      "row": 3,
+      "column": 5,
+      "crop": {
+        "x": 3236,
+        "y": 1697,
+        "side": 706
+      },
+      "width": 512,
+      "height": 512,
+      "pixelHash": "a57f51489bdac1751692f00449e00ee237a03e913b56d7382c97d110ca0e7838",
+      "sizeBytes": 180684,
+      "contentType": "image/webp"
+    },
+    {
+      "number": 41,
+      "filePath": "attached_assets/processed/profile-avatar-new-characters/avatar-41.webp",
+      "sheet": 2,
+      "row": 4,
+      "column": 1,
+      "crop": {
+        "x": 152,
+        "y": 2459,
+        "side": 708
+      },
+      "width": 512,
+      "height": 512,
+      "pixelHash": "807e3c2395236bd3826c86750ef72721646be67c15e73678c731192ff4e46342",
+      "sizeBytes": 154342,
+      "contentType": "image/webp"
+    },
+    {
+      "number": 42,
+      "filePath": "attached_assets/processed/profile-avatar-new-characters/avatar-42.webp",
+      "sheet": 2,
+      "row": 4,
+      "column": 2,
+      "crop": {
+        "x": 924,
+        "y": 2460,
+        "side": 708
+      },
+      "width": 512,
+      "height": 512,
+      "pixelHash": "2b6d6adc656a28a4a4ec9939795e9530afb12e0ea2d8bf156afa6b1b70ea7f78",
+      "sizeBytes": 166874,
+      "contentType": "image/webp"
+    },
+    {
+      "number": 43,
+      "filePath": "attached_assets/processed/profile-avatar-new-characters/avatar-43.webp",
+      "sheet": 2,
+      "row": 4,
+      "column": 3,
+      "crop": {
+        "x": 1692,
+        "y": 2456,
+        "side": 712
+      },
+      "width": 512,
+      "height": 512,
+      "pixelHash": "a23db9927258f37d6b9b493c4dbd4702636b30781f7e36b77e744d854435752c",
+      "sizeBytes": 184572,
+      "contentType": "image/webp"
+    },
+    {
+      "number": 44,
+      "filePath": "attached_assets/processed/profile-avatar-new-characters/avatar-44.webp",
+      "sheet": 2,
+      "row": 4,
+      "column": 4,
+      "crop": {
+        "x": 2464,
+        "y": 2459,
+        "side": 708
+      },
+      "width": 512,
+      "height": 512,
+      "pixelHash": "e7e36351209491295575d3450f10b450f952064ea5084a1512ad450a5c910c0b",
+      "sizeBytes": 173330,
+      "contentType": "image/webp"
+    },
+    {
+      "number": 45,
+      "filePath": "attached_assets/processed/profile-avatar-new-characters/avatar-45.webp",
+      "sheet": 2,
+      "row": 4,
+      "column": 5,
+      "crop": {
+        "x": 3236,
+        "y": 2460,
+        "side": 708
+      },
+      "width": 512,
+      "height": 512,
+      "pixelHash": "23888a7fc0f991575c103bccb677f6251b037aa0df40ad199709f705f0d6c37f",
+      "sizeBytes": 193458,
+      "contentType": "image/webp"
+    },
+    {
+      "number": 46,
+      "filePath": "attached_assets/processed/profile-avatar-new-characters/avatar-46.webp",
+      "sheet": 2,
+      "row": 5,
+      "column": 1,
+      "crop": {
+        "x": 152,
+        "y": 3225,
+        "side": 708
+      },
+      "width": 512,
+      "height": 512,
+      "pixelHash": "a1ba52728bd4cb9a72ba9efd00ac6e66b25e9a43830489cf9ce2ef8ecf63eba8",
+      "sizeBytes": 194582,
+      "contentType": "image/webp"
+    },
+    {
+      "number": 47,
+      "filePath": "attached_assets/processed/profile-avatar-new-characters/avatar-47.webp",
+      "sheet": 2,
+      "row": 5,
+      "column": 2,
+      "crop": {
+        "x": 924,
+        "y": 3225,
+        "side": 708
+      },
+      "width": 512,
+      "height": 512,
+      "pixelHash": "4a3769a01778491cccaf41d9f8dd942fdbe9ca937716ae8e8fc49b91bdcffcd4",
+      "sizeBytes": 168478,
+      "contentType": "image/webp"
+    },
+    {
+      "number": 48,
+      "filePath": "attached_assets/processed/profile-avatar-new-characters/avatar-48.webp",
+      "sheet": 2,
+      "row": 5,
+      "column": 3,
+      "crop": {
+        "x": 1693,
+        "y": 3232,
+        "side": 711
+      },
+      "width": 512,
+      "height": 512,
+      "pixelHash": "21268840f9140288d8bfae2fde247ec37851b5902efb3e091af933572be6bd3c",
+      "sizeBytes": 182018,
+      "contentType": "image/webp"
+    },
+    {
+      "number": 49,
+      "filePath": "attached_assets/processed/profile-avatar-new-characters/avatar-49.webp",
+      "sheet": 2,
+      "row": 5,
+      "column": 4,
+      "crop": {
+        "x": 2466,
+        "y": 3224,
+        "side": 708
+      },
+      "width": 512,
+      "height": 512,
+      "pixelHash": "a093e606d659201289aca56bf9514c496d5daefdecde2eb70b434abf44ec926f",
+      "sizeBytes": 177088,
+      "contentType": "image/webp"
+    },
+    {
+      "number": 50,
+      "filePath": "attached_assets/processed/profile-avatar-new-characters/avatar-50.webp",
+      "sheet": 2,
+      "row": 5,
+      "column": 5,
+      "crop": {
+        "x": 3236,
+        "y": 3224,
+        "side": 708
+      },
+      "width": 512,
+      "height": 512,
+      "pixelHash": "c90ee954390384cae3c2f6a7843d44a7b7fe761b89b1d2a49a175a0d40abb439",
+      "sizeBytes": 178674,
+      "contentType": "image/webp"
+    },
+    {
+      "number": 51,
+      "filePath": "attached_assets/processed/profile-avatar-new-characters/avatar-51.webp",
+      "sheet": 3,
+      "row": 1,
+      "column": 1,
+      "crop": {
+        "x": 171,
+        "y": 153,
+        "side": 702
+      },
+      "width": 512,
+      "height": 512,
+      "pixelHash": "7a242ddc2c60400a7d837d63a114c5803514819bd89de1aef6cb54e849ada89a",
+      "sizeBytes": 165518,
+      "contentType": "image/webp"
+    },
+    {
+      "number": 52,
+      "filePath": "attached_assets/processed/profile-avatar-new-characters/avatar-52.webp",
+      "sheet": 3,
+      "row": 1,
+      "column": 2,
+      "crop": {
+        "x": 936,
+        "y": 155,
+        "side": 700
+      },
+      "width": 512,
+      "height": 512,
+      "pixelHash": "bfc8364503171d4cb1fdabdef54ed66330ca7365219caea7e7f3520847470b6c",
+      "sizeBytes": 170110,
+      "contentType": "image/webp"
+    },
+    {
+      "number": 53,
+      "filePath": "attached_assets/processed/profile-avatar-new-characters/avatar-53.webp",
+      "sheet": 3,
+      "row": 1,
+      "column": 3,
+      "crop": {
+        "x": 1702,
+        "y": 152,
+        "side": 703
+      },
+      "width": 512,
+      "height": 512,
+      "pixelHash": "178576bc4e7ed1d48c3c62ead11bbbd278401d29b2db176d8db734f8726615df",
+      "sizeBytes": 192958,
+      "contentType": "image/webp"
+    },
+    {
+      "number": 54,
+      "filePath": "attached_assets/processed/profile-avatar-new-characters/avatar-54.webp",
+      "sheet": 3,
+      "row": 1,
+      "column": 4,
+      "crop": {
+        "x": 2469,
+        "y": 152,
+        "side": 703
+      },
+      "width": 512,
+      "height": 512,
+      "pixelHash": "a6be862297658a788575883becdbfba877964f930502b46623ab7f43fcdfe29b",
+      "sizeBytes": 173314,
+      "contentType": "image/webp"
+    },
+    {
+      "number": 55,
+      "filePath": "attached_assets/processed/profile-avatar-new-characters/avatar-55.webp",
+      "sheet": 3,
+      "row": 1,
+      "column": 5,
+      "crop": {
+        "x": 3235,
+        "y": 152,
+        "side": 702
+      },
+      "width": 512,
+      "height": 512,
+      "pixelHash": "b86b836cb222c6a7c577602e6071ebba9f0faaf4a783b4e13fcc7af011b4583e",
+      "sizeBytes": 191094,
+      "contentType": "image/webp"
+    },
+    {
+      "number": 56,
+      "filePath": "attached_assets/processed/profile-avatar-new-characters/avatar-56.webp",
+      "sheet": 3,
+      "row": 2,
+      "column": 1,
+      "crop": {
+        "x": 171,
+        "y": 924,
+        "side": 702
+      },
+      "width": 512,
+      "height": 512,
+      "pixelHash": "107225e07b0bd799dcdbfd9d8514924e57d0a3eae6913b52c2091b3531db6b4f",
+      "sizeBytes": 185194,
+      "contentType": "image/webp"
+    },
+    {
+      "number": 57,
+      "filePath": "attached_assets/processed/profile-avatar-new-characters/avatar-57.webp",
+      "sheet": 3,
+      "row": 2,
+      "column": 2,
+      "crop": {
+        "x": 935,
+        "y": 924,
+        "side": 703
+      },
+      "width": 512,
+      "height": 512,
+      "pixelHash": "5ea6c3edbd4a405eeb003f5ba461e46e1be7ed8374f3e7b9efa7be8f00ff4ec9",
+      "sizeBytes": 181616,
+      "contentType": "image/webp"
+    },
+    {
+      "number": 58,
+      "filePath": "attached_assets/processed/profile-avatar-new-characters/avatar-58.webp",
+      "sheet": 3,
+      "row": 2,
+      "column": 3,
+      "crop": {
+        "x": 1702,
+        "y": 924,
+        "side": 704
+      },
+      "width": 512,
+      "height": 512,
+      "pixelHash": "1e51462f157eba17cb71a62b9d301a5cfd9969e8fb9156b2965c2ae426fb7f6a",
+      "sizeBytes": 158428,
+      "contentType": "image/webp"
+    },
+    {
+      "number": 59,
+      "filePath": "attached_assets/processed/profile-avatar-new-characters/avatar-59.webp",
+      "sheet": 3,
+      "row": 2,
+      "column": 4,
+      "crop": {
+        "x": 2470,
+        "y": 924,
+        "side": 703
+      },
+      "width": 512,
+      "height": 512,
+      "pixelHash": "2ba3e0fe8d450fe2973b46fa8098f948c645ff584a868643c8cdaa0b4bb4bab1",
+      "sizeBytes": 179050,
+      "contentType": "image/webp"
+    },
+    {
+      "number": 60,
+      "filePath": "attached_assets/processed/profile-avatar-new-characters/avatar-60.webp",
+      "sheet": 3,
+      "row": 2,
+      "column": 5,
+      "crop": {
+        "x": 3237,
+        "y": 924,
+        "side": 703
+      },
+      "width": 512,
+      "height": 512,
+      "pixelHash": "7a3376dab829d24f1b3b496a095fe6b9045115a9bb2c16186ab48c5dadb7f784",
+      "sizeBytes": 171434,
+      "contentType": "image/webp"
+    },
+    {
+      "number": 61,
+      "filePath": "attached_assets/processed/profile-avatar-new-characters/avatar-61.webp",
+      "sheet": 3,
+      "row": 3,
+      "column": 1,
+      "crop": {
+        "x": 170,
+        "y": 1693,
+        "side": 703
+      },
+      "width": 512,
+      "height": 512,
+      "pixelHash": "2959480da7ee82a3555c56e8b106e21bd71d3a41c5a8a286017424e4136ca10d",
+      "sizeBytes": 175128,
+      "contentType": "image/webp"
+    },
+    {
+      "number": 62,
+      "filePath": "attached_assets/processed/profile-avatar-new-characters/avatar-62.webp",
+      "sheet": 3,
+      "row": 3,
+      "column": 2,
+      "crop": {
+        "x": 936,
+        "y": 1694,
+        "side": 702
+      },
+      "width": 512,
+      "height": 512,
+      "pixelHash": "a3e8fd29c4164b0e783436524b44a5bf1f05ee42898de6552531daff210b1e3f",
+      "sizeBytes": 160604,
+      "contentType": "image/webp"
+    },
+    {
+      "number": 63,
+      "filePath": "attached_assets/processed/profile-avatar-new-characters/avatar-63.webp",
+      "sheet": 3,
+      "row": 3,
+      "column": 3,
+      "crop": {
+        "x": 1702,
+        "y": 1693,
+        "side": 703
+      },
+      "width": 512,
+      "height": 512,
+      "pixelHash": "803fb5c0f6b6f856e05da9b3c86ef269dac5e783d4c11e35eb8fd6d3068292b1",
+      "sizeBytes": 175980,
+      "contentType": "image/webp"
+    },
+    {
+      "number": 64,
+      "filePath": "attached_assets/processed/profile-avatar-new-characters/avatar-64.webp",
+      "sheet": 3,
+      "row": 3,
+      "column": 4,
+      "crop": {
+        "x": 2470,
+        "y": 1696,
+        "side": 703
+      },
+      "width": 512,
+      "height": 512,
+      "pixelHash": "170ce289c2843f84a89f17804a25c177467d8a58cca136aa40e560f42520ce4f",
+      "sizeBytes": 194016,
+      "contentType": "image/webp"
+    },
+    {
+      "number": 65,
+      "filePath": "attached_assets/processed/profile-avatar-new-characters/avatar-65.webp",
+      "sheet": 3,
+      "row": 3,
+      "column": 5,
+      "crop": {
+        "x": 3238,
+        "y": 1692,
+        "side": 703
+      },
+      "width": 512,
+      "height": 512,
+      "pixelHash": "90a0e454584798add0f7968a7a28db622c8785920f7b05dbe5de49c78d8406d9",
+      "sizeBytes": 178010,
+      "contentType": "image/webp"
+    },
+    {
+      "number": 66,
+      "filePath": "attached_assets/processed/profile-avatar-new-characters/avatar-66.webp",
+      "sheet": 3,
+      "row": 4,
+      "column": 1,
+      "crop": {
+        "x": 165,
+        "y": 2464,
+        "side": 704
+      },
+      "width": 512,
+      "height": 512,
+      "pixelHash": "244dca7782150eb3884bc3b0033669eff341bc96e20681730a09b4428c6c35c0",
+      "sizeBytes": 179174,
+      "contentType": "image/webp"
+    },
+    {
+      "number": 67,
+      "filePath": "attached_assets/processed/profile-avatar-new-characters/avatar-67.webp",
+      "sheet": 3,
+      "row": 4,
+      "column": 2,
+      "crop": {
+        "x": 932,
+        "y": 2464,
+        "side": 707
+      },
+      "width": 512,
+      "height": 512,
+      "pixelHash": "3ee8bea93b8960882c4193f8136972fcfeaff6c8703972f9ac6bc52ba8ab0fde",
+      "sizeBytes": 164280,
+      "contentType": "image/webp"
+    },
+    {
+      "number": 68,
+      "filePath": "attached_assets/processed/profile-avatar-new-characters/avatar-68.webp",
+      "sheet": 3,
+      "row": 4,
+      "column": 3,
+      "crop": {
+        "x": 1701,
+        "y": 2461,
+        "side": 706
+      },
+      "width": 512,
+      "height": 512,
+      "pixelHash": "f2b1ef6f750e384980d94d8252f9f69862f434fa13dfc81c43f2239025539013",
+      "sizeBytes": 189592,
+      "contentType": "image/webp"
+    },
+    {
+      "number": 69,
+      "filePath": "attached_assets/processed/profile-avatar-new-characters/avatar-69.webp",
+      "sheet": 3,
+      "row": 4,
+      "column": 4,
+      "crop": {
+        "x": 2470,
+        "y": 2464,
+        "side": 704
+      },
+      "width": 512,
+      "height": 512,
+      "pixelHash": "06d07bc5c0c9d010378140e0b8adb1abe0a5fa00b23b7d20dd99f2bb4b26e0eb",
+      "sizeBytes": 157174,
+      "contentType": "image/webp"
+    },
+    {
+      "number": 70,
+      "filePath": "attached_assets/processed/profile-avatar-new-characters/avatar-70.webp",
+      "sheet": 3,
+      "row": 4,
+      "column": 5,
+      "crop": {
+        "x": 3236,
+        "y": 2455,
+        "side": 708
+      },
+      "width": 512,
+      "height": 512,
+      "pixelHash": "e38a6a81d1cf0ddc90ccb8d69a82597fe06f70cae1f6cd5f33ce479ca7d9396d",
+      "sizeBytes": 190610,
+      "contentType": "image/webp"
+    },
+    {
+      "number": 71,
+      "filePath": "attached_assets/processed/profile-avatar-new-characters/avatar-71.webp",
+      "sheet": 3,
+      "row": 5,
+      "column": 1,
+      "crop": {
+        "x": 164,
+        "y": 3232,
+        "side": 704
+      },
+      "width": 512,
+      "height": 512,
+      "pixelHash": "49d691be496e1d52b6f96a7de10b002fa3e512a581c53cc458663a6376f19f9c",
+      "sizeBytes": 182436,
+      "contentType": "image/webp"
+    },
+    {
+      "number": 72,
+      "filePath": "attached_assets/processed/profile-avatar-new-characters/avatar-72.webp",
+      "sheet": 3,
+      "row": 5,
+      "column": 2,
+      "crop": {
+        "x": 935,
+        "y": 3233,
+        "side": 703
+      },
+      "width": 512,
+      "height": 512,
+      "pixelHash": "8b86789bfce76be7abbac35a2350db2fff0967fbace67a19c905ff7cc90821e4",
+      "sizeBytes": 173238,
+      "contentType": "image/webp"
+    },
+    {
+      "number": 73,
+      "filePath": "attached_assets/processed/profile-avatar-new-characters/avatar-73.webp",
+      "sheet": 3,
+      "row": 5,
+      "column": 3,
+      "crop": {
+        "x": 1701,
+        "y": 3233,
+        "side": 705
+      },
+      "width": 512,
+      "height": 512,
+      "pixelHash": "5982fa7f8e3e6c471a36f4a30f478fdbe3402279f2d2a842f85940091fe8cf95",
+      "sizeBytes": 185876,
+      "contentType": "image/webp"
+    },
+    {
+      "number": 74,
+      "filePath": "attached_assets/processed/profile-avatar-new-characters/avatar-74.webp",
+      "sheet": 3,
+      "row": 5,
+      "column": 4,
+      "crop": {
+        "x": 2468,
+        "y": 3232,
+        "side": 708
+      },
+      "width": 512,
+      "height": 512,
+      "pixelHash": "011e3d7cd25754e2d2e37f96f8c7f003f1f87c58640e11d06566747d39bf9b84",
+      "sizeBytes": 182936,
+      "contentType": "image/webp"
+    },
+    {
+      "number": 75,
+      "filePath": "attached_assets/processed/profile-avatar-new-characters/avatar-75.webp",
+      "sheet": 3,
+      "row": 5,
+      "column": 5,
+      "crop": {
+        "x": 3238,
+        "y": 3232,
+        "side": 704
+      },
+      "width": 512,
+      "height": 512,
+      "pixelHash": "c51cb4a7befbeef7ce37c7549ec9a78dde1db95e0f7c13c81dc42cef12349183",
+      "sizeBytes": 167732,
+      "contentType": "image/webp"
+    }
+  ]
+}

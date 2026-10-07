@@ -12,6 +12,11 @@ const directoryIndex = process.argv.indexOf("--directory");
 const directory = directoryIndex === -1
   ? "attached_assets/processed/profile-avatar-characters"
   : process.argv[directoryIndex + 1];
+const countIndex = process.argv.indexOf("--expected-count");
+const expectedCount = countIndex === -1 ? 30 : Number(process.argv[countIndex + 1]);
+if (!Number.isInteger(expectedCount) || expectedCount < 1 || expectedCount > 200) {
+  throw new Error("Expected an avatar count between 1 and 200.");
+}
 if (!directory || !/^attached_assets\/processed\/[a-z0-9-]+$/.test(directory)) {
   throw new Error("Expected a prepared avatar directory under attached_assets/processed.");
 }
@@ -26,10 +31,10 @@ async function main() {
   }
   type Image = { number: number; filePath: string; width: number; height: number; pixelHash: string; sizeBytes: number; contentType: string };
   const { images } = JSON.parse(await readFile(resolve(root, directory, "manifest.json"), "utf8")) as { images: Image[] };
-  if (images.length !== 30 || images.some((image, index) => image.number !== index + 1 ||
+  if (images.length !== expectedCount || images.some((image, index) => image.number !== index + 1 ||
     image.width !== 512 || image.height !== 512 || image.contentType !== "image/webp" ||
     image.filePath !== `${directory}/avatar-${String(index + 1).padStart(2, "0")}.webp`)) {
-    throw new Error("Expected the approved 30 ordered, circular, lossless avatars.");
+    throw new Error(`Expected the approved ${expectedCount} ordered, circular, lossless avatars.`);
   }
   const [owner] = await db.select({ id: usersTable.id, clerkUserId: usersTable.clerkUserId }).from(usersTable)
     .where(eq(usersTable.role, "admin")).orderBy(asc(usersTable.id)).limit(1);
@@ -43,7 +48,7 @@ async function main() {
   } catch (error) {
     if (!(error instanceof Error) || !("code" in error) || error.code !== "ENOENT") throw error;
   }
-  const uploaded: { objectPath: string; sizeBytes: number; name: string }[] = new Array(30);
+  const uploaded: { objectPath: string; sizeBytes: number; name: string }[] = new Array(images.length);
   let cursor = 0;
   stage = "upload";
   const results = await Promise.allSettled(Array.from({ length: 3 }, async () => {
@@ -86,12 +91,19 @@ async function main() {
     await tx.insert(uploadsTable).values(uploaded.map(image => ({
       ...image, userId: owner.id, contentType: "image/webp",
     })));
-    return tx.insert(coverPresetsTable).values(uploaded.map((image, index) => {
+    const appended = await tx.insert(coverPresetsTable).values(uploaded.map((image, index) => {
       const key = `custom-${randomUUID()}`;
       return { id: `profile:${key}`, scope: "profile" as const, key,
         label: `Avatar ${String(start + index + 1).padStart(2, "0")}`,
         objectPath: image.objectPath, sortOrder: start + index, isLocked: false };
     })).returning();
+    const after = await tx.select().from(coverPresetsTable).where(eq(coverPresetsTable.scope, "profile"));
+    const byId = new Map(after.map(item => [item.id, item]));
+    if (after.length !== current.length + images.length ||
+      current.some(item => JSON.stringify(byId.get(item.id)) !== JSON.stringify(item))) {
+      throw new Error("Existing avatar catalog changed during append.");
+    }
+    return appended;
   });
   committed = true;
   await writeFile(receipt, JSON.stringify(presets.map((preset, index) => ({

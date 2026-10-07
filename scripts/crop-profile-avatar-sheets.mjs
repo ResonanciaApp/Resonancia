@@ -7,10 +7,15 @@ import { join, resolve } from "node:path";
 const args = process.argv.slice(2);
 const option = (name) => args.includes(name) ? args[args.indexOf(name) + 1] : undefined;
 const outputDir = option("--output") ?? "attached_assets/processed/profile-avatar-catalog";
-const sheets = option("--sheet") ? [option("--sheet")] : [
+const sheetArguments = args.flatMap((arg, index) => arg === "--sheet" ? [args[index + 1]] : []);
+const sheets = sheetArguments.length ? sheetArguments : [
   "attached_assets/image_1791323663792.png",
   "attached_assets/image_(1)_1791323663793.png",
 ];
+const columns = Number(option("--columns") ?? 6);
+const rows = Number(option("--rows") ?? 5);
+if (!Number.isInteger(columns) || columns < 1 || !Number.isInteger(rows) || rows < 1 ||
+  sheets.some(sheet => !sheet || sheet.startsWith("--"))) throw new Error("Invalid sheet grid arguments.");
 const losslessWebp = args.includes("--lossless-webp");
 const rowCentered = args.includes("--row-centered");
 const temporary = losslessWebp ? mkdtempSync(join(tmpdir(), "profile-avatar-crops-")) : null;
@@ -34,9 +39,9 @@ for (const [sheetIndex, sheet] of sheets.entries()) {
       const [width, height, x, y] = match.slice(1).map(Number);
       return { width, height, x, y, centerY: y + height / 2 };
     }).sort((a, b) => a.centerY - b.centerY);
-  if (components.length !== 30) throw new Error(`Expected 30 circles in sheet ${sheetIndex + 1}, found ${components.length}`);
-  for (let row = 0; row < 5; row++) {
-    const cells = components.slice(row * 6, (row + 1) * 6).sort((a, b) => a.x - b.x);
+  if (components.length !== rows * columns) throw new Error(`Expected ${rows * columns} circles in sheet ${sheetIndex + 1}, found ${components.length}`);
+  for (let row = 0; row < rows; row++) {
+    const cells = components.slice(row * columns, (row + 1) * columns).sort((a, b) => a.x - b.x);
     if (Math.max(...cells.map(c => c.centerY)) - Math.min(...cells.map(c => c.centerY)) > 40) {
       throw new Error(`Invalid row grouping in sheet ${sheetIndex + 1}`);
     }
