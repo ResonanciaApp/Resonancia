@@ -52,7 +52,13 @@ test("top ten are ranked by real likes without mutating cache or changing tie or
 
 test("ranking medals and exact typography/avatar sizes are preserved", () => {
   assert.match(carousel, /rank=\{index \+ 1\}/);
-  assert.match(carousel, /rank <= 3 && \{ backgroundColor: "rgba\(255,255,255,0\.1\)" \}/);
+  assert.match(carousel, /<View style=\{styles\.rankSlot\} pointerEvents="none"/);
+  assert.doesNotMatch(carousel, /rankCircle|rank <= 3 && \{ backgroundColor/);
+  assert.match(carousel, /rankSlot: \{ width: 26, height: 26, alignItems/);
+  assert.match(carousel, /transform: \[\{ translateX: -5 \}\]/);
+  assert.match(carousel, /color: "#CFCFCF", fontSize: 9, marginTop: 6/);
+  assert.match(carousel, /rowAvatar: \{.*transform: \[\{ translateX: -5 \}\]/);
+  assert.match(carousel, /rowName: \{.*transform: \[\{ translateX: -5 \}\]/);
   assert.match(carousel, /fontWeight: "700", color: \["#BE9650", "#C0C0C0", "#B87333"\]/);
   assert.match(carousel, /\{rank\}\./);
   assert.match(carousel, /fontSize: 9, marginTop: 6, lineHeight: 10/);

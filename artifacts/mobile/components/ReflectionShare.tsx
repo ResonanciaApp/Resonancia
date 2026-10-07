@@ -429,8 +429,8 @@ export function ReflectionShare({ reflection, onClose }: { reflection: Reflectio
           {currentAvatarSource ? <Image source={currentAvatarSource}
             contentFit="cover" style={{ width: "100%", height: "100%" }} /> : null}
           {includedAvatar && <View pointerEvents="none" style={[StyleSheet.absoluteFillObject,
-            { backgroundColor: "rgba(0,0,0,0.2)", borderWidth: 1,
-              borderColor: "rgba(255,255,255,0.4)", borderRadius: 22 }]} />}
+            { backgroundColor: "rgba(0,0,0,0.7)", borderWidth: 1,
+              borderColor: "rgba(255,255,255,0.5)", borderRadius: 22 }]} />}
         </Pressable>
       </View>}
       renderArtwork={(width, isExport, callbacks, previewContext) => {

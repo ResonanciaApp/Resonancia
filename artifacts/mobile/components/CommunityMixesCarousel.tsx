@@ -230,7 +230,8 @@ function AnimatedHeart({ favorited, onPress, count, mixId }: {
 
   return (
     <Pressable testID="community-mix-heart" onPress={handlePress} hitSlop={4}
-      style={[styles.heartBtn, { width: undefined, minWidth: 44, flexDirection: "row", gap: 6 }]}
+      style={[styles.heartBtn, { width: undefined, minWidth: 44, flexDirection: "row", gap: 6,
+        transform: [{ translateX: -5 }] }]}
       accessibilityRole="button" accessibilityLabel={`${favorited ? "Quitar de" : "Añadir a"} favoritos, ${count} favoritos`}
       accessibilityState={{ selected: favorited }}>
       <Text testID={`community-mix-likes-${mixId}`} style={styles.rowLikes} numberOfLines={1}>{count}</Text>
@@ -284,8 +285,7 @@ export function MixRow({
         { opacity: pressed ? 0.6 : 1 },
       ]}
     >
-      {rank != null && <View style={[styles.rankCircle,
-        rank <= 3 && { backgroundColor: "rgba(255,255,255,0.1)" }]} pointerEvents="none">
+      {rank != null && <View style={styles.rankSlot} pointerEvents="none">
         <Text style={[styles.rankText, rank <= 3 && {
           fontWeight: "700", color: ["#BE9650", "#C0C0C0", "#B87333"][rank - 1],
         }]}>{rank}.</Text>
@@ -310,7 +310,7 @@ export function MixRow({
         <Text style={[styles.mixName, { color: colors.foreground, lineHeight: 16 }]} numberOfLines={1}>
           {mix.name}
         </Text>
-        <Text style={[styles.mixCreator, { color: colors.mutedForeground, fontSize: 9, marginTop: 6, lineHeight: 10 }]} numberOfLines={1}>
+        <Text style={[styles.mixCreator, { color: "#CFCFCF", fontSize: 9, marginTop: 6, lineHeight: 10 }]} numberOfLines={1}>
           {mix.sounds.length} sonidos
         </Text>
       </View>
@@ -599,11 +599,11 @@ const styles = StyleSheet.create({
     borderRadius: 18,
     backgroundColor: "rgba(255,255,255,0.045)",
   },
-  rankCircle: { width: 26, height: 26, borderRadius: 13, alignItems: "center", justifyContent: "center", flexShrink: 0 },
+  rankSlot: { width: 26, height: 26, alignItems: "center", justifyContent: "center", flexShrink: 0 },
   rankText: { fontFamily: "Manrope", fontSize: 13, fontWeight: "500", color: "#F9F9F9" },
-  rowAvatar: { width: 37, height: 37, borderRadius: 18.5, flexShrink: 0 },
+  rowAvatar: { width: 37, height: 37, borderRadius: 18.5, flexShrink: 0, transform: [{ translateX: -5 }] },
   rowAvatarImg: { width: 37, height: 37, borderRadius: 18.5, overflow: "hidden" },
-  rowName: { flexGrow: 1, flexShrink: 1, flexBasis: 0, minWidth: 40 },
+  rowName: { flexGrow: 1, flexShrink: 1, flexBasis: 0, minWidth: 40, transform: [{ translateX: -5 }] },
   rowCount: { flexShrink: 0, maxWidth: 70 },
   rowCategory: { flexShrink: 2, maxWidth: 80 },
   rowLikes: { fontFamily: "Manrope", fontSize: 11, fontWeight: "600", color: "#f9f9f9", flexShrink: 0, minWidth: 14, textAlign: "right" },
