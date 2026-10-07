@@ -1,13 +1,13 @@
 ---
 name: Distribución de Mezclas comunidad
-description: Corrección expresa de la propuesta original de una sola línea.
+description: Jerarquía editorial vigente de las cards y alcance de la simulación de avatares.
 ---
 
-Las cards de Mezclas comunidad conservan avatar y botón de favoritos a los lados; nombre y cantidad de sonidos forman dos líneas. No muestran editorial.
+Las cards de Mezclas comunidad conservan avatar y botón de favoritos a los lados; el texto tiene tres líneas: cantidad de sonidos, título y nombre del autor, separadas por 4 px. No muestran editorial.
 
-**Why:** El usuario corrigió la propuesta original que reunía todos los elementos en una sola línea. No restaurar esa propuesta antigua al revisar planes anteriores.
+**Why:** El usuario reemplazó expresamente el diseño anterior de dos líneas por sonidos arriba del título y autor debajo. No restaurar las propuestas anteriores.
 
-**How to apply:** Mantener la cantidad debajo del nombre y las acciones de autor, mezcla y favoritos separadas. La ubicación vigente, corregida posteriormente por el usuario, es al final de Descubrir, debajo de Explora por objetivo; no restaurar la ubicación anterior bajo Explora por contenido.
+**How to apply:** Mantener esta jerarquía y las acciones de autor, mezcla y favoritos separadas en Descubrir y Creaciones. La ubicación vigente es al final de Descubrir, debajo de Explora por objetivo; no restaurar la ubicación anterior bajo Explora por contenido.
 
 Los avatares para comparar estas cards se eligen al azar del mismo catálogo cargado en Perfil/portada, no de fotos de personas ni de los retratos de Expansores. Son una simulación visual, no un cambio de identidad de los autores.
 

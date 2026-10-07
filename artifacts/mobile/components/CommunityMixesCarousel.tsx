@@ -320,11 +320,14 @@ export function MixRow({
         )}
       </Pressable>
       <View style={styles.rowName}>
+        <Text style={styles.rowMeta} numberOfLines={1}>
+          {mix.sounds.length} sonidos
+        </Text>
         <Text style={[styles.mixName, { color: colors.foreground, lineHeight: 16 }]} numberOfLines={1}>
           {mix.name}
         </Text>
-        <Text style={[styles.mixCreator, { color: "#CFCFCF", fontSize: 9, marginTop: 6, lineHeight: 10 }]} numberOfLines={1}>
-          {mix.sounds.length} sonidos
+        <Text style={styles.rowMeta} numberOfLines={1}>
+          {mix.author.displayName}
         </Text>
       </View>
        <AnimatedHeart count={mix.likes ?? 0} mixId={mix.id}
@@ -605,7 +608,7 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     alignItems: "center",
     gap: 8,
-    paddingVertical: 10,
+    paddingVertical: 6,
     minHeight: 57,
     height: 57,
     paddingHorizontal: 12,
@@ -614,9 +617,10 @@ const styles = StyleSheet.create({
   },
   rankSlot: { width: 26, height: 26, alignItems: "center", justifyContent: "center", flexShrink: 0 },
   rankText: { fontFamily: "Manrope", fontSize: 10, fontWeight: "500", color: "#F9F9F9" },
-  rowAvatar: { width: 37, height: 37, borderRadius: 18.5, flexShrink: 0, transform: [{ translateX: -5 }] },
+  rowAvatar: { width: 37, height: 37, borderRadius: 18.5, flexShrink: 0, transform: [{ translateX: -9 }] },
   rowAvatarImg: { width: 37, height: 37, borderRadius: 18.5, overflow: "hidden" },
-  rowName: { flexGrow: 1, flexShrink: 1, flexBasis: 0, minWidth: 40, transform: [{ translateX: -5 }] },
+  rowName: { flexGrow: 1, flexShrink: 1, flexBasis: 0, minWidth: 40, gap: 4, transform: [{ translateX: -9 }] },
+  rowMeta: { fontFamily: "Manrope", fontSize: 9, lineHeight: 10, color: "#CFCFCF" },
   rowCount: { flexShrink: 0, maxWidth: 70 },
   rowCategory: { flexShrink: 2, maxWidth: 80 },
   rowLikes: { fontFamily: "Manrope", fontSize: 11, fontWeight: "600", color: "#f9f9f9", flexShrink: 0, minWidth: 14, textAlign: "right" },

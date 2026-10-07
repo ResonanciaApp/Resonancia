@@ -18,16 +18,21 @@ test("Descubrir renders Mezclas comunidad", () => {
   assert.match(explore, /<CommunityMixesCarousel \/>\s*\{\s*\/\* ── Descubre algo nuevo/);
 });
 
-test("mix row keeps separate actions and stacks sound count below the title without editorial", () => {
+test("mix row keeps separate actions and stacks sounds, title and author with four-pixel gaps", () => {
   const row = carousel.slice(carousel.indexOf("export function MixRow"), carousel.indexOf("// ── Celda de grilla"));
-  const order = ["community-mix-author-", "{mix.name}", "sonidos", "AnimatedHeart", "count={mix.likes"]
+  const order = ["community-mix-author-", "{mix.sounds.length} sonidos", "{mix.name}", "{mix.author.displayName}", "AnimatedHeart", "count={mix.likes"]
     .map((t) => row.indexOf(t));
+  // Ignore the author's earlier accessibility label when checking text order.
+  order[3] = row.indexOf("{mix.author.displayName}", order[2]);
   assert.ok(order.every((i, n) => i > 0 && (n === 0 || i > order[n - 1])), order.join());
   assert.doesNotMatch(row, /categoryLabel|mix\.category/);
-  assert.match(row, /marginTop: 6/);
-  assert.equal((row.match(/numberOfLines=\{1\}/g) ?? []).length >= 2, true);
+  assert.match(carousel, /rowName: \{.*gap: 4/);
+  assert.doesNotMatch(row, /marginTop: 6/);
+  assert.equal((row.match(/numberOfLines=\{1\}/g) ?? []).length, 3);
   assert.match(carousel, /minHeight: 57/);
-  assert.match(carousel, /paddingVertical: 10/);
+  assert.match(carousel, /paddingVertical: 6/);
+  // Three lines and two gaps fit without increasing the 57px card height.
+  assert.ok(10 + 16 + 10 + 4 * 2 + 6 * 2 <= 57);
   assert.match(row, /rgba\(0,0,0,0\.16\)/);
   assert.match(row, /activeSceneId === "cloudy".*rgba\(0,0,0,0\.19\)/);
   assert.match(carousel, /heartFill = "#F9F9F9"/);
@@ -58,13 +63,13 @@ test("ranking uses white top-three numbers and preserves typography/avatar sizes
   assert.match(carousel, /rankSlot: \{ width: 26, height: 26, alignItems/);
   assert.match(carousel, /rankText: \{.*fontSize: 10/);
   assert.match(carousel, /transform: \[\{ translateX: -5 \}\]/);
-  assert.match(carousel, /color: "#CFCFCF", fontSize: 9, marginTop: 6/);
-  assert.match(carousel, /rowAvatar: \{.*transform: \[\{ translateX: -5 \}\]/);
-  assert.match(carousel, /rowName: \{.*transform: \[\{ translateX: -5 \}\]/);
+  assert.match(carousel, /rowMeta: \{.*fontSize: 9, lineHeight: 10, color: "#CFCFCF"/);
+  assert.match(carousel, /rowAvatar: \{.*transform: \[\{ translateX: -9 \}\]/);
+  assert.match(carousel, /rowName: \{.*transform: \[\{ translateX: -9 \}\]/);
   assert.match(carousel, /rank <= 3 && \{\s*fontWeight: "700", color: "#F9F9F9"/);
   assert.doesNotMatch(carousel, /#BE9650|#C0C0C0|#B87333/);
   assert.match(carousel, /\{rank\}\./);
-  assert.match(carousel, /fontSize: 9, marginTop: 6, lineHeight: 10/);
+  assert.match(carousel, /rowName: \{.*gap: 4/);
   assert.match(carousel, /mixName: \{.*fontWeight: "700"/);
   assert.match(carousel, /name="heart" size=\{16\}/);
   assert.match(carousel, /name="heart-outline" size=\{16\}/);
