@@ -169,6 +169,26 @@ test("real cards select independently of locks and move a non-contiguous block i
   assert.equal(button(h.render(), "Guardar orden").props.disabled, false);
 });
 
+test("profile preserves the original vertical list of horizontal rows, thumbnail size and action layout", () => {
+  const h = harness();
+  const tree = h.render();
+  assert.ok(elements(tree).some(element => element.props.className === "space-y-2"));
+  const rows = elements(tree).filter(element => element.props.draggable !== undefined);
+  assert.equal(rows.length, 20);
+  for (const row of rows) {
+    assert.match(row.props.className, /^flex items-center gap-4 rounded-lg border bg-card px-4 py-3/);
+    assert.doesNotMatch(row.props.className, /flex-col|w-52/);
+    const contents = elements(row);
+    assert.ok(contents.some(element => element.props.className === "flex-1"));
+    assert.ok(contents.some(element => element.props.className === "flex shrink-0 items-center gap-2"));
+    assert.ok(contents.some(element => /h-12 w-12.*rounded-full/.test(element.props.className ?? "")));
+    assert.equal(contents.filter(element => element.props.type === "checkbox").length, 1);
+  }
+  assert.ok(!elements(tree).some(element => /overflow-x-auto|Lista horizontal/.test(`${element.props.className ?? ""} ${element.props["aria-label"] ?? ""}`)));
+  h.select(1);
+  assert.match(elements(h.render()).find(element => element.props.draggable !== undefined)!.props.className, /ring-2/);
+});
+
 test("invalid positions retain the selection and show an accessible error; no-op stays clean", () => {
   const h = harness();
   h.select(1); h.setPosition("0"); h.move();

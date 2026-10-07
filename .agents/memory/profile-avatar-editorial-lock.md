@@ -9,6 +9,12 @@ El bloqueo de avatares es editorial y manual desde Admin. No activa desbloqueos 
 
 **How to apply:** Mantener la disponibilidad editorial independiente de las promesas visuales de recompensas de Tu camino hasta que el usuario pida conectar ambas.
 
+Las cards de Avatares de Perfil del Admin deben conservar su presentación de tarjetas horizontales apiladas verticalmente, no un carrusel.
+
+**Why:** El usuario aclaró que «tarjetas horizontales como estaba» se refiere a cada fila original; rechazó expresamente convertir el catálogo en un carrusel al añadir movimiento por lotes.
+
+**How to apply:** Añadir selección y controles de reordenación sin cambiar el formato de las filas, las miniaturas ni la distribución de sus acciones.
+
 El catálogo editorial de Perfil complementa la elección de una foto personal desde la galería del teléfono; no la sustituye. Cambiar una píldora por un icono no autoriza retirar esa acción.
 
 **Why:** El usuario reiteró que el icono de imagen de Portada debe conservar la función de cargar una foto del celular que tenía la píldora anterior.

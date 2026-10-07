@@ -417,12 +417,7 @@ export function ScopeSection({
               <p className="text-sm text-muted-foreground">No hay imágenes configuradas.</p>
             </div>
           ) : (
-            <div
-              className={isProfile ? "flex gap-3 overflow-x-auto pb-3" : "space-y-2"}
-              tabIndex={isProfile ? 0 : undefined}
-              role={isProfile ? "region" : undefined}
-              aria-label={isProfile ? "Lista horizontal de avatares de Perfil" : undefined}
-            >
+            <div className="space-y-2">
           {presets.map((preset, index) => {
             const isBuiltin = preset.source === "builtin" && !preset.objectPath;
             return (
@@ -438,19 +433,15 @@ export function ScopeSection({
                   dragIdx.current = null;
                 }}
                 onDragOver={(e) => e.preventDefault()}
-                className={isProfile
-                  ? `flex w-52 shrink-0 flex-col items-center gap-3 rounded-lg border bg-card p-3 transition-colors ${selectedIds.has(preset.id) ? "border-primary ring-2 ring-primary/40" : "hover:bg-secondary/20"}`
-                  : "flex items-center gap-4 rounded-lg border bg-card px-4 py-3 transition-colors hover:bg-secondary/20"}
+                className={`flex items-center gap-4 rounded-lg border bg-card px-4 py-3 transition-colors ${isProfile && selectedIds.has(preset.id) ? "border-primary ring-2 ring-primary/40" : "hover:bg-secondary/20"}`}
               >
                 {isProfile && (
-                  <label className="flex w-full cursor-pointer items-center justify-between gap-2 text-sm">
-                    <span>Posición {index + 1}</span>
                     <input
                       type="checkbox"
                       aria-label={`Seleccionar ${preset.label}, posición ${index + 1}`}
                       checked={selectedIds.has(preset.id)}
                       disabled={isMutating || orderConflict}
-                      className="h-4 w-4 accent-primary"
+                      className="h-4 w-4 shrink-0 accent-primary"
                       onChange={event => {
                         const checked = event.target.checked;
                         dragIdx.current = null;
@@ -462,18 +453,13 @@ export function ScopeSection({
                         setMoveError(null);
                       }}
                     />
-                  </label>
                 )}
-                {!isProfile && (
-                  <>
                 <GripVertical className="h-5 w-5 shrink-0 cursor-grab text-muted-foreground active:cursor-grabbing" />
                 <span className="w-5 shrink-0 text-right text-xs text-muted-foreground">
                   {index + 1}
                 </span>
-                  </>
-                )}
                 
-                <div className={`relative shrink-0 overflow-hidden border border-border bg-secondary ${isProfile ? "h-20 w-20 rounded-full" : "h-12 w-12 rounded-md"}`}>
+                <div className={`relative h-12 w-12 shrink-0 overflow-hidden border border-border bg-secondary ${isProfile ? "rounded-full" : "rounded-md"}`}>
                   {previewUrl(preset.objectPath, preset.builtinKey) ? (
                     <img
                       src={previewUrl(preset.objectPath, preset.builtinKey)!}
@@ -493,7 +479,7 @@ export function ScopeSection({
                   )}
                 </div>
 
-                <div className={isProfile ? "min-w-0 w-full flex-1 break-words text-center" : "flex-1"}>
+                <div className="flex-1">
                   <p className="text-sm font-medium">{preset.label}</p>
                   {isBuiltin && (
                     <span className="mt-1 inline-flex items-center rounded-sm bg-primary/10 px-2 py-0.5 text-[10px] font-medium text-primary">
@@ -502,7 +488,7 @@ export function ScopeSection({
                   )}
                 </div>
 
-                  <div className={`flex shrink-0 items-center ${isProfile ? "gap-1" : "gap-2"}`}>
+                  <div className="flex shrink-0 items-center gap-2">
                   {scope.value === "profile" && (
                     <Button
                       type="button"
