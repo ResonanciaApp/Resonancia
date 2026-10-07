@@ -15,6 +15,12 @@ Cuando se elimina una sección completa, revisar si queda un espaciador pensado 
 
 **How to apply:** Comparar la suma de márgenes y espaciadores en cada rama condicional (con o sin videos) antes de ajustar la siguiente sección; no retirar el espacio normal entre secciones.
 
+En Inicio, Frase del día debe tener una separación equivalente antes y después, respecto de Videos destacados y Muro de agradecimiento.
+
+**Why:** El usuario pidió aumentar y estandarizar ambos espacios porque percibía esas secciones demasiado juntas.
+
+**How to apply:** Ajustar solo Inicio activo, conservar las variantes anteriores y comprobar también la rama sin videos. Contar el espacio ya aportado por el carrusel anterior antes de añadir padding; el divisor debe quedar centrado en el nuevo espacio.
+
 Al volver de una altura animada a layout natural en Reanimated, limpiar explícitamente
 la dimensión con `height: undefined`; devolver `{}` no retira la altura aplicada al
 nodo nativo.

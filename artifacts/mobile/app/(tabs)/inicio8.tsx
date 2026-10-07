@@ -220,6 +220,7 @@ const INICIO2_SLEEP_CARD_H = Math.round(
 const INICIO2_SCROLL_START_THRESHOLD = 8;
 
 const SECTION_GAP = 60;
+const INICIO3_QUOTE_SECTION_GAP = SECTION_GAP + INICIO3_SECTION_EXTRA_GAP + StyleSheet.hairlineWidth;
 const TEMA_GAP = 10;
 const SHOW_CONTINUE_LISTENING = false;
 
@@ -3346,12 +3347,12 @@ export default function HomeScreen2({
             <DailyWisdomCard
               backgroundColor="rgba(0,0,0,0.25)"
               decorativeGradient={variant === "inicio3"}
-              style={variant === "inicio3" ? { marginBottom: 53 + INICIO3_SECTION_EXTRA_GAP } : undefined}
+              style={variant === "inicio3" ? { marginBottom: INICIO3_QUOTE_SECTION_GAP } : undefined}
             />
             {variant === "inicio3" && (
               <View
                 pointerEvents="none"
-                style={[styles.inicio3QuoteDivider, { bottom: isPremium ? 29 : 39 }]}
+                style={[styles.inicio3QuoteDivider, { bottom: (INICIO3_QUOTE_SECTION_GAP + (isPremium ? 0 : 20)) / 2 }]}
               />
             )}
           </View>
@@ -4458,7 +4459,12 @@ const styles = StyleSheet.create({
     marginBottom: 23.5 + INICIO3_SECTION_EXTRA_GAP,
     backgroundColor: SECTION_DIVIDER_COLOR,
   },
-  inicio3QuoteDividerWrap: { position: "relative" },
+  inicio3QuoteDividerWrap: {
+    position: "relative",
+    // The preceding carousel/divider already supplies 53 - 1 + 5px and a hairline.
+    // Add only the difference to the shared quote gap, including when videos are absent.
+    paddingTop: SECTION_GAP - INICIO2_SECTION_GAP + 1,
+  },
   inicio3QuoteDivider: {
     position: "absolute",
     left: GRID_PAD,

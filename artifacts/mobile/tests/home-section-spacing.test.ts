@@ -26,6 +26,8 @@ function evaluate(expression: string, values: Record<string, unknown>) {
 const bindings = {
   GRID_PAD: 18, StyleSheet: { hairlineWidth: 0.333 },
   INICIO3_SECTION_EXTRA_GAP: 5,
+  SECTION_GAP: 60, INICIO2_SECTION_GAP: 53,
+  INICIO3_QUOTE_SECTION_GAP: 65.333,
   SECTION_DIVIDER_COLOR: "rgba(255,255,255,0.12)",
 };
 function style(name: string) {
@@ -49,7 +51,7 @@ test("Inicio section title sizing remains scoped to the active home variant", ()
       && node.getText(ast).includes("squareTitle")) as ts.JsxSelfClosingElement;
     assert.match(carousel.getText(ast), /titleSize=\{sectionTitleSize\}/);
   }
-  assert.match(home, /titleSize=\{variant === "inicio3" \? 20 : 18\}/);
+  assert.match(home, /titleSize=\{variant === "inicio3" \? 19 : 17\}/);
   assert.match(read("../components/AlmaCommunitySection.tsx"), /fontSize: titleSize/);
 });
 
@@ -80,18 +82,29 @@ test("Inicio 3 shows centered dividers in existing section gaps without changing
     assert.equal(line.right, bindings.GRID_PAD);
   }
   assert.doesNotMatch(home, /inicio3FeaturedDivider|inicio3PremiumDivider/, "No lines above Para este momento or below Muro de agradecimiento");
-  assert.match(home, /bottom: isPremium \? 29 : 39/);
+  assert.match(home, /bottom: \(INICIO3_QUOTE_SECTION_GAP \+ \(isPremium \? 0 : 20\)\) \/ 2/);
   assert.match(home, /marginTop: variant === "inicio3" \? -8 : 0/);
 });
 
-test("quote and community gaps increase by five pixels, with component defaults preserved", () => {
-  for (const [tagName, previousGap] of [["DailyWisdomCard", 53], ["AlmaCommunitySection", 28]] as const) {
+test("quote spacing increases on both sides while community and component defaults are preserved", () => {
+  const quoteGapDeclaration = find(node => ts.isVariableDeclaration(node)
+    && node.name.getText(ast) === "INICIO3_QUOTE_SECTION_GAP") as ts.VariableDeclaration;
+  const quoteGap = evaluate(quoteGapDeclaration.initializer!.getText(ast), bindings);
+  const divider = style("inicio3SectionSpacer");
+  const wrapper = style("inicio3QuoteDividerWrap");
+  const gapBeforeQuote = bindings.INICIO2_SECTION_GAP + divider.marginTop + divider.marginBottom
+    + divider.height + wrapper.paddingTop;
+  assert.ok(Math.abs(gapBeforeQuote - quoteGap) < 0.001,
+    "the quote uses the same space before and after, with or without featured videos");
+  assert.ok(gapBeforeQuote > 58, "the requested gap is increased rather than merely recentered");
+  assert.equal(wrapper.paddingTop, 8);
+  for (const [tagName, expectedGap] of [["DailyWisdomCard", quoteGap], ["AlmaCommunitySection", 33]] as const) {
     const element = find(node => ts.isJsxSelfClosingElement(node)
       && node.tagName.getText(ast) === tagName) as ts.JsxSelfClosingElement;
     const attribute = element.attributes.properties.find(node => ts.isJsxAttribute(node)
       && node.name.getText(ast) === "style") as ts.JsxAttribute;
     const expression = (attribute.initializer as ts.JsxExpression).expression!.getText(ast);
-    assert.deepEqual(evaluate(expression, { ...bindings, variant: "inicio3" }), { marginBottom: previousGap + 5 });
+    assert.deepEqual(evaluate(expression, { ...bindings, variant: "inicio3" }), { marginBottom: expectedGap });
     assert.equal(evaluate(expression, { ...bindings, variant: "copy" }), undefined);
   }
   assert.match(read("../components/DailyWisdomCard.tsx"), /styles\.card,[\s\S]*?style,/);
