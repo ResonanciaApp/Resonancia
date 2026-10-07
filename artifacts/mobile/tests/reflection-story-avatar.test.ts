@@ -3,7 +3,7 @@ import { readFileSync } from "node:fs";
 import { fileURLToPath, URL } from "node:url";
 import test from "node:test";
 import { reflectionAvatarObjectPath, getStableIdempotencyKey, clampReflectionStoryAvatarPosition,
-  REFLECTION_STORY_AVATAR_X_MIN, REFLECTION_STORY_AVATAR_Y_MIN } from "../lib/reflection-story-logic.ts";
+  REFLECTION_STORY_AVATAR_X_MIN, REFLECTION_STORY_AVATAR_Y_MIN, snapReflectionStoryAvatarCoordinate } from "../lib/reflection-story-logic.ts";
 
 const base = "https://app.example.invalid";
 
@@ -51,4 +51,20 @@ test("free avatar movement keeps the full circle inside the image and changes th
   assert.deepEqual(clampReflectionStoryAvatarPosition({ x: 0.25, y: 0.75 }), { x: 0.25, y: 0.75 });
   const initial = getStableIdempotencyKey({ avatarX: 0.5, avatarY: 0.66 }, { hash: "", key: "" });
   assert.notEqual(getStableIdempotencyKey({ avatarX: 0.25, avatarY: 0.75 }, initial).key, initial.key);
+});
+
+test("avatar snaps to both pink center guides using the visible size, not export pixels", () => {
+  assert.equal(snapReflectionStoryAvatarCoordinate(0.52, 300), 0.5);
+  assert.equal(snapReflectionStoryAvatarCoordinate(0.49, 600), 0.5);
+  assert.equal(snapReflectionStoryAvatarCoordinate(0.54, 300), 0.54);
+  assert.equal(snapReflectionStoryAvatarCoordinate(0.52, 600), 0.52);
+  assert.equal(snapReflectionStoryAvatarCoordinate(0.52, 600 * 0.5), 0.5);
+  assert.equal(snapReflectionStoryAvatarCoordinate(0.3, 300), 0.3);
+  const read = (path: string) => readFileSync(fileURLToPath(new URL(path, import.meta.url)), "utf8");
+  const layer = read("../components/StoryAvatarLayer.tsx");
+  assert.match(layer, /guideOpacity\.value = 1/);
+  assert.match(layer, /guideOpacity\.value = 0/);
+  assert.match(layer, /snapReflectionStoryAvatarCoordinate\(nextX, width \* visibleScale\)/);
+  assert.match(layer, /snapReflectionStoryAvatarCoordinate\(nextY, height \* visibleScale\)/);
+  assert.match(read("../components/ReflectionShare.tsx"), /displayScale=\{displayScale\} guideOpacity=\{guideOpacity\}/);
 });

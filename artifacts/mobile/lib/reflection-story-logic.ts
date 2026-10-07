@@ -9,6 +9,12 @@ export const REFLECTION_STORY_AVATAR_Y_MIN = 62 / 1920;
 export type ReflectionStoryAvatarPosition = { x: number; y: number };
 export const DEFAULT_REFLECTION_STORY_AVATAR_POSITION: ReflectionStoryAvatarPosition = { x: 0.5, y: 0.66 };
 
+/** Same eight-screen-pixel snap zone as the background and quote guides. */
+export function snapReflectionStoryAvatarCoordinate(value: number, visibleExtent: number): number {
+  "worklet";
+  return Math.abs((value - 0.5) * visibleExtent) < 8 ? 0.5 : value;
+}
+
 export function clampReflectionStoryAvatarPosition(position: ReflectionStoryAvatarPosition): ReflectionStoryAvatarPosition {
   return {
     x: clamp(position.x, REFLECTION_STORY_AVATAR_X_MIN, 1 - REFLECTION_STORY_AVATAR_X_MIN),

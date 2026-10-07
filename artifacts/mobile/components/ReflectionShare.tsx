@@ -273,7 +273,7 @@ function InteractiveReflectionArtwork({
       </GestureDetector>
       {avatarSource && <StoryAvatarLayer source={avatarSource} width={width}
         position={avatarPosition} onPositionChange={onAvatarPositionChange}
-        displayScale={displayScale} onFailure={onAvatarFailure ?? onFailure} />}
+        displayScale={displayScale} guideOpacity={guideOpacity} onFailure={onAvatarFailure ?? onFailure} />}
     </View>
   );
 }
