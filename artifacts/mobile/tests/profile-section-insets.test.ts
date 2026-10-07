@@ -62,10 +62,10 @@ test("Premium members keep the compact identity layout while free users recover 
   const card = style("ProfileScreenBase", "profileCard", { PROFILE_CARD_BOTTOM_PADDING: bottom, PROFILE_SECTION_GAP: 21 });
   const preview = style("ProfileScreenBase", "profileIdentityPreviewCard");
   const progress = style("ProfileScreenBase", "profileProgressSection", { PROFILE_SECTION_GAP: 21 });
-  assert.equal(progress.marginTop, -4 + 6 - 15);
+  assert.equal(progress.marginTop, -4 + 6 - 15 + 10);
   assert.equal(progress.transform, undefined);
   assert.equal(progress.marginBottom, 21);
-  assert.equal(card.paddingBottom + preview.marginBottom + progress.marginTop, 25 - 4 + 6 - 15);
+  assert.equal(card.paddingBottom + preview.marginBottom + progress.marginTop, 25 - 4 + 6 - 15 + 10);
   const border = style("ProfileScreenBase", "avatarOuterBorder");
   const avatar = style("ProfileScreenBase", "avatarWrapper");
   const image = style("ProfileScreenBase", "avatarImage");
@@ -84,7 +84,9 @@ test("avatar outline matches the image bounds and the chevron reaches the profil
   assert.equal(border.width, image.width);
   assert.equal(border.height, image.height);
   assert.equal(border.borderRadius, image.borderRadius);
-  assert.equal(border.borderWidth, 3);
+  assert.equal(border.borderWidth, 1);
+  assert.equal(image.width, 79);
+  assert.equal(image.height, 79);
   assert.equal(border.zIndex, 1);
   const source = readFileSync(new URL("../components/ProfileScreenBase.tsx", import.meta.url), "utf8");
   const avatarStart = source.indexOf('testID="profile-identity-avatar"');
@@ -101,7 +103,7 @@ test("avatar outline matches the image bounds and the chevron reaches the profil
   }
 });
 
-test("Premium streak section stays 15px below the baseline after moving up 15px in normal flow, without changing free users", () => {
+test("streak section gains 10px spacing for both free and Premium while preserving their 15px difference", () => {
   const source = readFileSync(new URL("../components/ProfileScreenBase.tsx", import.meta.url), "utf8");
   const ast = ts.createSourceFile("ProfileScreenBase.tsx", source, ts.ScriptTarget.Latest, true, ts.ScriptKind.TSX);
   let expression: ts.Expression | undefined;
@@ -125,7 +127,9 @@ test("Premium streak section stays 15px below the baseline after moving up 15px 
   assert.deepEqual(resolve(true), { ...base, marginTop: base.marginTop + 15 });
   assert.equal(resolve(true).transform, undefined);
   assert.deepEqual(resolve(false), base, "switching to free leaves no residual offset");
-  assert.equal(base.marginTop, -13, "the shared baseline must not be mutated");
+  assert.equal(base.marginTop, -13 + 10, "the shared baseline gains ten pixels without being mutated by Premium");
+  assert.equal(resolve(false).marginTop - (-13), 10);
+  assert.equal(resolve(true).marginTop - (-13 + 15), 10);
 });
 
 test("username keeps 24 points and the new description leaves avatar and Premium spacing unchanged", () => {
@@ -137,7 +141,7 @@ test("username keeps 24 points and the new description leaves avatar and Premium
   assert.equal(style("ProfileScreenBase", "profileDescription").marginRight, 50);
   assert.equal(style("ProfileScreenBase", "profileDescription").paddingRight, undefined);
   assert.deepEqual(style("ProfileScreenBase", "profileDescription").transform, [{ translateX: 1 }, { translateY: -4 }]);
-  assert.equal(style("ProfileScreenBase", "avatarImage").width, 75);
+  assert.equal(style("ProfileScreenBase", "avatarImage").width, 79);
   assert.equal(style("ProfileScreenBase", "profileIdentityPreviewCard").marginBottom, 5);
 });
 
@@ -146,8 +150,8 @@ test("the user section moves up 7px in normal flow, carrying subsequent sections
   assert.equal(card.marginTop, 8 - 7);
   assert.equal(card.transform, undefined);
   const avatar = style("ProfileScreenBase", "avatarImage");
-  assert.equal(avatar.width, 83 - 8);
-  assert.equal(avatar.height, 83 - 8);
+  assert.equal(avatar.width, 79);
+  assert.equal(avatar.height, 79);
   assert.equal(style("ProfileScreenBase", "profileIdentityPreviewCard").marginBottom, 5);
 });
 

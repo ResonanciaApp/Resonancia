@@ -2607,10 +2607,10 @@ const styles = StyleSheet.create({
     position: "absolute",
     top: 0,
     left: 0,
-    width: 75,
-    height: 75,
-    borderRadius: 37.5,
-    borderWidth: 3,
+    width: 79,
+    height: 79,
+    borderRadius: 39.5,
+    borderWidth: 1,
     borderColor: "rgba(255,255,255,0.25)",
     zIndex: 1,
   },
@@ -2624,16 +2624,16 @@ const styles = StyleSheet.create({
     transform: [{ translateY: 2 }],
   },
   avatarCircle: {
-    width: 75,
-    height: 75,
-    borderRadius: 37.5,
+    width: 79,
+    height: 79,
+    borderRadius: 39.5,
     alignItems: "center",
     justifyContent: "center",
   },
   avatarImage: {
-    width: 75,
-    height: 75,
-    borderRadius: 37.5,
+    width: 79,
+    height: 79,
+    borderRadius: 39.5,
   },
   userName: { fontFamily: "Manrope", fontSize: 24, fontWeight: "700", textAlign: "left", marginTop: 0 },
   profileNameRow: { width: "100%", flexDirection: "row", alignItems: "center", gap: 12, paddingRight: 46 },
@@ -2681,7 +2681,7 @@ const styles = StyleSheet.create({
 
   // Ajustar el margen en el flujo desplaza también todas las secciones posteriores.
   profileProgressSection: {
-    marginTop: 2 - 15,
+    marginTop: 2 - 15 + 10,
     marginBottom: PROFILE_SECTION_GAP,
   },
   practiceReminderSection: {

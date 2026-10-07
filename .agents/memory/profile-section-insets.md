@@ -27,7 +27,7 @@ Los espacios adicionales del banner de Intención son exclusivos de Perfil: sepa
 
 **How to apply:** Mantener esos ajustes propios de Perfil al reemplazar las imágenes, sin propagarlos a las filas del recorrido.
 
-El borde del avatar de Perfil debe superponerse al perímetro de la imagen, no quedar por fuera. Este ajuste no debe mover ni redimensionar la imagen ni modificar otras pantallas.
+El borde del avatar de Perfil debe superponerse al perímetro de la imagen, no quedar por fuera. Un ajuste del borde por sí solo no debe mover ni redimensionar la imagen ni modificar otras pantallas; un cambio explícito del tamaño del avatar conserva la superposición.
 
 **Why:** El usuario observó espacios de fondo entre algunos avatares y su borde y pidió cubrirlos con el borde, no editar las imágenes.
 

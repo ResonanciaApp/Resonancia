@@ -366,7 +366,7 @@ test("Perfil narrows its seven-day row by 10px total while Tu progreso and histo
 test("Perfil keeps its normal-flow progress offset and section gaps while moving the week up", () => {
   const profileSource = readFileSync(new URL("../components/ProfileScreenBase.tsx", import.meta.url), "utf8");
   assert.doesNotMatch(profileSource, /profileIntentionDescription|Todo gran cambio comienza con el primer paso|Bienvenido a Resonancia/);
-  assert.match(profileSource, /profileProgressSection:\s*\{\s*marginTop: 2 - 15,/);
+  assert.match(profileSource, /profileProgressSection:\s*\{\s*marginTop: 2 - 15 \+ 10,/);
   assert.match(profileSource, /const PROFILE_SECTION_GAP = 21;/);
   const cardStyle = profileSource.match(/  profileCard: \{([\s\S]*?)\n  \},/)?.[1] ?? "";
   assert.match(cardStyle, /marginBottom: PROFILE_SECTION_GAP/);
@@ -380,13 +380,13 @@ test("Perfil keeps its normal-flow progress offset and section gaps while moving
   assert.doesNotMatch(profileSource, /testID="profile-identity-email"/);
 });
 
-test("Perfil pulls all following sections up 15px and lowers only the seven days visually by 10px", () => {
+test("Perfil lowers the streak block 10px from its previous normal-flow baseline while preserving its internal offsets", () => {
   const source = readFileSync(new URL("../components/ProfileScreenBase.tsx", import.meta.url), "utf8");
   assert.doesNotMatch(source, /weeklySectionTitle="Esta semana"/);
   assert.doesNotMatch(source, /weeklySectionTitle=/);
   assert.match(source, /weeklySectionBackgroundColor="transparent"/);
   assert.match(source, /streakContentTranslateY=\{10\}/);
-  assert.match(source, /profileProgressSection:\s*\{\s*marginTop: 2 - 15,\s*marginBottom: PROFILE_SECTION_GAP,\s*\}/);
+  assert.match(source, /profileProgressSection:\s*\{\s*marginTop: 2 - 15 \+ 10,\s*marginBottom: PROFILE_SECTION_GAP,\s*\}/);
   assert.doesNotMatch(source, /streakMarginBottom=\{PROFILE_SECTION_GAP - 12\}/);
   assert.match(source, /sectionMarginBottom=\{PROFILE_SECTION_GAP\}/);
   const html = render({
@@ -640,7 +640,7 @@ test("settings statistics contain the existing stats and range filter without st
   assert.match(settingsSource, /label: "Personalizar notificaciones"/);
 });
 
-test("Perfil keeps settings accessible in its sticky header and uses the 75-point avatar", () => {
+test("Perfil keeps settings accessible in its sticky header and uses the 79-point avatar", () => {
   const source = readFileSync(new URL("../components/ProfileScreenBase.tsx", import.meta.url), "utf8");
   const headerStart = source.indexOf("<View style={styles.profileStickyHeaderRow}>");
   const header = source.slice(headerStart, source.indexOf("\n        </Animated.View>", headerStart));
@@ -660,7 +660,7 @@ test("Perfil keeps settings accessible in its sticky header and uses the 75-poin
     const targetStyle = ["position", "left", "right", "top"].includes(property) ? titleGroupStyle : titleStyle;
     assert.equal(targetStyle.match(pattern)?.[1], reference, `sticky title matches Descubrir: ${property}`);
   }
-  assert.match(source, /avatarCircle:\s*\{\s*width: 75,\s*height: 75,\s*borderRadius: 37\.5/);
-  assert.match(source, /avatarImage:\s*\{\s*width: 75,\s*height: 75,\s*borderRadius: 37\.5/);
-  assert.match(source, /avatarOuterBorder:\s*\{[\s\S]*?width: 75,\s*height: 75,\s*borderRadius: 37\.5/);
+  assert.match(source, /avatarCircle:\s*\{\s*width: 79,\s*height: 79,\s*borderRadius: 39\.5/);
+  assert.match(source, /avatarImage:\s*\{\s*width: 79,\s*height: 79,\s*borderRadius: 39\.5/);
+  assert.match(source, /avatarOuterBorder:\s*\{[\s\S]*?width: 79,\s*height: 79,\s*borderRadius: 39\.5/);
 });

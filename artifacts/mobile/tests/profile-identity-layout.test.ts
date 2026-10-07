@@ -115,9 +115,9 @@ test("Perfil places the saved description below the username without the old pil
   assert.doesNotMatch(html, /Ubicación|data-icon="map-pin"/);
   assert.match(html, /data-testid="profile-identity-description"[^>]*data-text-align="left" data-lines="2" data-ellipsis="tail"[^>]*>Mi descripción/);
   assert.doesNotMatch(source.match(/dedicatedProfileCard: \{([^}]*)\}/)?.[1] ?? "", /backgroundColor/);
-  assert.match(source, /avatarImage:\s*\{\s*width: 75,\s*height: 75,\s*borderRadius: 37\.5/);
-  assert.match(source, /avatarCircle:\s*\{\s*width: 75,\s*height: 75,\s*borderRadius: 37\.5/);
-  assert.match(source, /avatarOuterBorder:\s*\{\s*position: "absolute",\s*top: 0,\s*left: 0,\s*width: 75,\s*height: 75,\s*borderRadius: 37\.5,\s*borderWidth: 3/);
+  assert.match(source, /avatarImage:\s*\{\s*width: 79,\s*height: 79,\s*borderRadius: 39\.5/);
+  assert.match(source, /avatarCircle:\s*\{\s*width: 79,\s*height: 79,\s*borderRadius: 39\.5/);
+  assert.match(source, /avatarOuterBorder:\s*\{\s*position: "absolute",\s*top: 0,\s*left: 0,\s*width: 79,\s*height: 79,\s*borderRadius: 39\.5,\s*borderWidth: 1/);
   const rowStyle = source.match(/profileIdentityRow: \{([\s\S]*?)\n  \},/)?.[1] ?? "";
   assert.match(rowStyle, /paddingLeft: 3/);
   assert.match(rowStyle, /paddingRight: 0/);
