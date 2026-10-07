@@ -764,23 +764,6 @@ export function ExploreScreen({
             <View style={styles.sectionSpacer} />
           </>
 
-          {editorialDiscoverCarousels.map((carousel) => (
-            <React.Fragment key={carousel.id}>
-              <EditorialPlaylistCarousel
-                title={carousel.title}
-                titleSize={19}
-                playlists={carousel.playlists}
-                editorialTextPlacement="below-title"
-                showDurationClock
-                showPremiumBadge
-                onPress={(playlist) =>
-                  openCategory(`/editorial-playlist/${encodeURIComponent(playlist.id)}`)
-                }
-              />
-              <View style={styles.sectionSpacer} />
-            </React.Fragment>
-          ))}
-
           <View style={styles.newInResonanceSection}>
             <View style={styles.newInResonanceHeader}>
               <Text style={[styles.sectionTitle, { marginBottom: 0 }]}>
@@ -836,6 +819,23 @@ export function ExploreScreen({
               ))}
             </ScrollView>
           </View>
+
+          {editorialDiscoverCarousels.map((carousel) => (
+            <React.Fragment key={carousel.id}>
+              <View style={styles.sectionSpacer} />
+              <EditorialPlaylistCarousel
+                title={carousel.title}
+                titleSize={19}
+                playlists={carousel.playlists}
+                editorialTextPlacement="below-title"
+                showDurationClock
+                showPremiumBadge
+                onPress={(playlist) =>
+                  openCategory(`/editorial-playlist/${encodeURIComponent(playlist.id)}`)
+                }
+              />
+            </React.Fragment>
+          ))}
 
           <View style={[styles.sectionSpacer, styles.resonadoresSpacer]} />
 

@@ -50,6 +50,20 @@ const GRID_GAP = 10;
 const CELL_W = (Dimensions.get("window").width - 40 - GRID_GAP * 2) / 3;
 const SHARED_MIXES_CACHE_KEY = "cdc_shared_mixes_v1";
 
+// Temporary visual preview only: never replace real avatars in production or saved data.
+const COMMUNITY_AVATAR_PREVIEW_SOURCES = __DEV__ ? [
+  require("@/assets/images/expansores/ana-sofia-luna.png"),
+  require("@/assets/images/expansores/carlos-medina.png"),
+  require("@/assets/images/expansores/valeria-rios.png"),
+  require("@/assets/images/expansores/martin-paz.png"),
+  require("@/assets/images/expansores/daniela-vega.png"),
+  require("@/assets/images/expansores/andres-morales.png"),
+  require("@/assets/images/expansores/lucia-rojas.png"),
+  require("@/assets/images/expansores/gabriel-flores.png"),
+  require("@/assets/images/expansores/isabel-torres.png"),
+  require("@/assets/images/expansores/diego-ramirez.png"),
+] : [];
+
 const DEFAULT_COVER: [string, string] = ["#1B060F", "#2E0A18"];
 
 // ── Componente principal ───────────────────────────────────────────
@@ -195,6 +209,7 @@ export function CommunityMixesCarousel() {
               key={mix.id}
               mix={mix}
               rank={index + 1}
+              previewAvatarSource={COMMUNITY_AVATAR_PREVIEW_SOURCES[index]}
               colors={colors}
               onPress={() => handleOpenMix(mix)}
               onDotsPress={() => {}}
@@ -252,6 +267,7 @@ export type Colors = ReturnType<typeof import("@/hooks/useColors").useColors>;
 export function MixRow({
   mix,
   rank,
+  previewAvatarSource,
   colors,
   onPress,
   onDotsPress,
@@ -261,6 +277,7 @@ export function MixRow({
 }: {
   mix: SharedMix;
   rank?: number;
+  previewAvatarSource?: number;
   colors: Colors;
   onPress: () => void;
   onDotsPress: () => void;
@@ -269,7 +286,8 @@ export function MixRow({
   onHeartPress?: () => void;
 }) {
   const { activeSceneId } = useSceneTheme();
-  const avatarSource = useProfileAvatarSource(mix.author);
+  const realAvatarSource = useProfileAvatarSource(mix.author);
+  const avatarSource = previewAvatarSource ?? realAvatarSource;
   const initial = mix.author.displayName?.trim()?.[0]?.toUpperCase() ?? "·";
 
   return (
@@ -287,7 +305,7 @@ export function MixRow({
     >
       {rank != null && <View style={styles.rankSlot} pointerEvents="none">
         <Text style={[styles.rankText, rank <= 3 && {
-          fontWeight: "700", color: ["#BE9650", "#C0C0C0", "#B87333"][rank - 1],
+          fontWeight: "700", color: "#F9F9F9",
         }]}>{rank}.</Text>
       </View>}
       <Pressable
@@ -600,7 +618,7 @@ const styles = StyleSheet.create({
     backgroundColor: "rgba(255,255,255,0.045)",
   },
   rankSlot: { width: 26, height: 26, alignItems: "center", justifyContent: "center", flexShrink: 0 },
-  rankText: { fontFamily: "Manrope", fontSize: 13, fontWeight: "500", color: "#F9F9F9" },
+  rankText: { fontFamily: "Manrope", fontSize: 10, fontWeight: "500", color: "#F9F9F9" },
   rowAvatar: { width: 37, height: 37, borderRadius: 18.5, flexShrink: 0, transform: [{ translateX: -5 }] },
   rowAvatarImg: { width: 37, height: 37, borderRadius: 18.5, overflow: "hidden" },
   rowName: { flexGrow: 1, flexShrink: 1, flexBasis: 0, minWidth: 40, transform: [{ translateX: -5 }] },
