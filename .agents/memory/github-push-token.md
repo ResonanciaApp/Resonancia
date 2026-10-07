@@ -1,11 +1,9 @@
 ---
 name: GitHub push via GHPUSH_TOKEN
-description: How to push to GitHub when the Replit git credential is broken for this workspace
+description: Autenticación segura de Git al fallar la credencial habitual del workspace.
 ---
-El askpass del workspace (`replit-git-askpass`) devuelve password vacío aunque la conexión GitHub esté "Active" → `git push origin main` falla con "Invalid username or token". El connector (`listConnections("github")`) funciona para API pero NO expone token de git (proxy server-side, auth "unauthenticated").
+Si la autenticación habitual de Git falla, usar el secreto existente GHPUSH_TOKEN mediante un credential helper efímero, sin insertar su valor en URLs, argumentos de procesos, logs ni configuración persistente.
 
-**Solución vigente:** secreto `GHPUSH_TOKEN` (fine-grained PAT del org ResonanciaApp, repo Resonancia, Contents read/write, expira 13-sep-2026).
+**Why:** La conexión de GitHub para API no garantiza que el askpass del workspace autentique operaciones Git. Colocar un token en una URL puede exponerlo antes de que un filtro de salida lo oculte.
 
-**How to apply:** `git push https://x-access-token:${GHPUSH_TOKEN}@github.com/ResonanciaApp/Resonancia.git main` con `| sed "s/${GHPUSH_TOKEN}/***/g"` para no filtrar el token en logs. No guardar el token en el remote URL de .git/config.
-
-**Why:** los PAT fine-grained nacen con acceso "Public repositories" (read-only); hay que elegir "Only select repositories" + permiso Contents Read and write o el push da 403 aunque la API diga push:true.
+**How to apply:** Primero intentar la autenticación habitual. Si falla, reemplazar los helpers solo para el comando mediante opciones temporales de Git; el helper entrega la credencial desde el entorno directamente a Git, sin mostrarla al agente. Conservar el remote limpio, no usar force-push y no omitir los uploads LFS. Un PAT fine-grained debe autorizar el repositorio y tener Contents read/write; no asumir vigencia ni permisos por una nota antigua.
