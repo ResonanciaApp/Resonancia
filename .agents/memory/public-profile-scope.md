@@ -3,7 +3,7 @@ name: Alcance del perfil público
 description: Restricción editorial de los perfiles de otros usuarios y retirada temporal de Expansores.
 ---
 
-El perfil público se centra en avatar, nombre, píldora de días activos acumulados, etapa de Tu camino y descripción larga, en ese orden. No muestra acciones de amistad, mensaje ni Vibración, tampoco Sus mezclas, Sus reflexiones ni líneas divisoras. Se conserva el control de volver.
+El perfil público se centra en avatar, nombre, píldora de días activos acumulados, etapa de Tu camino y descripción larga, en ese orden, alineados a la izquierda y sin título «Perfil». No muestra acciones de amistad, mensaje ni Vibración, tampoco Sus mezclas, Sus reflexiones ni líneas divisoras. Se conserva el control de volver.
 
 **Why:** El usuario pidió retirar explícitamente todos los botones sociales y ambas secciones del perfil de otro usuario el 7 de octubre de 2026; sustituye la autorización anterior de Agregar a amigos.
 

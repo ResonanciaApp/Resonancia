@@ -154,7 +154,7 @@ test("public profile preserves avatar, name, days, stage and optional descriptio
   assert.match(profile, /CLOUDY_GROWTH_DAY_PILL_BACKGROUND/);
   assert.match(profile, /rgba\(151,128,231,0\.20\)/);
   assert.match(profile, /\{totalActiveDays\} días/);
-  assert.match(profile, /avatarImage: \{ width: 117, height: 117, borderRadius: 58\.5 \}/);
+  assert.match(profile, /avatarImage: \{ width: 107, height: 107, borderRadius: 53\.5 \}/);
   assert.match(profile, /longDescription \? \(/);
   assert.doesNotMatch(profile, /followersCount|followingCount|Racha acumulada|memberSince|Miembro desde|profile\.location|@\{profile\.username\}/);
   assert.doesNotMatch(profile, /isExpansor|Expansor|useGetExpansorProfile|useFollowUser|useUnfollowUser|useGetUserFollowing/);
@@ -167,6 +167,20 @@ test("public profile has no friendship, messaging or vibration controls for any 
   assert.doesNotMatch(profile, /friendshipStatus|isFriend|pendingOutgoing|\/chat\//);
   assert.equal((profile.match(/<Pressable\b/g) ?? []).length, 1);
   assert.match(profile, /<Pressable onPress=\{\(\) => router.back\(\)\}/);
+});
+
+test("public profile aligns content to the back button's left inset and omits the header title", () => {
+  assert.match(profile, /profileCard: \{[^}]*paddingHorizontal: H_PAD[^}]*alignItems: "flex-start"/);
+  for (const textStyle of ["userName", "stageName", "longDesc"]) {
+    const style = profile.match(new RegExp(`${textStyle}: \\{([^}]+)\\}`))?.[1];
+    assert.ok(style, textStyle);
+    assert.match(style, /textAlign: "left"/);
+    assert.doesNotMatch(style, /paddingHorizontal|paddingLeft|marginLeft/);
+  }
+  const header = profile.slice(profile.indexOf("const HeaderBar ="), profile.indexOf("if (isLoading)"));
+  assert.match(header, /paddingHorizontal: H_PAD/);
+  assert.doesNotMatch(header, /<Text|headerTitle|width: 38/);
+  assert.match(header, /router.back\(\)/);
 });
 
 test("public profile removes shared sections, dividers and obsolete vibration feedback", () => {

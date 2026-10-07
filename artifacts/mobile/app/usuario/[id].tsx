@@ -65,8 +65,6 @@ export default function UsuarioScreen() {
       <Pressable onPress={() => router.back()} style={styles.backBtn} hitSlop={8}>
         <Feather name="chevron-left" size={22} color={colors.foreground} />
       </Pressable>
-      <Text style={[styles.headerTitle, { color: colors.foreground }]}>Perfil</Text>
-      <View style={{ width: 38 }} />
     </View>
   );
 
@@ -181,10 +179,9 @@ const styles = StyleSheet.create({
   headerRow: {
     flexDirection: "row",
     alignItems: "center",
-    justifyContent: "space-between",
+    justifyContent: "flex-start",
     marginBottom: 4,
   },
-  headerTitle: { fontFamily: "Manrope", fontSize: 17, fontWeight: "700" },
   backBtn: {
     width: 38,
     height: 38,
@@ -198,13 +195,13 @@ const styles = StyleSheet.create({
   notFoundSub: { fontFamily: "Manrope", fontSize: 14, textAlign: "center", lineHeight: 21 },
 
   scroll: { paddingTop: 4, gap: 16 },
-  profileCard: { borderRadius: 24, padding: 24, alignItems: "center", gap: 6 },
+  profileCard: { borderRadius: 24, paddingVertical: 24, paddingHorizontal: H_PAD, alignItems: "flex-start", gap: 6 },
   avatarWrapper: { position: "relative", marginBottom: 8 },
-  avatarImage: { width: 117, height: 117, borderRadius: 58.5 },
+  avatarImage: { width: 107, height: 107, borderRadius: 53.5 },
   avatarFallback: { alignItems: "center", justifyContent: "center" },
   initials: { fontFamily: "Manrope", fontSize: 40, fontWeight: "700" },
-  userName: { fontFamily: "Manrope", fontSize: 20, fontWeight: "700", textAlign: "center" },
-  stageName: { fontFamily: "Manrope", fontSize: 15, fontWeight: "700", textAlign: "center" },
+  userName: { fontFamily: "Manrope", fontSize: 20, fontWeight: "700", textAlign: "left" },
+  stageName: { fontFamily: "Manrope", fontSize: 15, fontWeight: "700", textAlign: "left" },
   daysPill: {
     flexDirection: "row",
     alignItems: "center",
@@ -219,5 +216,5 @@ const styles = StyleSheet.create({
   },
   daysText: { fontFamily: "Manrope", fontSize: 10, fontWeight: "600" },
   lotus: { lineHeight: 12, includeFontPadding: false },
-  longDesc: { fontFamily: "Manrope", fontSize: 14, lineHeight: 21, textAlign: "center", marginTop: 20, paddingHorizontal: 4 },
+  longDesc: { fontFamily: "Manrope", fontSize: 14, lineHeight: 21, textAlign: "left", marginTop: 20 },
 });
