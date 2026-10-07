@@ -13,7 +13,7 @@ Inicio no muestra estrella de membresía sobre el avatar, tampoco para usuarios 
 
 **Why:** El usuario pidió quitar la estrella del avatar específicamente en Inicio.
 
-**How to apply:** No volver a añadir la insignia al header de Inicio por analogía con Perfil; preservar foto, inicial, borde y apertura del menú.
+**How to apply:** No volver a añadir la insignia al header de Inicio por analogía con Perfil; preservar foto, inicial y apertura del menú. Inicio y drawer usan avatares sin borde.
 
 En cuentas gratuitas, la estrella y el contenido de «Prueba Premium» usan el margen lateral izquierdo del perfil; el chevron llega al margen lateral derecho, sin una sangría adicional dentro del banner.
 

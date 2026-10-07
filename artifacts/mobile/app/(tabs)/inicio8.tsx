@@ -1918,18 +1918,12 @@ const Inicio2HeroStatic = React.memo(function Inicio2HeroStatic({
             {avatarSource ? (
               <ExpoImage
                 source={avatarSource}
-                style={[
-                  styles.inicio2HeroAvatar,
-                  isInicio3 && styles.inicio3HeroAvatarBorder,
-                ]}
+                style={styles.inicio2HeroAvatar}
                 contentFit="cover"
               />
             ) : (
               <View
-                style={[
-                  styles.inicio2HeroAvatarFallback,
-                  isInicio3 && styles.inicio3HeroAvatarBorder,
-                ]}
+                style={styles.inicio2HeroAvatarFallback}
               >
                 <Text style={styles.inicio2HeroAvatarInitial}>{initial}</Text>
               </View>
@@ -3612,12 +3606,6 @@ const styles = StyleSheet.create({
     width: 42,
     height: 42,
     borderRadius: 21,
-    borderWidth: 2,
-    borderColor: "rgba(255,255,255,0.1)",
-  },
-  inicio3HeroAvatarBorder: {
-    borderWidth: 2,
-    borderColor: "rgba(255,255,255,0.25)",
   },
   inicio2HeroAvatarButton: {
     position: "relative",
@@ -3629,8 +3617,6 @@ const styles = StyleSheet.create({
     alignItems: "center",
     justifyContent: "center",
     backgroundColor: "rgba(190,150,80,0.28)",
-    borderWidth: 2,
-    borderColor: "rgba(255,255,255,0.1)",
   },
   inicio2HeroAvatarInitial: {
     color: "#FFFFFF",

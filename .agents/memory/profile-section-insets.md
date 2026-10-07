@@ -27,8 +27,8 @@ Los espacios adicionales del banner de Intención son exclusivos de Perfil: sepa
 
 **How to apply:** Mantener esos ajustes propios de Perfil al reemplazar las imágenes, sin propagarlos a las filas del recorrido.
 
-El avatar de Perfil debe quedar sin borde. Retirar el contorno no debe mover ni redimensionar la imagen ni modificar otras pantallas.
+Los avatares de Perfil, Inicio y del drawer deben quedar sin borde. Retirar el contorno no debe mover ni redimensionar las imágenes.
 
-**Why:** El 7 de octubre de 2026 el usuario reemplazó la dirección anterior de borde superpuesto por un avatar sin borde.
+**Why:** El 7 de octubre de 2026 el usuario reemplazó la dirección anterior de borde superpuesto por un avatar sin borde y extendió expresamente esa regla a Inicio y al drawer.
 
-**How to apply:** Conservar la colocación del avatar y las separaciones del bloque de usuario; no recuperar ningún contorno para satisfacer expectativas antiguas de espaciado. El borde de Inicio es independiente.
+**How to apply:** Conservar la colocación y el tamaño propio de cada avatar y las separaciones de los bloques de usuario; no recuperar contornos para satisfacer expectativas antiguas de espaciado.

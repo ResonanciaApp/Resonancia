@@ -540,15 +540,12 @@ const styles = StyleSheet.create({
     justifyContent: "center",
   },
   profilePhotoGuest: {
-    borderColor: "rgba(250,240,238,0.18)",
     backgroundColor: "rgba(255,255,255,0.04)",
   },
   inicio3ProfilePhoto: {
     width: 75,
     height: 75,
     borderRadius: 37.5,
-    borderWidth: 0.5,
-    borderColor: "rgba(255,255,255,0.7)",
   },
   profileInfo: {
     flex: 1,
