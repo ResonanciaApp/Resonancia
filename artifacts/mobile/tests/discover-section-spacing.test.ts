@@ -84,7 +84,6 @@ test("Explore by time follows Para este momento with standard spacing and appear
   assert.ok(ts.isJsxElement(banner.parent));
   const siblings = banner.parent.children.filter(node => ts.isJsxElement(node) || ts.isJsxSelfClosingElement(node));
   const index = siblings.indexOf(banner);
-  assert.ok(siblings[index - 2].getText(ast).startsWith("<View style={styles.otherThemesSection}>"));
   assert.equal(siblings[index - 1].getText(ast), "<View style={[styles.sectionSpacer, styles.resonadoresSpacer]} />");
   const bannerSpacer = style("resonadoresSpacer");
   assert.equal(53 + bannerSpacer.marginTop, bannerSpacer.marginBottom + 3);
@@ -94,14 +93,18 @@ test("Explore by time follows Para este momento with standard spacing and appear
   const communitySpacer = style("communityDivider");
   assert.equal(communitySpacer.marginTop, standardSpacer.marginTop);
   assert.equal(communitySpacer.marginBottom + 18, standardSpacer.marginBottom);
-  assert.equal(siblings[index + 1].getText(ast), "<View style={[styles.sectionSpacer, styles.communityDivider]} />");
-  assert.ok(siblings[index + 2].getText(ast).startsWith("<CommunityMixesCarousel"));
+  assert.equal(siblings[index + 1].getText(ast), "<View style={styles.sectionSpacer} />");
+  assert.ok(siblings[index + 2].getText(ast).startsWith("<View style={styles.otherThemesSection}>"));
+  assert.equal(siblings[index + 3].getText(ast), "<View style={styles.sectionSpacer} />");
+  assert.ok(siblings[index + 4].getText(ast).startsWith("<View style={styles.newInResonanceSection}>"));
+  assert.equal(siblings[index + 5].getText(ast), "<View style={[styles.sectionSpacer, styles.communityDivider]} />");
+  assert.ok(siblings[index + 6].getText(ast).startsWith("<CommunityMixesCarousel"));
   assert.match(banner.getText(ast), /router\.push\("\/equipo" as never\)/);
   assert.equal((source.match(/style=\{styles\.durationSection\}/g) ?? []).length, 1);
   assert.equal(style("durationSection").marginBottom, style("newInResonanceSection").marginBottom);
 });
 
-test("editorial playlists precede Nuevo en Resonancia without duplicate separators", () => {
+test("editorial playlists precede Resonadores, and Nuevo follows objectives, without duplicate separators", () => {
   let playlists: ts.JsxExpression | undefined;
   let banner: ts.JsxSelfClosingElement | undefined;
   let newSessions: ts.JsxElement | undefined;
@@ -123,15 +126,26 @@ test("editorial playlists precede Nuevo en Resonancia without duplicate separato
   assert.ok(playlists.getStart(ast) < banner.getStart(ast));
   const bannerIndex = siblings.indexOf(banner);
   assert.equal(siblings[bannerIndex - 1].getText(ast), "<View style={[styles.sectionSpacer, styles.resonadoresSpacer]} />");
+  assert.equal(siblings[bannerIndex - 2], playlists);
+  assert.ok(banner.getStart(ast) < newSessions.getStart(ast));
   assert.equal((source.match(/<ResonadoresBanner /g) ?? []).length, 1);
   assert.equal((source.match(/style=\{styles\.newInResonanceSection\}/g) ?? []).length, 1);
   assert.match(newSessions.getText(ast), /onPress=\{\(\) => handleSessionPress\(session\)\}/);
   const preceding = siblings[index - 1];
   assert.equal(preceding.getText(ast), "<View style={styles.sectionSpacer} />");
-  assert.equal(siblings[index - 2], playlists);
+  assert.ok(siblings[index - 2].getText(ast).startsWith("<View style={styles.otherThemesSection}>"));
   assert.match(playlists.getText(ast), /<View style=\{styles\.sectionSpacer\} \/>/);
   assert.equal((source.match(/editorialDiscoverCarousels\.map\(/g) ?? []).length, 1);
   assert.match(playlists.getText(ast), /openCategory\(`\/editorial-playlist\/\$\{encodeURIComponent\(playlist\.id\)\}`\)/);
+  assert.equal(style("newInResonanceSection").marginBottom, 53);
+  const bannerSource = read("../components/ResonadoresBanner.tsx");
+  assert.match(bannerSource, /marginTop: 3/);
+  assert.match(bannerSource, /marginBottom: 53/);
+  const standard = style("sectionSpacer");
+  const bannerSpacer = style("resonadoresSpacer");
+  assert.equal(53 + bannerSpacer.marginTop + standard.height + bannerSpacer.marginBottom + 3,
+    53 + standard.marginTop + standard.height + standard.marginBottom,
+    "incoming banner gap matches the previous Nuevo gap");
 });
 
 test("objective cards have exactly 16px between columns and rows, without overflowing", () => {

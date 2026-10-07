@@ -780,63 +780,8 @@ export function ExploreScreen({
             </React.Fragment>
           ))}
 
-          <View style={styles.sectionSpacer} />
-
-          <View style={styles.newInResonanceSection}>
-            <View style={styles.newInResonanceHeader}>
-              <Text style={[styles.sectionTitle, { marginBottom: 0 }]}>
-                Nuevo en Resonancia
-              </Text>
-            </View>
-            <ScrollView
-              horizontal
-              showsHorizontalScrollIndicator={false}
-              style={{ marginHorizontal: -H_PAD }}
-              contentContainerStyle={styles.newInResonanceRow}
-            >
-              {recientesMeditaciones.map((session) => (
-                <PressScale
-                  key={session.id}
-                  onPress={() => handleSessionPress(session)}
-                  accessibilityRole="button"
-                  accessibilityLabel={`${session.title}. ${getSessionAuthor(session)}`}
-                  style={styles.newInResonanceCard}
-                >
-                  <View style={styles.newInResonanceImageWrap}>
-                    <Image
-                      source={session.image as number}
-                      style={StyleSheet.absoluteFill}
-                      contentFit="cover"
-                      placeholder={BLUR_PLACEHOLDER}
-                      transition={IMAGE_TRANSITION}
-                      cachePolicy="memory-disk"
-                    />
-                    <PremiumBadge session={session} size={22} top={16} left={16} />
-                    <SessionDurationBadge
-                      label={session.durationLabel}
-                      showClock
-                      whiteGlass
-                      style={styles.categoryDurationBadge}
-                    />
-                  </View>
-                  <View style={styles.newInResonanceMeta}>
-                    <Text style={styles.newInResonanceTitle} numberOfLines={2}>
-                      {session.title}
-                    </Text>
-                    <Text
-                      style={[
-                        styles.newInResonanceSecondary,
-                        { color: CARD_TEXT_BELOW },
-                      ]}
-                      numberOfLines={1}
-                    >
-                      {getSessionAuthor(session)}
-                    </Text>
-                  </View>
-                </PressScale>
-              ))}
-            </ScrollView>
-          </View>
+          <View style={[styles.sectionSpacer, styles.resonadoresSpacer]} />
+          <ResonadoresBanner onPress={() => router.push("/equipo" as never)} />
 
           <View style={styles.sectionSpacer} />
 
@@ -894,8 +839,63 @@ export function ExploreScreen({
             </View>
           </View>
 
-          <View style={[styles.sectionSpacer, styles.resonadoresSpacer]} />
-          <ResonadoresBanner onPress={() => router.push("/equipo" as never)} />
+          <View style={styles.sectionSpacer} />
+
+          <View style={styles.newInResonanceSection}>
+            <View style={styles.newInResonanceHeader}>
+              <Text style={[styles.sectionTitle, { marginBottom: 0 }]}>
+                Nuevo en Resonancia
+              </Text>
+            </View>
+            <ScrollView
+              horizontal
+              showsHorizontalScrollIndicator={false}
+              style={{ marginHorizontal: -H_PAD }}
+              contentContainerStyle={styles.newInResonanceRow}
+            >
+              {recientesMeditaciones.map((session) => (
+                <PressScale
+                  key={session.id}
+                  onPress={() => handleSessionPress(session)}
+                  accessibilityRole="button"
+                  accessibilityLabel={`${session.title}. ${getSessionAuthor(session)}`}
+                  style={styles.newInResonanceCard}
+                >
+                  <View style={styles.newInResonanceImageWrap}>
+                    <Image
+                      source={session.image as number}
+                      style={StyleSheet.absoluteFill}
+                      contentFit="cover"
+                      placeholder={BLUR_PLACEHOLDER}
+                      transition={IMAGE_TRANSITION}
+                      cachePolicy="memory-disk"
+                    />
+                    <PremiumBadge session={session} size={22} top={16} left={16} />
+                    <SessionDurationBadge
+                      label={session.durationLabel}
+                      showClock
+                      whiteGlass
+                      style={styles.categoryDurationBadge}
+                    />
+                  </View>
+                  <View style={styles.newInResonanceMeta}>
+                    <Text style={styles.newInResonanceTitle} numberOfLines={2}>
+                      {session.title}
+                    </Text>
+                    <Text
+                      style={[
+                        styles.newInResonanceSecondary,
+                        { color: CARD_TEXT_BELOW },
+                      ]}
+                      numberOfLines={1}
+                    >
+                      {getSessionAuthor(session)}
+                    </Text>
+                  </View>
+                </PressScale>
+              ))}
+            </ScrollView>
+          </View>
 
           <View style={[styles.sectionSpacer, styles.communityDivider]} />
           <CommunityMixesCarousel />

@@ -127,13 +127,13 @@ test("community divider matches the upper sections including its header inset", 
   assert.equal(gap + top + bottom + extra + sectionPadding, gap + standardTop + standardBottom + extra);
 });
 
-test("playlists precede New in Resonancia with remaining Discover sections in place", () => {
+test("Discover swaps Resonadores and Nuevo while keeping playlists, objectives and community in place", () => {
   const positions = [
     "Explora según tu tiempo",
     "{editorialDiscoverCarousels.map",
-    "<View style={styles.newInResonanceSection}>",
-    "Explora por objetivo",
     "<ResonadoresBanner",
+    "Explora por objetivo",
+    "<View style={styles.newInResonanceSection}>",
     "<CommunityMixesCarousel",
   ].map(marker => explore.indexOf(marker));
   assert.ok(positions.every((position, index) =>
