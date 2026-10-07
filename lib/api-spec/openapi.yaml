@@ -1563,6 +1563,41 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/ErrorResponse"
+  /users/{userId}/vibrations:
+    post:
+      operationId: sendUserVibration
+      tags: [users]
+      summary: Send a vibration notification to another user
+      parameters:
+        - name: userId
+          in: path
+          required: true
+          schema:
+            type: integer
+            minimum: 1
+      responses:
+        "201":
+          description: Vibration saved in the recipient's inbox
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  sent:
+                    type: boolean
+                required: [sent]
+        "400":
+          description: Invalid user or self-directed vibration
+          content:
+            application/json:
+              schema: {$ref: "#/components/schemas/ErrorResponse"}
+        "401":
+          description: Authentication required
+        "404":
+          description: Recipient not found
+          content:
+            application/json:
+              schema: {$ref: "#/components/schemas/ErrorResponse"}
   /notifications:
     get:
       operationId: getNotifications
@@ -6522,6 +6557,9 @@ components:
           type: string
         displayName:
           type: string
+        friendshipStatus:
+          type: string
+          enum: ["none", "pending_outgoing", "pending_incoming", "accepted", "self"]
         totalActiveDays:
           type: integer
           minimum: 0
@@ -6542,7 +6580,7 @@ components:
           format: date-time
         stats:
           $ref: "#/components/schemas/PublicUserStats"
-      required: [id, username, displayName, createdAt, stats, totalActiveDays, longDescription]
+      required: [id, username, displayName, createdAt, stats, totalActiveDays, longDescription, friendshipStatus]
     UserRoleUpdate:
       type: object
       properties:
@@ -6628,6 +6666,7 @@ components:
               "content_approved",
               "content_rejected",
               "session_published",
+              "vibration",
             ]
         entityId:
           type: ["integer", "null"]

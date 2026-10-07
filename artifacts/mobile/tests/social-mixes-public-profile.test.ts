@@ -138,10 +138,10 @@ test("New in Resonancia precedes playlists with remaining Discover sections in p
   assert.match(explore, /<React.Fragment key=\{carousel.id\}>\s*<View style=\{styles.sectionSpacer\} \/>\s*<EditorialPlaylistCarousel/);
 });
 
-test("public profile shows avatar, name, Intención, gold lotus days pill and description only", () => {
+test("public profile shows name, days pill then stage, with friendship and vibration actions", () => {
   assert.match(profile, /<SceneThemeBackground \/>/);
   assert.doesNotMatch(profile, /BG_GRADIENT|topCategoryLabel/);
-  const order = ["styles.avatarWrapper", "public-profile-name", "public-profile-stage", "public-profile-accumulated-pill", "public-profile-long-description"]
+  const order = ["styles.avatarWrapper", "public-profile-name", "public-profile-accumulated-pill", "public-profile-stage", "public-profile-long-description"]
     .map((t) => profile.indexOf(t));
   assert.ok(order.every((i, n) => i > 0 && (n === 0 || i > order[n - 1])), order.join());
   assert.match(profile, /growthLevels\[0\]/);
@@ -154,5 +154,16 @@ test("public profile shows avatar, name, Intención, gold lotus days pill and de
   assert.match(profile, /longDescription \? \(/);
   assert.match(profile, /\/chat\//);
   assert.doesNotMatch(profile, /followersCount|followingCount|Racha acumulada|memberSince|Miembro desde|profile\.location|@\{profile\.username\}/);
-  assert.doesNotMatch(profile, /isExpansor|Expansor|useGetExpansorProfile|useFollowUser|useUnfollowUser|useSendFriendRequest|useGetUserFollowing/);
+  assert.doesNotMatch(profile, /isExpansor|Expansor|useGetExpansorProfile|useFollowUser|useUnfollowUser|useGetUserFollowing/);
+  assert.match(profile, /public-profile-add-friend/);
+  assert.match(profile, /addFriend\.mutate\(\{ data: \{ addresseeId: userId \} \}\)/);
+  assert.match(profile, /pending_outgoing/);
+  assert.match(profile, /pending_incoming/);
+  assert.match(profile, /Agregar a amigos/);
+  assert.match(profile, /name=\{isFriend \? "user-check" : "user-plus"\}/);
+  assert.match(profile, /public-profile-vibration/);
+  assert.match(profile, /vibration\.mutate\(\{ userId \}\)/);
+  assert.match(profile, /name="radio"/);
+  assert.match(profile, /disabled=\{vibration\.isPending\}/);
+  assert.match(profile, /Vibración enviada/);
 });

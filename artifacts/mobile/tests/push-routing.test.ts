@@ -16,3 +16,11 @@ test("routes published-session pushes using entityKey as a fallback", () => {
     "/session/sesion-42",
   );
 });
+
+test("vibration pushes open the sender's public profile", () => {
+  assert.equal(routeForPushData({ kind: "vibration", fromUserId: 42 }), "/usuario/42");
+  assert.equal(routeForPushData({ type: "vibration", fromUserId: 17 }), "/usuario/17");
+  for (const fromUserId of [undefined, "42", 0, -1, 2.5, NaN]) {
+    assert.equal(routeForPushData({ kind: "vibration", fromUserId }), undefined);
+  }
+});

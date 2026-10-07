@@ -23,6 +23,7 @@ export const NOTIFICATION_TYPES = [
   "content_approved",
   "content_rejected",
   "session_published",
+  "vibration",
 ] as const;
 export type NotificationType = (typeof NOTIFICATION_TYPES)[number];
 

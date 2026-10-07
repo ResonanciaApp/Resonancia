@@ -30,6 +30,10 @@ export function routeForPushData(data: PushRouteData | undefined): string | unde
   if (eventType === "dm" && typeof data.fromUserId === "number") {
     return `/chat/${data.fromUserId}`;
   }
+  if (eventType === "vibration" && typeof data.fromUserId === "number"
+    && Number.isSafeInteger(data.fromUserId) && data.fromUserId > 0) {
+    return `/usuario/${data.fromUserId}`;
+  }
   if (eventType === "friend_request" || eventType === "friend_accepted") {
     return "/amigos";
   }

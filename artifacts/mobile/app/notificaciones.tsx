@@ -67,6 +67,7 @@ function iconFor(type: string): { name: FeatherName; color: string } {
   switch (type) {
     case "session_published": return { name: "bell", color: "#E7B95C" };
     case "friend_request":  return { name: "user-plus",      color: "#8AAAD4" };
+    case "vibration":       return { name: "radio",          color: "#E7B95C" };
     case "friend_accepted": return { name: "user-check",     color: "#A8C4A8" };
     case "new_follower":    return { name: "user",           color: "#F9F9F9" };
     case "dm":              return { name: "message-circle", color: "#F9F9F9" };
@@ -81,6 +82,7 @@ function messageFor(n: Notification): string {
   switch ((n as Notification & { type: string }).type) {
     case "session_published": return n.message?.trim() || "hay una nueva sesión para ti";
     case "friend_request":  return "te envió una solicitud de amistad";
+    case "vibration":       return "te envió una vibración";
     case "friend_accepted": return "aceptó tu solicitud de amistad";
     case "new_follower":    return "empezó a seguirte";
     case "dm":              return "te envió un mensaje";
@@ -99,6 +101,7 @@ function routeFor(n: Notification): string {
     return sessionId ? `/session/${encodeURIComponent(sessionId)}` : "/nuevas-sesiones";
   }
   if (n.type === "dm")            return n.actor?.id != null ? `/chat/${n.actor.id}` : "/amigos";
+  if (n.type === "vibration")     return n.actor?.id != null ? `/usuario/${n.actor.id}` : "/amigos";
   if (n.type === "group_message") return n.entityId != null ? `/grupo/${n.entityId}` : "/grupos";
   if (n.type === "new_follower")  return n.actor?.id != null ? `/expansor-perfil/${n.actor.id}` : "/amigos";
   if (n.type === "mix_like" || n.type === "mix_comment") {

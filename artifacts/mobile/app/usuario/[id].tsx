@@ -3,6 +3,7 @@ import { router, useLocalSearchParams } from "expo-router";
 import { Image as ExpoImage } from "expo-image";
 import {
   ActivityIndicator,
+  Alert,
   Platform,
   Pressable,
   ScrollView,
@@ -14,6 +15,7 @@ import {
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { useProfileAvatarSource } from "@/lib/profile-avatar";
 import React from "react";
+import { useQueryClient } from "@tanstack/react-query";
 
 import {
   useGetPublicUserProfile,
@@ -21,6 +23,9 @@ import {
   useGetMe,
   useGetFriends,
   getGetFriendsQueryKey,
+  useSendFriendRequest,
+  getGetFriendRequestsQueryKey,
+  useSendUserVibration,
 } from "@workspace/api-client-react";
 import { BLUR_PLACEHOLDER, IMAGE_TRANSITION } from "@/constants/imagePlaceholder";
 import { CLOUDY_GROWTH_DAY_PILL_BACKGROUND, MEMBERSHIP_AURORA } from "@/constants/colors";
@@ -46,6 +51,7 @@ export default function UsuarioScreen() {
   const insets = useSafeAreaInsets();
   const { id } = useLocalSearchParams<{ id: string }>();
   const userId = Number(id);
+  const queryClient = useQueryClient();
 
   const { data: profile, isLoading, isError } = useGetPublicUserProfile(userId, {
     query: {
@@ -60,8 +66,31 @@ export default function UsuarioScreen() {
   const { data: friendsList } = useGetFriends({
     query: { queryKey: getGetFriendsQueryKey(), enabled: !!me?.id },
   });
-  const isFriend = (friendsList ?? []).some((f) => f.id === userId);
+  const isFriend = profile?.friendshipStatus === "accepted" || (friendsList ?? []).some((f) => f.id === userId);
   const isOwnProfile = me?.id === userId;
+  const refreshFriendship = () => Promise.all([
+    queryClient.invalidateQueries({ queryKey: getGetFriendsQueryKey() }),
+    queryClient.invalidateQueries({ queryKey: getGetFriendRequestsQueryKey() }),
+    queryClient.invalidateQueries({ queryKey: getGetPublicUserProfileQueryKey(userId) }),
+  ]);
+  const addFriend = useSendFriendRequest({
+    mutation: {
+      onSuccess: refreshFriendship,
+      onError: (error) => {
+        void refreshFriendship();
+        const status = (error as { status?: number }).status;
+        Alert.alert("Amistad", status === 409
+          ? "Ya existe una amistad o una solicitud con este usuario."
+          : "No se pudo enviar la solicitud. Inténtalo nuevamente.");
+      },
+    },
+  });
+  const vibration = useSendUserVibration({
+    mutation: {
+      onError: () => Alert.alert("Vibración", "No se pudo enviar la vibración. Inténtalo nuevamente."),
+    },
+  });
+  const pendingOutgoing = profile?.friendshipStatus === "pending_outgoing";
 
   const topPad = Platform.OS === "web" ? 67 : insets.top;
   const bottomPad = Platform.OS === "web" ? 34 : insets.bottom;
@@ -148,12 +177,7 @@ export default function UsuarioScreen() {
             {profile.displayName}
           </Text>
 
-          {/* 3. Etapa actual */}
-          <Text testID="public-profile-stage" style={[styles.stageName, { color: colors.foreground }]}>
-            {CURRENT_STAGE.name}
-          </Text>
-
-          {/* 4. Días activos acumulados */}
+          {/* 3. Días activos acumulados */}
           <View
             testID="public-profile-accumulated-pill"
             style={[
@@ -172,12 +196,60 @@ export default function UsuarioScreen() {
             </Text>
           </View>
 
+          {/* 4. Etapa actual */}
+          <Text testID="public-profile-stage" style={[styles.stageName, { color: colors.foreground }]}>
+            {CURRENT_STAGE.name}
+          </Text>
+
           {/* 5. Descripción larga */}
           {longDescription ? (
             <Text testID="public-profile-long-description" style={[styles.longDesc, { color: colors.foreground }]}>
               {longDescription}
             </Text>
           ) : null}
+
+          {!isOwnProfile && profile.friendshipStatus !== "self" && (
+            <View style={styles.actionsSection}>
+              <View style={styles.actionsRow}>
+                <Pressable
+                  testID="public-profile-add-friend"
+                  accessibilityRole="button"
+                  disabled={isFriend || pendingOutgoing || addFriend.isPending}
+                  onPress={() => addFriend.mutate({ data: { addresseeId: userId } })}
+                  style={({ pressed }) => [
+                    styles.actionButton,
+                    { opacity: isFriend || pendingOutgoing || addFriend.isPending ? 0.6 : pressed ? 0.75 : 1 },
+                  ]}
+                >
+                  <Feather name={isFriend ? "user-check" : "user-plus"} size={14} color={colors.foreground} />
+                  <Text style={[styles.actionText, { color: colors.foreground }]}>
+                    {addFriend.isPending ? "Enviando…" : isFriend ? "Amigos" : pendingOutgoing ? "Solicitud enviada"
+                      : profile.friendshipStatus === "pending_incoming" ? "Aceptar amistad" : "Agregar a amigos"}
+                  </Text>
+                </Pressable>
+                <Pressable
+                  testID="public-profile-vibration"
+                  accessibilityRole="button"
+                  disabled={vibration.isPending}
+                  onPress={() => vibration.mutate({ userId })}
+                  style={({ pressed }) => [
+                    styles.actionButton,
+                    { opacity: vibration.isPending ? 0.6 : pressed ? 0.75 : 1 },
+                  ]}
+                >
+                  <Feather name="radio" size={14} color={colors.foreground} />
+                  <Text style={[styles.actionText, { color: colors.foreground }]}>
+                    {vibration.isPending ? "Enviando…" : "Vibración"}
+                  </Text>
+                </Pressable>
+              </View>
+              {vibration.isSuccess && vibration.variables?.userId === userId && (
+                <Text accessibilityLiveRegion="polite" style={[styles.feedback, { color: colors.foreground }]}>
+                  Vibración enviada
+                </Text>
+              )}
+            </View>
+          )}
 
           {/* Mensaje solo para amigos existentes */}
           {!isOwnProfile && isFriend && (
@@ -240,6 +312,22 @@ const styles = StyleSheet.create({
   daysText: { fontFamily: "Manrope", fontSize: 10, fontWeight: "600" },
   lotus: { lineHeight: 12, includeFontPadding: false },
   longDesc: { fontFamily: "Manrope", fontSize: 14, lineHeight: 21, textAlign: "center", marginTop: 12, paddingHorizontal: 4 },
+  actionsSection: { alignSelf: "stretch", gap: 8, marginTop: 18 },
+  actionsRow: { flexDirection: "row", gap: 8 },
+  actionButton: {
+    flex: 1,
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "center",
+    gap: 6,
+    paddingHorizontal: 8,
+    paddingVertical: 10,
+    minHeight: 40,
+    borderRadius: 20,
+    backgroundColor: "rgba(255,255,255,0.07)",
+  },
+  actionText: { fontFamily: "Manrope", fontSize: 12, fontWeight: "600", flexShrink: 1, textAlign: "center" },
+  feedback: { fontFamily: "Manrope", fontSize: 12, textAlign: "center" },
   messagePill: {
     flexDirection: "row",
     alignItems: "center",

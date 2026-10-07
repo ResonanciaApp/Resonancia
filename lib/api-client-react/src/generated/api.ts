@@ -217,6 +217,7 @@ import type {
   SearchTrendsResponse,
   SearchUsersParams,
   SendDirectMessageBody,
+  SendUserVibration201,
   SetPinnedFeatured200,
   SetPinnedFeaturedBody,
   SharedGlyph,
@@ -7256,6 +7257,76 @@ export const useDeclineFriendRequest = <TError = ErrorType<ErrorResponse>,
         TContext
       > => {
       return useMutation(getDeclineFriendRequestMutationOptions(options));
+    }
+
+export const getSendUserVibrationUrl = (userId: number,) => {
+
+
+
+
+  return `/api/users/${userId}/vibrations`
+}
+
+/**
+ * @summary Send a vibration notification to another user
+ */
+export const sendUserVibration = async (userId: number, options?: RequestInit): Promise<SendUserVibration201> => {
+
+  return customFetch<SendUserVibration201>(getSendUserVibrationUrl(userId),
+  {
+    ...options,
+    method: 'POST'
+
+
+  }
+);}
+
+
+
+
+export const getSendUserVibrationMutationOptions = <TError = ErrorType<ErrorResponse | void>,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof sendUserVibration>>, TError,{userId: number}, TContext>, request?: SecondParameter<typeof customFetch>}
+): UseMutationOptions<Awaited<ReturnType<typeof sendUserVibration>>, TError,{userId: number}, TContext> => {
+
+const mutationKey = ['sendUserVibration'];
+const {mutation: mutationOptions, request: requestOptions} = options ?
+      options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey ?
+      options
+      : {...options, mutation: {...options.mutation, mutationKey}}
+      : {mutation: { mutationKey, }, request: undefined};
+
+
+
+
+      const mutationFn: MutationFunction<Awaited<ReturnType<typeof sendUserVibration>>, {userId: number}> = (props) => {
+          const {userId} = props ?? {};
+
+          return  sendUserVibration(userId,requestOptions)
+        }
+
+
+
+
+
+
+  return  { mutationFn, ...mutationOptions }}
+
+    export type SendUserVibrationMutationResult = NonNullable<Awaited<ReturnType<typeof sendUserVibration>>>
+
+    export type SendUserVibrationMutationError = ErrorType<ErrorResponse | void>
+
+    /**
+ * @summary Send a vibration notification to another user
+ */
+export const useSendUserVibration = <TError = ErrorType<ErrorResponse | void>,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof sendUserVibration>>, TError,{userId: number}, TContext>, request?: SecondParameter<typeof customFetch>}
+ ): UseMutationResult<
+        Awaited<ReturnType<typeof sendUserVibration>>,
+        TError,
+        {userId: number},
+        TContext
+      > => {
+      return useMutation(getSendUserVibrationMutationOptions(options));
     }
 
 export const getGetNotificationsUrl = () => {

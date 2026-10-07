@@ -2577,6 +2577,7 @@ export const GetPublicUserProfileResponse = zod.object({
   "id": zod.number(),
   "username": zod.string(),
   "displayName": zod.string(),
+  "friendshipStatus": zod.enum(['none', 'pending_outgoing', 'pending_incoming', 'accepted', 'self']),
   "totalActiveDays": zod.number().min(getPublicUserProfileResponseTotalActiveDaysMin),
   "longDescription": zod.string().nullable(),
   "avatarUrl": zod.string().nullish(),
@@ -2847,11 +2848,22 @@ export const DeclineFriendRequestParams = zod.object({
 
 
 /**
+ * @summary Send a vibration notification to another user
+ */
+
+
+
+export const SendUserVibrationParams = zod.object({
+  "userId": zod.coerce.number().min(1)
+})
+
+
+/**
  * @summary List the current user's notifications (newest first)
  */
 export const GetNotificationsResponseItem = zod.object({
   "id": zod.number(),
-  "type": zod.enum(['friend_request', 'friend_accepted', 'new_follower', 'dm', 'group_message', 'mix_like', 'mix_comment', 'content_approved', 'content_rejected', 'session_published']),
+  "type": zod.enum(['friend_request', 'friend_accepted', 'new_follower', 'dm', 'group_message', 'mix_like', 'mix_comment', 'content_approved', 'content_rejected', 'session_published', 'vibration']),
   "entityId": zod.number().nullable().describe('ID de la entidad relacionada (p. ej. la mezcla para mix_like\/mix_comment)'),
   "sessionId": zod.string().nullable().describe('Textual catalog session ID for session_published notices'),
   "message": zod.string().nullable(),

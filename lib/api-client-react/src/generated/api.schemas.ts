@@ -1328,6 +1328,17 @@ export interface PublicUserStats {
   followingCount: number;
 }
 
+export type PublicUserProfileFriendshipStatus = typeof PublicUserProfileFriendshipStatus[keyof typeof PublicUserProfileFriendshipStatus];
+
+
+export const PublicUserProfileFriendshipStatus = {
+  none: 'none',
+  pending_outgoing: 'pending_outgoing',
+  pending_incoming: 'pending_incoming',
+  accepted: 'accepted',
+  self: 'self',
+} as const;
+
 export type PublicUserProfileRole = typeof PublicUserProfileRole[keyof typeof PublicUserProfileRole];
 
 
@@ -1344,6 +1355,7 @@ export interface PublicUserProfile {
   id: number;
   username: string;
   displayName: string;
+  friendshipStatus: PublicUserProfileFriendshipStatus;
   /** @minimum 0 */
   totalActiveDays: number;
   /** @nullable */
@@ -1456,6 +1468,7 @@ export const NotificationType = {
   content_approved: 'content_approved',
   content_rejected: 'content_rejected',
   session_published: 'session_published',
+  vibration: 'vibration',
 } as const;
 
 export interface Notification {
@@ -3626,6 +3639,10 @@ export type SearchUsersParams = {
  * @minLength 1
  */
 q: string;
+};
+
+export type SendUserVibration201 = {
+  sent: boolean;
 };
 
 export type GetDirectMessagesParams = {

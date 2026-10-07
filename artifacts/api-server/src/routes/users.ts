@@ -681,6 +681,17 @@ router.get("/users/:userId/public", requireAuth, async (req, res) => {
           OR bool_or(${playbackHistoryTable.completed})
       ) AS active_days
     `);
+    const me = req.currentUser!;
+    const [friendship] = userId === me.id ? [] : await db.select()
+      .from(friendshipsTable)
+      .where(or(
+        and(eq(friendshipsTable.requesterId, me.id), eq(friendshipsTable.addresseeId, userId)),
+        and(eq(friendshipsTable.requesterId, userId), eq(friendshipsTable.addresseeId, me.id)),
+      )).limit(1);
+    const friendshipStatus = userId === me.id ? "self"
+      : !friendship ? "none"
+      : friendship.status === "accepted" ? "accepted"
+      : friendship.requesterId === me.id ? "pending_outgoing" : "pending_incoming";
     res.json({
       id: user.id,
       username: user.username,
@@ -690,6 +701,7 @@ router.get("/users/:userId/public", requireAuth, async (req, res) => {
       location: user.location ?? null,
       role: user.role,
       createdAt: user.createdAt.toISOString(),
+      friendshipStatus,
       totalActiveDays: Number(activeDays.rows[0]?.count ?? 0),
       longDescription: user.longDescription ?? null,
       stats: {
