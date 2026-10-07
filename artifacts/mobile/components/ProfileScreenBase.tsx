@@ -1510,16 +1510,16 @@ export function ProfileScreenBase({
               />
             </View>
 
+            <MiRutinaSection style={{ marginHorizontal: 0, marginTop: 25 }} />
+
             <ProfileReflectionWallSection
               ref={profileWallRef}
               scrollRef={profileScrollRef}
               getScrollY={getProfileScrollY}
               onComposingChange={setProfileWallComposing}
               onMessageSaved={handleProfileReflectionSaved}
-              style={{ marginTop: 25 }}
+              style={{ marginTop: 25, marginBottom: PROFILE_SECTION_GAP }}
             />
-
-            <MiRutinaSection style={{ marginHorizontal: 0, marginTop: 25, marginBottom: PROFILE_SECTION_GAP }} />
 
             {SHOW_PROFILE_PRACTICE_CARDS && (
             <>
