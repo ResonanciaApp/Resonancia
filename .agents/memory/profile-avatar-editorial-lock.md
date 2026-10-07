@@ -9,6 +9,12 @@ El bloqueo de avatares es editorial y manual desde Admin. No activa desbloqueos 
 
 **How to apply:** Mantener la disponibilidad editorial independiente de las promesas visuales de recompensas de Tu camino hasta que el usuario pida conectar ambas.
 
+El catálogo editorial de Perfil complementa la elección de una foto personal desde la galería del teléfono; no la sustituye. Cambiar una píldora por un icono no autoriza retirar esa acción.
+
+**Why:** El usuario reiteró que el icono de imagen de Portada debe conservar la función de cargar una foto del celular que tenía la píldora anterior.
+
+**How to apply:** Al rediseñar Portada o ampliar el catálogo, verificar también que el control de foto personal recibe el toque y mantiene el flujo de permisos, selección y guardado.
+
 La visión futura del producto es desbloquear grupos de avatares de Perfil al avanzar de etapa en Tu camino, y darles usos personales y sociales después de desbloquearlos.
 
 **Why:** El usuario describió explícitamente este objetivo al pedir ideas para aprovechar la colección, no solo para editar su foto.

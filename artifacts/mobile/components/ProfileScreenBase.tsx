@@ -1053,6 +1053,7 @@ export function ProfileScreenBase({
               />
               <View style={styles.accountCoverHandle} />
               <View style={styles.accountCoverHeader}>
+                <Text style={styles.accountCoverTitle}>Portada</Text>
                 <Pressable
                   style={styles.accountCoverUploadButton}
                   onPress={() => {
@@ -1065,7 +1066,6 @@ export function ProfileScreenBase({
                 >
                   <Feather name="image" size={18} color="#F9F9F9" />
                 </Pressable>
-                <Text style={styles.accountCoverTitle}>Portada</Text>
                 <Pressable
                   onPress={() => setAccountPhotoPickerVisible(false)}
                   hitSlop={8}
@@ -1236,12 +1236,6 @@ export function ProfileScreenBase({
               ]}
             >
               <Text style={[styles.profileStickyHeaderTitle, { color: colors.foreground }]}>Perfil</Text>
-              {isPremium && (
-                <View testID="profile-sticky-title-premium-badge" style={styles.titlePremiumBadge}>
-                  <SessionBadgeGlass showBlackTint={false} showWhiteTint />
-                  <MaterialCommunityIcons name="star" size={15} color={MEMBERSHIP_AURORA.premium.accent} />
-                </View>
-              )}
             </Animated.View>
             <Pressable
               onPress={() => router.push("/configuracion-ajustes")}
@@ -1366,12 +1360,6 @@ export function ProfileScreenBase({
         <View style={styles.dedicatedTitleRow}>
           <View style={styles.dedicatedTitleLeft}>
             <Text style={[styles.dedicatedHeroTitle, { color: colors.foreground }]}>Perfil</Text>
-            {isPremium && (
-              <View testID="profile-title-premium-badge" pointerEvents="none" style={styles.titlePremiumBadge}>
-                <SessionBadgeGlass showBlackTint={false} showWhiteTint />
-                <MaterialCommunityIcons name="star" size={15} color={MEMBERSHIP_AURORA.premium.accent} />
-              </View>
-            )}
           </View>
           <View style={styles.profileHeaderActions}>
             <Pressable
@@ -1410,7 +1398,12 @@ export function ProfileScreenBase({
                   <Feather name="user" size={28} color={colors.primary} />
                 </View>
               )}
-              <View pointerEvents="none" style={styles.avatarOuterBorder} />
+              {isPremium && (
+                <View testID="profile-avatar-premium-badge" pointerEvents="none" style={styles.avatarPremiumBadge}>
+                  <SessionBadgeGlass showBlackTint={false} showWhiteTint />
+                  <MaterialCommunityIcons name="star" size={15} color={MEMBERSHIP_AURORA.premium.accent} />
+                </View>
+              )}
             </Pressable>
 
             {/* Name + details */}
@@ -2340,6 +2333,7 @@ const styles = StyleSheet.create({
   },
   accountCoverPreviewSlot: {
     height: 170,
+    marginTop: 10,
     flexShrink: 0,
     alignItems: "center",
     justifyContent: "center",
@@ -2352,6 +2346,7 @@ const styles = StyleSheet.create({
   accountCoverUploadButton: {
     position: "absolute",
     left: 0,
+    zIndex: 1,
     width: 43,
     height: 43,
     alignItems: "center",
@@ -2595,25 +2590,17 @@ const styles = StyleSheet.create({
   },
   profileDetails: { flex: 1, minWidth: 0, alignItems: "flex-start", gap: 6 },
   avatarWrapper: { position: "relative", marginTop: 3, marginBottom: 3, flexShrink: 0 },
-  avatarOuterBorder: {
+  avatarPremiumBadge: {
     position: "absolute",
-    top: 0,
-    left: 0,
-    width: 79,
-    height: 79,
-    borderRadius: 39.5,
-    borderWidth: 1,
-    borderColor: "rgba(255,255,255,0.25)",
+    right: 0,
+    bottom: 0,
     zIndex: 1,
-  },
-  titlePremiumBadge: {
     width: 22,
     height: 22,
     borderRadius: 11,
     overflow: "hidden",
     alignItems: "center",
     justifyContent: "center",
-    transform: [{ translateY: 2 }],
   },
   avatarCircle: {
     width: 79,

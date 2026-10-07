@@ -14,22 +14,18 @@ test("Inicio keeps its interactive avatar without a Premium star", () => {
   assert.doesNotMatch(source, /inicio2HeroPremiumBadge/);
 });
 
-test("Perfil shows its independent Premium title badge, never on the avatar", () => {
+test("Perfil shows its independent Premium avatar badge, not on its titles", () => {
   const profile = readFileSync(new URL("../components/ProfileScreenBase.tsx", import.meta.url), "utf8");
-  assert.match(profile, /testID="profile-title-premium-badge"/);
-  assert.doesNotMatch(profile, /profile-avatar-premium-badge/);
+  assert.match(profile, /testID="profile-avatar-premium-badge"/);
+  assert.doesNotMatch(profile, /profile-(?:sticky-)?title-premium-badge/);
 });
 
-test("Inicio uses the same avatar border color as Perfil without changing its thickness", () => {
+test("Inicio preserves its own avatar border while Perfil has none", () => {
   const home = readFileSync(new URL("../app/(tabs)/inicio8.tsx", import.meta.url), "utf8");
   const profile = readFileSync(new URL("../components/ProfileScreenBase.tsx", import.meta.url), "utf8");
   const homeBorder = home.match(/inicio3HeroAvatarBorder:\s*\{([^}]+)\}/)?.[1];
-  const profileBorder = profile.match(/avatarOuterBorder:\s*\{([^}]+)\}/)?.[1];
   assert.ok(homeBorder);
-  assert.ok(profileBorder);
-  assert.equal(
-    homeBorder.match(/borderColor:\s*"([^"]+)"/)?.[1],
-    profileBorder.match(/borderColor:\s*"([^"]+)"/)?.[1],
-  );
+  assert.doesNotMatch(profile, /avatarOuterBorder/);
+  assert.match(homeBorder, /borderColor:\s*"rgba\(255,255,255,0\.25\)"/);
   assert.match(homeBorder, /borderWidth:\s*2\b/);
 });
