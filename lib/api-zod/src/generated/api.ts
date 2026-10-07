@@ -2281,6 +2281,41 @@ export const ReportSharedMixResponse = zod.object({
 })
 
 
+
+
+
+export const GetSharedMixParams = zod.object({
+  "id": zod.coerce.number().min(1)
+})
+
+export const GetSharedMixResponse = zod.object({
+  "id": zod.number(),
+  "name": zod.string(),
+  "description": zod.string().nullish(),
+  "image": zod.string().nullish(),
+  "category": zod.enum(['dormir', 'trabajar', 'motivarme', 'concentracion', 'paz_interior', 'magico']),
+  "sounds": zod.array(zod.object({
+  "id": zod.string(),
+  "volume": zod.number()
+})),
+  "likes": zod.number(),
+  "trending": zod.boolean(),
+  "likedByMe": zod.boolean(),
+  "isMine": zod.boolean(),
+  "author": zod.object({
+  "id": zod.number(),
+  "username": zod.string(),
+  "displayName": zod.string(),
+  "avatarUrl": zod.string().nullish(),
+  "avatarPresetId": zod.string().nullish().describe('Stable profile preset ID; resolve its current image from GET \/api\/cover-presets?scope=profile. avatarUrl is reserved for custom uploaded avatars.'),
+  "location": zod.string().nullish(),
+  "role": zod.enum(['user', 'creator', 'admin', 'moderador', 'expansor', 'resonador']).optional(),
+  "createdAt": zod.coerce.date()
+}),
+  "createdAt": zod.coerce.date()
+})
+
+
 /**
  * @summary Unshare a mix (author only)
  */
@@ -7726,7 +7761,7 @@ export const ListMyReflectionStoriesQueryParams = zod.object({
   "limit": zod.coerce.number().min(1).max(listMyReflectionStoriesQueryLimitMax).default(listMyReflectionStoriesQueryLimitDefault)
 })
 
-
+export const listMyReflectionStoriesResponseItemsItemIsPublicDefault = false;
 export const listMyReflectionStoriesResponseItemsItemCategoryMax = 40;
 
 
@@ -7761,6 +7796,7 @@ export const ListMyReflectionStoriesResponse = zod.object({
   "items": zod.array(zod.object({
   "id": zod.number(),
   "userId": zod.number(),
+  "isPublic": zod.boolean().default(listMyReflectionStoriesResponseItemsItemIsPublicDefault),
   "message": zod.string().min(1),
   "category": zod.string().max(listMyReflectionStoriesResponseItemsItemCategoryMax).regex(listMyReflectionStoriesResponseItemsItemCategoryRegExp),
   "backgroundPresetKey": zod.string().min(1).max(listMyReflectionStoriesResponseItemsItemBackgroundPresetKeyMax),
@@ -7833,7 +7869,7 @@ export const CreateMyReflectionStoryBody = zod.object({
   "textY": zod.number().min(createMyReflectionStoryBodyTextYMin).max(createMyReflectionStoryBodyTextYMax)
 })
 
-
+export const createMyReflectionStoryResponseIsPublicDefault = false;
 export const createMyReflectionStoryResponseCategoryMax = 40;
 
 
@@ -7867,6 +7903,7 @@ export const createMyReflectionStoryResponseTextYMax = 0.2604166667;
 export const CreateMyReflectionStoryResponse = zod.object({
   "id": zod.number(),
   "userId": zod.number(),
+  "isPublic": zod.boolean().default(createMyReflectionStoryResponseIsPublicDefault),
   "message": zod.string().min(1),
   "category": zod.string().max(createMyReflectionStoryResponseCategoryMax).regex(createMyReflectionStoryResponseCategoryRegExp),
   "backgroundPresetKey": zod.string().min(1).max(createMyReflectionStoryResponseBackgroundPresetKeyMax),
@@ -7882,11 +7919,201 @@ export const CreateMyReflectionStoryResponse = zod.object({
 })
 
 
+
+
+
+export const ListUserReflectionStoriesParams = zod.object({
+  "userId": zod.coerce.number().min(1)
+})
+
+export const listUserReflectionStoriesQueryLimitDefault = 20;
+export const listUserReflectionStoriesQueryLimitMax = 50;
+
+
+
+export const ListUserReflectionStoriesQueryParams = zod.object({
+  "cursor": zod.coerce.string().optional(),
+  "limit": zod.coerce.number().min(1).max(listUserReflectionStoriesQueryLimitMax).default(listUserReflectionStoriesQueryLimitDefault)
+})
+
+export const listUserReflectionStoriesResponseItemsItemIsPublicDefault = false;
+export const listUserReflectionStoriesResponseItemsItemCategoryMax = 40;
+
+
+export const listUserReflectionStoriesResponseItemsItemCategoryRegExp = new RegExp('^[a-z][a-z0-9-]{0,39}$');
+export const listUserReflectionStoriesResponseItemsItemBackgroundPresetKeyMax = 120;
+
+export const listUserReflectionStoriesResponseItemsItemAvatarImagePathMax = 2048;
+
+export const listUserReflectionStoriesResponseItemsItemAvatarXMin = 0;
+export const listUserReflectionStoriesResponseItemsItemAvatarXMax = 1;
+
+export const listUserReflectionStoriesResponseItemsItemAvatarYMin = 0;
+export const listUserReflectionStoriesResponseItemsItemAvatarYMax = 1;
+
+export const listUserReflectionStoriesResponseItemsItemBackgroundScaleMax = 3;
+
+export const listUserReflectionStoriesResponseItemsItemBackgroundXMin = -1;
+export const listUserReflectionStoriesResponseItemsItemBackgroundXMax = 1;
+
+export const listUserReflectionStoriesResponseItemsItemBackgroundYMin = -1;
+export const listUserReflectionStoriesResponseItemsItemBackgroundYMax = 1;
+
+export const listUserReflectionStoriesResponseItemsItemTextXMin = -0.0925925926;
+export const listUserReflectionStoriesResponseItemsItemTextXMax = 0.0925925926;
+
+export const listUserReflectionStoriesResponseItemsItemTextYMin = -0.2604166667;
+export const listUserReflectionStoriesResponseItemsItemTextYMax = 0.2604166667;
+
+
+
+export const ListUserReflectionStoriesResponse = zod.object({
+  "items": zod.array(zod.object({
+  "id": zod.number(),
+  "userId": zod.number(),
+  "isPublic": zod.boolean().default(listUserReflectionStoriesResponseItemsItemIsPublicDefault),
+  "message": zod.string().min(1),
+  "category": zod.string().max(listUserReflectionStoriesResponseItemsItemCategoryMax).regex(listUserReflectionStoriesResponseItemsItemCategoryRegExp),
+  "backgroundPresetKey": zod.string().min(1).max(listUserReflectionStoriesResponseItemsItemBackgroundPresetKeyMax),
+  "avatarImagePath": zod.string().max(listUserReflectionStoriesResponseItemsItemAvatarImagePathMax).nullish(),
+  "avatarX": zod.number().min(listUserReflectionStoriesResponseItemsItemAvatarXMin).max(listUserReflectionStoriesResponseItemsItemAvatarXMax).nullish(),
+  "avatarY": zod.number().min(listUserReflectionStoriesResponseItemsItemAvatarYMin).max(listUserReflectionStoriesResponseItemsItemAvatarYMax).nullish(),
+  "backgroundScale": zod.number().min(1).max(listUserReflectionStoriesResponseItemsItemBackgroundScaleMax),
+  "backgroundX": zod.number().min(listUserReflectionStoriesResponseItemsItemBackgroundXMin).max(listUserReflectionStoriesResponseItemsItemBackgroundXMax),
+  "backgroundY": zod.number().min(listUserReflectionStoriesResponseItemsItemBackgroundYMin).max(listUserReflectionStoriesResponseItemsItemBackgroundYMax),
+  "textX": zod.number().min(listUserReflectionStoriesResponseItemsItemTextXMin).max(listUserReflectionStoriesResponseItemsItemTextXMax),
+  "textY": zod.number().min(listUserReflectionStoriesResponseItemsItemTextYMin).max(listUserReflectionStoriesResponseItemsItemTextYMax),
+  "createdAt": zod.coerce.date()
+})),
+  "nextCursor": zod.string().nullable()
+})
+
+
+
+
+
+
+export const GetUserReflectionStoryParams = zod.object({
+  "userId": zod.coerce.number().min(1),
+  "id": zod.coerce.number().min(1)
+})
+
+export const getUserReflectionStoryResponseIsPublicDefault = false;
+export const getUserReflectionStoryResponseCategoryMax = 40;
+
+
+export const getUserReflectionStoryResponseCategoryRegExp = new RegExp('^[a-z][a-z0-9-]{0,39}$');
+export const getUserReflectionStoryResponseBackgroundPresetKeyMax = 120;
+
+export const getUserReflectionStoryResponseAvatarImagePathMax = 2048;
+
+export const getUserReflectionStoryResponseAvatarXMin = 0;
+export const getUserReflectionStoryResponseAvatarXMax = 1;
+
+export const getUserReflectionStoryResponseAvatarYMin = 0;
+export const getUserReflectionStoryResponseAvatarYMax = 1;
+
+export const getUserReflectionStoryResponseBackgroundScaleMax = 3;
+
+export const getUserReflectionStoryResponseBackgroundXMin = -1;
+export const getUserReflectionStoryResponseBackgroundXMax = 1;
+
+export const getUserReflectionStoryResponseBackgroundYMin = -1;
+export const getUserReflectionStoryResponseBackgroundYMax = 1;
+
+export const getUserReflectionStoryResponseTextXMin = -0.0925925926;
+export const getUserReflectionStoryResponseTextXMax = 0.0925925926;
+
+export const getUserReflectionStoryResponseTextYMin = -0.2604166667;
+export const getUserReflectionStoryResponseTextYMax = 0.2604166667;
+
+
+
+export const GetUserReflectionStoryResponse = zod.object({
+  "id": zod.number(),
+  "userId": zod.number(),
+  "isPublic": zod.boolean().default(getUserReflectionStoryResponseIsPublicDefault),
+  "message": zod.string().min(1),
+  "category": zod.string().max(getUserReflectionStoryResponseCategoryMax).regex(getUserReflectionStoryResponseCategoryRegExp),
+  "backgroundPresetKey": zod.string().min(1).max(getUserReflectionStoryResponseBackgroundPresetKeyMax),
+  "avatarImagePath": zod.string().max(getUserReflectionStoryResponseAvatarImagePathMax).nullish(),
+  "avatarX": zod.number().min(getUserReflectionStoryResponseAvatarXMin).max(getUserReflectionStoryResponseAvatarXMax).nullish(),
+  "avatarY": zod.number().min(getUserReflectionStoryResponseAvatarYMin).max(getUserReflectionStoryResponseAvatarYMax).nullish(),
+  "backgroundScale": zod.number().min(1).max(getUserReflectionStoryResponseBackgroundScaleMax),
+  "backgroundX": zod.number().min(getUserReflectionStoryResponseBackgroundXMin).max(getUserReflectionStoryResponseBackgroundXMax),
+  "backgroundY": zod.number().min(getUserReflectionStoryResponseBackgroundYMin).max(getUserReflectionStoryResponseBackgroundYMax),
+  "textX": zod.number().min(getUserReflectionStoryResponseTextXMin).max(getUserReflectionStoryResponseTextXMax),
+  "textY": zod.number().min(getUserReflectionStoryResponseTextYMin).max(getUserReflectionStoryResponseTextYMax),
+  "createdAt": zod.coerce.date()
+})
+
+
+
+
+
+export const SetMyReflectionStoryVisibilityParams = zod.object({
+  "id": zod.coerce.number().min(1)
+})
+
+export const SetMyReflectionStoryVisibilityBody = zod.object({
+  "isPublic": zod.boolean()
+})
+
+export const setMyReflectionStoryVisibilityResponseIsPublicDefault = false;
+export const setMyReflectionStoryVisibilityResponseCategoryMax = 40;
+
+
+export const setMyReflectionStoryVisibilityResponseCategoryRegExp = new RegExp('^[a-z][a-z0-9-]{0,39}$');
+export const setMyReflectionStoryVisibilityResponseBackgroundPresetKeyMax = 120;
+
+export const setMyReflectionStoryVisibilityResponseAvatarImagePathMax = 2048;
+
+export const setMyReflectionStoryVisibilityResponseAvatarXMin = 0;
+export const setMyReflectionStoryVisibilityResponseAvatarXMax = 1;
+
+export const setMyReflectionStoryVisibilityResponseAvatarYMin = 0;
+export const setMyReflectionStoryVisibilityResponseAvatarYMax = 1;
+
+export const setMyReflectionStoryVisibilityResponseBackgroundScaleMax = 3;
+
+export const setMyReflectionStoryVisibilityResponseBackgroundXMin = -1;
+export const setMyReflectionStoryVisibilityResponseBackgroundXMax = 1;
+
+export const setMyReflectionStoryVisibilityResponseBackgroundYMin = -1;
+export const setMyReflectionStoryVisibilityResponseBackgroundYMax = 1;
+
+export const setMyReflectionStoryVisibilityResponseTextXMin = -0.0925925926;
+export const setMyReflectionStoryVisibilityResponseTextXMax = 0.0925925926;
+
+export const setMyReflectionStoryVisibilityResponseTextYMin = -0.2604166667;
+export const setMyReflectionStoryVisibilityResponseTextYMax = 0.2604166667;
+
+
+
+export const SetMyReflectionStoryVisibilityResponse = zod.object({
+  "id": zod.number(),
+  "userId": zod.number(),
+  "isPublic": zod.boolean().default(setMyReflectionStoryVisibilityResponseIsPublicDefault),
+  "message": zod.string().min(1),
+  "category": zod.string().max(setMyReflectionStoryVisibilityResponseCategoryMax).regex(setMyReflectionStoryVisibilityResponseCategoryRegExp),
+  "backgroundPresetKey": zod.string().min(1).max(setMyReflectionStoryVisibilityResponseBackgroundPresetKeyMax),
+  "avatarImagePath": zod.string().max(setMyReflectionStoryVisibilityResponseAvatarImagePathMax).nullish(),
+  "avatarX": zod.number().min(setMyReflectionStoryVisibilityResponseAvatarXMin).max(setMyReflectionStoryVisibilityResponseAvatarXMax).nullish(),
+  "avatarY": zod.number().min(setMyReflectionStoryVisibilityResponseAvatarYMin).max(setMyReflectionStoryVisibilityResponseAvatarYMax).nullish(),
+  "backgroundScale": zod.number().min(1).max(setMyReflectionStoryVisibilityResponseBackgroundScaleMax),
+  "backgroundX": zod.number().min(setMyReflectionStoryVisibilityResponseBackgroundXMin).max(setMyReflectionStoryVisibilityResponseBackgroundXMax),
+  "backgroundY": zod.number().min(setMyReflectionStoryVisibilityResponseBackgroundYMin).max(setMyReflectionStoryVisibilityResponseBackgroundYMax),
+  "textX": zod.number().min(setMyReflectionStoryVisibilityResponseTextXMin).max(setMyReflectionStoryVisibilityResponseTextXMax),
+  "textY": zod.number().min(setMyReflectionStoryVisibilityResponseTextYMin).max(setMyReflectionStoryVisibilityResponseTextYMax),
+  "createdAt": zod.coerce.date()
+})
+
+
 export const GetMyReflectionStoryParams = zod.object({
   "id": zod.coerce.number()
 })
 
-
+export const getMyReflectionStoryResponseIsPublicDefault = false;
 export const getMyReflectionStoryResponseCategoryMax = 40;
 
 
@@ -7920,6 +8147,7 @@ export const getMyReflectionStoryResponseTextYMax = 0.2604166667;
 export const GetMyReflectionStoryResponse = zod.object({
   "id": zod.number(),
   "userId": zod.number(),
+  "isPublic": zod.boolean().default(getMyReflectionStoryResponseIsPublicDefault),
   "message": zod.string().min(1),
   "category": zod.string().max(getMyReflectionStoryResponseCategoryMax).regex(getMyReflectionStoryResponseCategoryRegExp),
   "backgroundPresetKey": zod.string().min(1).max(getMyReflectionStoryResponseBackgroundPresetKeyMax),

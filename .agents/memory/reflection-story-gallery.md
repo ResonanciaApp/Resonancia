@@ -15,6 +15,12 @@ Las historias deben conservar la imagen concreta del avatar, no resolver el avat
 
 **How to apply:** Persistir una ruta de imagen estable; subir primero las imágenes locales o externas y validar propiedad o acceso público antes de referenciarlas. No conceder lectura pública por aparecer en una receta privada. Esperar la carga del avatar y del fondo antes de capturar.
 
+«Sus reflexiones» del perfil público muestra únicamente historias que su autor haya autorizado explícitamente. La galería personal sigue siendo privada: ni enviar a Instagram ni tener una historia antigua implica autorización para el perfil.
+
+**Why:** El usuario eligió expresamente la publicación voluntaria por el autor y mantener las historias existentes privadas.
+
+**How to apply:** Toda historia nueva empieza privada. Permitir publicar y volver a ocultar historias desde la galería; revocar también el acceso directo cuando se ocultan o borran. Nunca inferir consentimiento de un intento de envío a Instagram.
+
 El avatar es una capa movible independiente: no queda unido al bloque de la frase ni al fondo.
 
 **Why:** El usuario corrigió expresamente la colocación fija debajo de la frase: la persona debe poder elegir cualquier ubicación dentro de la imagen.

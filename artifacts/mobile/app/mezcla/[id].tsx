@@ -32,7 +32,9 @@ import {
   useAddMixComment,
   useDeleteMixComment,
   useGetMixComments,
-  useGetSharedMixes,
+  useGetSharedMix,
+  getGetSharedMixQueryKey,
+  type SharedMix,
   useToggleSharedMixLike,
 } from "@workspace/api-client-react";
 import type { MixComment } from "@workspace/api-client-react";
@@ -62,7 +64,7 @@ export default function CommunityMixScreen({ id: idProp }: { id?: string } = {})
   const overlayBack = useBackOverride();
   const goBack = () => (overlayBack ? overlayBack() : router.back());
 
-  const { isSignedIn } = useAuth();
+  const { isSignedIn, clerkUserId } = useAuth();
   const { photoUri } = useUserProfile();
   const { isPlaying, togglePlay, loadedPresetId, stopAll } = useMixer();
   const accentColor = "rgb(218,212,236)";
@@ -74,8 +76,12 @@ export default function CommunityMixScreen({ id: idProp }: { id?: string } = {})
   const pendingLike = useRef(false);
   const heartScale = useRef(new Animated.Value(1)).current;
 
-  const { data, isLoading } = useGetSharedMixes();
-  const mix = data?.mixes.find((m) => m.id === mixId);
+  const { data: mix, isLoading } = useGetSharedMix(mixId, {
+    query: {
+      queryKey: [...getGetSharedMixQueryKey(mixId), clerkUserId],
+      enabled: Number.isInteger(mixId) && mixId > 0,
+    },
+  });
 
   const { data: commentsData } = useGetMixComments(mixId);
   const comments = commentsData?.comments ?? [];
@@ -105,8 +111,14 @@ export default function CommunityMixScreen({ id: idProp }: { id?: string } = {})
 
   const { applyOptimistic: applyMixLikeOptimistic, patchAll: patchMixLike } = useMixLike();
   const applyOptimistic = useCallback(
-    (liked: boolean) => applyMixLikeOptimistic(mixId, liked),
-    [applyMixLikeOptimistic, mixId],
+    (liked: boolean) => {
+      applyMixLikeOptimistic(mixId, liked);
+      queryClient.setQueryData<SharedMix>([...getGetSharedMixQueryKey(mixId), clerkUserId], current => current ? {
+        ...current, likedByMe: liked,
+        likes: Math.max(0, current.likes + (current.likedByMe === liked ? 0 : liked ? 1 : -1)),
+      } : current);
+    },
+    [applyMixLikeOptimistic, mixId, queryClient, clerkUserId],
   );
 
   const handleLike = useCallback(() => {
@@ -133,11 +145,12 @@ export default function CommunityMixScreen({ id: idProp }: { id?: string } = {})
         onError: () => applyOptimistic(!nextLiked),
         onSettled: () => { pendingLike.current = false; },
         onSuccess: (updated) => {
+          queryClient.setQueryData([...getGetSharedMixQueryKey(updated.id), clerkUserId], updated);
           patchMixLike(updated.id, (m) => ({ ...m, likes: updated.likes, likedByMe: updated.likedByMe }));
         },
       },
     );
-  }, [mix, isSignedIn, applyOptimistic, patchMixLike, toggleLike]);
+  }, [mix, isSignedIn, applyOptimistic, patchMixLike, toggleLike, queryClient, clerkUserId]);
 
   const onAuthorPress = () => {
     if (!mix) return;

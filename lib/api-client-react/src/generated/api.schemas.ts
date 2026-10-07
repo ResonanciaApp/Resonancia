@@ -131,6 +131,7 @@ export interface ReflectionsPage {
 export interface ReflectionStory {
   id: number;
   userId: number;
+  isPublic?: boolean;
   /** @minLength 1 */
   message: string;
   category: ReflectionCategory;
@@ -3877,5 +3878,18 @@ cursor?: string;
  * @maximum 50
  */
 limit?: number;
+};
+
+export type ListUserReflectionStoriesParams = {
+cursor?: string;
+/**
+ * @minimum 1
+ * @maximum 50
+ */
+limit?: number;
+};
+
+export type SetMyReflectionStoryVisibilityBody = {
+  isPublic: boolean;
 };
 

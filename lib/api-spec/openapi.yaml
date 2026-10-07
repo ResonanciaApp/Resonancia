@@ -811,6 +811,21 @@ paths:
               schema:
                 $ref: "#/components/schemas/ErrorResponse"
   /mixes/{id}:
+    get:
+      operationId: getSharedMix
+      tags: [mixes]
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema: {type: integer, minimum: 1}
+      responses:
+        "200":
+          description: A visible shared mix, independently of feed pagination
+          content:
+            application/json:
+              schema: {$ref: "#/components/schemas/SharedMix"}
+        "404": {description: Mix not found}
     delete:
       operationId: unshareMix
       tags: [mixes]
@@ -5224,6 +5239,73 @@ paths:
           content:
             application/json:
               schema: {$ref: "#/components/schemas/ReflectionStory"}
+  /users/{userId}/reflection-stories:
+    get:
+      operationId: listUserReflectionStories
+      tags: [reflections]
+      parameters:
+        - name: userId
+          in: path
+          required: true
+          schema: {type: integer, minimum: 1}
+        - name: cursor
+          in: query
+          schema: {type: string}
+        - name: limit
+          in: query
+          schema: {type: integer, minimum: 1, maximum: 50, default: 20}
+      responses:
+        "200":
+          description: Only stories explicitly authorized for this user's public profile
+          content:
+            application/json:
+              schema: {$ref: "#/components/schemas/ReflectionStoriesPage"}
+  /users/{userId}/reflection-stories/{id}:
+    get:
+      operationId: getUserReflectionStory
+      tags: [reflections]
+      parameters:
+        - name: userId
+          in: path
+          required: true
+          schema: {type: integer, minimum: 1}
+        - name: id
+          in: path
+          required: true
+          schema: {type: integer, minimum: 1}
+      responses:
+        "200":
+          description: An explicitly public reflection story
+          content:
+            application/json:
+              schema: {$ref: "#/components/schemas/ReflectionStory"}
+        "404": {description: Public story not found}
+  /me/reflection-stories/{id}/visibility:
+    patch:
+      operationId: setMyReflectionStoryVisibility
+      tags: [reflections]
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema: {type: integer, minimum: 1}
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [isPublic]
+              properties:
+                isPublic: {type: boolean}
+      responses:
+        "200":
+          description: Updated story visibility, only by its owner
+          content:
+            application/json:
+              schema: {$ref: "#/components/schemas/ReflectionStory"}
+        "404": {description: Story not found}
+        "409": {description: Story image cannot be made public}
   /me/reflection-stories/{id}:
     get:
       operationId: getMyReflectionStory
@@ -5371,6 +5453,7 @@ components:
       properties:
         id: {type: integer}
         userId: {type: integer}
+        isPublic: {type: boolean, default: false}
         message: {type: string, minLength: 1}
         category: {$ref: "#/components/schemas/ReflectionCategory"}
         backgroundPresetKey: {type: string, minLength: 1, maxLength: 120}

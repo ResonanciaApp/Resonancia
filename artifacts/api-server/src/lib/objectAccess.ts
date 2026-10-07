@@ -183,6 +183,15 @@ export async function resolveObjectReadAccess({
             AND avatar_upload.object_path = ${objectPath}
           WHERE profile.avatar_url = ${objectPath}
         )
+        OR EXISTS (
+          SELECT 1
+          FROM reflection_stories story
+          JOIN uploads image_upload ON image_upload.object_path = story.avatar_image_path
+          JOIN users uploader ON uploader.id = image_upload.user_id
+          WHERE story.is_public = true
+            AND story.avatar_image_path = ${objectPath}
+            AND (image_upload.user_id = story.user_id OR uploader.role IN ('admin', 'moderador'))
+        )
       ) AS is_public,
       EXISTS (
         SELECT 1

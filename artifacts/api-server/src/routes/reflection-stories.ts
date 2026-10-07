@@ -6,6 +6,11 @@ import {
   CreateMyReflectionStoryHeader,
   GetMyReflectionStoryParams,
   ListMyReflectionStoriesQueryParams,
+  ListUserReflectionStoriesParams,
+  ListUserReflectionStoriesQueryParams,
+  GetUserReflectionStoryParams,
+  SetMyReflectionStoryVisibilityParams,
+  SetMyReflectionStoryVisibilityBody,
 } from "@workspace/api-zod";
 import { requireAuth } from "../middlewares/requireAuth";
 import { findReflectionCategory } from "./reflection-categories";
@@ -37,12 +42,83 @@ function countGraphemes(value: string): number {
 
 function dto(row: typeof reflectionStoriesTable.$inferSelect) {
   const { idempotencyKey: _idempotencyKey, ...publicRow } = row;
-  return { ...publicRow, createdAt: row.createdAt.toISOString() };
+  return { ...publicRow, isPublic: row.isPublic ?? false, createdAt: row.createdAt.toISOString() };
 }
 
 function isUniqueViolation(error: unknown): boolean {
   return Boolean(error && typeof error === "object" && "code" in error && (error as { code?: string }).code === "23505");
 }
+
+router.get("/users/:userId/reflection-stories", requireAuth, async (req, res) => {
+  const params = ListUserReflectionStoriesParams.safeParse(req.params);
+  const query = ListUserReflectionStoriesQueryParams.safeParse(req.query);
+  if (!params.success || !query.success) { res.status(400).json({ error: "Datos inválidos" }); return; }
+  const { cursor, limit } = query.data;
+  const decoded = cursor ? decodeCursor(cursor) : null;
+  if (cursor && !decoded) { res.status(400).json({ error: "Cursor inválido" }); return; }
+  const conditions = [
+    eq(reflectionStoriesTable.userId, params.data.userId),
+    eq(reflectionStoriesTable.isPublic, true),
+  ];
+  if (decoded) {
+    conditions.push(or(
+      lt(reflectionStoriesTable.createdAt, decoded.createdAt),
+      and(eq(reflectionStoriesTable.createdAt, decoded.createdAt), lt(reflectionStoriesTable.id, decoded.id)),
+    )!);
+  }
+  try {
+    const rows = await db.select().from(reflectionStoriesTable).where(and(...conditions))
+      .orderBy(desc(reflectionStoriesTable.createdAt), desc(reflectionStoriesTable.id)).limit(limit + 1);
+    const items = rows.slice(0, limit);
+    res.set("Cache-Control", "private, no-store").json({
+      items: items.map(dto),
+      nextCursor: rows.length > limit ? encodeCursor(items[items.length - 1].createdAt, items[items.length - 1].id) : null,
+    });
+  } catch (error) {
+    req.log.error(error);
+    res.status(500).json({ error: "No se pudieron obtener las reflexiones" });
+  }
+});
+
+router.get("/users/:userId/reflection-stories/:id", requireAuth, async (req, res) => {
+  const parsed = GetUserReflectionStoryParams.safeParse(req.params);
+  if (!parsed.success) { res.status(400).json({ error: "Datos inválidos" }); return; }
+  try {
+    const [row] = await db.select().from(reflectionStoriesTable).where(and(
+      eq(reflectionStoriesTable.id, parsed.data.id),
+      eq(reflectionStoriesTable.userId, parsed.data.userId),
+      eq(reflectionStoriesTable.isPublic, true),
+    )).limit(1);
+    if (!row) { res.status(404).json({ error: "Reflexión no disponible" }); return; }
+    res.set("Cache-Control", "private, no-store").json(dto(row));
+  } catch (error) {
+    req.log.error(error);
+    res.status(500).json({ error: "No se pudo obtener la reflexión" });
+  }
+});
+
+router.patch("/me/reflection-stories/:id/visibility", requireAuth, async (req, res) => {
+  const params = SetMyReflectionStoryVisibilityParams.safeParse(req.params);
+  const input = SetMyReflectionStoryVisibilityBody.safeParse(req.body);
+  if (!params.success || !input.success) { res.status(400).json({ error: "Datos inválidos" }); return; }
+  const actor = req.currentUser!;
+  const owned = and(eq(reflectionStoriesTable.id, params.data.id), eq(reflectionStoriesTable.userId, actor.id));
+  try {
+    const [existing] = await db.select().from(reflectionStoriesTable).where(owned).limit(1);
+    if (!existing) { res.status(404).json({ error: "Historia no encontrada" }); return; }
+    if (input.data.isPublic && existing.avatarImagePath && !(await canUserReferenceObject({
+      objectPath: existing.avatarImagePath, userId: actor.id, clerkUserId: actor.clerkUserId, role: actor.role,
+    }))) {
+      res.status(409).json({ error: "La imagen de esta historia no puede hacerse pública" }); return;
+    }
+    const [row] = await db.update(reflectionStoriesTable).set({ isPublic: input.data.isPublic }).where(owned).returning();
+    if (!row) { res.status(404).json({ error: "Historia no encontrada" }); return; }
+    res.json(dto(row));
+  } catch (error) {
+    req.log.error(error);
+    res.status(500).json({ error: "No se pudo cambiar la visibilidad" });
+  }
+});
 
 router.get("/me/reflection-stories", requireAuth, async (req, res) => {
   const parsed = ListMyReflectionStoriesQueryParams.safeParse(req.query);

@@ -6,6 +6,10 @@ import {
   useDeleteMyReflectionStory,
   useGetMyReflectionStory,
   getGetMyReflectionStoryQueryKey,
+  getListMyReflectionStoriesQueryKey,
+  getListUserReflectionStoriesQueryKey,
+  getGetUserReflectionStoryQueryKey,
+  useSetMyReflectionStoryVisibility,
   type ReflectionStoryInput,
 } from "@workspace/api-client-react";
 import { useQueryClient } from "@tanstack/react-query";
@@ -28,6 +32,15 @@ export default function GalleryDetailScreen() {
   const storyId = Number(id);
   const validStoryId = Number.isInteger(storyId) && storyId > 0;
   const deleteMutation = useDeleteMyReflectionStory();
+  const visibilityMutation = useSetMyReflectionStoryVisibility({ mutation: {
+    onSuccess: (updated) => {
+      qc.setQueryData([...getGetMyReflectionStoryQueryKey(storyId), clerkUserId], updated);
+      void qc.invalidateQueries({ queryKey: getListMyReflectionStoriesQueryKey() });
+      void qc.invalidateQueries({ queryKey: getListUserReflectionStoriesQueryKey(updated.userId) });
+      void qc.invalidateQueries({ queryKey: getGetUserReflectionStoryQueryKey(updated.userId, updated.id) });
+    },
+    onError: () => Alert.alert("Visibilidad", "No se pudo cambiar la visibilidad de la historia. Inténtalo nuevamente."),
+  } });
 
   const { data: story, isLoading, isError, refetch } = useGetMyReflectionStory(storyId, {
     query: {
@@ -164,6 +177,26 @@ export default function GalleryDetailScreen() {
       previewOffsetY={0}
       closeOnLeft
       headerRightAction={(
+        <View style={{ flexDirection: "row", alignItems: "center", gap: 8 }}>
+          <Pressable
+            accessibilityRole="button"
+            accessibilityLabel={story.isPublic ? "Ocultar del perfil público" : "Mostrar en mi perfil público"}
+            disabled={visibilityMutation.isPending}
+            style={({ pressed }) => ({ flexDirection: "row", alignItems: "center", gap: 5, opacity: pressed || visibilityMutation.isPending ? 0.6 : 1 })}
+            onPress={() => {
+              const updateVisibility = () => visibilityMutation.mutate({ id: storyId, data: { isPublic: !story.isPublic } });
+              if (story.isPublic) updateVisibility();
+              else Alert.alert("Mostrar en mi perfil", "Otros usuarios podrán ver esta historia y su imagen en “Sus reflexiones”. Puedes ocultarla cuando quieras.", [
+                { text: "Cancelar", style: "cancel" },
+                { text: "Mostrar", onPress: updateVisibility },
+              ]);
+            }}
+          >
+            <Feather name={story.isPublic ? "eye" : "eye-off"} size={17} color="#F9F9F9" />
+            <Text style={{ fontFamily: "Manrope", fontSize: 11, color: "#F9F9F9" }}>
+              {visibilityMutation.isPending ? "Guardando…" : story.isPublic ? "Pública" : "Privada"}
+            </Text>
+          </Pressable>
         <Pressable
           accessibilityRole="button"
           accessibilityLabel="Borrar historia"
@@ -176,6 +209,7 @@ export default function GalleryDetailScreen() {
         >
           <Feather name="trash-2" size={19} color="#F9F9F9" />
         </Pressable>
+        </View>
       )}
       titleFontSize={15}
       lightInstagramButton

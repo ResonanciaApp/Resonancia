@@ -164,6 +164,32 @@ async function getOptionalUser(req: Parameters<typeof getAuth>[0]): Promise<User
   return user ?? null;
 }
 
+router.get("/mixes/:id", async (req, res) => {
+  const id = Number(req.params.id);
+  if (!Number.isInteger(id) || id <= 0 || id > 2147483647) {
+    res.status(400).json({ error: "Mezcla inválida" }); return;
+  }
+  try {
+    const me = await getOptionalUser(req);
+    const [row] = await db.select({ mix: sharedMixesTable, author: usersTable })
+      .from(sharedMixesTable).innerJoin(usersTable, eq(usersTable.id, sharedMixesTable.authorId))
+      .where(and(eq(sharedMixesTable.id, id), eq(sharedMixesTable.hidden, false))).limit(1);
+    if (!row) { res.status(404).json({ error: "Mezcla no disponible" }); return; }
+    const [like] = me ? await db.select({ id: sharedMixLikesTable.id }).from(sharedMixLikesTable)
+      .where(and(eq(sharedMixLikesTable.mixId, id), eq(sharedMixLikesTable.userId, me.id))).limit(1) : [];
+    const since = new Date(Date.now() - TRENDING_WINDOW_DAYS * 24 * 60 * 60 * 1000);
+    const [{ count: recentCount }] = await db.select({ count: sql<number>`count(*)::int` })
+      .from(sharedMixLikesTable).where(and(
+        eq(sharedMixLikesTable.mixId, id),
+        sql`${sharedMixLikesTable.createdAt} >= ${since.toISOString()}::timestamptz`,
+      ));
+    res.json(serialize(row.mix, row.author, !!like, me?.id ?? null, recentCount >= TRENDING_THRESHOLD));
+  } catch (error) {
+    req.log.error(error);
+    res.status(500).json({ error: "No se pudo obtener la mezcla" });
+  }
+});
+
 router.get("/mixes", async (req, res) => {
   const page = Math.max(1, parseInt(String(req.query.page ?? "1"), 10) || 1);
   const offset = (page - 1) * PAGE_SIZE;

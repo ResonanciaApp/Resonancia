@@ -35,6 +35,7 @@ import { useSceneTheme } from "@/context/SceneThemeContext";
 import { SceneThemeBackground } from "@/components/SceneThemeBackground";
 import { isIndigo2ThemeId } from "@/config/scene-themes";
 import { RoutineCompletionBanner } from "@/components/RoutineCompletionBanner";
+import { PublicProfileCarousels } from "@/components/PublicProfileCarousels";
 import {
   RoutineCompletionBannerProvider,
   useRoutineCompletionBanner,
@@ -247,7 +248,8 @@ function UsuarioProfile() {
                     styles.actionButton,
                     styles.actionSurface,
                     actionThemeStyle,
-                    { opacity: isFriend || pendingOutgoing || addFriend.isPending ? 0.6 : pressed ? 0.75 : 1 },
+                    (isFriend || pendingOutgoing) && { backgroundColor: "rgba(255,255,255,0.10)" },
+                    { opacity: addFriend.isPending ? 0.6 : pressed ? 0.75 : 1 },
                   ]}
                 >
                   <Feather name={isFriend ? "user-check" : "user-plus"} size={14} color={colors.foreground} />
@@ -294,6 +296,7 @@ function UsuarioProfile() {
             </Pressable>
           )}
         </View>
+        <PublicProfileCarousels key={userId} userId={userId} />
       </ScrollView>
       <RoutineCompletionBanner
         bottom={bottomPad + 22}
@@ -348,7 +351,7 @@ const styles = StyleSheet.create({
   },
   daysText: { fontFamily: "Manrope", fontSize: 10, fontWeight: "600" },
   lotus: { lineHeight: 12, includeFontPadding: false },
-  longDesc: { fontFamily: "Manrope", fontSize: 14, lineHeight: 21, textAlign: "center", marginTop: 12, paddingHorizontal: 4 },
+  longDesc: { fontFamily: "Manrope", fontSize: 14, lineHeight: 21, textAlign: "center", marginTop: 20, paddingHorizontal: 4 },
   actionsSection: { alignSelf: "stretch", gap: 8, marginTop: 28 },
   actionsRow: { flexDirection: "row", gap: 8 },
   actionSurface: {
