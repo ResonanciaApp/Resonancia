@@ -1221,22 +1221,6 @@ export function ProfileScreenBase({
           ]}
         >
           <View style={styles.profileStickyHeaderRow}>
-            <Animated.View
-              pointerEvents="none"
-              style={[
-                styles.profileStickyHeaderTitleGroup,
-                {
-                  transform: [{
-                    translateY: profileStickyHeaderOpacity.interpolate({
-                      inputRange: [0, 1],
-                      outputRange: [20, 0],
-                    }),
-                  }],
-                },
-              ]}
-            >
-              <Text style={[styles.profileStickyHeaderTitle, { color: colors.foreground }]}>Perfil</Text>
-            </Animated.View>
             <Pressable
               onPress={() => router.push("/configuracion-ajustes")}
               hitSlop={8}
@@ -1358,9 +1342,6 @@ export function ProfileScreenBase({
         disableScrollOnKeyboardHide
       >
         <View style={styles.dedicatedTitleRow}>
-          <View pointerEvents="none" style={styles.dedicatedTitleLeft}>
-            <Text style={[styles.dedicatedHeroTitle, { color: colors.foreground }]}>Perfil</Text>
-          </View>
           <View style={styles.profileHeaderActions}>
             <Pressable
               onPress={() => router.push("/configuracion-ajustes")}
@@ -1440,6 +1421,21 @@ export function ProfileScreenBase({
                   {description}
                 </Text>
               )}
+              <Pressable
+                onPress={() => router.push("/mi-perfil")}
+                testID="profile-edit-details"
+                accessibilityRole="button"
+                accessibilityLabel="Editar detalles en Mi cuenta"
+                style={({ pressed }) => [
+                  styles.profileEditDetailsButton,
+                  { opacity: pressed ? 0.7 : 1 },
+                ]}
+              >
+                <Feather name="edit-2" size={15} color={colors.foreground} />
+                <Text style={[styles.profileEditDetailsText, { color: colors.foreground }]}>
+                  Editar detalles
+                </Text>
+              </Pressable>
             </View>
           </View>
           {!isPremium && <ProfileMembershipBanner isPremium={isPremium} foregroundColor={colors.foreground} />}
@@ -2080,25 +2076,6 @@ const styles = StyleSheet.create({
     paddingTop: 7,
     paddingBottom: 6,
   },
-  profileStickyHeaderTitleGroup: {
-    position: "absolute",
-    left: 0,
-    right: 0,
-    top: 7,
-    height: 43,
-    flexDirection: "row",
-    alignItems: "center",
-    justifyContent: "center",
-    gap: 6,
-  },
-  profileStickyHeaderTitle: {
-    fontFamily: "Manrope",
-    fontSize: 18,
-    lineHeight: 21,
-    fontWeight: "700",
-    letterSpacing: 0.2,
-    textAlign: "center",
-  },
   profileStickySettingsButton: {
     position: "absolute",
     right: 16,
@@ -2154,24 +2131,6 @@ const styles = StyleSheet.create({
     paddingBottom: 10,
     paddingHorizontal: 16,
     marginHorizontal: -16,
-  },
-  dedicatedTitleLeft: {
-    position: "absolute",
-    left: 0,
-    right: 0,
-    top: 7,
-    height: 43,
-    flexDirection: "row",
-    alignItems: "center",
-    justifyContent: "center",
-  },
-  dedicatedHeroTitle: {
-    fontFamily: "Manrope",
-    fontSize: 18,
-    lineHeight: 21,
-    fontWeight: "700",
-    letterSpacing: 0.2,
-    textAlign: "center",
   },
   profileSettingsSections: {
     marginTop: 12,
@@ -2564,7 +2523,7 @@ const styles = StyleSheet.create({
     gap: 0,
   },
   // Desplazar el bloque en el flujo para que las secciones siguientes lo acompañen.
-  dedicatedProfileCard: { marginTop: 1 },
+  dedicatedProfileCard: { marginTop: 1 - 35 },
   // 20 px de padding inferior + 5 px de separación = 25 px hasta el fondo semanal.
   profileIdentityPreviewCard: { marginBottom: 5 },
   wisdomSection: {
@@ -2614,6 +2573,19 @@ const styles = StyleSheet.create({
   profileNameRow: { width: "100%", flexDirection: "row", alignItems: "center" },
   profileNameText: { flex: 1, minWidth: 0 },
   profileDescription: { fontFamily: "Manrope", fontSize: 12, lineHeight: 18, textAlign: "left", alignSelf: "stretch" },
+  profileEditDetailsButton: {
+    flexDirection: "row",
+    alignItems: "center",
+    alignSelf: "flex-start",
+    gap: 8,
+    // Los 6 px de gap del contenedor más este margen suman 15 px.
+    marginTop: 15 - 6,
+    paddingHorizontal: 14,
+    paddingVertical: 9,
+    borderRadius: 24,
+    backgroundColor: "rgba(255,255,255,0.1)",
+  },
+  profileEditDetailsText: { fontFamily: "Manrope", fontSize: 12, lineHeight: 18, fontWeight: "600" },
   locationRow: { flexDirection: "row", alignItems: "center", justifyContent: "center", gap: 4 },
   locationText: { fontFamily: "Manrope", fontSize: 12 },
   bioText: { fontFamily: "Manrope", fontSize: 13, lineHeight: 19, textAlign: "center", paddingHorizontal: 8, fontStyle: "italic" },

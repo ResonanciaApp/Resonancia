@@ -35,7 +35,7 @@ visit(ast);
 assert.ok(identity && userSection && styles);
 const styleProperties = styles.properties.filter(property =>
   ts.isPropertyAssignment(property)
-    && /^(profileCard|dedicatedProfileCard|profileIdentityPreviewCard|profileIdentityRow|dedicatedProfileIdentityRow|profileDetails|profileDescription|dedicatedProfileDetails|avatar.*|userName|profileName.*|profileEmail|profileLocationLeft|profileIntention.*|locationRow|locationText)$/.test(property.name.getText(ast)),
+    && /^(profileCard|dedicatedProfileCard|profileIdentityPreviewCard|profileIdentityRow|dedicatedProfileIdentityRow|profileDetails|profileDescription|profileEditDetails.*|dedicatedProfileDetails|avatar.*|userName|profileName.*|profileEmail|profileLocationLeft|profileIntention.*|locationRow|locationText)$/.test(property.name.getText(ast)),
 );
 const compiled = ts.transpileModule(`
   const PROFILE_CARD_BOTTOM_PADDING = ${source.match(/const PROFILE_CARD_BOTTOM_PADDING = (\d+);/)?.[1]};
@@ -80,6 +80,8 @@ const Native = (props: any) => {
     "data-pointer-events": props.pointerEvents,
     "data-translate-y": style.transform?.find((item: any) => "translateY" in item)?.translateY,
     "data-margin-bottom": style.marginBottom,
+    "data-margin-top": style.marginTop,
+    "data-background": style.backgroundColor,
   }, props.children);
 };
 const Pill = (props: any) => React.createElement(Native, { ...props, testID: "profile-intention-pill" }, "0 Días: Intención");
@@ -206,25 +208,22 @@ test("Premium membership overlays the bottom-right avatar corner without changin
   assert.doesNotMatch(render({ isPremium: false }), /profile-avatar-premium-badge|data-icon="star"/);
 });
 
-test("both Perfil titles are free of membership badges for free and Premium users", () => {
-  assert.equal(titleRows.length, 2);
-  const titleStyleProperties = styles!.properties.filter(property =>
-    ts.isPropertyAssignment(property) && /^(dedicatedTitleLeft|dedicatedHeroTitle|profileStickyHeaderTitleGroup|profileStickyHeaderTitle)$/.test(property.name.getText(ast)));
-  const titleCode = ts.transpileModule(`
-    const styles = { ${titleStyleProperties.map(property => property.getText(ast)).join(",")} };
-    function Titles({ isPremium }) {
-      const colors = { foreground: "#FFFFFF" };
-      const MEMBERSHIP_AURORA = { premium: { accent: "#E7B95C" } };
-      const profileStickyHeaderOpacity = { interpolate: () => 0 };
-      return <>${titleRows.map(row => row.getText(ast)).join("")}</>;
-    }
-  `, { compilerOptions: { jsx: ts.JsxEmit.React, module: ts.ModuleKind.CommonJS } }).outputText;
-  const Glass = () => React.createElement("span", { "data-testid": "premium-glass" });
-  const Titles = new Function("React", "View", "Text", "Animated", "SessionBadgeGlass", "MaterialCommunityIcons",
-    `${titleCode}\nreturn Titles;`)(React, Native, Native, { View: Native }, Glass, Native);
-  const premium = renderToStaticMarkup(React.createElement(Titles, { isPremium: true }));
-  assert.doesNotMatch(premium, /premium-badge|premium-glass|data-icon="star"/);
-  assert.equal((premium.match(/>Perfil</g) ?? []).length, 2);
-  const free = renderToStaticMarkup(React.createElement(Titles, { isPremium: false }));
-  assert.doesNotMatch(free, /premium-badge|premium-glass|data-icon="star"/);
+test("Perfil titles are removed from both headers without removing settings", () => {
+  assert.equal(titleRows.length, 0);
+  assert.doesNotMatch(source, />Perfil<\/Text>/);
+  assert.match(source, /testID="profile-open-settings"/);
+  assert.match(source, /testID="profile-sticky-open-settings"/);
+});
+
+test("Editar detalles follows the description and opens Mi cuenta for free and Premium users", () => {
+  for (const isPremium of [false, true]) {
+    let route = "";
+    const html = render({ isPremium, description: "Mi descripción", onNavigate: (next: string) => route = next });
+    assert.ok(html.indexOf('data-testid="profile-identity-description"') < html.indexOf('data-testid="profile-edit-details"'));
+    assert.ok(html.indexOf('data-icon="edit-2"') < html.indexOf("Editar detalles"));
+    assert.match(html, /data-testid="profile-edit-details"[^>]*data-direction="row"[^>]*data-margin-top="9"[^>]*data-background="rgba\(255,255,255,0.1\)"/);
+    presses.get("profile-edit-details")?.();
+    assert.equal(route, "/mi-perfil");
+  }
+  assert.match(render({ description: "" }), /profile-edit-details/);
 });

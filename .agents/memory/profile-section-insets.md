@@ -11,7 +11,7 @@ Todas las secciones de Perfil deben tener 18 px desde el borde superior hasta el
 
 Los desplazamientos verticales solicitados en Perfil, tanto del bloque de avatar y usuario como del historial de rachas, deben desplazar también todo el contenido posterior, conservando las separaciones entre secciones, salvo una instrucción explícita de «no empujes».
 
-**Why:** El usuario aclaró «hacia abajo y empuja todo» para el avatar y repitió «empuja todo» para los siete días de racha; no quería desplazamientos visuales aislados. Después pidió «arrastra todas» hacia arriba. Para el bloque de siete días sin título ni fondo, distinguió después dos ajustes: subir 15 px arrastrando y bajar 10 px sin empujar.
+**Why:** El usuario aclaró «hacia abajo y empuja todo» para el avatar y repitió «empuja todo» para los siete días de racha; no quería desplazamientos visuales aislados. Después pidió «arrastra todas» hacia arriba y reiteró «sube el avatar y arrastra todo lo de abajo». Para el bloque de siete días sin título ni fondo, distinguió después dos ajustes: subir 15 px arrastrando y bajar 10 px sin empujar.
 
 **How to apply:** Usar el flujo normal para «arrastra» o «empuja». Aplicar solo a la sección indicada una compensación visual cuando diga «no empujes», sin trasladarla al contenido posterior. Consultar la regla específica de los siete días en las notas de progreso de Perfil.
 

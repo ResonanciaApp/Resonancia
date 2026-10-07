@@ -33,37 +33,29 @@ function verticalInsets(styles: Record<string, any>) {
   };
 }
 
-test("both Perfil titles match Historial typography and center on the screen and settings button", () => {
-  const history = readFileSync(new URL("../app/historial.tsx", import.meta.url), "utf8");
-  const reference = history.match(/stickyTitleLibraryTab: \{([\s\S]*?)\n  \}/)?.[1];
-  assert.ok(reference);
-  const historyTitle = new Function(`return ({${reference}});`)();
-  for (const name of ["dedicatedHeroTitle", "profileStickyHeaderTitle"]) {
-    const title = style("ProfileScreenBase", name);
-    for (const property of ["fontFamily", "fontSize", "lineHeight", "fontWeight", "letterSpacing", "textAlign"]) {
-      assert.equal(title[property], historyTitle[property], `${name}.${property} matches Historial`);
-    }
-    assert.equal(title.transform, undefined);
-  }
+test("both settings buttons retain their placement without a Perfil title", () => {
+  const source = readFileSync(new URL("../components/ProfileScreenBase.tsx", import.meta.url), "utf8");
+  assert.doesNotMatch(source, />Perfil<\/Text>/);
   const gear = style("ProfileScreenBase", "gearBtn");
   const gearYOffset = gear.transform.reduce((sum: number, item: any) => sum + (item.translateY ?? 0), 0);
   const row = style("ProfileScreenBase", "dedicatedTitleRow");
   const stickyGear = style("ProfileScreenBase", "profileStickySettingsButton");
-  for (const [groupName, gearTop] of [
-    ["dedicatedTitleLeft", row.paddingTop],
-    ["profileStickyHeaderTitleGroup", stickyGear.top],
-  ] as const) {
-    const group = style("ProfileScreenBase", groupName);
-    assert.equal(group.position, "absolute");
-    assert.equal(group.left, 0);
-    assert.equal(group.right, 0);
-    assert.equal(group.justifyContent, "center");
-    assert.equal(group.top + group.height / 2, gearTop + gear.height / 2 + gearYOffset);
-    for (const width of [320, 375, 402, 768]) {
-      assert.equal(group.left + (width - group.left - group.right) / 2, width / 2);
-    }
-  }
+  assert.equal(gear.height, 43);
+  assert.equal(gearYOffset, 0);
+  assert.equal(row.paddingTop, stickyGear.top);
+  assert.equal(stickyGear.right, 16);
   assert.equal(style("ProfileScreenBase", "profileHeaderActions").marginLeft, "auto");
+});
+
+test("Editar detalles is a white ten-percent pill fifteen pixels below the description", () => {
+  const button = style("ProfileScreenBase", "profileEditDetailsButton");
+  const details = style("ProfileScreenBase", "profileDetails");
+  assert.equal(details.gap + button.marginTop, 15);
+  assert.equal(button.backgroundColor, "rgba(255,255,255,0.1)");
+  assert.equal(button.flexDirection, "row");
+  assert.equal(button.alignSelf, "flex-start");
+  assert.equal(button.borderWidth, undefined);
+  assert.ok(button.borderRadius >= (style("ProfileScreenBase", "profileEditDetailsText").lineHeight + button.paddingVertical * 2) / 2);
 });
 
 test("user section preserves its padding and avatar placement without an outline", () => {
@@ -166,9 +158,9 @@ test("username keeps 24 points and the new description leaves avatar and Premium
   assert.equal(style("ProfileScreenBase", "profileIdentityPreviewCard").marginBottom, 5);
 });
 
-test("the user section moves up 7px in normal flow, carrying subsequent sections without changing their gaps", () => {
+test("the user section moves up another 35px in normal flow, carrying subsequent sections without changing their gaps", () => {
   const card = style("ProfileScreenBase", "dedicatedProfileCard");
-  assert.equal(card.marginTop, 8 - 7);
+  assert.equal(card.marginTop, 8 - 7 - 35);
   assert.equal(card.transform, undefined);
   const avatar = style("ProfileScreenBase", "avatarImage");
   assert.equal(avatar.width, 79);
