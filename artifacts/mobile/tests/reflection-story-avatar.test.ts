@@ -40,8 +40,11 @@ test("preview and export share avatar geometry and wait for both images", () => 
   assert.match(read("../app/galeria-reflexiones/index.tsx"), /avatarUrl: item\.avatarImagePath/);
   assert.match(read("../app/galeria-reflexiones/[id].tsx"), /avatarImagePath: story\.avatarImagePath/);
   assert.match(read("../app/galeria-reflexiones/[id].tsx"), /avatarX: story\.avatarX/);
-  assert.match(read("../components/StoryAvatar.tsx"), /borderWidth: 1, borderColor: "rgba\(255,255,255,0\.4\)"/);
-  assert.match(read("../components/StoryAvatar.tsx"), /backgroundColor: "rgba\(0,0,0,0\.2\)"/);
+  const avatar = read("../components/StoryAvatar.tsx");
+  assert.doesNotMatch(avatar, /borderWidth|borderColor|backgroundColor|opacity|tintColor|pointerEvents="none"/);
+  assert.match(avatar, /source=\{imageSource\}/);
+  assert.equal((avatar.match(/<Image\b/g) ?? []).length, 1);
+  assert.equal((avatar.match(/<View\b/g) ?? []).length, 1);
 });
 
 test("free avatar movement keeps the full circle inside the image and changes the capture recipe", () => {

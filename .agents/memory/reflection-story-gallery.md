@@ -20,3 +20,9 @@ El avatar es una capa movible independiente: no queda unido al bloque de la fras
 **Why:** El usuario corrigió expresamente la colocación fija debajo de la frase: la persona debe poder elegir cualquier ubicación dentro de la imagen.
 
 **How to apply:** Mantener posición normalizada propia en vista previa, captura y receta guardada. Reservar el diseño antiguo debajo de la frase solo para historias previas sin coordenadas.
+
+El avatar dentro de la imagen compartida se muestra sin borde ni overlay, con sus colores originales.
+
+**Why:** El usuario pidió expresamente que fuera solo el avatar sin modificaciones.
+
+**How to apply:** No agregar tintes, oscurecimiento ni marcos a la capa del avatar en la vista previa o captura. Esta regla no cambia el indicador de selección del botón del compositor.

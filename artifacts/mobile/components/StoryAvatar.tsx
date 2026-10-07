@@ -43,10 +43,6 @@ export function StoryAvatar({ source, scale, onReady, onFailure }: {
       onError={onFailure}
       style={StyleSheet.absoluteFillObject}
     />
-    <View pointerEvents="none" style={[StyleSheet.absoluteFillObject, {
-      backgroundColor: "rgba(0,0,0,0.2)", borderWidth: 1, borderColor: "rgba(255,255,255,0.4)",
-      borderRadius: 62 * scale,
-    }]} />
     </View>
   );
 }
