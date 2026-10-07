@@ -7,4 +7,4 @@ Debajo del nombre de usuario en Perfil no va la píldora de Intención. Ese luga
 
 **Why:** El usuario pidió explícitamente reemplazar la píldora por una descripción propia editable en Mi cuenta, que solo se refleje en Perfil después de guardar.
 
-**How to apply:** Mantener separado el borrador del texto guardado y permitir guardar cambios de descripción aunque el nombre no cambie. No restaurar la píldora ni mostrar un texto ficticio cuando la descripción esté vacía. Conservar las otras entradas de Tu camino y el correo dentro de Mi cuenta, no bajo el usuario en Perfil. El usuario pidió que el ancho de la descripción termine 50 px antes del margen lateral derecho, sin desplazar el nombre ni la flecha.
+**How to apply:** Mantener separado el borrador del texto guardado y permitir guardar cambios de descripción aunque el nombre no cambie. No restaurar la píldora ni mostrar un texto ficticio cuando la descripción esté vacía. Conservar las otras entradas de Tu camino y el correo dentro de Mi cuenta, no bajo el usuario en Perfil.

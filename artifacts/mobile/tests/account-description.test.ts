@@ -7,6 +7,25 @@ import { limitProfileDescriptionLines } from "../lib/profileDescription.ts";
 
 const source = readFileSync(new URL("../components/ProfileScreenBase.tsx", import.meta.url), "utf8");
 const ast = ts.createSourceFile("ProfileScreenBase.tsx", source, ts.ScriptTarget.Latest, true, ts.ScriptKind.TSX);
+test("account screen is titled Editar detalles and starts with Nombre before the read-only email", () => {
+  assert.match(source, /<Text style=\{styles.stickyTitleLibraryTab\}>Editar detalles<\/Text>/);
+  assert.doesNotMatch(source, /<Text style=\{styles.stickyTitleLibraryTab\}>Mi cuenta<\/Text>/);
+  const fields: string[] = [];
+  function visit(node: ts.Node) {
+    if (ts.isJsxElement(node) && node.openingElement.tagName.getText(ast) === "View"
+      && /style=\{styles\.accountField\}/.test(node.openingElement.getText(ast))) fields.push(node.getText(ast));
+    ts.forEachChild(node, visit);
+  }
+  visit(ast);
+  assert.deepEqual(fields.map(field =>
+    field.match(/<Text style=\{styles.accountFieldLabel\}>\s*([^<]*)<\/Text>/)?.[1].trim()),
+  ["Nombre", "Correo electrónico", "Descripción"]);
+  assert.match(fields[0], /value=\{accountName\}/);
+  assert.match(fields[0], /onChangeText=\{setAccountName\}/);
+  assert.match(fields[1], /\{email \|\| "No disponible"\}/);
+  assert.doesNotMatch(fields[1], /<TextInput/);
+});
+
 function initializer(name: string): string {
   let value: string | undefined;
   function visit(node: ts.Node) {

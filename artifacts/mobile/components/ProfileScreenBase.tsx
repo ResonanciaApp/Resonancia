@@ -944,7 +944,7 @@ export function ProfileScreenBase({
                   style={{ transform: [{ translateX: -1 }] }}
                 />
               </Pressable>
-              <Text style={styles.stickyTitleLibraryTab}>Mi cuenta</Text>
+              <Text style={styles.stickyTitleLibraryTab}>Editar detalles</Text>
               <View style={styles.accountHeaderSpacer} />
             </View>
           </View>
@@ -981,17 +981,6 @@ export function ProfileScreenBase({
 
               <View style={styles.accountField}>
                 <Text style={styles.accountFieldLabel}>
-                  Correo electrónico
-                </Text>
-                <View style={styles.accountFieldValueBox}>
-                  <Text style={[styles.accountFieldValue, { color: colors.mutedForeground }]}>
-                    {email || "No disponible"}
-                  </Text>
-                </View>
-              </View>
-
-              <View style={styles.accountField}>
-                <Text style={styles.accountFieldLabel}>
                   Nombre
                 </Text>
                 <TextInput
@@ -1003,6 +992,17 @@ export function ProfileScreenBase({
                   autoCapitalize="words"
                   returnKeyType="done"
                 />
+              </View>
+
+              <View style={styles.accountField}>
+                <Text style={styles.accountFieldLabel}>
+                  Correo electrónico
+                </Text>
+                <View style={styles.accountFieldValueBox}>
+                  <Text style={[styles.accountFieldValue, { color: colors.mutedForeground }]}>
+                    {email || "No disponible"}
+                  </Text>
+                </View>
               </View>
 
               <View testID="account-description-section" style={styles.accountField}>
