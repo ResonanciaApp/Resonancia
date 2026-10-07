@@ -44,13 +44,13 @@ test("mix row shows only title and username with a four-pixel gap and separate a
   assert.match(carousel, /toggleLike\.mutate/);
 });
 
-test("top ten are ranked by real likes without mutating cache or changing tie order", () => {
+test("only the top five are ranked by real likes without mutating cache or changing tie order", () => {
   const mixes = Array.from({ length: 14 }, (_, id) => ({ id, likes: id % 7 }));
   const original = mixes.map(m => ({ ...m }));
   const top = getTopCommunityMixes(mixes);
-  assert.equal(TOP_COMMUNITY_MIX_LIMIT, 10);
-  assert.equal(top.length, 10);
-  assert.deepEqual(top.map(m => m.id), [6, 13, 5, 12, 4, 11, 3, 10, 2, 9]);
+  assert.equal(TOP_COMMUNITY_MIX_LIMIT, 5);
+  assert.equal(top.length, 5);
+  assert.deepEqual(top.map(m => m.id), [6, 13, 5, 12, 4]);
   assert.deepEqual(mixes, original);
   assert.deepEqual(getTopCommunityMixes([]), []);
   assert.equal(getTopCommunityMixes(mixes.slice(0, 2)).length, 2);
@@ -99,7 +99,7 @@ test("preview uses hydrated Profile avatars, stays stable on rerenders, and is d
   assert.ok(expression);
   const profileCatalog = Array.from({ length: 14 }, (_, id) => ({ source: { uri: `/profile/${id}` } }));
   const preview = runInNewContext(expression, { __DEV__: true, profileCatalogHydrated: true, profileCatalog, selectRandomCommunityAvatars });
-  assert.equal(preview.length, 10);
+  assert.equal(preview.length, TOP_COMMUNITY_MIX_LIMIT);
   for (const state of [{ __DEV__: false, profileCatalogHydrated: true }, { __DEV__: true, profileCatalogHydrated: false }]) {
     const result = runInNewContext(expression, {
       ...state,

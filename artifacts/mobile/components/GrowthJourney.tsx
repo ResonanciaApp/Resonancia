@@ -3,7 +3,7 @@ import { Asset } from "expo-asset";
 import React, { useEffect, useState } from "react";
 import { Image, Platform, Pressable, StyleSheet, Text, View } from "react-native";
 
-import { CLOUDY_GROWTH_DAY_PILL_BACKGROUND, CLOUDY_GROWTH_STAGE_LABEL_COLOR, MEMBERSHIP_AURORA, POSITIONED_DAY_GRADIENT } from "@/constants/colors";
+import { CLOUDY_GROWTH_ASCENT_TOGGLE_COLOR, CLOUDY_GROWTH_DAY_PILL_BACKGROUND, CLOUDY_GROWTH_STAGE_LABEL_COLOR, MEMBERSHIP_AURORA, POSITIONED_DAY_GRADIENT } from "@/constants/colors";
 import { CinematicFadeSlide } from "@/components/CinematicFadeSlide";
 import { getPositionedDayGradient } from "@/components/StreakWeekRow";
 import { ascentLevels, growthLevels, type GrowthLevel } from "@/data/growthLevels";
@@ -393,7 +393,7 @@ function GrowthStageHeading({
   const { theme } = useSceneTheme();
   return (
     <View style={[styles.sectionHeading, second && styles.secondStageHeading]}>
-      <Text style={[styles.sectionEyebrow, theme.id === "cloudy" && { color: second ? CLOUDY_GROWTH_STAGE_LABEL_COLOR : "#B5EFFF" }]}>{eyebrow}</Text>
+      <Text style={[styles.sectionEyebrow, theme.id === "cloudy" && { color: CLOUDY_GROWTH_STAGE_LABEL_COLOR }]}>{eyebrow}</Text>
       <Text
         style={[styles.sectionTitle, { color: colors.foreground }]}
         accessibilityRole="header"
@@ -422,6 +422,8 @@ function GrowthTimeline({ children }: { children: React.ReactNode }) {
 
 export function GrowthJourney({ onIntentionPress }: { onIntentionPress?: () => void } = {}) {
   const [ascentExpanded, setAscentExpanded] = useState(false);
+  const { theme } = useSceneTheme();
+  const ascentToggleColor = theme.id === "cloudy" ? CLOUDY_GROWTH_ASCENT_TOGGLE_COLOR : GROWTH_COLORS.line;
   // Visual preview: Intención is the only active level until progression is enabled.
 
   return (
@@ -455,8 +457,8 @@ export function GrowthJourney({ onIntentionPress }: { onIntentionPress?: () => v
         accessibilityState={{ expanded: ascentExpanded }}
         testID="growth-ascent-toggle"
       >
-        <Text style={styles.ascentToggleText}>{ascentExpanded ? "Ocultar niveles" : "Próximamente"}</Text>
-        <Feather name={ascentExpanded ? "chevron-up" : "chevron-down"} size={16} color={GROWTH_COLORS.line} />
+        <Text style={[styles.ascentToggleText, { color: ascentToggleColor }]}>{ascentExpanded ? "Ocultar niveles" : "Próximamente"}</Text>
+        <Feather name={ascentExpanded ? "chevron-up" : "chevron-down"} size={16} color={ascentToggleColor} />
       </Pressable>
       {ascentExpanded && (
         <GrowthTimeline>

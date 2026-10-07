@@ -137,7 +137,8 @@ const mocks: Record<string, unknown> = {
   "expo-asset": { Asset: { fromModule: () => ({ localUri: null, downloadAsync: async () => {} }) } },
   "@/constants/colors": {
     CLOUDY_GROWTH_DAY_PILL_BACKGROUND: "rgba(128,171,231,0.20)",
-    CLOUDY_GROWTH_STAGE_LABEL_COLOR: "#BDBDBD",
+    CLOUDY_GROWTH_STAGE_LABEL_COLOR: "#B5EFFF",
+    CLOUDY_GROWTH_ASCENT_TOGGLE_COLOR: "#F9F9F9",
     MEMBERSHIP_AURORA: { premium: { accent: "#BE9650" } },
     POSITIONED_DAY_GRADIENT: ["#C9A6FF"],
   },
@@ -299,16 +300,18 @@ test("Cloudy's Tu camino day pills use a more sky-blue Indigo tint in both timel
   }
 });
 
-test("Cloudy uses B5EFFF only for Primera etapa without changing other themes or the second stage", () => {
+test("Cloudy matches both stage labels in sky blue and uses F9F9F9 for the ascent toggle, preserving other themes", () => {
   const sceneMock = mocks["@/context/SceneThemeContext"] as { useSceneTheme: () => { theme: { id: string } } };
   for (const id of ["cloudy", "cloudy2", "indigo2", "tibet"]) {
     sceneMock.useSceneTheme = () => ({ theme: { id, gradient: TEST_GRADIENT } });
     const html = renderToStaticMarkup(React.createElement(componentModule.exports.GrowthJourney));
-    const expected = id === "cloudy" ? "#BDBDBD" : "#C9A6FF";
+    const expected = id === "cloudy" ? "#B5EFFF" : "#C9A6FF";
     for (const label of ["PRIMERA ETAPA", "SEGUNDA ETAPA"]) {
-      const labelColor = id === "cloudy" && label === "PRIMERA ETAPA" ? "#B5EFFF" : expected;
-      assert.match(html, new RegExp(`data-color="${labelColor.replace(/[()]/g, "\\$&")}"[^>]*>${label}`));
+      assert.match(html, new RegExp(`data-color="${expected.replace(/[()]/g, "\\$&")}"[^>]*>${label}`));
     }
+    const toggleColor = id === "cloudy" ? "#F9F9F9" : "#C9A6FF";
+    assert.match(html, new RegExp(`data-color="${toggleColor}"[^>]*>Próximamente`));
+    assert.match(html, new RegExp(`data-icon="chevron-down" data-color="${toggleColor}"`));
     assert.match(html, /Florecimiento/);
     assert.match(html, /El ascenso/);
   }

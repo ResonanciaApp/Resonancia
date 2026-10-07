@@ -1,4 +1,4 @@
-export const TOP_COMMUNITY_MIX_LIMIT = 10;
+export const TOP_COMMUNITY_MIX_LIMIT = 5;
 
 /** Keep server order for ties, and never mutate cached query data. */
 export function getTopCommunityMixes<T extends { likes?: number | null }>(mixes: readonly T[]): T[] {
