@@ -49,7 +49,7 @@ test("a large avatar catalog cannot enlarge the sheet beyond the screen", () => 
   const headerHeight = handle.marginTop + handle.height + handle.marginBottom + findStyle("accountCoverHeader").minHeight;
   for (const viewportHeight of [568, 640, 874, 1024]) {
     const sheetHeight = viewportHeight * 0.85;
-    const listHeight = sheetHeight - headerHeight - hero.height - 42 - 54;
+    const listHeight = sheetHeight - headerHeight - hero.height - 54;
     assert.ok(listHeight > 63, `a usable scroll area remains at ${viewportHeight}px`);
     for (const avatars of [26, 86, 200]) {
       const contentHeight = Math.ceil(avatars / 5) * 75 + 46;
@@ -57,6 +57,46 @@ test("a large avatar catalog cannot enlarge the sheet beyond the screen", () => 
       assert.ok(sheetHeight < viewportHeight);
     }
   }
+});
+
+test("photo upload is an icon-only 43px circle to the left of Portada, preserving the title and close control", () => {
+  const header = source.slice(source.indexOf("<View style={styles.accountCoverHeader}>"), source.indexOf("<View style={styles.accountCoverPreviewSlot}>"));
+  assert.match(header, /accountCoverUploadButton[\s\S]*?<Feather name="image" size=\{18\} color="#F9F9F9" \/>[\s\S]*?<Text style=\{styles.accountCoverTitle\}>Portada<\/Text>[\s\S]*?accountCoverCloseButton/);
+  assert.equal((source.match(/style=\{styles.accountCoverUploadButton\}/g) ?? []).length, 1);
+  assert.doesNotMatch(source, /accountCoverUploadText/);
+  assert.match(header, /accessibilityRole="button"\s+accessibilityLabel="Elegir una foto"/);
+  const button = findStyle("accountCoverUploadButton");
+  assert.equal(button.width, 43);
+  assert.equal(button.height, 43);
+  assert.equal(button.borderRadius, 21.5);
+  assert.equal(button.position, "absolute");
+  assert.equal(button.left, 0);
+  assert.equal(button.borderWidth, 0);
+  assert.equal(button.backgroundColor, "rgba(0,0,0,0.16)");
+  assert.equal(findStyle("accountCoverTitle").textAlign, "center");
+  assert.equal(findStyle("accountCoverCloseButton").right, 0);
+});
+
+test("upload action waits for the selector dismissal before requesting the photo library", () => {
+  let button: ts.JsxElement | undefined;
+  function visit(node: ts.Node) {
+    if (ts.isJsxElement(node) && node.openingElement.tagName.getText(ast) === "Pressable"
+      && node.openingElement.attributes.getText(ast).includes("styles.accountCoverUploadButton")) button = node;
+    ts.forEachChild(node, visit);
+  }
+  visit(ast);
+  assert.ok(button);
+  const press = button.openingElement.attributes.properties.find(node => ts.isJsxAttribute(node) && node.name.getText(ast) === "onPress");
+  assert.ok(press && ts.isJsxAttribute(press) && press.initializer && ts.isJsxExpression(press.initializer) && press.initializer.expression);
+  const js = ts.transpileModule(`return (${press.initializer.expression.getText(ast)});`, {}).outputText;
+  const calls: unknown[] = [];
+  new Function("setAccountPhotoLibraryPending", "setAccountPhotoPickerVisible", js)(
+    (pending: boolean) => calls.push(["pending", pending]),
+    (visible: boolean) => calls.push(["visible", visible]),
+  )();
+  assert.deepEqual(calls, [["pending", true], ["visible", false]]);
+  assert.doesNotMatch(press.initializer.expression.getText(ast), /pickPhoto/);
+  assert.match(source, /onDismiss=\{\(\) => \{[\s\S]*?if \(!accountPhotoLibraryPending\) return;[\s\S]*?requestAnimationFrame[\s\S]*?void pickPhoto\(\)/);
 });
 
 test("opening and reopening the actual picker resets its own avatar list to the first row", () => {

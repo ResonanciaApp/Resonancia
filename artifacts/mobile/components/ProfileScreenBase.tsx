@@ -1053,6 +1053,18 @@ export function ProfileScreenBase({
               />
               <View style={styles.accountCoverHandle} />
               <View style={styles.accountCoverHeader}>
+                <Pressable
+                  style={styles.accountCoverUploadButton}
+                  onPress={() => {
+                    setAccountPhotoLibraryPending(true);
+                    setAccountPhotoPickerVisible(false);
+                  }}
+                  hitSlop={8}
+                  accessibilityRole="button"
+                  accessibilityLabel="Elegir una foto"
+                >
+                  <Feather name="image" size={18} color="#F9F9F9" />
+                </Pressable>
                 <Text style={styles.accountCoverTitle}>Portada</Text>
                 <Pressable
                   onPress={() => setAccountPhotoPickerVisible(false)}
@@ -1086,16 +1098,6 @@ export function ProfileScreenBase({
                   </View>
                 )}
               </View>
-              <Pressable
-                style={styles.accountCoverUploadButton}
-                onPress={() => {
-                  setAccountPhotoLibraryPending(true);
-                  setAccountPhotoPickerVisible(false);
-                }}
-              >
-                <Feather name="image" size={18} color="#F9F9F9" />
-                <Text style={styles.accountCoverUploadText}>Elegir una foto</Text>
-              </Pressable>
               <FlatList
                 ref={accountAvatarGridRef}
                 style={styles.accountCoverPresetGrid}
@@ -2348,25 +2350,15 @@ const styles = StyleSheet.create({
     borderRadius: 57.75,
   },
   accountCoverUploadButton: {
-    minWidth: 190,
-    minHeight: 42,
-    alignSelf: "center",
-    flexDirection: "row",
+    position: "absolute",
+    left: 0,
+    width: 43,
+    height: 43,
     alignItems: "center",
     justifyContent: "center",
-    gap: 9,
-    paddingHorizontal: 18,
-    paddingVertical: 10,
-    borderRadius: 21,
-    borderWidth: 1,
-    borderColor: "rgba(255,255,255,0.2)",
+    borderRadius: 21.5,
+    borderWidth: 0,
     backgroundColor: "rgba(0,0,0,0.16)",
-  },
-  accountCoverUploadText: {
-    fontFamily: "Manrope",
-    color: "#F9F9F9",
-    fontSize: 14,
-    fontWeight: "600",
   },
   accountCoverPresetGrid: {
     flex: 1,
