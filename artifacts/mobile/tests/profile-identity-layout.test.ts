@@ -11,7 +11,11 @@ const ast = ts.createSourceFile("ProfileScreenBase.tsx", source, ts.ScriptTarget
 let identity: ts.JsxElement | undefined;
 let userSection: ts.JsxElement | undefined;
 let styles: ts.ObjectLiteralExpression | undefined;
+const titleRows: ts.JsxElement[] = [];
 function visit(node: ts.Node) {
+  if (ts.isJsxElement(node) && /styles\.(dedicatedTitleLeft|profileStickyHeaderTitleGroup)\b/.test(node.openingElement.getText(ast))) {
+    titleRows.push(node);
+  }
   if (ts.isJsxElement(node) && node.openingElement.attributes.properties.some(
     attribute => ts.isJsxAttribute(attribute) && attribute.name.getText(ast) === "testID"
       && attribute.initializer && ts.isStringLiteral(attribute.initializer)
@@ -65,6 +69,10 @@ const Native = (props: any) => {
     "data-ellipsis": props.ellipsizeMode,
     "data-icon": props.name,
     "data-width": style.width,
+    "data-gap": style.gap,
+    "data-height": style.height,
+    "data-radius": style.borderRadius,
+    "data-overflow": style.overflow,
     "data-margin-bottom": style.marginBottom,
   }, props.children);
 };
@@ -79,7 +87,7 @@ const render = (props: Record<string, unknown> = {}) => {
   return renderToStaticMarkup(React.createElement(Identity, props));
 };
 
-test("free users see Prueba Premium below their identity, while Premium users retain only the avatar star and compact layout", () => {
+test("free users see Prueba Premium below their identity, while Premium users retain the compact layout without an avatar star", () => {
   const free = render({ isPremium: false });
   assert.match(free, /profile-premium-banner/);
   assert.match(free, /Prueba Premium/);
@@ -88,7 +96,7 @@ test("free users see Prueba Premium below their identity, while Premium users re
   assert.match(free, /data-testid="profile-user-section"[^>]*data-margin-bottom="21"/);
   const premium = render({ isPremium: true });
   assert.doesNotMatch(premium, /profile-premium-banner|Prueba Premium/);
-  assert.match(premium, /profile-avatar-premium-badge/);
+  assert.doesNotMatch(premium, /profile-avatar-premium-badge|data-icon="star"/);
   assert.match(premium, /data-testid="profile-user-section"[^>]*data-margin-bottom="5"/);
 });
 
@@ -175,7 +183,7 @@ test("missing email and an empty description do not get placeholder content", ()
   assert.doesNotMatch(other, /profile-intention-pill/);
 });
 
-test("Premium star and glass shrink by 5 points each, retaining their center and avatar navigation", () => {
+test("Premium membership no longer overlays the avatar or changes its navigation", () => {
   let route = "";
   let journey = false;
   const html = render({ isPremium: true, onNavigate: (next: string) => route = next, onJourney: (open: boolean) => journey = open });
@@ -184,11 +192,37 @@ test("Premium star and glass shrink by 5 points each, retaining their center and
   assert.equal(route, "/mi-perfil");
   assert.equal(journey, false);
   assert.doesNotMatch(html, /profile-intention-pill/);
-  assert.match(html, /data-testid="profile-avatar-premium-badge"/);
-  assert.match(html, /data-icon="star"/);
+  assert.doesNotMatch(html, /profile-avatar-premium-badge|data-icon="star"/);
   assert.match(source, /<SessionBadgeGlass showBlackTint=\{false\} showWhiteTint \/>/);
   assert.match(source, /<MaterialCommunityIcons name="star" size=\{19\} color=\{MEMBERSHIP_AURORA\.premium\.accent\} \/>/);
-  assert.match(source, /avatarPremiumBadge:\s*\{\s*position: "absolute",\s*left: -4,\s*top: -4,\s*width: 26,\s*height: 26,\s*borderRadius: 13,\s*overflow: "hidden"/);
-  assert.equal(-4 + 26 / 2, -6.5 + 31 / 2, "badge center remains unchanged");
+  assert.match(source, /titlePremiumBadge:\s*\{\s*width: 26,\s*height: 26,\s*borderRadius: 13,\s*overflow: "hidden"/);
   assert.doesNotMatch(render({ isPremium: false }), /profile-avatar-premium-badge|data-icon="star"/);
+});
+
+test("both Perfil titles place Premium star and its glass six pixels to the right, only for Premium users", () => {
+  assert.equal(titleRows.length, 2);
+  const titleStyleProperties = styles!.properties.filter(property =>
+    ts.isPropertyAssignment(property) && /^(dedicatedTitleLeft|dedicatedHeroTitle|profileStickyHeaderTitleGroup|profileStickyHeaderTitle|titlePremiumBadge)$/.test(property.name.getText(ast)));
+  const titleCode = ts.transpileModule(`
+    const styles = { ${titleStyleProperties.map(property => property.getText(ast)).join(",")} };
+    function Titles({ isPremium }) {
+      const colors = { foreground: "#FFFFFF" };
+      const MEMBERSHIP_AURORA = { premium: { accent: "#E7B95C" } };
+      const profileStickyHeaderOpacity = { interpolate: () => 0 };
+      return <>${titleRows.map(row => row.getText(ast)).join("")}</>;
+    }
+  `, { compilerOptions: { jsx: ts.JsxEmit.React, module: ts.ModuleKind.CommonJS } }).outputText;
+  const Glass = () => React.createElement("span", { "data-testid": "premium-glass" });
+  const Titles = new Function("React", "View", "Text", "Animated", "SessionBadgeGlass", "MaterialCommunityIcons",
+    `${titleCode}\nreturn Titles;`)(React, Native, Native, { View: Native }, Glass, Native);
+  const premium = renderToStaticMarkup(React.createElement(Titles, { isPremium: true }));
+  assert.equal((premium.match(/data-icon="star"/g) ?? []).length, 2);
+  assert.equal((premium.match(/data-testid="premium-glass"/g) ?? []).length, 2);
+  assert.equal((premium.match(/data-direction="row" data-align="center"[^>]*data-gap="6"/g) ?? []).length, 2);
+  for (const id of ["profile-title-premium-badge", "profile-sticky-title-premium-badge"]) {
+    assert.match(premium, new RegExp(`Perfil</div><div data-testid="${id}"`));
+    assert.match(premium, new RegExp(`data-testid="${id}"[^>]*data-width="26"[^>]*data-height="26"[^>]*data-radius="13"[^>]*data-overflow="hidden"`));
+  }
+  const free = renderToStaticMarkup(React.createElement(Titles, { isPremium: false }));
+  assert.doesNotMatch(free, /premium-badge|premium-glass|data-icon="star"/);
 });

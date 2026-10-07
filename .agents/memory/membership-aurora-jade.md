@@ -1,13 +1,13 @@
 ---
 name: Membresía Aurora jade-gold
-description: Insignia del avatar en Perfil y acentos Premium de las demás superficies.
+description: Insignia junto al título de Perfil y acentos Premium de las demás superficies.
 ---
 
-En Perfil, las cuentas gratuitas deben ver «Prueba Premium» debajo del bloque de usuario. Para miembros Premium, el banner queda oculto y la membresía se indica solo con la estrella de vidrio sobre el avatar. El chevron de Mi cuenta permanece al margen lateral derecho y centrado a la altura del nombre, no del conjunto nombre + píldora; el avatar se alinea con el margen lateral izquierdo.
+En Perfil, las cuentas gratuitas deben ver «Prueba Premium» debajo del bloque de usuario. Para miembros Premium, el banner queda oculto y la membresía se indica con la estrella y su vidrio a la derecha del título «Perfil», separados por 6 px, nunca sobre el avatar. El chevron de Mi cuenta permanece al margen lateral derecho y centrado a la altura del nombre, no del conjunto nombre + píldora; el avatar se alinea con el margen lateral izquierdo.
 
-**Why:** El usuario aclaró que ocultar el banner era solo para miembros Premium, no para cuentas gratuitas. La estrella del avatar evita repetir la membresía en un banner. Solicitó alinear el chevron con el título del usuario. También pidió bajar la semana y todo lo que sigue sin mover el avatar; la separación anterior de 25 px ya no es fija.
+**Why:** El usuario aclaró que ocultar el banner era solo para miembros Premium, no para cuentas gratuitas. El 7 de octubre de 2026 pidió mover estrella y fondo desde el avatar al título, con 6 px de separación. Solicitó alinear el chevron con el título del usuario. También pidió bajar la semana y todo lo que sigue sin mover el avatar; la separación anterior de 25 px ya no es fija.
 
-**How to apply:** Mantener el banner de prueba integrado al bloque de usuario para cuentas gratuitas, no como tarjeta independiente. Conservar el diseño compacto y la estrella del avatar para miembros Premium, sin recuperar «Tu Premium» debajo del usuario. El acceso Premium del drawer es independiente de esta regla.
+**How to apply:** Mantener el banner de prueba integrado al bloque de usuario para cuentas gratuitas, no como tarjeta independiente. Conservar el diseño compacto y la insignia junto al título, incluido el header al hacer scroll, sin recuperar «Tu Premium» debajo del usuario. El acceso Premium del drawer es independiente de esta regla.
 
 Inicio no muestra estrella de membresía sobre el avatar, tampoco para usuarios Premium. Perfil conserva su estrella y el drawer no cambia.
 

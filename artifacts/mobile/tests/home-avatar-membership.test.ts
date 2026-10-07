@@ -14,9 +14,10 @@ test("Inicio keeps its interactive avatar without a Premium star", () => {
   assert.doesNotMatch(source, /inicio2HeroPremiumBadge/);
 });
 
-test("Perfil retains its independent Premium avatar badge", () => {
+test("Perfil shows its independent Premium title badge, never on the avatar", () => {
   const profile = readFileSync(new URL("../components/ProfileScreenBase.tsx", import.meta.url), "utf8");
-  assert.match(profile, /testID="profile-avatar-premium-badge"/);
+  assert.match(profile, /testID="profile-title-premium-badge"/);
+  assert.doesNotMatch(profile, /profile-avatar-premium-badge/);
 });
 
 test("Inicio uses the same avatar border color as Perfil without changing its thickness", () => {

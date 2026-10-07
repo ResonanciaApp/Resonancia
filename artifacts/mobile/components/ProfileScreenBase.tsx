@@ -1219,12 +1219,11 @@ export function ProfileScreenBase({
           ]}
         >
           <View style={styles.profileStickyHeaderRow}>
-            <Animated.Text
+            <Animated.View
               pointerEvents="none"
               style={[
-                styles.profileStickyHeaderTitle,
+                styles.profileStickyHeaderTitleGroup,
                 {
-                  color: colors.foreground,
                   transform: [{
                     translateY: profileStickyHeaderOpacity.interpolate({
                       inputRange: [0, 1],
@@ -1234,8 +1233,14 @@ export function ProfileScreenBase({
                 },
               ]}
             >
-              Perfil
-            </Animated.Text>
+              <Text style={[styles.profileStickyHeaderTitle, { color: colors.foreground }]}>Perfil</Text>
+              {isPremium && (
+                <View testID="profile-sticky-title-premium-badge" style={styles.titlePremiumBadge}>
+                  <SessionBadgeGlass showBlackTint={false} showWhiteTint />
+                  <MaterialCommunityIcons name="star" size={19} color={MEMBERSHIP_AURORA.premium.accent} />
+                </View>
+              )}
+            </Animated.View>
             <Pressable
               onPress={() => router.push("/configuracion-ajustes")}
               hitSlop={8}
@@ -1359,6 +1364,12 @@ export function ProfileScreenBase({
         <View style={styles.dedicatedTitleRow}>
           <View style={styles.dedicatedTitleLeft}>
             <Text style={[styles.dedicatedHeroTitle, { color: colors.foreground }]}>Perfil</Text>
+            {isPremium && (
+              <View testID="profile-title-premium-badge" pointerEvents="none" style={styles.titlePremiumBadge}>
+                <SessionBadgeGlass showBlackTint={false} showWhiteTint />
+                <MaterialCommunityIcons name="star" size={19} color={MEMBERSHIP_AURORA.premium.accent} />
+              </View>
+            )}
           </View>
           <View style={styles.profileHeaderActions}>
             <Pressable
@@ -1398,12 +1409,6 @@ export function ProfileScreenBase({
                 </View>
               )}
               <View pointerEvents="none" style={styles.avatarOuterBorder} />
-              {isPremium && (
-                <View testID="profile-avatar-premium-badge" pointerEvents="none" style={styles.avatarPremiumBadge}>
-                  <SessionBadgeGlass showBlackTint={false} showWhiteTint />
-                  <MaterialCommunityIcons name="star" size={19} color={MEMBERSHIP_AURORA.premium.accent} />
-                </View>
-              )}
             </Pressable>
 
             {/* Name + details */}
@@ -2090,11 +2095,18 @@ const styles = StyleSheet.create({
     paddingTop: 7,
     paddingBottom: 6,
   },
-  profileStickyHeaderTitle: {
+  profileStickyHeaderTitleGroup: {
     position: "absolute",
     left: 0,
     right: 0,
     top: 16,
+    height: 22,
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "center",
+    gap: 6,
+  },
+  profileStickyHeaderTitle: {
     fontFamily: "Manrope",
     fontSize: 18,
     lineHeight: 22,
@@ -2160,6 +2172,7 @@ const styles = StyleSheet.create({
   dedicatedTitleLeft: {
     flexDirection: "row",
     alignItems: "center",
+    gap: 6,
   },
   dedicatedHeroTitle: {
     fontFamily: "Manrope",
@@ -2600,10 +2613,7 @@ const styles = StyleSheet.create({
     borderWidth: 3,
     borderColor: "rgba(255,255,255,0.25)",
   },
-  avatarPremiumBadge: {
-    position: "absolute",
-    left: -4,
-    top: -4,
+  titlePremiumBadge: {
     width: 26,
     height: 26,
     borderRadius: 13,

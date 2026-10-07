@@ -643,20 +643,22 @@ test("settings statistics contain the existing stats and range filter without st
 test("Perfil keeps settings accessible in its sticky header and uses the 75-point avatar", () => {
   const source = readFileSync(new URL("../components/ProfileScreenBase.tsx", import.meta.url), "utf8");
   const headerStart = source.indexOf("<View style={styles.profileStickyHeaderRow}>");
-  const header = source.slice(headerStart, source.indexOf("</View>", headerStart));
+  const header = source.slice(headerStart, source.indexOf("\n        </Animated.View>", headerStart));
   assert.match(header, /testID="profile-sticky-open-settings"/);
   assert.match(header, /onPress=\{\(\) => router.push\("\/configuracion-ajustes"\)\}/);
   assert.match(header, /<Feather name="settings" size=\{21\}/);
   assert.match(header, /accessibilityLabel="Abrir ajustes"/);
   assert.match(header, /pointerEvents="none"/);
   const titleStyle = source.match(/profileStickyHeaderTitle:\s*\{([\s\S]*?)\n  \},/)?.[1] ?? "";
+  const titleGroupStyle = source.match(/profileStickyHeaderTitleGroup:\s*\{([\s\S]*?)\n  \},/)?.[1] ?? "";
   const discover = readFileSync(new URL("../app/(tabs)/explore.tsx", import.meta.url), "utf8");
   const discoverTitleStyle = discover.match(/stickyTitle:\s*\{([\s\S]*?)\n  \},/)?.[1] ?? "";
   for (const property of ["position", "left", "right", "top", "fontFamily", "fontSize", "lineHeight", "fontWeight", "letterSpacing", "textAlign"]) {
     const pattern = new RegExp(`${property}:\\s*([^,\\n]+)`);
     const reference = discoverTitleStyle.match(pattern)?.[1];
     assert.ok(reference, `Descubrir defines ${property}`);
-    assert.equal(titleStyle.match(pattern)?.[1], reference, `sticky title matches Descubrir: ${property}`);
+    const targetStyle = ["position", "left", "right", "top"].includes(property) ? titleGroupStyle : titleStyle;
+    assert.equal(targetStyle.match(pattern)?.[1], reference, `sticky title matches Descubrir: ${property}`);
   }
   assert.match(source, /avatarCircle:\s*\{\s*width: 75,\s*height: 75,\s*borderRadius: 37\.5/);
   assert.match(source, /avatarImage:\s*\{\s*width: 75,\s*height: 75,\s*borderRadius: 37\.5/);
