@@ -39,7 +39,7 @@ test("both settings buttons retain their placement without a Perfil title", () =
   const gear = style("ProfileScreenBase", "gearBtn");
   const gearYOffset = gear.transform.reduce((sum: number, item: any) => sum + (item.translateY ?? 0), 0);
   const row = style("ProfileScreenBase", "dedicatedTitleRow");
-  const stickyGear = style("ProfileScreenBase", "profileStickySettingsButton");
+  const stickyGear = style("ProfileScreenBase", "profileStickyHeaderActions");
   assert.equal(gear.height, 43);
   assert.equal(gearYOffset, 0);
   assert.equal(row.paddingTop, stickyGear.top);
@@ -47,15 +47,13 @@ test("both settings buttons retain their placement without a Perfil title", () =
   assert.equal(style("ProfileScreenBase", "profileHeaderActions").marginLeft, "auto");
 });
 
-test("Editar detalles is a white ten-percent pill fifteen pixels below the description", () => {
-  const button = style("ProfileScreenBase", "profileEditDetailsButton");
-  const details = style("ProfileScreenBase", "profileDetails");
-  assert.equal(details.gap + button.marginTop, 15);
-  assert.equal(button.backgroundColor, "rgba(255,255,255,0.1)");
-  assert.equal(button.flexDirection, "row");
-  assert.equal(button.alignSelf, "flex-start");
-  assert.equal(button.borderWidth, undefined);
-  assert.ok(button.borderRadius >= (style("ProfileScreenBase", "profileEditDetailsText").lineHeight + button.paddingVertical * 2) / 2);
+test("the edit and settings backgrounds use the same eight-pixel gap as Dormir", () => {
+  const sleep = readFileSync(new URL("../app/(tabs)/descanzo.tsx", import.meta.url), "utf8");
+  const gap = Number(sleep.match(/headerActions: \{[\s\S]*?gap: (\d+)/)?.[1]);
+  const buttons = style("ProfileScreenBase", "profileHeaderActions");
+  assert.equal(buttons.gap, gap);
+  assert.equal(buttons.gap, 8);
+  assert.equal(buttons.flexDirection, "row");
 });
 
 test("user section preserves its padding and avatar placement without an outline", () => {
@@ -92,7 +90,7 @@ test("Premium members keep the compact identity layout while free users recover 
   assert.equal(card.paddingBottom + preview.marginBottom + progress.marginTop, 25 - 4 + 6 - 15 + 10);
   const avatar = style("ProfileScreenBase", "avatarWrapper");
   const image = style("ProfileScreenBase", "avatarImage");
-  assert.equal(image.height, 79);
+  assert.equal(image.height, 99);
   assert.equal(avatar.marginBottom, 0);
 });
 
@@ -103,8 +101,8 @@ test("avatar remains borderless and its details use the full available width wit
   assert.equal(image.borderWidth, undefined);
   assert.equal(style("ProfileScreenBase", "avatarCircle").borderWidth, undefined);
   assert.equal(style("ProfileScreenBase", "avatarWrapper").borderWidth, undefined);
-  assert.equal(image.width, 79);
-  assert.equal(image.height, 79);
+  assert.equal(image.width, 99);
+  assert.equal(image.height, 99);
   const source = readFileSync(new URL("../components/ProfileScreenBase.tsx", import.meta.url), "utf8");
   const avatarStart = source.indexOf('testID="profile-identity-avatar"');
   const avatarContent = source.slice(avatarStart, source.indexOf("</Pressable>", avatarStart));
@@ -149,12 +147,14 @@ test("username keeps 24 points and the new description leaves avatar and Premium
   assert.equal(style("ProfileScreenBase", "userName").fontSize, 24);
   const details = style("ProfileScreenBase", "profileDetails");
   assert.equal(details.gap, 6);
-  assert.equal(style("ProfileScreenBase", "profileDescription").lineHeight, 18);
+  assert.equal(style("ProfileScreenBase", "profileDescription").fontSize, 14);
+  assert.equal(style("ProfileScreenBase", "profileDescription").lineHeight, 20);
+  assert.equal(style("ProfileScreenBase", "profileDescription").color, "#C4C4C4");
   assert.equal(style("ProfileScreenBase", "profileDescription").alignSelf, "stretch");
   assert.equal(style("ProfileScreenBase", "profileDescription").marginRight, undefined);
   assert.equal(style("ProfileScreenBase", "profileDescription").paddingRight, undefined);
   assert.equal(style("ProfileScreenBase", "profileDescription").transform, undefined);
-  assert.equal(style("ProfileScreenBase", "avatarImage").width, 79);
+  assert.equal(style("ProfileScreenBase", "avatarImage").width, 99);
   assert.equal(style("ProfileScreenBase", "profileIdentityPreviewCard").marginBottom, 5);
 });
 
@@ -163,8 +163,8 @@ test("the user section moves up another 35px in normal flow, carrying subsequent
   assert.equal(card.marginTop, 8 - 7 - 35);
   assert.equal(card.transform, undefined);
   const avatar = style("ProfileScreenBase", "avatarImage");
-  assert.equal(avatar.width, 79);
-  assert.equal(avatar.height, 79);
+  assert.equal(avatar.width, 99);
+  assert.equal(avatar.height, 99);
   assert.equal(style("ProfileScreenBase", "profileIdentityPreviewCard").marginBottom, 5);
 });
 

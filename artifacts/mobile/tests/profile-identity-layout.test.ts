@@ -122,8 +122,8 @@ test("Perfil places the saved description below the username without the old pil
   assert.doesNotMatch(html, /Ubicación|data-icon="map-pin"/);
   assert.match(html, /data-testid="profile-identity-description"[^>]*data-text-align="left" data-lines="2" data-ellipsis="tail"[^>]*>Mi descripción/);
   assert.doesNotMatch(source.match(/dedicatedProfileCard: \{([^}]*)\}/)?.[1] ?? "", /backgroundColor/);
-  assert.match(source, /avatarImage:\s*\{\s*width: 79,\s*height: 79,\s*borderRadius: 39\.5/);
-  assert.match(source, /avatarCircle:\s*\{\s*width: 79,\s*height: 79,\s*borderRadius: 39\.5/);
+  assert.match(source, /avatarImage:\s*\{\s*width: 99,\s*height: 99,\s*borderRadius: 49\.5/);
+  assert.match(source, /avatarCircle:\s*\{\s*width: 99,\s*height: 99,\s*borderRadius: 49\.5/);
   assert.doesNotMatch(source, /avatarOuterBorder/);
   const rowStyle = source.match(/profileIdentityRow: \{([\s\S]*?)\n  \},/)?.[1] ?? "";
   assert.match(rowStyle, /paddingLeft: 3/);
@@ -211,19 +211,16 @@ test("Premium membership overlays the bottom-right avatar corner without changin
 test("Perfil titles are removed from both headers without removing settings", () => {
   assert.equal(titleRows.length, 0);
   assert.doesNotMatch(source, />Perfil<\/Text>/);
-  assert.match(source, /testID="profile-open-settings"/);
-  assert.match(source, /testID="profile-sticky-open-settings"/);
+  assert.match(source, /"profile-open-settings"/);
+  assert.match(source, /"profile-sticky-open-settings"/);
 });
 
-test("Editar detalles follows the description and opens Mi cuenta for free and Premium users", () => {
+test("the old edit pill is removed below the description for free and Premium users", () => {
   for (const isPremium of [false, true]) {
-    let route = "";
-    const html = render({ isPremium, description: "Mi descripción", onNavigate: (next: string) => route = next });
-    assert.ok(html.indexOf('data-testid="profile-identity-description"') < html.indexOf('data-testid="profile-edit-details"'));
-    assert.ok(html.indexOf('data-icon="edit-2"') < html.indexOf("Editar detalles"));
-    assert.match(html, /data-testid="profile-edit-details"[^>]*data-direction="row"[^>]*data-margin-top="9"[^>]*data-background="rgba\(255,255,255,0.1\)"/);
-    presses.get("profile-edit-details")?.();
-    assert.equal(route, "/mi-perfil");
+    const html = render({ isPremium, description: "Mi descripción" });
+    assert.match(html, /profile-identity-description/);
+    assert.doesNotMatch(html, /profile-edit-details|Editar detalles|data-icon="edit-2"/);
+    assert.doesNotMatch(userSection!.getText(ast), /profileEditDetailsButton/);
   }
-  assert.match(render({ description: "" }), /profile-edit-details/);
+  assert.doesNotMatch(render({ description: "" }), /profile-edit-details/);
 });
