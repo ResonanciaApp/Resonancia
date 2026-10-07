@@ -897,7 +897,7 @@ export function ExploreScreen({
             </View>
           </View>
 
-          <View style={styles.sectionSpacer} />
+          <View style={[styles.sectionSpacer, styles.communityDivider]} />
           <CommunityMixesCarousel />
 
           {/* ── Descubre algo nuevo (al final de la página) — oculta a pedido del usuario ── */}
@@ -1196,6 +1196,11 @@ const styles = StyleSheet.create({
   resonadoresSpacer: {
     marginTop: -23,
     marginBottom: 22 + SECTION_EXTRA_GAP,
+  },
+  communityDivider: {
+    // 53 - 15.5 = 37.5 above; 14.5 + 5 + the community header's 18 = 37.5 below.
+    marginTop: -15.5,
+    marginBottom: 14.5 + SECTION_EXTRA_GAP,
   },
   popularSection: {
     marginTop: 0,

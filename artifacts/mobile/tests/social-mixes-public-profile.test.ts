@@ -1,9 +1,9 @@
 import assert from "node:assert/strict";
-import { existsSync, readFileSync } from "node:fs";
+import { readFileSync } from "node:fs";
 import { runInNewContext } from "node:vm";
 import { URL } from "node:url";
 import test from "node:test";
-import { getTopCommunityMixes, TOP_COMMUNITY_MIX_LIMIT } from "../lib/community-mixes-ranking.ts";
+import { getTopCommunityMixes, TOP_COMMUNITY_MIX_LIMIT, selectRandomCommunityAvatars } from "../lib/community-mixes-ranking.ts";
 
 const read = (p: string) => readFileSync(new URL(p, import.meta.url), "utf8");
 const carousel = read("../components/CommunityMixesCarousel.tsx");
@@ -73,25 +73,47 @@ test("ranking uses white top-three numbers and preserves typography/avatar sizes
   assert.match(carousel, /rowAvatarImg: \{ width: 37, height: 37, borderRadius: 18\.5/);
 });
 
-test("avatar simulation has ten distinct local photos and is disabled in production", () => {
-  const expression = carousel.match(/const COMMUNITY_AVATAR_PREVIEW_SOURCES = ([\s\S]*?);/)?.[1];
+test("avatar simulation randomly samples Profile catalog without duplicates or mutations", () => {
+  const sources = Array.from({ length: 14 }, (_, id) => ({ uri: `/avatars/${id}` }));
+  const original = [...sources];
+  const sampled = selectRandomCommunityAvatars([...sources, { uri: sources[0].uri }], () => 0);
+  assert.equal(sampled.length, TOP_COMMUNITY_MIX_LIMIT);
+  assert.equal(new Set(sampled.map(source => typeof source === "number" ? source : source.uri)).size, sampled.length);
+  assert.deepEqual(sources, original);
+  assert.notDeepEqual(sampled, sources.slice(0, 10));
+  assert.deepEqual(selectRandomCommunityAvatars([]), []);
+  assert.equal(selectRandomCommunityAvatars([1, 1, 2]).length, 2);
+});
+
+test("preview uses hydrated Profile avatars, stays stable on rerenders, and is disabled in production", () => {
+  assert.match(carousel, /useCoverPresetCatalogState\("profile"\)/);
+  assert.doesNotMatch(carousel, /assets\/images\/expansores/);
+  const expression = carousel.match(/const previewAvatarSources = React.useMemo\(\s*\(\) => ([\s\S]*?),\s*\[profileCatalog, profileCatalogHydrated\]/)?.[1];
   assert.ok(expression);
-  const preview = runInNewContext(expression, {
-    __DEV__: true,
-    require: (path: string) => {
-      assert.ok(existsSync(new URL(path.replace("@/", "../"), import.meta.url)), path);
-      return path;
-    },
-  });
-  assert.equal(preview.length, TOP_COMMUNITY_MIX_LIMIT);
-  assert.equal(new Set(preview).size, preview.length);
-  const production = runInNewContext(expression, {
-    __DEV__: false,
-    require: () => { throw new Error("Production must not select simulated avatars"); },
-  });
-  assert.equal(production.length, 0);
-  assert.match(carousel, /previewAvatarSource=\{COMMUNITY_AVATAR_PREVIEW_SOURCES\[index\]\}/);
+  const profileCatalog = Array.from({ length: 14 }, (_, id) => ({ source: { uri: `/profile/${id}` } }));
+  const preview = runInNewContext(expression, { __DEV__: true, profileCatalogHydrated: true, profileCatalog, selectRandomCommunityAvatars });
+  assert.equal(preview.length, 10);
+  for (const state of [{ __DEV__: false, profileCatalogHydrated: true }, { __DEV__: true, profileCatalogHydrated: false }]) {
+    const result = runInNewContext(expression, {
+      ...state,
+      selectRandomCommunityAvatars: () => { throw new Error("Do not sample production or unhydrated catalogs"); },
+    });
+    assert.equal(result.length, 0);
+  }
+  assert.match(carousel, /previewAvatarSource=\{previewAvatarSources\[index\]\}/);
   assert.match(carousel, /const avatarSource = previewAvatarSource \?\? realAvatarSource/);
+});
+
+test("community divider is vertically centered without moving the adjacent sections", () => {
+  assert.match(explore, /styles.sectionSpacer, styles.communityDivider\]\} \/>\s*<CommunityMixesCarousel/);
+  const gap = Number(explore.match(/const SECTION_GAP = ([\d.]+)/)?.[1]);
+  const extra = Number(explore.match(/const SECTION_EXTRA_GAP = ([\d.]+)/)?.[1]);
+  const sectionPadding = Number(carousel.match(/section: \{ paddingHorizontal: \d+, paddingTop: ([\d.]+)/)?.[1]);
+  const style = explore.slice(explore.indexOf("communityDivider: {"), explore.indexOf("communityDivider: {") + 260);
+  const top = Number(style.match(/marginTop: (-?[\d.]+)/)?.[1]);
+  const bottom = Number(style.match(/marginBottom: ([\d.]+) \+ SECTION_EXTRA_GAP/)?.[1]);
+  assert.equal(gap + top, bottom + extra + sectionPadding);
+  assert.equal(gap + top + bottom + extra + sectionPadding, 75);
 });
 
 test("New in Resonancia precedes playlists with remaining Discover sections in place", () => {

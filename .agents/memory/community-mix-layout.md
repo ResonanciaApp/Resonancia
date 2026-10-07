@@ -9,8 +9,8 @@ Las cards de Mezclas comunidad conservan avatar y botón de favoritos a los lado
 
 **How to apply:** Mantener la cantidad debajo del nombre y las acciones de autor, mezcla y favoritos separadas. La ubicación vigente, corregida posteriormente por el usuario, es al final de Descubrir, debajo de Explora por objetivo; no restaurar la ubicación anterior bajo Explora por contenido.
 
-Las fotos distintas solicitadas para comparar estas cards son una simulación visual, no un cambio de identidad de los autores.
+Los avatares para comparar estas cards se eligen al azar del mismo catálogo cargado en Perfil/portada, no de fotos de personas ni de los retratos de Expansores. Son una simulación visual, no un cambio de identidad de los autores.
 
-**Why:** El usuario pidió expresamente «solo para ver cómo se vería», simulando distintos usuarios.
+**Why:** El usuario pidió expresamente «solo para ver cómo se vería», simulando distintos usuarios, y corrigió el uso de retratos: se refería a los avatares de Perfil cargados recientemente.
 
 **How to apply:** Mantener cualquier sustitución de avatares limitada a la vista de desarrollo; no guardar fotos simuladas en perfiles, cachés de usuarios ni datos compartidos, ni mostrarlas en producción.

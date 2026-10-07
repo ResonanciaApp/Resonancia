@@ -30,10 +30,10 @@ import {
 } from "@workspace/api-client-react";
 import type { SharedMix } from "@workspace/api-client-react";
 import { getMixImage } from "@/config/mix-images";
-import { catalogImage, useCoverPresetCatalog } from "@/lib/cover-preset-catalog";
+import { catalogImage, useCoverPresetCatalog, useCoverPresetCatalogState } from "@/lib/cover-preset-catalog";
 
 import { useProfileAvatarSource } from "@/lib/profile-avatar";
-import { getTopCommunityMixes } from "@/lib/community-mixes-ranking";
+import { getTopCommunityMixes, selectRandomCommunityAvatars } from "@/lib/community-mixes-ranking";
 import { useColors } from "@/hooks/useColors";
 import { useSceneTheme } from "@/context/SceneThemeContext";
 import { isIndigo2ThemeId, isIndigoThemeId } from "@/config/scene-themes";
@@ -50,24 +50,18 @@ const GRID_GAP = 10;
 const CELL_W = (Dimensions.get("window").width - 40 - GRID_GAP * 2) / 3;
 const SHARED_MIXES_CACHE_KEY = "cdc_shared_mixes_v1";
 
-// Temporary visual preview only: never replace real avatars in production or saved data.
-const COMMUNITY_AVATAR_PREVIEW_SOURCES = __DEV__ ? [
-  require("@/assets/images/expansores/ana-sofia-luna.png"),
-  require("@/assets/images/expansores/carlos-medina.png"),
-  require("@/assets/images/expansores/valeria-rios.png"),
-  require("@/assets/images/expansores/martin-paz.png"),
-  require("@/assets/images/expansores/daniela-vega.png"),
-  require("@/assets/images/expansores/andres-morales.png"),
-  require("@/assets/images/expansores/lucia-rojas.png"),
-  require("@/assets/images/expansores/gabriel-flores.png"),
-  require("@/assets/images/expansores/isabel-torres.png"),
-  require("@/assets/images/expansores/diego-ramirez.png"),
-] : [];
-
 const DEFAULT_COVER: [string, string] = ["#1B060F", "#2E0A18"];
 
 // ── Componente principal ───────────────────────────────────────────
 export function CommunityMixesCarousel() {
+  const { items: profileCatalog, hydrated: profileCatalogHydrated } = useCoverPresetCatalogState("profile");
+  // Temporary preview from the same catalog as Profile; stable across likes/rerenders.
+  const previewAvatarSources = React.useMemo(
+    () => __DEV__ && profileCatalogHydrated
+      ? selectRandomCommunityAvatars(profileCatalog.map(preset => preset.source))
+      : [],
+    [profileCatalog, profileCatalogHydrated],
+  );
   const { openCategory } = useCategoryOverlay();
   const colors = useColors();
   const { theme } = useSceneTheme();
@@ -209,7 +203,7 @@ export function CommunityMixesCarousel() {
               key={mix.id}
               mix={mix}
               rank={index + 1}
-              previewAvatarSource={COMMUNITY_AVATAR_PREVIEW_SOURCES[index]}
+              previewAvatarSource={previewAvatarSources[index]}
               colors={colors}
               onPress={() => handleOpenMix(mix)}
               onDotsPress={() => {}}
@@ -277,7 +271,7 @@ export function MixRow({
 }: {
   mix: SharedMix;
   rank?: number;
-  previewAvatarSource?: number;
+  previewAvatarSource?: number | { uri: string };
   colors: Colors;
   onPress: () => void;
   onDotsPress: () => void;
