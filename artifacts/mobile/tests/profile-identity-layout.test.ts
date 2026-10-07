@@ -68,11 +68,13 @@ const Native = (props: any) => {
     "data-lines": props.numberOfLines,
     "data-ellipsis": props.ellipsizeMode,
     "data-icon": props.name,
+    "data-icon-size": props.size,
     "data-width": style.width,
     "data-gap": style.gap,
     "data-height": style.height,
     "data-radius": style.borderRadius,
     "data-overflow": style.overflow,
+    "data-translate-y": style.transform?.find((item: any) => "translateY" in item)?.translateY,
     "data-margin-bottom": style.marginBottom,
   }, props.children);
 };
@@ -194,8 +196,8 @@ test("Premium membership no longer overlays the avatar or changes its navigation
   assert.doesNotMatch(html, /profile-intention-pill/);
   assert.doesNotMatch(html, /profile-avatar-premium-badge|data-icon="star"/);
   assert.match(source, /<SessionBadgeGlass showBlackTint=\{false\} showWhiteTint \/>/);
-  assert.match(source, /<MaterialCommunityIcons name="star" size=\{19\} color=\{MEMBERSHIP_AURORA\.premium\.accent\} \/>/);
-  assert.match(source, /titlePremiumBadge:\s*\{\s*width: 26,\s*height: 26,\s*borderRadius: 13,\s*overflow: "hidden"/);
+  assert.match(source, /<MaterialCommunityIcons name="star" size=\{15\} color=\{MEMBERSHIP_AURORA\.premium\.accent\} \/>/);
+  assert.match(source, /titlePremiumBadge:\s*\{\s*width: 22,\s*height: 22,\s*borderRadius: 11,\s*overflow: "hidden"/);
   assert.doesNotMatch(render({ isPremium: false }), /profile-avatar-premium-badge|data-icon="star"/);
 });
 
@@ -216,12 +218,12 @@ test("both Perfil titles place Premium star and its glass six pixels to the righ
   const Titles = new Function("React", "View", "Text", "Animated", "SessionBadgeGlass", "MaterialCommunityIcons",
     `${titleCode}\nreturn Titles;`)(React, Native, Native, { View: Native }, Glass, Native);
   const premium = renderToStaticMarkup(React.createElement(Titles, { isPremium: true }));
-  assert.equal((premium.match(/data-icon="star"/g) ?? []).length, 2);
+  assert.equal((premium.match(/data-icon="star" data-icon-size="15"/g) ?? []).length, 2);
   assert.equal((premium.match(/data-testid="premium-glass"/g) ?? []).length, 2);
   assert.equal((premium.match(/data-direction="row" data-align="center"[^>]*data-gap="6"/g) ?? []).length, 2);
   for (const id of ["profile-title-premium-badge", "profile-sticky-title-premium-badge"]) {
     assert.match(premium, new RegExp(`Perfil</div><div data-testid="${id}"`));
-    assert.match(premium, new RegExp(`data-testid="${id}"[^>]*data-width="26"[^>]*data-height="26"[^>]*data-radius="13"[^>]*data-overflow="hidden"`));
+    assert.match(premium, new RegExp(`data-testid="${id}"[^>]*data-width="22"[^>]*data-height="22"[^>]*data-radius="11"[^>]*data-overflow="hidden"[^>]*data-translate-y="2"`));
   }
   const free = renderToStaticMarkup(React.createElement(Titles, { isPremium: false }));
   assert.doesNotMatch(free, /premium-badge|premium-glass|data-icon="star"/);

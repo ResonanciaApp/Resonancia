@@ -1237,7 +1237,7 @@ export function ProfileScreenBase({
               {isPremium && (
                 <View testID="profile-sticky-title-premium-badge" style={styles.titlePremiumBadge}>
                   <SessionBadgeGlass showBlackTint={false} showWhiteTint />
-                  <MaterialCommunityIcons name="star" size={19} color={MEMBERSHIP_AURORA.premium.accent} />
+                  <MaterialCommunityIcons name="star" size={15} color={MEMBERSHIP_AURORA.premium.accent} />
                 </View>
               )}
             </Animated.View>
@@ -1367,7 +1367,7 @@ export function ProfileScreenBase({
             {isPremium && (
               <View testID="profile-title-premium-badge" pointerEvents="none" style={styles.titlePremiumBadge}>
                 <SessionBadgeGlass showBlackTint={false} showWhiteTint />
-                <MaterialCommunityIcons name="star" size={19} color={MEMBERSHIP_AURORA.premium.accent} />
+                <MaterialCommunityIcons name="star" size={15} color={MEMBERSHIP_AURORA.premium.accent} />
               </View>
             )}
           </View>
@@ -2615,12 +2615,13 @@ const styles = StyleSheet.create({
     zIndex: 1,
   },
   titlePremiumBadge: {
-    width: 26,
-    height: 26,
-    borderRadius: 13,
+    width: 22,
+    height: 22,
+    borderRadius: 11,
     overflow: "hidden",
     alignItems: "center",
     justifyContent: "center",
+    transform: [{ translateY: 2 }],
   },
   avatarCircle: {
     width: 75,
