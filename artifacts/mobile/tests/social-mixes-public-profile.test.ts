@@ -176,3 +176,14 @@ test("all public-profile action buttons share a 40px height and the requested th
   assert.match(profile, /theme\.id === "cloudy"\s*\? \{ backgroundColor: "rgba\(0,0,0,0\.19\)" \}/);
   assert.doesNotMatch(profile, /height: 34/);
 });
+
+test("public-profile action spacing and vibration confirmation reuse the routine banner", () => {
+  assert.match(profile, /name="chevron-left"/);
+  assert.doesNotMatch(profile, /name="arrow-left"/);
+  assert.match(profile, /actionsSection: \{[^\n]*marginTop: 28/);
+  assert.match(profile, /messagePill: \{[^}]*marginTop: 6/);
+  assert.match(profile, /<RoutineCompletionBannerProvider key=\{id\}>/);
+  assert.match(profile, /onSuccess: announceActivityAdded/);
+  assert.match(profile, /<RoutineCompletionBanner\s+bottom=\{bottomPad \+ 22\}\s+visible=\{isFocused\}\s+addedTitle="Vibración enviada"\s+showAddedAction=\{false\}/);
+  assert.doesNotMatch(profile, /vibration\.isSuccess|styles\.feedback/);
+});

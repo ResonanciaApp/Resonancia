@@ -20,3 +20,9 @@ Vibración equivale por ahora a un toque: notifica al otro usuario quién se lo 
 **Why:** El usuario lo comparó con el «Toque» de Facebook y pidió dejarlo así por mientras.
 
 **How to apply:** Mantenerlo como aviso social simple; no añadir recompensas, contadores públicos ni respuestas automáticas sin una nueva petición.
+
+La confirmación «Vibración enviada» debe conservar el aspecto, los colores, el check y la animación de «Actividad añadida» de Mi rutina.
+
+**Why:** El usuario pidió que ambas confirmaciones fueran idénticas, cambiando únicamente el mensaje.
+
+**How to apply:** Compartir la presentación sin convertir una Vibración en una actividad real ni consumir avisos pendientes de Mi rutina.

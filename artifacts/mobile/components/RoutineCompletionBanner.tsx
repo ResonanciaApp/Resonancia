@@ -25,6 +25,8 @@ type Props = {
   entryDistance?: number;
   enteredOffset?: number;
   onAddedPress?: () => void;
+  addedTitle?: string;
+  showAddedAction?: boolean;
 };
 
 export function RoutineCompletionBanner({
@@ -33,6 +35,8 @@ export function RoutineCompletionBanner({
   entryDistance = ENTRY_DISTANCE,
   enteredOffset = 0,
   onAddedPress,
+  addedTitle = "Actividad añadida",
+  showAddedAction = true,
 }: Props) {
   const { activeEvent, hasPendingCompletion, dismissActiveEvent, emotionWidgetOpacity } =
     useRoutineCompletionBanner();
@@ -351,7 +355,7 @@ export function RoutineCompletionBanner({
             <View style={styles.addedCheckSurface}>
               <Feather name="check" size={17} color="#F9F9F9" />
             </View>
-            <Text style={styles.title}>Actividad añadida</Text>
+            <Text accessibilityLiveRegion="polite" style={styles.title}>{addedTitle}</Text>
           </View>
         ) : (
           <>
@@ -378,7 +382,7 @@ export function RoutineCompletionBanner({
               </>
             </View>
           </>
-        ) : (
+        ) : showAddedAction ? (
           <Pressable
             onPress={() => {
               dismissActiveEvent();
@@ -391,7 +395,7 @@ export function RoutineCompletionBanner({
           >
             <Text style={styles.addedButtonText}>Ver</Text>
           </Pressable>
-        )}
+        ) : null}
       </View>
     </Animated.View>
   );

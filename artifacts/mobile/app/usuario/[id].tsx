@@ -1,5 +1,5 @@
 import { Feather, MaterialCommunityIcons } from "@expo/vector-icons";
-import { router, useLocalSearchParams } from "expo-router";
+import { router, useFocusEffect, useLocalSearchParams } from "expo-router";
 import { Image as ExpoImage } from "expo-image";
 import {
   ActivityIndicator,
@@ -34,6 +34,11 @@ import { useColors } from "@/hooks/useColors";
 import { useSceneTheme } from "@/context/SceneThemeContext";
 import { SceneThemeBackground } from "@/components/SceneThemeBackground";
 import { isIndigo2ThemeId } from "@/config/scene-themes";
+import { RoutineCompletionBanner } from "@/components/RoutineCompletionBanner";
+import {
+  RoutineCompletionBannerProvider,
+  useRoutineCompletionBanner,
+} from "@/context/RoutineCompletionBannerContext";
 
 const H_PAD = 20;
 // Product rule: only Intención is active; never derive the stage from day count.
@@ -47,7 +52,22 @@ function initialsFor(name: string): string {
 }
 
 export default function UsuarioScreen() {
+  const { id } = useLocalSearchParams<{ id: string }>();
+  return (
+    <RoutineCompletionBannerProvider key={id}>
+      <UsuarioProfile />
+    </RoutineCompletionBannerProvider>
+  );
+}
+
+function UsuarioProfile() {
   const colors = useColors();
+  const [isFocused, setIsFocused] = React.useState(true);
+  useFocusEffect(React.useCallback(() => {
+    setIsFocused(true);
+    return () => setIsFocused(false);
+  }, []));
+  const { announceActivityAdded } = useRoutineCompletionBanner();
   const { theme } = useSceneTheme();
   const actionThemeStyle = isIndigo2ThemeId(theme.id)
     ? { backgroundColor: "rgba(0,0,0,0.16)" }
@@ -93,6 +113,7 @@ export default function UsuarioScreen() {
   });
   const vibration = useSendUserVibration({
     mutation: {
+      onSuccess: announceActivityAdded,
       onError: () => Alert.alert("Vibración", "No se pudo enviar la vibración. Inténtalo nuevamente."),
     },
   });
@@ -107,7 +128,7 @@ export default function UsuarioScreen() {
   const HeaderBar = (
     <View style={[styles.headerRow, { paddingHorizontal: H_PAD, paddingTop: topPad + 8 }]}>
       <Pressable onPress={() => router.back()} style={styles.backBtn} hitSlop={8}>
-        <Feather name="arrow-left" size={22} color={colors.foreground} />
+        <Feather name="chevron-left" size={22} color={colors.foreground} />
       </Pressable>
       <Text style={[styles.headerTitle, { color: colors.foreground }]}>Perfil</Text>
       <View style={{ width: 38 }} />
@@ -253,11 +274,6 @@ export default function UsuarioScreen() {
                   </Text>
                 </Pressable>
               </View>
-              {vibration.isSuccess && vibration.variables?.userId === userId && (
-                <Text accessibilityLiveRegion="polite" style={[styles.feedback, { color: colors.foreground }]}>
-                  Vibración enviada
-                </Text>
-              )}
             </View>
           )}
 
@@ -279,6 +295,12 @@ export default function UsuarioScreen() {
           )}
         </View>
       </ScrollView>
+      <RoutineCompletionBanner
+        bottom={bottomPad + 22}
+        visible={isFocused}
+        addedTitle="Vibración enviada"
+        showAddedAction={false}
+      />
     </View>
   );
 }
@@ -327,7 +349,7 @@ const styles = StyleSheet.create({
   daysText: { fontFamily: "Manrope", fontSize: 10, fontWeight: "600" },
   lotus: { lineHeight: 12, includeFontPadding: false },
   longDesc: { fontFamily: "Manrope", fontSize: 14, lineHeight: 21, textAlign: "center", marginTop: 12, paddingHorizontal: 4 },
-  actionsSection: { alignSelf: "stretch", gap: 8, marginTop: 18 },
+  actionsSection: { alignSelf: "stretch", gap: 8, marginTop: 28 },
   actionsRow: { flexDirection: "row", gap: 8 },
   actionSurface: {
     height: 40,
@@ -345,14 +367,13 @@ const styles = StyleSheet.create({
     borderRadius: 20,
   },
   actionText: { fontFamily: "Manrope", fontSize: 12, fontWeight: "600", flexShrink: 1, textAlign: "center" },
-  feedback: { fontFamily: "Manrope", fontSize: 12, textAlign: "center" },
   messagePill: {
     flexDirection: "row",
     alignItems: "center",
     justifyContent: "center",
     gap: 6,
     alignSelf: "stretch",
-    marginTop: 18,
+    marginTop: 6,
     borderRadius: 20,
   },
   messagePillText: { fontFamily: "Manrope", fontSize: 13, color: "#FFFFFF", letterSpacing: 0.1 },
