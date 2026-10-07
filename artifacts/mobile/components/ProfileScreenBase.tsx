@@ -1358,7 +1358,7 @@ export function ProfileScreenBase({
         disableScrollOnKeyboardHide
       >
         <View style={styles.dedicatedTitleRow}>
-          <View style={styles.dedicatedTitleLeft}>
+          <View pointerEvents="none" style={styles.dedicatedTitleLeft}>
             <Text style={[styles.dedicatedHeroTitle, { color: colors.foreground }]}>Perfil</Text>
           </View>
           <View style={styles.profileHeaderActions}>
@@ -1428,16 +1428,6 @@ export function ProfileScreenBase({
               </Text>
               </Pressable>
 
-              <Pressable
-                onPress={() => router.push("/mi-perfil")}
-                testID="profile-identity-chevron"
-                accessibilityRole="button"
-                accessibilityLabel="Abrir Mi cuenta"
-                hitSlop={8}
-                style={styles.profileNameChevron}
-              >
-                <Feather name="chevron-right" size={24} color={colors.foreground} />
-              </Pressable>
               </View>
 
               {description.trim() !== "" && (
@@ -2094,8 +2084,8 @@ const styles = StyleSheet.create({
     position: "absolute",
     left: 0,
     right: 0,
-    top: 16,
-    height: 22,
+    top: 7,
+    height: 43,
     flexDirection: "row",
     alignItems: "center",
     justifyContent: "center",
@@ -2104,8 +2094,8 @@ const styles = StyleSheet.create({
   profileStickyHeaderTitle: {
     fontFamily: "Manrope",
     fontSize: 18,
-    lineHeight: 22,
-    fontWeight: "800",
+    lineHeight: 21,
+    fontWeight: "700",
     letterSpacing: 0.2,
     textAlign: "center",
   },
@@ -2134,7 +2124,7 @@ const styles = StyleSheet.create({
     width: 43,
     height: 43,
     borderRadius: 21.5,
-    transform: [{ translateX: 1 }, { translateY: -2 }],
+    transform: [{ translateX: 1 }],
     borderWidth: 0,
     borderColor: "transparent",
     alignItems: "center",
@@ -2144,6 +2134,7 @@ const styles = StyleSheet.create({
   profileHeaderActions: {
     flexDirection: "row",
     alignItems: "center",
+    marginLeft: "auto",
     gap: 6,
   },
   giftIcon: {
@@ -2165,17 +2156,22 @@ const styles = StyleSheet.create({
     marginHorizontal: -16,
   },
   dedicatedTitleLeft: {
+    position: "absolute",
+    left: 0,
+    right: 0,
+    top: 7,
+    height: 43,
     flexDirection: "row",
     alignItems: "center",
-    gap: 6,
+    justifyContent: "center",
   },
   dedicatedHeroTitle: {
     fontFamily: "Manrope",
-    fontSize: 30,
-    fontWeight: "800",
-    letterSpacing: 0.3,
-    textAlign: "left",
-    transform: [{ translateY: 1 }],
+    fontSize: 18,
+    lineHeight: 21,
+    fontWeight: "700",
+    letterSpacing: 0.2,
+    textAlign: "center",
   },
   profileSettingsSections: {
     marginTop: 12,
@@ -2581,15 +2577,15 @@ const styles = StyleSheet.create({
     marginBottom: 17,
   },
   profileIdentityRow: {
-    flexDirection: "row",
-    alignItems: "center",
+    flexDirection: "column",
+    alignItems: "flex-start",
     width: "100%",
-    gap: 16,
+    gap: 7,
     paddingLeft: 3,
     paddingRight: 0,
   },
-  profileDetails: { flex: 1, minWidth: 0, alignItems: "flex-start", gap: 6 },
-  avatarWrapper: { position: "relative", marginTop: 3, marginBottom: 3, flexShrink: 0 },
+  profileDetails: { width: "100%", minWidth: 0, alignItems: "flex-start", gap: 6 },
+  avatarWrapper: { position: "relative", marginTop: 3, marginBottom: 0, flexShrink: 0 },
   avatarPremiumBadge: {
     position: "absolute",
     right: 0,
@@ -2615,19 +2611,9 @@ const styles = StyleSheet.create({
     borderRadius: 39.5,
   },
   userName: { fontFamily: "Manrope", fontSize: 24, fontWeight: "700", textAlign: "left", marginTop: 0 },
-  profileNameRow: { width: "100%", flexDirection: "row", alignItems: "center", gap: 12, paddingRight: 46 },
+  profileNameRow: { width: "100%", flexDirection: "row", alignItems: "center" },
   profileNameText: { flex: 1, minWidth: 0 },
-  profileNameChevron: {
-    position: "absolute",
-    right: 0,
-    top: "50%",
-    marginTop: -19,
-    width: 38,
-    height: 38,
-    alignItems: "flex-end",
-    justifyContent: "center",
-  },
-  profileDescription: { fontFamily: "Manrope", fontSize: 12, lineHeight: 18, textAlign: "left", alignSelf: "stretch", marginRight: 50, transform: [{ translateX: 1 }, { translateY: -4 }] },
+  profileDescription: { fontFamily: "Manrope", fontSize: 12, lineHeight: 18, textAlign: "left", alignSelf: "stretch" },
   locationRow: { flexDirection: "row", alignItems: "center", justifyContent: "center", gap: 4 },
   locationText: { fontFamily: "Manrope", fontSize: 12 },
   bioText: { fontFamily: "Manrope", fontSize: 13, lineHeight: 19, textAlign: "center", paddingHorizontal: 8, fontStyle: "italic" },

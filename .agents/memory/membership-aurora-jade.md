@@ -3,9 +3,9 @@ name: Membresía Aurora jade-gold
 description: Insignia sobre el avatar de Perfil y acentos Premium de las demás superficies.
 ---
 
-En Perfil, las cuentas gratuitas deben ver «Prueba Premium» debajo del bloque de usuario. Para miembros Premium, el banner queda oculto y la membresía se indica con la estrella y su vidrio en la esquina inferior derecha del avatar, no junto al título «Perfil» ni en el header al hacer scroll. El chevron de Mi cuenta permanece al margen lateral derecho y centrado a la altura del nombre, no del conjunto nombre + píldora; el avatar se alinea con el margen lateral izquierdo.
+En Perfil, las cuentas gratuitas deben ver «Prueba Premium» debajo del bloque de usuario. Para miembros Premium, el banner queda oculto y la membresía se indica con la estrella y su vidrio en la esquina inferior derecha del avatar, no junto al título «Perfil» ni en el header al hacer scroll. El chevron de Mi cuenta está retirado de forma provisional; avatar y nombre deben seguir siendo accesos a Mi cuenta.
 
-**Why:** El usuario aclaró que ocultar el banner era solo para miembros Premium, no para cuentas gratuitas. El 7 de octubre de 2026 cambió la ubicación de la estrella del título a la esquina inferior derecha del avatar. Solicitó alinear el chevron con el título del usuario. También pidió bajar la semana y todo lo que sigue sin mover el avatar; la separación anterior de 25 px ya no es fija.
+**Why:** El usuario aclaró que ocultar el banner era solo para miembros Premium, no para cuentas gratuitas. El 7 de octubre de 2026 cambió la ubicación de la estrella del título a la esquina inferior derecha del avatar y después pidió sacar el chevron «por mientras» al poner la identidad debajo del avatar. También pidió bajar la semana y todo lo que sigue sin mover el avatar; la separación anterior de 25 px ya no es fija.
 
 **How to apply:** Mantener el banner de prueba integrado al bloque de usuario para cuentas gratuitas, no como tarjeta independiente. Conservar el diseño compacto y la insignia sobre el avatar sin recuperar «Tu Premium» debajo del usuario. La insignia no debe interceptar el toque que abre Mi cuenta. El acceso Premium del drawer es independiente de esta regla.
 

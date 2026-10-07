@@ -109,8 +109,8 @@ test("free users see Prueba Premium below their identity, while Premium users re
 
 test("Perfil places the saved description below the username without the old pill or email", () => {
   const html = render({ email: "example@example.com", location: "Ubicación", description: "Mi descripción" });
-  assert.match(html, /data-testid="profile-identity-row" data-direction="row" data-align="center"/);
-  assert.match(html, /data-testid="profile-identity-details" data-align="flex-start"[^>]*data-flex="1" data-min-width="0"/);
+  assert.match(html, /data-testid="profile-identity-row" data-direction="column" data-align="flex-start"/);
+  assert.match(html, /data-testid="profile-identity-details" data-align="flex-start"[^>]*data-min-width="0"/);
   const avatar = html.indexOf('data-testid="profile-identity-avatar"');
   const name = html.indexOf("Resonador");
   const description = html.indexOf('data-testid="profile-identity-description"');
@@ -136,17 +136,17 @@ test("Perfil hides the email for both free and Premium accounts, whether present
   }
 });
 
-test("the profile chevron stays aligned with the username, not the description", () => {
+test("name and description sit below the avatar with a seven-pixel gap and no account chevron", () => {
   const html = render({ description: "Mi descripción" });
   assert.match(html, /data-testid="profile-identity-title-row" data-direction="row" data-align="center"/);
   const titleRow = source.match(/<View testID="profile-identity-title-row"[\s\S]*?<\/View>/)?.[0] ?? "";
   assert.match(titleRow, /testID="profile-identity-name"/);
-  assert.match(titleRow, /testID="profile-identity-chevron"/);
+  assert.doesNotMatch(titleRow, /testID="profile-identity-chevron"/);
   assert.doesNotMatch(titleRow, /ProfileIntentionPill/);
-  assert.match(html, /data-testid="profile-identity-chevron"[^>]*data-align="flex-end"[^>]*data-width="38"/);
-  assert.equal((html.match(/data-icon="chevron-right"/g) ?? []).length, 1);
-  assert.ok(html.indexOf("Resonador") < html.indexOf('data-testid="profile-identity-chevron"'));
-  assert.ok(html.indexOf('data-testid="profile-identity-chevron"') < html.indexOf('data-testid="profile-identity-description"'));
+  assert.doesNotMatch(html, /profile-identity-chevron|data-icon="chevron-right"/);
+  assert.match(html, /data-testid="profile-identity-row"[^>]*data-gap="7"/);
+  assert.ok(html.indexOf('data-testid="profile-identity-avatar"') < html.indexOf("Resonador"));
+  assert.ok(html.indexOf("Resonador") < html.indexOf('data-testid="profile-identity-description"'));
   assert.match(source, /profileNameRow: \{ width: "100%", flexDirection: "row", alignItems: "center"/);
   const children = identity!.children.filter(ts.isJsxElement).map(child =>
     child.openingElement.attributes.properties.find(attribute =>
@@ -157,27 +157,23 @@ test("the profile chevron stays aligned with the username, not the description",
     'testID="profile-identity-avatar"',
     'testID="profile-identity-details"',
   ]);
-  assert.match(source, /avatarWrapper: \{[^}]*marginTop: 3, marginBottom: 3/);
-  assert.match(html, /data-testid="profile-identity-row" data-direction="row" data-align="center"/);
+  assert.match(source, /avatarWrapper: \{[^}]*marginTop: 3, marginBottom: 0/);
+  assert.match(html, /data-testid="profile-identity-row" data-direction="column" data-align="flex-start"/);
   const membership = readFileSync(new URL("../components/ProfileMembershipBanner.tsx", import.meta.url), "utf8");
   assert.match(membership, /chevron: \{\s*width: 32,/);
   assert.match(membership, /row: \{[\s\S]*?paddingHorizontal: 0/);
   assert.match(source, /profileIdentityRow: \{[\s\S]*?paddingLeft: 3,\s*paddingRight: 0/);
-  assert.match(source, /<Feather name="chevron-right" size=\{24\}/);
   assert.match(membership, /<Feather name="chevron-right" size=\{24\}/);
 });
 
-test("name, avatar and restored chevron open Mi cuenta", () => {
+test("name and avatar still open Mi cuenta without a chevron", () => {
   let route = "";
   render({ onNavigate: (next: string) => route = next });
   assert.ok(presses.has("profile-identity-name"));
   presses.get("profile-identity-name")?.();
   assert.equal(route, "/mi-perfil");
   route = "";
-  assert.ok(presses.has("profile-identity-chevron"));
-  presses.get("profile-identity-chevron")?.();
-  assert.equal(route, "/mi-perfil");
-  route = "";
+  assert.ok(!presses.has("profile-identity-chevron"));
   assert.ok(presses.has("profile-identity-avatar"));
   presses.get("profile-identity-avatar")?.();
   assert.equal(route, "/mi-perfil");

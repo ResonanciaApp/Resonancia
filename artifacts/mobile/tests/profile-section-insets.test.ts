@@ -33,17 +33,50 @@ function verticalInsets(styles: Record<string, any>) {
   };
 }
 
+test("both Perfil titles match Historial typography and center on the screen and settings button", () => {
+  const history = readFileSync(new URL("../app/historial.tsx", import.meta.url), "utf8");
+  const reference = history.match(/stickyTitleLibraryTab: \{([\s\S]*?)\n  \}/)?.[1];
+  assert.ok(reference);
+  const historyTitle = new Function(`return ({${reference}});`)();
+  for (const name of ["dedicatedHeroTitle", "profileStickyHeaderTitle"]) {
+    const title = style("ProfileScreenBase", name);
+    for (const property of ["fontFamily", "fontSize", "lineHeight", "fontWeight", "letterSpacing", "textAlign"]) {
+      assert.equal(title[property], historyTitle[property], `${name}.${property} matches Historial`);
+    }
+    assert.equal(title.transform, undefined);
+  }
+  const gear = style("ProfileScreenBase", "gearBtn");
+  const gearYOffset = gear.transform.reduce((sum: number, item: any) => sum + (item.translateY ?? 0), 0);
+  const row = style("ProfileScreenBase", "dedicatedTitleRow");
+  const stickyGear = style("ProfileScreenBase", "profileStickySettingsButton");
+  for (const [groupName, gearTop] of [
+    ["dedicatedTitleLeft", row.paddingTop],
+    ["profileStickyHeaderTitleGroup", stickyGear.top],
+  ] as const) {
+    const group = style("ProfileScreenBase", groupName);
+    assert.equal(group.position, "absolute");
+    assert.equal(group.left, 0);
+    assert.equal(group.right, 0);
+    assert.equal(group.justifyContent, "center");
+    assert.equal(group.top + group.height / 2, gearTop + gear.height / 2 + gearYOffset);
+    for (const width of [320, 375, 402, 768]) {
+      assert.equal(group.left + (width - group.left - group.right) / 2, width / 2);
+    }
+  }
+  assert.equal(style("ProfileScreenBase", "profileHeaderActions").marginLeft, "auto");
+});
+
 test("user section preserves its padding and avatar placement without an outline", () => {
   const source = readFileSync(new URL("../components/ProfileScreenBase.tsx", import.meta.url), "utf8");
   const bottom = Number(source.match(/const PROFILE_CARD_BOTTOM_PADDING = (\d+);/)?.[1]);
   const card = style("ProfileScreenBase", "profileCard", { PROFILE_CARD_BOTTOM_PADDING: bottom, PROFILE_SECTION_GAP: 21 });
   assert.deepEqual(verticalInsets(card), { top: 20, bottom: 20 });
-  assert.equal(style("ProfileScreenBase", "profileIdentityRow").alignItems, "center");
+  assert.equal(style("ProfileScreenBase", "profileIdentityRow").alignItems, "flex-start");
   assert.equal(style("ProfileScreenBase", "userName").marginTop, 0);
   const avatar = style("ProfileScreenBase", "avatarWrapper");
   assert.equal(card.paddingTop + avatar.marginTop, 23);
   assert.equal(avatar.marginTop, 3);
-  assert.equal(avatar.marginTop, avatar.marginBottom);
+  assert.equal(avatar.marginBottom, 0);
   const row = style("ProfileMembershipBanner", "row");
   assert.equal(row.paddingVertical, 0);
   assert.equal(row.minHeight ?? 0, 0);
@@ -68,12 +101,11 @@ test("Premium members keep the compact identity layout while free users recover 
   const avatar = style("ProfileScreenBase", "avatarWrapper");
   const image = style("ProfileScreenBase", "avatarImage");
   assert.equal(image.height, 79);
-  assert.equal(avatar.marginBottom, 3);
+  assert.equal(avatar.marginBottom, 0);
 });
 
-test("avatar has no border and the chevron reaches the profile right margin at different widths", () => {
+test("avatar remains borderless and its details use the full available width without a chevron", () => {
   const row = style("ProfileScreenBase", "profileIdentityRow");
-  const chevron = style("ProfileScreenBase", "profileNameChevron");
   const image = style("ProfileScreenBase", "avatarImage");
   assert.equal(row.paddingLeft, 3);
   assert.equal(image.borderWidth, undefined);
@@ -86,14 +118,10 @@ test("avatar has no border and the chevron reaches the profile right margin at d
   const avatarContent = source.slice(avatarStart, source.indexOf("</Pressable>", avatarStart));
   assert.doesNotMatch(avatarContent, /avatarOuterBorder/);
   assert.match(avatarContent, /testID="profile-avatar-premium-badge" pointerEvents="none"/);
-  assert.equal(chevron.position, "absolute");
-  assert.equal(chevron.alignItems, "flex-end");
-  assert.equal(chevron.top, "50%");
-  assert.equal(chevron.marginTop + chevron.height / 2, 0);
-  for (const width of [320, 375, 402, 768]) {
-    const chevronRight = width - 16 - row.paddingRight - chevron.right;
-    assert.equal(chevronRight, width - 16);
-  }
+  assert.equal(row.flexDirection, "column");
+  assert.equal(row.gap, 7);
+  assert.equal(style("ProfileScreenBase", "profileDetails").width, "100%");
+  assert.doesNotMatch(source, /profile-identity-chevron/);
 });
 
 test("streak section gains 10px spacing for both free and Premium while preserving their 15px difference", () => {
@@ -131,9 +159,9 @@ test("username keeps 24 points and the new description leaves avatar and Premium
   assert.equal(details.gap, 6);
   assert.equal(style("ProfileScreenBase", "profileDescription").lineHeight, 18);
   assert.equal(style("ProfileScreenBase", "profileDescription").alignSelf, "stretch");
-  assert.equal(style("ProfileScreenBase", "profileDescription").marginRight, 50);
+  assert.equal(style("ProfileScreenBase", "profileDescription").marginRight, undefined);
   assert.equal(style("ProfileScreenBase", "profileDescription").paddingRight, undefined);
-  assert.deepEqual(style("ProfileScreenBase", "profileDescription").transform, [{ translateX: 1 }, { translateY: -4 }]);
+  assert.equal(style("ProfileScreenBase", "profileDescription").transform, undefined);
   assert.equal(style("ProfileScreenBase", "avatarImage").width, 79);
   assert.equal(style("ProfileScreenBase", "profileIdentityPreviewCard").marginBottom, 5);
 });
