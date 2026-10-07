@@ -1053,6 +1053,19 @@ export function ProfileScreenBase({
               />
               <View style={styles.accountCoverHandle} />
               <View style={styles.accountCoverHeader}>
+                <Pressable
+                  style={styles.accountCoverUploadButton}
+                  hitSlop={8}
+                  accessibilityRole="button"
+                  accessibilityLabel="Elegir una foto"
+                  onPress={() => {
+                    setAccountPhotoLibraryPending(true);
+                    setAccountPhotoPickerVisible(false);
+                  }}
+                >
+                  <Feather name="image" size={14} color="#F9F9F9" />
+                  <Text style={styles.accountCoverUploadText}>Elegir una foto</Text>
+                </Pressable>
                 <Text style={styles.accountCoverTitle}>Portada</Text>
                 <Pressable
                   onPress={() => setAccountPhotoPickerVisible(false)}
@@ -1086,16 +1099,6 @@ export function ProfileScreenBase({
                   </View>
                 )}
               </View>
-              <Pressable
-                style={styles.accountCoverUploadButton}
-                onPress={() => {
-                  setAccountPhotoLibraryPending(true);
-                  setAccountPhotoPickerVisible(false);
-                }}
-              >
-                <Feather name="image" size={18} color="#F9F9F9" />
-                <Text style={styles.accountCoverUploadText}>Elegir una foto</Text>
-              </Pressable>
               <FlatList
                 ref={accountAvatarGridRef}
                 style={styles.accountCoverPresetGrid}
@@ -2312,8 +2315,6 @@ const styles = StyleSheet.create({
     textAlign: "center",
   },
   accountCoverCloseButton: {
-    position: "absolute",
-    right: 0,
     width: 43,
     height: 43,
     borderRadius: 21.5,
@@ -2335,16 +2336,15 @@ const styles = StyleSheet.create({
     borderRadius: 57.75,
   },
   accountCoverUploadButton: {
-    minWidth: 190,
-    minHeight: 42,
+    minHeight: 38,
     alignSelf: "center",
     flexDirection: "row",
     alignItems: "center",
     justifyContent: "center",
-    gap: 9,
-    paddingHorizontal: 18,
-    paddingVertical: 10,
-    borderRadius: 21,
+    gap: 5,
+    paddingHorizontal: 14,
+    paddingVertical: 6,
+    borderRadius: 19,
     borderWidth: 1,
     borderColor: "rgba(255,255,255,0.2)",
     backgroundColor: "rgba(0,0,0,0.16)",
@@ -2352,7 +2352,7 @@ const styles = StyleSheet.create({
   accountCoverUploadText: {
     fontFamily: "Manrope",
     color: "#F9F9F9",
-    fontSize: 14,
+    fontSize: 10,
     fontWeight: "600",
   },
   accountCoverPresetGrid: {
