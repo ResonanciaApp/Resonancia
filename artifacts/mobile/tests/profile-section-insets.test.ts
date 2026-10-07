@@ -90,7 +90,7 @@ test("Premium members keep the compact identity layout while free users recover 
   assert.equal(card.paddingBottom + preview.marginBottom + progress.marginTop, 25 - 4 + 6 - 15 + 10);
   const avatar = style("ProfileScreenBase", "avatarWrapper");
   const image = style("ProfileScreenBase", "avatarImage");
-  assert.equal(image.height, 99);
+  assert.equal(image.height, 109);
   assert.equal(avatar.marginBottom, 0);
 });
 
@@ -101,8 +101,8 @@ test("avatar remains borderless and its details use the full available width wit
   assert.equal(image.borderWidth, undefined);
   assert.equal(style("ProfileScreenBase", "avatarCircle").borderWidth, undefined);
   assert.equal(style("ProfileScreenBase", "avatarWrapper").borderWidth, undefined);
-  assert.equal(image.width, 99);
-  assert.equal(image.height, 99);
+  assert.equal(image.width, 109);
+  assert.equal(image.height, 109);
   const source = readFileSync(new URL("../components/ProfileScreenBase.tsx", import.meta.url), "utf8");
   const avatarStart = source.indexOf('testID="profile-identity-avatar"');
   const avatarContent = source.slice(avatarStart, source.indexOf("</Pressable>", avatarStart));
@@ -154,17 +154,24 @@ test("username keeps 24 points and the new description leaves avatar and Premium
   assert.equal(style("ProfileScreenBase", "profileDescription").marginRight, undefined);
   assert.equal(style("ProfileScreenBase", "profileDescription").paddingRight, undefined);
   assert.equal(style("ProfileScreenBase", "profileDescription").transform, undefined);
-  assert.equal(style("ProfileScreenBase", "avatarImage").width, 99);
+  assert.equal(style("ProfileScreenBase", "avatarImage").width, 109);
   assert.equal(style("ProfileScreenBase", "profileIdentityPreviewCard").marginBottom, 5);
 });
 
-test("the user section moves up another 35px in normal flow, carrying subsequent sections without changing their gaps", () => {
+test("the avatar grows ten points and moves up eight more pixels in normal flow; details then push down five", () => {
   const card = style("ProfileScreenBase", "dedicatedProfileCard");
-  assert.equal(card.marginTop, 8 - 7 - 35);
+  assert.equal(card.marginTop, 8 - 7 - 35 - 8);
   assert.equal(card.transform, undefined);
   const avatar = style("ProfileScreenBase", "avatarImage");
-  assert.equal(avatar.width, 99);
-  assert.equal(avatar.height, 99);
+  assert.equal(avatar.width, 99 + 10);
+  assert.equal(avatar.height, 99 + 10);
+  assert.equal(avatar.borderRadius, 54.5);
+  const details = style("ProfileScreenBase", "profileDetails");
+  assert.equal(details.marginTop, 5);
+  assert.equal(details.transform, undefined);
+  assert.equal(style("ProfileScreenBase", "profileIdentityRow").gap + details.marginTop, 12);
+  assert.equal((card.marginTop - (1 - 35)) + (avatar.height - 99) + details.marginTop, 7,
+    "content below the avatar accounts for the upward shift, larger avatar and downward details in normal flow");
   assert.equal(style("ProfileScreenBase", "profileIdentityPreviewCard").marginBottom, 5);
 });
 

@@ -2535,7 +2535,7 @@ const styles = StyleSheet.create({
     gap: 0,
   },
   // Desplazar el bloque en el flujo para que las secciones siguientes lo acompañen.
-  dedicatedProfileCard: { marginTop: 1 - 35 },
+  dedicatedProfileCard: { marginTop: 1 - 35 - 8 },
   // 20 px de padding inferior + 5 px de separación = 25 px hasta el fondo semanal.
   profileIdentityPreviewCard: { marginBottom: 5 },
   wisdomSection: {
@@ -2555,7 +2555,7 @@ const styles = StyleSheet.create({
     paddingLeft: 3,
     paddingRight: 0,
   },
-  profileDetails: { width: "100%", minWidth: 0, alignItems: "flex-start", gap: 6 },
+  profileDetails: { width: "100%", minWidth: 0, alignItems: "flex-start", gap: 6, marginTop: 5 },
   avatarWrapper: { position: "relative", marginTop: 3, marginBottom: 0, flexShrink: 0 },
   avatarPremiumBadge: {
     position: "absolute",
@@ -2570,16 +2570,16 @@ const styles = StyleSheet.create({
     justifyContent: "center",
   },
   avatarCircle: {
-    width: 99,
-    height: 99,
-    borderRadius: 49.5,
+    width: 109,
+    height: 109,
+    borderRadius: 54.5,
     alignItems: "center",
     justifyContent: "center",
   },
   avatarImage: {
-    width: 99,
-    height: 99,
-    borderRadius: 49.5,
+    width: 109,
+    height: 109,
+    borderRadius: 54.5,
   },
   userName: { fontFamily: "Manrope", fontSize: 24, fontWeight: "700", textAlign: "left", marginTop: 0 },
   profileNameRow: { width: "100%", flexDirection: "row", alignItems: "center" },

@@ -122,8 +122,8 @@ test("Perfil places the saved description below the username without the old pil
   assert.doesNotMatch(html, /Ubicación|data-icon="map-pin"/);
   assert.match(html, /data-testid="profile-identity-description"[^>]*data-text-align="left" data-lines="2" data-ellipsis="tail"[^>]*>Mi descripción/);
   assert.doesNotMatch(source.match(/dedicatedProfileCard: \{([^}]*)\}/)?.[1] ?? "", /backgroundColor/);
-  assert.match(source, /avatarImage:\s*\{\s*width: 99,\s*height: 99,\s*borderRadius: 49\.5/);
-  assert.match(source, /avatarCircle:\s*\{\s*width: 99,\s*height: 99,\s*borderRadius: 49\.5/);
+  assert.match(source, /avatarImage:\s*\{\s*width: 109,\s*height: 109,\s*borderRadius: 54\.5/);
+  assert.match(source, /avatarCircle:\s*\{\s*width: 109,\s*height: 109,\s*borderRadius: 54\.5/);
   assert.doesNotMatch(source, /avatarOuterBorder/);
   const rowStyle = source.match(/profileIdentityRow: \{([\s\S]*?)\n  \},/)?.[1] ?? "";
   assert.match(rowStyle, /paddingLeft: 3/);
@@ -138,7 +138,7 @@ test("Perfil hides the email for both free and Premium accounts, whether present
   }
 });
 
-test("name and description sit below the avatar with a seven-pixel gap and no account chevron", () => {
+test("name and description sit below the avatar with the existing seven-pixel gap plus five more pixels and no account chevron", () => {
   const html = render({ description: "Mi descripción" });
   assert.match(html, /data-testid="profile-identity-title-row" data-direction="row" data-align="center"/);
   const titleRow = source.match(/<View testID="profile-identity-title-row"[\s\S]*?<\/View>/)?.[0] ?? "";
@@ -147,6 +147,7 @@ test("name and description sit below the avatar with a seven-pixel gap and no ac
   assert.doesNotMatch(titleRow, /ProfileIntentionPill/);
   assert.doesNotMatch(html, /profile-identity-chevron|data-icon="chevron-right"/);
   assert.match(html, /data-testid="profile-identity-row"[^>]*data-gap="7"/);
+  assert.match(html, /data-testid="profile-identity-details"[^>]*data-margin-top="5"/);
   assert.ok(html.indexOf('data-testid="profile-identity-avatar"') < html.indexOf("Resonador"));
   assert.ok(html.indexOf("Resonador") < html.indexOf('data-testid="profile-identity-description"'));
   assert.match(source, /profileNameRow: \{ width: "100%", flexDirection: "row", alignItems: "center"/);
