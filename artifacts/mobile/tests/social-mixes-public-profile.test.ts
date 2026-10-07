@@ -29,10 +29,11 @@ test("mix row shows only title and username with a four-pixel gap and separate a
   assert.match(carousel, /rowName: \{.*gap: 4/);
   assert.doesNotMatch(row, /marginTop: 6/);
   assert.equal((row.match(/numberOfLines=\{1\}/g) ?? []).length, 2);
-  assert.match(carousel, /minHeight: 57/);
+  assert.match(carousel, /minHeight: 59/);
+  assert.match(carousel, /height: 59/);
   assert.match(carousel, /paddingVertical: 10/);
-  // Text and avatar fit without changing the 57px card height.
-  assert.ok(Math.max(16 + 10 + 4, 37) + 10 * 2 <= 57);
+  // Text and avatar fit in the card's updated 59px height.
+  assert.ok(Math.max(16 + 10 + 4, 37) + 10 * 2 <= 59);
   assert.match(row, /rgba\(0,0,0,0\.16\)/);
   assert.match(row, /activeSceneId === "cloudy".*rgba\(0,0,0,0\.19\)/);
   assert.match(carousel, /heartFill = "#F9F9F9"/);
@@ -64,8 +65,9 @@ test("ranking uses white top-three numbers and preserves typography/avatar sizes
   assert.match(carousel, /rankText: \{.*fontSize: 10/);
   assert.match(carousel, /transform: \[\{ translateX: -5 \}\]/);
   assert.match(carousel, /rowMeta: \{.*fontSize: 9, lineHeight: 10, color: "#CFCFCF"/);
-  assert.match(carousel, /rowAvatar: \{.*transform: \[\{ translateX: -9 \}\]/);
-  assert.match(carousel, /rowName: \{.*transform: \[\{ translateX: -9 \}\]/);
+  assert.match(carousel, /rankText: \{.*transform: \[\{ translateX: -3 \}\]/);
+  assert.match(carousel, /rowAvatar: \{.*transform: \[\{ translateX: -7 \}\]/);
+  assert.match(carousel, /rowName: \{.*transform: \[\{ translateX: -7 \}\]/);
   assert.match(carousel, /rank <= 3 && \{\s*fontWeight: "700", color: "#F9F9F9"/);
   assert.doesNotMatch(carousel, /#BE9650|#C0C0C0|#B87333/);
   assert.match(carousel, /\{rank\}\./);
