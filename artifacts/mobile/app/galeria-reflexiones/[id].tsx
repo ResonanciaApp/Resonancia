@@ -11,6 +11,7 @@ import {
 import { useQueryClient } from "@tanstack/react-query";
 import { StoryShareModal } from "@/components/StoryShareModal";
 import { StoryArtworkFrame } from "@/components/StoryArtworkFrame";
+import { resolveProfileAvatarSource } from "@/lib/profile-avatar-logic";
 import { useCoverPresetCatalogState } from "@/lib/cover-preset-catalog";
 import { useColors } from "@/hooks/useColors";
 import { useAuth } from "@/context/AuthContext";
@@ -78,6 +79,7 @@ export default function GalleryDetailScreen() {
       backgroundY: story.backgroundY,
       textX: story.textX,
       textY: story.textY,
+      avatarImagePath: story.avatarImagePath ?? null,
     };
     idempotencyState.current = getStableIdempotencyKey(payload, idempotencyState.current);
     try {
@@ -180,6 +182,7 @@ export default function GalleryDetailScreen() {
       renderArtwork={(width, isExport, callbacks) => {
         return (
           <StoryArtworkFrame
+            avatarSource={resolveProfileAvatarSource({ avatarUrl: story.avatarImagePath }, [])}
             message={story.message}
             width={width}
             bgImageSource={selectedImageSource}

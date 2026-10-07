@@ -2569,10 +2569,16 @@ export const GetPublicUserProfileParams = zod.object({
   "userId": zod.coerce.number()
 })
 
+export const getPublicUserProfileResponseTotalActiveDaysMin = 0;
+
+
+
 export const GetPublicUserProfileResponse = zod.object({
   "id": zod.number(),
   "username": zod.string(),
   "displayName": zod.string(),
+  "totalActiveDays": zod.number().min(getPublicUserProfileResponseTotalActiveDaysMin),
+  "longDescription": zod.string().nullable(),
   "avatarUrl": zod.string().nullish(),
   "avatarPresetId": zod.string().nullish().describe('Stable profile preset ID; resolve its current image from GET \/api\/cover-presets?scope=profile. avatarUrl is reserved for custom uploaded avatars.'),
   "location": zod.string().nullish(),
@@ -7715,6 +7721,8 @@ export const listMyReflectionStoriesResponseItemsItemCategoryMax = 40;
 export const listMyReflectionStoriesResponseItemsItemCategoryRegExp = new RegExp('^[a-z][a-z0-9-]{0,39}$');
 export const listMyReflectionStoriesResponseItemsItemBackgroundPresetKeyMax = 120;
 
+export const listMyReflectionStoriesResponseItemsItemAvatarImagePathMax = 2048;
+
 export const listMyReflectionStoriesResponseItemsItemBackgroundScaleMax = 3;
 
 export const listMyReflectionStoriesResponseItemsItemBackgroundXMin = -1;
@@ -7738,6 +7746,7 @@ export const ListMyReflectionStoriesResponse = zod.object({
   "message": zod.string().min(1),
   "category": zod.string().max(listMyReflectionStoriesResponseItemsItemCategoryMax).regex(listMyReflectionStoriesResponseItemsItemCategoryRegExp),
   "backgroundPresetKey": zod.string().min(1).max(listMyReflectionStoriesResponseItemsItemBackgroundPresetKeyMax),
+  "avatarImagePath": zod.string().max(listMyReflectionStoriesResponseItemsItemAvatarImagePathMax).nullish(),
   "backgroundScale": zod.number().min(1).max(listMyReflectionStoriesResponseItemsItemBackgroundScaleMax),
   "backgroundX": zod.number().min(listMyReflectionStoriesResponseItemsItemBackgroundXMin).max(listMyReflectionStoriesResponseItemsItemBackgroundXMax),
   "backgroundY": zod.number().min(listMyReflectionStoriesResponseItemsItemBackgroundYMin).max(listMyReflectionStoriesResponseItemsItemBackgroundYMax),
@@ -7764,6 +7773,10 @@ export const createMyReflectionStoryBodyCategoryMax = 40;
 export const createMyReflectionStoryBodyCategoryRegExp = new RegExp('^[a-z][a-z0-9-]{0,39}$');
 export const createMyReflectionStoryBodyBackgroundPresetKeyMax = 120;
 
+export const createMyReflectionStoryBodyAvatarImagePathMax = 2048;
+
+
+export const createMyReflectionStoryBodyAvatarImagePathRegExp = new RegExp('^\/objects\/[^\/].+$');
 export const createMyReflectionStoryBodyBackgroundScaleMax = 3;
 
 export const createMyReflectionStoryBodyBackgroundXMin = -1;
@@ -7784,6 +7797,7 @@ export const CreateMyReflectionStoryBody = zod.object({
   "message": zod.string().min(1),
   "category": zod.string().max(createMyReflectionStoryBodyCategoryMax).regex(createMyReflectionStoryBodyCategoryRegExp),
   "backgroundPresetKey": zod.string().min(1).max(createMyReflectionStoryBodyBackgroundPresetKeyMax),
+  "avatarImagePath": zod.string().max(createMyReflectionStoryBodyAvatarImagePathMax).regex(createMyReflectionStoryBodyAvatarImagePathRegExp).nullish(),
   "backgroundScale": zod.number().min(1).max(createMyReflectionStoryBodyBackgroundScaleMax),
   "backgroundX": zod.number().min(createMyReflectionStoryBodyBackgroundXMin).max(createMyReflectionStoryBodyBackgroundXMax),
   "backgroundY": zod.number().min(createMyReflectionStoryBodyBackgroundYMin).max(createMyReflectionStoryBodyBackgroundYMax),
@@ -7797,6 +7811,8 @@ export const createMyReflectionStoryResponseCategoryMax = 40;
 
 export const createMyReflectionStoryResponseCategoryRegExp = new RegExp('^[a-z][a-z0-9-]{0,39}$');
 export const createMyReflectionStoryResponseBackgroundPresetKeyMax = 120;
+
+export const createMyReflectionStoryResponseAvatarImagePathMax = 2048;
 
 export const createMyReflectionStoryResponseBackgroundScaleMax = 3;
 
@@ -7820,6 +7836,7 @@ export const CreateMyReflectionStoryResponse = zod.object({
   "message": zod.string().min(1),
   "category": zod.string().max(createMyReflectionStoryResponseCategoryMax).regex(createMyReflectionStoryResponseCategoryRegExp),
   "backgroundPresetKey": zod.string().min(1).max(createMyReflectionStoryResponseBackgroundPresetKeyMax),
+  "avatarImagePath": zod.string().max(createMyReflectionStoryResponseAvatarImagePathMax).nullish(),
   "backgroundScale": zod.number().min(1).max(createMyReflectionStoryResponseBackgroundScaleMax),
   "backgroundX": zod.number().min(createMyReflectionStoryResponseBackgroundXMin).max(createMyReflectionStoryResponseBackgroundXMax),
   "backgroundY": zod.number().min(createMyReflectionStoryResponseBackgroundYMin).max(createMyReflectionStoryResponseBackgroundYMax),
@@ -7839,6 +7856,8 @@ export const getMyReflectionStoryResponseCategoryMax = 40;
 
 export const getMyReflectionStoryResponseCategoryRegExp = new RegExp('^[a-z][a-z0-9-]{0,39}$');
 export const getMyReflectionStoryResponseBackgroundPresetKeyMax = 120;
+
+export const getMyReflectionStoryResponseAvatarImagePathMax = 2048;
 
 export const getMyReflectionStoryResponseBackgroundScaleMax = 3;
 
@@ -7862,6 +7881,7 @@ export const GetMyReflectionStoryResponse = zod.object({
   "message": zod.string().min(1),
   "category": zod.string().max(getMyReflectionStoryResponseCategoryMax).regex(getMyReflectionStoryResponseCategoryRegExp),
   "backgroundPresetKey": zod.string().min(1).max(getMyReflectionStoryResponseBackgroundPresetKeyMax),
+  "avatarImagePath": zod.string().max(getMyReflectionStoryResponseAvatarImagePathMax).nullish(),
   "backgroundScale": zod.number().min(1).max(getMyReflectionStoryResponseBackgroundScaleMax),
   "backgroundX": zod.number().min(getMyReflectionStoryResponseBackgroundXMin).max(getMyReflectionStoryResponseBackgroundXMax),
   "backgroundY": zod.number().min(getMyReflectionStoryResponseBackgroundYMin).max(getMyReflectionStoryResponseBackgroundYMax),

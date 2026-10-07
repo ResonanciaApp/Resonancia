@@ -668,6 +668,19 @@ router.get("/users/:userId/public", requireAuth, async (req, res) => {
       .from(followsTable)
       .where(eq(followsTable.followerId, userId));
 
+    // Public accumulation uses the product's Chilean calendar, independent of
+    // the viewer, and the full history rather than the 600-event local window.
+    const activeDays = await db.execute(sql`
+      SELECT count(*)::integer AS count FROM (
+        SELECT (${playbackHistoryTable.playedAt} AT TIME ZONE 'America/Santiago')::date
+        FROM ${playbackHistoryTable}
+        WHERE ${playbackHistoryTable.userId} = ${userId}
+          AND ${playbackHistoryTable.playedAt} <= now()
+        GROUP BY 1
+        HAVING sum(${playbackHistoryTable.minutes}) >= 3
+          OR bool_or(${playbackHistoryTable.completed})
+      ) AS active_days
+    `);
     res.json({
       id: user.id,
       username: user.username,
@@ -677,6 +690,8 @@ router.get("/users/:userId/public", requireAuth, async (req, res) => {
       location: user.location ?? null,
       role: user.role,
       createdAt: user.createdAt.toISOString(),
+      totalActiveDays: Number(activeDays.rows[0]?.count ?? 0),
+      longDescription: user.longDescription ?? null,
       stats: {
         totalSessions: Number(agg?.totalSessions ?? 0),
         totalMinutes: Math.round(Number(agg?.totalMinutes ?? 0)),

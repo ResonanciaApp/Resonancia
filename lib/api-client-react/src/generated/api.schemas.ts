@@ -140,6 +140,11 @@ export interface ReflectionStory {
      */
   backgroundPresetKey: string;
   /**
+     * @maxLength 2048
+     * @nullable
+     */
+  avatarImagePath?: string | null;
+  /**
      * @minimum 1
      * @maximum 3
      */
@@ -176,6 +181,12 @@ export interface ReflectionStoryInput {
      * @maxLength 120
      */
   backgroundPresetKey: string;
+  /**
+     * @maxLength 2048
+     * @nullable
+     * @pattern ^/objects/[^/].+$
+     */
+  avatarImagePath?: string | null;
   /**
      * @minimum 1
      * @maximum 3
@@ -1309,6 +1320,10 @@ export interface PublicUserProfile {
   id: number;
   username: string;
   displayName: string;
+  /** @minimum 0 */
+  totalActiveDays: number;
+  /** @nullable */
+  longDescription: string | null;
   /** @nullable */
   avatarUrl?: string | null;
   /**

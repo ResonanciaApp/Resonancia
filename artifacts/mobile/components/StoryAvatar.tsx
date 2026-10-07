@@ -1,0 +1,45 @@
+import React, { useEffect, useState } from "react";
+import { Image } from "expo-image";
+import { useAuth } from "@clerk/expo";
+import type { ProfileAvatarSource } from "@/lib/profile-avatar";
+
+export function StoryAvatar({ source, scale, onReady, onFailure }: {
+  source?: ProfileAvatarSource;
+  scale: number;
+  onReady?: () => void;
+  onFailure?: () => void;
+}) {
+  const { getToken, userId } = useAuth();
+  const [credentials, setCredentials] = useState<{ userId: string; token: string }>();
+  const uri = typeof source === "object" ? source.uri : "";
+  const base = (process.env.EXPO_PUBLIC_API_URL ?? "").replace(/\/+$/, "");
+  // Never attach the session token to an external avatar URL.
+  const protectedUri = /^\/(?:api\/storage\/)?objects\//.test(uri)
+    || Boolean(base && uri.startsWith(`${base}/api/storage/objects/`));
+  useEffect(() => {
+    if (!protectedUri || !userId) return;
+    let cancelled = false;
+    getToken().then(token => {
+      if (cancelled) return;
+      if (token) setCredentials({ userId, token });
+      else onFailure?.();
+    }).catch(() => { if (!cancelled) onFailure?.(); });
+    return () => { cancelled = true; };
+  }, [getToken, userId, protectedUri, uri]);
+  if (!source) return null;
+  if (protectedUri && credentials?.userId !== userId) return null;
+  const imageSource = protectedUri && typeof source === "object" && credentials
+    ? { ...source, headers: { Authorization: `Bearer ${credentials.token}` } } : source;
+  return (
+    <Image
+      key={JSON.stringify(source)}
+      testID="reflection-story-avatar"
+      source={imageSource}
+      contentFit="cover"
+      onLoad={onReady}
+      onError={onFailure}
+      style={{ width: 124 * scale, height: 124 * scale, borderRadius: 62 * scale,
+        marginTop: 24 * scale, flexShrink: 0 }}
+    />
+  );
+}

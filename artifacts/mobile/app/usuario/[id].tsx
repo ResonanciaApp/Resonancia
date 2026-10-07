@@ -1,4 +1,4 @@
-import { Feather } from "@expo/vector-icons";
+import { Feather, MaterialCommunityIcons } from "@expo/vector-icons";
 import { router, useLocalSearchParams } from "expo-router";
 import { Image as ExpoImage } from "expo-image";
 import {
@@ -42,9 +42,10 @@ import {
 import { BLUR_PLACEHOLDER, IMAGE_TRANSITION } from "@/constants/imagePlaceholder";
 import { resolveAvatarUrl } from "@/lib/avatar";
 import { useColors } from "@/hooks/useColors";
+import { useSceneTheme } from "@/context/SceneThemeContext";
+import { SceneThemeBackground } from "@/components/SceneThemeBackground";
 
 const H_PAD = 20;
-const BG_GRADIENT = ["#340D1A", "#190913"] as const;
 
 function initialsFor(name: string): string {
   const parts = name.trim().split(/\s+/).filter(Boolean);
@@ -55,6 +56,7 @@ function initialsFor(name: string): string {
 
 export default function UsuarioScreen() {
   const colors = useColors();
+  const { theme } = useSceneTheme();
   const insets = useSafeAreaInsets();
   const { id } = useLocalSearchParams<{ id: string }>();
   const userId = Number(id);
@@ -157,9 +159,9 @@ export default function UsuarioScreen() {
 
   if (isLoading) {
     return (
-      <View style={styles.root}>
+      <View style={[styles.root, { backgroundColor: theme.gradient[0] as string }]}>
         <StatusBar hidden />
-        <LinearGradient colors={BG_GRADIENT} style={StyleSheet.absoluteFill} />
+        <SceneThemeBackground />
         {HeaderBar}
         <View style={styles.centered}>
           <ActivityIndicator color={colors.primary} />
@@ -170,9 +172,9 @@ export default function UsuarioScreen() {
 
   if (isError || !profile) {
     return (
-      <View style={styles.root}>
+      <View style={[styles.root, { backgroundColor: theme.gradient[0] as string }]}>
         <StatusBar hidden />
-        <LinearGradient colors={BG_GRADIENT} style={StyleSheet.absoluteFill} />
+        <SceneThemeBackground />
         {HeaderBar}
         <View style={styles.centered}>
           <Feather name="user-x" size={40} color={colors.mutedForeground} />
@@ -189,10 +191,13 @@ export default function UsuarioScreen() {
     ? new Date(profile.createdAt).toLocaleDateString("es", { month: "long", year: "numeric" })
     : null;
 
+  const totalActiveDays = Math.max(0, Math.floor(profile.totalActiveDays ?? 0));
+  const longDescription = profile.longDescription?.trim() || null;
+
   return (
-    <View style={styles.root}>
+    <View style={[styles.root, { backgroundColor: theme.gradient[0] as string }]}>
       <StatusBar hidden />
-      <LinearGradient colors={BG_GRADIENT} style={StyleSheet.absoluteFill} />
+      <SceneThemeBackground />
 
       {HeaderBar}
 
@@ -244,6 +249,20 @@ export default function UsuarioScreen() {
                 Miembro desde {memberSince}
               </Text>
             </View>
+          ) : null}
+
+          {/* Racha acumulada */}
+          <View testID="public-profile-accumulated-pill" style={styles.streakPill}>
+            <MaterialCommunityIcons name="spa" size={15} color="#F9F9F9" />
+            <Text style={styles.streakPillText} numberOfLines={1}>
+              Racha acumulada · {totalActiveDays} {totalActiveDays === 1 ? "día" : "días"}
+            </Text>
+          </View>
+
+          {longDescription ? (
+            <Text testID="public-profile-long-description" style={[styles.longDesc, { color: colors.foreground }]}>
+              {longDescription}
+            </Text>
           ) : null}
 
           {/* Seguidores / Siguiendo */}
@@ -367,19 +386,6 @@ export default function UsuarioScreen() {
             </View>
           )}
         </View>
-
-        {/* ── Stats card (categoría más escuchada) ── */}
-        {profile.stats.topCategoryLabel ? (
-          <View style={[styles.topCatCard, { marginHorizontal: H_PAD, backgroundColor: "rgba(74,12,12,0.08)" }]}>
-            <Feather name="headphones" size={16} color={colors.accent} />
-            <Text style={[styles.topCatLabel, { color: colors.mutedForeground }]}>
-              Categoría más escuchada
-            </Text>
-            <Text style={[styles.topCatValue, { color: colors.foreground }]} numberOfLines={1}>
-              {profile.stats.topCategoryLabel}
-            </Text>
-          </View>
-        ) : null}
 
         {/* ── Sección Expansor ── */}
         {isExpansor && (
@@ -544,9 +550,9 @@ const styles = StyleSheet.create({
     gap: 6,
   },
   avatarWrapper: { position: "relative", marginBottom: 8 },
-  avatarImage: { width: 80, height: 80, borderRadius: 40 },
+  avatarImage: { width: 132, height: 132, borderRadius: 66 },
   avatarFallback: { alignItems: "center", justifyContent: "center" },
-  initials: { fontFamily: "Manrope", fontSize: 28, fontWeight: "700" },
+  initials: { fontFamily: "Manrope", fontSize: 44, fontWeight: "700" },
   userName: { fontFamily: "Manrope", fontSize: 20, fontWeight: "700", textAlign: "center" },
   handle: { fontFamily: "Manrope", fontSize: 13 },
   metaRow: { flexDirection: "row", alignItems: "center", gap: 4 },
@@ -595,6 +601,13 @@ const styles = StyleSheet.create({
   actionPillTextActive: { fontFamily: "Manrope", color: "#1B060F", fontWeight: "600" },
   actionPillTextSent: { color: "#c2c2c2" },
 
+  streakPill: {
+    flexDirection: "row", alignItems: "center", gap: 6, marginTop: 12,
+    paddingHorizontal: 14, height: 32, borderRadius: 16, maxWidth: "100%",
+    backgroundColor: "rgba(255,255,255,0.12)",
+  },
+  streakPillText: { fontFamily: "Manrope", fontSize: 13, fontWeight: "600", color: "#F9F9F9", flexShrink: 1 },
+  longDesc: { fontFamily: "Manrope", fontSize: 14, lineHeight: 21, textAlign: "center", marginTop: 12, paddingHorizontal: 4 },
   /* ── Categoría más escuchada ── */
   topCatCard: {
     flexDirection: "row",

@@ -18,6 +18,7 @@ export const reflectionStoriesTable = pgTable(
     backgroundY: real("background_y").notNull(),
     textX: real("text_x").notNull(),
     textY: real("text_y").notNull(),
+    avatarImagePath: text("avatar_image_path"),
     createdAt: timestamp("created_at", { withTimezone: true }).notNull().defaultNow(),
   },
   (table) => [

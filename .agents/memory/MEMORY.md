@@ -151,6 +151,7 @@
 - [Inercia global del scroll](native-scroll-inertia.md) — menos desplazamiento al soltar; arrastre normal y tasas explícitas intactas; React 19 exige defaults en la clase nativa, no en el wrapper
 - [Usuarios conectados](community-presence-semantics.md) — sección eliminada de Inicio por sospecha de lag; preservar presencia global real en primer plano
 - [Descripción de Mi cuenta](profile-account-description.md) — reemplaza la píldora bajo el usuario en Perfil; texto opcional guardado en Mi cuenta, máximo dos líneas
+- [Calendario del perfil público](public-profile-activity-calendar.md) — acumulación con día chileno fijo y todo el historial; no cambia según la zona del visitante
 - [Banner del Mezclador en Sonidos](sound-mixer-banner.md) — recuperado de Dormir, solo en Sonidos tras el tercer carrusel visible; abre el panel actual para gratuitos y Premium
 - [Títulos de cards](card-title-alignment.md) — títulos debajo de la imagen y alineados al borde izquierdo; Ambientales de Sonidos conservan su excepción centrada
 - [Velocidad de apertura de paneles](sheet-opening-geometry.md) — igualar el resorte no basta: comparar el recorrido visible desde la altura real del panel

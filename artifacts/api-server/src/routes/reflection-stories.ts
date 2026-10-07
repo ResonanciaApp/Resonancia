@@ -9,8 +9,11 @@ import {
 } from "@workspace/api-zod";
 import { requireAuth } from "../middlewares/requireAuth";
 import { findReflectionCategory } from "./reflection-categories";
+import { canUserReferenceObject } from "../lib/objectAccess";
+import { ObjectStorageService } from "../lib/objectStorage";
 
 const router: IRouter = Router();
+const storage = new ObjectStorageService();
 
 const encodeCursor = (createdAt: Date, id: number) =>
   Buffer.from(JSON.stringify({ createdAt: createdAt.toISOString(), id }), "utf8").toString("base64url");
@@ -90,6 +93,21 @@ router.post("/me/reflection-stories", requireAuth, async (req, res) => {
   const userId = req.currentUser!.id;
   const idempotencyKey = header.data["Idempotency-Key"];
   try {
+    if (input.avatarImagePath) {
+      const actor = req.currentUser!;
+      if (!(await canUserReferenceObject({
+        objectPath: input.avatarImagePath, userId: actor.id,
+        clerkUserId: actor.clerkUserId, role: actor.role,
+      }))) {
+        res.status(403).json({ error: "No puedes utilizar esta imagen de avatar" }); return;
+      }
+      const file = await storage.getObjectEntityFile(input.avatarImagePath);
+      const [metadata] = await file.getMetadata();
+      const size = Number(metadata.size);
+      if (!String(metadata.contentType).startsWith("image/") || !Number.isFinite(size) || size <= 0) {
+        res.status(400).json({ error: "La imagen del avatar no está lista" }); return;
+      }
+    }
     if (!(await findReflectionCategory(input.category))) {
       res.status(400).json({ error: "Categoría desconocida" }); return;
     }
@@ -104,6 +122,7 @@ router.post("/me/reflection-stories", requireAuth, async (req, res) => {
       backgroundY: input.backgroundY,
       textX: input.textX,
       textY: input.textY,
+      avatarImagePath: input.avatarImagePath ?? null,
     }).returning();
     res.status(201).json(dto(row));
   } catch (error) {

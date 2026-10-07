@@ -51,6 +51,7 @@ import { ContentCategoryGrid } from "@/components/ContentCategoryGrid";
 import { PressScale } from "@/components/PressScale";
 import { PremiumBadge } from "@/components/PremiumBadge";
 import { ResonadoresBanner } from "@/components/ResonadoresBanner";
+import { CommunityMixesCarousel } from "@/components/CommunityMixesCarousel";
 import { useResonadores } from "@/hooks/useResonadores";
 import {
   useGetPopularSessions,
@@ -835,6 +836,10 @@ export function ExploreScreen({
               ))}
             </ScrollView>
           </View>
+
+          <View style={styles.sectionSpacer} />
+
+          <CommunityMixesCarousel />
 
           <View style={[styles.sectionSpacer, styles.resonadoresSpacer]} />
 

@@ -5,8 +5,21 @@ import request from "supertest";
 const state = vi.hoisted(() => ({
   userId: 1,
   rows: [] as Array<Record<string, unknown>>,
+  avatarAllowed: true,
+  avatarContentType: "image/png",
+  avatarSize: 2048,
 }));
 
+vi.mock("../lib/objectAccess", () => ({
+  canUserReferenceObject: async () => state.avatarAllowed,
+}));
+vi.mock("../lib/objectStorage", () => ({
+  ObjectStorageService: class {
+    async getObjectEntityFile() {
+      return { getMetadata: async () => [{ contentType: state.avatarContentType, size: state.avatarSize }] };
+    }
+  },
+}));
 vi.mock("../middlewares/requireAuth", () => ({
   requireAuth: (req: Request, _res: Response, next: NextFunction) => {
     (req as unknown as { currentUser?: { id: number } }).currentUser = { id: state.userId };
@@ -107,8 +120,51 @@ describe("private reflection stories API", () => {
   beforeEach(() => {
     state.userId = 1;
     state.rows = [];
+    state.avatarAllowed = true;
+    state.avatarContentType = "image/png";
+    state.avatarSize = 2048;
   });
 
+  it("preserves an exact avatar image path across retries and gallery reads", async () => {
+    const payload = { ...body, avatarImagePath: "/objects/uploads/frozen-avatar" };
+    const created = await request(app).post("/api/me/reflection-stories")
+      .set("Idempotency-Key", "avatar").send(payload).expect(201);
+    expect(created.body.avatarImagePath).toBe(payload.avatarImagePath);
+    const replay = await request(app).post("/api/me/reflection-stories")
+      .set("Idempotency-Key", "avatar").send({ ...payload, avatarImagePath: "/objects/uploads/new-avatar" }).expect(200);
+    expect(replay.body.avatarImagePath).toBe(payload.avatarImagePath);
+    const read = await request(app).get(`/api/me/reflection-stories/${created.body.id}`).expect(200);
+    expect(read.body.avatarImagePath).toBe(payload.avatarImagePath);
+  });
+
+  it("keeps legacy compositions avatar-free and accepts explicit removal", async () => {
+    const created = await request(app).post("/api/me/reflection-stories")
+      .set("Idempotency-Key", "legacy").send(body).expect(201);
+    expect(created.body.avatarImagePath).toBeNull();
+    const without = await request(app).post("/api/me/reflection-stories")
+      .set("Idempotency-Key", "none").send({ ...body, avatarImagePath: null }).expect(201);
+    expect(without.body.avatarImagePath).toBeNull();
+  });
+
+  it("rejects private foreign images, non-image objects and incomplete uploads", async () => {
+    const payload = { ...body, avatarImagePath: "/objects/uploads/other-person" };
+    state.avatarAllowed = false;
+    await request(app).post("/api/me/reflection-stories").set("Idempotency-Key", "foreign").send(payload).expect(403);
+    state.avatarAllowed = true;
+    state.avatarContentType = "audio/mpeg";
+    await request(app).post("/api/me/reflection-stories").set("Idempotency-Key", "audio").send(payload).expect(400);
+    state.avatarContentType = "image/png";
+    state.avatarSize = 0;
+    await request(app).post("/api/me/reflection-stories").set("Idempotency-Key", "empty").send(payload).expect(400);
+    expect(state.rows).toHaveLength(0);
+  });
+
+  it("never accepts local URIs or arbitrary external avatar references", async () => {
+    for (const avatarImagePath of ["file:///avatar.png", "https://example.org/avatar.png", "/objects//invalid"]) {
+      await request(app).post("/api/me/reflection-stories")
+        .set("Idempotency-Key", "invalid-path").send({ ...body, avatarImagePath }).expect(400);
+    }
+  });
   it("persists snapshots, paginates newest first, and gets only the owner item", async () => {
     const created = await request(app).post("/api/me/reflection-stories").set("Idempotency-Key", "one").send(body).expect(201);
     const second = await request(app).post("/api/me/reflection-stories").set("Idempotency-Key", "two").send({ ...body, message: "Segunda" }).expect(201);

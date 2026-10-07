@@ -5339,6 +5339,7 @@ components:
         message: {type: string, minLength: 1}
         category: {$ref: "#/components/schemas/ReflectionCategory"}
         backgroundPresetKey: {type: string, minLength: 1, maxLength: 120}
+        avatarImagePath: {type: ["string", "null"], maxLength: 2048}
         backgroundScale: {type: number, minimum: 1, maximum: 3}
         backgroundX: {type: number, minimum: -1, maximum: 1}
         backgroundY: {type: number, minimum: -1, maximum: 1}
@@ -5352,6 +5353,10 @@ components:
         message: {type: string, minLength: 1}
         category: {$ref: "#/components/schemas/ReflectionCategory"}
         backgroundPresetKey: {type: string, minLength: 1, maxLength: 120}
+        avatarImagePath:
+          type: ["string", "null"]
+          pattern: "^/objects/[^/].+$"
+          maxLength: 2048
         backgroundScale: {type: number, minimum: 1, maximum: 3}
         backgroundX: {type: number, minimum: -1, maximum: 1}
         backgroundY: {type: number, minimum: -1, maximum: 1}
@@ -6513,6 +6518,11 @@ components:
           type: string
         displayName:
           type: string
+        totalActiveDays:
+          type: integer
+          minimum: 0
+        longDescription:
+          type: ["string", "null"]
         avatarUrl:
           type: ["string", "null"]
         avatarPresetId:
@@ -6528,7 +6538,7 @@ components:
           format: date-time
         stats:
           $ref: "#/components/schemas/PublicUserStats"
-      required: [id, username, displayName, createdAt, stats]
+      required: [id, username, displayName, createdAt, stats, totalActiveDays, longDescription]
     UserRoleUpdate:
       type: object
       properties:

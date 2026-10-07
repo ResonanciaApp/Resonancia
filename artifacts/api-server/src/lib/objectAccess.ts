@@ -28,6 +28,7 @@ export async function isObjectReferenced({
     SELECT (
       EXISTS (SELECT 1 FROM cover_presets WHERE object_path = ${objectPath} ${coverPresetExclusion})
       OR EXISTS (SELECT 1 FROM users WHERE avatar_url = ${objectPath})
+      OR EXISTS (SELECT 1 FROM reflection_stories WHERE avatar_image_path = ${objectPath})
       OR EXISTS (SELECT 1 FROM catalog_sessions WHERE image_url = ${objectPath})
       OR EXISTS (SELECT 1 FROM catalog_sessions WHERE image_key = ${objectPath})
       OR EXISTS (SELECT 1 FROM catalog_audio_files WHERE url = ${objectPath})

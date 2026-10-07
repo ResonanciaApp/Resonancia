@@ -16,6 +16,7 @@ import {
   type ReflectionStory,
 } from "@workspace/api-client-react";
 import { StoryArtworkFrame } from "@/components/StoryArtworkFrame";
+import { resolveProfileAvatarSource } from "@/lib/profile-avatar-logic";
 import { useCoverPresetCatalogState } from "@/lib/cover-preset-catalog";
 import { useReflectionCategories } from "@/constants/reflectionCategories";
 
@@ -149,6 +150,7 @@ export default function GalleryScreen() {
         }}
       >
         <StoryArtworkFrame
+          avatarSource={resolveProfileAvatarSource({ avatarUrl: item.avatarImagePath }, [])}
           message={item.message}
           width={cardWidth}
           bgImageSource={bgImageSource}

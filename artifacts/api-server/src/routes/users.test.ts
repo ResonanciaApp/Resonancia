@@ -37,6 +37,7 @@ import {
   liveSessionsTable,
   pushTokensTable,
   uploadsTable,
+  playbackHistoryTable,
   usersTable,
   type User,
 } from "@workspace/db";
@@ -116,6 +117,45 @@ describe("account data lifecycle", () => {
 
   afterAll(async () => {
     await db.$client.end();
+  });
+
+  it("returns the visited user's full accumulated days and optional biography, without contact data", async () => {
+    const [visited] = await db.insert(usersTable).values({
+      clerkUserId: `visited_${suffix}_${sequence}`,
+      username: `visited_${suffix}_${sequence}`,
+      displayName: "Perfil visitado",
+      longDescription: "Una descripción pública extensa.",
+    }).returning();
+    try {
+      const events = [
+        // Both UTC dates belong to the same Chilean calendar day.
+        { minutes: 1.5, completed: false, playedAt: new Date("2026-09-10T23:50:00Z") },
+        { minutes: 1.5, completed: false, playedAt: new Date("2026-09-11T00:10:00Z") },
+        { minutes: 0, completed: true, playedAt: new Date("2026-09-13T12:00:00Z") },
+        { minutes: 2.9, completed: false, playedAt: new Date("2026-09-14T12:00:00Z") },
+        { minutes: 5, completed: true, playedAt: new Date(Date.now() + 86400_000) },
+        ...Array.from({ length: 620 }, () => ({
+          minutes: 0.1, completed: false, playedAt: new Date("2026-09-15T12:00:00Z"),
+        })),
+      ];
+      await db.insert(playbackHistoryTable).values(events.map((event, i) => ({
+        userId: visited.id, clientEventId: `public-${suffix}-${i}`,
+        sessionId: "public-fixture", categoryId: "calm", categoryLabel: "Calma", ...event,
+      })));
+      const response = await request(app).get(`/api/users/${visited.id}/public`).expect(200);
+      expect(response.body.id).toBe(visited.id);
+      expect(response.body.totalActiveDays).toBe(3);
+      expect(response.body.longDescription).toBe("Una descripción pública extensa.");
+      expect(response.body).not.toHaveProperty("email");
+      expect(response.body).not.toHaveProperty("clerkUserId");
+      const own = await request(app).get(`/api/users/${currentUser!.id}/public`).expect(200);
+      expect(own.body.totalActiveDays).toBe(0);
+      expect(own.body.longDescription).toBeNull();
+      await request(app).get("/api/users/not-a-number/public").expect(400);
+      await request(app).get("/api/users/2147483647/public").expect(404);
+    } finally {
+      await db.delete(usersTable).where(eq(usersTable.id, visited.id));
+    }
   });
 
   it("exports the authenticated account in a portable JSON envelope", async () => {

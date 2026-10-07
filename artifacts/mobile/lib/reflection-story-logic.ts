@@ -109,6 +109,21 @@ export function canShareReflection(message: string): boolean {
   return reflectionCharacterCount(message) <= REFLECTION_SHARE_CHARACTER_LIMIT;
 }
 
+/** Only our storage URLs can be preserved as object references. */
+export function reflectionAvatarObjectPath(uri: string, apiBase: string): string | null {
+  let path = uri;
+  if (/^https?:\/\//i.test(uri)) {
+    if (!apiBase) return null;
+    try {
+      const parsed = new URL(uri);
+      if (parsed.origin !== new URL(apiBase).origin) return null;
+      path = parsed.pathname;
+    } catch { return null; }
+  }
+  if (path.startsWith("/api/storage/objects/")) return path.replace("/api/storage/", "/");
+  return path.startsWith("/objects/") ? path : null;
+}
+
 export function getStableIdempotencyKey(
   payload: unknown,
   state: { hash: string; key: string }

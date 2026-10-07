@@ -1,7 +1,9 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { View, Text, StyleSheet } from "react-native";
 import { Image } from "expo-image";
 import type { ReflectionStoryComposition } from "@/lib/reflection-story-logic";
+import type { ProfileAvatarSource } from "@/lib/profile-avatar";
+import { StoryAvatar } from "./StoryAvatar";
 
 export const STORY_WIDTH = 1080;
 export const STORY_QUOTE_TOP = 610;
@@ -12,8 +14,10 @@ export type ReflectionArtworkProps = {
   width: number;
   bgImageSource: number | { uri: string } | undefined;
   composition: ReflectionStoryComposition;
+  avatarSource?: ProfileAvatarSource;
   onReady?: () => void;
   onFailure?: () => void;
+  onAvatarFailure?: () => void;
 };
 
 export function StoryArtworkFrame({
@@ -21,12 +25,21 @@ export function StoryArtworkFrame({
   width,
   bgImageSource,
   composition,
+  avatarSource,
   onReady,
   onFailure,
+  onAvatarFailure,
 }: ReflectionArtworkProps) {
   const exportScale = width / STORY_WIDTH;
   const isExport = width === STORY_WIDTH;
   const height = (width * 16) / 9;
+  const backgroundKey = JSON.stringify(bgImageSource);
+  const avatarKey = JSON.stringify(avatarSource);
+  const [loadedBackground, setLoadedBackground] = useState<string>();
+  const [loadedAvatar, setLoadedAvatar] = useState<string>();
+  useEffect(() => {
+    if (loadedBackground === backgroundKey && (!avatarSource || loadedAvatar === avatarKey)) onReady?.();
+  }, [loadedBackground, loadedAvatar, backgroundKey, avatarKey, avatarSource, onReady]);
 
   return (
     <View
@@ -57,10 +70,11 @@ export function StoryArtworkFrame({
           ]}
         >
           <Image
+            key={backgroundKey}
             source={bgImageSource}
             style={StyleSheet.absoluteFillObject}
             contentFit="cover"
-            onLoad={onReady}
+            onLoad={() => setLoadedBackground(backgroundKey)}
             onError={onFailure}
           />
         </View>
@@ -95,6 +109,8 @@ export function StoryArtworkFrame({
         >
           {message.trim()}
         </Text>
+        <StoryAvatar source={avatarSource} scale={exportScale}
+          onReady={() => setLoadedAvatar(avatarKey)} onFailure={onAvatarFailure ?? onFailure} />
       </View>
     </View>
   );
@@ -117,6 +133,7 @@ const styles = StyleSheet.create({
     justifyContent: "center",
   },
   storyQuote: {
+    flexShrink: 1,
     width: "100%",
     color: "#F9F9F9",
     fontFamily: "CormorantGaramond",

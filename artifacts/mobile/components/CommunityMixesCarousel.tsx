@@ -6,10 +6,11 @@
 import { Feather, Ionicons } from "@expo/vector-icons";
 import { useMixLike } from "@/hooks/useMixLike";
 import { LinearGradient } from "expo-linear-gradient";
-import { router } from "expo-router";
+import { router, useFocusEffect } from "expo-router";
 import React, { useCallback, useRef, useState } from "react";
 import {
   Alert,
+  ActivityIndicator,
   Animated,
   Modal,
   Pressable,
@@ -23,10 +24,12 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 
 import {
   useGetSharedMixes,
+  getGetSharedMixesQueryKey,
   useToggleSharedMixLike,
   useReportSharedMix,
 } from "@workspace/api-client-react";
 import type { SharedMix } from "@workspace/api-client-react";
+import { MIX_CATEGORIES } from "@/data/mix-categories";
 import { getMixImage } from "@/config/mix-images";
 import { catalogImage, useCoverPresetCatalog } from "@/lib/cover-preset-catalog";
 
@@ -55,35 +58,48 @@ export function CommunityMixesCarousel() {
   const { openCategory } = useCategoryOverlay();
   const colors = useColors();
   const { theme } = useSceneTheme();
-  const { data } = useGetSharedMixes();
-  const [cachedMixes, setCachedMixes] = useState<SharedMix[]>([]);
-  const allMixes = data?.mixes ?? cachedMixes;
-  const { isSignedIn } = useAuth();
+   const { isSignedIn, clerkUserId } = useAuth();
+   const [focused, setFocused] = useState(false);
+   useFocusEffect(useCallback(() => {
+     setFocused(true);
+     return () => setFocused(false);
+   }, []));
+   const cacheKey = `${SHARED_MIXES_CACHE_KEY}:${clerkUserId ?? "guest"}`;
+   const { data, isLoading, isError, refetch } = useGetSharedMixes(undefined, {
+     query: {
+       queryKey: [...getGetSharedMixesQueryKey(), clerkUserId ?? "guest"],
+       enabled: focused,
+       staleTime: 30_000,
+       refetchInterval: focused ? 60_000 : false,
+     },
+   });
+   const [cached, setCached] = useState<{ key: string; mixes: SharedMix[] }>({ key: "", mixes: [] });
+   const allMixes = data?.mixes ?? (cached.key === cacheKey ? cached.mixes : []);
   const toggleLike = useToggleSharedMixLike();
   const pendingLike = useRef<Record<number, boolean>>({});
 
   React.useEffect(() => {
     let cancelled = false;
-    AsyncStorage.getItem(SHARED_MIXES_CACHE_KEY)
+     AsyncStorage.getItem(cacheKey)
       .then((raw) => {
         if (!raw || cancelled) return;
         const parsed = JSON.parse(raw);
-        if (Array.isArray(parsed)) setCachedMixes(parsed);
+         if (Array.isArray(parsed)) setCached({ key: cacheKey, mixes: parsed });
       })
       .catch(() => {});
     return () => {
       cancelled = true;
     };
-  }, []);
+   }, [cacheKey]);
 
   React.useEffect(() => {
     if (!Array.isArray(data?.mixes)) return;
-    setCachedMixes(data.mixes);
+     setCached({ key: cacheKey, mixes: data.mixes });
     AsyncStorage.setItem(
-      SHARED_MIXES_CACHE_KEY,
+       cacheKey,
       JSON.stringify(data.mixes),
     ).catch(() => {});
-  }, [data]);
+   }, [data, cacheKey]);
 
 
   const sorted = [...allMixes].sort((a, b) => (b.likes ?? 0) - (a.likes ?? 0));
@@ -125,10 +141,7 @@ export function CommunityMixesCarousel() {
   );
 
   const handleViewCreator = useCallback((mix: SharedMix) => {
-    router.push({
-      pathname: "/mezcla-creador/[userId]",
-      params: { userId: String(mix.author.id), name: mix.author.displayName },
-    } as never);
+    router.push(`/usuario/${mix.author.id}` as never);
   }, []);
 
   const handleOpenMix = useCallback((mix: SharedMix) => {
@@ -141,7 +154,7 @@ export function CommunityMixesCarousel() {
       {/* Header */}
       <View style={styles.headerRow}>
         <Text style={[styles.sectionTitle, { color: "#FFFFFF" }]}>
-          Top 5 Mezclas
+          Mezclas comunidad
         </Text>
         <Pressable
           onPress={() => router.push("/mezclas-comunidad" as never)}
@@ -153,7 +166,19 @@ export function CommunityMixesCarousel() {
 
       <View style={styles.panel}>
       {/* Empty state */}
-      {visible.length === 0 && (
+       {visible.length === 0 && isLoading && (
+         <View style={styles.emptyState}>
+           <ActivityIndicator color={colors.primary} />
+           <Text style={[styles.emptyText, { color: colors.foreground }]}>Cargando mezclas…</Text>
+         </View>
+       )}
+       {visible.length === 0 && isError && (
+         <Pressable style={styles.emptyState} onPress={() => refetch()} accessibilityRole="button">
+           <Text style={[styles.emptyText, { color: colors.foreground }]}>No se pudieron cargar las mezclas</Text>
+           <Text style={[styles.emptySub, { color: colors.primary }]}>Reintentar</Text>
+         </Pressable>
+       )}
+       {visible.length === 0 && !isLoading && !isError && (
         <View style={[styles.emptyState, { backgroundColor: colors.card }]}>
           <Feather name="music" size={28} color="rgba(212,175,55,0.35)" />
           <Text style={[styles.emptyText, { color: colors.foreground }]}>
@@ -176,7 +201,7 @@ export function CommunityMixesCarousel() {
               onPress={() => handleOpenMix(mix)}
               onDotsPress={() => {}}
               onAuthorPress={() => handleViewCreator(mix)}
-              favorited={(mix.likedByMe ?? false) || (mix.likes ?? 0) > 0}
+              favorited={mix.likedByMe ?? false}
               onHeartPress={() => handleLike(mix)}
             />
           ))}
@@ -190,7 +215,9 @@ export function CommunityMixesCarousel() {
 }
 
 // ── Corazón animado ───────────────────────────────────────────────
-function AnimatedHeart({ favorited, onPress }: { favorited: boolean; onPress: () => void }) {
+function AnimatedHeart({ favorited, onPress, count, mixId }: {
+  favorited: boolean; onPress: () => void; count: number; mixId: number;
+}) {
   const scale = useRef(new Animated.Value(1)).current;
   const { theme: heartTheme } = useSceneTheme();
   const heartFill = heartTheme.id === "tibet" ? "#F9F9F9" : "#BEA3E6";
@@ -205,7 +232,11 @@ function AnimatedHeart({ favorited, onPress }: { favorited: boolean; onPress: ()
   };
 
   return (
-    <Pressable onPress={handlePress} hitSlop={10} style={styles.heartBtn}>
+    <Pressable testID="community-mix-heart" onPress={handlePress} hitSlop={4}
+      style={[styles.heartBtn, { width: undefined, minWidth: 44, flexDirection: "row", gap: 6 }]}
+      accessibilityRole="button" accessibilityLabel={`${favorited ? "Quitar de" : "Añadir a"} favoritos, ${count} favoritos`}
+      accessibilityState={{ selected: favorited }}>
+      <Text testID={`community-mix-likes-${mixId}`} style={styles.rowLikes} numberOfLines={1}>{count}</Text>
       <Animated.View style={{ transform: [{ scale }] }}>
         {favorited ? (
           <Ionicons name="heart" size={18} color={heartFill} />
@@ -237,13 +268,14 @@ export function MixRow({
   favorited?: boolean;
   onHeartPress?: () => void;
 }) {
-  const trending = mix.trending === true;
   const { activeSceneId } = useSceneTheme();
   const avatarSource = useProfileAvatarSource(mix.author);
   const initial = mix.author.displayName?.trim()?.[0]?.toUpperCase() ?? "·";
 
+  const categoryLabel = MIX_CATEGORIES.find((c) => c.id === mix.category)?.label;
   return (
     <Pressable
+      testID={`community-mix-row-${mix.id}`}
       onPress={onPress}
       style={({ pressed }) => [
         styles.row,
@@ -253,59 +285,35 @@ export function MixRow({
         { opacity: pressed ? 0.6 : 1 },
       ]}
     >
-      {/* Portada de la mezcla */}
-      <MixCover image={mix.image} />
-
-      {/* Info */}
-      <View style={styles.info}>
-        {/* Nº de sonidos — arriba del título, mismo estilo que el autor */}
-        <Text style={[styles.mixCreator, { color: colors.mutedForeground }]} numberOfLines={1}>
-          {mix.sounds.length} sonidos
+      <Pressable
+        testID={`community-mix-author-${mix.id}`}
+        onPress={onAuthorPress}
+        hitSlop={6}
+        accessibilityRole="button"
+        accessibilityLabel={`Perfil de ${mix.author.displayName}`}
+        style={styles.rowAvatar}
+      >
+        {avatarSource ? (
+          <ExpoImage source={avatarSource} style={styles.rowAvatarImg} contentFit="cover" />
+        ) : (
+          <View style={[styles.rowAvatarImg, styles.authorAvatarFallback]}>
+            <Text style={styles.authorInitial}>{initial}</Text>
+          </View>
+        )}
+      </Pressable>
+      <Text style={[styles.mixName, styles.rowName, { color: colors.foreground }]} numberOfLines={1}>
+        {mix.name}
+      </Text>
+      <Text style={[styles.mixCreator, styles.rowCount, { color: colors.mutedForeground }]} numberOfLines={1}>
+        {mix.sounds.length} sonidos
+      </Text>
+      {categoryLabel ? (
+        <Text style={[styles.mixCreator, styles.rowCategory, { color: colors.mutedForeground }]} numberOfLines={1}>
+          {categoryLabel}
         </Text>
-        {/* Título */}
-        <View style={styles.nameRow}>
-          <Text
-            style={[styles.mixName, { color: colors.foreground }]}
-            numberOfLines={1}
-          >
-            {mix.name}
-          </Text>
-          {trending && (
-            <View style={styles.trendBadge}>
-              <Text style={[styles.trendText, { color: GOLD }]}>↑</Text>
-            </View>
-          )}
-        </View>
-        {/* Autor — debajo del título */}
-        <Pressable
-          onPress={onAuthorPress}
-          hitSlop={6}
-          style={styles.authorRow}
-        >
-          {avatarSource ? (
-            <ExpoImage source={avatarSource} style={styles.authorAvatar} contentFit="cover" />
-          ) : (
-            <View style={styles.authorAvatarFallback}>
-              <Text style={styles.authorInitial}>{initial}</Text>
-            </View>
-          )}
-          <Text style={[styles.mixCreator, { color: colors.mutedForeground }]} numberOfLines={1}>
-            {mix.author.displayName}
-          </Text>
-        </Pressable>
-      </View>
-
-      {/* Likes */}
-      {mix.likes > 0 && (
-        <Text style={styles.likeCount}>{mix.likes}</Text>
-      )}
-
-      {/* Corazón animado */}
-      <AnimatedHeart
-        favorited={favorited ?? false}
-        onPress={onHeartPress ?? (() => {})}
-      />
-
+      ) : null}
+       <AnimatedHeart count={mix.likes ?? 0} mixId={mix.id}
+         favorited={favorited ?? false} onPress={onHeartPress ?? (() => {})} />
     </Pressable>
   );
 }
@@ -581,11 +589,18 @@ const styles = StyleSheet.create({
   row: {
     flexDirection: "row",
     alignItems: "center",
-    gap: 14,
-    padding: 16,
+    gap: 8,
+    paddingVertical: 10,
+    paddingHorizontal: 12,
     borderRadius: 18,
     backgroundColor: "rgba(255,255,255,0.045)",
   },
+  rowAvatar: { width: 34, height: 34, borderRadius: 17, flexShrink: 0 },
+  rowAvatarImg: { width: 34, height: 34, borderRadius: 17, overflow: "hidden" },
+  rowName: { flexGrow: 1, flexShrink: 1, flexBasis: 0, minWidth: 40 },
+  rowCount: { flexShrink: 0, maxWidth: 70 },
+  rowCategory: { flexShrink: 2, maxWidth: 80 },
+  rowLikes: { fontFamily: "Manrope", fontSize: 13, fontWeight: "600", color: "#f9f9f9", flexShrink: 0, minWidth: 14, textAlign: "right" },
   info: { flex: 1, minWidth: 0 },
   nameRow: { flexDirection: "row", alignItems: "center", gap: 6, marginTop: 2 },
   mixName: { fontFamily: "Manrope", fontSize: 13, fontWeight: "600", flexShrink: 1 },
