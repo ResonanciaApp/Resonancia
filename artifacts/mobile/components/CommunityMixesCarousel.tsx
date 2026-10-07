@@ -33,6 +33,7 @@ import { getMixImage } from "@/config/mix-images";
 import { catalogImage, useCoverPresetCatalog } from "@/lib/cover-preset-catalog";
 
 import { useProfileAvatarSource } from "@/lib/profile-avatar";
+import { getTopCommunityMixes } from "@/lib/community-mixes-ranking";
 import { useColors } from "@/hooks/useColors";
 import { useSceneTheme } from "@/context/SceneThemeContext";
 import { isIndigo2ThemeId, isIndigoThemeId } from "@/config/scene-themes";
@@ -45,7 +46,6 @@ import { Dimensions } from "react-native";
 
 const GOLD = "#F9F9F9";
 const STACK_THUMB = 93;
-const MAX_VISIBLE = 5;
 const GRID_GAP = 10;
 const CELL_W = (Dimensions.get("window").width - 40 - GRID_GAP * 2) / 3;
 const SHARED_MIXES_CACHE_KEY = "cdc_shared_mixes_v1";
@@ -101,9 +101,7 @@ export function CommunityMixesCarousel() {
    }, [data, cacheKey]);
 
 
-  const sorted = [...allMixes].sort((a, b) => (b.likes ?? 0) - (a.likes ?? 0));
-  const visible = sorted.slice(0, MAX_VISIBLE);
-  const remaining = sorted.length - visible.length;
+  const visible = getTopCommunityMixes(allMixes);
 
   // ── Like toggle ───────────────────────────────────────────────
   const { applyOptimistic, patchAll: patchMixLike } = useMixLike();
@@ -192,10 +190,11 @@ export function CommunityMixesCarousel() {
       {/* ── Lista vertical ── */}
       {visible.length > 0 && (
         <View style={styles.listWrap}>
-          {visible.map((mix) => (
+          {visible.map((mix, index) => (
             <MixRow
               key={mix.id}
               mix={mix}
+              rank={index + 1}
               colors={colors}
               onPress={() => handleOpenMix(mix)}
               onDotsPress={() => {}}
@@ -237,9 +236,9 @@ function AnimatedHeart({ favorited, onPress, count, mixId }: {
       <Text testID={`community-mix-likes-${mixId}`} style={styles.rowLikes} numberOfLines={1}>{count}</Text>
       <Animated.View style={{ transform: [{ scale }] }}>
         {favorited ? (
-          <Ionicons name="heart" size={18} color={heartFill} />
+          <Ionicons name="heart" size={16} color={heartFill} />
         ) : (
-          <Ionicons name="heart-outline" size={18} color="#f9f9f9" />
+          <Ionicons name="heart-outline" size={16} color="#f9f9f9" />
         )}
       </Animated.View>
     </Pressable>
@@ -251,6 +250,7 @@ export type Colors = ReturnType<typeof import("@/hooks/useColors").useColors>;
 
 export function MixRow({
   mix,
+  rank,
   colors,
   onPress,
   onDotsPress,
@@ -259,6 +259,7 @@ export function MixRow({
   onHeartPress,
 }: {
   mix: SharedMix;
+  rank?: number;
   colors: Colors;
   onPress: () => void;
   onDotsPress: () => void;
@@ -283,6 +284,12 @@ export function MixRow({
         { opacity: pressed ? 0.6 : 1 },
       ]}
     >
+      {rank != null && <View style={[styles.rankCircle,
+        rank <= 3 && { backgroundColor: "rgba(255,255,255,0.1)" }]} pointerEvents="none">
+        <Text style={[styles.rankText, rank <= 3 && {
+          fontWeight: "700", color: ["#BE9650", "#C0C0C0", "#B87333"][rank - 1],
+        }]}>{rank}.</Text>
+      </View>}
       <Pressable
         testID={`community-mix-author-${mix.id}`}
         onPress={onAuthorPress}
@@ -303,7 +310,7 @@ export function MixRow({
         <Text style={[styles.mixName, { color: colors.foreground, lineHeight: 16 }]} numberOfLines={1}>
           {mix.name}
         </Text>
-        <Text style={[styles.mixCreator, { color: colors.mutedForeground, marginTop: 6, lineHeight: 12 }]} numberOfLines={1}>
+        <Text style={[styles.mixCreator, { color: colors.mutedForeground, fontSize: 9, marginTop: 6, lineHeight: 10 }]} numberOfLines={1}>
           {mix.sounds.length} sonidos
         </Text>
       </View>
@@ -585,22 +592,24 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     alignItems: "center",
     gap: 8,
-    paddingVertical: 11.5,
+    paddingVertical: 10,
     minHeight: 57,
     height: 57,
     paddingHorizontal: 12,
     borderRadius: 18,
     backgroundColor: "rgba(255,255,255,0.045)",
   },
-  rowAvatar: { width: 34, height: 34, borderRadius: 17, flexShrink: 0 },
-  rowAvatarImg: { width: 34, height: 34, borderRadius: 17, overflow: "hidden" },
+  rankCircle: { width: 26, height: 26, borderRadius: 13, alignItems: "center", justifyContent: "center", flexShrink: 0 },
+  rankText: { fontFamily: "Manrope", fontSize: 13, fontWeight: "500", color: "#F9F9F9" },
+  rowAvatar: { width: 37, height: 37, borderRadius: 18.5, flexShrink: 0 },
+  rowAvatarImg: { width: 37, height: 37, borderRadius: 18.5, overflow: "hidden" },
   rowName: { flexGrow: 1, flexShrink: 1, flexBasis: 0, minWidth: 40 },
   rowCount: { flexShrink: 0, maxWidth: 70 },
   rowCategory: { flexShrink: 2, maxWidth: 80 },
-  rowLikes: { fontFamily: "Manrope", fontSize: 13, fontWeight: "600", color: "#f9f9f9", flexShrink: 0, minWidth: 14, textAlign: "right" },
+  rowLikes: { fontFamily: "Manrope", fontSize: 11, fontWeight: "600", color: "#f9f9f9", flexShrink: 0, minWidth: 14, textAlign: "right" },
   info: { flex: 1, minWidth: 0 },
   nameRow: { flexDirection: "row", alignItems: "center", gap: 6, marginTop: 2 },
-  mixName: { fontFamily: "Manrope", fontSize: 13, fontWeight: "600", flexShrink: 1 },
+  mixName: { fontFamily: "Manrope", fontSize: 13, fontWeight: "700", flexShrink: 1 },
   trendBadge: {
     backgroundColor: "rgba(212,175,55,0.12)",
     borderRadius: 4,
