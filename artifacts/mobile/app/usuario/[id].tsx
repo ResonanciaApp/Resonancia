@@ -3,49 +3,35 @@ import { router, useLocalSearchParams } from "expo-router";
 import { Image as ExpoImage } from "expo-image";
 import {
   ActivityIndicator,
-  Alert,
-  Linking,
-  Modal,
   Platform,
   Pressable,
   ScrollView,
   StatusBar,
   StyleSheet,
   Text,
-  useWindowDimensions,
   View,
 } from "react-native";
-import { LinearGradient } from "expo-linear-gradient";
-import { GoldGradientFill } from "@/components/GoldGradient";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { useProfileAvatarSource } from "@/lib/profile-avatar";
-import { useQueryClient } from "@tanstack/react-query";
 import React from "react";
 
 import {
   useGetPublicUserProfile,
   getGetPublicUserProfileQueryKey,
   useGetMe,
-  useGetUserFollowing,
-  getGetUserFollowingQueryKey,
-  getGetMyFollowCountsQueryKey,
-  useFollowUser,
-  useUnfollowUser,
-  useSendFriendRequest,
-  getGetFriendRequestsQueryKey,
   useGetFriends,
   getGetFriendsQueryKey,
-  useRemoveFriend,
-  useGetExpansorProfile,
-  getGetExpansorProfileQueryKey,
 } from "@workspace/api-client-react";
 import { BLUR_PLACEHOLDER, IMAGE_TRANSITION } from "@/constants/imagePlaceholder";
-import { resolveAvatarUrl } from "@/lib/avatar";
+import { CLOUDY_GROWTH_DAY_PILL_BACKGROUND, MEMBERSHIP_AURORA } from "@/constants/colors";
+import { growthLevels } from "@/data/growthLevels";
 import { useColors } from "@/hooks/useColors";
 import { useSceneTheme } from "@/context/SceneThemeContext";
 import { SceneThemeBackground } from "@/components/SceneThemeBackground";
 
 const H_PAD = 20;
+// Product rule: only Intención is active; never derive the stage from day count.
+const CURRENT_STAGE = growthLevels[0];
 
 function initialsFor(name: string): string {
   const parts = name.trim().split(/\s+/).filter(Boolean);
@@ -61,85 +47,21 @@ export default function UsuarioScreen() {
   const { id } = useLocalSearchParams<{ id: string }>();
   const userId = Number(id);
 
-  const [friendRequested, setFriendRequested] = React.useState(false);
-
   const { data: profile, isLoading, isError } = useGetPublicUserProfile(userId, {
     query: {
       queryKey: getGetPublicUserProfileQueryKey(userId),
       enabled: Number.isInteger(userId) && userId > 0,
+      staleTime: 0,
+      refetchOnMount: "always",
     },
   });
 
   const { data: me } = useGetMe();
-  const queryClient = useQueryClient();
-
   const { data: friendsList } = useGetFriends({
     query: { queryKey: getGetFriendsQueryKey(), enabled: !!me?.id },
   });
   const isFriend = (friendsList ?? []).some((f) => f.id === userId);
-
-  const { data: myFollowing } = useGetUserFollowing(me?.id ?? 0, {
-    query: { enabled: !!me?.id, queryKey: getGetUserFollowingQueryKey(me?.id ?? 0) },
-  });
-  const isFollowing = (myFollowing ?? []).some((u) => u.id === userId);
   const isOwnProfile = me?.id === userId;
-
-  const invalidateFollows = () => {
-    if (me?.id) queryClient.invalidateQueries({ queryKey: getGetUserFollowingQueryKey(me.id) });
-    queryClient.invalidateQueries({ queryKey: getGetMyFollowCountsQueryKey() });
-    queryClient.invalidateQueries({ queryKey: getGetPublicUserProfileQueryKey(userId) });
-  };
-
-  const followMutation = useFollowUser({ mutation: { onSuccess: invalidateFollows } });
-  const unfollowMutation = useUnfollowUser({ mutation: { onSuccess: invalidateFollows } });
-
-  const removeFriendMutation = useRemoveFriend({
-    mutation: {
-      onSuccess: () => {
-        queryClient.invalidateQueries({ queryKey: getGetFriendsQueryKey() });
-        queryClient.invalidateQueries({ queryKey: getGetPublicUserProfileQueryKey(userId) });
-      },
-    },
-  });
-
-  const sendFriendRequest = useSendFriendRequest({
-    mutation: {
-      onSuccess: () => {
-        setFriendRequested(true);
-        queryClient.invalidateQueries({ queryKey: getGetFriendRequestsQueryKey() });
-        queryClient.invalidateQueries({ queryKey: getGetFriendsQueryKey() });
-        queryClient.invalidateQueries({ queryKey: getGetPublicUserProfileQueryKey(userId) });
-        Alert.alert("¡Listo!", "Solicitud de amistad enviada.");
-      },
-      onError: (error) => {
-        const status = (error as { status?: number })?.status;
-        if (status === 409) {
-          // Ya existe una relación — refrescamos y actualizamos el estado local
-          queryClient.invalidateQueries({ queryKey: getGetFriendsQueryKey() });
-          queryClient.invalidateQueries({ queryKey: getGetPublicUserProfileQueryKey(userId) });
-          setFriendRequested(true);
-        } else {
-          Alert.alert("Error", "No se pudo enviar la solicitud.");
-        }
-      },
-    },
-  });
-
-  const isExpansor = profile?.role === "expansor";
-
-  const { data: expansorProfile } = useGetExpansorProfile(userId, {
-    query: {
-      queryKey: getGetExpansorProfileQueryKey(userId),
-      enabled: isExpansor && Number.isInteger(userId) && userId > 0,
-      retry: false,
-    },
-  });
-
-  const [epDescExpanded, setEpDescExpanded] = React.useState(false);
-  const [epDescOverflows, setEpDescOverflows] = React.useState(false);
-  const [epLightboxUri, setEpLightboxUri] = React.useState<string | null>(null);
-  const { width: screenWidth } = useWindowDimensions();
-  const epCellSize = Math.floor((screenWidth - H_PAD * 2 - 2 * 8) / 3);
 
   const topPad = Platform.OS === "web" ? 67 : insets.top;
   const bottomPad = Platform.OS === "web" ? 34 : insets.bottom;
@@ -187,10 +109,6 @@ export default function UsuarioScreen() {
     );
   }
 
-  const memberSince = profile.createdAt
-    ? new Date(profile.createdAt).toLocaleDateString("es", { month: "long", year: "numeric" })
-    : null;
-
   const totalActiveDays = Math.max(0, Math.floor(profile.totalActiveDays ?? 0));
   const longDescription = profile.longDescription?.trim() || null;
 
@@ -205,10 +123,8 @@ export default function UsuarioScreen() {
         showsVerticalScrollIndicator={false}
         contentContainerStyle={[styles.scroll, { paddingBottom: bottomPad + 40 }]}
       >
-        {/* ── Profile Card — mismo layout que profile.tsx ── */}
         <View style={styles.profileCard}>
-
-          {/* Avatar */}
+          {/* 1. Avatar */}
           <View style={styles.avatarWrapper}>
             {avatarSource ? (
               <ExpoImage
@@ -227,294 +143,55 @@ export default function UsuarioScreen() {
             )}
           </View>
 
-          {/* Nombre */}
-          <Text style={[styles.userName, { color: colors.foreground }]}>{profile.displayName}</Text>
+          {/* 2. Nombre de usuario */}
+          <Text testID="public-profile-name" style={[styles.userName, { color: colors.foreground }]}>
+            {profile.displayName}
+          </Text>
 
-          {/* País / ubicación */}
-          {profile.location ? (
-            <View style={styles.metaRow}>
-              <Feather name="map-pin" size={12} color={colors.mutedForeground} />
-              <Text style={[styles.metaText, { color: colors.mutedForeground }]}>{profile.location}</Text>
-            </View>
-          ) : null}
+          {/* 3. Etapa actual */}
+          <Text testID="public-profile-stage" style={[styles.stageName, { color: colors.foreground }]}>
+            {CURRENT_STAGE.name}
+          </Text>
 
-          {/* Handle */}
-          <Text style={[styles.handle, { color: colors.mutedForeground }]}>@{profile.username}</Text>
-
-          {/* Miembro desde */}
-          {memberSince ? (
-            <View style={styles.metaRow}>
-              <Feather name="calendar" size={12} color={colors.mutedForeground} />
-              <Text style={[styles.metaText, { color: colors.mutedForeground }]}>
-                Miembro desde {memberSince}
-              </Text>
-            </View>
-          ) : null}
-
-          {/* Racha acumulada */}
-          <View testID="public-profile-accumulated-pill" style={styles.streakPill}>
-            <MaterialCommunityIcons name="spa" size={15} color="#F9F9F9" />
-            <Text style={styles.streakPillText} numberOfLines={1}>
-              Racha acumulada · {totalActiveDays} {totalActiveDays === 1 ? "día" : "días"}
+          {/* 4. Días activos acumulados */}
+          <View
+            testID="public-profile-accumulated-pill"
+            style={[
+              styles.daysPill,
+              theme.id === "cloudy" && { backgroundColor: CLOUDY_GROWTH_DAY_PILL_BACKGROUND },
+            ]}
+          >
+            <MaterialCommunityIcons
+              name="spa"
+              size={12}
+              color={MEMBERSHIP_AURORA.premium.accent}
+              style={styles.lotus}
+            />
+            <Text style={[styles.daysText, { color: colors.foreground }]}>
+              {totalActiveDays} días
             </Text>
           </View>
 
+          {/* 5. Descripción larga */}
           {longDescription ? (
             <Text testID="public-profile-long-description" style={[styles.longDesc, { color: colors.foreground }]}>
               {longDescription}
             </Text>
           ) : null}
 
-          {/* Seguidores / Siguiendo */}
-          <View style={styles.followCountsRow}>
-            <View style={styles.followCountItem}>
-              <Text style={[styles.followCountNum, { color: colors.foreground }]}>
-                {profile.stats.followersCount ?? 0}
-              </Text>
-              <Text style={[styles.followCountLabel, { color: colors.mutedForeground }]}>seguidores</Text>
-            </View>
-            <View style={[styles.followCountDivider, { backgroundColor: colors.border ?? "#3D0E16" }]} />
-            <View style={styles.followCountItem}>
-              <Text style={[styles.followCountNum, { color: colors.foreground }]}>
-                {profile.stats.followingCount ?? 0}
-              </Text>
-              <Text style={[styles.followCountLabel, { color: colors.mutedForeground }]}>siguiendo</Text>
-            </View>
-          </View>
-
-          {/* ── Pills de acción (solo para perfiles ajenos) ── */}
-          {!isOwnProfile && (
-            <View style={styles.actionPillsWrap}>
-              {/* Fila 1: Seguir + Amistad */}
-              <View style={styles.actionPillsRow}>
-                {/* Seguir */}
-                <Pressable
-                  onPress={() => {
-                    if (isFollowing) unfollowMutation.mutate({ userId });
-                    else followMutation.mutate({ userId });
-                  }}
-                  style={({ pressed }) => [
-                    styles.actionPill,
-                    isFollowing && styles.actionPillActive,
-                    { opacity: pressed ? 0.75 : 1, flex: 1, justifyContent: "center" },
-                  ]}
-                >
-                  {isFollowing && (
-                    <LinearGradient
-                      colors={["#F9F9F9", "#F9F9F9"]}
-                      start={{ x: 0, y: 0 }}
-                      end={{ x: 1, y: 0 }}
-                      style={StyleSheet.absoluteFill}
-                    />
-                  )}
-                  <Feather
-                    name={isFollowing ? "user-check" : "user-plus"}
-                    size={13}
-                    color={isFollowing ? "#1B060F" : "#FFFFFF"}
-                  />
-                  <Text style={[styles.actionPillText, isFollowing && styles.actionPillTextActive]}>
-                    {isFollowing ? "Siguiendo" : "Seguir"}
-                  </Text>
-                </Pressable>
-
-                {/* Amistad */}
-                <Pressable
-                  onPress={() => {
-                    if (isFriend) {
-                      Alert.alert(
-                        "Eliminar amigo",
-                        `¿Querés eliminar a ${profile.displayName} de tus amigos?`,
-                        [
-                          { text: "Cancelar", style: "cancel" },
-                          {
-                            text: "Eliminar",
-                            style: "destructive",
-                            onPress: () => removeFriendMutation.mutate({ userId }),
-                          },
-                        ]
-                      );
-                    } else if (friendRequested) {
-                      Alert.alert("Solicitud enviada", "Ya enviaste una solicitud de amistad.");
-                    } else {
-                      sendFriendRequest.mutate({ data: { addresseeId: userId } });
-                    }
-                  }}
-                  style={({ pressed }) => [
-                    styles.actionPill,
-                    isFriend && styles.actionPillActive,
-                    !isFriend && friendRequested && styles.actionPillSent,
-                    { opacity: pressed ? 0.75 : 1, flex: 1, justifyContent: "center" },
-                  ]}
-                >
-                  {isFriend && (
-                    <LinearGradient
-                      colors={["#F9F9F9", "#F9F9F9"]}
-                      start={{ x: 0, y: 0 }}
-                      end={{ x: 1, y: 0 }}
-                      style={StyleSheet.absoluteFill}
-                    />
-                  )}
-                  <Feather
-                    name={isFriend ? "user-check" : friendRequested ? "user-x" : "users"}
-                    size={13}
-                    color={isFriend ? "#1B060F" : friendRequested ? "rgba(250,240,238,0.55)" : "#FFFFFF"}
-                  />
-                  <Text style={[
-                    styles.actionPillText,
-                    isFriend && styles.actionPillTextActive,
-                    !isFriend && friendRequested && styles.actionPillTextSent,
-                  ]}>
-                    {isFriend ? "Amigos" : friendRequested ? "Solicitado" : "Amistad"}
-                  </Text>
-                </Pressable>
-              </View>
-
-              {/* Fila 2: Enviar mensaje — solo si son amigos */}
-              {isFriend && (
-                <Pressable
-                  onPress={() => router.push(`/chat/${profile.id}` as never)}
-                  style={({ pressed }) => [
-                    styles.actionPill,
-                    styles.actionPillFull,
-                    { opacity: pressed ? 0.75 : 1 },
-                  ]}
-                >
-                  <Feather name="message-circle" size={13} color="#FFFFFF" />
-                  <Text style={styles.actionPillText}>Enviar mensaje</Text>
-                </Pressable>
-              )}
-            </View>
+          {/* Mensaje solo para amigos existentes */}
+          {!isOwnProfile && isFriend && (
+            <Pressable
+              testID="public-profile-message"
+              onPress={() => router.push(`/chat/${profile.id}` as never)}
+              style={({ pressed }) => [styles.messagePill, { opacity: pressed ? 0.75 : 1 }]}
+            >
+              <Feather name="message-circle" size={13} color="#FFFFFF" />
+              <Text style={styles.messagePillText}>Enviar mensaje</Text>
+            </Pressable>
           )}
         </View>
-
-        {/* ── Sección Expansor ── */}
-        {isExpansor && (
-          <View style={[styles.expansorSection, { marginHorizontal: H_PAD }]}>
-
-            {/* Banner certificado — siempre visible */}
-            <View style={styles.epCertBanner}>
-              <LinearGradient
-                colors={["#F9F9F9", "#B8860B"]}
-                start={{ x: 0, y: 0 }} end={{ x: 0, y: 1 }}
-                style={styles.epCertBannerBar}
-              />
-              <View style={{ flex: 1, paddingLeft: 12, paddingVertical: 10, justifyContent: "center" }}>
-                <Text style={styles.epCertBannerTitle}>EXPANSOR CERTIFICADO</Text>
-                <Text style={[styles.epCertBannerSub, { color: "rgba(212,175,55,0.65)" }]}>Verificado · Resonancia</Text>
-              </View>
-              <View style={{ paddingRight: 14, justifyContent: "center" }}>
-                <View style={styles.epCertIconBorder}>
-                  <View style={styles.epCertIcon}>
-                    <LinearGradient
-                      colors={["rgba(212,175,55,0.30)", "rgba(184,134,11,0.20)"]}
-                      style={StyleSheet.absoluteFill}
-                    />
-                    <Text style={styles.epCertStar}>✦</Text>
-                  </View>
-                </View>
-              </View>
-            </View>
-
-            {/* Especialidades */}
-            {(expansorProfile?.specialties ?? []).length > 0 && (
-              <View style={{ gap: 8 }}>
-                <Text style={[styles.epSectionTitle, { color: colors.foreground }]}>Se especializa en</Text>
-                <ScrollView horizontal showsHorizontalScrollIndicator={false} contentContainerStyle={{ gap: 6, paddingRight: 4 }}>
-                  {(expansorProfile?.specialties ?? []).map((s) => (
-                    <View key={s} style={[styles.epChip, { borderColor: "rgba(212,175,55,0.30)", backgroundColor: "rgba(212,175,55,0.07)" }]}>
-                      <Text style={[styles.epChipText, { color: "#F9F9F9" }]}>{s}</Text>
-                    </View>
-                  ))}
-                </ScrollView>
-              </View>
-            )}
-
-            {/* Descripción */}
-            {expansorProfile?.description ? (
-              <View style={{ gap: 6 }}>
-                <Text style={[styles.epSectionTitle, { color: colors.foreground }]}>Servicios</Text>
-                <Text
-                  style={[styles.epDesc, { color: colors.mutedForeground }]}
-                  numberOfLines={epDescExpanded ? undefined : 5}
-                  onTextLayout={(e) => { if (!epDescOverflows && e.nativeEvent.lines.length > 5) setEpDescOverflows(true); }}
-                >
-                  {expansorProfile.description}
-                </Text>
-                {epDescOverflows && (
-                  <Pressable onPress={() => setEpDescExpanded((v) => !v)} style={({ pressed }) => [styles.epReadMore, { opacity: pressed ? 0.7 : 1 }]}>
-                    <Text style={{ fontSize: 13, color: "#F9F9F9", fontWeight: "600" }}>{epDescExpanded ? "Leer menos" : "Leer más"}</Text>
-                    <Feather name={epDescExpanded ? "chevron-up" : "chevron-down"} size={13} color="#F9F9F9" />
-                  </Pressable>
-                )}
-              </View>
-            ) : null}
-
-            {/* Contacto */}
-            {(expansorProfile?.phone || expansorProfile?.email || expansorProfile?.instagram) && (
-              <View style={{ gap: 8 }}>
-                <Text style={[styles.epSectionTitle, { color: colors.foreground }]}>Contacto</Text>
-                <View style={styles.epContactRow}>
-                  {expansorProfile.phone ? (
-                    <Pressable onPress={() => Linking.openURL(`tel:${expansorProfile.phone}`)} style={({ pressed }) => [styles.epContactPill, { opacity: pressed ? 0.75 : 1, flex: 1, justifyContent: "center" }]}>
-                      <Feather name="phone" size={13} color="#FFFFFF" />
-                      <Text style={styles.epContactPillText}>Teléfono</Text>
-                    </Pressable>
-                  ) : null}
-                  {expansorProfile.email ? (
-                    <Pressable onPress={() => Linking.openURL(`mailto:${expansorProfile.email}`)} style={({ pressed }) => [styles.epContactPill, { opacity: pressed ? 0.75 : 1, flex: 1, justifyContent: "center" }]}>
-                      <Feather name="mail" size={13} color="#FFFFFF" />
-                      <Text style={styles.epContactPillText}>Email</Text>
-                    </Pressable>
-                  ) : null}
-                  {expansorProfile.instagram ? (
-                    <Pressable onPress={() => Linking.openURL(expansorProfile.instagram!)} style={({ pressed }) => [styles.epContactPill, { opacity: pressed ? 0.75 : 1, flex: 1, justifyContent: "center" }]}>
-                      <Feather name="instagram" size={13} color="#FFFFFF" />
-                      <Text style={styles.epContactPillText}>Instagram</Text>
-                    </Pressable>
-                  ) : null}
-                </View>
-              </View>
-            )}
-
-            {/* Galería */}
-            {(expansorProfile?.photos ?? []).length > 0 && (
-              <View style={styles.epGalleryWrap}>
-                <View style={styles.epGalleryGrid}>
-                  {(expansorProfile?.photos ?? []).map((objectPath, i) => {
-                    const uri = resolveAvatarUrl(objectPath) ?? objectPath;
-                    return (
-                      <Pressable key={i} onPress={() => setEpLightboxUri(uri)} style={({ pressed }) => ({ opacity: pressed ? 0.85 : 1 })}>
-                        <ExpoImage
-                          source={{ uri }}
-                          style={{ width: epCellSize, height: Math.floor(epCellSize * 1.3), borderRadius: 10 }}
-                          contentFit="cover"
-                        />
-                      </Pressable>
-                    );
-                  })}
-                </View>
-              </View>
-            )}
-
-            {/* Quote */}
-            {expansorProfile?.quote ? (
-              <View style={styles.epQuoteWrap}>
-                <Text style={[styles.epQuoteText, { color: colors.mutedForeground }]}>"{expansorProfile.quote}"</Text>
-              </View>
-            ) : null}
-
-          </View>
-        )}
       </ScrollView>
-
-      {/* Lightbox */}
-      <Modal visible={epLightboxUri !== null} transparent animationType="fade" onRequestClose={() => setEpLightboxUri(null)}>
-        <Pressable style={styles.lbBackdrop} onPress={() => setEpLightboxUri(null)}>
-          {epLightboxUri && (
-            <ExpoImage source={{ uri: epLightboxUri }} style={styles.lbImg} contentFit="contain" />
-          )}
-        </Pressable>
-      </Modal>
     </View>
   );
 }
@@ -541,159 +218,38 @@ const styles = StyleSheet.create({
   notFoundSub: { fontFamily: "Manrope", fontSize: 14, textAlign: "center", lineHeight: 21 },
 
   scroll: { paddingTop: 4, gap: 16 },
-
-  /* ── Profile card — sin fondo, igual que profile.tsx ── */
-  profileCard: {
-    borderRadius: 24,
-    padding: 24,
-    alignItems: "center",
-    gap: 6,
-  },
+  profileCard: { borderRadius: 24, padding: 24, alignItems: "center", gap: 6 },
   avatarWrapper: { position: "relative", marginBottom: 8 },
-  avatarImage: { width: 132, height: 132, borderRadius: 66 },
+  avatarImage: { width: 117, height: 117, borderRadius: 58.5 },
   avatarFallback: { alignItems: "center", justifyContent: "center" },
-  initials: { fontFamily: "Manrope", fontSize: 44, fontWeight: "700" },
+  initials: { fontFamily: "Manrope", fontSize: 40, fontWeight: "700" },
   userName: { fontFamily: "Manrope", fontSize: 20, fontWeight: "700", textAlign: "center" },
-  handle: { fontFamily: "Manrope", fontSize: 13 },
-  metaRow: { flexDirection: "row", alignItems: "center", gap: 4 },
-  metaText: { fontFamily: "Manrope", fontSize: 12 },
-
-  /* — Seguidores/stats row — */
-  followCountsRow: { flexDirection: "row", alignItems: "center", marginTop: 14, marginBottom: 4 },
-  followCountItem: { alignItems: "center", paddingHorizontal: 16 },
-  followCountNum: { fontFamily: "Manrope", fontSize: 18, fontWeight: "700" },
-  followCountLabel: { fontFamily: "Manrope", fontSize: 11, marginTop: 1 },
-  followCountDivider: { width: 1, height: 28 },
-
-  /* — Pills de acción — */
-  actionPillsWrap: {
-    alignSelf: "stretch",
-    gap: 8,
-    marginTop: 14,
-  },
-  actionPillsRow: {
-    flexDirection: "row",
-    gap: 8,
-  },
-  actionPillFull: {
-    alignSelf: "stretch",
-    justifyContent: "center",
-  },
-  actionPill: {
+  stageName: { fontFamily: "Manrope", fontSize: 15, fontWeight: "700", textAlign: "center" },
+  daysPill: {
     flexDirection: "row",
     alignItems: "center",
-    gap: 6,
-    borderRadius: 20,
-    paddingHorizontal: 14,
-    height: 34,
-    overflow: "hidden",
-    backgroundColor: "rgba(255,255,255,0.07)",
-  },
-  actionPillActive: { backgroundColor: "transparent" },
-  actionPillSent: { backgroundColor: "rgba(255,255,255,0.04)" },
-  actionPillText: {
-    fontFamily: "Manrope",
-    fontSize: 13,
-    fontWeight: "400",
-    color: "#FFFFFF",
-    letterSpacing: 0.1,
-  },
-  actionPillTextActive: { fontFamily: "Manrope", color: "#1B060F", fontWeight: "600" },
-  actionPillTextSent: { color: "#c2c2c2" },
-
-  streakPill: {
-    flexDirection: "row", alignItems: "center", gap: 6, marginTop: 12,
-    paddingHorizontal: 14, height: 32, borderRadius: 16, maxWidth: "100%",
-    backgroundColor: "rgba(255,255,255,0.12)",
-  },
-  streakPillText: { fontFamily: "Manrope", fontSize: 13, fontWeight: "600", color: "#F9F9F9", flexShrink: 1 },
-  longDesc: { fontFamily: "Manrope", fontSize: 14, lineHeight: 21, textAlign: "center", marginTop: 12, paddingHorizontal: 4 },
-  /* ── Categoría más escuchada ── */
-  topCatCard: {
-    flexDirection: "row",
-    alignItems: "center",
-    gap: 8,
-    borderRadius: 14,
-    padding: 14,
-  },
-  topCatLabel: { fontFamily: "Manrope", fontSize: 13, flex: 1 },
-  topCatValue: { fontFamily: "Manrope", fontSize: 14, fontWeight: "700" },
-
-  /* ── Sección expansor ── */
-  expansorSection: {
-    borderRadius: 18,
-    borderWidth: 1,
-    borderColor: "rgba(212,175,55,0.15)",
-    backgroundColor: "rgba(74,12,12,0.08)",
-    padding: 16,
-    gap: 16,
-  },
-  epSectionTitle: { fontFamily: "Manrope", fontSize: 13, fontWeight: "700", letterSpacing: 0.3 },
-  epChip: {
-    paddingHorizontal: 11,
-    paddingVertical: 5,
-    borderRadius: 20,
-    borderWidth: 1,
-  },
-  epChipText: { fontFamily: "Manrope", fontSize: 12, fontWeight: "600" },
-  epDesc: { fontFamily: "Manrope", fontSize: 14, lineHeight: 21 },
-  epReadMore: { flexDirection: "row", alignItems: "center", gap: 4 },
-  epContactRow: { flexDirection: "row", gap: 8 },
-  epContactPill: {
-    flexDirection: "row",
-    alignItems: "center",
-    gap: 6,
-    borderRadius: 20,
-    paddingHorizontal: 14,
-    height: 34,
-    overflow: "hidden",
-    backgroundColor: "rgba(255,255,255,0.07)",
-  },
-  epContactPillText: { fontFamily: "Manrope", fontSize: 13, color: "#FFFFFF" },
-  epQuoteWrap: { paddingTop: 4 },
-  epQuoteText: { fontFamily: "Manrope", fontSize: 13, fontStyle: "italic", lineHeight: 20, textAlign: "center" },
-
-  /* ── Banner certificado ── */
-  epCertBanner: {
-    flexDirection: "row",
-    alignItems: "stretch",
+    gap: 4,
+    marginTop: 6,
+    paddingHorizontal: 9,
+    paddingVertical: 4,
     borderRadius: 12,
-    overflow: "hidden",
-    backgroundColor: "rgba(212,175,55,0.06)",
     borderWidth: 1,
-    borderColor: "rgba(212,175,55,0.20)",
+    borderColor: "rgba(255,255,255,0.10)",
+    backgroundColor: "rgba(151,128,231,0.20)",
   },
-  epCertBannerBar: { width: 4 },
-  epCertBannerTitle: {
-    fontFamily: "Manrope",
-    fontSize: 11,
-    fontWeight: "800",
-    letterSpacing: 1.4,
-    color: "#F9F9F9",
-  },
-  epCertBannerSub: { fontFamily: "Manrope", fontSize: 11, marginTop: 2 },
-  epCertIconBorder: {
-    width: 34, height: 34, borderRadius: 17,
-    borderWidth: 1, borderColor: "rgba(212,175,55,0.35)",
-    alignItems: "center", justifyContent: "center",
-  },
-  epCertIcon: {
-    width: 28, height: 28, borderRadius: 14,
-    alignItems: "center", justifyContent: "center",
-    overflow: "hidden",
-  },
-  epCertStar: { fontFamily: "Manrope", fontSize: 13, color: "#F9F9F9" },
-  epGalleryWrap: { marginTop: 12 },
-  epGalleryGrid: {
+  daysText: { fontFamily: "Manrope", fontSize: 10, fontWeight: "600" },
+  lotus: { lineHeight: 12, includeFontPadding: false },
+  longDesc: { fontFamily: "Manrope", fontSize: 14, lineHeight: 21, textAlign: "center", marginTop: 12, paddingHorizontal: 4 },
+  messagePill: {
     flexDirection: "row",
-    flexWrap: "wrap",
-    gap: 8,
-  },
-  lbBackdrop: {
-    flex: 1,
-    backgroundColor: "rgba(0,0,0,0.88)",
     alignItems: "center",
     justifyContent: "center",
+    gap: 6,
+    alignSelf: "stretch",
+    marginTop: 18,
+    borderRadius: 20,
+    height: 34,
+    backgroundColor: "rgba(255,255,255,0.07)",
   },
-  lbImg: { width: "90%", height: "75%" },
+  messagePillText: { fontFamily: "Manrope", fontSize: 13, color: "#FFFFFF", letterSpacing: 0.1 },
 });

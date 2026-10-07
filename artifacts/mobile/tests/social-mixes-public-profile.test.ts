@@ -138,12 +138,21 @@ test("New in Resonancia precedes playlists with remaining Discover sections in p
   assert.match(explore, /<React.Fragment key=\{carousel.id\}>\s*<View style=\{styles.sectionSpacer\} \/>\s*<EditorialPlaylistCarousel/);
 });
 
-test("public profile uses theme background, lotus pill, followers and optional description", () => {
+test("public profile shows avatar, name, Intención, gold lotus days pill and description only", () => {
   assert.match(profile, /<SceneThemeBackground \/>/);
   assert.doesNotMatch(profile, /BG_GRADIENT|topCategoryLabel/);
+  const order = ["styles.avatarWrapper", "public-profile-name", "public-profile-stage", "public-profile-accumulated-pill", "public-profile-long-description"]
+    .map((t) => profile.indexOf(t));
+  assert.ok(order.every((i, n) => i > 0 && (n === 0 || i > order[n - 1])), order.join());
+  assert.match(profile, /growthLevels\[0\]/);
   assert.match(profile, /name="spa"/);
-  assert.match(profile, /Racha acumulada/);
-  assert.match(profile, /followersCount/);
+  assert.match(profile, /MEMBERSHIP_AURORA\.premium\.accent/);
+  assert.match(profile, /CLOUDY_GROWTH_DAY_PILL_BACKGROUND/);
+  assert.match(profile, /rgba\(151,128,231,0\.20\)/);
+  assert.match(profile, /\{totalActiveDays\} días/);
+  assert.match(profile, /avatarImage: \{ width: 117, height: 117, borderRadius: 58\.5 \}/);
   assert.match(profile, /longDescription \? \(/);
-  assert.match(profile, /isExpansor/);
+  assert.match(profile, /\/chat\//);
+  assert.doesNotMatch(profile, /followersCount|followingCount|Racha acumulada|memberSince|Miembro desde|profile\.location|@\{profile\.username\}/);
+  assert.doesNotMatch(profile, /isExpansor|Expansor|useGetExpansorProfile|useFollowUser|useUnfollowUser|useSendFriendRequest|useGetUserFollowing/);
 });
