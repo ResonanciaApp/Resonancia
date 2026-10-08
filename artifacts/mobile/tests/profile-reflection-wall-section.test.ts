@@ -113,7 +113,7 @@ test("routine add card uses the measured wall height only when supplied and leav
   const wallGap = Number(style("ProfileReflectionWallSection", "title").marginBottom);
   const routineGap = Number(style("MiRutinaSection", "headerRow").marginBottom);
   assert.equal(wallGap, routineGap);
-  assert.equal(Number(style("MiRutinaSection", "alignedHeaderRow").marginBottom), routineGap + 3);
+  assert.equal(Number(style("MiRutinaSection", "alignedHeaderRow").marginBottom), routineGap + 2);
   assert.match(source("../components/MiRutinaSection.tsx"), /styles\.headerRow, alignCardGapToWall && styles\.alignedHeaderRow/);
   assert.equal(style("MiRutinaSection", "completeState").marginTop ?? 0, 0);
   assert.deepEqual(style("RoutineCompletionTransition", "completeLayer"), { position: "absolute", top: 0, left: 0, right: 0 });
@@ -135,6 +135,48 @@ test("Tu camino lifts only its content row four pixels and trims eight pixels of
   assert.deepEqual(style("GrowthJourney", "previewContentRow").transform, [{ translateY: -4 }]);
   assert.equal(style("GrowthJourney", "previewSectionHeader").transform, undefined);
   assert.match(source("../components/GrowthJourney.tsx"), /<View style=\{styles\.previewContentRow\}>\{previewContent\}<\/View>/);
+});
+
+test("Perfil header controls take touch priority over the lifted avatar without moving either", () => {
+  const profile = source("../components/ProfileScreenBase.tsx");
+  const ast = ts.createSourceFile("profile.tsx", profile, ts.ScriptTarget.Latest, true, ts.ScriptKind.TSX);
+  const component = ast.statements.find((node) => ts.isFunctionDeclaration(node) && node.name?.text === "ProfileHeaderActions");
+  assert.ok(component);
+  const compiled = ts.transpileModule(`${component.getText(ast)}; return ProfileHeaderActions;`, {
+    compilerOptions: { jsx: ts.JsxEmit.React },
+  }).outputText;
+  const header = new Function("React", "View", "Pressable", "Feather", "styles", compiled)(
+    React, "View", "Pressable", "Feather", {
+      profileHeaderActions: style("ProfileScreenBase", "profileHeaderActions"),
+      profileStickyHeaderActions: style("ProfileScreenBase", "profileStickyHeaderActions"),
+      gearBtn: style("ProfileScreenBase", "gearBtn"),
+    },
+  );
+  for (const sticky of [false, true]) {
+    let edits = 0;
+    let settings = 0;
+    const root = header({
+      sticky, foreground: "#F9F9F9", activeSceneId: "cloudy",
+      onEdit: () => edits++, onSettings: () => settings++,
+    });
+    assert.equal(root.props.pointerEvents, "box-none");
+    const buttons = React.Children.toArray(root.props.children) as React.ReactElement<any>[];
+    buttons[0].props.onPress();
+    buttons[1].props.onPress();
+    assert.equal(edits, 1);
+    assert.equal(settings, 1);
+    assert.equal(buttons[0].props.testID, sticky ? "profile-sticky-edit-details" : "profile-edit-details");
+    assert.equal(buttons[1].props.testID, sticky ? "profile-sticky-open-settings" : "profile-open-settings");
+  }
+  const row = style("ProfileScreenBase", "dedicatedTitleRow");
+  const card = profile.match(/profileCard:\s*\{([\s\S]*?)\n  \},/)?.[1];
+  assert.ok(card);
+  assert.ok(Number(row.zIndex) > Number(card.match(/zIndex:\s*(\d+)/)?.[1] ?? 0));
+  assert.ok(Number(row.elevation) > Number(card.match(/elevation:\s*(\d+)/)?.[1] ?? 0));
+  assert.match(profile, /<View pointerEvents="box-none" style=\{styles\.dedicatedTitleRow\}>/);
+  assert.match(profile, /onEdit=\{\(\) => router\.push\("\/mi-perfil"\)\}/);
+  assert.match(profile, /onSettings=\{\(\) => router\.push\("\/configuracion-ajustes"\)\}/);
+  assert.equal(style("ProfileScreenBase", "gearBtn").width, 43);
 });
 
 test("Mi muro keeps the same prompt before and after selecting any category tab", () => {

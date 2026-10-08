@@ -231,7 +231,10 @@ test("Perfil Tu camino keeps only the stage title and description, preserving Ve
   const html = render({ embedded: true, canonicalVerticalInsets: true, sectionTitle: "Tu camino", onPress: () => { opened = true; } });
   assert.match(html, /data-testid="profile-growth-view-all"[^>]*data-accessibility-role="button"[^>]*>[\s\S]*?Ver todo/);
   assert.match(html, /data-justify-content="space-between"/);
-  assert.doesNotMatch(html, /intention-preview-day-pill|data-icon="spa"|>0 días</);
+  assert.doesNotMatch(html, /intention-preview-day-pill|>0 días</);
+  assert.match(html, /data-testid="profile-intention-name-with-lotus"[^>]*data-direction="row"/);
+  assert.match(html, /data-icon="spa" data-color="#BE9650"/);
+  assert.ok(html.indexOf('data-icon="spa"') < html.indexOf(">Intención"));
   assert.match(html, />Intención</);
   assert.match(html, /Una práctica que comienza hoy\./);
   assert.match(html, /data-testid="profile-intention-description"[^>]*data-transform="\[\{&quot;translateY&quot;:-3\}\]"/);

@@ -29,8 +29,8 @@ En Perfil, la card inferior «Añadir una actividad» iguala la altura real de M
 
 **How to apply:** Usar la medida colapsada, incluyendo cualquier cambio por ajuste de texto o escala de fuente; ignorar las alturas durante la expansión y sus animaciones. No trasladar esta regla a otros controles de añadir.
 
-En Perfil, las cards de Mi rutina expansiva toman Mi muro como referencia, pero quedan tres píxeles más abajo del título: tareas, Añadir una actividad y Rutina completa.
+En Perfil, las cards de Mi rutina expansiva toman Mi muro como referencia, pero quedan dos píxeles más abajo del título: tareas, Añadir una actividad y Rutina completa.
 
-**Why:** Tras igualar la separación de los estados vacíos, el usuario pidió bajar las tres clases de card tres píxeles. Comparar solo el margen del header ignora el margen adicional de la card y la altura de la línea del título.
+**Why:** El usuario afinó la separación de las tres clases de card por igual. Comparar solo el margen del header ignora el margen adicional de la card y la altura de la línea del título.
 
 **How to apply:** Igualar los marcos de los títulos y contar todos los márgenes hasta el borde. Conservar la separación entre la última actividad y Añadir cuando sí hay actividades.

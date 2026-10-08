@@ -258,7 +258,7 @@ function ProfileHeaderActions({
 }) {
   const backgroundColor = activeSceneId === "cloudy" ? "rgba(0,0,0,0.19)" : "rgba(0,0,0,0.16)";
   return (
-    <View style={[styles.profileHeaderActions, sticky && styles.profileStickyHeaderActions]}>
+    <View pointerEvents="box-none" style={[styles.profileHeaderActions, sticky && styles.profileStickyHeaderActions]}>
       <Pressable
         onPress={onEdit}
         hitSlop={4}
@@ -1401,7 +1401,7 @@ export function ProfileScreenBase({
         bottomOffset={165}
         disableScrollOnKeyboardHide
       >
-        <View style={styles.dedicatedTitleRow}>
+        <View pointerEvents="box-none" style={styles.dedicatedTitleRow}>
           <ProfileHeaderActions
             foreground={colors.foreground}
             activeSceneId={activeSceneId}
@@ -2178,6 +2178,8 @@ const styles = StyleSheet.create({
   stickyTitle: { fontFamily: "Manrope", fontSize: 18, fontWeight: "800", color: "#F4F4F4", letterSpacing: 0.3, flex: 1, textAlign: "center", marginLeft: -4, transform: [{ translateY: 4 }] },
   dedicatedTitleRow: {
     position: "relative",
+    zIndex: 2,
+    elevation: 2,
     flexDirection: "row",
     alignItems: "center",
     justifyContent: "space-between",

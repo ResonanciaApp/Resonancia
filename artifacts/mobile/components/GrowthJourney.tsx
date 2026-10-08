@@ -207,7 +207,18 @@ export function GrowthLevelPreviewCard({
         {canonicalVerticalInsets ? (
           <View testID="profile-intention-title-row" style={styles.canonicalPreviewTitleRow}>
             {!sectionTitle && dayPill}
-            {name}
+            {sectionTitle ? (
+              <View testID="profile-intention-name-with-lotus" style={styles.profileIntentionNameRow}>
+                <MaterialCommunityIcons
+                  name="spa"
+                  size={16}
+                  color={GROWTH_COLORS.current}
+                  accessibilityElementsHidden
+                  importantForAccessibility="no"
+                />
+                {name}
+              </View>
+            ) : name}
           </View>
         ) : (
           <>
@@ -530,6 +541,7 @@ const styles = StyleSheet.create({
   canonicalPreviewName: { marginBottom: 0, fontSize: 18, lineHeight: 23 },
   canonicalPreviewPill: { marginBottom: 0, alignSelf: "center", flexDirection: "row", alignItems: "center", gap: 4 },
   canonicalPreviewTitleRow: { flexDirection: "column", alignItems: "flex-start", gap: 10 },
+  profileIntentionNameRow: { flexDirection: "row", alignItems: "center", gap: 6 },
   previewCopy: { flex: 1, minWidth: 0 },
   previewStory: { fontFamily: "Manrope", fontSize: 11, lineHeight: 16 },
   section: {

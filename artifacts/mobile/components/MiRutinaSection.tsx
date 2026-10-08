@@ -661,7 +661,7 @@ const styles = StyleSheet.create({
     lineHeight: 26,
   },
   alignedHeaderRow: {
-    marginBottom: 18,
+    marginBottom: 17,
   },
   headerActions: {
     flexDirection: "row",

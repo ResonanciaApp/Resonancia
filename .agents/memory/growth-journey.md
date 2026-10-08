@@ -15,9 +15,9 @@ El banner de Intención en Perfil no muestra la píldora de días encima del nom
 
 **How to apply:** No restaurar la píldora de días dentro del banner Tu camino en Perfil; conservarla en las demás portadas y etapas del camino. Mantener los ajustes independientes de descripción y espacio inferior de Perfil.
 
-La píldora de etapa del bloque de identidad en Perfil, sobre el Lema de vida, es independiente de la píldora de días retirada del banner Tu camino. Lleva la flor de loto dorada a la izquierda.
+La píldora de etapa del bloque de identidad en Perfil, sobre el Lema de vida, es independiente de la píldora de días retirada del banner Tu camino. Lleva la flor de loto dorada a la izquierda. El nombre Intención en Tu camino también lleva el loto a su izquierda, sin recuperar la píldora de días.
 
-**Why:** El usuario pidió explícitamente restaurar el loto a la izquierda de la etapa en Perfil. La decoración no activa la progresión ni cambia la decisión de que Intención sea la única etapa actual.
+**Why:** El usuario pidió el loto a la izquierda tanto de la etapa de identidad como de Intención en Tu camino. La decoración no activa la progresión ni cambia la decisión de que Intención sea la única etapa actual.
 
 **How to apply:** Conservar el estilo compartido por tema y la etapa activa del recorrido, sin calcular etapas futuras a partir de rachas o días hasta que se autorice activar la progresión.
 
