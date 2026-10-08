@@ -3,11 +3,13 @@ import { readFileSync } from "node:fs";
 import test from "node:test";
 import React from "react";
 import ts from "typescript";
+import { getThemeStyleId, isIndigo2ThemeId, SCENE_THEMES } from "../config/scene-themes.ts";
 
 const read = (path: string) => readFileSync(new URL(path, import.meta.url), "utf8");
 const gradient = ["#2D2F7C", "#2D3981", "#2D4085", "#2A4687", "#25528C", "#1F5D92", "#166494"];
 let theme = { id: "cloudy", gradient, gradientStart: { x: 0.5, y: 0 }, gradientEnd: { x: 0.5, y: 1 } };
 const mocks: Record<string, unknown> = {
+  "@/config/scene-themes": { getThemeStyleId },
   react: React,
   "react-native": { StyleSheet: { absoluteFill: { position: "absolute" } } },
   "expo-linear-gradient": { LinearGradient: () => null },
@@ -46,7 +48,7 @@ test("all six Biblioteca creation surfaces include the Cloudy background", () =>
   assert.match(source, /styles\.addResModalSheet[\s\S]*?<LibraryCreationBackground style=/);
 });
 
-test("long-press menus use the last stop only for Cloudy Biblioteca and preserve the third stop elsewhere", () => {
+test("long-press menus use Natural first stop and Cloudy last stop only in Biblioteca", () => {
   for (const [file, variable, scope] of [
     ["PlaylistActionsSheet", "sheetColor", "librarySurface"],
     ["FavoriteActionsSheet", "sheetSolid", "librarySurface"],
@@ -55,10 +57,10 @@ test("long-press menus use the last stop only for Cloudy Biblioteca and preserve
     const source = read(`../components/${file}.tsx`);
     const expression = source.match(new RegExp(`const ${variable} = ([\\s\\S]*?);`))?.[1];
     assert.ok(expression);
-    const resolve = new Function("theme", scope, `return (${expression});`);
-    for (const id of ["cloudy", "cloudy2", "indigo2", "tibet"]) {
+    const resolve = new Function("theme", scope, "getThemeStyleId", `return (${expression});`);
+    for (const id of ["natural", "pleyades", "cloudy", "cloudy2", "indigo2", "tibet"]) {
       for (const library of [true, false]) {
-        assert.equal(resolve({ id, gradient }, library), id === "cloudy" && library ? gradient[6] : gradient[2]);
+        assert.equal(resolve({ id, gradient }, library, getThemeStyleId), library && id === "natural" ? gradient[0] : id === "cloudy" && library ? gradient[6] : gradient[2]);
       }
     }
   }
@@ -68,11 +70,32 @@ test("long-press menus use the last stop only for Cloudy Biblioteca and preserve
   assert.match(library, /<MixActionsSheet[\s\S]*?libraryActionsOnly/);
 });
 
-test("Cloudy resonador long press opens a themed confirmation and retains native alerts for other themes", () => {
+test("Natural and Cloudy resonador long press open a themed confirmation and retain native alerts for other themes", () => {
   const source = read("../components/BibliotecaScreen.tsx");
-  assert.match(source, /if \(sceneTheme\.id === "cloudy"\) \{\s+setResonadorToUnfollow\(\{ id, name \}\);\s+return;\s+\}\s+Alert\.alert/);
+  assert.match(source, /if \(sceneTheme\.id === "cloudy" \|\| sceneTheme\.id === "natural"\) \{\s+setResonadorToUnfollow\(\{ id, name \}\);\s+return;\s+\}\s+Alert\.alert/);
   assert.match(source, /visible=\{resonadorToUnfollow !== null\}/);
-  assert.match(source, /backgroundColor: librarySheetColor[\s\S]*?>Dejar de seguir</);
+  assert.match(source, /backgroundColor: libraryActionsColor[\s\S]*?>Dejar de seguir</);
   assert.match(source, /saveFollowed\(followedIds\.filter\(\(id\) => id !== resonadorToUnfollow\.id\)\)/);
   assert.match(source, />Cancelar</);
+});
+
+test("resonador action background uses first Natural stop without changing creation backgrounds", () => {
+  const source = read("../components/BibliotecaScreen.tsx");
+  const expr = source.match(/const libraryActionsColor = ([^;]+);/)![1];
+  const resolve = new Function("sceneTheme", "librarySheetColor", `return (${expr});`);
+  for (const theme of Object.values(SCENE_THEMES)) {
+    const last = theme.gradient[theme.gradient.length - 1];
+    assert.equal(resolve(theme, last), theme.id === "natural" ? theme.gradient[0] : last);
+  }
+  assert.match(source, /styles\.addResModalSheet, \{ backgroundColor: librarySheetColor \}/);
+});
+
+test("Agregar Resonador search is black at 19% only in Natural", () => {
+  const source = read("../components/BibliotecaScreen.tsx");
+  const expr = source.match(/const addResSearchSurface =\s*([\s\S]*?);/)![1];
+  const resolve = new Function("sceneTheme", "activeSceneId", "isIndigo2ThemeId", `return (${expr});`);
+  for (const theme of Object.values(SCENE_THEMES)) {
+    assert.equal(resolve(theme, theme.id, isIndigo2ThemeId), theme.id === "natural" ? "rgba(0,0,0,0.19)" : isIndigo2ThemeId(theme.id) ? "rgba(21,13,46,0.7)" : "rgba(14,14,23,0.7)");
+  }
+  assert.match(source, /styles\.addResSearchRow, \{ backgroundColor: addResSearchSurface \}/);
 });

@@ -69,7 +69,9 @@ export function PlaylistActionsSheet({ itemId, itemKind, visible, onClose, libra
   const colors = useColors();
   const insets = useSafeAreaInsets();
   const { theme } = useSceneTheme();
-  const sheetColor = librarySurface && getThemeStyleId(theme.id) === "cloudy"
+  const sheetColor = librarySurface && theme.id === "natural"
+    ? theme.gradient[0]
+    : librarySurface && getThemeStyleId(theme.id) === "cloudy"
     ? theme.gradient[theme.gradient.length - 1]
     : theme.gradient[2] ?? theme.gradient[1];
   const sheetGradient = [sheetColor, sheetColor] as [string, string];

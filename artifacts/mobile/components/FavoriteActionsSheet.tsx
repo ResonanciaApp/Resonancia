@@ -71,7 +71,9 @@ export function FavoriteActionsSheet({ itemId, itemKind, visible, onClose, libra
   const colors = useColors();
   const insets = useSafeAreaInsets();
   const { theme } = useSceneTheme();
-  const sheetSolid = librarySurface && getThemeStyleId(theme.id) === "cloudy"
+  const sheetSolid = librarySurface && theme.id === "natural"
+    ? theme.gradient[0]
+    : librarySurface && getThemeStyleId(theme.id) === "cloudy"
     ? theme.gradient[theme.gradient.length - 1]
     : theme.gradient[2] ?? theme.gradient[1] ?? theme.gradient[0];
   const sheetGradient = [sheetSolid, sheetSolid] as [string, string];

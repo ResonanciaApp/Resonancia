@@ -5,7 +5,7 @@ description: How "..." menu (action sheet) backgrounds map to scene theme across
 
 Action sheets ("..." 3-dot menus) follow a leveled convention for background color, tied to `useSceneTheme()`:
 
-- **Biblioteca** — solo Cloudy: acciones al mantener pulsadas mezclas, playlists, carpetas y resonadores usan el último stop sólido. Creación, menú + y Agrega Resonador usan los cuatro primeros stops. Los demás temas conservan tercer stop para acciones y último para creación.
+- **Biblioteca** — Natural: acciones al mantener pulsadas mezclas, playlists, carpetas y resonadores usan el primer stop sólido. Cloudy conserva el último stop sólido para esas acciones. Creación, menú + y Agrega Resonador conservan los cuatro primeros stops en la familia Cloudy/Natural. Los demás temas conservan tercer stop para acciones y último para creación.
 - **Otras hojas Nivel 1 & 2** (por ejemplo SessionActionsSheet) — conservan su tratamiento específico mientras no haya una instrucción visual nueva.
 - **«Escoge tu duración» Ambiental** — Cloudy usa los cuatro primeros stops y la dirección del tema; Índigo 2 usa segundo/tercer stop de Tibet; los demás, segundo/tercer stop propios.
 - **Nivel 3** (player.tsx options sheet) — background = SOLID fill using only the lighter stop, `theme.gradient[0]`, as a plain `View` absoluteFill (not a LinearGradient with two similar colors).
@@ -29,3 +29,14 @@ Las ventanas Categoría y Tiempo de Búsqueda desde «Explora según tu tiempo»
 **How to apply:** Conservar también la excepción del temporizador en Índigo 2; la selección de una opción no debe blanquear el fondo de sus píldoras.
 
 **How to apply:** Aplicar la excepción de Cloudy solo en Biblioteca; fuera de ella, mantener la convención local. La confirmación de resonadores en Cloudy requiere panel propio: Alert nativo no permite elegir fondo; otros temas conservan su alerta.
+
+Natural también usa el panel propio de confirmación de resonadores, con el mismo
+primer stop sólido que las otras acciones de Biblioteca. La barra de búsqueda
+de Agrega Resonador usa negro al 19 % únicamente en Natural.
+
+**Why:** El usuario pidió un fondo elegible para los cuatro tipos de pulsación
+larga de Biblioteca y una excepción específica para esa búsqueda.
+
+**How to apply:** Limitar el primer stop a acciones de Biblioteca, no a los
+componentes compartidos abiertos desde otras pantallas ni a creación o al menú +.
+Conservar las acciones de cancelar y confirmar; no cambiar los otros temas.

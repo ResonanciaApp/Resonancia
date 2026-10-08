@@ -1176,11 +1176,14 @@ export function BibliotecaScreen({
   const { open: openDrawer, openLibraryMix } = useDrawer();
   const { activeSceneId, theme: sceneTheme } = useSceneTheme();
   const librarySheetColor = sceneTheme.gradient[sceneTheme.gradient.length - 1];
+  const libraryActionsColor = sceneTheme.id === "natural" ? sceneTheme.gradient[0] : librarySheetColor;
   const [resonadorToUnfollow, setResonadorToUnfollow] = useState<{ id: string; name?: string } | null>(null);
   const iconPlaceholderColor = "#fefefe";
   const libraryTabSurface = getLibraryTabSurface(activeSceneId);
   const addResSearchSurface =
-    isIndigo2ThemeId(activeSceneId)
+    sceneTheme.id === "natural"
+      ? "rgba(0,0,0,0.19)"
+      : isIndigo2ThemeId(activeSceneId)
       ? "rgba(21,13,46,0.7)"
       : activeSceneId === "resonancia"
         ? "rgba(9,11,23,0.7)"
@@ -1319,7 +1322,7 @@ export function BibliotecaScreen({
     if (!followedIds.includes(id)) saveFollowed([id, ...followedIds]);
   };
   const unfollowResonador = (id: string, name?: string) => {
-    if (sceneTheme.id === "cloudy") {
+    if (sceneTheme.id === "cloudy" || sceneTheme.id === "natural") {
       setResonadorToUnfollow({ id, name });
       return;
     }
@@ -2235,7 +2238,7 @@ export function BibliotecaScreen({
           onPress={() => setResonadorToUnfollow(null)}
           accessibilityLabel="Cerrar acciones del resonador"
         />
-        <View style={[styles.sheet, { backgroundColor: librarySheetColor }]}>
+        <View style={[styles.sheet, { backgroundColor: libraryActionsColor }]}>
           <View style={styles.sheetHandle} />
           <Text style={styles.sheetTitle}>Dejar de seguir</Text>
           <Text style={[styles.addResonadorLabel, { marginBottom: 20 }]}>
