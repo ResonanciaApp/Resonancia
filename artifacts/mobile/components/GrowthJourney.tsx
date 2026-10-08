@@ -202,6 +202,7 @@ export function GrowthLevelPreviewCard({
         style={[
           styles.previewCopy,
           canonicalVerticalInsets && styles.canonicalPreviewCopy,
+          sectionTitle && styles.profilePreviewCopyOffset,
         ]}
       >
         {canonicalVerticalInsets ? (
@@ -546,6 +547,7 @@ const styles = StyleSheet.create({
   profileIntentionNameRow: { flexDirection: "row", alignItems: "center", gap: 6 },
   profileIntentionLotusBackground: { width: 26, height: 26, borderRadius: 13, backgroundColor: "rgba(255,255,255,0.1)", alignItems: "center", justifyContent: "center" },
   previewCopy: { flex: 1, minWidth: 0 },
+  profilePreviewCopyOffset: { transform: [{ translateX: -4 }] },
   previewStory: { fontFamily: "Manrope", fontSize: 11, lineHeight: 16 },
   section: {
     marginHorizontal: 16,

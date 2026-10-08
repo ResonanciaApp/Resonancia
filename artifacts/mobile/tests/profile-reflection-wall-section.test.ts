@@ -150,6 +150,14 @@ test("Tu camino uses the smaller caption and stage title with a larger gold lotu
   assert.match(source("../components/GrowthJourney.tsx"), /testID="profile-intention-lotus-background" pointerEvents="none"[\s\S]*?name="spa"\s*size=\{18\}\s*color=\{GROWTH_COLORS\.current\}/);
 });
 
+test("Tu camino shifts the lotus, its background, stage name and description four pixels left without moving the image", () => {
+  assert.deepEqual(style("GrowthJourney", "profilePreviewCopyOffset").transform, [{ translateX: -4 }]);
+  const growth = source("../components/GrowthJourney.tsx");
+  assert.match(growth, /styles\.previewCopy,\s*canonicalVerticalInsets && styles\.canonicalPreviewCopy,\s*sectionTitle && styles\.profilePreviewCopyOffset/);
+  assert.match(growth, /style=\{\[styles\.previewArt, sectionTitle && styles\.profilePreviewArt\]\}/);
+  assert.deepEqual(style("GrowthJourney", "previewContentRow").transform, [{ translateY: -4 }, { translateX: -8 }]);
+});
+
 test("Perfil header controls take touch priority over the lifted avatar without moving either", () => {
   const profile = source("../components/ProfileScreenBase.tsx");
   const ast = ts.createSourceFile("profile.tsx", profile, ts.ScriptTarget.Latest, true, ts.ScriptKind.TSX);
