@@ -2345,8 +2345,6 @@ const styles = StyleSheet.create({
     overflow: "hidden",
     alignItems: "center",
     justifyContent: "center",
-    borderWidth: 2,
-    borderColor: "#1B060F",
   },
   accountPressed: {
     opacity: 0.75,
