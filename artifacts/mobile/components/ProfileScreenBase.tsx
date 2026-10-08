@@ -1124,6 +1124,8 @@ export function ProfileScreenBase({
                   testID="account-description-input"
                   value={accountDescription}
                   editable={!accountSaving}
+                  autoCorrect={true}
+                  spellCheck={true}
                   onChangeText={(text) => setAccountDescription(limitProfileDescription(text))}
                   style={[styles.accountNameInput, styles.accountDescriptionInput, { color: colors.foreground, height: accountDescriptionHeight }]}
                   multiline

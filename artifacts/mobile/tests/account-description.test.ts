@@ -46,6 +46,8 @@ const disabled = (action: string | null, name: string, savedName: string, descri
 test("description input edits only its draft, caps at 300 characters and has no old two-line hint", () => {
   const field = source.slice(source.indexOf('<View testID="account-description-section"'), source.indexOf("onPress={handleDeleteAccount}"));
   assert.match(field, /value=\{accountDescription\}/);
+  assert.match(field, /autoCorrect=\{true\}/);
+  assert.match(field, /spellCheck=\{true\}/);
   assert.match(field, /onChangeText=\{\(text\) => setAccountDescription\(limitProfileDescription\(text\)\)\}/);
   assert.match(field, /multiline[\s\S]*maxLength=\{MAX_PROFILE_DESCRIPTION_LENGTH\}/);
   assert.doesNotMatch(field, /numberOfLines=\{2\}|accountDescriptionHint|Se mostrará/);
