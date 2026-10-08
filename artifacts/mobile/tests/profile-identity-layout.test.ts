@@ -35,7 +35,7 @@ visit(ast);
 assert.ok(identity && userSection && styles);
 const styleProperties = styles.properties.filter(property =>
   ts.isPropertyAssignment(property)
-    && /^(profileCard|dedicatedProfileCard|profileIdentityPreviewCard|profileIdentityRow|dedicatedProfileIdentityRow|profileDetails|profileDescription|profileLifeMotto|profileEditDetails.*|dedicatedProfileDetails|avatar.*|userName|profileName.*|profileEmail|profileLocationLeft|profileIntention.*|locationRow|locationText)$/.test(property.name.getText(ast)),
+    && /^(profileCard|dedicatedProfileCard|profileIdentityPreviewCard|profileIdentityRow|dedicatedProfileIdentityRow|profileDetails|profileDescription|profileLifeMotto|profileBiography|profileEditDetails.*|dedicatedProfileDetails|avatar.*|userName|profileName.*|profileEmail|profileLocationLeft|profileIntention.*|locationRow|locationText)$/.test(property.name.getText(ast)),
 );
 const compiled = ts.transpileModule(`
   const PROFILE_CARD_BOTTOM_PADDING = ${source.match(/const PROFILE_CARD_BOTTOM_PADDING = (\d+);/)?.[1]};
@@ -153,6 +153,23 @@ test("current stage sits above the larger bold motto and description, for free a
     assert.match(html, /data-font-size="24"/);
   }
   assert.doesNotMatch(render({ lifeMotto: "   " }), /profile-identity-life-motto/);
+});
+
+test("motto and description move down seven pixels together in normal flow, keeping their internal gap", () => {
+  for (const isPremium of [false, true]) {
+    for (const fields of [
+      { lifeMotto: "Mi lema", description: "Mi descripción" },
+      { lifeMotto: "Mi lema" },
+      { description: "Mi descripción" },
+    ]) {
+      const html = render({ isPremium, ...fields });
+      assert.match(html, /data-testid="profile-identity-biography"[^>]*data-width="100%"[^>]*data-gap="6"[^>]*data-margin-top="7"/);
+      assert.ok(html.indexOf('data-testid="profile-growth-stage-pill"') < html.indexOf('data-testid="profile-identity-biography"'));
+    }
+    assert.doesNotMatch(render({ isPremium, lifeMotto: " ", description: "" }), /profile-identity-biography/);
+  }
+  assert.match(source, /profileBiography: \{[^}]*marginTop: 7/);
+  assert.doesNotMatch(source.match(/profileBiography: \{([^}]+)\}/)![1], /transform|position|top:/);
 });
 
 test("name and description sit below the avatar with the existing seven-pixel gap plus five more pixels and no account chevron", () => {

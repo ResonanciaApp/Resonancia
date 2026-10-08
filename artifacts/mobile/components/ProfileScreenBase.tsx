@@ -1446,24 +1446,28 @@ export function ProfileScreenBase({
 
               <GrowthCurrentStagePill />
 
-              {lifeMotto.trim() !== "" && (
-                <Text
-                  testID="profile-identity-life-motto"
-                  style={[styles.profileLifeMotto, { color: colors.foreground }]}
-                >
-                  {lifeMotto}
-                </Text>
-              )}
+              {(lifeMotto.trim() !== "" || description.trim() !== "") && (
+                <View testID="profile-identity-biography" style={styles.profileBiography}>
+                  {lifeMotto.trim() !== "" && (
+                    <Text
+                      testID="profile-identity-life-motto"
+                      style={[styles.profileLifeMotto, { color: colors.foreground }]}
+                    >
+                      {lifeMotto}
+                    </Text>
+                  )}
 
-              {description.trim() !== "" && (
-                <Text
-                  testID="profile-identity-description"
-                  style={styles.profileDescription}
-                  numberOfLines={2}
-                  ellipsizeMode="tail"
-                >
-                  {description}
-                </Text>
+                  {description.trim() !== "" && (
+                    <Text
+                      testID="profile-identity-description"
+                      style={styles.profileDescription}
+                      numberOfLines={2}
+                      ellipsizeMode="tail"
+                    >
+                      {description}
+                    </Text>
+                  )}
+                </View>
               )}
             </View>
           </View>
@@ -2569,6 +2573,7 @@ const styles = StyleSheet.create({
     paddingRight: 0,
   },
   profileDetails: { width: "100%", minWidth: 0, alignItems: "flex-start", gap: 6, marginTop: 5 },
+  profileBiography: { width: "100%", alignItems: "flex-start", gap: 6, marginTop: 7 },
   avatarWrapper: { position: "relative", marginTop: 3, marginBottom: 0, flexShrink: 0 },
   avatarPremiumBadge: {
     position: "absolute",
