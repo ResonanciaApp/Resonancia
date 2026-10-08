@@ -37,6 +37,7 @@ type Props = {
   canonicalVerticalInsets?: boolean;
   sectionBackgroundColor?: string;
   profileVariant?: boolean;
+  onCollapsedHeightChange?: (height: number) => void;
 };
 
 export const HomeReflectionWallSection = forwardRef<HomeReflectionWallHandle, Props>(
@@ -50,6 +51,7 @@ export const HomeReflectionWallSection = forwardRef<HomeReflectionWallHandle, Pr
     canonicalVerticalInsets = false,
     sectionBackgroundColor,
     profileVariant = false,
+    onCollapsedHeightChange,
   }, ref) {
     const { wallComposeRequest, consumeWallComposeRequest } = useDrawer();
     const sectionRef = useRef<View>(null);
@@ -251,6 +253,7 @@ export const HomeReflectionWallSection = forwardRef<HomeReflectionWallHandle, Pr
           canonicalVerticalInsets={canonicalVerticalInsets}
           sectionBackgroundColor={sectionBackgroundColor}
           profileVariant={profileVariant}
+          onCollapsedHeightChange={onCollapsedHeightChange}
         />
       </View>
     );

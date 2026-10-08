@@ -345,6 +345,7 @@ export function ProfileScreenBase({
   const profileScrollRef = useRef<ScrollView>(null);
   const profileScrollYRef = useRef(0);
   const profileWallRef = useRef<HomeReflectionWallHandle>(null);
+  const [profileWallCardHeight, setProfileWallCardHeight] = useState(82);
   const [profileWallComposing, setProfileWallComposing] = useState(false);
   const [profileReflectionSavedTrigger, setProfileReflectionSavedTrigger] = useState(0);
   const handleProfileReflectionSaved = useCallback(() => {
@@ -1553,10 +1554,11 @@ export function ProfileScreenBase({
               getScrollY={getProfileScrollY}
               onComposingChange={setProfileWallComposing}
               onMessageSaved={handleProfileReflectionSaved}
+              onCollapsedHeightChange={setProfileWallCardHeight}
               style={{ marginTop: 25, marginBottom: PROFILE_SECTION_GAP }}
             />
 
-            <MiRutinaSection style={{ marginHorizontal: 0, marginTop: 25, marginBottom: PROFILE_SECTION_GAP }} />
+            <MiRutinaSection titleSize={19} addCardHeight={profileWallCardHeight} style={{ marginHorizontal: 0, marginTop: 25, marginBottom: PROFILE_SECTION_GAP }} />
 
             {SHOW_PROFILE_PRACTICE_CARDS && (
             <>
@@ -2600,7 +2602,7 @@ const styles = StyleSheet.create({
     height: 124,
     borderRadius: 62,
   },
-  userName: { fontFamily: "Manrope", fontSize: 24, fontWeight: "700", textAlign: "left", marginTop: 0 },
+  userName: { fontFamily: "Manrope", fontSize: 29, fontWeight: "700", textAlign: "left", marginTop: 0 },
   profileLifeMotto: { fontFamily: "Manrope", fontSize: 19, fontWeight: "700", lineHeight: 27, textAlign: "left", alignSelf: "stretch", marginTop: 7 },
   profileNameRow: { width: "100%", flexDirection: "row", alignItems: "center" },
   profileNameText: { flex: 1, minWidth: 0 },
@@ -2637,7 +2639,7 @@ const styles = StyleSheet.create({
 
   // Ajustar el margen en el flujo desplaza también todas las secciones posteriores.
   profileProgressSection: {
-    marginTop: 2 - 15 + 10,
+    marginTop: 2 - 15 + 10 - 6,
     marginBottom: PROFILE_SECTION_GAP,
   },
   practiceReminderSection: {

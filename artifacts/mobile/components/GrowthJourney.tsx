@@ -36,7 +36,7 @@ export function GrowthCurrentStagePill() {
         styles.bloomDayPill,
         styles.timelineDayPill,
         styles.timelineBloomDayPill,
-        { marginBottom: 0 },
+        { marginBottom: 0, marginTop: 2 },
         theme.id === "cloudy" && { backgroundColor: CLOUDY_GROWTH_DAY_PILL_BACKGROUND },
       ]}
     >

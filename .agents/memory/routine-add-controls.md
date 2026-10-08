@@ -22,3 +22,9 @@ Mi rutina expansiva pertenece a Perfil, debajo de Mi muro expansivo, y no se mue
 **Why:** El usuario pidió insertar la sección en Perfil y luego eliminarla explícitamente de Inicio, no borrar las actividades.
 
 **How to apply:** Al modificar Inicio, no volver a montar allí la sección; al trabajar en Perfil, conservar el acceso funcional a la rutina.
+
+En Perfil, la card inferior «Añadir una actividad» iguala la altura real de Mi muro expansivo cerrado, no la del formulario expandido. La píldora del estado Rutina completa conserva su diseño propio.
+
+**Why:** El usuario pidió igualar las dos cards. Acoplar la card de rutina a la expansión del editor la agrandaría sin una relación funcional y movería contenido innecesariamente.
+
+**How to apply:** Usar la medida colapsada, incluyendo cualquier cambio por ajuste de texto o escala de fuente; ignorar las alturas durante la expansión y sus animaciones. No trasladar esta regla a otros controles de añadir.

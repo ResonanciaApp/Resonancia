@@ -84,10 +84,10 @@ test("Premium members keep the compact identity layout while free users recover 
   const card = style("ProfileScreenBase", "profileCard", { PROFILE_CARD_BOTTOM_PADDING: bottom, PROFILE_SECTION_GAP: 21 });
   const preview = style("ProfileScreenBase", "profileIdentityPreviewCard");
   const progress = style("ProfileScreenBase", "profileProgressSection", { PROFILE_SECTION_GAP: 21 });
-  assert.equal(progress.marginTop, -4 + 6 - 15 + 10);
+  assert.equal(progress.marginTop, -4 + 6 - 15 + 10 - 6);
   assert.equal(progress.transform, undefined);
   assert.equal(progress.marginBottom, 21);
-  assert.equal(card.paddingBottom + preview.marginBottom + progress.marginTop, 25 - 4 + 6 - 15 + 10);
+  assert.equal(card.paddingBottom + preview.marginBottom + progress.marginTop, 25 - 4 + 6 - 15 + 10 - 6);
   const avatar = style("ProfileScreenBase", "avatarWrapper");
   const image = style("ProfileScreenBase", "avatarImage");
   assert.equal(image.height, 124);
@@ -138,13 +138,13 @@ test("streak section gains 10px spacing for both free and Premium while preservi
   assert.deepEqual(resolve(true), { ...base, marginTop: base.marginTop + 15 });
   assert.equal(resolve(true).transform, undefined);
   assert.deepEqual(resolve(false), base, "switching to free leaves no residual offset");
-  assert.equal(base.marginTop, -13 + 10, "the shared baseline gains ten pixels without being mutated by Premium");
-  assert.equal(resolve(false).marginTop - (-13), 10);
-  assert.equal(resolve(true).marginTop - (-13 + 15), 10);
+  assert.equal(base.marginTop, -13 + 10 - 6, "raise the prior shared baseline six pixels without mutating the Premium offset");
+  assert.equal(resolve(false).marginTop - (-13 + 10), -6);
+  assert.equal(resolve(true).marginTop - (-13 + 10 + 15), -6);
 });
 
 test("username keeps 24 points and the new description leaves avatar and Premium spacing unchanged", () => {
-  assert.equal(style("ProfileScreenBase", "userName").fontSize, 24);
+  assert.equal(style("ProfileScreenBase", "userName").fontSize, 29);
   const details = style("ProfileScreenBase", "profileDetails");
   assert.equal(details.gap, 6);
   assert.equal(style("ProfileScreenBase", "profileDescription").fontSize, 14);

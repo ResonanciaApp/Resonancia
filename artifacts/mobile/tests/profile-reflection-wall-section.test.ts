@@ -30,12 +30,77 @@ test("Perfil puts Mi muro's heading outside the card with Mi rutina's exact gap,
   assert.match(profile, /profileVariant/);
   assert.equal(style("ProfileReflectionWallSection", "title").marginBottom, style("MiRutinaSection", "headerRow").marginBottom);
   assert.equal(style("InnerSpaceCard", "profileWall").borderWidth, 1);
-  assert.equal(style("InnerSpaceCard", "profileWallDescription").fontSize,
-    Number(style("InnerSpaceCard", "canonicalHeaderDescription").fontSize) + 3);
+  assert.equal(style("InnerSpaceCard", "profileWallDescription").fontSize, 14 + 3);
+  assert.deepEqual(style("InnerSpaceCard", "profileWallDescription").transform, [{ translateY: -2 }]);
+  assert.equal(style("ProfileReflectionWallSection", "title").fontSize, 19);
   const card = source("../components/InnerSpaceCard.tsx");
   assert.match(card, /borderWidth=\{profileVariant \? 1 : 2\}/);
   assert.match(card, /profileVariant && styles.profileWallDescription/);
   assert.match(source("../components/HomeReflectionWallSection.tsx"), /profileVariant=\{profileVariant\}/);
+});
+
+test("both Perfil section titles use Dormir's carousel size, while Inicio keeps its routine defaults", () => {
+  const size = Number(source("../app/(tabs)/descanzo.tsx").match(/titleSize=\{(\d+)\}/)![1]);
+  assert.equal(style("ProfileReflectionWallSection", "title").fontSize, size);
+  assert.match(source("../components/ProfileScreenBase.tsx"), new RegExp(`<MiRutinaSection titleSize=\\{${size}\\}`));
+  assert.match(source("../components/MiRutinaSection.tsx"), /titleSize = 17/);
+});
+
+test("Mi muro reports only its actual closed-card height and Perfil forwards it to Añadir una actividad", () => {
+  const contents = source("../components/InnerSpaceCard.tsx");
+  const ast = ts.createSourceFile("wall.tsx", contents, ts.ScriptTarget.Latest, true, ts.ScriptKind.TSX);
+  let layout: ts.Expression | undefined;
+  function visit(node: ts.Node) {
+    if (ts.isJsxAttribute(node) && node.name.getText(ast) === "onLayout"
+      && node.initializer && ts.isJsxExpression(node.initializer)
+      && node.initializer.expression?.getText(ast).includes("onCollapsedHeightChange")) layout = node.initializer.expression;
+    ts.forEachChild(node, visit);
+  }
+  visit(ast);
+  assert.ok(layout);
+  const compiled = ts.transpileModule(`return (${layout.getText(ast)});`, { compilerOptions: { target: ts.ScriptTarget.ES2022 } }).outputText;
+  const factory = new Function("onCollapsedHeightChange", "expandedRef", "animatingRef", compiled);
+  const measured: number[] = [];
+  for (const [expanded, animating] of [[false, false], [true, false], [false, true]]) {
+    const onLayout = factory((height: number) => measured.push(height), { current: expanded }, { current: animating });
+    onLayout({ nativeEvent: { layout: { height: 84.5 } } });
+    onLayout({ nativeEvent: { layout: { height: 0 } } });
+  }
+  assert.deepEqual(measured, [84.5], "expanded/transitional layouts must not resize the routine card");
+  assert.equal(factory(undefined, { current: false }, { current: false }), undefined, "Inicio has no extra measurement listener");
+  const profile = source("../components/ProfileScreenBase.tsx");
+  assert.match(profile, /onCollapsedHeightChange=\{setProfileWallCardHeight\}/);
+  assert.match(profile, /addCardHeight=\{profileWallCardHeight\}/);
+  assert.match(source("../components/ProfileReflectionWallSection.tsx"), /onCollapsedHeightChange=\{onCollapsedHeightChange\}/);
+  assert.match(source("../components/HomeReflectionWallSection.tsx"), /onCollapsedHeightChange=\{onCollapsedHeightChange\}/);
+});
+
+test("routine add card uses the measured wall height only when supplied and leaves the complete-state pill intact", () => {
+  const contents = source("../components/MiRutinaSection.tsx");
+  const ast = ts.createSourceFile("routine.tsx", contents, ts.ScriptTarget.Latest, true, ts.ScriptKind.TSX);
+  let styling: ts.Expression | undefined;
+  function visit(node: ts.Node) {
+    if (ts.isJsxElement(node) && node.openingElement.getText(ast).includes('testID="mi-rutina-add-button"')) {
+      const attr = node.openingElement.attributes.properties.find(p => ts.isJsxAttribute(p) && p.name.getText(ast) === "style");
+      if (attr && ts.isJsxAttribute(attr) && attr.initializer && ts.isJsxExpression(attr.initializer)) styling = attr.initializer.expression;
+    }
+    ts.forEachChild(node, visit);
+  }
+  visit(ast);
+  assert.ok(styling);
+  const compiled = ts.transpileModule(`return (${styling.getText(ast)});`, { compilerOptions: { target: ts.ScriptTarget.ES2022 } }).outputText;
+  for (const height of [undefined, 82, 103.5]) {
+    const fn = new Function("styles", "addCardHeight", compiled)({ addButton: style("MiRutinaSection", "addButton") }, height);
+    const merged = Object.assign({}, ...fn({ pressed: false }).filter(Boolean));
+    assert.equal(merged.height, height);
+    assert.equal(merged.minHeight, height ?? 68);
+    assert.equal(merged.borderStyle, "dashed");
+  }
+  const baseHeight = Number(style("InnerSpaceCard", "canonicalHeaderCopy").minHeight)
+    + Number(style("InnerSpaceCard", "profileWall").paddingTop)
+    + Number(style("InnerSpaceCard", "profileWall").paddingBottom)
+    + 2 * Number(style("InnerSpaceCard", "profileWall").borderWidth);
+  assert.equal(baseHeight, 82);
 });
 
 test("Mi muro keeps the same prompt before and after selecting any category tab", () => {
@@ -372,6 +437,7 @@ test("Perfil replays the existing saved banner after every successful save and V
       const ${handler.getText(ast)};
       const ${bottom.getText(ast)};
       const profileWallRef = { current: null }, profileScrollRef = { current: null };
+      const setProfileWallCardHeight = () => {};
       const PROFILE_SECTION_GAP = 21;
       const getProfileScrollY = () => 0, setProfileWallComposing = () => {};
       return <>${wall.getText(ast)}${banner.getText(ast)}</>;

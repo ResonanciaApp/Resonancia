@@ -64,6 +64,7 @@ export function InnerSpaceCard({
   canonicalVerticalInsets = false,
   sectionBackgroundColor,
   profileVariant = false,
+  onCollapsedHeightChange,
   onComposeRequested,
   onInputBlur,
   onMessageSaved,
@@ -76,6 +77,7 @@ export function InnerSpaceCard({
   canonicalVerticalInsets?: boolean;
   sectionBackgroundColor?: string;
   profileVariant?: boolean;
+  onCollapsedHeightChange?: (height: number) => void;
   onComposeRequested?: () => void;
   onInputBlur?: () => void;
   onMessageSaved?: () => void;
@@ -535,7 +537,14 @@ export function InnerSpaceCard({
 
   return (
     <>
-    <View style={[styles.container, canonicalVerticalInsets && styles.canonicalVerticalInsets, canonicalVerticalInsets && theme.id === "cloudy" && styles.cloudyFlushBorder, profileVariant && styles.profileWall, sectionBackgroundColor !== undefined && { backgroundColor: sectionBackgroundColor }]}>
+    <View
+      style={[styles.container, canonicalVerticalInsets && styles.canonicalVerticalInsets, canonicalVerticalInsets && theme.id === "cloudy" && styles.cloudyFlushBorder, profileVariant && styles.profileWall, sectionBackgroundColor !== undefined && { backgroundColor: sectionBackgroundColor }]}
+      onLayout={onCollapsedHeightChange ? (event) => {
+        if (!expandedRef.current && !animatingRef.current && event.nativeEvent.layout.height > 0) {
+          onCollapsedHeightChange(event.nativeEvent.layout.height);
+        }
+      } : undefined}
+    >
       {canonicalVerticalInsets && (
         <DiscoverSearchBorder
           borderRadius={24}
@@ -824,8 +833,9 @@ const styles = StyleSheet.create({
     paddingBottom: 18,
   },
   profileWallDescription: {
-    fontSize: 14,
-    lineHeight: 20,
+    fontSize: 17,
+    lineHeight: 23,
+    transform: [{ translateY: -2 }],
   },
   profileWallHeaderCopy: {
     justifyContent: "center",

@@ -19,6 +19,7 @@ type Props = {
   getScrollY: () => number;
   onComposingChange: (composing: boolean) => void;
   onMessageSaved: () => void;
+  onCollapsedHeightChange?: (height: number) => void;
   style?: StyleProp<ViewStyle>;
 };
 
@@ -28,6 +29,7 @@ export const ProfileReflectionWallSection = forwardRef<HomeReflectionWallHandle,
     getScrollY,
     onComposingChange,
     onMessageSaved,
+    onCollapsedHeightChange,
     style,
   }, ref) {
     const colors = useColors();
@@ -40,6 +42,7 @@ export const ProfileReflectionWallSection = forwardRef<HomeReflectionWallHandle,
           getScrollY={getScrollY}
           onComposingChange={onComposingChange}
           onMessageSaved={onMessageSaved}
+          onCollapsedHeightChange={onCollapsedHeightChange}
           profileVariant
           canonicalVerticalInsets
           sectionBackgroundColor="rgba(0,0,0,0.16)"
@@ -52,7 +55,7 @@ export const ProfileReflectionWallSection = forwardRef<HomeReflectionWallHandle,
 const styles = StyleSheet.create({
   title: {
     fontFamily: "Manrope",
-    fontSize: 16,
+    fontSize: 19,
     fontWeight: "800",
     marginBottom: 15,
   },

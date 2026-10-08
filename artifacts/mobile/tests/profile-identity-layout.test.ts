@@ -151,7 +151,7 @@ test("current stage sits above the larger bold motto and description, for free a
     assert.ok(html.indexOf('data-testid="profile-identity-life-motto"') < html.indexOf('data-testid="profile-identity-description"'));
     assert.match(html, /data-testid="profile-identity-life-motto"[^>]*data-color="#FFFFFF"[^>]*data-font-size="19"[^>]*>Vivir con intención/);
     assert.match(source, /profileLifeMotto: \{[^}]*fontWeight: "700"/);
-    assert.match(html, /data-font-size="24"/);
+    assert.match(html, /data-font-size="29"/);
   }
   assert.doesNotMatch(render({ lifeMotto: "   " }), /profile-identity-life-motto/);
 });

@@ -27,6 +27,7 @@ const Native = (props: any) => {
     "data-radius": style.borderRadius, "data-border": style.borderColor,
     "data-padding-y": style.paddingVertical, "data-padding-x": style.paddingHorizontal,
     "data-color": style.color, "data-icon": props.name, "data-icon-size": props.size,
+    "data-margin-top": style.marginTop,
   }, props.children);
 };
 
@@ -45,6 +46,7 @@ test("Perfil stage shares Tu camino pill styling for Índigo 2 and Cloudy withou
     assert.ok(html.includes(`data-background="${theme === "cloudy" ? cloudy : styles.dayPill.backgroundColor}"`));
     assert.match(html, /data-radius="12"[^>]*data-border="rgba\(255,255,255,0.10\)"[^>]*data-padding-y="4"[^>]*data-padding-x="9"/);
     assert.doesNotMatch(html, /data-icon="spa"/);
+    assert.match(html, /data-margin-top="2"/);
     assert.match(html, /data-color="#F9F9F9"[^>]*>Intención/);
   }
   assert.match(component, /growthLevels\[0\]\.name/);

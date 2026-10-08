@@ -40,6 +40,7 @@ type Props = {
   style?: StyleProp<ViewStyle>;
   cardBackgroundColor?: string;
   titleSize?: number;
+  addCardHeight?: number;
 };
 
 const ROUTINE_CARD_HEIGHT = 74;
@@ -321,7 +322,7 @@ const ActivityRow = React.memo(function ActivityRow({
   );
 });
 
-export function MiRutinaSection({ style, cardBackgroundColor, titleSize = 17 }: Props) {
+export function MiRutinaSection({ style, cardBackgroundColor, titleSize = 17, addCardHeight }: Props) {
   const colors = useColors();
   const routineTheme = useRoutineTheme();
   const { announceActivityAdded, announceCompletion } = useRoutineCompletionBanner();
@@ -618,6 +619,7 @@ export function MiRutinaSection({ style, cardBackgroundColor, titleSize = 17 }: 
           testID="mi-rutina-add-button"
           style={({ pressed }) => [
             styles.addButton,
+            addCardHeight !== undefined && { height: addCardHeight, minHeight: addCardHeight },
             {
               borderColor: "rgba(249,249,249,0.5)",
               opacity: pressed ? 0.72 : 1,
