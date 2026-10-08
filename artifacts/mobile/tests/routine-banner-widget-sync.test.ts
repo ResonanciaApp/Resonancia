@@ -282,7 +282,7 @@ test("emoji, plus, plus background and widget glass all share one native opacity
   assert.deepEqual(cloudyGradient.props.colors, ["#2D2F7C", "#2D3981"]);
   assert.deepEqual(cloudyGradient.props.start, { x: 0.5, y: 0 });
   assert.deepEqual(cloudyGradient.props.end, { x: 0.5, y: 1 });
-  assert.match(home, /plusBackgroundGradient=\{activeTheme\.id === "cloudy" \? CLOUDY_WIDGET_PLUS_GRADIENT : undefined\}/);
+  assert.match(home, /plusBackgroundGradient=\{activeTheme\.id === "natural" \? NATURAL_WIDGET_PLUS_GRADIENT : activeTheme\.id === "cloudy" \? CLOUDY_WIDGET_PLUS_GRADIENT : undefined\}/);
   assert.match(source("../constants/colors.ts"), /CLOUDY_WIDGET_PLUS_GRADIENT = \["#2D2F7C", "#2D3981"\]/);
   context.activeEvent = { kind: "added" };
   assert.equal(build({ bottom: 100 }).props.pointerEvents, "none");

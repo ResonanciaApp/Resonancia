@@ -25,6 +25,17 @@ las copias de Cloudy e Índigo 2, sin cambiar los otros temas.
 no la identidad de la familia heredada. Mantener el cambio de la barra acotado
 a su capa de vidrio y respetar la opacidad compartida.
 
+En Natural, los acentos degradados de Mi rutina expansiva y su calendario son
+dorados, no el morado heredado de Cloudy. El + del widget de Inicio tiene un
+fondo dorado uniforme, no un degradado visible.
+
+**Why:** El usuario pidió distinguir estos elementos de Natural sin recolorear
+Cloudy ni los otros temas.
+
+**How to apply:** Mantener esta excepción en todas las superficies compartidas
+de rutina, incluidos los estados completados y controles de añadir; conservar
+su geometría y comportamiento.
+
 **Why:** El 2026-10-04 trasladó Escenas al drawer y luego pidió sustituir las tarjetas ilustradas por sol/luna con títulos Día/Noche y selección mediante color. Posteriormente fijó explícitamente #A8A8A8 tanto para el icono como para el texto de la opción inactiva. Esta dirección reemplaza los banners luminosos con check, sin autorizar cambios de paleta ni audio.
 
 La luna debe ser la misma silueta del banner del Mezclador de sonidos en Sonidos, no el glifo lunar de la fuente de iconos. La separación del título Escena a Día sigue el ritmo de los menús del drawer. El espacio ampliado antes de la línea de Escena es deliberado: al desplazarla, su título y las opciones Día/Noche deben acompañarla en el flujo, sin mover los menús anteriores.

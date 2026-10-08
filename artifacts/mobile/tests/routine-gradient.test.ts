@@ -5,6 +5,8 @@ import { URL } from "node:url";
 import React from "react";
 import { renderToStaticMarkup } from "react-dom/server";
 import ts from "typescript";
+import { getThemeStyleId } from "../config/scene-themes.ts";
+import { CLOUDY_WIDGET_PLUS_GRADIENT, NATURAL_WIDGET_PLUS_GRADIENT } from "../constants/colors.ts";
 
 const source = (path: string) => readFileSync(new URL(path, import.meta.url), "utf8");
 const compiled = ts.transpileModule(source("../components/RoutineGradientFill.tsx"), {
@@ -14,6 +16,7 @@ const module = { exports: {} as { RoutineGradientFill: React.ComponentType<{ sty
 let themeId = "indigo2";
 const mocks: Record<string, unknown> = {
   react: React,
+  "@/config/scene-themes": { getThemeStyleId },
   "@/context/SceneThemeContext": { useSceneTheme: () => ({ theme: { id: themeId } }) },
   "react-native": { StyleSheet: { absoluteFillObject: { position: "absolute", top: 0, right: 0, bottom: 0, left: 0 } } },
   "expo-linear-gradient": {
@@ -78,6 +81,37 @@ test("calendar completion and add button use the same fill while preserving anim
   assert.match(calendar, /opacity: pressed \? 0\.78 : 1/);
   assert.match(calendar, /<RoutineGradientFill style=\{\{ borderRadius: 18 \}\} \/>/);
   assert.doesNotMatch(calendar, /#276FC2/);
+});
+
+test("Natural uses the exact gold gradient across routine fills without changing other themes", () => {
+  try {
+    for (const [id, expected] of [
+      ["natural", "#E0A44A,#C99444"],
+      ["cloudy", "#8247BD,#6C4ABC"],
+      ["pleyades", "#477FBD,#4A99BC"],
+      ["indigo2", "#477FBD,#4A99BC"],
+    ]) {
+      themeId = id;
+      const html = renderToStaticMarkup(React.createElement(module.exports.RoutineGradientFill));
+      assert.ok(html.includes(`data-colors="${expected}"`), id);
+      assert.match(html, /data-start="0,0.5" data-end="1,0.5"/);
+      assert.match(html, /data-pointer-events="none" data-position="absolute"/);
+    }
+  } finally {
+    themeId = "indigo2";
+  }
+});
+
+test("the Inicio widget plus has a solid gold background only in Natural", () => {
+  const home = source("../app/(tabs)/inicio8.tsx");
+  const binding = home.match(/plusBackgroundGradient=\{([^\n}]+)\}/);
+  assert.ok(binding);
+  const resolve = new Function("activeTheme", "NATURAL_WIDGET_PLUS_GRADIENT", "CLOUDY_WIDGET_PLUS_GRADIENT", `return ${binding[1]};`);
+  for (const id of ["natural", "cloudy", "indigo2", "pleyades", "cloudy2", "tibet"]) {
+    const actual = resolve({ id }, NATURAL_WIDGET_PLUS_GRADIENT, CLOUDY_WIDGET_PLUS_GRADIENT);
+    assert.deepEqual(actual, id === "natural" ? ["#E0A44A", "#E0A44A"] : id === "cloudy" ? ["#2D2F7C", "#2D3981"] : undefined);
+  }
+  assert.match(home, /colors=\{plusBackgroundGradient \?\? \["#532FA8", "#372FA8"\]\}/);
 });
 
 test("calendar empty-state message uses a black background at 16% opacity", () => {

@@ -116,6 +116,7 @@ import {
   CARD_TEXT_ABOVE,
   CARD_TEXT_BELOW,
   CLOUDY_WIDGET_PLUS_GRADIENT,
+  NATURAL_WIDGET_PLUS_GRADIENT,
   MEMBERSHIP_AURORA,
   WIDGET_GREEN_SOLID,
 } from "@/constants/colors";
@@ -3446,7 +3447,7 @@ export default function HomeScreen2({
 
       <InicioEmotionWidget
         bottom={emotionWidgetBottom}
-        plusBackgroundGradient={activeTheme.id === "cloudy" ? CLOUDY_WIDGET_PLUS_GRADIENT : undefined}
+        plusBackgroundGradient={activeTheme.id === "natural" ? NATURAL_WIDGET_PLUS_GRADIENT : activeTheme.id === "cloudy" ? CLOUDY_WIDGET_PLUS_GRADIENT : undefined}
         onOpenMoodPicker={() => setMoodSheetVisible(true)}
       />
       </Animated.View>{/* fin contenido desvanecible */}
