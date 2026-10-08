@@ -498,7 +498,7 @@ test("Perfil lowers the streak divider by 3px to its centered position without c
   assert.match(source, /sectionDivider:\s*\{\s*height: 1,\s*width: "100%",\s*marginVertical: 16,/);
 });
 
-test("Perfil keeps creativity points in place while Tu camino moves after calendar", () => {
+test("Perfil keeps creativity points in place while Tu camino moves before calendar", () => {
   const profile = readFileSync(new URL("../components/ProfileScreenBase.tsx", import.meta.url), "utf8");
   assert.match(profile, /beforeCalendar=\{\s*<>\s*<CreativityPointsSection style=\{\{ marginBottom: PROFILE_SECTION_GAP \}\} onInfoPress=\{\(\) => setCreativityInfoOpen\(true\)\} \/>/);
   assert.equal((profile.match(/<CreativityPointsSection /g) ?? []).length, 1);
@@ -508,10 +508,10 @@ test("Perfil keeps creativity points in place while Tu camino moves after calend
     showPersonalStats: false,
     showCalendar: true,
     beforeCalendar: React.createElement(React.Fragment, null,
-      React.createElement("div", { "data-testid": "profile-creativity-points" })),
-    afterCalendar: React.createElement("div", { "data-testid": "profile-growth-intention" }),
+      React.createElement("div", { "data-testid": "profile-creativity-points" }),
+      React.createElement("div", { "data-testid": "profile-growth-intention" })),
   });
-  const positions = ["profile-streak-history", "profile-creativity-points", "calendar", "profile-growth-intention"]
+  const positions = ["profile-streak-history", "profile-creativity-points", "profile-growth-intention", "calendar"]
     .map(id => html.indexOf(`data-testid="${id}"`));
   assert.ok(positions.every((position, index) => position >= 0 && (index === 0 || position > positions[index - 1])));
   assert.doesNotMatch(render({
@@ -523,19 +523,19 @@ test("Perfil keeps creativity points in place while Tu camino moves after calend
 
 test("Perfil swaps calendar and Intención, preserving section gaps and the Tu camino action", () => {
   const profileSource = readFileSync(new URL("../components/ProfileScreenBase.tsx", import.meta.url), "utf8");
-  assert.match(profileSource, /import \{ GrowthLevelPreviewCard \} from "@\/components\/GrowthJourney"/);
+  assert.match(profileSource, /import \{[^}]*GrowthLevelPreviewCard[^}]*\} from "@\/components\/GrowthJourney"/);
   assert.match(profileSource, /<GrowthLevelPreviewCard[^>]*sectionTitle="Tu camino"/);
   const ast = ts.createSourceFile("ProfileScreenBase.tsx", profileSource, ts.ScriptTarget.Latest, true, ts.ScriptKind.TSX);
   let slot: ts.Expression | undefined;
   let journeySheet: ts.JsxSelfClosingElement | undefined;
   function visit(node: ts.Node) {
-    if (ts.isJsxAttribute(node) && node.name.getText(ast) === "afterCalendar"
+    if (ts.isJsxAttribute(node) && node.name.getText(ast) === "beforeCalendar"
       && node.initializer && ts.isJsxExpression(node.initializer)) slot = node.initializer.expression;
     if (ts.isJsxSelfClosingElement(node) && node.tagName.getText(ast) === "GrowthJourneySheet") journeySheet = node;
     ts.forEachChild(node, visit);
   }
   visit(ast);
-  assert.ok(slot, "Profile passes its real preview JSX to the post-calendar slot");
+  assert.ok(slot, "Profile passes its real preview JSX to the pre-calendar slot");
   assert.ok(journeySheet, "Profile mounts the Tu camino window");
   let sheetExpression: ts.Expression | undefined;
   for (let parent: ts.Node | undefined = journeySheet.parent; parent; parent = parent.parent) {
@@ -570,22 +570,21 @@ test("Perfil swaps calendar and Intención, preserving section gaps and the Tu c
     showPersonalStats: false,
     showCalendar: true,
     sectionMarginBottom: gap,
-    beforeCalendar: React.createElement(Points),
-    afterCalendar: buildSlot((open: boolean) => { journeyOpen = open; }),
+    beforeCalendar: buildSlot((open: boolean) => { journeyOpen = open; }),
   });
   const history = html.indexOf('data-testid="profile-streak-history"');
   const intention = html.indexOf('data-testid="profile-growth-intention"');
   const calendar = html.indexOf('data-testid="calendar"');
   const points = html.indexOf('data-testid="profile-creativity-points"');
-  assert.ok(history >= 0 && history < points && points < calendar && calendar < intention);
-  assert.match(html, /data-testid="profile-growth-intention" data-margin-top="21"/);
-  assert.doesNotMatch(html, /data-testid="profile-growth-intention"[^>]*data-margin-bottom=/);
+  assert.ok(history >= 0 && history < points && points < intention && intention < calendar);
+  assert.match(html, /data-testid="profile-growth-intention" data-margin-bottom="21"/);
+  assert.doesNotMatch(html, /data-testid="profile-growth-intention"[^>]*data-margin-top=/);
   assert.match(profileSource, /<ProfileReflectionWallSection[\s\S]*?style=\{\{ marginTop: 25, marginBottom: PROFILE_SECTION_GAP \}\}/);
-  assert.match(profileSource, /<MiRutinaSection style=\{\{ marginHorizontal: 0, marginTop: 25, marginBottom: PROFILE_SECTION_GAP \}\}/);
+  assert.match(profileSource, /<MiRutinaSection[^>]*style=\{\{ marginHorizontal: 0, marginTop: 25, marginBottom: PROFILE_SECTION_GAP \}\}/);
   assert.match(profileSource, /profileProgressSection:\s*\{[\s\S]*?marginBottom: PROFILE_SECTION_GAP/);
   assert.ok(profileSource.indexOf("<ProfileReflectionWallSection") < profileSource.indexOf("<MiRutinaSection"),
     "Mi muro expansivo precedes Mi rutina expansiva with the same exterior spacing");
-  assert.match(html, /growth-level-zero-preview" data-embedded="true" data-title-size="19">Intención/);
+  assert.match(html, /growth-level-zero-preview" data-embedded="true" data-title-size="17">Intención/);
   assert.ok(pressPreview);
   pressPreview();
   assert.equal(journeyOpen, true);
