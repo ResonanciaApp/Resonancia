@@ -1,9 +1,9 @@
 ---
 name: Pesos intermedios de Manrope
-description: Cómo respetar aumentos exactos de 50 en el peso tipográfico de etiquetas móviles.
+description: Cómo respetar ajustes exactos de pesos intermedios en etiquetas móviles.
 ---
 
-No representar pesos intermedios como 550 mediante un `fontWeight` arbitrario ni redondearlos a la centena siguiente cuando el usuario pidió un incremento exacto.
+No representar pesos intermedios como 550 mediante un `fontWeight` arbitrario ni redondearlos a una centena cuando el usuario pidió un aumento o una reducción exactos.
 
 **Why:** El conversor de fuentes de React Native iOS reconoce pesos discretos; un valor no reconocido puede volver silenciosamente al peso regular. La fuente Manrope original tiene un eje variable que permite generar el peso exacto.
 

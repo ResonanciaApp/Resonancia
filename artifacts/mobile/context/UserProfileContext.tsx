@@ -6,6 +6,7 @@ import React, {
   useEffect,
   useState,
 } from "react";
+import { limitProfileDescription } from "@/lib/profileDescription";
 
 const STORAGE_KEY = "cdc_user_profile";
 
@@ -17,6 +18,7 @@ interface UserProfile {
   lastName: string;
   location: string;
   description: string;
+  lifeMotto: string;
   photoUri: string | null;
   avatarPresetId: string | null;
   sentMessageIds: number[];
@@ -31,6 +33,7 @@ const DEFAULT_PROFILE: UserProfile = {
   lastName: "",
   location: "",
   description: "",
+  lifeMotto: "",
   photoUri: null,
   avatarPresetId: null,
   sentMessageIds: [],
@@ -44,6 +47,7 @@ interface ProfileUpdate {
   lastName?: string;
   location?: string;
   description?: string;
+  lifeMotto?: string;
   /** Restore the last server-confirmed avatar after a rejected offline choice. */
   avatarPresetId?: string | null;
   photoUri?: string | null;
@@ -76,7 +80,12 @@ export function UserProfileProvider({ children }: { children: React.ReactNode })
         if (!raw) return;
         try {
           const saved = JSON.parse(raw) as Partial<UserProfile>;
-          setProfile((p) => ({ ...p, ...saved }));
+          setProfile((p) => ({
+            ...p,
+            ...saved,
+            description: limitProfileDescription(typeof saved.description === "string" ? saved.description : ""),
+            lifeMotto: typeof saved.lifeMotto === "string" ? saved.lifeMotto : "",
+          }));
         } catch {}
       })
       .finally(() => setLoaded(true));
@@ -103,7 +112,7 @@ export function UserProfileProvider({ children }: { children: React.ReactNode })
   );
 
   const setDescription = useCallback(
-    (v: string) => persist({ ...profile, description: v.trim() }),
+    (v: string) => persist({ ...profile, description: limitProfileDescription(v.trim()) }),
     [profile, persist],
   );
 
@@ -114,7 +123,8 @@ export function UserProfileProvider({ children }: { children: React.ReactNode })
         ...(fields.username !== undefined ? { username: fields.username.trim() || DEFAULT_PROFILE.username } : {}),
         ...(fields.lastName !== undefined ? { lastName: fields.lastName.trim() } : {}),
         ...(fields.location !== undefined ? { location: fields.location.trim() } : {}),
-        ...(fields.description !== undefined ? { description: fields.description.trim() } : {}),
+        ...(fields.description !== undefined ? { description: limitProfileDescription(fields.description.trim()) } : {}),
+        ...(fields.lifeMotto !== undefined ? { lifeMotto: fields.lifeMotto.replace(/\r?\n/g, " ").trim() } : {}),
         ...(fields.avatarPresetId !== undefined ? { avatarPresetId: fields.avatarPresetId } : {}),
         ...(fields.photoUri !== undefined ? { photoUri: fields.photoUri } : {}),
       });

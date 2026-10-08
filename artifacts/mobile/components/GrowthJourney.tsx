@@ -24,6 +24,35 @@ const GROWTH_COLORS = {
 
 type Status = "current" | "locked";
 
+/** Intención remains the current level until functional progression is enabled. */
+export function GrowthCurrentStagePill() {
+  const colors = useColors();
+  const { theme } = useSceneTheme();
+  return (
+    <View
+      testID="profile-growth-stage-pill"
+      style={[
+        styles.dayPill,
+        styles.bloomDayPill,
+        styles.timelineDayPill,
+        styles.timelineBloomDayPill,
+        { marginBottom: 0 },
+        theme.id === "cloudy" && { backgroundColor: CLOUDY_GROWTH_DAY_PILL_BACKGROUND },
+      ]}
+    >
+      <MaterialCommunityIcons
+        name="spa"
+        size={12}
+        color={GROWTH_COLORS.current}
+        style={styles.bloomLotus}
+        accessibilityElementsHidden
+        importantForAccessibility="no"
+      />
+      <Text style={[styles.days, { color: colors.foreground }]}>{growthLevels[0].name}</Text>
+    </View>
+  );
+}
+
 // Metro serves bundled images over the development tunnel. Fetching every row
 // at once can time out on device, so download and cache them one at a time.
 const growthImageLoads = new Map<number, Promise<string>>();

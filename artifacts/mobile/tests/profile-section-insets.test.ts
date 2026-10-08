@@ -160,7 +160,7 @@ test("username keeps 24 points and the new description leaves avatar and Premium
 
 test("the larger avatar retains the prior upward placement and five-pixel details offset in normal flow", () => {
   const card = style("ProfileScreenBase", "dedicatedProfileCard");
-  assert.equal(card.marginTop, 8 - 7 - 35 - 8);
+  assert.equal(card.marginTop, 8 - 7 - 35 - 8 - 15);
   assert.equal(card.transform, undefined);
   const avatar = style("ProfileScreenBase", "avatarImage");
   assert.equal(avatar.width, 109 + 15);
@@ -170,7 +170,7 @@ test("the larger avatar retains the prior upward placement and five-pixel detail
   assert.equal(details.marginTop, 5);
   assert.equal(details.transform, undefined);
   assert.equal(style("ProfileScreenBase", "profileIdentityRow").gap + details.marginTop, 12);
-  assert.equal((card.marginTop - (1 - 35)) + (avatar.height - 99) + details.marginTop, 7 + 15,
+  assert.equal((card.marginTop - (1 - 35)) + (avatar.height - 99) + details.marginTop, 7 + 15 - 15,
     "content below the avatar accounts for the upward shift, larger avatar and downward details in normal flow");
   assert.equal(style("ProfileScreenBase", "profileIdentityPreviewCard").marginBottom, 5);
 });

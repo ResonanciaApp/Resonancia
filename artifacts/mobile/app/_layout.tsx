@@ -445,6 +445,7 @@ export default function RootLayout() {
   const [fontsLoaded, fontError] = useFonts({
     Manrope: require("../assets/fonts/Manrope.ttf"),
     Manrope550: require("../assets/fonts/Manrope550.ttf"),
+    Manrope630: require("../assets/fonts/Manrope630.ttf"),
     Manrope650: require("../assets/fonts/Manrope650.ttf"),
     CormorantGaramond: CormorantGaramond_500Medium,
     ...Feather.font,

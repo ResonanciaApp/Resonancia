@@ -76,7 +76,7 @@ import { ProgressMirrorSections } from "@/components/ProgressMirrorSections";
 import { CreativityPointsSection } from "@/components/CreativityPointsSection";
 import { CreativityPointsInfoSheet } from "@/components/CreativityPointsInfoSheet";
 import { ProfileSettingsSections } from "@/components/ProfileSettingsSections";
-import { limitProfileDescriptionLines } from "@/lib/profileDescription";
+import { limitProfileDescription, MAX_PROFILE_DESCRIPTION_LENGTH } from "@/lib/profileDescription";
 import { ProfileMembershipBanner } from "@/components/ProfileMembershipBanner";
 import { SessionBadgeGlass } from "@/components/SessionDurationBadge";
 import { ProfileReflectionWallSection } from "@/components/ProfileReflectionWallSection";
@@ -84,7 +84,7 @@ import { MiRutinaSection } from "@/components/MiRutinaSection";
 import { ReflectionSavedBanner } from "@/components/ReflectionSavedBanner";
 import type { HomeReflectionWallHandle } from "@/components/HomeReflectionWallSection";
 import { GrowthJourneySheet } from "@/components/GrowthJourneySheet";
-import { GrowthLevelPreviewCard } from "@/components/GrowthJourney";
+import { GrowthLevelPreviewCard, GrowthCurrentStagePill } from "@/components/GrowthJourney";
 import { useCoverPresetCatalogState } from "@/lib/cover-preset-catalog";
 import {
   gradientColors,
@@ -314,6 +314,7 @@ export function ProfileScreenBase({
     lastName,
     location,
     description,
+    lifeMotto,
     photoUri,
     avatarPresetId,
     expansorId,
@@ -573,6 +574,7 @@ export function ProfileScreenBase({
   const [editDesc, setEditDesc] = useState(description);
   const [accountName, setAccountName] = useState(username);
   const [accountDescription, setAccountDescription] = useState(description);
+  const [accountLifeMotto, setAccountLifeMotto] = useState(lifeMotto);
   const [accountAction, setAccountAction] = useState<"delete" | null>(null);
   const [accountPhotoPickerVisible, setAccountPhotoPickerVisible] = useState(false);
   const accountAvatarGridRef = useRef<FlatList<(typeof profileCatalog)[number]>>(null);
@@ -583,13 +585,15 @@ export function ProfileScreenBase({
   useEffect(() => {
     if (accountMode) {
       setAccountName(username);
-      setAccountDescription(limitProfileDescriptionLines(description));
+      setAccountDescription(limitProfileDescription(description));
+      setAccountLifeMotto(lifeMotto);
     }
-  }, [accountMode, username, description]);
+  }, [accountMode, username, description, lifeMotto]);
 
   const accountSaveDisabled = Boolean(accountAction) || (
     accountName.trim() === username.trim()
     && accountDescription.trim() === description.trim()
+    && accountLifeMotto.trim() === lifeMotto.trim()
   );
 
   const openEdit = () => {
@@ -613,7 +617,11 @@ export function ProfileScreenBase({
 
   const saveAccount = () => {
     if (accountSaveDisabled) return;
-    updateProfile({ username: accountName, description: limitProfileDescriptionLines(accountDescription).trim() });
+    updateProfile({
+      username: accountName,
+      description: limitProfileDescription(accountDescription).trim(),
+      lifeMotto: accountLifeMotto,
+    });
     Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success);
     accountToastOpacity.stopAnimation();
     accountToastY.stopAnimation();
@@ -929,23 +937,37 @@ export function ProfileScreenBase({
 
         <View style={styles.accountContent}>
           <View style={[styles.stickyHeader, { paddingTop: topPad + 8 }]}>
-            <View style={[styles.stickyHeaderRow, styles.libraryTabHeaderRow]}>
+            <View testID="account-header-actions" style={[styles.stickyHeaderRow, styles.libraryTabHeaderRow]}>
               <Pressable
                 onPress={() => (onBack ? onBack() : router.back())}
                 hitSlop={8}
                 style={styles.accountBackButton}
                 accessibilityRole="button"
-                accessibilityLabel="Volver"
+                accessibilityLabel="Cerrar edición"
+                testID="account-close"
               >
                 <Feather
-                  name="chevron-left"
-                  size={28}
+                  name="x"
+                  size={22}
                   color="#FBFBFB"
-                  style={{ transform: [{ translateX: -1 }] }}
                 />
               </Pressable>
-              <Text style={styles.stickyTitleLibraryTab}>Editar detalles</Text>
-              <View style={styles.accountHeaderSpacer} />
+              <Pressable
+                testID="account-save"
+                onPress={saveAccount}
+                disabled={accountSaveDisabled}
+                accessibilityRole="button"
+                accessibilityState={{ disabled: accountSaveDisabled }}
+                style={({ pressed }) => [
+                  styles.accountSaveButton,
+                  accountSaveDisabled && styles.accountSaveButtonDisabled,
+                  !accountSaveDisabled && pressed && styles.accountSaveButtonPressed,
+                ]}
+              >
+                <Text style={[styles.accountSaveButtonText, accountSaveDisabled && styles.accountSaveButtonTextDisabled]}>
+                  Guardar
+                </Text>
+              </Pressable>
             </View>
           </View>
 
@@ -994,15 +1016,18 @@ export function ProfileScreenBase({
                 />
               </View>
 
-              <View style={styles.accountField}>
-                <Text style={styles.accountFieldLabel}>
-                  Correo electrónico
-                </Text>
-                <View style={styles.accountFieldValueBox}>
-                  <Text style={[styles.accountFieldValue, { color: colors.mutedForeground }]}>
-                    {email || "No disponible"}
-                  </Text>
-                </View>
+              <View testID="account-life-motto-section" style={styles.accountField}>
+                <Text style={styles.accountFieldLabel}>Lema de vida</Text>
+                <TextInput
+                  testID="account-life-motto-input"
+                  value={accountLifeMotto}
+                  onChangeText={setAccountLifeMotto}
+                  placeholder="Tu lema de vida"
+                  placeholderTextColor={colors.mutedForeground}
+                  style={[styles.accountNameInput, { color: colors.foreground }]}
+                  accessibilityLabel="Lema de vida"
+                  returnKeyType="done"
+                />
               </View>
 
               <View testID="account-description-section" style={styles.accountField}>
@@ -1010,35 +1035,16 @@ export function ProfileScreenBase({
                 <TextInput
                   testID="account-description-input"
                   value={accountDescription}
-                  onChangeText={(text) => setAccountDescription(limitProfileDescriptionLines(text))}
+                  onChangeText={(text) => setAccountDescription(limitProfileDescription(text))}
                   placeholder="Una breve descripción sobre ti"
                   placeholderTextColor={colors.mutedForeground}
                   style={[styles.accountNameInput, styles.accountDescriptionInput, { color: colors.foreground }]}
                   multiline
-                  numberOfLines={2}
+                  maxLength={MAX_PROFILE_DESCRIPTION_LENGTH}
                   textAlignVertical="top"
                   accessibilityLabel="Descripción de tu perfil"
                 />
-                <Text style={[styles.accountDescriptionHint, { color: colors.mutedForeground }]}>
-                  Se mostrará en un máximo de 2 líneas en tu perfil.
-                </Text>
               </View>
-
-              <Pressable
-                onPress={saveAccount}
-                disabled={accountSaveDisabled}
-                accessibilityRole="button"
-                accessibilityState={{ disabled: accountSaveDisabled }}
-                style={({ pressed }) => [
-                  styles.accountSaveButton,
-                  accountSaveDisabled && styles.accountSaveButtonDisabled,
-                  !accountSaveDisabled && pressed && styles.accountSaveButtonPressed,
-                ]}
-              >
-                <Text style={[styles.accountSaveButtonText, accountSaveDisabled && styles.accountSaveButtonTextDisabled]}>
-                  Guardar
-                </Text>
-              </Pressable>
 
               <Pressable
                 onPress={handleDeleteAccount}
@@ -1437,6 +1443,17 @@ export function ProfileScreenBase({
               </Pressable>
 
               </View>
+
+              <GrowthCurrentStagePill />
+
+              {lifeMotto.trim() !== "" && (
+                <Text
+                  testID="profile-identity-life-motto"
+                  style={[styles.profileLifeMotto, { color: colors.foreground }]}
+                >
+                  {lifeMotto}
+                </Text>
+              )}
 
               {description.trim() !== "" && (
                 <Text
@@ -2206,13 +2223,10 @@ const styles = StyleSheet.create({
     alignItems: "center",
     justifyContent: "center",
   },
-  accountHeaderSpacer: {
-    width: 43,
-    height: 43,
-  },
   accountFormFlex: {
     flex: 1,
   },
+  accountHeaderSpacer: { width: 43, height: 43 },
   accountForm: {
     paddingHorizontal: 24,
     paddingTop: 34,
@@ -2224,9 +2238,9 @@ const styles = StyleSheet.create({
     marginBottom: 6,
   },
   accountAvatar: {
-    width: 112,
-    height: 112,
-    borderRadius: 56,
+    width: 124,
+    height: 124,
+    borderRadius: 62,
   },
   accountAvatarFallback: {
     alignItems: "center",
@@ -2363,9 +2377,8 @@ const styles = StyleSheet.create({
     gap: 8,
   },
   accountFieldLabel: {
-    fontFamily: "Manrope",
-    fontSize: 13,
-    fontWeight: "700",
+    fontFamily: "Manrope630",
+    fontSize: 15,
     color: "#AAAAC4",
   },
   accountFieldValueBox: {
@@ -2390,16 +2403,16 @@ const styles = StyleSheet.create({
     borderRadius: 17,
     borderWidth: 0,
   },
-  accountDescriptionInput: { height: 72, paddingVertical: 12, lineHeight: 22 },
-  accountDescriptionHint: { fontFamily: "Manrope", fontSize: 11, lineHeight: 16 },
+  accountDescriptionInput: { height: 122, paddingVertical: 12, lineHeight: 22 },
   accountSaveButton: {
-    height: 52,
+    height: 43,
+    paddingHorizontal: 18,
+    marginLeft: "auto",
     borderRadius: 999,
     backgroundColor: "#F9F9F9",
     alignItems: "center",
     justifyContent: "center",
     overflow: "hidden",
-    marginTop: 4,
   },
   accountSaveButtonDisabled: {
     backgroundColor: "rgba(249,249,249,0.4)",
@@ -2535,7 +2548,7 @@ const styles = StyleSheet.create({
     gap: 0,
   },
   // Desplazar el bloque en el flujo para que las secciones siguientes lo acompañen.
-  dedicatedProfileCard: { marginTop: 1 - 35 - 8 },
+  dedicatedProfileCard: { marginTop: 1 - 35 - 8 - 15 },
   // 20 px de padding inferior + 5 px de separación = 25 px hasta el fondo semanal.
   profileIdentityPreviewCard: { marginBottom: 5 },
   wisdomSection: {
@@ -2582,6 +2595,7 @@ const styles = StyleSheet.create({
     borderRadius: 62,
   },
   userName: { fontFamily: "Manrope", fontSize: 24, fontWeight: "700", textAlign: "left", marginTop: 0 },
+  profileLifeMotto: { fontFamily: "Manrope", fontSize: 20, fontWeight: "700", lineHeight: 27, textAlign: "left", alignSelf: "stretch" },
   profileNameRow: { width: "100%", flexDirection: "row", alignItems: "center" },
   profileNameText: { flex: 1, minWidth: 0 },
   profileDescription: { fontFamily: "Manrope", fontSize: 14, lineHeight: 20, color: "#C4C4C4", textAlign: "left", alignSelf: "stretch" },

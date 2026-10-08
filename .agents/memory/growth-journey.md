@@ -13,7 +13,13 @@ El banner de Intención en Perfil no muestra la píldora de días encima del nom
 
 **Why:** Después de ajustar la posición de la píldora, el usuario pidió retirarla de Tu camino en Perfil y dejar solo el título y la descripción.
 
-**How to apply:** No restaurar la píldora en Perfil; conservarla en las demás portadas y etapas del camino. Mantener los ajustes independientes de descripción y espacio inferior de Perfil.
+**How to apply:** No restaurar la píldora de días dentro del banner Tu camino en Perfil; conservarla en las demás portadas y etapas del camino. Mantener los ajustes independientes de descripción y espacio inferior de Perfil.
+
+La píldora de etapa del bloque de identidad en Perfil, sobre el Lema de vida, es independiente de la píldora de días retirada del banner Tu camino.
+
+**Why:** El usuario pidió explícitamente la etapa sobre el lema con el diseño de las píldoras de Tu camino para cada tema. Este pedido no activa la progresión ni cambia la decisión de que Intención sea la única etapa actual.
+
+**How to apply:** Conservar el estilo compartido por tema y la etapa activa del recorrido, sin calcular etapas futuras a partir de rachas o días hasta que se autorice activar la progresión.
 
 Cuando se active el progreso funcional, los niveles del camino deberán depender del total de días **activos acumulados**, no de la racha actual ni de la mayor racha. Un nivel alcanzado no debe retroceder cuando se corta una racha.
 

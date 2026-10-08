@@ -1,4 +1,6 @@
-/** Keep at most two explicit lines; Profile also caps visual wrapping at two. */
-export function limitProfileDescriptionLines(value: string): string {
-  return value.replace(/\r\n?/g, "\n").split("\n").slice(0, 2).join("\n");
+export const MAX_PROFILE_DESCRIPTION_LENGTH = 300;
+
+/** Match the native input limit, preserve line breaks and never split a surrogate pair. */
+export function limitProfileDescription(value: string): string {
+  return value.replace(/\r\n?/g, "\n").slice(0, MAX_PROFILE_DESCRIPTION_LENGTH).replace(/[\uD800-\uDBFF]$/, "");
 }

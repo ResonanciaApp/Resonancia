@@ -55,7 +55,8 @@
 - [FlatList header remount](flatlist-header-remount.md) — ListHeaderComponent como useCallback con deps cambiantes remonta el header y resetea carruseles internos; pasar elemento JSX
 - [Clerk native SSO redirect](clerk-native-sso-redirect.md) — SSO Expo vuelve sin sesión: scheme correcto + allowlist redirect_urls por API (estaba vacía) + ruta explícita sso-callback
 - [Manrope default font patch](manrope-default-font-patch.md) — fuente global via patch de Text.render (base primero), NUNCA parchando StyleSheet.create: eso pisaba la fontFamily de los íconos → tofu en Android
-- [Pesos intermedios de Manrope](manrope-intermediate-weights.md) — aumentos exactos de 50 requieren una fuente estática; valores fontWeight no reconocidos pueden volver a regular en iOS
+- [Pesos intermedios de Manrope](manrope-intermediate-weights.md) — ajustes exactos requieren una fuente estática; valores fontWeight no reconocidos pueden volver a regular en iOS
+- [Paquetes Python y Nix](python-nix-package-cache.md) — una instalación fallida en un prefijo inmutable puede haber dejado el módulo utilizable en la caché local
 - [Android top-inset floor](android-top-inset-floor.md) — tablets Android dan insets.top chico (~24) vs iPhone (~59); topPad nativo = Math.max(insets.top, 40) en todas las pantallas
 - [Chat overlay sobre Amigos](chat-overlay-stack.md) — desde overlays del drawer router.push monta DEBAJO; chat usa openChat→ChatOverlay apilado; otras rutas: closeOverlay antes de push
 - [Racha canónica en utils/stats](streak-canonical.md) — toda racha/semana importa de utils/stats (día activo = ≥3 min O sesión completada, desde ago 2026; fallback a ayer); memos deben depender de useDayRollover o quedan pegados en ayer

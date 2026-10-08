@@ -35,14 +35,14 @@ visit(ast);
 assert.ok(identity && userSection && styles);
 const styleProperties = styles.properties.filter(property =>
   ts.isPropertyAssignment(property)
-    && /^(profileCard|dedicatedProfileCard|profileIdentityPreviewCard|profileIdentityRow|dedicatedProfileIdentityRow|profileDetails|profileDescription|profileEditDetails.*|dedicatedProfileDetails|avatar.*|userName|profileName.*|profileEmail|profileLocationLeft|profileIntention.*|locationRow|locationText)$/.test(property.name.getText(ast)),
+    && /^(profileCard|dedicatedProfileCard|profileIdentityPreviewCard|profileIdentityRow|dedicatedProfileIdentityRow|profileDetails|profileDescription|profileLifeMotto|profileEditDetails.*|dedicatedProfileDetails|avatar.*|userName|profileName.*|profileEmail|profileLocationLeft|profileIntention.*|locationRow|locationText)$/.test(property.name.getText(ast)),
 );
 const compiled = ts.transpileModule(`
   const PROFILE_CARD_BOTTOM_PADDING = ${source.match(/const PROFILE_CARD_BOTTOM_PADDING = (\d+);/)?.[1]};
   const PROFILE_SECTION_GAP = ${source.match(/const PROFILE_SECTION_GAP = (\d+);/)?.[1]};
   const styles = { ${styleProperties.map(property => property.getText(ast)).join(",")} };
   function Identity(props) {
-    const { dedicated = true, email = null, location = "", isPremium = false, description = "" } = props;
+    const { dedicated = true, email = null, location = "", isPremium = false, description = "", lifeMotto = "" } = props;
     const username = "Resonador", lastName = "", photoUri = null, selectedProfilePreset = null;
     const colors = { foreground: "#FFFFFF", mutedForeground: "#AAAAAA", secondary: "#060A0F", primary: "#BE9650" };
     const secondaryAccent = "#BE9650", MEMBERSHIP_AURORA = { premium: { accent: "#E7B95C" } };
@@ -82,14 +82,17 @@ const Native = (props: any) => {
     "data-margin-bottom": style.marginBottom,
     "data-margin-top": style.marginTop,
     "data-background": style.backgroundColor,
+    "data-color": style.color,
+    "data-font-size": style.fontSize,
   }, props.children);
 };
 const Pill = (props: any) => React.createElement(Native, { ...props, testID: "profile-intention-pill" }, "0 Días: Intención");
 const Membership = () => React.createElement(Native, { testID: "profile-premium-banner" }, "Prueba Premium");
+const StagePill = () => React.createElement(Native, { testID: "profile-growth-stage-pill" }, "Intención");
 const Identity = new Function(
-  "React", "View", "Pressable", "Text", "Feather", "MaterialCommunityIcons", "Image", "SessionBadgeGlass", "ProfileIntentionPill", "ProfileMembershipBanner",
+  "React", "View", "Pressable", "Text", "Feather", "MaterialCommunityIcons", "Image", "SessionBadgeGlass", "ProfileIntentionPill", "ProfileMembershipBanner", "GrowthCurrentStagePill",
   `${compiled}\nreturn Identity;`,
-)(React, Native, Native, Native, Native, Native, Native, Native, Pill, Membership);
+)(React, Native, Native, Native, Native, Native, Native, Native, Pill, Membership, StagePill);
 const render = (props: Record<string, unknown> = {}) => {
   presses.clear();
   return renderToStaticMarkup(React.createElement(Identity, props));
@@ -136,6 +139,20 @@ test("Perfil hides the email for both free and Premium accounts, whether present
     assert.doesNotMatch(render({ email: "", isPremium }), /profile-identity-email/);
     assert.doesNotMatch(render({ email: "example@example.com", isPremium }), /profile-identity-email|example@example\.com/);
   }
+});
+
+test("current stage sits above the larger bold motto and description, for free and Premium", () => {
+  for (const isPremium of [false, true]) {
+    const html = render({ isPremium, lifeMotto: "Vivir con intención", description: "Mi descripción" });
+    assert.ok(html.indexOf("Resonador") < html.indexOf('data-testid="profile-identity-life-motto"'));
+    assert.ok(html.indexOf("Resonador") < html.indexOf('data-testid="profile-growth-stage-pill"'));
+    assert.ok(html.indexOf('data-testid="profile-growth-stage-pill"') < html.indexOf('data-testid="profile-identity-life-motto"'));
+    assert.ok(html.indexOf('data-testid="profile-identity-life-motto"') < html.indexOf('data-testid="profile-identity-description"'));
+    assert.match(html, /data-testid="profile-identity-life-motto"[^>]*data-color="#FFFFFF"[^>]*data-font-size="20"[^>]*>Vivir con intención/);
+    assert.match(source, /profileLifeMotto: \{[^}]*fontWeight: "700"/);
+    assert.match(html, /data-font-size="24"/);
+  }
+  assert.doesNotMatch(render({ lifeMotto: "   " }), /profile-identity-life-motto/);
 });
 
 test("name and description sit below the avatar with the existing seven-pixel gap plus five more pixels and no account chevron", () => {
