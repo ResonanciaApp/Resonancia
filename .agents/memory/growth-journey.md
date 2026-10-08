@@ -33,13 +33,13 @@ En Perfil, la sección del banner de Intención se titula «Tu camino», con la 
 
 **How to apply:** Limitar este encabezado a Perfil; conservar el arte, la información de la etapa y la apertura de Tu camino. «Ver todo» queda al margen derecho del encabezado y sustituye al chevron del cuerpo.
 
-El banner de Tu camino en Perfil muestra una píldora de días **activos acumulados reales** encima del nombre de la etapa actual. El loto dorado pertenece a esa píldora; no lleva un segundo loto ni fondo circular junto al título.
+El banner de Tu camino en Perfil muestra el loto dorado y los días **activos acumulados reales** encima del nombre de la etapa actual, sin cápsula, borde ni fondo. No lleva un segundo loto junto al título.
 
-**Why:** El usuario reemplazó expresamente la decisión anterior de ocultar la píldora: ahora pide el contador acumulado y el loto arriba del título, con el mismo tamaño que las píldoras del recorrido.
+**Why:** El usuario conservó el contador acumulado y el loto, pero pidió quitar la píldora específicamente del banner de Perfil; las píldoras del recorrido siguen siendo independientes.
 
-**How to apply:** Conservar el arte, el encabezado Tu camino con Ver todo y la etapa dinámica. Usar el total personal, no el rango editorial, para la píldora. El usuario fijó 5 px entre píldora y título y otros 5 px entre título y descripción: medir la separación total, sin sumar margen de píldora al gap ni compensar con una traslación del texto.
+**How to apply:** Conservar el arte, el encabezado Tu camino con Ver todo y la etapa dinámica. Usar el total personal, no el rango editorial. Mantener 5 px entre la fila de loto/días y el título, y otros 5 px entre título y descripción; no sumar padding invisible ni compensar con una traslación del texto.
 
-La píldora de etapa del bloque de identidad en Perfil, sobre el Lema de vida, es independiente de la píldora de días del banner Tu camino. Conserva la flor de loto dorada a la izquierda.
+La píldora de etapa del bloque de identidad en Perfil, sobre el Lema de vida, es independiente de la fila de días del banner Tu camino. Conserva la flor de loto dorada a la izquierda.
 
 **Why:** El último cambio del loto en el banner no retiró el loto de la identidad. Ambas píldoras tienen propósitos distintos.
 

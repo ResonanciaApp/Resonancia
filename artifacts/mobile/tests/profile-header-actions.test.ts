@@ -35,6 +35,15 @@ const Header = new Function("React", "View", "Pressable", "Feather", `${compiled
 );
 const flatten = (value: any): any => Array.isArray(value) ? Object.assign({}, ...value.map(flatten)) : value || {};
 
+test("both header actions and their backgrounds rise 3px without changing their gap", () => {
+  for (const sticky of [false, true]) {
+    const tree = Header({ sticky, foreground: "#FFFFFF", activeSceneId: "cloudy", onEdit() {}, onSettings() {} });
+    const style = flatten(tree.props.style);
+    assert.deepEqual(style.transform, [{ translateY: -3 }]);
+    assert.equal(style.gap, 8);
+  }
+});
+
 test("normal and sticky headers share the edit/settings actions and navigation", () => {
   assert.equal(headers, 2);
   for (const sticky of [false, true]) {

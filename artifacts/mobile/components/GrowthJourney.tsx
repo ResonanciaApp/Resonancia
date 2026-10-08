@@ -164,10 +164,10 @@ export function GrowthLevelPreviewCard({
           sectionTitle && styles.bloomDayPill,
           sectionTitle && styles.timelineDayPill,
           sectionTitle && styles.timelineBloomDayPill,
-          sectionTitle && styles.profilePreviewDayPill,
           (canonicalVerticalInsets || sectionTitle) && theme.id === "cloudy" && {
             backgroundColor: sectionTitle ? CLOUDY_GROWTH_DAY_PILL_BACKGROUND : "rgba(0,0,0,0.16)",
           },
+          sectionTitle && styles.profilePreviewDayPill,
         ]}
       >
         {(canonicalVerticalInsets || sectionTitle) && (
@@ -555,7 +555,7 @@ const styles = StyleSheet.create({
   previewArt: { width: 100, height: 100 },
   profilePreviewArt: { width: 96, height: 96 },
   embeddedPreviewCard: { marginHorizontal: 0 },
-  titledPreviewCard: { flexDirection: "column", alignItems: "stretch", paddingTop: 18, paddingBottom: 4 },
+  titledPreviewCard: { flexDirection: "column", alignItems: "stretch", paddingTop: 18, paddingBottom: 11 },
   previewSectionHeader: { flexDirection: "row", alignItems: "center", justifyContent: "space-between", minHeight: 25 },
   previewSectionTitle: { fontFamily: "Manrope", fontSize: 16, fontWeight: "600" },
   previewViewAll: { fontFamily: "Manrope", fontSize: 11, fontWeight: "400" },
@@ -569,7 +569,7 @@ const styles = StyleSheet.create({
   profilePreviewCopyOffset: { transform: [{ translateX: -4 }] },
   profilePreviewCopySpacing: { gap: 5 },
   profilePreviewTitleSpacing: { gap: 5 },
-  profilePreviewDayPill: { marginBottom: 0 },
+  profilePreviewDayPill: { marginBottom: 0, backgroundColor: "transparent", borderWidth: 0, borderRadius: 0, paddingHorizontal: 0, paddingVertical: 0 },
   previewStory: { fontFamily: "Manrope", fontSize: 11, lineHeight: 16 },
   section: {
     marginHorizontal: 16,

@@ -2228,6 +2228,7 @@ const styles = StyleSheet.create({
     alignItems: "center",
     marginLeft: "auto",
     gap: 8,
+    transform: [{ translateY: -3 }],
   },
   giftIcon: {
     width: 35,

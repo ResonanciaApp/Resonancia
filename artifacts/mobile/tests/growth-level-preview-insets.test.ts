@@ -256,7 +256,7 @@ test("Perfil Tu camino shows accumulated days above the stage without a lotus be
   assert.match(html, /Una práctica que comienza hoy\./);
   assert.doesNotMatch(html, /data-testid="profile-intention-description"[^>]*data-transform=/);
   assert.doesNotMatch(html, /profile-intention-chevron|data-icon="chevron-right"/);
-  assert.match(html, /data-testid="growth-level-zero-preview"[^>]*data-padding-top="18" data-padding-bottom="4"/);
+  assert.match(html, /data-testid="growth-level-zero-preview"[^>]*data-padding-top="18" data-padding-bottom="11"/);
   assert.ok(capturedViewAllPress);
   capturedViewAllPress();
   assert.equal(opened, true);
@@ -280,7 +280,9 @@ test("Perfil uses actual accumulated days and the timeline pill's sizing for eve
       growthMock.useGrowth = () => ({ ...original(), currentStage: stage, levels: [stage], progress: { totalActiveDays: days } });
       const html = render({ canonicalVerticalInsets: true, sectionTitle: "Tu camino" });
       const pill = html.match(/<div[^>]*data-testid="intention-preview-day-pill"[^>]*>/)?.[0] ?? "";
-      assert.match(pill, /data-padding-vertical="4"/);
+      assert.match(pill, /data-padding-vertical="0"/);
+      assert.match(pill, /data-background="transparent"/);
+      assert.match(pill, /data-border-width="0"/);
       assert.match(pill, /data-direction="row" data-align="center"/);
       assert.match(pill, /data-margin-bottom="0"/);
       const titleRow = html.match(/<div[^>]*data-testid="profile-intention-title-row"[^>]*>/)?.[0] ?? "";

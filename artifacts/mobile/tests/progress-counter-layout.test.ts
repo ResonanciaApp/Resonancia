@@ -148,6 +148,8 @@ test("counter background and ring shrink another 7px without changing the number
       assert.match(html, /data-font-size="46" data-line-height="53"/);
       const size = days > 0 ? 118 : 100;
       assert.match(html, new RegExp(`data-testid="progress-day-counter" data-width="${size}" data-height="${size}"`));
+      assert.match(html, /data-testid="progress-day-counter"[^>]*data-margin-top="25"/);
+      assert.match(html, /data-margin-top="15"/);
       if (days > 0) {
         assert.match(html, /data-circle-radius="54.5" data-stroke="9"/);
         const offset = 2 * Math.PI * 54.5 * (1 - days / 7);

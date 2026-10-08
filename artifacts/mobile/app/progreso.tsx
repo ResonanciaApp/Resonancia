@@ -211,6 +211,7 @@ const styles = StyleSheet.create({
   },
   streakCountWrap: {
     position: "relative",
+    marginTop: 25,
     width: COUNT_SIZE,
     height: COUNT_SIZE,
     alignItems: "center",
