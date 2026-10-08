@@ -1099,8 +1099,6 @@ export function ProfileScreenBase({
                   value={accountName}
                   editable={!accountSaving}
                   onChangeText={setAccountName}
-                  placeholder="Nombre del usuario"
-                  placeholderTextColor={colors.mutedForeground}
                   style={[styles.accountNameInput, { color: colors.foreground }]}
                   autoCapitalize="words"
                   returnKeyType="done"
@@ -1114,8 +1112,6 @@ export function ProfileScreenBase({
                   value={accountLifeMotto}
                   editable={!accountSaving}
                   onChangeText={setAccountLifeMotto}
-                  placeholder="Tu lema de vida"
-                  placeholderTextColor={colors.mutedForeground}
                   style={[styles.accountNameInput, { color: colors.foreground }]}
                   accessibilityLabel="Lema de vida"
                   returnKeyType="done"
@@ -1129,8 +1125,6 @@ export function ProfileScreenBase({
                   value={accountDescription}
                   editable={!accountSaving}
                   onChangeText={(text) => setAccountDescription(limitProfileDescription(text))}
-                  placeholder="Una breve descripción sobre ti"
-                  placeholderTextColor={colors.mutedForeground}
                   style={[styles.accountNameInput, styles.accountDescriptionInput, { color: colors.foreground, height: accountDescriptionHeight }]}
                   multiline
                   scrollEnabled={false}

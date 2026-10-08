@@ -25,6 +25,7 @@ test("Editar detalles starts with Nombre, then Lema de vida and Descripción wit
   assert.match(fields[1], /value=\{accountLifeMotto\}/);
   assert.match(fields[1], /onChangeText=\{setAccountLifeMotto\}/);
   assert.doesNotMatch(fields.join(""), /Correo electrónico|\{email/);
+   assert.doesNotMatch(fields.join(""), /\bplaceholder(?:TextColor)?=/, "Editar detalles has labels, but no placeholder text");
 });
 
 function initializer(name: string): string {
