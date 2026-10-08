@@ -34,7 +34,7 @@ import { useSceneTheme } from "@/context/SceneThemeContext";
 import { markRoutineAdditionTransition } from "@/lib/routineCompletionTransition";
 
 const ALL_DAYS = [0, 1, 2, 3, 4, 5, 6];
-const ROUTINE_MUTED = "#7F7F7F";
+const ROUTINE_MUTED = "#A1A1A1";
 const ROUTINE_SELECTED = "#F9F9F9";
 
 function repeatLabel(repeatEnabled: boolean, timesPerDay: number) {

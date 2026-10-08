@@ -311,7 +311,7 @@ export default function RutinaDetailScreen() {
             <Text
               style={[
                 styles.statusText,
-                { color: hasUnsavedChanges ? "#F9F9F9" : "#7F7F7F" },
+                { color: hasUnsavedChanges ? "#F9F9F9" : "#A1A1A1" },
               ]}
             >
               Guardar
@@ -320,7 +320,7 @@ export default function RutinaDetailScreen() {
         </View>
 
         <View style={styles.mainCopy}>
-          <Text style={[styles.eyebrow, { color: "#7F7F7F" }]}>
+          <Text style={[styles.eyebrow, { color: "#A1A1A1" }]}>
             Nombre de la rutina
           </Text>
           <Text style={[styles.title, { color: routineTheme.text }]}>{activity.title}</Text>
@@ -329,7 +329,7 @@ export default function RutinaDetailScreen() {
             style={[
               styles.eyebrow,
               styles.descriptionLabel,
-              { color: "#7F7F7F" },
+              { color: "#A1A1A1" },
             ]}
           >
             Descripción
@@ -342,7 +342,7 @@ export default function RutinaDetailScreen() {
               value={descriptionDraft}
               onChangeText={setDescriptionDraft}
               placeholder="Añadir una descripción (opcional)"
-              placeholderTextColor="#7F7F7F"
+              placeholderTextColor="#A1A1A1"
               style={[styles.description, styles.descriptionInput, { color: "#F9F9F9" }]}
               accessibilityLabel="Descripción de la actividad"
             />
@@ -362,7 +362,7 @@ export default function RutinaDetailScreen() {
                   {
                     color: activity.description
                       ? routineTheme.textMuted
-                      : "#7F7F7F",
+                      : "#A1A1A1",
                   },
                 ]}
               >
@@ -371,7 +371,7 @@ export default function RutinaDetailScreen() {
             </Pressable>
           )}
 
-          <Text style={[styles.sectionLabel, { color: "#7F7F7F" }]}>Detalles</Text>
+          <Text style={[styles.sectionLabel, { color: "#A1A1A1" }]}>Detalles</Text>
           <View
             style={[
               styles.detailsCard,

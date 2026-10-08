@@ -48,7 +48,7 @@ const ROUTINE_CARD_HEIGHT = 74;
 const ROUTINE_CARD_GAP = 9;
 const ROUTINE_SLOT_HEIGHT = ROUTINE_CARD_HEIGHT + ROUTINE_CARD_GAP;
 const COMPLETION_EXIT_DELAY = 1500;
-const HANDLE_COLOR = "#7F7F7F";
+const HANDLE_COLOR = "#A1A1A1";
 
 type RoutineOccurrence = {
   activity: RoutineActivity;
