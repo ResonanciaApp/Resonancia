@@ -35,7 +35,7 @@ export const ProfileReflectionWallSection = forwardRef<HomeReflectionWallHandle,
     const colors = useColors();
     return (
       <View style={[styles.section, style]}>
-        <Text testID="profile-wall-title" style={[styles.title, { color: colors.foreground }]}>Mi muro expansivo</Text>
+        <Text testID="profile-wall-title" style={[styles.title, { color: colors.foreground }]}>Muro de reflexiones</Text>
         <HomeReflectionWallSection
           ref={ref}
           scrollRef={scrollRef}

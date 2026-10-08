@@ -548,16 +548,6 @@ export function MiRutinaSection({ style, cardBackgroundColor, titleSize = 17, ad
           >
             <Feather name="calendar" size={19} color={routineTheme.accent} />
           </Pressable>
-          <Pressable
-            onPress={openCreate}
-            accessibilityRole="button"
-            accessibilityLabel="Añadir una actividad a Mi rutina"
-            testID="mi-rutina-add-header"
-            hitSlop={8}
-            style={({ pressed }) => ({ opacity: pressed ? 0.58 : 1 })}
-          >
-            <Feather name="plus" size={25} color="#F9F9F9" />
-          </Pressable>
         </View>
       </View>
 
