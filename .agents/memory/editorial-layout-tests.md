@@ -14,3 +14,9 @@ Explora por objetivo, Conoce a los resonadores y Mezclas de la comunidad deben u
 **Why:** El usuario reiteró que la referencia es el espaciado de arriba, no una separación propia de los módulos inferiores.
 
 **How to apply:** Comparar el espacio completo entre contenidos, incluyendo márgenes y padding propios de los componentes. Una prueba que solo verifica el centrado del divisor puede aprobar una distancia distinta de la solicitada.
+
+Mezclas de la comunidad queda oculta únicamente en Descubrir; sus datos y otras superficies se conservan. Nuevo en Resonancia va inmediatamente antes de las playlists editoriales, manteniendo la separación estándar.
+
+**Why:** El usuario cambió expresamente esta distribución el 8 de octubre de 2026; sustituye la ubicación anterior de Nuevo debajo de los objetivos.
+
+**How to apply:** No reintroducir el carrusel comunitario ni su separador huérfano en Descubrir para satisfacer pruebas del orden antiguo. Conservar el orden de las demás secciones.

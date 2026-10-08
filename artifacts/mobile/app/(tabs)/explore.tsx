@@ -51,7 +51,6 @@ import { ContentCategoryGrid } from "@/components/ContentCategoryGrid";
 import { PressScale } from "@/components/PressScale";
 import { PremiumBadge } from "@/components/PremiumBadge";
 import { ResonadoresBanner } from "@/components/ResonadoresBanner";
-import { CommunityMixesCarousel } from "@/components/CommunityMixesCarousel";
 import { useResonadores } from "@/hooks/useResonadores";
 import {
   useGetPopularSessions,
@@ -763,6 +762,63 @@ export function ExploreScreen({
             </View>
           </>
 
+          <View style={styles.sectionSpacer} />
+          <View style={styles.newInResonanceSection}>
+            <View style={styles.newInResonanceHeader}>
+              <Text style={[styles.sectionTitle, { marginBottom: 0 }]}>
+                Nuevo en Resonancia
+              </Text>
+            </View>
+            <ScrollView
+              horizontal
+              showsHorizontalScrollIndicator={false}
+              style={{ marginHorizontal: -H_PAD }}
+              contentContainerStyle={styles.newInResonanceRow}
+            >
+              {recientesMeditaciones.map((session) => (
+                <PressScale
+                  key={session.id}
+                  onPress={() => handleSessionPress(session)}
+                  accessibilityRole="button"
+                  accessibilityLabel={`${session.title}. ${getSessionAuthor(session)}`}
+                  style={styles.newInResonanceCard}
+                >
+                  <View style={styles.newInResonanceImageWrap}>
+                    <Image
+                      source={session.image as number}
+                      style={StyleSheet.absoluteFill}
+                      contentFit="cover"
+                      placeholder={BLUR_PLACEHOLDER}
+                      transition={IMAGE_TRANSITION}
+                      cachePolicy="memory-disk"
+                    />
+                    <PremiumBadge session={session} size={22} top={16} left={16} />
+                    <SessionDurationBadge
+                      label={session.durationLabel}
+                      showClock
+                      whiteGlass
+                      style={styles.categoryDurationBadge}
+                    />
+                  </View>
+                  <View style={styles.newInResonanceMeta}>
+                    <Text style={styles.newInResonanceTitle} numberOfLines={2}>
+                      {session.title}
+                    </Text>
+                    <Text
+                      style={[
+                        styles.newInResonanceSecondary,
+                        { color: CARD_TEXT_BELOW },
+                      ]}
+                      numberOfLines={1}
+                    >
+                      {getSessionAuthor(session)}
+                    </Text>
+                  </View>
+                </PressScale>
+              ))}
+            </ScrollView>
+          </View>
+
           {editorialDiscoverCarousels.map((carousel) => (
             <React.Fragment key={carousel.id}>
               <View style={styles.sectionSpacer} />
@@ -839,66 +895,7 @@ export function ExploreScreen({
             </View>
           </View>
 
-          <View style={styles.sectionSpacer} />
-
-          <View style={styles.newInResonanceSection}>
-            <View style={styles.newInResonanceHeader}>
-              <Text style={[styles.sectionTitle, { marginBottom: 0 }]}>
-                Nuevo en Resonancia
-              </Text>
-            </View>
-            <ScrollView
-              horizontal
-              showsHorizontalScrollIndicator={false}
-              style={{ marginHorizontal: -H_PAD }}
-              contentContainerStyle={styles.newInResonanceRow}
-            >
-              {recientesMeditaciones.map((session) => (
-                <PressScale
-                  key={session.id}
-                  onPress={() => handleSessionPress(session)}
-                  accessibilityRole="button"
-                  accessibilityLabel={`${session.title}. ${getSessionAuthor(session)}`}
-                  style={styles.newInResonanceCard}
-                >
-                  <View style={styles.newInResonanceImageWrap}>
-                    <Image
-                      source={session.image as number}
-                      style={StyleSheet.absoluteFill}
-                      contentFit="cover"
-                      placeholder={BLUR_PLACEHOLDER}
-                      transition={IMAGE_TRANSITION}
-                      cachePolicy="memory-disk"
-                    />
-                    <PremiumBadge session={session} size={22} top={16} left={16} />
-                    <SessionDurationBadge
-                      label={session.durationLabel}
-                      showClock
-                      whiteGlass
-                      style={styles.categoryDurationBadge}
-                    />
-                  </View>
-                  <View style={styles.newInResonanceMeta}>
-                    <Text style={styles.newInResonanceTitle} numberOfLines={2}>
-                      {session.title}
-                    </Text>
-                    <Text
-                      style={[
-                        styles.newInResonanceSecondary,
-                        { color: CARD_TEXT_BELOW },
-                      ]}
-                      numberOfLines={1}
-                    >
-                      {getSessionAuthor(session)}
-                    </Text>
-                  </View>
-                </PressScale>
-              ))}
-            </ScrollView>
-          </View>
-
-          <View style={[styles.sectionSpacer, styles.communityDivider]} />
-          <CommunityMixesCarousel />
+          {/* Mezclas de la comunidad está oculta solo en Descubrir. */}
 
           {/* ── Descubre algo nuevo (al final de la página) — oculta a pedido del usuario ── */}
           {false && (
@@ -1198,11 +1195,6 @@ const styles = StyleSheet.create({
     // Same gap as the upper sections; compensate only the banner's own top margin.
     marginTop: -24.5,
     marginBottom: 23.5 + SECTION_EXTRA_GAP - 3,
-  },
-  communityDivider: {
-    // Same gap as the upper sections; compensate the community header's own top padding.
-    marginTop: -24.5,
-    marginBottom: 23.5 + SECTION_EXTRA_GAP - 18,
   },
   popularSection: {
     marginTop: 0,
