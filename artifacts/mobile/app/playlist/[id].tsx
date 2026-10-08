@@ -1169,7 +1169,7 @@ const modalStyles = StyleSheet.create({
   },
   coverCloseButton: {
     position: "absolute",
-    right: 0,
+    left: 0,
     width: 43,
     height: 43,
     borderRadius: 21.5,
@@ -1191,7 +1191,7 @@ const modalStyles = StyleSheet.create({
   },
   coverUploadButton: {
     position: "absolute",
-    left: 0,
+    right: 0,
     zIndex: 1,
     width: 43,
     height: 43,

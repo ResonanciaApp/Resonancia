@@ -60,7 +60,7 @@ test("a large avatar catalog cannot enlarge the sheet beyond the screen", () => 
   }
 });
 
-test("photo upload is an icon-only 43px circle to the left of Portada, preserving the title and close control", () => {
+test("photo upload is an icon-only 43px circle to the right of Portada, with close on the left and no balance message", () => {
   const header = source.slice(source.indexOf("<View style={styles.accountCoverHeader}>"), source.indexOf("<View style={styles.accountCoverPreviewSlot}>"));
   assert.match(header, /<Text style=\{styles.accountCoverTitle\}>Portada<\/Text>[\s\S]*?accountCoverUploadButton[\s\S]*?<Feather name="image" size=\{18\} color="#F9F9F9" \/>[\s\S]*?accountCoverCloseButton/);
   assert.equal((source.match(/style=\{styles.accountCoverUploadButton\}/g) ?? []).length, 1);
@@ -71,12 +71,15 @@ test("photo upload is an icon-only 43px circle to the left of Portada, preservin
   assert.equal(button.height, 43);
   assert.equal(button.borderRadius, 21.5);
   assert.equal(button.position, "absolute");
-  assert.equal(button.left, 0);
+  assert.equal(button.right, 0);
+  assert.equal(button.left, undefined);
   assert.equal(button.zIndex, 1, "the photo action stays above the full-width title so its taps reach the Pressable");
   assert.equal(button.borderWidth, 0);
   assert.equal(button.backgroundColor, "rgba(0,0,0,0.16)");
   assert.equal(findStyle("accountCoverTitle").textAlign, "center");
-  assert.equal(findStyle("accountCoverCloseButton").right, 0);
+  assert.equal(findStyle("accountCoverCloseButton").left, 0);
+  assert.equal(findStyle("accountCoverCloseButton").right, undefined);
+  assert.doesNotMatch(header, /desbloqueos disponibles|ganar desbloqueos/);
 });
 
 test("hero moves down ten pixels in normal flow and pushes the avatar grid equally", () => {

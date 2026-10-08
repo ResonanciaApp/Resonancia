@@ -1200,9 +1200,6 @@ export function ProfileScreenBase({
                   <Feather name="x" size={22} color="#F9F9F9" />
                 </Pressable>
               </View>
-              <Text accessibilityLiveRegion="polite" style={{ color: "#C4C4C4", marginHorizontal: 16, marginBottom: 8 }}>
-                {growth.progress ? `${growth.progress.balance} desbloqueos disponibles` : "Inicia sesión y avanza en Tu camino para ganar desbloqueos"}
-              </Text>
               <View style={styles.accountCoverPreviewSlot}>
                 {accountSelectedProfilePreset ? (
                   <Image
@@ -2388,7 +2385,7 @@ const styles = StyleSheet.create({
   },
   accountCoverCloseButton: {
     position: "absolute",
-    right: 0,
+    left: 0,
     width: 43,
     height: 43,
     borderRadius: 21.5,
@@ -2412,7 +2409,7 @@ const styles = StyleSheet.create({
   },
   accountCoverUploadButton: {
     position: "absolute",
-    left: 0,
+    right: 0,
     zIndex: 1,
     width: 43,
     height: 43,
