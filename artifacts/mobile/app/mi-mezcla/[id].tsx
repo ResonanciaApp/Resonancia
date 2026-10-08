@@ -243,6 +243,18 @@ function CoverPickerSheet({
         <View style={ms.coverHeader}>
           <Text style={ms.sheetTitle}>Portada</Text>
           <Pressable
+            style={({ pressed }) => [
+              ms.coverUploadButton,
+              { opacity: pressed ? 0.7 : 1 },
+            ]}
+            onPress={() => onPickImage(onClose)}
+            hitSlop={8}
+            accessibilityRole="button"
+            accessibilityLabel="Agregar imagen desde la galería"
+          >
+            <Feather name="image" size={18} color={TEXT} />
+          </Pressable>
+          <Pressable
             onPress={onClose}
             hitSlop={8}
             accessibilityRole="button"
@@ -266,19 +278,6 @@ function CoverPickerSheet({
             />
           )}
         </View>
-
-        <Pressable
-          style={({ pressed }) => [
-            ms.uploadPill,
-            { opacity: pressed ? 0.7 : 1 },
-          ]}
-          onPress={() => onPickImage(onClose)}
-          accessibilityRole="button"
-          accessibilityLabel="Agregar imagen desde la galería"
-        >
-          <Feather name="image" size={18} color={GOLD} />
-          <Text style={ms.uploadPillText}>Agregar imagen</Text>
-        </Pressable>
 
         <FlatList
           style={ms.presetGrid}
@@ -922,26 +921,17 @@ const ms = StyleSheet.create({
     height: 115.5,
     borderRadius: 20,
   },
-  uploadPill: {
-    flexDirection: "row",
+  coverUploadButton: {
+    position: "absolute",
+    left: 0,
+    zIndex: 1,
+    width: 43,
+    height: 43,
     alignItems: "center",
     justifyContent: "center",
-    alignSelf: "center",
-    gap: 9,
-    minWidth: 190,
-    minHeight: 42,
-    paddingVertical: 10,
-    paddingHorizontal: 18,
-    borderRadius: 21,
+    borderRadius: 21.5,
     backgroundColor: "rgba(0,0,0,0.16)",
-    borderWidth: 1,
-    borderColor: "rgba(255,255,255,0.2)",
-  },
-  uploadPillText: {
-    fontFamily: "Manrope",
-    color: TEXT,
-    fontSize: 14,
-    fontWeight: "600",
+    borderWidth: 0,
   },
   presetGridContent: {
     paddingTop: 26,
