@@ -109,7 +109,7 @@ test("the Inicio widget plus has a solid green background only in Natural", () =
   const resolve = new Function("activeTheme", "NATURAL_WIDGET_PLUS_GRADIENT", "CLOUDY_WIDGET_PLUS_GRADIENT", `return ${binding[1]};`);
   for (const id of ["natural", "cloudy", "indigo2", "pleyades", "cloudy2", "tibet"]) {
     const actual = resolve({ id }, NATURAL_WIDGET_PLUS_GRADIENT, CLOUDY_WIDGET_PLUS_GRADIENT);
-    assert.deepEqual(actual, id === "natural" ? ["#377D39", "#377D39"] : id === "cloudy" ? ["#2D2F7C", "#2D3981"] : undefined);
+    assert.deepEqual(actual, id === "natural" ? ["#52A855", "#52A855"] : id === "cloudy" ? ["#2D2F7C", "#2D3981"] : undefined);
   }
   assert.match(home, /colors=\{plusBackgroundGradient \?\? \["#532FA8", "#372FA8"\]\}/);
 });
