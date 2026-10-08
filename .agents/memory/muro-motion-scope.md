@@ -9,6 +9,12 @@ El borde del Muro de reflexiones debe seguir visible al colapsar y atenuarse al 
 
 **How to apply:** Animar entre ambos niveles de opacidad conservando color, grosor, dimensiones y gestos; nunca usar cero como estado cerrado por interpretar “fade out”.
 
+Al abrir el compositor, enfocar el cursor nativo sin abrir automáticamente el teclado. El toque de escritura conserva la coordinación del teclado y el scroll padre.
+
+**Why:** Se pidió ver la rayita parpadeando sin tocar el campo; eso no necesita disparar el flujo de teclado ni mover la pantalla adicionalmente.
+
+**How to apply:** Separar el foco de cursor del foco de escritura; esperar a que el panel sea visible y respetar las restricciones de publicación gratuita.
+
 En Mi muro expansivo, la “+” tiene rebote exclusivamente angular: sobrepasa su orientación, cruza de vuelta con menor amplitud y se amortigua gradualmente. Los tabs, el campo de mensajes y los botones entran con fade-in y desplazamiento descendente monótono, sin sobrepasar ni rebotar; el cierre tampoco rebota. Al plegar, el contenido permanece quieto y opaco dentro del recorte mientras este lo oculta progresivamente de abajo hacia arriba. Al CERRAR, la “+” y sus tres círculos arrancan JUNTOS desde el toque; es el MOVIMIENTO DE LA PANTALLA el que debe esperar a que termine el pliegue. La “+” es simétrica cada 90°, así que tres giros perceptibles no requieren tres vueltas físicas completas.
 
 **Why:** El usuario percibió tres vueltas físicas de la “+” como unas diez vueltas rápidas, rechazó el desplazamiento y cambio aparente de tamaño del icono, y señaló que el rebote del formulario al llegar abajo era incorrecto. Una oscilación matemática breve de ~250 ms con cruces menores a 6° se percibió como parada en seco; una secuencia con más segmentos se percibió como cinco rebotes incluso cuando pretendía representar menos. El tirón al cerrar provenía del desplazamiento del contenedor durante el pliegue, no del giro de la “+”; retrasar el giro fue una interpretación errónea explícitamente corregida por el usuario. Confirmó que reservar la altura hasta terminar el pliegue funciona, y pidió que el movimiento posterior sea más pausado y sutil, como el scroll al desplegar.

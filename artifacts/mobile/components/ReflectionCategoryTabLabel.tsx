@@ -9,12 +9,14 @@ import {
   REFLECTION_WALL_BORDER_BRIGHTNESS,
 } from "@/constants/reflectionWallBorder";
 
-export const ReflectionCategoryTabBorder = React.memo(function ReflectionCategoryTabBorder({ color }: { color?: string }) {
-  if (color) return <View pointerEvents="none" style={[styles.categoryBorder, { borderColor: color }]} />;
+export const ReflectionCategoryTabBorder = React.memo(function ReflectionCategoryTabBorder({
+  color, borderWidth = 1, opacity = 1, inset = 0,
+}: { color?: string; borderWidth?: number; opacity?: number; inset?: number }) {
+  if (color) return <View pointerEvents="none" style={[styles.categoryBorder, { borderColor: color, borderWidth, opacity, top: inset, right: inset, bottom: inset, left: inset }]} />;
   return (
     <DiscoverSearchBorder
       borderRadius={999}
-      borderWidth={1}
+      borderWidth={borderWidth}
       brightness={REFLECTION_WALL_BORDER_BRIGHTNESS}
       colors={REFLECTION_WALL_BORDER_GRADIENT}
       start={REFLECTION_WALL_BORDER_START}

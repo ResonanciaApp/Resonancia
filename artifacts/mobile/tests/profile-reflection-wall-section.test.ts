@@ -220,30 +220,10 @@ test("Perfil header controls take touch priority over the lifted avatar without 
   assert.equal(style("ProfileScreenBase", "gearBtn").width, 43);
 });
 
-test("Mi muro keeps the same prompt before and after selecting any category tab", () => {
+test("Mi muro uses the question as its heading and has no writing placeholder", () => {
   const contents = source("../components/InnerSpaceCard.tsx");
-  const ast = ts.createSourceFile("InnerSpaceCard.tsx", contents, ts.ScriptTarget.Latest, true, ts.ScriptKind.TSX);
-  const declarations = new Map<string, ts.Expression>();
-  function visit(node: ts.Node) {
-    if (ts.isVariableDeclaration(node) && node.initializer) {
-      declarations.set(node.name.getText(ast), node.initializer);
-    }
-    ts.forEachChild(node, visit);
-  }
-  visit(ast);
-  const defaultPrompt = declarations.get("DEFAULT_PLACEHOLDER");
-  const desiredPrompt = declarations.get("desiredPlaceholder");
-  assert.ok(defaultPrompt && desiredPrompt);
-  const resolve = new Function("category", ts.transpileModule(
-    `const DEFAULT_PLACEHOLDER = ${defaultPrompt.getText(ast)}; return ${desiredPrompt.getText(ast)};`,
-    { compilerOptions: { target: ts.ScriptTarget.ES2022 } },
-  ).outputText);
-  for (const category of [null, "gratitude", "clarity", "calm", "purpose", "acceptance", "new-category"]) {
-    assert.equal(resolve(category), "¿Qué sientes compartir hoy?");
-  }
-  assert.doesNotMatch(contents, /CATEGORY_PLACEHOLDERS|Ej: /);
-  assert.match(contents, /useState\(DEFAULT_PLACEHOLDER\)/);
-  assert.match(contents, /settlePlaceholder\(DEFAULT_PLACEHOLDER\)/);
+  assert.ok(contents.includes(">¿Qué sientes compartir hoy?</Text>"));
+  assert.doesNotMatch(contents, /DEFAULT_PLACEHOLDER|inputPlaceholder|placeholder=|Registra y comparte tu viaje/);
 });
 
 function style(file: string, name: string, values: Record<string, unknown> = {}): Record<string, unknown> {
@@ -375,7 +355,7 @@ test("the wall renders all ten brightened stops at equal intervals without chang
   assert.equal(resolve(wall.props.maskElement.props.style).borderRadius, 24);
 });
 
-test("Registrar uses Natural white with original opacities and preserves other themes", () => {
+test("Registrar uses white with original opacities in every theme", () => {
   const contents = source("../components/InnerSpaceCard.tsx");
   const ast = ts.createSourceFile("InnerSpaceCard.tsx", contents, ts.ScriptTarget.Latest, true, ts.ScriptKind.TSX);
   let button: ts.JsxElement | undefined;
@@ -401,41 +381,46 @@ test("Registrar uses Natural white with original opacities and preserves other t
   const saveMessage = () => {};
   const scope = {
     React, Pressable: "button", Text: "span", styles, saveMessage,
-    REGISTER_BUTTON_BACKGROUND: "rgba(184, 117, 240, 0.2)",
-    REGISTER_BUTTON_ENABLED_BACKGROUND: "rgba(184, 117, 240, 0.45)",
-    NATURAL_REGISTER_BUTTON_BACKGROUND: "rgba(249,249,249,0.2)",
-    NATURAL_REGISTER_BUTTON_ENABLED_BACKGROUND: "rgba(249,249,249,0.45)",
+    REGISTER_BUTTON_BACKGROUND: "rgba(249,249,249,0.2)",
+    REGISTER_BUTTON_ENABLED_BACKGROUND: "rgba(249,249,249,0.45)",
   };
   const renderButton = new Function(...Object.keys(scope), "isSubmitDisabled", "createMutation", "theme", compiled);
   for (const themeId of ["natural", "cloudy", "indigo2", "pleyades"]) {
   for (const [disabled, pending] of [[false, false], [true, false], [true, true]]) {
     const element = renderButton(...Object.values(scope), disabled, { isPending: pending }, { id: themeId }) as React.ReactElement<any>;
     const background = element.props.style.find((entry: any) => entry?.backgroundColor)?.backgroundColor;
-    assert.equal(background, themeId === "natural"
-      ? (disabled ? scope.NATURAL_REGISTER_BUTTON_BACKGROUND : scope.NATURAL_REGISTER_BUTTON_ENABLED_BACKGROUND)
-      : (disabled ? scope.REGISTER_BUTTON_BACKGROUND : scope.REGISTER_BUTTON_ENABLED_BACKGROUND));
+    assert.equal(background, disabled ? scope.REGISTER_BUTTON_BACKGROUND : scope.REGISTER_BUTTON_ENABLED_BACKGROUND);
     assert.equal(element.props.disabled, disabled);
     assert.equal(element.props.onPress, saveMessage);
     assert.equal(element.props.accessibilityLabel, "Registrar");
     const label = element.props.children as React.ReactElement<any>;
     assert.equal(label.type, "span");
     assert.equal(label.props.children, pending ? "Registrando..." : "REGISTRAR");
-    assert.equal(label.props.style.find((entry: any) => entry?.color)?.color, disabled ? "#D4B8F4" : "#F9F9F9");
+    assert.equal(label.props.style.find((entry: any) => entry?.color)?.color, "#F9F9F9");
     assert.equal(element.props.style.find((entry: any) => entry?.opacity)?.opacity, disabled ? 0.5 : undefined);
   }
   }
   assert.doesNotMatch(button.getText(ast), /MaskedView|LinearGradient/);
+  assert.match(source("../constants/colors.ts"), /REGISTER_BUTTON_ENABLED_BACKGROUND = "rgba\(249,249,249,0\.45\)"/);
 });
 
-test("Ver muro has an opaque white border in every theme", () => {
+test("Ver muro has a white border at 80 percent opacity in every theme", () => {
   const contents = source("../components/InnerSpaceCard.tsx");
   const button = contents.slice(contents.indexOf('testID="open-reflection-wall"'), contents.indexOf('testID="save-reflection"'));
   assert.match(button, /borderColor: REFLECTION_WALL_BUTTON_BORDER_COLOR/);
   assert.doesNotMatch(button, /opacity:|theme\.id/);
-  assert.match(source("../constants/colors.ts"), /REFLECTION_WALL_BUTTON_BORDER_COLOR = "#F9F9F9"/);
+  assert.match(source("../constants/colors.ts"), /REFLECTION_WALL_BUTTON_BORDER_COLOR = "rgba\(249,249,249,0\.8\)"/);
   assert.match(source("../constants/colors.ts"), /NATURAL_REGISTER_BUTTON_BACKGROUND = "rgba\(249,249,249,0\.2\)"/);
   assert.match(source("../constants/colors.ts"), /NATURAL_REGISTER_BUTTON_ENABLED_BACKGROUND = "rgba\(249,249,249,0\.45\)"/);
   assert.equal(style("InnerSpaceCard", "wallButton").borderWidth, 1);
+});
+
+test("Composer tabs have 2px borders and the selected stroke alone is 80 percent opaque", () => {
+  assert.equal(style("InnerSpaceCard", "gridItem").borderWidth, 2);
+  const card = source("../components/InnerSpaceCard.tsx");
+  assert.match(card, /ReflectionCategoryTabBorder color=\{cat\.color\} borderWidth=\{2\} opacity=\{0\.8\} inset=\{-2\}/);
+  const stroke = source("../components/ReflectionCategoryTabLabel.tsx");
+  assert.match(stroke, /borderColor: color, borderWidth, opacity/);
 });
 
 test("Perfil wall description matches Intención typography and centers the plus with both header lines", () => {

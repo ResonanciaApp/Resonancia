@@ -43,13 +43,10 @@ import { usePremium } from "@/context/PremiumContext";
 import { FREE_REFLECTIONS_LIMIT, showPremiumGate } from "@/lib/premiumGate";
 import {
   REGISTER_BUTTON_ENABLED_BACKGROUND,
-  NATURAL_REGISTER_BUTTON_BACKGROUND,
-  NATURAL_REGISTER_BUTTON_ENABLED_BACKGROUND,
   REFLECTION_WALL_BUTTON_BORDER_COLOR,
 } from "@/constants/colors";
 
-const DEFAULT_PLACEHOLDER = "¿Qué sientes compartir hoy?";
-const REGISTER_BUTTON_BACKGROUND = "rgba(184, 117, 240, 0.2)";
+const REGISTER_BUTTON_BACKGROUND = "rgba(249,249,249,0.2)";
 // La + se repite visualmente cada 90°: 270° son tres ciclos perceptibles.
 // Tras el giro hay solo tres movimientos: cruce moderado, cruce menor y ajuste final.
 const PLUS_ROTATION_STOPS = [
@@ -98,11 +95,7 @@ export function InnerSpaceCard({
   const [saveError, setSaveError] = useState<string | null>(null);
   const [signInRequired, setSignInRequired] = useState(false);
   const inputRef = useRef<TextInput>(null);
-  const placeholderVisibility = useRef(new Animated.Value(1)).current;
-  const outgoingPlaceholderOpacity = useRef(new Animated.Value(1)).current;
-  const incomingPlaceholderOpacity = useRef(new Animated.Value(0)).current;
-  const [displayedPlaceholder, setDisplayedPlaceholder] = useState(DEFAULT_PLACEHOLDER);
-  const [incomingPlaceholder, setIncomingPlaceholder] = useState<string | null>(null);
+  const caretOnlyFocusRef = useRef(false);
   const [inputActive, setInputActive] = useState(false);
   const [inputFocusVersion, setInputFocusVersion] = useState(0);
   const [expanded, setExpanded] = useState(false);
@@ -145,21 +138,11 @@ export function InnerSpaceCard({
   const freeLimitReached =
     !isPremium && (freeQuotaData?.items.length ?? 0) >= FREE_REFLECTIONS_LIMIT;
 
-  const settlePlaceholder = (placeholder: string) => {
-    outgoingPlaceholderOpacity.stopAnimation();
-    incomingPlaceholderOpacity.stopAnimation();
-    outgoingPlaceholderOpacity.setValue(1);
-    incomingPlaceholderOpacity.setValue(0);
-    setDisplayedPlaceholder(placeholder);
-    setIncomingPlaceholder(null);
-  };
-
   const createMutation = useCreateMyReflection({
     mutation: {
       onSuccess: (created: Reflection) => {
         setSaveError(null);
         setSignInRequired(false);
-        settlePlaceholder(DEFAULT_PLACEHOLDER);
         setMessage("");
         setCategory(null);
         inputRef.current?.blur();
@@ -223,70 +206,6 @@ export function InnerSpaceCard({
       },
     }
   });
-
-  const desiredPlaceholder = DEFAULT_PLACEHOLDER;
-  const messageIsEmpty = message.length === 0;
-
-  useEffect(() => {
-    placeholderVisibility.stopAnimation();
-    Animated.timing(placeholderVisibility, {
-      toValue: messageIsEmpty ? 1 : 0,
-      duration: 300,
-      useNativeDriver: true,
-    }).start();
-    return () => placeholderVisibility.stopAnimation();
-  }, [messageIsEmpty, placeholderVisibility]);
-
-  useEffect(() => {
-    if (displayedPlaceholder === desiredPlaceholder) return;
-
-    outgoingPlaceholderOpacity.stopAnimation();
-    incomingPlaceholderOpacity.stopAnimation();
-    outgoingPlaceholderOpacity.setValue(1);
-    incomingPlaceholderOpacity.setValue(0);
-    setIncomingPlaceholder(desiredPlaceholder);
-
-    const frame = requestAnimationFrame(() => {
-      Animated.parallel([
-        Animated.timing(outgoingPlaceholderOpacity, {
-          toValue: 0,
-          duration: 300,
-          useNativeDriver: true,
-        }),
-        Animated.timing(incomingPlaceholderOpacity, {
-          toValue: 1,
-          duration: 300,
-          useNativeDriver: true,
-        }),
-      ]).start(({ finished }) => {
-        if (!finished) return;
-        setDisplayedPlaceholder(desiredPlaceholder);
-        setIncomingPlaceholder(null);
-      });
-    });
-
-    return () => {
-      cancelAnimationFrame(frame);
-      outgoingPlaceholderOpacity.stopAnimation();
-      incomingPlaceholderOpacity.stopAnimation();
-    };
-  }, [
-    desiredPlaceholder,
-    displayedPlaceholder,
-    incomingPlaceholderOpacity,
-    outgoingPlaceholderOpacity,
-  ]);
-
-  useLayoutEffect(() => {
-    if (incomingPlaceholder !== null) return;
-    outgoingPlaceholderOpacity.setValue(1);
-    incomingPlaceholderOpacity.setValue(0);
-  }, [
-    displayedPlaceholder,
-    incomingPlaceholder,
-    incomingPlaceholderOpacity,
-    outgoingPlaceholderOpacity,
-  ]);
 
   const traceWriting = (stage: string) => {
     if (typeof __DEV__ !== "undefined" && __DEV__) {
@@ -357,9 +276,17 @@ export function InnerSpaceCard({
   };
 
   const focusInput = () => {
+    caretOnlyFocusRef.current = false;
     traceWriting("activate");
     setInputActive(true);
     setInputFocusVersion((value) => value + 1);
+  };
+
+  const focusCaret = () => {
+    if (freeLimitReached || inputActive || !expandedRef.current || !inputRef.current || inputRef.current.isFocused()) return;
+    // Show the native caret without opening the keyboard or changing parent scroll.
+    caretOnlyFocusRef.current = true;
+    inputRef.current.focus();
   };
 
   useLayoutEffect(() => {
@@ -428,6 +355,8 @@ export function InnerSpaceCard({
       if (opening && focusAfterExpandRef.current) {
         focusAfterExpandRef.current = false;
         focusInput();
+      } else if (opening) {
+        requestAnimationFrame(focusCaret);
       }
       return;
     }
@@ -511,6 +440,8 @@ export function InnerSpaceCard({
       if (expandedRef.current && focusAfterExpandRef.current) {
         focusAfterExpandRef.current = false;
         focusInput();
+      } else if (expandedRef.current) {
+        focusCaret();
       }
     };
 
@@ -596,7 +527,7 @@ export function InnerSpaceCard({
             canonicalVerticalInsets && styles.canonicalHeaderDescription,
             profileVariant && styles.profileWallDescription,
             { color: colors.foreground },
-          ]}>Registra y comparte tu viaje</Text>
+          ]}>¿Qué sientes compartir hoy?</Text>
         </View>
         <Pressable
           style={styles.infoButton}
@@ -653,7 +584,7 @@ export function InnerSpaceCard({
               ]}
               onPress={() => toggleCategory(cat.id as ReflectionCategory)}
             >
-              {category === cat.id && <ReflectionCategoryTabBorder color={cat.color} />}
+              {category === cat.id && <ReflectionCategoryTabBorder color={cat.color} borderWidth={2} opacity={0.8} inset={-2} />}
               <ReflectionCategoryTabLabel
                 label={cat.label}
                 selected={category === cat.id}
@@ -676,39 +607,6 @@ export function InnerSpaceCard({
         style={[styles.inputContainer, { backgroundColor: "rgba(0,0,0,0.2)" }, saveError && { borderColor: colors.destructive }]}
         onPress={requestInputFocus}
       >
-        <Animated.View
-          pointerEvents="none"
-          style={[
-            styles.inputPlaceholder,
-            { opacity: placeholderVisibility },
-          ]}
-        >
-          <Animated.Text
-            style={[
-              styles.inputPlaceholderText,
-              {
-                color: colors.mutedForeground,
-                opacity: outgoingPlaceholderOpacity,
-              },
-            ]}
-          >
-            {displayedPlaceholder}
-          </Animated.Text>
-          {incomingPlaceholder ? (
-            <Animated.Text
-              style={[
-                styles.inputPlaceholderText,
-                styles.incomingPlaceholder,
-                {
-                  color: colors.mutedForeground,
-                  opacity: incomingPlaceholderOpacity,
-                },
-              ]}
-            >
-              {incomingPlaceholder}
-            </Animated.Text>
-          ) : null}
-        </Animated.View>
         <TextInput
           testID="reflection-writing-input"
           ref={inputRef}
@@ -717,6 +615,10 @@ export function InnerSpaceCard({
           onPressIn={requestInputFocus}
           onFocus={() => {
             traceWriting("native-focus");
+            if (caretOnlyFocusRef.current) {
+              caretOnlyFocusRef.current = false;
+              return;
+            }
             if (!inputActive) requestInputFocus();
           }}
           onBlur={() => {
@@ -785,15 +687,13 @@ export function InnerSpaceCard({
           accessibilityRole="button"
           style={[
             styles.submitButton,
-            { backgroundColor: theme.id === "natural"
-              ? (isSubmitDisabled ? NATURAL_REGISTER_BUTTON_BACKGROUND : NATURAL_REGISTER_BUTTON_ENABLED_BACKGROUND)
-              : (isSubmitDisabled ? REGISTER_BUTTON_BACKGROUND : REGISTER_BUTTON_ENABLED_BACKGROUND) },
+            { backgroundColor: isSubmitDisabled ? REGISTER_BUTTON_BACKGROUND : REGISTER_BUTTON_ENABLED_BACKGROUND },
             isSubmitDisabled && { opacity: 0.5 },
           ]}
           disabled={isSubmitDisabled}
           onPress={saveMessage}
         >
-          <Text style={[styles.submitText, { color: isSubmitDisabled ? "#D4B8F4" : "#F9F9F9" }]}>
+          <Text style={[styles.submitText, { color: "#F9F9F9" }]}>
             {createMutation.isPending ? "Registrando..." : "REGISTRAR"}
           </Text>
         </Pressable>
@@ -922,7 +822,7 @@ const styles = StyleSheet.create({
     paddingVertical: 10,
     paddingHorizontal: 14,
     borderRadius: 999,
-    borderWidth: 1,
+    borderWidth: 2,
     borderColor: "rgba(255,255,255,0.1)",
   },
   selectedGridItem: {
@@ -953,28 +853,12 @@ const styles = StyleSheet.create({
     lineHeight: 21,
     transform: [{ translateY: -5 }],
   },
-  inputPlaceholder: {
-    position: "absolute",
-    top: 19,
-    left: 12,
-    right: 12,
-  },
   characterCounter: {
     position: "absolute",
     right: 12,
     bottom: 10,
     fontSize: 12,
     lineHeight: 16,
-  },
-  inputPlaceholderText: {
-    fontSize: 15,
-    lineHeight: 21,
-  },
-  incomingPlaceholder: {
-    position: "absolute",
-    top: 0,
-    left: 0,
-    right: 0,
   },
   errorText: {
     fontSize: 12,

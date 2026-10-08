@@ -198,6 +198,28 @@ test("a collapsed composer waits for the panel, but never for the plus animation
   f.dispose();
 });
 
+test("opening with plus shows the native caret without a tap or opening the keyboard", () => {
+  const f = fixture();
+  f.open();
+  assert.equal(f.focusCalls, 0);
+  f.finishPanel();
+  f.flushFrames();
+  assert.equal(f.focusCalls, 1);
+  const input = f.nodes.get("reflection-writing-input");
+  input.onFocus();
+  f.render();
+  f.flushFrames();
+  assert.equal(f.composeRequests, 0);
+  assert.equal(input.placeholder, undefined);
+  assert.equal(f.nodes.get("reflection-writing-input").showSoftInputOnFocus, false);
+  assert.equal(f.keyboardVisible, false);
+  f.tap();
+  f.render({ focusRequest: 1 });
+  f.flushFrames();
+  assert.equal(f.keyboardVisible, true);
+  f.dispose();
+});
+
 test("quota restrictions and unmount still prevent focus", () => {
   const limited = fixture(3);
   limited.open();
