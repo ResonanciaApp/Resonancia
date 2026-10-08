@@ -759,7 +759,7 @@ export function InnerSpaceCard({
         style={styles.actionRow}
         onLayout={(event) => {
           const { y, height } = event.nativeEvent.layout;
-          updateContentHeight(18 + y + height);
+          updateContentHeight(styles.expandBody.paddingTop + y + height);
         }}
       >
         <Pressable
@@ -891,10 +891,10 @@ const styles = StyleSheet.create({
     top: 0,
     left: 20,
     right: 20,
-    paddingTop: 18,
+    paddingTop: 0,
   },
   categoriesMask: {
-    marginTop: 15,
+    marginTop: 13,
     marginBottom: 20,
     marginHorizontal: -20,
   },

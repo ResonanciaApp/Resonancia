@@ -462,14 +462,18 @@ test("Home forwards the opt-in title/insets and subtracts the selected card marg
   assert.match(home, /canonicalVerticalInsets=\{canonicalVerticalInsets\}/);
 });
 
-test("wall composer grows 40px and lowers the category row 15px in normal flow", () => {
+test("wall composer moves tabs and content up 20px and reduces measured panel height", () => {
   assert.equal(style("InnerSpaceCard", "input").minHeight, 53 + 40);
-  assert.equal(style("InnerSpaceCard", "categoriesMask").marginTop, 15);
+  const bodyTop = style("InnerSpaceCard", "expandBody").paddingTop;
+  const tabsTop = style("InnerSpaceCard", "categoriesMask").marginTop;
+  assert.equal(bodyTop, 0);
+  assert.equal(tabsTop, 13);
+  assert.equal(18 + 15 - (bodyTop + tabsTop), 20);
   assert.equal(style("InnerSpaceCard", "categoriesMask").marginBottom, 20);
   assert.equal(style("InnerSpaceCard", "inputContainer").paddingBottom, 34);
   const card = source("../components/InnerSpaceCard.tsx");
   assert.ok(card.indexOf("style={styles.categoriesMask}") < card.indexOf("styles.inputContainer"));
-  assert.match(card, /updateContentHeight\(18 \+ y \+ height\)/);
+  assert.match(card, /updateContentHeight\(styles\.expandBody\.paddingTop \+ y \+ height\)/);
 });
 
 test("wall character counter renders the current length at the lower-right without taking input space", () => {
