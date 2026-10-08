@@ -3,6 +3,12 @@ name: Camino de crecimiento
 description: Criterio de progreso y tratamiento visual acordados para la línea de tiempo botánica de Tu progreso.
 ---
 
+La administración editorial de Tu camino debe permitir añadir y quitar etapas de ambos grupos y hasta tres candados con texto por etapa. Esta fase prepara Admin y diseño, no activa ni repara la gamificación.
+
+**Why:** El usuario separó explícitamente la configuración del recorrido de la conexión real a días acumulados el 8 de octubre de 2026.
+
+**How to apply:** Las líneas y círculos acompañan automáticamente la estructura editorial. Los días configurados y los candados no desbloquean etapas o recompensas; conservar las etapas e imágenes originales como contenido inicial.
+
 En Perfil, la sección del banner de Intención se titula «Tu camino», con la misma tipografía y alineación del encabezado de Puntos creatividad. El nombre de la etapa «Intención» permanece dentro del banner.
 
 **Why:** El usuario pidió añadir el título de sección tomando Puntos creatividad como referencia, no renombrar la etapa.
