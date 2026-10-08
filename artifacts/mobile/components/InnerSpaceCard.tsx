@@ -549,6 +549,10 @@ export function InnerSpaceCard({
     }
   }, [focusRequest, freeLimitReached]);
 
+  // Absolute children start inside the native border. Extend the decorative
+  // stroke by that inset, without changing the card's layout or content.
+  const sectionBorderInset = canonicalVerticalInsets && !profileVariant && getThemeStyleId(theme.id) === "cloudy" ? 0 : -1;
+
   return (
     <>
     <View
@@ -562,7 +566,11 @@ export function InnerSpaceCard({
       <Reanimated.View
         testID="reflection-section-border"
         pointerEvents="none"
-        style={[StyleSheet.absoluteFill, sectionBorderStyle]}
+        style={[
+          StyleSheet.absoluteFill,
+          { top: sectionBorderInset, right: sectionBorderInset, bottom: sectionBorderInset, left: sectionBorderInset },
+          sectionBorderStyle,
+        ]}
       >
       {canonicalVerticalInsets ? (
         <DiscoverSearchBorder
