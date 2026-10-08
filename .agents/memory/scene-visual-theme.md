@@ -11,6 +11,20 @@ El selector incluye también Natural (árbol, copia visual de Cloudy con el degr
 
 **How to apply:** Heredar las reglas de superficies y controles del tema base, no solo registrar un nuevo degradado. Mantener independientes la selección visual y el audio, y no sustituir la paleta antigua solicitada por una nueva inventada.
 
+Natural y Pleyades tienen excepciones explícitas para los botones Continuar de
+Vuelve a ti en Dormir y Empezar sesión del temporizador Ambiental: fondo blanco,
+texto e icono verde oscuro en Natural y azul marino oscuro en Pleyades.
+El recordatorio matinal conserva sus colores. La barra horizontal de Natural
+usa vidrio y elementos inactivos tintados de verde, con la misma transparencia;
+el miniplayer del Mezclador no se recolorea con este ajuste.
+
+**Why:** El usuario pidió estas diferencias de contraste y tinte después de crear
+las copias de Cloudy e Índigo 2, sin cambiar los otros temas.
+
+**How to apply:** Evaluar la identidad real del tema para estas excepciones,
+no la identidad de la familia heredada. Mantener el cambio de la barra acotado
+a su capa de vidrio y respetar la opacidad compartida.
+
 **Why:** El 2026-10-04 trasladó Escenas al drawer y luego pidió sustituir las tarjetas ilustradas por sol/luna con títulos Día/Noche y selección mediante color. Posteriormente fijó explícitamente #A8A8A8 tanto para el icono como para el texto de la opción inactiva. Esta dirección reemplaza los banners luminosos con check, sin autorizar cambios de paleta ni audio.
 
 La luna debe ser la misma silueta del banner del Mezclador de sonidos en Sonidos, no el glifo lunar de la fuente de iconos. La separación del título Escena a Día sigue el ritmo de los menús del drawer. El espacio ampliado antes de la línea de Escena es deliberado: al desplazarla, su título y las opciones Día/Noche deben acompañarla en el flujo, sin mover los menús anteriores.

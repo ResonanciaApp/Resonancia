@@ -14,7 +14,7 @@ import {
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 
 import { useSceneTheme } from "@/context/SceneThemeContext";
-import { getThemeStyleId, SCENE_THEMES } from "@/config/scene-themes";
+import { getSleepActionColors, getThemeStyleId, SCENE_THEMES } from "@/config/scene-themes";
 import { useColors } from "@/hooks/useColors";
 import { useAmbientalDurationTransition } from "@/hooks/useAmbientalDurationTransition";
 import { DURATION_SHEET_OPEN_SPRING, DURATION_SHEET_OPEN_BACKDROP_MS } from "@/lib/ambiental-duration-opening";
@@ -124,6 +124,7 @@ export function AmbientalDurationSheet({
 }: Props) {
   const colors = useColors();
   const { theme } = useSceneTheme();
+  const sleepActionColors = getSleepActionColors(theme.id);
   const selectedPresetBackground = getThemeStyleId(theme.id) === "cloudy" || getThemeStyleId(theme.id) === "indigo2" ? "rgba(0,0,0,0.3)" : "rgba(0,0,0,0.16)";
   const selectedCustomBackground = getThemeStyleId(theme.id) === "cloudy" ? "rgba(0,0,0,0.3)" : "rgba(0,0,0,0.16)";
   const sheetGradient: [string, string, ...string[]] = getThemeStyleId(theme.id) === "cloudy"
@@ -533,17 +534,17 @@ export function AmbientalDurationSheet({
             <View
               style={[
                 styles.startButtonFill,
-                { backgroundColor: REGISTER_BUTTON_ENABLED_BACKGROUND },
+                { backgroundColor: sleepActionColors?.background ?? REGISTER_BUTTON_ENABLED_BACKGROUND },
               ]}
             />
             <View style={styles.startButtonContent}>
               <Svg width={21} height={21} viewBox="0 0 48 48">
                 <Path
                   d="M 13.2 7.1 Q 8 4 8 10 L 8 36 Q 8 42 13.2 38.9 L 34.8 26.1 Q 40 23 34.8 19.9 Z"
-                  fill="#F9F9F9"
+                  fill={sleepActionColors?.foreground ?? "#F9F9F9"}
                 />
               </Svg>
-              <Text style={styles.startButtonText}>Empezar sesión</Text>
+              <Text style={[styles.startButtonText, sleepActionColors && { color: sleepActionColors.foreground }]}>Empezar sesión</Text>
             </View>
           </Pressable>
           </Animated.View>

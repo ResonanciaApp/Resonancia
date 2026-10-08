@@ -121,6 +121,13 @@ export function getThemeStyleId(id: string | null | undefined): string | null | 
   return id;
 }
 
+/** Opt-in palette for sleep reminder and Ambiental start CTAs only. */
+export function getSleepActionColors(id: string): { background: string; foreground: string } | null {
+  if (id === "natural") return { background: "#F9F9F9", foreground: "#073B32" };
+  if (id === "pleyades") return { background: "#F9F9F9", foreground: "#0B1438" };
+  return null;
+}
+
 export function isVisualThemeId(id: unknown): id is VisualThemeId {
   return typeof id === "string" && Object.prototype.hasOwnProperty.call(SCENE_THEMES, id);
 }

@@ -29,7 +29,7 @@ import { CategoryOverlayProvider, useCategoryOverlay } from "@/context/CategoryO
 import { CategoryOverlay } from "@/components/CategoryOverlay";
 import { SacredBackground } from "@/components/SacredBackground";
 import { WIDGET_GREEN_SOLID } from "@/constants/colors";
-import { TAB_BAR_BLUR_INTENSITY, TAB_BAR_GLASS_OVERLAY, TAB_BAR_INACTIVE_COLOR, getTabBarInactiveColor } from "@/constants/tab-bar";
+import { TAB_BAR_BLUR_INTENSITY, TAB_BAR_INACTIVE_COLOR, getTabBarGlassOverlay, getTabBarInactiveColor } from "@/constants/tab-bar";
 import { RoutineCompletionBanner } from "@/components/RoutineCompletionBanner";
 import { RoutineCompletionBannerProvider } from "@/context/RoutineCompletionBannerContext";
 
@@ -42,10 +42,6 @@ const ICON_SIZE      = 27;
 const PILL_H         = 58;   // altura del bloque de navegación, sin safe area
 const TAB_CONTENT_OFFSET_Y = 11;
 const TAB_LABEL_OFFSET_Y = 2;
-
-function getTabBarBackground(activeSceneId: string) {
-  return "#0E0821";
-}
 
 // Rutas que nunca aparecen en el menú inferior
 const HIDDEN_ROUTES = new Set(["musica", "biblioteca", "video", "emocion", "herramientas", "explore", "encuentros"]);
@@ -177,7 +173,7 @@ function CustomTabBar({ state, navigation, descriptors }: TabBarProps) {
   const { activeSceneId } = useSceneTheme();
   const inactiveColor = getTabBarInactiveColor(activeSceneId);
   const indigo2Mode = isIndigo2ThemeId(activeSceneId);
-  const tabBarBackground = getTabBarBackground(activeSceneId);
+  const tabBarGlassOverlay = getTabBarGlassOverlay(activeSceneId);
   const translateY    = useRef(new Animated.Value(0)).current;
   const handleOpacity = useRef(new Animated.Value(0)).current;
   const isLibraryRoute = state.routes[state.index]?.name === "biblioteca";
@@ -263,7 +259,7 @@ function CustomTabBar({ state, navigation, descriptors }: TabBarProps) {
           pointerEvents="none"
           style={[
             StyleSheet.absoluteFill,
-            { backgroundColor: TAB_BAR_GLASS_OVERLAY },
+            { backgroundColor: tabBarGlassOverlay },
           ]}
         />
         <View

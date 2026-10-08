@@ -18,7 +18,7 @@ import {
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 
 import { FilledSunIcon } from "@/components/FilledSunIcon";
-import { getThemeStyleId, SCENE_THEMES } from "@/config/scene-themes";
+import { getSleepActionColors, getThemeStyleId, SCENE_THEMES } from "@/config/scene-themes";
 import { useSceneTheme } from "@/context/SceneThemeContext";
 import {
   SLEEP_REMINDER_CARD_BACKGROUND,
@@ -167,6 +167,7 @@ export function SleepReminderSheet({
 
   if (!mounted) return null;
 
+  const sleepActionColors = isMorning ? null : getSleepActionColors(theme.id);
   const timeLabel = formatPracticeNotificationTimeLocal(draft.hour, draft.minute);
   const gradient = isMorning
     ? ["#C96D68", "#855269", "#443044"] as const
@@ -320,6 +321,7 @@ export function SleepReminderSheet({
             style={({ pressed }) => [
                styles.continueButton,
                isMorning && styles.morningContinueButton,
+              sleepActionColors && { backgroundColor: sleepActionColors.background },
               pressed && !saving && styles.pressed,
               saving && styles.disabled,
             ]}
@@ -327,9 +329,9 @@ export function SleepReminderSheet({
             accessibilityLabel="Guardar recordatorio"
           >
             {saving ? (
-              <ActivityIndicator color={isMorning ? "#FFFFFF" : SLEEP_REMINDER_CONTINUE_FOREGROUND} />
+              <ActivityIndicator color={sleepActionColors?.foreground ?? (isMorning ? "#FFFFFF" : SLEEP_REMINDER_CONTINUE_FOREGROUND)} />
             ) : (
-              <Text style={[styles.continueText, !isMorning && styles.nightContinueText]}>Continuar</Text>
+              <Text style={[styles.continueText, !isMorning && styles.nightContinueText, sleepActionColors && { color: sleepActionColors.foreground }]}>Continuar</Text>
             )}
           </Pressable>
           </ScrollView>

@@ -38,7 +38,7 @@ test("sleep reminder uses a 16% black card and solid periwinkle Continue with da
   assert.match(source, /continueButton: \{[\s\S]*?backgroundColor: SLEEP_REMINDER_CONTINUE_BACKGROUND/);
   assert.match(source, /nightContinueText: \{\s*color: SLEEP_REMINDER_CONTINUE_FOREGROUND/);
   assert.match(source, /!isMorning && styles\.nightContinueText/);
-  assert.match(source, /ActivityIndicator color=\{isMorning \? "#FFFFFF" : SLEEP_REMINDER_CONTINUE_FOREGROUND\}/);
+  assert.match(source, /ActivityIndicator color=\{sleepActionColors\?\.foreground \?\? \(isMorning \? "#FFFFFF" : SLEEP_REMINDER_CONTINUE_FOREGROUND\)\}/);
   assert.doesNotMatch(source, /colors=\{\["#321F5E", "#4D318F"\]\}/);
   assert.match(source, /morningContinueButton: \{\s*backgroundColor: "#C96D68"/);
   assert.match(source, /continueText: \{\s*color: "#FFFFFF"/);
