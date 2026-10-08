@@ -1574,31 +1574,59 @@ function EditInfoModal({ visible, playlist, onClose, onSave, onChangeCover, onDe
     if (visible) { setName(playlist.name); setDesc(playlist.description ?? ""); }
   }, [visible, playlist.name, playlist.description]);
 
+  const hasChanges = name !== playlist.name || desc !== (playlist.description ?? "");
+  const saveDisabled = !hasChanges || !name.trim();
+  const requestClose = (close = onClose) => {
+    if (!hasChanges) {
+      close();
+      return;
+    }
+    Alert.alert(
+      "¿Estás seguro/a de que quieres descargar los cambios?",
+      undefined,
+      [
+        { text: "Continuar editando", style: "cancel" },
+        { text: "Descartar", style: "destructive", onPress: close },
+      ],
+      { cancelable: false },
+    );
+  };
+
   const handleSave = () => {
-    if (!name.trim()) return;
+    if (saveDisabled) return;
     onSave(name.trim(), desc.trim());
     onClose();
   };
 
   return (
-    <Modal visible={visible} animationType="slide" transparent onRequestClose={onClose}>
+    <Modal visible={visible} animationType="slide" transparent onRequestClose={() => requestClose()}>
       <View style={eiSt.backdrop}>
         <View style={[eiSt.sheet, { paddingBottom: bottomPad }]}>
           <LinearGradient colors={[...BG_GRADIENT]} style={StyleSheet.absoluteFill} />
           <View style={eiSt.handle} />
           <View style={eiSt.header}>
-            <Pressable onPress={onClose} hitSlop={12} style={eiSt.closeBtn}>
+            <Pressable onPress={() => requestClose()} hitSlop={12} style={eiSt.closeBtn}>
               <Feather name="x" size={20} color={MUTED} />
             </Pressable>
             <Text style={eiSt.title}>Nombre y datos</Text>
-            <Pressable onPress={handleSave} hitSlop={12}>
-              <Text style={eiSt.saveText}>Guardar</Text>
+            <Pressable
+              onPress={handleSave}
+              disabled={saveDisabled}
+              accessibilityRole="button"
+              accessibilityState={{ disabled: saveDisabled }}
+              style={({ pressed }) => [
+                eiSt.saveButton,
+                saveDisabled && eiSt.saveButtonDisabled,
+                !saveDisabled && pressed && { opacity: 0.86 },
+              ]}
+            >
+              <Text style={[eiSt.saveText, saveDisabled && eiSt.saveTextDisabled]}>Guardar</Text>
             </Pressable>
           </View>
 
           <ScrollView style={{ flex: 1 }} keyboardShouldPersistTaps="handled" showsVerticalScrollIndicator={false}>
             {/* Portada */}
-            <Pressable style={({ pressed }) => [eiSt.coverRow, { opacity: pressed ? 0.7 : 1 }]} onPress={onChangeCover}>
+            <Pressable style={({ pressed }) => [eiSt.coverRow, { opacity: pressed ? 0.7 : 1 }]} onPress={() => requestClose(onChangeCover)}>
               <View style={eiSt.coverThumb}>
                 {playlist.coverPresetId && playlistCatalog.find((item) => item.key === playlist.coverPresetId || item.id === playlist.coverPresetId) ? (
                   <Image source={playlistCatalog.find((item) => item.key === playlist.coverPresetId || item.id === playlist.coverPresetId)?.source} style={StyleSheet.absoluteFill} contentFit="cover" />
@@ -1621,8 +1649,6 @@ function EditInfoModal({ visible, playlist, onClose, onSave, onChangeCover, onDe
               style={eiSt.input}
               value={name}
               onChangeText={setName}
-              placeholder="Nombre de la playlist"
-              placeholderTextColor={MUTED}
               returnKeyType="next"
               maxLength={80}
             />
@@ -1633,8 +1659,6 @@ function EditInfoModal({ visible, playlist, onClose, onSave, onChangeCover, onDe
               style={[eiSt.input, eiSt.inputMulti]}
               value={desc}
               onChangeText={setDesc}
-              placeholder="Agrega una descripción opcional"
-              placeholderTextColor={MUTED}
               multiline
               numberOfLines={3}
               maxLength={300}
@@ -1643,7 +1667,7 @@ function EditInfoModal({ visible, playlist, onClose, onSave, onChangeCover, onDe
             {/* Eliminar */}
             <Pressable
               style={({ pressed }) => [eiSt.deleteBtn, { opacity: pressed ? 0.7 : 1 }]}
-              onPress={() => { onClose(); setTimeout(onDelete, 300); }}
+              onPress={() => requestClose(() => { onClose(); setTimeout(onDelete, 300); })}
             >
               <Feather name="trash-2" size={16} color="#E05252" />
               <Text style={eiSt.deleteBtnText}>Eliminar playlist</Text>
@@ -1668,11 +1692,17 @@ const eiSt = StyleSheet.create({
   header: { flexDirection: "row", alignItems: "center", paddingVertical: 14 },
   closeBtn: { width: 43, height: 43, borderRadius: 21.5, borderWidth: 0, borderColor: "transparent", backgroundColor: "rgba(0,0,0,0.16)", alignItems: "center", justifyContent: "center" },
   title: { fontFamily: "Manrope", flex: 1, textAlign: "center", color: TEXT, fontSize: 16, fontWeight: "700" },
-  saveText: { fontFamily: "Manrope", color: GOLD, fontSize: 15, fontWeight: "700" },
+  saveButton: {
+    height: 43, paddingHorizontal: 18, marginLeft: "auto", borderRadius: 999,
+    backgroundColor: "#F9F9F9", alignItems: "center", justifyContent: "center", overflow: "hidden",
+  },
+  saveButtonDisabled: { backgroundColor: "rgba(249,249,249,0.4)" },
+  saveText: { fontFamily: "Manrope", color: "#060A0F", fontSize: 16, fontWeight: "700" },
+  saveTextDisabled: { color: "rgba(249,249,249,0.8)" },
   coverRow: {
     flexDirection: "row", alignItems: "center", gap: 14,
     paddingVertical: 14, marginBottom: 8,
-    borderBottomWidth: StyleSheet.hairlineWidth, borderBottomColor: "rgba(61,14,22,0.35)",
+    borderBottomWidth: StyleSheet.hairlineWidth, borderBottomColor: "rgba(255,255,255,0.06)",
   },
   coverThumb: {
     width: 52, height: 52, borderRadius: 8, overflow: "hidden",
@@ -1681,7 +1711,7 @@ const eiSt = StyleSheet.create({
   },
   coverLabel: { fontFamily: "Manrope", color: TEXT, fontSize: 14, fontWeight: "600" },
   coverSub: { fontFamily: "Manrope", color: MUTED, fontSize: 12, marginTop: 2 },
-  fieldLabel: { fontFamily: "Manrope", color: MUTED, fontSize: 12, fontWeight: "600", marginTop: 16, marginBottom: 6, textTransform: "uppercase", letterSpacing: 0.5 },
+  fieldLabel: { fontFamily: "Manrope630", color: MUTED, fontSize: 15, marginTop: 16, marginBottom: 6, textTransform: "uppercase", letterSpacing: 0.5 },
   input: {
     fontFamily: "Manrope",
     backgroundColor: "rgba(0,0,0,0.16)", borderRadius: 10, padding: 12,
