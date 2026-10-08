@@ -31,6 +31,7 @@ import {
 import { useColors } from "@/hooks/useColors";
 import { useDayRollover } from "@/hooks/useDayRollover";
 import { useRoutineTheme } from "@/hooks/useRoutineTheme";
+import { useSceneTheme } from "@/context/SceneThemeContext";
 import { useRoutineCompletionBanner } from "@/context/RoutineCompletionBannerContext";
 import { CARD_TEXT_ABOVE } from "@/constants/colors";
 import { RoutineGradientFill } from "@/components/RoutineGradientFill";
@@ -326,6 +327,7 @@ const ActivityRow = React.memo(function ActivityRow({
 export function MiRutinaSection({ style, cardBackgroundColor, titleSize = 17, addCardHeight, alignCardGapToWall = false }: Props) {
   const colors = useColors();
   const routineTheme = useRoutineTheme();
+  const { activeSceneId } = useSceneTheme();
   const { announceActivityAdded, announceCompletion } = useRoutineCompletionBanner();
   const todayKey = useDayRollover();
   const {
@@ -564,7 +566,7 @@ export function MiRutinaSection({ style, cardBackgroundColor, titleSize = 17, ad
         complete={showCompleteState}
         animateToPending={false}
         completedContent={
-          <View style={styles.completeState}>
+          <View style={[styles.completeState, activeSceneId === "cloudy" && { borderColor: "rgba(255,255,255,0.27)" }]}>
             <View style={styles.completeCopy}>
               <Text style={styles.completeTitle}>
                 Rutina completa
