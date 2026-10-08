@@ -27,7 +27,8 @@ a su capa de vidrio y respetar la opacidad compartida.
 
 En Natural, los acentos degradados de Mi rutina expansiva y su calendario son
 dorados, no el morado heredado de Cloudy. El + del widget de Inicio tiene un
-fondo dorado uniforme, no un degradado visible.
+fondo verde uniforme, no un degradado visible; es independiente del dorado de
+rutina y calendario.
 
 **Why:** El usuario pidió distinguir estos elementos de Natural sin recolorear
 Cloudy ni los otros temas.
