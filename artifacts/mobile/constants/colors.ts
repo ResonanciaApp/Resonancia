@@ -41,6 +41,8 @@ export function getProfileSecondaryTextColor(themeId: string): string {
   return themeId === "cloudy" || themeId === "natural" ? "#D1D1D1" : "#C4C4C4";
 }
 export const REGISTER_BUTTON_ENABLED_BACKGROUND = "rgba(184, 117, 240, 0.45)";
+export const NATURAL_REGISTER_BUTTON_BACKGROUND = "rgba(24,56,19,0.2)";
+export const NATURAL_REGISTER_BUTTON_ENABLED_BACKGROUND = "rgba(24,56,19,0.45)";
 export const CARD_TEXT_ABOVE = "#D1D1D1";
 export const CARD_TEXT_BELOW = "#EBF2FF";
 export const NAVIGATION_HELP_ICON_COLOR = "#F9F9F9";

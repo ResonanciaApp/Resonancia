@@ -41,7 +41,11 @@ import { useReflectionCategories } from "@/constants/reflectionCategories";
 import { useAuth } from "@/context/AuthContext";
 import { usePremium } from "@/context/PremiumContext";
 import { FREE_REFLECTIONS_LIMIT, showPremiumGate } from "@/lib/premiumGate";
-import { REGISTER_BUTTON_ENABLED_BACKGROUND } from "@/constants/colors";
+import {
+  REGISTER_BUTTON_ENABLED_BACKGROUND,
+  NATURAL_REGISTER_BUTTON_BACKGROUND,
+  NATURAL_REGISTER_BUTTON_ENABLED_BACKGROUND,
+} from "@/constants/colors";
 
 const DEFAULT_PLACEHOLDER = "¿Qué sientes compartir hoy?";
 const REGISTER_BUTTON_BACKGROUND = "rgba(184, 117, 240, 0.2)";
@@ -756,7 +760,9 @@ export function InnerSpaceCard({
           accessibilityRole="button"
           style={[
             styles.submitButton,
-            { backgroundColor: isSubmitDisabled ? REGISTER_BUTTON_BACKGROUND : REGISTER_BUTTON_ENABLED_BACKGROUND },
+            { backgroundColor: theme.id === "natural"
+              ? (isSubmitDisabled ? NATURAL_REGISTER_BUTTON_BACKGROUND : NATURAL_REGISTER_BUTTON_ENABLED_BACKGROUND)
+              : (isSubmitDisabled ? REGISTER_BUTTON_BACKGROUND : REGISTER_BUTTON_ENABLED_BACKGROUND) },
             isSubmitDisabled && { opacity: 0.5 },
           ]}
           disabled={isSubmitDisabled}

@@ -375,7 +375,7 @@ test("the wall renders all ten brightened stops at equal intervals without chang
   assert.equal(resolve(wall.props.maskElement.props.style).borderRadius, 24);
 });
 
-test("Registrar preserves its original translucent violet surface and plain label in every button state", () => {
+test("Registrar uses Natural green with original opacities and preserves other themes", () => {
   const contents = source("../components/InnerSpaceCard.tsx");
   const ast = ts.createSourceFile("InnerSpaceCard.tsx", contents, ts.ScriptTarget.Latest, true, ts.ScriptKind.TSX);
   let button: ts.JsxElement | undefined;
@@ -403,12 +403,17 @@ test("Registrar preserves its original translucent violet surface and plain labe
     React, Pressable: "button", Text: "span", styles, saveMessage,
     REGISTER_BUTTON_BACKGROUND: "rgba(184, 117, 240, 0.2)",
     REGISTER_BUTTON_ENABLED_BACKGROUND: "rgba(184, 117, 240, 0.45)",
+    NATURAL_REGISTER_BUTTON_BACKGROUND: "rgba(24,56,19,0.2)",
+    NATURAL_REGISTER_BUTTON_ENABLED_BACKGROUND: "rgba(24,56,19,0.45)",
   };
-  const renderButton = new Function(...Object.keys(scope), "isSubmitDisabled", "createMutation", compiled);
+  const renderButton = new Function(...Object.keys(scope), "isSubmitDisabled", "createMutation", "theme", compiled);
+  for (const themeId of ["natural", "cloudy", "indigo2", "pleyades"]) {
   for (const [disabled, pending] of [[false, false], [true, false], [true, true]]) {
-    const element = renderButton(...Object.values(scope), disabled, { isPending: pending }) as React.ReactElement<any>;
+    const element = renderButton(...Object.values(scope), disabled, { isPending: pending }, { id: themeId }) as React.ReactElement<any>;
     const background = element.props.style.find((entry: any) => entry?.backgroundColor)?.backgroundColor;
-    assert.equal(background, disabled ? scope.REGISTER_BUTTON_BACKGROUND : scope.REGISTER_BUTTON_ENABLED_BACKGROUND);
+    assert.equal(background, themeId === "natural"
+      ? (disabled ? scope.NATURAL_REGISTER_BUTTON_BACKGROUND : scope.NATURAL_REGISTER_BUTTON_ENABLED_BACKGROUND)
+      : (disabled ? scope.REGISTER_BUTTON_BACKGROUND : scope.REGISTER_BUTTON_ENABLED_BACKGROUND));
     assert.equal(element.props.disabled, disabled);
     assert.equal(element.props.onPress, saveMessage);
     assert.equal(element.props.accessibilityLabel, "Registrar");
@@ -417,6 +422,7 @@ test("Registrar preserves its original translucent violet surface and plain labe
     assert.equal(label.props.children, pending ? "Registrando..." : "REGISTRAR");
     assert.equal(label.props.style.find((entry: any) => entry?.color)?.color, disabled ? "#D4B8F4" : "#F9F9F9");
     assert.equal(element.props.style.find((entry: any) => entry?.opacity)?.opacity, disabled ? 0.5 : undefined);
+  }
   }
   assert.doesNotMatch(button.getText(ast), /MaskedView|LinearGradient/);
 });
