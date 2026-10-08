@@ -3,11 +3,11 @@ name: Camino de crecimiento
 description: Criterio de progreso y tratamiento visual acordados para la línea de tiempo botánica de Tu progreso.
 ---
 
-La administración editorial de Tu camino debe permitir añadir y quitar etapas de ambos grupos y hasta tres candados con texto por etapa. Esta fase prepara Admin y diseño, no activa ni repara la gamificación.
+La administración editorial de Tu camino debe permitir añadir y quitar etapas de ambos grupos y hasta tres candados con texto por etapa. El alcance autorizado incluye ahora la gamificación y los desbloqueos reales, además de Admin y diseño.
 
-**Why:** El usuario separó explícitamente la configuración del recorrido de la conexión real a días acumulados el 8 de octubre de 2026.
+**Why:** El 8 de octubre de 2026 el usuario pidió primero solo Admin y diseño, pero después cambió explícitamente el alcance: «mejor incluye la gamificacion y los desbloqueos reales».
 
-**How to apply:** Las líneas y círculos acompañan automáticamente la estructura editorial. Los días configurados y los candados no desbloquean etapas o recompensas; conservar las etapas e imágenes originales como contenido inicial.
+**How to apply:** Las líneas y círculos acompañan automáticamente la estructura editorial. Conectar el progreso a días activos acumulados y las recompensas a recursos reales, no solo textos; conservar las etapas e imágenes originales como contenido inicial. El progreso alcanzado no retrocede cuando se corta una racha.
 
 En Perfil, la sección del banner de Intención se titula «Tu camino», con la misma tipografía y alineación del encabezado de Puntos creatividad. El nombre de la etapa «Intención» permanece dentro del banner.
 
@@ -25,7 +25,7 @@ La píldora de etapa del bloque de identidad en Perfil, sobre el Lema de vida, e
 
 **Why:** El usuario pidió el loto a la izquierda tanto de la etapa de identidad como de Intención en Tu camino. La decoración no activa la progresión ni cambia la decisión de que Intención sea la única etapa actual.
 
-**How to apply:** Conservar el estilo compartido por tema y la etapa activa del recorrido, sin calcular etapas futuras a partir de rachas o días hasta que se autorice activar la progresión.
+**How to apply:** Conservar el estilo compartido por tema. La decoración no determina la etapa activa: al implementar la progresión ahora autorizada, usar días activos acumulados, nunca la longitud de la racha consecutiva.
 
 Cuando se active el progreso funcional, los niveles del camino deberán depender del total de días **activos acumulados**, no de la racha actual ni de la mayor racha. Un nivel alcanzado no debe retroceder cuando se corta una racha.
 
