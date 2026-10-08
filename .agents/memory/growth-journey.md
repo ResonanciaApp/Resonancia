@@ -33,6 +33,26 @@ En Perfil, la sección del banner de Intención se titula «Tu camino», con la 
 
 **How to apply:** Limitar este encabezado a Perfil; conservar el arte, la información de la etapa y la apertura de Tu camino. «Ver todo» queda al margen derecho del encabezado y sustituye al chevron del cuerpo.
 
+Las recompensas de avatares de una misma fase se muestran como filas compactas
+de candado y texto, con 7 px entre filas, independientemente del tema o estado.
+Conservar la posición visual del primer candado al añadir recompensas.
+
+**Why:** Al configurar dos candados en Crecimiento, el usuario encontró demasiado
+espacio vacío entre ellos y pidió una separación uniforme.
+
+**How to apply:** Medir la distancia entre los contenidos visibles, no solo el
+margen de contenedores con padding o altura mínima sobrante.
+
+En Natural, los acentos de Primera etapa y Segunda etapa, las píldoras y la
+línea y círculos del recorrido son verde claro en lugar del celeste de Cloudy.
+Conservar las transparencias de píldoras y elementos pendientes y el loto dorado.
+
+**Why:** El usuario pidió este cambio únicamente para Natural; Cloudy y el resto
+de temas mantienen su paleta.
+
+**How to apply:** Aplicar la excepción por identidad real del tema, aunque Natural
+herede reglas de Cloudy; no recolorear las ilustraciones ni los textos generales.
+
 El banner de Tu camino en Perfil muestra el loto dorado y los días **activos acumulados reales** encima del nombre de la etapa actual, sin cápsula, borde ni fondo. No lleva un segundo loto junto al título.
 
 **Why:** El usuario conservó el contador acumulado y el loto, pero pidió quitar la píldora específicamente del banner de Perfil; las píldoras del recorrido siguen siendo independientes.

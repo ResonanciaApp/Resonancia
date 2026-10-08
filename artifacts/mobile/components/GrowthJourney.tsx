@@ -43,7 +43,7 @@ export function GrowthCurrentStagePill({ stage }: { stage?: GrowthStage | null }
         styles.timelineDayPill,
         styles.timelineBloomDayPill,
         { marginBottom: 0, marginTop: 2 },
-        getThemeStyleId(theme.id) === "cloudy" && { backgroundColor: CLOUDY_GROWTH_DAY_PILL_BACKGROUND },
+        getThemeStyleId(theme.id) === "cloudy" && { backgroundColor: theme.id === "natural" ? "rgba(229,255,219,0.20)" : CLOUDY_GROWTH_DAY_PILL_BACKGROUND },
       ]}
     >
       <MaterialCommunityIcons
@@ -166,7 +166,7 @@ export function GrowthLevelPreviewCard({
           sectionTitle && styles.timelineDayPill,
           sectionTitle && styles.timelineBloomDayPill,
           (canonicalVerticalInsets || sectionTitle) && getThemeStyleId(theme.id) === "cloudy" && {
-            backgroundColor: sectionTitle ? CLOUDY_GROWTH_DAY_PILL_BACKGROUND : "rgba(0,0,0,0.16)",
+            backgroundColor: sectionTitle ? (theme.id === "natural" ? "rgba(229,255,219,0.20)" : CLOUDY_GROWTH_DAY_PILL_BACKGROUND) : "rgba(0,0,0,0.16)",
           },
           sectionTitle && styles.profilePreviewDayPill,
         ]}
@@ -336,8 +336,8 @@ function GrowthRow({
     : `${level.startDay}–${level.endDay} días`;
   const rewards = level.rewards?.filter(r => r.enabled) ?? [];
   const reward = rewards.length > 0;
-  const nodeColor = getThemeStyleId(theme.id) === "cloudy" ? "#B5EFFF" : GROWTH_COLORS.activeNode;
-  const inactiveNodeColor = getThemeStyleId(theme.id) === "cloudy" ? "rgba(181,239,255,0.28)" : GROWTH_COLORS.inactiveLine;
+  const nodeColor = theme.id === "natural" ? "#E5FFDB" : getThemeStyleId(theme.id) === "cloudy" ? "#B5EFFF" : GROWTH_COLORS.activeNode;
+  const inactiveNodeColor = theme.id === "natural" ? "rgba(229,255,219,0.28)" : getThemeStyleId(theme.id) === "cloudy" ? "rgba(181,239,255,0.28)" : GROWTH_COLORS.inactiveLine;
   const content = (
     <View
       style={[styles.row, { height: "auto", minHeight: GROWTH_ROW_HEIGHT }, reward && styles.rewardRow]}
@@ -370,7 +370,7 @@ function GrowthRow({
             florecimiento && styles.bloomDayPill,
             styles.timelineDayPill,
             florecimiento && styles.timelineBloomDayPill,
-            getThemeStyleId(theme.id) === "cloudy" && { backgroundColor: CLOUDY_GROWTH_DAY_PILL_BACKGROUND },
+            getThemeStyleId(theme.id) === "cloudy" && { backgroundColor: theme.id === "natural" ? "rgba(229,255,219,0.20)" : CLOUDY_GROWTH_DAY_PILL_BACKGROUND },
           ]}
         >
           {florecimiento && (
@@ -398,7 +398,7 @@ function GrowthRow({
         <View
           key={item.id}
           testID={index === 0 ? `${level.id}-reward` : `${level.id}-reward-${item.id}`}
-          style={[styles.reward, status === "locked" && styles.lockedCopy]}
+          style={[styles.reward, index > 0 && { marginTop: 7 }, status === "locked" && styles.lockedCopy]}
           pointerEvents="none"
           accessibilityState={{ disabled: true }}
         >
@@ -451,7 +451,7 @@ function GrowthStageHeading({
   const { theme } = useSceneTheme();
   return (
     <View style={[styles.sectionHeading, second && styles.secondStageHeading]}>
-      <Text style={[styles.sectionEyebrow, getThemeStyleId(theme.id) === "cloudy" && { color: CLOUDY_GROWTH_STAGE_LABEL_COLOR }]}>{eyebrow}</Text>
+      <Text style={[styles.sectionEyebrow, getThemeStyleId(theme.id) === "cloudy" && { color: theme.id === "natural" ? "#E5FFDB" : CLOUDY_GROWTH_STAGE_LABEL_COLOR }]}>{eyebrow}</Text>
       <Text
         style={[styles.sectionTitle, { color: colors.foreground }]}
         accessibilityRole="header"
@@ -469,7 +469,7 @@ function GrowthTimeline({ children }: { children: React.ReactNode }) {
     <View style={styles.timeline}>
       <View style={styles.timeline}>
         {rows.length > 1 && (
-          <View testID="growth-timeline-line" style={[styles.lineBase, getThemeStyleId(theme.id) === "cloudy" && { backgroundColor: "rgba(181,239,255,0.28)" }]} pointerEvents="none" />
+          <View testID="growth-timeline-line" style={[styles.lineBase, getThemeStyleId(theme.id) === "cloudy" && { backgroundColor: theme.id === "natural" ? "rgba(229,255,219,0.28)" : "rgba(181,239,255,0.28)" }]} pointerEvents="none" />
         )}
         {rows.slice(0, -1)}
       </View>
@@ -658,9 +658,10 @@ const styles = StyleSheet.create({
   reward: {
     alignSelf: "stretch",
     transform: [{ translateY: -4 }],
-    marginTop: 2,
-    minHeight: 50,
-    paddingVertical: 8,
+    // Keep the first lock's visual position, but remove empty space between locks.
+    marginTop: 19,
+    minHeight: 16,
+    paddingVertical: 0,
     flexDirection: "row",
     alignItems: "center",
     justifyContent: "flex-start",
