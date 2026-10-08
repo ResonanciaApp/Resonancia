@@ -3,9 +3,9 @@ name: Descripción de Mi cuenta en Perfil
 description: Sustitución de la píldora bajo el usuario por una descripción editable desde Mi cuenta.
 ---
 
-La descripción opcional se guarda desde Editar detalles y desaparece al borrar el texto; su vista previa en Perfil conserva un máximo de dos líneas. La píldora de etapa añadida después sobre el lema es independiente.
+La descripción opcional se guarda desde Editar detalles y desaparece al borrar el texto. El editor crece con el contenido y Perfil muestra la descripción completa, sin límite de dos líneas. La píldora de etapa sobre el lema es independiente.
 
-**Why:** El usuario pidió explícitamente reemplazar la píldora por una descripción propia editable en Mi cuenta, que solo se refleje en Perfil después de guardar.
+**Why:** El usuario pidió una descripción propia editable que solo se refleje en Perfil después de guardar; posteriormente señaló que el recorte tras dos líneas impedía ver el texto completo.
 
 **How to apply:** Mantener separado el borrador del texto guardado y permitir guardar cambios de descripción aunque el nombre no cambie. No mostrar un texto ficticio cuando la descripción esté vacía. El correo fue retirado del formulario por petición expresa del usuario; no recuperarlo por expectativas antiguas.
 
@@ -13,7 +13,7 @@ La descripción opcional se guarda desde Editar detalles y desaparece al borrar 
 
 **Why:** El usuario confirmó esta ubicación al aclarar a qué «título» se refería. También reemplazó el límite de dos líneas del editor por un máximo de 300 caracteres.
 
-**How to apply:** Guardar el lema con los otros cambios del formulario, conservarlo al reabrir y ocultarlo al vaciarlo. Distinguir el límite de caracteres del editor de la vista previa de la descripción en Perfil.
+**How to apply:** Guardar el lema con los otros cambios del formulario, conservarlo al reabrir y ocultarlo al vaciarlo. Mantener el límite de 300 caracteres sin reintroducir un recorte visual de dos líneas.
 
 Guardar en el editor cierra la ventana como la X, pero solo después de confirmar la escritura local. Un fallo conserva el borrador y permite reintentar.
 

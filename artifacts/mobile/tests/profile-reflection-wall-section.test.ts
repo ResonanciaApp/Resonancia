@@ -23,6 +23,21 @@ function source(path: string) {
   return readFileSync(new URL(path, import.meta.url), "utf8");
 }
 
+test("Perfil puts Mi muro's heading outside the card with Mi rutina's exact gap, a one-pixel border and a three-point larger prompt", () => {
+  const profile = source("../components/ProfileReflectionWallSection.tsx");
+  assert.ok(profile.indexOf('testID="profile-wall-title"') < profile.indexOf("<HomeReflectionWallSection"));
+  assert.doesNotMatch(profile, /sectionTitle="Mi muro expansivo"/);
+  assert.match(profile, /profileVariant/);
+  assert.equal(style("ProfileReflectionWallSection", "title").marginBottom, style("MiRutinaSection", "headerRow").marginBottom);
+  assert.equal(style("InnerSpaceCard", "profileWall").borderWidth, 1);
+  assert.equal(style("InnerSpaceCard", "profileWallDescription").fontSize,
+    Number(style("InnerSpaceCard", "canonicalHeaderDescription").fontSize) + 3);
+  const card = source("../components/InnerSpaceCard.tsx");
+  assert.match(card, /borderWidth=\{profileVariant \? 1 : 2\}/);
+  assert.match(card, /profileVariant && styles.profileWallDescription/);
+  assert.match(source("../components/HomeReflectionWallSection.tsx"), /profileVariant=\{profileVariant\}/);
+});
+
 test("Mi muro keeps the same prompt before and after selecting any category tab", () => {
   const contents = source("../components/InnerSpaceCard.tsx");
   const ast = ts.createSourceFile("InnerSpaceCard.tsx", contents, ts.ScriptTarget.Latest, true, ts.ScriptKind.TSX);
@@ -97,7 +112,7 @@ test("InnerSpaceCard keeps Home defaults and opts profile into a single 18px-ins
   const titleAt = card.indexOf("{sectionTitle ? (");
   const headerAt = card.indexOf("<View style={styles.header}>");
   assert.ok(titleAt > headerAt && titleAt < card.indexOf('style={styles.infoButton}'), "heading and description share the same header row with the plus");
-  assert.match(card, /style=\{\[styles\.container,\s*canonicalVerticalInsets && styles\.canonicalVerticalInsets,\s*canonicalVerticalInsets && theme\.id === "cloudy" && styles\.cloudyFlushBorder,\s*sectionBackgroundColor !== undefined && \{ backgroundColor: sectionBackgroundColor \}\]\}/);
+  assert.match(card, /style=\{\[styles\.container,\s*canonicalVerticalInsets && styles\.canonicalVerticalInsets,\s*canonicalVerticalInsets && theme\.id === "cloudy" && styles\.cloudyFlushBorder,\s*profileVariant && styles\.profileWall,\s*sectionBackgroundColor !== undefined && \{ backgroundColor: sectionBackgroundColor \}\]\}/);
   assert.match(source("../components/ProfileReflectionWallSection.tsx"), /sectionBackgroundColor="rgba\(0,0,0,0.16\)"/);
   assert.match(card, /styles\.sectionTitle,\s*\{ color: colors\.foreground \}/);
 });
@@ -357,6 +372,7 @@ test("Perfil replays the existing saved banner after every successful save and V
       const ${handler.getText(ast)};
       const ${bottom.getText(ast)};
       const profileWallRef = { current: null }, profileScrollRef = { current: null };
+      const PROFILE_SECTION_GAP = 21;
       const getProfileScrollY = () => 0, setProfileWallComposing = () => {};
       return <>${wall.getText(ast)}${banner.getText(ast)}</>;
     }
@@ -412,7 +428,8 @@ test("Profile wrapper forwards composer inputs/ref, uses the profile heading and
   }).outputText;
   const mocks = {
     react: React,
-    "react-native": { StyleSheet: { create: (styles: unknown) => styles }, View: "view" },
+    "react-native": { StyleSheet: { create: (styles: unknown) => styles }, View: "view", Text: "text" },
+    "@/hooks/useColors": { useColors: () => ({ foreground: "#F9F9F9" }) },
     "@/components/HomeReflectionWallSection": { HomeReflectionWallSection: () => null },
   };
   const module = { exports: {} as Record<string, any> };
@@ -439,7 +456,9 @@ test("Profile wrapper forwards composer inputs/ref, uses the profile heading and
     onMessageSaved,
     style: suppliedStyle,
   }, forwardedHandle) as React.ReactElement<Record<string, any>>;
-  const element = wrapper.props.children as React.ReactElement<Record<string, any>>;
+  const [heading, element] = wrapper.props.children as React.ReactElement<Record<string, any>>[];
+  assert.equal(heading.props.children, "Mi muro expansivo");
+  assert.equal(heading.props.style[0].marginBottom, 15);
 
   assert.deepEqual(wrapper.props.style, [{ marginTop: 0, marginBottom: 21 }, suppliedStyle]);
   const profileSource = source("../components/ProfileScreenBase.tsx");
@@ -448,7 +467,8 @@ test("Profile wrapper forwards composer inputs/ref, uses the profile heading and
   assert.equal(element.props.scrollRef, scrollRef);
   assert.equal(element.props.getScrollY, getScrollY);
   assert.equal(element.props.onComposingChange, onComposingChange);
-  assert.equal(element.props.sectionTitle, "Mi muro expansivo");
+  assert.equal(element.props.sectionTitle, undefined);
+  assert.equal(element.props.profileVariant, true);
   assert.equal(element.props.canonicalVerticalInsets, true);
   assert.equal(element.props.ref, forwardedHandle);
   assert.equal(element.props.style, undefined, "the gap sits outside the measured Home section");

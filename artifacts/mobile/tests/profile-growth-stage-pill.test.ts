@@ -44,7 +44,7 @@ test("Perfil stage shares Tu camino pill styling for Índigo 2 and Cloudy withou
     assert.match(html, /Intención/);
     assert.ok(html.includes(`data-background="${theme === "cloudy" ? cloudy : styles.dayPill.backgroundColor}"`));
     assert.match(html, /data-radius="12"[^>]*data-border="rgba\(255,255,255,0.10\)"[^>]*data-padding-y="4"[^>]*data-padding-x="9"/);
-    assert.match(html, /data-icon="spa" data-icon-size="12"/);
+    assert.doesNotMatch(html, /data-icon="spa"/);
     assert.match(html, /data-color="#F9F9F9"[^>]*>Intención/);
   }
   assert.match(component, /growthLevels\[0\]\.name/);

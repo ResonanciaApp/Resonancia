@@ -1,6 +1,7 @@
 import React, { forwardRef } from "react";
 import {
   StyleSheet,
+  Text,
   View,
   type ScrollView,
   type StyleProp,
@@ -11,6 +12,7 @@ import {
   HomeReflectionWallSection,
   type HomeReflectionWallHandle,
 } from "@/components/HomeReflectionWallSection";
+import { useColors } from "@/hooks/useColors";
 
 type Props = {
   scrollRef: React.RefObject<Pick<ScrollView, "scrollTo" | "getNativeScrollRef"> | null>;
@@ -28,15 +30,17 @@ export const ProfileReflectionWallSection = forwardRef<HomeReflectionWallHandle,
     onMessageSaved,
     style,
   }, ref) {
+    const colors = useColors();
     return (
       <View style={[styles.section, style]}>
+        <Text testID="profile-wall-title" style={[styles.title, { color: colors.foreground }]}>Mi muro expansivo</Text>
         <HomeReflectionWallSection
           ref={ref}
           scrollRef={scrollRef}
           getScrollY={getScrollY}
           onComposingChange={onComposingChange}
           onMessageSaved={onMessageSaved}
-          sectionTitle="Mi muro expansivo"
+          profileVariant
           canonicalVerticalInsets
           sectionBackgroundColor="rgba(0,0,0,0.16)"
         />
@@ -46,6 +50,12 @@ export const ProfileReflectionWallSection = forwardRef<HomeReflectionWallHandle,
 );
 
 const styles = StyleSheet.create({
+  title: {
+    fontFamily: "Manrope",
+    fontSize: 16,
+    fontWeight: "800",
+    marginBottom: 15,
+  },
   section: {
     marginTop: 0,
     marginBottom: 21,

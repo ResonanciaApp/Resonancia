@@ -148,7 +148,7 @@
 - [Rebote en los bordes](scroll-edge-bounce.md) — en Sistema de rachas, no bloquear arriba/abajo también exige rebote elástico, no solo eliminar franjas fijas
 - [Inercia global del scroll](native-scroll-inertia.md) — menos desplazamiento al soltar; arrastre normal y tasas explícitas intactas; React 19 exige defaults en la clase nativa, no en el wrapper
 - [Usuarios conectados](community-presence-semantics.md) — sección eliminada de Inicio por sospecha de lag; preservar presencia global real en primer plano
-- [Descripción de Mi cuenta](profile-account-description.md) — reemplaza la píldora bajo el usuario en Perfil; texto opcional guardado en Mi cuenta, máximo dos líneas
+- [Descripción del perfil](profile-account-description.md) — borradores hasta Guardar; descripción completa sin recorte a dos líneas
 - [Calendario del perfil público](public-profile-activity-calendar.md) — acumulación con día chileno fijo y todo el historial; no cambia según la zona del visitante
 - [Alcance del perfil público](public-profile-scope.md) — avatar, nombre, días, etapa y descripción; sin acciones sociales, mezclas, reflexiones ni divisores
 - [Distribución de Mezclas comunidad](community-mix-layout.md) — título y usuario en dos líneas con separación de 4 px; sin sonidos ni editorial

@@ -40,14 +40,6 @@ export function GrowthCurrentStagePill() {
         theme.id === "cloudy" && { backgroundColor: CLOUDY_GROWTH_DAY_PILL_BACKGROUND },
       ]}
     >
-      <MaterialCommunityIcons
-        name="spa"
-        size={12}
-        color={GROWTH_COLORS.current}
-        style={styles.bloomLotus}
-        accessibilityElementsHidden
-        importantForAccessibility="no"
-      />
       <Text style={[styles.days, { color: colors.foreground }]}>{growthLevels[0].name}</Text>
     </View>
   );

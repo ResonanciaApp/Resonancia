@@ -123,7 +123,8 @@ test("Perfil places the saved description below the username without the old pil
   assert.doesNotMatch(html, /profile-intention-pill/);
   assert.doesNotMatch(html, /profile-identity-email|example@example\.com/);
   assert.doesNotMatch(html, /Ubicación|data-icon="map-pin"/);
-  assert.match(html, /data-testid="profile-identity-description"[^>]*data-text-align="left" data-lines="2" data-ellipsis="tail"[^>]*>Mi descripción/);
+  assert.match(html, /data-testid="profile-identity-description"[^>]*data-text-align="left"[^>]*>Mi descripción/);
+  assert.doesNotMatch(html, /data-testid="profile-identity-description"[^>]*data-lines|data-testid="profile-identity-description"[^>]*data-ellipsis/);
   assert.doesNotMatch(source.match(/dedicatedProfileCard: \{([^}]*)\}/)?.[1] ?? "", /backgroundColor/);
   assert.match(source, /avatarImage:\s*\{\s*width: 124,\s*height: 124,\s*borderRadius: 62/);
   assert.match(source, /avatarCircle:\s*\{\s*width: 124,\s*height: 124,\s*borderRadius: 62/);
@@ -148,7 +149,7 @@ test("current stage sits above the larger bold motto and description, for free a
     assert.ok(html.indexOf("Resonador") < html.indexOf('data-testid="profile-growth-stage-pill"'));
     assert.ok(html.indexOf('data-testid="profile-growth-stage-pill"') < html.indexOf('data-testid="profile-identity-life-motto"'));
     assert.ok(html.indexOf('data-testid="profile-identity-life-motto"') < html.indexOf('data-testid="profile-identity-description"'));
-    assert.match(html, /data-testid="profile-identity-life-motto"[^>]*data-color="#FFFFFF"[^>]*data-font-size="20"[^>]*>Vivir con intención/);
+    assert.match(html, /data-testid="profile-identity-life-motto"[^>]*data-color="#FFFFFF"[^>]*data-font-size="19"[^>]*>Vivir con intención/);
     assert.match(source, /profileLifeMotto: \{[^}]*fontWeight: "700"/);
     assert.match(html, /data-font-size="24"/);
   }

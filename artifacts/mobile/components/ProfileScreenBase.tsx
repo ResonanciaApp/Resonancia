@@ -572,6 +572,7 @@ export function ProfileScreenBase({
   const [editDesc, setEditDesc] = useState(description);
   const [accountName, setAccountName] = useState(username);
   const [accountDescription, setAccountDescription] = useState(description);
+  const [accountDescriptionHeight, setAccountDescriptionHeight] = useState(122);
   const [accountLifeMotto, setAccountLifeMotto] = useState(lifeMotto);
   const [accountPhotoUri, setAccountPhotoUri] = useState(photoUri);
   const [accountAvatarPresetId, setAccountAvatarPresetId] = useState(selectedProfilePreset?.id ?? avatarPresetId);
@@ -1069,8 +1070,10 @@ export function ProfileScreenBase({
                   onChangeText={(text) => setAccountDescription(limitProfileDescription(text))}
                   placeholder="Una breve descripción sobre ti"
                   placeholderTextColor={colors.mutedForeground}
-                  style={[styles.accountNameInput, styles.accountDescriptionInput, { color: colors.foreground }]}
+                  style={[styles.accountNameInput, styles.accountDescriptionInput, { color: colors.foreground, height: accountDescriptionHeight }]}
                   multiline
+                  scrollEnabled={false}
+                  onContentSizeChange={(event) => setAccountDescriptionHeight(Math.max(122, Math.ceil(event.nativeEvent.contentSize.height)))}
                   maxLength={MAX_PROFILE_DESCRIPTION_LENGTH}
                   textAlignVertical="top"
                   accessibilityLabel="Descripción de tu perfil"
@@ -1478,8 +1481,6 @@ export function ProfileScreenBase({
                     <Text
                       testID="profile-identity-description"
                       style={styles.profileDescription}
-                      numberOfLines={2}
-                      ellipsizeMode="tail"
                     >
                       {description}
                     </Text>
@@ -2600,7 +2601,7 @@ const styles = StyleSheet.create({
     borderRadius: 62,
   },
   userName: { fontFamily: "Manrope", fontSize: 24, fontWeight: "700", textAlign: "left", marginTop: 0 },
-  profileLifeMotto: { fontFamily: "Manrope", fontSize: 20, fontWeight: "700", lineHeight: 27, textAlign: "left", alignSelf: "stretch", marginTop: 7 },
+  profileLifeMotto: { fontFamily: "Manrope", fontSize: 19, fontWeight: "700", lineHeight: 27, textAlign: "left", alignSelf: "stretch", marginTop: 7 },
   profileNameRow: { width: "100%", flexDirection: "row", alignItems: "center" },
   profileNameText: { flex: 1, minWidth: 0 },
   profileDescription: { fontFamily: "Manrope", fontSize: 14, lineHeight: 20, color: "#C4C4C4", textAlign: "left", alignSelf: "stretch" },

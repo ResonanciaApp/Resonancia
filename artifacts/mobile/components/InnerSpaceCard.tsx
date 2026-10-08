@@ -63,6 +63,7 @@ export function InnerSpaceCard({
   sectionTitle,
   canonicalVerticalInsets = false,
   sectionBackgroundColor,
+  profileVariant = false,
   onComposeRequested,
   onInputBlur,
   onMessageSaved,
@@ -74,6 +75,7 @@ export function InnerSpaceCard({
   sectionTitle?: string;
   canonicalVerticalInsets?: boolean;
   sectionBackgroundColor?: string;
+  profileVariant?: boolean;
   onComposeRequested?: () => void;
   onInputBlur?: () => void;
   onMessageSaved?: () => void;
@@ -533,10 +535,11 @@ export function InnerSpaceCard({
 
   return (
     <>
-    <View style={[styles.container, canonicalVerticalInsets && styles.canonicalVerticalInsets, canonicalVerticalInsets && theme.id === "cloudy" && styles.cloudyFlushBorder, sectionBackgroundColor !== undefined && { backgroundColor: sectionBackgroundColor }]}>
+    <View style={[styles.container, canonicalVerticalInsets && styles.canonicalVerticalInsets, canonicalVerticalInsets && theme.id === "cloudy" && styles.cloudyFlushBorder, profileVariant && styles.profileWall, sectionBackgroundColor !== undefined && { backgroundColor: sectionBackgroundColor }]}>
       {canonicalVerticalInsets && (
         <DiscoverSearchBorder
           borderRadius={24}
+          borderWidth={profileVariant ? 1 : 2}
           brightness={REFLECTION_WALL_BORDER_BRIGHTNESS}
           colors={theme.id === "cloudy" ? CLOUDY_REFLECTION_WALL_BORDER_GRADIENT : REFLECTION_WALL_BORDER_GRADIENT}
           locations={REFLECTION_WALL_BORDER_LOCATIONS}
@@ -545,13 +548,14 @@ export function InnerSpaceCard({
         />
       )}
       <View style={styles.header}>
-        <View style={[styles.headerCopy, canonicalVerticalInsets && styles.canonicalHeaderCopy]}>
+        <View style={[styles.headerCopy, canonicalVerticalInsets && styles.canonicalHeaderCopy, profileVariant && styles.profileWallHeaderCopy]}>
           {sectionTitle ? (
             <Text style={[styles.sectionTitle, { color: colors.foreground }]}>{sectionTitle}</Text>
           ) : null}
           <Text style={[
             styles.headerTitle,
             canonicalVerticalInsets && styles.canonicalHeaderDescription,
+            profileVariant && styles.profileWallDescription,
             { color: colors.foreground },
           ]}>Registra y comparte tu viaje</Text>
         </View>
@@ -811,6 +815,20 @@ const styles = StyleSheet.create({
     fontSize: 11,
     lineHeight: 16,
     fontWeight: "400",
+  },
+  profileWall: {
+    borderWidth: 1,
+    borderColor: "transparent",
+    paddingHorizontal: 20,
+    paddingTop: 18,
+    paddingBottom: 18,
+  },
+  profileWallDescription: {
+    fontSize: 14,
+    lineHeight: 20,
+  },
+  profileWallHeaderCopy: {
+    justifyContent: "center",
   },
   headerTitle: {
     fontFamily: "Manrope",

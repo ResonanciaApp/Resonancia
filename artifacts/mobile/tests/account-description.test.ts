@@ -46,11 +46,30 @@ test("description input edits only its draft, caps at 300 characters and has no 
   const field = source.slice(source.indexOf('<View testID="account-description-section"'), source.indexOf("onPress={handleDeleteAccount}"));
   assert.match(field, /value=\{accountDescription\}/);
   assert.match(field, /onChangeText=\{\(text\) => setAccountDescription\(limitProfileDescription\(text\)\)\}/);
-  assert.match(field, /multiline\s+maxLength=\{MAX_PROFILE_DESCRIPTION_LENGTH\}/);
+  assert.match(field, /multiline[\s\S]*maxLength=\{MAX_PROFILE_DESCRIPTION_LENGTH\}/);
   assert.doesNotMatch(field, /numberOfLines=\{2\}|accountDescriptionHint|Se mostrará/);
   assert.doesNotMatch(field, /updateProfile/);
   assert.ok(source.indexOf('value={accountName}') < source.indexOf('testID="account-description-section"'));
   assert.match(source, /setAccountDescription\(limitProfileDescription\(description\)\)/);
+});
+
+test("description editor expands above its 122px minimum so multiline text is visible without internal clipping", () => {
+  let resize: ts.Expression | undefined;
+  function visit(node: ts.Node) {
+    if (ts.isJsxAttribute(node) && node.name.getText(ast) === "onContentSizeChange"
+      && node.initializer && ts.isJsxExpression(node.initializer)) resize = node.initializer.expression;
+    ts.forEachChild(node, visit);
+  }
+  visit(ast);
+  assert.ok(resize);
+  const sizes: number[] = [];
+  const compiled = ts.transpileModule(`return (${resize.getText(ast)});`, { compilerOptions: { target: ts.ScriptTarget.ES2022 } }).outputText;
+  const onResize = new Function("setAccountDescriptionHeight", compiled)((size: number) => sizes.push(size));
+  for (const height of [30, 300.2, 22]) onResize({ nativeEvent: { contentSize: { height } } });
+  assert.deepEqual(sizes, [122, 301, 122]);
+  const field = source.slice(source.indexOf('testID="account-description-input"'), source.indexOf('onPress={handleDeleteAccount}'));
+  assert.match(field, /height: accountDescriptionHeight/);
+  assert.match(field, /scrollEnabled=\{false\}/);
 });
 
 test("changing only the description enables Guardar, including removing an existing description", () => {

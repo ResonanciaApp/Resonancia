@@ -36,6 +36,7 @@ type Props = {
   sectionTitle?: string;
   canonicalVerticalInsets?: boolean;
   sectionBackgroundColor?: string;
+  profileVariant?: boolean;
 };
 
 export const HomeReflectionWallSection = forwardRef<HomeReflectionWallHandle, Props>(
@@ -48,6 +49,7 @@ export const HomeReflectionWallSection = forwardRef<HomeReflectionWallHandle, Pr
     sectionTitle,
     canonicalVerticalInsets = false,
     sectionBackgroundColor,
+    profileVariant = false,
   }, ref) {
     const { wallComposeRequest, consumeWallComposeRequest } = useDrawer();
     const sectionRef = useRef<View>(null);
@@ -248,6 +250,7 @@ export const HomeReflectionWallSection = forwardRef<HomeReflectionWallHandle, Pr
           sectionTitle={sectionTitle}
           canonicalVerticalInsets={canonicalVerticalInsets}
           sectionBackgroundColor={sectionBackgroundColor}
+          profileVariant={profileVariant}
         />
       </View>
     );
