@@ -18,6 +18,7 @@ import React from "react";
 import {
   useGetPublicUserProfile,
   getGetPublicUserProfileQueryKey,
+  useGetUserGrowth, getGetUserGrowthQueryKey,
 } from "@workspace/api-client-react";
 import { BLUR_PLACEHOLDER, IMAGE_TRANSITION } from "@/constants/imagePlaceholder";
 import { MEMBERSHIP_AURORA } from "@/constants/colors";
@@ -35,6 +36,9 @@ export default function UsuarioScreen() {
   const insets = useSafeAreaInsets();
   const { id } = useLocalSearchParams<{ id: string }>();
   const userId = Number(id);
+  const publicGrowth = useGetUserGrowth(String(userId), {
+    query: { queryKey: getGetUserGrowthQueryKey(String(userId)), enabled: Number.isInteger(userId) && userId > 0, staleTime: 0 },
+  });
 
   const { data: profile, isLoading, isError } = useGetPublicUserProfile(userId, {
     query: {
@@ -137,7 +141,7 @@ export default function UsuarioScreen() {
               </View>
             </View>
 
-            <GrowthCurrentStagePill />
+            <GrowthCurrentStagePill stage={publicGrowth.data?.currentStage ?? null} />
             {(lifeMotto || longDescription) && (
               <View style={styles.profileBiography}>
                 {lifeMotto && (

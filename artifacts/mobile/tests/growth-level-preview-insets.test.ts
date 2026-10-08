@@ -116,8 +116,17 @@ const compiled = ts.transpileModule(
   readFileSync(new URL("../components/GrowthJourney.tsx", import.meta.url), "utf8"),
   { compilerOptions: { module: ts.ModuleKind.CommonJS, jsx: ts.JsxEmit.React, esModuleInterop: true } },
 ).outputText;
-const mocks: Record<string, unknown> = {
+const mocks: Record<string, any> = {
   "@/context/SceneThemeContext": { useSceneTheme: () => ({ theme: { id: "tibet", gradient: TEST_GRADIENT } }) },
+  "@/lib/avatar": { resolveAvatarUrl: (url: string) => url },
+  "@/context/GrowthContext": { useGrowth: () => {
+    const data = mocks["@/data/growthLevels"] as { growthLevels: any[]; ascentLevels: any[] };
+    return {
+      levels: [...data.growthLevels.map(level => ({ ...level, group: "florecimiento" })), ...data.ascentLevels.map(level => ({ ...level, group: "ascenso" }))],
+      currentStage: data.growthLevels[0],
+      reachedStageIds: ["intencion"], progress: null, loading: false, error: false,
+    };
+  } },
   "../assets/images/growth/semilla-reward-chest.png": 3,
   "../assets/images/growth/reward-avatar-moon.png": 4,
   "../assets/images/growth/reward-avatar-lotus.png": 5,
@@ -128,7 +137,7 @@ const mocks: Record<string, unknown> = {
     Image: Native,
     Platform: { OS: "web" },
     Pressable: Native,
-    StyleSheet: { create: (styles: unknown) => styles },
+    StyleSheet: { create: (styles: unknown) => styles, flatten: (values: unknown[]) => Object.assign({}, ...values.filter(Boolean)) },
     Text: Native,
     View: Native,
   },
@@ -196,10 +205,17 @@ new Function("require", "module", "exports", ts.transpileModule(
 }, streakModule, streakModule.exports);
 mocks["@/components/StreakWeekRow"] = streakModule.exports;
 const componentModule = { exports: {} as Record<string, React.ComponentType<Record<string, unknown>>> };
-const { GrowthRow, GrowthTimeline } = new Function("require", "module", "exports", `${compiled}\nreturn { GrowthRow, GrowthTimeline };`)((name: string) => {
+const { GrowthRow: RenderGrowthRow, GrowthTimeline } = new Function("require", "module", "exports", `${compiled}\nreturn { GrowthRow, GrowthTimeline };`)((name: string) => {
   if (!(name in mocks)) throw new Error(`Missing growth preview test mock: ${name}`);
   return mocks[name];
 }, componentModule, componentModule.exports);
+const GrowthRow = (props: any) => RenderGrowthRow({
+  ...props,
+  level: { ...props.level, rewards: props.level.rewards ?? (
+    ["semilla", "crecimiento", "vegetacion", "expansion"].includes(props.level.id)
+      ? [{ id: `${props.level.id}-avatars`, enabled: true, amount: 5, text: "Desbloquea {cantidad} avatares a elección" }] : []
+  ) },
+});
 
 const render = (props: Record<string, unknown> = {}) => renderToStaticMarkup(
   React.createElement(componentModule.exports.GrowthLevelPreviewCard, { onPress: () => {}, ...props }),
@@ -313,7 +329,7 @@ test("Cloudy matches both stage labels in sky blue and uses F9F9F9 for the ascen
       assert.match(html, new RegExp(`data-color="${expected.replace(/[()]/g, "\\$&")}"[^>]*>${label}`));
     }
     const toggleColor = id === "cloudy" ? "#F9F9F9" : "#C9A6FF";
-    assert.match(html, new RegExp(`data-color="${toggleColor}"[^>]*>Próximamente`));
+    assert.match(html, new RegExp(`data-color="${toggleColor}"[^>]*>Ver niveles`));
     assert.match(html, new RegExp(`data-icon="chevron-down" data-color="${toggleColor}"`));
     assert.match(html, /Florecimiento/);
     assert.match(html, /El ascenso/);
@@ -359,7 +375,7 @@ test("Florecimiento has no hard frame; El ascenso preserves its 7% circle indepe
   assert.doesNotMatch(image({ size: 402, height: 874, sourceModule: 2 }), /data-background|data-opacity/);
 });
 
-test("only Intención opens a stage detail, without activating progression or linking other stages", () => {
+test("only Intención opens a detail while stage status follows real progression", () => {
   let opened = 0;
   const html = renderToStaticMarkup(React.createElement(componentModule.exports.GrowthJourney, {
     onIntentionPress: () => opened++,
@@ -377,7 +393,8 @@ test("only Intención opens a stage detail, without activating progression or li
   }
   const source = readFileSync(new URL("../components/GrowthJourney.tsx", import.meta.url), "utf8");
   assert.match(source, /onPress=\{level.id === "intencion" \? onIntentionPress : undefined\}/);
-  assert.match(source, /status=\{index === 0 \? "current" : "locked"\}/);
+  assert.match(source, /status=\{status\(level\)\}/);
+  assert.match(source, /reachedStageIds\.includes\(level.id\)/);
 });
 
 test("the detail hero stays unscaled while timeline and profile use smaller faded circles", () => {
@@ -434,16 +451,16 @@ test("Semilla displays only a larger inline filled lock and a one-line avatar re
   assert.ok(lock);
   assert.match(lock, /data-icon="lock"/);
   const source = readFileSync(new URL("../components/GrowthJourney.tsx", import.meta.url), "utf8");
-  assert.match(source, /<MaterialCommunityIcons\s+testID=\{`\$\{levelId\}-reward-lock`\}\s+name="lock"\s+size=\{16\}/);
+  assert.match(source, /name=\{unlocked \? "lock-open-variant" : "lock"\}/);
   assert.match(lock, /data-line-height="16"/);
   assert.doesNotMatch(lock, /data-opacity=/);
   assert.match(lock, /data-height="16" data-width="16"/);
   assert.doesNotMatch(lock, /data-position="absolute"/);
-  assert.match(html, /data-color="rgba\(196,194,222,0.8\)"[^>]*data-lines="1" data-auto-size="true"[^>]*>Desbloquea 50 avatares nuevos/);
+  assert.match(html, /data-color="rgba\(196,194,222,0.8\)"[^>]*data-lines="1" data-auto-size="true"[^>]*>Desbloquea 5 avatares a elección/);
   assert.doesNotMatch(html, /semilla-reward-chest|data-source="3"/);
   assert.match(html, /data-opacity="0.55"/);
   assert.ok(html.indexOf(`>${semilla.story}</div>`) < html.indexOf('data-testid="semilla-reward"'));
-  assert.ok(html.indexOf('data-testid="semilla-reward-lock"') < html.indexOf(">Desbloquea 50 avatares nuevos</div>"));
+  assert.ok(html.indexOf('data-testid="semilla-reward-lock"') < html.indexOf(">Desbloquea 5 avatares a elección</div>"));
   assert.doesNotMatch(html, /semilla-reward-avatar|semilla-reward-overlay|data-source="5"/);
   assert.doesNotMatch(html, /Regalitos sorpresa|Desbloquea tu cofre de regalos/);
   assert.doesNotMatch(html, /data-accessibility-role="button"/);
@@ -474,13 +491,13 @@ test("all reward stages share the 16-point inline lock and single-line text with
     assert.doesNotMatch(lock, /data-opacity=/);
     assert.match(lock, /data-height="16" data-width="16"/);
     assert.doesNotMatch(lock, /data-position="absolute"/);
-    assert.match(html, /data-color="rgba\(196,194,222,0.8\)"[^>]*>Desbloquea 50 avatares nuevos/);
+    assert.match(html, /data-color="rgba\(196,194,222,0.8\)"[^>]*>Desbloquea 5 avatares a elección/);
     assert.doesNotMatch(html, /reward-chest|data-source="3"/);
     assert.match(html, /data-opacity="0.55"/);
     assert.ok(html.indexOf(`>${story}</div>`) < html.indexOf(`data-testid="${id}-reward"`));
     assert.doesNotMatch(html, /Regalitos sorpresa|Desbloquea tu cofre de regalos|data-accessibility-role="button"/);
     const banner = html.slice(html.indexOf(`data-testid="${id}-reward"`));
-    assert.ok(banner.indexOf(`data-testid="${id}-reward-lock"`) < banner.indexOf(">Desbloquea 50 avatares nuevos"));
+    assert.ok(banner.indexOf(`data-testid="${id}-reward-lock"`) < banner.indexOf(">Desbloquea 5 avatares a elección"));
     assert.match(banner, /data-lines="1" data-auto-size="true"/);
     assert.match(banner, new RegExp(`data-testid="${id}-reward-content"[^>]*data-direction="row" data-align="center" data-gap="6" data-wrap="nowrap"`));
     assert.match(banner, /data-opacity="0.55"/);
@@ -513,7 +530,7 @@ test("Expansion keeps its avatar reward but removes the entire watermark achieve
       hasNext: false, status: "locked",
     }));
     assert.doesNotMatch(html, /expansion-wall-reward|Comparte sin sello/);
-    assert.match(html, /Desbloquea 50 avatares nuevos/);
+    assert.match(html, /Desbloquea 5 avatares a elección/);
     assert.match(html, new RegExp(`data-testid="${id}-reward-lock"`));
   }
   assert.doesNotMatch(source, /WALL_REWARD_TEXT|WallRewardIcon|expansion-wall-reward|wallReward:|wallRewardIcon:|rewardLock:/);
@@ -550,7 +567,7 @@ test("all avatar reward rows move up 10px together and use the positioned day's 
           assert.ok(reward.includes(`data-margin-top="${12 - 10}"`));
           assert.ok(reward.includes('data-transform="[{&quot;translateY&quot;:-4}]"'));
           assert.ok(lock.includes(`data-color="${streakModule.exports.getPositionedDayGradient(gradient)[0]}"`));
-          assert.match(html, /Desbloquea 50 avatares nuevos/);
+          assert.match(html, /Desbloquea 5 avatares a elección/);
         }
       }
     }
@@ -689,8 +706,8 @@ test("reward pills grow in normal flow and preserve nonreward and profile previe
   }
   visit(ast);
   assert.ok(copy);
-  assert.match(copy.getText(ast), /testID=\{`\$\{level.id\}-reward`\}/);
-  assert.ok(copy.getText(ast).indexOf("{level.story}") < copy.getText(ast).indexOf('testID={`${level.id}-reward`}'));
+  assert.match(copy.getText(ast), /testID=\{index === 0 \? `\$\{level.id\}-reward`/);
+  assert.ok(copy.getText(ast).indexOf("{level.story}") < copy.getText(ast).indexOf('testID={index === 0'));
   assert.doesNotMatch(pill, /backgroundColor|borderWidth|borderColor|borderRadius/);
   assert.match(pill, /justifyContent: "flex-start"/);
   assert.match(source, /rewardContent: \{ flexDirection: "row", alignItems: "center", maxWidth: "100%", flexShrink: 1, paddingLeft: 3, gap: 6 \}/);
@@ -731,7 +748,7 @@ test("only Perfil's Tu camino shrinks the intention icon by four points", () => 
   assert.match(profile, /data-font-size="19"[^>]*>Intención/);
   // The entrance mock omits its animated wrapper; check its sizing contract.
   const source = readFileSync(new URL("../components/GrowthJourney.tsx", import.meta.url), "utf8");
-  assert.match(source, /style=\{\[styles\.previewArt, sectionTitle && styles\.profilePreviewArt\]\}/);
+  assert.match(source, /style=\{StyleSheet\.flatten\(\[styles\.previewArt, !!sectionTitle && styles\.profilePreviewArt\]\)\}/);
   assert.match(source, /profilePreviewArt: \{ width: 96, height: 96 \}/);
   assert.match(source, /previewArt: \{ width: 100, height: 100 \}/);
 });

@@ -4,7 +4,9 @@ export type GrowthLevel = {
   startDay: number;
   endDay: number;
   story: string;
-  image: number;
+  image: number | string;
+  group?: "florecimiento" | "ascenso";
+  rewards?: { id: string; enabled: boolean; text: string; amount: number }[];
 };
 
 // Intención precedes the first active day; the remaining ranges are editorial.

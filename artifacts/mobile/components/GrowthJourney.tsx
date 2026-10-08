@@ -6,13 +6,15 @@ import { Image, Platform, Pressable, StyleSheet, Text, View } from "react-native
 import { CLOUDY_GROWTH_ASCENT_TOGGLE_COLOR, CLOUDY_GROWTH_DAY_PILL_BACKGROUND, CLOUDY_GROWTH_STAGE_LABEL_COLOR, MEMBERSHIP_AURORA, POSITIONED_DAY_GRADIENT } from "@/constants/colors";
 import { CinematicFadeSlide } from "@/components/CinematicFadeSlide";
 import { getPositionedDayGradient } from "@/components/StreakWeekRow";
-import { ascentLevels, growthLevels, type GrowthLevel } from "@/data/growthLevels";
+import { type GrowthLevel } from "@/data/growthLevels";
+import { useGrowth } from "@/context/GrowthContext";
+import { resolveAvatarUrl } from "@/lib/avatar";
+import type { GrowthStage } from "@workspace/api-client-react";
 import { useColors } from "@/hooks/useColors";
 import { useSceneTheme } from "@/context/SceneThemeContext";
 
 export const GROWTH_ROW_HEIGHT = 205;
 const GROWTH_STAGE_ICON_SIZE = 133;
-const REWARD_LEVEL_IDS = new Set(["semilla", "crecimiento", "vegetacion", "expansion"]);
 
 const GROWTH_COLORS = {
   line: POSITIONED_DAY_GRADIENT[0],
@@ -22,12 +24,15 @@ const GROWTH_COLORS = {
   activeNode: "rgb(174,161,237)",
 } as const;
 
-type Status = "current" | "locked";
+type Status = "current" | "reached" | "locked";
 
-/** Intención remains the current level until functional progression is enabled. */
-export function GrowthCurrentStagePill() {
+/** Public profiles pass their own owner's stage instead of using the visitor's. */
+export function GrowthCurrentStagePill({ stage }: { stage?: GrowthStage | null } = {}) {
   const colors = useColors();
   const { theme } = useSceneTheme();
+  const { currentStage } = useGrowth();
+  const level = stage === undefined ? currentStage : stage;
+  if (!level) return null;
   return (
     <View
       testID="profile-growth-stage-pill"
@@ -48,7 +53,7 @@ export function GrowthCurrentStagePill() {
         accessibilityElementsHidden
         importantForAccessibility="no"
       />
-      <Text style={[styles.days, { color: colors.foreground }]}>{growthLevels[0].name}</Text>
+      <Text style={[styles.days, { color: colors.foreground }]}>{level.name}</Text>
     </View>
   );
 }
@@ -87,11 +92,11 @@ function loadGrowthImage(module: number): Promise<string> {
 
 export function GrowthLevelImage({ level, profilePreview = false, dimmed = false, size, height, sourceModule }: { level: GrowthLevel; profilePreview?: boolean; dimmed?: boolean; size?: number; height?: number; sourceModule?: number }) {
   const imageModule = sourceModule ?? level.image;
-  const fadedStage = sourceModule === undefined && !level.id.startsWith("ascenso-");
-  const [localUri, setLocalUri] = useState(() => growthImageUris.get(imageModule) ?? null);
+  const fadedStage = sourceModule === undefined && level.group !== "ascenso" && !level.id.startsWith("ascenso-");
+  const [localUri, setLocalUri] = useState(() => typeof imageModule === "number" ? growthImageUris.get(imageModule) ?? null : null);
 
   useEffect(() => {
-    if (Platform.OS === "web") return;
+    if (Platform.OS === "web" || typeof imageModule !== "number") return;
     let mounted = true;
     loadGrowthImage(imageModule)
       .then((uri) => {
@@ -101,7 +106,9 @@ export function GrowthLevelImage({ level, profilePreview = false, dimmed = false
     return () => { mounted = false; };
   }, [level.id, imageModule]);
 
-  const source = Platform.OS === "web" ? imageModule : localUri ? { uri: localUri } : null;
+  const source = typeof imageModule === "string"
+    ? { uri: resolveAvatarUrl(imageModule) ?? "" }
+    : Platform.OS === "web" ? imageModule : localUri ? { uri: localUri } : null;
   return (
     <View
       testID={profilePreview ? "profile-intention-image" : undefined}
@@ -139,7 +146,10 @@ export function GrowthLevelPreviewCard({
 }) {
   const colors = useColors();
   const { theme } = useSceneTheme();
-  const level = growthLevels[0];
+  const { currentStage, levels } = useGrowth();
+  const level = levels.find(item => item.id === currentStage?.id)
+    ?? (currentStage ? { ...currentStage, image: currentStage.imageUrl } : null);
+  if (!level) return null;
   const dayLabel = level.startDay === level.endDay
     ? `${level.startDay} días`
     : `${level.startDay}–${level.endDay} días`;
@@ -195,7 +205,7 @@ export function GrowthLevelPreviewCard({
 
   const previewContent = (
     <>
-      <PreviewContentEntrance replayKey="intention-art" delay={420} style={[styles.previewArt, sectionTitle && styles.profilePreviewArt]}>
+      <PreviewContentEntrance replayKey="intention-art" delay={420} style={StyleSheet.flatten([styles.previewArt, !!sectionTitle && styles.profilePreviewArt])}>
         <GrowthLevelImage level={level} profilePreview={canonicalVerticalInsets} />
       </PreviewContentEntrance>
       <View
@@ -298,11 +308,11 @@ function PreviewContentEntrance({
   );
 }
 
-function RewardLock({ levelId, color }: { levelId: string; color: string }) {
+function RewardLock({ levelId, color, unlocked = false }: { levelId: string; color: string; unlocked?: boolean }) {
   return (
     <MaterialCommunityIcons
       testID={`${levelId}-reward-lock`}
-      name="lock"
+      name={unlocked ? "lock-open-variant" : "lock"}
       size={16}
       color={color}
       style={styles.avatarRewardLock}
@@ -325,17 +335,19 @@ function GrowthRow({
 }) {
   const colors = useColors();
   const { theme } = useSceneTheme();
+  const { progress } = useGrowth();
   const dayLabel = level.startDay === level.endDay
     ? `${level.startDay} días`
     : `${level.startDay}–${level.endDay} días`;
-  const reward = REWARD_LEVEL_IDS.has(level.id);
+  const rewards = level.rewards?.filter(r => r.enabled) ?? [];
+  const reward = rewards.length > 0;
   const nodeColor = theme.id === "cloudy" ? "#B5EFFF" : GROWTH_COLORS.activeNode;
   const inactiveNodeColor = theme.id === "cloudy" ? "rgba(181,239,255,0.28)" : GROWTH_COLORS.inactiveLine;
   const content = (
     <View
-      style={[styles.row, reward && styles.rewardRow]}
+      style={[styles.row, { height: "auto", minHeight: GROWTH_ROW_HEIGHT }, reward && styles.rewardRow]}
       accessible={!onPress}
-      accessibilityLabel={`${level.name}, ${dayLabel} de práctica, ${status === "current" ? "etapa actual" : "por desbloquear"}. ${level.story}${REWARD_LEVEL_IDS.has(level.id) ? " Desbloquea 50 avatares nuevos, por desbloquear." : ""}`}
+      accessibilityLabel={`${level.name}, ${dayLabel} de práctica, ${status === "current" ? "etapa actual" : status === "reached" ? "etapa alcanzada" : "por desbloquear"}. ${level.story}. ${rewards.map(r => `${r.amount} avatares a elección`).join(". ")}`}
     >
       <View
         testID={`${level.id}-stage-node`}
@@ -345,7 +357,7 @@ function GrowthRow({
           {
             borderWidth: status === "current" ? 2 : 0,
             borderColor: nodeColor,
-            backgroundColor: status === "current" ? nodeColor : inactiveNodeColor,
+            backgroundColor: status !== "locked" ? nodeColor : inactiveNodeColor,
             shadowColor: nodeColor,
             shadowOpacity: status === "current" ? 0.8 : 0,
           },
@@ -387,15 +399,16 @@ function GrowthRow({
           {level.story}
         </Text>
         </View>
-      {reward && (
+      {rewards.map((item, index) => (
         <View
-          testID={`${level.id}-reward`}
+          key={item.id}
+          testID={index === 0 ? `${level.id}-reward` : `${level.id}-reward-${item.id}`}
           style={[styles.reward, status === "locked" && styles.lockedCopy]}
           pointerEvents="none"
           accessibilityState={{ disabled: true }}
         >
           <View testID={`${level.id}-reward-content`} style={[styles.rewardContent, styles.avatarRewardContent]}>
-          <RewardLock levelId={level.id} color={getPositionedDayGradient(theme.gradient)[0]} />
+          <RewardLock levelId={level.id} color={getPositionedDayGradient(theme.gradient)[0]} unlocked={progress?.grantedRewards.some(grant => grant.rewardId === item.id)} />
           <Text
             style={[styles.rewardText, { color: status === "locked" ? GROWTH_COLORS.muted : colors.mutedForeground }]}
             numberOfLines={1}
@@ -403,11 +416,18 @@ function GrowthRow({
             minimumFontScale={0.6}
             ellipsizeMode="tail"
           >
-            {"Desbloquea 50 avatares nuevos"}
+            {(() => {
+              const grant = progress?.grantedRewards.find(grant => grant.rewardId === item.id);
+              const amount = grant?.amount ?? item.amount;
+              const text = item.text.includes("{cantidad}")
+                ? item.text.replaceAll("{cantidad}", String(amount))
+                : `${item.text} · ${amount} avatares`;
+              return grant ? text.replace(/^Desbloquea\b/, "Desbloqueaste") : text;
+            })()}
           </Text>
           </View>
         </View>
-      )}
+      ))}
       </View>
     </View>
   );
@@ -466,21 +486,29 @@ function GrowthTimeline({ children }: { children: React.ReactNode }) {
 export function GrowthJourney({ onIntentionPress }: { onIntentionPress?: () => void } = {}) {
   const [ascentExpanded, setAscentExpanded] = useState(false);
   const { theme } = useSceneTheme();
+  const { levels, currentStage, reachedStageIds, loading, error } = useGrowth();
+  const bloom = levels.filter(level => level.group === "florecimiento");
+  const ascent = levels.filter(level => level.group === "ascenso");
+  const status = (level: GrowthLevel): Status => currentStage?.id === level.id ? "current" : reachedStageIds.includes(level.id) ? "reached" : "locked";
+  useEffect(() => {
+    if (currentStage?.group === "ascenso") setAscentExpanded(true);
+  }, [currentStage?.group]);
   const ascentToggleColor = theme.id === "cloudy" ? CLOUDY_GROWTH_ASCENT_TOGGLE_COLOR : GROWTH_COLORS.line;
-  // Visual preview: Intención is the only active level until progression is enabled.
 
   return (
     <View style={styles.section}>
+      {loading && <Text style={{ color: "#C4C4C4" }}>Verificando tu progreso…</Text>}
+      {error && <Text style={{ color: "#C4C4C4" }}>No se pudo actualizar Tu camino. Se conserva la última información disponible.</Text>}
       <GrowthStageHeading
         eyebrow="PRIMERA ETAPA"
         title="Florecimiento"
       />
       <GrowthTimeline>
-        {growthLevels.map((level, index) => (
+        {bloom.map((level) => (
           <GrowthRow
             key={level.id}
             level={level}
-            status={index === 0 ? "current" : "locked"}
+            status={status(level)}
             florecimiento
             onPress={level.id === "intencion" ? onIntentionPress : undefined}
           />
@@ -496,20 +524,20 @@ export function GrowthJourney({ onIntentionPress }: { onIntentionPress?: () => v
         onPress={() => setAscentExpanded((expanded) => !expanded)}
         style={styles.ascentToggle}
         accessibilityRole="button"
-        accessibilityLabel={ascentExpanded ? "Ocultar niveles de El ascenso" : "Próximamente, mostrar niveles de El ascenso"}
+        accessibilityLabel={ascentExpanded ? "Ocultar niveles de El ascenso" : "Mostrar niveles de El ascenso"}
         accessibilityState={{ expanded: ascentExpanded }}
         testID="growth-ascent-toggle"
       >
-        <Text style={[styles.ascentToggleText, { color: ascentToggleColor }]}>{ascentExpanded ? "Ocultar niveles" : "Próximamente"}</Text>
+        <Text style={[styles.ascentToggleText, { color: ascentToggleColor }]}>{ascentExpanded ? "Ocultar niveles" : "Ver niveles"}</Text>
         <Feather name={ascentExpanded ? "chevron-up" : "chevron-down"} size={16} color={ascentToggleColor} />
       </Pressable>
       {ascentExpanded && (
         <GrowthTimeline>
-          {ascentLevels.map((level) => (
+          {ascent.map((level) => (
             <GrowthRow
               key={level.id}
               level={level}
-              status="locked"
+              status={status(level)}
             />
           ))}
         </GrowthTimeline>

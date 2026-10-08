@@ -35,7 +35,8 @@ import {
   Images,
   MessageSquare,
   BookOpen,
-  Sunrise
+  Sunrise,
+  Route as RouteIcon
 } from "lucide-react";
 import { Toaster } from "@/components/ui/sonner";
 import { queryClient } from "@/lib/queryClient";
@@ -67,6 +68,7 @@ import InspiracionDiariaPage from "@/pages/inspiracion-diaria";
 import SaludoInicioPage from "@/pages/saludo-inicio";
 import ParaEsteMomentoPage from "@/pages/para-este-momento";
 import CategoriasReflexionPage from "@/pages/categorias-reflexion";
+import TuCaminoPage from "@/pages/tu-camino";
 
 const clerkPubKey = publishableKeyFromHost(
   window.location.hostname,
@@ -215,6 +217,7 @@ const NAV_SECTIONS = [
       { href: "/dormir-orden", label: "Dormir - Orden", icon: ListOrdered },
       { href: "/sonidos-orden", label: "Sonidos - Orden", icon: ListOrdered },
       { href: "/portadas-avatares", label: "Portadas y avatares", icon: Images },
+      { href: "/tu-camino", label: "Tu camino", icon: RouteIcon },
       { href: "/geometrix", label: "Geometrix", icon: Hexagon },
     ],
   },
@@ -407,6 +410,7 @@ function AdminGate() {
         <Route path="/dormir-orden" component={DormirOrdenPage} />
         <Route path="/sonidos-orden" component={SonidosOrdenPage} />
         <Route path="/portadas-avatares" component={PortadasAvataresPage} />
+        <Route path="/tu-camino" component={TuCaminoPage} />
         <Route path="/resonadores" component={ResonadoresPage} />
         <Route component={NotFound} />
       </Switch>

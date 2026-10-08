@@ -72,6 +72,7 @@ const { GrowthStageDetail } = load("../components/GrowthStageDetail.tsx", (name)
     })(),
     "@/context/SceneThemeContext": { useSceneTheme: () => ({ theme: { gradient: colors, gradientLocations: locations, gradientStart: { x: 0, y: 0 }, gradientEnd: { x: 0, y: 1 } } }) },
     "@/data/growthLevels": { growthLevels },
+    "@/context/GrowthContext": { useGrowth: () => ({ levels: growthLevels }) },
   };
   assert.ok(name in imports, `Missing detail mock: ${name}`);
   return imports[name];

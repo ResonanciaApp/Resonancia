@@ -1,3 +1,4 @@
+import { ownsGrowthAvatar } from "../lib/growthService";
 import { Router, type IRouter } from "express";
 import { and, desc, eq, ilike, inArray, ne, or, sql } from "drizzle-orm";
 import { clerkClient, getAuth } from "@clerk/express";
@@ -118,7 +119,7 @@ router.patch("/me", requireAuth, async (req, res) => {
           .where(and(eq(coverPresetsTable.id, parsed.data.avatarPresetId), eq(coverPresetsTable.scope, "profile")))
           .limit(1).for("update");
         if (!preset) throw new Error("avatar_missing");
-        if (preset.isLocked && currentUser.avatarPresetId !== preset.id) throw new Error("avatar_locked");
+        if (preset.isLocked && currentUser.avatarPresetId !== preset.id && !await ownsGrowthAvatar(me.id, preset.id, tx)) throw new Error("avatar_locked");
       }
       const [saved] = await tx.update(usersTable).set(updates)
         .where(eq(usersTable.id, me.id)).returning();

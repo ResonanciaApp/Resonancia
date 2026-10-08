@@ -37,9 +37,9 @@ test("Perfil stage shares Tu camino pill styling for Índigo 2 and Cloudy withou
   const levels = readFileSync(new URL("../data/growthLevels.ts", import.meta.url), "utf8");
   const currentName = levels.match(/id: "intencion", name: "([^"]+)"/)![1];
   for (const theme of ["indigo-2", "cloudy"]) {
-    const Pill = new Function("React", "View", "Text", "MaterialCommunityIcons", "useColors", "useSceneTheme", "styles", "GROWTH_COLORS", "CLOUDY_GROWTH_DAY_PILL_BACKGROUND", "growthLevels", compiled)(
+    const Pill = new Function("React", "View", "Text", "MaterialCommunityIcons", "useColors", "useSceneTheme", "styles", "GROWTH_COLORS", "CLOUDY_GROWTH_DAY_PILL_BACKGROUND", "useGrowth", compiled)(
       React, Native, Native, Native, () => ({ foreground: "#F9F9F9" }), () => ({ theme: { id: theme } }),
-      styles, { current: "#E7B95C" }, cloudy, [{ name: currentName }],
+      styles, { current: "#E7B95C" }, cloudy, () => ({ currentStage: { name: currentName } }),
     );
     const html = renderToStaticMarkup(React.createElement(Pill));
     assert.match(html, /Intención/);
@@ -50,6 +50,7 @@ test("Perfil stage shares Tu camino pill styling for Índigo 2 and Cloudy withou
     assert.match(html, /data-margin-top="2"/);
     assert.match(html, /data-color="#F9F9F9"[^>]*>Intención/);
   }
-  assert.match(component, /growthLevels\[0\]\.name/);
+  assert.match(component, /level\.name/);
+  assert.match(component, /stage === undefined \? currentStage : stage/);
   assert.doesNotMatch(component, /totalActiveDays|streak|Math\.floor/);
 });

@@ -8,6 +8,290 @@
 import * as zod from 'zod';
 
 
+export const getGrowthCatalogResponseStagesItemIdMax = 100;
+
+export const getGrowthCatalogResponseStagesItemNameMax = 100;
+
+export const getGrowthCatalogResponseStagesItemStartDayMin = 0;
+export const getGrowthCatalogResponseStagesItemStartDayMax = 1000000;
+
+export const getGrowthCatalogResponseStagesItemEndDayMin = 0;
+export const getGrowthCatalogResponseStagesItemEndDayMax = 1000000;
+
+export const getGrowthCatalogResponseStagesItemStoryMax = 2000;
+
+
+
+export const getGrowthCatalogResponseStagesItemRewardsItemTextMax = 240;
+
+export const getGrowthCatalogResponseStagesItemRewardsItemAmountMax = 1000000;
+
+export const getGrowthCatalogResponseStagesItemRewardsMax = 3;
+
+
+
+export const GetGrowthCatalogResponse = zod.object({
+  "revision": zod.number(),
+  "updatedAt": zod.string(),
+  "stages": zod.array(zod.object({
+  "id": zod.string().min(1).max(getGrowthCatalogResponseStagesItemIdMax),
+  "group": zod.enum(['florecimiento', 'ascenso']),
+  "name": zod.string().min(1).max(getGrowthCatalogResponseStagesItemNameMax),
+  "startDay": zod.number().min(getGrowthCatalogResponseStagesItemStartDayMin).max(getGrowthCatalogResponseStagesItemStartDayMax),
+  "endDay": zod.number().min(getGrowthCatalogResponseStagesItemEndDayMin).max(getGrowthCatalogResponseStagesItemEndDayMax),
+  "story": zod.string().max(getGrowthCatalogResponseStagesItemStoryMax),
+  "imageUrl": zod.string().min(1),
+  "rewards": zod.array(zod.object({
+  "id": zod.string().min(1),
+  "enabled": zod.boolean(),
+  "text": zod.string().max(getGrowthCatalogResponseStagesItemRewardsItemTextMax),
+  "amount": zod.number().min(1).max(getGrowthCatalogResponseStagesItemRewardsItemAmountMax)
+})).max(getGrowthCatalogResponseStagesItemRewardsMax)
+}))
+})
+
+
+
+export const saveGrowthCatalogBodyStagesItemIdMax = 100;
+
+export const saveGrowthCatalogBodyStagesItemNameMax = 100;
+
+export const saveGrowthCatalogBodyStagesItemStartDayMin = 0;
+export const saveGrowthCatalogBodyStagesItemStartDayMax = 1000000;
+
+export const saveGrowthCatalogBodyStagesItemEndDayMin = 0;
+export const saveGrowthCatalogBodyStagesItemEndDayMax = 1000000;
+
+export const saveGrowthCatalogBodyStagesItemStoryMax = 2000;
+
+
+
+export const saveGrowthCatalogBodyStagesItemRewardsItemTextMax = 240;
+
+export const saveGrowthCatalogBodyStagesItemRewardsItemAmountMax = 1000000;
+
+export const saveGrowthCatalogBodyStagesItemRewardsMax = 3;
+
+export const saveGrowthCatalogBodyStagesMax = 200;
+
+
+
+export const SaveGrowthCatalogBody = zod.object({
+  "revision": zod.number().min(1),
+  "stages": zod.array(zod.object({
+  "id": zod.string().min(1).max(saveGrowthCatalogBodyStagesItemIdMax),
+  "group": zod.enum(['florecimiento', 'ascenso']),
+  "name": zod.string().min(1).max(saveGrowthCatalogBodyStagesItemNameMax),
+  "startDay": zod.number().min(saveGrowthCatalogBodyStagesItemStartDayMin).max(saveGrowthCatalogBodyStagesItemStartDayMax),
+  "endDay": zod.number().min(saveGrowthCatalogBodyStagesItemEndDayMin).max(saveGrowthCatalogBodyStagesItemEndDayMax),
+  "story": zod.string().max(saveGrowthCatalogBodyStagesItemStoryMax),
+  "imageUrl": zod.string().min(1),
+  "rewards": zod.array(zod.object({
+  "id": zod.string().min(1),
+  "enabled": zod.boolean(),
+  "text": zod.string().max(saveGrowthCatalogBodyStagesItemRewardsItemTextMax),
+  "amount": zod.number().min(1).max(saveGrowthCatalogBodyStagesItemRewardsItemAmountMax)
+})).max(saveGrowthCatalogBodyStagesItemRewardsMax)
+})).max(saveGrowthCatalogBodyStagesMax)
+})
+
+export const saveGrowthCatalogResponseStagesItemIdMax = 100;
+
+export const saveGrowthCatalogResponseStagesItemNameMax = 100;
+
+export const saveGrowthCatalogResponseStagesItemStartDayMin = 0;
+export const saveGrowthCatalogResponseStagesItemStartDayMax = 1000000;
+
+export const saveGrowthCatalogResponseStagesItemEndDayMin = 0;
+export const saveGrowthCatalogResponseStagesItemEndDayMax = 1000000;
+
+export const saveGrowthCatalogResponseStagesItemStoryMax = 2000;
+
+
+
+export const saveGrowthCatalogResponseStagesItemRewardsItemTextMax = 240;
+
+export const saveGrowthCatalogResponseStagesItemRewardsItemAmountMax = 1000000;
+
+export const saveGrowthCatalogResponseStagesItemRewardsMax = 3;
+
+
+
+export const SaveGrowthCatalogResponse = zod.object({
+  "revision": zod.number(),
+  "updatedAt": zod.string(),
+  "stages": zod.array(zod.object({
+  "id": zod.string().min(1).max(saveGrowthCatalogResponseStagesItemIdMax),
+  "group": zod.enum(['florecimiento', 'ascenso']),
+  "name": zod.string().min(1).max(saveGrowthCatalogResponseStagesItemNameMax),
+  "startDay": zod.number().min(saveGrowthCatalogResponseStagesItemStartDayMin).max(saveGrowthCatalogResponseStagesItemStartDayMax),
+  "endDay": zod.number().min(saveGrowthCatalogResponseStagesItemEndDayMin).max(saveGrowthCatalogResponseStagesItemEndDayMax),
+  "story": zod.string().max(saveGrowthCatalogResponseStagesItemStoryMax),
+  "imageUrl": zod.string().min(1),
+  "rewards": zod.array(zod.object({
+  "id": zod.string().min(1),
+  "enabled": zod.boolean(),
+  "text": zod.string().max(saveGrowthCatalogResponseStagesItemRewardsItemTextMax),
+  "amount": zod.number().min(1).max(saveGrowthCatalogResponseStagesItemRewardsItemAmountMax)
+})).max(saveGrowthCatalogResponseStagesItemRewardsMax)
+}))
+})
+
+
+export const getMyGrowthResponseCurrentStageOneIdMax = 100;
+
+export const getMyGrowthResponseCurrentStageOneNameMax = 100;
+
+export const getMyGrowthResponseCurrentStageOneStartDayMin = 0;
+export const getMyGrowthResponseCurrentStageOneStartDayMax = 1000000;
+
+export const getMyGrowthResponseCurrentStageOneEndDayMin = 0;
+export const getMyGrowthResponseCurrentStageOneEndDayMax = 1000000;
+
+export const getMyGrowthResponseCurrentStageOneStoryMax = 2000;
+
+
+
+export const getMyGrowthResponseCurrentStageOneRewardsItemTextMax = 240;
+
+export const getMyGrowthResponseCurrentStageOneRewardsItemAmountMax = 1000000;
+
+export const getMyGrowthResponseCurrentStageOneRewardsMax = 3;
+
+
+
+export const GetMyGrowthResponse = zod.object({
+  "ownerClerkUserId": zod.string(),
+  "totalActiveDays": zod.number(),
+  "balance": zod.number(),
+  "unlockedAvatarIds": zod.array(zod.string()),
+  "reachedStageIds": zod.array(zod.string()),
+  "grantedRewards": zod.array(zod.object({
+  "rewardId": zod.string(),
+  "amount": zod.number()
+})),
+  "currentStage": zod.union([zod.object({
+  "id": zod.string().min(1).max(getMyGrowthResponseCurrentStageOneIdMax),
+  "group": zod.enum(['florecimiento', 'ascenso']),
+  "name": zod.string().min(1).max(getMyGrowthResponseCurrentStageOneNameMax),
+  "startDay": zod.number().min(getMyGrowthResponseCurrentStageOneStartDayMin).max(getMyGrowthResponseCurrentStageOneStartDayMax),
+  "endDay": zod.number().min(getMyGrowthResponseCurrentStageOneEndDayMin).max(getMyGrowthResponseCurrentStageOneEndDayMax),
+  "story": zod.string().max(getMyGrowthResponseCurrentStageOneStoryMax),
+  "imageUrl": zod.string().min(1),
+  "rewards": zod.array(zod.object({
+  "id": zod.string().min(1),
+  "enabled": zod.boolean(),
+  "text": zod.string().max(getMyGrowthResponseCurrentStageOneRewardsItemTextMax),
+  "amount": zod.number().min(1).max(getMyGrowthResponseCurrentStageOneRewardsItemAmountMax)
+})).max(getMyGrowthResponseCurrentStageOneRewardsMax)
+}),zod.null()])
+})
+
+
+
+
+
+
+export const UnlockGrowthAvatarBody = zod.object({
+  "avatarId": zod.string().min(1),
+  "expectedClerkUserId": zod.string().min(1)
+})
+
+export const unlockGrowthAvatarResponseCurrentStageOneIdMax = 100;
+
+export const unlockGrowthAvatarResponseCurrentStageOneNameMax = 100;
+
+export const unlockGrowthAvatarResponseCurrentStageOneStartDayMin = 0;
+export const unlockGrowthAvatarResponseCurrentStageOneStartDayMax = 1000000;
+
+export const unlockGrowthAvatarResponseCurrentStageOneEndDayMin = 0;
+export const unlockGrowthAvatarResponseCurrentStageOneEndDayMax = 1000000;
+
+export const unlockGrowthAvatarResponseCurrentStageOneStoryMax = 2000;
+
+
+
+export const unlockGrowthAvatarResponseCurrentStageOneRewardsItemTextMax = 240;
+
+export const unlockGrowthAvatarResponseCurrentStageOneRewardsItemAmountMax = 1000000;
+
+export const unlockGrowthAvatarResponseCurrentStageOneRewardsMax = 3;
+
+
+
+export const UnlockGrowthAvatarResponse = zod.object({
+  "ownerClerkUserId": zod.string(),
+  "totalActiveDays": zod.number(),
+  "balance": zod.number(),
+  "unlockedAvatarIds": zod.array(zod.string()),
+  "reachedStageIds": zod.array(zod.string()),
+  "grantedRewards": zod.array(zod.object({
+  "rewardId": zod.string(),
+  "amount": zod.number()
+})),
+  "currentStage": zod.union([zod.object({
+  "id": zod.string().min(1).max(unlockGrowthAvatarResponseCurrentStageOneIdMax),
+  "group": zod.enum(['florecimiento', 'ascenso']),
+  "name": zod.string().min(1).max(unlockGrowthAvatarResponseCurrentStageOneNameMax),
+  "startDay": zod.number().min(unlockGrowthAvatarResponseCurrentStageOneStartDayMin).max(unlockGrowthAvatarResponseCurrentStageOneStartDayMax),
+  "endDay": zod.number().min(unlockGrowthAvatarResponseCurrentStageOneEndDayMin).max(unlockGrowthAvatarResponseCurrentStageOneEndDayMax),
+  "story": zod.string().max(unlockGrowthAvatarResponseCurrentStageOneStoryMax),
+  "imageUrl": zod.string().min(1),
+  "rewards": zod.array(zod.object({
+  "id": zod.string().min(1),
+  "enabled": zod.boolean(),
+  "text": zod.string().max(unlockGrowthAvatarResponseCurrentStageOneRewardsItemTextMax),
+  "amount": zod.number().min(1).max(unlockGrowthAvatarResponseCurrentStageOneRewardsItemAmountMax)
+})).max(unlockGrowthAvatarResponseCurrentStageOneRewardsMax)
+}),zod.null()])
+})
+
+
+export const GetUserGrowthParams = zod.object({
+  "userId": zod.coerce.string()
+})
+
+export const getUserGrowthResponseCurrentStageOneIdMax = 100;
+
+export const getUserGrowthResponseCurrentStageOneNameMax = 100;
+
+export const getUserGrowthResponseCurrentStageOneStartDayMin = 0;
+export const getUserGrowthResponseCurrentStageOneStartDayMax = 1000000;
+
+export const getUserGrowthResponseCurrentStageOneEndDayMin = 0;
+export const getUserGrowthResponseCurrentStageOneEndDayMax = 1000000;
+
+export const getUserGrowthResponseCurrentStageOneStoryMax = 2000;
+
+
+
+export const getUserGrowthResponseCurrentStageOneRewardsItemTextMax = 240;
+
+export const getUserGrowthResponseCurrentStageOneRewardsItemAmountMax = 1000000;
+
+export const getUserGrowthResponseCurrentStageOneRewardsMax = 3;
+
+
+
+export const GetUserGrowthResponse = zod.object({
+  "currentStage": zod.union([zod.object({
+  "id": zod.string().min(1).max(getUserGrowthResponseCurrentStageOneIdMax),
+  "group": zod.enum(['florecimiento', 'ascenso']),
+  "name": zod.string().min(1).max(getUserGrowthResponseCurrentStageOneNameMax),
+  "startDay": zod.number().min(getUserGrowthResponseCurrentStageOneStartDayMin).max(getUserGrowthResponseCurrentStageOneStartDayMax),
+  "endDay": zod.number().min(getUserGrowthResponseCurrentStageOneEndDayMin).max(getUserGrowthResponseCurrentStageOneEndDayMax),
+  "story": zod.string().max(getUserGrowthResponseCurrentStageOneStoryMax),
+  "imageUrl": zod.string().min(1),
+  "rewards": zod.array(zod.object({
+  "id": zod.string().min(1),
+  "enabled": zod.boolean(),
+  "text": zod.string().max(getUserGrowthResponseCurrentStageOneRewardsItemTextMax),
+  "amount": zod.number().min(1).max(getUserGrowthResponseCurrentStageOneRewardsItemAmountMax)
+})).max(getUserGrowthResponseCurrentStageOneRewardsMax)
+}),zod.null()])
+})
+
+
 /**
  * @summary Active unique accounts and a bounded sample of shareable profile photos
  */

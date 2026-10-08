@@ -2,6 +2,7 @@ import app from "./app";
 import { pool } from "@workspace/db";
 import { logger } from "./lib/logger";
 import { startAccountDeletionCleanup } from "./lib/accountDeletionCleanup";
+import { initializeGrowthSchema } from "./lib/growthSchema";
 
 // PostgreSQL may terminate idle clients during maintenance. Without an error
 // listener, pg emits an unhandled event and brings down the entire API server.
@@ -23,7 +24,7 @@ if (Number.isNaN(port) || port <= 0) {
   throw new Error(`Invalid PORT value: "${rawPort}"`);
 }
 
-app.listen(port, (err) => {
+initializeGrowthSchema().then(() => app.listen(port, (err) => {
   if (err) {
     logger.error({ err }, "Error listening on port");
     process.exit(1);
@@ -31,4 +32,7 @@ app.listen(port, (err) => {
 
   logger.info({ port }, "Server listening");
   startAccountDeletionCleanup();
+})).catch(error => {
+  logger.error({ err: error }, "Tu camino schema initialization failed");
+  process.exit(1);
 });

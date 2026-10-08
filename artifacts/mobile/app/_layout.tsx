@@ -64,6 +64,7 @@ import { MilestoneCelebration } from "@/components/MilestoneCelebration";
 import { StreakCelebrationProvider } from "@/context/StreakCelebrationContext";
 import { StreakCelebrationFlow } from "@/components/StreakCelebrationFlow";
 import { PlayerProvider } from "@/context/PlayerContext";
+import { GrowthProvider } from "@/context/GrowthContext";
 import { AmbientalDurationProvider } from "@/context/AmbientalDurationContext";
 import { GeoUniverseProvider } from "@/context/GeoUniverseContext";
 import { RachaProvider } from "@/context/RachaContext";
@@ -552,6 +553,7 @@ export default function RootLayout() {
                 <PremiumProvider>
                 <DownloadProvider>
                 <PlayerProvider>
+                  <GrowthProvider>
                   <AmbientPlayerProvider>
                     <MixerProvider>
                     <MilestonesProvider>
@@ -597,6 +599,7 @@ export default function RootLayout() {
                     </MilestonesProvider>
                     </MixerProvider>
                   </AmbientPlayerProvider>
+                  </GrowthProvider>
                 </PlayerProvider>
                 </DownloadProvider>
                 </PremiumProvider>

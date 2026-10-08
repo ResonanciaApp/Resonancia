@@ -55,6 +55,7 @@ import { isIndigo2ThemeId, isIndigoThemeId } from "@/config/scene-themes";
 import { useUserProfile } from "@/context/UserProfileContext";
 import { usePremium } from "@/context/PremiumContext";
 import { useAuth } from "@/context/AuthContext";
+import { useGrowth } from "@/context/GrowthContext";
 import type { LibraryTab } from "@/context/DrawerContext";
 import { useColors } from "@/hooks/useColors";
 import { IMAGE_TRANSITION } from "@/constants/imagePlaceholder";
@@ -309,6 +310,8 @@ export function ProfileScreenBase({
   const { theme: activeTheme, activeSceneId } = useSceneTheme();
   const insets = useSafeAreaInsets();
   const { email, logout } = useAuth();
+  const growth = useGrowth();
+  const avatarSpendRef = useRef(false);
   const {
     username,
     lastName,
@@ -813,14 +816,62 @@ export function ProfileScreenBase({
     }
   };
 
-  const pickAccountAvatarPreset = (preset: (typeof profileCatalog)[number]) => {
-    if (preset.isLocked || accountSavingRef.current || accountClosedRef.current) return;
+  const selectAccountAvatar = (preset: (typeof profileCatalog)[number]) => {
+    if (accountSavingRef.current || accountClosedRef.current) return;
     setAccountAvatarPresetId(preset.id);
     setAccountPhotoUri(null);
   };
+  const pickAccountAvatarPreset = async (preset: (typeof profileCatalog)[number]) => {
+    if (accountSavingRef.current || accountClosedRef.current || avatarSpendRef.current) return;
+    if (!preset.isLocked || growth.progress?.unlockedAvatarIds.includes(preset.id) || preset.id === selectedAvatarPresetId) {
+      selectAccountAvatar(preset);
+      return;
+    }
+    // Refetch before showing a spend confirmation; offline state cannot authorize a purchase.
+    avatarSpendRef.current = true;
+    let refreshed: { data?: typeof growth.progress; isError?: boolean };
+    try { refreshed = await growth.refresh(); }
+    finally { avatarSpendRef.current = false; }
+    if (accountClosedRef.current) return;
+    if (refreshed.isError || !refreshed.data) {
+      Alert.alert("No se pudo verificar", "Conéctate e inicia sesión para consultar tus desbloqueos.");
+      return;
+    }
+    if (refreshed.data.unlockedAvatarIds.includes(preset.id)) {
+      selectAccountAvatar(preset);
+      return;
+    }
+    if (refreshed.data.balance < 1) {
+      Alert.alert("Avatar bloqueado", "Avanza en Tu camino para ganar desbloqueos y elegir avatares.");
+      return;
+    }
+    const spend = async () => {
+      if (avatarSpendRef.current || accountClosedRef.current) return;
+      avatarSpendRef.current = true;
+      try {
+        await growth.unlock(preset.id);
+        // The owned avatar remains available even if this profile draft is discarded.
+        selectAccountAvatar(preset);
+      } catch {
+        Alert.alert("No se pudo desbloquear", "Revisa tu conexión y saldo e inténtalo de nuevo. El servidor confirma cada gasto.");
+      } finally { avatarSpendRef.current = false; }
+    };
+    const message = `Usarás 1 de tus ${refreshed.data.balance} desbloqueos. Este avatar quedará disponible para ti.`;
+    if (Platform.OS === "web") {
+      if (window.confirm(`¿Desbloquear este avatar?\n${message}`)) await spend();
+    } else {
+      Alert.alert("¿Desbloquear este avatar?", message, [
+        { text: "Cancelar", style: "cancel" },
+        { text: "Desbloquear", onPress: () => { void spend(); } },
+      ]);
+    }
+  };
 
   useEffect(() => {
-    if (accountPhotoPickerVisible) void refreshProfileCatalog();
+    if (accountPhotoPickerVisible) {
+      void refreshProfileCatalog();
+      void growth.refresh();
+    }
   }, [accountPhotoPickerVisible, refreshProfileCatalog]);
 
   useEffect(() => {
@@ -1152,6 +1203,9 @@ export function ProfileScreenBase({
                   <Feather name="x" size={22} color="#F9F9F9" />
                 </Pressable>
               </View>
+              <Text accessibilityLiveRegion="polite" style={{ color: "#C4C4C4", marginHorizontal: 16, marginBottom: 8 }}>
+                {growth.progress ? `${growth.progress.balance} desbloqueos disponibles` : "Inicia sesión y avanza en Tu camino para ganar desbloqueos"}
+              </Text>
               <View style={styles.accountCoverPreviewSlot}>
                 {accountSelectedProfilePreset ? (
                   <Image
@@ -1185,13 +1239,14 @@ export function ProfileScreenBase({
                 columnWrapperStyle={styles.accountCoverPresetGridRow}
                 renderItem={({ item: preset }) => {
                    const selected = preset.id === (accountSelectedProfilePreset?.id ?? accountAvatarPresetId);
+                  const locked = preset.isLocked && !growth.progress?.unlockedAvatarIds.includes(preset.id) && preset.id !== selectedAvatarPresetId;
                   return (
                     <Pressable
                       onPress={() => void pickAccountAvatarPreset(preset)}
                       accessibilityRole="button"
-                      accessibilityLabel={`Avatar: ${preset.label}${preset.isLocked ? ", bloqueado" : ""}`}
-                       accessibilityState={{ selected, disabled: !!preset.isLocked || accountSaving }}
-                       disabled={!!preset.isLocked || accountSaving}
+                      accessibilityLabel={`Avatar: ${preset.label}${locked ? ", desbloquear con 1 cupo" : ""}`}
+                       accessibilityState={{ selected, disabled: accountSaving || growth.spending }}
+                       disabled={accountSaving || growth.spending}
                       style={({ pressed }) => [
                         styles.accountCoverPresetFrame,
                         selected && styles.accountCoverPresetFrameSelected,
@@ -1203,7 +1258,7 @@ export function ProfileScreenBase({
                         style={styles.accountCoverPresetPhoto}
                         contentFit="cover"
                       />
-                      {preset.isLocked && (
+                      {locked && (
                         <View pointerEvents="none" style={[StyleSheet.absoluteFill, styles.accountAvatarLockedOverlay]}>
                           <MaterialCommunityIcons name="lock" size={16} color="#F9F9F9" accessibilityElementsHidden importantForAccessibility="no" />
                         </View>

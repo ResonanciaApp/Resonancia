@@ -39,6 +39,73 @@ tags:
   - name: greeting
     description: Global greeting shown on Inicio
 paths:
+  /growth/catalog:
+    get:
+      operationId: getGrowthCatalog
+      tags: [catalog]
+      responses:
+        "200":
+          description: Configuración editorial de Tu camino
+          content:
+            application/json:
+              schema: { $ref: "#/components/schemas/GrowthCatalog" }
+  /admin/growth/catalog:
+    put:
+      operationId: saveGrowthCatalog
+      tags: [admin]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { $ref: "#/components/schemas/GrowthCatalogInput" }
+      responses:
+        "200":
+          description: Configuración guardada
+          content:
+            application/json:
+              schema: { $ref: "#/components/schemas/GrowthCatalog" }
+        "409": { description: La configuración cambió; recargar antes de guardar }
+  /me/growth:
+    get:
+      operationId: getMyGrowth
+      tags: [users]
+      responses:
+        "200":
+          description: Progreso y saldo verificados
+          content:
+            application/json:
+              schema: { $ref: "#/components/schemas/GrowthProgress" }
+  /me/growth/avatars/unlock:
+    post:
+      operationId: unlockGrowthAvatar
+      tags: [users]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { $ref: "#/components/schemas/GrowthAvatarInput" }
+      responses:
+        "200":
+          description: Avatar desbloqueado y saldo restante
+          content:
+            application/json:
+              schema: { $ref: "#/components/schemas/GrowthProgress" }
+        "409": { description: Saldo insuficiente }
+  /users/{userId}/growth:
+    get:
+      operationId: getUserGrowth
+      tags: [users]
+      parameters:
+        - name: userId
+          in: path
+          required: true
+          schema: { type: string }
+      responses:
+        "200":
+          description: Etapa pública del usuario visitado, sin saldo privado
+          content:
+            application/json:
+              schema: { $ref: "#/components/schemas/GrowthIdentity" }
   /community/presence:
     get:
       operationId: getCommunityPresence
@@ -5337,6 +5404,87 @@ paths:
         "404": {description: Reflection story not found}
 components:
   schemas:
+    GrowthReward:
+      type: object
+      required: [id, enabled, text, amount]
+      properties:
+        id: { type: string, minLength: 1 }
+        enabled: { type: boolean }
+        text: { type: string, maxLength: 240 }
+        amount: { type: integer, minimum: 1, maximum: 1000000 }
+    GrowthStage:
+      type: object
+      required: [id, group, name, startDay, endDay, story, imageUrl, rewards]
+      properties:
+        id: { type: string, minLength: 1, maxLength: 100 }
+        group: { type: string, enum: [florecimiento, ascenso] }
+        name: { type: string, minLength: 1, maxLength: 100 }
+        startDay: { type: integer, minimum: 0, maximum: 1000000 }
+        endDay: { type: integer, minimum: 0, maximum: 1000000 }
+        story: { type: string, maxLength: 2000 }
+        imageUrl: { type: string, minLength: 1 }
+        rewards:
+          type: array
+          maxItems: 3
+          items: { $ref: "#/components/schemas/GrowthReward" }
+    GrowthCatalogInput:
+      type: object
+      required: [revision, stages]
+      properties:
+        revision: { type: integer, minimum: 1 }
+        stages:
+          type: array
+          maxItems: 200
+          items: { $ref: "#/components/schemas/GrowthStage" }
+    GrowthCatalog:
+      type: object
+      required: [revision, stages, updatedAt]
+      properties:
+        revision: { type: integer }
+        updatedAt: { type: string }
+        stages:
+          type: array
+          items: { $ref: "#/components/schemas/GrowthStage" }
+    GrowthIdentity:
+      type: object
+      required: [currentStage]
+      properties:
+        currentStage:
+          anyOf:
+            - { $ref: "#/components/schemas/GrowthStage" }
+            - { type: "null" }
+    GrowthProgress:
+      type: object
+      required: [ownerClerkUserId, totalActiveDays, balance, unlockedAvatarIds, reachedStageIds, currentStage, grantedRewards]
+      properties:
+        ownerClerkUserId: { type: string }
+        totalActiveDays: { type: integer }
+        balance: { type: integer }
+        unlockedAvatarIds:
+          type: array
+          items: { type: string }
+        reachedStageIds:
+          type: array
+          items: { type: string }
+        grantedRewards:
+          type: array
+          items: { $ref: "#/components/schemas/GrowthGrant" }
+        currentStage:
+          anyOf:
+            - { $ref: "#/components/schemas/GrowthStage" }
+            - { type: "null" }
+    GrowthAvatarInput:
+      type: object
+      required: [avatarId, expectedClerkUserId]
+      properties:
+        avatarId: { type: string, minLength: 1 }
+        expectedClerkUserId: { type: string, minLength: 1 }
+    GrowthGrant:
+      type: object
+      required: [rewardId, amount]
+      properties:
+        rewardId: { type: string }
+        amount: { type: integer }
     CommunityPresenceSession:
       type: object
       required: [sessionId]

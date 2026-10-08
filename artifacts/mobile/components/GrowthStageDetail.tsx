@@ -16,7 +16,7 @@ import { CinematicFadeSlide } from "@/components/CinematicFadeSlide";
 import { GrowthLevelImage } from "@/components/GrowthJourney";
 import { MEMBERSHIP_AURORA, STREAK_INFO_COLORS } from "@/constants/colors";
 import { useSceneTheme } from "@/context/SceneThemeContext";
-import { growthLevels } from "@/data/growthLevels";
+import { useGrowth } from "@/context/GrowthContext";
 import { getMoodHeroGradient } from "@/utils/moodHeroGradient";
 
 const WHITE = STREAK_INFO_COLORS.foreground;
@@ -26,8 +26,6 @@ const BASE_DELAY = 150;
 // Unmasked original artwork; Perfil and Tu camino retain their radial-alpha assets.
 const FULL_HERO_IMAGE = require("../assets/images/growth/00-intencion-profile-square.png");
 
-const level = growthLevels[0];
-const DAY_LABEL = "0 días";
 const EXPLANATION =
   "Antes del primer día hay un momento de decisión. No necesitas hacer nada todavía: solo reconocer que quieres darte un espacio de calma y volver a él, a tu ritmo.";
 
@@ -38,6 +36,11 @@ export function GrowthStageDetail({
 }) {
   const insets = useSafeAreaInsets();
   const { theme } = useSceneTheme();
+  const { levels } = useGrowth();
+  const level = levels.find(item => item.id === "intencion");
+  React.useEffect(() => {
+    if (!level) onClose();
+  }, [level, onClose]);
   const { width, height } = useWindowDimensions();
   const topPad = Platform.OS === "web" ? 67 : Math.max(insets.top, 40);
   const bottomPad = Platform.OS === "web" ? 34 : insets.bottom;
@@ -45,6 +48,8 @@ export function GrowthStageDetail({
   const heroHeight = height;
   const fadeColor = theme.gradient[0] || "#080910";
   const heroGradient = getMoodHeroGradient(fadeColor, heroHeight);
+  if (!level) return null;
+  const dayLabel = level.startDay === level.endDay ? `${level.startDay} días` : `${level.startDay}–${level.endDay} días`;
 
   return (
     <LinearGradient
@@ -66,7 +71,7 @@ export function GrowthStageDetail({
             translateYFrom={0}
             style={[StyleSheet.absoluteFill, styles.heroImageOffset]}
           >
-            <GrowthLevelImage level={level} size={heroSize} height={heroHeight} sourceModule={FULL_HERO_IMAGE} />
+            <GrowthLevelImage level={level} size={heroSize} height={heroHeight} sourceModule={typeof level.image === "string" && level.image.startsWith("/objects/") ? undefined : FULL_HERO_IMAGE} />
           </CinematicFadeSlide>
           <LinearGradient
             testID="growth-stage-detail-hero-gradient"
@@ -91,7 +96,7 @@ export function GrowthStageDetail({
             <Text style={styles.stageName} accessibilityRole="header">{level.name}</Text>
             <View style={styles.dayPill}>
               <MaterialCommunityIcons name="spa" size={14} color={GOLD} />
-              <Text style={styles.days}>{DAY_LABEL}</Text>
+              <Text style={styles.days}>{dayLabel}</Text>
             </View>
           </View>
         </CinematicFadeSlide>

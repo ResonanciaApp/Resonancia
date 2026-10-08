@@ -15,6 +15,12 @@ Los candados conceden cantidades de avatares de Perfil a elección del usuario, 
 
 **How to apply:** Separar cupos ganados de avatares elegidos; no repartir lotes automáticamente ni fijar 50 avatares en los textos. Permitir el canje funcional usando el selector existente, sin inventar una pantalla automática de premios. El bloqueo editorial global puede coexistir con un desbloqueo individual ganado.
 
+Las etapas se alcanzan al llegar al día inicial del rango. Una recompensa concedida conserva su cantidad original: editar cuotas afecta a concesiones futuras, y retirar etapas o candados no revoca avances, cupos ni avatares ya ganados.
+
+**Why:** Los días del rango describen la etapa actual; el premio acompaña la llegada a esa etapa. La edición editorial no debe retirar derechos que el usuario ya obtuvo o gastó.
+
+**How to apply:** Mantener esta política explícita en Admin. Cualquier ajuste retroactivo de cupos debe tratarse como una operación diferente y autorizada, no como efecto secundario de editar el catálogo.
+
 En Perfil, la sección del banner de Intención se titula «Tu camino», con la misma tipografía y alineación del encabezado de Puntos creatividad. El nombre de la etapa «Intención» permanece dentro del banner.
 
 **Why:** El usuario pidió añadir el título de sección tomando Puntos creatividad como referencia, no renombrar la etapa.

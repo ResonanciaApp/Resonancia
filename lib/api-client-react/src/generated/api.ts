@@ -142,6 +142,11 @@ import type {
   GetSharedMixesParams,
   Greeting,
   GreetingUpdate,
+  GrowthAvatarInput,
+  GrowthCatalog,
+  GrowthCatalogInput,
+  GrowthIdentity,
+  GrowthProgress,
   GuideConfig,
   GuideConfigInput,
   GuideConfigUpdate,
@@ -271,6 +276,349 @@ type AwaitedInput<T> = PromiseLike<T> | T;
 
 
 type SecondParameter<T extends (...args: never) => unknown> = Parameters<T>[1];
+
+
+
+export const getGetGrowthCatalogUrl = () => {
+
+
+
+
+  return `/api/growth/catalog`
+}
+
+export const getGrowthCatalog = async ( options?: RequestInit): Promise<GrowthCatalog> => {
+
+  return customFetch<GrowthCatalog>(getGetGrowthCatalogUrl(),
+  {
+    ...options,
+    method: 'GET'
+
+
+  }
+);}
+
+
+
+
+
+export const getGetGrowthCatalogQueryKey = () => {
+    return [
+    `/api/growth/catalog`
+    ] as const;
+    }
+
+
+export const getGetGrowthCatalogQueryOptions = <TData = Awaited<ReturnType<typeof getGrowthCatalog>>, TError = ErrorType<unknown>>( options?: { query?:UseQueryOptions<Awaited<ReturnType<typeof getGrowthCatalog>>, TError, TData>, request?: SecondParameter<typeof customFetch>}
+) => {
+
+const {query: queryOptions, request: requestOptions} = options ?? {};
+
+  const queryKey =  queryOptions?.queryKey ?? getGetGrowthCatalogQueryKey();
+
+
+
+    const queryFn: QueryFunction<Awaited<ReturnType<typeof getGrowthCatalog>>> = ({ signal }) => getGrowthCatalog({ signal, ...requestOptions });
+
+
+
+
+
+   return  { queryKey, queryFn, ...queryOptions} as UseQueryOptions<Awaited<ReturnType<typeof getGrowthCatalog>>, TError, TData> & { queryKey: QueryKey }
+}
+
+export type GetGrowthCatalogQueryResult = NonNullable<Awaited<ReturnType<typeof getGrowthCatalog>>>
+export type GetGrowthCatalogQueryError = ErrorType<unknown>
+
+
+
+export function useGetGrowthCatalog<TData = Awaited<ReturnType<typeof getGrowthCatalog>>, TError = ErrorType<unknown>>(
+  options?: { query?:UseQueryOptions<Awaited<ReturnType<typeof getGrowthCatalog>>, TError, TData>, request?: SecondParameter<typeof customFetch>}
+
+ ):  UseQueryResult<TData, TError> & { queryKey: QueryKey } {
+
+  const queryOptions = getGetGrowthCatalogQueryOptions(options)
+
+  const query = useQuery(queryOptions) as  UseQueryResult<TData, TError> & { queryKey: QueryKey };
+
+  return { ...query, queryKey: queryOptions.queryKey };
+}
+
+
+
+
+
+
+
+export const getSaveGrowthCatalogUrl = () => {
+
+
+
+
+  return `/api/admin/growth/catalog`
+}
+
+export const saveGrowthCatalog = async (growthCatalogInput: GrowthCatalogInput, options?: RequestInit): Promise<GrowthCatalog> => {
+
+  return customFetch<GrowthCatalog>(getSaveGrowthCatalogUrl(),
+  {
+    ...options,
+    method: 'PUT',
+    headers: { 'Content-Type': 'application/json', ...options?.headers },
+    body: JSON.stringify(
+      growthCatalogInput,)
+  }
+);}
+
+
+
+
+export const getSaveGrowthCatalogMutationOptions = <TError = ErrorType<void>,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof saveGrowthCatalog>>, TError,{data: BodyType<GrowthCatalogInput>}, TContext>, request?: SecondParameter<typeof customFetch>}
+): UseMutationOptions<Awaited<ReturnType<typeof saveGrowthCatalog>>, TError,{data: BodyType<GrowthCatalogInput>}, TContext> => {
+
+const mutationKey = ['saveGrowthCatalog'];
+const {mutation: mutationOptions, request: requestOptions} = options ?
+      options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey ?
+      options
+      : {...options, mutation: {...options.mutation, mutationKey}}
+      : {mutation: { mutationKey, }, request: undefined};
+
+
+
+
+      const mutationFn: MutationFunction<Awaited<ReturnType<typeof saveGrowthCatalog>>, {data: BodyType<GrowthCatalogInput>}> = (props) => {
+          const {data} = props ?? {};
+
+          return  saveGrowthCatalog(data,requestOptions)
+        }
+
+
+
+
+
+
+  return  { mutationFn, ...mutationOptions }}
+
+    export type SaveGrowthCatalogMutationResult = NonNullable<Awaited<ReturnType<typeof saveGrowthCatalog>>>
+    export type SaveGrowthCatalogMutationBody = BodyType<GrowthCatalogInput>
+    export type SaveGrowthCatalogMutationError = ErrorType<void>
+
+    export const useSaveGrowthCatalog = <TError = ErrorType<void>,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof saveGrowthCatalog>>, TError,{data: BodyType<GrowthCatalogInput>}, TContext>, request?: SecondParameter<typeof customFetch>}
+ ): UseMutationResult<
+        Awaited<ReturnType<typeof saveGrowthCatalog>>,
+        TError,
+        {data: BodyType<GrowthCatalogInput>},
+        TContext
+      > => {
+      return useMutation(getSaveGrowthCatalogMutationOptions(options));
+    }
+
+export const getGetMyGrowthUrl = () => {
+
+
+
+
+  return `/api/me/growth`
+}
+
+export const getMyGrowth = async ( options?: RequestInit): Promise<GrowthProgress> => {
+
+  return customFetch<GrowthProgress>(getGetMyGrowthUrl(),
+  {
+    ...options,
+    method: 'GET'
+
+
+  }
+);}
+
+
+
+
+
+export const getGetMyGrowthQueryKey = () => {
+    return [
+    `/api/me/growth`
+    ] as const;
+    }
+
+
+export const getGetMyGrowthQueryOptions = <TData = Awaited<ReturnType<typeof getMyGrowth>>, TError = ErrorType<unknown>>( options?: { query?:UseQueryOptions<Awaited<ReturnType<typeof getMyGrowth>>, TError, TData>, request?: SecondParameter<typeof customFetch>}
+) => {
+
+const {query: queryOptions, request: requestOptions} = options ?? {};
+
+  const queryKey =  queryOptions?.queryKey ?? getGetMyGrowthQueryKey();
+
+
+
+    const queryFn: QueryFunction<Awaited<ReturnType<typeof getMyGrowth>>> = ({ signal }) => getMyGrowth({ signal, ...requestOptions });
+
+
+
+
+
+   return  { queryKey, queryFn, ...queryOptions} as UseQueryOptions<Awaited<ReturnType<typeof getMyGrowth>>, TError, TData> & { queryKey: QueryKey }
+}
+
+export type GetMyGrowthQueryResult = NonNullable<Awaited<ReturnType<typeof getMyGrowth>>>
+export type GetMyGrowthQueryError = ErrorType<unknown>
+
+
+
+export function useGetMyGrowth<TData = Awaited<ReturnType<typeof getMyGrowth>>, TError = ErrorType<unknown>>(
+  options?: { query?:UseQueryOptions<Awaited<ReturnType<typeof getMyGrowth>>, TError, TData>, request?: SecondParameter<typeof customFetch>}
+
+ ):  UseQueryResult<TData, TError> & { queryKey: QueryKey } {
+
+  const queryOptions = getGetMyGrowthQueryOptions(options)
+
+  const query = useQuery(queryOptions) as  UseQueryResult<TData, TError> & { queryKey: QueryKey };
+
+  return { ...query, queryKey: queryOptions.queryKey };
+}
+
+
+
+
+
+
+
+export const getUnlockGrowthAvatarUrl = () => {
+
+
+
+
+  return `/api/me/growth/avatars/unlock`
+}
+
+export const unlockGrowthAvatar = async (growthAvatarInput: GrowthAvatarInput, options?: RequestInit): Promise<GrowthProgress> => {
+
+  return customFetch<GrowthProgress>(getUnlockGrowthAvatarUrl(),
+  {
+    ...options,
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json', ...options?.headers },
+    body: JSON.stringify(
+      growthAvatarInput,)
+  }
+);}
+
+
+
+
+export const getUnlockGrowthAvatarMutationOptions = <TError = ErrorType<void>,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof unlockGrowthAvatar>>, TError,{data: BodyType<GrowthAvatarInput>}, TContext>, request?: SecondParameter<typeof customFetch>}
+): UseMutationOptions<Awaited<ReturnType<typeof unlockGrowthAvatar>>, TError,{data: BodyType<GrowthAvatarInput>}, TContext> => {
+
+const mutationKey = ['unlockGrowthAvatar'];
+const {mutation: mutationOptions, request: requestOptions} = options ?
+      options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey ?
+      options
+      : {...options, mutation: {...options.mutation, mutationKey}}
+      : {mutation: { mutationKey, }, request: undefined};
+
+
+
+
+      const mutationFn: MutationFunction<Awaited<ReturnType<typeof unlockGrowthAvatar>>, {data: BodyType<GrowthAvatarInput>}> = (props) => {
+          const {data} = props ?? {};
+
+          return  unlockGrowthAvatar(data,requestOptions)
+        }
+
+
+
+
+
+
+  return  { mutationFn, ...mutationOptions }}
+
+    export type UnlockGrowthAvatarMutationResult = NonNullable<Awaited<ReturnType<typeof unlockGrowthAvatar>>>
+    export type UnlockGrowthAvatarMutationBody = BodyType<GrowthAvatarInput>
+    export type UnlockGrowthAvatarMutationError = ErrorType<void>
+
+    export const useUnlockGrowthAvatar = <TError = ErrorType<void>,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof unlockGrowthAvatar>>, TError,{data: BodyType<GrowthAvatarInput>}, TContext>, request?: SecondParameter<typeof customFetch>}
+ ): UseMutationResult<
+        Awaited<ReturnType<typeof unlockGrowthAvatar>>,
+        TError,
+        {data: BodyType<GrowthAvatarInput>},
+        TContext
+      > => {
+      return useMutation(getUnlockGrowthAvatarMutationOptions(options));
+    }
+
+export const getGetUserGrowthUrl = (userId: string,) => {
+
+
+
+
+  return `/api/users/${userId}/growth`
+}
+
+export const getUserGrowth = async (userId: string, options?: RequestInit): Promise<GrowthIdentity> => {
+
+  return customFetch<GrowthIdentity>(getGetUserGrowthUrl(userId),
+  {
+    ...options,
+    method: 'GET'
+
+
+  }
+);}
+
+
+
+
+
+export const getGetUserGrowthQueryKey = (userId: string,) => {
+    return [
+    `/api/users/${userId}/growth`
+    ] as const;
+    }
+
+
+export const getGetUserGrowthQueryOptions = <TData = Awaited<ReturnType<typeof getUserGrowth>>, TError = ErrorType<unknown>>(userId: string, options?: { query?:UseQueryOptions<Awaited<ReturnType<typeof getUserGrowth>>, TError, TData>, request?: SecondParameter<typeof customFetch>}
+) => {
+
+const {query: queryOptions, request: requestOptions} = options ?? {};
+
+  const queryKey =  queryOptions?.queryKey ?? getGetUserGrowthQueryKey(userId);
+
+
+
+    const queryFn: QueryFunction<Awaited<ReturnType<typeof getUserGrowth>>> = ({ signal }) => getUserGrowth(userId, { signal, ...requestOptions });
+
+
+
+
+
+   return  { queryKey, queryFn, enabled: !!(userId), ...queryOptions} as UseQueryOptions<Awaited<ReturnType<typeof getUserGrowth>>, TError, TData> & { queryKey: QueryKey }
+}
+
+export type GetUserGrowthQueryResult = NonNullable<Awaited<ReturnType<typeof getUserGrowth>>>
+export type GetUserGrowthQueryError = ErrorType<unknown>
+
+
+
+export function useGetUserGrowth<TData = Awaited<ReturnType<typeof getUserGrowth>>, TError = ErrorType<unknown>>(
+ userId: string, options?: { query?:UseQueryOptions<Awaited<ReturnType<typeof getUserGrowth>>, TError, TData>, request?: SecondParameter<typeof customFetch>}
+
+ ):  UseQueryResult<TData, TError> & { queryKey: QueryKey } {
+
+  const queryOptions = getGetUserGrowthQueryOptions(userId,options)
+
+  const query = useQuery(queryOptions) as  UseQueryResult<TData, TError> & { queryKey: QueryKey };
+
+  return { ...query, queryKey: queryOptions.queryKey };
+}
+
+
+
+
 
 
 

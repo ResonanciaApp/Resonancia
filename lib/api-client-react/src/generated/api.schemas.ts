@@ -5,6 +5,96 @@
  * API specification
  * OpenAPI spec version: 0.1.0
  */
+export interface GrowthReward {
+  /** @minLength 1 */
+  id: string;
+  enabled: boolean;
+  /** @maxLength 240 */
+  text: string;
+  /**
+     * @minimum 1
+     * @maximum 1000000
+     */
+  amount: number;
+}
+
+export type GrowthStageGroup = typeof GrowthStageGroup[keyof typeof GrowthStageGroup];
+
+
+export const GrowthStageGroup = {
+  florecimiento: 'florecimiento',
+  ascenso: 'ascenso',
+} as const;
+
+export interface GrowthStage {
+  /**
+     * @minLength 1
+     * @maxLength 100
+     */
+  id: string;
+  group: GrowthStageGroup;
+  /**
+     * @minLength 1
+     * @maxLength 100
+     */
+  name: string;
+  /**
+     * @minimum 0
+     * @maximum 1000000
+     */
+  startDay: number;
+  /**
+     * @minimum 0
+     * @maximum 1000000
+     */
+  endDay: number;
+  /** @maxLength 2000 */
+  story: string;
+  /** @minLength 1 */
+  imageUrl: string;
+  /** @maxItems 3 */
+  rewards: GrowthReward[];
+}
+
+export interface GrowthCatalogInput {
+  /** @minimum 1 */
+  revision: number;
+  /** @maxItems 200 */
+  stages: GrowthStage[];
+}
+
+export interface GrowthCatalog {
+  revision: number;
+  updatedAt: string;
+  stages: GrowthStage[];
+}
+
+export interface GrowthIdentity {
+  currentStage: GrowthStage | null;
+}
+
+export interface GrowthGrant {
+  rewardId: string;
+  amount: number;
+}
+
+export interface GrowthProgress {
+  ownerClerkUserId: string;
+  totalActiveDays: number;
+  balance: number;
+  unlockedAvatarIds: string[];
+  reachedStageIds: string[];
+  grantedRewards: GrowthGrant[];
+  currentStage: GrowthStage | null;
+}
+
+export interface GrowthAvatarInput {
+  /** @minLength 1 */
+  avatarId: string;
+  /** @minLength 1 */
+  expectedClerkUserId: string;
+}
+
 export interface CommunityPresenceSession {
   sessionId: string;
 }

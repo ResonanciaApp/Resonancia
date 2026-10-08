@@ -27,6 +27,7 @@ export async function isObjectReferenced({
   const result = await db.execute(sql`
     SELECT (
       EXISTS (SELECT 1 FROM cover_presets WHERE object_path = ${objectPath} ${coverPresetExclusion})
+      OR EXISTS (SELECT 1 FROM growth_catalog g, jsonb_array_elements(g.stages) s WHERE s->>'imageUrl' = ${objectPath})
       OR EXISTS (SELECT 1 FROM users WHERE avatar_url = ${objectPath})
       OR EXISTS (SELECT 1 FROM reflection_stories WHERE avatar_image_path = ${objectPath})
       OR EXISTS (SELECT 1 FROM shared_mixes WHERE image = ${objectPath})
@@ -50,12 +51,14 @@ export async function isObjectReferenced({
 export async function validateOwnedCompletedImageUpload({
   objectPath,
   userId,
+  executor = db,
 }: {
   objectPath: string;
   userId: number;
+  executor?: Pick<typeof db, "select">;
 }): Promise<{ ok: true } | { ok: false; reason: "path" | "ownership" | "image" | "incomplete" }> {
   if (!/^\/objects\/[^/].+/.test(objectPath)) return { ok: false, reason: "path" };
-  const [upload] = await db
+  const [upload] = await executor
     .select()
     .from(uploadsTable)
     .where(and(eq(uploadsTable.objectPath, objectPath), eq(uploadsTable.userId, userId)))
@@ -103,6 +106,13 @@ export async function resolveObjectReadAccess({
         SELECT 1 FROM inspiration_assets a WHERE a.object_path = ${objectPath}
       ) AS inspiration_only,
       (
+        EXISTS (
+          SELECT 1 FROM growth_catalog g, jsonb_array_elements(g.stages) s
+          JOIN uploads u ON u.object_path = s->>'imageUrl'
+          JOIN users editor ON editor.id = u.user_id
+          WHERE s->>'imageUrl' = ${objectPath} AND editor.role IN ('admin', 'moderador')
+        )
+        OR
         EXISTS (
           SELECT 1
           FROM catalog_sessions s
