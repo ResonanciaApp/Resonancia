@@ -27,7 +27,7 @@ import { usePremium } from "@/context/PremiumContext";
 import { usePlayer } from "@/context/PlayerContext";
 import { useSceneTheme } from "@/context/SceneThemeContext";
 import { useCategoryOverlayOptional } from "@/context/CategoryOverlayContext";
-import { SCENE_THEMES } from "@/config/scene-themes";
+import { getThemeStyleId, SCENE_THEMES } from "@/config/scene-themes";
 
 const { width } = Dimensions.get("window");
 const H_PAD = 20;
@@ -109,10 +109,10 @@ function FilterSheet({
 }) {
   const insets = useSafeAreaInsets();
   const { theme } = useSceneTheme();
-  const sheetGradient: [string, string] = theme.id === "indigo2"
+  const sheetGradient: [string, string] = getThemeStyleId(theme.id) === "indigo2"
     ? [SCENE_THEMES.tibet.gradient[1], SCENE_THEMES.tibet.gradient[2]]
     : [theme.gradient[1], theme.gradient[2]];
-  const optionBackground = theme.id === "cloudy" ? "rgba(0,0,0,0.19)" : "rgba(0,0,0,0.16)";
+  const optionBackground = getThemeStyleId(theme.id) === "cloudy" ? "rgba(0,0,0,0.19)" : "rgba(0,0,0,0.16)";
   return (
     <Modal visible={visible} transparent animationType="fade" onRequestClose={onClose}>
       <View style={StyleSheet.absoluteFill}>

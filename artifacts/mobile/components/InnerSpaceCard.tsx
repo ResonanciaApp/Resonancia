@@ -1,3 +1,4 @@
+import { getThemeStyleId } from "@/config/scene-themes";
 import React, { useState, useRef, useEffect, useLayoutEffect } from "react";
 import { View, Text, TextInput, Pressable, ScrollView, StyleSheet, Animated, Easing, Keyboard } from "react-native";
 import MaskedView from "@react-native-masked-view/masked-view";
@@ -538,7 +539,7 @@ export function InnerSpaceCard({
   return (
     <>
     <View
-      style={[styles.container, canonicalVerticalInsets && styles.canonicalVerticalInsets, canonicalVerticalInsets && theme.id === "cloudy" && styles.cloudyFlushBorder, profileVariant && styles.profileWall, sectionBackgroundColor !== undefined && { backgroundColor: sectionBackgroundColor }]}
+      style={[styles.container, canonicalVerticalInsets && styles.canonicalVerticalInsets, canonicalVerticalInsets && getThemeStyleId(theme.id) === "cloudy" && styles.cloudyFlushBorder, profileVariant && styles.profileWall, sectionBackgroundColor !== undefined && { backgroundColor: sectionBackgroundColor }]}
       onLayout={onCollapsedHeightChange ? (event) => {
         if (!expandedRef.current && !animatingRef.current && event.nativeEvent.layout.height > 0) {
           onCollapsedHeightChange(event.nativeEvent.layout.height);
@@ -550,7 +551,7 @@ export function InnerSpaceCard({
           borderRadius={profileVariant ? 16 : 24}
           borderWidth={profileVariant ? 1 : 2}
           brightness={REFLECTION_WALL_BORDER_BRIGHTNESS}
-          colors={theme.id === "cloudy" ? CLOUDY_REFLECTION_WALL_BORDER_GRADIENT : REFLECTION_WALL_BORDER_GRADIENT}
+          colors={getThemeStyleId(theme.id) === "cloudy" ? CLOUDY_REFLECTION_WALL_BORDER_GRADIENT : REFLECTION_WALL_BORDER_GRADIENT}
           locations={REFLECTION_WALL_BORDER_LOCATIONS}
           start={REFLECTION_WALL_BORDER_START}
           end={REFLECTION_WALL_BORDER_END}

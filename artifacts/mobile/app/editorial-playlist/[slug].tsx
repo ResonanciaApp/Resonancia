@@ -1,3 +1,4 @@
+import { getThemeStyleId } from "@/config/scene-themes";
 import { Feather, Ionicons, MaterialCommunityIcons } from "@expo/vector-icons";
 import { BlurView } from "expo-blur";
 import { Image } from "expo-image";
@@ -66,10 +67,10 @@ export default function EditorialPlaylistScreen({ slug: slugProp }: EditorialPla
   const slug = slugProp ?? resolveSlug(params.slug);
   const insets = useSafeAreaInsets();
   const { theme, activeSceneId } = useSceneTheme();
-  const playlistBackground = activeSceneId === "cloudy"
+  const playlistBackground = getThemeStyleId(activeSceneId) === "cloudy"
     ? { colors: theme.gradient, locations: theme.gradientLocations, start: theme.gradientStart, end: theme.gradientEnd }
     : { colors: EDITORIAL_PLAYLIST_GRADIENT };
-  const playlistBackgroundColor = activeSceneId === "cloudy" ? theme.solid : EDITORIAL_PLAYLIST_GRADIENT[0];
+  const playlistBackgroundColor = getThemeStyleId(activeSceneId) === "cloudy" ? theme.solid : EDITORIAL_PLAYLIST_GRADIENT[0];
   const { version: catalogVersion } = useCatalog();
   const { isPremium } = usePremium();
   const {

@@ -3,7 +3,7 @@ import { readFileSync } from "node:fs";
 import { URL } from "node:url";
 import test from "node:test";
 import ts from "typescript";
-import { SCENE_THEMES } from "../config/scene-themes.ts";
+import { getThemeStyleId, SCENE_THEMES } from "../config/scene-themes.ts";
 import { CLOUDY_REFLECTION_WALL_BORDER_GRADIENT, REFLECTION_WALL_BORDER_BASE_GRADIENT, REFLECTION_WALL_BORDER_GRADIENT } from "../constants/reflectionWallBorder.ts";
 
 const source = readFileSync(new URL("../components/AmbientalDurationSheet.tsx", import.meta.url), "utf8");
@@ -29,11 +29,11 @@ visit(ast);
 assert.ok(gradientExpression, "Duration sheet defines its gradient colors");
 assert.equal(gradientExpression.getText(ast), "sheetGradient");
 assert.ok(sheetGradientExpression);
-const resolveColors = new Function("theme", "SCENE_THEMES", ts.transpileModule(`return ${sheetGradientExpression.getText(ast)};`, {
+const resolveColors = new Function("theme", "SCENE_THEMES", "getThemeStyleId", ts.transpileModule(`return ${sheetGradientExpression.getText(ast)};`, {
   compilerOptions: { target: ts.ScriptTarget.ES2022 },
 }).outputText);
 type ThemePalette = { id: string; gradient: readonly string[] };
-const colorsFor = (theme: ThemePalette) => resolveColors(theme, SCENE_THEMES);
+const colorsFor = (theme: ThemePalette) => resolveColors(theme, SCENE_THEMES, getThemeStyleId);
 const backgroundExpression = source.match(/backgroundColor:\s*(sheetGradient\[\d+\])/)?.[1];
 assert.ok(backgroundExpression);
 const resolveBackground = new Function("sheetGradient", `return ${backgroundExpression};`);
@@ -41,7 +41,7 @@ const backgroundFor = (theme: ThemePalette) => resolveBackground(colorsFor(theme
 
 test("Ambiental duration sheet preserves the active theme stops outside Indigo 2 and Cloudy", () => {
   for (const theme of Object.values(SCENE_THEMES)) {
-    if (theme.id === "indigo2" || theme.id === "cloudy") continue;
+    if (getThemeStyleId(theme.id) === "indigo2" || getThemeStyleId(theme.id) === "cloudy") continue;
     assert.deepEqual(colorsFor(theme), [theme.gradient[1], theme.gradient[2]]);
     assert.equal(backgroundFor(theme), theme.gradient[1]);
     const changedTheme = { ...theme, gradient: theme.gradient.map(color => `${color}-changed`) };
@@ -53,9 +53,9 @@ test("Ambiental duration sheet preserves the active theme stops outside Indigo 2
 test("Cloudy duration selector uses the first four stops across its whole background", () => {
   assert.deepEqual(colorsFor(SCENE_THEMES.cloudy), SCENE_THEMES.cloudy.gradient.slice(0, 4));
   assert.equal(backgroundFor(SCENE_THEMES.cloudy), SCENE_THEMES.cloudy.gradient[0]);
-  assert.match(source, /locations=\{theme\.id === "cloudy" \? \[0, 1 \/ 3, 2 \/ 3, 1\] : undefined\}/);
-  assert.match(source, /start=\{theme\.id === "cloudy" \? theme\.gradientStart : undefined\}/);
-  assert.match(source, /end=\{theme\.id === "cloudy" \? theme\.gradientEnd : undefined\}/);
+  assert.match(source, /locations=\{getThemeStyleId\(theme\.id\) === "cloudy" \? \[0, 1 \/ 3, 2 \/ 3, 1\] : undefined\}/);
+  assert.match(source, /start=\{getThemeStyleId\(theme\.id\) === "cloudy" \? theme\.gradientStart : undefined\}/);
+  assert.match(source, /end=\{getThemeStyleId\(theme\.id\) === "cloudy" \? theme\.gradientEnd : undefined\}/);
 });
 
 test("Indigo 2 duration sheet uses the Universo violet gradient without altering global theme colors", () => {
@@ -69,16 +69,16 @@ test("Indigo 2 duration sheet uses the Universo violet gradient without altering
 test("selected duration circles use 30% black in Cloudy and Indigo 2 without changing the + or other themes", () => {
   const expression = source.match(/const selectedPresetBackground = (.*);/)?.[1];
   assert.ok(expression);
-  const resolve = new Function("theme", `return ${expression};`);
+  const resolve = new Function("theme", "getThemeStyleId", `return ${expression};`);
   for (const theme of Object.values(SCENE_THEMES)) {
-    assert.equal(resolve(theme), theme.id === "cloudy" || theme.id === "indigo2" ? "rgba(0,0,0,0.3)" : "rgba(0,0,0,0.16)");
+    assert.equal(resolve(theme, getThemeStyleId), getThemeStyleId(theme.id) === "cloudy" || getThemeStyleId(theme.id) === "indigo2" ? "rgba(0,0,0,0.3)" : "rgba(0,0,0,0.16)");
   }
   assert.match(source, /backgroundColor: selected\s*\? selectedPresetBackground/);
   const customExpression = source.match(/const selectedCustomBackground = (.*);/)?.[1];
   assert.ok(customExpression);
-  const resolveCustom = new Function("theme", `return ${customExpression};`);
+  const resolveCustom = new Function("theme", "getThemeStyleId", `return ${customExpression};`);
   for (const theme of Object.values(SCENE_THEMES)) {
-    assert.equal(resolveCustom(theme), theme.id === "cloudy" ? "rgba(0,0,0,0.3)" : "rgba(0,0,0,0.16)");
+    assert.equal(resolveCustom(theme, getThemeStyleId), getThemeStyleId(theme.id) === "cloudy" ? "rgba(0,0,0,0.3)" : "rgba(0,0,0,0.16)");
   }
   assert.match(source, /backgroundColor: customMode\s*\? selectedCustomBackground/);
 });
@@ -96,5 +96,5 @@ test("Cloudy and Indigo wall borders share the supplied palette with 25% brighte
     }
   }
   const wall = readFileSync(new URL("../components/InnerSpaceCard.tsx", import.meta.url), "utf8");
-  assert.match(wall, /colors=\{theme\.id === "cloudy" \? CLOUDY_REFLECTION_WALL_BORDER_GRADIENT : REFLECTION_WALL_BORDER_GRADIENT\}/);
+  assert.match(wall, /colors=\{getThemeStyleId\(theme\.id\) === "cloudy" \? CLOUDY_REFLECTION_WALL_BORDER_GRADIENT : REFLECTION_WALL_BORDER_GRADIENT\}/);
 });

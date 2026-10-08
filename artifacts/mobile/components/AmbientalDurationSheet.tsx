@@ -14,7 +14,7 @@ import {
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 
 import { useSceneTheme } from "@/context/SceneThemeContext";
-import { SCENE_THEMES } from "@/config/scene-themes";
+import { getThemeStyleId, SCENE_THEMES } from "@/config/scene-themes";
 import { useColors } from "@/hooks/useColors";
 import { useAmbientalDurationTransition } from "@/hooks/useAmbientalDurationTransition";
 import { DURATION_SHEET_OPEN_SPRING, DURATION_SHEET_OPEN_BACKDROP_MS } from "@/lib/ambiental-duration-opening";
@@ -124,11 +124,11 @@ export function AmbientalDurationSheet({
 }: Props) {
   const colors = useColors();
   const { theme } = useSceneTheme();
-  const selectedPresetBackground = theme.id === "cloudy" || theme.id === "indigo2" ? "rgba(0,0,0,0.3)" : "rgba(0,0,0,0.16)";
-  const selectedCustomBackground = theme.id === "cloudy" ? "rgba(0,0,0,0.3)" : "rgba(0,0,0,0.16)";
-  const sheetGradient: [string, string, ...string[]] = theme.id === "cloudy"
+  const selectedPresetBackground = getThemeStyleId(theme.id) === "cloudy" || getThemeStyleId(theme.id) === "indigo2" ? "rgba(0,0,0,0.3)" : "rgba(0,0,0,0.16)";
+  const selectedCustomBackground = getThemeStyleId(theme.id) === "cloudy" ? "rgba(0,0,0,0.3)" : "rgba(0,0,0,0.16)";
+  const sheetGradient: [string, string, ...string[]] = getThemeStyleId(theme.id) === "cloudy"
     ? [theme.gradient[0], theme.gradient[1], theme.gradient[2], theme.gradient[3]]
-    : theme.id === "indigo2"
+    : getThemeStyleId(theme.id) === "indigo2"
       ? [SCENE_THEMES.tibet.gradient[1], SCENE_THEMES.tibet.gradient[2]]
       : [theme.gradient[1], theme.gradient[2]];
   const insets = useSafeAreaInsets();
@@ -313,9 +313,9 @@ export function AmbientalDurationSheet({
           <LinearGradient
             pointerEvents="none"
             colors={sheetGradient}
-            locations={theme.id === "cloudy" ? [0, 1 / 3, 2 / 3, 1] : undefined}
-            start={theme.id === "cloudy" ? theme.gradientStart : undefined}
-            end={theme.id === "cloudy" ? theme.gradientEnd : undefined}
+            locations={getThemeStyleId(theme.id) === "cloudy" ? [0, 1 / 3, 2 / 3, 1] : undefined}
+            start={getThemeStyleId(theme.id) === "cloudy" ? theme.gradientStart : undefined}
+            end={getThemeStyleId(theme.id) === "cloudy" ? theme.gradientEnd : undefined}
             style={StyleSheet.absoluteFill}
           />
           <Animated.View

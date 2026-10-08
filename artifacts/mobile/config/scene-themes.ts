@@ -1,9 +1,9 @@
 /** Temas visuales de la app; las escenas de audio son independientes. */
 import type { SceneId } from "@/context/AmbientPlayerContext";
 
-export type VisualThemeId = "tibet" | "indigo2" | "cloudy" | "cloudy2";
+export type VisualThemeId = "tibet" | "indigo2" | "cloudy" | "cloudy2" | "natural" | "pleyades";
 export type ThemeSceneId = SceneId | VisualThemeId;
-export const VISUAL_THEME_IDS = ["tibet", "indigo2", "cloudy", "cloudy2"] as const;
+export const VISUAL_THEME_IDS = ["tibet", "indigo2", "cloudy", "cloudy2", "natural", "pleyades"] as const;
 export const SCENE_THEME_STORAGE_KEY = "@active_theme_scene";
 
 export type SceneTheme = {
@@ -53,6 +53,17 @@ const INDIGO2_THEME: SceneTheme = {
   accent: "#E8E8E8",
 };
 
+export const NATURAL_GRADIENT = ["#4A7D48", "#3B6D3C", "#326740", "#285E3E", "#175543", "#0B4B3D", "#073B32"] as const;
+export const NATURAL_GRADIENT_LOCATIONS = [0, 0.16, 0.33, 0.5, 0.68, 0.84, 1] as const;
+const CLOUDY_THEME: SceneTheme = {
+  ...INDIGO2_THEME,
+  id: "cloudy",
+  label: "Cloudy",
+  gradient: ["#2D2F7C", "#2D3981", "#2D4085", "#2A4687", "#25528C", "#1F5D92", "#166494"],
+  gradientLocations: [0, 0.167, 0.333, 0.5, 0.667, 0.833, 1],
+  solid: "#2D2F7C",
+};
+
 export const SCENE_THEMES: Record<VisualThemeId, SceneTheme> = {
   tibet: {
     id: "tibet",
@@ -64,14 +75,7 @@ export const SCENE_THEMES: Record<VisualThemeId, SceneTheme> = {
     solid: "#0B1438",
   },
   indigo2: INDIGO2_THEME,
-  cloudy: {
-    ...INDIGO2_THEME,
-    id: "cloudy",
-    label: "Cloudy",
-    gradient: ["#2D2F7C", "#2D3981", "#2D4085", "#2A4687", "#25528C", "#1F5D92", "#166494"],
-    gradientLocations: [0, 0.167, 0.333, 0.5, 0.667, 0.833, 1],
-    solid: "#2D2F7C",
-  },
+  cloudy: CLOUDY_THEME,
   cloudy2: {
     ...INDIGO2_THEME,
     id: "cloudy2",
@@ -79,6 +83,21 @@ export const SCENE_THEMES: Record<VisualThemeId, SceneTheme> = {
     gradient: ["#165794", "#1E5492", "#254B8D", "#2A4687", "#2D4085", "#2D3981", "#2D2F7C"],
     gradientLocations: [0, 0.167, 0.333, 0.5, 0.667, 0.833, 1],
     solid: "#165794",
+  },
+  natural: {
+    ...CLOUDY_THEME,
+    id: "natural",
+    label: "Natural",
+    gradient: NATURAL_GRADIENT,
+    gradientLocations: NATURAL_GRADIENT_LOCATIONS,
+    solid: NATURAL_GRADIENT[0],
+  },
+  pleyades: {
+    ...INDIGO2_THEME,
+    id: "pleyades",
+    label: "Pleyades",
+    gradient: ["#371C5F", "#332261", "#2D2468", "#242A6B", "#212B6D", "#1E2D6E", "#192E70"],
+    solid: "#371C5F",
   },
 };
 
@@ -91,7 +110,15 @@ export function isIndigoThemeId(id: ThemeSceneId): boolean {
 
 /** Los temas Cloudy conservan las reglas de Índigo 2, no su paleta. */
 export function isIndigo2ThemeId(id: ThemeSceneId): boolean {
-  return id === "indigo2" || id === "cloudy" || id === "cloudy2";
+  const styleId = getThemeStyleId(id);
+  return styleId === "indigo2" || styleId === "cloudy" || styleId === "cloudy2";
+}
+
+/** Style inheritance only: selection, persistence and transitions retain the real ID. */
+export function getThemeStyleId(id: string | null | undefined): string | null | undefined {
+  if (id === "natural") return "cloudy";
+  if (id === "pleyades") return "indigo2";
+  return id;
 }
 
 export function isVisualThemeId(id: unknown): id is VisualThemeId {

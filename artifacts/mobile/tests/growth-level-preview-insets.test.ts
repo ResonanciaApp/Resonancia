@@ -5,6 +5,7 @@ import { URL } from "node:url";
 import React from "react";
 import { renderToStaticMarkup } from "react-dom/server";
 import ts from "typescript";
+import { getThemeStyleId } from "../config/scene-themes.ts";
 import * as wallBorderConstants from "../constants/reflectionWallBorder.ts";
 
 const TEST_GRADIENT = ["#060A0F", "#111122"] as const;
@@ -117,6 +118,7 @@ const compiled = ts.transpileModule(
   { compilerOptions: { module: ts.ModuleKind.CommonJS, jsx: ts.JsxEmit.React, esModuleInterop: true } },
 ).outputText;
 const mocks: Record<string, any> = {
+  "@/config/scene-themes": { getThemeStyleId },
   "@/context/SceneThemeContext": { useSceneTheme: () => ({ theme: { id: "tibet", gradient: TEST_GRADIENT } }) },
   "@/lib/avatar": { resolveAvatarUrl: (url: string) => url },
   "@/context/GrowthContext": { useGrowth: () => {

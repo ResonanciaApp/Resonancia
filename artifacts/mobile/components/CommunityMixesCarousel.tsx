@@ -37,7 +37,7 @@ import { useProfileAvatarSource } from "@/lib/profile-avatar";
 import { getTopCommunityMixes, selectRandomCommunityAvatars } from "@/lib/community-mixes-ranking";
 import { useColors } from "@/hooks/useColors";
 import { useSceneTheme } from "@/context/SceneThemeContext";
-import { isIndigo2ThemeId, isIndigoThemeId } from "@/config/scene-themes";
+import { getThemeStyleId, isIndigo2ThemeId, isIndigoThemeId } from "@/config/scene-themes";
 import { useCategoryOverlay } from "@/context/CategoryOverlayContext";
 import { useAuth } from "@/context/AuthContext";
 import { WIDGET_GREEN_SOLID } from "@/constants/colors";
@@ -295,7 +295,7 @@ export function MixRow({
         activeSceneId === "tibet" && { backgroundColor: "rgba(0,0,0,0.15)" },
         isIndigoThemeId(activeSceneId) && { backgroundColor: "rgba(181,211,255,0.057)" },
         isIndigo2ThemeId(activeSceneId) && { backgroundColor: "rgba(0,0,0,0.16)" },
-        activeSceneId === "cloudy" && { backgroundColor: "rgba(0,0,0,0.19)" },
+        getThemeStyleId(activeSceneId) === "cloudy" && { backgroundColor: "rgba(0,0,0,0.19)" },
         { opacity: pressed ? 0.6 : 1 },
       ]}
     >

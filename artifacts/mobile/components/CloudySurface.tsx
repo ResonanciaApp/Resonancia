@@ -1,3 +1,4 @@
+import { getThemeStyleId } from "@/config/scene-themes";
 import React, { forwardRef, useMemo } from "react";
 import { StyleSheet } from "react-native";
 import { useSceneThemeOptional } from "@/context/SceneThemeContext";
@@ -21,7 +22,7 @@ export const CloudySurface = forwardRef<any, {
   __surfaceComponent: React.ElementType;
   [prop: string]: any;
 }>(function CloudySurface({ __surfaceComponent: Component, ...props }, ref) {
-  const cloudy = useSceneThemeOptional()?.activeSceneId === "cloudy";
+  const cloudy = getThemeStyleId(useSceneThemeOptional()?.activeSceneId) === "cloudy";
   const themedStyles = useMemo(() => {
     if (!cloudy) return {};
     const result: Record<string, any> = {};

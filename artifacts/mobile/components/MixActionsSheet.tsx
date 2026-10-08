@@ -1,3 +1,4 @@
+import { getThemeStyleId } from "@/config/scene-themes";
 /**
  * MixActionsSheet — menú de acciones de una mezcla guardada (3 puntitos).
  *
@@ -127,7 +128,7 @@ export function MixActionsSheet({
   const colors = useColors();
   const insets = useSafeAreaInsets();
   const { theme } = useSceneTheme();
-  const sheetColor = libraryActionsOnly && theme.id === "cloudy"
+  const sheetColor = libraryActionsOnly && getThemeStyleId(theme.id) === "cloudy"
     ? theme.gradient[theme.gradient.length - 1]
     : theme.gradient[2] ?? theme.gradient[1];
   const sheetGradient = [sheetColor, sheetColor] as [string, string];

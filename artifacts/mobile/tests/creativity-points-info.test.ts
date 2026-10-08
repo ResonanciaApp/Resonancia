@@ -5,7 +5,7 @@ import { URL } from "node:url";
 import React from "react";
 import { renderToStaticMarkup } from "react-dom/server";
 import ts from "typescript";
-import { SCENE_THEMES } from "../config/scene-themes.ts";
+import { getThemeStyleId, SCENE_THEMES } from "../config/scene-themes.ts";
 import { DURATION_SHEET_OPEN_BACKDROP_MS, DURATION_SHEET_OPEN_SPRING } from "../lib/ambiental-duration-opening.ts";
 
 const read = (path: string) => readFileSync(new URL(path, import.meta.url), "utf8");
@@ -75,7 +75,7 @@ function harness(theme = SCENE_THEMES.indigo2, measuredHeight = 480) {
     "expo-linear-gradient": { LinearGradient: Native },
     "@expo/vector-icons": { Feather: Native },
     "@/context/SceneThemeContext": { useSceneTheme: () => ({ theme }) },
-    "@/config/scene-themes": { SCENE_THEMES },
+    "@/config/scene-themes": { getThemeStyleId, SCENE_THEMES },
     "@/lib/ambiental-duration-opening": { DURATION_SHEET_OPEN_BACKDROP_MS, DURATION_SHEET_OPEN_SPRING },
   };
   const module: any = { exports: {} };
@@ -105,7 +105,7 @@ function harness(theme = SCENE_THEMES.indigo2, measuredHeight = 480) {
 
 test("the information window copies the supplied text and preserves its two-stop background independently of the Cloudy timer", () => {
   const timerColors = (theme: typeof SCENE_THEMES[keyof typeof SCENE_THEMES], palettes: typeof SCENE_THEMES) =>
-    theme.id === "indigo2"
+    getThemeStyleId(theme.id) === "indigo2"
       ? [palettes.tibet.gradient[1], palettes.tibet.gradient[2]]
       : [theme.gradient[1], theme.gradient[2]];
   for (const theme of Object.values(SCENE_THEMES)) {

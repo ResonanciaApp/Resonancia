@@ -32,16 +32,20 @@ function all(node: any): any[] {
 }
 
 test("minimal Día/Noche rows retain menu sizes and dim the inactive icon and title to #A8A8A8", () => {
-  for (const active of ["cloudy", "indigo2", "tibet"]) {
+  for (const active of ["cloudy", "indigo2", "natural", "pleyades", "tibet"]) {
     const calls: string[] = [];
     const nodes = all(exports.DrawerSceneCards({ activeId: active, onSelect: (id: string) => calls.push(id) }));
     const radios = nodes.filter(node => node.props.accessibilityRole === "radio");
-    assert.equal(radios.length, 2);
+    assert.equal(radios.length, 4);
     assert.deepEqual(radios.map(radio => radio.props.accessibilityState.selected),
-      [active === "cloudy", active === "indigo2"]);
+      ["cloudy", "indigo2", "natural", "pleyades"].map(id => active === id));
     assert.equal(nodes.filter(node => node.props.name === "check" || node.type === "image" || node.type === "gradient").length, 0);
     assert.equal(radios[0].props.accessibilityLabel, "Día");
     assert.equal(radios[1].props.accessibilityLabel, "Noche");
+    assert.equal(radios[2].props.accessibilityLabel, "Natural");
+    assert.equal(radios[3].props.accessibilityLabel, "Pleyades");
+    assert.equal(all(radios[2]).find(node => node.type === "icon").props.name, "pine-tree");
+    assert.equal(all(radios[3]).find(node => node.type === "icon").props.name, "diamond-stone");
     const sun = nodes.find(node => node.props.name === "white-balance-sunny");
     const moon = nodes.find(node => node.type === "moon-crescent");
     assert.equal(sun.props.color, active === "cloudy" ? "#BE9650" : "#A8A8A8");
@@ -49,7 +53,12 @@ test("minimal Día/Noche rows retain menu sizes and dim the inactive icon and ti
     assert.equal(sun.props.size, 23);
     assert.equal(moon.props.size, 23);
     assert.equal(nodes.find(node => node.props.accessibilityRole === "radiogroup").props.style.marginTop, 10);
-    assert.equal(nodes.find(node => node.props.accessibilityRole === "radiogroup").props.style.gap, 2);
+    const list = nodes.find(node => node.props.accessibilityRole === "radiogroup");
+    assert.equal(list.props.style.gap, 12);
+    assert.equal(list.props.style.flexDirection, "row");
+    assert.equal(list.props.children.length, 2);
+    assert.deepEqual(all(list.props.children[0]).filter(node => node.props.accessibilityRole === "radio").map(node => node.props.accessibilityLabel), ["Día", "Noche"]);
+    assert.deepEqual(all(list.props.children[1]).filter(node => node.props.accessibilityRole === "radio").map(node => node.props.accessibilityLabel), ["Natural", "Pleyades"]);
     const sectionHeader = nodes.find(node => node.props.style?.borderTopWidth === 1);
     assert.equal(sectionHeader.props.style.marginTop, 150 + 15, "Divider, Escena heading and all following options move down another 15px in layout flow");
     for (const radio of radios) {
@@ -68,7 +77,7 @@ test("minimal Día/Noche rows retain menu sizes and dim the inactive icon and ti
       assert.equal(radio.props.style({ pressed: false })[0].backgroundColor, undefined);
     }
     radios.forEach(radio => radio.props.onPress());
-    assert.deepEqual(calls, ["cloudy", "indigo2"].filter(id => id !== active));
+    assert.deepEqual(calls, ["cloudy", "indigo2", "natural", "pleyades"].filter(id => id !== active));
     assert.equal(nodes.some(node => node.props.testID === "drawer-scene-info" || node.props.name === "info"), false);
   }
 });

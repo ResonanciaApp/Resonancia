@@ -1,3 +1,4 @@
+import { getThemeStyleId } from "@/config/scene-themes";
 import { Feather, MaterialCommunityIcons } from "@expo/vector-icons";
 import { Asset } from "expo-asset";
 import React, { useEffect, useState } from "react";
@@ -42,7 +43,7 @@ export function GrowthCurrentStagePill({ stage }: { stage?: GrowthStage | null }
         styles.timelineDayPill,
         styles.timelineBloomDayPill,
         { marginBottom: 0, marginTop: 2 },
-        theme.id === "cloudy" && { backgroundColor: CLOUDY_GROWTH_DAY_PILL_BACKGROUND },
+        getThemeStyleId(theme.id) === "cloudy" && { backgroundColor: CLOUDY_GROWTH_DAY_PILL_BACKGROUND },
       ]}
     >
       <MaterialCommunityIcons
@@ -164,7 +165,7 @@ export function GrowthLevelPreviewCard({
           sectionTitle && styles.bloomDayPill,
           sectionTitle && styles.timelineDayPill,
           sectionTitle && styles.timelineBloomDayPill,
-          (canonicalVerticalInsets || sectionTitle) && theme.id === "cloudy" && {
+          (canonicalVerticalInsets || sectionTitle) && getThemeStyleId(theme.id) === "cloudy" && {
             backgroundColor: sectionTitle ? CLOUDY_GROWTH_DAY_PILL_BACKGROUND : "rgba(0,0,0,0.16)",
           },
           sectionTitle && styles.profilePreviewDayPill,
@@ -335,8 +336,8 @@ function GrowthRow({
     : `${level.startDay}–${level.endDay} días`;
   const rewards = level.rewards?.filter(r => r.enabled) ?? [];
   const reward = rewards.length > 0;
-  const nodeColor = theme.id === "cloudy" ? "#B5EFFF" : GROWTH_COLORS.activeNode;
-  const inactiveNodeColor = theme.id === "cloudy" ? "rgba(181,239,255,0.28)" : GROWTH_COLORS.inactiveLine;
+  const nodeColor = getThemeStyleId(theme.id) === "cloudy" ? "#B5EFFF" : GROWTH_COLORS.activeNode;
+  const inactiveNodeColor = getThemeStyleId(theme.id) === "cloudy" ? "rgba(181,239,255,0.28)" : GROWTH_COLORS.inactiveLine;
   const content = (
     <View
       style={[styles.row, { height: "auto", minHeight: GROWTH_ROW_HEIGHT }, reward && styles.rewardRow]}
@@ -369,7 +370,7 @@ function GrowthRow({
             florecimiento && styles.bloomDayPill,
             styles.timelineDayPill,
             florecimiento && styles.timelineBloomDayPill,
-            theme.id === "cloudy" && { backgroundColor: CLOUDY_GROWTH_DAY_PILL_BACKGROUND },
+            getThemeStyleId(theme.id) === "cloudy" && { backgroundColor: CLOUDY_GROWTH_DAY_PILL_BACKGROUND },
           ]}
         >
           {florecimiento && (
@@ -450,7 +451,7 @@ function GrowthStageHeading({
   const { theme } = useSceneTheme();
   return (
     <View style={[styles.sectionHeading, second && styles.secondStageHeading]}>
-      <Text style={[styles.sectionEyebrow, theme.id === "cloudy" && { color: CLOUDY_GROWTH_STAGE_LABEL_COLOR }]}>{eyebrow}</Text>
+      <Text style={[styles.sectionEyebrow, getThemeStyleId(theme.id) === "cloudy" && { color: CLOUDY_GROWTH_STAGE_LABEL_COLOR }]}>{eyebrow}</Text>
       <Text
         style={[styles.sectionTitle, { color: colors.foreground }]}
         accessibilityRole="header"
@@ -468,7 +469,7 @@ function GrowthTimeline({ children }: { children: React.ReactNode }) {
     <View style={styles.timeline}>
       <View style={styles.timeline}>
         {rows.length > 1 && (
-          <View testID="growth-timeline-line" style={[styles.lineBase, theme.id === "cloudy" && { backgroundColor: "rgba(181,239,255,0.28)" }]} pointerEvents="none" />
+          <View testID="growth-timeline-line" style={[styles.lineBase, getThemeStyleId(theme.id) === "cloudy" && { backgroundColor: "rgba(181,239,255,0.28)" }]} pointerEvents="none" />
         )}
         {rows.slice(0, -1)}
       </View>
@@ -487,7 +488,7 @@ export function GrowthJourney({ onIntentionPress }: { onIntentionPress?: () => v
   useEffect(() => {
     if (currentStage?.group === "ascenso") setAscentExpanded(true);
   }, [currentStage?.group]);
-  const ascentToggleColor = theme.id === "cloudy" ? CLOUDY_GROWTH_ASCENT_TOGGLE_COLOR : GROWTH_COLORS.line;
+  const ascentToggleColor = getThemeStyleId(theme.id) === "cloudy" ? CLOUDY_GROWTH_ASCENT_TOGGLE_COLOR : GROWTH_COLORS.line;
 
   return (
     <View style={styles.section}>

@@ -17,6 +17,50 @@ const brighten = (hex: string) => "#" + hex.slice(1).match(/../g)!.map(channel =
   Math.round(parseInt(channel, 16) * 0.965 + 255 * 0.035).toString(16).padStart(2, "0"),
 ).join("").toUpperCase();
 
+test("Natural uses Respiración's exact green stops and inherits Cloudy styles without changing its identity", () => {
+  const natural = themes.SCENE_THEMES.natural;
+  assert.equal(natural.id, "natural");
+  assert.equal(natural.label, "Natural");
+  assert.deepEqual(natural.gradient, ["#4A7D48", "#3B6D3C", "#326740", "#285E3E", "#175543", "#0B4B3D", "#073B32"]);
+  assert.equal(natural.solid, natural.gradient[0]);
+  assert.equal(natural.gradient, themes.NATURAL_GRADIENT);
+  assert.deepEqual(natural.gradientLocations, [0, 0.16, 0.33, 0.5, 0.68, 0.84, 1]);
+  assert.match(read("../app/respiracion.tsx"), /colors=\{NATURAL_GRADIENT\}/);
+  assert.match(read("../app/respiracion.tsx"), /locations=\{NATURAL_GRADIENT_LOCATIONS\}/);
+  for (const key of ["gradientStart", "gradientEnd", "accent"]) {
+    assert.deepEqual(natural[key], themes.SCENE_THEMES.cloudy[key]);
+  }
+  assert.equal(themes.getThemeStyleId("natural"), "cloudy");
+  assert.equal(themes.isIndigo2ThemeId("natural"), true);
+});
+
+test("Pleyades uses all seven supplied Andrómeda colors and inherits only Indigo 2's styles", () => {
+  const pleyades = themes.SCENE_THEMES.pleyades;
+  assert.equal(pleyades.id, "pleyades");
+  assert.equal(pleyades.label, "Pleyades");
+  assert.deepEqual(pleyades.gradient, ["#371C5F", "#332261", "#2D2468", "#242A6B", "#212B6D", "#1E2D6E", "#192E70"]);
+  assert.equal(pleyades.solid, "#371C5F");
+  for (const key of ["gradientLocations", "gradientStart", "gradientEnd", "accent"]) {
+    assert.deepEqual(pleyades[key], themes.SCENE_THEMES.indigo2[key]);
+  }
+  assert.equal(themes.getThemeStyleId("pleyades"), "indigo2");
+  assert.equal(themes.isIndigo2ThemeId("pleyades"), true);
+  for (const id of ["tibet", "indigo2", "cloudy", "cloudy2", null, undefined]) {
+    assert.equal(themes.getThemeStyleId(id), id);
+  }
+});
+
+test("The provider keeps both new IDs, exact palettes and brightness support, independently of audio scenes", () => {
+  for (const id of ["natural", "pleyades"]) {
+    const ctx = providerHarness(id).render(id);
+    assert.equal(ctx.activeSceneId, id);
+    assert.equal(ctx.theme.id, id);
+    assert.deepEqual(ctx.theme.gradient, themes.SCENE_THEMES[id].gradient);
+    assert.deepEqual(providerHarness(id, true).render(id).theme.gradient, themes.SCENE_THEMES[id].gradient.map(brighten));
+    assert.equal(themes.isVisualThemeId(id), true);
+  }
+});
+
 test("Índigo 2 keeps its latest saturation, brightness and contrast adjustment, evenly spaced vertically", () => {
   const { indigo2 } = themes.SCENE_THEMES;
   assert.deepEqual(indigo2.gradient, ["#243462", "#242C60", "#252960", "#2A2462", "#2A255F", "#342462", "#372568"]);
@@ -42,7 +86,7 @@ test("Cloudy has all seven exact reference stops in order and inherits Indigo 2 
   assert.equal(themes.isIndigo2ThemeId("indigo2"), true);
   assert.equal(themes.isIndigo2ThemeId("tibet"), false);
   assert.equal(themes.isIndigoThemeId("cloudy"), false);
-  assert.deepEqual(themes.VISUAL_THEME_IDS, ["tibet", "indigo2", "cloudy", "cloudy2"]);
+  assert.deepEqual(themes.VISUAL_THEME_IDS, ["tibet", "indigo2", "cloudy", "cloudy2", "natural", "pleyades"]);
 });
 
 test("Cloudy 2 copies Indigo 2 styles with its exact reference colors, not just a reversed Cloudy palette", () => {
@@ -61,7 +105,7 @@ test("Cloudy 2 copies Indigo 2 styles with its exact reference colors, not just 
   assert.equal(themes.isIndigoThemeId("cloudy2"), false);
 });
 
-test("Only the four visual IDs are accepted; old audio IDs never become visual themes", () => {
+test("All six visual IDs are accepted; old audio IDs never become visual themes", () => {
   for (const id of themes.VISUAL_THEME_IDS) assert.equal(themes.isVisualThemeId(id), true);
   for (const id of [null, "indigo", "resonancia", "none", "__proto__", "unknown"]) {
     assert.equal(themes.isVisualThemeId(id), false);
@@ -170,7 +214,7 @@ test("Legacy swatches remain valid but settings no longer expose a visual scene 
       button.props.onPress();
     });
   }
-  assert.deepEqual(selected, Array.from({ length: 4 }, () => available).flat());
+  assert.deepEqual(selected, Array.from({ length: themes.VISUAL_THEME_IDS.length }, () => available).flat());
   const settings = read("../components/ProfileSettingsSections.tsx");
   assert.doesNotMatch(settings, /label: "Escenas"|themePicker|VisualThemeSwatches/);
   assert.doesNotMatch(settings, /Luz \/ Noche|setBrightMode/);

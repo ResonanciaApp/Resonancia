@@ -93,7 +93,7 @@ export function DrawerMenu() {
     if (!visible) cancelThemeHaptics.current?.();
     return () => { cancelThemeHaptics.current?.(); };
   }, [visible]);
-  const selectVisualTheme = (id: "cloudy" | "indigo2") => {
+  const selectVisualTheme = (id: "cloudy" | "indigo2" | "natural" | "pleyades") => {
     if (id === activeSceneId) return;
     cancelThemeHaptics.current?.();
     setActiveScene(id);

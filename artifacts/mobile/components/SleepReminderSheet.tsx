@@ -18,7 +18,7 @@ import {
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 
 import { FilledSunIcon } from "@/components/FilledSunIcon";
-import { SCENE_THEMES } from "@/config/scene-themes";
+import { getThemeStyleId, SCENE_THEMES } from "@/config/scene-themes";
 import { useSceneTheme } from "@/context/SceneThemeContext";
 import {
   SLEEP_REMINDER_CARD_BACKGROUND,
@@ -170,9 +170,9 @@ export function SleepReminderSheet({
   const timeLabel = formatPracticeNotificationTimeLocal(draft.hour, draft.minute);
   const gradient = isMorning
     ? ["#C96D68", "#855269", "#443044"] as const
-    : theme.id === "indigo2"
+    : getThemeStyleId(theme.id) === "indigo2"
       ? [SCENE_THEMES.tibet.gradient[1], SCENE_THEMES.tibet.gradient[2]] as const
-      : theme.id === "cloudy"
+      : getThemeStyleId(theme.id) === "cloudy"
         ? [theme.gradient[0], theme.gradient[1], theme.gradient[2], theme.gradient[3]] as const
         : [theme.gradient[1], theme.gradient[2]] as const;
   return (
@@ -201,9 +201,9 @@ export function SleepReminderSheet({
         >
           <LinearGradient
             colors={gradient}
-            locations={!isMorning && theme.id === "cloudy" ? [0, 1 / 3, 2 / 3, 1] : undefined}
-            start={!isMorning && theme.id === "cloudy" ? theme.gradientStart : undefined}
-            end={!isMorning && theme.id === "cloudy" ? theme.gradientEnd : undefined}
+            locations={!isMorning && getThemeStyleId(theme.id) === "cloudy" ? [0, 1 / 3, 2 / 3, 1] : undefined}
+            start={!isMorning && getThemeStyleId(theme.id) === "cloudy" ? theme.gradientStart : undefined}
+            end={!isMorning && getThemeStyleId(theme.id) === "cloudy" ? theme.gradientEnd : undefined}
             style={StyleSheet.absoluteFill}
           />
           <View style={styles.handle} />

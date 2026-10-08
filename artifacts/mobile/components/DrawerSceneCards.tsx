@@ -3,7 +3,7 @@ import { MoonCrescentIcon } from "@/components/MoonCrescentIcon";
 import React from "react";
 import { Pressable, StyleSheet, Text, View } from "react-native";
 
-type SceneId = "cloudy" | "indigo2";
+type SceneId = "cloudy" | "indigo2" | "natural" | "pleyades";
 
 type Props = {
   activeId: string;
@@ -14,17 +14,22 @@ const SCENES: {
   id: SceneId;
   title: string;
   iconColor: string;
+  icon: "white-balance-sunny" | "pine-tree" | "diamond-stone";
 }[] = [
   {
     id: "cloudy",
     title: "Día",
     iconColor: "#BE9650",
+    icon: "white-balance-sunny",
   },
   {
     id: "indigo2",
     title: "Noche",
     iconColor: "#B6A1E5",
+    icon: "white-balance-sunny",
   },
+  { id: "natural", title: "Natural", iconColor: "#7EAA65", icon: "pine-tree" },
+  { id: "pleyades", title: "Pleyades", iconColor: "#B6A1E5", icon: "diamond-stone" },
 ];
 
 export function DrawerSceneCards({ activeId, onSelect }: Props) {
@@ -34,7 +39,9 @@ export function DrawerSceneCards({ activeId, onSelect }: Props) {
         <Text style={styles.title}>Escena</Text>
       </View>
       <View style={styles.list} accessibilityRole="radiogroup" accessibilityLabel="Escena">
-        {SCENES.map((s) => {
+        {[SCENES.slice(0, 2), SCENES.slice(2)].map((column, columnIndex) => (
+          <View key={columnIndex} style={styles.column}>
+        {column.map((s) => {
           const selected = s.id === activeId;
           return (
             <Pressable
@@ -55,13 +62,15 @@ export function DrawerSceneCards({ activeId, onSelect }: Props) {
                 {s.id === "indigo2" ? (
                   <MoonCrescentIcon size={23} color={selected ? s.iconColor : "#A8A8A8"} />
                 ) : (
-                  <MaterialCommunityIcons name="white-balance-sunny" size={23} color={selected ? s.iconColor : "#A8A8A8"} />
+                  <MaterialCommunityIcons name={s.icon} size={23} color={selected ? s.iconColor : "#A8A8A8"} />
                 )}
               </View>
               <Text style={[styles.label, { color: selected ? "#FFFFFF" : "#A8A8A8" }]} numberOfLines={1}>{s.title}</Text>
             </Pressable>
           );
         })}
+          </View>
+        ))}
       </View>
     </View>
   );
@@ -85,7 +94,8 @@ const styles = StyleSheet.create({
     borderRadius: 10,
     gap: 14,
   },
-  list: { marginTop: 10, gap: 2 },
+  list: { marginTop: 10, flexDirection: "row", gap: 12 },
+  column: { flex: 1, gap: 2 },
   iconWrap: { width: 26, height: 26, alignItems: "center", justifyContent: "center" },
   label: { fontFamily: "Manrope", color: "#FFFFFF", fontSize: 14, fontWeight: "500", letterSpacing: 0.2 },
 });

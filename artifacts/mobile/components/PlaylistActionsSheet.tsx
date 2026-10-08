@@ -1,3 +1,4 @@
+import { getThemeStyleId } from "@/config/scene-themes";
 import { Feather } from "@expo/vector-icons";
 import { LinearGradient } from "expo-linear-gradient";
 import React, { useEffect, useState } from "react";
@@ -68,7 +69,7 @@ export function PlaylistActionsSheet({ itemId, itemKind, visible, onClose, libra
   const colors = useColors();
   const insets = useSafeAreaInsets();
   const { theme } = useSceneTheme();
-  const sheetColor = librarySurface && theme.id === "cloudy"
+  const sheetColor = librarySurface && getThemeStyleId(theme.id) === "cloudy"
     ? theme.gradient[theme.gradient.length - 1]
     : theme.gradient[2] ?? theme.gradient[1];
   const sheetGradient = [sheetColor, sheetColor] as [string, string];

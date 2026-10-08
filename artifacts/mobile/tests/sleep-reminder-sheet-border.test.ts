@@ -3,7 +3,7 @@ import { readFileSync } from "node:fs";
 import test from "node:test";
 import { URL } from "node:url";
 import ts from "typescript";
-import { SCENE_THEMES } from "../config/scene-themes.ts";
+import { getThemeStyleId, SCENE_THEMES } from "../config/scene-themes.ts";
 import {
   SLEEP_REMINDER_NIGHT_GRADIENT,
   SLEEP_REMINDER_CARD_BACKGROUND,
@@ -48,23 +48,23 @@ test("sleep reminder uses a 16% black card and solid periwinkle Continue with da
 test("sleep reminder matches the Ambiental duration gradient in every theme without changing morning", () => {
   const expression = source.match(/const gradient = ([\s\S]*?);\n  return/)?.[1];
   assert.ok(expression);
-  const gradientFor = new Function("isMorning", "theme", "SCENE_THEMES", "SLEEP_REMINDER_NIGHT_GRADIENT",
+  const gradientFor = new Function("isMorning", "theme", "SCENE_THEMES", "SLEEP_REMINDER_NIGHT_GRADIENT", "getThemeStyleId",
     ts.transpileModule(`return (${expression});`, {
       compilerOptions: { target: ts.ScriptTarget.ES2022 },
     }).outputText);
   assert.match(source, /<LinearGradient\s+colors=\{gradient\}/);
-  assert.match(source, /locations=\{!isMorning && theme\.id === "cloudy" \? \[0, 1 \/ 3, 2 \/ 3, 1\] : undefined\}/);
-  assert.match(source, /start=\{!isMorning && theme\.id === "cloudy" \? theme\.gradientStart : undefined\}/);
-  assert.match(source, /end=\{!isMorning && theme\.id === "cloudy" \? theme\.gradientEnd : undefined\}/);
+  assert.match(source, /locations=\{!isMorning && getThemeStyleId\(theme\.id\) === "cloudy" \? \[0, 1 \/ 3, 2 \/ 3, 1\] : undefined\}/);
+  assert.match(source, /start=\{!isMorning && getThemeStyleId\(theme\.id\) === "cloudy" \? theme\.gradientStart : undefined\}/);
+  assert.match(source, /end=\{!isMorning && getThemeStyleId\(theme\.id\) === "cloudy" \? theme\.gradientEnd : undefined\}/);
   for (const theme of Object.values(SCENE_THEMES)) {
     assert.deepEqual(
-      gradientFor(false, theme, SCENE_THEMES, SLEEP_REMINDER_NIGHT_GRADIENT),
-      theme.id === "indigo2" ? ["#332261", "#2E2468"]
-        : theme.id === "cloudy" ? theme.gradient.slice(0, 4)
+      gradientFor(false, theme, SCENE_THEMES, SLEEP_REMINDER_NIGHT_GRADIENT, getThemeStyleId),
+      getThemeStyleId(theme.id) === "indigo2" ? ["#332261", "#2E2468"]
+        : getThemeStyleId(theme.id) === "cloudy" ? theme.gradient.slice(0, 4)
         : [theme.gradient[1], theme.gradient[2]],
     );
     assert.deepEqual(
-      gradientFor(true, theme, SCENE_THEMES, SLEEP_REMINDER_NIGHT_GRADIENT),
+      gradientFor(true, theme, SCENE_THEMES, SLEEP_REMINDER_NIGHT_GRADIENT, getThemeStyleId),
       ["#C96D68", "#855269", "#443044"],
     );
   }

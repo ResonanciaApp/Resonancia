@@ -4,7 +4,7 @@ import React, { useEffect, useRef, useState } from "react";
 import { Animated, Modal, Pressable, ScrollView, StyleSheet, Text, useWindowDimensions, View } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 
-import { SCENE_THEMES } from "@/config/scene-themes";
+import { getThemeStyleId, SCENE_THEMES } from "@/config/scene-themes";
 import { useSceneTheme } from "@/context/SceneThemeContext";
 import { DURATION_SHEET_OPEN_BACKDROP_MS, DURATION_SHEET_OPEN_SPRING } from "@/lib/ambiental-duration-opening";
 
@@ -16,7 +16,7 @@ export function CreativityPointsInfoSheet({ visible, onClose }: { visible: boole
   const insets = useSafeAreaInsets();
   const { height } = useWindowDimensions();
   const maxHeight = height * 0.88;
-  const sheetGradient: [string, string] = theme.id === "indigo2"
+  const sheetGradient: [string, string] = getThemeStyleId(theme.id) === "indigo2"
     ? [SCENE_THEMES.tibet.gradient[1], SCENE_THEMES.tibet.gradient[2]]
     : [theme.gradient[1], theme.gradient[2]];
   const [rendered, setRendered] = useState(visible);

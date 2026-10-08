@@ -13,6 +13,7 @@ import { router, useLocalSearchParams } from "expo-router";
 import { Feather } from "@expo/vector-icons";
 import { BackPill } from "@/components/BackPill";
 import { LinearGradient } from "expo-linear-gradient";
+import { NATURAL_GRADIENT, NATURAL_GRADIENT_LOCATIONS } from "@/config/scene-themes";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 
 import { useColors } from "@/hooks/useColors";
@@ -180,16 +181,8 @@ export default function RespiracionScreen() {
     <View style={[styles.root, { backgroundColor: colors.background }]}>
       <StatusBar hidden />
       <LinearGradient
-        colors={[
-          "#4A7D48",
-          "#3B6D3C",
-          "#326740",
-          "#285E3E",
-          "#175543",
-          "#0B4B3D",
-          "#073B32",
-        ]}
-        locations={[0, 0.16, 0.33, 0.5, 0.68, 0.84, 1]}
+        colors={NATURAL_GRADIENT}
+        locations={NATURAL_GRADIENT_LOCATIONS}
         start={{ x: 0.5, y: 0 }}
         end={{ x: 0.5, y: 1 }}
         style={StyleSheet.absoluteFill}

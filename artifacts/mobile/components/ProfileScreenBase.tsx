@@ -51,7 +51,7 @@ import { useQueryClient } from "@tanstack/react-query";
 import { QuickAccessGrid } from "@/components/QuickAccessGrid";
 import { SacredBackground } from "@/components/SacredBackground";
 import { useSceneTheme } from "@/context/SceneThemeContext";
-import { isIndigo2ThemeId, isIndigoThemeId } from "@/config/scene-themes";
+import { getThemeStyleId, isIndigo2ThemeId, isIndigoThemeId } from "@/config/scene-themes";
 import { useUserProfile } from "@/context/UserProfileContext";
 import { usePremium } from "@/context/PremiumContext";
 import { useAuth } from "@/context/AuthContext";
@@ -257,7 +257,7 @@ function ProfileHeaderActions({
   onEdit: () => void;
   onSettings: () => void;
 }) {
-  const backgroundColor = activeSceneId === "cloudy" ? "rgba(0,0,0,0.19)" : "rgba(0,0,0,0.16)";
+  const backgroundColor = getThemeStyleId(activeSceneId) === "cloudy" ? "rgba(0,0,0,0.19)" : "rgba(0,0,0,0.16)";
   return (
     <View pointerEvents="box-none" style={[styles.profileHeaderActions, sticky && styles.profileStickyHeaderActions]}>
       <Pressable

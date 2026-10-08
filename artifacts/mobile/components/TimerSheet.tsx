@@ -1,3 +1,4 @@
+import { getThemeStyleId } from "@/config/scene-themes";
 import { Feather } from "@expo/vector-icons";
 import { LinearGradient } from "expo-linear-gradient";
 import React from "react";
@@ -41,7 +42,7 @@ type Props = {
 export function TimerSheet({ visible, onClose, sleepTimerRemaining: propRemaining, setSleepTimer: propSetTimer }: Props) {
   const colors = useColors();
   const { theme } = useSceneTheme();
-  const timerGradient = theme.id === "cloudy"
+  const timerGradient = getThemeStyleId(theme.id) === "cloudy"
     ? theme.gradient.slice(0, 4) as [string, string, string, string]
     : null;
   const { sleepTimerRemaining: playerRemaining, setSleepTimer: playerSetTimer } = usePlayer();

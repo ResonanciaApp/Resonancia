@@ -4,6 +4,7 @@ import test from "node:test";
 import { URL } from "node:url";
 import React from "react";
 import ts from "typescript";
+import { getThemeStyleId } from "../config/scene-themes.ts";
 
 const source = readFileSync(new URL("../components/ProfileScreenBase.tsx", import.meta.url), "utf8");
 const ast = ts.createSourceFile("profile.tsx", source, ts.ScriptTarget.Latest, true, ts.ScriptKind.TSX);
@@ -30,8 +31,8 @@ const selected = stylesObject.properties.filter(property =>
 const compiled = ts.transpileModule(`const styles = {${selected.map(property => property.getText(ast)).join(",")}};\n${component}`, {
   compilerOptions: { jsx: ts.JsxEmit.React, module: ts.ModuleKind.CommonJS },
 }).outputText;
-const Header = new Function("React", "View", "Pressable", "Feather", `${compiled}; return ProfileHeaderActions;`)(
-  React, "View", "Pressable", "Feather",
+const Header = new Function("React", "View", "Pressable", "Feather", "getThemeStyleId", `${compiled}; return ProfileHeaderActions;`)(
+  React, "View", "Pressable", "Feather", getThemeStyleId,
 );
 const flatten = (value: any): any => Array.isArray(value) ? Object.assign({}, ...value.map(flatten)) : value || {};
 
@@ -64,14 +65,14 @@ test("normal and sticky headers share the edit/settings actions and navigation",
 
 test("both 43px controls follow Cloudy and Indigo 2 opacity on every render", () => {
   for (const sticky of [false, true]) {
-    for (const scene of ["indigo2", "cloudy", "cloudy2", "indigo2"]) {
+    for (const scene of ["indigo2", "cloudy", "cloudy2", "natural", "pleyades"]) {
       const tree = Header({ sticky, foreground: "#FFFFFF", activeSceneId: scene, onEdit() {}, onSettings() {} });
       for (const button of tree.props.children) {
         const style = flatten(button.props.style({ pressed: false }));
         assert.equal(style.width, 43);
         assert.equal(style.height, 43);
         assert.equal(style.borderRadius, 21.5);
-        assert.equal(style.backgroundColor, scene === "cloudy" ? "rgba(0,0,0,0.19)" : "rgba(0,0,0,0.16)");
+        assert.equal(style.backgroundColor, getThemeStyleId(scene) === "cloudy" ? "rgba(0,0,0,0.19)" : "rgba(0,0,0,0.16)");
         assert.equal(style.borderWidth, 0);
         assert.equal(style.opacity, 1);
         assert.ok(flatten(button.props.style({ pressed: true })).opacity < 1);

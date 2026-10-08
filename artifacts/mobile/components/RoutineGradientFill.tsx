@@ -1,3 +1,4 @@
+import { getThemeStyleId } from "@/config/scene-themes";
 import { LinearGradient } from "expo-linear-gradient";
 import React from "react";
 import { StyleSheet, type StyleProp, type ViewStyle } from "react-native";
@@ -11,7 +12,7 @@ export function RoutineGradientFill({ style }: { style?: StyleProp<ViewStyle> })
   return (
     <LinearGradient
       pointerEvents="none"
-      colors={theme.id === "cloudy" ? CLOUDY_ROUTINE_GRADIENT : ROUTINE_GRADIENT}
+      colors={getThemeStyleId(theme.id) === "cloudy" ? CLOUDY_ROUTINE_GRADIENT : ROUTINE_GRADIENT}
       start={{ x: 0, y: 0.5 }}
       end={{ x: 1, y: 0.5 }}
       style={[StyleSheet.absoluteFillObject, style]}

@@ -2,7 +2,7 @@ import assert from "node:assert/strict";
 import { readFileSync } from "node:fs";
 import test from "node:test";
 import ts from "typescript";
-import { SCENE_THEMES } from "../config/scene-themes.ts";
+import { getThemeStyleId, SCENE_THEMES } from "../config/scene-themes.ts";
 
 const source = readFileSync(new URL("../components/TimerSheet.tsx", import.meta.url), "utf8");
 const ast = ts.createSourceFile("TimerSheet.tsx", source, ts.ScriptTarget.Latest, true, ts.ScriptKind.TSX);
@@ -13,13 +13,13 @@ function visit(node: ts.Node) {
 }
 visit(ast);
 assert.ok(expression);
-const resolve = new Function("theme", ts.transpileModule(`return (${expression.getText(ast)});`, {
+const resolve = new Function("theme", "getThemeStyleId", ts.transpileModule(`return (${expression.getText(ast)});`, {
   compilerOptions: { target: ts.ScriptTarget.ES2022 },
 }).outputText);
 
 test("the timer uses the first four stops only in Cloudy", () => {
-  for (const id of ["cloudy", "cloudy2", "indigo2", "tibet"] as const) {
-    assert.deepEqual(resolve(SCENE_THEMES[id]), id === "cloudy" ? SCENE_THEMES[id].gradient.slice(0, 4) : null);
+  for (const id of ["cloudy", "cloudy2", "indigo2", "tibet", "natural", "pleyades"] as const) {
+    assert.deepEqual(resolve(SCENE_THEMES[id], getThemeStyleId), getThemeStyleId(id) === "cloudy" ? SCENE_THEMES[id].gradient.slice(0, 4) : null);
   }
 });
 
