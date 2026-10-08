@@ -39,8 +39,9 @@ test("the active Descubrir route uses 19-point section titles, including editori
   assert.match(editorial, /styles\.title, \{ fontSize: titleSize \}/);
 });
 
-test("Descubrir restores centered visible separators without changing existing gaps", () => {
+test("Descubrir hides separators without changing existing gaps", () => {
   const spacer = style("sectionSpacer");
+  assert.equal(spacer.opacity, 0);
   assert.equal(spacer.backgroundColor, "rgba(255,255,255,0.12)");
   assert.equal(spacer.borderWidth, undefined);
   assert.equal(53 + spacer.marginTop, spacer.marginBottom);

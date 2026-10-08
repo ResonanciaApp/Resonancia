@@ -1183,6 +1183,7 @@ const styles = StyleSheet.create({
     marginTop: 2,
   },
   sectionSpacer: {
+    opacity: 0,
     height: StyleSheet.hairlineWidth,
     marginHorizontal: H_PAD,
     marginTop: -24.5,

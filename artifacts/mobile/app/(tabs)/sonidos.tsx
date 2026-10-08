@@ -705,6 +705,7 @@ const styles = StyleSheet.create({
   firstCarousel: { marginTop: 33 },
   carouselAfterSpacer: { marginTop: 26 },
   sectionSpacer: {
+    opacity: 0,
     height: StyleSheet.hairlineWidth,
     marginHorizontal: H_PAD,
     marginTop: 26 + SECTION_EXTRA_GAP / 2,

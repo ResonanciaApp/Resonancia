@@ -37,8 +37,9 @@ for (const [name, source, titleCount] of [["Dormir", sleep, 3], ["Sonidos", soun
     assert.equal((source.match(/titleSize=\{19\}/g) ?? []).length, titleCount);
     assert.doesNotMatch(source, /titleSize=\{17\}/);
   });
-  test(`${name}: visible dividers are centered and preserve the existing gap`, () => {
+  test(`${name}: hidden dividers preserve the existing gap`, () => {
     const spacer = style(source, "sectionSpacer");
+    assert.equal(spacer.opacity, 0);
     assert.equal(spacer.backgroundColor, "rgba(255,255,255,0.12)");
     assert.equal(spacer.borderWidth, undefined);
     assert.equal(spacer.marginTop, 26 + spacer.marginBottom);
@@ -92,6 +93,7 @@ test("Dormir keeps centered dividers on both sides of the free-user banner witho
     const second = render(item, 1);
     assert.equal(second.props.children[0].props.style.height, 0);
     const line = second.props.children[0].props.children.props.style;
+    assert.equal(line.opacity, 0);
     assert.equal(line.top + line.height / 2, 31 / 2);
     assert.equal(line.backgroundColor, "rgba(255,255,255,0.12)");
     assert.equal(second.props.children[1].props.style.marginTop, 31);

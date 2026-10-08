@@ -860,6 +860,7 @@ const styles = StyleSheet.create({
   },
   sectionExtraSpacing: { paddingTop: SECTION_EXTRA_GAP },
   sectionSpacer: {
+    opacity: 0,
     height: StyleSheet.hairlineWidth,
     marginHorizontal: H_PAD,
     marginTop: 26 + SECTION_EXTRA_GAP / 2,
@@ -868,6 +869,7 @@ const styles = StyleSheet.create({
   },
   bannerDividerGap: { height: 0, position: "relative" },
   bannerSectionDivider: {
+    opacity: 0,
     position: "absolute",
     top: (26 + SECTION_EXTRA_GAP - StyleSheet.hairlineWidth) / 2,
     left: H_PAD,
