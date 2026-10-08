@@ -67,6 +67,7 @@ export const STREAK_INFO_COLORS = {
 export const PREMIUM_STAR_GRADIENT = ["#FFD848", "#FCC200", "#F6BA00"] as const;
 
 export const MEMBERSHIP_AURORA = {
+  trialButtonBackground: "#B9822F",
   textSoft: "#D4DDDA",
   textMuted: "#AAB9BE",
   premium: {

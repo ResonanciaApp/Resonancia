@@ -42,10 +42,11 @@ const compiled = ts.transpileModule(`
   const PROFILE_SECTION_GAP = ${source.match(/const PROFILE_SECTION_GAP = (\d+);/)?.[1]};
   const styles = { ${styleProperties.map(property => property.getText(ast)).join(",")} };
   function Identity(props) {
+    const require = (path) => path;
     const { dedicated = true, email = null, location = "", isPremium = false, description = "", lifeMotto = "" } = props;
     const username = "Resonador", lastName = "", photoUri = null, selectedProfilePreset = null;
     const colors = { foreground: "#FFFFFF", mutedForeground: "#AAAAAA", secondary: "#060A0F", primary: "#BE9650" };
-    const secondaryAccent = "#BE9650", MEMBERSHIP_AURORA = { premium: { accent: "#E7B95C" } };
+    const secondaryAccent = "#BE9650", MEMBERSHIP_AURORA = { trialButtonBackground: "#B9822F", premium: { accent: "#E7B95C" } };
     const router = { push: props.onNavigate || (() => {}) };
     const setGrowthJourneyOpen = props.onJourney || (() => {});
     return ${userSection.getText(ast)};
@@ -69,6 +70,7 @@ const Native = (props: any) => {
     "data-ellipsis": props.ellipsizeMode,
     "data-icon": props.name,
     "data-icon-size": props.size,
+    "data-source": typeof props.source === "string" ? props.source : undefined,
     "data-width": style.width,
     "data-gap": style.gap,
     "data-height": style.height,
@@ -82,7 +84,7 @@ const Native = (props: any) => {
     "data-margin-bottom": style.marginBottom,
     "data-margin-top": style.marginTop,
     "data-background": style.backgroundColor,
-    "data-color": style.color,
+    "data-color": props.color ?? style.color,
     "data-font-size": style.fontSize,
   }, props.children);
 };
@@ -108,7 +110,7 @@ test("free users see Prueba Premium below their identity, while Premium users re
   const premium = render({ isPremium: true });
   assert.doesNotMatch(premium, /profile-premium-banner|Prueba Premium/);
   assert.match(premium, /profile-avatar-premium-badge/);
-  assert.equal((premium.match(/data-icon="star"/g) ?? []).length, 1);
+  assert.equal((premium.match(/data-source="..\/assets\/images\/estrella-premium.png"/g) ?? []).length, 1);
   assert.match(premium, /data-testid="profile-user-section"[^>]*data-margin-bottom="5"/);
 });
 
@@ -244,9 +246,11 @@ test("Premium membership overlays the bottom-right avatar corner without changin
   assert.equal(journey, false);
   assert.doesNotMatch(html, /profile-intention-pill/);
   assert.match(html, /data-testid="profile-avatar-premium-badge"[^>]*data-width="32"[^>]*data-height="32"[^>]*data-radius="16"[^>]*data-position="absolute"[^>]*data-right="0"[^>]*data-bottom="0"[^>]*data-pointer-events="none"/);
-  assert.equal((html.match(/data-icon="star" data-icon-size="25"/g) ?? []).length, 1);
+  assert.equal((html.match(/data-source="..\/assets\/images\/estrella-premium.png"/g) ?? []).length, 1);
   assert.match(source, /<SessionBadgeGlass showBlackTint=\{false\} showWhiteTint \/>/);
-  assert.match(source, /<MaterialCommunityIcons name="star" size=\{25\} color=\{MEMBERSHIP_AURORA\.premium\.accent\} \/>/);
+  assert.match(source, /<Image source=\{require\("..\/assets\/images\/estrella-premium.png"\)\} style=\{\{ width: 25, height: 25 \}\} contentFit="contain" \/>/);
+  const homeBanner = readFileSync(new URL("../components/PremiumBanner.tsx", import.meta.url), "utf8");
+  assert.match(homeBanner, /source=\{require\("..\/assets\/images\/estrella-premium.png"\)\}/);
   const avatarStart = source.indexOf('testID="profile-identity-avatar"');
   const avatarContent = source.slice(avatarStart, source.indexOf("</Pressable>", avatarStart));
   assert.ok(avatarContent.includes('testID="profile-avatar-premium-badge"'));

@@ -1,6 +1,7 @@
 import React from "react";
 import { Pressable, StyleSheet, Text, View } from "react-native";
-import { Feather, MaterialCommunityIcons } from "@expo/vector-icons";
+import { Feather } from "@expo/vector-icons";
+import { Image } from "expo-image";
 import { CARD_TEXT_BELOW, MEMBERSHIP_AURORA } from "@/constants/colors";
 import { openPremiumPlans } from "@/lib/premiumGate";
 import { router } from "expo-router";
@@ -23,7 +24,7 @@ export function ProfileMembershipBanner({
         accessibilityLabel={isPremium ? "Abrir Tu Premium" : "Prueba Premium"}
       >
         <View style={styles.icon}>
-          <MaterialCommunityIcons name="star" size={31} color={MEMBERSHIP_AURORA.premium.accent} />
+          <Image source={require("../assets/images/estrella-premium.png")} style={{ width: 31, height: 31 }} contentFit="contain" />
         </View>
         <View style={styles.copy}>
           <Text style={[styles.title, { color: MEMBERSHIP_AURORA.premium.accent }]}>

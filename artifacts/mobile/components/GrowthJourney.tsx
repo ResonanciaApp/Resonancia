@@ -146,11 +146,11 @@ export function GrowthLevelPreviewCard({
 }) {
   const colors = useColors();
   const { theme } = useSceneTheme();
-  const { currentStage, levels } = useGrowth();
+  const { currentStage, levels, progress } = useGrowth();
   const level = levels.find(item => item.id === currentStage?.id)
     ?? (currentStage ? { ...currentStage, image: currentStage.imageUrl } : null);
   if (!level) return null;
-  const dayLabel = level.startDay === level.endDay
+  const dayLabel = sectionTitle ? `${progress?.totalActiveDays ?? 0} días` : level.startDay === level.endDay
     ? `${level.startDay} días`
     : `${level.startDay}–${level.endDay} días`;
 
@@ -161,10 +161,16 @@ export function GrowthLevelPreviewCard({
         style={[
           styles.dayPill,
           canonicalVerticalInsets && styles.canonicalPreviewPill,
-          canonicalVerticalInsets && theme.id === "cloudy" && { backgroundColor: "rgba(0,0,0,0.16)" },
+          sectionTitle && styles.bloomDayPill,
+          sectionTitle && styles.timelineDayPill,
+          sectionTitle && styles.timelineBloomDayPill,
+          sectionTitle && styles.profilePreviewDayPill,
+          (canonicalVerticalInsets || sectionTitle) && theme.id === "cloudy" && {
+            backgroundColor: sectionTitle ? CLOUDY_GROWTH_DAY_PILL_BACKGROUND : "rgba(0,0,0,0.16)",
+          },
         ]}
       >
-        {canonicalVerticalInsets && (
+        {(canonicalVerticalInsets || sectionTitle) && (
           <MaterialCommunityIcons
             name="spa"
             size={12}
@@ -197,7 +203,7 @@ export function GrowthLevelPreviewCard({
   );
   const story = (
     <PreviewContentEntrance key="intention-story" replayKey="intention-story" delay={810}>
-      <Text testID={sectionTitle ? "profile-intention-description" : undefined} style={[styles.previewStory, sectionTitle && styles.titledPreviewStory, { color: sectionTitle ? "#C4C4C4" : colors.mutedForeground }]}>
+      <Text testID={sectionTitle ? "profile-intention-description" : undefined} style={[styles.previewStory, { color: sectionTitle ? "#C4C4C4" : colors.mutedForeground }]}>
         {level.story}
       </Text>
     </PreviewContentEntrance>
@@ -213,29 +219,17 @@ export function GrowthLevelPreviewCard({
           styles.previewCopy,
           canonicalVerticalInsets && styles.canonicalPreviewCopy,
           sectionTitle && styles.profilePreviewCopyOffset,
+          sectionTitle && styles.profilePreviewCopySpacing,
         ]}
       >
         {canonicalVerticalInsets ? (
-          <View testID="profile-intention-title-row" style={styles.canonicalPreviewTitleRow}>
-            {!sectionTitle && dayPill}
-            {sectionTitle ? (
-              <View testID="profile-intention-name-with-lotus" style={styles.profileIntentionNameRow}>
-                <View testID="profile-intention-lotus-background" pointerEvents="none" style={styles.profileIntentionLotusBackground}>
-                  <MaterialCommunityIcons
-                    name="spa"
-                    size={16}
-                    color={GROWTH_COLORS.current}
-                    accessibilityElementsHidden
-                    importantForAccessibility="no"
-                  />
-                </View>
-                {name}
-              </View>
-            ) : name}
+          <View testID="profile-intention-title-row" style={[styles.canonicalPreviewTitleRow, sectionTitle && styles.profilePreviewTitleSpacing]}>
+            {dayPill}
+            {name}
           </View>
         ) : (
           <>
-            {!sectionTitle && dayPill}
+            {dayPill}
             {name}
           </>
         )}
@@ -565,17 +559,17 @@ const styles = StyleSheet.create({
   previewSectionHeader: { flexDirection: "row", alignItems: "center", justifyContent: "space-between", minHeight: 25 },
   previewSectionTitle: { fontFamily: "Manrope", fontSize: 16, fontWeight: "600" },
   previewViewAll: { fontFamily: "Manrope", fontSize: 11, fontWeight: "400" },
-  titledPreviewStory: { transform: [{ translateY: -3 }] },
   previewContentRow: { flexDirection: "row", alignItems: "center", gap: 12, transform: [{ translateY: -4 }, { translateX: -8 }] },
   canonicalPreviewVerticalInsets: { paddingTop: 20, paddingBottom: 20, marginVertical: 2, alignItems: "center" },
   canonicalPreviewCopy: { minHeight: 100, justifyContent: "center", gap: 10 },
   canonicalPreviewName: { marginBottom: 0, fontSize: 18, lineHeight: 23 },
   canonicalPreviewPill: { marginBottom: 0, alignSelf: "center", flexDirection: "row", alignItems: "center", gap: 4 },
   canonicalPreviewTitleRow: { flexDirection: "column", alignItems: "flex-start", gap: 10 },
-  profileIntentionNameRow: { flexDirection: "row", alignItems: "center", gap: 6 },
-  profileIntentionLotusBackground: { width: 26, height: 26, borderRadius: 13, backgroundColor: "rgba(255,255,255,0.1)", alignItems: "center", justifyContent: "center" },
   previewCopy: { flex: 1, minWidth: 0 },
   profilePreviewCopyOffset: { transform: [{ translateX: -4 }] },
+  profilePreviewCopySpacing: { gap: 5 },
+  profilePreviewTitleSpacing: { gap: 5 },
+  profilePreviewDayPill: { marginBottom: 0 },
   previewStory: { fontFamily: "Manrope", fontSize: 11, lineHeight: 16 },
   section: {
     marginHorizontal: 16,

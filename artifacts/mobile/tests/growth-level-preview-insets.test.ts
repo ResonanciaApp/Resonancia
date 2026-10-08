@@ -242,18 +242,19 @@ test("Perfil adds Tu camino above Intención with the creativity-points heading 
   assert.doesNotMatch(render(), /profile-growth-section-title|>Tu camino</);
 });
 
-test("Perfil Tu camino keeps only the stage title and description, preserving Ver todo and its insets", () => {
+test("Perfil Tu camino shows accumulated days above the stage without a lotus beside its title", () => {
   let opened = false;
   const html = render({ embedded: true, canonicalVerticalInsets: true, sectionTitle: "Tu camino", onPress: () => { opened = true; } });
   assert.match(html, /data-testid="profile-growth-view-all"[^>]*data-accessibility-role="button"[^>]*>[\s\S]*?Ver todo/);
   assert.match(html, /data-justify-content="space-between"/);
-  assert.doesNotMatch(html, /intention-preview-day-pill|>0 días</);
-  assert.match(html, /data-testid="profile-intention-name-with-lotus"[^>]*data-direction="row"/);
+  assert.match(html, /intention-preview-day-pill/);
+  assert.match(html, />0 días</);
+  assert.doesNotMatch(html, /profile-intention-name-with-lotus|profile-intention-lotus-background/);
   assert.match(html, /data-icon="spa" data-color="#BE9650"/);
   assert.ok(html.indexOf('data-icon="spa"') < html.indexOf(">Intención"));
   assert.match(html, />Intención</);
   assert.match(html, /Una práctica que comienza hoy\./);
-  assert.match(html, /data-testid="profile-intention-description"[^>]*data-transform="\[\{&quot;translateY&quot;:-3\}\]"/);
+  assert.doesNotMatch(html, /data-testid="profile-intention-description"[^>]*data-transform=/);
   assert.doesNotMatch(html, /profile-intention-chevron|data-icon="chevron-right"/);
   assert.match(html, /data-testid="growth-level-zero-preview"[^>]*data-padding-top="18" data-padding-bottom="4"/);
   assert.ok(capturedViewAllPress);
@@ -265,6 +266,35 @@ test("Perfil Tu camino keeps only the stage title and description, preserving Ve
   assert.match(original, /profile-intention-chevron/);
   assert.match(original, /data-padding-top="20" data-padding-bottom="20"/);
   assert.doesNotMatch(original, /profile-growth-view-all|profile-intention-description|translateY&quot;:3|translateY&quot;:-3/);
+});
+
+test("Perfil uses actual accumulated days and the timeline pill's sizing for every current stage", () => {
+  const growthMock = mocks["@/context/GrowthContext"];
+  const original = growthMock.useGrowth;
+  try {
+    for (const [id, name, startDay, endDay, days] of [
+      ["crecimiento", "Crecimiento", 15, 21, 16],
+      ["expansion", "Expansión", 50, 56, 54],
+    ] as const) {
+      const stage = { id, name, startDay, endDay, story: "Descripción.", image: 1, group: "florecimiento" };
+      growthMock.useGrowth = () => ({ ...original(), currentStage: stage, levels: [stage], progress: { totalActiveDays: days } });
+      const html = render({ canonicalVerticalInsets: true, sectionTitle: "Tu camino" });
+      const pill = html.match(/<div[^>]*data-testid="intention-preview-day-pill"[^>]*>/)?.[0] ?? "";
+      assert.match(pill, /data-padding-vertical="4"/);
+      assert.match(pill, /data-direction="row" data-align="center"/);
+      assert.match(pill, /data-margin-bottom="0"/);
+      const titleRow = html.match(/<div[^>]*data-testid="profile-intention-title-row"[^>]*>/)?.[0] ?? "";
+      assert.match(titleRow, /data-gap="5"/);
+      assert.equal((html.match(/data-gap="5"/g) ?? []).length, 2, "5px between pill and title, and title group and description");
+      assert.ok(html.includes(`>${days} días<`));
+      assert.ok(html.indexOf(`>${days} días<`) < html.indexOf(`>${name}<`));
+      assert.doesNotMatch(html, new RegExp(`${startDay}–${endDay} días`));
+      assert.equal((html.match(/data-icon="spa"/g) ?? []).length, 1);
+      assert.doesNotMatch(html, /profile-intention-lotus-background/);
+    }
+  } finally {
+    growthMock.useGrowth = original;
+  }
 });
 
 test("Only Cloudy's Perfil intention day pill uses black at 16% opacity", () => {

@@ -472,7 +472,7 @@ const styles = StyleSheet.create({
     borderRadius: 999,
     borderWidth: 2,
     borderColor: "rgba(255,255,255,0.2)",
-    backgroundColor: "#B9822F",
+    backgroundColor: MEMBERSHIP_AURORA.trialButtonBackground,
   },
   freeTrialButtonInner: {
     paddingVertical: 14,

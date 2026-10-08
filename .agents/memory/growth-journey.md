@@ -33,17 +33,17 @@ En Perfil, la sección del banner de Intención se titula «Tu camino», con la 
 
 **How to apply:** Limitar este encabezado a Perfil; conservar el arte, la información de la etapa y la apertura de Tu camino. «Ver todo» queda al margen derecho del encabezado y sustituye al chevron del cuerpo.
 
-El banner de Intención en Perfil no muestra la píldora de días encima del nombre: su texto se limita al título de la etapa y su descripción. Conserva el arte y el encabezado Tu camino con Ver todo.
+El banner de Tu camino en Perfil muestra una píldora de días **activos acumulados reales** encima del nombre de la etapa actual. El loto dorado pertenece a esa píldora; no lleva un segundo loto ni fondo circular junto al título.
 
-**Why:** Después de ajustar la posición de la píldora, el usuario pidió retirarla de Tu camino en Perfil y dejar solo el título y la descripción.
+**Why:** El usuario reemplazó expresamente la decisión anterior de ocultar la píldora: ahora pide el contador acumulado y el loto arriba del título, con el mismo tamaño que las píldoras del recorrido.
 
-**How to apply:** No restaurar la píldora de días dentro del banner Tu camino en Perfil; conservarla en las demás portadas y etapas del camino. Mantener los ajustes independientes de descripción y espacio inferior de Perfil.
+**How to apply:** Conservar el arte, el encabezado Tu camino con Ver todo y la etapa dinámica. Usar el total personal, no el rango editorial, para la píldora. El usuario fijó 5 px entre píldora y título y otros 5 px entre título y descripción: medir la separación total, sin sumar margen de píldora al gap ni compensar con una traslación del texto.
 
-La píldora de etapa del bloque de identidad en Perfil, sobre el Lema de vida, es independiente de la píldora de días retirada del banner Tu camino. Lleva la flor de loto dorada a la izquierda. El nombre Intención en Tu camino también lleva el loto a su izquierda, sin recuperar la píldora de días.
+La píldora de etapa del bloque de identidad en Perfil, sobre el Lema de vida, es independiente de la píldora de días del banner Tu camino. Conserva la flor de loto dorada a la izquierda.
 
-**Why:** El usuario pidió el loto a la izquierda tanto de la etapa de identidad como de Intención en Tu camino. La decoración no activa la progresión ni cambia la decisión de que Intención sea la única etapa actual.
+**Why:** El último cambio del loto en el banner no retiró el loto de la identidad. Ambas píldoras tienen propósitos distintos.
 
-**How to apply:** Conservar el estilo compartido por tema. La decoración no determina la etapa activa: al implementar la progresión ahora autorizada, usar días activos acumulados, nunca la longitud de la racha consecutiva.
+**How to apply:** Conservar el estilo compartido por tema. La decoración no determina la etapa activa: usar días activos acumulados, nunca la longitud de la racha consecutiva.
 
 Cuando se active el progreso funcional, los niveles del camino deberán depender del total de días **activos acumulados**, no de la racha actual ni de la mayor racha. Un nivel alcanzado no debe retroceder cuando se corta una racha.
 

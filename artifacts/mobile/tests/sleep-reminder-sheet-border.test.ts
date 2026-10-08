@@ -45,20 +45,23 @@ test("sleep reminder uses a 16% black card and solid periwinkle Continue with da
   assert.match(source, /morningReminderCard: \{\s*backgroundColor: "rgba\(20,18,32,0.36\)"/);
 });
 
-test("Indigo 2 sleep reminder matches the Universo duration gradient without changing morning or other themes", () => {
+test("sleep reminder matches the Ambiental duration gradient in every theme without changing morning", () => {
   const expression = source.match(/const gradient = ([\s\S]*?);\n  return/)?.[1];
   assert.ok(expression);
   const gradientFor = new Function("isMorning", "theme", "SCENE_THEMES", "SLEEP_REMINDER_NIGHT_GRADIENT",
     ts.transpileModule(`return (${expression});`, {
       compilerOptions: { target: ts.ScriptTarget.ES2022 },
     }).outputText);
-  assert.match(source, /<LinearGradient colors=\{gradient\}/);
+  assert.match(source, /<LinearGradient\s+colors=\{gradient\}/);
+  assert.match(source, /locations=\{!isMorning && theme\.id === "cloudy" \? \[0, 1 \/ 3, 2 \/ 3, 1\] : undefined\}/);
+  assert.match(source, /start=\{!isMorning && theme\.id === "cloudy" \? theme\.gradientStart : undefined\}/);
+  assert.match(source, /end=\{!isMorning && theme\.id === "cloudy" \? theme\.gradientEnd : undefined\}/);
   for (const theme of Object.values(SCENE_THEMES)) {
     assert.deepEqual(
       gradientFor(false, theme, SCENE_THEMES, SLEEP_REMINDER_NIGHT_GRADIENT),
       theme.id === "indigo2" ? ["#332261", "#2E2468"]
-        : theme.id === "cloudy" ? [theme.gradient[1], theme.gradient[2]]
-        : SLEEP_REMINDER_NIGHT_GRADIENT,
+        : theme.id === "cloudy" ? theme.gradient.slice(0, 4)
+        : [theme.gradient[1], theme.gradient[2]],
     );
     assert.deepEqual(
       gradientFor(true, theme, SCENE_THEMES, SLEEP_REMINDER_NIGHT_GRADIENT),

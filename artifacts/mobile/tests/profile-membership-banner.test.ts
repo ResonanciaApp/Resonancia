@@ -20,6 +20,8 @@ test("the Premium star remains raised 3px without changing banner layout", () =>
   const icon = source.match(/icon:\s*\{([\s\S]*?)\n  \},/)?.[1] ?? "";
   assert.match(icon, /transform: \[\{ translateY: -3 \}\]/);
   assert.equal((source.match(/translateY/g) ?? []).length, 2);
+  assert.match(source, /source=\{require\("..\/assets\/images\/estrella-premium.png"\)\}/);
+  assert.match(source, /style=\{\{ width: 31, height: 31 \}\} contentFit="contain"/);
 });
 let press: (() => void) | undefined;
 let offers = 0;
@@ -46,6 +48,8 @@ const mocks: Record<string, unknown> = {
     return styles;
   } } },
   "@expo/vector-icons": { Feather: Native, MaterialCommunityIcons: Native },
+  "expo-image": { Image: Native },
+  "../assets/images/estrella-premium.png": 1,
   "@/constants/colors": { CARD_TEXT_BELOW: "#AAA", MEMBERSHIP_AURORA: { premium: { accent: "#E7B95C", glow: "#E7B95C" } } },
   "@/lib/premiumGate": { openPremiumPlans: () => { offers++; } },
   "expo-router": { router: { push: (next: string) => { route = next; } } },
@@ -126,7 +130,7 @@ test("trial star and copy use the parent's screen margins without a second inset
   const iconStyle = source.match(/  icon: \{([\s\S]*?)\n  \},/)?.[1] ?? "";
   assert.match(rowStyle, /paddingHorizontal: 0/);
   assert.match(iconStyle, /width: 31/);
-  assert.match(source, /name="star" size=\{31\}/);
+  assert.match(source, /source=\{require\("..\/assets\/images\/estrella-premium.png"\)\} style=\{\{ width: 31, height: 31 \}\}/);
   assert.doesNotMatch(source, /translateX/);
   assert.equal(bannerStyles.chevron.alignItems, "flex-end");
   for (const screenWidth of [320, 375, 402, 768]) {

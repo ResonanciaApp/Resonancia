@@ -1496,7 +1496,7 @@ export function ProfileScreenBase({
               {isPremium && (
                 <View testID="profile-avatar-premium-badge" pointerEvents="none" style={styles.avatarPremiumBadge}>
                   <SessionBadgeGlass showBlackTint={false} showWhiteTint />
-                  <MaterialCommunityIcons name="star" size={25} color={MEMBERSHIP_AURORA.premium.accent} />
+                  <Image source={require("../assets/images/estrella-premium.png")} style={{ width: 25, height: 25 }} contentFit="contain" />
                 </View>
               )}
             </Pressable>

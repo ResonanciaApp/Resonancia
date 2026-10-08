@@ -21,7 +21,6 @@ import { FilledSunIcon } from "@/components/FilledSunIcon";
 import { SCENE_THEMES } from "@/config/scene-themes";
 import { useSceneTheme } from "@/context/SceneThemeContext";
 import {
-  SLEEP_REMINDER_NIGHT_GRADIENT,
   SLEEP_REMINDER_CARD_BACKGROUND,
   SLEEP_REMINDER_CONTINUE_BACKGROUND,
   SLEEP_REMINDER_CONTINUE_FOREGROUND,
@@ -174,8 +173,8 @@ export function SleepReminderSheet({
     : theme.id === "indigo2"
       ? [SCENE_THEMES.tibet.gradient[1], SCENE_THEMES.tibet.gradient[2]] as const
       : theme.id === "cloudy"
-        ? [theme.gradient[1], theme.gradient[2]] as const
-        : SLEEP_REMINDER_NIGHT_GRADIENT;
+        ? [theme.gradient[0], theme.gradient[1], theme.gradient[2], theme.gradient[3]] as const
+        : [theme.gradient[1], theme.gradient[2]] as const;
   return (
     <Modal
       transparent
@@ -200,7 +199,13 @@ export function SleepReminderSheet({
             },
           ]}
         >
-          <LinearGradient colors={gradient} style={StyleSheet.absoluteFill} />
+          <LinearGradient
+            colors={gradient}
+            locations={!isMorning && theme.id === "cloudy" ? [0, 1 / 3, 2 / 3, 1] : undefined}
+            start={!isMorning && theme.id === "cloudy" ? theme.gradientStart : undefined}
+            end={!isMorning && theme.id === "cloudy" ? theme.gradientEnd : undefined}
+            style={StyleSheet.absoluteFill}
+          />
           <View style={styles.handle} />
           <ScrollView
             style={styles.sheetScroll}
