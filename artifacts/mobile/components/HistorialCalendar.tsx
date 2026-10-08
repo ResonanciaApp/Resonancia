@@ -231,6 +231,7 @@ export function HistorialCalendar({
   containerPadding = 0,
   embedded = false,
   showCompletedSessionCount = false,
+  dayContentTextColor,
   backgroundColor,
   outlined = false,
   cardHorizontalPadding,
@@ -243,6 +244,7 @@ export function HistorialCalendar({
   containerPadding?: number;
   embedded?: boolean;
   showCompletedSessionCount?: boolean;
+  dayContentTextColor?: string;
   backgroundColor?: string;
   outlined?: boolean;
   cardHorizontalPadding?: number;
@@ -472,13 +474,13 @@ export function HistorialCalendar({
               {formatSelectedDate(selectedDate, today)}
             </Text>
             {showCompletedSessionCount && dayEntries.length > 0 && (
-              <Text testID="profile-calendar-completed-count" style={styles.embeddedCompletedCount}>
+              <Text testID="profile-calendar-completed-count" style={[styles.embeddedCompletedCount, dayContentTextColor !== undefined && { color: dayContentTextColor }]}>
                 {formatCompletedSessionCount(dayEntries.length)}
               </Text>
             )}
           </View>
           {dayEntries.length === 0 ? (
-            <Text style={[styles.embeddedEmptyText, { color: "#F9F9F9" }]}>
+            <Text style={[styles.embeddedEmptyText, { color: dayContentTextColor ?? "#F9F9F9" }]}>
               {isSameDay(selectedDate, today)
                 ? "Aún no has completado nada hoy"
                 : "No hay actividad"}
@@ -521,14 +523,14 @@ export function HistorialCalendar({
                     <SessionDurationBadge
                       label={session.durationLabel}
                       style={styles.embeddedEntryDuration}
-                      textStyle={styles.embeddedEntryDurationText}
+                      textStyle={[styles.embeddedEntryDurationText, dayContentTextColor !== undefined && { color: dayContentTextColor }]}
                     />
                   </View>
                   <View style={styles.embeddedEntryCopy}>
-                    <Text style={[styles.embeddedEntryTitle, { color: calendarAccent }]} numberOfLines={2}>
+                    <Text style={[styles.embeddedEntryTitle, { color: dayContentTextColor ?? calendarAccent }]} numberOfLines={2}>
                       {session.title}
                     </Text>
-                    <Text style={[styles.embeddedEntryCategory, { color: colors.foreground }]}>
+                    <Text style={[styles.embeddedEntryCategory, { color: dayContentTextColor ?? colors.foreground }]}>
                       {entry.categoryLabel || session.categoryLabel || "Contenido"}
                     </Text>
                   </View>

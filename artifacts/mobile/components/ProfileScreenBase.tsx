@@ -1528,6 +1528,7 @@ export function ProfileScreenBase({
                 streakHistoryTopPadding={18}
                 streakHistoryDividerOffsetY={0}
                 longestStreakLabel="RACHA ACUMULADA"
+                secondaryTextColor="#C4C4C4"
                 longestStreakIconColor={MEMBERSHIP_AURORA.premium.accent}
                 sectionBackgroundColor="rgba(0,0,0,0.16)"
                 sectionHorizontalPadding={20}

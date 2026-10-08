@@ -19,6 +19,7 @@ const NativeView = ({ children, testID, style, disabled, accessibilityLabel, acc
     "data-role": accessibilityRole,
     "data-action-label": accessibilityLabel,
     "data-background": resolved.backgroundColor,
+    "data-color": resolved.color === "#C4C4C4" ? resolved.color : undefined,
     "data-disabled": disabled,
     "data-label": testID === "profile-streak-history-info" ? accessibilityLabel : undefined,
     "data-align-items": resolved.alignItems,
@@ -70,8 +71,8 @@ const mocks: Record<string, unknown> = {
   "@react-native-masked-view/masked-view": Mask,
   "expo-linear-gradient": { LinearGradient: Gradient },
   "@/components/HistorialCalendar": {
-    HistorialCalendar: ({ showCompletedSessionCount, canonicalVerticalInsets }: { showCompletedSessionCount?: boolean; canonicalVerticalInsets?: boolean }) =>
-      React.createElement("div", { "data-testid": "calendar", "data-completed-count": !!showCompletedSessionCount, "data-canonical-insets": !!canonicalVerticalInsets }),
+    HistorialCalendar: ({ showCompletedSessionCount, canonicalVerticalInsets, dayContentTextColor }: { showCompletedSessionCount?: boolean; canonicalVerticalInsets?: boolean; dayContentTextColor?: string }) =>
+      React.createElement("div", { "data-testid": "calendar", "data-completed-count": !!showCompletedSessionCount, "data-canonical-insets": !!canonicalVerticalInsets, "data-day-text-color": dayContentTextColor }),
   },
   "@/components/CinematicFadeSlide": { CinematicFadeSlide: Passthrough },
   "@/components/StreakWeekRow": {
@@ -161,6 +162,21 @@ test("Perfil separates week-only progress from the titled streak history", () =>
   assert.match(html.slice(longestIndex, completedIndex), /<div>2<\/div>/);
   assert.ok(html.indexOf("Mis estadísticas") > historyIndex);
   assert.ok(html.indexOf('data-testid="calendar"') > html.indexOf("Mis estadísticas"));
+});
+
+test("Perfil renders all four streak labels and forwards its selected-day gray without recoloring counters", () => {
+  const html = render({
+    separateStreakHistory: true,
+    showPersonalStats: false,
+    showCalendar: true,
+    longestStreakLabel: "RACHA ACUMULADA",
+    secondaryTextColor: "#C4C4C4",
+  });
+  for (const label of ["RACHA ACTUAL", "RACHA ACUMULADA", "RACHA MÁS LARGA", "RACHAS COMPLETADAS"]) {
+    assert.match(html, new RegExp(`<div[^>]*data-color="#C4C4C4"[^>]*>${label}</div>`));
+  }
+  assert.match(html, /data-testid="calendar"[^>]*data-day-text-color="#C4C4C4"/);
+  assert.doesNotMatch(render({ separateStreakHistory: true }), /data-color="#C4C4C4"/);
 });
 
 test("Perfil shows Progreso semanal above history, preserving Intención and calendar", () => {

@@ -58,6 +58,7 @@ export function ProgressMirrorSections({
   streakHistoryDividerOffsetY = 0,
   longestStreakLabel = "RACHA MÁS LARGA",
   longestStreakIconColor,
+  secondaryTextColor,
   onStreakTitlePress,
   showStreakWeek = true,
   showStreakViewAll = false,
@@ -107,6 +108,7 @@ export function ProgressMirrorSections({
   streakHistoryDividerOffsetY?: number;
   longestStreakLabel?: string;
   longestStreakIconColor?: string;
+  secondaryTextColor?: string;
   onStreakTitlePress?: () => void;
   showStreakWeek?: boolean;
   showStreakViewAll?: boolean;
@@ -405,6 +407,7 @@ export function ProgressMirrorSections({
             value={weekCount}
             label="RACHA ACTUAL"
             accent={accent}
+            labelColor={secondaryTextColor}
             onPress={onStreakHistoryPress ? undefined : onStreakTitlePress}
             edgeAligned={canonicalVerticalInsets && !centerStreakHistoryCopy}
           />
@@ -416,6 +419,7 @@ export function ProgressMirrorSections({
             value={maxStreak}
             label={longestStreakLabel}
             accent={accent}
+            labelColor={secondaryTextColor}
             onPress={onStreakHistoryPress ? undefined : onStreakTitlePress}
             edgeAligned={canonicalVerticalInsets && !centerStreakHistoryCopy}
           />
@@ -432,6 +436,7 @@ export function ProgressMirrorSections({
             value={maxStreak}
             label="RACHA MÁS LARGA"
             accent={accent}
+            labelColor={secondaryTextColor}
             onPress={onStreakHistoryPress ? undefined : onStreakTitlePress}
             edgeAligned={canonicalVerticalInsets && !centerStreakHistoryCopy}
           />
@@ -443,6 +448,7 @@ export function ProgressMirrorSections({
             value={completedWeeks}
             label="RACHAS COMPLETADAS"
             accent={accent}
+            labelColor={secondaryTextColor}
             onPress={onStreakHistoryPress ? undefined : onStreakTitlePress}
             edgeAligned={canonicalVerticalInsets && !centerStreakHistoryCopy}
           />
@@ -652,6 +658,7 @@ export function ProgressMirrorSections({
         >
           <HistorialCalendar
             embedded
+            dayContentTextColor={secondaryTextColor}
             showCompletedSessionCount={showCalendarCompletedCount}
             outlined={showSectionBorders}
             backgroundColor={sectionBackgroundColor}
@@ -731,6 +738,7 @@ function Stat({
   unit,
   label,
   accent,
+  labelColor,
   onPress,
   edgeAligned = false,
 }: {
@@ -739,6 +747,7 @@ function Stat({
   unit?: string;
   label: string;
   accent: string;
+  labelColor?: string;
   onPress?: () => void;
   edgeAligned?: boolean;
 }) {
@@ -748,7 +757,7 @@ function Stat({
       {statIcon}
       <View style={[styles.statCopy, edgeAligned && styles.statCopyEdgeAligned]}>
         <Text style={styles.statValue}>{value}{unit ? ` ${unit}` : ""}</Text>
-        <Text style={[styles.statLabel, { color: accent }]}>{label}</Text>
+        <Text style={[styles.statLabel, { color: labelColor ?? accent }]}>{label}</Text>
       </View>
     </>
   );

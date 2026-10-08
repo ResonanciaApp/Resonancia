@@ -187,7 +187,7 @@ export function GrowthLevelPreviewCard({
   );
   const story = (
     <PreviewContentEntrance key="intention-story" replayKey="intention-story" delay={810}>
-      <Text testID={sectionTitle ? "profile-intention-description" : undefined} style={[styles.previewStory, sectionTitle && styles.titledPreviewStory, { color: colors.mutedForeground }]}>
+      <Text testID={sectionTitle ? "profile-intention-description" : undefined} style={[styles.previewStory, sectionTitle && styles.titledPreviewStory, { color: sectionTitle ? "#C4C4C4" : colors.mutedForeground }]}>
         {level.story}
       </Text>
     </PreviewContentEntrance>
@@ -213,7 +213,7 @@ export function GrowthLevelPreviewCard({
                 <View testID="profile-intention-lotus-background" pointerEvents="none" style={styles.profileIntentionLotusBackground}>
                   <MaterialCommunityIcons
                     name="spa"
-                    size={18}
+                    size={16}
                     color={GROWTH_COLORS.current}
                     accessibilityElementsHidden
                     importantForAccessibility="no"

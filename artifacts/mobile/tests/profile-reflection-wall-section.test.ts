@@ -137,7 +137,7 @@ test("Tu camino lifts only its content row four pixels and trims eight pixels of
   assert.match(source("../components/GrowthJourney.tsx"), /<View style=\{styles\.previewContentRow\}>\{previewContent\}<\/View>/);
 });
 
-test("Tu camino uses the smaller caption and stage title with a larger gold lotus on a translucent circular background", () => {
+test("Tu camino uses the smaller caption and stage title with a gold lotus on a translucent circular background", () => {
   assert.equal(style("GrowthJourney", "previewViewAll").fontSize, 13 - 2);
   assert.match(source("../components/ProfileScreenBase.tsx"), /sectionTitle="Tu camino" titleFontSize=\{17\}/);
   const circle = style("GrowthJourney", "profileIntentionLotusBackground");
@@ -147,7 +147,7 @@ test("Tu camino uses the smaller caption and stage title with a larger gold lotu
   assert.equal(circle.opacity, undefined, "the gold lotus remains opaque");
   assert.equal(circle.alignItems, "center");
   assert.equal(circle.justifyContent, "center");
-  assert.match(source("../components/GrowthJourney.tsx"), /testID="profile-intention-lotus-background" pointerEvents="none"[\s\S]*?name="spa"\s*size=\{18\}\s*color=\{GROWTH_COLORS\.current\}/);
+  assert.match(source("../components/GrowthJourney.tsx"), /testID="profile-intention-lotus-background" pointerEvents="none"[\s\S]*?name="spa"\s*size=\{16\}\s*color=\{GROWTH_COLORS\.current\}/);
 });
 
 test("Tu camino shifts the lotus, its background, stage name and description four pixels left without moving the image", () => {
@@ -156,6 +156,23 @@ test("Tu camino shifts the lotus, its background, stage name and description fou
   assert.match(growth, /styles\.previewCopy,\s*canonicalVerticalInsets && styles\.canonicalPreviewCopy,\s*sectionTitle && styles\.profilePreviewCopyOffset/);
   assert.match(growth, /style=\{\[styles\.previewArt, sectionTitle && styles\.profilePreviewArt\]\}/);
   assert.deepEqual(style("GrowthJourney", "previewContentRow").transform, [{ translateY: -4 }, { translateX: -8 }]);
+});
+
+test("Perfil supplies its description gray to Tu camino, streak labels and all selected-day content without changing other surfaces", () => {
+  const growth = source("../components/GrowthJourney.tsx");
+  assert.match(growth, /color: sectionTitle \? "#C4C4C4" : colors\.mutedForeground/);
+  assert.match(source("../components/ProfileScreenBase.tsx"), /secondaryTextColor="#C4C4C4"/);
+  const mirror = source("../components/ProgressMirrorSections.tsx");
+  assert.equal((mirror.match(/labelColor=\{secondaryTextColor\}/g) ?? []).length, 4);
+  assert.match(mirror, /dayContentTextColor=\{secondaryTextColor\}/);
+  assert.match(mirror, /color: labelColor \?\? accent/);
+  const calendar = source("../components/HistorialCalendar.tsx");
+  assert.match(calendar, /styles\.embeddedEmptyText, \{ color: dayContentTextColor \?\? "#F9F9F9" \}/);
+  assert.match(calendar, /styles\.embeddedEntryTitle, \{ color: dayContentTextColor \?\? calendarAccent \}/);
+  assert.match(calendar, /styles\.embeddedEntryCategory, \{ color: dayContentTextColor \?\? colors\.foreground \}/);
+  for (const styleName of ["embeddedCompletedCount", "embeddedEntryDurationText"]) {
+    assert.ok(calendar.includes(`styles.${styleName}, dayContentTextColor !== undefined && { color: dayContentTextColor }`));
+  }
 });
 
 test("Perfil header controls take touch priority over the lifted avatar without moving either", () => {
