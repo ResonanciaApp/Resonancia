@@ -375,7 +375,7 @@ test("the wall renders all ten brightened stops at equal intervals without chang
   assert.equal(resolve(wall.props.maskElement.props.style).borderRadius, 24);
 });
 
-test("Registrar uses Natural green with original opacities and preserves other themes", () => {
+test("Registrar uses Natural white with original opacities and preserves other themes", () => {
   const contents = source("../components/InnerSpaceCard.tsx");
   const ast = ts.createSourceFile("InnerSpaceCard.tsx", contents, ts.ScriptTarget.Latest, true, ts.ScriptKind.TSX);
   let button: ts.JsxElement | undefined;
@@ -403,8 +403,8 @@ test("Registrar uses Natural green with original opacities and preserves other t
     React, Pressable: "button", Text: "span", styles, saveMessage,
     REGISTER_BUTTON_BACKGROUND: "rgba(184, 117, 240, 0.2)",
     REGISTER_BUTTON_ENABLED_BACKGROUND: "rgba(184, 117, 240, 0.45)",
-    NATURAL_REGISTER_BUTTON_BACKGROUND: "rgba(24,56,19,0.2)",
-    NATURAL_REGISTER_BUTTON_ENABLED_BACKGROUND: "rgba(24,56,19,0.45)",
+    NATURAL_REGISTER_BUTTON_BACKGROUND: "rgba(249,249,249,0.2)",
+    NATURAL_REGISTER_BUTTON_ENABLED_BACKGROUND: "rgba(249,249,249,0.45)",
   };
   const renderButton = new Function(...Object.keys(scope), "isSubmitDisabled", "createMutation", "theme", compiled);
   for (const themeId of ["natural", "cloudy", "indigo2", "pleyades"]) {
@@ -425,6 +425,17 @@ test("Registrar uses Natural green with original opacities and preserves other t
   }
   }
   assert.doesNotMatch(button.getText(ast), /MaskedView|LinearGradient/);
+});
+
+test("Ver muro has an opaque white border in every theme", () => {
+  const contents = source("../components/InnerSpaceCard.tsx");
+  const button = contents.slice(contents.indexOf('testID="open-reflection-wall"'), contents.indexOf('testID="save-reflection"'));
+  assert.match(button, /borderColor: REFLECTION_WALL_BUTTON_BORDER_COLOR/);
+  assert.doesNotMatch(button, /opacity:|theme\.id/);
+  assert.match(source("../constants/colors.ts"), /REFLECTION_WALL_BUTTON_BORDER_COLOR = "#F9F9F9"/);
+  assert.match(source("../constants/colors.ts"), /NATURAL_REGISTER_BUTTON_BACKGROUND = "rgba\(249,249,249,0\.2\)"/);
+  assert.match(source("../constants/colors.ts"), /NATURAL_REGISTER_BUTTON_ENABLED_BACKGROUND = "rgba\(249,249,249,0\.45\)"/);
+  assert.equal(style("InnerSpaceCard", "wallButton").borderWidth, 1);
 });
 
 test("Perfil wall description matches Intención typography and centers the plus with both header lines", () => {

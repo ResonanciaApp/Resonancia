@@ -45,6 +45,7 @@ import {
   REGISTER_BUTTON_ENABLED_BACKGROUND,
   NATURAL_REGISTER_BUTTON_BACKGROUND,
   NATURAL_REGISTER_BUTTON_ENABLED_BACKGROUND,
+  REFLECTION_WALL_BUTTON_BORDER_COLOR,
 } from "@/constants/colors";
 
 const DEFAULT_PLACEHOLDER = "¿Qué sientes compartir hoy?";
@@ -748,7 +749,7 @@ export function InnerSpaceCard({
         <Pressable
           testID="open-reflection-wall"
           onPress={openWall}
-          style={[styles.submitButton, styles.wallButton, { borderColor: REGISTER_BUTTON_BACKGROUND }]}
+          style={[styles.submitButton, styles.wallButton, { borderColor: REFLECTION_WALL_BUTTON_BORDER_COLOR }]}
           accessibilityRole="button"
           accessibilityLabel="Ver muro"
         >
