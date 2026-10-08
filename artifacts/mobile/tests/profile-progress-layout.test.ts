@@ -163,28 +163,32 @@ test("Perfil separates week-only progress from the titled streak history", () =>
   assert.ok(html.indexOf('data-testid="calendar"') > html.indexOf("Mis estadísticas"));
 });
 
-test("Perfil hides its seven-day section completely, preserving history, Intención and calendar", () => {
+test("Perfil shows Progreso semanal above history, preserving Intención and calendar", () => {
   const profile = readFileSync(new URL("../components/ProfileScreenBase.tsx", import.meta.url), "utf8");
   const usage = profile.match(/<ProgressMirrorSections[\s\S]*?canonicalVerticalInsets/)?.[0] ?? "";
-  assert.match(usage, /showStreakWeek=\{false\}/);
-  assert.doesNotMatch(usage, /weeklySectionTitle=/);
-  assert.match(usage, /weeklySectionHorizontalPadding=\{5\}/);
-  assert.match(usage, /weeklySectionBackgroundColor="transparent"/);
-  assert.match(usage, /streakContentTranslateY=\{10\}/);
+  assert.match(usage, /showStreakWeek\s/);
+  assert.match(usage, /weeklySectionTitle="Progreso semanal"/);
+  assert.match(usage, /weeklySectionHorizontalPadding=\{20\}/);
+  assert.match(usage, /weeklySectionBackgroundColor="rgba\(0,0,0,0.16\)"/);
+  assert.match(usage, /streakContentTranslateY=\{0\}/);
   assert.match(usage, /separateStreakHistory/);
   const html = render({
     separateStreakHistory: true,
-    showStreakWeek: false,
+    showStreakWeek: true,
     showPersonalStats: false,
     showCalendar: true,
-    weeklySectionHorizontalPadding: 5,
-    weeklySectionBackgroundColor: "transparent",
-    streakContentTranslateY: 10,
+    weeklySectionTitle: "Progreso semanal",
+    weeklySectionHorizontalPadding: 20,
+    weeklySectionBackgroundColor: "rgba(0,0,0,0.16)",
+    streakContentTranslateY: 0,
     longestStreakLabel: "RACHA ACUMULADA",
     afterStreakHistory: React.createElement("div", { "data-testid": "profile-growth-intention" }, "Intención"),
   });
-  assert.doesNotMatch(html, /seven-week-days|profile-weekly-progress/);
-  assert.doesNotMatch(html, /profile-weekly-title|>Tu progreso semanal</);
+  assert.match(html, /seven-week-days/);
+  assert.match(html, /profile-weekly-title/);
+  assert.match(html, />Progreso semanal</);
+  assert.ok(html.indexOf('data-testid="profile-weekly-progress"') < html.indexOf('data-testid="profile-streak-history"'));
+  assert.match(html, /data-testid="profile-weekly-progress"[^>]*data-background="rgba\(0,0,0,0.16\)"/);
   assert.doesNotMatch(html, /Tu progreso esta semana/);
   for (const content of ["profile-streak-history", "RACHA ACTUAL", "RACHA ACUMULADA", "RACHA MÁS LARGA", "RACHAS COMPLETADAS", "profile-growth-intention", 'data-testid="calendar"']) {
     assert.ok(html.includes(content), `Missing preserved content: ${content}`);
@@ -258,7 +262,7 @@ test("Tu progreso keeps weekly circles without streak history, calendar or Inten
   const progressSource = readFileSync(new URL("../app/progreso.tsx", import.meta.url), "utf8");
   const usage = progressSource.match(/<ProgressMirrorSections[\s\S]*?\/>/)?.[0] ?? "";
   assert.match(usage, /separateStreakHistory/);
-  assert.match(usage, /weeklySectionBackgroundColor="transparent"/);
+  assert.match(usage, /weeklySectionBackgroundColor="rgba\(0,0,0,0.16\)"/);
   assert.match(usage, /showStreakHistory=\{false\}/);
   assert.match(usage, /showPersonalStats=\{false\}/);
   assert.match(usage, /showCalendar=\{false\}/);

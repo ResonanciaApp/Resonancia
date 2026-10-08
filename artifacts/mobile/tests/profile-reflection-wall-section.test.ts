@@ -47,6 +47,12 @@ test("both Perfil section titles use Dormir's carousel size, while Inicio keeps 
   assert.match(source("../components/MiRutinaSection.tsx"), /titleSize = 17/);
 });
 
+test("calendar keeps only the requested today-empty message, with past-day wording intact", () => {
+  const calendar = source("../components/HistorialCalendar.tsx");
+  assert.match(calendar, /isSameDay\(selectedDate, today\)\s*\? "Aún no has completado nada hoy"\s*: "No hay actividad"/);
+  assert.doesNotMatch(calendar, /Tómate un momento para pausar y comenzar tu práctica/);
+});
+
 test("Mi muro reports only its actual closed-card height and Perfil forwards it to Añadir una actividad", () => {
   const contents = source("../components/InnerSpaceCard.tsx");
   const ast = ts.createSourceFile("wall.tsx", contents, ts.ScriptTarget.Latest, true, ts.ScriptKind.TSX);
@@ -91,12 +97,27 @@ test("routine add card uses the measured wall height only when supplied and leav
   assert.ok(styling);
   const compiled = ts.transpileModule(`return (${styling.getText(ast)});`, { compilerOptions: { target: ts.ScriptTarget.ES2022 } }).outputText;
   for (const height of [undefined, 82, 103.5]) {
-    const fn = new Function("styles", "addCardHeight", compiled)({ addButton: style("MiRutinaSection", "addButton") }, height);
+    const fn = new Function("styles", "addCardHeight", "alignCardGapToWall", "todayActivities", compiled)({ addButton: style("MiRutinaSection", "addButton") }, height, false, []);
     const merged = Object.assign({}, ...fn({ pressed: false }).filter(Boolean));
     assert.equal(merged.height, height);
     assert.equal(merged.minHeight, height ?? 68);
     assert.equal(merged.borderStyle, "dashed");
   }
+  const evaluate = new Function("styles", "addCardHeight", "alignCardGapToWall", "todayActivities", compiled);
+  for (const [align, activities, margin] of [[true, [], 0], [true, [{ id: "pending" }], 10], [false, [], 10]] as const) {
+    const fn = evaluate({ addButton: style("MiRutinaSection", "addButton") }, 82, align, activities);
+    const merged = Object.assign({}, ...fn({ pressed: false }).filter(Boolean));
+    assert.equal(merged.marginTop, margin, "only the empty aligned state removes the extra ten pixels");
+  }
+  const wallGap = Number(style("ProfileReflectionWallSection", "title").marginBottom);
+  const routineGap = Number(style("MiRutinaSection", "headerRow").marginBottom);
+  assert.equal(wallGap, routineGap);
+  assert.equal(Number(style("MiRutinaSection", "alignedHeaderRow").marginBottom), routineGap + 3);
+  assert.match(source("../components/MiRutinaSection.tsx"), /styles\.headerRow, alignCardGapToWall && styles\.alignedHeaderRow/);
+  assert.equal(style("MiRutinaSection", "completeState").marginTop ?? 0, 0);
+  assert.deepEqual(style("RoutineCompletionTransition", "completeLayer"), { position: "absolute", top: 0, left: 0, right: 0 });
+  assert.equal(style("ProfileReflectionWallSection", "title").lineHeight, style("MiRutinaSection", "alignedSectionTitle").lineHeight);
+  assert.match(source("../components/ProfileScreenBase.tsx"), /<MiRutinaSection[^>]*alignCardGapToWall/);
   const baseHeight = Number(style("InnerSpaceCard", "canonicalHeaderCopy").minHeight)
     + Number(style("InnerSpaceCard", "profileWall").paddingTop)
     + Number(style("InnerSpaceCard", "profileWall").paddingBottom)

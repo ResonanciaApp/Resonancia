@@ -480,7 +480,7 @@ export function HistorialCalendar({
           {dayEntries.length === 0 ? (
             <Text style={[styles.embeddedEmptyText, { color: "#F9F9F9" }]}>
               {isSameDay(selectedDate, today)
-                ? "Aún no has completado nada hoy. Tómate un momento para pausar y comenzar tu práctica. 🌿"
+                ? "Aún no has completado nada hoy"
                 : "No hay actividad"}
             </Text>
           ) : (

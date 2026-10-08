@@ -41,6 +41,7 @@ type Props = {
   cardBackgroundColor?: string;
   titleSize?: number;
   addCardHeight?: number;
+  alignCardGapToWall?: boolean;
 };
 
 const ROUTINE_CARD_HEIGHT = 74;
@@ -322,7 +323,7 @@ const ActivityRow = React.memo(function ActivityRow({
   );
 });
 
-export function MiRutinaSection({ style, cardBackgroundColor, titleSize = 17, addCardHeight }: Props) {
+export function MiRutinaSection({ style, cardBackgroundColor, titleSize = 17, addCardHeight, alignCardGapToWall = false }: Props) {
   const colors = useColors();
   const routineTheme = useRoutineTheme();
   const { announceActivityAdded, announceCompletion } = useRoutineCompletionBanner();
@@ -532,8 +533,8 @@ export function MiRutinaSection({ style, cardBackgroundColor, titleSize = 17, ad
 
   return (
     <View style={[styles.section, style]} testID="mi-rutina-section">
-      <View style={styles.headerRow}>
-        <Text style={[styles.title, { color: colors.foreground, fontSize: titleSize }]}>Mi rutina expansiva</Text>
+      <View style={[styles.headerRow, alignCardGapToWall && styles.alignedHeaderRow]}>
+        <Text style={[styles.title, alignCardGapToWall && styles.alignedSectionTitle, { color: colors.foreground, fontSize: titleSize }]}>Mi rutina expansiva</Text>
         <View style={styles.headerActions}>
           <Pressable
             onPress={openCalendar}
@@ -620,6 +621,7 @@ export function MiRutinaSection({ style, cardBackgroundColor, titleSize = 17, ad
           style={({ pressed }) => [
             styles.addButton,
             addCardHeight !== undefined && { height: addCardHeight, minHeight: addCardHeight },
+            alignCardGapToWall && todayActivities.length === 0 && { marginTop: 0 },
             {
               borderColor: "rgba(249,249,249,0.5)",
               opacity: pressed ? 0.72 : 1,
@@ -653,6 +655,12 @@ const styles = StyleSheet.create({
     fontSize: 17,
     fontWeight: "700",
     letterSpacing: 0.2,
+  },
+  alignedSectionTitle: {
+    lineHeight: 26,
+  },
+  alignedHeaderRow: {
+    marginBottom: 18,
   },
   headerActions: {
     flexDirection: "row",

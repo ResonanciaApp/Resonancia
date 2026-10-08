@@ -1512,7 +1512,7 @@ export function ProfileScreenBase({
               <ProgressMirrorSections
                 showSectionBorders={false}
                 showPersonalStats={false}
-                showStreakWeek={false}
+                showStreakWeek
                 showCalendar
                 showCalendarCompletedCount
                 separateStreakHistory
@@ -1520,10 +1520,11 @@ export function ProfileScreenBase({
                 showStreakHistoryTitle={false}
                 showStreakHistoryInfo={false}
                 onStreakHistoryPress={() => setStreakInfoOpen(true)}
-                weeklySectionBackgroundColor="transparent"
-                weeklySectionHorizontalPadding={5}
-                streakContentTranslateY={10}
-                streakMarginBottom={PROFILE_SECTION_GAP + 20}
+                weeklySectionTitle="Progreso semanal"
+                weeklySectionBackgroundColor="rgba(0,0,0,0.16)"
+                weeklySectionHorizontalPadding={20}
+                streakContentTranslateY={0}
+                streakMarginBottom={PROFILE_SECTION_GAP}
                 streakHistoryTopPadding={18}
                 streakHistoryDividerOffsetY={0}
                 longestStreakLabel="RACHA ACUMULADA"
@@ -1558,7 +1559,7 @@ export function ProfileScreenBase({
               style={{ marginTop: 25, marginBottom: PROFILE_SECTION_GAP }}
             />
 
-            <MiRutinaSection titleSize={19} addCardHeight={profileWallCardHeight} style={{ marginHorizontal: 0, marginTop: 25, marginBottom: PROFILE_SECTION_GAP }} />
+            <MiRutinaSection titleSize={19} addCardHeight={profileWallCardHeight} alignCardGapToWall style={{ marginHorizontal: 0, marginTop: 25, marginBottom: PROFILE_SECTION_GAP }} />
 
             {SHOW_PROFILE_PRACTICE_CARDS && (
             <>

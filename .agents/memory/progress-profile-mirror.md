@@ -27,9 +27,9 @@ La raya horizontal de las rachas de Perfil debe estar en el centro de su tarjeta
 
 **How to apply:** Conservar márgenes simétricos alrededor del divisor y comprobar el centro respecto de la tarjeta completa, sin mover sus filas ni el contenido posterior.
 
-Perfil conserva el historial completo de cuatro cifras, puntos de creatividad expansiva, Intención y después el calendario, seguido del contenido personal restante. Tu progreso muestra el mensaje de práctica encima de «Esta semana» y del contador, seguido de los siete días, sin sesiones completadas, divisores, historial de rachas ni tarjeta de Intención. Los tratamientos de ambas superficies son independientes.
+Perfil muestra primero los siete días en un bloque negro con el título interior «Progreso semanal», encima del historial completo de cuatro cifras. Conserva puntos de creatividad expansiva, Intención y después el calendario, seguido del contenido personal restante. Tu progreso muestra el mensaje de práctica encima de «Esta semana» y del contador, seguido de los siete días, sin sesiones completadas, divisores, historial de rachas ni tarjeta de Intención. Los tratamientos de ambas superficies son independientes.
 
-**Why:** El usuario retiró la sección de sesiones completadas y su divisor, pero después devolvió únicamente el mensaje a su ubicación anterior por encima del contador. Esa corrección no revierte los otros cambios; Perfil conserva sus accesos personales.
+**Why:** El usuario pidió restaurar los siete días encima de Rachas en Perfil, con fondo negro y título interior. En Tu progreso retiró la sección de sesiones completadas y su divisor, pero después devolvió únicamente el mensaje a su ubicación anterior por encima del contador. Esa corrección no revierte los otros cambios; Perfil conserva sus accesos personales.
 
 **How to apply:** Configurar cada superficie por separado. Retirar las completadas de Tu progreso no autoriza a borrar actividad histórica, ni a ocultar el historial o el calendario de Perfil. No reintroducir «Mis estadísticas» en Perfil.
 

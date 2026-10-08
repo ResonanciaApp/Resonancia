@@ -45,7 +45,8 @@ test("Perfil stage shares Tu camino pill styling for Índigo 2 and Cloudy withou
     assert.match(html, /Intención/);
     assert.ok(html.includes(`data-background="${theme === "cloudy" ? cloudy : styles.dayPill.backgroundColor}"`));
     assert.match(html, /data-radius="12"[^>]*data-border="rgba\(255,255,255,0.10\)"[^>]*data-padding-y="4"[^>]*data-padding-x="9"/);
-    assert.doesNotMatch(html, /data-icon="spa"/);
+    assert.match(html, /data-icon="spa" data-icon-size="12"/);
+    assert.ok(html.indexOf('data-icon="spa"') < html.indexOf(">Intención"), "the lotus sits to the left of the label");
     assert.match(html, /data-margin-top="2"/);
     assert.match(html, /data-color="#F9F9F9"[^>]*>Intención/);
   }

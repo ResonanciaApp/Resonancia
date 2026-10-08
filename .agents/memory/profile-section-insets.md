@@ -9,6 +9,12 @@ Todas las secciones de Perfil deben tener 18 px desde el borde superior hasta el
 
 **How to apply:** Auditar también el centrado, los tamaños mínimos, las transformaciones y los paddings de hijos: pueden sumar espacio aunque la tarjeta tenga el padding correcto. Incluir estados vacíos y con contenido. En componentes compartidos, usar una opción exclusiva de Perfil para no modificar otras pantallas.
 
+Tu camino tiene una excepción explícita: su altura se redujo desde el borde inferior, sin desplazar el contenido interior ni reducir el espacio superior.
+
+**Why:** El usuario pidió cinco píxeles menos exclusivamente desde abajo; normalizar después ese padding a la regla general desharía el ajuste.
+
+**How to apply:** Conservar esta excepción al revisar los insets de Perfil y no compensarla aumentando el margen posterior.
+
 Los desplazamientos verticales solicitados en Perfil, tanto del bloque de avatar y usuario como del historial de rachas, deben desplazar también todo el contenido posterior, conservando las separaciones entre secciones, salvo una instrucción explícita de «no empujes».
 
 **Why:** El usuario aclaró «hacia abajo y empuja todo» para el avatar y repitió «empuja todo» para los siete días de racha; no quería desplazamientos visuales aislados. Después pidió «arrastra todas» hacia arriba y reiteró «sube el avatar y arrastra todo lo de abajo». Para el bloque de siete días sin título ni fondo, distinguió después dos ajustes: subir 15 px arrastrando y bajar 10 px sin empujar.

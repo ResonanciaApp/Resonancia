@@ -40,6 +40,14 @@ export function GrowthCurrentStagePill() {
         theme.id === "cloudy" && { backgroundColor: CLOUDY_GROWTH_DAY_PILL_BACKGROUND },
       ]}
     >
+      <MaterialCommunityIcons
+        name="spa"
+        size={12}
+        color={GROWTH_COLORS.current}
+        style={styles.bloomLotus}
+        accessibilityElementsHidden
+        importantForAccessibility="no"
+      />
       <Text style={[styles.days, { color: colors.foreground }]}>{growthLevels[0].name}</Text>
     </View>
   );
@@ -511,7 +519,7 @@ const styles = StyleSheet.create({
   previewArt: { width: 100, height: 100 },
   profilePreviewArt: { width: 96, height: 96 },
   embeddedPreviewCard: { marginHorizontal: 0 },
-  titledPreviewCard: { flexDirection: "column", alignItems: "stretch", paddingTop: 18, paddingBottom: 17 },
+  titledPreviewCard: { flexDirection: "column", alignItems: "stretch", paddingTop: 18, paddingBottom: 12 },
   previewSectionHeader: { flexDirection: "row", alignItems: "center", justifyContent: "space-between", minHeight: 25 },
   previewSectionTitle: { fontFamily: "Manrope", fontSize: 16, fontWeight: "600" },
   previewViewAll: { fontFamily: "Manrope", fontSize: 13, fontWeight: "400" },
