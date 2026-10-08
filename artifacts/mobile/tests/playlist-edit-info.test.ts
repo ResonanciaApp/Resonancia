@@ -5,6 +5,15 @@ import { test } from "node:test";
 const source = readFileSync(new URL("../app/playlist/[id].tsx", import.meta.url), "utf8");
 const editor = source.slice(source.indexOf("function EditInfoModal"));
 
+test("Playlist: recomendaciones sin emoji ni divisor superior y menú con nombre correcto", () => {
+  assert.doesNotMatch(source, /recommendedMoodBadge|recommendedMoodEmoji|recommendedSectionDivider/);
+  assert.match(source, />Sesiones recomendadas</);
+  assert.match(source, /Contenido basado en tu último estado de ánimo/);
+  assert.match(source, /label: "Agregar a esta playlist", action: onAddSessions/);
+  assert.doesNotMatch(source, /Agregar a este ritual/);
+  assert.match(source, /index < recommended.length - 1 && <View style=\{styles.recommendedDivider\}/);
+});
+
 test("Nombre y datos: campos sin placeholders y controles como Editar detalles", () => {
   assert.doesNotMatch(editor, /placeholder=/);
   assert.match(editor, /borderBottomColor: "rgba\(255,255,255,0\.06\)"/);

@@ -543,11 +543,7 @@ export default function PlaylistDetailScreen({ id: idProp }: { id?: string } = {
         {/* Sesiones recomendadas */}
         {recommended.length > 0 && (
           <>
-            <View style={styles.recommendedSectionDivider} />
             <View style={styles.recommendedHeader}>
-              <View style={styles.recommendedMoodBadge}>
-                <Text style={styles.recommendedMoodEmoji}>{latestMoods[0]?.emoji ?? "😌"}</Text>
-              </View>
               <View style={styles.recommendedHeaderCopy}>
                 <Text style={styles.sectionHeader}>Sesiones recomendadas</Text>
                 <Text style={styles.sectionDescription}>
@@ -920,25 +916,6 @@ const styles = StyleSheet.create({
     paddingTop: 20,
     paddingBottom: 8,
     marginTop: 5,
-  },
-  recommendedSectionDivider: {
-    height: StyleSheet.hairlineWidth,
-    marginHorizontal: 20,
-    backgroundColor: "rgba(255,255,255,0.12)",
-  },
-  recommendedMoodBadge: {
-    width: 49,
-    height: 49,
-    borderRadius: 24.5,
-    alignItems: "center",
-    justifyContent: "center",
-    backgroundColor: "rgba(0,0,0,0.16)",
-    borderWidth: 1,
-    borderColor: "rgba(255,255,255,0.2)",
-  },
-  recommendedMoodEmoji: {
-    fontSize: 22,
-    lineHeight: 27,
   },
   recommendedHeaderCopy: {
     flex: 1,
@@ -1316,7 +1293,7 @@ function PlaylistMenuSheet({
         <View style={menuSt.handle} />
         {([
           { icon: "share", label: "Compartir", action: () => { onClose(); onShare(); } },
-          { icon: "plus-circle", label: "Agregar a este ritual", action: onAddSessions },
+          { icon: "plus-circle", label: "Agregar a esta playlist", action: onAddSessions },
           { icon: "list", label: "Editar Playlist", action: onEditOrder },
           { icon: "edit-2", label: "Nombre y datos", action: onEditInfo },
         ] as { icon: React.ComponentProps<typeof Feather>["name"]; label: string; action: () => void }[]).map(({ icon, label, action }) => (
