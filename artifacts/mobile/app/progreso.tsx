@@ -1,7 +1,7 @@
 import { Feather } from "@expo/vector-icons";
 import { LinearGradient } from "expo-linear-gradient";
-import { router, useFocusEffect } from "expo-router";
-import React, { useCallback, useMemo, useState } from "react";
+import { router } from "expo-router";
+import React, { useMemo } from "react";
 import {
   Platform,
   Pressable,
@@ -13,20 +13,7 @@ import {
 } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import Svg, { Circle, Defs, LinearGradient as SvgLinearGradient, Stop } from "react-native-svg";
-import Animated, {
-  cancelAnimation,
-  Easing,
-  type SharedValue,
-  useAnimatedProps,
-  useAnimatedStyle,
-  useReducedMotion,
-  useSharedValue,
-  withDelay,
-  withTiming,
-} from "react-native-reanimated";
-
 import { ProgressMirrorSections } from "@/components/ProgressMirrorSections";
-import { CinematicFadeSlide } from "@/components/CinematicFadeSlide";
 import { getPositionedDayGradient } from "@/components/StreakWeekRow";
 import { useSceneTheme } from "@/context/SceneThemeContext";
 import { useColors } from "@/hooks/useColors";
@@ -37,70 +24,15 @@ const RING_SIZE = 118;
 const RING_STROKE = 9;
 const RING_RADIUS = (RING_SIZE - RING_STROKE) / 2;
 const RING_CIRCUMFERENCE = 2 * Math.PI * RING_RADIUS;
-const RING_ENTRANCE_DELAY = 100;
-const AnimatedCircle = Animated.createAnimatedComponent(Circle);
-
-function StreakCountDigit({
-  day,
-  lastDay,
-  progress,
-  color,
-}: {
-  day: number;
-  lastDay: number;
-  progress: SharedValue<number>;
-  color: string;
-}) {
-  const fadeStyle = useAnimatedStyle(() => {
-    const value = progress.value;
-    const fadeIn = day === 0 ? 1 : Math.max(0, Math.min(1, (value - day + 0.25) / 0.25));
-    const fadeOut = day === lastDay ? 1 : Math.max(0, Math.min(1, (day + 0.7 - value) / 0.2));
-    return { opacity: Math.min(fadeIn, fadeOut) };
-  }, [day, lastDay]);
-
-  return (
-    <Animated.Text
-      accessible={false}
-      importantForAccessibility="no"
-      style={[styles.streakIntroCount, styles.streakDigit, { color }, fadeStyle]}
-    >
-      {day}
-    </Animated.Text>
-  );
-}
 
 export default function ProgresoScreen() {
   const colors = useColors();
   const insets = useSafeAreaInsets();
   const { theme } = useSceneTheme();
   const { weekFlags } = useStreak();
-  const reduceMotion = useReducedMotion();
-  const [descriptionStarted, setDescriptionStarted] = useState(reduceMotion);
-  const onCountEntranceComplete = useCallback(() => setDescriptionStarted(true), []);
   const completedWeekDays = weekFlags.filter(Boolean).length;
   const ringGradient = useMemo(() => getPositionedDayGradient(theme.gradient), [theme.gradient]);
-  const animatedDays = useSharedValue(reduceMotion ? completedWeekDays : 0);
-  const ringProps = useAnimatedProps(() => ({
-    strokeDashoffset: RING_CIRCUMFERENCE *
-      (1 - Math.max(0, Math.min(1, (reduceMotion ? completedWeekDays : animatedDays.value) / 7))),
-  }));
-
-  useFocusEffect(useCallback(() => {
-    cancelAnimation(animatedDays);
-    if (reduceMotion || completedWeekDays === 0) {
-      animatedDays.value = completedWeekDays;
-    } else {
-      animatedDays.value = 0;
-      animatedDays.value = withDelay(
-        RING_ENTRANCE_DELAY,
-        withTiming(completedWeekDays, {
-          duration: Math.max(1000, completedWeekDays * 300),
-          easing: Easing.linear,
-        }),
-      );
-    }
-    return () => cancelAnimation(animatedDays);
-  }, [animatedDays, completedWeekDays, reduceMotion]));
+  const ringOffset = RING_CIRCUMFERENCE * (1 - completedWeekDays / 7);
 
   const topPad = Platform.OS === "web" ? 67 : Math.max(insets.top, 40);
   const bottomPad = Platform.OS === "web" ? 34 : insets.bottom;
@@ -133,33 +65,17 @@ export default function ProgresoScreen() {
               style={styles.backChevron}
             />
           </Pressable>
-          <Text style={[styles.headerTitle, { color: colors.foreground }]}>Tu progreso</Text>
+          <Text style={[styles.headerTitle, { color: colors.foreground }]}>Tu progreso semanal</Text>
           <View style={styles.headerSpacer} />
         </View>
 
         <View style={[styles.heroContainer, { paddingTop: topPad + 90 }]}>
-                <CinematicFadeSlide
-                  replayKey="progress-intro-description"
-                  active={descriptionStarted}
-                  duration={600}
-                  style={styles.heroAnimatedContent}
-                >
+                <View style={styles.heroContent}>
                   <Text style={styles.streakIntroDescription} testID="progress-intro-description">
                     Medita al menos 3 días a la semana y transforma todos los aspectos de tu vida
                   </Text>
-                </CinematicFadeSlide>
-                <CinematicFadeSlide
-                  replayKey="progress-streak-count"
-                  delay={RING_ENTRANCE_DELAY}
-                  duration={1200}
-                  scaleFrom={0.9}
-                  translateYFrom={14}
-                  onComplete={onCountEntranceComplete}
-                  style={styles.heroAnimatedContent}
-                >
-                  <Text style={[styles.weekTitle, { color: colors.foreground }]} testID="progress-week-title">
-                    ESTA SEMANA
-                  </Text>
+                </View>
+                <View style={styles.heroContent}>
                   <View
                     style={[styles.streakCountWrap, completedWeekDays > 0 && styles.streakCountWithRing]}
                     testID="progress-day-counter"
@@ -190,8 +106,7 @@ export default function ProgresoScreen() {
                           strokeWidth={RING_STROKE}
                           fill="none"
                         />
-                        <AnimatedCircle
-                          animatedProps={ringProps}
+                        <Circle
                           cx={RING_SIZE / 2}
                           cy={RING_SIZE / 2}
                           r={RING_RADIUS}
@@ -200,7 +115,7 @@ export default function ProgresoScreen() {
                           strokeLinecap="round"
                           fill="none"
                           strokeDasharray={`${RING_CIRCUMFERENCE} ${RING_CIRCUMFERENCE}`}
-                          strokeDashoffset={RING_CIRCUMFERENCE}
+                          strokeDashoffset={ringOffset}
                           transform={`rotate(-90 ${RING_SIZE / 2} ${RING_SIZE / 2})`}
                         />
                       </Svg>
@@ -211,40 +126,19 @@ export default function ProgresoScreen() {
                       accessible
                       accessibilityLabel={`${completedWeekDays} ${completedWeekDays === 1 ? "día" : "días"}`}
                     >
-                      {reduceMotion ? (
-                        <Text style={[styles.streakIntroCount, { color: colors.foreground }]}>
-                          {completedWeekDays}
-                        </Text>
-                      ) : (
-                        <View style={styles.streakDigitSlot}>
-                          {Array.from({ length: completedWeekDays + 1 }, (_, day) => (
-                            <StreakCountDigit
-                              key={day}
-                              day={day}
-                              lastDay={completedWeekDays}
-                              progress={animatedDays}
-                              color={colors.foreground}
-                            />
-                          ))}
-                        </View>
-                      )}
+                      <Text style={[styles.streakIntroCount, { color: colors.foreground }]}>
+                        {completedWeekDays}
+                      </Text>
                       <Text style={[styles.streakIntroUnit, { color: colors.foreground }]}>Días</Text>
                     </View>
                   </View>
-                </CinematicFadeSlide>
+                </View>
         </View>
 
-        {descriptionStarted && (
-          <>
             <View style={styles.content}>
-              <CinematicFadeSlide
-                replayKey="progress-week-circles"
-                active={descriptionStarted}
-                duration={600}
-              >
                 <ProgressMirrorSections
                   animateEntrance={false}
-                  animateWeekEntrance
+                  animateWeekEntrance={false}
                   entranceReplayKey="progress-sections"
                   entranceBaseDelay={0}
                   showSectionBorders={false}
@@ -261,10 +155,7 @@ export default function ProgresoScreen() {
                   sectionMarginBottom={0}
                   streakMarginBottom={0}
                 />
-              </CinematicFadeSlide>
             </View>
-          </>
-        )}
       </ScrollView>
     </LinearGradient>
   );
@@ -300,7 +191,7 @@ const styles = StyleSheet.create({
   headerTitle: {
     flex: 1,
     fontFamily: "Manrope",
-    fontSize: 20,
+    fontSize: 18,
     lineHeight: 42,
     fontWeight: "700",
     textAlign: "center",
@@ -310,7 +201,7 @@ const styles = StyleSheet.create({
     alignItems: "center",
     paddingHorizontal: 20,
   },
-  heroAnimatedContent: {
+  heroContent: {
     width: "100%",
     alignItems: "center",
   },
@@ -326,16 +217,6 @@ const styles = StyleSheet.create({
     justifyContent: "center",
   },
   streakCountWithRing: { width: RING_SIZE, height: RING_SIZE },
-  weekTitle: {
-    fontFamily: "Manrope",
-    fontSize: 12,
-    lineHeight: 18,
-    fontWeight: "700",
-    letterSpacing: 1.1,
-    textAlign: "center",
-    marginTop: 12,
-    marginBottom: 20,
-  },
   streakProgressRing: {
     position: "absolute",
     top: 0,

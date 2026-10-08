@@ -30,7 +30,7 @@ function renderProgress(days: number, reducedMotion: boolean, entranceComplete =
       "data-opacity": style.opacity,
       "data-circle-radius": props.r,
       "data-stroke": props.strokeWidth,
-      "data-stroke-offset": props.animatedProps?.strokeDashoffset,
+      "data-stroke-offset": props.strokeDashoffset ?? props.animatedProps?.strokeDashoffset,
     }, props.children);
   };
   const reanimated = {
@@ -95,48 +95,35 @@ function renderProgress(days: number, reducedMotion: boolean, entranceComplete =
   return { html, mirrorProps, entrances, rerender };
 }
 
-test("the weekly row mounts with the description after the counter entrance, with individual day cascading enabled", () => {
+test("description, final count, ring and weekly row mount immediately without animations", () => {
   for (const days of [0, 4, 7]) {
     const h = renderProgress(days, false, false);
-    assert.equal(h.entrances.get("progress-intro-description").active, false);
-    assert.equal(h.entrances.has("progress-week-circles"), false);
-    assert.doesNotMatch(h.html, /weekly-circles/);
+    assert.equal(h.entrances.size, 0);
+    assert.match(h.html, /progress-intro-description/);
+    assert.match(h.html, /weekly-circles/);
     assert.match(h.html, /progress-days-background/);
-    const counter = h.entrances.get("progress-streak-count");
-    assert.equal(counter.duration, 1200);
-    counter.onComplete();
-    const html = h.rerender();
-    assert.match(html, /weekly-circles/);
-    const description = h.entrances.get("progress-intro-description");
-    const circles = h.entrances.get("progress-week-circles");
-    assert.equal(description.active, true);
-    assert.equal(circles.active, true);
-    assert.equal(description.duration, circles.duration);
-    assert.equal(description.delay ?? 0, 0);
-    assert.equal(circles.delay ?? 0, 0);
+    assert.equal(h.mirrorProps.animateEntrance, false);
+    assert.equal(h.mirrorProps.animateWeekEntrance, false);
   }
-  assert.equal(renderProgress(7, false).mirrorProps.animateEntrance, false);
-  assert.equal(renderProgress(7, false).mirrorProps.animateWeekEntrance, true);
-  assert.doesNotMatch(source, /countValueDone|onCountValueComplete/);
+  assert.doesNotMatch(source, /react-native-reanimated|CinematicFadeSlide|withTiming|withDelay|descriptionStarted|StreakCountDigit/);
 });
 
 test("reduced motion shows the description and weekly circles immediately", () => {
   const h = renderProgress(7, true, false);
-  assert.equal(h.entrances.get("progress-intro-description").active, true);
-  assert.equal(h.entrances.get("progress-week-circles").active, true);
+  assert.equal(h.entrances.size, 0);
+  assert.match(h.html, /progress-intro-description/);
   assert.match(h.html, /weekly-circles/);
 });
 
-test("Tu progreso restores the description above ESTA SEMANA and its counter without restoring completed sessions or dividers", () => {
+test("Tu progreso semanal has an 18px title, no ESTA SEMANA, and preserves description and counter order", () => {
   const { html, mirrorProps } = renderProgress(4, true);
   const description = html.indexOf('data-testid="progress-intro-description"');
-  const title = html.indexOf('data-testid="progress-week-title"');
   const counter = html.indexOf('data-testid="progress-day-counter"');
   const week = html.indexOf('data-testid="weekly-circles"');
-  assert.ok(description >= 0 && description < title && title < counter && counter < week);
+  assert.ok(description >= 0 && description < counter && counter < week);
   assert.doesNotMatch(html, /progress-description-below-week/);
-  assert.match(html, /data-testid="progress-week-title"[^>]*data-margin-bottom="20"[^>]*>ESTA SEMANA/);
-  assert.match(html, /data-testid="progress-week-title"[^>]*data-margin-top="12"/);
+  assert.match(html, /data-font-size="18"[^>]*>Tu progreso semanal</);
+  assert.doesNotMatch(html, /ESTA SEMANA|progress-week-title/);
   assert.match(html, /data-margin-top="15"/);
   assert.equal(mirrorProps.sectionTopPadding, 0);
   assert.equal(mirrorProps.weeklySectionHorizontalPadding, 0);

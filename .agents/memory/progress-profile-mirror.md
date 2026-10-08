@@ -27,7 +27,7 @@ La raya horizontal de las rachas de Perfil debe estar en el centro de su tarjeta
 
 **How to apply:** Conservar márgenes simétricos alrededor del divisor y comprobar el centro respecto de la tarjeta completa, sin mover sus filas ni el contenido posterior.
 
-Perfil muestra primero los siete días en un bloque negro con el título interior «Progreso semanal», encima del historial completo de cuatro cifras. Conserva puntos de creatividad expansiva, Intención y después el calendario, seguido del contenido personal restante. Tu progreso muestra el mensaje de práctica encima de «Esta semana» y del contador, seguido de los siete días, sin sesiones completadas, divisores, historial de rachas ni tarjeta de Intención. Los tratamientos de ambas superficies son independientes.
+Perfil muestra primero los siete días en un bloque negro con el título interior «Progreso semanal», encima del historial completo de cuatro cifras. Conserva puntos de creatividad expansiva, Intención y después el calendario, seguido del contenido personal restante. Tu progreso semanal muestra el mensaje de práctica encima del contador, seguido de los siete días, sin «Esta semana», sesiones completadas, divisores, historial de rachas ni tarjeta de Intención. Los tratamientos de ambas superficies son independientes.
 
 **Why:** El usuario pidió restaurar los siete días encima de Rachas en Perfil, con fondo negro y título interior. En Tu progreso retiró la sección de sesiones completadas y su divisor, pero después devolvió únicamente el mensaje a su ubicación anterior por encima del contador. Esa corrección no revierte los otros cambios; Perfil conserva sus accesos personales.
 
@@ -99,11 +99,11 @@ El loto de «Racha acumulada» debe conservar su brillo difuminado clásico, per
 
 **How to apply:** Mantener el efecto difuminado en el contenido y aplicar una máscara con la forma del glifo; si cambia el icono o su tamaño, ajustar máscara y contenido juntos.
 
-En «Tu progreso», los siete días entran individualmente de lunes a domingo, escalonados en cascada; no sustituir esa secuencia por la aparición simultánea de toda la fila.
+En «Tu progreso semanal» no se anima ningún elemento: descripción, contador, anillo y siete días aparecen directamente con sus valores actuales. No hay etiqueta «Esta semana».
 
-**Why:** El usuario pidió restaurar la entrada escalonada anterior, sin cambiar el contador ni el texto.
+**Why:** El usuario reemplazó expresamente la entrada escalonada por una pantalla sin animaciones, cambió su título y retiró la etiqueta semanal redundante.
 
-**How to apply:** Conservar independiente la animación individual de la semana de la entrada conjunta del resto del contenido; no trasladar este cambio automáticamente a Perfil.
+**How to apply:** No depender de callbacks de animación para montar contenido ni empezar el contador desde cero. Mantener las animaciones de Inicio y Perfil independientes de esta pantalla.
 
 El loto de la píldora de racha en Inicio conserva el blanco del tratamiento clásico de la racha actual, no el dorado de «Racha acumulada».
 

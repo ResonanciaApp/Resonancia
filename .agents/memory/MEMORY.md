@@ -147,6 +147,7 @@
 - [Rebote en los bordes](scroll-edge-bounce.md) — en Sistema de rachas, no bloquear arriba/abajo también exige rebote elástico, no solo eliminar franjas fijas
 - [Inercia global del scroll](native-scroll-inertia.md) — menos desplazamiento al soltar; arrastre normal y tasas explícitas intactas; React 19 exige defaults en la clase nativa, no en el wrapper
 - [Usuarios conectados](community-presence-semantics.md) — sección eliminada de Inicio por sospecha de lag; preservar presencia global real en primer plano
+- [Muro de agradecimientos gratuito](gratitude-wall-access.md) — la sección comunitaria de Inicio está disponible para cuentas gratuitas y Premium; no confundir con Mi muro expansivo
 - [Calendario del perfil público](public-profile-activity-calendar.md) — acumulación con día chileno fijo y todo el historial; no cambia según la zona del visitante
 - [Perfil público](public-profile-scope.md) — identidad espejo hasta descripción, incluido lema y estrella del visitado; solo chevron arriba, sin secciones inferiores
 - [Biografías y borradores](public-biography-adoption.md) — vacíos antiguos no borran descripción editorial; cambios y borrados explícitos sí; borradores hasta Guardar
