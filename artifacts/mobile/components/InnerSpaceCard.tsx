@@ -833,7 +833,8 @@ const styles = StyleSheet.create({
     paddingBottom: 18,
   },
   profileWallDescription: {
-    fontSize: 17,
+    fontSize: 15,
+    fontWeight: "700",
     lineHeight: 23,
     transform: [{ translateY: -2 }],
   },

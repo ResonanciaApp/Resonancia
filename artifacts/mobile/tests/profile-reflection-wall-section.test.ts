@@ -23,14 +23,15 @@ function source(path: string) {
   return readFileSync(new URL(path, import.meta.url), "utf8");
 }
 
-test("Perfil puts Mi muro's heading outside the card with Mi rutina's exact gap, a one-pixel border and a three-point larger prompt", () => {
+test("Perfil puts Mi muro's heading outside the card with Mi rutina's gap and matching add-card typography", () => {
   const profile = source("../components/ProfileReflectionWallSection.tsx");
   assert.ok(profile.indexOf('testID="profile-wall-title"') < profile.indexOf("<HomeReflectionWallSection"));
   assert.doesNotMatch(profile, /sectionTitle="Mi muro expansivo"/);
   assert.match(profile, /profileVariant/);
   assert.equal(style("ProfileReflectionWallSection", "title").marginBottom, style("MiRutinaSection", "headerRow").marginBottom);
   assert.equal(style("InnerSpaceCard", "profileWall").borderWidth, 1);
-  assert.equal(style("InnerSpaceCard", "profileWallDescription").fontSize, 14 + 3);
+  assert.equal(style("InnerSpaceCard", "profileWallDescription").fontSize, style("MiRutinaSection", "addButtonText").fontSize);
+  assert.equal(style("InnerSpaceCard", "profileWallDescription").fontWeight, style("MiRutinaSection", "addButtonText").fontWeight);
   assert.deepEqual(style("InnerSpaceCard", "profileWallDescription").transform, [{ translateY: -2 }]);
   assert.equal(style("ProfileReflectionWallSection", "title").fontSize, 19);
   const card = source("../components/InnerSpaceCard.tsx");
