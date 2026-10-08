@@ -6,6 +6,7 @@ import React from "react";
 import { renderToStaticMarkup } from "react-dom/server";
 import ts from "typescript";
 import { getThemeStyleId } from "../config/scene-themes.ts";
+import { getProfileSecondaryTextColor } from "../constants/colors.ts";
 import * as wallBorderConstants from "../constants/reflectionWallBorder.ts";
 
 const TEST_GRADIENT = ["#060A0F", "#111122"] as const;
@@ -147,6 +148,7 @@ const mocks: Record<string, any> = {
   "react-native-svg": { __esModule: true, default: Native, Circle: Native, Defs: Native, RadialGradient: Native, Stop: Native },
   "expo-asset": { Asset: { fromModule: () => ({ localUri: null, downloadAsync: async () => {} }) } },
   "@/constants/colors": {
+    getProfileSecondaryTextColor,
     CLOUDY_GROWTH_DAY_PILL_BACKGROUND: "rgba(128,171,231,0.20)",
     CLOUDY_GROWTH_STAGE_LABEL_COLOR: "#B5EFFF",
     CLOUDY_GROWTH_ASCENT_TOGGLE_COLOR: "#F9F9F9",
@@ -298,6 +300,49 @@ test("Perfil uses actual accumulated days and the timeline pill's sizing for eve
     }
   } finally {
     growthMock.useGrowth = original;
+  }
+});
+
+test("Perfil matches timeline pills and lightens secondary copy only in Cloudy and Natural", () => {
+  const sceneMock = mocks["@/context/SceneThemeContext"];
+  const growthMock = mocks["@/context/GrowthContext"];
+  const originalScene = sceneMock.useSceneTheme;
+  const originalGrowth = growthMock.useGrowth;
+  const stage = { id: "crecimiento", name: "Crecimiento", startDay: 15, endDay: 21, story: "Descripción.", image: 1, group: "florecimiento" };
+  try {
+    growthMock.useGrowth = () => ({ ...originalGrowth(), currentStage: stage, levels: [stage], progress: { totalActiveDays: 16, grantedRewards: [], unlockedAvatarIds: [] } });
+    for (const id of ["cloudy", "natural", "indigo2", "pleyades", "tibet"]) {
+      sceneMock.useSceneTheme = () => ({ theme: { id, gradient: TEST_GRADIENT } });
+      const html = render({ canonicalVerticalInsets: true, sectionTitle: "Tu camino" });
+      const pill = html.match(/<div[^>]*data-testid="intention-preview-day-pill"[^>]*>/)?.[0] ?? "";
+      const description = html.match(/<div[^>]*data-testid="profile-intention-description"[^>]*>/)?.[0] ?? "";
+      const updated = id === "cloudy" || id === "natural";
+      assert.match(description, new RegExp(`data-color="${updated ? "#D1D1D1" : "#C4C4C4"}"`));
+      if (updated) {
+        const expectedBackground = id === "natural" ? "rgba(229,255,219,0.20)" : "rgba(128,171,231,0.20)";
+        assert.ok(pill.includes(`data-background="${expectedBackground}"`));
+        assert.match(pill, /data-padding-vertical="4"/);
+        assert.match(pill, /data-border-width="1"/);
+        assert.match(pill, /data-border-radius="12"/);
+        const timeline = renderToStaticMarkup(React.createElement(GrowthRow, { level: stage, status: "current", florecimiento: true }));
+        const timelinePill = timeline.match(/<div[^>]*data-testid="crecimiento-day-pill"[^>]*>/)?.[0] ?? "";
+        for (const attribute of ["data-background", "data-padding-vertical", "data-border-width", "data-border-radius"]) {
+          assert.equal(pill.match(new RegExp(`${attribute}="([^"]*)"`))?.[1], timelinePill.match(new RegExp(`${attribute}="([^"]*)"`))?.[1]);
+        }
+      } else {
+        assert.match(pill, /data-background="transparent"/);
+        assert.match(pill, /data-border-width="0"/);
+        assert.match(pill, /data-padding-vertical="0"/);
+      }
+      assert.match(pill, /data-margin-bottom="0"/);
+      assert.ok(html.includes(">16 días<"));
+      assert.doesNotMatch(html, /15–21 días/);
+      assert.equal((html.match(/data-icon="spa"/g) ?? []).length, 1);
+      assert.equal((html.match(/data-gap="5"/g) ?? []).length, 2);
+    }
+  } finally {
+    sceneMock.useSceneTheme = originalScene;
+    growthMock.useGrowth = originalGrowth;
   }
 });
 

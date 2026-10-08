@@ -158,10 +158,13 @@ test("Tu camino shifts the lotus, its background, stage name and description fou
   assert.deepEqual(style("GrowthJourney", "previewContentRow").transform, [{ translateY: -4 }, { translateX: -8 }]);
 });
 
-test("Perfil supplies its description gray to Tu camino, streak labels and all selected-day content without changing other surfaces", () => {
+test("Perfil supplies its themed description gray to Tu camino, streak labels and all selected-day content without changing other surfaces", () => {
   const growth = source("../components/GrowthJourney.tsx");
-  assert.match(growth, /color: sectionTitle \? "#C4C4C4" : colors\.mutedForeground/);
-  assert.match(source("../components/ProfileScreenBase.tsx"), /secondaryTextColor="#C4C4C4"/);
+  assert.match(growth, /color: sectionTitle \? getProfileSecondaryTextColor\(theme\.id\) : colors\.mutedForeground/);
+  const profile = source("../components/ProfileScreenBase.tsx");
+  assert.match(profile, /profileSecondaryTextColor = getProfileSecondaryTextColor\(activeSceneId\)/);
+  assert.match(profile, /secondaryTextColor=\{profileSecondaryTextColor\}/);
+  assert.match(profile, /styles\.profileDescription, \{ color: profileSecondaryTextColor \}/);
   const mirror = source("../components/ProgressMirrorSections.tsx");
   assert.equal((mirror.match(/labelColor=\{secondaryTextColor\}/g) ?? []).length, 4);
   assert.match(mirror, /dayContentTextColor=\{secondaryTextColor\}/);

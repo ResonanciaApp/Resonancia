@@ -53,11 +53,11 @@ de temas mantienen su paleta.
 **How to apply:** Aplicar la excepción por identidad real del tema, aunque Natural
 herede reglas de Cloudy; no recolorear las ilustraciones ni los textos generales.
 
-El banner de Tu camino en Perfil muestra el loto dorado y los días **activos acumulados reales** encima del nombre de la etapa actual, sin cápsula, borde ni fondo. No lleva un segundo loto junto al título.
+El banner de Tu camino en Perfil muestra el loto dorado y los días **activos acumulados reales** encima del nombre de la etapa actual. En Cloudy y Natural vuelven a estar dentro de la píldora correspondiente del recorrido, con sus tamaños y colores por tema; los demás temas conservan la fila sin cápsula. No lleva un segundo loto junto al título.
 
-**Why:** El usuario conservó el contador acumulado y el loto, pero pidió quitar la píldora específicamente del banner de Perfil; las píldoras del recorrido siguen siendo independientes.
+**Why:** El usuario había retirado la cápsula del banner, pero el 2026-10-08 pidió recuperar la píldora correspondiente de Tu camino al ajustar Cloudy y Natural. Esto cambia la presentación, no la métrica de progreso.
 
-**How to apply:** Conservar el arte, el encabezado Tu camino con Ver todo y la etapa dinámica. Usar el total personal, no el rango editorial. Mantener 5 px entre la fila de loto/días y el título, y otros 5 px entre título y descripción; no sumar padding invisible ni compensar con una traslación del texto.
+**How to apply:** Conservar el arte, el encabezado Tu camino con Ver todo y la etapa dinámica. Usar el total personal, no el rango editorial. Mantener 5 px entre la píldora o fila de loto/días y el título, y otros 5 px entre título y descripción; reutilizar el tratamiento del recorrido sin añadir el margen inferior propio de sus filas.
 
 La píldora de etapa del bloque de identidad en Perfil, sobre el Lema de vida, es independiente de la fila de días del banner Tu camino. Conserva la flor de loto dorada a la izquierda.
 

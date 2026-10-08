@@ -100,7 +100,7 @@ import { SleepReminderSheet } from "@/components/SleepReminderSheet";
 import { StreakInfoSheet } from "@/components/StreakInfoSheet";
 import { FilledSunIcon } from "@/components/FilledSunIcon";
 import { useMixerPanel } from "@/context/MixerPanelContext";
-import { CARD_TEXT_BELOW, MEMBERSHIP_AURORA } from "@/constants/colors";
+import { CARD_TEXT_BELOW, MEMBERSHIP_AURORA, getProfileSecondaryTextColor } from "@/constants/colors";
 
 const SHOW_PROFILE_PRACTICE_CARDS = false;
 // Separación entre los bloques de progreso en Perfil.
@@ -308,6 +308,7 @@ export function ProfileScreenBase({
   const { isPremium } = usePremium();
   const { openMixer } = useMixerPanel();
   const { theme: activeTheme, activeSceneId } = useSceneTheme();
+  const profileSecondaryTextColor = getProfileSecondaryTextColor(activeSceneId);
   const insets = useSafeAreaInsets();
   const { email, logout } = useAuth();
   const growth = useGrowth();
@@ -1541,7 +1542,7 @@ export function ProfileScreenBase({
                   {description.trim() !== "" && (
                     <Text
                       testID="profile-identity-description"
-                      style={styles.profileDescription}
+                      style={[styles.profileDescription, { color: profileSecondaryTextColor }]}
                     >
                       {description}
                     </Text>
@@ -1588,7 +1589,7 @@ export function ProfileScreenBase({
                 streakHistoryTopPadding={18}
                 streakHistoryDividerOffsetY={0}
                 longestStreakLabel="RACHA ACUMULADA"
-                secondaryTextColor="#C4C4C4"
+                secondaryTextColor={profileSecondaryTextColor}
                 longestStreakIconColor={MEMBERSHIP_AURORA.premium.accent}
                 sectionBackgroundColor="rgba(0,0,0,0.16)"
                 sectionHorizontalPadding={20}

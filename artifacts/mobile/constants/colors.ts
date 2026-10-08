@@ -37,6 +37,9 @@ export const NATURAL_WIDGET_PLUS_GRADIENT = ["#52A855", "#52A855"] as const;
 export const CLOUDY_GROWTH_STAGE_LABEL_COLOR = "#B5EFFF";
 export const CLOUDY_GROWTH_ASCENT_TOGGLE_COLOR = "#F9F9F9";
 export const CLOUDY_GROWTH_DAY_PILL_BACKGROUND = "rgba(128,171,231,0.20)";
+export function getProfileSecondaryTextColor(themeId: string): string {
+  return themeId === "cloudy" || themeId === "natural" ? "#D1D1D1" : "#C4C4C4";
+}
 export const REGISTER_BUTTON_ENABLED_BACKGROUND = "rgba(184, 117, 240, 0.45)";
 export const CARD_TEXT_ABOVE = "#D1D1D1";
 export const CARD_TEXT_BELOW = "#EBF2FF";
