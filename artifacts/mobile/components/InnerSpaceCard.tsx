@@ -112,6 +112,8 @@ export function InnerSpaceCard({
   const focusAfterExpandRef = useRef(false);
   const contentHeightRef = useRef(0);
   const reduceMotion = useReducedMotion();
+  const sectionBorderOpacity = useSharedValue(0);
+  const sectionBorderStyle = useAnimatedStyle(() => ({ opacity: sectionBorderOpacity.value }));
   const clipHeight = useSharedValue(0);
   const clipStyle = useAnimatedStyle(() => ({ height: clipHeight.value }));
   const reservedHeight = useSharedValue(0);
@@ -397,6 +399,12 @@ export function InnerSpaceCard({
     animatingRef.current = true;
     expandedRef.current = opening;
     setExpanded(opening);
+    sectionBorderOpacity.value = reduceMotion
+      ? (opening ? 0.25 : 0)
+      : withTiming(opening ? 0.25 : 0, {
+          duration: PANEL_DURATION,
+          easing: ReanimatedEasing.inOut(ReanimatedEasing.quad),
+        });
     if (opening && followScroll) {
       onExpandStart?.();
     }
@@ -544,14 +552,19 @@ export function InnerSpaceCard({
   return (
     <>
     <View
-      style={[styles.container, canonicalVerticalInsets && styles.canonicalVerticalInsets, canonicalVerticalInsets && getThemeStyleId(theme.id) === "cloudy" && styles.cloudyFlushBorder, profileVariant && styles.profileWall, sectionBackgroundColor !== undefined && { backgroundColor: sectionBackgroundColor }]}
+      style={[styles.container, canonicalVerticalInsets && styles.canonicalVerticalInsets, canonicalVerticalInsets && getThemeStyleId(theme.id) === "cloudy" && styles.cloudyFlushBorder, profileVariant && styles.profileWall, sectionBackgroundColor !== undefined && { backgroundColor: sectionBackgroundColor }, { borderColor: "transparent" }]}
       onLayout={onCollapsedHeightChange ? (event) => {
         if (!expandedRef.current && !animatingRef.current && event.nativeEvent.layout.height > 0) {
           onCollapsedHeightChange(event.nativeEvent.layout.height);
         }
       } : undefined}
     >
-      {canonicalVerticalInsets && (
+      <Reanimated.View
+        testID="reflection-section-border"
+        pointerEvents="none"
+        style={[StyleSheet.absoluteFill, sectionBorderStyle]}
+      >
+      {canonicalVerticalInsets ? (
         <DiscoverSearchBorder
           borderRadius={profileVariant ? 16 : 24}
           borderWidth={profileVariant ? 1 : 2}
@@ -561,7 +574,10 @@ export function InnerSpaceCard({
           start={REFLECTION_WALL_BORDER_START}
           end={REFLECTION_WALL_BORDER_END}
         />
+      ) : (
+        <View style={[StyleSheet.absoluteFill, styles.sectionBorder]} />
       )}
+      </Reanimated.View>
       <View style={styles.header}>
         <View style={[styles.headerCopy, canonicalVerticalInsets && styles.canonicalHeaderCopy, profileVariant && styles.profileWallHeaderCopy]}>
           {sectionTitle ? (
@@ -784,6 +800,11 @@ export function InnerSpaceCard({
 }
 
 const styles = StyleSheet.create({
+  sectionBorder: {
+    borderRadius: 24,
+    borderWidth: 1,
+    borderColor: "#FFFFFF",
+  },
   container: {
     borderRadius: 24,
     borderWidth: 1,

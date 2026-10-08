@@ -54,6 +54,7 @@ function fixture(quota = 0) {
   };
   const animation = () => ({ start() {}, stop() {} }); // Decorative animations never complete.
   const mocks: Record<string, any> = {
+    "@/config/scene-themes": { getThemeStyleId: (id: string) => id },
     react: {
       ...React, useRef: ref, useEffect: effect, useLayoutEffect: effect,
       useState: (initial: any) => {
