@@ -16,8 +16,7 @@
 - [Listen-time stats](listen-time-stats.md) — stat minutes = wall-clock accumulator gated on isPlaying, NEVER elapsed/position (seek corrupts position; loop interval ticks while paused)
 - [Profile name sync to server](profile-name-sync.md) — username local (AsyncStorage) NO se sincroniza solo; ProfileSync empuja a displayName del server o las features sociales muestran el ID de Clerk
 - [Admin web panel auth](admin-web-auth.md) — resonancia-admin usa Clerk cookie same-origin (NO Bearer/setBaseUrl como mobile); gating real solo server requireRole("admin"), front es UX
-- [Cloud sync activity](cloud-sync-activity.md) — historial derivable de eventos (no entidad); firstSync solo se marca si recovered (lecturas OK) o local vacío pisa la nube; merge post-await con update funcional
-- [Cloud sync merge rules](cloud-sync-merge.md) — actividad offline-first; favoritos/progreso: unión solo en firstSync, luego local autoritativo (o los borrados reaparecen); eventos = unión append-only
+- [Cloud sync](cloud-sync-merge.md) — recuperación válida antes del primer sync; favoritos/progreso unen una vez y después respetan borrados; eventos append-only
 - [Shared-mix likes consistency](shared-mix-likes-consistency.md) — feed ordena por likes DESC + trending=likes>=3; columna likes denormalizada se recalcula bajo row lock (.for("update")); compartir exige min 2 sonidos
 - [Portada original de mezclas compartidas](shared-mix-cover-semantics.md) — mostrar la elección del autor, no sustituir fotos por imágenes editoriales o por categoría
 - [Skip-flags only-if-true](skip-flags-only-if-true.md) — snapshot solo aplica skipDetail/skipMiniPlayer/isLoop si remoto true (false clobbea defaults de categoría); miniplayer trigger ANTES del return isLoop; form admin bloquea solo hidratación inicial
@@ -148,9 +147,9 @@
 - [Rebote en los bordes](scroll-edge-bounce.md) — en Sistema de rachas, no bloquear arriba/abajo también exige rebote elástico, no solo eliminar franjas fijas
 - [Inercia global del scroll](native-scroll-inertia.md) — menos desplazamiento al soltar; arrastre normal y tasas explícitas intactas; React 19 exige defaults en la clase nativa, no en el wrapper
 - [Usuarios conectados](community-presence-semantics.md) — sección eliminada de Inicio por sospecha de lag; preservar presencia global real en primer plano
-- [Descripción del perfil](profile-account-description.md) — borradores hasta Guardar; descripción completa sin recorte a dos líneas
 - [Calendario del perfil público](public-profile-activity-calendar.md) — acumulación con día chileno fijo y todo el historial; no cambia según la zona del visitante
-- [Alcance del perfil público](public-profile-scope.md) — avatar, nombre, días, etapa y descripción; sin acciones sociales, mezclas, reflexiones ni divisores
+- [Perfil público](public-profile-scope.md) — identidad espejo hasta descripción, incluido lema y estrella del visitado; solo chevron arriba, sin secciones inferiores
+- [Biografías y borradores](public-biography-adoption.md) — vacíos antiguos no borran descripción editorial; cambios y borrados explícitos sí; borradores hasta Guardar
 - [Distribución de Mezclas comunidad](community-mix-layout.md) — título y usuario en dos líneas con separación de 4 px; sin sonidos ni editorial
 - [Banner del Mezclador en Sonidos](sound-mixer-banner.md) — recuperado de Dormir, solo en Sonidos tras el tercer carrusel visible; abre el panel actual para gratuitos y Premium
 - [Títulos de cards](card-title-alignment.md) — títulos debajo de la imagen y alineados al borde izquierdo; Ambientales de Sonidos conservan su excepción centrada

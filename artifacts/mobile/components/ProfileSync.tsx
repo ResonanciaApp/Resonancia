@@ -13,12 +13,13 @@
  */
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { useQueryClient } from "@tanstack/react-query";
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 
 import {
   getGetMeQueryKey,
   getMe,
   getGetSharedMixesQueryKey,
+  getGetPublicUserProfileQueryKey,
   useGetMe,
   useUpdateMe,
 } from "@workspace/api-client-react";
@@ -26,6 +27,8 @@ import {
 import { useAuth } from "@/context/AuthContext";
 import { DEFAULT_USERNAME, useUserProfile } from "@/context/UserProfileContext";
 import { uploadLocalFile } from "@/lib/upload";
+import { useSubscription } from "@/lib/revenuecat";
+import { biographyFingerprint, recoverBiography } from "@/lib/profileBiographySync";
 
 const AVATAR_MARKER_KEY = "cdc_avatar_synced";
 
@@ -48,8 +51,27 @@ function avatarMeta(uri: string): { contentType: string; fileName: string } {
 }
 
 export function ProfileSync() {
-  const { isSignedIn } = useAuth();
-  const { username, location, photoUri, avatarPresetId, profileLoaded, updateProfile } = useUserProfile();
+  const { isSignedIn, clerkUserId } = useAuth();
+  const { username, lastName, location, description, lifeMotto, biographyOwnerId, biographySyncedValue, photoUri, avatarPresetId, profileLoaded, updateProfile } = useUserProfile();
+  const { subscriptionStatus, customerInfo } = useSubscription();
+  const [biographyRecovered, setBiographyRecovered] = useState<number | null>(null);
+  const [biographyRetry, setBiographyRetry] = useState(0);
+  const biographyPending = useRef(false);
+  const membershipPending = useRef(false);
+  const lastMembershipSynced = useRef<string | null>(null);
+  const currentAccount = useRef(clerkUserId);
+  currentAccount.current = clerkUserId;
+  const latestBiography = useRef("");
+  latestBiography.current = JSON.stringify([description.trim(), lifeMotto.trim()]);
+  const biographyRetryTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const mounted = useRef(true);
+  useEffect(() => {
+    mounted.current = true;
+    return () => {
+      mounted.current = false;
+      if (biographyRetryTimer.current) clearTimeout(biographyRetryTimer.current);
+    };
+  }, []);
   const latestAvatarPresetId = useRef(avatarPresetId);
   latestAvatarPresetId.current = avatarPresetId;
   const queryClient = useQueryClient();
@@ -59,6 +81,62 @@ export function ProfileSync() {
   });
   const updateMe = useUpdateMe();
 
+  useEffect(() => {
+    if (isSignedIn && clerkUserId) void queryClient.invalidateQueries({ queryKey: getGetMeQueryKey() });
+  }, [isSignedIn, clerkUserId, queryClient]);
+
+  // Preserve pending edits, but recover updates made on another device.
+  useEffect(() => {
+    if (!isSignedIn || !clerkUserId || !me || me.clerkUserId !== clerkUserId || !profileLoaded) return;
+    const recovered = recoverBiography({ description, lifeMotto, biographyOwnerId, biographySyncedValue }, me, clerkUserId);
+    if (recovered) updateProfile(recovered);
+    if (biographyRecovered !== me.id) setBiographyRecovered(me.id);
+  }, [isSignedIn, clerkUserId, me, profileLoaded, description, lifeMotto, biographyOwnerId, biographySyncedValue, biographyRecovered, updateProfile]);
+
+  useEffect(() => {
+    if (!isSignedIn || !clerkUserId || !me || me.clerkUserId !== clerkUserId || biographyOwnerId !== clerkUserId || !profileLoaded || biographyRecovered !== me.id || biographyPending.current) return;
+    if (biographySyncedValue === biographyFingerprint(description, lifeMotto)) return;
+    const desired = { longDescription: description.trim() || null, lifeMotto: lifeMotto.trim() || null };
+    if (desired.longDescription === (me.longDescription ?? null) && desired.lifeMotto === (me.lifeMotto ?? null)) return;
+    biographyPending.current = true;
+    let succeeded = false;
+    const sentBiography = JSON.stringify([description.trim(), lifeMotto.trim()]);
+    void updateMe.mutateAsync({ data: desired }).then((updated) => {
+      succeeded = true;
+      if (currentAccount.current !== clerkUserId) return;
+      queryClient.setQueryData(getGetMeQueryKey(), updated);
+      updateProfile({ biographySyncedValue: sentBiography });
+      void queryClient.invalidateQueries({ queryKey: getGetPublicUserProfileQueryKey(me.id) });
+    }).catch((error) => {
+      console.warn("[ProfileSync] No se pudo publicar la biografía", error);
+      if (mounted.current && currentAccount.current === clerkUserId) {
+        if (biographyRetryTimer.current) clearTimeout(biographyRetryTimer.current);
+        biographyRetryTimer.current = setTimeout(() => setBiographyRetry((tick) => tick + 1), 15_000);
+      }
+    }).finally(() => {
+      biographyPending.current = false;
+      if (mounted.current && (succeeded || latestBiography.current !== sentBiography)) setBiographyRetry((tick) => tick + 1);
+    });
+  }, [isSignedIn, clerkUserId, me, biographyOwnerId, biographySyncedValue, profileLoaded, biographyRecovered, description, lifeMotto, biographyRetry, queryClient, updateProfile]);
+
+  useEffect(() => {
+    if (!isSignedIn || !clerkUserId || !me || me.clerkUserId !== clerkUserId || subscriptionStatus === "unknown" || !customerInfo || membershipPending.current) return;
+    const entitlement = customerInfo.entitlements.active.premium;
+    const snapshot = {
+      active: subscriptionStatus === "active",
+      expiresAt: entitlement?.expirationDate ?? null,
+    };
+    const key = `${me.id}:${snapshot.active}:${snapshot.expiresAt}`;
+    if (lastMembershipSynced.current === key) return;
+    membershipPending.current = true;
+    void updateMe.mutateAsync({ data: { publicMembership: snapshot } }).then(() => {
+      lastMembershipSynced.current = key;
+      void queryClient.invalidateQueries({ queryKey: getGetPublicUserProfileQueryKey(me.id) });
+    }).catch((error) => {
+      console.warn("[ProfileSync] No se pudo publicar la insignia", error);
+    }).finally(() => { membershipPending.current = false; });
+  }, [isSignedIn, clerkUserId, me, subscriptionStatus, customerInfo, queryClient]);
+
   // Última combinación cuenta+nombre que intentamos sincronizar, para no
   // repetir el PATCH ni entrar en bucle de reintentos. Incluye el id de la
   // cuenta para no arrastrar el nombre de una cuenta a otra en el mismo device.
@@ -67,8 +145,8 @@ export function ProfileSync() {
   useEffect(() => {
     // Esperar a que el perfil local termine de hidratar desde AsyncStorage:
     // si no, podríamos empujar el valor por defecto antes de leer el real.
-    if (!isSignedIn || !me || !profileLoaded) return;
-    const desired = username.trim();
+    if (!isSignedIn || !me || me.clerkUserId !== clerkUserId || !profileLoaded) return;
+    const desired = [username.trim(), lastName.trim()].filter(Boolean).join(" ");
     if (!desired || me.displayName === desired) return;
 
     // El server arranca con un displayName auto-generado del ID de Clerk
@@ -94,7 +172,7 @@ export function ProfileSync() {
         },
       },
     );
-  }, [isSignedIn, me, username, profileLoaded, updateMe, queryClient]);
+  }, [isSignedIn, clerkUserId, me, username, lastName, profileLoaded, updateMe, queryClient]);
 
   // ── Sync de location ─────────────────────────────────────────────────────
   const lastLocationSynced = useRef<string | null>(null);

@@ -879,8 +879,14 @@ export const UserProfileRole = {
 
 export interface UserProfile {
   id: number;
+  /** Only returned for the authenticated account's own profile. */
+  clerkUserId?: string;
   username: string;
   displayName: string;
+  /** @nullable */
+  lifeMotto?: string | null;
+  /** @nullable */
+  longDescription?: string | null;
   /** @nullable */
   avatarUrl?: string | null;
   /**
@@ -1356,6 +1362,13 @@ export interface PublicUserProfile {
   id: number;
   username: string;
   displayName: string;
+  /** @nullable */
+  lifeMotto?: string | null;
+  /**
+     * Display-only subscription snapshot. Null means unknown; never authorizes paid access.
+     * @nullable
+     */
+  isPremium?: boolean | null;
   friendshipStatus: PublicUserProfileFriendshipStatus;
   /** @minimum 0 */
   totalActiveDays: number;
@@ -1391,6 +1404,12 @@ export interface UserRoleUpdate {
   role: UserRoleUpdateRole;
 }
 
+export type UserProfileUpdatePublicMembership = {
+  active: boolean;
+  /** @nullable */
+  expiresAt: string | null;
+};
+
 export interface UserProfileUpdate {
   /**
      * @minLength 3
@@ -1403,6 +1422,14 @@ export interface UserProfileUpdate {
      * @maxLength 60
      */
   displayName?: string;
+  /** @nullable */
+  lifeMotto?: string | null;
+  /**
+     * @maxLength 300
+     * @nullable
+     */
+  longDescription?: string | null;
+  publicMembership?: UserProfileUpdatePublicMembership;
   /** @nullable */
   avatarUrl?: string | null;
   /** @nullable */

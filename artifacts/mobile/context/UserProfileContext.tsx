@@ -19,6 +19,8 @@ interface UserProfile {
   location: string;
   description: string;
   lifeMotto: string;
+  biographyOwnerId: string | null;
+  biographySyncedValue: string | null;
   photoUri: string | null;
   avatarPresetId: string | null;
   sentMessageIds: number[];
@@ -34,6 +36,8 @@ const DEFAULT_PROFILE: UserProfile = {
   location: "",
   description: "",
   lifeMotto: "",
+  biographyOwnerId: null,
+  biographySyncedValue: null,
   photoUri: null,
   avatarPresetId: null,
   sentMessageIds: [],
@@ -48,6 +52,8 @@ interface ProfileUpdate {
   location?: string;
   description?: string;
   lifeMotto?: string;
+  biographyOwnerId?: string | null;
+  biographySyncedValue?: string | null;
   /** Restore the last server-confirmed avatar after a rejected offline choice. */
   avatarPresetId?: string | null;
   photoUri?: string | null;
@@ -61,6 +67,8 @@ function applyProfileUpdate(profile: UserProfile, fields: ProfileUpdate): UserPr
     ...(fields.location !== undefined ? { location: fields.location.trim() } : {}),
     ...(fields.description !== undefined ? { description: limitProfileDescription(fields.description.trim()) } : {}),
     ...(fields.lifeMotto !== undefined ? { lifeMotto: fields.lifeMotto.replace(/\r?\n/g, " ").trim() } : {}),
+    ...(fields.biographyOwnerId !== undefined ? { biographyOwnerId: fields.biographyOwnerId } : {}),
+    ...(fields.biographySyncedValue !== undefined ? { biographySyncedValue: fields.biographySyncedValue } : {}),
     ...(fields.avatarPresetId !== undefined ? { avatarPresetId: fields.avatarPresetId } : {}),
     ...(fields.photoUri !== undefined ? { photoUri: fields.photoUri } : {}),
   };

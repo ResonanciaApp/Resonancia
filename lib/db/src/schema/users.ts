@@ -1,4 +1,4 @@
-import { pgTable, serial, text, timestamp, uniqueIndex } from "drizzle-orm/pg-core";
+import { pgTable, serial, text, timestamp, uniqueIndex, jsonb } from "drizzle-orm/pg-core";
 import { createInsertSchema } from "drizzle-zod";
 import { z } from "zod/v4";
 
@@ -16,6 +16,9 @@ export const usersTable = pgTable(
     avatarUrl: text("avatar_url"),
     avatarPresetId: text("avatar_preset_id"),
     longDescription: text("long_description"),
+    lifeMotto: text("life_motto"),
+    // Presentation-only SDK snapshot. Never use this to authorize paid content.
+    publicMembership: jsonb("public_membership").$type<{ active: boolean; expiresAt: string | null }>(),
     location: text("location"),
     role: text("role", { enum: USER_ROLES }).notNull().default("user"),
     createdAt: timestamp("created_at", { withTimezone: true }).notNull().defaultNow(),

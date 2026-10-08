@@ -6599,10 +6599,17 @@ components:
       properties:
         id:
           type: integer
+        clerkUserId:
+          type: string
+          description: Only returned for the authenticated account's own profile.
         username:
           type: string
         displayName:
           type: string
+        lifeMotto:
+          type: ["string", "null"]
+        longDescription:
+          type: ["string", "null"]
         avatarUrl:
           type: ["string", "null"]
         avatarPresetId:
@@ -6642,6 +6649,11 @@ components:
           type: string
         displayName:
           type: string
+        lifeMotto:
+          type: ["string", "null"]
+        isPremium:
+          type: ["boolean", "null"]
+          description: Display-only subscription snapshot. Null means unknown; never authorizes paid access.
         friendshipStatus:
           type: string
           enum: ["none", "pending_outgoing", "pending_incoming", "accepted", "self"]
@@ -6685,6 +6697,20 @@ components:
           type: string
           minLength: 1
           maxLength: 60
+        lifeMotto:
+          type: ["string", "null"]
+        longDescription:
+          type: ["string", "null"]
+          maxLength: 300
+        publicMembership:
+          type: object
+          additionalProperties: false
+          required: [active, expiresAt]
+          properties:
+            active: {type: boolean}
+            expiresAt:
+              type: ["string", "null"]
+              format: date-time
         avatarUrl:
           type: ["string", "null"]
         avatarPresetId:

@@ -2191,8 +2191,11 @@ export const GetSharedMixesResponse = zod.object({
   "isMine": zod.boolean(),
   "author": zod.object({
   "id": zod.number(),
+  "clerkUserId": zod.string().optional().describe('Only returned for the authenticated account\'s own profile.'),
   "username": zod.string(),
   "displayName": zod.string(),
+  "lifeMotto": zod.string().nullish(),
+  "longDescription": zod.string().nullish(),
   "avatarUrl": zod.string().nullish(),
   "avatarPresetId": zod.string().nullish().describe('Stable profile preset ID; resolve its current image from GET \/api\/cover-presets?scope=profile. avatarUrl is reserved for custom uploaded avatars.'),
   "location": zod.string().nullish(),
@@ -2256,8 +2259,11 @@ export const ToggleSharedMixLikeResponse = zod.object({
   "isMine": zod.boolean(),
   "author": zod.object({
   "id": zod.number(),
+  "clerkUserId": zod.string().optional().describe('Only returned for the authenticated account\'s own profile.'),
   "username": zod.string(),
   "displayName": zod.string(),
+  "lifeMotto": zod.string().nullish(),
+  "longDescription": zod.string().nullish(),
   "avatarUrl": zod.string().nullish(),
   "avatarPresetId": zod.string().nullish().describe('Stable profile preset ID; resolve its current image from GET \/api\/cover-presets?scope=profile. avatarUrl is reserved for custom uploaded avatars.'),
   "location": zod.string().nullish(),
@@ -2307,8 +2313,11 @@ export const GetSharedMixResponse = zod.object({
   "isMine": zod.boolean(),
   "author": zod.object({
   "id": zod.number(),
+  "clerkUserId": zod.string().optional().describe('Only returned for the authenticated account\'s own profile.'),
   "username": zod.string(),
   "displayName": zod.string(),
+  "lifeMotto": zod.string().nullish(),
+  "longDescription": zod.string().nullish(),
   "avatarUrl": zod.string().nullish(),
   "avatarPresetId": zod.string().nullish().describe('Stable profile preset ID; resolve its current image from GET \/api\/cover-presets?scope=profile. avatarUrl is reserved for custom uploaded avatars.'),
   "location": zod.string().nullish(),
@@ -2341,8 +2350,11 @@ export const GetMixCommentsResponse = zod.object({
   "body": zod.string(),
   "author": zod.object({
   "id": zod.number(),
+  "clerkUserId": zod.string().optional().describe('Only returned for the authenticated account\'s own profile.'),
   "username": zod.string(),
   "displayName": zod.string(),
+  "lifeMotto": zod.string().nullish(),
+  "longDescription": zod.string().nullish(),
   "avatarUrl": zod.string().nullish(),
   "avatarPresetId": zod.string().nullish().describe('Stable profile preset ID; resolve its current image from GET \/api\/cover-presets?scope=profile. avatarUrl is reserved for custom uploaded avatars.'),
   "location": zod.string().nullish(),
@@ -2414,8 +2426,11 @@ export const GetSharedGlyphsResponse = zod.object({
   "isMine": zod.boolean(),
   "author": zod.object({
   "id": zod.number(),
+  "clerkUserId": zod.string().optional().describe('Only returned for the authenticated account\'s own profile.'),
   "username": zod.string(),
   "displayName": zod.string(),
+  "lifeMotto": zod.string().nullish(),
+  "longDescription": zod.string().nullish(),
   "avatarUrl": zod.string().nullish(),
   "avatarPresetId": zod.string().nullish().describe('Stable profile preset ID; resolve its current image from GET \/api\/cover-presets?scope=profile. avatarUrl is reserved for custom uploaded avatars.'),
   "location": zod.string().nullish(),
@@ -2487,8 +2502,11 @@ export const ToggleSharedGlyphLikeResponse = zod.object({
   "isMine": zod.boolean(),
   "author": zod.object({
   "id": zod.number(),
+  "clerkUserId": zod.string().optional().describe('Only returned for the authenticated account\'s own profile.'),
   "username": zod.string(),
   "displayName": zod.string(),
+  "lifeMotto": zod.string().nullish(),
+  "longDescription": zod.string().nullish(),
   "avatarUrl": zod.string().nullish(),
   "avatarPresetId": zod.string().nullish().describe('Stable profile preset ID; resolve its current image from GET \/api\/cover-presets?scope=profile. avatarUrl is reserved for custom uploaded avatars.'),
   "location": zod.string().nullish(),
@@ -2512,8 +2530,11 @@ export const UnshareGlyphParams = zod.object({
  */
 export const GetMeResponse = zod.object({
   "id": zod.number(),
+  "clerkUserId": zod.string().optional().describe('Only returned for the authenticated account\'s own profile.'),
   "username": zod.string(),
   "displayName": zod.string(),
+  "lifeMotto": zod.string().nullish(),
+  "longDescription": zod.string().nullish(),
   "avatarUrl": zod.string().nullish(),
   "avatarPresetId": zod.string().nullish().describe('Stable profile preset ID; resolve its current image from GET \/api\/cover-presets?scope=profile. avatarUrl is reserved for custom uploaded avatars.'),
   "location": zod.string().nullish(),
@@ -2532,11 +2553,19 @@ export const updateMeBodyUsernameMax = 24;
 export const updateMeBodyUsernameRegExp = new RegExp('^[a-zA-Z0-9_]+$');
 export const updateMeBodyDisplayNameMax = 60;
 
+export const updateMeBodyLongDescriptionMax = 300;
+
 
 
 export const UpdateMeBody = zod.object({
   "username": zod.string().min(updateMeBodyUsernameMin).max(updateMeBodyUsernameMax).regex(updateMeBodyUsernameRegExp).optional(),
   "displayName": zod.string().min(1).max(updateMeBodyDisplayNameMax).optional(),
+  "lifeMotto": zod.string().nullish(),
+  "longDescription": zod.string().max(updateMeBodyLongDescriptionMax).nullish(),
+  "publicMembership": zod.object({
+  "active": zod.boolean(),
+  "expiresAt": zod.coerce.date().nullable()
+}).optional(),
   "avatarUrl": zod.string().nullish(),
   "avatarPresetId": zod.string().nullish(),
   "location": zod.string().nullish()
@@ -2544,8 +2573,11 @@ export const UpdateMeBody = zod.object({
 
 export const UpdateMeResponse = zod.object({
   "id": zod.number(),
+  "clerkUserId": zod.string().optional().describe('Only returned for the authenticated account\'s own profile.'),
   "username": zod.string(),
   "displayName": zod.string(),
+  "lifeMotto": zod.string().nullish(),
+  "longDescription": zod.string().nullish(),
   "avatarUrl": zod.string().nullish(),
   "avatarPresetId": zod.string().nullish().describe('Stable profile preset ID; resolve its current image from GET \/api\/cover-presets?scope=profile. avatarUrl is reserved for custom uploaded avatars.'),
   "location": zod.string().nullish(),
@@ -2615,6 +2647,8 @@ export const GetPublicUserProfileResponse = zod.object({
   "id": zod.number(),
   "username": zod.string(),
   "displayName": zod.string(),
+  "lifeMotto": zod.string().nullish(),
+  "isPremium": zod.boolean().nullish().describe('Display-only subscription snapshot. Null means unknown; never authorizes paid access.'),
   "friendshipStatus": zod.enum(['none', 'pending_outgoing', 'pending_incoming', 'accepted', 'self']),
   "totalActiveDays": zod.number().min(getPublicUserProfileResponseTotalActiveDaysMin),
   "longDescription": zod.string().nullable(),
@@ -2647,8 +2681,11 @@ export const SetUserRoleBody = zod.object({
 
 export const SetUserRoleResponse = zod.object({
   "id": zod.number(),
+  "clerkUserId": zod.string().optional().describe('Only returned for the authenticated account\'s own profile.'),
   "username": zod.string(),
   "displayName": zod.string(),
+  "lifeMotto": zod.string().nullish(),
+  "longDescription": zod.string().nullish(),
   "avatarUrl": zod.string().nullish(),
   "avatarPresetId": zod.string().nullish().describe('Stable profile preset ID; resolve its current image from GET \/api\/cover-presets?scope=profile. avatarUrl is reserved for custom uploaded avatars.'),
   "location": zod.string().nullish(),
@@ -2785,8 +2822,11 @@ export const GetUserFollowingResponse = zod.array(GetUserFollowingResponseItem)
  */
 export const GetFriendsResponseItem = zod.object({
   "id": zod.number(),
+  "clerkUserId": zod.string().optional().describe('Only returned for the authenticated account\'s own profile.'),
   "username": zod.string(),
   "displayName": zod.string(),
+  "lifeMotto": zod.string().nullish(),
+  "longDescription": zod.string().nullish(),
   "avatarUrl": zod.string().nullish(),
   "avatarPresetId": zod.string().nullish().describe('Stable profile preset ID; resolve its current image from GET \/api\/cover-presets?scope=profile. avatarUrl is reserved for custom uploaded avatars.'),
   "location": zod.string().nullish(),
@@ -2813,8 +2853,11 @@ export const GetFriendRequestsResponseItem = zod.object({
   "createdAt": zod.coerce.date(),
   "requester": zod.object({
   "id": zod.number(),
+  "clerkUserId": zod.string().optional().describe('Only returned for the authenticated account\'s own profile.'),
   "username": zod.string(),
   "displayName": zod.string(),
+  "lifeMotto": zod.string().nullish(),
+  "longDescription": zod.string().nullish(),
   "avatarUrl": zod.string().nullish(),
   "avatarPresetId": zod.string().nullish().describe('Stable profile preset ID; resolve its current image from GET \/api\/cover-presets?scope=profile. avatarUrl is reserved for custom uploaded avatars.'),
   "location": zod.string().nullish(),
@@ -2823,8 +2866,11 @@ export const GetFriendRequestsResponseItem = zod.object({
 }),
   "addressee": zod.object({
   "id": zod.number(),
+  "clerkUserId": zod.string().optional().describe('Only returned for the authenticated account\'s own profile.'),
   "username": zod.string(),
   "displayName": zod.string(),
+  "lifeMotto": zod.string().nullish(),
+  "longDescription": zod.string().nullish(),
   "avatarUrl": zod.string().nullish(),
   "avatarPresetId": zod.string().nullish().describe('Stable profile preset ID; resolve its current image from GET \/api\/cover-presets?scope=profile. avatarUrl is reserved for custom uploaded avatars.'),
   "location": zod.string().nullish(),
@@ -2856,8 +2902,11 @@ export const AcceptFriendRequestResponse = zod.object({
   "createdAt": zod.coerce.date(),
   "requester": zod.object({
   "id": zod.number(),
+  "clerkUserId": zod.string().optional().describe('Only returned for the authenticated account\'s own profile.'),
   "username": zod.string(),
   "displayName": zod.string(),
+  "lifeMotto": zod.string().nullish(),
+  "longDescription": zod.string().nullish(),
   "avatarUrl": zod.string().nullish(),
   "avatarPresetId": zod.string().nullish().describe('Stable profile preset ID; resolve its current image from GET \/api\/cover-presets?scope=profile. avatarUrl is reserved for custom uploaded avatars.'),
   "location": zod.string().nullish(),
@@ -2866,8 +2915,11 @@ export const AcceptFriendRequestResponse = zod.object({
 }),
   "addressee": zod.object({
   "id": zod.number(),
+  "clerkUserId": zod.string().optional().describe('Only returned for the authenticated account\'s own profile.'),
   "username": zod.string(),
   "displayName": zod.string(),
+  "lifeMotto": zod.string().nullish(),
+  "longDescription": zod.string().nullish(),
   "avatarUrl": zod.string().nullish(),
   "avatarPresetId": zod.string().nullish().describe('Stable profile preset ID; resolve its current image from GET \/api\/cover-presets?scope=profile. avatarUrl is reserved for custom uploaded avatars.'),
   "location": zod.string().nullish(),
@@ -2912,8 +2964,11 @@ export const GetNotificationsResponseItem = zod.object({
   "readAt": zod.coerce.date().nullable(),
   "actor": zod.union([zod.object({
   "id": zod.number(),
+  "clerkUserId": zod.string().optional().describe('Only returned for the authenticated account\'s own profile.'),
   "username": zod.string(),
   "displayName": zod.string(),
+  "lifeMotto": zod.string().nullish(),
+  "longDescription": zod.string().nullish(),
   "avatarUrl": zod.string().nullish(),
   "avatarPresetId": zod.string().nullish().describe('Stable profile preset ID; resolve its current image from GET \/api\/cover-presets?scope=profile. avatarUrl is reserved for custom uploaded avatars.'),
   "location": zod.string().nullish(),
@@ -3031,8 +3086,11 @@ export const GetStorageObjectParams = zod.object({
 export const GetConversationsResponseItem = zod.object({
   "friend": zod.object({
   "id": zod.number(),
+  "clerkUserId": zod.string().optional().describe('Only returned for the authenticated account\'s own profile.'),
   "username": zod.string(),
   "displayName": zod.string(),
+  "lifeMotto": zod.string().nullish(),
+  "longDescription": zod.string().nullish(),
   "avatarUrl": zod.string().nullish(),
   "avatarPresetId": zod.string().nullish().describe('Stable profile preset ID; resolve its current image from GET \/api\/cover-presets?scope=profile. avatarUrl is reserved for custom uploaded avatars.'),
   "location": zod.string().nullish(),
@@ -4717,8 +4775,11 @@ export const GetPendingSubmissionsResponse = zod.object({
   "sortOrder": zod.number(),
   "creator": zod.object({
   "id": zod.number(),
+  "clerkUserId": zod.string().optional().describe('Only returned for the authenticated account\'s own profile.'),
   "username": zod.string(),
   "displayName": zod.string(),
+  "lifeMotto": zod.string().nullish(),
+  "longDescription": zod.string().nullish(),
   "avatarUrl": zod.string().nullish(),
   "avatarPresetId": zod.string().nullish().describe('Stable profile preset ID; resolve its current image from GET \/api\/cover-presets?scope=profile. avatarUrl is reserved for custom uploaded avatars.'),
   "location": zod.string().nullish(),
@@ -4825,8 +4886,11 @@ export const GetMySubmissionsResponse = zod.object({
   "sortOrder": zod.number(),
   "creator": zod.object({
   "id": zod.number(),
+  "clerkUserId": zod.string().optional().describe('Only returned for the authenticated account\'s own profile.'),
   "username": zod.string(),
   "displayName": zod.string(),
+  "lifeMotto": zod.string().nullish(),
+  "longDescription": zod.string().nullish(),
   "avatarUrl": zod.string().nullish(),
   "avatarPresetId": zod.string().nullish().describe('Stable profile preset ID; resolve its current image from GET \/api\/cover-presets?scope=profile. avatarUrl is reserved for custom uploaded avatars.'),
   "location": zod.string().nullish(),
@@ -4923,8 +4987,11 @@ export const ApproveSubmissionResponse = zod.object({
   "sortOrder": zod.number(),
   "creator": zod.object({
   "id": zod.number(),
+  "clerkUserId": zod.string().optional().describe('Only returned for the authenticated account\'s own profile.'),
   "username": zod.string(),
   "displayName": zod.string(),
+  "lifeMotto": zod.string().nullish(),
+  "longDescription": zod.string().nullish(),
   "avatarUrl": zod.string().nullish(),
   "avatarPresetId": zod.string().nullish().describe('Stable profile preset ID; resolve its current image from GET \/api\/cover-presets?scope=profile. avatarUrl is reserved for custom uploaded avatars.'),
   "location": zod.string().nullish(),
@@ -5028,8 +5095,11 @@ export const RejectSubmissionResponse = zod.object({
   "sortOrder": zod.number(),
   "creator": zod.object({
   "id": zod.number(),
+  "clerkUserId": zod.string().optional().describe('Only returned for the authenticated account\'s own profile.'),
   "username": zod.string(),
   "displayName": zod.string(),
+  "lifeMotto": zod.string().nullish(),
+  "longDescription": zod.string().nullish(),
   "avatarUrl": zod.string().nullish(),
   "avatarPresetId": zod.string().nullish().describe('Stable profile preset ID; resolve its current image from GET \/api\/cover-presets?scope=profile. avatarUrl is reserved for custom uploaded avatars.'),
   "location": zod.string().nullish(),
@@ -5215,8 +5285,11 @@ export const EditSubmissionResponse = zod.object({
   "sortOrder": zod.number(),
   "creator": zod.object({
   "id": zod.number(),
+  "clerkUserId": zod.string().optional().describe('Only returned for the authenticated account\'s own profile.'),
   "username": zod.string(),
   "displayName": zod.string(),
+  "lifeMotto": zod.string().nullish(),
+  "longDescription": zod.string().nullish(),
   "avatarUrl": zod.string().nullish(),
   "avatarPresetId": zod.string().nullish().describe('Stable profile preset ID; resolve its current image from GET \/api\/cover-presets?scope=profile. avatarUrl is reserved for custom uploaded avatars.'),
   "location": zod.string().nullish(),
@@ -5324,8 +5397,11 @@ export const HideSubmissionResponse = zod.object({
   "sortOrder": zod.number(),
   "creator": zod.object({
   "id": zod.number(),
+  "clerkUserId": zod.string().optional().describe('Only returned for the authenticated account\'s own profile.'),
   "username": zod.string(),
   "displayName": zod.string(),
+  "lifeMotto": zod.string().nullish(),
+  "longDescription": zod.string().nullish(),
   "avatarUrl": zod.string().nullish(),
   "avatarPresetId": zod.string().nullish().describe('Stable profile preset ID; resolve its current image from GET \/api\/cover-presets?scope=profile. avatarUrl is reserved for custom uploaded avatars.'),
   "location": zod.string().nullish(),
@@ -5421,8 +5497,11 @@ export const UnhideSubmissionResponse = zod.object({
   "sortOrder": zod.number(),
   "creator": zod.object({
   "id": zod.number(),
+  "clerkUserId": zod.string().optional().describe('Only returned for the authenticated account\'s own profile.'),
   "username": zod.string(),
   "displayName": zod.string(),
+  "lifeMotto": zod.string().nullish(),
+  "longDescription": zod.string().nullish(),
   "avatarUrl": zod.string().nullish(),
   "avatarPresetId": zod.string().nullish().describe('Stable profile preset ID; resolve its current image from GET \/api\/cover-presets?scope=profile. avatarUrl is reserved for custom uploaded avatars.'),
   "location": zod.string().nullish(),
@@ -5527,8 +5606,11 @@ export const GetAdminSessionsResponse = zod.object({
   "sortOrder": zod.number(),
   "creator": zod.object({
   "id": zod.number(),
+  "clerkUserId": zod.string().optional().describe('Only returned for the authenticated account\'s own profile.'),
   "username": zod.string(),
   "displayName": zod.string(),
+  "lifeMotto": zod.string().nullish(),
+  "longDescription": zod.string().nullish(),
   "avatarUrl": zod.string().nullish(),
   "avatarPresetId": zod.string().nullish().describe('Stable profile preset ID; resolve its current image from GET \/api\/cover-presets?scope=profile. avatarUrl is reserved for custom uploaded avatars.'),
   "location": zod.string().nullish(),
@@ -5628,8 +5710,11 @@ export const GetAdminSessionResponse = zod.object({
   "sortOrder": zod.number(),
   "creator": zod.object({
   "id": zod.number(),
+  "clerkUserId": zod.string().optional().describe('Only returned for the authenticated account\'s own profile.'),
   "username": zod.string(),
   "displayName": zod.string(),
+  "lifeMotto": zod.string().nullish(),
+  "longDescription": zod.string().nullish(),
   "avatarUrl": zod.string().nullish(),
   "avatarPresetId": zod.string().nullish().describe('Stable profile preset ID; resolve its current image from GET \/api\/cover-presets?scope=profile. avatarUrl is reserved for custom uploaded avatars.'),
   "location": zod.string().nullish(),
@@ -5744,8 +5829,11 @@ export const AddAdminSessionAudioResponse = zod.object({
   "sortOrder": zod.number(),
   "creator": zod.object({
   "id": zod.number(),
+  "clerkUserId": zod.string().optional().describe('Only returned for the authenticated account\'s own profile.'),
   "username": zod.string(),
   "displayName": zod.string(),
+  "lifeMotto": zod.string().nullish(),
+  "longDescription": zod.string().nullish(),
   "avatarUrl": zod.string().nullish(),
   "avatarPresetId": zod.string().nullish().describe('Stable profile preset ID; resolve its current image from GET \/api\/cover-presets?scope=profile. avatarUrl is reserved for custom uploaded avatars.'),
   "location": zod.string().nullish(),
@@ -5842,8 +5930,11 @@ export const DeleteAdminSessionAudioResponse = zod.object({
   "sortOrder": zod.number(),
   "creator": zod.object({
   "id": zod.number(),
+  "clerkUserId": zod.string().optional().describe('Only returned for the authenticated account\'s own profile.'),
   "username": zod.string(),
   "displayName": zod.string(),
+  "lifeMotto": zod.string().nullish(),
+  "longDescription": zod.string().nullish(),
   "avatarUrl": zod.string().nullish(),
   "avatarPresetId": zod.string().nullish().describe('Stable profile preset ID; resolve its current image from GET \/api\/cover-presets?scope=profile. avatarUrl is reserved for custom uploaded avatars.'),
   "location": zod.string().nullish(),
@@ -5950,8 +6041,11 @@ export const GetAdminMixesResponse = zod.object({
   "reportCount": zod.number(),
   "author": zod.object({
   "id": zod.number(),
+  "clerkUserId": zod.string().optional().describe('Only returned for the authenticated account\'s own profile.'),
   "username": zod.string(),
   "displayName": zod.string(),
+  "lifeMotto": zod.string().nullish(),
+  "longDescription": zod.string().nullish(),
   "avatarUrl": zod.string().nullish(),
   "avatarPresetId": zod.string().nullish().describe('Stable profile preset ID; resolve its current image from GET \/api\/cover-presets?scope=profile. avatarUrl is reserved for custom uploaded avatars.'),
   "location": zod.string().nullish(),

@@ -93,6 +93,36 @@ describe("account data lifecycle", () => {
     await createUser();
   });
 
+  it("publishes saved biography and display-only membership without leaking account identifiers", async () => {
+    const expiry = new Date(Date.now() + 86_400_000).toISOString();
+    const saved = await request(app).patch("/api/me").send({
+      lifeMotto: "Respirar y avanzar",
+      longDescription: "Una descripción propia compartida.",
+      publicMembership: { active: true, expiresAt: expiry },
+    }).expect(200);
+    expect(saved.body.lifeMotto).toBe("Respirar y avanzar");
+    expect(saved.body.clerkUserId).toBe(currentUser!.clerkUserId);
+    const published = await request(app).get(`/api/users/${currentUser!.id}/public`).expect(200);
+    expect(published.body.lifeMotto).toBe(saved.body.lifeMotto);
+    expect(published.body.longDescription).toBe(saved.body.longDescription);
+    expect(published.body.isPremium).toBe(true);
+    expect(published.body).not.toHaveProperty("clerkUserId");
+    expect(published.body).not.toHaveProperty("email");
+    expect(published.body).not.toHaveProperty("publicMembership");
+    expect(published.body.role).toBe("user");
+    await request(app).patch("/api/me").send({ longDescription: "x".repeat(301) }).expect(400);
+    await request(app).patch("/api/me").send({
+      publicMembership: { active: true, expiresAt: "invalid" },
+    }).expect(400);
+    await request(app).patch("/api/me").send({
+      lifeMotto: null, longDescription: null, publicMembership: { active: false, expiresAt: null },
+    }).expect(200);
+    const cleared = await request(app).get(`/api/users/${currentUser!.id}/public`).expect(200);
+    expect(cleared.body.lifeMotto).toBeNull();
+    expect(cleared.body.longDescription).toBeNull();
+    expect(cleared.body.isPremium).toBe(false);
+  });
+
   afterEach(async () => {
     if (currentLiveSessionUid) {
       await db

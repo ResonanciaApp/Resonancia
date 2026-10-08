@@ -34,6 +34,7 @@ import {
 } from "../lib/objectStorage";
 import { accountIdentityHash } from "../lib/accountDeletion";
 import { canUserReferenceObject } from "../lib/objectAccess";
+import { publicPremiumStatus } from "../lib/publicMembership";
 
 const router: IRouter = Router();
 const objectStorageService = new ObjectStorageService();
@@ -43,6 +44,8 @@ function toProfile(u: User) {
     id: u.id,
     username: u.username,
     displayName: u.displayName,
+    lifeMotto: u.lifeMotto ?? null,
+    longDescription: u.longDescription ?? null,
     avatarUrl: u.avatarUrl,
     avatarPresetId: u.avatarPresetId ?? null,
     location: u.location ?? null,
@@ -52,7 +55,7 @@ function toProfile(u: User) {
 }
 
 router.get("/me", requireAuth, async (req, res) => {
-  res.json(toProfile(req.currentUser!));
+  res.json({ ...toProfile(req.currentUser!), clerkUserId: req.currentUser!.clerkUserId });
 });
 
 router.patch("/me", requireAuth, async (req, res) => {
@@ -82,6 +85,14 @@ router.patch("/me", requireAuth, async (req, res) => {
   const updates: Partial<typeof usersTable.$inferInsert> = {};
   if (parsed.data.username !== undefined) updates.username = parsed.data.username;
   if (parsed.data.displayName !== undefined) updates.displayName = parsed.data.displayName;
+  if (parsed.data.lifeMotto !== undefined) updates.lifeMotto = parsed.data.lifeMotto?.trim() || null;
+  if (parsed.data.longDescription !== undefined) updates.longDescription = parsed.data.longDescription?.trim() || null;
+  if (parsed.data.publicMembership !== undefined) {
+    updates.publicMembership = {
+      active: parsed.data.publicMembership.active,
+      expiresAt: parsed.data.publicMembership.expiresAt?.toISOString() ?? null,
+    };
+  }
   if (parsed.data.avatarPresetId !== undefined) {
     updates.avatarPresetId = parsed.data.avatarPresetId;
     updates.avatarUrl = null;
@@ -92,7 +103,7 @@ router.patch("/me", requireAuth, async (req, res) => {
   if (parsed.data.location !== undefined) updates.location = parsed.data.location;
 
   if (Object.keys(updates).length === 0) {
-    res.json(toProfile(me));
+    res.json({ ...toProfile(me), clerkUserId: me.clerkUserId });
     return;
   }
 
@@ -113,7 +124,7 @@ router.patch("/me", requireAuth, async (req, res) => {
         .where(eq(usersTable.id, me.id)).returning();
       return saved;
     });
-    res.json(toProfile(updated));
+    res.json({ ...toProfile(updated), clerkUserId: updated.clerkUserId });
   } catch (err: unknown) {
     if (err instanceof Error && err.message === "avatar_locked") {
       res.status(403).json({ error: "Este avatar está bloqueado", code: "AVATAR_LOCKED" });
@@ -696,6 +707,8 @@ router.get("/users/:userId/public", requireAuth, async (req, res) => {
       id: user.id,
       username: user.username,
       displayName: user.displayName,
+      lifeMotto: user.lifeMotto ?? null,
+      isPremium: publicPremiumStatus(user.publicMembership),
       avatarUrl: user.avatarUrl,
       avatarPresetId: user.avatarPresetId ?? null,
       location: user.location ?? null,

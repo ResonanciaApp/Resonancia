@@ -24,7 +24,7 @@ test("public profile omits carousels without deleting shared content or gallery 
   const profile = readSource("../app/usuario/[id].tsx");
   const carousels = readSource("../components/PublicProfileCarousels.tsx");
   const gallery = readSource("../app/galeria-reflexiones/[id].tsx");
-  assert.match(profile, /longDesc: \{[^\n]*marginTop: 20/);
+  assert.match(profile, /profileDescription: \{[^\n]*fontSize: 14[^\n]*lineHeight: 20[^\n]*#C4C4C4/);
   assert.doesNotMatch(profile, /PublicProfileCarousels|public-profile-message/);
   assert.match(carousels, /getSharedMixes\(\{ author: userId, page: pageParam \}\)/);
   assert.match(carousels, /listUserReflectionStories\(userId/);

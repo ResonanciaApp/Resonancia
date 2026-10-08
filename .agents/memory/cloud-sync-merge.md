@@ -23,3 +23,6 @@ Siempre **unión** — es un log append-only. El server deduplica por índice ú
 
 ## Limitación in-flight (aceptada Phase 1)
 El sync aplica el merge sobre un snapshot tomado al arrancar; si el usuario togglea un favorito en esa ventana corta, el `setFavorites(merged)` podría pisarlo. Ventana = arranque de la app, riesgo bajo.
+
+## Recuperación y evolución del merge
+La nota de Phase 1 es histórica. Consultar [actividad y recuperación inicial](cloud-sync-activity.md) antes de cambiar la hidratación: reúne las decisiones posteriores sobre lecturas fallidas y combinación con actividad llegada durante una espera.

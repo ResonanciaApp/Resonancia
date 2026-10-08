@@ -583,6 +583,7 @@ export function ProfileScreenBase({
   const [accountAction, setAccountAction] = useState<"delete" | null>(null);
   const [accountSaving, setAccountSaving] = useState(false);
   const accountSavingRef = useRef(false);
+  const accountDraftBaselineRef = useRef<string | null>(null);
   const accountClosedRef = useRef(false);
   const [accountPhotoPickerVisible, setAccountPhotoPickerVisible] = useState(false);
   const accountAvatarGridRef = useRef<FlatList<(typeof profileCatalog)[number]>>(null);
@@ -594,11 +595,19 @@ export function ProfileScreenBase({
 
   useEffect(() => {
     if (accountMode) {
+      const draft = JSON.stringify([accountName, accountDescription, accountLifeMotto, accountPhotoUri, accountAvatarPresetId]);
+      // A background profile sync must not overwrite unsaved form edits.
+      if (accountDraftBaselineRef.current !== null && accountDraftBaselineRef.current !== draft) return;
+      accountDraftBaselineRef.current = JSON.stringify([
+        username, limitProfileDescription(description), lifeMotto, photoUri, selectedProfilePreset?.id ?? avatarPresetId,
+      ]);
       setAccountName(username);
       setAccountDescription(limitProfileDescription(description));
       setAccountLifeMotto(lifeMotto);
       setAccountPhotoUri(photoUri);
       setAccountAvatarPresetId(selectedProfilePreset?.id ?? avatarPresetId);
+    } else {
+      accountDraftBaselineRef.current = null;
     }
   }, [accountMode, username, description, lifeMotto, photoUri, avatarPresetId]);
 

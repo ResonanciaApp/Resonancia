@@ -20,22 +20,14 @@ import {
   getGetPublicUserProfileQueryKey,
 } from "@workspace/api-client-react";
 import { BLUR_PLACEHOLDER, IMAGE_TRANSITION } from "@/constants/imagePlaceholder";
-import { CLOUDY_GROWTH_DAY_PILL_BACKGROUND, MEMBERSHIP_AURORA } from "@/constants/colors";
-import { growthLevels } from "@/data/growthLevels";
+import { MEMBERSHIP_AURORA } from "@/constants/colors";
+import { GrowthCurrentStagePill } from "@/components/GrowthJourney";
+import { SessionBadgeGlass } from "@/components/SessionDurationBadge";
 import { useColors } from "@/hooks/useColors";
 import { useSceneTheme } from "@/context/SceneThemeContext";
 import { SceneThemeBackground } from "@/components/SceneThemeBackground";
 
-const H_PAD = 20;
-// Product rule: only Intención is active; never derive the stage from day count.
-const CURRENT_STAGE = growthLevels[0];
-
-function initialsFor(name: string): string {
-  const parts = name.trim().split(/\s+/).filter(Boolean);
-  if (parts.length === 0) return "?";
-  if (parts.length === 1) return parts[0].slice(0, 2).toUpperCase();
-  return (parts[0][0] + parts[parts.length - 1][0]).toUpperCase();
-}
+const H_PAD = 16;
 
 export default function UsuarioScreen() {
   const colors = useColors();
@@ -54,15 +46,15 @@ export default function UsuarioScreen() {
   });
 
 
-  const topPad = Platform.OS === "web" ? 67 : insets.top;
+  const topPad = Platform.OS === "web" ? 67 : Math.max(insets.top, 40);
   const bottomPad = Platform.OS === "web" ? 34 : insets.bottom;
   const avatarSource = useProfileAvatarSource(
     profile ?? { avatarPresetId: null, avatarUrl: null },
   );
 
   const HeaderBar = (
-    <View style={[styles.headerRow, { paddingHorizontal: H_PAD, paddingTop: topPad + 8 }]}>
-      <Pressable onPress={() => router.back()} style={styles.backBtn} hitSlop={8}>
+    <View style={[styles.headerRow, { paddingHorizontal: H_PAD + 4, paddingTop: topPad + 8 }]}>
+      <Pressable testID="public-profile-back" accessibilityRole="button" accessibilityLabel="Volver" onPress={() => router.back()} style={styles.backBtn} hitSlop={8}>
         <Feather name="chevron-left" size={22} color={colors.foreground} />
       </Pressable>
     </View>
@@ -98,8 +90,8 @@ export default function UsuarioScreen() {
     );
   }
 
-  const totalActiveDays = Math.max(0, Math.floor(profile.totalActiveDays ?? 0));
   const longDescription = profile.longDescription?.trim() || null;
+  const lifeMotto = profile.lifeMotto?.trim() || null;
 
   return (
     <View style={[styles.root, { backgroundColor: theme.gradient[0] as string }]}>
@@ -125,49 +117,42 @@ export default function UsuarioScreen() {
               />
             ) : (
               <View style={[styles.avatarImage, styles.avatarFallback, { backgroundColor: colors.secondary }]}>
-                <Text style={[styles.initials, { color: colors.primary }]}>
-                  {initialsFor(profile.displayName)}
-                </Text>
+                <Feather name="user" size={28} color={colors.primary} />
+              </View>
+            )}
+            {profile.isPremium === true && (
+              <View testID="public-profile-premium-badge" pointerEvents="none" style={styles.avatarPremiumBadge}>
+                <SessionBadgeGlass showBlackTint={false} showWhiteTint />
+                <MaterialCommunityIcons name="star" size={25} color={MEMBERSHIP_AURORA.premium.accent} />
               </View>
             )}
           </View>
 
-          {/* 2. Nombre de usuario */}
-          <Text testID="public-profile-name" style={[styles.userName, { color: colors.foreground }]}>
-            {profile.displayName}
-          </Text>
+          <View testID="public-profile-identity-details" style={styles.profileDetails}>
+            <View style={styles.profileNameRow}>
+              <View style={styles.profileNameText}>
+                <Text testID="public-profile-name" numberOfLines={1} ellipsizeMode="tail" style={[styles.userName, { color: colors.foreground }]}>
+                  {profile.displayName}
+                </Text>
+              </View>
+            </View>
 
-          {/* 3. Días activos acumulados */}
-          <View
-            testID="public-profile-accumulated-pill"
-            style={[
-              styles.daysPill,
-              theme.id === "cloudy" && { backgroundColor: CLOUDY_GROWTH_DAY_PILL_BACKGROUND },
-            ]}
-          >
-            <MaterialCommunityIcons
-              name="spa"
-              size={12}
-              color={MEMBERSHIP_AURORA.premium.accent}
-              style={styles.lotus}
-            />
-            <Text style={[styles.daysText, { color: colors.foreground }]}>
-              {totalActiveDays} días
-            </Text>
+            <GrowthCurrentStagePill />
+            {(lifeMotto || longDescription) && (
+              <View style={styles.profileBiography}>
+                {lifeMotto && (
+                  <Text testID="public-profile-life-motto" style={[styles.profileLifeMotto, { color: colors.foreground }]}>
+                    {lifeMotto}
+                  </Text>
+                )}
+                {longDescription && (
+                  <Text testID="public-profile-long-description" style={styles.profileDescription}>
+                    {longDescription}
+                  </Text>
+                )}
+              </View>
+            )}
           </View>
-
-          {/* 4. Etapa actual */}
-          <Text testID="public-profile-stage" style={[styles.stageName, { color: colors.foreground }]}>
-            {CURRENT_STAGE.name}
-          </Text>
-
-          {/* 5. Descripción larga */}
-          {longDescription ? (
-            <Text testID="public-profile-long-description" style={[styles.longDesc, { color: colors.foreground }]}>
-              {longDescription}
-            </Text>
-          ) : null}
-
         </View>
       </ScrollView>
     </View>
@@ -180,12 +165,12 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     alignItems: "center",
     justifyContent: "flex-start",
-    marginBottom: 4,
+    marginBottom: 0,
   },
   backBtn: {
-    width: 38,
-    height: 38,
-    borderRadius: 19,
+    width: 43,
+    height: 43,
+    borderRadius: 21.5,
     backgroundColor: "rgba(0,0,0,0.16)",
     alignItems: "center",
     justifyContent: "center",
@@ -194,27 +179,21 @@ const styles = StyleSheet.create({
   notFoundTitle: { fontFamily: "Manrope", fontSize: 18, fontWeight: "700" },
   notFoundSub: { fontFamily: "Manrope", fontSize: 14, textAlign: "center", lineHeight: 21 },
 
-  scroll: { paddingTop: 4, gap: 16 },
-  profileCard: { borderRadius: 24, paddingVertical: 24, paddingHorizontal: H_PAD, alignItems: "flex-start", gap: 6 },
-  avatarWrapper: { position: "relative", marginBottom: 8 },
-  avatarImage: { width: 107, height: 107, borderRadius: 53.5 },
+  scroll: { paddingTop: 20, paddingHorizontal: H_PAD },
+  profileCard: { flexDirection: "column", alignItems: "flex-start", width: "100%", gap: 7, paddingLeft: 3, paddingRight: 0 },
+  avatarWrapper: { position: "relative", marginTop: 3, marginBottom: 0, flexShrink: 0 },
+  avatarImage: { width: 124, height: 124, borderRadius: 62 },
   avatarFallback: { alignItems: "center", justifyContent: "center" },
-  initials: { fontFamily: "Manrope", fontSize: 40, fontWeight: "700" },
-  userName: { fontFamily: "Manrope", fontSize: 20, fontWeight: "700", textAlign: "left" },
-  stageName: { fontFamily: "Manrope", fontSize: 15, fontWeight: "700", textAlign: "left" },
-  daysPill: {
-    flexDirection: "row",
-    alignItems: "center",
-    gap: 4,
-    marginTop: 6,
-    paddingHorizontal: 9,
-    paddingVertical: 4,
-    borderRadius: 12,
-    borderWidth: 1,
-    borderColor: "rgba(255,255,255,0.10)",
-    backgroundColor: "rgba(151,128,231,0.20)",
+  avatarPremiumBadge: {
+    position: "absolute", right: 0, bottom: 0, zIndex: 1,
+    width: 32, height: 32, borderRadius: 16, overflow: "hidden",
+    alignItems: "center", justifyContent: "center",
   },
-  daysText: { fontFamily: "Manrope", fontSize: 10, fontWeight: "600" },
-  lotus: { lineHeight: 12, includeFontPadding: false },
-  longDesc: { fontFamily: "Manrope", fontSize: 14, lineHeight: 21, textAlign: "left", marginTop: 20 },
+  profileDetails: { width: "100%", minWidth: 0, alignItems: "flex-start", gap: 6, marginTop: 5 },
+  profileNameRow: { width: "100%", flexDirection: "row", alignItems: "center" },
+  profileNameText: { flex: 1, minWidth: 0 },
+  userName: { fontFamily: "Manrope", fontSize: 29, fontWeight: "700", textAlign: "left", marginTop: 0 },
+  profileBiography: { width: "100%", alignItems: "flex-start", gap: 6, marginTop: 7 },
+  profileLifeMotto: { fontFamily: "Manrope", fontSize: 19, fontWeight: "700", lineHeight: 27, textAlign: "left", alignSelf: "stretch", marginTop: 7 },
+  profileDescription: { fontFamily: "Manrope", fontSize: 14, lineHeight: 20, color: "#C4C4C4", textAlign: "left", alignSelf: "stretch" },
 });
