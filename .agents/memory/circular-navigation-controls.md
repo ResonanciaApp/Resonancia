@@ -14,3 +14,12 @@ El fondo de la flor de loto de Inicio también usa negro al 16 % sin borde, aunq
 **Why:** El usuario incluyó explícitamente el loto tras el ajuste general de controles.
 
 **How to apply:** Conservar dimensiones, contador y acción del loto; aplicar la regla a su superficie.
+
+La X de Crear actividad de Mi rutina expansiva usa un círculo de 43 × 43 px:
+negro al 19 % en Natural y Cloudy, y al 16 % en Índigo 2 y Pleyades.
+
+**Why:** El usuario pidió expresamente estas opacidades para esa pantalla,
+después de la regla general de controles.
+
+**How to apply:** Mantener esta excepción acotada a ese cierre; conservar
+el icono, la acción de volver y la respuesta al pulsarlo.

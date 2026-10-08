@@ -159,7 +159,16 @@ export default function CrearRutinaScreen() {
             accessibilityLabel="Cerrar creación de actividad"
             testID="crear-rutina-close"
             hitSlop={10}
-            style={({ pressed }) => [styles.headerSide, { opacity: pressed ? 0.6 : 1 }]}
+            style={({ pressed }) => [
+              styles.headerSide,
+              styles.closeButton,
+              {
+                backgroundColor: activeTheme.id === "natural" || activeTheme.id === "cloudy"
+                  ? "rgba(0,0,0,0.19)"
+                  : "rgba(0,0,0,0.16)",
+                opacity: pressed ? 0.6 : 1,
+              },
+            ]}
           >
             <Feather name="x" size={25} color={colors.foreground} />
           </Pressable>
@@ -489,6 +498,13 @@ const styles = StyleSheet.create({
   },
   headerSide: {
     width: 72,
+  },
+  closeButton: {
+    width: 43,
+    height: 43,
+    borderRadius: 21.5,
+    alignItems: "center",
+    justifyContent: "center",
   },
   saveSide: {
     alignItems: "flex-end",
