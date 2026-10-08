@@ -621,6 +621,7 @@ export function MiRutinaSection({ style, cardBackgroundColor, titleSize = 17, ad
           style={({ pressed }) => [
             styles.addButton,
             addCardHeight !== undefined && { height: addCardHeight, minHeight: addCardHeight },
+            alignCardGapToWall && { borderRadius: 16 },
             alignCardGapToWall && todayActivities.length === 0 && { marginTop: 0 },
             {
               borderColor: "rgba(249,249,249,0.5)",

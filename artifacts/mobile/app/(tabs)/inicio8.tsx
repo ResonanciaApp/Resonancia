@@ -4439,6 +4439,7 @@ const styles = StyleSheet.create({
     backgroundColor: SECTION_DIVIDER_COLOR,
   },
   inicio3SectionSpacer: {
+    opacity: 0,
     height: StyleSheet.hairlineWidth,
     marginHorizontal: GRID_PAD,
     marginTop: -24.5,
@@ -4452,6 +4453,7 @@ const styles = StyleSheet.create({
     paddingTop: SECTION_GAP - INICIO2_SECTION_GAP + 1,
   },
   inicio3QuoteDivider: {
+    opacity: 0,
     position: "absolute",
     left: GRID_PAD,
     right: GRID_PAD,
@@ -4459,6 +4461,7 @@ const styles = StyleSheet.create({
     backgroundColor: SECTION_DIVIDER_COLOR,
   },
   inicio3StandaloneDivider: {
+    opacity: 0,
     height: StyleSheet.hairlineWidth,
     marginHorizontal: GRID_PAD,
     marginTop: 26,
@@ -4466,6 +4469,7 @@ const styles = StyleSheet.create({
     backgroundColor: SECTION_DIVIDER_COLOR,
   },
   inicio3LowerSectionDivider: {
+    opacity: 0,
     height: StyleSheet.hairlineWidth,
     marginHorizontal: GRID_PAD,
     marginTop: -22,

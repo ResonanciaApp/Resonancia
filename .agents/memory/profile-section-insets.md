@@ -9,9 +9,9 @@ Todas las secciones de Perfil deben tener 18 px desde el borde superior hasta el
 
 **How to apply:** Auditar también el centrado, los tamaños mínimos, las transformaciones y los paddings de hijos: pueden sumar espacio aunque la tarjeta tenga el padding correcto. Incluir estados vacíos y con contenido. En componentes compartidos, usar una opción exclusiva de Perfil para no modificar otras pantallas.
 
-Tu camino tiene una excepción explícita: su altura se redujo desde el borde inferior, sin desplazar el contenido interior ni reducir el espacio superior.
+Tu camino tiene una excepción explícita: las reducciones de altura se hacen desde el borde inferior sin reducir el espacio superior. El desplazamiento de imagen, Intención y descripción es independiente del título de la sección.
 
-**Why:** El usuario pidió cinco píxeles menos exclusivamente desde abajo; normalizar después ese padding a la regla general desharía el ajuste.
+**Why:** El usuario pidió reducciones exclusivamente desde abajo y, por separado, subir el contenido interior sin mover el título. Normalizar ese padding a la regla general o sumar un desplazamiento de contenido al recorte desharía el ajuste.
 
 **How to apply:** Conservar esta excepción al revisar los insets de Perfil y no compensarla aumentando el margen posterior.
 

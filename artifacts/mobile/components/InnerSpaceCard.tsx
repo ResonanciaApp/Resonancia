@@ -547,7 +547,7 @@ export function InnerSpaceCard({
     >
       {canonicalVerticalInsets && (
         <DiscoverSearchBorder
-          borderRadius={24}
+          borderRadius={profileVariant ? 16 : 24}
           borderWidth={profileVariant ? 1 : 2}
           brightness={REFLECTION_WALL_BORDER_BRIGHTNESS}
           colors={theme.id === "cloudy" ? CLOUDY_REFLECTION_WALL_BORDER_GRADIENT : REFLECTION_WALL_BORDER_GRADIENT}
@@ -826,6 +826,7 @@ const styles = StyleSheet.create({
     fontWeight: "400",
   },
   profileWall: {
+    borderRadius: 16,
     borderWidth: 1,
     borderColor: "transparent",
     paddingHorizontal: 20,

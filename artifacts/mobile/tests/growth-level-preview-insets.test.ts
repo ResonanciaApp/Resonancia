@@ -236,7 +236,7 @@ test("Perfil Tu camino keeps only the stage title and description, preserving Ve
   assert.match(html, /Una práctica que comienza hoy\./);
   assert.match(html, /data-testid="profile-intention-description"[^>]*data-transform="\[\{&quot;translateY&quot;:-3\}\]"/);
   assert.doesNotMatch(html, /profile-intention-chevron|data-icon="chevron-right"/);
-  assert.match(html, /data-testid="growth-level-zero-preview"[^>]*data-padding-top="18" data-padding-bottom="12"/);
+  assert.match(html, /data-testid="growth-level-zero-preview"[^>]*data-padding-top="18" data-padding-bottom="4"/);
   assert.ok(capturedViewAllPress);
   capturedViewAllPress();
   assert.equal(opened, true);

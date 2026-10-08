@@ -61,8 +61,12 @@ test("daily recommendations independently increase from 17 to 19 points", () => 
   assert.match(home, /<DailyRecommendationsSection[\s\S]*?inicio3Compact/);
 });
 
-test("Inicio 3 shows centered dividers in existing section gaps without changing their height", () => {
+test("Inicio 3 hides inter-section dividers without changing their layout or section positions", () => {
   const divider = style("inicio3SectionSpacer");
+  assert.equal(divider.opacity, 0);
+  for (const key of ["inicio3QuoteDivider", "inicio3StandaloneDivider", "inicio3LowerSectionDivider"]) {
+    assert.equal(style(key).opacity, 0, `${key} reserves its existing space without painting a line`);
+  }
   assert.equal(divider.backgroundColor, bindings.SECTION_DIVIDER_COLOR);
   assert.equal(divider.borderWidth, undefined);
   const previousGap = 53 - 27 + 26 + bindings.INICIO3_SECTION_EXTRA_GAP + bindings.StyleSheet.hairlineWidth;

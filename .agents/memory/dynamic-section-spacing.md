@@ -19,7 +19,13 @@ En Inicio, Frase del día debe tener una separación equivalente antes y despué
 
 **Why:** El usuario pidió aumentar y estandarizar ambos espacios porque percibía esas secciones demasiado juntas.
 
-**How to apply:** Ajustar solo Inicio activo, conservar las variantes anteriores y comprobar también la rama sin videos. Contar el espacio ya aportado por el carrusel anterior antes de añadir padding; el divisor debe quedar centrado en el nuevo espacio.
+**How to apply:** Ajustar solo Inicio activo, conservar las variantes anteriores y comprobar también la rama sin videos. Contar el espacio ya aportado por el carrusel anterior antes de añadir padding. Los antiguos divisores conservan su espacio pero no deben verse.
+
+En Inicio no se muestran líneas divisoras entre secciones, pero retirarlas no debe mover ninguna sección.
+
+**Why:** El usuario pidió eliminar las líneas expresamente sin alterar las posiciones.
+
+**How to apply:** Ocultar la pintura de los divisores conservando sus alturas, márgenes y contenedores. No borrar espaciadores ni cambiar separaciones; esto no elimina bordes internos de cards o del header.
 
 Al volver de una altura animada a layout natural en Reanimated, limpiar explícitamente
 la dimensión con `height: undefined`; devolver `{}` no retira la altura aplicada al

@@ -108,6 +108,7 @@ test("routine add card uses the measured wall height only when supplied and leav
     const fn = evaluate({ addButton: style("MiRutinaSection", "addButton") }, 82, align, activities);
     const merged = Object.assign({}, ...fn({ pressed: false }).filter(Boolean));
     assert.equal(merged.marginTop, margin, "only the empty aligned state removes the extra ten pixels");
+    assert.equal(merged.borderRadius, align ? style("MiRutinaSection", "completeState").borderRadius : 21);
   }
   const wallGap = Number(style("ProfileReflectionWallSection", "title").marginBottom);
   const routineGap = Number(style("MiRutinaSection", "headerRow").marginBottom);
@@ -118,11 +119,22 @@ test("routine add card uses the measured wall height only when supplied and leav
   assert.deepEqual(style("RoutineCompletionTransition", "completeLayer"), { position: "absolute", top: 0, left: 0, right: 0 });
   assert.equal(style("ProfileReflectionWallSection", "title").lineHeight, style("MiRutinaSection", "alignedSectionTitle").lineHeight);
   assert.match(source("../components/ProfileScreenBase.tsx"), /<MiRutinaSection[^>]*alignCardGapToWall/);
+  assert.equal(style("InnerSpaceCard", "profileWall").borderRadius, style("MiRutinaSection", "completeState").borderRadius);
+  assert.match(source("../components/InnerSpaceCard.tsx"), /borderRadius=\{profileVariant \? 16 : 24\}/);
   const baseHeight = Number(style("InnerSpaceCard", "canonicalHeaderCopy").minHeight)
     + Number(style("InnerSpaceCard", "profileWall").paddingTop)
     + Number(style("InnerSpaceCard", "profileWall").paddingBottom)
     + 2 * Number(style("InnerSpaceCard", "profileWall").borderWidth);
   assert.equal(baseHeight, 82);
+});
+
+test("Tu camino lifts only its content row four pixels and trims eight pixels off the bottom", () => {
+  const card = style("GrowthJourney", "titledPreviewCard");
+  assert.equal(card.paddingTop, 18);
+  assert.equal(card.paddingBottom, 12 - 8);
+  assert.deepEqual(style("GrowthJourney", "previewContentRow").transform, [{ translateY: -4 }]);
+  assert.equal(style("GrowthJourney", "previewSectionHeader").transform, undefined);
+  assert.match(source("../components/GrowthJourney.tsx"), /<View style=\{styles\.previewContentRow\}>\{previewContent\}<\/View>/);
 });
 
 test("Mi muro keeps the same prompt before and after selecting any category tab", () => {
@@ -207,7 +219,7 @@ test("InnerSpaceCard keeps Home defaults and opts profile into a single 18px-ins
 test("the profile wall uses ten equally spaced supplied colors with 25% more brightness without changing the history background or direction", () => {
   const card = source("../components/InnerSpaceCard.tsx");
   const border = source("../components/DiscoverSearchBorder.tsx");
-  assert.match(card, /canonicalVerticalInsets && \(\s*<DiscoverSearchBorder[\s\S]*?borderRadius=\{24\}[\s\S]*?brightness=\{REFLECTION_WALL_BORDER_BRIGHTNESS\}[\s\S]*?colors=\{theme.id === "cloudy" \? CLOUDY_REFLECTION_WALL_BORDER_GRADIENT : REFLECTION_WALL_BORDER_GRADIENT\}[\s\S]*?start=\{REFLECTION_WALL_BORDER_START\}[\s\S]*?end=\{REFLECTION_WALL_BORDER_END\}/);
+  assert.match(card, /canonicalVerticalInsets && \(\s*<DiscoverSearchBorder[\s\S]*?borderRadius=\{profileVariant \? 16 : 24\}[\s\S]*?brightness=\{REFLECTION_WALL_BORDER_BRIGHTNESS\}[\s\S]*?colors=\{theme.id === "cloudy" \? CLOUDY_REFLECTION_WALL_BORDER_GRADIENT : REFLECTION_WALL_BORDER_GRADIENT\}[\s\S]*?start=\{REFLECTION_WALL_BORDER_START\}[\s\S]*?end=\{REFLECTION_WALL_BORDER_END\}/);
   assert.match(border, /borderWidth = 2/);
   assert.match(border, /brightness = 1/);
   assert.match(border, /opacity: 0\.99 \* brightness/);
