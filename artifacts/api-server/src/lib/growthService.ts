@@ -23,11 +23,13 @@ async function reconcile(tx: Tx, userId: number) {
       FROM ${playbackHistoryTable}
       WHERE ${playbackHistoryTable.userId} = ${userId}
         AND ${playbackHistoryTable.playedAt} <= now()
+        AND (${wallet.countFromDay}::date IS NULL
+          OR (${playbackHistoryTable.playedAt} AT TIME ZONE 'America/Santiago')::date >= ${wallet.countFromDay}::date)
       GROUP BY 1
       HAVING sum(${playbackHistoryTable.minutes}) >= 3 OR bool_or(${playbackHistoryTable.completed})
     ) active_days
   `);
-  const maxDays = Math.max(wallet.maxDays, Number(result.rows[0]?.days ?? 0));
+  const maxDays = Math.max(wallet.maxDays, wallet.baseDays + Number(result.rows[0]?.days ?? 0));
   const catalog = await readGrowthCatalog(tx);
   const reached = reconcileReached(catalog.stages, wallet.reached, maxDays);
   await tx.update(growthWalletsTable).set({ maxDays, reached })

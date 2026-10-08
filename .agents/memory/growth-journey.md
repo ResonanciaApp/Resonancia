@@ -21,6 +21,12 @@ Las etapas se alcanzan al llegar al día inicial del rango. Una recompensa conce
 
 **How to apply:** Mantener esta política explícita en Admin. Cualquier ajuste retroactivo de cupos debe tratarse como una operación diferente y autorizada, no como efecto secundario de editar el catálogo.
 
+Un reinicio explícitamente autorizado de **solo Tu camino** es una excepción a la conservación de etapas alcanzadas: puede fijar una nueva base de progreso, pero no debe borrar escuchas, otras estadísticas, cupos concedidos ni avatares elegidos.
+
+**Why:** El usuario eligió ajustar solamente Tu camino y conservar el historial. Recalcular ese mismo historial completo desharía inmediatamente el ajuste; los días antiguos sincronizados después tampoco deben hacerlo.
+
+**How to apply:** Identificar inequívocamente la cuenta antes de escribir. Separar la base del camino del historial general y empezar a sumar días activos nuevos desde el siguiente día chileno; los demás usuarios conservan su cálculo histórico habitual. No revocar recompensas como efecto implícito del reinicio.
+
 En Perfil, la sección del banner de Intención se titula «Tu camino», con la misma tipografía y alineación del encabezado de Puntos creatividad. El nombre de la etapa «Intención» permanece dentro del banner.
 
 **Why:** El usuario pidió añadir el título de sección tomando Puntos creatividad como referencia, no renombrar la etapa.

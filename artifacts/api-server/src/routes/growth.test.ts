@@ -32,7 +32,7 @@ let quota: number;
 beforeAll(async () => {
   if (process.env.NODE_ENV === "production") throw new Error("Growth fixtures must never run in production");
   await initializeGrowthSchema();
-  for (let i = 0; i < 3; i++) {
+   for (let i = 0; i < 4; i++) {
     const [row] = await db.insert(usersTable).values({
       clerkUserId: `${tag}_${i}`, username: `${tag}_${i}`, displayName: "Growth test fixture",
     }).returning();
@@ -67,6 +67,46 @@ afterAll(async () => {
 });
 
 describe("Tu camino API y canjes transaccionales", () => {
+  it("reinicia solo Tu camino sin recalcular el historial anterior ni retirar derechos ganados", async () => {
+    const resetUser = userIds[3];
+    const catalog = await readGrowthCatalog();
+    const history = Array.from({ length: 54 }, (_, i) => ({
+      userId: resetUser, clientEventId: `${tag}_reset_history_${i}`,
+      sessionId: "test-only", categoryId: "test", categoryLabel: "Test",
+      playedAt: new Date(Date.UTC(2025, 7, i + 1, 16)), minutes: 3,
+    }));
+    await db.insert(playbackHistoryTable).values(history);
+    const original = await getGrowthProgress(resetUser);
+    expect(original.totalActiveDays).toBe(54);
+    expect(original.currentStage?.id).toBe("expansion");
+    const withAvatar = await unlockGrowthAvatar(resetUser, avatarIds[0]);
+    await db.update(growthWalletsTable).set({
+      maxDays: 16, baseDays: 16, countFromDay: "2026-09-01",
+      reached: catalog.stages.filter(stage => stage.startDay <= 16),
+    }).where(eq(growthWalletsTable.userId, resetUser));
+    const reset = await getGrowthProgress(resetUser);
+    expect(reset.totalActiveDays).toBe(16);
+    expect(reset.currentStage?.id).toBe("crecimiento");
+    expect(reset.reachedStageIds).not.toContain("expansion");
+    expect(reset.unlockedAvatarIds).toEqual(withAvatar.unlockedAvatarIds);
+    expect(reset.balance).toBe(withAvatar.balance);
+    expect(reset.grantedRewards).toEqual(withAvatar.grantedRewards);
+    expect(await db.select().from(playbackHistoryTable).where(eq(playbackHistoryTable.userId, resetUser))).toHaveLength(54);
+    // Syncing an old day later must not undo the scoped reset.
+    await db.insert(playbackHistoryTable).values({
+      ...history[0], clientEventId: `${tag}_old_backfill`, playedAt: new Date("2025-12-01T16:00:00Z"),
+    });
+    expect((await getGrowthProgress(resetUser)).totalActiveDays).toBe(16);
+    await db.insert(playbackHistoryTable).values({
+      ...history[0], clientEventId: `${tag}_new_day`, playedAt: new Date("2026-09-01T16:00:00Z"),
+    });
+    expect((await getGrowthProgress(resetUser)).totalActiveDays).toBe(17);
+    // Another listen on the same Chilean day adds no extra day.
+    await db.insert(playbackHistoryTable).values({
+      ...history[0], clientEventId: `${tag}_same_day`, playedAt: new Date("2026-09-01T18:00:00Z"),
+    });
+    expect((await getGrowthProgress(resetUser)).totalActiveDays).toBe(17);
+  });
   it("protege saldo, guardado Admin y canjes", async () => {
     auth.actor = null;
     expect((await request(app).get("/me/growth")).status).toBe(401);
