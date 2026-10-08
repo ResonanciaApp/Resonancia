@@ -3,11 +3,11 @@ name: Bloqueo editorial de avatares
 description: Alcance del control manual de avatares de Perfil y conservación de elecciones existentes.
 ---
 
-El bloqueo de avatares es editorial y manual desde Admin. No activa desbloqueos automáticos por Tu camino, rachas o membresía, ni afecta a portadas de Mezclas, Playlists o Mi viaje interior.
+El bloqueo global de avatares es editorial y manual desde Admin. La gamificación de Tu camino, autorizada posteriormente, permite ganar cupos y canjearlos por autorizaciones individuales sobre avatares bloqueados de Perfil; no modifica su bloqueo global ni afecta a portadas de Mezclas, Playlists o Mi viaje interior.
 
-**Why:** El usuario pidió poder bloquear y desbloquear las cards de Avatares de Perfil; la tarea aprobada excluye expresamente los desbloqueos por progreso y cambios a otras colecciones.
+**Why:** La primera petición era un control editorial manual. El 8 de octubre de 2026 el usuario amplió el alcance a recompensas reales: cada usuario elige qué avatares desbloquear del pool bloqueado con la cantidad concedida por cada etapa.
 
-**How to apply:** Mantener la disponibilidad editorial independiente de las promesas visuales de recompensas de Tu camino hasta que el usuario pida conectar ambas.
+**How to apply:** Mantener el estado editorial separado de los derechos individuales; canjear un avatar no lo libera para todos ni altera su orden. Conservar las elecciones ya confirmadas y no extender estos derechos a otras colecciones.
 
 Las cards de Avatares de Perfil del Admin deben conservar su presentación de tarjetas horizontales apiladas verticalmente, no un carrusel.
 

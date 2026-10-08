@@ -9,6 +9,12 @@ La administración editorial de Tu camino debe permitir añadir y quitar etapas 
 
 **How to apply:** Las líneas y círculos acompañan automáticamente la estructura editorial. Conectar el progreso a días activos acumulados y las recompensas a recursos reales, no solo textos; conservar las etapas e imágenes originales como contenido inicial. El progreso alcanzado no retrocede cuando se corta una racha.
 
+Los candados conceden cantidades de avatares de Perfil a elección del usuario, no avatares predeterminados por etapa. Inicialmente cada candado concede 5; Admin puede configurar cuántos concede cada uno. La elección se hace de todo el pool de avatares bloqueados.
+
+**Why:** El usuario definió explícitamente este sistema el 8 de octubre de 2026 y dejó fuera de alcance el diseño de la pantalla que se abrirá al subir de nivel.
+
+**How to apply:** Separar cupos ganados de avatares elegidos; no repartir lotes automáticamente ni fijar 50 avatares en los textos. Permitir el canje funcional usando el selector existente, sin inventar una pantalla automática de premios. El bloqueo editorial global puede coexistir con un desbloqueo individual ganado.
+
 En Perfil, la sección del banner de Intención se titula «Tu camino», con la misma tipografía y alineación del encabezado de Puntos creatividad. El nombre de la etapa «Intención» permanece dentro del banner.
 
 **Why:** El usuario pidió añadir el título de sección tomando Puntos creatividad como referencia, no renombrar la etapa.
@@ -75,11 +81,11 @@ En desarrollo, todas las imágenes del recorrido disparadas a la vez por el tún
 
 **How to apply:** Si se agregan ilustraciones o vuelve a faltar arte, distinguir un timeout de red de un archivo inexistente; evitar que el timeline inicie todas las descargas remotas al mismo tiempo.
 
-Por ahora, mostrar **solo Intención (nivel 0) activa**, con el punto morado opaco y luminoso; Semilla y todos los niveles siguientes quedan apagados, sin importar los días registrados. La píldora de días conserva el morado de las demás píldoras incluso para la etapa activa. Este es un estado temporal para evaluar el diseño, no un cambio de criterio para el futuro.
+La vista previa inicial mostraba **solo Intención (nivel 0) activa**, sin importar los días registrados. Esa restricción temporal queda reemplazada por la autorización de gamificación real; la píldora de días conserva el morado de las demás píldoras incluso para la etapa activa.
 
 **Why:** El usuario confirmó explícitamente que están probando el diseño, no la funcionalidad todavía; corrigió la vista previa para trasladar el punto dorado de Semilla a Intención y pidió que la píldora activa nunca cambiara a dorado.
 
-**How to apply:** No reconectar las etapas a estadísticas hasta que se apruebe la dirección visual y el usuario pida activar el progreso. En ese momento usar los días activos acumulados no consecutivos acordados, sin tomar la racha como sustituto ni cambiar a dorado la píldora de días.
+**How to apply:** Al conectar el progreso real autorizado, usar los días activos acumulados no consecutivos acordados, sin tomar la racha como sustituto ni cambiar a dorado la píldora de días.
 
 En el recorrido, píldora, título, descripción y avisos de recompensa son un único bloque textual por nivel. Sus desplazamientos horizontales no deben mover las ilustraciones, los puntos ni la línea.
 
@@ -109,7 +115,7 @@ Dentro de la ventana, usar el degradado completo del tema. Florecimiento y sus n
 
 **Why:** El usuario pidió el fondo completo del tema, la segunda etapa plegada inicialmente y eliminó las animaciones de los niveles y las etiquetas numéricas. Los cambios de apertura no deben reintroducir animaciones de las filas.
 
-**How to apply:** No condicionar títulos o niveles del recorrido a eventos de scroll ni a mediciones de visibilidad; mostrarlos inmediatamente al abrir o expandir, manteniendo solo Intención como nivel activo hasta que se solicite la funcionalidad.
+**How to apply:** No condicionar títulos o niveles del recorrido a eventos de scroll ni a mediciones de visibilidad; mostrarlos inmediatamente al abrir o expandir. La etapa activa corresponde al progreso real cuando se conecte la funcionalidad autorizada.
 
 La ventana que se abre desde Intención en Perfil («Tu camino») debe abrirse a pantalla completa, como Sistema de rachas, no como un panel parcial de temporizador.
 
@@ -121,7 +127,7 @@ Los avisos de avatares de Semilla, Crecimiento, Vegetación y Expansión son men
 
 **Why:** Tras probar el loto y una frase partida, el usuario pidió eliminar la imagen en todas las etapas, alinear candado y texto en una sola línea y aumentar el candado 3 puntos. Esto reemplaza expresamente el diseño anterior con el candado superpuesto a la imagen.
 
-**How to apply:** Mantener los cuatro avisos desactivados hasta que se pida implementar recompensas; no añadir avisos a los demás niveles. Atenuar candado y texto juntos una sola vez fuera de la etapa actual. Conservar la alineación izquierda con la descripción y adaptar el texto a una sola línea sin reintroducir arte.
+**How to apply:** Conservar los cuatro avisos como configuración inicial; los nuevos candados se añaden desde Admin. Atenuar candado y texto juntos una sola vez en etapas pendientes. Conservar la alineación izquierda con la descripción y adaptar el texto a una sola línea sin reintroducir arte; su cantidad viene de la configuración, no del antiguo texto fijo.
 
 Expansión conserva únicamente el aviso de avatares. No mostrar el antiguo logro «Comparte sin sello de agua en Mi muro expansivo», su icono, su candado ni su texto accesible.
 
