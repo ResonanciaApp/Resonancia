@@ -209,13 +209,15 @@ export function GrowthLevelPreviewCard({
             {!sectionTitle && dayPill}
             {sectionTitle ? (
               <View testID="profile-intention-name-with-lotus" style={styles.profileIntentionNameRow}>
-                <MaterialCommunityIcons
-                  name="spa"
-                  size={16}
-                  color={GROWTH_COLORS.current}
-                  accessibilityElementsHidden
-                  importantForAccessibility="no"
-                />
+                <View testID="profile-intention-lotus-background" pointerEvents="none" style={styles.profileIntentionLotusBackground}>
+                  <MaterialCommunityIcons
+                    name="spa"
+                    size={18}
+                    color={GROWTH_COLORS.current}
+                    accessibilityElementsHidden
+                    importantForAccessibility="no"
+                  />
+                </View>
                 {name}
               </View>
             ) : name}
@@ -533,15 +535,16 @@ const styles = StyleSheet.create({
   titledPreviewCard: { flexDirection: "column", alignItems: "stretch", paddingTop: 18, paddingBottom: 4 },
   previewSectionHeader: { flexDirection: "row", alignItems: "center", justifyContent: "space-between", minHeight: 25 },
   previewSectionTitle: { fontFamily: "Manrope", fontSize: 16, fontWeight: "600" },
-  previewViewAll: { fontFamily: "Manrope", fontSize: 13, fontWeight: "400" },
+  previewViewAll: { fontFamily: "Manrope", fontSize: 11, fontWeight: "400" },
   titledPreviewStory: { transform: [{ translateY: -3 }] },
-  previewContentRow: { flexDirection: "row", alignItems: "center", gap: 12, transform: [{ translateY: -4 }] },
+  previewContentRow: { flexDirection: "row", alignItems: "center", gap: 12, transform: [{ translateY: -4 }, { translateX: -8 }] },
   canonicalPreviewVerticalInsets: { paddingTop: 20, paddingBottom: 20, marginVertical: 2, alignItems: "center" },
   canonicalPreviewCopy: { minHeight: 100, justifyContent: "center", gap: 10 },
   canonicalPreviewName: { marginBottom: 0, fontSize: 18, lineHeight: 23 },
   canonicalPreviewPill: { marginBottom: 0, alignSelf: "center", flexDirection: "row", alignItems: "center", gap: 4 },
   canonicalPreviewTitleRow: { flexDirection: "column", alignItems: "flex-start", gap: 10 },
   profileIntentionNameRow: { flexDirection: "row", alignItems: "center", gap: 6 },
+  profileIntentionLotusBackground: { width: 26, height: 26, borderRadius: 13, backgroundColor: "rgba(255,255,255,0.1)", alignItems: "center", justifyContent: "center" },
   previewCopy: { flex: 1, minWidth: 0 },
   previewStory: { fontFamily: "Manrope", fontSize: 11, lineHeight: 16 },
   section: {

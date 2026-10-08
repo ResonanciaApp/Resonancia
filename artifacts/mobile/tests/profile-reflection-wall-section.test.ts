@@ -132,9 +132,22 @@ test("Tu camino lifts only its content row four pixels and trims eight pixels of
   const card = style("GrowthJourney", "titledPreviewCard");
   assert.equal(card.paddingTop, 18);
   assert.equal(card.paddingBottom, 12 - 8);
-  assert.deepEqual(style("GrowthJourney", "previewContentRow").transform, [{ translateY: -4 }]);
+  assert.deepEqual(style("GrowthJourney", "previewContentRow").transform, [{ translateY: -4 }, { translateX: -8 }]);
   assert.equal(style("GrowthJourney", "previewSectionHeader").transform, undefined);
   assert.match(source("../components/GrowthJourney.tsx"), /<View style=\{styles\.previewContentRow\}>\{previewContent\}<\/View>/);
+});
+
+test("Tu camino uses the smaller caption and stage title with a larger gold lotus on a translucent circular background", () => {
+  assert.equal(style("GrowthJourney", "previewViewAll").fontSize, 13 - 2);
+  assert.match(source("../components/ProfileScreenBase.tsx"), /sectionTitle="Tu camino" titleFontSize=\{17\}/);
+  const circle = style("GrowthJourney", "profileIntentionLotusBackground");
+  assert.equal(circle.width, circle.height);
+  assert.equal(Number(circle.borderRadius), Number(circle.width) / 2);
+  assert.equal(circle.backgroundColor, "rgba(255,255,255,0.1)");
+  assert.equal(circle.opacity, undefined, "the gold lotus remains opaque");
+  assert.equal(circle.alignItems, "center");
+  assert.equal(circle.justifyContent, "center");
+  assert.match(source("../components/GrowthJourney.tsx"), /testID="profile-intention-lotus-background" pointerEvents="none"[\s\S]*?name="spa"\s*size=\{18\}\s*color=\{GROWTH_COLORS\.current\}/);
 });
 
 test("Perfil header controls take touch priority over the lifted avatar without moving either", () => {
