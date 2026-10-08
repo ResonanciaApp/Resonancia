@@ -53,6 +53,19 @@ interface ProfileUpdate {
   photoUri?: string | null;
 }
 
+function applyProfileUpdate(profile: UserProfile, fields: ProfileUpdate): UserProfile {
+  return {
+    ...profile,
+    ...(fields.username !== undefined ? { username: fields.username.trim() || DEFAULT_PROFILE.username } : {}),
+    ...(fields.lastName !== undefined ? { lastName: fields.lastName.trim() } : {}),
+    ...(fields.location !== undefined ? { location: fields.location.trim() } : {}),
+    ...(fields.description !== undefined ? { description: limitProfileDescription(fields.description.trim()) } : {}),
+    ...(fields.lifeMotto !== undefined ? { lifeMotto: fields.lifeMotto.replace(/\r?\n/g, " ").trim() } : {}),
+    ...(fields.avatarPresetId !== undefined ? { avatarPresetId: fields.avatarPresetId } : {}),
+    ...(fields.photoUri !== undefined ? { photoUri: fields.photoUri } : {}),
+  };
+}
+
 interface UserProfileContextValue extends UserProfile {
   /** true una vez que se intentó cargar el perfil desde AsyncStorage. */
   profileLoaded: boolean;
@@ -61,6 +74,8 @@ interface UserProfileContextValue extends UserProfile {
   setLocation: (v: string) => void;
   setDescription: (v: string) => void;
   updateProfile: (fields: ProfileUpdate) => void;
+  /** Explicit form saves resolve only after local storage confirms the write. */
+  saveProfile: (fields: ProfileUpdate) => Promise<void>;
   setPhotoUri: (uri: string | null) => void;
   setAvatarPresetId: (id: string | null) => void;
   setExpansorId: (id: string | null) => void;
@@ -118,18 +133,18 @@ export function UserProfileProvider({ children }: { children: React.ReactNode })
 
   const updateProfile = useCallback(
     (fields: ProfileUpdate) => {
-      persist({
-        ...profile,
-        ...(fields.username !== undefined ? { username: fields.username.trim() || DEFAULT_PROFILE.username } : {}),
-        ...(fields.lastName !== undefined ? { lastName: fields.lastName.trim() } : {}),
-        ...(fields.location !== undefined ? { location: fields.location.trim() } : {}),
-        ...(fields.description !== undefined ? { description: limitProfileDescription(fields.description.trim()) } : {}),
-        ...(fields.lifeMotto !== undefined ? { lifeMotto: fields.lifeMotto.replace(/\r?\n/g, " ").trim() } : {}),
-        ...(fields.avatarPresetId !== undefined ? { avatarPresetId: fields.avatarPresetId } : {}),
-        ...(fields.photoUri !== undefined ? { photoUri: fields.photoUri } : {}),
-      });
+      persist(applyProfileUpdate(profile, fields));
     },
     [profile, persist],
+  );
+
+  const saveProfile = useCallback(
+    async (fields: ProfileUpdate) => {
+      const next = applyProfileUpdate(profile, fields);
+      await AsyncStorage.setItem(STORAGE_KEY, JSON.stringify(next));
+      setProfile(next);
+    },
+    [profile],
   );
 
   const setPhotoUri = useCallback(
@@ -181,6 +196,7 @@ export function UserProfileProvider({ children }: { children: React.ReactNode })
         setLocation,
         setDescription,
         updateProfile,
+        saveProfile,
         setPhotoUri,
         setAvatarPresetId,
         setExpansorId,

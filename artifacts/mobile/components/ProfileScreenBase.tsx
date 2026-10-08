@@ -319,12 +319,10 @@ export function ProfileScreenBase({
     avatarPresetId,
     expansorId,
     updateProfile,
+    saveProfile,
     setPhotoUri,
-    setAvatarPresetId,
   } = useUserProfile();
   const { items: profileCatalog, refresh: refreshProfileCatalog } = useCoverPresetCatalogState("profile");
-  const [savingAvatar, setSavingAvatar] = useState(false);
-  const savingAvatarRef = useRef(false);
 
   const resourceBlockBackground = "rgba(0,0,0,0.16)";
   const libraryHeaderButtonBackground = getLibraryTabSurface(activeSceneId);
@@ -575,26 +573,40 @@ export function ProfileScreenBase({
   const [accountName, setAccountName] = useState(username);
   const [accountDescription, setAccountDescription] = useState(description);
   const [accountLifeMotto, setAccountLifeMotto] = useState(lifeMotto);
+  const [accountPhotoUri, setAccountPhotoUri] = useState(photoUri);
+  const [accountAvatarPresetId, setAccountAvatarPresetId] = useState(selectedProfilePreset?.id ?? avatarPresetId);
+  const accountSelectedProfilePreset = accountAvatarPresetId
+    ? profileCatalog.find((preset) => preset.id === accountAvatarPresetId || preset.key === accountAvatarPresetId || `profile:${preset.key}` === accountAvatarPresetId)
+    : undefined;
   const [accountAction, setAccountAction] = useState<"delete" | null>(null);
+  const [accountSaving, setAccountSaving] = useState(false);
+  const accountSavingRef = useRef(false);
+  const accountClosedRef = useRef(false);
   const [accountPhotoPickerVisible, setAccountPhotoPickerVisible] = useState(false);
   const accountAvatarGridRef = useRef<FlatList<(typeof profileCatalog)[number]>>(null);
   const [accountPhotoLibraryPending, setAccountPhotoLibraryPending] = useState(false);
-  const accountToastOpacity = useRef(new Animated.Value(0)).current;
-  const accountToastY = useRef(new Animated.Value(12)).current;
+  useEffect(() => {
+    accountClosedRef.current = false;
+    return () => { accountClosedRef.current = true; };
+  }, []);
 
   useEffect(() => {
     if (accountMode) {
       setAccountName(username);
       setAccountDescription(limitProfileDescription(description));
       setAccountLifeMotto(lifeMotto);
+      setAccountPhotoUri(photoUri);
+      setAccountAvatarPresetId(selectedProfilePreset?.id ?? avatarPresetId);
     }
-  }, [accountMode, username, description, lifeMotto]);
+  }, [accountMode, username, description, lifeMotto, photoUri, avatarPresetId]);
 
-  const accountSaveDisabled = Boolean(accountAction) || (
-    accountName.trim() === username.trim()
-    && accountDescription.trim() === description.trim()
-    && accountLifeMotto.trim() === lifeMotto.trim()
-  );
+  const accountAvatarChanged = accountPhotoUri !== photoUri
+    || (accountSelectedProfilePreset?.id ?? accountAvatarPresetId) !== (selectedProfilePreset?.id ?? avatarPresetId);
+  const accountHasChanges = accountAvatarChanged
+    || accountName.trim() !== username.trim()
+    || accountDescription.trim() !== description.trim()
+    || accountLifeMotto.trim() !== lifeMotto.trim();
+  const accountSaveDisabled = accountSaving || Boolean(accountAction) || !accountHasChanges;
 
   const openEdit = () => {
     setEditNombre(username);
@@ -615,49 +627,65 @@ export function ProfileScreenBase({
     setEditVisible(false);
   };
 
-  const saveAccount = () => {
-    if (accountSaveDisabled) return;
-    updateProfile({
-      username: accountName,
-      description: limitProfileDescription(accountDescription).trim(),
-      lifeMotto: accountLifeMotto,
-    });
+  const closeAccount = () => {
+    if (accountClosedRef.current) return;
+    accountClosedRef.current = true;
+    if (onBack) onBack();
+    else router.back();
+  };
+
+  const requestCloseAccount = () => {
+    if (accountSavingRef.current || accountClosedRef.current) return;
+    if (!accountHasChanges) {
+      closeAccount();
+      return;
+    }
+    Alert.alert(
+      "¿Estás seguro/a de que quieres descargar los cambios?",
+      undefined,
+      [
+        { text: "Continuar editando", style: "cancel" },
+        { text: "Descartar", style: "destructive", onPress: closeAccount },
+      ],
+      { cancelable: false },
+    );
+  };
+
+  const saveAccount = async () => {
+    if (accountSaveDisabled || accountSavingRef.current || accountClosedRef.current) return;
+    accountSavingRef.current = true;
+    setAccountSaving(true);
+    try {
+      let confirmedAvatarPresetId = accountAvatarPresetId;
+      let avatarConfirmation;
+      if (accountAvatarChanged && accountAvatarPresetId) {
+        // Editorial locks are confirmed at Save, never while previewing a draft.
+        avatarConfirmation = await updateMe({ avatarPresetId: accountAvatarPresetId });
+        confirmedAvatarPresetId = avatarConfirmation.avatarPresetId ?? null;
+      }
+      await saveProfile({
+        username: accountName,
+        description: limitProfileDescription(accountDescription).trim(),
+        lifeMotto: accountLifeMotto,
+        ...(accountAvatarChanged ? { avatarPresetId: confirmedAvatarPresetId, photoUri: accountPhotoUri } : {}),
+      });
+      if (avatarConfirmation) {
+        qc.setQueryData(getGetMeQueryKey(), avatarConfirmation);
+        void qc.invalidateQueries();
+      }
+    } catch {
+      if (!accountClosedRef.current) {
+        Alert.alert("No se pudo guardar", "No se pudo completar el guardado. Inténtalo nuevamente.");
+        if (accountAvatarChanged && accountAvatarPresetId) void refreshProfileCatalog();
+      }
+      return;
+    } finally {
+      accountSavingRef.current = false;
+      if (!accountClosedRef.current) setAccountSaving(false);
+    }
+    if (accountClosedRef.current) return;
     Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success);
-    accountToastOpacity.stopAnimation();
-    accountToastY.stopAnimation();
-    accountToastOpacity.setValue(0);
-    accountToastY.setValue(12);
-    Animated.sequence([
-      Animated.parallel([
-        Animated.timing(accountToastOpacity, {
-          toValue: 1,
-          duration: 220,
-          easing: Easing.out(Easing.quad),
-          useNativeDriver: true,
-        }),
-        Animated.timing(accountToastY, {
-          toValue: 0,
-          duration: 220,
-          easing: Easing.out(Easing.quad),
-          useNativeDriver: true,
-        }),
-      ]),
-      Animated.delay(1800),
-      Animated.parallel([
-        Animated.timing(accountToastOpacity, {
-          toValue: 0,
-          duration: 260,
-          easing: Easing.in(Easing.quad),
-          useNativeDriver: true,
-        }),
-        Animated.timing(accountToastY, {
-          toValue: 8,
-          duration: 260,
-          easing: Easing.in(Easing.quad),
-          useNativeDriver: true,
-        }),
-      ]),
-    ]).start();
+    closeAccount();
   };
 
   const performAccountDeletion = async () => {
@@ -728,7 +756,18 @@ export function ProfileScreenBase({
   };
 
   // ── Photo picker ──────────────────────────────────────────────────────────
+  const applySelectedPhoto = (uri: string) => {
+    if (accountMode) {
+      if (accountClosedRef.current || accountSavingRef.current) return;
+      setAccountPhotoUri(uri);
+      setAccountAvatarPresetId(null);
+    } else {
+      setPhotoUri(uri);
+    }
+  };
+
   const pickPhoto = async () => {
+    if (accountMode && (accountClosedRef.current || accountSavingRef.current)) return;
     const { status } = await ImagePicker.requestMediaLibraryPermissionsAsync();
     if (status !== "granted") {
       Alert.alert("Permiso necesario", "Necesitamos acceso a tu galería para cambiar la foto.");
@@ -741,45 +780,32 @@ export function ProfileScreenBase({
       quality: 0.8,
     });
     if (!result.canceled && result.assets[0]) {
+      if (accountMode && accountClosedRef.current) return;
       const tempUri = result.assets[0].uri;
       if (Platform.OS === "web") {
         try {
           const dataUrl = await resizeImageForWeb(tempUri, 320);
-          setPhotoUri(dataUrl);
+          applySelectedPhoto(dataUrl);
         } catch {
-          setPhotoUri(tempUri);
+          applySelectedPhoto(tempUri);
         }
       } else {
         try {
           const src = new FSFile(tempUri);
           const dest = new FSFile(Paths.document, buildLocalAvatarFilename(tempUri, randomUUID()));
           src.copy(dest);
-          setPhotoUri(dest.uri);
+          applySelectedPhoto(dest.uri);
         } catch {
-          setPhotoUri(tempUri);
+          applySelectedPhoto(tempUri);
         }
       }
     }
   };
 
-  const pickAccountAvatarPreset = async (preset: (typeof profileCatalog)[number]) => {
-    if (preset.isLocked || savingAvatarRef.current) return;
-    savingAvatarRef.current = true;
-    setSavingAvatar(true);
-    try {
-      // Confirm before persisting locally so a freshly locked avatar cannot
-      // become a pending offline selection.
-      const saved = await updateMe({ avatarPresetId: preset.id });
-      qc.setQueryData(getGetMeQueryKey(), saved);
-      setAvatarPresetId(saved.avatarPresetId ?? null);
-      void qc.invalidateQueries();
-    } catch {
-      Alert.alert("Avatar no disponible", "No se pudo elegir este avatar. Puede estar bloqueado o no haber conexión.");
-      await refreshProfileCatalog();
-    } finally {
-      savingAvatarRef.current = false;
-      setSavingAvatar(false);
-    }
+  const pickAccountAvatarPreset = (preset: (typeof profileCatalog)[number]) => {
+    if (preset.isLocked || accountSavingRef.current || accountClosedRef.current) return;
+    setAccountAvatarPresetId(preset.id);
+    setAccountPhotoUri(null);
   };
 
   useEffect(() => {
@@ -939,12 +965,13 @@ export function ProfileScreenBase({
           <View style={[styles.stickyHeader, { paddingTop: topPad + 8 }]}>
             <View testID="account-header-actions" style={[styles.stickyHeaderRow, styles.libraryTabHeaderRow]}>
               <Pressable
-                onPress={() => (onBack ? onBack() : router.back())}
+                onPress={requestCloseAccount}
                 hitSlop={8}
                 style={styles.accountBackButton}
                 accessibilityRole="button"
                 accessibilityLabel="Cerrar edición"
                 testID="account-close"
+                disabled={accountSaving}
               >
                 <Feather
                   name="x"
@@ -982,14 +1009,15 @@ export function ProfileScreenBase({
             >
               <Pressable
                 onPress={() => setAccountPhotoPickerVisible(true)}
+                disabled={accountSaving}
                 style={({ pressed }) => [styles.accountAvatarButton, pressed && styles.accountPressed]}
                 accessibilityRole="button"
                 accessibilityLabel="Cambiar foto de perfil"
               >
-                {photoUri ? (
-                  <Image source={{ uri: photoUri }} style={styles.accountAvatar} contentFit="cover" />
-                ) : selectedProfilePreset ? (
-                  <Image source={selectedProfilePreset.source} style={styles.accountAvatar} contentFit="cover" />
+                {accountPhotoUri ? (
+                  <Image source={{ uri: accountPhotoUri }} style={styles.accountAvatar} contentFit="cover" />
+                ) : accountSelectedProfilePreset ? (
+                  <Image source={accountSelectedProfilePreset.source} style={styles.accountAvatar} contentFit="cover" />
                 ) : (
                   <View style={[styles.accountAvatar, styles.accountAvatarFallback, { backgroundColor: colors.secondary }]}>
                     <Feather name="user" size={34} color={colors.primary} />
@@ -1007,6 +1035,7 @@ export function ProfileScreenBase({
                 </Text>
                 <TextInput
                   value={accountName}
+                  editable={!accountSaving}
                   onChangeText={setAccountName}
                   placeholder="Nombre del usuario"
                   placeholderTextColor={colors.mutedForeground}
@@ -1021,6 +1050,7 @@ export function ProfileScreenBase({
                 <TextInput
                   testID="account-life-motto-input"
                   value={accountLifeMotto}
+                  editable={!accountSaving}
                   onChangeText={setAccountLifeMotto}
                   placeholder="Tu lema de vida"
                   placeholderTextColor={colors.mutedForeground}
@@ -1035,6 +1065,7 @@ export function ProfileScreenBase({
                 <TextInput
                   testID="account-description-input"
                   value={accountDescription}
+                  editable={!accountSaving}
                   onChangeText={(text) => setAccountDescription(limitProfileDescription(text))}
                   placeholder="Una breve descripción sobre ti"
                   placeholderTextColor={colors.mutedForeground}
@@ -1048,7 +1079,7 @@ export function ProfileScreenBase({
 
               <Pressable
                 onPress={handleDeleteAccount}
-                disabled={Boolean(accountAction)}
+                disabled={Boolean(accountAction) || accountSaving}
                 style={({ pressed }) => [
                   styles.accountDeleteButton,
                   { opacity: pressed || accountAction ? 0.65 : 1 },
@@ -1059,20 +1090,6 @@ export function ProfileScreenBase({
 
             </ScrollView>
           </KeyboardAvoidingView>
-          <Animated.View
-            pointerEvents="none"
-            style={[
-              styles.accountSavedToast,
-              {
-                bottom: bottomPad + 24,
-                opacity: accountToastOpacity,
-                transform: [{ translateY: accountToastY }],
-              },
-            ]}
-          >
-            <MaterialCommunityIcons name="ticket-outline" size={20} color="#A777D0" />
-            <Text style={styles.accountSavedToastText}>¡Datos actualizados exitosamente!</Text>
-          </Animated.View>
           <Modal
             visible={accountPhotoPickerVisible}
             animationType="slide"
@@ -1123,15 +1140,15 @@ export function ProfileScreenBase({
                 </Pressable>
               </View>
               <View style={styles.accountCoverPreviewSlot}>
-                {selectedProfilePreset ? (
+                {accountSelectedProfilePreset ? (
                   <Image
-                    source={selectedProfilePreset.source}
+                    source={accountSelectedProfilePreset.source}
                     style={styles.accountCoverPreview}
                     contentFit="cover"
                     transition={IMAGE_TRANSITION}
                   />
-                ) : photoUri ? (
-                  <Image source={{ uri: photoUri }} style={styles.accountCoverPreview} contentFit="cover" transition={IMAGE_TRANSITION} />
+                ) : accountPhotoUri ? (
+                  <Image source={{ uri: accountPhotoUri }} style={styles.accountCoverPreview} contentFit="cover" transition={IMAGE_TRANSITION} />
                 ) : (
                   <View
                     style={[
@@ -1154,14 +1171,14 @@ export function ProfileScreenBase({
                 contentContainerStyle={styles.accountCoverPresetGridContent}
                 columnWrapperStyle={styles.accountCoverPresetGridRow}
                 renderItem={({ item: preset }) => {
-                  const selected = preset.id === avatarPresetId || preset.key === avatarPresetId || `profile:${preset.key}` === avatarPresetId;
+                   const selected = preset.id === (accountSelectedProfilePreset?.id ?? accountAvatarPresetId);
                   return (
                     <Pressable
                       onPress={() => void pickAccountAvatarPreset(preset)}
                       accessibilityRole="button"
                       accessibilityLabel={`Avatar: ${preset.label}${preset.isLocked ? ", bloqueado" : ""}`}
-                      accessibilityState={{ selected, disabled: !!preset.isLocked || savingAvatar }}
-                      disabled={!!preset.isLocked || savingAvatar}
+                       accessibilityState={{ selected, disabled: !!preset.isLocked || accountSaving }}
+                       disabled={!!preset.isLocked || accountSaving}
                       style={({ pressed }) => [
                         styles.accountCoverPresetFrame,
                         selected && styles.accountCoverPresetFrameSelected,
@@ -2232,12 +2249,12 @@ const styles = StyleSheet.create({
   },
   accountHeaderSpacer: { width: 43, height: 43 },
   accountForm: {
-    paddingHorizontal: 24,
+    paddingHorizontal: 16,
     paddingTop: 34,
     gap: 26,
   },
   accountAvatarButton: {
-    alignSelf: "center",
+    alignSelf: "flex-start",
     position: "relative",
     marginBottom: 6,
   },
@@ -2446,23 +2463,6 @@ const styles = StyleSheet.create({
     fontWeight: "700",
     color: "#E58B8B",
   },
-  accountSavedToast: {
-    position: "absolute",
-    alignSelf: "center",
-    flexDirection: "row",
-    alignItems: "center",
-    gap: 8,
-    paddingHorizontal: 16,
-    paddingVertical: 12,
-    borderRadius: 999,
-    backgroundColor: "rgba(18,10,24,0.92)",
-  },
-  accountSavedToastText: {
-    fontFamily: "Manrope",
-    fontSize: 13,
-    fontWeight: "700",
-    color: "#F9F9F9",
-  },
   libActionsPill: {
     position: "absolute",
     right: 12,
@@ -2600,7 +2600,7 @@ const styles = StyleSheet.create({
     borderRadius: 62,
   },
   userName: { fontFamily: "Manrope", fontSize: 24, fontWeight: "700", textAlign: "left", marginTop: 0 },
-  profileLifeMotto: { fontFamily: "Manrope", fontSize: 20, fontWeight: "700", lineHeight: 27, textAlign: "left", alignSelf: "stretch" },
+  profileLifeMotto: { fontFamily: "Manrope", fontSize: 20, fontWeight: "700", lineHeight: 27, textAlign: "left", alignSelf: "stretch", marginTop: 7 },
   profileNameRow: { width: "100%", flexDirection: "row", alignItems: "center" },
   profileNameText: { flex: 1, minWidth: 0 },
   profileDescription: { fontFamily: "Manrope", fontSize: 14, lineHeight: 20, color: "#C4C4C4", textAlign: "left", alignSelf: "stretch" },

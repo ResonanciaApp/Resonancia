@@ -9,8 +9,12 @@ import ts from "typescript";
 const source = readFileSync(new URL("../components/ProfileScreenBase.tsx", import.meta.url), "utf8");
 const ast = ts.createSourceFile("profile.tsx", source, ts.ScriptTarget.Latest, true, ts.ScriptKind.TSX);
 let header: ts.JsxElement | undefined;
+let close = "";
+let requestClose = "";
 const selected: string[] = [];
 function visit(node: ts.Node) {
+  if (ts.isVariableDeclaration(node) && node.name.getText(ast) === "closeAccount") close = node.initializer!.getText(ast);
+  if (ts.isVariableDeclaration(node) && node.name.getText(ast) === "requestCloseAccount") requestClose = node.initializer!.getText(ast);
   if (ts.isJsxElement(node) && node.openingElement.getText(ast).includes('testID="account-header-actions"')) header = node;
   if (ts.isPropertyAssignment(node) && /^(accountBackButton|accountSaveButton.*|stickyHeaderRow|libraryTabHeaderRow)$/.test(node.name.getText(ast))) selected.push(node.getText(ast));
   ts.forEachChild(node, visit);
@@ -19,7 +23,10 @@ visit(ast);
 assert.ok(header);
 const styles = new Function(`return ({${selected.join(",")}});`)();
 const compiled = ts.transpileModule(`return (${header.getText(ast)});`, { compilerOptions: { jsx: ts.JsxEmit.React } }).outputText;
-const factory = new Function("React", "View", "Pressable", "Text", "Feather", "styles", "onBack", "router", "saveAccount", "accountSaveDisabled", compiled);
+const factory = new Function("React", "View", "Pressable", "Text", "Feather", "styles", "onBack", "router", "saveAccount", "accountSaveDisabled",
+  `const accountClosedRef = { current: false }, accountSavingRef = { current: false };
+   const accountHasChanges = false, accountSaving = false;
+   const closeAccount = ${close}; const requestCloseAccount = ${requestClose}; ${compiled}`);
 const flat = (value: any): any => Array.isArray(value) ? Object.assign({}, ...value.map(flat)) : value ?? {};
 const callbacks = new Map<string, () => void>();
 let pressed = false;
@@ -43,6 +50,7 @@ test("edit header has X on the left and one compact 43px Guardar at the right ed
   assert.equal((source.match(/onPress=\{saveAccount\}/g) ?? []).length, 1);
   assert.ok(source.indexOf('testID="account-save"') < source.indexOf("<KeyboardAvoidingView"));
   assert.doesNotMatch(header!.getText(ast), /Editar detalles|Mi cuenta|chevron-left/);
+  assert.match(header!.getText(ast), /onPress=\{requestCloseAccount\}/);
 });
 
 test("Guardar retains disabled, enabled and pressed appearance and X retains both back paths", () => {

@@ -172,6 +172,16 @@ test("motto and description move down seven pixels together in normal flow, keep
   assert.doesNotMatch(source.match(/profileBiography: \{([^}]+)\}/)![1], /transform|position|top:/);
 });
 
+test("motto gains another seven pixels of normal-flow margin and pushes the description after it", () => {
+  const html = render({ lifeMotto: "Mi lema", description: "Mi descripción" });
+  assert.match(html, /data-testid="profile-identity-life-motto"[^>]*data-margin-top="7"/);
+  assert.ok(html.indexOf("Mi lema") < html.indexOf("Mi descripción"));
+  assert.match(source, /profileLifeMotto: \{[^}]*marginTop: 7/);
+  assert.doesNotMatch(source.match(/profileLifeMotto: \{([^}]+)\}/)![1], /transform|position/);
+  assert.equal(source.match(/profileDescription: \{([^}]+)\}/)![1].includes("marginTop"), false,
+    "do not move the description twice; the motto's extra space already pushes it");
+});
+
 test("name and description sit below the avatar with the existing seven-pixel gap plus five more pixels and no account chevron", () => {
   const html = render({ description: "Mi descripción" });
   assert.match(html, /data-testid="profile-identity-title-row" data-direction="row" data-align="center"/);

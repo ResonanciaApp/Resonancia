@@ -28,18 +28,16 @@ function evaluate(expression: ts.Expression, deps: Record<string, unknown>) {
   }).outputText;
   return new Function(...Object.keys(deps), code)(...Object.values(deps));
 }
-function harness(updateMe: (body: unknown) => Promise<unknown>) {
+function harness() {
   const selected: unknown[] = [];
   const alerts: unknown[] = [];
   const saving: unknown[] = [];
   let refreshed = 0;
   const ref = { current: false };
   const pick = evaluate(picker!, {
-    savingAvatarRef: ref, updateMe,
-    setSavingAvatar: (value: unknown) => saving.push(value),
-    qc: { setQueryData() {}, invalidateQueries() {} },
-    getGetMeQueryKey: () => ["me"],
-    setAvatarPresetId: (value: unknown) => selected.push(value),
+    accountSavingRef: ref, accountClosedRef: { current: false },
+    setAccountAvatarPresetId: (value: unknown) => selected.push(value),
+    setAccountPhotoUri: (value: unknown) => saving.push(value),
     Alert: { alert: (...args: unknown[]) => alerts.push(args) },
     refreshProfileCatalog: async () => { refreshed++; },
   });
@@ -47,34 +45,27 @@ function harness(updateMe: (body: unknown) => Promise<unknown>) {
 }
 
 test("locked avatar handler never requests or persists a selection", async () => {
-  const h = harness(async () => { throw new Error("must not call"); });
+  const h = harness();
   await h.pick({ id: "profile:locked", isLocked: true });
   assert.deepEqual(h.selected, []);
   assert.deepEqual(h.saving, []);
 });
 
-test("server rejects a lock added after opening: selection stays unchanged and catalog refreshes", async () => {
-  const h = harness(async () => { throw { data: { code: "AVATAR_LOCKED" } }; });
+test("unlocked avatar choices stage a draft without sending or persisting anything", async () => {
+  const h = harness();
   await h.pick({ id: "profile:one", isLocked: false });
-  assert.deepEqual(h.selected, []);
-  assert.equal(h.alerts.length, 1);
-  assert.equal(h.refreshed(), 1);
-  assert.deepEqual(h.saving, [true, false]);
+  assert.deepEqual(h.selected, ["profile:one"]);
+  assert.equal(h.alerts.length, 0);
+  assert.equal(h.refreshed(), 0);
+  assert.deepEqual(h.saving, [null]);
   assert.equal(h.ref.current, false);
 });
 
-test("network failure does not leave a pending avatar; unlocked success persists only after server confirmation", async () => {
-  const failed = harness(async () => { throw new Error("offline"); });
-  await failed.pick({ id: "profile:one" });
-  assert.deepEqual(failed.selected, []);
-  let resolve!: (value: unknown) => void;
-  const success = harness(() => new Promise((done) => { resolve = done; }));
-  const task = success.pick({ id: "profile:one", isLocked: false });
-  assert.deepEqual(success.selected, []);
-  await success.pick({ id: "profile:two" }); // Duplicate taps are ignored.
-  resolve({ avatarPresetId: "profile:one" });
-  await task;
-  assert.deepEqual(success.selected, ["profile:one"]);
+test("picker cannot modify the draft while Guardar is committing it", async () => {
+  const h = harness();
+  h.ref.current = true;
+  await h.pick({ id: "profile:one", isLocked: false });
+  assert.deepEqual(h.selected, []);
 });
 
 test("actual avatar grid disables locked cards and overlays exact white 40% plus Tu camino's lock", () => {
@@ -89,7 +80,7 @@ test("actual avatar grid disables locked cards and overlays exact white 40% plus
       React, Pressable: "Pressable", Image: "Image", View: "View", MaterialCommunityIcons: "MaterialCommunityIcons",
       styles: { accountAvatarLockedOverlay: overlayStyle },
       StyleSheet: { absoluteFill: { position: "absolute" } },
-      avatarPresetId: null, savingAvatar: false, pickAccountAvatarPreset() {},
+      accountAvatarPresetId: null, accountSelectedProfilePreset: undefined, accountSaving: false, pickAccountAvatarPreset() {},
     });
     const card = render({ item: { id: "profile:one", key: "one", label: "One", isLocked: locked, source: 1 } });
     assert.equal(card.props.disabled, locked);
