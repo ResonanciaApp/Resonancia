@@ -51,7 +51,6 @@ type NativeProps = {
   testID?: string;
   name?: string;
   color?: string;
-  resizeMode?: string;
   source?: number;
   stopOpacity?: number;
   pointerEvents?: string;
@@ -65,7 +64,7 @@ const flattenStyle = (style: unknown): Record<string, unknown> => Array.isArray(
 let capturedOnPress: (() => void) | undefined;
 let capturedViewAllPress: (() => void) | undefined;
 let capturedIntentionPress: (() => void) | undefined;
-const Native = ({ accessibilityLabel, accessibilityRole, children, onPress, style, testID, name, color, source, resizeMode, stopOpacity, pointerEvents, accessibilityState, numberOfLines, adjustsFontSizeToFit }: NativeProps) => {
+const Native = ({ accessibilityLabel, accessibilityRole, children, onPress, style, testID, name, color, source, stopOpacity, pointerEvents, accessibilityState, numberOfLines, adjustsFontSizeToFit }: NativeProps) => {
   const resolvedStyle = flattenStyle(style);
   if (testID === "growth-level-zero-preview") capturedOnPress = onPress;
   if (testID === "profile-growth-view-all") capturedViewAllPress = onPress;
@@ -89,7 +88,6 @@ const Native = ({ accessibilityLabel, accessibilityRole, children, onPress, styl
     "data-transform": resolvedStyle.transform ? JSON.stringify(resolvedStyle.transform) : undefined,
     "data-filter": resolvedStyle.filter,
     "data-source": source,
-    "data-resize-mode": resizeMode,
     "data-opacity": resolvedStyle.opacity,
     "data-pointer-events": pointerEvents,
     "data-disabled": accessibilityState?.disabled,
@@ -142,7 +140,7 @@ const mocks: Record<string, any> = {
     Image: Native,
     Platform: { OS: "web" },
     Pressable: Native,
-    StyleSheet: { create: (styles: unknown) => styles, flatten: (values: unknown[]) => Object.assign({}, ...values.filter(Boolean)), absoluteFillObject: { position: "absolute", top: 0, right: 0, bottom: 0, left: 0 } },
+    StyleSheet: { create: (styles: unknown) => styles, flatten: (values: unknown[]) => Object.assign({}, ...values.filter(Boolean)) },
     Text: Native,
     View: Native,
   },
@@ -521,17 +519,6 @@ test("the detail hero stays unscaled while timeline and profile use smaller fade
   assert.match(fullHero, /data-height="874" data-width="402" data-border-radius="0"/);
   assert.match(fullHero, /data-source="2"/);
   assert.doesNotMatch(fullHero, /data-border-width|data-border-color|data-transform/);
-});
-
-test("fullscreen phase backgrounds use cover without a circle, inset scale or ascent surface", () => {
-  for (const id of ["intencion", "crecimiento", "ascenso-inicio"]) {
-    const html = renderToStaticMarkup(React.createElement(componentModule.exports.GrowthLevelImage, {
-      level: { id, name: id, image: 1 }, background: true,
-    }));
-    assert.match(html, /data-source="1"/);
-    assert.match(html, /data-resize-mode="cover"/);
-    assert.doesNotMatch(html, /data-border-radius|data-transform|data-background/);
-  }
 });
 
 test("all nine pastel stages shrink 10% without a hard frame or changes to ascent", () => {

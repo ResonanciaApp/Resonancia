@@ -53,7 +53,7 @@ function Native(props: any) {
 }
 const native = {
   View: Native, Text: Native, Pressable: Native, ScrollView: Native,
-  StyleSheet: { create: (value: any) => value, absoluteFillObject: { position: "absolute", top: 0, right: 0, bottom: 0, left: 0 }, absoluteFill: { position: "absolute", top: 0, right: 0, bottom: 0, left: 0 } },
+  StyleSheet: { create: (value: any) => value, absoluteFillObject: { position: "absolute", top: 0, right: 0, bottom: 0, left: 0 }, absoluteFill: {} },
   Platform: { get OS() { return platform; } },
    useWindowDimensions: () => ({ width, height }),
 };
@@ -99,8 +99,7 @@ test("every stage uses its own editorial detail, current title and range, includ
     assert.match(html, /Frase editorial/);
     assert.match(html, /Descripción editorial/);
     assert.doesNotMatch(html, /Solo en recorrido|Antes del primer día|Intención/);
-    assert.equal(nodes.get("growth-detail-hero-artwork").background, true);
-    assert.equal(nodes.get("growth-detail-hero-artwork").size, undefined);
+    assert.equal(nodes.get("growth-detail-hero-artwork").size, 266);
     assert.equal(nodes.get("growth-detail-hero-artwork").level.image, newStage.image);
     newStage.name = "Presencia";
     newStage.endDay = 490;
@@ -149,8 +148,7 @@ test("Intención detail uses its actual hero and canonical story, without the da
   assert.doesNotMatch(html, /Semilla|1.?7 días|avatares|sin sello/);
   assert.equal(nodes.get("growth-detail-hero-artwork").level, growthLevels[0]);
   assert.equal(nodes.get("growth-detail-hero-artwork").sourceModule, undefined, "uses the same stage image as Tu camino");
-  assert.equal(nodes.get("growth-detail-hero-artwork").background, true);
-  assert.equal(nodes.get("growth-detail-hero-artwork").size, undefined);
+  assert.equal(nodes.get("growth-detail-hero-artwork").size, 137 * 2);
   assert.match(html, /data-font="CormorantGaramond"/);
   assert.doesNotMatch(html, /PRIMERA ETAPA|Elegir comenzar|growth-stage-detail-help/);
   assert.equal((html.match(/data-icon="spa"/g) ?? []).length, 0, "the removed day pill includes its lotus");
@@ -165,11 +163,10 @@ test("the detail shares the streak screen's theme, safe-area spacing, circular c
       const html = render();
       assert.equal(nodes.get("growth-stage-detail").colors, colors);
       assert.equal(nodes.get("growth-stage-detail").locations, locations);
-       assert.equal(nodes.get("growth-detail-hero-artwork").background, true);
-       assert.equal(nodes.get("growth-detail-hero-artwork").size, undefined);
-       assert.deepEqual(flat(nodes.get("growth-stage-detail-fixed-art").style),
-         { position: "absolute", top: 0, right: 0, bottom: 0, left: 0 });
-       assert.equal(nodes.get("growth-stage-detail-scroll").contentContainerStyle.paddingTop, Math.max(inset, 40) + 84);
+       assert.equal(nodes.get("growth-detail-hero-artwork").size, 274);
+       assert.equal(nodes.get("growth-detail-hero-artwork").height, undefined, "square image, no viewport stretch");
+       assert.equal(flat(nodes.get("growth-stage-detail-fixed-art").style).top, Math.max(inset, 40) + 20);
+       assert.equal(nodes.get("growth-stage-detail-scroll").contentContainerStyle.paddingTop, Math.max(inset, 40) + 20 + 274 + 16);
       assert.match(html, new RegExp(`data-top-padding="${Math.max(inset, 40) + 8}"`));
       const scroll = nodes.get("growth-stage-detail-scroll");
       assert.equal(scroll.bounces, true);
@@ -211,30 +208,9 @@ test("the detail has only one continuous theme background, without opaque hero s
   assert.match(journey, /bloomArt: \{ width: GROWTH_BLOOM_ART_SIZE, height: GROWTH_BLOOM_ART_SIZE/);
 });
 
-test("every phase uses its own fixed fullscreen image under a noninteractive twenty-percent black overlay", () => {
-  for (const level of [...growthLevels, { ...growthLevels[0], id: "editorial-stage", image: "/objects/stage.webp" }]) {
-    levels = [level];
-    try {
-      const html = render({ stageId: level.id });
-      const art = nodes.get("growth-detail-hero-artwork");
-      assert.equal(art.level, level);
-      assert.equal(art.background, true);
-      const overlay = nodes.get("growth-stage-detail-overlay");
-      assert.equal(overlay.pointerEvents, "none");
-      assert.deepEqual(flat(overlay.style), {
-        position: "absolute", top: 0, right: 0, bottom: 0, left: 0,
-        backgroundColor: "rgba(0,0,0,0.2)",
-      });
-      assert.ok(html.indexOf('data-testid="growth-stage-detail-fixed-art"') < html.indexOf('data-testid="growth-stage-detail-overlay"'));
-      assert.ok(html.indexOf('data-testid="growth-stage-detail-overlay"') < html.indexOf('data-testid="growth-stage-detail-scroll"'));
-      assert.ok(html.indexOf('data-testid="growth-stage-detail-scroll"') < html.indexOf('data-testid="growth-stage-detail-fixed-header"'));
-    } finally { levels = growthLevels; }
-  }
-});
-
-test("content starts below the controls with copy below the title", () => {
+test("artwork and title retain their position with copy below the title", () => {
   render();
-  assert.equal(nodes.get("growth-stage-detail-scroll").contentContainerStyle.paddingTop, 124);
+  assert.equal(nodes.get("growth-stage-detail-scroll").contentContainerStyle.paddingTop, 350);
   const block = flat(nodes.get("growth-stage-detail-title-block").style);
   assert.equal(block.gap, 8);
   assert.equal(block.transform, undefined);
@@ -293,15 +269,14 @@ test("artwork is static outside scrolling content and no day pill remains", () =
   assert.doesNotMatch(source, /dayPill|dayLabel|styles\.days|MaterialCommunityIcons/);
 });
 
-test("a fixed alpha mask fades content only near the top, not at the middle of the screen", () => {
+test("a fixed alpha mask progressively hides content as it scrolls into the image, without tinting the background", () => {
   for (const viewportHeight of [812, 874, 1024]) {
     height = viewportHeight;
     render();
     const fade = nodes.get("growth-stage-detail-scroll-fade");
-    assert.equal(nodes.get("growth-stage-detail-scroll").contentContainerStyle.minHeight, undefined);
+    assert.equal(nodes.get("growth-stage-detail-scroll").contentContainerStyle.minHeight, height + 274, "even short descriptions can scroll up towards the image");
     assert.deepEqual(fade.colors, ["transparent", "transparent", "#000000", "#000000"]);
-    assert.deepEqual(fade.locations, [0, 50 / height, 110 / height, 1]);
-    assert.ok(fade.locations[2] < 0.15, "all content below the top region is fully visible");
+    assert.deepEqual(fade.locations, [0, (334 - 48) / height, (334 + 8) / height, 1]);
     assert.equal(fade.pointerEvents, "none");
     assert.equal(flat(fade.style).position, "absolute");
     const mask = nodes.get("growth-stage-detail-content-mask");
