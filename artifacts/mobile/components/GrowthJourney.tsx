@@ -405,7 +405,7 @@ function GrowthRow({
           accessibilityState={{ disabled: true }}
         >
           <View testID={`${level.id}-reward-content`} style={[styles.rewardContent, styles.avatarRewardContent]}>
-          <RewardLock levelId={level.id} color={getPositionedDayGradient(theme.gradient)[0]} unlocked={progress?.grantedRewards.some(grant => grant.rewardId === item.id)} />
+          <RewardLock levelId={level.id} color={getPositionedDayGradient(theme.gradient)[0]} unlocked={status !== "locked" && progress?.grantedRewards.some(grant => grant.rewardId === item.id)} />
           <Text
             style={[styles.rewardText, { color: status === "locked" ? GROWTH_COLORS.muted : colors.mutedForeground }]}
             numberOfLines={1}

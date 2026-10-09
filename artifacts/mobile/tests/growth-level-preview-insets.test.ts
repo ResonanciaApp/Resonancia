@@ -225,6 +225,39 @@ const render = (props: Record<string, unknown> = {}) => renderToStaticMarkup(
   React.createElement(componentModule.exports.GrowthLevelPreviewCard, { onPress: () => {}, ...props }),
 );
 
+test("Future-stage reward locks remain closed after a reset even when historical grants are preserved", () => {
+  const growthMock = mocks["@/context/GrowthContext"];
+  const original = growthMock.useGrowth;
+  const level = {
+    id: "vegetacion", name: "Vegetación", group: "florecimiento",
+    startDay: 36, endDay: 49, image: 1, story: "La práctica sigue creciendo.",
+  };
+  try {
+    for (const rewardId of ["vegetacion-avatars", "another-reward"]) {
+      const progress = {
+        totalActiveDays: 16,
+        grantedRewards: [{ rewardId, amount: 5 }],
+        balance: 5,
+        unlockedAvatarIds: ["previously-chosen-avatar"],
+      };
+      const before = structuredClone(progress);
+      growthMock.useGrowth = () => ({ ...original(), progress });
+      for (const status of ["locked", "current", "reached"]) {
+        const html = renderToStaticMarkup(React.createElement(GrowthRow, {
+          level, status, isLast: true, onPress: () => {},
+        }));
+        const lock = html.match(/<div[^>]*data-testid="vegetacion-reward-lock"[^>]*>/)?.[0] ?? "";
+        const expectedIcon = status !== "locked" && rewardId === "vegetacion-avatars"
+          ? "lock-open-variant" : "lock";
+        assert.match(lock, new RegExp(`data-icon="${expectedIcon}"`));
+        assert.deepEqual(progress, before, "Displaying locks must not revoke grants or avatars");
+      }
+    }
+  } finally {
+    growthMock.useGrowth = original;
+  }
+});
+
 test("Perfil adds Tu camino above Intención with the creativity-points heading style, preserving navigation and other callers", () => {
   let opened = false;
   const html = render({ embedded: true, canonicalVerticalInsets: true, sectionTitle: "Tu camino", titleFontSize: 15, onPress: () => { opened = true; } });

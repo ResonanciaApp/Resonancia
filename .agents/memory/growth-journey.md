@@ -27,6 +27,12 @@ Un reinicio explícitamente autorizado de **solo Tu camino** es una excepción a
 
 **How to apply:** Identificar inequívocamente la cuenta antes de escribir. Separar la base del camino del historial general y empezar a sumar días activos nuevos desde el siguiente día chileno; los demás usuarios conservan su cálculo histórico habitual. No revocar recompensas como efecto implícito del reinicio.
 
+Los candados visuales de una etapa futura permanecen cerrados aunque haya concesiones históricas conservadas tras un reinicio del camino. Una etapa alcanzada puede mostrar el candado abierto si su recompensa ya fue concedida.
+
+**Why:** Las concesiones conservadas hicieron que Vegetación pareciera desbloqueada mientras el camino actual seguía en Crecimiento. Conservar derechos anteriores no significa que la etapa vuelva a estar alcanzada.
+
+**How to apply:** Separar el estado actual de la etapa del historial de premios. Corregir la presentación no autoriza borrar cupos ni avatares; tampoco cambia el criterio de conceder premios al llegar al inicio de la etapa.
+
 En Perfil, la sección del banner de Intención se titula «Tu camino», con la misma tipografía y alineación del encabezado de Puntos creatividad. El nombre de la etapa «Intención» permanece dentro del banner.
 
 **Why:** El usuario pidió añadir el título de sección tomando Puntos creatividad como referencia, no renombrar la etapa.
