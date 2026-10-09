@@ -876,10 +876,11 @@ const styles = StyleSheet.create({
   actionRow: {
     flexDirection: "row",
     gap: 10,
+    marginTop: -3,
   },
   submitButton: {
     flex: 1,
-    minHeight: 48,
+    minHeight: 42,
     borderRadius: 20,
     alignItems: "center",
     justifyContent: "center",

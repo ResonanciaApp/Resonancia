@@ -355,6 +355,20 @@ test("the wall renders all ten brightened stops at equal intervals without chang
   assert.equal(resolve(wall.props.maskElement.props.style).borderRadius, 24);
 });
 
+test("both reflection actions are 6px shorter and move up 3px together", () => {
+  const button = style("InnerSpaceCard", "submitButton");
+  assert.equal(button.minHeight, 48 - 6);
+  assert.equal(button.borderRadius, 20);
+  const row = style("InnerSpaceCard", "actionRow");
+  assert.equal(row.marginTop, -3);
+  assert.equal(row.flexDirection, "row");
+  assert.equal(row.gap, 10);
+  const card = source("../components/InnerSpaceCard.tsx");
+  assert.match(card, /testID="open-reflection-wall"[\s\S]*?style=\{\[styles\.submitButton, styles\.wallButton/);
+  assert.match(card, /testID="save-reflection"[\s\S]*?style=\{\[\s*styles\.submitButton/);
+  assert.match(card, /updateContentHeight\(styles\.expandBody\.paddingTop \+ y \+ height\)/);
+});
+
 test("Registrar uses solid white and theme-specific dark text in both disabled and active states", () => {
   const contents = source("../components/InnerSpaceCard.tsx");
   const ast = ts.createSourceFile("InnerSpaceCard.tsx", contents, ts.ScriptTarget.Latest, true, ts.ScriptKind.TSX);
@@ -391,6 +405,7 @@ test("Registrar uses solid white and theme-specific dark text in both disabled a
     assert.equal(background, "#F9F9F9");
     assert.equal(element.props.disabled, disabled);
     assert.equal(element.props.onPress, saveMessage);
+    assert.equal(Object.assign({}, ...element.props.style.filter(Boolean)).minHeight, 42);
     assert.equal(element.props.accessibilityLabel, "Registrar");
     const label = element.props.children as React.ReactElement<any>;
     assert.equal(label.type, "span");
