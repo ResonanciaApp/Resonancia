@@ -58,15 +58,12 @@
 - [Paquetes Python y Nix](python-nix-package-cache.md) — una instalación fallida en un prefijo inmutable puede haber dejado el módulo utilizable en la caché local
 - [Android top-inset floor](android-top-inset-floor.md) — tablets Android dan insets.top chico (~24) vs iPhone (~59); topPad nativo = Math.max(insets.top, 40) en todas las pantallas
 - [Chat overlay sobre Amigos](chat-overlay-stack.md) — desde overlays del drawer router.push monta DEBAJO; chat usa openChat→ChatOverlay apilado; otras rutas: closeOverlay antes de push
-- [Racha canónica en utils/stats](streak-canonical.md) — toda racha/semana importa de utils/stats (día activo = ≥3 min O sesión completada, desde ago 2026; fallback a ayer); memos deben depender de useDayRollover o quedan pegados en ayer
-- [useStreak hook unificado](usestreak-unified.md) — hook único reconcilia servidor+local sin regresiones; toda UI importa de hooks/useStreak, salvo la celebración en tiempo real
+- [Rachas: cálculo, UI y servidor](streak-canonical.md) — ≥3 min o sesión completada; rollover obligatorio; referencias al hook unificado y API en la nota
 - [Sleep timer background enforcement](sleep-timer-background.md) — MixerContext y PlayerContext: sleepEndTimeRef timestamp + guardián en listener nativo (UIBackgroundModes audio); AppState recovery al volver al frente; setInterval solo es UI
-- [Server streak endpoint + Orval Zod crash](server-streak-endpoint.md) — GET /me/streak?tz= server-authoritative; Orval ^8.9.1 se actualizó a 8.23.0 → genera zod.int() (v4) → crash API; fix: pin exacto "8.9.1" + parche sed en api-zod/generated
 - [Library sync](library-sync.md) — snapshot JSONB user_library ahora incluye mixerPresets+geometrixCreations; PUT /me/library es parcial (campo omitido se preserva); firstSync=unión, luego local autoritativo; push debounced lee estado fresco al disparar
 - [AudioBridge chat slot](audiobridge-chat-slot.md) — chatStopper = 4to slot del audioBridge; AudioAttachment registra/desregistra al play/pause/finish/unmount; startRecording también corta todo antes de grabar
-- [Motor de hitos (logros)](milestones-engine.md) — evaluación espera hydrated+cloudSettled; sync unión append-only; contadores de por vida para mezclas/Geometrix; orval SIEMPRE 8.9.1
+- [Hitos y celebración de racha](milestones-engine.md) — esperar hidratación+nube; unión append-only; contadores de por vida; disparo de celebración local en nota enlazada
 - [Session-level isLoop](session-isloop.md) — loop = session.isLoop || LOOP_SESSIONS.has(id); snapshot solo asigna isLoop si remoto es true (no clobbear bundles a false)
-- [Celebración día de racha](streak-day-celebration.md) — disparo por lastLocalStat (nunca diff de statEvents: hidratación/nube dan falsos positivos); hold de hitos mientras el flujo está abierto
 - [Authenticated capacity fixture safety](authenticated-capacity-fixture-safety.md) — pruebas de carga con escrituras usan identidades efímeras de Development, preparación secuencial y limpieza verificable; nunca apuntarlas a producción
 - [Account deletion vs signed uploads](account-deletion-signed-uploads.md) — borrar un objeto una vez no basta si sobreviven PUT firmados; tombstone + segundo barrido tras el TTL antes de completar
 - [Private object reference grants](private-object-reference-grants.md) — una ruta privada referenciada no concede acceso por sí sola; exigir propiedad del upload o rol editorial antes de compartir/publicar
@@ -125,6 +122,7 @@
 - [Galería de historias iniciadas](reflection-story-gallery.md) — registra al confirmar “Abrir Instagram”, no al completar publicación; snapshot visual reconstruible e idempotencia por intento
 - [Control externo de fondos](reflection-story-picker-controls.md) — el botón de ampliar del compositor del muro pertenece afuera de la grilla, arriba a la derecha
 - [Muro expansivo optimista](reflection-wall-optimistic.md) — guardar siembra el caché del muro y borrar oculta la card antes de cerrar el editor; rollback solo si falla la red
+- [Separación entre grupos del Muro](reflection-wall-group-spacing.md) — “fechas y sus cards con otras fechas y sus cards” se refiere a grupos completos, no al espacio interno fecha–card
 - [Desconexiones de PostgreSQL](postgres-idle-disconnect.md) — un reinicio de la base puede terminar conexiones inactivas y tumbar toda la API si el pool no maneja su evento de error
 - [Drizzle push y datos de Inspiraciones](drizzle-push-inspirations.md) — `push` puede pedir truncar Inspiraciones por un índice único ajeno al cambio; no usar `push-force` sin resolver los duplicados
 - [Entitlement RevenueCat desconocido](revenuecat-entitlement-unknown.md) — error/carga/no-configurado nunca equivale a free; conservar último entitlement verificado solo hasta su expiración real

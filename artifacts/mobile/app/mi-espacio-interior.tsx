@@ -991,11 +991,11 @@ const styles = StyleSheet.create({
   },
   dateHeader: {
     alignItems: 'stretch',
-    marginBottom: -4,
+    marginBottom: 16,
     marginTop: 6,
   },
   subsequentDateHeader: {
-    marginTop: 51,
+    marginTop: 31,
   },
   firstDateHeader: {
     marginTop: 21,

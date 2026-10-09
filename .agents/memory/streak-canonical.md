@@ -6,4 +6,8 @@ Regla: TODO cálculo de racha/semana importa de `mobile/utils/stats.ts` (GOAL_MI
 
 **Why:** había 7+ implementaciones divergentes (presencia-de-evento vs umbral de 5 min) y el número de racha cambiaba según la pantalla; unificado a la meta diaria (desde ago 2026: 3 min o sesión completada) que coincide con la meta del fuego.
 
+Notas relacionadas:
+- [Reconciliación servidor/local y hook único de UI](usestreak-unified.md).
+- [Autoridad del servidor y compatibilidad de generación Orval/Zod](server-streak-endpoint.md).
+
 **How to apply:** cualquier useMemo que use estos helpers debe depender de `[statEvents, todayKey]` con `todayKey = useDayRollover()` (hooks/useDayRollover.ts) — sin eso, una pantalla montada pasa medianoche mostrando la racha de ayer. `computeActiveDays` sigue siendo presencia-de-evento (estadística de uso, no racha). Legacy sin migrar: WeeklyStreakStrip4.tsx (sin referencias).

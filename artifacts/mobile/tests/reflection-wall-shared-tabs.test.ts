@@ -36,7 +36,7 @@ function styles(tree: ts.SourceFile, keys: string[]) {
       compile(`return (${entry.initializer.getText(tree)});`))(32)]));
 }
 
-test("all dates reduce date-to-pill spacing by 20px without dividers or changing day-group gaps", () => {
+test("all dates restore 20px below the date while adjacent day groups move 20px closer", () => {
   const tree = ast(source("../app/mi-espacio-interior.tsx"));
   const wallStyles = styles(tree, ["dateHeader", "dateHeaderRow", "subsequentDateHeader",
     "firstDateHeader", "monthSelectorAboveDate", "timelineRow", "monthSelectorButton"]);
@@ -47,13 +47,16 @@ test("all dates reduce date-to-pill spacing by 20px without dividers or changing
   const renderStyle = new Function("styles", "index", compile(`return (${style.initializer.expression.getText(tree)});`));
   assert.equal(flatten(renderStyle(wallStyles, 0)).marginTop - wallStyles.dateHeader.marginTop, 15,
     "the month and all following content move down by another 15px");
-  assert.equal(flatten(renderStyle(wallStyles, 3)).marginTop - 16, 35);
+  for (const index of [1, 3, 5]) {
+    assert.equal(51 - flatten(renderStyle(wallStyles, index)).marginTop, 20,
+      "each following date group moves 20px closer to the preceding group's last card");
+  }
   assert.doesNotMatch(source("../app/mi-espacio-interior.tsx"), /dayDivider/);
   assert.equal(wallStyles.dateHeaderRow.minHeight, wallStyles.monthSelectorButton.height,
     "later dates reserve the same height as the first date's month control");
   assert.equal(wallStyles.dateHeaderRow.minHeight, 33);
   assert.equal(wallStyles.dateHeaderRow.alignItems, "center");
-  assert.equal(16 - wallStyles.dateHeader.marginBottom, 20, "every date-to-pill gap shrinks by exactly 20px");
+  assert.equal(wallStyles.dateHeader.marginBottom - (-4), 20, "every date-to-pill gap grows by exactly 20px");
   const row = find(tree, node => ts.isJsxElement(node)
     && node.openingElement.attributes.getText(tree) === "style={styles.dateHeaderRow}");
   assert.doesNotMatch(row.getText(tree), /renderMonthSelector/);
