@@ -161,6 +161,7 @@ export default function GalleryScreen() {
             backgroundY: item.backgroundY,
             textX: item.textX,
             textY: item.textY,
+            textScale: item.textScale ?? 1,
           }}
         />
         <View style={styles.cardOverlay}>

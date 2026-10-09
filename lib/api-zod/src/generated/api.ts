@@ -8171,6 +8171,9 @@ export const listMyReflectionStoriesResponseItemsItemTextXMax = 0.0925925926;
 export const listMyReflectionStoriesResponseItemsItemTextYMin = -0.2604166667;
 export const listMyReflectionStoriesResponseItemsItemTextYMax = 0.2604166667;
 
+export const listMyReflectionStoriesResponseItemsItemTextScaleDefault = 1;
+export const listMyReflectionStoriesResponseItemsItemTextScaleMax = 3;
+
 
 
 export const ListMyReflectionStoriesResponse = zod.object({
@@ -8189,6 +8192,7 @@ export const ListMyReflectionStoriesResponse = zod.object({
   "backgroundY": zod.number().min(listMyReflectionStoriesResponseItemsItemBackgroundYMin).max(listMyReflectionStoriesResponseItemsItemBackgroundYMax),
   "textX": zod.number().min(listMyReflectionStoriesResponseItemsItemTextXMin).max(listMyReflectionStoriesResponseItemsItemTextXMax),
   "textY": zod.number().min(listMyReflectionStoriesResponseItemsItemTextYMin).max(listMyReflectionStoriesResponseItemsItemTextYMax),
+  "textScale": zod.number().min(1).max(listMyReflectionStoriesResponseItemsItemTextScaleMax).default(listMyReflectionStoriesResponseItemsItemTextScaleDefault),
   "createdAt": zod.coerce.date()
 })),
   "nextCursor": zod.string().nullable()
@@ -8234,6 +8238,9 @@ export const createMyReflectionStoryBodyTextXMax = 0.0925925926;
 export const createMyReflectionStoryBodyTextYMin = -0.2604166667;
 export const createMyReflectionStoryBodyTextYMax = 0.2604166667;
 
+export const createMyReflectionStoryBodyTextScaleDefault = 1;
+export const createMyReflectionStoryBodyTextScaleMax = 3;
+
 
 
 export const CreateMyReflectionStoryBody = zod.object({
@@ -8247,7 +8254,8 @@ export const CreateMyReflectionStoryBody = zod.object({
   "backgroundX": zod.number().min(createMyReflectionStoryBodyBackgroundXMin).max(createMyReflectionStoryBodyBackgroundXMax),
   "backgroundY": zod.number().min(createMyReflectionStoryBodyBackgroundYMin).max(createMyReflectionStoryBodyBackgroundYMax),
   "textX": zod.number().min(createMyReflectionStoryBodyTextXMin).max(createMyReflectionStoryBodyTextXMax),
-  "textY": zod.number().min(createMyReflectionStoryBodyTextYMin).max(createMyReflectionStoryBodyTextYMax)
+  "textY": zod.number().min(createMyReflectionStoryBodyTextYMin).max(createMyReflectionStoryBodyTextYMax),
+  "textScale": zod.number().min(1).max(createMyReflectionStoryBodyTextScaleMax).default(createMyReflectionStoryBodyTextScaleDefault)
 })
 
 export const createMyReflectionStoryResponseIsPublicDefault = false;
@@ -8279,6 +8287,9 @@ export const createMyReflectionStoryResponseTextXMax = 0.0925925926;
 export const createMyReflectionStoryResponseTextYMin = -0.2604166667;
 export const createMyReflectionStoryResponseTextYMax = 0.2604166667;
 
+export const createMyReflectionStoryResponseTextScaleDefault = 1;
+export const createMyReflectionStoryResponseTextScaleMax = 3;
+
 
 
 export const CreateMyReflectionStoryResponse = zod.object({
@@ -8296,6 +8307,7 @@ export const CreateMyReflectionStoryResponse = zod.object({
   "backgroundY": zod.number().min(createMyReflectionStoryResponseBackgroundYMin).max(createMyReflectionStoryResponseBackgroundYMax),
   "textX": zod.number().min(createMyReflectionStoryResponseTextXMin).max(createMyReflectionStoryResponseTextXMax),
   "textY": zod.number().min(createMyReflectionStoryResponseTextYMin).max(createMyReflectionStoryResponseTextYMax),
+  "textScale": zod.number().min(1).max(createMyReflectionStoryResponseTextScaleMax).default(createMyReflectionStoryResponseTextScaleDefault),
   "createdAt": zod.coerce.date()
 })
 
@@ -8346,6 +8358,9 @@ export const listUserReflectionStoriesResponseItemsItemTextXMax = 0.0925925926;
 export const listUserReflectionStoriesResponseItemsItemTextYMin = -0.2604166667;
 export const listUserReflectionStoriesResponseItemsItemTextYMax = 0.2604166667;
 
+export const listUserReflectionStoriesResponseItemsItemTextScaleDefault = 1;
+export const listUserReflectionStoriesResponseItemsItemTextScaleMax = 3;
+
 
 
 export const ListUserReflectionStoriesResponse = zod.object({
@@ -8364,6 +8379,7 @@ export const ListUserReflectionStoriesResponse = zod.object({
   "backgroundY": zod.number().min(listUserReflectionStoriesResponseItemsItemBackgroundYMin).max(listUserReflectionStoriesResponseItemsItemBackgroundYMax),
   "textX": zod.number().min(listUserReflectionStoriesResponseItemsItemTextXMin).max(listUserReflectionStoriesResponseItemsItemTextXMax),
   "textY": zod.number().min(listUserReflectionStoriesResponseItemsItemTextYMin).max(listUserReflectionStoriesResponseItemsItemTextYMax),
+  "textScale": zod.number().min(1).max(listUserReflectionStoriesResponseItemsItemTextScaleMax).default(listUserReflectionStoriesResponseItemsItemTextScaleDefault),
   "createdAt": zod.coerce.date()
 })),
   "nextCursor": zod.string().nullable()
@@ -8408,6 +8424,9 @@ export const getUserReflectionStoryResponseTextXMax = 0.0925925926;
 export const getUserReflectionStoryResponseTextYMin = -0.2604166667;
 export const getUserReflectionStoryResponseTextYMax = 0.2604166667;
 
+export const getUserReflectionStoryResponseTextScaleDefault = 1;
+export const getUserReflectionStoryResponseTextScaleMax = 3;
+
 
 
 export const GetUserReflectionStoryResponse = zod.object({
@@ -8425,6 +8444,7 @@ export const GetUserReflectionStoryResponse = zod.object({
   "backgroundY": zod.number().min(getUserReflectionStoryResponseBackgroundYMin).max(getUserReflectionStoryResponseBackgroundYMax),
   "textX": zod.number().min(getUserReflectionStoryResponseTextXMin).max(getUserReflectionStoryResponseTextXMax),
   "textY": zod.number().min(getUserReflectionStoryResponseTextYMin).max(getUserReflectionStoryResponseTextYMax),
+  "textScale": zod.number().min(1).max(getUserReflectionStoryResponseTextScaleMax).default(getUserReflectionStoryResponseTextScaleDefault),
   "createdAt": zod.coerce.date()
 })
 
@@ -8469,6 +8489,9 @@ export const setMyReflectionStoryVisibilityResponseTextXMax = 0.0925925926;
 export const setMyReflectionStoryVisibilityResponseTextYMin = -0.2604166667;
 export const setMyReflectionStoryVisibilityResponseTextYMax = 0.2604166667;
 
+export const setMyReflectionStoryVisibilityResponseTextScaleDefault = 1;
+export const setMyReflectionStoryVisibilityResponseTextScaleMax = 3;
+
 
 
 export const SetMyReflectionStoryVisibilityResponse = zod.object({
@@ -8486,6 +8509,7 @@ export const SetMyReflectionStoryVisibilityResponse = zod.object({
   "backgroundY": zod.number().min(setMyReflectionStoryVisibilityResponseBackgroundYMin).max(setMyReflectionStoryVisibilityResponseBackgroundYMax),
   "textX": zod.number().min(setMyReflectionStoryVisibilityResponseTextXMin).max(setMyReflectionStoryVisibilityResponseTextXMax),
   "textY": zod.number().min(setMyReflectionStoryVisibilityResponseTextYMin).max(setMyReflectionStoryVisibilityResponseTextYMax),
+  "textScale": zod.number().min(1).max(setMyReflectionStoryVisibilityResponseTextScaleMax).default(setMyReflectionStoryVisibilityResponseTextScaleDefault),
   "createdAt": zod.coerce.date()
 })
 
@@ -8523,6 +8547,9 @@ export const getMyReflectionStoryResponseTextXMax = 0.0925925926;
 export const getMyReflectionStoryResponseTextYMin = -0.2604166667;
 export const getMyReflectionStoryResponseTextYMax = 0.2604166667;
 
+export const getMyReflectionStoryResponseTextScaleDefault = 1;
+export const getMyReflectionStoryResponseTextScaleMax = 3;
+
 
 
 export const GetMyReflectionStoryResponse = zod.object({
@@ -8540,6 +8567,7 @@ export const GetMyReflectionStoryResponse = zod.object({
   "backgroundY": zod.number().min(getMyReflectionStoryResponseBackgroundYMin).max(getMyReflectionStoryResponseBackgroundYMax),
   "textX": zod.number().min(getMyReflectionStoryResponseTextXMin).max(getMyReflectionStoryResponseTextXMax),
   "textY": zod.number().min(getMyReflectionStoryResponseTextYMin).max(getMyReflectionStoryResponseTextYMax),
+  "textScale": zod.number().min(1).max(getMyReflectionStoryResponseTextScaleMax).default(getMyReflectionStoryResponseTextScaleDefault),
   "createdAt": zod.coerce.date()
 })
 

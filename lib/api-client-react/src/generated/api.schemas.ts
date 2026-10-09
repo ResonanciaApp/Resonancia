@@ -272,6 +272,11 @@ export interface ReflectionStory {
      * @maximum 0.2604166667
      */
   textY: number;
+  /**
+     * @minimum 1
+     * @maximum 3
+     */
+  textScale?: number;
   createdAt: string;
 }
 
@@ -327,6 +332,11 @@ export interface ReflectionStoryInput {
      * @maximum 0.2604166667
      */
   textY: number;
+  /**
+     * @minimum 1
+     * @maximum 3
+     */
+  textScale?: number;
 }
 
 export interface ReflectionStoriesPage {

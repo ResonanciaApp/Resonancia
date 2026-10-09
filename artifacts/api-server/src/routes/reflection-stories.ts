@@ -203,6 +203,7 @@ router.post("/me/reflection-stories", requireAuth, async (req, res) => {
       backgroundY: input.backgroundY,
       textX: input.textX,
       textY: input.textY,
+      textScale: input.textScale,
       avatarImagePath: input.avatarImagePath ?? null,
       avatarX,
       avatarY,

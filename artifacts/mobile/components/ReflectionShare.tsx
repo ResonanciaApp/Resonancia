@@ -24,6 +24,7 @@ import { StoryAvatarLayer } from "./StoryAvatarLayer";
 import {
   canShareReflection,
   clampReflectionStoryComposition,
+  clampReflectionStoryTextScale,
   getStableIdempotencyKey,
   DEFAULT_REFLECTION_STORY_COMPOSITION,
   REFLECTION_STORY_MAX_BACKGROUND_SCALE,
@@ -71,6 +72,8 @@ function InteractiveReflectionArtwork({
   const backgroundY = useSharedValue(composition.backgroundY);
   const textX = useSharedValue(composition.textX);
   const textY = useSharedValue(composition.textY);
+  const textScale = useSharedValue(composition.textScale ?? 1);
+  const startTextScale = useSharedValue(composition.textScale ?? 1);
   const startScale = useSharedValue(composition.backgroundScale);
   const startBackgroundX = useSharedValue(composition.backgroundX);
   const startBackgroundY = useSharedValue(composition.backgroundY);
@@ -84,6 +87,7 @@ function InteractiveReflectionArtwork({
     backgroundY.value = composition.backgroundY;
     textX.value = composition.textX;
     textY.value = composition.textY;
+    textScale.value = composition.textScale ?? 1;
   }, [
     backgroundScale,
     backgroundX,
@@ -91,6 +95,7 @@ function InteractiveReflectionArtwork({
     composition,
     textX,
     textY,
+    textScale,
   ]);
 
   const commitComposition = () => {
@@ -101,6 +106,7 @@ function InteractiveReflectionArtwork({
       backgroundY: backgroundY.value,
       textX: textX.value,
       textY: textY.value,
+      textScale: textScale.value,
     });
   };
 
@@ -173,7 +179,8 @@ function InteractiveReflectionArtwork({
   const textPan = useMemo(
     () => Gesture.Pan()
       .minPointers(1)
-      .maxPointers(1)
+      .maxPointers(2)
+      .averageTouches(true)
       .minDistance(1)
       .onBegin(() => {
         guideOpacity.value = 1;
@@ -201,6 +208,19 @@ function InteractiveReflectionArtwork({
     [guideOpacity, height, startTextX, startTextY, textX, textY, width, displayScale],
   );
 
+  const textPinch = useMemo(
+    () => Gesture.Pinch()
+      .onBegin(() => { startTextScale.value = textScale.value; })
+      .onUpdate((event) => {
+        textScale.value = clampReflectionStoryTextScale(startTextScale.value * event.scale);
+      })
+      .onFinalize(commitComposition),
+    [startTextScale, textScale, backgroundScale, backgroundX, backgroundY, textX, textY, onCompositionChange],
+  );
+  const textGesture = useMemo(
+    () => Gesture.Simultaneous(textPan, textPinch),
+    [textPan, textPinch],
+  );
   const backgroundGesture = useMemo(
     () => Gesture.Simultaneous(backgroundPan, backgroundPinch),
     [backgroundPan, backgroundPinch],
@@ -218,6 +238,7 @@ function InteractiveReflectionArtwork({
     transform: [
       { translateX: textX.value * width },
       { translateY: textY.value * height },
+      { scale: textScale.value },
     ],
   }));
   const guideStyle = useAnimatedStyle(() => ({
@@ -243,7 +264,7 @@ function InteractiveReflectionArtwork({
       <View pointerEvents="none" style={styles.storyShade} />
       <Animated.View pointerEvents="none" style={[styles.verticalGuide, guideStyle]} />
       <Animated.View pointerEvents="none" style={[styles.horizontalGuide, guideStyle]} />
-      <GestureDetector gesture={textPan}>
+      <GestureDetector gesture={textGesture}>
         <Animated.View
           style={[
             styles.interactiveQuoteRegion,
@@ -352,6 +373,7 @@ export function ReflectionShare({ reflection, onClose }: { reflection: Reflectio
         backgroundY: composition.backgroundY,
         textX: composition.textX,
         textY: composition.textY,
+        textScale: composition.textScale ?? 1,
       };
 
       idempotencyState.current = getStableIdempotencyKey(payload, idempotencyState.current);
@@ -374,6 +396,7 @@ export function ReflectionShare({ reflection, onClose }: { reflection: Reflectio
     || Math.abs(composition.backgroundY) > 0.0001
     || Math.abs(composition.textX) > 0.0001
     || Math.abs(composition.textY) > 0.0001
+    || Math.abs((composition.textScale ?? 1) - 1) > 0.0001
     || (!!includedAvatar && (Math.abs(avatarPosition.x - DEFAULT_REFLECTION_STORY_AVATAR_POSITION.x) > 0.0001
       || Math.abs(avatarPosition.y - DEFAULT_REFLECTION_STORY_AVATAR_POSITION.y) > 0.0001));
 
@@ -394,6 +417,7 @@ export function ReflectionShare({ reflection, onClose }: { reflection: Reflectio
         composition.backgroundY.toFixed(4),
         composition.textX.toFixed(4),
         composition.textY.toFixed(4),
+        (composition.textScale ?? 1).toFixed(4),
       ].join(":")}
       assetKey={`${selectedBgId ?? "initial"}:${selectedUsesFallback ? "fallback" : "primary"}:${JSON.stringify(includedAvatar)}`}
       showGenericShare={false}

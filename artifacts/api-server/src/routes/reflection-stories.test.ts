@@ -232,6 +232,21 @@ describe("private reflection stories API", () => {
     await request(app).post("/api/me/reflection-stories").set("Idempotency-Key", "offset").send({ ...body, backgroundScale: 1, backgroundX: 0.1 }).expect(400);
   });
 
+  it("persists enlarged text, defaults legacy requests to 1 and rejects shrinking", async () => {
+    const enlarged = await request(app).post("/api/me/reflection-stories")
+      .set("Idempotency-Key", "enlarged").send({ ...body, textScale: 2.25 }).expect(201);
+    expect(enlarged.body.textScale).toBe(2.25);
+    const detail = await request(app).get(`/api/me/reflection-stories/${enlarged.body.id}`).expect(200);
+    expect(detail.body.textScale).toBe(2.25);
+    const legacy = await request(app).post("/api/me/reflection-stories")
+      .set("Idempotency-Key", "legacy").send(body).expect(201);
+    expect(legacy.body.textScale).toBe(1);
+    for (const textScale of [0.5, 3.1]) {
+      await request(app).post("/api/me/reflection-stories")
+        .set("Idempotency-Key", `invalid-scale-${textScale}`).send({ ...body, textScale }).expect(400);
+    }
+  });
+
   it("counts graphemes instead of UTF-16 code units", async () => {
     const joinedFamily = "👨‍👩‍👧‍👦";
     const accepted = await request(app)

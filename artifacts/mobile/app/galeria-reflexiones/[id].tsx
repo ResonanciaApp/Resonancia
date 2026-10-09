@@ -92,6 +92,7 @@ export default function GalleryDetailScreen() {
       backgroundY: story.backgroundY,
       textX: story.textX,
       textY: story.textY,
+      textScale: story.textScale ?? 1,
       avatarImagePath: story.avatarImagePath ?? null,
       avatarX: story.avatarX ?? null,
       avatarY: story.avatarY ?? null,
@@ -229,6 +230,7 @@ export default function GalleryDetailScreen() {
               backgroundY: story.backgroundY,
               textX: story.textX,
               textY: story.textY,
+              textScale: story.textScale ?? 1,
             }}
             onReady={callbacks.onReady}
             onFailure={callbacks.onFailure}

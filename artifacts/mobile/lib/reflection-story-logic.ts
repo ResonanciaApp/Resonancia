@@ -1,6 +1,12 @@
 export const REFLECTION_SHARE_CHARACTER_LIMIT = 160;
 export const REFLECTION_STORY_MIN_BACKGROUND_SCALE = 1;
 export const REFLECTION_STORY_MAX_BACKGROUND_SCALE = 3;
+export const REFLECTION_STORY_MIN_TEXT_SCALE = 1;
+export const REFLECTION_STORY_MAX_TEXT_SCALE = 3;
+export function clampReflectionStoryTextScale(scale: number): number {
+  "worklet";
+  return Math.min(REFLECTION_STORY_MAX_TEXT_SCALE, Math.max(REFLECTION_STORY_MIN_TEXT_SCALE, scale));
+}
 export const REFLECTION_STORY_TEXT_X_LIMIT = 100 / 1080;
 export const REFLECTION_STORY_TEXT_Y_LIMIT = 500 / 1920;
 export const REFLECTION_STORY_AVATAR_SIZE = 124;
@@ -28,6 +34,7 @@ export type ReflectionStoryComposition = {
   backgroundY: number;
   textX: number;
   textY: number;
+  textScale?: number;
 };
 
 export const DEFAULT_REFLECTION_STORY_COMPOSITION: ReflectionStoryComposition = {
@@ -36,6 +43,7 @@ export const DEFAULT_REFLECTION_STORY_COMPOSITION: ReflectionStoryComposition = 
   backgroundY: 0,
   textX: 0,
   textY: 0,
+  textScale: 1,
 };
 
 function clamp(value: number, minimum: number, maximum: number): number {
@@ -73,6 +81,7 @@ export function clampReflectionStoryComposition(
     backgroundY,
     textX: clamp(composition.textX, -REFLECTION_STORY_TEXT_X_LIMIT, REFLECTION_STORY_TEXT_X_LIMIT),
     textY: clamp(composition.textY, -REFLECTION_STORY_TEXT_Y_LIMIT, REFLECTION_STORY_TEXT_Y_LIMIT),
+    textScale: clampReflectionStoryTextScale(composition.textScale ?? 1),
   };
 }
 

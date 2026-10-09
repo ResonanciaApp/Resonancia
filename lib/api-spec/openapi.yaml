@@ -5615,6 +5615,7 @@ components:
         backgroundY: {type: number, minimum: -1, maximum: 1}
         textX: {type: number, minimum: -0.0925925926, maximum: 0.0925925926}
         textY: {type: number, minimum: -0.2604166667, maximum: 0.2604166667}
+        textScale: {type: number, minimum: 1, maximum: 3, default: 1}
         createdAt: {type: string, format: date-time}
     ReflectionStoryInput:
       type: object
@@ -5634,6 +5635,7 @@ components:
         backgroundY: {type: number, minimum: -1, maximum: 1}
         textX: {type: number, minimum: -0.0925925926, maximum: 0.0925925926}
         textY: {type: number, minimum: -0.2604166667, maximum: 0.2604166667}
+        textScale: {type: number, minimum: 1, maximum: 3, default: 1}
     ReflectionStoriesPage:
       type: object
       required: [items, nextCursor]

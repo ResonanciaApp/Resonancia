@@ -95,6 +95,7 @@ export function StoryArtworkFrame({
             transform: [
               { translateX: composition.textX * width },
               { translateY: composition.textY * height },
+              { scale: composition.textScale ?? 1 },
             ],
           },
         ]}

@@ -27,6 +27,12 @@ El avatar es una capa movible independiente: no queda unido al bloque de la fras
 
 **How to apply:** Mantener posición normalizada propia en vista previa, captura y receta guardada. Reservar el diseño antiguo debajo de la frase solo para historias previas sin coordenadas.
 
+El zoom de dos dedos corresponde solo al texto, nunca al avatar; el texto no debe reducirse por debajo de su tamaño original.
+
+**Why:** El usuario limitó explícitamente la ampliación al texto para conservar el avatar sin cambios y mantener legible la frase.
+
+**How to apply:** Conservar esa separación al modificar los gestos del compositor, y mantener el mismo tamaño del texto en la vista previa, la imagen compartida y la galería.
+
 El avatar dentro de la imagen compartida se muestra sin borde ni overlay, con sus colores originales.
 
 **Why:** El usuario pidió expresamente que fuera solo el avatar sin modificaciones.
