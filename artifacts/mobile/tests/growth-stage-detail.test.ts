@@ -120,7 +120,8 @@ test("deleted editorial text stays deleted, without a divider or legacy fallback
     const phraseOnly = render();
     assert.match(phraseOnly, /Solo frase/);
     const copyWithPhrase = nodes.get("growth-stage-detail-scroll").children[1].props.children.props.children;
-    assert.equal(copyWithPhrase[1], false);
+    assert.equal(copyWithPhrase[0].props.testID, "growth-stage-detail-rule");
+    assert.equal(copyWithPhrase[1].props.testID, "growth-stage-detail-phrase");
     assert.equal(copyWithPhrase[2], false);
   } finally { levels = growthLevels; }
 });
@@ -214,9 +215,25 @@ test("artwork and title retain their position with copy below the title", () => 
   assert.equal(block.gap, 8);
   assert.equal(block.transform, undefined);
   const source = readFileSync(new URL("../components/GrowthStageDetail.tsx", import.meta.url), "utf8");
-  assert.match(source, /copy: \{[^}]*marginTop: 35/);
+  assert.match(source, /copy: \{[^}]*marginTop: 0/);
   assert.match(source, /stageName: \{[^}]*fontSize: 41,\s*lineHeight: 47/);
   assert.match(source, /rule: \{[^}]*backgroundColor: GOLD, opacity: 0\.7/);
+});
+
+test("golden line sits above the phrase exactly halfway from the title", () => {
+  for (const detailDescription of ["", "Descripción larga"]) {
+    levels = [{ ...growthLevels[0], detailPhrase: "Frase editorial", detailDescription }];
+    try {
+      const html = render();
+      const rule = flat(nodes.get("growth-stage-detail-rule").style);
+      assert.ok(html.indexOf('data-testid="growth-stage-detail-title-block"') < html.indexOf('data-testid="growth-stage-detail-rule"'));
+      assert.ok(html.indexOf('data-testid="growth-stage-detail-rule"') < html.indexOf('data-testid="growth-stage-detail-phrase"'));
+      assert.equal(rule.marginVertical, 16.5);
+      assert.equal(rule.height + 2 * rule.marginVertical, 35);
+      assert.equal(rule.opacity, 0.7);
+      assert.equal((html.match(/data-testid="growth-stage-detail-rule"/g) ?? []).length, 1);
+    } finally { levels = growthLevels; }
+  }
 });
 
 test("the X stays fixed, stage labels are removed and Intención uses the app's Manrope font", () => {

@@ -98,10 +98,10 @@ export function GrowthStageDetail({
         </CinematicFadeSlide>
 
         <CinematicFadeSlide active replayKey="copy" delay={BASE_DELAY + 700} duration={DURATION}>
-          <View style={styles.copy}>
-            {!!phrase.trim() && <Text style={styles.quote}>{phrase}</Text>}
-            {!!phrase.trim() && !!description.trim() && <View style={styles.rule} />}
-            {!!description.trim() && <Text style={styles.explanation}>{description}</Text>}
+          <View style={[styles.copy, !phrase.trim() && { marginTop: 35 }]}>
+            {!!phrase.trim() && <View testID="growth-stage-detail-rule" style={styles.rule} />}
+            {!!phrase.trim() && <Text testID="growth-stage-detail-phrase" style={styles.quote}>{phrase}</Text>}
+            {!!description.trim() && <Text style={[styles.explanation, !!phrase.trim() && { marginTop: 38 }]}>{description}</Text>}
           </View>
         </CinematicFadeSlide>
 
@@ -157,7 +157,7 @@ const styles = StyleSheet.create({
     color: STREAK_INFO_COLORS.pageTitle,
     textAlign: "center",
   },
-  copy: { paddingHorizontal: 28, alignItems: "center", marginTop: 35 },
+  copy: { paddingHorizontal: 28, alignItems: "center", marginTop: 0 },
   quote: {
     fontFamily: "CormorantGaramond",
     fontSize: 27,
@@ -165,7 +165,7 @@ const styles = StyleSheet.create({
     color: WHITE,
     textAlign: "center",
   },
-  rule: { width: 44, height: 2, backgroundColor: GOLD, opacity: 0.7, marginVertical: 18, borderRadius: 1 },
+  rule: { width: 44, height: 2, backgroundColor: GOLD, opacity: 0.7, marginVertical: 16.5, borderRadius: 1 },
   explanation: {
     fontFamily: "Manrope",
     fontSize: 15,
