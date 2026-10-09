@@ -40,9 +40,6 @@ export const CLOUDY_GROWTH_DAY_PILL_BACKGROUND = "rgba(128,171,231,0.20)";
 export function getProfileSecondaryTextColor(themeId: string): string {
   return themeId === "cloudy" || themeId === "natural" ? "#D1D1D1" : "#C4C4C4";
 }
-export const REGISTER_BUTTON_ENABLED_BACKGROUND = "rgba(249,249,249,0.45)";
-export const NATURAL_REGISTER_BUTTON_BACKGROUND = "rgba(249,249,249,0.2)";
-export const NATURAL_REGISTER_BUTTON_ENABLED_BACKGROUND = "rgba(249,249,249,0.45)";
 export const REFLECTION_WALL_BUTTON_BORDER_COLOR = "rgba(249,249,249,0.8)";
 export const CARD_TEXT_ABOVE = "#D1D1D1";
 export const CARD_TEXT_BELOW = "#EBF2FF";

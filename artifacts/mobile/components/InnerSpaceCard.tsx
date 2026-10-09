@@ -42,11 +42,9 @@ import { useAuth } from "@/context/AuthContext";
 import { usePremium } from "@/context/PremiumContext";
 import { FREE_REFLECTIONS_LIMIT, showPremiumGate } from "@/lib/premiumGate";
 import {
-  REGISTER_BUTTON_ENABLED_BACKGROUND,
   REFLECTION_WALL_BUTTON_BORDER_COLOR,
 } from "@/constants/colors";
 
-const REGISTER_BUTTON_BACKGROUND = "rgba(249,249,249,0.2)";
 // La + se repite visualmente cada 90°: 270° son tres ciclos perceptibles.
 // Tras el giro hay solo tres movimientos: cruce moderado, cruce menor y ajuste final.
 const PLUS_ROTATION_STOPS = [
@@ -687,13 +685,16 @@ export function InnerSpaceCard({
           accessibilityRole="button"
           style={[
             styles.submitButton,
-            { backgroundColor: isSubmitDisabled ? REGISTER_BUTTON_BACKGROUND : REGISTER_BUTTON_ENABLED_BACKGROUND },
-            isSubmitDisabled && { opacity: 0.5 },
+            { backgroundColor: "#F9F9F9" },
           ]}
           disabled={isSubmitDisabled}
           onPress={saveMessage}
         >
-          <Text style={[styles.submitText, { color: "#F9F9F9" }]}>
+          <Text style={[styles.submitText, {
+            color: theme.id === "natural" ? "#073B32"
+              : getThemeStyleId(theme.id) === "cloudy" ? "#166494"
+                : "#0B1438",
+          }]}>
             {createMutation.isPending ? "Registrando..." : "REGISTRAR"}
           </Text>
         </Pressable>
@@ -833,7 +834,7 @@ const styles = StyleSheet.create({
     transform: [{ scale: 0.97 }],
   },
   gridLabel: {
-    fontSize: 9,
+    fontSize: 10,
     fontWeight: "500",
     textAlign: "left",
   },

@@ -355,7 +355,7 @@ test("the wall renders all ten brightened stops at equal intervals without chang
   assert.equal(resolve(wall.props.maskElement.props.style).borderRadius, 24);
 });
 
-test("Registrar uses white with original opacities in every theme", () => {
+test("Registrar uses solid white and theme-specific dark text in both disabled and active states", () => {
   const contents = source("../components/InnerSpaceCard.tsx");
   const ast = ts.createSourceFile("InnerSpaceCard.tsx", contents, ts.ScriptTarget.Latest, true, ts.ScriptKind.TSX);
   let button: ts.JsxElement | undefined;
@@ -381,27 +381,27 @@ test("Registrar uses white with original opacities in every theme", () => {
   const saveMessage = () => {};
   const scope = {
     React, Pressable: "button", Text: "span", styles, saveMessage,
-    REGISTER_BUTTON_BACKGROUND: "rgba(249,249,249,0.2)",
-    REGISTER_BUTTON_ENABLED_BACKGROUND: "rgba(249,249,249,0.45)",
+    getThemeStyleId: (id: string) => id === "pleyades" ? "indigo2" : id,
   };
   const renderButton = new Function(...Object.keys(scope), "isSubmitDisabled", "createMutation", "theme", compiled);
   for (const themeId of ["natural", "cloudy", "indigo2", "pleyades"]) {
   for (const [disabled, pending] of [[false, false], [true, false], [true, true]]) {
     const element = renderButton(...Object.values(scope), disabled, { isPending: pending }, { id: themeId }) as React.ReactElement<any>;
     const background = element.props.style.find((entry: any) => entry?.backgroundColor)?.backgroundColor;
-    assert.equal(background, disabled ? scope.REGISTER_BUTTON_BACKGROUND : scope.REGISTER_BUTTON_ENABLED_BACKGROUND);
+    assert.equal(background, "#F9F9F9");
     assert.equal(element.props.disabled, disabled);
     assert.equal(element.props.onPress, saveMessage);
     assert.equal(element.props.accessibilityLabel, "Registrar");
     const label = element.props.children as React.ReactElement<any>;
     assert.equal(label.type, "span");
     assert.equal(label.props.children, pending ? "Registrando..." : "REGISTRAR");
-    assert.equal(label.props.style.find((entry: any) => entry?.color)?.color, "#F9F9F9");
-    assert.equal(element.props.style.find((entry: any) => entry?.opacity)?.opacity, disabled ? 0.5 : undefined);
+    assert.equal(label.props.style.find((entry: any) => entry?.color)?.color,
+      themeId === "natural" ? "#073B32" : themeId === "cloudy" ? "#166494" : "#0B1438");
+    assert.equal(element.props.style.find((entry: any) => entry?.opacity)?.opacity, undefined);
   }
   }
   assert.doesNotMatch(button.getText(ast), /MaskedView|LinearGradient/);
-  assert.match(source("../constants/colors.ts"), /REGISTER_BUTTON_ENABLED_BACKGROUND = "rgba\(249,249,249,0\.45\)"/);
+  assert.doesNotMatch(button.getText(ast), /opacity:|REGISTER_BUTTON/);
 });
 
 test("Ver muro has a white border at 80 percent opacity in every theme", () => {
@@ -410,8 +410,6 @@ test("Ver muro has a white border at 80 percent opacity in every theme", () => {
   assert.match(button, /borderColor: REFLECTION_WALL_BUTTON_BORDER_COLOR/);
   assert.doesNotMatch(button, /opacity:|theme\.id/);
   assert.match(source("../constants/colors.ts"), /REFLECTION_WALL_BUTTON_BORDER_COLOR = "rgba\(249,249,249,0\.8\)"/);
-  assert.match(source("../constants/colors.ts"), /NATURAL_REGISTER_BUTTON_BACKGROUND = "rgba\(249,249,249,0\.2\)"/);
-  assert.match(source("../constants/colors.ts"), /NATURAL_REGISTER_BUTTON_ENABLED_BACKGROUND = "rgba\(249,249,249,0\.45\)"/);
   assert.equal(style("InnerSpaceCard", "wallButton").borderWidth, 1);
 });
 
@@ -427,7 +425,7 @@ test("Composer tabs and labels are smaller with 4px more space between tabs", ()
   const tab = style("InnerSpaceCard", "gridItem");
   assert.equal(tab.paddingVertical, 8.5);
   assert.equal(tab.paddingHorizontal, 12.5);
-  assert.equal(style("InnerSpaceCard", "gridLabel").fontSize, 9);
+  assert.equal(style("InnerSpaceCard", "gridLabel").fontSize, 10);
   assert.equal(style("InnerSpaceCard", "categoriesContent").gap, 12);
 });
 
