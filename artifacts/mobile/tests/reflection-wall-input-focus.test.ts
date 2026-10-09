@@ -331,6 +331,7 @@ test("all themes use borderless category fills, uniform text and one soft haptic
       const fill = (React.Children.toArray(selectedTab.children) as any[]).find(k => k.type === "tab-fill");
       assert.equal(fill.props.selected, true);
       assert.equal(fill.props.color, "#ABCDEF");
+      assert.equal(fill.props.selectedOpacity, 0.6);
       assert.equal((React.Children.toArray(selectedTab.children) as any[]).some(k => k.type === "tab-border"), false);
       assert.equal(Object.assign({}, ...selectedTab.style({ pressed: false }).filter(Boolean)).borderWidth, 0);
     }
@@ -343,6 +344,7 @@ test("all themes use borderless category fills, uniform text and one soft haptic
       const fill = (React.Children.toArray(deselectedTab.children) as any[]).find(k => k.type === "tab-fill");
       assert.equal(fill.props.selected, false, "fill remains mounted so deselection can fade out");
       assert.equal(fill.props.color, "#ABCDEF");
+      assert.equal(fill.props.selectedOpacity, 0.6);
       assert.equal((React.Children.toArray(deselectedTab.children) as any[]).some(k => k.type === "tab-border"), false);
     }
     f.dispose();

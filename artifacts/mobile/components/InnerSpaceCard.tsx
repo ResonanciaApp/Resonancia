@@ -588,7 +588,7 @@ export function InnerSpaceCard({
               ]}
               onPress={() => toggleCategory(cat.id as ReflectionCategory)}
             >
-              <ReflectionCategoryTabFill selected={category === cat.id} color={cat.color} reduceMotion={Boolean(reduceMotion)} />
+              <ReflectionCategoryTabFill selected={category === cat.id} color={cat.color} selectedOpacity={0.6} reduceMotion={Boolean(reduceMotion)} />
               <ReflectionCategoryTabLabel
                 label={cat.label}
                 selected={category === cat.id}

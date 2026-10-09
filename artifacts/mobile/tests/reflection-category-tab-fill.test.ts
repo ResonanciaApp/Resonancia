@@ -9,7 +9,7 @@ const compiled = ts.transpileModule(src, {
   compilerOptions: { module: ts.ModuleKind.CommonJS, jsx: ts.JsxEmit.React, esModuleInterop: true },
 }).outputText;
 
-function load(reduce: boolean, color = "#F075B3") {
+function load(reduce: boolean, color = "#F075B3", selectedOpacity?: number) {
   const timings: any[] = [], stops: number[] = [], sets: number[] = [];
   let cleanup: any, effect: any;
   let savedRef: any;
@@ -31,12 +31,12 @@ function load(reduce: boolean, color = "#F075B3") {
   const m: any = { exports: {} };
   new Function("require", "module", "exports", compiled)((n: string) => mocks[n], m, m.exports);
   const Fill = m.exports.ReflectionCategoryTabFill.type ?? m.exports.ReflectionCategoryTabFill;
-  const tree: any = (m.exports.ReflectionCategoryTabFill.type ?? Fill)({ selected: true, color, reduceMotion: reduce });
+  const tree: any = (m.exports.ReflectionCategoryTabFill.type ?? Fill)({ selected: true, color, reduceMotion: reduce, selectedOpacity });
   cleanup = effect();
   return { timings, stops, sets, cleanup, tree,
     rerender(selected: boolean) {
       cleanup?.();
-      const next = Fill({ selected, color, reduceMotion: reduce });
+      const next = Fill({ selected, color, reduceMotion: reduce, selectedOpacity });
       cleanup = effect();
       return next;
     },
@@ -53,6 +53,20 @@ test("fill uses the Premium fade config and stops on cleanup", () => {
   r.cleanup();
   assert.equal(r.stops.length, 1);
   assert.equal(r.tree.props.pointerEvents, "none");
+});
+
+test("composer can raise selected category tint to 60% without changing the 7% unselected fill", () => {
+  const r = load(false, "#52A855", 0.6);
+  for (const tree of [r.tree, r.rerender(false)]) {
+    const [base, selected] = React.Children.toArray(tree.props.children) as any[];
+    assert.deepEqual(base.props.style[1].opacity.outputRange, [0.07, 0]);
+    const tint = (React.Children.toArray(selected.props.children) as any[])[1];
+    assert.equal(Object.assign({}, ...tint.props.style).opacity, 0.6);
+    assert.equal(Object.assign({}, ...tint.props.style).backgroundColor, "#52A855");
+  }
+  assert.equal(r.timings[0].duration, 400);
+  assert.equal(r.timings[1].toValue, 0);
+  r.dispose();
 });
 
 test("reduce motion sets the value without animating", () => {
