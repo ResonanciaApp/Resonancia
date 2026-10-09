@@ -8,3 +8,11 @@ Todos los tabs de contenido no seleccionados usan negro al 16 % (`rgba(0,0,0,0.1
 **Why:** El usuario pidió unificar todos los tabs no seleccionados al 16 % para todos los temas, no solo Cloudy. Sustituye las reglas anteriores de fondos coloreados, transparentes o con distinta opacidad.
 
 **How to apply:** Preservar los diseños de los tabs seleccionados, textos, iconos y bordes. No volver a variar el fondo de un tab inactivo según el tema o el scroll del sticky header. La barra inferior de navegación es una superficie distinta; esta regla no autoriza cambiar su diseño.
+
+Excepción explícita: en la pantalla Muro expansivo, los tabs no seleccionados,
+incluido Todos, usan negro al 19 % en Cloudy/Natural y al 16 % en Índigo 2/Pleyades.
+Los seleccionados conservan su diseño.
+
+**Why:** El usuario pidió distinguir estas opacidades por tema únicamente en esa pantalla, después de la regla general.
+
+**How to apply:** Mantener la excepción acotada al Muro expansivo; no cambiar los tabs del compositor de Perfil ni otras pantallas.

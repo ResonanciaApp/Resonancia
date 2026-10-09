@@ -14,7 +14,7 @@ export const ReflectionCategoryTabBorder = React.memo(function ReflectionCategor
 }: { color?: string; borderWidth?: number; opacity?: number; inset?: number }) {
   if (color) return <View pointerEvents="none" style={[styles.categoryBorder, { borderColor: color, borderWidth, opacity, top: inset, right: inset, bottom: inset, left: inset }]} />;
   return (
-    <View pointerEvents="none" style={[StyleSheet.absoluteFillObject, { opacity }]}>
+    <View pointerEvents="none" style={[StyleSheet.absoluteFillObject, { opacity, top: inset, right: inset, bottom: inset, left: inset }]}>
     <DiscoverSearchBorder
       borderRadius={999}
       borderWidth={borderWidth}

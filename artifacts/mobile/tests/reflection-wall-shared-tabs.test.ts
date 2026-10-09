@@ -31,7 +31,7 @@ function styles(tree: ts.SourceFile, keys: string[]) {
       compile(`return (${entry.initializer.getText(tree)});`))(32)]));
 }
 
-test("Muro expansivo category filters share the design and filtering, leaving Todos unchanged except its 3px stroke", () => {
+test("Muro expansivo filters keep selected colors, use theme-specific inactive black and expand Todos' stroke", () => {
   const tree = ast(source("../app/mi-espacio-interior.tsx"));
   const row = find(tree, node => ts.isJsxElement(node)
     && node.openingElement.tagName.getText(tree) === "ScrollView"
@@ -40,10 +40,16 @@ test("Muro expansivo category filters share the design and filtering, leaving To
     "filterPillSelected", "filterPillInactive", "filterPillAllInactive", "filterText"]);
   const render = new Function("React", "ScrollView", "Pressable", "ReflectionCategoryTabFill",
     "ReflectionCategoryTabLabel", "ReflectionCategoryTabBorder", "styles", "reflectionCategoryOptions",
-    "filter", "setFilter", "disableWallAnimations", "Haptics", "reduceMotion",
+    "filter", "setFilter", "disableWallAnimations", "Haptics", "reduceMotion", "inactiveTabBackground",
     compile(`return (${row.getText(tree)});`));
   const options = [{ id: "gratitude", label: "Gratitud", color: "#F075B3" },
     { id: "custom", label: "Editorial", color: "#123456" }];
+  const palette = find(tree, node => ts.isVariableDeclaration(node)
+    && node.name.getText(tree) === "inactiveTabBackground");
+  const background = new Function("theme", compile(`return (${palette.initializer.getText(tree)});`));
+  for (const id of ["cloudy", "natural", "indigo2", "pleyades"]) {
+  const inactive = background({ id });
+  assert.equal(inactive, id === "cloudy" || id === "natural" ? "rgba(0,0,0,0.19)" : "rgba(0,0,0,0.16)");
   for (const filter of ["all", "gratitude"]) {
     for (const reduceMotion of [false, true]) {
       const changed: string[] = [], impacts: string[] = [];
@@ -51,11 +57,11 @@ test("Muro expansivo category filters share the design and filtering, leaving To
       const result = render(React, "scroll", "pressable", "fill", "label", "border", wallStyles,
         options, filter, (next: string) => changed.push(next), () => disabledAnimations++,
         { impactAsync: async (kind: string) => { impacts.push(kind); }, ImpactFeedbackStyle: { Soft: "soft" } },
-        reduceMotion);
+        reduceMotion, inactive);
       const [all, ...categories] = React.Children.toArray(result.props.children) as any[];
       const allChildren = React.Children.toArray(all.props.children) as any[];
       assert.equal(allChildren.some(child => child.type === "fill"), false);
-      assert.equal(flatten(all.props.style).backgroundColor, "rgba(0,0,0,0.16)");
+      assert.equal(flatten(all.props.style).backgroundColor, filter === "all" ? "rgba(0,0,0,0.16)" : inactive);
       assert.equal(flatten(all.props.style).borderWidth, filter === "all" ? 1 : 3);
       assert.equal(flatten(all.props.style).paddingHorizontal + flatten(all.props.style).borderWidth, 17,
         "Todos retains its outer dimensions with the 3px inactive stroke");
@@ -64,6 +70,7 @@ test("Muro expansivo category filters share the design and filtering, leaving To
         const border = allChildren.find(child => child.type === "border");
         assert.equal(border.props.borderWidth, 3);
         assert.equal(border.props.opacity, 0.75);
+        assert.equal(border.props.inset, -1);
       }
       for (let index = 0; index < categories.length; index++) {
         const tab = categories[index];
@@ -79,6 +86,7 @@ test("Muro expansivo category filters share the design and filtering, leaving To
         assert.equal(fill.props.selected, filter === options[index].id);
         assert.equal(fill.props.reduceMotion, reduceMotion);
         assert.equal(fill.props.selectedOpacity, 0.6);
+        assert.equal(fill.props.inactiveBackgroundColor, inactive);
         const label = children.find(child => child.type === "label");
         assert.equal(label.props.uniformWeight, true);
         assert.equal(label.props.textStyle.fontSize, 13);
@@ -91,9 +99,10 @@ test("Muro expansivo category filters share the design and filtering, leaving To
       assert.deepEqual(changed, filter === "all" ? ["custom"] : ["custom", "all"]);
     }
   }
+  }
 });
 
-test("message category pills use their editorial color at 60% and full-white 500-weight text", () => {
+test("message category pills use their editorial color at 20% and full-white 500-weight text", () => {
   const tree = ast(source("../app/mi-espacio-interior.tsx"));
   const wallStyles = styles(tree, ["cardCatPill", "cardCatText", "filterText"]);
   const pill = find(tree, node => ts.isJsxElement(node)
@@ -106,7 +115,7 @@ test("message category pills use their editorial color at 60% and full-white 500
       wallStyles, { color, bg: "unused-old-tint", label: "Categoría" });
     const [background, label] = React.Children.toArray(result.props.children) as any[];
     assert.equal(flatten(background.props.style).backgroundColor, color);
-    assert.equal(flatten(background.props.style).opacity, 0.6);
+    assert.equal(flatten(background.props.style).opacity, 0.2);
     assert.equal(background.props.pointerEvents, "none");
     assert.equal(flatten(label.props.style).color, "#F9F9F9");
     assert.equal(flatten(label.props.style).fontWeight, wallStyles.filterText.fontWeight);
@@ -141,27 +150,30 @@ test("the pencil action opens the existing editor with the original reflection I
   assert.equal(message, reflection.message);
 });
 
-test("edit and Instagram actions are paired above the card, aligned right, with existing sharing guards", () => {
+test("edit and Instagram actions are vertical inside the card with existing sharing guards", () => {
   const tree = ast(source("../app/mi-espacio-interior.tsx"));
   const row = find(tree, node => ts.isJsxElement(node)
-    && node.openingElement.attributes.getText(tree).includes("styles.reflectionMetaRow"));
+    && node.openingElement.attributes.getText(tree).includes("styles.cardActionsRow"));
   const card = find(tree, node => ts.isJsxElement(node)
     && node.openingElement.attributes.getText(tree) === "style={styles.reflectionCard}");
-  assert.doesNotMatch(card.getText(tree), /testID=\{`(?:menu|share)-/);
+  assert.match(card.getText(tree), /testID=\{`menu-/);
+  assert.match(card.getText(tree), /testID=\{`share-/);
+  const meta = find(tree, node => ts.isJsxElement(node)
+    && node.openingElement.attributes.getText(tree).includes("styles.reflectionMetaRow"));
+  assert.doesNotMatch(meta.getText(tree), /testID=\{`(?:menu|share)-/);
   const render = new Function("React", "View", "Text", "Pressable", "Feather", "StyleSheet", "styles",
     "cat", "isEditing", "isPremium", "isShareable", "reflection", "beginEditing", "setShareReflection",
     compile(`return (${row.getText(tree)});`));
   const wallStyles = styles(tree, ["reflectionMetaRow", "cardActionsRow", "cardCatPill", "cardCatText", "menuButton"]);
   assert.equal(wallStyles.reflectionMetaRow.justifyContent, "space-between");
-  assert.equal(wallStyles.cardActionsRow.flexDirection, "row");
+  assert.equal(wallStyles.cardActionsRow.flexDirection, "column");
   assert.equal(wallStyles.cardActionsRow.marginRight, -4);
   const reflection = { id: 7, message: "Mi reflexión" };
   let shared;
   const run = (editing: boolean, premium: boolean, shareable: boolean) => render(React, "view", "text", "button",
     "icon", { absoluteFill: {} }, wallStyles, { color: "#F075B3", label: "Gratitud" },
     editing, premium, shareable, reflection, () => {}, (value: unknown) => { shared = value; });
-  const [, actions] = React.Children.toArray(run(false, true, true).props.children) as any[];
-  const [pencil, instagram] = React.Children.toArray(actions.props.children) as any[];
+  const [pencil, instagram] = React.Children.toArray(run(false, true, true).props.children) as any[];
   assert.equal(pencil.props.children.props.size, 17);
   assert.equal(pencil.props.children.props.color, "#D6D6D6");
   assert.equal(instagram.props.children.props.name, "instagram");
@@ -169,9 +181,8 @@ test("edit and Instagram actions are paired above the card, aligned right, with 
   assert.equal(instagram.props.children.props.color, "#D6D6D6");
   instagram.props.onPress();
   assert.equal(shared, reflection);
-  assert.equal(React.Children.toArray((React.Children.toArray(run(false, false, true).props.children) as any[])[1].props.children).length, 1);
-  assert.equal((React.Children.toArray(run(true, true, true).props.children) as any[]).length, 1);
-  const disabledActions = (React.Children.toArray(run(false, true, false).props.children) as any[])[1];
+  assert.equal(React.Children.toArray(run(false, false, true).props.children).length, 1);
+  const disabledActions = run(false, true, false);
   assert.equal((React.Children.toArray(disabledActions.props.children) as any[])[1].props.disabled, true);
 });
 

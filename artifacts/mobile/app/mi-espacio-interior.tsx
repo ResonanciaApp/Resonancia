@@ -229,6 +229,9 @@ function PremiumInnerSpaceScreen() {
   const { requestWallCompose } = useDrawer();
   const colors = useColors();
   const { theme } = useSceneTheme();
+  const inactiveTabBackground = theme.id === "cloudy" || theme.id === "natural"
+    ? "rgba(0,0,0,0.19)"
+    : "rgba(0,0,0,0.16)";
   const qc = useQueryClient();
   const { authLoading, isSignedIn, clerkUserId } = useAuth();
   const { isPremium } = usePremium();
@@ -606,34 +609,9 @@ function PremiumInnerSpaceScreen() {
         >
           <View style={styles.reflectionMetaRow}>
             <View style={[styles.cardCatPill, { overflow: "hidden" }]}>
-              <View pointerEvents="none" style={[StyleSheet.absoluteFill, { backgroundColor: cat.color, opacity: 0.6, borderRadius: 10 }]} />
+              <View pointerEvents="none" style={[StyleSheet.absoluteFill, { backgroundColor: cat.color, opacity: 0.2, borderRadius: 10 }]} />
               <Text style={[styles.cardCatText, { color: "#F9F9F9", fontWeight: "500" }]}>{cat.label}</Text>
             </View>
-            {!isEditing && (
-              <View style={styles.cardActionsRow}>
-                <Pressable
-                  testID={`menu-${reflection.id}`}
-                  accessibilityLabel="Editar reflexión"
-                  accessibilityRole="button"
-                  style={styles.menuButton}
-                  onPress={() => beginEditing(reflection)}
-                >
-                  <Feather name="edit-2" size={17} color="#D6D6D6" />
-                </Pressable>
-                {isPremium && (
-                  <Pressable
-                    testID={`share-${reflection.id}`}
-                    accessibilityLabel="Compartir"
-                    accessibilityRole="button"
-                    style={[styles.menuButton, !isShareable && { opacity: 0.3 }]}
-                    disabled={!isShareable}
-                    onPress={() => setShareReflection(reflection)}
-                  >
-                    <Feather name="instagram" size={16} color="#D6D6D6" />
-                  </Pressable>
-                )}
-              </View>
-            )}
           </View>
         </WallScrollReveal>
 
@@ -695,6 +673,29 @@ function PremiumInnerSpaceScreen() {
             <View style={styles.cardContentRow}>
               <View style={styles.cardMessageColumn}>
                 <CollapsibleReflectionMessage message={reflection.message} color={colors.foreground} />
+              </View>
+              <View style={styles.cardActionsRow}>
+                <Pressable
+                  testID={`menu-${reflection.id}`}
+                  accessibilityLabel="Editar reflexión"
+                  accessibilityRole="button"
+                  style={styles.menuButton}
+                  onPress={() => beginEditing(reflection)}
+                >
+                  <Feather name="edit-2" size={17} color="#D6D6D6" />
+                </Pressable>
+                {isPremium && (
+                  <Pressable
+                    testID={`share-${reflection.id}`}
+                    accessibilityLabel="Compartir"
+                    accessibilityRole="button"
+                    style={[styles.menuButton, !isShareable && { opacity: 0.3 }]}
+                    disabled={!isShareable}
+                    onPress={() => setShareReflection(reflection)}
+                  >
+                    <Feather name="instagram" size={16} color="#D6D6D6" />
+                  </Pressable>
+                )}
               </View>
             </View>
           )}
@@ -770,6 +771,7 @@ function PremiumInnerSpaceScreen() {
               styles.filterPill,
               filter === "all" ? styles.filterPillSelected : styles.filterPillInactive,
               filter !== "all" && styles.filterPillAllInactive,
+              filter !== "all" && { backgroundColor: inactiveTabBackground },
             ]}
             onPress={() => {
               if (filter === "all") return;
@@ -777,7 +779,7 @@ function PremiumInnerSpaceScreen() {
               setFilter("all");
             }}
           >
-            {filter === "all" && <ReflectionCategoryTabBorder opacity={0.75} borderWidth={3} />}
+            {filter === "all" && <ReflectionCategoryTabBorder opacity={0.75} borderWidth={3} inset={-1} />}
             <ReflectionCategoryTabLabel label="Todos" selected={filter === "all"} textStyle={styles.filterText} />
           </Pressable>
            {reflectionCategoryOptions.map(cat => {
@@ -799,7 +801,7 @@ function PremiumInnerSpaceScreen() {
                   setFilter(cat.id as ReflectionCategory);
                 }}
               >
-                <ReflectionCategoryTabFill selected={isActive} color={cat.color} reduceMotion={Boolean(reduceMotion)} selectedOpacity={0.6} />
+                <ReflectionCategoryTabFill selected={isActive} color={cat.color} reduceMotion={Boolean(reduceMotion)} selectedOpacity={0.6} inactiveBackgroundColor={inactiveTabBackground} />
                 <ReflectionCategoryTabLabel
                   label={cat.label}
                   selected={isActive}
@@ -1071,7 +1073,7 @@ const styles = StyleSheet.create({
   },
   cardActionsRow: {
     marginRight: -4,
-    flexDirection: "row",
+    flexDirection: "column",
     alignItems: "center",
     gap: 10,
   },

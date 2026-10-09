@@ -14,7 +14,8 @@ export const ReflectionCategoryTabFill = React.memo(function ReflectionCategoryT
   color,
   reduceMotion = false,
   selectedOpacity = 0.23,
-}: { selected: boolean; color: string; reduceMotion?: boolean; selectedOpacity?: number }) {
+  inactiveBackgroundColor,
+}: { selected: boolean; color: string; reduceMotion?: boolean; selectedOpacity?: number; inactiveBackgroundColor?: string }) {
   const opacity = useRef(new Animated.Value(selected ? 1 : 0)).current;
 
   useEffect(() => {
@@ -32,8 +33,8 @@ export const ReflectionCategoryTabFill = React.memo(function ReflectionCategoryT
       <Animated.View
         pointerEvents="none"
         style={[StyleSheet.absoluteFill, {
-          backgroundColor: "#FFFFFF",
-          opacity: opacity.interpolate({ inputRange: [0, 1], outputRange: [0.07, 0] }),
+          backgroundColor: inactiveBackgroundColor ?? "#FFFFFF",
+          opacity: opacity.interpolate({ inputRange: [0, 1], outputRange: [inactiveBackgroundColor ? 1 : 0.07, 0] }),
         }]}
       />
       <Animated.View pointerEvents="none" style={[StyleSheet.absoluteFill, { opacity }]}>

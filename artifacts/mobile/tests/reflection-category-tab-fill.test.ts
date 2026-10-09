@@ -9,7 +9,7 @@ const compiled = ts.transpileModule(src, {
   compilerOptions: { module: ts.ModuleKind.CommonJS, jsx: ts.JsxEmit.React, esModuleInterop: true },
 }).outputText;
 
-function load(reduce: boolean, color = "#F075B3", selectedOpacity?: number) {
+function load(reduce: boolean, color = "#F075B3", selectedOpacity?: number, inactiveBackgroundColor?: string) {
   const timings: any[] = [], stops: number[] = [], sets: number[] = [];
   let cleanup: any, effect: any;
   let savedRef: any;
@@ -31,12 +31,12 @@ function load(reduce: boolean, color = "#F075B3", selectedOpacity?: number) {
   const m: any = { exports: {} };
   new Function("require", "module", "exports", compiled)((n: string) => mocks[n], m, m.exports);
   const Fill = m.exports.ReflectionCategoryTabFill.type ?? m.exports.ReflectionCategoryTabFill;
-  const tree: any = (m.exports.ReflectionCategoryTabFill.type ?? Fill)({ selected: true, color, reduceMotion: reduce, selectedOpacity });
+  const tree: any = (m.exports.ReflectionCategoryTabFill.type ?? Fill)({ selected: true, color, reduceMotion: reduce, selectedOpacity, inactiveBackgroundColor });
   cleanup = effect();
   return { timings, stops, sets, cleanup, tree,
     rerender(selected: boolean) {
       cleanup?.();
-      const next = Fill({ selected, color, reduceMotion: reduce, selectedOpacity });
+      const next = Fill({ selected, color, reduceMotion: reduce, selectedOpacity, inactiveBackgroundColor });
       cleanup = effect();
       return next;
     },
@@ -76,6 +76,21 @@ test("reduce motion sets the value without animating", () => {
   r.rerender(false);
   assert.deepEqual(r.sets, [1, 0]);
   assert.equal(r.timings.length, 0);
+});
+
+test("wall tabs crossfade theme-specific inactive black without dimming the selected category", () => {
+  for (const inactive of ["rgba(0,0,0,0.16)", "rgba(0,0,0,0.19)"]) {
+    const r = load(false, "#52A855", 0.6, inactive);
+    for (const tree of [r.tree, r.rerender(false)]) {
+      const [base, selected] = React.Children.toArray(tree.props.children) as any[];
+      assert.equal(base.props.style[1].backgroundColor, inactive);
+      assert.deepEqual(base.props.style[1].opacity.outputRange, [1, 0]);
+      const tint = (React.Children.toArray(selected.props.children) as any[])[1];
+      assert.equal(Object.assign({}, ...tint.props.style).opacity, 0.6);
+      assert.equal(Object.assign({}, ...tint.props.style).backgroundColor, "#52A855");
+    }
+    r.dispose();
+  }
 });
 
 test("deselection reverses the same native opacity fade without removing its overlay", () => {
