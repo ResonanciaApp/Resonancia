@@ -360,11 +360,11 @@ function GrowthRow({
           },
         ]}
       />
-      <View testID={`${level.id}-stage-art`} style={[styles.art, florecimiento && styles.bloomArt]}>
+      <View testID={`${level.id}-stage-art`} style={[styles.art, florecimiento && styles.bloomArt, styles.stageContentOffset]}>
         <GrowthLevelImage level={level} dimmed={status === "locked"} />
       </View>
       <View testID={`${level.id}-copy`} style={[styles.copy, reward && styles.rewardCopy]}>
-        <View style={status === "locked" && styles.lockedCopy}>
+        <View testID={`${level.id}-stage-summary`} style={[styles.stageContentOffset, status === "locked" && styles.lockedCopy]}>
         <View
           testID={`${level.id}-day-pill`}
           style={[
@@ -658,6 +658,7 @@ const styles = StyleSheet.create({
     paddingRight: 1,
   },
   lockedCopy: { opacity: 0.55 },
+  stageContentOffset: { transform: [{ translateX: -15 }] },
   rewardRow: { height: "auto", minHeight: GROWTH_ROW_HEIGHT, justifyContent: "flex-start", paddingBottom: 20 },
   rewardCopy: { flex: 0, paddingTop: 34 },
   reward: {
