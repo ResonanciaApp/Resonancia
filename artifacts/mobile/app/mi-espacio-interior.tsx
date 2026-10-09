@@ -803,7 +803,7 @@ function PremiumInnerSpaceScreen() {
                   setFilter(cat.id as ReflectionCategory);
                 }}
               >
-                <ReflectionCategoryTabFill selected={isActive} color={cat.color} reduceMotion={Boolean(reduceMotion)} selectedOpacity={0.6} inactiveBackgroundColor={inactiveTabBackground} />
+                <ReflectionCategoryTabFill selected={isActive} color={cat.color} reduceMotion={Boolean(reduceMotion)} selectedOpacity={0.2} inactiveBackgroundColor={inactiveTabBackground} />
                 <ReflectionCategoryTabLabel
                   label={cat.label}
                   selected={isActive}
@@ -991,7 +991,7 @@ const styles = StyleSheet.create({
   },
   dateHeader: {
     alignItems: 'stretch',
-    marginBottom: 16,
+    marginBottom: -4,
     marginTop: 6,
   },
   subsequentDateHeader: {

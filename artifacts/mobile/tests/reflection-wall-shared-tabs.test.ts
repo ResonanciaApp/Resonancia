@@ -36,7 +36,7 @@ function styles(tree: ts.SourceFile, keys: string[]) {
       compile(`return (${entry.initializer.getText(tree)});`))(32)]));
 }
 
-test("all dates add 10px to date-to-pill spacing without dividers or changing day-group gaps", () => {
+test("all dates reduce date-to-pill spacing by 20px without dividers or changing day-group gaps", () => {
   const tree = ast(source("../app/mi-espacio-interior.tsx"));
   const wallStyles = styles(tree, ["dateHeader", "dateHeaderRow", "subsequentDateHeader",
     "firstDateHeader", "monthSelectorAboveDate", "timelineRow", "monthSelectorButton"]);
@@ -53,7 +53,7 @@ test("all dates add 10px to date-to-pill spacing without dividers or changing da
     "later dates reserve the same height as the first date's month control");
   assert.equal(wallStyles.dateHeaderRow.minHeight, 33);
   assert.equal(wallStyles.dateHeaderRow.alignItems, "center");
-  assert.equal(wallStyles.dateHeader.marginBottom - 6, 10, "every date-to-pill gap grows by exactly 10px");
+  assert.equal(16 - wallStyles.dateHeader.marginBottom, 20, "every date-to-pill gap shrinks by exactly 20px");
   const row = find(tree, node => ts.isJsxElement(node)
     && node.openingElement.attributes.getText(tree) === "style={styles.dateHeaderRow}");
   assert.doesNotMatch(row.getText(tree), /renderMonthSelector/);
@@ -175,7 +175,7 @@ test("Muro filters keep category colors and Todos keeps its black fill with a 1p
         assert.equal(fill.props.color, options[index].color);
         assert.equal(fill.props.selected, filter === options[index].id);
         assert.equal(fill.props.reduceMotion, reduceMotion);
-        assert.equal(fill.props.selectedOpacity, 0.6);
+        assert.equal(fill.props.selectedOpacity, 0.2, "selected category tabs match card pill opacity");
         assert.equal(fill.props.inactiveBackgroundColor, inactive);
         const label = children.find(child => child.type === "label");
         assert.equal(label.props.uniformWeight, true);
