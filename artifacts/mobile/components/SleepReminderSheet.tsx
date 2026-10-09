@@ -1,4 +1,4 @@
-import { Feather } from "@expo/vector-icons";
+import { Feather, Ionicons } from "@expo/vector-icons";
 import * as Haptics from "expo-haptics";
 import { LinearGradient } from "expo-linear-gradient";
 import React, { useCallback, useEffect, useRef, useState } from "react";
@@ -241,7 +241,7 @@ export function SleepReminderSheet({
                  {isMorning ? (
                    <FilledSunIcon size={23} color="#FFD79A" />
                  ) : (
-                   <Feather name="moon" size={23} color="#D6C8FF" />
+                   <Ionicons name="moon" size={23} color="#D6C8FF" />
                  )}
                  <Text style={styles.reminderTitle}>
                    {isMorning ? "Recordatorio para meditar" : "Recordatorio para dormir"}

@@ -39,6 +39,17 @@ function expression(attr: ts.JsxAttribute, env: Record<string, unknown>): any {
 }
 const flatten = (styles: any[]) => Object.assign({}, ...styles.filter(Boolean));
 
+test("Vuelve a ti uses a solid purple moon, preserving its size and the morning sun", () => {
+  const moon = find(reminder, node => ts.isJsxSelfClosingElement(node)
+    && node.tagName.getText() === "Ionicons"
+    && node.attributes.getText().includes('name="moon"'));
+  assert.equal((attribute(moon, "name").initializer as ts.StringLiteral).text, "moon");
+  assert.equal(expression(attribute(moon, "size"), {}), 23);
+  assert.equal((attribute(moon, "color").initializer as ts.StringLiteral).text, "#D6C8FF");
+  assert.match(read("../components/SleepReminderSheet.tsx"), /<FilledSunIcon size=\{23\}/);
+  assert.doesNotMatch(read("../components/SleepReminderSheet.tsx"), /<Feather name="moon"/);
+});
+
 test("sleep CTAs opt in only for Natural and Pleyades", () => {
   assert.deepEqual(getSleepActionColors("natural"), { background: "#F9F9F9", foreground: "#073B32" });
   assert.deepEqual(getSleepActionColors("pleyades"), { background: "#F9F9F9", foreground: "#0B1438" });
