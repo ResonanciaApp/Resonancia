@@ -228,16 +228,16 @@ export function GrowthLevelPreviewCard({
       >
         {canonicalVerticalInsets ? (
           <View testID="profile-intention-title-row" style={[styles.canonicalPreviewTitleRow, sectionTitle && styles.profilePreviewTitleSpacing]}>
-            {sectionTitle ? name : dayPill}
-            {sectionTitle ? dayPill : name}
+            {dayPill}
+            {name}
           </View>
         ) : (
           <>
-            {sectionTitle ? name : dayPill}
-            {sectionTitle ? dayPill : name}
+            {dayPill}
+            {name}
           </>
         )}
-        {!sectionTitle && story}
+        {story}
       </View>
       {!sectionTitle && <PreviewContentEntrance replayKey="intention-chevron" delay={810}>
         <Feather

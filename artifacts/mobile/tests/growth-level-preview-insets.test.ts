@@ -246,7 +246,7 @@ test("Perfil adds Tu camino above Intención with the creativity-points heading 
   assert.doesNotMatch(render(), /profile-growth-section-title|>Tu camino</);
 });
 
-test("Perfil Tu camino shows accumulated days below the stage without a lotus beside its title", () => {
+test("Perfil Tu camino shows accumulated days above the stage without a lotus beside its title", () => {
   let opened = false;
   const html = render({ embedded: true, canonicalVerticalInsets: true, sectionTitle: "Tu camino", onPress: () => { opened = true; } });
   assert.match(html, /data-testid="profile-growth-view-all"[^>]*data-accessibility-role="button"[^>]*>[\s\S]*?Ver todo/);
@@ -255,9 +255,10 @@ test("Perfil Tu camino shows accumulated days below the stage without a lotus be
   assert.match(html, />0 días</);
   assert.doesNotMatch(html, /profile-intention-name-with-lotus|profile-intention-lotus-background/);
   assert.match(html, /data-icon="spa" data-color="#BE9650"/);
-  assert.ok(html.indexOf(">Intención") < html.indexOf('data-icon="spa"'));
+  assert.ok(html.indexOf('data-icon="spa"') < html.indexOf(">Intención"));
   assert.match(html, />Intención</);
-  assert.doesNotMatch(html, /Una práctica que comienza hoy\.|profile-intention-description/);
+  assert.match(html, /Una práctica que comienza hoy\./);
+  assert.match(html, /profile-intention-description/);
   assert.doesNotMatch(html, /profile-intention-chevron|data-icon="chevron-right"/);
   assert.match(html, /data-testid="growth-level-zero-preview"[^>]*data-padding-top="18" data-padding-bottom="11"/);
   assert.ok(capturedViewAllPress);
@@ -292,8 +293,9 @@ test("Perfil uses actual accumulated days and the timeline pill's sizing for eve
       assert.match(titleRow, /data-gap="5"/);
       assert.equal((html.match(/data-gap="5"/g) ?? []).length, 2, "existing copy and title-group spacing is preserved");
       assert.ok(html.includes(`>${days} días<`));
-      assert.ok(html.indexOf(`>${name}<`) < html.indexOf(`>${days} días<`));
-      assert.doesNotMatch(html, /profile-intention-description|>Descripción\.</);
+      assert.ok(html.indexOf(`>${days} días<`) < html.indexOf(`>${name}<`));
+      assert.ok(html.indexOf(`>${name}<`) < html.indexOf(">Descripción.</div>"));
+      assert.match(html, /profile-intention-description/);
       assert.doesNotMatch(html, new RegExp(`${startDay}–${endDay} días`));
       assert.equal((html.match(/data-icon="spa"/g) ?? []).length, 1);
       assert.doesNotMatch(html, /profile-intention-lotus-background/);
@@ -303,7 +305,7 @@ test("Perfil uses actual accumulated days and the timeline pill's sizing for eve
   }
 });
 
-test("Perfil preserves themed timeline pills while its phase description stays hidden", () => {
+test("Perfil preserves themed timeline pills and restores its phase description", () => {
   const sceneMock = mocks["@/context/SceneThemeContext"];
   const growthMock = mocks["@/context/GrowthContext"];
   const originalScene = sceneMock.useSceneTheme;
@@ -316,7 +318,9 @@ test("Perfil preserves themed timeline pills while its phase description stays h
       const html = render({ canonicalVerticalInsets: true, sectionTitle: "Tu camino" });
       const pill = html.match(/<div[^>]*data-testid="intention-preview-day-pill"[^>]*>/)?.[0] ?? "";
       const updated = id === "cloudy" || id === "natural";
-      assert.doesNotMatch(html, /profile-intention-description|>Descripción\.</);
+      const description = html.match(/<div[^>]*data-testid="profile-intention-description"[^>]*>/)?.[0] ?? "";
+      assert.match(description, new RegExp(`data-color="${updated ? "#D1D1D1" : "#C4C4C4"}"`));
+      assert.match(html, />Descripción\.</);
       if (updated) {
         const expectedBackground = id === "natural" ? "rgba(229,255,219,0.20)" : "rgba(128,171,231,0.20)";
         assert.ok(pill.includes(`data-background="${expectedBackground}"`));
@@ -850,7 +854,7 @@ test("Profile intention uses the same smaller circular image as Tu camino withou
   assert.doesNotMatch(render(), /profile-intention-glow|profile-intention-image|brightness/);
 });
 
-test("Perfil Tu camino shows its title then day pill without a description in every theme", () => {
+test("Perfil Tu camino restores day pill then title then description in every theme", () => {
   const scene = mocks["@/context/SceneThemeContext"];
   const originalTheme = scene.useSceneTheme;
   try {
@@ -860,9 +864,10 @@ test("Perfil Tu camino shows its title then day pill without a description in ev
       const row = html.indexOf('data-testid="profile-intention-title-row"');
       const name = html.indexOf(">Intención</div>", row);
       const pill = html.indexOf('data-testid="intention-preview-day-pill"', row);
-      assert.ok(row >= 0 && name > row && pill > name, id);
+      assert.ok(row >= 0 && pill > row && name > pill, id);
       assert.match(html, /0 días/);
-      assert.doesNotMatch(html, /profile-intention-description|Una práctica que comienza hoy\./);
+      assert.ok(html.indexOf('data-testid="profile-intention-description"') > name, id);
+      assert.match(html, /Una práctica que comienza hoy\./);
       assert.doesNotMatch(html, /data-icon="chevron-right"/);
       assert.match(html, /data-gap="5"/);
       assert.match(html, /data-testid="profile-intention-image"/);

@@ -27,7 +27,7 @@ La raya horizontal de las rachas de Perfil debe estar en el centro de su tarjeta
 
 **How to apply:** Conservar márgenes simétricos alrededor del divisor y comprobar el centro respecto de la tarjeta completa, sin mover sus filas ni el contenido posterior.
 
-Perfil muestra primero los siete días en un bloque negro con el título interior «Progreso semanal», encima del historial completo de cuatro cifras. Puntos creatividad queda oculto deliberadamente; conserva Tu camino y después el calendario, seguido del contenido personal restante. Tu progreso semanal muestra el mensaje de práctica encima del contador, seguido de los siete días, sin «Esta semana», sesiones completadas, divisores, historial de rachas ni tarjeta de Intención. Los tratamientos de ambas superficies son independientes.
+Perfil muestra primero los siete días en un bloque negro con el título interior «Progreso semanal», encima del historial completo de cuatro cifras. Puntos creatividad queda oculto deliberadamente; conserva el calendario y Tu camino, seguido del contenido personal restante. Tu progreso semanal muestra el mensaje de práctica encima del contador, seguido de los siete días, sin «Esta semana», sesiones completadas, divisores, historial de rachas ni tarjeta de Intención. Los tratamientos de ambas superficies son independientes.
 
 **Why:** El usuario pidió restaurar los siete días encima de Rachas en Perfil, con fondo negro y título interior. En Tu progreso retiró la sección de sesiones completadas y su divisor, pero después devolvió únicamente el mensaje a su ubicación anterior por encima del contador. El 9 de octubre de 2026 reiteró que Puntos creatividad debe esconderse de Perfil, no que se elimine su funcionalidad. Estas correcciones no revierten los otros cambios.
 

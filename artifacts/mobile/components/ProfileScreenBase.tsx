@@ -1590,9 +1590,9 @@ export function ProfileScreenBase({
                 sectionBottomPadding={18}
                 sectionMarginBottom={PROFILE_SECTION_GAP}
                 canonicalVerticalInsets
-                beforeCalendar={
+                afterCalendar={
                   <>
-                    <View testID="profile-growth-intention" style={{ marginBottom: PROFILE_SECTION_GAP }}>
+                    <View testID="profile-growth-intention" style={{ marginTop: PROFILE_SECTION_GAP }}>
                       <GrowthLevelPreviewCard embedded canonicalVerticalInsets sectionTitle="Tu camino" titleFontSize={17} backgroundColor="rgba(0,0,0,0.16)" onPress={() => setGrowthJourneyOpen(true)} />
                     </View>
                   </>
