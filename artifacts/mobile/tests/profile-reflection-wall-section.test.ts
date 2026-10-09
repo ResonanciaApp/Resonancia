@@ -423,6 +423,14 @@ test("Composer tabs have 2px borders and the selected stroke alone is 80 percent
   assert.match(stroke, /borderColor: color, borderWidth, opacity/);
 });
 
+test("Composer tabs and labels are smaller with 4px more space between tabs", () => {
+  const tab = style("InnerSpaceCard", "gridItem");
+  assert.equal(tab.paddingVertical, 8.5);
+  assert.equal(tab.paddingHorizontal, 12.5);
+  assert.equal(style("InnerSpaceCard", "gridLabel").fontSize, 9);
+  assert.equal(style("InnerSpaceCard", "categoriesContent").gap, 12);
+});
+
 test("Perfil wall description matches Intención typography and centers the plus with both header lines", () => {
   const description = style("InnerSpaceCard", "canonicalHeaderDescription");
   const intention = style("GrowthJourney", "previewStory");

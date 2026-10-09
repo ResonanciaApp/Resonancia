@@ -811,7 +811,7 @@ const styles = StyleSheet.create({
   },
   categoriesContent: {
     paddingHorizontal: 20,
-    gap: 8,
+    gap: 12,
     alignItems: "center",
   },
   gridItem: {
@@ -819,8 +819,8 @@ const styles = StyleSheet.create({
     alignItems: "center",
     justifyContent: "center",
     gap: 7,
-    paddingVertical: 10,
-    paddingHorizontal: 14,
+    paddingVertical: 8.5,
+    paddingHorizontal: 12.5,
     borderRadius: 999,
     borderWidth: 2,
     borderColor: "rgba(255,255,255,0.1)",
@@ -833,7 +833,7 @@ const styles = StyleSheet.create({
     transform: [{ scale: 0.97 }],
   },
   gridLabel: {
-    fontSize: 12,
+    fontSize: 9,
     fontWeight: "500",
     textAlign: "left",
   },
