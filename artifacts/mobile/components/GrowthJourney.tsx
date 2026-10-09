@@ -172,6 +172,7 @@ export function GrowthLevelPreviewCard({
           },
           sectionTitle && !useTimelineProfilePill && styles.profilePreviewDayPill,
           useTimelineProfilePill && styles.profilePreviewTimelineDayPill,
+          sectionTitle && styles.profilePreviewPillOffset,
         ]}
       >
         {(canonicalVerticalInsets || sectionTitle) && (
@@ -207,7 +208,7 @@ export function GrowthLevelPreviewCard({
   );
   const story = (
     <PreviewContentEntrance key="intention-story" replayKey="intention-story" delay={810}>
-      <Text testID={sectionTitle ? "profile-intention-description" : undefined} style={[styles.previewStory, { color: sectionTitle ? getProfileSecondaryTextColor(theme.id) : colors.mutedForeground }]}>
+      <Text testID={sectionTitle ? "profile-intention-description" : undefined} style={[styles.previewStory, sectionTitle && styles.profilePreviewStoryOffset, { color: sectionTitle ? getProfileSecondaryTextColor(theme.id) : colors.mutedForeground }]}>
         {level.story}
       </Text>
     </PreviewContentEntrance>
@@ -560,7 +561,7 @@ const styles = StyleSheet.create({
   previewArt: { width: 100, height: 100 },
   profilePreviewArt: { width: 96, height: 96, position: "relative", top: 2 },
   embeddedPreviewCard: { marginHorizontal: 0 },
-  titledPreviewCard: { flexDirection: "column", alignItems: "stretch", paddingTop: 18, paddingBottom: 11 },
+  titledPreviewCard: { flexDirection: "column", alignItems: "stretch", paddingTop: 18, paddingBottom: 14 },
   previewSectionHeader: { flexDirection: "row", alignItems: "center", justifyContent: "space-between", minHeight: 25 },
   previewSectionTitle: { fontFamily: "Manrope", fontSize: 16, fontWeight: "600" },
   previewViewAll: { fontFamily: "Manrope", fontSize: 11, fontWeight: "400" },
@@ -574,6 +575,8 @@ const styles = StyleSheet.create({
   profilePreviewCopyOffset: { transform: [{ translateX: -4 }] },
   profilePreviewCopySpacing: { gap: 5 },
   profilePreviewTitleSpacing: { gap: 5 },
+  profilePreviewPillOffset: { position: "relative", top: -4 },
+  profilePreviewStoryOffset: { position: "relative", top: 1 },
   profilePreviewDayPill: { marginBottom: 0, backgroundColor: "transparent", borderWidth: 0, borderRadius: 0, paddingHorizontal: 0, paddingVertical: 0 },
   profilePreviewTimelineDayPill: { marginBottom: 0, alignSelf: "flex-start" },
   previewStory: { fontFamily: "Manrope", fontSize: 11, lineHeight: 16 },

@@ -260,7 +260,7 @@ test("Perfil Tu camino shows accumulated days above the stage without a lotus be
   assert.match(html, /Una práctica que comienza hoy\./);
   assert.match(html, /profile-intention-description/);
   assert.doesNotMatch(html, /profile-intention-chevron|data-icon="chevron-right"/);
-  assert.match(html, /data-testid="growth-level-zero-preview"[^>]*data-padding-top="18" data-padding-bottom="11"/);
+  assert.match(html, /data-testid="growth-level-zero-preview"[^>]*data-padding-top="18" data-padding-bottom="14"/);
   assert.ok(capturedViewAllPress);
   capturedViewAllPress();
   assert.equal(opened, true);
@@ -871,10 +871,17 @@ test("Perfil Tu camino restores day pill then title then description in every th
       assert.doesNotMatch(html, /data-icon="chevron-right"/);
       assert.match(html, /data-gap="5"/);
       assert.match(html, /data-testid="profile-intention-image"/);
+      const pillElement = html.match(/<div[^>]*data-testid="intention-preview-day-pill"[^>]*>/)?.[0] ?? "";
+      const descriptionElement = html.match(/<div[^>]*data-testid="profile-intention-description"[^>]*>/)?.[0] ?? "";
+      assert.match(pillElement, /data-top="-4"/);
+      assert.match(descriptionElement, /data-top="1"/);
+      assert.match(html, /data-testid="growth-level-zero-preview"[^>]*data-padding-top="18" data-padding-bottom="14"/);
     }
     const otherPreview = render({ canonicalVerticalInsets: true });
     assert.ok(otherPreview.indexOf("0 días") < otherPreview.indexOf(">Intención</div>"));
     assert.match(otherPreview, /Una práctica que comienza hoy\./);
+    const otherPill = otherPreview.match(/<div[^>]*data-testid="intention-preview-day-pill"[^>]*>/)?.[0] ?? "";
+    assert.doesNotMatch(otherPill, /data-top="-4"/);
   } finally { scene.useSceneTheme = originalTheme; }
 });
 
