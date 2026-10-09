@@ -42,6 +42,7 @@ export interface StoryShareModalProps {
   previewOffsetY?: number;
   closeOnLeft?: boolean;
   headerLeftAction?: React.ReactNode;
+  headerLeftActionGap?: number;
   headerRightAction?: React.ReactNode;
   titleFontSize?: number;
   titleOffsetY?: number;
@@ -71,6 +72,7 @@ export function StoryShareModal({
   previewHeightReduction,
   closeOnLeft = false,
   headerLeftAction,
+  headerLeftActionGap = 8,
   headerRightAction,
   titleFontSize,
   titleOffsetY = 0,
@@ -317,6 +319,7 @@ export function StoryShareModal({
             <View
               style={[
                 styles.headerLeft,
+                { gap: headerLeftActionGap },
                 headerControlsOffsetY !== 0 && { transform: [{ translateY: headerControlsOffsetY }] },
               ]}
             >

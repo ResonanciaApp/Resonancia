@@ -408,8 +408,8 @@ export function ReflectionShare({ reflection, onClose }: { reflection: Reflectio
       compactFooter
       closeButtonBackgroundColor="rgba(255,255,255,0.1)"
       instagramActionTextStyle={styles.instagramActionText}
-      headerRightAction={<View style={{ flexDirection: "row", alignItems: "center", gap: 8 }}>
-        {compositionIsModified ? (
+      headerLeftActionGap={7}
+      headerLeftAction={compositionIsModified ? (
         <Pressable
           accessibilityRole="button"
           accessibilityLabel="Restablecer composición"
@@ -418,7 +418,8 @@ export function ReflectionShare({ reflection, onClose }: { reflection: Reflectio
         >
           <Feather name="rotate-ccw" size={25} color="#F9F9F9" />
         </Pressable>
-        ) : null}
+      ) : null}
+      headerRightAction={<View style={{ flexDirection: "row", alignItems: "center" }}>
         <Pressable accessibilityRole="button"
           accessibilityLabel={includedAvatar ? "Quitar avatar de la imagen" : "Añadir avatar a la imagen"}
           accessibilityState={{ selected: !!includedAvatar, disabled: !currentAvatarSource }}
@@ -626,10 +627,9 @@ const styles = StyleSheet.create({
     borderRadius: 21.5,
     alignItems: "center",
     justifyContent: "center",
-    backgroundColor: "rgba(0,0,0,0.16)",
+    backgroundColor: "rgba(255,255,255,0.1)",
     borderWidth: 0,
     borderColor: "transparent",
-    transform: [{ translateX: -1 }],
   },
   instagramActionText: {
     fontSize: 13,
