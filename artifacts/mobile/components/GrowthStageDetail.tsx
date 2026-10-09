@@ -14,7 +14,7 @@ import {
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 
 import { CinematicFadeSlide } from "@/components/CinematicFadeSlide";
-import { GrowthLevelImage, GROWTH_BLOOM_ART_SIZE, GROWTH_STAGE_ICON_SIZE } from "@/components/GrowthJourney";
+import { GrowthLevelImage } from "@/components/GrowthJourney";
 import { MEMBERSHIP_AURORA, STREAK_INFO_COLORS } from "@/constants/colors";
 import { useSceneTheme } from "@/context/SceneThemeContext";
 import { useGrowth } from "@/context/GrowthContext";
@@ -42,12 +42,8 @@ export function GrowthStageDetail({
   }, [level, onClose]);
   const topPad = Platform.OS === "web" ? 67 : Math.max(insets.top, 40);
   const bottomPad = Platform.OS === "web" ? 34 : insets.bottom;
-  const ascent = (level?.group ?? (stageId.startsWith("ascenso-") ? "ascenso" : "florecimiento")) === "ascenso";
-  const heroSize = (ascent ? GROWTH_STAGE_ICON_SIZE : GROWTH_BLOOM_ART_SIZE) * 2;
-  const heroTop = topPad + 20;
-  const heroBottom = heroTop + heroSize;
-  const fadeStart = Math.min(1, Math.max(0, (heroBottom - 48) / height));
-  const fadeEnd = Math.min(1, Math.max(fadeStart, (heroBottom + 8) / height));
+  const fadeStart = Math.min(1, Math.max(0, (topPad + 10) / height));
+  const fadeEnd = Math.min(1, Math.max(fadeStart, (topPad + 70) / height));
   if (!level) return null;
   const { phrase, description } = growthDetailCopy(level);
 
@@ -60,13 +56,14 @@ export function GrowthStageDetail({
       end={theme.gradientEnd}
       style={styles.root}
     >
-      <View
-        testID="growth-stage-detail-fixed-art"
-        pointerEvents="none"
-        style={[styles.heroArt, { top: heroTop }]}
-      >
-        <GrowthLevelImage level={level} size={heroSize} />
+      <View testID="growth-stage-detail-fixed-art" pointerEvents="none" style={StyleSheet.absoluteFill}>
+        <GrowthLevelImage level={level} background />
       </View>
+      <View
+        testID="growth-stage-detail-overlay"
+        pointerEvents="none"
+        style={[StyleSheet.absoluteFill, { backgroundColor: "rgba(0,0,0,0.2)" }]}
+      />
       <MaskedView
         testID="growth-stage-detail-content-mask"
         style={styles.scrollLayer}
@@ -89,7 +86,7 @@ export function GrowthStageDetail({
         contentInsetAdjustmentBehavior="never"
         automaticallyAdjustContentInsets={false}
         testID="growth-stage-detail-scroll"
-        contentContainerStyle={{ paddingTop: heroBottom + 16, paddingBottom: bottomPad + 28, minHeight: height + heroSize }}
+        contentContainerStyle={{ paddingTop: topPad + 84, paddingBottom: bottomPad + 28 }}
       >
         <CinematicFadeSlide active replayKey="stage" delay={BASE_DELAY} duration={DURATION}>
           <View testID="growth-stage-detail-title-block" style={styles.titleBlock}>
@@ -125,7 +122,6 @@ export function GrowthStageDetail({
 
 const styles = StyleSheet.create({
   root: { ...StyleSheet.absoluteFillObject },
-  heroArt: { position: "absolute", alignSelf: "center" },
   scrollLayer: { flex: 1 },
   header: {
     position: "absolute",

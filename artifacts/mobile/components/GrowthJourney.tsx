@@ -92,7 +92,7 @@ function loadGrowthImage(module: number): Promise<string> {
   return load;
 }
 
-export function GrowthLevelImage({ level, profilePreview = false, dimmed = false, size, height, sourceModule }: { level: GrowthLevel; profilePreview?: boolean; dimmed?: boolean; size?: number; height?: number; sourceModule?: number }) {
+export function GrowthLevelImage({ level, profilePreview = false, dimmed = false, size, height, sourceModule, background = false }: { level: GrowthLevel; profilePreview?: boolean; dimmed?: boolean; size?: number; height?: number; sourceModule?: number; background?: boolean }) {
   const imageModule = sourceModule ?? level.image;
   const fadedStage = sourceModule === undefined && level.group !== "ascenso" && !level.id.startsWith("ascenso-");
   const [localUri, setLocalUri] = useState(() => typeof imageModule === "number" ? growthImageUris.get(imageModule) ?? null : null);
@@ -114,14 +114,14 @@ export function GrowthLevelImage({ level, profilePreview = false, dimmed = false
   return (
     <View
       testID={profilePreview ? "profile-intention-image" : undefined}
-      style={[styles.imageWrap, sourceModule === undefined && level.id.startsWith("ascenso-") && styles.stageIconSurface, profilePreview && styles.profileImageWrap, size !== undefined && { width: size, height: height ?? size, borderRadius: 0 }]}
+      style={background ? StyleSheet.absoluteFillObject : [styles.imageWrap, sourceModule === undefined && level.id.startsWith("ascenso-") && styles.stageIconSurface, profilePreview && styles.profileImageWrap, size !== undefined && { width: size, height: height ?? size, borderRadius: 0 }]}
       importantForAccessibility="no"
     >
       {source && (
         <Image
           source={source}
-          resizeMode={sourceModule !== undefined ? "cover" : "contain"}
-          style={[styles.levelImage, fadedStage && styles.fadedStageImage, dimmed && styles.lockedArt]}
+          resizeMode={background || sourceModule !== undefined ? "cover" : "contain"}
+          style={[styles.levelImage, !background && fadedStage && styles.fadedStageImage, dimmed && styles.lockedArt]}
           onError={(event) => console.warn(`[GrowthJourney] No se pudo cargar ${level.id}: ${event.nativeEvent.error}`)}
           accessibilityElementsHidden
           importantForAccessibility="no"
