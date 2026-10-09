@@ -429,12 +429,16 @@ test("Ver muro has a white border at 80 percent opacity in every theme", () => {
   assert.equal(style("InnerSpaceCard", "wallButton").borderWidth, 1);
 });
 
-test("Composer tabs have 2px borders and the selected stroke alone is 80 percent opaque", () => {
+test("Profile tabs have a 1px selected stroke at 75 percent opacity without changing the home tabs", () => {
   assert.equal(style("InnerSpaceCard", "gridItem").borderWidth, 2);
   const card = source("../components/InnerSpaceCard.tsx");
-  assert.match(card, /ReflectionCategoryTabBorder color=\{cat\.color\} borderWidth=\{2\} opacity=\{0\.8\} inset=\{-2\}/);
+  assert.match(card, /ReflectionCategoryTabBorder color=\{cat\.color\} borderWidth=\{profileVariant \? 1 : 2\} opacity=\{profileVariant \? 0\.75 : 0\.8\} inset=\{-2\}/);
   const stroke = source("../components/ReflectionCategoryTabLabel.tsx");
   assert.match(stroke, /borderColor: color, borderWidth, opacity/);
+  assert.match(stroke, /StyleSheet\.absoluteFillObject, \{ opacity \}/);
+  const wall = source("../app/mi-espacio-interior.tsx");
+  assert.match(wall, /filter === "all" && <ReflectionCategoryTabBorder opacity=\{0\.75\}/);
+  assert.match(wall, /isActive && <ReflectionCategoryTabBorder color=\{cat\.color\} opacity=\{0\.75\}/);
 });
 
 test("Composer tabs and labels are smaller with 4px more space between tabs", () => {

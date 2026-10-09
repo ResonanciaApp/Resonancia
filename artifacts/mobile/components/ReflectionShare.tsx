@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useMemo, useRef } from "react";
-import { View, Text, StyleSheet, Pressable, ScrollView } from "react-native";
+import { View, Text, StyleSheet, Pressable } from "react-native";
 import { Image } from "expo-image";
 import { Feather } from "@expo/vector-icons";
 import { Gesture, GestureDetector } from "react-native-gesture-handler";
@@ -7,6 +7,7 @@ import Animated, {
   runOnJS,
   useAnimatedStyle,
   useSharedValue,
+  useAnimatedScrollHandler,
   type SharedValue,
 } from "react-native-reanimated";
 import { useQueryClient } from "@tanstack/react-query";
@@ -17,7 +18,7 @@ import { StoryShareModal, STORY_WIDTH } from "./StoryShareModal";
 import { StoryArtworkFrame, STORY_QUOTE_TOP, STORY_QUOTE_HEIGHT } from "./StoryArtworkFrame";
 import { useCoverPresetCatalogState } from "@/lib/cover-preset-catalog";
 import { useReflectionGalleryExpansion } from "@/hooks/useReflectionGalleryExpansion";
-import { REFLECTION_GALLERY_HEIGHT } from "@/lib/reflection-gallery-layout";
+import { REFLECTION_GALLERY_HEIGHT, reflectionGalleryScrollIndicator } from "@/lib/reflection-gallery-layout";
 import { useCurrentUserAvatarSource, type ProfileAvatarSource } from "@/lib/profile-avatar";
 import { prepareReflectionAvatar } from "@/lib/reflection-story-avatar";
 import { StoryAvatarLayer } from "./StoryAvatarLayer";
@@ -306,6 +307,21 @@ export function ReflectionShare({ reflection, onClose }: { reflection: Reflectio
   const updateAvatarPosition = (position: ReflectionStoryAvatarPosition) => setAvatarPosition(clampReflectionStoryAvatarPosition(position));
   const preparedAvatar = useRef<{ key: string; promise: Promise<string> } | undefined>(undefined);
   const { expanded, toggle, heightReduction } = useReflectionGalleryExpansion();
+  const galleryViewport = useSharedValue(REFLECTION_GALLERY_HEIGHT - 16);
+  const galleryContentHeight = useSharedValue(0);
+  const galleryScrollOffset = useSharedValue(0);
+  const galleryScrollHandler = useAnimatedScrollHandler({
+    onScroll: (event) => { galleryScrollOffset.value = event.contentOffset.y; },
+  });
+  const galleryScrollTrackStyle = useAnimatedStyle(() => ({
+    opacity: galleryContentHeight.value > galleryViewport.value ? 1 : 0,
+  }));
+  const galleryScrollThumbStyle = useAnimatedStyle(() => {
+    const indicator = reflectionGalleryScrollIndicator(
+      galleryViewport.value, galleryContentHeight.value, galleryScrollOffset.value,
+    );
+    return { height: indicator.height, transform: [{ translateY: indicator.translateY }] };
+  });
   const gallerySizeStyle = useAnimatedStyle(() => ({
     height: REFLECTION_GALLERY_HEIGHT + heightReduction.value,
   }));
@@ -510,7 +526,15 @@ export function ReflectionShare({ reflection, onClose }: { reflection: Reflectio
           </Pressable>
         </View>
       <Animated.View style={[styles.galleryContainer, gallerySizeStyle]}>
-        <ScrollView contentContainerStyle={styles.galleryContent} showsVerticalScrollIndicator={false}>
+        <Animated.ScrollView
+          testID="reflection-background-gallery"
+          contentContainerStyle={styles.galleryContent}
+          showsVerticalScrollIndicator={false}
+          onLayout={(event) => { galleryViewport.value = event.nativeEvent.layout.height; }}
+          onContentSizeChange={(_width, height) => { galleryContentHeight.value = height; }}
+          onScroll={galleryScrollHandler}
+          scrollEventThrottle={16}
+        >
           {catalog.map((item) => {
             const isSelected = selectedBgId === item.id;
             const usesFallback = failedRemoteIds.has(item.id);
@@ -547,7 +571,12 @@ export function ReflectionShare({ reflection, onClose }: { reflection: Reflectio
               </Pressable>
             );
           })}
-        </ScrollView>
+        </Animated.ScrollView>
+        <Animated.View pointerEvents="none" accessible={false}
+          testID="reflection-gallery-scroll-track"
+          style={[styles.galleryScrollTrack, galleryScrollTrackStyle]}>
+          <Animated.View style={[styles.galleryScrollThumb, galleryScrollThumbStyle]} />
+        </Animated.View>
       </Animated.View>
       </View>
     </StoryShareModal>
@@ -668,6 +697,21 @@ const styles = StyleSheet.create({
     flexWrap: "wrap",
     justifyContent: "space-between",
     rowGap: 8,
+  },
+  galleryScrollTrack: {
+    position: "absolute",
+    top: 8,
+    bottom: 8,
+    right: 2,
+    width: 3,
+    borderRadius: 2,
+    backgroundColor: "rgba(249,249,249,0.13)",
+    overflow: "hidden",
+  },
+  galleryScrollThumb: {
+    width: 3,
+    borderRadius: 2,
+    backgroundColor: "rgba(249,249,249,0.75)",
   },
   galleryItem: {
     width: "23%",

@@ -769,7 +769,7 @@ function PremiumInnerSpaceScreen() {
               setFilter("all");
             }}
           >
-            {filter === "all" && <ReflectionCategoryTabBorder />}
+            {filter === "all" && <ReflectionCategoryTabBorder opacity={0.75} />}
             <ReflectionCategoryTabLabel label="Todos" selected={filter === "all"} textStyle={styles.filterText} />
           </Pressable>
            {reflectionCategoryOptions.map(cat => {
@@ -790,7 +790,7 @@ function PremiumInnerSpaceScreen() {
                   setFilter(cat.id as ReflectionCategory);
                 }}
               >
-                {isActive && <ReflectionCategoryTabBorder color={cat.color} />}
+                {isActive && <ReflectionCategoryTabBorder color={cat.color} opacity={0.75} />}
                 <ReflectionCategoryTabLabel
                   label={cat.label}
                   selected={isActive}

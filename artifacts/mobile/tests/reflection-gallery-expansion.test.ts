@@ -12,6 +12,26 @@ import {
 } from "../lib/reflection-gallery-layout.ts";
 import { SHEET_EXPAND_MS } from "../lib/ambiental-duration-transition.ts";
 import { clampReflectionStoryComposition } from "../lib/reflection-story-logic.ts";
+import { reflectionGalleryScrollIndicator } from "../lib/reflection-gallery-layout.ts";
+
+test("gallery scrollbar follows progress, clamps bounce and updates when the grid expands", () => {
+  const top = reflectionGalleryScrollIndicator(100, 1000, 0);
+  assert.equal(top.height, 18);
+  assert.equal(top.translateY, 0);
+  assert.equal(top.visible, true);
+  const middle = reflectionGalleryScrollIndicator(100, 1000, 450);
+  assert.equal(middle.progress, 0.5);
+  assert.equal(middle.translateY, 41);
+  const bottom = reflectionGalleryScrollIndicator(100, 1000, 900);
+  assert.equal(bottom.translateY + bottom.height, 100);
+  assert.equal(reflectionGalleryScrollIndicator(100, 1000, -20).progress, 0);
+  assert.equal(reflectionGalleryScrollIndicator(100, 1000, 1000).progress, 1);
+  const expanded = reflectionGalleryScrollIndicator(200, 1000, 800);
+  assert.equal(expanded.height, 40);
+  assert.equal(expanded.translateY + expanded.height, 200);
+  assert.equal(reflectionGalleryScrollIndicator(200, 100, 0).visible, false);
+  assert.equal(reflectionGalleryScrollIndicator(0, 0, 0).visible, false);
+});
 
 const close = (actual: number, expected: number) => assert.ok(Math.abs(actual - expected) < 1e-8);
 const source = (relativePath: string) => readFileSync(new URL(relativePath, import.meta.url), "utf8");
@@ -180,7 +200,10 @@ test("solo este compositor activa el tamaño animado; captura y catálogo perman
   assert.match(share, /previewHeightReduction=\{heightReduction\}/);
   assert.match(share, /height: REFLECTION_GALLERY_HEIGHT \+ heightReduction.value/);
   assert.match(share, /displayScale=\{previewContext\?\.displayScale\}/);
-  assert.match(share, /<ScrollView contentContainerStyle=\{styles.galleryContent\}/);
+  assert.match(share, /<Animated\.ScrollView[\s\S]*?contentContainerStyle=\{styles.galleryContent\}/);
+  assert.match(share, /onScroll=\{galleryScrollHandler\}/);
+  assert.match(share, /scrollEventThrottle=\{16\}/);
+  assert.match(share, /pointerEvents="none" accessible=\{false\}[\s\S]*?testID="reflection-gallery-scroll-track"/);
   assert.match(share, /catalog.map\(\(item\)/);
   assert.match(modal, /renderArtwork\(STORY_WIDTH, true/);
   assert.match(modal, /width: STORY_WIDTH,\s*height: STORY_HEIGHT/);

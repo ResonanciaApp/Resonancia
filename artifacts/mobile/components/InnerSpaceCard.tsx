@@ -581,7 +581,7 @@ export function InnerSpaceCard({
               ]}
               onPress={() => toggleCategory(cat.id as ReflectionCategory)}
             >
-              {category === cat.id && <ReflectionCategoryTabBorder color={cat.color} borderWidth={2} opacity={0.8} inset={-2} />}
+              {category === cat.id && <ReflectionCategoryTabBorder color={cat.color} borderWidth={profileVariant ? 1 : 2} opacity={profileVariant ? 0.75 : 0.8} inset={-2} />}
               <ReflectionCategoryTabLabel
                 label={cat.label}
                 selected={category === cat.id}
