@@ -275,7 +275,7 @@ export function GrowthLevelPreviewCard({
               <Text style={[styles.previewViewAll, { color: colors.foreground }]}>Ver todo</Text>
             </Pressable>
           </View>
-          <View style={styles.previewContentRow}>{previewContent}</View>
+          <View testID="profile-growth-phase-content" style={styles.previewContentRow}>{previewContent}</View>
         </>
       ) : previewContent}
     </Pressable>
@@ -565,7 +565,7 @@ const styles = StyleSheet.create({
   previewSectionHeader: { flexDirection: "row", alignItems: "center", justifyContent: "space-between", minHeight: 25 },
   previewSectionTitle: { fontFamily: "Manrope", fontSize: 16, fontWeight: "600" },
   previewViewAll: { fontFamily: "Manrope", fontSize: 11, fontWeight: "400" },
-  previewContentRow: { flexDirection: "row", alignItems: "center", gap: 12, transform: [{ translateY: -4 }, { translateX: -8 }] },
+  previewContentRow: { flexDirection: "row", alignItems: "center", gap: 12, marginTop: 6, transform: [{ translateY: -4 }, { translateX: -8 }] },
   canonicalPreviewVerticalInsets: { paddingTop: 20, paddingBottom: 20, marginVertical: 2, alignItems: "center" },
   canonicalPreviewCopy: { minHeight: 100, justifyContent: "center", gap: 10 },
   canonicalPreviewName: { marginBottom: 0, fontSize: 18, lineHeight: 23 },

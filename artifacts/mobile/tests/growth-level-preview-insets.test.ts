@@ -871,6 +871,10 @@ test("Perfil Tu camino restores day pill then title then description in every th
       assert.doesNotMatch(html, /data-icon="chevron-right"/);
       assert.match(html, /data-gap="5"/);
       assert.match(html, /data-testid="profile-intention-image"/);
+      const phaseContent = html.match(/<div[^>]*data-testid="profile-growth-phase-content"[^>]*>/)?.[0] ?? "";
+      assert.match(phaseContent, /data-margin-top="6"/);
+      assert.match(phaseContent, /data-transform="\[\{&quot;translateY&quot;:-4\},\{&quot;translateX&quot;:-8\}\]"/);
+      assert.ok(html.indexOf('data-testid="profile-growth-phase-content"') < pill);
       const pillElement = html.match(/<div[^>]*data-testid="intention-preview-day-pill"[^>]*>/)?.[0] ?? "";
       const descriptionElement = html.match(/<div[^>]*data-testid="profile-intention-description"[^>]*>/)?.[0] ?? "";
       assert.match(pillElement, /data-top="-4"/);
@@ -882,6 +886,7 @@ test("Perfil Tu camino restores day pill then title then description in every th
     assert.match(otherPreview, /Una práctica que comienza hoy\./);
     const otherPill = otherPreview.match(/<div[^>]*data-testid="intention-preview-day-pill"[^>]*>/)?.[0] ?? "";
     assert.doesNotMatch(otherPill, /data-top="-4"/);
+    assert.doesNotMatch(otherPreview, /profile-growth-phase-content/);
   } finally { scene.useSceneTheme = originalTheme; }
 });
 
