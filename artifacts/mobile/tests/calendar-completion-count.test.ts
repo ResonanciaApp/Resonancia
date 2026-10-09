@@ -34,11 +34,13 @@ const Native = ({ children, testID, style }: Props) => {
     "data-left": resolvedStyle.left,
     "data-top": resolvedStyle.top,
     "data-border-radius": resolvedStyle.borderRadius,
+    "data-border-width": resolvedStyle.borderWidth,
+    "data-border-color": resolvedStyle.borderColor,
     "data-position": resolvedStyle.position,
     "data-margin-horizontal": resolvedStyle.marginHorizontal,
   }, children);
 };
-const Icon = ({ name }: { name: string }) => React.createElement("i", { "data-icon": name });
+const Icon = ({ name, size }: { name: string; size?: number }) => React.createElement("i", { "data-icon": name, "data-size": size });
 const Passthrough = ({ children }: Props) => React.createElement(React.Fragment, null, children);
 let events: Array<{ sessionId: string; playedAt: string; completed: boolean }> = [];
 const colorsSource = readFileSync(new URL("../constants/colors.ts", import.meta.url), "utf8");
@@ -91,6 +93,19 @@ const render = (enabled = true, props: Record<string, unknown> = {}) => renderTo
   }),
 );
 const completed = (sessionId: string) => ({ sessionId, playedAt: new Date().toISOString(), completed: true });
+
+test("only Profile's previous-month button has a transparent fill, 80% white outline and a 21px chevron", () => {
+  const html = render(true, { profileCalendarLayout: true });
+  const button = html.match(/<div[^>]*><i data-icon="chevron-left" data-size="21"><\/i><\/div>/)?.[0];
+  assert.ok(button);
+  assert.match(button, /data-background="transparent"/);
+  assert.match(button, /data-border-width="1"/);
+  assert.match(button, /data-border-color="rgba\(255,255,255,0.8\)"/);
+  assert.match(button, /data-width="37"/);
+  assert.match(button, /data-height="37"/);
+  assert.match(render(), /data-icon="chevron-left" data-size="18"/);
+  assert.doesNotMatch(render(), /data-border-color="rgba\(255,255,255,0.8\)"/);
+});
 
 test("Profile keeps 10px weekdays and shrinks month dates another point to 14px, without changing other calendars", () => {
   events = [];

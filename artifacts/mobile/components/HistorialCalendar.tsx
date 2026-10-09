@@ -402,9 +402,9 @@ export function HistorialCalendar({
           <Pressable
             onPress={goPrevMonth}
             hitSlop={10}
-            style={[styles.navBtn, canonicalEmbeddedInsets && styles.canonicalEmbeddedNavButton, isProfileNav && styles.profileNavBtn, isProfileNav && { left: cardHorizontalPadding ?? 14 }]}
+            style={[styles.navBtn, canonicalEmbeddedInsets && styles.canonicalEmbeddedNavButton, isProfileNav && styles.profileNavBtn, isProfileNav && styles.profilePrevNavBtn, isProfileNav && { left: cardHorizontalPadding ?? 14 }]}
           >
-            <Feather name="chevron-left" size={18} color={colors.foreground} />
+            <Feather name="chevron-left" size={isProfileNav ? 21 : 18} color={colors.foreground} />
           </Pressable>
           <Text
             style={[
@@ -698,6 +698,11 @@ const styles = StyleSheet.create({
     backgroundColor: "rgba(255,255,255,0.1)",
   },
   profileNavPlaceholder: { backgroundColor: "transparent" },
+  profilePrevNavBtn: {
+    backgroundColor: "transparent",
+    borderWidth: 1,
+    borderColor: "rgba(255,255,255,0.8)",
+  },
   profileWeekRow: { marginTop: 20 },
   outlinedCalendarCard: {
     borderWidth: 1,
