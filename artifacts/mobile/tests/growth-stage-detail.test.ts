@@ -107,8 +107,8 @@ test("the detail shares the streak screen's theme, safe-area spacing, circular c
       assert.equal(nodes.get("growth-stage-detail").locations, locations);
        assert.equal(nodes.get("growth-detail-hero-artwork").size, 274);
        assert.equal(nodes.get("growth-detail-hero-artwork").height, undefined, "square image, no viewport stretch");
-       assert.equal(flat(nodes.get("growth-stage-detail-fixed-art").style).top, Math.max(inset, 40) + 40);
-       assert.equal(nodes.get("growth-stage-detail-scroll").contentContainerStyle.paddingTop, Math.max(inset, 40) + 40 + 274 + 16);
+       assert.equal(flat(nodes.get("growth-stage-detail-fixed-art").style).top, Math.max(inset, 40) + 20);
+       assert.equal(nodes.get("growth-stage-detail-scroll").contentContainerStyle.paddingTop, Math.max(inset, 40) + 20 + 274 + 16);
       assert.match(html, new RegExp(`data-top-padding="${Math.max(inset, 40) + 8}"`));
       const scroll = nodes.get("growth-stage-detail-scroll");
       assert.equal(scroll.bounces, true);
@@ -150,14 +150,16 @@ test("the detail has only one continuous theme background, without opaque hero s
   assert.match(journey, /bloomArt: \{ width: GROWTH_BLOOM_ART_SIZE, height: GROWTH_BLOOM_ART_SIZE/);
 });
 
-test("Intención and its pill sit below the artwork, with description 15px away", () => {
+test("artwork and content rise 20px together, with copy moved 20px farther below the pill", () => {
   render();
-  assert.equal(nodes.get("growth-stage-detail-scroll").contentContainerStyle.paddingTop, 370);
+  assert.equal(nodes.get("growth-stage-detail-scroll").contentContainerStyle.paddingTop, 350);
   const block = flat(nodes.get("growth-stage-detail-title-block").style);
   assert.equal(block.gap, 8);
   assert.equal(block.transform, undefined);
   const source = readFileSync(new URL("../components/GrowthStageDetail.tsx", import.meta.url), "utf8");
-  assert.match(source, /copy: \{[^}]*marginTop: 15/);
+  assert.match(source, /copy: \{[^}]*marginTop: 35/);
+  assert.match(source, /stageName: \{[^}]*fontSize: 41,\s*lineHeight: 47/);
+  assert.match(source, /rule: \{[^}]*backgroundColor: GOLD, opacity: 0\.7/);
 });
 
 test("the X stays fixed, stage labels are removed and Intención uses the app's Manrope font", () => {
@@ -190,7 +192,7 @@ test("artwork is static outside scrolling content and the smaller day pill prese
   const scrollChildren = React.Children.toArray(nodes.get("growth-stage-detail-scroll").children) as React.ReactElement<any>[];
   assert.ok(scrollChildren.every(child => child.props.replayKey !== "hero"));
   const source = readFileSync(new URL("../components/GrowthStageDetail.tsx", import.meta.url), "utf8");
-  assert.match(source, /dayPill: \{[^}]*paddingHorizontal: 14,\s*paddingVertical: 5,/);
+  assert.match(source, /dayPill: \{[^}]*paddingHorizontal: 11\.5,\s*paddingVertical: 2\.5,/);
   assert.match(source, /days: \{[^}]*fontSize: 14/);
 });
 
@@ -201,7 +203,7 @@ test("a fixed alpha mask progressively hides content as it scrolls into the imag
     const fade = nodes.get("growth-stage-detail-scroll-fade");
     assert.equal(nodes.get("growth-stage-detail-scroll").contentContainerStyle.minHeight, height + 274, "even short descriptions can scroll up towards the image");
     assert.deepEqual(fade.colors, ["transparent", "transparent", "#000000", "#000000"]);
-    assert.deepEqual(fade.locations, [0, (354 - 48) / height, (354 + 8) / height, 1]);
+    assert.deepEqual(fade.locations, [0, (334 - 48) / height, (334 + 8) / height, 1]);
     assert.equal(fade.pointerEvents, "none");
     assert.equal(flat(fade.style).position, "absolute");
     const mask = nodes.get("growth-stage-detail-content-mask");

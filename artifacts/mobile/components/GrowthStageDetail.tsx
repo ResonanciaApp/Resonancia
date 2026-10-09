@@ -43,7 +43,7 @@ export function GrowthStageDetail({
   const topPad = Platform.OS === "web" ? 67 : Math.max(insets.top, 40);
   const bottomPad = Platform.OS === "web" ? 34 : insets.bottom;
   const heroSize = GROWTH_BLOOM_ART_SIZE * 2;
-  const heroTop = topPad + 40;
+  const heroTop = topPad + 20;
   const heroBottom = heroTop + heroSize;
   const fadeStart = Math.min(1, Math.max(0, (heroBottom - 48) / height));
   const fadeEnd = Math.min(1, Math.max(fadeStart, (heroBottom + 8) / height));
@@ -155,8 +155,8 @@ const styles = StyleSheet.create({
   stageName: {
     fontFamily: "Manrope",
     fontWeight: "700",
-    fontSize: 44,
-    lineHeight: 50,
+    fontSize: 41,
+    lineHeight: 47,
     color: STREAK_INFO_COLORS.pageTitle,
     textAlign: "center",
   },
@@ -164,15 +164,15 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     alignItems: "center",
     gap: 6,
-    paddingHorizontal: 14,
-    paddingVertical: 5,
+    paddingHorizontal: 11.5,
+    paddingVertical: 2.5,
     borderRadius: 18,
     backgroundColor: "rgba(151,128,231,0.20)",
     borderWidth: 1,
     borderColor: "rgba(255,255,255,0.18)",
   },
   days: { fontFamily: "Manrope", fontSize: 14, fontWeight: "600", color: WHITE },
-  copy: { paddingHorizontal: 28, alignItems: "center", marginTop: 15 },
+  copy: { paddingHorizontal: 28, alignItems: "center", marginTop: 35 },
   quote: {
     fontFamily: "CormorantGaramond",
     fontSize: 27,
@@ -180,7 +180,7 @@ const styles = StyleSheet.create({
     color: WHITE,
     textAlign: "center",
   },
-  rule: { width: 44, height: 2, backgroundColor: GOLD, marginVertical: 18, borderRadius: 1 },
+  rule: { width: 44, height: 2, backgroundColor: GOLD, opacity: 0.7, marginVertical: 18, borderRadius: 1 },
   explanation: {
     fontFamily: "Manrope",
     fontSize: 15,
