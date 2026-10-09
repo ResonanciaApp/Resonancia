@@ -3,6 +3,11 @@ import { readFileSync } from "node:fs";
 import test from "node:test";
 import React from "react";
 import ts from "typescript";
+import {
+  REFLECTION_WALL_BORDER_GRADIENT,
+  REFLECTION_WALL_BORDER_START,
+  REFLECTION_WALL_BORDER_END,
+} from "../constants/reflectionWallBorder.ts";
 
 const source = (name: string) => readFileSync(new URL(name, import.meta.url), "utf8");
 const compile = (text: string) => ts.transpileModule(text, {
@@ -31,16 +36,17 @@ function styles(tree: ts.SourceFile, keys: string[]) {
       compile(`return (${entry.initializer.getText(tree)});`))(32)]));
 }
 
-test("Muro expansivo filters keep selected colors, use theme-specific inactive black and expand Todos' stroke", () => {
+test("Muro expansivo filters keep category colors and Todos uses a borderless selected gradient", () => {
   const tree = ast(source("../app/mi-espacio-interior.tsx"));
   const row = find(tree, node => ts.isJsxElement(node)
     && node.openingElement.tagName.getText(tree) === "ScrollView"
     && node.getText(tree).includes('label="Todos"'));
   const wallStyles = styles(tree, ["filtersContent", "filterPill", "filterPillCategory",
-    "filterPillSelected", "filterPillInactive", "filterPillAllInactive", "filterText"]);
+    "filterPillSelected", "filterPillInactive", "filterText"]);
   const render = new Function("React", "ScrollView", "Pressable", "ReflectionCategoryTabFill",
     "ReflectionCategoryTabLabel", "ReflectionCategoryTabBorder", "styles", "reflectionCategoryOptions",
     "filter", "setFilter", "disableWallAnimations", "Haptics", "reduceMotion", "inactiveTabBackground",
+    "LinearGradient", "StyleSheet", "REFLECTION_WALL_BORDER_GRADIENT", "REFLECTION_WALL_BORDER_START", "REFLECTION_WALL_BORDER_END",
     compile(`return (${row.getText(tree)});`));
   const options = [{ id: "gratitude", label: "Gratitud", color: "#F075B3" },
     { id: "custom", label: "Editorial", color: "#123456" }];
@@ -57,20 +63,28 @@ test("Muro expansivo filters keep selected colors, use theme-specific inactive b
       const result = render(React, "scroll", "pressable", "fill", "label", "border", wallStyles,
         options, filter, (next: string) => changed.push(next), () => disabledAnimations++,
         { impactAsync: async (kind: string) => { impacts.push(kind); }, ImpactFeedbackStyle: { Soft: "soft" } },
-        reduceMotion, inactive);
+        reduceMotion, inactive, "gradient", { absoluteFill: { position: "absolute", top: 0, left: 0, right: 0, bottom: 0 } },
+        REFLECTION_WALL_BORDER_GRADIENT, REFLECTION_WALL_BORDER_START, REFLECTION_WALL_BORDER_END);
       const [all, ...categories] = React.Children.toArray(result.props.children) as any[];
       const allChildren = React.Children.toArray(all.props.children) as any[];
       assert.equal(allChildren.some(child => child.type === "fill"), false);
-      assert.equal(flatten(all.props.style).backgroundColor, filter === "all" ? "rgba(0,0,0,0.16)" : inactive);
-      assert.equal(flatten(all.props.style).borderWidth, filter === "all" ? 1 : 3);
+      assert.equal(flatten(all.props.style).backgroundColor, filter === "all" ? "transparent" : inactive);
+      assert.equal(flatten(all.props.style).borderWidth, 0);
       assert.equal(flatten(all.props.style).paddingHorizontal + flatten(all.props.style).borderWidth, 17,
-        "Todos retains its outer dimensions with the 3px inactive stroke");
+        "Todos retains its outer dimensions without borders");
+      assert.equal(allChildren.some(child => child.type === "border"), false);
       assert.equal(allChildren.find(child => child.type === "label").props.uniformWeight, undefined);
       if (filter === "all") {
-        const border = allChildren.find(child => child.type === "border");
-        assert.equal(border.props.borderWidth, 3);
-        assert.equal(border.props.opacity, 0.75);
-        assert.equal(border.props.inset, -1);
+        const gradient = allChildren.find(child => child.type === "gradient");
+        assert.deepEqual(gradient.props.colors, REFLECTION_WALL_BORDER_GRADIENT);
+        assert.deepEqual(gradient.props.start, REFLECTION_WALL_BORDER_START);
+        assert.deepEqual(gradient.props.end, REFLECTION_WALL_BORDER_END);
+        assert.equal(gradient.props.pointerEvents, "none");
+        assert.deepEqual(flatten(gradient.props.style), {
+          position: "absolute", top: 0, left: 0, right: 0, bottom: 0, borderRadius: 27,
+        });
+      } else {
+        assert.equal(allChildren.some(child => child.type === "gradient"), false);
       }
       for (let index = 0; index < categories.length; index++) {
         const tab = categories[index];

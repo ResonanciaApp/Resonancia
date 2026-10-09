@@ -17,7 +17,12 @@ import { useAuth } from "@/context/AuthContext";
 import { usePremium } from "@/context/PremiumContext";
 import { useDrawer } from "@/context/DrawerContext";
 import { ReflectionShare } from "@/components/ReflectionShare";
-import { ReflectionCategoryTabBorder, ReflectionCategoryTabLabel } from "@/components/ReflectionCategoryTabLabel";
+import { ReflectionCategoryTabLabel } from "@/components/ReflectionCategoryTabLabel";
+import {
+  REFLECTION_WALL_BORDER_GRADIENT,
+  REFLECTION_WALL_BORDER_START,
+  REFLECTION_WALL_BORDER_END,
+} from "@/constants/reflectionWallBorder";
 import { CinematicFadeSlide } from "@/components/CinematicFadeSlide";
 import { canShareReflection } from "@/lib/reflection-story-logic";
 
@@ -770,7 +775,6 @@ function PremiumInnerSpaceScreen() {
             style={[
               styles.filterPill,
               filter === "all" ? styles.filterPillSelected : styles.filterPillInactive,
-              filter !== "all" && styles.filterPillAllInactive,
               filter !== "all" && { backgroundColor: inactiveTabBackground },
             ]}
             onPress={() => {
@@ -779,7 +783,15 @@ function PremiumInnerSpaceScreen() {
               setFilter("all");
             }}
           >
-            {filter === "all" && <ReflectionCategoryTabBorder opacity={0.75} borderWidth={3} inset={-1} />}
+            {filter === "all" && (
+              <LinearGradient
+                pointerEvents="none"
+                colors={REFLECTION_WALL_BORDER_GRADIENT}
+                start={REFLECTION_WALL_BORDER_START}
+                end={REFLECTION_WALL_BORDER_END}
+                style={[StyleSheet.absoluteFill, { borderRadius: 27 }]}
+              />
+            )}
             <ReflectionCategoryTabLabel label="Todos" selected={filter === "all"} textStyle={styles.filterText} />
           </Pressable>
            {reflectionCategoryOptions.map(cat => {
@@ -974,26 +986,20 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
     height: 51,
-    paddingHorizontal: 16,
+    paddingHorizontal: 17,
     borderRadius: 27,
-    borderWidth: 1,
+    borderWidth: 0,
     gap: 8,
   },
   filterPillCategory: {
     borderWidth: 0,
     paddingHorizontal: 17,
   },
-  filterPillAllInactive: {
-    borderWidth: 3,
-    paddingHorizontal: 14,
-  },
   filterPillInactive: {
     backgroundColor: "rgba(0,0,0,0.16)",
-    borderColor: "rgba(255,255,255,0.2)",
   },
   filterPillSelected: {
-    backgroundColor: "rgba(0,0,0,0.16)",
-    borderColor: "transparent",
+    backgroundColor: "transparent",
   },
   filterText: {
     fontSize: 13,
