@@ -26,11 +26,13 @@ const Native = ({ children, testID, style }: Props) => {
     "data-line-height": resolvedStyle.lineHeight,
     "data-font-size": resolvedStyle.fontSize,
     "data-padding-top": resolvedStyle.paddingTop,
+    "data-margin-top": resolvedStyle.marginTop,
+    "data-margin-bottom": resolvedStyle.marginBottom,
     "data-padding-bottom": resolvedStyle.paddingBottom,
     "data-padding-vertical": resolvedStyle.paddingVertical,
   }, children);
 };
-const Icon = () => React.createElement("i");
+const Icon = ({ name }: { name: string }) => React.createElement("i", { "data-icon": name });
 const Passthrough = ({ children }: Props) => React.createElement(React.Fragment, null, children);
 let events: Array<{ sessionId: string; playedAt: string; completed: boolean }> = [];
 const colorsSource = readFileSync(new URL("../constants/colors.ts", import.meta.url), "utf8");
@@ -153,6 +155,65 @@ test("canonical embedded calendar insets are 18px and replace supplied vertical 
   const nonEmbeddedHtml = render(true, { embedded: false, canonicalVerticalInsets: true });
   assert.match(nonEmbeddedHtml, /data-padding-vertical="16"/);
   assert.match(nonEmbeddedHtml, /data-height="30"/);
+});
+
+test("Profile shifts weekdays and following content 10px, grows 8px, and centers the month above the weekdays", () => {
+  events = [];
+  const html = render(true, { canonicalVerticalInsets: true, profileCalendarLayout: true });
+  assert.match(html, /data-padding-top="26"/);
+  assert.match(html, /data-padding-bottom="16"/);
+  assert.match(html, /data-margin-bottom="6"/);
+  assert.match(html, /data-margin-top="20"/);
+  assert.match(html, /data-line-height="18"/);
+  const priorWeekTop = 18 + 18 + 14 + 10;
+  const profileWeekTop = 26 + 18 + 6 + 20;
+  assert.equal(profileWeekTop - priorWeekTop, 10);
+  assert.equal((profileWeekTop + 16) - (priorWeekTop + 18), 8);
+  assert.equal(26 + 18 / 2, profileWeekTop / 2);
+  assert.match(html, /data-icon="chevron-left"/);
+  assert.doesNotMatch(html, /data-icon="chevron-right"/);
+  assert.match(render(true), /data-icon="chevron-right"/);
+  assert.match(readFileSync(new URL("../components/ProfileScreenBase.tsx", import.meta.url), "utf8"),
+    /canonicalVerticalInsets\s+profileCalendarLayout/);
+  assert.match(readFileSync(new URL("../components/ProgressMirrorSections.tsx", import.meta.url), "utf8"),
+    /profileCalendarLayout=\{profileCalendarLayout\}/);
+});
+
+test("Profile cannot navigate into future months but can return from history, including across a year boundary", () => {
+  const source = readFileSync(new URL("../components/HistorialCalendar.tsx", import.meta.url), "utf8");
+  const tree = ts.createSourceFile("calendar.tsx", source, ts.ScriptTarget.Latest, true, ts.ScriptKind.TSX);
+  const expressions: Record<string, string> = {};
+  function visit(node: ts.Node) {
+    if (ts.isVariableDeclaration(node) && node.initializer &&
+      ["atCurrentMonth", "goNextMonth", "goPrevMonth"].includes(node.name.getText(tree))) {
+      expressions[node.name.getText(tree)] = node.initializer.getText(tree);
+    }
+    ts.forEachChild(node, visit);
+  }
+  visit(tree);
+  const text = `const atCurrentMonth = ${expressions.atCurrentMonth};
+    return { next: ${expressions.goNextMonth}, previous: ${expressions.goPrevMonth} };`;
+  const output = ts.transpileModule(text, { compilerOptions: { target: ts.ScriptTarget.ES2022 } }).outputText;
+  const factory = new Function("viewMonth", "today", "profileCalendarLayout", "embedded",
+    "startOfMonth", "setViewMonth", "setSelectedDate", output);
+  const startOfMonth = (date: Date) => new Date(date.getFullYear(), date.getMonth(), 1);
+  for (const today of [new Date(2026, 9, 9), new Date(2027, 0, 9)]) {
+    let changed: Date | undefined;
+    const record = (date: Date) => { changed = date; };
+    const current = factory(startOfMonth(today), today, true, true, startOfMonth, record, () => {});
+    current.next();
+    assert.equal(changed, undefined);
+    current.previous();
+    assert.equal(changed!.getTime(), new Date(today.getFullYear(), today.getMonth() - 1, 1).getTime());
+    changed = undefined;
+    const older = factory(new Date(today.getFullYear(), today.getMonth() - 1, 1),
+      today, true, true, startOfMonth, record, () => {});
+    older.next();
+    assert.equal(changed!.getTime(), startOfMonth(today).getTime());
+    changed = undefined;
+    factory(startOfMonth(today), today, false, true, startOfMonth, record, () => {}).next();
+    assert.equal(changed!.getTime(), new Date(today.getFullYear(), today.getMonth() + 1, 1).getTime());
+  }
 });
 
 test("canonical calendar bottom inset aligns to the last rendered event, not an unavailable event", () => {

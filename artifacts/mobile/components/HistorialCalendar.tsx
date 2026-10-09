@@ -240,6 +240,7 @@ export function HistorialCalendar({
   cardHorizontalPadding,
   cardVerticalPadding,
   canonicalVerticalInsets = false,
+  profileCalendarLayout = false,
   animateEntrance = false,
   entranceReplayKey = "history-calendar",
   entranceBaseDelay = 0,
@@ -255,6 +256,7 @@ export function HistorialCalendar({
   cardHorizontalPadding?: number;
   cardVerticalPadding?: number;
   canonicalVerticalInsets?: boolean;
+  profileCalendarLayout?: boolean;
   animateEntrance?: boolean;
   entranceReplayKey?: string | number;
   entranceBaseDelay?: number;
@@ -344,7 +346,9 @@ export function HistorialCalendar({
       );
     }
   };
+  const atCurrentMonth = viewMonth.getTime() >= startOfMonth(today).getTime();
   const goNextMonth = () => {
+    if (profileCalendarLayout && atCurrentMonth) return;
     const next = new Date(viewMonth.getFullYear(), viewMonth.getMonth() + 1, 1);
     setViewMonth(next);
     if (embedded) {
@@ -380,6 +384,7 @@ export function HistorialCalendar({
             paddingVertical: cardVerticalPadding,
           },
           canonicalVerticalInsets && embedded && styles.canonicalCalendarVerticalInsets,
+          profileCalendarLayout && embedded && styles.profileCalendarInsets,
           p ? { marginHorizontal: p } : undefined,
         ]}
       >
@@ -388,7 +393,7 @@ export function HistorialCalendar({
           replayKey={`${entranceReplayKey}:nav`}
           delay={entranceBaseDelay}
         >
-        <View style={styles.calendarNav}>
+        <View style={[styles.calendarNav, profileCalendarLayout && embedded && styles.profileCalendarNav]}>
           <Pressable
             onPress={goPrevMonth}
             hitSlop={10}
@@ -406,6 +411,9 @@ export function HistorialCalendar({
           >
             {monthLabel}
           </Text>
+          {profileCalendarLayout && atCurrentMonth ? (
+            <View pointerEvents="none" style={[styles.navBtn, canonicalEmbeddedInsets && styles.canonicalEmbeddedNavButton]} />
+          ) : (
           <Pressable
             onPress={goNextMonth}
             hitSlop={10}
@@ -413,6 +421,7 @@ export function HistorialCalendar({
           >
             <Feather name="chevron-right" size={18} color={colors.foreground} />
           </Pressable>
+          )}
         </View>
         </CalendarEntrance>
 
@@ -421,7 +430,7 @@ export function HistorialCalendar({
           replayKey={`${entranceReplayKey}:labels`}
           delay={entranceBaseDelay + 180}
         >
-        <View style={[styles.weekRow, embedded && styles.embeddedWeekRow]}>
+        <View style={[styles.weekRow, embedded && styles.embeddedWeekRow, profileCalendarLayout && embedded && styles.profileWeekRow]}>
           {(embedded ? EMBEDDED_WEEK_LABELS : WEEK_LABELS).map((label, index) => (
             <Text key={`${label}-${index}`} style={[styles.weekLabel, { color: calendarAccent }, calendarTextSizeAdjustment !== 0 && { fontSize: styles.weekLabel.fontSize + calendarTextSizeAdjustment }]}>
               {label}
@@ -668,6 +677,9 @@ const styles = StyleSheet.create({
     paddingTop: 18,
     paddingBottom: 18,
   },
+  profileCalendarInsets: { paddingTop: 26, paddingBottom: 16 },
+  profileCalendarNav: { marginBottom: 6 },
+  profileWeekRow: { marginTop: 20 },
   outlinedCalendarCard: {
     borderWidth: 1,
     borderColor: "rgba(255,255,255,0.2)",

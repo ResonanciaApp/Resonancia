@@ -609,6 +609,31 @@ function PremiumInnerSpaceScreen() {
               <View pointerEvents="none" style={[StyleSheet.absoluteFill, { backgroundColor: cat.color, opacity: 0.6, borderRadius: 10 }]} />
               <Text style={[styles.cardCatText, { color: "#F9F9F9", fontWeight: "500" }]}>{cat.label}</Text>
             </View>
+            {!isEditing && (
+              <View style={styles.cardActionsRow}>
+                <Pressable
+                  testID={`menu-${reflection.id}`}
+                  accessibilityLabel="Editar reflexión"
+                  accessibilityRole="button"
+                  style={styles.menuButton}
+                  onPress={() => beginEditing(reflection)}
+                >
+                  <Feather name="edit-2" size={17} color="#D6D6D6" />
+                </Pressable>
+                {isPremium && (
+                  <Pressable
+                    testID={`share-${reflection.id}`}
+                    accessibilityLabel="Compartir"
+                    accessibilityRole="button"
+                    style={[styles.menuButton, !isShareable && { opacity: 0.3 }]}
+                    disabled={!isShareable}
+                    onPress={() => setShareReflection(reflection)}
+                  >
+                    <Feather name="instagram" size={16} color="#D6D6D6" />
+                  </Pressable>
+                )}
+              </View>
+            )}
           </View>
         </WallScrollReveal>
 
@@ -670,29 +695,6 @@ function PremiumInnerSpaceScreen() {
             <View style={styles.cardContentRow}>
               <View style={styles.cardMessageColumn}>
                 <CollapsibleReflectionMessage message={reflection.message} color={colors.foreground} />
-              </View>
-              <View style={styles.cardActionsColumn}>
-                <Pressable
-                  testID={`menu-${reflection.id}`}
-                  accessibilityLabel="Editar reflexión"
-                  accessibilityRole="button"
-                  style={styles.menuButton}
-                  onPress={() => beginEditing(reflection)}
-                >
-                  <Feather name="edit-2" size={20} color={colors.mutedForeground} />
-                </Pressable>
-                {isPremium && (
-                  <Pressable
-                    testID={`share-${reflection.id}`}
-                    accessibilityLabel="Compartir"
-                    accessibilityRole="button"
-                    style={[styles.menuButton, !isShareable && { opacity: 0.3 }]}
-                    disabled={!isShareable}
-                    onPress={() => setShareReflection(reflection)}
-                  >
-                    <Feather name="instagram" size={16} color={colors.mutedForeground} />
-                  </Pressable>
-                )}
               </View>
             </View>
           )}
@@ -1034,6 +1036,7 @@ const styles = StyleSheet.create({
     width: "100%",
     flexDirection: "row",
     alignItems: "center",
+    justifyContent: "space-between",
     marginBottom: 10,
   },
   reflectionCard: {
@@ -1066,7 +1069,9 @@ const styles = StyleSheet.create({
     flex: 1,
     minWidth: 0,
   },
-  cardActionsColumn: {
+  cardActionsRow: {
+    marginRight: -4,
+    flexDirection: "row",
     alignItems: "center",
     gap: 10,
   },

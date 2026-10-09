@@ -134,10 +134,45 @@ test("the pencil action opens the existing editor with the original reflection I
   assert.equal(result.props.accessibilityLabel, "Editar reflexión");
   assert.equal(result.props.accessibilityRole, "button");
   assert.equal(result.props.children.props.name, "edit-2");
-  assert.equal(result.props.children.props.size, 20);
+  assert.equal(result.props.children.props.size, 17);
+  assert.equal(result.props.children.props.color, "#D6D6D6");
   result.props.onPress();
   assert.equal(id, reflection.id);
   assert.equal(message, reflection.message);
+});
+
+test("edit and Instagram actions are paired above the card, aligned right, with existing sharing guards", () => {
+  const tree = ast(source("../app/mi-espacio-interior.tsx"));
+  const row = find(tree, node => ts.isJsxElement(node)
+    && node.openingElement.attributes.getText(tree).includes("styles.reflectionMetaRow"));
+  const card = find(tree, node => ts.isJsxElement(node)
+    && node.openingElement.attributes.getText(tree) === "style={styles.reflectionCard}");
+  assert.doesNotMatch(card.getText(tree), /testID=\{`(?:menu|share)-/);
+  const render = new Function("React", "View", "Text", "Pressable", "Feather", "StyleSheet", "styles",
+    "cat", "isEditing", "isPremium", "isShareable", "reflection", "beginEditing", "setShareReflection",
+    compile(`return (${row.getText(tree)});`));
+  const wallStyles = styles(tree, ["reflectionMetaRow", "cardActionsRow", "cardCatPill", "cardCatText", "menuButton"]);
+  assert.equal(wallStyles.reflectionMetaRow.justifyContent, "space-between");
+  assert.equal(wallStyles.cardActionsRow.flexDirection, "row");
+  assert.equal(wallStyles.cardActionsRow.marginRight, -4);
+  const reflection = { id: 7, message: "Mi reflexión" };
+  let shared;
+  const run = (editing: boolean, premium: boolean, shareable: boolean) => render(React, "view", "text", "button",
+    "icon", { absoluteFill: {} }, wallStyles, { color: "#F075B3", label: "Gratitud" },
+    editing, premium, shareable, reflection, () => {}, (value: unknown) => { shared = value; });
+  const [, actions] = React.Children.toArray(run(false, true, true).props.children) as any[];
+  const [pencil, instagram] = React.Children.toArray(actions.props.children) as any[];
+  assert.equal(pencil.props.children.props.size, 17);
+  assert.equal(pencil.props.children.props.color, "#D6D6D6");
+  assert.equal(instagram.props.children.props.name, "instagram");
+  assert.equal(instagram.props.children.props.size, 16);
+  assert.equal(instagram.props.children.props.color, "#D6D6D6");
+  instagram.props.onPress();
+  assert.equal(shared, reflection);
+  assert.equal(React.Children.toArray((React.Children.toArray(run(false, false, true).props.children) as any[])[1].props.children).length, 1);
+  assert.equal((React.Children.toArray(run(true, true, true).props.children) as any[]).length, 1);
+  const disabledActions = (React.Children.toArray(run(false, true, false).props.children) as any[])[1];
+  assert.equal((React.Children.toArray(disabledActions.props.children) as any[])[1].props.disabled, true);
 });
 
 test("composer retains both 20px writing gaps and adds 8px below the buttons across themes", () => {

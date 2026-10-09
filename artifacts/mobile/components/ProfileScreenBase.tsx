@@ -1592,6 +1592,7 @@ export function ProfileScreenBase({
                 sectionBottomPadding={18}
                 sectionMarginBottom={PROFILE_SECTION_GAP}
                 canonicalVerticalInsets
+                profileCalendarLayout
                 afterCalendar={
                   <>
                     <View testID="profile-growth-intention" style={{ marginTop: PROFILE_SECTION_GAP }}>

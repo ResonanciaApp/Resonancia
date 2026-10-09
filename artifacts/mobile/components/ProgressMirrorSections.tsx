@@ -71,6 +71,7 @@ export function ProgressMirrorSections({
   personalStatsMarginTop,
   streakMarginBottom,
   canonicalVerticalInsets = false,
+  profileCalendarLayout = false,
   calendarTextSizeAdjustment = 0,
   calendarDayTextSizeAdjustment = calendarTextSizeAdjustment,
 }: {
@@ -123,6 +124,7 @@ export function ProgressMirrorSections({
   personalStatsMarginTop?: number;
   streakMarginBottom?: number;
   canonicalVerticalInsets?: boolean;
+  profileCalendarLayout?: boolean;
   calendarTextSizeAdjustment?: number;
   calendarDayTextSizeAdjustment?: number;
 }) {
@@ -669,6 +671,7 @@ export function ProgressMirrorSections({
             cardHorizontalPadding={sectionHorizontalPadding}
             cardVerticalPadding={sectionVerticalPadding}
             canonicalVerticalInsets={canonicalVerticalInsets}
+            profileCalendarLayout={profileCalendarLayout}
             calendarTextSizeAdjustment={calendarTextSizeAdjustment}
             calendarDayTextSizeAdjustment={calendarDayTextSizeAdjustment}
             animateEntrance={animateEntrance}
