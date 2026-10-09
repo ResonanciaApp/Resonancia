@@ -136,7 +136,7 @@ function uiHarness() {
   };
 }
 
-test("Tu camino preserves its controls and adds a two-line intro while lowering Primera etapa and the whole journey by 50px", () => {
+test("Tu camino centers a 13px two-line intro, lowers the whole journey another 60px, and keeps help accessible through the map icon", () => {
   const h = uiHarness();
   const { GrowthJourneySheet } = load("../components/GrowthJourneySheet.tsx", h.imports);
   let closes = 0;
@@ -162,7 +162,7 @@ test("Tu camino preserves its controls and adds a two-line intro while lowering 
   assert.equal(flatten(scroll.contentContainerStyle).paddingBottom, 52);
   assert.ok(html.indexOf('data-testid="growth-journey-close"') < html.indexOf("Tu camino"));
   assert.ok(html.indexOf("Tu camino") < html.indexOf('data-testid="growth-journey-help"'));
-  assert.match(html, /data-testid="growth-journey-help-info" data-icon="information-variant" data-color="#F9F9F9"/);
+  assert.match(html, /data-testid="growth-journey-help-info" data-icon="map-outline" data-color="#F9F9F9"/);
   assert.equal(h.presses.get("growth-journey-help").style.backgroundColor, "rgba(0,0,0,0.16)");
   assert.doesNotMatch(html, /trending-up|Cada día de racha|descriptionDivider/);
   assert.doesNotMatch(html, /No florecemos/);
@@ -170,7 +170,10 @@ test("Tu camino preserves its controls and adds a two-line intro while lowering 
   assert.equal(intro.numberOfLines, 2);
   assert.equal(intro.children, "Tu práctica diaria se transforma en crecimiento.\nAvanza por etapas y desbloquea nuevos avatares.");
   assert.equal(flatten(intro.style).lineHeight, 22);
+  assert.equal(flatten(intro.style).fontSize, 13);
+  assert.equal(flatten(intro.style).textAlign, "center");
   assert.equal(flatten(h.nodes.get("growth-journey-intro-space").style).paddingHorizontal, 20);
+  assert.equal(flatten(h.nodes.get("growth-journey-intro-space").style).justifyContent, "center");
   assert.ok(html.indexOf("Tu camino") < html.indexOf(intro.children));
   assert.ok(html.indexOf(intro.children) < html.indexOf("PRIMERA ETAPA"));
   assert.ok(html.indexOf("Tu camino") < html.indexOf("PRIMERA ETAPA"));
@@ -183,10 +186,10 @@ test("Tu camino preserves its controls and adds a two-line intro while lowering 
   assert.equal(h.presses.get("growth-journey-help").accessibilityLabel, "Información de Tu camino");
   assert.equal(h.presses.get("growth-journey-help").style.width, 43);
   assert.doesNotMatch(html, />\?</);
-  assert.equal(flatten(h.nodes.get("growth-journey-intro-space").style).height, 123); // previous 73px plus 50px, including the intro
+  assert.equal(flatten(h.nodes.get("growth-journey-intro-space").style).height, 183); // previous 123px plus 60px, including the centered intro
   h.help.onDescriptionLayout(46);
   render();
-  assert.equal(flatten(h.nodes.get("growth-journey-intro-space").style).height, 100); // previous 50px plus 50px
+  assert.equal(flatten(h.nodes.get("growth-journey-intro-space").style).height, 160); // previous 100px plus 60px
   h.presses.get("growth-journey-help").onPress();
   render();
   assert.equal(h.help.visible, true);

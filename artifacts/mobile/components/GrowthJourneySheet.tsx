@@ -23,7 +23,7 @@ import { useColors } from "@/hooks/useColors";
 // Retain its measured height minus the requested rise, keeping the timeline in flow.
 const FORMER_INTRO_FIXED_HEIGHT = 181;
 const FIRST_STAGE_RISE = 184;
-const FIRST_STAGE_DROP = 57;
+const FIRST_STAGE_DROP = 117;
 
 export function GrowthJourneySheet({
   visible,
@@ -110,7 +110,7 @@ export function GrowthJourneySheet({
             >
               <MaterialCommunityIcons
                 testID="growth-journey-help-info"
-                name="information-variant"
+                name="map-outline"
                 size={24}
                 color={NAVIGATION_HELP_ICON_COLOR}
                 accessibilityElementsHidden
@@ -162,7 +162,7 @@ const styles = StyleSheet.create({
   },
   title: { fontFamily: "Manrope", fontSize: 20, lineHeight: 42, fontWeight: "700" },
   introSpace: { justifyContent: "center", paddingHorizontal: 20 },
-  introText: { fontFamily: "Manrope", fontSize: 14, lineHeight: 22, fontWeight: "400" },
+  introText: { fontFamily: "Manrope", fontSize: 13, lineHeight: 22, fontWeight: "400", textAlign: "center" },
   closeButton: {
     width: 43,
     height: 43,

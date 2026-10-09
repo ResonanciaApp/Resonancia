@@ -92,7 +92,7 @@ function loadGrowthImage(module: number): Promise<string> {
   return load;
 }
 
-export function GrowthLevelImage({ level, profilePreview = false, dimmed = false, size, height, sourceModule }: { level: GrowthLevel; profilePreview?: boolean; dimmed?: boolean; size?: number; height?: number; sourceModule?: number }) {
+export function GrowthLevelImage({ level, profilePreview = false, dimmed = false, attenuated = false, size, height, sourceModule }: { level: GrowthLevel; profilePreview?: boolean; dimmed?: boolean; attenuated?: boolean; size?: number; height?: number; sourceModule?: number }) {
   const imageModule = sourceModule ?? level.image;
   const fadedStage = sourceModule === undefined && level.group !== "ascenso" && !level.id.startsWith("ascenso-");
   const [localUri, setLocalUri] = useState(() => typeof imageModule === "number" ? growthImageUris.get(imageModule) ?? null : null);
@@ -123,6 +123,18 @@ export function GrowthLevelImage({ level, profilePreview = false, dimmed = false
           resizeMode={sourceModule !== undefined ? "cover" : "contain"}
           style={[styles.levelImage, fadedStage && styles.fadedStageImage, dimmed && styles.lockedArt]}
           onError={(event) => console.warn(`[GrowthJourney] No se pudo cargar ${level.id}: ${event.nativeEvent.error}`)}
+          accessibilityElementsHidden
+          importantForAccessibility="no"
+        />
+      )}
+      {source && attenuated && !dimmed && (
+        // Use the same image's alpha so the black overlay does not darken transparent margins.
+        <Image
+          testID={`${level.id}-active-art-overlay`}
+          source={source}
+          resizeMode={sourceModule !== undefined ? "cover" : "contain"}
+          style={[styles.levelImage, fadedStage && styles.fadedStageImage, styles.activeArtOverlay]}
+          pointerEvents="none"
           accessibilityElementsHidden
           importantForAccessibility="no"
         />
@@ -361,7 +373,7 @@ function GrowthRow({
         ]}
       />
       <View testID={`${level.id}-stage-art`} style={[styles.art, florecimiento && styles.bloomArt, styles.stageContentOffset]}>
-        <GrowthLevelImage level={level} dimmed={status === "locked"} />
+        <GrowthLevelImage level={level} dimmed={status === "locked"} attenuated={status !== "locked"} />
       </View>
       <View testID={`${level.id}-copy`} style={[styles.copy, reward && styles.rewardCopy]}>
         <View testID={`${level.id}-stage-summary`} style={[styles.stageSummaryOffset, status === "locked" && styles.lockedCopy]}>
@@ -651,6 +663,7 @@ const styles = StyleSheet.create({
   fadedStageImage: { transform: [{ scale: 0.9 }] },
   profileImageWrap: { borderRadius: 67 },
   levelImage: { width: "100%", height: "100%" },
+  activeArtOverlay: { position: "absolute", top: 0, left: 0, tintColor: "#000000", opacity: 0.1 },
   copy: {
     marginLeft: 196,
     flex: 1,

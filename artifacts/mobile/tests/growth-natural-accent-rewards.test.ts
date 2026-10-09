@@ -15,9 +15,13 @@ import {
 const source = readFileSync(new URL("../components/GrowthJourney.tsx", import.meta.url), "utf8");
 const ast = ts.createSourceFile("growth.tsx", source, ts.ScriptTarget.Latest, true, ts.ScriptKind.TSX);
 const declarations: string[] = [];
+let imageDeclaration = "";
 let stylesExpression = "";
 let colorsExpression = "";
 function visit(node: ts.Node) {
+  if (ts.isFunctionDeclaration(node) && node.name?.text === "GrowthLevelImage") {
+    imageDeclaration = node.getText(ast).replace(/^export /, "");
+  }
   if (ts.isFunctionDeclaration(node) && ["GrowthRow", "GrowthTimeline", "GrowthStageHeading", "GrowthCurrentStagePill"].includes(node.name?.text ?? "")) {
     declarations.push(node.getText(ast).replace(/^export /, ""));
   }
@@ -48,7 +52,7 @@ const env = {
   useSceneTheme: () => ({ theme: { id: themeId, gradient: ["#123456", "#654321"] } }),
   useGrowth: () => ({ currentStage: { name: "Crecimiento" }, progress: { grantedRewards: [] } }),
   getPositionedDayGradient: (gradient: string[]) => gradient,
-  GrowthLevelImage: () => null, RewardLock: Native,
+  GrowthLevelImage: Native, RewardLock: Native,
 };
 const components = new Function(...Object.keys(env), compile(`${declarations.join("\n")}; return { GrowthRow, GrowthTimeline, GrowthStageHeading, GrowthCurrentStagePill };`))(...Object.values(env));
 const render = (component: any, props: any = {}) => {
@@ -97,11 +101,37 @@ test("every stage keeps its image offset and shifts summary another 15px and rew
         assert.equal(art.left, florecimiento ? 38 : 40);
         assert.equal(nodes.find(node => node.testID === "crecimiento-stage-node").style.left, 1);
         assert.equal(nodes.find(node => node.testID === "crecimiento-copy").style.marginLeft, 196);
+        assert.equal(nodes.find(node => node.level === level).attenuated, status !== "locked");
         for (const reward of nodes.filter(node => /^crecimiento-reward(?:-reward-\d)?$/.test(node.testID ?? ""))) {
           assert.deepEqual(reward.style.transform, [{ translateY: -4 }, { translateX: -30 }]);
         }
       }
     }
+  }
+});
+
+test("active-stage attenuation is a 10% black image overlay preserving transparency; locked images and other surfaces stay unchanged", () => {
+  const GrowthLevelImage = new Function(
+    "React", "useState", "useEffect", "Platform", "growthImageUris", "resolveAvatarUrl", "View", "Image", "styles",
+    compile(`${imageDeclaration}; return GrowthLevelImage;`),
+  )(
+    React, (initial: any) => [typeof initial === "function" ? initial() : initial], () => {},
+    { OS: "web" }, new Map(), (uri: string) => uri, Native, Native, styles,
+  );
+  const illustratedLevel = { ...level, group: "florecimiento", image: "https://example.com/stage.png" };
+  render(GrowthLevelImage, { level: illustratedLevel, attenuated: true });
+  const overlay = nodes.find(node => node.testID === "crecimiento-active-art-overlay");
+  assert.ok(overlay);
+  assert.deepEqual(overlay.source, { uri: illustratedLevel.image });
+  assert.equal(overlay.style.tintColor, "#000000");
+  assert.equal(overlay.style.opacity, 0.1);
+  assert.equal(overlay.style.backgroundColor, undefined);
+  assert.equal(overlay.style.position, "absolute");
+  assert.deepEqual(overlay.style.transform, [{ scale: 0.9 }]);
+  assert.equal(overlay.pointerEvents, "none");
+  for (const props of [{}, { profilePreview: true }, { attenuated: true, dimmed: true }]) {
+    render(GrowthLevelImage, { level: illustratedLevel, ...props });
+    assert.equal(nodes.some(node => node.testID === "crecimiento-active-art-overlay"), false);
   }
 });
 
