@@ -88,6 +88,18 @@ test("public identity uses precisely the own-profile sizes, type and inner spaci
   }
   assert.deepEqual(styleProperties(publicSource, "profileCard"), styleProperties(ownSource, "profileIdentityRow"));
 });
+test("description and life motto shrink one point without changing line heights or spacing", () => {
+  for (const source of [ownSource, publicSource]) {
+    const motto = styleProperties(source, "profileLifeMotto");
+    const description = styleProperties(source, "profileDescription");
+    assert.equal(motto.fontSize, "18");
+    assert.equal(motto.lineHeight, "27");
+    assert.equal(motto.marginTop, "7");
+    assert.equal(motto.fontWeight, '"700"');
+    assert.equal(description.fontSize, "13");
+    assert.equal(description.lineHeight, "20");
+  }
+});
 test("renders actual identity in order and stops at description", () => {
   const html = render();
   const ordered = ["public-profile-back", "public-profile-premium-badge", "public-profile-name", "data-shared-stage", "public-profile-life-motto", "public-profile-long-description"];

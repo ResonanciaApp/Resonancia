@@ -198,6 +198,6 @@ const styles = StyleSheet.create({
   profileNameText: { flex: 1, minWidth: 0 },
   userName: { fontFamily: "Manrope", fontSize: 29, fontWeight: "700", textAlign: "left", marginTop: 0 },
   profileBiography: { width: "100%", alignItems: "flex-start", gap: 6, marginTop: 7 },
-  profileLifeMotto: { fontFamily: "Manrope", fontSize: 19, fontWeight: "700", lineHeight: 27, textAlign: "left", alignSelf: "stretch", marginTop: 7 },
-  profileDescription: { fontFamily: "Manrope", fontSize: 14, lineHeight: 20, color: "#C4C4C4", textAlign: "left", alignSelf: "stretch" },
+  profileLifeMotto: { fontFamily: "Manrope", fontSize: 18, fontWeight: "700", lineHeight: 27, textAlign: "left", alignSelf: "stretch", marginTop: 7 },
+  profileDescription: { fontFamily: "Manrope", fontSize: 13, lineHeight: 20, color: "#C4C4C4", textAlign: "left", alignSelf: "stretch" },
 });
