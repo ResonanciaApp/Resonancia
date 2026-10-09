@@ -183,9 +183,9 @@ Los detalles de etapa usan ahora una imagen al doble del tamaño del recorrido T
 
 **Why:** El usuario sustituyó la dirección fullscreen anterior: pidió imagen 100 % más grande que en Tu camino y un solo fondo como el recorrido porque veía una franja negra.
 
-**How to apply:** Mantener fijas fuera del scroll la X y la imagen, sin animar la imagen. El usuario retiró «Primera etapa / Florecimiento» y pidió la fuente normal en negrita para el nombre de etapa. Título, píldora y textos desplazan sobre el degradado raíz fijo y se desvanecen progresivamente al llegar a la imagen. Usar transparencia real, no un overlay negro que reintroduzca franjas. Conservar el loto solo en la píldora.
+**How to apply:** Mantener fijas fuera del scroll la X y la imagen, sin animar la imagen. El usuario retiró «Primera etapa / Florecimiento» y pidió la fuente normal en negrita para el nombre de etapa. Título y textos desplazan sobre el degradado raíz fijo y se desvanecen progresivamente al llegar a la imagen. Usar transparencia real, no un overlay negro que reintroduzca franjas. La píldora de días y su loto se retiraron únicamente de las pantallas de detalle; conservarlos en el recorrido y Perfil.
 
-La frase y la descripción larga del detalle son contenido editorial independiente del resumen del recorrido. El nombre y los días no tienen variantes propias del detalle: deben reflejar siempre los de la etapa editada en Admin.
+La frase y la descripción larga del detalle son contenido editorial independiente del resumen del recorrido. El nombre no tiene una variante propia del detalle: debe reflejar siempre el de la etapa editada en Admin. Los días siguen perteneciendo a la etapa aunque el detalle ya no los muestre.
 
 **Why:** El usuario pidió editar los detalles de cada fase sin mantener dos títulos ni dos rangos que puedan contradecirse. Esto amplía la autorización anterior limitada a Intención a todas las fases de ambos grupos, incluidas las creadas desde Admin.
 

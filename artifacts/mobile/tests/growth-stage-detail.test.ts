@@ -95,7 +95,7 @@ test("every stage uses its own editorial detail, current title and range, includ
   try {
     const html = render({ stageId: newStage.id });
     assert.match(html, /Claridad/);
-    assert.match(html, /450–480 días/);
+    assert.doesNotMatch(html, /450–480 días|data-icon="spa"/);
     assert.match(html, /Frase editorial/);
     assert.match(html, /Descripción editorial/);
     assert.doesNotMatch(html, /Solo en recorrido|Antes del primer día|Intención/);
@@ -104,7 +104,7 @@ test("every stage uses its own editorial detail, current title and range, includ
     newStage.name = "Presencia";
     newStage.endDay = 490;
     newStage.detailPhrase = "Nueva frase";
-    assert.match(render({ stageId: newStage.id }), /Presencia[\s\S]*450–490 días[\s\S]*Nueva frase/);
+    assert.match(render({ stageId: newStage.id }), /Presencia[\s\S]*Nueva frase/);
   } finally { levels = growthLevels; }
 });
 
@@ -139,10 +139,10 @@ test("offline legacy detail adopts once and never invents a long description for
   }
 });
 
-test("Intención detail uses its actual hero, 0-day label and canonical story, not Semilla content", () => {
+test("Intención detail uses its actual hero and canonical story, without the day pill", () => {
   const html = render();
   assert.match(html, /Intención/);
-  assert.match(html, />0 días</);
+  assert.doesNotMatch(html, />0 días</);
   assert.ok(html.includes(growthLevels[0].story));
   assert.doesNotMatch(html, /Semilla|1.?7 días|avatares|sin sello/);
   assert.equal(nodes.get("growth-detail-hero-artwork").level, growthLevels[0]);
@@ -150,7 +150,7 @@ test("Intención detail uses its actual hero, 0-day label and canonical story, n
   assert.equal(nodes.get("growth-detail-hero-artwork").size, 137 * 2);
   assert.match(html, /data-font="CormorantGaramond"/);
   assert.doesNotMatch(html, /PRIMERA ETAPA|Elegir comenzar|growth-stage-detail-help/);
-  assert.equal((html.match(/data-icon="spa"/g) ?? []).length, 1, "only the day pill retains its lotus");
+  assert.equal((html.match(/data-icon="spa"/g) ?? []).length, 0, "the removed day pill includes its lotus");
 });
 
 test("the detail shares the streak screen's theme, safe-area spacing, circular controls and scroll bounce", () => {
@@ -207,7 +207,7 @@ test("the detail has only one continuous theme background, without opaque hero s
   assert.match(journey, /bloomArt: \{ width: GROWTH_BLOOM_ART_SIZE, height: GROWTH_BLOOM_ART_SIZE/);
 });
 
-test("artwork and content rise 20px together, with copy moved 20px farther below the pill", () => {
+test("artwork and title retain their position with copy below the title", () => {
   render();
   assert.equal(nodes.get("growth-stage-detail-scroll").contentContainerStyle.paddingTop, 350);
   const block = flat(nodes.get("growth-stage-detail-title-block").style);
@@ -240,7 +240,7 @@ test("the X stays fixed, stage labels are removed and Intención uses the app's 
    assert.match(source, /stageName: \{\s*fontFamily: "Manrope",\s*fontWeight: "700"/);
 });
 
-test("artwork is static outside scrolling content and the smaller day pill preserves its text", () => {
+test("artwork is static outside scrolling content and no day pill remains", () => {
   render();
   const art = nodes.get("growth-stage-detail-fixed-art");
   assert.equal(flat(art.style).position, "absolute");
@@ -249,8 +249,7 @@ test("artwork is static outside scrolling content and the smaller day pill prese
   const scrollChildren = React.Children.toArray(nodes.get("growth-stage-detail-scroll").children) as React.ReactElement<any>[];
   assert.ok(scrollChildren.every(child => child.props.replayKey !== "hero"));
   const source = readFileSync(new URL("../components/GrowthStageDetail.tsx", import.meta.url), "utf8");
-  assert.match(source, /dayPill: \{[^}]*paddingHorizontal: 11\.5,\s*paddingVertical: 2\.5,/);
-  assert.match(source, /days: \{[^}]*fontSize: 14/);
+  assert.doesNotMatch(source, /dayPill|dayLabel|styles\.days|MaterialCommunityIcons/);
 });
 
 test("a fixed alpha mask progressively hides content as it scrolls into the image, without tinting the background", () => {

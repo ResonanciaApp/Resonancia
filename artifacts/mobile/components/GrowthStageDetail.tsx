@@ -1,4 +1,4 @@
-import { Feather, MaterialCommunityIcons } from "@expo/vector-icons";
+import { Feather } from "@expo/vector-icons";
 import MaskedView from "@react-native-masked-view/masked-view";
 import { LinearGradient } from "expo-linear-gradient";
 import React from "react";
@@ -50,7 +50,6 @@ export function GrowthStageDetail({
   const fadeEnd = Math.min(1, Math.max(fadeStart, (heroBottom + 8) / height));
   if (!level) return null;
   const { phrase, description } = growthDetailCopy(level);
-  const dayLabel = level.startDay === level.endDay ? `${level.startDay} días` : `${level.startDay}–${level.endDay} días`;
 
   return (
     <LinearGradient
@@ -95,10 +94,6 @@ export function GrowthStageDetail({
         <CinematicFadeSlide active replayKey="stage" delay={BASE_DELAY} duration={DURATION}>
           <View testID="growth-stage-detail-title-block" style={styles.titleBlock}>
             <Text style={styles.stageName} accessibilityRole="header">{level.name}</Text>
-            <View style={styles.dayPill}>
-              <MaterialCommunityIcons name="spa" size={14} color={GOLD} />
-              <Text style={styles.days}>{dayLabel}</Text>
-            </View>
           </View>
         </CinematicFadeSlide>
 
@@ -162,18 +157,6 @@ const styles = StyleSheet.create({
     color: STREAK_INFO_COLORS.pageTitle,
     textAlign: "center",
   },
-  dayPill: {
-    flexDirection: "row",
-    alignItems: "center",
-    gap: 6,
-    paddingHorizontal: 11.5,
-    paddingVertical: 2.5,
-    borderRadius: 18,
-    backgroundColor: "rgba(151,128,231,0.20)",
-    borderWidth: 1,
-    borderColor: "rgba(255,255,255,0.18)",
-  },
-  days: { fontFamily: "Manrope", fontSize: 14, fontWeight: "600", color: WHITE },
   copy: { paddingHorizontal: 28, alignItems: "center", marginTop: 35 },
   quote: {
     fontFamily: "CormorantGaramond",
