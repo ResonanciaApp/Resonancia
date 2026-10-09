@@ -45,10 +45,10 @@ export function GrowthStageDetail({
   const heroSize = GROWTH_BLOOM_ART_SIZE * 2;
   const heroTop = topPad + 40;
   const heroBottom = heroTop + heroSize;
-  // Content remains visible over the artwork, fading only near its upper edge.
-  const fadeTop = Math.max(0, heroTop - 96);
+  // Fade begins exactly at the artwork's lower edge, over a long upward travel.
+  const fadeTop = Math.max(0, heroBottom - 144);
   const fadeStart = Math.min(1, fadeTop / height);
-  const fadeEnd = Math.min(1, Math.max(fadeStart, (heroTop + 48) / height));
+  const fadeEnd = Math.min(1, Math.max(fadeStart, heroBottom / height));
   if (!level) return null;
   const dayLabel = level.startDay === level.endDay ? `${level.startDay} días` : `${level.startDay}–${level.endDay} días`;
 
