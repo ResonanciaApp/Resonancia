@@ -106,6 +106,7 @@ function DayCell({
   isFuture,
   embedded,
   color,
+  textSizeAdjustment = 0,
   onPress,
 }: {
   d: Date;
@@ -115,6 +116,7 @@ function DayCell({
   isFuture: boolean;
   embedded: boolean;
   color: string;
+  textSizeAdjustment?: number;
   onPress: () => void;
 }) {
   const scale = useRef(new Animated.Value(1)).current;
@@ -188,6 +190,7 @@ function DayCell({
           style={[
             styles.dayNum,
             embedded && styles.embeddedDayNum,
+            embedded && textSizeAdjustment !== 0 && { fontSize: styles.embeddedDayNum.fontSize + textSizeAdjustment },
             {
               color: isFuture
                 ? "rgba(255,255,255,0.24)"
@@ -240,6 +243,7 @@ export function HistorialCalendar({
   animateEntrance = false,
   entranceReplayKey = "history-calendar",
   entranceBaseDelay = 0,
+  calendarTextSizeAdjustment = 0,
 }: {
   containerPadding?: number;
   embedded?: boolean;
@@ -253,6 +257,7 @@ export function HistorialCalendar({
   animateEntrance?: boolean;
   entranceReplayKey?: string | number;
   entranceBaseDelay?: number;
+  calendarTextSizeAdjustment?: number;
 }) {
   const colors = useColors();
   const { activeSceneId } = useSceneTheme();
@@ -416,7 +421,7 @@ export function HistorialCalendar({
         >
         <View style={[styles.weekRow, embedded && styles.embeddedWeekRow]}>
           {(embedded ? EMBEDDED_WEEK_LABELS : WEEK_LABELS).map((label, index) => (
-            <Text key={`${label}-${index}`} style={[styles.weekLabel, { color: calendarAccent }]}>
+            <Text key={`${label}-${index}`} style={[styles.weekLabel, { color: calendarAccent }, calendarTextSizeAdjustment !== 0 && { fontSize: styles.weekLabel.fontSize + calendarTextSizeAdjustment }]}>
               {label}
             </Text>
           ))}
@@ -450,6 +455,7 @@ export function HistorialCalendar({
                     isFuture={d.getTime() > today.getTime()}
                     embedded={embedded}
                     color={colors.foreground}
+                    textSizeAdjustment={calendarTextSizeAdjustment}
                     onPress={() => setSelectedDate(d)}
                   />
                 );

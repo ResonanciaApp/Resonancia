@@ -24,6 +24,7 @@ const Native = ({ children, testID, style }: Props) => {
     "data-background": resolvedStyle.backgroundColor,
     "data-height": resolvedStyle.height,
     "data-line-height": resolvedStyle.lineHeight,
+    "data-font-size": resolvedStyle.fontSize,
     "data-padding-top": resolvedStyle.paddingTop,
     "data-padding-bottom": resolvedStyle.paddingBottom,
     "data-padding-vertical": resolvedStyle.paddingVertical,
@@ -82,6 +83,27 @@ const render = (enabled = true, props: Record<string, unknown> = {}) => renderTo
   }),
 );
 const completed = (sessionId: string) => ({ sessionId, playedAt: new Date().toISOString(), completed: true });
+
+test("Profile shrinks calendar weekday initials and month dates by 2px without changing other calendars", () => {
+  events = [];
+  const profile = render(false, { calendarTextSizeAdjustment: -2 });
+  const embedded = render(false);
+  const standalone = render(false, { embedded: false });
+  const weekdays = (html: string, size: number) =>
+    [...html.matchAll(new RegExp(`data-font-size="${size}"[^>]*>[A-ZÁÉÍÓÚ]{1,4}</div>`, "g"))].length;
+  const dates = (html: string, size: number) =>
+    [...html.matchAll(new RegExp(`data-font-size="${size}"[^>]*>\\d{1,2}</div>`, "g"))].length;
+  assert.equal(weekdays(profile, 10), 7);
+  assert.equal(weekdays(embedded, 12), 7);
+  assert.equal(weekdays(standalone, 12), 7);
+  assert.ok(dates(profile, 15) >= 28);
+  assert.equal(dates(profile, 15), dates(embedded, 17));
+  assert.equal(dates(embedded, 17), dates(standalone, 15));
+  const profileSource = readFileSync(new URL("../components/ProfileScreenBase.tsx", import.meta.url), "utf8");
+  const progressSource = readFileSync(new URL("../components/ProgressMirrorSections.tsx", import.meta.url), "utf8");
+  assert.match(profileSource, /<ProgressMirrorSections[\s\S]*?calendarTextSizeAdjustment=\{-2\}/);
+  assert.match(progressSource, /<HistorialCalendar[\s\S]*?calendarTextSizeAdjustment=\{calendarTextSizeAdjustment\}/);
+});
 
 test("one completed session appears beside the date, above its card, in the favorites-description color", () => {
   events = [completed("Prueba 33")];

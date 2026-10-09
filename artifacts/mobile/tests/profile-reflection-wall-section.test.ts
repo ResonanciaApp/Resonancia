@@ -421,6 +421,7 @@ test("Registrar uses solid white and theme-specific dark text in both disabled a
   const saveMessage = () => {};
   const scope = {
     React, Pressable: "button", Text: "span", Feather: "icon", styles, saveMessage,
+    REFLECTION_ACTION_ICON_SIZE: Number(contents.match(/const REFLECTION_ACTION_ICON_SIZE = (\d+)/)?.[1]),
     getThemeStyleId: (id: string) => id === "pleyades" ? "indigo2" : id,
   };
   const colorDeclaration = contents.match(/const registerColor = ([\s\S]*?);/);
@@ -438,6 +439,7 @@ test("Registrar uses solid white and theme-specific dark text in both disabled a
     assert.equal(element.props.accessibilityLabel, "Registrar");
     const [icon, label] = React.Children.toArray(element.props.children) as React.ReactElement<any>[];
     assert.equal(icon.props.name, "message-circle");
+    assert.equal(icon.props.size, 14);
     assert.equal(icon.props.color, themeId === "natural" ? "#073B32" : themeId === "cloudy" ? "#166494" : "#0B1438");
     assert.equal(label.type, "span");
     assert.equal(label.props.children, pending ? "Registrando..." : "REGISTRAR");
@@ -471,7 +473,10 @@ test("Ver muro has no border, starts at the left margin and has a matching right
   const button = contents.slice(contents.indexOf('testID="open-reflection-wall"'), contents.indexOf('testID="save-reflection"'));
   assert.doesNotMatch(button, /borderColor:|REFLECTION_WALL_BUTTON_BORDER_COLOR/);
   assert.doesNotMatch(button, /opacity:|theme\.id/);
-  assert.match(button, />Ver muro<\/Text>[\s\S]*<Feather name="arrow-right" size=\{14\} color="#F9F9F9"/);
+  assert.match(button, />VER MURO<\/Text>[\s\S]*<Feather name="arrow-right" size=\{REFLECTION_ACTION_ICON_SIZE\} color="#F9F9F9"/);
+  assert.match(contents, /name="message-circle" size=\{REFLECTION_ACTION_ICON_SIZE\}/);
+  assert.equal(style("InnerSpaceCard", "submitText").fontSize, 11);
+  assert.equal(style("InnerSpaceCard", "submitText").fontWeight, "600");
   assert.match(button, /color: "#F9F9F9"/);
   assert.equal(style("InnerSpaceCard", "wallButton").borderWidth, 0);
   assert.equal(style("InnerSpaceCard", "wallButton").justifyContent, "flex-start");

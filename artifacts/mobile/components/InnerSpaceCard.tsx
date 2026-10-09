@@ -56,6 +56,7 @@ const PANEL_DURATION = 620;
 const SCREEN_SETTLE_DURATION = 650;
 export const INNER_SPACE_CARD_BOTTOM_MARGIN = 32;
 const COMPOSER_BOTTOM_GAP = 28;
+const REFLECTION_ACTION_ICON_SIZE = 14;
 
 export function InnerSpaceCard({
   focusRequest = 0,
@@ -683,8 +684,8 @@ export function InnerSpaceCard({
           accessibilityRole="button"
           accessibilityLabel="Ver muro"
         >
-          <Text style={[styles.submitText, { color: "#F9F9F9" }]}>Ver muro</Text>
-          <Feather name="arrow-right" size={14} color="#F9F9F9" />
+          <Text style={[styles.submitText, { color: "#F9F9F9" }]}>VER MURO</Text>
+          <Feather name="arrow-right" size={REFLECTION_ACTION_ICON_SIZE} color="#F9F9F9" />
         </Pressable>
         <Pressable
           testID="save-reflection"
@@ -698,7 +699,7 @@ export function InnerSpaceCard({
           disabled={isSubmitDisabled}
           onPress={saveMessage}
         >
-          <Feather name="message-circle" size={14} color={registerColor} />
+          <Feather name="message-circle" size={REFLECTION_ACTION_ICON_SIZE} color={registerColor} />
           <Text style={[styles.submitText, { color: registerColor }]}>
             {createMutation.isPending ? "Registrando..." : "REGISTRAR"}
           </Text>

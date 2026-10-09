@@ -71,6 +71,7 @@ export function ProgressMirrorSections({
   personalStatsMarginTop,
   streakMarginBottom,
   canonicalVerticalInsets = false,
+  calendarTextSizeAdjustment = 0,
 }: {
   showSectionBorders?: boolean;
   showPersonalStats?: boolean;
@@ -121,6 +122,7 @@ export function ProgressMirrorSections({
   personalStatsMarginTop?: number;
   streakMarginBottom?: number;
   canonicalVerticalInsets?: boolean;
+  calendarTextSizeAdjustment?: number;
 }) {
   const colors = useColors();
   const { theme } = useSceneTheme();
@@ -665,6 +667,7 @@ export function ProgressMirrorSections({
             cardHorizontalPadding={sectionHorizontalPadding}
             cardVerticalPadding={sectionVerticalPadding}
             canonicalVerticalInsets={canonicalVerticalInsets}
+            calendarTextSizeAdjustment={calendarTextSizeAdjustment}
             animateEntrance={animateEntrance}
             entranceReplayKey={`${entranceReplayKey}:calendar-content`}
             entranceBaseDelay={entranceBaseDelay + (showPersonalStats ? 1450 : 950)}
