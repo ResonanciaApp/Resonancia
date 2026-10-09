@@ -260,7 +260,6 @@ export function InnerSpaceCard({
     }
     setSaveError(null);
     setSignInRequired(false);
-    settlePlaceholder(desiredPlaceholder);
     createMutation.mutate({ data: { category, message: message.trim() } });
   };
 

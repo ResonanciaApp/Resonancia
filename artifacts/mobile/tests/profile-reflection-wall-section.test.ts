@@ -223,7 +223,7 @@ test("Perfil header controls take touch priority over the lifted avatar without 
 test("Mi muro uses the question as its heading and has no writing placeholder", () => {
   const contents = source("../components/InnerSpaceCard.tsx");
   assert.ok(contents.includes(">¿Qué sientes compartir hoy?</Text>"));
-  assert.doesNotMatch(contents, /DEFAULT_PLACEHOLDER|inputPlaceholder|placeholder=|Registra y comparte tu viaje/);
+  assert.doesNotMatch(contents, /DEFAULT_PLACEHOLDER|inputPlaceholder|placeholder=|Registra y comparte tu viaje|settlePlaceholder|desiredPlaceholder/);
 });
 
 function style(file: string, name: string, values: Record<string, unknown> = {}): Record<string, unknown> {

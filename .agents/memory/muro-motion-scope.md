@@ -15,6 +15,12 @@ Al abrir el compositor, enfocar el cursor nativo sin abrir automáticamente el t
 
 **How to apply:** Separar el foco de cursor del foco de escritura; esperar a que el panel sea visible y respetar las restricciones de publicación gratuita.
 
+Los cambios al compositor necesitan una prueba que pulse Registrar y recorra tanto el éxito como el fallo del guardado, además de verificar su aspecto.
+
+**Why:** Las pruebas visuales y de foco pasaban mientras una referencia retirada del placeholder seguía ejecutándose al guardar y cerraba la app.
+
+**How to apply:** En los refactors del editor, ejecutar la acción real con categoría y texto, confirmar que conserva el borrador ante error y que lo limpia solo tras éxito. No sustituir esa comprobación por inspeccionar los props del botón.
+
 En Mi muro expansivo, la “+” tiene rebote exclusivamente angular: sobrepasa su orientación, cruza de vuelta con menor amplitud y se amortigua gradualmente. Los tabs, el campo de mensajes y los botones entran con fade-in y desplazamiento descendente monótono, sin sobrepasar ni rebotar; el cierre tampoco rebota. Al plegar, el contenido permanece quieto y opaco dentro del recorte mientras este lo oculta progresivamente de abajo hacia arriba. Al CERRAR, la “+” y sus tres círculos arrancan JUNTOS desde el toque; es el MOVIMIENTO DE LA PANTALLA el que debe esperar a que termine el pliegue. La “+” es simétrica cada 90°, así que tres giros perceptibles no requieren tres vueltas físicas completas.
 
 **Why:** El usuario percibió tres vueltas físicas de la “+” como unas diez vueltas rápidas, rechazó el desplazamiento y cambio aparente de tamaño del icono, y señaló que el rebote del formulario al llegar abajo era incorrecto. Una oscilación matemática breve de ~250 ms con cruces menores a 6° se percibió como parada en seco; una secuencia con más segmentos se percibió como cinco rebotes incluso cuando pretendía representar menos. El tirón al cerrar provenía del desplazamiento del contenedor durante el pliegue, no del giro de la “+”; retrasar el giro fue una interpretación errónea explícitamente corregida por el usuario. Confirmó que reservar la altura hasta terminar el pliegue funciona, y pidió que el movimiento posterior sea más pausado y sutil, como el scroll al desplegar.

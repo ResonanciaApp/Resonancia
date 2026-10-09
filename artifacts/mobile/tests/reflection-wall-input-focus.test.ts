@@ -18,6 +18,15 @@ function fixture(quota = 0) {
   const commits: (() => void)[] = [];
   const panelCompletions: ((finished: boolean) => void)[] = [];
   const nodes = new Map<string, any>();
+  const saveRequests: any[] = [];
+  let mutationCallbacks: any;
+  let reflectionPage: any = { items: [] };
+  let invalidations = 0;
+  const queryClient = {
+    getQueriesData: () => [[["/api/me/reflections", { limit: 4 }, "fixture"], reflectionPage]],
+    setQueryData: (_key: any, nextPage: any) => { reflectionPage = nextPage; },
+    invalidateQueries: async () => { invalidations++; },
+  };
   let props: any = { focusRequest: 0, onComposeRequested: () => { composeRequests++; } };
   let composeRequests = 0;
   const nativeInput = {
@@ -94,11 +103,16 @@ function fixture(quota = 0) {
     "@/context/SceneThemeContext": { useSceneTheme: () => ({ theme: { id: "indigo2", gradient: ["black", "navy"] } }) },
     "@/context/AuthContext": { useAuth: () => ({ authLoading: false, isSignedIn: true, clerkUserId: "fixture" }) },
     "@/context/PremiumContext": { usePremium: () => ({ isPremium: false }) },
-    "@/constants/reflectionCategories": { useReflectionCategories: () => ({ options: [] }) },
+    "@/constants/reflectionCategories": { useReflectionCategories: () => ({
+      options: [{ id: "gratitude", label: "Gratitud", color: "#ABCDEF" }],
+    }) },
     "@/lib/premiumGate": { FREE_REFLECTIONS_LIMIT: 3, showPremiumGate: () => gates++ },
-    "@tanstack/react-query": { useQueryClient: () => ({}) },
+    "@tanstack/react-query": { useQueryClient: () => queryClient },
     "@workspace/api-client-react": {
-      useCreateMyReflection: () => ({ isPending: false }),
+      useCreateMyReflection: ({ mutation }: any) => {
+        mutationCallbacks = mutation;
+        return { isPending: false, mutate: (request: any) => saveRequests.push(request) };
+      },
       useListMyReflections: () => ({ data: { items: Array.from({ length: quota }) }, isLoading: false }),
       getListMyReflectionsQueryKey: () => ["reflections"],
     },
@@ -135,6 +149,11 @@ function fixture(quota = 0) {
   render();
   return {
     nodes, render,
+    saveRequests,
+    succeed: (created: any) => { mutationCallbacks.onSuccess(created); render(); },
+    fail: (error: any) => { mutationCallbacks.onError(error); render(); },
+    get reflectionPage() { return reflectionPage; },
+    get invalidations() { return invalidations; },
     open: () => { nodes.get("reflection-wall-toggle").onPress(); render(); },
     tap: () => {
       const input = nodes.get("reflection-writing-input");
@@ -184,6 +203,45 @@ test("the native field receives taps and reveals its keyboard only after the par
   f.tap();
   f.flushFrames();
   assert.equal(f.restored, priorRestorations + 1);
+  f.dispose();
+});
+
+test("Registrar sends the reflection, updates the wall and clears the form only after success", () => {
+  const f = fixture();
+  let saved = 0;
+  f.render({ onMessageSaved: () => saved++ });
+  f.open();
+  f.nodes.get("category-gratitude").onPress();
+  f.nodes.get("reflection-writing-input").onChangeText("  Gracias por hoy  ");
+  f.render();
+  assert.equal(f.nodes.get("save-reflection").disabled, false);
+  assert.doesNotThrow(() => f.nodes.get("save-reflection").onPress());
+  assert.deepEqual(f.saveRequests, [{ data: { category: "gratitude", message: "Gracias por hoy" } }]);
+  assert.equal(f.nodes.get("reflection-writing-input").value, "  Gracias por hoy  ");
+  const created = { id: 123, category: "gratitude", message: "Gracias por hoy", createdAt: "2026-10-09T00:00:00Z" };
+  assert.doesNotThrow(() => f.succeed(created));
+  assert.deepEqual(f.reflectionPage.items, [created]);
+  assert.equal(f.invalidations, 1);
+  assert.equal(saved, 1);
+  assert.equal(f.nodes.get("reflection-writing-input").value, "");
+  assert.equal(f.nodes.get("category-gratitude").accessibilityState.selected, false);
+  assert.equal(f.nodes.get("save-reflection").disabled, true);
+  f.dispose();
+});
+
+test("A save error keeps the message and selected category available for retry", () => {
+  const f = fixture();
+  f.open();
+  f.nodes.get("category-gratitude").onPress();
+  f.nodes.get("reflection-writing-input").onChangeText("Mi reflexión");
+  f.render();
+  f.nodes.get("save-reflection").onPress();
+  assert.doesNotThrow(() => f.fail({ status: 500, data: { error: "No se pudo guardar" } }));
+  assert.equal(f.nodes.get("reflection-writing-input").value, "Mi reflexión");
+  assert.equal(f.nodes.get("category-gratitude").accessibilityState.selected, true);
+  assert.equal(f.invalidations, 0);
+  f.nodes.get("save-reflection").onPress();
+  assert.equal(f.saveRequests.length, 2);
   f.dispose();
 });
 
