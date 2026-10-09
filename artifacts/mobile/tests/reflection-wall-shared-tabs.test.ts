@@ -78,6 +78,7 @@ test("Muro expansivo category filters share the design and filtering, leaving To
         assert.equal(fill.props.color, options[index].color);
         assert.equal(fill.props.selected, filter === options[index].id);
         assert.equal(fill.props.reduceMotion, reduceMotion);
+        assert.equal(fill.props.selectedOpacity, 0.6);
         const label = children.find(child => child.type === "label");
         assert.equal(label.props.uniformWeight, true);
         assert.equal(label.props.textStyle.fontSize, 13);
@@ -90,6 +91,53 @@ test("Muro expansivo category filters share the design and filtering, leaving To
       assert.deepEqual(changed, filter === "all" ? ["custom"] : ["custom", "all"]);
     }
   }
+});
+
+test("message category pills use their editorial color at 60% and full-white 500-weight text", () => {
+  const tree = ast(source("../app/mi-espacio-interior.tsx"));
+  const wallStyles = styles(tree, ["cardCatPill", "cardCatText", "filterText"]);
+  const pill = find(tree, node => ts.isJsxElement(node)
+    && node.openingElement.tagName.getText(tree) === "View"
+    && node.openingElement.attributes.getText(tree).includes("styles.cardCatPill"));
+  const render = new Function("React", "View", "Text", "StyleSheet", "styles", "cat",
+    compile(`return (${pill.getText(tree)});`));
+  for (const color of ["#F075B3", "#8B95EE", "#F2C94C", "#B875F0", "#5FCA81", "#5FA1CA", "#123456"]) {
+    const result = render(React, "view", "text", { absoluteFillObject: { position: "absolute" } },
+      wallStyles, { color, bg: "unused-old-tint", label: "Categoría" });
+    const [background, label] = React.Children.toArray(result.props.children) as any[];
+    assert.equal(flatten(background.props.style).backgroundColor, color);
+    assert.equal(flatten(background.props.style).opacity, 0.6);
+    assert.equal(background.props.pointerEvents, "none");
+    assert.equal(flatten(label.props.style).color, "#F9F9F9");
+    assert.equal(flatten(label.props.style).fontWeight, wallStyles.filterText.fontWeight);
+    assert.equal(flatten(label.props.style).opacity, undefined);
+    assert.equal(flatten(result.props.style).opacity, undefined);
+    assert.equal(label.props.children, "Categoría");
+  }
+});
+
+test("the pencil action opens the existing editor with the original reflection ID and message", () => {
+  const tree = ast(source("../app/mi-espacio-interior.tsx"));
+  const button = find(tree, node => ts.isJsxElement(node)
+    && node.openingElement.tagName.getText(tree) === "Pressable"
+    && node.openingElement.attributes.getText(tree).includes("menu-${reflection.id}"));
+  const editor = find(tree, node => ts.isVariableDeclaration(node) && node.name.getText(tree) === "beginEditing");
+  let id, message;
+  const beginEditing = new Function("setEditingId", "setEditMessage",
+    compile(`return (${editor.initializer.getText(tree)});`))(
+      (value: number) => { id = value; }, (value: string) => { message = value; });
+  const reflection = { id: 7, message: "Mi reflexión original" };
+  const render = new Function("React", "Pressable", "Feather", "styles", "colors", "reflection", "beginEditing",
+    compile(`return (${button.getText(tree)});`));
+  const result = render(React, "button", "icon", styles(tree, ["menuButton"]),
+    { mutedForeground: "#CCCCCC" }, reflection, beginEditing);
+  assert.equal(result.props.accessibilityLabel, "Editar reflexión");
+  assert.equal(result.props.accessibilityRole, "button");
+  assert.equal(result.props.children.props.name, "edit-2");
+  assert.equal(result.props.children.props.size, 20);
+  result.props.onPress();
+  assert.equal(id, reflection.id);
+  assert.equal(message, reflection.message);
 });
 
 test("composer retains both 20px writing gaps and adds 8px below the buttons across themes", () => {

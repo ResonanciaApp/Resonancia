@@ -605,8 +605,9 @@ function PremiumInnerSpaceScreen() {
           translateYFrom={10}
         >
           <View style={styles.reflectionMetaRow}>
-            <View style={[styles.cardCatPill, { backgroundColor: cat.bg }]}>
-              <Text style={[styles.cardCatText, { color: cat.color }]}>{cat.label}</Text>
+            <View style={[styles.cardCatPill, { overflow: "hidden" }]}>
+              <View pointerEvents="none" style={[StyleSheet.absoluteFill, { backgroundColor: cat.color, opacity: 0.6, borderRadius: 10 }]} />
+              <Text style={[styles.cardCatText, { color: "#F9F9F9", fontWeight: "500" }]}>{cat.label}</Text>
             </View>
           </View>
         </WallScrollReveal>
@@ -673,12 +674,12 @@ function PremiumInnerSpaceScreen() {
               <View style={styles.cardActionsColumn}>
                 <Pressable
                   testID={`menu-${reflection.id}`}
-                  accessibilityLabel="Opciones"
+                  accessibilityLabel="Editar reflexión"
                   accessibilityRole="button"
                   style={styles.menuButton}
                   onPress={() => beginEditing(reflection)}
                 >
-                  <Feather name="more-horizontal" size={20} color={colors.mutedForeground} />
+                  <Feather name="edit-2" size={20} color={colors.mutedForeground} />
                 </Pressable>
                 {isPremium && (
                   <Pressable
@@ -796,7 +797,7 @@ function PremiumInnerSpaceScreen() {
                   setFilter(cat.id as ReflectionCategory);
                 }}
               >
-                <ReflectionCategoryTabFill selected={isActive} color={cat.color} reduceMotion={Boolean(reduceMotion)} />
+                <ReflectionCategoryTabFill selected={isActive} color={cat.color} reduceMotion={Boolean(reduceMotion)} selectedOpacity={0.6} />
                 <ReflectionCategoryTabLabel
                   label={cat.label}
                   selected={isActive}
