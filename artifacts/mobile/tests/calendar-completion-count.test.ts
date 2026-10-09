@@ -32,6 +32,7 @@ const Native = ({ children, testID, style }: Props) => {
     "data-padding-vertical": resolvedStyle.paddingVertical,
     "data-width": resolvedStyle.width,
     "data-left": resolvedStyle.left,
+    "data-top": resolvedStyle.top,
     "data-border-radius": resolvedStyle.borderRadius,
     "data-position": resolvedStyle.position,
     "data-margin-horizontal": resolvedStyle.marginHorizontal,
@@ -162,7 +163,7 @@ test("canonical embedded calendar insets are 18px and replace supplied vertical 
   assert.match(nonEmbeddedHtml, /data-height="30"/);
 });
 
-test("Profile calendar adds 6px below the header and centers the enlarged month without clipping its 42px arrow", () => {
+test("Profile calendar keeps its geometry with a 37px arrow aligned to the inner margin", () => {
   events = [];
   const html = render(true, { canonicalVerticalInsets: true, profileCalendarLayout: true, cardHorizontalPadding: 20 });
   assert.match(html, /data-padding-top="17"/);
@@ -178,10 +179,11 @@ test("Profile calendar adds 6px below the header and centers the enlarged month 
   assert.equal((profileWeekTop + 16) - (priorWeekTop + 16), 6);
   assert.equal(17 + 42 / 2, profileWeekTop / 2);
   const arrow = html.match(/<div[^>]*data-background="rgba\(255,255,255,0\.1\)"[^>]*>/)?.[0] ?? "";
-  assert.match(arrow, /data-height="42"/);
-  assert.match(arrow, /data-width="42"/);
-  assert.match(arrow, /data-left="0"/);
-  assert.match(arrow, /data-border-radius="21"/);
+  assert.match(arrow, /data-height="37"/);
+  assert.match(arrow, /data-width="37"/);
+  assert.match(arrow, /data-left="20"/);
+  assert.match(arrow, /data-top="2.5"/);
+  assert.match(arrow, /data-border-radius="18.5"/);
   assert.match(arrow, /data-position="absolute"/);
   assert.match(html, /data-icon="chevron-left"/);
   assert.doesNotMatch(html, /data-icon="chevron-right"/);

@@ -32,6 +32,7 @@ const NativeView = ({ children, testID, style, disabled, accessibilityLabel, acc
     "data-margin-bottom": resolved.marginBottom,
     "data-margin-top": resolved.marginTop,
     "data-transform": resolved.transform ? JSON.stringify(resolved.transform) : undefined,
+    "data-font-size": resolved.fontSize,
   }, children);
 };
 const Passthrough = ({ children }: NativeProps) => React.createElement(React.Fragment, null, children);
@@ -274,19 +275,24 @@ test("compact callers keep their existing stats unless they opt into the full hi
   assert.doesNotMatch(html, /RACHAS COMPLETADAS/);
 });
 
-test("Profile changes only its four streak icons, preserving number and label geometry", () => {
+test("Profile scopes its streak icon and copy changes without changing outer geometry", () => {
   const props = { separateStreakHistory: true, centerStreakHistoryCopy: true,
     showPersonalStats: false, showStreakWeek: false, showCalendar: false };
   const baseline = render(props);
   const profile = render({ ...props, profileStreakIcons: true });
   assert.equal((profile.match(/data-background="transparent"[^>]*data-transform="\[\{&quot;translateY&quot;:-7\}\]"/g) ?? []).length, 4);
-  for (const name of ["spa", "image-filter-hdr", "check-circle"]) {
-    assert.match(profile, new RegExp(`data-icon="${name}"[^>]*data-size="21"`));
+  for (const [name, size] of [["spa", 21], ["image-filter-hdr", 23], ["check-circle", 21]]) {
+    assert.match(profile, new RegExp(`data-icon="${name}"[^>]*data-size="${size}"`));
     assert.doesNotMatch(profile, new RegExp(`data-icon="${name}"[^>]*data-size="18"`));
   }
+  assert.equal((profile.match(/data-font-size="19"/g) ?? []).length, 4);
+  assert.equal((profile.match(/data-transform="\[\{&quot;translateX&quot;:-5\}\]"/g) ?? []).length, 4);
   const normalizeIcons = (html: string) => html
     .replaceAll('data-size="21"', 'data-size="18"')
+    .replaceAll('data-size="23"', 'data-size="18"')
+    .replaceAll('data-font-size="19"', 'data-font-size="20"')
     .replaceAll('data-background="transparent"', 'data-background="rgba(255,255,255,0.08)"')
+    .replaceAll(' data-transform="[{&quot;translateX&quot;:-5}]"', "")
     .replaceAll(' data-transform="[{&quot;translateY&quot;:-7}]"', "");
   assert.equal(normalizeIcons(profile), normalizeIcons(baseline));
   assert.match(readFileSync(new URL("../components/ProfileScreenBase.tsx", import.meta.url), "utf8"),

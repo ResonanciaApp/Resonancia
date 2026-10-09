@@ -353,7 +353,7 @@ export function ProgressMirrorSections({
   );
 
   const longestHistoryStreakIcon = (
-    <MaterialCommunityIcons name="image-filter-hdr" size={historyIconSize} color="#F9F9F9" />
+    <MaterialCommunityIcons name="image-filter-hdr" size={profileStreakIcons ? historyIconSize + 2 : historyIconSize} color="#F9F9F9" />
   );
 
   const longestStreakIcon = longestStreakIconColor ? (
@@ -413,6 +413,7 @@ export function ProgressMirrorSections({
         <View style={styles.statEntranceSlot}>
           <Stat
             iconBoxStyle={profileStreakIcons ? styles.profileStreakIconBox : undefined}
+            profileCopy={profileStreakIcons}
             icon={<MaterialCommunityIcons name="spa" size={historyIconSize} color="#F9F9F9" />}
             value={weekCount}
             label="RACHA ACTUAL"
@@ -426,6 +427,7 @@ export function ProgressMirrorSections({
         <View style={styles.statEntranceSlot}>
           <Stat
             iconBoxStyle={profileStreakIcons ? styles.profileStreakIconBox : undefined}
+            profileCopy={profileStreakIcons}
             icon={longestStreakIcon}
             value={maxStreak}
             label={longestStreakLabel}
@@ -444,6 +446,7 @@ export function ProgressMirrorSections({
         <View style={styles.statEntranceSlot}>
           <Stat
             iconBoxStyle={profileStreakIcons ? styles.profileStreakIconBox : undefined}
+            profileCopy={profileStreakIcons}
             icon={longestHistoryStreakIcon}
             value={maxStreak}
             label="RACHA MÁS LARGA"
@@ -457,6 +460,7 @@ export function ProgressMirrorSections({
         <View style={styles.statEntranceSlot}>
           <Stat
             iconBoxStyle={profileStreakIcons ? styles.profileStreakIconBox : undefined}
+            profileCopy={profileStreakIcons}
             icon={completedStreakIcon}
             value={completedWeeks}
             label="RACHAS COMPLETADAS"
@@ -758,6 +762,7 @@ function Stat({
   onPress,
   edgeAligned = false,
   iconBoxStyle,
+  profileCopy = false,
 }: {
   icon: React.ReactNode;
   value: number;
@@ -768,13 +773,14 @@ function Stat({
   onPress?: () => void;
   edgeAligned?: boolean;
   iconBoxStyle?: object;
+  profileCopy?: boolean;
 }) {
   const statIcon = <View style={[styles.statIcon, iconBoxStyle]}>{icon}</View>;
   const content = (
     <>
       {statIcon}
-      <View style={[styles.statCopy, edgeAligned && styles.statCopyEdgeAligned]}>
-        <Text style={styles.statValue}>{value}{unit ? ` ${unit}` : ""}</Text>
+      <View style={[styles.statCopy, edgeAligned && styles.statCopyEdgeAligned, profileCopy && { transform: [{ translateX: -5 }] }]}>
+        <Text style={[styles.statValue, profileCopy && { fontSize: 19 }]}>{value}{unit ? ` ${unit}` : ""}</Text>
         <Text style={[styles.statLabel, { color: labelColor ?? accent }]}>{label}</Text>
       </View>
     </>

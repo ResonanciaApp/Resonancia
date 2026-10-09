@@ -402,7 +402,7 @@ export function HistorialCalendar({
           <Pressable
             onPress={goPrevMonth}
             hitSlop={10}
-            style={[styles.navBtn, canonicalEmbeddedInsets && styles.canonicalEmbeddedNavButton, isProfileNav && styles.profileNavBtn, isProfileNav && { left: 0 }]}
+            style={[styles.navBtn, canonicalEmbeddedInsets && styles.canonicalEmbeddedNavButton, isProfileNav && styles.profileNavBtn, isProfileNav && { left: cardHorizontalPadding ?? 14 }]}
           >
             <Feather name="chevron-left" size={18} color={colors.foreground} />
           </Pressable>
@@ -418,12 +418,12 @@ export function HistorialCalendar({
             {monthLabel}
           </Text>
           {profileCalendarLayout && atCurrentMonth ? (
-            <View pointerEvents="none" style={[styles.navBtn, canonicalEmbeddedInsets && styles.canonicalEmbeddedNavButton, isProfileNav && styles.profileNavBtn, isProfileNav && styles.profileNavPlaceholder, isProfileNav && { right: 0 }]} />
+            <View pointerEvents="none" style={[styles.navBtn, canonicalEmbeddedInsets && styles.canonicalEmbeddedNavButton, isProfileNav && styles.profileNavBtn, isProfileNav && styles.profileNavPlaceholder, isProfileNav && { right: cardHorizontalPadding ?? 14 }]} />
           ) : (
           <Pressable
             onPress={goNextMonth}
             hitSlop={10}
-            style={[styles.navBtn, canonicalEmbeddedInsets && styles.canonicalEmbeddedNavButton, isProfileNav && styles.profileNavBtn, isProfileNav && { right: 0 }]}
+            style={[styles.navBtn, canonicalEmbeddedInsets && styles.canonicalEmbeddedNavButton, isProfileNav && styles.profileNavBtn, isProfileNav && { right: cardHorizontalPadding ?? 14 }]}
           >
             <Feather name="chevron-right" size={18} color={colors.foreground} />
           </Pressable>
@@ -691,10 +691,10 @@ const styles = StyleSheet.create({
   profileMonthLabel: { fontSize: 14 },
   profileNavBtn: {
     position: "absolute",
-    top: 0,
-    width: 42,
-    height: 42,
-    borderRadius: 21,
+    top: 2.5,
+    width: 37,
+    height: 37,
+    borderRadius: 18.5,
     backgroundColor: "rgba(255,255,255,0.1)",
   },
   profileNavPlaceholder: { backgroundColor: "transparent" },
