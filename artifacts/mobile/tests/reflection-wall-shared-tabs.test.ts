@@ -163,6 +163,7 @@ test("Muro filters keep category colors and Todos keeps its black fill with a 1p
       if (filter === "all") {
         const border = allChildren.find(child => child.type === "border");
         assert.equal(border.props.borderWidth, 1);
+        assert.equal(border.props.opacity, 0.7);
         assert.equal(border.props.color, undefined, "the shared border keeps its original gradient");
       }
       for (let index = 0; index < categories.length; index++) {

@@ -27,6 +27,20 @@ const render = new Function("React", "Pressable", "StoryArtworkFrame", "View", "
   "getGetMyReflectionStoryQueryKey", "clerkUserId", "router",
   compile(`return (${card.initializer.getText(tree)});`));
 
+test("gallery matches Muro's title size, starts cards 20px lower and separates rows by 25px without changing columns", () => {
+  const wallSource = readFileSync(new URL("../app/mi-espacio-interior.tsx", import.meta.url), "utf8");
+  const wallTitle = wallSource.match(/mainTitle:\s*\{\s*fontSize:\s*(\d+)/);
+  assert.ok(wallTitle);
+  assert.equal(styles.mainTitle.fontSize, Number(wallTitle[1]));
+  assert.equal(styles.mainTitle.fontSize, 18);
+  assert.equal(styles.listContent.paddingTop, 20);
+  assert.equal(styles.columnWrapper.marginBottom, 25);
+  assert.equal(styles.listContent.paddingHorizontal, 20);
+  assert.match(source, /const CARD_MARGIN = 8;/, "horizontal card gap remains unchanged");
+  assert.match(source, /contentContainerStyle=\{styles\.listContent\}/);
+  assert.match(source, /columnWrapperStyle=\{styles\.columnWrapper\}/);
+});
+
 function mount(categoryId = "gratitude") {
   const cache: any[] = [], routes: string[] = [];
   const item = {

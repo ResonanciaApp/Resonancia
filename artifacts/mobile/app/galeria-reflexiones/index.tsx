@@ -270,7 +270,7 @@ const styles = StyleSheet.create({
     justifyContent: "center",
   },
   mainTitle: {
-    fontSize: 20,
+    fontSize: 18,
     fontFamily: "Manrope",
     fontWeight: "600",
   },
@@ -311,11 +311,12 @@ const styles = StyleSheet.create({
   },
   listContent: {
     paddingHorizontal: 20,
+    paddingTop: 20,
     paddingBottom: 40,
   },
   columnWrapper: {
     justifyContent: "space-between",
-    marginBottom: CARD_MARGIN,
+    marginBottom: 25,
   },
   cardWrapper: {
     alignItems: "stretch",

@@ -780,7 +780,7 @@ function PremiumInnerSpaceScreen() {
             }}
           >
             {filter === "all" && (
-              <ReflectionCategoryTabBorder borderWidth={1} />
+              <ReflectionCategoryTabBorder borderWidth={1} opacity={0.7} />
             )}
             <ReflectionCategoryTabLabel label="Todos" selected={filter === "all"} textStyle={styles.filterText} />
           </Pressable>
