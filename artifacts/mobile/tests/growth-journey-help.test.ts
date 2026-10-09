@@ -136,7 +136,7 @@ function uiHarness() {
   };
 }
 
-test("Tu camino preserves its controls and raises Primera etapa and the whole journey by 53px", () => {
+test("Tu camino preserves its controls and adds a two-line intro while lowering Primera etapa and the whole journey by 50px", () => {
   const h = uiHarness();
   const { GrowthJourneySheet } = load("../components/GrowthJourneySheet.tsx", h.imports);
   let closes = 0;
@@ -165,7 +165,14 @@ test("Tu camino preserves its controls and raises Primera etapa and the whole jo
   assert.match(html, /data-testid="growth-journey-help-info" data-icon="information-variant" data-color="#F9F9F9"/);
   assert.equal(h.presses.get("growth-journey-help").style.backgroundColor, "rgba(0,0,0,0.16)");
   assert.doesNotMatch(html, /trending-up|Cada día de racha|descriptionDivider/);
-  assert.doesNotMatch(html, /No florecemos|growth-journey-intro/);
+  assert.doesNotMatch(html, /No florecemos/);
+  const intro = h.nodes.get("growth-journey-intro");
+  assert.equal(intro.numberOfLines, 2);
+  assert.equal(intro.children, "Tu práctica diaria se transforma en crecimiento.\nAvanza por etapas y desbloquea nuevos avatares.");
+  assert.equal(flatten(intro.style).lineHeight, 22);
+  assert.equal(flatten(h.nodes.get("growth-journey-intro-space").style).paddingHorizontal, 20);
+  assert.ok(html.indexOf("Tu camino") < html.indexOf(intro.children));
+  assert.ok(html.indexOf(intro.children) < html.indexOf("PRIMERA ETAPA"));
   assert.ok(html.indexOf("Tu camino") < html.indexOf("PRIMERA ETAPA"));
   const infoIcon = html.match(/<i[^>]*data-testid="growth-journey-help-info"[^>]*>/)?.[0];
   assert.ok(infoIcon);
@@ -176,9 +183,10 @@ test("Tu camino preserves its controls and raises Primera etapa and the whole jo
   assert.equal(h.presses.get("growth-journey-help").accessibilityLabel, "Información de Tu camino");
   assert.equal(h.presses.get("growth-journey-help").style.width, 43);
   assert.doesNotMatch(html, />\?</);
-  assert.match(html, /data-padding-top="73"/); // previous 90px minus 17px
+  assert.equal(flatten(h.nodes.get("growth-journey-intro-space").style).height, 123); // previous 73px plus 50px, including the intro
   h.help.onDescriptionLayout(46);
-  assert.match(render(), /data-padding-top="50"/); // previous 67px minus 17px
+  render();
+  assert.equal(flatten(h.nodes.get("growth-journey-intro-space").style).height, 100); // previous 50px plus 50px
   h.presses.get("growth-journey-help").onPress();
   render();
   assert.equal(h.help.visible, true);

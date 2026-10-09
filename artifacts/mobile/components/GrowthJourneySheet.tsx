@@ -23,7 +23,7 @@ import { useColors } from "@/hooks/useColors";
 // Retain its measured height minus the requested rise, keeping the timeline in flow.
 const FORMER_INTRO_FIXED_HEIGHT = 181;
 const FIRST_STAGE_RISE = 184;
-const FIRST_STAGE_DROP = 7;
+const FIRST_STAGE_DROP = 57;
 
 export function GrowthJourneySheet({
   visible,
@@ -118,9 +118,21 @@ export function GrowthJourneySheet({
               />
             </Pressable>
           </View>
-          <View style={{ paddingTop: FORMER_INTRO_FIXED_HEIGHT + descriptionHeight - FIRST_STAGE_RISE + FIRST_STAGE_DROP }}>
-            <GrowthJourney onStagePress={setDetailStageId} />
+          <View
+            testID="growth-journey-intro-space"
+            style={[styles.introSpace, { height: FORMER_INTRO_FIXED_HEIGHT + descriptionHeight - FIRST_STAGE_RISE + FIRST_STAGE_DROP }]}
+          >
+            <Text
+              testID="growth-journey-intro"
+              style={[styles.introText, { color: colors.mutedForeground }]}
+              numberOfLines={2}
+              adjustsFontSizeToFit
+              minimumFontScale={0.85}
+            >
+              {"Tu práctica diaria se transforma en crecimiento.\nAvanza por etapas y desbloquea nuevos avatares."}
+            </Text>
           </View>
+          <GrowthJourney onStagePress={setDetailStageId} />
         </ScrollView>
         {detailStageId && (
           <GrowthStageDetail
@@ -149,6 +161,8 @@ const styles = StyleSheet.create({
     justifyContent: "space-between",
   },
   title: { fontFamily: "Manrope", fontSize: 20, lineHeight: 42, fontWeight: "700" },
+  introSpace: { justifyContent: "center", paddingHorizontal: 20 },
+  introText: { fontFamily: "Manrope", fontSize: 14, lineHeight: 22, fontWeight: "400" },
   closeButton: {
     width: 43,
     height: 43,
