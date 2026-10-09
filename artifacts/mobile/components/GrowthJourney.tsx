@@ -16,6 +16,7 @@ import { useSceneTheme } from "@/context/SceneThemeContext";
 
 export const GROWTH_ROW_HEIGHT = 205;
 const GROWTH_STAGE_ICON_SIZE = 133;
+export const GROWTH_BLOOM_ART_SIZE = GROWTH_STAGE_ICON_SIZE + 4;
 
 const GROWTH_COLORS = {
   line: POSITIONED_DAY_GRADIENT[0],
@@ -643,7 +644,7 @@ const styles = StyleSheet.create({
     height: GROWTH_STAGE_ICON_SIZE,
   },
   lockedArt: { opacity: 0.44 },
-  bloomArt: { width: GROWTH_STAGE_ICON_SIZE + 4, height: GROWTH_STAGE_ICON_SIZE + 4, left: 38, top: 32 },
+  bloomArt: { width: GROWTH_BLOOM_ART_SIZE, height: GROWTH_BLOOM_ART_SIZE, left: 38, top: 32 },
   imageWrap: { width: "100%", height: "100%", borderRadius: 67, overflow: "hidden" },
   stageIconSurface: { backgroundColor: "rgba(255,255,255,0.07)" },
   fadedStageImage: { transform: [{ scale: 0.9 }] },

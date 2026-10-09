@@ -8,23 +8,19 @@ import {
   StyleSheet,
   Text,
   View,
-  useWindowDimensions,
 } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 
 import { CinematicFadeSlide } from "@/components/CinematicFadeSlide";
-import { GrowthLevelImage } from "@/components/GrowthJourney";
+import { GrowthLevelImage, GROWTH_BLOOM_ART_SIZE } from "@/components/GrowthJourney";
 import { MEMBERSHIP_AURORA, STREAK_INFO_COLORS } from "@/constants/colors";
 import { useSceneTheme } from "@/context/SceneThemeContext";
 import { useGrowth } from "@/context/GrowthContext";
-import { getMoodHeroGradient } from "@/utils/moodHeroGradient";
 
 const WHITE = STREAK_INFO_COLORS.foreground;
 const GOLD = MEMBERSHIP_AURORA.premium.accent;
 const DURATION = 1400;
 const BASE_DELAY = 150;
-// Unmasked original artwork; Perfil and Tu camino retain their radial-alpha assets.
-const FULL_HERO_IMAGE = require("../assets/images/growth/00-intencion-profile-square.png");
 
 const EXPLANATION =
   "Antes del primer día hay un momento de decisión. No necesitas hacer nada todavía: solo reconocer que quieres darte un espacio de calma y volver a él, a tu ritmo.";
@@ -41,13 +37,9 @@ export function GrowthStageDetail({
   React.useEffect(() => {
     if (!level) onClose();
   }, [level, onClose]);
-  const { width, height } = useWindowDimensions();
   const topPad = Platform.OS === "web" ? 67 : Math.max(insets.top, 40);
   const bottomPad = Platform.OS === "web" ? 34 : insets.bottom;
-  const heroSize = Math.round(width);
-  const heroHeight = height;
-  const fadeColor = theme.gradient[0] || "#080910";
-  const heroGradient = getMoodHeroGradient(fadeColor, heroHeight);
+  const heroSize = GROWTH_BLOOM_ART_SIZE * 2;
   if (!level) return null;
   const dayLabel = level.startDay === level.endDay ? `${level.startDay} días` : `${level.startDay}–${level.endDay} días`;
 
@@ -60,27 +52,6 @@ export function GrowthStageDetail({
       end={theme.gradientEnd}
       style={styles.root}
     >
-      <View testID="growth-stage-detail-background-hero" pointerEvents="none" style={[styles.heroBackground, { width: heroSize, height: heroHeight, backgroundColor: fadeColor }]}>
-        <View testID="growth-stage-detail-hero-layer" style={[StyleSheet.absoluteFill, styles.heroLayer]}>
-          <CinematicFadeSlide
-            active
-            replayKey="hero"
-            delay={0}
-            duration={DURATION}
-            scaleFrom={1.06}
-            translateYFrom={0}
-            style={[StyleSheet.absoluteFill, styles.heroImageOffset]}
-          >
-            <GrowthLevelImage level={level} size={heroSize} height={heroHeight} sourceModule={typeof level.image === "string" && level.image.startsWith("/objects/") ? undefined : FULL_HERO_IMAGE} />
-          </CinematicFadeSlide>
-          <LinearGradient
-            testID="growth-stage-detail-hero-gradient"
-            {...heroGradient}
-            style={StyleSheet.absoluteFill}
-            pointerEvents="none"
-          />
-        </View>
-      </View>
       <ScrollView
         showsVerticalScrollIndicator={false}
         bounces
@@ -89,8 +60,17 @@ export function GrowthStageDetail({
         contentInsetAdjustmentBehavior="never"
         automaticallyAdjustContentInsets={false}
         testID="growth-stage-detail-scroll"
-        contentContainerStyle={{ paddingTop: Math.max(0, heroHeight * heroGradient.locations[1] - 200), paddingBottom: bottomPad + 28 }}
+        contentContainerStyle={{ paddingTop: topPad + 70, paddingBottom: bottomPad + 28 }}
       >
+        <CinematicFadeSlide
+          active
+          replayKey="hero"
+          delay={0}
+          duration={DURATION}
+          style={styles.heroArt}
+        >
+          <GrowthLevelImage level={level} size={heroSize} />
+        </CinematicFadeSlide>
         <CinematicFadeSlide active replayKey="stage" delay={BASE_DELAY} duration={DURATION}>
           <View testID="growth-stage-detail-title-block" style={styles.titleBlock}>
             <Text style={styles.stageName} accessibilityRole="header">{level.name}</Text>
@@ -133,9 +113,7 @@ export function GrowthStageDetail({
 
 const styles = StyleSheet.create({
   root: { ...StyleSheet.absoluteFillObject },
-  heroBackground: { position: "absolute", top: 0, left: 0, overflow: "hidden" },
-  heroLayer: { top: -230, bottom: 230 },
-  heroImageOffset: { top: 80, bottom: -80 },
+  heroArt: { alignSelf: "center", marginBottom: 16 },
   header: {
     position: "absolute",
     top: 0,

@@ -63,7 +63,7 @@ const { GrowthStageDetail } = load("../components/GrowthStageDetail.tsx", (name)
     "expo-linear-gradient": { LinearGradient: Native },
     "react-native-safe-area-context": { useSafeAreaInsets: () => ({ top, bottom: 34 }) },
     "@/components/CinematicFadeSlide": { CinematicFadeSlide: Native },
-    "@/components/GrowthJourney": { GrowthLevelImage: (props: any) => React.createElement(Native, { ...props, testID: "growth-detail-hero-artwork" }) },
+    "@/components/GrowthJourney": { GROWTH_BLOOM_ART_SIZE: 137, GrowthLevelImage: (props: any) => React.createElement(Native, { ...props, testID: "growth-detail-hero-artwork" }) },
     "@/constants/colors": constants,
     "@/utils/moodHeroGradient": gradientHelpers,
     "../assets/images/growth/00-intencion-profile-square.png": (() => {
@@ -89,11 +89,8 @@ test("Intención detail uses its actual hero, 0-day label and canonical story, n
   assert.ok(html.includes(growthLevels[0].story));
   assert.doesNotMatch(html, /Semilla|1.?7 días|avatares|sin sello/);
   assert.equal(nodes.get("growth-detail-hero-artwork").level, growthLevels[0]);
-  const fullArt = nodes.get("growth-detail-hero-artwork").sourceModule;
-  assert.equal(assets[fullArt - 1], "../assets/images/growth/00-intencion-profile-square.png");
-  const png = readFileSync(new URL(assets[fullArt - 1], new URL("../components/GrowthStageDetail.tsx", import.meta.url)));
-  assert.equal(png[25], 2, "the fullscreen hero uses an opaque RGB PNG, not the radially masked artwork");
-  assert.equal(nodes.get("growth-detail-hero-artwork").size, 375);
+  assert.equal(nodes.get("growth-detail-hero-artwork").sourceModule, undefined, "uses the same stage image as Tu camino");
+  assert.equal(nodes.get("growth-detail-hero-artwork").size, 137 * 2);
   assert.match(html, /data-font="CormorantGaramond"/);
   assert.doesNotMatch(html, /PRIMERA ETAPA|Elegir comenzar|growth-stage-detail-help/);
   assert.equal((html.match(/data-icon="spa"/g) ?? []).length, 1, "only the day pill retains its lotus");
@@ -108,13 +105,9 @@ test("the detail shares the streak screen's theme, safe-area spacing, circular c
       const html = render();
       assert.equal(nodes.get("growth-stage-detail").colors, colors);
       assert.equal(nodes.get("growth-stage-detail").locations, locations);
-      assert.equal(nodes.get("growth-detail-hero-artwork").size, viewport);
-      assert.equal(nodes.get("growth-detail-hero-artwork").height, viewportHeight);
-      assert.equal(flat(nodes.get("growth-stage-detail-hero-layer").style).top, -230);
-      assert.equal(flat(nodes.get("growth-stage-detail-hero-layer").style).bottom, 230);
-      assert.equal(flat(nodes.get("growth-stage-detail-hero-image").style).top, 80);
-      assert.equal(flat(nodes.get("growth-stage-detail-hero-image").style).bottom, -80);
-      assert.equal(nodes.get("growth-stage-detail-scroll").contentContainerStyle.paddingTop, viewportHeight * 0.7 - 200);
+       assert.equal(nodes.get("growth-detail-hero-artwork").size, 274);
+       assert.equal(nodes.get("growth-detail-hero-artwork").height, undefined, "square image, no viewport stretch");
+       assert.equal(nodes.get("growth-stage-detail-scroll").contentContainerStyle.paddingTop, Math.max(inset, 40) + 70);
       assert.match(html, new RegExp(`data-top-padding="${Math.max(inset, 40) + 8}"`));
       const scroll = nodes.get("growth-stage-detail-scroll");
       assert.equal(scroll.bounces, true);
@@ -143,31 +136,22 @@ test("X returns to Tu camino; the detail has no help button or its background", 
   assert.doesNotMatch(source, /<Modal|router\.push/);
 });
 
-test("the unmasked hero fills the viewport with exactly the mood completion gradient over it", () => {
+test("the detail has only one continuous theme background, without opaque hero strips", () => {
   const html = render();
-  const hero = nodes.get("growth-stage-detail-background-hero");
-  assert.equal(flat(hero.style).position, "absolute");
-  assert.equal(flat(hero.style).top, 0);
-  assert.equal(hero.pointerEvents, "none");
-  assert.equal(flat(hero.style).height, 812);
-  assert.equal(nodes.get("growth-detail-hero-artwork").height, 812);
-  assert.ok(html.indexOf('data-testid="growth-stage-detail-background-hero"') < html.indexOf('data-testid="growth-stage-detail-scroll"'));
-  const gradient = nodes.get("growth-stage-detail-hero-gradient");
-  assert.deepEqual(gradient.locations, [0.3, 0.7, 1 - 55 / 812, 1]);
-  assert.deepEqual(gradient.colors, ["#060A0F00", "#060A0F4d", "#060A0F", "#060A0F"]);
-  assert.equal(gradient.pointerEvents, "none");
-  assert.equal(flat(hero.style).backgroundColor, gradient.colors.at(-1), "the area below the shifted hero must match the opaque gradient ending");
-  const layer = nodes.get("growth-stage-detail-hero-layer");
-  const children = React.Children.toArray(layer.children) as React.ReactElement<any>[];
-  assert.ok(children.some(child => child.props.replayKey === "hero"), "the image is inside the shifted layer");
-  assert.ok(children.some(child => child.props.testID === "growth-stage-detail-hero-gradient"), "the gradient moves in that same layer");
+  assert.equal((html.match(/data-colors=/g) ?? []).length, 1);
+  assert.equal(nodes.get("growth-stage-detail").colors, colors);
+  assert.equal(nodes.get("growth-stage-detail").locations, locations);
+  assert.equal(flat(nodes.get("growth-stage-detail-hero-image").style).backgroundColor, undefined);
+  assert.ok(html.indexOf('data-testid="growth-stage-detail-scroll"') < html.indexOf('data-testid="growth-detail-hero-artwork"'));
   const source = readFileSync(new URL("../components/GrowthStageDetail.tsx", import.meta.url), "utf8");
-  assert.doesNotMatch(source, /MaskedView|maskElement|growth-stage-detail-hero-fade/);
+  assert.doesNotMatch(source, /FULL_HERO_IMAGE|getMoodHeroGradient|heroBackground|heroLayer|heroImageOffset/);
+  const journey = readFileSync(new URL("../components/GrowthJourney.tsx", import.meta.url), "utf8");
+  assert.match(journey, /bloomArt: \{ width: GROWTH_BLOOM_ART_SIZE, height: GROWTH_BLOOM_ART_SIZE/);
 });
 
-test("Intención and its pill sit below the main artwork at the tinted transition, with description 15px away", () => {
+test("Intención and its pill sit below the artwork, with description 15px away", () => {
   render();
-  assert.equal(nodes.get("growth-stage-detail-scroll").contentContainerStyle.paddingTop, 812 * 0.7 - 200);
+  assert.equal(nodes.get("growth-stage-detail-scroll").contentContainerStyle.paddingTop, 110);
   const block = flat(nodes.get("growth-stage-detail-title-block").style);
   assert.equal(block.gap, 8);
   assert.equal(block.transform, undefined);
