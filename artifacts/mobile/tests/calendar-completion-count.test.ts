@@ -84,9 +84,9 @@ const render = (enabled = true, props: Record<string, unknown> = {}) => renderTo
 );
 const completed = (sessionId: string) => ({ sessionId, playedAt: new Date().toISOString(), completed: true });
 
-test("Profile shrinks calendar weekday initials and month dates by 2px without changing other calendars", () => {
+test("Profile keeps 10px weekdays and shrinks month dates another point to 14px, without changing other calendars", () => {
   events = [];
-  const profile = render(false, { calendarTextSizeAdjustment: -2 });
+  const profile = render(false, { calendarTextSizeAdjustment: -2, calendarDayTextSizeAdjustment: -3 });
   const embedded = render(false);
   const standalone = render(false, { embedded: false });
   const weekdays = (html: string, size: number) =>
@@ -96,13 +96,15 @@ test("Profile shrinks calendar weekday initials and month dates by 2px without c
   assert.equal(weekdays(profile, 10), 7);
   assert.equal(weekdays(embedded, 12), 7);
   assert.equal(weekdays(standalone, 12), 7);
-  assert.ok(dates(profile, 15) >= 28);
-  assert.equal(dates(profile, 15), dates(embedded, 17));
+  assert.ok(dates(profile, 14) >= 28);
+  assert.equal(dates(profile, 14), dates(embedded, 17));
   assert.equal(dates(embedded, 17), dates(standalone, 15));
   const profileSource = readFileSync(new URL("../components/ProfileScreenBase.tsx", import.meta.url), "utf8");
   const progressSource = readFileSync(new URL("../components/ProgressMirrorSections.tsx", import.meta.url), "utf8");
   assert.match(profileSource, /<ProgressMirrorSections[\s\S]*?calendarTextSizeAdjustment=\{-2\}/);
+  assert.match(profileSource, /<ProgressMirrorSections[\s\S]*?calendarDayTextSizeAdjustment=\{-3\}/);
   assert.match(progressSource, /<HistorialCalendar[\s\S]*?calendarTextSizeAdjustment=\{calendarTextSizeAdjustment\}/);
+  assert.match(progressSource, /<HistorialCalendar[\s\S]*?calendarDayTextSizeAdjustment=\{calendarDayTextSizeAdjustment\}/);
 });
 
 test("one completed session appears beside the date, above its card, in the favorites-description color", () => {

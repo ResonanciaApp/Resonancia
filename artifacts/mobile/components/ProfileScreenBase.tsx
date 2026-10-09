@@ -1569,6 +1569,7 @@ export function ProfileScreenBase({
                 showStreakWeek
                 showCalendar
                 calendarTextSizeAdjustment={-2}
+                calendarDayTextSizeAdjustment={-3}
                 showCalendarCompletedCount
                 separateStreakHistory
                 centerStreakHistoryCopy

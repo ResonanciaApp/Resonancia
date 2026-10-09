@@ -892,6 +892,7 @@ const styles = StyleSheet.create({
     borderWidth: 0,
     backgroundColor: "transparent",
     justifyContent: "flex-start",
+    transform: [{ translateX: -25 }],
   },
   submitText: {
     fontSize: 11,

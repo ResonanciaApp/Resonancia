@@ -244,6 +244,7 @@ export function HistorialCalendar({
   entranceReplayKey = "history-calendar",
   entranceBaseDelay = 0,
   calendarTextSizeAdjustment = 0,
+  calendarDayTextSizeAdjustment = calendarTextSizeAdjustment,
 }: {
   containerPadding?: number;
   embedded?: boolean;
@@ -258,6 +259,7 @@ export function HistorialCalendar({
   entranceReplayKey?: string | number;
   entranceBaseDelay?: number;
   calendarTextSizeAdjustment?: number;
+  calendarDayTextSizeAdjustment?: number;
 }) {
   const colors = useColors();
   const { activeSceneId } = useSceneTheme();
@@ -455,7 +457,7 @@ export function HistorialCalendar({
                     isFuture={d.getTime() > today.getTime()}
                     embedded={embedded}
                     color={colors.foreground}
-                    textSizeAdjustment={calendarTextSizeAdjustment}
+                    textSizeAdjustment={calendarDayTextSizeAdjustment}
                     onPress={() => setSelectedDate(d)}
                   />
                 );
