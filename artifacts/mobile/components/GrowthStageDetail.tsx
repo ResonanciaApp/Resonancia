@@ -45,10 +45,8 @@ export function GrowthStageDetail({
   const heroSize = GROWTH_BLOOM_ART_SIZE * 2;
   const heroTop = topPad + 40;
   const heroBottom = heroTop + heroSize;
-  // Fade begins exactly at the artwork's lower edge, over a long upward travel.
-  const fadeTop = Math.max(0, heroBottom - 144);
-  const fadeStart = Math.min(1, fadeTop / height);
-  const fadeEnd = Math.min(1, Math.max(fadeStart, heroBottom / height));
+  const fadeStart = Math.min(1, Math.max(0, (heroBottom - 48) / height));
+  const fadeEnd = Math.min(1, Math.max(fadeStart, (heroBottom + 8) / height));
   if (!level) return null;
   const dayLabel = level.startDay === level.endDay ? `${level.startDay} días` : `${level.startDay}–${level.endDay} días`;
 
@@ -90,7 +88,7 @@ export function GrowthStageDetail({
         contentInsetAdjustmentBehavior="never"
         automaticallyAdjustContentInsets={false}
         testID="growth-stage-detail-scroll"
-        contentContainerStyle={{ paddingTop: heroBottom + 16, paddingBottom: Math.max(bottomPad + 28, height - fadeTop), minHeight: height + heroSize }}
+        contentContainerStyle={{ paddingTop: heroBottom + 16, paddingBottom: bottomPad + 28, minHeight: height + heroSize }}
       >
         <CinematicFadeSlide active replayKey="stage" delay={BASE_DELAY} duration={DURATION}>
           <View testID="growth-stage-detail-title-block" style={styles.titleBlock}>
