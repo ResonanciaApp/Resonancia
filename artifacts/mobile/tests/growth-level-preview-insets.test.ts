@@ -828,7 +828,7 @@ test("only Perfil's Tu camino shrinks the intention icon by four points", () => 
   // The entrance mock omits its animated wrapper; check its sizing contract.
   const source = readFileSync(new URL("../components/GrowthJourney.tsx", import.meta.url), "utf8");
   assert.match(source, /style=\{StyleSheet\.flatten\(\[styles\.previewArt, !!sectionTitle && styles\.profilePreviewArt\]\)\}/);
-  assert.match(source, /profilePreviewArt: \{ width: 96, height: 96 \}/);
+  assert.match(source, /profilePreviewArt: \{ width: 96, height: 96, position: "relative", top: 2 \}/);
   assert.match(source, /previewArt: \{ width: 100, height: 100 \}/);
 });
 

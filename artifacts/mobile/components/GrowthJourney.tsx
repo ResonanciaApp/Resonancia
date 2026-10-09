@@ -556,7 +556,7 @@ const styles = StyleSheet.create({
     gap: 12,
   },
   previewArt: { width: 100, height: 100 },
-  profilePreviewArt: { width: 96, height: 96 },
+  profilePreviewArt: { width: 96, height: 96, position: "relative", top: 2 },
   embeddedPreviewCard: { marginHorizontal: 0 },
   titledPreviewCard: { flexDirection: "column", alignItems: "stretch", paddingTop: 18, paddingBottom: 11 },
   previewSectionHeader: { flexDirection: "row", alignItems: "center", justifyContent: "space-between", minHeight: 25 },
