@@ -80,15 +80,15 @@ test("deselection reverses the same native opacity fade without removing its ove
   assert.equal(r.stops.length, 2);
 });
 
-test("Pleyades uses each category color at 6% and 12%, crossfading without stacking", () => {
+test("Pleyades crossfades white 7% into each selected category color at 12% without stacking", () => {
   for (const color of ["#F075B3", "#8B95EE", "#F2C94C", "#B875F0", "#5FCA81", "#5FA1CA", "#ABCDEF"]) {
   const r = load(false, color);
   const [base, selected] = React.Children.toArray(r.tree.props.children) as any[];
   const baseStyle = Object.assign({}, ...base.props.style);
-  assert.equal(baseStyle.backgroundColor, color);
+  assert.equal(baseStyle.backgroundColor, "#FFFFFF");
   const inverse = baseStyle.opacity;
   assert.deepEqual(inverse.inputRange, [0, 1]);
-  assert.deepEqual(inverse.outputRange, [0.06, 0]);
+  assert.deepEqual(inverse.outputRange, [0.07, 0]);
   assert.equal(inverse.parent, selected.props.style[1].opacity);
   const [blur, selectedTint] = React.Children.toArray(selected.props.children) as any[];
   const selectedStyle = Object.assign({}, ...selectedTint.props.style);

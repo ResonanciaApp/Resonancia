@@ -31,8 +31,8 @@ export const ReflectionCategoryTabFill = React.memo(function ReflectionCategoryT
       <Animated.View
         pointerEvents="none"
         style={[StyleSheet.absoluteFill, {
-          backgroundColor: color,
-          opacity: opacity.interpolate({ inputRange: [0, 1], outputRange: [0.06, 0] }),
+          backgroundColor: "#FFFFFF",
+          opacity: opacity.interpolate({ inputRange: [0, 1], outputRange: [0.07, 0] }),
         }]}
       />
       <Animated.View pointerEvents="none" style={[StyleSheet.absoluteFill, { opacity }]}>
