@@ -13,7 +13,11 @@ function load(reduce: boolean) {
   const timings: any[] = [], stops: number[] = [], sets: number[] = [];
   let cleanup: any, effect: any;
   let savedRef: any;
-  class Value { constructor(_v: number) {} setValue(v: number) { sets.push(v); } }
+  class Value {
+    constructor(_v: number) {}
+    setValue(v: number) { sets.push(v); }
+    interpolate(config: any) { return { parent: this, ...config }; }
+  }
   const mocks: any = {
     react: { ...React, useRef: (i: any) => (savedRef ??= { current: i }), useEffect: (fn: any) => { effect = fn; } },
     "react-native": {
@@ -76,7 +80,20 @@ test("deselection reverses the same native opacity fade without removing its ove
   assert.equal(r.stops.length, 2);
 });
 
-test("fill source keeps Premium colors and blur", () => {
-  for (const t of ["rgba(255,255,255,0.10)", "rgba(107,80,210,0.60)", "intensity={38}", 'tint="light"', "dimezisBlurView"])
-    assert.ok(src.includes(t), t);
+test("Pleyades crossfades white 6% and white 12% without stacking the base or using violet", () => {
+  const r = load(false);
+  const [base, selected] = React.Children.toArray(r.tree.props.children) as any[];
+  const baseStyle = Object.assign({}, ...base.props.style);
+  assert.equal(baseStyle.backgroundColor, "rgba(255,255,255,0.06)");
+  const inverse = baseStyle.opacity;
+  assert.deepEqual(inverse.inputRange, [0, 1]);
+  assert.deepEqual(inverse.outputRange, [1, 0]);
+  assert.equal(inverse.parent, selected.props.style[1].opacity);
+  const [blur, selectedTint] = React.Children.toArray(selected.props.children) as any[];
+  assert.equal(Object.assign({}, ...selectedTint.props.style).backgroundColor, "rgba(255,255,255,0.12)");
+  assert.equal(blur.props.intensity, 38);
+  assert.equal(blur.props.tint, "light");
+  assert.equal(blur.props.experimentalBlurMethod, "dimezisBlurView");
+  assert.doesNotMatch(src, /rgba\(107,80,210/);
+  r.dispose();
 });
