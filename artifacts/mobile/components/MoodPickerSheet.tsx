@@ -1,7 +1,5 @@
 import { Feather } from "@expo/vector-icons";
-import { Image } from "expo-image";
 import * as Haptics from "expo-haptics";
-import { getMoodHeroGradient } from "@/utils/moodHeroGradient";
 import { router } from "expo-router";
 import { openPremiumPlans } from "@/lib/premiumGate";
 import { PremiumPlansSurface, usePremiumPlansModalHost } from "@/components/PremiumPlansOverlay";
@@ -34,26 +32,6 @@ import {
 import { useMoodQuotes } from "@/context/MoodQuotesContext";
 import type { MoodQuote } from "@/data/mood-quotes";
 
-const MOOD_HEROES: Record<MoodId, number> = {
-  estresado: require("@/assets/images/mood-heroes/mood-hero-estresado.jpg"),
-  ansioso: require("@/assets/images/mood-heroes/mood-hero-ansioso.jpg"),
-  cansado: require("@/assets/images/mood-heroes/mood-hero-cansado.jpg"),
-  inepto: require("@/assets/images/mood-heroes/mood-hero-inepto.jpg"),
-  triste: require("@/assets/images/mood-heroes/mood-hero-triste.jpg"),
-  solo: require("@/assets/images/mood-heroes/mood-hero-solo.jpg"),
-  deprimido: require("@/assets/images/mood-heroes/mood-hero-deprimido.jpg"),
-  desmotivado: require("@/assets/images/mood-heroes/mood-hero-desmotivado.jpg"),
-  enojado: require("@/assets/images/mood-heroes/mood-hero-enojado.jpg"),
-  adolorido: require("@/assets/images/mood-heroes/mood-hero-adolorido.jpg"),
-  agradecido: require("@/assets/images/mood-heroes/mood-hero-agradecido.jpg"),
-  emocionado: require("@/assets/images/mood-heroes/mood-hero-emocionado.jpg"),
-  "lleno-de-amor": require("@/assets/images/mood-heroes/mood-hero-lleno-de-amor.jpg"),
-  feliz: require("@/assets/images/mood-heroes/mood-hero-feliz.jpg"),
-  "en-paz": require("@/assets/images/mood-heroes/mood-hero-en-paz.jpg"),
-  esperanzado: require("@/assets/images/mood-heroes/mood-hero-esperanzado.jpg"),
-  contento: require("@/assets/images/mood-heroes/mood-hero-contento.jpg"),
-  presente: require("@/assets/images/mood-heroes/mood-hero-presente.jpg"),
-};
 import { SESSIONS, type Session } from "@/data/sessions";
 import {
   MoodCheckInAlreadyExistsError,
@@ -424,14 +402,12 @@ export function MoodPickerSheet({
   }
 
   const bgColors = theme.gradient as unknown as [string, string, ...string[]];
-  const fadeColor = bgColors[0] || "#080910";
   const firstMood = selectedMoods[0];
   const firstMoodAnswer = firstMood
     ? MOOD_SURVEY_OPTIONS[firstMood.id].find((option) => option.id === answers[firstMood.id])
     : undefined;
   const moodQuote = completionQuote ?? (firstMood ? getQuoteForMood(firstMood.id) : undefined);
-  const moodHeroHeight = Math.min(410, Math.max(340, viewportWidth * 0.98));
-  const heroGradient = getMoodHeroGradient(fadeColor, moodHeroHeight);
+  const emotionHeaderHeight = Math.min(410, Math.max(340, viewportWidth * 0.98));
 
   return (
     <Modal
@@ -611,7 +587,7 @@ export function MoodPickerSheet({
 
         {step === "complete" && (
           <View style={styles.completeRoot}>
-            <View style={[styles.header, styles.completeHeader, { paddingTop: topPad + 8 }]}>
+            <View pointerEvents="box-none" style={[styles.header, styles.completeHeader, { paddingTop: topPad + 8 }]}>
               <Pressable
                 onPress={handleClose}
                 style={styles.headerButton}
@@ -624,30 +600,15 @@ export function MoodPickerSheet({
             </View>
             <ScrollView
               showsVerticalScrollIndicator={false}
+              testID="mood-complete-scroll"
               contentContainerStyle={{ paddingBottom: bottomPad + 28 }}
-              bounces={false}
+              bounces
+              alwaysBounceVertical
+              overScrollMode="always"
+              contentInsetAdjustmentBehavior="never"
+              automaticallyAdjustContentInsets={false}
             >
-              <View style={[styles.heroContainer, { width: viewportWidth, height: moodHeroHeight }]}>
-                <CinematicFadeSlide
-                  active={visible}
-                  replayKey={`hero-background:${completionCycle}`}
-                  delay={0}
-                  duration={CINEMATIC_DURATION}
-                  scaleFrom={1.06}
-                  translateYFrom={0}
-                  style={StyleSheet.absoluteFill}
-                >
-                  <Image
-                    source={MOOD_HEROES[firstMood?.id ?? "feliz"]}
-                    style={StyleSheet.absoluteFill}
-                    contentFit="cover"
-                  />
-                </CinematicFadeSlide>
-                <LinearGradient
-                  {...heroGradient}
-                  style={StyleSheet.absoluteFill}
-                  pointerEvents="none"
-                />
+              <View style={[styles.heroContainer, { width: viewportWidth, height: emotionHeaderHeight }]}>
                 <View style={[styles.heroOverlay, { paddingTop: topPad + 80 }]}>
                   <CinematicFadeSlide
                     active={visible}
@@ -668,10 +629,7 @@ export function MoodPickerSheet({
                 </View>
               </View>
 
-              <LinearGradient
-                colors={bgColors}
-                style={styles.completeContent}
-              >
+              <View style={styles.completeContent}>
                 <CinematicFadeSlide
                   active={visible}
                   replayKey={completionCycle}
@@ -714,7 +672,7 @@ export function MoodPickerSheet({
                   delay={CINEMATIC_BASE_DELAY + 1700}
                   duration={CINEMATIC_DURATION}
                 >
-                  <View style={styles.completeSectionDivider} />
+                  <View style={styles.completeSectionGap} />
 
                   <View style={styles.monthCard}>
                     <Text style={styles.monthSectionTitle}>Este mes</Text>
@@ -736,7 +694,7 @@ export function MoodPickerSheet({
                       <Feather name="chevron-right" size={16} color="#060A0F" />
                     </Pressable>
                   </View>
-                  {!moodQuote && <View style={styles.completeSectionDivider} />}
+                  {!moodQuote && <View style={styles.completeSectionGap} />}
                 </CinematicFadeSlide>
 
                 {moodQuote && (
@@ -746,12 +704,12 @@ export function MoodPickerSheet({
                     delay={CINEMATIC_BASE_DELAY + 2200}
                     duration={CINEMATIC_DURATION}
                   >
-                    <View style={styles.completeSectionDivider} />
+                    <View style={styles.completeSectionGap} />
                     <EmotionalQuoteCard
                       author="Resonancia"
                       quote={moodQuote.text}
                     />
-                    <View style={styles.completeSectionDivider} />
+                    <View style={styles.completeSectionGap} />
                   </CinematicFadeSlide>
                 )}
 
@@ -760,7 +718,7 @@ export function MoodPickerSheet({
                     Último registro: {formatShortDate(history[0].createdAt)}
                   </Text>
                 )}
-              </LinearGradient>
+              </View>
             </ScrollView>
           </View>
         )}
@@ -1090,11 +1048,8 @@ const styles = StyleSheet.create({
     paddingHorizontal: 16,
     marginBottom: 0,
   },
-  completeSectionDivider: {
-    height: StyleSheet.hairlineWidth,
-    marginTop: 31,
-    marginBottom: 31,
-    backgroundColor: "rgba(255,255,255,0.18)",
+  completeSectionGap: {
+    height: 62 + StyleSheet.hairlineWidth,
   },
   monthCard: {
     borderRadius: 19,
