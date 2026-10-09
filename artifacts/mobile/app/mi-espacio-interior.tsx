@@ -803,7 +803,7 @@ function PremiumInnerSpaceScreen() {
                   setFilter(cat.id as ReflectionCategory);
                 }}
               >
-                <ReflectionCategoryTabFill selected={isActive} color={cat.color} reduceMotion={Boolean(reduceMotion)} selectedOpacity={0.2} inactiveBackgroundColor={inactiveTabBackground} />
+                <ReflectionCategoryTabFill selected={isActive} color={cat.color} reduceMotion={Boolean(reduceMotion)} selectedOpacity={0.2} inactiveBackgroundColor={inactiveTabBackground} blurred={false} />
                 <ReflectionCategoryTabLabel
                   label={cat.label}
                   selected={isActive}

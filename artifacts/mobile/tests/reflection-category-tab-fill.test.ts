@@ -9,7 +9,7 @@ const compiled = ts.transpileModule(src, {
   compilerOptions: { module: ts.ModuleKind.CommonJS, jsx: ts.JsxEmit.React, esModuleInterop: true },
 }).outputText;
 
-function load(reduce: boolean, color = "#F075B3", selectedOpacity?: number, inactiveBackgroundColor?: string) {
+function load(reduce: boolean, color = "#F075B3", selectedOpacity?: number, inactiveBackgroundColor?: string, blurred?: boolean) {
   const timings: any[] = [], stops: number[] = [], sets: number[] = [];
   let cleanup: any, effect: any;
   let savedRef: any;
@@ -31,12 +31,12 @@ function load(reduce: boolean, color = "#F075B3", selectedOpacity?: number, inac
   const m: any = { exports: {} };
   new Function("require", "module", "exports", compiled)((n: string) => mocks[n], m, m.exports);
   const Fill = m.exports.ReflectionCategoryTabFill.type ?? m.exports.ReflectionCategoryTabFill;
-  const tree: any = (m.exports.ReflectionCategoryTabFill.type ?? Fill)({ selected: true, color, reduceMotion: reduce, selectedOpacity, inactiveBackgroundColor });
+  const tree: any = (m.exports.ReflectionCategoryTabFill.type ?? Fill)({ selected: true, color, reduceMotion: reduce, selectedOpacity, inactiveBackgroundColor, blurred });
   cleanup = effect();
   return { timings, stops, sets, cleanup, tree,
     rerender(selected: boolean) {
       cleanup?.();
-      const next = Fill({ selected, color, reduceMotion: reduce, selectedOpacity, inactiveBackgroundColor });
+      const next = Fill({ selected, color, reduceMotion: reduce, selectedOpacity, inactiveBackgroundColor, blurred });
       cleanup = effect();
       return next;
     },
@@ -76,6 +76,22 @@ test("reduce motion sets the value without animating", () => {
   r.rerender(false);
   assert.deepEqual(r.sets, [1, 0]);
   assert.equal(r.timings.length, 0);
+});
+
+test("wall can remove the light blur and show only the same 20% category tint as card pills", () => {
+  for (const reduce of [false, true]) {
+    const r = load(reduce, "#F075B3", 0.2, "rgba(0,0,0,0.19)", false);
+    for (const tree of [r.tree, r.rerender(false)]) {
+      const [base, selected] = React.Children.toArray(tree.props.children) as any[];
+      assert.equal(base.props.style[1].backgroundColor, "rgba(0,0,0,0.19)");
+      const children = React.Children.toArray(selected.props.children) as any[];
+      assert.equal(children.length, 1);
+      assert.equal(children[0].type, "view");
+      assert.equal(Object.assign({}, ...children[0].props.style).opacity, 0.2);
+      assert.equal(Object.assign({}, ...children[0].props.style).backgroundColor, "#F075B3");
+    }
+    r.dispose();
+  }
 });
 
 test("wall tabs crossfade theme-specific inactive black without dimming the selected category", () => {

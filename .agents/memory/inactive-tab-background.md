@@ -16,3 +16,9 @@ Los seleccionados conservan su diseño.
 **Why:** El usuario pidió distinguir estas opacidades por tema únicamente en esa pantalla, después de la regla general.
 
 **How to apply:** Mantener la excepción acotada al Muro expansivo; no cambiar los tabs del compositor de Perfil ni otras pantallas.
+
+En Muro, los tabs de categoría seleccionados deben verse del mismo color que las píldoras de las cards, sin brillo adicional.
+
+**Why:** El usuario detectó que usar el mismo color y opacidad no daba el mismo resultado visual porque la capa de blur claro iluminaba los tabs.
+
+**How to apply:** No agregar blur claro a esos tabs. Preservar las animaciones y las otras superficies que usan el componente compartido.

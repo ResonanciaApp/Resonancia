@@ -15,7 +15,8 @@ export const ReflectionCategoryTabFill = React.memo(function ReflectionCategoryT
   reduceMotion = false,
   selectedOpacity = 0.23,
   inactiveBackgroundColor,
-}: { selected: boolean; color: string; reduceMotion?: boolean; selectedOpacity?: number; inactiveBackgroundColor?: string }) {
+  blurred = true,
+}: { selected: boolean; color: string; reduceMotion?: boolean; selectedOpacity?: number; inactiveBackgroundColor?: string; blurred?: boolean }) {
   const opacity = useRef(new Animated.Value(selected ? 1 : 0)).current;
 
   useEffect(() => {
@@ -38,12 +39,12 @@ export const ReflectionCategoryTabFill = React.memo(function ReflectionCategoryT
         }]}
       />
       <Animated.View pointerEvents="none" style={[StyleSheet.absoluteFill, { opacity }]}>
-        <BlurView
+        {blurred && <BlurView
           intensity={38}
           tint="light"
           experimentalBlurMethod="dimezisBlurView"
           style={StyleSheet.absoluteFill}
-        />
+        />}
         <View style={[StyleSheet.absoluteFill, { backgroundColor: color, opacity: selectedOpacity }]} />
       </Animated.View>
     </View>

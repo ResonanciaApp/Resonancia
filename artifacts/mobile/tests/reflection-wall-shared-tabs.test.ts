@@ -180,6 +180,7 @@ test("Muro filters keep category colors and Todos keeps its black fill with a 1p
         assert.equal(fill.props.selected, filter === options[index].id);
         assert.equal(fill.props.reduceMotion, reduceMotion);
         assert.equal(fill.props.selectedOpacity, 0.2, "selected category tabs match card pill opacity");
+        assert.equal(fill.props.blurred, false, "wall tabs do not brighten category colors with light blur");
         assert.equal(fill.props.inactiveBackgroundColor, inactive);
         const label = children.find(child => child.type === "label");
         assert.equal(label.props.uniformWeight, true);

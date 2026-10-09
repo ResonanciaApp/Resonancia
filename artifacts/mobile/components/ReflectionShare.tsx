@@ -8,9 +8,11 @@ import Animated, {
   ReduceMotion,
   runOnJS,
   useAnimatedStyle,
+  useAnimatedReaction,
   useSharedValue,
   useAnimatedScrollHandler,
   withTiming,
+  withDelay,
   type SharedValue,
 } from "react-native-reanimated";
 import { useQueryClient } from "@tanstack/react-query";
@@ -314,15 +316,36 @@ export function ReflectionShare({ reflection, onClose }: { reflection: Reflectio
   const galleryContentHeight = useSharedValue(0);
   const galleryScrollOffset = useSharedValue(0);
   const galleryScrollOpacity = useSharedValue(0);
-  useEffect(() => () => cancelAnimation(galleryScrollOpacity), [galleryScrollOpacity]);
+  const galleryScrollActivity = useSharedValue(0);
+  useEffect(() => () => {
+    cancelAnimation(galleryScrollOpacity);
+    cancelAnimation(galleryScrollActivity);
+  }, [galleryScrollOpacity, galleryScrollActivity]);
+  useAnimatedReaction(
+    () => galleryScrollActivity.value,
+    (active, previous) => {
+      if (active === previous) return;
+      galleryScrollOpacity.value = withTiming(active, {
+        duration: active ? 160 : 240,
+        reduceMotion: ReduceMotion.System,
+      });
+    },
+  );
   const galleryScrollHandler = useAnimatedScrollHandler({
-    onBeginDrag: () => {
-      galleryScrollOpacity.value = withTiming(1, { duration: 160, reduceMotion: ReduceMotion.System });
+    onScroll: (event) => {
+      if (event.contentOffset.y === galleryScrollOffset.value) return;
+      galleryScrollOffset.value = event.contentOffset.y;
+      cancelAnimation(galleryScrollActivity);
+      galleryScrollActivity.value = 1;
+      galleryScrollActivity.value = withDelay(120, withTiming(0, {
+        duration: 0,
+        reduceMotion: ReduceMotion.System,
+      }), ReduceMotion.Never);
     },
-    onEndDrag: () => {
-      galleryScrollOpacity.value = withTiming(0, { duration: 240, reduceMotion: ReduceMotion.System });
+    onMomentumEnd: () => {
+      cancelAnimation(galleryScrollActivity);
+      galleryScrollActivity.value = 0;
     },
-    onScroll: (event) => { galleryScrollOffset.value = event.contentOffset.y; },
   });
   const galleryScrollTrackStyle = useAnimatedStyle(() => ({
     opacity: galleryContentHeight.value > galleryViewport.value ? galleryScrollOpacity.value : 0,
