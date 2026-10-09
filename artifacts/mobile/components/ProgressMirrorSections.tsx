@@ -72,6 +72,7 @@ export function ProgressMirrorSections({
   streakMarginBottom,
   canonicalVerticalInsets = false,
   profileCalendarLayout = false,
+  profileStreakIcons = false,
   calendarTextSizeAdjustment = 0,
   calendarDayTextSizeAdjustment = calendarTextSizeAdjustment,
 }: {
@@ -125,6 +126,7 @@ export function ProgressMirrorSections({
   streakMarginBottom?: number;
   canonicalVerticalInsets?: boolean;
   profileCalendarLayout?: boolean;
+  profileStreakIcons?: boolean;
   calendarTextSizeAdjustment?: number;
   calendarDayTextSizeAdjustment?: number;
 }) {
@@ -345,27 +347,28 @@ export function ProgressMirrorSections({
     </Pressable>
   ) : null;
 
+  const historyIconSize = profileStreakIcons ? 21 : 18;
   const completedStreakIcon = (
-    <Feather name="check-circle" size={18} color="#F9F9F9" />
+    <Feather name="check-circle" size={historyIconSize} color="#F9F9F9" />
   );
 
   const longestHistoryStreakIcon = (
-    <MaterialCommunityIcons name="image-filter-hdr" size={18} color="#F9F9F9" />
+    <MaterialCommunityIcons name="image-filter-hdr" size={historyIconSize} color="#F9F9F9" />
   );
 
   const longestStreakIcon = longestStreakIconColor ? (
-    <MaskedView maskElement={<MaterialCommunityIcons name="spa" size={18} color="#FFFFFF" />}>
+    <MaskedView maskElement={<MaterialCommunityIcons name="spa" size={historyIconSize} color="#FFFFFF" />}>
       <MaterialCommunityIcons
         name="spa"
-        size={18}
+        size={historyIconSize}
         color={longestStreakIconColor}
         style={[styles.goldenLotusIcon, { textShadowColor: `${longestStreakIconColor}CC` }]}
       />
     </MaskedView>
   ) : (
-    <MaskedView maskElement={<MaterialCommunityIcons name="spa" size={18} color="#FFFFFF" />}>
+    <MaskedView maskElement={<MaterialCommunityIcons name="spa" size={historyIconSize} color="#FFFFFF" />}>
       <LinearGradient colors={PREMIUM_STAR_GRADIENT} start={{ x: 0, y: 0 }} end={{ x: 0, y: 1 }}>
-        <MaterialCommunityIcons name="spa" size={18} color="transparent" />
+        <MaterialCommunityIcons name="spa" size={historyIconSize} color="transparent" />
       </LinearGradient>
     </MaskedView>
   );
@@ -409,7 +412,8 @@ export function ProgressMirrorSections({
       <View testID="profile-streak-history-weekly" style={[styles.statsValues, styles.statsValuesNoTitle]}>
         <View style={styles.statEntranceSlot}>
           <Stat
-            icon={<MaterialCommunityIcons name="spa" size={18} color="#F9F9F9" />}
+            iconBoxStyle={profileStreakIcons ? styles.profileStreakIconBox : undefined}
+            icon={<MaterialCommunityIcons name="spa" size={historyIconSize} color="#F9F9F9" />}
             value={weekCount}
             label="RACHA ACTUAL"
             accent={accent}
@@ -421,6 +425,7 @@ export function ProgressMirrorSections({
         <View style={styles.statDivider} />
         <View style={styles.statEntranceSlot}>
           <Stat
+            iconBoxStyle={profileStreakIcons ? styles.profileStreakIconBox : undefined}
             icon={longestStreakIcon}
             value={maxStreak}
             label={longestStreakLabel}
@@ -438,6 +443,7 @@ export function ProgressMirrorSections({
       <View style={[styles.statsValues, styles.statsValuesNoTitle]}>
         <View style={styles.statEntranceSlot}>
           <Stat
+            iconBoxStyle={profileStreakIcons ? styles.profileStreakIconBox : undefined}
             icon={longestHistoryStreakIcon}
             value={maxStreak}
             label="RACHA MÁS LARGA"
@@ -450,6 +456,7 @@ export function ProgressMirrorSections({
         <View style={styles.statDivider} />
         <View style={styles.statEntranceSlot}>
           <Stat
+            iconBoxStyle={profileStreakIcons ? styles.profileStreakIconBox : undefined}
             icon={completedStreakIcon}
             value={completedWeeks}
             label="RACHAS COMPLETADAS"
@@ -750,6 +757,7 @@ function Stat({
   labelColor,
   onPress,
   edgeAligned = false,
+  iconBoxStyle,
 }: {
   icon: React.ReactNode;
   value: number;
@@ -759,8 +767,9 @@ function Stat({
   labelColor?: string;
   onPress?: () => void;
   edgeAligned?: boolean;
+  iconBoxStyle?: object;
 }) {
-  const statIcon = <View style={styles.statIcon}>{icon}</View>;
+  const statIcon = <View style={[styles.statIcon, iconBoxStyle]}>{icon}</View>;
   const content = (
     <>
       {statIcon}
@@ -943,6 +952,7 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     flexShrink: 0,
   },
+  profileStreakIconBox: { backgroundColor: "transparent", transform: [{ translateY: -7 }] },
   goldenLotusIcon: {
     textShadowOffset: { width: 0, height: 0 },
     textShadowRadius: 8,

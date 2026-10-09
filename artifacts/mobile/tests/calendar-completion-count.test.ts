@@ -30,6 +30,11 @@ const Native = ({ children, testID, style }: Props) => {
     "data-margin-bottom": resolvedStyle.marginBottom,
     "data-padding-bottom": resolvedStyle.paddingBottom,
     "data-padding-vertical": resolvedStyle.paddingVertical,
+    "data-width": resolvedStyle.width,
+    "data-left": resolvedStyle.left,
+    "data-border-radius": resolvedStyle.borderRadius,
+    "data-position": resolvedStyle.position,
+    "data-margin-horizontal": resolvedStyle.marginHorizontal,
   }, children);
 };
 const Icon = ({ name }: { name: string }) => React.createElement("i", { "data-icon": name });
@@ -142,7 +147,7 @@ test("empty days and other calendar consumers keep their existing presentation",
 test("canonical embedded calendar insets are 18px and replace supplied vertical padding", () => {
   events = [completed("Prueba 33")];
   const profileHtml = render(true, { canonicalVerticalInsets: true, cardVerticalPadding: 29 });
-  assert.match(profileHtml, /data-background="rgba\(191,207,255,0\.096\)" data-padding-top="18" data-padding-bottom="18"/);
+  assert.match(profileHtml, /data-background="rgba\(191,207,255,0\.096\)"[^>]*data-padding-top="18" data-padding-bottom="18"/);
   assert.match(profileHtml, /data-padding-bottom="0"/);
   assert.match(profileHtml, /data-height="18"/);
   assert.match(profileHtml, /data-line-height="18"/);
@@ -157,19 +162,27 @@ test("canonical embedded calendar insets are 18px and replace supplied vertical 
   assert.match(nonEmbeddedHtml, /data-height="30"/);
 });
 
-test("Profile shifts weekdays and following content 10px, grows 8px, and centers the month above the weekdays", () => {
+test("Profile calendar adds 6px below the header and centers the enlarged month without clipping its 42px arrow", () => {
   events = [];
-  const html = render(true, { canonicalVerticalInsets: true, profileCalendarLayout: true });
-  assert.match(html, /data-padding-top="26"/);
+  const html = render(true, { canonicalVerticalInsets: true, profileCalendarLayout: true, cardHorizontalPadding: 20 });
+  assert.match(html, /data-padding-top="17"/);
   assert.match(html, /data-padding-bottom="16"/);
-  assert.match(html, /data-margin-bottom="6"/);
+  assert.match(html, /data-margin-bottom="-3"/);
+  assert.match(html, /data-margin-horizontal="-20"/);
   assert.match(html, /data-margin-top="20"/);
   assert.match(html, /data-line-height="18"/);
-  const priorWeekTop = 18 + 18 + 14 + 10;
-  const profileWeekTop = 26 + 18 + 6 + 20;
-  assert.equal(profileWeekTop - priorWeekTop, 10);
-  assert.equal((profileWeekTop + 16) - (priorWeekTop + 18), 8);
-  assert.equal(26 + 18 / 2, profileWeekTop / 2);
+  assert.match(html, /data-font-size="14"/);
+  const priorWeekTop = 26 + 18 + 6 + 20;
+  const profileWeekTop = 17 + 42 - 3 + 20;
+  assert.equal(profileWeekTop - priorWeekTop, 6);
+  assert.equal((profileWeekTop + 16) - (priorWeekTop + 16), 6);
+  assert.equal(17 + 42 / 2, profileWeekTop / 2);
+  const arrow = html.match(/<div[^>]*data-background="rgba\(255,255,255,0\.1\)"[^>]*>/)?.[0] ?? "";
+  assert.match(arrow, /data-height="42"/);
+  assert.match(arrow, /data-width="42"/);
+  assert.match(arrow, /data-left="0"/);
+  assert.match(arrow, /data-border-radius="21"/);
+  assert.match(arrow, /data-position="absolute"/);
   assert.match(html, /data-icon="chevron-left"/);
   assert.doesNotMatch(html, /data-icon="chevron-right"/);
   assert.match(render(true), /data-icon="chevron-right"/);

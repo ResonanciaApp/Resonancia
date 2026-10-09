@@ -254,7 +254,7 @@ test("Perfil Tu camino shows accumulated days above the stage without a lotus be
   assert.match(html, /intention-preview-day-pill/);
   assert.match(html, />0 días</);
   assert.doesNotMatch(html, /profile-intention-name-with-lotus|profile-intention-lotus-background/);
-  assert.doesNotMatch(html, /data-icon="spa"/);
+  assert.match(html, /data-icon="spa" data-color="#BE9650"/);
   assert.match(html, />Intención</);
   assert.match(html, /Una práctica que comienza hoy\./);
   assert.match(html, /profile-intention-description/);
@@ -297,7 +297,7 @@ test("Perfil uses actual accumulated days and the timeline pill's sizing for eve
       assert.ok(html.indexOf(`>${name}<`) < html.indexOf(">Descripción.</div>"));
       assert.match(html, /profile-intention-description/);
       assert.doesNotMatch(html, new RegExp(`${startDay}–${endDay} días`));
-      assert.equal((html.match(/data-icon="spa"/g) ?? []).length, 0);
+      assert.equal((html.match(/data-icon="spa"/g) ?? []).length, 1);
       assert.doesNotMatch(html, /profile-intention-lotus-background/);
     }
   } finally {
@@ -336,7 +336,7 @@ test("Perfil preserves themed timeline pills and restores its phase description"
       assert.match(pill, /data-margin-bottom="0"/);
       assert.ok(html.includes(">16 días<"));
       assert.doesNotMatch(html, /15–21 días/);
-      assert.equal((html.match(/data-icon="spa"/g) ?? []).length, 0);
+      assert.equal((html.match(/data-icon="spa"/g) ?? []).length, 1);
       const timeline = renderToStaticMarkup(React.createElement(GrowthRow, { level: stage, status: "current", florecimiento: true }));
       assert.match(timeline, /data-icon="spa"/);
       assert.equal((html.match(/data-gap="5"/g) ?? []).length, 2);
@@ -959,6 +959,9 @@ test("Perfil's Intención day pill has a small centered golden lotus, without ch
   assert.ok(html.indexOf('data-icon="spa"') < html.lastIndexOf("0 días"));
   assert.doesNotMatch(html, /de racha|data-padding-vertical="5.5"/);
   assert.doesNotMatch(render(), /data-icon="spa"/);
+  const profile = render({ embedded: true, canonicalVerticalInsets: true, sectionTitle: "Tu camino" });
+  assert.match(profile, /data-icon="spa" data-color="#BE9650"/);
+  assert.ok(profile.indexOf('data-icon="spa"') < profile.lastIndexOf("0 días"));
 });
 
 test("the preview remains an accessible actionable button with the same day label", () => {

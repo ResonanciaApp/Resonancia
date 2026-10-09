@@ -1593,6 +1593,7 @@ export function ProfileScreenBase({
                 sectionMarginBottom={PROFILE_SECTION_GAP}
                 canonicalVerticalInsets
                 profileCalendarLayout
+                profileStreakIcons
                 afterCalendar={
                   <>
                     <View testID="profile-growth-intention" style={{ marginTop: PROFILE_SECTION_GAP }}>

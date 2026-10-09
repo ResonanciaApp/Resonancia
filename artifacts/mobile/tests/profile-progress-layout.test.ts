@@ -274,6 +274,25 @@ test("compact callers keep their existing stats unless they opt into the full hi
   assert.doesNotMatch(html, /RACHAS COMPLETADAS/);
 });
 
+test("Profile changes only its four streak icons, preserving number and label geometry", () => {
+  const props = { separateStreakHistory: true, centerStreakHistoryCopy: true,
+    showPersonalStats: false, showStreakWeek: false, showCalendar: false };
+  const baseline = render(props);
+  const profile = render({ ...props, profileStreakIcons: true });
+  assert.equal((profile.match(/data-background="transparent"[^>]*data-transform="\[\{&quot;translateY&quot;:-7\}\]"/g) ?? []).length, 4);
+  for (const name of ["spa", "image-filter-hdr", "check-circle"]) {
+    assert.match(profile, new RegExp(`data-icon="${name}"[^>]*data-size="21"`));
+    assert.doesNotMatch(profile, new RegExp(`data-icon="${name}"[^>]*data-size="18"`));
+  }
+  const normalizeIcons = (html: string) => html
+    .replaceAll('data-size="21"', 'data-size="18"')
+    .replaceAll('data-background="transparent"', 'data-background="rgba(255,255,255,0.08)"')
+    .replaceAll(' data-transform="[{&quot;translateY&quot;:-7}]"', "");
+  assert.equal(normalizeIcons(profile), normalizeIcons(baseline));
+  assert.match(readFileSync(new URL("../components/ProfileScreenBase.tsx", import.meta.url), "utf8"),
+    /profileStreakIcons/);
+});
+
 test("Tu progreso keeps weekly circles without streak history, calendar or Intención", () => {
   const progressSource = readFileSync(new URL("../app/progreso.tsx", import.meta.url), "utf8");
   const usage = progressSource.match(/<ProgressMirrorSections[\s\S]*?\/>/)?.[0] ?? "";

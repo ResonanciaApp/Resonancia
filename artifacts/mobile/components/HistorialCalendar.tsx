@@ -361,6 +361,10 @@ export function HistorialCalendar({
   };
 
   const p = containerPadding;
+  const isProfileNav = profileCalendarLayout && embedded;
+  const profileNavContainerStyle = isProfileNav
+    ? { marginHorizontal: -(cardHorizontalPadding ?? 14), marginBottom: -3 }
+    : undefined;
   const canonicalEmbeddedInsets = canonicalVerticalInsets && embedded;
 
   return (
@@ -392,12 +396,13 @@ export function HistorialCalendar({
           animated={animateEntrance}
           replayKey={`${entranceReplayKey}:nav`}
           delay={entranceBaseDelay}
+          style={profileNavContainerStyle}
         >
         <View style={[styles.calendarNav, profileCalendarLayout && embedded && styles.profileCalendarNav]}>
           <Pressable
             onPress={goPrevMonth}
             hitSlop={10}
-            style={[styles.navBtn, canonicalEmbeddedInsets && styles.canonicalEmbeddedNavButton]}
+            style={[styles.navBtn, canonicalEmbeddedInsets && styles.canonicalEmbeddedNavButton, isProfileNav && styles.profileNavBtn, isProfileNav && { left: 0 }]}
           >
             <Feather name="chevron-left" size={18} color={colors.foreground} />
           </Pressable>
@@ -405,6 +410,7 @@ export function HistorialCalendar({
             style={[
               styles.monthLabel,
               embedded && styles.embeddedMonthLabel,
+              isProfileNav && styles.profileMonthLabel,
               canonicalEmbeddedInsets && styles.canonicalEmbeddedMonthLabel,
               { color: colors.foreground },
             ]}
@@ -412,12 +418,12 @@ export function HistorialCalendar({
             {monthLabel}
           </Text>
           {profileCalendarLayout && atCurrentMonth ? (
-            <View pointerEvents="none" style={[styles.navBtn, canonicalEmbeddedInsets && styles.canonicalEmbeddedNavButton]} />
+            <View pointerEvents="none" style={[styles.navBtn, canonicalEmbeddedInsets && styles.canonicalEmbeddedNavButton, isProfileNav && styles.profileNavBtn, isProfileNav && styles.profileNavPlaceholder, isProfileNav && { right: 0 }]} />
           ) : (
           <Pressable
             onPress={goNextMonth}
             hitSlop={10}
-            style={[styles.navBtn, canonicalEmbeddedInsets && styles.canonicalEmbeddedNavButton]}
+            style={[styles.navBtn, canonicalEmbeddedInsets && styles.canonicalEmbeddedNavButton, isProfileNav && styles.profileNavBtn, isProfileNav && { right: 0 }]}
           >
             <Feather name="chevron-right" size={18} color={colors.foreground} />
           </Pressable>
@@ -643,15 +649,18 @@ function CalendarEntrance({
   children,
   delay,
   replayKey,
+  style,
 }: {
   animated: boolean;
   children: React.ReactNode;
   delay: number;
   replayKey: string | number;
+  style?: { marginHorizontal: number; marginBottom: number };
 }) {
-  if (!animated) return <>{children}</>;
+  if (!animated) return style ? <View style={style}>{children}</View> : <>{children}</>;
   return (
     <CinematicFadeSlide
+      style={style}
       replayKey={replayKey}
       delay={delay}
       duration={1050}
@@ -677,8 +686,18 @@ const styles = StyleSheet.create({
     paddingTop: 18,
     paddingBottom: 18,
   },
-  profileCalendarInsets: { paddingTop: 26, paddingBottom: 16 },
-  profileCalendarNav: { marginBottom: 6 },
+  profileCalendarInsets: { paddingTop: 17, paddingBottom: 16 },
+  profileCalendarNav: { height: 42, marginBottom: 0 },
+  profileMonthLabel: { fontSize: 14 },
+  profileNavBtn: {
+    position: "absolute",
+    top: 0,
+    width: 42,
+    height: 42,
+    borderRadius: 21,
+    backgroundColor: "rgba(255,255,255,0.1)",
+  },
+  profileNavPlaceholder: { backgroundColor: "transparent" },
   profileWeekRow: { marginTop: 20 },
   outlinedCalendarCard: {
     borderWidth: 1,

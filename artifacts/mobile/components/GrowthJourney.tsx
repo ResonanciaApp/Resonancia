@@ -173,11 +173,11 @@ export function GrowthLevelPreviewCard({
           sectionTitle && styles.profilePreviewPillOffset,
         ]}
       >
-        {canonicalVerticalInsets && !sectionTitle && (
+        {canonicalVerticalInsets && (
           <MaterialCommunityIcons
             name="spa"
             size={12}
-            color={GROWTH_COLORS.current}
+            color={sectionTitle ? "#BE9650" : GROWTH_COLORS.current}
             style={styles.bloomLotus}
             accessibilityElementsHidden
             importantForAccessibility="no"
