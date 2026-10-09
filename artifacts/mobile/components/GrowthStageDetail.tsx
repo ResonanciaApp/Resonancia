@@ -1,4 +1,5 @@
 import { Feather, MaterialCommunityIcons } from "@expo/vector-icons";
+import MaskedView from "@react-native-masked-view/masked-view";
 import { LinearGradient } from "expo-linear-gradient";
 import React from "react";
 import {
@@ -8,6 +9,7 @@ import {
   StyleSheet,
   Text,
   View,
+  useWindowDimensions,
 } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 
@@ -33,6 +35,7 @@ export function GrowthStageDetail({
   const insets = useSafeAreaInsets();
   const { theme } = useSceneTheme();
   const { levels } = useGrowth();
+  const { height } = useWindowDimensions();
   const level = levels.find(item => item.id === "intencion");
   React.useEffect(() => {
     if (!level) onClose();
@@ -40,6 +43,10 @@ export function GrowthStageDetail({
   const topPad = Platform.OS === "web" ? 67 : Math.max(insets.top, 40);
   const bottomPad = Platform.OS === "web" ? 34 : insets.bottom;
   const heroSize = GROWTH_BLOOM_ART_SIZE * 2;
+  const heroTop = topPad + 40;
+  const heroBottom = heroTop + heroSize;
+  const fadeStart = Math.min(1, Math.max(0, (heroBottom - 48) / height));
+  const fadeEnd = Math.min(1, Math.max(fadeStart, (heroBottom + 8) / height));
   if (!level) return null;
   const dayLabel = level.startDay === level.endDay ? `${level.startDay} días` : `${level.startDay}–${level.endDay} días`;
 
@@ -52,7 +59,28 @@ export function GrowthStageDetail({
       end={theme.gradientEnd}
       style={styles.root}
     >
+      <View
+        testID="growth-stage-detail-fixed-art"
+        pointerEvents="none"
+        style={[styles.heroArt, { top: heroTop }]}
+      >
+        <GrowthLevelImage level={level} size={heroSize} />
+      </View>
+      <MaskedView
+        testID="growth-stage-detail-content-mask"
+        style={styles.scrollLayer}
+        maskElement={(
+          <LinearGradient
+            testID="growth-stage-detail-scroll-fade"
+            colors={["transparent", "transparent", "#000000", "#000000"]}
+            locations={[0, fadeStart, fadeEnd, 1]}
+            style={StyleSheet.absoluteFillObject}
+            pointerEvents="none"
+          />
+        )}
+      >
       <ScrollView
+        style={styles.scrollLayer}
         showsVerticalScrollIndicator={false}
         bounces
         alwaysBounceVertical
@@ -60,17 +88,8 @@ export function GrowthStageDetail({
         contentInsetAdjustmentBehavior="never"
         automaticallyAdjustContentInsets={false}
         testID="growth-stage-detail-scroll"
-        contentContainerStyle={{ paddingTop: topPad + 40, paddingBottom: bottomPad + 28 }}
+        contentContainerStyle={{ paddingTop: heroBottom + 16, paddingBottom: bottomPad + 28, minHeight: height + heroSize }}
       >
-        <CinematicFadeSlide
-          active
-          replayKey="hero"
-          delay={0}
-          duration={DURATION}
-          style={styles.heroArt}
-        >
-          <GrowthLevelImage level={level} size={heroSize} />
-        </CinematicFadeSlide>
         <CinematicFadeSlide active replayKey="stage" delay={BASE_DELAY} duration={DURATION}>
           <View testID="growth-stage-detail-title-block" style={styles.titleBlock}>
             <Text style={styles.stageName} accessibilityRole="header">{level.name}</Text>
@@ -90,6 +109,7 @@ export function GrowthStageDetail({
         </CinematicFadeSlide>
 
       </ScrollView>
+      </MaskedView>
       <View testID="growth-stage-detail-fixed-header" style={[styles.header, { paddingTop: topPad + 8 }]}>
         <Pressable
           onPress={onClose}
@@ -108,7 +128,8 @@ export function GrowthStageDetail({
 
 const styles = StyleSheet.create({
   root: { ...StyleSheet.absoluteFillObject },
-  heroArt: { alignSelf: "center", marginBottom: 16 },
+  heroArt: { position: "absolute", alignSelf: "center" },
+  scrollLayer: { flex: 1 },
   header: {
     position: "absolute",
     top: 0,
@@ -133,6 +154,7 @@ const styles = StyleSheet.create({
   titleBlock: { alignItems: "center", marginTop: 0, gap: 8 },
   stageName: {
     fontFamily: "Manrope",
+    fontWeight: "700",
     fontSize: 44,
     lineHeight: 50,
     color: STREAK_INFO_COLORS.pageTitle,
@@ -142,8 +164,8 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     alignItems: "center",
     gap: 6,
-    paddingHorizontal: 16,
-    paddingVertical: 7,
+    paddingHorizontal: 14,
+    paddingVertical: 5,
     borderRadius: 18,
     backgroundColor: "rgba(151,128,231,0.20)",
     borderWidth: 1,

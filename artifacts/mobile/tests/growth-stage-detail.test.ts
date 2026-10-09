@@ -107,7 +107,8 @@ test("the detail shares the streak screen's theme, safe-area spacing, circular c
       assert.equal(nodes.get("growth-stage-detail").locations, locations);
        assert.equal(nodes.get("growth-detail-hero-artwork").size, 274);
        assert.equal(nodes.get("growth-detail-hero-artwork").height, undefined, "square image, no viewport stretch");
-       assert.equal(nodes.get("growth-stage-detail-scroll").contentContainerStyle.paddingTop, Math.max(inset, 40) + 40);
+       assert.equal(flat(nodes.get("growth-stage-detail-fixed-art").style).top, Math.max(inset, 40) + 40);
+       assert.equal(nodes.get("growth-stage-detail-scroll").contentContainerStyle.paddingTop, Math.max(inset, 40) + 40 + 274 + 16);
       assert.match(html, new RegExp(`data-top-padding="${Math.max(inset, 40) + 8}"`));
       const scroll = nodes.get("growth-stage-detail-scroll");
       assert.equal(scroll.bounces, true);
@@ -138,11 +139,11 @@ test("X returns to Tu camino; the detail has no help button or its background", 
 
 test("the detail has only one continuous theme background, without opaque hero strips", () => {
   const html = render();
-  assert.equal((html.match(/data-colors=/g) ?? []).length, 1);
+  assert.equal((html.match(/data-colors=/g) ?? []).length, 2, "one theme gradient plus the alpha mask, not a second background");
   assert.equal(nodes.get("growth-stage-detail").colors, colors);
   assert.equal(nodes.get("growth-stage-detail").locations, locations);
-  assert.equal(flat(nodes.get("growth-stage-detail-hero-image").style).backgroundColor, undefined);
-  assert.ok(html.indexOf('data-testid="growth-stage-detail-scroll"') < html.indexOf('data-testid="growth-detail-hero-artwork"'));
+  assert.equal(flat(nodes.get("growth-stage-detail-fixed-art").style).backgroundColor, undefined);
+  assert.ok(html.indexOf('data-testid="growth-detail-hero-artwork"') < html.indexOf('data-testid="growth-stage-detail-scroll"'));
   const source = readFileSync(new URL("../components/GrowthStageDetail.tsx", import.meta.url), "utf8");
   assert.doesNotMatch(source, /FULL_HERO_IMAGE|getMoodHeroGradient|heroBackground|heroLayer|heroImageOffset/);
   const journey = readFileSync(new URL("../components/GrowthJourney.tsx", import.meta.url), "utf8");
@@ -151,7 +152,7 @@ test("the detail has only one continuous theme background, without opaque hero s
 
 test("Intención and its pill sit below the artwork, with description 15px away", () => {
   render();
-  assert.equal(nodes.get("growth-stage-detail-scroll").contentContainerStyle.paddingTop, 80);
+  assert.equal(nodes.get("growth-stage-detail-scroll").contentContainerStyle.paddingTop, 370);
   const block = flat(nodes.get("growth-stage-detail-title-block").style);
   assert.equal(block.gap, 8);
   assert.equal(block.transform, undefined);
@@ -177,7 +178,39 @@ test("the X stays fixed, stage labels are removed and Intención uses the app's 
   assert.ok(!ids(nodes.get("growth-stage-detail-scroll").children).includes("growth-stage-detail-header-label"));
    assert.doesNotMatch(html, /Primera etapa|Florecimiento/);
    const source = readFileSync(new URL("../components/GrowthStageDetail.tsx", import.meta.url), "utf8");
-   assert.match(source, /stageName: \{\s*fontFamily: "Manrope"/);
+   assert.match(source, /stageName: \{\s*fontFamily: "Manrope",\s*fontWeight: "700"/);
+});
+
+test("artwork is static outside scrolling content and the smaller day pill preserves its text", () => {
+  render();
+  const art = nodes.get("growth-stage-detail-fixed-art");
+  assert.equal(flat(art.style).position, "absolute");
+  assert.equal(art.pointerEvents, "none");
+  assert.equal(nodes.has("growth-stage-detail-hero-image"), false, "no entrance or scroll animation on artwork");
+  const scrollChildren = React.Children.toArray(nodes.get("growth-stage-detail-scroll").children) as React.ReactElement<any>[];
+  assert.ok(scrollChildren.every(child => child.props.replayKey !== "hero"));
+  const source = readFileSync(new URL("../components/GrowthStageDetail.tsx", import.meta.url), "utf8");
+  assert.match(source, /dayPill: \{[^}]*paddingHorizontal: 14,\s*paddingVertical: 5,/);
+  assert.match(source, /days: \{[^}]*fontSize: 14/);
+});
+
+test("a fixed alpha mask progressively hides content as it scrolls into the image, without tinting the background", () => {
+  for (const viewportHeight of [812, 874, 1024]) {
+    height = viewportHeight;
+    render();
+    const fade = nodes.get("growth-stage-detail-scroll-fade");
+    assert.equal(nodes.get("growth-stage-detail-scroll").contentContainerStyle.minHeight, height + 274, "even short descriptions can scroll up towards the image");
+    assert.deepEqual(fade.colors, ["transparent", "transparent", "#000000", "#000000"]);
+    assert.deepEqual(fade.locations, [0, (354 - 48) / height, (354 + 8) / height, 1]);
+    assert.equal(fade.pointerEvents, "none");
+    assert.equal(flat(fade.style).position, "absolute");
+    const mask = nodes.get("growth-stage-detail-content-mask");
+    assert.equal(mask.maskElement.props.testID, "growth-stage-detail-scroll-fade");
+    const children = React.Children.toArray(mask.children) as React.ReactElement<any>[];
+    assert.ok(children.some(child => child.props.testID === "growth-stage-detail-scroll"));
+    assert.ok(children.every(child => child.props.testID !== "growth-stage-detail-fixed-art"));
+  }
+  height = 812;
 });
 
 test("the shared gradient preserves the original emotional screen overlay and handles short viewports", () => {
