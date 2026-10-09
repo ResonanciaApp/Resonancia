@@ -40,12 +40,12 @@ const MONTH_NAMES = [
 function SlidingSheetModal({
   visible,
   onClose,
-  surfaceColor,
+  surfaceColors,
   children,
 }: {
   visible: boolean;
   onClose: () => void;
-  surfaceColor: string;
+  surfaceColors: [string, string, ...string[]];
   children: React.ReactNode;
 }) {
   const [mounted, setMounted] = useState(visible);
@@ -121,10 +121,16 @@ function SlidingSheetModal({
             accessibilityViewIsModal
             style={[
               styles.actionSheet,
-              { backgroundColor: surfaceColor, transform: [{ translateY }] },
+              { backgroundColor: surfaceColors[0], transform: [{ translateY }] },
             ]}
             onStartShouldSetResponder={() => true}
           >
+            <LinearGradient
+              colors={surfaceColors}
+              locations={[0, 0.5, 1]}
+              pointerEvents="none"
+              style={[StyleSheet.absoluteFill, styles.actionSheetGradient]}
+            />
             {children}
           </Animated.View>
         </Pressable>
@@ -870,7 +876,7 @@ function PremiumInnerSpaceScreen() {
       <SlidingSheetModal
         visible={monthPickerVisible}
         onClose={() => setMonthPickerVisible(false)}
-        surfaceColor={theme.gradient[0]}
+        surfaceColors={theme.gradient.slice(0, 3) as [string, string, ...string[]]}
       >
         <Text style={[styles.actionSheetTitle, { color: colors.foreground }]}>
           Seleccionar mes · {selectedYear}
@@ -1244,6 +1250,10 @@ const styles = StyleSheet.create({
     paddingHorizontal: 20,
     paddingTop: 20,
     paddingBottom: 34,
+  },
+  actionSheetGradient: {
+    borderTopLeftRadius: 24,
+    borderTopRightRadius: 24,
   },
   actionSheetTitle: {
     fontSize: 18,

@@ -120,6 +120,35 @@ test("month selector sits above only the first date with a 15px gap, aligned to 
     < entrance.getText(tree).indexOf("styles.dateHeaderRow"), "month precedes the first date in layout flow");
 });
 
+test("month picker uses only the first three active-theme gradient stops without changing its filtering actions", () => {
+  const tree = ast(source("../app/mi-espacio-interior.tsx"));
+  const picker = find(tree, node => ts.isJsxElement(node)
+    && node.openingElement.tagName.getText(tree) === "SlidingSheetModal");
+  const attribute = picker.openingElement.attributes.properties.find((entry: any) => entry.name?.getText(tree) === "surfaceColors");
+  const colors = new Function("theme", compile(`return (${attribute.initializer.expression.getText(tree)});`));
+  // Load the actual palettes; the only dependency is a type-only import.
+  const palettes = source("../config/scene-themes.ts");
+  const module = { exports: {} as any };
+  new Function("exports", "module", ts.transpileModule(palettes, {
+    compilerOptions: { module: ts.ModuleKind.CommonJS },
+  }).outputText)(module.exports, module);
+  for (const theme of Object.values(module.exports.SCENE_THEMES) as any[]) {
+    assert.deepEqual(colors(theme), theme.gradient.slice(0, 3), theme.id);
+    assert.equal(colors(theme).length, 3, theme.id);
+  }
+  const sheet = find(tree, node => ts.isFunctionDeclaration(node) && node.name?.getText(tree) === "SlidingSheetModal");
+  const gradient = find(sheet, node => ts.isJsxSelfClosingElement(node)
+    && node.tagName.getText(tree) === "LinearGradient");
+  assert.match(gradient.getText(tree), /colors=\{surfaceColors\}/);
+  assert.match(gradient.getText(tree), /locations=\{\[0, 0\.5, 1\]\}/);
+  assert.match(gradient.getText(tree), /pointerEvents="none"/);
+  assert.match(gradient.getText(tree), /StyleSheet\.absoluteFill/);
+  assert.equal(styles(tree, ["actionSheetGradient"]).actionSheetGradient.borderTopLeftRadius, 24);
+  assert.match(picker.getText(tree), /disabled=\{isFuture\}/);
+  assert.match(picker.getText(tree), /setSelectedMonth\(index\)/);
+  assert.match(picker.getText(tree), /setMonthPickerVisible\(false\)/);
+});
+
 test("Muro filters keep category colors and Todos keeps its black fill with a 1px selected gradient border", () => {
   const tree = ast(source("../app/mi-espacio-interior.tsx"));
   const row = find(tree, node => ts.isJsxElement(node)
