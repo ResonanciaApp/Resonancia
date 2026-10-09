@@ -254,8 +254,7 @@ test("Perfil Tu camino shows accumulated days above the stage without a lotus be
   assert.match(html, /intention-preview-day-pill/);
   assert.match(html, />0 días</);
   assert.doesNotMatch(html, /profile-intention-name-with-lotus|profile-intention-lotus-background/);
-  assert.match(html, /data-icon="spa" data-color="#BE9650"/);
-  assert.ok(html.indexOf('data-icon="spa"') < html.indexOf(">Intención"));
+  assert.doesNotMatch(html, /data-icon="spa"/);
   assert.match(html, />Intención</);
   assert.match(html, /Una práctica que comienza hoy\./);
   assert.match(html, /profile-intention-description/);
@@ -284,9 +283,10 @@ test("Perfil uses actual accumulated days and the timeline pill's sizing for eve
       growthMock.useGrowth = () => ({ ...original(), currentStage: stage, levels: [stage], progress: { totalActiveDays: days } });
       const html = render({ canonicalVerticalInsets: true, sectionTitle: "Tu camino" });
       const pill = html.match(/<div[^>]*data-testid="intention-preview-day-pill"[^>]*>/)?.[0] ?? "";
-      assert.match(pill, /data-padding-vertical="0"/);
-      assert.match(pill, /data-background="transparent"/);
-      assert.match(pill, /data-border-width="0"/);
+      assert.match(pill, /data-padding-vertical="4"/);
+      assert.match(pill, /data-background="rgba\(151,128,231,0.20\)"/);
+      assert.match(pill, /data-border-width="1"/);
+      assert.match(pill, /data-border-radius="12"/);
       assert.match(pill, /data-direction="row" data-align="center"/);
       assert.match(pill, /data-margin-bottom="0"/);
       const titleRow = html.match(/<div[^>]*data-testid="profile-intention-title-row"[^>]*>/)?.[0] ?? "";
@@ -297,7 +297,7 @@ test("Perfil uses actual accumulated days and the timeline pill's sizing for eve
       assert.ok(html.indexOf(`>${name}<`) < html.indexOf(">Descripción.</div>"));
       assert.match(html, /profile-intention-description/);
       assert.doesNotMatch(html, new RegExp(`${startDay}–${endDay} días`));
-      assert.equal((html.match(/data-icon="spa"/g) ?? []).length, 1);
+      assert.equal((html.match(/data-icon="spa"/g) ?? []).length, 0);
       assert.doesNotMatch(html, /profile-intention-lotus-background/);
     }
   } finally {
@@ -321,8 +321,8 @@ test("Perfil preserves themed timeline pills and restores its phase description"
       const description = html.match(/<div[^>]*data-testid="profile-intention-description"[^>]*>/)?.[0] ?? "";
       assert.match(description, new RegExp(`data-color="${updated ? "#D1D1D1" : "#C4C4C4"}"`));
       assert.match(html, />Descripción\.</);
-      if (updated) {
-        const expectedBackground = id === "natural" ? "rgba(229,255,219,0.20)" : "rgba(128,171,231,0.20)";
+      {
+        const expectedBackground = id === "natural" ? "rgba(229,255,219,0.20)" : id === "cloudy" ? "rgba(128,171,231,0.20)" : "rgba(151,128,231,0.20)";
         assert.ok(pill.includes(`data-background="${expectedBackground}"`));
         assert.match(pill, /data-padding-vertical="4"/);
         assert.match(pill, /data-border-width="1"/);
@@ -332,15 +332,13 @@ test("Perfil preserves themed timeline pills and restores its phase description"
         for (const attribute of ["data-background", "data-padding-vertical", "data-border-width", "data-border-radius"]) {
           assert.equal(pill.match(new RegExp(`${attribute}="([^"]*)"`))?.[1], timelinePill.match(new RegExp(`${attribute}="([^"]*)"`))?.[1]);
         }
-      } else {
-        assert.match(pill, /data-background="transparent"/);
-        assert.match(pill, /data-border-width="0"/);
-        assert.match(pill, /data-padding-vertical="0"/);
       }
       assert.match(pill, /data-margin-bottom="0"/);
       assert.ok(html.includes(">16 días<"));
       assert.doesNotMatch(html, /15–21 días/);
-      assert.equal((html.match(/data-icon="spa"/g) ?? []).length, 1);
+      assert.equal((html.match(/data-icon="spa"/g) ?? []).length, 0);
+      const timeline = renderToStaticMarkup(React.createElement(GrowthRow, { level: stage, status: "current", florecimiento: true }));
+      assert.match(timeline, /data-icon="spa"/);
       assert.equal((html.match(/data-gap="5"/g) ?? []).length, 2);
     }
   } finally {

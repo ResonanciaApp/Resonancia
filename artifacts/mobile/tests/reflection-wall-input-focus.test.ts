@@ -9,7 +9,8 @@ const compiled = ts.transpileModule(source, {
   compilerOptions: { module: ts.ModuleKind.CommonJS, jsx: ts.JsxEmit.React, esModuleInterop: true },
 }).outputText;
 
-function fixture(quota = 0) {
+function fixture(quota = 0, themeId = "indigo2") {
+  const haptics: string[] = [];
   const states: any[] = [], refs: any[] = [], effects: any[] = [];
   let stateIndex = 0, refIndex = 0, effectIndex = 0, dirty = false;
   let focused = false, keyboardVisible = false, focusCalls = 0, restored = 0, gates = 0;
@@ -96,11 +97,15 @@ function fixture(quota = 0) {
     } },
     "@react-native-masked-view/masked-view": { default: "mask", __esModule: true },
     "expo-linear-gradient": { LinearGradient: "gradient" },
-    "expo-haptics": { selectionAsync: async () => {} },
+    "expo-haptics": {
+      selectionAsync: async () => { haptics.push("selection"); },
+      impactAsync: async (style: string) => { haptics.push(`impact:${style}`); },
+      ImpactFeedbackStyle: { Soft: "soft" },
+    },
     "@expo/vector-icons": { Feather: "icon" },
     "expo-router": { router: { push() {} } },
     "@/hooks/useColors": { useColors: () => ({ foreground: "white", accent: "gold" }) },
-    "@/context/SceneThemeContext": { useSceneTheme: () => ({ theme: { id: "indigo2", gradient: ["black", "navy"] } }) },
+    "@/context/SceneThemeContext": { useSceneTheme: () => ({ theme: { id: themeId, gradient: ["black", "navy"] } }) },
     "@/context/AuthContext": { useAuth: () => ({ authLoading: false, isSignedIn: true, clerkUserId: "fixture" }) },
     "@/context/PremiumContext": { usePremium: () => ({ isPremium: false }) },
     "@/constants/reflectionCategories": { useReflectionCategories: () => ({
@@ -118,6 +123,7 @@ function fixture(quota = 0) {
     },
     "@/components/DiscoverSearchBorder": { DiscoverSearchBorder: "border" },
     "@/components/ReflectionWallPlusIcon": { ReflectionWallPlusIcon: "plus", WALL_PLUS_HALO_SIZES: [1, 2, 3] },
+    "@/components/ReflectionCategoryTabFill": { ReflectionCategoryTabFill: "tab-fill" },
     "@/components/ReflectionCategoryTabLabel": { ReflectionCategoryTabBorder: "tab-border", ReflectionCategoryTabLabel: "tab-label" },
     "@/constants/reflectionWallBorder": {},
     "@/constants/colors": {},
@@ -178,6 +184,7 @@ function fixture(quota = 0) {
     get restored() { return restored; },
     get keyboardVisible() { return keyboardVisible; },
     get gates() { return gates; },
+    haptics,
     get composeRequests() { return composeRequests; },
   };
 }
@@ -295,4 +302,35 @@ test("quota restrictions and unmount still prevent focus", () => {
   f.dispose();
   f.flushFrames();
   assert.equal(f.focusCalls, 0);
+});
+test("Pleyades tabs add the fill and emit one soft haptic; other themes keep selection", () => {
+  for (const theme of ["pleyades", "indigo2", "cloudy", "natural"]) {
+    const expected = theme === "pleyades" ? "impact:soft" : "selection";
+    const f = fixture(0, theme);
+    f.open();
+    const tab = f.nodes.get("category-gratitude");
+    const kids = React.Children.toArray(tab.children as any) as any[];
+    assert.equal(kids.some(k => k.type === "tab-fill"), theme === "pleyades");
+    tab.onPress();
+    f.render();
+    assert.deepEqual(f.haptics, [expected]);
+    const selectedTab = f.nodes.get("category-gratitude");
+    assert.equal(selectedTab.accessibilityState.selected, true);
+    assert.equal(Object.assign({}, ...selectedTab.style({ pressed: false }).filter(Boolean)).backgroundColor,
+      theme === "pleyades" ? "transparent" : "rgba(0,0,0,0.16)");
+    if (theme === "pleyades") {
+      const fill = (React.Children.toArray(selectedTab.children) as any[]).find(k => k.type === "tab-fill");
+      assert.equal(fill.props.selected, true);
+    }
+    selectedTab.onPress();
+    f.render();
+    assert.deepEqual(f.haptics, [expected, expected]);
+    const deselectedTab = f.nodes.get("category-gratitude");
+    assert.equal(deselectedTab.accessibilityState.selected, false);
+    if (theme === "pleyades") {
+      const fill = (React.Children.toArray(deselectedTab.children) as any[]).find(k => k.type === "tab-fill");
+      assert.equal(fill.props.selected, false, "fill remains mounted so deselection can fade out");
+    }
+    f.dispose();
+  }
 });

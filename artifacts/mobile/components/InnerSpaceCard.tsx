@@ -17,6 +17,7 @@ import Reanimated, {
 import { useColors } from "@/hooks/useColors";
 import { DiscoverSearchBorder } from "@/components/DiscoverSearchBorder";
 import { ReflectionWallPlusIcon, WALL_PLUS_HALO_SIZES as HALO_SIZES } from "@/components/ReflectionWallPlusIcon";
+import { ReflectionCategoryTabFill } from "@/components/ReflectionCategoryTabFill";
 import { ReflectionCategoryTabBorder, ReflectionCategoryTabLabel } from "@/components/ReflectionCategoryTabLabel";
 import {
   REFLECTION_WALL_BORDER_GRADIENT,
@@ -268,7 +269,11 @@ export function InnerSpaceCard({
   };
 
   const toggleCategory = (nextCategory: ReflectionCategory) => {
-    void Haptics.selectionAsync().catch(() => {});
+    if (theme.id === "pleyades") {
+      void Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Soft).catch(() => {});
+    } else {
+      void Haptics.selectionAsync().catch(() => {});
+    }
     setCategory((current) => current === nextCategory ? null : nextCategory);
   };
 
@@ -577,10 +582,14 @@ export function InnerSpaceCard({
               style={({ pressed }) => [
                 styles.gridItem,
                  category === cat.id && styles.selectedGridItem,
+                theme.id === "pleyades" && styles.pleyadesGridItem,
                 pressed && styles.pressedCategory,
               ]}
               onPress={() => toggleCategory(cat.id as ReflectionCategory)}
             >
+              {theme.id === "pleyades" && (
+                <ReflectionCategoryTabFill selected={category === cat.id} reduceMotion={Boolean(reduceMotion)} />
+              )}
               {category === cat.id && <ReflectionCategoryTabBorder color={cat.color} borderWidth={profileVariant ? 1 : 2} opacity={profileVariant ? 0.75 : 0.8} inset={-2} />}
               <ReflectionCategoryTabLabel
                 label={cat.label}
@@ -829,6 +838,9 @@ const styles = StyleSheet.create({
   selectedGridItem: {
     borderColor: "transparent",
     backgroundColor: "rgba(0,0,0,0.16)",
+  },
+  pleyadesGridItem: {
+    backgroundColor: "transparent",
   },
   pressedCategory: {
     transform: [{ scale: 0.97 }],

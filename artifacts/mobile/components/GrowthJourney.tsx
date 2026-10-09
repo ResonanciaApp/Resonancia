@@ -155,7 +155,6 @@ export function GrowthLevelPreviewCard({
   const dayLabel = sectionTitle ? `${progress?.totalActiveDays ?? 0} días` : level.startDay === level.endDay
     ? `${level.startDay} días`
     : `${level.startDay}–${level.endDay} días`;
-  const useTimelineProfilePill = !!sectionTitle && (theme.id === "cloudy" || theme.id === "natural");
 
   const dayPill = (
     <PreviewContentEntrance key="intention-days" replayKey="intention-days" delay={420}>
@@ -170,12 +169,11 @@ export function GrowthLevelPreviewCard({
           (canonicalVerticalInsets || sectionTitle) && getThemeStyleId(theme.id) === "cloudy" && {
             backgroundColor: sectionTitle ? (theme.id === "natural" ? "rgba(229,255,219,0.20)" : CLOUDY_GROWTH_DAY_PILL_BACKGROUND) : "rgba(0,0,0,0.16)",
           },
-          sectionTitle && !useTimelineProfilePill && styles.profilePreviewDayPill,
-          useTimelineProfilePill && styles.profilePreviewTimelineDayPill,
+          sectionTitle && styles.profilePreviewTimelineDayPill,
           sectionTitle && styles.profilePreviewPillOffset,
         ]}
       >
-        {(canonicalVerticalInsets || sectionTitle) && (
+        {canonicalVerticalInsets && !sectionTitle && (
           <MaterialCommunityIcons
             name="spa"
             size={12}
@@ -577,7 +575,6 @@ const styles = StyleSheet.create({
   profilePreviewTitleSpacing: { gap: 5 },
   profilePreviewPillOffset: { position: "relative", top: -4 },
   profilePreviewStoryOffset: { position: "relative", top: 1 },
-  profilePreviewDayPill: { marginBottom: 0, backgroundColor: "transparent", borderWidth: 0, borderRadius: 0, paddingHorizontal: 0, paddingVertical: 0 },
   profilePreviewTimelineDayPill: { marginBottom: 0, alignSelf: "flex-start" },
   previewStory: { fontFamily: "Manrope", fontSize: 11, lineHeight: 16 },
   section: {
