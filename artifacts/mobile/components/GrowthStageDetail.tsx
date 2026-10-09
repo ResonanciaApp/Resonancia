@@ -60,7 +60,7 @@ export function GrowthStageDetail({
         contentInsetAdjustmentBehavior="never"
         automaticallyAdjustContentInsets={false}
         testID="growth-stage-detail-scroll"
-        contentContainerStyle={{ paddingTop: topPad + 70, paddingBottom: bottomPad + 28 }}
+        contentContainerStyle={{ paddingTop: topPad + 40, paddingBottom: bottomPad + 28 }}
       >
         <CinematicFadeSlide
           active
@@ -101,11 +101,6 @@ export function GrowthStageDetail({
         >
           <Feather name="x" size={23} color={WHITE} />
         </Pressable>
-        <View testID="growth-stage-detail-header-label" style={styles.headerLabel} accessibilityRole="header">
-          <Text style={styles.headerLabelText}>Primera etapa</Text>
-          <Text style={styles.headerLabelText}>Florecimiento</Text>
-        </View>
-        <View pointerEvents="none" style={styles.headerSpacer} />
       </View>
     </LinearGradient>
   );
@@ -125,9 +120,6 @@ const styles = StyleSheet.create({
     alignItems: "center",
     justifyContent: "space-between",
   },
-  headerLabel: { flex: 1, alignItems: "center" },
-  headerLabelText: { fontFamily: "Manrope", fontSize: 11, lineHeight: 14, fontWeight: "500", color: WHITE, textAlign: "center" },
-  headerSpacer: { width: 43 },
   headerButton: {
     width: 43,
     height: 43,
@@ -140,7 +132,7 @@ const styles = StyleSheet.create({
   },
   titleBlock: { alignItems: "center", marginTop: 0, gap: 8 },
   stageName: {
-    fontFamily: "CormorantGaramond",
+    fontFamily: "Manrope",
     fontSize: 44,
     lineHeight: 50,
     color: STREAK_INFO_COLORS.pageTitle,

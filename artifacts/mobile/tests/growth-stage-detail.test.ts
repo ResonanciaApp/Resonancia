@@ -107,7 +107,7 @@ test("the detail shares the streak screen's theme, safe-area spacing, circular c
       assert.equal(nodes.get("growth-stage-detail").locations, locations);
        assert.equal(nodes.get("growth-detail-hero-artwork").size, 274);
        assert.equal(nodes.get("growth-detail-hero-artwork").height, undefined, "square image, no viewport stretch");
-       assert.equal(nodes.get("growth-stage-detail-scroll").contentContainerStyle.paddingTop, Math.max(inset, 40) + 70);
+       assert.equal(nodes.get("growth-stage-detail-scroll").contentContainerStyle.paddingTop, Math.max(inset, 40) + 40);
       assert.match(html, new RegExp(`data-top-padding="${Math.max(inset, 40) + 8}"`));
       const scroll = nodes.get("growth-stage-detail-scroll");
       assert.equal(scroll.bounces, true);
@@ -151,7 +151,7 @@ test("the detail has only one continuous theme background, without opaque hero s
 
 test("Intención and its pill sit below the artwork, with description 15px away", () => {
   render();
-  assert.equal(nodes.get("growth-stage-detail-scroll").contentContainerStyle.paddingTop, 110);
+  assert.equal(nodes.get("growth-stage-detail-scroll").contentContainerStyle.paddingTop, 80);
   const block = flat(nodes.get("growth-stage-detail-title-block").style);
   assert.equal(block.gap, 8);
   assert.equal(block.transform, undefined);
@@ -159,7 +159,7 @@ test("Intención and its pill sit below the artwork, with description 15px away"
   assert.match(source, /copy: \{[^}]*marginTop: 15/);
 });
 
-test("the X, its circular background and the two-line stage label remain outside scrolling content", () => {
+test("the X stays fixed, stage labels are removed and Intención uses the app's Manrope font", () => {
   const html = render();
   const header = nodes.get("growth-stage-detail-fixed-header");
   assert.equal(flat(header.style).position, "absolute");
@@ -172,11 +172,12 @@ test("the X, its circular background and the two-line stage label remain outside
     return [...(props.testID ? [props.testID] : []), ...ids(props.children)];
   });
   assert.ok(ids(header.children).includes("growth-stage-detail-close"));
-  assert.ok(ids(header.children).includes("growth-stage-detail-header-label"));
+   assert.ok(!ids(header.children).includes("growth-stage-detail-header-label"));
   assert.ok(!ids(nodes.get("growth-stage-detail-scroll").children).includes("growth-stage-detail-close"));
   assert.ok(!ids(nodes.get("growth-stage-detail-scroll").children).includes("growth-stage-detail-header-label"));
-  assert.match(html, />Primera etapa</);
-  assert.match(html, />Florecimiento</);
+   assert.doesNotMatch(html, /Primera etapa|Florecimiento/);
+   const source = readFileSync(new URL("../components/GrowthStageDetail.tsx", import.meta.url), "utf8");
+   assert.match(source, /stageName: \{\s*fontFamily: "Manrope"/);
 });
 
 test("the shared gradient preserves the original emotional screen overlay and handles short viewports", () => {

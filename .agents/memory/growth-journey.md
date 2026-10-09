@@ -183,4 +183,4 @@ Los detalles de etapa usan ahora una imagen al doble del tamaño del recorrido T
 
 **Why:** El usuario sustituyó la dirección fullscreen anterior: pidió imagen 100 % más grande que en Tu camino y un solo fondo como el recorrido porque veía una franja negra.
 
-**How to apply:** Mantener fijas fuera del scroll la X y la etiqueta pequeña de dos líneas «Primera etapa / Florecimiento». Imagen, título, píldora y textos desplazan juntos sobre el degradado raíz fijo. Conservar el loto solo en la píldora y los 15 px entre píldora y descripción; no reintroducir capas opacas desplazadas que creen cortes en el fondo.
+**How to apply:** Mantener fija fuera del scroll solo la X; el usuario retiró la etiqueta «Primera etapa / Florecimiento» y pidió la fuente normal de la app para el nombre de etapa. Imagen, título, píldora y textos desplazan juntos sobre el degradado raíz fijo. Conservar el loto solo en la píldora y los 15 px entre píldora y descripción; no reintroducir capas opacas desplazadas que creen cortes en el fondo.
