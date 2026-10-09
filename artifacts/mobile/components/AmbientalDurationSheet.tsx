@@ -20,7 +20,7 @@ import { useAmbientalDurationTransition } from "@/hooks/useAmbientalDurationTran
 import { DURATION_SHEET_OPEN_SPRING, DURATION_SHEET_OPEN_BACKDROP_MS } from "@/lib/ambiental-duration-opening";
 import { CIRCLE_DIAMETER, MANUAL_HEIGHT_INCREASE, CANCEL_BUTTON_HEIGHT as CANCEL_HEIGHT, DURATION_CONTROL_GAP as CONTROL_GAP } from "@/lib/ambiental-duration-transition";
 import { FREE_TIMER_MAX_MINUTES, showPremiumGate } from "@/lib/premiumGate";
-import { REGISTER_BUTTON_ENABLED_BACKGROUND } from "@/constants/colors";
+const REGISTER_BUTTON_ENABLED_BACKGROUND = "#BE9650";
 import { PremiumPlansSurface, usePremiumPlansModalHost } from "@/components/PremiumPlansOverlay";
 import Svg, { Line, Path } from "react-native-svg";
 
@@ -124,7 +124,9 @@ export function AmbientalDurationSheet({
 }: Props) {
   const colors = useColors();
   const { theme } = useSceneTheme();
-  const sleepActionColors = getSleepActionColors(theme.id);
+  const sleepActionColors = theme.id === "cloudy" || theme.id === "indigo2"
+    ? { background: "#F9F9F9", foreground: "#0B1438" }
+    : getSleepActionColors(theme.id);
   const selectedPresetBackground = getThemeStyleId(theme.id) === "cloudy" || getThemeStyleId(theme.id) === "indigo2" ? "rgba(0,0,0,0.3)" : "rgba(0,0,0,0.16)";
   const selectedCustomBackground = getThemeStyleId(theme.id) === "cloudy" ? "rgba(0,0,0,0.3)" : "rgba(0,0,0,0.16)";
   const sheetGradient: [string, string, ...string[]] = getThemeStyleId(theme.id) === "cloudy"
@@ -524,6 +526,7 @@ export function AmbientalDurationSheet({
             style={({ pressed }) => [
               styles.startButton,
               {
+                backgroundColor: sleepActionColors?.background,
                 opacity: phase === "manual" && selectedMinutes === 0 ? 0.45 : pressed && canStart ? 0.78 : 1,
               },
             ]}
@@ -563,7 +566,7 @@ export function AmbientalDurationSheet({
               style={({ pressed }) => [
                 styles.cancelButton,
                 {
-                  backgroundColor: "rgba(249,249,249,0.6)",
+                  backgroundColor: "rgba(249,249,249,0.1)",
                   height: cancelHeight,
                   opacity: pressed ? 0.78 : 1,
                 },

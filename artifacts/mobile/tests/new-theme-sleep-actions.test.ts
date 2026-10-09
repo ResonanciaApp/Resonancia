@@ -8,8 +8,8 @@ import { getTabBarGlassOverlay, getTabBarInactiveColor, TAB_BAR_GLASS_OVERLAY } 
 import {
   SLEEP_REMINDER_CONTINUE_BACKGROUND,
   SLEEP_REMINDER_CONTINUE_FOREGROUND,
-  REGISTER_BUTTON_ENABLED_BACKGROUND,
 } from "../constants/colors.ts";
+const REGISTER_BUTTON_ENABLED_BACKGROUND = "#BE9650";
 
 const read = (file: string) => readFileSync(new URL(file, import.meta.url), "utf8");
 const compile = (source: string) => ts.transpileModule(source, {
@@ -74,20 +74,41 @@ test("Continuar renders the new background and foreground only at night, includi
   }
 });
 
-test("Empezar sesión applies the palette to its fill, text and play icon, retaining legacy colors", () => {
+test("Empezar sesión has a white surface in Cloudy and Indigo 2 and preserves other themes", () => {
   const button = find(duration, node => ts.isJsxElement(node) && node.openingElement.tagName.getText() === "Pressable"
     && node.openingElement.attributes.getText().includes('testID="ambiental-duration-start"'));
   const fill = find(button, node => (ts.isJsxOpeningElement(node) || ts.isJsxSelfClosingElement(node)) && node.tagName.getText() === "View"
     && node.attributes.getText().includes("styles.startButtonFill"));
   const icon = find(button, node => ts.isJsxSelfClosingElement(node) && node.tagName.getText() === "Path");
   const text = find(button, node => ts.isJsxElement(node) && node.getText().endsWith(">Empezar sesión</Text>")) as ts.JsxElement;
+  const palette = find(duration, node => ts.isVariableDeclaration(node) && node.name.getText() === "sleepActionColors") as ts.VariableDeclaration;
   for (const id of ["natural", "pleyades", "cloudy", "indigo2", "tibet"]) {
-    const sleepActionColors = getSleepActionColors(id);
-    const env = { sleepActionColors, styles: { startButtonFill: {}, startButtonText: { color: "#F9F9F9" } }, REGISTER_BUTTON_ENABLED_BACKGROUND };
+    const sleepActionColors = new Function("theme", "getSleepActionColors",
+      compile(`return (${palette.initializer!.getText()});`))({ id }, getSleepActionColors);
+    const env = { sleepActionColors, styles: { startButton: {}, startButtonFill: {}, startButtonText: { color: "#F9F9F9" } }, REGISTER_BUTTON_ENABLED_BACKGROUND, phase: "presets", selectedMinutes: 10, canStart: true };
+    if (id === "cloudy" || id === "indigo2") {
+      assert.deepEqual(sleepActionColors, { background: "#F9F9F9", foreground: "#0B1438" });
+    } else {
+      assert.deepEqual(sleepActionColors, getSleepActionColors(id));
+    }
+    const buttonStyle = expression(attribute(button.openingElement, "style"), env);
+    assert.equal(flatten(buttonStyle({ pressed: false })).backgroundColor, sleepActionColors?.background);
     assert.equal(flatten(expression(attribute(fill, "style"), env)).backgroundColor, sleepActionColors?.background ?? REGISTER_BUTTON_ENABLED_BACKGROUND);
     assert.equal(expression(attribute(icon, "fill"), env), sleepActionColors?.foreground ?? "#F9F9F9");
     assert.equal(flatten(expression(attribute(text.openingElement, "style"), env)).color, sleepActionColors?.foreground ?? "#F9F9F9");
   }
+});
+
+test("Cancelar uses a ten-percent white background without dimming its text or changing press feedback", () => {
+  const button = find(duration, node => ts.isJsxOpeningElement(node)
+    && node.tagName.getText() === "Pressable"
+    && node.attributes.getText().includes('testID="ambiental-duration-cancel"'));
+  const buttonStyle = expression(attribute(button, "style"), {
+    styles: { cancelButton: {} }, cancelHeight: 58,
+  });
+  assert.equal(flatten(buttonStyle({ pressed: false })).backgroundColor, "rgba(249,249,249,0.1)");
+  assert.equal(flatten(buttonStyle({ pressed: false })).opacity, 1);
+  assert.equal(flatten(buttonStyle({ pressed: true })).opacity, 0.78);
 });
 
 test("Natural changes the tab bar tint to green without changing the other backgrounds or glass overlay", () => {

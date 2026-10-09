@@ -1,6 +1,6 @@
 ---
 name: Orden de controles del temporizador Ambiental
-description: Jerarquía visual del selector manual y revisión de la anterior acción fija.
+description: Jerarquía del selector manual, alcance de su ventana y colores independientes de Registrar.
 ---
 
 El temporizador Ambiental crece desde su borde superior. En modo manual, Empezar sesión va arriba y Cancelar debajo; el reloj queda centrado en el espacio entre el título y Empezar sesión.
@@ -20,3 +20,9 @@ Cuando el usuario se refiera a la «ventana del temporizador», revisar también
 **Why:** Una petición sobre el fondo de Cloudy se aplicó inicialmente solo a la ventana con ese título, pero el usuario indicó que la ventana que estaba usando seguía sin cambiar.
 
 **How to apply:** Comprobar las entradas de duración y sueño antes de limitar un cambio al título literal. Los filtros de búsqueda y la información de puntos son superficies independientes: no heredan automáticamente un cambio de fondo del temporizador.
+
+Las acciones de iniciar audio deben conservar una paleta propia, independiente de las constantes editoriales del botón Registrar.
+
+**Why:** Empezar sesión dependía de una constante compartida que ya no se exportaba; en Cloudy e Índigo 2, su fondo quedaba sin un color definido.
+
+**How to apply:** Al retirar o modificar constantes de botones, comprobar sus consumidores antes de eliminarlas. En temporizadores, mantener una superficie explícita y contraste para texto e iconos, sin propagar cambios a Vuelve a ti ni a otros temas por accidente.
