@@ -36,7 +36,7 @@ function styles(tree: ts.SourceFile, keys: string[]) {
       compile(`return (${entry.initializer.getText(tree)});`))(32)]));
 }
 
-test("all dates reduce date-to-card spacing by 15px without dividers or changing day-group gaps", () => {
+test("all dates add 10px to date-to-pill spacing without dividers or changing day-group gaps", () => {
   const tree = ast(source("../app/mi-espacio-interior.tsx"));
   const wallStyles = styles(tree, ["dateHeader", "dateHeaderRow", "subsequentDateHeader",
     "firstDateHeader", "monthSelectorAboveDate", "timelineRow", "monthSelectorButton"]);
@@ -53,13 +53,30 @@ test("all dates reduce date-to-card spacing by 15px without dividers or changing
     "later dates reserve the same height as the first date's month control");
   assert.equal(wallStyles.dateHeaderRow.minHeight, 33);
   assert.equal(wallStyles.dateHeaderRow.alignItems, "center");
-  assert.equal(21 - wallStyles.dateHeader.marginBottom, 15, "every date-to-pill gap shrinks by exactly 15px");
+  assert.equal(wallStyles.dateHeader.marginBottom - 6, 10, "every date-to-pill gap grows by exactly 10px");
   const row = find(tree, node => ts.isJsxElement(node)
     && node.openingElement.attributes.getText(tree) === "style={styles.dateHeaderRow}");
   assert.doesNotMatch(row.getText(tree), /renderMonthSelector/);
   assert.match(row.openingElement.attributes.getText(tree), /style=\{styles.dateHeaderRow\}/,
     "every date uses the same row geometry regardless of whether its month selector is visible");
-  assert.equal(wallStyles.timelineRow.marginBottom, 26, "spacing within each day stays unchanged");
+  assert.equal(wallStyles.timelineRow.marginBottom, 26, "spacing after the last card of each day stays unchanged");
+});
+
+test("Muro enlarges the month by 5pt, adds 4px below pills and 4px between same-day cards only", () => {
+  const tree = ast(source("../app/mi-espacio-interior.tsx"));
+  const wallStyles = styles(tree, ["monthSelectorText", "timelineRow", "sameDayCardGap", "reflectionMetaRow"]);
+  assert.equal(wallStyles.monthSelectorText.fontSize - 13, 5);
+  assert.equal(wallStyles.reflectionMetaRow.marginBottom - 10, 4);
+  const title = find(tree, node => ts.isJsxElement(node)
+    && node.openingElement.attributes.getText(tree).includes("styles.mainTitle"));
+  assert.match(title.getText(tree), />Muro<\/Text>/);
+  assert.doesNotMatch(title.getText(tree), /expansivo/);
+  const row = find(tree, node => ts.isJsxElement(node)
+    && node.openingElement.attributes.getText(tree).includes("styles.timelineRow,"));
+  const style = row.openingElement.attributes.properties.find((entry: any) => entry.name?.getText(tree) === "style");
+  const measure = new Function("styles", "item", compile(`return (${style.initializer.expression.getText(tree)});`));
+  assert.equal(flatten(measure(wallStyles, { isLastInGroup: false })).marginBottom - 26, 4);
+  assert.equal(flatten(measure(wallStyles, { isLastInGroup: true })).marginBottom, 26);
 });
 
 test("category notices stay hidden during normal loading and refresh, retaining genuine errors and empty states", () => {

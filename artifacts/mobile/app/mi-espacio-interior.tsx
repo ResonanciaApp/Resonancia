@@ -603,7 +603,7 @@ function PremiumInnerSpaceScreen() {
     const revealDelay = wallRevealDelays.get(reflectionId) ?? 0;
 
     return (
-      <View style={styles.timelineRow}>
+      <View style={[styles.timelineRow, !item.isLastInGroup && styles.sameDayCardGap]}>
         <WallScrollReveal
           active={isRevealed}
           completedIds={completedRevealIds}
@@ -753,7 +753,7 @@ function PremiumInnerSpaceScreen() {
           <Feather name="chevron-left" size={28} color={colors.foreground} />
         </Pressable>
         <View style={styles.headerTitles}>
-          <Text style={[styles.mainTitle, { color: colors.foreground }]}>Muro expansivo</Text>
+          <Text style={[styles.mainTitle, { color: colors.foreground }]}>Muro</Text>
         </View>
         <Pressable
           testID="gallery-button"
@@ -1009,7 +1009,7 @@ const styles = StyleSheet.create({
   },
   dateHeader: {
     alignItems: 'stretch',
-    marginBottom: 6,
+    marginBottom: 16,
     marginTop: 6,
   },
   subsequentDateHeader: {
@@ -1043,6 +1043,9 @@ const styles = StyleSheet.create({
     width: "100%",
     marginBottom: 26,
   },
+  sameDayCardGap: {
+    marginBottom: 30,
+  },
   reflectionMetaEntrance: {
     width: "100%",
   },
@@ -1051,7 +1054,7 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     alignItems: "center",
     justifyContent: "space-between",
-    marginBottom: 10,
+    marginBottom: 14,
   },
   reflectionCard: {
     width: "100%",
@@ -1214,7 +1217,7 @@ const styles = StyleSheet.create({
   },
   monthSelectorText: {
     color: "#F9F9F9",
-    fontSize: 13,
+    fontSize: 18,
     fontWeight: "700",
   },
   monthList: {
