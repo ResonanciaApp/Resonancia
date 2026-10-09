@@ -502,10 +502,11 @@ export function ReflectionShare({ reflection, onClose }: { reflection: Reflectio
           style={{ width: 43, height: 43, borderRadius: 22, overflow: "hidden",
             backgroundColor: "transparent" }}>
           {currentAvatarSource ? <Image source={currentAvatarSource}
-            contentFit="cover" style={{ width: "100%", height: "100%", opacity: includedAvatar ? 1 : 0.8 }} /> : null}
-          {includedAvatar && <View pointerEvents="none" style={[StyleSheet.absoluteFillObject,
-            { backgroundColor: "rgba(0,0,0,0.7)", borderWidth: 1,
-              borderColor: "rgba(255,255,255,0.5)", borderRadius: 22 }]} />}
+            contentFit="cover" style={{ width: "100%", height: "100%" }} /> : null}
+          <View pointerEvents="none" style={[StyleSheet.absoluteFillObject,
+            { backgroundColor: includedAvatar ? "rgba(0,0,0,0.15)" : "rgba(0,0,0,0.45)",
+              borderWidth: includedAvatar ? 1 : 0,
+              borderColor: "rgba(255,255,255,0.5)", borderRadius: 22 }]} />
         </Pressable>
       </View>}
       renderArtwork={(width, isExport, callbacks, previewContext) => {

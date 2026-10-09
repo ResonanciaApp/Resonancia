@@ -22,3 +22,9 @@ En Muro, los tabs de categoría seleccionados deben verse del mismo color que la
 **Why:** El usuario detectó que usar el mismo color y opacidad no daba el mismo resultado visual porque la capa de blur claro iluminaba los tabs.
 
 **How to apply:** No agregar blur claro a esos tabs. Preservar las animaciones y las otras superficies que usan el componente compartido.
+
+Los tabs seleccionados del compositor Muro de reflexiones también deben coincidir con los del Muro: color de categoría al 20 %, sin brillo.
+
+**Why:** El usuario pidió extender esa igualdad visual al compositor de Perfil, no solo a la pantalla Muro.
+
+**How to apply:** Mantener el mismo tratamiento plano en ambas superficies y conservar sus animaciones y fondos no seleccionados.

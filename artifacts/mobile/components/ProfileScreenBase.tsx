@@ -9,6 +9,8 @@ import { LinearGradient } from "expo-linear-gradient";
 import { SymbolView } from "expo-symbols";
 import { GoldGradient, GoldGradientFill } from "@/components/GoldGradient";
 import { BackPill } from "@/components/BackPill";
+import Reanimated from "react-native-reanimated";
+import { ScrollProgressIndicator, useScrollProgress } from "@/components/ScrollProgressIndicator";
 import { router, useFocusEffect, useNavigation } from "expo-router";
 import React, { useCallback, useEffect, useLayoutEffect, useMemo, useRef, useState } from "react";
 import {
@@ -586,6 +588,7 @@ export function ProfileScreenBase({
   const accountDraftBaselineRef = useRef<string | null>(null);
   const accountClosedRef = useRef(false);
   const [accountPhotoPickerVisible, setAccountPhotoPickerVisible] = useState(false);
+  const avatarScrollProgress = useScrollProgress(accountPhotoPickerVisible);
   const accountAvatarGridRef = useRef<FlatList<(typeof profileCatalog)[number]>>(null);
   const [accountPhotoLibraryPending, setAccountPhotoLibraryPending] = useState(false);
   useEffect(() => {
@@ -1218,9 +1221,14 @@ export function ProfileScreenBase({
                   </View>
                 )}
               </View>
-              <FlatList
+              <View style={styles.accountCoverPresetGrid}>
+              <Reanimated.FlatList
                 ref={accountAvatarGridRef}
                 style={styles.accountCoverPresetGrid}
+                onScroll={avatarScrollProgress.onScroll}
+                onLayout={avatarScrollProgress.onLayout}
+                onContentSizeChange={avatarScrollProgress.onContentSizeChange}
+                scrollEventThrottle={16}
                  data={profileCatalog}
                 keyExtractor={(preset) => preset.id}
                 numColumns={5}
@@ -1257,6 +1265,8 @@ export function ProfileScreenBase({
                   );
                 }}
               />
+              <ScrollProgressIndicator progress={avatarScrollProgress} />
+              </View>
             </View>
           </Modal>
         </View>

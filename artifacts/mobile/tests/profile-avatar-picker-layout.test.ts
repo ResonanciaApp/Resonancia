@@ -92,7 +92,7 @@ test("hero moves down ten pixels in normal flow and pushes the avatar grid equal
   assert.equal(preview.height, 115.5);
   assert.equal(preview.transform, undefined);
   assert.equal(hero.marginTop + hero.height - 170, 10);
-  assert.match(source, /<\/View>\s*<FlatList\s+ref=\{accountAvatarGridRef\}/);
+  assert.match(source, /<\/View>\s*<View style=\{styles.accountCoverPresetGrid\}>\s*<Reanimated\.FlatList\s+ref=\{accountAvatarGridRef\}/);
 });
 
 test("upload action waits for the selector dismissal before requesting the photo library", () => {
@@ -190,5 +190,5 @@ test("opening and reopening the actual picker resets its own avatar list to the 
   assert.deepEqual(calls, [{ offset: 0, animated: false }, { offset: 0, animated: false }]);
   ref.current = null;
   assert.doesNotThrow(onShow);
-  assert.match(source, /<FlatList\s+ref=\{accountAvatarGridRef\}/);
+  assert.match(source, /<Reanimated\.FlatList\s+ref=\{accountAvatarGridRef\}/);
 });

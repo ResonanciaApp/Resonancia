@@ -11,7 +11,6 @@ import { useLocalSearchParams } from "expo-router";
 import React, { useCallback, useEffect, useMemo, useState } from "react";
 import {
   Alert,
-  FlatList,
   Modal,
   Platform,
   Pressable,
@@ -26,6 +25,8 @@ import { useSafeAreaInsets } from "react-native-safe-area-context";
 
 import { SacredGlyph } from "@/components/SacredGlyph";
 import { CreationCoverPreview } from "@/components/CreationCoverPreview";
+import Animated from "react-native-reanimated";
+import { ScrollProgressIndicator, useScrollProgress } from "@/components/ScrollProgressIndicator";
 import { isIndigoThemeId } from "@/config/scene-themes";
 import { formatMixImageLabel, getMixImage } from "@/config/mix-images";
 import { getSoundImage } from "@/config/sound-images";
@@ -202,6 +203,7 @@ function CoverPickerSheet({
   const topOffset = (Platform.OS === "web" ? 67 : insets.top) + 50;
   const [selectedImageKey, setSelectedImageKey] = useState<string | null>(null);
   const catalog = useCoverPresetCatalog("mix");
+  const coverScrollProgress = useScrollProgress(visible);
   const gradientLocations =
     theme.gradientLocations?.length === theme.gradient.length
       ? theme.gradientLocations
@@ -279,8 +281,13 @@ function CoverPickerSheet({
           )}
         </View>
 
-        <FlatList
+        <View style={ms.presetGrid}>
+        <Animated.FlatList
           style={ms.presetGrid}
+          onScroll={coverScrollProgress.onScroll}
+          onLayout={coverScrollProgress.onLayout}
+          onContentSizeChange={coverScrollProgress.onContentSizeChange}
+          scrollEventThrottle={16}
            data={catalog}
            keyExtractor={(item) => item.id}
           numColumns={5}
@@ -316,6 +323,8 @@ function CoverPickerSheet({
             );
           }}
         />
+        <ScrollProgressIndicator progress={coverScrollProgress} />
+        </View>
       </View>
     </Modal>
   );

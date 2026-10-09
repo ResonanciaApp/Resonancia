@@ -9,7 +9,6 @@ import { useBackOverride } from "@/context/BackOverrideContext";
 import React, { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import {
   Alert,
-  FlatList,
   Modal,
   PanResponder,
   Platform,
@@ -36,6 +35,8 @@ import { SessionActionsSheet } from "@/components/SessionActionsSheet";
 import { VideoActionsSheet } from "@/components/VideoActionsSheet";
 import { VideoCard } from "@/components/VideoCard";
 import { CreationCoverPreview } from "@/components/CreationCoverPreview";
+import Animated from "react-native-reanimated";
+import { ScrollProgressIndicator, useScrollProgress } from "@/components/ScrollProgressIndicator";
 import { EqualizerBars } from "@/components/EqualizerBars";
 import { useFoldersPlaylists } from "@/context/FoldersPlaylistsContext";
 import { usePlayer } from "@/context/PlayerContext";
@@ -1026,6 +1027,7 @@ function CoverPickerModal({
   const topOffset = (Platform.OS === "web" ? 67 : insets.top) + 50;
   const [selectedPresetId, setSelectedPresetId] = useState<string | null>(null);
   const catalog = useCoverPresetCatalog("playlist");
+  const coverScrollProgress = useScrollProgress(visible);
   const selectedPreset = catalog.find((item) => item.key === selectedPresetId || item.id === selectedPresetId);
 
   useEffect(() => {
@@ -1092,8 +1094,13 @@ function CoverPickerModal({
           )}
         </View>
 
-        <FlatList
+        <View style={modalStyles.presetGrid}>
+        <Animated.FlatList
           style={modalStyles.presetGrid}
+          onScroll={coverScrollProgress.onScroll}
+          onLayout={coverScrollProgress.onLayout}
+          onContentSizeChange={coverScrollProgress.onContentSizeChange}
+          scrollEventThrottle={16}
            data={catalog}
            keyExtractor={(preset) => preset.id}
           numColumns={5}
@@ -1127,6 +1134,8 @@ function CoverPickerModal({
             );
           }}
         />
+        <ScrollProgressIndicator progress={coverScrollProgress} />
+        </View>
       </View>
     </Modal>
   );

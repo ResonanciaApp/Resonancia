@@ -599,6 +599,8 @@ test("composer category tabs share fill, font and borderless dimensions in both 
     assert.equal(Object.assign({}, ...active.props.style({ pressed: false })).borderWidth, 0);
     assert.ok(active.props.children[0], "selected tab has the shared fill");
     assert.equal(active.props.children[0].props.color, cat.color);
+    assert.equal(active.props.children[0].props.selectedOpacity, 0.2);
+    assert.equal(active.props.children[0].props.blurred, false);
     assert.equal(active.props.children[1].props.selected, true);
     assert.equal(active.props.children[1].props.uniformWeight, true);
     assert.equal(active.props.accessibilityState.selected, true);

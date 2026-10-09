@@ -129,12 +129,14 @@ test("short and resized galleries never show an unnecessary scrollbar", () => {
   assert.equal(style().opacity, 0);
 });
 
-test("only the upper avatar control dims when excluded; capture avatar is unchanged", () => {
+test("only the upper avatar control has a 45% excluded or 15% included black overlay; capture avatar is unchanged", () => {
   const declaration = source.slice(source.indexOf("headerRightAction="), source.indexOf("renderArtwork={(width"));
   assert.match(declaration, /source=\{currentAvatarSource\}/);
-  assert.match(declaration, /opacity: includedAvatar \? 1 : 0\.8/);
+  assert.match(declaration, /backgroundColor: includedAvatar \? "rgba\(0,0,0,0\.15\)" : "rgba\(0,0,0,0\.45\)"/);
+  assert.doesNotMatch(declaration, /opacity: includedAvatar/);
   for (const includedAvatar of [undefined, { uri: "avatar.webp" }]) {
-    assert.equal(runInNewContext("includedAvatar ? 1 : 0.8", { includedAvatar }), includedAvatar ? 1 : 0.8);
+    assert.equal(runInNewContext('includedAvatar ? "rgba(0,0,0,0.15)" : "rgba(0,0,0,0.45)"', { includedAvatar }),
+      includedAvatar ? "rgba(0,0,0,0.15)" : "rgba(0,0,0,0.45)");
   }
   const avatarLayer = readFileSync("components/StoryAvatar.tsx", "utf8");
   assert.doesNotMatch(avatarLayer, /opacity/);
