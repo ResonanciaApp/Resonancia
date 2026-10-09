@@ -114,7 +114,7 @@ test("the detail shares the streak screen's theme, safe-area spacing, circular c
       assert.equal(scroll.bounces, true);
       assert.equal(scroll.alwaysBounceVertical, true);
       assert.equal(scroll.overScrollMode, "always");
-      assert.equal(scroll.contentContainerStyle.paddingBottom, 62);
+      assert.equal(scroll.contentContainerStyle.paddingBottom, viewportHeight - Math.max(0, Math.max(inset, 40) + 40 - 96));
       for (const button of ["growth-stage-detail-close"]) {
         assert.equal(flat(presses.get(button).style).width, 43);
         assert.equal(flat(presses.get(button).style).height, 43);
@@ -194,14 +194,22 @@ test("artwork is static outside scrolling content and the smaller day pill prese
   assert.match(source, /days: \{[^}]*fontSize: 14/);
 });
 
-test("a fixed alpha mask progressively hides content as it scrolls into the image, without tinting the background", () => {
+test("content stays visible over the image and fades slowly near its upper edge, without tinting the background", () => {
   for (const viewportHeight of [812, 874, 1024]) {
     height = viewportHeight;
     render();
     const fade = nodes.get("growth-stage-detail-scroll-fade");
     assert.equal(nodes.get("growth-stage-detail-scroll").contentContainerStyle.minHeight, height + 274, "even short descriptions can scroll up towards the image");
     assert.deepEqual(fade.colors, ["transparent", "transparent", "#000000", "#000000"]);
-    assert.deepEqual(fade.locations, [0, (354 - 48) / height, (354 + 8) / height, 1]);
+    assert.deepEqual(fade.locations, [0, 0, 128 / height, 1]);
+    const opacityAt = (y: number) => Math.max(0, Math.min(1, (y / height - fade.locations[1]) / (fade.locations[2] - fade.locations[1])));
+    assert.equal(opacityAt(354), 1, "lower image edge does not fade the content");
+    assert.equal(opacityAt(217), 1, "content passes above the center of the artwork fully visible");
+    assert.ok(opacityAt(110) < 1, "starts fading close to the image's upper edge");
+    assert.ok(opacityAt(80) > opacityAt(40), "fade progresses gradually upwards");
+    assert.equal(opacityAt(0), 0);
+    assert.ok((fade.locations[2] - fade.locations[1]) * height > 56 * 2, "fade travel is more than twice the former 56px");
+    assert.equal(nodes.get("growth-stage-detail-scroll").contentContainerStyle.paddingBottom, height, "last paragraph can reach the end of the fade");
     assert.equal(fade.pointerEvents, "none");
     assert.equal(flat(fade.style).position, "absolute");
     const mask = nodes.get("growth-stage-detail-content-mask");
