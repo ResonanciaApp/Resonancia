@@ -11,3 +11,10 @@ test("Gallery story detail omits visibility controls while preserving close, del
   assert.match(source, /onPress=\{requestDelete\}/);
   assert.match(source, /onBeforeInstagramShare=\{handleBeforeInstagramShare\}/);
 });
+
+test("Gallery back chevron has a circular black background with the requested theme opacity", () => {
+  const gallery = readFileSync(new URL("../app/galeria-reflexiones/index.tsx", import.meta.url), "utf8");
+  assert.match(gallery, /style=\{\[\s*styles\.backButton,\s*\{ backgroundColor: theme\.id === "cloudy" \|\| theme\.id === "natural"\s*\? "rgba\(0,0,0,0\.19\)"\s*: "rgba\(0,0,0,0\.16\)"/);
+  assert.match(gallery, /backButton: \{\s*width: 44,\s*height: 44,\s*borderRadius: 22,/);
+  assert.match(gallery, /accessibilityLabel="Volver" onPress=\{\(\) => router\.back\(\)\}/);
+});

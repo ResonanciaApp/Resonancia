@@ -197,7 +197,12 @@ export default function GalleryScreen() {
       style={styles.root}
     >
       <View style={[styles.headerContainer, { paddingTop: Math.max(insets.top, 40) + 8 }]}>
-        <Pressable accessibilityLabel="Volver" onPress={() => router.back()} style={styles.backButton}>
+        <Pressable accessibilityLabel="Volver" onPress={() => router.back()} style={[
+          styles.backButton,
+          { backgroundColor: theme.id === "cloudy" || theme.id === "natural"
+            ? "rgba(0,0,0,0.19)"
+            : "rgba(0,0,0,0.16)" },
+        ]}>
           <Feather name="chevron-left" size={28} color={colors.foreground} />
         </Pressable>
         <Text style={[styles.mainTitle, { color: colors.foreground }]}>Galería</Text>
@@ -258,6 +263,7 @@ const styles = StyleSheet.create({
   backButton: {
     width: 44,
     height: 44,
+    borderRadius: 22,
     alignItems: "center",
     justifyContent: "center",
   },
