@@ -83,7 +83,7 @@ test("Natural replaces only the Cloudy blue accents, preserving pill and line tr
   }
 });
 
-test("every stage shifts its image and summary 15px left while keeping timeline, rewards and vertical spacing fixed", () => {
+test("every stage keeps its image offset and shifts summary another 15px and rewards 30px left without changing vertical spacing", () => {
   for (const id of ["natural", "cloudy", "indigo2", "pleyades"]) {
     themeId = id;
     for (const florecimiento of [true, false]) {
@@ -92,13 +92,13 @@ test("every stage shifts its image and summary 15px left while keeping timeline,
         const art = nodes.find(node => node.testID === "crecimiento-stage-art").style;
         const summary = nodes.find(node => node.testID === "crecimiento-stage-summary").style;
         assert.deepEqual(art.transform, [{ translateX: -15 }]);
-        assert.deepEqual(summary.transform, [{ translateX: -15 }]);
+        assert.deepEqual(summary.transform, [{ translateX: -30 }]);
         assert.equal(art.top, florecimiento ? 32 : 34);
         assert.equal(art.left, florecimiento ? 38 : 40);
         assert.equal(nodes.find(node => node.testID === "crecimiento-stage-node").style.left, 1);
         assert.equal(nodes.find(node => node.testID === "crecimiento-copy").style.marginLeft, 196);
         for (const reward of nodes.filter(node => /^crecimiento-reward(?:-reward-\d)?$/.test(node.testID ?? ""))) {
-          assert.deepEqual(reward.style.transform, [{ translateY: -4 }]);
+          assert.deepEqual(reward.style.transform, [{ translateY: -4 }, { translateX: -30 }]);
         }
       }
     }

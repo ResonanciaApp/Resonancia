@@ -364,7 +364,7 @@ function GrowthRow({
         <GrowthLevelImage level={level} dimmed={status === "locked"} />
       </View>
       <View testID={`${level.id}-copy`} style={[styles.copy, reward && styles.rewardCopy]}>
-        <View testID={`${level.id}-stage-summary`} style={[styles.stageContentOffset, status === "locked" && styles.lockedCopy]}>
+        <View testID={`${level.id}-stage-summary`} style={[styles.stageSummaryOffset, status === "locked" && styles.lockedCopy]}>
         <View
           testID={`${level.id}-day-pill`}
           style={[
@@ -659,11 +659,12 @@ const styles = StyleSheet.create({
   },
   lockedCopy: { opacity: 0.55 },
   stageContentOffset: { transform: [{ translateX: -15 }] },
+  stageSummaryOffset: { transform: [{ translateX: -30 }] },
   rewardRow: { height: "auto", minHeight: GROWTH_ROW_HEIGHT, justifyContent: "flex-start", paddingBottom: 20 },
   rewardCopy: { flex: 0, paddingTop: 34 },
   reward: {
     alignSelf: "stretch",
-    transform: [{ translateY: -4 }],
+    transform: [{ translateY: -4 }, { translateX: -30 }],
     // Keep the first lock's visual position, but remove empty space between locks.
     marginTop: 19,
     minHeight: 16,

@@ -40,7 +40,10 @@ const Native = ({ children, testID, style }: Props) => {
     "data-margin-horizontal": resolvedStyle.marginHorizontal,
   }, children);
 };
-const Icon = ({ name, size }: { name: string; size?: number }) => React.createElement("i", { "data-icon": name, "data-size": size });
+const Icon = ({ name, size, style }: { name: string; size?: number; style?: unknown }) => React.createElement("i", {
+  "data-icon": name, "data-size": size,
+  "data-translate-x": (flattenStyle(style).transform as Array<{ translateX?: number }> | undefined)?.[0]?.translateX,
+});
 const Passthrough = ({ children }: Props) => React.createElement(React.Fragment, null, children);
 let events: Array<{ sessionId: string; playedAt: string; completed: boolean }> = [];
 const colorsSource = readFileSync(new URL("../constants/colors.ts", import.meta.url), "utf8");
@@ -94,17 +97,19 @@ const render = (enabled = true, props: Record<string, unknown> = {}) => renderTo
 );
 const completed = (sessionId: string) => ({ sessionId, playedAt: new Date().toISOString(), completed: true });
 
-test("only Profile's previous-month button has a transparent fill, 30% white outline and a 21px chevron", () => {
+test("only Profile's previous-month button has a transparent fill, 18% white outline and a 21px chevron shifted 1px left", () => {
   const html = render(true, { profileCalendarLayout: true });
-  const button = html.match(/<div[^>]*><i data-icon="chevron-left" data-size="21"><\/i><\/div>/)?.[0];
+  const button = html.match(/<div[^>]*><i data-icon="chevron-left" data-size="21"[^>]*><\/i><\/div>/)?.[0];
   assert.ok(button);
   assert.match(button, /data-background="transparent"/);
   assert.match(button, /data-border-width="1"/);
-  assert.match(button, /data-border-color="rgba\(255,255,255,0.3\)"/);
+  assert.match(button, /data-border-color="rgba\(255,255,255,0.18\)"/);
+  assert.match(button, /data-translate-x="-1"/);
   assert.match(button, /data-width="37"/);
   assert.match(button, /data-height="37"/);
   assert.match(render(), /data-icon="chevron-left" data-size="18"/);
-  assert.doesNotMatch(render(), /data-border-color="rgba\(255,255,255,0.3\)"/);
+  assert.doesNotMatch(render(), /data-border-color="rgba\(255,255,255,0.18\)"/);
+  assert.doesNotMatch(render(), /data-translate-x="-1"/);
 });
 
 test("Profile keeps 10px weekdays and shrinks month dates another point to 14px, without changing other calendars", () => {

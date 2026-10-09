@@ -404,7 +404,7 @@ export function HistorialCalendar({
             hitSlop={10}
             style={[styles.navBtn, canonicalEmbeddedInsets && styles.canonicalEmbeddedNavButton, isProfileNav && styles.profileNavBtn, isProfileNav && styles.profilePrevNavBtn, isProfileNav && { left: cardHorizontalPadding ?? 14 }]}
           >
-            <Feather name="chevron-left" size={isProfileNav ? 21 : 18} color={colors.foreground} />
+            <Feather name="chevron-left" size={isProfileNav ? 21 : 18} color={colors.foreground} style={isProfileNav ? { transform: [{ translateX: -1 }] } : undefined} />
           </Pressable>
           <Text
             style={[
@@ -701,7 +701,7 @@ const styles = StyleSheet.create({
   profilePrevNavBtn: {
     backgroundColor: "transparent",
     borderWidth: 1,
-    borderColor: "rgba(255,255,255,0.3)",
+    borderColor: "rgba(255,255,255,0.18)",
   },
   profileWeekRow: { marginTop: 20 },
   outlinedCalendarCard: {
