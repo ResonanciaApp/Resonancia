@@ -1342,6 +1342,22 @@ export function ProfileScreenBase({
           ]}
         >
           <View style={styles.profileStickyHeaderRow}>
+            <Animated.View
+              pointerEvents="none"
+              style={[
+                styles.profileStickyHeaderTitleGroup,
+                {
+                  transform: [{
+                    translateY: profileStickyHeaderOpacity.interpolate({
+                      inputRange: [0, 1],
+                      outputRange: [20, 0],
+                    }),
+                  }],
+                },
+              ]}
+            >
+              <Text testID="profile-sticky-title" style={[styles.profileStickyHeaderTitle, { color: colors.foreground }]}>Perfil</Text>
+            </Animated.View>
             <ProfileHeaderActions
               sticky
               foreground={colors.foreground}
@@ -2189,6 +2205,25 @@ const styles = StyleSheet.create({
     position: "absolute",
     right: 16,
     top: 7,
+  },
+  profileStickyHeaderTitleGroup: {
+    position: "absolute",
+    left: 0,
+    right: 0,
+    top: 7,
+    height: 43,
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "center",
+    gap: 6,
+  },
+  profileStickyHeaderTitle: {
+    fontFamily: "Manrope",
+    fontSize: 18,
+    lineHeight: 21,
+    fontWeight: "700",
+    letterSpacing: 0.2,
+    textAlign: "center",
   },
   stickyHeaderBorder: {
     position: "absolute",

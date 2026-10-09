@@ -3,6 +3,12 @@ name: Sticky headers Índigo
 description: Convención visual compartida para headers y tabs que se fijan al hacer scroll en Índigo e Índigo 2.
 ---
 
+En Perfil, el título centrado «Perfil» pertenece exclusivamente al sticky header; no reintroducirlo en el contenido principal junto al avatar.
+
+**Why:** El usuario pidió recuperar el título anterior, limitándolo expresamente al encabezado fijo.
+
+**How to apply:** Conservar la aparición por scroll y las acciones del encabezado. Los ajustes de este título no autorizan mover la identidad ni añadir otro título fuera del sticky.
+
 En Índigo e Índigo 2, los sticky headers de las pantallas principales de exploración usan vidrio puro con blur fuerte, sin tinte cromático, sin oscurecimiento negro y sin divisor recto. El extremo inferior debe desvanecerse para evitar un corte horizontal visible.
 
 Los tabs inactivos usan negro con alpha 0.16 en todos los temas, sin cambios de fondo al activar el sticky header. Esta regla posterior sustituye el fade blanco y los tintes específicos de Índigo. Los tabs seleccionados no cambian; ver [Fondo de tabs no seleccionados](inactive-tab-background.md).

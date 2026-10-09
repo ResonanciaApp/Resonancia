@@ -683,6 +683,29 @@ test("settings statistics contain the existing stats and range filter without st
   assert.match(settingsSource, /label: "Personalizar notificaciones"/);
 });
 
+test("Perfil restores its centered title only inside the scroll-triggered sticky header without blocking actions", () => {
+  const source = readFileSync(new URL("../components/ProfileScreenBase.tsx", import.meta.url), "utf8");
+  const start = source.indexOf("<View style={styles.profileStickyHeaderRow}>");
+  const header = source.slice(start, source.indexOf("\n        </Animated.View>", start));
+  assert.match(header, /testID="profile-sticky-title"[^>]*>Perfil<\/Text>/);
+  assert.equal((source.match(/>Perfil<\/Text>/g) ?? []).length, 1);
+  assert.match(header, /pointerEvents="none"/);
+  assert.match(header, /profileStickyHeaderOpacity\.interpolate/);
+  assert.match(header, /<ProfileHeaderActions\s+sticky/);
+  assert.match(source, /pointerEvents=\{profileStickyHeaderActive \? "auto" : "none"\}/);
+  const group = source.match(/profileStickyHeaderTitleGroup:\s*\{([\s\S]*?)\n  \},/)?.[1] ?? "";
+  assert.match(group, /position: "absolute"/);
+  assert.match(group, /left: 0/);
+  assert.match(group, /right: 0/);
+  assert.match(group, /height: 43/);
+  assert.match(group, /justifyContent: "center"/);
+  const title = source.match(/profileStickyHeaderTitle:\s*\{([\s\S]*?)\n  \},/)?.[1] ?? "";
+  assert.match(title, /fontFamily: "Manrope"/);
+  assert.match(title, /fontSize: 18/);
+  assert.match(title, /fontWeight: "700"/);
+  assert.match(title, /textAlign: "center"/);
+});
+
 test("Perfil keeps settings accessible in its sticky header and uses the 79-point avatar", () => {
   const source = readFileSync(new URL("../components/ProfileScreenBase.tsx", import.meta.url), "utf8");
   const headerStart = source.indexOf("<View style={styles.profileStickyHeaderRow}>");
