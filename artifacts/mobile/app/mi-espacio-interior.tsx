@@ -243,9 +243,7 @@ function PremiumInnerSpaceScreen() {
   const {
     options: reflectionCategoryOptions,
     categories: reflectionCategories,
-    isCatalogLoading,
     isCatalogError,
-    isCatalogStale,
     isCatalogEmpty,
   } = useReflectionCategories();
   const reduceMotion = useReducedMotion();
@@ -829,15 +827,11 @@ function PremiumInnerSpaceScreen() {
           })}
         </ScrollView>
       </View>
-      {(isCatalogLoading || isCatalogError || isCatalogEmpty || isCatalogStale) && (
+      {(isCatalogError || isCatalogEmpty) && (
         <Text style={[styles.catalogNotice, { color: colors.mutedForeground }]}>
-          {isCatalogLoading
-            ? "Cargando categorías…"
-            : isCatalogError
-              ? "No se pudieron cargar las categorías nuevas. Mostrando las categorías guardadas; inténtalo de nuevo más tarde."
-              : isCatalogEmpty
-                ? "No hay categorías activas disponibles en este momento."
-              : "Categorías actualizadas en segundo plano…"}
+          {isCatalogError
+            ? "No se pudieron cargar las categorías nuevas. Mostrando las categorías guardadas; inténtalo de nuevo más tarde."
+            : "No hay categorías activas disponibles en este momento."}
         </Text>
       )}
 
@@ -1015,7 +1009,7 @@ const styles = StyleSheet.create({
   },
   dateHeader: {
     alignItems: 'stretch',
-    marginBottom: 21,
+    marginBottom: 6,
     marginTop: 6,
   },
   subsequentDateHeader: {

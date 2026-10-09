@@ -36,7 +36,7 @@ function styles(tree: ts.SourceFile, keys: string[]) {
       compile(`return (${entry.initializer.getText(tree)});`))(32)]));
 }
 
-test("all dates keep the first date-to-pill spacing without dividers or changing day-group gaps", () => {
+test("all dates reduce date-to-card spacing by 15px without dividers or changing day-group gaps", () => {
   const tree = ast(source("../app/mi-espacio-interior.tsx"));
   const wallStyles = styles(tree, ["dateHeader", "dateHeaderRow", "subsequentDateHeader",
     "firstDateHeader", "monthSelectorAboveDate", "timelineRow", "monthSelectorButton"]);
@@ -53,13 +53,29 @@ test("all dates keep the first date-to-pill spacing without dividers or changing
     "later dates reserve the same height as the first date's month control");
   assert.equal(wallStyles.dateHeaderRow.minHeight, 33);
   assert.equal(wallStyles.dateHeaderRow.alignItems, "center");
-  assert.equal(wallStyles.dateHeader.marginBottom, 21, "the first date-to-pill gap stays unchanged");
+  assert.equal(21 - wallStyles.dateHeader.marginBottom, 15, "every date-to-pill gap shrinks by exactly 15px");
   const row = find(tree, node => ts.isJsxElement(node)
     && node.openingElement.attributes.getText(tree) === "style={styles.dateHeaderRow}");
   assert.doesNotMatch(row.getText(tree), /renderMonthSelector/);
   assert.match(row.openingElement.attributes.getText(tree), /style=\{styles.dateHeaderRow\}/,
     "every date uses the same row geometry regardless of whether its month selector is visible");
   assert.equal(wallStyles.timelineRow.marginBottom, 26, "spacing within each day stays unchanged");
+});
+
+test("category notices stay hidden during normal loading and refresh, retaining genuine errors and empty states", () => {
+  const text = source("../app/mi-espacio-interior.tsx");
+  assert.doesNotMatch(text, /Cargando categorías|Categorías actualizadas en segundo plano/);
+  const tree = ast(text);
+  const notice = find(tree, node => ts.isJsxExpression(node)
+    && node.getText(tree).includes("isCatalogError || isCatalogEmpty")
+    && node.getText(tree).includes("styles.catalogNotice"));
+  const render = new Function("React", "Text", "styles", "colors", "isCatalogError", "isCatalogEmpty",
+    compile(`return (${notice.expression.getText(tree)});`));
+  assert.equal(render(React, "text", { catalogNotice: {} }, {}, false, false), false);
+  for (const [error, empty] of [[true, false], [false, true]]) {
+    const result = render(React, "text", { catalogNotice: {} }, {}, error, empty);
+    assert.match(result.props.children, error ? /No se pudieron cargar/ : /No hay categorías activas/);
+  }
 });
 
 test("month selector sits above only the first date with a 15px gap, aligned to the left margin", () => {
