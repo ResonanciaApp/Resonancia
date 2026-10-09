@@ -42,9 +42,6 @@ import { useReflectionCategories } from "@/constants/reflectionCategories";
 import { useAuth } from "@/context/AuthContext";
 import { usePremium } from "@/context/PremiumContext";
 import { FREE_REFLECTIONS_LIMIT, showPremiumGate } from "@/lib/premiumGate";
-import {
-  REFLECTION_WALL_BUTTON_BORDER_COLOR,
-} from "@/constants/colors";
 
 // La + se repite visualmente cada 90°: 270° son tres ciclos perceptibles.
 // Tras el giro hay solo tres movimientos: cruce moderado, cruce menor y ajuste final.
@@ -58,7 +55,7 @@ const PLUS_ROTATION_STOPS = [
 const PANEL_DURATION = 620;
 const SCREEN_SETTLE_DURATION = 650;
 export const INNER_SPACE_CARD_BOTTOM_MARGIN = 32;
-const COMPOSER_EDGE_GAP = 20;
+const COMPOSER_BOTTOM_GAP = 28;
 
 export function InnerSpaceCard({
   focusRequest = 0,
@@ -485,7 +482,10 @@ export function InnerSpaceCard({
   const containerBottomInset = flatBorder
     ? styles.cloudyFlushBorder.paddingBottom
     : (profileVariant ? styles.profileWall : canonicalVerticalInsets ? styles.canonicalVerticalInsets : styles.container).paddingBottom + 1;
-  const bottomGapExtra = COMPOSER_EDGE_GAP - containerBottomInset;
+  const bottomGapExtra = COMPOSER_BOTTOM_GAP - containerBottomInset;
+  const registerColor = theme.id === "natural" ? "#073B32"
+    : getThemeStyleId(theme.id) === "cloudy" ? "#166494"
+      : "#0B1438";
   const sectionBorderInset = canonicalVerticalInsets && !profileVariant && getThemeStyleId(theme.id) === "cloudy" ? 0 : -1;
 
   return (
@@ -679,11 +679,12 @@ export function InnerSpaceCard({
         <Pressable
           testID="open-reflection-wall"
           onPress={openWall}
-          style={[styles.submitButton, styles.wallButton, { borderColor: REFLECTION_WALL_BUTTON_BORDER_COLOR }]}
+          style={[styles.submitButton, styles.wallButton]}
           accessibilityRole="button"
           accessibilityLabel="Ver muro"
         >
-          <Text style={[styles.submitText, { color: "#F9F9F9" }]}>VER MURO</Text>
+          <Text style={[styles.submitText, { color: "#F9F9F9" }]}>Ver muro</Text>
+          <Feather name="arrow-right" size={14} color="#F9F9F9" />
         </Pressable>
         <Pressable
           testID="save-reflection"
@@ -697,11 +698,8 @@ export function InnerSpaceCard({
           disabled={isSubmitDisabled}
           onPress={saveMessage}
         >
-          <Text style={[styles.submitText, {
-            color: theme.id === "natural" ? "#073B32"
-              : getThemeStyleId(theme.id) === "cloudy" ? "#166494"
-                : "#0B1438",
-          }]}>
+          <Feather name="message-circle" size={14} color={registerColor} />
+          <Text style={[styles.submitText, { color: registerColor }]}>
             {createMutation.isPending ? "Registrando..." : "REGISTRAR"}
           </Text>
         </Pressable>
@@ -884,12 +882,15 @@ const styles = StyleSheet.create({
     flex: 1,
     minHeight: 42,
     borderRadius: 20,
+    flexDirection: "row",
+    gap: 6,
     alignItems: "center",
     justifyContent: "center",
   },
   wallButton: {
-    borderWidth: 1,
+    borderWidth: 0,
     backgroundColor: "transparent",
+    justifyContent: "flex-start",
   },
   submitText: {
     fontSize: 11,

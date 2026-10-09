@@ -420,10 +420,13 @@ test("Registrar uses solid white and theme-specific dark text in both disabled a
   };
   const saveMessage = () => {};
   const scope = {
-    React, Pressable: "button", Text: "span", styles, saveMessage,
+    React, Pressable: "button", Text: "span", Feather: "icon", styles, saveMessage,
     getThemeStyleId: (id: string) => id === "pleyades" ? "indigo2" : id,
   };
-  const renderButton = new Function(...Object.keys(scope), "isSubmitDisabled", "createMutation", "theme", compiled);
+  const colorDeclaration = contents.match(/const registerColor = ([\s\S]*?);/);
+  assert.ok(colorDeclaration);
+  const renderButton = new Function(...Object.keys(scope), "isSubmitDisabled", "createMutation", "theme",
+    `const registerColor = ${colorDeclaration[1]};\n${compiled}`);
   for (const themeId of ["natural", "cloudy", "indigo2", "pleyades"]) {
   for (const [disabled, pending] of [[false, false], [true, false], [true, true]]) {
     const element = renderButton(...Object.values(scope), disabled, { isPending: pending }, { id: themeId }) as React.ReactElement<any>;
@@ -433,7 +436,9 @@ test("Registrar uses solid white and theme-specific dark text in both disabled a
     assert.equal(element.props.onPress, saveMessage);
     assert.equal(Object.assign({}, ...element.props.style.filter(Boolean)).minHeight, 42);
     assert.equal(element.props.accessibilityLabel, "Registrar");
-    const label = element.props.children as React.ReactElement<any>;
+    const [icon, label] = React.Children.toArray(element.props.children) as React.ReactElement<any>[];
+    assert.equal(icon.props.name, "message-circle");
+    assert.equal(icon.props.color, themeId === "natural" ? "#073B32" : themeId === "cloudy" ? "#166494" : "#0B1438");
     assert.equal(label.type, "span");
     assert.equal(label.props.children, pending ? "Registrando..." : "REGISTRAR");
     assert.equal(label.props.style.find((entry: any) => entry?.color)?.color,
@@ -461,13 +466,16 @@ test("Registrar requires both a selected tab and a nonblank message", () => {
   }
 });
 
-test("Ver muro has a white border at 80 percent opacity in every theme", () => {
+test("Ver muro has no border, starts at the left margin and has a matching right arrow", () => {
   const contents = source("../components/InnerSpaceCard.tsx");
   const button = contents.slice(contents.indexOf('testID="open-reflection-wall"'), contents.indexOf('testID="save-reflection"'));
-  assert.match(button, /borderColor: REFLECTION_WALL_BUTTON_BORDER_COLOR/);
+  assert.doesNotMatch(button, /borderColor:|REFLECTION_WALL_BUTTON_BORDER_COLOR/);
   assert.doesNotMatch(button, /opacity:|theme\.id/);
-  assert.match(source("../constants/colors.ts"), /REFLECTION_WALL_BUTTON_BORDER_COLOR = "rgba\(249,249,249,0\.8\)"/);
-  assert.equal(style("InnerSpaceCard", "wallButton").borderWidth, 1);
+  assert.match(button, />Ver muro<\/Text>[\s\S]*<Feather name="arrow-right" size=\{14\} color="#F9F9F9"/);
+  assert.match(button, /color: "#F9F9F9"/);
+  assert.equal(style("InnerSpaceCard", "wallButton").borderWidth, 0);
+  assert.equal(style("InnerSpaceCard", "wallButton").justifyContent, "flex-start");
+  assert.equal(style("InnerSpaceCard", "submitButton").flexDirection, "row");
 });
 
 test("category tabs are borderless everywhere while Todos alone retains its 3px gradient stroke", () => {

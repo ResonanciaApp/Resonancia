@@ -92,7 +92,7 @@ test("Muro expansivo category filters share the design and filtering, leaving To
   }
 });
 
-test("the three composer gaps are exactly 20px across default, canonical and profile variants", () => {
+test("composer retains both 20px writing gaps and adds 8px below the buttons across themes", () => {
   const tree = ast(source("../components/InnerSpaceCard.tsx"));
   const cardStyles = styles(tree, ["container", "canonicalVerticalInsets", "cloudyFlushBorder",
     "profileWall", "expandBody", "categoriesMask", "inputContainer", "actionRow"]);
@@ -104,24 +104,26 @@ test("the three composer gaps are exactly 20px across default, canonical and pro
     && node.openingElement.attributes.getText(tree).includes("styles.container"));
   const rootStyle = root.openingElement.attributes.properties.find((item: any) => item.name?.getText(tree) === "style");
   const measure = new Function("styles", "theme", "getThemeStyleId", "canonicalVerticalInsets", "profileVariant",
-    "COMPOSER_EDGE_GAP", "sectionBackgroundColor", compile(`${declarations}
+    "COMPOSER_BOTTOM_GAP", "sectionBackgroundColor", compile(`${declarations}
       return { bottomGapExtra, rootStyle: ${rootStyle.initializer.expression.getText(tree)} };`));
   const row = find(tree, node => ts.isJsxElement(node) && node.openingElement.tagName.getText(tree) === "View"
     && node.openingElement.attributes.getText(tree).includes("styles.actionRow"));
   const onLayout = row.openingElement.attributes.properties.find((item: any) => item.name?.getText(tree) === "onLayout");
   assert.equal(cardStyles.categoriesMask.marginBottom, 20);
   assert.equal(cardStyles.inputContainer.marginBottom + cardStyles.actionRow.marginTop, 20);
+  assert.equal(Number(find(tree, node => ts.isVariableDeclaration(node)
+    && node.name.getText(tree) === "COMPOSER_BOTTOM_GAP").initializer.getText(tree)), 28);
   for (const id of ["cloudy", "natural", "indigo2", "pleyades", "dark"]) {
     for (const [canonical, profile] of [[false, false], [true, false], [true, true]]) {
       const result = measure(cardStyles, { id }, (theme: string) => theme === "natural" ? "cloudy" : theme,
-        canonical, profile, 20, undefined);
+        canonical, profile, 28, undefined);
       let height = 0;
       const handler = new Function("styles", "updateContentHeight", "bottomGapExtra",
         compile(`return (${onLayout.initializer.expression.getText(tree)});`))(cardStyles,
           (measured: number) => { height = measured; }, result.bottomGapExtra);
       handler({ nativeEvent: { layout: { y: 200, height: 42 } } });
       const parent = flatten(result.rootStyle);
-      assert.equal(height - 242 + parent.paddingBottom + parent.borderWidth, 20,
+      assert.equal(height - 242 + parent.paddingBottom + parent.borderWidth, 28,
         `${id}: canonical=${canonical}, profile=${profile}`);
       assert.equal(parent.paddingBottom, canonical ? profile || id !== "cloudy" && id !== "natural" ? 18 : 19 : 16,
         "collapsed card retains its existing padding");
