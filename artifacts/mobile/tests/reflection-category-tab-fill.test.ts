@@ -9,7 +9,7 @@ const compiled = ts.transpileModule(src, {
   compilerOptions: { module: ts.ModuleKind.CommonJS, jsx: ts.JsxEmit.React, esModuleInterop: true },
 }).outputText;
 
-function load(reduce: boolean) {
+function load(reduce: boolean, color = "#F075B3") {
   const timings: any[] = [], stops: number[] = [], sets: number[] = [];
   let cleanup: any, effect: any;
   let savedRef: any;
@@ -31,12 +31,12 @@ function load(reduce: boolean) {
   const m: any = { exports: {} };
   new Function("require", "module", "exports", compiled)((n: string) => mocks[n], m, m.exports);
   const Fill = m.exports.ReflectionCategoryTabFill.type ?? m.exports.ReflectionCategoryTabFill;
-  const tree: any = (m.exports.ReflectionCategoryTabFill.type ?? Fill)({ selected: true, reduceMotion: reduce });
+  const tree: any = (m.exports.ReflectionCategoryTabFill.type ?? Fill)({ selected: true, color, reduceMotion: reduce });
   cleanup = effect();
   return { timings, stops, sets, cleanup, tree,
     rerender(selected: boolean) {
       cleanup?.();
-      const next = Fill({ selected, reduceMotion: reduce });
+      const next = Fill({ selected, color, reduceMotion: reduce });
       cleanup = effect();
       return next;
     },
@@ -80,20 +80,24 @@ test("deselection reverses the same native opacity fade without removing its ove
   assert.equal(r.stops.length, 2);
 });
 
-test("Pleyades crossfades white 6% and white 12% without stacking the base or using violet", () => {
-  const r = load(false);
+test("Pleyades uses each category color at 6% and 12%, crossfading without stacking", () => {
+  for (const color of ["#F075B3", "#8B95EE", "#F2C94C", "#B875F0", "#5FCA81", "#5FA1CA", "#ABCDEF"]) {
+  const r = load(false, color);
   const [base, selected] = React.Children.toArray(r.tree.props.children) as any[];
   const baseStyle = Object.assign({}, ...base.props.style);
-  assert.equal(baseStyle.backgroundColor, "rgba(255,255,255,0.06)");
+  assert.equal(baseStyle.backgroundColor, color);
   const inverse = baseStyle.opacity;
   assert.deepEqual(inverse.inputRange, [0, 1]);
-  assert.deepEqual(inverse.outputRange, [1, 0]);
+  assert.deepEqual(inverse.outputRange, [0.06, 0]);
   assert.equal(inverse.parent, selected.props.style[1].opacity);
   const [blur, selectedTint] = React.Children.toArray(selected.props.children) as any[];
-  assert.equal(Object.assign({}, ...selectedTint.props.style).backgroundColor, "rgba(255,255,255,0.12)");
+  const selectedStyle = Object.assign({}, ...selectedTint.props.style);
+  assert.equal(selectedStyle.backgroundColor, color);
+  assert.equal(selectedStyle.opacity, 0.12);
   assert.equal(blur.props.intensity, 38);
   assert.equal(blur.props.tint, "light");
   assert.equal(blur.props.experimentalBlurMethod, "dimezisBlurView");
   assert.doesNotMatch(src, /rgba\(107,80,210/);
   r.dispose();
+  }
 });

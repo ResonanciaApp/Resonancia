@@ -2,7 +2,7 @@ import React, { useEffect, useRef } from "react";
 import { Animated, Easing, StyleSheet, View } from "react-native";
 import { BlurView } from "expo-blur";
 
-// Premium trial selection fade, with Pleyades' white tab fills.
+// Premium trial selection fade, with Pleyades' category-colored tab fills.
 export const TAB_FILL_FADE = {
   duration: 400,
   easing: Easing.inOut(Easing.cubic),
@@ -11,8 +11,9 @@ export const TAB_FILL_FADE = {
 
 export const ReflectionCategoryTabFill = React.memo(function ReflectionCategoryTabFill({
   selected,
+  color,
   reduceMotion = false,
-}: { selected: boolean; reduceMotion?: boolean }) {
+}: { selected: boolean; color: string; reduceMotion?: boolean }) {
   const opacity = useRef(new Animated.Value(selected ? 1 : 0)).current;
 
   useEffect(() => {
@@ -29,8 +30,9 @@ export const ReflectionCategoryTabFill = React.memo(function ReflectionCategoryT
     <View pointerEvents="none" style={styles.clip}>
       <Animated.View
         pointerEvents="none"
-        style={[StyleSheet.absoluteFill, styles.tint, {
-          opacity: opacity.interpolate({ inputRange: [0, 1], outputRange: [1, 0] }),
+        style={[StyleSheet.absoluteFill, {
+          backgroundColor: color,
+          opacity: opacity.interpolate({ inputRange: [0, 1], outputRange: [0.06, 0] }),
         }]}
       />
       <Animated.View pointerEvents="none" style={[StyleSheet.absoluteFill, { opacity }]}>
@@ -40,7 +42,7 @@ export const ReflectionCategoryTabFill = React.memo(function ReflectionCategoryT
           experimentalBlurMethod="dimezisBlurView"
           style={StyleSheet.absoluteFill}
         />
-        <View style={[StyleSheet.absoluteFill, styles.tintSelected]} />
+        <View style={[StyleSheet.absoluteFill, styles.tintSelected, { backgroundColor: color }]} />
       </Animated.View>
     </View>
   );
@@ -48,6 +50,5 @@ export const ReflectionCategoryTabFill = React.memo(function ReflectionCategoryT
 
 const styles = StyleSheet.create({
   clip: { ...StyleSheet.absoluteFillObject, borderRadius: 999, overflow: "hidden" },
-  tint: { backgroundColor: "rgba(255,255,255,0.06)" },
-  tintSelected: { backgroundColor: "rgba(255,255,255,0.12)" },
+  tintSelected: { opacity: 0.12 },
 });

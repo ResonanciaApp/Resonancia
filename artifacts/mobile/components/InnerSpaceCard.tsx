@@ -588,9 +588,9 @@ export function InnerSpaceCard({
               onPress={() => toggleCategory(cat.id as ReflectionCategory)}
             >
               {theme.id === "pleyades" && (
-                <ReflectionCategoryTabFill selected={category === cat.id} reduceMotion={Boolean(reduceMotion)} />
+                <ReflectionCategoryTabFill selected={category === cat.id} color={cat.color} reduceMotion={Boolean(reduceMotion)} />
               )}
-              {category === cat.id && <ReflectionCategoryTabBorder color={cat.color} borderWidth={profileVariant ? 1 : 2} opacity={profileVariant ? 0.75 : 0.8} inset={-2} />}
+              {category === cat.id && theme.id !== "pleyades" && <ReflectionCategoryTabBorder color={cat.color} borderWidth={profileVariant ? 1 : 2} opacity={profileVariant ? 0.75 : 0.8} inset={-2} />}
               <ReflectionCategoryTabLabel
                 label={cat.label}
                 selected={category === cat.id}
@@ -841,6 +841,9 @@ const styles = StyleSheet.create({
   },
   pleyadesGridItem: {
     backgroundColor: "transparent",
+    borderWidth: 0,
+    paddingVertical: 10.5,
+    paddingHorizontal: 14.5,
   },
   pressedCategory: {
     transform: [{ scale: 0.97 }],

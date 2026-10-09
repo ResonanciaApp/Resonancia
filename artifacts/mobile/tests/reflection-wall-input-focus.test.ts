@@ -311,6 +311,10 @@ test("Pleyades tabs add the fill and emit one soft haptic; other themes keep sel
     const tab = f.nodes.get("category-gratitude");
     const kids = React.Children.toArray(tab.children as any) as any[];
     assert.equal(kids.some(k => k.type === "tab-fill"), theme === "pleyades");
+    const initialStyle = Object.assign({}, ...tab.style({ pressed: false }).filter(Boolean));
+    assert.equal(initialStyle.borderWidth, theme === "pleyades" ? 0 : 2);
+    assert.equal(initialStyle.paddingVertical + initialStyle.borderWidth, 10.5);
+    assert.equal(initialStyle.paddingHorizontal + initialStyle.borderWidth, 14.5);
     tab.onPress();
     f.render();
     assert.deepEqual(f.haptics, [expected]);
@@ -321,6 +325,11 @@ test("Pleyades tabs add the fill and emit one soft haptic; other themes keep sel
     if (theme === "pleyades") {
       const fill = (React.Children.toArray(selectedTab.children) as any[]).find(k => k.type === "tab-fill");
       assert.equal(fill.props.selected, true);
+      assert.equal(fill.props.color, "#ABCDEF");
+      assert.equal((React.Children.toArray(selectedTab.children) as any[]).some(k => k.type === "tab-border"), false);
+      assert.equal(Object.assign({}, ...selectedTab.style({ pressed: false }).filter(Boolean)).borderWidth, 0);
+    } else {
+      assert.equal((React.Children.toArray(selectedTab.children) as any[]).some(k => k.type === "tab-border"), true);
     }
     selectedTab.onPress();
     f.render();
@@ -330,6 +339,8 @@ test("Pleyades tabs add the fill and emit one soft haptic; other themes keep sel
     if (theme === "pleyades") {
       const fill = (React.Children.toArray(deselectedTab.children) as any[]).find(k => k.type === "tab-fill");
       assert.equal(fill.props.selected, false, "fill remains mounted so deselection can fade out");
+      assert.equal(fill.props.color, "#ABCDEF");
+      assert.equal((React.Children.toArray(deselectedTab.children) as any[]).some(k => k.type === "tab-border"), false);
     }
     f.dispose();
   }
