@@ -17,12 +17,7 @@ import { useAuth } from "@/context/AuthContext";
 import { usePremium } from "@/context/PremiumContext";
 import { useDrawer } from "@/context/DrawerContext";
 import { ReflectionShare } from "@/components/ReflectionShare";
-import { ReflectionCategoryTabLabel } from "@/components/ReflectionCategoryTabLabel";
-import {
-  REFLECTION_WALL_BORDER_GRADIENT,
-  REFLECTION_WALL_BORDER_START,
-  REFLECTION_WALL_BORDER_END,
-} from "@/constants/reflectionWallBorder";
+import { ReflectionCategoryTabLabel, ReflectionCategoryTabBorder } from "@/components/ReflectionCategoryTabLabel";
 import { CinematicFadeSlide } from "@/components/CinematicFadeSlide";
 import { canShareReflection } from "@/lib/reflection-story-logic";
 
@@ -776,8 +771,7 @@ function PremiumInnerSpaceScreen() {
             accessibilityState={{ selected: filter === "all" }}
             style={[
               styles.filterPill,
-              filter === "all" ? styles.filterPillSelected : styles.filterPillInactive,
-              filter !== "all" && { backgroundColor: inactiveTabBackground },
+              { backgroundColor: inactiveTabBackground },
             ]}
             onPress={() => {
               if (filter === "all") return;
@@ -786,13 +780,7 @@ function PremiumInnerSpaceScreen() {
             }}
           >
             {filter === "all" && (
-              <LinearGradient
-                pointerEvents="none"
-                colors={REFLECTION_WALL_BORDER_GRADIENT}
-                start={REFLECTION_WALL_BORDER_START}
-                end={REFLECTION_WALL_BORDER_END}
-                style={[StyleSheet.absoluteFill, { borderRadius: 27 }]}
-              />
+              <ReflectionCategoryTabBorder borderWidth={1} />
             )}
             <ReflectionCategoryTabLabel label="Todos" selected={filter === "all"} textStyle={styles.filterText} />
           </Pressable>
@@ -992,12 +980,6 @@ const styles = StyleSheet.create({
   filterPillCategory: {
     borderWidth: 0,
     paddingHorizontal: 17,
-  },
-  filterPillInactive: {
-    backgroundColor: "rgba(0,0,0,0.16)",
-  },
-  filterPillSelected: {
-    backgroundColor: "transparent",
   },
   filterText: {
     fontSize: 13,

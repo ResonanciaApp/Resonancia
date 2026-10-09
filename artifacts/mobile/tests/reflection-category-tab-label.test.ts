@@ -135,11 +135,9 @@ test("composer and message filters share the category label and keep filtering h
   assert.match(composer, /<ReflectionCategoryTabFill selected=\{category === cat\.id\} color=\{cat\.color\}/);
   assert.match(composer, /<ReflectionCategoryTabLabel[\s\S]*?selected=\{category === cat\.id\}/);
   assert.match(wall, /<ReflectionCategoryTabFill selected=\{isActive\} color=\{cat\.color\}/);
-  assert.doesNotMatch(wall, /ReflectionCategoryTabBorder/);
-  assert.match(wall, /filter === "all" && \(\s*<LinearGradient/);
-  assert.match(wall, /colors=\{REFLECTION_WALL_BORDER_GRADIENT\}/);
+  assert.match(wall, /filter === "all" && \(\s*<ReflectionCategoryTabBorder borderWidth=\{1\}/);
   assert.match(wall, /<ReflectionCategoryTabLabel[\s\S]*?selected=\{isActive\}/);
   assert.match(wall, /setFilter\(cat\.id as ReflectionCategory\)/);
   assert.match(wall, /setFilter\("all"\)/);
-  assert.match(wall, /filterPillSelected: \{\s*backgroundColor: "transparent"/);
+  assert.match(wall, /styles\.filterPill,\s*\{ backgroundColor: inactiveTabBackground \}/);
 });

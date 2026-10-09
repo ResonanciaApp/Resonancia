@@ -117,7 +117,7 @@ test("month selector sits above only the first date with a 15px gap, aligned to 
     < entrance.getText(tree).indexOf("styles.dateHeaderRow"), "month precedes the first date in layout flow");
 });
 
-test("Muro expansivo filters keep category colors and Todos uses a borderless selected gradient", () => {
+test("Muro filters keep category colors and Todos keeps its black fill with a 1px selected gradient border", () => {
   const tree = ast(source("../app/mi-espacio-interior.tsx"));
   const row = find(tree, node => ts.isJsxElement(node)
     && node.openingElement.tagName.getText(tree) === "ScrollView"
@@ -149,23 +149,18 @@ test("Muro expansivo filters keep category colors and Todos uses a borderless se
       const [all, ...categories] = React.Children.toArray(result.props.children) as any[];
       const allChildren = React.Children.toArray(all.props.children) as any[];
       assert.equal(allChildren.some(child => child.type === "fill"), false);
-      assert.equal(flatten(all.props.style).backgroundColor, filter === "all" ? "transparent" : inactive);
+      assert.equal(flatten(all.props.style).backgroundColor, inactive);
       assert.equal(flatten(all.props.style).borderWidth, 0);
       assert.equal(flatten(all.props.style).paddingHorizontal + flatten(all.props.style).borderWidth, 17,
-        "Todos retains its outer dimensions without borders");
-      assert.equal(allChildren.some(child => child.type === "border"), false);
+        "Todos retains its outer dimensions with an overlay border");
+      assert.equal(allChildren.some(child => child.type === "border"), filter === "all");
       assert.equal(allChildren.find(child => child.type === "label").props.uniformWeight, undefined);
+      assert.equal(allChildren.some(child => child.type === "gradient"), false,
+        "the gradient is never a full tab fill");
       if (filter === "all") {
-        const gradient = allChildren.find(child => child.type === "gradient");
-        assert.deepEqual(gradient.props.colors, REFLECTION_WALL_BORDER_GRADIENT);
-        assert.deepEqual(gradient.props.start, REFLECTION_WALL_BORDER_START);
-        assert.deepEqual(gradient.props.end, REFLECTION_WALL_BORDER_END);
-        assert.equal(gradient.props.pointerEvents, "none");
-        assert.deepEqual(flatten(gradient.props.style), {
-          position: "absolute", top: 0, left: 0, right: 0, bottom: 0, borderRadius: 27,
-        });
-      } else {
-        assert.equal(allChildren.some(child => child.type === "gradient"), false);
+        const border = allChildren.find(child => child.type === "border");
+        assert.equal(border.props.borderWidth, 1);
+        assert.equal(border.props.color, undefined, "the shared border keeps its original gradient");
       }
       for (let index = 0; index < categories.length; index++) {
         const tab = categories[index];
