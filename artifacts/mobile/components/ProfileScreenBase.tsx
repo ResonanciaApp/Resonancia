@@ -1608,10 +1608,10 @@ export function ProfileScreenBase({
               onComposingChange={setProfileWallComposing}
               onMessageSaved={handleProfileReflectionSaved}
               onCollapsedHeightChange={setProfileWallCardHeight}
-              style={{ marginTop: 25, marginBottom: PROFILE_SECTION_GAP }}
+              style={{ marginTop: 40, marginBottom: PROFILE_SECTION_GAP }}
             />
 
-            <MiRutinaSection titleSize={19} addCardHeight={profileWallCardHeight} alignCardGapToWall style={{ marginHorizontal: 0, marginTop: 25, marginBottom: PROFILE_SECTION_GAP }} />
+            <MiRutinaSection titleSize={19} addCardHeight={profileWallCardHeight} alignCardGapToWall style={{ marginHorizontal: 0, marginTop: 40, marginBottom: PROFILE_SECTION_GAP }} />
 
             {SHOW_PROFILE_PRACTICE_CARDS && (
             <>

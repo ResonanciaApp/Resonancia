@@ -23,6 +23,31 @@ function source(path: string) {
   return readFileSync(new URL(path, import.meta.url), "utf8");
 }
 
+test("Perfil lowers the wall by 15px in flow and adds another 15px before the routine", () => {
+  const contents = source("../components/ProfileScreenBase.tsx");
+  const ast = ts.createSourceFile("profile.tsx", contents, ts.ScriptTarget.Latest, true, ts.ScriptKind.TSX);
+  const sections = new Map<string, Record<string, number>>();
+  function visit(node: ts.Node) {
+    if (ts.isJsxSelfClosingElement(node)) {
+      const name = node.tagName.getText(ast);
+      if (name === "ProfileReflectionWallSection" || name === "MiRutinaSection") {
+        const attribute = node.attributes.properties.find(
+          (prop) => ts.isJsxAttribute(prop) && prop.name.getText(ast) === "style",
+        ) as ts.JsxAttribute | undefined;
+        assert.ok(attribute?.initializer && ts.isJsxExpression(attribute.initializer));
+        assert.ok(attribute.initializer.expression);
+        const expression = attribute.initializer.expression.getText(ast);
+        sections.set(name, new Function("PROFILE_SECTION_GAP", `return (${expression})`)(21));
+      }
+    }
+    ts.forEachChild(node, visit);
+  }
+  visit(ast);
+  assert.deepEqual(sections.get("ProfileReflectionWallSection"), { marginTop: 25 + 15, marginBottom: 21 });
+  assert.deepEqual(sections.get("MiRutinaSection"), { marginHorizontal: 0, marginTop: 25 + 15, marginBottom: 21 });
+  assert.ok(contents.indexOf("<ProfileReflectionWallSection") < contents.indexOf("<MiRutinaSection"));
+});
+
 test("Perfil puts Mi muro's heading outside the card with Mi rutina's gap and matching add-card typography", () => {
   const profile = source("../components/ProfileReflectionWallSection.tsx");
   assert.ok(profile.indexOf('testID="profile-wall-title"') < profile.indexOf("<HomeReflectionWallSection"));
