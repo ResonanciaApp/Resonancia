@@ -701,7 +701,7 @@ const styles = StyleSheet.create({
   profilePrevNavBtn: {
     backgroundColor: "transparent",
     borderWidth: 1,
-    borderColor: "rgba(255,255,255,0.8)",
+    borderColor: "rgba(255,255,255,0.3)",
   },
   profileWeekRow: { marginTop: 20 },
   outlinedCalendarCard: {

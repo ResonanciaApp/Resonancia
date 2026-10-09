@@ -94,17 +94,17 @@ const render = (enabled = true, props: Record<string, unknown> = {}) => renderTo
 );
 const completed = (sessionId: string) => ({ sessionId, playedAt: new Date().toISOString(), completed: true });
 
-test("only Profile's previous-month button has a transparent fill, 80% white outline and a 21px chevron", () => {
+test("only Profile's previous-month button has a transparent fill, 30% white outline and a 21px chevron", () => {
   const html = render(true, { profileCalendarLayout: true });
   const button = html.match(/<div[^>]*><i data-icon="chevron-left" data-size="21"><\/i><\/div>/)?.[0];
   assert.ok(button);
   assert.match(button, /data-background="transparent"/);
   assert.match(button, /data-border-width="1"/);
-  assert.match(button, /data-border-color="rgba\(255,255,255,0.8\)"/);
+  assert.match(button, /data-border-color="rgba\(255,255,255,0.3\)"/);
   assert.match(button, /data-width="37"/);
   assert.match(button, /data-height="37"/);
   assert.match(render(), /data-icon="chevron-left" data-size="18"/);
-  assert.doesNotMatch(render(), /data-border-color="rgba\(255,255,255,0.8\)"/);
+  assert.doesNotMatch(render(), /data-border-color="rgba\(255,255,255,0.3\)"/);
 });
 
 test("Profile keeps 10px weekdays and shrinks month dates another point to 14px, without changing other calendars", () => {
