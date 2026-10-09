@@ -164,17 +164,19 @@ export default function GalleryScreen() {
             textScale: item.textScale ?? 1,
           }}
         />
-        <View style={styles.cardOverlay}>
-          <View style={styles.cardMetaRow}>
-            <Text style={styles.cardDate}>
-              {new Date(item.createdAt).toLocaleDateString("es-ES", { day: "numeric", month: "short" })}
+        <View style={styles.cardMetadata}>
+          <View style={styles.categoryPill}>
+            <View
+              pointerEvents="none"
+              style={[StyleSheet.absoluteFill, { backgroundColor: category.color, opacity: 0.2, borderRadius: 10 }]}
+            />
+            <Text style={styles.categoryText}>
+              {category.label}
             </Text>
-            <View style={[styles.categoryPill, { backgroundColor: category.bg }]}>
-              <Text style={[styles.categoryText, { color: category.color }]}>
-                {category.label}
-              </Text>
-            </View>
           </View>
+          <Text style={styles.cardDate}>
+            {new Date(item.createdAt).toLocaleDateString("es-ES", { day: "numeric", month: "short" })}
+          </Text>
         </View>
       </Pressable>
     );
@@ -316,37 +318,29 @@ const styles = StyleSheet.create({
     marginBottom: CARD_MARGIN,
   },
   cardWrapper: {
-    borderRadius: 22,
-    overflow: "hidden",
+    alignItems: "stretch",
   },
-  cardOverlay: {
-    position: "absolute",
-    bottom: 0,
-    left: 0,
-    right: 0,
-    padding: 12,
-    backgroundColor: "rgba(0,0,0,0.4)",
-  },
-  cardMetaRow: {
-    flexDirection: "row",
-    alignItems: "center",
-    justifyContent: "center",
-    gap: 8,
+  cardMetadata: {
+    marginTop: 10,
+    alignItems: "flex-start",
   },
   cardDate: {
+    marginTop: 8,
     color: "#fff",
     fontSize: 12,
     fontFamily: "Manrope",
     fontWeight: "600",
   },
   categoryPill: {
-    borderRadius: 999,
-    paddingHorizontal: 9,
+    borderRadius: 10,
+    paddingHorizontal: 10,
     paddingVertical: 4,
+    overflow: "hidden",
   },
   categoryText: {
-    fontSize: 10,
+    fontSize: 11,
     fontFamily: "Manrope",
-    fontWeight: "700",
+    fontWeight: "500",
+    color: "#F9F9F9",
   },
 });
