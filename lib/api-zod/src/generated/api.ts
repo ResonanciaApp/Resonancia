@@ -20,6 +20,10 @@ export const getGrowthCatalogResponseStagesItemEndDayMax = 1000000;
 
 export const getGrowthCatalogResponseStagesItemStoryMax = 2000;
 
+export const getGrowthCatalogResponseStagesItemDetailPhraseMax = 2000;
+
+export const getGrowthCatalogResponseStagesItemDetailDescriptionMax = 10000;
+
 
 
 export const getGrowthCatalogResponseStagesItemRewardsItemTextMax = 240;
@@ -40,6 +44,8 @@ export const GetGrowthCatalogResponse = zod.object({
   "startDay": zod.number().min(getGrowthCatalogResponseStagesItemStartDayMin).max(getGrowthCatalogResponseStagesItemStartDayMax),
   "endDay": zod.number().min(getGrowthCatalogResponseStagesItemEndDayMin).max(getGrowthCatalogResponseStagesItemEndDayMax),
   "story": zod.string().max(getGrowthCatalogResponseStagesItemStoryMax),
+  "detailPhrase": zod.string().max(getGrowthCatalogResponseStagesItemDetailPhraseMax).optional(),
+  "detailDescription": zod.string().max(getGrowthCatalogResponseStagesItemDetailDescriptionMax).optional(),
   "imageUrl": zod.string().min(1),
   "rewards": zod.array(zod.object({
   "id": zod.string().min(1),
@@ -64,6 +70,10 @@ export const saveGrowthCatalogBodyStagesItemEndDayMax = 1000000;
 
 export const saveGrowthCatalogBodyStagesItemStoryMax = 2000;
 
+export const saveGrowthCatalogBodyStagesItemDetailPhraseMax = 2000;
+
+export const saveGrowthCatalogBodyStagesItemDetailDescriptionMax = 10000;
+
 
 
 export const saveGrowthCatalogBodyStagesItemRewardsItemTextMax = 240;
@@ -85,6 +95,8 @@ export const SaveGrowthCatalogBody = zod.object({
   "startDay": zod.number().min(saveGrowthCatalogBodyStagesItemStartDayMin).max(saveGrowthCatalogBodyStagesItemStartDayMax),
   "endDay": zod.number().min(saveGrowthCatalogBodyStagesItemEndDayMin).max(saveGrowthCatalogBodyStagesItemEndDayMax),
   "story": zod.string().max(saveGrowthCatalogBodyStagesItemStoryMax),
+  "detailPhrase": zod.string().max(saveGrowthCatalogBodyStagesItemDetailPhraseMax).optional(),
+  "detailDescription": zod.string().max(saveGrowthCatalogBodyStagesItemDetailDescriptionMax).optional(),
   "imageUrl": zod.string().min(1),
   "rewards": zod.array(zod.object({
   "id": zod.string().min(1),
@@ -107,6 +119,10 @@ export const saveGrowthCatalogResponseStagesItemEndDayMax = 1000000;
 
 export const saveGrowthCatalogResponseStagesItemStoryMax = 2000;
 
+export const saveGrowthCatalogResponseStagesItemDetailPhraseMax = 2000;
+
+export const saveGrowthCatalogResponseStagesItemDetailDescriptionMax = 10000;
+
 
 
 export const saveGrowthCatalogResponseStagesItemRewardsItemTextMax = 240;
@@ -127,6 +143,8 @@ export const SaveGrowthCatalogResponse = zod.object({
   "startDay": zod.number().min(saveGrowthCatalogResponseStagesItemStartDayMin).max(saveGrowthCatalogResponseStagesItemStartDayMax),
   "endDay": zod.number().min(saveGrowthCatalogResponseStagesItemEndDayMin).max(saveGrowthCatalogResponseStagesItemEndDayMax),
   "story": zod.string().max(saveGrowthCatalogResponseStagesItemStoryMax),
+  "detailPhrase": zod.string().max(saveGrowthCatalogResponseStagesItemDetailPhraseMax).optional(),
+  "detailDescription": zod.string().max(saveGrowthCatalogResponseStagesItemDetailDescriptionMax).optional(),
   "imageUrl": zod.string().min(1),
   "rewards": zod.array(zod.object({
   "id": zod.string().min(1),
@@ -149,6 +167,10 @@ export const getMyGrowthResponseCurrentStageOneEndDayMin = 0;
 export const getMyGrowthResponseCurrentStageOneEndDayMax = 1000000;
 
 export const getMyGrowthResponseCurrentStageOneStoryMax = 2000;
+
+export const getMyGrowthResponseCurrentStageOneDetailPhraseMax = 2000;
+
+export const getMyGrowthResponseCurrentStageOneDetailDescriptionMax = 10000;
 
 
 
@@ -177,6 +199,8 @@ export const GetMyGrowthResponse = zod.object({
   "startDay": zod.number().min(getMyGrowthResponseCurrentStageOneStartDayMin).max(getMyGrowthResponseCurrentStageOneStartDayMax),
   "endDay": zod.number().min(getMyGrowthResponseCurrentStageOneEndDayMin).max(getMyGrowthResponseCurrentStageOneEndDayMax),
   "story": zod.string().max(getMyGrowthResponseCurrentStageOneStoryMax),
+  "detailPhrase": zod.string().max(getMyGrowthResponseCurrentStageOneDetailPhraseMax).optional(),
+  "detailDescription": zod.string().max(getMyGrowthResponseCurrentStageOneDetailDescriptionMax).optional(),
   "imageUrl": zod.string().min(1),
   "rewards": zod.array(zod.object({
   "id": zod.string().min(1),
@@ -209,6 +233,10 @@ export const unlockGrowthAvatarResponseCurrentStageOneEndDayMax = 1000000;
 
 export const unlockGrowthAvatarResponseCurrentStageOneStoryMax = 2000;
 
+export const unlockGrowthAvatarResponseCurrentStageOneDetailPhraseMax = 2000;
+
+export const unlockGrowthAvatarResponseCurrentStageOneDetailDescriptionMax = 10000;
+
 
 
 export const unlockGrowthAvatarResponseCurrentStageOneRewardsItemTextMax = 240;
@@ -236,6 +264,8 @@ export const UnlockGrowthAvatarResponse = zod.object({
   "startDay": zod.number().min(unlockGrowthAvatarResponseCurrentStageOneStartDayMin).max(unlockGrowthAvatarResponseCurrentStageOneStartDayMax),
   "endDay": zod.number().min(unlockGrowthAvatarResponseCurrentStageOneEndDayMin).max(unlockGrowthAvatarResponseCurrentStageOneEndDayMax),
   "story": zod.string().max(unlockGrowthAvatarResponseCurrentStageOneStoryMax),
+  "detailPhrase": zod.string().max(unlockGrowthAvatarResponseCurrentStageOneDetailPhraseMax).optional(),
+  "detailDescription": zod.string().max(unlockGrowthAvatarResponseCurrentStageOneDetailDescriptionMax).optional(),
   "imageUrl": zod.string().min(1),
   "rewards": zod.array(zod.object({
   "id": zod.string().min(1),
@@ -263,6 +293,10 @@ export const getUserGrowthResponseCurrentStageOneEndDayMax = 1000000;
 
 export const getUserGrowthResponseCurrentStageOneStoryMax = 2000;
 
+export const getUserGrowthResponseCurrentStageOneDetailPhraseMax = 2000;
+
+export const getUserGrowthResponseCurrentStageOneDetailDescriptionMax = 10000;
+
 
 
 export const getUserGrowthResponseCurrentStageOneRewardsItemTextMax = 240;
@@ -281,6 +315,8 @@ export const GetUserGrowthResponse = zod.object({
   "startDay": zod.number().min(getUserGrowthResponseCurrentStageOneStartDayMin).max(getUserGrowthResponseCurrentStageOneStartDayMax),
   "endDay": zod.number().min(getUserGrowthResponseCurrentStageOneEndDayMin).max(getUserGrowthResponseCurrentStageOneEndDayMax),
   "story": zod.string().max(getUserGrowthResponseCurrentStageOneStoryMax),
+  "detailPhrase": zod.string().max(getUserGrowthResponseCurrentStageOneDetailPhraseMax).optional(),
+  "detailDescription": zod.string().max(getUserGrowthResponseCurrentStageOneDetailDescriptionMax).optional(),
   "imageUrl": zod.string().min(1),
   "rewards": zod.array(zod.object({
   "id": zod.string().min(1),

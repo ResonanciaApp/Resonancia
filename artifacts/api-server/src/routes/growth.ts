@@ -7,6 +7,7 @@ import { requireRole } from "../middlewares/requireRole";
 import { getGrowthProgress, readGrowthCatalog, unlockGrowthAvatar } from "../lib/growthService";
 import { GrowthError, validateGrowthOrder } from "../lib/growthRules";
 import { growthSeed } from "../lib/growthSeed";
+import { adoptGrowthEditorial } from "../lib/growthEditorial";
 import { lockObjectPaths, validateOwnedCompletedImageUpload } from "../lib/objectAccess";
 
 const router = Router();
@@ -40,7 +41,10 @@ router.put("/admin/growth/catalog", requireAuth, requireRole("admin"), async (re
           throw new GrowthError(400, "Sube la imagen desde el editor de Tu camino");
         }
       }
-      await tx.update(growthCatalogTable).set({ stages, revision: revision + 1, updatedAt: new Date() })
+      const adopted = stages.map(stage => adoptGrowthEditorial(
+        stage, before.stages.find(existing => existing.id === stage.id),
+      ));
+      await tx.update(growthCatalogTable).set({ stages: adopted, revision: revision + 1, updatedAt: new Date() })
         .where(eq(growthCatalogTable.id, "main"));
     });
     res.json(await readGrowthCatalog());

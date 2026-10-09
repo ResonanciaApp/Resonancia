@@ -37,16 +37,17 @@ export function GrowthJourneySheet({
   const { theme } = useSceneTheme();
   const scrollRef = useRef<ScrollView>(null);
   const [helpVisible, setHelpVisible] = useState(false);
-  const [intentionDetailVisible, setIntentionDetailVisible] = useState(false);
+  const [detailStageId, setDetailStageId] = useState<string | null>(null);
   const [descriptionHeight, setDescriptionHeight] = useState(69);
   const closeHelp = useCallback(() => setHelpVisible(false), []);
+  const closeDetail = useCallback(() => setDetailStageId(null), []);
   useEffect(() => {
     if (!visible) {
       closeHelp();
-      setIntentionDetailVisible(false);
+      closeDetail();
     }
     else scrollRef.current?.scrollTo({ y: 0, animated: false });
-  }, [visible, closeHelp]);
+  }, [visible, closeHelp, closeDetail]);
 
   if (!visible) return null;
 
@@ -58,7 +59,7 @@ export function GrowthJourneySheet({
       visible
       transparent={false}
       animationType="slide"
-      onRequestClose={helpVisible ? closeHelp : intentionDetailVisible ? () => setIntentionDetailVisible(false) : onClose}
+      onRequestClose={helpVisible ? closeHelp : detailStageId ? closeDetail : onClose}
       statusBarTranslucent
       navigationBarTranslucent
       testID="growth-journey-modal"
@@ -82,9 +83,9 @@ export function GrowthJourneySheet({
           contentInsetAdjustmentBehavior="never"
           automaticallyAdjustContentInsets={false}
           accessibilityViewIsModal
-          pointerEvents={helpVisible || intentionDetailVisible ? "none" : "auto"}
-          accessibilityElementsHidden={helpVisible || intentionDetailVisible}
-          importantForAccessibility={helpVisible || intentionDetailVisible ? "no-hide-descendants" : "auto"}
+          pointerEvents={helpVisible || detailStageId ? "none" : "auto"}
+          accessibilityElementsHidden={helpVisible || !!detailStageId}
+          importantForAccessibility={helpVisible || detailStageId ? "no-hide-descendants" : "auto"}
           testID="growth-journey-scroll"
         >
           <View style={[styles.header, { marginTop: topPad + 8 }]}>
@@ -118,12 +119,14 @@ export function GrowthJourneySheet({
             </Pressable>
           </View>
           <View style={{ paddingTop: FORMER_INTRO_FIXED_HEIGHT + descriptionHeight - FIRST_STAGE_RISE + FIRST_STAGE_DROP }}>
-            <GrowthJourney onIntentionPress={() => setIntentionDetailVisible(true)} />
+            <GrowthJourney onStagePress={setDetailStageId} />
           </View>
         </ScrollView>
-        {intentionDetailVisible && (
+        {detailStageId && (
           <GrowthStageDetail
-            onClose={() => setIntentionDetailVisible(false)}
+            key={detailStageId}
+            stageId={detailStageId}
+            onClose={closeDetail}
           />
         )}
         <GrowthJourneyHelpSheet

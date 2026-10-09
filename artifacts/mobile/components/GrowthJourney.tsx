@@ -15,7 +15,7 @@ import { useColors } from "@/hooks/useColors";
 import { useSceneTheme } from "@/context/SceneThemeContext";
 
 export const GROWTH_ROW_HEIGHT = 205;
-const GROWTH_STAGE_ICON_SIZE = 133;
+export const GROWTH_STAGE_ICON_SIZE = 133;
 export const GROWTH_BLOOM_ART_SIZE = GROWTH_STAGE_ICON_SIZE + 4;
 
 const GROWTH_COLORS = {
@@ -481,7 +481,7 @@ function GrowthTimeline({ children }: { children: React.ReactNode }) {
   );
 }
 
-export function GrowthJourney({ onIntentionPress }: { onIntentionPress?: () => void } = {}) {
+export function GrowthJourney({ onIntentionPress, onStagePress }: { onIntentionPress?: () => void; onStagePress?: (stageId: string) => void } = {}) {
   const [ascentExpanded, setAscentExpanded] = useState(false);
   const { theme } = useSceneTheme();
   const { levels, currentStage, reachedStageIds, loading, error } = useGrowth();
@@ -508,7 +508,7 @@ export function GrowthJourney({ onIntentionPress }: { onIntentionPress?: () => v
             level={level}
             status={status(level)}
             florecimiento
-            onPress={level.id === "intencion" ? onIntentionPress : undefined}
+            onPress={onStagePress ? () => onStagePress(level.id) : level.id === "intencion" ? onIntentionPress : undefined}
           />
         ))}
       </GrowthTimeline>
@@ -536,6 +536,7 @@ export function GrowthJourney({ onIntentionPress }: { onIntentionPress?: () => v
               key={level.id}
               level={level}
               status={status(level)}
+              onPress={onStagePress ? () => onStagePress(level.id) : undefined}
             />
           ))}
         </GrowthTimeline>

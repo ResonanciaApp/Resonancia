@@ -5422,6 +5422,8 @@ components:
         startDay: { type: integer, minimum: 0, maximum: 1000000 }
         endDay: { type: integer, minimum: 0, maximum: 1000000 }
         story: { type: string, maxLength: 2000 }
+        detailPhrase: { type: string, maxLength: 2000 }
+        detailDescription: { type: string, maxLength: 10000 }
         imageUrl: { type: string, minLength: 1 }
         rewards:
           type: array

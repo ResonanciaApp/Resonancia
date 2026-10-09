@@ -4,6 +4,8 @@ export type GrowthLevel = {
   startDay: number;
   endDay: number;
   story: string;
+  detailPhrase?: string;
+  detailDescription?: string;
   image: number | string;
   group?: "florecimiento" | "ascenso";
   rewards?: { id: string; enabled: boolean; text: string; amount: number }[];

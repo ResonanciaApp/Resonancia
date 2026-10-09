@@ -110,7 +110,7 @@ function uiHarness() {
     "@/hooks/useColors": { useColors: () => ({ foreground: "#FBFBFB" }) },
     "@/constants/colors": { NAVIGATION_HELP_ICON_COLOR: "#F9F9F9", MEMBERSHIP_AURORA: { premium: { accent: "#BE9650" } } },
     "@/components/GrowthJourney": { GrowthJourney: (props: any) => React.createElement(
-      native.Pressable, { testID: "test-open-intention", onPress: props.onIntentionPress }, "PRIMERA ETAPA",
+      native.Pressable, { testID: "test-open-intention", onPress: () => props.onStagePress("intencion") }, "PRIMERA ETAPA",
     ) },
     "@/components/GrowthStageDetail": { GrowthStageDetail: (props: any) => {
       detailProps = props;
@@ -216,6 +216,7 @@ test("Intención opens inside the same Modal; close and back preserve Tu camino,
   assert.equal(h.nodes.get("growth-journey-scroll").accessibilityElementsHidden, true);
   assert.equal(h.help.visible, false);
   assert.equal(h.detail.onHelp, undefined);
+  assert.equal(h.detail.stageId, "intencion");
   h.back();
   assert.doesNotMatch(render(), /data-testid="growth-stage-detail"/);
   assert.equal(closes, 0);

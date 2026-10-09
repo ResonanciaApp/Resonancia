@@ -45,6 +45,8 @@ function validate(stages: Stage[]): Record<string, string[]> {
   for (const g of GROUPS) {
     for (const s of stages.filter((x) => x.group === g.value)) {
       if (!s.name.trim()) add(s.id, "Falta el nombre.");
+      if ((s.detailPhrase?.length ?? 0) > 2000) add(s.id, "Frase del detalle: máximo 2.000 caracteres.");
+      if ((s.detailDescription?.length ?? 0) > 10000) add(s.id, "Descripción larga del detalle: máximo 10.000 caracteres.");
       if (!s.imageUrl) add(s.id, "Falta la imagen.");
       if (!Number.isInteger(s.startDay) || !Number.isInteger(s.endDay) || s.startDay < 0) add(s.id, "Los días deben ser enteros desde 0.");
       else if (s.endDay < s.startDay) add(s.id, "El día final no puede ser menor al inicial.");
@@ -99,7 +101,7 @@ export default function TuCaminoPage() {
     edit((s) => {
       const last = s.filter((x) => x.group === group).at(-1);
       const start = last ? last.endDay + 1 : 0;
-      return [...s, { id: uid(), group, name: "", startDay: start, endDay: start, story: "", imageUrl: "", rewards: [] }];
+      return [...s, { id: uid(), group, name: "", startDay: start, endDay: start, story: "", detailPhrase: "", detailDescription: "", imageUrl: "", rewards: [] }];
     });
   }
   function move(id: string, dir: -1 | 1) {
@@ -259,6 +261,22 @@ export default function TuCaminoPage() {
                         }}>{isRange ? "Día único" : "Rango"}</Button>
                       </div>
                       <Textarea value={s.story} maxLength={2000} rows={2} placeholder="Historia de la etapa" onChange={(e) => patch(s.id, { story: e.target.value })} />
+                      <fieldset className="space-y-3 rounded-lg border border-border p-3">
+                        <legend className="px-1 text-sm font-medium">Pantalla de detalle</legend>
+                        <p className="text-xs text-muted-foreground">El título, los días y la imagen usan los datos de esta etapa.</p>
+                        <div className="space-y-1">
+                          <label htmlFor={`detail-phrase-${s.id}`} className="text-sm font-medium">Frase del detalle</label>
+                          <Textarea id={`detail-phrase-${s.id}`} data-testid={`input-detail-phrase-${s.id}`}
+                            value={s.detailPhrase ?? s.story} maxLength={2000} rows={3}
+                            onChange={(e) => patch(s.id, { detailPhrase: e.target.value })} />
+                        </div>
+                        <div className="space-y-1">
+                          <label htmlFor={`detail-description-${s.id}`} className="text-sm font-medium">Descripción larga del detalle</label>
+                          <Textarea id={`detail-description-${s.id}`} data-testid={`input-detail-description-${s.id}`}
+                            value={s.detailDescription ?? ""} maxLength={10000} rows={5}
+                            onChange={(e) => patch(s.id, { detailDescription: e.target.value })} />
+                        </div>
+                      </fieldset>
                     </div>
                   </div>
 

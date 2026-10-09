@@ -19,6 +19,8 @@ const { growthLevels } = load("../data/growthLevels.ts", (name) => {
   assets.push(name);
   return assets.length;
 });
+const editorial = load("../lib/growth-editorial.ts", (name) => { throw new Error(`Unexpected editorial import ${name}`); });
+let levels = growthLevels;
 const constants = load("../constants/colors.ts", (name) => { throw new Error(`Unexpected color import ${name}`); });
 const gradientHelpers = load("../utils/moodHeroGradient.ts", (name) => { throw new Error(`Unexpected gradient import ${name}`); });
 const colors = ["#060A0F", "#1B2342", "#242350"];
@@ -63,7 +65,8 @@ const { GrowthStageDetail } = load("../components/GrowthStageDetail.tsx", (name)
     "expo-linear-gradient": { LinearGradient: Native },
     "react-native-safe-area-context": { useSafeAreaInsets: () => ({ top, bottom: 34 }) },
     "@/components/CinematicFadeSlide": { CinematicFadeSlide: Native },
-    "@/components/GrowthJourney": { GROWTH_BLOOM_ART_SIZE: 137, GrowthLevelImage: (props: any) => React.createElement(Native, { ...props, testID: "growth-detail-hero-artwork" }) },
+    "@/components/GrowthJourney": { GROWTH_BLOOM_ART_SIZE: 137, GROWTH_STAGE_ICON_SIZE: 133, GrowthLevelImage: (props: any) => React.createElement(Native, { ...props, testID: "growth-detail-hero-artwork" }) },
+    "@/lib/growth-editorial": editorial,
     "@/constants/colors": constants,
     "@/utils/moodHeroGradient": gradientHelpers,
     "../assets/images/growth/00-intencion-profile-square.png": (() => {
@@ -72,15 +75,69 @@ const { GrowthStageDetail } = load("../components/GrowthStageDetail.tsx", (name)
     })(),
     "@/context/SceneThemeContext": { useSceneTheme: () => ({ theme: { gradient: colors, gradientLocations: locations, gradientStart: { x: 0, y: 0 }, gradientEnd: { x: 0, y: 1 } } }) },
     "@/data/growthLevels": { growthLevels },
-    "@/context/GrowthContext": { useGrowth: () => ({ levels: growthLevels }) },
+    "@/context/GrowthContext": { useGrowth: () => ({ levels }) },
   };
   assert.ok(name in imports, `Missing detail mock: ${name}`);
   return imports[name];
 });
 const render = (props: Record<string, unknown> = {}) => {
   nodes.clear(); presses.clear();
-  return renderToStaticMarkup(React.createElement(GrowthStageDetail, { onClose() {}, ...props }));
+  return renderToStaticMarkup(React.createElement(GrowthStageDetail, { stageId: "intencion", onClose() {}, ...props }));
 };
+
+test("every stage uses its own editorial detail, current title and range, including new ascenso stages", () => {
+  const newStage = {
+    id: "custom-stage", group: "ascenso", name: "Claridad", startDay: 450, endDay: 480,
+    story: "Solo en recorrido", image: "https://example.test/stage.png",
+    detailPhrase: "Frase editorial", detailDescription: "Descripción editorial\ncon más líneas.",
+  };
+  levels = [...growthLevels, newStage];
+  try {
+    const html = render({ stageId: newStage.id });
+    assert.match(html, /Claridad/);
+    assert.match(html, /450–480 días/);
+    assert.match(html, /Frase editorial/);
+    assert.match(html, /Descripción editorial/);
+    assert.doesNotMatch(html, /Solo en recorrido|Antes del primer día|Intención/);
+    assert.equal(nodes.get("growth-detail-hero-artwork").size, 266);
+    assert.equal(nodes.get("growth-detail-hero-artwork").level.image, newStage.image);
+    newStage.name = "Presencia";
+    newStage.endDay = 490;
+    newStage.detailPhrase = "Nueva frase";
+    assert.match(render({ stageId: newStage.id }), /Presencia[\s\S]*450–490 días[\s\S]*Nueva frase/);
+  } finally { levels = growthLevels; }
+});
+
+test("deleted editorial text stays deleted, without a divider or legacy fallback", () => {
+  levels = [{ ...growthLevels[0], detailPhrase: "", detailDescription: "" }];
+  try {
+    const html = render();
+    assert.doesNotMatch(html, /Antes del primer día/);
+    assert.equal(editorial.growthDetailCopy(levels[0]).phrase, "");
+    const copy = nodes.get("growth-stage-detail-scroll").children[1].props.children.props.children;
+    assert.deepEqual(copy, [false, false, false]);
+    levels = [{ ...growthLevels[0], detailPhrase: "Solo frase", detailDescription: "" }];
+    const phraseOnly = render();
+    assert.match(phraseOnly, /Solo frase/);
+    const copyWithPhrase = nodes.get("growth-stage-detail-scroll").children[1].props.children.props.children;
+    assert.equal(copyWithPhrase[1], false);
+    assert.equal(copyWithPhrase[2], false);
+  } finally { levels = growthLevels; }
+});
+
+test("a removed stage is never replaced with another stage", () => {
+  assert.equal(render({ stageId: "removed-stage" }), "");
+});
+
+test("offline legacy detail adopts once and never invents a long description for other stages", () => {
+  assert.equal(editorial.growthDetailCopy(growthLevels[0]).phrase, growthLevels[0].story);
+  assert.match(editorial.growthDetailCopy(growthLevels[0]).description, /Antes del primer día/);
+  for (const level of growthLevels.slice(1)) {
+    const copy = editorial.growthDetailCopy(level);
+    assert.equal(copy.phrase, level.story);
+    assert.equal(copy.description, "");
+  }
+});
 
 test("Intención detail uses its actual hero, 0-day label and canonical story, not Semilla content", () => {
   const html = render();

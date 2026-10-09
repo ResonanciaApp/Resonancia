@@ -3,6 +3,7 @@ import { createInsertSchema } from "drizzle-zod";
 export type GrowthStageRecord = {
   id: string; group: "florecimiento" | "ascenso"; name: string;
   startDay: number; endDay: number; story: string; imageUrl: string;
+  detailPhrase?: string; detailDescription?: string;
   rewards: { id: string; enabled: boolean; text: string; amount: number }[];
 };
 export const growthCatalogTable = pgTable("growth_catalog", {

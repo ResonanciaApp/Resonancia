@@ -50,6 +50,10 @@ export interface GrowthStage {
   endDay: number;
   /** @maxLength 2000 */
   story: string;
+  /** @maxLength 2000 */
+  detailPhrase?: string;
+  /** @maxLength 10000 */
+  detailDescription?: string;
   /** @minLength 1 */
   imageUrl: string;
   /** @maxItems 3 */

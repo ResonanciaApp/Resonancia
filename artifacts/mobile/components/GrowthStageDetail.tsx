@@ -14,40 +14,42 @@ import {
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 
 import { CinematicFadeSlide } from "@/components/CinematicFadeSlide";
-import { GrowthLevelImage, GROWTH_BLOOM_ART_SIZE } from "@/components/GrowthJourney";
+import { GrowthLevelImage, GROWTH_BLOOM_ART_SIZE, GROWTH_STAGE_ICON_SIZE } from "@/components/GrowthJourney";
 import { MEMBERSHIP_AURORA, STREAK_INFO_COLORS } from "@/constants/colors";
 import { useSceneTheme } from "@/context/SceneThemeContext";
 import { useGrowth } from "@/context/GrowthContext";
+import { growthDetailCopy } from "@/lib/growth-editorial";
 
 const WHITE = STREAK_INFO_COLORS.foreground;
 const GOLD = MEMBERSHIP_AURORA.premium.accent;
 const DURATION = 1400;
 const BASE_DELAY = 150;
 
-const EXPLANATION =
-  "Antes del primer día hay un momento de decisión. No necesitas hacer nada todavía: solo reconocer que quieres darte un espacio de calma y volver a él, a tu ritmo.";
-
 export function GrowthStageDetail({
   onClose,
+  stageId,
 }: {
   onClose: () => void;
+  stageId: string;
 }) {
   const insets = useSafeAreaInsets();
   const { theme } = useSceneTheme();
   const { levels } = useGrowth();
   const { height } = useWindowDimensions();
-  const level = levels.find(item => item.id === "intencion");
+  const level = levels.find(item => item.id === stageId);
   React.useEffect(() => {
     if (!level) onClose();
   }, [level, onClose]);
   const topPad = Platform.OS === "web" ? 67 : Math.max(insets.top, 40);
   const bottomPad = Platform.OS === "web" ? 34 : insets.bottom;
-  const heroSize = GROWTH_BLOOM_ART_SIZE * 2;
+  const ascent = (level?.group ?? (stageId.startsWith("ascenso-") ? "ascenso" : "florecimiento")) === "ascenso";
+  const heroSize = (ascent ? GROWTH_STAGE_ICON_SIZE : GROWTH_BLOOM_ART_SIZE) * 2;
   const heroTop = topPad + 20;
   const heroBottom = heroTop + heroSize;
   const fadeStart = Math.min(1, Math.max(0, (heroBottom - 48) / height));
   const fadeEnd = Math.min(1, Math.max(fadeStart, (heroBottom + 8) / height));
   if (!level) return null;
+  const { phrase, description } = growthDetailCopy(level);
   const dayLabel = level.startDay === level.endDay ? `${level.startDay} días` : `${level.startDay}–${level.endDay} días`;
 
   return (
@@ -102,9 +104,9 @@ export function GrowthStageDetail({
 
         <CinematicFadeSlide active replayKey="copy" delay={BASE_DELAY + 700} duration={DURATION}>
           <View style={styles.copy}>
-            <Text style={styles.quote}>{level.story}</Text>
-            <View style={styles.rule} />
-            <Text style={styles.explanation}>{EXPLANATION}</Text>
+            {!!phrase.trim() && <Text style={styles.quote}>{phrase}</Text>}
+            {!!phrase.trim() && !!description.trim() && <View style={styles.rule} />}
+            {!!description.trim() && <Text style={styles.explanation}>{description}</Text>}
           </View>
         </CinematicFadeSlide>
 

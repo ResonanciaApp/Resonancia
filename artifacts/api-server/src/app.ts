@@ -39,6 +39,9 @@ app.use(capacityMetricsMiddleware());
 app.use(CLERK_PROXY_PATH, clerkProxyMiddleware());
 
 app.use(cors({ credentials: true, origin: true }));
+// Up to 200 stages with multiline editorial text can exceed the default 100 KB.
+// Keep the larger JSON allowance scoped to this catalog, not to the rest of the API.
+app.use("/api/admin/growth/catalog", express.json({ limit: "12mb" }));
 app.use(
   express.json({
     verify: (_req, _res, buf) => {

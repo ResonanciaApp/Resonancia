@@ -471,9 +471,38 @@ test("only Intención opens a detail while stage status follows real progression
     assert.doesNotMatch(row, /growth-stage-.+-open/);
   }
   const source = readFileSync(new URL("../components/GrowthJourney.tsx", import.meta.url), "utf8");
-  assert.match(source, /onPress=\{level.id === "intencion" \? onIntentionPress : undefined\}/);
+  assert.match(source, /onPress=\{onStagePress \? \(\) => onStagePress\(level.id\) : level.id === "intencion" \? onIntentionPress : undefined\}/);
   assert.match(source, /status=\{status\(level\)\}/);
   assert.match(source, /reachedStageIds\.includes\(level.id\)/);
+});
+
+test("all Florecimiento and El ascenso phases open their own editorial detail", () => {
+  const oldReact = mocks.react;
+  const oldData = mocks["@/data/growthLevels"];
+  mocks.react = { ...React, useState: (initial: any) => React.useState(initial === false ? true : initial) };
+  const base = (oldData as any).growthLevels[0];
+  mocks["@/data/growthLevels"] = {
+    growthLevels: [base, { ...base, id: "new-bloom", name: "Nueva fase" }],
+    ascentLevels: [{ ...base, id: "ascenso-claridad", name: "Claridad" }, { ...base, id: "custom-ascent", name: "Nuevo ascenso" }],
+  };
+  try {
+    const module = { exports: {} as any };
+    new Function("require", "module", "exports", compiled)((name: string) => {
+      assert.ok(name in mocks, `Missing journey mock ${name}`);
+      return mocks[name];
+    }, module, module.exports);
+    const { GrowthJourney } = module.exports;
+    const data = mocks["@/data/growthLevels"] as { growthLevels: any[]; ascentLevels: any[] };
+    const opened: string[] = [];
+    const html = renderToStaticMarkup(React.createElement(GrowthJourney, {
+      onStagePress: (id: string) => opened.push(id),
+    }));
+    for (const level of [...data.growthLevels, ...data.ascentLevels]) {
+      assert.match(html, new RegExp(`data-testid="growth-stage-${level.id}-open"`));
+    }
+    capturedIntentionPress?.();
+    assert.deepEqual(opened, ["intencion"]);
+  } finally { mocks.react = oldReact; mocks["@/data/growthLevels"] = oldData; }
 });
 
 test("the detail hero stays unscaled while timeline and profile use smaller faded circles", () => {
