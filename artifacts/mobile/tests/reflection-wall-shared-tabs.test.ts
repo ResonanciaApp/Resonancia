@@ -39,13 +39,14 @@ function styles(tree: ts.SourceFile, keys: string[]) {
 test("all dates keep the first date-to-pill spacing without dividers or changing day-group gaps", () => {
   const tree = ast(source("../app/mi-espacio-interior.tsx"));
   const wallStyles = styles(tree, ["dateHeader", "dateHeaderRow", "subsequentDateHeader",
-    "timelineRow", "monthSelectorButton"]);
+    "firstDateHeader", "monthSelectorAboveDate", "timelineRow", "monthSelectorButton"]);
   const header = find(tree, node => ts.isJsxElement(node)
     && node.openingElement.attributes.getText(tree).includes("styles.dateHeader,"));
   const style = header.openingElement.attributes.properties.find((entry: any) =>
     entry.name?.getText(tree) === "style");
   const renderStyle = new Function("styles", "index", compile(`return (${style.initializer.expression.getText(tree)});`));
-  assert.equal(flatten(renderStyle(wallStyles, 0)).marginTop, 6);
+  assert.equal(flatten(renderStyle(wallStyles, 0)).marginTop - wallStyles.dateHeader.marginTop, 15,
+    "the month and all following content move down by another 15px");
   assert.equal(flatten(renderStyle(wallStyles, 3)).marginTop - 16, 35);
   assert.doesNotMatch(source("../app/mi-espacio-interior.tsx"), /dayDivider/);
   assert.equal(wallStyles.dateHeaderRow.minHeight, wallStyles.monthSelectorButton.height,
@@ -55,10 +56,32 @@ test("all dates keep the first date-to-pill spacing without dividers or changing
   assert.equal(wallStyles.dateHeader.marginBottom, 21, "the first date-to-pill gap stays unchanged");
   const row = find(tree, node => ts.isJsxElement(node)
     && node.openingElement.attributes.getText(tree) === "style={styles.dateHeaderRow}");
-  assert.match(row.getText(tree), /index === 0 \? renderMonthSelector\(\) : null/);
+  assert.doesNotMatch(row.getText(tree), /renderMonthSelector/);
   assert.match(row.openingElement.attributes.getText(tree), /style=\{styles.dateHeaderRow\}/,
     "every date uses the same row geometry regardless of whether its month selector is visible");
   assert.equal(wallStyles.timelineRow.marginBottom, 26, "spacing within each day stays unchanged");
+});
+
+test("month selector sits above only the first date with a 15px gap, aligned to the left margin", () => {
+  const tree = ast(source("../app/mi-espacio-interior.tsx"));
+  const wallStyles = styles(tree, ["monthSelectorAboveDate"]);
+  const month = find(tree, node => ts.isJsxExpression(node)
+    && node.getText(tree).includes("index === 0 &&")
+    && node.getText(tree).includes("styles.monthSelectorAboveDate"));
+  const render = new Function("React", "View", "styles", "index", "renderMonthSelector",
+    compile(`return (${month.expression.getText(tree)});`));
+  const control = React.createElement("month-filter");
+  const first = render(React, "view", wallStyles, 0, () => control);
+  assert.equal(first.props.children, control);
+  assert.equal(first.props.style.alignSelf, "flex-start");
+  assert.equal(first.props.style.marginBottom, 15);
+  for (const index of [1, 2, 3, 4]) {
+    assert.equal(render(React, "view", wallStyles, index, () => control), false);
+  }
+  const entrance = find(tree, node => ts.isJsxElement(node)
+    && node.openingElement.attributes.getText(tree).includes("styles.dateHeaderEntrance"));
+  assert.ok(entrance.getText(tree).indexOf("styles.monthSelectorAboveDate")
+    < entrance.getText(tree).indexOf("styles.dateHeaderRow"), "month precedes the first date in layout flow");
 });
 
 test("Muro expansivo filters keep category colors and Todos uses a borderless selected gradient", () => {

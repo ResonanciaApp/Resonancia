@@ -570,7 +570,7 @@ function PremiumInnerSpaceScreen() {
       const revealId = String(item.id);
       const revealDelay = wallRevealDelays.get(revealId) ?? 0;
       return (
-        <View style={[styles.dateHeader, index > 0 && styles.subsequentDateHeader]}>
+        <View style={[styles.dateHeader, index === 0 && styles.firstDateHeader, index > 0 && styles.subsequentDateHeader]}>
           <WallScrollReveal
             active={wallRevealDelays.has(revealId)}
             completedIds={completedRevealIds}
@@ -581,11 +581,15 @@ function PremiumInnerSpaceScreen() {
             style={styles.dateHeaderEntrance}
             translateYFrom={12}
           >
+            {index === 0 && (
+              <View style={styles.monthSelectorAboveDate}>
+                {renderMonthSelector()}
+              </View>
+            )}
             <View style={styles.dateHeaderRow}>
               <View style={styles.datePill}>
                 <Text style={[styles.dateText, { color: colors.foreground }]}>{item.dateLabel}</Text>
               </View>
-              {index === 0 ? renderMonthSelector() : null}
             </View>
           </WallScrollReveal>
         </View>
@@ -1016,6 +1020,13 @@ const styles = StyleSheet.create({
   },
   subsequentDateHeader: {
     marginTop: 51,
+  },
+  firstDateHeader: {
+    marginTop: 21,
+  },
+  monthSelectorAboveDate: {
+    alignSelf: "flex-start",
+    marginBottom: 15,
   },
   dateHeaderEntrance: {
     width: "100%",
