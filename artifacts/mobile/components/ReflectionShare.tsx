@@ -4,10 +4,13 @@ import { Image } from "expo-image";
 import { Feather } from "@expo/vector-icons";
 import { Gesture, GestureDetector } from "react-native-gesture-handler";
 import Animated, {
+  cancelAnimation,
+  ReduceMotion,
   runOnJS,
   useAnimatedStyle,
   useSharedValue,
   useAnimatedScrollHandler,
+  withTiming,
   type SharedValue,
 } from "react-native-reanimated";
 import { useQueryClient } from "@tanstack/react-query";
@@ -310,11 +313,19 @@ export function ReflectionShare({ reflection, onClose }: { reflection: Reflectio
   const galleryViewport = useSharedValue(REFLECTION_GALLERY_HEIGHT - 16);
   const galleryContentHeight = useSharedValue(0);
   const galleryScrollOffset = useSharedValue(0);
+  const galleryScrollOpacity = useSharedValue(0);
+  useEffect(() => () => cancelAnimation(galleryScrollOpacity), [galleryScrollOpacity]);
   const galleryScrollHandler = useAnimatedScrollHandler({
+    onBeginDrag: () => {
+      galleryScrollOpacity.value = withTiming(1, { duration: 160, reduceMotion: ReduceMotion.System });
+    },
+    onEndDrag: () => {
+      galleryScrollOpacity.value = withTiming(0, { duration: 240, reduceMotion: ReduceMotion.System });
+    },
     onScroll: (event) => { galleryScrollOffset.value = event.contentOffset.y; },
   });
   const galleryScrollTrackStyle = useAnimatedStyle(() => ({
-    opacity: galleryContentHeight.value > galleryViewport.value ? 1 : 0,
+    opacity: galleryContentHeight.value > galleryViewport.value ? galleryScrollOpacity.value : 0,
   }));
   const galleryScrollThumbStyle = useAnimatedStyle(() => {
     const indicator = reflectionGalleryScrollIndicator(
@@ -468,7 +479,7 @@ export function ReflectionShare({ reflection, onClose }: { reflection: Reflectio
           style={{ width: 43, height: 43, borderRadius: 22, overflow: "hidden",
             backgroundColor: "transparent" }}>
           {currentAvatarSource ? <Image source={currentAvatarSource}
-            contentFit="cover" style={{ width: "100%", height: "100%" }} /> : null}
+            contentFit="cover" style={{ width: "100%", height: "100%", opacity: includedAvatar ? 1 : 0.8 }} /> : null}
           {includedAvatar && <View pointerEvents="none" style={[StyleSheet.absoluteFillObject,
             { backgroundColor: "rgba(0,0,0,0.7)", borderWidth: 1,
               borderColor: "rgba(255,255,255,0.5)", borderRadius: 22 }]} />}
