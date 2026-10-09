@@ -571,6 +571,7 @@ function PremiumInnerSpaceScreen() {
       const revealDelay = wallRevealDelays.get(revealId) ?? 0;
       return (
         <View style={[styles.dateHeader, index > 0 && styles.subsequentDateHeader]}>
+          {index > 0 && <View pointerEvents="none" style={styles.dayDivider} />}
           <WallScrollReveal
             active={wallRevealDelays.has(revealId)}
             completedIds={completedRevealIds}
@@ -1015,7 +1016,15 @@ const styles = StyleSheet.create({
     marginTop: 6,
   },
   subsequentDateHeader: {
-    marginTop: 16,
+    marginTop: 51,
+  },
+  dayDivider: {
+    position: "absolute",
+    top: -38,
+    left: 0,
+    right: 0,
+    height: 1,
+    backgroundColor: "rgba(249,249,249,0.1)",
   },
   dateHeaderEntrance: {
     width: "100%",

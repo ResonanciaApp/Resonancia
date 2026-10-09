@@ -36,6 +36,32 @@ function styles(tree: ts.SourceFile, keys: string[]) {
       compile(`return (${entry.initializer.getText(tree)});`))(32)]));
 }
 
+test("day groups add 35px of separation with a divider above later dates, not above the first date", () => {
+  const tree = ast(source("../app/mi-espacio-interior.tsx"));
+  const wallStyles = styles(tree, ["dateHeader", "subsequentDateHeader", "dayDivider", "timelineRow"]);
+  const header = find(tree, node => ts.isJsxElement(node)
+    && node.openingElement.attributes.getText(tree).includes("styles.dateHeader,"));
+  const style = header.openingElement.attributes.properties.find((entry: any) =>
+    entry.name?.getText(tree) === "style");
+  const divider = header.children.find((node: ts.Node) => ts.isJsxExpression(node)
+    && node.getText(tree).includes("styles.dayDivider"));
+  assert.ok(divider);
+  const renderStyle = new Function("styles", "index", compile(`return (${style.initializer.expression.getText(tree)});`));
+  const renderDivider = new Function("React", "View", "styles", "index",
+    compile(`return (${divider.expression.getText(tree)});`));
+  assert.equal(flatten(renderStyle(wallStyles, 0)).marginTop, 6);
+  assert.equal(renderDivider(React, "view", wallStyles, 0), false);
+  assert.equal(flatten(renderStyle(wallStyles, 3)).marginTop - 16, 35);
+  const line = renderDivider(React, "view", wallStyles, 3);
+  assert.equal(line.props.pointerEvents, "none");
+  assert.equal(line.props.style.position, "absolute", "the divider does not add extra spacing");
+  assert.equal(line.props.style.height, 1);
+  const dayGap = wallStyles.timelineRow.marginBottom + wallStyles.subsequentDateHeader.marginTop;
+  assert.ok(line.props.style.top < 0 && line.props.style.top > -dayGap,
+    "the line sits between the preceding card and the next date");
+  assert.equal(wallStyles.timelineRow.marginBottom, 26, "spacing within each day stays unchanged");
+});
+
 test("Muro expansivo filters keep category colors and Todos uses a borderless selected gradient", () => {
   const tree = ast(source("../app/mi-espacio-interior.tsx"));
   const row = find(tree, node => ts.isJsxElement(node)
