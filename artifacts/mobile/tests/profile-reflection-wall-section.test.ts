@@ -397,11 +397,27 @@ test("Registrar uses solid white and theme-specific dark text in both disabled a
     assert.equal(label.props.children, pending ? "Registrando..." : "REGISTRAR");
     assert.equal(label.props.style.find((entry: any) => entry?.color)?.color,
       themeId === "natural" ? "#073B32" : themeId === "cloudy" ? "#166494" : "#0B1438");
-    assert.equal(element.props.style.find((entry: any) => entry?.opacity)?.opacity, undefined);
+    assert.equal(element.props.style.find((entry: any) => entry?.opacity)?.opacity, disabled ? 0.5 : 1);
   }
   }
   assert.doesNotMatch(button.getText(ast), /MaskedView|LinearGradient/);
-  assert.doesNotMatch(button.getText(ast), /opacity:|REGISTER_BUTTON/);
+  assert.doesNotMatch(button.getText(ast), /REGISTER_BUTTON/);
+});
+
+test("Registrar requires both a selected tab and a nonblank message", () => {
+  const card = source("../components/InnerSpaceCard.tsx");
+  const expression = card.match(/const isSubmitDisabled =([\s\S]+?);/)?.[1];
+  assert.ok(expression);
+  const disabled = new Function("category", "message", "createMutation", "authLoading", "isPremium", "freeQuotaLoading", "freeLimitReached", `return (${expression});`);
+  for (const [category, message, expected] of [
+    [null, "", true],
+    [null, "Gracias", true],
+    ["gratitude", "", true],
+    ["gratitude", "   ", true],
+    ["gratitude", "Gracias", false],
+  ]) {
+    assert.equal(disabled(category, message, { isPending: false }, false, true, false, false), expected);
+  }
 });
 
 test("Ver muro has a white border at 80 percent opacity in every theme", () => {

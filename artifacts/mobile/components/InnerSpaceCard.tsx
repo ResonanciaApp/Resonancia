@@ -686,6 +686,7 @@ export function InnerSpaceCard({
           style={[
             styles.submitButton,
             { backgroundColor: "#F9F9F9" },
+            { opacity: isSubmitDisabled ? 0.5 : 1 },
           ]}
           disabled={isSubmitDisabled}
           onPress={saveMessage}
