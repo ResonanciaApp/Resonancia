@@ -480,7 +480,7 @@ test("Ver muro has no border, starts at the left margin and has a matching right
   assert.match(button, /color: "#F9F9F9"/);
   assert.equal(style("InnerSpaceCard", "wallButton").borderWidth, 0);
   assert.equal(style("InnerSpaceCard", "wallButton").justifyContent, "flex-start");
-  assert.deepEqual(style("InnerSpaceCard", "wallButton").transform, [{ translateX: -25 }]);
+  assert.deepEqual(style("InnerSpaceCard", "wallButton").transform, [{ translateX: 25 }]);
   assert.equal(style("InnerSpaceCard", "submitButton").transform, undefined);
   assert.equal(style("InnerSpaceCard", "submitButton").flexDirection, "row");
 });
