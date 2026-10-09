@@ -1,3 +1,6 @@
+import * as Haptics from "expo-haptics";
+import { useReducedMotion } from "react-native-reanimated";
+import { ReflectionCategoryTabFill } from "@/components/ReflectionCategoryTabFill";
 import React, { useState, useEffect, useMemo, useRef, useCallback } from "react";
 import { View, Text, StyleSheet, Pressable, ScrollView, FlatList, ActivityIndicator, Modal, TextInput, Platform, Animated, Easing, Alert } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
@@ -237,6 +240,7 @@ function PremiumInnerSpaceScreen() {
     isCatalogStale,
     isCatalogEmpty,
   } = useReflectionCategories();
+  const reduceMotion = useReducedMotion();
   const today = useRef(new Date()).current;
   const [filter, setFilter] = useState<ReflectionCategory | "all">("all");
   const [selectedMonth, setSelectedMonth] = useState(today.getMonth());
@@ -762,6 +766,7 @@ function PremiumInnerSpaceScreen() {
             style={[
               styles.filterPill,
               filter === "all" ? styles.filterPillSelected : styles.filterPillInactive,
+              filter !== "all" && styles.filterPillAllInactive,
             ]}
             onPress={() => {
               if (filter === "all") return;
@@ -769,7 +774,7 @@ function PremiumInnerSpaceScreen() {
               setFilter("all");
             }}
           >
-            {filter === "all" && <ReflectionCategoryTabBorder opacity={0.75} />}
+            {filter === "all" && <ReflectionCategoryTabBorder opacity={0.75} borderWidth={3} />}
             <ReflectionCategoryTabLabel label="Todos" selected={filter === "all"} textStyle={styles.filterText} />
           </Pressable>
            {reflectionCategoryOptions.map(cat => {
@@ -782,19 +787,21 @@ function PremiumInnerSpaceScreen() {
                 accessibilityState={{ selected: isActive }}
                 style={[
                   styles.filterPill,
-                  isActive ? styles.filterPillSelected : styles.filterPillInactive,
+                  styles.filterPillCategory,
                 ]}
                 onPress={() => {
                   if (filter === cat.id) return;
+                  void Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Soft).catch(() => {});
                   disableWallAnimations();
                   setFilter(cat.id as ReflectionCategory);
                 }}
               >
-                {isActive && <ReflectionCategoryTabBorder color={cat.color} opacity={0.75} />}
+                <ReflectionCategoryTabFill selected={isActive} color={cat.color} reduceMotion={Boolean(reduceMotion)} />
                 <ReflectionCategoryTabLabel
                   label={cat.label}
                   selected={isActive}
                   textStyle={styles.filterText}
+                  uniformWeight
                 />
               </Pressable>
             );
@@ -966,6 +973,14 @@ const styles = StyleSheet.create({
     borderRadius: 27,
     borderWidth: 1,
     gap: 8,
+  },
+  filterPillCategory: {
+    borderWidth: 0,
+    paddingHorizontal: 17,
+  },
+  filterPillAllInactive: {
+    borderWidth: 3,
+    paddingHorizontal: 14,
   },
   filterPillInactive: {
     backgroundColor: "rgba(0,0,0,0.16)",

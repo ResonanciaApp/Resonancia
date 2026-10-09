@@ -303,19 +303,19 @@ test("quota restrictions and unmount still prevent focus", () => {
   f.flushFrames();
   assert.equal(f.focusCalls, 0);
 });
-test("Pleyades tabs add the fill and emit one soft haptic; other themes keep selection", () => {
-  for (const theme of ["pleyades", "indigo2", "cloudy", "natural"]) {
-    const expected = theme === "pleyades" ? "impact:soft" : "selection";
+test("all themes use borderless category fills, uniform text and one soft haptic", () => {
+  for (const theme of ["pleyades", "indigo2", "cloudy", "natural", "dark"]) {
+    const expected = "impact:soft";
     const f = fixture(0, theme);
     f.open();
     const tab = f.nodes.get("category-gratitude");
     const kids = React.Children.toArray(tab.children as any) as any[];
     const initialLabel = kids.find(k => k.type === "tab-label");
-    assert.equal(initialLabel.props.uniformWeight, theme === "pleyades");
+    assert.equal(initialLabel.props.uniformWeight, true);
     assert.equal(initialLabel.props.textStyle.fontSize, 10);
-    assert.equal(kids.some(k => k.type === "tab-fill"), theme === "pleyades");
+    assert.equal(kids.some(k => k.type === "tab-fill"), true);
     const initialStyle = Object.assign({}, ...tab.style({ pressed: false }).filter(Boolean));
-    assert.equal(initialStyle.borderWidth, theme === "pleyades" ? 0 : 2);
+    assert.equal(initialStyle.borderWidth, 0);
     assert.equal(initialStyle.paddingVertical + initialStyle.borderWidth, 10.5);
     assert.equal(initialStyle.paddingHorizontal + initialStyle.borderWidth, 14.5);
     tab.onPress();
@@ -323,26 +323,23 @@ test("Pleyades tabs add the fill and emit one soft haptic; other themes keep sel
     assert.deepEqual(f.haptics, [expected]);
     const selectedTab = f.nodes.get("category-gratitude");
     const selectedLabel = (React.Children.toArray(selectedTab.children) as any[]).find(k => k.type === "tab-label");
-    assert.equal(selectedLabel.props.uniformWeight, theme === "pleyades");
+    assert.equal(selectedLabel.props.uniformWeight, true);
     assert.equal(selectedLabel.props.textStyle.fontSize, initialLabel.props.textStyle.fontSize);
     assert.equal(selectedTab.accessibilityState.selected, true);
-    assert.equal(Object.assign({}, ...selectedTab.style({ pressed: false }).filter(Boolean)).backgroundColor,
-      theme === "pleyades" ? "transparent" : "rgba(0,0,0,0.16)");
-    if (theme === "pleyades") {
+    assert.equal(Object.assign({}, ...selectedTab.style({ pressed: false }).filter(Boolean)).backgroundColor, undefined);
+    {
       const fill = (React.Children.toArray(selectedTab.children) as any[]).find(k => k.type === "tab-fill");
       assert.equal(fill.props.selected, true);
       assert.equal(fill.props.color, "#ABCDEF");
       assert.equal((React.Children.toArray(selectedTab.children) as any[]).some(k => k.type === "tab-border"), false);
       assert.equal(Object.assign({}, ...selectedTab.style({ pressed: false }).filter(Boolean)).borderWidth, 0);
-    } else {
-      assert.equal((React.Children.toArray(selectedTab.children) as any[]).some(k => k.type === "tab-border"), true);
     }
     selectedTab.onPress();
     f.render();
     assert.deepEqual(f.haptics, [expected, expected]);
     const deselectedTab = f.nodes.get("category-gratitude");
     assert.equal(deselectedTab.accessibilityState.selected, false);
-    if (theme === "pleyades") {
+    {
       const fill = (React.Children.toArray(deselectedTab.children) as any[]).find(k => k.type === "tab-fill");
       assert.equal(fill.props.selected, false, "fill remains mounted so deselection can fade out");
       assert.equal(fill.props.color, "#ABCDEF");

@@ -83,7 +83,7 @@ test("selected labels are fully white and bold while inactive labels retain thei
   assert.match(render(false), /data-color="#E0E0E0" data-weight="500"/);
 });
 
-test("Pleyades uniform labels keep the same 10px size and 500 weight in both states", () => {
+test("uniform labels keep the same size and 500 weight in both states", () => {
   for (const selected of [false, true]) {
     const html = renderToStaticMarkup(React.createElement(ReflectionCategoryTabLabel, {
       label: "Gratitud", selected, uniformWeight: true, textStyle: { fontSize: 10, fontWeight: "500" },
@@ -131,10 +131,12 @@ test("category borders use their exact editorial color without affecting layout 
 test("composer and message filters share the category label and keep filtering handlers", () => {
   const composer = source("../components/InnerSpaceCard.tsx");
   const wall = source("../app/mi-espacio-interior.tsx");
-  assert.match(composer, /category === cat\.id && theme\.id !== "pleyades" && <ReflectionCategoryTabBorder color=\{cat\.color\}/);
+  assert.doesNotMatch(composer, /<ReflectionCategoryTabBorder/);
+  assert.match(composer, /<ReflectionCategoryTabFill selected=\{category === cat\.id\} color=\{cat\.color\}/);
   assert.match(composer, /<ReflectionCategoryTabLabel[\s\S]*?selected=\{category === cat\.id\}/);
-  assert.match(wall, /isActive && <ReflectionCategoryTabBorder color=\{cat\.color\}/);
+  assert.match(wall, /<ReflectionCategoryTabFill selected=\{isActive\} color=\{cat\.color\}/);
   assert.match(wall, /filter === "all" && <ReflectionCategoryTabBorder/);
+  assert.match(wall, /filter === "all" && <ReflectionCategoryTabBorder opacity=\{0\.75\} borderWidth=\{3\}/);
   assert.match(wall, /<ReflectionCategoryTabLabel[\s\S]*?selected=\{isActive\}/);
   assert.match(wall, /setFilter\(cat\.id as ReflectionCategory\)/);
   assert.match(wall, /setFilter\("all"\)/);

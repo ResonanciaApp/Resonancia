@@ -18,7 +18,7 @@ import { useColors } from "@/hooks/useColors";
 import { DiscoverSearchBorder } from "@/components/DiscoverSearchBorder";
 import { ReflectionWallPlusIcon, WALL_PLUS_HALO_SIZES as HALO_SIZES } from "@/components/ReflectionWallPlusIcon";
 import { ReflectionCategoryTabFill } from "@/components/ReflectionCategoryTabFill";
-import { ReflectionCategoryTabBorder, ReflectionCategoryTabLabel } from "@/components/ReflectionCategoryTabLabel";
+import { ReflectionCategoryTabLabel } from "@/components/ReflectionCategoryTabLabel";
 import {
   REFLECTION_WALL_BORDER_GRADIENT,
   REFLECTION_WALL_BORDER_LOCATIONS,
@@ -58,6 +58,7 @@ const PLUS_ROTATION_STOPS = [
 const PANEL_DURATION = 620;
 const SCREEN_SETTLE_DURATION = 650;
 export const INNER_SPACE_CARD_BOTTOM_MARGIN = 32;
+const COMPOSER_EDGE_GAP = 20;
 
 export function InnerSpaceCard({
   focusRequest = 0,
@@ -269,11 +270,7 @@ export function InnerSpaceCard({
   };
 
   const toggleCategory = (nextCategory: ReflectionCategory) => {
-    if (theme.id === "pleyades") {
-      void Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Soft).catch(() => {});
-    } else {
-      void Haptics.selectionAsync().catch(() => {});
-    }
+    void Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Soft).catch(() => {});
     setCategory((current) => current === nextCategory ? null : nextCategory);
   };
 
@@ -484,6 +481,11 @@ export function InnerSpaceCard({
 
   // Absolute children start inside the native border. Extend the decorative
   // stroke by that inset, without changing the card's layout or content.
+  const flatBorder = canonicalVerticalInsets && getThemeStyleId(theme.id) === "cloudy";
+  const containerBottomInset = flatBorder
+    ? styles.cloudyFlushBorder.paddingBottom
+    : (profileVariant ? styles.profileWall : canonicalVerticalInsets ? styles.canonicalVerticalInsets : styles.container).paddingBottom + 1;
+  const bottomGapExtra = COMPOSER_EDGE_GAP - containerBottomInset;
   const sectionBorderInset = canonicalVerticalInsets && !profileVariant && getThemeStyleId(theme.id) === "cloudy" ? 0 : -1;
 
   return (
@@ -581,21 +583,16 @@ export function InnerSpaceCard({
               accessibilityState={{ selected: category === cat.id }}
               style={({ pressed }) => [
                 styles.gridItem,
-                 category === cat.id && styles.selectedGridItem,
-                theme.id === "pleyades" && styles.pleyadesGridItem,
                 pressed && styles.pressedCategory,
               ]}
               onPress={() => toggleCategory(cat.id as ReflectionCategory)}
             >
-              {theme.id === "pleyades" && (
-                <ReflectionCategoryTabFill selected={category === cat.id} color={cat.color} reduceMotion={Boolean(reduceMotion)} />
-              )}
-              {category === cat.id && theme.id !== "pleyades" && <ReflectionCategoryTabBorder color={cat.color} borderWidth={profileVariant ? 1 : 2} opacity={profileVariant ? 0.75 : 0.8} inset={-2} />}
+              <ReflectionCategoryTabFill selected={category === cat.id} color={cat.color} reduceMotion={Boolean(reduceMotion)} />
               <ReflectionCategoryTabLabel
                 label={cat.label}
                 selected={category === cat.id}
                 textStyle={styles.gridLabel}
-                uniformWeight={theme.id === "pleyades"}
+                uniformWeight
               />
             </Pressable>
           ))}
@@ -676,7 +673,7 @@ export function InnerSpaceCard({
         style={styles.actionRow}
         onLayout={(event) => {
           const { y, height } = event.nativeEvent.layout;
-          updateContentHeight(styles.expandBody.paddingTop + y + height);
+          updateContentHeight(styles.expandBody.paddingTop + y + height + bottomGapExtra);
         }}
       >
         <Pressable
@@ -830,21 +827,10 @@ const styles = StyleSheet.create({
     alignItems: "center",
     justifyContent: "center",
     gap: 7,
-    paddingVertical: 8.5,
-    paddingHorizontal: 12.5,
-    borderRadius: 999,
-    borderWidth: 2,
-    borderColor: "rgba(255,255,255,0.1)",
-  },
-  selectedGridItem: {
-    borderColor: "transparent",
-    backgroundColor: "rgba(0,0,0,0.16)",
-  },
-  pleyadesGridItem: {
-    backgroundColor: "transparent",
-    borderWidth: 0,
     paddingVertical: 10.5,
     paddingHorizontal: 14.5,
+    borderRadius: 999,
+    borderWidth: 0,
   },
   pressedCategory: {
     transform: [{ scale: 0.97 }],
@@ -892,7 +878,7 @@ const styles = StyleSheet.create({
   actionRow: {
     flexDirection: "row",
     gap: 10,
-    marginTop: -3,
+    marginTop: 0,
   },
   submitButton: {
     flex: 1,

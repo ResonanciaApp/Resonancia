@@ -2,7 +2,7 @@ import React, { useEffect, useRef } from "react";
 import { Animated, Easing, StyleSheet, View } from "react-native";
 import { BlurView } from "expo-blur";
 
-// Premium trial selection fade, with Pleyades' category-colored tab fills.
+// Premium trial selection fade, with shared category-colored tab fills.
 export const TAB_FILL_FADE = {
   duration: 400,
   easing: Easing.inOut(Easing.cubic),

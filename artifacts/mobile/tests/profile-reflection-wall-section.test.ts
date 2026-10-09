@@ -380,18 +380,19 @@ test("the wall renders all ten brightened stops at equal intervals without chang
   assert.equal(resolve(wall.props.maskElement.props.style).borderRadius, 24);
 });
 
-test("both reflection actions are 6px shorter and move up 3px together", () => {
+test("both reflection actions keep their 42px height and the input-to-button gap is 20px", () => {
   const button = style("InnerSpaceCard", "submitButton");
   assert.equal(button.minHeight, 48 - 6);
   assert.equal(button.borderRadius, 20);
   const row = style("InnerSpaceCard", "actionRow");
-  assert.equal(row.marginTop, -3);
+  assert.equal(row.marginTop, 0);
+  assert.equal(style("InnerSpaceCard", "inputContainer").marginBottom, 20);
   assert.equal(row.flexDirection, "row");
   assert.equal(row.gap, 10);
   const card = source("../components/InnerSpaceCard.tsx");
   assert.match(card, /testID="open-reflection-wall"[\s\S]*?style=\{\[styles\.submitButton, styles\.wallButton/);
   assert.match(card, /testID="save-reflection"[\s\S]*?style=\{\[\s*styles\.submitButton/);
-  assert.match(card, /updateContentHeight\(styles\.expandBody\.paddingTop \+ y \+ height\)/);
+  assert.match(card, /updateContentHeight\(styles\.expandBody\.paddingTop \+ y \+ height \+ bottomGapExtra\)/);
 });
 
 test("Registrar uses solid white and theme-specific dark text in both disabled and active states", () => {
@@ -469,22 +470,22 @@ test("Ver muro has a white border at 80 percent opacity in every theme", () => {
   assert.equal(style("InnerSpaceCard", "wallButton").borderWidth, 1);
 });
 
-test("Profile tabs have a 1px selected stroke at 75 percent opacity without changing the home tabs", () => {
-  assert.equal(style("InnerSpaceCard", "gridItem").borderWidth, 2);
+test("category tabs are borderless everywhere while Todos alone retains its 3px gradient stroke", () => {
+  assert.equal(style("InnerSpaceCard", "gridItem").borderWidth, 0);
   const card = source("../components/InnerSpaceCard.tsx");
-  assert.match(card, /ReflectionCategoryTabBorder color=\{cat\.color\} borderWidth=\{profileVariant \? 1 : 2\} opacity=\{profileVariant \? 0\.75 : 0\.8\} inset=\{-2\}/);
+  assert.doesNotMatch(card, /<ReflectionCategoryTabBorder/);
   const stroke = source("../components/ReflectionCategoryTabLabel.tsx");
   assert.match(stroke, /borderColor: color, borderWidth, opacity/);
   assert.match(stroke, /StyleSheet\.absoluteFillObject, \{ opacity \}/);
   const wall = source("../app/mi-espacio-interior.tsx");
-  assert.match(wall, /filter === "all" && <ReflectionCategoryTabBorder opacity=\{0\.75\}/);
-  assert.match(wall, /isActive && <ReflectionCategoryTabBorder color=\{cat\.color\} opacity=\{0\.75\}/);
+  assert.match(wall, /filter === "all" && <ReflectionCategoryTabBorder opacity=\{0\.75\} borderWidth=\{3\}/);
+  assert.doesNotMatch(wall, /isActive && <ReflectionCategoryTabBorder/);
 });
 
 test("Composer tabs and labels are smaller with 4px more space between tabs", () => {
   const tab = style("InnerSpaceCard", "gridItem");
-  assert.equal(tab.paddingVertical, 8.5);
-  assert.equal(tab.paddingHorizontal, 12.5);
+  assert.equal(tab.paddingVertical, 10.5);
+  assert.equal(tab.paddingHorizontal, 14.5);
   assert.equal(style("InnerSpaceCard", "gridLabel").fontSize, 10);
   assert.equal(style("InnerSpaceCard", "categoriesContent").gap, 12);
 });
@@ -524,7 +525,7 @@ test("wall composer moves tabs and content up 20px and reduces measured panel he
   assert.equal(style("InnerSpaceCard", "inputContainer").paddingBottom, 34);
   const card = source("../components/InnerSpaceCard.tsx");
   assert.ok(card.indexOf("style={styles.categoriesMask}") < card.indexOf("styles.inputContainer"));
-  assert.match(card, /updateContentHeight\(styles\.expandBody\.paddingTop \+ y \+ height\)/);
+  assert.match(card, /updateContentHeight\(styles\.expandBody\.paddingTop \+ y \+ height \+ bottomGapExtra\)/);
 });
 
 test("wall character counter renders the current length at the lower-right without taking input space", () => {
@@ -555,7 +556,7 @@ test("wall character counter renders the current length at the lower-right witho
   assert.match(card, /maxLength=\{300\}/);
 });
 
-test("selected wall categories use black at 28%, the wall border and the stable bold label", () => {
+test("composer category tabs share fill, font and borderless dimensions in both states", () => {
   const card = source("../components/InnerSpaceCard.tsx");
   const ast = ts.createSourceFile("InnerSpaceCard.tsx", card, ts.ScriptTarget.Latest, true, ts.ScriptKind.TSX);
   let chip: ts.JsxElement | undefined;
@@ -566,33 +567,29 @@ test("selected wall categories use black at 28%, the wall border and the stable 
   }
   visit(ast);
   assert.ok(chip);
-  const selectedStyle = style("InnerSpaceCard", "selectedGridItem");
-  assert.equal(selectedStyle.backgroundColor, "rgba(0,0,0,0.16)");
-  assert.equal(selectedStyle.borderColor, "transparent");
-  assert.equal(selectedStyle.opacity, undefined);
-  assert.equal(selectedStyle.fontWeight, undefined);
   const compiled = ts.transpileModule(`return (${chip.getText(ast)});`, {
     compilerOptions: { jsx: ts.JsxEmit.React },
   }).outputText;
-  const render = new Function("React", "Pressable", "ReflectionCategoryTabBorder", "ReflectionCategoryTabLabel",
-    "cat", "category", "styles", "toggleCategory", compiled);
+  const render = new Function("React", "Pressable", "ReflectionCategoryTabFill", "ReflectionCategoryTabLabel",
+    "cat", "category", "styles", "toggleCategory", "reduceMotion", compiled);
   const styles = {
     gridItem: style("InnerSpaceCard", "gridItem"),
-    selectedGridItem: selectedStyle,
     gridLabel: style("InnerSpaceCard", "gridLabel"),
     pressedCategory: style("InnerSpaceCard", "pressedCategory"),
   };
   for (const cat of [{ id: "gratitude", label: "Gratitud", color: "#F075B3" },
     { id: "calm", label: "Calma", color: "#50AFB0" },
     { id: "custom", label: "Editorial", color: "#477FBD" }]) {
-    const active = render(React, () => null, () => null, () => null, cat, cat.id, styles, () => {});
-    assert.equal(Object.assign({}, ...active.props.style({ pressed: false })).backgroundColor, "rgba(0,0,0,0.16)");
-    assert.ok(active.props.children[0], "selected tab has the shared wall border");
+    const active = render(React, "pressable", "fill", "label", cat, cat.id, styles, () => {}, false);
+    assert.equal(Object.assign({}, ...active.props.style({ pressed: false })).borderWidth, 0);
+    assert.ok(active.props.children[0], "selected tab has the shared fill");
     assert.equal(active.props.children[0].props.color, cat.color);
     assert.equal(active.props.children[1].props.selected, true);
+    assert.equal(active.props.children[1].props.uniformWeight, true);
     assert.equal(active.props.accessibilityState.selected, true);
-    const inactive = render(React, () => null, () => null, () => null, cat, null, styles, () => {});
-    assert.equal(inactive.props.children[0], false, "inactive tab does not gain a gradient border");
+    const inactive = render(React, "pressable", "fill", "label", cat, null, styles, () => {}, false);
+    assert.equal(inactive.props.children[0].type, "fill");
+    assert.equal(inactive.props.children[0].props.selected, false);
     assert.equal(inactive.props.children[1].props.selected, false);
     assert.equal(active.props.children[1].props.textStyle, inactive.props.children[1].props.textStyle);
   }
