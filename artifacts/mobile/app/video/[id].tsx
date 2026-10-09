@@ -199,6 +199,7 @@ export default function VideoPlayerScreen() {
       <View style={[styles.header, { paddingTop: topPad + 8 }]}>
         <BackPill
           onPress={() => router.back()}
+          style={{ alignSelf: "flex-start" }}
           size={28}
           bgColor="rgba(0,0,0,0.16)"
           borderColor="rgba(241,224,255,0.25)"

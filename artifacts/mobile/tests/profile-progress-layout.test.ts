@@ -498,22 +498,21 @@ test("Perfil lowers the streak divider by 3px to its centered position without c
   assert.match(source, /sectionDivider:\s*\{\s*height: 1,\s*width: "100%",\s*marginVertical: 16,/);
 });
 
-test("Perfil keeps creativity points in place while Tu camino moves before calendar", () => {
+test("Perfil hides creativity points while Tu camino remains before calendar", () => {
   const profile = readFileSync(new URL("../components/ProfileScreenBase.tsx", import.meta.url), "utf8");
-  assert.match(profile, /beforeCalendar=\{\s*<>\s*<CreativityPointsSection style=\{\{ marginBottom: PROFILE_SECTION_GAP \}\} onInfoPress=\{\(\) => setCreativityInfoOpen\(true\)\} \/>/);
-  assert.equal((profile.match(/<CreativityPointsSection /g) ?? []).length, 1);
+  assert.doesNotMatch(profile, /CreativityPointsSection|CreativityPointsInfoSheet|creativityInfoOpen/);
   const html = render({
     separateStreakHistory: true,
     showStreakWeek: false,
     showPersonalStats: false,
     showCalendar: true,
     beforeCalendar: React.createElement(React.Fragment, null,
-      React.createElement("div", { "data-testid": "profile-creativity-points" }),
       React.createElement("div", { "data-testid": "profile-growth-intention" })),
   });
-  const positions = ["profile-streak-history", "profile-creativity-points", "profile-growth-intention", "calendar"]
+  const positions = ["profile-streak-history", "profile-growth-intention", "calendar"]
     .map(id => html.indexOf(`data-testid="${id}"`));
   assert.ok(positions.every((position, index) => position >= 0 && (index === 0 || position > positions[index - 1])));
+  assert.doesNotMatch(html, /profile-creativity-points/);
   assert.doesNotMatch(render({
     showCalendar: false,
     beforeCalendar: React.createElement("div", { "data-testid": "profile-creativity-points" }),
@@ -563,8 +562,7 @@ test("Perfil swaps calendar and Intención, preserving section gaps and the Tu c
     pressPreview = onPress;
     return React.createElement("div", { "data-testid": "growth-level-zero-preview", "data-embedded": embedded, "data-title-size": titleFontSize }, "Intención");
   };
-  const Points = () => React.createElement("div", { "data-testid": "profile-creativity-points" });
-  const buildSlot = new Function("React", "View", "GrowthLevelPreviewCard", "CreativityPointsSection", `${compiled}\nreturn buildSlot;`)(React, NativeView, Preview, Points);
+  const buildSlot = new Function("React", "View", "GrowthLevelPreviewCard", `${compiled}\nreturn buildSlot;`)(React, NativeView, Preview);
   const html = render({
     separateStreakHistory: true,
     showPersonalStats: false,
@@ -575,8 +573,8 @@ test("Perfil swaps calendar and Intención, preserving section gaps and the Tu c
   const history = html.indexOf('data-testid="profile-streak-history"');
   const intention = html.indexOf('data-testid="profile-growth-intention"');
   const calendar = html.indexOf('data-testid="calendar"');
-  const points = html.indexOf('data-testid="profile-creativity-points"');
-  assert.ok(history >= 0 && history < points && points < intention && intention < calendar);
+  assert.doesNotMatch(html, /profile-creativity-points/);
+  assert.ok(history >= 0 && history < intention && intention < calendar);
   assert.match(html, /data-testid="profile-growth-intention" data-margin-bottom="21"/);
   assert.doesNotMatch(html, /data-testid="profile-growth-intention"[^>]*data-margin-top=/);
   assert.match(profileSource, /<ProfileReflectionWallSection[\s\S]*?style=\{\{ marginTop: 25, marginBottom: PROFILE_SECTION_GAP \}\}/);
