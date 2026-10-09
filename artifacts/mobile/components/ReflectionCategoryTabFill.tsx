@@ -50,5 +50,5 @@ export const ReflectionCategoryTabFill = React.memo(function ReflectionCategoryT
 
 const styles = StyleSheet.create({
   clip: { ...StyleSheet.absoluteFillObject, borderRadius: 999, overflow: "hidden" },
-  tintSelected: { opacity: 0.12 },
+  tintSelected: { opacity: 0.23 },
 });

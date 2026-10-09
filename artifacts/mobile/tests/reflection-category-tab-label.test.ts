@@ -37,6 +37,7 @@ const mocks: Record<string, unknown> = {
     Text: ({ children, style, accessible, importantForAccessibility }: any) => {
       const resolved = flatten(style);
       return React.createElement("span", {
+        "data-size": resolved.fontSize,
         "data-color": resolved.color,
         "data-weight": resolved.fontWeight,
         "data-accessible": accessible,
@@ -82,6 +83,16 @@ test("selected labels are fully white and bold while inactive labels retain thei
   assert.match(render(false), /data-color="#E0E0E0" data-weight="500"/);
 });
 
+test("Pleyades uniform labels keep the same 10px size and 500 weight in both states", () => {
+  for (const selected of [false, true]) {
+    const html = renderToStaticMarkup(React.createElement(ReflectionCategoryTabLabel, {
+      label: "Gratitud", selected, uniformWeight: true, textStyle: { fontSize: 10, fontWeight: "500" },
+    }));
+    assert.match(html, new RegExp(`data-size="10" data-color="${selected ? "#FFFFFF" : "#E0E0E0"}" data-weight="500"`));
+    assert.match(html, /data-color="transparent" data-weight="700"/, "reserved width remains unchanged");
+  }
+});
+
 test("both selection states reserve the same bold text width with an inaccessible transparent copy", () => {
   for (const selected of [false, true]) {
     const html = render(selected);
@@ -100,8 +111,9 @@ test("Todos shares the same selected white/bold label as the category filters", 
 
 test("Todos keeps its existing wall gradient and brightness with a 1px stroke", () => {
   const html = renderToStaticMarkup(React.createElement(ReflectionCategoryTabBorder));
-  assert.match(html, new RegExp(`data-gradient="${REFLECTION_WALL_BORDER_GRADIENT.join(",")}"`));
-  assert.match(html, /data-start="0,0.5" data-end="1,0.5"/);
+  assert.ok(html.includes(`data-gradient="${REFLECTION_WALL_BORDER_GRADIENT.join(",")}"`));
+  assert.ok(html.includes(`data-start="${REFLECTION_WALL_BORDER_START.x},${REFLECTION_WALL_BORDER_START.y}"`));
+  assert.ok(html.includes(`data-end="${REFLECTION_WALL_BORDER_END.x},${REFLECTION_WALL_BORDER_END.y}"`));
   assert.match(html, /data-radius="999" data-width="1"/);
   assert.ok(html.includes(`data-brightness="${REFLECTION_WALL_BORDER_BRIGHTNESS}"`));
 });
@@ -119,7 +131,7 @@ test("category borders use their exact editorial color without affecting layout 
 test("composer and message filters share the category label and keep filtering handlers", () => {
   const composer = source("../components/InnerSpaceCard.tsx");
   const wall = source("../app/mi-espacio-interior.tsx");
-  assert.match(composer, /category === cat\.id && <ReflectionCategoryTabBorder color=\{cat\.color\}/);
+  assert.match(composer, /category === cat\.id && theme\.id !== "pleyades" && <ReflectionCategoryTabBorder color=\{cat\.color\}/);
   assert.match(composer, /<ReflectionCategoryTabLabel[\s\S]*?selected=\{category === cat\.id\}/);
   assert.match(wall, /isActive && <ReflectionCategoryTabBorder color=\{cat\.color\}/);
   assert.match(wall, /filter === "all" && <ReflectionCategoryTabBorder/);

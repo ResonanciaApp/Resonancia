@@ -310,6 +310,9 @@ test("Pleyades tabs add the fill and emit one soft haptic; other themes keep sel
     f.open();
     const tab = f.nodes.get("category-gratitude");
     const kids = React.Children.toArray(tab.children as any) as any[];
+    const initialLabel = kids.find(k => k.type === "tab-label");
+    assert.equal(initialLabel.props.uniformWeight, theme === "pleyades");
+    assert.equal(initialLabel.props.textStyle.fontSize, 10);
     assert.equal(kids.some(k => k.type === "tab-fill"), theme === "pleyades");
     const initialStyle = Object.assign({}, ...tab.style({ pressed: false }).filter(Boolean));
     assert.equal(initialStyle.borderWidth, theme === "pleyades" ? 0 : 2);
@@ -319,6 +322,9 @@ test("Pleyades tabs add the fill and emit one soft haptic; other themes keep sel
     f.render();
     assert.deepEqual(f.haptics, [expected]);
     const selectedTab = f.nodes.get("category-gratitude");
+    const selectedLabel = (React.Children.toArray(selectedTab.children) as any[]).find(k => k.type === "tab-label");
+    assert.equal(selectedLabel.props.uniformWeight, theme === "pleyades");
+    assert.equal(selectedLabel.props.textStyle.fontSize, initialLabel.props.textStyle.fontSize);
     assert.equal(selectedTab.accessibilityState.selected, true);
     assert.equal(Object.assign({}, ...selectedTab.style({ pressed: false }).filter(Boolean)).backgroundColor,
       theme === "pleyades" ? "transparent" : "rgba(0,0,0,0.16)");

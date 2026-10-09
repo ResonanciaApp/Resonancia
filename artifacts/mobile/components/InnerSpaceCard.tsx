@@ -595,6 +595,7 @@ export function InnerSpaceCard({
                 label={cat.label}
                 selected={category === cat.id}
                 textStyle={styles.gridLabel}
+                uniformWeight={theme.id === "pleyades"}
               />
             </Pressable>
           ))}

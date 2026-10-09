@@ -31,10 +31,12 @@ export const ReflectionCategoryTabLabel = React.memo(function ReflectionCategory
   label,
   selected,
   textStyle,
+  uniformWeight = false,
 }: {
   label: string;
   selected: boolean;
   textStyle: StyleProp<TextStyle>;
+  uniformWeight?: boolean;
 }) {
   const color = selected ? "#FFFFFF" : "#E0E0E0";
 
@@ -49,7 +51,7 @@ export const ReflectionCategoryTabLabel = React.memo(function ReflectionCategory
         {label}
       </Text>
       <View style={styles.visibleLayer} pointerEvents="none">
-        <Text style={[textStyle, styles.visibleText, { color, fontWeight: selected ? "700" : "500" }]}>
+        <Text style={[textStyle, styles.visibleText, { color, fontWeight: selected && !uniformWeight ? "700" : "500" }]}>
           {label}
         </Text>
       </View>
