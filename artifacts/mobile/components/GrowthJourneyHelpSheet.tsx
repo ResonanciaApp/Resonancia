@@ -24,8 +24,8 @@ export function GrowthJourneyHelpSheet({
   const insets = useSafeAreaInsets();
   const { theme } = useSceneTheme();
   const colors = useColors();
-  // Add 25pt to the previous window; the fixed header keeps its title in place.
-  const sheetHeight = Math.min(height * 0.8, GROWTH_MAP_HEIGHT + 50 + 44 + 32 + Math.max(insets.bottom, 16));
+  // Window height is independent from the map offset and its fixed header.
+  const sheetHeight = Math.min(height * 0.8, GROWTH_MAP_HEIGHT + 85 + 44 + 32 + Math.max(insets.bottom, 16));
   const { rendered, sheetY, backdropOpacity } = useGrowthJourneySheetMotion(visible, sheetHeight);
   const pan = useMemo(() => PanResponder.create({
     onMoveShouldSetPanResponder: (_, gesture) =>
@@ -139,7 +139,7 @@ const styles = StyleSheet.create({
   scroll: { flex: 1 },
   content: { flexGrow: 1, justifyContent: "flex-start", alignItems: "center", paddingBottom: 16 },
   mapHeader: { height: 56 },
-  mapSection: { paddingTop: 30 },
+  mapSection: { paddingTop: 10 },
   mapTitle: { position: "absolute", top: 16, left: 64, right: 64, textAlign: "center", fontFamily: "Manrope", fontSize: 20, lineHeight: 24, fontWeight: "700" },
   closeButton: { position: "absolute", top: 6.5, left: 20, width: 43, height: 43, borderRadius: 21.5, borderWidth: 0, backgroundColor: "rgba(0,0,0,0.16)", alignItems: "center", justifyContent: "center" },
 });

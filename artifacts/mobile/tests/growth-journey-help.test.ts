@@ -261,17 +261,17 @@ test("the map replaces the old help icon and paragraph, fits its sheet and dismi
     }));
   };
   const html = render(true);
-  assert.match(html, /data-testid="growth-help-sheet" data-height="496"/);
+  assert.match(html, /data-testid="growth-help-sheet" data-height="531"/);
   assert.match(html, /data-testid="growth-journey-map"/);
   assert.equal(h.nodes.get("growth-journey-map").width, 388);
   assert.equal(h.nodes.get("growth-map-title").children, "El recorrido");
-  assert.equal(flatten(h.nodes.get("growth-map-section").style).paddingTop, 30);
+  assert.equal(flatten(h.nodes.get("growth-map-section").style).paddingTop, 10);
   const header = flatten(h.nodes.get("growth-map-header").style);
   const title = flatten(h.nodes.get("growth-map-title").style);
   const close = flatten(h.nodes.get("growth-help-close").style);
-  // Same title position (44 + 16); map moves up 25pt from its previous 155pt.
+  // Same title position (44 + 16); map moves up 20pt from its previous 130pt.
   assert.equal(44 + title.top, 60);
-  assert.equal(44 + header.height + 30, 130);
+  assert.equal(44 + header.height + 10, 110);
   assert.equal(title.top + title.lineHeight / 2, close.top + close.height / 2);
   assert.equal(close.width, 43);
   assert.equal(close.height, 43);
@@ -321,7 +321,6 @@ test("the map follows a perfect circle without connecting El Gran Despertar back
       GrowthLevelImage: (props: any) => React.createElement(Node, { ...props, testID: "map-final-phase-art" }),
       RewardLock: (props: any) => React.createElement(Node, { ...props, testID: `${props.levelId}-reward-lock` }),
     },
-    "@/components/StreakWeekRow": { getPositionedDayGradient: () => ["theme-lock-color"] },
     "../assets/images/growth/map-ascenso.webp": "asset:ascenso",
     "../assets/images/growth/map-iluminacion.webp": "asset:iluminacion",
     "../assets/images/growth/map-llegada.webp": "asset:llegada",
@@ -346,13 +345,13 @@ test("the map follows a perfect circle without connecting El Gran Despertar back
       assert.equal(iconStyle.width, i === 0 ? 93 : 52);
       assert.equal(flatten(h.nodes.get(`growth-map-label-${ids[i]}`).style).fontSize, 11);
       if (i) {
-        assert.equal(h.nodes.get(`growth-map-${ids[i]}-reward-lock`).color, "theme-lock-color");
+        assert.equal(h.nodes.get(`growth-map-${ids[i]}-reward-lock`).color, "#F9F9F9");
         assert.equal(h.nodes.get(`growth-map-${ids[i]}-reward-lock`).size, 14);
         const image = h.nodes.get(`growth-map-image-${ids[i]}`);
         const overlay = h.nodes.get(`growth-map-image-overlay-${ids[i]}`);
         assert.equal(image.source, `asset:${ids[i]}`);
         assert.equal(image.resizeMode, "cover");
-        assert.equal(flatten(overlay.style).backgroundColor, "rgba(255,255,255,0.5)");
+        assert.equal(flatten(overlay.style).backgroundColor, "rgba(255,255,255,0.2)");
         assert.equal(overlay.pointerEvents, "none");
         const frame = flatten(h.nodes.get(`growth-map-image-frame-${ids[i]}`).style);
         assert.equal(frame.width, 48);

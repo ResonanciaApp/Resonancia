@@ -3,9 +3,7 @@ import { Image, StyleSheet, Text, View } from "react-native";
 import Svg, { Path } from "react-native-svg";
 
 import { GrowthLevelImage, RewardLock } from "@/components/GrowthJourney";
-import { getPositionedDayGradient } from "@/components/StreakWeekRow";
 import { useGrowth } from "@/context/GrowthContext";
-import { useSceneTheme } from "@/context/SceneThemeContext";
 import { useColors } from "@/hooks/useColors";
 import { allGrowthLevels, type GrowthLevel } from "@/data/growthLevels";
 
@@ -32,8 +30,6 @@ export const GROWTH_MAP_HEIGHT = 350;
 
 export function GrowthJourneyMap({ width }: { width: number }) {
   const colors = useColors();
-  const { theme } = useSceneTheme();
-  const lockColor = getPositionedDayGradient(theme.gradient)[0];
   const { levels } = useGrowth();
   const bloom = levels.filter((l) => l.group === "florecimiento");
   const last: GrowthLevel | undefined = bloom[bloom.length - 1]
@@ -97,7 +93,7 @@ export function GrowthJourneyMap({ width }: { width: number }) {
                     style={[StyleSheet.absoluteFill, styles.imageOverlay]}
                   />
                   <View pointerEvents="none" style={[StyleSheet.absoluteFill, styles.lockOverlay]}>
-                    <RewardLock levelId={`growth-map-${s.id}`} color={lockColor} size={14} />
+                    <RewardLock levelId={`growth-map-${s.id}`} color="#F9F9F9" size={14} />
                   </View>
                 </View>
               )}
@@ -121,7 +117,7 @@ const styles = StyleSheet.create({
   lockedNode: { backgroundColor: "rgba(0,0,0,0.16)" },
   lockedImageFrame: { width: LOCKED - 4, height: LOCKED - 4, borderRadius: (LOCKED - 4) / 2, overflow: "hidden" },
   lockedImage: { width: "100%", height: "100%" },
-  imageOverlay: { backgroundColor: "rgba(255,255,255,0.5)" },
+  imageOverlay: { backgroundColor: "rgba(255,255,255,0.2)" },
   lockOverlay: { alignItems: "center", justifyContent: "center" },
   label: { marginTop: 6, fontFamily: "Manrope", fontSize: 11, lineHeight: 16, fontWeight: "700", textAlign: "center" },
 });
