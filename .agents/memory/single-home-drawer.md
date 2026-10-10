@@ -9,9 +9,9 @@ El drawer global debe tener una sola estructura: la correspondiente a Inicio 3. 
 
 **How to apply:** Toda superficie debe abrir el drawer sin indicar variantes. Al comenzar una apertura, cancelar y restablecer cualquier desplazamiento residual del gesto antes de mostrar el panel.
 
-Mezclador y Respiración continúan directamente debajo de Notificaciones, sin título «Herramientas» ni separación de grupo. Registro de ánimo se retiró solo del menú.
+Mezclador, Respiración y Registro de ánimo forman parte de la lista principal debajo de Notificaciones, sin título «Herramientas» ni separación de grupo.
 
-**Why:** El usuario pidió eliminar ese título y aplicar la separación estándar; posteriormente pidió sacar Registro de ánimo del menú, no de la app.
+**Why:** El usuario pidió eliminar el título de grupo y mantener la separación estándar. Después de haber retirado Registro de ánimo, pidió volver a incluirlo en el drawer.
 
 **How to apply:** Conservar el orden y la separación regular entre filas; no reintroducir un encabezado ni reservar un hueco para la antigua sección.
 

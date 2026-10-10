@@ -22,6 +22,26 @@ import {
 
 const read = (path: string) => readFileSync(new URL(path, import.meta.url), "utf8");
 
+test("Registro de ánimo is restored with the existing picker, without shifting scenes", () => {
+  const menu = read("../components/DrawerMenu.tsx");
+  assert.match(menu, /id: "mood-register", label: "Registro de ánimo", icon: "smile", mciIcon: "emoticon-happy-outline", route: "__mood_picker"/);
+  assert.match(menu, /testID=\{item\.id \? `drawer-item-\$\{item\.id\}` : undefined\}/);
+  const branch = menu.match(/if \(route === "__mood_picker"\) \{([\s\S]*?)\n    \}/)?.[1];
+  assert.ok(branch);
+  let selection: { kind: string; run: () => void } | undefined;
+  let pickerOpens = 0;
+  new Function("selectFromDrawer", "requestMoodPicker", branch)(
+    (action: typeof selection) => { selection = action; },
+    () => { pickerOpens++; },
+  );
+  assert.equal(selection?.kind, "afterClose");
+  assert.equal(pickerOpens, 0, "picker is deferred until the drawer finishes closing");
+  selection!.run();
+  assert.equal(pickerOpens, 1);
+  assert.match(menu, /marginTop: -\(8 \* 8 - 3 \+ 36 \+ 10\)/);
+  assert.equal(36 + 10 - (8 * 8 - 3 + 36 + 10), -(8 * 8 - 3));
+});
+
 test("geometry initializes after the native Babel/worklet transform, not just TypeScript hoisting", () => {
   const require = createRequire(import.meta.url);
   const babel = require("@babel/core");
