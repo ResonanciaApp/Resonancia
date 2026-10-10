@@ -6,7 +6,7 @@
 - [Favoritos folders hide from flat list](favoritos-folder-hides-flat-list.md) — excepción deliberada: sesión en una carpeta de Favoritos desaparece de la lista plana (a diferencia de Playlist/Mezclas donde no se oculta)
 - [Nested folders pattern](nested-folders-pattern.md) — subFolderIds + helpers + unified action sheet shared across Playlist/Mezclas/Favoritos; cycle-prevention via descendant-exclusion in move picker
 - [Storage URLs y fotos locales](storage-url-absolute.md) — solo rutas remotas relativas llevan base del API; preservar URI locales y dar identidad nueva a cada foto seleccionada
-- [Chip fontWeight shift](chip-fontweight-shift.md) — cambiar fontWeight al seleccionar un chip empuja los adyacentes; solo cambiar color; paddingHorizontal va en contentContainerStyle no en el View padre
+- [Tipografía móvil](mobile-typography.md) — Manrope global sin romper iconos, pesos intermedios y chips que no cambien de tamaño al seleccionar
 - [Slide decks](slide-decks.md) — tres artifacts slides distintos: resonancia-deck (Brochure), resonancia-pitch (Pitch Inversionistas), resonancia-plantilla (Invitación); no mezclarlos
 - [Pitch financial coherence](pitch-financial-coherence.md) — cifras del modelo (ronda/equity/uso de fondos/valle/stakes) viven en 6+ slides hardcodeadas; cambiar una = propagar a todas o se contradicen
 - [Navy + gold palette (rebrand)](warm-theme.md) — marca migrada de café/bronce a azul marina #060A0F + dorado #BE9650; mapeo de reemplazo + slides hardcodean hex inline (no usan CSS vars); mockups de decks pendientes
@@ -35,7 +35,6 @@
 - [RN overlay effect gotchas](rn-overlay-effect-gotchas.md) — hitSlop se recorta al padre; siblings solapados y SVG decorativos roban gestos; envolver SVG en View pointerEvents none
 - [Hero como fondo único](hero-fade-bg-match.md) — imagen hero + bg degradado leídos como "dos fondos": fix = meter la imagen EN la capa de fondo raíz y desvanecerla al color EXACTO del degradado raíz a la Y del borde (mismo degradado continuo debajo, sin costura); top fade desde #4A0C0C opaco→transparente; offsets px vía locations
 - [Animated layout-prop slide fails under Fabric](animated-left-fabric.md) — animar `left`/posición con JS driver no renderiza en New Arch; usar `translateX` nativo con left estático (width JS + transform nativo conviven)
-- [EAS iOS CocoaPods modular headers](eas-ios-modular-headers.md) — AppCheckCore (RevenueCat/Clerk) exige modular_headers en GoogleUtilities+RecaptchaInterop; fix = expo-build-properties ios.extraPods con modular_headers:true (NO plugin custom: falla silencioso)
 - [iOS deployment target 17.0 — Clerk](ios-deployment-target-clerk.md) — @clerk/expo ≥3.7 exige iOS 17; bajar el target omite ClerkExpo pod → SPM nil crash + "no such module ClerkExpo"
 - [ErrorFallback no context hooks](error-fallback-no-hooks.md) — ErrorBoundary vive encima de SceneThemeProvider/AuthProvider; ErrorFallback debe usar colores hardcoded (#060A0F/#BE9650) — ningún hook de contexto es seguro ahí
 - [Category overlay stack](category-overlay-stack.md) — pantallas con tab bar visible abren vía openCategory (pila de overlays bajo la barra), nunca router.push; useCategoryOverlayOptional en componentes compartidos
@@ -53,8 +52,6 @@
 - [Biblioteca y menú estilo X](biblioteca-drawer-overlay.md) — Biblioteca conserva el overlay; elegirla cierra el menú, y los detalles restauran su tab sin reabrirlo
 - [FlatList header remount](flatlist-header-remount.md) — ListHeaderComponent como useCallback con deps cambiantes remonta el header y resetea carruseles internos; pasar elemento JSX
 - [Clerk native SSO redirect](clerk-native-sso-redirect.md) — SSO Expo vuelve sin sesión: scheme correcto + allowlist redirect_urls por API (estaba vacía) + ruta explícita sso-callback
-- [Manrope default font patch](manrope-default-font-patch.md) — fuente global via patch de Text.render (base primero), NUNCA parchando StyleSheet.create: eso pisaba la fontFamily de los íconos → tofu en Android
-- [Pesos intermedios de Manrope](manrope-intermediate-weights.md) — ajustes exactos requieren una fuente estática; valores fontWeight no reconocidos pueden volver a regular en iOS
 - [Paquetes Python y Nix](python-nix-package-cache.md) — una instalación fallida en un prefijo inmutable puede haber dejado el módulo utilizable en la caché local
 - [Android top-inset floor](android-top-inset-floor.md) — tablets Android dan insets.top chico (~24) vs iPhone (~59); topPad nativo = Math.max(insets.top, 40) en todas las pantallas
 - [Chat overlay sobre Amigos](chat-overlay-stack.md) — desde overlays del drawer router.push monta DEBAJO; chat usa openChat→ChatOverlay apilado; otras rutas: closeOverlay antes de push
@@ -143,6 +140,7 @@
 - [Edición de imágenes en el runtime](image-processing-runtime.md) — Pillow anuncia versión pero falla al importar _imaging; usar ImageMagick para procesar PNGs aquí
 - [Assets nuevos y Metro](expo-new-assets-metro.md) — generar el PNG antes de referenciarlo con require; si Metro cachea el error de archivo ausente, reiniciar tras crearlo
 - [Metro y generación compartida](metro-shared-generation.md) — la limpieza temporal del codegen puede romper la recarga de Expo; terminar la generación antes de reiniciar consumidores
+- [Conectividad móvil en desarrollo](mobile-development-connectivity.md) — una API sana y un workflow activo no garantizan que Expo responda al teléfono
 - [Rebote en los bordes](scroll-edge-bounce.md) — en Sistema de rachas, no bloquear arriba/abajo también exige rebote elástico, no solo eliminar franjas fijas
 - [Inercia global del scroll](native-scroll-inertia.md) — menos desplazamiento al soltar; arrastre normal y tasas explícitas intactas; React 19 exige defaults en la clase nativa, no en el wrapper
 - [Usuarios conectados](community-presence-semantics.md) — sección eliminada de Inicio por sospecha de lag; preservar presencia global real en primer plano
