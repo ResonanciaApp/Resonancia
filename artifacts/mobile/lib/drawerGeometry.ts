@@ -1,6 +1,6 @@
 /**
  * Geometria y controlador puro del drawer de Inicio estilo X.
- * Todo deriva de un unico progreso cancelable (0 cerrado, 1 abierto).
+ * El movimiento deriva de un unico progreso cancelable (0 cerrado, 1 abierto).
  * Las funciones de geometria son worklets: corren en el hilo de UI
  * (Reanimated) y tambien en Node para las pruebas.
  */
@@ -12,8 +12,6 @@ export const DRAWER_VEIL_MAX = 0.05;
 export const DRAWER_MENU_OFFSET_Y = 7;
 export const DRAWER_SHADOW_MAX = 0.24;
 export const DRAWER_ELEVATION_MAX = 18;
-/** Fraccion del progreso en la que las esquinas ya alcanzan su radio final. */
-export const DRAWER_CORNER_RAMP = 0.18;
 /** Fraccion del progreso en la que el menu ya es totalmente visible. */
 export const DRAWER_MENU_FADE_RAMP = 1;
 export const DRAWER_MENU_SHIFT_RAMP = 1;
@@ -27,11 +25,6 @@ function clamp01(value: number) {
   return value > 1 ? 1 : value;
 }
 
-function easeOut(t: number) {
-  "worklet";
-  const inv = 1 - t;
-  return 1 - inv * inv * inv;
-}
 
 /** Distancia horizontal de la pantalla frontal: ancho actual menos la franja visible. */
 export function drawerOffset(windowWidth: number) {
@@ -44,10 +37,6 @@ export function foregroundTranslateX(progress: number, windowWidth: number) {
   return drawerOffset(windowWidth) * clamp01(progress);
 }
 
-export function foregroundCornerRadius(progress: number) {
-  "worklet";
-  return DRAWER_CORNER_RADIUS * easeOut(clamp01(progress / DRAWER_CORNER_RAMP));
-}
 
 export function foregroundVeilOpacity(progress: number) {
   "worklet";

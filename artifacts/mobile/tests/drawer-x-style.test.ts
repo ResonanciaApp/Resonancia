@@ -7,7 +7,7 @@ import {
   createDrawerTransitionController,
   dragProgress,
   drawerOffset,
-  foregroundCornerRadius,
+  DRAWER_CORNER_RADIUS,
   foregroundShadowOpacity,
   foregroundTranslateX,
   foregroundVeilOpacity,
@@ -28,11 +28,13 @@ test("fully open foreground leaves exactly 75 px visible at multiple widths", ()
   }
 });
 
-test("corners reach 50 early and menu remains animated through the reveal", () => {
-  assert.equal(foregroundCornerRadius(0), 0);
-  assert.ok(foregroundCornerRadius(0.08) > 20);
-  assert.equal(foregroundCornerRadius(0.2), 50);
-  assert.equal(foregroundCornerRadius(1), 50);
+test("corners are fixed at 50 while menu and other reveal effects remain animated", () => {
+  assert.equal(DRAWER_CORNER_RADIUS, 50);
+  const foreground = read("../components/DrawerForeground.tsx");
+  assert.match(foreground, /outer: \{[\s\S]*?borderTopLeftRadius: DRAWER_CORNER_RADIUS,[\s\S]*?borderBottomLeftRadius: DRAWER_CORNER_RADIUS/);
+  assert.match(foreground, /inner: \{[\s\S]*?borderTopLeftRadius: DRAWER_CORNER_RADIUS,[\s\S]*?borderBottomLeftRadius: DRAWER_CORNER_RADIUS/);
+  assert.doesNotMatch(foreground, /foregroundCornerRadius|const innerStyle|borderTopLeftRadius: radius/);
+  assert.match(foreground, /<RAnimated.View style=\{styles.inner\}>/);
   assert.equal(foregroundVeilOpacity(1), 0.05);
   assert.equal(foregroundVeilOpacity(0.5), 0.025);
   assert.equal(foregroundShadowOpacity(0), 0);
@@ -43,7 +45,7 @@ test("corners reach 50 early and menu remains animated through the reveal", () =
   assert.equal(menuContentTranslateY(0), -7);
   assert.equal(menuContentTranslateY(1), 0);
   // Cierre revierte: mismo progreso, misma geometria.
-  assert.equal(foregroundCornerRadius(0), 0);
+  assert.equal(DRAWER_CORNER_RADIUS, 50);
 });
 
 test("drag progress and release decisions are clamped and directional", () => {

@@ -7,10 +7,10 @@ import { SacredBackground } from "@/components/SacredBackground";
 import { useDrawer, useDrawerMotion } from "@/context/DrawerContext";
 import { useSceneTheme } from "@/context/SceneThemeContext";
 import {
+  DRAWER_CORNER_RADIUS,
   DRAWER_GESTURE_ACTIVE_X,
   DRAWER_GESTURE_FAIL_Y,
   dragProgress,
-  foregroundCornerRadius,
   foregroundElevation,
   foregroundShadowOpacity,
   foregroundTranslateX,
@@ -23,7 +23,7 @@ import {
  * Se desplaza a la derecha y revela el menu fijo detras.
  * Capas separadas: la exterior lleva translate + sombra (sin recorte), la
  * interior recorta las esquinas y el velo blanco va encima del contenido.
- * Todo lo anima Reanimated desde el mismo progreso; ningun nodo mezcla drivers.
+ * Las esquinas son estáticas; el resto usa el mismo progreso de Reanimated.
  */
 export function DrawerForeground({ children }: { children: React.ReactNode }) {
   const {
@@ -42,18 +42,11 @@ export function DrawerForeground({ children }: { children: React.ReactNode }) {
 
   const outerStyle = useAnimatedStyle(() => {
     const p = drawerProgress.value;
-    const radius = foregroundCornerRadius(p);
     return {
       transform: [{ translateX: foregroundTranslateX(p, drawerWidth.value) }],
-      borderTopLeftRadius: radius,
-      borderBottomLeftRadius: radius,
       shadowOpacity: foregroundShadowOpacity(p),
       elevation: foregroundElevation(p),
     };
-  });
-  const innerStyle = useAnimatedStyle(() => {
-    const radius = foregroundCornerRadius(drawerProgress.value);
-    return { borderTopLeftRadius: radius, borderBottomLeftRadius: radius };
   });
   const veilStyle = useAnimatedStyle(() => ({
     opacity: foregroundVeilOpacity(drawerProgress.value),
@@ -96,7 +89,7 @@ export function DrawerForeground({ children }: { children: React.ReactNode }) {
       style={[styles.outer, { backgroundColor: theme.solid }, outerStyle]}
       testID="drawer-foreground"
     >
-      <RAnimated.View style={[styles.inner, innerStyle]}>
+      <RAnimated.View style={styles.inner}>
         <SacredBackground variant="gradient" noImage />
         <View
           style={{ flex: 1 }}
@@ -169,6 +162,8 @@ export function DrawerEdgeGesture({ enabled, top = 0, children }: { enabled: boo
 const styles = StyleSheet.create({
   outer: {
     flex: 1,
+    borderTopLeftRadius: DRAWER_CORNER_RADIUS,
+    borderBottomLeftRadius: DRAWER_CORNER_RADIUS,
     shadowColor: "#05070D",
     shadowOffset: { width: -6, height: 0 },
     shadowRadius: 18,
@@ -176,6 +171,8 @@ const styles = StyleSheet.create({
   },
   inner: {
     flex: 1,
+    borderTopLeftRadius: DRAWER_CORNER_RADIUS,
+    borderBottomLeftRadius: DRAWER_CORNER_RADIUS,
     overflow: "hidden",
   },
   veil: {
