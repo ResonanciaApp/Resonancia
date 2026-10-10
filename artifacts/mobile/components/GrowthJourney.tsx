@@ -317,7 +317,7 @@ function PreviewContentEntrance({
   );
 }
 
-function RewardLock({ levelId, color, unlocked = false }: { levelId: string; color: string; unlocked?: boolean }) {
+export function RewardLock({ levelId, color, unlocked = false }: { levelId: string; color: string; unlocked?: boolean }) {
   return (
     <MaterialCommunityIcons
       testID={`${levelId}-reward-lock`}

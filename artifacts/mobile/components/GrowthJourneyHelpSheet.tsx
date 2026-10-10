@@ -1,7 +1,7 @@
 import { LinearGradient } from "expo-linear-gradient";
 import React, { useMemo } from "react";
 import {
-  Animated, PanResponder, Pressable, ScrollView, StyleSheet,
+  Animated, PanResponder, Pressable, ScrollView, StyleSheet, Text,
   useWindowDimensions, View,
 } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
@@ -9,6 +9,7 @@ import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { GROWTH_MAP_HEIGHT, GrowthJourneyMap } from "@/components/GrowthJourneyMap";
 
 import { useSceneTheme } from "@/context/SceneThemeContext";
+import { useColors } from "@/hooks/useColors";
 import { GROWTH_SHEET_SPRING, useGrowthJourneySheetMotion } from "@/hooks/useGrowthJourneySheetMotion";
 
 /** An in-tree sheet: shares Tu camino's native Modal instead of nesting Modals. */
@@ -21,8 +22,9 @@ export function GrowthJourneyHelpSheet({
   const { height, width } = useWindowDimensions();
   const insets = useSafeAreaInsets();
   const { theme } = useSceneTheme();
-  // Raised from height / 2 so the 330pt map plus handle fits legibly.
-  const sheetHeight = Math.min(height * 0.8, GROWTH_MAP_HEIGHT + 44 + 32 + Math.max(insets.bottom, 16));
+  const colors = useColors();
+  // Reserve the title's 25pt space without clipping the enlarged map.
+  const sheetHeight = Math.min(height * 0.8, GROWTH_MAP_HEIGHT + 25 + 44 + 32 + Math.max(insets.bottom, 16));
   const { rendered, sheetY, backdropOpacity } = useGrowthJourneySheetMotion(visible, sheetHeight);
   const pan = useMemo(() => PanResponder.create({
     onMoveShouldSetPanResponder: (_, gesture) =>
@@ -97,7 +99,12 @@ export function GrowthJourneyHelpSheet({
           contentContainerStyle={styles.content}
           showsVerticalScrollIndicator={false}
         >
-          <GrowthJourneyMap width={Math.min(width, 520) - 32} />
+          <View testID="growth-map-section" style={styles.mapSection}>
+            <Text testID="growth-map-title" style={[styles.mapTitle, { color: colors.foreground }]}>
+              El recorrido
+            </Text>
+            <GrowthJourneyMap width={Math.min(width, 520) - 12} />
+          </View>
         </ScrollView>
       </Animated.View>
     </View>
@@ -120,4 +127,6 @@ const styles = StyleSheet.create({
   },
   scroll: { flex: 1 },
   content: { flexGrow: 1, justifyContent: "center", alignItems: "center", paddingVertical: 16 },
+  mapSection: { paddingTop: 25 },
+  mapTitle: { position: "absolute", top: 0, left: 0, right: 0, textAlign: "center", fontFamily: "Manrope", fontSize: 20, lineHeight: 24, fontWeight: "700" },
 });

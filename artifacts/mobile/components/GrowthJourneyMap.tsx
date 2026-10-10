@@ -1,10 +1,11 @@
-import { Feather } from "@expo/vector-icons";
 import React from "react";
 import { StyleSheet, Text, View } from "react-native";
 import Svg, { Path } from "react-native-svg";
 
-import { GrowthLevelImage } from "@/components/GrowthJourney";
+import { GrowthLevelImage, RewardLock } from "@/components/GrowthJourney";
+import { getPositionedDayGradient } from "@/components/StreakWeekRow";
 import { useGrowth } from "@/context/GrowthContext";
+import { useSceneTheme } from "@/context/SceneThemeContext";
 import { useColors } from "@/hooks/useColors";
 import { allGrowthLevels, type GrowthLevel } from "@/data/growthLevels";
 
@@ -21,10 +22,12 @@ const ACTIVE = 76;
 const LOCKED = 46;
 const LABEL_W = 104;
 
-export const GROWTH_MAP_HEIGHT = 330;
+export const GROWTH_MAP_HEIGHT = 350;
 
 export function GrowthJourneyMap({ width }: { width: number }) {
   const colors = useColors();
+  const { theme } = useSceneTheme();
+  const lockColor = getPositionedDayGradient(theme.gradient)[0];
   const { levels } = useGrowth();
   const bloom = levels.filter((l) => l.group === "florecimiento");
   const last: GrowthLevel | undefined = bloom[bloom.length - 1]
@@ -58,19 +61,21 @@ export function GrowthJourneyMap({ width }: { width: number }) {
             style={{ position: "absolute", left, top: cy - size / 2, width: LABEL_W, alignItems: "center" }}
           >
             <View
+              testID={`growth-map-node-${s.id}`}
               style={[
                 styles.node,
                 { width: size, height: size, borderRadius: size / 2 },
-                active ? { borderColor: colors.foreground, borderWidth: 2 } : styles.lockedNode,
+                !active && styles.lockedNode,
               ]}
             >
               {active && last ? (
                 <GrowthLevelImage level={last} size={size - 4} />
               ) : (
-                <Feather name="lock" size={16} color={colors.mutedForeground} />
+                <RewardLock levelId={`growth-map-${s.id}`} color={lockColor} />
               )}
             </View>
             <Text
+              testID={`growth-map-label-${s.id}`}
               style={[styles.label, { color: active ? colors.foreground : colors.mutedForeground, opacity: active ? 1 : 0.7 }]}
               numberOfLines={2}
             >
@@ -84,7 +89,7 @@ export function GrowthJourneyMap({ width }: { width: number }) {
 }
 
 const styles = StyleSheet.create({
-  node: { alignItems: "center", justifyContent: "center", overflow: "hidden", backgroundColor: "rgba(255,255,255,0.08)" },
-  lockedNode: { borderWidth: 1, borderColor: "rgba(255,255,255,0.16)", backgroundColor: "rgba(0,0,0,0.16)" },
-  label: { marginTop: 6, fontFamily: "Manrope", fontSize: 12, lineHeight: 16, fontWeight: "700", textAlign: "center" },
+  node: { alignItems: "center", justifyContent: "center", overflow: "hidden", backgroundColor: "rgba(255,255,255,0.08)", borderWidth: 0 },
+  lockedNode: { backgroundColor: "rgba(0,0,0,0.16)" },
+  label: { marginTop: 6, fontFamily: "Manrope", fontSize: 11, lineHeight: 16, fontWeight: "700", textAlign: "center" },
 });

@@ -121,7 +121,7 @@ function uiHarness() {
       return React.createElement("div", { "data-help-visible": String(props.visible) });
     } },
     "@/components/GrowthJourneyMap": {
-      GROWTH_MAP_HEIGHT: 330,
+      GROWTH_MAP_HEIGHT: 350,
       GrowthJourneyMap: (props: any) => React.createElement(Native, { ...props, testID: "growth-journey-map" }),
     },
     "@/hooks/useGrowthJourneySheetMotion": {
@@ -258,9 +258,11 @@ test("the map replaces the old help icon and paragraph, fits its sheet and dismi
     }));
   };
   const html = render(true);
-  assert.match(html, /data-testid="growth-help-sheet" data-height="426"/);
+  assert.match(html, /data-testid="growth-help-sheet" data-height="471"/);
   assert.match(html, /data-testid="growth-journey-map"/);
-  assert.equal(h.nodes.get("growth-journey-map").width, 368);
+  assert.equal(h.nodes.get("growth-journey-map").width, 388);
+  assert.equal(h.nodes.get("growth-map-title").children, "El recorrido");
+  assert.equal(flatten(h.nodes.get("growth-map-section").style).paddingTop, 25);
   assert.doesNotMatch(html, /trending-up|Cada día de racha lograda|florecimiento espiritual/);
   assert.equal(h.layouts.length, 0);
   assert.equal(h.pan.onMoveShouldSetPanResponder(null, { dx: 30, dy: 10 }), false);
@@ -297,12 +299,14 @@ test("the treasure map has five ordered stops in an irregular loop, only Floraci
     "react-native-svg": { __esModule: true, default: Node, Path: (props: any) => { paths.push(props); return React.createElement(Node, props); } },
     "@/components/GrowthJourney": {
       GrowthLevelImage: (props: any) => React.createElement(Node, { ...props, testID: "map-final-phase-art" }),
+      RewardLock: (props: any) => React.createElement(Node, { ...props, testID: `${props.levelId}-reward-lock` }),
     },
+    "@/components/StreakWeekRow": { getPositionedDayGradient: () => ["theme-lock-color"] },
     "@/context/GrowthContext": { useGrowth: () => ({ levels }) },
     "@/data/growthLevels": { allGrowthLevels: [bundledFinal] },
   });
-  assert.equal(GROWTH_MAP_HEIGHT, 330);
-  for (const width of [288, 343, 370, 488]) {
+  assert.equal(GROWTH_MAP_HEIGHT, 350);
+  for (const width of [308, 363, 390, 508]) {
     h.nodes.clear();
     paths.length = 0;
     const html = renderToStaticMarkup(React.createElement(GrowthJourneyMap, { width }));
@@ -312,6 +316,13 @@ test("the treasure map has five ordered stops in an irregular loop, only Floraci
       assert.equal(node.accessibilityState.selected, i === 0);
       assert.match(node.accessibilityLabel, new RegExp(`${i + 1}\\. ${labels[i]}`));
       const style = flatten(node.style);
+      const iconStyle = flatten(h.nodes.get(`growth-map-node-${ids[i]}`).style);
+      assert.equal(iconStyle.borderWidth, 0);
+      assert.equal(iconStyle.height, i === 0 ? 76 : 46);
+      assert.equal(flatten(h.nodes.get(`growth-map-label-${ids[i]}`).style).fontSize, 11);
+      if (i) {
+        assert.equal(h.nodes.get(`growth-map-${ids[i]}-reward-lock`).color, "theme-lock-color");
+      }
       assert.ok(style.left >= 0 && style.left + style.width <= width);
       assert.ok(style.top >= 0 && style.top + (i === 0 ? 76 : 46) + 38 <= GROWTH_MAP_HEIGHT);
       if (i) assert.ok(html.indexOf(labels[i - 1]) < html.indexOf(labels[i]));
