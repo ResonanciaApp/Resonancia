@@ -465,7 +465,7 @@ test("current and locked stage icons have identical dimensions in Tu camino", ()
   }
 });
 
-test("Florecimiento has no hard frame; El ascenso preserves its 7% circle independently of symbol opacity", () => {
+test("all worlds render phase images without a circular background in timeline, preview and detail", () => {
   const image = (props: Record<string, unknown> = {}) => renderToStaticMarkup(React.createElement(componentModule.exports.GrowthLevelImage, {
     level: { id: "intencion", name: "Intención", image: 1 }, ...props,
   }));
@@ -479,11 +479,17 @@ test("Florecimiento has no hard frame; El ascenso preserves its 7% circle indepe
   for (const id of ["intencion", "semilla", "brote", "crecimiento", "desarrollo", "enraizamiento", "vegetacion", "floracion", "expansion"]) {
     assert.doesNotMatch(image({ level: { id, name: id, image: 1 } }), /data-background/);
   }
-  for (const dimmed of [false, true]) {
-    const html = image({ level: { id: "ascenso-inicio", name: "Inicio", image: 1 }, dimmed });
-    const wrapper = html.slice(0, html.indexOf(">") + 1);
-    assert.match(wrapper, /data-background="rgba\(255,255,255,0.07\)"/);
-    assert.doesNotMatch(wrapper, /data-opacity/);
+  for (const [id, group] of [
+    ["intencion", "florecimiento"], ["ascenso-inicio", "ascenso"],
+    ["custom-stage", "ascenso"], ["iluminacion-fase", "iluminacion"],
+    ["llegada-fase", "llegada"], ["despertar-fase", "gran-despertar"],
+  ]) {
+    for (const props of [{}, { dimmed: true }, { attenuated: true }, { profilePreview: true }, { size: 274 }, { size: 266 }]) {
+      const html = image({ level: { id, group, name: id, image: 1 }, ...props });
+      const wrapper = html.slice(0, html.indexOf(">") + 1);
+      assert.doesNotMatch(wrapper, /data-background|data-opacity|data-border-width|data-border-color/);
+      assert.match(html, /data-source="1"/);
+    }
   }
   assert.match(image({ dimmed: true }), /data-source="1" data-opacity="0.44"/);
   assert.doesNotMatch(image(), /data-opacity/);

@@ -114,7 +114,7 @@ export function GrowthLevelImage({ level, profilePreview = false, dimmed = false
   return (
     <View
       testID={profilePreview ? "profile-intention-image" : undefined}
-      style={[styles.imageWrap, sourceModule === undefined && level.id.startsWith("ascenso-") && styles.stageIconSurface, profilePreview && styles.profileImageWrap, size !== undefined && { width: size, height: height ?? size, borderRadius: 0 }]}
+      style={[styles.imageWrap, profilePreview && styles.profileImageWrap, size !== undefined && { width: size, height: height ?? size, borderRadius: 0 }]}
       importantForAccessibility="no"
     >
       {source && (
@@ -674,7 +674,6 @@ const styles = StyleSheet.create({
   lockedArt: { opacity: 0.44 },
   bloomArt: { width: GROWTH_BLOOM_ART_SIZE, height: GROWTH_BLOOM_ART_SIZE, left: 38, top: 32 },
   imageWrap: { width: "100%", height: "100%", borderRadius: 67, overflow: "hidden" },
-  stageIconSurface: { backgroundColor: "rgba(255,255,255,0.07)" },
   fadedStageImage: { transform: [{ scale: 0.9 }] },
   profileImageWrap: { borderRadius: 67 },
   levelImage: { width: "100%", height: "100%" },
