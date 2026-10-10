@@ -19,6 +19,14 @@ import {
 
 const read = (path: string) => readFileSync(new URL(path, import.meta.url), "utf8");
 
+test("foreground has no animated shadow or Android elevation; movement is unchanged", () => {
+  const source = read("../components/DrawerForeground.tsx");
+  assert.doesNotMatch(source, /foregroundShadowOpacity|foregroundElevation|shadowColor:|shadowOffset:|shadowRadius:/);
+  assert.match(source, /outer: \{[\s\S]*?shadowOpacity: 0,[\s\S]*?elevation: 0,/);
+  assert.match(source, /translateX: foregroundTranslateX\(p, drawerWidth\.value\)/);
+  assert.match(source, /opacity: foregroundVeilOpacity\(drawerProgress\.value\)/);
+});
+
 test("fully open foreground leaves exactly 75 px visible at multiple widths", () => {
   for (const width of [320, 360, 375, 390, 412, 430, 768]) {
     assert.equal(drawerOffset(width), width - 75);
