@@ -265,13 +265,13 @@ test("the map replaces the old help icon and paragraph, fits its sheet and dismi
   assert.match(html, /data-testid="growth-journey-map"/);
   assert.equal(h.nodes.get("growth-journey-map").width, 388);
   assert.equal(h.nodes.get("growth-map-title").children, "El recorrido");
-  assert.equal(flatten(h.nodes.get("growth-map-section").style).paddingTop, 10);
+  assert.equal(flatten(h.nodes.get("growth-map-section").style).paddingTop, 35);
   const header = flatten(h.nodes.get("growth-map-header").style);
   const title = flatten(h.nodes.get("growth-map-title").style);
   const close = flatten(h.nodes.get("growth-help-close").style);
-  // Same title position (44 + 16); map moves up 20pt from its previous 130pt.
+  // Same title position (44 + 16); map moves down 25pt from its previous 110pt.
   assert.equal(44 + title.top, 60);
-  assert.equal(44 + header.height + 10, 110);
+  assert.equal(44 + header.height + 35, 135);
   assert.equal(title.top + title.lineHeight / 2, close.top + close.height / 2);
   assert.equal(close.width, 43);
   assert.equal(close.height, 43);
@@ -345,8 +345,9 @@ test("the map follows a perfect circle without connecting El Gran Despertar back
       assert.equal(iconStyle.width, i === 0 ? 93 : 52);
       assert.equal(flatten(h.nodes.get(`growth-map-label-${ids[i]}`).style).fontSize, 11);
       if (i) {
+        assert.equal(iconStyle.backgroundColor, "transparent");
         assert.equal(h.nodes.get(`growth-map-${ids[i]}-reward-lock`).color, "#F9F9F9");
-        assert.equal(h.nodes.get(`growth-map-${ids[i]}-reward-lock`).size, 14);
+        assert.equal(h.nodes.get(`growth-map-${ids[i]}-reward-lock`).size, 16);
         const image = h.nodes.get(`growth-map-image-${ids[i]}`);
         const overlay = h.nodes.get(`growth-map-image-overlay-${ids[i]}`);
         assert.equal(image.source, `asset:${ids[i]}`);
@@ -368,7 +369,7 @@ test("the map follows a perfect circle without connecting El Gran Despertar back
     assert.equal(h.nodes.get("growth-journey-map-route").pointerEvents, "none");
     assert.equal(paths.length, 1);
     assert.equal(paths[0].strokeDasharray, "2 8");
-    const circle = { cx: width / 2, cy: GROWTH_MAP_HEIGHT / 2, r: Math.min(width / 2 - 56, 120) };
+    const circle = { cx: width / 2, cy: GROWTH_MAP_HEIGHT / 2, r: Math.min(width / 2 - 56, 120) + 5 };
     const points = ids.map((id, i) => {
       const style = flatten(h.nodes.get(`growth-map-stop-${id}`).style);
       return { x: style.left + style.width / 2, y: style.top + (i === 0 ? 93 : 52) / 2 };

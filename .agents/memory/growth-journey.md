@@ -209,3 +209,14 @@ progreso, renombrar fases del catálogo ni bloquear recompensas reales.
 **How to apply:** Distinguir las paradas panorámicas de las fases internas.
 Cambiar la disponibilidad del mapa solo por una nueva decisión editorial;
 no inferirla automáticamente de días acumulados ni de premios históricos.
+
+Las imágenes de las paradas bloqueadas del mapa no deben llevar un anillo
+visible por fuera.
+
+**Why:** El usuario volvió a pedir quitar el borde aun cuando el borde
+explícito ya era cero. El fondo de un contenedor más grande que la imagen
+se percibe también como un borde.
+
+**How to apply:** Revisar tanto el borde como el fondo expuesto alrededor
+de la imagen. No reintroducir un fondo circular mayor y coloreado en esas
+paradas aunque su grosor de borde sea cero.

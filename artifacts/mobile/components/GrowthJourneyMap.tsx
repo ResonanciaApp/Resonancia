@@ -37,7 +37,7 @@ export function GrowthJourneyMap({ width }: { width: number }) {
   const h = GROWTH_MAP_HEIGHT;
   const center = { x: width / 2, y: h / 2 };
   // Equal radii and 72-degree spacing; leave room for images and labels.
-  const radius = Math.min(width / 2 - LABEL_W / 2 - 4, 120);
+  const radius = Math.min(width / 2 - LABEL_W / 2 - 4, 120) + 5;
   const pts = STOPS.map((_, i) => {
     const angle = -Math.PI / 2 + i * (2 * Math.PI / STOPS.length);
     return { x: center.x + radius * Math.cos(angle), y: center.y + radius * Math.sin(angle) };
@@ -93,7 +93,7 @@ export function GrowthJourneyMap({ width }: { width: number }) {
                     style={[StyleSheet.absoluteFill, styles.imageOverlay]}
                   />
                   <View pointerEvents="none" style={[StyleSheet.absoluteFill, styles.lockOverlay]}>
-                    <RewardLock levelId={`growth-map-${s.id}`} color="#F9F9F9" size={14} />
+                    <RewardLock levelId={`growth-map-${s.id}`} color="#F9F9F9" size={16} />
                   </View>
                 </View>
               )}
@@ -114,7 +114,7 @@ export function GrowthJourneyMap({ width }: { width: number }) {
 
 const styles = StyleSheet.create({
   node: { alignItems: "center", justifyContent: "center", overflow: "hidden", backgroundColor: "rgba(255,255,255,0.08)", borderWidth: 0 },
-  lockedNode: { backgroundColor: "rgba(0,0,0,0.16)" },
+  lockedNode: { backgroundColor: "transparent" },
   lockedImageFrame: { width: LOCKED - 4, height: LOCKED - 4, borderRadius: (LOCKED - 4) / 2, overflow: "hidden" },
   lockedImage: { width: "100%", height: "100%" },
   imageOverlay: { backgroundColor: "rgba(255,255,255,0.2)" },
