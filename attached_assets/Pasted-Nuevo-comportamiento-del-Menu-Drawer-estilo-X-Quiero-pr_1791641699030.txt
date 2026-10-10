@@ -1,0 +1,33 @@
+Nuevo comportamiento del Menu Drawer (estilo X)
+
+Quiero probar una nueva interacción del menú drawer en Inicio, replicando el comportamiento de la app de X.
+
+1. Apertura y desplazamiento
+
+Al tocar el avatar o deslizar hacia la derecha desde Inicio, la pantalla debe desplazarse hacia la derecha, dejando únicamente 50 px visibles en el borde derecho.
+
+Desde el inicio del movimiento, las esquinas superior izquierda e inferior izquierda de Inicio deben redondearse rápidamente mediante un fade-in hasta alcanzar un border-radius: 35px.
+
+A medida que Inicio se desplaza, su contenido debe aclararse sutilmente un 5%, alcanzando ese valor al completar el desplazamiento.
+
+2. Backdrop y aparición del contenido
+
+El backdrop del drawer debe tener exactamente el mismo color de fondo que Inicio.
+
+Mientras Inicio se desplaza hacia la derecha, el contenido del menú debe aparecer directamente sobre el backdrop mediante un fade-in rápido y un desplazamiento vertical sutil de 7 px hacia abajo hasta alcanzar su posición final.
+
+El contenido del menú permanece en su lugar: no debe existir una ventana o panel independiente que se deslice. Es la pantalla de Inicio la que se mueve y revela el menú que está detrás.
+
+3. Sombra lateral
+
+Al desplazarse Inicio hacia la derecha, debe aparecer una sombra sutil en su borde izquierdo, creando una separación visual natural entre la pantalla y el backdrop.
+
+La sombra debe intensificarse progresivamente con el desplazamiento y desaparecer al cerrar el menú, utilizando transiciones suaves de fade-in y fade-out.
+
+4. Selección de una opción y cierre
+
+Al tocar cualquier opción del menú, Inicio debe actualizar su contenido a la nueva ruta seleccionada mientras la pantalla se desliza hacia la izquierda, recuperando su posición original.
+
+Durante el cierre, el redondeo de las esquinas, la aclaración del 5%, la sombra lateral y el contenido del menú deben revertirse mediante animaciones fade-out y transiciones suaves, sincronizadas con el movimiento.
+
+Evitar saltos visuales, parpadeos o pantallas intermedias innecesarias.
