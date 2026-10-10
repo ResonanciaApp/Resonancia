@@ -5,6 +5,8 @@ import test from "node:test";
 import React from "react";
 import { renderToStaticMarkup } from "react-dom/server";
 import ts from "typescript";
+import { getThemeStyleId } from "../config/scene-themes.ts";
+import { CLOUDY_GROWTH_STAGE_LABEL_COLOR, POSITIONED_DAY_GRADIENT } from "../constants/colors.ts";
 
 function load(path: string, imports: Record<string, unknown>) {
   const compiled = ts.transpileModule(readFileSync(new URL(path, import.meta.url), "utf8"), {
@@ -49,7 +51,7 @@ function hooks() {
 const flatten = (style: any): Record<string, any> =>
   Array.isArray(style) ? Object.assign({}, ...style.map(flatten)) : style ?? {};
 
-function uiHarness() {
+function uiHarness(themeId = "indigo") {
   const h = hooks();
   const presses = new Map<string, any>();
   const nodes = new Map<string, any>();
@@ -109,9 +111,10 @@ function uiHarness() {
      "@react-native-masked-view/masked-view": { __esModule: true, default: Native },
     "expo-linear-gradient": { LinearGradient: Native },
     "react-native-safe-area-context": { useSafeAreaInsets: () => ({ top: 40, bottom: 20 }) },
-    "@/context/SceneThemeContext": { useSceneTheme: () => ({ theme: { gradient: ["#060A0F", "#111122"] } }) },
+    "@/context/SceneThemeContext": { useSceneTheme: () => ({ theme: { id: themeId, gradient: ["#060A0F", "#111122"] } }) },
+    "@/config/scene-themes": { getThemeStyleId },
     "@/hooks/useColors": { useColors: () => ({ foreground: "#FBFBFB" }) },
-    "@/constants/colors": { NAVIGATION_HELP_ICON_COLOR: "#F9F9F9", MEMBERSHIP_AURORA: { premium: { accent: "#BE9650" } } },
+    "@/constants/colors": { NAVIGATION_HELP_ICON_COLOR: "#F9F9F9", MEMBERSHIP_AURORA: { premium: { accent: "#BE9650" } }, CLOUDY_GROWTH_STAGE_LABEL_COLOR, POSITIONED_DAY_GRADIENT },
     "@/components/GrowthJourney": { GrowthJourney: (props: any) => React.createElement(
       native.Pressable, { testID: "test-open-intention", onPress: () => props.onStagePress("intencion") }, "PRIMERA ETAPA",
     ) },
@@ -250,6 +253,28 @@ test("Intención opens inside the same Modal; close and back preserve Tu camino,
   assert.doesNotMatch(render(), /data-testid="growth-stage-detail"/);
 });
 
+test("Primer universo matches the first-stage label typography and colors in every theme", () => {
+  for (const [id, color] of [
+    ["natural", "#E5FFDB"],
+    ["cloudy", CLOUDY_GROWTH_STAGE_LABEL_COLOR],
+    ["indigo", POSITIONED_DAY_GRADIENT[0]],
+    ["pleyades", POSITIONED_DAY_GRADIENT[0]],
+  ]) {
+    const h = uiHarness(id);
+    const { GrowthJourneyHelpSheet } = load("../components/GrowthJourneyHelpSheet.tsx", h.imports);
+    renderToStaticMarkup(React.createElement(GrowthJourneyHelpSheet, { visible: true, onClose() {} }));
+    const subtitle = h.nodes.get("growth-map-subtitle");
+    const style = flatten(subtitle.style);
+    assert.equal(subtitle.children, "Primer universo");
+    assert.equal(style.fontFamily, "Manrope");
+    assert.equal(style.fontSize, 11);
+    assert.equal(style.fontWeight, "700");
+    assert.equal(style.letterSpacing, 1.2);
+    assert.equal(style.color, color);
+    assert.equal(style.textAlign, "center");
+  }
+});
+
 test("the map replaces the old help icon and paragraph, fits its sheet and dismisses by tap or drag", () => {
   const h = uiHarness();
   const { GrowthJourneyHelpSheet } = load("../components/GrowthJourneyHelpSheet.tsx", h.imports);
@@ -261,17 +286,18 @@ test("the map replaces the old help icon and paragraph, fits its sheet and dismi
     }));
   };
   const html = render(true);
-  assert.match(html, /data-testid="growth-help-sheet" data-height="531"/);
+  assert.match(html, /data-testid="growth-help-sheet" data-height="541"/);
   assert.match(html, /data-testid="growth-journey-map"/);
   assert.equal(h.nodes.get("growth-journey-map").width, 388);
-  assert.equal(h.nodes.get("growth-map-title").children, "El recorrido");
-  assert.equal(flatten(h.nodes.get("growth-map-section").style).paddingTop, 35);
+  assert.equal(h.nodes.get("growth-map-title").children, "Recorrido");
+  assert.equal(h.nodes.get("growth-map-subtitle").children, "Primer universo");
+  assert.equal(flatten(h.nodes.get("growth-map-section").style).paddingTop, 45);
   const header = flatten(h.nodes.get("growth-map-header").style);
   const title = flatten(h.nodes.get("growth-map-title").style);
   const close = flatten(h.nodes.get("growth-help-close").style);
-  // Same title position (44 + 16); map moves down 25pt from its previous 110pt.
+  // Same title position (44 + 16); map moves down 10pt from its previous 135pt.
   assert.equal(44 + title.top, 60);
-  assert.equal(44 + header.height + 35, 135);
+  assert.equal(44 + header.height + 45, 145);
   assert.equal(title.top + title.lineHeight / 2, close.top + close.height / 2);
   assert.equal(close.width, 43);
   assert.equal(close.height, 43);
@@ -352,7 +378,7 @@ test("the map follows a perfect circle without connecting El Gran Despertar back
         const overlay = h.nodes.get(`growth-map-image-overlay-${ids[i]}`);
         assert.equal(image.source, `asset:${ids[i]}`);
         assert.equal(image.resizeMode, "cover");
-        assert.equal(flatten(overlay.style).backgroundColor, "rgba(255,255,255,0.2)");
+        assert.equal(flatten(overlay.style).backgroundColor, "rgba(0,0,0,0.4)");
         assert.equal(overlay.pointerEvents, "none");
         const frame = flatten(h.nodes.get(`growth-map-image-frame-${ids[i]}`).style);
         assert.equal(frame.width, 48);

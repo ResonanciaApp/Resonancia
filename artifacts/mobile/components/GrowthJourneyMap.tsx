@@ -117,7 +117,7 @@ const styles = StyleSheet.create({
   lockedNode: { backgroundColor: "transparent" },
   lockedImageFrame: { width: LOCKED - 4, height: LOCKED - 4, borderRadius: (LOCKED - 4) / 2, overflow: "hidden" },
   lockedImage: { width: "100%", height: "100%" },
-  imageOverlay: { backgroundColor: "rgba(255,255,255,0.2)" },
+  imageOverlay: { backgroundColor: "rgba(0,0,0,0.4)" },
   lockOverlay: { alignItems: "center", justifyContent: "center" },
   label: { marginTop: 6, fontFamily: "Manrope", fontSize: 11, lineHeight: 16, fontWeight: "700", textAlign: "center" },
 });

@@ -8,6 +8,8 @@ import {
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 
 import { GROWTH_MAP_HEIGHT, GrowthJourneyMap } from "@/components/GrowthJourneyMap";
+import { getThemeStyleId } from "@/config/scene-themes";
+import { CLOUDY_GROWTH_STAGE_LABEL_COLOR, POSITIONED_DAY_GRADIENT } from "@/constants/colors";
 
 import { useSceneTheme } from "@/context/SceneThemeContext";
 import { useColors } from "@/hooks/useColors";
@@ -24,8 +26,11 @@ export function GrowthJourneyHelpSheet({
   const insets = useSafeAreaInsets();
   const { theme } = useSceneTheme();
   const colors = useColors();
+  const universeColor = theme.id === "natural" ? "#E5FFDB"
+    : getThemeStyleId(theme.id) === "cloudy" ? CLOUDY_GROWTH_STAGE_LABEL_COLOR
+    : POSITIONED_DAY_GRADIENT[0];
   // Window height is independent from the map offset and its fixed header.
-  const sheetHeight = Math.min(height * 0.8, GROWTH_MAP_HEIGHT + 85 + 44 + 32 + Math.max(insets.bottom, 16));
+  const sheetHeight = Math.min(height * 0.8, GROWTH_MAP_HEIGHT + 95 + 44 + 32 + Math.max(insets.bottom, 16));
   const { rendered, sheetY, backdropOpacity } = useGrowthJourneySheetMotion(visible, sheetHeight);
   const pan = useMemo(() => PanResponder.create({
     onMoveShouldSetPanResponder: (_, gesture) =>
@@ -95,14 +100,17 @@ export function GrowthJourneyHelpSheet({
         </View>
         <View testID="growth-map-header" style={styles.mapHeader}>
           <Text testID="growth-map-title" style={[styles.mapTitle, { color: colors.foreground }]}>
-            El recorrido
+            Recorrido
+          </Text>
+          <Text testID="growth-map-subtitle" style={[styles.mapSubtitle, { color: universeColor }]}>
+            Primer universo
           </Text>
           <Pressable
             testID="growth-help-close"
             onPress={onClose}
             style={styles.closeButton}
             accessibilityRole="button"
-            accessibilityLabel="Cerrar El recorrido"
+            accessibilityLabel="Cerrar Recorrido"
           >
             <Feather testID="growth-help-close-icon" name="x" size={22} color={colors.foreground} />
           </Pressable>
@@ -139,7 +147,8 @@ const styles = StyleSheet.create({
   scroll: { flex: 1 },
   content: { flexGrow: 1, justifyContent: "flex-start", alignItems: "center", paddingBottom: 16 },
   mapHeader: { height: 56 },
-  mapSection: { paddingTop: 35 },
+  mapSection: { paddingTop: 45 },
   mapTitle: { position: "absolute", top: 16, left: 64, right: 64, textAlign: "center", fontFamily: "Manrope", fontSize: 20, lineHeight: 24, fontWeight: "700" },
+  mapSubtitle: { position: "absolute", top: 43, left: 64, right: 64, textAlign: "center", fontFamily: "Manrope", fontSize: 11, lineHeight: 13, fontWeight: "700", letterSpacing: 1.2 },
   closeButton: { position: "absolute", top: 6.5, left: 20, width: 43, height: 43, borderRadius: 21.5, borderWidth: 0, backgroundColor: "rgba(0,0,0,0.16)", alignItems: "center", justifyContent: "center" },
 });
