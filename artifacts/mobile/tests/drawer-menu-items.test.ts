@@ -66,10 +66,31 @@ test("menu and scenes shift right 6px; scene offset compensates the added menu h
   assert.match(source, /paddingLeft: 26, paddingRight: 14/);
   assert.equal(26 - 20, 6);
   assert.equal(26 + 14, 20 * 2, "available text width is unchanged");
-  assert.match(source, /style=\{styles\.scenePositionCompensation\}>\s*<DrawerSceneCards/);
+  assert.match(source, /style=\{\[styles\.scenePositionCompensation,[^\n]*\}>\s*<DrawerSceneCards/);
   assert.match(source, /scenePositionCompensation: \{[\s\S]*?marginTop: -\(33 \+ 10 \+ 8 \* 8\)/);
   const originalRows = 34 + 8 * 36;
   const originalMenuHeight = originalRows + 8 * 2;
   const currentMenuHeight = originalRows + 33 + 9 * 10;
   assert.equal(currentMenuHeight - 107 + 165, originalMenuHeight + 165);
+});
+
+test("drawer avatar is 20% larger than Inicio, lifted without layout shift, with identity below", () => {
+  const source = readFileSync(new URL("../components/DrawerMenu.tsx", import.meta.url), "utf8");
+  const home = readFileSync(new URL("../app/(tabs)/inicio8.tsx", import.meta.url), "utf8");
+  assert.match(home, /inicio2HeroAvatar: \{\s*width: 42,\s*height: 42/);
+  assert.match(source, /inicio3ProfilePhoto: \{\s*width: 42 \* 1\.2,\s*height: 42 \* 1\.2,[\s\S]*?translateY: -10/);
+  assert.match(source, /profileSection: \{[\s\S]*?flexDirection: "column",\s*alignItems: "flex-start"/);
+  assert.match(source, /profileInfo: \{\s*alignSelf: "stretch"/);
+  assert.match(source, /onLayout=\{\(\{ nativeEvent \}\) => setProfileHeaderHeight\(nativeEvent\.layout\.height\)\}/);
+  assert.match(source, /marginTop: -107 - sceneHeaderOffset/);
+  const baselineHeaderHeight = 67 + 16 + 1 + 75 + 16;
+  for (const newHeaderHeight of [baselineHeaderHeight + 20, baselineHeaderHeight + 35, baselineHeaderHeight + 50]) {
+    const offset = newHeaderHeight - baselineHeaderHeight;
+    const menuHeight = 34 + 8 * 36 + 33 + 9 * 10;
+    assert.equal(
+      newHeaderHeight + menuHeight - 107 - offset + 165,
+      baselineHeaderHeight + menuHeight - 107 + 165,
+      "name and stage can push menus without shifting scenes",
+    );
+  }
 });
