@@ -28,5 +28,17 @@ test("mixer, breathing exercises and mood register follow notifications in the s
   assert.match(sections, /id: "mood-register"[^}]*route: "__mood_picker"/);
   assert.match(source, /itemGroup: \{ gap: 2, marginTop: 10 \}/);
   assert.match(source, /section\.items\.map\(\(item\) => \([\s\S]*?style=\{styles\.item\}/);
-  assert.match(source, /item: \{[\s\S]*?paddingVertical: 6\.5,/);
+  assert.match(source, /item: \{[\s\S]*?paddingVertical: 5,/);
+});
+
+test("larger bold menu contents keep row heights and do not push scenes down", () => {
+  const source = readFileSync(new URL("../components/DrawerMenu.tsx", import.meta.url), "utf8");
+  assert.match(source, /inicio3ItemLabel: \{[\s\S]*?fontSize: 17,/);
+  assert.match(source, /itemLabel: \{[\s\S]*?lineHeight: 23,[\s\S]*?fontWeight: "700"/);
+  assert.match(source, /MaterialCommunityIcons name=\{item\.mciIcon\} size=\{26\}/);
+  assert.match(source, /Feather name=\{item\.icon\} size=\{23\}/);
+  assert.match(source, /premiumMenuStar: \{\s*width: 24,\s*height: 24/);
+  for (const originalIcon of [20, 23, 21]) {
+    assert.equal(originalIcon + 2 * 6.5, originalIcon + 3 + 2 * 5);
+  }
 });

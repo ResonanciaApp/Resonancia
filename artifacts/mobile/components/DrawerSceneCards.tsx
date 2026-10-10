@@ -60,9 +60,9 @@ export function DrawerSceneCards({ activeId, onSelect }: Props) {
             >
               <View style={styles.iconWrap} pointerEvents="none">
                 {s.id === "indigo2" ? (
-                  <MoonCrescentIcon size={23} color={selected ? s.iconColor : "#A8A8A8"} />
+                  <MoonCrescentIcon size={24} color={selected ? s.iconColor : "#A8A8A8"} />
                 ) : (
-                  <MaterialCommunityIcons name={s.icon} size={23} color={selected ? s.iconColor : "#A8A8A8"} />
+                  <MaterialCommunityIcons name={s.icon} size={24} color={selected ? s.iconColor : "#A8A8A8"} />
                 )}
               </View>
               <Text style={[styles.label, { color: selected ? "#FFFFFF" : "#A8A8A8" }]} numberOfLines={1}>{s.title}</Text>
@@ -81,8 +81,8 @@ const styles = StyleSheet.create({
   title: {
     fontFamily: "Manrope",
     color: "rgba(255,255,255,0.58)",
-    fontSize: 11,
-    fontWeight: "600",
+    fontSize: 12,
+    fontWeight: "700",
     letterSpacing: 1.1,
     textTransform: "uppercase",
   },
@@ -97,5 +97,5 @@ const styles = StyleSheet.create({
   list: { marginTop: 10, flexDirection: "row", gap: 12 },
   column: { flex: 1, gap: 2 },
   iconWrap: { width: 26, height: 26, alignItems: "center", justifyContent: "center" },
-  label: { fontFamily: "Manrope", color: "#FFFFFF", fontSize: 14, fontWeight: "500", letterSpacing: 0.2 },
+  label: { fontFamily: "Manrope", color: "#FFFFFF", fontSize: 15, lineHeight: 20, fontWeight: "700", letterSpacing: 0.2 },
 });

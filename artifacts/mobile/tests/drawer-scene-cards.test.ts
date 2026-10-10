@@ -50,8 +50,8 @@ test("minimal Día/Noche rows retain menu sizes and dim the inactive icon and ti
     const moon = nodes.find(node => node.type === "moon-crescent");
     assert.equal(sun.props.color, active === "cloudy" ? "#BE9650" : "#A8A8A8");
     assert.equal(moon.props.color, active === "indigo2" ? "#B6A1E5" : "#A8A8A8");
-    assert.equal(sun.props.size, 23);
-    assert.equal(moon.props.size, 23);
+    assert.equal(sun.props.size, 24);
+    assert.equal(moon.props.size, 24);
     assert.equal(nodes.find(node => node.props.accessibilityRole === "radiogroup").props.style.marginTop, 10);
     const list = nodes.find(node => node.props.accessibilityRole === "radiogroup");
     assert.equal(list.props.style.gap, 12);
@@ -71,8 +71,8 @@ test("minimal Día/Noche rows retain menu sizes and dim the inactive icon and ti
       const text = all(radio).filter(node => node.type === "text");
       assert.equal(text.length, 1);
       const textStyle = Object.assign({}, ...text[0].props.style);
-      assert.equal(textStyle.fontSize, 14);
-      assert.equal(textStyle.fontWeight, "500");
+      assert.equal(textStyle.fontSize, 15);
+      assert.equal(textStyle.fontWeight, "700");
       assert.equal(textStyle.color, radio.props.accessibilityState.selected ? "#FFFFFF" : "#A8A8A8");
       assert.equal(radio.props.style({ pressed: false })[0].backgroundColor, undefined);
     }
