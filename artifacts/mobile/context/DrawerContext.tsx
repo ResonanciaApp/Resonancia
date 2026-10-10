@@ -5,7 +5,6 @@ import {
   cancelAnimation,
   Easing,
   runOnJS,
-  runOnUI,
   type SharedValue,
   useSharedValue,
   withTiming,
@@ -127,18 +126,15 @@ export function DrawerProvider({ children }: { children: React.ReactNode }) {
   const animateTo = useCallback((target: 0 | 1, callback?: () => void) => {
     const token = controller.beginAnimation();
     afterSettle.current = { token, callback };
-    runOnUI(() => {
-      "worklet";
-      cancelAnimation(drawerProgress);
-      const duration = settleDuration(drawerProgress.value, target);
-      drawerProgress.value = withTiming(
-        target,
-        { duration, easing: Easing.out(Easing.cubic) },
-        (finished) => {
-          if (finished) runOnJS(finishAnimation)(token, target);
-        },
-      );
-    })();
+    cancelAnimation(drawerProgress);
+    const duration = settleDuration(drawerProgress.value, target);
+    drawerProgress.value = withTiming(
+      target,
+      { duration, easing: Easing.out(Easing.cubic) },
+      (finished) => {
+        if (finished) runOnJS(finishAnimation)(token, target);
+      },
+    );
   }, [controller, drawerProgress, finishAnimation]);
 
   const open = useCallback(() => {

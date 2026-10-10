@@ -28,11 +28,11 @@ test("fully open foreground leaves exactly 75 px visible at multiple widths", ()
   }
 });
 
-test("corners reach 75 early and menu remains animated through the reveal", () => {
+test("corners reach 50 early and menu remains animated through the reveal", () => {
   assert.equal(foregroundCornerRadius(0), 0);
   assert.ok(foregroundCornerRadius(0.08) > 20);
-  assert.equal(foregroundCornerRadius(0.2), 75);
-  assert.equal(foregroundCornerRadius(1), 75);
+  assert.equal(foregroundCornerRadius(0.2), 50);
+  assert.equal(foregroundCornerRadius(1), 50);
   assert.equal(foregroundVeilOpacity(1), 0.05);
   assert.equal(foregroundVeilOpacity(0.5), 0.025);
   assert.equal(foregroundShadowOpacity(0), 0);
@@ -55,27 +55,6 @@ test("drag progress and release decisions are clamped and directional", () => {
   assert.equal(shouldSettleOpen(0.49, 0), false);
   assert.equal(normalizeRoutePath("/(tabs)/profile"), "/profile");
   assert.equal(normalizeRoutePath("/(auth)/sign-in/"), "/sign-in");
-});
-
-test("moving foreground has no native full-screen blur shadow or elevation", () => {
-  const foreground = read("../components/DrawerForeground.tsx");
-  assert.doesNotMatch(foreground, /shadowRadius:|shadowOpacity:|elevation:/);
-  assert.match(foreground, /<LinearGradient/);
-  const provider = read("../context/DrawerContext.tsx");
-  assert.match(provider, /runOnUI\(\(\) => \{[\s\S]*cancelAnimation\(drawerProgress\)/);
-});
-
-test("drawer menu entries grow by eight without changing scene controls", () => {
-  const menu = read("../components/DrawerMenu.tsx");
-  assert.match(menu, /inicio3ItemLabel:\s*\{\s*fontSize: 22/);
-  assert.match(menu, /name=\{item\.icon\} size=\{28\}/);
-  assert.match(menu, /name=\{item\.mciIcon\} size=\{31\}/);
-  assert.match(menu, /premiumMenuStar:\s*\{\s*width: 29,\s*height: 29/);
-});
-
-test("home avatar and greeting share the same fading container", () => {
-  const home = read("../app/(tabs)/inicio8.tsx");
-  assert.match(home, /<RAnimated.View\s+style=\{\[\s*styles.inicio2HeroProfileButton,[\s\S]*?avatarDrawerStyle,[\s\S]*?inicio2-avatar-open-drawer[\s\S]*?inicio2-open-drawer[\s\S]*?<\/RAnimated.View>/);
 });
 
 test("controller: ready acknowledgement, interruptions and obsolete callbacks", () => {

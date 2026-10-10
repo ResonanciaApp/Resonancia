@@ -356,9 +356,9 @@ export function DrawerMenu() {
                                 contentFit="contain"
                               />
                             ) : item.mciIcon ? (
-                              <MaterialCommunityIcons name={item.mciIcon} size={31} color={item.color ?? "#F9F9F9"} />
+                              <MaterialCommunityIcons name={item.mciIcon} size={23} color={item.color ?? "#F9F9F9"} />
                             ) : (
-                              <Feather name={item.icon} size={28} color={item.color ?? "#F9F9F9"} />
+                              <Feather name={item.icon} size={20} color={item.color ?? "#F9F9F9"} />
                             )}
                             {item.id === "notifications" && unreadCount > 0 && (
                               <View pointerEvents="none" style={styles.notificationBadge}>
@@ -546,7 +546,7 @@ const styles = StyleSheet.create({
     paddingHorizontal: 2,
   },
   inicio3ItemLabel: {
-    fontSize: 22,
+    fontSize: 14,
   },
 
   item: {
@@ -557,7 +557,7 @@ const styles = StyleSheet.create({
     borderRadius: 10,
     gap: 14,
   },
-  itemIcon: { width: 34, alignItems: "center" },
+  itemIcon: { width: 26, alignItems: "center" },
   notificationBadge: {
     position: "absolute",
     left: -7,
@@ -583,8 +583,8 @@ const styles = StyleSheet.create({
     textAlign: "center",
   },
   premiumMenuStar: {
-    width: 29,
-    height: 29,
+    width: 21,
+    height: 21,
   },
   premiumLabelRow: {
     flexDirection: "row",
@@ -597,15 +597,14 @@ const styles = StyleSheet.create({
   premiumPromoHighlight: {
     color: MEMBERSHIP_AURORA.premium.accent,
     fontFamily: "Manrope",
-    fontSize: 22,
+    fontSize: 14,
     fontWeight: "700",
     letterSpacing: 0.2,
   },
   itemLabel: {
-    flexShrink: 1,
     fontFamily: "Manrope",
     color: "#FFFFFF",
-    fontSize: 23,
+    fontSize: 15,
     fontWeight: "500",
     letterSpacing: 0.2,
   },

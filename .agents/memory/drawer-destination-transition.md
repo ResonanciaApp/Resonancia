@@ -20,9 +20,3 @@ Mientras el dedo arrastra Inicio, no montar una nueva capa táctil encima ni ini
 **Why:** El usuario observó apertura anticipada y tirones: una capa nueva puede cancelar el reconocedor original y una cancelación tardía compite con sus actualizaciones.
 
 **How to apply:** Separar las suscripciones estables de Inicio de los estados de apertura del menú. La aparición de contenido debe durar mientras se revela, no concluir cuando todavía está oculto detrás de la pantalla.
-
-No confundir pruebas del protocolo de gestos con una validación de fluidez nativa.
-
-**Why:** El usuario volvió a observar tirones después de pasar las pruebas de lógica y compilación. Esas pruebas no miden el costo de composición de la pantalla completa.
-
-**How to apply:** Mantener el parallax de Inicio y evitar sombras desenfocadas o rasterizaciones costosas sobre todo su árbol durante el desplazamiento. Si no se ha medido la animación en un dispositivo, explicar esa limitación sin asegurar que desaparecieron los tirones.

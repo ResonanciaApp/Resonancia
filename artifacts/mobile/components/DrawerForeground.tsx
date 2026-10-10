@@ -1,6 +1,5 @@
 import React from "react";
 import { StyleSheet, View } from "react-native";
-import { LinearGradient } from "expo-linear-gradient";
 import { Gesture, GestureDetector } from "react-native-gesture-handler";
 import RAnimated, { cancelAnimation, runOnJS, useAnimatedStyle, useSharedValue } from "react-native-reanimated";
 
@@ -12,6 +11,7 @@ import {
   DRAWER_GESTURE_FAIL_Y,
   dragProgress,
   foregroundCornerRadius,
+  foregroundElevation,
   foregroundShadowOpacity,
   foregroundTranslateX,
   foregroundVeilOpacity,
@@ -42,15 +42,15 @@ export function DrawerForeground({ children }: { children: React.ReactNode }) {
 
   const outerStyle = useAnimatedStyle(() => {
     const p = drawerProgress.value;
+    const radius = foregroundCornerRadius(p);
     return {
       transform: [{ translateX: foregroundTranslateX(p, drawerWidth.value) }],
+      borderTopLeftRadius: radius,
+      borderBottomLeftRadius: radius,
+      shadowOpacity: foregroundShadowOpacity(p),
+      elevation: foregroundElevation(p),
     };
   });
-  // Static edge gradient instead of a live shadow/elevation over the entire
-  // navigation tree. Only alpha changes; no per-frame shadow path/blur.
-  const edgeStyle = useAnimatedStyle(() => ({
-    opacity: foregroundShadowOpacity(drawerProgress.value),
-  }));
   const innerStyle = useAnimatedStyle(() => {
     const radius = foregroundCornerRadius(drawerProgress.value);
     return { borderTopLeftRadius: radius, borderBottomLeftRadius: radius };
@@ -93,18 +93,10 @@ export function DrawerForeground({ children }: { children: React.ReactNode }) {
 
   return (
     <RAnimated.View
-      style={[styles.outer, outerStyle]}
+      style={[styles.outer, { backgroundColor: theme.solid }, outerStyle]}
       testID="drawer-foreground"
     >
-      <RAnimated.View pointerEvents="none" style={[styles.edgeShadow, edgeStyle]}>
-        <LinearGradient
-          colors={["rgba(5,7,13,0)", "#05070D"]}
-          start={{ x: 0, y: 0 }}
-          end={{ x: 1, y: 0 }}
-          style={StyleSheet.absoluteFill}
-        />
-      </RAnimated.View>
-      <RAnimated.View style={[styles.inner, { backgroundColor: theme.solid }, innerStyle]}>
+      <RAnimated.View style={[styles.inner, innerStyle]}>
         <SacredBackground variant="gradient" noImage />
         <View
           style={{ flex: 1 }}
@@ -177,13 +169,10 @@ export function DrawerEdgeGesture({ enabled, top = 0, children }: { enabled: boo
 const styles = StyleSheet.create({
   outer: {
     flex: 1,
-  },
-  edgeShadow: {
-    position: "absolute",
-    left: -22,
-    width: 22,
-    top: 75,
-    bottom: 75,
+    shadowColor: "#05070D",
+    shadowOffset: { width: -6, height: 0 },
+    shadowRadius: 18,
+    shadowOpacity: 0,
   },
   inner: {
     flex: 1,

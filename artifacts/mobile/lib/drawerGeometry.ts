@@ -7,7 +7,7 @@
 
 /** Franja de Inicio que queda visible en el borde derecho con el menu abierto. */
 export const DRAWER_VISIBLE_STRIP = 75;
-export const DRAWER_CORNER_RADIUS = 75;
+export const DRAWER_CORNER_RADIUS = 50;
 export const DRAWER_VEIL_MAX = 0.05;
 export const DRAWER_MENU_OFFSET_Y = 7;
 export const DRAWER_SHADOW_MAX = 0.24;
