@@ -5,6 +5,19 @@ description: Criterio de progreso y tratamiento visual acordados para la línea 
 
 La administración editorial de Tu camino debe permitir añadir y quitar etapas de ambos grupos y hasta tres candados con texto por etapa. El alcance autorizado incluye ahora la gamificación y los desbloqueos reales, además de Admin y diseño.
 
+El alcance editorial solicitado se amplía a cinco mundos configurables, cada
+uno con título, descripción, portada y todas las opciones de fases del primer
+mundo. El título y la portada alimentan El recorrido; título, descripción y
+fases alimentan Tu camino.
+
+**Why:** El usuario quiere administrar los cinco mundos desde un solo catálogo,
+no mantener versiones separadas de sus nombres e imágenes en cada pantalla.
+
+**How to apply:** Conservar las fases y derechos existentes al ampliar la
+estructura. En Tu camino adelantar solo el siguiente mundo al actual con
+«Próximamente para ti»; por ahora esa píldora sigue desplegando sus fases,
+sin que desplegarlas equivalga a completar etapas ni conceder premios.
+
 **Why:** El 8 de octubre de 2026 el usuario pidió primero solo Admin y diseño, pero después cambió explícitamente el alcance: «mejor incluye la gamificacion y los desbloqueos reales».
 
 **How to apply:** Las líneas y círculos acompañan automáticamente la estructura editorial. Conectar el progreso a días activos acumulados y las recompensas a recursos reales, no solo textos; conservar las etapas e imágenes originales como contenido inicial. El progreso alcanzado no retrocede cuando se corta una racha.
