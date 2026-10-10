@@ -277,7 +277,7 @@ test("intro description matches Tu camino screen intro typography (GrowthJourney
   const m2 = source.match(/subtitle:\s*(\{[\s\S]*?\n  \})/)!;
   const act = new Function("STREAK_INFO_COLORS", `return (${m2[1]});`)(STREAK_INFO_COLORS);
   for (const k of ["fontFamily", "fontSize", "fontWeight", "lineHeight"]) assert.equal(act[k], exp[k], k);
-  assert.equal(act.textAlign, "left");
+  assert.equal(act.textAlign, "center");
   const footnote = source.match(/footnote:\s*(\{[\s\S]*?\n  \})/)!;
   assert.equal(new Function("STREAK_INFO_COLORS", `return (${footnote[1]});`)(STREAK_INFO_COLORS).textAlign, "left");
   assert.equal(flatten(h.nodes.get("streak-info-description")!.style).alignItems, "stretch");

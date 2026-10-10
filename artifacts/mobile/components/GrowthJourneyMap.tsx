@@ -59,7 +59,8 @@ export function GrowthJourneyMap({ width }: { width: number }) {
         const cover = bundled ? LOCKED_ART[s.id] : s.coverUrl;
         const size = active ? ACTIVE : LOCKED;
         const cx = pts[i].x, cy = pts[i].y;
-        const left = cx - LABEL_W / 2;
+        const labelWidth = active ? Math.min(164, width) : LABEL_W;
+        const left = cx - labelWidth / 2;
         return (
           <View
             key={s.id}
@@ -67,7 +68,7 @@ export function GrowthJourneyMap({ width }: { width: number }) {
             accessible
             accessibilityLabel={`${i + 1}. ${s.name}${active ? ", Primer mundo" : ""}, ${active ? "disponible" : "no disponible"}`}
             accessibilityState={{ disabled: !active, selected: active }}
-            style={{ position: "absolute", left, top: cy - size / 2, width: LABEL_W, alignItems: "center" }}
+            style={{ position: "absolute", left, top: cy - size / 2, width: labelWidth, alignItems: "center" }}
           >
             <View
               testID={`growth-map-node-${stopId}`}

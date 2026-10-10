@@ -376,6 +376,8 @@ test("the map preserves its circle, overlays and first-only access while using i
       assert.equal(iconStyle.width, i === 0 ? 93 : 52);
       assert.equal(flatten(h.nodes.get(`growth-map-label-${ids[i]}`).style).fontSize, i === 0 ? 16 : 11);
       if (i === 0) {
+        assert.equal(style.width, 164, "Florecimiento has enough width without moving the circular route");
+        assert.equal(style.left + style.width / 2, width / 2, "active title and artwork remain centered");
         const world = h.nodes.get("growth-map-world-floracion");
         assert.equal(world.children, "Primer mundo");
         assert.equal(flatten(world.style).textAlign, "center");

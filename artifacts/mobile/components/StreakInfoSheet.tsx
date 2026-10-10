@@ -244,7 +244,7 @@ const styles = StyleSheet.create({
     fontWeight: "400",
     lineHeight: 22,
     color: STREAK_INFO_COLORS.subtitle,
-    textAlign: "left",
+    textAlign: "center",
   },
   cards: { paddingHorizontal: 20, marginTop: 50, gap: 15 },
   card: {
