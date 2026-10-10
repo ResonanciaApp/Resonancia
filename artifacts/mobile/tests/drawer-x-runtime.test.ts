@@ -9,6 +9,73 @@ import * as geometry from "../lib/drawerGeometry.ts";
 
 const require = createRequire(import.meta.url);
 
+test("opening, dragging and closing keep destination and panel subscriptions stable", () => {
+  const h = harness();
+  const initial = h.destinations;
+  h.ctx.beginDrawerDrag();
+  h.ctx.drawerProgress.value = 0.4;
+  h.flush();
+  assert.equal(h.destinations, initial);
+  h.ctx.settleDrawerDrag(true);
+  h.flush();
+  assert.equal(h.ctx.foregroundBlocked, true);
+  assert.equal(h.destinations, initial);
+  h.finish();
+  assert.equal(h.destinations, initial);
+  h.ctx.close();
+  h.flush();
+  assert.equal(h.destinations, initial);
+  h.finish();
+  assert.equal(h.ctx.foregroundBlocked, false);
+  assert.equal(h.destinations, initial);
+  h.ctx.open();
+  h.flush();
+  assert.equal(h.destinations, initial);
+});
+
+test("stable destination callbacks read current blocking state and publish real destination changes", () => {
+  const h = harness();
+  const initial = h.destinations;
+  const cachedCloseLibrary = initial.closeLib;
+  const cachedCloseOverlay = initial.closeOverlay;
+  h.ctx.open();
+  h.flush();
+  h.ctx.openLibFromDrawer("favoritos");
+  h.flush();
+  assert.notEqual(h.destinations, initial);
+  assert.equal(h.destinations.libOpen, true);
+  assert.equal(h.destinations.libraryInitialTab, "favoritos");
+  assert.equal(h.destinations.closeLib, cachedCloseLibrary);
+  cachedCloseLibrary();
+  h.flush();
+  assert.equal(h.ctx.isOpen, false);
+  assert.equal(h.destinations.libOpen, false);
+  h.finish();
+  h.ctx.open();
+  h.flush();
+  h.ctx.openOverlayFromDrawer("/historial");
+  h.flush();
+  assert.equal(h.destinations.overlayRoute, "/historial");
+  assert.equal(h.destinations.closeOverlay, cachedCloseOverlay);
+  cachedCloseOverlay();
+  h.flush();
+  assert.equal(h.ctx.isOpen, false);
+  assert.equal(h.destinations.overlayRoute, null);
+});
+
+test("navigation, overlay hosts and tool providers subscribe only to destination state", () => {
+  for (const path of [
+    "../app/_layout.tsx",
+    "../components/BibliotecaOverlay.tsx", "../components/DrawerScreenOverlay.tsx",
+    "../components/ChatOverlay.tsx", "../components/LibraryMixOverlay.tsx",
+    "../context/MixerPanelContext.tsx", "../context/GeometrixPanelContext.tsx",
+  ]) {
+    const source = readFileSync(new URL(path, import.meta.url), "utf8");
+    assert.match(source, /useDrawerDestinations\(\)/, path);
+    assert.doesNotMatch(source, /\buseDrawer\(\)/, path);
+  }
+});
+
 /** Execute the real provider/components with deterministic hooks, native gestures
  * and UI timing. This tests callbacks from production, not a copied controller.
  * Native view rendering, hardware event delivery and pixels still need a device.
@@ -23,6 +90,7 @@ function harness() {
   const backs: Array<() => boolean> = [];
   const gestures: any[] = [];
   let context: any;
+  let destinationContext: any;
   let Provider: any;
   const same = (a: any[], b?: any[]) => b && a.length === b.length && a.every((v, i) => Object.is(v, b[i]));
   const React: any = {
@@ -148,7 +216,9 @@ function harness() {
     let limit = 20;
     while (dirty && limit-- > 0) {
       dirty = false; index = 0;
-      context = Provider({ children: null }).props.children[0].props.children[0].props.value;
+      const provider = Provider({ children: null }).props.children[0].props.children[0];
+      context = provider.props.value;
+      destinationContext = provider.props.children[0].props.value;
       effects.splice(0).forEach(fn => fn());
     }
     assert.ok(limit > 0, "provider settles without an infinite render loop");
@@ -157,6 +227,7 @@ function harness() {
   flush();
   return {
     get ctx() { return context; }, flush,
+    get destinations() { return destinationContext; },
     frame: () => { frames.splice(0).forEach(fn => fn()); flush(); },
     finish: () => { context.drawerProgress.finish(); flush(); },
     path: (path: string) => { currentPath = path; dirty = true; flush(); },

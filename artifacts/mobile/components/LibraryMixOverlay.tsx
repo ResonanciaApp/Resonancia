@@ -3,7 +3,7 @@ import { LinearGradient } from "expo-linear-gradient";
 import { Animated, BackHandler, Dimensions, StyleSheet } from "react-native";
 
 import { BackOverrideProvider } from "@/context/BackOverrideContext";
-import { useDrawer } from "@/context/DrawerContext";
+import { useDrawerDestinations } from "@/context/DrawerContext";
 import { useSceneTheme } from "@/context/SceneThemeContext";
 import { DURATION, easeOutCubic } from "@/constants/motion";
 
@@ -12,7 +12,7 @@ const MixDetail = React.lazy(() => import("@/app/mi-mezcla/[id]"));
 
 /** El detalle de una mezcla se desliza sobre Biblioteca sin cambiar su tab ni cerrar el drawer. */
 export function LibraryMixOverlay() {
-  const { libraryMixId, closeLibraryMix } = useDrawer();
+  const { libraryMixId, closeLibraryMix } = useDrawerDestinations();
   const { theme } = useSceneTheme();
   const [activeId, setActiveId] = useState<string | null>(null);
   const slideAnim = useRef(new Animated.Value(W)).current;

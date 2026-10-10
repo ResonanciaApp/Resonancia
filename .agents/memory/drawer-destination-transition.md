@@ -20,3 +20,9 @@ Mientras el dedo arrastra Inicio, no montar una nueva capa táctil encima ni ini
 **Why:** El usuario observó apertura anticipada y tirones: una capa nueva puede cancelar el reconocedor original y una cancelación tardía compite con sus actualizaciones.
 
 **How to apply:** Separar las suscripciones estables de Inicio de los estados de apertura del menú. La aparición de contenido debe durar mientras se revela, no concluir cuando todavía está oculto detrás de la pantalla.
+
+No dar por aislado Inicio solo porque su conexión directa al drawer sea estable: revisar también los proveedores intermedios de herramientas y la navegación.
+
+**Why:** Un proveedor que escucha los estados transitorios del menú puede propagar sus actualizaciones a Inicio mediante otro contexto, aunque la suscripción directa de Inicio no haya cambiado.
+
+**How to apply:** Mantener las conexiones de destinos y herramientas independientes de abrir/cerrar el menú. Los callbacks estables que necesitan saber si la superficie está bloqueada deben leer el estado vigente, no conservar una captura antigua. Esto limita actualizaciones indirectas; no demuestra por sí solo la causa de los tirones.

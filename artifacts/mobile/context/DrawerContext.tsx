@@ -86,12 +86,24 @@ const Ctx = createContext<DrawerCtx | null>(null);
 type MotionContext = Pick<DrawerCtx, "drawerProgress" | "drawerWidth" | "drawerGestureVersion" | "beginDrawerDrag" | "settleDrawerDrag">;
 const MotionCtx = createContext<MotionContext | null>(null);
 const HomeCtx = createContext<Pick<DrawerCtx, "open" | "moodPickerRequest"> | null>(null);
+type DestinationContext = Pick<DrawerCtx,
+  "instantNav" | "overlayParallax" | "drawerTransitionProgress" |
+  "libOpen" | "libraryInitialTab" | "libOpenedFromDrawer" | "closeLib" |
+  "libraryMixId" | "closeLibraryMix" | "overlayRoute" | "overlayOpenedFromDrawer" |
+  "closeOverlay" | "chatUserId" | "closeChat" | "destinationRequest" | "acknowledgeDestinationReady"
+>;
+const DestinationCtx = createContext<DestinationContext | null>(null);
 
 export function DrawerProvider({ children }: { children: React.ReactNode }) {
   const { width } = useWindowDimensions();
   const pathname = usePathname();
   const [isOpen, setIsOpen] = useState(false);
-  const [foregroundBlocked, setForegroundBlocked] = useState(false);
+  const [foregroundBlocked, setForegroundBlockedState] = useState(false);
+  const foregroundBlockedRef = useRef(false);
+  const setForegroundBlocked = useCallback((value: boolean) => {
+    foregroundBlockedRef.current = value;
+    setForegroundBlockedState(value);
+  }, []);
   const [moodPickerRequest, setMoodPickerRequest] = useState(0);
   const [wallComposeRequest, setWallComposeRequest] = useState<number | null>(null);
   const [instantNav, setInstantNav] = useState(false);
@@ -271,10 +283,10 @@ export function DrawerProvider({ children }: { children: React.ReactNode }) {
     setLibOpen(true);
   }, []);
   const closeLib = useCallback(() => {
-    if (foregroundBlocked) close();
+    if (foregroundBlockedRef.current) close();
     setLibOpen(false);
     setLibraryInitialTab(null);
-  }, [close, foregroundBlocked]);
+  }, [close]);
   const [libraryMixId, setLibraryMixId] = useState<string | null>(null);
   const openLibraryMix = useCallback((id: string) => setLibraryMixId(id), []);
   const closeLibraryMix = useCallback(() => setLibraryMixId(null), []);
@@ -312,9 +324,9 @@ export function DrawerProvider({ children }: { children: React.ReactNode }) {
     setOverlayRoute(route);
   }, []);
   const closeOverlay = useCallback(() => {
-    if (foregroundBlocked) close();
+    if (foregroundBlockedRef.current) close();
     setOverlayRoute(null);
-  }, [close, foregroundBlocked]);
+  }, [close]);
   const [chatUserId, setChatUserId] = useState<number | null>(null);
   const openChat = useCallback((userId: number) => setChatUserId(userId), []);
   const closeChat = useCallback(() => setChatUserId(null), []);
@@ -324,12 +336,27 @@ export function DrawerProvider({ children }: { children: React.ReactNode }) {
     [isOpen, foregroundBlocked, open, close, drawerProgress, drawerWidth, drawerGestureVersion, beginDrawerDrag, settleDrawerDrag, selectFromDrawer, destinationRequest, acknowledgeDestinationReady, moodPickerRequest, requestMoodPicker, wallComposeRequest, requestWallCompose, consumeWallComposeRequest, instantNav, libOpen, libraryParallax, libraryInitialTab, openLib, openLibFromDrawer, closeLib, libOpenedFromDrawer, libraryMixId, openLibraryMix, closeLibraryMix, overlayRoute, openOverlay, openOverlayFromDrawer, closeOverlay, overlayOpenedFromDrawer, overlayParallax, drawerTransitionProgress, chatUserId, openChat, closeChat],
   );
 
+  // Opening/closing the drawer must not broadcast to navigation or panel providers.
+  // Their close callbacks read the latest blocking flag without changing identity.
+  const destinations = React.useMemo<DestinationContext>(() => ({
+    instantNav, overlayParallax, drawerTransitionProgress,
+    libOpen, libraryInitialTab, libOpenedFromDrawer, closeLib,
+    libraryMixId, closeLibraryMix, overlayRoute, overlayOpenedFromDrawer, closeOverlay,
+    chatUserId, closeChat, destinationRequest, acknowledgeDestinationReady,
+  }), [
+    instantNav, overlayParallax, drawerTransitionProgress,
+    libOpen, libraryInitialTab, libOpenedFromDrawer, closeLib,
+    libraryMixId, closeLibraryMix, overlayRoute, overlayOpenedFromDrawer, closeOverlay,
+    chatUserId, closeChat, destinationRequest, acknowledgeDestinationReady,
+  ]);
   const motion = React.useMemo(() => ({
     drawerProgress, drawerWidth, drawerGestureVersion, beginDrawerDrag, settleDrawerDrag,
   }), [drawerProgress, drawerWidth, drawerGestureVersion, beginDrawerDrag, settleDrawerDrag]);
   const home = React.useMemo(() => ({ open, moodPickerRequest }), [open, moodPickerRequest]);
   return <HomeCtx.Provider value={home}><MotionCtx.Provider value={motion}>
-    <Ctx.Provider value={value}>{children}</Ctx.Provider>
+    <Ctx.Provider value={value}>
+      <DestinationCtx.Provider value={destinations}>{children}</DestinationCtx.Provider>
+    </Ctx.Provider>
   </MotionCtx.Provider></HomeCtx.Provider>;
 }
 
@@ -342,6 +369,12 @@ export function useDrawerMotion() {
 export function useHomeDrawer() {
   const value = useContext(HomeCtx);
   if (!value) throw new Error("useHomeDrawer requires DrawerProvider");
+  return value;
+}
+
+export function useDrawerDestinations() {
+  const value = useContext(DestinationCtx);
+  if (!value) throw new Error("useDrawerDestinations requires DrawerProvider");
   return value;
 }
 

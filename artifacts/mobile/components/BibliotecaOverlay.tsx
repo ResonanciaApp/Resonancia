@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import { Animated, BackHandler, Dimensions, StyleSheet, View } from "react-native";
 
 import { ProfileScreenBase } from "@/components/ProfileScreenBase";
-import { useDrawer } from "@/context/DrawerContext";
+import { useDrawerDestinations } from "@/context/DrawerContext";
 import { easeOutCubic } from "@/constants/motion";
 
 const W = Dimensions.get("window").width;
@@ -20,7 +20,7 @@ export function BibliotecaOverlay() {
     libOpenedFromDrawer,
     acknowledgeDestinationReady,
     destinationRequest,
-  } = useDrawer();
+  } = useDrawerDestinations();
   const [rendered, setRendered] = useState(false);
   const [mountKey, setMountKey] = useState(0);
   const normalSlideAnim = React.useRef(new Animated.Value(W)).current;

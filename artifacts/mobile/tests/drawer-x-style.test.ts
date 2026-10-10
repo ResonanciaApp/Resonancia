@@ -177,8 +177,8 @@ test("context: Back has priority while blocked/pending, strip close cancels sele
   assert.match(ctx, /const close = useCallback\(\(onClosed\?: \(\) => void\) => \{[\s\S]*?controller\.cancelSelection\(\)/);
   assert.doesNotMatch(ctx, /setTimeout/);
   assert.match(ctx, /acknowledgeDestinationReady\("route"\)/);
-  assert.match(ctx, /const closeLib = useCallback\(\(\) => \{\s*if \(foregroundBlocked\) close\(\)/);
-  assert.match(ctx, /const closeOverlay = useCallback\(\(\) => \{\s*if \(foregroundBlocked\) close\(\)/);
+  assert.match(ctx, /const closeLib = useCallback\(\(\) => \{\s*if \(foregroundBlockedRef.current\) close\(\)/);
+  assert.match(ctx, /const closeOverlay = useCallback\(\(\) => \{\s*if \(foregroundBlockedRef.current\) close\(\)/);
 });
 
 test("drawer-origin overlays acknowledge real layout inside Suspense; other origins keep slide transitions", () => {

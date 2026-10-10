@@ -1,7 +1,7 @@
 import React, { createContext, useCallback, useContext, useEffect, useRef, useState } from "react";
 import { Animated, BackHandler, Dimensions } from "react-native";
 import { easeOutCubic } from "@/constants/motion";
-import { useDrawer } from "@/context/DrawerContext";
+import { useDrawerDestinations } from "@/context/DrawerContext";
 
 export const GEOMETRIX_PANEL_W = Dimensions.get("window").width;
 
@@ -31,7 +31,7 @@ type GeometrixPanelCtx = {
 const Ctx = createContext<GeometrixPanelCtx | null>(null);
 
 export function GeometrixPanelProvider({ children }: { children: React.ReactNode }) {
-  const { drawerTransitionProgress } = useDrawer();
+  const { drawerTransitionProgress } = useDrawerDestinations();
   const [isGeometrixOpen, setIsGeometrixOpen] = useState(false);
   const [openedFromDrawer, setOpenedFromDrawer] = useState(false);
   const [hasOpenedGeometrix, setHasOpenedGeometrix] = useState(false);

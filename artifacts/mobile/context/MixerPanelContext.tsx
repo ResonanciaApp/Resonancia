@@ -2,7 +2,7 @@ import React, { createContext, useCallback, useContext, useEffect, useRef, useSt
 import { Animated, BackHandler, Dimensions } from "react-native";
 import { DURATION, easeOutCubic } from "@/constants/motion";
 import { stopSessionPlayback } from "@/context/audioBridge";
-import { useDrawer } from "@/context/DrawerContext";
+import { useDrawerDestinations } from "@/context/DrawerContext";
 
 export const MIXER_PANEL_W = Dimensions.get("window").width;
 
@@ -18,7 +18,7 @@ type MixerPanelCtx = {
 const Ctx = createContext<MixerPanelCtx | null>(null);
 
 export function MixerPanelProvider({ children }: { children: React.ReactNode }) {
-  const { drawerTransitionProgress } = useDrawer();
+  const { drawerTransitionProgress } = useDrawerDestinations();
   const [isMixerOpen, setIsMixerOpen] = useState(false);
   const [openedFromDrawer, setOpenedFromDrawer] = useState(false);
   const panelAnim = useRef(new Animated.Value(0)).current;

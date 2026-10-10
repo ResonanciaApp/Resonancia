@@ -51,7 +51,7 @@ import { VideosProvider } from "@/context/VideosContext";
 import {
   DrawerProvider,
   DRAWER_OVERLAY_PARALLAX_X,
-  useDrawer,
+  useDrawerDestinations,
 } from "@/context/DrawerContext";
 import { MixerPanelProvider } from "@/context/MixerPanelContext";
 import { GeometrixPanelProvider } from "@/context/GeometrixPanelContext";
@@ -191,7 +191,7 @@ function ThemedGestureRoot({ children }: { children: React.ReactNode }) {
 /** Pantalla activa: solo ella recibe el parallax de overlays abiertos fuera
  *  del drawer. El drawer estilo X vive en DrawerForeground (sin velo negro). */
 function NavParallax({ children }: { children: React.ReactNode }) {
-  const { overlayParallax } = useDrawer();
+  const { overlayParallax } = useDrawerDestinations();
   const backgroundParallaxX = overlayParallax.interpolate({
     inputRange: [0, 1],
     outputRange: [0, DRAWER_OVERLAY_PARALLAX_X],
@@ -208,7 +208,7 @@ function NavStack() {
   // Navegación desde el menú: las pantallas destino del drawer entran sin slide
   // propio (instantáneo), así el único movimiento es el cierre del drawer y no se
   // alcanza a ver Inicio antes de la página. Desde otros lados, slide normal.
-  const { instantNav } = useDrawer();
+  const { instantNav } = useDrawerDestinations();
   const { theme } = useSceneTheme();
   const drawerScreenAnim = instantNav ? "none" : "slide_from_right";
   return (

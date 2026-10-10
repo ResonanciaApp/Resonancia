@@ -2,7 +2,7 @@ import React, { useEffect, useRef, useState, Suspense } from "react";
 import { LinearGradient } from "expo-linear-gradient";
 import { Animated, BackHandler, Dimensions, StyleSheet, View } from "react-native";
 
-import { useDrawer } from "@/context/DrawerContext";
+import { useDrawerDestinations } from "@/context/DrawerContext";
 import { BackOverrideProvider } from "@/context/BackOverrideContext";
 import { DURATION, easeOutCubic } from "@/constants/motion";
 import { useSceneTheme } from "@/context/SceneThemeContext";
@@ -44,7 +44,7 @@ export function DrawerScreenOverlay() {
     overlayOpenedFromDrawer,
     acknowledgeDestinationReady,
     destinationRequest,
-  } = useDrawer();
+  } = useDrawerDestinations();
   const [mountKey, setMountKey] = useState(0);
   const { theme: sceneTheme } = useSceneTheme();
   const [rendered, setRendered] = useState(false);

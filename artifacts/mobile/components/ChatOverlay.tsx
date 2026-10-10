@@ -2,7 +2,7 @@ import React, { useEffect, useRef, useState, Suspense } from "react";
 import { LinearGradient } from "expo-linear-gradient";
 import { Animated, Dimensions, StyleSheet } from "react-native";
 
-import { useDrawer } from "@/context/DrawerContext";
+import { useDrawerDestinations } from "@/context/DrawerContext";
 import { BackOverrideProvider } from "@/context/BackOverrideContext";
 import { DURATION, easeOutCubic } from "@/constants/motion";
 import { useSceneTheme } from "@/context/SceneThemeContext";
@@ -17,7 +17,7 @@ const ChatScreen = React.lazy(() => import("@/app/chat/[userId]"));
  * cierra solo esta capa y vuelve a Amigos.
  */
 export function ChatOverlay() {
-  const { chatUserId, closeChat } = useDrawer();
+  const { chatUserId, closeChat } = useDrawerDestinations();
   const { theme: sceneTheme } = useSceneTheme();
   const [rendered, setRendered] = useState(false);
   const [activeId, setActiveId] = useState<number | null>(null);
