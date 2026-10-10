@@ -608,9 +608,9 @@ const styles = StyleSheet.create({
     paddingBottom: 12,
   },
   sectionHeading: { alignItems: "center", marginBottom: 8 },
-  firstStageHeading: { marginTop: 5 },
+  firstStageHeading: { marginTop: 0 },
   secondStageHeading: { marginBottom: 0 },
-  worldDescription: { width: "70%", alignSelf: "center", textAlign: "center", marginTop: 9, marginBottom: 8, fontFamily: "Manrope", fontSize: 12, fontWeight: "400", lineHeight: 18 },
+  worldDescription: { width: "70%", alignSelf: "center", textAlign: "center", marginTop: 5, marginBottom: 8, fontFamily: "Manrope", fontSize: 12, fontWeight: "400", lineHeight: 18 },
   stageGap: { height: 73 },
   ascentToggle: {
     alignSelf: "center",

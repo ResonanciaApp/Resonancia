@@ -64,14 +64,14 @@ const level = {
   rewards: [1, 2, 3].map(id => ({ id: `reward-${id}`, enabled: true, amount: 5, text: "Desbloquea {cantidad} avatares" })),
 };
 
-test("Florecimiento grows 4pt, its centered description uses one line at 12pt and moves up 3px, and the first world moves up 25px", () => {
+test("Florecimiento keeps its larger title and one-line description, with the first world up another 5px and description up another 4px", () => {
   const description = "Cultiva tu calma cada día.";
   render(components.GrowthStageHeading, {
     eyebrow: "PRIMER MUNDO", title: "Florecimiento", description,
   });
   const heading = nodes.find(node => node.testID === "growth-first-world-heading");
   const copy = nodes.find(node => node.testID === "growth-world-description");
-  assert.equal(heading.style.marginTop, 5);
+  assert.equal(heading.style.marginTop, 0);
   assert.equal(heading.style.position, undefined);
   assert.equal(copy.children, description);
   assert.equal(copy.children.split("\n").length, 1);
@@ -80,7 +80,7 @@ test("Florecimiento grows 4pt, its centered description uses one line at 12pt an
   assert.equal(copy.style.textAlign, "center");
   assert.equal(copy.numberOfLines, 1);
   assert.equal(copy.style.fontSize, 12);
-  assert.equal(copy.style.marginTop, 9);
+  assert.equal(copy.style.marginTop, 5);
   assert.equal(nodes.find(node => node.children === "Florecimiento").style.fontSize, 27);
   assert.equal(nodes.find(node => node.children === "Florecimiento").style.lineHeight, 30);
   assert.ok(nodes.findIndex(node => node.children === "Florecimiento") < nodes.indexOf(copy));
