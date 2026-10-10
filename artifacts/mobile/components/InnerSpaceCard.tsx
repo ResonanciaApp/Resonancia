@@ -614,6 +614,8 @@ export function InnerSpaceCard({
       >
         <TextInput
           testID="reflection-writing-input"
+          placeholder="Escribe tu reflexión aquí"
+          placeholderTextColor={colors.mutedForeground}
           ref={inputRef}
           editable={!freeLimitReached}
           showSoftInputOnFocus={inputActive}

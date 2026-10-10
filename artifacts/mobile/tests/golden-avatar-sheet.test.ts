@@ -53,7 +53,8 @@ test("Avatar dorado explains the unique prize, shares the native host and can cl
     const heroStyle = h.nodes.get("golden-avatar-hero-circle").style;
     assert.equal(heroStyle.width, 115.5);
     assert.equal(heroStyle.height, 115.5);
-    assert.equal(heroStyle.backgroundColor, "#000000");
+    assert.equal(heroStyle.backgroundColor, "rgba(0,0,0,0.5)");
+    assert.doesNotMatch(golden, /styles\.halo|\bhalo:/);
     assert.equal(h.nodes.get("golden-avatar-question").style.color, "#F9F9F9");
     const decorations = h.nodes.get("golden-avatar-decorations");
     assert.equal(decorations.pointerEvents, "none");
@@ -62,6 +63,17 @@ test("Avatar dorado explains the unique prize, shares the native host and can cl
     assert.equal(h.nodes.get("golden-avatar-title").style.fontSize, 16);
     assert.equal(h.nodes.get("golden-avatar-header").style.minHeight, 63);
     assert.equal(h.nodes.get("golden-avatar-header").style.paddingTop, 20);
+    assert.equal(h.nodes.get("golden-avatar-header").style.flexShrink, 0);
+    const scroll = h.nodes.get("golden-avatar-scroll");
+    assert.equal(scroll.bounces, true);
+    assert.equal(scroll.alwaysBounceVertical, true);
+    assert.equal(scroll.overScrollMode, "always");
+    const directChildren = React.Children.toArray(h.nodes.get("golden-avatar-sheet").children)
+      .map(child => React.isValidElement<{ testID?: string }>(child) ? child.props.testID : undefined);
+    assert.ok(directChildren.includes("golden-avatar-header"), "title header remains outside the scrolling body");
+    assert.ok(directChildren.includes("golden-avatar-scroll"));
+    assert.equal(h.nodes.get("golden-avatar-description").style.fontSize, 13);
+    assert.equal(h.nodes.get("golden-avatar-description").style.marginTop, 37);
     const closeStyles = Object.assign({}, ...h.nodes.get("golden-avatar-close").style);
     assert.equal(closeStyles.left, 0);
     assert.equal(closeStyles.top, 20);
@@ -69,7 +81,7 @@ test("Avatar dorado explains the unique prize, shares the native host and can cl
     const sheetStyle = Object.assign({}, ...h.nodes.get("golden-avatar-sheet").style);
     assert.equal(sheetStyle.height, props.sheetHeight);
     const bodyStyle = Object.assign({}, ...h.nodes.get("golden-avatar-scroll-content").contentContainerStyle);
-    assert.equal(bodyStyle.paddingTop, 30);
+    assert.equal(bodyStyle.paddingTop, 50);
     h.nodes.get("golden-avatar-close").onPress();
     h.nodes.get("golden-avatar-backdrop-close").onPress();
     assert.equal(closes, 2);

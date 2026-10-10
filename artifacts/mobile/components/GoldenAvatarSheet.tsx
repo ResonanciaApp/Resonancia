@@ -57,14 +57,16 @@ export function GoldenAvatarSheet({ motion, onClose, sheetHeight }: {
           style={styles.scroll}
           contentContainerStyle={[styles.body, { paddingBottom: Math.max(insets.bottom, 18) + 18 }]}
           showsVerticalScrollIndicator={false}
-          bounces={false}
+          bounces
+          alwaysBounceVertical
+          overScrollMode="always"
+          testID="golden-avatar-scroll"
         >
           <View style={styles.heroSlot}>
             <View pointerEvents="none" style={StyleSheet.absoluteFill} accessibilityElementsHidden importantForAccessibility="no-hide-descendants" testID="golden-avatar-decorations">
               {CONFETTI.map(([l, t, s, r, c, round], i) => (
                 <View key={i} style={{ position: "absolute", left: `${l}%`, top: t, width: s, height: round ? s : s * 1.8, borderRadius: round ? s / 2 : 2, backgroundColor: c, opacity: 0.85, transform: [{ rotate: `${r}deg` }] }} />
               ))}
-              <View style={styles.halo} />
             </View>
             <View style={styles.hero} testID="golden-avatar-hero-circle">
               <Text style={styles.question} testID="golden-avatar-question" accessibilityLabel="Avatar misterioso">?</Text>
@@ -83,15 +85,14 @@ const styles = StyleSheet.create({
   root: { ...StyleSheet.absoluteFillObject, justifyContent: "flex-end" },
   backdrop: { ...StyleSheet.absoluteFillObject, backgroundColor: "#000000" },
   sheet: { position: "absolute", left: 0, right: 0, bottom: 0, overflow: "hidden", borderTopLeftRadius: 22, borderTopRightRadius: 22, paddingHorizontal: 20 },
-  handle: { alignSelf: "center", width: 36, height: 4, borderRadius: 2, backgroundColor: "rgba(255,255,255,0.18)", marginTop: 10, marginBottom: 4 },
-  header: { paddingTop: 20, minHeight: 63, flexDirection: "row", alignItems: "center", justifyContent: "center" },
+  handle: { alignSelf: "center", width: 36, height: 4, borderRadius: 2, backgroundColor: "rgba(255,255,255,0.18)", marginTop: 10, marginBottom: 4, flexShrink: 0 },
+  header: { flexShrink: 0, paddingTop: 20, minHeight: 63, flexDirection: "row", alignItems: "center", justifyContent: "center" },
   title: { flex: 1, fontFamily: "Manrope", fontSize: 16, fontWeight: "700", color: "#F9F9F9", textAlign: "center" },
   close: { position: "absolute", top: 20, left: 0, width: 43, height: 43, borderRadius: 21.5, alignItems: "center", justifyContent: "center" },
   scroll: { flex: 1 },
-  body: { alignItems: "center", paddingTop: 30 },
+  body: { alignItems: "center", paddingTop: 50 },
   heroSlot: { width: "100%", height: 170, alignItems: "center", justifyContent: "center" },
-  halo: { position: "absolute", alignSelf: "center", top: 27, width: 116, height: 116, borderRadius: 58, borderWidth: 14, borderColor: "rgba(245,200,75,0.18)" },
-  hero: { width: HERO, height: HERO, borderRadius: HERO / 2, backgroundColor: "#000000", alignItems: "center", justifyContent: "center" },
+  hero: { width: HERO, height: HERO, borderRadius: HERO / 2, backgroundColor: "rgba(0,0,0,0.5)", alignItems: "center", justifyContent: "center" },
   question: { fontFamily: "Manrope", fontSize: 56, fontWeight: "700", color: "#F9F9F9", includeFontPadding: false },
-  description: { fontFamily: "Manrope", fontSize: 15, lineHeight: 22, fontWeight: "500", color: "#F9F9F9", textAlign: "center", marginTop: 20, paddingHorizontal: 12 },
+  description: { fontFamily: "Manrope", fontSize: 13, lineHeight: 22, fontWeight: "500", color: "#F9F9F9", textAlign: "center", marginTop: 37, paddingHorizontal: 12 },
 });
