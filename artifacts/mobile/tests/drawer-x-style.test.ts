@@ -89,9 +89,14 @@ test("normal corner and light-layer animations share the drawer progress", () =>
   assert.ok(foregroundShadowOpacity(0.5) < foregroundShadowOpacity(1));
   assert.equal(menuContentOpacity(0), 0);
   assert.equal(menuContentOpacity(0.4), 0.4);
-  assert.ok(menuContentTranslateY(0.55) < -3);
-  assert.equal(menuContentTranslateY(0), -7);
+  assert.ok(Math.abs(menuContentTranslateY(0.55) - 5.4) < 1e-9);
+  assert.equal(menuContentTranslateY(0), 12);
   assert.equal(menuContentTranslateY(1), 0);
+  assert.equal(menuContentTranslateY(0.5), 6);
+  assert.equal(menuContentTranslateY(-1), 12);
+  assert.equal(menuContentTranslateY(2), 0);
+  const positions = [0, 0.25, 0.5, 0.75, 1].map(menuContentTranslateY);
+  assert.deepEqual(positions, [12, 9, 6, 3, 0]);
   // Cierre revierte: mismo progreso, misma geometria.
   assert.equal(foregroundCornerRadius(0), 0);
 });

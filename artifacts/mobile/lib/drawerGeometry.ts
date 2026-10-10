@@ -9,7 +9,7 @@
 export const DRAWER_VISIBLE_STRIP = 75;
 export const DRAWER_CORNER_RADIUS = 50;
 export const DRAWER_VEIL_MAX = 0.13;
-export const DRAWER_MENU_OFFSET_Y = 7;
+export const DRAWER_MENU_OFFSET_Y = 12;
 export const DRAWER_SHADOW_MAX = 0.24;
 export const DRAWER_ELEVATION_MAX = 18;
 /** Fraccion del progreso en la que las esquinas ya alcanzan su radio final. */
@@ -87,11 +87,11 @@ export function menuContentOpacity(progress: number) {
   return clamp01(progress / DRAWER_MENU_FADE_RAMP);
 }
 
-/** -7 px al inicio de la apertura, 0 en su posicion final (se mueve 7 px hacia abajo). */
+/** +12 px al inicio de la apertura, 0 en su posicion final (se mueve 12 px hacia arriba). */
 export function menuContentTranslateY(progress: number) {
   "worklet";
   const remaining = 1 - clamp01(progress / DRAWER_MENU_SHIFT_RAMP);
-  return remaining === 0 ? 0 : -DRAWER_MENU_OFFSET_Y * remaining;
+  return remaining === 0 ? 0 : DRAWER_MENU_OFFSET_Y * remaining;
 }
 
 /** Progreso durante un arrastre, a partir del progreso inicial y la traslacion. */
