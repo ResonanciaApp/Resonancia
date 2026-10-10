@@ -1158,7 +1158,7 @@ const modalStyles = StyleSheet.create({
     alignSelf: "center",
     width: 36, height: 4,
     borderRadius: 2,
-    backgroundColor: "rgba(74,12,12,0.08)",
+    backgroundColor: "rgba(255,255,255,0.1)",
     marginTop: 10, marginBottom: 4,
   },
   sheetTitle: {
@@ -1171,7 +1171,8 @@ const modalStyles = StyleSheet.create({
     marginBottom: 0,
   },
   coverHeader: {
-    minHeight: 43,
+    minHeight: 63,
+    paddingTop: 20,
     flexDirection: "row",
     alignItems: "center",
     justifyContent: "center",
@@ -1179,6 +1180,7 @@ const modalStyles = StyleSheet.create({
   coverCloseButton: {
     position: "absolute",
     left: 0,
+    top: 20,
     width: 43,
     height: 43,
     borderRadius: 21.5,
@@ -1189,6 +1191,7 @@ const modalStyles = StyleSheet.create({
     borderColor: "transparent",
   },
   selectedPreviewSlot: {
+    marginTop: 10,
     height: 170,
     alignItems: "center",
     justifyContent: "center",
@@ -1201,6 +1204,7 @@ const modalStyles = StyleSheet.create({
   coverUploadButton: {
     position: "absolute",
     right: 0,
+    top: 20,
     zIndex: 1,
     width: 43,
     height: 43,
