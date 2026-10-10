@@ -24,6 +24,6 @@ test("all unselected icon types and labels share the theme tint while selected t
   assert.match(source, /<MaterialCommunityIcons[^>]+color=\{color\}/);
   assert.match(source, /<SymbolView[^>]+tintColor=\{color\}/);
   assert.match(source, /<Feather[^>]+color=\{color\}/);
-  assert.match(source, /color: isFocused \? activeCol : inactiveCol/);
+  assert.match(source, /accessibilityLabel=\{conf\.label\}/);
   assert.match(source, /const ACTIVE_COLOR\s*=\s*"#FFFFFF"/);
 });

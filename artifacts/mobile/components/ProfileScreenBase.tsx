@@ -1,4 +1,5 @@
 import { Feather, MaterialCommunityIcons } from "@expo/vector-icons";
+import { TAB_BAR_NAVIGATION_HEIGHT } from "@/constants/tab-bar";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { randomUUID } from "expo-crypto";
 import { File as FSFile, Paths } from "expo-file-system";
@@ -355,7 +356,7 @@ export function ProfileScreenBase({
   const handleProfileReflectionSaved = useCallback(() => {
     setProfileReflectionSavedTrigger((current) => current + 1);
   }, []);
-  const profileReflectionBannerBottom = 58 + (Platform.OS === "web" ? 8 : insets.bottom) + 15;
+  const profileReflectionBannerBottom = TAB_BAR_NAVIGATION_HEIGHT + (Platform.OS === "web" ? 8 : insets.bottom) + 15;
   const getProfileScrollY = useCallback(() => profileScrollYRef.current, []);
   const navigation = useNavigation();
   useEffect(() => {

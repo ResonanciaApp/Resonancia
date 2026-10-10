@@ -650,9 +650,9 @@ test("Perfil replays the existing saved banner after every successful save and V
   `, { compilerOptions: { module: ts.ModuleKind.CommonJS, jsx: ts.JsxEmit.React } }).outputText;
   let count = 0;
   let route = "";
-  const Surface = new Function("React", "useState", "useCallback", "Platform", "insets", "router",
+  const Surface = new Function("TAB_BAR_NAVIGATION_HEIGHT", "React", "useState", "useCallback", "Platform", "insets", "router",
     "ProfileReflectionWallSection", "ReflectionSavedBanner", `${compiled}; return Surface;`)(
-      React,
+      43, React,
       () => [count, (update: (current: number) => number) => { count = update(count); }],
       (callback: () => void) => callback,
       { OS: "ios" }, { bottom: 34 },
@@ -664,7 +664,7 @@ test("Perfil replays the existing saved banner after every successful save and V
   first[0].props.onMessageSaved();
   const second = Surface(true).props.children;
   assert.equal(second[1].props.trigger, 1);
-  assert.equal(second[1].props.bottom, 58 + 34 + 15);
+  assert.equal(second[1].props.bottom, 43 + 34 + 15);
   second[0].props.onMessageSaved();
   assert.equal(Surface(true).props.children[1].props.trigger, 2);
   second[1].props.onPress();

@@ -9,18 +9,14 @@ contenido: cualquier pantalla `flex:1` se extiende DEBAJO de ella, así que
 contenido pegado al fondo queda tapado/recortado.
 
 **Regla:** una pantalla que ancla algo al fondo (lienzo a pantalla completa,
-fila pegada abajo) debe reservar el alto de la tab bar ella misma. La fórmula
-(misma que usa `_layout.tsx`):
+fila pegada abajo) debe reservar el alto de la tab bar ella misma, usando la constante compartida más el área segura (misma que usa `_layout.tsx`):
 
 ```
 const bottomPb = Platform.OS === "web" ? 8 : insets.bottom; // useSafeAreaInsets
-const tabBarHeight = 56 + Math.round(bottomPb / 2) + bottomPb;
+const tabBarHeight = TAB_BAR_NAVIGATION_HEIGHT + bottomPb;
 ```
 
 Aplicar como `paddingBottom: tabBarHeight` en el contenedor flex, o anclar
 elementos con `position:"absolute"; bottom: tabBarHeight + N`.
 
-**Why:** sin esto el contenido del fondo se ve "cortado" por la tab bar; pasó
-en Geometrix (lienzo + thumbnails). No hay context/hook compartido que exponga
-el alto, por eso se recalcula localmente (deuda menor: la fórmula queda
-duplicada con `_layout.tsx`; si cambia una, sincronizar la otra).
+**Why:** sin esto el contenido del fondo se ve "cortado" por la tab bar; pasó en Geometrix. Reutilizar la altura compartida evita reservas antiguas en avisos y lienzos cuando cambia la altura de la barra.
