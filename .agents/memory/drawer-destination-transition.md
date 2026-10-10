@@ -32,3 +32,9 @@ Cancelar el movimiento en UI no invalida por sí solo las finalizaciones que ya 
 **Why:** Una prueba con JS retrasado reprodujo una finalización antigua que iniciaba apertura automática y bloqueaba un segundo arrastre, aunque este ya había cancelado la animación. Además, una curva nueva puede provocar un tirón de velocidad aun sin pérdida de FPS.
 
 **How to apply:** Reservar las generaciones de gesto en UI y validar también los callbacks de finalización/readiness. JS puede publicar estados discretos, pero no debe reiniciar el movimiento de un gesto soltado. Separar siempre la continuidad matemática verificada de la fluidez nativa: las pruebas con mocks no miden GPU ni FPS.
+
+El usuario confirmó que la apertura por avatar quedó fluida al conservar el movimiento en UI y la continuidad de velocidad; el cierre mejoró mucho pero conservó una pequeña traba al final.
+
+**Why:** Esta confirmación permite separar el problema de cierre de la apertura ya validada, en vez de volver a probar cambios generales de curva, sombra o radio.
+
+**How to apply:** Preservar la apertura y los efectos. Investigar el trabajo que coincide con el final del cierre, sin tratar la confirmación como una medición de FPS o como prueba de que todo el drawer está resuelto.

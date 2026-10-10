@@ -9,6 +9,30 @@ import * as geometry from "../lib/drawerGeometry.ts";
 
 const require = createRequire(import.meta.url);
 
+test("tap shield remains mounted but neither intercepts nor recognizes touches when Home is restored", () => {
+  const h = harness();
+  function strip(node: any): any {
+    if (!node || typeof node !== "object") return;
+    if (node.props?.testID === "drawer-foreground-strip") return node;
+    for (const child of node.props?.children ?? []) {
+      const result = strip(child);
+      if (result) return result;
+    }
+  }
+  for (const open of [false, true, false]) {
+    if (open) h.ctx.open();
+    else h.ctx.close();
+    h.flush(); h.finish(); h.flush();
+    const result = h.component("DrawerForeground", { children: null });
+    const touchLayer = strip(result.tree);
+    assert.ok(touchLayer, "no native hierarchy change at the closing endpoint");
+    assert.equal(touchLayer.props.pointerEvents, open ? "auto" : "none");
+    assert.equal(touchLayer.props.accessible, open);
+    assert.equal(touchLayer.props.accessibilityElementsHidden, !open);
+    for (const gesture of result.gestures.slice(-2)) assert.equal(gesture.options.enabled, open);
+  }
+});
+
 test("delayed JS cannot launch an old settle over a newer held finger", () => {
   const h = harness({ deferJS: true });
   const pan = h.component("DrawerEdgeGesture", { enabled: true, children: null }).gestures[0];

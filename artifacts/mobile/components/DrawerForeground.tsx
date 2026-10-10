@@ -63,6 +63,7 @@ export function DrawerForeground({ children }: { children: React.ReactNode }) {
 
   const gesture = React.useMemo(() => {
     const pan = Gesture.Pan()
+      .enabled(foregroundBlocked)
       .activeOffsetX([-10, 10])
       .failOffsetY([-DRAWER_GESTURE_FAIL_Y, DRAWER_GESTURE_FAIL_Y])
       .onStart(() => {
@@ -90,11 +91,11 @@ export function DrawerForeground({ children }: { children: React.ReactNode }) {
         dragging.value = false;
         settleDrawerDrag(dragStart.value >= 0.5, gestureVersion.value);
       });
-    const tap = Gesture.Tap().onEnd((_event, success) => {
+    const tap = Gesture.Tap().enabled(foregroundBlocked).onEnd((_event, success) => {
       if (success) runOnJS(closeFromStrip)();
     });
     return Gesture.Exclusive(pan, tap);
-  }, [beginDrawerDrag, closeFromStrip, dragging, dragStart, drawerGestureVersion, drawerProgress, drawerWidth, gestureVersion, settleDrawerDrag]);
+  }, [beginDrawerDrag, closeFromStrip, dragging, dragStart, drawerGestureVersion, drawerProgress, drawerWidth, foregroundBlocked, gestureVersion, settleDrawerDrag]);
 
   return (
     <RAnimated.View
@@ -111,17 +112,20 @@ export function DrawerForeground({ children }: { children: React.ReactNode }) {
           {children}
         </View>
         <RAnimated.View pointerEvents="none" style={[StyleSheet.absoluteFill, styles.veil, veilStyle]} />
-        {foregroundBlocked && (
-          <GestureDetector gesture={gesture}>
-            <View
-              style={StyleSheet.absoluteFill}
-              accessible
-              accessibilityRole="button"
-              accessibilityLabel="Cerrar menú"
-              testID="drawer-foreground-strip"
-            />
-          </GestureDetector>
-        )}
+        {/* Stable native hierarchy: do not detach recognizers/views in the
+            same frame that ends the closing spring and restores Home. */}
+        <GestureDetector gesture={gesture}>
+          <View
+            style={StyleSheet.absoluteFill}
+            pointerEvents={foregroundBlocked ? "auto" : "none"}
+            accessible={foregroundBlocked}
+            accessibilityElementsHidden={!foregroundBlocked}
+            importantForAccessibility={foregroundBlocked ? "auto" : "no-hide-descendants"}
+            accessibilityRole="button"
+            accessibilityLabel="Cerrar menú"
+            testID="drawer-foreground-strip"
+          />
+        </GestureDetector>
       </RAnimated.View>
     </RAnimated.View>
   );

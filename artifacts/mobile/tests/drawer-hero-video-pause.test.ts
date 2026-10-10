@@ -18,8 +18,20 @@ function pauseHarness(initialProgress = 0, initialEnabled = true) {
   let previous: boolean | null = null;
   let prepare: () => boolean;
   let reaction: (next: boolean, previous: boolean | null) => void;
+  const refs: any[] = [];
+  let refIndex = 0;
+  let cleanup: (() => void) | undefined;
+  let effectMounted = false;
+  const frames = new Map<number, () => void>();
+  let frameId = 0;
   const modules: any = {
-    react: { useState: (initial: () => boolean) => {
+    react: {
+      useRef: (initial: any) => refs[refIndex++] ?? (refs[refIndex - 1] = { current: initial }),
+      useCallback: (fn: any) => fn,
+      useEffect: (fn: () => (() => void)) => {
+        if (!effectMounted) { cleanup = fn(); effectMounted = true; }
+      },
+      useState: (initial: () => boolean) => {
       if (!initialized) { paused = initial(); initialized = true; }
       return [paused, (next: boolean) => { paused = next; updates.push(next); }];
     } },
@@ -30,14 +42,18 @@ function pauseHarness(initialProgress = 0, initialEnabled = true) {
     "@/context/DrawerContext": { useDrawerMotion: () => ({ drawerProgress }) },
   };
   const module = { exports: {} as any };
-  new Function("require", "module", "exports", compile(read("../hooks/useDrawerMediaPaused.ts")))(
+  new Function("require", "module", "exports", "requestAnimationFrame", "cancelAnimationFrame", compile(read("../hooks/useDrawerMediaPaused.ts")))(
     (id: string) => modules[id], module, module.exports,
+    (fn: () => void) => { frames.set(++frameId, fn); return frameId; },
+    (id: number) => frames.delete(id),
   );
   let enabled = initialEnabled;
-  const render = () => module.exports.useDrawerMediaPaused(enabled);
+  const render = () => { refIndex = 0; return module.exports.useDrawerMediaPaused(enabled); };
   render();
   return {
     updates, render,
+    frame() { const callbacks = [...frames.values()]; frames.clear(); callbacks.forEach(fn => fn()); return render(); },
+    unmount() { cleanup?.(); },
     sample(value: number) {
       drawerProgress.value = value;
       const next = prepare();
@@ -49,25 +65,58 @@ function pauseHarness(initialProgress = 0, initialEnabled = true) {
   };
 }
 
-test("video pauses from the first drag movement and resumes only at fully closed progress", () => {
+test("video pauses immediately and resumes two paint opportunities after fully closed progress", () => {
   const h = pauseHarness();
   assert.equal(h.sample(0), false);
   h.updates.length = 0;
   assert.equal(h.sample(0.001), true);
   for (const value of [0.2, 0.4, 0.8, 1, 0.6, 0.05, 0.001]) assert.equal(h.sample(value), true);
   assert.deepEqual(h.updates, [true], "no per-frame React updates");
-  assert.equal(h.sample(0), false);
+  assert.equal(h.sample(0), true);
+  assert.deepEqual(h.updates, [true], "the final closing commit must not restart the decoder");
+  assert.equal(h.frame(), true);
+  assert.equal(h.frame(), false);
   assert.deepEqual(h.updates, [true, false]);
 });
 
 test("cancelled and interrupted gestures track actual progress rather than the open-state flag", () => {
   const h = pauseHarness();
   assert.equal(h.sample(0.3), true);
-  assert.equal(h.sample(0), false);
+  assert.equal(h.sample(0), true);
+  h.frame(); assert.equal(h.frame(), false);
   assert.equal(h.sample(0.2), true);
   assert.equal(h.sample(0.01), true);
   assert.equal(h.sample(0.9), true);
-  assert.equal(h.sample(0), false);
+  assert.equal(h.sample(0), true);
+  h.frame(); assert.equal(h.frame(), false);
+});
+
+test("reopening between close and deferred resume never restarts the video", () => {
+  for (const framesBeforeReopening of [0, 1]) {
+    const h = pauseHarness(1);
+    h.sample(1);
+    h.sample(0);
+    if (framesBeforeReopening) h.frame();
+    h.sample(0.01);
+    h.frame(); h.frame();
+    assert.equal(h.render(), true);
+    assert.equal(h.updates.includes(false), false);
+    h.sample(0); h.frame();
+    assert.equal(h.frame(), false);
+  }
+});
+
+test("unmount cancels deferred resume and changing back from an image does not retain stale pause", () => {
+  const h = pauseHarness(1);
+  h.sample(1); h.sample(0);
+  h.frame(); h.unmount(); h.frame();
+  assert.equal(h.updates.includes(false), false);
+
+  const media = pauseHarness(1);
+  media.sample(1); media.enable(false); media.sample(1);
+  media.frame(); media.frame();
+  media.sample(0); media.enable(true);
+  assert.equal(media.sample(0), false);
 });
 
 test("media mounted behind an already open drawer starts paused; images stay unaffected", () => {

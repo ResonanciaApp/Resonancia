@@ -93,6 +93,14 @@ conserva su actualización local al comenzar/terminar el desplazamiento.
 
 ## Verificación nativa pendiente
 
+El usuario confirmó después que la apertura desde el avatar quedó fluida y
+que el cierre mejoró mucho, con una pequeña traba restante al terminar.
+Se conservó esa curva. Para evitar concentrar trabajo en el último frame,
+la capa táctil queda montada e inactiva al cerrar y el video se reanuda tras
+dos oportunidades de pintura. La reanudación se cancela al reabrir o desmontar.
+Esto elimina el cambio de jerarquía y separa operaciones; no es una medición
+de GPU ni confirma por sí solo que el tirón residual desapareció.
+
 Para confirmar la fluidez visual se necesita una sesión en dispositivo con
 tiempos de frame: reposo, avatar, arrastres lentos/rápidos/cortos/largos,
 apertura/cierre e interrupciones. Debe distinguirse FPS de UI y JS, comparando
