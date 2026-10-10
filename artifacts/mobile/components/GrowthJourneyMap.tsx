@@ -1,5 +1,5 @@
 import React from "react";
-import { StyleSheet, Text, View } from "react-native";
+import { Image, StyleSheet, Text, View } from "react-native";
 import Svg, { Path } from "react-native-svg";
 
 import { GrowthLevelImage, RewardLock } from "@/components/GrowthJourney";
@@ -19,8 +19,13 @@ const STOPS = [
 ] as const;
 
 const ACTIVE = 76;
-const LOCKED = 46;
 const LABEL_W = 104;
+const LOCKED_ART: Record<string, number> = {
+  ascenso: require("../assets/images/growth/map-ascenso.webp"),
+  iluminacion: require("../assets/images/growth/map-iluminacion.webp"),
+  llegada: require("../assets/images/growth/map-llegada.webp"),
+  despertar: require("../assets/images/growth/map-despertar.webp"),
+};
 
 export const GROWTH_MAP_HEIGHT = 350;
 
@@ -48,7 +53,7 @@ export function GrowthJourneyMap({ width }: { width: number }) {
       </Svg>
       {STOPS.map((s, i) => {
         const active = i === 0;
-        const size = active ? ACTIVE : LOCKED;
+        const size = ACTIVE;
         const cx = pts[i].x, cy = pts[i].y;
         const left = Math.min(Math.max(cx - LABEL_W / 2, 4), width - LABEL_W - 4);
         return (
@@ -71,7 +76,24 @@ export function GrowthJourneyMap({ width }: { width: number }) {
               {active && last ? (
                 <GrowthLevelImage level={last} size={size - 4} />
               ) : (
-                <RewardLock levelId={`growth-map-${s.id}`} color={lockColor} />
+                <View testID={`growth-map-image-frame-${s.id}`} style={styles.lockedImageFrame}>
+                  <Image
+                    testID={`growth-map-image-${s.id}`}
+                    source={LOCKED_ART[s.id]}
+                    resizeMode="cover"
+                    style={styles.lockedImage}
+                    accessibilityElementsHidden
+                    importantForAccessibility="no"
+                  />
+                  <View
+                    testID={`growth-map-image-overlay-${s.id}`}
+                    pointerEvents="none"
+                    style={[StyleSheet.absoluteFill, styles.darkImageOverlay]}
+                  />
+                  <View pointerEvents="none" style={[StyleSheet.absoluteFill, styles.lockOverlay]}>
+                    <RewardLock levelId={`growth-map-${s.id}`} color={lockColor} />
+                  </View>
+                </View>
               )}
             </View>
             <Text
@@ -91,5 +113,9 @@ export function GrowthJourneyMap({ width }: { width: number }) {
 const styles = StyleSheet.create({
   node: { alignItems: "center", justifyContent: "center", overflow: "hidden", backgroundColor: "rgba(255,255,255,0.08)", borderWidth: 0 },
   lockedNode: { backgroundColor: "rgba(0,0,0,0.16)" },
+  lockedImageFrame: { width: ACTIVE - 4, height: ACTIVE - 4, borderRadius: (ACTIVE - 4) / 2, overflow: "hidden" },
+  lockedImage: { width: "100%", height: "100%" },
+  darkImageOverlay: { backgroundColor: "rgba(0,0,0,0.75)" },
+  lockOverlay: { alignItems: "center", justifyContent: "center" },
   label: { marginTop: 6, fontFamily: "Manrope", fontSize: 11, lineHeight: 16, fontWeight: "700", textAlign: "center" },
 });

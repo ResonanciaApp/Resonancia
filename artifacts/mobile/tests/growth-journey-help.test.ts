@@ -77,7 +77,7 @@ function uiHarness() {
     }, props.children);
   };
   const native = {
-    View: Native, Text: Native, ScrollView: Native,
+    View: Native, Text: Native, ScrollView: Native, Image: Native,
     Pressable: (props: any) => {
       if (props.testID) presses.set(props.testID, props);
       return React.createElement(Native, props);
@@ -302,6 +302,10 @@ test("the treasure map has five ordered stops in an irregular loop, only Floraci
       RewardLock: (props: any) => React.createElement(Node, { ...props, testID: `${props.levelId}-reward-lock` }),
     },
     "@/components/StreakWeekRow": { getPositionedDayGradient: () => ["theme-lock-color"] },
+    "../assets/images/growth/map-ascenso.webp": "asset:ascenso",
+    "../assets/images/growth/map-iluminacion.webp": "asset:iluminacion",
+    "../assets/images/growth/map-llegada.webp": "asset:llegada",
+    "../assets/images/growth/map-despertar.webp": "asset:despertar",
     "@/context/GrowthContext": { useGrowth: () => ({ levels }) },
     "@/data/growthLevels": { allGrowthLevels: [bundledFinal] },
   });
@@ -318,13 +322,24 @@ test("the treasure map has five ordered stops in an irregular loop, only Floraci
       const style = flatten(node.style);
       const iconStyle = flatten(h.nodes.get(`growth-map-node-${ids[i]}`).style);
       assert.equal(iconStyle.borderWidth, 0);
-      assert.equal(iconStyle.height, i === 0 ? 76 : 46);
+      assert.equal(iconStyle.height, 76);
       assert.equal(flatten(h.nodes.get(`growth-map-label-${ids[i]}`).style).fontSize, 11);
       if (i) {
         assert.equal(h.nodes.get(`growth-map-${ids[i]}-reward-lock`).color, "theme-lock-color");
+        const image = h.nodes.get(`growth-map-image-${ids[i]}`);
+        const overlay = h.nodes.get(`growth-map-image-overlay-${ids[i]}`);
+        assert.equal(image.source, `asset:${ids[i]}`);
+        assert.equal(image.resizeMode, "cover");
+        assert.equal(flatten(overlay.style).backgroundColor, "rgba(0,0,0,0.75)");
+        assert.equal(overlay.pointerEvents, "none");
+        const frame = flatten(h.nodes.get(`growth-map-image-frame-${ids[i]}`).style);
+        assert.equal(frame.width, h.nodes.get("map-final-phase-art").size);
+        assert.equal(frame.height, h.nodes.get("map-final-phase-art").size);
+        assert.equal(frame.overflow, "hidden");
+        assert.ok(readFileSync(new URL(`../assets/images/growth/map-${ids[i]}.webp`, import.meta.url)).byteLength < 100_000);
       }
       assert.ok(style.left >= 0 && style.left + style.width <= width);
-      assert.ok(style.top >= 0 && style.top + (i === 0 ? 76 : 46) + 38 <= GROWTH_MAP_HEIGHT);
+      assert.ok(style.top >= 0 && style.top + 76 + 38 <= GROWTH_MAP_HEIGHT);
       if (i) assert.ok(html.indexOf(labels[i - 1]) < html.indexOf(labels[i]));
     }
     assert.equal(h.nodes.get("map-final-phase-art").level, finalPhase);
