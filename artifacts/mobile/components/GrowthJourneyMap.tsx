@@ -18,8 +18,8 @@ const STOPS = [
   { id: "despertar", label: "El Gran Despertar", x: 0.22, y: 0.52 },
 ] as const;
 
-const ACTIVE = 96;
-const LOCKED = 46;
+const ACTIVE = 93;
+const LOCKED = 52;
 const LABEL_W = 104;
 const LOCKED_ART: Record<string, number> = {
   ascenso: require("../assets/images/growth/map-ascenso.webp"),
@@ -92,7 +92,7 @@ export function GrowthJourneyMap({ width }: { width: number }) {
                     style={[StyleSheet.absoluteFill, styles.darkImageOverlay]}
                   />
                   <View pointerEvents="none" style={[StyleSheet.absoluteFill, styles.lockOverlay]}>
-                    <RewardLock levelId={`growth-map-${s.id}`} color={lockColor} />
+                    <RewardLock levelId={`growth-map-${s.id}`} color={lockColor} size={14} />
                   </View>
                 </View>
               )}
@@ -116,7 +116,7 @@ const styles = StyleSheet.create({
   lockedNode: { backgroundColor: "rgba(0,0,0,0.16)" },
   lockedImageFrame: { width: LOCKED - 4, height: LOCKED - 4, borderRadius: (LOCKED - 4) / 2, overflow: "hidden" },
   lockedImage: { width: "100%", height: "100%" },
-  darkImageOverlay: { backgroundColor: "rgba(0,0,0,0.75)" },
+  darkImageOverlay: { backgroundColor: "rgba(0,0,0,0.2)" },
   lockOverlay: { alignItems: "center", justifyContent: "center" },
   label: { marginTop: 6, fontFamily: "Manrope", fontSize: 11, lineHeight: 16, fontWeight: "700", textAlign: "center" },
 });

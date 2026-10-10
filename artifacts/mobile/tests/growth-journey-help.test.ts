@@ -275,7 +275,8 @@ test("the map replaces the old help icon and paragraph, fits its sheet and dismi
   assert.equal(title.top + title.lineHeight / 2, close.top + close.height / 2);
   assert.equal(close.width, 43);
   assert.equal(close.height, 43);
-  assert.equal(close.right, 20);
+  assert.equal(close.left, 20);
+  assert.equal(close.right, undefined);
   assert.equal(close.backgroundColor, "rgba(0,0,0,0.16)");
   assert.equal(h.nodes.get("growth-help-close-icon").name, "x");
   assert.equal(h.nodes.get("growth-help-close-icon").size, 22);
@@ -341,29 +342,30 @@ test("the treasure map has five ordered stops in an irregular loop, only Floraci
       const style = flatten(node.style);
       const iconStyle = flatten(h.nodes.get(`growth-map-node-${ids[i]}`).style);
       assert.equal(iconStyle.borderWidth, 0);
-      assert.equal(iconStyle.height, i === 0 ? 96 : 46);
-      assert.equal(iconStyle.width, i === 0 ? 96 : 46);
+      assert.equal(iconStyle.height, i === 0 ? 93 : 52);
+      assert.equal(iconStyle.width, i === 0 ? 93 : 52);
       assert.equal(flatten(h.nodes.get(`growth-map-label-${ids[i]}`).style).fontSize, 11);
       if (i) {
         assert.equal(h.nodes.get(`growth-map-${ids[i]}-reward-lock`).color, "theme-lock-color");
+        assert.equal(h.nodes.get(`growth-map-${ids[i]}-reward-lock`).size, 14);
         const image = h.nodes.get(`growth-map-image-${ids[i]}`);
         const overlay = h.nodes.get(`growth-map-image-overlay-${ids[i]}`);
         assert.equal(image.source, `asset:${ids[i]}`);
         assert.equal(image.resizeMode, "cover");
-        assert.equal(flatten(overlay.style).backgroundColor, "rgba(0,0,0,0.75)");
+        assert.equal(flatten(overlay.style).backgroundColor, "rgba(0,0,0,0.2)");
         assert.equal(overlay.pointerEvents, "none");
         const frame = flatten(h.nodes.get(`growth-map-image-frame-${ids[i]}`).style);
-        assert.equal(frame.width, 42);
-        assert.equal(frame.height, 42);
+        assert.equal(frame.width, 48);
+        assert.equal(frame.height, 48);
         assert.equal(frame.overflow, "hidden");
         assert.ok(readFileSync(new URL(`../assets/images/growth/map-${ids[i]}.webp`, import.meta.url)).byteLength < 100_000);
       }
       assert.ok(style.left >= 0 && style.left + style.width <= width);
-      assert.ok(style.top >= 0 && style.top + (i === 0 ? 96 : 46) + 38 <= GROWTH_MAP_HEIGHT);
+      assert.ok(style.top >= 0 && style.top + (i === 0 ? 93 : 52) + 38 <= GROWTH_MAP_HEIGHT);
       if (i) assert.ok(html.indexOf(labels[i - 1]) < html.indexOf(labels[i]));
     }
     assert.equal(h.nodes.get("map-final-phase-art").level, finalPhase);
-    assert.equal(h.nodes.get("map-final-phase-art").size, 92);
+    assert.equal(h.nodes.get("map-final-phase-art").size, 89);
     assert.equal(h.nodes.get("growth-journey-map-route").pointerEvents, "none");
     assert.equal(paths[0].strokeDasharray, "2 8");
     const segments = paths[0].d.match(/[MC][^MC]+/g);

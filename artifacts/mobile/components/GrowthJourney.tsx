@@ -317,14 +317,14 @@ function PreviewContentEntrance({
   );
 }
 
-export function RewardLock({ levelId, color, unlocked = false }: { levelId: string; color: string; unlocked?: boolean }) {
+export function RewardLock({ levelId, color, unlocked = false, size = 16 }: { levelId: string; color: string; unlocked?: boolean; size?: number }) {
   return (
     <MaterialCommunityIcons
       testID={`${levelId}-reward-lock`}
       name={unlocked ? "lock-open-variant" : "lock"}
-      size={16}
+      size={size}
       color={color}
-      style={styles.avatarRewardLock}
+      style={[styles.avatarRewardLock, { width: size, height: size, lineHeight: size }]}
       accessibilityElementsHidden
       importantForAccessibility="no"
     />
