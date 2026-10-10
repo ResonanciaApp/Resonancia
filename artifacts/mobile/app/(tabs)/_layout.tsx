@@ -29,7 +29,7 @@ import { CategoryOverlayProvider, useCategoryOverlay } from "@/context/CategoryO
 import { CategoryOverlay } from "@/components/CategoryOverlay";
 import { SacredBackground } from "@/components/SacredBackground";
 import { WIDGET_GREEN_SOLID } from "@/constants/colors";
-import { TAB_BAR_NAVIGATION_HEIGHT, TAB_BAR_BLUR_INTENSITY, TAB_BAR_INACTIVE_COLOR, getTabBarGlassOverlay, getTabBarInactiveColor } from "@/constants/tab-bar";
+import { TAB_BAR_BLUR_INTENSITY, TAB_BAR_INACTIVE_COLOR, getTabBarGlassOverlay, getTabBarInactiveColor } from "@/constants/tab-bar";
 import { RoutineCompletionBanner } from "@/components/RoutineCompletionBanner";
 import { RoutineCompletionBannerProvider } from "@/context/RoutineCompletionBannerContext";
 
@@ -39,7 +39,9 @@ const INDIGO2_COLOR  = "#DEDEDE";
 const GRAD_END       = "#F9F9F9";
 
 const ICON_SIZE      = 27;
-const PILL_H         = TAB_BAR_NAVIGATION_HEIGHT; // sin safe area
+const PILL_H         = 58;   // altura del bloque de navegación, sin safe area
+const TAB_CONTENT_OFFSET_Y = 11;
+const TAB_LABEL_OFFSET_Y = 2;
 
 // Rutas que nunca aparecen en el menú inferior
 const HIDDEN_ROUTES = new Set(["musica", "biblioteca", "video", "emocion", "herramientas", "explore", "encuentros"]);
@@ -64,6 +66,7 @@ const TAB_CONFIG: Record<
     emoji?: string;
     iconSize?: number;
     iconOffset?: number;
+    labelOffset?: number;
     activeColor?: string;
   }
 > = {
@@ -103,6 +106,7 @@ function TabItem({
   const isIOS      = Platform.OS === "ios";
   const iconSize   = conf.iconSize ?? ICON_SIZE;
   const iconOffset = conf.iconOffset ?? 0;
+  const labelOffset = conf.labelOffset ?? 0;
   const tOffset    = [{ translateY: iconOffset }];
 
   const activeCol   = ACTIVE_COLOR;
@@ -133,12 +137,16 @@ function TabItem({
       onPress={onPress}
       style={styles.tab}
       accessibilityRole="button"
-      accessibilityLabel={conf.label}
       accessibilityState={{ selected: isFocused }}
     >
       <View style={styles.pillWrap}>
         <View style={{ width: iconSize, height: ICON_SIZE, alignItems: "center", justifyContent: "center", overflow: "visible" }}>
           {makeIcon(isFocused)}
+        </View>
+        <View style={[styles.labelWrap, { transform: [{ translateY: labelOffset + TAB_LABEL_OFFSET_Y }] }]}>
+          <Text style={[styles.label, { color: isFocused ? activeCol : inactiveCol }]} numberOfLines={1}>
+            {conf.label}
+          </Text>
         </View>
       </View>
     </Pressable>
@@ -258,6 +266,7 @@ function CustomTabBar({ state, navigation, descriptors }: TabBarProps) {
           style={[
             styles.row,
             isWeb && styles.rowWeb,
+            { transform: [{ translateY: TAB_CONTENT_OFFSET_Y }] },
           ]}
         >
           {state.routes.map((route: { key: string; name: string; params?: object }, index: number) => {
@@ -483,6 +492,23 @@ const styles = StyleSheet.create({
     shadowOffset: { width: 0, height: 0 },
     shadowOpacity: 0.30,
     shadowRadius: 4,
+  },
+  label: {
+    fontFamily: "Manrope",
+    fontSize: 10,
+    letterSpacing: 0.3,
+    fontWeight: "500",
+  },
+  labelWrap: {
+    width: "100%",
+    paddingHorizontal: 2,
+    alignItems: "center",
+    marginTop: -1,
+  },
+  labelActive: {
+    fontFamily: "Manrope",
+    color: GRAD_END,
+    fontWeight: "700",
   },
   mezcladorHandle: {
     position: "absolute",

@@ -3,7 +3,6 @@
  * El usuario activa geometrías por capas para componer un fondo en vivo.
  */
 import { Feather } from "@expo/vector-icons";
-import { TAB_BAR_NAVIGATION_HEIGHT } from "@/constants/tab-bar";
 import MaskedView from "@react-native-masked-view/masked-view";
 import { GoldGradientFill } from "@/components/GoldGradient";
 import { Image } from "expo-image";
@@ -2129,7 +2128,7 @@ export default function GeometrixScreen() {
   // Alto de la tab bar inferior (réplica del cálculo en (tabs)/_layout.tsx),
   // para que el lienzo no quede tapado por el menú de la app.
   const bottomPb = Platform.OS === "web" ? 8 : insets.bottom;
-  const tabBarHeight = TAB_BAR_NAVIGATION_HEIGHT + bottomPb;
+  const tabBarHeight = 56 + Math.round(bottomPb / 2) + bottomPb;
   const { requestHide, showMenu, hidden: menuHidden } = useTabBarVisibility();
   const bottomReserve = tabBarHeight;
 
