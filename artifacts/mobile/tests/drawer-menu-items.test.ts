@@ -52,3 +52,16 @@ test("Perfil precedes Premium and live stage replaces the old profile header con
   assert.doesNotMatch(source, /<Text[^>]*>\s*Ver perfil\s*<\/Text>/);
   assert.doesNotMatch(source, /style=\{styles\.profileChevronButton\}/);
 });
+
+test("menu and scenes shift right 6px; scene offset compensates the added menu height", () => {
+  const source = readFileSync(new URL("../components/DrawerMenu.tsx", import.meta.url), "utf8");
+  assert.match(source, /paddingLeft: 26, paddingRight: 14/);
+  assert.equal(26 - 20, 6);
+  assert.equal(26 + 14, 20 * 2, "available text width is unchanged");
+  assert.match(source, /style=\{styles\.scenePositionCompensation\}>\s*<DrawerSceneCards/);
+  assert.match(source, /scenePositionCompensation: \{[\s\S]*?marginTop: -\(33 \+ 10 \+ 8 \* 8\)/);
+  const originalRows = 34 + 8 * 36;
+  const originalMenuHeight = originalRows + 8 * 2;
+  const currentMenuHeight = originalRows + 33 + 9 * 10;
+  assert.equal(currentMenuHeight - 107 + 165, originalMenuHeight + 165);
+});

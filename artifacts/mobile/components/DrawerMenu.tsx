@@ -310,7 +310,7 @@ export function DrawerMenu() {
           <ScrollView
             showsVerticalScrollIndicator={false}
             style={{ flex: 1 }}
-            contentContainerStyle={{ paddingHorizontal: 20, paddingTop: 5, paddingBottom: bottomPad + 40 }}
+            contentContainerStyle={{ paddingLeft: 26, paddingRight: 14, paddingTop: 5, paddingBottom: bottomPad + 40 }}
           >
             <View style={styles.inicio3Sections}>
               {INICIO3_SECTIONS.map((section, sectionIndex) => (
@@ -379,7 +379,9 @@ export function DrawerMenu() {
               ))}
             </View>
 
-            <DrawerSceneCards activeId={activeSceneId} onSelect={selectVisualTheme} />
+            <View style={styles.scenePositionCompensation}>
+              <DrawerSceneCards activeId={activeSceneId} onSelect={selectVisualTheme} />
+            </View>
           </ScrollView>
         </View>
         </RAnimated.View>
@@ -511,6 +513,11 @@ const styles = StyleSheet.create({
   },
   // ── Items ──
   itemGroup: { gap: 10, marginTop: 10 },
+  scenePositionCompensation: {
+    // Restore scenes: Perfil adds 33px + its 10px gap; eight existing gaps grew 8px.
+    // Consume the old 165px spacer, not menu rows or scene card dimensions.
+    marginTop: -(33 + 10 + 8 * 8),
+  },
   inicio3Sections: {
     marginTop: -1,
   },
