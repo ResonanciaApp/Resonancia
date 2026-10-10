@@ -8,13 +8,13 @@ test("the drawer hides Diario without removing its screen or neighboring menu it
   const sections = source.match(/const INICIO3_SECTIONS[\s\S]*?\n\];/)?.[0];
   assert.ok(sections);
   assert.doesNotMatch(sections, /id: "journal"|label: "Diario"|__overlay:\/diario/);
-  for (const id of ["premium", "favorites", "library", "history", "downloads", "notifications", "mixer", "breathing", "mood-register"]) {
+  for (const id of ["profile", "premium", "favorites", "library", "history", "downloads", "notifications", "mixer", "breathing"]) {
     assert.ok(sections.includes(`id: "${id}"`), `Missing neighboring drawer item: ${id}`);
   }
   assert.ok(existsSync(new URL("../app/diario.tsx", import.meta.url)));
 });
 
-test("mixer, breathing exercises and mood register follow notifications in the same standard-spaced menu group, without Herramientas", () => {
+test("mixer and breathing follow notifications; mood register is removed only from the menu", () => {
   const source = readFileSync(new URL("../components/DrawerMenu.tsx", import.meta.url), "utf8");
   const sections = source.match(/const INICIO3_SECTIONS[\s\S]*?\n\];/)?.[0];
   assert.ok(sections);
@@ -22,16 +22,16 @@ test("mixer, breathing exercises and mood register follow notifications in the s
   assert.equal((sections.match(/items: \[/g) ?? []).length, 1);
   assert.match(sections, /title: null/);
   const ids = Array.from(sections.matchAll(/id: "([^"]+)"/g), match => match[1]);
-  assert.deepEqual(ids.slice(ids.indexOf("notifications")), ["notifications", "mixer", "breathing", "mood-register"]);
+  assert.deepEqual(ids.slice(ids.indexOf("notifications")), ["notifications", "mixer", "breathing"]);
   assert.match(sections, /id: "mixer", label: "Mezclador"[^}]*route: "__mixer"/);
   assert.match(sections, /id: "breathing", label: "Respiración"[^}]*route: "\/respiracion"/);
-  assert.match(sections, /id: "mood-register"[^}]*route: "__mood_picker"/);
+  assert.doesNotMatch(sections, /id: "mood-register"|label: "Registro de ánimo"/);
   assert.match(source, /itemGroup: \{ gap: 10, marginTop: 10 \}/);
   assert.match(source, /section\.items\.map\(\(item\) => \([\s\S]*?style=\{styles\.item\}/);
   assert.match(source, /item: \{[\s\S]*?paddingVertical: 5,/);
 });
 
-test("smaller menu icons keep row heights and centers while labels move right 5px", () => {
+test("smaller menu icons keep row heights and centers while labels move left 3px independently", () => {
   const source = readFileSync(new URL("../components/DrawerMenu.tsx", import.meta.url), "utf8");
   assert.match(source, /inicio3ItemLabel: \{[\s\S]*?fontSize: 17,/);
   assert.match(source, /itemLabel: \{[\s\S]*?lineHeight: 23,[\s\S]*?fontWeight: "700"/);
@@ -40,8 +40,8 @@ test("smaller menu icons keep row heights and centers while labels move right 5p
   assert.match(source, /premiumMenuStar: \{\s*width: 21,\s*height: 21/);
   assert.match(source, /height: item\.id === "premium" \? 24 : item\.mciIcon \? 26 : 23/);
   assert.match(source, /itemIcon: \{ width: 26, alignItems: "center", justifyContent: "center" \}/);
-  assert.match(source, /item: \{[\s\S]*?gap: 19,/);
-  assert.equal(19 - 14, 5);
+  assert.match(source, /item: \{[\s\S]*?gap: 16,/);
+  assert.equal(16 - 19, -3);
   for (const originalIcon of [23, 26, 24]) {
     const smallerIcon = originalIcon - 3;
     const slotHeight = originalIcon;
@@ -61,15 +61,16 @@ test("Perfil precedes Premium and live stage replaces the old profile header con
   assert.doesNotMatch(source, /style=\{styles\.profileChevronButton\}/);
 });
 
-test("menu and scenes shift right 6px; scene offset compensates the added menu height", () => {
+test("menu and scenes shift left 3px, labels another 3px; removing mood register preserves scene height", () => {
   const source = readFileSync(new URL("../components/DrawerMenu.tsx", import.meta.url), "utf8");
-  assert.match(source, /paddingLeft: 26, paddingRight: 14/);
-  assert.equal(26 - 20, 6);
-  assert.equal(26 + 14, 20 * 2, "available text width is unchanged");
+  assert.match(source, /paddingLeft: 23, paddingRight: 17/);
+  assert.equal(23 - 26, -3);
+  assert.equal((23 + 26 + 16) - (26 + 26 + 19), -6, "labels move a total of 6px left");
+  assert.equal(23 + 17, 20 * 2, "menu and scene content width is unchanged");
   assert.match(source, /style=\{styles\.scenePositionCompensation\}>\s*<DrawerSceneCards/);
-  assert.match(source, /scenePositionCompensation: \{[\s\S]*?marginTop: -\(33 \+ 10 \+ 8 \* 8\)/);
+  assert.match(source, /scenePositionCompensation: \{[\s\S]*?marginTop: -\(8 \* 8 - 3\)/);
   const originalRows = 34 + 8 * 36;
   const originalMenuHeight = originalRows + 8 * 2;
-  const currentMenuHeight = originalRows + 33 + 9 * 10;
-  assert.equal(currentMenuHeight - 107 + 165, originalMenuHeight + 165);
+  const currentMenuHeight = originalRows + 33 - 36 + 8 * 10;
+  assert.equal(currentMenuHeight - 61 + 165, originalMenuHeight + 165);
 });

@@ -67,7 +67,6 @@ const INICIO3_SECTIONS: { title: string | null; items: MenuItem[] }[] = [
       { id: "notifications", label: "Notificaciones", icon: "bell", mciIcon: "bell-outline", route: "__overlay:/notificaciones" },
       { id: "mixer", label: "Mezclador", icon: "sliders", mciIcon: "tune-vertical", route: "__mixer", color: "#F9F9F9" },
       { id: "breathing", label: "Respiración", icon: "wind", mciIcon: "weather-windy", route: "/respiracion", color: "#F9F9F9" },
-      { id: "mood-register", label: "Registro de ánimo", icon: "smile", mciIcon: "emoticon-happy-outline", route: "__mood_picker", color: "#F9F9F9" },
     ],
   },
 ];
@@ -310,7 +309,7 @@ export function DrawerMenu() {
           <ScrollView
             showsVerticalScrollIndicator={false}
             style={{ flex: 1 }}
-            contentContainerStyle={{ paddingLeft: 26, paddingRight: 14, paddingTop: 5, paddingBottom: bottomPad + 40 }}
+            contentContainerStyle={{ paddingLeft: 23, paddingRight: 17, paddingTop: 5, paddingBottom: bottomPad + 40 }}
           >
             <View style={styles.inicio3Sections}>
               {INICIO3_SECTIONS.map((section, sectionIndex) => (
@@ -514,9 +513,9 @@ const styles = StyleSheet.create({
   // ── Items ──
   itemGroup: { gap: 10, marginTop: 10 },
   scenePositionCompensation: {
-    // Restore scenes: Perfil adds 33px + its 10px gap; eight existing gaps grew 8px.
+    // Eight gaps grew 8px; Perfil (33px) replaces Registro de ánimo (36px).
     // Consume the old 165px spacer, not menu rows or scene card dimensions.
-    marginTop: -(33 + 10 + 8 * 8),
+    marginTop: -(8 * 8 - 3),
   },
   inicio3Sections: {
     marginTop: -1,
@@ -547,7 +546,7 @@ const styles = StyleSheet.create({
     paddingVertical: 5,
     paddingHorizontal: 0,
     borderRadius: 10,
-    gap: 19,
+    gap: 16,
   },
   itemIcon: { width: 26, alignItems: "center", justifyContent: "center" },
   notificationBadge: {
