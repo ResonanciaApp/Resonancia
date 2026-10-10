@@ -23,6 +23,6 @@ Mientras el dedo arrastra Inicio, no montar una nueva capa táctil encima ni ini
 
 No dar por aislado Inicio solo porque su conexión directa al drawer sea estable: revisar también los proveedores intermedios de herramientas y la navegación.
 
-**Why:** Un proveedor que escucha los estados transitorios del menú puede propagar sus actualizaciones a Inicio mediante otro contexto, aunque la suscripción directa de Inicio no haya cambiado.
+**Why:** Un proveedor que escucha los estados transitorios del menú puede propagar sus actualizaciones a Inicio mediante otro contexto, aunque la suscripción directa de Inicio no haya cambiado. El usuario confirmó una mejora parcial al aislar esta cadena; no equivale a resolver todos los tirones.
 
 **How to apply:** Mantener las conexiones de destinos y herramientas independientes de abrir/cerrar el menú. Los callbacks estables que necesitan saber si la superficie está bloqueada deben leer el estado vigente, no conservar una captura antigua. Esto limita actualizaciones indirectas; no demuestra por sí solo la causa de los tirones.

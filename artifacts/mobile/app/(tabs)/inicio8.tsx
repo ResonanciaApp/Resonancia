@@ -59,6 +59,7 @@ import { GreetingHeader } from "@/components/GreetingHeader";
 import { useGreeting } from "@/hooks/useGreeting";
 import { useGreetingVisible } from "@/context/GreetingVisibleContext";
 import { useDrawerMotion, useHomeDrawer } from "@/context/DrawerContext";
+import { useDrawerMediaPaused } from "@/hooks/useDrawerMediaPaused";
 import { useRoutineCompletionBanner } from "@/context/RoutineCompletionBannerContext";
 import { useCategoryOverlay } from "@/context/CategoryOverlayContext";
 import { getWeeklyPhrase } from "@/data/greeting-phrases";
@@ -1312,6 +1313,7 @@ function Inicio3HeroMedia({
   const videoUri = effectiveHero.kind === "video" && !videoFailed && !reduceMotion
     ? effectiveHero.uri
     : "";
+  const drawerMediaPaused = useDrawerMediaPaused(Boolean(videoUri));
   const heroPlayer = useVideoPlayer(videoUri, (player) => {
     player.loop = true;
     player.muted = true;
@@ -1323,9 +1325,9 @@ function Inicio3HeroMedia({
     }, []),
   );
   useEffect(() => {
-    if (!videoUri || !focused || !active) heroPlayer.pause();
+    if (!videoUri || !focused || !active || drawerMediaPaused) heroPlayer.pause();
     else heroPlayer.play();
-  }, [active, focused, heroPlayer, videoUri]);
+  }, [active, drawerMediaPaused, focused, heroPlayer, videoUri]);
   useEffect(() => {
     setVideoFailed(false);
     setVideoReady(false);
