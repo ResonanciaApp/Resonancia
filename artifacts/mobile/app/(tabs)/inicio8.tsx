@@ -1840,7 +1840,7 @@ const Inicio2HeroStatic = React.memo(function Inicio2HeroStatic({
   const inicio3HeroTop = inicio3HeroLayoutTop - 19;
   const { drawerProgress: identityDrawerProgress } = useDrawerMotion();
   const identityDrawerStyle = useAnimatedStyle(() => ({
-    opacity: isInicio3 ? 1 - identityDrawerProgress.value : 1,
+    opacity: isInicio3 ? 1 - Math.max(0, Math.min(1, identityDrawerProgress.value)) : 1,
   }));
   const slowHeaderStyle = useAnimatedStyle(() => {
     if (!isInicio3 || reduceMotion) return { transform: [{ translateY: 0 }] };

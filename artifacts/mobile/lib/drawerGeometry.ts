@@ -8,6 +8,8 @@
 /** Franja de Inicio que queda visible en el borde derecho con el menu abierto. */
 export const DRAWER_VISIBLE_STRIP = 75;
 export const DRAWER_CORNER_RADIUS = 50;
+/** Maximum opening rebound, independent of screen width or swipe velocity. */
+export const DRAWER_OPEN_REBOUND_MAX = 10;
 export const DRAWER_VEIL_MAX = 0.13;
 export const DRAWER_MENU_OFFSET_Y = 12;
 export const DRAWER_SHADOW_MAX = 0.24;
@@ -39,26 +41,63 @@ export function drawerOffset(windowWidth: number) {
   return Math.max(0, windowWidth - DRAWER_VISIBLE_STRIP);
 }
 
-/** Declare after drawerOffset: Babel captures worklet dependencies at module
- * initialization, unlike Node's hoisted function declarations. */
-export function drawerSpringConfig(velocityX: number, windowWidth: number, target: 0 | 1 = 1) {
+/** First positive peak of an underdamped spring, in physical pixels. */
+function openingPeak(displacement: number, velocity: number, omega: number, ratio: number) {
   "worklet";
+  const decay = ratio * omega;
+  const frequency = omega * Math.sqrt(1 - ratio * ratio);
+  let phase = Math.atan2(velocity * frequency, decay * velocity + omega * omega * displacement);
+  if (velocity < 0) phase += 2 * Math.PI;
+  const time = phase / frequency;
+  const peak = Math.exp(-decay * time) * (
+    displacement * Math.cos(phase) +
+    (velocity + decay * displacement) / frequency * Math.sin(phase)
+  );
+  return Math.max(0, displacement, peak);
+}
+
+/** Declare after dependencies: Babel captures them at module initialization. */
+export function drawerSpringConfig(velocityX: number, windowWidth: number, target: 0 | 1 = 1, currentProgress = 0) {
+  "worklet";
+  const offset = Math.max(1, drawerOffset(windowWidth));
+  const velocity = Number.isFinite(velocityX) ? velocityX : 0;
+  let stiffness = 625;
+  let damping = 50;
+  if (target === 1) {
+    const displacement = (currentProgress - 1) * offset;
+    let ratio = 0.8;
+    // Keep tap-open rebounds small even on tablets.
+    const distance = Math.abs(displacement);
+    if (distance > 0 && distance * Math.exp(-Math.PI * ratio / Math.sqrt(1 - ratio * ratio)) > 6) {
+      const log = -Math.log(6 / distance);
+      ratio = log / Math.sqrt(Math.PI * Math.PI + log * log);
+    }
+    let omega = 25;
+    // Preserve release velocity; tune the spring rather than clipping its
+    // position or applying a nonlinear transform that distorts gesture handoff.
+    for (let attempt = 0; attempt < 24; attempt++) {
+      if (openingPeak(displacement, velocity, omega, ratio) <= DRAWER_OPEN_REBOUND_MAX) break;
+      omega *= 1.5;
+    }
+    stiffness = omega * omega;
+    damping = 2 * ratio * omega;
+  }
   return {
-    stiffness: 625,
-    damping: 50,
+    stiffness,
+    damping,
     mass: 1,
-    overshootClamping: true,
+    overshootClamping: target === 0,
     // Closing has a steep radius ramp near zero: the previous threshold
     // snapped ~0.7 px of position and ~1.85 px of radius in one frame.
-    // Use Reanimated's default precision only for closing; opening is unchanged.
+    // Preserve Reanimated's default precision for closing.
     energyThreshold: target === 0 ? 6e-9 : 0.00001,
-    velocity: Number.isFinite(velocityX) ? velocityX / Math.max(1, drawerOffset(windowWidth)) : 0,
+    velocity: velocity / offset,
   };
 }
 
 export function foregroundTranslateX(progress: number, windowWidth: number) {
   "worklet";
-  return drawerOffset(windowWidth) * clamp01(progress);
+  return drawerOffset(windowWidth) * Math.max(0, progress);
 }
 
 
@@ -99,7 +138,8 @@ export function dragProgress(startProgress: number, translationX: number, window
   "worklet";
   const offset = drawerOffset(windowWidth);
   if (offset <= 0) return startProgress;
-  return clamp01(startProgress + translationX / offset);
+  // Do not snap to 1 when a gesture interrupts a small opening overrun.
+  return Math.max(0, Math.min(Math.max(1, startProgress), startProgress + translationX / offset));
 }
 
 /** Decide si al soltar el gesto el drawer queda abierto. */

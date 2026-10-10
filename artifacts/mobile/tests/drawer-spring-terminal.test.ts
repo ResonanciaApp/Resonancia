@@ -6,10 +6,12 @@ import { runInNewContext } from "node:vm";
 import ts from "typescript";
 import {
   drawerOffset,
+  dragProgress,
   drawerSpringConfig,
   foregroundCornerRadius,
   foregroundShadowOpacity,
   foregroundVeilOpacity,
+  foregroundTranslateX,
 } from "../lib/drawerGeometry.ts";
 
 /** Execute the installed Reanimated spring's real onStart/onFrame/termination,
@@ -51,12 +53,15 @@ function trace(config: ReturnType<typeof drawerSpringConfig>, start = 1, target 
   animation.onStart(animation, start, 1);
   const positions = [start];
   for (let frame = 1; frame <= hz * 3; frame++) {
-    const raw = engine.utils.criticallyDampedSpringCalculations(animation, {
+    const values = {
       v0: animation.velocity,
       x0: animation.current - target,
       omega0: animation.omega0,
       t: 1 / hz,
-    });
+    };
+    const raw = animation.zeta < 1
+      ? engine.utils.underDampedSpringCalculations(animation, { ...values, zeta: animation.zeta, omega1: animation.omega1 })
+      : engine.utils.criticallyDampedSpringCalculations(animation, values);
     const finished = animation.onFrame(animation, 1 + frame * 1000 / hz);
     positions.push(animation.current);
     if (finished) return { positions, rawTerminal: raw.position, elapsed: frame * 1000 / hz };
@@ -65,17 +70,17 @@ function trace(config: ReturnType<typeof drawerSpringConfig>, start = 1, target 
 }
 
 test("installed spring reproduces the old closing position and radius snap", () => {
-  const old = trace(drawerSpringConfig(0, 390, 1));
+  const old = trace({ ...drawerSpringConfig(0, 390, 0), energyThreshold: 0.00001 });
   assert.ok(old.rawTerminal * drawerOffset(390) > 0.7);
   assert.ok(foregroundCornerRadius(old.rawTerminal) > 1.8);
   assert.equal(old.positions.at(-1), 0);
 });
 
-test("closing precision changes only the terminal tail, never the opening or main trajectory", () => {
-  const original = drawerSpringConfig(0, 390);
+test("closing retains its critically damped trajectory and precise terminal tail", () => {
+  const original = { ...drawerSpringConfig(0, 390, 0), energyThreshold: 0.00001 };
   const closing = drawerSpringConfig(0, 390, 0);
-  const opening = drawerSpringConfig(0, 390, 1);
-  assert.deepEqual(opening, original);
+  assert.equal(closing.damping, 50);
+  assert.equal(closing.overshootClamping, true);
   assert.deepEqual({ ...closing, energyThreshold: original.energyThreshold }, original);
   const before = trace(original);
   const after = trace(closing);
@@ -114,8 +119,48 @@ test("consecutive real-engine closes reach exact zero monotonically at 60/90/120
   assert.equal(closes, 240);
 });
 
-test("programmatic and gesture settle select precision using their destination", () => {
+test("programmatic and gesture settle use the destination and current progress", () => {
   const source = readFileSync(new URL("../context/DrawerContext.tsx", import.meta.url), "utf8");
-  assert.match(source, /drawerSpringConfig\(0, drawerWidth\.value, destination\)/);
-  assert.match(source, /drawerSpringConfig\(velocityX, drawerWidth\.value, target\)/);
+  assert.match(source, /drawerSpringConfig\(0, drawerWidth\.value, destination, drawerProgress\.value\)/);
+  assert.match(source, /drawerSpringConfig\(velocityX, drawerWidth\.value, target, drawerProgress\.value\)/);
+});
+
+test("real-engine opening rebounds a few pixels then settles at the 75px strip", () => {
+  for (const hz of [60, 90, 120]) {
+    for (const width of [320, 390, 430, 768, 1024]) {
+      for (const [start, velocity] of [[0, 0], [0.2, 200], [0.5, 1600], [0.98, 5000]]) {
+        const result = trace(drawerSpringConfig(velocity, width, 1, start), start, 1, hz);
+        const positions = result.positions.map(p => foregroundTranslateX(p, width));
+        const destination = drawerOffset(width);
+        assert.ok(Math.max(...positions) > destination, "rebound is actually visible");
+        assert.ok(Math.max(...positions) <= destination + 10, "fast gestures cannot push Inicio offscreen");
+        assert.equal(positions.at(-1), destination);
+        assert.equal(width - positions.at(-1)!, 75);
+        assert.ok(result.elapsed < 1000);
+        for (const p of result.positions) {
+          assert.ok(foregroundVeilOpacity(p) >= 0 && foregroundVeilOpacity(p) <= 0.13);
+          assert.ok(foregroundShadowOpacity(p) >= 0 && foregroundShadowOpacity(p) <= 0.24);
+        }
+      }
+    }
+  }
+});
+
+test("interrupting a rebound preserves position, finger tracking and release velocity", () => {
+  for (const width of [320, 390, 768]) {
+    for (const extra of [0.5, 4, 8]) {
+      const start = 1 + extra / drawerOffset(width);
+      const startX = foregroundTranslateX(start, width);
+      for (const dx of [0, -0.1, -1, -5, -20]) {
+        const progress = dragProgress(start, dx, width);
+        assert.ok(Math.abs(foregroundTranslateX(progress, width) - (startX + dx)) < 1e-9);
+      }
+      const eps = 1e-7;
+      const derivative = (foregroundTranslateX(start + eps, width) - foregroundTranslateX(start - eps, width)) / (2 * eps);
+      for (const target of [0, 1] as const) {
+        const config = drawerSpringConfig(-600, width, target, start);
+        assert.ok(Math.abs(config.velocity * derivative + 600) < 0.001);
+      }
+    }
+  }
 });

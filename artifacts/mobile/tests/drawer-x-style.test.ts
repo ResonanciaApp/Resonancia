@@ -42,10 +42,10 @@ test("geometry initializes after the native Babel/worklet transform, not just Ty
   assert.equal(module.exports.drawerSpringConfig(1600, 390).velocity, 1600 / 315);
 });
 
-test("spring handoff preserves finger velocity across widths with critical damping", () => {
+test("spring handoff preserves finger velocity while only opening allows a mild rebound", () => {
   for (const width of [320, 390, 430, 768]) {
     for (const velocity of [-5000, -1600, -50, 0, 50, 1600, 5000]) {
-      const config = drawerSpringConfig(velocity, width);
+      const config = drawerSpringConfig(velocity, width, 0);
       assert.ok(Math.abs(config.velocity * drawerOffset(width) - velocity) < 1e-9);
       assert.equal(config.damping ** 2, 4 * config.mass * config.stiffness);
       assert.equal(config.overshootClamping, true);
@@ -62,6 +62,10 @@ test("spring handoff preserves finger velocity across widths with critical dampi
     }
   }
   assert.equal(drawerSpringConfig(Number.NaN, 390).velocity, 0);
+  const opening = drawerSpringConfig(0, 390, 1);
+  assert.equal(opening.damping, 40);
+  assert.equal(opening.overshootClamping, false);
+  assert.ok(opening.damping ** 2 < 4 * opening.mass * opening.stiffness);
 });
 test("fully open foreground leaves exactly 75 px visible at multiple widths", () => {
   for (const width of [320, 360, 375, 390, 412, 430, 768]) {
@@ -223,7 +227,7 @@ test("menu never slides horizontally and keeps the Inicio themed gradient backdr
 test("Inicio avatar, user name and greeting fade together from the same UI-thread drawer progress", () => {
   const source = read("../app/(tabs)/inicio8.tsx");
   assert.match(source, /drawerProgress: identityDrawerProgress \} = useDrawerMotion\(\)/);
-  assert.match(source, /identityDrawerStyle = useAnimatedStyle\(\(\) => \(\{\s*opacity: isInicio3 \? 1 - identityDrawerProgress\.value : 1,/);
+  assert.match(source, /identityDrawerStyle = useAnimatedStyle\(\(\) => \(\{\s*opacity: isInicio3 \? 1 - Math\.max\(0, Math\.min\(1, identityDrawerProgress\.value\)\) : 1,/);
   const start = source.indexOf("styles.inicio2HeroProfileButton,", source.indexOf("const identityDrawerStyle"));
   const groupStart = source.lastIndexOf("<RAnimated.View", start);
   const groupEnd = source.indexOf("</RAnimated.View>", start);
@@ -234,12 +238,14 @@ test("Inicio avatar, user name and greeting fade together from the same UI-threa
   assert.match(group, /\{displayName\}/);
   assert.match(group, /\{greeting\}/);
   assert.equal((source.match(/identityDrawerStyle,/g) ?? []).length, 1, "one shared parent fade, not multiplied fades");
-  const expression = source.match(/opacity: (isInicio3 \? 1 - identityDrawerProgress\.value : 1)/)![1];
+  const expression = source.match(/opacity: (isInicio3 \? 1 - Math\.max\(0, Math\.min\(1, identityDrawerProgress\.value\)\) : 1)/)![1];
   const opacity = new Function("isInicio3", "identityDrawerProgress", `return ${expression};`);
   for (const progress of [0, 0.25, 0.5, 0.75, 1, 0.75, 0.5, 0.25, 0]) {
     assert.equal(opacity(true, { value: progress }), 1 - progress);
     assert.equal(opacity(false, { value: progress }), 1);
   }
+  assert.equal(opacity(true, { value: 1.1 }), 0);
+  assert.equal(opacity(true, { value: -0.1 }), 1);
 });
 
 test("context: Back has priority while blocked/pending, strip close cancels selection, no timers", () => {

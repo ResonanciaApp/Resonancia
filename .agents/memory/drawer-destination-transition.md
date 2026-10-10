@@ -49,10 +49,16 @@ El usuario confirmó que la apertura por avatar quedó fluida al conservar el mo
 
 **Why:** Esta confirmación permite separar el problema de cierre de la apertura ya validada, en vez de volver a probar cambios generales de curva, sombra o radio.
 
-**How to apply:** Preservar la apertura y los efectos. Investigar el trabajo que coincide con el final del cierre, sin tratar la confirmación como una medición de FPS o como prueba de que todo el drawer está resuelto.
+**How to apply:** Preservar los efectos y las optimizaciones del cierre. El usuario pidió después un rebote leve al abrir; ese cambio de apertura no autoriza a aplicar el mismo rebote al cierre. Las confirmaciones anteriores no son mediciones de FPS.
 
 Los umbrales de reposo de un resorte sobre progreso normalizado deben evaluarse en píxeles y en las superficies derivadas, no solo comprobando que el valor final es cero.
 
 **Why:** El motor puede forzar el último valor al destino cuando todavía queda un salto visible; una función de radio con pendiente alta amplifica ese salto. Un mock que asigna directamente el destino oculta esta discontinuidad.
 
 **How to apply:** Ejecutar los fotogramas y la terminación del motor instalado, distinguir el corte por energía del clamping por sobrepaso y comparar la trayectoria anterior. Conservar la apertura validada y separar siempre estos resultados de una medición de FPS nativa.
+
+Un rebote pequeño debe limitarse en píxeles mediante la física, no comprimiendo de forma no lineal la posición renderizada.
+
+**Why:** La compresión puede verse correcta al abrir, pero su inversa amplifica mucho la velocidad al interrumpir el rebote y puede hacer que un cierre avance casi toda la pantalla en un solo fotograma. Igualar solo la derivada inicial no garantiza una trayectoria correcta.
+
+**How to apply:** Mantener posición y velocidad en coordenadas lineales del mismo valor compartido. Evaluar sobrepasos con el motor real a distintos anchos y velocidades, conservar el límite visual también en tablets y permitir que un nuevo gesto capture la posición sobrepasada sin saltar al destino.

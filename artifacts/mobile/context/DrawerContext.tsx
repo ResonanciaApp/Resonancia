@@ -148,7 +148,7 @@ export function DrawerProvider({ children }: { children: React.ReactNode }) {
       // carries its velocity on reversal. No JS read/write of the position.
       drawerProgress.value = withSpring(
         destination,
-        drawerSpringConfig(0, drawerWidth.value, destination),
+        drawerSpringConfig(0, drawerWidth.value, destination, drawerProgress.value),
         (finished) => {
           if (finished && version === drawerGestureVersion.value) {
             runOnJS(finishAnimation)(animationToken, destination, version);
@@ -221,7 +221,7 @@ export function DrawerProvider({ children }: { children: React.ReactNode }) {
     cancelAnimation(drawerProgress);
     // Start settling here on UI; JS only publishes coarse state after release.
     runOnJS(prepareGestureSettle)(target, generation);
-    drawerProgress.value = withSpring(target, drawerSpringConfig(velocityX, drawerWidth.value, target), (finished) => {
+    drawerProgress.value = withSpring(target, drawerSpringConfig(velocityX, drawerWidth.value, target, drawerProgress.value), (finished) => {
       if (finished && generation === drawerGestureVersion.value) {
         runOnJS(finishGestureSettle)(target, generation);
       }
