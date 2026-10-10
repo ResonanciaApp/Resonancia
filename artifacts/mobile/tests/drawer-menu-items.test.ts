@@ -61,6 +61,14 @@ test("Perfil precedes Premium and live stage replaces the old profile header con
   assert.doesNotMatch(source, /style=\{styles\.profileChevronButton\}/);
 });
 
+test("Perfil and all following menu content move down 15px together", () => {
+  const source = readFileSync(new URL("../components/DrawerMenu.tsx", import.meta.url), "utf8");
+  assert.match(source, /paddingLeft: 23, paddingRight: 17, paddingTop: 20, paddingBottom: bottomPad \+ 40/);
+  assert.equal(20 - 5, 15);
+  assert.match(source, /itemGroup: \{ gap: 10, marginTop: 10 \}/);
+  assert.match(source, /scenePositionCompensation: \{[\s\S]*?marginTop: -\(8 \* 8 - 3\)/);
+});
+
 test("menu and scenes shift left 3px, labels another 3px; removing mood register preserves scene height", () => {
   const source = readFileSync(new URL("../components/DrawerMenu.tsx", import.meta.url), "utf8");
   assert.match(source, /paddingLeft: 23, paddingRight: 17/);
