@@ -3,17 +3,17 @@ import React, { createContext, useCallback, useContext, useEffect, useRef, useSt
 import { usePathname } from "expo-router";
 import {
   cancelAnimation,
-  Easing,
   runOnJS,
+  runOnUI,
   type SharedValue,
   useSharedValue,
-  withTiming,
+  withSpring,
 } from "react-native-reanimated";
 import { DURATION, easeOutCubic } from "@/constants/motion";
 import {
   createDrawerTransitionController,
   normalizeRoutePath,
-  settleDuration,
+  drawerSpringConfig,
   type DrawerReadySource,
 } from "@/lib/drawerGeometry";
 
@@ -47,7 +47,7 @@ type DrawerCtx = {
   drawerWidth: SharedValue<number>;
   drawerGestureVersion: SharedValue<number>;
   beginDrawerDrag: (version?: number) => void;
-  settleDrawerDrag: (open: boolean, version?: number) => void;
+  settleDrawerDrag: (open: boolean, version?: number, velocityX?: number) => void;
   selectFromDrawer: (selection: DrawerSelection) => void;
   destinationRequest: number;
   acknowledgeDestinationReady: (source: DrawerReadySource, target?: string) => void;
@@ -113,6 +113,7 @@ export function DrawerProvider({ children }: { children: React.ReactNode }) {
   const drawerGestureVersion = useSharedValue(0);
   const controller = useRef(createDrawerTransitionController()).current;
   const afterSettle = useRef<{ token: number; callback?: () => void } | null>(null);
+  const gestureSettle = useRef<{ token: number; version: number } | null>(null);
   const isOpenRef = useRef(false);
   const pathnameRef = useRef(pathname);
 
@@ -125,32 +126,39 @@ export function DrawerProvider({ children }: { children: React.ReactNode }) {
     setIsOpen(value);
   }, []);
 
-  const finishAnimation = useCallback((token: number, target: number) => {
+  const finishAnimation = useCallback((token: number, target: number, version: number) => {
+    if (version !== drawerGestureVersion.value) return;
     if (!controller.isCurrentAnimation(token)) return;
     if (target === 0) setForegroundBlocked(false);
     const pending = afterSettle.current;
     afterSettle.current = null;
     if (pending && pending.token === token) pending.callback?.();
-  }, [controller]);
+  }, [controller, drawerGestureVersion]);
 
   // Una sola animacion en vuelo: cada inicio invalida el callback anterior,
   // asi un cierre interrumpido nunca ejecuta su accion obsoleta.
   const animateTo = useCallback((target: 0 | 1, callback?: () => void) => {
     const token = controller.beginAnimation();
     afterSettle.current = { token, callback };
-    cancelAnimation(drawerProgress);
-    const duration = settleDuration(drawerProgress.value, target);
-    drawerProgress.value = withTiming(
-      target,
-      { duration, easing: Easing.out(Easing.cubic) },
-      (finished) => {
-        if (finished) runOnJS(finishAnimation)(token, target);
-      },
-    );
-  }, [controller, drawerProgress, finishAnimation]);
+    runOnUI((destination: 0 | 1, animationToken: number) => {
+      "worklet";
+      drawerGestureVersion.value += 1;
+      const version = drawerGestureVersion.value;
+      // Reanimated replaces the previous spring on this SAME shared value and
+      // carries its velocity on reversal. No JS read/write of the position.
+      drawerProgress.value = withSpring(
+        destination,
+        drawerSpringConfig(0, drawerWidth.value),
+        (finished) => {
+          if (finished && version === drawerGestureVersion.value) {
+            runOnJS(finishAnimation)(animationToken, destination, version);
+          }
+        },
+      );
+    })(target, token);
+  }, [controller, drawerGestureVersion, drawerProgress, drawerWidth, finishAnimation]);
 
   const open = useCallback(() => {
-    drawerGestureVersion.value += 1;
     controller.cancelSelection();
     setInstantNav(false);
     setForegroundBlocked(true);
@@ -164,44 +172,75 @@ export function DrawerProvider({ children }: { children: React.ReactNode }) {
   }, [animateTo, setOpenState]);
 
   const close = useCallback((onClosed?: () => void) => {
-    drawerGestureVersion.value += 1;
     controller.cancelSelection();
     closeInternal(() => {
       setInstantNav(false);
       // Pressable puede pasar su evento: solo se ejecutan callbacks reales.
       if (typeof onClosed === "function") onClosed();
     });
-  }, [closeInternal, controller, drawerGestureVersion]);
+  }, [closeInternal, controller]);
 
   const beginDrawerDrag = useCallback((version?: number) => {
     if (version !== undefined && version !== drawerGestureVersion.value) return;
     controller.cancelSelection();
     controller.beginAnimation();
     afterSettle.current = null;
+    gestureSettle.current = null;
     // The worklet already stopped timing before touching the progress.
     // Do not mount a touch shield (or rerender Inicio) underneath an active finger.
   }, [controller, drawerGestureVersion, drawerProgress]);
 
-  const settleDrawerDrag = useCallback((shouldOpen: boolean, version?: number) => {
-    if (version !== undefined && version !== drawerGestureVersion.value) return;
-    if (shouldOpen) open();
-    else close();
-  }, [close, drawerGestureVersion, open]);
+  const prepareGestureSettle = useCallback((target: 0 | 1, version: number) => {
+    if (version !== drawerGestureVersion.value) return;
+    controller.cancelSelection();
+    const token = controller.beginAnimation();
+    gestureSettle.current = { token, version };
+    afterSettle.current = { token };
+    setInstantNav(false);
+    setForegroundBlocked(true);
+    setOpenState(target === 1);
+  }, [controller, drawerGestureVersion, setForegroundBlocked, setOpenState]);
+
+  const finishGestureSettle = useCallback((target: 0 | 1, version: number) => {
+    const pending = gestureSettle.current;
+    if (!pending || pending.version !== version) return;
+    finishAnimation(pending.token, target, version);
+  }, [finishAnimation]);
+
+  const settleDrawerDrag = useCallback((shouldOpen: boolean, version?: number, velocityX = 0) => {
+    "worklet";
+    const generation = version ?? drawerGestureVersion.value;
+    if (generation !== drawerGestureVersion.value) return;
+    const target = shouldOpen ? 1 : 0;
+    cancelAnimation(drawerProgress);
+    // Start settling here on UI; JS only publishes coarse state after release.
+    runOnJS(prepareGestureSettle)(target, generation);
+    drawerProgress.value = withSpring(target, drawerSpringConfig(velocityX, drawerWidth.value), (finished) => {
+      if (finished && generation === drawerGestureVersion.value) {
+        runOnJS(finishGestureSettle)(target, generation);
+      }
+    });
+  }, [drawerGestureVersion, drawerProgress, drawerWidth, finishGestureSettle, prepareGestureSettle]);
 
   const acknowledgeDestinationReady = useCallback((source: DrawerReadySource, target?: string) => {
     const token = controller.acknowledge(source, target);
     if (token === null) return;
+    const version = drawerGestureVersion.value;
     // Dos frames tras la confirmacion: el destino ya pinto antes de que la
     // superficie empiece a volver (las rutas confirman al cambiar pathname).
     requestAnimationFrame(() => requestAnimationFrame(() => {
-      if (!controller.isCurrentSelection(token)) return;
+      if (!controller.isCurrentSelection(token) || version !== drawerGestureVersion.value) return;
       closeInternal(() => setInstantNav(false));
     }));
-  }, [closeInternal, controller]);
+  }, [closeInternal, controller, drawerGestureVersion]);
 
   const selectFromDrawer = useCallback((selection: DrawerSelection) => {
     if (!isOpenRef.current) return; // evita selecciones repetidas
-    drawerGestureVersion.value += 1;
+    runOnUI(() => {
+      "worklet";
+      drawerGestureVersion.value += 1;
+      cancelAnimation(drawerProgress);
+    })();
     if (selection.kind === "afterClose") {
       const token = controller.cancelSelection();
       closeInternal(() => {
@@ -231,7 +270,7 @@ export function DrawerProvider({ children }: { children: React.ReactNode }) {
       }
       selection.run();
     });
-  }, [acknowledgeDestinationReady, closeInternal, controller, drawerGestureVersion, setOpenState]);
+  }, [acknowledgeDestinationReady, closeInternal, controller, drawerGestureVersion, drawerProgress, setOpenState]);
 
   // La ruta real cambio: el destino ya esta montado en la superficie frontal.
   useEffect(() => {

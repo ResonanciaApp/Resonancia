@@ -2,11 +2,14 @@ import assert from "node:assert/strict";
 import { readFileSync } from "node:fs";
 import test from "node:test";
 import { URL } from "node:url";
+import { createRequire } from "node:module";
+import { runInNewContext } from "node:vm";
 
 import {
   createDrawerTransitionController,
   dragProgress,
   drawerOffset,
+  drawerSpringConfig,
   foregroundCornerRadius,
   foregroundShadowOpacity,
   foregroundTranslateX,
@@ -19,6 +22,47 @@ import {
 
 const read = (path: string) => readFileSync(new URL(path, import.meta.url), "utf8");
 
+test("geometry initializes after the native Babel/worklet transform, not just TypeScript hoisting", () => {
+  const require = createRequire(import.meta.url);
+  const babel = require("@babel/core");
+  const preset = createRequire(require.resolve("expo/package.json")).resolve("babel-preset-expo");
+  const transformed = babel.transformSync(read("../lib/drawerGeometry.ts"), {
+    filename: new URL("../lib/drawerGeometry.ts", import.meta.url).pathname,
+    configFile: false,
+    babelrc: false,
+    presets: [preset],
+    plugins: [require.resolve("react-native-worklets/plugin")],
+    caller: { name: "metro", platform: "ios", supportsStaticESM: false },
+  }).code;
+  const module = { exports: {} as Record<string, any> };
+  const scope: Record<string, any> = { module, exports: module.exports, require, __DEV__: true, console };
+  scope.global = scope;
+  runInNewContext(transformed, scope);
+  assert.ok(module.exports.drawerSpringConfig.__workletHash);
+  assert.equal(module.exports.drawerSpringConfig(1600, 390).velocity, 1600 / 315);
+});
+
+test("spring handoff preserves finger velocity across widths with critical damping", () => {
+  for (const width of [320, 390, 430, 768]) {
+    for (const velocity of [-5000, -1600, -50, 0, 50, 1600, 5000]) {
+      const config = drawerSpringConfig(velocity, width);
+      assert.ok(Math.abs(config.velocity * drawerOffset(width) - velocity) < 1e-9);
+      assert.equal(config.damping ** 2, 4 * config.mass * config.stiffness);
+      assert.equal(config.overshootClamping, true);
+      // Exact critically damped solution: x(0)=current position, x'(0)=finger velocity.
+      for (const progress of [0, 0.05, 0.2, 0.5, 0.8, 1]) {
+        const target = velocity < 0 ? 0 : 1;
+        const omega = Math.sqrt(config.stiffness / config.mass);
+        const d = progress - target;
+        const positionAtZero = target + d;
+        const speedAtZero = (config.velocity + omega * d) - omega * d;
+        assert.ok(Math.abs(positionAtZero - progress) < 1e-9);
+        assert.ok(Math.abs(speedAtZero * drawerOffset(width) - velocity) < 1e-9);
+      }
+    }
+  }
+  assert.equal(drawerSpringConfig(Number.NaN, 390).velocity, 0);
+});
 test("fully open foreground leaves exactly 75 px visible at multiple widths", () => {
   for (const width of [320, 360, 375, 390, 412, 430, 768]) {
     assert.equal(drawerOffset(width), width - 75);

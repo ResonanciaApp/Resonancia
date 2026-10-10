@@ -39,6 +39,20 @@ export function drawerOffset(windowWidth: number) {
   return Math.max(0, windowWidth - DRAWER_VISIBLE_STRIP);
 }
 
+/** Declare after drawerOffset: Babel captures worklet dependencies at module
+ * initialization, unlike Node's hoisted function declarations. */
+export function drawerSpringConfig(velocityX: number, windowWidth: number) {
+  "worklet";
+  return {
+    stiffness: 625,
+    damping: 50,
+    mass: 1,
+    overshootClamping: true,
+    energyThreshold: 0.00001,
+    velocity: Number.isFinite(velocityX) ? velocityX / Math.max(1, drawerOffset(windowWidth)) : 0,
+  };
+}
+
 export function foregroundTranslateX(progress: number, windowWidth: number) {
   "worklet";
   return drawerOffset(windowWidth) * clamp01(progress);

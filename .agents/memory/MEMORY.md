@@ -93,6 +93,7 @@
 - [Transacciones de recordatorios locales](practice-notification-transactions.md) — actualizar una alarma exige operación nativa estricta + rollback; la cancelación tolerante queda solo para limpieza
 - [Límite de limpieza del catálogo Mixer](mixer-catalog-cleanup-boundary.md) — limpiar el bundle local no autoriza borrar sonidos creados en Admin ni sesiones Ambientales de prueba
 - [Drawer único de Inicio](single-home-drawer.md) — el drawer ya no tiene modo legado; toda apertura usa la estructura de Inicio 3 y debe limpiar el desplazamiento residual del gesto
+- [Orden de declaración de worklets](reanimated-worklet-declaration-order.md) — Babel captura dependencias al inicializar; declarar helpers antes de usarlos y probar también el módulo transformado
 - [Parallax del header de Inicio 3](inicio3-header-parallax.md) — avatar, acciones y fila semanal conservan desplazamiento lento conjunto; optimizar renders sin quitar ni alterar este efecto
 - [Historial de rachas](progress-profile-mirror.md) — Perfil y Tu progreso comparten cuatro cifras; actual semanal 0–7 y completadas Lun–Dom; Inicio conserva la racha consecutiva
 - [Mis estadísticas en Ajustes](settings-statistics-window.md) — menú encima de notificaciones; ventana lateral con filtro, minutos totales y días activos, sin rachas ni calendario

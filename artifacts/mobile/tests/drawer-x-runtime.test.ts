@@ -9,6 +9,108 @@ import * as geometry from "../lib/drawerGeometry.ts";
 
 const require = createRequire(import.meta.url);
 
+test("delayed JS cannot launch an old settle over a newer held finger", () => {
+  const h = harness({ deferJS: true });
+  const pan = h.component("DrawerEdgeGesture", { enabled: true, children: null }).gestures[0];
+  pan.handlers.onStart();
+  pan.handlers.onUpdate({ translationX: 126 });
+  pan.handlers.onEnd({ translationX: 126, velocityX: 1600 });
+  assert.equal(h.ctx.drawerProgress.animation.target, 1, "spring starts on UI before JS is drained");
+  pan.handlers.onStart();
+  pan.handlers.onUpdate({ translationX: -31.5 });
+  h.drainJS();
+  assert.equal(h.ctx.drawerProgress.animation, undefined, "old JS callbacks cannot restart animation");
+  assert.equal(h.ctx.foregroundBlocked, false, "old callbacks cannot mount a shield over the new finger");
+  pan.handlers.onUpdate({ translationX: -63 });
+  assert.ok(Math.abs(h.ctx.drawerProgress.value - 0.2) < 1e-9);
+  assert.equal(h.ctx.drawerProgress.animation, undefined);
+});
+
+test("slow and fast opening/closing drags keep 1:1 position and pass final velocity to UI spring", () => {
+  for (const mode of ["open", "close"] as const) {
+    for (const distance of [15, 63, 157.5, 280]) {
+      for (const speed of [50, 500, 1600, 5000]) {
+        const h = harness({ deferJS: true });
+        if (mode === "close") { h.ctx.open(); h.drainJS(); h.finish(); h.drainJS(); }
+        const pan = h.component(mode === "open" ? "DrawerEdgeGesture" : "DrawerForeground",
+          mode === "open" ? { enabled: true, children: null } : { children: null }).gestures[0];
+        pan.handlers.onStart();
+        h.drainJS();
+        const rendersBefore = h.providerRenders;
+        const sign = mode === "open" ? 1 : -1;
+        for (const fraction of [0.15, 0.4, 0.8]) {
+          pan.handlers.onUpdate({ translationX: sign * distance * fraction, velocityX: sign * speed });
+          h.flush();
+          const expected = (mode === "open" ? 0 : 1) + sign * distance * fraction / 315;
+          assert.ok(Math.abs(h.ctx.drawerProgress.value - expected) < 1e-9);
+          assert.equal(h.ctx.drawerProgress.animation, undefined);
+        }
+        assert.equal(h.providerRenders, rendersBefore, "no provider renders for per-frame movement");
+        pan.handlers.onEnd({ translationX: sign * distance, velocityX: sign * speed });
+        const animation = h.ctx.drawerProgress.animation;
+        assert.ok(Math.abs(h.ctx.drawerProgress.value - ((mode === "open" ? 0 : 1) + sign * distance / 315)) < 1e-9,
+          "the final native translation, not the previous update, defines the handoff position");
+        assert.equal(animation.kind, "spring");
+        assert.equal(animation.options.velocity, sign * speed / 315);
+        const expectedTarget = mode === "open" ? 1 : geometry.shouldSettleOpen(h.ctx.drawerProgress.value, -speed) ? 1 : 0;
+        assert.equal(animation.target, expectedTarget);
+        h.drainJS(); h.finish(); h.drainJS();
+        assert.equal(h.ctx.drawerProgress.value, expectedTarget);
+        assert.equal(h.ctx.foregroundBlocked, expectedTarget === 1);
+      }
+    }
+  }
+});
+
+test("avatar/programmatic opening starts at current position and reversals retain spring momentum", () => {
+  const h = harness();
+  h.ctx.drawerProgress.value = 0.35;
+  h.ctx.open(); h.flush();
+  assert.equal(h.ctx.drawerProgress.value, 0.35);
+  assert.equal(h.ctx.drawerProgress.animation.options.velocity, 0);
+  h.ctx.drawerProgress.animation.velocity = 2.4;
+  h.ctx.close(); h.flush();
+  assert.equal(h.ctx.drawerProgress.value, 0.35);
+  assert.equal(h.ctx.drawerProgress.animation.velocity, 2.4, "Reanimated carries the replaced spring's velocity");
+  h.ctx.open(); h.flush(); h.finish();
+  assert.equal(h.ctx.drawerProgress.value, 1);
+});
+
+test("late animation completion and destination-ready callbacks cannot override a new drag", () => {
+  const h = harness({ deferJS: true });
+  h.ctx.open(); h.flush(); h.finish(); // finish callback remains queued
+  const pan = h.component("DrawerForeground", { children: null }).gestures[0];
+  pan.handlers.onStart(); pan.handlers.onUpdate({ translationX: -63 });
+  h.drainJS();
+  assert.equal(h.ctx.drawerProgress.animation, undefined);
+  assert.equal(h.ctx.drawerProgress.value, 0.8);
+  pan.handlers.onEnd({ translationX: -63, velocityX: -1600 });
+  h.drainJS(); h.finish(); h.drainJS();
+  assert.equal(h.ctx.drawerProgress.value, 0);
+
+  const k = harness({ deferJS: true });
+  k.ctx.open(); k.flush(); k.finish(); k.drainJS();
+  k.ctx.selectFromDrawer({ kind: "layout", target: "/historial", run: () => {} });
+  k.flush();
+  k.ctx.acknowledgeDestinationReady("layout", "/historial");
+  const newer = k.component("DrawerForeground", { children: null }).gestures[0];
+  newer.handlers.onStart();
+  newer.handlers.onUpdate({ translationX: -63 });
+  k.frame(); k.frame(); // pending ready callback before JS sees the new gesture
+  assert.equal(k.ctx.drawerProgress.animation, undefined);
+  assert.equal(k.ctx.drawerProgress.value, 0.8);
+  k.drainJS();
+});
+
+test("all three gesture surfaces settle directly on UI, never via a JS animation handoff", () => {
+  for (const file of ["../components/DrawerForeground.tsx", "../components/DrawerMenu.tsx"]) {
+    const source = readFileSync(new URL(file, import.meta.url), "utf8");
+    assert.doesNotMatch(source, /runOnJS\(settleDrawerDrag\)/);
+    assert.match(source, /drawerGestureVersion.value \+= 1/);
+    assert.match(source, /settleDrawerDrag\([\s\S]*?gestureVersion.value, event.velocityX\)/);
+  }
+});
+
 test("opening, dragging and closing keep destination and panel subscriptions stable", () => {
   const h = harness();
   const initial = h.destinations;
@@ -80,7 +182,7 @@ test("navigation, overlay hosts and tool providers subscribe only to destination
  * and UI timing. This tests callbacks from production, not a copied controller.
  * Native view rendering, hardware event delivery and pixels still need a device.
  */
-function harness() {
+function harness({ deferJS = false } = {}) {
   let index = 0;
   let dirty = true;
   let currentPath = "/inicio3";
@@ -89,6 +191,8 @@ function harness() {
   const frames: Array<() => void> = [];
   const backs: Array<() => boolean> = [];
   const gestures: any[] = [];
+  const jsTasks: Array<() => void> = [];
+  let providerRenders = 0;
   let context: any;
   let destinationContext: any;
   let Provider: any;
@@ -130,8 +234,13 @@ function harness() {
     constructor(value: any) { this.stored = value; }
     get value() { return this.stored; }
     set value(value: any) {
-      if (value && typeof value === "object" && "target" in value) this.animation = value;
-      else this.stored = value;
+      const previous = this.animation;
+      this.animation = undefined;
+      previous?.callback?.(false);
+      if (value && typeof value === "object" && "target" in value) {
+        value.velocity = (previous?.velocity || 0) + (value.options?.velocity || 0);
+        this.animation = value;
+      } else this.stored = value;
     }
     finish() {
       const animation = this.animation;
@@ -145,13 +254,18 @@ function harness() {
     __esModule: true, default: { View: "AnimatedView" },
     useSharedValue: (value: number) => React.useRef(new Shared(value)).current,
     useAnimatedStyle: (fn: any) => fn(),
-    runOnJS: (fn: any) => fn,
+    runOnJS: (fn: any) => (...args: any[]) => {
+      if (deferJS) jsTasks.push(() => fn(...args));
+      else fn(...args);
+    },
+    runOnUI: (fn: any) => fn,
     cancelAnimation: (value: Shared) => {
       const animation = value.animation;
       value.animation = undefined;
       animation?.callback?.(false);
     },
     withTiming: (target: number, _options: any, callback: any) => ({ target, callback }),
+    withSpring: (target: number, options: any, callback: any) => ({ target, options, callback, kind: "spring" }),
     Easing: { out: (v: any) => v, cubic: () => {} },
   };
   class Value {
@@ -216,6 +330,7 @@ function harness() {
     let limit = 20;
     while (dirty && limit-- > 0) {
       dirty = false; index = 0;
+      providerRenders++;
       const provider = Provider({ children: null }).props.children[0].props.children[0];
       context = provider.props.value;
       destinationContext = provider.props.children[0].props.value;
@@ -228,6 +343,8 @@ function harness() {
   return {
     get ctx() { return context; }, flush,
     get destinations() { return destinationContext; },
+    get providerRenders() { return providerRenders; },
+    drainJS: () => { while (jsTasks.length) { jsTasks.shift()!(); flush(); } },
     frame: () => { frames.splice(0).forEach(fn => fn()); flush(); },
     finish: () => { context.drawerProgress.finish(); flush(); },
     path: (path: string) => { currentPath = path; dirty = true; flush(); },

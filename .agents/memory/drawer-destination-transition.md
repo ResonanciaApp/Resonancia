@@ -26,3 +26,9 @@ No dar por aislado Inicio solo porque su conexión directa al drawer sea estable
 **Why:** Un proveedor que escucha los estados transitorios del menú puede propagar sus actualizaciones a Inicio mediante otro contexto, aunque la suscripción directa de Inicio no haya cambiado. El usuario confirmó una mejora parcial al aislar esta cadena; no equivale a resolver todos los tirones.
 
 **How to apply:** Mantener las conexiones de destinos y herramientas independientes de abrir/cerrar el menú. Los callbacks estables que necesitan saber si la superficie está bloqueada deben leer el estado vigente, no conservar una captura antigua. Esto limita actualizaciones indirectas; no demuestra por sí solo la causa de los tirones.
+
+Cancelar el movimiento en UI no invalida por sí solo las finalizaciones que ya están pendientes en JavaScript. La identidad de cada gesto debe cambiar en UI antes de cruzar el puente; el asentamiento debe iniciarse allí con la última posición y velocidad del dedo.
+
+**Why:** Una prueba con JS retrasado reprodujo una finalización antigua que iniciaba apertura automática y bloqueaba un segundo arrastre, aunque este ya había cancelado la animación. Además, una curva nueva puede provocar un tirón de velocidad aun sin pérdida de FPS.
+
+**How to apply:** Reservar las generaciones de gesto en UI y validar también los callbacks de finalización/readiness. JS puede publicar estados discretos, pero no debe reiniciar el movimiento de un gesto soltado. Separar siempre la continuidad matemática verificada de la fluidez nativa: las pruebas con mocks no miden GPU ni FPS.

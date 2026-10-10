@@ -143,6 +143,7 @@ export function DrawerMenu() {
       .onStart(() => {
         cancelAnimation(drawerProgress);
         dragging.value = true;
+        drawerGestureVersion.value += 1;
         gestureVersion.value = drawerGestureVersion.value;
         dragStart.value = drawerProgress.value;
         runOnJS(beginDrawerDrag)(gestureVersion.value);
@@ -153,12 +154,16 @@ export function DrawerMenu() {
       })
       .onEnd((event) => {
         dragging.value = false;
-        runOnJS(settleDrawerDrag)(shouldSettleOpen(drawerProgress.value, event.velocityX), gestureVersion.value);
+        if (gestureVersion.value !== drawerGestureVersion.value) return;
+        if (Number.isFinite(event.translationX)) {
+          drawerProgress.value = dragProgress(dragStart.value, event.translationX, drawerWidth.value);
+        }
+        settleDrawerDrag(shouldSettleOpen(drawerProgress.value, event.velocityX), gestureVersion.value, event.velocityX);
       })
       .onFinalize(() => {
         if (!dragging.value) return;
         dragging.value = false;
-        runOnJS(settleDrawerDrag)(dragStart.value >= 0.5, gestureVersion.value);
+        settleDrawerDrag(dragStart.value >= 0.5, gestureVersion.value);
       }),
     [beginDrawerDrag, dragging, dragStart, drawerGestureVersion, drawerProgress, drawerWidth, gestureVersion, settleDrawerDrag],
   );
