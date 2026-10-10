@@ -314,7 +314,7 @@ export function DrawerMenu() {
           <ScrollView
             showsVerticalScrollIndicator={false}
             style={{ flex: 1 }}
-            contentContainerStyle={{ paddingLeft: 23, paddingRight: 17, paddingTop: 20, paddingBottom: bottomPad + 40 }}
+            contentContainerStyle={{ paddingLeft: 23, paddingRight: 17, paddingTop: 16, paddingBottom: bottomPad + 40 }}
           >
             <View style={styles.inicio3Sections}>
               {INICIO3_SECTIONS.map((section, sectionIndex) => (
