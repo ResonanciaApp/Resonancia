@@ -21,6 +21,12 @@ Los cambios al compositor necesitan una prueba que pulse Registrar y recorra tan
 
 **How to apply:** En los refactors del editor, ejecutar la acción real con categoría y texto, confirmar que conserva el borrador ante error y que lo limpia solo tras éxito. No sustituir esa comprobación por inspeccionar los props del botón.
 
+Mostrar el cursor al expandir el compositor no equivale a una intención de escribir: el placeholder debe permanecer hasta el toque explícito del usuario. El teclado tampoco debe abrirse solo por mostrar la sección.
+
+**Why:** El usuario precisó que el placeholder desaparece al tocar el campo, no antes. El foco nativo usado para mostrar el cursor no debe anticipar esa acción.
+
+**How to apply:** Distinguir el foco visual del inicio de edición; conservar la espera del desplazamiento del padre antes de abrir el teclado y comprobar la visibilidad del placeholder antes y después del toque.
+
 En Mi muro expansivo, la “+” tiene rebote exclusivamente angular: sobrepasa su orientación, cruza de vuelta con menor amplitud y se amortigua gradualmente. Los tabs, el campo de mensajes y los botones entran con fade-in y desplazamiento descendente monótono, sin sobrepasar ni rebotar; el cierre tampoco rebota. Al plegar, el contenido permanece quieto y opaco dentro del recorte mientras este lo oculta progresivamente de abajo hacia arriba. Al CERRAR, la “+” y sus tres círculos arrancan JUNTOS desde el toque; es el MOVIMIENTO DE LA PANTALLA el que debe esperar a que termine el pliegue. La “+” es simétrica cada 90°, así que tres giros perceptibles no requieren tres vueltas físicas completas.
 
 **Why:** El usuario percibió tres vueltas físicas de la “+” como unas diez vueltas rápidas, rechazó el desplazamiento y cambio aparente de tamaño del icono, y señaló que el rebote del formulario al llegar abajo era incorrecto. Una oscilación matemática breve de ~250 ms con cruces menores a 6° se percibió como parada en seco; una secuencia con más segmentos se percibió como cinco rebotes incluso cuando pretendía representar menos. El tirón al cerrar provenía del desplazamiento del contenedor durante el pliegue, no del giro de la “+”; retrasar el giro fue una interpretación errónea explícitamente corregida por el usuario. Confirmó que reservar la altura hasta terminar el pliegue funciona, y pidió que el movimiento posterior sea más pausado y sutil, como el scroll al desplegar.

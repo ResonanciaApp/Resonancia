@@ -248,8 +248,8 @@ test("Perfil header controls take touch priority over the lifted avatar without 
 test("Mi muro uses the question as its heading and the requested reflection placeholder", () => {
   const contents = source("../components/InnerSpaceCard.tsx");
   assert.ok(contents.includes(">¿Qué sientes compartir hoy?</Text>"));
-  assert.match(contents, /testID="reflection-writing-input"\s+placeholder="Escribe tu reflexión aquí"/);
-  assert.match(contents, /placeholderTextColor=\{colors.mutedForeground\}/);
+  assert.match(contents, /testID="reflection-writing-input"\s+placeholder=\{inputTouched \? undefined : "Escribe tu reflexión aquí"\}/);
+  assert.match(contents, /placeholderTextColor="#D1D1D1"/);
   assert.doesNotMatch(contents, /DEFAULT_PLACEHOLDER|inputPlaceholder|Registra y comparte tu viaje|settlePlaceholder|desiredPlaceholder/);
 });
 

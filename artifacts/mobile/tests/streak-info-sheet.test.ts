@@ -186,10 +186,10 @@ test("sheet uses all gradient colors, locations and direction from every theme a
     if (theme.gradientLocations) assert.ok(html.includes(`data-gradient-locations="${theme.gradientLocations.join("|")}"`));
     if (theme.gradientStart) assert.ok(html.includes(`data-gradient-start="${JSON.stringify(theme.gradientStart).replace(/"/g, "&quot;")}"`));
     if (theme.gradientEnd) assert.ok(html.includes(`data-gradient-end="${JSON.stringify(theme.gradientEnd).replace(/"/g, "&quot;")}"`));
-    assert.match(html, /data-icon="spa" data-color="#F9F9F9" data-size="30"/);
-    assert.ok(html.includes(`data-icon="spa" data-color="${MEMBERSHIP_AURORA.premium.accent}" data-size="30"`));
-    assert.match(html, /data-icon="image-filter-hdr" data-color="#F9F9F9" data-size="30"/);
-    assert.match(html, /data-icon="check-circle" data-color="#F9F9F9" data-size="28"/);
+    assert.match(html, /data-icon="spa" data-color="#F9F9F9" data-size="26"/);
+    assert.ok(html.includes(`data-icon="spa" data-color="${MEMBERSHIP_AURORA.premium.accent}" data-size="26"`));
+    assert.match(html, /data-icon="image-filter-hdr" data-color="#F9F9F9" data-size="26"/);
+    assert.match(html, /data-icon="check-circle" data-color="#F9F9F9" data-size="24"/);
   }
 });
 
@@ -230,6 +230,7 @@ test("four horizontal cards separated by 15px with icon left, title, chevron rig
     assert.equal(icon.props.testID, `streak-info-icon-${id}`);
     assert.equal(flatten(icon.props.style).backgroundColor, undefined);
     assert.equal(flatten(title.props.style).flex, 1);
+    assert.equal(flatten(title.props.style).fontSize, 14);
     assert.equal(toggle.props.testID, `streak-info-toggle-${id}`);
     assert.equal(toggle.props.accessibilityRole, "button");
   }
@@ -241,13 +242,23 @@ test("each chevron toggles only its own description and expanded state; close/re
   h.render(true);
   for (const [i, id] of IDS.entries()) {
     assert.equal(h.toggleState.get(`streak-info-toggle-${id}`).expanded, false);
+    assert.ok(!h.render(true).includes(`data-testid="streak-info-divider-${id}"`));
     h.toggles.get(`streak-info-toggle-${id}`)!();
     const html = h.render(true);
     assert.ok(html.includes(DESCS[i]));
+    const divider = flatten(h.nodes.get(`streak-info-divider-${id}`)!.style);
+    const description = flatten(h.nodes.get(`streak-info-desc-${id}`)!.style);
+    assert.equal(divider.marginTop, 10);
+    assert.equal(divider.height, 1);
+    assert.equal(divider.backgroundColor, "rgba(255,255,255,0.1)");
+    assert.equal(description.textAlign, "left");
+    assert.equal(description.marginTop, 16);
+    assert.equal(divider.marginTop + divider.height + description.marginTop, 12 + 15);
     assert.equal(h.toggleState.get(`streak-info-toggle-${id}`).expanded, true);
     assert.match(html, /data-icon="chevron-up"/);
     h.toggles.get(`streak-info-toggle-${id}`)!();
     assert.ok(!h.render(true).includes(DESCS[i]));
+    assert.ok(!h.render(true).includes(`data-testid="streak-info-divider-${id}"`));
   }
   h.toggles.get("streak-info-toggle-longest")!();
   assert.ok(h.render(true).includes(DESCS[2]));
@@ -265,7 +276,11 @@ test("intro description matches Tu camino screen intro typography (GrowthJourney
   const exp = new Function(`return (${m[1]});`)();
   const m2 = source.match(/subtitle:\s*(\{[\s\S]*?\n  \})/)!;
   const act = new Function("STREAK_INFO_COLORS", `return (${m2[1]});`)(STREAK_INFO_COLORS);
-  for (const k of ["fontFamily", "fontSize", "fontWeight", "lineHeight", "textAlign"]) assert.equal(act[k], exp[k], k);
+  for (const k of ["fontFamily", "fontSize", "fontWeight", "lineHeight"]) assert.equal(act[k], exp[k], k);
+  assert.equal(act.textAlign, "left");
+  const footnote = source.match(/footnote:\s*(\{[\s\S]*?\n  \})/)!;
+  assert.equal(new Function("STREAK_INFO_COLORS", `return (${footnote[1]});`)(STREAK_INFO_COLORS).textAlign, "left");
+  assert.equal(flatten(h.nodes.get("streak-info-description")!.style).alignItems, "stretch");
 });
 
 test("sheet scrolls edge to edge without fixed headers or footers, retaining content-only safe insets and natural text scaling", () => {

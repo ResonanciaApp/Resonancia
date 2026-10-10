@@ -114,15 +114,14 @@ test("deleted editorial text stays deleted, without a divider or legacy fallback
     const html = render();
     assert.doesNotMatch(html, /Antes del primer día/);
     assert.equal(editorial.growthDetailCopy(levels[0]).phrase, "");
-    const copy = nodes.get("growth-stage-detail-scroll").children[1].props.children.props.children;
-    assert.deepEqual(copy, [false, false, false]);
+    const copy = nodes.get("growth-stage-detail-scroll").children.props.children.props.children;
+    assert.deepEqual(copy, [false, false]);
     levels = [{ ...growthLevels[0], detailPhrase: "Solo frase", detailDescription: "" }];
     const phraseOnly = render();
     assert.match(phraseOnly, /Solo frase/);
-    const copyWithPhrase = nodes.get("growth-stage-detail-scroll").children[1].props.children.props.children;
-    assert.equal(copyWithPhrase[0].props.testID, "growth-stage-detail-rule");
-    assert.equal(copyWithPhrase[1].props.testID, "growth-stage-detail-phrase");
-    assert.equal(copyWithPhrase[2], false);
+    const copyWithPhrase = nodes.get("growth-stage-detail-scroll").children.props.children.props.children;
+    assert.equal(copyWithPhrase[0].props.testID, "growth-stage-detail-phrase");
+    assert.equal(copyWithPhrase[1], false);
   } finally { levels = growthLevels; }
 });
 
@@ -165,9 +164,9 @@ test("the detail shares the streak screen's theme, safe-area spacing, circular c
       assert.equal(nodes.get("growth-stage-detail").locations, locations);
        assert.equal(nodes.get("growth-detail-hero-artwork").size, 274);
        assert.equal(nodes.get("growth-detail-hero-artwork").height, undefined, "square image, no viewport stretch");
-       assert.equal(flat(nodes.get("growth-stage-detail-fixed-art").style).top, Math.max(inset, 40) + 20);
-       assert.equal(nodes.get("growth-stage-detail-scroll").contentContainerStyle.paddingTop, Math.max(inset, 40) + 20 + 274 + 16);
-      assert.match(html, new RegExp(`data-top-padding="${Math.max(inset, 40) + 8}"`));
+        assert.equal(flat(nodes.get("growth-stage-detail-fixed-art").style).top, Math.max(inset, 40) + 76);
+        assert.equal(nodes.get("growth-stage-detail-scroll").contentContainerStyle.paddingTop, Math.max(inset, 40) + 76 + 274 + 16);
+      assert.match(html, new RegExp(`data-top-padding="${Math.max(inset, 40) + 24}"`));
       const scroll = nodes.get("growth-stage-detail-scroll");
       assert.equal(scroll.bounces, true);
       assert.equal(scroll.alwaysBounceVertical, true);
@@ -180,7 +179,7 @@ test("the detail shares the streak screen's theme, safe-area spacing, circular c
     }
   }
   platform = "web";
-  assert.match(render(), /data-top-padding="75"/);
+  assert.match(render(), /data-top-padding="91"/);
   platform = "ios"; width = 375; height = 812; top = 24;
 });
 
@@ -208,30 +207,34 @@ test("the detail has only one continuous theme background, without opaque hero s
   assert.match(journey, /bloomArt: \{ width: GROWTH_BLOOM_ART_SIZE, height: GROWTH_BLOOM_ART_SIZE/);
 });
 
-test("artwork and title retain their position with copy below the title", () => {
+test("title is seven points smaller and the entire layout is lowered sixteen pixels with a twenty-pixel artwork gap", () => {
   render();
-  assert.equal(nodes.get("growth-stage-detail-scroll").contentContainerStyle.paddingTop, 350);
+  assert.equal(nodes.get("growth-stage-detail-scroll").contentContainerStyle.paddingTop, 406);
   const block = flat(nodes.get("growth-stage-detail-title-block").style);
   assert.equal(block.gap, 8);
   assert.equal(block.transform, undefined);
+  const art = nodes.get("growth-stage-detail-fixed-art");
+  const anchor = flat((React.Children.toArray(art.children)[0] as React.ReactElement<{ style: unknown }>).props.style);
+  assert.equal(anchor.position, "absolute");
+  assert.equal(anchor.bottom, 274 + 20);
+  assert.equal(flat(art.style).top, 116);
+  assert.ok(!JSON.stringify(nodes.get("growth-stage-detail-scroll").children).includes("growth-stage-detail-title-block"));
   const source = readFileSync(new URL("../components/GrowthStageDetail.tsx", import.meta.url), "utf8");
   assert.match(source, /copy: \{[^}]*marginTop: 0/);
-  assert.match(source, /stageName: \{[^}]*fontSize: 41,\s*lineHeight: 47/);
-  assert.match(source, /rule: \{[^}]*backgroundColor: GOLD, opacity: 0\.7/);
+  assert.match(source, /stageName: \{[^}]*fontSize: 28,\s*lineHeight: 41/);
+  assert.doesNotMatch(source, /styles\.rule|\brule:|MEMBERSHIP_AURORA/);
 });
 
-test("golden line sits above the phrase exactly halfway from the title", () => {
+test("golden line is removed while editorial phrase and long description remain", () => {
   for (const detailDescription of ["", "Descripción larga"]) {
     levels = [{ ...growthLevels[0], detailPhrase: "Frase editorial", detailDescription }];
     try {
       const html = render();
-      const rule = flat(nodes.get("growth-stage-detail-rule").style);
-      assert.ok(html.indexOf('data-testid="growth-stage-detail-title-block"') < html.indexOf('data-testid="growth-stage-detail-rule"'));
-      assert.ok(html.indexOf('data-testid="growth-stage-detail-rule"') < html.indexOf('data-testid="growth-stage-detail-phrase"'));
-      assert.equal(rule.marginVertical, 16.5);
-      assert.equal(rule.height + 2 * rule.marginVertical, 35);
-      assert.equal(rule.opacity, 0.7);
-      assert.equal((html.match(/data-testid="growth-stage-detail-rule"/g) ?? []).length, 1);
+      assert.equal(nodes.has("growth-stage-detail-rule"), false);
+      assert.ok(html.indexOf('data-testid="growth-stage-detail-title-block"') < html.indexOf('data-testid="growth-detail-hero-artwork"'));
+      assert.ok(html.indexOf('data-testid="growth-detail-hero-artwork"') < html.indexOf('data-testid="growth-stage-detail-phrase"'));
+      assert.match(html, /Frase editorial/);
+      if (detailDescription) assert.ok(html.includes(detailDescription));
     } finally { levels = growthLevels; }
   }
 });
@@ -276,7 +279,7 @@ test("a fixed alpha mask progressively hides content as it scrolls into the imag
     const fade = nodes.get("growth-stage-detail-scroll-fade");
     assert.equal(nodes.get("growth-stage-detail-scroll").contentContainerStyle.minHeight, height + 274, "even short descriptions can scroll up towards the image");
     assert.deepEqual(fade.colors, ["transparent", "transparent", "#000000", "#000000"]);
-    assert.deepEqual(fade.locations, [0, (334 - 48) / height, (334 + 8) / height, 1]);
+    assert.deepEqual(fade.locations, [0, (390 - 48) / height, (390 + 8) / height, 1]);
     assert.equal(fade.pointerEvents, "none");
     assert.equal(flat(fade.style).position, "absolute");
     const mask = nodes.get("growth-stage-detail-content-mask");

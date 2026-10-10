@@ -1,5 +1,6 @@
 import assert from "node:assert/strict";
 import { readFileSync } from "node:fs";
+import { URL } from "node:url";
 import test from "node:test";
 import React from "react";
 import ts from "typescript";
@@ -275,13 +276,19 @@ test("opening with plus shows the native caret without a tap or opening the keyb
   f.render();
   f.flushFrames();
   assert.equal(f.composeRequests, 0);
-  assert.equal(input.placeholder, undefined);
+  assert.equal(input.placeholder, "Escribe tu reflexión aquí");
+  assert.equal(input.placeholderTextColor, "#D1D1D1");
   assert.equal(f.nodes.get("reflection-writing-input").showSoftInputOnFocus, false);
   assert.equal(f.keyboardVisible, false);
   f.tap();
+  assert.equal(f.nodes.get("reflection-writing-input").placeholder, undefined);
+  assert.equal(f.keyboardVisible, false, "keyboard waits for the touch-triggered scroll handoff");
   f.render({ focusRequest: 1 });
   f.flushFrames();
   assert.equal(f.keyboardVisible, true);
+  f.nodes.get("reflection-writing-input").onBlur();
+  f.render();
+  assert.equal(f.nodes.get("reflection-writing-input").placeholder, "Escribe tu reflexión aquí");
   f.dispose();
 });
 
@@ -331,7 +338,7 @@ test("all themes use borderless category fills, uniform text and one soft haptic
       const fill = (React.Children.toArray(selectedTab.children) as any[]).find(k => k.type === "tab-fill");
       assert.equal(fill.props.selected, true);
       assert.equal(fill.props.color, "#ABCDEF");
-      assert.equal(fill.props.selectedOpacity, 0.6);
+      assert.equal(fill.props.selectedOpacity, 0.2);
       assert.equal((React.Children.toArray(selectedTab.children) as any[]).some(k => k.type === "tab-border"), false);
       assert.equal(Object.assign({}, ...selectedTab.style({ pressed: false }).filter(Boolean)).borderWidth, 0);
     }
@@ -344,7 +351,7 @@ test("all themes use borderless category fills, uniform text and one soft haptic
       const fill = (React.Children.toArray(deselectedTab.children) as any[]).find(k => k.type === "tab-fill");
       assert.equal(fill.props.selected, false, "fill remains mounted so deselection can fade out");
       assert.equal(fill.props.color, "#ABCDEF");
-      assert.equal(fill.props.selectedOpacity, 0.6);
+      assert.equal(fill.props.selectedOpacity, 0.2);
       assert.equal((React.Children.toArray(deselectedTab.children) as any[]).some(k => k.type === "tab-border"), false);
     }
     f.dispose();

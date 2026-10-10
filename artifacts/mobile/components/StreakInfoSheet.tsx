@@ -52,19 +52,19 @@ const STREAK_DEFINITIONS: { id: IconKind; title: string; description: string }[]
 const FOOTNOTE = "Un día cuenta como activo al escuchar al menos 3 minutos o completar una sesión.";
 
 function StreakIcon({ kind }: { kind: IconKind }) {
-  if (kind === "current") return <MaterialCommunityIcons name="spa" size={30} color={WHITE} />;
+  if (kind === "current") return <MaterialCommunityIcons name="spa" size={26} color={WHITE} />;
   if (kind === "accumulated") return (
-    <MaskedView maskElement={<MaterialCommunityIcons name="spa" size={30} color={WHITE} />}>
+    <MaskedView maskElement={<MaterialCommunityIcons name="spa" size={26} color={WHITE} />}>
       <MaterialCommunityIcons
         name="spa"
-        size={30}
+        size={26}
         color={GOLD}
         style={styles.goldenLotus}
       />
     </MaskedView>
   );
-  if (kind === "longest") return <MaterialCommunityIcons name="image-filter-hdr" size={30} color={WHITE} />;
-  return <Feather name="check-circle" size={28} color={WHITE} />;
+  if (kind === "longest") return <MaterialCommunityIcons name="image-filter-hdr" size={26} color={WHITE} />;
+  return <Feather name="check-circle" size={24} color={WHITE} />;
 }
 
 export function StreakInfoSheet({
@@ -182,7 +182,10 @@ export function StreakInfoSheet({
                       </Pressable>
                     </View>
                     {open && (
-                      <Text testID={`streak-info-desc-${item.id}`} style={styles.cardDesc}>{item.description}</Text>
+                      <>
+                        <View testID={`streak-info-divider-${item.id}`} style={styles.divider} />
+                        <Text testID={`streak-info-desc-${item.id}`} style={styles.cardDesc}>{item.description}</Text>
+                      </>
                     )}
                   </View>
                 </CinematicFadeSlide>
@@ -234,14 +237,14 @@ const styles = StyleSheet.create({
     color: STREAK_INFO_COLORS.pageTitle,
     textAlign: "center",
   },
-  heroText: { paddingHorizontal: 28, paddingTop: 56, alignItems: "center" },
+  heroText: { paddingHorizontal: 28, paddingTop: 56, alignItems: "stretch" },
   subtitle: {
     fontFamily: "Manrope",
     fontSize: 13,
     fontWeight: "400",
     lineHeight: 22,
     color: STREAK_INFO_COLORS.subtitle,
-    textAlign: "center",
+    textAlign: "left",
   },
   cards: { paddingHorizontal: 20, marginTop: 50, gap: 15 },
   card: {
@@ -257,14 +260,15 @@ const styles = StyleSheet.create({
     textShadowOffset: { width: 0, height: 0 },
     textShadowRadius: 4,
   },
-  cardTitle: { flex: 1, fontFamily: "Manrope", fontSize: 16, fontWeight: "700", color: WHITE },
+  cardTitle: { flex: 1, fontFamily: "Manrope", fontSize: 14, fontWeight: "700", color: WHITE },
+  divider: { height: 1, marginTop: 10, backgroundColor: "rgba(255,255,255,0.1)" },
   cardDesc: {
-    marginTop: 12,
+    marginTop: 16,
     fontFamily: "Manrope",
     fontSize: 12,
     fontWeight: "400",
     lineHeight: 18,
-    textAlign: "center",
+    textAlign: "left",
     color: STREAK_INFO_COLORS.description,
   },
   footnote: {
@@ -272,7 +276,7 @@ const styles = StyleSheet.create({
     fontSize: 13,
     lineHeight: 19,
     color: STREAK_INFO_COLORS.footnote,
-    textAlign: "center",
+    textAlign: "left",
     paddingHorizontal: 12,
     paddingTop: 6,
   },

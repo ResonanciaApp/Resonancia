@@ -95,6 +95,7 @@ export function InnerSpaceCard({
   const inputRef = useRef<TextInput>(null);
   const caretOnlyFocusRef = useRef(false);
   const [inputActive, setInputActive] = useState(false);
+  const [inputTouched, setInputTouched] = useState(false);
   const [inputFocusVersion, setInputFocusVersion] = useState(0);
   const [expanded, setExpanded] = useState(false);
   const expandedRef = useRef(false);
@@ -145,6 +146,7 @@ export function InnerSpaceCard({
         setCategory(null);
         inputRef.current?.blur();
         setInputActive(false);
+        setInputTouched(false);
 
         const createdAt = new Date(created.createdAt).getTime();
         const reflectionQueries = qc.getQueriesData<ReflectionsPage>({
@@ -225,6 +227,7 @@ export function InnerSpaceCard({
       );
       return;
     }
+    setInputTouched(true);
     if (inputActive) {
       focusInput();
       return;
@@ -275,6 +278,7 @@ export function InnerSpaceCard({
   const focusInput = () => {
     caretOnlyFocusRef.current = false;
     traceWriting("activate");
+    setInputTouched(true);
     setInputActive(true);
     setInputFocusVersion((value) => value + 1);
   };
@@ -336,6 +340,7 @@ export function InnerSpaceCard({
       if (!opening) {
         inputRef.current?.blur();
         setInputActive(false);
+        setInputTouched(false);
       }
       reservedHeight.value = 0;
       clipHeight.value = opening ? contentHeightRef.current : 0;
@@ -370,6 +375,7 @@ export function InnerSpaceCard({
     const blurAfterCollapse = () => {
       inputRef.current?.blur();
       setInputActive(false);
+      setInputTouched(false);
     };
     let controlsFinished = false;
     let movementFinished = opening;
@@ -614,8 +620,8 @@ export function InnerSpaceCard({
       >
         <TextInput
           testID="reflection-writing-input"
-          placeholder="Escribe tu reflexión aquí"
-          placeholderTextColor={colors.mutedForeground}
+          placeholder={inputTouched ? undefined : "Escribe tu reflexión aquí"}
+          placeholderTextColor="#D1D1D1"
           ref={inputRef}
           editable={!freeLimitReached}
           showSoftInputOnFocus={inputActive}
@@ -631,6 +637,7 @@ export function InnerSpaceCard({
           onBlur={() => {
             traceWriting("native-blur");
             setInputActive(false);
+            setInputTouched(false);
             onInputBlur?.();
           }}
           style={[styles.input, { color: colors.foreground }]}

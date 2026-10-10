@@ -15,13 +15,12 @@ import { useSafeAreaInsets } from "react-native-safe-area-context";
 
 import { CinematicFadeSlide } from "@/components/CinematicFadeSlide";
 import { GrowthLevelImage, GROWTH_BLOOM_ART_SIZE, GROWTH_STAGE_ICON_SIZE } from "@/components/GrowthJourney";
-import { MEMBERSHIP_AURORA, STREAK_INFO_COLORS } from "@/constants/colors";
+import { STREAK_INFO_COLORS } from "@/constants/colors";
 import { useSceneTheme } from "@/context/SceneThemeContext";
 import { useGrowth } from "@/context/GrowthContext";
 import { growthDetailCopy } from "@/lib/growth-editorial";
 
 const WHITE = STREAK_INFO_COLORS.foreground;
-const GOLD = MEMBERSHIP_AURORA.premium.accent;
 const DURATION = 1400;
 const BASE_DELAY = 150;
 
@@ -44,7 +43,7 @@ export function GrowthStageDetail({
   const bottomPad = Platform.OS === "web" ? 34 : insets.bottom;
   const ascent = (level?.group ?? (stageId.startsWith("ascenso-") ? "ascenso" : "florecimiento")) === "ascenso";
   const heroSize = (ascent ? GROWTH_STAGE_ICON_SIZE : GROWTH_BLOOM_ART_SIZE) * 2;
-  const heroTop = topPad + 20;
+  const heroTop = topPad + 76;
   const heroBottom = heroTop + heroSize;
   const fadeStart = Math.min(1, Math.max(0, (heroBottom - 48) / height));
   const fadeEnd = Math.min(1, Math.max(fadeStart, (heroBottom + 8) / height));
@@ -65,6 +64,11 @@ export function GrowthStageDetail({
         pointerEvents="none"
         style={[styles.heroArt, { top: heroTop }]}
       >
+        <CinematicFadeSlide active replayKey="stage" delay={BASE_DELAY} duration={DURATION} style={[styles.titleAnchor, { bottom: heroSize + 20 }]}>
+          <View testID="growth-stage-detail-title-block" style={styles.titleBlock}>
+            <Text style={styles.stageName} accessibilityRole="header">{level.name}</Text>
+          </View>
+        </CinematicFadeSlide>
         <GrowthLevelImage level={level} size={heroSize} />
       </View>
       <MaskedView
@@ -91,15 +95,8 @@ export function GrowthStageDetail({
         testID="growth-stage-detail-scroll"
         contentContainerStyle={{ paddingTop: heroBottom + 16, paddingBottom: bottomPad + 28, minHeight: height + heroSize }}
       >
-        <CinematicFadeSlide active replayKey="stage" delay={BASE_DELAY} duration={DURATION}>
-          <View testID="growth-stage-detail-title-block" style={styles.titleBlock}>
-            <Text style={styles.stageName} accessibilityRole="header">{level.name}</Text>
-          </View>
-        </CinematicFadeSlide>
-
         <CinematicFadeSlide active replayKey="copy" delay={BASE_DELAY + 700} duration={DURATION}>
           <View style={[styles.copy, !phrase.trim() && { marginTop: 35 }]}>
-            {!!phrase.trim() && <View testID="growth-stage-detail-rule" style={styles.rule} />}
             {!!phrase.trim() && <Text testID="growth-stage-detail-phrase" style={styles.quote}>{phrase}</Text>}
             {!!description.trim() && <Text style={[styles.explanation, !!phrase.trim() && { marginTop: 38 }]}>{description}</Text>}
           </View>
@@ -107,7 +104,7 @@ export function GrowthStageDetail({
 
       </ScrollView>
       </MaskedView>
-      <View testID="growth-stage-detail-fixed-header" style={[styles.header, { paddingTop: topPad + 8 }]}>
+      <View testID="growth-stage-detail-fixed-header" style={[styles.header, { paddingTop: topPad + 24 }]}>
         <Pressable
           onPress={onClose}
           style={styles.headerButton}
@@ -125,7 +122,8 @@ export function GrowthStageDetail({
 
 const styles = StyleSheet.create({
   root: { ...StyleSheet.absoluteFillObject },
-  heroArt: { position: "absolute", alignSelf: "center" },
+  heroArt: { position: "absolute", left: 20, right: 20, alignItems: "center" },
+  titleAnchor: { position: "absolute", left: 0, right: 0 },
   scrollLayer: { flex: 1 },
   header: {
     position: "absolute",
@@ -152,8 +150,8 @@ const styles = StyleSheet.create({
   stageName: {
     fontFamily: "Manrope",
     fontWeight: "700",
-    fontSize: 41,
-    lineHeight: 47,
+    fontSize: 28,
+    lineHeight: 41,
     color: STREAK_INFO_COLORS.pageTitle,
     textAlign: "center",
   },
@@ -165,7 +163,6 @@ const styles = StyleSheet.create({
     color: WHITE,
     textAlign: "center",
   },
-  rule: { width: 44, height: 2, backgroundColor: GOLD, opacity: 0.7, marginVertical: 16.5, borderRadius: 1 },
   explanation: {
     fontFamily: "Manrope",
     fontSize: 15,
