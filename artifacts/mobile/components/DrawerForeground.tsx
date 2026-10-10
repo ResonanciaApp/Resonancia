@@ -7,14 +7,13 @@ import { SacredBackground } from "@/components/SacredBackground";
 import { useDrawer, useDrawerMotion } from "@/context/DrawerContext";
 import { useSceneTheme } from "@/context/SceneThemeContext";
 import {
-  DRAWER_CORNER_RADIUS,
   DRAWER_GESTURE_ACTIVE_X,
   DRAWER_GESTURE_FAIL_Y,
   dragProgress,
+  foregroundCornerRadius,
   foregroundElevation,
   foregroundShadowOpacity,
   foregroundTranslateX,
-  foregroundVeilOpacity,
   shouldSettleOpen,
 } from "@/lib/drawerGeometry";
 
@@ -22,8 +21,8 @@ import {
  * Superficie frontal estilo X: contiene la pantalla activa y sus overlays.
  * Se desplaza a la derecha y revela el menu fijo detras.
  * Capas separadas: la exterior lleva translate + sombra (sin recorte), la
- * interior recorta las esquinas y el velo blanco va encima del contenido.
- * Las esquinas son estáticas; el resto usa el mismo progreso de Reanimated.
+ * interior recorta las esquinas. No se monta ninguna capa de luz.
+ * Todo lo anima Reanimated desde el mismo progreso; ningun nodo mezcla drivers.
  */
 export function DrawerForeground({ children }: { children: React.ReactNode }) {
   const {
@@ -42,15 +41,19 @@ export function DrawerForeground({ children }: { children: React.ReactNode }) {
 
   const outerStyle = useAnimatedStyle(() => {
     const p = drawerProgress.value;
+    const radius = foregroundCornerRadius(p);
     return {
       transform: [{ translateX: foregroundTranslateX(p, drawerWidth.value) }],
+      borderTopLeftRadius: radius,
+      borderBottomLeftRadius: radius,
       shadowOpacity: foregroundShadowOpacity(p),
       elevation: foregroundElevation(p),
     };
   });
-  const veilStyle = useAnimatedStyle(() => ({
-    opacity: foregroundVeilOpacity(drawerProgress.value),
-  }));
+  const innerStyle = useAnimatedStyle(() => {
+    const radius = foregroundCornerRadius(drawerProgress.value);
+    return { borderTopLeftRadius: radius, borderBottomLeftRadius: radius };
+  });
 
   const closeFromStrip = React.useCallback(() => close(), [close]);
 
@@ -89,7 +92,7 @@ export function DrawerForeground({ children }: { children: React.ReactNode }) {
       style={[styles.outer, { backgroundColor: theme.solid }, outerStyle]}
       testID="drawer-foreground"
     >
-      <RAnimated.View style={styles.inner}>
+      <RAnimated.View style={[styles.inner, innerStyle]}>
         <SacredBackground variant="gradient" noImage />
         <View
           style={{ flex: 1 }}
@@ -98,7 +101,6 @@ export function DrawerForeground({ children }: { children: React.ReactNode }) {
         >
           {children}
         </View>
-        <RAnimated.View pointerEvents="none" style={[StyleSheet.absoluteFill, styles.veil, veilStyle]} />
         {foregroundBlocked && (
           <GestureDetector gesture={gesture}>
             <View
@@ -162,8 +164,6 @@ export function DrawerEdgeGesture({ enabled, top = 0, children }: { enabled: boo
 const styles = StyleSheet.create({
   outer: {
     flex: 1,
-    borderTopLeftRadius: DRAWER_CORNER_RADIUS,
-    borderBottomLeftRadius: DRAWER_CORNER_RADIUS,
     shadowColor: "#05070D",
     shadowOffset: { width: -6, height: 0 },
     shadowRadius: 18,
@@ -171,11 +171,6 @@ const styles = StyleSheet.create({
   },
   inner: {
     flex: 1,
-    borderTopLeftRadius: DRAWER_CORNER_RADIUS,
-    borderBottomLeftRadius: DRAWER_CORNER_RADIUS,
     overflow: "hidden",
-  },
-  veil: {
-    backgroundColor: "#FFFFFF",
   },
 });

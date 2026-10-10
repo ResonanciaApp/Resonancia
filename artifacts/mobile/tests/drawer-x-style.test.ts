@@ -7,10 +7,9 @@ import {
   createDrawerTransitionController,
   dragProgress,
   drawerOffset,
-  DRAWER_CORNER_RADIUS,
+  foregroundCornerRadius,
   foregroundShadowOpacity,
   foregroundTranslateX,
-  foregroundVeilOpacity,
   menuContentOpacity,
   menuContentTranslateY,
   normalizeRoutePath,
@@ -28,15 +27,16 @@ test("fully open foreground leaves exactly 75 px visible at multiple widths", ()
   }
 });
 
-test("corners are fixed at 50 while menu and other reveal effects remain animated", () => {
-  assert.equal(DRAWER_CORNER_RADIUS, 50);
+test("corner animation is restored while the foreground light layer is removed", () => {
+  assert.equal(foregroundCornerRadius(0), 0);
+  assert.ok(foregroundCornerRadius(0.08) > 20);
+  assert.equal(foregroundCornerRadius(0.2), 50);
+  assert.equal(foregroundCornerRadius(1), 50);
   const foreground = read("../components/DrawerForeground.tsx");
-  assert.match(foreground, /outer: \{[\s\S]*?borderTopLeftRadius: DRAWER_CORNER_RADIUS,[\s\S]*?borderBottomLeftRadius: DRAWER_CORNER_RADIUS/);
-  assert.match(foreground, /inner: \{[\s\S]*?borderTopLeftRadius: DRAWER_CORNER_RADIUS,[\s\S]*?borderBottomLeftRadius: DRAWER_CORNER_RADIUS/);
-  assert.doesNotMatch(foreground, /foregroundCornerRadius|const innerStyle|borderTopLeftRadius: radius/);
-  assert.match(foreground, /<RAnimated.View style=\{styles.inner\}>/);
-  assert.equal(foregroundVeilOpacity(1), 0.05);
-  assert.equal(foregroundVeilOpacity(0.5), 0.025);
+  assert.match(foreground, /const radius = foregroundCornerRadius\(p\)/);
+  assert.match(foreground, /const radius = foregroundCornerRadius\(drawerProgress.value\)/);
+  assert.match(foreground, /<RAnimated.View style=\{\[styles.inner, innerStyle\]\}>/);
+  assert.doesNotMatch(foreground, /veilStyle|styles\.veil|foregroundVeilOpacity|backgroundColor: "#FFFFFF"/);
   assert.equal(foregroundShadowOpacity(0), 0);
   assert.ok(foregroundShadowOpacity(0.5) < foregroundShadowOpacity(1));
   assert.equal(menuContentOpacity(0), 0);
@@ -45,7 +45,7 @@ test("corners are fixed at 50 while menu and other reveal effects remain animate
   assert.equal(menuContentTranslateY(0), -7);
   assert.equal(menuContentTranslateY(1), 0);
   // Cierre revierte: mismo progreso, misma geometria.
-  assert.equal(DRAWER_CORNER_RADIUS, 50);
+  assert.equal(foregroundCornerRadius(0), 0);
 });
 
 test("drag progress and release decisions are clamped and directional", () => {
@@ -134,7 +134,7 @@ test("simulated provider closure: close only starts after ready, interrupted clo
   assert.equal(closes, 0, "obsolete close callback ignored");
 });
 
-test("root stacking: static menu behind a single animated foreground, no black veil", () => {
+test("root stacking: static menu behind a single animated foreground, without a light veil", () => {
   const layout = read("../app/_layout.tsx");
   const nav = layout.slice(layout.indexOf("function RootLayoutNav"));
   const order = ["<DrawerMenu />", "<DrawerForeground>", "<NavStack />", "<CreationPanelsOverlay />", "<BibliotecaOverlay />", "<LibraryMixOverlay />", "<DrawerScreenOverlay />", "<ChatOverlay />", "</DrawerForeground>", "<MixerSheet />", "<PremiumPlansOverlay />"];
@@ -146,8 +146,7 @@ test("root stacking: static menu behind a single animated foreground, no black v
   }
   assert.doesNotMatch(layout, /PushWrapper|backgroundColor: "#000"/);
   const fg = read("../components/DrawerForeground.tsx");
-  assert.match(fg, /foregroundVeilOpacity/);
-  assert.match(fg, /backgroundColor: "#FFFFFF"/);
+  assert.doesNotMatch(fg, /foregroundVeilOpacity|styles\.veil|veilStyle|backgroundColor: "#FFFFFF"/);
   assert.doesNotMatch(fg, /useNativeDriver/);
   assert.match(fg, /Gesture\.Exclusive\(pan, tap\)/);
 });
