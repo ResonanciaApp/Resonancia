@@ -12,12 +12,11 @@ const compile = (text: string) => ts.transpileModule(text, {
   compilerOptions: { module: ts.ModuleKind.CommonJS, jsx: ts.JsxEmit.React, esModuleInterop: true },
 }).outputText;
 
-test("emotion widget uses a static translucent background instead of native blur", () => {
+test("emotion widget preserves its original native blur and translucent background", () => {
   const home = source("../app/(tabs)/inicio8.tsx");
   const widget = home.slice(home.indexOf("function InicioEmotionWidget("), home.indexOf("type InicioMoodRecommendationsProps"));
   assert.ok(widget.length > 0);
-  assert.doesNotMatch(widget, /BlurView|intensity=|experimentalBlurMethod/);
-  assert.match(widget, /<View\s+pointerEvents="none"\s+style=\{styles.inicio2HeroEmotionGlass\}/);
+  assert.match(widget, /<BlurView\s+pointerEvents="none"\s+intensity=\{38\}\s+tint="light"\s+experimentalBlurMethod="dimezisBlurView"\s+style=\{styles.inicio2HeroEmotionGlass\}/);
   assert.match(widget, /onPress=\{onOpenMoodPicker\}/);
   assert.match(widget, /testID="inicio-add-emotion"/);
   assert.match(widget, /opacity: emotionWidgetOpacity/);
@@ -292,7 +291,9 @@ test("emoji, plus, plus background and widget glass all share one native opacity
   assert.equal(root.props.pointerEvents, "auto");
   const [glass, emoji, plusBackground] = root.props.children.props.children;
   assert.equal(glass.type, Native);
-  assert.equal(glass.props.intensity, undefined);
+  assert.equal(glass.props.intensity, 38);
+  assert.equal(glass.props.tint, "light");
+  assert.equal(glass.props.experimentalBlurMethod, "dimezisBlurView");
   assert.equal(glass.props.style, styles.inicio2HeroEmotionGlass);
   assert.equal(glass.props.pointerEvents, "none");
   assert.equal(emoji.props.children, "😌");

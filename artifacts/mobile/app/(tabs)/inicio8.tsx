@@ -8,6 +8,7 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 import { LinearGradient } from "expo-linear-gradient";
 import { SceneThemeBackground } from "@/components/SceneThemeBackground";
 import { DrawerEdgeGesture } from "@/components/DrawerForeground";
+import { BlurView } from "expo-blur";
 import { SymbolView } from "expo-symbols";
 import { router, useFocusEffect, useRouter } from "expo-router";
 import { openPremiumPlans } from "@/lib/premiumGate";
@@ -2088,8 +2089,11 @@ function InicioEmotionWidget({
           },
         ]}
       >
-        <View
+        <BlurView
           pointerEvents="none"
+          intensity={38}
+          tint="light"
+          experimentalBlurMethod="dimezisBlurView"
           style={styles.inicio2HeroEmotionGlass}
         />
         <Text style={styles.inicio2HeroEmotionEmoji}>😌</Text>
