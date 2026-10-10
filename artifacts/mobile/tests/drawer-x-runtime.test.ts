@@ -80,7 +80,8 @@ test("navigation, overlay hosts and tool providers subscribe only to destination
  * and UI timing. This tests callbacks from production, not a copied controller.
  * Native view rendering, hardware event delivery and pixels still need a device.
  */
-function harness() {
+function harness(deferJS = false) {
+  const jsQueue: Array<() => void> = [];
   let index = 0;
   let dirty = true;
   let currentPath = "/inicio3";
@@ -145,7 +146,11 @@ function harness() {
     __esModule: true, default: { View: "AnimatedView" },
     useSharedValue: (value: number) => React.useRef(new Shared(value)).current,
     useAnimatedStyle: (fn: any) => fn(),
-    runOnJS: (fn: any) => fn,
+    runOnJS: (fn: any) => (...args: any[]) => {
+      if (deferJS) jsQueue.push(() => fn(...args));
+      else fn(...args);
+    },
+    runOnUI: (fn: any) => fn,
     cancelAnimation: (value: Shared) => {
       const animation = value.animation;
       value.animation = undefined;
@@ -227,6 +232,8 @@ function harness() {
   flush();
   return {
     get ctx() { return context; }, flush,
+    drainJS: () => { jsQueue.splice(0).forEach(fn => fn()); flush(); },
+    get queuedJS() { return jsQueue.length; },
     get destinations() { return destinationContext; },
     frame: () => { frames.splice(0).forEach(fn => fn()); flush(); },
     finish: () => { context.drawerProgress.finish(); flush(); },
@@ -246,6 +253,42 @@ function opened() {
   assert.equal(h.ctx.drawerProgress.value, 1);
   return h;
 }
+
+test("UI drag and release continue with the JS queue stalled, without per-frame callbacks", () => {
+  const h = harness(true);
+  const { gestures } = h.component("DrawerEdgeGesture", { enabled: true, children: null });
+  const pan = gestures[0];
+  pan.handlers.onStart();
+  const queuedAtStart = h.queuedJS;
+  for (const x of [20, 60, 140, 180]) {
+    pan.handlers.onUpdate({ translationX: x });
+    assert.equal(h.ctx.drawerProgress.value, x / 315);
+    assert.equal(h.queuedJS, queuedAtStart, "no JS calls per frame");
+  }
+  pan.handlers.onEnd({ translationX: 180, velocityX: 0 });
+  assert.equal(h.ctx.drawerProgress.animation.target, 1, "timing starts without draining JS");
+  h.finish();
+  assert.equal(h.ctx.drawerProgress.value, 1, "UI reaches the endpoint while JS is stalled");
+  h.drainJS();
+  assert.equal(h.ctx.isOpen, true);
+  const strip = h.component("DrawerForeground", { children: null }).gestures.at(-2);
+  strip.handlers.onStart();
+  strip.handlers.onUpdate({ translationX: -200 });
+  strip.handlers.onEnd({ velocityX: -800 });
+  assert.equal(h.ctx.drawerProgress.animation.target, 0);
+  h.finish();
+  assert.equal(h.ctx.drawerProgress.value, 0);
+  h.drainJS();
+  assert.equal(h.ctx.foregroundBlocked, false);
+});
+
+test("interrupted closing cannot navigate after reopening", () => {
+  const h = opened();
+  let navigations = 0;
+  h.ctx.selectFromDrawer({ kind: "route", target: "/profile", run: () => navigations++ });
+  h.ctx.open(); h.flush(); h.finish(); h.frame();
+  assert.equal(navigations, 0);
+});
 
 test("real provider waits for overlay layout, then closes with destination still mounted", () => {
   const h = opened();
@@ -303,14 +346,16 @@ test("Back or closing the newly mounted overlay cancels a pending selection in o
   }
 });
 
-test("route selection waits for navigation and tools wait for real close, including a late reopen", () => {
+test("route selection and tools wait for real close, including a late reopen", () => {
   const h = opened();
   let navigations = 0;
   h.ctx.selectFromDrawer({ kind: "route", target: "/respiracion", run: () => navigations++ });
   h.flush(); h.frame();
+  assert.equal(navigations, 0);
+  assert.equal(h.ctx.drawerProgress.animation.target, 0);
+  h.finish(); h.frame();
   assert.equal(navigations, 1);
-  assert.equal(h.ctx.drawerProgress.animation, undefined);
-  h.path("/respiracion"); h.frame(); h.frame(); h.finish();
+  h.path("/respiracion");
   assert.equal(h.ctx.instantNav, false);
   let tools = 0;
   h.ctx.open(); h.flush(); h.finish();

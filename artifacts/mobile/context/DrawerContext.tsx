@@ -5,6 +5,7 @@ import {
   cancelAnimation,
   Easing,
   runOnJS,
+  runOnUI,
   type SharedValue,
   useSharedValue,
   withTiming,
@@ -25,7 +26,7 @@ export const DRAWER_OVERLAY_PARALLAX_X = -32;
  * Seleccion iniciada desde el menu.
  * - layout: el destino es un overlay; el cierre empieza cuando su contenido
  *   confirma el layout real (acknowledgeDestinationReady("layout")).
- * - route: el destino es una ruta; el cierre empieza cuando cambia la ruta.
+ * - route: la navegación se ejecuta solo cuando termina el cierre.
  * - afterClose: herramientas (Mezclador, Registro de animo) que abren su
  *   propia superficie solo despues de que el cierre termino de verdad.
  */
@@ -125,29 +126,34 @@ export function DrawerProvider({ children }: { children: React.ReactNode }) {
     setIsOpen(value);
   }, []);
 
-  const finishAnimation = useCallback((token: number, target: number) => {
+  const finishAnimation = useCallback((token: number, target: number, version: number) => {
+    if (version !== drawerGestureVersion.value) return;
     if (!controller.isCurrentAnimation(token)) return;
     if (target === 0) setForegroundBlocked(false);
     const pending = afterSettle.current;
     afterSettle.current = null;
     if (pending && pending.token === token) pending.callback?.();
-  }, [controller]);
+  }, [controller, drawerGestureVersion, setForegroundBlocked]);
 
   // Una sola animacion en vuelo: cada inicio invalida el callback anterior,
   // asi un cierre interrumpido nunca ejecuta su accion obsoleta.
   const animateTo = useCallback((target: 0 | 1, callback?: () => void) => {
     const token = controller.beginAnimation();
     afterSettle.current = { token, callback };
-    cancelAnimation(drawerProgress);
-    const duration = settleDuration(drawerProgress.value, target);
-    drawerProgress.value = withTiming(
-      target,
-      { duration, easing: Easing.out(Easing.cubic) },
-      (finished) => {
-        if (finished) runOnJS(finishAnimation)(token, target);
-      },
-    );
-  }, [controller, drawerProgress, finishAnimation]);
+    const version = drawerGestureVersion.value;
+    runOnUI((destination: 0 | 1, animationToken: number, commandVersion: number) => {
+      "worklet";
+      if (commandVersion !== drawerGestureVersion.value) return;
+      cancelAnimation(drawerProgress);
+      drawerProgress.value = withTiming(
+        destination,
+        { duration: settleDuration(drawerProgress.value, destination), easing: Easing.out(Easing.cubic) },
+        (finished) => {
+          if (finished) runOnJS(finishAnimation)(animationToken, destination, commandVersion);
+        },
+      );
+    })(target, token, version);
+  }, [controller, drawerGestureVersion, drawerProgress, finishAnimation]);
 
   const open = useCallback(() => {
     drawerGestureVersion.value += 1;
@@ -182,11 +188,37 @@ export function DrawerProvider({ children }: { children: React.ReactNode }) {
     // Do not mount a touch shield (or rerender Inicio) underneath an active finger.
   }, [controller, drawerGestureVersion, drawerProgress]);
 
+  const recordDragSettle = useCallback((shouldOpen: boolean, version: number) => {
+    if (version !== drawerGestureVersion.value) return;
+    controller.cancelSelection();
+    controller.beginAnimation();
+    afterSettle.current = null;
+    setInstantNav(false);
+    setForegroundBlocked(true);
+    setOpenState(shouldOpen);
+  }, [controller, drawerGestureVersion, setOpenState, setForegroundBlocked]);
+
+  const finishDragSettle = useCallback((target: number, version: number) => {
+    if (version !== drawerGestureVersion.value) return;
+    if (target === 0) setForegroundBlocked(false);
+  }, [drawerGestureVersion, setForegroundBlocked]);
+
+  // Called directly by gesture worklets: JS bookkeeping must never be on the
+  // critical path between finger release and the next animated frame.
   const settleDrawerDrag = useCallback((shouldOpen: boolean, version?: number) => {
+    "worklet";
     if (version !== undefined && version !== drawerGestureVersion.value) return;
-    if (shouldOpen) open();
-    else close();
-  }, [close, drawerGestureVersion, open]);
+    const currentVersion = drawerGestureVersion.value;
+    const target = shouldOpen ? 1 : 0;
+    cancelAnimation(drawerProgress);
+    drawerProgress.value = withTiming(target, {
+      duration: settleDuration(drawerProgress.value, target),
+      easing: Easing.out(Easing.cubic),
+    }, (finished) => {
+      if (finished) runOnJS(finishDragSettle)(target, currentVersion);
+    });
+    runOnJS(recordDragSettle)(shouldOpen, currentVersion);
+  }, [drawerGestureVersion, drawerProgress, finishDragSettle, recordDragSettle]);
 
   const acknowledgeDestinationReady = useCallback((source: DrawerReadySource, target?: string) => {
     const token = controller.acknowledge(source, target);
@@ -202,12 +234,18 @@ export function DrawerProvider({ children }: { children: React.ReactNode }) {
   const selectFromDrawer = useCallback((selection: DrawerSelection) => {
     if (!isOpenRef.current) return; // evita selecciones repetidas
     drawerGestureVersion.value += 1;
-    if (selection.kind === "afterClose") {
+    if (selection.kind === "afterClose" || selection.kind === "route") {
       const token = controller.cancelSelection();
       closeInternal(() => {
-        setInstantNav(false);
+        setInstantNav(selection.kind === "route");
         requestAnimationFrame(() => {
-          if (controller.isCurrentSelection(token)) selection.run();
+          if (!controller.isCurrentSelection(token)) return;
+          if (selection.kind === "route" && selection.target
+            && normalizeRoutePath(selection.target) === normalizeRoutePath(pathnameRef.current)) {
+            setInstantNav(false);
+            return;
+          }
+          selection.run();
         });
       });
       return;
@@ -219,24 +257,13 @@ export function DrawerProvider({ children }: { children: React.ReactNode }) {
       selection.run();
       return;
     }
-    setInstantNav(true);
-    requestAnimationFrame(() => {
-      if (!controller.isPendingSelection(token)) return;
-      if (
-        selection.target
-        && normalizeRoutePath(selection.target) === normalizeRoutePath(pathnameRef.current)
-      ) {
-        acknowledgeDestinationReady("route");
-        return;
-      }
-      selection.run();
-    });
   }, [acknowledgeDestinationReady, closeInternal, controller, drawerGestureVersion, setOpenState]);
 
   // La ruta real cambio: el destino ya esta montado en la superficie frontal.
   useEffect(() => {
     if (pathnameRef.current === pathname) return;
     pathnameRef.current = pathname;
+    setInstantNav(false);
     acknowledgeDestinationReady("route");
   }, [acknowledgeDestinationReady, pathname]);
 
