@@ -6,7 +6,7 @@ import ts from "typescript";
 
 const source = readFileSync(new URL("../components/ProfileScreenBase.tsx", import.meta.url), "utf8");
 const ast = ts.createSourceFile("profile.tsx", source, ts.ScriptTarget.Latest, true, ts.ScriptKind.TSX);
-test("avatar hero uses the same image transition as playlist covers without remounting on selection", () => {
+test("avatar hero is immediately visible without fading or remounting, leaving playlist cover transitions unchanged", () => {
   const heroes: ts.JsxSelfClosingElement[] = [];
   function visit(node: ts.Node) {
     if (ts.isJsxSelfClosingElement(node) && node.tagName.getText(ast) === "Image"
@@ -16,7 +16,7 @@ test("avatar hero uses the same image transition as playlist covers without remo
   visit(ast);
   assert.equal(heroes.length, 2); // Editorial avatar and uploaded photo.
   for (const hero of heroes) {
-    assert.match(hero.attributes.getText(ast), /transition=\{IMAGE_TRANSITION\}/);
+    assert.match(hero.attributes.getText(ast), /transition=\{0\}/);
     assert.equal(hero.attributes.properties.some((attribute) => ts.isJsxAttribute(attribute) && attribute.name.getText(ast) === "key"), false);
   }
   assert.match(source, /import \{ IMAGE_TRANSITION \} from "@\/constants\/imagePlaceholder"/);
@@ -82,6 +82,14 @@ test("photo upload is an icon-only 43px circle 10px to the right of X, with cele
   assert.equal(celebration.height, 43);
   assert.match(header, /setGoldenAvatarVisible\(true\)/);
   assert.match(header, /name="party-popper"/);
+  assert.equal(findStyle("accountCoverHeader").minHeight, 63);
+  assert.equal(findStyle("accountCoverHeader").paddingTop, 20);
+  for (const name of ["accountCoverCloseButton", "accountCoverUploadButton", "accountCoverCelebrationButton"]) {
+    assert.equal(findStyle(name).top, 20);
+  }
+  const hero = source.slice(source.indexOf("<View style={styles.accountCoverPreviewSlot}>"), source.indexOf("<View style={styles.accountCoverPresetGrid}>"));
+  assert.equal((hero.match(/transition=\{0\}/g) ?? []).length, 2);
+  assert.doesNotMatch(hero, /IMAGE_TRANSITION/);
   assert.equal(findStyle("accountCoverTitle").textAlign, "center");
   assert.equal(findStyle("accountCoverCloseButton").left, 0);
   assert.equal(findStyle("accountCoverCloseButton").right, undefined);

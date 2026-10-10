@@ -20,7 +20,7 @@ function harness(themeId: keyof typeof SCENE_THEMES) {
   };
   const mocks: Record<string, any> = {
     react: React,
-    "react-native": { View: Native, Animated: { View: Native }, Pressable: Native,
+    "react-native": { View: Native, ScrollView: Native, Animated: { View: Native }, Pressable: Native,
       Text: (props: any) => { texts.push(props.children); return React.createElement(Native, props); },
       StyleSheet: { create: (s: any) => s, absoluteFill: {}, absoluteFillObject: { position: "absolute", top: 0, left: 0, right: 0, bottom: 0 } } },
     "@expo/vector-icons": { Feather: Native },
@@ -37,14 +37,34 @@ function harness(themeId: keyof typeof SCENE_THEMES) {
   return { ...module.exports, nodes, texts, gradients };
 }
 
-test("Avatar dorado shows only its title, shares the native host and can close by X or scrim in every theme", () => {
+test("Avatar dorado explains the unique prize, shares the native host and can close by X or scrim in every theme", () => {
   assert.doesNotMatch(golden, /<Modal\b/);
   for (const id of ["tibet", "cloudy", "natural", "pleyades"] as const) {
     const h = harness(id);
     let closes = 0;
     const props = { motion: { rendered: true, sheetY: 0, backdropOpacity: 0.62 }, onClose: () => closes++ };
     renderToStaticMarkup(React.createElement(h.GoldenAvatarSheet, props));
-    assert.deepEqual(h.texts, ["Avatar dorado"]);
+    assert.ok(h.texts.includes("Avatar dorado"));
+    assert.ok(h.texts.includes("?"));
+    assert.match(h.texts.filter((text: unknown) => typeof text === "string").join(" "), /avatar dorado/i);
+    assert.ok(h.nodes.has("golden-avatar-description"));
+    assert.match(h.nodes.get("golden-avatar-description").children, /único avatar dorado: el avatar premiado/);
+    const heroStyle = h.nodes.get("golden-avatar-hero-circle").style;
+    assert.equal(heroStyle.width, 115.5);
+    assert.equal(heroStyle.height, 115.5);
+    assert.equal(heroStyle.backgroundColor, "#000000");
+    assert.equal(h.nodes.get("golden-avatar-question").style.color, "#F9F9F9");
+    const decorations = h.nodes.get("golden-avatar-decorations");
+    assert.equal(decorations.pointerEvents, "none");
+    assert.equal(decorations.importantForAccessibility, "no-hide-descendants");
+    assert.equal(h.nodes.get("golden-avatar-title").style.textAlign, "center");
+    assert.equal(h.nodes.get("golden-avatar-title").style.fontSize, 16);
+    assert.equal(h.nodes.get("golden-avatar-header").style.minHeight, 63);
+    assert.equal(h.nodes.get("golden-avatar-header").style.paddingTop, 20);
+    const closeStyles = Object.assign({}, ...h.nodes.get("golden-avatar-close").style);
+    assert.equal(closeStyles.left, 0);
+    assert.equal(closeStyles.top, 20);
+    assert.equal(closeStyles.width, 43);
     h.nodes.get("golden-avatar-close").onPress();
     h.nodes.get("golden-avatar-backdrop-close").onPress();
     assert.equal(closes, 2);
@@ -91,5 +111,5 @@ test("both avatar overlays reuse Vuelve a ti timing and retain their host throug
   assert.match(motion, /toValue: 0,\s+duration: 460/);
   assert.match(motion, /if \(finished\)[\s\S]*?setRendered\(false\)/);
   assert.match(profile, /useGrowthJourneySheetMotion\(accountPhotoPickerVisible, height \* 0.85\)/);
-  assert.match(profile, /useGrowthJourneySheetMotion\(goldenAvatarVisible && accountPhotoPickerVisible, 320\)/);
+  assert.match(profile, /useGrowthJourneySheetMotion\(goldenAvatarVisible && accountPhotoPickerVisible, height \* 0.85\)/);
 });

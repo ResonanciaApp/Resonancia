@@ -155,3 +155,4 @@
 - [Velocidad de apertura de paneles](sheet-opening-geometry.md) — igualar el resorte no basta: comparar el recorrido visible desde la altura real del panel
 - [Compartir Frase del día](daily-quote-sharing.md) — tarjeta con marca y autor; no inventar enlaces; Messenger iOS comparte PNG mediante la hoja del sistema
 - [Bloqueo editorial de avatares](profile-avatar-editorial-lock.md) — manual y solo Perfil; bloquea nuevas elecciones, conserva las ya confirmadas y no conecta recompensas automáticamente
+- [Avatar dorado](golden-avatar-prize.md) — hay un único avatar premiado entre los desbloqueables; no inventar su identidad, condiciones ni premio

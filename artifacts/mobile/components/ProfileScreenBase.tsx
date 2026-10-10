@@ -592,7 +592,7 @@ export function ProfileScreenBase({
   const [accountPhotoPickerVisible, setAccountPhotoPickerVisible] = useState(false);
   const avatarPickerMotion = useGrowthJourneySheetMotion(accountPhotoPickerVisible, height * 0.85);
   const [goldenAvatarVisible, setGoldenAvatarVisible] = useState(false);
-  const goldenAvatarMotion = useGrowthJourneySheetMotion(goldenAvatarVisible && accountPhotoPickerVisible, 320);
+  const goldenAvatarMotion = useGrowthJourneySheetMotion(goldenAvatarVisible && accountPhotoPickerVisible, height * 0.85);
   const goldenAvatarActive = goldenAvatarVisible || goldenAvatarMotion.rendered;
   const avatarHeaderBackground = getThemeStyleId(activeSceneId) === "cloudy" || activeSceneId === "natural"
     ? "rgba(0,0,0,0.19)" : "rgba(0,0,0,0.16)";
@@ -1237,10 +1237,10 @@ export function ProfileScreenBase({
                     source={accountSelectedProfilePreset.source}
                     style={styles.accountCoverPreview}
                     contentFit="cover"
-                    transition={IMAGE_TRANSITION}
+                    transition={0}
                   />
                 ) : accountPhotoUri ? (
-                  <Image source={{ uri: accountPhotoUri }} style={styles.accountCoverPreview} contentFit="cover" transition={IMAGE_TRANSITION} />
+                  <Image source={{ uri: accountPhotoUri }} style={styles.accountCoverPreview} contentFit="cover" transition={0} />
                 ) : (
                   <View
                     style={[
@@ -2448,7 +2448,8 @@ const styles = StyleSheet.create({
     marginBottom: 4,
   },
   accountCoverHeader: {
-    minHeight: 43,
+    minHeight: 63,
+    paddingTop: 20,
     flexDirection: "row",
     alignItems: "center",
     justifyContent: "center",
@@ -2464,6 +2465,7 @@ const styles = StyleSheet.create({
   accountCoverCloseButton: {
     position: "absolute",
     left: 0,
+    top: 20,
     width: 43,
     height: 43,
     borderRadius: 21.5,
@@ -2488,6 +2490,7 @@ const styles = StyleSheet.create({
   accountCoverUploadButton: {
     position: "absolute",
     left: 53,
+    top: 20,
     zIndex: 1,
     width: 43,
     height: 43,
@@ -2500,6 +2503,7 @@ const styles = StyleSheet.create({
   accountCoverCelebrationButton: {
     position: "absolute",
     right: 0,
+    top: 20,
     zIndex: 1,
     width: 43,
     height: 43,
