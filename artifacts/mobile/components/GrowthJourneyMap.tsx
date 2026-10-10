@@ -106,7 +106,7 @@ export function GrowthJourneyMap({ width }: { width: number }) {
               {s.label}
             </Text>
             {active && (
-              <Text testID="growth-map-world-floracion" style={[styles.worldLabel, { color: colors.foreground }]}>
+              <Text testID="growth-map-world-floracion" style={[styles.worldLabel, { color: colors.accent }]}>
                 Primer mundo
               </Text>
             )}
@@ -125,6 +125,6 @@ const styles = StyleSheet.create({
   imageOverlay: { backgroundColor: "rgba(0,0,0,0.4)" },
   lockOverlay: { alignItems: "center", justifyContent: "center" },
   label: { marginTop: 6, fontFamily: "Manrope", fontSize: 11, lineHeight: 16, fontWeight: "700", textAlign: "center" },
-  bloomLabel: { fontSize: 15, lineHeight: 20 },
-  worldLabel: { marginTop: 2, fontFamily: "Manrope", fontSize: 11, lineHeight: 16, fontWeight: "500", textAlign: "center" },
+  bloomLabel: { fontSize: 16, lineHeight: 20 },
+  worldLabel: { marginTop: 2, fontFamily: "Manrope", fontSize: 10, lineHeight: 16, fontWeight: "500", textAlign: "center" },
 });

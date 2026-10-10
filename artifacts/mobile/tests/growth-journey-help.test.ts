@@ -113,7 +113,7 @@ function uiHarness(themeId = "indigo") {
     "react-native-safe-area-context": { useSafeAreaInsets: () => ({ top: 40, bottom: 20 }) },
     "@/context/SceneThemeContext": { useSceneTheme: () => ({ theme: { id: themeId, gradient: ["#060A0F", "#111122"] } }) },
     "@/config/scene-themes": { getThemeStyleId },
-    "@/hooks/useColors": { useColors: () => ({ foreground: "#FBFBFB" }) },
+    "@/hooks/useColors": { useColors: () => ({ foreground: "#FBFBFB", accent: "#9ADAA9" }) },
     "@/constants/colors": { NAVIGATION_HELP_ICON_COLOR: "#F9F9F9", MEMBERSHIP_AURORA: { premium: { accent: "#BE9650" } }, CLOUDY_GROWTH_STAGE_LABEL_COLOR, POSITIONED_DAY_GRADIENT },
     "@/components/GrowthJourney": { GrowthJourney: (props: any) => React.createElement(
       native.Pressable, { testID: "test-open-intention", onPress: () => props.onStagePress("intencion") }, "PRIMER MUNDO",
@@ -370,11 +370,13 @@ test("the map follows a perfect circle without connecting El Gran Despertar back
       assert.equal(iconStyle.borderWidth, 0);
       assert.equal(iconStyle.height, i === 0 ? 93 : 52);
       assert.equal(iconStyle.width, i === 0 ? 93 : 52);
-      assert.equal(flatten(h.nodes.get(`growth-map-label-${ids[i]}`).style).fontSize, i === 0 ? 15 : 11);
+      assert.equal(flatten(h.nodes.get(`growth-map-label-${ids[i]}`).style).fontSize, i === 0 ? 16 : 11);
       if (i === 0) {
         const world = h.nodes.get("growth-map-world-floracion");
         assert.equal(world.children, "Primer mundo");
         assert.equal(flatten(world.style).textAlign, "center");
+        assert.equal(flatten(world.style).fontSize, 10);
+        assert.equal(flatten(world.style).color, "#9ADAA9");
         assert.ok(html.indexOf("Floración") < html.indexOf(">Primer mundo<"));
         assert.equal(flatten(h.nodes.get(`growth-map-label-${ids[i]}`).style).lineHeight, 20);
         assert.match(node.accessibilityLabel, /Primer mundo/);
