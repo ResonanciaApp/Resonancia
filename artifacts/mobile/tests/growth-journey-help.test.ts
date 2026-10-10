@@ -120,6 +120,10 @@ function uiHarness() {
       helpProps = props;
       return React.createElement("div", { "data-help-visible": String(props.visible) });
     } },
+    "@/components/GrowthJourneyMap": {
+      GROWTH_MAP_HEIGHT: 330,
+      GrowthJourneyMap: (props: any) => React.createElement(Native, { ...props, testID: "growth-journey-map" }),
+    },
     "@/hooks/useGrowthJourneySheetMotion": {
       GROWTH_SHEET_SPRING: { tension: 55, friction: 8, useNativeDriver: true },
       useGrowthJourneySheetMotion: (visible: boolean) => {
@@ -187,9 +191,9 @@ test("Tu camino centers a 13px two-line intro, lowers the whole journey another 
   assert.equal(h.presses.get("growth-journey-help").style.width, 43);
   assert.doesNotMatch(html, />\?</);
   assert.equal(flatten(h.nodes.get("growth-journey-intro-space").style).height, 183); // previous 123px plus 60px, including the centered intro
-  h.help.onDescriptionLayout(46);
+  assert.equal(h.help.onDescriptionLayout, undefined);
   render();
-  assert.equal(flatten(h.nodes.get("growth-journey-intro-space").style).height, 160); // previous 100px plus 60px
+  assert.equal(flatten(h.nodes.get("growth-journey-intro-space").style).height, 183); // no coupling to map content
   h.presses.get("growth-journey-help").onPress();
   render();
   assert.equal(h.help.visible, true);
@@ -243,23 +247,22 @@ test("Intención opens inside the same Modal; close and back preserve Tu camino,
   assert.doesNotMatch(render(), /data-testid="growth-stage-detail"/);
 });
 
-test("help uses half the screen, shows the original icon above its description, and dismisses by tap or drag", () => {
+test("the map replaces the old help icon and paragraph, fits its sheet and dismisses by tap or drag", () => {
   const h = uiHarness();
   const { GrowthJourneyHelpSheet } = load("../components/GrowthJourneyHelpSheet.tsx", h.imports);
   let closes = 0;
-  let measured = 0;
   const render = (visible: boolean) => {
     h.reset();
     return renderToStaticMarkup(GrowthJourneyHelpSheet({
-      visible, onClose: () => closes++, onDescriptionLayout: (height: number) => measured = height,
+      visible, onClose: () => closes++,
     }));
   };
   const html = render(true);
-  assert.match(html, /data-testid="growth-help-sheet" data-height="400"/);
-  assert.ok(html.indexOf("trending-up") < html.indexOf("Cada día de racha lograda en Resonancia"));
-  assert.match(html, /te acerca más a ti mismo y a tu florecimiento espiritual/);
-  h.layouts[0]({ nativeEvent: { layout: { height: 69 } } });
-  assert.equal(measured, 69);
+  assert.match(html, /data-testid="growth-help-sheet" data-height="426"/);
+  assert.match(html, /data-testid="growth-journey-map"/);
+  assert.equal(h.nodes.get("growth-journey-map").width, 368);
+  assert.doesNotMatch(html, /trending-up|Cada día de racha lograda|florecimiento espiritual/);
+  assert.equal(h.layouts.length, 0);
   assert.equal(h.pan.onMoveShouldSetPanResponder(null, { dx: 30, dy: 10 }), false);
   assert.equal(h.pan.onMoveShouldSetPanResponder(null, { dx: 0, dy: 20 }), true);
   h.pan.onPanResponderMove(null, { dy: 32 });
@@ -274,6 +277,59 @@ test("help uses half the screen, shows the original icon above its description, 
   assert.match(render(false), /data-pointer-events="none"/);
   const source = readFileSync(new URL("../components/GrowthJourneyHelpSheet.tsx", import.meta.url), "utf8");
   assert.doesNotMatch(source, /<Modal/);
+});
+
+test("the treasure map has five ordered stops in an irregular loop, only Floración active, and uses the editorial final phase image", () => {
+  const h = uiHarness();
+  const labels = ["Floración", "El ascenso", "Iluminación", "La llegada", "El Gran Despertar"];
+  const ids = ["floracion", "ascenso", "iluminacion", "llegada", "despertar"];
+  const finalPhase = { id: "editorial-final", group: "florecimiento", name: "Final", image: "final.webp" };
+  const bundledFinal = { id: "expansion", name: "Expansión", image: "bundled-final.png" };
+  let levels = [
+    { id: "intencion", group: "florecimiento", image: "start.webp" },
+    finalPhase,
+    { id: "ascenso-final", group: "ascenso", image: "ascent.webp" },
+  ];
+  const paths: any[] = [];
+  const Node = h.imports["react-native"].View;
+  const { GrowthJourneyMap, GROWTH_MAP_HEIGHT } = load("../components/GrowthJourneyMap.tsx", {
+    ...h.imports,
+    "react-native-svg": { __esModule: true, default: Node, Path: (props: any) => { paths.push(props); return React.createElement(Node, props); } },
+    "@/components/GrowthJourney": {
+      GrowthLevelImage: (props: any) => React.createElement(Node, { ...props, testID: "map-final-phase-art" }),
+    },
+    "@/context/GrowthContext": { useGrowth: () => ({ levels }) },
+    "@/data/growthLevels": { allGrowthLevels: [bundledFinal] },
+  });
+  assert.equal(GROWTH_MAP_HEIGHT, 330);
+  for (const width of [288, 343, 370, 488]) {
+    h.nodes.clear();
+    paths.length = 0;
+    const html = renderToStaticMarkup(React.createElement(GrowthJourneyMap, { width }));
+    for (let i = 0; i < ids.length; i++) {
+      const node = h.nodes.get(`growth-map-stop-${ids[i]}`);
+      assert.equal(node.accessibilityState.disabled, i !== 0);
+      assert.equal(node.accessibilityState.selected, i === 0);
+      assert.match(node.accessibilityLabel, new RegExp(`${i + 1}\\. ${labels[i]}`));
+      const style = flatten(node.style);
+      assert.ok(style.left >= 0 && style.left + style.width <= width);
+      assert.ok(style.top >= 0 && style.top + (i === 0 ? 76 : 46) + 38 <= GROWTH_MAP_HEIGHT);
+      if (i) assert.ok(html.indexOf(labels[i - 1]) < html.indexOf(labels[i]));
+    }
+    assert.equal(h.nodes.get("map-final-phase-art").level, finalPhase);
+    assert.equal(h.nodes.get("growth-journey-map-route").pointerEvents, "none");
+    assert.equal(paths[0].strokeDasharray, "2 8");
+    const segments = paths[0].d.match(/[MC][^MC]+/g);
+    assert.equal(segments.length, 5);
+    const positions = [[0.27, 0.2], [0.75, 0.13], [0.79, 0.5], [0.5, 0.72], [0.22, 0.52]];
+    for (let i = 0; i < segments.length; i++) {
+      const numbers = segments[i].slice(1).trim().split(/[ ,]+/).map(Number);
+      assert.deepEqual(numbers.slice(-2), [positions[i][0] * width, positions[i][1] * GROWTH_MAP_HEIGHT]);
+    }
+  }
+  levels = [];
+  renderToStaticMarkup(React.createElement(GrowthJourneyMap, { width: 343 }));
+  assert.equal(h.nodes.get("map-final-phase-art").level, bundledFinal);
 });
 
 test("the help overlay retains its original spring entrance, backdrop fade and animated exit", () => {

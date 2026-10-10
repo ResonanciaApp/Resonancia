@@ -1,31 +1,28 @@
-import { Feather } from "@expo/vector-icons";
 import { LinearGradient } from "expo-linear-gradient";
 import React, { useMemo } from "react";
 import {
-  Animated, PanResponder, Pressable, ScrollView, StyleSheet, Text,
+  Animated, PanResponder, Pressable, ScrollView, StyleSheet,
   useWindowDimensions, View,
 } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 
-import { useSceneTheme } from "@/context/SceneThemeContext";
-import { useColors } from "@/hooks/useColors";
-import { GROWTH_SHEET_SPRING, useGrowthJourneySheetMotion } from "@/hooks/useGrowthJourneySheetMotion";
+import { GROWTH_MAP_HEIGHT, GrowthJourneyMap } from "@/components/GrowthJourneyMap";
 
-const DESCRIPTION = "Cada día de racha lograda en Resonancia te acerca más a ti mismo y a tu florecimiento espiritual.";
+import { useSceneTheme } from "@/context/SceneThemeContext";
+import { GROWTH_SHEET_SPRING, useGrowthJourneySheetMotion } from "@/hooks/useGrowthJourneySheetMotion";
 
 /** An in-tree sheet: shares Tu camino's native Modal instead of nesting Modals. */
 export function GrowthJourneyHelpSheet({
-  visible, onClose, onDescriptionLayout,
+  visible, onClose,
 }: {
   visible: boolean;
   onClose: () => void;
-  onDescriptionLayout: (height: number) => void;
 }) {
-  const { height } = useWindowDimensions();
+  const { height, width } = useWindowDimensions();
   const insets = useSafeAreaInsets();
-  const colors = useColors();
   const { theme } = useSceneTheme();
-  const sheetHeight = height / 2;
+  // Raised from height / 2 so the 330pt map plus handle fits legibly.
+  const sheetHeight = Math.min(height * 0.8, GROWTH_MAP_HEIGHT + 44 + 32 + Math.max(insets.bottom, 16));
   const { rendered, sheetY, backdropOpacity } = useGrowthJourneySheetMotion(visible, sheetHeight);
   const pan = useMemo(() => PanResponder.create({
     onMoveShouldSetPanResponder: (_, gesture) =>
@@ -100,15 +97,7 @@ export function GrowthJourneyHelpSheet({
           contentContainerStyle={styles.content}
           showsVerticalScrollIndicator={false}
         >
-          <View style={styles.progressIcon} accessible={false}>
-            <Feather name="trending-up" size={26} color={colors.foreground} />
-          </View>
-          <Text
-            style={[styles.description, { color: colors.foreground }]}
-            onLayout={(event) => onDescriptionLayout(event.nativeEvent.layout.height)}
-          >
-            {DESCRIPTION}
-          </Text>
+          <GrowthJourneyMap width={Math.min(width, 520) - 32} />
         </ScrollView>
       </Animated.View>
     </View>
@@ -131,13 +120,4 @@ const styles = StyleSheet.create({
   },
   scroll: { flex: 1 },
   content: { flexGrow: 1, justifyContent: "center", alignItems: "center", paddingVertical: 16 },
-  progressIcon: {
-    width: 56, height: 56, borderRadius: 28,
-    backgroundColor: "rgba(255,255,255,0.1)",
-    alignItems: "center", justifyContent: "center",
-  },
-  description: {
-    marginHorizontal: 25, marginTop: 20, textAlign: "center",
-    fontFamily: "Manrope", fontSize: 15, lineHeight: 23,
-  },
 });

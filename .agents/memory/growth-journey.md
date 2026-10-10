@@ -196,3 +196,16 @@ La frase y la descripción larga del detalle son contenido editorial independien
 **Why:** El usuario pidió editar los detalles de cada fase sin mantener dos títulos ni dos rangos que puedan contradecirse. Esto amplía la autorización anterior limitada a Intención a todas las fases de ambos grupos, incluidas las creadas desde Admin.
 
 **How to apply:** Reutilizar la plantilla aprobada para todas las fases, sin inventar descripciones largas. Distinguir datos antiguos ausentes de un borrado explícito: la adopción inicial no debe volver a rellenar un campo que el editor dejó vacío.
+
+El mapa panorámico muestra cinco grandes recorridos: Floración, El ascenso,
+Iluminación, La llegada y El Gran Despertar. Por ahora solo Floración está
+disponible, independientemente del progreso personal; su imagen es la fase
+final de la primera serie editorial.
+
+**Why:** El usuario pidió esta disponibilidad explícita para el mapa, aunque
+el recorrido detallado ya contiene fases de Ascenso. No equivale a revocar
+progreso, renombrar fases del catálogo ni bloquear recompensas reales.
+
+**How to apply:** Distinguir las paradas panorámicas de las fases internas.
+Cambiar la disponibilidad del mapa solo por una nueva decisión editorial;
+no inferirla automáticamente de días acumulados ni de premios históricos.

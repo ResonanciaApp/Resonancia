@@ -19,11 +19,8 @@ import { NAVIGATION_HELP_ICON_COLOR } from "@/constants/colors";
 import { useSceneTheme } from "@/context/SceneThemeContext";
 import { useColors } from "@/hooks/useColors";
 
-// Former intro: icon (45 + 56), paragraph top (20), divider (30 + 1 + 29).
-// Retain its measured height minus the requested rise, keeping the timeline in flow.
-const FORMER_INTRO_FIXED_HEIGHT = 181;
-const FIRST_STAGE_RISE = 184;
-const FIRST_STAGE_DROP = 117;
+// Stable intro spacing (formerly 181 + 69 - 184 + 117), independent of the help sheet.
+const INTRO_SPACE_HEIGHT = 183;
 
 export function GrowthJourneySheet({
   visible,
@@ -38,7 +35,6 @@ export function GrowthJourneySheet({
   const scrollRef = useRef<ScrollView>(null);
   const [helpVisible, setHelpVisible] = useState(false);
   const [detailStageId, setDetailStageId] = useState<string | null>(null);
-  const [descriptionHeight, setDescriptionHeight] = useState(69);
   const closeHelp = useCallback(() => setHelpVisible(false), []);
   const closeDetail = useCallback(() => setDetailStageId(null), []);
   useEffect(() => {
@@ -120,7 +116,7 @@ export function GrowthJourneySheet({
           </View>
           <View
             testID="growth-journey-intro-space"
-            style={[styles.introSpace, { height: FORMER_INTRO_FIXED_HEIGHT + descriptionHeight - FIRST_STAGE_RISE + FIRST_STAGE_DROP }]}
+            style={[styles.introSpace, { height: INTRO_SPACE_HEIGHT }]}
           >
             <Text
               testID="growth-journey-intro"
@@ -144,7 +140,6 @@ export function GrowthJourneySheet({
         <GrowthJourneyHelpSheet
           visible={visible && helpVisible}
           onClose={closeHelp}
-          onDescriptionLayout={setDescriptionHeight}
         />
       </LinearGradient>
     </Modal>
