@@ -8,7 +8,8 @@ export function validateGrowthOrder(stages: GrowthStageRecord[]) {
   const ids = new Set<string>();
   const rewards = new Set<string>();
   let previousEnd = -1;
-  let ascentStarted = false;
+  const completedGroups = new Set<string>();
+  let lastGroup: string | undefined;
   for (const stage of stages) {
     if (ids.has(stage.id)) throw new GrowthError(400, "Los IDs de etapas deben ser únicos");
     ids.add(stage.id);
@@ -16,10 +17,11 @@ export function validateGrowthOrder(stages: GrowthStageRecord[]) {
     if (stage.startDay > stage.endDay || stage.startDay <= previousEnd) {
       throw new GrowthError(400, `Revisa los días de ${stage.name}: los rangos deben estar ordenados y no superponerse`);
     }
-    if (ascentStarted && stage.group === "florecimiento") {
-      throw new GrowthError(400, "Florecimiento debe preceder a El ascenso");
+    if (stage.group !== lastGroup) {
+      if (completedGroups.has(stage.group)) throw new GrowthError(400, "Las fases de cada mundo deben quedar juntas");
+      if (lastGroup) completedGroups.add(lastGroup);
+      lastGroup = stage.group;
     }
-    ascentStarted ||= stage.group === "ascenso";
     previousEnd = stage.endDay;
     for (const reward of stage.rewards) {
       if (rewards.has(reward.id)) throw new GrowthError(400, "Los IDs de candados deben ser únicos");

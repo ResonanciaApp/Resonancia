@@ -1,6 +1,7 @@
 import { describe, it, expect } from "vitest";
 import { growthSeed } from "./growthSeed";
 import { validateGrowthOrder, reconcileReached, growthIdentity } from "./growthRules";
+import { adoptLegacyGrowthWorlds, validateGrowthWorlds } from "./growthWorlds";
 describe("Tu camino editorial y progreso", () => {
   it("precarga 17 etapas originales y cuatro candados de 5", () => {
     expect(growthSeed).toHaveLength(17);
@@ -13,7 +14,7 @@ describe("Tu camino editorial y progreso", () => {
     expect(() => validateGrowthOrder(growthSeed.slice(0, 1))).not.toThrow();
     expect(() => validateGrowthOrder([growthSeed[0], growthSeed[0]])).toThrow();
     expect(() => validateGrowthOrder([{ ...growthSeed[0], endDay: 4 }, growthSeed[1]])).toThrow();
-    expect(() => validateGrowthOrder([growthSeed[9], { ...growthSeed[0], startDay: 100, endDay: 101 }])).toThrow();
+    expect(() => validateGrowthWorlds(adoptLegacyGrowthWorlds(growthSeed), [growthSeed[9], { ...growthSeed[0], startDay: 100, endDay: 101 }])).toThrow();
   });
   it("usa el día inicial, conserva avances al cortar la racha y soporta el último nivel", () => {
     const reached = reconcileReached(growthSeed, [], 15);

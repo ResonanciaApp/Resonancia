@@ -8,21 +8,15 @@ import { CLOUDY_GROWTH_STAGE_LABEL_COLOR, POSITIONED_DAY_GRADIENT } from "@/cons
 import { useGrowth } from "@/context/GrowthContext";
 import { useSceneTheme } from "@/context/SceneThemeContext";
 import { useColors } from "@/hooks/useColors";
-import { allGrowthLevels, type GrowthLevel } from "@/data/growthLevels";
+import { resolveAvatarUrl } from "@/lib/avatar";
+import { GROWTH_WORLD_TEMPLATES, INITIAL_GROWTH_WORLDS } from "@/utils/growthWorlds";
 
 // Fixed editorial overview: only the first stop is available.
-const STOPS = [
-  { id: "floracion", label: "Floración" },
-  { id: "ascenso", label: "El ascenso" },
-  { id: "iluminacion", label: "Iluminación" },
-  { id: "llegada", label: "La llegada" },
-  { id: "despertar", label: "El Gran Despertar" },
-] as const;
-
 const ACTIVE = 93;
 const LOCKED = 52;
 const LABEL_W = 104;
 const LOCKED_ART: Record<string, number> = {
+  florecimiento: require("../assets/images/growth/08-expansion.png"),
   ascenso: require("../assets/images/growth/map-ascenso.webp"),
   iluminacion: require("../assets/images/growth/map-iluminacion.webp"),
   llegada: require("../assets/images/growth/map-llegada.webp"),
@@ -37,16 +31,14 @@ export function GrowthJourneyMap({ width }: { width: number }) {
   const worldColor = theme.id === "natural" ? "#E5FFDB"
     : getThemeStyleId(theme.id) === "cloudy" ? CLOUDY_GROWTH_STAGE_LABEL_COLOR
     : POSITIONED_DAY_GRADIENT[0];
-  const { levels } = useGrowth();
-  const bloom = levels.filter((l) => l.group === "florecimiento");
-  const last: GrowthLevel | undefined = bloom[bloom.length - 1]
-    ?? allGrowthLevels.find((l) => l.id === "expansion");
+  const { worlds = INITIAL_GROWTH_WORLDS } = useGrowth();
+  const stops = [...worlds, ...GROWTH_WORLD_TEMPLATES.filter(template => !worlds.some(world => world.id === template.id))].slice(0, 5);
   const h = GROWTH_MAP_HEIGHT;
   const center = { x: width / 2, y: h / 2 };
   // Equal radii and 72-degree spacing; leave room for images and labels.
   const radius = Math.min(width / 2 - LABEL_W / 2 - 4, 120) + 5;
-  const pts = STOPS.map((_, i) => {
-    const angle = -Math.PI / 2 + i * (2 * Math.PI / STOPS.length);
+  const pts = stops.map((_, i) => {
+    const angle = -Math.PI / 2 + i * (2 * Math.PI / stops.length);
     return { x: center.x + radius * Math.cos(angle), y: center.y + radius * Math.sin(angle) };
   });
   // Follow the same circle clockwise, stopping at El Gran Despertar.
@@ -60,35 +52,38 @@ export function GrowthJourneyMap({ width }: { width: number }) {
       <Svg width={width} height={h} style={StyleSheet.absoluteFill} pointerEvents="none" testID="growth-journey-map-route">
         <Path d={route} stroke={colors.mutedForeground} strokeOpacity={0.55} strokeWidth={2} strokeDasharray="2 8" strokeLinecap="round" fill="none" />
       </Svg>
-      {STOPS.map((s, i) => {
+      {stops.map((s, i) => {
         const active = i === 0;
+        const stopId = s.id === "florecimiento" ? "floracion" : s.id;
+        const bundled = GROWTH_WORLD_TEMPLATES.find(template => template.id === s.id && template.coverUrl === s.coverUrl);
+        const cover = bundled ? LOCKED_ART[s.id] : s.coverUrl;
         const size = active ? ACTIVE : LOCKED;
         const cx = pts[i].x, cy = pts[i].y;
         const left = cx - LABEL_W / 2;
         return (
           <View
             key={s.id}
-            testID={`growth-map-stop-${s.id}`}
+            testID={`growth-map-stop-${stopId}`}
             accessible
-            accessibilityLabel={`${i + 1}. ${s.label}${active ? ", Primer mundo" : ""}, ${active ? "disponible" : "no disponible"}`}
+            accessibilityLabel={`${i + 1}. ${s.name}${active ? ", Primer mundo" : ""}, ${active ? "disponible" : "no disponible"}`}
             accessibilityState={{ disabled: !active, selected: active }}
             style={{ position: "absolute", left, top: cy - size / 2, width: LABEL_W, alignItems: "center" }}
           >
             <View
-              testID={`growth-map-node-${s.id}`}
+              testID={`growth-map-node-${stopId}`}
               style={[
                 styles.node,
                 { width: size, height: size, borderRadius: size / 2 },
                 !active && styles.lockedNode,
               ]}
             >
-              {active && last ? (
-                <GrowthLevelImage level={last} size={size - 4} />
+              {active ? (
+                <GrowthLevelImage level={{ id: `world-cover-${s.id}`, group: s.id, name: s.name, story: "", startDay: 0, endDay: 0, image: cover }} size={size - 4} />
               ) : (
                 <View testID={`growth-map-image-frame-${s.id}`} style={styles.lockedImageFrame}>
                   <Image
                     testID={`growth-map-image-${s.id}`}
-                    source={LOCKED_ART[s.id]}
+                    source={typeof cover === "string" ? { uri: resolveAvatarUrl(cover) ?? cover } : cover}
                     resizeMode="cover"
                     style={styles.lockedImage}
                     accessibilityElementsHidden
@@ -106,11 +101,11 @@ export function GrowthJourneyMap({ width }: { width: number }) {
               )}
             </View>
             <Text
-              testID={`growth-map-label-${s.id}`}
+              testID={`growth-map-label-${stopId}`}
               style={[styles.label, active && styles.bloomLabel, { color: active ? colors.foreground : colors.mutedForeground, opacity: active ? 1 : 0.7 }]}
               numberOfLines={2}
             >
-              {s.label}
+              {s.name}
             </Text>
             {active && (
               <Text testID="growth-map-world-floracion" style={[styles.worldLabel, { color: worldColor }]}>

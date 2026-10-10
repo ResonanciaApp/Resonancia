@@ -8,7 +8,19 @@
 import * as zod from 'zod';
 
 
+export const getGrowthCatalogResponseWorldsItemIdMax = 100;
+
+export const getGrowthCatalogResponseWorldsItemNameMax = 100;
+
+export const getGrowthCatalogResponseWorldsItemDescriptionMax = 2000;
+
+export const getGrowthCatalogResponseWorldsItemCoverUrlMax = 2000;
+
+export const getGrowthCatalogResponseWorldsMax = 5;
+
 export const getGrowthCatalogResponseStagesItemIdMax = 100;
+
+export const getGrowthCatalogResponseStagesItemGroupMax = 100;
 
 export const getGrowthCatalogResponseStagesItemNameMax = 100;
 
@@ -37,9 +49,15 @@ export const getGrowthCatalogResponseStagesItemRewardsMax = 3;
 export const GetGrowthCatalogResponse = zod.object({
   "revision": zod.number(),
   "updatedAt": zod.string(),
+  "worlds": zod.array(zod.object({
+  "id": zod.string().min(1).max(getGrowthCatalogResponseWorldsItemIdMax),
+  "name": zod.string().min(1).max(getGrowthCatalogResponseWorldsItemNameMax),
+  "description": zod.string().max(getGrowthCatalogResponseWorldsItemDescriptionMax),
+  "coverUrl": zod.string().min(1).max(getGrowthCatalogResponseWorldsItemCoverUrlMax)
+})).max(getGrowthCatalogResponseWorldsMax),
   "stages": zod.array(zod.object({
   "id": zod.string().min(1).max(getGrowthCatalogResponseStagesItemIdMax),
-  "group": zod.enum(['florecimiento', 'ascenso']),
+  "group": zod.string().min(1).max(getGrowthCatalogResponseStagesItemGroupMax),
   "name": zod.string().min(1).max(getGrowthCatalogResponseStagesItemNameMax),
   "startDay": zod.number().min(getGrowthCatalogResponseStagesItemStartDayMin).max(getGrowthCatalogResponseStagesItemStartDayMax),
   "endDay": zod.number().min(getGrowthCatalogResponseStagesItemEndDayMin).max(getGrowthCatalogResponseStagesItemEndDayMax),
@@ -58,7 +76,19 @@ export const GetGrowthCatalogResponse = zod.object({
 
 
 
+export const saveGrowthCatalogBodyWorldsItemIdMax = 100;
+
+export const saveGrowthCatalogBodyWorldsItemNameMax = 100;
+
+export const saveGrowthCatalogBodyWorldsItemDescriptionMax = 2000;
+
+export const saveGrowthCatalogBodyWorldsItemCoverUrlMax = 2000;
+
+export const saveGrowthCatalogBodyWorldsMax = 5;
+
 export const saveGrowthCatalogBodyStagesItemIdMax = 100;
+
+export const saveGrowthCatalogBodyStagesItemGroupMax = 100;
 
 export const saveGrowthCatalogBodyStagesItemNameMax = 100;
 
@@ -88,9 +118,15 @@ export const saveGrowthCatalogBodyStagesMax = 200;
 
 export const SaveGrowthCatalogBody = zod.object({
   "revision": zod.number().min(1),
+  "worlds": zod.array(zod.object({
+  "id": zod.string().min(1).max(saveGrowthCatalogBodyWorldsItemIdMax),
+  "name": zod.string().min(1).max(saveGrowthCatalogBodyWorldsItemNameMax),
+  "description": zod.string().max(saveGrowthCatalogBodyWorldsItemDescriptionMax),
+  "coverUrl": zod.string().min(1).max(saveGrowthCatalogBodyWorldsItemCoverUrlMax)
+})).max(saveGrowthCatalogBodyWorldsMax).optional(),
   "stages": zod.array(zod.object({
   "id": zod.string().min(1).max(saveGrowthCatalogBodyStagesItemIdMax),
-  "group": zod.enum(['florecimiento', 'ascenso']),
+  "group": zod.string().min(1).max(saveGrowthCatalogBodyStagesItemGroupMax),
   "name": zod.string().min(1).max(saveGrowthCatalogBodyStagesItemNameMax),
   "startDay": zod.number().min(saveGrowthCatalogBodyStagesItemStartDayMin).max(saveGrowthCatalogBodyStagesItemStartDayMax),
   "endDay": zod.number().min(saveGrowthCatalogBodyStagesItemEndDayMin).max(saveGrowthCatalogBodyStagesItemEndDayMax),
@@ -107,7 +143,19 @@ export const SaveGrowthCatalogBody = zod.object({
 })).max(saveGrowthCatalogBodyStagesMax)
 })
 
+export const saveGrowthCatalogResponseWorldsItemIdMax = 100;
+
+export const saveGrowthCatalogResponseWorldsItemNameMax = 100;
+
+export const saveGrowthCatalogResponseWorldsItemDescriptionMax = 2000;
+
+export const saveGrowthCatalogResponseWorldsItemCoverUrlMax = 2000;
+
+export const saveGrowthCatalogResponseWorldsMax = 5;
+
 export const saveGrowthCatalogResponseStagesItemIdMax = 100;
+
+export const saveGrowthCatalogResponseStagesItemGroupMax = 100;
 
 export const saveGrowthCatalogResponseStagesItemNameMax = 100;
 
@@ -136,9 +184,15 @@ export const saveGrowthCatalogResponseStagesItemRewardsMax = 3;
 export const SaveGrowthCatalogResponse = zod.object({
   "revision": zod.number(),
   "updatedAt": zod.string(),
+  "worlds": zod.array(zod.object({
+  "id": zod.string().min(1).max(saveGrowthCatalogResponseWorldsItemIdMax),
+  "name": zod.string().min(1).max(saveGrowthCatalogResponseWorldsItemNameMax),
+  "description": zod.string().max(saveGrowthCatalogResponseWorldsItemDescriptionMax),
+  "coverUrl": zod.string().min(1).max(saveGrowthCatalogResponseWorldsItemCoverUrlMax)
+})).max(saveGrowthCatalogResponseWorldsMax),
   "stages": zod.array(zod.object({
   "id": zod.string().min(1).max(saveGrowthCatalogResponseStagesItemIdMax),
-  "group": zod.enum(['florecimiento', 'ascenso']),
+  "group": zod.string().min(1).max(saveGrowthCatalogResponseStagesItemGroupMax),
   "name": zod.string().min(1).max(saveGrowthCatalogResponseStagesItemNameMax),
   "startDay": zod.number().min(saveGrowthCatalogResponseStagesItemStartDayMin).max(saveGrowthCatalogResponseStagesItemStartDayMax),
   "endDay": zod.number().min(saveGrowthCatalogResponseStagesItemEndDayMin).max(saveGrowthCatalogResponseStagesItemEndDayMax),
@@ -157,6 +211,8 @@ export const SaveGrowthCatalogResponse = zod.object({
 
 
 export const getMyGrowthResponseCurrentStageOneIdMax = 100;
+
+export const getMyGrowthResponseCurrentStageOneGroupMax = 100;
 
 export const getMyGrowthResponseCurrentStageOneNameMax = 100;
 
@@ -194,7 +250,7 @@ export const GetMyGrowthResponse = zod.object({
 })),
   "currentStage": zod.union([zod.object({
   "id": zod.string().min(1).max(getMyGrowthResponseCurrentStageOneIdMax),
-  "group": zod.enum(['florecimiento', 'ascenso']),
+  "group": zod.string().min(1).max(getMyGrowthResponseCurrentStageOneGroupMax),
   "name": zod.string().min(1).max(getMyGrowthResponseCurrentStageOneNameMax),
   "startDay": zod.number().min(getMyGrowthResponseCurrentStageOneStartDayMin).max(getMyGrowthResponseCurrentStageOneStartDayMax),
   "endDay": zod.number().min(getMyGrowthResponseCurrentStageOneEndDayMin).max(getMyGrowthResponseCurrentStageOneEndDayMax),
@@ -222,6 +278,8 @@ export const UnlockGrowthAvatarBody = zod.object({
 })
 
 export const unlockGrowthAvatarResponseCurrentStageOneIdMax = 100;
+
+export const unlockGrowthAvatarResponseCurrentStageOneGroupMax = 100;
 
 export const unlockGrowthAvatarResponseCurrentStageOneNameMax = 100;
 
@@ -259,7 +317,7 @@ export const UnlockGrowthAvatarResponse = zod.object({
 })),
   "currentStage": zod.union([zod.object({
   "id": zod.string().min(1).max(unlockGrowthAvatarResponseCurrentStageOneIdMax),
-  "group": zod.enum(['florecimiento', 'ascenso']),
+  "group": zod.string().min(1).max(unlockGrowthAvatarResponseCurrentStageOneGroupMax),
   "name": zod.string().min(1).max(unlockGrowthAvatarResponseCurrentStageOneNameMax),
   "startDay": zod.number().min(unlockGrowthAvatarResponseCurrentStageOneStartDayMin).max(unlockGrowthAvatarResponseCurrentStageOneStartDayMax),
   "endDay": zod.number().min(unlockGrowthAvatarResponseCurrentStageOneEndDayMin).max(unlockGrowthAvatarResponseCurrentStageOneEndDayMax),
@@ -282,6 +340,8 @@ export const GetUserGrowthParams = zod.object({
 })
 
 export const getUserGrowthResponseCurrentStageOneIdMax = 100;
+
+export const getUserGrowthResponseCurrentStageOneGroupMax = 100;
 
 export const getUserGrowthResponseCurrentStageOneNameMax = 100;
 
@@ -310,7 +370,7 @@ export const getUserGrowthResponseCurrentStageOneRewardsMax = 3;
 export const GetUserGrowthResponse = zod.object({
   "currentStage": zod.union([zod.object({
   "id": zod.string().min(1).max(getUserGrowthResponseCurrentStageOneIdMax),
-  "group": zod.enum(['florecimiento', 'ascenso']),
+  "group": zod.string().min(1).max(getUserGrowthResponseCurrentStageOneGroupMax),
   "name": zod.string().min(1).max(getUserGrowthResponseCurrentStageOneNameMax),
   "startDay": zod.number().min(getUserGrowthResponseCurrentStageOneStartDayMin).max(getUserGrowthResponseCurrentStageOneStartDayMax),
   "endDay": zod.number().min(getUserGrowthResponseCurrentStageOneEndDayMin).max(getUserGrowthResponseCurrentStageOneEndDayMax),

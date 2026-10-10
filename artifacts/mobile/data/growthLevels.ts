@@ -7,7 +7,7 @@ export type GrowthLevel = {
   detailPhrase?: string;
   detailDescription?: string;
   image: number | string;
-  group?: "florecimiento" | "ascenso";
+  group?: string;
   rewards?: { id: string; enabled: boolean; text: string; amount: number }[];
 };
 

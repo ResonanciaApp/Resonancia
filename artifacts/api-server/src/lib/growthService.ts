@@ -5,13 +5,14 @@ import {
 } from "@workspace/db";
 import { GrowthError, reconcileReached, growthIdentity } from "./growthRules";
 import { adoptGrowthEditorial } from "./growthEditorial";
+import { adoptLegacyGrowthWorlds } from "./growthWorlds";
 
 type Tx = Parameters<Parameters<typeof db.transaction>[0]>[0];
 
 export async function readGrowthCatalog(tx: Tx | typeof db = db) {
   const [catalog] = await tx.select().from(growthCatalogTable).where(eq(growthCatalogTable.id, "main"));
   if (!catalog) throw new GrowthError(503, "Tu camino no está inicializado");
-  return { revision: catalog.revision, stages: catalog.stages.map(stage => adoptGrowthEditorial(stage)), updatedAt: catalog.updatedAt.toISOString() };
+  return { revision: catalog.revision, worlds: catalog.worlds ?? adoptLegacyGrowthWorlds(catalog.stages), stages: catalog.stages.map(stage => adoptGrowthEditorial(stage)), updatedAt: catalog.updatedAt.toISOString() };
 }
 
 async function reconcile(tx: Tx, userId: number) {

@@ -84,7 +84,7 @@ test("Florecimiento keeps its larger title and one-line description, with the fi
   assert.equal(nodes.find(node => node.children === "Florecimiento").style.fontSize, 27);
   assert.equal(nodes.find(node => node.children === "Florecimiento").style.lineHeight, 30);
   assert.ok(nodes.findIndex(node => node.children === "Florecimiento") < nodes.indexOf(copy));
-  assert.match(source, /title="Florecimiento"\s+description=/);
+  assert.match(source, /title=\{world\.name\}\s+description=\{world\.description\}/);
   render(components.GrowthStageHeading, { eyebrow: "SEGUNDO MUNDO", title: "El ascenso", second: true });
   assert.equal(nodes.find(node => node.testID === "growth-second-world-heading").style.marginTop, undefined);
   assert.equal(nodes.find(node => node.children === "El ascenso").style.fontSize, 23);

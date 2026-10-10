@@ -1,4 +1,5 @@
 import { Router, type Response } from "express";
+import { growthWorldCoverRoot } from "../worldCoverAssets";
 import { eq } from "drizzle-orm";
 import { db, growthCatalogTable, usersTable } from "@workspace/db";
 import { SaveGrowthCatalogBody, UnlockGrowthAvatarBody } from "@workspace/api-zod";
@@ -8,9 +9,20 @@ import { getGrowthProgress, readGrowthCatalog, unlockGrowthAvatar } from "../lib
 import { GrowthError, validateGrowthOrder } from "../lib/growthRules";
 import { growthSeed } from "../lib/growthSeed";
 import { adoptGrowthEditorial } from "../lib/growthEditorial";
+import { adoptLegacyGrowthWorlds, growthWorldTemplates, validateGrowthWorlds } from "../lib/growthWorlds";
 import { lockObjectPaths, validateOwnedCompletedImageUpload } from "../lib/objectAccess";
 
 const router = Router();
+const bundledWorldCovers: Record<string, string> = {
+  ascenso: "map-ascenso.webp", iluminacion: "map-iluminacion.webp",
+  llegada: "map-llegada.webp", despertar: "map-despertar.webp",
+};
+router.get("/growth/world-covers/:worldId", (req, res) => {
+  const filename = Object.hasOwn(bundledWorldCovers, req.params.worldId) ? bundledWorldCovers[req.params.worldId] : undefined;
+  if (!filename) { res.status(404).json({ error: "Portada no encontrada" }); return; }
+  res.setHeader("Cache-Control", "public, max-age=86400");
+  res.sendFile(filename, { root: growthWorldCoverRoot });
+});
 const respondError = (res: Response, error: unknown) => {
   if (error instanceof GrowthError) { res.status(error.status).json({ error: error.message }); return; }
   console.error("[Tu camino]", error);
@@ -29,22 +41,31 @@ router.put("/admin/growth/catalog", requireAuth, requireRole("admin"), async (re
       const [before] = await tx.select().from(growthCatalogTable)
         .where(eq(growthCatalogTable.id, "main")).for("update");
       if (!before || before.revision !== revision) throw new GrowthError(409, "Tu camino cambió. Recarga la configuración antes de guardar");
-      const images = [...new Set(stages.map(s => s.imageUrl))];
+      if (!parsed.data.worlds && before.stages.some(s => !["florecimiento", "ascenso"].includes(s.group))) {
+        throw new GrowthError(409, "Actualiza el Admin para guardar un recorrido con más de dos mundos");
+      }
+      const previousWorlds = before.worlds ?? adoptLegacyGrowthWorlds(before.stages);
+      const worlds = parsed.data.worlds ?? previousWorlds;
+      validateGrowthWorlds(worlds, stages);
+      const images = [...new Set([...stages.map(s => s.imageUrl), ...worlds.map(w => w.coverUrl)])];
       await lockObjectPaths(tx, images.filter(p => p.startsWith("/objects/")));
       for (const image of images) {
         if (image.startsWith("/objects/")) {
           // Existing references can be retained by another editor; new references require ownership.
-          if (before.stages.some(s => s.imageUrl === image)) continue;
+          if (before.stages.some(s => s.imageUrl === image) || previousWorlds.some(w => w.coverUrl === image)) continue;
           const validation = await validateOwnedCompletedImageUpload({ objectPath: image, userId: req.currentUser!.id, executor: tx });
           if (!validation.ok) throw new GrowthError(400, `La imagen no es una subida válida (${validation.reason})`);
-        } else if (!growthSeed.some(stage => stage.imageUrl === image)) {
+        } else if (!growthSeed.some(stage => stage.imageUrl === image)
+          && !growthWorldTemplates.some(world => world.coverUrl === image)
+          && !before.stages.some(stage => stage.imageUrl === image)
+          && !previousWorlds.some(world => world.coverUrl === image)) {
           throw new GrowthError(400, "Sube la imagen desde el editor de Tu camino");
         }
       }
       const adopted = stages.map(stage => adoptGrowthEditorial(
         stage, before.stages.find(existing => existing.id === stage.id),
       ));
-      await tx.update(growthCatalogTable).set({ stages: adopted, revision: revision + 1, updatedAt: new Date() })
+      await tx.update(growthCatalogTable).set({ stages: adopted, worlds, revision: revision + 1, updatedAt: new Date() })
         .where(eq(growthCatalogTable.id, "main"));
     });
     res.json(await readGrowthCatalog());

@@ -1,5 +1,7 @@
 import { pool, db, growthCatalogTable } from "@workspace/db";
 import { growthSeed } from "./growthSeed";
+import { and, eq, isNull } from "drizzle-orm";
+import { adoptLegacyGrowthWorlds } from "./growthWorlds";
 
 // Additive, repeatable migration. Never run drizzle push-force for this feature.
 export async function initializeGrowthSchema() {
@@ -28,9 +30,15 @@ export async function initializeGrowthSchema() {
         avatar_id text NOT NULL, created_at timestamptz NOT NULL DEFAULT now(),
         PRIMARY KEY(user_id,avatar_id)
       );
+      ALTER TABLE growth_catalog ADD COLUMN IF NOT EXISTS worlds jsonb;
       COMMIT;`);
   } catch (error) { await client.query("ROLLBACK"); throw error; }
   finally { client.release(); }
   // The singleton row is the initialization marker, including a deliberately empty catalog.
-  await db.insert(growthCatalogTable).values({ id: "main", stages: growthSeed }).onConflictDoNothing();
+  await db.insert(growthCatalogTable).values({ id: "main", stages: growthSeed, worlds: adoptLegacyGrowthWorlds(growthSeed) }).onConflictDoNothing();
+  const [catalog] = await db.select().from(growthCatalogTable).where(eq(growthCatalogTable.id, "main"));
+  if (catalog && catalog.worlds === null) {
+    await db.update(growthCatalogTable).set({ worlds: adoptLegacyGrowthWorlds(catalog.stages) })
+      .where(and(eq(growthCatalogTable.id, "main"), isNull(growthCatalogTable.worlds)));
+  }
 }

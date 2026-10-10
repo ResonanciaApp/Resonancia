@@ -18,6 +18,16 @@ estructura. En Tu camino adelantar solo el siguiente mundo al actual con
 «Próximamente para ti»; por ahora esa píldora sigue desplegando sus fases,
 sin que desplegarlas equivalga a completar etapas ni conceder premios.
 
+Los mundos adicionales no llevan fases ni rangos de ejemplo: pueden prepararse
+editorialmente sin conceder premios ni adelantar el recorrido del usuario.
+
+**Why:** Solo los dos mundos originales tienen fases definidas. Inventar rangos
+para los tres adicionales podría otorgar desbloqueos reales por el historial
+acumulado, aunque aún no exista contenido editorial.
+
+**How to apply:** Conservar los mundos vacíos como preparación; incorporarlos
+al recorrido detallado cuando el editor configure sus fases explícitamente.
+
 **Why:** El 8 de octubre de 2026 el usuario pidió primero solo Admin y diseño, pero después cambió explícitamente el alcance: «mejor incluye la gamificacion y los desbloqueos reales».
 
 **How to apply:** Las líneas y círculos acompañan automáticamente la estructura editorial. Conectar el progreso a días activos acumulados y las recompensas a recursos reales, no solo textos; conservar las etapas e imágenes originales como contenido inicial. El progreso alcanzado no retrocede cuando se corta una racha.
@@ -162,7 +172,7 @@ En «Tu progreso», los siete círculos y la descripción entran juntos inmediat
 
 **How to apply:** Conservar la secuencia del contador y la separación entre superficies. Intención y el recorrido se acceden desde Perfil; no reintroducirlos en Tu progreso al reutilizar componentes.
 
-Dentro de la ventana, usar el degradado completo del tema. Florecimiento y sus niveles se muestran sin animación ni espera; «El ascenso» muestra primero solo el encabezado y el botón «Próximamente», que despliega sus niveles sin animación al pulsarlo. No hay divisor arriba de la segunda etapa. En todas las filas, la píldora de días va encima del título; no mostrar etiquetas «Nivel».
+Dentro de la ventana, usar el degradado completo del tema. Mostrar los mundos alcanzados y el actual sin animación ni espera; solo el siguiente empieza plegado y despliega sus fases sin animación al pulsar «Próximamente para ti». No hay divisor entre mundos. En todas las filas, la píldora de días va encima del título; no mostrar etiquetas «Nivel».
 
 **Why:** El usuario pidió el fondo completo del tema, la segunda etapa plegada inicialmente y eliminó las animaciones de los niveles y las etiquetas numéricas. Los cambios de apertura no deben reintroducir animaciones de las filas.
 

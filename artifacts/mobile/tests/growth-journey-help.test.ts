@@ -1,4 +1,5 @@
 import assert from "node:assert/strict";
+import { GROWTH_WORLD_TEMPLATES, INITIAL_GROWTH_WORLDS } from "../utils/growthWorlds.ts";
 import { readFileSync } from "node:fs";
 import { URL } from "node:url";
 import test from "node:test";
@@ -328,12 +329,13 @@ test("the map replaces the old help icon and paragraph, fits its sheet and dismi
   assert.doesNotMatch(source, /<Modal/);
 });
 
-test("the map follows a perfect circle without connecting El Gran Despertar back to Floración, only Floración active, and uses the editorial final phase image", () => {
+test("the map preserves its circle, overlays and first-only access while using independent world metadata", () => {
   const h = uiHarness();
-  const labels = ["Floración", "El ascenso", "Iluminación", "La llegada", "El Gran Despertar"];
+  const labels = GROWTH_WORLD_TEMPLATES.map(w => w.name);
   const ids = ["floracion", "ascenso", "iluminacion", "llegada", "despertar"];
   const finalPhase = { id: "editorial-final", group: "florecimiento", name: "Final", image: "final.webp" };
-  const bundledFinal = { id: "expansion", name: "Expansión", image: "bundled-final.png" };
+  const worlds = GROWTH_WORLD_TEMPLATES.map(w => ({ ...w }));
+  worlds[0].coverUrl = "editorial-world-cover.webp";
   let levels = [
     { id: "intencion", group: "florecimiento", image: "start.webp" },
     finalPhase,
@@ -348,12 +350,14 @@ test("the map follows a perfect circle without connecting El Gran Despertar back
       GrowthLevelImage: (props: any) => React.createElement(Node, { ...props, testID: "map-final-phase-art" }),
       RewardLock: (props: any) => React.createElement(Node, { ...props, testID: `${props.levelId}-reward-lock` }),
     },
-    "../assets/images/growth/map-ascenso.webp": "asset:ascenso",
-    "../assets/images/growth/map-iluminacion.webp": "asset:iluminacion",
-    "../assets/images/growth/map-llegada.webp": "asset:llegada",
-    "../assets/images/growth/map-despertar.webp": "asset:despertar",
-    "@/context/GrowthContext": { useGrowth: () => ({ levels }) },
-    "@/data/growthLevels": { allGrowthLevels: [bundledFinal] },
+    "../assets/images/growth/08-expansion.png": 5,
+    "../assets/images/growth/map-ascenso.webp": 1,
+    "../assets/images/growth/map-iluminacion.webp": 2,
+    "../assets/images/growth/map-llegada.webp": 3,
+    "../assets/images/growth/map-despertar.webp": 4,
+    "@/context/GrowthContext": { useGrowth: () => ({ worlds, levels }) },
+    "@/utils/growthWorlds": { GROWTH_WORLD_TEMPLATES, INITIAL_GROWTH_WORLDS },
+    "@/lib/avatar": { resolveAvatarUrl: (url: string) => url },
   });
   assert.equal(GROWTH_MAP_HEIGHT, 350);
   for (const width of [308, 363, 390, 508]) {
@@ -377,7 +381,7 @@ test("the map follows a perfect circle without connecting El Gran Despertar back
         assert.equal(flatten(world.style).textAlign, "center");
         assert.equal(flatten(world.style).fontSize, 10);
         assert.equal(flatten(world.style).color, POSITIONED_DAY_GRADIENT[0]);
-        assert.ok(html.indexOf("Floración") < html.indexOf(">Primer mundo<"));
+        assert.ok(html.indexOf(labels[0]) < html.indexOf(">Primer mundo<"));
         assert.equal(flatten(h.nodes.get(`growth-map-label-${ids[i]}`).style).lineHeight, 20);
         assert.match(node.accessibilityLabel, /Primer mundo/);
       }
@@ -387,7 +391,7 @@ test("the map follows a perfect circle without connecting El Gran Despertar back
         assert.equal(h.nodes.get(`growth-map-${ids[i]}-reward-lock`).size, 16);
         const image = h.nodes.get(`growth-map-image-${ids[i]}`);
         const overlay = h.nodes.get(`growth-map-image-overlay-${ids[i]}`);
-        assert.equal(image.source, `asset:${ids[i]}`);
+        assert.equal(image.source, i);
         assert.equal(image.resizeMode, "cover");
         assert.equal(flatten(overlay.style).backgroundColor, "rgba(0,0,0,0.4)");
         assert.equal(overlay.pointerEvents, "none");
@@ -401,7 +405,7 @@ test("the map follows a perfect circle without connecting El Gran Despertar back
       assert.ok(style.top >= 0 && style.top + (i === 0 ? 93 : 52) + 38 <= GROWTH_MAP_HEIGHT);
       if (i) assert.ok(html.indexOf(labels[i - 1]) < html.indexOf(labels[i]));
     }
-    assert.equal(h.nodes.get("map-final-phase-art").level, finalPhase);
+    assert.equal(h.nodes.get("map-final-phase-art").level.image, worlds[0].coverUrl);
     assert.equal(h.nodes.get("map-final-phase-art").size, 89);
     assert.equal(h.nodes.get("growth-journey-map-route").pointerEvents, "none");
     assert.equal(paths.length, 1);
@@ -428,7 +432,21 @@ test("the map follows a perfect circle without connecting El Gran Despertar back
   }
   levels = [];
   renderToStaticMarkup(React.createElement(GrowthJourneyMap, { width: 343 }));
-  assert.equal(h.nodes.get("map-final-phase-art").level, bundledFinal);
+  assert.equal(h.nodes.get("map-final-phase-art").level.image, worlds[0].coverUrl);
+  worlds[0].name = "Un mundo editorial";
+  worlds[0].coverUrl = "/objects/independent-cover";
+  worlds[1].name = "Ascenso editado";
+  worlds[1].coverUrl = "/objects/second-cover";
+  renderToStaticMarkup(React.createElement(GrowthJourneyMap, { width: 343 }));
+  assert.equal(h.nodes.get("growth-map-label-floracion").children, "Un mundo editorial");
+  assert.equal(h.nodes.get("map-final-phase-art").level.image, "/objects/independent-cover");
+  assert.equal(h.nodes.get("growth-map-label-ascenso").children, "Ascenso editado");
+  assert.deepEqual(h.nodes.get("growth-map-image-ascenso").source, { uri: "/objects/second-cover" });
+  worlds.splice(1, 1);
+  const partialHtml = renderToStaticMarkup(React.createElement(GrowthJourneyMap, { width: 343 }));
+  const stopIds = [...partialHtml.matchAll(/data-testid="growth-map-stop-([^"]+)"/g)].map(match => match[1]);
+  assert.equal(stopIds.length, 5);
+  assert.equal(new Set(stopIds).size, 5, "a partial catalog must not duplicate fallback stops");
   for (const [id, color] of [
     ["natural", "#E5FFDB"],
     ["cloudy", CLOUDY_GROWTH_STAGE_LABEL_COLOR],

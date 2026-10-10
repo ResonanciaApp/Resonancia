@@ -5417,7 +5417,7 @@ components:
       required: [id, group, name, startDay, endDay, story, imageUrl, rewards]
       properties:
         id: { type: string, minLength: 1, maxLength: 100 }
-        group: { type: string, enum: [florecimiento, ascenso] }
+        group: { type: string, minLength: 1, maxLength: 100 }
         name: { type: string, minLength: 1, maxLength: 100 }
         startDay: { type: integer, minimum: 0, maximum: 1000000 }
         endDay: { type: integer, minimum: 0, maximum: 1000000 }
@@ -5429,21 +5429,37 @@ components:
           type: array
           maxItems: 3
           items: { $ref: "#/components/schemas/GrowthReward" }
+    GrowthWorld:
+      type: object
+      required: [id, name, description, coverUrl]
+      properties:
+        id: { type: string, minLength: 1, maxLength: 100 }
+        name: { type: string, minLength: 1, maxLength: 100 }
+        description: { type: string, maxLength: 2000 }
+        coverUrl: { type: string, minLength: 1, maxLength: 2000 }
     GrowthCatalogInput:
       type: object
       required: [revision, stages]
       properties:
         revision: { type: integer, minimum: 1 }
+        worlds:
+          type: array
+          maxItems: 5
+          items: { $ref: "#/components/schemas/GrowthWorld" }
         stages:
           type: array
           maxItems: 200
           items: { $ref: "#/components/schemas/GrowthStage" }
     GrowthCatalog:
       type: object
-      required: [revision, stages, updatedAt]
+      required: [revision, worlds, stages, updatedAt]
       properties:
         revision: { type: integer }
         updatedAt: { type: string }
+        worlds:
+          type: array
+          maxItems: 5
+          items: { $ref: "#/components/schemas/GrowthWorld" }
         stages:
           type: array
           items: { $ref: "#/components/schemas/GrowthStage" }

@@ -2,12 +2,13 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 import React, { createContext, useContext, useEffect, useMemo, useState } from "react";
 import {
   useGetGrowthCatalog, useGetMyGrowth, useUnlockGrowthAvatar,
-  getGetMyGrowthQueryKey, getGetGrowthCatalogQueryKey, type GrowthCatalog, type GrowthProgress, type GrowthStage,
+  getGetMyGrowthQueryKey, getGetGrowthCatalogQueryKey, type GrowthCatalog, type GrowthProgress, type GrowthStage, type GrowthWorld,
 } from "@workspace/api-client-react";
 import { useQueryClient } from "@tanstack/react-query";
 import { useAuth } from "@/context/AuthContext";
 import { usePlayerStats } from "@/context/PlayerContext";
 import { allGrowthLevels, type GrowthLevel } from "@/data/growthLevels";
+import { normalizeGrowthWorlds } from "@/utils/growthWorlds";
 
 const CATALOG_KEY = "@resonancia/growth-catalog/v1";
 const INITIAL_REWARD_IDS = new Set(["semilla", "crecimiento", "vegetacion", "expansion"]);
@@ -21,6 +22,7 @@ const initialStages: GrowthStage[] = allGrowthLevels.map(level => ({
 }));
 
 type GrowthState = {
+  worlds: GrowthWorld[];
   stages: GrowthStage[];
   levels: GrowthLevel[];
   currentStage: GrowthStage | null;
@@ -91,6 +93,7 @@ export function GrowthProvider({ children }: { children: React.ReactNode }) {
     return () => clearTimeout(timer);
   }, [statEvents, isSignedIn, clerkUserId, client]);
   const stages = (catalog.data ?? cached)?.stages ?? initialStages;
+  const worlds = useMemo(() => normalizeGrowthWorlds(catalog.data ?? cached ?? { stages: initialStages }), [catalog.data, cached]);
   const progress = isSignedIn
     ? (query.data?.ownerClerkUserId === clerkUserId ? query.data : null)
       ?? (savedProgress?.owner === clerkUserId && savedProgress.value.ownerClerkUserId === clerkUserId ? savedProgress.value : null)
@@ -101,7 +104,7 @@ export function GrowthProvider({ children }: { children: React.ReactNode }) {
   })), [stages]);
   const currentStage = isSignedIn ? progress?.currentStage ?? null : stages.find(s => s.id === "intencion") ?? null;
   return <Context.Provider value={{
-    stages, levels, currentStage, progress,
+    worlds, stages, levels, currentStage, progress,
     reachedStageIds: progress?.reachedStageIds ?? (currentStage ? [currentStage.id] : []),
     loading: !!isSignedIn && !progress && query.isLoading,
     error: query.isError || catalog.isError,

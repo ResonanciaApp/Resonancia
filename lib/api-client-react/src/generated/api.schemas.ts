@@ -18,21 +18,17 @@ export interface GrowthReward {
   amount: number;
 }
 
-export type GrowthStageGroup = typeof GrowthStageGroup[keyof typeof GrowthStageGroup];
-
-
-export const GrowthStageGroup = {
-  florecimiento: 'florecimiento',
-  ascenso: 'ascenso',
-} as const;
-
 export interface GrowthStage {
   /**
      * @minLength 1
      * @maxLength 100
      */
   id: string;
-  group: GrowthStageGroup;
+  /**
+     * @minLength 1
+     * @maxLength 100
+     */
+  group: string;
   /**
      * @minLength 1
      * @maxLength 100
@@ -60,9 +56,31 @@ export interface GrowthStage {
   rewards: GrowthReward[];
 }
 
+export interface GrowthWorld {
+  /**
+     * @minLength 1
+     * @maxLength 100
+     */
+  id: string;
+  /**
+     * @minLength 1
+     * @maxLength 100
+     */
+  name: string;
+  /** @maxLength 2000 */
+  description: string;
+  /**
+     * @minLength 1
+     * @maxLength 2000
+     */
+  coverUrl: string;
+}
+
 export interface GrowthCatalogInput {
   /** @minimum 1 */
   revision: number;
+  /** @maxItems 5 */
+  worlds?: GrowthWorld[];
   /** @maxItems 200 */
   stages: GrowthStage[];
 }
@@ -70,6 +88,8 @@ export interface GrowthCatalogInput {
 export interface GrowthCatalog {
   revision: number;
   updatedAt: string;
+  /** @maxItems 5 */
+  worlds: GrowthWorld[];
   stages: GrowthStage[];
 }
 

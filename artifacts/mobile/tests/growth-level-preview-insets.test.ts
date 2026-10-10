@@ -1,4 +1,5 @@
 import assert from "node:assert/strict";
+import * as growthWorldUtils from "../utils/growthWorlds.ts";
 import { readFileSync } from "node:fs";
 import test from "node:test";
 import { URL } from "node:url";
@@ -119,6 +120,7 @@ const compiled = ts.transpileModule(
   { compilerOptions: { module: ts.ModuleKind.CommonJS, jsx: ts.JsxEmit.React, esModuleInterop: true } },
 ).outputText;
 const mocks: Record<string, any> = {
+  "@/utils/growthWorlds": growthWorldUtils,
   "@/config/scene-themes": { getThemeStyleId },
   "@/context/SceneThemeContext": { useSceneTheme: () => ({ theme: { id: "tibet", gradient: TEST_GRADIENT } }) },
   "@/lib/avatar": { resolveAvatarUrl: (url: string) => url },
@@ -173,7 +175,7 @@ const mocks: Record<string, any> = {
     }),
   },
   "@/data/growthLevels": {
-    ascentLevels: [],
+    ascentLevels: [{ id: "ascenso-inicio", name: "Inicio", startDay: 57, endDay: 63, image: 2, story: "Un nuevo comienzo." }],
     growthLevels: [{
       id: "intencion",
       name: "Intención",
@@ -442,7 +444,7 @@ test("Cloudy matches both stage labels in sky blue and uses F9F9F9 for the ascen
       assert.match(html, new RegExp(`data-color="${expected.replace(/[()]/g, "\\$&")}"[^>]*>${label}`));
     }
     const toggleColor = id === "cloudy" ? "#F9F9F9" : "#C9A6FF";
-    assert.match(html, new RegExp(`data-color="${toggleColor}"[^>]*>Ver niveles`));
+    assert.match(html, new RegExp(`data-color="${toggleColor}"[^>]*>Próximamente para ti`));
     assert.match(html, new RegExp(`data-icon="chevron-down" data-color="${toggleColor}"`));
     assert.match(html, /Florecimiento/);
     assert.match(html, /El ascenso/);
@@ -506,14 +508,14 @@ test("only Intención opens a detail while stage status follows real progression
   }
   const source = readFileSync(new URL("../components/GrowthJourney.tsx", import.meta.url), "utf8");
   assert.match(source, /onPress=\{onStagePress \? \(\) => onStagePress\(level.id\) : level.id === "intencion" \? onIntentionPress : undefined\}/);
-  assert.match(source, /status=\{status\(level\)\}/);
+  assert.match(source, /status=\{upcoming \? "locked" : status\(level\)\}/);
   assert.match(source, /reachedStageIds\.includes\(level.id\)/);
 });
 
 test("all Florecimiento and El ascenso phases open their own editorial detail", () => {
   const oldReact = mocks.react;
   const oldData = mocks["@/data/growthLevels"];
-  mocks.react = { ...React, useState: (initial: any) => React.useState(initial === false ? true : initial) };
+  mocks.react = { ...React, useState: (initial: any) => React.useState(initial === null ? "ascenso" : initial) };
   const base = (oldData as any).growthLevels[0];
   mocks["@/data/growthLevels"] = {
     growthLevels: [base, { ...base, id: "new-bloom", name: "Nueva fase" }],

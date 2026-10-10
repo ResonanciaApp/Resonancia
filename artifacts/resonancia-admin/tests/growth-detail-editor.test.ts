@@ -4,6 +4,7 @@ import { readFileSync } from "node:fs";
 import React from "react";
 import ts from "typescript";
 
+const lib = await import("../src/lib/growth-worlds.ts");
 const compiled = ts.transpileModule(
   readFileSync(new URL("../src/pages/tu-camino.tsx", import.meta.url), "utf8"),
   { compilerOptions: { module: ts.ModuleKind.CommonJS, jsx: ts.JsxEmit.React } },
@@ -52,6 +53,7 @@ function harness() {
       }),
       useRequestUploadUrl: () => ({}),
     },
+    "@/lib/growth-worlds": lib,
     "@/lib/uploadFile": { uploadFile: async () => {} },
     "sonner": { toast: { error: () => {}, success: () => {} } },
     "lucide-react": Object.fromEntries(["ArrowDown", "ArrowUp", "ImageIcon", "Loader2", "Plus", "Trash2", "Upload", "X", "AlertTriangle"].map(name => [name, ui])),

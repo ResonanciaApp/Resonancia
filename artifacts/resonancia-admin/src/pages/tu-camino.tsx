@@ -8,6 +8,7 @@ import {
   type GrowthCatalog,
 } from "@workspace/api-client-react";
 import { uploadFile } from "@/lib/uploadFile";
+import { MAX_WORLDS, addWorld, moveStage, newStage, orderStages, resolveWorlds, validate, type WorldLike } from "@/lib/growth-worlds";
 import { ArrowDown, ArrowUp, ImageIcon, Loader2, Plus, Trash2, Upload, X, AlertTriangle } from "lucide-react";
 import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
@@ -20,13 +21,8 @@ import {
 } from "@/components/ui/alert-dialog";
 
 type Stage = GrowthCatalog["stages"][number];
-type Group = Stage["group"];
 type Reward = Stage["rewards"][number];
-
-const GROUPS: { value: Group; label: string; hint: string }[] = [
-  { value: "florecimiento", label: "Florecimiento", hint: "Primeras etapas del camino." },
-  { value: "ascenso", label: "El ascenso", hint: "Etapas de compromiso sostenido." },
-];
+type World = WorldLike;
 const DEFAULT_TEXT = "Desbloquea {cantidad} avatares a elección";
 const uid = () => crypto.randomUUID();
 
@@ -38,35 +34,13 @@ function imgSrc(url: string) {
 function rewardPreview(r: Reward) {
   return (r.text || DEFAULT_TEXT).split("{cantidad}").join(String(r.amount));
 }
-function validate(stages: Stage[]): Record<string, string[]> {
-  const out: Record<string, string[]> = {};
-  const add = (id: string, m: string) => (out[id] ??= []).push(m);
-  let prevEnd = -1;
-  for (const g of GROUPS) {
-    for (const s of stages.filter((x) => x.group === g.value)) {
-      if (!s.name.trim()) add(s.id, "Falta el nombre.");
-      if ((s.detailPhrase?.length ?? 0) > 2000) add(s.id, "Frase del detalle: máximo 2.000 caracteres.");
-      if ((s.detailDescription?.length ?? 0) > 10000) add(s.id, "Descripción larga del detalle: máximo 10.000 caracteres.");
-      if (!s.imageUrl) add(s.id, "Falta la imagen.");
-      if (!Number.isInteger(s.startDay) || !Number.isInteger(s.endDay) || s.startDay < 0) add(s.id, "Los días deben ser enteros desde 0.");
-      else if (s.endDay < s.startDay) add(s.id, "El día final no puede ser menor al inicial.");
-      else if (s.startDay <= prevEnd) add(s.id, `Se superpone o está fuera de orden (la etapa anterior termina el día ${prevEnd}).`);
-      if (Number.isInteger(s.endDay)) prevEnd = Math.max(prevEnd, s.endDay);
-      s.rewards.forEach((r, i) => {
-        if (!Number.isInteger(r.amount) || r.amount < 1 || r.amount > 1000000) add(s.id, `Recompensa ${i + 1}: la cantidad debe ser un entero positivo hasta 1.000.000.`);
-        if (r.text.length > 240) add(s.id, `Recompensa ${i + 1}: máximo 240 caracteres.`);
-      });
-    }
-  }
-  return out;
-}
-
 export default function TuCaminoPage() {
   const qc = useQueryClient();
   const query = useGetGrowthCatalog();
   const save = useSaveGrowthCatalog();
   const requestUploadUrl = useRequestUploadUrl();
   const [draft, setDraft] = useState<Stage[] | null>(null);
+  const [worlds, setWorlds] = useState<World[]>([]);
   const [revision, setRevision] = useState(0);
   const [dirty, setDirty] = useState(false);
   const [conflict, setConflict] = useState(false);
@@ -82,11 +56,12 @@ export default function TuCaminoPage() {
   useEffect(() => {
     if (!data || dirtyRef.current) return;
     setDraft(data.stages);
+    setWorlds(resolveWorlds(data as never));
     setRevision(data.revision);
     setRangeIds(new Set(data.stages.filter((s) => s.endDay !== s.startDay).map((s) => s.id)));
   }, [data]);
 
-  const errors = useMemo(() => validate(draft ?? []), [draft]);
+  const errors = useMemo(() => validate(worlds, draft ?? []), [worlds, draft]);
   const errorCount = Object.keys(errors).length;
 
   function edit(fn: (s: Stage[]) => Stage[]) {
@@ -94,39 +69,35 @@ export default function TuCaminoPage() {
     setDirty(true);
     setSaveError(null);
   }
+  function markDirty() { dirtyRef.current = true; setDirty(true); setSaveError(null); }
+  function patchWorld(id: string, p: Partial<World>) {
+    setWorlds((w) => w.map((x) => (x.id === id ? { ...x, ...p } : x)));
+    markDirty();
+  }
+  function createWorld() {
+    setWorlds((w) => addWorld(w));
+    markDirty();
+  }
   function patch(id: string, p: Partial<Stage>) {
     edit((s) => s.map((x) => (x.id === id ? { ...x, ...p } : x)));
   }
-  function addStage(group: Group) {
-    edit((s) => {
-      const last = s.filter((x) => x.group === group).at(-1);
-      const start = last ? last.endDay + 1 : 0;
-      return [...s, { id: uid(), group, name: "", startDay: start, endDay: start, story: "", detailPhrase: "", detailDescription: "", imageUrl: "", rewards: [] }];
-    });
+  function addStage(group: string) {
+    edit((s) => newStage(s, group, uid(), worlds));
   }
   function move(id: string, dir: -1 | 1) {
-    edit((all) => {
-      const s = all.find((x) => x.id === id)!;
-      const sib = all.filter((x) => x.group === s.group);
-      const i = sib.findIndex((x) => x.id === id);
-      const j = i + dir;
-      if (j < 0 || j >= sib.length) return all;
-      const next = [...sib];
-      [next[i], next[j]] = [next[j], next[i]];
-      let k = 0;
-      return all.map((x) => (x.group === s.group ? next[k++] : x));
-    });
+    edit((all) => moveStage(all, id, dir));
   }
   function patchReward(sid: string, rid: string, p: Partial<Reward>) {
     edit((all) => all.map((s) => (s.id === sid ? { ...s, rewards: s.rewards.map((r) => (r.id === rid ? { ...r, ...p } : r)) } : s)));
   }
-  async function upload(id: string, file?: File) {
+  async function upload(id: string, file?: File, worldId?: string) {
     if (!file) return;
     if (!file.type.startsWith("image/")) { toast.error("Selecciona una imagen válida"); return; }
     setUploadingId(id);
     try {
       const up = await uploadFile(file, (a) => requestUploadUrl.mutateAsync(a), null);
-      patch(id, { imageUrl: up.objectPath });
+      if (worldId) patchWorld(worldId, { coverUrl: up.objectPath });
+      else patch(id, { imageUrl: up.objectPath });
     } catch {
       toast.error("No se pudo subir la imagen");
     } finally {
@@ -136,9 +107,9 @@ export default function TuCaminoPage() {
   async function doSave() {
     setShowErrors(true);
     if (errorCount > 0 || !draft) { toast.error("Corrige los errores antes de guardar"); return; }
-    const ordered = GROUPS.flatMap((g) => draft.filter((s) => s.group === g.value));
+    const ordered = orderStages(worlds, draft);
     try {
-      const saved = await save.mutateAsync({ data: { revision, stages: ordered } });
+      const saved = await save.mutateAsync({ data: { revision, worlds, stages: ordered } });
       qc.setQueryData(getGetGrowthCatalogQueryKey(), saved);
       void qc.invalidateQueries({ queryKey: getGetGrowthCatalogQueryKey() });
       dirtyRef.current = false;
@@ -146,6 +117,7 @@ export default function TuCaminoPage() {
       setConflict(false);
       setShowErrors(false);
       setDraft(saved.stages);
+      setWorlds(resolveWorlds(saved as never));
       setRevision(saved.revision);
       toast.success("Tu camino guardado");
     } catch (e) {
@@ -171,6 +143,7 @@ export default function TuCaminoPage() {
     setSaveError(null);
     setShowErrors(false);
     setDraft(d.stages);
+    setWorlds(resolveWorlds(d as never));
     setRevision(d.revision);
     setRangeIds(new Set(d.stages.filter((s) => s.endDay !== s.startDay).map((s) => s.id)));
   }
@@ -207,22 +180,40 @@ export default function TuCaminoPage() {
       )}
       {saveError && <p role="alert" className="rounded-lg border border-destructive/40 p-3 text-sm" data-testid="text-save-error">{saveError}</p>}
 
-      {GROUPS.map((g) => {
-        const list = stages.filter((s) => s.group === g.value);
+      {worlds.map((g, wi) => {
+        const list = stages.filter((s) => s.group === g.id);
+        const werrs = errors[g.id] ?? [];
         return (
-          <section key={g.value} className="space-y-3">
-            <div className="flex items-end justify-between">
-              <div>
-                <h2 className="text-lg font-semibold">{g.label}</h2>
-                <p className="text-sm text-muted-foreground">{g.hint}</p>
+          <section key={g.id} className="space-y-3" data-testid={`world-${g.id}`}>
+            <div className="space-y-3 rounded-xl border border-border bg-secondary/20 p-4">
+              <div className="flex gap-4">
+                <div className="w-28 shrink-0 space-y-2">
+                  <div className="flex h-20 w-28 items-center justify-center overflow-hidden rounded-lg border border-border bg-secondary">
+                    {g.coverUrl ? <img src={imgSrc(g.coverUrl)} alt={g.name} className="h-full w-full object-cover" /> : <ImageIcon className="h-6 w-6 text-muted-foreground/50" />}
+                  </div>
+                  <label className="inline-flex h-8 w-full cursor-pointer items-center justify-center rounded-md border border-input text-xs hover:bg-secondary">
+                    <input type="file" accept="image/png,image/jpeg,image/webp" className="hidden" disabled={uploadingId === `world:${g.id}`} data-testid={`input-world-cover-${g.id}`} onChange={(e) => { void upload(`world:${g.id}`, e.target.files?.[0], g.id); e.target.value = ""; }} />
+                    {uploadingId === `world:${g.id}` ? <Loader2 className="mr-1 h-3 w-3 animate-spin" /> : <Upload className="mr-1 h-3 w-3" />}
+                    Portada
+                  </label>
+                </div>
+                <div className="min-w-0 flex-1 space-y-2">
+                  <p className="text-xs uppercase tracking-wide text-muted-foreground">Mundo {wi + 1} de {MAX_WORLDS}</p>
+                  <Input value={g.name} maxLength={100} placeholder="Título del mundo" onChange={(e) => patchWorld(g.id, { name: e.target.value })} data-testid={`input-world-name-${g.id}`} />
+                  <Textarea value={g.description} maxLength={2000} rows={2} placeholder="Descripción del mundo" onChange={(e) => patchWorld(g.id, { description: e.target.value })} data-testid={`input-world-description-${g.id}`} />
+                </div>
               </div>
-              <Button size="sm" variant="outline" onClick={() => addStage(g.value)} data-testid={`button-add-${g.value}`}>
-                <Plus className="mr-1 h-4 w-4" /> Añadir etapa
-              </Button>
+              {showErrors && werrs.length > 0 && <ul className="list-disc pl-5 text-xs text-destructive" role="alert">{werrs.map((m) => <li key={m}>{m}</li>)}</ul>}
+              <div className="flex items-center justify-between">
+                <p className="text-xs text-muted-foreground">{list.length === 0 ? "Sin etapas: este mundo permanece inactivo en la app hasta configurarlas." : `${list.length} etapa(s)`}</p>
+                <Button size="sm" variant="outline" onClick={() => addStage(g.id)} data-testid={`button-add-${g.id}`}>
+                  <Plus className="mr-1 h-4 w-4" /> Añadir etapa
+                </Button>
+              </div>
             </div>
             {list.length === 0 && (
               <div className="flex h-24 items-center justify-center rounded-lg border border-dashed border-border bg-secondary/20 text-sm text-muted-foreground">
-                Sin etapas en {g.label.toLowerCase()}.
+                Sin etapas en {g.name.toLowerCase()}.
               </div>
             )}
             {list.map((s, i) => {
@@ -308,6 +299,13 @@ export default function TuCaminoPage() {
           </section>
         );
       })}
+
+      <div className="flex items-center justify-between rounded-xl border border-dashed border-border p-4">
+        <p className="text-sm text-muted-foreground">{worlds.length} de {MAX_WORLDS} mundos</p>
+        <Button size="sm" variant="outline" disabled={worlds.length >= MAX_WORLDS} onClick={createWorld} data-testid="button-add-world">
+          <Plus className="mr-1 h-4 w-4" /> Añadir mundo
+        </Button>
+      </div>
 
       <div className="sticky bottom-0 -mx-2 flex items-center justify-between gap-3 rounded-lg border border-border bg-card px-4 py-3">
         <p className="text-sm text-muted-foreground">

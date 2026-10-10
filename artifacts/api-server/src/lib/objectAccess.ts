@@ -28,6 +28,7 @@ export async function isObjectReferenced({
     SELECT (
       EXISTS (SELECT 1 FROM cover_presets WHERE object_path = ${objectPath} ${coverPresetExclusion})
       OR EXISTS (SELECT 1 FROM growth_catalog g, jsonb_array_elements(g.stages) s WHERE s->>'imageUrl' = ${objectPath})
+      OR EXISTS (SELECT 1 FROM growth_catalog g, jsonb_array_elements(COALESCE(g.worlds, '[]'::jsonb)) w WHERE w->>'coverUrl' = ${objectPath})
       OR EXISTS (SELECT 1 FROM users WHERE avatar_url = ${objectPath})
       OR EXISTS (SELECT 1 FROM reflection_stories WHERE avatar_image_path = ${objectPath})
       OR EXISTS (SELECT 1 FROM shared_mixes WHERE image = ${objectPath})
@@ -111,6 +112,12 @@ export async function resolveObjectReadAccess({
           JOIN uploads u ON u.object_path = s->>'imageUrl'
           JOIN users editor ON editor.id = u.user_id
           WHERE s->>'imageUrl' = ${objectPath} AND editor.role IN ('admin', 'moderador')
+        )
+        OR EXISTS (
+          SELECT 1 FROM growth_catalog g, jsonb_array_elements(COALESCE(g.worlds, '[]'::jsonb)) w
+          JOIN uploads u ON u.object_path = w->>'coverUrl'
+          JOIN users editor ON editor.id = u.user_id
+          WHERE w->>'coverUrl' = ${objectPath} AND editor.role IN ('admin', 'moderador')
         )
         OR
         EXISTS (

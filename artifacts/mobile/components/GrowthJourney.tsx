@@ -10,6 +10,7 @@ import { type GrowthLevel } from "@/data/growthLevels";
 import { useGrowth } from "@/context/GrowthContext";
 import { resolveAvatarUrl } from "@/lib/avatar";
 import type { GrowthStage } from "@workspace/api-client-react";
+import { GROWTH_WORLD_LABELS, INITIAL_GROWTH_WORLDS, visibleGrowthWorlds } from "@/utils/growthWorlds";
 import { useColors } from "@/hooks/useColors";
 import { useSceneTheme } from "@/context/SceneThemeContext";
 
@@ -456,16 +457,18 @@ function GrowthStageHeading({
   title,
   second,
   description,
+  worldId,
 }: {
   eyebrow: string;
   title: string;
   second?: boolean;
   description?: string;
+  worldId?: string;
 }) {
   const colors = useColors();
   const { theme } = useSceneTheme();
   return (
-    <View testID={second ? "growth-second-world-heading" : "growth-first-world-heading"} style={[styles.sectionHeading, second ? styles.secondStageHeading : styles.firstStageHeading]}>
+    <View testID={worldId ? `growth-world-heading-${worldId}` : second ? "growth-second-world-heading" : "growth-first-world-heading"} style={[styles.sectionHeading, second ? styles.secondStageHeading : styles.firstStageHeading]}>
       <Text style={[styles.sectionEyebrow, getThemeStyleId(theme.id) === "cloudy" && { color: theme.id === "natural" ? "#E5FFDB" : CLOUDY_GROWTH_STAGE_LABEL_COLOR }]}>{eyebrow}</Text>
       <Text
         style={[styles.sectionTitle, !second && styles.firstWorldTitle, { color: colors.foreground }]}
@@ -477,9 +480,7 @@ function GrowthStageHeading({
         <Text
           testID="growth-world-description"
           style={[styles.worldDescription, { color: colors.mutedForeground }]}
-          numberOfLines={1}
-          adjustsFontSizeToFit
-          minimumFontScale={0.85}
+          numberOfLines={description.length <= 40 ? 1 : undefined}
         >
           {description}
         </Text>
@@ -505,14 +506,14 @@ function GrowthTimeline({ children }: { children: React.ReactNode }) {
 }
 
 export function GrowthJourney({ onIntentionPress, onStagePress }: { onIntentionPress?: () => void; onStagePress?: (stageId: string) => void } = {}) {
-  const [ascentExpanded, setAscentExpanded] = useState(false);
+  const [expandedWorldId, setExpandedWorldId] = useState<string | null>(null);
   const { theme } = useSceneTheme();
-  const { levels, currentStage, reachedStageIds, loading, error } = useGrowth();
-  const bloom = levels.filter(level => level.group === "florecimiento");
-  const ascent = levels.filter(level => level.group === "ascenso");
+  const { worlds = INITIAL_GROWTH_WORLDS, levels, currentStage, reachedStageIds, progress, loading, error } = useGrowth();
+  const days = progress?.totalActiveDays ?? currentStage?.startDay ?? 0;
+  const visible = visibleGrowthWorlds(worlds, levels, days);
   const status = (level: GrowthLevel): Status => currentStage?.id === level.id ? "current" : reachedStageIds.includes(level.id) ? "reached" : "locked";
   useEffect(() => {
-    if (currentStage?.group === "ascenso") setAscentExpanded(true);
+    setExpandedWorldId(null);
   }, [currentStage?.group]);
   const ascentToggleColor = getThemeStyleId(theme.id) === "cloudy" ? CLOUDY_GROWTH_ASCENT_TOGGLE_COLOR : GROWTH_COLORS.line;
 
@@ -520,51 +521,49 @@ export function GrowthJourney({ onIntentionPress, onStagePress }: { onIntentionP
     <View style={styles.section}>
       {loading && <Text style={{ color: "#C4C4C4" }}>Verificando tu progreso…</Text>}
       {error && <Text style={{ color: "#C4C4C4" }}>No se pudo actualizar Tu camino. Se conserva la última información disponible.</Text>}
-      <GrowthStageHeading
-        eyebrow="PRIMER MUNDO"
-        title="Florecimiento"
-        description="Cultiva tu calma cada día."
-      />
-      <GrowthTimeline>
-        {bloom.map((level) => (
-          <GrowthRow
-            key={level.id}
-            level={level}
-            status={status(level)}
-            florecimiento
-            onPress={onStagePress ? () => onStagePress(level.id) : level.id === "intencion" ? onIntentionPress : undefined}
-          />
-        ))}
-      </GrowthTimeline>
-      <View style={styles.stageGap} pointerEvents="none" />
-      <GrowthStageHeading
-        eyebrow="SEGUNDO MUNDO"
-        title="El ascenso"
-        second
-      />
-      <Pressable
-        onPress={() => setAscentExpanded((expanded) => !expanded)}
-        style={styles.ascentToggle}
-        accessibilityRole="button"
-        accessibilityLabel={ascentExpanded ? "Ocultar niveles de El ascenso" : "Mostrar niveles de El ascenso"}
-        accessibilityState={{ expanded: ascentExpanded }}
-        testID="growth-ascent-toggle"
-      >
-        <Text style={[styles.ascentToggleText, { color: ascentToggleColor }]}>{ascentExpanded ? "Ocultar niveles" : "Ver niveles"}</Text>
-        <Feather name={ascentExpanded ? "chevron-up" : "chevron-down"} size={16} color={ascentToggleColor} />
-      </Pressable>
-      {ascentExpanded && (
-        <GrowthTimeline>
-          {ascent.map((level) => (
-            <GrowthRow
-              key={level.id}
-              level={level}
-              status={status(level)}
-              onPress={onStagePress ? () => onStagePress(level.id) : undefined}
+      {!visible.length && !loading && <Text style={{ color: "#C4C4C4" }}>Aún no hay mundos con fases disponibles.</Text>}
+      {visible.map(({ world, index, upcoming }, position) => {
+        const expanded = expandedWorldId === world.id;
+        const worldLevels = levels.filter(level => level.group === world.id);
+        return (
+          <View key={world.id} testID={`growth-world-${world.id}`}>
+            {position > 0 && <View style={styles.stageGap} pointerEvents="none" />}
+            <GrowthStageHeading
+              worldId={world.id}
+              eyebrow={GROWTH_WORLD_LABELS[index]}
+              title={world.name}
+              description={world.description}
+              second={index > 0}
             />
-          ))}
-        </GrowthTimeline>
-      )}
+            {upcoming && (
+              <Pressable
+                onPress={() => setExpandedWorldId(expanded ? null : world.id)}
+                style={styles.ascentToggle}
+                accessibilityRole="button"
+                accessibilityLabel={`${expanded ? "Ocultar" : "Mostrar"} fases de ${world.name}`}
+                accessibilityState={{ expanded }}
+                testID={`growth-world-toggle-${world.id}`}
+              >
+                <Text style={[styles.ascentToggleText, { color: ascentToggleColor }]}>{expanded ? "Ocultar niveles" : "Próximamente para ti"}</Text>
+                <Feather name={expanded ? "chevron-up" : "chevron-down"} size={16} color={ascentToggleColor} />
+              </Pressable>
+            )}
+            {(!upcoming || expanded) && (
+              <GrowthTimeline>
+                {worldLevels.map(level => (
+                  <GrowthRow
+                    key={level.id}
+                    level={level}
+                    status={upcoming ? "locked" : status(level)}
+                    florecimiento={world.id === "florecimiento"}
+                    onPress={onStagePress ? () => onStagePress(level.id) : level.id === "intencion" ? onIntentionPress : undefined}
+                  />
+                ))}
+              </GrowthTimeline>
+            )}
+          </View>
+        );
+      })}
     </View>
   );
 }

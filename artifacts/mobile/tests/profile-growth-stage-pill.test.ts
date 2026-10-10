@@ -5,6 +5,7 @@ import test from "node:test";
 import React from "react";
 import { renderToStaticMarkup } from "react-dom/server";
 import ts from "typescript";
+import { getThemeStyleId } from "../config/scene-themes.ts";
 
 const source = readFileSync(new URL("../components/GrowthJourney.tsx", import.meta.url), "utf8");
 const ast = ts.createSourceFile("growth.tsx", source, ts.ScriptTarget.Latest, true, ts.ScriptKind.TSX);
@@ -37,9 +38,9 @@ test("Perfil stage shares Tu camino pill styling for Índigo 2 and Cloudy withou
   const levels = readFileSync(new URL("../data/growthLevels.ts", import.meta.url), "utf8");
   const currentName = levels.match(/id: "intencion", name: "([^"]+)"/)![1];
   for (const theme of ["indigo-2", "cloudy"]) {
-    const Pill = new Function("React", "View", "Text", "MaterialCommunityIcons", "useColors", "useSceneTheme", "styles", "GROWTH_COLORS", "CLOUDY_GROWTH_DAY_PILL_BACKGROUND", "useGrowth", compiled)(
+    const Pill = new Function("React", "View", "Text", "MaterialCommunityIcons", "useColors", "useSceneTheme", "styles", "GROWTH_COLORS", "CLOUDY_GROWTH_DAY_PILL_BACKGROUND", "useGrowth", "getThemeStyleId", compiled)(
       React, Native, Native, Native, () => ({ foreground: "#F9F9F9" }), () => ({ theme: { id: theme } }),
-      styles, { current: "#E7B95C" }, cloudy, () => ({ currentStage: { name: currentName } }),
+      styles, { current: "#E7B95C" }, cloudy, () => ({ currentStage: { name: currentName } }), getThemeStyleId,
     );
     const html = renderToStaticMarkup(React.createElement(Pill));
     assert.match(html, /Intención/);
