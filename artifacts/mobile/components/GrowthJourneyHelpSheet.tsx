@@ -100,7 +100,7 @@ export function GrowthJourneyHelpSheet({
         </View>
         <View testID="growth-map-header" style={styles.mapHeader}>
           <Text testID="growth-map-title" style={[styles.mapTitle, { color: colors.foreground }]}>
-            Recorrido
+            El recorrido
           </Text>
           <Text testID="growth-map-subtitle" style={[styles.mapSubtitle, { color: universeColor }]}>
             Primer universo
@@ -110,7 +110,7 @@ export function GrowthJourneyHelpSheet({
             onPress={onClose}
             style={styles.closeButton}
             accessibilityRole="button"
-            accessibilityLabel="Cerrar Recorrido"
+            accessibilityLabel="Cerrar El recorrido"
           >
             <Feather testID="growth-help-close-icon" name="x" size={22} color={colors.foreground} />
           </Pressable>

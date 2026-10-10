@@ -289,7 +289,7 @@ test("the map replaces the old help icon and paragraph, fits its sheet and dismi
   assert.match(html, /data-testid="growth-help-sheet" data-height="541"/);
   assert.match(html, /data-testid="growth-journey-map"/);
   assert.equal(h.nodes.get("growth-journey-map").width, 388);
-  assert.equal(h.nodes.get("growth-map-title").children, "Recorrido");
+  assert.equal(h.nodes.get("growth-map-title").children, "El recorrido");
   assert.equal(h.nodes.get("growth-map-subtitle").children, "Primer universo");
   assert.equal(flatten(h.nodes.get("growth-map-section").style).paddingTop, 45);
   const header = flatten(h.nodes.get("growth-map-header").style);
