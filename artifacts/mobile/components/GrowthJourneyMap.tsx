@@ -94,7 +94,7 @@ export function GrowthJourneyMap({ width }: { width: number }) {
                   <View
                     testID={`growth-map-image-overlay-${s.id}`}
                     pointerEvents="none"
-                    style={[StyleSheet.absoluteFill, styles.darkImageOverlay]}
+                    style={[StyleSheet.absoluteFill, styles.imageOverlay]}
                   />
                   <View pointerEvents="none" style={[StyleSheet.absoluteFill, styles.lockOverlay]}>
                     <RewardLock levelId={`growth-map-${s.id}`} color={lockColor} size={14} />
@@ -121,7 +121,7 @@ const styles = StyleSheet.create({
   lockedNode: { backgroundColor: "rgba(0,0,0,0.16)" },
   lockedImageFrame: { width: LOCKED - 4, height: LOCKED - 4, borderRadius: (LOCKED - 4) / 2, overflow: "hidden" },
   lockedImage: { width: "100%", height: "100%" },
-  darkImageOverlay: { backgroundColor: "rgba(0,0,0,0.3)" },
+  imageOverlay: { backgroundColor: "rgba(255,255,255,0.5)" },
   lockOverlay: { alignItems: "center", justifyContent: "center" },
   label: { marginTop: 6, fontFamily: "Manrope", fontSize: 11, lineHeight: 16, fontWeight: "700", textAlign: "center" },
 });
