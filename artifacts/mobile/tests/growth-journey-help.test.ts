@@ -253,7 +253,7 @@ test("Intención opens inside the same Modal; close and back preserve Tu camino,
   assert.doesNotMatch(render(), /data-testid="growth-stage-detail"/);
 });
 
-test("Primer universo keeps the first-world typography and themed colors without changing its universe label", () => {
+test("Primer universo keeps themed colors, moves down 2px and shrinks 1pt without changing its universe label", () => {
   for (const [id, color] of [
     ["natural", "#E5FFDB"],
     ["cloudy", CLOUDY_GROWTH_STAGE_LABEL_COLOR],
@@ -267,7 +267,8 @@ test("Primer universo keeps the first-world typography and themed colors without
     const style = flatten(subtitle.style);
     assert.equal(subtitle.children, "PRIMER UNIVERSO");
     assert.equal(style.fontFamily, "Manrope");
-    assert.equal(style.fontSize, 11);
+    assert.equal(style.fontSize, 10);
+    assert.equal(style.top, 45);
     assert.equal(style.fontWeight, "700");
     assert.equal(style.letterSpacing, 1.2);
     assert.equal(style.color, color);
@@ -369,7 +370,15 @@ test("the map follows a perfect circle without connecting El Gran Despertar back
       assert.equal(iconStyle.borderWidth, 0);
       assert.equal(iconStyle.height, i === 0 ? 93 : 52);
       assert.equal(iconStyle.width, i === 0 ? 93 : 52);
-      assert.equal(flatten(h.nodes.get(`growth-map-label-${ids[i]}`).style).fontSize, 11);
+      assert.equal(flatten(h.nodes.get(`growth-map-label-${ids[i]}`).style).fontSize, i === 0 ? 15 : 11);
+      if (i === 0) {
+        const world = h.nodes.get("growth-map-world-floracion");
+        assert.equal(world.children, "Primer mundo");
+        assert.equal(flatten(world.style).textAlign, "center");
+        assert.ok(html.indexOf("Floración") < html.indexOf(">Primer mundo<"));
+        assert.equal(flatten(h.nodes.get(`growth-map-label-${ids[i]}`).style).lineHeight, 20);
+        assert.match(node.accessibilityLabel, /Primer mundo/);
+      }
       if (i) {
         assert.equal(iconStyle.backgroundColor, "transparent");
         assert.equal(h.nodes.get(`growth-map-${ids[i]}-reward-lock`).color, "#F9F9F9");

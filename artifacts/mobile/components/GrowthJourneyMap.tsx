@@ -63,7 +63,7 @@ export function GrowthJourneyMap({ width }: { width: number }) {
             key={s.id}
             testID={`growth-map-stop-${s.id}`}
             accessible
-            accessibilityLabel={`${i + 1}. ${s.label}, ${active ? "disponible" : "no disponible"}`}
+            accessibilityLabel={`${i + 1}. ${s.label}${active ? ", Primer mundo" : ""}, ${active ? "disponible" : "no disponible"}`}
             accessibilityState={{ disabled: !active, selected: active }}
             style={{ position: "absolute", left, top: cy - size / 2, width: LABEL_W, alignItems: "center" }}
           >
@@ -100,11 +100,16 @@ export function GrowthJourneyMap({ width }: { width: number }) {
             </View>
             <Text
               testID={`growth-map-label-${s.id}`}
-              style={[styles.label, { color: active ? colors.foreground : colors.mutedForeground, opacity: active ? 1 : 0.7 }]}
+              style={[styles.label, active && styles.bloomLabel, { color: active ? colors.foreground : colors.mutedForeground, opacity: active ? 1 : 0.7 }]}
               numberOfLines={2}
             >
               {s.label}
             </Text>
+            {active && (
+              <Text testID="growth-map-world-floracion" style={[styles.worldLabel, { color: colors.foreground }]}>
+                Primer mundo
+              </Text>
+            )}
           </View>
         );
       })}
@@ -120,4 +125,6 @@ const styles = StyleSheet.create({
   imageOverlay: { backgroundColor: "rgba(0,0,0,0.4)" },
   lockOverlay: { alignItems: "center", justifyContent: "center" },
   label: { marginTop: 6, fontFamily: "Manrope", fontSize: 11, lineHeight: 16, fontWeight: "700", textAlign: "center" },
+  bloomLabel: { fontSize: 15, lineHeight: 20 },
+  worldLabel: { marginTop: 2, fontFamily: "Manrope", fontSize: 11, lineHeight: 16, fontWeight: "500", textAlign: "center" },
 });

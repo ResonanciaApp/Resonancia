@@ -149,6 +149,6 @@ const styles = StyleSheet.create({
   mapHeader: { height: 56 },
   mapSection: { paddingTop: 45 },
   mapTitle: { position: "absolute", top: 16, left: 64, right: 64, textAlign: "center", fontFamily: "Manrope", fontSize: 20, lineHeight: 24, fontWeight: "700" },
-  mapSubtitle: { position: "absolute", top: 43, left: 64, right: 64, textAlign: "center", fontFamily: "Manrope", fontSize: 11, lineHeight: 13, fontWeight: "700", letterSpacing: 1.2 },
+  mapSubtitle: { position: "absolute", top: 45, left: 64, right: 64, textAlign: "center", fontFamily: "Manrope", fontSize: 10, lineHeight: 13, fontWeight: "700", letterSpacing: 1.2 },
   closeButton: { position: "absolute", top: 6.5, left: 20, width: 43, height: 43, borderRadius: 21.5, borderWidth: 0, backgroundColor: "rgba(0,0,0,0.16)", alignItems: "center", justifyContent: "center" },
 });
