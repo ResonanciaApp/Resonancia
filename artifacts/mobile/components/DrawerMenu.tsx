@@ -3,6 +3,7 @@ import { useUser } from "@clerk/expo";
 import { Image } from "expo-image";
 import * as Haptics from "expo-haptics";
 import { DrawerSceneCards } from "@/components/DrawerSceneCards";
+import { GrowthCurrentStagePill } from "@/components/GrowthJourney";
 import { SceneThemeBackground } from "@/components/SceneThemeBackground";
 import { scheduleSceneThemeHaptics } from "@/lib/scene-theme-transition";
 
@@ -57,6 +58,7 @@ const INICIO3_SECTIONS: { title: string | null; items: MenuItem[] }[] = [
   {
     title: null,
     items: [
+      { id: "profile", label: "Perfil", icon: "user", route: "/(tabs)/profile" },
       { id: "premium", label: "Tu Premium", icon: "star", route: "__overlay:/membresia", color: MEMBERSHIP_AURORA.premium.accent },
       { id: "favorites", label: "Favoritos", icon: "heart", mciIcon: "heart-outline", route: "__overlay:/favoritos-todos" },
       { id: "library", label: "Biblioteca", icon: "book", mciIcon: "bookshelf", route: "__biblioteca_overlay" },
@@ -285,16 +287,9 @@ export function DrawerMenu() {
                         {fullName || "Mi perfil"}
                       </Text>
                     </Pressable>
-                    <Pressable
-                      onPress={() => navigate("/(tabs)/profile")}
-                      style={styles.verPerfilBtn}
-                      accessibilityRole="button"
-                      accessibilityLabel="Ver perfil"
-                    >
-                      <Text style={[styles.verPerfilText, styles.inicio3VerPerfilText]}>
-                        Ver perfil
-                      </Text>
-                    </Pressable>
+                    <View testID="drawer-current-stage-pill" style={{ alignSelf: "flex-start" }}>
+                      <GrowthCurrentStagePill />
+                    </View>
                   </>
                 ) : (
                   <>
@@ -307,17 +302,6 @@ export function DrawerMenu() {
                 )}
               </View>
 
-              {loggedIn && (
-                <Pressable
-                  onPress={() => navigate("/(tabs)/profile")}
-                  hitSlop={10}
-                  style={styles.profileChevronButton}
-                  accessibilityRole="button"
-                  accessibilityLabel="Ver perfil"
-                >
-                  <Feather name="chevron-right" size={23} color="#DEDEDE" />
-                </Pressable>
-              )}
             </View>
 
           </View>
@@ -526,7 +510,7 @@ const styles = StyleSheet.create({
     color: "#F9F9F9",
   },
   // ── Items ──
-  itemGroup: { gap: 2, marginTop: 10 },
+  itemGroup: { gap: 10, marginTop: 10 },
   inicio3Sections: {
     marginTop: -1,
   },

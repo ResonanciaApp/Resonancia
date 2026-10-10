@@ -26,7 +26,7 @@ test("mixer, breathing exercises and mood register follow notifications in the s
   assert.match(sections, /id: "mixer", label: "Mezclador"[^}]*route: "__mixer"/);
   assert.match(sections, /id: "breathing", label: "Respiración"[^}]*route: "\/respiracion"/);
   assert.match(sections, /id: "mood-register"[^}]*route: "__mood_picker"/);
-  assert.match(source, /itemGroup: \{ gap: 2, marginTop: 10 \}/);
+  assert.match(source, /itemGroup: \{ gap: 10, marginTop: 10 \}/);
   assert.match(source, /section\.items\.map\(\(item\) => \([\s\S]*?style=\{styles\.item\}/);
   assert.match(source, /item: \{[\s\S]*?paddingVertical: 5,/);
 });
@@ -41,4 +41,14 @@ test("larger bold menu contents keep row heights and do not push scenes down", (
   for (const originalIcon of [20, 23, 21]) {
     assert.equal(originalIcon + 2 * 6.5, originalIcon + 3 + 2 * 5);
   }
+});
+
+test("Perfil precedes Premium and live stage replaces the old profile header controls", () => {
+  const source = readFileSync(new URL("../components/DrawerMenu.tsx", import.meta.url), "utf8");
+  const profile = source.indexOf('id: "profile", label: "Perfil"');
+  assert.ok(profile >= 0 && profile < source.indexOf('id: "premium", label: "Tu Premium"'));
+  assert.match(source, /id: "profile"[^\n]*route: "\/\(tabs\)\/profile"/);
+  assert.match(source, /testID="drawer-current-stage-pill"[\s\S]*?<GrowthCurrentStagePill \/>/);
+  assert.doesNotMatch(source, /<Text[^>]*>\s*Ver perfil\s*<\/Text>/);
+  assert.doesNotMatch(source, /style=\{styles\.profileChevronButton\}/);
 });
