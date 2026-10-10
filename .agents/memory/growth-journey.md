@@ -173,11 +173,11 @@ Expansión conserva únicamente el aviso de avatares. No mostrar el antiguo logr
 
 **How to apply:** La eliminación se limita al recorrido; no retirar la + real de Perfil ni modificar la exportación de historias. Mantener el aviso de avatares alineado con la descripción, con texto completo en una sola línea.
 
-Los candados de los avisos de avatares toman el color del borde del día posicionado en Inicio, derivado del tema actual, no un morado fijo.
+Los candados de los avisos de avatares del recorrido tienen color propio fijo y ya no siguen el borde del día posicionado en Inicio.
 
-**Why:** El usuario pidió igualar ese borde; el anillo de Inicio aclara el degradado del tema y no usa directamente el token morado de las píldoras.
+**Why:** El usuario sustituyó explícitamente el vínculo anterior con el anillo de Inicio por candados blancos para todos los temas.
 
-**How to apply:** Reutilizar el mismo cálculo cromático del anillo, conservando la atenuación conjunta de candado y texto en etapas bloqueadas.
+**How to apply:** No volver a derivar su color del tema ni del anillo de Inicio. Conservar la atenuación conjunta de candado y texto en fases bloqueadas.
 
 Los detalles de Florecimiento deben usar la plantilla de Sistema de rachas, con el hero original de cada etapa. La referencia de Semilla entregada por el usuario define la composición, no la imagen ni los textos de Intención.
 

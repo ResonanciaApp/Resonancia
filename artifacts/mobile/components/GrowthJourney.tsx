@@ -6,7 +6,6 @@ import { Image, Platform, Pressable, StyleSheet, Text, View } from "react-native
 
 import { CLOUDY_GROWTH_ASCENT_TOGGLE_COLOR, CLOUDY_GROWTH_DAY_PILL_BACKGROUND, CLOUDY_GROWTH_STAGE_LABEL_COLOR, MEMBERSHIP_AURORA, POSITIONED_DAY_GRADIENT, getProfileSecondaryTextColor } from "@/constants/colors";
 import { CinematicFadeSlide } from "@/components/CinematicFadeSlide";
-import { getPositionedDayGradient } from "@/components/StreakWeekRow";
 import { type GrowthLevel } from "@/data/growthLevels";
 import { useGrowth } from "@/context/GrowthContext";
 import { resolveAvatarUrl } from "@/lib/avatar";
@@ -417,7 +416,7 @@ function GrowthRow({
           accessibilityState={{ disabled: true }}
         >
           <View testID={`${level.id}-reward-content`} style={[styles.rewardContent, styles.avatarRewardContent]}>
-          <RewardLock levelId={level.id} color={getPositionedDayGradient(theme.gradient)[0]} unlocked={status !== "locked" && progress?.grantedRewards.some(grant => grant.rewardId === item.id)} />
+          <RewardLock levelId={level.id} color="#F9F9F9" size={14} unlocked={status !== "locked" && progress?.grantedRewards.some(grant => grant.rewardId === item.id)} />
           <Text
             style={[styles.rewardText, { color: status === "locked" ? GROWTH_COLORS.muted : colors.mutedForeground }]}
             numberOfLines={1}
@@ -509,7 +508,7 @@ export function GrowthJourney({ onIntentionPress, onStagePress }: { onIntentionP
       {loading && <Text style={{ color: "#C4C4C4" }}>Verificando tu progreso…</Text>}
       {error && <Text style={{ color: "#C4C4C4" }}>No se pudo actualizar Tu camino. Se conserva la última información disponible.</Text>}
       <GrowthStageHeading
-        eyebrow="PRIMERA ETAPA"
+        eyebrow="PRIMER MUNDO"
         title="Florecimiento"
       />
       <GrowthTimeline>
@@ -525,7 +524,7 @@ export function GrowthJourney({ onIntentionPress, onStagePress }: { onIntentionP
       </GrowthTimeline>
       <View style={styles.stageGap} pointerEvents="none" />
       <GrowthStageHeading
-        eyebrow="SEGUNDA ETAPA"
+        eyebrow="SEGUNDO MUNDO"
         title="El ascenso"
         second
       />
@@ -665,19 +664,19 @@ const styles = StyleSheet.create({
   levelImage: { width: "100%", height: "100%" },
   activeArtOverlay: { position: "absolute", top: 0, left: 0, tintColor: "#000000", opacity: 0.1 },
   copy: {
-    marginLeft: 196,
+    marginLeft: 206,
     flex: 1,
     justifyContent: "center",
     paddingRight: 1,
   },
   lockedCopy: { opacity: 0.55 },
-  stageContentOffset: { transform: [{ translateX: -15 }] },
-  stageSummaryOffset: { transform: [{ translateX: -30 }] },
+  stageContentOffset: { transform: [{ translateX: -5 }] },
+  stageSummaryOffset: { transform: [{ translateX: -20 }] },
   rewardRow: { height: "auto", minHeight: GROWTH_ROW_HEIGHT, justifyContent: "flex-start", paddingBottom: 20 },
   rewardCopy: { flex: 0, paddingTop: 34 },
   reward: {
     alignSelf: "stretch",
-    transform: [{ translateY: -4 }, { translateX: -30 }],
+    transform: [{ translateY: -4 }, { translateX: -20 }],
     // Keep the first lock's visual position, but remove empty space between locks.
     marginTop: 19,
     minHeight: 16,

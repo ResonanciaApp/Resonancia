@@ -9,9 +9,9 @@ Al reordenar una sección de Descubrir, conservar el orden vigente de las demás
 
 **How to apply:** Contrastar las expectativas con la pantalla actual y la instrucción del usuario. Actualizar solo las expectativas obsoletas, sin cambiar contenido o posiciones no solicitados para conseguir que pase la prueba.
 
-En Perfil también hay expectativas históricas de tamaños, espaciado y estructura. Ante un fallo ajeno al cambio solicitado, contrastarlo con la versión anterior antes de modificar la UI.
+En Perfil y Tu camino también hay expectativas históricas de tamaños, espaciado y estructura. Ante un fallo ajeno al cambio solicitado, contrastarlo con la versión anterior antes de modificar la UI.
 
-**Why:** Algunas pruebas amplias ya fallaban antes de los ajustes de iconos y calendario. Corregir la pantalla para satisfacerlas habría deshecho decisiones visuales posteriores.
+**Why:** Algunas pruebas amplias ya fallaban antes de los ajustes de iconos y calendario. En Tu camino, las expectativas de las antiguas tarjetas altas de recompensas sobrevivieron al diseño compacto de candado y texto. Corregir la pantalla para satisfacerlas habría deshecho decisiones visuales posteriores.
 
 **How to apply:** Verificar el cambio con pruebas específicas y comparar los fallos generales contra la base anterior. Separar regresiones nuevas de fallos preexistentes; no declarar toda la suite aprobada si solo pasó el alcance específico.
 

@@ -116,7 +116,7 @@ function uiHarness(themeId = "indigo") {
     "@/hooks/useColors": { useColors: () => ({ foreground: "#FBFBFB" }) },
     "@/constants/colors": { NAVIGATION_HELP_ICON_COLOR: "#F9F9F9", MEMBERSHIP_AURORA: { premium: { accent: "#BE9650" } }, CLOUDY_GROWTH_STAGE_LABEL_COLOR, POSITIONED_DAY_GRADIENT },
     "@/components/GrowthJourney": { GrowthJourney: (props: any) => React.createElement(
-      native.Pressable, { testID: "test-open-intention", onPress: () => props.onStagePress("intencion") }, "PRIMERA ETAPA",
+      native.Pressable, { testID: "test-open-intention", onPress: () => props.onStagePress("intencion") }, "PRIMER MUNDO",
     ) },
     "@/components/GrowthStageDetail": { GrowthStageDetail: (props: any) => {
       detailProps = props;
@@ -185,8 +185,8 @@ test("Tu camino centers a 13px two-line intro, lowers the whole journey another 
   assert.equal(flatten(h.nodes.get("growth-journey-intro-space").style).paddingHorizontal, 20);
   assert.equal(flatten(h.nodes.get("growth-journey-intro-space").style).justifyContent, "center");
   assert.ok(html.indexOf("Tu camino") < html.indexOf(intro.children));
-  assert.ok(html.indexOf(intro.children) < html.indexOf("PRIMERA ETAPA"));
-  assert.ok(html.indexOf("Tu camino") < html.indexOf("PRIMERA ETAPA"));
+  assert.ok(html.indexOf(intro.children) < html.indexOf("PRIMER MUNDO"));
+  assert.ok(html.indexOf("Tu camino") < html.indexOf("PRIMER MUNDO"));
   const infoIcon = html.match(/<i[^>]*data-testid="growth-journey-help-info"[^>]*>/)?.[0];
   assert.ok(infoIcon);
   assert.match(infoIcon, /data-size="24"/);

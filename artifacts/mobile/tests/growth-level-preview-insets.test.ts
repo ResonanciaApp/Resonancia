@@ -438,7 +438,7 @@ test("Cloudy matches both stage labels in sky blue and uses F9F9F9 for the ascen
     sceneMock.useSceneTheme = () => ({ theme: { id, gradient: TEST_GRADIENT } });
     const html = renderToStaticMarkup(React.createElement(componentModule.exports.GrowthJourney));
     const expected = id === "cloudy" ? "#B5EFFF" : "#C9A6FF";
-    for (const label of ["PRIMERA ETAPA", "SEGUNDA ETAPA"]) {
+    for (const label of ["PRIMER MUNDO", "SEGUNDO MUNDO"]) {
       assert.match(html, new RegExp(`data-color="${expected.replace(/[()]/g, "\\$&")}"[^>]*>${label}`));
     }
     const toggleColor = id === "cloudy" ? "#F9F9F9" : "#C9A6FF";
@@ -574,7 +574,7 @@ test("all nine pastel stages shrink 10% without a hard frame or changes to ascen
   assert.doesNotMatch(ascent, /data-border-width|data-transform/);
 });
 
-test("Semilla displays only a larger inline filled lock and a one-line avatar reward", () => {
+test("Semilla displays a 14-point inline filled lock and a one-line avatar reward", () => {
   const semilla = {
     id: "semilla", name: "Semilla", startDay: 1, endDay: 7,
     image: 1, story: "Tu primer paso abre un espacio para crecer.",
@@ -594,9 +594,9 @@ test("Semilla displays only a larger inline filled lock and a one-line avatar re
   assert.match(lock, /data-icon="lock"/);
   const source = readFileSync(new URL("../components/GrowthJourney.tsx", import.meta.url), "utf8");
   assert.match(source, /name=\{unlocked \? "lock-open-variant" : "lock"\}/);
-  assert.match(lock, /data-line-height="16"/);
+  assert.match(lock, /data-line-height="14"/);
   assert.doesNotMatch(lock, /data-opacity=/);
-  assert.match(lock, /data-height="16" data-width="16"/);
+  assert.match(lock, /data-height="14" data-width="14"/);
   assert.doesNotMatch(lock, /data-position="absolute"/);
   assert.match(html, /data-color="rgba\(196,194,222,0.8\)"[^>]*data-lines="1" data-auto-size="true"[^>]*>Desbloquea 5 avatares a elección/);
   assert.doesNotMatch(html, /semilla-reward-chest|data-source="3"/);
@@ -614,7 +614,7 @@ test("Semilla displays only a larger inline filled lock and a one-line avatar re
   }
 });
 
-test("all reward stages share the 16-point inline lock and single-line text without avatar artwork", () => {
+test("all reward stages share the 14-point inline lock and single-line text without avatar artwork", () => {
   for (const [id, name] of [["crecimiento", "Crecimiento"], ["vegetacion", "Vegetación"], ["expansion", "Expansión"]]) {
     const story = `Descripción de ${name}.`;
     const html = renderToStaticMarkup(React.createElement(GrowthRow, {
@@ -631,7 +631,7 @@ test("all reward stages share the 16-point inline lock and single-line text with
     assert.ok(lock, id);
     assert.match(lock, /data-icon="lock"/);
     assert.doesNotMatch(lock, /data-opacity=/);
-    assert.match(lock, /data-height="16" data-width="16"/);
+    assert.match(lock, /data-height="14" data-width="14"/);
     assert.doesNotMatch(lock, /data-position="absolute"/);
     assert.match(html, /data-color="rgba\(196,194,222,0.8\)"[^>]*>Desbloquea 5 avatares a elección/);
     assert.doesNotMatch(html, /reward-chest|data-source="3"/);
@@ -691,7 +691,7 @@ test("Profile keeps the original wall plus artwork and rotation independently of
   assert.match(html, /data-icon="plus"/);
 });
 
-test("all avatar reward rows move up 10px together and use the positioned day's theme-derived border hue", () => {
+test("all avatar reward rows preserve their vertical position and use fixed white locks independent of the theme", () => {
   const sceneMock = mocks["@/context/SceneThemeContext"] as { useSceneTheme: () => { theme: { id: string; gradient: readonly [string, string] } } };
   const originalTheme = sceneMock.useSceneTheme;
   try {
@@ -706,9 +706,9 @@ test("all avatar reward rows move up 10px together and use the positioned day's 
           const lock = html.match(new RegExp(`<div[^>]*data-testid="${id}-reward-lock"[^>]*>`))?.[0];
           assert.ok(reward);
           assert.ok(lock);
-          assert.ok(reward.includes(`data-margin-top="${12 - 10}"`));
-          assert.ok(reward.includes('data-transform="[{&quot;translateY&quot;:-4}]"'));
-          assert.ok(lock.includes(`data-color="${streakModule.exports.getPositionedDayGradient(gradient)[0]}"`));
+          assert.ok(reward.includes('data-margin-top="19"'));
+          assert.ok(reward.includes('data-transform="[{&quot;translateY&quot;:-4},{&quot;translateX&quot;:-20}]"'));
+          assert.ok(lock.includes('data-color="#F9F9F9"'));
           assert.match(html, /Desbloquea 5 avatares a elección/);
         }
       }
@@ -783,7 +783,7 @@ test("a single timeline line connects node centers even when reward rows have di
   }
 });
 
-test("every timeline stage keeps its copy position and moves its artwork 30px right from the previous offset while preserving nodes", () => {
+test("every timeline stage pushes its copy 10px right while preserving node positions and illustration sizes", () => {
   const levelsModule = { exports: {} as { growthLevels: any[]; ascentLevels: any[] } };
   const levelsSource = readFileSync(new URL("../data/growthLevels.ts", import.meta.url), "utf8");
   new Function("require", "exports", ts.transpileModule(levelsSource, {
@@ -799,7 +799,7 @@ test("every timeline stage keeps its copy position and moves its artwork 30px ri
       }));
       const copy = html.match(new RegExp(`<div[^>]*data-testid="${level.id}-copy"[^>]*>`))?.[0];
       assert.ok(copy);
-      assert.ok(copy.includes(`data-margin-left="${166 + 30}"`), level.id);
+      assert.ok(copy.includes('data-margin-left="206"'), level.id);
       const copyContent = html.slice(html.indexOf(copy));
       assert.ok(copyContent.includes(`data-testid="${level.id}-day-pill"`));
       assert.ok(copyContent.includes(`>${level.name}</div>`));
@@ -821,7 +821,7 @@ test("every timeline stage keeps its copy position and moves its artwork 30px ri
     }
   }
   const source = readFileSync(new URL("../components/GrowthJourney.tsx", import.meta.url), "utf8");
-  assert.match(source, /copy: \{\s+marginLeft: 196,\s+flex: 1,/);
+  assert.match(source, /copy: \{\s+marginLeft: 206,\s+flex: 1,/);
   assert.match(source, /lineBase: \{\s+position: "absolute",\s+left: 9,/);
   assert.match(source, /rewardCopy: \{ flex: 0, paddingTop: 34 \}/);
 });
@@ -834,7 +834,7 @@ test("reward pills grow in normal flow and preserve nonreward and profile previe
   assert.doesNotMatch(pill, /position: "absolute"|height:/);
   assert.doesNotMatch(pill, /width:/);
   assert.match(pill, /alignSelf: "stretch"/);
-  assert.match(pill, /marginTop: 2/);
+  assert.match(pill, /marginTop: 19/);
   assert.doesNotMatch(pill, /marginLeft|marginRight|paddingHorizontal/);
   assert.match(source, /rewardCopy: \{ flex: 0, paddingTop: 34 \}/);
   const ast = ts.createSourceFile("GrowthJourney.tsx", source, ts.ScriptTarget.Latest, true, ts.ScriptKind.TSX);
@@ -858,7 +858,7 @@ test("reward pills grow in normal flow and preserve nonreward and profile previe
   assert.match(copy.getText(ast), /testID=\{`\$\{level.id\}-reward-content`\} style=\{\[styles.rewardContent, styles.avatarRewardContent\]\}/);
   assert.doesNotMatch(source, /rewardAvatarOverlay|RewardArtwork|RewardAvatar|REWARD_AVATAR/);
   assert.match(source, /avatarRewardLock: \{ width: 16, height: 16, lineHeight: 16, includeFontPadding: false, flexShrink: 0 \}/);
-  assert.match(pill, /minHeight: 50/);
+  assert.match(pill, /minHeight: 16/);
   // Previous rendered height was 36px artwork + 16px padding + 2px border = 54px.
   assert.equal(36 + 8 * 2 + 2 - 50, 4);
   assert.match(source, /rewardText: \{ flexShrink: 1/);

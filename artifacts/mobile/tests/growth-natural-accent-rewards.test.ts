@@ -69,7 +69,7 @@ test("Natural replaces only the Cloudy blue accents, preserving pill and line tr
     themeId = id;
     const cloudyFamily = ["natural", "cloudy"].includes(id);
     const expectedPill = id === "natural" ? "rgba(229,255,219,0.20)" : id === "cloudy" ? CLOUDY_GROWTH_DAY_PILL_BACKGROUND : styles.dayPill.backgroundColor;
-    for (const eyebrow of ["PRIMERA ETAPA", "SEGUNDA ETAPA"]) {
+    for (const eyebrow of ["PRIMER MUNDO", "SEGUNDO MUNDO"]) {
       render(components.GrowthStageHeading, { eyebrow, title: "Etapa" });
       assert.equal(nodes.find(node => node.children === eyebrow).style.color, id === "natural" ? "#E5FFDB" : id === "cloudy" ? CLOUDY_GROWTH_STAGE_LABEL_COLOR : styles.sectionEyebrow.color);
     }
@@ -87,7 +87,7 @@ test("Natural replaces only the Cloudy blue accents, preserving pill and line tr
   }
 });
 
-test("every stage keeps its image offset and shifts summary another 15px and rewards 30px left without changing vertical spacing", () => {
+test("each stage moves its image 10px right, pushes copy 10px and moves summary and rewards another 10px without vertical changes", () => {
   for (const id of ["natural", "cloudy", "indigo2", "pleyades"]) {
     themeId = id;
     for (const florecimiento of [true, false]) {
@@ -95,15 +95,19 @@ test("every stage keeps its image offset and shifts summary another 15px and rew
         render(components.GrowthRow, { level, status, florecimiento });
         const art = nodes.find(node => node.testID === "crecimiento-stage-art").style;
         const summary = nodes.find(node => node.testID === "crecimiento-stage-summary").style;
-        assert.deepEqual(art.transform, [{ translateX: -15 }]);
-        assert.deepEqual(summary.transform, [{ translateX: -30 }]);
+        assert.deepEqual(art.transform, [{ translateX: -5 }]);
+        assert.deepEqual(summary.transform, [{ translateX: -20 }]);
         assert.equal(art.top, florecimiento ? 32 : 34);
         assert.equal(art.left, florecimiento ? 38 : 40);
         assert.equal(nodes.find(node => node.testID === "crecimiento-stage-node").style.left, 1);
-        assert.equal(nodes.find(node => node.testID === "crecimiento-copy").style.marginLeft, 196);
+        assert.equal(nodes.find(node => node.testID === "crecimiento-copy").style.marginLeft, 206);
+        for (const lock of nodes.filter(node => node.levelId === level.id)) {
+          assert.equal(lock.color, "#F9F9F9");
+          assert.equal(lock.size, 14);
+        }
         assert.equal(nodes.find(node => node.level === level).attenuated, status !== "locked");
         for (const reward of nodes.filter(node => /^crecimiento-reward(?:-reward-\d)?$/.test(node.testID ?? ""))) {
-          assert.deepEqual(reward.style.transform, [{ translateY: -4 }, { translateX: -30 }]);
+          assert.deepEqual(reward.style.transform, [{ translateY: -4 }, { translateX: -20 }]);
         }
       }
     }
