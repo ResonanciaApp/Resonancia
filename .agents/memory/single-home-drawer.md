@@ -15,8 +15,8 @@ Mezclador, Respiración y Registro de ánimo continúan directamente debajo de N
 
 **How to apply:** Conservar el orden y la separación regular entre filas; no reintroducir un encabezado ni reservar un hueco para la antigua sección.
 
-Las escenas deben conservar su altura cuando cambia la cabecera, crecen los menús o se agregan opciones encima; no desplazarlas por esos cambios salvo que el usuario lo pida.
+Las escenas deben conservar su altura cuando crecen los menús o se agregan opciones encima; no desplazarlas por esos cambios salvo que el usuario lo pida.
 
-**Why:** El usuario pidió mantenerlas, corrigió el desplazamiento causado por la nueva opción Perfil y reiteró que poner el nombre bajo el avatar debe empujar los menús, pero no las escenas.
+**Why:** El usuario pidió mantenerlas y corrigió el desplazamiento causado por la nueva opción Perfil y el aumento de separación entre menús.
 
 **How to apply:** Compensar primero el espacio vacío que separa el menú de las escenas, conservando el tamaño y las opciones de las escenas; no reducir la separación solicitada entre menús.

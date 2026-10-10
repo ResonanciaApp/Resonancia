@@ -127,10 +127,6 @@ export function DrawerMenu() {
 
   const topPad = Platform.OS === "web" ? 67 : insets.top;
   const bottomPad = Platform.OS === "web" ? 34 : insets.bottom;
-  const [profileHeaderHeight, setProfileHeaderHeight] = React.useState<number | null>(null);
-  // Original horizontal header: top inset + padding + 75px avatar + bottom padding.
-  const originalProfileHeaderHeight = topPad + 16 + 1 + 75 + 16;
-  const sceneHeaderOffset = (profileHeaderHeight ?? originalProfileHeaderHeight) - originalProfileHeaderHeight;
 
   // Menu fijo: nunca se desliza horizontalmente. Solo su contenido aparece
   // con un fade rapido y baja 7 px, derivado del mismo progreso del drawer.
@@ -253,11 +249,8 @@ export function DrawerMenu() {
           />
 
           {/* ── Header de perfil ── */}
-          <View
-            style={[styles.profileHeader, { paddingTop: topPad + 16 }]}
-            onLayout={({ nativeEvent }) => setProfileHeaderHeight(nativeEvent.layout.height)}
-          >
-            {/* Avatar above identity; its visual lift does not affect layout. */}
+          <View style={[styles.profileHeader, { paddingTop: topPad + 16 }]}>
+            {/* Fila avatar + nombre + cerrar */}
             <View style={styles.profileSection}>
               {avatarSource ? (
                 <View style={[styles.profilePhoto, styles.inicio3ProfilePhoto]}>
@@ -386,7 +379,7 @@ export function DrawerMenu() {
               ))}
             </View>
 
-            <View style={[styles.scenePositionCompensation, { marginTop: -107 - sceneHeaderOffset }]}>
+            <View style={styles.scenePositionCompensation}>
               <DrawerSceneCards activeId={activeSceneId} onSelect={selectVisualTheme} />
             </View>
           </ScrollView>
@@ -427,8 +420,8 @@ const styles = StyleSheet.create({
   },
   profileSection: {
     position: "relative",
-    flexDirection: "column",
-    alignItems: "flex-start",
+    flexDirection: "row",
+    alignItems: "center",
     gap: 12,
     paddingTop: 1,
     paddingBottom: 16,
@@ -458,13 +451,12 @@ const styles = StyleSheet.create({
     backgroundColor: "rgba(255,255,255,0.04)",
   },
   inicio3ProfilePhoto: {
-    width: 42 * 1.2,
-    height: 42 * 1.2,
-    borderRadius: (42 * 1.2) / 2,
-    transform: [{ translateY: -10 }],
+    width: 75,
+    height: 75,
+    borderRadius: 37.5,
   },
   profileInfo: {
-    alignSelf: "stretch",
+    flex: 1,
     gap: 3,
     justifyContent: "center",
   },
