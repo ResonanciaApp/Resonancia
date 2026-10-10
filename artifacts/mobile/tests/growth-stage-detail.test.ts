@@ -164,9 +164,12 @@ test("the detail shares the streak screen's theme, safe-area spacing, circular c
       assert.equal(nodes.get("growth-stage-detail").locations, locations);
        assert.equal(nodes.get("growth-detail-hero-artwork").size, 274);
        assert.equal(nodes.get("growth-detail-hero-artwork").height, undefined, "square image, no viewport stretch");
-        assert.equal(flat(nodes.get("growth-stage-detail-fixed-art").style).top, Math.max(inset, 40) + 76);
-        assert.equal(nodes.get("growth-stage-detail-scroll").contentContainerStyle.paddingTop, Math.max(inset, 40) + 76 + 274 + 16);
-      assert.match(html, new RegExp(`data-top-padding="${Math.max(inset, 40) + 24}"`));
+        assert.equal(flat(nodes.get("growth-stage-detail-fixed-art").style).top, Math.max(inset, 40) + 83);
+        assert.equal(nodes.get("growth-stage-detail-scroll").contentContainerStyle.paddingTop, Math.max(inset, 40) + 83 + 274 + 16);
+      assert.match(html, new RegExp(`data-top-padding="${Math.max(inset, 40) + 21}"`));
+      const titleCenter = flat(nodes.get("growth-stage-detail-fixed-art").style).top - 20 - 41 / 2;
+      const closeCenter = flat(nodes.get("growth-stage-detail-fixed-header").style).paddingTop + 43 / 2;
+      assert.equal(closeCenter, titleCenter, "X and its background align with the title");
       const scroll = nodes.get("growth-stage-detail-scroll");
       assert.equal(scroll.bounces, true);
       assert.equal(scroll.alwaysBounceVertical, true);
@@ -179,7 +182,7 @@ test("the detail shares the streak screen's theme, safe-area spacing, circular c
     }
   }
   platform = "web";
-  assert.match(render(), /data-top-padding="91"/);
+  assert.match(render(), /data-top-padding="88"/);
   platform = "ios"; width = 375; height = 812; top = 24;
 });
 
@@ -207,9 +210,9 @@ test("the detail has only one continuous theme background, without opaque hero s
   assert.match(journey, /bloomArt: \{ width: GROWTH_BLOOM_ART_SIZE, height: GROWTH_BLOOM_ART_SIZE/);
 });
 
-test("title is seven points smaller and the entire layout is lowered sixteen pixels with a twenty-pixel artwork gap", () => {
+test("title and artwork are lowered another seven pixels with a twenty-pixel gap", () => {
   render();
-  assert.equal(nodes.get("growth-stage-detail-scroll").contentContainerStyle.paddingTop, 406);
+  assert.equal(nodes.get("growth-stage-detail-scroll").contentContainerStyle.paddingTop, 413);
   const block = flat(nodes.get("growth-stage-detail-title-block").style);
   assert.equal(block.gap, 8);
   assert.equal(block.transform, undefined);
@@ -217,7 +220,7 @@ test("title is seven points smaller and the entire layout is lowered sixteen pix
   const anchor = flat((React.Children.toArray(art.children)[0] as React.ReactElement<{ style: unknown }>).props.style);
   assert.equal(anchor.position, "absolute");
   assert.equal(anchor.bottom, 274 + 20);
-  assert.equal(flat(art.style).top, 116);
+  assert.equal(flat(art.style).top, 123);
   assert.ok(!JSON.stringify(nodes.get("growth-stage-detail-scroll").children).includes("growth-stage-detail-title-block"));
   const source = readFileSync(new URL("../components/GrowthStageDetail.tsx", import.meta.url), "utf8");
   assert.match(source, /copy: \{[^}]*marginTop: 0/);
@@ -279,7 +282,7 @@ test("a fixed alpha mask progressively hides content as it scrolls into the imag
     const fade = nodes.get("growth-stage-detail-scroll-fade");
     assert.equal(nodes.get("growth-stage-detail-scroll").contentContainerStyle.minHeight, height + 274, "even short descriptions can scroll up towards the image");
     assert.deepEqual(fade.colors, ["transparent", "transparent", "#000000", "#000000"]);
-    assert.deepEqual(fade.locations, [0, (390 - 48) / height, (390 + 8) / height, 1]);
+    assert.deepEqual(fade.locations, [0, (397 - 48) / height, (397 + 8) / height, 1]);
     assert.equal(fade.pointerEvents, "none");
     assert.equal(flat(fade.style).position, "absolute");
     const mask = nodes.get("growth-stage-detail-content-mask");

@@ -43,7 +43,7 @@ export function GrowthStageDetail({
   const bottomPad = Platform.OS === "web" ? 34 : insets.bottom;
   const ascent = (level?.group ?? (stageId.startsWith("ascenso-") ? "ascenso" : "florecimiento")) === "ascenso";
   const heroSize = (ascent ? GROWTH_STAGE_ICON_SIZE : GROWTH_BLOOM_ART_SIZE) * 2;
-  const heroTop = topPad + 76;
+  const heroTop = topPad + 83;
   const heroBottom = heroTop + heroSize;
   const fadeStart = Math.min(1, Math.max(0, (heroBottom - 48) / height));
   const fadeEnd = Math.min(1, Math.max(fadeStart, (heroBottom + 8) / height));
@@ -104,7 +104,7 @@ export function GrowthStageDetail({
 
       </ScrollView>
       </MaskedView>
-      <View testID="growth-stage-detail-fixed-header" style={[styles.header, { paddingTop: topPad + 24 }]}>
+      <View testID="growth-stage-detail-fixed-header" style={[styles.header, { paddingTop: heroTop - 20 - 41 / 2 - 43 / 2 }]}>
         <Pressable
           onPress={onClose}
           style={styles.headerButton}
