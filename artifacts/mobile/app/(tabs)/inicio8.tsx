@@ -1907,13 +1907,13 @@ const Inicio2HeroStatic = React.memo(function Inicio2HeroStatic({
           isInicio3 && slowHeaderStyle,
         ]}
       >
-        <View
+        <RAnimated.View
           style={[
             styles.inicio2HeroProfileButton,
             isInicio3 && styles.inicio3HeroProfileLift,
+            avatarDrawerStyle,
           ]}
         >
-          <RAnimated.View style={avatarDrawerStyle}>
           <Pressable
             onPress={onOpenDrawer}
             hitSlop={10}
@@ -1936,7 +1936,6 @@ const Inicio2HeroStatic = React.memo(function Inicio2HeroStatic({
               </View>
             )}
           </Pressable>
-          </RAnimated.View>
           <Pressable
             onPress={onOpenDrawer}
             hitSlop={8}
@@ -1958,7 +1957,7 @@ const Inicio2HeroStatic = React.memo(function Inicio2HeroStatic({
               </Text>
             ) : null}
           </Pressable>
-        </View>
+        </RAnimated.View>
 
         <View
           style={[

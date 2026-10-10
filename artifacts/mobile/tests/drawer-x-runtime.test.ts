@@ -78,6 +78,7 @@ function harness() {
     useSharedValue: (value: number) => React.useRef(new Shared(value)).current,
     useAnimatedStyle: (fn: any) => fn(),
     runOnJS: (fn: any) => fn,
+    runOnUI: (fn: any) => fn,
     cancelAnimation: (value: Shared) => {
       const animation = value.animation;
       value.animation = undefined;
@@ -118,6 +119,7 @@ function harness() {
     },
     "expo-router": { usePathname: () => currentPath },
     "react-native-reanimated": Reanimated,
+    "expo-linear-gradient": { LinearGradient: "LinearGradient" },
     "react-native-gesture-handler": { GestureDetector: "GestureDetector", Gesture: {
       Pan: () => gesture("pan"), Tap: () => gesture("tap"),
       Exclusive: (...items: any[]) => ({ items }),
