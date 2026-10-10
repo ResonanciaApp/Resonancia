@@ -1,3 +1,4 @@
+import { Feather } from "@expo/vector-icons";
 import { LinearGradient } from "expo-linear-gradient";
 import React, { useMemo } from "react";
 import {
@@ -23,8 +24,8 @@ export function GrowthJourneyHelpSheet({
   const insets = useSafeAreaInsets();
   const { theme } = useSceneTheme();
   const colors = useColors();
-  // Reserve the title's 25pt space without clipping the enlarged map.
-  const sheetHeight = Math.min(height * 0.8, GROWTH_MAP_HEIGHT + 25 + 44 + 32 + Math.max(insets.bottom, 16));
+  // Add 25pt to the previous window; the fixed header keeps its title in place.
+  const sheetHeight = Math.min(height * 0.8, GROWTH_MAP_HEIGHT + 50 + 44 + 32 + Math.max(insets.bottom, 16));
   const { rendered, sheetY, backdropOpacity } = useGrowthJourneySheetMotion(visible, sheetHeight);
   const pan = useMemo(() => PanResponder.create({
     onMoveShouldSetPanResponder: (_, gesture) =>
@@ -43,8 +44,6 @@ export function GrowthJourneyHelpSheet({
     },
   }), [visible, sheetHeight, sheetY, onClose]);
 
-  // Keep the hidden sheet laid out so its paragraph also measures the former
-  // intro at the same width/font scale, preserving the requested stage shift.
   return (
     <View
       style={[StyleSheet.absoluteFill, styles.overlay, { opacity: rendered ? 1 : 0 }]}
@@ -94,15 +93,27 @@ export function GrowthJourneyHelpSheet({
             <View style={styles.handle} />
           </Pressable>
         </View>
+        <View testID="growth-map-header" style={styles.mapHeader}>
+          <Text testID="growth-map-title" style={[styles.mapTitle, { color: colors.foreground }]}>
+            El recorrido
+          </Text>
+          <Pressable
+            testID="growth-help-close"
+            onPress={onClose}
+            style={styles.closeButton}
+            accessibilityRole="button"
+            accessibilityLabel="Cerrar El recorrido"
+          >
+            <Feather testID="growth-help-close-icon" name="x" size={22} color={colors.foreground} />
+          </Pressable>
+        </View>
         <ScrollView
+          testID="growth-map-scroll"
           style={styles.scroll}
           contentContainerStyle={styles.content}
           showsVerticalScrollIndicator={false}
         >
           <View testID="growth-map-section" style={styles.mapSection}>
-            <Text testID="growth-map-title" style={[styles.mapTitle, { color: colors.foreground }]}>
-              El recorrido
-            </Text>
             <GrowthJourneyMap width={Math.min(width, 520) - 12} />
           </View>
         </ScrollView>
@@ -126,7 +137,9 @@ const styles = StyleSheet.create({
     backgroundColor: "rgba(255,255,255,0.28)",
   },
   scroll: { flex: 1 },
-  content: { flexGrow: 1, justifyContent: "center", alignItems: "center", paddingVertical: 16 },
+  content: { flexGrow: 1, justifyContent: "flex-start", alignItems: "center", paddingBottom: 16 },
+  mapHeader: { height: 56 },
   mapSection: { paddingTop: 25 },
-  mapTitle: { position: "absolute", top: 0, left: 0, right: 0, textAlign: "center", fontFamily: "Manrope", fontSize: 20, lineHeight: 24, fontWeight: "700" },
+  mapTitle: { position: "absolute", top: 16, left: 64, right: 64, textAlign: "center", fontFamily: "Manrope", fontSize: 20, lineHeight: 24, fontWeight: "700" },
+  closeButton: { position: "absolute", top: 6.5, right: 20, width: 43, height: 43, borderRadius: 21.5, borderWidth: 0, backgroundColor: "rgba(0,0,0,0.16)", alignItems: "center", justifyContent: "center" },
 });

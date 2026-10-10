@@ -95,7 +95,10 @@ function uiHarness() {
   const imports = {
     react: h.react, "react-native": native,
      "@expo/vector-icons": {
-       Feather: (props: any) => React.createElement("i", { "data-icon": props.name }),
+       Feather: (props: any) => {
+         if (props.testID) nodes.set(props.testID, props);
+         return React.createElement("i", { "data-icon": props.name });
+       },
        MaterialCommunityIcons: (props: any) => React.createElement("i", {
          "data-testid": props.testID, "data-icon": props.name, "data-color": props.color,
          "data-size": props.size, "data-shadow-color": props.style?.textShadowColor,
@@ -258,11 +261,25 @@ test("the map replaces the old help icon and paragraph, fits its sheet and dismi
     }));
   };
   const html = render(true);
-  assert.match(html, /data-testid="growth-help-sheet" data-height="471"/);
+  assert.match(html, /data-testid="growth-help-sheet" data-height="496"/);
   assert.match(html, /data-testid="growth-journey-map"/);
   assert.equal(h.nodes.get("growth-journey-map").width, 388);
   assert.equal(h.nodes.get("growth-map-title").children, "El recorrido");
   assert.equal(flatten(h.nodes.get("growth-map-section").style).paddingTop, 25);
+  const header = flatten(h.nodes.get("growth-map-header").style);
+  const title = flatten(h.nodes.get("growth-map-title").style);
+  const close = flatten(h.nodes.get("growth-help-close").style);
+  // Same title position (44 + 16); map now starts 40pt below its previous 85pt.
+  assert.equal(44 + title.top, 60);
+  assert.equal(44 + header.height + 25, 125);
+  assert.equal(title.top + title.lineHeight / 2, close.top + close.height / 2);
+  assert.equal(close.width, 43);
+  assert.equal(close.height, 43);
+  assert.equal(close.right, 20);
+  assert.equal(close.backgroundColor, "rgba(0,0,0,0.16)");
+  assert.equal(h.nodes.get("growth-help-close-icon").name, "x");
+  assert.equal(h.nodes.get("growth-help-close-icon").size, 22);
+  assert.equal(flatten(h.nodes.get("growth-map-scroll").contentContainerStyle).justifyContent, "flex-start");
   assert.doesNotMatch(html, /trending-up|Cada día de racha lograda|florecimiento espiritual/);
   assert.equal(h.layouts.length, 0);
   assert.equal(h.pan.onMoveShouldSetPanResponder(null, { dx: 30, dy: 10 }), false);
@@ -276,6 +293,8 @@ test("the map replaces the old help icon and paragraph, fits its sheet and dismi
   h.presses.get("growth-help-handle").onPress();
   h.presses.get("growth-help-backdrop").onPress();
   assert.equal(closes, 3);
+  h.presses.get("growth-help-close").onPress();
+  assert.equal(closes, 4);
   assert.match(render(false), /data-pointer-events="none"/);
   const source = readFileSync(new URL("../components/GrowthJourneyHelpSheet.tsx", import.meta.url), "utf8");
   assert.doesNotMatch(source, /<Modal/);
@@ -322,7 +341,8 @@ test("the treasure map has five ordered stops in an irregular loop, only Floraci
       const style = flatten(node.style);
       const iconStyle = flatten(h.nodes.get(`growth-map-node-${ids[i]}`).style);
       assert.equal(iconStyle.borderWidth, 0);
-      assert.equal(iconStyle.height, 76);
+      assert.equal(iconStyle.height, i === 0 ? 96 : 46);
+      assert.equal(iconStyle.width, i === 0 ? 96 : 46);
       assert.equal(flatten(h.nodes.get(`growth-map-label-${ids[i]}`).style).fontSize, 11);
       if (i) {
         assert.equal(h.nodes.get(`growth-map-${ids[i]}-reward-lock`).color, "theme-lock-color");
@@ -333,16 +353,17 @@ test("the treasure map has five ordered stops in an irregular loop, only Floraci
         assert.equal(flatten(overlay.style).backgroundColor, "rgba(0,0,0,0.75)");
         assert.equal(overlay.pointerEvents, "none");
         const frame = flatten(h.nodes.get(`growth-map-image-frame-${ids[i]}`).style);
-        assert.equal(frame.width, h.nodes.get("map-final-phase-art").size);
-        assert.equal(frame.height, h.nodes.get("map-final-phase-art").size);
+        assert.equal(frame.width, 42);
+        assert.equal(frame.height, 42);
         assert.equal(frame.overflow, "hidden");
         assert.ok(readFileSync(new URL(`../assets/images/growth/map-${ids[i]}.webp`, import.meta.url)).byteLength < 100_000);
       }
       assert.ok(style.left >= 0 && style.left + style.width <= width);
-      assert.ok(style.top >= 0 && style.top + 76 + 38 <= GROWTH_MAP_HEIGHT);
+      assert.ok(style.top >= 0 && style.top + (i === 0 ? 96 : 46) + 38 <= GROWTH_MAP_HEIGHT);
       if (i) assert.ok(html.indexOf(labels[i - 1]) < html.indexOf(labels[i]));
     }
     assert.equal(h.nodes.get("map-final-phase-art").level, finalPhase);
+    assert.equal(h.nodes.get("map-final-phase-art").size, 92);
     assert.equal(h.nodes.get("growth-journey-map-route").pointerEvents, "none");
     assert.equal(paths[0].strokeDasharray, "2 8");
     const segments = paths[0].d.match(/[MC][^MC]+/g);

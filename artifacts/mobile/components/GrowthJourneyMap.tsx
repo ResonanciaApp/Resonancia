@@ -18,7 +18,8 @@ const STOPS = [
   { id: "despertar", label: "El Gran Despertar", x: 0.22, y: 0.52 },
 ] as const;
 
-const ACTIVE = 76;
+const ACTIVE = 96;
+const LOCKED = 46;
 const LABEL_W = 104;
 const LOCKED_ART: Record<string, number> = {
   ascenso: require("../assets/images/growth/map-ascenso.webp"),
@@ -53,7 +54,7 @@ export function GrowthJourneyMap({ width }: { width: number }) {
       </Svg>
       {STOPS.map((s, i) => {
         const active = i === 0;
-        const size = ACTIVE;
+        const size = active ? ACTIVE : LOCKED;
         const cx = pts[i].x, cy = pts[i].y;
         const left = Math.min(Math.max(cx - LABEL_W / 2, 4), width - LABEL_W - 4);
         return (
@@ -113,7 +114,7 @@ export function GrowthJourneyMap({ width }: { width: number }) {
 const styles = StyleSheet.create({
   node: { alignItems: "center", justifyContent: "center", overflow: "hidden", backgroundColor: "rgba(255,255,255,0.08)", borderWidth: 0 },
   lockedNode: { backgroundColor: "rgba(0,0,0,0.16)" },
-  lockedImageFrame: { width: ACTIVE - 4, height: ACTIVE - 4, borderRadius: (ACTIVE - 4) / 2, overflow: "hidden" },
+  lockedImageFrame: { width: LOCKED - 4, height: LOCKED - 4, borderRadius: (LOCKED - 4) / 2, overflow: "hidden" },
   lockedImage: { width: "100%", height: "100%" },
   darkImageOverlay: { backgroundColor: "rgba(0,0,0,0.75)" },
   lockOverlay: { alignItems: "center", justifyContent: "center" },
