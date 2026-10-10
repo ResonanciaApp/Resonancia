@@ -253,7 +253,7 @@ test("Intención opens inside the same Modal; close and back preserve Tu camino,
   assert.doesNotMatch(render(), /data-testid="growth-stage-detail"/);
 });
 
-test("Primer mundo matches the journey's first-world label typography and colors in every theme", () => {
+test("Primer universo keeps the first-world typography and themed colors without changing its universe label", () => {
   for (const [id, color] of [
     ["natural", "#E5FFDB"],
     ["cloudy", CLOUDY_GROWTH_STAGE_LABEL_COLOR],
@@ -265,7 +265,7 @@ test("Primer mundo matches the journey's first-world label typography and colors
     renderToStaticMarkup(React.createElement(GrowthJourneyHelpSheet, { visible: true, onClose() {} }));
     const subtitle = h.nodes.get("growth-map-subtitle");
     const style = flatten(subtitle.style);
-    assert.equal(subtitle.children, "PRIMER MUNDO");
+    assert.equal(subtitle.children, "PRIMER UNIVERSO");
     assert.equal(style.fontFamily, "Manrope");
     assert.equal(style.fontSize, 11);
     assert.equal(style.fontWeight, "700");
@@ -290,7 +290,7 @@ test("the map replaces the old help icon and paragraph, fits its sheet and dismi
   assert.match(html, /data-testid="growth-journey-map"/);
   assert.equal(h.nodes.get("growth-journey-map").width, 388);
   assert.equal(h.nodes.get("growth-map-title").children, "El recorrido");
-  assert.equal(h.nodes.get("growth-map-subtitle").children, "PRIMER MUNDO");
+  assert.equal(h.nodes.get("growth-map-subtitle").children, "PRIMER UNIVERSO");
   assert.equal(flatten(h.nodes.get("growth-map-section").style).paddingTop, 45);
   const header = flatten(h.nodes.get("growth-map-header").style);
   const title = flatten(h.nodes.get("growth-map-title").style);

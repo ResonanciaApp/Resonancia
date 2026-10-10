@@ -210,6 +210,16 @@ progreso, renombrar fases del catálogo ni bloquear recompensas reales.
 Cambiar la disponibilidad del mapa solo por una nueva decisión editorial;
 no inferirla automáticamente de días acumulados ni de premios históricos.
 
+El mapa «El recorrido» lleva «PRIMER UNIVERSO»; los grupos del recorrido
+detallado llevan «PRIMER MUNDO» y «SEGUNDO MUNDO». Universo y mundo no son
+etiquetas intercambiables.
+
+**Why:** El usuario corrigió expresamente que igualar el estilo de letras
+al de Primer mundo no debía cambiar el texto Primer universo del mapa.
+
+**How to apply:** Compartir tipografía y colores cuando se solicite, pero
+conservar cada nombre según su superficie y nivel editorial.
+
 Las imágenes de las paradas bloqueadas del mapa no deben llevar un anillo
 visible por fuera.
 

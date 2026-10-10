@@ -455,22 +455,35 @@ function GrowthStageHeading({
   eyebrow,
   title,
   second,
+  description,
 }: {
   eyebrow: string;
   title: string;
   second?: boolean;
+  description?: string;
 }) {
   const colors = useColors();
   const { theme } = useSceneTheme();
   return (
-    <View style={[styles.sectionHeading, second && styles.secondStageHeading]}>
+    <View testID={second ? "growth-second-world-heading" : "growth-first-world-heading"} style={[styles.sectionHeading, second ? styles.secondStageHeading : styles.firstStageHeading]}>
       <Text style={[styles.sectionEyebrow, getThemeStyleId(theme.id) === "cloudy" && { color: theme.id === "natural" ? "#E5FFDB" : CLOUDY_GROWTH_STAGE_LABEL_COLOR }]}>{eyebrow}</Text>
       <Text
-        style={[styles.sectionTitle, { color: colors.foreground }]}
+        style={[styles.sectionTitle, !second && styles.firstWorldTitle, { color: colors.foreground }]}
         accessibilityRole="header"
       >
         {title}
       </Text>
+      {description && (
+        <Text
+          testID="growth-world-description"
+          style={[styles.worldDescription, { color: colors.mutedForeground }]}
+          numberOfLines={1}
+          adjustsFontSizeToFit
+          minimumFontScale={0.85}
+        >
+          {description}
+        </Text>
+      )}
     </View>
   );
 }
@@ -510,6 +523,7 @@ export function GrowthJourney({ onIntentionPress, onStagePress }: { onIntentionP
       <GrowthStageHeading
         eyebrow="PRIMER MUNDO"
         title="Florecimiento"
+        description="Cultiva tu calma cada día."
       />
       <GrowthTimeline>
         {bloom.map((level) => (
@@ -594,7 +608,9 @@ const styles = StyleSheet.create({
     paddingBottom: 12,
   },
   sectionHeading: { alignItems: "center", marginBottom: 8 },
+  firstStageHeading: { marginTop: 5 },
   secondStageHeading: { marginBottom: 0 },
+  worldDescription: { width: "70%", alignSelf: "center", textAlign: "center", marginTop: 9, marginBottom: 8, fontFamily: "Manrope", fontSize: 12, fontWeight: "400", lineHeight: 18 },
   stageGap: { height: 73 },
   ascentToggle: {
     alignSelf: "center",
@@ -625,6 +641,7 @@ const styles = StyleSheet.create({
     marginBottom: 5,
   },
   sectionTitle: { fontFamily: "Manrope", fontSize: 23, fontWeight: "700", lineHeight: 30 },
+  firstWorldTitle: { fontSize: 27 },
   timeline: { position: "relative" },
   row: { height: GROWTH_ROW_HEIGHT, position: "relative", justifyContent: "center" },
   lineBase: {

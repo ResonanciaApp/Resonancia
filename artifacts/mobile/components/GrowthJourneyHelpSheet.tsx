@@ -103,7 +103,7 @@ export function GrowthJourneyHelpSheet({
             El recorrido
           </Text>
           <Text testID="growth-map-subtitle" style={[styles.mapSubtitle, { color: universeColor }]}>
-            PRIMER MUNDO
+            PRIMER UNIVERSO
           </Text>
           <Pressable
             testID="growth-help-close"

@@ -64,6 +64,33 @@ const level = {
   rewards: [1, 2, 3].map(id => ({ id: `reward-${id}`, enabled: true, amount: 5, text: "Desbloquea {cantidad} avatares" })),
 };
 
+test("Florecimiento grows 4pt, its centered description uses one line at 12pt and moves up 3px, and the first world moves up 25px", () => {
+  const description = "Cultiva tu calma cada día.";
+  render(components.GrowthStageHeading, {
+    eyebrow: "PRIMER MUNDO", title: "Florecimiento", description,
+  });
+  const heading = nodes.find(node => node.testID === "growth-first-world-heading");
+  const copy = nodes.find(node => node.testID === "growth-world-description");
+  assert.equal(heading.style.marginTop, 5);
+  assert.equal(heading.style.position, undefined);
+  assert.equal(copy.children, description);
+  assert.equal(copy.children.split("\n").length, 1);
+  assert.equal(copy.style.width, "70%");
+  assert.equal(copy.style.alignSelf, "center");
+  assert.equal(copy.style.textAlign, "center");
+  assert.equal(copy.numberOfLines, 1);
+  assert.equal(copy.style.fontSize, 12);
+  assert.equal(copy.style.marginTop, 9);
+  assert.equal(nodes.find(node => node.children === "Florecimiento").style.fontSize, 27);
+  assert.equal(nodes.find(node => node.children === "Florecimiento").style.lineHeight, 30);
+  assert.ok(nodes.findIndex(node => node.children === "Florecimiento") < nodes.indexOf(copy));
+  assert.match(source, /title="Florecimiento"\s+description=/);
+  render(components.GrowthStageHeading, { eyebrow: "SEGUNDO MUNDO", title: "El ascenso", second: true });
+  assert.equal(nodes.find(node => node.testID === "growth-second-world-heading").style.marginTop, undefined);
+  assert.equal(nodes.find(node => node.children === "El ascenso").style.fontSize, 23);
+  assert.equal(nodes.some(node => node.testID === "growth-world-description"), false);
+});
+
 test("Natural replaces only the Cloudy blue accents, preserving pill and line transparency", () => {
   for (const id of ["natural", "cloudy", "indigo2", "pleyades"]) {
     themeId = id;
