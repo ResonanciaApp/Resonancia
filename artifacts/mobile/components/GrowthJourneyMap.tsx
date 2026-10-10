@@ -11,11 +11,11 @@ import { allGrowthLevels, type GrowthLevel } from "@/data/growthLevels";
 
 // Fixed editorial overview: only the first stop is available.
 const STOPS = [
-  { id: "floracion", label: "Floración", x: 0.27, y: 0.2 },
-  { id: "ascenso", label: "El ascenso", x: 0.75, y: 0.13 },
-  { id: "iluminacion", label: "Iluminación", x: 0.79, y: 0.5 },
-  { id: "llegada", label: "La llegada", x: 0.5, y: 0.72 },
-  { id: "despertar", label: "El Gran Despertar", x: 0.22, y: 0.52 },
+  { id: "floracion", label: "Floración" },
+  { id: "ascenso", label: "El ascenso" },
+  { id: "iluminacion", label: "Iluminación" },
+  { id: "llegada", label: "La llegada" },
+  { id: "despertar", label: "El Gran Despertar" },
 ] as const;
 
 const ACTIVE = 93;
@@ -39,24 +39,29 @@ export function GrowthJourneyMap({ width }: { width: number }) {
   const last: GrowthLevel | undefined = bloom[bloom.length - 1]
     ?? allGrowthLevels.find((l) => l.id === "expansion");
   const h = GROWTH_MAP_HEIGHT;
-  const pts = STOPS.map((s) => ({ x: s.x * width, y: s.y * h }));
-  // Catmull-Rom to cubic Bezier: every segment ends exactly at a stop center.
-  let d = `M${pts[0].x} ${pts[0].y}`;
-  for (let i = 0; i < pts.length - 1; i++) {
-    const p0 = pts[Math.max(i - 1, 0)], p1 = pts[i], p2 = pts[i + 1], p3 = pts[Math.min(i + 2, pts.length - 1)];
-    d += ` C${p1.x + (p2.x - p0.x) / 6} ${p1.y + (p2.y - p0.y) / 6} ${p2.x - (p3.x - p1.x) / 6} ${p2.y - (p3.y - p1.y) / 6} ${p2.x} ${p2.y}`;
-  }
+  const center = { x: width / 2, y: h / 2 };
+  // Equal radii and 72-degree spacing; leave room for images and labels.
+  const radius = Math.min(width / 2 - LABEL_W / 2 - 4, 120);
+  const pts = STOPS.map((_, i) => {
+    const angle = -Math.PI / 2 + i * (2 * Math.PI / STOPS.length);
+    return { x: center.x + radius * Math.cos(angle), y: center.y + radius * Math.sin(angle) };
+  });
+  // Follow the same circle clockwise, stopping at El Gran Despertar.
+  // No closing arc back to Floración.
+  const route = pts.map((point, i) => i === 0
+    ? `M${point.x} ${point.y}`
+    : `A${radius} ${radius} 0 0 1 ${point.x} ${point.y}`).join(" ");
 
   return (
     <View style={{ width, height: h }} testID="growth-journey-map">
       <Svg width={width} height={h} style={StyleSheet.absoluteFill} pointerEvents="none" testID="growth-journey-map-route">
-        <Path d={d} stroke={colors.mutedForeground} strokeOpacity={0.55} strokeWidth={2} strokeDasharray="2 8" strokeLinecap="round" fill="none" />
+        <Path d={route} stroke={colors.mutedForeground} strokeOpacity={0.55} strokeWidth={2} strokeDasharray="2 8" strokeLinecap="round" fill="none" />
       </Svg>
       {STOPS.map((s, i) => {
         const active = i === 0;
         const size = active ? ACTIVE : LOCKED;
         const cx = pts[i].x, cy = pts[i].y;
-        const left = Math.min(Math.max(cx - LABEL_W / 2, 4), width - LABEL_W - 4);
+        const left = cx - LABEL_W / 2;
         return (
           <View
             key={s.id}
@@ -116,7 +121,7 @@ const styles = StyleSheet.create({
   lockedNode: { backgroundColor: "rgba(0,0,0,0.16)" },
   lockedImageFrame: { width: LOCKED - 4, height: LOCKED - 4, borderRadius: (LOCKED - 4) / 2, overflow: "hidden" },
   lockedImage: { width: "100%", height: "100%" },
-  darkImageOverlay: { backgroundColor: "rgba(0,0,0,0.2)" },
+  darkImageOverlay: { backgroundColor: "rgba(0,0,0,0.3)" },
   lockOverlay: { alignItems: "center", justifyContent: "center" },
   label: { marginTop: 6, fontFamily: "Manrope", fontSize: 11, lineHeight: 16, fontWeight: "700", textAlign: "center" },
 });

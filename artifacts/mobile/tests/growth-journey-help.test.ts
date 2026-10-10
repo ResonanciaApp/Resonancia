@@ -265,13 +265,13 @@ test("the map replaces the old help icon and paragraph, fits its sheet and dismi
   assert.match(html, /data-testid="growth-journey-map"/);
   assert.equal(h.nodes.get("growth-journey-map").width, 388);
   assert.equal(h.nodes.get("growth-map-title").children, "El recorrido");
-  assert.equal(flatten(h.nodes.get("growth-map-section").style).paddingTop, 25);
+  assert.equal(flatten(h.nodes.get("growth-map-section").style).paddingTop, 55);
   const header = flatten(h.nodes.get("growth-map-header").style);
   const title = flatten(h.nodes.get("growth-map-title").style);
   const close = flatten(h.nodes.get("growth-help-close").style);
-  // Same title position (44 + 16); map now starts 40pt below its previous 85pt.
+  // Same title position (44 + 16); map drops another 30pt from its previous 125pt.
   assert.equal(44 + title.top, 60);
-  assert.equal(44 + header.height + 25, 125);
+  assert.equal(44 + header.height + 55, 155);
   assert.equal(title.top + title.lineHeight / 2, close.top + close.height / 2);
   assert.equal(close.width, 43);
   assert.equal(close.height, 43);
@@ -301,7 +301,7 @@ test("the map replaces the old help icon and paragraph, fits its sheet and dismi
   assert.doesNotMatch(source, /<Modal/);
 });
 
-test("the treasure map has five ordered stops in an irregular loop, only Floración active, and uses the editorial final phase image", () => {
+test("the map follows a perfect circle without connecting El Gran Despertar back to Floración, only Floración active, and uses the editorial final phase image", () => {
   const h = uiHarness();
   const labels = ["Floración", "El ascenso", "Iluminación", "La llegada", "El Gran Despertar"];
   const ids = ["floracion", "ascenso", "iluminacion", "llegada", "despertar"];
@@ -352,7 +352,7 @@ test("the treasure map has five ordered stops in an irregular loop, only Floraci
         const overlay = h.nodes.get(`growth-map-image-overlay-${ids[i]}`);
         assert.equal(image.source, `asset:${ids[i]}`);
         assert.equal(image.resizeMode, "cover");
-        assert.equal(flatten(overlay.style).backgroundColor, "rgba(0,0,0,0.2)");
+        assert.equal(flatten(overlay.style).backgroundColor, "rgba(0,0,0,0.3)");
         assert.equal(overlay.pointerEvents, "none");
         const frame = flatten(h.nodes.get(`growth-map-image-frame-${ids[i]}`).style);
         assert.equal(frame.width, 48);
@@ -367,13 +367,26 @@ test("the treasure map has five ordered stops in an irregular loop, only Floraci
     assert.equal(h.nodes.get("map-final-phase-art").level, finalPhase);
     assert.equal(h.nodes.get("map-final-phase-art").size, 89);
     assert.equal(h.nodes.get("growth-journey-map-route").pointerEvents, "none");
+    assert.equal(paths.length, 1);
     assert.equal(paths[0].strokeDasharray, "2 8");
-    const segments = paths[0].d.match(/[MC][^MC]+/g);
-    assert.equal(segments.length, 5);
-    const positions = [[0.27, 0.2], [0.75, 0.13], [0.79, 0.5], [0.5, 0.72], [0.22, 0.52]];
+    const circle = { cx: width / 2, cy: GROWTH_MAP_HEIGHT / 2, r: Math.min(width / 2 - 56, 120) };
+    const points = ids.map((id, i) => {
+      const style = flatten(h.nodes.get(`growth-map-stop-${id}`).style);
+      return { x: style.left + style.width / 2, y: style.top + (i === 0 ? 93 : 52) / 2 };
+    });
+    for (let i = 0; i < points.length; i++) {
+      const point = points[i], next = points[(i + 1) % points.length];
+      assert.ok(Math.abs(Math.hypot(point.x - circle.cx, point.y - circle.cy) - circle.r) < 1e-9);
+      assert.ok(Math.abs(Math.hypot(next.x - point.x, next.y - point.y) - 2 * circle.r * Math.sin(Math.PI / 5)) < 1e-9);
+    }
+    const segments = paths[0].d.match(/[MA][^MA]+/g);
+    assert.equal(segments.length, 5); // One start and four arcs, never a fifth closing arc.
+    assert.doesNotMatch(paths[0].d, /[Zz]/);
     for (let i = 0; i < segments.length; i++) {
       const numbers = segments[i].slice(1).trim().split(/[ ,]+/).map(Number);
-      assert.deepEqual(numbers.slice(-2), [positions[i][0] * width, positions[i][1] * GROWTH_MAP_HEIGHT]);
+      if (i) assert.deepEqual(numbers.slice(0, 5), [circle.r, circle.r, 0, 0, 1]);
+      assert.ok(Math.abs(numbers.at(-2) - points[i].x) < 1e-9);
+      assert.ok(Math.abs(numbers.at(-1) - points[i].y) < 1e-9);
     }
   }
   levels = [];
