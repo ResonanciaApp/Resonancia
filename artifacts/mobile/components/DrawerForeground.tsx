@@ -14,6 +14,7 @@ import {
   foregroundElevation,
   foregroundShadowOpacity,
   foregroundTranslateX,
+  foregroundVeilOpacity,
   shouldSettleOpen,
 } from "@/lib/drawerGeometry";
 
@@ -21,7 +22,7 @@ import {
  * Superficie frontal estilo X: contiene la pantalla activa y sus overlays.
  * Se desplaza a la derecha y revela el menu fijo detras.
  * Capas separadas: la exterior lleva translate + sombra (sin recorte), la
- * interior recorta las esquinas. No se monta ninguna capa de luz.
+ * interior recorta las esquinas y el velo blanco va encima del contenido.
  * Todo lo anima Reanimated desde el mismo progreso; ningun nodo mezcla drivers.
  */
 export function DrawerForeground({ children }: { children: React.ReactNode }) {
@@ -54,6 +55,9 @@ export function DrawerForeground({ children }: { children: React.ReactNode }) {
     const radius = foregroundCornerRadius(drawerProgress.value);
     return { borderTopLeftRadius: radius, borderBottomLeftRadius: radius };
   });
+  const veilStyle = useAnimatedStyle(() => ({
+    opacity: foregroundVeilOpacity(drawerProgress.value),
+  }));
 
   const closeFromStrip = React.useCallback(() => close(), [close]);
 
@@ -101,6 +105,7 @@ export function DrawerForeground({ children }: { children: React.ReactNode }) {
         >
           {children}
         </View>
+        <RAnimated.View pointerEvents="none" style={[StyleSheet.absoluteFill, styles.veil, veilStyle]} />
         {foregroundBlocked && (
           <GestureDetector gesture={gesture}>
             <View
@@ -172,5 +177,8 @@ const styles = StyleSheet.create({
   inner: {
     flex: 1,
     overflow: "hidden",
+  },
+  veil: {
+    backgroundColor: "#FFFFFF",
   },
 });

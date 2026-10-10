@@ -8,6 +8,7 @@
 /** Franja de Inicio que queda visible en el borde derecho con el menu abierto. */
 export const DRAWER_VISIBLE_STRIP = 75;
 export const DRAWER_CORNER_RADIUS = 50;
+export const DRAWER_VEIL_MAX = 0.05;
 export const DRAWER_MENU_OFFSET_Y = 7;
 export const DRAWER_SHADOW_MAX = 0.24;
 export const DRAWER_ELEVATION_MAX = 18;
@@ -47,6 +48,11 @@ export function foregroundTranslateX(progress: number, windowWidth: number) {
 export function foregroundCornerRadius(progress: number) {
   "worklet";
   return DRAWER_CORNER_RADIUS * easeOut(clamp01(progress / DRAWER_CORNER_RAMP));
+}
+
+export function foregroundVeilOpacity(progress: number) {
+  "worklet";
+  return DRAWER_VEIL_MAX * clamp01(progress);
 }
 
 export function foregroundShadowOpacity(progress: number) {

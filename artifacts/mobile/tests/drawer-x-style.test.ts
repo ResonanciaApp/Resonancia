@@ -10,6 +10,7 @@ import {
   foregroundCornerRadius,
   foregroundShadowOpacity,
   foregroundTranslateX,
+  foregroundVeilOpacity,
   menuContentOpacity,
   menuContentTranslateY,
   normalizeRoutePath,
@@ -27,7 +28,7 @@ test("fully open foreground leaves exactly 75 px visible at multiple widths", ()
   }
 });
 
-test("corner animation is restored while the foreground light layer is removed", () => {
+test("normal corner and light-layer animations share the drawer progress", () => {
   assert.equal(foregroundCornerRadius(0), 0);
   assert.ok(foregroundCornerRadius(0.08) > 20);
   assert.equal(foregroundCornerRadius(0.2), 50);
@@ -36,7 +37,10 @@ test("corner animation is restored while the foreground light layer is removed",
   assert.match(foreground, /const radius = foregroundCornerRadius\(p\)/);
   assert.match(foreground, /const radius = foregroundCornerRadius\(drawerProgress.value\)/);
   assert.match(foreground, /<RAnimated.View style=\{\[styles.inner, innerStyle\]\}>/);
-  assert.doesNotMatch(foreground, /veilStyle|styles\.veil|foregroundVeilOpacity|backgroundColor: "#FFFFFF"/);
+  assert.match(foreground, /pointerEvents="none" style=\{\[StyleSheet.absoluteFill, styles.veil, veilStyle\]\}/);
+  assert.equal(foregroundVeilOpacity(0), 0);
+  assert.equal(foregroundVeilOpacity(0.5), 0.025);
+  assert.equal(foregroundVeilOpacity(1), 0.05);
   assert.equal(foregroundShadowOpacity(0), 0);
   assert.ok(foregroundShadowOpacity(0.5) < foregroundShadowOpacity(1));
   assert.equal(menuContentOpacity(0), 0);
@@ -134,7 +138,7 @@ test("simulated provider closure: close only starts after ready, interrupted clo
   assert.equal(closes, 0, "obsolete close callback ignored");
 });
 
-test("root stacking: static menu behind a single animated foreground, without a light veil", () => {
+test("root stacking: static menu behind a single animated foreground, no black veil", () => {
   const layout = read("../app/_layout.tsx");
   const nav = layout.slice(layout.indexOf("function RootLayoutNav"));
   const order = ["<DrawerMenu />", "<DrawerForeground>", "<NavStack />", "<CreationPanelsOverlay />", "<BibliotecaOverlay />", "<LibraryMixOverlay />", "<DrawerScreenOverlay />", "<ChatOverlay />", "</DrawerForeground>", "<MixerSheet />", "<PremiumPlansOverlay />"];
@@ -146,7 +150,8 @@ test("root stacking: static menu behind a single animated foreground, without a 
   }
   assert.doesNotMatch(layout, /PushWrapper|backgroundColor: "#000"/);
   const fg = read("../components/DrawerForeground.tsx");
-  assert.doesNotMatch(fg, /foregroundVeilOpacity|styles\.veil|veilStyle|backgroundColor: "#FFFFFF"/);
+  assert.match(fg, /foregroundVeilOpacity/);
+  assert.match(fg, /backgroundColor: "#FFFFFF"/);
   assert.doesNotMatch(fg, /useNativeDriver/);
   assert.match(fg, /Gesture\.Exclusive\(pan, tap\)/);
 });
