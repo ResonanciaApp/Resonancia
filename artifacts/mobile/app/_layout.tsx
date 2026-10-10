@@ -14,7 +14,7 @@ import { router, Stack, useSegments } from "expo-router";
 import * as SplashScreen from "expo-splash-screen";
 import { StatusBar } from "expo-status-bar";
 import React, { useEffect } from "react";
-import { Animated, AppState, Dimensions, I18nManager, StyleSheet, Text, TextInput, View } from "react-native";
+import { Animated, AppState, Dimensions, I18nManager, Text, TextInput } from "react-native";
 import { GestureHandlerRootView } from "react-native-gesture-handler";
 import { KeyboardProvider } from "react-native-keyboard-controller";
 import { SafeAreaProvider } from "react-native-safe-area-context";
@@ -24,6 +24,7 @@ import { LibraryMixOverlay } from "@/components/LibraryMixOverlay";
 import { DrawerScreenOverlay } from "@/components/DrawerScreenOverlay";
 import { ChatOverlay } from "@/components/ChatOverlay";
 import { DrawerMenu } from "@/components/DrawerMenu";
+import { DrawerForeground } from "@/components/DrawerForeground";
 import { CreationPanelsOverlay } from "@/components/CreationPanelsOverlay";
 import { MixerSheet } from "@/components/MixerSheet";
 import { EscenasSheet } from "@/components/EscenasSheet";
@@ -187,17 +188,10 @@ function ThemedGestureRoot({ children }: { children: React.ReactNode }) {
   );
 }
 
-function PushWrapper({ children }: { children: React.ReactNode }) {
-  const { drawerAnim, isOpen, overlayParallax } = useDrawer();
-  const overlayOpacity = drawerAnim.interpolate({
-    inputRange: [0, 1],
-    outputRange: [0, 0.6],
-  });
-  // Los overlays que nacen desde el drawer viven fuera de NavStack. Mover solo
-  // su propia capa deja el fondo inmóvil, a diferencia del panel Mezclador.
-  // Este desplazamiento mantiene la pantalla de fondo sincronizada con la
-  // entrada/salida de Diario, Biblioteca, sesiones, favoritos, Amigos y Grupos.
-  // Historial usa su propio progreso único compartido con el drawer.
+/** Pantalla activa: solo ella recibe el parallax de overlays abiertos fuera
+ *  del drawer. El drawer estilo X vive en DrawerForeground (sin velo negro). */
+function NavParallax({ children }: { children: React.ReactNode }) {
+  const { overlayParallax } = useDrawer();
   const backgroundParallaxX = overlayParallax.interpolate({
     inputRange: [0, 1],
     outputRange: [0, DRAWER_OVERLAY_PARALLAX_X],
@@ -206,10 +200,6 @@ function PushWrapper({ children }: { children: React.ReactNode }) {
   return (
     <Animated.View style={{ flex: 1, transform: [{ translateX: backgroundParallaxX }] }}>
       {children}
-      <Animated.View
-        pointerEvents={isOpen ? "auto" : "none"}
-        style={[StyleSheet.absoluteFill, { backgroundColor: "#000", opacity: overlayOpacity }]}
-      />
     </Animated.View>
   );
 }
@@ -375,6 +365,8 @@ function NavStack() {
           name="chat/[userId]"
           options={{ headerShown: false, animation: "slide_from_right" }}
         />
+        <Stack.Screen name="respiracion" options={{ headerShown: false, animation: drawerScreenAnim }} />
+        <Stack.Screen name="progreso" options={{ headerShown: false, animation: drawerScreenAnim }} />
         <Stack.Screen name="mi-perfil" options={{ headerShown: false, animation: drawerScreenAnim }} />
         <Stack.Screen name="mi-espacio-interior" options={{ headerShown: false, animation: "slide_from_right" }} />
         <Stack.Screen name="galeria-reflexiones/index" options={{ headerShown: false, animation: "slide_from_right" }} />
@@ -419,15 +411,18 @@ function RootLayoutNav() {
           <ApiAuthBridge />
           <AuthGate />
           <PushBridge />
-          <PushWrapper>
-            <NavStack />
-          </PushWrapper>
+          {/* Menu fijo detras; la superficie frontal se desplaza y lo revela. */}
           <DrawerMenu />
-           <CreationPanelsOverlay />
-          <BibliotecaOverlay />
-          <LibraryMixOverlay />
-          <DrawerScreenOverlay />
-          <ChatOverlay />
+          <DrawerForeground>
+            <NavParallax>
+              <NavStack />
+            </NavParallax>
+            <CreationPanelsOverlay />
+            <BibliotecaOverlay />
+            <LibraryMixOverlay />
+            <DrawerScreenOverlay />
+            <ChatOverlay />
+          </DrawerForeground>
           <MixerSheet />
           <EscenasSheet />
           <GlobalSceneModal />

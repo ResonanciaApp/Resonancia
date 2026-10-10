@@ -33,12 +33,10 @@ function StatCard({ icon, value, label, innerCorner }: StatCardProps) {
 
 export function DrawerStats() {
   const { sessions, totalTime, activeDays, streak } = useDrawerStats();
-  const { close, markInstantNav } = useDrawer();
+  const { selectFromDrawer } = useDrawer();
 
   const goToProgreso = () => {
-    markInstantNav();
-    close();
-    router.push("/progreso" as never);
+    selectFromDrawer({ kind: "route", target: "/progreso", run: () => router.push("/progreso" as never) });
   };
 
   return (

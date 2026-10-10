@@ -50,7 +50,7 @@
 - [Para este momento](home-featured-selection.md) — día chileno compartido; vistas previas no consumen el ciclo y una manual expuesta cuenta solo para su propio ID
 - [Session tap three-state](session-tap-three-state.md) — prioridad skipMiniPlayer > skipDetail > detalle, duplicada en ~22 sitios incl. onPress inline de carruseles (SessionCard no los cubre)
 - [Catalog create vs edit field parity](catalog-create-vs-edit-fields.md) — INSERT de creación y PATCH de edición enumeran campos por separado; omitir uno lo pierde en silencio ("funciona al editar, no al crear")
-- [Biblioteca overlay sobre drawer](biblioteca-drawer-overlay.md) — "Biblioteca" del menú no navega: overlay deslizante sobre el drawer (queda abierto debajo); patrón para pantallas "sobre el menú"
+- [Biblioteca y menú estilo X](biblioteca-drawer-overlay.md) — Biblioteca conserva el overlay; elegirla cierra el menú, y los detalles restauran su tab sin reabrirlo
 - [FlatList header remount](flatlist-header-remount.md) — ListHeaderComponent como useCallback con deps cambiantes remonta el header y resetea carruseles internos; pasar elemento JSX
 - [Clerk native SSO redirect](clerk-native-sso-redirect.md) — SSO Expo vuelve sin sesión: scheme correcto + allowlist redirect_urls por API (estaba vacía) + ruta explícita sso-callback
 - [Manrope default font patch](manrope-default-font-patch.md) — fuente global via patch de Text.render (base primero), NUNCA parchando StyleSheet.create: eso pisaba la fontFamily de los íconos → tofu en Android
@@ -126,7 +126,7 @@
 - [Desconexiones de PostgreSQL](postgres-idle-disconnect.md) — un reinicio de la base puede terminar conexiones inactivas y tumbar toda la API si el pool no maneja su evento de error
 - [Drizzle push y datos de Inspiraciones](drizzle-push-inspirations.md) — `push` puede pedir truncar Inspiraciones por un índice único ajeno al cambio; no usar `push-force` sin resolver los duplicados
 - [Entitlement RevenueCat desconocido](revenuecat-entitlement-unknown.md) — error/carga/no-configurado nunca equivale a free; conservar último entitlement verificado solo hasta su expiración real
-- [Transiciones desde el drawer](drawer-destination-transition.md) — destinos del menú usan un progreso único para ventana+drawer; aperturas desde otros orígenes conservan su animación normal
+- [Transiciones desde el drawer](drawer-destination-transition.md) — menú fijo detrás; destino listo antes de volver la pantalla; callbacks y gestos antiguos no deben cerrar una reapertura
 - [Etiquetas libres de playlists](playlist-free-editorial-labels.md) — texto editorial libre; `none` oculta el texto, sea píldora o descripción; slugs históricos conservan su traducción
 - [Reflexiones conserva el ID charlas](reflexiones-charlas-id.md) — la categoría visible Reflexiones usa el ID técnico `charlas`; no confundir con diario/reflexiones personales
 - [Temáticas Chakra retiradas](chakra-editorial-scope.md) — ocultar Chakra solo de Otras temáticas; Geometrix y la colección Sonidos para Chakras son independientes

@@ -1,4 +1,4 @@
-import React, { useEffect, useMemo, useRef, useState, Suspense } from "react";
+import React, { useEffect, useRef, useState, Suspense } from "react";
 import { LinearGradient } from "expo-linear-gradient";
 import { Animated, BackHandler, Dimensions, StyleSheet, View } from "react-native";
 
@@ -8,7 +8,6 @@ import { DURATION, easeOutCubic } from "@/constants/motion";
 import { useSceneTheme } from "@/context/SceneThemeContext";
 
 const W = Dimensions.get("window").width;
-const DRAWER_DESTINATION_DURATION = 450;
 const SHARED_DRAWER_ROUTES = new Set([
   "/historial",
   "/favoritos-todos",
@@ -42,23 +41,17 @@ export function DrawerScreenOverlay() {
   const {
     overlayRoute,
     closeOverlay,
-    drawerTransitionProgress,
     overlayOpenedFromDrawer,
+    acknowledgeDestinationReady,
+    destinationRequest,
   } = useDrawer();
+  const [mountKey, setMountKey] = useState(0);
   const { theme: sceneTheme } = useSceneTheme();
   const [rendered, setRendered] = useState(false);
   const [activeRoute, setActiveRoute] = useState<string | null>(null);
   const slideAnim = useRef(new Animated.Value(W)).current;
   const transitionToken = useRef(0);
   const afterCloseRef = useRef<(() => void) | null>(null);
-  const sharedSlideX = useMemo(
-    () => drawerTransitionProgress.interpolate({
-      inputRange: [0, 1],
-      outputRange: [W, 0],
-      extrapolate: "clamp",
-    }),
-    [drawerTransitionProgress],
-  );
 
   // Pre-cargar todos los módulos al montar el componente para que cuando el
   // usuario toque un ítem del drawer el JS ya esté en caché y renderice
@@ -81,21 +74,16 @@ export function DrawerScreenOverlay() {
   useEffect(() => {
     const token = ++transitionToken.current;
     slideAnim.stopAnimation();
-    drawerTransitionProgress.stopAnimation();
     if (overlayRoute) {
       afterCloseRef.current = null;
       setActiveRoute(overlayRoute);
       setRendered(true);
       if (overlayOpenedFromDrawer && SHARED_DRAWER_ROUTES.has(overlayRoute)) {
-        if (!rendered) drawerTransitionProgress.setValue(0);
-        Animated.timing(drawerTransitionProgress, {
-          toValue: 1,
-          duration: DRAWER_DESTINATION_DURATION,
-          easing: easeOutCubic,
-          useNativeDriver: true,
-        }).start();
+        // Origen drawer: se monta ya en su sitio dentro de la superficie
+        // frontal, sin entrada lateral propia. El drawer cierra al confirmar layout.
+        slideAnim.setValue(0);
+        setMountKey((key) => key + 1);
       } else {
-        drawerTransitionProgress.setValue(0);
         Animated.timing(slideAnim, {
           toValue: 0,
           duration: DURATION.DRAWER,
@@ -104,13 +92,9 @@ export function DrawerScreenOverlay() {
         }).start();
       }
     } else if (rendered) {
-      const closingSharedRoute = Boolean(
-        overlayOpenedFromDrawer && activeRoute && SHARED_DRAWER_ROUTES.has(activeRoute),
-      );
-      const progress = closingSharedRoute ? drawerTransitionProgress : slideAnim;
-      Animated.timing(progress, {
-        toValue: closingSharedRoute ? 0 : W,
-        duration: closingSharedRoute ? DRAWER_DESTINATION_DURATION : DURATION.DRAWER,
+      Animated.timing(slideAnim, {
+        toValue: W,
+        duration: DURATION.DRAWER,
         easing: easeOutCubic,
         useNativeDriver: true,
       }).start(({ finished }) => {
@@ -151,20 +135,30 @@ export function DrawerScreenOverlay() {
         StyleSheet.absoluteFill,
         {
           backgroundColor: sceneTheme.gradient[0],
-          transform: [{
-            translateX:
-              overlayOpenedFromDrawer && SHARED_DRAWER_ROUTES.has(activeRoute)
-                ? sharedSlideX
-                : slideAnim,
-          }],
+          transform: [{ translateX: slideAnim }],
         },
       ]}
     >
       <BackOverrideProvider onBack={closeOverlay} onBackAfterClose={closeAfterAnimation}>
         <Suspense fallback={<LinearGradient style={StyleSheet.absoluteFill} colors={sceneTheme.gradient} start={{ x: 0, y: 0 }} end={{ x: 0, y: 1 }} />}>
-          <Screen />
+          {/* onLayout solo ocurre cuando el modulo lazy ya resolvio: confirmacion real. */}
+          <View
+            key={mountKey}
+            style={styles.fill}
+          >
+            <Screen />
+            <View
+              key={destinationRequest}
+              collapsable={false}
+              pointerEvents="none"
+              style={{ position: "absolute", width: 1, height: 1 }}
+              onLayout={() => acknowledgeDestinationReady("layout", activeRoute)}
+            />
+          </View>
         </Suspense>
       </BackOverrideProvider>
     </Animated.View>
   );
 }
+
+const styles = StyleSheet.create({ fill: { flex: 1 } });

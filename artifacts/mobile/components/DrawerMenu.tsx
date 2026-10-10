@@ -9,26 +9,29 @@ import { scheduleSceneThemeHaptics } from "@/lib/scene-theme-transition";
 import { router } from "expo-router";
 import React from "react";
 import {
-  Animated,
-  PanResponder,
   Platform,
   Pressable,
   ScrollView,
   StyleSheet,
   Text,
+  useWindowDimensions,
   View,
 } from "react-native";
+import { Gesture, GestureDetector } from "react-native-gesture-handler";
+import RAnimated, { cancelAnimation, runOnJS, useAnimatedStyle, useSharedValue } from "react-native-reanimated";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 
 import { useAuth } from "@/context/AuthContext";
+import { useDrawer } from "@/context/DrawerContext";
 import {
-  useDrawer,
-  DRAWER_W,
-  DRAWER_PUSH,
-  DRAWER_OVERLAY_PARALLAX_X,
-} from "@/context/DrawerContext";
-import { DURATION } from "@/constants/motion";
+  DRAWER_GESTURE_FAIL_Y,
+  dragProgress,
+  drawerOffset,
+  menuContentOpacity,
+  menuContentTranslateY,
+  shouldSettleOpen,
+} from "@/lib/drawerGeometry";
 import { MEMBERSHIP_AURORA } from "@/constants/colors";
 import { openCategoryGlobal } from "@/context/CategoryOverlayContext";
 import { useUserProfile } from "@/context/UserProfileContext";
@@ -71,17 +74,20 @@ const INICIO3_SECTIONS: { title: string | null; items: MenuItem[] }[] = [
 export function DrawerMenu() {
   const {
     isOpen: visible,
-    drawerAnim,
-    close: onClose,
-    markInstantNav,
+    close,
+    drawerProgress,
+    drawerWidth,
+    drawerGestureVersion,
+    beginDrawerDrag,
+    settleDrawerDrag,
+    selectFromDrawer,
     openLibFromDrawer,
-    openOverlay,
     openOverlayFromDrawer,
-    overlayParallax,
-    drawerTransitionProgress,
     requestWallCompose,
     requestMoodPicker,
   } = useDrawer();
+  const onClose = React.useCallback(() => close(), [close]);
+  const { width: windowWidth } = useWindowDimensions();
   const insets = useSafeAreaInsets();
   const { isRegistered, isSignedIn } = useAuth();
   const { user: clerkUser } = useUser();
@@ -120,177 +126,105 @@ export function DrawerMenu() {
   const topPad = Platform.OS === "web" ? 67 : insets.top;
   const bottomPad = Platform.OS === "web" ? 34 : insets.bottom;
 
-  const translateX = React.useMemo(() => drawerAnim.interpolate({
-    inputRange: [0, 1],
-    outputRange: [-DRAWER_PUSH, 0],
-  }), [drawerAnim]);
-
-  const drawerOpacity = drawerAnim.interpolate({
-    inputRange: [0, 1],
-    outputRange: [0, 1],
-  });
-
-  const dragX = React.useRef(new Animated.Value(0)).current;
-  const dragResetTimer = React.useRef<ReturnType<typeof setTimeout> | null>(null);
-
-  // Nodo de transform ESTABLE entre renders: recrearlo en cada render
-  // re-ata el nodo nativo y produce un glitch de un frame al abrir overlays.
-  const drawerTranslate = React.useMemo(
-    () =>
-      Animated.add(
-        Animated.add(
-          Animated.add(translateX, dragX),
-          overlayParallax.interpolate({
-            inputRange: [0, 1],
-            outputRange: [0, DRAWER_OVERLAY_PARALLAX_X],
-          }),
-        ),
-        drawerTransitionProgress.interpolate({
-          inputRange: [0, 1],
-          outputRange: [0, -18],
-          extrapolate: "clamp",
-        }),
-      ),
-    [translateX, dragX, overlayParallax, drawerTransitionProgress],
+  // Menu fijo: nunca se desliza horizontalmente. Solo su contenido aparece
+  // con un fade rapido y baja 7 px, derivado del mismo progreso del drawer.
+  const contentStyle = useAnimatedStyle(() => ({
+    opacity: menuContentOpacity(drawerProgress.value),
+    transform: [{ translateY: menuContentTranslateY(drawerProgress.value) }],
+  }));
+  const dragStart = useSharedValue(1);
+  const dragging = useSharedValue(false);
+  const gestureVersion = useSharedValue(0);
+  const closePan = React.useMemo(
+    () => Gesture.Pan()
+      .activeOffsetX([-12, 10000])
+      .failOffsetY([-DRAWER_GESTURE_FAIL_Y, DRAWER_GESTURE_FAIL_Y])
+      .onStart(() => {
+        cancelAnimation(drawerProgress);
+        dragging.value = true;
+        gestureVersion.value = drawerGestureVersion.value;
+        dragStart.value = drawerProgress.value;
+        runOnJS(beginDrawerDrag)(gestureVersion.value);
+      })
+      .onUpdate((event) => {
+        if (gestureVersion.value !== drawerGestureVersion.value) return;
+        drawerProgress.value = dragProgress(dragStart.value, event.translationX, drawerWidth.value);
+      })
+      .onEnd((event) => {
+        dragging.value = false;
+        runOnJS(settleDrawerDrag)(shouldSettleOpen(drawerProgress.value, event.velocityX), gestureVersion.value);
+      })
+      .onFinalize(() => {
+        if (!dragging.value) return;
+        dragging.value = false;
+        runOnJS(settleDrawerDrag)(dragStart.value >= 0.5, gestureVersion.value);
+      }),
+    [beginDrawerDrag, dragging, dragStart, drawerGestureVersion, drawerProgress, drawerWidth, gestureVersion, settleDrawerDrag],
   );
-  const historyScale = React.useMemo(
-    () => drawerTransitionProgress.interpolate({
-      inputRange: [0, 1],
-      outputRange: [1, 0.985],
-      extrapolate: "clamp",
-    }),
-    [drawerTransitionProgress],
-  );
-  const historyOpacity = React.useMemo(
-    () => drawerTransitionProgress.interpolate({
-      inputRange: [0, 1],
-      outputRange: [1, 0.985],
-      extrapolate: "clamp",
-    }),
-    [drawerTransitionProgress],
-  );
-  const composedDrawerOpacity = React.useMemo(
-    () => Animated.multiply(drawerOpacity, historyOpacity),
-    [drawerOpacity, historyOpacity],
-  );
-
-  const panResponder = React.useRef(
-    PanResponder.create({
-      onMoveShouldSetPanResponder: (_, { dx, dy }) =>
-        dx < -8 && Math.abs(dx) > Math.abs(dy),
-      onPanResponderMove: (_, { dx }) => {
-        dragX.setValue(Math.min(0, dx));
-      },
-      onPanResponderRelease: (_, { dx, vx }) => {
-        if (dx < -60 || vx < -0.5) {
-          // No resetear dragX aquí: si se hace setValue(0) antes del cierre,
-          // el drawer salta de vuelta a abierto y luego cierra (doble movimiento).
-          // Dejamos dragX en su posición arrastrada; drawerAnim lleva el panel
-          // fuera de pantalla y reseteamos dragX al terminar.
-          onClose();
-          if (dragResetTimer.current) clearTimeout(dragResetTimer.current);
-          dragResetTimer.current = setTimeout(() => {
-            dragX.setValue(0);
-            dragResetTimer.current = null;
-          }, DURATION.DRAWER + 32);
-        } else {
-          Animated.spring(dragX, { toValue: 0, useNativeDriver: true, bounciness: 0 }).start();
-        }
-      },
-      onPanResponderTerminate: () => {
-        Animated.spring(dragX, { toValue: 0, useNativeDriver: true, bounciness: 0 }).start();
-      },
-    })
-  ).current;
-
-  React.useLayoutEffect(() => {
-    if (!visible) return;
-    if (dragResetTimer.current) {
-      clearTimeout(dragResetTimer.current);
-      dragResetTimer.current = null;
-    }
-    dragX.stopAnimation();
-    dragX.setValue(0);
-  }, [dragX, visible]);
-
-  React.useEffect(
-    () => () => {
-      if (dragResetTimer.current) clearTimeout(dragResetTimer.current);
-    },
-    [],
-  );
+  const menuWidth = drawerOffset(windowWidth);
 
   const localFullName = [username, lastName].filter(Boolean).join(" ");
   const hasLocalName = !!localFullName && localFullName !== "Explorador de Sonido";
   const fullName = hasLocalName ? localFullName : (clerkName || "");
   const initial = (fullName || clerkName || "").charAt(0).toUpperCase() || null;
 
+  // Cada destino se prepara dentro de la superficie frontal que vuelve; el
+  // cierre empieza cuando el destino confirma su layout o la ruta cambia.
   const navigate = (route: string) => {
-    // Overlays sobre el drawer (menú queda abierto debajo)
-    if (route === "__biblioteca_overlay") { openLibFromDrawer(); return; }
+    if (route === "__biblioteca_overlay") {
+      selectFromDrawer({ kind: "layout", target: "library", run: () => openLibFromDrawer() });
+      return;
+    }
     if (route === "__mood_picker") {
-      onClose();
-      requestMoodPicker();
+      selectFromDrawer({ kind: "afterClose", run: requestMoodPicker });
       return;
     }
     if (route === "__mixer") {
-      onClose();
-      openMixer();
+      selectFromDrawer({ kind: "afterClose", run: openMixer });
       return;
     }
     if (route === "__profile_compose") {
-      markInstantNav();
-      onClose();
-      requestWallCompose();
-      router.push("/(tabs)/profile" as never);
+      selectFromDrawer({
+        kind: "route",
+        target: "/(tabs)/profile",
+        run: () => {
+          requestWallCompose();
+          router.push("/(tabs)/profile" as never);
+        },
+      });
       return;
     }
     if (route.startsWith("__overlay:")) {
       const target = route.replace("__overlay:", "");
-      if (["/historial", "/favoritos-todos", "/diario", "/descargas", "/notificaciones", "/amigos", "/grupos", "/membresia"].includes(target)) {
-        openOverlayFromDrawer(target);
-      } else {
-        openOverlay(target);
-      }
+      selectFromDrawer({ kind: "layout", target, run: () => openOverlayFromDrawer(target) });
       return;
     }
     if (route.startsWith("__cat:")) {
       const target = route.replace("__cat:", "");
-      onClose();
-      if (openCategoryGlobal(target)) return;
-      markInstantNav();
-      router.push(target as never);
+      selectFromDrawer({
+        kind: "afterClose",
+        run: () => {
+          if (!openCategoryGlobal(target)) router.push(target as never);
+        },
+      });
       return;
     }
-    markInstantNav();
-    onClose();
-    router.push(route as never);
+    selectFromDrawer({ kind: "route", target: route, run: () => router.push(route as never) });
   };
 
   return (
-    <View style={StyleSheet.absoluteFill} pointerEvents="box-none">
-      <Pressable
-        pointerEvents={visible ? "auto" : "none"}
-        style={[StyleSheet.absoluteFill, { left: DRAWER_PUSH }]}
-        onPress={onClose}
-      />
-
-      <Animated.View
-        renderToHardwareTextureAndroid
-        shouldRasterizeIOS
-        {...panResponder.panHandlers}
-        style={[
-          styles.drawer,
-          styles.drawerShadow,
-          {
-            bottom: 0,
-            transform: [{ translateX: drawerTranslate }, { scale: historyScale }],
-            opacity: composedDrawerOpacity,
-          },
-        ]}
-      >
+    <View
+      style={StyleSheet.absoluteFill}
+      pointerEvents={visible ? "box-none" : "none"}
+      accessibilityElementsHidden={!visible}
+      importantForAccessibility={visible ? "auto" : "no-hide-descendants"}
+      testID="drawer-menu"
+    >
+      {/* Mismo fondo vigente de Inicio, a pantalla completa: sin panel ni costura. */}
+      <SceneThemeBackground />
+      <GestureDetector gesture={closePan}>
+        <RAnimated.View style={[styles.drawer, { width: menuWidth }, contentStyle]}>
         <View style={styles.drawerInner}>
-          <SceneThemeBackground />
           <Pressable
             onPress={onClose}
             style={[
@@ -464,7 +398,8 @@ export function DrawerMenu() {
             <DrawerSceneCards activeId={activeSceneId} onSelect={selectVisualTheme} />
           </ScrollView>
         </View>
-      </Animated.View>
+        </RAnimated.View>
+      </GestureDetector>
     </View>
   );
 }
@@ -475,22 +410,9 @@ const styles = StyleSheet.create({
     top: 0,
     bottom: 0,
     left: 0,
-    width: DRAWER_PUSH,
-    borderTopRightRadius: 31,
-    borderBottomRightRadius: 31,
-    overflow: "hidden",
-  },
-  drawerShadow: {
-    shadowColor: "#000",
-    shadowOffset: { width: 6, height: 0 },
-    shadowOpacity: 0.35,
-    shadowRadius: 12,
-    elevation: 20,
   },
   drawerInner: {
     flex: 1,
-    borderRightWidth: StyleSheet.hairlineWidth,
-    borderRightColor: "rgba(180,180,180,0.10)",
   },
   drawerEmptyCloseZone: {
     position: "absolute",

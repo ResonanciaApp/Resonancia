@@ -7,6 +7,7 @@ import { useStreakCelebration } from "@/context/StreakCelebrationContext";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { LinearGradient } from "expo-linear-gradient";
 import { SceneThemeBackground } from "@/components/SceneThemeBackground";
+import { DrawerEdgeGesture } from "@/components/DrawerForeground";
 import { BlurView } from "expo-blur";
 import { SymbolView } from "expo-symbols";
 import { router, useFocusEffect, useRouter } from "expo-router";
@@ -57,7 +58,7 @@ import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { GreetingHeader } from "@/components/GreetingHeader";
 import { useGreeting } from "@/hooks/useGreeting";
 import { useGreetingVisible } from "@/context/GreetingVisibleContext";
-import { useDrawer } from "@/context/DrawerContext";
+import { useDrawerMotion, useHomeDrawer } from "@/context/DrawerContext";
 import { useRoutineCompletionBanner } from "@/context/RoutineCompletionBannerContext";
 import { useCategoryOverlay } from "@/context/CategoryOverlayContext";
 import { getWeeklyPhrase } from "@/data/greeting-phrases";
@@ -1835,6 +1836,10 @@ const Inicio2HeroStatic = React.memo(function Inicio2HeroStatic({
     inicio3HeroShift +
     inicio3HeroDownshift;
   const inicio3HeroTop = inicio3HeroLayoutTop - 19;
+  const { drawerProgress: avatarDrawerProgress } = useDrawerMotion();
+  const avatarDrawerStyle = useAnimatedStyle(() => ({
+    opacity: isInicio3 ? 1 - avatarDrawerProgress.value : 1,
+  }));
   const slowHeaderStyle = useAnimatedStyle(() => {
     if (!isInicio3 || reduceMotion) return { transform: [{ translateY: 0 }] };
     const y = Math.max(0, effectiveScrollY.value);
@@ -1908,6 +1913,7 @@ const Inicio2HeroStatic = React.memo(function Inicio2HeroStatic({
             isInicio3 && styles.inicio3HeroProfileLift,
           ]}
         >
+          <RAnimated.View style={avatarDrawerStyle}>
           <Pressable
             onPress={onOpenDrawer}
             hitSlop={10}
@@ -1930,6 +1936,7 @@ const Inicio2HeroStatic = React.memo(function Inicio2HeroStatic({
               </View>
             )}
           </Pressable>
+          </RAnimated.View>
           <Pressable
             onPress={onOpenDrawer}
             hitSlop={8}
@@ -2153,7 +2160,7 @@ export default function HomeScreen2({
   const { openCategory } = useCategoryOverlay();
   const { openForSession } = useAmbientalDuration();
   const { openSheet: openEscenasSheet } = useAmbientPlayer();
-  const { open: openDrawer, moodPickerRequest } = useDrawer();
+  const { open: openDrawer, moodPickerRequest } = useHomeDrawer();
   const { theme: activeTheme, activeSceneId } = useSceneTheme();
   const handleOpenDrawer = useCallback(() => {
     openDrawer();
@@ -2778,6 +2785,7 @@ export default function HomeScreen2({
   );
 
   return (
+    <DrawerEdgeGesture enabled={variant === "inicio3" && tabFocused && !immersive} top={topPad + 56}>
     <View
       testID={`inicio-${variant}`}
       style={[styles.root, { backgroundColor: activeTheme.gradient[activeTheme.gradient.length - 1] as string }]}
@@ -3493,6 +3501,8 @@ export default function HomeScreen2({
 
       {/* SceneAnimationModal lives at root (_layout.tsx) via SelectedSceneContext */}
 
+      {/* Apertura progresiva del drawer desde el borde izquierdo seguro, bajo el header. */}
+
       {/* ── Modo inmersivo — animación centrada, fade in/out + pinch zoom ── */}
       {!isInicio2 && headerScene && immersiveRendered && tabFocused && (
         <Animated.View
@@ -3517,6 +3527,7 @@ export default function HomeScreen2({
       )}
 
     </View>
+    </DrawerEdgeGesture>
   );
 }
 

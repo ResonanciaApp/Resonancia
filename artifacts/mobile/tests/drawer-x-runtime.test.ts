@@ -1,0 +1,299 @@
+import assert from "node:assert/strict";
+import { readFileSync } from "node:fs";
+import { createRequire } from "node:module";
+import { URL } from "node:url";
+import test from "node:test";
+import { runInNewContext } from "node:vm";
+import ts from "typescript";
+import * as geometry from "../lib/drawerGeometry.ts";
+
+const require = createRequire(import.meta.url);
+
+/** Execute the real provider/components with deterministic hooks, native gestures
+ * and UI timing. This tests callbacks from production, not a copied controller.
+ * Native view rendering, hardware event delivery and pixels still need a device.
+ */
+function harness() {
+  let index = 0;
+  let dirty = true;
+  let currentPath = "/inicio3";
+  const slots: any[] = [];
+  const effects: Array<() => void> = [];
+  const frames: Array<() => void> = [];
+  const backs: Array<() => boolean> = [];
+  const gestures: any[] = [];
+  let context: any;
+  let Provider: any;
+  const same = (a: any[], b?: any[]) => b && a.length === b.length && a.every((v, i) => Object.is(v, b[i]));
+  const React: any = {
+    createContext: () => ({ Provider: "Provider" }),
+    createElement: (type: any, props: any, ...children: any[]) => ({ type, props: { ...props, children } }),
+    useContext: () => context,
+    useRef: (initial: any) => {
+      const n = index++;
+      return slots[n] ?? (slots[n] = { current: initial });
+    },
+    useState: (initial: any) => {
+      const n = index++;
+      if (!slots[n]) slots[n] = { value: typeof initial === "function" ? initial() : initial };
+      return [slots[n].value, (value: any) => {
+        const next = typeof value === "function" ? value(slots[n].value) : value;
+        if (!Object.is(next, slots[n].value)) { slots[n].value = next; dirty = true; }
+      }];
+    },
+    useMemo: (fn: any, deps: any[]) => {
+      const n = index++;
+      if (!slots[n] || !same(deps, slots[n].deps)) slots[n] = { value: fn(), deps };
+      return slots[n].value;
+    },
+    useCallback: (fn: any, deps: any[]) => React.useMemo(() => fn, deps),
+    useEffect: (fn: any, deps: any[]) => {
+      const n = index++;
+      if (!slots[n] || !same(deps, slots[n].deps)) {
+        const previous = slots[n];
+        slots[n] = { deps };
+        effects.push(() => { previous?.cleanup?.(); slots[n].cleanup = fn(); });
+      }
+    },
+  };
+  class Shared {
+    animation: any;
+    private stored: any;
+    constructor(value: any) { this.stored = value; }
+    get value() { return this.stored; }
+    set value(value: any) {
+      if (value && typeof value === "object" && "target" in value) this.animation = value;
+      else this.stored = value;
+    }
+    finish() {
+      const animation = this.animation;
+      this.animation = undefined;
+      if (!animation) return;
+      this.stored = animation.target;
+      animation.callback?.(true);
+    }
+  }
+  const Reanimated: any = {
+    __esModule: true, default: { View: "AnimatedView" },
+    useSharedValue: (value: number) => React.useRef(new Shared(value)).current,
+    useAnimatedStyle: (fn: any) => fn(),
+    runOnJS: (fn: any) => fn,
+    cancelAnimation: (value: Shared) => {
+      const animation = value.animation;
+      value.animation = undefined;
+      animation?.callback?.(false);
+    },
+    withTiming: (target: number, _options: any, callback: any) => ({ target, callback }),
+    Easing: { out: (v: any) => v, cubic: () => {} },
+  };
+  class Value {
+    value: number;
+    constructor(value: number) { this.value = value; }
+    stopAnimation() {}
+    setValue(value: number) { this.value = value; }
+    interpolate(options: any) { return options; }
+  }
+  function gesture(kind: string) {
+    const g: any = { kind, handlers: {}, options: {} };
+    for (const key of ["enabled", "hitSlop", "activeOffsetX", "failOffsetX", "failOffsetY"]) {
+      g[key] = (value: any) => { g.options[key] = value; return g; };
+    }
+    for (const key of ["onStart", "onUpdate", "onEnd", "onFinalize"]) {
+      g[key] = (fn: any) => { g.handlers[key] = fn; return g; };
+    }
+    gestures.push(g);
+    return g;
+  }
+  const modules: any = {
+    react: { __esModule: true, default: React, ...React },
+    "react-native": {
+      useWindowDimensions: () => ({ width: 390, height: 844 }),
+      Animated: { Value, timing: (value: Value, options: any) => ({ start: (cb?: any) => { value.setValue(options.toValue); cb?.({ finished: true }); } }) },
+      BackHandler: { addEventListener: (_event: string, fn: any) => {
+        backs.push(fn);
+        return { remove: () => { const i = backs.indexOf(fn); if (i >= 0) backs.splice(i, 1); } };
+      } },
+      StyleSheet: { create: (s: any) => s, absoluteFill: { position: "absolute" } },
+      View: "View",
+    },
+    "expo-router": { usePathname: () => currentPath },
+    "react-native-reanimated": Reanimated,
+    "react-native-gesture-handler": { GestureDetector: "GestureDetector", Gesture: {
+      Pan: () => gesture("pan"), Tap: () => gesture("tap"),
+      Exclusive: (...items: any[]) => ({ items }),
+    } },
+    "@/constants/motion": { DURATION: { DRAWER: 350 }, easeOutCubic: (v: number) => v },
+    "@/lib/drawerGeometry": geometry,
+    "@/context/DrawerContext": { useDrawer: () => context, useDrawerMotion: () => context },
+    "@/context/SceneThemeContext": { useSceneTheme: () => ({ theme: { solid: "#060A0F" } }) },
+    "@/components/SacredBackground": { SacredBackground: "Background" },
+  };
+  function load(file: string) {
+    const source = readFileSync(new URL(file, import.meta.url), "utf8");
+    const output = ts.transpileModule(source, { compilerOptions: {
+      module: ts.ModuleKind.CommonJS, jsx: ts.JsxEmit.React, esModuleInterop: true,
+    } }).outputText;
+    const module = { exports: {} };
+    runInNewContext(output, {
+      module, exports: module.exports,
+      require: (id: string) => modules[id] ?? require(id),
+      requestAnimationFrame: (fn: any) => { frames.push(fn); return frames.length; },
+      console,
+    });
+    return module.exports as any;
+  }
+  Provider = load("../context/DrawerContext.tsx").DrawerProvider;
+  const foreground = load("../components/DrawerForeground.tsx");
+  function flush() {
+    let limit = 20;
+    while (dirty && limit-- > 0) {
+      dirty = false; index = 0;
+      context = Provider({ children: null }).props.children[0].props.children[0].props.value;
+      effects.splice(0).forEach(fn => fn());
+    }
+    assert.ok(limit > 0, "provider settles without an infinite render loop");
+    return context;
+  }
+  flush();
+  return {
+    get ctx() { return context; }, flush,
+    frame: () => { frames.splice(0).forEach(fn => fn()); flush(); },
+    finish: () => { context.drawerProgress.finish(); flush(); },
+    path: (path: string) => { currentPath = path; dirty = true; flush(); },
+    back: () => { const handled = [...backs].reverse().some(fn => fn()); flush(); return handled; },
+    component: (name: "DrawerForeground" | "DrawerEdgeGesture", props: any) => {
+      // Separate hook slots: rendering the foreground must not consume provider hooks.
+      index = slots.length;
+      return { tree: foreground[name](props), gestures };
+    },
+  };
+}
+
+function opened() {
+  const h = harness();
+  h.ctx.open(); h.flush(); h.finish();
+  assert.equal(h.ctx.drawerProgress.value, 1);
+  return h;
+}
+
+test("real provider waits for overlay layout, then closes with destination still mounted", () => {
+  const h = opened();
+  h.ctx.selectFromDrawer({ kind: "layout", run: () => h.ctx.openLibFromDrawer() });
+  h.flush();
+  assert.equal(h.ctx.libOpen, true);
+  assert.equal(h.ctx.foregroundBlocked, true);
+  assert.equal(h.ctx.drawerProgress.animation, undefined);
+  h.ctx.acknowledgeDestinationReady("layout");
+  h.frame(); assert.equal(h.ctx.drawerProgress.animation, undefined);
+  h.frame(); assert.equal(h.ctx.drawerProgress.animation.target, 0);
+  h.finish();
+  assert.equal(h.ctx.foregroundBlocked, false);
+  assert.equal(h.ctx.libOpen, true);
+});
+
+test("reselecting an already mounted overlay requests fresh readiness without accepting another destination", () => {
+  const h = opened();
+  const choose = () => {
+    h.ctx.selectFromDrawer({ kind: "layout", target: "library", run: () => h.ctx.openLibFromDrawer() });
+    h.flush();
+  };
+  choose();
+  const first = h.ctx.destinationRequest;
+  h.ctx.open(); h.flush(); h.finish();
+  choose();
+  assert.ok(h.ctx.destinationRequest > first, "a fresh layout probe mounts even if libOpen was already true");
+  h.ctx.acknowledgeDestinationReady("layout", "/historial"); h.frame(); h.frame();
+  assert.equal(h.ctx.drawerProgress.animation, undefined);
+  h.ctx.acknowledgeDestinationReady("layout", "library"); h.frame(); h.frame(); h.finish();
+  assert.equal(h.ctx.foregroundBlocked, false);
+  assert.equal(h.ctx.libOpen, true);
+});
+
+test("real provider invalidates already acknowledged but not yet executed closing frames", () => {
+  const h = opened();
+  h.ctx.selectFromDrawer({ kind: "layout", run: () => h.ctx.openOverlayFromDrawer("/historial") });
+  h.flush(); h.ctx.acknowledgeDestinationReady("layout"); h.frame();
+  h.ctx.open(); h.flush(); h.frame();
+  assert.equal(h.ctx.isOpen, true);
+  assert.equal(h.ctx.drawerProgress.animation.target, 1);
+});
+
+test("Back or closing the newly mounted overlay cancels a pending selection in one action", () => {
+  for (const action of ["back", "closeOverlay", "closeLib"]) {
+    const h = opened();
+    h.ctx.selectFromDrawer({ kind: "layout", run: () => action === "closeLib" ? h.ctx.openLibFromDrawer() : h.ctx.openOverlayFromDrawer("/historial") });
+    h.flush();
+    if (action === "back") assert.equal(h.back(), true);
+    else h.ctx[action]();
+    h.flush();
+    assert.equal(h.ctx.drawerProgress.animation.target, 0);
+    h.ctx.acknowledgeDestinationReady("layout"); h.frame(); h.frame(); h.finish();
+    assert.equal(h.ctx.foregroundBlocked, false);
+  }
+});
+
+test("route selection waits for navigation and tools wait for real close, including a late reopen", () => {
+  const h = opened();
+  let navigations = 0;
+  h.ctx.selectFromDrawer({ kind: "route", target: "/respiracion", run: () => navigations++ });
+  h.flush(); h.frame();
+  assert.equal(navigations, 1);
+  assert.equal(h.ctx.drawerProgress.animation, undefined);
+  h.path("/respiracion"); h.frame(); h.frame(); h.finish();
+  assert.equal(h.ctx.instantNav, false);
+  let tools = 0;
+  h.ctx.open(); h.flush(); h.finish();
+  h.ctx.selectFromDrawer({ kind: "afterClose", run: () => tools++ }); h.flush();
+  assert.equal(tools, 0);
+  h.finish();
+  h.ctx.open(); h.flush(); h.frame();
+  assert.equal(tools, 0, "reopening before the queued frame suppresses the obsolete tool");
+});
+
+test("edge gesture wraps real content, restricts recognition without a touch-blocking strip, and cancels safely", () => {
+  const h = harness();
+  const child = { type: "Home", props: {} };
+  const result = h.component("DrawerEdgeGesture", { enabled: true, top: 100, children: child });
+  assert.equal(result.tree.props.children[0], child);
+  const pan = result.gestures[0];
+  assert.equal(pan.options.hitSlop, undefined);
+  pan.handlers.onFinalize();
+  assert.equal(h.ctx.foregroundBlocked, false, "failing before activation does not close or block content");
+  pan.handlers.onStart(); pan.handlers.onUpdate({ translationX: 157.5 });
+  h.flush();
+  assert.equal(h.ctx.foregroundBlocked, false, "no shield mounts over an active finger");
+  assert.equal(h.ctx.drawerProgress.value, 0.5);
+  pan.handlers.onFinalize(); h.flush(); h.finish();
+  assert.equal(h.ctx.drawerProgress.value, 0);
+  assert.equal(h.ctx.foregroundBlocked, false);
+});
+
+test("an active native drag cannot overwrite or reopen a programmatic Back close", () => {
+  const h = opened();
+  const result = h.component("DrawerForeground", { children: null });
+  const pan = result.gestures[0];
+  pan.handlers.onStart(); h.flush();
+  assert.equal(h.back(), true);
+  pan.handlers.onUpdate({ translationX: -100 });
+  assert.equal(h.ctx.drawerProgress.value, 1, "stale gesture update ignored during programmatic closing");
+  pan.handlers.onFinalize(); h.flush(); h.finish();
+  assert.equal(h.ctx.drawerProgress.value, 0);
+  assert.equal(h.ctx.foregroundBlocked, false);
+  assert.equal(h.ctx.isOpen, false);
+});
+
+test("Inicio follows the held finger in both directions and settles only after release", () => {
+  const h = harness();
+  const { gestures } = h.component("DrawerEdgeGesture", { enabled: true, children: null });
+  const pan = gestures[0];
+  pan.handlers.onStart(); h.flush();
+  for (const x of [31.5, 126, 63]) {
+    pan.handlers.onUpdate({ translationX: x }); h.flush();
+    assert.equal(h.ctx.drawerProgress.value, x / 315);
+    assert.equal(h.ctx.drawerProgress.animation, undefined, "no timing fights the finger");
+    assert.equal(h.ctx.foregroundBlocked, false, "the original gesture keeps its touch target");
+    assert.equal(h.ctx.isOpen, false);
+  }
+  pan.handlers.onEnd({ translationX: 63, velocityX: 0 }); h.flush(); h.finish();
+  assert.equal(h.ctx.drawerProgress.value, 1, "a short intentional right swipe opens upon release");
+});

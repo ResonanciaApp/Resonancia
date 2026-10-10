@@ -1,14 +1,22 @@
 ---
 name: Transiciones desde el drawer
-description: Regla para mantener sincronizadas la superficie destino y la reacción visual del menú lateral.
+description: El menú estilo X revela sus destinos dentro de una superficie frontal compartida, sin una segunda entrada lateral.
 ---
 
-Los destinos abiertos desde el drawer deben derivar la entrada de la superficie y la reacción del menú del mismo progreso animado. No basta con igualar duraciones de dos animaciones independientes. La apertura y el cierre invierten ese mismo progreso.
+El menú permanece fijo detrás de la pantalla desplazada. Elegir un destino prepara su contenido dentro de esa pantalla y cierra el menú mientras la pantalla regresa, en vez de abrir otra ventana lateral sobre un drawer que queda abierto.
 
-**Why:** Las animaciones separadas se desincronizan bajo carga, al interrumpirse o al cerrar rápidamente. Además, reutilizar el progreso compartido sin registrar el origen cambia por accidente las aperturas normales de esas pantallas.
+**Why:** El usuario pidió reemplazar la interacción anterior por el comportamiento estilo X, sin flashes de Inicio ni una segunda animación de entrada.
 
-**How to apply:** Registrar explícitamente si la apertura nació en el drawer. Solo ese origen usa el progreso compartido y mantiene el drawer montado debajo hasta terminar el cierre. Las aperturas desde otras superficies conservan su animación y parallax previos. Invalidar callbacks de transiciones antiguas para que una reapertura no sea desmontada por un cierre ya obsoleto.
+**How to apply:** Usar un progreso cancelable para desplazamiento, esquinas, aclaración, sombra y aparición del menú. Registrar el origen del destino: las aperturas ajenas al drawer mantienen sus transiciones normales. No conservar el menú abierto al regresar a Biblioteca.
 
-Los paneles fullscreen que deben cubrir el drawer tienen que renderizarse en una capa raíz posterior al drawer. Un `zIndex` alto dentro del árbol de Tabs no puede superar a un hermano global posterior. Si el panel usa contextos de Tabs (por ejemplo, visibilidad de la barra inferior), subir el proveedor compartido por encima de ambos árboles en vez de crear una segunda instancia.
+La confirmación de destino listo debe corresponder a la selección concreta y ocurrir después de montar el contenido, no tras un timeout estimado. Repetir una selección de un overlay ya montado también exige una confirmación nueva sin perder su contenido.
 
-Durante el cierre del drawer, no desmontar capas transparentes ni quitar sombra/elevación antes de que termine el `translateX`: ese cambio de composición produce un flash del fondo. Mantener estable el árbol y rasterizar la vista animada en una sola textura.
+**Why:** Una confirmación tardía de otra pantalla puede cerrar el menú antes de preparar la elegida; esperar solo un cambio de estado que ya era verdadero puede dejarlo bloqueado.
+
+**How to apply:** Invalidar también las selecciones que ya confirmaron readiness pero tienen un callback pendiente. Un cierre programático debe invalidar los eventos de un gesto anterior, incluidos los que cruzan del hilo de UI al de JS. Mantener la composición y la sombra hasta terminar el movimiento real.
+
+Mientras el dedo arrastra Inicio, no montar una nueva capa táctil encima ni iniciar una animación de asentamiento. El progreso debe seguir directamente la traslación del dedo; cancelar el timing anterior en el hilo de UI, no después de cruzar a JavaScript.
+
+**Why:** El usuario observó apertura anticipada y tirones: una capa nueva puede cancelar el reconocedor original y una cancelación tardía compite con sus actualizaciones.
+
+**How to apply:** Separar las suscripciones estables de Inicio de los estados de apertura del menú. La aparición de contenido debe durar mientras se revela, no concluir cuando todavía está oculto detrás de la pantalla.
