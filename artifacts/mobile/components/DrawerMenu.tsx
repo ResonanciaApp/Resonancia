@@ -142,7 +142,6 @@ export function DrawerMenu() {
       .failOffsetY([-DRAWER_GESTURE_FAIL_Y, DRAWER_GESTURE_FAIL_Y])
       .onStart(() => {
         cancelAnimation(drawerProgress);
-        drawerGestureVersion.value += 1;
         dragging.value = true;
         gestureVersion.value = drawerGestureVersion.value;
         dragStart.value = drawerProgress.value;
@@ -154,12 +153,12 @@ export function DrawerMenu() {
       })
       .onEnd((event) => {
         dragging.value = false;
-        settleDrawerDrag(shouldSettleOpen(drawerProgress.value, event.velocityX), gestureVersion.value);
+        runOnJS(settleDrawerDrag)(shouldSettleOpen(drawerProgress.value, event.velocityX), gestureVersion.value);
       })
       .onFinalize(() => {
         if (!dragging.value) return;
         dragging.value = false;
-        settleDrawerDrag(dragStart.value >= 0.5, gestureVersion.value);
+        runOnJS(settleDrawerDrag)(dragStart.value >= 0.5, gestureVersion.value);
       }),
     [beginDrawerDrag, dragging, dragStart, drawerGestureVersion, drawerProgress, drawerWidth, gestureVersion, settleDrawerDrag],
   );

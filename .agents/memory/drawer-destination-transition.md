@@ -3,29 +3,11 @@ name: Transiciones desde el drawer
 description: El menú estilo X revela sus destinos dentro de una superficie frontal compartida, sin una segunda entrada lateral.
 ---
 
-El menú permanece fijo detrás de la pantalla desplazada. Los destinos overlay preparan su contenido dentro de esa pantalla antes del cierre. Las rutas del navegador esperan al cierre real antes de navegar, conservando Inicio montado durante todo el movimiento.
+El menú permanece fijo detrás de la pantalla desplazada. Elegir un destino prepara su contenido dentro de esa pantalla y cierra el menú mientras la pantalla regresa, en vez de abrir otra ventana lateral sobre un drawer que queda abierto.
 
-**Why:** El usuario pidió el comportamiento estilo X y posteriormente exigió coordinar el cambio de ruta con el cierre para no montar otra ruta durante el desplazamiento.
+**Why:** El usuario pidió reemplazar la interacción anterior por el comportamiento estilo X, sin flashes de Inicio ni una segunda animación de entrada.
 
 **How to apply:** Usar un progreso cancelable para desplazamiento, esquinas, aclaración, sombra y aparición del menú. Registrar el origen del destino: las aperturas ajenas al drawer mantienen sus transiciones normales. No conservar el menú abierto al regresar a Biblioteca.
-
-El asentamiento al soltar debe arrancar directamente en el hilo UI; JavaScript solo registra el estado y recibe la finalización. Todo nuevo gesto invalida también las finalizaciones que ya estén en la cola JS.
-
-**Why:** Esperar el viaje UI→JS→UI introduce una pausa cuando JS está ocupado. Los tests con la cola JS detenida confirman esta independencia, pero no demuestran una mejora de FPS en un dispositivo.
-
-**How to apply:** Mantener un solo progreso compartido, cancelar el timing al empezar el gesto y verificar la versión tanto al iniciar comandos como al recibir finalizaciones.
-
-No dar por validada una nueva capa de planificación UI con un mock que ejecuta `runOnUI` sincrónicamente.
-
-**Why:** Tras introducir esa capa, el usuario reportó que tocar el avatar bloqueaba Inicio sin abrir el menú, aunque los tests deterministas pasaban.
-
-**How to apply:** La apertura programática conserva la asignación directa de timing al shared value; cualquier cambio de planificación entre hilos necesita verificar sus colas reales y la interacción nativa.
-
-No releer inmediatamente desde JS un SharedValue recién escrito para obtener la versión del comando: conservar y pasar el valor calculado.
-
-**Why:** Los setters nativos de Reanimated programan escrituras en UI. Una lectura inmediata puede devolver la versión anterior y hacer que se descarte una apertura o su finalización, dejando el bloqueo táctil activo. El mock síncrono ocultaba esa carrera.
-
-**How to apply:** Probar apertura, cierre y navegación también con escrituras nativas diferidas. Los gestos que ya corren en UI no necesitan esa compensación.
 
 La confirmación de destino listo debe corresponder a la selección concreta y ocurrir después de montar el contenido, no tras un timeout estimado. Repetir una selección de un overlay ya montado también exige una confirmación nueva sin perder su contenido.
 

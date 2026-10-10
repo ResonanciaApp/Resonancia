@@ -25,7 +25,7 @@ export const DRAWER_OVERLAY_PARALLAX_X = -32;
  * Seleccion iniciada desde el menu.
  * - layout: el destino es un overlay; el cierre empieza cuando su contenido
  *   confirma el layout real (acknowledgeDestinationReady("layout")).
- * - route: la navegación se ejecuta solo cuando termina el cierre.
+ * - route: el destino es una ruta; el cierre empieza cuando cambia la ruta.
  * - afterClose: herramientas (Mezclador, Registro de animo) que abren su
  *   propia superficie solo despues de que el cierre termino de verdad.
  */
@@ -125,58 +125,52 @@ export function DrawerProvider({ children }: { children: React.ReactNode }) {
     setIsOpen(value);
   }, []);
 
-  const finishAnimation = useCallback((token: number, target: number, version: number) => {
-    if (version !== drawerGestureVersion.value) return;
+  const finishAnimation = useCallback((token: number, target: number) => {
     if (!controller.isCurrentAnimation(token)) return;
     if (target === 0) setForegroundBlocked(false);
     const pending = afterSettle.current;
     afterSettle.current = null;
     if (pending && pending.token === token) pending.callback?.();
-  }, [controller, drawerGestureVersion, setForegroundBlocked]);
+  }, [controller]);
 
   // Una sola animacion en vuelo: cada inicio invalida el callback anterior,
   // asi un cierre interrumpido nunca ejecuta su accion obsoleta.
-  const animateTo = useCallback((target: 0 | 1, callback?: () => void, expectedVersion?: number) => {
+  const animateTo = useCallback((target: 0 | 1, callback?: () => void) => {
     const token = controller.beginAnimation();
     afterSettle.current = { token, callback };
-    const version = expectedVersion ?? drawerGestureVersion.value;
-    // Schedule through Reanimated's shared-value setter, as before.
-    // Do not add a second queued command that can silently reject opening
-    // after React has already enabled the foreground touch shield.
     cancelAnimation(drawerProgress);
+    const duration = settleDuration(drawerProgress.value, target);
     drawerProgress.value = withTiming(
       target,
-      { duration: settleDuration(drawerProgress.value, target), easing: Easing.out(Easing.cubic) },
+      { duration, easing: Easing.out(Easing.cubic) },
       (finished) => {
-        if (finished) runOnJS(finishAnimation)(token, target, version);
+        if (finished) runOnJS(finishAnimation)(token, target);
       },
     );
-  }, [controller, drawerGestureVersion, drawerProgress, finishAnimation]);
+  }, [controller, drawerProgress, finishAnimation]);
 
   const open = useCallback(() => {
-    const version = drawerGestureVersion.value + 1;
-    drawerGestureVersion.value = version;
+    drawerGestureVersion.value += 1;
     controller.cancelSelection();
     setInstantNav(false);
     setForegroundBlocked(true);
     setOpenState(true);
-    animateTo(1, undefined, version);
+    animateTo(1);
   }, [animateTo, controller, drawerGestureVersion, setOpenState]);
 
-  const closeInternal = useCallback((onClosed?: () => void, version?: number) => {
+  const closeInternal = useCallback((onClosed?: () => void) => {
     setOpenState(false);
-    animateTo(0, onClosed, version);
+    animateTo(0, onClosed);
   }, [animateTo, setOpenState]);
 
   const close = useCallback((onClosed?: () => void) => {
-    const version = drawerGestureVersion.value + 1;
-    drawerGestureVersion.value = version;
+    drawerGestureVersion.value += 1;
     controller.cancelSelection();
     closeInternal(() => {
       setInstantNav(false);
       // Pressable puede pasar su evento: solo se ejecutan callbacks reales.
       if (typeof onClosed === "function") onClosed();
-    }, version);
+    });
   }, [closeInternal, controller, drawerGestureVersion]);
 
   const beginDrawerDrag = useCallback((version?: number) => {
@@ -188,37 +182,11 @@ export function DrawerProvider({ children }: { children: React.ReactNode }) {
     // Do not mount a touch shield (or rerender Inicio) underneath an active finger.
   }, [controller, drawerGestureVersion, drawerProgress]);
 
-  const recordDragSettle = useCallback((shouldOpen: boolean, version: number) => {
-    if (version !== drawerGestureVersion.value) return;
-    controller.cancelSelection();
-    controller.beginAnimation();
-    afterSettle.current = null;
-    setInstantNav(false);
-    setForegroundBlocked(true);
-    setOpenState(shouldOpen);
-  }, [controller, drawerGestureVersion, setOpenState, setForegroundBlocked]);
-
-  const finishDragSettle = useCallback((target: number, version: number) => {
-    if (version !== drawerGestureVersion.value) return;
-    if (target === 0) setForegroundBlocked(false);
-  }, [drawerGestureVersion, setForegroundBlocked]);
-
-  // Called directly by gesture worklets: JS bookkeeping must never be on the
-  // critical path between finger release and the next animated frame.
   const settleDrawerDrag = useCallback((shouldOpen: boolean, version?: number) => {
-    "worklet";
     if (version !== undefined && version !== drawerGestureVersion.value) return;
-    const currentVersion = drawerGestureVersion.value;
-    const target = shouldOpen ? 1 : 0;
-    cancelAnimation(drawerProgress);
-    drawerProgress.value = withTiming(target, {
-      duration: settleDuration(drawerProgress.value, target),
-      easing: Easing.out(Easing.cubic),
-    }, (finished) => {
-      if (finished) runOnJS(finishDragSettle)(target, currentVersion);
-    });
-    runOnJS(recordDragSettle)(shouldOpen, currentVersion);
-  }, [drawerGestureVersion, drawerProgress, finishDragSettle, recordDragSettle]);
+    if (shouldOpen) open();
+    else close();
+  }, [close, drawerGestureVersion, open]);
 
   const acknowledgeDestinationReady = useCallback((source: DrawerReadySource, target?: string) => {
     const token = controller.acknowledge(source, target);
@@ -233,22 +201,15 @@ export function DrawerProvider({ children }: { children: React.ReactNode }) {
 
   const selectFromDrawer = useCallback((selection: DrawerSelection) => {
     if (!isOpenRef.current) return; // evita selecciones repetidas
-    const version = drawerGestureVersion.value + 1;
-    drawerGestureVersion.value = version;
-    if (selection.kind === "afterClose" || selection.kind === "route") {
+    drawerGestureVersion.value += 1;
+    if (selection.kind === "afterClose") {
       const token = controller.cancelSelection();
       closeInternal(() => {
-        setInstantNav(selection.kind === "route");
+        setInstantNav(false);
         requestAnimationFrame(() => {
-          if (!controller.isCurrentSelection(token)) return;
-          if (selection.kind === "route" && selection.target
-            && normalizeRoutePath(selection.target) === normalizeRoutePath(pathnameRef.current)) {
-            setInstantNav(false);
-            return;
-          }
-          selection.run();
+          if (controller.isCurrentSelection(token)) selection.run();
         });
-      }, version);
+      });
       return;
     }
     setOpenState(false);
@@ -258,13 +219,24 @@ export function DrawerProvider({ children }: { children: React.ReactNode }) {
       selection.run();
       return;
     }
+    setInstantNav(true);
+    requestAnimationFrame(() => {
+      if (!controller.isPendingSelection(token)) return;
+      if (
+        selection.target
+        && normalizeRoutePath(selection.target) === normalizeRoutePath(pathnameRef.current)
+      ) {
+        acknowledgeDestinationReady("route");
+        return;
+      }
+      selection.run();
+    });
   }, [acknowledgeDestinationReady, closeInternal, controller, drawerGestureVersion, setOpenState]);
 
   // La ruta real cambio: el destino ya esta montado en la superficie frontal.
   useEffect(() => {
     if (pathnameRef.current === pathname) return;
     pathnameRef.current = pathname;
-    setInstantNav(false);
     acknowledgeDestinationReady("route");
   }, [acknowledgeDestinationReady, pathname]);
 

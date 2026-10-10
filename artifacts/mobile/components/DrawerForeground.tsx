@@ -67,7 +67,6 @@ export function DrawerForeground({ children }: { children: React.ReactNode }) {
       .failOffsetY([-DRAWER_GESTURE_FAIL_Y, DRAWER_GESTURE_FAIL_Y])
       .onStart(() => {
         cancelAnimation(drawerProgress);
-        drawerGestureVersion.value += 1;
         dragging.value = true;
         gestureVersion.value = drawerGestureVersion.value;
         dragStart.value = drawerProgress.value;
@@ -79,12 +78,12 @@ export function DrawerForeground({ children }: { children: React.ReactNode }) {
       })
       .onEnd((event) => {
         dragging.value = false;
-        settleDrawerDrag(shouldSettleOpen(drawerProgress.value, event.velocityX), gestureVersion.value);
+        runOnJS(settleDrawerDrag)(shouldSettleOpen(drawerProgress.value, event.velocityX), gestureVersion.value);
       })
       .onFinalize(() => {
         if (!dragging.value) return;
         dragging.value = false;
-        settleDrawerDrag(dragStart.value >= 0.5, gestureVersion.value);
+        runOnJS(settleDrawerDrag)(dragStart.value >= 0.5, gestureVersion.value);
       });
     const tap = Gesture.Tap().onEnd((_event, success) => {
       if (success) runOnJS(closeFromStrip)();
@@ -140,7 +139,6 @@ export function DrawerEdgeGesture({ enabled, top = 0, children }: { enabled: boo
       .failOffsetY([-DRAWER_GESTURE_FAIL_Y, DRAWER_GESTURE_FAIL_Y])
       .onStart(() => {
         cancelAnimation(drawerProgress);
-        drawerGestureVersion.value += 1;
         dragging.value = true;
         gestureVersion.value = drawerGestureVersion.value;
         dragStart.value = drawerProgress.value;
@@ -152,12 +150,12 @@ export function DrawerEdgeGesture({ enabled, top = 0, children }: { enabled: boo
       })
       .onEnd((event) => {
         dragging.value = false;
-        settleDrawerDrag(event.translationX > 0 && event.velocityX > -500, gestureVersion.value);
+        runOnJS(settleDrawerDrag)(event.translationX > 0 && event.velocityX > -500, gestureVersion.value);
       })
       .onFinalize(() => {
         if (!dragging.value) return;
         dragging.value = false;
-        settleDrawerDrag(dragStart.value >= 0.5, gestureVersion.value);
+        runOnJS(settleDrawerDrag)(dragStart.value >= 0.5, gestureVersion.value);
       }),
     [beginDrawerDrag, dragging, dragStart, drawerGestureVersion, drawerProgress, drawerWidth, enabled, gestureVersion, settleDrawerDrag],
   );
