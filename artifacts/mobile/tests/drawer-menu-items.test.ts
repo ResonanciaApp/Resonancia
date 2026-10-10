@@ -31,15 +31,23 @@ test("mixer, breathing exercises and mood register follow notifications in the s
   assert.match(source, /item: \{[\s\S]*?paddingVertical: 5,/);
 });
 
-test("larger bold menu contents keep row heights and do not push scenes down", () => {
+test("smaller menu icons keep row heights and centers while labels move right 5px", () => {
   const source = readFileSync(new URL("../components/DrawerMenu.tsx", import.meta.url), "utf8");
   assert.match(source, /inicio3ItemLabel: \{[\s\S]*?fontSize: 17,/);
   assert.match(source, /itemLabel: \{[\s\S]*?lineHeight: 23,[\s\S]*?fontWeight: "700"/);
-  assert.match(source, /MaterialCommunityIcons name=\{item\.mciIcon\} size=\{26\}/);
-  assert.match(source, /Feather name=\{item\.icon\} size=\{23\}/);
-  assert.match(source, /premiumMenuStar: \{\s*width: 24,\s*height: 24/);
-  for (const originalIcon of [20, 23, 21]) {
-    assert.equal(originalIcon + 2 * 6.5, originalIcon + 3 + 2 * 5);
+  assert.match(source, /MaterialCommunityIcons name=\{item\.mciIcon\} size=\{23\}/);
+  assert.match(source, /Feather name=\{item\.icon\} size=\{20\}/);
+  assert.match(source, /premiumMenuStar: \{\s*width: 21,\s*height: 21/);
+  assert.match(source, /height: item\.id === "premium" \? 24 : item\.mciIcon \? 26 : 23/);
+  assert.match(source, /itemIcon: \{ width: 26, alignItems: "center", justifyContent: "center" \}/);
+  assert.match(source, /item: \{[\s\S]*?gap: 19,/);
+  assert.equal(19 - 14, 5);
+  for (const originalIcon of [23, 26, 24]) {
+    const smallerIcon = originalIcon - 3;
+    const slotHeight = originalIcon;
+    const inset = (slotHeight - smallerIcon) / 2;
+    assert.equal(inset + smallerIcon / 2, originalIcon / 2);
+    assert.equal(Math.max(23, slotHeight) + 2 * 5, originalIcon + 2 * 5);
   }
 });
 

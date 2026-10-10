@@ -332,7 +332,7 @@ export function DrawerMenu() {
                               : undefined
                           }
                         >
-                          <View style={styles.itemIcon}>
+                          <View style={[styles.itemIcon, { height: item.id === "premium" ? 24 : item.mciIcon ? 26 : 23 }]}>
                             {item.id === "premium" ? (
                               <Image
                                 source={require("../assets/images/estrella-premium.png")}
@@ -340,9 +340,9 @@ export function DrawerMenu() {
                                 contentFit="contain"
                               />
                             ) : item.mciIcon ? (
-                              <MaterialCommunityIcons name={item.mciIcon} size={26} color={item.color ?? "#F9F9F9"} />
+                              <MaterialCommunityIcons name={item.mciIcon} size={23} color={item.color ?? "#F9F9F9"} />
                             ) : (
-                              <Feather name={item.icon} size={23} color={item.color ?? "#F9F9F9"} />
+                              <Feather name={item.icon} size={20} color={item.color ?? "#F9F9F9"} />
                             )}
                             {item.id === "notifications" && unreadCount > 0 && (
                               <View pointerEvents="none" style={styles.notificationBadge}>
@@ -543,13 +543,13 @@ const styles = StyleSheet.create({
   item: {
     flexDirection: "row",
     alignItems: "center",
-    // Icons grow 3px; compensate within each row so scenes keep their Y position.
+    // Fixed icon slots preserve row heights and centers when the artwork shrinks.
     paddingVertical: 5,
     paddingHorizontal: 0,
     borderRadius: 10,
-    gap: 14,
+    gap: 19,
   },
-  itemIcon: { width: 26, alignItems: "center" },
+  itemIcon: { width: 26, alignItems: "center", justifyContent: "center" },
   notificationBadge: {
     position: "absolute",
     left: -7,
@@ -575,8 +575,8 @@ const styles = StyleSheet.create({
     textAlign: "center",
   },
   premiumMenuStar: {
-    width: 24,
-    height: 24,
+    width: 21,
+    height: 21,
   },
   premiumLabelRow: {
     flexDirection: "row",
