@@ -6,6 +6,8 @@ import React from "react";
 import { renderToStaticMarkup } from "react-dom/server";
 import ts from "typescript";
 import {
+  REFLECTION_WALL_BORDER_BASE_GRADIENT,
+  REFLECTION_WALL_BORDER_LOCATIONS,
   REFLECTION_WALL_BORDER_GRADIENT,
   REFLECTION_WALL_BORDER_START,
   REFLECTION_WALL_BORDER_END,
@@ -107,6 +109,15 @@ test("Todos shares the same selected white/bold label as the category filters", 
     label: "Todos", selected: true, textStyle: { fontSize: 13 },
   }));
   assert.match(html, /data-color="#FFFFFF" data-weight="700">Todos/);
+});
+
+test("the shared wall palette removes only orange and brown and redistributes its remaining stops", () => {
+  assert.deepEqual(REFLECTION_WALL_BORDER_BASE_GRADIENT, [
+    "#4D97A8", "#4D8EA8", "#4D70A8", "#566BB6",
+    "#5D6EC0", "#756EC1", "#916BB5", "#AA7BA0",
+  ]);
+  assert.equal(REFLECTION_WALL_BORDER_GRADIENT.length, 8);
+  assert.deepEqual(REFLECTION_WALL_BORDER_LOCATIONS, [0, 1 / 7, 2 / 7, 3 / 7, 4 / 7, 5 / 7, 6 / 7, 1]);
 });
 
 test("Todos keeps its existing wall gradient and brightness with a 1px stroke", () => {

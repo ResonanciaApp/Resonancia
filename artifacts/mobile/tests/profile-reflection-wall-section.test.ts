@@ -321,7 +321,7 @@ test("the profile wall uses ten equally spaced supplied colors with 25% more bri
   assert.deepEqual(MOOD_HISTORY_GRADIENT, ["#074B4C", "#24414F", "#2E3955", "#363459", "#493453", "#57334F", "#5B3D25"]);
   assert.deepEqual(MOOD_HISTORY_GRADIENT_START, { x: 0.35, y: 0 });
   assert.deepEqual(MOOD_HISTORY_GRADIENT_END, { x: 0.65, y: 1 });
-  assert.deepEqual(REFLECTION_WALL_BORDER_BASE_GRADIENT, ["#4D97A8", "#4D8EA8", "#4D70A8", "#566BB6", "#5D6EC0", "#756EC1", "#916BB5", "#AA7BA0", "#C18A82", "#D0A66F"]);
+  assert.deepEqual(REFLECTION_WALL_BORDER_BASE_GRADIENT, ["#4D97A8", "#4D8EA8", "#4D70A8", "#566BB6", "#5D6EC0", "#756EC1", "#916BB5", "#AA7BA0"]);
   assert.deepEqual(REFLECTION_WALL_BORDER_GRADIENT, ["#60BDD2", "#60B2D2", "#608CD2", "#6C86E4", "#748AF0", "#928AF1", "#B586E2", "#D59AC8", "#F1ADA3", "#FFD08B"]);
   assert.match(card, /locations=\{REFLECTION_WALL_BORDER_LOCATIONS\}/);
   assert.equal(REFLECTION_WALL_BORDER_LOCATIONS.length, 10);

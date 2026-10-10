@@ -86,7 +86,7 @@ test("selected duration circles use 30% black in Cloudy and Indigo 2 without cha
 test("Cloudy and Indigo wall borders share the supplied palette with 25% brighter RGB channels", () => {
   assert.equal(CLOUDY_REFLECTION_WALL_BORDER_GRADIENT, REFLECTION_WALL_BORDER_GRADIENT);
   assert.notEqual(REFLECTION_WALL_BORDER_GRADIENT, REFLECTION_WALL_BORDER_BASE_GRADIENT);
-  assert.equal(REFLECTION_WALL_BORDER_GRADIENT.length, 10);
+  assert.equal(REFLECTION_WALL_BORDER_GRADIENT.length, 8);
   for (let i = 0; i < REFLECTION_WALL_BORDER_BASE_GRADIENT.length; i++) {
     for (const channel of [1, 3, 5]) {
       assert.equal(

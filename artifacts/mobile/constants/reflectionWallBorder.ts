@@ -12,8 +12,6 @@ export const REFLECTION_WALL_BORDER_BASE_GRADIENT: [string, string, ...string[]]
   "#756EC1",
   "#916BB5",
   "#AA7BA0",
-  "#C18A82",
-  "#D0A66F",
 ];
 
 export const REFLECTION_WALL_BORDER_GRADIENT = REFLECTION_WALL_BORDER_BASE_GRADIENT.map(hex =>
