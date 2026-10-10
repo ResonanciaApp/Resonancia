@@ -163,23 +163,26 @@ export function StreakInfoSheet({
                   delay={BASE_DELAY + 400 + i * 180}
                   duration={DURATION}
                 >
-                  <View testID={`streak-info-card-${item.id}`} style={styles.card}>
+                  <Pressable
+                    testID={`streak-info-card-${item.id}`}
+                    style={styles.card}
+                    onPress={() => setExpanded((prev) => ({ ...prev, [item.id]: !prev[item.id] }))}
+                    accessibilityRole="button"
+                    accessibilityLabel={`${open ? "Ocultar" : "Mostrar"} descripción de ${item.title}${open ? `. ${item.description}` : ""}`}
+                    accessibilityState={{ expanded: open }}
+                  >
                     <View style={styles.cardHeader}>
                       <View testID={`streak-info-icon-${item.id}`} style={styles.iconWrap}>
                         <StreakIcon kind={item.id} />
                       </View>
                       <Text style={styles.cardTitle}>{item.title}</Text>
-                      <Pressable
-                        onPress={() => setExpanded((prev) => ({ ...prev, [item.id]: !prev[item.id] }))}
-                        hitSlop={8}
+                      <View
+                        pointerEvents="none"
                         style={styles.chevron}
-                        accessibilityRole="button"
-                        accessibilityLabel={`${open ? "Ocultar" : "Mostrar"} descripción de ${item.title}`}
-                        accessibilityState={{ expanded: open }}
                         testID={`streak-info-toggle-${item.id}`}
                       >
                         <Feather name={open ? "chevron-up" : "chevron-down"} size={20} color={WHITE} />
-                      </Pressable>
+                      </View>
                     </View>
                     {open && (
                       <>
@@ -187,7 +190,7 @@ export function StreakInfoSheet({
                         <Text testID={`streak-info-desc-${item.id}`} style={styles.cardDesc}>{item.description}</Text>
                       </>
                     )}
-                  </View>
+                  </Pressable>
                 </CinematicFadeSlide>
               );
             })}

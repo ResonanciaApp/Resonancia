@@ -16,6 +16,7 @@ type Props = {
   accessibilityRole?: string;
   onPress?: () => void;
   accessibilityState?: { expanded?: boolean };
+  pointerEvents?: string;
   colors?: string[];
   locations?: number[];
   start?: { x: number; y: number };
@@ -53,10 +54,10 @@ function harness({
   const toggles = new Map<string, () => void>();
   const toggleState = new Map<string, any>();
   const Native = ({ children, style, testID, accessibilityLabel, accessibilityRole, onPress, accessibilityState, name, color, size, replayKey, contentContainerStyle, bounces, alwaysBounceVertical, overScrollMode }: Props) => {
-    if (testID) nodes.set(testID, { children, style, contentContainerStyle, bounces, alwaysBounceVertical, overScrollMode });
+    if (testID) nodes.set(testID, { children, style, contentContainerStyle, bounces, alwaysBounceVertical, overScrollMode, onPress, accessibilityRole, accessibilityLabel, accessibilityState });
     if (testID === "streak-info-close") closeButton = onPress;
-    if (testID?.startsWith("streak-info-toggle-")) toggles.set(testID, onPress!);
-    if (testID?.startsWith("streak-info-toggle-")) toggleState.set(testID, accessibilityState);
+    if (testID?.startsWith("streak-info-card-")) toggles.set(testID, onPress!);
+    if (testID?.startsWith("streak-info-card-")) toggleState.set(testID, accessibilityState);
     const resolved = flatten(style);
     return React.createElement("div", {
       "data-testid": testID,
@@ -232,18 +233,21 @@ test("four horizontal cards separated by 15px with icon left, title, chevron rig
     assert.equal(flatten(title.props.style).flex, 1);
     assert.equal(flatten(title.props.style).fontSize, 14);
     assert.equal(toggle.props.testID, `streak-info-toggle-${id}`);
-    assert.equal(toggle.props.accessibilityRole, "button");
+    assert.equal(card.accessibilityRole, "button");
+    assert.equal(typeof card.onPress, "function");
+    assert.equal(toggle.props.onPress, undefined, "chevron shares the card handler instead of double-toggling");
+    assert.equal(toggle.props.pointerEvents, "none");
   }
   assert.match(h.render(true), /data-icon="chevron-down"/);
 });
 
-test("each chevron toggles only its own description and expanded state; close/reopen resets", () => {
+test("each entire card toggles only its own description and expanded state; close/reopen resets", () => {
   const h = harness();
   h.render(true);
   for (const [i, id] of IDS.entries()) {
-    assert.equal(h.toggleState.get(`streak-info-toggle-${id}`).expanded, false);
+    assert.equal(h.toggleState.get(`streak-info-card-${id}`).expanded, false);
     assert.ok(!h.render(true).includes(`data-testid="streak-info-divider-${id}"`));
-    h.toggles.get(`streak-info-toggle-${id}`)!();
+    h.toggles.get(`streak-info-card-${id}`)!();
     const html = h.render(true);
     assert.ok(html.includes(DESCS[i]));
     const divider = flatten(h.nodes.get(`streak-info-divider-${id}`)!.style);
@@ -254,13 +258,13 @@ test("each chevron toggles only its own description and expanded state; close/re
     assert.equal(description.textAlign, "left");
     assert.equal(description.marginTop, 16);
     assert.equal(divider.marginTop + divider.height + description.marginTop, 12 + 15);
-    assert.equal(h.toggleState.get(`streak-info-toggle-${id}`).expanded, true);
+    assert.equal(h.toggleState.get(`streak-info-card-${id}`).expanded, true);
     assert.match(html, /data-icon="chevron-up"/);
-    h.toggles.get(`streak-info-toggle-${id}`)!();
+    h.toggles.get(`streak-info-card-${id}`)!();
     assert.ok(!h.render(true).includes(DESCS[i]));
     assert.ok(!h.render(true).includes(`data-testid="streak-info-divider-${id}"`));
   }
-  h.toggles.get("streak-info-toggle-longest")!();
+  h.toggles.get("streak-info-card-longest")!();
   assert.ok(h.render(true).includes(DESCS[2]));
   h.render(false);
   const reopened = h.render(true);
