@@ -215,6 +215,28 @@ test("menu never slides horizontally and keeps the Inicio themed gradient backdr
   assert.match(inicio, /<DrawerEdgeGesture enabled=\{variant === "inicio3"/);
 });
 
+test("Inicio avatar, user name and greeting fade together from the same UI-thread drawer progress", () => {
+  const source = read("../app/(tabs)/inicio8.tsx");
+  assert.match(source, /drawerProgress: identityDrawerProgress \} = useDrawerMotion\(\)/);
+  assert.match(source, /identityDrawerStyle = useAnimatedStyle\(\(\) => \(\{\s*opacity: isInicio3 \? 1 - identityDrawerProgress\.value : 1,/);
+  const start = source.indexOf("styles.inicio2HeroProfileButton,", source.indexOf("const identityDrawerStyle"));
+  const groupStart = source.lastIndexOf("<RAnimated.View", start);
+  const groupEnd = source.indexOf("</RAnimated.View>", start);
+  const group = source.slice(groupStart, groupEnd);
+  assert.match(group, /identityDrawerStyle/);
+  assert.match(group, /testID="inicio2-avatar-open-drawer"/);
+  assert.match(group, /testID="inicio2-open-drawer"/);
+  assert.match(group, /\{displayName\}/);
+  assert.match(group, /\{greeting\}/);
+  assert.equal((source.match(/identityDrawerStyle,/g) ?? []).length, 1, "one shared parent fade, not multiplied fades");
+  const expression = source.match(/opacity: (isInicio3 \? 1 - identityDrawerProgress\.value : 1)/)![1];
+  const opacity = new Function("isInicio3", "identityDrawerProgress", `return ${expression};`);
+  for (const progress of [0, 0.25, 0.5, 0.75, 1, 0.75, 0.5, 0.25, 0]) {
+    assert.equal(opacity(true, { value: progress }), 1 - progress);
+    assert.equal(opacity(false, { value: progress }), 1);
+  }
+});
+
 test("context: Back has priority while blocked/pending, strip close cancels selection, no timers", () => {
   const ctx = read("../context/DrawerContext.tsx");
   assert.match(ctx, /if \(!foregroundBlocked\) return;\s*const subscription = BackHandler/);

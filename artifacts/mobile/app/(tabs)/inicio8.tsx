@@ -1838,9 +1838,9 @@ const Inicio2HeroStatic = React.memo(function Inicio2HeroStatic({
     inicio3HeroShift +
     inicio3HeroDownshift;
   const inicio3HeroTop = inicio3HeroLayoutTop - 19;
-  const { drawerProgress: avatarDrawerProgress } = useDrawerMotion();
-  const avatarDrawerStyle = useAnimatedStyle(() => ({
-    opacity: isInicio3 ? 1 - avatarDrawerProgress.value : 1,
+  const { drawerProgress: identityDrawerProgress } = useDrawerMotion();
+  const identityDrawerStyle = useAnimatedStyle(() => ({
+    opacity: isInicio3 ? 1 - identityDrawerProgress.value : 1,
   }));
   const slowHeaderStyle = useAnimatedStyle(() => {
     if (!isInicio3 || reduceMotion) return { transform: [{ translateY: 0 }] };
@@ -1909,13 +1909,14 @@ const Inicio2HeroStatic = React.memo(function Inicio2HeroStatic({
           isInicio3 && slowHeaderStyle,
         ]}
       >
-        <View
+        <RAnimated.View
           style={[
             styles.inicio2HeroProfileButton,
             isInicio3 && styles.inicio3HeroProfileLift,
+            identityDrawerStyle,
           ]}
         >
-          <RAnimated.View style={avatarDrawerStyle}>
+          <View>
           <Pressable
             onPress={onOpenDrawer}
             hitSlop={10}
@@ -1938,7 +1939,7 @@ const Inicio2HeroStatic = React.memo(function Inicio2HeroStatic({
               </View>
             )}
           </Pressable>
-          </RAnimated.View>
+          </View>
           <Pressable
             onPress={onOpenDrawer}
             hitSlop={8}
@@ -1960,7 +1961,7 @@ const Inicio2HeroStatic = React.memo(function Inicio2HeroStatic({
               </Text>
             ) : null}
           </Pressable>
-        </View>
+        </RAnimated.View>
 
         <View
           style={[

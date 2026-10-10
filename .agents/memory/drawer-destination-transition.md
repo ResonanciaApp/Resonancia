@@ -15,6 +15,12 @@ Las herramientas que tienen un host dentro de la superficie frontal, como Mezcla
 
 **How to apply:** Conectar origen, posicionamiento sin entrada propia y confirmación de layout real en todos los niveles. Mantener la apertura normal cuando la herramienta se invoca desde Sonidos u otros accesos.
 
+El fade de la identidad de Inicio incluye avatar, nombre del usuario y saludo juntos; no debe ocultar las acciones laterales ni cambiar el parallax vertical.
+
+**Why:** El usuario pidió que el nombre y el saludo desaparezcan y reaparezcan acompañando al avatar.
+
+**How to apply:** Conservar su sincronización al ajustar el drawer o el header; no añadir fades independientes ni multiplicar la opacidad del avatar.
+
 La confirmación de destino listo debe corresponder a la selección concreta y ocurrir después de montar el contenido, no tras un timeout estimado. Repetir una selección de un overlay ya montado también exige una confirmación nueva sin perder su contenido.
 
 **Why:** Una confirmación tardía de otra pantalla puede cerrar el menú antes de preparar la elegida; esperar solo un cambio de estado que ya era verdadero puede dejarlo bloqueado.
