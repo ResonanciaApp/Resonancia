@@ -287,7 +287,7 @@ export function DrawerMenu() {
                         {fullName || "Mi perfil"}
                       </Text>
                     </Pressable>
-                    <View testID="drawer-current-stage-pill" style={{ alignSelf: "flex-start" }}>
+                    <View testID="drawer-current-stage-pill" style={{ alignSelf: "flex-start", marginTop: 5 }}>
                       <GrowthCurrentStagePill />
                     </View>
                   </>
