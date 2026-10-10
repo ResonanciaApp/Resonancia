@@ -11,6 +11,8 @@ import {
   DRAWER_GESTURE_FAIL_Y,
   dragProgress,
   foregroundCornerRadius,
+  foregroundElevation,
+  foregroundShadowOpacity,
   foregroundTranslateX,
   foregroundVeilOpacity,
   shouldSettleOpen,
@@ -19,7 +21,7 @@ import {
 /**
  * Superficie frontal estilo X: contiene la pantalla activa y sus overlays.
  * Se desplaza a la derecha y revela el menu fijo detras.
- * Capas separadas: la exterior lleva translate sin sombra ni elevacion, la
+ * Capas separadas: la exterior lleva translate + sombra (sin recorte), la
  * interior recorta las esquinas y el velo blanco va encima del contenido.
  * Todo lo anima Reanimated desde el mismo progreso; ningun nodo mezcla drivers.
  */
@@ -45,6 +47,8 @@ export function DrawerForeground({ children }: { children: React.ReactNode }) {
       transform: [{ translateX: foregroundTranslateX(p, drawerWidth.value) }],
       borderTopLeftRadius: radius,
       borderBottomLeftRadius: radius,
+      shadowOpacity: foregroundShadowOpacity(p),
+      elevation: foregroundElevation(p),
     };
   });
   const innerStyle = useAnimatedStyle(() => {
@@ -165,8 +169,10 @@ export function DrawerEdgeGesture({ enabled, top = 0, children }: { enabled: boo
 const styles = StyleSheet.create({
   outer: {
     flex: 1,
+    shadowColor: "#05070D",
+    shadowOffset: { width: -6, height: 0 },
+    shadowRadius: 18,
     shadowOpacity: 0,
-    elevation: 0,
   },
   inner: {
     flex: 1,
