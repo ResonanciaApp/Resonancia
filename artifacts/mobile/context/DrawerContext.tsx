@@ -91,7 +91,7 @@ type DestinationContext = Pick<DrawerCtx,
   "libOpen" | "libraryInitialTab" | "libOpenedFromDrawer" | "closeLib" |
   "libraryMixId" | "closeLibraryMix" | "overlayRoute" | "overlayOpenedFromDrawer" |
   "closeOverlay" | "chatUserId" | "closeChat" | "destinationRequest" | "acknowledgeDestinationReady"
->;
+> & { closeDrawerIfBlocked: () => void };
 const DestinationCtx = createContext<DestinationContext | null>(null);
 
 export function DrawerProvider({ children }: { children: React.ReactNode }) {
@@ -179,6 +179,12 @@ export function DrawerProvider({ children }: { children: React.ReactNode }) {
       if (typeof onClosed === "function") onClosed();
     });
   }, [closeInternal, controller]);
+
+  // Tools can abort a pending layout/return on Android Back without
+  // subscribing to per-transition flags or starting a redundant zero spring.
+  const closeDrawerIfBlocked = useCallback(() => {
+    if (foregroundBlockedRef.current) close();
+  }, [close]);
 
   const beginDrawerDrag = useCallback((version?: number) => {
     if (version !== undefined && version !== drawerGestureVersion.value) return;
@@ -381,12 +387,12 @@ export function DrawerProvider({ children }: { children: React.ReactNode }) {
     instantNav, overlayParallax, drawerTransitionProgress,
     libOpen, libraryInitialTab, libOpenedFromDrawer, closeLib,
     libraryMixId, closeLibraryMix, overlayRoute, overlayOpenedFromDrawer, closeOverlay,
-    chatUserId, closeChat, destinationRequest, acknowledgeDestinationReady,
+    chatUserId, closeChat, destinationRequest, acknowledgeDestinationReady, closeDrawerIfBlocked,
   }), [
     instantNav, overlayParallax, drawerTransitionProgress,
     libOpen, libraryInitialTab, libOpenedFromDrawer, closeLib,
     libraryMixId, closeLibraryMix, overlayRoute, overlayOpenedFromDrawer, closeOverlay,
-    chatUserId, closeChat, destinationRequest, acknowledgeDestinationReady,
+    chatUserId, closeChat, destinationRequest, acknowledgeDestinationReady, closeDrawerIfBlocked,
   ]);
   const motion = React.useMemo(() => ({
     drawerProgress, drawerWidth, drawerGestureVersion, beginDrawerDrag, settleDrawerDrag,

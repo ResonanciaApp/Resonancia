@@ -9,6 +9,21 @@ import * as geometry from "../lib/drawerGeometry.ts";
 
 const require = createRequire(import.meta.url);
 
+test("closing a prepared drawer tool before layout aborts the pending selection without blocking Home", () => {
+  const h = harness();
+  h.ctx.open(); h.flush(); h.finish(); h.flush();
+  h.ctx.selectFromDrawer({ kind: "layout", target: "mixer", run() {} }); h.flush();
+  h.destinations.closeDrawerIfBlocked(); h.flush(); h.finish(); h.flush();
+  assert.equal(h.ctx.foregroundBlocked, false);
+  assert.equal(h.ctx.drawerProgress.value, 0);
+  h.ctx.acknowledgeDestinationReady("layout", "mixer");
+  h.frame(); h.frame(); h.flush();
+  assert.equal(h.ctx.drawerProgress.value, 0);
+  const version = h.ctx.drawerGestureVersion.value;
+  h.destinations.closeDrawerIfBlocked(); h.flush();
+  assert.equal(h.ctx.drawerGestureVersion.value, version, "already-closed drawer must not start another spring");
+});
+
 test("tap shield remains mounted but neither intercepts nor recognizes touches when Home is restored", () => {
   const h = harness();
   function strip(node: any): any {

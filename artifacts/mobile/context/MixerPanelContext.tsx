@@ -18,7 +18,7 @@ type MixerPanelCtx = {
 const Ctx = createContext<MixerPanelCtx | null>(null);
 
 export function MixerPanelProvider({ children }: { children: React.ReactNode }) {
-  const { drawerTransitionProgress } = useDrawerDestinations();
+  const { drawerTransitionProgress, closeDrawerIfBlocked } = useDrawerDestinations();
   const [isMixerOpen, setIsMixerOpen] = useState(false);
   const [openedFromDrawer, setOpenedFromDrawer] = useState(false);
   const panelAnim = useRef(new Animated.Value(0)).current;
@@ -47,40 +47,31 @@ export function MixerPanelProvider({ children }: { children: React.ReactNode }) 
     setOpenedFromDrawer(fromDrawer);
     setIsMixerOpen(true);
     if (fromDrawer) {
-      Animated.timing(drawerTransitionProgress, {
-        toValue: 1,
-        duration: 450,
-        easing: easeOutCubic,
-        useNativeDriver: true,
-      }).start();
+      // The panel is ready inside DrawerForeground before its return starts.
+      // DrawerContext owns that motion; do not run a second lateral entrance.
+      panelAnim.setValue(1);
     } else {
       drawerTransitionProgress.setValue(0);
       animate(true);
     }
-  }, [animate, drawerTransitionProgress]);
+  }, [animate, drawerTransitionProgress, panelAnim]);
   const openMixer = useCallback(() => openMixerWithOrigin(false), [openMixerWithOrigin]);
   const openMixerFromDrawer = useCallback(() => openMixerWithOrigin(true), [openMixerWithOrigin]);
 
   const closeMixer = useCallback(() => {
-    const token = ++transitionToken.current;
+    ++transitionToken.current;
     panelAnim.stopAnimation();
     drawerTransitionProgress.stopAnimation();
     if (openedFromDrawer) {
-      Animated.timing(drawerTransitionProgress, {
-        toValue: 0,
-        duration: 450,
-        easing: easeOutCubic,
-        useNativeDriver: true,
-      }).start(({ finished }) => {
-        if (!finished || token !== transitionToken.current) return;
-        setIsMixerOpen(false);
-        setOpenedFromDrawer(false);
-      });
+      panelAnim.setValue(0);
+      setIsMixerOpen(false);
+      setOpenedFromDrawer(false);
+      closeDrawerIfBlocked();
     } else {
       setIsMixerOpen(false);
       animate(false);
     }
-  }, [animate, drawerTransitionProgress, openedFromDrawer]);
+  }, [animate, closeDrawerIfBlocked, drawerTransitionProgress, openedFromDrawer, panelAnim]);
 
   useEffect(() => {
     if (!isMixerOpen) return;
@@ -91,11 +82,9 @@ export function MixerPanelProvider({ children }: { children: React.ReactNode }) 
     return () => subscription.remove();
   }, [closeMixer, isMixerOpen]);
 
-  const effectivePanelAnim = openedFromDrawer ? drawerTransitionProgress : panelAnim;
-
   const value = React.useMemo(
-    () => ({ isMixerOpen, openedFromDrawer, openMixer, openMixerFromDrawer, closeMixer, panelAnim: effectivePanelAnim }),
-    [isMixerOpen, openedFromDrawer, openMixer, openMixerFromDrawer, closeMixer, effectivePanelAnim],
+    () => ({ isMixerOpen, openedFromDrawer, openMixer, openMixerFromDrawer, closeMixer, panelAnim }),
+    [isMixerOpen, openedFromDrawer, openMixer, openMixerFromDrawer, closeMixer, panelAnim],
   );
 
   return <Ctx.Provider value={value}>{children}</Ctx.Provider>;

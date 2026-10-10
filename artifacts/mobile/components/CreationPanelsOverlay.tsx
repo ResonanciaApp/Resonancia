@@ -13,6 +13,7 @@ import {
   MIXER_PANEL_W,
   useMixerPanel,
 } from "@/context/MixerPanelContext";
+import { useDrawerDestinations } from "@/context/DrawerContext";
 
 const MINI_PLAYER_MARGIN_H = 15;
 
@@ -22,6 +23,7 @@ const MINI_PLAYER_MARGIN_H = 15;
  * global posterior.
  */
 export function CreationPanelsOverlay() {
+  const { destinationRequest, acknowledgeDestinationReady } = useDrawerDestinations();
   const { activeSounds } = useMixer();
   const {
     isMixerOpen,
@@ -36,10 +38,12 @@ export function CreationPanelsOverlay() {
     closeGeometrix,
     panelAnim: geoPanelAnim,
   } = useGeometrixPanel();
+  const mixerReadyState = React.useRef({ open: isMixerOpen, fromDrawer: mixerFromDrawer, request: destinationRequest });
+  mixerReadyState.current = { open: isMixerOpen, fromDrawer: mixerFromDrawer, request: destinationRequest };
 
   const panelTranslateX = panelAnim.interpolate({
     inputRange: [0, 1],
-    outputRange: [MIXER_PANEL_W, 0],
+    outputRange: mixerFromDrawer ? [0, 0] : [MIXER_PANEL_W, 0],
   });
   const geoTranslateX = geoPanelAnim.interpolate({
     inputRange: [0, 1],
@@ -61,6 +65,20 @@ export function CreationPanelsOverlay() {
         style={[styles.panel, { width: MIXER_PANEL_W, transform: [{ translateX: panelTranslateX }] }]}
       >
         <MezcladorScreen />
+        {isMixerOpen && mixerFromDrawer && (
+          <View
+            key={destinationRequest}
+            collapsable={false}
+            pointerEvents="none"
+            style={{ position: "absolute", width: 1, height: 1 }}
+            testID="drawer-mixer-ready"
+            onLayout={() => {
+              const current = mixerReadyState.current;
+              if (!current.open || !current.fromDrawer || current.request !== destinationRequest) return;
+              acknowledgeDestinationReady("layout", "mixer");
+            }}
+          />
+        )}
         {activeSounds.length > 0 && (
           <View style={styles.miniPlayerFloat} pointerEvents="box-none">
             <MiniPlayer forceMix />

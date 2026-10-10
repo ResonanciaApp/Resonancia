@@ -207,7 +207,7 @@ test("menu never slides horizontally and keeps the Inicio themed gradient backdr
   assert.match(menu, /menuContentOpacity\(drawerProgress\.value\)/);
   assert.match(menu, /translateY: menuContentTranslateY/);
   assert.match(menu, /kind: "afterClose", run: requestMoodPicker/);
-  assert.match(menu, /kind: "afterClose", run: openMixer/);
+  assert.match(menu, /kind: "layout", target: "mixer", run: openMixerFromDrawer/);
   assert.match(menu, /kind: "layout", target: "library", run: \(\) => openLibFromDrawer\(\)/);
   assert.match(menu, /kind: "layout", target, run: \(\) => openOverlayFromDrawer\(target\)/);
   const inicio = read("../app/(tabs)/inicio8.tsx");

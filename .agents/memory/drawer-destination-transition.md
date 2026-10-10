@@ -9,6 +9,12 @@ El menú permanece fijo detrás de la pantalla desplazada. Elegir un destino pre
 
 **How to apply:** Usar un progreso cancelable para desplazamiento, esquinas, aclaración, sombra y aparición del menú. Registrar el origen del destino: las aperturas ajenas al drawer mantienen sus transiciones normales. No conservar el menú abierto al regresar a Biblioteca.
 
+Las herramientas que tienen un host dentro de la superficie frontal, como Mezclador, también son destinos preparados antes del retorno; no deben abrirse como ventanas normales después de cerrar el drawer.
+
+**Why:** El usuario detectó que Mezclador primero devolvía Inicio y después entraba como otra ventana, distinto al resto del menú. Tener una función llamada “desde drawer” no basta si todavía anima una entrada lateral propia.
+
+**How to apply:** Conectar origen, posicionamiento sin entrada propia y confirmación de layout real en todos los niveles. Mantener la apertura normal cuando la herramienta se invoca desde Sonidos u otros accesos.
+
 La confirmación de destino listo debe corresponder a la selección concreta y ocurrir después de montar el contenido, no tras un timeout estimado. Repetir una selección de un overlay ya montado también exige una confirmación nueva sin perder su contenido.
 
 **Why:** Una confirmación tardía de otra pantalla puede cerrar el menú antes de preparar la elegida; esperar solo un cambio de estado que ya era verdadero puede dejarlo bloqueado.

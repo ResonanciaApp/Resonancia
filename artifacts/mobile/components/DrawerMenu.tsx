@@ -114,7 +114,7 @@ export function DrawerMenu() {
   };
   const { unreadCount } = useNotifications();
   const { isPremium, hydrated: premiumHydrated } = usePremium();
-  const { openMixer } = useMixerPanel();
+  const { openMixerFromDrawer } = useMixerPanel();
 
   const loggedIn = isRegistered || isSignedIn;
   const clerkName =
@@ -186,7 +186,7 @@ export function DrawerMenu() {
       return;
     }
     if (route === "__mixer") {
-      selectFromDrawer({ kind: "afterClose", run: openMixer });
+      selectFromDrawer({ kind: "layout", target: "mixer", run: openMixerFromDrawer });
       return;
     }
     if (route === "__profile_compose") {
