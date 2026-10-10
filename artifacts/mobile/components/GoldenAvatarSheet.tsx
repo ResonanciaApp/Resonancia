@@ -17,9 +17,10 @@ const CONFETTI: [number, number, number, number, string, boolean][] = [
 ];
 
 /** Shares the avatar picker's native Modal, so dismissing it preserves the grid. */
-export function GoldenAvatarSheet({ motion, onClose }: {
+export function GoldenAvatarSheet({ motion, onClose, sheetHeight }: {
   motion: ReturnType<typeof useGrowthJourneySheetMotion>;
   onClose: () => void;
+  sheetHeight: number;
 }) {
   const { theme } = useSceneTheme();
   const insets = useSafeAreaInsets();
@@ -36,7 +37,7 @@ export function GoldenAvatarSheet({ motion, onClose }: {
     <View style={styles.root} testID="golden-avatar-overlay" accessibilityViewIsModal>
       <Animated.View pointerEvents="none" style={[styles.backdrop, { opacity: motion.backdropOpacity }]} />
       <Pressable style={StyleSheet.absoluteFill} onPress={onClose} accessibilityRole="button" accessibilityLabel="Cerrar Avatar dorado" testID="golden-avatar-backdrop-close" />
-      <Animated.View style={[styles.sheet, { transform: [{ translateY: motion.sheetY }] }]}>
+      <Animated.View testID="golden-avatar-sheet" style={[styles.sheet, { height: sheetHeight, transform: [{ translateY: motion.sheetY }] }]}>
         <LinearGradient
           colors={gradient}
           locations={cloudy ? [0, 1 / 3, 2 / 3, 1] : undefined}
@@ -81,13 +82,13 @@ export function GoldenAvatarSheet({ motion, onClose }: {
 const styles = StyleSheet.create({
   root: { ...StyleSheet.absoluteFillObject, justifyContent: "flex-end" },
   backdrop: { ...StyleSheet.absoluteFillObject, backgroundColor: "#000000" },
-  sheet: { position: "absolute", left: 0, right: 0, bottom: 0, height: "85%", overflow: "hidden", borderTopLeftRadius: 22, borderTopRightRadius: 22, paddingHorizontal: 20 },
+  sheet: { position: "absolute", left: 0, right: 0, bottom: 0, overflow: "hidden", borderTopLeftRadius: 22, borderTopRightRadius: 22, paddingHorizontal: 20 },
   handle: { alignSelf: "center", width: 36, height: 4, borderRadius: 2, backgroundColor: "rgba(255,255,255,0.18)", marginTop: 10, marginBottom: 4 },
   header: { paddingTop: 20, minHeight: 63, flexDirection: "row", alignItems: "center", justifyContent: "center" },
   title: { flex: 1, fontFamily: "Manrope", fontSize: 16, fontWeight: "700", color: "#F9F9F9", textAlign: "center" },
   close: { position: "absolute", top: 20, left: 0, width: 43, height: 43, borderRadius: 21.5, alignItems: "center", justifyContent: "center" },
   scroll: { flex: 1 },
-  body: { alignItems: "center", paddingTop: 10 },
+  body: { alignItems: "center", paddingTop: 30 },
   heroSlot: { width: "100%", height: 170, alignItems: "center", justifyContent: "center" },
   halo: { position: "absolute", alignSelf: "center", top: 27, width: 116, height: 116, borderRadius: 58, borderWidth: 14, borderColor: "rgba(245,200,75,0.18)" },
   hero: { width: HERO, height: HERO, borderRadius: HERO / 2, backgroundColor: "#000000", alignItems: "center", justifyContent: "center" },

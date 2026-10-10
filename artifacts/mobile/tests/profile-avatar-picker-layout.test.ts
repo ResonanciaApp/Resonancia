@@ -50,7 +50,7 @@ test("a large avatar catalog cannot enlarge the sheet beyond the screen", () => 
   const headerHeight = handle.marginTop + handle.height + handle.marginBottom + findStyle("accountCoverHeader").minHeight;
   for (const viewportHeight of [568, 640, 874, 1024]) {
     const sheetHeight = viewportHeight * 0.85;
-    const listHeight = sheetHeight - headerHeight - hero.marginTop - hero.height - 54;
+    const listHeight = sheetHeight - headerHeight - hero.marginTop - hero.height;
     assert.ok(listHeight > 63, `a usable scroll area remains at ${viewportHeight}px`);
     for (const avatars of [26, 86, 200]) {
       const contentHeight = Math.ceil(avatars / 5) * 75 + 46;
@@ -58,6 +58,12 @@ test("a large avatar catalog cannot enlarge the sheet beyond the screen", () => 
       assert.ok(sheetHeight < viewportHeight);
     }
   }
+});
+
+test("avatar grid reaches the bottom without a fixed footer, retaining scrollable safe-area spacing", () => {
+  assert.match(source, /style=\{\[styles.accountCoverSheet, \{ transform:/);
+  assert.doesNotMatch(source, /styles.accountCoverSheet, \{ paddingBottom:/);
+  assert.match(source, /contentContainerStyle=\{\[styles.accountCoverPresetGridContent, \{ paddingBottom: bottomPad \+ 20 \}\]\}/);
 });
 
 test("photo upload is an icon-only 43px circle 10px to the right of X, with celebration at the right and no balance message", () => {

@@ -592,7 +592,8 @@ export function ProfileScreenBase({
   const [accountPhotoPickerVisible, setAccountPhotoPickerVisible] = useState(false);
   const avatarPickerMotion = useGrowthJourneySheetMotion(accountPhotoPickerVisible, height * 0.85);
   const [goldenAvatarVisible, setGoldenAvatarVisible] = useState(false);
-  const goldenAvatarMotion = useGrowthJourneySheetMotion(goldenAvatarVisible && accountPhotoPickerVisible, height * 0.85);
+  const goldenAvatarHeight = Math.max(200, height * 0.85 - 200);
+  const goldenAvatarMotion = useGrowthJourneySheetMotion(goldenAvatarVisible && accountPhotoPickerVisible, goldenAvatarHeight);
   const goldenAvatarActive = goldenAvatarVisible || goldenAvatarMotion.rendered;
   const avatarHeaderBackground = getThemeStyleId(activeSceneId) === "cloudy" || activeSceneId === "natural"
     ? "rgba(0,0,0,0.19)" : "rgba(0,0,0,0.16)";
@@ -1188,7 +1189,7 @@ export function ProfileScreenBase({
               pointerEvents={goldenAvatarActive ? "none" : "auto"}
               accessibilityElementsHidden={goldenAvatarActive}
               importantForAccessibility={goldenAvatarActive ? "no-hide-descendants" : "auto"}
-              style={[styles.accountCoverSheet, { paddingBottom: bottomPad + 20, transform: [{ translateY: avatarPickerMotion.sheetY }] }]}
+              style={[styles.accountCoverSheet, { transform: [{ translateY: avatarPickerMotion.sheetY }] }]}
             >
               <LinearGradient
                 colors={activeTheme.gradient as unknown as [string, string, ...string[]]}
@@ -1265,7 +1266,7 @@ export function ProfileScreenBase({
                 keyExtractor={(preset) => preset.id}
                 numColumns={5}
                 showsVerticalScrollIndicator={false}
-                contentContainerStyle={styles.accountCoverPresetGridContent}
+                contentContainerStyle={[styles.accountCoverPresetGridContent, { paddingBottom: bottomPad + 20 }]}
                 columnWrapperStyle={styles.accountCoverPresetGridRow}
                 renderItem={({ item: preset }) => {
                    const selected = preset.id === (accountSelectedProfilePreset?.id ?? accountAvatarPresetId);
@@ -1300,7 +1301,7 @@ export function ProfileScreenBase({
               <ScrollProgressIndicator progress={avatarScrollProgress} />
               </View>
             </Animated.View>
-            <GoldenAvatarSheet motion={goldenAvatarMotion} onClose={() => setGoldenAvatarVisible(false)} />
+            <GoldenAvatarSheet motion={goldenAvatarMotion} sheetHeight={goldenAvatarHeight} onClose={() => setGoldenAvatarVisible(false)} />
             </View>
           </Modal>
         </View>

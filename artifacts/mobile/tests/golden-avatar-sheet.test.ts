@@ -16,6 +16,7 @@ function harness(themeId: keyof typeof SCENE_THEMES) {
   const gradients: any[] = [];
   const Native = (props: any) => {
     if (props.testID) nodes.set(props.testID, props);
+    if (props.contentContainerStyle) nodes.set("golden-avatar-scroll-content", props);
     return React.createElement("div", {}, props.children);
   };
   const mocks: Record<string, any> = {
@@ -42,7 +43,7 @@ test("Avatar dorado explains the unique prize, shares the native host and can cl
   for (const id of ["tibet", "cloudy", "natural", "pleyades"] as const) {
     const h = harness(id);
     let closes = 0;
-    const props = { motion: { rendered: true, sheetY: 0, backdropOpacity: 0.62 }, onClose: () => closes++ };
+    const props = { motion: { rendered: true, sheetY: 0, backdropOpacity: 0.62 }, sheetHeight: 874 * 0.85 - 200, onClose: () => closes++ };
     renderToStaticMarkup(React.createElement(h.GoldenAvatarSheet, props));
     assert.ok(h.texts.includes("Avatar dorado"));
     assert.ok(h.texts.includes("?"));
@@ -65,6 +66,10 @@ test("Avatar dorado explains the unique prize, shares the native host and can cl
     assert.equal(closeStyles.left, 0);
     assert.equal(closeStyles.top, 20);
     assert.equal(closeStyles.width, 43);
+    const sheetStyle = Object.assign({}, ...h.nodes.get("golden-avatar-sheet").style);
+    assert.equal(sheetStyle.height, props.sheetHeight);
+    const bodyStyle = Object.assign({}, ...h.nodes.get("golden-avatar-scroll-content").contentContainerStyle);
+    assert.equal(bodyStyle.paddingTop, 30);
     h.nodes.get("golden-avatar-close").onPress();
     h.nodes.get("golden-avatar-backdrop-close").onPress();
     assert.equal(closes, 2);
@@ -83,7 +88,7 @@ test("avatar picker waits for fade-out and native dismissal before invoking the 
   assert.match(profile, /translateY: avatarPickerMotion.sheetY/);
   assert.match(profile, /accountPhotoPickerVisible \|\| avatarPickerMotion.rendered[\s\S]*?\|\| !accountPhotoLibraryPending/);
   assert.match(profile, /onDismiss=\{\(\) => \{[\s\S]*?requestAnimationFrame\(\(\) => \{[\s\S]*?void pickPhoto\(\)/);
-  assert.match(profile, /<GoldenAvatarSheet motion=\{goldenAvatarMotion\}/);
+  assert.match(profile, /<GoldenAvatarSheet motion=\{goldenAvatarMotion\} sheetHeight=\{goldenAvatarHeight\}/);
   assert.match(profile, /importantForAccessibility=\{goldenAvatarActive \? "no-hide-descendants" : "auto"\}/);
 });
 
@@ -111,5 +116,6 @@ test("both avatar overlays reuse Vuelve a ti timing and retain their host throug
   assert.match(motion, /toValue: 0,\s+duration: 460/);
   assert.match(motion, /if \(finished\)[\s\S]*?setRendered\(false\)/);
   assert.match(profile, /useGrowthJourneySheetMotion\(accountPhotoPickerVisible, height \* 0.85\)/);
-  assert.match(profile, /useGrowthJourneySheetMotion\(goldenAvatarVisible && accountPhotoPickerVisible, height \* 0.85\)/);
+  assert.match(profile, /const goldenAvatarHeight = Math.max\(200, height \* 0.85 - 200\)/);
+  assert.match(profile, /useGrowthJourneySheetMotion\(goldenAvatarVisible && accountPhotoPickerVisible, goldenAvatarHeight\)/);
 });
