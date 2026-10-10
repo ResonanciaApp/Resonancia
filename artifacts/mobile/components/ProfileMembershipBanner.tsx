@@ -14,12 +14,10 @@ export function ProfileMembershipBanner({
   foregroundColor: string;
 }) {
   return (
-    <>
-      <View testID="profile-premium-divider" style={styles.divider} />
       <Pressable
         testID="profile-premium-banner"
         onPress={() => isPremium ? router.push("/membresia") : openPremiumPlans()}
-        style={({ pressed }) => [styles.row, { opacity: pressed ? 0.78 : 1 }]}
+        style={({ pressed }) => [styles.row, !isPremium && styles.trialCard, { opacity: pressed ? 0.78 : 1 }]}
         accessibilityRole="button"
         accessibilityLabel={isPremium ? "Abrir Tu Premium" : "Prueba Premium"}
       >
@@ -38,17 +36,16 @@ export function ProfileMembershipBanner({
           <Feather name="chevron-right" size={24} color={foregroundColor} />
         </View>
       </Pressable>
-    </>
   );
 }
 
 const styles = StyleSheet.create({
-  divider: {
-    height: 1,
-    width: "100%",
-    backgroundColor: "rgba(181,211,255,0.05)",
-    marginTop: 15,
-    marginBottom: 9,
+  trialCard: {
+    backgroundColor: "rgba(0,0,0,0.16)",
+    borderRadius: 20,
+    paddingHorizontal: 16,
+    paddingVertical: 18,
+    marginTop: 25,
   },
   row: {
     flexDirection: "row",

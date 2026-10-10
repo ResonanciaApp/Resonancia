@@ -13,7 +13,7 @@ En Perfil, las cuentas gratuitas deben ver «Prueba Premium» debajo del bloque 
 
 **Why:** El usuario aclaró que ocultar el banner era solo para miembros Premium, no para cuentas gratuitas. El 7 de octubre de 2026 cambió la ubicación de la estrella del título a la esquina inferior derecha del avatar y después pidió sacar el chevron «por mientras» al poner la identidad debajo del avatar. También pidió bajar la semana y todo lo que sigue sin mover el avatar; la separación anterior de 25 px ya no es fija.
 
-**How to apply:** Mantener el banner de prueba integrado al bloque de usuario para cuentas gratuitas, no como tarjeta independiente. Conservar el diseño compacto y la insignia sobre el avatar sin recuperar «Tu Premium» debajo del usuario. La insignia no debe interceptar el toque que abre Mi cuenta. El acceso Premium del drawer es independiente de esta regla.
+**How to apply:** Mantener el banner de prueba debajo de la identidad para cuentas gratuitas, ahora con su propio fondo de sección y sin línea divisora. Conservar la insignia sobre el avatar sin recuperar «Tu Premium» debajo del usuario. La insignia no debe interceptar el toque que abre Mi cuenta. El acceso Premium del drawer es independiente de esta regla.
 
 Inicio no muestra estrella de membresía sobre el avatar, tampoco para usuarios Premium. Perfil conserva su estrella y el drawer no cambia.
 
@@ -21,11 +21,11 @@ Inicio no muestra estrella de membresía sobre el avatar, tampoco para usuarios 
 
 **How to apply:** No volver a añadir la insignia al header de Inicio por analogía con Perfil; preservar foto, inicial y apertura del menú. Inicio y drawer usan avatares sin borde.
 
-En cuentas gratuitas, la estrella y el contenido de «Prueba Premium» usan el margen lateral izquierdo del perfil; el chevron llega al margen lateral derecho, sin una sangría adicional dentro del banner.
+En cuentas gratuitas, «Prueba Premium» tiene un fondo como las otras secciones de Perfil, sin línea divisora; sus extremos exteriores conservan los márgenes de la pantalla y su contenido tiene el inset interior de sección.
 
-**Why:** El usuario pidió expresamente alinear ambos extremos con los márgenes de la pantalla cuando está sin Premium.
+**Why:** El usuario sustituyó el banner sin fondo separado por una línea por un bloque con el mismo fondo que las demás secciones.
 
-**How to apply:** Heredar los márgenes del contenedor de Perfil y no sumar padding horizontal propio al banner. Mantener la separación entre estrella y texto y la alineación vertical existente.
+**How to apply:** Heredar los márgenes del contenedor de Perfil y usar el tratamiento de superficie e insets de sus secciones. Mantener la separación entre estrella y texto, la alineación vertical y el acceso a los planes.
 
 El amarillo sólido de Premium sigue en «Plan Premium» de Sonidos y Descubrir, en solo «Premium» del banner inferior de Inicio y en «Tu Premium» del drawer para miembros o solo «Premium» para no miembros. «Prueba» y «Gratis» de Inicio no cambian; en el drawer «Prueba» sigue blanco. El loto de «Racha más larga» conserva el degradado.
 

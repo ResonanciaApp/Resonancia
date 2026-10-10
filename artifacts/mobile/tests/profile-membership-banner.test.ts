@@ -7,14 +7,15 @@ import { renderToStaticMarkup } from "react-dom/server";
 import ts from "typescript";
 
 const source = readFileSync(new URL("../components/ProfileMembershipBanner.tsx", import.meta.url), "utf8");
-test("Premium divider moves up 5px while preserving the banner's position", () => {
-  const divider = source.match(/divider:\s*\{([\s\S]*?)\n  \},/)?.[1] ?? "";
-  const top = Number(divider.match(/marginTop: (\d+)/)?.[1]);
-  const bottom = Number(divider.match(/marginBottom: (\d+)/)?.[1]);
-  const height = Number(divider.match(/height: (\d+)/)?.[1]);
-  assert.equal(top, 20 - 5);
-  assert.equal(bottom, 4 + 5);
-  assert.equal(top + height + bottom, 20 + 1 + 4);
+test("the trial card replaces the divider and keeps its previous top separation", () => {
+  assert.doesNotMatch(source, /profile-premium-divider|styles\.divider/);
+  assert.match(source, /!isPremium && styles\.trialCard/);
+  const card = source.match(/trialCard:\s*\{([\s\S]*?)\n  \},/)?.[1] ?? "";
+  assert.match(card, /backgroundColor: "rgba\(0,0,0,0\.16\)"/);
+  assert.match(card, /borderRadius: 20/);
+  assert.match(card, /paddingVertical: 18/);
+  assert.match(card, /paddingHorizontal: 16/);
+  assert.match(card, /marginTop: 25/);
 });
 test("the Premium star remains raised 3px without changing banner layout", () => {
   const icon = source.match(/icon:\s*\{([\s\S]*?)\n  \},/)?.[1] ?? "";
@@ -28,15 +29,17 @@ let offers = 0;
 let route = "";
 const Native = (props: any) => {
   if (props.onPress) press = props.onPress;
-  const style = Object.assign({}, ...(
-    Array.isArray(props.style) ? props.style :
-      [typeof props.style === "function" ? props.style({ pressed: false }) : props.style]
-  ));
+  const rawStyle = typeof props.style === "function" ? props.style({ pressed: false }) : props.style;
+  const style = Object.assign({}, ...[rawStyle].flat(Infinity).filter(Boolean));
   return React.createElement("div", {
     "data-testid": props.testID,
     "data-icon": props.name,
     "aria-label": props.accessibilityLabel,
     "data-height": style.height,
+    "data-background": style.backgroundColor,
+    "data-padding-horizontal": style.paddingHorizontal,
+    "data-padding-vertical": style.paddingVertical,
+    "data-radius": style.borderRadius,
     "data-translate-y": style.transform?.find((item: any) => "translateY" in item)?.translateY,
   }, props.children);
 };
@@ -69,7 +72,7 @@ const { ProfileMembershipBanner } = module.exports as {
 test("Tu Premium and Prueba Premium chevrons share the star's vertical center without moving the copy", () => {
   for (const isPremium of [true, false]) {
     const html = renderToStaticMarkup(React.createElement(ProfileMembershipBanner, { isPremium, foregroundColor: "#FFF" }));
-    assert.match(html, /data-height="31" data-translate-y="-3"/);
+    assert.match(html, /data-height="31"[^>]* data-translate-y="-3"/);
     assert.match(html, /data-height="44" data-translate-y="3.5"/);
     assert.equal(bannerStyles.row.alignItems, "flex-end");
     const centerFromBottom = (style: Record<string, any>) =>
@@ -87,7 +90,9 @@ test("free users see Prueba Premium and open the existing plans offer directly",
   const html = renderToStaticMarkup(React.createElement(ProfileMembershipBanner, { isPremium: false, foregroundColor: "#FFF" }));
   assert.match(html, /Prueba Premium/);
   assert.match(html, /Tu transformación comienza acá/);
-  assert.ok(html.indexOf("profile-premium-divider") < html.indexOf("profile-premium-banner"));
+  assert.doesNotMatch(html, /profile-premium-divider/);
+  assert.match(html, /data-background="rgba\(0,0,0,0\.16\)"/);
+  assert.match(html, /data-padding-horizontal="16" data-padding-vertical="18" data-radius="20"/);
   assert.ok(html.indexOf('data-icon="star"') < html.indexOf(">Prueba Premium<"));
   press?.();
   assert.equal(offers, 1);
@@ -105,7 +110,7 @@ test("Premium users see Tu Premium and open subscription management", () => {
   assert.equal(offers, 0);
 });
 
-test("banner and identity share the same user-section background", () => {
+test("trial stays in the user section and keeps Premium membership visibility unchanged", () => {
   const profile = readFileSync(new URL("../components/ProfileScreenBase.tsx", import.meta.url), "utf8");
   const ast = ts.createSourceFile("profile.tsx", profile, ts.ScriptTarget.Latest, true, ts.ScriptKind.TSX);
   let section = "";
@@ -122,10 +127,10 @@ test("banner and identity share the same user-section background", () => {
   assert.match(profile, /const PROFILE_CARD_BOTTOM_PADDING = 20;/);
   assert.match(profile, /paddingBottom: PROFILE_CARD_BOTTOM_PADDING/);
   assert.match(profile, /marginBottom: PROFILE_SECTION_GAP/);
-  assert.doesNotMatch(source, /backgroundColor:.*0,0,0/);
+  assert.match(section, /!isPremium && <ProfileMembershipBanner/);
 });
 
-test("trial star and copy use the parent's screen margins without a second inset", () => {
+test("trial card uses screen margins with the same inner inset as other profile sections", () => {
   const rowStyle = source.match(/  row: \{([\s\S]*?)\n  \},/)?.[1] ?? "";
   const iconStyle = source.match(/  icon: \{([\s\S]*?)\n  \},/)?.[1] ?? "";
   assert.match(rowStyle, /paddingHorizontal: 0/);
@@ -135,10 +140,10 @@ test("trial star and copy use the parent's screen margins without a second inset
   assert.equal(bannerStyles.chevron.alignItems, "flex-end");
   for (const screenWidth of [320, 375, 402, 768]) {
     const screenMargin = 16;
-    const starLeft = screenMargin + bannerStyles.row.paddingHorizontal;
-    const chevronRight = screenWidth - screenMargin - bannerStyles.row.paddingHorizontal;
-    assert.equal(starLeft, screenMargin);
-    assert.equal(chevronRight, screenWidth - screenMargin);
-    assert.equal(starLeft + bannerStyles.icon.width + bannerStyles.row.gap, 60);
+    const starLeft = screenMargin + bannerStyles.trialCard.paddingHorizontal;
+    const chevronRight = screenWidth - screenMargin - bannerStyles.trialCard.paddingHorizontal;
+    assert.equal(starLeft, screenMargin + 16);
+    assert.equal(chevronRight, screenWidth - screenMargin - 16);
+    assert.equal(starLeft + bannerStyles.icon.width + bannerStyles.row.gap, 76);
   }
 });
