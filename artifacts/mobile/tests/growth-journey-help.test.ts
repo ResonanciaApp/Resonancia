@@ -376,7 +376,7 @@ test("the map follows a perfect circle without connecting El Gran Despertar back
         assert.equal(world.children, "Primer mundo");
         assert.equal(flatten(world.style).textAlign, "center");
         assert.equal(flatten(world.style).fontSize, 10);
-        assert.equal(flatten(world.style).color, "#9ADAA9");
+        assert.equal(flatten(world.style).color, POSITIONED_DAY_GRADIENT[0]);
         assert.ok(html.indexOf("Floración") < html.indexOf(">Primer mundo<"));
         assert.equal(flatten(h.nodes.get(`growth-map-label-${ids[i]}`).style).lineHeight, 20);
         assert.match(node.accessibilityLabel, /Primer mundo/);
@@ -429,6 +429,20 @@ test("the map follows a perfect circle without connecting El Gran Despertar back
   levels = [];
   renderToStaticMarkup(React.createElement(GrowthJourneyMap, { width: 343 }));
   assert.equal(h.nodes.get("map-final-phase-art").level, bundledFinal);
+  for (const [id, color] of [
+    ["natural", "#E5FFDB"],
+    ["cloudy", CLOUDY_GROWTH_STAGE_LABEL_COLOR],
+    ["indigo2", POSITIONED_DAY_GRADIENT[0]],
+    ["pleyades", POSITIONED_DAY_GRADIENT[0]],
+  ]) {
+    h.imports["@/context/SceneThemeContext"].useSceneTheme = () => ({
+      theme: { id, gradient: ["#060A0F", "#111122"] },
+    });
+    renderToStaticMarkup(React.createElement(GrowthJourneyMap, { width: 388 }));
+    const world = flatten(h.nodes.get("growth-map-world-floracion").style);
+    assert.equal(world.color, color, `${id} uses Tu camino's world label color, not the generic accent`);
+    assert.equal(world.fontSize, 10);
+  }
 });
 
 test("the help overlay retains its original spring entrance, backdrop fade and animated exit", () => {

@@ -3,7 +3,10 @@ import { Image, StyleSheet, Text, View } from "react-native";
 import Svg, { Path } from "react-native-svg";
 
 import { GrowthLevelImage, RewardLock } from "@/components/GrowthJourney";
+import { getThemeStyleId } from "@/config/scene-themes";
+import { CLOUDY_GROWTH_STAGE_LABEL_COLOR, POSITIONED_DAY_GRADIENT } from "@/constants/colors";
 import { useGrowth } from "@/context/GrowthContext";
+import { useSceneTheme } from "@/context/SceneThemeContext";
 import { useColors } from "@/hooks/useColors";
 import { allGrowthLevels, type GrowthLevel } from "@/data/growthLevels";
 
@@ -30,6 +33,10 @@ export const GROWTH_MAP_HEIGHT = 350;
 
 export function GrowthJourneyMap({ width }: { width: number }) {
   const colors = useColors();
+  const { theme } = useSceneTheme();
+  const worldColor = theme.id === "natural" ? "#E5FFDB"
+    : getThemeStyleId(theme.id) === "cloudy" ? CLOUDY_GROWTH_STAGE_LABEL_COLOR
+    : POSITIONED_DAY_GRADIENT[0];
   const { levels } = useGrowth();
   const bloom = levels.filter((l) => l.group === "florecimiento");
   const last: GrowthLevel | undefined = bloom[bloom.length - 1]
@@ -106,7 +113,7 @@ export function GrowthJourneyMap({ width }: { width: number }) {
               {s.label}
             </Text>
             {active && (
-              <Text testID="growth-map-world-floracion" style={[styles.worldLabel, { color: colors.accent }]}>
+              <Text testID="growth-map-world-floracion" style={[styles.worldLabel, { color: worldColor }]}>
                 Primer mundo
               </Text>
             )}

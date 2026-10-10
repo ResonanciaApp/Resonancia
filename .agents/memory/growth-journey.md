@@ -220,6 +220,15 @@ al de Primer mundo no debía cambiar el texto Primer universo del mapa.
 **How to apply:** Compartir tipografía y colores cuando se solicite, pero
 conservar cada nombre según su superficie y nivel editorial.
 
+El color de «Primer mundo» bajo Floración en el mapa debe seguir la etiqueta
+«PRIMER MUNDO» del recorrido detallado, no el acento genérico del tema.
+
+**Why:** El usuario aclaró esta referencia después de probar el acento
+genérico, que no equivale a los colores editoriales de Tu camino.
+
+**How to apply:** Mantener la misma resolución cromática por tema que usa
+la etiqueta del recorrido, sin modificar el tamaño ni la posición del mapa.
+
 Las imágenes de las paradas bloqueadas del mapa no deben llevar un anillo
 visible por fuera.
 
