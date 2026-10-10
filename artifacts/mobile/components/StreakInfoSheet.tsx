@@ -78,8 +78,10 @@ export function StreakInfoSheet({
   const { theme } = useSceneTheme();
   const scrollRef = useRef<ScrollView>(null);
   const [cycle, setCycle] = useState(0);
+  const [expanded, setExpanded] = useState<Partial<Record<IconKind, boolean>>>({});
 
   useEffect(() => {
+    setExpanded({});
     if (visible) {
       setCycle((c) => c + 1);
       scrollRef.current?.scrollTo({ y: 0, animated: false });
@@ -151,30 +153,41 @@ export function StreakInfoSheet({
           </View>
 
           <View testID="streak-info-cards" style={styles.cards}>
-            {[STREAK_DEFINITIONS.slice(0, 2), STREAK_DEFINITIONS.slice(2)].map((row, rowIndex) => (
-              <View key={rowIndex} testID={`streak-info-row-${rowIndex}`} style={styles.cardRow}>
-                {row.map((item, i) => (
-                  <CinematicFadeSlide
-                    key={item.id}
-                    active={visible}
-                    replayKey={`card:${cycle}`}
-                    delay={BASE_DELAY + 400 + (rowIndex * 2 + i) * 180}
-                    duration={DURATION}
-                    style={styles.cardColumn}
-                  >
-                    <View testID={`streak-info-card-${item.id}`} style={styles.card} accessible accessibilityLabel={`${item.title}. ${item.description}`}>
-                      <View style={styles.iconWrap}>
+            {STREAK_DEFINITIONS.map((item, i) => {
+              const open = !!expanded[item.id];
+              return (
+                <CinematicFadeSlide
+                  key={item.id}
+                  active={visible}
+                  replayKey={`card:${cycle}`}
+                  delay={BASE_DELAY + 400 + i * 180}
+                  duration={DURATION}
+                >
+                  <View testID={`streak-info-card-${item.id}`} style={styles.card}>
+                    <View style={styles.cardHeader}>
+                      <View testID={`streak-info-icon-${item.id}`} style={styles.iconWrap}>
                         <StreakIcon kind={item.id} />
                       </View>
-                      <View style={styles.cardText}>
-                        <Text style={styles.cardTitle}>{item.title}</Text>
-                        <Text style={styles.cardDesc}>{item.description}</Text>
-                      </View>
+                      <Text style={styles.cardTitle}>{item.title}</Text>
+                      <Pressable
+                        onPress={() => setExpanded((prev) => ({ ...prev, [item.id]: !prev[item.id] }))}
+                        hitSlop={8}
+                        style={styles.chevron}
+                        accessibilityRole="button"
+                        accessibilityLabel={`${open ? "Ocultar" : "Mostrar"} descripción de ${item.title}`}
+                        accessibilityState={{ expanded: open }}
+                        testID={`streak-info-toggle-${item.id}`}
+                      >
+                        <Feather name={open ? "chevron-up" : "chevron-down"} size={20} color={WHITE} />
+                      </Pressable>
                     </View>
-                  </CinematicFadeSlide>
-                ))}
-              </View>
-            ))}
+                    {open && (
+                      <Text testID={`streak-info-desc-${item.id}`} style={styles.cardDesc}>{item.description}</Text>
+                    )}
+                  </View>
+                </CinematicFadeSlide>
+              );
+            })}
             <CinematicFadeSlide
               active={visible}
               replayKey={`foot:${cycle}`}
@@ -224,43 +237,33 @@ const styles = StyleSheet.create({
   heroText: { paddingHorizontal: 28, paddingTop: 56, alignItems: "center" },
   subtitle: {
     fontFamily: "Manrope",
-    fontSize: 15,
+    fontSize: 13,
+    fontWeight: "400",
     lineHeight: 22,
     color: STREAK_INFO_COLORS.subtitle,
     textAlign: "center",
   },
-  cards: { paddingHorizontal: 20, marginTop: 50, gap: 14 },
-  cardRow: { flexDirection: "row", alignItems: "stretch", gap: 14 },
-  cardColumn: { flex: 1, minWidth: 0 },
+  cards: { paddingHorizontal: 20, marginTop: 50, gap: 15 },
   card: {
-    flex: 1,
-    flexDirection: "column",
-    alignItems: "center",
-    justifyContent: "center",
-    gap: 16,
     padding: 18,
     borderRadius: 22,
     backgroundColor: STREAK_INFO_COLORS.cardBackground,
   },
-  iconWrap: {
-    width: 56,
-    height: 56,
-    borderRadius: 28,
-    alignItems: "center",
-    justifyContent: "center",
-    backgroundColor: STREAK_INFO_COLORS.iconBackground,
-  },
+  cardHeader: { flexDirection: "row", alignItems: "center", gap: 14 },
+  iconWrap: { width: 40, height: 40, alignItems: "center", justifyContent: "center" },
+  chevron: { width: 32, height: 32, alignItems: "center", justifyContent: "center" },
   goldenLotus: {
     textShadowColor: `${GOLD}CC`,
     textShadowOffset: { width: 0, height: 0 },
     textShadowRadius: 4,
   },
-  cardText: { width: "100%", alignItems: "center", gap: 4 },
-  cardTitle: { fontFamily: "Manrope", fontSize: 16, fontWeight: "700", color: WHITE, textAlign: "center" },
+  cardTitle: { flex: 1, fontFamily: "Manrope", fontSize: 16, fontWeight: "700", color: WHITE },
   cardDesc: {
+    marginTop: 12,
     fontFamily: "Manrope",
-    fontSize: 13,
-    lineHeight: 20,
+    fontSize: 12,
+    fontWeight: "400",
+    lineHeight: 18,
     textAlign: "center",
     color: STREAK_INFO_COLORS.description,
   },

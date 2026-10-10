@@ -3,9 +3,9 @@ name: Handoff entre Modal nativos
 description: Regla para encadenar una hoja modal y una pantalla modal sin solaparlas en iOS
 ---
 
-Al reemplazar un `Modal` nativo por otro, el segundo debe abrirse únicamente después de que la animación de salida del primero haya terminado, este se haya desmontado y haya pasado un frame.
+Al reemplazar un `Modal` nativo por otro o abrir la galería del teléfono desde él, la nueva ventana debe abrirse únicamente después de que la animación de salida del primero haya terminado, este se haya desmontado y haya pasado un frame.
 
-**Why:** Un timeout con la misma duración nominal de la animación no garantiza que UIKit ya haya descartado el primer presentador; bajo carga, iOS puede rechazar intermitentemente el segundo modal.
+**Why:** Un timeout con la misma duración nominal de la animación no garantiza que UIKit ya haya descartado el primer presentador; bajo carga, iOS puede rechazar intermitentemente el segundo modal o el selector de fotos del sistema. La intención de cerrar no equivale al fin de una salida en fade.
 
 **How to apply:** La hoja saliente debe emitir un callback de cierre real. El coordinador guarda la intención pendiente y presenta el segundo modal desde ese callback, idealmente en el siguiente `requestAnimationFrame`.
 

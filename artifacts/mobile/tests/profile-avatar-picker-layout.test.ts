@@ -60,10 +60,10 @@ test("a large avatar catalog cannot enlarge the sheet beyond the screen", () => 
   }
 });
 
-test("photo upload is an icon-only 43px circle to the right of Portada, with close on the left and no balance message", () => {
+test("photo upload is an icon-only 43px circle 10px to the right of X, with celebration at the right and no balance message", () => {
   const header = source.slice(source.indexOf("<View style={styles.accountCoverHeader}>"), source.indexOf("<View style={styles.accountCoverPreviewSlot}>"));
-  assert.match(header, /<Text style=\{styles.accountCoverTitle\}>Portada<\/Text>[\s\S]*?accountCoverUploadButton[\s\S]*?<Feather name="image" size=\{18\} color="#F9F9F9" \/>[\s\S]*?accountCoverCloseButton/);
-  assert.equal((source.match(/style=\{styles.accountCoverUploadButton\}/g) ?? []).length, 1);
+  assert.match(header, /<Text style=\{styles.accountCoverTitle\}>Portada<\/Text>[\s\S]*?accountCoverUploadButton[\s\S]*?<Feather name="image" size=\{18\} color="#F9F9F9" \/>[\s\S]*?accountCoverCloseButton[\s\S]*?accountCoverCelebrationButton/);
+  assert.equal((source.match(/styles\.accountCoverUploadButton,/g) ?? []).length, 1);
   assert.doesNotMatch(source, /accountCoverUploadText/);
   assert.match(header, /accessibilityRole="button"\s+accessibilityLabel="Elegir una foto"/);
   const button = findStyle("accountCoverUploadButton");
@@ -71,11 +71,17 @@ test("photo upload is an icon-only 43px circle to the right of Portada, with clo
   assert.equal(button.height, 43);
   assert.equal(button.borderRadius, 21.5);
   assert.equal(button.position, "absolute");
-  assert.equal(button.right, 0);
-  assert.equal(button.left, undefined);
+  assert.equal(button.right, undefined);
+  assert.equal(button.left, findStyle("accountCoverCloseButton").left + 43 + 10);
   assert.equal(button.zIndex, 1, "the photo action stays above the full-width title so its taps reach the Pressable");
   assert.equal(button.borderWidth, 0);
   assert.equal(button.backgroundColor, "rgba(0,0,0,0.16)");
+  const celebration = findStyle("accountCoverCelebrationButton");
+  assert.equal(celebration.right, 0);
+  assert.equal(celebration.width, 43);
+  assert.equal(celebration.height, 43);
+  assert.match(header, /setGoldenAvatarVisible\(true\)/);
+  assert.match(header, /name="party-popper"/);
   assert.equal(findStyle("accountCoverTitle").textAlign, "center");
   assert.equal(findStyle("accountCoverCloseButton").left, 0);
   assert.equal(findStyle("accountCoverCloseButton").right, undefined);
@@ -119,13 +125,18 @@ test("upload action waits for the selector dismissal before requesting the photo
 
 test("the photo action opens the native image library and persists the selected photo, respecting denial and cancellation", async () => {
   let picker: ts.Expression | undefined;
+  let apply: ts.Expression | undefined;
   function visit(node: ts.Node) {
     if (ts.isVariableDeclaration(node) && node.name.getText(ast) === "pickPhoto") picker = node.initializer;
+    if (ts.isVariableDeclaration(node) && node.name.getText(ast) === "applySelectedPhoto") apply = node.initializer;
     ts.forEachChild(node, visit);
   }
   visit(ast);
   assert.ok(picker);
+  assert.ok(apply);
   const js = ts.transpileModule(`return (${picker.getText(ast)});`, {}).outputText;
+  const applyJs = ts.transpileModule(`return (${apply.getText(ast)});`, {}).outputText;
+  for (const accountMode of [false, true]) {
   for (const platform of ["ios", "android"]) {
     for (const scenario of ["selected", "denied", "canceled"]) {
       const calls: unknown[] = [];
@@ -141,11 +152,19 @@ test("the photo action opens the native image library and persists the selected 
         constructor(directory: string, name?: string) { this.uri = name ? `${directory}/${name}` : directory; }
         copy(destination: File) { calls.push(["copy", this.uri, destination.uri]); }
       }
+      const closedRef = { current: false };
+      const savingRef = { current: false };
+      const applySelectedPhoto = new Function("accountMode", "accountClosedRef", "accountSavingRef",
+        "setAccountPhotoUri", "setAccountAvatarPresetId", "setPhotoUri", applyJs)(
+        accountMode, closedRef, savingRef,
+        (uri: string) => calls.push(["draft-photo", uri]), (id: unknown) => calls.push(["avatar-preset", id]),
+        (uri: string) => calls.push(["photo", uri]),
+      );
       const pickPhoto = new Function("ImagePicker", "Alert", "Platform", "FSFile", "Paths",
-        "buildLocalAvatarFilename", "randomUUID", "setPhotoUri", js)(
+        "buildLocalAvatarFilename", "randomUUID", "accountMode", "accountClosedRef", "accountSavingRef", "applySelectedPhoto", js)(
         imagePicker, { alert: () => calls.push(["permission-alert"]) }, { OS: platform }, File,
         { document: "file:///documents" }, () => "avatar-new.jpg", () => "unique",
-        (uri: string) => calls.push(["photo", uri]),
+        accountMode, closedRef, savingRef, applySelectedPhoto,
       );
       await pickPhoto();
       if (scenario === "denied") {
@@ -157,13 +176,15 @@ test("the photo action opens the native image library and persists the selected 
         if (scenario === "selected") {
           assert.deepEqual(calls.slice(1), [
             ["copy", "file:///selected.jpg", "file:///documents/avatar-new.jpg"],
-            ["photo", "file:///documents/avatar-new.jpg"],
+            [accountMode ? "draft-photo" : "photo", "file:///documents/avatar-new.jpg"],
+            ...(accountMode ? [["avatar-preset", null]] : []),
           ]);
         } else {
           assert.equal(calls.length, 1);
         }
       }
     }
+  }
   }
 });
 

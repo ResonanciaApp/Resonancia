@@ -97,6 +97,8 @@ import { GeometrixOverlay } from "@/components/GeometrixToggle";
 import { KeyboardAwareScrollViewCompat } from "@/components/KeyboardAwareScrollViewCompat";
 import { MoonCrescentIcon } from "@/components/MoonCrescentIcon";
 import { SleepReminderSheet } from "@/components/SleepReminderSheet";
+import { GoldenAvatarSheet } from "@/components/GoldenAvatarSheet";
+import { useGrowthJourneySheetMotion } from "@/hooks/useGrowthJourneySheetMotion";
 import { StreakInfoSheet } from "@/components/StreakInfoSheet";
 import { FilledSunIcon } from "@/components/FilledSunIcon";
 import { useMixerPanel } from "@/context/MixerPanelContext";
@@ -402,7 +404,7 @@ export function ProfileScreenBase({
     }
   };
 
-  const { width } = useWindowDimensions();
+  const { width, height } = useWindowDimensions();
 
   // ── Geometrix creations (for profile background picker) ───────────────────
   const { creations: geoCreations, reload: reloadCreations } = useGeometrixCreations();
@@ -588,9 +590,22 @@ export function ProfileScreenBase({
   const accountDraftBaselineRef = useRef<string | null>(null);
   const accountClosedRef = useRef(false);
   const [accountPhotoPickerVisible, setAccountPhotoPickerVisible] = useState(false);
+  const avatarPickerMotion = useGrowthJourneySheetMotion(accountPhotoPickerVisible, height * 0.85);
+  const [goldenAvatarVisible, setGoldenAvatarVisible] = useState(false);
+  const goldenAvatarMotion = useGrowthJourneySheetMotion(goldenAvatarVisible && accountPhotoPickerVisible, 320);
+  const goldenAvatarActive = goldenAvatarVisible || goldenAvatarMotion.rendered;
+  const avatarHeaderBackground = getThemeStyleId(activeSceneId) === "cloudy" || activeSceneId === "natural"
+    ? "rgba(0,0,0,0.19)" : "rgba(0,0,0,0.16)";
+  const closeAvatarPicker = () => {
+    if (goldenAvatarActive) setGoldenAvatarVisible(false);
+    else setAccountPhotoPickerVisible(false);
+  };
   const avatarScrollProgress = useScrollProgress(accountPhotoPickerVisible);
   const accountAvatarGridRef = useRef<FlatList<(typeof profileCatalog)[number]>>(null);
   const [accountPhotoLibraryPending, setAccountPhotoLibraryPending] = useState(false);
+  useEffect(() => {
+    if (!accountPhotoPickerVisible) setGoldenAvatarVisible(false);
+  }, [accountPhotoPickerVisible]);
   useEffect(() => {
     accountClosedRef.current = false;
     return () => { accountClosedRef.current = true; };
@@ -877,7 +892,7 @@ export function ProfileScreenBase({
   useEffect(() => {
     if (
       Platform.OS === "ios"
-      || accountPhotoPickerVisible
+      || accountPhotoPickerVisible || avatarPickerMotion.rendered
       || !accountPhotoLibraryPending
     ) return;
     const frame = requestAnimationFrame(() => {
@@ -885,7 +900,7 @@ export function ProfileScreenBase({
       void pickPhoto();
     });
     return () => cancelAnimationFrame(frame);
-  }, [accountPhotoLibraryPending, accountPhotoPickerVisible]);
+  }, [accountPhotoLibraryPending, accountPhotoPickerVisible, avatarPickerMotion.rendered]);
 
 
   // ── Fondo activo (degradado de perfil) ────────────────────────────────────
@@ -1151,12 +1166,14 @@ export function ProfileScreenBase({
             </ScrollView>
           </KeyboardAvoidingView>
           <Modal
-            visible={accountPhotoPickerVisible}
-            animationType="slide"
+            visible={accountPhotoPickerVisible || avatarPickerMotion.rendered}
+            animationType="none"
             transparent
+            statusBarTranslucent
             onShow={() => accountAvatarGridRef.current?.scrollToOffset({ offset: 0, animated: false })}
-            onRequestClose={() => setAccountPhotoPickerVisible(false)}
+            onRequestClose={closeAvatarPicker}
             onDismiss={() => {
+              setGoldenAvatarVisible(false);
               if (!accountPhotoLibraryPending) return;
               requestAnimationFrame(() => {
                 setAccountPhotoLibraryPending(false);
@@ -1164,11 +1181,15 @@ export function ProfileScreenBase({
               });
             }}
           >
-            <Pressable
-              style={styles.accountCoverBackdrop}
-              onPress={() => setAccountPhotoPickerVisible(false)}
-            />
-            <View style={[styles.accountCoverSheet, { paddingBottom: bottomPad + 20 }]}>
+            <View style={styles.accountCoverModalRoot}>
+            <Animated.View pointerEvents="none" style={[styles.accountCoverBackdrop, { opacity: avatarPickerMotion.backdropOpacity }]} />
+            <Pressable style={StyleSheet.absoluteFill} onPress={closeAvatarPicker} disabled={goldenAvatarActive} accessibilityElementsHidden={goldenAvatarActive} importantForAccessibility={goldenAvatarActive ? "no-hide-descendants" : "auto"} />
+            <Animated.View
+              pointerEvents={goldenAvatarActive ? "none" : "auto"}
+              accessibilityElementsHidden={goldenAvatarActive}
+              importantForAccessibility={goldenAvatarActive ? "no-hide-descendants" : "auto"}
+              style={[styles.accountCoverSheet, { paddingBottom: bottomPad + 20, transform: [{ translateY: avatarPickerMotion.sheetY }] }]}
+            >
               <LinearGradient
                 colors={activeTheme.gradient as unknown as [string, string, ...string[]]}
                 style={StyleSheet.absoluteFill}
@@ -1178,7 +1199,7 @@ export function ProfileScreenBase({
               <View style={styles.accountCoverHeader}>
                 <Text style={styles.accountCoverTitle}>Portada</Text>
                 <Pressable
-                  style={styles.accountCoverUploadButton}
+                  style={[styles.accountCoverUploadButton, { backgroundColor: avatarHeaderBackground }]}
                   onPress={() => {
                     setAccountPhotoLibraryPending(true);
                     setAccountPhotoPickerVisible(false);
@@ -1186,17 +1207,28 @@ export function ProfileScreenBase({
                   hitSlop={8}
                   accessibilityRole="button"
                   accessibilityLabel="Elegir una foto"
+                  testID="avatar-cover-upload"
                 >
                   <Feather name="image" size={18} color="#F9F9F9" />
                 </Pressable>
                 <Pressable
-                  onPress={() => setAccountPhotoPickerVisible(false)}
+                  onPress={closeAvatarPicker}
                   hitSlop={8}
-                  style={styles.accountCoverCloseButton}
+                  style={[styles.accountCoverCloseButton, { backgroundColor: avatarHeaderBackground }]}
                   accessibilityRole="button"
                   accessibilityLabel="Cerrar selector de portada"
                 >
                   <Feather name="x" size={22} color="#F9F9F9" />
+                </Pressable>
+                <Pressable
+                  onPress={() => setGoldenAvatarVisible(true)}
+                  style={[styles.accountCoverCelebrationButton, { backgroundColor: avatarHeaderBackground }]}
+                  accessibilityRole="button"
+                  accessibilityLabel="Abrir Avatar dorado"
+                  testID="avatar-cover-celebration"
+                  hitSlop={8}
+                >
+                  <MaterialCommunityIcons name="party-popper" size={22} color="#F9F9F9" />
                 </Pressable>
               </View>
               <View style={styles.accountCoverPreviewSlot}>
@@ -1267,6 +1299,8 @@ export function ProfileScreenBase({
               />
               <ScrollProgressIndicator progress={avatarScrollProgress} />
               </View>
+            </Animated.View>
+            <GoldenAvatarSheet motion={goldenAvatarMotion} onClose={() => setGoldenAvatarVisible(false)} />
             </View>
           </Modal>
         </View>
@@ -2388,9 +2422,10 @@ const styles = StyleSheet.create({
   accountPressed: {
     opacity: 0.75,
   },
+  accountCoverModalRoot: { flex: 1 },
   accountCoverBackdrop: {
     ...StyleSheet.absoluteFillObject,
-    backgroundColor: "rgba(0,0,0,0.55)",
+    backgroundColor: "#000000",
   },
   accountCoverSheet: {
     position: "absolute",
@@ -2452,7 +2487,7 @@ const styles = StyleSheet.create({
   },
   accountCoverUploadButton: {
     position: "absolute",
-    right: 0,
+    left: 53,
     zIndex: 1,
     width: 43,
     height: 43,
@@ -2461,6 +2496,16 @@ const styles = StyleSheet.create({
     borderRadius: 21.5,
     borderWidth: 0,
     backgroundColor: "rgba(0,0,0,0.16)",
+  },
+  accountCoverCelebrationButton: {
+    position: "absolute",
+    right: 0,
+    zIndex: 1,
+    width: 43,
+    height: 43,
+    borderRadius: 21.5,
+    alignItems: "center",
+    justifyContent: "center",
   },
   accountCoverPresetGrid: {
     flex: 1,

@@ -15,6 +15,7 @@ type Props = {
   accessibilityLabel?: string;
   accessibilityRole?: string;
   onPress?: () => void;
+  accessibilityState?: { expanded?: boolean };
   colors?: string[];
   locations?: number[];
   start?: { x: number; y: number };
@@ -49,9 +50,13 @@ function harness({
   let closeButton: (() => void) | undefined;
   let closes = 0;
   const nodes = new Map<string, Props>();
-  const Native = ({ children, style, testID, accessibilityLabel, accessibilityRole, onPress, name, color, size, replayKey, contentContainerStyle, bounces, alwaysBounceVertical, overScrollMode }: Props) => {
+  const toggles = new Map<string, () => void>();
+  const toggleState = new Map<string, any>();
+  const Native = ({ children, style, testID, accessibilityLabel, accessibilityRole, onPress, accessibilityState, name, color, size, replayKey, contentContainerStyle, bounces, alwaysBounceVertical, overScrollMode }: Props) => {
     if (testID) nodes.set(testID, { children, style, contentContainerStyle, bounces, alwaysBounceVertical, overScrollMode });
     if (testID === "streak-info-close") closeButton = onPress;
+    if (testID?.startsWith("streak-info-toggle-")) toggles.set(testID, onPress!);
+    if (testID?.startsWith("streak-info-toggle-")) toggleState.set(testID, accessibilityState);
     const resolved = flatten(style);
     return React.createElement("div", {
       "data-testid": testID,
@@ -119,6 +124,8 @@ function harness({
   return {
     scrolls,
     nodes,
+    toggles,
+    toggleState,
     render(visible: boolean) {
       stateIndex = 0; refIndex = 0;
       const tree = module.exports.StreakInfoSheet({ visible, onClose: () => closes++ });
@@ -143,12 +150,13 @@ test("streak sheet is hidden when closed and has exactly four ordered explanator
   assert.match(html, /data-icon="x" data-color="#F9F9F9" data-size="23"/);
   assert.doesNotMatch(html, /data-icon="arrow-left"/);
   assert.match(html, /Existen diferentes tipos de rachas que te muestran tu compromiso/);
+  for (const description of []) void description;
   for (const description of [
     "Días activos de esta semana, no necesariamente consecutivos.",
     "Total de días que has sumado de racha desde que comenzaste",
     "Tu mejor secuencia de dias de racha consecutiva en la App",
     "Semanas de lunes a domingo en las que completaste los 7 días activos",
-  ]) assert.ok(html.includes(description));
+  ]) assert.ok(!html.includes(description), "collapsed by default");
   assert.match(html, /al escuchar al menos 3 minutos o completar una sesión/);
   assert.doesNotMatch(html, /<img|streak-info-artwork/);
   assert.doesNotMatch(source, /HERO_IMAGE|expo-image|styles\.artwork/);
@@ -201,38 +209,63 @@ test("cards are exactly 50px after the description in normal flow, with black 16
   assert.equal(heroStyle.minHeight, undefined);
 });
 
-test("four vertically centered cards form exactly two equal-width columns and two rows", () => {
-  for (const width of [320, 375, 402, 768]) {
-    const h = harness({ width });
-    h.render(true);
-    const expectedRows = [["current", "accumulated"], ["longest", "completed"]];
-    assert.equal([...h.nodes.keys()].filter(id => id.startsWith("streak-info-row-")).length, 2);
-    for (const [index, ids] of expectedRows.entries()) {
-      const row = h.nodes.get(`streak-info-row-${index}`)!;
-      const rowStyle = flatten(row.style);
-      assert.equal(rowStyle.flexDirection, "row");
-      assert.equal(rowStyle.alignItems, "stretch");
-      const columns = React.Children.toArray(row.children) as React.ReactElement<Props>[];
-      assert.equal(columns.length, 2);
-      for (const [columnIndex, column] of columns.entries()) {
-        assert.equal(flatten(column.props.style).flex, 1);
-        assert.equal(flatten(column.props.style).minWidth, 0);
-        const card = column.props.children as React.ReactElement<Props>;
-        assert.equal(card.props.testID, `streak-info-card-${ids[columnIndex]}`);
-        const cardStyle = flatten(card.props.style);
-        assert.equal(cardStyle.flexDirection, "column");
-        assert.equal(cardStyle.alignItems, "center");
-        assert.equal(cardStyle.justifyContent, "center");
-        const [icon, text] = React.Children.toArray(card.props.children) as React.ReactElement<Props>[];
-        assert.equal(flatten(icon.props.style).width, 56);
-        assert.equal(flatten(text.props.style).alignItems, "center");
-        for (const label of React.Children.toArray(text.props.children) as React.ReactElement<Props>[]) {
-          assert.equal(flatten(label.props.style).textAlign, "center");
-        }
-      }
-      assert.ok((width - 40 - Number(rowStyle.gap)) / 2 > 0);
-    }
+const IDS = ["current", "accumulated", "longest", "completed"];
+const DESCS = [
+  "Días activos de esta semana, no necesariamente consecutivos.",
+  "Total de días que has sumado de racha desde que comenzaste",
+  "Tu mejor secuencia de dias de racha consecutiva en la App",
+  "Semanas de lunes a domingo en las que completaste los 7 días activos",
+];
+
+test("four horizontal cards separated by 15px with icon left, title, chevron right and no icon background", () => {
+  const h = harness();
+  h.render(true);
+  assert.equal(flatten(h.nodes.get("streak-info-cards")!.style).gap, 15);
+  assert.equal([...h.nodes.keys()].filter(id => id.startsWith("streak-info-row-")).length, 0);
+  for (const id of IDS) {
+    const card = h.nodes.get(`streak-info-card-${id}`)!;
+    const [header] = React.Children.toArray(card.children) as React.ReactElement<Props>[];
+    assert.equal(flatten(header.props.style).flexDirection, "row");
+    const [icon, title, toggle] = React.Children.toArray(header.props.children) as React.ReactElement<Props>[];
+    assert.equal(icon.props.testID, `streak-info-icon-${id}`);
+    assert.equal(flatten(icon.props.style).backgroundColor, undefined);
+    assert.equal(flatten(title.props.style).flex, 1);
+    assert.equal(toggle.props.testID, `streak-info-toggle-${id}`);
+    assert.equal(toggle.props.accessibilityRole, "button");
   }
+  assert.match(h.render(true), /data-icon="chevron-down"/);
+});
+
+test("each chevron toggles only its own description and expanded state; close/reopen resets", () => {
+  const h = harness();
+  h.render(true);
+  for (const [i, id] of IDS.entries()) {
+    assert.equal(h.toggleState.get(`streak-info-toggle-${id}`).expanded, false);
+    h.toggles.get(`streak-info-toggle-${id}`)!();
+    const html = h.render(true);
+    assert.ok(html.includes(DESCS[i]));
+    assert.equal(h.toggleState.get(`streak-info-toggle-${id}`).expanded, true);
+    assert.match(html, /data-icon="chevron-up"/);
+    h.toggles.get(`streak-info-toggle-${id}`)!();
+    assert.ok(!h.render(true).includes(DESCS[i]));
+  }
+  h.toggles.get("streak-info-toggle-longest")!();
+  assert.ok(h.render(true).includes(DESCS[2]));
+  h.render(false);
+  const reopened = h.render(true);
+  for (const d of DESCS) assert.ok(!reopened.includes(d));
+});
+
+test("intro description matches Tu camino screen intro typography (GrowthJourneySheet introText)", () => {
+  const h = harness();
+  const html = h.render(true);
+  assert.ok(html);
+  const growth = readFileSync(new URL("../components/GrowthJourneySheet.tsx", import.meta.url), "utf8");
+  const m = growth.match(/introText:\s*(\{[^}]*\})/)!;
+  const exp = new Function(`return (${m[1]});`)();
+  const m2 = source.match(/subtitle:\s*(\{[\s\S]*?\n  \})/)!;
+  const act = new Function("STREAK_INFO_COLORS", `return (${m2[1]});`)(STREAK_INFO_COLORS);
+  for (const k of ["fontFamily", "fontSize", "fontWeight", "lineHeight", "textAlign"]) assert.equal(act[k], exp[k], k);
 });
 
 test("sheet scrolls edge to edge without fixed headers or footers, retaining content-only safe insets and natural text scaling", () => {
