@@ -15,6 +15,18 @@ El asentamiento al soltar debe arrancar directamente en el hilo UI; JavaScript s
 
 **How to apply:** Mantener un solo progreso compartido, cancelar el timing al empezar el gesto y verificar la versión tanto al iniciar comandos como al recibir finalizaciones.
 
+No dar por validada una nueva capa de planificación UI con un mock que ejecuta `runOnUI` sincrónicamente.
+
+**Why:** Tras introducir esa capa, el usuario reportó que tocar el avatar bloqueaba Inicio sin abrir el menú, aunque los tests deterministas pasaban.
+
+**How to apply:** La apertura programática conserva la asignación directa de timing al shared value; cualquier cambio de planificación entre hilos necesita verificar sus colas reales y la interacción nativa.
+
+No releer inmediatamente desde JS un SharedValue recién escrito para obtener la versión del comando: conservar y pasar el valor calculado.
+
+**Why:** Los setters nativos de Reanimated programan escrituras en UI. Una lectura inmediata puede devolver la versión anterior y hacer que se descarte una apertura o su finalización, dejando el bloqueo táctil activo. El mock síncrono ocultaba esa carrera.
+
+**How to apply:** Probar apertura, cierre y navegación también con escrituras nativas diferidas. Los gestos que ya corren en UI no necesitan esa compensación.
+
 La confirmación de destino listo debe corresponder a la selección concreta y ocurrir después de montar el contenido, no tras un timeout estimado. Repetir una selección de un overlay ya montado también exige una confirmación nueva sin perder su contenido.
 
 **Why:** Una confirmación tardía de otra pantalla puede cerrar el menú antes de preparar la elegida; esperar solo un cambio de estado que ya era verdadero puede dejarlo bloqueado.

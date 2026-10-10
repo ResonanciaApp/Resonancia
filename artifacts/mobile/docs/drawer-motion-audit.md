@@ -9,9 +9,15 @@
 - La finalización del gesto sí cruzaba UI → runOnJS → open/close → timing.
   Por ello el comienzo del asentamiento dependía de la disponibilidad de JS.
   Ahora el worklet inicia timing directamente y notifica a JS sin esperarlo.
-- La apertura/cierre programáticos ahora leen el progreso y cancelan/inician
-  timing en una misma operación UI. Un gesto nuevo invalida comandos y
-  finalizaciones antiguos mediante su versión.
+- Tras una regresión reportada al tocar el avatar, la apertura/cierre
+  programáticos vuelven a asignar timing directamente al shared value.
+  Se retiró el comando adicional runOnUI con rechazo por versión que podía
+  dejar el bloqueo táctil activado sin iniciar movimiento. Reanimated sigue
+  ejecutando el timing nativo en UI. Las finalizaciones conservan su versión.
+  La versión recién calculada se pasa explícitamente: releer el shared value
+  inmediatamente desde JS podía devolver el valor anterior, porque el setter
+  nativo difiere la escritura. Se añadió una prueba con escrituras diferidas
+  que cubre apertura por avatar, retirada del bloqueo al cerrar y navegación.
 - Las rutas antes se cambiaban ANTES del cierre. Ahora navegan después de
   completarlo. Los overlays conservan el contrato de preparar su layout antes
   de cerrar; no se desmonta Inicio para animar el drawer.

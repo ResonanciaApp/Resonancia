@@ -80,8 +80,9 @@ test("navigation, overlay hosts and tool providers subscribe only to destination
  * and UI timing. This tests callbacks from production, not a copied controller.
  * Native view rendering, hardware event delivery and pixels still need a device.
  */
-function harness(deferJS = false) {
+function harness(deferJS = false, deferNativeWrites = false) {
   const jsQueue: Array<() => void> = [];
+  const nativeWrites: Array<() => void> = [];
   let index = 0;
   let dirty = true;
   let currentPath = "/inicio3";
@@ -131,8 +132,12 @@ function harness(deferJS = false) {
     constructor(value: any) { this.stored = value; }
     get value() { return this.stored; }
     set value(value: any) {
-      if (value && typeof value === "object" && "target" in value) this.animation = value;
-      else this.stored = value;
+      const apply = () => {
+        if (value && typeof value === "object" && "target" in value) this.animation = value;
+        else this.stored = value;
+      };
+      if (deferNativeWrites) nativeWrites.push(apply);
+      else apply();
     }
     finish() {
       const animation = this.animation;
@@ -150,7 +155,7 @@ function harness(deferJS = false) {
       if (deferJS) jsQueue.push(() => fn(...args));
       else fn(...args);
     },
-    runOnUI: (fn: any) => fn,
+    runOnUI: () => { throw new Error("Programmatic open must not depend on an additional UI command"); },
     cancelAnimation: (value: Shared) => {
       const animation = value.animation;
       value.animation = undefined;
@@ -233,6 +238,7 @@ function harness(deferJS = false) {
   return {
     get ctx() { return context; }, flush,
     drainJS: () => { jsQueue.splice(0).forEach(fn => fn()); flush(); },
+    drainNativeWrites: () => { nativeWrites.splice(0).forEach(fn => fn()); },
     get queuedJS() { return jsQueue.length; },
     get destinations() { return destinationContext; },
     frame: () => { frames.splice(0).forEach(fn => fn()); flush(); },
@@ -253,6 +259,26 @@ function opened() {
   assert.equal(h.ctx.drawerProgress.value, 1);
   return h;
 }
+
+test("avatar opening and close release the shield when native shared-value writes are asynchronous", () => {
+  const h = harness(false, true);
+  h.ctx.open(); h.flush();
+  assert.equal(h.ctx.drawerGestureVersion.value, 0, "JS still sees the old native version");
+  h.drainNativeWrites(); h.finish();
+  assert.equal(h.ctx.drawerProgress.value, 1);
+  let closed = 0;
+  h.ctx.close(() => closed++); h.flush();
+  h.drainNativeWrites(); h.finish();
+  assert.equal(h.ctx.drawerProgress.value, 0);
+  assert.equal(h.ctx.foregroundBlocked, false, "native completion removes the touch shield");
+  assert.equal(closed, 1);
+  h.ctx.open(); h.flush(); h.drainNativeWrites(); h.finish();
+  let navigations = 0;
+  h.ctx.selectFromDrawer({ kind: "route", target: "/profile", run: () => navigations++ });
+  h.flush(); h.drainNativeWrites(); h.finish(); h.frame();
+  assert.equal(h.ctx.foregroundBlocked, false);
+  assert.equal(navigations, 1);
+});
 
 test("UI drag and release continue with the JS queue stalled, without per-frame callbacks", () => {
   const h = harness(true);

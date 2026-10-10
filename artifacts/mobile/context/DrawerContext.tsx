@@ -5,7 +5,6 @@ import {
   cancelAnimation,
   Easing,
   runOnJS,
-  runOnUI,
   type SharedValue,
   useSharedValue,
   withTiming,
@@ -137,46 +136,47 @@ export function DrawerProvider({ children }: { children: React.ReactNode }) {
 
   // Una sola animacion en vuelo: cada inicio invalida el callback anterior,
   // asi un cierre interrumpido nunca ejecuta su accion obsoleta.
-  const animateTo = useCallback((target: 0 | 1, callback?: () => void) => {
+  const animateTo = useCallback((target: 0 | 1, callback?: () => void, expectedVersion?: number) => {
     const token = controller.beginAnimation();
     afterSettle.current = { token, callback };
-    const version = drawerGestureVersion.value;
-    runOnUI((destination: 0 | 1, animationToken: number, commandVersion: number) => {
-      "worklet";
-      if (commandVersion !== drawerGestureVersion.value) return;
-      cancelAnimation(drawerProgress);
-      drawerProgress.value = withTiming(
-        destination,
-        { duration: settleDuration(drawerProgress.value, destination), easing: Easing.out(Easing.cubic) },
-        (finished) => {
-          if (finished) runOnJS(finishAnimation)(animationToken, destination, commandVersion);
-        },
-      );
-    })(target, token, version);
+    const version = expectedVersion ?? drawerGestureVersion.value;
+    // Schedule through Reanimated's shared-value setter, as before.
+    // Do not add a second queued command that can silently reject opening
+    // after React has already enabled the foreground touch shield.
+    cancelAnimation(drawerProgress);
+    drawerProgress.value = withTiming(
+      target,
+      { duration: settleDuration(drawerProgress.value, target), easing: Easing.out(Easing.cubic) },
+      (finished) => {
+        if (finished) runOnJS(finishAnimation)(token, target, version);
+      },
+    );
   }, [controller, drawerGestureVersion, drawerProgress, finishAnimation]);
 
   const open = useCallback(() => {
-    drawerGestureVersion.value += 1;
+    const version = drawerGestureVersion.value + 1;
+    drawerGestureVersion.value = version;
     controller.cancelSelection();
     setInstantNav(false);
     setForegroundBlocked(true);
     setOpenState(true);
-    animateTo(1);
+    animateTo(1, undefined, version);
   }, [animateTo, controller, drawerGestureVersion, setOpenState]);
 
-  const closeInternal = useCallback((onClosed?: () => void) => {
+  const closeInternal = useCallback((onClosed?: () => void, version?: number) => {
     setOpenState(false);
-    animateTo(0, onClosed);
+    animateTo(0, onClosed, version);
   }, [animateTo, setOpenState]);
 
   const close = useCallback((onClosed?: () => void) => {
-    drawerGestureVersion.value += 1;
+    const version = drawerGestureVersion.value + 1;
+    drawerGestureVersion.value = version;
     controller.cancelSelection();
     closeInternal(() => {
       setInstantNav(false);
       // Pressable puede pasar su evento: solo se ejecutan callbacks reales.
       if (typeof onClosed === "function") onClosed();
-    });
+    }, version);
   }, [closeInternal, controller, drawerGestureVersion]);
 
   const beginDrawerDrag = useCallback((version?: number) => {
@@ -233,7 +233,8 @@ export function DrawerProvider({ children }: { children: React.ReactNode }) {
 
   const selectFromDrawer = useCallback((selection: DrawerSelection) => {
     if (!isOpenRef.current) return; // evita selecciones repetidas
-    drawerGestureVersion.value += 1;
+    const version = drawerGestureVersion.value + 1;
+    drawerGestureVersion.value = version;
     if (selection.kind === "afterClose" || selection.kind === "route") {
       const token = controller.cancelSelection();
       closeInternal(() => {
@@ -247,7 +248,7 @@ export function DrawerProvider({ children }: { children: React.ReactNode }) {
           }
           selection.run();
         });
-      });
+      }, version);
       return;
     }
     setOpenState(false);
