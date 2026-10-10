@@ -83,8 +83,8 @@ test("normal corner and light-layer animations share the drawer progress", () =>
   assert.match(foreground, /<RAnimated.View style=\{\[styles.inner, innerStyle\]\}>/);
   assert.match(foreground, /pointerEvents="none" style=\{\[StyleSheet.absoluteFill, styles.veil, veilStyle\]\}/);
   assert.equal(foregroundVeilOpacity(0), 0);
-  assert.equal(foregroundVeilOpacity(0.5), 0.025);
-  assert.equal(foregroundVeilOpacity(1), 0.05);
+  assert.equal(foregroundVeilOpacity(0.5), 0.065);
+  assert.equal(foregroundVeilOpacity(1), 0.13);
   assert.equal(foregroundShadowOpacity(0), 0);
   assert.ok(foregroundShadowOpacity(0.5) < foregroundShadowOpacity(1));
   assert.equal(menuContentOpacity(0), 0);
