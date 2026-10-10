@@ -73,6 +73,37 @@ vertical. Los efectos siguen derivados del mismo progreso.
 
 ## Verificación automatizada
 
+### Precisión terminal del cierre
+
+La ejecución del `onStart` y `onFrame` del resorte instalado de Reanimated
+(sin renderizador nativo) reprodujo una discontinuidad de finalización:
+con el umbral anterior de energía `1e-5`, un cierre desde reposo a 60 Hz
+terminaba a los 333,33 ms y forzaba a cero un desplazamiento restante de
+0,7067 px (pantalla de 390 px). El radio correspondiente saltaba 1,8463 px.
+La sombra y el aclarado ya eran casi transparentes: los saltos de opacidad
+eran 0,000538 y 0,000112, respectivamente.
+
+El cambio mínimo pasa el destino al configurador y usa el umbral estándar
+de Reanimated (`6e-9`) solo al cerrar. No cambia rigidez, amortiguación, masa,
+velocidad, geometría, navegación ni la configuración de apertura. Todos los
+fotogramas anteriores al corte viejo son idénticos; únicamente se deja
+completar la cola subpíxel. En ese mismo caso, el corte nuevo deja 0,01585 px
+de desplazamiento y 0,04191 px de radio, a los 500 ms. No se ralentiza el
+recorrido principal, pero la finalización formal ocurre más tarde porque
+ya no trunca esa cola.
+
+Las pruebas ejecutan el motor instalado en 240 cierres a 60/90/120 Hz, con
+cinco anchos, cuatro posiciones y cuatro velocidades. Comprueban posición
+monótona, cero exacto, precisión terminal y configuración de apertura
+idéntica. Los cierres con velocidad suficiente para cruzar cero usan el
+clamping intencional existente, no se confunden con el corte por energía.
+Las pruebas anteriores mantienen la protección de callbacks, el orden de
+navegación, la capa táctil estable y el video reanudado después del cierre.
+
+Esto prueba y corrige la discontinuidad del motor, pero no mide FPS, coste
+de composición ni percepción en un teléfono. No permite asegurar por sí
+solo que desapareció cualquier tirón físico restante.
+
 - Matriz de 32 casos: apertura/cierre, distancias 15/63/157,5/280 px y
   velocidades 50/500/1600/5000 px/s, incluido retorno al destino original.
 - Posición 1:1 mientras el dedo permanece apoyado, sin renders adicionales

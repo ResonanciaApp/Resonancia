@@ -41,14 +41,17 @@ export function drawerOffset(windowWidth: number) {
 
 /** Declare after drawerOffset: Babel captures worklet dependencies at module
  * initialization, unlike Node's hoisted function declarations. */
-export function drawerSpringConfig(velocityX: number, windowWidth: number) {
+export function drawerSpringConfig(velocityX: number, windowWidth: number, target: 0 | 1 = 1) {
   "worklet";
   return {
     stiffness: 625,
     damping: 50,
     mass: 1,
     overshootClamping: true,
-    energyThreshold: 0.00001,
+    // Closing has a steep radius ramp near zero: the previous threshold
+    // snapped ~0.7 px of position and ~1.85 px of radius in one frame.
+    // Use Reanimated's default precision only for closing; opening is unchanged.
+    energyThreshold: target === 0 ? 6e-9 : 0.00001,
     velocity: Number.isFinite(velocityX) ? velocityX / Math.max(1, drawerOffset(windowWidth)) : 0,
   };
 }
