@@ -21,7 +21,7 @@ export function ProfileMembershipBanner({
         accessibilityRole="button"
         accessibilityLabel={isPremium ? "Abrir Tu Premium" : "Prueba Premium"}
       >
-        <View style={styles.icon}>
+        <View style={[styles.icon, !isPremium && styles.centeredAdornment]}>
           <Image source={require("../assets/images/estrella-premium.png")} style={{ width: 31, height: 31 }} contentFit="contain" />
         </View>
         <View style={styles.copy}>
@@ -32,7 +32,7 @@ export function ProfileMembershipBanner({
             {isPremium ? "Gestiona tu suscripción y beneficios" : "Tu transformación comienza acá"}
           </Text>
         </View>
-        <View style={styles.chevron}>
+        <View style={[styles.chevron, !isPremium && styles.centeredAdornment]}>
           <Feather name="chevron-right" size={24} color={foregroundColor} />
         </View>
       </Pressable>
@@ -45,7 +45,10 @@ const styles = StyleSheet.create({
     borderRadius: 20,
     paddingHorizontal: 16,
     paddingVertical: 18,
-    marginTop: 25,
+    alignItems: "center",
+  },
+  centeredAdornment: {
+    transform: [],
   },
   row: {
     flexDirection: "row",

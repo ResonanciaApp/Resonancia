@@ -23,9 +23,9 @@ Inicio no muestra estrella de membresía sobre el avatar, tampoco para usuarios 
 
 En cuentas gratuitas, «Prueba Premium» tiene un fondo como las otras secciones de Perfil, sin línea divisora; sus extremos exteriores conservan los márgenes de la pantalla y su contenido tiene el inset interior de sección.
 
-**Why:** El usuario sustituyó el banner sin fondo separado por una línea por un bloque con el mismo fondo que las demás secciones.
+**Why:** El usuario sustituyó el banner sin fondo separado por una línea por un bloque con el mismo fondo que las demás secciones; después pidió centrarlo verticalmente y darle la separación estándar.
 
-**How to apply:** Heredar los márgenes del contenedor de Perfil y usar el tratamiento de superficie e insets de sus secciones. Mantener la separación entre estrella y texto, la alineación vertical y el acceso a los planes.
+**How to apply:** Heredar los márgenes del contenedor de Perfil y usar el tratamiento de superficie e insets de sus secciones. Centrar verticalmente todo el contenido, sin los offsets del banner antiguo; conservar el acceso a los planes y la separación estándar entre secciones.
 
 El amarillo sólido de Premium sigue en «Plan Premium» de Sonidos y Descubrir, en solo «Premium» del banner inferior de Inicio y en «Tu Premium» del drawer para miembros o solo «Premium» para no miembros. «Prueba» y «Gratis» de Inicio no cambian; en el drawer «Prueba» sigue blanco. El loto de «Racha más larga» conserva el degradado.
 

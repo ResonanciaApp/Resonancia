@@ -1605,8 +1605,13 @@ export function ProfileScreenBase({
               )}
             </View>
           </View>
-          {!isPremium && <ProfileMembershipBanner isPremium={isPremium} foregroundColor={colors.foreground} />}
         </View>
+
+        {!isPremium && (
+          <View testID="profile-premium-section" style={{ marginBottom: PROFILE_SECTION_GAP }}>
+            <ProfileMembershipBanner isPremium={isPremium} foregroundColor={colors.foreground} />
+          </View>
+        )}
 
         {false && (
           <View style={styles.wisdomSection}>
@@ -1622,7 +1627,7 @@ export function ProfileScreenBase({
           <>
             <View style={[
               styles.profileProgressSection,
-              isPremium && { marginTop: styles.profileProgressSection.marginTop + 15 },
+              { marginTop: isPremium ? styles.profileProgressSection.marginTop + 15 : 0 },
             ]}>
               <ProgressMirrorSections
                 showSectionBorders={false}

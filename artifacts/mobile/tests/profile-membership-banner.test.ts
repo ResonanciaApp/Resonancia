@@ -7,7 +7,7 @@ import { renderToStaticMarkup } from "react-dom/server";
 import ts from "typescript";
 
 const source = readFileSync(new URL("../components/ProfileMembershipBanner.tsx", import.meta.url), "utf8");
-test("the trial card replaces the divider and keeps its previous top separation", () => {
+test("the trial card has no divider or extra top margin and centers its contents", () => {
   assert.doesNotMatch(source, /profile-premium-divider|styles\.divider/);
   assert.match(source, /!isPremium && styles\.trialCard/);
   const card = source.match(/trialCard:\s*\{([\s\S]*?)\n  \},/)?.[1] ?? "";
@@ -15,9 +15,10 @@ test("the trial card replaces the divider and keeps its previous top separation"
   assert.match(card, /borderRadius: 20/);
   assert.match(card, /paddingVertical: 18/);
   assert.match(card, /paddingHorizontal: 16/);
-  assert.match(card, /marginTop: 25/);
+  assert.doesNotMatch(card, /marginTop/);
+  assert.match(card, /alignItems: "center"/);
 });
-test("the Premium star remains raised 3px without changing banner layout", () => {
+test("the Premium star artwork and legacy offsets remain unchanged outside the trial card", () => {
   const icon = source.match(/icon:\s*\{([\s\S]*?)\n  \},/)?.[1] ?? "";
   assert.match(icon, /transform: \[\{ translateY: -3 \}\]/);
   assert.equal((source.match(/translateY/g) ?? []).length, 2);
@@ -69,11 +70,19 @@ const { ProfileMembershipBanner } = module.exports as {
   ProfileMembershipBanner: React.ComponentType<{ isPremium: boolean; foregroundColor: string }>;
 };
 
-test("Tu Premium and Prueba Premium chevrons share the star's vertical center without moving the copy", () => {
+test("legacy Premium alignment is retained while trial contents are centered without translations", () => {
   for (const isPremium of [true, false]) {
     const html = renderToStaticMarkup(React.createElement(ProfileMembershipBanner, { isPremium, foregroundColor: "#FFF" }));
-    assert.match(html, /data-height="31"[^>]* data-translate-y="-3"/);
-    assert.match(html, /data-height="44" data-translate-y="3.5"/);
+    if (isPremium) {
+      assert.match(html, /data-height="31"[^>]* data-translate-y="-3"/);
+      assert.match(html, /data-height="44" data-translate-y="3.5"/);
+    } else {
+      assert.doesNotMatch(html, /data-translate-y/);
+      assert.equal(bannerStyles.trialCard.alignItems, "center");
+      assert.deepEqual(bannerStyles.centeredAdornment.transform, []);
+      assert.match(source, /styles\.icon, !isPremium && styles\.centeredAdornment/);
+      assert.match(source, /styles\.chevron, !isPremium && styles\.centeredAdornment/);
+    }
     assert.equal(bannerStyles.row.alignItems, "flex-end");
     const centerFromBottom = (style: Record<string, any>) =>
       -style.height / 2 + style.transform.reduce((sum: number, item: any) => sum + (item.translateY ?? 0), 0);
@@ -110,7 +119,7 @@ test("Premium users see Tu Premium and open subscription management", () => {
   assert.equal(offers, 0);
 });
 
-test("trial stays in the user section and keeps Premium membership visibility unchanged", () => {
+test("trial is its own section with the standard gap and no inherited progress offset", () => {
   const profile = readFileSync(new URL("../components/ProfileScreenBase.tsx", import.meta.url), "utf8");
   const ast = ts.createSourceFile("profile.tsx", profile, ts.ScriptTarget.Latest, true, ts.ScriptKind.TSX);
   let section = "";
@@ -123,11 +132,14 @@ test("trial stays in the user section and keeps Premium membership visibility un
   }
   visit(ast);
   assert.match(section, /testID="profile-identity-row"/);
-  assert.match(section, /<ProfileMembershipBanner isPremium=\{isPremium\} foregroundColor=\{colors.foreground\}/);
+  assert.doesNotMatch(section, /ProfileMembershipBanner/);
   assert.match(profile, /const PROFILE_CARD_BOTTOM_PADDING = 20;/);
   assert.match(profile, /paddingBottom: PROFILE_CARD_BOTTOM_PADDING/);
   assert.match(profile, /marginBottom: PROFILE_SECTION_GAP/);
-  assert.match(section, /!isPremium && <ProfileMembershipBanner/);
+  assert.match(profile, /!isPremium && \(\s*<View testID="profile-premium-section" style=\{\{ marginBottom: PROFILE_SECTION_GAP \}\}>/);
+  assert.match(profile, /<ProfileMembershipBanner isPremium=\{isPremium\} foregroundColor=\{colors.foreground\}/);
+  assert.match(profile, /marginTop: isPremium \? styles\.profileProgressSection\.marginTop \+ 15 : 0/);
+  assert.match(profile, /const PROFILE_SECTION_GAP = 21;/);
 });
 
 test("trial card uses screen margins with the same inner inset as other profile sections", () => {

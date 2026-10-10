@@ -78,7 +78,7 @@ test("user section preserves its padding and avatar placement without an outline
 
 test("Premium members keep the compact identity layout while free users recover their trial banner", () => {
   const source = readFileSync(new URL("../components/ProfileScreenBase.tsx", import.meta.url), "utf8");
-  assert.match(source, /!isPremium && <ProfileMembershipBanner/);
+  assert.match(source, /!isPremium && \(\s*<View testID="profile-premium-section"/);
   assert.match(source, /isPremium && styles\.profileIdentityPreviewCard/);
   const bottom = Number(source.match(/const PROFILE_CARD_BOTTOM_PADDING = (\d+);/)?.[1]);
   const card = style("ProfileScreenBase", "profileCard", { PROFILE_CARD_BOTTOM_PADDING: bottom, PROFILE_SECTION_GAP: 21 });
@@ -114,7 +114,7 @@ test("avatar remains borderless and its details use the full available width wit
   assert.doesNotMatch(source, /profile-identity-chevron/);
 });
 
-test("streak section gains 10px spacing for both free and Premium while preserving their 15px difference", () => {
+test("free trial uses the standard gap before streaks while Premium positioning stays unchanged", () => {
   const source = readFileSync(new URL("../components/ProfileScreenBase.tsx", import.meta.url), "utf8");
   const ast = ts.createSourceFile("ProfileScreenBase.tsx", source, ts.ScriptTarget.Latest, true, ts.ScriptKind.TSX);
   let expression: ts.Expression | undefined;
@@ -134,12 +134,12 @@ test("streak section gains 10px spacing for both free and Premium while preservi
   }).outputText;
   const evaluate = new Function("isPremium", "styles", compiled);
   const resolve = (isPremium: boolean) => Object.assign({}, ...evaluate(isPremium, { profileProgressSection: base }));
-  assert.deepEqual(resolve(false), base);
+  assert.deepEqual(resolve(false), { ...base, marginTop: 0 });
   assert.deepEqual(resolve(true), { ...base, marginTop: base.marginTop + 15 });
   assert.equal(resolve(true).transform, undefined);
-  assert.deepEqual(resolve(false), base, "switching to free leaves no residual offset");
+  assert.deepEqual(resolve(false), { ...base, marginTop: 0 }, "switching to free leaves no residual offset");
   assert.equal(base.marginTop, -13 + 10 - 6, "raise the prior shared baseline six pixels without mutating the Premium offset");
-  assert.equal(resolve(false).marginTop - (-13 + 10), -6);
+  assert.equal(21 + resolve(false).marginTop, 21, "trial section margin is the complete standard gap");
   assert.equal(resolve(true).marginTop - (-13 + 10 + 15), -6);
 });
 
