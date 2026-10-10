@@ -12,6 +12,18 @@ const compile = (text: string) => ts.transpileModule(text, {
   compilerOptions: { module: ts.ModuleKind.CommonJS, jsx: ts.JsxEmit.React, esModuleInterop: true },
 }).outputText;
 
+test("emotion widget uses a static translucent background instead of native blur", () => {
+  const home = source("../app/(tabs)/inicio8.tsx");
+  const widget = home.slice(home.indexOf("function InicioEmotionWidget("), home.indexOf("type InicioMoodRecommendationsProps"));
+  assert.ok(widget.length > 0);
+  assert.doesNotMatch(widget, /BlurView|intensity=|experimentalBlurMethod/);
+  assert.match(widget, /<View\s+pointerEvents="none"\s+style=\{styles.inicio2HeroEmotionGlass\}/);
+  assert.match(widget, /onPress=\{onOpenMoodPicker\}/);
+  assert.match(widget, /testID="inicio-add-emotion"/);
+  assert.match(widget, /opacity: emotionWidgetOpacity/);
+  assert.match(home, /inicio2HeroEmotionGlass: \{[\s\S]*?borderRadius: 33\.5,[\s\S]*?backgroundColor: "rgba\(255,255,255,0\.10\)"/);
+});
+
 function harness(kind: "added" | "completed") {
   class Value {
     constructor(public value: number) {}
@@ -264,16 +276,25 @@ test("emoji, plus, plus background and widget glass all share one native opacity
   const opacity = { native: true };
   const context: any = { activeEvent: null, emotionWidgetOpacity: opacity };
   const Native = () => null;
-  const styles: any = { inicio2HeroEmotionWidget: { width: 67, height: 67, position: "absolute" } };
+  const styles: any = {
+    inicio2HeroEmotionWidget: { width: 67, height: 67, position: "absolute" },
+    inicio2HeroEmotionGlass: { backgroundColor: "rgba(255,255,255,0.10)" },
+  };
   const build = new Function("React", "Animated", "Pressable", "BlurView", "Text", "View", "LinearGradient", "StyleSheet", "styles", "useRoutineCompletionBanner",
     `${compile(widget.getText(ast))}\nreturn InicioEmotionWidget;`)(
     React, { View: Native }, Native, Native, Native, Native, Native, { absoluteFill: {} }, styles, () => context,
   );
-  const root = build({ bottom: 100, onOpenMoodPicker: () => {} });
+  let opened = 0;
+  const root = build({ bottom: 100, onOpenMoodPicker: () => { opened++; } });
+  root.props.children.props.onPress();
+  assert.equal(opened, 1);
   assert.equal(root.props.style[1].opacity, opacity);
   assert.equal(root.props.pointerEvents, "auto");
   const [glass, emoji, plusBackground] = root.props.children.props.children;
-  assert.equal(glass.props.intensity, 38);
+  assert.equal(glass.type, Native);
+  assert.equal(glass.props.intensity, undefined);
+  assert.equal(glass.props.style, styles.inicio2HeroEmotionGlass);
+  assert.equal(glass.props.pointerEvents, "none");
   assert.equal(emoji.props.children, "😌");
   assert.equal(plusBackground.props.children[1].props.children, "+");
   assert.deepEqual(plusBackground.props.children[0].props.colors, ["#532FA8", "#372FA8"]);
