@@ -3788,7 +3788,7 @@ const styles = StyleSheet.create({
   },
   inicio2HeroEmotionAdd: {
     position: "absolute",
-    top: -4 + 2 / (63 / 67),
+    top: -4 + 1 / (63 / 67),
     left: -7 + 2 / (63 / 67),
     width: 28 - 4 / (63 / 67),
     height: 28 - 4 / (63 / 67),

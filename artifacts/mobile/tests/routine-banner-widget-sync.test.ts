@@ -314,7 +314,7 @@ test("emoji, plus, plus background and widget glass all share one native opacity
   close(styles.inicio2HeroEmotionAddText.fontSize * scale, 22 * scale - 4);
   assert.equal(styles.inicio2HeroEmotionEmoji.fontSize, 31, "The emoji itself keeps its previous size");
   close((styles.inicio2HeroEmotionAdd.left + styles.inicio2HeroEmotionAdd.width / 2) * scale, 7 * scale);
-  close((styles.inicio2HeroEmotionAdd.top + styles.inicio2HeroEmotionAdd.height / 2) * scale, 10 * scale);
+  close((styles.inicio2HeroEmotionAdd.top + styles.inicio2HeroEmotionAdd.height / 2) * scale, 10 * scale - 1);
   assert.equal(glass.type, Native);
   assert.equal(glass.props.intensity, 38);
   assert.equal(glass.props.tint, "light");
