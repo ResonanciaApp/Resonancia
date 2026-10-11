@@ -2075,7 +2075,12 @@ function InicioEmotionWidget({
       pointerEvents={activeEvent ? "none" : "auto"}
       accessibilityElementsHidden={!!activeEvent}
       importantForAccessibility={activeEvent ? "no-hide-descendants" : "auto"}
-      style={[styles.inicio2HeroEmotionWidget, { right: 18, bottom, opacity: emotionWidgetOpacity }]}
+      style={[styles.inicio2HeroEmotionWidget, {
+        right: 18,
+        bottom: bottom - 4,
+        transform: [{ scale: 63 / 67 }],
+        opacity: emotionWidgetOpacity,
+      }]}
     >
       <Pressable
         onPress={onOpenMoodPicker}

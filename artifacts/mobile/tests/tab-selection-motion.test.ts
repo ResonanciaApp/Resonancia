@@ -54,15 +54,15 @@ function harness() {
   };
 }
 
-test("first layout snaps without entrance animation; capsule grows 1px on each vertical side and 2px wide", () => {
+test("first layout snaps without entrance animation; capsule keeps its height and grows another 2px wide", () => {
   const h = harness();
   assert.equal(h.render(0, 2).style.opacity, 0);
   const { node, style } = h.render(340, 2);
   const slot = (340 - 14) / 5;
   assert.equal(h.springs.length, 0);
   assert.equal(style.transform[0].translateX, slot * 2);
-  assert.equal(style.width, slot + 2);
-  assert.equal(node.props.style[0].left, selection.TAB_ROW_PADDING - 1);
+  assert.equal(style.width, slot + 4);
+  assert.equal(node.props.style[0].left, selection.TAB_ROW_PADDING - 2);
   assert.equal(node.props.style[0].height, 48 + 2);
   assert.equal(node.props.style[0].top, 3);
   assert.equal(node.props.style[0].top + node.props.style[0].height, 53);

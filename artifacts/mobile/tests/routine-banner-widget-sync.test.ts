@@ -288,6 +288,10 @@ test("emoji, plus, plus background and widget glass all share one native opacity
   root.props.children.props.onPress();
   assert.equal(opened, 1);
   assert.equal(root.props.style[1].opacity, opacity);
+  assert.equal(root.props.style[1].bottom, 96, "The complete widget is moved down 4px");
+  assert.equal(root.props.style[1].transform[0].scale, 63 / 67);
+  assert.equal(styles.inicio2HeroEmotionWidget.width * root.props.style[1].transform[0].scale, 63);
+  assert.equal(styles.inicio2HeroEmotionWidget.height * root.props.style[1].transform[0].scale, 63);
   assert.equal(root.props.pointerEvents, "auto");
   const [glass, emoji, plusBackground] = root.props.children.props.children;
   assert.equal(glass.type, Native);
