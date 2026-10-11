@@ -1,7 +1,7 @@
 export const TAB_SELECTION_HEIGHT = 50;
 // Five tabs: reduce center spacing by 2.5px; with 1.5px larger icons,
-// the visible gap decreases by 4px. The capsule extends 5.25px on each side.
-export const TAB_SELECTION_INSET = -5.25;
+// the visible gap decreases by 4px. The capsule extends 7.25px on each side.
+export const TAB_SELECTION_INSET = -7.25;
 export const TAB_ROW_PADDING = 13.25;
 export const TAB_SELECTION_BACKGROUND = "rgba(255,255,255,0.1)";
 
