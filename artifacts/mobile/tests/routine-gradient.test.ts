@@ -83,10 +83,10 @@ test("calendar completion and add button use the same fill while preserving anim
   assert.doesNotMatch(calendar, /#276FC2/);
 });
 
-test("Natural uses the exact gold gradient across routine fills without changing other themes", () => {
+test("Natural uses the reference green gradient across routine fills without changing other themes", () => {
   try {
     for (const [id, expected] of [
-      ["natural", "#E0A44A,#C99444"],
+      ["natural", "#61C278,#52A365"],
       ["cloudy", "#8247BD,#6C4ABC"],
       ["pleyades", "#477FBD,#4A99BC"],
       ["indigo2", "#477FBD,#4A99BC"],

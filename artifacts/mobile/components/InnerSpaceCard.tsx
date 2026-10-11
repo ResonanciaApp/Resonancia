@@ -102,6 +102,7 @@ export function InnerSpaceCard({
   const animatingRef = useRef(false);
   const queuedOpenRef = useRef(false);
   const focusAfterExpandRef = useRef(false);
+  const consumedProfileFocusRequestRef = useRef(0);
   const contentHeightRef = useRef(0);
   const reduceMotion = useReducedMotion();
   const closedBorderOpacity = profileVariant ? 0.8 : 0.4;
@@ -478,7 +479,15 @@ export function InnerSpaceCard({
   };
 
   useEffect(() => {
-    if (focusRequest <= 0 || freeLimitReached) return;
+    // En Perfil la expansión pertenece solo al botón +. Una solicitud de foco
+    // antigua puede repetirse al actualizarse el cupo y reabrir el panel sola.
+    if (focusRequest <= 0) return;
+    if (profileVariant) {
+      if (consumedProfileFocusRequestRef.current === focusRequest) return;
+      consumedProfileFocusRequestRef.current = focusRequest;
+      if (!expandedRef.current) return;
+    }
+    if (freeLimitReached) return;
     focusAfterExpandRef.current = true;
     if (!expandedRef.current) {
       if (animatingRef.current) queuedOpenRef.current = true;
@@ -487,7 +496,7 @@ export function InnerSpaceCard({
       focusAfterExpandRef.current = false;
       focusInput();
     }
-  }, [focusRequest, freeLimitReached]);
+  }, [focusRequest, freeLimitReached, profileVariant]);
 
   // Absolute children start inside the native border. Extend the decorative
   // stroke by that inset, without changing the card's layout or content.
@@ -548,7 +557,13 @@ export function InnerSpaceCard({
         </View>
         <Pressable
           style={styles.infoButton}
-          onPress={() => animateExpansion(!expandedRef.current, true)}
+          onPress={() => {
+            if (profileVariant && expandedRef.current) {
+              queuedOpenRef.current = false;
+              focusAfterExpandRef.current = false;
+            }
+            animateExpansion(!expandedRef.current, true);
+          }}
           accessibilityRole="button"
           accessibilityLabel={expanded ? "Contraer Mi muro expansivo" : "Expandir Mi muro expansivo"}
           accessibilityState={{ expanded }}

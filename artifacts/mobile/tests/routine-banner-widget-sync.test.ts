@@ -311,12 +311,17 @@ test("emoji, plus, plus background and widget glass all share one native opacity
       });
     }
   }
-  const build = new Function("React", "Animated", "Pressable", "BlurView", "Text", "View", "LinearGradient", "StyleSheet", "styles", "useRoutineCompletionBanner",
+  let widgetEnabled = true;
+  const build = new Function("React", "Animated", "Pressable", "BlurView", "Text", "View", "LinearGradient", "StyleSheet", "styles", "useRoutineCompletionBanner", "useEmojiWidget",
     `${compile(widget.getText(ast))}\nreturn InicioEmotionWidget;`)(
-    React, { View: Native }, Native, Native, Native, Native, Native, { absoluteFill: {} }, styles, () => context,
+    React, { View: Native }, Native, Native, Native, Native, Native, { absoluteFill: {} }, styles, () => context, () => ({ enabled: widgetEnabled, loaded: true }),
   );
   let opened = 0;
   const root = build({ bottom: 100, onOpenMoodPicker: () => { opened++; } });
+  widgetEnabled = false;
+  assert.equal(build({ bottom: 100, onOpenMoodPicker: () => {} }), null);
+  widgetEnabled = true;
+  assert.ok(build({ bottom: 100, onOpenMoodPicker: () => {} }));
   root.props.children.props.onPress();
   assert.equal(opened, 1);
   assert.equal(root.props.style[1].opacity, opacity);

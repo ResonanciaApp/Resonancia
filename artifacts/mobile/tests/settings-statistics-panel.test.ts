@@ -50,6 +50,7 @@ test("Mis estadísticas is above notifications and opens/closes its own window w
     "@/context/BrightnessContext": { useBrightness: () => ({ brightMode: false }) },
     "@/context/GeometrixPanelContext": { useGeometrixPanel: () => ({ openGeometrix: () => {} }) },
     "@/context/PremiumContext": { usePremium: () => ({ isPremium: false, setPremium: () => {} }) },
+    "@/context/EmojiWidgetContext": { useEmojiWidget: () => ({ enabled: true, loaded: true, saving: false, setEnabled: async () => {} }) },
     "@/context/SceneThemeContext": { useSceneTheme: () => ({ activeSceneId: "cloudy", setActiveScene: () => {} }) },
     "@/hooks/useColors": { useColors: () => ({ primary: "#FFF" }) },
   });

@@ -10,7 +10,7 @@ const compiled = ts.transpileModule(source, {
   compilerOptions: { module: ts.ModuleKind.CommonJS, jsx: ts.JsxEmit.React, esModuleInterop: true },
 }).outputText;
 
-function fixture(quota = 0, themeId = "indigo2") {
+function fixture(quota = 0, themeId = "indigo2", finishControls = false) {
   const haptics: string[] = [];
   const states: any[] = [], refs: any[] = [], effects: any[] = [];
   let stateIndex = 0, refIndex = 0, effectIndex = 0, dirty = false;
@@ -63,7 +63,12 @@ function fixture(quota = 0, themeId = "indigo2") {
       commits.push(() => { entry.cleanup = callback(); });
     }
   };
-  const animation = () => ({ start() {}, stop() {} }); // Decorative animations never complete.
+  const animation = () => ({
+    start(callback?: (result: { finished: boolean }) => void) {
+      if (finishControls) callback?.({ finished: true });
+    },
+    stop() {},
+  }); // By default decorative animations never complete.
   const mocks: Record<string, any> = {
     "@/config/scene-themes": { getThemeStyleId: (id: string) => id },
     react: {
@@ -162,6 +167,7 @@ function fixture(quota = 0, themeId = "indigo2") {
     get reflectionPage() { return reflectionPage; },
     get invalidations() { return invalidations; },
     open: () => { nodes.get("reflection-wall-toggle").onPress(); render(); },
+    setQuota: (next: number) => { quota = next; },
     tap: () => {
       const input = nodes.get("reflection-writing-input");
       assert.notEqual(input.pointerEvents, "none", "the writing field must receive native taps");
@@ -261,6 +267,57 @@ test("a collapsed composer waits for the panel, but never for the plus animation
   f.finishPanel();
   f.flushFrames();
   assert.equal(f.focusCalls, 1);
+  f.dispose();
+});
+
+test("Profile wall opens only with +, not from stale focus requests or quota updates", () => {
+  const f = fixture(0, "indigo2", true);
+  const isOpen = () => f.nodes.get("reflection-wall-toggle").accessibilityState.expanded;
+  f.render({ profileVariant: true, focusRequest: 1 });
+  assert.equal(isOpen(), false);
+  f.setQuota(3);
+  f.render();
+  f.setQuota(0);
+  f.render();
+  f.render({ focusRequest: 2 });
+  f.flushFrames();
+  assert.equal(isOpen(), false);
+  assert.equal(f.focusCalls, 0);
+
+  f.open();
+  assert.equal(isOpen(), true);
+  f.finishPanel();
+  f.flushFrames();
+  f.nodes.get("reflection-wall-toggle").onPress();
+  f.render();
+  assert.equal(isOpen(), false);
+  f.render({ focusRequest: 3 });
+  f.finishPanel();
+  f.finishPanel();
+  f.flushFrames();
+  f.render();
+  assert.equal(isOpen(), false, "closing + must not be followed by a queued reopen");
+  f.dispose();
+});
+
+test("Profile still opens the keyboard after + and an explicit writing tap", () => {
+  const f = fixture(0, "indigo2", true);
+  f.render({ profileVariant: true, focusRequest: 1 });
+  f.open();
+  f.finishPanel();
+  f.flushFrames();
+  assert.equal(f.keyboardVisible, false);
+  f.setQuota(3);
+  f.render();
+  f.setQuota(0);
+  f.render();
+  f.flushFrames();
+  assert.equal(f.keyboardVisible, false, "hydration must not replay the discarded focus request");
+  f.tap();
+  assert.ok(f.composeRequests > 0);
+  f.render({ focusRequest: 2 });
+  f.flushFrames();
+  assert.equal(f.keyboardVisible, true, "a fresh writing request may focus an already open panel");
   f.dispose();
 });
 

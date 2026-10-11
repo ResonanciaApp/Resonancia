@@ -6,7 +6,7 @@ import { useSceneTheme } from "@/context/SceneThemeContext";
 
 const ROUTINE_GRADIENT = ["#477FBD", "#4A99BC"] as const;
 const CLOUDY_ROUTINE_GRADIENT = ["#8247BD", "#6C4ABC"] as const;
-const NATURAL_ROUTINE_GRADIENT = ["#E0A44A", "#C99444"] as const;
+const NATURAL_ROUTINE_GRADIENT = ["#61C278", "#52A365"] as const;
 
 export function RoutineGradientFill({ style }: { style?: StyleProp<ViewStyle> }) {
   const { theme } = useSceneTheme();

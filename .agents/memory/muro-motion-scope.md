@@ -5,6 +5,12 @@ description: Distinción deliberada entre el rebote del control de expansión y 
 
 El borde del Muro de reflexiones debe seguir visible al colapsar y atenuarse al abrir, no aparecer solo con el formulario.
 
+En Perfil, el panel de Muro de reflexiones se despliega únicamente al pulsar su botón +. Una solicitud previa de redacción o de foco no autoriza a desplegarlo después, aunque cambie el cupo, termine una animación o se vuelva a visitar la pantalla.
+
+**Why:** El usuario observó aperturas espontáneas. Las solicitudes de foco persistentes podían ejecutarse de nuevo cuando llegaban datos asíncronos, y una apertura pendiente podía competir con un cierre manual.
+
+**How to apply:** Mantener el control de apertura de Perfil separado de las solicitudes programáticas de foco usadas en otras superficies; cancelar cualquier reapertura pendiente cuando se cierra con +. Una solicitud nueva de foco sí debe abrir el teclado cuando el panel ya está abierto y el usuario toca para escribir; una descartada con el panel cerrado no se revive al cargar datos. Conservar la animación existente del control y el desplazamiento del contenido.
+
 **Why:** El usuario corrigió explícitamente la interpretación de fade-in/fade-out: quiere mayor presencia del borde cerrado y menor presencia al desplegar.
 
 **How to apply:** Animar entre ambos niveles de opacidad conservando color, grosor, dimensiones y gestos; nunca usar cero como estado cerrado por interpretar “fade out”.

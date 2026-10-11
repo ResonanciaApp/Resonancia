@@ -2,6 +2,7 @@ import { Feather, Ionicons, MaterialCommunityIcons } from "@expo/vector-icons";
 import { useUser } from "@clerk/expo";
 import { useDayRollover } from "@/hooks/useDayRollover";
 import { useStreak } from "@/hooks/useStreak";
+import { useEmojiWidget } from "@/context/EmojiWidgetContext";
 import { StreakWeekRow } from "@/components/StreakWeekRow";
 import { useStreakCelebration } from "@/context/StreakCelebrationContext";
 import AsyncStorage from "@react-native-async-storage/async-storage";
@@ -1989,7 +1990,7 @@ const Inicio2HeroStatic = React.memo(function Inicio2HeroStatic({
                 style={({ pressed }) => [styles.inicio3MoodRegister, pressed && { opacity: 0.65 }]}
               >
                 <Text style={styles.inicio3HeroDecree} numberOfLines={1}>Registro de ánimo</Text>
-                <Feather name="chevron-down" size={14} color="#F4F4F4" />
+                <Feather name="chevron-down" size={13} color="#F4F4F4" />
               </Pressable>
             ) : null}
           </View>
@@ -2110,6 +2111,8 @@ function InicioEmotionWidget({
   onOpenMoodPicker: () => void;
 }) {
   const { activeEvent, emotionWidgetOpacity } = useRoutineCompletionBanner();
+  const { enabled, loaded } = useEmojiWidget();
+  if (!loaded || !enabled) return null;
   return (
     <Animated.View
       testID="inicio-emotion-widget-fade"
@@ -3723,7 +3726,7 @@ const styles = StyleSheet.create({
   inicio3HeroDecree: {
     color: "#F4F4F4",
     fontFamily: "Manrope",
-    fontSize: 13,
+    fontSize: 12,
     lineHeight: 17,
     fontWeight: "600",
     letterSpacing: 0.2,

@@ -134,7 +134,7 @@
 - [Reproducción protegida de Bunny](bunny-protected-playback.md) — el HLS directo del CDN devuelve 403; Mobile debe usar la URL oficial de embed entregada por el API
 - [Contrato de destinos editoriales](hero-destination-contract.md) — los IDs de opciones Admin no equivalen a IDs de rutas Mobile; verificar contrato extremo a extremo y namespace editorial
 - [Fondo global de Índigo 2](indigo2-global-gradient.md) — buscadores de categorías y superficies de biblioteca usan tema completo; Mezclador mantiene su excepción
-- [Movimiento de Mi muro](muro-motion-scope.md) — solo la + rebota angularmente; formulario entra sin sobrepaso, y la simetría del signo cambia la percepción de las vueltas
+- [Movimiento de Mi muro](muro-motion-scope.md) — en Perfil solo + despliega el panel; solo + rebota angularmente y el formulario entra sin sobrepaso
 - [Negrita editorial de Sabiduría diaria](daily-wisdom-bold.md) — la frase sigue siendo texto plano; la negrita selectiva solo afecta el primer slide del hero, no detalle ni compartir
 - [Activación de tareas propuestas](task-activation.md) — cambiar a Build y ejecutar por chat no activa un borrador; el cierre requiere una tarea asignada en progreso
 - [Camino de crecimiento](growth-journey.md) — etapas editoriales con días acumulados; cupos de avatares a elección; sin pantalla automática de premios
