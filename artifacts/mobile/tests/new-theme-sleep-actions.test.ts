@@ -4,7 +4,7 @@ import { readFileSync } from "node:fs";
 import { URL } from "node:url";
 import ts from "typescript";
 import { getSleepActionColors } from "../config/scene-themes.ts";
-import { getTabBarGlassOverlay, getTabBarInactiveColor, TAB_BAR_GLASS_OVERLAY } from "../constants/tab-bar.ts";
+import { getTabBarGlassOverlay, getTabBarInactiveColor, TAB_PILL_GLASS_OVERLAY } from "../constants/tab-bar.ts";
 import {
   SLEEP_REMINDER_CONTINUE_BACKGROUND,
   SLEEP_REMINDER_CONTINUE_FOREGROUND,
@@ -124,9 +124,9 @@ test("Cancelar uses a ten-percent white background without dimming its text or c
 
 test("Natural changes the tab bar tint to green without changing the other backgrounds or glass overlay", () => {
   const source = read("../app/(tabs)/_layout.tsx");
-  assert.equal(getTabBarGlassOverlay("natural"), "rgba(8,33,28,0.62)");
+  assert.equal(getTabBarGlassOverlay("natural"), "rgba(8,33,28,0.744)");
   assert.equal(getTabBarInactiveColor("natural"), "#D5EBDD");
-  for (const id of ["pleyades", "cloudy", "cloudy2", "indigo2", "tibet"]) assert.equal(getTabBarGlassOverlay(id), TAB_BAR_GLASS_OVERLAY);
+  for (const id of ["pleyades", "cloudy", "cloudy2", "indigo2", "tibet"]) assert.equal(getTabBarGlassOverlay(id), TAB_PILL_GLASS_OVERLAY);
   assert.match(source, /const tabBarGlassOverlay = getTabBarGlassOverlay\(activeSceneId\)/);
   assert.match(source, /backgroundColor: tabBarGlassOverlay/);
 });

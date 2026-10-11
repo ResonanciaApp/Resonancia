@@ -57,7 +57,7 @@ test("routine history add button uses the actual tab glass in all four themes an
     assert.equal(blur.props.tint, "light");
     assert.equal(blur.props.experimentalBlurMethod, "dimezisBlurView");
     const tint = all.find(node => Array.isArray(node.props.style) && node.props.style[1]?.backgroundColor);
-    assert.equal(tint.props.style[1].backgroundColor, theme === "natural" ? "rgba(8,33,28,0.62)" : "rgba(14,8,33,0.62)");
+    assert.equal(tint.props.style[1].backgroundColor, theme === "natural" ? "rgba(8,33,28,0.744)" : "rgba(14,8,33,0.744)");
     assert.equal(all.find(node => node.props.style === styles.addActivityGlass).props.pointerEvents, "none");
     assert.equal(styles.addActivityGlass.overflow, "hidden");
     assert.equal(styles.addActivity.overflow, undefined);

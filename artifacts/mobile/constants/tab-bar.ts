@@ -1,4 +1,4 @@
-/** Shared glass surface used by the horizontal tab bar and mixer miniplayer. */
+/** Legacy mini-player glass; the floating tab pill has its own stronger tint. */
 export const TAB_BAR_GLASS_OVERLAY = "rgba(14,8,33,0.62)";
 export const TAB_BAR_BLUR_INTENSITY = 48;
 export const TAB_BAR_INACTIVE_COLOR = "rgba(190,180,207,0.96)";
@@ -6,12 +6,13 @@ export const TAB_BAR_INACTIVE_COLOR = "rgba(190,180,207,0.96)";
 /** Floating tab pill: mirrors the Inicio hero emotion widget glass (inicio8). */
 export const TAB_PILL_BLUR_INTENSITY = 38;
 export const TAB_PILL_BLUR_TINT = "light" as const;
+export const TAB_PILL_GLASS_OVERLAY = "rgba(14,8,33,0.744)";
 export const TAB_PILL_SIDE_MARGIN = 16;
 export const TAB_PILL_BAR_H = 58;
 
 /** Natural keeps the same glass opacity while changing only its tint. */
 export function getTabBarGlassOverlay(themeId: string): string {
-  return themeId === "natural" ? "rgba(8,33,28,0.62)" : TAB_BAR_GLASS_OVERLAY;
+  return themeId === "natural" ? "rgba(8,33,28,0.744)" : TAB_PILL_GLASS_OVERLAY;
 }
 
 /** Exact theme palettes; Cloudy variants do not inherit each other's tint. */
