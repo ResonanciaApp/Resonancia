@@ -213,4 +213,8 @@ test("the outer pill matches Home widget shadow while only the inner glass clips
   const wrappers = find(h.render(), (node) => node.props.style?.[1] === h.styles.pillShadow);
   assert.equal(wrappers.length, 1);
   assert.equal(wrappers[0].props.collapsable, false);
+  assert.equal(find(wrappers[0], (node) => node.type === "blur").length, 1);
+  assert.equal(find(wrappers[0], (node) => node.type === "selection-indicator").length, 0,
+    "moving indicator must not invalidate the glass shadow");
+  assert.equal(find(wrappers[0], (node) => node.props.accessibilityRole === "tab").length, 0);
 });

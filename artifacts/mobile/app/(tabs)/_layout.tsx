@@ -246,7 +246,9 @@ function CustomTabBar({ state, navigation, descriptors }: TabBarProps) {
           },
         ]}
       >
-        <View collapsable={false} style={[styles.pill, styles.pillShadow]}>
+        <View style={styles.pill}>
+        {/* The shadow samples only the static glass, never the moving indicator/icons. */}
+        <View pointerEvents="none" collapsable={false} style={[styles.glassLayer, styles.pillShadow]}>
         <View style={styles.pillClip}>
         <BlurView
           pointerEvents="none"
@@ -262,6 +264,9 @@ function CustomTabBar({ state, navigation, descriptors }: TabBarProps) {
             { backgroundColor: tabBarGlassOverlay },
           ]}
         />
+        </View>
+        </View>
+        <View style={[styles.pillClip, styles.controlsLayer]}>
         <View onLayout={(event) => setRowWidth(event.nativeEvent.layout.width)} style={[styles.row, isWeb && styles.rowWeb]}>
           <TabSelectionIndicator width={rowWidth} count={visibleRoutes.length} index={selectedVisibleIndex} />
           {state.routes.map((route: { key: string; name: string; params?: object }, index: number) => {
@@ -475,6 +480,14 @@ const styles = StyleSheet.create({
     shadowOffset: { width: 0, height: 6 },
     shadowOpacity: 0.28,
     shadowRadius: 12,
+  },
+  glassLayer: {
+    ...StyleSheet.absoluteFillObject,
+    borderRadius: (PILL_H + 1) / 2,
+  },
+  controlsLayer: {
+    // Match the glass border's layout inset without drawing it twice.
+    borderColor: "transparent",
   },
   pillClip: {
     ...StyleSheet.absoluteFillObject,

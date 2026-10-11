@@ -15,6 +15,7 @@ function harness() {
   let prepare: () => any;
   let react: (next: any, previous: any) => void;
   let animatedStyle: () => any;
+  let geometry: any = {};
   const shared = (value: unknown) => refs[cursor++] ??= { value };
   const reanimated = {
     __esModule: true,
@@ -43,14 +44,16 @@ function harness() {
   vm.runInNewContext(compiled, { module, exports: module.exports, require: (name: string) => imports[name] });
   return {
     refs, springs,
-    sampleStyle: () => animatedStyle(),
+    sampleStyle: () => ({ ...geometry, ...animatedStyle() }),
+    animatedStyle: () => animatedStyle(),
     render(width: number, index: number, count = 5) {
       cursor = 0;
       const node = module.exports.TabSelectionIndicator({ width, count, index });
+      geometry = node.props.style[1];
       const next = prepare();
       react(next, previous);
       previous = next;
-      return { node, style: animatedStyle() };
+      return { node, style: { ...geometry, ...animatedStyle() } };
     },
   };
 }
@@ -71,6 +74,7 @@ test("first layout snaps without entrance animation; tighter icons preserve caps
   assert.equal(node.props.style[0].top + node.props.style[0].height / 2, TAB_PILL_BAR_H / 2 - 1);
   assert.equal(node.props.style[0].backgroundColor, "rgba(255,255,255,0.1)");
   assert.equal(node.props.pointerEvents, "none");
+  assert.deepEqual(Object.keys(h.animatedStyle()), ["transform"], "spring frames must not send layout properties");
 });
 
 test("quick changes continue from the current position, including reversal, with only one position value", () => {

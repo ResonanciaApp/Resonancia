@@ -28,3 +28,14 @@ esa pausa.
 **How to apply:** comprobar continuidad del movimiento junto al borde y en
 cambios rápidos de destino. Si se comprime la posición al dibujar, no volver
 a comprimir esa misma posición al redirigir la animación.
+
+El usuario aclaró que también percibe trabas durante el recorrido, al pasar
+por los iconos; no atribuir ese síntoma al rebote en los extremos.
+
+**Why:** suavizar el límite no resolvió el problema reportado. Una prueba de
+continuidad matemática no demuestra fluidez en el dispositivo.
+
+**How to apply:** conservar dimensiones y efectos. Separar el vidrio y su
+sombra de la capa móvil; enviar solo transformaciones durante el resorte,
+no propiedades de layout constantes. Estas medidas reducen trabajo de dibujo,
+pero no declarar resuelto el lag sin comprobar el movimiento en un teléfono.

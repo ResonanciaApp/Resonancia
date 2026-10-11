@@ -32,18 +32,19 @@ export function TabSelectionIndicator({ width, count, index }: {
       x.value = withSpring(target, { ...tabSelectionSpring(distance, Math.abs(target - visibleX)), reduceMotion: ReduceMotion.System });
     },
   );
+  // Geometry changes only on layout, never on each spring frame.
+  const geometry = {
+    width: count > 0 ? Math.max(0, (width - TAB_ROW_PADDING * 2) / count - TAB_SELECTION_INSET * 2) : 0,
+    opacity: width > 0 && index >= 0 ? 1 : 0,
+  };
   const style = useAnimatedStyle(() => ({
-    width: metrics.value.count > 0
-      ? Math.max(0, (metrics.value.width - TAB_ROW_PADDING * 2) / metrics.value.count - TAB_SELECTION_INSET * 2)
-      : 0,
-    opacity: metrics.value.width > 0 && metrics.value.index >= 0 ? 1 : 0,
     transform: [{
       translateX: metrics.value.count > 0
         ? tabSelectionTranslation(x.value, (metrics.value.width - TAB_ROW_PADDING * 2) / metrics.value.count, metrics.value.count)
         : 0,
     }],
   }));
-  return <Reanimated.View pointerEvents="none" testID="tab-selection-indicator" style={[styles.capsule, style]} />;
+  return <Reanimated.View pointerEvents="none" testID="tab-selection-indicator" style={[styles.capsule, geometry, style]} />;
 }
 
 const styles = StyleSheet.create({
