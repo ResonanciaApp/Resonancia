@@ -17,6 +17,9 @@ import {
   resolveCatalogRecord,
   padWithBootstrap,
 } from "@/lib/cover-preset-catalog-logic";
+import { parseCatalogEnvelope, type AvatarCategory } from "@/lib/profile-avatar-categories";
+
+export type { AvatarCategory } from "@/lib/profile-avatar-categories";
 
 export type CoverCatalogScope = CoverPresetScope;
 export type CoverCatalogItem = {
@@ -28,6 +31,7 @@ export type CoverCatalogItem = {
   fallbackSource?: number;
   builtinKey?: string | null;
   objectPath?: string | null;
+  categoryIds?: string[];
 };
 
 const CACHE_PREFIX = "@resonance_cover_catalog:";
@@ -35,6 +39,9 @@ const bundledByKey = new Map([
   ...PLAYLIST_COVER_PRESETS.map((preset) => [preset.id, preset] as const),
 ]);
 const memoryCatalog = new Map<CoverCatalogScope, CoverPreset[]>();
+const memoryCategories = new Map<CoverCatalogScope, AvatarCategory[]>();
+/** Incremented each time a fresh server response has been validated. */
+const authoritativeRevision = new Map<CoverCatalogScope, number>();
 const loading = new Map<CoverCatalogScope, Promise<void>>();
 
 export function bundledCoverCatalog(scope: CoverCatalogScope): CoverCatalogItem[] {
@@ -79,6 +86,7 @@ function resolveItem(item: CoverPreset): CoverCatalogItem | null {
   if (!resolved) return null;
   return {
     ...resolved,
+    categoryIds: item.scope === "profile" ? [...new Set(item.categoryIds ?? [])] : undefined,
     source: item.scope === "reflection-story" && remote ? { uri: remote } : resolved.source,
     fallbackSource: remote ? builtin?.source : undefined,
   };
@@ -108,8 +116,12 @@ async function hydrate(scope: CoverCatalogScope): Promise<void> {
   const cached = await AsyncStorage.getItem(`${CACHE_PREFIX}${scope}`);
   if (cached) {
     try {
-      const parsed = JSON.parse(cached) as CoverPreset[];
-      if (Array.isArray(parsed)) memoryCatalog.set(scope, parsed);
+      // Accepts the legacy array cache and the new { categories, presets } envelope.
+      const parsed = parseCatalogEnvelope<CoverPreset>(JSON.parse(cached), scope);
+      if (parsed && !memoryCatalog.has(scope)) {
+        memoryCatalog.set(scope, parsed.presets);
+        memoryCategories.set(scope, scope === "profile" ? parsed.categories : []);
+      }
     } catch {
       // Ignore corrupt cache and use bundled defaults.
     }
@@ -120,10 +132,18 @@ async function hydrate(scope: CoverCatalogScope): Promise<void> {
 async function refresh(scope: CoverCatalogScope): Promise<void> {
   try {
     const response = await listCoverPresets({ scope });
-    const next = response.presets;
+    const parsed = parseCatalogEnvelope<CoverPreset>(response, scope);
+    // Corrupt metadata never replaces the last valid snapshot.
+    if (!parsed) return;
+    const categories = scope === "profile" ? parsed.categories : [];
     // A successful response is authoritative, including deletions.
-    memoryCatalog.set(scope, next);
-    await AsyncStorage.setItem(`${CACHE_PREFIX}${scope}`, JSON.stringify(next));
+    memoryCatalog.set(scope, parsed.presets);
+    memoryCategories.set(scope, categories);
+    authoritativeRevision.set(scope, (authoritativeRevision.get(scope) ?? 0) + 1);
+    await AsyncStorage.setItem(
+      `${CACHE_PREFIX}${scope}`,
+      JSON.stringify({ categories, presets: parsed.presets }),
+    );
   } catch {
     // Keep the complete last-valid snapshot. Never re-add deleted entries.
   }
@@ -135,6 +155,9 @@ export function useCoverPresetCatalog(scope: CoverCatalogScope): CoverCatalogIte
 
 export function useCoverPresetCatalogState(scope: CoverCatalogScope): {
   items: CoverCatalogItem[];
+  categories: AvatarCategory[];
+  /** > 0 once a fresh server catalog has been validated in this app session. */
+  authoritativeRevision: number;
   hydrated: boolean;
   refresh: () => Promise<void>;
 } {
@@ -169,10 +192,18 @@ export function useCoverPresetCatalogState(scope: CoverCatalogScope): {
     void version;
     return resolveCoverCatalog(memoryCatalog.get(scope) ?? bundledRawCatalog(scope), scope);
   }, [scope, version]);
-  return { items, hydrated, refresh: refreshCatalog };
+  const categories = useMemo(() => {
+    void version;
+    return memoryCategories.get(scope) ?? [];
+  }, [scope, version]);
+  void version;
+  const revision = authoritativeRevision.get(scope) ?? 0;
+  return { items, categories, authoritativeRevision: revision, hydrated, refresh: refreshCatalog };
 }
 
 export function resetCoverPresetCatalogForTests(): void {
   memoryCatalog.clear();
+  memoryCategories.clear();
+  authoritativeRevision.clear();
   loading.clear();
 }

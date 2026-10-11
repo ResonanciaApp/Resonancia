@@ -3538,6 +3538,41 @@ export const CoverPresetScope = {
   'reflection-story': 'reflection-story',
 } as const;
 
+export interface ProfileAvatarCategory {
+  id: string;
+  name: string;
+}
+
+export interface ProfileAvatarCategoryInput {
+  /**
+     * @minLength 1
+     * @maxLength 80
+     */
+  name: string;
+}
+
+export type ProfileAvatarMembershipInputMode = typeof ProfileAvatarMembershipInputMode[keyof typeof ProfileAvatarMembershipInputMode];
+
+
+export const ProfileAvatarMembershipInputMode = {
+  add: 'add',
+  remove: 'remove',
+} as const;
+
+export interface ProfileAvatarMembershipInput {
+  /**
+     * @minItems 1
+     * @maxItems 300
+     */
+  presetIds: string[];
+  /**
+     * @minItems 1
+     * @maxItems 100
+     */
+  categoryIds: string[];
+  mode: ProfileAvatarMembershipInputMode;
+}
+
 export type CoverPresetSource = typeof CoverPresetSource[keyof typeof CoverPresetSource];
 
 
@@ -3554,6 +3589,7 @@ export interface CoverPreset {
   sortOrder: number;
   /** Bloqueo editorial; solo aplica a avatares de Perfil. */
   isLocked?: boolean;
+  categoryIds?: string[];
   source: CoverPresetSource;
   /** @nullable */
   builtinKey?: string | null;
@@ -3564,6 +3600,7 @@ export interface CoverPreset {
 }
 
 export interface CoverPresetList {
+  categories?: ProfileAvatarCategory[];
   scope: CoverPresetScope;
   presets: CoverPreset[];
 }

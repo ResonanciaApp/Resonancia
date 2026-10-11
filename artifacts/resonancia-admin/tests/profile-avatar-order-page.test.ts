@@ -4,6 +4,7 @@ import { readFileSync } from "node:fs";
 import React from "react";
 import ts from "typescript";
 import * as helpers from "../src/lib/cover-preset-order.ts";
+import * as categoryHelpers from "../src/lib/profile-avatar-categories.ts";
 
 function compile(path: string) {
   const source = readFileSync(new URL(path, import.meta.url), "utf8")
@@ -52,7 +53,7 @@ function harness(count = 20, scope = "profile") {
   const query = {
     data: { scope, presets: structuredClone(server) }, isLoading: false, error: null,
     refetch: async () => {
-      query.data = { scope, presets: structuredClone(server) };
+      query.data = { scope, categories: [{ id: "c1", name: "Calma" }, { id: "c2", name: "Sueño" }], presets: structuredClone(server) } as any;
       return { data: query.data, error: null };
     },
   };
@@ -76,6 +77,21 @@ function harness(count = 20, scope = "profile") {
         ...server.find(item => item.id === id), sortOrder,
       }));
       return { scope, presets: structuredClone(server) };
+    },
+  };
+  const membershipWrites: any[] = [];
+  const memberships = {
+    isPending: false,
+    mutateAsync: async (payload: any) => {
+      membershipWrites.push(payload);
+      const { presetIds, categoryIds, mode } = payload.data;
+      server = server.map(item => presetIds.includes(item.id) ? {
+        ...item,
+        categoryIds: mode === "add"
+          ? [...new Set([...(item.categoryIds ?? []), ...categoryIds])]
+          : (item.categoryIds ?? []).filter((id: string) => !categoryIds.includes(id)),
+      } : item);
+      return { scope, categories: [{ id: "c1", name: "Calma" }], presets: structuredClone(server) };
     },
   };
   const neutral = () => ({ isPending: false, mutateAsync: async () => {} });
@@ -116,12 +132,16 @@ function harness(count = 20, scope = "profile") {
         mutateAsync: async (payload: any) => { locks.push(payload); return initial[0]; },
       }),
       useReorderAdminCoverPresets: () => mutation,
+      useUpdateProfileAvatarMemberships: () => memberships,
       getListAdminCoverPresetsQueryKey: (params: unknown) => ["admin", params],
       getListCoverPresetsQueryKey: (params: unknown) => ["public", params],
     },
     "@/lib/uploadFile": { uploadFile: async () => { throw new Error("Unexpected upload"); } },
     "@/lib/cover-preset-order": helpers,
     "@/components/ProfileAvatarOrderControls": { ProfileAvatarOrderControls: Controls },
+    "@/components/ProfileAvatarCategoryManager": { ProfileAvatarCategoryManager: "category-manager" },
+    "@/components/ProfileAvatarCategoryPicker": { ProfileAvatarCategoryPicker: "category-picker" },
+    "@/lib/profile-avatar-categories": categoryHelpers,
     "@/components/ui/button": { Button: "button" },
     sonner: { toast: {
       success: (value: string) => notices.push(`success:${value}`),
@@ -150,7 +170,7 @@ function harness(count = 20, scope = "profile") {
   const ids = () => elements(render()).filter(element => element.type === "img").map(element => element.props.alt);
   find(render(), element => element.type === "button" && element.props["aria-controls"]).props.onClick();
   return {
-    render, select, setPosition, move, ids, initial, query, writes, locks, notices, invalidations, mutation,
+    render, select, setPosition, move, ids, initial, membershipWrites, query, writes, locks, notices, invalidations, mutation,
     setFailure: (value: any) => { saveFailure = value; },
     setGate: (value: (() => Promise<void>) | null) => { savingGate = value; },
     changeServer: (value: typeof initial) => { server = structuredClone(value); },
@@ -293,4 +313,47 @@ test("other collections retain their vertical rows and have no profile selection
     assert.ok(!elements(h.render()).some(element => element.props.type === "checkbox" || element.props.role === "region"));
     assert.ok(elements(h.render()).some(element => element.props.className === "space-y-2"));
   }
+});
+
+const flush = () => new Promise(resolve => setTimeout(resolve, 0));
+const pickers = (tree: unknown) => elements(tree).filter(element => element.type === "category-picker");
+const manager = (tree: unknown) => find(tree, element => element.type === "category-manager");
+
+test("single membership edit preserves unsaved order and other assignments", async () => {
+  const h = harness();
+  h.changeServer(h.initial.map(item => item.id === "avatar-3" ? { ...item, categoryIds: ["c2"] } as any : item));
+  h.select(9); h.setPosition("1"); h.move();
+  const proposed = h.ids();
+  assert.equal(proposed[0], "Avatar 9");
+  const picker = pickers(h.render()).find(element => element.props.label === "Avatar 3")!;
+  picker.props.onToggle("c1", true); await flush();
+  assert.deepEqual(h.membershipWrites[0].data, { presetIds: ["avatar-3"], categoryIds: ["c1"], mode: "add" });
+  assert.deepEqual(h.ids(), proposed, "local order is not replaced by the response or refetch");
+  const after = pickers(h.render()).find(element => element.props.label === "Avatar 3")!;
+  assert.deepEqual(after.props.categoryIds, ["c2", "c1"]);
+  assert.equal(button(h.render(), "Guardar orden").props.disabled, false);
+  assert.ok(h.invalidations.some(item => JSON.stringify(item.queryKey).includes("public")));
+});
+
+test("bulk add/remove uses current selection and keeps unrelated memberships", async () => {
+  const h = harness();
+  h.changeServer(h.initial.map(item => ({ ...item, categoryIds: ["c2"] }) as any));
+  h.select(2); h.select(4);
+  manager(h.render()).props.onBulk("c1", true); await flush();
+  assert.deepEqual(h.membershipWrites[0].data.presetIds.sort(), ["avatar-2", "avatar-4"]);
+  assert.deepEqual((h.server[1] as any).categoryIds, ["c2", "c1"]);
+  manager(h.render()).props.onBulk("c1", false); await flush();
+  assert.equal(h.membershipWrites[1].data.mode, "remove");
+  assert.deepEqual((h.server[1] as any).categoryIds, ["c2"]);
+  assert.deepEqual(h.ids(), h.initial.map(item => item.label));
+});
+
+test("order writes are blocked while categories save", async () => {
+  const h = harness();
+  manager(h.render()).props.onBusyChange(true);
+  assert.equal(pickers(h.render())[0].props.disabled, true);
+  manager(h.render()).props.onBusyChange(false);
+  h.select(1);
+  const original = (h as any).membershipWrites;
+  assert.equal(original.length, 0);
 });

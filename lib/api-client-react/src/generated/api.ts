@@ -188,6 +188,9 @@ import type {
   PlaybackEventList,
   PlaylistCarousel,
   PopularSessionsResponse,
+  ProfileAvatarCategory,
+  ProfileAvatarCategoryInput,
+  ProfileAvatarMembershipInput,
   ProgressInput,
   ProgressList,
   PublicEmotionalPhrasesResponse,
@@ -839,6 +842,266 @@ export const useLeaveCommunityPresence = <TError = ErrorType<void>,
         TContext
       > => {
       return useMutation(getLeaveCommunityPresenceMutationOptions(options));
+    }
+
+export const getCreateProfileAvatarCategoryUrl = () => {
+
+
+
+
+  return `/api/admin/profile-avatar-categories`
+}
+
+export const createProfileAvatarCategory = async (profileAvatarCategoryInput: ProfileAvatarCategoryInput, options?: RequestInit): Promise<ProfileAvatarCategory> => {
+
+  return customFetch<ProfileAvatarCategory>(getCreateProfileAvatarCategoryUrl(),
+  {
+    ...options,
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json', ...options?.headers },
+    body: JSON.stringify(
+      profileAvatarCategoryInput,)
+  }
+);}
+
+
+
+
+export const getCreateProfileAvatarCategoryMutationOptions = <TError = ErrorType<unknown>,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof createProfileAvatarCategory>>, TError,{data: BodyType<ProfileAvatarCategoryInput>}, TContext>, request?: SecondParameter<typeof customFetch>}
+): UseMutationOptions<Awaited<ReturnType<typeof createProfileAvatarCategory>>, TError,{data: BodyType<ProfileAvatarCategoryInput>}, TContext> => {
+
+const mutationKey = ['createProfileAvatarCategory'];
+const {mutation: mutationOptions, request: requestOptions} = options ?
+      options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey ?
+      options
+      : {...options, mutation: {...options.mutation, mutationKey}}
+      : {mutation: { mutationKey, }, request: undefined};
+
+
+
+
+      const mutationFn: MutationFunction<Awaited<ReturnType<typeof createProfileAvatarCategory>>, {data: BodyType<ProfileAvatarCategoryInput>}> = (props) => {
+          const {data} = props ?? {};
+
+          return  createProfileAvatarCategory(data,requestOptions)
+        }
+
+
+
+
+
+
+  return  { mutationFn, ...mutationOptions }}
+
+    export type CreateProfileAvatarCategoryMutationResult = NonNullable<Awaited<ReturnType<typeof createProfileAvatarCategory>>>
+    export type CreateProfileAvatarCategoryMutationBody = BodyType<ProfileAvatarCategoryInput>
+    export type CreateProfileAvatarCategoryMutationError = ErrorType<unknown>
+
+    export const useCreateProfileAvatarCategory = <TError = ErrorType<unknown>,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof createProfileAvatarCategory>>, TError,{data: BodyType<ProfileAvatarCategoryInput>}, TContext>, request?: SecondParameter<typeof customFetch>}
+ ): UseMutationResult<
+        Awaited<ReturnType<typeof createProfileAvatarCategory>>,
+        TError,
+        {data: BodyType<ProfileAvatarCategoryInput>},
+        TContext
+      > => {
+      return useMutation(getCreateProfileAvatarCategoryMutationOptions(options));
+    }
+
+export const getUpdateProfileAvatarCategoryUrl = (id: string,) => {
+
+
+
+
+  return `/api/admin/profile-avatar-categories/${id}`
+}
+
+export const updateProfileAvatarCategory = async (id: string,
+    profileAvatarCategoryInput: ProfileAvatarCategoryInput, options?: RequestInit): Promise<ProfileAvatarCategory> => {
+
+  return customFetch<ProfileAvatarCategory>(getUpdateProfileAvatarCategoryUrl(id),
+  {
+    ...options,
+    method: 'PATCH',
+    headers: { 'Content-Type': 'application/json', ...options?.headers },
+    body: JSON.stringify(
+      profileAvatarCategoryInput,)
+  }
+);}
+
+
+
+
+export const getUpdateProfileAvatarCategoryMutationOptions = <TError = ErrorType<unknown>,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof updateProfileAvatarCategory>>, TError,{id: string;data: BodyType<ProfileAvatarCategoryInput>}, TContext>, request?: SecondParameter<typeof customFetch>}
+): UseMutationOptions<Awaited<ReturnType<typeof updateProfileAvatarCategory>>, TError,{id: string;data: BodyType<ProfileAvatarCategoryInput>}, TContext> => {
+
+const mutationKey = ['updateProfileAvatarCategory'];
+const {mutation: mutationOptions, request: requestOptions} = options ?
+      options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey ?
+      options
+      : {...options, mutation: {...options.mutation, mutationKey}}
+      : {mutation: { mutationKey, }, request: undefined};
+
+
+
+
+      const mutationFn: MutationFunction<Awaited<ReturnType<typeof updateProfileAvatarCategory>>, {id: string;data: BodyType<ProfileAvatarCategoryInput>}> = (props) => {
+          const {id,data} = props ?? {};
+
+          return  updateProfileAvatarCategory(id,data,requestOptions)
+        }
+
+
+
+
+
+
+  return  { mutationFn, ...mutationOptions }}
+
+    export type UpdateProfileAvatarCategoryMutationResult = NonNullable<Awaited<ReturnType<typeof updateProfileAvatarCategory>>>
+    export type UpdateProfileAvatarCategoryMutationBody = BodyType<ProfileAvatarCategoryInput>
+    export type UpdateProfileAvatarCategoryMutationError = ErrorType<unknown>
+
+    export const useUpdateProfileAvatarCategory = <TError = ErrorType<unknown>,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof updateProfileAvatarCategory>>, TError,{id: string;data: BodyType<ProfileAvatarCategoryInput>}, TContext>, request?: SecondParameter<typeof customFetch>}
+ ): UseMutationResult<
+        Awaited<ReturnType<typeof updateProfileAvatarCategory>>,
+        TError,
+        {id: string;data: BodyType<ProfileAvatarCategoryInput>},
+        TContext
+      > => {
+      return useMutation(getUpdateProfileAvatarCategoryMutationOptions(options));
+    }
+
+export const getDeleteProfileAvatarCategoryUrl = (id: string,) => {
+
+
+
+
+  return `/api/admin/profile-avatar-categories/${id}`
+}
+
+export const deleteProfileAvatarCategory = async (id: string, options?: RequestInit): Promise<void> => {
+
+  return customFetch<void>(getDeleteProfileAvatarCategoryUrl(id),
+  {
+    ...options,
+    method: 'DELETE'
+
+
+  }
+);}
+
+
+
+
+export const getDeleteProfileAvatarCategoryMutationOptions = <TError = ErrorType<unknown>,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof deleteProfileAvatarCategory>>, TError,{id: string}, TContext>, request?: SecondParameter<typeof customFetch>}
+): UseMutationOptions<Awaited<ReturnType<typeof deleteProfileAvatarCategory>>, TError,{id: string}, TContext> => {
+
+const mutationKey = ['deleteProfileAvatarCategory'];
+const {mutation: mutationOptions, request: requestOptions} = options ?
+      options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey ?
+      options
+      : {...options, mutation: {...options.mutation, mutationKey}}
+      : {mutation: { mutationKey, }, request: undefined};
+
+
+
+
+      const mutationFn: MutationFunction<Awaited<ReturnType<typeof deleteProfileAvatarCategory>>, {id: string}> = (props) => {
+          const {id} = props ?? {};
+
+          return  deleteProfileAvatarCategory(id,requestOptions)
+        }
+
+
+
+
+
+
+  return  { mutationFn, ...mutationOptions }}
+
+    export type DeleteProfileAvatarCategoryMutationResult = NonNullable<Awaited<ReturnType<typeof deleteProfileAvatarCategory>>>
+
+    export type DeleteProfileAvatarCategoryMutationError = ErrorType<unknown>
+
+    export const useDeleteProfileAvatarCategory = <TError = ErrorType<unknown>,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof deleteProfileAvatarCategory>>, TError,{id: string}, TContext>, request?: SecondParameter<typeof customFetch>}
+ ): UseMutationResult<
+        Awaited<ReturnType<typeof deleteProfileAvatarCategory>>,
+        TError,
+        {id: string},
+        TContext
+      > => {
+      return useMutation(getDeleteProfileAvatarCategoryMutationOptions(options));
+    }
+
+export const getUpdateProfileAvatarMembershipsUrl = () => {
+
+
+
+
+  return `/api/admin/profile-avatar-memberships`
+}
+
+export const updateProfileAvatarMemberships = async (profileAvatarMembershipInput: ProfileAvatarMembershipInput, options?: RequestInit): Promise<CoverPresetList> => {
+
+  return customFetch<CoverPresetList>(getUpdateProfileAvatarMembershipsUrl(),
+  {
+    ...options,
+    method: 'PUT',
+    headers: { 'Content-Type': 'application/json', ...options?.headers },
+    body: JSON.stringify(
+      profileAvatarMembershipInput,)
+  }
+);}
+
+
+
+
+export const getUpdateProfileAvatarMembershipsMutationOptions = <TError = ErrorType<unknown>,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof updateProfileAvatarMemberships>>, TError,{data: BodyType<ProfileAvatarMembershipInput>}, TContext>, request?: SecondParameter<typeof customFetch>}
+): UseMutationOptions<Awaited<ReturnType<typeof updateProfileAvatarMemberships>>, TError,{data: BodyType<ProfileAvatarMembershipInput>}, TContext> => {
+
+const mutationKey = ['updateProfileAvatarMemberships'];
+const {mutation: mutationOptions, request: requestOptions} = options ?
+      options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey ?
+      options
+      : {...options, mutation: {...options.mutation, mutationKey}}
+      : {mutation: { mutationKey, }, request: undefined};
+
+
+
+
+      const mutationFn: MutationFunction<Awaited<ReturnType<typeof updateProfileAvatarMemberships>>, {data: BodyType<ProfileAvatarMembershipInput>}> = (props) => {
+          const {data} = props ?? {};
+
+          return  updateProfileAvatarMemberships(data,requestOptions)
+        }
+
+
+
+
+
+
+  return  { mutationFn, ...mutationOptions }}
+
+    export type UpdateProfileAvatarMembershipsMutationResult = NonNullable<Awaited<ReturnType<typeof updateProfileAvatarMemberships>>>
+    export type UpdateProfileAvatarMembershipsMutationBody = BodyType<ProfileAvatarMembershipInput>
+    export type UpdateProfileAvatarMembershipsMutationError = ErrorType<unknown>
+
+    export const useUpdateProfileAvatarMemberships = <TError = ErrorType<unknown>,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof updateProfileAvatarMemberships>>, TError,{data: BodyType<ProfileAvatarMembershipInput>}, TContext>, request?: SecondParameter<typeof customFetch>}
+ ): UseMutationResult<
+        Awaited<ReturnType<typeof updateProfileAvatarMemberships>>,
+        TError,
+        {data: BodyType<ProfileAvatarMembershipInput>},
+        TContext
+      > => {
+      return useMutation(getUpdateProfileAvatarMembershipsMutationOptions(options));
     }
 
 export const getListCoverPresetsUrl = (params: ListCoverPresetsParams,) => {

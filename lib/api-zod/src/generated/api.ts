@@ -424,11 +424,57 @@ export const LeaveCommunityPresenceBody = zod.object({
 })
 
 
-export const ListCoverPresetsQueryParams = zod.object({
-  "scope": zod.enum(['mix', 'playlist', 'profile', 'reflection-story'])
+export const createProfileAvatarCategoryBodyNameMax = 80;
+
+
+
+export const CreateProfileAvatarCategoryBody = zod.object({
+  "name": zod.string().min(1).max(createProfileAvatarCategoryBodyNameMax)
 })
 
-export const ListCoverPresetsResponse = zod.object({
+
+export const UpdateProfileAvatarCategoryParams = zod.object({
+  "id": zod.coerce.string()
+})
+
+export const updateProfileAvatarCategoryBodyNameMax = 80;
+
+
+
+export const UpdateProfileAvatarCategoryBody = zod.object({
+  "name": zod.string().min(1).max(updateProfileAvatarCategoryBodyNameMax)
+})
+
+export const UpdateProfileAvatarCategoryResponse = zod.object({
+  "id": zod.string(),
+  "name": zod.string()
+})
+
+
+export const DeleteProfileAvatarCategoryParams = zod.object({
+  "id": zod.coerce.string()
+})
+
+
+
+export const updateProfileAvatarMembershipsBodyPresetIdsMax = 300;
+
+
+export const updateProfileAvatarMembershipsBodyCategoryIdsMax = 100;
+
+
+
+export const UpdateProfileAvatarMembershipsBody = zod.object({
+  "presetIds": zod.array(zod.string().min(1)).min(1).max(updateProfileAvatarMembershipsBodyPresetIdsMax),
+  "categoryIds": zod.array(zod.string().min(1)).min(1).max(updateProfileAvatarMembershipsBodyCategoryIdsMax),
+  "mode": zod.enum(['add', 'remove'])
+})
+
+export const UpdateProfileAvatarMembershipsResponse = zod.object({
+  "categories": zod.array(zod.object({
+  "id": zod.string(),
+  "name": zod.string()
+})).optional(),
   "scope": zod.enum(['mix', 'playlist', 'profile', 'reflection-story']),
   "presets": zod.array(zod.object({
   "id": zod.string(),
@@ -437,6 +483,34 @@ export const ListCoverPresetsResponse = zod.object({
   "label": zod.string(),
   "sortOrder": zod.number(),
   "isLocked": zod.boolean().optional().describe('Bloqueo editorial; solo aplica a avatares de Perfil.'),
+  "categoryIds": zod.array(zod.string()).optional(),
+  "source": zod.enum(['builtin', 'object']),
+  "builtinKey": zod.string().nullish(),
+  "objectPath": zod.string().nullish(),
+  "createdAt": zod.coerce.date().optional(),
+  "updatedAt": zod.coerce.date().optional()
+}))
+})
+
+
+export const ListCoverPresetsQueryParams = zod.object({
+  "scope": zod.enum(['mix', 'playlist', 'profile', 'reflection-story'])
+})
+
+export const ListCoverPresetsResponse = zod.object({
+  "categories": zod.array(zod.object({
+  "id": zod.string(),
+  "name": zod.string()
+})).optional(),
+  "scope": zod.enum(['mix', 'playlist', 'profile', 'reflection-story']),
+  "presets": zod.array(zod.object({
+  "id": zod.string(),
+  "scope": zod.enum(['mix', 'playlist', 'profile', 'reflection-story']),
+  "key": zod.string(),
+  "label": zod.string(),
+  "sortOrder": zod.number(),
+  "isLocked": zod.boolean().optional().describe('Bloqueo editorial; solo aplica a avatares de Perfil.'),
+  "categoryIds": zod.array(zod.string()).optional(),
   "source": zod.enum(['builtin', 'object']),
   "builtinKey": zod.string().nullish(),
   "objectPath": zod.string().nullish(),
@@ -451,6 +525,10 @@ export const ListAdminCoverPresetsQueryParams = zod.object({
 })
 
 export const ListAdminCoverPresetsResponse = zod.object({
+  "categories": zod.array(zod.object({
+  "id": zod.string(),
+  "name": zod.string()
+})).optional(),
   "scope": zod.enum(['mix', 'playlist', 'profile', 'reflection-story']),
   "presets": zod.array(zod.object({
   "id": zod.string(),
@@ -459,6 +537,7 @@ export const ListAdminCoverPresetsResponse = zod.object({
   "label": zod.string(),
   "sortOrder": zod.number(),
   "isLocked": zod.boolean().optional().describe('Bloqueo editorial; solo aplica a avatares de Perfil.'),
+  "categoryIds": zod.array(zod.string()).optional(),
   "source": zod.enum(['builtin', 'object']),
   "builtinKey": zod.string().nullish(),
   "objectPath": zod.string().nullish(),
@@ -496,6 +575,10 @@ export const ReorderAdminCoverPresetsBody = zod.object({
 })
 
 export const ReorderAdminCoverPresetsResponse = zod.object({
+  "categories": zod.array(zod.object({
+  "id": zod.string(),
+  "name": zod.string()
+})).optional(),
   "scope": zod.enum(['mix', 'playlist', 'profile', 'reflection-story']),
   "presets": zod.array(zod.object({
   "id": zod.string(),
@@ -504,6 +587,7 @@ export const ReorderAdminCoverPresetsResponse = zod.object({
   "label": zod.string(),
   "sortOrder": zod.number(),
   "isLocked": zod.boolean().optional().describe('Bloqueo editorial; solo aplica a avatares de Perfil.'),
+  "categoryIds": zod.array(zod.string()).optional(),
   "source": zod.enum(['builtin', 'object']),
   "builtinKey": zod.string().nullish(),
   "objectPath": zod.string().nullish(),
@@ -543,6 +627,7 @@ export const UpdateAdminCoverPresetResponse = zod.object({
   "label": zod.string(),
   "sortOrder": zod.number(),
   "isLocked": zod.boolean().optional().describe('Bloqueo editorial; solo aplica a avatares de Perfil.'),
+  "categoryIds": zod.array(zod.string()).optional(),
   "source": zod.enum(['builtin', 'object']),
   "builtinKey": zod.string().nullish(),
   "objectPath": zod.string().nullish(),

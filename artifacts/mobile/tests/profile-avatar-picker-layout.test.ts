@@ -63,7 +63,7 @@ test("a large avatar catalog cannot enlarge the sheet beyond the screen", () => 
 test("avatar grid reaches the bottom without a fixed footer, retaining scrollable safe-area spacing", () => {
   assert.match(source, /style=\{\[styles.accountCoverSheet, \{ transform:/);
   assert.doesNotMatch(source, /styles.accountCoverSheet, \{ paddingBottom:/);
-  assert.match(source, /contentContainerStyle=\{\[styles.accountCoverPresetGridContent, \{ paddingBottom: bottomPad \+ 20 \}\]\}/);
+  assert.match(source, /contentContainerStyle=\{\[styles.accountCoverPresetGridContent, styles.accountCoverPresetGridContentFiltered, \{ paddingBottom: bottomPad \+ 20 \}\]\}/);
 });
 
 test("photo upload is an icon-only 43px circle 10px to the right of X, with celebration at the right and no balance message", () => {
@@ -112,7 +112,31 @@ test("hero moves down ten pixels in normal flow and pushes the avatar grid equal
   assert.equal(preview.height, 115.5);
   assert.equal(preview.transform, undefined);
   assert.equal(hero.marginTop + hero.height - 170, 10);
-  assert.match(source, /<\/View>\s*<View style=\{styles.accountCoverPresetGrid\}>\s*<Reanimated\.FlatList\s+ref=\{accountAvatarGridRef\}/);
+  assert.match(source, /<\/View>\s*<View\s+style=\{styles.accountCoverPresetGrid\}[\s\S]*?<AvatarCategoryTrigger[\s\S]*?<Reanimated\.FlatList\s+ref=\{accountAvatarGridRef\}/);
+});
+
+test("category selection only changes the filter and scroll, never the staged identity", () => {
+  let selector: ts.Expression | undefined;
+  function visit(node: ts.Node) {
+    if (ts.isVariableDeclaration(node) && node.name.getText(ast) === "selectAvatarFilter") selector = node.initializer;
+    ts.forEachChild(node, visit);
+  }
+  visit(ast);
+  assert.ok(selector);
+  const calls: unknown[] = [];
+  const output = ts.transpileModule(`return (${selector.getText(ast)});`, {
+    compilerOptions: { target: ts.ScriptTarget.ES2022 },
+  }).outputText;
+  const select = new Function("setAvatarFilterOpen", "setAvatarFilter", "avatarFilter", "accountAvatarGridRef", output)(
+    (value: boolean) => calls.push(["menu", value]),
+    (value: string) => calls.push(["filter", value]),
+    "all",
+    { current: { scrollToOffset: (value: unknown) => calls.push(["scroll", value]) } },
+  );
+  select("category-a");
+  assert.deepEqual(calls, [["menu", false], ["filter", "category-a"], ["scroll", { offset: 0, animated: false }]]);
+  assert.match(source, /data=\{filteredProfileCatalog\}/);
+  assert.match(source, /<AvatarCategoryMenu[\s\S]*?onSelect=\{selectAvatarFilter\}[\s\S]*?<\/Modal>/);
 });
 
 test("upload action waits for the selector dismissal before requesting the photo library", () => {

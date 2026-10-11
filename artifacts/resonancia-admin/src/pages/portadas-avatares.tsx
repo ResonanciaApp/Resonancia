@@ -8,6 +8,7 @@ import {
   useReorderAdminCoverPresets,
   useCleanupAdminCoverPresetUpload,
   useRequestUploadUrl,
+  useUpdateProfileAvatarMemberships,
   getListAdminCoverPresetsQueryKey,
   getListCoverPresetsQueryKey,
   type CoverPresetScope,
@@ -28,6 +29,9 @@ import { Button } from "@/components/ui/button";
 import { toast } from "sonner";
 import { ProfileAvatarOrderControls } from "@/components/ProfileAvatarOrderControls";
 import { movePresetBlock, presetCatalogSignature, samePresetOrder } from "@/lib/cover-preset-order";
+import { ProfileAvatarCategoryManager } from "@/components/ProfileAvatarCategoryManager";
+import { ProfileAvatarCategoryPicker } from "@/components/ProfileAvatarCategoryPicker";
+import { errorMessage, membershipPayload, mergeCategoryIds } from "@/lib/profile-avatar-categories";
 
 // Import builtin mobile assets using Vite's glob import
 const builtinModules = import.meta.glob(
@@ -123,6 +127,9 @@ export function ScopeSection({
   const reorderPresets = useReorderAdminCoverPresets();
   const cleanupUpload = useCleanupAdminCoverPresetUpload();
   const requestUploadUrl = useRequestUploadUrl();
+  const updateMemberships = useUpdateProfileAvatarMemberships();
+  const [categoryBusy, setCategoryBusy] = useState(false);
+  const categoryBusyRef = useRef(false);
 
   const [presets, setPresets] = useState<CoverPreset[]>([]);
   const [dirty, setDirty] = useState(false);
@@ -141,7 +148,7 @@ export function ScopeSection({
   const dragIdx = useRef<number | null>(null);
 
   async function handleToggleLock(preset: CoverPreset) {
-    if (lockingRef.current || isMutating || dirty) return;
+    if (lockingRef.current || categoryBusyRef.current || isMutating || dirty) return;
     lockingRef.current = true;
     setLockingId(preset.id);
     try {
@@ -158,7 +165,14 @@ export function ScopeSection({
   }
 
   useEffect(() => {
-    if (!query.data || dirty) return;
+    if (!query.data) return;
+    if (dirty) {
+      // Keep the unsaved local order; only refresh category assignments by ID.
+      const fresh = query.data.presets;
+      setPresets(current => mergeCategoryIds(current, fresh));
+      baselineRef.current = mergeCategoryIds(baselineRef.current, fresh);
+      return;
+    }
     setPresets(query.data.presets);
     baselineRef.current = query.data.presets;
     setSelectedIds(current => new Set([...current].filter(id => query.data!.presets.some(item => item.id === id))));
@@ -175,8 +189,33 @@ export function ScopeSection({
   const maxSlots = isFixedSlots ? 100 : scope.value === "profile" ? 300 : 50;
   const maxReached = presets.length >= maxSlots;
 
-  const isMutating = checkingOrder || uploading || createPreset.isPending || updatePreset.isPending || deletePreset.isPending || reorderPresets.isPending || cleanupUpload.isPending;
+  const categories = query.data?.categories ?? [];
+  const isMutating = categoryBusy || updateMemberships.isPending || checkingOrder || uploading || createPreset.isPending || updatePreset.isPending || deletePreset.isPending || reorderPresets.isPending || cleanupUpload.isPending;
   const isUploadDisabled = maxReached || isMutating || dirty;
+
+  async function refreshCatalog() {
+    await query.refetch();
+    await queryClient.invalidateQueries({ queryKey: getListCoverPresetsQueryKey({ scope: scope.value }) });
+  }
+
+  async function changeMembership(presetIds: string[], categoryId: string, add: boolean) {
+    if (!isProfile || categoryBusyRef.current || isMutating || lockingId !== null || presetIds.length === 0) return;
+    categoryBusyRef.current = true;
+    setCategoryBusy(true);
+    try {
+      const result = await updateMemberships.mutateAsync(membershipPayload(presetIds, categoryId, add));
+      // Never adopt the response order: merge assignments into the local (possibly unsaved) order.
+      setPresets(current => mergeCategoryIds(current, result.presets));
+      baselineRef.current = mergeCategoryIds(baselineRef.current, result.presets);
+      toast.success(add ? "Categoría asignada" : "Categoría retirada");
+    } catch (error) {
+      toast.error(errorMessage(error, "No se pudieron actualizar las categorías"));
+    } finally {
+      try { await refreshCatalog(); } catch { toast.error("No se pudo actualizar el catálogo"); }
+      categoryBusyRef.current = false;
+      setCategoryBusy(false);
+    }
+  }
 
   function onDragEnter(index: number) {
     if (isMutating || orderConflict || selectedIds.size > 0) return;
@@ -390,6 +429,17 @@ export function ScopeSection({
             </div>
           )}
 
+          {isProfile && (
+            <ProfileAvatarCategoryManager
+              categories={categories}
+              presets={presets}
+              selectedCount={selectedIds.size}
+              disabled={(isMutating && !categoryBusy) || lockingId !== null || query.isLoading}
+              onBusyChange={busy => { categoryBusyRef.current = busy; setCategoryBusy(busy); }}
+              onChanged={refreshCatalog}
+              onBulk={(categoryId, add) => void changeMembership([...selectedIds], categoryId, add)}
+            />
+          )}
           {isProfile && presets.length > 0 && (
             <ProfileAvatarOrderControls
               count={selectedIds.size}
@@ -489,6 +539,15 @@ export function ScopeSection({
                 </div>
 
                   <div className="flex shrink-0 items-center gap-2">
+                  {isProfile && (
+                    <ProfileAvatarCategoryPicker
+                      label={preset.label}
+                      categories={categories}
+                      categoryIds={preset.categoryIds ?? []}
+                      disabled={isMutating || lockingId !== null}
+                      onToggle={(categoryId, add) => void changeMembership([preset.id], categoryId, add)}
+                    />
+                  )}
                   {scope.value === "profile" && (
                     <Button
                       type="button"

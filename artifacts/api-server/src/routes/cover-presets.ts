@@ -22,6 +22,7 @@ import { requireAuth } from "../middlewares/requireAuth";
 import { requireRole } from "../middlewares/requireRole";
 import { ObjectStorageService } from "../lib/objectStorage";
 import { PROFILE_AVATAR_PRESET_LIMIT } from "../lib/coverPresetLimits";
+import { avatarCategoryMetadata, serializeAvatarMembership } from "../lib/profileAvatarCategories";
 import {
   isObjectReferenced,
   lockObjectPaths,
@@ -50,7 +51,20 @@ function serializePreset(preset: CoverPreset) {
   };
 }
 
-async function listPresets(scope: (typeof COVER_PRESET_SCOPES)[number]) {
+export async function listPresets(scope: (typeof COVER_PRESET_SCOPES)[number]) {
+  if (scope === "profile") {
+    // Names and memberships must belong to the same snapshot, including during edits/deletions.
+    return db.transaction(async tx => {
+      const presets = await tx.select().from(coverPresetsTable)
+        .where(eq(coverPresetsTable.scope, scope)).orderBy(asc(coverPresetsTable.sortOrder), asc(coverPresetsTable.id));
+      const metadata = await avatarCategoryMetadata(tx);
+      return {
+        scope,
+        categories: metadata.categories,
+        presets: presets.map(preset => ({ ...serializePreset(preset), ...serializeAvatarMembership(preset, metadata.idsByPreset) })),
+      };
+    }, { isolationLevel: "repeatable read", accessMode: "read only" });
+  }
   const presets = await db
     .select()
     .from(coverPresetsTable)
@@ -238,6 +252,13 @@ router.put("/admin/cover-presets/order", requireAuth, requireRole("admin"), asyn
       const ordered = await tx.select().from(coverPresetsTable)
         .where(eq(coverPresetsTable.scope, parsed.data.scope))
         .orderBy(asc(coverPresetsTable.sortOrder), asc(coverPresetsTable.id));
+      if (parsed.data.scope === "profile") {
+        const metadata = await avatarCategoryMetadata(tx);
+        return {
+          scope: parsed.data.scope, categories: metadata.categories,
+          presets: ordered.map(preset => ({ ...serializePreset(preset), ...serializeAvatarMembership(preset, metadata.idsByPreset) })),
+        };
+      }
       return { scope: parsed.data.scope, presets: ordered.map(serializePreset) };
     });
     res.json(result);
@@ -351,7 +372,10 @@ router.patch("/admin/cover-presets/:id", requireAuth, requireRole("admin"), asyn
         await tx.delete(uploadsTable).where(eq(uploadsTable.objectPath, oldObjectPath));
       }).catch((err) => req.log.warn({ err, objectPath: oldObjectPath }, "failed to delete replaced cover preset object"));
     }
-    res.json(serializePreset(updated));
+    const membership = updated.scope === "profile"
+      ? serializeAvatarMembership(updated, (await avatarCategoryMetadata()).idsByPreset)
+      : {};
+    res.json({ ...serializePreset(updated), ...membership });
   } catch (err) {
     if (typeof parsed.data.objectPath === "string") {
       await cleanupUnclaimedObject(parsed.data.objectPath, me.id, req.log);

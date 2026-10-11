@@ -71,6 +71,7 @@ export * from "./emotional-phrases";
 export * from "./inspirations";
 export * from "./hero-slides";
 export * from "./cover-presets";
+export * from "./profile-avatar-categories";
 export * from "./reflections";
 export * from "./reflection-categories";
 export * from "./reflection-stories";

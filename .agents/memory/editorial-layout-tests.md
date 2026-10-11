@@ -11,7 +11,7 @@ Al reordenar una sección de Descubrir, conservar el orden vigente de las demás
 
 En Perfil y Tu camino también hay expectativas históricas de tamaños, espaciado y estructura. Ante un fallo ajeno al cambio solicitado, contrastarlo con la versión anterior antes de modificar la UI.
 
-**Why:** Algunas pruebas amplias ya fallaban antes de los ajustes de iconos y calendario. En Tu camino, las expectativas de las antiguas tarjetas altas de recompensas sobrevivieron al diseño compacto de candado y texto. Corregir la pantalla para satisfacerlas habría deshecho decisiones visuales posteriores.
+**Why:** Algunas pruebas amplias ya fallaban antes de los ajustes de iconos y calendario. En Tu camino, las expectativas de las antiguas tarjetas altas de recompensas sobrevivieron al diseño compacto de candado y texto. También quedaron pruebas de avatares que suponían un bloqueo absoluto, anteriores a los desbloqueos ganados. Corregir el producto para satisfacerlas habría deshecho decisiones posteriores.
 
 **How to apply:** Verificar el cambio con pruebas específicas y comparar los fallos generales contra la base anterior. Separar regresiones nuevas de fallos preexistentes; no declarar toda la suite aprobada si solo pasó el alcance específico.
 

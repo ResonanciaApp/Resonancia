@@ -87,6 +87,15 @@ import type { HomeReflectionWallHandle } from "@/components/HomeReflectionWallSe
 import { GrowthJourneySheet } from "@/components/GrowthJourneySheet";
 import { GrowthLevelPreviewCard, GrowthCurrentStagePill } from "@/components/GrowthJourney";
 import { useCoverPresetCatalogState } from "@/lib/cover-preset-catalog";
+import { AvatarCategoryMenu, AvatarCategoryTrigger } from "@/components/AvatarCategoryDropdown";
+import {
+  ALL_AVATARS,
+  avatarFilterLabel,
+  filterAvatarsByCategory,
+  padAvatarGrid,
+  reconcileAvatarFilter,
+  type AvatarCategoryFilter,
+} from "@/lib/profile-avatar-categories";
 import {
   gradientColors,
   type GeoSettings,
@@ -326,7 +335,23 @@ export function ProfileScreenBase({
     saveProfile,
     setPhotoUri,
   } = useUserProfile();
-  const { items: profileCatalog, refresh: refreshProfileCatalog } = useCoverPresetCatalogState("profile");
+  const {
+    items: profileCatalog,
+    categories: profileCategories,
+    authoritativeRevision: profileCatalogRevision,
+    refresh: refreshProfileCatalog,
+  } = useCoverPresetCatalogState("profile");
+  const [avatarFilter, setAvatarFilter] = useState<AvatarCategoryFilter>(ALL_AVATARS);
+  const [avatarFilterOpen, setAvatarFilterOpen] = useState(false);
+  const [avatarGridOrigin, setAvatarGridOrigin] = useState({ x: 20, y: 0 });
+  const filteredProfileCatalog = useMemo(
+    () => padAvatarGrid(filterAvatarsByCategory(profileCatalog, avatarFilter), 5),
+    [profileCatalog, avatarFilter],
+  );
+  useEffect(() => {
+    // A deleted category returns to Todos only once a fresh catalog confirms it.
+    setAvatarFilter((current) => reconcileAvatarFilter(current, profileCategories, profileCatalogRevision > 0));
+  }, [profileCategories, profileCatalogRevision]);
 
   const resourceBlockBackground = "rgba(0,0,0,0.16)";
   const libraryHeaderButtonBackground = getLibraryTabSurface(activeSceneId);
@@ -598,15 +623,26 @@ export function ProfileScreenBase({
   const avatarHeaderBackground = getThemeStyleId(activeSceneId) === "cloudy" || activeSceneId === "natural"
     ? "rgba(0,0,0,0.19)" : "rgba(0,0,0,0.16)";
   const closeAvatarPicker = () => {
-    if (goldenAvatarActive) setGoldenAvatarVisible(false);
+    if (avatarFilterOpen) setAvatarFilterOpen(false);
+    else if (goldenAvatarActive) setGoldenAvatarVisible(false);
     else setAccountPhotoPickerVisible(false);
   };
   const avatarScrollProgress = useScrollProgress(accountPhotoPickerVisible);
-  const accountAvatarGridRef = useRef<FlatList<(typeof profileCatalog)[number]>>(null);
+  const accountAvatarGridRef = useRef<FlatList<(typeof filteredProfileCatalog)[number]>>(null);
   const [accountPhotoLibraryPending, setAccountPhotoLibraryPending] = useState(false);
   useEffect(() => {
     if (!accountPhotoPickerVisible) setGoldenAvatarVisible(false);
+    // Every opening starts on Todos with the dropdown closed.
+    setAvatarFilter(ALL_AVATARS);
+    setAvatarFilterOpen(false);
   }, [accountPhotoPickerVisible]);
+  const selectAvatarFilter = (next: AvatarCategoryFilter) => {
+    setAvatarFilterOpen(false);
+    if (next === avatarFilter) return;
+    setAvatarFilter(next);
+    // Reset list scroll (and with it the progress guide) for the new group.
+    accountAvatarGridRef.current?.scrollToOffset({ offset: 0, animated: false });
+  };
   useEffect(() => {
     accountClosedRef.current = false;
     return () => { accountClosedRef.current = true; };
@@ -1254,7 +1290,21 @@ export function ProfileScreenBase({
                   </View>
                 )}
               </View>
-              <View style={styles.accountCoverPresetGrid}>
+              <View
+                style={styles.accountCoverPresetGrid}
+                onLayout={(event) => {
+                  const { x, y } = event.nativeEvent.layout;
+                  setAvatarGridOrigin((current) => (current.x === x && current.y === y ? current : { x, y }));
+                }}
+              >
+              <View style={styles.accountAvatarCategoryRow}>
+                <AvatarCategoryTrigger
+                  label={avatarFilterLabel(avatarFilter, profileCategories)}
+                  open={avatarFilterOpen}
+                  background={avatarHeaderBackground}
+                  onPress={() => setAvatarFilterOpen((open) => !open)}
+                />
+              </View>
               <Reanimated.FlatList
                 ref={accountAvatarGridRef}
                 style={styles.accountCoverPresetGrid}
@@ -1262,13 +1312,27 @@ export function ProfileScreenBase({
                 onLayout={avatarScrollProgress.onLayout}
                 onContentSizeChange={avatarScrollProgress.onContentSizeChange}
                 scrollEventThrottle={16}
-                 data={profileCatalog}
+                data={filteredProfileCatalog}
                 keyExtractor={(preset) => preset.id}
                 numColumns={5}
                 showsVerticalScrollIndicator={false}
-                contentContainerStyle={[styles.accountCoverPresetGridContent, { paddingBottom: bottomPad + 20 }]}
+                contentContainerStyle={[styles.accountCoverPresetGridContent, styles.accountCoverPresetGridContentFiltered, { paddingBottom: bottomPad + 20 }]}
+                ListEmptyComponent={
+                  <View style={styles.accountAvatarCategoryEmpty} testID="avatar-category-empty">
+                    <Text style={styles.accountAvatarCategoryEmptyText}>No hay avatares en esta categoría.</Text>
+                    <Pressable
+                      onPress={() => selectAvatarFilter(ALL_AVATARS)}
+                      accessibilityRole="button"
+                      style={[styles.accountAvatarCategoryEmptyButton, { backgroundColor: avatarHeaderBackground }]}
+                      testID="avatar-category-empty-all"
+                    >
+                      <Text style={styles.accountAvatarCategoryEmptyButtonText}>Ver Todos</Text>
+                    </Pressable>
+                  </View>
+                }
                 columnWrapperStyle={styles.accountCoverPresetGridRow}
                 renderItem={({ item: preset }) => {
+                  if (preset.placeholder) return <View style={styles.accountCoverPresetFrame} pointerEvents="none" importantForAccessibility="no" accessibilityElementsHidden />;
                    const selected = preset.id === (accountSelectedProfilePreset?.id ?? accountAvatarPresetId);
                   const locked = preset.isLocked && !growth.progress?.unlockedAvatarIds.includes(preset.id) && preset.id !== selectedAvatarPresetId;
                   return (
@@ -1300,6 +1364,16 @@ export function ProfileScreenBase({
               />
               <ScrollProgressIndicator progress={avatarScrollProgress} />
               </View>
+              <AvatarCategoryMenu
+                visible={avatarFilterOpen}
+                top={avatarGridOrigin.y + 12 + 34 + 6}
+                left={avatarGridOrigin.x}
+                categories={profileCategories}
+                value={avatarFilter}
+                surface={activeTheme.gradient[activeTheme.gradient.length - 1] as string}
+                onSelect={selectAvatarFilter}
+                onDismiss={() => setAvatarFilterOpen(false)}
+              />
             </Animated.View>
             <GoldenAvatarSheet motion={goldenAvatarMotion} sheetHeight={goldenAvatarHeight} onClose={() => setGoldenAvatarVisible(false)} />
             </View>
@@ -2523,6 +2597,34 @@ const styles = StyleSheet.create({
   accountCoverPresetGridContent: {
     paddingTop: 26,
     paddingBottom: 20,
+  },
+  accountCoverPresetGridContentFiltered: {
+    paddingTop: 16,
+  },
+  accountAvatarCategoryRow: {
+    paddingTop: 12,
+    alignItems: "flex-start",
+  },
+  accountAvatarCategoryEmpty: {
+    alignItems: "flex-start",
+    gap: 14,
+    paddingTop: 12,
+  },
+  accountAvatarCategoryEmptyText: {
+    color: "rgba(249,249,249,0.82)",
+    fontSize: 15,
+    fontFamily: "Inter_400Regular",
+  },
+  accountAvatarCategoryEmptyButton: {
+    height: 36,
+    paddingHorizontal: 16,
+    borderRadius: 18,
+    justifyContent: "center",
+  },
+  accountAvatarCategoryEmptyButtonText: {
+    color: "#F9F9F9",
+    fontSize: 14,
+    fontFamily: "Inter_500Medium",
   },
   accountCoverPresetGridRow: {
     justifyContent: "space-between",
