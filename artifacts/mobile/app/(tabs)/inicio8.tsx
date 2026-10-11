@@ -1793,6 +1793,7 @@ const Inicio2HeroStatic = React.memo(function Inicio2HeroStatic({
   giftScale,
   onOpenDrawer,
   onOpenProfile,
+  onOpenMoodPicker,
   isInicio3,
   scrollY,
 }: {
@@ -1801,6 +1802,7 @@ const Inicio2HeroStatic = React.memo(function Inicio2HeroStatic({
   giftScale: Animated.Value;
   onOpenDrawer: () => void;
   onOpenProfile: () => void;
+  onOpenMoodPicker: () => void;
   isInicio3?: boolean;
   scrollY?: SharedValue<number>;
 }) {
@@ -1959,27 +1961,38 @@ const Inicio2HeroStatic = React.memo(function Inicio2HeroStatic({
             )}
           </Pressable>
           </View>
-          <Pressable
-            onPress={onOpenDrawer}
-            hitSlop={8}
+          <View
             style={[
               styles.inicio2HeroGreeting,
               isInicio3 && styles.inicio3HeroGreeting,
             ]}
-            accessibilityRole="button"
-            accessibilityLabel="Abrir menú de perfil"
-            testID="inicio2-open-drawer"
           >
+            <Pressable
+              onPress={onOpenDrawer}
+              hitSlop={isInicio3 ? { top: 8, left: 8, right: 8, bottom: 0 } : 8}
+              accessibilityRole="button"
+              accessibilityLabel="Abrir menú de perfil"
+              testID="inicio2-open-drawer"
+            >
             {!isInicio3 && (
               <Text style={styles.inicio2HeroGreetingLabel}>{greeting}</Text>
             )}
             <Text style={[styles.inicio2HeroGreetingName, isInicio3 && styles.inicio3HeroGreetingName]}>{displayName}</Text>
+            </Pressable>
             {isInicio3 ? (
-              <Text style={styles.inicio3HeroDecree} numberOfLines={2}>
-                {greeting}
-              </Text>
+              <Pressable
+                onPress={onOpenMoodPicker}
+                hitSlop={{ top: 0, left: 8, right: 8, bottom: 8 }}
+                accessibilityRole="button"
+                accessibilityLabel="Abrir registro de ánimo"
+                testID="inicio3-open-mood-register"
+                style={({ pressed }) => [styles.inicio3MoodRegister, pressed && { opacity: 0.65 }]}
+              >
+                <Text style={styles.inicio3HeroDecree} numberOfLines={1}>Registro de ánimo</Text>
+                <Feather name="chevron-down" size={14} color="#F4F4F4" />
+              </Pressable>
             ) : null}
-          </Pressable>
+          </View>
         </RAnimated.View>
 
         <View
@@ -2258,6 +2271,7 @@ export default function HomeScreen2({
 
   const [moodSheetVisible, setMoodSheetVisible] = useState(false);
   const [selectedMoods, setSelectedMoods] = useState<Mood[]>([]);
+  const handleOpenMoodPicker = useCallback(() => setMoodSheetVisible(true), []);
   const [immersive, setImmersive] = useState(false);
   const [immersiveRendered, setImmersiveRendered] = useState(false);
   const { requestHide, showMenu } = useTabBarVisibility();
@@ -2939,6 +2953,7 @@ export default function HomeScreen2({
               giftScale={giftScaleAnim}
               onOpenDrawer={handleOpenDrawer}
               onOpenProfile={handleOpenProgress}
+              onOpenMoodPicker={handleOpenMoodPicker}
               isInicio3={variant === "inicio3"}
               scrollY={inicio3ScrollY}
             />
@@ -3492,7 +3507,7 @@ export default function HomeScreen2({
       <InicioEmotionWidget
         bottom={emotionWidgetBottom}
         plusBackgroundGradient={activeTheme.id === "natural" ? NATURAL_WIDGET_PLUS_GRADIENT : activeTheme.id === "cloudy" ? CLOUDY_WIDGET_PLUS_GRADIENT : undefined}
-        onOpenMoodPicker={() => setMoodSheetVisible(true)}
+        onOpenMoodPicker={handleOpenMoodPicker}
       />
       </Animated.View>{/* fin contenido desvanecible */}
 
@@ -3715,6 +3730,12 @@ const styles = StyleSheet.create({
     textShadowColor: "rgba(0,0,0,0.55)",
     textShadowOffset: { width: 0, height: 1 },
     textShadowRadius: 3,
+  },
+  inicio3MoodRegister: {
+    flexDirection: "row",
+    alignItems: "center",
+    alignSelf: "flex-start",
+    gap: 5,
   },
   inicio2HeroLotusButton: {
     width: 62,

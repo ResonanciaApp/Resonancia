@@ -246,7 +246,7 @@ test("menu never slides horizontally and keeps the Inicio themed gradient backdr
   assert.match(inicio, /<DrawerEdgeGesture enabled=\{variant === "inicio3"/);
 });
 
-test("Inicio avatar, user name and greeting fade together from the same UI-thread drawer progress", () => {
+test("Inicio avatar, user name and mood register fade together from the same UI-thread drawer progress", () => {
   const source = read("../app/(tabs)/inicio8.tsx");
   assert.match(source, /drawerProgress: identityDrawerProgress \} = useDrawerMotion\(\)/);
   assert.match(source, /identityDrawerStyle = useAnimatedStyle\(\(\) => \(\{\s*opacity: isInicio3 \? 1 - Math\.max\(0, Math\.min\(1, identityDrawerProgress\.value\)\) : 1,/);
@@ -258,7 +258,8 @@ test("Inicio avatar, user name and greeting fade together from the same UI-threa
   assert.match(group, /testID="inicio2-avatar-open-drawer"/);
   assert.match(group, /testID="inicio2-open-drawer"/);
   assert.match(group, /\{displayName\}/);
-  assert.match(group, /\{greeting\}/);
+  assert.match(group, /Registro de ánimo/);
+  assert.match(group, /testID="inicio3-open-mood-register"/);
   assert.equal((source.match(/identityDrawerStyle,/g) ?? []).length, 1, "one shared parent fade, not multiplied fades");
   const expression = source.match(/opacity: (isInicio3 \? 1 - Math\.max\(0, Math\.min\(1, identityDrawerProgress\.value\)\) : 1)/)![1];
   const opacity = new Function("isInicio3", "identityDrawerProgress", `return ${expression};`);
