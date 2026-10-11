@@ -164,7 +164,7 @@ test("pill geometry preserves the existing safe-area footprint and native visibi
   assert.equal(h.styles.pill.top + h.styles.row.marginTop, 0);
   assert.equal(h.styles.row.height, 58);
   assert.equal(selectionConstants.TAB_SELECTION_HEIGHT, 50);
-  assert.equal(selectionConstants.TAB_SELECTION_INSET, -3.25);
+  assert.equal(selectionConstants.TAB_SELECTION_INSET, -5.25);
   assert.equal(h.styles.row.paddingHorizontal, 13.25);
   assert.ok(h.animations.every((animation) => animation.useNativeDriver === true));
   h.session();
