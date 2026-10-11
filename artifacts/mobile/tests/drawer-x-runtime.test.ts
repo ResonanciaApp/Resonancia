@@ -74,7 +74,17 @@ test("tap shield remains mounted but neither intercepts nor recognizes touches w
     assert.equal(touchLayer.props.pointerEvents, open ? "auto" : "none");
     assert.equal(touchLayer.props.accessible, open);
     assert.equal(touchLayer.props.accessibilityElementsHidden, !open);
-    for (const gesture of result.gestures.slice(-2)) assert.equal(gesture.options.enabled, open);
+    assert.equal(touchLayer.props.disabled, !open);
+    assert.equal(typeof touchLayer.props.onPress, "function");
+    assert.equal(result.gestures.at(-1).options.enabled, open);
+    if (open) {
+      touchLayer.props.onPress({ nativeEvent: {} });
+      h.flush();
+      assert.equal(h.ctx.isOpen, false, "strip press starts the normal close path");
+      assert.equal(h.ctx.drawerProgress.animation.target, 0);
+      h.finish(); h.flush();
+      assert.equal(h.ctx.foregroundBlocked, false);
+    }
   }
 });
 
@@ -358,6 +368,7 @@ function harness({ deferJS = false } = {}) {
   const modules: any = {
     react: { __esModule: true, default: React, ...React },
     "react-native": {
+      Pressable: "Pressable",
       useWindowDimensions: () => ({ width: 390, height: 844 }),
       Animated: { Value, timing: (value: Value, options: any) => ({ start: (cb?: any) => { value.setValue(options.toValue); cb?.({ finished: true }); } }) },
       BackHandler: { addEventListener: (_event: string, fn: any) => {

@@ -1,5 +1,5 @@
 import React from "react";
-import { StyleSheet, View } from "react-native";
+import { Pressable, StyleSheet, View } from "react-native";
 import { Gesture, GestureDetector } from "react-native-gesture-handler";
 import RAnimated, { cancelAnimation, runOnJS, useAnimatedStyle, useSharedValue } from "react-native-reanimated";
 
@@ -92,11 +92,10 @@ export function DrawerForeground({ children }: { children: React.ReactNode }) {
         dragging.value = false;
         settleDrawerDrag(dragStart.value >= 0.5, gestureVersion.value);
       });
-    const tap = Gesture.Tap().enabled(foregroundBlocked).onEnd((_event, success) => {
-      if (success) runOnJS(closeFromStrip)();
-    });
-    return Gesture.Exclusive(pan, tap);
-  }, [beginDrawerDrag, closeFromStrip, dragging, dragStart, drawerGestureVersion, drawerProgress, drawerWidth, foregroundBlocked, gestureVersion, settleDrawerDrag]);
+    // Taps use the same RN responder path as the menu's avatar/empty zones.
+    // The native pan still takes over (cancelling that press) for actual drags.
+    return pan;
+  }, [beginDrawerDrag, dragging, dragStart, drawerGestureVersion, drawerProgress, drawerWidth, foregroundBlocked, gestureVersion, settleDrawerDrag]);
 
   return (
     <RAnimated.View
@@ -121,8 +120,10 @@ export function DrawerForeground({ children }: { children: React.ReactNode }) {
         {/* Stable native hierarchy: do not detach recognizers/views in the
             same frame that ends the closing spring and restores Home. */}
         <GestureDetector gesture={gesture}>
-          <View
+          <Pressable
             style={StyleSheet.absoluteFill}
+            onPress={closeFromStrip}
+            disabled={!foregroundBlocked}
             pointerEvents={foregroundBlocked ? "auto" : "none"}
             accessible={foregroundBlocked}
             accessibilityElementsHidden={!foregroundBlocked}

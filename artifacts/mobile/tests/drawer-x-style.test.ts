@@ -228,7 +228,8 @@ test("root stacking: static menu behind a single animated foreground, no black v
   assert.match(fg, /foregroundVeilOpacity/);
   assert.match(fg, /backgroundColor: "#FFFFFF"/);
   assert.doesNotMatch(fg, /useNativeDriver/);
-  assert.match(fg, /Gesture\.Exclusive\(pan, tap\)/);
+  assert.doesNotMatch(fg, /Gesture\.Tap|Gesture\.Exclusive/);
+  assert.match(fg, /onPress=\{closeFromStrip\}/);
 });
 
 test("menu never slides horizontally and keeps the Inicio themed gradient backdrop", () => {

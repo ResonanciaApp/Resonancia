@@ -61,6 +61,16 @@ para intentar resolver el cierre pondría en riesgo lo que ya funciona.
 desaceleración continua de una congelación nativa antes de retocar ese tramo;
 la física del motor sin renderizado no prueba la ausencia de tirones en iPhone.
 
+El usuario aisló el fallo de cierre por origen del toque: desde el avatar del
+drawer o sus zonas vacías casi nunca hay traba; desde la franja de Inicio sí.
+
+**Why:** comparten la animación, pero no necesariamente el reconocimiento y la
+finalización del toque. No atribuir automáticamente el fallo al resorte común.
+
+**How to apply:** comparar los caminos de entrada y su cancelación durante un
+arrastre; preservar el cierre desde el menú y la apertura ya aprobados. Esta
+observación no confirma por sí sola una causa nativa ni la eficacia de un arreglo.
+
 Los umbrales de reposo de un resorte sobre progreso normalizado deben evaluarse en píxeles y en las superficies derivadas, no solo comprobando que el valor final es cero.
 
 **Why:** El motor puede forzar el último valor al destino cuando todavía queda un salto visible; una función de radio con pendiente alta amplifica ese salto. Un mock que asigna directamente el destino oculta esta discontinuidad.
