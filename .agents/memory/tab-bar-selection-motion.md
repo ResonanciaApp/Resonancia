@@ -11,6 +11,8 @@ el selector antes de confirmar el destino puede indicar una pantalla que no
 se abrió.
 
 **How to apply:** mantener una sola posición animada en el hilo UI; un cambio
-rápido de destino continúa desde su posición actual. El rebote aumenta con la
-distancia que aún debe recorrer, no con un salto desde la posición del tab
-anterior. No reiniciar el selector ni añadir otra animación horizontal.
+rápido de destino continúa desde su posición visible actual, no con un salto
+desde la posición del tab anterior. La distancia influye en el resorte, pero
+los viajes Inicio–Perfil deben tener un rebote contenido y nunca salir de la
+barra: el usuario corrigió expresamente el exceso de inercia entre extremos.
+No reiniciar el selector ni añadir otra animación horizontal.

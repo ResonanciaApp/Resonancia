@@ -61,6 +61,9 @@ test("minimal Día/Noche rows retain menu sizes and dim the inactive icon and ti
     assert.deepEqual(all(list.props.children[1]).filter(node => node.props.accessibilityRole === "radio").map(node => node.props.accessibilityLabel), ["Natural", "Pleyades"]);
     const sectionHeader = nodes.find(node => node.props.style?.borderTopWidth === 1);
     assert.equal(sectionHeader.props.style.marginTop, 150 + 15, "Divider, Escena heading and all following options move down another 15px in layout flow");
+    const heading = all(sectionHeader).find(node => node.type === "text");
+    assert.equal(heading.props.style.fontSize, 10);
+    assert.equal(heading.props.style.fontFamily, "Manrope650");
     for (const radio of radios) {
       const iconBox = all(radio).find(node => node.props.style?.width === 26);
       assert.equal(iconBox.props.style.height, 26);
@@ -71,8 +74,9 @@ test("minimal Día/Noche rows retain menu sizes and dim the inactive icon and ti
       const text = all(radio).filter(node => node.type === "text");
       assert.equal(text.length, 1);
       const textStyle = Object.assign({}, ...text[0].props.style);
-      assert.equal(textStyle.fontSize, 15);
-      assert.equal(textStyle.fontWeight, "700");
+      assert.equal(textStyle.fontSize, 13);
+      assert.equal(textStyle.fontFamily, "Manrope650");
+      assert.equal(textStyle.fontWeight, "400", "Use the registered static 650-weight face rather than unsupported iOS weight strings");
       assert.equal(textStyle.color, radio.props.accessibilityState.selected ? "#FFFFFF" : "#A8A8A8");
       assert.equal(radio.props.style({ pressed: false })[0].backgroundColor, undefined);
     }

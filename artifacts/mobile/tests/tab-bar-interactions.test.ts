@@ -184,11 +184,11 @@ test("the bar keeps Home's blur with one persistent selection indicator behind t
   assert.equal(indicators[0].props.index, 0);
 });
 
-test("selected capsule uses exactly ten percent white and greater rebound for longer travel", () => {
+test("selected capsule uses exactly ten percent white and extra damping for end-to-end travel", () => {
   assert.equal(selectionConstants.TAB_SELECTION_BACKGROUND, "rgba(255,255,255,0.1)");
   const near = selectionConstants.tabSelectionSpring(1);
   const far = selectionConstants.tabSelectionSpring(4);
-  assert.ok(far.damping < near.damping);
+  assert.ok(far.damping > near.damping);
   assert.equal(near.stiffness, far.stiffness);
   assert.equal(far.overshootClamping, false);
   assert.deepEqual(selectionConstants.tabSelectionSpring(10), far);

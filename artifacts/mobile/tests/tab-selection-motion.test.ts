@@ -43,6 +43,7 @@ function harness() {
   vm.runInNewContext(compiled, { module, exports: module.exports, require: (name: string) => imports[name] });
   return {
     refs, springs,
+    sampleStyle: () => animatedStyle(),
     render(width: number, index: number, count = 5) {
       cursor = 0;
       const node = module.exports.TabSelectionIndicator({ width, count, index });
@@ -88,7 +89,7 @@ test("quick changes continue from the current position, including reversal, with
   assert.equal(h.springs.at(-1).target, 0);
 });
 
-test("farther trips have a greater physical overshoot; resizing realigns immediately", () => {
+test("end-to-end trips have much less overshoot while short trips and resizing stay unchanged", () => {
   const near = selection.tabSelectionSpring(1);
   const far = selection.tabSelectionSpring(4);
   const overshoot = (config: typeof near) => {
@@ -96,11 +97,38 @@ test("farther trips have a greater physical overshoot; resizing realigns immedia
     return Math.exp(-Math.PI * ratio / Math.sqrt(1 - ratio * ratio));
   };
   assert.ok(overshoot(near) > 0);
-  assert.ok(overshoot(far) > overshoot(near));
-  assert.ok(overshoot(far) < 0.1);
+  assert.ok(overshoot(far) < overshoot(near));
+  assert.ok(overshoot(far) < 0.006);
+  assert.equal(near.damping, 27.4);
   const h = harness();
   h.render(340, 4);
   const { style } = h.render(700, 4);
   assert.equal(style.transform[0].translateX, (700 - 14) / 5 * 4);
   assert.equal(h.springs.length, 0);
+});
+
+test("the entire capsule stays inside the bar during overshoot in both directions", () => {
+  for (const width of [320, 340, 768]) {
+    const h = harness();
+    const { node } = h.render(width, 0);
+    const slot = (width - 14) / 5;
+    for (const position of [-10000, -20, 0, slot * 2, slot * 4 + 20, 10000]) {
+      h.refs[1].value = position;
+      const style = h.sampleStyle();
+      const left = node.props.style[0].left + style.transform[0].translateX;
+      assert.ok(left >= 1);
+      assert.ok(left + style.width <= width - 1 + 1e-9);
+    }
+  }
+});
+
+test("retargeting after overshoot starts from the visible position, not from beyond the bar", () => {
+  const h = harness();
+  h.render(340, 4);
+  h.refs[1].value = 1000;
+  const visible = h.sampleStyle().transform[0].translateX;
+  h.render(340, 0);
+  assert.equal(h.springs.at(-1).start, visible);
+  assert.equal(h.springs.at(-1).target, 0);
+  assert.equal(h.springs.at(-1).config.damping, 29);
 });

@@ -79,10 +79,10 @@ export function DrawerSceneCards({ activeId, onSelect }: Props) {
 const styles = StyleSheet.create({
   header: { flexDirection: "row", alignItems: "center", gap: 8, paddingHorizontal: 2, marginBottom: 4, marginTop: 165, paddingTop: 18, borderTopWidth: StyleSheet.hairlineWidth, borderTopColor: "rgba(255,255,255,0.10)" },
   title: {
-    fontFamily: "Manrope",
+    fontFamily: "Manrope650",
     color: "rgba(255,255,255,0.58)",
-    fontSize: 12,
-    fontWeight: "700",
+    fontSize: 10,
+    fontWeight: "400",
     letterSpacing: 1.1,
     textTransform: "uppercase",
   },
@@ -97,5 +97,5 @@ const styles = StyleSheet.create({
   list: { marginTop: 10, flexDirection: "row", gap: 12 },
   column: { flex: 1, gap: 2 },
   iconWrap: { width: 26, height: 26, alignItems: "center", justifyContent: "center" },
-  label: { fontFamily: "Manrope", color: "#FFFFFF", fontSize: 15, lineHeight: 20, fontWeight: "700", letterSpacing: 0.2 },
+  label: { fontFamily: "Manrope650", color: "#FFFFFF", fontSize: 13, lineHeight: 20, fontWeight: "400", letterSpacing: 0.2 },
 });

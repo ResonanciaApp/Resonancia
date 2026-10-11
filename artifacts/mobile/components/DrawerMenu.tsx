@@ -67,7 +67,6 @@ const INICIO3_SECTIONS: { title: string | null; items: MenuItem[] }[] = [
       { id: "notifications", label: "Notificaciones", icon: "bell", mciIcon: "bell-outline", route: "__overlay:/notificaciones" },
       { id: "mixer", label: "Mezclador", icon: "sliders", mciIcon: "tune-vertical", route: "__mixer", color: "#F9F9F9" },
       { id: "breathing", label: "Respiración", icon: "wind", mciIcon: "weather-windy", route: "/respiracion", color: "#F9F9F9" },
-      { id: "mood-register", label: "Registro de ánimo", icon: "smile", mciIcon: "emoticon-happy-outline", route: "__mood_picker" },
     ],
   },
 ];
@@ -521,8 +520,7 @@ const styles = StyleSheet.create({
   scenePositionCompensation: {
     // Eight gaps grew 8px; Perfil (33px) replaces Registro de ánimo (36px).
     // Consume the old 165px spacer, not menu rows or scene card dimensions.
-    // Restoring Registro adds a 36px row and a 10px gap; keep scenes in place.
-    marginTop: -(8 * 8 - 3 + 36 + 10),
+    marginTop: -(8 * 8 - 3),
   },
   inicio3Sections: {
     marginTop: -1,
