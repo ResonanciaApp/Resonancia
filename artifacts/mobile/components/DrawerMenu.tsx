@@ -88,6 +88,10 @@ export function DrawerMenu() {
     requestMoodPicker,
   } = useDrawer();
   const onClose = React.useCallback(() => close(), [close]);
+  const onAvatarPress = React.useCallback(() => {
+    void Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Soft).catch(() => {});
+    onClose();
+  }, [onClose]);
   const { width: windowWidth } = useWindowDimensions();
   const insets = useSafeAreaInsets();
   const { isRegistered, isSignedIn } = useAuth();
@@ -256,6 +260,12 @@ export function DrawerMenu() {
           <View style={[styles.profileHeader, { paddingTop: topPad + 16 }]}>
             {/* Fila avatar + nombre + cerrar */}
             <View style={styles.profileSection}>
+              <Pressable
+                onPress={onAvatarPress}
+                accessibilityRole="button"
+                accessibilityLabel="Cerrar menú"
+                testID="drawer-avatar-close"
+              >
               {avatarSource ? (
                 <View style={[styles.profilePhoto, styles.inicio3ProfilePhoto]}>
                   <Image
@@ -278,6 +288,7 @@ export function DrawerMenu() {
                 </View>
               )}
 
+              </Pressable>
               <View style={styles.profileInfo}>
                 {loggedIn ? (
                   <>
