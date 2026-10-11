@@ -20,7 +20,7 @@ test("emotion widget preserves its original native blur and translucent backgrou
   assert.match(widget, /onPress=\{onOpenMoodPicker\}/);
   assert.match(widget, /testID="inicio-add-emotion"/);
   assert.match(widget, /opacity: emotionWidgetOpacity/);
-  assert.match(home, /inicio2HeroEmotionGlass: \{[\s\S]*?borderRadius: 33\.5,[\s\S]*?backgroundColor: "rgba\(255,255,255,0\.10\)"/);
+  assert.match(home, /inicio2HeroEmotionGlass: \{[\s\S]*?borderRadius: \(67 - 4 \/ \(63 \/ 67\)\) \/ 2,[\s\S]*?backgroundColor: "rgba\(255,255,255,0\.10\)"/);
 });
 
 function harness(kind: "added" | "completed") {
@@ -275,10 +275,21 @@ test("emoji, plus, plus background and widget glass all share one native opacity
   const opacity = { native: true };
   const context: any = { activeEvent: null, emotionWidgetOpacity: opacity };
   const Native = () => null;
-  const styles: any = {
-    inicio2HeroEmotionWidget: { width: 67, height: 67, position: "absolute" },
-    inicio2HeroEmotionGlass: { backgroundColor: "rgba(255,255,255,0.10)" },
-  };
+  const stylesDeclaration = ast.statements
+    .filter(ts.isVariableStatement)
+    .flatMap(statement => [...statement.declarationList.declarations])
+    .find(declaration => declaration.name.getText(ast) === "styles");
+  assert.ok(stylesDeclaration?.initializer && ts.isCallExpression(stylesDeclaration.initializer));
+  const stylesObject = stylesDeclaration.initializer.arguments[0];
+  assert.ok(ts.isObjectLiteralExpression(stylesObject));
+  const styles: any = {};
+  for (const property of stylesObject.properties) {
+    if (ts.isPropertyAssignment(property) && property.name.getText(ast).startsWith("inicio2HeroEmotion")) {
+      styles[property.name.getText(ast)] = new Function("StyleSheet", `return (${property.initializer.getText(ast)});`)({
+        absoluteFillObject: { top: 0, right: 0, bottom: 0, left: 0 },
+      });
+    }
+  }
   const build = new Function("React", "Animated", "Pressable", "BlurView", "Text", "View", "LinearGradient", "StyleSheet", "styles", "useRoutineCompletionBanner",
     `${compile(widget.getText(ast))}\nreturn InicioEmotionWidget;`)(
     React, { View: Native }, Native, Native, Native, Native, Native, { absoluteFill: {} }, styles, () => context,
@@ -294,6 +305,16 @@ test("emoji, plus, plus background and widget glass all share one native opacity
   assert.equal(styles.inicio2HeroEmotionWidget.height * root.props.style[1].transform[0].scale, 63);
   assert.equal(root.props.pointerEvents, "auto");
   const [glass, emoji, plusBackground] = root.props.children.props.children;
+  const scale = root.props.style[1].transform[0].scale;
+  const close = (actual: number, expected: number) => assert.ok(Math.abs(actual - expected) < 1e-9);
+  close((styles.inicio2HeroEmotionWidget.width - styles.inicio2HeroEmotionGlass.left * 2) * scale, 59);
+  close(styles.inicio2HeroEmotionGlass.borderRadius * 2 * scale, 59);
+  close(styles.inicio2HeroEmotionAdd.width * scale, 28 * scale - 4);
+  close(styles.inicio2HeroEmotionAdd.height * scale, 28 * scale - 4);
+  close(styles.inicio2HeroEmotionAddText.fontSize * scale, 22 * scale - 4);
+  assert.equal(styles.inicio2HeroEmotionEmoji.fontSize, 31, "The emoji itself keeps its previous size");
+  close((styles.inicio2HeroEmotionAdd.left + styles.inicio2HeroEmotionAdd.width / 2) * scale, 7 * scale);
+  close((styles.inicio2HeroEmotionAdd.top + styles.inicio2HeroEmotionAdd.height / 2) * scale, 10 * scale);
   assert.equal(glass.type, Native);
   assert.equal(glass.props.intensity, 38);
   assert.equal(glass.props.tint, "light");
