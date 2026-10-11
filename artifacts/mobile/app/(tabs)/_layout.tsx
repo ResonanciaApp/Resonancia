@@ -1,7 +1,6 @@
 import { router, Tabs, usePathname } from "expo-router";
 import { SymbolView } from "expo-symbols";
 import { BlurView } from "expo-blur";
-import { LinearGradient } from "expo-linear-gradient";
 import * as Haptics from "expo-haptics";
 import { Feather, MaterialCommunityIcons } from "@expo/vector-icons";
 import React, { useEffect, useRef, useCallback, useLayoutEffect, useState } from "react";
@@ -30,7 +29,9 @@ import { CategoryOverlayProvider, useCategoryOverlay } from "@/context/CategoryO
 import { CategoryOverlay } from "@/components/CategoryOverlay";
 import { SacredBackground } from "@/components/SacredBackground";
 import { WIDGET_GREEN_SOLID } from "@/constants/colors";
-import { TAB_BAR_INACTIVE_COLOR, TAB_PILL_BAR_H, TAB_PILL_BLUR_INTENSITY, TAB_PILL_BLUR_TINT, TAB_PILL_SIDE_MARGIN, getTabBarGlassOverlay, getTabBarInactiveColor, getTabPillSelectedGradient } from "@/constants/tab-bar";
+import { TAB_BAR_INACTIVE_COLOR, TAB_PILL_BAR_H, TAB_PILL_BLUR_INTENSITY, TAB_PILL_BLUR_TINT, TAB_PILL_SIDE_MARGIN, getTabBarGlassOverlay, getTabBarInactiveColor } from "@/constants/tab-bar";
+import { TabSelectionIndicator } from "@/components/TabSelectionIndicator";
+import { TAB_ROW_PADDING } from "@/constants/tab-selection";
 import { RoutineCompletionBanner } from "@/components/RoutineCompletionBanner";
 import { RoutineCompletionBannerProvider } from "@/context/RoutineCompletionBannerContext";
 
@@ -41,7 +42,6 @@ const GRAD_END       = "#F9F9F9";
 
 const ICON_SIZE      = 24;
 const PILL_H         = TAB_PILL_BAR_H; // altura del bloque de navegación, sin safe area
-const SELECTED_H = 44;
 
 // Rutas que nunca aparecen en el menú inferior
 const HIDDEN_ROUTES = new Set(["musica", "biblioteca", "video", "emocion", "herramientas", "explore", "encuentros"]);
@@ -92,7 +92,6 @@ function TabItem({
   tibetMode = false,
   lightNeutralColors = false,
   inactiveColor = INACTIVE_COLOR,
-  selectedGradient,
 }: {
   route: { key: string; name: string };
   isFocused: boolean;
@@ -100,7 +99,6 @@ function TabItem({
   tibetMode?: boolean;
   lightNeutralColors?: boolean;
   inactiveColor?: string;
-  selectedGradient: [string, string];
 }) {
   const conf = TAB_CONFIG[route.name];
   if (!conf) return null;
@@ -141,28 +139,6 @@ function TabItem({
       accessibilityState={{ selected: isFocused }}
       testID={`tab-${route.name}`}
     >
-      {isFocused && (
-        <View pointerEvents="none" style={styles.selected}>
-          <BlurView
-            tint={TAB_PILL_BLUR_TINT}
-            intensity={TAB_PILL_BLUR_INTENSITY}
-            experimentalBlurMethod="dimezisBlurView"
-            style={StyleSheet.absoluteFill}
-          />
-          <LinearGradient
-            colors={selectedGradient}
-            start={{ x: 0, y: 0 }}
-            end={{ x: 1, y: 1 }}
-            style={StyleSheet.absoluteFill}
-          />
-          <LinearGradient
-            colors={["rgba(255,255,255,0.26)", "rgba(255,255,255,0)"]}
-            start={{ x: 0.5, y: 0 }}
-            end={{ x: 0.5, y: 0.6 }}
-            style={StyleSheet.absoluteFill}
-          />
-        </View>
-      )}
       <View style={styles.pillWrap}>
         <View style={{ width: Math.max(iconSize, ICON_SIZE), height: Math.max(iconSize, ICON_SIZE), alignItems: "center", justifyContent: "center", overflow: "visible" }}>
           {makeIcon(isFocused)}
@@ -189,11 +165,11 @@ function CustomTabBar({ state, navigation, descriptors }: TabBarProps) {
   const barHeight = PILL_H + pb;
 
   const { hidden, showMenu, revealHandleHidden } = useTabBarVisibility();
-  const { activeSceneId, theme } = useSceneTheme();
+  const { activeSceneId } = useSceneTheme();
   const inactiveColor = getTabBarInactiveColor(activeSceneId);
   const indigo2Mode = isIndigo2ThemeId(activeSceneId);
   const tabBarGlassOverlay = getTabBarGlassOverlay(activeSceneId);
-  const selectedGradient = getTabPillSelectedGradient(theme.gradient);
+  const [rowWidth, setRowWidth] = useState(0);
   const translateY    = useRef(new Animated.Value(0)).current;
   const handleOpacity = useRef(new Animated.Value(0)).current;
   const isLibraryRoute = state.routes[state.index]?.name === "biblioteca";
@@ -223,6 +199,8 @@ function CustomTabBar({ state, navigation, descriptors }: TabBarProps) {
     lastRealRouteIndex.current = state.index;
   }
   const effectiveRouteIndex = currentIsRendered ? state.index : lastRealRouteIndex.current;
+  const visibleRoutes = state.routes.filter((route) => isRenderedTab(route.name));
+  const selectedVisibleIndex = visibleRoutes.findIndex((route) => route.key === state.routes[effectiveRouteIndex]?.key);
   // ────────────────────────────────────────────────────────────────
 
   useEffect(() => {
@@ -283,7 +261,8 @@ function CustomTabBar({ state, navigation, descriptors }: TabBarProps) {
             { backgroundColor: tabBarGlassOverlay },
           ]}
         />
-        <View style={[styles.row, isWeb && styles.rowWeb]}>
+        <View onLayout={(event) => setRowWidth(event.nativeEvent.layout.width)} style={[styles.row, isWeb && styles.rowWeb]}>
+          <TabSelectionIndicator width={rowWidth} count={visibleRoutes.length} index={selectedVisibleIndex} />
           {state.routes.map((route: { key: string; name: string; params?: object }, index: number) => {
             if (HIDDEN_ROUTES.has(route.name)) return null;
 
@@ -318,7 +297,6 @@ function CustomTabBar({ state, navigation, descriptors }: TabBarProps) {
                 isFocused={isFocused}
                 onPress={onPress}
                 inactiveColor={inactiveColor}
-                selectedGradient={selectedGradient}
                 tibetMode={activeSceneId === "tibet"}
                 lightNeutralColors={
                   indigo2Mode || activeSceneId === "resonancia"
@@ -492,21 +470,10 @@ const styles = StyleSheet.create({
     borderWidth: StyleSheet.hairlineWidth,
     borderColor: "rgba(255,255,255,0.16)",
   },
-  selected: {
-    position: "absolute",
-    left: 4,
-    right: 4,
-    height: SELECTED_H,
-    top: (PILL_H - SELECTED_H) / 2,
-    borderRadius: SELECTED_H / 2,
-    overflow: "hidden",
-    borderWidth: StyleSheet.hairlineWidth,
-    borderColor: "rgba(255,255,255,0.32)",
-  },
   row: {
     height: PILL_H,
     flexDirection: "row",
-    paddingHorizontal: 7,
+    paddingHorizontal: TAB_ROW_PADDING,
     alignItems: "center",
     overflow: "visible",
   },

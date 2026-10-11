@@ -5,6 +5,7 @@ import test from "node:test";
 import React from "react";
 import ts from "typescript";
 import * as tabConstants from "../constants/tab-bar.ts";
+import * as selectionConstants from "../constants/tab-selection.ts";
 
 const source = readFileSync(new URL("../app/(tabs)/_layout.tsx", import.meta.url), "utf8");
 const compiled = ts.transpileModule(`${source}\nexport { CustomTabBar, TabItem, styles };`, {
@@ -32,6 +33,7 @@ function harness(platform = "ios") {
       useRef: (initial: unknown) => refs[refIndex++] ??= { current: initial },
       useCallback: (fn: unknown) => fn,
       useMemo: (fn: () => unknown) => fn(),
+      useState: (initial: unknown) => [initial, () => {}],
       useEffect: (fn: () => unknown) => fn(),
       useLayoutEffect: () => {},
     },
@@ -58,6 +60,8 @@ function harness(platform = "ios") {
     "@expo/vector-icons": { Feather: "feather", MaterialCommunityIcons: "mci" },
     "react-native-safe-area-context": { useSafeAreaInsets: () => ({ bottom: 34 }) },
     "@/constants/tab-bar": tabConstants,
+    "@/constants/tab-selection": selectionConstants,
+    "@/components/TabSelectionIndicator": { TabSelectionIndicator: "selection-indicator" },
     "@/constants/motion": { DURATION: { SHEET_CLOSE: 250 }, easeOutCubic: () => {} },
     "@/config/scene-themes": { isIndigo2ThemeId: () => false },
     "@/context/SceneThemeContext": { useSceneTheme: () => ({ activeSceneId: "pleyades", theme }) },
@@ -117,7 +121,7 @@ test("icon-only tabs retain accessible names, selected state, and a single small
       assert.equal(find(rendered, (node) => node.type === "text").length, 0);
       const icon = find(rendered, (node) => ["symbol", "mci", "feather"].includes(node.type))[0];
       assert.equal(icon.props.size, item.props.route.name === "sonidos" ? 27 : 24);
-      assert.equal(find(rendered, (node) => node.type === "blur").length, item.props.isFocused ? 1 : 0);
+      assert.equal(find(rendered, (node) => node.type === "blur").length, 0);
     }
   }
 });
@@ -154,35 +158,34 @@ test("pill geometry preserves the existing safe-area footprint and native visibi
   const bar = find(h.render(), (node) => node.type === "animated-view")[0];
   assert.equal(bar.props.style[1].height, 58 + 34);
   assert.equal(h.styles.pill.borderRadius, h.styles.pill.height / 2);
-  assert.equal(h.styles.selected.borderRadius, h.styles.selected.height / 2);
-  assert.ok(h.styles.selected.height >= 44);
+  assert.equal(selectionConstants.TAB_SELECTION_HEIGHT, 48);
+  assert.equal(selectionConstants.TAB_SELECTION_INSET, 0);
   assert.ok(h.animations.every((animation) => animation.useNativeDriver === true));
   h.session();
   const hiddenBar = find(h.render(), (node) => node.type === "animated-view")[0];
   assert.equal(hiddenBar.props.style[1].transform[1].translateY, 58 + 34 + 40);
 });
 
-test("the bar and selected capsule use the Home widget's same real blur", () => {
+test("the bar keeps Home's blur with one persistent selection indicator behind the icons", () => {
   const h = harness();
   const tree = h.render();
   const blur = find(tree, (node) => node.type === "blur")[0];
-  const selected = find(tree, (node) => node.type === h.TabItem && node.props.isFocused)[0];
-  const selectedBlur = find(h.TabItem(selected.props), (node) => node.type === "blur")[0];
-  for (const layer of [blur, selectedBlur]) {
-    assert.equal(layer.props.intensity, 38);
-    assert.equal(layer.props.tint, "light");
-    assert.equal(layer.props.experimentalBlurMethod, "dimezisBlurView");
-  }
+  assert.equal(blur.props.intensity, 38);
+  assert.equal(blur.props.tint, "light");
+  assert.equal(blur.props.experimentalBlurMethod, "dimezisBlurView");
+  const indicators = find(tree, (node) => node.type === "selection-indicator");
+  assert.equal(indicators.length, 1);
+  assert.equal(indicators[0].props.count, 5);
+  assert.equal(indicators[0].props.index, 0);
 });
 
-test("selected capsule colors follow the current theme without becoming opaque", () => {
-  const green = tabConstants.getTabPillSelectedGradient(["#073B32", "#235D43"]);
-  const blue = tabConstants.getTabPillSelectedGradient(["#165794", "#2D2F7C"]);
-  const violet = tabConstants.getTabPillSelectedGradient(["#371C5F", "#192E70"]);
-  assert.notDeepEqual(green, blue);
-  assert.notDeepEqual(blue, violet);
-  for (const pair of [green, blue, violet]) {
-    assert.equal(pair.length, 2);
-    for (const color of pair) assert.match(color, /^rgba\(\d+,\d+,\d+,0\.\d+\)$/);
-  }
+test("selected capsule uses exactly ten percent white and greater rebound for longer travel", () => {
+  assert.equal(selectionConstants.TAB_SELECTION_BACKGROUND, "rgba(255,255,255,0.1)");
+  const near = selectionConstants.tabSelectionSpring(1);
+  const far = selectionConstants.tabSelectionSpring(4);
+  assert.ok(far.damping < near.damping);
+  assert.equal(near.stiffness, far.stiffness);
+  assert.equal(far.overshootClamping, false);
+  assert.deepEqual(selectionConstants.tabSelectionSpring(10), far);
+  assert.deepEqual(selectionConstants.tabSelectionSpring(-4), far);
 });

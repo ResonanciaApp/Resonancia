@@ -22,6 +22,7 @@
 - [Skip-flags only-if-true](skip-flags-only-if-true.md) — snapshot solo aplica skipDetail/skipMiniPlayer/isLoop si remoto true (false clobbea defaults de categoría); miniplayer trigger ANTES del return isLoop; form admin bloquea solo hidratación inicial
 - [voiceTag three-state caption](voice-tag-three-state.md) — caption de voz: undefined=fallback VOICE_MAP, null=DB vacío, string=admin; fase 1 de applyCatalogSnapshot NO debe clobbear undefined→null
 - [Tab bar overlay padding](tab-bar-overlay-padding.md) — la tab bar de (tabs) es overlay absoluto; pantallas con contenido al fondo deben reservar tabBarHeight (recalcular fórmula de _layout.tsx)
+- [Selección del tab bar](tab-bar-selection-motion.md) — seguir navegación confirmada; taps rápidos conservan la posición actual y el rebote depende del recorrido restante
 - [Geometrix: decisiones y restricciones](geometrix-guide.md) — navegación, foco, zoom, capas, gestos, carrusel, ajustes e historial; consultar las notas antes de cambiarlo
 - [Tab-screen audio focus cleanup](tab-screen-audio-focus-cleanup.md) — audio propio de una tab debe pararse con useFocusEffect (las tabs quedan montadas; el cleanup de unmount no corre al cambiar de tab)
 - [SVG gradient import clash](svg-gradient-import-clash.md) — react-native-svg LinearGradient choca con expo-linear-gradient (mismo nombre); aliasear + sanear useId (quitar ":") + colors refs estables para memo
