@@ -21,6 +21,7 @@ import {
 import { requireAuth } from "../middlewares/requireAuth";
 import { requireRole } from "../middlewares/requireRole";
 import { ObjectStorageService } from "../lib/objectStorage";
+import { PROFILE_AVATAR_PRESET_LIMIT } from "../lib/coverPresetLimits";
 import {
   isObjectReferenced,
   lockObjectPaths,
@@ -31,7 +32,6 @@ const router: IRouter = Router();
 const objectStorageService = new ObjectStorageService();
 const REFLECTION_STORY_SCOPE = "reflection-story" as const;
 const DEFAULT_COVER_PRESET_LIMIT = 50;
-const PROFILE_AVATAR_PRESET_LIMIT = 200;
 const REFLECTION_STORY_PRESET_LIMIT = 100;
 
 function serializePreset(preset: CoverPreset) {

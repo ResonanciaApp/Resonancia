@@ -1,0 +1,1 @@
+export const PROFILE_AVATAR_PRESET_LIMIT = 300;

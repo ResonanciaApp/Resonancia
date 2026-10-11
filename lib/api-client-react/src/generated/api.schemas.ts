@@ -3606,12 +3606,12 @@ export interface CoverPresetOrderInput {
   scope: CoverPresetScope;
   /**
      * @minItems 1
-     * @maxItems 200
+     * @maxItems 300
      */
   ids: string[];
   /**
      * Optional last-read order; reject atomically if the current catalog differs.
-     * @maxItems 200
+     * @maxItems 300
      */
   expectedIds?: string[];
 }

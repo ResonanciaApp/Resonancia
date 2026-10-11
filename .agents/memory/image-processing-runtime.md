@@ -20,3 +20,9 @@ Las ilustraciones transparentes requieren verificación visual de sus colores, b
 **Why:** Una máscara puede conservar alfa válido pero perder el color al componerla o borrar detalles blancos del dibujo si se aplica una clave de color indiscriminada.
 
 **How to apply:** Comparar la silueta con el original y revisar una composición sobre el fondo del producto antes de integrar los assets; preservar los detalles del primer plano al limpiar el fondo.
+
+Para crear hojas de revisión con `magick montage`, especificar una fuente existente mediante `-font`, aunque no se añadan etiquetas.
+
+**Why:** El runtime puede resolver la fuente predeterminada a un nombre vacío y abortar el montaje con un error de FreeType.
+
+**How to apply:** Verificar una fuente local antes de generar la hoja de revisión; no reinstalar ImageMagick ni cambiar las imágenes por este error.

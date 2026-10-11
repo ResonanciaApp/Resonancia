@@ -4,3 +4,6 @@
 # No need to store the pnpm store twice.
 .local
 /attached_assets/generated_images/growth-map/
+/generated-artifacts/
+/attached_assets/a-sheet-of-10-separate-circular-mandala-badges-in-_(1)_1791753245145.png
+/attached_assets/a-sheet-of-10-separate-circular-mandala-badges-in-_(2)_1791753245146.png

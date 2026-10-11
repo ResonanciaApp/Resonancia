@@ -6,6 +6,7 @@ import { fileURLToPath } from "node:url";
 import { asc, eq, sql } from "drizzle-orm";
 import { db, pool, coverPresetsTable, uploadsTable, usersTable } from "@workspace/db";
 import { ObjectStorageService } from "../src/lib/objectStorage";
+import { PROFILE_AVATAR_PRESET_LIMIT } from "../src/lib/coverPresetLimits";
 
 const root = fileURLToPath(new URL("../../../", import.meta.url));
 const directoryIndex = process.argv.indexOf("--directory");
@@ -14,11 +15,11 @@ const directory = directoryIndex === -1
   : process.argv[directoryIndex + 1];
 const countIndex = process.argv.indexOf("--expected-count");
 const expectedCount = countIndex === -1 ? 30 : Number(process.argv[countIndex + 1]);
-if (!Number.isInteger(expectedCount) || expectedCount < 1 || expectedCount > 200) {
-  throw new Error("Expected an avatar count between 1 and 200.");
+if (!Number.isInteger(expectedCount) || expectedCount < 1 || expectedCount > PROFILE_AVATAR_PRESET_LIMIT) {
+  throw new Error(`Expected an avatar count between 1 and ${PROFILE_AVATAR_PRESET_LIMIT}.`);
 }
-if (!directory || !/^attached_assets\/processed\/[a-z0-9-]+$/.test(directory)) {
-  throw new Error("Expected a prepared avatar directory under attached_assets/processed.");
+if (!directory || !/^(?:attached_assets\/processed|generated-artifacts)\/[a-z0-9-]+$/.test(directory)) {
+  throw new Error("Expected a prepared avatar directory under attached_assets/processed or generated-artifacts.");
 }
 const storage = new ObjectStorageService();
 const created: string[] = [];
@@ -40,7 +41,7 @@ async function main() {
     .where(eq(usersTable.role, "admin")).orderBy(asc(usersTable.id)).limit(1);
   if (!owner?.clerkUserId) throw new Error("Missing administrator.");
   const before = await db.select().from(coverPresetsTable).where(eq(coverPresetsTable.scope, "profile"));
-  if (before.length + images.length > 200) throw new Error("Profile capacity exceeded.");
+  if (before.length + images.length > PROFILE_AVATAR_PRESET_LIMIT) throw new Error("Profile capacity exceeded.");
   const receipt = resolve(root, directory, "imported-catalog.json");
   try {
     await readFile(receipt);
@@ -86,7 +87,7 @@ async function main() {
   const presets = await db.transaction(async tx => {
     await tx.execute(sql`select pg_advisory_xact_lock(hashtextextended(${"profile"}, 402))`);
     const current = await tx.select().from(coverPresetsTable).where(eq(coverPresetsTable.scope, "profile"));
-    if (current.length + images.length > 200) throw new Error("Concurrent capacity change.");
+    if (current.length + images.length > PROFILE_AVATAR_PRESET_LIMIT) throw new Error("Concurrent capacity change.");
     const start = Math.max(-1, ...current.map(item => item.sortOrder)) + 1;
     await tx.insert(uploadsTable).values(uploaded.map(image => ({
       ...image, userId: owner.id, contentType: "image/webp",
