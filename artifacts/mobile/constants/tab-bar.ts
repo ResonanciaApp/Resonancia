@@ -3,6 +3,26 @@ export const TAB_BAR_GLASS_OVERLAY = "rgba(14,8,33,0.62)";
 export const TAB_BAR_BLUR_INTENSITY = 48;
 export const TAB_BAR_INACTIVE_COLOR = "rgba(190,180,207,0.96)";
 
+/** Floating tab pill: mirrors the Inicio hero emotion widget glass (inicio8). */
+export const TAB_PILL_BLUR_INTENSITY = 38;
+export const TAB_PILL_BLUR_TINT = "light" as const;
+export const TAB_PILL_SIDE_MARGIN = 16;
+export const TAB_PILL_BAR_H = 58;
+
+/** Selected capsule gradient derived from the active scene gradient. */
+export function getTabPillSelectedGradient(gradient: readonly string[]): [string, string] {
+  const first = gradient[0] ?? "#4A3F9A";
+  const last = gradient[gradient.length - 1] ?? first;
+  const toRgba = (hex: string, a: number) => {
+    const h = hex.replace("#", "");
+    if (h.length !== 6) return hex;
+    const n = parseInt(h, 16);
+    const lift = (c: number) => Math.min(255, Math.round(c + (255 - c) * 0.28));
+    return `rgba(${lift((n >> 16) & 255)},${lift((n >> 8) & 255)},${lift(n & 255)},${a})`;
+  };
+  return [toRgba(first, 0.82), toRgba(last, 0.7)];
+}
+
 /** Natural keeps the same glass opacity while changing only its tint. */
 export function getTabBarGlassOverlay(themeId: string): string {
   return themeId === "natural" ? "rgba(8,33,28,0.62)" : TAB_BAR_GLASS_OVERLAY;

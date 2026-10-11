@@ -1,6 +1,7 @@
 import { router, Tabs, usePathname } from "expo-router";
 import { SymbolView } from "expo-symbols";
 import { BlurView } from "expo-blur";
+import { LinearGradient } from "expo-linear-gradient";
 import * as Haptics from "expo-haptics";
 import { Feather, MaterialCommunityIcons } from "@expo/vector-icons";
 import React, { useEffect, useRef, useCallback, useLayoutEffect, useState } from "react";
@@ -29,7 +30,7 @@ import { CategoryOverlayProvider, useCategoryOverlay } from "@/context/CategoryO
 import { CategoryOverlay } from "@/components/CategoryOverlay";
 import { SacredBackground } from "@/components/SacredBackground";
 import { WIDGET_GREEN_SOLID } from "@/constants/colors";
-import { TAB_BAR_BLUR_INTENSITY, TAB_BAR_INACTIVE_COLOR, getTabBarGlassOverlay, getTabBarInactiveColor } from "@/constants/tab-bar";
+import { TAB_BAR_INACTIVE_COLOR, TAB_PILL_BAR_H, TAB_PILL_BLUR_INTENSITY, TAB_PILL_BLUR_TINT, TAB_PILL_SIDE_MARGIN, getTabBarGlassOverlay, getTabBarInactiveColor, getTabPillSelectedGradient } from "@/constants/tab-bar";
 import { RoutineCompletionBanner } from "@/components/RoutineCompletionBanner";
 import { RoutineCompletionBannerProvider } from "@/context/RoutineCompletionBannerContext";
 
@@ -38,10 +39,9 @@ const INACTIVE_COLOR = TAB_BAR_INACTIVE_COLOR;
 const INDIGO2_COLOR  = "#DEDEDE";
 const GRAD_END       = "#F9F9F9";
 
-const ICON_SIZE      = 27;
-const PILL_H         = 58;   // altura del bloque de navegación, sin safe area
-const TAB_CONTENT_OFFSET_Y = 11;
-const TAB_LABEL_OFFSET_Y = 2;
+const ICON_SIZE      = 24;
+const PILL_H         = TAB_PILL_BAR_H; // altura del bloque de navegación, sin safe area
+const SELECTED_H = 44;
 
 // Rutas que nunca aparecen en el menú inferior
 const HIDDEN_ROUTES = new Set(["musica", "biblioteca", "video", "emocion", "herramientas", "explore", "encuentros"]);
@@ -73,14 +73,14 @@ const TAB_CONFIG: Record<
   inicio3:    { label: "Inicio",     sfIcon: "house",               sfIconFill: "house.fill",           featherIcon: "home" },
   explore:    { label: "Descubrir",  sfIcon: "magnifyingglass",     sfIconFill: "magnifyingglass",       featherIcon: "search" },
   "explore-copia": { label: "Descubrir", sfIcon: "magnifyingglass", sfIconFill: "magnifyingglass", featherIcon: "search" },
-  herramientas: { label: "Recursos", sfIcon: "square.grid.2x2", sfIconFill: "square.grid.2x2.fill", featherIcon: "grid", iconSize: 25 },
+  herramientas: { label: "Recursos", sfIcon: "square.grid.2x2", sfIconFill: "square.grid.2x2.fill", featherIcon: "grid", iconSize: 22 },
   musica:     { label: "Mezclador",  sfIcon: "slider.horizontal.3", sfIconFill: "slider.horizontal.3", mciIcon: "tune-variant", mciIconFill: "tune-variant", featherIcon: "sliders", activeColor: "#F9F9F9" },
   biblioteca: { label: "Biblioteca", sfIcon: "books.vertical",      sfIconFill: "books.vertical.fill",  featherIcon: "bookmark" },
   video:      { label: "Videos",     sfIcon: "video",               sfIconFill: "video.fill",           featherIcon: "video" },
-  descanzo:   { label: "Dormir",     sfIcon: "moon",                sfIconFill: "moon.fill",             featherIcon: "moon", iconSize: 27 },
-  sonidos:    { label: "Sonidos",    sfIcon: "waveform",  sfIconFill: "waveform", mciIcon: "waveform", mciIconFill: "waveform", featherIcon: "headphones", iconSize: 30, activeColor: "#F9F9F9" },
+  descanzo:   { label: "Dormir",     sfIcon: "moon",                sfIconFill: "moon.fill",             featherIcon: "moon", iconSize: 24 },
+  sonidos:    { label: "Sonidos",    sfIcon: "waveform",  sfIconFill: "waveform", mciIcon: "waveform", mciIconFill: "waveform", featherIcon: "headphones", iconSize: 27, activeColor: "#F9F9F9" },
   emocion:    { label: "Emoción",    sfIcon: "face.smiling",        sfIconFill: "face.smiling.fill",     featherIcon: "smile", emoji: "🙂" },
-  encuentros: { label: "Comunidad",  sfIcon: "person.3",            sfIconFill: "person.3.fill",          featherIcon: "users", iconSize: 30 },
+  encuentros: { label: "Comunidad",  sfIcon: "person.3",            sfIconFill: "person.3.fill",          featherIcon: "users", iconSize: 27 },
   profile:    { label: "Perfil",     sfIcon: "person.crop.circle",   sfIconFill: "person.crop.circle.fill", featherIcon: "user" },
 };
 
@@ -92,6 +92,7 @@ function TabItem({
   tibetMode = false,
   lightNeutralColors = false,
   inactiveColor = INACTIVE_COLOR,
+  selectedGradient,
 }: {
   route: { key: string; name: string };
   isFocused: boolean;
@@ -99,6 +100,7 @@ function TabItem({
   tibetMode?: boolean;
   lightNeutralColors?: boolean;
   inactiveColor?: string;
+  selectedGradient: [string, string];
 }) {
   const conf = TAB_CONFIG[route.name];
   if (!conf) return null;
@@ -106,7 +108,6 @@ function TabItem({
   const isIOS      = Platform.OS === "ios";
   const iconSize   = conf.iconSize ?? ICON_SIZE;
   const iconOffset = conf.iconOffset ?? 0;
-  const labelOffset = conf.labelOffset ?? 0;
   const tOffset    = [{ translateY: iconOffset }];
 
   const activeCol   = ACTIVE_COLOR;
@@ -114,13 +115,12 @@ function TabItem({
 
   const makeIcon = useCallback((active: boolean) => {
     const color  = active ? activeCol : inactiveCol;
-    // El icono conserva su forma base al seleccionar el tab: solo cambia el
-    // tintado de forma inmediata. La animación que permanece es la del
-    // indicador/píldora de selección.
+    // El icono conserva su forma base; la selección cambia su tinte y
+    // muestra la cápsula de vidrio detrás, sin alterar su tamaño.
     const sfName = conf.sfIcon;
     const mciName = conf.mciIcon;
     return conf.emoji ? (
-      <Text style={{ fontSize: 22, lineHeight: 26, transform: tOffset }}>{conf.emoji}</Text>
+      <Text style={{ fontSize: 19, lineHeight: 23, transform: tOffset }}>{conf.emoji}</Text>
     ) : conf.image ? (
       <Image source={conf.image} style={{ width: iconSize, height: iconSize, transform: tOffset }} tintColor={color} resizeMode="contain" />
     ) : mciName ? (
@@ -136,17 +136,36 @@ function TabItem({
     <Pressable
       onPress={onPress}
       style={styles.tab}
-      accessibilityRole="button"
+      accessibilityRole="tab"
+      accessibilityLabel={conf.label}
       accessibilityState={{ selected: isFocused }}
+      testID={`tab-${route.name}`}
     >
-      <View style={styles.pillWrap}>
-        <View style={{ width: iconSize, height: ICON_SIZE, alignItems: "center", justifyContent: "center", overflow: "visible" }}>
-          {makeIcon(isFocused)}
+      {isFocused && (
+        <View pointerEvents="none" style={styles.selected}>
+          <BlurView
+            tint={TAB_PILL_BLUR_TINT}
+            intensity={TAB_PILL_BLUR_INTENSITY}
+            experimentalBlurMethod="dimezisBlurView"
+            style={StyleSheet.absoluteFill}
+          />
+          <LinearGradient
+            colors={selectedGradient}
+            start={{ x: 0, y: 0 }}
+            end={{ x: 1, y: 1 }}
+            style={StyleSheet.absoluteFill}
+          />
+          <LinearGradient
+            colors={["rgba(255,255,255,0.26)", "rgba(255,255,255,0)"]}
+            start={{ x: 0.5, y: 0 }}
+            end={{ x: 0.5, y: 0.6 }}
+            style={StyleSheet.absoluteFill}
+          />
         </View>
-        <View style={[styles.labelWrap, { transform: [{ translateY: labelOffset + TAB_LABEL_OFFSET_Y }] }]}>
-          <Text style={[styles.label, { color: isFocused ? activeCol : inactiveCol }]} numberOfLines={1}>
-            {conf.label}
-          </Text>
+      )}
+      <View style={styles.pillWrap}>
+        <View style={{ width: Math.max(iconSize, ICON_SIZE), height: Math.max(iconSize, ICON_SIZE), alignItems: "center", justifyContent: "center", overflow: "visible" }}>
+          {makeIcon(isFocused)}
         </View>
       </View>
     </Pressable>
@@ -170,10 +189,11 @@ function CustomTabBar({ state, navigation, descriptors }: TabBarProps) {
   const barHeight = PILL_H + pb;
 
   const { hidden, showMenu, revealHandleHidden } = useTabBarVisibility();
-  const { activeSceneId } = useSceneTheme();
+  const { activeSceneId, theme } = useSceneTheme();
   const inactiveColor = getTabBarInactiveColor(activeSceneId);
   const indigo2Mode = isIndigo2ThemeId(activeSceneId);
   const tabBarGlassOverlay = getTabBarGlassOverlay(activeSceneId);
+  const selectedGradient = getTabPillSelectedGradient(theme.gradient);
   const translateY    = useRef(new Animated.Value(0)).current;
   const handleOpacity = useRef(new Animated.Value(0)).current;
   const isLibraryRoute = state.routes[state.index]?.name === "biblioteca";
@@ -248,10 +268,11 @@ function CustomTabBar({ state, navigation, descriptors }: TabBarProps) {
           },
         ]}
       >
+        <View style={styles.pill}>
         <BlurView
           pointerEvents="none"
-          tint="dark"
-          intensity={TAB_BAR_BLUR_INTENSITY}
+          tint={TAB_PILL_BLUR_TINT}
+          intensity={TAB_PILL_BLUR_INTENSITY}
           experimentalBlurMethod="dimezisBlurView"
           style={StyleSheet.absoluteFill}
         />
@@ -262,13 +283,7 @@ function CustomTabBar({ state, navigation, descriptors }: TabBarProps) {
             { backgroundColor: tabBarGlassOverlay },
           ]}
         />
-        <View
-          style={[
-            styles.row,
-            isWeb && styles.rowWeb,
-            { transform: [{ translateY: TAB_CONTENT_OFFSET_Y }] },
-          ]}
-        >
+        <View style={[styles.row, isWeb && styles.rowWeb]}>
           {state.routes.map((route: { key: string; name: string; params?: object }, index: number) => {
             if (HIDDEN_ROUTES.has(route.name)) return null;
 
@@ -303,6 +318,7 @@ function CustomTabBar({ state, navigation, descriptors }: TabBarProps) {
                 isFocused={isFocused}
                 onPress={onPress}
                 inactiveColor={inactiveColor}
+                selectedGradient={selectedGradient}
                 tibetMode={activeSceneId === "tibet"}
                 lightNeutralColors={
                   indigo2Mode || activeSceneId === "resonancia"
@@ -310,6 +326,7 @@ function CustomTabBar({ state, navigation, descriptors }: TabBarProps) {
               />
             );
           })}
+        </View>
         </View>
       </Animated.View>
 
@@ -462,13 +479,34 @@ const styles = StyleSheet.create({
     left: 0,
     right: 0,
     bottom: 0,
-    overflow: "hidden",
     zIndex: 50,
+  },
+  pill: {
+    position: "absolute",
+    top: 0,
+    left: TAB_PILL_SIDE_MARGIN,
+    right: TAB_PILL_SIDE_MARGIN,
+    height: PILL_H,
+    borderRadius: PILL_H / 2,
+    overflow: "hidden",
+    borderWidth: StyleSheet.hairlineWidth,
+    borderColor: "rgba(255,255,255,0.16)",
+  },
+  selected: {
+    position: "absolute",
+    left: 4,
+    right: 4,
+    height: SELECTED_H,
+    top: (PILL_H - SELECTED_H) / 2,
+    borderRadius: SELECTED_H / 2,
+    overflow: "hidden",
+    borderWidth: StyleSheet.hairlineWidth,
+    borderColor: "rgba(255,255,255,0.32)",
   },
   row: {
     height: PILL_H,
     flexDirection: "row",
-    paddingHorizontal: 16,
+    paddingHorizontal: 7,
     alignItems: "center",
     overflow: "visible",
   },
