@@ -12,7 +12,7 @@ const compiled = ts.transpileModule(`${source}\nexport { CustomTabBar, TabItem, 
   compilerOptions: { jsx: ts.JsxEmit.React, module: ts.ModuleKind.CommonJS, esModuleInterop: true },
 }).outputText;
 
-function harness(platform = "ios", themeId = "pleyades") {
+function harness(platform = "ios", themeId = "pleyades", showLabels = false) {
   const calls: string[] = [];
   const animations: any[] = [];
   const refs: any[] = [];
@@ -60,6 +60,7 @@ function harness(platform = "ios", themeId = "pleyades") {
     "@expo/vector-icons": { Feather: "feather", MaterialCommunityIcons: "mci" },
     "react-native-safe-area-context": { useSafeAreaInsets: () => ({ bottom: 34 }) },
     "@/constants/tab-bar": tabConstants,
+    "@/context/TabBarLabelsContext": { useTabBarLabels: () => ({ enabled: showLabels }) },
     "@/constants/tab-selection": selectionConstants,
     "@/components/TabSelectionIndicator": { TabSelectionIndicator: "selection-indicator" },
     "@/constants/motion": { DURATION: { SHEET_CLOSE: 250 }, easeOutCubic: () => {} },
@@ -108,14 +109,18 @@ function find(node: any, predicate: (node: any) => boolean): any[] {
   return [...(predicate(node) ? [node] : []), ...find(node.props.children, predicate)];
 }
 
-test("tabs add 9px labels 4px below icons without changing icons or bar height", () => {
+test("enabled labels sit 4px below icons at size 9 and add exactly 10px to the bar", () => {
   for (const platform of ["ios", "android", "web"]) {
     for (const themeId of ["indigo2", "cloudy", "natural", "pleyades"]) {
-      const h = harness(platform, themeId);
+      const h = harness(platform, themeId, true);
       assert.equal(h.styles.row.height, 58);
       assert.equal(h.styles.pillWrap.gap, 4);
       assert.equal(h.styles.label.fontSize, 9);
       assert.equal(h.styles.label.lineHeight, 11);
+      const row = find(h.render(), node => !!node.props.onLayout)[0];
+      assert.equal(Object.assign({}, ...row.props.style).height, 68);
+      const indicator = find(h.render(), node => node.type === "selection-indicator")[0];
+      assert.equal(indicator.props.barHeight, 68);
       const items = find(h.render(), (node) => node.type === h.TabItem);
       assert.equal(items.length, 5);
       for (const item of items) {
@@ -136,6 +141,19 @@ test("tabs add 9px labels 4px below icons without changing icons or bar height",
         }
       }
     }
+  }
+});
+
+test("default icon-only mode restores the original height and centers icons without labels", () => {
+  const h = harness();
+  const tree = h.render();
+  const row = find(tree, node => !!node.props.onLayout)[0];
+  assert.equal(Object.assign({}, ...row.props.style).height, 58);
+  assert.equal(find(tree, node => node.type === "selection-indicator")[0].props.barHeight, 58);
+  for (const item of find(tree, node => node.type === h.TabItem)) {
+    const rendered = h.TabItem(item.props);
+    assert.equal(find(rendered, node => node.type === "text").length, 0);
+    assert.ok(rendered.props.accessibilityLabel);
   }
 });
 

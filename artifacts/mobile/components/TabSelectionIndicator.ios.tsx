@@ -7,10 +7,11 @@ import {
 } from "@/constants/tab-selection";
 
 /** iOS: native Animated transforms avoid Reanimated's Fabric commit-pausing path. */
-export function TabSelectionIndicator({ width, count, index }: {
+export function TabSelectionIndicator({ width, count, index, barHeight = TAB_PILL_BAR_H }: {
   width: number;
   count: number;
   index: number;
+  barHeight?: number;
 }) {
   const x = useRef(new Animated.Value(0)).current;
   const previous = useRef<{ width: number; count: number } | null>(null);
@@ -82,6 +83,7 @@ export function TabSelectionIndicator({ width, count, index }: {
       style={[
         styles.capsule,
         {
+          top: (barHeight - TAB_SELECTION_HEIGHT) / 2 - 1,
           width: count > 0 ? Math.max(0, slot - TAB_SELECTION_INSET * 2) : 0,
           opacity: width > 0 && index >= 0 ? 1 : 0,
           transform: [{ translateX: translation }],

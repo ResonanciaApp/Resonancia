@@ -4,7 +4,7 @@ import test from "node:test";
 import React from "react";
 import ts from "typescript";
 
-function harness(saved: string | null = null, failWrite = false) {
+function harness(saved: string | null = null, failWrite = false, contextName = "EmojiWidget") {
   const states: any[] = [];
   const pending = { current: false };
   const writes: string[][] = [];
@@ -38,7 +38,7 @@ function harness(saved: string | null = null, failWrite = false) {
     },
     "react-native": { Alert: { alert: (...args: string[]) => alerts.push(args) } },
   };
-  const source = readFileSync(new URL("../context/EmojiWidgetContext.tsx", import.meta.url), "utf8");
+  const source = readFileSync(new URL(`../context/${contextName}Context.tsx`, import.meta.url), "utf8");
   const compiled = ts.transpileModule(source, {
     compilerOptions: { module: ts.ModuleKind.CommonJS, jsx: ts.JsxEmit.React, esModuleInterop: true },
   }).outputText;
@@ -49,14 +49,14 @@ function harness(saved: string | null = null, failWrite = false) {
   );
   const render = () => {
     index = 0;
-    preference = module.exports.EmojiWidgetProvider({ children: null }).props.value;
+    preference = module.exports[`${contextName}Provider`]({ children: null }).props.value;
     if (!mounted) { mounted = true; effect?.(); }
     return preference;
   };
   return {
     render, writes, alerts,
     hydrate: async () => { await new Promise<void>(resolve => setImmediate(resolve)); return render(); },
-    hook: () => module.exports.useEmojiWidget(),
+    hook: () => module.exports[`use${contextName}`](),
   };
 }
 
@@ -70,6 +70,38 @@ test("emoji widget is on by default and restores an explicitly disabled preferen
     assert.equal(h.hook().enabled, expected);
     assert.deepEqual(h.writes, [], "hydration never overwrites the saved choice");
   }
+});
+
+test("tab bar labels default off, restore explicit choices, and persist toggles independently", async () => {
+  for (const [saved, expected] of [[null, false], ["false", false], ["true", true], ["invalid", false]] as const) {
+    const h = harness(saved, false, "TabBarLabels");
+    assert.equal(h.render().enabled, false);
+    assert.equal((await h.hydrate()).enabled, expected);
+    const changed = h.render().setEnabled(!expected);
+    assert.equal(h.render().enabled, !expected);
+    assert.equal(h.render().saving, true);
+    await h.render().setEnabled(expected);
+    assert.equal(h.writes.length, 1, "concurrent writes are ignored");
+    await changed;
+    assert.equal(h.render().saving, false);
+    assert.deepEqual(h.writes, [["@resonance_tab_bar_labels", String(!expected)]]);
+    const restored = harness(String(!expected), false, "TabBarLabels");
+    restored.render();
+    assert.equal((await restored.hydrate()).enabled, !expected);
+  }
+});
+
+test("tab bar label preference rolls back failed writes and remains wired to settings", async () => {
+  const h = harness(null, true, "TabBarLabels");
+  h.render();
+  await h.hydrate();
+  await h.render().setEnabled(true);
+  assert.equal(h.render().enabled, false);
+  assert.equal(h.alerts.length, 1);
+  const settings = readFileSync(new URL("../components/ProfileSettingsSections.tsx", import.meta.url), "utf8");
+  assert.match(settings, /label: "Títulos del menú inferior"/);
+  assert.match(settings, /toggleValue: tabBarLabels.enabled/);
+  assert.match(settings, /tabBarLabels.setEnabled\(value\)/);
 });
 
 test("turning the widget off and back on persists the choice, guarding pending writes", async () => {

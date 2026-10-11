@@ -34,6 +34,7 @@ import { TabSelectionIndicator } from "@/components/TabSelectionIndicator";
 import { TAB_ROW_PADDING } from "@/constants/tab-selection";
 import { RoutineCompletionBanner } from "@/components/RoutineCompletionBanner";
 import { RoutineCompletionBannerProvider } from "@/context/RoutineCompletionBannerContext";
+import { useTabBarLabels } from "@/context/TabBarLabelsContext";
 
 const ACTIVE_COLOR   = "#FFFFFF";
 const INACTIVE_COLOR = TAB_BAR_INACTIVE_COLOR;
@@ -101,6 +102,7 @@ function TabItem({
   inactiveColor?: string;
 }) {
   const conf = TAB_CONFIG[route.name];
+  const { enabled: showLabels } = useTabBarLabels();
   if (!conf) return null;
 
   const isIOS      = Platform.OS === "ios";
@@ -143,13 +145,13 @@ function TabItem({
         <View style={{ width: Math.max(iconSize, ICON_SIZE), height: Math.max(iconSize, ICON_SIZE), alignItems: "center", justifyContent: "center", overflow: "visible" }}>
           {makeIcon(isFocused)}
         </View>
-        <Text
+        {showLabels && <Text
           numberOfLines={1}
           style={[styles.label, { color: isFocused ? activeCol : inactiveCol }]}
           testID={`tab-label-${route.name}`}
         >
           {conf.label}
-        </Text>
+        </Text>}
       </View>
     </Pressable>
   );
@@ -169,7 +171,10 @@ function CustomTabBar({ state, navigation, descriptors }: TabBarProps) {
   const { libOpen, closeLib, libraryParallax } = useDrawerDestinations();
 
   // El bloque llega hasta el borde inferior e incluye el área segura.
-  const barHeight = PILL_H + pb;
+  const { enabled: showLabels } = useTabBarLabels();
+  const pillHeight = PILL_H + (showLabels ? 10 : 0);
+  const barHeight = pillHeight + pb;
+  const pillShape = { borderRadius: (pillHeight + 1) / 2 };
 
   const { hidden, showMenu, revealHandleHidden } = useTabBarVisibility();
   const { activeSceneId } = useSceneTheme();
@@ -253,10 +258,10 @@ function CustomTabBar({ state, navigation, descriptors }: TabBarProps) {
           },
         ]}
       >
-        <View style={styles.pill}>
+        <View style={[styles.pill, pillShape, { height: pillHeight + 1 }]}>
         {/* The shadow samples only the static glass, never the moving indicator/icons. */}
-        <View pointerEvents="none" collapsable={false} style={[styles.glassLayer, styles.pillShadow]}>
-        <View style={styles.pillClip}>
+        <View pointerEvents="none" collapsable={false} style={[styles.glassLayer, styles.pillShadow, pillShape]}>
+        <View style={[styles.pillClip, pillShape]}>
         <BlurView
           pointerEvents="none"
           tint={TAB_PILL_BLUR_TINT}
@@ -273,9 +278,9 @@ function CustomTabBar({ state, navigation, descriptors }: TabBarProps) {
         />
         </View>
         </View>
-        <View style={[styles.pillClip, styles.controlsLayer]}>
-        <View onLayout={(event) => setRowWidth(event.nativeEvent.layout.width)} style={[styles.row, isWeb && styles.rowWeb]}>
-          <TabSelectionIndicator width={rowWidth} count={visibleRoutes.length} index={selectedVisibleIndex} />
+        <View style={[styles.pillClip, styles.controlsLayer, pillShape]}>
+        <View onLayout={(event) => setRowWidth(event.nativeEvent.layout.width)} style={[styles.row, isWeb && styles.rowWeb, { height: pillHeight }]}>
+          <TabSelectionIndicator width={rowWidth} count={visibleRoutes.length} index={selectedVisibleIndex} barHeight={pillHeight} />
           {state.routes.map((route: { key: string; name: string; params?: object }, index: number) => {
             if (HIDDEN_ROUTES.has(route.name)) return null;
 
@@ -363,7 +368,8 @@ function TabLayoutInner() {
   const insets             = useSafeAreaInsets();
   const isWeb              = Platform.OS === "web";
   const bottomPb           = isWeb ? 8 : insets.bottom;
-  const tabBarHeight       = PILL_H + bottomPb;
+  const { enabled: showLabels } = useTabBarLabels();
+  const tabBarHeight       = PILL_H + (showLabels ? 10 : 0) + bottomPb;
   const { libOpen }        = useDrawerDestinations();
   const [barProps, setBarProps] = useState<any>(null);
   const { isMixerOpen, openedFromDrawer: mixerFromDrawer, panelAnim } = useMixerPanel();

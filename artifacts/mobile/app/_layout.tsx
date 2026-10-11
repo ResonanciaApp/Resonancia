@@ -57,6 +57,7 @@ import { MixerPanelProvider } from "@/context/MixerPanelContext";
 import { GeometrixPanelProvider } from "@/context/GeometrixPanelContext";
 import { GreetingVisibleProvider } from "@/context/GreetingVisibleContext";
 import { EmojiWidgetProvider } from "@/context/EmojiWidgetContext";
+import { TabBarLabelsProvider } from "@/context/TabBarLabelsContext";
 import { IntencionProvider } from "@/context/IntencionContext";
 import { MixerProvider } from "@/context/MixerContext";
 import { SoundsProvider } from "@/context/SoundsContext";
@@ -559,6 +560,7 @@ export default function RootLayout() {
                       <ProfileSync />
                       <GreetingVisibleProvider>
                       <EmojiWidgetProvider>
+                      <TabBarLabelsProvider>
                       <IntencionProvider>
                         <FoldersPlaylistsProvider>
                         <VideosProvider>
@@ -588,6 +590,7 @@ export default function RootLayout() {
                         </VideosProvider>
                         </FoldersPlaylistsProvider>
                       </IntencionProvider>
+                      </TabBarLabelsProvider>
                       </EmojiWidgetProvider>
                       </GreetingVisibleProvider>
                     </UserProfileProvider>

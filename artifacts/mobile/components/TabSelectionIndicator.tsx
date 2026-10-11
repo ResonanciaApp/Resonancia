@@ -5,10 +5,11 @@ import { TAB_PILL_BAR_H } from "@/constants/tab-bar";
 import { TAB_ROW_PADDING, TAB_SELECTION_BACKGROUND, TAB_SELECTION_HEIGHT, TAB_SELECTION_INSET, tabSelectionSpring, tabSelectionTranslation } from "@/constants/tab-selection";
 
 /** One persistent capsule. Its position and spring run exclusively on the UI thread. */
-export function TabSelectionIndicator({ width, count, index }: {
+export function TabSelectionIndicator({ width, count, index, barHeight = TAB_PILL_BAR_H }: {
   width: number;
   count: number;
   index: number;
+  barHeight?: number;
 }) {
   const metrics = useSharedValue({ width, count, index });
   const x = useSharedValue(0);
@@ -34,6 +35,7 @@ export function TabSelectionIndicator({ width, count, index }: {
   );
   // Geometry changes only on layout, never on each spring frame.
   const geometry = {
+    top: (barHeight - TAB_SELECTION_HEIGHT) / 2 - 1,
     width: count > 0 ? Math.max(0, (width - TAB_ROW_PADDING * 2) / count - TAB_SELECTION_INSET * 2) : 0,
     opacity: width > 0 && index >= 0 ? 1 : 0,
   };

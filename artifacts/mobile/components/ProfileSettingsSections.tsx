@@ -19,6 +19,7 @@ import { MEMBERSHIP_AURORA } from "@/constants/colors";
 import { useGeometrixPanel } from "@/context/GeometrixPanelContext";
 import { usePremium } from "@/context/PremiumContext";
 import { useEmojiWidget } from "@/context/EmojiWidgetContext";
+import { useTabBarLabels } from "@/context/TabBarLabelsContext";
 import { useColors } from "@/hooks/useColors";
 
 type FeatherName = React.ComponentProps<typeof Feather>["name"];
@@ -67,6 +68,7 @@ export function ProfileSettingsSections({
   const { isPremium: isPremiumDev, setPremium: setPremiumDev } = usePremium();
   const { primary } = useColors();
   const { enabled: emojiWidgetEnabled, loaded: emojiWidgetLoaded, saving: emojiWidgetSaving, setEnabled: setEmojiWidgetEnabled } = useEmojiWidget();
+  const tabBarLabels = useTabBarLabels();
   const isIndigo = isIndigoThemeId(sceneId);
   const isIndigo2 = isIndigo2ThemeId(sceneId);
   const themeAccent = isIndigo2 ? accent : isIndigo ? "#AAAAC4" : accent;
@@ -113,6 +115,13 @@ export function ProfileSettingsSections({
           toggle: true,
           toggleValue: emojiWidgetEnabled,
           onToggle: emojiWidgetLoaded && !emojiWidgetSaving ? (value) => { void setEmojiWidgetEnabled(value); } : undefined,
+        },
+        {
+          icon: "type",
+          label: "Títulos del menú inferior",
+          toggle: true,
+          toggleValue: tabBarLabels.enabled,
+          onToggle: tabBarLabels.loaded && !tabBarLabels.saving ? value => { void tabBarLabels.setEnabled(value); } : undefined,
         },
         { icon: "zap", label: "Racha", toggle: true },
         { icon: "smile", label: "Registro diario estado de ánimo", toggle: true },
