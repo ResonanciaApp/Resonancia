@@ -3099,7 +3099,7 @@ export default function HomeScreen2({
           <View
             style={{
               paddingHorizontal: GRID_PAD,
-              marginTop: variant === "inicio3" ? -8 : 0,
+              marginTop: variant === "inicio3" ? INICIO3_SECTION_EXTRA_GAP - 1 + StyleSheet.hairlineWidth : 0,
               marginBottom: INICIO2_SECTION_GAP,
             }}
           >

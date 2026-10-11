@@ -36,6 +36,20 @@ function style(name: string) {
   return evaluate(property.initializer.getText(ast), bindings);
 }
 
+test("Para este momento follows recommendations with the standard carousel gap", () => {
+  const title = find(node => ts.isJsxText(node) && node.getText(ast).trim() === "Para este momento");
+  const section = title.parent.parent as ts.JsxElement;
+  const attribute = section.openingElement.attributes.properties.find(node =>
+    ts.isJsxAttribute(node) && node.name.getText(ast) === "style") as ts.JsxAttribute;
+  const expression = (attribute.initializer as ts.JsxExpression).expression!.getText(ast);
+  const featured = evaluate(expression, { ...bindings, variant: "inicio3" });
+  const spacer = style("inicio3SectionSpacer");
+  const standardGap = bindings.INICIO2_SECTION_GAP + spacer.marginTop + spacer.marginBottom + spacer.height;
+  assert.ok(Math.abs(53 + featured.marginTop - standardGap) < 0.001);
+  assert.equal(featured.marginBottom, 53);
+  assert.equal(evaluate(expression, { ...bindings, variant: "copy" }).marginTop, 0);
+});
+
 test("Inicio section title sizing remains scoped to the active home variant", () => {
   const declaration = find(node => ts.isVariableDeclaration(node)
     && node.name.getText(ast) === "sectionTitleSize") as ts.VariableDeclaration;
@@ -87,7 +101,7 @@ test("Inicio 3 hides inter-section dividers without changing their layout or sec
   }
   assert.doesNotMatch(home, /inicio3FeaturedDivider|inicio3PremiumDivider/, "No lines above Para este momento or below Muro de agradecimiento");
   assert.match(home, /bottom: \(INICIO3_QUOTE_SECTION_GAP \+ \(isPremium \? 0 : 20\)\) \/ 2/);
-  assert.match(home, /marginTop: variant === "inicio3" \? -8 : 0/);
+  assert.match(home, /marginTop: variant === "inicio3" \? INICIO3_SECTION_EXTRA_GAP - 1 \+ StyleSheet.hairlineWidth : 0/);
 });
 
 test("quote spacing increases on both sides while community and component defaults are preserved", () => {
