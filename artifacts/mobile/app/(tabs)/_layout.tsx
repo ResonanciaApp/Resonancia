@@ -40,7 +40,7 @@ const INACTIVE_COLOR = TAB_BAR_INACTIVE_COLOR;
 const INDIGO2_COLOR  = "#DEDEDE";
 const GRAD_END       = "#F9F9F9";
 
-const ICON_SIZE      = 27;
+const ICON_SIZE      = 25;
 const PILL_H         = TAB_PILL_BAR_H; // altura del bloque de navegación, sin safe area
 
 // Rutas que nunca aparecen en el menú inferior
@@ -77,8 +77,8 @@ const TAB_CONFIG: Record<
   musica:     { label: "Mezclador",  sfIcon: "slider.horizontal.3", sfIconFill: "slider.horizontal.3", mciIcon: "tune-variant", mciIconFill: "tune-variant", featherIcon: "sliders", activeColor: "#F9F9F9" },
   biblioteca: { label: "Biblioteca", sfIcon: "books.vertical",      sfIconFill: "books.vertical.fill",  featherIcon: "bookmark" },
   video:      { label: "Videos",     sfIcon: "video",               sfIconFill: "video.fill",           featherIcon: "video" },
-  descanzo:   { label: "Dormir",     sfIcon: "moon",                sfIconFill: "moon.fill",             featherIcon: "moon", iconSize: 27 },
-  sonidos:    { label: "Sonidos",    sfIcon: "waveform",  sfIconFill: "waveform", mciIcon: "waveform", mciIconFill: "waveform", featherIcon: "headphones", iconSize: 30, activeColor: "#F9F9F9" },
+  descanzo:   { label: "Dormir",     sfIcon: "moon",                sfIconFill: "moon.fill",             featherIcon: "moon", iconSize: 25 },
+  sonidos:    { label: "Sonidos",    sfIcon: "waveform",  sfIconFill: "waveform", mciIcon: "waveform", mciIconFill: "waveform", featherIcon: "headphones", iconSize: 28, activeColor: "#F9F9F9" },
   emocion:    { label: "Emoción",    sfIcon: "face.smiling",        sfIconFill: "face.smiling.fill",     featherIcon: "smile", emoji: "🙂" },
   encuentros: { label: "Comunidad",  sfIcon: "person.3",            sfIconFill: "person.3.fill",          featherIcon: "users", iconSize: 27 },
   profile:    { label: "Perfil",     sfIcon: "person.crop.circle",   sfIconFill: "person.crop.circle.fill", featherIcon: "user" },
