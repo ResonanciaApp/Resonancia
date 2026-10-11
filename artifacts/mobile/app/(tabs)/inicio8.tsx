@@ -1,4 +1,5 @@
 import { Feather, Ionicons, MaterialCommunityIcons } from "@expo/vector-icons";
+import * as Haptics from "expo-haptics";
 import { useUser } from "@clerk/expo";
 import { useDayRollover } from "@/hooks/useDayRollover";
 import { useStreak } from "@/hooks/useStreak";
@@ -2215,6 +2216,7 @@ export default function HomeScreen2({
   const { open: openDrawer, moodPickerRequest } = useHomeDrawer();
   const { theme: activeTheme, activeSceneId } = useSceneTheme();
   const handleOpenDrawer = useCallback(() => {
+    void Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Soft).catch(() => {});
     openDrawer();
   }, [openDrawer]);
   const handleOpenProgress = useCallback(() => {

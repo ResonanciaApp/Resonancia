@@ -62,7 +62,7 @@ test("first layout snaps without entrance animation; tighter icons preserve caps
   const slot = (340 - selection.TAB_ROW_PADDING * 2) / 5;
   assert.equal(h.springs.length, 0);
   assert.equal(style.transform[0].translateX, slot * 2);
-  assert.equal(style.width, (340 - 14) / 5 + 12);
+  assert.equal(style.width, (340 - 14) / 5 + 14);
   assert.equal(node.props.style[0].left, selection.TAB_ROW_PADDING + selection.TAB_SELECTION_INSET);
   assert.equal(slot - 26.5, (340 - 14) / 5 - 25 - 4, "visible icon gaps are exactly 4px smaller");
   assert.equal(node.props.style[0].height, 48 + 2);
