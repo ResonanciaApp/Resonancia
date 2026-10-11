@@ -82,6 +82,18 @@ se congela; un registro «sin pausas» del callback no descarta esa congelación
 por frame; callbacks estables para que medir no agregue registros/desregistros
 justo al abrir/cerrar. El informe es orientativo, no una medición de Instruments.
 
+Servir JavaScript con `__DEV__ = false` en un development client es una prueba
+parcial, no una compilación nativa de distribución.
+
+**Why:** elimina ayudas JS de desarrollo, pero mantiene el contenedor nativo
+de desarrollo y Metro como origen. Además desactiva el diagnóstico y los
+toggles Premium de desarrollo, y puede cambiar la configuración de compras.
+
+**How to apply:** comparar solo navegación/drawer, no compras ni permisos
+simulados. Verificar el manifiesto y el preámbulo del bundle, no solo los flags
+del comando. No presentar esa prueba como equivalente a TestFlight ni como
+ausencia demostrada de un problema nativo.
+
 El usuario detectó que el tirón reaparece después de visitar Perfil. El primer
 registro mostró muchos retrasos de callbacks JS y pocos de UI, sin demostrar
 qué componente consume el tiempo ni medir la presentación final.
