@@ -108,7 +108,7 @@ function find(node: any, predicate: (node: any) => boolean): any[] {
   return [...(predicate(node) ? [node] : []), ...find(node.props.children, predicate)];
 }
 
-test("icon-only tabs retain accessible names, selected state, and a single smaller icon", () => {
+test("icon-only tabs retain accessible names, selected state, and icons enlarged by three points", () => {
   for (const platform of ["ios", "android", "web"]) {
     const h = harness(platform);
     const items = find(h.render(), (node) => node.type === h.TabItem);
@@ -120,7 +120,7 @@ test("icon-only tabs retain accessible names, selected state, and a single small
       assert.equal(rendered.props.accessibilityState.selected, item.props.isFocused);
       assert.equal(find(rendered, (node) => node.type === "text").length, 0);
       const icon = find(rendered, (node) => ["symbol", "mci", "feather"].includes(node.type))[0];
-      assert.equal(icon.props.size, item.props.route.name === "sonidos" ? 27 : 24);
+      assert.equal(icon.props.size, item.props.route.name === "sonidos" ? 30 : 27);
       assert.equal(find(rendered, (node) => node.type === "blur").length, 0);
     }
   }

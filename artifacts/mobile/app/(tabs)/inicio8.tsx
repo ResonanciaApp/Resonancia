@@ -3706,7 +3706,7 @@ const styles = StyleSheet.create({
     lineHeight: 23,
   },
   inicio3HeroDecree: {
-    color: CARD_TEXT_BELOW,
+    color: "#F4F4F4",
     fontFamily: "Manrope",
     fontSize: 13,
     lineHeight: 17,
