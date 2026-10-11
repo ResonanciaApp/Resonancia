@@ -4,7 +4,7 @@ import { URL } from "node:url";
 import test from "node:test";
 import React from "react";
 import ts from "typescript";
-import { TAB_BAR_BLUR_INTENSITY, TAB_BAR_GLASS_OVERLAY } from "../constants/tab-bar.ts";
+import { getTabBarGlassOverlay, TAB_PILL_BLUR_INTENSITY, TAB_PILL_BLUR_TINT } from "../constants/tab-bar.ts";
 import { CONFIRMATION_ENTRY_DELAY_MS } from "../constants/confirmation-banner.ts";
 
 const source = (path: string) => readFileSync(new URL(path, import.meta.url), "utf8");
@@ -23,7 +23,7 @@ test("emotion widget preserves its original native blur and translucent backgrou
   assert.match(home, /inicio2HeroEmotionGlass: \{[\s\S]*?borderRadius: \(67 - 4 \/ \(63 \/ 67\)\) \/ 2,[\s\S]*?backgroundColor: "rgba\(255,255,255,0\.10\)"/);
 });
 
-function harness(kind: "added" | "completed") {
+function harness(kind: "added" | "completed", themeId = "cloudy") {
   class Value {
     constructor(public value: number) {}
     setValue(value: number) { this.value = value; }
@@ -94,7 +94,8 @@ function harness(kind: "added" | "completed") {
       ImpactFeedbackStyle: { Medium: "medium" },
       impactAsync: (style: string) => { haptics.push(style); return Promise.resolve(); },
     },
-    "@/constants/tab-bar": { TAB_BAR_BLUR_INTENSITY, TAB_BAR_GLASS_OVERLAY },
+    "@/constants/tab-bar": { getTabBarGlassOverlay, TAB_PILL_BLUR_INTENSITY, TAB_PILL_BLUR_TINT },
+    "@/context/SceneThemeContext": { useSceneTheme: () => ({ activeSceneId: themeId }) },
     "@/constants/confirmation-banner": { CONFIRMATION_ENTRY_DELAY_MS },
     "@/components/RoutineGradientFill": { RoutineGradientFill: Native },
     "@/context/RoutineCompletionBannerContext": { useRoutineCompletionBanner: () => context },
@@ -213,17 +214,19 @@ for (const kind of ["added", "completed"] as const) {
     assert.equal(banner.props.style[1].opacity.value, 1);
   });
 
-  test(`${kind}: shares the tab bar's purple dark blur and is exactly 50px narrower`, () => {
+  test(`${kind}: shares the tab pill glass and retains its original width`, () => {
     const h = harness(kind);
     const banner = h.render();
     const style = banner.props.style[0];
     assert.equal(style.left, style.right);
     assert.equal(style.left + style.right - 28, 50);
     const [blur, overlay] = banner.props.children[0].props.children;
-    assert.equal(blur.props.tint, "dark");
-    assert.equal(blur.props.intensity, TAB_BAR_BLUR_INTENSITY);
+    assert.equal(blur.props.tint, TAB_PILL_BLUR_TINT);
+    assert.equal(blur.props.intensity, TAB_PILL_BLUR_INTENSITY);
     assert.equal(blur.props.experimentalBlurMethod, "dimezisBlurView");
-    assert.equal(overlay.props.style[1].backgroundColor, TAB_BAR_GLASS_OVERLAY);
+    assert.equal(overlay.props.style[1].backgroundColor, getTabBarGlassOverlay("cloudy"));
+    assert.equal(style.borderRadius, style.height / 2);
+    assert.equal(banner.props.children[0].props.style.borderRadius, style.height / 2);
   });
 }
 
@@ -238,6 +241,24 @@ test("hiding or dismissing a banner during its delay cancels entry and vibration
     assert.equal(h.started.length, 0);
     assert.deepEqual(h.haptics, []);
     assert.equal(h.widgetOpacity.value, 1);
+  }
+});
+
+test("both routine notices are full pills with the live tab color in every theme", () => {
+  for (const theme of ["natural", "cloudy", "indigo2", "pleyades"]) {
+    for (const kind of ["added", "completed"] as const) {
+      const banner = harness(kind, theme).render();
+      const style = banner.props.style[0];
+      const glass = banner.props.children[0];
+      const [blur, overlay] = glass.props.children;
+      assert.equal(style.height, 56);
+      assert.equal(style.borderRadius, style.height / 2);
+      assert.equal(glass.props.style.borderRadius, style.height / 2);
+      assert.equal(glass.props.style.overflow, "hidden");
+      assert.equal(overlay.props.style[1].backgroundColor, getTabBarGlassOverlay(theme));
+      assert.equal(blur.props.tint, TAB_PILL_BLUR_TINT);
+      assert.equal(blur.props.intensity, TAB_PILL_BLUR_INTENSITY);
+    }
   }
 });
 

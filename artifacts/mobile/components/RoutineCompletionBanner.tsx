@@ -4,7 +4,8 @@ import { BlurView } from "expo-blur";
 import * as Haptics from "expo-haptics";
 import { Animated, Easing, Platform, Pressable, StyleSheet, Text, View } from "react-native";
 
-import { TAB_BAR_BLUR_INTENSITY, TAB_BAR_GLASS_OVERLAY } from "@/constants/tab-bar";
+import { getTabBarGlassOverlay, TAB_PILL_BLUR_INTENSITY, TAB_PILL_BLUR_TINT } from "@/constants/tab-bar";
+import { useSceneTheme } from "@/context/SceneThemeContext";
 import { CONFIRMATION_ENTRY_DELAY_MS } from "@/constants/confirmation-banner";
 import { RoutineGradientFill } from "@/components/RoutineGradientFill";
 import { useRoutineCompletionBanner } from "@/context/RoutineCompletionBannerContext";
@@ -38,6 +39,8 @@ export function RoutineCompletionBanner({
   addedTitle = "Actividad añadida",
   showAddedAction = true,
 }: Props) {
+  const { activeSceneId } = useSceneTheme();
+  const glassOverlay = getTabBarGlassOverlay(activeSceneId);
   const { activeEvent, hasPendingCompletion, dismissActiveEvent, emotionWidgetOpacity } =
     useRoutineCompletionBanner();
   const translateY = useRef(new Animated.Value(entryDistance)).current;
@@ -339,14 +342,14 @@ export function RoutineCompletionBanner({
       <View pointerEvents="none" style={styles.glassSurface}>
         <BlurView
           pointerEvents="none"
-          tint="dark"
-          intensity={TAB_BAR_BLUR_INTENSITY}
+          tint={TAB_PILL_BLUR_TINT}
+          intensity={TAB_PILL_BLUR_INTENSITY}
           experimentalBlurMethod="dimezisBlurView"
           style={StyleSheet.absoluteFill}
         />
         <View
           pointerEvents="none"
-          style={[StyleSheet.absoluteFill, { backgroundColor: TAB_BAR_GLASS_OVERLAY }]}
+          style={[StyleSheet.absoluteFill, { backgroundColor: glassOverlay }]}
         />
       </View>
       <View style={[styles.copy, activeEvent.kind === "added" && styles.addedCopy]}>
@@ -407,7 +410,7 @@ const styles = StyleSheet.create({
     left: 39,
     right: 39,
     height: 56,
-    borderRadius: 18,
+    borderRadius: 28,
     borderWidth: StyleSheet.hairlineWidth,
     borderColor: "rgba(255,255,255,0.10)",
     paddingHorizontal: 17,
@@ -421,7 +424,7 @@ const styles = StyleSheet.create({
   },
   glassSurface: {
     ...StyleSheet.absoluteFillObject,
-    borderRadius: 18,
+    borderRadius: 28,
     overflow: "hidden",
   },
   copy: {

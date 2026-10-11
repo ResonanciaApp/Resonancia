@@ -5,7 +5,8 @@ import * as Haptics from "expo-haptics";
 import React, { useCallback, useRef, useState } from "react";
 import { Animated, Easing, Platform, Pressable, StyleSheet, Text, View } from "react-native";
 
-import { TAB_BAR_BLUR_INTENSITY, TAB_BAR_GLASS_OVERLAY } from "@/constants/tab-bar";
+import { getTabBarGlassOverlay, TAB_PILL_BLUR_INTENSITY, TAB_PILL_BLUR_TINT } from "@/constants/tab-bar";
+import { useSceneTheme } from "@/context/SceneThemeContext";
 import { CONFIRMATION_ENTRY_DELAY_MS } from "@/constants/confirmation-banner";
 
 const ENTRY_DISTANCE = 86;
@@ -22,6 +23,8 @@ export function ReflectionSavedBanner({
   bottom: number;
   onPress: () => void;
 }) {
+  const { activeSceneId } = useSceneTheme();
+  const glassOverlay = getTabBarGlassOverlay(activeSceneId);
   const [visible, setVisible] = useState(false);
   const shownTriggerRef = useRef(0);
   const translateY = useRef(new Animated.Value(ENTRY_DISTANCE)).current;
@@ -125,14 +128,14 @@ export function ReflectionSavedBanner({
         <View pointerEvents="none" style={styles.glassSurface}>
           <BlurView
             pointerEvents="none"
-            tint="dark"
-            intensity={TAB_BAR_BLUR_INTENSITY}
+            tint={TAB_PILL_BLUR_TINT}
+            intensity={TAB_PILL_BLUR_INTENSITY}
             experimentalBlurMethod="dimezisBlurView"
             style={StyleSheet.absoluteFill}
           />
           <View
             pointerEvents="none"
-            style={[StyleSheet.absoluteFill, { backgroundColor: TAB_BAR_GLASS_OVERLAY }]}
+            style={[StyleSheet.absoluteFill, { backgroundColor: glassOverlay }]}
           />
         </View>
         <View style={styles.titleRow}>
@@ -153,7 +156,7 @@ const styles = StyleSheet.create({
     left: 36.5,
     right: 36.5,
     height: 56,
-    borderRadius: 18,
+    borderRadius: 28,
     borderWidth: StyleSheet.hairlineWidth,
     borderColor: "rgba(255,255,255,0.10)",
     shadowColor: "#000000",
@@ -164,7 +167,7 @@ const styles = StyleSheet.create({
   },
   pressable: {
     flex: 1,
-    borderRadius: 18,
+    borderRadius: 28,
     paddingHorizontal: 17,
     flexDirection: "row",
     alignItems: "center",
@@ -172,7 +175,7 @@ const styles = StyleSheet.create({
   pressed: { opacity: 0.6 },
   glassSurface: {
     ...StyleSheet.absoluteFillObject,
-    borderRadius: 18,
+    borderRadius: 28,
     overflow: "hidden",
   },
   titleRow: {

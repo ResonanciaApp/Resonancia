@@ -5,9 +5,9 @@ import test from "node:test";
 import React from "react";
 import ts from "typescript";
 import { CONFIRMATION_ENTRY_DELAY_MS } from "../constants/confirmation-banner.ts";
-import { TAB_BAR_BLUR_INTENSITY, TAB_BAR_GLASS_OVERLAY } from "../constants/tab-bar.ts";
+import { getTabBarGlassOverlay, TAB_PILL_BLUR_INTENSITY, TAB_PILL_BLUR_TINT } from "../constants/tab-bar.ts";
 
-function harness(platform = "ios") {
+function harness(platform = "ios", themeId = "cloudy") {
   class Value {
     constructor(public value: number) {}
     setValue(value: number) { this.value = value; }
@@ -79,7 +79,8 @@ function harness(platform = "ios") {
       impactAsync: (style: string) => { haptics.push(style); return Promise.resolve(); },
     },
     "@/constants/confirmation-banner": { CONFIRMATION_ENTRY_DELAY_MS },
-    "@/constants/tab-bar": { TAB_BAR_BLUR_INTENSITY, TAB_BAR_GLASS_OVERLAY },
+    "@/constants/tab-bar": { getTabBarGlassOverlay, TAB_PILL_BLUR_INTENSITY, TAB_PILL_BLUR_TINT },
+    "@/context/SceneThemeContext": { useSceneTheme: () => ({ activeSceneId: themeId }) },
   };
   const module: any = { exports: {} };
   const compiled = ts.transpileModule(readFileSync(new URL("../components/ReflectionSavedBanner.tsx", import.meta.url), "utf8"), {
@@ -140,15 +141,37 @@ test("Wall confirmation waits the same 900ms as activity added, then fades/slide
   assert.deepEqual(h.haptics, ["medium"]);
 });
 
-test("Wall confirmation uses the routine banner's dark blur and exact shared overlay color", () => {
+test("Wall confirmation uses the tab pill blur and exact shared overlay color", () => {
   const h = harness();
   h.render(); h.advance(900);
   const glass = h.render().props.children.props.children[0];
   const [blur, overlay] = glass.props.children;
-  assert.equal(blur.props.tint, "dark");
-  assert.equal(blur.props.intensity, TAB_BAR_BLUR_INTENSITY);
+  assert.equal(blur.props.tint, TAB_PILL_BLUR_TINT);
+  assert.equal(blur.props.intensity, TAB_PILL_BLUR_INTENSITY);
   assert.equal(blur.props.experimentalBlurMethod, "dimezisBlurView");
-  assert.equal(overlay.props.style[1].backgroundColor, TAB_BAR_GLASS_OVERLAY);
+  assert.equal(overlay.props.style[1].backgroundColor, getTabBarGlassOverlay("cloudy"));
+});
+
+test("Wall confirmation is a full pill using the live tab color in every theme", () => {
+  for (const theme of ["natural", "cloudy", "indigo2", "pleyades"]) {
+    const h = harness("ios", theme);
+    h.render();
+    h.advance(900);
+    const banner = h.render();
+    const base = banner.props.style[0];
+    const pressable = banner.props.children;
+    const pressableStyle = pressable.props.style({ pressed: false })[0];
+    const glass = pressable.props.children[0];
+    const [blur, overlay] = glass.props.children;
+    assert.equal(base.height, 56);
+    assert.equal(base.borderRadius, base.height / 2);
+    assert.equal(pressableStyle.borderRadius, base.height / 2);
+    assert.equal(glass.props.style.borderRadius, base.height / 2);
+    assert.equal(glass.props.style.overflow, "hidden");
+    assert.equal(overlay.props.style[1].backgroundColor, getTabBarGlassOverlay(theme));
+    assert.equal(blur.props.tint, TAB_PILL_BLUR_TINT);
+    assert.equal(blur.props.intensity, TAB_PILL_BLUR_INTENSITY);
+  }
 });
 
 test("Wall confirmation is 45px narrower and centered, with the shorter message and unchanged check and Ver", () => {
