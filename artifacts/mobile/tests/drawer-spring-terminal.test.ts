@@ -89,6 +89,28 @@ test("closing retains its critically damped trajectory and precise terminal tail
   assert.ok(foregroundCornerRadius(after.rawTerminal) < 0.05);
 });
 
+test("last 50px of closing have no held frames, reversals or terminal jumps", () => {
+  for (const hz of [60, 120]) {
+    const width = 390;
+    const result = trace(drawerSpringConfig(0, width, 0), 1, 0, hz);
+    const pixels = result.positions.map(value => foregroundTranslateX(value, width));
+    const start = pixels.findIndex(value => value <= 50);
+    assert.ok(start > 0);
+    const tail = pixels.slice(start);
+    for (let i = 1; i < tail.length; i++) {
+      assert.ok(tail[i] < tail[i - 1], "the closing spring never pauses or reverses");
+    }
+    assert.equal(tail.at(-1), 0);
+    assert.ok(tail.at(-2)! < 0.05, "final snap is below a visible pixel");
+    console.log(JSON.stringify({
+      check: "drawer-closing-last-50px",
+      hz,
+      remainingMs: Math.round((tail.length - 1) * 1000 / hz),
+      lastVisibleStepPx: tail.at(-2),
+    }));
+  }
+});
+
 test("consecutive real-engine closes reach exact zero monotonically at 60/90/120 Hz", () => {
   let closes = 0;
   for (const hz of [60, 90, 120]) {

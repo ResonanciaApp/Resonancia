@@ -51,6 +51,16 @@ El usuario confirmó que la apertura por avatar quedó fluida al conservar el mo
 
 **How to apply:** Preservar los efectos y las optimizaciones del cierre. El usuario pidió después un rebote leve al abrir; ese cambio de apertura no autoriza a aplicar el mismo rebote al cierre. Las confirmaciones anteriores no son mediciones de FPS.
 
+El usuario volvió a confirmar que la apertura funciona perfectamente y restringió
+la revisión del cierre a sus últimos 50 px.
+
+**Why:** el movimiento de apertura está aprobado; modificar curvas compartidas
+para intentar resolver el cierre pondría en riesgo lo que ya funciona.
+
+**How to apply:** no cambiar apertura, su resorte ni sus efectos. Separar una
+desaceleración continua de una congelación nativa antes de retocar ese tramo;
+la física del motor sin renderizado no prueba la ausencia de tirones en iPhone.
+
 Los umbrales de reposo de un resorte sobre progreso normalizado deben evaluarse en píxeles y en las superficies derivadas, no solo comprobando que el valor final es cero.
 
 **Why:** El motor puede forzar el último valor al destino cuando todavía queda un salto visible; una función de radio con pendiente alta amplifica ese salto. Un mock que asigna directamente el destino oculta esta discontinuidad.
