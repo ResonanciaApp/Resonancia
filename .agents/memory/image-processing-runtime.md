@@ -26,3 +26,9 @@ Para crear hojas de revisión con `magick montage`, especificar una fuente exist
 **Why:** El runtime puede resolver la fuente predeterminada a un nombre vacío y abortar el montaje con un error de FreeType.
 
 **How to apply:** Verificar una fuente local antes de generar la hoja de revisión; no reinstalar ImageMagick ni cambiar las imágenes por este error.
+
+La detección por saturación no sirve para todas las ilustraciones circulares: puede separar el personaje del fondo como si fueran figuras distintas.
+
+**Why:** Los detalles blancos o poco saturados pueden interrumpir la conexión entre áreas de color aunque pertenezcan a un solo avatar. Elegir únicamente el componente mayor puede recortar mal la ilustración.
+
+**How to apply:** Escoger la máscara de detección según la composición; para personajes con detalles claros, probar luminancia y validar el recorte visualmente contra el original antes de subirlo.

@@ -5,32 +5,28 @@ import { Pressable, ScrollView, StyleSheet, View } from "react-native";
 import { CardCaptionText as Text } from "@/components/CardCaptionText";
 import { avatarFilterOptions, type AvatarCategory, type AvatarCategoryFilter } from "@/lib/profile-avatar-categories";
 
-export const AVATAR_CATEGORY_TRIGGER_HEIGHT = 34;
-
-/** Control shown directly above the first avatar of the grid. */
+/** Transparent text control at the right margin immediately above the avatar grid. */
 export function AvatarCategoryTrigger({
   label,
   open,
-  background,
   onPress,
 }: {
   label: string;
   open: boolean;
-  background: string;
   onPress: () => void;
 }) {
   return (
     <Pressable
       onPress={onPress}
-      hitSlop={6}
+      hitSlop={{ top: 32, bottom: 14, left: 16, right: 12 }}
       accessibilityRole="button"
       accessibilityLabel={`Categoría de avatares: ${label}`}
       accessibilityState={{ expanded: open }}
       testID="avatar-category-trigger"
-      style={({ pressed }) => [styles.trigger, { backgroundColor: background, opacity: pressed ? 0.72 : 1 }]}
+      style={({ pressed }) => [styles.trigger, { opacity: pressed ? 0.6 : 1 }]}
     >
       <Text style={styles.triggerText} numberOfLines={1}>{label}</Text>
-      <Feather name={open ? "chevron-up" : "chevron-down"} size={16} color="#F9F9F9" />
+      <Feather name={open ? "chevron-up" : "chevron-down"} size={11} color="#F9F9F9" />
     </Pressable>
   );
 }
@@ -42,7 +38,7 @@ export function AvatarCategoryTrigger({
 export function AvatarCategoryMenu({
   visible,
   top,
-  left,
+  right,
   categories,
   value,
   surface,
@@ -51,7 +47,7 @@ export function AvatarCategoryMenu({
 }: {
   visible: boolean;
   top: number;
-  left: number;
+  right: number;
   categories: readonly AvatarCategory[];
   value: AvatarCategoryFilter;
   surface: string;
@@ -69,7 +65,7 @@ export function AvatarCategoryMenu({
         accessibilityLabel="Cerrar lista de categorías"
         testID="avatar-category-backdrop"
       />
-      <View style={[styles.menu, { top, left, backgroundColor: surface }]} accessibilityRole="menu" testID="avatar-category-menu">
+      <View style={[styles.menu, { top, right, backgroundColor: surface }]} accessibilityRole="menu" testID="avatar-category-menu">
         <ScrollView bounces={false} keyboardShouldPersistTaps="handled" style={styles.menuScroll}>
           {options.map((option) => {
             const selected = option.id === value;
@@ -97,24 +93,23 @@ export function AvatarCategoryMenu({
 
 const styles = StyleSheet.create({
   trigger: {
-    alignSelf: "flex-start",
-    height: AVATAR_CATEGORY_TRIGGER_HEIGHT,
-    maxWidth: 240,
+    alignSelf: "flex-end",
+    maxWidth: 200,
     flexDirection: "row",
     alignItems: "center",
-    gap: 6,
-    paddingHorizontal: 14,
-    borderRadius: AVATAR_CATEGORY_TRIGGER_HEIGHT / 2,
+    gap: 3,
+    backgroundColor: "transparent",
   },
   triggerText: {
     color: "#F9F9F9",
-    fontSize: 14,
+    fontSize: 9,
+    lineHeight: 12,
     fontFamily: "Inter_500Medium",
     flexShrink: 1,
   },
   menu: {
     position: "absolute",
-    zIndex: 20,
+    zIndex: 22,
     minWidth: 200,
     maxWidth: 280,
     borderRadius: 16,

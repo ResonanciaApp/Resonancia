@@ -41,7 +41,7 @@ for (const screen of ["playlist", "mi-mezcla"]) {
       assert.equal(styleNumber(source, "coverHeader", property), styleNumber(avatarSource, "accountCoverHeader", property));
     }
     for (const [name, reference] of [
-      ["coverCloseButton", "accountCoverCloseButton"],
+      ["coverCloseButton", "accountCoverUploadButton"],
       ["coverUploadButton", "accountCoverUploadButton"],
     ]) {
       for (const property of ["top", "width", "height"]) {

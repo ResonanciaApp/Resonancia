@@ -3562,7 +3562,7 @@ export const ProfileAvatarMembershipInputMode = {
 export interface ProfileAvatarMembershipInput {
   /**
      * @minItems 1
-     * @maxItems 300
+     * @maxItems 350
      */
   presetIds: string[];
   /**
@@ -3643,12 +3643,12 @@ export interface CoverPresetOrderInput {
   scope: CoverPresetScope;
   /**
      * @minItems 1
-     * @maxItems 300
+     * @maxItems 350
      */
   ids: string[];
   /**
      * Optional last-read order; reject atomically if the current catalog differs.
-     * @maxItems 300
+     * @maxItems 350
      */
   expectedIds?: string[];
 }

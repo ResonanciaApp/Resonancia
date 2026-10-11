@@ -66,6 +66,7 @@ export function useScrollProgress(visible: boolean) {
     return { height: indicator.height, transform: [{ translateY: indicator.translateY }] };
   });
   return {
+    offset,
     onScroll,
     onLayout: (event: LayoutChangeEvent) => { viewport.value = event.nativeEvent.layout.height; },
     onContentSizeChange: (_width: number, height: number) => { contentHeight.value = height; },

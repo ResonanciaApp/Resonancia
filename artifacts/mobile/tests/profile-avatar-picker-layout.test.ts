@@ -66,9 +66,10 @@ test("avatar grid reaches the bottom without a fixed footer, retaining scrollabl
   assert.match(source, /contentContainerStyle=\{\[styles.accountCoverPresetGridContent, styles.accountCoverPresetGridContentFiltered, \{ paddingBottom: bottomPad \+ 20 \}\]\}/);
 });
 
-test("photo upload is an icon-only 43px circle 10px to the right of X, with celebration at the right and no balance message", () => {
+test("photo upload replaces X at the left margin, with celebration at the right and no balance message", () => {
   const header = source.slice(source.indexOf("<View style={styles.accountCoverHeader}>"), source.indexOf("<View style={styles.accountCoverPreviewSlot}>"));
-  assert.match(header, /<Text style=\{styles.accountCoverTitle\}>Portada<\/Text>[\s\S]*?accountCoverUploadButton[\s\S]*?<Feather name="image" size=\{18\} color="#F9F9F9" \/>[\s\S]*?accountCoverCloseButton[\s\S]*?accountCoverCelebrationButton/);
+  assert.match(header, /<Text style=\{styles.accountCoverTitle\}[\s\S]*?>Portada<\/Text>[\s\S]*?accountCoverUploadButton[\s\S]*?<Feather name="image" size=\{18\} color="#F9F9F9" \/>[\s\S]*?accountCoverCelebrationButton/);
+  assert.doesNotMatch(header, /accountCoverCloseButton|name="x"/);
   assert.equal((source.match(/styles\.accountCoverUploadButton,/g) ?? []).length, 1);
   assert.doesNotMatch(source, /accountCoverUploadText/);
   assert.match(header, /accessibilityRole="button"\s+accessibilityLabel="Elegir una foto"/);
@@ -78,7 +79,7 @@ test("photo upload is an icon-only 43px circle 10px to the right of X, with cele
   assert.equal(button.borderRadius, 21.5);
   assert.equal(button.position, "absolute");
   assert.equal(button.right, undefined);
-  assert.equal(button.left, findStyle("accountCoverCloseButton").left + 43 + 10);
+  assert.equal(button.left, 0);
   assert.equal(button.zIndex, 1, "the photo action stays above the full-width title so its taps reach the Pressable");
   assert.equal(button.borderWidth, 0);
   assert.equal(button.backgroundColor, "rgba(0,0,0,0.16)");
@@ -90,15 +91,13 @@ test("photo upload is an icon-only 43px circle 10px to the right of X, with cele
   assert.match(header, /name="party-popper"/);
   assert.equal(findStyle("accountCoverHeader").minHeight, 63);
   assert.equal(findStyle("accountCoverHeader").paddingTop, 20);
-  for (const name of ["accountCoverCloseButton", "accountCoverUploadButton", "accountCoverCelebrationButton"]) {
+  for (const name of ["accountCoverUploadButton", "accountCoverCelebrationButton"]) {
     assert.equal(findStyle(name).top, 20);
   }
   const hero = source.slice(source.indexOf("<View style={styles.accountCoverPreviewSlot}>"), source.indexOf("<View style={styles.accountCoverPresetGrid}>"));
   assert.equal((hero.match(/transition=\{0\}/g) ?? []).length, 2);
   assert.doesNotMatch(hero, /IMAGE_TRANSITION/);
   assert.equal(findStyle("accountCoverTitle").textAlign, "center");
-  assert.equal(findStyle("accountCoverCloseButton").left, 0);
-  assert.equal(findStyle("accountCoverCloseButton").right, undefined);
   assert.doesNotMatch(header, /desbloqueos disponibles|ganar desbloqueos/);
 });
 
@@ -112,7 +111,29 @@ test("hero moves down ten pixels in normal flow and pushes the avatar grid equal
   assert.equal(preview.height, 115.5);
   assert.equal(preview.transform, undefined);
   assert.equal(hero.marginTop + hero.height - 170, 10);
-  assert.match(source, /<\/View>\s*<View\s+style=\{styles.accountCoverPresetGrid\}[\s\S]*?<AvatarCategoryTrigger[\s\S]*?<Reanimated\.FlatList\s+ref=\{accountAvatarGridRef\}/);
+  assert.match(source, /<\/View>\s*<View\s+style=\{styles.accountCoverPresetGrid\}[\s\S]*?<Reanimated\.FlatList\s+ref=\{accountAvatarGridRef\}/);
+});
+
+test("avatar filter is transparent, 9pt and right-aligned twenty pixels above the first grid row", () => {
+  const dropdown = readFileSync(new URL("../components/AvatarCategoryDropdown.tsx", import.meta.url), "utf8");
+  assert.match(dropdown, /fontSize:\s*9/);
+  assert.match(dropdown, /lineHeight:\s*12/);
+  assert.match(dropdown, /alignSelf:\s*"flex-end"/);
+  const triggerStyles = dropdown.slice(dropdown.indexOf("trigger: {"), dropdown.indexOf("triggerText: {"));
+  assert.doesNotMatch(triggerStyles, /borderRadius|borderWidth/);
+  assert.match(triggerStyles, /backgroundColor:\s*"transparent"/);
+  assert.match(dropdown, /hitSlop=\{\{\s*top:\s*32,\s*bottom:\s*14/);
+  const handle = findStyle("accountCoverHandle");
+  const headerEnd = handle.marginTop + handle.height + handle.marginBottom + findStyle("accountCoverHeader").minHeight;
+  assert.equal(headerEnd, 81);
+  assert.equal(findStyle("accountAvatarCategoryRow").justifyContent, "flex-end");
+  assert.equal(findStyle("accountAvatarCategoryAnchor").justifyContent, "flex-end");
+  assert.equal(findStyle("accountAvatarCategoryAnchor").position, undefined);
+  assert.equal(findStyle("accountCoverPresetGridContentFiltered").paddingTop, 20);
+  assert.match(source, /<View style=\{styles.accountAvatarCategoryRow\}>[\s\S]*?<AvatarCategoryTrigger[\s\S]*?<\/View>\s*<\/View>\s*<Reanimated.FlatList/);
+  assert.match(source, /<AvatarCategoryMenu[\s\S]*?top=\{avatarGridTop \+ 46 \+ 6\}[\s\S]*?right=\{20\}/);
+  assert.match(dropdown, /menu:\s*\{[\s\S]*?zIndex:\s*22/);
+  assert.match(source, /accountAvatarCategoryAnchor:\s*\{[\s\S]*?minHeight:\s*44,[\s\S]*?minWidth:\s*44,[\s\S]*?zIndex:\s*21/);
 });
 
 test("category selection only changes the filter and scroll, never the staged identity", () => {

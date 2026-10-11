@@ -457,7 +457,7 @@ export const DeleteProfileAvatarCategoryParams = zod.object({
 
 
 
-export const updateProfileAvatarMembershipsBodyPresetIdsMax = 300;
+export const updateProfileAvatarMembershipsBodyPresetIdsMax = 350;
 
 
 export const updateProfileAvatarMembershipsBodyCategoryIdsMax = 100;
@@ -562,9 +562,9 @@ export const CreateAdminCoverPresetBody = zod.object({
 })
 
 
-export const reorderAdminCoverPresetsBodyIdsMax = 300;
+export const reorderAdminCoverPresetsBodyIdsMax = 350;
 
-export const reorderAdminCoverPresetsBodyExpectedIdsMax = 300;
+export const reorderAdminCoverPresetsBodyExpectedIdsMax = 350;
 
 
 

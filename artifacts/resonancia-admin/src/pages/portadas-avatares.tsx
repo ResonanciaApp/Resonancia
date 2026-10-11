@@ -28,7 +28,7 @@ import {
 import { Button } from "@/components/ui/button";
 import { toast } from "sonner";
 import { ProfileAvatarOrderControls } from "@/components/ProfileAvatarOrderControls";
-import { movePresetBlock, presetCatalogSignature, samePresetOrder } from "@/lib/cover-preset-order";
+import { movePresetBlock, presetCatalogSignature, samePresetOrder, shufflePresets, interleavePresets } from "@/lib/cover-preset-order";
 import { ProfileAvatarCategoryManager } from "@/components/ProfileAvatarCategoryManager";
 import { ProfileAvatarCategoryPicker } from "@/components/ProfileAvatarCategoryPicker";
 import { errorMessage, membershipPayload, mergeCategoryIds } from "@/lib/profile-avatar-categories";
@@ -103,7 +103,7 @@ export default function PortadasAvataresPage() {
         <h1 className="text-2xl font-bold">Portadas y avatares</h1>
         <p className="mt-1 text-sm text-muted-foreground">
           Administrá las imágenes predeterminadas que los usuarios pueden elegir.
-            Perfil permite hasta 300 avatares. Mezclas y Playlists permiten 50 opciones cada una. Mi viaje interior mantiene 100 posiciones fijas.
+            Perfil permite hasta 350 avatares. Mezclas y Playlists permiten 50 opciones cada una. Mi viaje interior mantiene 100 posiciones fijas.
         </p>
       </div>
 
@@ -144,6 +144,7 @@ export function ScopeSection({
   const [moveError, setMoveError] = useState<string | null>(null);
   const [checkingOrder, setCheckingOrder] = useState(false);
   const [orderConflict, setOrderConflict] = useState(false);
+  const [orderMode, setOrderMode] = useState<"manual" | "random" | "interleaved">("manual");
   
   const dragIdx = useRef<number | null>(null);
 
@@ -186,7 +187,7 @@ export function ScopeSection({
 
   const isFixedSlots = scope.value === "reflection-story";
   const isProfile = scope.value === "profile";
-  const maxSlots = isFixedSlots ? 100 : scope.value === "profile" ? 300 : 50;
+  const maxSlots = isFixedSlots ? 100 : scope.value === "profile" ? 350 : 50;
   const maxReached = presets.length >= maxSlots;
 
   const categories = query.data?.categories ?? [];
@@ -220,6 +221,7 @@ export function ScopeSection({
   function onDragEnter(index: number) {
     if (isMutating || orderConflict || selectedIds.size > 0) return;
     if (dragIdx.current === null || dragIdx.current === index) return;
+    setOrderMode("manual");
     setPresets((current) => {
       const next = [...current];
       const [moved] = next.splice(dragIdx.current!, 1);
@@ -243,6 +245,7 @@ export function ScopeSection({
       setMoveError(result.error);
       return;
     }
+    setOrderMode("manual");
     setPresets(result.presets);
     setDirty(!samePresetOrder(result.presets, baselineRef.current));
     clearSelection();
@@ -253,6 +256,15 @@ export function ScopeSection({
     setPresets(query.data?.presets ?? baselineRef.current);
     setDirty(false);
     setOrderConflict(false);
+    setOrderMode("manual");
+    clearSelection();
+  }
+
+  function applyOrderMode() {
+    if (!isProfile || isMutating || lockingId !== null || orderConflict || orderMode === "manual") return;
+    const next = orderMode === "random" ? shufflePresets(presets) : interleavePresets(presets, categories);
+    setPresets(next);
+    setDirty(!samePresetOrder(next, baselineRef.current));
     clearSelection();
   }
 
@@ -429,6 +441,37 @@ export function ScopeSection({
             </div>
           )}
 
+          {isProfile && (
+            <div className="mb-5 space-y-2">
+              <div className="flex flex-wrap items-center gap-3">
+                <label htmlFor="profile-avatar-order-mode" className="text-sm font-medium">Orden de los avatares</label>
+                <select
+                  id="profile-avatar-order-mode"
+                  value={orderMode}
+                  disabled={isMutating || orderConflict || lockingId !== null || query.isLoading}
+                  onChange={event => setOrderMode(event.target.value as typeof orderMode)}
+                  className="h-9 rounded-md border border-input bg-background px-3 text-sm"
+                >
+                  <option value="manual">Manual</option>
+                  <option value="random">Aleatorio</option>
+                  <option value="interleaved">Intercalado por categoría</option>
+                </select>
+                {orderMode !== "manual" && (
+                  <Button variant="outline" onClick={applyOrderMode} disabled={isMutating || orderConflict || lockingId !== null || query.isLoading || presets.length < 2}>
+                    {orderMode === "random" ? "Mezclar orden" : "Intercalar categorías"}
+                  </Button>
+                )}
+              </div>
+              <p className="text-xs text-muted-foreground">
+                {orderMode === "manual"
+                  ? "Arrastra las tarjetas o mueve una selección a una posición."
+                  : orderMode === "random"
+                    ? "Genera una mezcla de todos los avatares. El orden no cambia solo al abrir la app."
+                    : "Alterna uno por categoría, sin repetir avatares. Sin categoría participa como otro grupo."}
+                {" "}Pulsa Guardar orden para reflejar los cambios en la app.
+              </p>
+            </div>
+          )}
           {isProfile && (
             <ProfileAvatarCategoryManager
               categories={categories}

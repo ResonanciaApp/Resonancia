@@ -293,6 +293,29 @@ test("server's atomic 409 also preserves the proposal and requires explicit reco
   assert.deepEqual(h.ids(), h.initial.map(item => item.label));
 });
 
+test("interleaved preview saves the app order and survives refetch", async () => {
+  const h = harness(6);
+  h.changeServer(h.initial.map((item, index) => ({ ...item, categoryIds: [index < 3 ? "c1" : "c2"] })));
+  await h.query.refetch();
+  let tree = h.render();
+  find(tree, element => element.props.id === "profile-avatar-order-mode").props.onChange({ target: { value: "interleaved" } });
+  tree = h.render();
+  button(tree, "Intercalar categorías").props.onClick();
+  tree = h.render();
+  const expected = ["avatar-1", "avatar-4", "avatar-2", "avatar-5", "avatar-3", "avatar-6"];
+  const ids = (value: unknown) => elements(value).filter(element => element.props.draggable !== undefined).map(element => element.key);
+  assert.deepEqual(ids(tree), expected);
+  assert.equal(h.writes.length, 0);
+  await button(tree, "Guardar orden").props.onClick();
+  assert.deepEqual(h.writes[0].data.ids, expected);
+  assert.deepEqual(h.writes[0].data.expectedIds, h.initial.map(item => item.id));
+  await h.query.refetch();
+  tree = h.render();
+  assert.deepEqual(ids(tree), expected);
+  find(tree, element => element.props.id === "profile-avatar-order-mode").props.onChange({ target: { value: "manual" } });
+  assert.ok(elements(h.render()).filter(element => element.props.draggable !== undefined).every(element => element.props.draggable));
+});
+
 test("saving disables selection, another save and cancellation", async () => {
   const h = harness();
   h.select(20); h.setPosition("1"); h.move();

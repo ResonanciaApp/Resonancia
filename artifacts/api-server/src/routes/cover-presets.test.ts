@@ -124,12 +124,12 @@ describe("cover preset catalog security and profile identity", () => {
     await db.delete(uploadsTable).where(eq(uploadsTable.id, audio.id));
   });
 
-  it("limits profile to 300 without expanding other catalogs", () => {
-    expect(scopeLimit("profile")).toBe(300);
+  it("limits profile to 350 without expanding other catalogs", () => {
+    expect(scopeLimit("profile")).toBe(350);
     expect(scopeLimit("playlist")).toBe(50);
     expect(scopeLimit("mix")).toBe(50);
     expect(scopeLimit("reflection-story")).toBe(100);
-    const ids = Array.from({ length: 300 }, (_, index) => `avatar-${index}`);
+    const ids = Array.from({ length: 350 }, (_, index) => `avatar-${index}`);
     expect(ReorderAdminCoverPresetsBody.safeParse({ scope: "profile", ids, expectedIds: ids }).success).toBe(true);
     expect(ReorderAdminCoverPresetsBody.safeParse({ scope: "profile", ids: [...ids, "extra"] }).success).toBe(false);
   });
@@ -164,10 +164,10 @@ describe("cover preset catalog security and profile identity", () => {
     }
   });
 
-  it("enforces the 300-image avatar limit and cleans failed claims", async () => {
+  it("enforces the 350-image avatar limit and cleans failed claims", async () => {
     authAs(admin);
     const existingProfiles = await db.select().from(coverPresetsTable).where(eq(coverPresetsTable.scope, "profile"));
-    const rows = Array.from({ length: Math.max(0, 300 - existingProfiles.length) }, (_, index) => ({
+    const rows = Array.from({ length: Math.max(0, 350 - existingProfiles.length) }, (_, index) => ({
       id: `profile:limit-${suffix}-${index}`,
       scope: "profile" as const,
       key: `limit-${suffix}-${index}`,
@@ -191,7 +191,7 @@ describe("cover preset catalog security and profile identity", () => {
       label: "Over limit",
       objectPath: upload.objectPath,
     })).status).toBe(409);
-    // The create limit and reorder payload limit must agree: all 300 slots
+    // The create limit and reorder payload limit must agree: all 350 slots
     // must remain manageable from Admin after the catalog grows past fifty.
     const order = [...existingProfiles, ...rows].sort((a, b) => a.sortOrder - b.sortOrder).map((row) => row.id);
     expect((await request(app).put("/api/admin/cover-presets/order").send({

@@ -108,6 +108,7 @@ import { MoonCrescentIcon } from "@/components/MoonCrescentIcon";
 import { SleepReminderSheet } from "@/components/SleepReminderSheet";
 import { GoldenAvatarSheet } from "@/components/GoldenAvatarSheet";
 import { useGrowthJourneySheetMotion } from "@/hooks/useGrowthJourneySheetMotion";
+import { useAvatarPickerDismiss } from "@/hooks/useAvatarPickerDismiss";
 import { StreakInfoSheet } from "@/components/StreakInfoSheet";
 import { FilledSunIcon } from "@/components/FilledSunIcon";
 import { useMixerPanel } from "@/context/MixerPanelContext";
@@ -343,7 +344,6 @@ export function ProfileScreenBase({
   } = useCoverPresetCatalogState("profile");
   const [avatarFilter, setAvatarFilter] = useState<AvatarCategoryFilter>(ALL_AVATARS);
   const [avatarFilterOpen, setAvatarFilterOpen] = useState(false);
-  const [avatarGridOrigin, setAvatarGridOrigin] = useState({ x: 20, y: 0 });
   const filteredProfileCatalog = useMemo(
     () => padAvatarGrid(filterAvatarsByCategory(profileCatalog, avatarFilter), 5),
     [profileCatalog, avatarFilter],
@@ -628,6 +628,15 @@ export function ProfileScreenBase({
     else setAccountPhotoPickerVisible(false);
   };
   const avatarScrollProgress = useScrollProgress(accountPhotoPickerVisible);
+  const [avatarGridTop, setAvatarGridTop] = useState(0);
+  const avatarDismiss = useAvatarPickerDismiss({
+    enabled: accountPhotoPickerVisible && !goldenAvatarActive && !avatarFilterOpen,
+    sheetY: avatarPickerMotion.sheetY,
+    sheetTop: height * 0.15,
+    gridTop: avatarGridTop + 46,
+    scrollOffset: avatarScrollProgress.offset,
+    onClose: () => setAccountPhotoPickerVisible(false),
+  });
   const accountAvatarGridRef = useRef<FlatList<(typeof filteredProfileCatalog)[number]>>(null);
   const [accountPhotoLibraryPending, setAccountPhotoLibraryPending] = useState(false);
   useEffect(() => {
@@ -1222,6 +1231,7 @@ export function ProfileScreenBase({
             <Animated.View pointerEvents="none" style={[styles.accountCoverBackdrop, { opacity: avatarPickerMotion.backdropOpacity }]} />
             <Pressable style={StyleSheet.absoluteFill} onPress={closeAvatarPicker} disabled={goldenAvatarActive} accessibilityElementsHidden={goldenAvatarActive} importantForAccessibility={goldenAvatarActive ? "no-hide-descendants" : "auto"} />
             <Animated.View
+              {...avatarDismiss.panHandlers}
               pointerEvents={goldenAvatarActive ? "none" : "auto"}
               accessibilityElementsHidden={goldenAvatarActive}
               importantForAccessibility={goldenAvatarActive ? "no-hide-descendants" : "auto"}
@@ -1232,9 +1242,10 @@ export function ProfileScreenBase({
                 style={StyleSheet.absoluteFill}
                 pointerEvents="none"
               />
+              <Pressable style={{ flex: 1 }} onPress={avatarDismiss.onBlankPress} accessible={false} testID="avatar-cover-empty-area">
               <View style={styles.accountCoverHandle} />
               <View style={styles.accountCoverHeader}>
-                <Text style={styles.accountCoverTitle}>Portada</Text>
+                <Text style={styles.accountCoverTitle} onPress={() => {}}>Portada</Text>
                 <Pressable
                   style={[styles.accountCoverUploadButton, { backgroundColor: avatarHeaderBackground }]}
                   onPress={() => {
@@ -1249,15 +1260,6 @@ export function ProfileScreenBase({
                   <Feather name="image" size={18} color="#F9F9F9" />
                 </Pressable>
                 <Pressable
-                  onPress={closeAvatarPicker}
-                  hitSlop={8}
-                  style={[styles.accountCoverCloseButton, { backgroundColor: avatarHeaderBackground }]}
-                  accessibilityRole="button"
-                  accessibilityLabel="Cerrar selector de portada"
-                >
-                  <Feather name="x" size={22} color="#F9F9F9" />
-                </Pressable>
-                <Pressable
                   onPress={() => setGoldenAvatarVisible(true)}
                   style={[styles.accountCoverCelebrationButton, { backgroundColor: avatarHeaderBackground }]}
                   accessibilityRole="button"
@@ -1269,6 +1271,7 @@ export function ProfileScreenBase({
                 </Pressable>
               </View>
               <View style={styles.accountCoverPreviewSlot}>
+                <View onStartShouldSetResponder={() => true}>
                 {accountSelectedProfilePreset ? (
                   <Image
                     source={accountSelectedProfilePreset.source}
@@ -1289,21 +1292,20 @@ export function ProfileScreenBase({
                     <Feather name="user" size={34} color={colors.primary} />
                   </View>
                 )}
+                </View>
               </View>
               <View
                 style={styles.accountCoverPresetGrid}
-                onLayout={(event) => {
-                  const { x, y } = event.nativeEvent.layout;
-                  setAvatarGridOrigin((current) => (current.x === x && current.y === y ? current : { x, y }));
-                }}
+                onLayout={event => setAvatarGridTop(event.nativeEvent.layout.y)}
               >
               <View style={styles.accountAvatarCategoryRow}>
-                <AvatarCategoryTrigger
-                  label={avatarFilterLabel(avatarFilter, profileCategories)}
-                  open={avatarFilterOpen}
-                  background={avatarHeaderBackground}
-                  onPress={() => setAvatarFilterOpen((open) => !open)}
-                />
+                <View style={styles.accountAvatarCategoryAnchor}>
+                  <AvatarCategoryTrigger
+                    label={avatarFilterLabel(avatarFilter, profileCategories)}
+                    open={avatarFilterOpen}
+                    onPress={() => setAvatarFilterOpen((open) => !open)}
+                  />
+                </View>
               </View>
               <Reanimated.FlatList
                 ref={accountAvatarGridRef}
@@ -1364,10 +1366,11 @@ export function ProfileScreenBase({
               />
               <ScrollProgressIndicator progress={avatarScrollProgress} />
               </View>
+              </Pressable>
               <AvatarCategoryMenu
                 visible={avatarFilterOpen}
-                top={avatarGridOrigin.y + 12 + 34 + 6}
-                left={avatarGridOrigin.x}
+                top={avatarGridTop + 46 + 6}
+                right={20}
                 categories={profileCategories}
                 value={avatarFilter}
                 surface={activeTheme.gradient[activeTheme.gradient.length - 1] as string}
@@ -2281,6 +2284,7 @@ function ModalField({ label, value, onChangeText, placeholder, colors, icon, mul
 
 // ── Styles ───────────────────────────────────────────────────────────────────
 
+
 const styles = StyleSheet.create({
   profileCarouselDivider: {
     height: StyleSheet.hairlineWidth,
@@ -2542,19 +2546,6 @@ const styles = StyleSheet.create({
     fontWeight: "700",
     textAlign: "center",
   },
-  accountCoverCloseButton: {
-    position: "absolute",
-    left: 0,
-    top: 20,
-    width: 43,
-    height: 43,
-    borderRadius: 21.5,
-    borderWidth: 0,
-    borderColor: "transparent",
-    backgroundColor: "rgba(0,0,0,0.16)",
-    alignItems: "center",
-    justifyContent: "center",
-  },
   accountCoverPreviewSlot: {
     height: 170,
     marginTop: 10,
@@ -2569,7 +2560,7 @@ const styles = StyleSheet.create({
   },
   accountCoverUploadButton: {
     position: "absolute",
-    left: 53,
+    left: 0,
     top: 20,
     zIndex: 1,
     width: 43,
@@ -2599,11 +2590,19 @@ const styles = StyleSheet.create({
     paddingBottom: 20,
   },
   accountCoverPresetGridContentFiltered: {
-    paddingTop: 16,
+    paddingTop: 20,
   },
   accountAvatarCategoryRow: {
-    paddingTop: 12,
-    alignItems: "flex-start",
+    height: 46,
+    alignItems: "flex-end",
+    justifyContent: "flex-end",
+  },
+  accountAvatarCategoryAnchor: {
+    alignSelf: "flex-end",
+    justifyContent: "flex-end",
+    minHeight: 44,
+    minWidth: 44,
+    zIndex: 21,
   },
   accountAvatarCategoryEmpty: {
     alignItems: "flex-start",

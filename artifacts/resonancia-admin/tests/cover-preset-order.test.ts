@@ -1,6 +1,38 @@
 import assert from "node:assert/strict";
 import test from "node:test";
-import { movePresetBlock, samePresetOrder, presetCatalogSignature } from "../src/lib/cover-preset-order.ts";
+import { movePresetBlock, samePresetOrder, presetCatalogSignature, shufflePresets, interleavePresets } from "../src/lib/cover-preset-order.ts";
+
+test("random order is a permutation of the same records without modifying the source", () => {
+  const original = [{ id: "a", isLocked: true }, { id: "b" }, { id: "c" }];
+  const shuffled = shufflePresets(original, () => 0);
+  assert.deepEqual(shuffled.map(item => item.id), ["b", "c", "a"]);
+  assert.deepEqual(original.map(item => item.id), ["a", "b", "c"]);
+  for (const item of shuffled) assert.equal(item, original.find(row => row.id === item.id));
+  assert.deepEqual(shufflePresets([]), []);
+  assert.deepEqual(shufflePresets(original.slice(0, 1)), original.slice(0, 1));
+});
+
+test("interleaving rotates categories and uncategorized, then exhausts longer groups", () => {
+  const records = [
+    { id: "a1", categoryIds: ["a"] }, { id: "a2", categoryIds: ["a"] },
+    { id: "a3", categoryIds: ["a"] }, { id: "b1", categoryIds: ["b"] },
+    { id: "b2", categoryIds: ["b"] }, { id: "none", categoryIds: [] },
+  ];
+  const sorted = interleavePresets(records, [{ id: "a" }, { id: "b" }, { id: "empty" }]);
+  assert.deepEqual(sorted.map(item => item.id), ["a1", "b1", "none", "a2", "b2", "a3"]);
+  sorted.forEach(item => assert.equal(item, records.find(row => row.id === item.id)));
+});
+
+test("multiple memberships never duplicate an avatar; missing categories never lose it", () => {
+  const records = [
+    { id: "both", categoryIds: ["a", "b"] }, { id: "a", categoryIds: ["a"] },
+    { id: "b", categoryIds: ["b"] }, { id: "orphan", categoryIds: ["deleted"] },
+    { id: "none" },
+  ];
+  assert.deepEqual(interleavePresets(records, [{ id: "a" }, { id: "b" }]).map(item => item.id), ["both", "b", "orphan", "a", "none"]);
+  assert.deepEqual(interleavePresets(records, []), records);
+  assert.deepEqual(interleavePresets([], [{ id: "a" }]), []);
+});
 
 const cards = Array.from({ length: 20 }, (_, index) => ({
   id: String(index + 1), label: `Avatar ${index + 1}`, sortOrder: index,
