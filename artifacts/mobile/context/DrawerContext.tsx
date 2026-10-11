@@ -88,6 +88,7 @@ type MotionContext = Pick<DrawerCtx, "drawerProgress" | "drawerWidth" | "drawerG
 const MotionCtx = createContext<MotionContext | null>(null);
 const HomeCtx = createContext<Pick<DrawerCtx, "open" | "moodPickerRequest"> | null>(null);
 type DestinationContext = Pick<DrawerCtx,
+  "libraryParallax" | "openLib" | "wallComposeRequest" | "consumeWallComposeRequest" |
   "instantNav" | "overlayParallax" | "drawerTransitionProgress" |
   "libOpen" | "libraryInitialTab" | "libOpenedFromDrawer" | "closeLib" |
   "libraryMixId" | "closeLibraryMix" | "overlayRoute" | "overlayOpenedFromDrawer" |
@@ -117,6 +118,12 @@ export function DrawerProvider({ children }: { children: React.ReactNode }) {
   const gestureSettle = useRef<{ token: number; version: number } | null>(null);
   const isOpenRef = useRef(false);
   const pathnameRef = useRef(pathname);
+  useEffect(() => {
+    const route = normalizeRoutePath(pathname);
+    drawerDiagnosticEvent(route === "/profile" ? "screen:profile"
+      : route === "/" || route === "/inicio3" || route === "/inicio8" ? "screen:home"
+      : "screen:other");
+  }, [pathname]);
 
   useEffect(() => {
     drawerWidth.value = width;
@@ -389,11 +396,13 @@ export function DrawerProvider({ children }: { children: React.ReactNode }) {
   // Opening/closing the drawer must not broadcast to navigation or panel providers.
   // Their close callbacks read the latest blocking flag without changing identity.
   const destinations = React.useMemo<DestinationContext>(() => ({
+    libraryParallax, openLib, wallComposeRequest, consumeWallComposeRequest,
     instantNav, overlayParallax, drawerTransitionProgress,
     libOpen, libraryInitialTab, libOpenedFromDrawer, closeLib,
     libraryMixId, closeLibraryMix, overlayRoute, overlayOpenedFromDrawer, closeOverlay,
     chatUserId, closeChat, destinationRequest, acknowledgeDestinationReady, closeDrawerIfBlocked,
   }), [
+    libraryParallax, openLib, wallComposeRequest, consumeWallComposeRequest,
     instantNav, overlayParallax, drawerTransitionProgress,
     libOpen, libraryInitialTab, libOpenedFromDrawer, closeLib,
     libraryMixId, closeLibraryMix, overlayRoute, overlayOpenedFromDrawer, closeOverlay,

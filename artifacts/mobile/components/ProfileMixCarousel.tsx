@@ -5,7 +5,7 @@ import { CardCaptionText as Text } from "@/components/CardCaptionText";
 
 import { MixCover } from "@/app/mi-mezcla/[id]";
 import { getTwoCardCarouselCardWidth } from "@/constants/carousel";
-import { useDrawer } from "@/context/DrawerContext";
+import { useDrawerDestinations } from "@/context/DrawerContext";
 import { useMixer } from "@/context/MixerContext";
 import { useMixerPanel } from "@/context/MixerPanelContext";
 import { useSceneTheme } from "@/context/SceneThemeContext";
@@ -26,7 +26,7 @@ export const ProfileMixCarousel = React.memo(function ProfileMixCarousel({
   const { width } = useWindowDimensions();
   const colors = useColors();
   const { theme } = useSceneTheme();
-  const { openLib } = useDrawer();
+  const { openLib } = useDrawerDestinations();
   const { presets, stopAll } = useMixer();
   const { openForMix } = useAmbientalDuration();
   const { openMixer } = useMixerPanel();

@@ -247,6 +247,10 @@ test("stable destination callbacks read current blocking state and publish real 
 test("navigation, overlay hosts and tool providers subscribe only to destination state", () => {
   for (const path of [
     "../app/_layout.tsx",
+    "../app/(tabs)/_layout.tsx",
+    "../components/HomeReflectionWallSection.tsx",
+    "../components/ProfileMixCarousel.tsx",
+    "../components/ProfilePlaylistCarousel.tsx",
     "../components/BibliotecaOverlay.tsx", "../components/DrawerScreenOverlay.tsx",
     "../components/ChatOverlay.tsx", "../components/LibraryMixOverlay.tsx",
     "../context/MixerPanelContext.tsx", "../context/GeometrixPanelContext.tsx",
@@ -255,6 +259,25 @@ test("navigation, overlay hosts and tool providers subscribe only to destination
     assert.match(source, /useDrawerDestinations\(\)/, path);
     assert.doesNotMatch(source, /\buseDrawer\(\)/, path);
   }
+});
+
+test("isolated Profile subscriptions still receive library and compose changes", () => {
+  const h = harness();
+  const initial = h.destinations;
+  assert.equal(initial.libraryParallax, h.ctx.libraryParallax);
+  initial.openLib("playlists"); h.flush();
+  assert.equal(h.destinations.libOpen, true);
+  assert.equal(h.destinations.libraryInitialTab, "playlists");
+  h.ctx.requestWallCompose(); h.flush();
+  const request = h.destinations.wallComposeRequest;
+  assert.ok(request);
+  const composing = h.destinations;
+  h.ctx.open(); h.flush(); h.finish(); h.flush();
+  assert.equal(h.destinations, composing, "opening does not republish Profile data");
+  h.ctx.close(); h.flush(); h.finish(); h.flush();
+  assert.equal(h.destinations, composing, "closing does not republish Profile data");
+  h.destinations.consumeWallComposeRequest(request); h.flush();
+  assert.equal(h.destinations.wallComposeRequest, null);
 });
 
 /** Execute the real provider/components with deterministic hooks, native gestures

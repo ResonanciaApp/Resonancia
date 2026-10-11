@@ -46,7 +46,7 @@ function fixture(measureResponds = true, layoutReady = true) {
     },
     "expo-router": { useFocusEffect: () => {} },
     "@/components/InnerSpaceCard": { InnerSpaceCard: "composer", INNER_SPACE_CARD_BOTTOM_MARGIN: 32 },
-    "@/context/DrawerContext": { useDrawer: () => ({ wallComposeRequest: null, consumeWallComposeRequest() {} }) },
+    "@/context/DrawerContext": { useDrawerDestinations: () => ({ wallComposeRequest: null, consumeWallComposeRequest() {} }) },
   };
   const loaded = { exports: {} as any };
   new Function("require", "module", "exports", "requestAnimationFrame", "cancelAnimationFrame", "setTimeout", "clearTimeout", compiled)(

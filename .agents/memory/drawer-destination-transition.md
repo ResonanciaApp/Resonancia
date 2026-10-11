@@ -82,6 +82,18 @@ se congela; un registro «sin pausas» del callback no descarta esa congelación
 por frame; callbacks estables para que medir no agregue registros/desregistros
 justo al abrir/cerrar. El informe es orientativo, no una medición de Instruments.
 
+El usuario detectó que el tirón reaparece después de visitar Perfil. El primer
+registro mostró muchos retrasos de callbacks JS y pocos de UI, sin demostrar
+qué componente consume el tiempo ni medir la presentación final.
+
+**Why:** las tabs visitadas permanecen montadas; la prueba en Inicio recién
+abierto no representa necesariamente el coste después de navegar.
+
+**How to apply:** incluir ciclos Inicio–Perfil–drawer al verificar rendimiento.
+Los consumidores de acciones/datos no deben suscribirse al estado de apertura
+solo para obtener funciones estables. No interpretar correlación temporal
+entre un commit y un retraso como un perfil de CPU.
+
 Los umbrales de reposo de un resorte sobre progreso normalizado deben evaluarse en píxeles y en las superficies derivadas, no solo comprobando que el valor final es cero.
 
 **Why:** El motor puede forzar el último valor al destino cuando todavía queda un salto visible; una función de radio con pendiente alta amplifica ese salto. Un mock que asigna directamente el destino oculta esta discontinuidad.

@@ -17,7 +17,7 @@ import {
 import { useFocusEffect } from "expo-router";
 
 import { InnerSpaceCard, INNER_SPACE_CARD_BOTTOM_MARGIN } from "@/components/InnerSpaceCard";
-import { useDrawer } from "@/context/DrawerContext";
+import { useDrawerDestinations } from "@/context/DrawerContext";
 
 const KEYBOARD_ESTIMATE = Platform.OS === "android" ? 305 : 335;
 const KEYBOARD_GAP = 15;
@@ -53,7 +53,7 @@ export const HomeReflectionWallSection = forwardRef<HomeReflectionWallHandle, Pr
     profileVariant = false,
     onCollapsedHeightChange,
   }, ref) {
-    const { wallComposeRequest, consumeWallComposeRequest } = useDrawer();
+    const { wallComposeRequest, consumeWallComposeRequest } = useDrawerDestinations();
     const sectionRef = useRef<View>(null);
     const [layoutReady, setLayoutReady] = useState(false);
     const [focusRequest, setFocusRequest] = useState(0);

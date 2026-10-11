@@ -1,0 +1,530 @@
+{
+  "diagnostic": "drawer-timing-v1",
+  "mode": "development",
+  "platform": "ios",
+  "osVersion": "26.1",
+  "durationMs": 26865,
+  "note": "UI callback timing is not GPU/presentation timing. Compare with a screen recording; instrumentation itself adds some overhead.",
+  "ui": {
+    "samples": 3190,
+    "maxGapMs": 78.19895833358169,
+    "gapsOver32ms": 2,
+    "slowFrames": [
+      {
+        "at": 12999,
+        "gap": 78.19895833358169,
+        "progress": 0
+      },
+      {
+        "at": 25252,
+        "gap": 33.17070833593607,
+        "progress": 1
+      }
+    ]
+  },
+  "js": {
+    "samples": 1170,
+    "maxGapMs": 953,
+    "gapsOver32ms": 52,
+    "slowFrames": [
+      {
+        "at": 64,
+        "gap": 41
+      },
+      {
+        "at": 291,
+        "gap": 101
+      },
+      {
+        "at": 770,
+        "gap": 80
+      },
+      {
+        "at": 888,
+        "gap": 98
+      },
+      {
+        "at": 1488,
+        "gap": 148
+      },
+      {
+        "at": 2105,
+        "gap": 148
+      },
+      {
+        "at": 3050,
+        "gap": 160
+      },
+      {
+        "at": 3813,
+        "gap": 139
+      },
+      {
+        "at": 4436,
+        "gap": 146
+      },
+      {
+        "at": 4732,
+        "gap": 125
+      },
+      {
+        "at": 5064,
+        "gap": 140
+      },
+      {
+        "at": 5796,
+        "gap": 139
+      },
+      {
+        "at": 6413,
+        "gap": 139
+      },
+      {
+        "at": 6719,
+        "gap": 128
+      },
+      {
+        "at": 7468,
+        "gap": 144
+      },
+      {
+        "at": 8894,
+        "gap": 953
+      },
+      {
+        "at": 9291,
+        "gap": 50
+      },
+      {
+        "at": 9564,
+        "gap": 206
+      },
+      {
+        "at": 10303,
+        "gap": 295
+      },
+      {
+        "at": 10874,
+        "gap": 149
+      },
+      {
+        "at": 11650,
+        "gap": 141
+      },
+      {
+        "at": 12372,
+        "gap": 247
+      },
+      {
+        "at": 13150,
+        "gap": 524
+      },
+      {
+        "at": 13188,
+        "gap": 38
+      },
+      {
+        "at": 13754,
+        "gap": 128
+      },
+      {
+        "at": 13873,
+        "gap": 97
+      },
+      {
+        "at": 14004,
+        "gap": 45
+      },
+      {
+        "at": 14154,
+        "gap": 78
+      },
+      {
+        "at": 14506,
+        "gap": 47
+      },
+      {
+        "at": 14594,
+        "gap": 88
+      },
+      {
+        "at": 14891,
+        "gap": 199
+      },
+      {
+        "at": 15389,
+        "gap": 46
+      },
+      {
+        "at": 15945,
+        "gap": 152
+      },
+      {
+        "at": 16111,
+        "gap": 85
+      },
+      {
+        "at": 16571,
+        "gap": 145
+      },
+      {
+        "at": 16835,
+        "gap": 192
+      },
+      {
+        "at": 17165,
+        "gap": 155
+      },
+      {
+        "at": 17708,
+        "gap": 148
+      },
+      {
+        "at": 18331,
+        "gap": 155
+      },
+      {
+        "at": 19973,
+        "gap": 263
+      },
+      {
+        "at": 20632,
+        "gap": 122
+      },
+      {
+        "at": 20755,
+        "gap": 123
+      },
+      {
+        "at": 21553,
+        "gap": 159
+      },
+      {
+        "at": 21629,
+        "gap": 52
+      },
+      {
+        "at": 22493,
+        "gap": 149
+      },
+      {
+        "at": 23128,
+        "gap": 151
+      },
+      {
+        "at": 23499,
+        "gap": 88
+      },
+      {
+        "at": 23754,
+        "gap": 110
+      },
+      {
+        "at": 23897,
+        "gap": 143
+      },
+      {
+        "at": 24160,
+        "gap": 161
+      },
+      {
+        "at": 24798,
+        "gap": 104
+      },
+      {
+        "at": 26385,
+        "gap": 107
+      }
+    ]
+  },
+  "events": [
+    {
+      "at": 290,
+      "name": "commit:inicio"
+    },
+    {
+      "at": 770,
+      "name": "commit:inicio"
+    },
+    {
+      "at": 1350,
+      "name": "tap:inicio"
+    },
+    {
+      "at": 1350,
+      "name": "command:close"
+    },
+    {
+      "at": 1975,
+      "name": "settled:closed"
+    },
+    {
+      "at": 2158,
+      "name": "tap:inicio"
+    },
+    {
+      "at": 2158,
+      "name": "command:close"
+    },
+    {
+      "at": 2159,
+      "name": "settled:closed"
+    },
+    {
+      "at": 2900,
+      "name": "command:open"
+    },
+    {
+      "at": 3368,
+      "name": "settled:open"
+    },
+    {
+      "at": 3675,
+      "name": "tap:menu-avatar"
+    },
+    {
+      "at": 3675,
+      "name": "command:close"
+    },
+    {
+      "at": 4301,
+      "name": "settled:closed"
+    },
+    {
+      "at": 4428,
+      "name": "tap:inicio"
+    },
+    {
+      "at": 4428,
+      "name": "command:close"
+    },
+    {
+      "at": 4452,
+      "name": "settled:closed"
+    },
+    {
+      "at": 4933,
+      "name": "command:open"
+    },
+    {
+      "at": 5385,
+      "name": "settled:open"
+    },
+    {
+      "at": 5658,
+      "name": "tap:menu-avatar"
+    },
+    {
+      "at": 5659,
+      "name": "command:close"
+    },
+    {
+      "at": 6284,
+      "name": "settled:closed"
+    },
+    {
+      "at": 6607,
+      "name": "command:open"
+    },
+    {
+      "at": 7035,
+      "name": "settled:open"
+    },
+    {
+      "at": 7326,
+      "name": "tap:menu-avatar"
+    },
+    {
+      "at": 7326,
+      "name": "command:close"
+    },
+    {
+      "at": 7951,
+      "name": "settled:closed"
+    },
+    {
+      "at": 8236,
+      "name": "tap:inicio"
+    },
+    {
+      "at": 8236,
+      "name": "command:close"
+    },
+    {
+      "at": 8373,
+      "name": "settled:closed"
+    },
+    {
+      "at": 8662,
+      "name": "command:open"
+    },
+    {
+      "at": 9083,
+      "name": "settled:open"
+    },
+    {
+      "at": 9452,
+      "name": "commit:inicio"
+    },
+    {
+      "at": 9457,
+      "name": "tap:menu-avatar"
+    },
+    {
+      "at": 9457,
+      "name": "command:close"
+    },
+    {
+      "at": 10181,
+      "name": "settled:closed"
+    },
+    {
+      "at": 10298,
+      "name": "tap:inicio"
+    },
+    {
+      "at": 10298,
+      "name": "command:close"
+    },
+    {
+      "at": 10319,
+      "name": "settled:closed"
+    },
+    {
+      "at": 10735,
+      "name": "command:open"
+    },
+    {
+      "at": 11195,
+      "name": "settled:open"
+    },
+    {
+      "at": 11509,
+      "name": "tap:menu-avatar"
+    },
+    {
+      "at": 11510,
+      "name": "command:close"
+    },
+    {
+      "at": 12144,
+      "name": "settled:closed"
+    },
+    {
+      "at": 13050,
+      "name": "commit:inicio"
+    },
+    {
+      "at": 13738,
+      "name": "commit:inicio"
+    },
+    {
+      "at": 14003,
+      "name": "commit:inicio"
+    },
+    {
+      "at": 14766,
+      "name": "command:open"
+    },
+    {
+      "at": 15195,
+      "name": "settled:open"
+    },
+    {
+      "at": 15802,
+      "name": "tap:menu-avatar"
+    },
+    {
+      "at": 15803,
+      "name": "command:close"
+    },
+    {
+      "at": 16436,
+      "name": "settled:closed"
+    },
+    {
+      "at": 16680,
+      "name": "command:open"
+    },
+    {
+      "at": 17165,
+      "name": "settled:open"
+    },
+    {
+      "at": 17561,
+      "name": "tap:menu-avatar"
+    },
+    {
+      "at": 17561,
+      "name": "command:close"
+    },
+    {
+      "at": 18195,
+      "name": "settled:closed"
+    },
+    {
+      "at": 18385,
+      "name": "tap:inicio"
+    },
+    {
+      "at": 18385,
+      "name": "command:close"
+    },
+    {
+      "at": 18386,
+      "name": "settled:closed"
+    },
+    {
+      "at": 19826,
+      "name": "commit:inicio"
+    },
+    {
+      "at": 20752,
+      "name": "commit:inicio"
+    },
+    {
+      "at": 21404,
+      "name": "command:open"
+    },
+    {
+      "at": 21629,
+      "name": "commit:inicio"
+    },
+    {
+      "at": 21863,
+      "name": "settled:open"
+    },
+    {
+      "at": 22345,
+      "name": "tap:menu-avatar"
+    },
+    {
+      "at": 22345,
+      "name": "command:close"
+    },
+    {
+      "at": 22988,
+      "name": "settled:closed"
+    },
+    {
+      "at": 23151,
+      "name": "tap:inicio"
+    },
+    {
+      "at": 23151,
+      "name": "command:close"
+    },
+    {
+      "at": 23152,
+      "name": "settled:closed"
+    },
+    {
+      "at": 23769,
+      "name": "command:open"
+    },
+    {
+      "at": 24202,
+      "name": "settled:open"
+    }
+  ]
+}

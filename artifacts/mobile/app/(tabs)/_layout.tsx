@@ -24,7 +24,7 @@ import {
 } from "@/context/TabBarVisibilityContext";
 import { useSceneTheme } from "@/context/SceneThemeContext";
 import { isIndigo2ThemeId } from "@/config/scene-themes";
-import { useDrawer } from "@/context/DrawerContext";
+import { useDrawerDestinations } from "@/context/DrawerContext";
 import { CategoryOverlayProvider, useCategoryOverlay } from "@/context/CategoryOverlayContext";
 import { CategoryOverlay } from "@/components/CategoryOverlay";
 import { SacredBackground } from "@/components/SacredBackground";
@@ -159,7 +159,7 @@ function CustomTabBar({ state, navigation, descriptors }: TabBarProps) {
   // Compensa el parallax del wrapper de Tabs (la barra vive dentro de él).
   const { isGeometrixOpen } = useGeometrixPanel();
   const { closeAllCategories, stack: categoryStack } = useCategoryOverlay();
-  const { libOpen, closeLib, libraryParallax } = useDrawer();
+  const { libOpen, closeLib, libraryParallax } = useDrawerDestinations();
 
   // El bloque llega hasta el borde inferior e incluye el área segura.
   const barHeight = PILL_H + pb;
@@ -357,7 +357,7 @@ function TabLayoutInner() {
   const isWeb              = Platform.OS === "web";
   const bottomPb           = isWeb ? 8 : insets.bottom;
   const tabBarHeight       = PILL_H + bottomPb;
-  const { libOpen }        = useDrawer();
+  const { libOpen }        = useDrawerDestinations();
   const [barProps, setBarProps] = useState<any>(null);
   const { isMixerOpen, openedFromDrawer: mixerFromDrawer, panelAnim } = useMixerPanel();
   const { isGeometrixOpen, openedFromDrawer: geometrixFromDrawer, panelAnim: geoPanelAnim } = useGeometrixPanel();

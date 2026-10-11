@@ -14,7 +14,7 @@ import {
 
 import { PressScale } from "@/components/PressScale";
 import { getTwoCardCarouselCardWidth } from "@/constants/carousel";
-import { useDrawer } from "@/context/DrawerContext";
+import { useDrawerDestinations } from "@/context/DrawerContext";
 import { useFoldersPlaylists } from "@/context/FoldersPlaylistsContext";
 import { useSceneTheme } from "@/context/SceneThemeContext";
 import {
@@ -35,7 +35,7 @@ export const ProfilePlaylistCarousel = React.memo(function ProfilePlaylistCarous
   const { width } = useWindowDimensions();
   const colors = useColors();
   const { theme } = useSceneTheme();
-  const { openLib } = useDrawer();
+  const { openLib } = useDrawerDestinations();
   const { playlists } = useFoldersPlaylists();
   const playlistCatalog = useCoverPresetCatalog("playlist");
   const cardWidth = getTwoCardCarouselCardWidth(width, GRID_PAD);
