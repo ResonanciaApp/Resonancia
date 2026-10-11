@@ -68,7 +68,7 @@ function harness(platform = "ios") {
     "@/context/MixerPanelContext": { useMixerPanel: () => ({ isMixerOpen: false, openMixer: () => calls.push("mixer") }) },
     "@/context/GeometrixPanelContext": { useGeometrixPanel: () => ({ isGeometrixOpen: false }) },
     "@/context/DrawerContext": {
-      useDrawerDestinations: () => ({
+      useDrawer: () => ({
         libOpen, closeLib: () => calls.push("close-library"), libraryParallax: new Value(0),
       }),
     },

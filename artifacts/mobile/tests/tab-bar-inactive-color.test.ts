@@ -2,17 +2,7 @@ import assert from "node:assert/strict";
 import { readFileSync } from "node:fs";
 import test from "node:test";
 import { URL } from "node:url";
-import { TAB_BAR_INACTIVE_COLOR, getTabBarInactiveColor, getTabBarGlassOverlay, getFloatingTabBarGlassOverlay } from "../constants/tab-bar.ts";
-
-test("only Cloudy's floating glass shifts toward sky blue, at unchanged opacity", () => {
-  assert.equal(getFloatingTabBarGlassOverlay("cloudy"), "rgba(14,20,33,0.744)");
-  assert.equal(getTabBarGlassOverlay("cloudy"), "rgba(14,8,33,0.744)");
-  for (const theme of ["natural", "indigo2", "pleyades", "cloudy2", "unknown"]) {
-    assert.equal(getFloatingTabBarGlassOverlay(theme), getTabBarGlassOverlay(theme));
-  }
-  const source = readFileSync(new URL("../app/(tabs)/_layout.tsx", import.meta.url), "utf8");
-  assert.match(source, /const tabBarGlassOverlay = getFloatingTabBarGlassOverlay\(activeSceneId\)/);
-});
+import { TAB_BAR_INACTIVE_COLOR, getTabBarInactiveColor } from "../constants/tab-bar.ts";
 
 test("Cloudy and Indigo 2 use their exact requested inactive tints, without changing other themes", () => {
   assert.equal(getTabBarInactiveColor("cloudy"), "#D5E5F2");

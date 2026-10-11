@@ -15,11 +15,6 @@ export function getTabBarGlassOverlay(themeId: string): string {
   return themeId === "natural" ? "rgba(8,33,28,0.744)" : TAB_PILL_GLASS_OVERLAY;
 }
 
-/** Cloudy's floating bar leans subtly toward sky blue; feedback glass stays unchanged. */
-export function getFloatingTabBarGlassOverlay(themeId: string): string {
-  return themeId === "cloudy" ? "rgba(14,20,33,0.744)" : getTabBarGlassOverlay(themeId);
-}
-
 /** Exact theme palettes; Cloudy variants do not inherit each other's tint. */
 export function getTabBarInactiveColor(themeId: string): string {
   if (themeId === "natural") return "#D5EBDD";
