@@ -14,7 +14,9 @@ const sheets = sheetArguments.length ? sheetArguments : [
 ];
 const columns = Number(option("--columns") ?? 6);
 const rows = Number(option("--rows") ?? 5);
+const rowCounts = option("--row-counts")?.split(",").map(Number) ?? Array(rows).fill(columns);
 if (!Number.isInteger(columns) || columns < 1 || !Number.isInteger(rows) || rows < 1 ||
+  rowCounts.length !== rows || rowCounts.some(count => !Number.isInteger(count) || count < 1 || count > columns) ||
   sheets.some(sheet => !sheet || sheet.startsWith("--"))) throw new Error("Invalid sheet grid arguments.");
 const losslessWebp = args.includes("--lossless-webp");
 const rowCentered = args.includes("--row-centered");
@@ -39,9 +41,12 @@ for (const [sheetIndex, sheet] of sheets.entries()) {
       const [width, height, x, y] = match.slice(1).map(Number);
       return { width, height, x, y, centerY: y + height / 2 };
     }).sort((a, b) => a.centerY - b.centerY);
-  if (components.length !== rows * columns) throw new Error(`Expected ${rows * columns} circles in sheet ${sheetIndex + 1}, found ${components.length}`);
+  const expected = rowCounts.reduce((sum, count) => sum + count, 0);
+  if (components.length !== expected) throw new Error(`Expected ${expected} circles in sheet ${sheetIndex + 1}, found ${components.length}`);
+  let offset = 0;
   for (let row = 0; row < rows; row++) {
-    const cells = components.slice(row * columns, (row + 1) * columns).sort((a, b) => a.x - b.x);
+    const cells = components.slice(offset, offset + rowCounts[row]).sort((a, b) => a.x - b.x);
+    offset += rowCounts[row];
     if (Math.max(...cells.map(c => c.centerY)) - Math.min(...cells.map(c => c.centerY)) > 40) {
       throw new Error(`Invalid row grouping in sheet ${sheetIndex + 1}`);
     }
