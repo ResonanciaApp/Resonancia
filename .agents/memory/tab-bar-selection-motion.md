@@ -29,13 +29,25 @@ esa pausa.
 cambios rápidos de destino. Si se comprime la posición al dibujar, no volver
 a comprimir esa misma posición al redirigir la animación.
 
-El usuario aclaró que también percibe trabas durante el recorrido, al pasar
-por los iconos; no atribuir ese síntoma al rebote en los extremos.
+El usuario confirmó trabas durante el recorrido en iPhone, incluso alternando
+pantallas ya abiertas; no atribuir ese síntoma al rebote ni a la primera carga.
 
-**Why:** suavizar el límite no resolvió el problema reportado. Una prueba de
-continuidad matemática no demuestra fluidez en el dispositivo.
+**Why:** suavizar el límite y separar las capas de sombra no resolvieron el
+problema reportado. Una prueba de continuidad matemática no demuestra fluidez
+en el dispositivo.
 
 **How to apply:** conservar dimensiones y efectos. Separar el vidrio y su
 sombra de la capa móvil; enviar solo transformaciones durante el resorte,
 no propiedades de layout constantes. Estas medidas reducen trabajo de dibujo,
 pero no declarar resuelto el lag sin comprobar el movimiento en un teléfono.
+
+El indicador de iOS usa el controlador nativo de Animated como prueba dirigida,
+sin trasladar el resto del tab bar ni cambiar navegación o diseño.
+
+**Why:** evita el mecanismo de pausa de commits de Reanimated durante
+actualizaciones de React. Es una hipótesis de rendimiento, no una causa
+confirmada por un perfilado nativo ni una mejora confirmada por el usuario.
+
+**How to apply:** no reintroducir Reanimated en ese indicador sin medir primero;
+conservar la posición nativa al interrumpir, invalidar callbacks antiguos y
+respetar Reducir movimiento.
