@@ -1,4 +1,5 @@
 import { Feather } from "@expo/vector-icons";
+import { BlurView } from "expo-blur";
 import { router, useFocusEffect } from "expo-router";
 import React, { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import {
@@ -18,6 +19,8 @@ import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { SacredBackground } from "@/components/SacredBackground";
 import { RoutineCompletionBanner } from "@/components/RoutineCompletionBanner";
 import { RoutineGradientFill } from "@/components/RoutineGradientFill";
+import { getTabBarGlassOverlay, TAB_PILL_BLUR_INTENSITY, TAB_PILL_BLUR_TINT } from "@/constants/tab-bar";
+import { useSceneTheme } from "@/context/SceneThemeContext";
 import {
   getRoutineActivityCategory,
   getRoutineDateKey,
@@ -227,6 +230,8 @@ function CalendarActivityRow({
 function RutinaCalendarioScreenContent() {
   const insets = useSafeAreaInsets();
   const routineTheme = useRoutineTheme();
+  const { activeSceneId } = useSceneTheme();
+  const tabBarGlassOverlay = getTabBarGlassOverlay(activeSceneId);
   const { height: screenHeight } = useWindowDimensions();
   const { announceActivityAdded, announceCompletion } = useRoutineCompletionBanner();
   const todayKey = useDayRollover();
@@ -594,7 +599,15 @@ function RutinaCalendarioScreenContent() {
           },
         ]}
       >
-        <RoutineGradientFill style={{ borderRadius: 18 }} />
+        <View pointerEvents="none" style={styles.addActivityGlass}>
+          <BlurView
+            tint={TAB_PILL_BLUR_TINT}
+            intensity={TAB_PILL_BLUR_INTENSITY}
+            experimentalBlurMethod="dimezisBlurView"
+            style={StyleSheet.absoluteFill}
+          />
+          <View style={[StyleSheet.absoluteFill, { backgroundColor: tabBarGlassOverlay }]} />
+        </View>
         <Feather name="plus" size={19} color="#FFFFFF" />
         <Text style={styles.addActivityText}>Añadir actividad</Text>
       </Pressable>
@@ -783,10 +796,17 @@ const styles = StyleSheet.create({
     alignItems: "center",
     gap: 9,
     shadowColor: "#000000",
-    shadowOpacity: 0.25,
-    shadowRadius: 14,
-    shadowOffset: { width: 0, height: 7 },
-    elevation: 7,
+    shadowOpacity: 0.28,
+    shadowRadius: 12,
+    shadowOffset: { width: 0, height: 6 },
+    elevation: 18,
+  },
+  addActivityGlass: {
+    ...StyleSheet.absoluteFillObject,
+    borderRadius: 18,
+    overflow: "hidden",
+    borderWidth: StyleSheet.hairlineWidth,
+    borderColor: "rgba(255,255,255,0.16)",
   },
   addActivityText: {
     fontFamily: "Manrope",

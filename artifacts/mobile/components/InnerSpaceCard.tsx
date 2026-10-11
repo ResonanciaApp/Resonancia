@@ -104,7 +104,13 @@ export function InnerSpaceCard({
   const focusAfterExpandRef = useRef(false);
   const contentHeightRef = useRef(0);
   const reduceMotion = useReducedMotion();
-  const sectionBorderOpacity = useSharedValue(0.4);
+  const closedBorderOpacity = profileVariant ? 0.8 : 0.4;
+  const sectionBorderOpacity = useSharedValue(closedBorderOpacity);
+  useEffect(() => {
+    if (!expandedRef.current && !animatingRef.current) {
+      sectionBorderOpacity.value = closedBorderOpacity;
+    }
+  }, [closedBorderOpacity, sectionBorderOpacity]);
   const sectionBorderStyle = useAnimatedStyle(() => ({ opacity: sectionBorderOpacity.value }));
   const clipHeight = useSharedValue(0);
   const clipStyle = useAnimatedStyle(() => ({ height: clipHeight.value }));
@@ -328,8 +334,8 @@ export function InnerSpaceCard({
     expandedRef.current = opening;
     setExpanded(opening);
     sectionBorderOpacity.value = reduceMotion
-      ? (opening ? 0.23 : 0.4)
-      : withTiming(opening ? 0.23 : 0.4, {
+      ? (opening ? 0.23 : closedBorderOpacity)
+      : withTiming(opening ? 0.23 : closedBorderOpacity, {
           duration: PANEL_DURATION,
           easing: ReanimatedEasing.inOut(ReanimatedEasing.quad),
         });

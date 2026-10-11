@@ -194,3 +194,22 @@ test("selected capsule uses exactly ten percent white and extra damping for end-
   assert.deepEqual(selectionConstants.tabSelectionSpring(10), far);
   assert.deepEqual(selectionConstants.tabSelectionSpring(-4), far);
 });
+
+test("the outer pill matches Home widget shadow while only the inner glass clips its content", () => {
+  const h = harness();
+  const home = readFileSync(new URL("../app/(tabs)/inicio8.tsx", import.meta.url), "utf8");
+  const body = home.match(/inicio2HeroEmotionWidget: \{([\s\S]*?)\n  \}/)?.[1];
+  assert.ok(body);
+  const widget = new Function(`return ({${body}});`)();
+  for (const key of ["elevation", "shadowColor", "shadowOpacity", "shadowRadius"]) {
+    assert.equal(h.styles.pillShadow[key], widget[key]);
+  }
+  assert.equal(h.styles.pillShadow.shadowOffset.width, widget.shadowOffset.width);
+  assert.equal(h.styles.pillShadow.shadowOffset.height, widget.shadowOffset.height);
+  assert.equal(h.styles.pill.overflow, undefined, "Outer shadows must not be clipped");
+  assert.equal(h.styles.pillClip.overflow, "hidden");
+  assert.equal(h.styles.pillClip.borderRadius, h.styles.pill.borderRadius);
+  const wrappers = find(h.render(), (node) => node.props.style?.[1] === h.styles.pillShadow);
+  assert.equal(wrappers.length, 1);
+  assert.equal(wrappers[0].props.collapsable, false);
+});

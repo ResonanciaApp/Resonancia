@@ -28,7 +28,7 @@ export function TabSelectionIndicator({ width, count, index }: {
       const visibleX = tabSelectionTranslation(x.value, slot, next.count);
       if (visibleX !== x.value) x.value = visibleX;
       const distance = Math.abs(target - x.value) / slot;
-      x.value = withSpring(target, { ...tabSelectionSpring(distance), reduceMotion: ReduceMotion.System });
+      x.value = withSpring(target, { ...tabSelectionSpring(distance, Math.abs(target - x.value)), reduceMotion: ReduceMotion.System });
     },
   );
   const style = useAnimatedStyle(() => ({

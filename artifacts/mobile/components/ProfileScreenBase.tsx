@@ -1671,6 +1671,8 @@ export function ProfileScreenBase({
               />
             </View>
 
+            <MiRutinaSection titleSize={19} addCardHeight={profileWallCardHeight} alignCardGapToWall style={{ marginHorizontal: 0, marginTop: 40, marginBottom: PROFILE_SECTION_GAP }} />
+
             <ProfileReflectionWallSection
               ref={profileWallRef}
               scrollRef={profileScrollRef}
@@ -1680,8 +1682,6 @@ export function ProfileScreenBase({
               onCollapsedHeightChange={setProfileWallCardHeight}
               style={{ marginTop: 40, marginBottom: PROFILE_SECTION_GAP }}
             />
-
-            <MiRutinaSection titleSize={19} addCardHeight={profileWallCardHeight} alignCardGapToWall style={{ marginHorizontal: 0, marginTop: 40, marginBottom: PROFILE_SECTION_GAP }} />
 
             {SHOW_PROFILE_PRACTICE_CARDS && (
             <>

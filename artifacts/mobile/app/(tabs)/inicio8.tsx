@@ -1806,6 +1806,25 @@ const Inicio2HeroStatic = React.memo(function Inicio2HeroStatic({
 }) {
   const router = useRouter();
   const { currentStreak } = useStreak();
+  const weekBlink = useRef(new Animated.Value(1)).current;
+  const weekPressRunning = useRef(false);
+  useEffect(() => () => {
+    weekBlink.stopAnimation();
+    weekPressRunning.current = false;
+  }, [weekBlink]);
+  const handleWeekPress = useCallback(() => {
+    if (weekPressRunning.current) return;
+    weekPressRunning.current = true;
+    weekBlink.stopAnimation();
+    weekBlink.setValue(1);
+    Animated.sequence([
+      Animated.timing(weekBlink, { toValue: 0.55, duration: 70, useNativeDriver: true }),
+      Animated.timing(weekBlink, { toValue: 1, duration: 100, useNativeDriver: true }),
+    ]).start(({ finished }) => {
+      weekPressRunning.current = false;
+      if (finished) onOpenProfile();
+    });
+  }, [weekBlink, onOpenProfile]);
   const { user: clerkUser } = useUser();
   const { username } = useUserProfile();
   const avatarSource = useCurrentUserAvatarSource();
@@ -2021,7 +2040,16 @@ const Inicio2HeroStatic = React.memo(function Inicio2HeroStatic({
             ]}
             testID="inicio3-streak-row"
           >
-            <StreakWeekRow />
+            <Pressable
+              onPress={handleWeekPress}
+              accessibilityRole="button"
+              accessibilityLabel="Abrir Tu progreso semanal"
+              testID="inicio3-week-progress-link"
+            >
+              <Animated.View style={{ opacity: weekBlink }}>
+                <StreakWeekRow />
+              </Animated.View>
+            </Pressable>
           </RAnimated.View>
         </>
       )}

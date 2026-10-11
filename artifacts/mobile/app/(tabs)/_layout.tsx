@@ -246,7 +246,8 @@ function CustomTabBar({ state, navigation, descriptors }: TabBarProps) {
           },
         ]}
       >
-        <View style={styles.pill}>
+        <View collapsable={false} style={[styles.pill, styles.pillShadow]}>
+        <View style={styles.pillClip}>
         <BlurView
           pointerEvents="none"
           tint={TAB_PILL_BLUR_TINT}
@@ -304,6 +305,7 @@ function CustomTabBar({ state, navigation, descriptors }: TabBarProps) {
               />
             );
           })}
+        </View>
         </View>
         </View>
       </Animated.View>
@@ -465,6 +467,17 @@ const styles = StyleSheet.create({
     left: TAB_PILL_SIDE_MARGIN,
     right: TAB_PILL_SIDE_MARGIN,
     height: PILL_H + 1,
+    borderRadius: (PILL_H + 1) / 2,
+  },
+  pillShadow: {
+    elevation: 18,
+    shadowColor: "#000000",
+    shadowOffset: { width: 0, height: 6 },
+    shadowOpacity: 0.28,
+    shadowRadius: 12,
+  },
+  pillClip: {
+    ...StyleSheet.absoluteFillObject,
     borderRadius: (PILL_H + 1) / 2,
     overflow: "hidden",
     borderWidth: StyleSheet.hairlineWidth,

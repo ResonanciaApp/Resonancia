@@ -130,5 +130,30 @@ test("retargeting after overshoot starts from the visible position, not from bey
   h.render(340, 0);
   assert.equal(h.springs.at(-1).start, visible);
   assert.equal(h.springs.at(-1).target, 0);
-  assert.equal(h.springs.at(-1).config.damping, 29);
+  assert.equal(h.springs.at(-1).config.damping, selection.tabSelectionSpring(4, visible).damping);
+});
+
+test("Inicio–Perfil adds one pixel of rebound in either direction, without changing short trips or bounds", () => {
+  const peak = (config: ReturnType<typeof selection.tabSelectionSpring>, pixels: number) => {
+    const ratio = config.damping / (2 * Math.sqrt(config.stiffness * config.mass));
+    return pixels * Math.exp(-Math.PI * ratio / Math.sqrt(1 - ratio * ratio));
+  };
+  for (const width of [320, 340, 402, 768]) {
+    const h = harness();
+    const slot = (width - 14) / 5;
+    const travel = slot * 4;
+    const originalPeak = peak(selection.tabSelectionSpring(4), travel);
+    h.render(width, 0);
+    h.render(width, 4);
+    const forward = h.springs.at(-1).config;
+    h.render(width, 0);
+    const backward = h.springs.at(-1).config;
+    assert.equal(forward.damping, backward.damping);
+    assert.ok(Math.abs(peak(forward, travel) - originalPeak - 1) < 1e-9);
+    assert.ok(peak(forward, travel) < 4, "Extra rebound fits inside the existing safe margin");
+    assert.equal(selection.tabSelectionTranslation(travel + peak(forward, travel), slot, 5), travel + peak(forward, travel));
+    for (const distance of [1, 2, 3]) {
+      assert.deepEqual(selection.tabSelectionSpring(distance, slot * distance), selection.tabSelectionSpring(distance));
+    }
+  }
 });
