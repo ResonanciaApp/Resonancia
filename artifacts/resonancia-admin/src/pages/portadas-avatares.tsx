@@ -459,7 +459,7 @@ export function ScopeSection({
                   {index + 1}
                 </span>
                 
-                <div className={`relative h-12 w-12 shrink-0 overflow-hidden border border-border bg-secondary ${isProfile ? "rounded-full" : "rounded-md"}`}>
+                <div className={`relative shrink-0 overflow-hidden border border-border bg-secondary ${isProfile ? "h-24 w-24 rounded-full" : "h-12 w-12 rounded-md"}`}>
                   {previewUrl(preset.objectPath, preset.builtinKey) ? (
                     <img
                       src={previewUrl(preset.objectPath, preset.builtinKey)!}

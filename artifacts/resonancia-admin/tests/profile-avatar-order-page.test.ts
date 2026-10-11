@@ -158,6 +158,17 @@ function harness(count = 20, scope = "profile") {
   };
 }
 
+test("Profile avatar previews double to 96px without enlarging library covers", () => {
+  for (const scope of ["profile", "mix", "playlist"]) {
+    const previews = elements(harness(3, scope).render()).filter(element =>
+      element.type === "div" && element.props.className?.includes("overflow-hidden border border-border bg-secondary"));
+    assert.equal(previews.length, 3);
+    for (const preview of previews) {
+      assert.match(preview.props.className, scope === "profile" ? /h-24 w-24 rounded-full/ : /h-12 w-12 rounded-md/);
+    }
+  }
+});
+
 test("real cards select independently of locks and move a non-contiguous block in current order", () => {
   const h = harness();
   h.select(9); h.select(2); h.select(7);
@@ -169,7 +180,7 @@ test("real cards select independently of locks and move a non-contiguous block i
   assert.equal(button(h.render(), "Guardar orden").props.disabled, false);
 });
 
-test("profile preserves the original vertical list of horizontal rows, thumbnail size and action layout", () => {
+test("profile preserves horizontal rows and action layout with larger avatar previews", () => {
   const h = harness();
   const tree = h.render();
   assert.ok(elements(tree).some(element => element.props.className === "space-y-2"));
@@ -181,7 +192,7 @@ test("profile preserves the original vertical list of horizontal rows, thumbnail
     const contents = elements(row);
     assert.ok(contents.some(element => element.props.className === "flex-1"));
     assert.ok(contents.some(element => element.props.className === "flex shrink-0 items-center gap-2"));
-    assert.ok(contents.some(element => /h-12 w-12.*rounded-full/.test(element.props.className ?? "")));
+    assert.ok(contents.some(element => /h-24 w-24.*rounded-full/.test(element.props.className ?? "")));
     assert.equal(contents.filter(element => element.props.type === "checkbox").length, 1);
   }
   assert.ok(!elements(tree).some(element => /overflow-x-auto|Lista horizontal/.test(`${element.props.className ?? ""} ${element.props["aria-label"] ?? ""}`)));
