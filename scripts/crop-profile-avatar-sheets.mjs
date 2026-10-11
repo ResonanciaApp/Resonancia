@@ -20,6 +20,10 @@ if (!Number.isInteger(columns) || columns < 1 || !Number.isInteger(rows) || rows
   sheets.some(sheet => !sheet || sheet.startsWith("--"))) throw new Error("Invalid sheet grid arguments.");
 const losslessWebp = args.includes("--lossless-webp");
 const rowCentered = args.includes("--row-centered");
+// Detect only the geometry with saturation; preserve all original colors when cropping.
+const detectionArgs = args.includes("--saturation-detection")
+  ? ["-colorspace", "HSL", "-channel", "G", "-separate", "+channel", "-threshold", "8%"]
+  : ["-colorspace", "gray", "-threshold", "2%"];
 const temporary = losslessWebp ? mkdtempSync(join(tmpdir(), "profile-avatar-crops-")) : null;
 const median = (values) => {
   const sorted = [...values].sort((a, b) => a - b);
@@ -33,7 +37,7 @@ magick("-size", "512x512", "xc:white", "-fx",
 const images = [];
 
 for (const [sheetIndex, sheet] of sheets.entries()) {
-  const report = magick(sheet, "-alpha", "off", "-colorspace", "gray", "-threshold", "2%",
+  const report = magick(sheet, "-alpha", "off", ...detectionArgs,
     "-define", "connected-components:verbose=true",
     "-define", "connected-components:area-threshold=10000", "-connected-components", "8", "null:");
   const components = [...report.matchAll(/^\s*\d+:\s+(\d+)x(\d+)\+(\d+)\+(\d+)\s+.*gray\(255\)/gm)]
