@@ -72,9 +72,9 @@ function harness() {
     motion: (value: boolean) => changeMotion(value),
     unmount: () => effects.forEach(effect => effect.cleanup?.()),
     removed: () => removed,
-    render(width: number, index: number) {
+    render(width: number, index: number, extraHeight = 0) {
       refCursor = effectCursor = 0;
-      return module.exports.TabSelectionIndicator({ width, count: 5, index });
+      return module.exports.TabSelectionIndicator({ width, count: 5, index, extraHeight, barHeight: TAB_PILL_BAR_H + extraHeight });
     },
   };
 }
@@ -95,6 +95,18 @@ test("iOS keeps geometry and sends its spring to the native driver after confirm
   // Identical props do not restart an in-flight spring.
   h.render(340, 4);
   assert.equal(h.callbacks.length, 0);
+});
+
+test("title mode grows the selected capsule 10px, keeps it centered, and restores original geometry", () => {
+  const h = harness();
+  for (const extraHeight of [0, 10, 0]) {
+    const node = h.render(340, 0, extraHeight);
+    const style = Object.assign({}, ...node.props.style);
+    assert.equal(style.height, selection.TAB_SELECTION_HEIGHT + extraHeight);
+    assert.equal(style.borderRadius, style.height / 2);
+    assert.equal(style.top + style.height / 2, (TAB_PILL_BAR_H + extraHeight) / 2 - 1);
+    assert.equal(style.top, 3);
+  }
 });
 
 test("rapid iOS taps discard stale native callbacks and start at the actual position", () => {

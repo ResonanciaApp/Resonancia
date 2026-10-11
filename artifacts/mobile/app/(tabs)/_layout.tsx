@@ -280,7 +280,7 @@ function CustomTabBar({ state, navigation, descriptors }: TabBarProps) {
         </View>
         <View style={[styles.pillClip, styles.controlsLayer, pillShape]}>
         <View onLayout={(event) => setRowWidth(event.nativeEvent.layout.width)} style={[styles.row, isWeb && styles.rowWeb, { height: pillHeight }]}>
-          <TabSelectionIndicator width={rowWidth} count={visibleRoutes.length} index={selectedVisibleIndex} barHeight={pillHeight} />
+          <TabSelectionIndicator width={rowWidth} count={visibleRoutes.length} index={selectedVisibleIndex} barHeight={pillHeight} extraHeight={showLabels ? 10 : 0} />
           {state.routes.map((route: { key: string; name: string; params?: object }, index: number) => {
             if (HIDDEN_ROUTES.has(route.name)) return null;
 

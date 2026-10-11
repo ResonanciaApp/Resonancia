@@ -121,6 +121,7 @@ test("enabled labels sit 4px below icons at size 9 and add exactly 10px to the b
       assert.equal(Object.assign({}, ...row.props.style).height, 68);
       const indicator = find(h.render(), node => node.type === "selection-indicator")[0];
       assert.equal(indicator.props.barHeight, 68);
+      assert.equal(indicator.props.extraHeight, 10);
       const items = find(h.render(), (node) => node.type === h.TabItem);
       assert.equal(items.length, 5);
       for (const item of items) {
@@ -150,6 +151,7 @@ test("default icon-only mode restores the original height and centers icons with
   const row = find(tree, node => !!node.props.onLayout)[0];
   assert.equal(Object.assign({}, ...row.props.style).height, 58);
   assert.equal(find(tree, node => node.type === "selection-indicator")[0].props.barHeight, 58);
+  assert.equal(find(tree, node => node.type === "selection-indicator")[0].props.extraHeight, 0);
   for (const item of find(tree, node => node.type === h.TabItem)) {
     const rendered = h.TabItem(item.props);
     assert.equal(find(rendered, node => node.type === "text").length, 0);
