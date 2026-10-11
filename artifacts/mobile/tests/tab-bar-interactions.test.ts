@@ -158,8 +158,13 @@ test("pill geometry preserves the existing safe-area footprint and native visibi
   const bar = find(h.render(), (node) => node.type === "animated-view")[0];
   assert.equal(bar.props.style[1].height, 58 + 34);
   assert.equal(h.styles.pill.borderRadius, h.styles.pill.height / 2);
-  assert.equal(selectionConstants.TAB_SELECTION_HEIGHT, 48);
-  assert.equal(selectionConstants.TAB_SELECTION_INSET, 0);
+  assert.equal(h.styles.pill.height, 59);
+  assert.equal(h.styles.pill.top, -1);
+  assert.equal(h.styles.pill.top + h.styles.pill.height, 58);
+  assert.equal(h.styles.pill.top + h.styles.row.marginTop, 0);
+  assert.equal(h.styles.row.height, 58);
+  assert.equal(selectionConstants.TAB_SELECTION_HEIGHT, 50);
+  assert.equal(selectionConstants.TAB_SELECTION_INSET, -1);
   assert.ok(h.animations.every((animation) => animation.useNativeDriver === true));
   h.session();
   const hiddenBar = find(h.render(), (node) => node.type === "animated-view")[0];

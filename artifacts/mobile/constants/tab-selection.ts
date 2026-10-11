@@ -1,5 +1,5 @@
-export const TAB_SELECTION_HEIGHT = 48;
-export const TAB_SELECTION_INSET = 0;
+export const TAB_SELECTION_HEIGHT = 50;
+export const TAB_SELECTION_INSET = -1;
 export const TAB_ROW_PADDING = 7;
 export const TAB_SELECTION_BACKGROUND = "rgba(255,255,255,0.1)";
 

@@ -54,15 +54,18 @@ function harness() {
   };
 }
 
-test("first layout snaps without an entrance animation; capsule grows another 2px high and 4px wide, centered 1px higher", () => {
+test("first layout snaps without entrance animation; capsule grows 1px on each vertical side and 2px wide", () => {
   const h = harness();
   assert.equal(h.render(0, 2).style.opacity, 0);
   const { node, style } = h.render(340, 2);
   const slot = (340 - 14) / 5;
   assert.equal(h.springs.length, 0);
   assert.equal(style.transform[0].translateX, slot * 2);
-  assert.equal(style.width, slot - 4 + 4);
-  assert.equal(node.props.style[0].height, 46 + 2);
+  assert.equal(style.width, slot + 2);
+  assert.equal(node.props.style[0].left, selection.TAB_ROW_PADDING - 1);
+  assert.equal(node.props.style[0].height, 48 + 2);
+  assert.equal(node.props.style[0].top, 3);
+  assert.equal(node.props.style[0].top + node.props.style[0].height, 53);
   assert.equal(node.props.style[0].top + node.props.style[0].height / 2, TAB_PILL_BAR_H / 2 - 1);
   assert.equal(node.props.style[0].backgroundColor, "rgba(255,255,255,0.1)");
   assert.equal(node.props.pointerEvents, "none");
