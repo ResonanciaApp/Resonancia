@@ -9,6 +9,36 @@ import * as geometry from "../lib/drawerGeometry.ts";
 
 const require = createRequire(import.meta.url);
 
+test("iOS content rasterization is limited to closing and resets on interruption", () => {
+  const h = harness();
+  function find(node: any): any {
+    if (!node || typeof node !== "object") return;
+    if (node.props?.testID === "drawer-foreground-content") return node;
+    for (const child of node.props?.children ?? []) {
+      const result = find(child);
+      if (result) return result;
+    }
+  }
+  const cached = () => find(h.component("DrawerForeground", { children: null }).tree).props.shouldRasterizeIOS;
+  assert.equal(cached(), false);
+  h.ctx.open(); h.flush();
+  assert.equal(cached(), false, "opening is unchanged");
+  h.finish(); h.flush();
+  assert.equal(cached(), false, "held open is unchanged");
+  h.ctx.close(); h.flush();
+  assert.equal(cached(), true, "closing reuses the rendered content");
+  h.ctx.open(); h.flush();
+  assert.equal(cached(), false, "reopening releases the cache immediately");
+  h.finish(); h.flush();
+  for (let i = 0; i < 3; i++) {
+    h.ctx.close(); h.flush();
+    assert.equal(cached(), true);
+    h.finish(); h.flush();
+    assert.equal(cached(), false, "closed Home must not retain the texture");
+    h.ctx.open(); h.flush(); h.finish(); h.flush();
+  }
+});
+
 test("closing a prepared drawer tool before layout aborts the pending selection without blocking Home", () => {
   const h = harness();
   h.ctx.open(); h.flush(); h.finish(); h.flush();

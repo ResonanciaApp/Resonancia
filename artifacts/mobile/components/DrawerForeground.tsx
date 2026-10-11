@@ -31,6 +31,7 @@ export function DrawerForeground({ children }: { children: React.ReactNode }) {
     drawerWidth,
     drawerGestureVersion,
     foregroundBlocked,
+    isOpen,
     beginDrawerDrag,
     settleDrawerDrag,
     close,
@@ -106,6 +107,11 @@ export function DrawerForeground({ children }: { children: React.ReactNode }) {
         <SacredBackground variant="gradient" noImage />
         <View
           style={{ flex: 1 }}
+          // Cache only the iOS content during closing settlement. The changing
+          // corner mask, shadow and veil stay outside this expensive subtree.
+          // Opening and fully closed rendering remain uncached as before.
+          shouldRasterizeIOS={foregroundBlocked && !isOpen}
+          testID="drawer-foreground-content"
           accessibilityElementsHidden={foregroundBlocked}
           importantForAccessibility={foregroundBlocked ? "no-hide-descendants" : "auto"}
         >
