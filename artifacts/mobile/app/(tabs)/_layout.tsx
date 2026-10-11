@@ -143,6 +143,13 @@ function TabItem({
         <View style={{ width: Math.max(iconSize, ICON_SIZE), height: Math.max(iconSize, ICON_SIZE), alignItems: "center", justifyContent: "center", overflow: "visible" }}>
           {makeIcon(isFocused)}
         </View>
+        <Text
+          numberOfLines={1}
+          style={[styles.label, { color: isFocused ? activeCol : inactiveCol }]}
+          testID={`tab-label-${route.name}`}
+        >
+          {conf.label}
+        </Text>
       </View>
     </Pressable>
   );
@@ -516,7 +523,7 @@ const styles = StyleSheet.create({
   pillWrap: {
     alignItems: "center",
     justifyContent: "center",
-    gap: 0,
+    gap: 4,
     width: "100%",
   },
   iconGlow: {
@@ -527,7 +534,8 @@ const styles = StyleSheet.create({
   },
   label: {
     fontFamily: "Manrope",
-    fontSize: 10,
+    fontSize: 9,
+    lineHeight: 11,
     letterSpacing: 0.3,
     fontWeight: "500",
   },

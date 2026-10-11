@@ -12,7 +12,7 @@ const compiled = ts.transpileModule(`${source}\nexport { CustomTabBar, TabItem, 
   compilerOptions: { jsx: ts.JsxEmit.React, module: ts.ModuleKind.CommonJS, esModuleInterop: true },
 }).outputText;
 
-function harness(platform = "ios") {
+function harness(platform = "ios", themeId = "pleyades") {
   const calls: string[] = [];
   const animations: any[] = [];
   const refs: any[] = [];
@@ -64,11 +64,11 @@ function harness(platform = "ios") {
     "@/components/TabSelectionIndicator": { TabSelectionIndicator: "selection-indicator" },
     "@/constants/motion": { DURATION: { SHEET_CLOSE: 250 }, easeOutCubic: () => {} },
     "@/config/scene-themes": { isIndigo2ThemeId: () => false },
-    "@/context/SceneThemeContext": { useSceneTheme: () => ({ activeSceneId: "pleyades", theme }) },
+    "@/context/SceneThemeContext": { useSceneTheme: () => ({ activeSceneId: themeId, theme }) },
     "@/context/MixerPanelContext": { useMixerPanel: () => ({ isMixerOpen: false, openMixer: () => calls.push("mixer") }) },
     "@/context/GeometrixPanelContext": { useGeometrixPanel: () => ({ isGeometrixOpen: false }) },
     "@/context/DrawerContext": {
-      useDrawer: () => ({
+      useDrawerDestinations: () => ({
         libOpen, closeLib: () => calls.push("close-library"), libraryParallax: new Value(0),
       }),
     },
@@ -108,20 +108,33 @@ function find(node: any, predicate: (node: any) => boolean): any[] {
   return [...(predicate(node) ? [node] : []), ...find(node.props.children, predicate)];
 }
 
-test("icon-only tabs retain accessible names, selected state, and the current icon sizes", () => {
+test("tabs add 9px labels 4px below icons without changing icons or bar height", () => {
   for (const platform of ["ios", "android", "web"]) {
-    const h = harness(platform);
-    const items = find(h.render(), (node) => node.type === h.TabItem);
-    assert.equal(items.length, 5);
-    for (const item of items) {
-      const rendered = h.TabItem(item.props);
-      assert.ok(rendered.props.accessibilityLabel);
-      assert.equal(rendered.props.accessibilityRole, "tab");
-      assert.equal(rendered.props.accessibilityState.selected, item.props.isFocused);
-      assert.equal(find(rendered, (node) => node.type === "text").length, 0);
-      const icon = find(rendered, (node) => ["symbol", "mci", "feather"].includes(node.type))[0];
-      assert.equal(icon.props.size, item.props.route.name === "sonidos" ? 29.5 : 26.5);
-      assert.equal(find(rendered, (node) => node.type === "blur").length, 0);
+    for (const themeId of ["indigo2", "cloudy", "natural", "pleyades"]) {
+      const h = harness(platform, themeId);
+      assert.equal(h.styles.row.height, 58);
+      assert.equal(h.styles.pillWrap.gap, 4);
+      assert.equal(h.styles.label.fontSize, 9);
+      assert.equal(h.styles.label.lineHeight, 11);
+      const items = find(h.render(), (node) => node.type === h.TabItem);
+      assert.equal(items.length, 5);
+      for (const item of items) {
+        for (const isFocused of [false, true]) {
+          const rendered = h.TabItem({ ...item.props, isFocused });
+          assert.ok(rendered.props.accessibilityLabel);
+          assert.equal(rendered.props.accessibilityRole, "tab");
+          assert.equal(rendered.props.accessibilityState.selected, isFocused);
+          const labels = find(rendered, (node) => node.type === "text");
+          assert.equal(labels.length, 1);
+          assert.equal(labels[0].props.children, rendered.props.accessibilityLabel);
+          const icon = find(rendered, (node) => ["symbol", "mci", "feather"].includes(node.type))[0];
+          assert.equal(icon.props.size, item.props.route.name === "sonidos" ? 29.5 : 26.5);
+          const labelStyle = Object.assign({}, ...labels[0].props.style);
+          assert.equal(labelStyle.color, icon.props.color ?? icon.props.tintColor);
+          assert.equal(labelStyle.color, isFocused ? "#FFFFFF" : tabConstants.getTabBarInactiveColor(themeId));
+          assert.equal(find(rendered, (node) => node.type === "blur").length, 0);
+        }
+      }
     }
   }
 });

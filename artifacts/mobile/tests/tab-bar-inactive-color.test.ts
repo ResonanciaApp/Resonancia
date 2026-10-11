@@ -13,7 +13,7 @@ test("Cloudy and Indigo 2 use their exact requested inactive tints, without chan
   }
 });
 
-test("all unselected icon types share the theme tint while icon-only selected tabs stay opaque white", () => {
+test("icons and menu labels share the theme tint and selected white", () => {
   const source = readFileSync(new URL("../app/(tabs)/_layout.tsx", import.meta.url), "utf8");
   assert.match(source, /const INACTIVE_COLOR = TAB_BAR_INACTIVE_COLOR/);
   assert.match(source, /const inactiveColor = getTabBarInactiveColor\(activeSceneId\)/);
@@ -25,6 +25,7 @@ test("all unselected icon types share the theme tint while icon-only selected ta
   assert.match(source, /<SymbolView[^>]+tintColor=\{color\}/);
   assert.match(source, /<Feather[^>]+color=\{color\}/);
   assert.match(source, /accessibilityLabel=\{conf.label\}/);
-  assert.doesNotMatch(source, /\{conf.label\}[\s\n]*<\/Text>/);
+  assert.match(source, /\{conf.label\}[\s\n]*<\/Text>/);
+  assert.match(source, /styles.label, \{ color: isFocused \? activeCol : inactiveCol \}/);
   assert.match(source, /const ACTIVE_COLOR\s*=\s*"#FFFFFF"/);
 });
