@@ -55,15 +55,16 @@ function harness() {
   };
 }
 
-test("first layout snaps without entrance animation; capsule keeps its height and grows another 2px wide", () => {
+test("first layout snaps without entrance animation; tighter icons preserve capsule dimensions", () => {
   const h = harness();
   assert.equal(h.render(0, 2).style.opacity, 0);
   const { node, style } = h.render(340, 2);
-  const slot = (340 - 14) / 5;
+  const slot = (340 - selection.TAB_ROW_PADDING * 2) / 5;
   assert.equal(h.springs.length, 0);
   assert.equal(style.transform[0].translateX, slot * 2);
-  assert.equal(style.width, slot + 4);
-  assert.equal(node.props.style[0].left, selection.TAB_ROW_PADDING - 2);
+  assert.equal(style.width, (340 - 14) / 5 + 4);
+  assert.equal(node.props.style[0].left, selection.TAB_ROW_PADDING + selection.TAB_SELECTION_INSET);
+  assert.equal(slot - 26.5, (340 - 14) / 5 - 25 - 4, "visible icon gaps are exactly 4px smaller");
   assert.equal(node.props.style[0].height, 48 + 2);
   assert.equal(node.props.style[0].top, 3);
   assert.equal(node.props.style[0].top + node.props.style[0].height, 53);
@@ -80,7 +81,7 @@ test("quick changes continue from the current position, including reversal, with
   h.render(340, 1);
   const interrupted = h.springs.at(-1);
   assert.equal(interrupted.start, 120);
-  assert.equal(interrupted.target, (340 - 14) / 5);
+  assert.equal(interrupted.target, (340 - selection.TAB_ROW_PADDING * 2) / 5);
   assert.equal(interrupted.config.reduceMotion, "system");
   assert.equal(h.refs.length, 2); // One metrics record; one horizontal position.
   h.refs[1].value = 80;
@@ -103,7 +104,7 @@ test("end-to-end trips have much less overshoot while short trips and resizing s
   const h = harness();
   h.render(340, 4);
   const { style } = h.render(700, 4);
-  assert.equal(style.transform[0].translateX, (700 - 14) / 5 * 4);
+  assert.equal(style.transform[0].translateX, (700 - selection.TAB_ROW_PADDING * 2) / 5 * 4);
   assert.equal(h.springs.length, 0);
 });
 
@@ -111,7 +112,7 @@ test("the entire capsule stays inside the bar during overshoot in both direction
   for (const width of [320, 340, 768]) {
     const h = harness();
     const { node } = h.render(width, 0);
-    const slot = (width - 14) / 5;
+    const slot = (width - selection.TAB_ROW_PADDING * 2) / 5;
     for (const position of [-10000, -20, 0, slot * 2, slot * 4 + 20, 10000]) {
       h.refs[1].value = position;
       const style = h.sampleStyle();
@@ -140,7 +141,7 @@ test("Inicio–Perfil adds one pixel of rebound in either direction, without cha
   };
   for (const width of [320, 340, 402, 768]) {
     const h = harness();
-    const slot = (width - 14) / 5;
+    const slot = (width - selection.TAB_ROW_PADDING * 2) / 5;
     const travel = slot * 4;
     const originalPeak = peak(selection.tabSelectionSpring(4), travel);
     h.render(width, 0);

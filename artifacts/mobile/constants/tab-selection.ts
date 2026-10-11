@@ -1,6 +1,8 @@
 export const TAB_SELECTION_HEIGHT = 50;
-export const TAB_SELECTION_INSET = -2;
-export const TAB_ROW_PADDING = 7;
+// Five tabs: reduce center spacing by 2.5px; with 1.5px larger icons,
+// the visible gap decreases by 4px. Compensate the inset to keep capsule width.
+export const TAB_SELECTION_INSET = -3.25;
+export const TAB_ROW_PADDING = 13.25;
 export const TAB_SELECTION_BACKGROUND = "rgba(255,255,255,0.1)";
 
 export function tabSelectionSpring(distanceInTabs: number, distanceInPixels = 0) {

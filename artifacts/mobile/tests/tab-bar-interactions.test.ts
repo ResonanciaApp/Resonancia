@@ -120,7 +120,7 @@ test("icon-only tabs retain accessible names, selected state, and the current ic
       assert.equal(rendered.props.accessibilityState.selected, item.props.isFocused);
       assert.equal(find(rendered, (node) => node.type === "text").length, 0);
       const icon = find(rendered, (node) => ["symbol", "mci", "feather"].includes(node.type))[0];
-      assert.equal(icon.props.size, item.props.route.name === "sonidos" ? 28 : 25);
+      assert.equal(icon.props.size, item.props.route.name === "sonidos" ? 29.5 : 26.5);
       assert.equal(find(rendered, (node) => node.type === "blur").length, 0);
     }
   }
@@ -164,7 +164,8 @@ test("pill geometry preserves the existing safe-area footprint and native visibi
   assert.equal(h.styles.pill.top + h.styles.row.marginTop, 0);
   assert.equal(h.styles.row.height, 58);
   assert.equal(selectionConstants.TAB_SELECTION_HEIGHT, 50);
-  assert.equal(selectionConstants.TAB_SELECTION_INSET, -2);
+  assert.equal(selectionConstants.TAB_SELECTION_INSET, -3.25);
+  assert.equal(h.styles.row.paddingHorizontal, 13.25);
   assert.ok(h.animations.every((animation) => animation.useNativeDriver === true));
   h.session();
   const hiddenBar = find(h.render(), (node) => node.type === "animated-view")[0];

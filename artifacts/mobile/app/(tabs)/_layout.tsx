@@ -104,7 +104,7 @@ function TabItem({
   if (!conf) return null;
 
   const isIOS      = Platform.OS === "ios";
-  const iconSize   = conf.iconSize ?? ICON_SIZE;
+  const iconSize   = (conf.iconSize ?? ICON_SIZE) + 1.5;
   const iconOffset = conf.iconOffset ?? 0;
   const tOffset    = [{ translateY: iconOffset }];
 
