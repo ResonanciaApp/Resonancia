@@ -16,3 +16,15 @@ desde la posición del tab anterior. La distancia influye en el resorte, pero
 los viajes Inicio–Perfil deben tener un rebote contenido y nunca salir de la
 barra: el usuario corrigió expresamente el exceso de inercia entre extremos.
 No reiniciar el selector ni añadir otra animación horizontal.
+
+Al ampliar la cápsula, revisar también el margen disponible para el rebote.
+Un límite duro de posición puede crear una pausa visible mientras el resorte
+sigue avanzando fuera del límite; contenerlo progresivamente, sin congelarlo.
+
+**Why:** los incrementos de ancho reducen el espacio de rebote aunque no cambie
+la configuración del resorte. Las pruebas de límites por sí solas no detectan
+esa pausa.
+
+**How to apply:** comprobar continuidad del movimiento junto al borde y en
+cambios rápidos de destino. Si se comprime la posición al dibujar, no volver
+a comprimir esa misma posición al redirigir la animación.

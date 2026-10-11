@@ -32,8 +32,15 @@ export function tabSelectionSpring(distanceInTabs: number, distanceInPixels = 0)
 
 export function tabSelectionTranslation(position: number, slot: number, count: number) {
   "worklet";
-  // El fondo nunca cruza el borde de la barra, incluso con velocidad heredada.
+  // Compress rebound smoothly instead of freezing against a hard clamp.
+  // Keep small rebounds unchanged and approach the safe edge asymptotically.
   const allowance = Math.max(0, TAB_ROW_PADDING + TAB_SELECTION_INSET - 1);
   const last = Math.max(0, count - 1) * slot;
-  return Math.max(-allowance, Math.min(last + allowance, position));
+  const excess = position < 0 ? -position : position > last ? position - last : 0;
+  const free = allowance / 2;
+  if (excess <= free) return position;
+  const softened = allowance > 0
+    ? free + free * (1 - Math.exp(-(excess - free) / free))
+    : 0;
+  return position < 0 ? -softened : last + softened;
 }

@@ -26,9 +26,10 @@ export function TabSelectionIndicator({ width, count, index }: {
       }
       // A new destination starts from the actual in-flight position, not the old tab.
       const visibleX = tabSelectionTranslation(x.value, slot, next.count);
-      if (visibleX !== x.value) x.value = visibleX;
-      const distance = Math.abs(target - x.value) / slot;
-      x.value = withSpring(target, { ...tabSelectionSpring(distance, Math.abs(target - x.value)), reduceMotion: ReduceMotion.System });
+      // Keep the spring coordinate intact: remapping the softened visible value
+      // back into x would apply the edge compression twice and cause a jump.
+      const distance = Math.abs(target - visibleX) / slot;
+      x.value = withSpring(target, { ...tabSelectionSpring(distance, Math.abs(target - visibleX)), reduceMotion: ReduceMotion.System });
     },
   );
   const style = useAnimatedStyle(() => ({
