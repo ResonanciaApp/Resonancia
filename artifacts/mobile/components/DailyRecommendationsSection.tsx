@@ -1,5 +1,5 @@
 import React from "react";
-import { CARD_TEXT_BELOW } from "@/constants/colors";
+import { getCardTextBelowColor } from "@/constants/colors";
 import {
   Animated,
   StyleProp,
@@ -71,7 +71,8 @@ export function DailyRecommendationsSection({
   onRefreshRecommendations,
 }: Props) {
   const colors = useColors();
-  const { theme } = useSceneTheme();
+  const { theme, activeSceneId } = useSceneTheme();
+  const cardTextBelow = getCardTextBelowColor(activeSceneId);
   const recommendations = sessions.slice(0, 3);
   const themeAccent = theme.accent ?? colors.accent;
   const [animationCycle, setAnimationCycle] = React.useState(0);
@@ -123,12 +124,12 @@ export function DailyRecommendationsSection({
                   imageSize={(inicio3Compact ? 81.9 * 1.2 : 103.7) * 0.85}
                   imageOffsetX={inicio3Compact ? 0 : -4}
                   metaText={`${session.categoryLabel} · ${session.durationLabel}`}
-                  metaTextColor={CARD_TEXT_BELOW}
+                  metaTextColor={cardTextBelow}
                   metaFontSize={10}
                   showChevron
                   titleFontSize={inicio3Compact ? 16.5 : undefined}
                   titleFontWeight={inicio3Compact ? "600" : undefined}
-                  authorColor={CARD_TEXT_BELOW}
+                  authorColor={cardTextBelow}
                   authorFontSize={isIndigo2ThemeId(theme.id) ? 10 : 11}
                   chevronColor={
                     inicio3Compact

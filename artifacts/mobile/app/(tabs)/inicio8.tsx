@@ -14,6 +14,7 @@ import { router, useFocusEffect, useRouter } from "expo-router";
 import { openPremiumPlans } from "@/lib/premiumGate";
 import { useVideoPlayer, VideoView } from "expo-video";
 import React, { useCallback, useEffect, useMemo, useRef, useState } from "react";
+import { CardCaptionText as Text } from "@/components/CardCaptionText";
 import {
   Animated,
   Dimensions,
@@ -31,7 +32,6 @@ import {
   Share,
   StatusBar,
   StyleSheet,
-  Text,
   TextInput,
   View,
 } from "react-native";

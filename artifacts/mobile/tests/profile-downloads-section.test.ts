@@ -25,6 +25,7 @@ const Native = ({ children, testID }: NativeProps) => React.createElement("div",
 const source = readFileSync(new URL("../components/ProfileDownloadsSection.tsx", import.meta.url), "utf8");
 const mocks: Record<string, unknown> = {
   react: React,
+  "@/components/CardCaptionText": { CardCaptionText: Native },
   "react-native": {
     View: Native, Text: Native,
     Pressable: (props: NativeProps) => { buttons.push(props); return React.createElement(Native, props); },

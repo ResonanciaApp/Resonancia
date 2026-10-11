@@ -13,6 +13,7 @@ import Reanimated from "react-native-reanimated";
 import { ScrollProgressIndicator, useScrollProgress } from "@/components/ScrollProgressIndicator";
 import { router, useFocusEffect, useNavigation } from "expo-router";
 import React, { useCallback, useEffect, useLayoutEffect, useMemo, useRef, useState } from "react";
+import { CardCaptionText as Text } from "@/components/CardCaptionText";
 import {
   ActivityIndicator,
   Alert,
@@ -28,7 +29,6 @@ import {
   StatusBar,
   StyleSheet,
   Switch,
-  Text,
   TextInput,
   type TextStyle,
   useWindowDimensions,

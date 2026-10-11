@@ -2,6 +2,7 @@ import { Feather } from "@expo/vector-icons";
 import { router, useLocalSearchParams } from "expo-router";
 import { useBackOverride } from "@/context/BackOverrideContext";
 import React, { useCallback, useEffect, useMemo, useRef, useState } from "react";
+import { CardCaptionText as Text } from "@/components/CardCaptionText";
 import {
   Animated,
   Dimensions,
@@ -10,7 +11,6 @@ import {
   ScrollView,
   StatusBar,
   StyleSheet,
-  Text,
   View,
 } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";

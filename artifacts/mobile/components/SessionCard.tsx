@@ -3,11 +3,11 @@ import { LinearGradient } from "expo-linear-gradient";
 import { router } from "expo-router";
 import { Image } from "expo-image";
 import React, { useEffect, useRef } from "react";
+import { CardCaptionText as Text } from "@/components/CardCaptionText";
 import {
   Animated,
   StyleProp,
   StyleSheet,
-  Text,
   useWindowDimensions,
   View,
   ViewStyle,

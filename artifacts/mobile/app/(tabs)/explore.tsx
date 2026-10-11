@@ -2,6 +2,7 @@ import { Feather, MaterialCommunityIcons } from "@expo/vector-icons";
 import { router } from "expo-router";
 import { openPremiumPlans } from "@/lib/premiumGate";
 import React, { useState, useMemo, useRef } from "react";
+import { CardCaptionText as Text } from "@/components/CardCaptionText";
 import {
   Dimensions,
   Animated,
@@ -10,7 +11,6 @@ import {
   ScrollView,
   StatusBar,
   StyleSheet,
-  Text,
   View,
 } from "react-native";
 import { Image } from "expo-image";

@@ -10,6 +10,7 @@ import Animated, {
   withTiming,
 } from "react-native-reanimated";
 import Svg, { Circle } from "react-native-svg";
+import { CardCaptionText as Text } from "@/components/CardCaptionText";
 import {
   Animated as RNAnimated,
   Pressable,
@@ -20,7 +21,6 @@ import {
   type FlatListProps,
   type StyleProp,
   type TextStyle,
-  Text,
   useWindowDimensions,
   View,
   type ViewStyle,

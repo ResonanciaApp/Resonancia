@@ -1,10 +1,10 @@
 import { MaterialCommunityIcons } from "@expo/vector-icons";
 import { LinearGradient } from "expo-linear-gradient";
 import React from "react";
+import { CardCaptionText as Text } from "@/components/CardCaptionText";
 import {
   Image,
   StyleSheet,
-  Text,
   View,
   type ImageSourcePropType,
 } from "react-native";

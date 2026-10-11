@@ -1,5 +1,6 @@
 import React, { useEffect, useRef } from "react";
-import { Animated, Pressable, StyleSheet, Text, View } from "react-native";
+import { Animated, Pressable, StyleSheet, View } from "react-native";
+import { CardCaptionText as Text } from "@/components/CardCaptionText";
 import { Image as ExpoImage } from "expo-image";
 import { router } from "expo-router";
 import { openPremiumPlans } from "@/lib/premiumGate";

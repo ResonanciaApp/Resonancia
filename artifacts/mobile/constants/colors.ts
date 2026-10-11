@@ -43,6 +43,9 @@ export function getProfileSecondaryTextColor(themeId: string): string {
 export const REFLECTION_WALL_BUTTON_BORDER_COLOR = "rgba(249,249,249,0.8)";
 export const CARD_TEXT_ABOVE = "#D1D1D1";
 export const CARD_TEXT_BELOW = "#EBF2FF";
+export function getCardTextBelowColor(themeId: string | undefined): string {
+  return themeId === "natural" ? "#F5FFF5" : CARD_TEXT_BELOW;
+}
 export const NAVIGATION_HELP_ICON_COLOR = "#F9F9F9";
 export const STREAK_HISTORY_INFO_ICON_COLOR = "#B3B3B3";
 export const DISCOVER_SEARCH_SURFACE = "rgba(0,0,0,0.33)";

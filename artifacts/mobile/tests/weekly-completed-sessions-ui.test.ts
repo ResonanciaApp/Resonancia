@@ -128,6 +128,7 @@ const compiled = ts.transpileModule(source, {
 }).outputText;
 const mocks: Record<string, unknown> = {
   react: TestReact,
+  "@/components/CardCaptionText": { CardCaptionText: NativeText },
   "react-native": {
     View: NativeView,
     Text: NativeText,

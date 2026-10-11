@@ -2,12 +2,12 @@ import { Feather } from "@expo/vector-icons";
 import { Image } from "expo-image";
 import { LinearGradient } from "expo-linear-gradient";
 import React from "react";
+import { CardCaptionText as Text } from "@/components/CardCaptionText";
 import {
   Dimensions,
   ScrollView,
   type StyleProp,
   StyleSheet,
-  Text,
   View,
   type ViewStyle,
 } from "react-native";

@@ -1,8 +1,8 @@
 import React from "react";
+import { CardCaptionText as Text } from "@/components/CardCaptionText";
 import {
   Pressable,
   StyleSheet,
-  Text,
   View,
 } from "react-native";
 import { Feather } from "@expo/vector-icons";

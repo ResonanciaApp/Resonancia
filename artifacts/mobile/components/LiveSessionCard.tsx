@@ -1,7 +1,8 @@
 import { Feather } from "@expo/vector-icons";
 import { LinearGradient } from "expo-linear-gradient";
 import { Image as ExpoImage } from "expo-image";
-import { Pressable, StyleSheet, Text, View } from "react-native";
+import { Pressable, StyleSheet, View } from "react-native";
+import { CardCaptionText as Text } from "@/components/CardCaptionText";
 import { getGuide } from "@/data/guides";
 import { BLUR_PLACEHOLDER, IMAGE_TRANSITION } from "@/constants/imagePlaceholder";
 import { type LiveSessionItem, canEnterLiveSession, formatLiveSessionDate } from "@/hooks/useLiveSessions";

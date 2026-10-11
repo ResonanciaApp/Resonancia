@@ -2,7 +2,8 @@ import { Feather, Ionicons } from "@expo/vector-icons";
 import { Image } from "expo-image";
 import { router } from "expo-router";
 import React, { useMemo, useRef, useState } from "react";
-import { Animated, Pressable, StyleSheet, Text, View } from "react-native";
+import { Animated, Pressable, StyleSheet, View } from "react-native";
+import { CardCaptionText as Text } from "@/components/CardCaptionText";
 
 import { usePlayer } from "@/context/PlayerContext";
 import { getArtist } from "@/data/artists";

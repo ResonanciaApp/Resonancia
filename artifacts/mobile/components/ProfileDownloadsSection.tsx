@@ -1,7 +1,8 @@
 import { Image } from "expo-image";
 import { router } from "expo-router";
 import React, { useMemo } from "react";
-import { Pressable, StyleSheet, Text, View } from "react-native";
+import { Pressable, StyleSheet, View } from "react-native";
+import { CardCaptionText as Text } from "@/components/CardCaptionText";
 
 import { CARD_TEXT_ABOVE, CARD_TEXT_BELOW } from "@/constants/colors";
 import { useCatalog } from "@/context/CatalogContext";

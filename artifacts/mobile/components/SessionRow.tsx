@@ -2,10 +2,10 @@ import { Feather, MaterialCommunityIcons } from "@expo/vector-icons";
 import { router } from "expo-router";
 import { useCategoryOverlayOptional } from "@/context/CategoryOverlayContext";
 import React from "react";
+import { CardCaptionText as Text } from "@/components/CardCaptionText";
 import {
   Pressable,
   StyleSheet,
-  Text,
   View,
   type TextStyle,
 } from "react-native";

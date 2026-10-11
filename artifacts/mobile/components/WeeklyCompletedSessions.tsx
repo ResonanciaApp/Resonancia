@@ -1,6 +1,7 @@
 import { router } from "expo-router";
 import React, { useMemo } from "react";
-import { Pressable, StyleSheet, Text, View } from "react-native";
+import { Pressable, StyleSheet, View } from "react-native";
+import { CardCaptionText as Text } from "@/components/CardCaptionText";
 import { Image } from "expo-image";
 
 import { SessionDurationBadge } from "@/components/SessionDurationBadge";

@@ -46,6 +46,7 @@ const Native = (props: any) => {
 };
 let bannerStyles: Record<string, any>;
 const mocks: Record<string, unknown> = {
+  "@/components/CardCaptionText": { CardCaptionText: Native },
   react: React,
   "react-native": { Pressable: Native, View: Native, Text: Native, StyleSheet: { create: (styles: Record<string, any>) => {
     bannerStyles = styles;

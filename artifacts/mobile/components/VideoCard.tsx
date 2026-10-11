@@ -3,7 +3,8 @@ import { router } from "expo-router";
 import { openPremiumPlans } from "@/lib/premiumGate";
 import { Image } from "expo-image";
 import React, { useEffect, useState } from "react";
-import { Pressable, StyleSheet, Text, View } from "react-native";
+import { Pressable, StyleSheet, View } from "react-native";
+import { CardCaptionText as Text } from "@/components/CardCaptionText";
 
 import { VIDEOS as STATIC_VIDEOS, type VideoItem } from "@/data/videos";
 import { useColors } from "@/hooks/useColors";

@@ -3,6 +3,8 @@ import React, { createContext, useCallback, useContext, useMemo, useState } from
 
 import { DEFAULT_THEME_ID, SCENE_THEME_STORAGE_KEY, SCENE_THEMES, isVisualThemeId, type SceneTheme, type ThemeSceneId, type VisualThemeId } from "@/config/scene-themes";
 import { brightenThemeColor, useBrightness } from "@/context/BrightnessContext";
+import { CardCaptionColorContext } from "@/context/CardCaptionColorContext";
+import { getCardTextBelowColor } from "@/constants/colors";
 
 type SceneThemeCtx = {
   activeSceneId: ThemeSceneId;
@@ -49,7 +51,13 @@ export function SceneThemeProvider({ children, initialSceneId = DEFAULT_THEME_ID
   }, [activeSceneId, brightMode]);
 
   const value = useMemo<SceneThemeCtx>(() => ({ activeSceneId, theme, setActiveScene }), [activeSceneId, theme, setActiveScene]);
-  return <SceneThemeContext.Provider value={value}>{children}</SceneThemeContext.Provider>;
+  return (
+    <SceneThemeContext.Provider value={value}>
+      <CardCaptionColorContext.Provider value={getCardTextBelowColor(activeSceneId)}>
+        {children}
+      </CardCaptionColorContext.Provider>
+    </SceneThemeContext.Provider>
+  );
 }
 
 export function useSceneTheme() {

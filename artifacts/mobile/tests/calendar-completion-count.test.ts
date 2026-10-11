@@ -51,6 +51,7 @@ const belowColor = colorsSource.match(/export const CARD_TEXT_BELOW = "([^"]+)"/
 assert.ok(belowColor);
 const mocks: Record<string, unknown> = {
   react: React,
+  "@/components/CardCaptionText": { CardCaptionText: Native },
   "react-native": {
     View: Native, Text: Native, Pressable: Native,
     StyleSheet: { create: (value: unknown) => value, absoluteFill: {}, hairlineWidth: 1 },

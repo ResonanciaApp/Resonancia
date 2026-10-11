@@ -2,12 +2,12 @@ import { Feather } from "@expo/vector-icons";
 import { Image } from "expo-image";
 import { router } from "expo-router";
 import React, { useMemo } from "react";
+import { CardCaptionText as Text } from "@/components/CardCaptionText";
 import {
   FlatList,
   Platform,
   Pressable,
   StyleSheet,
-  Text,
   useWindowDimensions,
   View,
 } from "react-native";

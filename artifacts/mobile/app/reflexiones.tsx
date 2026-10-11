@@ -1,4 +1,5 @@
 import React, { useMemo, useState, useRef } from "react";
+import { CardCaptionText as Text } from "@/components/CardCaptionText";
 import {
   Animated,
   FlatList,
@@ -7,7 +8,6 @@ import {
   Share,
   StatusBar,
   StyleSheet,
-  Text,
   View,
 } from "react-native";
 import { LinearGradient } from "expo-linear-gradient";

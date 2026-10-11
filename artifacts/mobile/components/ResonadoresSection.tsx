@@ -1,5 +1,6 @@
 import React from "react";
-import { Pressable, ScrollView, StyleSheet, Text, View, useWindowDimensions } from "react-native";
+import { Pressable, ScrollView, StyleSheet, View, useWindowDimensions } from "react-native";
+import { CardCaptionText as Text } from "@/components/CardCaptionText";
 import { Image as ExpoImage } from "expo-image";
 import { router } from "expo-router";
 

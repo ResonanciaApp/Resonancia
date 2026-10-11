@@ -1,6 +1,7 @@
 import { Feather, MaterialCommunityIcons } from "@expo/vector-icons";
 import React, { useMemo } from "react";
-import { FlatList, Platform, Pressable, StyleSheet, Text, useWindowDimensions, View } from "react-native";
+import { FlatList, Platform, Pressable, StyleSheet, useWindowDimensions, View } from "react-native";
+import { CardCaptionText as Text } from "@/components/CardCaptionText";
 
 import { MixCover } from "@/app/mi-mezcla/[id]";
 import { getTwoCardCarouselCardWidth } from "@/constants/carousel";

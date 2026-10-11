@@ -1,12 +1,12 @@
 import { usePollingInterval } from "@/hooks/usePollingInterval";
 import { router } from "expo-router";
 import React from "react";
+import { CardCaptionText as Text } from "@/components/CardCaptionText";
 import {
   ActivityIndicator,
   Image,
   Pressable,
   StyleSheet,
-  Text,
   View,
   type StyleProp,
   type ViewStyle,

@@ -9,6 +9,7 @@ import { useCategoryOverlayOptional } from "@/context/CategoryOverlayContext";
 import { Image } from "expo-image";
 import { LinearGradient } from "expo-linear-gradient";
 import React, { useRef, useState, useCallback, useMemo, useEffect } from "react";
+import { CardCaptionText as Text } from "@/components/CardCaptionText";
 import {
   Alert,
   Animated,
@@ -25,7 +26,6 @@ import {
   Pressable,
   ScrollView,
   StyleSheet,
-  Text,
   TextInput,
   View,
 } from "react-native";

@@ -1,5 +1,6 @@
 import React from "react";
-import { Pressable, StyleSheet, Text, View } from "react-native";
+import { Pressable, StyleSheet, View } from "react-native";
+import { CardCaptionText as Text } from "@/components/CardCaptionText";
 import { Feather } from "@expo/vector-icons";
 import { Image } from "expo-image";
 import { CARD_TEXT_BELOW, MEMBERSHIP_AURORA } from "@/constants/colors";

@@ -2,7 +2,8 @@ import { Feather } from "@expo/vector-icons";
 import { GoldGradient } from "@/components/GoldGradient";
 import { router } from "expo-router";
 import { Image as ExpoImage } from "expo-image";
-import { Pressable, StyleSheet, Text, View } from "react-native";
+import { Pressable, StyleSheet, View } from "react-native";
+import { CardCaptionText as Text } from "@/components/CardCaptionText";
 
 import { BLUR_PLACEHOLDER, IMAGE_TRANSITION } from "@/constants/imagePlaceholder";
 import { CARD_TEXT_BELOW } from "@/constants/colors";

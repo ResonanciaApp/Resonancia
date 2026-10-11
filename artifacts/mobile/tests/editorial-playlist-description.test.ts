@@ -26,6 +26,7 @@ function Native({ children, style, testID, onPress, numberOfLines }: any) {
   }, children);
 }
 const mocks: Record<string, unknown> = {
+  "@/components/CardCaptionText": { CardCaptionText: Native },
   react: React,
   "react/jsx-runtime": JSXRuntime,
   "@expo/vector-icons": { Feather: Native },
