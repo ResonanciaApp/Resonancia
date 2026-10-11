@@ -1,4 +1,5 @@
 import React from "react";
+import { drawerDiagnosticEvent, useDrawerDiagnostics } from "@/hooks/useDrawerDiagnostics";
 import { Pressable, StyleSheet, View } from "react-native";
 import { Gesture, GestureDetector } from "react-native-gesture-handler";
 import RAnimated, { cancelAnimation, runOnJS, useAnimatedStyle, useSharedValue } from "react-native-reanimated";
@@ -36,6 +37,7 @@ export function DrawerForeground({ children }: { children: React.ReactNode }) {
     settleDrawerDrag,
     close,
   } = useDrawer();
+  useDrawerDiagnostics(drawerProgress);
   const { theme } = useSceneTheme();
   const dragStart = useSharedValue(0);
   const dragging = useSharedValue(false);
@@ -60,7 +62,10 @@ export function DrawerForeground({ children }: { children: React.ReactNode }) {
     opacity: foregroundVeilOpacity(drawerProgress.value),
   }));
 
-  const closeFromStrip = React.useCallback(() => close(), [close]);
+  const closeFromStrip = React.useCallback(() => {
+    drawerDiagnosticEvent("tap:inicio");
+    close();
+  }, [close]);
 
   const gesture = React.useMemo(() => {
     const pan = Gesture.Pan()

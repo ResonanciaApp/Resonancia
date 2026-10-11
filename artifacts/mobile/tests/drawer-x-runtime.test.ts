@@ -366,6 +366,7 @@ function harness({ deferJS = false } = {}) {
     return g;
   }
   const modules: any = {
+    "@/hooks/useDrawerDiagnostics": { drawerDiagnosticEvent() {}, useDrawerDiagnostics() {} },
     react: { __esModule: true, default: React, ...React },
     "react-native": {
       Pressable: "Pressable",

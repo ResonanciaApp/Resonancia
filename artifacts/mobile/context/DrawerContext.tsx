@@ -1,4 +1,5 @@
 import { Animated, BackHandler, useWindowDimensions } from "react-native";
+import { drawerDiagnosticEvent } from "@/hooks/useDrawerDiagnostics";
 import React, { createContext, useCallback, useContext, useEffect, useRef, useState } from "react";
 import { usePathname } from "expo-router";
 import {
@@ -129,6 +130,7 @@ export function DrawerProvider({ children }: { children: React.ReactNode }) {
   const finishAnimation = useCallback((token: number, target: number, version: number) => {
     if (version !== drawerGestureVersion.value) return;
     if (!controller.isCurrentAnimation(token)) return;
+    drawerDiagnosticEvent(target === 0 ? "settled:closed" : "settled:open");
     if (target === 0) setForegroundBlocked(false);
     const pending = afterSettle.current;
     afterSettle.current = null;
@@ -159,6 +161,7 @@ export function DrawerProvider({ children }: { children: React.ReactNode }) {
   }, [controller, drawerGestureVersion, drawerProgress, drawerWidth, finishAnimation]);
 
   const open = useCallback(() => {
+    drawerDiagnosticEvent("command:open");
     controller.cancelSelection();
     setInstantNav(false);
     setForegroundBlocked(true);
@@ -172,6 +175,7 @@ export function DrawerProvider({ children }: { children: React.ReactNode }) {
   }, [animateTo, setOpenState]);
 
   const close = useCallback((onClosed?: () => void) => {
+    drawerDiagnosticEvent("command:close");
     controller.cancelSelection();
     closeInternal(() => {
       setInstantNav(false);
@@ -187,6 +191,7 @@ export function DrawerProvider({ children }: { children: React.ReactNode }) {
   }, [close]);
 
   const beginDrawerDrag = useCallback((version?: number) => {
+    drawerDiagnosticEvent("gesture:drag");
     if (version !== undefined && version !== drawerGestureVersion.value) return;
     controller.cancelSelection();
     controller.beginAnimation();

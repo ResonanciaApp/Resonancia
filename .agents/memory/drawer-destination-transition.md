@@ -71,6 +71,17 @@ finalización del toque. No atribuir automáticamente el fallo al resorte común
 arrastre; preservar el cierre desde el menú y la apertura ya aprobados. Esta
 observación no confirma por sí sola una causa nativa ni la eficacia de un arreglo.
 
+**Diagnóstico de rendimiento:** medir callbacks de frames de Reanimated y de
+JavaScript no mide directamente la presentación final de Core Animation/GPU.
+Comparar sus pausas con la grabación del teléfono antes de atribuir una causa.
+
+**Why:** el resorte puede avanzar correctamente mientras el contenido visible
+se congela; un registro «sin pausas» del callback no descarta esa congelación.
+
+**How to apply:** instrumentación manual y acotada, sin logs ni renders React
+por frame; callbacks estables para que medir no agregue registros/desregistros
+justo al abrir/cerrar. El informe es orientativo, no una medición de Instruments.
+
 Los umbrales de reposo de un resorte sobre progreso normalizado deben evaluarse en píxeles y en las superficies derivadas, no solo comprobando que el valor final es cero.
 
 **Why:** El motor puede forzar el último valor al destino cuando todavía queda un salto visible; una función de radio con pendiente alta amplifica ese salto. Un mock que asigna directamente el destino oculta esta discontinuidad.

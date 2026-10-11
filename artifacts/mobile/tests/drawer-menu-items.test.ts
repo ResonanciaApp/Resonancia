@@ -6,18 +6,18 @@ import { URL } from "node:url";
 test("drawer avatar closes the menu with one soft haptic without waiting for it", async () => {
   const source = readFileSync(new URL("../components/DrawerMenu.tsx", import.meta.url), "utf8");
   assert.match(source, /onPress=\{onAvatarPress\}[\s\S]*?testID="drawer-avatar-close"/);
-  const body = source.match(/const onAvatarPress = React\.useCallback\(\(\) => \{([\s\S]*?)\}, \[onClose\]\)/)?.[1];
+  const body = source.match(/const onAvatarPress = React\.useCallback\(\(\) => \{([\s\S]*?)\}, \[close\]\)/)?.[1];
   assert.ok(body);
   for (const reject of [false, true]) {
     const calls: string[] = [];
-    const press = new Function("Haptics", "onClose", body);
+    const press = new Function("Haptics", "close", "drawerDiagnosticEvent", body);
     press({
       ImpactFeedbackStyle: { Soft: "soft" },
       impactAsync: (style: string) => {
         calls.push(style);
         return reject ? Promise.reject(new Error("Unavailable")) : Promise.resolve();
       },
-    }, () => calls.push("close"));
+    }, () => calls.push("close"), () => {});
     assert.deepEqual(calls, ["soft", "close"]);
     await Promise.resolve();
   }

@@ -1,4 +1,5 @@
 import { Feather, Ionicons, MaterialCommunityIcons } from "@expo/vector-icons";
+import { drawerDiagnosticEvent } from "@/hooks/useDrawerDiagnostics";
 import * as Haptics from "expo-haptics";
 import { useUser } from "@clerk/expo";
 import { useDayRollover } from "@/hooks/useDayRollover";
@@ -2189,6 +2190,7 @@ export default function HomeScreen2({
 }: {
   variant?: InicioVariant;
 } = {}) {
+  useEffect(() => { drawerDiagnosticEvent("commit:inicio"); });
   const isInicio2 = variant === "copy" || variant === "inicio3";
   const sectionTitleSize = variant === "inicio3" ? 19 : 17;
   const colors = useColors();

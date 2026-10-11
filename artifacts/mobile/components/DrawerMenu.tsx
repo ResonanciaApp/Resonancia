@@ -1,4 +1,5 @@
 import { Feather } from "@expo/vector-icons";
+import { drawerDiagnosticEvent, showDrawerDiagnostics } from "@/hooks/useDrawerDiagnostics";
 import { useUser } from "@clerk/expo";
 import { Image } from "expo-image";
 import * as Haptics from "expo-haptics";
@@ -87,11 +88,15 @@ export function DrawerMenu() {
     requestWallCompose,
     requestMoodPicker,
   } = useDrawer();
-  const onClose = React.useCallback(() => close(), [close]);
+  const onClose = React.useCallback(() => {
+    drawerDiagnosticEvent("tap:menu-empty");
+    close();
+  }, [close]);
   const onAvatarPress = React.useCallback(() => {
+    drawerDiagnosticEvent("tap:menu-avatar");
     void Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Soft).catch(() => {});
-    onClose();
-  }, [onClose]);
+    close();
+  }, [close]);
   const { width: windowWidth } = useWindowDimensions();
   const insets = useSafeAreaInsets();
   const { isRegistered, isSignedIn } = useAuth();
@@ -262,6 +267,7 @@ export function DrawerMenu() {
             <View style={styles.profileSection}>
               <Pressable
                 onPress={onAvatarPress}
+                onLongPress={__DEV__ ? showDrawerDiagnostics : undefined}
                 accessibilityRole="button"
                 accessibilityLabel="Cerrar menú"
                 testID="drawer-avatar-close"
