@@ -29,7 +29,7 @@ import { CategoryOverlayProvider, useCategoryOverlay } from "@/context/CategoryO
 import { CategoryOverlay } from "@/components/CategoryOverlay";
 import { SacredBackground } from "@/components/SacredBackground";
 import { WIDGET_GREEN_SOLID } from "@/constants/colors";
-import { TAB_BAR_INACTIVE_COLOR, TAB_PILL_BAR_H, TAB_PILL_BLUR_INTENSITY, TAB_PILL_BLUR_TINT, TAB_PILL_SIDE_MARGIN, getTabBarGlassOverlay, getTabBarInactiveColor } from "@/constants/tab-bar";
+import { TAB_BAR_INACTIVE_COLOR, TAB_PILL_BAR_H, TAB_PILL_BLUR_INTENSITY, TAB_PILL_BLUR_TINT, TAB_PILL_SIDE_MARGIN, getFloatingTabBarGlassOverlay, getTabBarInactiveColor } from "@/constants/tab-bar";
 import { TabSelectionIndicator } from "@/components/TabSelectionIndicator";
 import { TAB_ROW_PADDING } from "@/constants/tab-selection";
 import { RoutineCompletionBanner } from "@/components/RoutineCompletionBanner";
@@ -168,7 +168,7 @@ function CustomTabBar({ state, navigation, descriptors }: TabBarProps) {
   const { activeSceneId } = useSceneTheme();
   const inactiveColor = getTabBarInactiveColor(activeSceneId);
   const indigo2Mode = isIndigo2ThemeId(activeSceneId);
-  const tabBarGlassOverlay = getTabBarGlassOverlay(activeSceneId);
+  const tabBarGlassOverlay = getFloatingTabBarGlassOverlay(activeSceneId);
   const [rowWidth, setRowWidth] = useState(0);
   const translateY    = useRef(new Animated.Value(0)).current;
   const handleOpacity = useRef(new Animated.Value(0)).current;
