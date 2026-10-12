@@ -3,9 +3,26 @@ import { readFileSync } from "node:fs";
 import { URL } from "node:url";
 import test from "node:test";
 import ts from "typescript";
+import { avatarGridItemLayout, AVATAR_GRID_CELL_SIZE, AVATAR_GRID_ROW_GAP, AVATAR_GRID_TOP_PADDING } from "../lib/avatar-grid-layout";
 
 const source = readFileSync(new URL("../components/ProfileScreenBase.tsx", import.meta.url), "utf8");
 const ast = ts.createSourceFile("profile.tsx", source, ts.ScriptTarget.Latest, true, ts.ScriptKind.TSX);
+
+test("avatar rows have exact stable offsets for both scroll directions and partial final rows", () => {
+  const frame = findStyle("accountCoverPresetFrame");
+  const row = findStyle("accountCoverPresetGridRow");
+  const padding = findStyle("accountCoverPresetGridContentFiltered").paddingTop;
+  for (const index of [0, 1, 2, 50, 99, 50, 2, 1, 0]) {
+    assert.deepEqual(avatarGridItemLayout(null, index), {
+      index, length: frame.height + row.marginBottom,
+      offset: padding + index * (frame.height + row.marginBottom),
+    });
+  }
+  // 12 avatars produce three rows; the partial row keeps the full row height.
+  assert.equal(avatarGridItemLayout(Array(12), 2).offset, 170);
+  assert.match(source, /getItemLayout=\{avatarGridItemLayout\}/);
+  assert.match(source, /removeClippedSubviews=\{false\}/);
+});
 
 test("category dropdown uses the same themed glass as Actividad añadida", () => {
   const dropdown = readFileSync(new URL("../components/AvatarCategoryDropdown.tsx", import.meta.url), "utf8");
@@ -71,7 +88,9 @@ function findStyle(name: string) {
   visit(ast);
   assert.ok(expression);
   const js = ts.transpileModule(`return (${expression.getText(ast)});`, {}).outputText;
-  return new Function(js)();
+  return new Function("AVATAR_GRID_CELL_SIZE", "AVATAR_GRID_ROW_GAP", "AVATAR_GRID_TOP_PADDING", js)(
+    AVATAR_GRID_CELL_SIZE, AVATAR_GRID_ROW_GAP, AVATAR_GRID_TOP_PADDING,
+  );
 }
 
 test("a large avatar catalog cannot enlarge the sheet beyond the screen", () => {
@@ -101,7 +120,7 @@ test("a large avatar catalog cannot enlarge the sheet beyond the screen", () => 
 test("avatar work is bounded and catalog refresh waits for the opening to settle", () => {
   assert.match(source, /initialNumToRender=\{8\}/);
   assert.match(source, /maxToRenderPerBatch=\{2\}/);
-  assert.match(source, /windowSize=\{3\}/);
+  assert.match(source, /windowSize=\{5\}/);
   assert.match(source, /updateCellsBatchingPeriod=\{avatarPickerMotion.opened \? 80 : 1000\}/);
   assert.match(source, /const AvatarCoverCell = React.memo/);
   assert.match(source, /cachePolicy="memory-disk"/);

@@ -1,0 +1,640 @@
+{
+  "diagnostic": "drawer-timing-v1",
+  "mode": "development",
+  "platform": "ios",
+  "osVersion": "26.1",
+  "durationMs": 41748,
+  "note": "UI callback timing is not GPU/presentation timing. Compare with a screen recording; instrumentation itself adds some overhead.",
+  "ui": {
+    "samples": 7438,
+    "maxGapMs": 679.0325833410025,
+    "gapsOver32ms": 16,
+    "slowFrames": [
+      {
+        "at": 3941,
+        "gap": 146.53566665947437,
+        "progress": 0
+      },
+      {
+        "at": 4467,
+        "gap": 60.55966666340828,
+        "progress": 0
+      },
+      {
+        "at": 4890,
+        "gap": 56.07879167795181,
+        "progress": 0
+      },
+      {
+        "at": 7158,
+        "gap": 32.05562502145767,
+        "progress": 0
+      },
+      {
+        "at": 11581,
+        "gap": 38.233916670084,
+        "progress": 0
+      },
+      {
+        "at": 13245,
+        "gap": 32.502249985933304,
+        "progress": 0
+      },
+      {
+        "at": 16279,
+        "gap": 32.47133333981037,
+        "progress": 0
+      },
+      {
+        "at": 22055,
+        "gap": 33.17800000309944,
+        "progress": 0
+      },
+      {
+        "at": 28090,
+        "gap": 33.06845833361149,
+        "progress": 0
+      },
+      {
+        "at": 29629,
+        "gap": 33.19224998354912,
+        "progress": 0
+      },
+      {
+        "at": 31405,
+        "gap": 271.16208332777023,
+        "progress": 0
+      },
+      {
+        "at": 32484,
+        "gap": 421.8744583129883,
+        "progress": 0
+      },
+      {
+        "at": 32932,
+        "gap": 679.0325833410025,
+        "progress": 0
+      },
+      {
+        "at": 35047,
+        "gap": 125.01999998092651,
+        "progress": 0
+      },
+      {
+        "at": 35605,
+        "gap": 95.93695832788944,
+        "progress": 0
+      },
+      {
+        "at": 40378,
+        "gap": 43.3820833414793,
+        "progress": 1
+      }
+    ]
+  },
+  "js": {
+    "samples": 8000,
+    "maxGapMs": 512,
+    "gapsOver32ms": 168,
+    "slowFrames": [
+      {
+        "at": 761,
+        "gap": 186
+      },
+      {
+        "at": 1425,
+        "gap": 183
+      },
+      {
+        "at": 1932,
+        "gap": 56
+      },
+      {
+        "at": 2750,
+        "gap": 208
+      },
+      {
+        "at": 2867,
+        "gap": 117
+      },
+      {
+        "at": 3552,
+        "gap": 143
+      },
+      {
+        "at": 3854,
+        "gap": 228
+      },
+      {
+        "at": 3887,
+        "gap": 33
+      },
+      {
+        "at": 4074,
+        "gap": 81
+      },
+      {
+        "at": 4642,
+        "gap": 33
+      },
+      {
+        "at": 4865,
+        "gap": 223
+      },
+      {
+        "at": 5128,
+        "gap": 52
+      },
+      {
+        "at": 5715,
+        "gap": 56
+      },
+      {
+        "at": 5831,
+        "gap": 116
+      },
+      {
+        "at": 5893,
+        "gap": 33
+      },
+      {
+        "at": 6191,
+        "gap": 98
+      },
+      {
+        "at": 6389,
+        "gap": 79
+      },
+      {
+        "at": 6769,
+        "gap": 343
+      },
+      {
+        "at": 6843,
+        "gap": 50
+      },
+      {
+        "at": 6902,
+        "gap": 42
+      },
+      {
+        "at": 6959,
+        "gap": 57
+      },
+      {
+        "at": 7025,
+        "gap": 49
+      },
+      {
+        "at": 7555,
+        "gap": 512
+      },
+      {
+        "at": 7777,
+        "gap": 51
+      },
+      {
+        "at": 8142,
+        "gap": 265
+      },
+      {
+        "at": 8205,
+        "gap": 63
+      },
+      {
+        "at": 8269,
+        "gap": 64
+      },
+      {
+        "at": 8324,
+        "gap": 55
+      },
+      {
+        "at": 8385,
+        "gap": 42
+      },
+      {
+        "at": 8617,
+        "gap": 40
+      },
+      {
+        "at": 8742,
+        "gap": 49
+      },
+      {
+        "at": 8864,
+        "gap": 37
+      },
+      {
+        "at": 8993,
+        "gap": 50
+      },
+      {
+        "at": 9240,
+        "gap": 47
+      },
+      {
+        "at": 9602,
+        "gap": 92
+      },
+      {
+        "at": 9659,
+        "gap": 57
+      },
+      {
+        "at": 9719,
+        "gap": 42
+      },
+      {
+        "at": 9773,
+        "gap": 54
+      },
+      {
+        "at": 9901,
+        "gap": 41
+      },
+      {
+        "at": 10011,
+        "gap": 34
+      },
+      {
+        "at": 10239,
+        "gap": 40
+      },
+      {
+        "at": 10467,
+        "gap": 90
+      },
+      {
+        "at": 10621,
+        "gap": 40
+      },
+      {
+        "at": 11379,
+        "gap": 385
+      },
+      {
+        "at": 11507,
+        "gap": 110
+      },
+      {
+        "at": 11562,
+        "gap": 55
+      },
+      {
+        "at": 11682,
+        "gap": 38
+      },
+      {
+        "at": 11802,
+        "gap": 41
+      },
+      {
+        "at": 11911,
+        "gap": 34
+      },
+      {
+        "at": 12038,
+        "gap": 39
+      },
+      {
+        "at": 12157,
+        "gap": 96
+      },
+      {
+        "at": 12194,
+        "gap": 37
+      },
+      {
+        "at": 12427,
+        "gap": 44
+      },
+      {
+        "at": 12535,
+        "gap": 34
+      },
+      {
+        "at": 13136,
+        "gap": 375
+      },
+      {
+        "at": 13231,
+        "gap": 70
+      },
+      {
+        "at": 13354,
+        "gap": 43
+      },
+      {
+        "at": 13471,
+        "gap": 43
+      },
+      {
+        "at": 13577,
+        "gap": 33
+      },
+      {
+        "at": 13694,
+        "gap": 33
+      },
+      {
+        "at": 14067,
+        "gap": 41
+      },
+      {
+        "at": 14268,
+        "gap": 90
+      },
+      {
+        "at": 14391,
+        "gap": 97
+      },
+      {
+        "at": 14478,
+        "gap": 87
+      },
+      {
+        "at": 14545,
+        "gap": 48
+      },
+      {
+        "at": 14602,
+        "gap": 41
+      },
+      {
+        "at": 14716,
+        "gap": 38
+      },
+      {
+        "at": 14964,
+        "gap": 36
+      },
+      {
+        "at": 15109,
+        "gap": 42
+      },
+      {
+        "at": 15240,
+        "gap": 42
+      },
+      {
+        "at": 15364,
+        "gap": 33
+      },
+      {
+        "at": 15894,
+        "gap": 37
+      },
+      {
+        "at": 16264,
+        "gap": 169
+      },
+      {
+        "at": 16343,
+        "gap": 48
+      },
+      {
+        "at": 16450,
+        "gap": 33
+      },
+      {
+        "at": 16484,
+        "gap": 34
+      },
+      {
+        "at": 16575,
+        "gap": 47
+      },
+      {
+        "at": 16812,
+        "gap": 47
+      },
+      {
+        "at": 16929,
+        "gap": 34
+      },
+      {
+        "at": 17049,
+        "gap": 38
+      },
+      {
+        "at": 17083,
+        "gap": 34
+      },
+      {
+        "at": 17163,
+        "gap": 35
+      },
+      {
+        "at": 17395,
+        "gap": 50
+      },
+      {
+        "at": 17860,
+        "gap": 148
+      },
+      {
+        "at": 17926,
+        "gap": 66
+      },
+      {
+        "at": 18096,
+        "gap": 128
+      },
+      {
+        "at": 18197,
+        "gap": 81
+      },
+      {
+        "at": 18324,
+        "gap": 79
+      },
+      {
+        "at": 18451,
+        "gap": 39
+      },
+      {
+        "at": 18699,
+        "gap": 37
+      },
+      {
+        "at": 18819,
+        "gap": 36
+      },
+      {
+        "at": 19044,
+        "gap": 46
+      },
+      {
+        "at": 19163,
+        "gap": 35
+      },
+      {
+        "at": 19495,
+        "gap": 33
+      },
+      {
+        "at": 19612,
+        "gap": 33
+      },
+      {
+        "at": 19737,
+        "gap": 42
+      },
+      {
+        "at": 19878,
+        "gap": 62
+      },
+      {
+        "at": 20012,
+        "gap": 50
+      },
+      {
+        "at": 20160,
+        "gap": 65
+      },
+      {
+        "at": 20413,
+        "gap": 51
+      }
+    ]
+  },
+  "events": [
+    {
+      "at": 585,
+      "name": "tap:inicio"
+    },
+    {
+      "at": 585,
+      "name": "command:close"
+    },
+    {
+      "at": 1253,
+      "name": "settled:closed"
+    },
+    {
+      "at": 1421,
+      "name": "tap:inicio"
+    },
+    {
+      "at": 1421,
+      "name": "command:close"
+    },
+    {
+      "at": 1441,
+      "name": "settled:closed"
+    },
+    {
+      "at": 2668,
+      "name": "commit:inicio"
+    },
+    {
+      "at": 2669,
+      "name": "screen:profile"
+    },
+    {
+      "at": 3790,
+      "name": "screen:other"
+    },
+    {
+      "at": 4805,
+      "name": "avatar:open-request"
+    },
+    {
+      "at": 4917,
+      "name": "avatar:native-shown"
+    },
+    {
+      "at": 5675,
+      "name": "avatar:opened"
+    },
+    {
+      "at": 33103,
+      "name": "commit:inicio"
+    },
+    {
+      "at": 33197,
+      "name": "avatar:close-x"
+    },
+    {
+      "at": 33258,
+      "name": "avatar:close-request"
+    },
+    {
+      "at": 33835,
+      "name": "commit:inicio"
+    },
+    {
+      "at": 33839,
+      "name": "avatar:hidden"
+    },
+    {
+      "at": 34071,
+      "name": "commit:inicio"
+    },
+    {
+      "at": 34323,
+      "name": "commit:inicio"
+    },
+    {
+      "at": 34431,
+      "name": "commit:inicio"
+    },
+    {
+      "at": 34906,
+      "name": "screen:profile"
+    },
+    {
+      "at": 35968,
+      "name": "commit:inicio"
+    },
+    {
+      "at": 35969,
+      "name": "screen:home"
+    },
+    {
+      "at": 36531,
+      "name": "command:open"
+    },
+    {
+      "at": 36847,
+      "name": "commit:inicio"
+    },
+    {
+      "at": 37066,
+      "name": "settled:open"
+    },
+    {
+      "at": 37759,
+      "name": "tap:menu-avatar"
+    },
+    {
+      "at": 37759,
+      "name": "command:close"
+    },
+    {
+      "at": 38435,
+      "name": "settled:closed"
+    },
+    {
+      "at": 38603,
+      "name": "tap:inicio"
+    },
+    {
+      "at": 38603,
+      "name": "command:close"
+    },
+    {
+      "at": 38626,
+      "name": "settled:closed"
+    },
+    {
+      "at": 39205,
+      "name": "command:open"
+    },
+    {
+      "at": 39690,
+      "name": "settled:open"
+    }
+  ]
+}

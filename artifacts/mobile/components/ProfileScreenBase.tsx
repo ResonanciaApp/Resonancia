@@ -112,6 +112,7 @@ import { useGrowthJourneySheetMotion } from "@/hooks/useGrowthJourneySheetMotion
 import { useAvatarPickerDismiss } from "@/hooks/useAvatarPickerDismiss";
 import { usePreparedAvatarImage } from "@/hooks/usePreparedAvatarImage";
 import { drawerDiagnosticEvent } from "@/hooks/useDrawerDiagnostics";
+import { avatarGridItemLayout, AVATAR_GRID_CELL_SIZE, AVATAR_GRID_ROW_GAP, AVATAR_GRID_TOP_PADDING } from "@/lib/avatar-grid-layout";
 import { StreakInfoSheet } from "@/components/StreakInfoSheet";
 import { FilledSunIcon } from "@/components/FilledSunIcon";
 import { useMixerPanel } from "@/context/MixerPanelContext";
@@ -1402,9 +1403,11 @@ export function ProfileScreenBase({
                 data={filteredProfileCatalog}
                 keyExtractor={(preset) => preset.id}
                 numColumns={5}
+                getItemLayout={avatarGridItemLayout}
+                removeClippedSubviews={false}
                 initialNumToRender={8}
                 maxToRenderPerBatch={2}
-                windowSize={3}
+                windowSize={5}
                 updateCellsBatchingPeriod={avatarPickerMotion.opened ? 80 : 1000}
                 showsVerticalScrollIndicator={false}
                 contentContainerStyle={[styles.accountCoverPresetGridContent, styles.accountCoverPresetGridContentFiltered, { paddingBottom: bottomPad + 20 }]}
@@ -2679,7 +2682,7 @@ const styles = StyleSheet.create({
     paddingBottom: 20,
   },
   accountCoverPresetGridContentFiltered: {
-    paddingTop: 20,
+    paddingTop: AVATAR_GRID_TOP_PADDING,
   },
   accountAvatarCategoryRow: {
     height: 39,
@@ -2717,11 +2720,11 @@ const styles = StyleSheet.create({
   },
   accountCoverPresetGridRow: {
     justifyContent: "space-between",
-    marginBottom: 12,
+    marginBottom: AVATAR_GRID_ROW_GAP,
   },
   accountCoverPresetFrame: {
-    width: 63,
-    height: 63,
+    width: AVATAR_GRID_CELL_SIZE,
+    height: AVATAR_GRID_CELL_SIZE,
     borderRadius: 31.5,
     borderWidth: 2,
     borderColor: "transparent",
