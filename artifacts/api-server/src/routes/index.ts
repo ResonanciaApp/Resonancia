@@ -34,6 +34,7 @@ import reflectionCategoriesRouter from "./reflection-categories";
 import reflectionStoriesRouter from "./reflection-stories";
 import dailyQuotesRouter from "./daily-quotes";
 import greetingRouter from "./greeting";
+import streakInfoRouter from "./streak-info";
 import growthRouter from "./growth";
 
 const router: IRouter = Router();
@@ -73,6 +74,7 @@ router.use(reflectionCategoriesRouter);
 router.use(reflectionStoriesRouter);
 router.use(dailyQuotesRouter);
 router.use(greetingRouter);
+router.use(streakInfoRouter);
 router.use(growthRouter);
 
 export default router;

@@ -3658,6 +3658,54 @@ export interface CoverPresetUploadCleanup {
   objectPath: string;
 }
 
+export type StreakInfoCardId = typeof StreakInfoCardId[keyof typeof StreakInfoCardId];
+
+
+export const StreakInfoCardId = {
+  current: 'current',
+  accumulated: 'accumulated',
+  longest: 'longest',
+  completed: 'completed',
+} as const;
+
+export interface StreakInfoCard {
+  id: StreakInfoCardId;
+  /**
+     * @minLength 1
+     * @maxLength 100
+     */
+  title: string;
+  /**
+     * @minLength 1
+     * @maxLength 2000
+     */
+  description: string;
+}
+
+export interface StreakInfoContent {
+  /**
+     * @minLength 1
+     * @maxLength 100
+     */
+  title: string;
+  /**
+     * @minLength 1
+     * @maxLength 1000
+     */
+  description: string;
+  /**
+     * @minItems 4
+     * @maxItems 4
+     */
+  cards: StreakInfoCard[];
+}
+
+export interface StreakInfoSettings {
+  content: StreakInfoContent;
+  /** @minimum 0 */
+  revision: number;
+}
+
 export interface Greeting {
   enabled: boolean;
   /**

@@ -44,6 +44,7 @@ function harness({
   platform = "ios",
   width = 375,
   fontScale = 1,
+  remoteContent = null as any,
 } = {}) {
   const states: unknown[] = [], refs: unknown[] = [], scrolls: unknown[] = [];
   let stateIndex = 0, refIndex = 0, previousDeps: unknown[] | undefined;
@@ -113,6 +114,7 @@ function harness({
     "@expo/vector-icons": { Feather: Native, MaterialCommunityIcons: Native },
     "@react-native-masked-view/masked-view": Native,
     "@/components/CinematicFadeSlide": { CinematicFadeSlide: Native },
+    "@/hooks/useStreakInfoContent": { useStreakInfoContent: (_visible: boolean, fallback: unknown) => remoteContent ?? fallback },
     "@/context/SceneThemeContext": { useSceneTheme: () => ({ theme }) },
     "@/constants/colors": { MEMBERSHIP_AURORA, STREAK_INFO_COLORS },
     "../assets/images/streak-practice-landscape.jpg": 1,
@@ -137,6 +139,26 @@ function harness({
     get closes() { return closes; },
   };
 }
+
+test("admin content appears in the sheet and the expanded cards, preserving icons and IDs", () => {
+  const remoteContent = {
+    title: "Título editorial", description: "Descripción editorial general",
+    cards: ["current", "accumulated", "longest", "completed"].map(id => ({
+      id, title: `Nombre ${id}`, description: `Explicación ${id}`,
+    })),
+  };
+  const h = harness({ remoteContent });
+  let html = h.render(true);
+  assert.match(html, /Título editorial/);
+  assert.match(html, /Descripción editorial general/);
+  for (const card of remoteContent.cards) {
+    assert.match(html, new RegExp(card.title));
+    h.nodes.get(`streak-info-card-${card.id}`)!.onPress!();
+    html = h.render(true);
+    assert.match(html, new RegExp(card.description));
+    assert.ok(h.nodes.has(`streak-info-icon-${card.id}`));
+  }
+});
 
 test("streak sheet is hidden when closed and has exactly four ordered explanatory cards when open", () => {
   const h = harness();

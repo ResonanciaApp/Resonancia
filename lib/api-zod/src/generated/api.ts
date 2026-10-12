@@ -2345,6 +2345,130 @@ export const GetQuoteOfTheDayResponse = zod.object({
 
 
 /**
+ * @summary Texts shown on Sistema de rachas
+ */
+export const getStreakInfoResponseContentTitleMax = 100;
+
+export const getStreakInfoResponseContentDescriptionMax = 1000;
+
+export const getStreakInfoResponseContentCardsItemTitleMax = 100;
+
+export const getStreakInfoResponseContentCardsItemDescriptionMax = 2000;
+
+export const getStreakInfoResponseContentCardsMin = 4;
+export const getStreakInfoResponseContentCardsMax = 4;
+
+export const getStreakInfoResponseRevisionMin = 0;
+
+
+
+export const GetStreakInfoResponse = zod.object({
+  "content": zod.object({
+  "title": zod.string().min(1).max(getStreakInfoResponseContentTitleMax),
+  "description": zod.string().min(1).max(getStreakInfoResponseContentDescriptionMax),
+  "cards": zod.array(zod.object({
+  "id": zod.enum(['current', 'accumulated', 'longest', 'completed']),
+  "title": zod.string().min(1).max(getStreakInfoResponseContentCardsItemTitleMax),
+  "description": zod.string().min(1).max(getStreakInfoResponseContentCardsItemDescriptionMax)
+})).min(getStreakInfoResponseContentCardsMin).max(getStreakInfoResponseContentCardsMax)
+}),
+  "revision": zod.number().min(getStreakInfoResponseRevisionMin)
+})
+
+
+/**
+ * @summary Read editable streak information
+ */
+export const getAdminStreakInfoResponseContentTitleMax = 100;
+
+export const getAdminStreakInfoResponseContentDescriptionMax = 1000;
+
+export const getAdminStreakInfoResponseContentCardsItemTitleMax = 100;
+
+export const getAdminStreakInfoResponseContentCardsItemDescriptionMax = 2000;
+
+export const getAdminStreakInfoResponseContentCardsMin = 4;
+export const getAdminStreakInfoResponseContentCardsMax = 4;
+
+export const getAdminStreakInfoResponseRevisionMin = 0;
+
+
+
+export const GetAdminStreakInfoResponse = zod.object({
+  "content": zod.object({
+  "title": zod.string().min(1).max(getAdminStreakInfoResponseContentTitleMax),
+  "description": zod.string().min(1).max(getAdminStreakInfoResponseContentDescriptionMax),
+  "cards": zod.array(zod.object({
+  "id": zod.enum(['current', 'accumulated', 'longest', 'completed']),
+  "title": zod.string().min(1).max(getAdminStreakInfoResponseContentCardsItemTitleMax),
+  "description": zod.string().min(1).max(getAdminStreakInfoResponseContentCardsItemDescriptionMax)
+})).min(getAdminStreakInfoResponseContentCardsMin).max(getAdminStreakInfoResponseContentCardsMax)
+}),
+  "revision": zod.number().min(getAdminStreakInfoResponseRevisionMin)
+})
+
+
+/**
+ * @summary Save all streak information texts atomically
+ */
+export const updateAdminStreakInfoBodyContentTitleMax = 100;
+
+export const updateAdminStreakInfoBodyContentDescriptionMax = 1000;
+
+export const updateAdminStreakInfoBodyContentCardsItemTitleMax = 100;
+
+export const updateAdminStreakInfoBodyContentCardsItemDescriptionMax = 2000;
+
+export const updateAdminStreakInfoBodyContentCardsMin = 4;
+export const updateAdminStreakInfoBodyContentCardsMax = 4;
+
+export const updateAdminStreakInfoBodyRevisionMin = 0;
+
+
+
+export const UpdateAdminStreakInfoBody = zod.object({
+  "content": zod.object({
+  "title": zod.string().min(1).max(updateAdminStreakInfoBodyContentTitleMax),
+  "description": zod.string().min(1).max(updateAdminStreakInfoBodyContentDescriptionMax),
+  "cards": zod.array(zod.object({
+  "id": zod.enum(['current', 'accumulated', 'longest', 'completed']),
+  "title": zod.string().min(1).max(updateAdminStreakInfoBodyContentCardsItemTitleMax),
+  "description": zod.string().min(1).max(updateAdminStreakInfoBodyContentCardsItemDescriptionMax)
+})).min(updateAdminStreakInfoBodyContentCardsMin).max(updateAdminStreakInfoBodyContentCardsMax)
+}),
+  "revision": zod.number().min(updateAdminStreakInfoBodyRevisionMin)
+})
+
+export const updateAdminStreakInfoResponseContentTitleMax = 100;
+
+export const updateAdminStreakInfoResponseContentDescriptionMax = 1000;
+
+export const updateAdminStreakInfoResponseContentCardsItemTitleMax = 100;
+
+export const updateAdminStreakInfoResponseContentCardsItemDescriptionMax = 2000;
+
+export const updateAdminStreakInfoResponseContentCardsMin = 4;
+export const updateAdminStreakInfoResponseContentCardsMax = 4;
+
+export const updateAdminStreakInfoResponseRevisionMin = 0;
+
+
+
+export const UpdateAdminStreakInfoResponse = zod.object({
+  "content": zod.object({
+  "title": zod.string().min(1).max(updateAdminStreakInfoResponseContentTitleMax),
+  "description": zod.string().min(1).max(updateAdminStreakInfoResponseContentDescriptionMax),
+  "cards": zod.array(zod.object({
+  "id": zod.enum(['current', 'accumulated', 'longest', 'completed']),
+  "title": zod.string().min(1).max(updateAdminStreakInfoResponseContentCardsItemTitleMax),
+  "description": zod.string().min(1).max(updateAdminStreakInfoResponseContentCardsItemDescriptionMax)
+})).min(updateAdminStreakInfoResponseContentCardsMin).max(updateAdminStreakInfoResponseContentCardsMax)
+}),
+  "revision": zod.number().min(updateAdminStreakInfoResponseRevisionMin)
+})
+
+
+/**
  * @summary Get the active global greeting
  */
 export const getGreetingResponseTextMax = 160;

@@ -623,6 +623,53 @@ paths:
           content:
             application/json:
               schema: {$ref: "#/components/schemas/QuoteOfTheDayResponse"}
+  /streak-info:
+    get:
+      operationId: getStreakInfo
+      tags: [greeting]
+      summary: Texts shown on Sistema de rachas
+      responses:
+        "200":
+          description: Current streak information
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/StreakInfoSettings"
+  /admin/streak-info:
+    get:
+      operationId: getAdminStreakInfo
+      tags: [admin]
+      summary: Read editable streak information
+      responses:
+        "200":
+          description: Editable streak information
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/StreakInfoSettings"
+        "401": {description: Unauthorized}
+        "403": {description: Forbidden}
+    put:
+      operationId: updateAdminStreakInfo
+      tags: [admin]
+      summary: Save all streak information texts atomically
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/StreakInfoSettings"
+      responses:
+        "200":
+          description: Saved streak information
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/StreakInfoSettings"
+        "400": {description: Invalid content}
+        "401": {description: Unauthorized}
+        "403": {description: Forbidden}
+        "409": {description: Another editor updated this content}
   /greeting:
     get:
       operationId: getGreeting
@@ -9679,6 +9726,51 @@ components:
         objectPath:
           type: string
           pattern: "^/objects/.+"
+    StreakInfoCard:
+      type: object
+      additionalProperties: false
+      required: [id, title, description]
+      properties:
+        id:
+          type: string
+          enum: [current, accumulated, longest, completed]
+        title:
+          type: string
+          minLength: 1
+          maxLength: 100
+        description:
+          type: string
+          minLength: 1
+          maxLength: 2000
+    StreakInfoContent:
+      type: object
+      additionalProperties: false
+      required: [title, description, cards]
+      properties:
+        title:
+          type: string
+          minLength: 1
+          maxLength: 100
+        description:
+          type: string
+          minLength: 1
+          maxLength: 1000
+        cards:
+          type: array
+          minItems: 4
+          maxItems: 4
+          items:
+            $ref: "#/components/schemas/StreakInfoCard"
+    StreakInfoSettings:
+      type: object
+      additionalProperties: false
+      required: [content, revision]
+      properties:
+        content:
+          $ref: "#/components/schemas/StreakInfoContent"
+        revision:
+          type: integer
+          minimum: 0
     Greeting:
       type: object
       required: [enabled, text]

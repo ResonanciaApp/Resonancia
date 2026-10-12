@@ -36,7 +36,8 @@ import {
   MessageSquare,
   BookOpen,
   Sunrise,
-  Route as RouteIcon
+  Route as RouteIcon,
+  Flame,
 } from "lucide-react";
 import { Toaster } from "@/components/ui/sonner";
 import { queryClient } from "@/lib/queryClient";
@@ -69,6 +70,7 @@ import SaludoInicioPage from "@/pages/saludo-inicio";
 import ParaEsteMomentoPage from "@/pages/para-este-momento";
 import CategoriasReflexionPage from "@/pages/categorias-reflexion";
 import TuCaminoPage from "@/pages/tu-camino";
+import SistemaRachasPage from "@/pages/sistema-rachas";
 
 const clerkPubKey = publishableKeyFromHost(
   window.location.hostname,
@@ -198,26 +200,32 @@ const NAV_SECTIONS = [
       { href: "/categorias", label: "Categorías", icon: FolderTree },
       { href: "/sesiones", label: "Sesiones", icon: AudioLines },
       { href: "/sesiones/nueva", label: "Nueva sesión", icon: PlusCircle },
-      { href: "/para-este-momento", label: "Para este momento", icon: Sunrise },
       { href: "/sonidos", label: "Sonidos Mezclador", icon: Music2 },
       { href: "/playlists", label: "Playlists", icon: Library },
       { href: "/guiadores-vivo", label: "Sesiones en vivo", icon: Radio },
     ],
   },
   {
-    label: "CONTENIDO",
+    label: "CONTENIDO INICIO",
     items: [
       { href: "/inspiracion-diaria", label: "Hero Inicio", icon: Sun },
       { href: "/saludo-inicio", label: "Saludo inicial", icon: MessageSquare },
       { href: "/frase-del-dia", label: "Frase del día", icon: Quote },
       { href: "/emocion", label: "Registro de ánimo", icon: Sparkles },
-      { href: "/categorias-reflexion", label: "Categorías reflexión", icon: BookOpen },
+      { href: "/para-este-momento", label: "Para este momento", icon: Sunrise },
       { href: "/videos", label: "Videos", icon: Film },
+    ],
+  },
+  {
+    label: "CONTENIDO OTROS",
+    items: [
+      { href: "/categorias-reflexion", label: "Categorías reflexión", icon: BookOpen },
       { href: "/explorar", label: "Explora por objetivo", icon: LayoutList },
       { href: "/dormir-orden", label: "Dormir - Orden", icon: ListOrdered },
       { href: "/sonidos-orden", label: "Sonidos - Orden", icon: ListOrdered },
       { href: "/portadas-avatares", label: "Portadas y avatares", icon: Images },
       { href: "/tu-camino", label: "Tu camino", icon: RouteIcon },
+      { href: "/sistema-rachas", label: "Sistema de rachas", icon: Flame },
       { href: "/geometrix", label: "Geometrix", icon: Hexagon },
     ],
   },
@@ -411,6 +419,7 @@ function AdminGate() {
         <Route path="/sonidos-orden" component={SonidosOrdenPage} />
         <Route path="/portadas-avatares" component={PortadasAvataresPage} />
         <Route path="/tu-camino" component={TuCaminoPage} />
+        <Route path="/sistema-rachas" component={SistemaRachasPage} />
         <Route path="/resonadores" component={ResonadoresPage} />
         <Route component={NotFound} />
       </Switch>

@@ -241,6 +241,7 @@ import type {
   SleepCarouselOrderUpdate,
   SoundCarouselOrderResponse,
   SoundCarouselOrderUpdate,
+  StreakInfoSettings,
   StreakResponse,
   Submission,
   SubmissionFilterOptions,
@@ -4271,6 +4272,231 @@ export function useGetQuoteOfTheDay<TData = Awaited<ReturnType<typeof getQuoteOf
 
 
 
+
+export const getGetStreakInfoUrl = () => {
+
+
+
+
+  return `/api/streak-info`
+}
+
+/**
+ * @summary Texts shown on Sistema de rachas
+ */
+export const getStreakInfo = async ( options?: RequestInit): Promise<StreakInfoSettings> => {
+
+  return customFetch<StreakInfoSettings>(getGetStreakInfoUrl(),
+  {
+    ...options,
+    method: 'GET'
+
+
+  }
+);}
+
+
+
+
+
+export const getGetStreakInfoQueryKey = () => {
+    return [
+    `/api/streak-info`
+    ] as const;
+    }
+
+
+export const getGetStreakInfoQueryOptions = <TData = Awaited<ReturnType<typeof getStreakInfo>>, TError = ErrorType<unknown>>( options?: { query?:UseQueryOptions<Awaited<ReturnType<typeof getStreakInfo>>, TError, TData>, request?: SecondParameter<typeof customFetch>}
+) => {
+
+const {query: queryOptions, request: requestOptions} = options ?? {};
+
+  const queryKey =  queryOptions?.queryKey ?? getGetStreakInfoQueryKey();
+
+
+
+    const queryFn: QueryFunction<Awaited<ReturnType<typeof getStreakInfo>>> = ({ signal }) => getStreakInfo({ signal, ...requestOptions });
+
+
+
+
+
+   return  { queryKey, queryFn, ...queryOptions} as UseQueryOptions<Awaited<ReturnType<typeof getStreakInfo>>, TError, TData> & { queryKey: QueryKey }
+}
+
+export type GetStreakInfoQueryResult = NonNullable<Awaited<ReturnType<typeof getStreakInfo>>>
+export type GetStreakInfoQueryError = ErrorType<unknown>
+
+
+/**
+ * @summary Texts shown on Sistema de rachas
+ */
+
+export function useGetStreakInfo<TData = Awaited<ReturnType<typeof getStreakInfo>>, TError = ErrorType<unknown>>(
+  options?: { query?:UseQueryOptions<Awaited<ReturnType<typeof getStreakInfo>>, TError, TData>, request?: SecondParameter<typeof customFetch>}
+
+ ):  UseQueryResult<TData, TError> & { queryKey: QueryKey } {
+
+  const queryOptions = getGetStreakInfoQueryOptions(options)
+
+  const query = useQuery(queryOptions) as  UseQueryResult<TData, TError> & { queryKey: QueryKey };
+
+  return { ...query, queryKey: queryOptions.queryKey };
+}
+
+
+
+
+
+
+
+export const getGetAdminStreakInfoUrl = () => {
+
+
+
+
+  return `/api/admin/streak-info`
+}
+
+/**
+ * @summary Read editable streak information
+ */
+export const getAdminStreakInfo = async ( options?: RequestInit): Promise<StreakInfoSettings> => {
+
+  return customFetch<StreakInfoSettings>(getGetAdminStreakInfoUrl(),
+  {
+    ...options,
+    method: 'GET'
+
+
+  }
+);}
+
+
+
+
+
+export const getGetAdminStreakInfoQueryKey = () => {
+    return [
+    `/api/admin/streak-info`
+    ] as const;
+    }
+
+
+export const getGetAdminStreakInfoQueryOptions = <TData = Awaited<ReturnType<typeof getAdminStreakInfo>>, TError = ErrorType<void>>( options?: { query?:UseQueryOptions<Awaited<ReturnType<typeof getAdminStreakInfo>>, TError, TData>, request?: SecondParameter<typeof customFetch>}
+) => {
+
+const {query: queryOptions, request: requestOptions} = options ?? {};
+
+  const queryKey =  queryOptions?.queryKey ?? getGetAdminStreakInfoQueryKey();
+
+
+
+    const queryFn: QueryFunction<Awaited<ReturnType<typeof getAdminStreakInfo>>> = ({ signal }) => getAdminStreakInfo({ signal, ...requestOptions });
+
+
+
+
+
+   return  { queryKey, queryFn, ...queryOptions} as UseQueryOptions<Awaited<ReturnType<typeof getAdminStreakInfo>>, TError, TData> & { queryKey: QueryKey }
+}
+
+export type GetAdminStreakInfoQueryResult = NonNullable<Awaited<ReturnType<typeof getAdminStreakInfo>>>
+export type GetAdminStreakInfoQueryError = ErrorType<void>
+
+
+/**
+ * @summary Read editable streak information
+ */
+
+export function useGetAdminStreakInfo<TData = Awaited<ReturnType<typeof getAdminStreakInfo>>, TError = ErrorType<void>>(
+  options?: { query?:UseQueryOptions<Awaited<ReturnType<typeof getAdminStreakInfo>>, TError, TData>, request?: SecondParameter<typeof customFetch>}
+
+ ):  UseQueryResult<TData, TError> & { queryKey: QueryKey } {
+
+  const queryOptions = getGetAdminStreakInfoQueryOptions(options)
+
+  const query = useQuery(queryOptions) as  UseQueryResult<TData, TError> & { queryKey: QueryKey };
+
+  return { ...query, queryKey: queryOptions.queryKey };
+}
+
+
+
+
+
+
+
+export const getUpdateAdminStreakInfoUrl = () => {
+
+
+
+
+  return `/api/admin/streak-info`
+}
+
+/**
+ * @summary Save all streak information texts atomically
+ */
+export const updateAdminStreakInfo = async (streakInfoSettings: StreakInfoSettings, options?: RequestInit): Promise<StreakInfoSettings> => {
+
+  return customFetch<StreakInfoSettings>(getUpdateAdminStreakInfoUrl(),
+  {
+    ...options,
+    method: 'PUT',
+    headers: { 'Content-Type': 'application/json', ...options?.headers },
+    body: JSON.stringify(
+      streakInfoSettings,)
+  }
+);}
+
+
+
+
+export const getUpdateAdminStreakInfoMutationOptions = <TError = ErrorType<void>,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof updateAdminStreakInfo>>, TError,{data: BodyType<StreakInfoSettings>}, TContext>, request?: SecondParameter<typeof customFetch>}
+): UseMutationOptions<Awaited<ReturnType<typeof updateAdminStreakInfo>>, TError,{data: BodyType<StreakInfoSettings>}, TContext> => {
+
+const mutationKey = ['updateAdminStreakInfo'];
+const {mutation: mutationOptions, request: requestOptions} = options ?
+      options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey ?
+      options
+      : {...options, mutation: {...options.mutation, mutationKey}}
+      : {mutation: { mutationKey, }, request: undefined};
+
+
+
+
+      const mutationFn: MutationFunction<Awaited<ReturnType<typeof updateAdminStreakInfo>>, {data: BodyType<StreakInfoSettings>}> = (props) => {
+          const {data} = props ?? {};
+
+          return  updateAdminStreakInfo(data,requestOptions)
+        }
+
+
+
+
+
+
+  return  { mutationFn, ...mutationOptions }}
+
+    export type UpdateAdminStreakInfoMutationResult = NonNullable<Awaited<ReturnType<typeof updateAdminStreakInfo>>>
+    export type UpdateAdminStreakInfoMutationBody = BodyType<StreakInfoSettings>
+    export type UpdateAdminStreakInfoMutationError = ErrorType<void>
+
+    /**
+ * @summary Save all streak information texts atomically
+ */
+export const useUpdateAdminStreakInfo = <TError = ErrorType<void>,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof updateAdminStreakInfo>>, TError,{data: BodyType<StreakInfoSettings>}, TContext>, request?: SecondParameter<typeof customFetch>}
+ ): UseMutationResult<
+        Awaited<ReturnType<typeof updateAdminStreakInfo>>,
+        TError,
+        {data: BodyType<StreakInfoSettings>},
+        TContext
+      > => {
+      return useMutation(getUpdateAdminStreakInfoMutationOptions(options));
+    }
 
 export const getGetGreetingUrl = () => {
 

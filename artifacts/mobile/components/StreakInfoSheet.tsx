@@ -16,6 +16,7 @@ import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { CinematicFadeSlide } from "@/components/CinematicFadeSlide";
 import { useSceneTheme } from "@/context/SceneThemeContext";
 import { MEMBERSHIP_AURORA, STREAK_INFO_COLORS } from "@/constants/colors";
+import { useStreakInfoContent } from "@/hooks/useStreakInfoContent";
 
 const WHITE = STREAK_INFO_COLORS.foreground;
 const GOLD = MEMBERSHIP_AURORA.premium.accent;
@@ -50,6 +51,11 @@ const STREAK_DEFINITIONS: { id: IconKind; title: string; description: string }[]
 ];
 
 const FOOTNOTE = "Un día cuenta como activo al escuchar al menos 3 minutos o completar una sesión.";
+const INITIAL_STREAK_CONTENT = {
+  title: "Sistema de rachas",
+  description: "Existen diferentes tipos de rachas que te muestran tu compromiso, constancia y evolución en la app.",
+  cards: STREAK_DEFINITIONS,
+};
 
 function StreakIcon({ kind }: { kind: IconKind }) {
   if (kind === "current") return <MaterialCommunityIcons name="spa" size={26} color={WHITE} />;
@@ -87,6 +93,8 @@ export function StreakInfoSheet({
       scrollRef.current?.scrollTo({ y: 0, animated: false });
     }
   }, [visible]);
+
+  const content = useStreakInfoContent(visible, INITIAL_STREAK_CONTENT);
 
   if (!visible) return null;
 
@@ -134,7 +142,7 @@ export function StreakInfoSheet({
               >
                 <Feather name="x" size={23} color={WHITE} />
               </Pressable>
-              <Text testID="streak-info-title" style={styles.pageTitle} accessibilityRole="header">Sistema de rachas</Text>
+              <Text testID="streak-info-title" style={styles.pageTitle} accessibilityRole="header">{content.title}</Text>
               <View style={styles.headerSpacer} />
             </View>
             <View testID="streak-info-description" style={styles.heroText}>
@@ -145,15 +153,14 @@ export function StreakInfoSheet({
                 duration={DURATION}
               >
                 <Text style={styles.subtitle}>
-                  Existen diferentes tipos de rachas que te muestran tu compromiso, constancia y
-                  evolución en la app.
+                  {content.description}
                 </Text>
               </CinematicFadeSlide>
             </View>
           </View>
 
           <View testID="streak-info-cards" style={styles.cards}>
-            {STREAK_DEFINITIONS.map((item, i) => {
+            {content.cards.map((item, i) => {
               const open = !!expanded[item.id];
               return (
                 <CinematicFadeSlide
