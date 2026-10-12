@@ -10,30 +10,11 @@ const source = (path: string) => readFileSync(new URL(`../${path}`, import.meta.
 const screen = source("app/(tabs)/sonidos.tsx");
 const bannerSource = source("components/SoundMixerBanner.tsx");
 
-test("Sonidos inserts the restored mixer banner once, immediately after the third visible carousel, for free and premium users", () => {
-  const ast = ts.createSourceFile("sonidos.tsx", screen, ts.ScriptTarget.Latest, true, ts.ScriptKind.TSX);
-  let conditional: ts.ConditionalExpression | undefined;
-  function visit(node: ts.Node) {
-    if (ts.isConditionalExpression(node) && /<SoundMixerBanner\s*\/>/.test(node.whenTrue.getText(ast))) conditional = node;
-    ts.forEachChild(node, visit);
-  }
-  visit(ast);
-  assert.ok(conditional);
-  assert.equal(conditional.condition.getText(ast), "index === 2");
-  const render = new Function("React", "SoundMixerBanner", "View", "styles", "index",
-    ts.transpileModule(`return (${conditional.getText(ast)});`, {
-      compilerOptions: { jsx: ts.JsxEmit.React },
-    }).outputText);
-  for (const index of [0, 1, 2, 3, 4]) {
-    const html = renderToStaticMarkup(render(
-      React, () => React.createElement("span", null, "mixer"), "div", { sectionSpacer: {} }, index,
-    ));
-    assert.equal(html.includes("mixer"), index === 2);
-  }
-  assert.equal((screen.match(/<SoundMixerBanner\s*\/>/g) ?? []).length, 1);
+test("Sonidos hides the mixer banner without leaving its spacer or removing the premium banner", () => {
+  assert.doesNotMatch(screen, /SoundMixerBanner|index === 2 \?/);
   const loopStart = screen.indexOf("{orderedCollections.map");
   const loop = screen.slice(loopStart, screen.indexOf("</ScrollView>", loopStart));
-  assert.ok(loop.indexOf("<SessionCarousel") < loop.indexOf("<SoundMixerBanner"));
+  assert.match(loop, /<SessionCarousel/);
   assert.match(screen, /\.filter\(\(tag\) => tag\.sessions\.length > 0\)/);
   assert.match(loop, /index === 1 && !isPremium[\s\S]*?<SoundPremiumBanner/);
   assert.doesNotMatch(source("app/(tabs)/descanzo.tsx"), /<SoundMixerBanner|sleepMixerBanner/);

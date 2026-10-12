@@ -3,11 +3,11 @@ name: Banner del Mezclador en Sonidos
 description: Ubicación y procedencia del banner recuperado de Dormir.
 ---
 
-El banner histórico del Mezclador de Dormir debe aparecer solo en Sonidos, inmediatamente después del tercer carrusel visible de colecciones. Dormir permanece sin ese banner. Se muestra tanto a usuarios gratuitos como Premium; el propio mezclador conserva sus reglas de acceso.
+El banner del Mezclador debe permanecer oculto en Sonidos y Dormir. No eliminar ni modificar los demás accesos al mezclador.
 
-**Why:** El usuario pidió recuperar el banner que antes estaba visible en Dormir y colocarlo debajo del tercer carrusel de Sonidos.
+**Why:** El 2026-10-12 el usuario pidió esconderlo en Sonidos, reemplazando la instrucción anterior de mostrarlo tras el tercer carrusel.
 
-**How to apply:** Contar colecciones no vacías en su orden editorial actual, no IDs de categorías fijos ni banners de membresía. Mantener su diseño recuperado, adaptar el título a “Mezclador de sonidos” y abrir el panel actual, no la antigua ruta de escenas.
+**How to apply:** No dejar un espacio vacío en su lugar. Si se solicita recuperarlo, conservar el diseño y abrir el panel actual, no la antigua ruta de escenas.
 
 El fondo negro del banner usa 28 %, igual que “Conoce a los Resonadores” de Descubrir, como excepción al 16 % general.
 

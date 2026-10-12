@@ -27,7 +27,6 @@ import { GeoUniverseBackground } from "@/components/GeoUniverseBackground";
 import { SessionCarousel } from "@/components/SessionCarousel";
 import { SessionDurationBadge } from "@/components/SessionDurationBadge";
 import { SoundPremiumBanner } from "@/components/SoundPremiumBanner";
-import { SoundMixerBanner } from "@/components/SoundMixerBanner";
 import { SESSION_CARD_METADATA_HEIGHT_SCALE } from "@/components/SessionCardMetadataOverlay";
 import { useCatalog } from "@/context/CatalogContext";
 import { usePlayer } from "@/context/PlayerContext";
@@ -476,12 +475,6 @@ export default function SonidosScreen() {
                   <>
                     <View style={styles.sectionSpacer} />
                     <SoundPremiumBanner />
-                  </>
-                ) : null}
-                {index === 2 ? (
-                  <>
-                    <View style={styles.sectionSpacer} />
-                    <SoundMixerBanner />
                   </>
                 ) : null}
               </React.Fragment>

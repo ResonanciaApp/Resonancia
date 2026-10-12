@@ -150,7 +150,7 @@
 - [Perfil público](public-profile-scope.md) — identidad espejo hasta descripción, incluido lema y estrella del visitado; solo chevron arriba, sin secciones inferiores
 - [Biografías y borradores](public-biography-adoption.md) — vacíos antiguos no borran descripción editorial; cambios y borrados explícitos sí; borradores hasta Guardar
 - [Distribución de Mezclas comunidad](community-mix-layout.md) — título y usuario en dos líneas con separación de 4 px; sin sonidos ni editorial
-- [Banner del Mezclador en Sonidos](sound-mixer-banner.md) — recuperado de Dormir, solo en Sonidos tras el tercer carrusel visible; abre el panel actual para gratuitos y Premium
+- [Banner del Mezclador en Sonidos](sound-mixer-banner.md) — oculto en Sonidos y Dormir por petición del usuario; preservar otros accesos al mezclador
 - [Títulos de cards](card-title-alignment.md) — títulos debajo de la imagen y alineados al borde izquierdo; Ambientales de Sonidos conservan su excepción centrada
 - [Velocidad de apertura de paneles](sheet-opening-geometry.md) — igualar el resorte no basta: comparar el recorrido visible desde la altura real del panel
 - [Compartir Frase del día](daily-quote-sharing.md) — tarjeta con marca y autor; no inventar enlaces; Messenger iOS comparte PNG mediante la hoja del sistema
