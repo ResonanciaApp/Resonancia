@@ -317,7 +317,7 @@ function CustomTabBar({ state, navigation, descriptors }: TabBarProps) {
                 isFocused={isFocused}
                 onPress={onPress}
                 inactiveColor={inactiveColor}
-                activeColor={activeSceneId === "galactic" ? "#EFF8FF" : activeSceneId === "fuego" ? "#FFF5EF" : ACTIVE_COLOR}
+                activeColor={activeSceneId === "fuego" ? "#FFF5EF" : ACTIVE_COLOR}
                 tibetMode={activeSceneId === "tibet"}
                 lightNeutralColors={
                   indigo2Mode || activeSceneId === "resonancia"

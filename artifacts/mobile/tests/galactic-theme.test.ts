@@ -63,9 +63,10 @@ test("Galactic coordinates tab tint, icon/text colors, widget and journey pills"
   new Function("exports", ts.transpileModule(source("../constants/tab-bar.ts"), {
     compilerOptions: { module: ts.ModuleKind.CommonJS },
   }).outputText)(tabColors);
-  assert.equal(tabColors.getTabBarGlassOverlay("galactic"), "rgba(8,22,33,0.744)");
+  assert.equal(tabColors.getTabBarGlassOverlay("galactic"), tabColors.getTabBarGlassOverlay("cloudy"));
   assert.equal(tabColors.getTabBarInactiveColor("galactic"), "#D5E5F2");
-  assert.match(source("../app/(tabs)/_layout.tsx"), /activeColor=\{activeSceneId === "galactic" \? "#EFF8FF"/);
+  assert.equal(tabColors.getTabBarInactiveColor("galactic"), tabColors.getTabBarInactiveColor("cloudy"));
+  assert.match(source("../app/(tabs)/_layout.tsx"), /activeColor=\{activeSceneId === "fuego" \? "#FFF5EF" : ACTIVE_COLOR\}/);
   assert.match(source("../app/(tabs)/inicio8.tsx"), /activeTheme\.id === "galactic" \? \[activeTheme\.gradient\[0\], activeTheme\.gradient\[activeTheme\.gradient\.length - 1\]\]/);
   const journey = source("../components/GrowthJourney.tsx");
   assert.equal((journey.match(/theme\.id === "galactic" && \{ backgroundColor: "rgba\(190,223,245,0\.20\)" \}/g) ?? []).length, 3);

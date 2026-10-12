@@ -12,17 +12,15 @@ export const TAB_PILL_BAR_H = 58;
 
 /** Natural keeps the same glass opacity while changing only its tint. */
 export function getTabBarGlassOverlay(themeId: string): string {
-  if (themeId === "galactic") return "rgba(8,22,33,0.744)";
   if (themeId === "fuego") return "rgba(33,16,8,0.744)";
   return themeId === "natural" ? "rgba(8,33,28,0.744)" : TAB_PILL_GLASS_OVERLAY;
 }
 
 /** Exact theme palettes; Cloudy variants do not inherit each other's tint. */
 export function getTabBarInactiveColor(themeId: string): string {
-  if (themeId === "galactic") return "#D5E5F2";
   if (themeId === "fuego") return "#F2DDD5";
   if (themeId === "natural") return "#D5EBDD";
-  if (themeId === "cloudy") return "#D5E5F2";
+  if (themeId === "cloudy" || themeId === "galactic") return "#D5E5F2";
   if (themeId === "indigo2") return "#DED5F2";
   return TAB_BAR_INACTIVE_COLOR;
 }
