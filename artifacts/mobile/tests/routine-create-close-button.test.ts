@@ -19,6 +19,30 @@ function visit(node: ts.Node) {
   ts.forEachChild(node, visit);
 }
 visit(ast);
+test("saving repetition emits one soft native impact without delaying the save", async () => {
+  let callback: ts.Expression | undefined;
+  function find(node: ts.Node) {
+    if (ts.isVariableDeclaration(node) && node.name.getText(ast) === "saveRepeatSettings") callback = node.initializer;
+    ts.forEachChild(node, find);
+  }
+  find(ast);
+  assert.ok(callback);
+  const code = ts.transpileModule(`return (${callback.getText(ast)});`, {}).outputText;
+  for (const os of ["ios", "android", "web"]) {
+    const events: unknown[] = [];
+    const save = new Function("Platform", "Haptics", "setRepeatEnabled", "setRepeatDays", "setTimesPerDay", "setRepeatSheetOpen", "draftRepeatEnabled", "draftTimesPerDay", "ALL_DAYS", code)(
+      { OS: os },
+      { ImpactFeedbackStyle: { Soft: "soft" }, impactAsync: (style: string) => { events.push(style); return Promise.reject(new Error("unavailable")); } },
+      (v: boolean) => events.push(v), (v: number[]) => events.push(v),
+      (v: number) => events.push(v), (v: boolean) => events.push(v),
+      true, 2, [0, 1, 2, 3, 4, 5, 6],
+    );
+    save();
+    assert.deepEqual(events, [...(os === "web" ? [] : ["soft"]), true, [0, 1, 2, 3, 4, 5, 6], 2, false]);
+    await Promise.resolve();
+  }
+});
+
 test("repeat dropdown selects either draft option, marks the current value and dismisses outside", () => {
   const menuSource = readFileSync(new URL("../components/RoutineRepeatMenu.tsx", import.meta.url), "utf8");
   const result: { exports: any } = { exports: {} };

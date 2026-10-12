@@ -1,5 +1,6 @@
 import { Feather } from "@expo/vector-icons";
 import { LinearGradient } from "expo-linear-gradient";
+import * as Haptics from "expo-haptics";
 import { router, useLocalSearchParams } from "expo-router";
 import React, { useMemo, useRef, useState } from "react";
 import {
@@ -125,6 +126,9 @@ export default function CrearRutinaScreen() {
   };
 
   const saveRepeatSettings = () => {
+    if (Platform.OS !== "web") {
+      void Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Soft).catch(() => {});
+    }
     setRepeatEnabled(draftRepeatEnabled);
     setRepeatDays(draftRepeatEnabled ? ALL_DAYS : []);
     setTimesPerDay(draftRepeatEnabled ? draftTimesPerDay : 1);
