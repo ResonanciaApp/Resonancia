@@ -617,7 +617,7 @@ function PremiumInnerSpaceScreen() {
         >
           <View style={styles.reflectionMetaRow}>
             <View style={[styles.cardCatPill, { overflow: "hidden" }]}>
-              <View pointerEvents="none" style={[StyleSheet.absoluteFill, { backgroundColor: cat.color, opacity: 0.2, borderRadius: 10 }]} />
+              <View pointerEvents="none" style={[StyleSheet.absoluteFill, { backgroundColor: cat.color, opacity: 0.5, borderRadius: 10 }]} />
               <Text style={[styles.cardCatText, { color: "#F9F9F9", fontWeight: "500" }]}>{cat.label}</Text>
             </View>
           </View>
@@ -786,7 +786,7 @@ function PremiumInnerSpaceScreen() {
             }}
           >
             {filter === "all" && (
-              <ReflectionCategoryTabBorder borderWidth={1} opacity={0.7} />
+              <ReflectionCategoryTabBorder borderWidth={1} opacity={0.9} />
             )}
             <ReflectionCategoryTabLabel label="Todos" selected={filter === "all"} textStyle={styles.filterText} />
           </Pressable>
@@ -809,7 +809,10 @@ function PremiumInnerSpaceScreen() {
                   setFilter(cat.id as ReflectionCategory);
                 }}
               >
-                <ReflectionCategoryTabFill selected={isActive} color={cat.color} reduceMotion={Boolean(reduceMotion)} selectedOpacity={0.2} inactiveBackgroundColor={inactiveTabBackground} blurred={false} />
+                <ReflectionCategoryTabFill selected={isActive} color={cat.color} reduceMotion={Boolean(reduceMotion)} selectedOpacity={0.5} inactiveBackgroundColor={inactiveTabBackground} blurred={false} />
+                {isActive && (
+                  <ReflectionCategoryTabBorder color={cat.color} borderWidth={1} opacity={0.7} />
+                )}
                 <ReflectionCategoryTabLabel
                   label={cat.label}
                   selected={isActive}

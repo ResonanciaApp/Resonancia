@@ -168,7 +168,7 @@ export default function GalleryScreen() {
           <View style={styles.categoryPill}>
             <View
               pointerEvents="none"
-              style={[StyleSheet.absoluteFill, { backgroundColor: category.color, opacity: 0.2, borderRadius: 10 }]}
+              style={[StyleSheet.absoluteFill, { backgroundColor: category.color, opacity: 0.5, borderRadius: 10 }]}
             />
             <Text style={styles.categoryText}>
               {category.label}
