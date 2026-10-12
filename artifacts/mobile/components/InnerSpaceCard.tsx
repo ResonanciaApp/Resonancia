@@ -105,7 +105,7 @@ export function InnerSpaceCard({
   const consumedProfileFocusRequestRef = useRef(0);
   const contentHeightRef = useRef(0);
   const reduceMotion = useReducedMotion();
-  const closedBorderOpacity = profileVariant ? 0.8 : 0.4;
+  const closedBorderOpacity = profileVariant ? 0.9 : 0.4;
   const sectionBorderOpacity = useSharedValue(closedBorderOpacity);
   useEffect(() => {
     if (!expandedRef.current && !animatingRef.current) {
@@ -532,7 +532,7 @@ export function InnerSpaceCard({
       {canonicalVerticalInsets ? (
         <DiscoverSearchBorder
           borderRadius={profileVariant ? 16 : 24}
-          borderWidth={profileVariant ? 1 : 2}
+          borderWidth={profileVariant ? (expanded ? 1 : 2) : 2}
           brightness={REFLECTION_WALL_BORDER_BRIGHTNESS}
           colors={getThemeStyleId(theme.id) === "cloudy" ? CLOUDY_REFLECTION_WALL_BORDER_GRADIENT : REFLECTION_WALL_BORDER_GRADIENT}
           locations={REFLECTION_WALL_BORDER_LOCATIONS}

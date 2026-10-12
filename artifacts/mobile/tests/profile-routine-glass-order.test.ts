@@ -88,17 +88,18 @@ test("Profile places routine before reflection wall, preserving both section mar
   assert.match(sections[1].getText(ast), /onCollapsedHeightChange=\{setProfileWallCardHeight\}/);
 });
 
-test("Profile wall starts and closes at 0.8, still opens at 0.23, and preserves fade and reduced motion", () => {
+test("Profile wall starts and closes at 0.9, still opens at 0.23, and preserves fade and reduced motion", () => {
   const closed = card.match(/const closedBorderOpacity = ([^;]+);/)?.[1];
   const transition = card.match(/sectionBorderOpacity\.value = (reduceMotion[\s\S]*?);\n/)?.[1];
   assert.ok(closed && transition);
+  assert.match(card, /borderWidth=\{profileVariant \? \(expanded \? 1 : 2\) : 2\}/);
   assert.match(card, /useSharedValue\(closedBorderOpacity\)/);
   assert.match(card, /if \(!expandedRef\.current && !animatingRef\.current\) \{\s*sectionBorderOpacity\.value = closedBorderOpacity/);
   const resolveClosed = new Function("profileVariant", `return (${closed});`);
   const resolveTransition = new Function("opening", "reduceMotion", "closedBorderOpacity", "withTiming", "PANEL_DURATION", "ReanimatedEasing", `return (${transition});`);
   for (const profileVariant of [true, false]) {
     const closedOpacity = resolveClosed(profileVariant);
-    assert.equal(closedOpacity, profileVariant ? 0.8 : 0.4);
+    assert.equal(closedOpacity, profileVariant ? 0.9 : 0.4);
     for (const opening of [true, false]) {
       for (const reducedMotion of [true, false]) {
         const calls: any[] = [];
