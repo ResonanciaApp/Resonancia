@@ -61,7 +61,7 @@ test("a large avatar catalog cannot enlarge the sheet beyond the screen", () => 
 });
 
 test("avatar grid reaches the bottom without a fixed footer, retaining scrollable safe-area spacing", () => {
-  assert.match(source, /style=\{\[styles.accountCoverSheet, \{ transform:/);
+  assert.match(source, /style=\{\[styles.accountCoverSheet, avatarPickerMotion.sheetStyle\]\}/);
   assert.doesNotMatch(source, /styles.accountCoverSheet, \{ paddingBottom:/);
   assert.match(source, /contentContainerStyle=\{\[styles.accountCoverPresetGridContent, styles.accountCoverPresetGridContentFiltered, \{ paddingBottom: bottomPad \+ 20 \}\]\}/);
 });
@@ -132,7 +132,7 @@ test("avatar filter is transparent, 11pt, right-aligned and raised seven pixels 
   assert.equal(findStyle("accountAvatarCategoryAnchor").position, undefined);
   assert.equal(findStyle("accountCoverPresetGridContentFiltered").paddingTop, 20);
   assert.equal(findStyle("accountAvatarCategoryRow").height, 39);
-  assert.match(source, /<View style=\{styles.accountAvatarCategoryRow\}>[\s\S]*?<AvatarCategoryTrigger[\s\S]*?<\/View>\s*<\/View>\s*<Reanimated.FlatList/);
+  assert.match(source, /<View style=\{styles.accountAvatarCategoryRow\}>[\s\S]*?<AvatarCategoryTrigger[\s\S]*?<\/View>\s*<\/View>\s*<GestureDetector gesture=\{avatarPickerMotion.gridGesture\}>\s*<Reanimated.FlatList/);
   assert.match(source, /<AvatarCategoryMenu[\s\S]*?top=\{avatarGridTop \+ 39 \+ 6\}[\s\S]*?right=\{20\}/);
   assert.match(dropdown, /menu:\s*\{[\s\S]*?zIndex:\s*22/);
   assert.match(source, /accountAvatarCategoryAnchor:\s*\{[\s\S]*?minHeight:\s*44,[\s\S]*?minWidth:\s*44,[\s\S]*?zIndex:\s*21/);

@@ -10,6 +10,7 @@ import { SymbolView } from "expo-symbols";
 import { GoldGradient, GoldGradientFill } from "@/components/GoldGradient";
 import { BackPill } from "@/components/BackPill";
 import Reanimated from "react-native-reanimated";
+import { GestureDetector, GestureHandlerRootView } from "react-native-gesture-handler";
 import { ScrollProgressIndicator, useScrollProgress } from "@/components/ScrollProgressIndicator";
 import { router, useFocusEffect, useNavigation } from "expo-router";
 import React, { useCallback, useEffect, useLayoutEffect, useMemo, useRef, useState } from "react";
@@ -615,7 +616,6 @@ export function ProfileScreenBase({
   const accountDraftBaselineRef = useRef<string | null>(null);
   const accountClosedRef = useRef(false);
   const [accountPhotoPickerVisible, setAccountPhotoPickerVisible] = useState(false);
-  const avatarPickerMotion = useGrowthJourneySheetMotion(accountPhotoPickerVisible, height * 0.85);
   const [goldenAvatarVisible, setGoldenAvatarVisible] = useState(false);
   const goldenAvatarHeight = Math.max(200, height * 0.85 - 200);
   const goldenAvatarMotion = useGrowthJourneySheetMotion(goldenAvatarVisible && accountPhotoPickerVisible, goldenAvatarHeight);
@@ -629,11 +629,12 @@ export function ProfileScreenBase({
   };
   const avatarScrollProgress = useScrollProgress(accountPhotoPickerVisible);
   const [avatarGridTop, setAvatarGridTop] = useState(0);
-  const avatarDismiss = useAvatarPickerDismiss({
+  const avatarPickerMotion = useAvatarPickerDismiss({
+    visible: accountPhotoPickerVisible,
     enabled: accountPhotoPickerVisible && !goldenAvatarActive && !avatarFilterOpen,
-    sheetY: avatarPickerMotion.sheetY,
+    sheetHeight: height * 0.85,
     sheetTop: height * 0.15,
-    gridTop: avatarGridTop + 46,
+    gridTop: avatarGridTop + 39,
     scrollOffset: avatarScrollProgress.offset,
     onClose: () => setAccountPhotoPickerVisible(false),
   });
@@ -1227,15 +1228,16 @@ export function ProfileScreenBase({
               });
             }}
           >
-            <View style={styles.accountCoverModalRoot}>
-            <Animated.View pointerEvents="none" style={[styles.accountCoverBackdrop, { opacity: avatarPickerMotion.backdropOpacity }]} />
-              <View style={StyleSheet.absoluteFill} pointerEvents="none" />
-            <Animated.View
-              {...avatarDismiss.panHandlers}
+            <GestureHandlerRootView style={styles.accountCoverModalRoot}>
+            <Reanimated.View pointerEvents="none" style={[styles.accountCoverBackdrop, avatarPickerMotion.backdropStyle]} />
+            <GestureDetector gesture={avatarPickerMotion.gesture}>
+            <Reanimated.View
+              testID="avatar-cover-sheet"
+              collapsable={false}
               pointerEvents={goldenAvatarActive ? "none" : "auto"}
               accessibilityElementsHidden={goldenAvatarActive}
               importantForAccessibility={goldenAvatarActive ? "no-hide-descendants" : "auto"}
-              style={[styles.accountCoverSheet, { transform: [{ translateY: avatarPickerMotion.sheetY }] }]}
+              style={[styles.accountCoverSheet, avatarPickerMotion.sheetStyle]}
             >
               <LinearGradient
                 colors={activeTheme.gradient as unknown as [string, string, ...string[]]}
@@ -1305,6 +1307,7 @@ export function ProfileScreenBase({
                   />
                 </View>
               </View>
+              <GestureDetector gesture={avatarPickerMotion.gridGesture}>
               <Reanimated.FlatList
                 ref={accountAvatarGridRef}
                 style={styles.accountCoverPresetGrid}
@@ -1362,6 +1365,7 @@ export function ProfileScreenBase({
                   );
                 }}
               />
+              </GestureDetector>
               <ScrollProgressIndicator progress={avatarScrollProgress} />
               </View>
               </View>
@@ -1375,9 +1379,10 @@ export function ProfileScreenBase({
                 onSelect={selectAvatarFilter}
                 onDismiss={() => setAvatarFilterOpen(false)}
               />
-            </Animated.View>
+            </Reanimated.View>
+            </GestureDetector>
             <GoldenAvatarSheet motion={goldenAvatarMotion} sheetHeight={goldenAvatarHeight} onClose={() => setGoldenAvatarVisible(false)} />
-            </View>
+            </GestureHandlerRootView>
           </Modal>
         </View>
       </View>

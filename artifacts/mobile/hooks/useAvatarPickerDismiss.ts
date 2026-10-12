@@ -1,45 +1,128 @@
-import { useMemo, useRef } from "react";
-import { Animated, PanResponder } from "react-native";
-import { GROWTH_SHEET_SPRING } from "./useGrowthJourneySheetMotion";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
+import { Gesture } from "react-native-gesture-handler";
+import {
+  cancelAnimation, Easing, runOnJS, useAnimatedStyle, useSharedValue, withSpring, withTiming,
+  type SharedValue,
+} from "react-native-reanimated";
 
-/** Take a downward drag only when it won't consume a scroll through the grid. */
+// Same physics as Animated's Origami tension 55 / friction 8.
+const SHEET_SPRING = { stiffness: 284.5, damping: 25, mass: 1 };
+
+/** The native gesture and all sheet motion share one UI-thread translation. */
 export function useAvatarPickerDismiss(options: {
+  visible: boolean;
   enabled: boolean;
-  sheetY: Animated.Value;
+  sheetHeight: number;
   sheetTop: number;
   gridTop: number;
-  scrollOffset: { value: number };
+  scrollOffset: SharedValue<number>;
   onClose: () => void;
 }) {
-  const current = useRef(options);
-  current.current = options;
-  return useMemo(() => {
-    let eligible = false;
-    const restore = () => {
-      if (current.current.enabled) Animated.spring(current.current.sheetY, {
-        toValue: 0, ...GROWTH_SHEET_SPRING,
-      }).start();
-    };
-    const pan = PanResponder.create({
-      onStartShouldSetPanResponderCapture: event => {
-        const state = current.current;
-        const aboveGrid = event.nativeEvent.pageY < state.sheetTop + state.gridTop;
-        eligible = state.enabled && (aboveGrid || state.scrollOffset.value <= 0.5);
-        return false; // Ordinary taps still reach buttons and avatar cards.
-      },
-      onMoveShouldSetPanResponderCapture: (_, gesture) =>
-        current.current.enabled && eligible && gesture.dy > 8 && gesture.dy > Math.abs(gesture.dx),
-      onPanResponderGrant: () => {
-        current.current.sheetY.stopAnimation();
-      },
-      onPanResponderMove: (_, gesture) => current.current.sheetY.setValue(Math.max(0, gesture.dy)),
-      onPanResponderRelease: (_, gesture) => {
-        if (!current.current.enabled) return;
-        if (gesture.dy > 70 || (gesture.dy > 12 && gesture.vy > 0.5)) current.current.onClose();
-        else restore();
-      },
-      onPanResponderTerminate: restore,
-    });
-    return { panHandlers: pan.panHandlers };
+  const { visible, enabled, sheetHeight, sheetTop, gridTop, scrollOffset } = options;
+  const latest = useRef(options);
+  latest.current = options;
+  const [rendered, setRendered] = useState(visible);
+  const revision = useRef(0);
+  const wasShown = useRef(visible);
+  const sheetY = useSharedValue(sheetHeight + 80);
+  const backdropOpacity = useSharedValue(0);
+  const isVisible = useSharedValue(visible);
+  const touchX = useSharedValue(0);
+  const touchY = useSharedValue(0);
+  const baseY = useSharedValue(0);
+  const dragging = useSharedValue(false);
+  const requestClose = useCallback(() => latest.current.onClose(), []);
+  const finishClose = useCallback((token: number) => {
+    if (revision.current === token && !latest.current.visible) {
+      wasShown.current = false;
+      setRendered(false);
+    }
   }, []);
+
+  useEffect(() => {
+    const token = ++revision.current;
+    isVisible.value = visible;
+    cancelAnimation(sheetY);
+    cancelAnimation(backdropOpacity);
+    if (visible) {
+      wasShown.current = true;
+      setRendered(true);
+      sheetY.value = sheetHeight + 80;
+      backdropOpacity.value = 0;
+      sheetY.value = withSpring(0, SHEET_SPRING);
+      backdropOpacity.value = withTiming(0.62, { duration: 500 });
+    } else if (wasShown.current) {
+      // Starts at the gesture's last position, never at a reset position.
+      sheetY.value = withTiming(sheetHeight + 80, {
+        duration: 500, easing: Easing.inOut(Easing.ease),
+      }, finished => {
+        if (finished) runOnJS(finishClose)(token);
+      });
+      backdropOpacity.value = withTiming(0, { duration: 460 });
+    }
+    return () => {
+      cancelAnimation(sheetY);
+      cancelAnimation(backdropOpacity);
+    };
+  }, [visible, sheetHeight, sheetY, backdropOpacity, isVisible, finishClose]);
+
+  const gridGesture = useMemo(() => Gesture.Native(), []);
+  const gesture = useMemo(() => Gesture.Pan()
+    .enabled(enabled)
+    .maxPointers(1)
+    .manualActivation(true)
+    // Let the list scroll once this recognizer fails; a downward drag at the
+    // top instead owns the sheet, so the native ScrollView cannot steal it.
+    .blocksExternalGesture(gridGesture)
+    .onTouchesDown((event, manager) => {
+      const touch = event.allTouches[0];
+      if (!touch || event.allTouches.length !== 1 || !isVisible.value) {
+        manager.fail();
+        return;
+      }
+      touchX.value = touch.absoluteX;
+      touchY.value = touch.absoluteY;
+      const aboveGrid = touch.absoluteY < sheetTop + gridTop;
+      if (!aboveGrid && scrollOffset.value > 0.5) manager.fail();
+    })
+    .onTouchesMove((event, manager) => {
+      if (dragging.value) return;
+      const touch = event.allTouches[0];
+      if (!touch) return;
+      const dx = touch.absoluteX - touchX.value;
+      const dy = touch.absoluteY - touchY.value;
+      if (dy < -8 || (Math.abs(dx) > 8 && Math.abs(dx) > Math.abs(dy))) {
+        manager.fail();
+      } else if (dy > 8 && dy > Math.abs(dx)) {
+        manager.activate();
+      }
+    })
+    .onStart(() => {
+      cancelAnimation(sheetY);
+      baseY.value = sheetY.value;
+      dragging.value = true;
+    })
+    .onUpdate(event => {
+      sheetY.value = Math.max(0, baseY.value + event.translationY);
+    })
+    .onEnd(event => {
+      dragging.value = false;
+      if (!isVisible.value) return;
+      if (event.translationY > 70 || (event.translationY > 12 && event.velocityY > 500)) {
+        runOnJS(requestClose)();
+      } else {
+        sheetY.value = withSpring(0, SHEET_SPRING);
+      }
+    })
+    .onFinalize(() => {
+      if (dragging.value && isVisible.value) sheetY.value = withSpring(0, SHEET_SPRING);
+      dragging.value = false;
+    }), [
+      enabled, sheetTop, gridTop, scrollOffset, gridGesture, isVisible,
+      touchX, touchY, baseY, dragging, sheetY, requestClose,
+    ]);
+
+  const sheetStyle = useAnimatedStyle(() => ({ transform: [{ translateY: sheetY.value }] }));
+  const backdropStyle = useAnimatedStyle(() => ({ opacity: backdropOpacity.value }));
+  return { rendered, gesture, gridGesture, sheetStyle, backdropStyle };
 }

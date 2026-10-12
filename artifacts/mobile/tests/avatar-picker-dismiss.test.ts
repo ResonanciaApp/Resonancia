@@ -3,72 +3,175 @@ import test from "node:test";
 import { readFileSync } from "node:fs";
 import ts from "typescript";
 
-const code = ts.transpileModule(readFileSync(new URL("../hooks/useAvatarPickerDismiss.ts", import.meta.url), "utf8"), {
-  compilerOptions: { module: ts.ModuleKind.CommonJS },
-}).outputText;
+const source = readFileSync(new URL("../hooks/useAvatarPickerDismiss.ts", import.meta.url), "utf8");
+const code = ts.transpileModule(source, { compilerOptions: { module: ts.ModuleKind.CommonJS } }).outputText;
 
 function setup(offset = 0) {
-  const calls: unknown[] = [];
+  const calls: any[] = [];
+  const values: { value: any }[] = [];
+  const refs: any[] = [];
+  const states: any[] = [];
+  const effects: any[][] = [];
+  const completions: ((finished: boolean) => void)[] = [];
+  let vi = 0, ri = 0, si = 0, ei = 0;
+  let failed = false, active = false;
   const exports: any = {};
-  const options = {
-    enabled: true, sheetTop: 100, gridTop: 300, scrollOffset: { value: offset },
-    sheetY: { stopAnimation: () => calls.push("stop"), setValue: (value: number) => calls.push(value) },
-    onClose: () => calls.push("close"),
-  };
-  const mocks: Record<string, unknown> = {
-    react: { useMemo: (fn: () => unknown) => fn(), useRef: (value: unknown) => ({ current: value }) },
-    "react-native": {
-      PanResponder: { create: (handlers: unknown) => ({ panHandlers: handlers }) },
-      Animated: { spring: (_: unknown, config: any) => ({ start: () => calls.push(["restore", config.toValue, config.useNativeDriver]) }) },
+  function recognizer(kind: string) {
+    const gesture: any = { kind, handlers: {}, config: {} };
+    for (const key of ["enabled", "maxPointers", "manualActivation", "blocksExternalGesture"]) {
+      gesture[key] = (value: unknown) => { gesture.config[key] = value; return gesture; };
+    }
+    for (const key of ["onTouchesDown", "onTouchesMove", "onStart", "onUpdate", "onEnd", "onFinalize"]) {
+      gesture[key] = (fn: unknown) => { gesture.handlers[key] = fn; return gesture; };
+    }
+    return gesture;
+  }
+  const mocks: Record<string, any> = {
+    react: {
+      useMemo: (fn: () => unknown) => fn(),
+      useCallback: (fn: unknown) => fn,
+      useRef: (initial: unknown) => refs[ri++] ?? (refs[ri - 1] = { current: initial }),
+      useState: (initial: unknown) => {
+        const i = si++;
+        if (!(i in states)) states[i] = initial;
+        return [states[i], (next: unknown) => { states[i] = next; }];
+      },
+      useEffect: (fn: () => unknown, deps: unknown[]) => {
+        const i = ei++;
+        if (!effects[i] || deps.some((value, n) => value !== effects[i][n])) fn();
+        effects[i] = deps;
+      },
     },
-    "./useGrowthJourneySheetMotion": { GROWTH_SHEET_SPRING: { tension: 55, friction: 8, useNativeDriver: true } },
+    "react-native-gesture-handler": { Gesture: { Native: () => recognizer("native"), Pan: () => recognizer("pan") } },
+    "react-native-reanimated": {
+      useSharedValue: (initial: unknown) => values[vi++] ?? (values[vi - 1] = { value: initial }),
+      useAnimatedStyle: (fn: () => unknown) => fn(),
+      cancelAnimation: () => {},
+      runOnJS: (fn: unknown) => fn,
+      withSpring: (target: number) => { calls.push(["spring", target]); return target; },
+      withTiming: (target: number, config: any, completed?: (ok: boolean) => void) => {
+        calls.push(["timing", target, config.duration, values[0]?.value]);
+        if (completed) completions.push(completed);
+        return target;
+      },
+      Easing: { ease: () => {}, inOut: (fn: unknown) => fn },
+    },
   };
   new Function("require", "exports", code)((id: string) => mocks[id], exports);
-  const controls = exports.useAvatarPickerDismiss(options);
-  const pan = controls.panHandlers;
-  const start = (pageY = 500) => pan.onStartShouldSetPanResponderCapture({ nativeEvent: { pageY } });
-  const gesture = (dy: number, dx = 0, vy = 0) => ({ dy, dx, vy });
-  return { controls, pan, calls, options, start, gesture };
+  const options = {
+    visible: true, enabled: true, sheetHeight: 700, sheetTop: 100, gridTop: 300,
+    scrollOffset: { value: offset }, onClose: () => calls.push("close"),
+  };
+  let controls: any;
+  const render = () => {
+    vi = ri = si = ei = 0;
+    controls = exports.useAvatarPickerDismiss(options);
+    return controls;
+  };
+  render();
+  calls.length = 0;
+  const manager = {
+    fail: () => { failed = true; },
+    activate: () => {
+      if (!active && !failed) { active = true; controls.gesture.handlers.onStart(); }
+    },
+  };
+  let startY = 500;
+  const down = (pageY = 500) => {
+    failed = !controls.gesture.config.enabled;
+    active = false;
+    startY = pageY;
+    if (!failed) controls.gesture.handlers.onTouchesDown({ allTouches: [{ absoluteX: 50, absoluteY: pageY }] }, manager);
+  };
+  const move = (dy: number, dx = 0) => {
+    if (failed) return;
+    controls.gesture.handlers.onTouchesMove({ allTouches: [{ absoluteX: 50 + dx, absoluteY: startY + dy }] }, manager);
+    if (active) controls.gesture.handlers.onUpdate({ translationY: dy });
+  };
+  const release = (dy: number, velocityY = 0) => {
+    if (active && !failed) controls.gesture.handlers.onEnd({ translationY: dy, velocityY });
+    controls.gesture.handlers.onFinalize();
+  };
+  return { options, values, states, calls, completions, render, down, move, release,
+    cancel: () => controls.gesture.handlers.onFinalize(), failed: () => failed, controls };
 }
 
-test("downward drag closes at the top of the grid and follows the finger", () => {
+test("native downward drag moves the same translation and dismisses on release", () => {
   const h = setup();
-  assert.equal(h.start(), false);
-  assert.equal(h.pan.onMoveShouldSetPanResponderCapture(null, h.gesture(20)), true);
-  h.pan.onPanResponderGrant();
-  h.pan.onPanResponderMove(null, h.gesture(80));
-  h.pan.onPanResponderRelease(null, h.gesture(80));
-  assert.deepEqual(h.calls, ["stop", 80, "close"]);
+  assert.equal(h.controls.gesture.config.blocksExternalGesture, h.controls.gridGesture);
+  h.down();
+  h.move(20);
+  assert.equal(h.values[0].value, 20);
+  h.move(90);
+  assert.equal(h.values[0].value, 90);
+  h.release(90);
+  assert.deepEqual(h.calls, ["close"]);
+  h.options.visible = h.options.enabled = false;
+  h.render();
+  assert.deepEqual(h.calls[1], ["timing", 780, 500, 90]);
+  h.completions[0](true);
+  assert.equal(h.states[0], false);
 });
 
-test("grid scrolling and horizontal or upward movement do not become dismissal gestures", () => {
+test("scrolling the grid releases its native recognizer, while the header always permits dismissal", () => {
   const h = setup(90);
-  h.start();
-  assert.equal(h.pan.onMoveShouldSetPanResponderCapture(null, h.gesture(80)), false);
-  h.start(200); // Header remains draggable even with a scrolled grid.
-  assert.equal(h.pan.onMoveShouldSetPanResponderCapture(null, h.gesture(80)), true);
-  assert.equal(h.pan.onMoveShouldSetPanResponderCapture(null, h.gesture(-80)), false);
-  assert.equal(h.pan.onMoveShouldSetPanResponderCapture(null, h.gesture(20, 60)), false);
-});
-
-test("short drag springs back, fast intentional swipe closes, and cancelled drag restores", () => {
-  const h = setup();
-  h.start();
-  h.pan.onPanResponderRelease(null, h.gesture(30));
-  assert.deepEqual(h.calls.pop(), ["restore", 0, true]);
-  h.pan.onPanResponderRelease(null, h.gesture(18, 0, 0.7));
+  h.down();
+  assert.equal(h.failed(), true);
+  h.down(200);
+  h.move(90);
+  h.release(90);
   assert.equal(h.calls.pop(), "close");
-  h.pan.onPanResponderTerminate();
-  assert.deepEqual(h.calls.pop(), ["restore", 0, true]);
 });
 
-test("the swipe handler never dismisses on touch alone and nested windows block it", () => {
+test("upward, horizontal and stationary touches do not dismiss or block normal list browsing", () => {
   const h = setup();
-  h.start();
-  assert.equal(h.calls.length, 0);
-  h.options.enabled = false;
-  h.start();
-  h.pan.onPanResponderTerminate();
-  assert.equal(h.pan.onMoveShouldSetPanResponderCapture(null, h.gesture(80)), false);
+  h.down();
+  h.release(0);
   assert.deepEqual(h.calls, []);
+  h.down();
+  h.move(-20);
+  assert.equal(h.failed(), true);
+  h.down();
+  h.move(12, 40);
+  assert.equal(h.failed(), true);
+  assert.deepEqual(h.calls, []);
+});
+
+test("short swipes and interruptions spring back; a quick deliberate swipe dismisses", () => {
+  const h = setup();
+  h.down();
+  h.move(30);
+  h.release(30);
+  assert.deepEqual(h.calls.pop(), ["spring", 0]);
+  h.down();
+  h.move(18);
+  h.release(18, 700);
+  assert.equal(h.calls.pop(), "close");
+  h.down();
+  h.move(25);
+  h.cancel();
+  assert.deepEqual(h.calls.pop(), ["spring", 0]);
+});
+
+test("disabled gestures and stale completion callbacks cannot close a newly opened sheet", () => {
+  const h = setup();
+  h.options.visible = h.options.enabled = false;
+  h.render();
+  h.down();
+  assert.equal(h.failed(), true);
+  h.options.visible = h.options.enabled = true;
+  h.render();
+  h.completions[0](true);
+  assert.equal(h.states[0], true);
+});
+
+test("the gesture and its motion run on the UI thread without React touch-capture or per-frame bridges", () => {
+  assert.doesNotMatch(source, /PanResponder|runOnJS\(.*setValue|\.runOnJS\(true\)/);
+  assert.match(source, /onUpdate\(event => \{\s*sheetY.value = Math.max/);
+  const page = readFileSync(new URL("../components/ProfileScreenBase.tsx", import.meta.url), "utf8");
+  assert.match(page, /<GestureHandlerRootView style=\{styles.accountCoverModalRoot\}>/);
+  assert.match(page, /<GestureDetector gesture=\{avatarPickerMotion.gesture\}>/);
+  assert.match(page, /<GestureDetector gesture=\{avatarPickerMotion.gridGesture\}>\s*<Reanimated.FlatList/);
+  assert.match(page, /styles.accountCoverSheet, avatarPickerMotion.sheetStyle/);
+  assert.doesNotMatch(page, /onPress=\{closeAvatarPicker\}/);
 });
