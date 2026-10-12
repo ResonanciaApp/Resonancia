@@ -1,5 +1,6 @@
 import { Feather, MaterialCommunityIcons } from "@expo/vector-icons";
 import { BlurView } from "expo-blur";
+import { Image } from "expo-image";
 import { LinearGradient } from "expo-linear-gradient";
 import { router } from "expo-router";
 import React, { useEffect, useMemo, useState } from "react";
@@ -799,10 +800,10 @@ function PremiumOfferContent({
                 ]}
               >
                 <AnimatedPlanSelection selected={selected} />
-                <MaterialCommunityIcons
-                  name="star"
-                  size={24}
-                  color={selected ? MEMBERSHIP_AURORA.premium.accent : "#F0F0F0"}
+                <Image
+                  source={require("../assets/images/estrella-premium.png")}
+                  style={{ width: 24, height: 24 }}
+                  contentFit="contain"
                 />
                 <View style={styles.planCopy}>
                   <Text style={[
@@ -853,10 +854,10 @@ function PremiumOfferContent({
               ]}
             >
               <AnimatedPlanSelection selected={selected} />
-              <MaterialCommunityIcons
-                name="star"
-                size={24}
-                color={selected ? MEMBERSHIP_AURORA.premium.accent : "#F0F0F0"}
+              <Image
+                source={require("../assets/images/estrella-premium.png")}
+                style={{ width: 24, height: 24 }}
+                contentFit="contain"
               />
               <View style={styles.planCopy}>
                 <Text style={[
@@ -1000,10 +1001,10 @@ function GiftCardPlanOption({
       accessibilityState={{ selected }}
     >
       <AnimatedPlanSelection selected={selected} />
-      <MaterialCommunityIcons
-        name="star"
-        size={24}
-        color={selected ? MEMBERSHIP_AURORA.premium.accent : "#F0F0F0"}
+      <Image
+        source={require("../assets/images/estrella-premium.png")}
+        style={{ width: 24, height: 24 }}
+        contentFit="contain"
       />
       <View style={styles.planCopy}>
         <Text style={[
