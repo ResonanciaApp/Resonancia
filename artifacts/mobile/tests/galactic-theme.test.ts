@@ -20,10 +20,10 @@ test("Galactic inherits Indigo 2 and reverses the exact Premium background", () 
   assert.match(source("../constants/premiumOfferBackground.ts"), /PREMIUM_OFFER_BACKGROUND = PREMIUM_BACKGROUND_GRADIENT/);
 });
 
-test("Galactic is under Noche in the first column", () => {
+test("The scene selector uses two rows of three", () => {
   const drawer = source("../components/DrawerSceneCards.tsx");
   assert.match(drawer, /id: "galactic", title: "Galactic"/);
-  assert.match(drawer, /\[SCENES\[0\], SCENES\[1\], SCENES\[4\]\]/);
+  assert.match(drawer, /SCENES\.slice\(0, 3\), SCENES\.slice\(3, 6\)/);
 });
 
 test("Fuego uses the six supplied stops and inherits Cloudy", () => {
@@ -36,5 +36,5 @@ test("Fuego uses the six supplied stops and inherits Cloudy", () => {
   assert.equal(themes.isIndigo2ThemeId(theme.id), true);
   const drawer = source("../components/DrawerSceneCards.tsx");
   assert.match(drawer, /id: "fuego", title: "Fuego"/);
-  assert.match(drawer, /\[SCENES\[2\], SCENES\[3\], SCENES\[5\]\]/);
+  assert.doesNotMatch(drawer, /numberOfLines/);
 });
