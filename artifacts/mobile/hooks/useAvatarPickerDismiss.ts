@@ -31,7 +31,19 @@ export function useAvatarPickerDismiss(options: {
   const touchY = useSharedValue(0);
   const baseY = useSharedValue(0);
   const dragging = useSharedValue(false);
+  const gestureClosing = useSharedValue(false);
+  const gestureExitFinished = useSharedValue(false);
+  const exitPartsRemaining = useSharedValue(0);
   const requestClose = useCallback(() => latest.current.onClose(), []);
+  const finishGestureExitPart = useCallback((finished?: boolean) => {
+    "worklet";
+    if (!finished) return;
+    exitPartsRemaining.value -= 1;
+    if (exitPartsRemaining.value === 0) {
+      gestureExitFinished.value = true;
+      runOnJS(requestClose)();
+    }
+  }, [exitPartsRemaining, gestureExitFinished, requestClose]);
   const finishClose = useCallback((token: number) => {
     if (revision.current === token && !latest.current.visible) {
       wasShown.current = false;
@@ -42,9 +54,21 @@ export function useAvatarPickerDismiss(options: {
   useEffect(() => {
     const token = ++revision.current;
     isVisible.value = visible;
+    if (!visible && wasShown.current && gestureExitFinished.value) {
+      // Both native animations have finished. React only dismisses the Modal;
+      // it must not replay the exit or reset its translation.
+      wasShown.current = false;
+      gestureExitFinished.value = false;
+      gestureClosing.value = false;
+      setRendered(false);
+      return;
+    }
     cancelAnimation(sheetY);
     cancelAnimation(backdropOpacity);
     if (visible) {
+      gestureClosing.value = false;
+      gestureExitFinished.value = false;
+      exitPartsRemaining.value = 0;
       wasShown.current = true;
       setRendered(true);
       sheetY.value = sheetHeight + 80;
@@ -64,7 +88,10 @@ export function useAvatarPickerDismiss(options: {
       cancelAnimation(sheetY);
       cancelAnimation(backdropOpacity);
     };
-  }, [visible, sheetHeight, sheetY, backdropOpacity, isVisible, finishClose]);
+  }, [
+    visible, sheetHeight, sheetY, backdropOpacity, isVisible, finishClose,
+    gestureClosing, gestureExitFinished, exitPartsRemaining,
+  ]);
 
   const gridGesture = useMemo(() => Gesture.Native(), []);
   const gesture = useMemo(() => Gesture.Pan()
@@ -76,7 +103,7 @@ export function useAvatarPickerDismiss(options: {
     .blocksExternalGesture(gridGesture)
     .onTouchesDown((event, manager) => {
       const touch = event.allTouches[0];
-      if (!touch || event.allTouches.length !== 1 || !isVisible.value) {
+      if (!touch || event.allTouches.length !== 1 || !isVisible.value || gestureClosing.value) {
         manager.fail();
         return;
       }
@@ -109,7 +136,16 @@ export function useAvatarPickerDismiss(options: {
       dragging.value = false;
       if (!isVisible.value) return;
       if (event.translationY > 70 || (event.translationY > 12 && event.velocityY > 500)) {
-        runOnJS(requestClose)();
+        // Continue in this very UI callback: no JS round trip, React render,
+        // or ease-in from rest between the finger and the automatic exit.
+        gestureClosing.value = true;
+        exitPartsRemaining.value = 2;
+        sheetY.value = withSpring(sheetHeight + 80, {
+          ...SHEET_SPRING,
+          velocity: Math.max(0, event.velocityY),
+          overshootClamping: true,
+        }, finishGestureExitPart);
+        backdropOpacity.value = withTiming(0, { duration: 460 }, finishGestureExitPart);
       } else {
         sheetY.value = withSpring(0, SHEET_SPRING);
       }
@@ -119,7 +155,8 @@ export function useAvatarPickerDismiss(options: {
       dragging.value = false;
     }), [
       enabled, sheetTop, gridTop, scrollOffset, gridGesture, isVisible,
-      touchX, touchY, baseY, dragging, sheetY, requestClose,
+      touchX, touchY, baseY, dragging, sheetY, sheetHeight, backdropOpacity,
+      gestureClosing, exitPartsRemaining, finishGestureExitPart,
     ]);
 
   const sheetStyle = useAnimatedStyle(() => ({ transform: [{ translateY: sheetY.value }] }));

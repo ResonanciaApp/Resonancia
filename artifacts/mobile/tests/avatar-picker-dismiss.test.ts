@@ -6,8 +6,10 @@ import ts from "typescript";
 const source = readFileSync(new URL("../hooks/useAvatarPickerDismiss.ts", import.meta.url), "utf8");
 const code = ts.transpileModule(source, { compilerOptions: { module: ts.ModuleKind.CommonJS } }).outputText;
 
-function setup(offset = 0) {
+function setup(offset = 0, deferJS = false) {
   const calls: any[] = [];
+  const springs: any[] = [];
+  const jsTasks: (() => void)[] = [];
   const values: { value: any }[] = [];
   const refs: any[] = [];
   const states: any[] = [];
@@ -47,8 +49,16 @@ function setup(offset = 0) {
       useSharedValue: (initial: unknown) => values[vi++] ?? (values[vi - 1] = { value: initial }),
       useAnimatedStyle: (fn: () => unknown) => fn(),
       cancelAnimation: () => {},
-      runOnJS: (fn: unknown) => fn,
-      withSpring: (target: number) => { calls.push(["spring", target]); return target; },
+      runOnJS: (fn: (...args: any[]) => void) => (...args: any[]) => {
+        if (deferJS) jsTasks.push(() => fn(...args));
+        else fn(...args);
+      },
+      withSpring: (target: number, config: any, completed?: (ok: boolean) => void) => {
+        calls.push(["spring", target]);
+        springs.push({ target, from: values[0]?.value, config });
+        if (completed) completions.push(completed);
+        return target;
+      },
       withTiming: (target: number, config: any, completed?: (ok: boolean) => void) => {
         calls.push(["timing", target, config.duration, values[0]?.value]);
         if (completed) completions.push(completed);
@@ -70,6 +80,7 @@ function setup(offset = 0) {
   };
   render();
   calls.length = 0;
+  springs.length = 0;
   const manager = {
     fail: () => { failed = true; },
     activate: () => {
@@ -92,11 +103,13 @@ function setup(offset = 0) {
     if (active && !failed) controls.gesture.handlers.onEnd({ translationY: dy, velocityY });
     controls.gesture.handlers.onFinalize();
   };
-  return { options, values, states, calls, completions, render, down, move, release,
+  return { options, values, states, calls, springs, completions, render, down, move, release,
+    jsTasks, flushJS: () => jsTasks.splice(0).forEach(fn => fn()),
+    completeExit: () => { completions[0](true); completions[1](true); },
     cancel: () => controls.gesture.handlers.onFinalize(), failed: () => failed, controls };
 }
 
-test("native downward drag moves the same translation and dismisses on release", () => {
+test("native downward drag continues immediately; React dismisses only after motion and fade finish", () => {
   const h = setup();
   assert.equal(h.controls.gesture.config.blocksExternalGesture, h.controls.gridGesture);
   h.down();
@@ -104,12 +117,18 @@ test("native downward drag moves the same translation and dismisses on release",
   assert.equal(h.values[0].value, 20);
   h.move(90);
   assert.equal(h.values[0].value, 90);
-  h.release(90);
-  assert.deepEqual(h.calls, ["close"]);
+  h.release(90, 900);
+  assert.deepEqual(h.calls, [["spring", 780], ["timing", 0, 460, 780]]);
+  assert.equal(h.springs[0].from, 90);
+  assert.equal(h.springs[0].config.velocity, 900);
+  h.completions[0](true);
+  assert.equal(h.calls.includes("close"), false);
+  h.completions[1](true);
+  assert.equal(h.calls.at(-1), "close");
+  const callsBeforeRender = h.calls.length;
   h.options.visible = h.options.enabled = false;
   h.render();
-  assert.deepEqual(h.calls[1], ["timing", 780, 500, 90]);
-  h.completions[0](true);
+  assert.equal(h.calls.length, callsBeforeRender, "React must not start a second exit");
   assert.equal(h.states[0], false);
 });
 
@@ -120,6 +139,7 @@ test("scrolling the grid releases its native recognizer, while the header always
   h.down(200);
   h.move(90);
   h.release(90);
+  h.completeExit();
   assert.equal(h.calls.pop(), "close");
 });
 
@@ -146,11 +166,58 @@ test("short swipes and interruptions spring back; a quick deliberate swipe dismi
   h.down();
   h.move(18);
   h.release(18, 700);
+  h.completeExit();
   assert.equal(h.calls.pop(), "close");
+  const interrupted = setup();
+  interrupted.down();
+  interrupted.move(25);
+  interrupted.cancel();
+  assert.deepEqual(interrupted.calls.pop(), ["spring", 0]);
+});
+
+test("a busy JS thread cannot delay the continuation at finger release", () => {
+  const h = setup(0, true);
+  h.down(200);
+  h.move(150);
+  h.release(150, 1200);
+  assert.equal(h.springs[0].from, 150);
+  assert.equal(h.springs[0].config.velocity, 1200);
+  assert.equal(h.jsTasks.length, 0, "no JS work is needed to start closing");
+  h.completeExit();
+  assert.equal(h.jsTasks.length, 1, "React is notified only after both animations");
+  assert.equal(h.calls.includes("close"), false);
+  h.flushJS();
+  assert.equal(h.calls.at(-1), "close");
+});
+
+test("a second touch during exit cannot interrupt or restart it", () => {
+  const h = setup();
+  h.down(200);
+  h.move(100);
+  h.release(100, 600);
+  const motionCount = h.calls.length;
+  h.down(200);
+  assert.equal(h.failed(), true);
+  h.move(100);
+  h.release(100);
+  assert.equal(h.calls.length, motionCount);
+  h.completeExit();
+  assert.equal(h.calls.filter(call => call === "close").length, 1);
+});
+
+test("programmatic dismissal still animates and cancelled gesture completion never dismisses", () => {
+  const h = setup();
   h.down();
-  h.move(25);
-  h.cancel();
-  assert.deepEqual(h.calls.pop(), ["spring", 0]);
+  h.move(100);
+  h.release(100);
+  h.completions[0](false);
+  h.completions[1](false);
+  assert.equal(h.calls.includes("close"), false);
+  h.options.visible = h.options.enabled = false;
+  h.render();
+  assert.equal(h.calls.some(call => call[0] === "timing" && call[2] === 500), true);
+  h.completions[2](true);
+  assert.equal(h.states[0], false);
 });
 
 test("disabled gestures and stale completion callbacks cannot close a newly opened sheet", () => {

@@ -26,3 +26,9 @@ Las pruebas de callbacks aislados no demuestran que el dispositivo reconozca el 
 **Why:** La lógica de cierre pasaba las pruebas, pero el usuario seguía atrapado en la ventana porque el arrastre real no se reconocía.
 
 **How to apply:** Distinguir siempre lógica y compilación de verificación interactiva nativa. No afirmar que el cierre funciona en iPhone ni que es fluido sin haber probado el arrastre real.
+
+El usuario confirmó que el cierre nativo por arrastre reconoce el gesto en su teléfono; la pausa al soltar es un problema separado.
+
+**Why:** La ventana dejó de quedar atrapada al cambiar el reconocimiento, pero apareció una pausa entre el arrastre y la salida automática.
+
+**How to apply:** Conservar el reconocimiento nativo confirmado. La continuación del gesto no debe esperar una actualización de React: movimiento y fade terminan en el hilo de animación antes de desmontar la ventana.
