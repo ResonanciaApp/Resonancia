@@ -66,7 +66,7 @@ export function DrawerSceneCards({ activeId, onSelect }: Props) {
                   <MaterialCommunityIcons name={s.icon} size={21} color={selected ? s.iconColor : "#A8A8A8"} />
                 )}
               </View>
-              <Text style={[styles.label, { color: selected ? "#FFFFFF" : "#A8A8A8" }]} numberOfLines={1}>{s.title}</Text>
+              <Text style={[styles.label, { color: selected ? "#FFFFFF" : "#A8A8A8" }]}>{s.title}</Text>
             </Pressable>
           );
         })}
@@ -96,7 +96,7 @@ const styles = StyleSheet.create({
     gap: 14,
   },
   list: { marginTop: 10, flexDirection: "row", gap: 12 },
-  column: { flex: 1, gap: 2 },
-  iconWrap: { width: 26, height: 26, alignItems: "center", justifyContent: "center" },
-  label: { fontFamily: "Manrope620", color: "#FFFFFF", fontSize: 12, lineHeight: 20, fontWeight: "400", letterSpacing: 0.2 },
+  column: { flex: 1, minWidth: 0, gap: 2 },
+  iconWrap: { width: 26, height: 26, flexShrink: 0, alignItems: "center", justifyContent: "center" },
+  label: { flexShrink: 1, fontFamily: "Manrope620", color: "#FFFFFF", fontSize: 12, lineHeight: 20, fontWeight: "400", letterSpacing: 0.2 },
 });
