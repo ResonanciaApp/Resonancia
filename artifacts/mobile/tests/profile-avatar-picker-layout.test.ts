@@ -75,7 +75,7 @@ test("opening waits for the prepared hero, and only the external upper backdrop 
   assert.ok(attr && ts.isJsxAttribute(attr) && attr.initializer && ts.isJsxExpression(attr.initializer) && attr.initializer.expression);
   const js = ts.transpileModule(`return (${attr.initializer.expression.getText(ast)});`, {}).outputText;
   const calls: boolean[] = [];
-  new Function("setAccountPhotoPickerVisible", js)((visible: boolean) => calls.push(visible))();
+  new Function("avatarPickerMotion", js)({ dismiss: () => calls.push(false) })();
   assert.deepEqual(calls, [false]);
 });
 
@@ -148,7 +148,7 @@ test("X closes at the left, celebration follows with a 10px gap and photo stays 
   assert.equal(close.borderRadius, 21.5);
   const closeButton = header.slice(header.indexOf("<Pressable"), header.indexOf("</Pressable>"));
   assert.match(closeButton, /drawerDiagnosticEvent\("avatar:close-x"\)/);
-  assert.match(closeButton, /setAccountPhotoPickerVisible\(false\)/);
+  assert.match(closeButton, /avatarPickerMotion.dismiss\(\)/);
   assert.match(closeButton, /disabled=\{!accountPhotoPickerVisible\}/);
   assert.equal((source.match(/styles\.accountCoverUploadButton,/g) ?? []).length, 1);
   assert.doesNotMatch(source, /accountCoverUploadText/);

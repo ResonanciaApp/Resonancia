@@ -38,7 +38,7 @@ export function useAvatarPickerDismiss(options: {
   const gestureExitFinished = useSharedValue(false);
   const exitPartsRemaining = useSharedValue(0);
   const requestClose = useCallback(() => {
-    drawerDiagnosticEvent("avatar:swipe-exit-finished");
+    drawerDiagnosticEvent("avatar:exit-finished");
     latest.current.onClose();
   }, []);
   const finishOpen = useCallback((token: number) => {
@@ -70,6 +70,24 @@ export function useAvatarPickerDismiss(options: {
       runOnJS(requestClose)();
     }
   }, [exitPartsRemaining, gestureExitFinished, requestClose]);
+  // Buttons/backdrop use the timer's exit timing, but do not flip the parent's
+  // visibility (and rebuild its large image grid) until both animations finish.
+  const dismiss = useCallback(() => {
+    drawerDiagnosticEvent("avatar:close-request");
+    runOnUI(() => {
+      "worklet";
+      if (!isVisible.value || gestureClosing.value) return;
+      gestureClosing.value = true;
+      dragging.value = false;
+      cancelAnimation(sheetY);
+      cancelAnimation(backdropOpacity);
+      exitPartsRemaining.value = 2;
+      sheetY.value = withTiming(sheetHeight + 80, {
+        duration: 500, easing: Easing.inOut(Easing.ease),
+      }, finishGestureExitPart);
+      backdropOpacity.value = withTiming(0, { duration: 460 }, finishGestureExitPart);
+    })();
+  }, [isVisible, gestureClosing, dragging, sheetY, backdropOpacity, exitPartsRemaining, sheetHeight, finishGestureExitPart]);
   const finishClose = useCallback((token: number) => {
     if (revision.current === token && !latest.current.visible) {
       drawerDiagnosticEvent("avatar:hidden");
@@ -164,11 +182,12 @@ export function useAvatarPickerDismiss(options: {
       dragging.value = true;
     })
     .onUpdate(event => {
+      if (gestureClosing.value) return;
       sheetY.value = Math.max(0, baseY.value + event.translationY);
     })
     .onEnd(event => {
       dragging.value = false;
-      if (!isVisible.value) return;
+      if (!isVisible.value || gestureClosing.value) return;
       if (event.translationY > 70 || (event.translationY > 12 && event.velocityY > 500)) {
         // Continue in this very UI callback: no JS round trip, React render,
         // or ease-in from rest between the finger and the automatic exit.
@@ -195,5 +214,5 @@ export function useAvatarPickerDismiss(options: {
 
   const sheetStyle = useAnimatedStyle(() => ({ transform: [{ translateY: sheetY.value }] }));
   const backdropStyle = useAnimatedStyle(() => ({ opacity: backdropOpacity.value }));
-  return { rendered, opened, onShow, gesture, gridGesture, sheetStyle, backdropStyle };
+  return { rendered, opened, onShow, dismiss, gesture, gridGesture, sheetStyle, backdropStyle };
 }

@@ -125,6 +125,27 @@ function setup(offset = 0, deferJS = false, showNativeModal = true) {
     cancel: () => controls.gesture.handlers.onFinalize(), failed: () => failed, controls };
 }
 
+test("tap close uses timer timings without changing React state until both animations finish", () => {
+  const h = setup(0, true);
+  const before = [...h.states];
+  h.controls.dismiss();
+  assert.deepEqual(h.calls, [["timing", 780, 500, 0], ["timing", 0, 460, 780]]);
+  assert.deepEqual(h.states, before, "keep the grid and opened configuration stable during exit");
+  h.controls.dismiss();
+  assert.equal(h.calls.length, 2, "repeated taps cannot restart the exit");
+  h.completions[0](true);
+  assert.equal(h.jsTasks.length, 0);
+  h.completions[1](true);
+  assert.equal(h.jsTasks.length, 1);
+  h.flushJS();
+  assert.equal(h.calls.at(-1), "close");
+  h.options.visible = h.options.enabled = false;
+  const count = h.calls.length;
+  h.render();
+  assert.equal(h.calls.length, count, "do not replay a completed close");
+  assert.equal(h.states[0], false);
+});
+
 test("native downward drag continues immediately; React dismisses only after motion and fade finish", () => {
   const h = setup();
   assert.equal(h.controls.gesture.config.blocksExternalGesture, h.controls.gridGesture);
@@ -262,7 +283,7 @@ test("disabled gestures and stale completion callbacks cannot close a newly open
 
 test("the gesture and its motion run on the UI thread without React touch-capture or per-frame bridges", () => {
   assert.doesNotMatch(source, /PanResponder|runOnJS\(.*setValue|\.runOnJS\(true\)/);
-  assert.match(source, /onUpdate\(event => \{\s*sheetY.value = Math.max/);
+  assert.match(source, /onUpdate\(event => \{[\s\S]*?sheetY.value = Math.max/);
   const page = readFileSync(new URL("../components/ProfileScreenBase.tsx", import.meta.url), "utf8");
   assert.match(page, /<GestureHandlerRootView style=\{styles.accountCoverModalRoot\}>/);
   assert.match(page, /<GestureDetector gesture=\{avatarPickerMotion.gesture\}>/);

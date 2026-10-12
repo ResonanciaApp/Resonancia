@@ -1,0 +1,660 @@
+{
+  "diagnostic": "drawer-timing-v1",
+  "mode": "development",
+  "platform": "ios",
+  "osVersion": "26.1",
+  "durationMs": 24979,
+  "note": "UI callback timing is not GPU/presentation timing. Compare with a screen recording; instrumentation itself adds some overhead.",
+  "ui": {
+    "samples": 2900,
+    "maxGapMs": 117.80174999998417,
+    "gapsOver32ms": 12,
+    "slowFrames": [
+      {
+        "at": 3580,
+        "gap": 117.80174999998417,
+        "progress": 0
+      },
+      {
+        "at": 4114,
+        "gap": 75.60804166668095,
+        "progress": 0
+      },
+      {
+        "at": 4682,
+        "gap": 51.15154166665161,
+        "progress": 0
+      },
+      {
+        "at": 6563,
+        "gap": 44.78158333332976,
+        "progress": 0
+      },
+      {
+        "at": 8297,
+        "gap": 43.874458333302755,
+        "progress": 0
+      },
+      {
+        "at": 10056,
+        "gap": 41.14983333327109,
+        "progress": 0
+      },
+      {
+        "at": 11731,
+        "gap": 50.00850000005448,
+        "progress": 0
+      },
+      {
+        "at": 13466,
+        "gap": 58.82549999997718,
+        "progress": 0
+      },
+      {
+        "at": 15183,
+        "gap": 50.46279166662134,
+        "progress": 0
+      },
+      {
+        "at": 17074,
+        "gap": 49.9071249999688,
+        "progress": 0
+      },
+      {
+        "at": 19872,
+        "gap": 88.57870833331253,
+        "progress": 0
+      },
+      {
+        "at": 20466,
+        "gap": 111.64570833329344,
+        "progress": 0
+      }
+    ]
+  },
+  "js": {
+    "samples": 1156,
+    "maxGapMs": 259,
+    "gapsOver32ms": 80,
+    "slowFrames": [
+      {
+        "at": 813,
+        "gap": 158
+      },
+      {
+        "at": 1429,
+        "gap": 141
+      },
+      {
+        "at": 2548,
+        "gap": 243
+      },
+      {
+        "at": 3178,
+        "gap": 89
+      },
+      {
+        "at": 3510,
+        "gap": 188
+      },
+      {
+        "at": 3772,
+        "gap": 83
+      },
+      {
+        "at": 4661,
+        "gap": 172
+      },
+      {
+        "at": 5191,
+        "gap": 119
+      },
+      {
+        "at": 5485,
+        "gap": 46
+      },
+      {
+        "at": 5561,
+        "gap": 76
+      },
+      {
+        "at": 5721,
+        "gap": 82
+      },
+      {
+        "at": 5806,
+        "gap": 50
+      },
+      {
+        "at": 6223,
+        "gap": 51
+      },
+      {
+        "at": 6318,
+        "gap": 95
+      },
+      {
+        "at": 6435,
+        "gap": 79
+      },
+      {
+        "at": 6523,
+        "gap": 88
+      },
+      {
+        "at": 6631,
+        "gap": 42
+      },
+      {
+        "at": 7370,
+        "gap": 47
+      },
+      {
+        "at": 7521,
+        "gap": 151
+      },
+      {
+        "at": 7557,
+        "gap": 36
+      },
+      {
+        "at": 7659,
+        "gap": 86
+      },
+      {
+        "at": 7933,
+        "gap": 60
+      },
+      {
+        "at": 8006,
+        "gap": 33
+      },
+      {
+        "at": 8252,
+        "gap": 96
+      },
+      {
+        "at": 9115,
+        "gap": 59
+      },
+      {
+        "at": 9259,
+        "gap": 144
+      },
+      {
+        "at": 9764,
+        "gap": 41
+      },
+      {
+        "at": 9822,
+        "gap": 58
+      },
+      {
+        "at": 9920,
+        "gap": 80
+      },
+      {
+        "at": 10016,
+        "gap": 96
+      },
+      {
+        "at": 10135,
+        "gap": 95
+      },
+      {
+        "at": 10993,
+        "gap": 120
+      },
+      {
+        "at": 11081,
+        "gap": 88
+      },
+      {
+        "at": 11116,
+        "gap": 35
+      },
+      {
+        "at": 11475,
+        "gap": 35
+      },
+      {
+        "at": 11684,
+        "gap": 94
+      },
+      {
+        "at": 11793,
+        "gap": 109
+      },
+      {
+        "at": 12057,
+        "gap": 50
+      },
+      {
+        "at": 12253,
+        "gap": 80
+      },
+      {
+        "at": 12546,
+        "gap": 39
+      },
+      {
+        "at": 12673,
+        "gap": 127
+      },
+      {
+        "at": 12834,
+        "gap": 77
+      },
+      {
+        "at": 13131,
+        "gap": 91
+      },
+      {
+        "at": 13198,
+        "gap": 67
+      },
+      {
+        "at": 13413,
+        "gap": 89
+      },
+      {
+        "at": 13925,
+        "gap": 85
+      },
+      {
+        "at": 14271,
+        "gap": 47
+      },
+      {
+        "at": 14425,
+        "gap": 154
+      },
+      {
+        "at": 14825,
+        "gap": 51
+      },
+      {
+        "at": 14915,
+        "gap": 41
+      },
+      {
+        "at": 14953,
+        "gap": 38
+      },
+      {
+        "at": 15042,
+        "gap": 89
+      },
+      {
+        "at": 15138,
+        "gap": 96
+      },
+      {
+        "at": 15990,
+        "gap": 49
+      },
+      {
+        "at": 16089,
+        "gap": 99
+      },
+      {
+        "at": 16280,
+        "gap": 89
+      },
+      {
+        "at": 16324,
+        "gap": 44
+      },
+      {
+        "at": 16442,
+        "gap": 85
+      },
+      {
+        "at": 16711,
+        "gap": 53
+      },
+      {
+        "at": 16762,
+        "gap": 38
+      },
+      {
+        "at": 16908,
+        "gap": 34
+      },
+      {
+        "at": 17030,
+        "gap": 106
+      },
+      {
+        "at": 17736,
+        "gap": 95
+      },
+      {
+        "at": 17880,
+        "gap": 39
+      },
+      {
+        "at": 17964,
+        "gap": 84
+      },
+      {
+        "at": 18175,
+        "gap": 34
+      },
+      {
+        "at": 18292,
+        "gap": 34
+      },
+      {
+        "at": 18408,
+        "gap": 33
+      },
+      {
+        "at": 18611,
+        "gap": 88
+      },
+      {
+        "at": 18924,
+        "gap": 99
+      },
+      {
+        "at": 19020,
+        "gap": 79
+      },
+      {
+        "at": 19415,
+        "gap": 57
+      },
+      {
+        "at": 19769,
+        "gap": 78
+      },
+      {
+        "at": 19854,
+        "gap": 85
+      },
+      {
+        "at": 20052,
+        "gap": 77
+      },
+      {
+        "at": 20836,
+        "gap": 161
+      },
+      {
+        "at": 21684,
+        "gap": 259
+      },
+      {
+        "at": 21805,
+        "gap": 97
+      },
+      {
+        "at": 22955,
+        "gap": 113
+      },
+      {
+        "at": 23530,
+        "gap": 105
+      }
+    ]
+  },
+  "events": [
+    {
+      "at": 656,
+      "name": "tap:inicio"
+    },
+    {
+      "at": 656,
+      "name": "command:close"
+    },
+    {
+      "at": 1307,
+      "name": "settled:closed"
+    },
+    {
+      "at": 1447,
+      "name": "tap:inicio"
+    },
+    {
+      "at": 1447,
+      "name": "command:close"
+    },
+    {
+      "at": 1450,
+      "name": "settled:closed"
+    },
+    {
+      "at": 2425,
+      "name": "commit:inicio"
+    },
+    {
+      "at": 2426,
+      "name": "screen:profile"
+    },
+    {
+      "at": 3456,
+      "name": "screen:other"
+    },
+    {
+      "at": 4614,
+      "name": "avatar:open-request"
+    },
+    {
+      "at": 4701,
+      "name": "avatar:native-shown"
+    },
+    {
+      "at": 5455,
+      "name": "avatar:opened"
+    },
+    {
+      "at": 5668,
+      "name": "avatar:close-x"
+    },
+    {
+      "at": 5695,
+      "name": "avatar:close-request"
+    },
+    {
+      "at": 6188,
+      "name": "avatar:hidden"
+    },
+    {
+      "at": 6498,
+      "name": "avatar:open-request"
+    },
+    {
+      "at": 6579,
+      "name": "avatar:native-shown"
+    },
+    {
+      "at": 7338,
+      "name": "avatar:opened"
+    },
+    {
+      "at": 7458,
+      "name": "avatar:close-x"
+    },
+    {
+      "at": 7485,
+      "name": "avatar:close-request"
+    },
+    {
+      "at": 7980,
+      "name": "avatar:hidden"
+    },
+    {
+      "at": 8227,
+      "name": "avatar:open-request"
+    },
+    {
+      "at": 8314,
+      "name": "avatar:native-shown"
+    },
+    {
+      "at": 9072,
+      "name": "avatar:opened"
+    },
+    {
+      "at": 9204,
+      "name": "avatar:close-x"
+    },
+    {
+      "at": 9233,
+      "name": "avatar:close-request"
+    },
+    {
+      "at": 9731,
+      "name": "avatar:hidden"
+    },
+    {
+      "at": 9990,
+      "name": "avatar:open-request"
+    },
+    {
+      "at": 10134,
+      "name": "avatar:native-shown"
+    },
+    {
+      "at": 10889,
+      "name": "avatar:opened"
+    },
+    {
+      "at": 10921,
+      "name": "avatar:close-x"
+    },
+    {
+      "at": 10952,
+      "name": "avatar:close-request"
+    },
+    {
+      "at": 11447,
+      "name": "avatar:hidden"
+    },
+    {
+      "at": 11658,
+      "name": "avatar:open-request"
+    },
+    {
+      "at": 11766,
+      "name": "avatar:native-shown"
+    },
+    {
+      "at": 12523,
+      "name": "avatar:opened"
+    },
+    {
+      "at": 12623,
+      "name": "avatar:close-x"
+    },
+    {
+      "at": 12649,
+      "name": "avatar:close-request"
+    },
+    {
+      "at": 13131,
+      "name": "commit:inicio"
+    },
+    {
+      "at": 13171,
+      "name": "avatar:hidden"
+    },
+    {
+      "at": 13385,
+      "name": "avatar:open-request"
+    },
+    {
+      "at": 13474,
+      "name": "avatar:native-shown"
+    },
+    {
+      "at": 14231,
+      "name": "avatar:opened"
+    },
+    {
+      "at": 14351,
+      "name": "avatar:close-x"
+    },
+    {
+      "at": 14380,
+      "name": "avatar:close-request"
+    },
+    {
+      "at": 14881,
+      "name": "avatar:hidden"
+    },
+    {
+      "at": 15107,
+      "name": "avatar:open-request"
+    },
+    {
+      "at": 15202,
+      "name": "avatar:native-shown"
+    },
+    {
+      "at": 15957,
+      "name": "avatar:opened"
+    },
+    {
+      "at": 16207,
+      "name": "avatar:close-x"
+    },
+    {
+      "at": 16238,
+      "name": "avatar:close-request"
+    },
+    {
+      "at": 16732,
+      "name": "avatar:hidden"
+    },
+    {
+      "at": 16998,
+      "name": "avatar:open-request"
+    },
+    {
+      "at": 17091,
+      "name": "avatar:native-shown"
+    },
+    {
+      "at": 17849,
+      "name": "avatar:opened"
+    },
+    {
+      "at": 18841,
+      "name": "avatar:close-x"
+    },
+    {
+      "at": 18879,
+      "name": "avatar:close-request"
+    },
+    {
+      "at": 19374,
+      "name": "avatar:hidden"
+    },
+    {
+      "at": 19768,
+      "name": "screen:profile"
+    },
+    {
+      "at": 20832,
+      "name": "commit:inicio"
+    },
+    {
+      "at": 20833,
+      "name": "screen:home"
+    },
+    {
+      "at": 21557,
+      "name": "command:open"
+    },
+    {
+      "at": 21804,
+      "name": "commit:inicio"
+    },
+    {
+      "at": 21984,
+      "name": "settled:open"
+    }
+  ]
+}

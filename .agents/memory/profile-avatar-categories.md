@@ -3,6 +3,16 @@ name: Categorías de avatares de Perfil
 description: Pertenencia editorial múltiple confirmada por el usuario.
 ---
 
+Los cierres por X y fondo exterior deben conservar el estado visible de Perfil
+y la configuración de la grilla hasta terminar el movimiento y el fade.
+
+**Why:** Cambiar visibilidad antes de iniciar la salida también actualiza la
+grilla y otros hooks de Perfil; igualar la duración del temporizador no elimina
+ese trabajo concurrente. La apertura aprobada se conserva independiente.
+
+**How to apply:** Lanzar el cierre por el controlador de movimiento, bloquear
+reinicios durante la salida y avisar a React al completar ambas animaciones.
+
 Las categorías de avatares de Perfil no son exclusivas: un mismo avatar puede pertenecer a varias a la vez.
 
 **Why:** El usuario eligió expresamente «Varias categorías» frente a una asignación única.

@@ -682,7 +682,7 @@ export function ProfileScreenBase({
   const closeAvatarPicker = () => {
     if (avatarFilterOpen) setAvatarFilterOpen(false);
     else if (goldenAvatarActive) setGoldenAvatarVisible(false);
-    else setAccountPhotoPickerVisible(false);
+    else avatarPickerMotion.dismiss();
   };
   const avatarScrollProgress = useScrollProgress(accountPhotoPickerVisible);
   const [avatarGridTop, setAvatarGridTop] = useState(0);
@@ -1296,7 +1296,7 @@ export function ProfileScreenBase({
             <Pressable
               testID="avatar-cover-backdrop-close"
               style={styles.accountCoverBackdropClose}
-              onPress={() => setAccountPhotoPickerVisible(false)}
+              onPress={avatarPickerMotion.dismiss}
               disabled={!accountPhotoPickerVisible || goldenAvatarActive}
               accessibilityRole="button"
               accessibilityLabel="Cerrar Portada de avatares"
@@ -1323,7 +1323,7 @@ export function ProfileScreenBase({
                   style={[styles.accountCoverCloseButton, { backgroundColor: avatarHeaderBackground }]}
                   onPress={() => {
                     drawerDiagnosticEvent("avatar:close-x");
-                    setAccountPhotoPickerVisible(false);
+                    avatarPickerMotion.dismiss();
                   }}
                   disabled={!accountPhotoPickerVisible}
                   hitSlop={4}
