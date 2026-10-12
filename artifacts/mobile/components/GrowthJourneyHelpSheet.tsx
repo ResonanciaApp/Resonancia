@@ -164,7 +164,7 @@ const styles = StyleSheet.create({
   content: { flexGrow: 1, justifyContent: "flex-start", alignItems: "center", paddingBottom: 16 },
   mapHeader: { height: 56 },
   mapSection: { paddingTop: 45 },
-  explanation: { width: "100%", maxWidth: 480, paddingHorizontal: 24, marginTop: 28, paddingVertical: 16, borderRadius: 20, gap: 12 },
+  explanation: { alignSelf: "stretch", marginHorizontal: 16, paddingHorizontal: 24, marginTop: 28, paddingVertical: 16, borderRadius: 20, gap: 12 },
   explanationTitle: { fontFamily: "Manrope", fontSize: 18, lineHeight: 24, fontWeight: "700", textAlign: "center", marginBottom: 15 },
   explanationText: { fontFamily: "Manrope", fontSize: 14, lineHeight: 21, textAlign: "left", opacity: 0.85 },
   mapTitle: { position: "absolute", top: 16, left: 64, right: 64, textAlign: "center", fontFamily: "Manrope", fontSize: 20, lineHeight: 24, fontWeight: "700" },

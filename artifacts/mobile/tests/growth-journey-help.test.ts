@@ -286,6 +286,9 @@ test("explanation uses themed black background, extra title gap and left-aligned
     h.reset();
     renderToStaticMarkup(GrowthJourneyHelpSheet({ visible: true, onClose() {} }));
     const section = flatten(h.nodes.get("growth-map-explanation").style);
+    assert.equal(section.marginHorizontal, 16);
+    assert.equal(section.alignSelf, "stretch");
+    assert.equal(section.width, undefined);
     assert.equal(section.backgroundColor, `rgba(0,0,0,${theme === "cloudy" || theme === "natural" ? "0.19" : "0.16"})`);
     assert.equal(section.gap + flatten(h.nodes.get("growth-map-explanation-title").style).marginBottom, 27);
     assert.equal(flatten(h.nodes.get("growth-map-explanation-paragraph-0").style).textAlign, "left");
