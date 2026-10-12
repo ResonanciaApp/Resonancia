@@ -15,11 +15,11 @@ El orden editorial elegido en Admin debe ser compartido con la app, también cua
 
 **How to apply:** Tratar Aleatorio e Intercalado como formas de preparar un orden para guardar, conservando la posibilidad de ajustarlo manualmente.
 
-La ventana móvil de Portada de avatares se cierra únicamente al deslizarla hacia abajo, no al tocar el fondo ni espacios vacíos.
+La ventana móvil de Portada de avatares se cierra al deslizarla hacia abajo o al tocar el fondo externo situado arriba de la ventana; los espacios vacíos internos no la cierran.
 
-**Why:** El usuario retiró expresamente el cierre por tacto para evitar cierres accidentales mientras explora o filtra avatares.
+**Why:** El usuario retiró el cierre por tacto general para evitar cierres accidentales, pero posteriormente pidió habilitarlo específicamente en el fondo externo superior.
 
-**How to apply:** Mantener el gesto descendente coordinado con el scroll: desde la cabecera siempre, y desde la grilla solo cuando está en el inicio. Un gesto corto vuelve suavemente a su posición.
+**How to apply:** Limitar el área de cierre por tacto al fondo superior externo. Mantener el gesto descendente coordinado con el scroll: desde la cabecera siempre, y desde la grilla solo cuando está en el inicio. Un gesto corto vuelve suavemente a su posición.
 
 Las pruebas de callbacks aislados no demuestran que el dispositivo reconozca el gesto de cierre de Portada.
 
@@ -32,3 +32,9 @@ El usuario confirmó que el cierre nativo por arrastre reconoce el gesto en su t
 **Why:** La ventana dejó de quedar atrapada al cambiar el reconocimiento, pero apareció una pausa entre el arrastre y la salida automática.
 
 **How to apply:** Conservar el reconocimiento nativo confirmado. La continuación del gesto no debe esperar una actualización de React: movimiento y fade terminan en el hilo de animación antes de desmontar la ventana.
+
+El avatar hero de Portada debe estar visible desde el comienzo, sin animación propia de aparición.
+
+**Why:** El usuario reiteró que debe comportarse como las imágenes de la grilla y reportó parpadeo aunque ya no tuviera fade.
+
+**How to apply:** No confundir la animación de la ventana con una animación del avatar. Preparar la imagen antes de abrir y evitar recargarla por una actualización editorial que no cambie su fuente real.

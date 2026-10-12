@@ -110,6 +110,7 @@ import { SleepReminderSheet } from "@/components/SleepReminderSheet";
 import { GoldenAvatarSheet } from "@/components/GoldenAvatarSheet";
 import { useGrowthJourneySheetMotion } from "@/hooks/useGrowthJourneySheetMotion";
 import { useAvatarPickerDismiss } from "@/hooks/useAvatarPickerDismiss";
+import { usePreparedAvatarImage } from "@/hooks/usePreparedAvatarImage";
 import { StreakInfoSheet } from "@/components/StreakInfoSheet";
 import { FilledSunIcon } from "@/components/FilledSunIcon";
 import { useMixerPanel } from "@/context/MixerPanelContext";
@@ -610,11 +611,32 @@ export function ProfileScreenBase({
   const accountSelectedProfilePreset = accountAvatarPresetId
     ? profileCatalog.find((preset) => preset.id === accountAvatarPresetId || preset.key === accountAvatarPresetId || `profile:${preset.key}` === accountAvatarPresetId)
     : undefined;
+  const accountCoverHeroSource = useMemo(
+    () => accountSelectedProfilePreset?.source ?? (accountPhotoUri ? { uri: accountPhotoUri } : null),
+    [accountSelectedProfilePreset?.source, accountPhotoUri],
+  );
+  const accountCoverHero = usePreparedAvatarImage(accountCoverHeroSource, accountMode);
   const [accountAction, setAccountAction] = useState<"delete" | null>(null);
   const [accountSaving, setAccountSaving] = useState(false);
   const accountSavingRef = useRef(false);
   const accountDraftBaselineRef = useRef<string | null>(null);
   const accountClosedRef = useRef(false);
+  const avatarOpeningRef = useRef(false);
+  const openAvatarPicker = async () => {
+    if (avatarOpeningRef.current || accountSavingRef.current) return;
+    avatarOpeningRef.current = true;
+    try {
+      await accountCoverHero.prepare();
+    } catch (error) {
+      // A broken image must not trap the user outside the selector.
+      console.warn("[avatar-cover] No se pudo cargar el avatar al abrir:", error);
+    } finally {
+      avatarOpeningRef.current = false;
+    }
+    if (!accountClosedRef.current && !accountSavingRef.current) {
+      setAccountPhotoPickerVisible(true);
+    }
+  };
   const [accountPhotoPickerVisible, setAccountPhotoPickerVisible] = useState(false);
   const [goldenAvatarVisible, setGoldenAvatarVisible] = useState(false);
   const goldenAvatarHeight = Math.max(200, height * 0.85 - 200);
@@ -1132,7 +1154,7 @@ export function ProfileScreenBase({
               showsVerticalScrollIndicator={false}
             >
               <Pressable
-                onPress={() => setAccountPhotoPickerVisible(true)}
+                onPress={() => void openAvatarPicker()}
                 disabled={accountSaving}
                 style={({ pressed }) => [styles.accountAvatarButton, pressed && styles.accountPressed]}
                 accessibilityRole="button"
@@ -1230,6 +1252,14 @@ export function ProfileScreenBase({
           >
             <GestureHandlerRootView style={styles.accountCoverModalRoot}>
             <Reanimated.View pointerEvents="none" style={[styles.accountCoverBackdrop, avatarPickerMotion.backdropStyle]} />
+            <Pressable
+              testID="avatar-cover-backdrop-close"
+              style={styles.accountCoverBackdropClose}
+              onPress={() => setAccountPhotoPickerVisible(false)}
+              disabled={!accountPhotoPickerVisible || goldenAvatarActive}
+              accessibilityRole="button"
+              accessibilityLabel="Cerrar Portada de avatares"
+            />
             <GestureDetector gesture={avatarPickerMotion.gesture}>
             <Reanimated.View
               testID="avatar-cover-sheet"
@@ -1275,13 +1305,13 @@ export function ProfileScreenBase({
               <View style={styles.accountCoverPreviewSlot}>
                 {accountSelectedProfilePreset ? (
                   <Image
-                    source={accountSelectedProfilePreset.source}
+                    source={accountCoverHero.image ?? accountSelectedProfilePreset.source}
                     style={styles.accountCoverPreview}
                     contentFit="cover"
                     transition={0}
                   />
                 ) : accountPhotoUri ? (
-                  <Image source={{ uri: accountPhotoUri }} style={styles.accountCoverPreview} contentFit="cover" transition={0} />
+                  <Image source={accountCoverHero.image ?? { uri: accountPhotoUri }} style={styles.accountCoverPreview} contentFit="cover" transition={0} />
                 ) : (
                   <View
                     style={[
@@ -2513,6 +2543,13 @@ const styles = StyleSheet.create({
   accountCoverBackdrop: {
     ...StyleSheet.absoluteFillObject,
     backgroundColor: "#000000",
+  },
+  accountCoverBackdropClose: {
+    position: "absolute",
+    top: 0,
+    left: 0,
+    right: 0,
+    height: "15%",
   },
   accountCoverSheet: {
     position: "absolute",

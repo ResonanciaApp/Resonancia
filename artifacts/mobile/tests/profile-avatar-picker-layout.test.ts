@@ -17,11 +17,36 @@ test("avatar hero is immediately visible without fading or remounting, leaving p
   assert.equal(heroes.length, 2); // Editorial avatar and uploaded photo.
   for (const hero of heroes) {
     assert.match(hero.attributes.getText(ast), /transition=\{0\}/);
+    assert.match(hero.attributes.getText(ast), /source=\{accountCoverHero.image \?\?/);
     assert.equal(hero.attributes.properties.some((attribute) => ts.isJsxAttribute(attribute) && attribute.name.getText(ast) === "key"), false);
   }
   assert.match(source, /import \{ IMAGE_TRANSITION \} from "@\/constants\/imagePlaceholder"/);
   const playlist = readFileSync(new URL("../app/playlist/[id].tsx", import.meta.url), "utf8");
   assert.match(playlist, /style=\{modalStyles.selectedPreview\}[\s\S]*?transition=\{IMAGE_TRANSITION\}/);
+});
+
+test("opening waits for the prepared hero, and only the external upper backdrop closes on touch", () => {
+  assert.match(source, /usePreparedAvatarImage\(accountCoverHeroSource, accountMode\)/);
+  assert.match(source, /await accountCoverHero.prepare\(\);[\s\S]*?setAccountPhotoPickerVisible\(true\)/);
+  assert.match(source, /onPress=\{\(\) => void openAvatarPicker\(\)\}/);
+  assert.deepEqual(findStyle("accountCoverBackdropClose"), {
+    position: "absolute", top: 0, left: 0, right: 0, height: "15%",
+  });
+  let backdrop: ts.JsxSelfClosingElement | undefined;
+  function visit(node: ts.Node) {
+    if (ts.isJsxSelfClosingElement(node) && node.tagName.getText(ast) === "Pressable"
+      && node.attributes.getText(ast).includes('testID="avatar-cover-backdrop-close"')) backdrop = node;
+    ts.forEachChild(node, visit);
+  }
+  visit(ast);
+  assert.ok(backdrop);
+  assert.match(backdrop.attributes.getText(ast), /disabled=\{!accountPhotoPickerVisible \|\| goldenAvatarActive\}/);
+  const attr = backdrop.attributes.properties.find(node => ts.isJsxAttribute(node) && node.name.getText(ast) === "onPress");
+  assert.ok(attr && ts.isJsxAttribute(attr) && attr.initializer && ts.isJsxExpression(attr.initializer) && attr.initializer.expression);
+  const js = ts.transpileModule(`return (${attr.initializer.expression.getText(ast)});`, {}).outputText;
+  const calls: boolean[] = [];
+  new Function("setAccountPhotoPickerVisible", js)((visible: boolean) => calls.push(visible))();
+  assert.deepEqual(calls, [false]);
 });
 
 function findStyle(name: string) {
