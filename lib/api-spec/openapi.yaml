@@ -39,6 +39,45 @@ tags:
   - name: greeting
     description: Global greeting shown on Inicio
 paths:
+  /premium-content:
+    get:
+      operationId: getPremiumContent
+      responses:
+        "200":
+          description: Premium editorial content
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/PremiumContentSettings"
+  /admin/premium-content:
+    get:
+      operationId: getAdminPremiumContent
+      responses:
+        "200":
+          description: Editable Premium content
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/PremiumContentSettings"
+    put:
+      operationId: updateAdminPremiumContent
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/PremiumContentSettings"
+      responses:
+        "200":
+          description: Saved content
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/PremiumContentSettings"
+        "400": {description: Invalid content}
+        "401": {description: Unauthorized}
+        "403": {description: Forbidden}
+        "409": {description: Concurrent edit}
   /growth/catalog:
     get:
       operationId: getGrowthCatalog
@@ -9770,6 +9809,30 @@ components:
         objectPath:
           type: string
           pattern: "^/objects/.+"
+    PremiumSectionContent:
+      type: object
+      required: [title, description, images]
+      properties:
+        title: {type: string, minLength: 1, maxLength: 150}
+        description: {type: string, maxLength: 2000}
+        images:
+          type: array
+          maxItems: 30
+          items: {type: string}
+    PremiumEditorialContent:
+      type: object
+      required: [sounds, sleep, home, profile]
+      properties:
+        sounds: {$ref: "#/components/schemas/PremiumSectionContent"}
+        sleep: {$ref: "#/components/schemas/PremiumSectionContent"}
+        home: {$ref: "#/components/schemas/PremiumSectionContent"}
+        profile: {$ref: "#/components/schemas/PremiumSectionContent"}
+    PremiumContentSettings:
+      type: object
+      required: [content, revision]
+      properties:
+        content: {$ref: "#/components/schemas/PremiumEditorialContent"}
+        revision: {type: integer, minimum: 0}
     JourneyInfoContent:
       type: object
       additionalProperties: false

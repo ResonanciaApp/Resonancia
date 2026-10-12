@@ -46,6 +46,7 @@ const Native = (props: any) => {
 };
 let bannerStyles: Record<string, any>;
 const mocks: Record<string, unknown> = {
+  "@/hooks/usePremiumContent": { usePremiumContent: () => ({ content: { profile: { title: "Prueba Premium", description: "Tu transformación comienza acá" } } }) },
   "@/components/CardCaptionText": { CardCaptionText: Native },
   react: React,
   "react-native": { Pressable: Native, View: Native, Text: Native, StyleSheet: { create: (styles: Record<string, any>) => {

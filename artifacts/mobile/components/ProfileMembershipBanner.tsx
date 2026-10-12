@@ -6,6 +6,7 @@ import { Image } from "expo-image";
 import { CARD_TEXT_BELOW, MEMBERSHIP_AURORA } from "@/constants/colors";
 import { openPremiumPlans } from "@/lib/premiumGate";
 import { router } from "expo-router";
+import { usePremiumContent } from "@/hooks/usePremiumContent";
 
 export function ProfileMembershipBanner({
   isPremium,
@@ -14,23 +15,24 @@ export function ProfileMembershipBanner({
   isPremium: boolean;
   foregroundColor: string;
 }) {
+  const { content: { profile } } = usePremiumContent();
   return (
       <Pressable
         testID="profile-premium-banner"
         onPress={() => isPremium ? router.push("/membresia") : openPremiumPlans()}
         style={({ pressed }) => [styles.row, !isPremium && styles.trialCard, { opacity: pressed ? 0.78 : 1 }]}
         accessibilityRole="button"
-        accessibilityLabel={isPremium ? "Abrir Tu Premium" : "Prueba Premium"}
+        accessibilityLabel={isPremium ? "Abrir Tu Premium" : profile.title}
       >
         <View style={[styles.icon, !isPremium && styles.centeredAdornment]}>
           <Image source={require("../assets/images/estrella-premium.png")} style={{ width: 31, height: 31 }} contentFit="contain" />
         </View>
         <View style={styles.copy}>
           <Text style={[styles.title, { color: MEMBERSHIP_AURORA.premium.accent }]}>
-            {isPremium ? "Tu Premium" : "Prueba Premium"}
+            {isPremium ? "Tu Premium" : profile.title}
           </Text>
           <Text style={[styles.subtitle, { color: CARD_TEXT_BELOW }]}>
-            {isPremium ? "Gestiona tu suscripción y beneficios" : "Tu transformación comienza acá"}
+            {isPremium ? "Gestiona tu suscripción y beneficios" : profile.description}
           </Text>
         </View>
         <View style={[styles.chevron, !isPremium && styles.centeredAdornment]}>

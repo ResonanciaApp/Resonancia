@@ -3658,6 +3658,31 @@ export interface CoverPresetUploadCleanup {
   objectPath: string;
 }
 
+export interface PremiumSectionContent {
+  /**
+     * @minLength 1
+     * @maxLength 150
+     */
+  title: string;
+  /** @maxLength 2000 */
+  description: string;
+  /** @maxItems 30 */
+  images: string[];
+}
+
+export interface PremiumEditorialContent {
+  sounds: PremiumSectionContent;
+  sleep: PremiumSectionContent;
+  home: PremiumSectionContent;
+  profile: PremiumSectionContent;
+}
+
+export interface PremiumContentSettings {
+  content: PremiumEditorialContent;
+  /** @minimum 0 */
+  revision: number;
+}
+
 export interface JourneyInfoContent {
   /**
      * @minLength 1

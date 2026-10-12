@@ -21,6 +21,13 @@ export async function isObjectReferenced({
   objectPath: string;
   excludeCoverPresetId?: string;
 }): Promise<boolean> {
+  const relation = await db.execute(sql`SELECT to_regclass('premium_content_settings') AS name`);
+  if ((relation.rows[0] as { name?: string })?.name) {
+    const premium = await db.execute(sql`SELECT 1 FROM premium_content_settings p,
+      jsonb_each(p.content) s, jsonb_array_elements_text(s.value->'images') image
+      WHERE image = ${objectPath} LIMIT 1`);
+    if (premium.rows.length) return true;
+  }
   const coverPresetExclusion = excludeCoverPresetId
     ? sql`AND id <> ${excludeCoverPresetId}`
     : sql``;

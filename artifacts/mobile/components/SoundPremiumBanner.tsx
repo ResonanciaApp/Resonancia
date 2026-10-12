@@ -3,13 +3,15 @@ import { router } from "expo-router";
 import { Pressable, StyleSheet, Text, View } from "react-native";
 
 import { MEMBERSHIP_AURORA } from "@/constants/colors";
+import { usePremiumContent } from "@/hooks/usePremiumContent";
 
 export function SoundPremiumBanner() {
+  const { content: { sounds } } = usePremiumContent();
   return (
     <Pressable
       onPress={() => router.push("/membresia" as never)}
       accessibilityRole="button"
-      accessibilityLabel="Suscríbete al Plan Premium"
+      accessibilityLabel={sounds.title}
       style={({ pressed }) => [
         styles.banner,
         { opacity: pressed ? 0.82 : 1 },
@@ -24,11 +26,11 @@ export function SoundPremiumBanner() {
       </View>
       <View style={styles.copy}>
         <View style={styles.titleRow}>
-          <Text style={styles.title}>Suscríbete al</Text>
-          <Text style={[styles.title, styles.premiumTitle]}>Plan Premium</Text>
+          <Text style={styles.title}>{sounds.title.split(/(Plan Premium)/).map((part, i) =>
+            <Text key={i} style={part === "Plan Premium" ? styles.premiumTitle : undefined}>{part}</Text>)}</Text>
         </View>
         <Text style={styles.subtitle}>
-          Accede a una librería de más de 300 sonidos ambientales de Chile y el mundo
+          {sounds.description}
         </Text>
       </View>
       <Feather name="chevron-right" size={20} color="rgba(249,249,249,0.7)" />

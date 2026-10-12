@@ -189,6 +189,7 @@ import type {
   PlaybackEventList,
   PlaylistCarousel,
   PopularSessionsResponse,
+  PremiumContentSettings,
   ProfileAvatarCategory,
   ProfileAvatarCategoryInput,
   ProfileAvatarMembershipInput,
@@ -283,6 +284,213 @@ type AwaitedInput<T> = PromiseLike<T> | T;
 type SecondParameter<T extends (...args: never) => unknown> = Parameters<T>[1];
 
 
+
+export const getGetPremiumContentUrl = () => {
+
+
+
+
+  return `/api/premium-content`
+}
+
+export const getPremiumContent = async ( options?: RequestInit): Promise<PremiumContentSettings> => {
+
+  return customFetch<PremiumContentSettings>(getGetPremiumContentUrl(),
+  {
+    ...options,
+    method: 'GET'
+
+
+  }
+);}
+
+
+
+
+
+export const getGetPremiumContentQueryKey = () => {
+    return [
+    `/api/premium-content`
+    ] as const;
+    }
+
+
+export const getGetPremiumContentQueryOptions = <TData = Awaited<ReturnType<typeof getPremiumContent>>, TError = ErrorType<unknown>>( options?: { query?:UseQueryOptions<Awaited<ReturnType<typeof getPremiumContent>>, TError, TData>, request?: SecondParameter<typeof customFetch>}
+) => {
+
+const {query: queryOptions, request: requestOptions} = options ?? {};
+
+  const queryKey =  queryOptions?.queryKey ?? getGetPremiumContentQueryKey();
+
+
+
+    const queryFn: QueryFunction<Awaited<ReturnType<typeof getPremiumContent>>> = ({ signal }) => getPremiumContent({ signal, ...requestOptions });
+
+
+
+
+
+   return  { queryKey, queryFn, ...queryOptions} as UseQueryOptions<Awaited<ReturnType<typeof getPremiumContent>>, TError, TData> & { queryKey: QueryKey }
+}
+
+export type GetPremiumContentQueryResult = NonNullable<Awaited<ReturnType<typeof getPremiumContent>>>
+export type GetPremiumContentQueryError = ErrorType<unknown>
+
+
+
+export function useGetPremiumContent<TData = Awaited<ReturnType<typeof getPremiumContent>>, TError = ErrorType<unknown>>(
+  options?: { query?:UseQueryOptions<Awaited<ReturnType<typeof getPremiumContent>>, TError, TData>, request?: SecondParameter<typeof customFetch>}
+
+ ):  UseQueryResult<TData, TError> & { queryKey: QueryKey } {
+
+  const queryOptions = getGetPremiumContentQueryOptions(options)
+
+  const query = useQuery(queryOptions) as  UseQueryResult<TData, TError> & { queryKey: QueryKey };
+
+  return { ...query, queryKey: queryOptions.queryKey };
+}
+
+
+
+
+
+
+
+export const getGetAdminPremiumContentUrl = () => {
+
+
+
+
+  return `/api/admin/premium-content`
+}
+
+export const getAdminPremiumContent = async ( options?: RequestInit): Promise<PremiumContentSettings> => {
+
+  return customFetch<PremiumContentSettings>(getGetAdminPremiumContentUrl(),
+  {
+    ...options,
+    method: 'GET'
+
+
+  }
+);}
+
+
+
+
+
+export const getGetAdminPremiumContentQueryKey = () => {
+    return [
+    `/api/admin/premium-content`
+    ] as const;
+    }
+
+
+export const getGetAdminPremiumContentQueryOptions = <TData = Awaited<ReturnType<typeof getAdminPremiumContent>>, TError = ErrorType<unknown>>( options?: { query?:UseQueryOptions<Awaited<ReturnType<typeof getAdminPremiumContent>>, TError, TData>, request?: SecondParameter<typeof customFetch>}
+) => {
+
+const {query: queryOptions, request: requestOptions} = options ?? {};
+
+  const queryKey =  queryOptions?.queryKey ?? getGetAdminPremiumContentQueryKey();
+
+
+
+    const queryFn: QueryFunction<Awaited<ReturnType<typeof getAdminPremiumContent>>> = ({ signal }) => getAdminPremiumContent({ signal, ...requestOptions });
+
+
+
+
+
+   return  { queryKey, queryFn, ...queryOptions} as UseQueryOptions<Awaited<ReturnType<typeof getAdminPremiumContent>>, TError, TData> & { queryKey: QueryKey }
+}
+
+export type GetAdminPremiumContentQueryResult = NonNullable<Awaited<ReturnType<typeof getAdminPremiumContent>>>
+export type GetAdminPremiumContentQueryError = ErrorType<unknown>
+
+
+
+export function useGetAdminPremiumContent<TData = Awaited<ReturnType<typeof getAdminPremiumContent>>, TError = ErrorType<unknown>>(
+  options?: { query?:UseQueryOptions<Awaited<ReturnType<typeof getAdminPremiumContent>>, TError, TData>, request?: SecondParameter<typeof customFetch>}
+
+ ):  UseQueryResult<TData, TError> & { queryKey: QueryKey } {
+
+  const queryOptions = getGetAdminPremiumContentQueryOptions(options)
+
+  const query = useQuery(queryOptions) as  UseQueryResult<TData, TError> & { queryKey: QueryKey };
+
+  return { ...query, queryKey: queryOptions.queryKey };
+}
+
+
+
+
+
+
+
+export const getUpdateAdminPremiumContentUrl = () => {
+
+
+
+
+  return `/api/admin/premium-content`
+}
+
+export const updateAdminPremiumContent = async (premiumContentSettings: PremiumContentSettings, options?: RequestInit): Promise<PremiumContentSettings> => {
+
+  return customFetch<PremiumContentSettings>(getUpdateAdminPremiumContentUrl(),
+  {
+    ...options,
+    method: 'PUT',
+    headers: { 'Content-Type': 'application/json', ...options?.headers },
+    body: JSON.stringify(
+      premiumContentSettings,)
+  }
+);}
+
+
+
+
+export const getUpdateAdminPremiumContentMutationOptions = <TError = ErrorType<void>,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof updateAdminPremiumContent>>, TError,{data: BodyType<PremiumContentSettings>}, TContext>, request?: SecondParameter<typeof customFetch>}
+): UseMutationOptions<Awaited<ReturnType<typeof updateAdminPremiumContent>>, TError,{data: BodyType<PremiumContentSettings>}, TContext> => {
+
+const mutationKey = ['updateAdminPremiumContent'];
+const {mutation: mutationOptions, request: requestOptions} = options ?
+      options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey ?
+      options
+      : {...options, mutation: {...options.mutation, mutationKey}}
+      : {mutation: { mutationKey, }, request: undefined};
+
+
+
+
+      const mutationFn: MutationFunction<Awaited<ReturnType<typeof updateAdminPremiumContent>>, {data: BodyType<PremiumContentSettings>}> = (props) => {
+          const {data} = props ?? {};
+
+          return  updateAdminPremiumContent(data,requestOptions)
+        }
+
+
+
+
+
+
+  return  { mutationFn, ...mutationOptions }}
+
+    export type UpdateAdminPremiumContentMutationResult = NonNullable<Awaited<ReturnType<typeof updateAdminPremiumContent>>>
+    export type UpdateAdminPremiumContentMutationBody = BodyType<PremiumContentSettings>
+    export type UpdateAdminPremiumContentMutationError = ErrorType<void>
+
+    export const useUpdateAdminPremiumContent = <TError = ErrorType<void>,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof updateAdminPremiumContent>>, TError,{data: BodyType<PremiumContentSettings>}, TContext>, request?: SecondParameter<typeof customFetch>}
+ ): UseMutationResult<
+        Awaited<ReturnType<typeof updateAdminPremiumContent>>,
+        TError,
+        {data: BodyType<PremiumContentSettings>},
+        TContext
+      > => {
+      return useMutation(getUpdateAdminPremiumContentMutationOptions(options));
+    }
 
 export const getGetGrowthCatalogUrl = () => {
 

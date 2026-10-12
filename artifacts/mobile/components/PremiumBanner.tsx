@@ -13,6 +13,8 @@ import {
 
 import { usePremium } from "@/context/PremiumContext";
 import { MEMBERSHIP_AURORA } from "@/constants/colors";
+import { usePremiumContent } from "@/hooks/usePremiumContent";
+import { resolveAvatarUrl } from "@/lib/avatar";
 
 const IMAGES = [
   require("@/assets/images/sessions/session-1.jpg"),
@@ -145,6 +147,9 @@ export default function PremiumBanner({
   sleepVariant?: boolean;
 }) {
   const { isPremium } = usePremium();
+  const settings = usePremiumContent();
+  const surface = sleepVariant ? "sleep" : "home";
+  const content = settings.content[surface];
   const { width: viewportWidth } = useWindowDimensions();
   const defaultPreviewCardSize = (viewportWidth - 15) / 4;
   if (isPremium) return null;
@@ -159,7 +164,7 @@ export default function PremiumBanner({
               style={styles.sleepStar}
               contentFit="contain"
             />
-            <Text style={styles.sleepTitle}>¿Problemas para dormir?</Text>
+            <Text style={styles.sleepTitle}>{content.title}</Text>
           </>
         ) : (
           <>
@@ -169,20 +174,20 @@ export default function PremiumBanner({
               contentFit="contain"
             />
             <View style={styles.defaultTitle}>
-              <Text style={[styles.sleepTitle, styles.defaultTitleWord]}>Prueba</Text>
-              <Text style={[styles.sleepTitle, styles.defaultTitleWord, styles.defaultPremiumWord]}>Premium</Text>
-              <Text style={[styles.sleepTitle, styles.defaultTitleWord]}>Gratis</Text>
+              {content.title.split(/\s+/).map((word, index) => (
+                <Text key={index} style={[styles.sleepTitle, styles.defaultTitleWord, word.toLowerCase() === "premium" && styles.defaultPremiumWord]}>{word}</Text>
+              ))}
             </View>
           </>
         )}
 
         {/* Description */}
         <Text style={[styles.sub, { color: P.textMuted }]}>
-          Comienza tu camino hacia el bienestar con más de 500 meditaciones y sonidos relajantes.
+          {content.description}
         </Text>
 
         {/* Preview images with star overlay */}
-        <ScrollView
+        {content.images.length > 0 && <ScrollView
           horizontal
           showsHorizontalScrollIndicator={false}
           contentContainerStyle={[styles.images, styles.defaultImages]}
@@ -191,7 +196,7 @@ export default function PremiumBanner({
             { width: viewportWidth + 17, marginLeft: -22 },
           ]}
         >
-          {AMBIENT_IMAGES.map((src, i) => (
+          {content.images.map((path, i) => (
             <View
               key={i}
               style={[
@@ -203,7 +208,10 @@ export default function PremiumBanner({
                 },
               ]}
             >
-              <Image source={src} style={styles.thumb} contentFit="cover" />
+              <Image source={path.startsWith("builtin:")
+                ? AMBIENT_IMAGES[Number(path.slice(8))]
+                : { uri: resolveAvatarUrl(`/api/premium-content/image/${surface}/${i}?revision=${settings.revision}`)! }}
+                style={styles.thumb} contentFit="cover" />
               <Image
                 source={require("../assets/images/estrella-premium.png")}
                 style={{ position: "absolute", top: 4, left: 4, width: 18, height: 18, zIndex: 2 }}
@@ -211,7 +219,7 @@ export default function PremiumBanner({
               />
             </View>
           ))}
-        </ScrollView>
+        </ScrollView>}
 
         {/* CTA button */}
         <Pressable

@@ -8,6 +8,225 @@
 import * as zod from 'zod';
 
 
+export const getPremiumContentResponseContentSoundsTitleMax = 150;
+
+export const getPremiumContentResponseContentSoundsDescriptionMax = 2000;
+
+export const getPremiumContentResponseContentSoundsImagesMax = 30;
+
+export const getPremiumContentResponseContentSleepTitleMax = 150;
+
+export const getPremiumContentResponseContentSleepDescriptionMax = 2000;
+
+export const getPremiumContentResponseContentSleepImagesMax = 30;
+
+export const getPremiumContentResponseContentHomeTitleMax = 150;
+
+export const getPremiumContentResponseContentHomeDescriptionMax = 2000;
+
+export const getPremiumContentResponseContentHomeImagesMax = 30;
+
+export const getPremiumContentResponseContentProfileTitleMax = 150;
+
+export const getPremiumContentResponseContentProfileDescriptionMax = 2000;
+
+export const getPremiumContentResponseContentProfileImagesMax = 30;
+
+export const getPremiumContentResponseRevisionMin = 0;
+
+
+
+export const GetPremiumContentResponse = zod.object({
+  "content": zod.object({
+  "sounds": zod.object({
+  "title": zod.string().min(1).max(getPremiumContentResponseContentSoundsTitleMax),
+  "description": zod.string().max(getPremiumContentResponseContentSoundsDescriptionMax),
+  "images": zod.array(zod.string()).max(getPremiumContentResponseContentSoundsImagesMax)
+}),
+  "sleep": zod.object({
+  "title": zod.string().min(1).max(getPremiumContentResponseContentSleepTitleMax),
+  "description": zod.string().max(getPremiumContentResponseContentSleepDescriptionMax),
+  "images": zod.array(zod.string()).max(getPremiumContentResponseContentSleepImagesMax)
+}),
+  "home": zod.object({
+  "title": zod.string().min(1).max(getPremiumContentResponseContentHomeTitleMax),
+  "description": zod.string().max(getPremiumContentResponseContentHomeDescriptionMax),
+  "images": zod.array(zod.string()).max(getPremiumContentResponseContentHomeImagesMax)
+}),
+  "profile": zod.object({
+  "title": zod.string().min(1).max(getPremiumContentResponseContentProfileTitleMax),
+  "description": zod.string().max(getPremiumContentResponseContentProfileDescriptionMax),
+  "images": zod.array(zod.string()).max(getPremiumContentResponseContentProfileImagesMax)
+})
+}),
+  "revision": zod.number().min(getPremiumContentResponseRevisionMin)
+})
+
+
+export const getAdminPremiumContentResponseContentSoundsTitleMax = 150;
+
+export const getAdminPremiumContentResponseContentSoundsDescriptionMax = 2000;
+
+export const getAdminPremiumContentResponseContentSoundsImagesMax = 30;
+
+export const getAdminPremiumContentResponseContentSleepTitleMax = 150;
+
+export const getAdminPremiumContentResponseContentSleepDescriptionMax = 2000;
+
+export const getAdminPremiumContentResponseContentSleepImagesMax = 30;
+
+export const getAdminPremiumContentResponseContentHomeTitleMax = 150;
+
+export const getAdminPremiumContentResponseContentHomeDescriptionMax = 2000;
+
+export const getAdminPremiumContentResponseContentHomeImagesMax = 30;
+
+export const getAdminPremiumContentResponseContentProfileTitleMax = 150;
+
+export const getAdminPremiumContentResponseContentProfileDescriptionMax = 2000;
+
+export const getAdminPremiumContentResponseContentProfileImagesMax = 30;
+
+export const getAdminPremiumContentResponseRevisionMin = 0;
+
+
+
+export const GetAdminPremiumContentResponse = zod.object({
+  "content": zod.object({
+  "sounds": zod.object({
+  "title": zod.string().min(1).max(getAdminPremiumContentResponseContentSoundsTitleMax),
+  "description": zod.string().max(getAdminPremiumContentResponseContentSoundsDescriptionMax),
+  "images": zod.array(zod.string()).max(getAdminPremiumContentResponseContentSoundsImagesMax)
+}),
+  "sleep": zod.object({
+  "title": zod.string().min(1).max(getAdminPremiumContentResponseContentSleepTitleMax),
+  "description": zod.string().max(getAdminPremiumContentResponseContentSleepDescriptionMax),
+  "images": zod.array(zod.string()).max(getAdminPremiumContentResponseContentSleepImagesMax)
+}),
+  "home": zod.object({
+  "title": zod.string().min(1).max(getAdminPremiumContentResponseContentHomeTitleMax),
+  "description": zod.string().max(getAdminPremiumContentResponseContentHomeDescriptionMax),
+  "images": zod.array(zod.string()).max(getAdminPremiumContentResponseContentHomeImagesMax)
+}),
+  "profile": zod.object({
+  "title": zod.string().min(1).max(getAdminPremiumContentResponseContentProfileTitleMax),
+  "description": zod.string().max(getAdminPremiumContentResponseContentProfileDescriptionMax),
+  "images": zod.array(zod.string()).max(getAdminPremiumContentResponseContentProfileImagesMax)
+})
+}),
+  "revision": zod.number().min(getAdminPremiumContentResponseRevisionMin)
+})
+
+
+export const updateAdminPremiumContentBodyContentSoundsTitleMax = 150;
+
+export const updateAdminPremiumContentBodyContentSoundsDescriptionMax = 2000;
+
+export const updateAdminPremiumContentBodyContentSoundsImagesMax = 30;
+
+export const updateAdminPremiumContentBodyContentSleepTitleMax = 150;
+
+export const updateAdminPremiumContentBodyContentSleepDescriptionMax = 2000;
+
+export const updateAdminPremiumContentBodyContentSleepImagesMax = 30;
+
+export const updateAdminPremiumContentBodyContentHomeTitleMax = 150;
+
+export const updateAdminPremiumContentBodyContentHomeDescriptionMax = 2000;
+
+export const updateAdminPremiumContentBodyContentHomeImagesMax = 30;
+
+export const updateAdminPremiumContentBodyContentProfileTitleMax = 150;
+
+export const updateAdminPremiumContentBodyContentProfileDescriptionMax = 2000;
+
+export const updateAdminPremiumContentBodyContentProfileImagesMax = 30;
+
+export const updateAdminPremiumContentBodyRevisionMin = 0;
+
+
+
+export const UpdateAdminPremiumContentBody = zod.object({
+  "content": zod.object({
+  "sounds": zod.object({
+  "title": zod.string().min(1).max(updateAdminPremiumContentBodyContentSoundsTitleMax),
+  "description": zod.string().max(updateAdminPremiumContentBodyContentSoundsDescriptionMax),
+  "images": zod.array(zod.string()).max(updateAdminPremiumContentBodyContentSoundsImagesMax)
+}),
+  "sleep": zod.object({
+  "title": zod.string().min(1).max(updateAdminPremiumContentBodyContentSleepTitleMax),
+  "description": zod.string().max(updateAdminPremiumContentBodyContentSleepDescriptionMax),
+  "images": zod.array(zod.string()).max(updateAdminPremiumContentBodyContentSleepImagesMax)
+}),
+  "home": zod.object({
+  "title": zod.string().min(1).max(updateAdminPremiumContentBodyContentHomeTitleMax),
+  "description": zod.string().max(updateAdminPremiumContentBodyContentHomeDescriptionMax),
+  "images": zod.array(zod.string()).max(updateAdminPremiumContentBodyContentHomeImagesMax)
+}),
+  "profile": zod.object({
+  "title": zod.string().min(1).max(updateAdminPremiumContentBodyContentProfileTitleMax),
+  "description": zod.string().max(updateAdminPremiumContentBodyContentProfileDescriptionMax),
+  "images": zod.array(zod.string()).max(updateAdminPremiumContentBodyContentProfileImagesMax)
+})
+}),
+  "revision": zod.number().min(updateAdminPremiumContentBodyRevisionMin)
+})
+
+export const updateAdminPremiumContentResponseContentSoundsTitleMax = 150;
+
+export const updateAdminPremiumContentResponseContentSoundsDescriptionMax = 2000;
+
+export const updateAdminPremiumContentResponseContentSoundsImagesMax = 30;
+
+export const updateAdminPremiumContentResponseContentSleepTitleMax = 150;
+
+export const updateAdminPremiumContentResponseContentSleepDescriptionMax = 2000;
+
+export const updateAdminPremiumContentResponseContentSleepImagesMax = 30;
+
+export const updateAdminPremiumContentResponseContentHomeTitleMax = 150;
+
+export const updateAdminPremiumContentResponseContentHomeDescriptionMax = 2000;
+
+export const updateAdminPremiumContentResponseContentHomeImagesMax = 30;
+
+export const updateAdminPremiumContentResponseContentProfileTitleMax = 150;
+
+export const updateAdminPremiumContentResponseContentProfileDescriptionMax = 2000;
+
+export const updateAdminPremiumContentResponseContentProfileImagesMax = 30;
+
+export const updateAdminPremiumContentResponseRevisionMin = 0;
+
+
+
+export const UpdateAdminPremiumContentResponse = zod.object({
+  "content": zod.object({
+  "sounds": zod.object({
+  "title": zod.string().min(1).max(updateAdminPremiumContentResponseContentSoundsTitleMax),
+  "description": zod.string().max(updateAdminPremiumContentResponseContentSoundsDescriptionMax),
+  "images": zod.array(zod.string()).max(updateAdminPremiumContentResponseContentSoundsImagesMax)
+}),
+  "sleep": zod.object({
+  "title": zod.string().min(1).max(updateAdminPremiumContentResponseContentSleepTitleMax),
+  "description": zod.string().max(updateAdminPremiumContentResponseContentSleepDescriptionMax),
+  "images": zod.array(zod.string()).max(updateAdminPremiumContentResponseContentSleepImagesMax)
+}),
+  "home": zod.object({
+  "title": zod.string().min(1).max(updateAdminPremiumContentResponseContentHomeTitleMax),
+  "description": zod.string().max(updateAdminPremiumContentResponseContentHomeDescriptionMax),
+  "images": zod.array(zod.string()).max(updateAdminPremiumContentResponseContentHomeImagesMax)
+}),
+  "profile": zod.object({
+  "title": zod.string().min(1).max(updateAdminPremiumContentResponseContentProfileTitleMax),
+  "description": zod.string().max(updateAdminPremiumContentResponseContentProfileDescriptionMax),
+  "images": zod.array(zod.string()).max(updateAdminPremiumContentResponseContentProfileImagesMax)
+})
+}),
+  "revision": zod.number().min(updateAdminPremiumContentResponseRevisionMin)
+})
+
+
 export const getGrowthCatalogResponseWorldsItemIdMax = 100;
 
 export const getGrowthCatalogResponseWorldsItemNameMax = 100;
