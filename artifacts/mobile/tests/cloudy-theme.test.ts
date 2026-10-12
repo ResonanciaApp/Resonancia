@@ -86,7 +86,7 @@ test("Cloudy has all seven exact reference stops in order and inherits Indigo 2 
   assert.equal(themes.isIndigo2ThemeId("indigo2"), true);
   assert.equal(themes.isIndigo2ThemeId("tibet"), false);
   assert.equal(themes.isIndigoThemeId("cloudy"), false);
-  assert.deepEqual(themes.VISUAL_THEME_IDS, ["tibet", "indigo2", "cloudy", "cloudy2", "natural", "pleyades", "galactic"]);
+  assert.deepEqual(themes.VISUAL_THEME_IDS, ["tibet", "indigo2", "cloudy", "cloudy2", "natural", "pleyades", "galactic", "fuego"]);
 });
 
 test("Cloudy 2 copies Indigo 2 styles with its exact reference colors, not just a reversed Cloudy palette", () => {

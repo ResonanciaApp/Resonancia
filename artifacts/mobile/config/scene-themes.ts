@@ -1,9 +1,9 @@
 /** Temas visuales de la app; las escenas de audio son independientes. */
 import type { SceneId } from "@/context/AmbientPlayerContext";
 
-export type VisualThemeId = "tibet" | "indigo2" | "cloudy" | "cloudy2" | "natural" | "pleyades" | "galactic";
+export type VisualThemeId = "tibet" | "indigo2" | "cloudy" | "cloudy2" | "natural" | "pleyades" | "galactic" | "fuego";
 export type ThemeSceneId = SceneId | VisualThemeId;
-export const VISUAL_THEME_IDS = ["tibet", "indigo2", "cloudy", "cloudy2", "natural", "pleyades", "galactic"] as const;
+export const VISUAL_THEME_IDS = ["tibet", "indigo2", "cloudy", "cloudy2", "natural", "pleyades", "galactic", "fuego"] as const;
 export const SCENE_THEME_STORAGE_KEY = "@active_theme_scene";
 
 export type SceneTheme = {
@@ -73,6 +73,15 @@ export const PREMIUM_BACKGROUND_GRADIENT = CLOUDY_THEME.gradient.map(
 const GALACTIC_GRADIENT = [...PREMIUM_BACKGROUND_GRADIENT].reverse() as [string, string, ...string[]];
 
 export const SCENE_THEMES: Record<VisualThemeId, SceneTheme> = {
+  fuego: {
+    ...CLOUDY_THEME,
+    id: "fuego",
+    label: "Fuego",
+    // Original supplied palette with 20% black mixed into each stop.
+    gradient: ["#CC6654", "#CC6954", "#CC7153", "#CB7452", "#CC7653", "#CC7653"],
+    gradientLocations: [0, 0.2, 0.4, 0.6, 0.8, 1],
+    solid: "#CC6654",
+  },
   galactic: {
     ...INDIGO2_THEME,
     id: "galactic",
@@ -131,7 +140,7 @@ export function isIndigo2ThemeId(id: ThemeSceneId): boolean {
 
 /** Style inheritance only: selection, persistence and transitions retain the real ID. */
 export function getThemeStyleId(id: string | null | undefined): string | null | undefined {
-  if (id === "natural") return "cloudy";
+  if (id === "natural" || id === "fuego") return "cloudy";
   if (id === "pleyades" || id === "galactic") return "indigo2";
   return id;
 }

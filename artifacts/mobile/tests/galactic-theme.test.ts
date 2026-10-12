@@ -25,3 +25,19 @@ test("Galactic is under Noche in the first column", () => {
   assert.match(drawer, /id: "galactic", title: "Galactic"/);
   assert.match(drawer, /\[SCENES\[0\], SCENES\[1\], SCENES\[4\]\]/);
 });
+
+test("Fuego uses the six supplied stops and inherits Cloudy", () => {
+  const theme = themes.SCENE_THEMES.fuego;
+  const original = ["#FF7F69", "#FF8369", "#FF8D68", "#FE9167", "#FF9468", "#FF9468"];
+  assert.deepEqual(theme.gradient, original.map(color => "#" + [1, 3, 5].map(offset =>
+    Math.round(parseInt(color.slice(offset, offset + 2), 16) * 0.8).toString(16).padStart(2, "0")
+  ).join("").toUpperCase()));
+  assert.deepEqual(theme.gradientLocations, [0, .2, .4, .6, .8, 1]);
+  assert.equal(theme.solid, theme.gradient[0]);
+  assert.equal(themes.getThemeStyleId(theme.id), "cloudy");
+  assert.equal(themes.isVisualThemeId(theme.id), true);
+  assert.equal(themes.isIndigo2ThemeId(theme.id), true);
+  const drawer = source("../components/DrawerSceneCards.tsx");
+  assert.match(drawer, /id: "fuego", title: "Fuego"/);
+  assert.match(drawer, /\[SCENES\[2\], SCENES\[3\], SCENES\[5\]\]/);
+});
