@@ -88,7 +88,7 @@ test("Profile places routine before reflection wall, preserving both section mar
   assert.match(sections[1].getText(ast), /onCollapsedHeightChange=\{setProfileWallCardHeight\}/);
 });
 
-test("Profile wall starts and closes at 0.9, still opens at 0.23, and preserves fade and reduced motion", () => {
+test("Profile wall starts and closes at 0.9, opens at 0.4, and preserves fade and reduced motion", () => {
   const closed = card.match(/const closedBorderOpacity = ([^;]+);/)?.[1];
   const transition = card.match(/sectionBorderOpacity\.value = (reduceMotion[\s\S]*?);\n/)?.[1];
   assert.ok(closed && transition);
@@ -106,7 +106,7 @@ test("Profile wall starts and closes at 0.9, still opens at 0.23, and preserves 
         const opacity = resolveTransition(opening, reducedMotion, closedOpacity,
           (target: number, options: unknown) => { calls.push({ target, options }); return target; },
           300, { inOut: (easing: unknown) => easing, quad: "quad" });
-        assert.equal(opacity, opening ? 0.23 : closedOpacity);
+        assert.equal(opacity, opening ? 0.4 : closedOpacity);
         assert.equal(calls.length, reducedMotion ? 0 : 1);
         if (!reducedMotion) assert.deepEqual(calls[0].options, { duration: 300, easing: "quad" });
       }

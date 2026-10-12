@@ -335,8 +335,8 @@ export function InnerSpaceCard({
     expandedRef.current = opening;
     setExpanded(opening);
     sectionBorderOpacity.value = reduceMotion
-      ? (opening ? 0.23 : closedBorderOpacity)
-      : withTiming(opening ? 0.23 : closedBorderOpacity, {
+      ? (opening ? 0.4 : closedBorderOpacity)
+      : withTiming(opening ? 0.4 : closedBorderOpacity, {
           duration: PANEL_DURATION,
           easing: ReanimatedEasing.inOut(ReanimatedEasing.quad),
         });
