@@ -38,3 +38,36 @@ test("Fuego uses the six supplied stops and inherits Cloudy", () => {
   assert.match(drawer, /id: "fuego", title: "Fuego"/);
   assert.match(drawer, /\[SCENES\[2\], SCENES\[3\], SCENES\[5\]\]/);
 });
+
+test("Fuego journey pills and world/universe labels use a warm palette", () => {
+  const journey = source("../components/GrowthJourney.tsx");
+  assert.equal((journey.match(/theme\.id === "fuego" \? "rgba\(255,214,191,0\.20\)"/g) ?? []).length, 3);
+  assert.match(journey, /color: theme\.id === "fuego" \? "#FFD6BF"/);
+  for (const [file, variable] of [
+    ["GrowthJourneyMap.tsx", "worldColor"],
+    ["GrowthJourneyHelpSheet.tsx", "universeColor"],
+  ]) {
+    const content = source(`../components/${file}`);
+    const expression = content.match(new RegExp(`const ${variable} = ([\\s\\S]*?);`))?.[1];
+    assert.ok(expression);
+    const resolve = new Function("theme", "getThemeStyleId", "CLOUDY_GROWTH_STAGE_LABEL_COLOR", "POSITIONED_DAY_GRADIENT", `return (${expression});`);
+    assert.equal(resolve({ id: "fuego" }, themes.getThemeStyleId, "#B5EFFF", ["#gold"]), "#FFD6BF");
+    assert.equal(resolve({ id: "galactic" }, themes.getThemeStyleId, "#B5EFFF", ["#gold"]), "#BEDFF5");
+    assert.equal(resolve({ id: "natural" }, themes.getThemeStyleId, "#B5EFFF", ["#gold"]), "#E5FFDB");
+    assert.equal(resolve({ id: "cloudy" }, themes.getThemeStyleId, "#B5EFFF", ["#gold"]), "#B5EFFF");
+  }
+});
+
+test("Galactic coordinates tab tint, icon/text colors, widget and journey pills", () => {
+  const tabColors: any = {};
+  new Function("exports", ts.transpileModule(source("../constants/tab-bar.ts"), {
+    compilerOptions: { module: ts.ModuleKind.CommonJS },
+  }).outputText)(tabColors);
+  assert.equal(tabColors.getTabBarGlassOverlay("galactic"), "rgba(8,22,33,0.744)");
+  assert.equal(tabColors.getTabBarInactiveColor("galactic"), "#D5E5F2");
+  assert.match(source("../app/(tabs)/_layout.tsx"), /activeColor=\{activeSceneId === "galactic" \? "#EFF8FF"/);
+  assert.match(source("../app/(tabs)/inicio8.tsx"), /activeTheme\.id === "galactic" \? \[activeTheme\.gradient\[0\], activeTheme\.gradient\[activeTheme\.gradient\.length - 1\]\]/);
+  const journey = source("../components/GrowthJourney.tsx");
+  assert.equal((journey.match(/theme\.id === "galactic" && \{ backgroundColor: "rgba\(190,223,245,0\.20\)" \}/g) ?? []).length, 3);
+  assert.match(journey, /theme\.id === "galactic" && \{ color: "#BEDFF5" \}/);
+});

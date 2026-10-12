@@ -44,7 +44,8 @@ export function GrowthCurrentStagePill({ stage }: { stage?: GrowthStage | null }
         styles.timelineDayPill,
         styles.timelineBloomDayPill,
         { marginBottom: 0, marginTop: 2 },
-        getThemeStyleId(theme.id) === "cloudy" && { backgroundColor: theme.id === "natural" ? "rgba(229,255,219,0.20)" : CLOUDY_GROWTH_DAY_PILL_BACKGROUND },
+        getThemeStyleId(theme.id) === "cloudy" && { backgroundColor: theme.id === "fuego" ? "rgba(255,214,191,0.20)" : theme.id === "natural" ? "rgba(229,255,219,0.20)" : CLOUDY_GROWTH_DAY_PILL_BACKGROUND },
+        theme.id === "galactic" && { backgroundColor: "rgba(190,223,245,0.20)" },
       ]}
     >
       <MaterialCommunityIcons
@@ -179,10 +180,11 @@ export function GrowthLevelPreviewCard({
           sectionTitle && styles.timelineDayPill,
           sectionTitle && styles.timelineBloomDayPill,
           (canonicalVerticalInsets || sectionTitle) && getThemeStyleId(theme.id) === "cloudy" && {
-            backgroundColor: sectionTitle ? (theme.id === "natural" ? "rgba(229,255,219,0.20)" : CLOUDY_GROWTH_DAY_PILL_BACKGROUND) : "rgba(0,0,0,0.16)",
+            backgroundColor: sectionTitle ? (theme.id === "fuego" ? "rgba(255,214,191,0.20)" : theme.id === "natural" ? "rgba(229,255,219,0.20)" : CLOUDY_GROWTH_DAY_PILL_BACKGROUND) : "rgba(0,0,0,0.16)",
           },
           sectionTitle && styles.profilePreviewTimelineDayPill,
           sectionTitle && styles.profilePreviewPillOffset,
+          theme.id === "galactic" && { backgroundColor: "rgba(190,223,245,0.20)" },
         ]}
       >
         {canonicalVerticalInsets && (
@@ -384,7 +386,8 @@ function GrowthRow({
             florecimiento && styles.bloomDayPill,
             styles.timelineDayPill,
             florecimiento && styles.timelineBloomDayPill,
-            getThemeStyleId(theme.id) === "cloudy" && { backgroundColor: theme.id === "natural" ? "rgba(229,255,219,0.20)" : CLOUDY_GROWTH_DAY_PILL_BACKGROUND },
+            getThemeStyleId(theme.id) === "cloudy" && { backgroundColor: theme.id === "fuego" ? "rgba(255,214,191,0.20)" : theme.id === "natural" ? "rgba(229,255,219,0.20)" : CLOUDY_GROWTH_DAY_PILL_BACKGROUND },
+            theme.id === "galactic" && { backgroundColor: "rgba(190,223,245,0.20)" },
           ]}
         >
           {florecimiento && (
@@ -469,7 +472,7 @@ function GrowthStageHeading({
   const { theme } = useSceneTheme();
   return (
     <View testID={worldId ? `growth-world-heading-${worldId}` : second ? "growth-second-world-heading" : "growth-first-world-heading"} style={[styles.sectionHeading, second ? styles.secondStageHeading : styles.firstStageHeading]}>
-      <Text style={[styles.sectionEyebrow, getThemeStyleId(theme.id) === "cloudy" && { color: theme.id === "natural" ? "#E5FFDB" : CLOUDY_GROWTH_STAGE_LABEL_COLOR }]}>{eyebrow}</Text>
+      <Text style={[styles.sectionEyebrow, getThemeStyleId(theme.id) === "cloudy" && { color: theme.id === "fuego" ? "#FFD6BF" : theme.id === "natural" ? "#E5FFDB" : CLOUDY_GROWTH_STAGE_LABEL_COLOR }, theme.id === "galactic" && { color: "#BEDFF5" }]}>{eyebrow}</Text>
       <Text
         style={[styles.sectionTitle, !second && styles.firstWorldTitle, { color: colors.foreground }]}
         accessibilityRole="header"

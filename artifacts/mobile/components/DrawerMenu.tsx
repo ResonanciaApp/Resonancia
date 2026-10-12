@@ -537,10 +537,11 @@ const styles = StyleSheet.create({
   scenePositionCompensation: {
     // Eight gaps grew 8px; Perfil (33px) replaces Registro de ánimo (36px).
     // Consume the old 165px spacer, not menu rows or scene card dimensions.
-    marginTop: -(8 * 8 - 3),
+    // Offset the menu's separate 15px lift so it does not also lift the scenes.
+    marginTop: -(8 * 8 - 3) + 15,
   },
   inicio3Sections: {
-    marginTop: -1,
+    marginTop: -16,
   },
   inicio3SectionDivider: {
     height: 1,

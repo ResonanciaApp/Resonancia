@@ -33,7 +33,7 @@ export function GrowthJourneyHelpSheet({
   const { theme } = useSceneTheme();
   const colors = useColors();
   const explanation = useJourneyInfoContent(visible);
-  const universeColor = theme.id === "natural" ? "#E5FFDB"
+  const universeColor = theme.id === "galactic" ? "#BEDFF5" : theme.id === "fuego" ? "#FFD6BF" : theme.id === "natural" ? "#E5FFDB"
     : getThemeStyleId(theme.id) === "cloudy" ? CLOUDY_GROWTH_STAGE_LABEL_COLOR
     : POSITIONED_DAY_GRADIENT[0];
   // Sheet sizing kept from the previous layout so the map position is unchanged.
