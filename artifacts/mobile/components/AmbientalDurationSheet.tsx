@@ -124,7 +124,9 @@ export function AmbientalDurationSheet({
 }: Props) {
   const colors = useColors();
   const { theme } = useSceneTheme();
-  const sleepActionColors = theme.id === "cloudy" || theme.id === "indigo2"
+  const sleepActionColors = theme.id === "fuego"
+    ? { background: "#F9F9F9", foreground: "#3B1B13" }
+    : theme.id === "cloudy" || theme.id === "indigo2"
     ? { background: "#F9F9F9", foreground: "#0B1438" }
     : getSleepActionColors(theme.id);
   const selectedPresetBackground = getThemeStyleId(theme.id) === "cloudy" || getThemeStyleId(theme.id) === "indigo2" ? "rgba(0,0,0,0.3)" : "rgba(0,0,0,0.16)";
