@@ -35,7 +35,10 @@ export function GrowthJourneySheet({
   const scrollRef = useRef<ScrollView>(null);
   const [helpVisible, setHelpVisible] = useState(false);
   const [detailStageId, setDetailStageId] = useState<string | null>(null);
-  const closeHelp = useCallback(() => setHelpVisible(false), []);
+  const [explanationVisible, setExplanationVisible] = useState(false);
+  const closeHelp = useCallback(() => { setExplanationVisible(false); setHelpVisible(false); }, []);
+  const openExplanation = useCallback(() => setExplanationVisible(true), []);
+  const closeExplanation = useCallback(() => setExplanationVisible(false), []);
   const closeDetail = useCallback(() => setDetailStageId(null), []);
   useEffect(() => {
     if (!visible) {
@@ -55,7 +58,7 @@ export function GrowthJourneySheet({
       visible
       transparent={false}
       animationType="slide"
-      onRequestClose={helpVisible ? closeHelp : detailStageId ? closeDetail : onClose}
+      onRequestClose={helpVisible && explanationVisible ? closeExplanation : helpVisible ? closeHelp : detailStageId ? closeDetail : onClose}
       statusBarTranslucent
       navigationBarTranslucent
       testID="growth-journey-modal"
@@ -140,6 +143,9 @@ export function GrowthJourneySheet({
         <GrowthJourneyHelpSheet
           visible={visible && helpVisible}
           onClose={closeHelp}
+          explanationVisible={helpVisible && explanationVisible}
+          onOpenExplanation={openExplanation}
+          onCloseExplanation={closeExplanation}
         />
       </LinearGradient>
     </Modal>

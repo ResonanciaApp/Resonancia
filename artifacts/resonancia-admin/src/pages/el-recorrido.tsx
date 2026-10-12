@@ -130,7 +130,7 @@ export default function ElRecorridoPage() {
       <div>
         <h1 className="text-2xl font-bold text-foreground tracking-tight">El Recorrido</h1>
         <p className="text-sm text-muted-foreground mt-1">
-          Edita el texto explicativo de El Recorrido en la aplicación. No modifica reglas ni el mapa.
+          Edita el texto explicativo que aparece en la app en Tu camino &gt; El recorrido &gt; ? (botón de ayuda arriba a la derecha). No modifica reglas ni el mapa.
         </p>
       </div>
 

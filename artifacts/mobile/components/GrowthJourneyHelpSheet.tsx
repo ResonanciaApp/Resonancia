@@ -7,6 +7,7 @@ import {
 } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 
+import { GrowthJourneyExplanationSheet } from "@/components/GrowthJourneyExplanationSheet";
 import { GROWTH_MAP_HEIGHT, GrowthJourneyMap } from "@/components/GrowthJourneyMap";
 import { getThemeStyleId } from "@/config/scene-themes";
 import { CLOUDY_GROWTH_STAGE_LABEL_COLOR, POSITIONED_DAY_GRADIENT } from "@/constants/colors";
@@ -18,11 +19,15 @@ import { GROWTH_SHEET_SPRING, useGrowthJourneySheetMotion } from "@/hooks/useGro
 
 /** An in-tree sheet: shares Tu camino's native Modal instead of nesting Modals. */
 export function GrowthJourneyHelpSheet({
-  visible, onClose,
+  visible, onClose, explanationVisible = false, onOpenExplanation, onCloseExplanation,
 }: {
   visible: boolean;
   onClose: () => void;
+  explanationVisible?: boolean;
+  onOpenExplanation?: () => void;
+  onCloseExplanation?: () => void;
 }) {
+  const showExplanation = visible && explanationVisible;
   const { height, width } = useWindowDimensions();
   const insets = useSafeAreaInsets();
   const { theme } = useSceneTheme();
@@ -31,7 +36,7 @@ export function GrowthJourneyHelpSheet({
   const universeColor = theme.id === "natural" ? "#E5FFDB"
     : getThemeStyleId(theme.id) === "cloudy" ? CLOUDY_GROWTH_STAGE_LABEL_COLOR
     : POSITIONED_DAY_GRADIENT[0];
-  // End the initial scroll viewport 10px into the explanation background.
+  // Sheet sizing kept from the previous layout so the map position is unchanged.
   const sheetHeight = Math.min(
     height - insets.top - 12,
     44 + 56 + 45 + GROWTH_MAP_HEIGHT + 28 + 10 + Math.max(insets.bottom, 16),
@@ -39,7 +44,7 @@ export function GrowthJourneyHelpSheet({
   const { rendered, sheetY, backdropOpacity } = useGrowthJourneySheetMotion(visible, sheetHeight);
   const pan = useMemo(() => PanResponder.create({
     onMoveShouldSetPanResponder: (_, gesture) =>
-      visible && gesture.dy > 6 && Math.abs(gesture.dy) > Math.abs(gesture.dx),
+      visible && !showExplanation && gesture.dy > 6 && Math.abs(gesture.dy) > Math.abs(gesture.dx),
     onPanResponderGrant: () => sheetY.stopAnimation(),
     onPanResponderMove: (_, gesture) => sheetY.setValue(Math.max(0, gesture.dy)),
     onPanResponderRelease: (_, gesture) => {
@@ -52,7 +57,7 @@ export function GrowthJourneyHelpSheet({
     onPanResponderTerminate: () => {
       if (visible) Animated.spring(sheetY, { toValue: 0, ...GROWTH_SHEET_SPRING }).start();
     },
-  }), [visible, sheetHeight, sheetY, onClose]);
+  }), [visible, showExplanation, sheetHeight, sheetY, onClose]);
 
   return (
     <View
@@ -83,7 +88,9 @@ export function GrowthJourneyHelpSheet({
             transform: [{ translateY: sheetY }],
           },
         ]}
-        accessibilityViewIsModal={rendered}
+        accessibilityViewIsModal={rendered && !showExplanation}
+        accessibilityElementsHidden={showExplanation}
+        importantForAccessibility={showExplanation ? "no-hide-descendants" : "auto"}
         testID="growth-help-sheet"
       >
         <LinearGradient
@@ -119,6 +126,16 @@ export function GrowthJourneyHelpSheet({
           >
             <Feather testID="growth-help-close-icon" name="x" size={22} color={colors.foreground} />
           </Pressable>
+          <Pressable
+            testID="growth-help-explanation-open"
+            onPress={() => { if (visible) onOpenExplanation?.(); }}
+            disabled={!onOpenExplanation}
+            style={styles.infoButton}
+            accessibilityRole="button"
+            accessibilityLabel="¿Qué es El recorrido?"
+          >
+            <Text testID="growth-help-explanation-open-icon" style={[styles.infoGlyph, { color: colors.foreground }]}>?</Text>
+          </Pressable>
         </View>
         <ScrollView
           testID="growth-map-scroll"
@@ -129,21 +146,14 @@ export function GrowthJourneyHelpSheet({
           <View testID="growth-map-section" style={styles.mapSection}>
             <GrowthJourneyMap width={Math.min(width, 520) - 12} />
           </View>
-          <View testID="growth-map-explanation" style={[styles.explanation, {
-            backgroundColor: getThemeStyleId(theme.id) === "cloudy"
-              ? "rgba(0,0,0,0.19)" : "rgba(0,0,0,0.16)",
-          }]}>
-            <Text testID="growth-map-explanation-title" accessibilityRole="header" style={[styles.explanationTitle, { color: colors.foreground }]}>
-              {explanation.title}
-            </Text>
-            {explanation.description.split(/\n\s*\n/).map((paragraph, index) => (
-              <Text key={index} testID={`growth-map-explanation-paragraph-${index}`} style={[styles.explanationText, { color: colors.foreground }]}>
-                {paragraph}
-              </Text>
-            ))}
-          </View>
         </ScrollView>
       </Animated.View>
+      <GrowthJourneyExplanationSheet
+        visible={showExplanation}
+        onClose={() => onCloseExplanation?.()}
+        title={explanation.title}
+        description={explanation.description}
+      />
     </View>
   );
 }
@@ -166,9 +176,8 @@ const styles = StyleSheet.create({
   content: { flexGrow: 1, justifyContent: "flex-start", alignItems: "center", paddingBottom: 16 },
   mapHeader: { height: 56 },
   mapSection: { paddingTop: 45 },
-  explanation: { alignSelf: "stretch", marginHorizontal: 16, paddingHorizontal: 24, marginTop: 28, paddingTop: 31, paddingBottom: 16, borderRadius: 20, gap: 12 },
-  explanationTitle: { fontFamily: "Manrope", fontSize: 18, lineHeight: 24, fontWeight: "700", textAlign: "center", marginBottom: 15 },
-  explanationText: { fontFamily: "Manrope", fontSize: 14, lineHeight: 21, textAlign: "left", opacity: 0.85 },
+  infoButton: { position: "absolute", top: 6.5, right: 20, width: 43, height: 43, borderRadius: 21.5, borderWidth: 0, backgroundColor: "rgba(0,0,0,0.16)", alignItems: "center", justifyContent: "center" },
+  infoGlyph: { fontFamily: "Manrope", fontSize: 20, lineHeight: 24, fontWeight: "700" },
   mapTitle: { position: "absolute", top: 16, left: 64, right: 64, textAlign: "center", fontFamily: "Manrope", fontSize: 20, lineHeight: 24, fontWeight: "700" },
   mapSubtitle: { position: "absolute", top: 45, left: 64, right: 64, textAlign: "center", fontFamily: "Manrope", fontSize: 10, lineHeight: 13, fontWeight: "700", letterSpacing: 1.2 },
   closeButton: { position: "absolute", top: 6.5, left: 20, width: 43, height: 43, borderRadius: 21.5, borderWidth: 0, backgroundColor: "rgba(0,0,0,0.16)", alignItems: "center", justifyContent: "center" },
