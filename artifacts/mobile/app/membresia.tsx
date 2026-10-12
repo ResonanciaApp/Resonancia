@@ -763,7 +763,7 @@ function PremiumOfferContent({
       <View style={styles.offerHero}>
         <LinearGradient
           colors={PREMIUM_OFFER_LOGO_GRADIENT}
-          locations={PREMIUM_OFFER_LOCATIONS}
+          locations={[0, 1 / 3, 2 / 3, 1]}
           start={{ x: 0.5, y: 0 }}
           end={{ x: 0.5, y: 1 }}
           style={styles.offerLogo}
