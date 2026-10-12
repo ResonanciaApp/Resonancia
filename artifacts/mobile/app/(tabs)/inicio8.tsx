@@ -18,6 +18,7 @@ import { openPremiumPlans } from "@/lib/premiumGate";
 import { useVideoPlayer, VideoView } from "expo-video";
 import React, { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { CardCaptionText as Text } from "@/components/CardCaptionText";
+import { HomeDisplayName } from "@/components/HomeDisplayName";
 import {
   Animated,
   Dimensions,
@@ -1980,7 +1981,9 @@ const Inicio2HeroStatic = React.memo(function Inicio2HeroStatic({
             {!isInicio3 && (
               <Text style={styles.inicio2HeroGreetingLabel}>{greeting}</Text>
             )}
-            <Text style={[styles.inicio2HeroGreetingName, isInicio3 && styles.inicio3HeroGreetingName]}>{displayName}</Text>
+            {isInicio3 ? <HomeDisplayName name={displayName} /> : (
+              <Text style={styles.inicio2HeroGreetingName}>{displayName}</Text>
+            )}
             </Pressable>
             {isInicio3 ? (
               <Pressable
@@ -3722,10 +3725,6 @@ const styles = StyleSheet.create({
     textShadowColor: "rgba(0,0,0,0.65)",
     textShadowOffset: { width: 0, height: 1 },
     textShadowRadius: 4,
-  },
-  inicio3HeroGreetingName: {
-    fontSize: 18,
-    lineHeight: 23,
   },
   inicio3HeroDecree: {
     color: "#F4F4F4",
