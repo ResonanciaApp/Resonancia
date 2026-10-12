@@ -77,10 +77,10 @@ export const SCENE_THEMES: Record<VisualThemeId, SceneTheme> = {
     ...CLOUDY_THEME,
     id: "fuego",
     label: "Fuego",
-    // Original supplied palette with 20% black mixed into each stop.
-    gradient: ["#CC6654", "#CC6954", "#CC7153", "#CB7452", "#CC7653", "#CC7653"],
+    // Supplied palette darkened by 20%, then a further 30%.
+    gradient: ["#8F473B", "#8F4A3B", "#8F4F3A", "#8E5139", "#8F533A", "#8F533A"],
     gradientLocations: [0, 0.2, 0.4, 0.6, 0.8, 1],
-    solid: "#CC6654",
+    solid: "#8F473B",
   },
   galactic: {
     ...INDIGO2_THEME,

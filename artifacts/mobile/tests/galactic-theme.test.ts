@@ -30,7 +30,7 @@ test("Fuego uses the six supplied stops and inherits Cloudy", () => {
   const theme = themes.SCENE_THEMES.fuego;
   const original = ["#FF7F69", "#FF8369", "#FF8D68", "#FE9167", "#FF9468", "#FF9468"];
   assert.deepEqual(theme.gradient, original.map(color => "#" + [1, 3, 5].map(offset =>
-    Math.round(parseInt(color.slice(offset, offset + 2), 16) * 0.8).toString(16).padStart(2, "0")
+    Math.round(Math.round(parseInt(color.slice(offset, offset + 2), 16) * 0.8) * 0.7).toString(16).padStart(2, "0")
   ).join("").toUpperCase()));
   assert.deepEqual(theme.gradientLocations, [0, .2, .4, .6, .8, 1]);
   assert.equal(theme.solid, theme.gradient[0]);
