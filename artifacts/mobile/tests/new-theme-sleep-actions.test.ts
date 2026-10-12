@@ -50,9 +50,12 @@ test("Vuelve a ti uses a solid purple moon, preserving its size and the morning 
   assert.doesNotMatch(read("../components/SleepReminderSheet.tsx"), /<Feather name="moon"/);
 });
 
-test("sleep CTAs opt in only for Natural and Pleyades", () => {
+test("sleep CTAs opt in for Natural, Pleyades, Galactic and Fuego", () => {
   assert.deepEqual(getSleepActionColors("natural"), { background: "#F9F9F9", foreground: "#073B32" });
   assert.deepEqual(getSleepActionColors("pleyades"), { background: "#F9F9F9", foreground: "#0B1438" });
+  for (const id of ["galactic", "fuego"]) {
+    assert.deepEqual(getSleepActionColors(id), { background: "#F9F9F9", foreground: "#0B1438" });
+  }
   for (const id of ["cloudy", "cloudy2", "indigo2", "tibet"]) assert.equal(getSleepActionColors(id), null);
 });
 

@@ -148,7 +148,7 @@ export function getThemeStyleId(id: string | null | undefined): string | null | 
 /** Opt-in palette for sleep reminder and Ambiental start CTAs only. */
 export function getSleepActionColors(id: string): { background: string; foreground: string } | null {
   if (id === "natural") return { background: "#F9F9F9", foreground: "#073B32" };
-  if (id === "pleyades") return { background: "#F9F9F9", foreground: "#0B1438" };
+  if (id === "pleyades" || id === "galactic" || id === "fuego") return { background: "#F9F9F9", foreground: "#0B1438" };
   return null;
 }
 
