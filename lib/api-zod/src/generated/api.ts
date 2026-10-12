@@ -2344,6 +2344,73 @@ export const GetQuoteOfTheDayResponse = zod.object({
 }))
 
 
+export const getJourneyInfoResponseContentTitleMax = 100;
+
+export const getJourneyInfoResponseContentDescriptionMax = 5000;
+
+export const getJourneyInfoResponseRevisionMin = 0;
+
+
+
+export const GetJourneyInfoResponse = zod.object({
+  "content": zod.object({
+  "title": zod.string().min(1).max(getJourneyInfoResponseContentTitleMax),
+  "description": zod.string().min(1).max(getJourneyInfoResponseContentDescriptionMax)
+}),
+  "revision": zod.number().min(getJourneyInfoResponseRevisionMin)
+})
+
+
+export const getAdminJourneyInfoResponseContentTitleMax = 100;
+
+export const getAdminJourneyInfoResponseContentDescriptionMax = 5000;
+
+export const getAdminJourneyInfoResponseRevisionMin = 0;
+
+
+
+export const GetAdminJourneyInfoResponse = zod.object({
+  "content": zod.object({
+  "title": zod.string().min(1).max(getAdminJourneyInfoResponseContentTitleMax),
+  "description": zod.string().min(1).max(getAdminJourneyInfoResponseContentDescriptionMax)
+}),
+  "revision": zod.number().min(getAdminJourneyInfoResponseRevisionMin)
+})
+
+
+export const updateAdminJourneyInfoBodyContentTitleMax = 100;
+
+export const updateAdminJourneyInfoBodyContentDescriptionMax = 5000;
+
+export const updateAdminJourneyInfoBodyRevisionMin = 0;
+
+
+
+export const UpdateAdminJourneyInfoBody = zod.object({
+  "content": zod.object({
+  "title": zod.string().min(1).max(updateAdminJourneyInfoBodyContentTitleMax),
+  "description": zod.string().min(1).max(updateAdminJourneyInfoBodyContentDescriptionMax)
+}),
+  "revision": zod.number().min(updateAdminJourneyInfoBodyRevisionMin)
+})
+
+export const updateAdminJourneyInfoResponseContentTitleMax = 100;
+
+export const updateAdminJourneyInfoResponseContentDescriptionMax = 5000;
+
+export const updateAdminJourneyInfoResponseRevisionMin = 0;
+
+
+
+export const UpdateAdminJourneyInfoResponse = zod.object({
+  "content": zod.object({
+  "title": zod.string().min(1).max(updateAdminJourneyInfoResponseContentTitleMax),
+  "description": zod.string().min(1).max(updateAdminJourneyInfoResponseContentDescriptionMax)
+}),
+  "revision": zod.number().min(updateAdminJourneyInfoResponseRevisionMin)
+})
+
+
 /**
  * @summary Texts shown on Sistema de rachas
  */

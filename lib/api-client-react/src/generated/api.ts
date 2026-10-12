@@ -164,6 +164,7 @@ import type {
   InspirationUpload,
   InspirationUploadBody,
   InspirationWeek,
+  JourneyInfoSettings,
   LibrarySnapshot,
   ListAdminCoverPresetsParams,
   ListAdminDailyQuotesParams,
@@ -4272,6 +4273,213 @@ export function useGetQuoteOfTheDay<TData = Awaited<ReturnType<typeof getQuoteOf
 
 
 
+
+export const getGetJourneyInfoUrl = () => {
+
+
+
+
+  return `/api/journey-info`
+}
+
+export const getJourneyInfo = async ( options?: RequestInit): Promise<JourneyInfoSettings> => {
+
+  return customFetch<JourneyInfoSettings>(getGetJourneyInfoUrl(),
+  {
+    ...options,
+    method: 'GET'
+
+
+  }
+);}
+
+
+
+
+
+export const getGetJourneyInfoQueryKey = () => {
+    return [
+    `/api/journey-info`
+    ] as const;
+    }
+
+
+export const getGetJourneyInfoQueryOptions = <TData = Awaited<ReturnType<typeof getJourneyInfo>>, TError = ErrorType<unknown>>( options?: { query?:UseQueryOptions<Awaited<ReturnType<typeof getJourneyInfo>>, TError, TData>, request?: SecondParameter<typeof customFetch>}
+) => {
+
+const {query: queryOptions, request: requestOptions} = options ?? {};
+
+  const queryKey =  queryOptions?.queryKey ?? getGetJourneyInfoQueryKey();
+
+
+
+    const queryFn: QueryFunction<Awaited<ReturnType<typeof getJourneyInfo>>> = ({ signal }) => getJourneyInfo({ signal, ...requestOptions });
+
+
+
+
+
+   return  { queryKey, queryFn, ...queryOptions} as UseQueryOptions<Awaited<ReturnType<typeof getJourneyInfo>>, TError, TData> & { queryKey: QueryKey }
+}
+
+export type GetJourneyInfoQueryResult = NonNullable<Awaited<ReturnType<typeof getJourneyInfo>>>
+export type GetJourneyInfoQueryError = ErrorType<unknown>
+
+
+
+export function useGetJourneyInfo<TData = Awaited<ReturnType<typeof getJourneyInfo>>, TError = ErrorType<unknown>>(
+  options?: { query?:UseQueryOptions<Awaited<ReturnType<typeof getJourneyInfo>>, TError, TData>, request?: SecondParameter<typeof customFetch>}
+
+ ):  UseQueryResult<TData, TError> & { queryKey: QueryKey } {
+
+  const queryOptions = getGetJourneyInfoQueryOptions(options)
+
+  const query = useQuery(queryOptions) as  UseQueryResult<TData, TError> & { queryKey: QueryKey };
+
+  return { ...query, queryKey: queryOptions.queryKey };
+}
+
+
+
+
+
+
+
+export const getGetAdminJourneyInfoUrl = () => {
+
+
+
+
+  return `/api/admin/journey-info`
+}
+
+export const getAdminJourneyInfo = async ( options?: RequestInit): Promise<JourneyInfoSettings> => {
+
+  return customFetch<JourneyInfoSettings>(getGetAdminJourneyInfoUrl(),
+  {
+    ...options,
+    method: 'GET'
+
+
+  }
+);}
+
+
+
+
+
+export const getGetAdminJourneyInfoQueryKey = () => {
+    return [
+    `/api/admin/journey-info`
+    ] as const;
+    }
+
+
+export const getGetAdminJourneyInfoQueryOptions = <TData = Awaited<ReturnType<typeof getAdminJourneyInfo>>, TError = ErrorType<void>>( options?: { query?:UseQueryOptions<Awaited<ReturnType<typeof getAdminJourneyInfo>>, TError, TData>, request?: SecondParameter<typeof customFetch>}
+) => {
+
+const {query: queryOptions, request: requestOptions} = options ?? {};
+
+  const queryKey =  queryOptions?.queryKey ?? getGetAdminJourneyInfoQueryKey();
+
+
+
+    const queryFn: QueryFunction<Awaited<ReturnType<typeof getAdminJourneyInfo>>> = ({ signal }) => getAdminJourneyInfo({ signal, ...requestOptions });
+
+
+
+
+
+   return  { queryKey, queryFn, ...queryOptions} as UseQueryOptions<Awaited<ReturnType<typeof getAdminJourneyInfo>>, TError, TData> & { queryKey: QueryKey }
+}
+
+export type GetAdminJourneyInfoQueryResult = NonNullable<Awaited<ReturnType<typeof getAdminJourneyInfo>>>
+export type GetAdminJourneyInfoQueryError = ErrorType<void>
+
+
+
+export function useGetAdminJourneyInfo<TData = Awaited<ReturnType<typeof getAdminJourneyInfo>>, TError = ErrorType<void>>(
+  options?: { query?:UseQueryOptions<Awaited<ReturnType<typeof getAdminJourneyInfo>>, TError, TData>, request?: SecondParameter<typeof customFetch>}
+
+ ):  UseQueryResult<TData, TError> & { queryKey: QueryKey } {
+
+  const queryOptions = getGetAdminJourneyInfoQueryOptions(options)
+
+  const query = useQuery(queryOptions) as  UseQueryResult<TData, TError> & { queryKey: QueryKey };
+
+  return { ...query, queryKey: queryOptions.queryKey };
+}
+
+
+
+
+
+
+
+export const getUpdateAdminJourneyInfoUrl = () => {
+
+
+
+
+  return `/api/admin/journey-info`
+}
+
+export const updateAdminJourneyInfo = async (journeyInfoSettings: JourneyInfoSettings, options?: RequestInit): Promise<JourneyInfoSettings> => {
+
+  return customFetch<JourneyInfoSettings>(getUpdateAdminJourneyInfoUrl(),
+  {
+    ...options,
+    method: 'PUT',
+    headers: { 'Content-Type': 'application/json', ...options?.headers },
+    body: JSON.stringify(
+      journeyInfoSettings,)
+  }
+);}
+
+
+
+
+export const getUpdateAdminJourneyInfoMutationOptions = <TError = ErrorType<void>,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof updateAdminJourneyInfo>>, TError,{data: BodyType<JourneyInfoSettings>}, TContext>, request?: SecondParameter<typeof customFetch>}
+): UseMutationOptions<Awaited<ReturnType<typeof updateAdminJourneyInfo>>, TError,{data: BodyType<JourneyInfoSettings>}, TContext> => {
+
+const mutationKey = ['updateAdminJourneyInfo'];
+const {mutation: mutationOptions, request: requestOptions} = options ?
+      options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey ?
+      options
+      : {...options, mutation: {...options.mutation, mutationKey}}
+      : {mutation: { mutationKey, }, request: undefined};
+
+
+
+
+      const mutationFn: MutationFunction<Awaited<ReturnType<typeof updateAdminJourneyInfo>>, {data: BodyType<JourneyInfoSettings>}> = (props) => {
+          const {data} = props ?? {};
+
+          return  updateAdminJourneyInfo(data,requestOptions)
+        }
+
+
+
+
+
+
+  return  { mutationFn, ...mutationOptions }}
+
+    export type UpdateAdminJourneyInfoMutationResult = NonNullable<Awaited<ReturnType<typeof updateAdminJourneyInfo>>>
+    export type UpdateAdminJourneyInfoMutationBody = BodyType<JourneyInfoSettings>
+    export type UpdateAdminJourneyInfoMutationError = ErrorType<void>
+
+    export const useUpdateAdminJourneyInfo = <TError = ErrorType<void>,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof updateAdminJourneyInfo>>, TError,{data: BodyType<JourneyInfoSettings>}, TContext>, request?: SecondParameter<typeof customFetch>}
+ ): UseMutationResult<
+        Awaited<ReturnType<typeof updateAdminJourneyInfo>>,
+        TError,
+        {data: BodyType<JourneyInfoSettings>},
+        TContext
+      > => {
+      return useMutation(getUpdateAdminJourneyInfoMutationOptions(options));
+    }
 
 export const getGetStreakInfoUrl = () => {
 

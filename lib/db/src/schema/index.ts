@@ -1,3 +1,4 @@
+export * from "./journey-info";
 export * from "./streak-info";
 export * from "./growth-catalog";
 export * from "./growth-wallets";

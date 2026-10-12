@@ -35,9 +35,11 @@ import reflectionStoriesRouter from "./reflection-stories";
 import dailyQuotesRouter from "./daily-quotes";
 import greetingRouter from "./greeting";
 import streakInfoRouter from "./streak-info";
+import journeyInfoRouter from "./journey-info";
 import growthRouter from "./growth";
 
 const router: IRouter = Router();
+router.use(journeyInfoRouter);
 
 router.use(healthRouter);
 router.use(messagesRouter);

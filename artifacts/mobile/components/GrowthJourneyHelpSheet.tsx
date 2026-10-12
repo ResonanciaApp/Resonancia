@@ -13,6 +13,7 @@ import { CLOUDY_GROWTH_STAGE_LABEL_COLOR, POSITIONED_DAY_GRADIENT } from "@/cons
 
 import { useSceneTheme } from "@/context/SceneThemeContext";
 import { useColors } from "@/hooks/useColors";
+import { useJourneyInfoContent } from "@/hooks/useJourneyInfoContent";
 import { GROWTH_SHEET_SPRING, useGrowthJourneySheetMotion } from "@/hooks/useGrowthJourneySheetMotion";
 
 /** An in-tree sheet: shares Tu camino's native Modal instead of nesting Modals. */
@@ -26,6 +27,7 @@ export function GrowthJourneyHelpSheet({
   const insets = useSafeAreaInsets();
   const { theme } = useSceneTheme();
   const colors = useColors();
+  const explanation = useJourneyInfoContent(visible);
   const universeColor = theme.id === "natural" ? "#E5FFDB"
     : getThemeStyleId(theme.id) === "cloudy" ? CLOUDY_GROWTH_STAGE_LABEL_COLOR
     : POSITIONED_DAY_GRADIENT[0];
@@ -125,19 +127,18 @@ export function GrowthJourneyHelpSheet({
           <View testID="growth-map-section" style={styles.mapSection}>
             <GrowthJourneyMap width={Math.min(width, 520) - 12} />
           </View>
-          <View testID="growth-map-explanation" style={styles.explanation}>
+          <View testID="growth-map-explanation" style={[styles.explanation, {
+            backgroundColor: getThemeStyleId(theme.id) === "cloudy"
+              ? "rgba(0,0,0,0.19)" : "rgba(0,0,0,0.16)",
+          }]}>
             <Text testID="growth-map-explanation-title" accessibilityRole="header" style={[styles.explanationTitle, { color: colors.foreground }]}>
-              ¿Qué es?
+              {explanation.title}
             </Text>
-            <Text style={[styles.explanationText, { color: colors.foreground }]}>
-              El primer universo de Resonancia es un recorrido de 365 días de racha acumulada: 5 mundos de 73 días, cada uno dividido en fases que acompañan tu crecimiento.
-            </Text>
-            <Text style={[styles.explanationText, { color: colors.foreground }]}>
-              Al avanzar de fase, desbloqueas 3 avatares a tu elección. Al pasar de mundo, desbloqueas 10 avatares más.
-            </Text>
-            <Text style={[styles.explanationText, { color: colors.foreground }]}>
-              Al completar el universo, tu constancia será reconocida en el Hall of Fame de Resonancia.
-            </Text>
+            {explanation.description.split(/\n\s*\n/).map((paragraph, index) => (
+              <Text key={index} testID={`growth-map-explanation-paragraph-${index}`} style={[styles.explanationText, { color: colors.foreground }]}>
+                {paragraph}
+              </Text>
+            ))}
           </View>
         </ScrollView>
       </Animated.View>
@@ -163,9 +164,9 @@ const styles = StyleSheet.create({
   content: { flexGrow: 1, justifyContent: "flex-start", alignItems: "center", paddingBottom: 16 },
   mapHeader: { height: 56 },
   mapSection: { paddingTop: 45 },
-  explanation: { width: "100%", maxWidth: 480, paddingHorizontal: 24, marginTop: 28, paddingBottom: 16, gap: 12 },
-  explanationTitle: { fontFamily: "Manrope", fontSize: 18, lineHeight: 24, fontWeight: "700", textAlign: "center" },
-  explanationText: { fontFamily: "Manrope", fontSize: 14, lineHeight: 21, textAlign: "center", opacity: 0.85 },
+  explanation: { width: "100%", maxWidth: 480, paddingHorizontal: 24, marginTop: 28, paddingVertical: 16, borderRadius: 20, gap: 12 },
+  explanationTitle: { fontFamily: "Manrope", fontSize: 18, lineHeight: 24, fontWeight: "700", textAlign: "center", marginBottom: 15 },
+  explanationText: { fontFamily: "Manrope", fontSize: 14, lineHeight: 21, textAlign: "left", opacity: 0.85 },
   mapTitle: { position: "absolute", top: 16, left: 64, right: 64, textAlign: "center", fontFamily: "Manrope", fontSize: 20, lineHeight: 24, fontWeight: "700" },
   mapSubtitle: { position: "absolute", top: 45, left: 64, right: 64, textAlign: "center", fontFamily: "Manrope", fontSize: 10, lineHeight: 13, fontWeight: "700", letterSpacing: 1.2 },
   closeButton: { position: "absolute", top: 6.5, left: 20, width: 43, height: 43, borderRadius: 21.5, borderWidth: 0, backgroundColor: "rgba(0,0,0,0.16)", alignItems: "center", justifyContent: "center" },

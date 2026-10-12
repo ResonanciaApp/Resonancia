@@ -1,4 +1,5 @@
 import assert from "node:assert/strict";
+import { INITIAL_JOURNEY_INFO } from "../lib/journey-info-content";
 import { GROWTH_WORLD_TEMPLATES, INITIAL_GROWTH_WORLDS } from "../utils/growthWorlds.ts";
 import { readFileSync } from "node:fs";
 import { URL } from "node:url";
@@ -115,6 +116,7 @@ function uiHarness(themeId = "indigo") {
     "@/context/SceneThemeContext": { useSceneTheme: () => ({ theme: { id: themeId, gradient: ["#060A0F", "#111122"] } }) },
     "@/config/scene-themes": { getThemeStyleId },
     "@/hooks/useColors": { useColors: () => ({ foreground: "#FBFBFB", accent: "#9ADAA9" }) },
+    "@/hooks/useJourneyInfoContent": { useJourneyInfoContent: () => INITIAL_JOURNEY_INFO },
     "@/constants/colors": { NAVIGATION_HELP_ICON_COLOR: "#F9F9F9", MEMBERSHIP_AURORA: { premium: { accent: "#BE9650" } }, CLOUDY_GROWTH_STAGE_LABEL_COLOR, POSITIONED_DAY_GRADIENT },
     "@/components/GrowthJourney": { GrowthJourney: (props: any) => React.createElement(
       native.Pressable, { testID: "test-open-intention", onPress: () => props.onStagePress("intencion") }, "PRIMER MUNDO",
@@ -274,6 +276,19 @@ test("Primer universo keeps themed colors, moves down 2px and shrinks 1pt withou
     assert.equal(style.letterSpacing, 1.2);
     assert.equal(style.color, color);
     assert.equal(style.textAlign, "center");
+  }
+});
+
+test("explanation uses themed black background, extra title gap and left-aligned paragraphs", () => {
+  for (const theme of ["indigo", "pleyades", "cloudy", "natural"]) {
+    const h = uiHarness(theme);
+    const { GrowthJourneyHelpSheet } = load("../components/GrowthJourneyHelpSheet.tsx", h.imports);
+    h.reset();
+    renderToStaticMarkup(GrowthJourneyHelpSheet({ visible: true, onClose() {} }));
+    const section = flatten(h.nodes.get("growth-map-explanation").style);
+    assert.equal(section.backgroundColor, `rgba(0,0,0,${theme === "cloudy" || theme === "natural" ? "0.19" : "0.16"})`);
+    assert.equal(section.gap + flatten(h.nodes.get("growth-map-explanation-title").style).marginBottom, 27);
+    assert.equal(flatten(h.nodes.get("growth-map-explanation-paragraph-0").style).textAlign, "left");
   }
 });
 

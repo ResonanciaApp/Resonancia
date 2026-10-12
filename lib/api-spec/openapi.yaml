@@ -623,6 +623,50 @@ paths:
           content:
             application/json:
               schema: {$ref: "#/components/schemas/QuoteOfTheDayResponse"}
+  /journey-info:
+    get:
+      operationId: getJourneyInfo
+      tags: [greeting]
+      responses:
+        "200":
+          description: Journey explanation
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/JourneyInfoSettings"
+  /admin/journey-info:
+    get:
+      operationId: getAdminJourneyInfo
+      tags: [admin]
+      responses:
+        "200":
+          description: Editable journey explanation
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/JourneyInfoSettings"
+        "401": {description: Unauthorized}
+        "403": {description: Forbidden}
+    put:
+      operationId: updateAdminJourneyInfo
+      tags: [admin]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/JourneyInfoSettings"
+      responses:
+        "200":
+          description: Saved journey explanation
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/JourneyInfoSettings"
+        "400": {description: Invalid content}
+        "401": {description: Unauthorized}
+        "403": {description: Forbidden}
+        "409": {description: Another editor updated this content}
   /streak-info:
     get:
       operationId: getStreakInfo
@@ -9726,6 +9770,21 @@ components:
         objectPath:
           type: string
           pattern: "^/objects/.+"
+    JourneyInfoContent:
+      type: object
+      additionalProperties: false
+      required: [title, description]
+      properties:
+        title: {type: string, minLength: 1, maxLength: 100}
+        description: {type: string, minLength: 1, maxLength: 5000}
+    JourneyInfoSettings:
+      type: object
+      additionalProperties: false
+      required: [content, revision]
+      properties:
+        content:
+          $ref: "#/components/schemas/JourneyInfoContent"
+        revision: {type: integer, minimum: 0}
     StreakInfoCard:
       type: object
       additionalProperties: false

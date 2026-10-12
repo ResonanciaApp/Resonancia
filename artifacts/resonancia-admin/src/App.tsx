@@ -38,6 +38,7 @@ import {
   Sunrise,
   Route as RouteIcon,
   Flame,
+  Map as MapIcon,
 } from "lucide-react";
 import { Toaster } from "@/components/ui/sonner";
 import { queryClient } from "@/lib/queryClient";
@@ -71,6 +72,7 @@ import ParaEsteMomentoPage from "@/pages/para-este-momento";
 import CategoriasReflexionPage from "@/pages/categorias-reflexion";
 import TuCaminoPage from "@/pages/tu-camino";
 import SistemaRachasPage from "@/pages/sistema-rachas";
+import ElRecorridoPage from "@/pages/el-recorrido";
 
 const clerkPubKey = publishableKeyFromHost(
   window.location.hostname,
@@ -226,6 +228,7 @@ const NAV_SECTIONS = [
       { href: "/portadas-avatares", label: "Portadas y avatares", icon: Images },
       { href: "/tu-camino", label: "Tu camino", icon: RouteIcon },
       { href: "/sistema-rachas", label: "Sistema de rachas", icon: Flame },
+      { href: "/el-recorrido", label: "El Recorrido", icon: MapIcon },
       { href: "/geometrix", label: "Geometrix", icon: Hexagon },
     ],
   },
@@ -420,6 +423,7 @@ function AdminGate() {
         <Route path="/portadas-avatares" component={PortadasAvataresPage} />
         <Route path="/tu-camino" component={TuCaminoPage} />
         <Route path="/sistema-rachas" component={SistemaRachasPage} />
+        <Route path="/el-recorrido" component={ElRecorridoPage} />
         <Route path="/resonadores" component={ResonadoresPage} />
         <Route component={NotFound} />
       </Switch>

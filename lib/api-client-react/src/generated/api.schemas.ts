@@ -3658,6 +3658,25 @@ export interface CoverPresetUploadCleanup {
   objectPath: string;
 }
 
+export interface JourneyInfoContent {
+  /**
+     * @minLength 1
+     * @maxLength 100
+     */
+  title: string;
+  /**
+     * @minLength 1
+     * @maxLength 5000
+     */
+  description: string;
+}
+
+export interface JourneyInfoSettings {
+  content: JourneyInfoContent;
+  /** @minimum 0 */
+  revision: number;
+}
+
 export type StreakInfoCardId = typeof StreakInfoCardId[keyof typeof StreakInfoCardId];
 
 
