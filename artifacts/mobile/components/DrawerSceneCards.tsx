@@ -61,9 +61,9 @@ export function DrawerSceneCards({ activeId, onSelect }: Props) {
             >
               <View style={styles.iconWrap} pointerEvents="none">
                 {s.id === "indigo2" ? (
-                  <MoonCrescentIcon size={24} color={selected ? s.iconColor : "#A8A8A8"} />
+                  <MoonCrescentIcon size={21} color={selected ? s.iconColor : "#A8A8A8"} />
                 ) : (
-                  <MaterialCommunityIcons name={s.icon} size={24} color={selected ? s.iconColor : "#A8A8A8"} />
+                  <MaterialCommunityIcons name={s.icon} size={21} color={selected ? s.iconColor : "#A8A8A8"} />
                 )}
               </View>
               <Text style={[styles.label, { color: selected ? "#FFFFFF" : "#A8A8A8" }]} numberOfLines={1}>{s.title}</Text>
@@ -98,5 +98,5 @@ const styles = StyleSheet.create({
   list: { marginTop: 10, flexDirection: "row", gap: 12 },
   column: { flex: 1, gap: 2 },
   iconWrap: { width: 26, height: 26, alignItems: "center", justifyContent: "center" },
-  label: { fontFamily: "Manrope650", color: "#FFFFFF", fontSize: 13, lineHeight: 20, fontWeight: "400", letterSpacing: 0.2 },
+  label: { fontFamily: "Manrope620", color: "#FFFFFF", fontSize: 12, lineHeight: 20, fontWeight: "400", letterSpacing: 0.2 },
 });

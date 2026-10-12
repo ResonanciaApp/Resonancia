@@ -448,6 +448,7 @@ export default function RootLayout() {
     Manrope: require("../assets/fonts/Manrope.ttf"),
     Manrope550: require("../assets/fonts/Manrope550.ttf"),
     Manrope630: require("../assets/fonts/Manrope630.ttf"),
+    Manrope620: require("../assets/fonts/Manrope620.ttf"),
     Manrope650: require("../assets/fonts/Manrope650.ttf"),
     CormorantGaramond: CormorantGaramond_500Medium,
     ...Feather.font,
