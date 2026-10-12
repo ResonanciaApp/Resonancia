@@ -14,3 +14,9 @@ El orden editorial elegido en Admin debe ser compartido con la app, también cua
 **Why:** El usuario pidió que los cambios de orden del Admin se reflejen en la app. Un sorteo independiente en cada cliente rompería esa correspondencia.
 
 **How to apply:** Tratar Aleatorio e Intercalado como formas de preparar un orden para guardar, conservando la posibilidad de ajustarlo manualmente.
+
+La ventana móvil de Portada de avatares se cierra únicamente al deslizarla hacia abajo, no al tocar el fondo ni espacios vacíos.
+
+**Why:** El usuario retiró expresamente el cierre por tacto para evitar cierres accidentales mientras explora o filtra avatares.
+
+**How to apply:** Mantener el gesto descendente coordinado con el scroll: desde la cabecera siempre, y desde la grilla solo cuando está en el inicio. Un gesto corto vuelve suavemente a su posición.
