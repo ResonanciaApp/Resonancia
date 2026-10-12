@@ -18,7 +18,7 @@ import { useColors } from "@/hooks/useColors";
 import { DiscoverSearchBorder } from "@/components/DiscoverSearchBorder";
 import { ReflectionWallPlusIcon, WALL_PLUS_HALO_SIZES as HALO_SIZES } from "@/components/ReflectionWallPlusIcon";
 import { ReflectionCategoryTabFill } from "@/components/ReflectionCategoryTabFill";
-import { ReflectionCategoryTabLabel } from "@/components/ReflectionCategoryTabLabel";
+import { ReflectionCategoryTabLabel, ReflectionCategoryTabBorder } from "@/components/ReflectionCategoryTabLabel";
 import {
   REFLECTION_WALL_BORDER_GRADIENT,
   REFLECTION_WALL_BORDER_LOCATIONS,
@@ -615,7 +615,10 @@ export function InnerSpaceCard({
               ]}
               onPress={() => toggleCategory(cat.id as ReflectionCategory)}
             >
-              <ReflectionCategoryTabFill selected={category === cat.id} color={cat.color} selectedOpacity={0.2} blurred={false} reduceMotion={Boolean(reduceMotion)} />
+              <ReflectionCategoryTabFill selected={category === cat.id} color={cat.color} selectedOpacity={0.5} blurred={false} reduceMotion={Boolean(reduceMotion)} />
+              {category === cat.id && (
+                <ReflectionCategoryTabBorder color={cat.color} borderWidth={1} opacity={0.7} />
+              )}
               <ReflectionCategoryTabLabel
                 label={cat.label}
                 selected={category === cat.id}
