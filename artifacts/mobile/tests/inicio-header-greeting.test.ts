@@ -11,7 +11,12 @@ test("the mood register below Home username preserves the same F4F4F4 in every t
   const greeting = source.match(/<Text style=\{styles\.inicio3HeroDecree\}[\s\S]*?<\/Text>/)?.[0];
   assert.ok(greeting);
   assert.match(greeting, /Registro de ánimo/);
-  assert.equal(style.fontSize, 12);
+  assert.equal(style.fontSize, 14);
+  assert.equal(style.lineHeight, 19);
+  const identityBody = source.match(/inicio3HeroGreeting: \{([\s\S]*?)\n  \}/)?.[1];
+  assert.ok(identityBody);
+  const identityStyle = new Function(`return ({${identityBody}});`)();
+  assert.equal(identityStyle.marginLeft, 15);
   assert.equal(style.fontWeight, "600");
 });
 
@@ -31,7 +36,7 @@ test("Home identity and emoji widget use the same stable mood-sheet action", () 
   assert.ok(register);
   assert.match(register[0], /accessibilityRole="button"/);
   assert.match(register[0], /Registro de ánimo/);
-  assert.match(register[0], /<Feather name="chevron-down" size=\{13\} color="#F4F4F4"/);
+  assert.match(register[0], /<Feather name="chevron-down" size=\{18\} color="#F4F4F4" style=\{\{ transform: \[\{ translateY: 2 \}\] \}\}/);
   assert.doesNotMatch(register[0], /onOpenDrawer/);
   assert.match(source, /<MoodPickerSheet[\s\S]*?visible=\{moodSheetVisible\}/);
 });

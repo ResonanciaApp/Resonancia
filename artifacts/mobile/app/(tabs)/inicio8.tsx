@@ -1995,7 +1995,7 @@ const Inicio2HeroStatic = React.memo(function Inicio2HeroStatic({
                 style={({ pressed }) => [styles.inicio3MoodRegister, pressed && { opacity: 0.65 }]}
               >
                 <Text style={styles.inicio3HeroDecree} numberOfLines={1}>Registro de ánimo</Text>
-                <Feather name="chevron-down" size={13} color="#F4F4F4" />
+                <Feather name="chevron-down" size={18} color="#F4F4F4" style={{ transform: [{ translateY: 2 }] }} />
               </Pressable>
             ) : null}
           </View>
@@ -3704,6 +3704,7 @@ const styles = StyleSheet.create({
     width: width * 0.6,
   },
   inicio3HeroGreeting: {
+    marginLeft: 15,
     transform: [{ translateY: -1 }],
   },
   inicio2HeroGreetingLabel: {
@@ -3729,8 +3730,8 @@ const styles = StyleSheet.create({
   inicio3HeroDecree: {
     color: "#F4F4F4",
     fontFamily: "Manrope",
-    fontSize: 12,
-    lineHeight: 17,
+    fontSize: 14,
+    lineHeight: 19,
     fontWeight: "600",
     letterSpacing: 0.2,
     textShadowColor: "rgba(0,0,0,0.55)",
