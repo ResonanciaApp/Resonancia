@@ -3,12 +3,14 @@ import React, { useCallback, useRef } from "react";
 import { BackHandler } from "react-native";
 
 import { useDrawer, type LibraryTab } from "@/context/DrawerContext";
+import { useBackOverride } from "@/context/BackOverrideContext";
 
 /**
  * Los detalles abiertos desde el overlay de Biblioteca deben volver a ese
  * overlay, no a la tab que quedó debajo (por ejemplo, Recursos).
  */
 export function useLibraryReturnBack(fromLibrary?: string | string[], returnTab?: LibraryTab) {
+  const backOverride = useBackOverride();
   const { openLib, openLibFromDrawer, libOpenedFromDrawer } = useDrawer();
   const returningRef = useRef(false);
   const shouldReturnToLibrary = Array.isArray(fromLibrary)
@@ -16,6 +18,10 @@ export function useLibraryReturnBack(fromLibrary?: string | string[], returnTab?
     : fromLibrary === "1";
 
   const goBack = useCallback(() => {
+    if (backOverride) {
+      backOverride();
+      return;
+    }
     if (!shouldReturnToLibrary) {
       if (router.canGoBack()) router.back();
       else router.navigate("/(tabs)/biblioteca" as never);
@@ -36,7 +42,7 @@ export function useLibraryReturnBack(fromLibrary?: string | string[], returnTab?
       if (router.canGoBack()) router.back();
       else router.navigate("/(tabs)/biblioteca" as never);
     });
-  }, [libOpenedFromDrawer, openLib, openLibFromDrawer, returnTab, shouldReturnToLibrary]);
+  }, [backOverride, libOpenedFromDrawer, openLib, openLibFromDrawer, returnTab, shouldReturnToLibrary]);
 
   useFocusEffect(
     useCallback(() => {

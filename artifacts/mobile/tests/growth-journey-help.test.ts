@@ -288,11 +288,21 @@ test("the map replaces the old help icon and paragraph, fits its sheet and dismi
     }));
   };
   const html = render(true);
-  assert.match(html, /data-testid="growth-help-sheet" data-height="541"/);
+  assert.match(html, /data-testid="growth-help-sheet" data-height="641"/);
   assert.match(html, /data-testid="growth-journey-map"/);
   assert.equal(h.nodes.get("growth-journey-map").width, 388);
   assert.equal(h.nodes.get("growth-map-title").children, "El recorrido");
   assert.equal(h.nodes.get("growth-map-subtitle").children, "PRIMER UNIVERSO");
+  assert.equal(h.nodes.get("growth-map-explanation-title").children, "¿Qué es?");
+  assert.ok(html.indexOf("¿Qué es?") < html.indexOf("El primer universo de Resonancia"));
+  assert.ok(html.indexOf('data-testid="growth-map-explanation"') > html.indexOf('data-testid="growth-journey-map"'));
+  assert.match(html, /365 días de racha acumulada: 5 mundos de 73 días/);
+  assert.match(html, /cada uno dividido en fases/);
+  assert.match(html, /3 avatares a tu elección/);
+  assert.match(html, /10 avatares más/);
+  assert.match(html, /Hall of Fame de Resonancia/);
+  const scrollChildren = h.nodes.get("growth-map-scroll").children;
+  assert.ok(scrollChildren.some((child: any) => child?.props?.testID === "growth-map-explanation"));
   assert.equal(flatten(h.nodes.get("growth-map-section").style).paddingTop, 45);
   const header = flatten(h.nodes.get("growth-map-header").style);
   const title = flatten(h.nodes.get("growth-map-title").style);
@@ -379,11 +389,12 @@ test("the map preserves its circle, overlays and first-only access while using i
         assert.equal(style.width, 164, "Florecimiento has enough width without moving the circular route");
         assert.equal(style.left + style.width / 2, width / 2, "active title and artwork remain centered");
         const world = h.nodes.get("growth-map-world-floracion");
-        assert.equal(world.children, "Primer mundo");
+        assert.equal(world.children, "PRIMER MUNDO");
         assert.equal(flatten(world.style).textAlign, "center");
         assert.equal(flatten(world.style).fontSize, 10);
+        assert.equal(flatten(world.style).fontWeight, "700");
         assert.equal(flatten(world.style).color, POSITIONED_DAY_GRADIENT[0]);
-        assert.ok(html.indexOf(labels[0]) < html.indexOf(">Primer mundo<"));
+        assert.ok(html.indexOf(labels[0]) < html.indexOf(">PRIMER MUNDO<"));
         assert.equal(flatten(h.nodes.get(`growth-map-label-${ids[i]}`).style).lineHeight, 20);
         assert.match(node.accessibilityLabel, /Primer mundo/);
       }

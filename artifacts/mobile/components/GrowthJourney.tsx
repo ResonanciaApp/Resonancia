@@ -476,7 +476,7 @@ function GrowthStageHeading({
       >
         {title}
       </Text>
-      {description && (
+      {second && description && (
         <Text
           testID="growth-world-description"
           style={[styles.worldDescription, { color: colors.mutedForeground }]}

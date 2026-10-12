@@ -64,6 +64,7 @@ import { useCoverPresetCatalog } from "@/lib/cover-preset-catalog";
 import { FavoriteActionsSheet } from "@/components/FavoriteActionsSheet";
 import { PremiumPlansSurface, usePremiumPlansModalHost } from "@/components/PremiumPlansOverlay";
 import { CARD_TEXT_ABOVE, CARD_TEXT_BELOW, WIDGET_GREEN_SOLID } from "@/constants/colors";
+import { isLibraryDetailRoute } from "@/lib/library-detail-navigation";
 
 const { width } = Dimensions.get("window");
 const H_PAD = 15;
@@ -102,6 +103,13 @@ function useLibraryRouteOpener() {
   const { libOpen, closeLib, isOpen: drawerOpen, close: closeDrawer } = useDrawer();
 
   return useCallback((route: string) => {
+    // iOS presents this modal above the root overlay, without moving its presenter.
+    if (Platform.OS === "ios" && isLibraryDetailRoute(route)) {
+      const separator = route.includes("?") ? "&" : "?";
+      router.push(`${route}${separator}librarySlide=1${libOpen ? "&fromLibrary=1" : ""}` as never);
+      // Biblioteca stays mounted, with its tab, scroll and opacity unchanged.
+      return;
+    }
     if (!libOpen) {
       router.push(route as never);
       return;
@@ -124,7 +132,7 @@ function usePlaylistPanelOpener() {
   const openLibraryRoute = useLibraryRouteOpener();
 
   return useCallback((plId: string) => {
-    if (libOpen) openLibraryRoute(`/playlist/${plId}`);
+    if (Platform.OS === "ios" || libOpen) openLibraryRoute(`/playlist/${plId}`);
     else if (overlay) overlay.openCategory(`/playlist/${plId}`);
     else openLibraryRoute(`/playlist/${plId}`);
   }, [libOpen, overlay, openLibraryRoute]);

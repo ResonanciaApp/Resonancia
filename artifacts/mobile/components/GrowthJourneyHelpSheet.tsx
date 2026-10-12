@@ -30,7 +30,8 @@ export function GrowthJourneyHelpSheet({
     : getThemeStyleId(theme.id) === "cloudy" ? CLOUDY_GROWTH_STAGE_LABEL_COLOR
     : POSITIONED_DAY_GRADIENT[0];
   // Window height is independent from the map offset and its fixed header.
-  const sheetHeight = Math.min(height * 0.8, GROWTH_MAP_HEIGHT + 95 + 44 + 32 + Math.max(insets.bottom, 16));
+  const previousHeight = Math.min(height * 0.8, GROWTH_MAP_HEIGHT + 95 + 44 + 32 + Math.max(insets.bottom, 16));
+  const sheetHeight = Math.min(height - insets.top - 12, previousHeight + 100);
   const { rendered, sheetY, backdropOpacity } = useGrowthJourneySheetMotion(visible, sheetHeight);
   const pan = useMemo(() => PanResponder.create({
     onMoveShouldSetPanResponder: (_, gesture) =>
@@ -124,6 +125,20 @@ export function GrowthJourneyHelpSheet({
           <View testID="growth-map-section" style={styles.mapSection}>
             <GrowthJourneyMap width={Math.min(width, 520) - 12} />
           </View>
+          <View testID="growth-map-explanation" style={styles.explanation}>
+            <Text testID="growth-map-explanation-title" accessibilityRole="header" style={[styles.explanationTitle, { color: colors.foreground }]}>
+              ¿Qué es?
+            </Text>
+            <Text style={[styles.explanationText, { color: colors.foreground }]}>
+              El primer universo de Resonancia es un recorrido de 365 días de racha acumulada: 5 mundos de 73 días, cada uno dividido en fases que acompañan tu crecimiento.
+            </Text>
+            <Text style={[styles.explanationText, { color: colors.foreground }]}>
+              Al avanzar de fase, desbloqueas 3 avatares a tu elección. Al pasar de mundo, desbloqueas 10 avatares más.
+            </Text>
+            <Text style={[styles.explanationText, { color: colors.foreground }]}>
+              Al completar el universo, tu constancia será reconocida en el Hall of Fame de Resonancia.
+            </Text>
+          </View>
         </ScrollView>
       </Animated.View>
     </View>
@@ -148,6 +163,9 @@ const styles = StyleSheet.create({
   content: { flexGrow: 1, justifyContent: "flex-start", alignItems: "center", paddingBottom: 16 },
   mapHeader: { height: 56 },
   mapSection: { paddingTop: 45 },
+  explanation: { width: "100%", maxWidth: 480, paddingHorizontal: 24, marginTop: 28, paddingBottom: 16, gap: 12 },
+  explanationTitle: { fontFamily: "Manrope", fontSize: 18, lineHeight: 24, fontWeight: "700", textAlign: "center" },
+  explanationText: { fontFamily: "Manrope", fontSize: 14, lineHeight: 21, textAlign: "center", opacity: 0.85 },
   mapTitle: { position: "absolute", top: 16, left: 64, right: 64, textAlign: "center", fontFamily: "Manrope", fontSize: 20, lineHeight: 24, fontWeight: "700" },
   mapSubtitle: { position: "absolute", top: 45, left: 64, right: 64, textAlign: "center", fontFamily: "Manrope", fontSize: 10, lineHeight: 13, fontWeight: "700", letterSpacing: 1.2 },
   closeButton: { position: "absolute", top: 6.5, left: 20, width: 43, height: 43, borderRadius: 21.5, borderWidth: 0, backgroundColor: "rgba(0,0,0,0.16)", alignItems: "center", justifyContent: "center" },

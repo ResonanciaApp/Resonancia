@@ -20,6 +20,8 @@ import { KeyboardProvider } from "react-native-keyboard-controller";
 import { SafeAreaProvider } from "react-native-safe-area-context";
 
 import { BibliotecaOverlay } from "@/components/BibliotecaOverlay";
+import { libraryScreenLayout } from "@/components/LibraryDetailTransition";
+import { libraryDetailOptions } from "@/lib/library-detail-navigation";
 import { LibraryMixOverlay } from "@/components/LibraryMixOverlay";
 import { DrawerScreenOverlay } from "@/components/DrawerScreenOverlay";
 import { ChatOverlay } from "@/components/ChatOverlay";
@@ -215,10 +217,12 @@ function NavStack() {
   const drawerScreenAnim = instantNav ? "none" : "slide_from_right";
   return (
       <Stack
-        screenOptions={{
+        screenLayout={libraryScreenLayout}
+        screenOptions={({ route }) => ({
           headerShown: false,
           contentStyle: { backgroundColor: "transparent" },
-        }}
+          ...libraryDetailOptions(route.params),
+        })}
       >
         <Stack.Screen name="(auth)" options={{ headerShown: false, animation: "fade" }} />
         <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
@@ -280,11 +284,11 @@ function NavStack() {
         />
         <Stack.Screen
           name="playlist/[id]"
-          options={{ headerShown: false, animation: "slide_from_right" }}
+          options={({ route }) => ({ headerShown: false, animation: "slide_from_right", ...libraryDetailOptions(route.params) })}
         />
         <Stack.Screen
           name="editorial-playlist/[slug]"
-          options={{ headerShown: false, animation: "slide_from_right" }}
+          options={({ route }) => ({ headerShown: false, animation: "slide_from_right", ...libraryDetailOptions(route.params) })}
         />
         <Stack.Screen
           name="mezclas-comunidad"

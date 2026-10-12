@@ -38,11 +38,11 @@ Los candados conceden cantidades de avatares de Perfil a elección del usuario, 
 
 **How to apply:** Separar cupos ganados de avatares elegidos; no repartir lotes automáticamente ni fijar 50 avatares en los textos. Permitir el canje funcional usando el selector existente, sin inventar una pantalla automática de premios. El bloqueo editorial global puede coexistir con un desbloqueo individual ganado.
 
-La visión del primer universo incluye cinco mundos: avanzar de fase concede 3 avatares y avanzar de mundo concede 10. Completar el universo merece reconocimiento en un Hall of Fame. La recompensa adicional por mundo y el diseño de ese reconocimiento no están definidos.
+La visión del primer universo incluye 365 días de racha acumulada, repartidos en cinco mundos de 73 días: avanzar de fase concede 3 avatares y avanzar de mundo concede 10. Completar el universo merece reconocimiento en un Hall of Fame. La recompensa adicional por mundo y el diseño de ese reconocimiento no están definidos.
 
 **Why:** El 12 de octubre de 2026 el usuario pidió explicar esta estructura bajo el mapa y ayudar a pensar los premios adicionales. Estos valores describen su nueva intención de producto, no una autorización para modificar retroactivamente las concesiones existentes.
 
-**How to apply:** No confundir el texto explicativo con una migración del motor de recompensas. Antes de fijar la duración, resolver con el usuario la incompatibilidad entre sus cifras de 360 días por universo y 73 días por cada uno de cinco mundos (365 en total). No presentar ideas sugeridas de premios adicionales como decisiones aprobadas.
+**How to apply:** No confundir el texto explicativo con una migración del motor de recompensas. El usuario confirmó 365 días (no 360), distribuidos en cinco mundos de 73 días. No presentar ideas sugeridas de premios adicionales como decisiones aprobadas.
 
 Las etapas se alcanzan al llegar al día inicial del rango. Una recompensa concedida conserva su cantidad original: editar cuotas afecta a concesiones futuras, y retirar etapas o candados no revoca avances, cupos ni avatares ya ganados.
 
