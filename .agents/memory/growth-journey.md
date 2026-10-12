@@ -32,11 +32,17 @@ al recorrido detallado cuando el editor configure sus fases explícitamente.
 
 **How to apply:** Las líneas y círculos acompañan automáticamente la estructura editorial. Conectar el progreso a días activos acumulados y las recompensas a recursos reales, no solo textos; conservar las etapas e imágenes originales como contenido inicial. El progreso alcanzado no retrocede cuando se corta una racha.
 
-Los candados conceden cantidades de avatares de Perfil a elección del usuario, no avatares predeterminados por etapa. Inicialmente cada candado concede 5; Admin puede configurar cuántos concede cada uno. La elección se hace de todo el pool de avatares bloqueados.
+Los candados conceden cantidades de avatares de Perfil a elección del usuario, no avatares predeterminados por etapa. La configuración inicial fue 5 por candado; Admin puede configurar cuántos concede cada uno. La elección se hace de todo el pool de avatares bloqueados.
 
 **Why:** El usuario definió explícitamente este sistema el 8 de octubre de 2026 y dejó fuera de alcance el diseño de la pantalla que se abrirá al subir de nivel.
 
 **How to apply:** Separar cupos ganados de avatares elegidos; no repartir lotes automáticamente ni fijar 50 avatares en los textos. Permitir el canje funcional usando el selector existente, sin inventar una pantalla automática de premios. El bloqueo editorial global puede coexistir con un desbloqueo individual ganado.
+
+La visión del primer universo incluye cinco mundos: avanzar de fase concede 3 avatares y avanzar de mundo concede 10. Completar el universo merece reconocimiento en un Hall of Fame. La recompensa adicional por mundo y el diseño de ese reconocimiento no están definidos.
+
+**Why:** El 12 de octubre de 2026 el usuario pidió explicar esta estructura bajo el mapa y ayudar a pensar los premios adicionales. Estos valores describen su nueva intención de producto, no una autorización para modificar retroactivamente las concesiones existentes.
+
+**How to apply:** No confundir el texto explicativo con una migración del motor de recompensas. Antes de fijar la duración, resolver con el usuario la incompatibilidad entre sus cifras de 360 días por universo y 73 días por cada uno de cinco mundos (365 en total). No presentar ideas sugeridas de premios adicionales como decisiones aprobadas.
 
 Las etapas se alcanzan al llegar al día inicial del rango. Una recompensa concedida conserva su cantidad original: editar cuotas afecta a concesiones futuras, y retirar etapas o candados no revoca avances, cupos ni avatares ya ganados.
 
