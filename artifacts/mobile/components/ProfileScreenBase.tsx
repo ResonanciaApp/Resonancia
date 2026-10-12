@@ -87,7 +87,7 @@ import { ReflectionSavedBanner } from "@/components/ReflectionSavedBanner";
 import type { HomeReflectionWallHandle } from "@/components/HomeReflectionWallSection";
 import { GrowthJourneySheet } from "@/components/GrowthJourneySheet";
 import { GrowthLevelPreviewCard, GrowthCurrentStagePill } from "@/components/GrowthJourney";
-import { useCoverPresetCatalogState } from "@/lib/cover-preset-catalog";
+import { useCoverPresetCatalogState, type CoverCatalogItem } from "@/lib/cover-preset-catalog";
 import { AvatarCategoryMenu, AvatarCategoryTrigger } from "@/components/AvatarCategoryDropdown";
 import {
   ALL_AVATARS,
@@ -121,6 +121,36 @@ const SHOW_PROFILE_PRACTICE_CARDS = false;
 const PROFILE_SECTION_GAP = 21;
 const PROFILE_CARD_BOTTOM_PADDING = 20;
 const PROFILE_WEEK_TOP_PADDING = 18;
+
+const AvatarCoverCell = React.memo(function AvatarCoverCell({
+  preset, selected, locked, disabled, onSelect,
+}: {
+  preset: CoverCatalogItem; selected: boolean; locked: boolean; disabled: boolean;
+  onSelect: (preset: CoverCatalogItem) => void;
+}) {
+  return (
+    <Pressable
+      onPress={() => onSelect(preset)}
+      accessibilityRole="button"
+      accessibilityLabel={`Avatar: ${preset.label}${locked ? ", desbloquear con 1 cupo" : ""}`}
+      accessibilityState={{ selected, disabled }}
+      disabled={disabled}
+      style={({ pressed }) => [
+        styles.accountCoverPresetFrame,
+        selected && styles.accountCoverPresetFrameSelected,
+        { opacity: pressed ? 0.72 : 1 },
+      ]}
+    >
+      <Image source={preset.source} style={styles.accountCoverPresetPhoto}
+        contentFit="cover" cachePolicy="memory-disk" transition={0} />
+      {locked && (
+        <View pointerEvents="none" style={[StyleSheet.absoluteFill, styles.accountAvatarLockedOverlay]}>
+          <MaterialCommunityIcons name="lock" size={16} color="#F9F9F9" accessibilityElementsHidden importantForAccessibility="no" />
+        </View>
+      )}
+    </Pressable>
+  );
+});
 
 function resizeImageForWeb(uri: string, maxSize: number): Promise<string> {
   return new Promise((resolve, reject) => {
@@ -625,6 +655,9 @@ export function ProfileScreenBase({
   const openAvatarPicker = async () => {
     if (avatarOpeningRef.current || accountSavingRef.current) return;
     avatarOpeningRef.current = true;
+    // Reset before native presentation, never while the sheet is moving.
+    setAvatarFilter(ALL_AVATARS);
+    setAvatarFilterOpen(false);
     try {
       await accountCoverHero.prepare();
     } catch (error) {
@@ -664,9 +697,6 @@ export function ProfileScreenBase({
   const [accountPhotoLibraryPending, setAccountPhotoLibraryPending] = useState(false);
   useEffect(() => {
     if (!accountPhotoPickerVisible) setGoldenAvatarVisible(false);
-    // Every opening starts on Todos with the dropdown closed.
-    setAvatarFilter(ALL_AVATARS);
-    setAvatarFilterOpen(false);
   }, [accountPhotoPickerVisible]);
   const selectAvatarFilter = (next: AvatarCategoryFilter) => {
     setAvatarFilterOpen(false);
@@ -951,12 +981,18 @@ export function ProfileScreenBase({
     }
   };
 
+  const pickAvatarRef = useRef(pickAccountAvatarPreset);
+  pickAvatarRef.current = pickAccountAvatarPreset;
+  const selectCoverAvatar = useCallback((preset: CoverCatalogItem) => {
+    void pickAvatarRef.current(preset);
+  }, []);
+
   useEffect(() => {
-    if (accountPhotoPickerVisible) {
+    if (accountPhotoPickerVisible && avatarPickerMotion.opened) {
       void refreshProfileCatalog();
       void growth.refresh();
     }
-  }, [accountPhotoPickerVisible, refreshProfileCatalog]);
+  }, [accountPhotoPickerVisible, avatarPickerMotion.opened, refreshProfileCatalog]);
 
   useEffect(() => {
     if (
@@ -1239,7 +1275,10 @@ export function ProfileScreenBase({
             animationType="none"
             transparent
             statusBarTranslucent
-            onShow={() => accountAvatarGridRef.current?.scrollToOffset({ offset: 0, animated: false })}
+            onShow={() => {
+              accountAvatarGridRef.current?.scrollToOffset({ offset: 0, animated: false });
+              avatarPickerMotion.onShow();
+            }}
             onRequestClose={closeAvatarPicker}
             onDismiss={() => {
               setGoldenAvatarVisible(false);
@@ -1348,6 +1387,10 @@ export function ProfileScreenBase({
                 data={filteredProfileCatalog}
                 keyExtractor={(preset) => preset.id}
                 numColumns={5}
+                initialNumToRender={8}
+                maxToRenderPerBatch={2}
+                windowSize={3}
+                updateCellsBatchingPeriod={avatarPickerMotion.opened ? 80 : 1000}
                 showsVerticalScrollIndicator={false}
                 contentContainerStyle={[styles.accountCoverPresetGridContent, styles.accountCoverPresetGridContentFiltered, { paddingBottom: bottomPad + 20 }]}
                 ListEmptyComponent={
@@ -1367,31 +1410,10 @@ export function ProfileScreenBase({
                 renderItem={({ item: preset }) => {
                   if (preset.placeholder) return <View style={styles.accountCoverPresetFrame} pointerEvents="none" importantForAccessibility="no" accessibilityElementsHidden />;
                    const selected = preset.id === (accountSelectedProfilePreset?.id ?? accountAvatarPresetId);
-                  const locked = preset.isLocked && !growth.progress?.unlockedAvatarIds.includes(preset.id) && preset.id !== selectedAvatarPresetId;
+                  const locked = Boolean(preset.isLocked && !growth.progress?.unlockedAvatarIds.includes(preset.id) && preset.id !== selectedAvatarPresetId);
                   return (
-                    <Pressable
-                      onPress={() => void pickAccountAvatarPreset(preset)}
-                      accessibilityRole="button"
-                      accessibilityLabel={`Avatar: ${preset.label}${locked ? ", desbloquear con 1 cupo" : ""}`}
-                       accessibilityState={{ selected, disabled: accountSaving || growth.spending }}
-                       disabled={accountSaving || growth.spending}
-                      style={({ pressed }) => [
-                        styles.accountCoverPresetFrame,
-                        selected && styles.accountCoverPresetFrameSelected,
-                        { opacity: pressed ? 0.72 : 1 },
-                      ]}
-                    >
-                      <Image
-                        source={preset.source}
-                        style={styles.accountCoverPresetPhoto}
-                        contentFit="cover"
-                      />
-                      {locked && (
-                        <View pointerEvents="none" style={[StyleSheet.absoluteFill, styles.accountAvatarLockedOverlay]}>
-                          <MaterialCommunityIcons name="lock" size={16} color="#F9F9F9" accessibilityElementsHidden importantForAccessibility="no" />
-                        </View>
-                      )}
-                    </Pressable>
+                    <AvatarCoverCell preset={preset} selected={selected} locked={locked}
+                      disabled={accountSaving || growth.spending} onSelect={selectCoverAvatar} />
                   );
                 }}
               />

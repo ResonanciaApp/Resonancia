@@ -131,7 +131,14 @@ test("mix, playlist and avatar grids wire all movement and measurement callbacks
     assert.match(attrs, /showsVerticalScrollIndicator=\{false\}/);
     assert.ok(text.includes(`<ScrollProgressIndicator progress={${hookName}} />`));
     assert.match(attrs, /numColumns=\{5\}/);
-    assert.match(attrs, /accessibilityState=\{\{ selected/);
+    if (hookName === "avatarScrollProgress") {
+      assert.match(attrs, /<AvatarCoverCell preset=\{preset\} selected=\{selected\} locked=\{locked\}/);
+      const cell = text.slice(text.indexOf("const AvatarCoverCell ="), text.indexOf("function resizeImageForWeb"));
+      assert.match(cell, /accessibilityState=\{\{ selected, disabled \}\}/);
+      assert.match(cell, /onPress=\{\(\) => onSelect\(preset\)\}/);
+    } else {
+      assert.match(attrs, /accessibilityState=\{\{ selected/);
+    }
   }
   assert.match(source, /pointerEvents="none"/);
   assert.match(source, /rgba\(249,249,249,0\.13\)/);

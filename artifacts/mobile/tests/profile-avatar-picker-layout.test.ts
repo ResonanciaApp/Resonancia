@@ -85,6 +85,19 @@ test("a large avatar catalog cannot enlarge the sheet beyond the screen", () => 
   }
 });
 
+test("avatar work is bounded and catalog refresh waits for the opening to settle", () => {
+  assert.match(source, /initialNumToRender=\{8\}/);
+  assert.match(source, /maxToRenderPerBatch=\{2\}/);
+  assert.match(source, /windowSize=\{3\}/);
+  assert.match(source, /updateCellsBatchingPeriod=\{avatarPickerMotion.opened \? 80 : 1000\}/);
+  assert.match(source, /const AvatarCoverCell = React.memo/);
+  assert.match(source, /cachePolicy="memory-disk"/);
+  assert.match(source, /if \(accountPhotoPickerVisible && avatarPickerMotion.opened\)/);
+  const open = source.slice(source.indexOf("const openAvatarPicker ="), source.indexOf("const [accountPhotoPickerVisible"));
+  assert.ok(open.indexOf("setAvatarFilter(ALL_AVATARS)") < open.indexOf("setAccountPhotoPickerVisible(true)"));
+  assert.match(source, /useEffect\(\(\) => \{\s*if \(!accountPhotoPickerVisible\) setGoldenAvatarVisible\(false\);\s*\}, \[accountPhotoPickerVisible\]\)/);
+});
+
 test("avatar grid reaches the bottom without a fixed footer, retaining scrollable safe-area spacing", () => {
   assert.match(source, /style=\{\[styles.accountCoverSheet, avatarPickerMotion.sheetStyle\]\}/);
   assert.doesNotMatch(source, /styles.accountCoverSheet, \{ paddingBottom:/);
@@ -293,7 +306,7 @@ test("opening and reopening the actual picker resets its own avatar list to the 
   const ref: { current: null | { scrollToOffset: (args: unknown) => void } } = {
     current: { scrollToOffset: (args) => calls.push(args) },
   };
-  const onShow = new Function("accountAvatarGridRef", js)(ref);
+  const onShow = new Function("accountAvatarGridRef", "avatarPickerMotion", js)(ref, { onShow: () => {} });
   onShow();
   onShow();
   assert.deepEqual(calls, [{ offset: 0, animated: false }, { offset: 0, animated: false }]);

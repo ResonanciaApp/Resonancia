@@ -38,3 +38,9 @@ El avatar hero de Portada debe estar visible desde el comienzo, sin animación p
 **Why:** El usuario reiteró que debe comportarse como las imágenes de la grilla y reportó parpadeo aunque ya no tuviera fade.
 
 **How to apply:** No confundir la animación de la ventana con una animación del avatar. Preparar la imagen antes de abrir y evitar recargarla por una actualización editorial que no cambie su fuente real.
+
+La presentación nativa y la carga del catálogo deben coordinarse: animar desde la confirmación de que el Modal está mostrado y no reconstruir la grilla mientras sale.
+
+**Why:** El arrastre ya era nativo, pero la apertura coincidía con montaje masivo de imágenes y refrescos; cerrar con un filtro activo cambiaba la lista antes de terminar la salida.
+
+**How to apply:** Preparar filtros antes de presentar, acotar las filas anticipadas y esperar el fin real de apertura para refrescar datos. El diagnóstico del drawer por sí solo no atribuye pausas a Portada; distinguir los eventos de cada ventana.

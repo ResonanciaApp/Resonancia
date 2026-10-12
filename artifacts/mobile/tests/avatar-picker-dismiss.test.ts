@@ -6,7 +6,7 @@ import ts from "typescript";
 const source = readFileSync(new URL("../hooks/useAvatarPickerDismiss.ts", import.meta.url), "utf8");
 const code = ts.transpileModule(source, { compilerOptions: { module: ts.ModuleKind.CommonJS } }).outputText;
 
-function setup(offset = 0, deferJS = false) {
+function setup(offset = 0, deferJS = false, showNativeModal = true) {
   const calls: any[] = [];
   const springs: any[] = [];
   const jsTasks: (() => void)[] = [];
@@ -14,6 +14,15 @@ function setup(offset = 0, deferJS = false) {
   const refs: any[] = [];
   const states: any[] = [];
   const effects: any[][] = [];
+  const memos: { deps: any[]; value: any }[] = [];
+  let mi = 0;
+  const memo = (fn: () => any, deps: any[]) => {
+    const index = mi++;
+    if (!memos[index] || deps.some((dep, i) => dep !== memos[index].deps[i])) {
+      memos[index] = { deps, value: fn() };
+    }
+    return memos[index].value;
+  };
   const completions: ((finished: boolean) => void)[] = [];
   let vi = 0, ri = 0, si = 0, ei = 0;
   let failed = false, active = false;
@@ -29,9 +38,10 @@ function setup(offset = 0, deferJS = false) {
     return gesture;
   }
   const mocks: Record<string, any> = {
+    "@/hooks/useDrawerDiagnostics": { drawerDiagnosticEvent: () => {} },
     react: {
-      useMemo: (fn: () => unknown) => fn(),
-      useCallback: (fn: unknown) => fn,
+      useMemo: memo,
+      useCallback: (fn: any, deps: any[]) => memo(() => fn, deps),
       useRef: (initial: unknown) => refs[ri++] ?? (refs[ri - 1] = { current: initial }),
       useState: (initial: unknown) => {
         const i = si++;
@@ -49,6 +59,7 @@ function setup(offset = 0, deferJS = false) {
       useSharedValue: (initial: unknown) => values[vi++] ?? (values[vi - 1] = { value: initial }),
       useAnimatedStyle: (fn: () => unknown) => fn(),
       cancelAnimation: () => {},
+      runOnUI: (fn: any) => fn,
       runOnJS: (fn: (...args: any[]) => void) => (...args: any[]) => {
         if (deferJS) jsTasks.push(() => fn(...args));
         else fn(...args);
@@ -74,11 +85,16 @@ function setup(offset = 0, deferJS = false) {
   };
   let controls: any;
   const render = () => {
-    vi = ri = si = ei = 0;
+    vi = ri = si = ei = mi = 0;
     controls = exports.useAvatarPickerDismiss(options);
     return controls;
   };
   render();
+  if (showNativeModal) {
+    controls.onShow();
+    completions.splice(0).forEach(fn => fn(true));
+    jsTasks.splice(0).forEach(fn => fn());
+  }
   calls.length = 0;
   springs.length = 0;
   const manager = {
@@ -130,6 +146,18 @@ test("native downward drag continues immediately; React dismisses only after mot
   h.render();
   assert.equal(h.calls.length, callsBeforeRender, "React must not start a second exit");
   assert.equal(h.states[0], false);
+});
+
+test("opening waits for native presentation and exposes readiness only after completion", () => {
+  const h = setup(0, false, false);
+  assert.equal(h.values[0].value, 780);
+  assert.equal(h.states[1], false);
+  assert.equal(h.calls.length, 0);
+  h.controls.onShow();
+  assert.deepEqual(h.calls[0], ["spring", 0]);
+  assert.equal(h.states[1], false);
+  h.completions[0](true);
+  assert.equal(h.states[1], true);
 });
 
 test("scrolling the grid releases its native recognizer, while the header always permits dismissal", () => {

@@ -1,7 +1,8 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { Gesture } from "react-native-gesture-handler";
+import { drawerDiagnosticEvent } from "@/hooks/useDrawerDiagnostics";
 import {
-  cancelAnimation, Easing, runOnJS, useAnimatedStyle, useSharedValue, withSpring, withTiming,
+  cancelAnimation, Easing, runOnJS, runOnUI, useAnimatedStyle, useSharedValue, withSpring, withTiming,
   type SharedValue,
 } from "react-native-reanimated";
 
@@ -22,6 +23,8 @@ export function useAvatarPickerDismiss(options: {
   const latest = useRef(options);
   latest.current = options;
   const [rendered, setRendered] = useState(visible);
+  const [opened, setOpened] = useState(false);
+  const modalShown = useRef(false);
   const revision = useRef(0);
   const wasShown = useRef(visible);
   const sheetY = useSharedValue(sheetHeight + 80);
@@ -34,7 +37,30 @@ export function useAvatarPickerDismiss(options: {
   const gestureClosing = useSharedValue(false);
   const gestureExitFinished = useSharedValue(false);
   const exitPartsRemaining = useSharedValue(0);
-  const requestClose = useCallback(() => latest.current.onClose(), []);
+  const requestClose = useCallback(() => {
+    drawerDiagnosticEvent("avatar:swipe-exit-finished");
+    latest.current.onClose();
+  }, []);
+  const finishOpen = useCallback((token: number) => {
+    if (revision.current === token && latest.current.visible) {
+      drawerDiagnosticEvent("avatar:opened");
+      setOpened(true);
+    }
+  }, []);
+  const animateOpen = useCallback((token: number) => {
+    runOnUI(() => {
+      "worklet";
+      sheetY.value = withSpring(0, SHEET_SPRING, finished => {
+        if (finished) runOnJS(finishOpen)(token);
+      });
+      backdropOpacity.value = withTiming(0.62, { duration: 500 });
+    })();
+  }, [sheetY, backdropOpacity, finishOpen]);
+  const onShow = useCallback(() => {
+    modalShown.current = true;
+    drawerDiagnosticEvent("avatar:native-shown");
+    if (latest.current.visible && wasShown.current) animateOpen(revision.current);
+  }, [animateOpen]);
   const finishGestureExitPart = useCallback((finished?: boolean) => {
     "worklet";
     if (!finished) return;
@@ -46,7 +72,9 @@ export function useAvatarPickerDismiss(options: {
   }, [exitPartsRemaining, gestureExitFinished, requestClose]);
   const finishClose = useCallback((token: number) => {
     if (revision.current === token && !latest.current.visible) {
+      drawerDiagnosticEvent("avatar:hidden");
       wasShown.current = false;
+      modalShown.current = false;
       setRendered(false);
     }
   }, []);
@@ -54,10 +82,13 @@ export function useAvatarPickerDismiss(options: {
   useEffect(() => {
     const token = ++revision.current;
     isVisible.value = visible;
+    setOpened(false);
     if (!visible && wasShown.current && gestureExitFinished.value) {
+      drawerDiagnosticEvent("avatar:hidden");
       // Both native animations have finished. React only dismisses the Modal;
       // it must not replay the exit or reset its translation.
       wasShown.current = false;
+      modalShown.current = false;
       gestureExitFinished.value = false;
       gestureClosing.value = false;
       setRendered(false);
@@ -66,6 +97,7 @@ export function useAvatarPickerDismiss(options: {
     cancelAnimation(sheetY);
     cancelAnimation(backdropOpacity);
     if (visible) {
+      drawerDiagnosticEvent("avatar:open-request");
       gestureClosing.value = false;
       gestureExitFinished.value = false;
       exitPartsRemaining.value = 0;
@@ -73,9 +105,11 @@ export function useAvatarPickerDismiss(options: {
       setRendered(true);
       sheetY.value = sheetHeight + 80;
       backdropOpacity.value = 0;
-      sheetY.value = withSpring(0, SHEET_SPRING);
-      backdropOpacity.value = withTiming(0.62, { duration: 500 });
+      // First mount waits for the native Modal, not just a React commit.
+      // Reopening an exit already in progress doesn't emit another onShow.
+      if (modalShown.current) animateOpen(token);
     } else if (wasShown.current) {
+      drawerDiagnosticEvent("avatar:close-request");
       // Starts at the gesture's last position, never at a reset position.
       sheetY.value = withTiming(sheetHeight + 80, {
         duration: 500, easing: Easing.inOut(Easing.ease),
@@ -90,7 +124,7 @@ export function useAvatarPickerDismiss(options: {
     };
   }, [
     visible, sheetHeight, sheetY, backdropOpacity, isVisible, finishClose,
-    gestureClosing, gestureExitFinished, exitPartsRemaining,
+    gestureClosing, gestureExitFinished, exitPartsRemaining, animateOpen,
   ]);
 
   const gridGesture = useMemo(() => Gesture.Native(), []);
@@ -161,5 +195,5 @@ export function useAvatarPickerDismiss(options: {
 
   const sheetStyle = useAnimatedStyle(() => ({ transform: [{ translateY: sheetY.value }] }));
   const backdropStyle = useAnimatedStyle(() => ({ opacity: backdropOpacity.value }));
-  return { rendered, gesture, gridGesture, sheetStyle, backdropStyle };
+  return { rendered, opened, onShow, gesture, gridGesture, sheetStyle, backdropStyle };
 }
