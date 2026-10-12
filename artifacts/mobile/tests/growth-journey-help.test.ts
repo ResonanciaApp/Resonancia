@@ -308,13 +308,14 @@ test("the map replaces the old help icon and paragraph, fits its sheet and dismi
   assert.equal(h.explanation.title, INITIAL_JOURNEY_INFO.title);
   assert.equal(h.explanation.description, INITIAL_JOURNEY_INFO.description);
   assert.equal(h.explanation.visible, false);
-  assert.equal(flatten(h.nodes.get("growth-map-section").style).paddingTop, 45);
+  const mapPadding = flatten(h.nodes.get("growth-map-section").style).paddingTop;
+  assert.equal(mapPadding, 61);
   const header = flatten(h.nodes.get("growth-map-header").style);
   const title = flatten(h.nodes.get("growth-map-title").style);
   const close = flatten(h.nodes.get("growth-help-close").style);
-  // Same title position (44 + 16); map moves down 10pt from its previous 135pt.
+  // Keep the title fixed; move the complete map 16pt below its previous 145pt.
   assert.equal(44 + title.top, 60);
-  assert.equal(44 + header.height + 45, 145);
+  assert.equal(44 + header.height + mapPadding, 161);
   assert.equal(title.top + title.lineHeight / 2, close.top + close.height / 2);
   assert.equal(close.width, 43);
   assert.equal(close.height, 43);
