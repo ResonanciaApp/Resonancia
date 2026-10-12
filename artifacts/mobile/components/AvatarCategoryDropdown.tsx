@@ -7,7 +7,7 @@ import { Pressable, ScrollView, StyleSheet, View } from "react-native";
 import { CardCaptionText as Text } from "@/components/CardCaptionText";
 import { avatarFilterOptions, type AvatarCategory, type AvatarCategoryFilter } from "@/lib/profile-avatar-categories";
 
-/** Transparent text control at the right margin immediately above the avatar grid. */
+/** Transparent text control at the left margin immediately above the avatar grid. */
 export function AvatarCategoryTrigger({
   label,
   open,
@@ -40,7 +40,7 @@ export function AvatarCategoryTrigger({
 export function AvatarCategoryMenu({
   visible,
   top,
-  right,
+  left,
   categories,
   value,
   sceneId,
@@ -49,7 +49,7 @@ export function AvatarCategoryMenu({
 }: {
   visible: boolean;
   top: number;
-  right: number;
+  left: number;
   categories: readonly AvatarCategory[];
   value: AvatarCategoryFilter;
   sceneId: string;
@@ -67,7 +67,7 @@ export function AvatarCategoryMenu({
         accessibilityLabel="Cerrar lista de categorías"
         testID="avatar-category-backdrop"
       />
-      <View style={[styles.menu, { top, right }]} accessibilityRole="menu" testID="avatar-category-menu">
+      <View style={[styles.menu, { top, left }]} accessibilityRole="menu" testID="avatar-category-menu">
         <View pointerEvents="none" style={styles.glassSurface}>
           <BlurView pointerEvents="none" tint={TAB_PILL_BLUR_TINT}
             intensity={TAB_PILL_BLUR_INTENSITY} experimentalBlurMethod="dimezisBlurView"
@@ -106,7 +106,7 @@ const styles = StyleSheet.create({
     overflow: "hidden",
   },
   trigger: {
-    alignSelf: "flex-end",
+    alignSelf: "flex-start",
     maxWidth: 200,
     flexDirection: "row",
     alignItems: "center",

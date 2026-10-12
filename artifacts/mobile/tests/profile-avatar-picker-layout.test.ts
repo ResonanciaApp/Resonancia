@@ -195,12 +195,14 @@ test("hero moves down ten pixels in normal flow and pushes the avatar grid equal
   assert.match(source, /<\/View>\s*<View\s+style=\{styles.accountCoverPresetGrid\}[\s\S]*?<Reanimated\.FlatList\s+ref=\{accountAvatarGridRef\}/);
 });
 
-test("avatar filter is transparent, 11pt, right-aligned and raised seven pixels with the grid", () => {
+test("avatar filter and its menu align to the left margin while preserving vertical spacing", () => {
   const dropdown = readFileSync(new URL("../components/AvatarCategoryDropdown.tsx", import.meta.url), "utf8");
   assert.match(dropdown, /fontSize:\s*11/);
   assert.match(dropdown, /lineHeight:\s*14/);
   assert.match(dropdown, /name=\{open \? "chevron-up" : "chevron-down"\} size=\{13\}/);
-  assert.match(dropdown, /alignSelf:\s*"flex-end"/);
+  assert.match(dropdown, /alignSelf:\s*"flex-start"/);
+  assert.equal(findStyle("accountAvatarCategoryRow").alignItems, "flex-start");
+  assert.equal(findStyle("accountAvatarCategoryAnchor").alignSelf, "flex-start");
   const triggerStyles = dropdown.slice(dropdown.indexOf("trigger: {"), dropdown.indexOf("triggerText: {"));
   assert.doesNotMatch(triggerStyles, /borderRadius|borderWidth/);
   assert.match(triggerStyles, /backgroundColor:\s*"transparent"/);
@@ -219,7 +221,7 @@ test("avatar filter is transparent, 11pt, right-aligned and raised seven pixels 
   // Row and grid remain fixed; bottom-aligned text now ends 15px higher.
   assert.equal(39 - anchor.paddingBottom, 24);
   assert.match(source, /<View style=\{styles.accountAvatarCategoryRow\}>[\s\S]*?<AvatarCategoryTrigger[\s\S]*?<\/View>\s*<\/View>\s*<GestureDetector gesture=\{avatarPickerMotion.gridGesture\}>\s*<Reanimated.FlatList/);
-  assert.match(source, /<AvatarCategoryMenu[\s\S]*?top=\{avatarGridTop \+ 39 - 15 \+ 6\}[\s\S]*?right=\{20\}/);
+  assert.match(source, /<AvatarCategoryMenu[\s\S]*?top=\{avatarGridTop \+ 39 - 15 \+ 6\}[\s\S]*?left=\{20\}/);
   assert.match(dropdown, /menu:\s*\{[\s\S]*?zIndex:\s*22/);
   assert.match(source, /accountAvatarCategoryAnchor:\s*\{[\s\S]*?minHeight:\s*44,[\s\S]*?minWidth:\s*44,[\s\S]*?zIndex:\s*21/);
   assert.doesNotMatch(source, /onPress=\{closeAvatarPicker\}/);

@@ -128,8 +128,8 @@ test("Perfil places the saved description below the username without the old pil
   assert.match(html, /data-testid="profile-identity-description"[^>]*data-text-align="left"[^>]*>Mi descripción/);
   assert.doesNotMatch(html, /data-testid="profile-identity-description"[^>]*data-lines|data-testid="profile-identity-description"[^>]*data-ellipsis/);
   assert.doesNotMatch(source.match(/dedicatedProfileCard: \{([^}]*)\}/)?.[1] ?? "", /backgroundColor/);
-  assert.match(source, /avatarImage:\s*\{\s*width: 124,\s*height: 124,\s*borderRadius: 62/);
-  assert.match(source, /avatarCircle:\s*\{\s*width: 124,\s*height: 124,\s*borderRadius: 62/);
+  assert.match(source, /avatarImage:\s*\{\s*width: 118,\s*height: 118,\s*borderRadius: 59/);
+  assert.match(source, /avatarCircle:\s*\{\s*width: 118,\s*height: 118,\s*borderRadius: 59/);
   assert.doesNotMatch(source, /avatarOuterBorder/);
   const rowStyle = source.match(/profileIdentityRow: \{([\s\S]*?)\n  \},/)?.[1] ?? "";
   assert.match(rowStyle, /paddingLeft: 3/);
@@ -190,6 +190,9 @@ test("name and description sit below the avatar with the existing seven-pixel ga
   assert.match(html, /data-testid="profile-identity-title-row" data-direction="row" data-align="center"/);
   const titleRow = source.match(/<View testID="profile-identity-title-row"[\s\S]*?<\/View>/)?.[0] ?? "";
   assert.match(titleRow, /testID="profile-identity-name"/);
+  assert.doesNotMatch(titleRow, /numberOfLines|ellipsizeMode/);
+  assert.match(source, /userName: \{ fontFamily: "Manrope", fontSize: 25,/);
+  assert.match(source, /avatarImage: \{\s*width: 118,\s*height: 118,\s*borderRadius: 59/);
   assert.doesNotMatch(titleRow, /testID="profile-identity-chevron"/);
   assert.doesNotMatch(titleRow, /ProfileIntentionPill/);
   assert.doesNotMatch(html, /profile-identity-chevron|data-icon="chevron-right"/);

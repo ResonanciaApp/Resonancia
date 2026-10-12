@@ -1442,7 +1442,7 @@ export function ProfileScreenBase({
               <AvatarCategoryMenu
                 visible={avatarFilterOpen}
                 top={avatarGridTop + 39 - 15 + 6}
-                right={20}
+                left={20}
                 categories={profileCategories}
                 value={avatarFilter}
                 sceneId={activeSceneId}
@@ -1721,8 +1721,6 @@ export function ProfileScreenBase({
               >
               <Text
                 style={[styles.userName, { color: colors.foreground }]}
-                numberOfLines={1}
-                ellipsizeMode="tail"
               >
                 {username}{lastName ? ` ${lastName}` : ""}
               </Text>
@@ -2686,11 +2684,11 @@ const styles = StyleSheet.create({
   },
   accountAvatarCategoryRow: {
     height: 39,
-    alignItems: "flex-end",
+    alignItems: "flex-start",
     justifyContent: "flex-end",
   },
   accountAvatarCategoryAnchor: {
-    alignSelf: "flex-end",
+    alignSelf: "flex-start",
     justifyContent: "flex-end",
     paddingBottom: 15,
     minHeight: 44,
@@ -2942,18 +2940,18 @@ const styles = StyleSheet.create({
     justifyContent: "center",
   },
   avatarCircle: {
-    width: 124,
-    height: 124,
-    borderRadius: 62,
+    width: 118,
+    height: 118,
+    borderRadius: 59,
     alignItems: "center",
     justifyContent: "center",
   },
   avatarImage: {
-    width: 124,
-    height: 124,
-    borderRadius: 62,
+    width: 118,
+    height: 118,
+    borderRadius: 59,
   },
-  userName: { fontFamily: "Manrope", fontSize: 29, fontWeight: "700", textAlign: "left", marginTop: 0 },
+  userName: { fontFamily: "Manrope", fontSize: 25, fontWeight: "700", textAlign: "left", marginTop: 0 },
   profileLifeMotto: { fontFamily: "Manrope", fontSize: 18, fontWeight: "700", lineHeight: 27, textAlign: "left", alignSelf: "stretch", marginTop: 7 },
   profileNameRow: { width: "100%", flexDirection: "row", alignItems: "center" },
   profileNameText: { flex: 1, minWidth: 0 },

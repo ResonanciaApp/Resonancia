@@ -135,7 +135,7 @@ export default function UsuarioScreen() {
           <View testID="public-profile-identity-details" style={styles.profileDetails}>
             <View style={styles.profileNameRow}>
               <View style={styles.profileNameText}>
-                <Text testID="public-profile-name" numberOfLines={1} ellipsizeMode="tail" style={[styles.userName, { color: colors.foreground }]}>
+                <Text testID="public-profile-name" style={[styles.userName, { color: colors.foreground }]}>
                   {profile.displayName}
                 </Text>
               </View>
@@ -186,7 +186,7 @@ const styles = StyleSheet.create({
   scroll: { paddingTop: 20, paddingHorizontal: H_PAD },
   profileCard: { flexDirection: "column", alignItems: "flex-start", width: "100%", gap: 7, paddingLeft: 3, paddingRight: 0 },
   avatarWrapper: { position: "relative", marginTop: 3, marginBottom: 0, flexShrink: 0 },
-  avatarImage: { width: 124, height: 124, borderRadius: 62 },
+  avatarImage: { width: 118, height: 118, borderRadius: 59 },
   avatarFallback: { alignItems: "center", justifyContent: "center" },
   avatarPremiumBadge: {
     position: "absolute", right: 0, bottom: 0, zIndex: 1,
@@ -196,7 +196,7 @@ const styles = StyleSheet.create({
   profileDetails: { width: "100%", minWidth: 0, alignItems: "flex-start", gap: 6, marginTop: 5 },
   profileNameRow: { width: "100%", flexDirection: "row", alignItems: "center" },
   profileNameText: { flex: 1, minWidth: 0 },
-  userName: { fontFamily: "Manrope", fontSize: 29, fontWeight: "700", textAlign: "left", marginTop: 0 },
+  userName: { fontFamily: "Manrope", fontSize: 25, fontWeight: "700", textAlign: "left", marginTop: 0 },
   profileBiography: { width: "100%", alignItems: "flex-start", gap: 6, marginTop: 7 },
   profileLifeMotto: { fontFamily: "Manrope", fontSize: 18, fontWeight: "700", lineHeight: 27, textAlign: "left", alignSelf: "stretch", marginTop: 7 },
   profileDescription: { fontFamily: "Manrope", fontSize: 13, lineHeight: 20, color: "#C4C4C4", textAlign: "left", alignSelf: "stretch" },

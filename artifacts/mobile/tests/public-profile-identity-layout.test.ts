@@ -115,8 +115,8 @@ test("renders actual identity in order and stops at description", () => {
   assert.doesNotMatch(html, /500 días|Sus mezclas|Sus reflexiones|Enviar mensaje|Agregar a amigos|Mi rutina|Progreso semanal/);
   assert.equal(nodes.filter((n) => n.kind === "Pressable").length, 1);
   const image = nodes.find((n) => n.kind === "Image")!;
-  assert.equal(image.style.width, 124);
-  assert.equal(image.style.height, 124);
+  assert.equal(image.style.width, 118);
+  assert.equal(image.style.height, 118);
   assert.equal(image.style.borderWidth, undefined);
   assert.equal(nodes.find((n) => n.testID === "public-profile-long-description")!.style.color, "#C4C4C4");
 });
