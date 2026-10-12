@@ -19,6 +19,26 @@ function visit(node: ts.Node) {
   ts.forEachChild(node, visit);
 }
 visit(ast);
+test("Cada día uses the theme gradient, dark settings rows and translucent white steppers", () => {
+  let surface: ts.Expression | undefined;
+  function find(node: ts.Node) {
+    if (ts.isVariableDeclaration(node) && node.name.getText(ast) === "repeatSurface") surface = node.initializer;
+    ts.forEachChild(node, find);
+  }
+  find(ast);
+  assert.ok(surface);
+  for (const id of ["natural", "cloudy", "indigo2", "pleyades"]) {
+    const actual = new Function("activeTheme", `return (${surface.getText(ast)});`)({ id });
+    assert.equal(actual, ["natural", "cloudy"].includes(id) ? "rgba(0,0,0,0.19)" : "rgba(0,0,0,0.16)");
+  }
+  const sheet = source.slice(source.indexOf("<Modal"));
+  assert.match(sheet, /colors=\{activeTheme.gradient\}/);
+  assert.match(sheet, /locations=\{activeTheme.gradientLocations\}/);
+  assert.equal((sheet.match(/backgroundColor: repeatSurface/g) ?? []).length, 3);
+  assert.equal((sheet.match(/backgroundColor: "rgba\(255,255,255,0\.1\)"/g) ?? []).length, 2);
+  assert.match(sheet, /styles.closeButton,\s*\{ backgroundColor: repeatSurface/);
+  assert.match(sheet, /onPress=\{saveRepeatSettings\}/);
+});
 assert.ok(close && styleObject);
 const definitions: Record<string, unknown> = {};
 for (const name of ["headerSide", "closeButton"]) {

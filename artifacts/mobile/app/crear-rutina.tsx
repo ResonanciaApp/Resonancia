@@ -1,4 +1,5 @@
 import { Feather } from "@expo/vector-icons";
+import { LinearGradient } from "expo-linear-gradient";
 import { router, useLocalSearchParams } from "expo-router";
 import React, { useMemo, useRef, useState } from "react";
 import {
@@ -75,6 +76,9 @@ export default function CrearRutinaScreen() {
         ? "rgba(191,207,255,0.07)"
         : "rgba(181,211,255,0.07)";
   const tabAccentColor = activeTheme.accent ?? colors.primary;
+  const repeatSurface = activeTheme.id === "natural" || activeTheme.id === "cloudy"
+    ? "rgba(0,0,0,0.19)"
+    : "rgba(0,0,0,0.16)";
   const suggestionsFadeStyle = useAnimatedStyle(() => ({
     opacity: 1 - suggestionTransition.value,
   }));
@@ -359,6 +363,14 @@ export default function CrearRutinaScreen() {
             accessibilityLabel="Cerrar selector de repetición"
           />
           <View style={[styles.repeatSheet, { backgroundColor: colors.background }]}>
+            <LinearGradient
+              pointerEvents="none"
+              colors={activeTheme.gradient}
+              locations={activeTheme.gradientLocations}
+              start={activeTheme.gradientStart}
+              end={activeTheme.gradientEnd}
+              style={StyleSheet.absoluteFillObject}
+            />
             <View style={styles.sheetHandle} />
             <View style={styles.sheetHeader}>
               <Pressable
@@ -366,7 +378,10 @@ export default function CrearRutinaScreen() {
                 accessibilityRole="button"
                 accessibilityLabel="Cerrar repetición"
                 hitSlop={10}
-                style={({ pressed }) => [styles.sheetHeaderSide, { opacity: pressed ? 0.6 : 1 }]}
+                style={({ pressed }) => [
+                  styles.closeButton,
+                  { backgroundColor: repeatSurface, opacity: pressed ? 0.6 : 1 },
+                ]}
               >
                 <Feather name="x" size={25} color={colors.foreground} />
               </Pressable>
@@ -375,7 +390,7 @@ export default function CrearRutinaScreen() {
             </View>
 
             <View style={styles.repeatSettings}>
-              <View style={[styles.settingRow, { backgroundColor: suggestionSurface }]}>
+              <View style={[styles.settingRow, { backgroundColor: repeatSurface }]}>
                 <Text style={[styles.settingLabel, { color: colors.foreground }]}>Repite</Text>
                 <View style={styles.repeatOptions}>
                   <Pressable
@@ -414,7 +429,7 @@ export default function CrearRutinaScreen() {
                 style={[
                   styles.settingRow,
                   {
-                    backgroundColor: suggestionSurface,
+                    backgroundColor: repeatSurface,
                     opacity: draftRepeatEnabled ? 1 : 0.4,
                   },
                 ]}
@@ -430,7 +445,7 @@ export default function CrearRutinaScreen() {
                     style={({ pressed }) => [
                       styles.stepperButton,
                       {
-                        backgroundColor: colors.background,
+                        backgroundColor: "rgba(255,255,255,0.1)",
                         opacity: pressed ? 0.55 : 1,
                       },
                     ]}
@@ -452,7 +467,7 @@ export default function CrearRutinaScreen() {
                     style={({ pressed }) => [
                       styles.stepperButton,
                       {
-                        backgroundColor: colors.background,
+                        backgroundColor: "rgba(255,255,255,0.1)",
                         opacity: pressed ? 0.55 : 1,
                       },
                     ]}
@@ -642,6 +657,7 @@ const styles = StyleSheet.create({
     backgroundColor: "rgba(0,0,0,0.48)",
   },
   repeatSheet: {
+    overflow: "hidden",
     minHeight: "63%",
     borderTopLeftRadius: 28,
     borderTopRightRadius: 28,
