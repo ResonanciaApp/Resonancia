@@ -6,6 +6,19 @@ import ts from "typescript";
 
 const source = readFileSync(new URL("../components/ProfileScreenBase.tsx", import.meta.url), "utf8");
 const ast = ts.createSourceFile("profile.tsx", source, ts.ScriptTarget.Latest, true, ts.ScriptKind.TSX);
+
+test("category dropdown uses the same themed glass as Actividad añadida", () => {
+  const dropdown = readFileSync(new URL("../components/AvatarCategoryDropdown.tsx", import.meta.url), "utf8");
+  const banner = readFileSync(new URL("../components/RoutineCompletionBanner.tsx", import.meta.url), "utf8");
+  for (const token of ["getTabBarGlassOverlay", "TAB_PILL_BLUR_INTENSITY", "TAB_PILL_BLUR_TINT"]) {
+    assert.ok(dropdown.includes(token));
+    assert.ok(banner.includes(token));
+  }
+  assert.match(source, /sceneId=\{activeSceneId\}/);
+  assert.match(dropdown, /backgroundColor: getTabBarGlassOverlay\(sceneId\)/);
+  assert.match(dropdown, /pointerEvents="none" style=\{styles.glassSurface\}/);
+  assert.doesNotMatch(dropdown, /backgroundColor: surface/);
+});
 test("avatar hero is immediately visible without fading or remounting, leaving playlist cover transitions unchanged", () => {
   const heroes: ts.JsxSelfClosingElement[] = [];
   function visit(node: ts.Node) {

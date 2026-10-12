@@ -1442,7 +1442,7 @@ export function ProfileScreenBase({
                 right={20}
                 categories={profileCategories}
                 value={avatarFilter}
-                surface={activeTheme.gradient[activeTheme.gradient.length - 1] as string}
+                sceneId={activeSceneId}
                 onSelect={selectAvatarFilter}
                 onDismiss={() => setAvatarFilterOpen(false)}
               />

@@ -1,4 +1,6 @@
 import { Feather } from "@expo/vector-icons";
+import { BlurView } from "expo-blur";
+import { getTabBarGlassOverlay, TAB_PILL_BLUR_INTENSITY, TAB_PILL_BLUR_TINT } from "@/constants/tab-bar";
 import React from "react";
 import { Pressable, ScrollView, StyleSheet, View } from "react-native";
 
@@ -41,7 +43,7 @@ export function AvatarCategoryMenu({
   right,
   categories,
   value,
-  surface,
+  sceneId,
   onSelect,
   onDismiss,
 }: {
@@ -50,7 +52,7 @@ export function AvatarCategoryMenu({
   right: number;
   categories: readonly AvatarCategory[];
   value: AvatarCategoryFilter;
-  surface: string;
+  sceneId: string;
   onSelect: (filter: AvatarCategoryFilter) => void;
   onDismiss: () => void;
 }) {
@@ -65,7 +67,13 @@ export function AvatarCategoryMenu({
         accessibilityLabel="Cerrar lista de categorías"
         testID="avatar-category-backdrop"
       />
-      <View style={[styles.menu, { top, right, backgroundColor: surface }]} accessibilityRole="menu" testID="avatar-category-menu">
+      <View style={[styles.menu, { top, right }]} accessibilityRole="menu" testID="avatar-category-menu">
+        <View pointerEvents="none" style={styles.glassSurface}>
+          <BlurView pointerEvents="none" tint={TAB_PILL_BLUR_TINT}
+            intensity={TAB_PILL_BLUR_INTENSITY} experimentalBlurMethod="dimezisBlurView"
+            style={StyleSheet.absoluteFill} />
+          <View style={[StyleSheet.absoluteFill, { backgroundColor: getTabBarGlassOverlay(sceneId) }]} />
+        </View>
         <ScrollView bounces={false} keyboardShouldPersistTaps="handled" style={styles.menuScroll}>
           {options.map((option) => {
             const selected = option.id === value;
@@ -92,6 +100,11 @@ export function AvatarCategoryMenu({
 }
 
 const styles = StyleSheet.create({
+  glassSurface: {
+    ...StyleSheet.absoluteFillObject,
+    borderRadius: 16,
+    overflow: "hidden",
+  },
   trigger: {
     alignSelf: "flex-end",
     maxWidth: 200,
