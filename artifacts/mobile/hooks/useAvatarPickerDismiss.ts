@@ -15,7 +15,6 @@ export function useAvatarPickerDismiss(options: {
   current.current = options;
   return useMemo(() => {
     let eligible = false;
-    let dragged = false;
     const restore = () => {
       if (current.current.enabled) Animated.spring(current.current.sheetY, {
         toValue: 0, ...GROWTH_SHEET_SPRING,
@@ -24,7 +23,6 @@ export function useAvatarPickerDismiss(options: {
     const pan = PanResponder.create({
       onStartShouldSetPanResponderCapture: event => {
         const state = current.current;
-        dragged = false;
         const aboveGrid = event.nativeEvent.pageY < state.sheetTop + state.gridTop;
         eligible = state.enabled && (aboveGrid || state.scrollOffset.value <= 0.5);
         return false; // Ordinary taps still reach buttons and avatar cards.
@@ -32,7 +30,6 @@ export function useAvatarPickerDismiss(options: {
       onMoveShouldSetPanResponderCapture: (_, gesture) =>
         current.current.enabled && eligible && gesture.dy > 8 && gesture.dy > Math.abs(gesture.dx),
       onPanResponderGrant: () => {
-        dragged = true;
         current.current.sheetY.stopAnimation();
       },
       onPanResponderMove: (_, gesture) => current.current.sheetY.setValue(Math.max(0, gesture.dy)),
@@ -43,11 +40,6 @@ export function useAvatarPickerDismiss(options: {
       },
       onPanResponderTerminate: restore,
     });
-    return {
-      panHandlers: pan.panHandlers,
-      onBlankPress: () => {
-        if (!dragged && current.current.enabled) current.current.onClose();
-      },
-    };
+    return { panHandlers: pan.panHandlers };
   }, []);
 }

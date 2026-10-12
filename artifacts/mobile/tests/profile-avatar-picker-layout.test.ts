@@ -114,15 +114,16 @@ test("hero moves down ten pixels in normal flow and pushes the avatar grid equal
   assert.match(source, /<\/View>\s*<View\s+style=\{styles.accountCoverPresetGrid\}[\s\S]*?<Reanimated\.FlatList\s+ref=\{accountAvatarGridRef\}/);
 });
 
-test("avatar filter is transparent, 9pt and right-aligned twenty pixels above the first grid row", () => {
+test("avatar filter is transparent, 11pt, right-aligned and raised seven pixels with the grid", () => {
   const dropdown = readFileSync(new URL("../components/AvatarCategoryDropdown.tsx", import.meta.url), "utf8");
-  assert.match(dropdown, /fontSize:\s*9/);
-  assert.match(dropdown, /lineHeight:\s*12/);
+  assert.match(dropdown, /fontSize:\s*11/);
+  assert.match(dropdown, /lineHeight:\s*14/);
+  assert.match(dropdown, /name=\{open \? "chevron-up" : "chevron-down"\} size=\{13\}/);
   assert.match(dropdown, /alignSelf:\s*"flex-end"/);
   const triggerStyles = dropdown.slice(dropdown.indexOf("trigger: {"), dropdown.indexOf("triggerText: {"));
   assert.doesNotMatch(triggerStyles, /borderRadius|borderWidth/);
   assert.match(triggerStyles, /backgroundColor:\s*"transparent"/);
-  assert.match(dropdown, /hitSlop=\{\{\s*top:\s*32,\s*bottom:\s*14/);
+  assert.match(dropdown, /hitSlop=\{\{\s*top:\s*25,\s*bottom:\s*21/);
   const handle = findStyle("accountCoverHandle");
   const headerEnd = handle.marginTop + handle.height + handle.marginBottom + findStyle("accountCoverHeader").minHeight;
   assert.equal(headerEnd, 81);
@@ -130,10 +131,13 @@ test("avatar filter is transparent, 9pt and right-aligned twenty pixels above th
   assert.equal(findStyle("accountAvatarCategoryAnchor").justifyContent, "flex-end");
   assert.equal(findStyle("accountAvatarCategoryAnchor").position, undefined);
   assert.equal(findStyle("accountCoverPresetGridContentFiltered").paddingTop, 20);
+  assert.equal(findStyle("accountAvatarCategoryRow").height, 39);
   assert.match(source, /<View style=\{styles.accountAvatarCategoryRow\}>[\s\S]*?<AvatarCategoryTrigger[\s\S]*?<\/View>\s*<\/View>\s*<Reanimated.FlatList/);
-  assert.match(source, /<AvatarCategoryMenu[\s\S]*?top=\{avatarGridTop \+ 46 \+ 6\}[\s\S]*?right=\{20\}/);
+  assert.match(source, /<AvatarCategoryMenu[\s\S]*?top=\{avatarGridTop \+ 39 \+ 6\}[\s\S]*?right=\{20\}/);
   assert.match(dropdown, /menu:\s*\{[\s\S]*?zIndex:\s*22/);
   assert.match(source, /accountAvatarCategoryAnchor:\s*\{[\s\S]*?minHeight:\s*44,[\s\S]*?minWidth:\s*44,[\s\S]*?zIndex:\s*21/);
+  assert.doesNotMatch(source, /onPress=\{closeAvatarPicker\}/);
+  assert.doesNotMatch(source, /onPress=\{avatarDismiss\.onBlankPress\}/);
 });
 
 test("category selection only changes the filter and scroll, never the staged identity", () => {

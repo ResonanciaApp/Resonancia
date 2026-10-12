@@ -18,7 +18,7 @@ export function AvatarCategoryTrigger({
   return (
     <Pressable
       onPress={onPress}
-      hitSlop={{ top: 32, bottom: 14, left: 16, right: 12 }}
+      hitSlop={{ top: 25, bottom: 21, left: 16, right: 12 }}
       accessibilityRole="button"
       accessibilityLabel={`Categoría de avatares: ${label}`}
       accessibilityState={{ expanded: open }}
@@ -26,7 +26,7 @@ export function AvatarCategoryTrigger({
       style={({ pressed }) => [styles.trigger, { opacity: pressed ? 0.6 : 1 }]}
     >
       <Text style={styles.triggerText} numberOfLines={1}>{label}</Text>
-      <Feather name={open ? "chevron-up" : "chevron-down"} size={11} color="#F9F9F9" />
+      <Feather name={open ? "chevron-up" : "chevron-down"} size={13} color="#F9F9F9" />
     </Pressable>
   );
 }
@@ -102,8 +102,8 @@ const styles = StyleSheet.create({
   },
   triggerText: {
     color: "#F9F9F9",
-    fontSize: 9,
-    lineHeight: 12,
+    fontSize: 11,
+    lineHeight: 14,
     fontFamily: "Inter_500Medium",
     flexShrink: 1,
   },

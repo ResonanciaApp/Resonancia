@@ -62,19 +62,13 @@ test("short drag springs back, fast intentional swipe closes, and cancelled drag
   assert.deepEqual(h.calls.pop(), ["restore", 0, true]);
 });
 
-test("blank taps close, but a drag does not also fire a tap; nested windows block closing", () => {
+test("the swipe handler never dismisses on touch alone and nested windows block it", () => {
   const h = setup();
   h.start();
-  h.controls.onBlankPress();
-  assert.equal(h.calls.pop(), "close");
-  h.pan.onPanResponderGrant();
-  h.calls.length = 0;
-  h.controls.onBlankPress();
   assert.equal(h.calls.length, 0);
   h.options.enabled = false;
   h.start();
-  h.controls.onBlankPress();
   h.pan.onPanResponderTerminate();
   assert.equal(h.pan.onMoveShouldSetPanResponderCapture(null, h.gesture(80)), false);
-  assert.equal(h.calls.length, 0);
+  assert.deepEqual(h.calls, []);
 });

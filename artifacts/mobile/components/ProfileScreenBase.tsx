@@ -1229,7 +1229,7 @@ export function ProfileScreenBase({
           >
             <View style={styles.accountCoverModalRoot}>
             <Animated.View pointerEvents="none" style={[styles.accountCoverBackdrop, { opacity: avatarPickerMotion.backdropOpacity }]} />
-            <Pressable style={StyleSheet.absoluteFill} onPress={closeAvatarPicker} disabled={goldenAvatarActive} accessibilityElementsHidden={goldenAvatarActive} importantForAccessibility={goldenAvatarActive ? "no-hide-descendants" : "auto"} />
+              <View style={StyleSheet.absoluteFill} pointerEvents="none" />
             <Animated.View
               {...avatarDismiss.panHandlers}
               pointerEvents={goldenAvatarActive ? "none" : "auto"}
@@ -1242,10 +1242,10 @@ export function ProfileScreenBase({
                 style={StyleSheet.absoluteFill}
                 pointerEvents="none"
               />
-              <Pressable style={{ flex: 1 }} onPress={avatarDismiss.onBlankPress} accessible={false} testID="avatar-cover-empty-area">
+              <View style={{ flex: 1 }}>
               <View style={styles.accountCoverHandle} />
               <View style={styles.accountCoverHeader}>
-                <Text style={styles.accountCoverTitle} onPress={() => {}}>Portada</Text>
+                <Text style={styles.accountCoverTitle}>Portada</Text>
                 <Pressable
                   style={[styles.accountCoverUploadButton, { backgroundColor: avatarHeaderBackground }]}
                   onPress={() => {
@@ -1271,7 +1271,6 @@ export function ProfileScreenBase({
                 </Pressable>
               </View>
               <View style={styles.accountCoverPreviewSlot}>
-                <View onStartShouldSetResponder={() => true}>
                 {accountSelectedProfilePreset ? (
                   <Image
                     source={accountSelectedProfilePreset.source}
@@ -1292,7 +1291,6 @@ export function ProfileScreenBase({
                     <Feather name="user" size={34} color={colors.primary} />
                   </View>
                 )}
-                </View>
               </View>
               <View
                 style={styles.accountCoverPresetGrid}
@@ -1366,10 +1364,10 @@ export function ProfileScreenBase({
               />
               <ScrollProgressIndicator progress={avatarScrollProgress} />
               </View>
-              </Pressable>
+              </View>
               <AvatarCategoryMenu
                 visible={avatarFilterOpen}
-                top={avatarGridTop + 46 + 6}
+                top={avatarGridTop + 39 + 6}
                 right={20}
                 categories={profileCategories}
                 value={avatarFilter}
@@ -2593,7 +2591,7 @@ const styles = StyleSheet.create({
     paddingTop: 20,
   },
   accountAvatarCategoryRow: {
-    height: 46,
+    height: 39,
     alignItems: "flex-end",
     justifyContent: "flex-end",
   },
