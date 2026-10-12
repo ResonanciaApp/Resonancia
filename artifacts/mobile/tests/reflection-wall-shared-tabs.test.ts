@@ -149,7 +149,7 @@ test("month picker uses only the first three active-theme gradient stops without
   assert.match(picker.getText(tree), /setMonthPickerVisible\(false\)/);
 });
 
-test("Muro filters keep category colors and Todos keeps its black fill with a 1px selected gradient border", () => {
+test("Muro filters keep category colors and Todos keeps its black fill with a 2px selected gradient border", () => {
   const tree = ast(source("../app/mi-espacio-interior.tsx"));
   const row = find(tree, node => ts.isJsxElement(node)
     && node.openingElement.tagName.getText(tree) === "ScrollView"
@@ -191,8 +191,8 @@ test("Muro filters keep category colors and Todos keeps its black fill with a 1p
         "the gradient is never a full tab fill");
       if (filter === "all") {
         const border = allChildren.find(child => child.type === "border");
-        assert.equal(border.props.borderWidth, 1);
-        assert.equal(border.props.opacity, 0.7);
+        assert.equal(border.props.borderWidth, 2);
+        assert.equal(border.props.opacity, 0.94);
         assert.equal(border.props.color, undefined, "the shared border keeps its original gradient");
       }
       for (let index = 0; index < categories.length; index++) {
