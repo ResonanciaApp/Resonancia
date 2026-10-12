@@ -41,6 +41,6 @@ El avatar hero de Portada debe estar visible desde el comienzo, sin animación p
 
 La presentación nativa y la carga del catálogo deben coordinarse: animar desde la confirmación de que el Modal está mostrado y no reconstruir la grilla mientras sale.
 
-**Why:** El arrastre ya era nativo, pero la apertura coincidía con montaje masivo de imágenes y refrescos; cerrar con un filtro activo cambiaba la lista antes de terminar la salida.
+**Why:** El arrastre ya era nativo, pero la apertura coincidía con montaje masivo de imágenes y refrescos; cerrar con un filtro activo cambiaba la lista antes de terminar la salida. El usuario confirmó que coordinar la presentación y limitar esa carga dejó la apertura fluida casi el 100 % de las veces; la fluidez del cierre se evalúa por separado.
 
 **How to apply:** Preparar filtros antes de presentar, acotar las filas anticipadas y esperar el fin real de apertura para refrescar datos. El diagnóstico del drawer por sí solo no atribuye pausas a Portada; distinguir los eventos de cada ventana.

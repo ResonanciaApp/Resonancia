@@ -111,6 +111,7 @@ import { GoldenAvatarSheet } from "@/components/GoldenAvatarSheet";
 import { useGrowthJourneySheetMotion } from "@/hooks/useGrowthJourneySheetMotion";
 import { useAvatarPickerDismiss } from "@/hooks/useAvatarPickerDismiss";
 import { usePreparedAvatarImage } from "@/hooks/usePreparedAvatarImage";
+import { drawerDiagnosticEvent } from "@/hooks/useDrawerDiagnostics";
 import { StreakInfoSheet } from "@/components/StreakInfoSheet";
 import { FilledSunIcon } from "@/components/FilledSunIcon";
 import { useMixerPanel } from "@/context/MixerPanelContext";
@@ -1318,12 +1319,26 @@ export function ProfileScreenBase({
               <View style={styles.accountCoverHeader}>
                 <Text style={styles.accountCoverTitle}>Portada</Text>
                 <Pressable
+                  style={[styles.accountCoverCloseButton, { backgroundColor: avatarHeaderBackground }]}
+                  onPress={() => {
+                    drawerDiagnosticEvent("avatar:close-x");
+                    setAccountPhotoPickerVisible(false);
+                  }}
+                  disabled={!accountPhotoPickerVisible}
+                  hitSlop={4}
+                  accessibilityRole="button"
+                  accessibilityLabel="Cerrar Portada de avatares"
+                  testID="avatar-cover-close"
+                >
+                  <Feather name="x" size={20} color="#F9F9F9" />
+                </Pressable>
+                <Pressable
                   style={[styles.accountCoverUploadButton, { backgroundColor: avatarHeaderBackground }]}
                   onPress={() => {
                     setAccountPhotoLibraryPending(true);
                     setAccountPhotoPickerVisible(false);
                   }}
-                  hitSlop={8}
+                  hitSlop={4}
                   accessibilityRole="button"
                   accessibilityLabel="Elegir una foto"
                   testID="avatar-cover-upload"
@@ -2620,9 +2635,21 @@ const styles = StyleSheet.create({
     height: 115.5,
     borderRadius: 57.75,
   },
-  accountCoverUploadButton: {
+  accountCoverCloseButton: {
     position: "absolute",
     left: 0,
+    top: 20,
+    zIndex: 1,
+    width: 43,
+    height: 43,
+    alignItems: "center",
+    justifyContent: "center",
+    borderRadius: 21.5,
+    borderWidth: 0,
+  },
+  accountCoverUploadButton: {
+    position: "absolute",
+    left: 53,
     top: 20,
     zIndex: 1,
     width: 43,

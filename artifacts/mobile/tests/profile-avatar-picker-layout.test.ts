@@ -104,10 +104,20 @@ test("avatar grid reaches the bottom without a fixed footer, retaining scrollabl
   assert.match(source, /contentContainerStyle=\{\[styles.accountCoverPresetGridContent, styles.accountCoverPresetGridContentFiltered, \{ paddingBottom: bottomPad \+ 20 \}\]\}/);
 });
 
-test("photo upload replaces X at the left margin, with celebration at the right and no balance message", () => {
+test("X closes the sheet at the left margin, photo follows with a 10px gap and celebration stays right", () => {
   const header = source.slice(source.indexOf("<View style={styles.accountCoverHeader}>"), source.indexOf("<View style={styles.accountCoverPreviewSlot}>"));
   assert.match(header, /<Text style=\{styles.accountCoverTitle\}[\s\S]*?>Portada<\/Text>[\s\S]*?accountCoverUploadButton[\s\S]*?<Feather name="image" size=\{18\} color="#F9F9F9" \/>[\s\S]*?accountCoverCelebrationButton/);
-  assert.doesNotMatch(header, /accountCoverCloseButton|name="x"/);
+  assert.match(header, /accountCoverCloseButton[\s\S]*?name="x"/);
+  const close = findStyle("accountCoverCloseButton");
+  assert.equal(close.left, 0);
+  assert.equal(close.top, 20);
+  assert.equal(close.width, 43);
+  assert.equal(close.height, 43);
+  assert.equal(close.borderRadius, 21.5);
+  const closeButton = header.slice(header.indexOf("<Pressable"), header.indexOf("</Pressable>"));
+  assert.match(closeButton, /drawerDiagnosticEvent\("avatar:close-x"\)/);
+  assert.match(closeButton, /setAccountPhotoPickerVisible\(false\)/);
+  assert.match(closeButton, /disabled=\{!accountPhotoPickerVisible\}/);
   assert.equal((source.match(/styles\.accountCoverUploadButton,/g) ?? []).length, 1);
   assert.doesNotMatch(source, /accountCoverUploadText/);
   assert.match(header, /accessibilityRole="button"\s+accessibilityLabel="Elegir una foto"/);
@@ -117,7 +127,7 @@ test("photo upload replaces X at the left margin, with celebration at the right 
   assert.equal(button.borderRadius, 21.5);
   assert.equal(button.position, "absolute");
   assert.equal(button.right, undefined);
-  assert.equal(button.left, 0);
+  assert.equal(button.left - (close.left + close.width), 10);
   assert.equal(button.zIndex, 1, "the photo action stays above the full-width title so its taps reach the Pressable");
   assert.equal(button.borderWidth, 0);
   assert.equal(button.backgroundColor, "rgba(0,0,0,0.16)");
