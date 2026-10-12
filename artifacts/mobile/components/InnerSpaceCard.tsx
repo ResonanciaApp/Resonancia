@@ -93,7 +93,7 @@ export function InnerSpaceCard({
   const [saveError, setSaveError] = useState<string | null>(null);
   const [signInRequired, setSignInRequired] = useState(false);
   const inputRef = useRef<TextInput>(null);
-  const caretOnlyFocusRef = useRef(false);
+  const writingTapPendingRef = useRef(false);
   const [inputActive, setInputActive] = useState(false);
   const [inputTouched, setInputTouched] = useState(false);
   const [inputFocusVersion, setInputFocusVersion] = useState(0);
@@ -235,6 +235,7 @@ export function InnerSpaceCard({
       return;
     }
     setInputTouched(true);
+    writingTapPendingRef.current = true;
     if (inputActive) {
       focusInput();
       return;
@@ -283,18 +284,11 @@ export function InnerSpaceCard({
   };
 
   const focusInput = () => {
-    caretOnlyFocusRef.current = false;
+    writingTapPendingRef.current = false;
     traceWriting("activate");
     setInputTouched(true);
     setInputActive(true);
     setInputFocusVersion((value) => value + 1);
-  };
-
-  const focusCaret = () => {
-    if (freeLimitReached || inputActive || !expandedRef.current || !inputRef.current || inputRef.current.isFocused()) return;
-    // Show the native caret without opening the keyboard or changing parent scroll.
-    caretOnlyFocusRef.current = true;
-    inputRef.current.focus();
   };
 
   useLayoutEffect(() => {
@@ -364,8 +358,6 @@ export function InnerSpaceCard({
       if (opening && focusAfterExpandRef.current) {
         focusAfterExpandRef.current = false;
         focusInput();
-      } else if (opening) {
-        requestAnimationFrame(focusCaret);
       }
       return;
     }
@@ -450,8 +442,6 @@ export function InnerSpaceCard({
       if (expandedRef.current && focusAfterExpandRef.current) {
         focusAfterExpandRef.current = false;
         focusInput();
-      } else if (expandedRef.current) {
-        focusCaret();
       }
     };
 
@@ -485,7 +475,7 @@ export function InnerSpaceCard({
     if (profileVariant) {
       if (consumedProfileFocusRequestRef.current === focusRequest) return;
       consumedProfileFocusRequestRef.current = focusRequest;
-      if (!expandedRef.current) return;
+      if (!expandedRef.current || !writingTapPendingRef.current) return;
     }
     if (freeLimitReached) return;
     focusAfterExpandRef.current = true;
@@ -558,6 +548,7 @@ export function InnerSpaceCard({
         <Pressable
           style={styles.infoButton}
           onPress={() => {
+            writingTapPendingRef.current = false;
             if (profileVariant && expandedRef.current) {
               queuedOpenRef.current = false;
               focusAfterExpandRef.current = false;
@@ -652,11 +643,6 @@ export function InnerSpaceCard({
           onPressIn={requestInputFocus}
           onFocus={() => {
             traceWriting("native-focus");
-            if (caretOnlyFocusRef.current) {
-              caretOnlyFocusRef.current = false;
-              return;
-            }
-            if (!inputActive) requestInputFocus();
           }}
           onBlur={() => {
             traceWriting("native-blur");

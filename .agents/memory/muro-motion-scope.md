@@ -15,11 +15,11 @@ En Perfil, el panel de Muro de reflexiones se despliega únicamente al pulsar su
 
 **How to apply:** Animar entre ambos niveles de opacidad conservando color, grosor, dimensiones y gestos; nunca usar cero como estado cerrado por interpretar “fade out”.
 
-Al abrir el compositor, enfocar el cursor nativo sin abrir automáticamente el teclado. El toque de escritura conserva la coordinación del teclado y el scroll padre.
+Al abrir el compositor, mostrar el placeholder sin enfocar automáticamente el campo. El teclado se activa solo al tocar la caja de escritura.
 
-**Why:** Se pidió ver la rayita parpadeando sin tocar el campo; eso no necesita disparar el flujo de teclado ni mover la pantalla adicionalmente.
+**Why:** El usuario reemplazó la solicitud antigua del cursor automático: al abrir quiere el placeholder y ningún teclado. El foco automático del cursor podía activar intermitentemente el flujo de escritura.
 
-**How to apply:** Separar el foco de cursor del foco de escritura; esperar a que el panel sea visible y respetar las restricciones de publicación gratuita.
+**How to apply:** No enfocar al completar la apertura ni tratar onFocus como un toque. En Perfil, exigir una solicitud de escritura explícita pendiente antes de aceptar el foco del scroll padre; conservar las restricciones de publicación gratuita.
 
 Los cambios al compositor necesitan una prueba que pulse Registrar y recorra tanto el éxito como el fallo del guardado, además de verificar su aspecto.
 

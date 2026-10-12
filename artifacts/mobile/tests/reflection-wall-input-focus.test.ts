@@ -321,13 +321,13 @@ test("Profile still opens the keyboard after + and an explicit writing tap", () 
   f.dispose();
 });
 
-test("opening with plus shows the native caret without a tap or opening the keyboard", () => {
+test("opening with plus leaves the placeholder visible without focus or keyboard until a writing tap", () => {
   const f = fixture();
   f.open();
   assert.equal(f.focusCalls, 0);
   f.finishPanel();
   f.flushFrames();
-  assert.equal(f.focusCalls, 1);
+  assert.equal(f.focusCalls, 0);
   const input = f.nodes.get("reflection-writing-input");
   input.onFocus();
   f.render();
@@ -346,6 +346,24 @@ test("opening with plus shows the native caret without a tap or opening the keyb
   f.nodes.get("reflection-writing-input").onBlur();
   f.render();
   assert.equal(f.nodes.get("reflection-writing-input").placeholder, "Escribe tu reflexión aquí");
+  f.dispose();
+});
+
+test("Profile ignores unsolicited focus requests after opening", () => {
+  const f = fixture(0, "indigo2", true);
+  f.render({ profileVariant: true });
+  f.open();
+  f.finishPanel();
+  f.flushFrames();
+  f.render({ focusRequest: 1 });
+  f.flushFrames();
+  assert.equal(f.focusCalls, 0);
+  assert.equal(f.keyboardVisible, false);
+  assert.equal(f.nodes.get("reflection-writing-input").placeholder, "Escribe tu reflexión aquí");
+  f.tap();
+  f.render({ focusRequest: 2 });
+  f.flushFrames();
+  assert.equal(f.keyboardVisible, true);
   f.dispose();
 });
 
