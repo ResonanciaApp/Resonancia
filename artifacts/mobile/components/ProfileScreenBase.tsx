@@ -1438,7 +1438,7 @@ export function ProfileScreenBase({
               </View>
               <AvatarCategoryMenu
                 visible={avatarFilterOpen}
-                top={avatarGridTop + 39 + 6}
+                top={avatarGridTop + 39 - 15 + 6}
                 right={20}
                 categories={profileCategories}
                 value={avatarFilter}
@@ -2649,7 +2649,7 @@ const styles = StyleSheet.create({
   },
   accountCoverUploadButton: {
     position: "absolute",
-    left: 53,
+    right: 0,
     top: 20,
     zIndex: 1,
     width: 43,
@@ -2662,7 +2662,7 @@ const styles = StyleSheet.create({
   },
   accountCoverCelebrationButton: {
     position: "absolute",
-    right: 0,
+    left: 53,
     top: 20,
     zIndex: 1,
     width: 43,
@@ -2689,6 +2689,7 @@ const styles = StyleSheet.create({
   accountAvatarCategoryAnchor: {
     alignSelf: "flex-end",
     justifyContent: "flex-end",
+    paddingBottom: 15,
     minHeight: 44,
     minWidth: 44,
     zIndex: 21,

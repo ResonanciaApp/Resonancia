@@ -27,6 +27,10 @@ Las pruebas de callbacks aislados no demuestran que el dispositivo reconozca el 
 
 **How to apply:** Distinguir siempre lógica y compilación de verificación interactiva nativa. No afirmar que el cierre funciona en iPhone ni que es fluido sin haber probado el arrastre real.
 
+Al mover el filtro de categorías, comprobar la posición visible de texto y chevron, no solo la del contenedor, y mantener el desplegable anclado al control.
+
+**Why:** El usuario reiteró que había pedido subir «Todos» y no había visto el movimiento. La alineación interna y el recorte pueden ocultar cambios en el contenedor.
+
 El usuario confirmó que el cierre nativo por arrastre reconoce el gesto en su teléfono; la pausa al soltar es un problema separado.
 
 **Why:** La ventana dejó de quedar atrapada al cambiar el reconocimiento, pero apareció una pausa entre el arrastre y la salida automática.
