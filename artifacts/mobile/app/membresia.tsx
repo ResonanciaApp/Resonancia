@@ -27,7 +27,7 @@ import { usePremium } from "@/context/PremiumContext";
 import { useBackAfterClose, useBackOverride } from "@/context/BackOverrideContext";
 import { useSceneTheme } from "@/context/SceneThemeContext";
 import { useColors } from "@/hooks/useColors";
-import { PREMIUM_OFFER_BACKGROUND, PREMIUM_OFFER_LOCATIONS } from "@/constants/premiumOfferBackground";
+import { PREMIUM_OFFER_ACCENT, PREMIUM_OFFER_LOGO_GRADIENT, PREMIUM_OFFER_BACKGROUND, PREMIUM_OFFER_LOCATIONS } from "@/constants/premiumOfferBackground";
 import {
   REVENUECAT_ENTITLEMENT_IDENTIFIER,
   useSubscription,
@@ -39,8 +39,6 @@ const DATE_FORMATTER = new Intl.DateTimeFormat("es-CL", {
   year: "numeric",
 });
 
-const PREMIUM_VIOLET = "#6B50D2";
-const PREMIUM_VIOLET_DARK = "#5139AF";
 
 function formatSubscriptionDate(value?: string | null) {
   if (!value) return "No disponible";
@@ -764,9 +762,10 @@ function PremiumOfferContent({
       <View style={styles.offerBrandOffset} />
       <View style={styles.offerHero}>
         <LinearGradient
-          colors={["#7A68DE", "#5742BC"]}
-          start={{ x: 0, y: 0 }}
-          end={{ x: 1, y: 1 }}
+          colors={PREMIUM_OFFER_LOGO_GRADIENT}
+          locations={PREMIUM_OFFER_LOCATIONS}
+          start={{ x: 0.5, y: 0 }}
+          end={{ x: 0.5, y: 1 }}
           style={styles.offerLogo}
         >
           <MaterialCommunityIcons
@@ -913,12 +912,7 @@ function PremiumOfferContent({
           pressed && effectiveSelectedPackage && !busy && styles.manageButtonPressed,
         ]}
       >
-        <LinearGradient
-          colors={[PREMIUM_VIOLET, PREMIUM_VIOLET_DARK]}
-          start={{ x: 0, y: 0.5 }}
-          end={{ x: 1, y: 0.5 }}
-          style={StyleSheet.absoluteFill}
-        />
+        <View style={[StyleSheet.absoluteFill, { backgroundColor: PREMIUM_OFFER_ACCENT }]} />
         {isPurchasing ? (
           <ActivityIndicator color="#F9F9F9" />
         ) : (
@@ -1378,7 +1372,7 @@ const styles = StyleSheet.create({
     backgroundColor: "rgba(255,255,255,0.10)",
   },
   planGlassTintSelected: {
-    backgroundColor: "rgba(107,80,210,0.60)",
+    backgroundColor: PREMIUM_OFFER_ACCENT,
   },
   previewPlanCard: {
     opacity: 1,
