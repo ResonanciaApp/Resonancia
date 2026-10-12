@@ -1,9 +1,9 @@
 /** Temas visuales de la app; las escenas de audio son independientes. */
 import type { SceneId } from "@/context/AmbientPlayerContext";
 
-export type VisualThemeId = "tibet" | "indigo2" | "cloudy" | "cloudy2" | "natural" | "pleyades";
+export type VisualThemeId = "tibet" | "indigo2" | "cloudy" | "cloudy2" | "natural" | "pleyades" | "galactic";
 export type ThemeSceneId = SceneId | VisualThemeId;
-export const VISUAL_THEME_IDS = ["tibet", "indigo2", "cloudy", "cloudy2", "natural", "pleyades"] as const;
+export const VISUAL_THEME_IDS = ["tibet", "indigo2", "cloudy", "cloudy2", "natural", "pleyades", "galactic"] as const;
 export const SCENE_THEME_STORAGE_KEY = "@active_theme_scene";
 
 export type SceneTheme = {
@@ -64,7 +64,22 @@ const CLOUDY_THEME: SceneTheme = {
   solid: "#2D2F7C",
 };
 
+export const PREMIUM_BACKGROUND_GRADIENT = CLOUDY_THEME.gradient.map(
+  color => "#" + [1, 3, 5].map(offset =>
+    Math.round(parseInt(color.slice(offset, offset + 2), 16) * 0.55)
+      .toString(16).padStart(2, "0"),
+  ).join(""),
+) as [string, string, ...string[]];
+const GALACTIC_GRADIENT = [...PREMIUM_BACKGROUND_GRADIENT].reverse() as [string, string, ...string[]];
+
 export const SCENE_THEMES: Record<VisualThemeId, SceneTheme> = {
+  galactic: {
+    ...INDIGO2_THEME,
+    id: "galactic",
+    label: "Galactic",
+    gradient: GALACTIC_GRADIENT,
+    solid: GALACTIC_GRADIENT[0],
+  },
   tibet: {
     id: "tibet",
     label: "Universo",
@@ -117,7 +132,7 @@ export function isIndigo2ThemeId(id: ThemeSceneId): boolean {
 /** Style inheritance only: selection, persistence and transitions retain the real ID. */
 export function getThemeStyleId(id: string | null | undefined): string | null | undefined {
   if (id === "natural") return "cloudy";
-  if (id === "pleyades") return "indigo2";
+  if (id === "pleyades" || id === "galactic") return "indigo2";
   return id;
 }
 

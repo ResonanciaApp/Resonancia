@@ -3,6 +3,12 @@ name: Temas visuales y escenas sonoras
 description: Selector minimalista de temas en el drawer y separación entre tema visual y audio.
 ---
 
+Galactic añade una tercera fila debajo de Noche; hereda Índigo 2 y usa el fondo de los tres planes Premium, con el oscurecimiento incluido, invirtiendo sus stops.
+
+**Why:** El usuario pidió expresamente esa ubicación y esa paleta, sin reemplazar los temas existentes.
+
+**How to apply:** Mantener Natural/Pleyades en la columna derecha; no confundir el fondo Premium con los colores de sus cards o logo.
+
 El usuario reemplazó el selector de ajustes por opciones minimalistas en el drawer: Día representa Cloudy y Noche representa Índigo 2, no dos niveles de brillo. Solo icono y título, con el mismo tamaño que las filas del menú; sin banners, imágenes, descripciones ni check. Día seleccionado colorea el sol dorado; Noche seleccionada colorea la luna morada suave; el icono y el texto de la opción no seleccionada deben ser #A8A8A8. Mantener crossfade y háptica suave extendida. La escena sonora sigue siendo independiente; la preferencia visual se conserva localmente y los sólidos mantienen contraste con texto claro.
 
 El selector incluye también Natural (árbol, copia visual de Cloudy con el degradado de Respiración del drawer) y Pleyades (diamante, copia visual de Índigo 2 con la paleta del antiguo Andrómeda). Mantener dos columnas: Natural a la derecha de Día y Pleyades a la derecha de Noche, sin aumentar el número de filas. La paleta de Andrómeda fue confirmada por el usuario mediante captura y colores HEX; no confundirla con el parecido tema Universo.

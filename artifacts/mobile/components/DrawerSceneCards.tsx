@@ -3,7 +3,7 @@ import { MoonCrescentIcon } from "@/components/MoonCrescentIcon";
 import React from "react";
 import { Pressable, StyleSheet, Text, View } from "react-native";
 
-type SceneId = "cloudy" | "indigo2" | "natural" | "pleyades";
+type SceneId = "cloudy" | "indigo2" | "natural" | "pleyades" | "galactic";
 
 type Props = {
   activeId: string;
@@ -14,7 +14,7 @@ const SCENES: {
   id: SceneId;
   title: string;
   iconColor: string;
-  icon: "white-balance-sunny" | "pine-tree" | "diamond-stone";
+  icon: "white-balance-sunny" | "pine-tree" | "diamond-stone" | "star-four-points";
 }[] = [
   {
     id: "cloudy",
@@ -30,6 +30,7 @@ const SCENES: {
   },
   { id: "natural", title: "Natural", iconColor: "#7EAA65", icon: "pine-tree" },
   { id: "pleyades", title: "Pleyades", iconColor: "#B6A1E5", icon: "diamond-stone" },
+  { id: "galactic", title: "Galactic", iconColor: "#91BBDC", icon: "star-four-points" },
 ];
 
 export function DrawerSceneCards({ activeId, onSelect }: Props) {
@@ -39,7 +40,7 @@ export function DrawerSceneCards({ activeId, onSelect }: Props) {
         <Text style={styles.title}>Escena</Text>
       </View>
       <View style={styles.list} accessibilityRole="radiogroup" accessibilityLabel="Escena">
-        {[SCENES.slice(0, 2), SCENES.slice(2)].map((column, columnIndex) => (
+        {[[SCENES[0], SCENES[1], SCENES[4]], SCENES.slice(2, 4)].map((column, columnIndex) => (
           <View key={columnIndex} style={styles.column}>
         {column.map((s) => {
           const selected = s.id === activeId;
