@@ -67,10 +67,10 @@ export default function EditorialPlaylistScreen({ slug: slugProp }: EditorialPla
   const slug = slugProp ?? resolveSlug(params.slug);
   const insets = useSafeAreaInsets();
   const { theme, activeSceneId } = useSceneTheme();
-  const playlistBackground = getThemeStyleId(activeSceneId) === "cloudy"
+  const playlistBackground = activeSceneId === "galactic" || getThemeStyleId(activeSceneId) === "cloudy"
     ? { colors: theme.gradient, locations: theme.gradientLocations, start: theme.gradientStart, end: theme.gradientEnd }
     : { colors: EDITORIAL_PLAYLIST_GRADIENT };
-  const playlistBackgroundColor = getThemeStyleId(activeSceneId) === "cloudy" ? theme.solid : EDITORIAL_PLAYLIST_GRADIENT[0];
+  const playlistBackgroundColor = activeSceneId === "galactic" || getThemeStyleId(activeSceneId) === "cloudy" ? theme.solid : EDITORIAL_PLAYLIST_GRADIENT[0];
   const { version: catalogVersion } = useCatalog();
   const { isPremium } = usePremium();
   const {

@@ -39,6 +39,19 @@ assert.ok(backgroundExpression);
 const resolveBackground = new Function("sheetGradient", `return ${backgroundExpression};`);
 const backgroundFor = (theme: ThemePalette) => resolveBackground(colorsFor(theme));
 
+test("Galactic timer and evening reminder use the first four theme stops", () => {
+  const theme = SCENE_THEMES.galactic;
+  assert.deepEqual(colorsFor(theme), theme.gradient.slice(0, 4));
+  const reminder = readFileSync(new URL("../components/SleepReminderSheet.tsx", import.meta.url), "utf8");
+  const expression = reminder.match(/const gradient = ([\s\S]*?);/)?.[1];
+  assert.ok(expression);
+  const resolve = new Function("theme", "isMorning", "getThemeStyleId", "SCENE_THEMES", ts.transpileModule(`return ${expression};`, {
+    compilerOptions: { target: ts.ScriptTarget.ES2022 },
+  }).outputText);
+  assert.deepEqual(resolve(theme, false, getThemeStyleId, SCENE_THEMES), theme.gradient.slice(0, 4));
+  assert.deepEqual(resolve(theme, true, getThemeStyleId, SCENE_THEMES), ["#C96D68", "#855269", "#443044"]);
+});
+
 test("Ambiental duration sheet preserves the active theme stops outside Indigo 2 and Cloudy", () => {
   for (const theme of Object.values(SCENE_THEMES)) {
     if (getThemeStyleId(theme.id) === "indigo2" || getThemeStyleId(theme.id) === "cloudy") continue;

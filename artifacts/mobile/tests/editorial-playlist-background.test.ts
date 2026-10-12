@@ -4,7 +4,7 @@ import test from "node:test";
 import React from "react";
 import { renderToStaticMarkup } from "react-dom/server";
 import ts from "typescript";
-import { SCENE_THEMES } from "../config/scene-themes.ts";
+import { SCENE_THEMES, getThemeStyleId } from "../config/scene-themes.ts";
 
 const source = readFileSync(new URL("../app/editorial-playlist/[slug].tsx", import.meta.url), "utf8");
 const ast = ts.createSourceFile("playlist.tsx", source, ts.ScriptTarget.Latest, true, ts.ScriptKind.TSX);
@@ -42,9 +42,9 @@ const LinearGradient = ({ colors, locations, start, end }: any) => React.createE
   "data-start": start && `${start.x},${start.y}`,
   "data-end": end && `${end.x},${end.y}`,
 });
-const evaluate = new Function("activeSceneId", "theme", "React", "View", "LinearGradient", "styles", "StyleSheet", compiled);
+const evaluate = new Function("activeSceneId", "theme", "React", "View", "LinearGradient", "styles", "StyleSheet", "getThemeStyleId", compiled);
 function background(id: keyof typeof SCENE_THEMES, theme = SCENE_THEMES[id]) {
-  return evaluate(id, theme, React, View, LinearGradient, { root: {} }, { absoluteFill: {} });
+  return evaluate(id, theme, React, View, LinearGradient, { root: {} }, { absoluteFill: {} }, getThemeStyleId);
 }
 
 test("Cloudy paints the full theme in both music/meditation detail and unavailable states", () => {
@@ -59,6 +59,15 @@ test("Cloudy paints the full theme in both music/meditation detail and unavailab
   assert.equal(html.split(`data-colors="${theme.gradient.join(",")}"`).length - 1, 2);
   assert.match(html, /data-locations="0,0.167,0.333,0.5,0.667,0.833,1"/);
   assert.match(html, /data-start="0.5,0" data-end="0.5,1"/);
+});
+
+test("Galactic and Fuego paint their entire theme gradient", () => {
+  for (const id of ["galactic", "fuego"] as const) {
+    const result = background(id);
+    const theme = SCENE_THEMES[id];
+    assert.deepEqual(result.background, { colors: theme.gradient, locations: theme.gradientLocations, start: theme.gradientStart, end: theme.gradientEnd });
+    assert.equal(result.solid, theme.solid);
+  }
 });
 
 test("other themes retain the editorial palette and original default gradient direction", () => {
