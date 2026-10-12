@@ -41,9 +41,9 @@ export function DrawerSceneCards({ activeId, onSelect }: Props) {
         <Text style={styles.title}>Escena</Text>
       </View>
       <View style={styles.list} accessibilityRole="radiogroup" accessibilityLabel="Escena">
-        {[SCENES.slice(0, 3), SCENES.slice(3, 6)].map((sceneRow, rowIndex) => (
-          <View key={rowIndex} style={styles.sceneRow}>
-        {sceneRow.map((s) => {
+        {[[SCENES[0], SCENES[1], SCENES[4]], [SCENES[2], SCENES[3], SCENES[5]]].map((column, columnIndex) => (
+          <View key={columnIndex} style={styles.column}>
+        {column.map((s) => {
           const selected = s.id === activeId;
           return (
             <Pressable
@@ -89,17 +89,15 @@ const styles = StyleSheet.create({
     textTransform: "uppercase",
   },
   row: {
-    flex: 1,
-    minWidth: 0,
     flexDirection: "row",
     alignItems: "center",
     paddingVertical: 6.5,
     paddingHorizontal: 0,
     borderRadius: 10,
-    gap: 4,
+    gap: 14,
   },
-  list: { marginTop: 10, gap: 2 },
-  sceneRow: { flexDirection: "row", gap: 8 },
+  list: { marginTop: 10, flexDirection: "row", gap: 12 },
+  column: { flex: 1, minWidth: 0, gap: 2 },
   iconWrap: { width: 26, height: 26, flexShrink: 0, alignItems: "center", justifyContent: "center" },
   label: { flexShrink: 1, fontFamily: "Manrope620", color: "#FFFFFF", fontSize: 12, lineHeight: 20, fontWeight: "400", letterSpacing: 0.2 },
 });
