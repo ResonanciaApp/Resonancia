@@ -288,6 +288,8 @@ test("explanation uses themed black background, extra title gap and left-aligned
     const section = flatten(h.nodes.get("growth-map-explanation").style);
     assert.equal(section.marginHorizontal, 16);
     assert.equal(section.alignSelf, "stretch");
+    assert.equal(section.paddingTop, 31);
+    assert.equal(section.paddingBottom, 16);
     assert.equal(section.width, undefined);
     assert.equal(section.backgroundColor, `rgba(0,0,0,${theme === "cloudy" || theme === "natural" ? "0.19" : "0.16"})`);
     assert.equal(section.gap + flatten(h.nodes.get("growth-map-explanation-title").style).marginBottom, 27);
@@ -306,7 +308,9 @@ test("the map replaces the old help icon and paragraph, fits its sheet and dismi
     }));
   };
   const html = render(true);
-  assert.match(html, /data-testid="growth-help-sheet" data-height="641"/);
+  assert.match(html, /data-testid="growth-help-sheet" data-height="553"/);
+  // Header, map, gap and safe-area padding leave exactly 10px of the panel visible.
+  assert.equal(553 - 44 - 56 - 45 - 350 - 28 - 20, 10);
   assert.match(html, /data-testid="growth-journey-map"/);
   assert.equal(h.nodes.get("growth-journey-map").width, 388);
   assert.equal(h.nodes.get("growth-map-title").children, "El recorrido");

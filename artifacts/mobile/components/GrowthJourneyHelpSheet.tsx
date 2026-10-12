@@ -31,9 +31,11 @@ export function GrowthJourneyHelpSheet({
   const universeColor = theme.id === "natural" ? "#E5FFDB"
     : getThemeStyleId(theme.id) === "cloudy" ? CLOUDY_GROWTH_STAGE_LABEL_COLOR
     : POSITIONED_DAY_GRADIENT[0];
-  // Window height is independent from the map offset and its fixed header.
-  const previousHeight = Math.min(height * 0.8, GROWTH_MAP_HEIGHT + 95 + 44 + 32 + Math.max(insets.bottom, 16));
-  const sheetHeight = Math.min(height - insets.top - 12, previousHeight + 100);
+  // End the initial scroll viewport 10px into the explanation background.
+  const sheetHeight = Math.min(
+    height - insets.top - 12,
+    44 + 56 + 45 + GROWTH_MAP_HEIGHT + 28 + 10 + Math.max(insets.bottom, 16),
+  );
   const { rendered, sheetY, backdropOpacity } = useGrowthJourneySheetMotion(visible, sheetHeight);
   const pan = useMemo(() => PanResponder.create({
     onMoveShouldSetPanResponder: (_, gesture) =>
@@ -164,7 +166,7 @@ const styles = StyleSheet.create({
   content: { flexGrow: 1, justifyContent: "flex-start", alignItems: "center", paddingBottom: 16 },
   mapHeader: { height: 56 },
   mapSection: { paddingTop: 45 },
-  explanation: { alignSelf: "stretch", marginHorizontal: 16, paddingHorizontal: 24, marginTop: 28, paddingVertical: 16, borderRadius: 20, gap: 12 },
+  explanation: { alignSelf: "stretch", marginHorizontal: 16, paddingHorizontal: 24, marginTop: 28, paddingTop: 31, paddingBottom: 16, borderRadius: 20, gap: 12 },
   explanationTitle: { fontFamily: "Manrope", fontSize: 18, lineHeight: 24, fontWeight: "700", textAlign: "center", marginBottom: 15 },
   explanationText: { fontFamily: "Manrope", fontSize: 14, lineHeight: 21, textAlign: "left", opacity: 0.85 },
   mapTitle: { position: "absolute", top: 16, left: 64, right: 64, textAlign: "center", fontFamily: "Manrope", fontSize: 20, lineHeight: 24, fontWeight: "700" },
