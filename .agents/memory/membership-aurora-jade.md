@@ -27,6 +27,12 @@ En cuentas gratuitas, «Prueba Premium» tiene un fondo como las otras secciones
 
 **How to apply:** Heredar los márgenes del contenedor de Perfil y usar el tratamiento de superficie e insets de sus secciones. Centrar verticalmente todo el contenido, sin los offsets del banner antiguo; conservar el acceso a los planes y la separación estándar entre secciones.
 
+En la oferta de tres planes, igualar la estrella a la de «¿Problemas para dormir?» corresponde solo al plan seleccionado; conservar el aspecto original de las estrellas no seleccionadas.
+
+**Why:** El usuario aclaró que el cambio de color no debía extenderse a los planes no seleccionados.
+
+**How to apply:** Mantener la distinción de estados al editar estrellas de planes, incluida Gift Card.
+
 El amarillo sólido de Premium sigue en «Plan Premium» de Sonidos y Descubrir, en solo «Premium» del banner inferior de Inicio y en «Tu Premium» del drawer para miembros o solo «Premium» para no miembros. «Prueba» y «Gratis» de Inicio no cambian; en el drawer «Prueba» sigue blanco. El loto de «Racha más larga» conserva el degradado.
 
 **Why:** Tras comparar el degradado más luminoso de los textos con el amarillo de la estrella que antes aparecía en Perfil, el usuario pidió extender ese amarillo sólido exacto a estas palabras; después precisó que «Tu» del drawer también debía coincidir.

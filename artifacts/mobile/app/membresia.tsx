@@ -800,11 +800,11 @@ function PremiumOfferContent({
                 ]}
               >
                 <AnimatedPlanSelection selected={selected} />
-                <Image
+                {selected ? <Image
                   source={require("../assets/images/estrella-premium.png")}
                   style={{ width: 24, height: 24 }}
                   contentFit="contain"
-                />
+                /> : <MaterialCommunityIcons name="star" size={24} color="#F0F0F0" />}
                 <View style={styles.planCopy}>
                   <Text style={[
                     styles.planName,
@@ -854,11 +854,11 @@ function PremiumOfferContent({
               ]}
             >
               <AnimatedPlanSelection selected={selected} />
-              <Image
+              {selected ? <Image
                 source={require("../assets/images/estrella-premium.png")}
                 style={{ width: 24, height: 24 }}
                 contentFit="contain"
-              />
+              /> : <MaterialCommunityIcons name="star" size={24} color="#F0F0F0" />}
               <View style={styles.planCopy}>
                 <Text style={[
                   styles.planName,
@@ -1001,11 +1001,11 @@ function GiftCardPlanOption({
       accessibilityState={{ selected }}
     >
       <AnimatedPlanSelection selected={selected} />
-      <Image
+      {selected ? <Image
         source={require("../assets/images/estrella-premium.png")}
         style={{ width: 24, height: 24 }}
         contentFit="contain"
-      />
+      /> : <MaterialCommunityIcons name="star" size={24} color="#F0F0F0" />}
       <View style={styles.planCopy}>
         <Text style={[
           styles.planName,
