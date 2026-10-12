@@ -19,6 +19,47 @@ function visit(node: ts.Node) {
   ts.forEachChild(node, visit);
 }
 visit(ast);
+test("repeat dropdown selects either draft option, marks the current value and dismisses outside", () => {
+  const menuSource = readFileSync(new URL("../components/RoutineRepeatMenu.tsx", import.meta.url), "utf8");
+  const result: { exports: any } = { exports: {} };
+  const mocks: Record<string, any> = {
+    react: { createElement: (type: unknown, props: any, ...children: any[]) => ({ type, props, children: children.flat() }) },
+    "@expo/vector-icons": { Feather: "Feather" },
+    "expo-blur": { BlurView: "BlurView" },
+    "react-native": {
+      Pressable: "Pressable", Text: "Text", View: "View",
+      StyleSheet: { create: (s: unknown) => s, absoluteFill: {}, absoluteFillObject: {}, hairlineWidth: 0.5 },
+    },
+    "@/constants/tab-bar": { getTabBarGlassOverlay: () => "#123456", TAB_PILL_BLUR_INTENSITY: 40, TAB_PILL_BLUR_TINT: "dark" },
+  };
+  new Function("require", "module", "exports", ts.transpileModule(menuSource, {
+    compilerOptions: { module: ts.ModuleKind.CommonJS, jsx: ts.JsxEmit.React, esModuleInterop: true },
+  }).outputText)((id: string) => mocks[id], result, result.exports);
+  for (const value of [true, false]) {
+    const selected: boolean[] = [];
+    let dismissed = 0;
+    const props = { visible: true, top: 150, sceneId: "natural", value,
+      onSelect: (v: boolean) => selected.push(v), onDismiss: () => dismissed++ };
+    const nodes: any[] = [];
+    function walk(node: any) {
+      if (!node || typeof node !== "object") return;
+      nodes.push(node);
+      node.children?.forEach(walk);
+    }
+    walk(result.exports.RoutineRepeatMenu(props));
+    for (const [id, enabled] of [["daily", true], ["off", false]] as const) {
+      const option = nodes.find(n => n.props?.testID === `crear-rutina-repeat-${id}`);
+      assert.equal(option.props.accessibilityState.selected, value === enabled);
+      option.props.onPress();
+    }
+    assert.deepEqual(selected, [true, false]);
+    nodes.find(n => n.props?.testID === "routine-repeat-menu-backdrop").props.onPress();
+    assert.equal(dismissed, 1);
+    assert.equal(result.exports.RoutineRepeatMenu({ ...props, visible: false }), null);
+  }
+  assert.match(source, /setDraftRepeatEnabled\(enabled\);\s*setRepeatMenuOpen\(false\)/);
+});
+
 test("Cada día uses the theme gradient, dark settings rows and translucent white steppers", () => {
   let surface: ts.Expression | undefined;
   function find(node: ts.Node) {

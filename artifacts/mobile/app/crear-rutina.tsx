@@ -21,6 +21,7 @@ import Reanimated, {
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 
 import { KeyboardAwareScrollViewCompat } from "@/components/KeyboardAwareScrollViewCompat";
+import { RoutineRepeatMenu } from "@/components/RoutineRepeatMenu";
 import { WIDGET_GREEN_SOLID } from "@/constants/colors";
 import {
   ROUTINE_CATEGORY_TABS,
@@ -59,6 +60,8 @@ export default function CrearRutinaScreen() {
   const [draftRepeatEnabled, setDraftRepeatEnabled] = useState(true);
   const [draftTimesPerDay, setDraftTimesPerDay] = useState(1);
   const [repeatSheetOpen, setRepeatSheetOpen] = useState(false);
+  const [repeatMenuOpen, setRepeatMenuOpen] = useState(false);
+  const [repeatMenuTop, setRepeatMenuTop] = useState(0);
   const [suggestionEditing, setSuggestionEditing] = useState(false);
   const titleInputRef = useRef<TextInput>(null);
   const contentScrollRef = useRef<any>(null);
@@ -115,6 +118,7 @@ export default function CrearRutinaScreen() {
 
   const openRepeatSheet = () => {
     Keyboard.dismiss();
+    setRepeatMenuOpen(false);
     setDraftRepeatEnabled(repeatEnabled);
     setDraftTimesPerDay(timesPerDay);
     setRepeatSheetOpen(true);
@@ -354,7 +358,7 @@ export default function CrearRutinaScreen() {
         visible={repeatSheetOpen}
         transparent
         animationType="slide"
-        onRequestClose={() => setRepeatSheetOpen(false)}
+        onRequestClose={() => repeatMenuOpen ? setRepeatMenuOpen(false) : setRepeatSheetOpen(false)}
       >
         <View style={styles.modalRoot}>
           <Pressable
@@ -389,40 +393,23 @@ export default function CrearRutinaScreen() {
               <View style={styles.sheetHeaderSide} />
             </View>
 
-            <View style={styles.repeatSettings}>
+            <View style={styles.repeatSettings} onLayout={event => setRepeatMenuTop(event.nativeEvent.layout.y + 64)}>
               <View style={[styles.settingRow, { backgroundColor: repeatSurface }]}>
                 <Text style={[styles.settingLabel, { color: colors.foreground }]}>Repite</Text>
-                <View style={styles.repeatOptions}>
-                  <Pressable
-                    onPress={() => setDraftRepeatEnabled(false)}
-                    accessibilityRole="radio"
-                    accessibilityState={{ selected: !draftRepeatEnabled }}
-                    testID="crear-rutina-repeat-off"
-                    style={({ pressed }) => ({ opacity: pressed ? 0.6 : 1 })}
-                  >
-                    <Text style={[
-                      styles.settingValue,
-                      { color: !draftRepeatEnabled ? WIDGET_GREEN_SOLID : colors.mutedForeground },
-                    ]}>
-                      Apagado
-                    </Text>
-                  </Pressable>
-                  <View style={[styles.optionDivider, { backgroundColor: colors.border }]} />
-                  <Pressable
-                    onPress={() => setDraftRepeatEnabled(true)}
-                    accessibilityRole="radio"
-                    accessibilityState={{ selected: draftRepeatEnabled }}
-                    testID="crear-rutina-repeat-daily"
-                    style={({ pressed }) => ({ opacity: pressed ? 0.6 : 1 })}
-                  >
-                    <Text style={[
-                      styles.settingValue,
-                      { color: draftRepeatEnabled ? WIDGET_GREEN_SOLID : colors.mutedForeground },
-                    ]}>
-                      Cada día
-                    </Text>
-                  </Pressable>
-                </View>
+                <Pressable
+                  onPress={() => setRepeatMenuOpen(open => !open)}
+                  accessibilityRole="button"
+                  accessibilityLabel={`Repite: ${draftRepeatEnabled ? "Cada día" : "Apagado"}`}
+                  accessibilityState={{ expanded: repeatMenuOpen }}
+                  testID="crear-rutina-repeat-dropdown"
+                  hitSlop={8}
+                  style={({ pressed }) => [styles.repeatOptions, { opacity: pressed ? 0.6 : 1 }]}
+                >
+                  <Text style={[styles.settingValue, { color: "#F9F9F9" }]}>
+                    {draftRepeatEnabled ? "Cada día" : "Apagado"}
+                  </Text>
+                  <Feather name={repeatMenuOpen ? "chevron-up" : "chevron-down"} size={13} color="#F9F9F9" />
+                </Pressable>
               </View>
 
               <View
@@ -490,6 +477,17 @@ export default function CrearRutinaScreen() {
             >
               <Text style={styles.applyButtonText}>Guardar</Text>
             </Pressable>
+            <RoutineRepeatMenu
+              visible={repeatMenuOpen}
+              top={repeatMenuTop}
+              sceneId={activeSceneId}
+              value={draftRepeatEnabled}
+              onSelect={enabled => {
+                setDraftRepeatEnabled(enabled);
+                setRepeatMenuOpen(false);
+              }}
+              onDismiss={() => setRepeatMenuOpen(false)}
+            />
           </View>
         </View>
       </Modal>
