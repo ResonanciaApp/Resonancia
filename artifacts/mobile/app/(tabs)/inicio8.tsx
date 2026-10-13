@@ -122,6 +122,7 @@ import {
   CARD_TEXT_ABOVE,
   CARD_TEXT_BELOW,
   CLOUDY_WIDGET_PLUS_GRADIENT,
+  FUEGO_WIDGET_PLUS_GRADIENT,
   NATURAL_WIDGET_PLUS_GRADIENT,
   MEMBERSHIP_AURORA,
   WIDGET_GREEN_SOLID,
@@ -3516,7 +3517,7 @@ export default function HomeScreen2({
 
       <InicioEmotionWidget
         bottom={emotionWidgetBottom}
-        plusBackgroundGradient={activeTheme.id === "fuego" || activeTheme.id === "galactic" ? [activeTheme.gradient[0], activeTheme.gradient[activeTheme.gradient.length - 1]] : activeTheme.id === "natural" ? NATURAL_WIDGET_PLUS_GRADIENT : activeTheme.id === "cloudy" ? CLOUDY_WIDGET_PLUS_GRADIENT : undefined}
+        plusBackgroundGradient={activeTheme.id === "fuego" ? FUEGO_WIDGET_PLUS_GRADIENT : activeTheme.id === "galactic" ? [activeTheme.gradient[0], activeTheme.gradient[activeTheme.gradient.length - 1]] : activeTheme.id === "natural" ? NATURAL_WIDGET_PLUS_GRADIENT : activeTheme.id === "cloudy" ? CLOUDY_WIDGET_PLUS_GRADIENT : undefined}
         onOpenMoodPicker={handleOpenMoodPicker}
       />
       </Animated.View>{/* fin contenido desvanecible */}

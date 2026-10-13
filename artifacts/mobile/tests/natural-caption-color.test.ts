@@ -65,8 +65,8 @@ test("Natural remaps only EBF2FF, preserving font, opacity, shadows and layout",
   assert.equal(renderedStyle({ color: "#ebf2ff" }).color, "#F5FFF5");
 });
 
-test("Cloudy, Indigo, Pleyades and the no-provider fallback retain the original color", () => {
-  for (const theme of ["cloudy", "indigo2", "pleyades", undefined]) {
+test("Cloudy, Indigo, Pleyades, Galactic and the no-provider fallback retain the original color", () => {
+  for (const theme of ["cloudy", "indigo2", "pleyades", "galactic", undefined]) {
     color = getCardTextBelowColor(theme);
     assert.equal(color, "#EBF2FF");
     assert.equal(renderedStyle({ color: CARD_TEXT_BELOW }).color, "#EBF2FF");
@@ -75,11 +75,21 @@ test("Cloudy, Indigo, Pleyades and the no-provider fallback retain the original 
   assert.equal(renderedStyle({ color: CARD_TEXT_BELOW }, false).color, "#EBF2FF");
 });
 
+test("Fuego replaces the shared caption color without changing other styling or colors", () => {
+  color = getCardTextBelowColor("fuego");
+  assert.equal(color, "#FFECEB");
+  const style = { color: CARD_TEXT_BELOW, fontSize: 12, opacity: 0.8, marginTop: 4 };
+  assert.deepEqual(renderedStyle(style), { ...style, color: "#FFECEB" });
+  assert.equal(renderedStyle({ color: "#ebf2ff" }).color, "#FFECEB");
+  assert.equal(renderedStyle({ color: "#F9F9F9" }).color, "#F9F9F9");
+  assert.equal(style.color, CARD_TEXT_BELOW);
+});
+
 test("subsequent renders follow theme changes into and out of Natural", () => {
-  for (const theme of ["cloudy", "natural", "pleyades", "natural", "indigo2"]) {
+  for (const theme of ["cloudy", "natural", "fuego", "pleyades", "natural", "fuego", "galactic", "indigo2"]) {
     color = getCardTextBelowColor(theme);
     assert.equal(renderedStyle({ color: CARD_TEXT_BELOW }).color,
-      theme === "natural" ? "#F5FFF5" : "#EBF2FF");
+      theme === "fuego" ? "#FFECEB" : theme === "natural" ? "#F5FFF5" : "#EBF2FF");
   }
 });
 
