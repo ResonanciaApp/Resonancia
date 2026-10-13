@@ -71,12 +71,9 @@ test("Cloudy duration selector uses the first four stops across its whole backgr
   assert.match(source, /end=\{getThemeStyleId\(theme\.id\) === "cloudy" \? theme\.gradientEnd : undefined\}/);
 });
 
-test("Indigo 2 duration sheet uses the Universo violet gradient without altering global theme colors", () => {
-  assert.deepEqual(colorsFor(SCENE_THEMES.indigo2), ["#332261", "#2E2468"]);
-  assert.equal(backgroundFor(SCENE_THEMES.indigo2), "#332261");
-  assert.deepEqual(colorsFor(SCENE_THEMES.indigo2), colorsFor(SCENE_THEMES.tibet));
-  assert.equal(SCENE_THEMES.indigo2.gradient[1], "#242C60");
-  assert.equal(SCENE_THEMES.indigo2.gradient[2], "#252960");
+test("Indigo 2 duration sheet uses its own first four stops", () => {
+  assert.deepEqual(colorsFor(SCENE_THEMES.indigo2), SCENE_THEMES.indigo2.gradient.slice(0, 4));
+  assert.equal(backgroundFor(SCENE_THEMES.indigo2), SCENE_THEMES.indigo2.gradient[0]);
 });
 
 test("selected duration circles use 30% black in Cloudy and Indigo 2 without changing the + or other themes", () => {

@@ -171,9 +171,9 @@ export function SleepReminderSheet({
   const timeLabel = formatPracticeNotificationTimeLocal(draft.hour, draft.minute);
   const gradient = isMorning
     ? ["#C96D68", "#855269", "#443044"] as const
-    : getThemeStyleId(theme.id) === "indigo2" && theme.id !== "galactic"
+    : getThemeStyleId(theme.id) === "indigo2" && theme.id !== "galactic" && theme.id !== "indigo2"
       ? [SCENE_THEMES.tibet.gradient[1], SCENE_THEMES.tibet.gradient[2]] as const
-      : theme.id === "galactic" || getThemeStyleId(theme.id) === "cloudy"
+      : theme.id === "indigo2" || theme.id === "galactic" || getThemeStyleId(theme.id) === "cloudy"
         ? [theme.gradient[0], theme.gradient[1], theme.gradient[2], theme.gradient[3]] as const
         : [theme.gradient[1], theme.gradient[2]] as const;
   return (
