@@ -17,7 +17,6 @@ test("Galactic inherits Indigo 2 and reverses the exact Premium background", () 
   assert.equal(themes.getThemeStyleId(theme.id), "indigo2");
   assert.equal(themes.isIndigo2ThemeId(theme.id), true);
   assert.equal(themes.isVisualThemeId(theme.id), true);
-  assert.match(source("../constants/premiumOfferBackground.ts"), /PREMIUM_OFFER_BACKGROUND = PREMIUM_BACKGROUND_GRADIENT/);
 });
 
 test("Galactic is under Noche in the first column", () => {

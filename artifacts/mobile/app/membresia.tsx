@@ -23,11 +23,12 @@ import { useSafeAreaInsets } from "react-native-safe-area-context";
 
 import { MEMBERSHIP_AURORA } from "@/constants/colors";
 import { SessionBadgeGlass } from "@/components/SessionDurationBadge";
+import { IconCuencoTibetano } from "@/components/AncestralIcons";
 import { usePremium } from "@/context/PremiumContext";
 import { useBackAfterClose, useBackOverride } from "@/context/BackOverrideContext";
 import { useSceneTheme } from "@/context/SceneThemeContext";
 import { useColors } from "@/hooks/useColors";
-import { PREMIUM_OFFER_ACCENT, PREMIUM_OFFER_LOGO_GRADIENT, PREMIUM_OFFER_BACKGROUND, PREMIUM_OFFER_LOCATIONS } from "@/constants/premiumOfferBackground";
+import { PREMIUM_OFFER_ACCENT, PREMIUM_OFFER_SELECTED_CARD, PREMIUM_OFFER_LOGO_GRADIENT, PREMIUM_OFFER_BACKGROUND, PREMIUM_OFFER_LOCATIONS } from "@/constants/premiumOfferBackground";
 import {
   REVENUECAT_ENTITLEMENT_IDENTIFIER,
   useSubscription,
@@ -763,16 +764,12 @@ function PremiumOfferContent({
       <View style={styles.offerHero}>
         <LinearGradient
           colors={PREMIUM_OFFER_LOGO_GRADIENT}
-          locations={[0, 1 / 3, 2 / 3, 1]}
+          locations={[0, 0.5, 1]}
           start={{ x: 0.5, y: 0 }}
           end={{ x: 0.5, y: 1 }}
           style={styles.offerLogo}
         >
-          <MaterialCommunityIcons
-            name="white-balance-sunny"
-            size={47}
-            color="#FFFFFF"
-          />
+          <IconCuencoTibetano size={47} color="#FFFFFF" />
         </LinearGradient>
         <Text style={styles.offerBrand}>Resonancia</Text>
       </View>
@@ -1372,7 +1369,7 @@ const styles = StyleSheet.create({
     backgroundColor: "rgba(255,255,255,0.10)",
   },
   planGlassTintSelected: {
-    backgroundColor: PREMIUM_OFFER_ACCENT,
+    backgroundColor: PREMIUM_OFFER_SELECTED_CARD,
   },
   previewPlanCard: {
     opacity: 1,
