@@ -6,6 +6,7 @@ import { useDayRollover } from "@/hooks/useDayRollover";
 import { useStreak } from "@/hooks/useStreak";
 import { useEmojiWidget } from "@/context/EmojiWidgetContext";
 import { StreakWeekRow } from "@/components/StreakWeekRow";
+import { useHomeWeekPreference } from "@/context/HomeWeekPreferenceContext";
 import { useStreakCelebration } from "@/context/StreakCelebrationContext";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { LinearGradient } from "expo-linear-gradient";
@@ -1849,6 +1850,7 @@ const Inicio2HeroStatic = React.memo(function Inicio2HeroStatic({
   const effectiveScrollY = scrollY ?? fallbackScrollY;
   // El hero reserva su alto en el flujo, así que moverlo desplaza también el contenido siguiente.
   const inicio3WeekShift = 2;
+  const { enabled: homeWeekVisible } = useHomeWeekPreference();
   const inicio3WeekDownshift = 33;
   const inicio3ProfileHeaderLift = 0;
   const inicio3HeroShift = 10 - 70 - 25;
@@ -1856,7 +1858,7 @@ const Inicio2HeroStatic = React.memo(function Inicio2HeroStatic({
   const inicio3HeroTopTrim = 25 + 80;
   const inicio3HeroHeight =
     (INICIO2_HERO_HEIGHT + 184 - (topInset + 286) - 52 + 60 + 32) / 2 + 60 + 120 + 25 + 15 - 40;
-  const inicio3HeroLayoutTop =
+  const defaultInicio3HeroLayoutTop =
     topInset +
     165 -
     INICIO3_VERTICAL_LIFT +
@@ -1864,6 +1866,12 @@ const Inicio2HeroStatic = React.memo(function Inicio2HeroStatic({
     inicio3WeekShift +
     inicio3HeroShift +
     inicio3HeroDownshift;
+  const inicio3WeekTop = topInset + 68 - INICIO3_VERTICAL_LIFT + inicio3WeekShift - 12 + inicio3WeekDownshift;
+  // Keep the hero's visible top exactly at the removed week's top.
+  // The same layout top sizes the header, moving all following content too.
+  const inicio3HeroLayoutTop = homeWeekVisible
+    ? defaultInicio3HeroLayoutTop
+    : inicio3WeekTop + 19 + 61 - inicio3HeroTopTrim;
   const inicio3HeroTop = inicio3HeroLayoutTop - 19;
   const { drawerProgress: identityDrawerProgress } = useDrawerMotion();
   const identityDrawerStyle = useAnimatedStyle(() => ({
@@ -2051,7 +2059,7 @@ const Inicio2HeroStatic = React.memo(function Inicio2HeroStatic({
         </View>
       </RAnimated.View>
 
-      {isInicio3 && (
+      {isInicio3 && homeWeekVisible && (
         <>
           <RAnimated.View
             style={[

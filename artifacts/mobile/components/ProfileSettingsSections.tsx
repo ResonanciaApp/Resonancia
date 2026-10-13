@@ -1,4 +1,5 @@
 import { Feather } from "@expo/vector-icons";
+import { useHomeWeekPreference } from "@/context/HomeWeekPreferenceContext";
 import * as Application from "expo-application";
 import { router } from "expo-router";
 import React, { useState } from "react";
@@ -66,6 +67,7 @@ export function ProfileSettingsSections({
   const { primary } = useColors();
   const { enabled: emojiWidgetEnabled, loaded: emojiWidgetLoaded, saving: emojiWidgetSaving, setEnabled: setEmojiWidgetEnabled } = useEmojiWidget();
   const tabBarLabels = useTabBarLabels();
+  const homeWeek = useHomeWeekPreference();
   const isIndigo = isIndigoThemeId(sceneId);
   const isIndigo2 = isIndigo2ThemeId(sceneId);
   const themeAccent = isIndigo2 ? accent : isIndigo ? "#AAAAC4" : accent;
@@ -106,6 +108,13 @@ export function ProfileSettingsSections({
           toggle: true,
           toggleValue: tabBarLabels.enabled,
           onToggle: tabBarLabels.loaded && !tabBarLabels.saving ? value => { void tabBarLabels.setEnabled(value); } : undefined,
+        },
+        {
+          icon: "calendar",
+          label: "Días de racha inicio",
+          toggle: true,
+          toggleValue: homeWeek.enabled,
+          onToggle: homeWeek.loaded && !homeWeek.saving ? value => { void homeWeek.setEnabled(value); } : undefined,
         },
         { icon: "zap", label: "Racha", toggle: true },
         { icon: "smile", label: "Registro diario de ánimo", toggle: true },
