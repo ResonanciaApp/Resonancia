@@ -55,16 +55,18 @@ const INDIGO2_THEME: SceneTheme = {
 
 export const NATURAL_GRADIENT = ["#4A7D48", "#3B6D3C", "#326740", "#285E3E", "#175543", "#0B4B3D", "#073B32"] as const;
 export const NATURAL_GRADIENT_LOCATIONS = [0, 0.16, 0.33, 0.5, 0.68, 0.84, 1] as const;
+// Premium and Galactic retain their original palette order independently of Cloudy.
+const PREMIUM_BASE_GRADIENT = ["#2D2F7C", "#2D3981", "#2D4085", "#2A4687", "#25528C", "#1F5D92", "#166494"] as const;
 const CLOUDY_THEME: SceneTheme = {
   ...INDIGO2_THEME,
   id: "cloudy",
   label: "Cloudy",
-  gradient: ["#2D2F7C", "#2D3981", "#2D4085", "#2A4687", "#25528C", "#1F5D92", "#166494"],
+  gradient: ["#166494", "#1F5D92", "#25528C", "#2A4687", "#2D4085", "#2D3981", "#2D2F7C"],
   gradientLocations: [0, 0.167, 0.333, 0.5, 0.667, 0.833, 1],
-  solid: "#2D2F7C",
+  solid: "#166494",
 };
 
-export const PREMIUM_BACKGROUND_GRADIENT = CLOUDY_THEME.gradient.map(
+export const PREMIUM_BACKGROUND_GRADIENT = PREMIUM_BASE_GRADIENT.map(
   color => "#" + [1, 3, 5].map(offset =>
     Math.round(parseInt(color.slice(offset, offset + 2), 16) * 0.55)
       .toString(16).padStart(2, "0"),
