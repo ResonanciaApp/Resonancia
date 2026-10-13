@@ -1,6 +1,8 @@
 import { router, Tabs, usePathname } from "expo-router";
 import { SymbolView } from "expo-symbols";
 import { BlurView } from "expo-blur";
+import MaskedView from "@react-native-masked-view/masked-view";
+import { LinearGradient } from "expo-linear-gradient";
 import * as Haptics from "expo-haptics";
 import { Feather, MaterialCommunityIcons } from "@expo/vector-icons";
 import React, { useEffect, useRef, useCallback, useLayoutEffect, useState } from "react";
@@ -260,6 +262,25 @@ function CustomTabBar({ state, navigation, descriptors }: TabBarProps) {
           },
         ]}
       >
+        <MaskedView
+          pointerEvents="none"
+          style={styles.underBarBlur}
+          maskElement={
+            <LinearGradient
+              colors={["transparent", "rgba(0,0,0,0.35)", "rgba(0,0,0,0.65)"]}
+              locations={[0, 0.55, 1]}
+              style={StyleSheet.absoluteFill}
+            />
+          }
+        >
+          <BlurView
+            pointerEvents="none"
+            intensity={20}
+            tint="default"
+            experimentalBlurMethod="dimezisBlurView"
+            style={StyleSheet.absoluteFill}
+          />
+        </MaskedView>
         <View style={[styles.pill, pillShape, { height: pillHeight + 1 }]}>
         {/* The shadow samples only the static glass, never the moving indicator/icons. */}
         <View pointerEvents="none" collapsable={false} style={[styles.glassLayer, styles.pillShadow, pillShape]}>
@@ -475,6 +496,13 @@ export default function TabLayout() {
 }
 
 const styles = StyleSheet.create({
+  underBarBlur: {
+    position: "absolute",
+    top: -16,
+    bottom: 0,
+    left: 0,
+    right: 0,
+  },
   bar: {
     position: "absolute",
     left: 0,
