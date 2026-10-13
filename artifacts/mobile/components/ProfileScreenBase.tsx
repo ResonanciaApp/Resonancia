@@ -2753,7 +2753,7 @@ const styles = StyleSheet.create({
   accountFieldLabel: {
     fontFamily: "Manrope630",
     fontSize: 15,
-    color: "#AAAAC4",
+    color: "#E3E3E3",
   },
   accountFieldValueBox: {
     backgroundColor: "rgba(0,0,0,0.16)",
