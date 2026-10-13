@@ -892,6 +892,7 @@ const ms = StyleSheet.create({
     borderRadius: 2,
     backgroundColor: "rgba(255,255,255,0.1)",
     marginTop: 10, marginBottom: 4,
+    transform: [{ translateY: 5 }],
   },
   sheetTitle: {
     fontFamily: "Manrope",
