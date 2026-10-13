@@ -131,7 +131,9 @@ export function AmbientalDurationSheet({
     : getSleepActionColors(theme.id);
   const selectedPresetBackground = getThemeStyleId(theme.id) === "cloudy" || getThemeStyleId(theme.id) === "indigo2" ? "rgba(0,0,0,0.3)" : "rgba(0,0,0,0.16)";
   const selectedCustomBackground = getThemeStyleId(theme.id) === "cloudy" ? "rgba(0,0,0,0.3)" : "rgba(0,0,0,0.16)";
-  const sheetGradient: [string, string, ...string[]] = theme.id === "indigo2" || theme.id === "galactic" || getThemeStyleId(theme.id) === "cloudy"
+  const sheetGradient: [string, string, ...string[]] = theme.id === "indigo2"
+    ? [theme.gradient[2], theme.gradient[3], theme.gradient[4]]
+    : theme.id === "galactic" || getThemeStyleId(theme.id) === "cloudy"
     ? [theme.gradient[0], theme.gradient[1], theme.gradient[2], theme.gradient[3]]
     : getThemeStyleId(theme.id) === "indigo2"
       ? [SCENE_THEMES.tibet.gradient[1], SCENE_THEMES.tibet.gradient[2]]
