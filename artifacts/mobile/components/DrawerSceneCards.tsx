@@ -81,7 +81,10 @@ export function DrawerSceneCards({ activeId, onSelect }: Props) {
 
 const styles = StyleSheet.create({
   header: { flexDirection: "row", alignItems: "center", gap: 8, paddingHorizontal: 2, marginBottom: 4, marginTop: 115, paddingTop: 18, borderTopWidth: StyleSheet.hairlineWidth, borderTopColor: "transparent" },
-  divider: { position: "absolute", top: -15 - StyleSheet.hairlineWidth, left: 0, right: 0, height: StyleSheet.hairlineWidth, backgroundColor: "rgba(255,255,255,0.10)" },
+  // Header starts 69px after the menu bottom (115px spacer - 46px compensation).
+  // Breathing's 20px icon ends 6.5px before that bottom; Escena starts 18px
+  // below this header. Center the divider in that gap without moving either.
+  divider: { position: "absolute", top: -28.75 - StyleSheet.hairlineWidth, left: 0, right: 0, height: StyleSheet.hairlineWidth, backgroundColor: "rgba(255,255,255,0.10)" },
   title: {
     fontFamily: "Manrope650",
     color: "rgba(255,255,255,0.58)",
