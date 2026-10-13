@@ -443,7 +443,7 @@ const styles = StyleSheet.create({
     position: "relative",
     flexDirection: "row",
     alignItems: "center",
-    gap: 27,
+    gap: 20,
     paddingTop: 1,
     paddingBottom: 16,
     paddingHorizontal: 4,
