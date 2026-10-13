@@ -304,7 +304,7 @@ export function DrawerMenu() {
                       accessibilityRole="button"
                       accessibilityLabel="Ver perfil"
                     >
-                      <Text style={styles.profileName} numberOfLines={1}>
+                      <Text style={styles.profileName} numberOfLines={2} ellipsizeMode="clip" adjustsFontSizeToFit>
                         {fullName || "Mi perfil"}
                       </Text>
                     </Pressable>

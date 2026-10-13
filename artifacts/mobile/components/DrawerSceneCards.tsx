@@ -38,6 +38,7 @@ export function DrawerSceneCards({ activeId, onSelect }: Props) {
   return (
     <View>
       <View style={styles.header}>
+        <View pointerEvents="none" style={styles.divider} />
         <Text style={styles.title}>Escena</Text>
       </View>
       <View style={styles.list} accessibilityRole="radiogroup" accessibilityLabel="Escena">
@@ -79,7 +80,8 @@ export function DrawerSceneCards({ activeId, onSelect }: Props) {
 }
 
 const styles = StyleSheet.create({
-  header: { flexDirection: "row", alignItems: "center", gap: 8, paddingHorizontal: 2, marginBottom: 4, marginTop: 115, paddingTop: 18, borderTopWidth: StyleSheet.hairlineWidth, borderTopColor: "rgba(255,255,255,0.10)" },
+  header: { flexDirection: "row", alignItems: "center", gap: 8, paddingHorizontal: 2, marginBottom: 4, marginTop: 115, paddingTop: 18, borderTopWidth: StyleSheet.hairlineWidth, borderTopColor: "transparent" },
+  divider: { position: "absolute", top: -15 - StyleSheet.hairlineWidth, left: 0, right: 0, height: StyleSheet.hairlineWidth, backgroundColor: "rgba(255,255,255,0.10)" },
   title: {
     fontFamily: "Manrope650",
     color: "rgba(255,255,255,0.58)",
