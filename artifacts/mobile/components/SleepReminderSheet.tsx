@@ -172,7 +172,7 @@ export function SleepReminderSheet({
   const gradient = isMorning
     ? ["#C96D68", "#855269", "#443044"] as const
     : theme.id === "indigo2"
-      ? [theme.gradient[2], theme.gradient[3], theme.gradient[4]] as const
+      ? theme.gradient
     : getThemeStyleId(theme.id) === "indigo2" && theme.id !== "galactic" && theme.id !== "indigo2"
       ? [SCENE_THEMES.tibet.gradient[1], SCENE_THEMES.tibet.gradient[2]] as const
       : theme.id === "galactic" || getThemeStyleId(theme.id) === "cloudy"
