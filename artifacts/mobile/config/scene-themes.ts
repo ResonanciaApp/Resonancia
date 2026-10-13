@@ -83,10 +83,10 @@ export const SCENE_THEMES: Record<VisualThemeId, SceneTheme> = {
     ...CLOUDY_THEME,
     id: "fuego",
     label: "Fuego",
-    // Reversed palette with saturation/contrast adjustments and 5% more RGB brightness.
-    gradient: ["#82462D", "#82462D", "#81442C", "#82422D", "#823E2E", "#823A2E"],
+    // Updated with HSL saturation ×1.05, then RGB brightness ×1.07.
+    gradient: ["#8D4A2E", "#8D4A2E", "#8C482D", "#8D452E", "#8D412F", "#8D3C2F"],
     gradientLocations: [0, 0.2, 0.4, 0.6, 0.8, 1],
-    solid: "#82462D",
+    solid: "#8D4A2E",
   },
   galactic: {
     ...INDIGO2_THEME,
