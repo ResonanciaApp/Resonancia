@@ -181,8 +181,7 @@ function CustomTabBar({ state, navigation, descriptors }: TabBarProps) {
   const pillShape = { borderRadius: (pillHeight + 1) / 2 };
 
   const { hidden, showMenu, revealHandleHidden } = useTabBarVisibility();
-  const { activeSceneId, theme } = useSceneTheme();
-  const bottomFadeColor = theme.gradient[theme.gradient.length - 1];
+  const { activeSceneId } = useSceneTheme();
   const inactiveColor = getTabBarInactiveColor(activeSceneId);
   const indigo2Mode = isIndigo2ThemeId(activeSceneId);
   const tabBarGlassOverlay = getTabBarGlassOverlay(activeSceneId);
@@ -282,14 +281,6 @@ function CustomTabBar({ state, navigation, descriptors }: TabBarProps) {
             style={StyleSheet.absoluteFill}
           />
         </MaskedView>
-        <LinearGradient
-          pointerEvents="none"
-          colors={["transparent", bottomFadeColor]}
-          locations={[0, 1]}
-          start={{ x: 0.5, y: 0 }}
-          end={{ x: 0.5, y: 1 }}
-          style={styles.underBarBlur}
-        />
         <View style={[styles.pill, pillShape, { height: pillHeight + 1 }]}>
         {/* The shadow samples only the static glass, never the moving indicator/icons. */}
         <View pointerEvents="none" collapsable={false} style={[styles.glassLayer, styles.pillShadow, pillShape]}>
