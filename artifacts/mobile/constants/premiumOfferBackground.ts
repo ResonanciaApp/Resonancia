@@ -17,8 +17,10 @@ function adjustColor(hex: string, brightness: number, contrast = 1, saturation =
   }).join("").toUpperCase();
 }
 
-// Keep saturation +5%; reduce the previous brightness by 15% and contrast by 5%.
-export const PREMIUM_OFFER_BACKGROUND = indigo.map(color => adjustColor(color, 0.7 * 0.85, 1.1 * 0.95, 1.05)) as [string, string, ...string[]];
+// Keep the existing adjustments, then darken the resulting background another 25%.
+export const PREMIUM_OFFER_BACKGROUND = indigo.map(color =>
+  adjustColor(adjustColor(color, 0.7 * 0.85, 1.1 * 0.95, 1.05), 0.75),
+) as [string, string, ...string[]];
 export const PREMIUM_OFFER_SELECTED_CARD = adjustColor(indigo[indigo.length - 1], 1.05);
 export const PREMIUM_OFFER_ACCENT = PREMIUM_OFFER_SELECTED_CARD;
 export const PREMIUM_OFFER_LOCATIONS = SCENE_THEMES.indigo2.gradientLocations;

@@ -1444,7 +1444,9 @@ const styles = StyleSheet.create({
     justifyContent: "center",
   },
   purchaseButtonDisabled: {
-    opacity: 0.76,
+    // Keep the same visible fill as selected cards, including in preview mode.
+    // Pressable.disabled and accessibilityState still prevent purchases.
+    opacity: 1,
   },
   purchaseButtonText: {
     color: "#FFFFFF",
