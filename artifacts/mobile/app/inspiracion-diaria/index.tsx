@@ -24,7 +24,6 @@ import { useColors } from "@/hooks/useColors";
 import type { InspirationDay } from "@/types/inspiration";
 import { addDays, formatDayNumber, formatISODate, parseISO } from "@/lib/date-utils";
 import { settledInspirationIndex } from "@/lib/inspiration-interaction";
-import { INSPIRATION_SKY } from "@/constants/colors";
 
 function monthAndYear(date: string): string {
   return new Intl.DateTimeFormat("es", { month: "short", year: "numeric" })
@@ -448,7 +447,7 @@ const styles = StyleSheet.create({
     textShadowColor: "rgba(0,0,0,.8)",
     textShadowRadius: 4,
   },
-  selectionDot: { position: "absolute", bottom: 10, alignSelf: "center", width: 8, height: 8, borderRadius: 4, backgroundColor: INSPIRATION_SKY },
+  selectionDot: { position: "absolute", bottom: 10, alignSelf: "center", width: 8, height: 8, borderRadius: 4, backgroundColor: "rgba(58,166,63,0.7)" },
   disabled: { opacity: 0.38 },
   notice: {
     position: "absolute",
