@@ -23,7 +23,7 @@ import { useSafeAreaInsets } from "react-native-safe-area-context";
 
 import { MEMBERSHIP_AURORA } from "@/constants/colors";
 import { SessionBadgeGlass } from "@/components/SessionDurationBadge";
-import { IconCuencoTibetano } from "@/components/AncestralIcons";
+import { SimpleBowlIcon } from "@/components/SimpleBowlIcon";
 import { usePremium } from "@/context/PremiumContext";
 import { useBackAfterClose, useBackOverride } from "@/context/BackOverrideContext";
 import { useSceneTheme } from "@/context/SceneThemeContext";
@@ -769,7 +769,7 @@ function PremiumOfferContent({
           end={{ x: 0.5, y: 1 }}
           style={styles.offerLogo}
         >
-          <IconCuencoTibetano size={47} color="#FFFFFF" />
+          <SimpleBowlIcon size={53} color="#FFFFFF" />
         </LinearGradient>
         <Text style={styles.offerBrand}>Resonancia</Text>
       </View>
@@ -1071,7 +1071,7 @@ const styles = StyleSheet.create({
     borderRadius: 23.5,
     borderWidth: 0,
     borderColor: "transparent",
-    backgroundColor: "rgba(0,0,0,0.16)",
+    backgroundColor: "rgba(255,255,255,0.1)",
     alignItems: "center",
     justifyContent: "center",
   },
@@ -1366,7 +1366,7 @@ const styles = StyleSheet.create({
     backgroundColor: "transparent",
   },
   planGlassTint: {
-    backgroundColor: "rgba(255,255,255,0.10)",
+    backgroundColor: "rgba(255,255,255,0.05)",
   },
   planGlassTintSelected: {
     backgroundColor: PREMIUM_OFFER_SELECTED_CARD,

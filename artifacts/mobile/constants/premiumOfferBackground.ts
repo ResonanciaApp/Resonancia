@@ -1,7 +1,9 @@
 import { SCENE_THEMES } from "@/config/scene-themes";
 
 const indigo = SCENE_THEMES.indigo2.gradient;
-export const PREMIUM_OFFER_LOGO_GRADIENT = indigo.slice(1, 4) as [string, string, ...string[]];
+export const PREMIUM_OFFER_LOGO_GRADIENT = indigo.slice(1, 4).map(
+  color => adjustColor(color, 1.03, 1.05, 1.1),
+) as [string, string, ...string[]];
 
 function adjustColor(hex: string, brightness: number, contrast = 1, saturation = 1): string {
   const rgb = [1, 3, 5].map(offset => parseInt(hex.slice(offset, offset + 2), 16) / 255);
@@ -21,6 +23,6 @@ function adjustColor(hex: string, brightness: number, contrast = 1, saturation =
 export const PREMIUM_OFFER_BACKGROUND = indigo.map(color =>
   adjustColor(adjustColor(color, 0.7 * 0.85, 1.1 * 0.95, 1.05), 0.75),
 ) as [string, string, ...string[]];
-export const PREMIUM_OFFER_SELECTED_CARD = adjustColor(indigo[indigo.length - 1], 1.05);
+export const PREMIUM_OFFER_SELECTED_CARD = adjustColor(adjustColor(indigo[indigo.length - 1], 1.05), 1.05);
 export const PREMIUM_OFFER_ACCENT = PREMIUM_OFFER_SELECTED_CARD;
 export const PREMIUM_OFFER_LOCATIONS = SCENE_THEMES.indigo2.gradientLocations;
