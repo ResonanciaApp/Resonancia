@@ -3861,7 +3861,7 @@ const styles = StyleSheet.create({
     fontSize: 22 - 1 / (63 / 67),
     lineHeight: 25 - 1 / (63 / 67),
     fontWeight: "600",
-    transform: [{ translateY: 2 }],
+    transform: [{ translateY: 2 }, { translateX: 1 / (63 / 67) }],
   },
   inicio3HeroLotusCount: {
     color: "#F9F9F9",
