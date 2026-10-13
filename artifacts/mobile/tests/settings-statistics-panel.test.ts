@@ -4,7 +4,7 @@ import test from "node:test";
 import React from "react";
 import ts from "typescript";
 
-function load(path: string, mocks: Record<string, any>) {
+function load(path: string, mocks: Record<string, any>, development = false) {
   const source = readFileSync(new URL(`../components/${path}.tsx`, import.meta.url), "utf8");
   const compiled = ts.transpileModule(source, {
     compilerOptions: { module: ts.ModuleKind.CommonJS, jsx: ts.JsxEmit.React, esModuleInterop: true },
@@ -13,7 +13,7 @@ function load(path: string, mocks: Record<string, any>) {
   new Function("require", "module", "exports", "__DEV__", compiled)((name: string) => {
     assert.ok(name in mocks, `Missing mock ${name}`);
     return mocks[name];
-  }, module, module.exports, false);
+  }, module, module.exports, development);
   return module.exports;
 }
 function elements(node: any): React.ReactElement<any>[] {
@@ -54,7 +54,7 @@ test("Mis estadísticas is above notifications and opens/closes its own window w
     "@/context/TabBarLabelsContext": { useTabBarLabels: () => ({ enabled: false, loaded: true, saving: false, setEnabled: async () => {} }) },
     "@/context/SceneThemeContext": { useSceneTheme: () => ({ activeSceneId: "cloudy", setActiveScene: () => {} }) },
     "@/hooks/useColors": { useColors: () => ({ primary: "#FFF" }) },
-  });
+  }, true);
   const props = {
     placement: "settings", sceneId: "cloudy", foreground: "#FFF", mutedForeground: "#AAA",
     accent: "#FFF", cardBackground: "rgba(0,0,0,0.16)", onLogout: () => {},
@@ -74,8 +74,17 @@ test("Mis estadísticas is above notifications and opens/closes its own window w
     "Instagram", "Facebook", "YouTube", "Abrir Geometrix", "Cerrar sesión",
   ]);
   const texts = nodes.filter(node => node.type === "text").map(node => node.props.children);
-  for (const hidden of ["Comparte bienestar", "Información", "Nuestras redes",
-    "Elige el contenido que quieres recibir", "Mañana, tarde y noche"]) {
+  assert.equal(texts[0], "Premium testing");
+  assert.equal(nodes.find(node => node.type === "switch")?.props.accessibilityLabel, "Premium testing");
+  assert.equal(labels.indexOf("Mis estadísticas"), labels.indexOf("Ayuda y soporte") + 1);
+  for (const title of ["Premium testing", "Mi cuenta", "Preferencias", "Comparte bienestar", "Información", "Nuestras redes", "Geometrix"]) {
+    const heading = nodes.find(node => node.type === "text" && node.props.children === title)!;
+    assert.ok(heading, `Missing heading ${title}`);
+    assert.equal(flatten(heading.props.style).fontSize, 19);
+  }
+  const sectionContainers = nodes.filter(node => node.type === "view" && flatten(node.props.style).marginBottom === 20);
+  assert.equal(sectionContainers.length, 6);
+  for (const hidden of ["Elige el contenido que quieres recibir", "Mañana, tarde y noche"]) {
     assert.ok(!texts.includes(hidden), `${hidden} should not be shown`);
   }
   assert.ok(labels.indexOf("Mis estadísticas") >= 0);

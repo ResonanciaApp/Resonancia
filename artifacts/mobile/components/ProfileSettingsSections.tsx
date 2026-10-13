@@ -82,13 +82,7 @@ export function ProfileSettingsSections({
   const sections: MenuSection[] = [
     {
       title: "Preferencias",
-      hideTitle: true,
       rows: [
-        ...(placement === "settings" ? [{
-          icon: "bar-chart-2" as const,
-          label: "Mis estadísticas",
-          onPress: () => setStatisticsOpen(true),
-        }] : []),
         {
           icon: "sliders",
           label: "Personalizar notificaciones",
@@ -119,7 +113,6 @@ export function ProfileSettingsSections({
     },
     {
       title: "Comparte bienestar",
-      hideTitle: true,
       rows: [
         { icon: "gift", label: "Regalar cuenta Premium", accent: true, onPress: () => comingSoon("Regalar cuenta Premium") },
         { icon: "share-2", label: "Compartir Resonancia", onPress: () => comingSoon("Compartir Resonancia") },
@@ -128,7 +121,6 @@ export function ProfileSettingsSections({
     },
     {
       title: "Información",
-      hideTitle: true,
       rows: [
         { icon: "users", label: "Quiénes somos", onPress: () => comingSoon("Quiénes somos") },
         { icon: "book-open", label: "Términos y condiciones", onPress: () => router.push("/terminos" as never) },
@@ -137,7 +129,6 @@ export function ProfileSettingsSections({
     },
     {
       title: "Nuestras redes",
-      hideTitle: true,
       rows: [
         { icon: "instagram", label: "Instagram", onPress: () => comingSoon("Instagram") },
         { icon: "facebook", label: "Facebook", onPress: () => comingSoon("Facebook") },
@@ -149,8 +140,29 @@ export function ProfileSettingsSections({
 
   return (
     <View style={styles.root}>
+      {placement === "settings" && __DEV__ && (
+        <View style={styles.section}>
+          <Text style={[styles.sectionTitle, { color: foreground }]}>Premium testing</Text>
+          <View style={[styles.card, { backgroundColor: cardBackground }]}>
+            <View style={styles.row}>
+              <View style={styles.iconBox}>
+                <Feather name="star" size={20} color="#F9F9F9" />
+              </View>
+              <Text style={[styles.rowLabel, styles.rowCopy, { color: foreground }]}>Premium testing</Text>
+              <Switch
+                value={isPremiumDev}
+                onValueChange={setPremiumDev}
+                accessibilityLabel="Premium testing"
+                trackColor={{ false: "rgba(61,14,22,0.50)", true: primary + "AA" }}
+                thumbColor={isPremiumDev ? primary : "#888"}
+              />
+            </View>
+          </View>
+        </View>
+      )}
       {placement === "settings" && (
-        <View style={[styles.section, styles.compactSection]}>
+        <View style={styles.section}>
+          <Text style={[styles.sectionTitle, { color: foreground }]}>Mi cuenta</Text>
           <View style={[styles.card, { backgroundColor: cardBackground }]}>
             <Pressable
               onPress={() => router.push("/membresia")}
@@ -182,31 +194,24 @@ export function ProfileSettingsSections({
               <Text style={[styles.rowLabel, styles.rowCopy, { color: foreground }]}>Ayuda y soporte</Text>
               <Feather name="chevron-right" size={19} color={themeAccent} />
             </Pressable>
-            {__DEV__ && (
-              <>
-                <View style={[styles.divider, { backgroundColor: dividerColor }]} />
-                <View style={styles.row}>
-                  <View style={styles.iconBox}>
-                    <Feather name="star" size={20} color="#F9F9F9" />
-                  </View>
-                  <Text style={[styles.rowLabel, styles.rowCopy, { color: foreground }]}>
-                    Premium testing
-                  </Text>
-                  <Switch
-                    value={isPremiumDev}
-                    onValueChange={setPremiumDev}
-                    accessibilityLabel="Premium testing"
-                    trackColor={{ false: "rgba(61,14,22,0.50)", true: primary + "AA" }}
-                    thumbColor={isPremiumDev ? primary : "#888"}
-                  />
-                </View>
-              </>
-            )}
+            <View style={[styles.divider, { backgroundColor: dividerColor }]} />
+            <Pressable
+              onPress={() => setStatisticsOpen(true)}
+              accessibilityRole="button"
+              accessibilityLabel="Mis estadísticas"
+              style={({ pressed }) => [styles.row, pressed && styles.rowPressed]}
+            >
+              <View style={styles.iconBox}>
+                <Feather name="bar-chart-2" size={20} color="#F9F9F9" />
+              </View>
+              <Text style={[styles.rowLabel, styles.rowCopy, { color: foreground }]}>Mis estadísticas</Text>
+              <Feather name="chevron-right" size={19} color={themeAccent} />
+            </Pressable>
           </View>
         </View>
       )}
-      {visibleSections.map((section, index) => (
-        <View key={section.title} style={[styles.section, index < visibleSections.length - 1 && styles.compactSection]}>
+      {visibleSections.map((section) => (
+        <View key={section.title} style={styles.section}>
           {!section.hideTitle && (
             <Text
               style={[
@@ -274,6 +279,7 @@ export function ProfileSettingsSections({
           {statisticsOpen && (
             <SettingsStatisticsPanel onClose={() => setStatisticsOpen(false)} />
           )}
+          <Text style={[styles.sectionTitle, { color: foreground }]}>Geometrix</Text>
           <Pressable
             onPress={() => openGeometrix()}
             accessibilityRole="button"
@@ -324,16 +330,14 @@ const styles = StyleSheet.create({
     paddingBottom: 20,
   },
   section: {
-    marginBottom: 38,
-  },
-  compactSection: {
-    marginBottom: 21,
+    marginBottom: 20,
   },
   sectionTitle: {
     fontFamily: "Manrope",
-    fontSize: 18,
+    fontSize: 19,
     lineHeight: 24,
     fontWeight: "700",
+    letterSpacing: 0.3,
     marginBottom: 16,
   },
   sectionTitleCompact: {
@@ -416,7 +420,7 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     alignItems: "center",
     paddingHorizontal: 15,
-    marginBottom: 16,
+    marginBottom: 20,
   },
   geometrixText: {
     flex: 1,
