@@ -466,6 +466,10 @@ type LibResult =
   | { kind: "playlist"; data: UserPlaylist };
 
 function SearchOverlay({ visible, onClose, gradient, accentColor }: { visible: boolean; onClose: () => void; gradient: readonly string[]; accentColor: string }) {
+  const { theme } = useSceneTheme();
+  const searchSurface = ["natural", "fuego", "cloudy"].includes(theme.id)
+    ? "rgba(0,0,0,0.19)"
+    : "rgba(0,0,0,0.16)";
   const overlay = useCategoryOverlayOptional();
   const openPlaylistPanel = usePlaylistPanelOpener();
   const [q, setQ] = useState("");
@@ -565,7 +569,7 @@ function SearchOverlay({ visible, onClose, gradient, accentColor }: { visible: b
       <LinearGradient colors={gradient as [string, string, ...string[]]} style={[blStyles.root, { paddingBottom: kbHeight }]}>
         {/* Barra */}
         <View style={[blStyles.overlay, { paddingTop: insets.top + 14, backgroundColor: "transparent" }]}>
-          <View style={blStyles.bar}>
+          <View style={[blStyles.bar, { backgroundColor: searchSurface }]}>
             <Feather name="search" size={16} color={accentColor} style={{ opacity: 0.8 }} />
             <TextInput
               ref={inputRef}
@@ -674,7 +678,7 @@ function SearchOverlay({ visible, onClose, gradient, accentColor }: { visible: b
 const blStyles = StyleSheet.create({
   root:         { flex: 1 },
   overlay:      { flexDirection: "row", alignItems: "center", paddingHorizontal: H_PAD, paddingBottom: 14, gap: 10 },
-  bar:          { flex: 1, flexDirection: "row", alignItems: "center", gap: 8, backgroundColor: "rgba(255,255,255,0.09)", borderRadius: 12, paddingHorizontal: 12, paddingVertical: 11 },
+  bar:          { flex: 1, flexDirection: "row", alignItems: "center", gap: 8, borderRadius: 999, paddingHorizontal: 12, paddingVertical: 11 },
   input:        { fontFamily: "Manrope", flex: 1, fontSize: 14, color: "#FBFBFB" },
   cancel:       { paddingVertical: 6 },
   cancelText:   { fontFamily: "Manrope", color: "#F9F9F9", fontSize: 14, fontWeight: "600" },
