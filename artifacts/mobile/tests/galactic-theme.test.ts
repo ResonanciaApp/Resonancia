@@ -67,7 +67,13 @@ test("Galactic coordinates tab tint, icon/text colors, widget and journey pills"
   assert.equal(tabColors.getTabBarInactiveColor("galactic"), "#D5E5F2");
   assert.equal(tabColors.getTabBarInactiveColor("galactic"), tabColors.getTabBarInactiveColor("cloudy"));
   assert.match(source("../app/(tabs)/_layout.tsx"), /activeColor=\{activeSceneId === "fuego" \? "#FFF5EF" : ACTIVE_COLOR\}/);
-  assert.match(source("../app/(tabs)/inicio8.tsx"), /activeTheme\.id === "galactic" \? \[activeTheme\.gradient\[0\], activeTheme\.gradient\[activeTheme\.gradient\.length - 1\]\]/);
+  assert.match(source("../app/(tabs)/inicio8.tsx"), /activeTheme\.id === "galactic" \? GALACTIC_WIDGET_PLUS_GRADIENT/);
+  const palette = themes.SCENE_THEMES.galactic.gradient;
+  const brighter = [palette[0], palette[palette.length - 1]].map((hex: string) =>
+    "#" + [1, 3, 5].map(offset => Math.round(parseInt(hex.slice(offset, offset + 2), 16) * 1.05).toString(16).padStart(2, "0")).join("").toUpperCase(),
+  );
+  assert.deepEqual(brighter, ["#0D3A55", "#1A1B47"]);
+  assert.match(source("../constants/colors.ts"), /GALACTIC_WIDGET_PLUS_GRADIENT = \["#0D3A55", "#1A1B47"\]/);
   const journey = source("../components/GrowthJourney.tsx");
   assert.equal((journey.match(/theme\.id === "galactic" && \{ backgroundColor: "rgba\(190,223,245,0\.20\)" \}/g) ?? []).length, 3);
   assert.match(journey, /theme\.id === "galactic" && \{ color: "#BEDFF5" \}/);

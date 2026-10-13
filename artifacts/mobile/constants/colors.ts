@@ -36,6 +36,8 @@ export const CLOUDY_WIDGET_PLUS_GRADIENT = ["#2D2F7C", "#2D3981"] as const;
 export const NATURAL_WIDGET_PLUS_GRADIENT = ["#52A855", "#52A855"] as const;
 // Fuego's endpoint colors with RGB brightness increased by 10%, widget only.
 export const FUEGO_WIDGET_PLUS_GRADIENT = ["#884A2F", "#883D30"] as const;
+// Galactic's endpoint colors with RGB brightness increased by 5%, widget only.
+export const GALACTIC_WIDGET_PLUS_GRADIENT = ["#0D3A55", "#1A1B47"] as const;
 export const CLOUDY_GROWTH_STAGE_LABEL_COLOR = "#B5EFFF";
 export const CLOUDY_GROWTH_ASCENT_TOGGLE_COLOR = "#F9F9F9";
 export const CLOUDY_GROWTH_DAY_PILL_BACKGROUND = "rgba(128,171,231,0.20)";
