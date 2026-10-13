@@ -495,7 +495,8 @@ export function InnerSpaceCard({
     ? styles.cloudyFlushBorder.paddingBottom
     : (profileVariant ? styles.profileWall : canonicalVerticalInsets ? styles.canonicalVerticalInsets : styles.container).paddingBottom + 1;
   const bottomGapExtra = COMPOSER_BOTTOM_GAP - containerBottomInset;
-  const registerColor = theme.id === "natural" ? "#073B32"
+  const registerColor = theme.id === "fuego" ? "#3B1B13"
+    : theme.id === "natural" ? "#073B32"
     : getThemeStyleId(theme.id) === "cloudy" ? "#166494"
       : "#0B1438";
   const sectionBorderInset = canonicalVerticalInsets && !profileVariant && getThemeStyleId(theme.id) === "cloudy" ? 0 : -1;
