@@ -90,12 +90,11 @@ test("resonador action background uses first Natural stop without changing creat
   assert.match(source, /styles\.addResModalSheet, \{ backgroundColor: librarySheetColor \}/);
 });
 
-test("Agregar Resonador search is black at 19% only in Natural", () => {
+test("Agregar Resonador has no search, centers title and has a left close button and subtle handle", () => {
   const source = read("../components/BibliotecaScreen.tsx");
-  const expr = source.match(/const addResSearchSurface =\s*([\s\S]*?);/)![1];
-  const resolve = new Function("sceneTheme", "activeSceneId", "isIndigo2ThemeId", `return (${expr});`);
-  for (const theme of Object.values(SCENE_THEMES)) {
-    assert.equal(resolve(theme, theme.id, isIndigo2ThemeId), theme.id === "natural" ? "rgba(0,0,0,0.19)" : isIndigo2ThemeId(theme.id) ? "rgba(21,13,46,0.7)" : "rgba(14,14,23,0.7)");
-  }
-  assert.match(source, /styles\.addResSearchRow, \{ backgroundColor: addResSearchSurface \}/);
+  assert.doesNotMatch(source, /addResSearch|addResonadorQ|setAddResonadorQ/);
+  assert.match(source, /addResModalHeader: \{[^}]*justifyContent: "center"/);
+  assert.match(source, /addResClose: \{ position: "absolute", left: H_PAD \}/);
+  assert.match(source, /addResHandle: \{[^}]*backgroundColor: "rgba\(255,255,255,0\.1\)"/);
+  assert.doesNotMatch(source.match(/addResFollowButton: \{[^}]*\}/)![0], /borderWidth|borderColor/);
 });

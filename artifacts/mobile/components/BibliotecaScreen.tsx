@@ -1188,14 +1188,6 @@ export function BibliotecaScreen({
   const [resonadorToUnfollow, setResonadorToUnfollow] = useState<{ id: string; name?: string } | null>(null);
   const iconPlaceholderColor = "#fefefe";
   const libraryTabSurface = getLibraryTabSurface(activeSceneId);
-  const addResSearchSurface =
-    sceneTheme.id === "natural"
-      ? "rgba(0,0,0,0.19)"
-      : isIndigo2ThemeId(activeSceneId)
-      ? "rgba(21,13,46,0.7)"
-      : activeSceneId === "resonancia"
-        ? "rgba(9,11,23,0.7)"
-        : "rgba(14,14,23,0.7)";
 
   const topPad = Platform.OS === "web" ? 67 : Math.max(insets.top, 40);
   const bottomPad = Platform.OS === "web" ? 34 : insets.bottom;
@@ -1222,7 +1214,6 @@ export function BibliotecaScreen({
   const [mixesLimit, setMixesLimit] = useState(12);
   const [geoLimit, setGeoLimit] = useState(8);
   const [addResonadorVisible, setAddResonadorVisible] = useState(false);
-  const [addResonadorQ, setAddResonadorQ] = useState("");
   const [addResKbHeight, setAddResKbHeight] = useState(0);
   useEffect(() => {
     const show = Keyboard.addListener("keyboardWillShow", (e) => setAddResKbHeight(e.endCoordinates.height));
@@ -1584,7 +1575,7 @@ export function BibliotecaScreen({
             {[
               { key: "playlist", icon: "list" as const, label: "Crear una Playlist", onPress: () => setNombreVisible(true) },
               { key: "mix", icon: "sliders" as const, label: "Crear una mezcla", onPress: () => openMixer() },
-              { key: "resonador", icon: "plus" as const, label: "Agregar Resonador", onPress: () => { setAddResonadorQ(""); setAddResonadorVisible(true); } },
+              { key: "resonador", icon: "plus" as const, label: "Agregar Resonador", onPress: () => { setAddResonadorVisible(true); } },
               { key: "folder", icon: "folder" as const, label: "Crear una carpeta", onPress: () => setNombreCarpetaVisible(true) },
             ].map((placeholder) => (
               <Pressable
@@ -2280,7 +2271,7 @@ export function BibliotecaScreen({
         visible={addResonadorVisible}
         animationType="slide"
         transparent
-        onRequestClose={() => { setAddResonadorVisible(false); setAddResonadorQ(""); }}
+        onRequestClose={() => { setAddResonadorVisible(false); }}
       >
         <View style={{ flex: 1 }}>
           <View style={[StyleSheet.absoluteFill, { backgroundColor: "rgba(0,0,0,0.65)", bottom: addResKbHeight }]} pointerEvents="none" />
@@ -2290,32 +2281,23 @@ export function BibliotecaScreen({
           >
            <View style={[styles.addResModalSheet, { backgroundColor: librarySheetColor }]}>
              <LibraryCreationBackground style={{ borderTopLeftRadius: 22, borderTopRightRadius: 22 }} />
+            <View pointerEvents="none" style={styles.addResHandle} />
             <View style={styles.addResModalHeader}>
               <Text style={styles.addResModalTitle}>Agrega Resonador</Text>
               <Pressable
                 hitSlop={10}
-                style={styles.modalCloseBtn}
-                onPress={() => { setAddResonadorVisible(false); setAddResonadorQ(""); }}
+                accessibilityLabel="Cerrar Agrega Resonador"
+                style={[styles.modalCloseBtn, styles.addResClose]}
+                onPress={() => { setAddResonadorVisible(false); }}
               >
                 <Feather name="x" size={22} color={TEXT} />
               </Pressable>
-            </View>
-            <View style={[styles.addResSearchRow, { backgroundColor: addResSearchSurface }]}>
-              <Feather name="search" size={17} color={TEXT} />
-              <TextInput
-                style={styles.addResSearchInput}
-                placeholder="Artistas, guiadores..."
-                placeholderTextColor={MUTED}
-                value={addResonadorQ}
-                onChangeText={setAddResonadorQ}
-              />
             </View>
             <ScrollView
               showsVerticalScrollIndicator={false}
               contentContainerStyle={{ paddingTop: 15, paddingBottom: 48, gap: 5 }}
             >
               {allResonadores
-                .filter((r) => addResonadorQ.length === 0 || r.name.toLowerCase().includes(addResonadorQ.toLowerCase()))
                 .map((r) => {
                   const isFollowed = followedIds.includes(r.id);
                   return (
@@ -2324,7 +2306,6 @@ export function BibliotecaScreen({
                       style={({ pressed }) => [styles.row, { opacity: pressed ? 0.8 : 1 }]}
                       onPress={() => {
                         setAddResonadorVisible(false);
-                        setAddResonadorQ("");
                         router.push((r.kind === "artist" ? `/artista/${r.id}` : `/guiador/${r.id}`) as never);
                       }}
                     >
@@ -2874,7 +2855,8 @@ const styles = StyleSheet.create({
   addResModalHeader: {
     flexDirection: "row",
     alignItems: "center",
-    justifyContent: "space-between",
+    justifyContent: "center",
+    minHeight: 43,
     paddingHorizontal: H_PAD,
     marginBottom: 14,
   },
@@ -2883,33 +2865,14 @@ const styles = StyleSheet.create({
     fontSize: 18,
     fontWeight: "700",
     color: TEXT,
-    transform: [{ translateY: 15 }],
+    textAlign: "center",
+    marginHorizontal: 43,
   },
-  addResSearchRow: {
-    flexDirection: "row",
-    alignItems: "center",
-    gap: 10,
-    height: 46,
-    borderRadius: 999,
-    marginHorizontal: H_PAD,
-    marginTop: 25,
-    paddingHorizontal: 18,
-    marginBottom: 12,
-    borderWidth: 1,
-    borderColor: "rgba(255,255,255,0.7)",
-  },
-  addResSearchInput: {
-    fontFamily: "Manrope",
-    flex: 1,
-    fontSize: 12,
-    color: TEXT,
-    padding: 0,
-  },
+  addResHandle: { width: 36, height: 4, borderRadius: 2, backgroundColor: "rgba(255,255,255,0.1)", alignSelf: "center", marginBottom: 12 },
+  addResClose: { position: "absolute", left: H_PAD },
   addResFollowButton: {
     width: 36,
     height: 36,
     borderRadius: 18,
-    borderWidth: 1,
-    borderColor: "rgba(255,255,255,0.1)",
   },
 });
