@@ -167,7 +167,9 @@ export function SleepReminderSheet({
 
   if (!mounted) return null;
 
-  const sleepActionColors = isMorning ? null : getSleepActionColors(theme.id);
+  const sleepActionColors = isMorning ? null : theme.id === "indigo2"
+    ? { background: "#F9F9F9", foreground: "#0B1438" }
+    : getSleepActionColors(theme.id);
   const timeLabel = formatPracticeNotificationTimeLocal(draft.hour, draft.minute);
   const gradient = isMorning
     ? ["#C96D68", "#855269", "#443044"] as const

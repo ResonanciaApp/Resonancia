@@ -78,8 +78,8 @@ test("Continuar renders the new background and foreground only at night, includi
       const sleepActionColors = resolve({ id }, isMorning, getSleepActionColors);
       const env = { sleepActionColors, isMorning, saving: false, styles, SLEEP_REMINDER_CONTINUE_FOREGROUND };
       const buttonStyle = expression(attribute(button, "style"), env);
-      const expectedBackground = isMorning ? "#C96D68" : getSleepActionColors(id)?.background ?? SLEEP_REMINDER_CONTINUE_BACKGROUND;
-      const expectedForeground = isMorning ? "#FFFFFF" : getSleepActionColors(id)?.foreground ?? SLEEP_REMINDER_CONTINUE_FOREGROUND;
+      const expectedBackground = isMorning ? "#C96D68" : id === "indigo2" ? "#F9F9F9" : getSleepActionColors(id)?.background ?? SLEEP_REMINDER_CONTINUE_BACKGROUND;
+      const expectedForeground = isMorning ? "#FFFFFF" : id === "indigo2" ? "#0B1438" : getSleepActionColors(id)?.foreground ?? SLEEP_REMINDER_CONTINUE_FOREGROUND;
       assert.equal(flatten(buttonStyle({ pressed: false })).backgroundColor, expectedBackground);
       assert.equal(flatten(expression(attribute(text.openingElement, "style"), env)).color, expectedForeground);
       assert.equal(expression(attribute(spinner, "color"), env), expectedForeground);
