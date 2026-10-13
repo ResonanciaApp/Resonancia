@@ -65,6 +65,19 @@ test("Mis estadísticas is above notifications and opens/closes its own window w
   };
   let nodes = render();
   const labels = nodes.filter(node => node.type === "pressable").map(node => node.props.accessibilityLabel);
+  assert.deepEqual(labels, [
+    "Suscripción Premium", "Ayuda y soporte",
+    "Mis estadísticas", "Personalizar notificaciones", "Recordatorios de práctica",
+    "Widget emoji", "Títulos del menú", "Racha", "Registro diario de ánimo",
+    "Regalar cuenta Premium", "Compartir Resonancia", "Calificarnos en App Store",
+    "Quiénes somos", "Términos y condiciones", "Políticas de privacidad",
+    "Instagram", "Facebook", "YouTube", "Abrir Geometrix", "Cerrar sesión",
+  ]);
+  const texts = nodes.filter(node => node.type === "text").map(node => node.props.children);
+  for (const hidden of ["Comparte bienestar", "Información", "Nuestras redes",
+    "Elige el contenido que quieres recibir", "Mañana, tarde y noche"]) {
+    assert.ok(!texts.includes(hidden), `${hidden} should not be shown`);
+  }
   assert.ok(labels.indexOf("Mis estadísticas") >= 0);
   assert.ok(labels.indexOf("Mis estadísticas") < labels.indexOf("Personalizar notificaciones"));
   assert.equal(nodes.filter(node => node.type === "statistics-panel").length, 0);

@@ -4,7 +4,6 @@ import { router } from "expo-router";
 import React, { useState } from "react";
 import {
   Alert,
-  LayoutAnimation,
   Pressable,
   StyleSheet,
   Switch,
@@ -12,7 +11,6 @@ import {
   View,
 } from "react-native";
 
-import { MilestoneCards } from "@/components/MilestoneCards";
 import { SettingsStatisticsPanel } from "@/components/SettingsStatisticsPanel";
 import { isIndigoThemeId, isIndigo2ThemeId, type ThemeSceneId } from "@/config/scene-themes";
 import { MEMBERSHIP_AURORA } from "@/constants/colors";
@@ -62,7 +60,6 @@ export function ProfileSettingsSections({
   cardBackground,
   onLogout,
 }: ProfileSettingsSectionsProps) {
-  const [milestonesOpen, setMilestonesOpen] = useState(false);
   const [statisticsOpen, setStatisticsOpen] = useState(false);
   const { openGeometrix } = useGeometrixPanel();
   const { isPremium: isPremiumDev, setPremium: setPremiumDev } = usePremium();
@@ -82,11 +79,6 @@ export function ProfileSettingsSections({
     Alert.alert(label, "Esta función estará disponible próximamente.");
   };
 
-  const toggleMilestones = () => {
-    LayoutAnimation.configureNext(LayoutAnimation.Presets.easeInEaseOut);
-    setMilestonesOpen((open) => !open);
-  };
-
   const sections: MenuSection[] = [
     {
       title: "Preferencias",
@@ -100,13 +92,11 @@ export function ProfileSettingsSections({
         {
           icon: "sliders",
           label: "Personalizar notificaciones",
-          description: "Elige el contenido que quieres recibir",
           onPress: () => router.push("/personalizar-notificaciones" as never),
         },
         {
           icon: "bell",
           label: "Recordatorios de práctica",
-          description: "Mañana, tarde y noche",
           onPress: () => router.push("/notificaciones-practica" as never),
         },
         {
@@ -118,20 +108,18 @@ export function ProfileSettingsSections({
         },
         {
           icon: "type",
-          label: "Títulos del menú inferior",
+          label: "Títulos del menú",
           toggle: true,
           toggleValue: tabBarLabels.enabled,
           onToggle: tabBarLabels.loaded && !tabBarLabels.saving ? value => { void tabBarLabels.setEnabled(value); } : undefined,
         },
         { icon: "zap", label: "Racha", toggle: true },
-        { icon: "smile", label: "Registro diario estado de ánimo", toggle: true },
-        { icon: "flag", label: "Hitos", value: milestonesOpen ? "Ocultar" : undefined, onPress: toggleMilestones },
-        { icon: "help-circle", label: "Ayuda y Soporte", onPress: () => router.push("/ayuda" as never) },
+        { icon: "smile", label: "Registro diario de ánimo", toggle: true },
       ],
     },
     {
       title: "Comparte bienestar",
-      compactTitle: true,
+      hideTitle: true,
       rows: [
         { icon: "gift", label: "Regalar cuenta Premium", accent: true, onPress: () => comingSoon("Regalar cuenta Premium") },
         { icon: "share-2", label: "Compartir Resonancia", onPress: () => comingSoon("Compartir Resonancia") },
@@ -139,14 +127,9 @@ export function ProfileSettingsSections({
       ],
     },
     {
-      title: "Asistencia e información",
+      title: "Información",
+      hideTitle: true,
       rows: [
-        {
-          icon: "life-buoy",
-          label: "Obtener ayuda",
-          description: "¿Tienes problemas con la app? Escríbenos.",
-          onPress: () => router.push("/ayuda" as never),
-        },
         { icon: "users", label: "Quiénes somos", onPress: () => comingSoon("Quiénes somos") },
         { icon: "book-open", label: "Términos y condiciones", onPress: () => router.push("/terminos" as never) },
         { icon: "eye", label: "Políticas de privacidad", onPress: () => router.push("/terminos" as never) },
@@ -154,11 +137,11 @@ export function ProfileSettingsSections({
     },
     {
       title: "Nuestras redes",
+      hideTitle: true,
       rows: [
         { icon: "instagram", label: "Instagram", onPress: () => comingSoon("Instagram") },
         { icon: "facebook", label: "Facebook", onPress: () => comingSoon("Facebook") },
         { icon: "youtube", label: "YouTube", onPress: () => comingSoon("YouTube") },
-        { icon: "radio", label: "Blog", onPress: () => comingSoon("Blog") },
       ],
     },
   ];
@@ -186,6 +169,19 @@ export function ProfileSettingsSections({
               </Text>
               <Feather name="chevron-right" size={19} color={themeAccent} />
             </Pressable>
+            <View style={[styles.divider, { backgroundColor: dividerColor }]} />
+            <Pressable
+              onPress={() => router.push("/ayuda" as never)}
+              accessibilityRole="button"
+              accessibilityLabel="Ayuda y soporte"
+              style={({ pressed }) => [styles.row, pressed && styles.rowPressed]}
+            >
+              <View style={styles.iconBox}>
+                <Feather name="help-circle" size={20} color="#F9F9F9" />
+              </View>
+              <Text style={[styles.rowLabel, styles.rowCopy, { color: foreground }]}>Ayuda y soporte</Text>
+              <Feather name="chevron-right" size={19} color={themeAccent} />
+            </Pressable>
             {__DEV__ && (
               <>
                 <View style={[styles.divider, { backgroundColor: dividerColor }]} />
@@ -194,12 +190,12 @@ export function ProfileSettingsSections({
                     <Feather name="star" size={20} color="#F9F9F9" />
                   </View>
                   <Text style={[styles.rowLabel, styles.rowCopy, { color: foreground }]}>
-                    Modo Premium (testing)
+                    Premium testing
                   </Text>
                   <Switch
                     value={isPremiumDev}
                     onValueChange={setPremiumDev}
-                    accessibilityLabel="Modo Premium (testing)"
+                    accessibilityLabel="Premium testing"
                     trackColor={{ false: "rgba(61,14,22,0.50)", true: primary + "AA" }}
                     thumbColor={isPremiumDev ? primary : "#888"}
                   />
@@ -259,18 +255,13 @@ export function ProfileSettingsSections({
                       <>
                         {row.value && <Text style={[styles.rowValue, { color: mutedForeground }]}>{row.value}</Text>}
                         <Feather
-                           name={row.label === "Hitos" && milestonesOpen ? "chevron-up" : "chevron-right"}
+                           name="chevron-right"
                           size={19}
                           color={themeAccent}
                         />
                       </>
                     )}
                   </Pressable>
-                  {row.label === "Hitos" && milestonesOpen && (
-                    <View style={[styles.milestones, { borderTopColor: dividerColor }]}>
-                      <MilestoneCards showTitle={false} />
-                    </View>
-                  )}
                 </React.Fragment>
               );
             })}
@@ -407,10 +398,6 @@ const styles = StyleSheet.create({
     fontWeight: "600",
     marginLeft: 8,
     marginRight: 7,
-  },
-  milestones: {
-    borderTopWidth: StyleSheet.hairlineWidth,
-    padding: 12,
   },
   logoutButton: {
     minHeight: 62,
