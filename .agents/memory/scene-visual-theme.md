@@ -3,6 +3,12 @@ name: Temas visuales y escenas sonoras
 description: Selector minimalista de temas en el drawer y separación entre tema visual y audio.
 ---
 
+Los degradados visibles deben conservar sus colores, posiciones de stops e identidad nativa durante una transición. Al interrumpirla, congelar la composición visible y superponer una capa nueva transparente; retirar las anteriores solo cuando quede cubierta.
+
+**Why:** Cambiar colores y reiniciar opacidad en una misma capa no garantiza una actualización atómica en iOS. Con pausas de JS puede verse un color anterior, y aplicar las posiciones del destino al origen cambia su aspecto antes del fade.
+
+**How to apply:** No reconstruir una transición interrumpida mezclando stops por índice: los temas tienen cantidades y posiciones distintas. Proteger finalizaciones antiguas y mantener la capa final sin resetearla. Las pruebas de lógica no verifican la presentación real en iPhone.
+
 Galactic añade una tercera fila debajo de Noche; hereda Índigo 2 y usa el fondo de los tres planes Premium, con el oscurecimiento incluido, invirtiendo sus stops.
 
 **Why:** El usuario pidió expresamente esa ubicación y esa paleta, sin reemplazar los temas existentes.

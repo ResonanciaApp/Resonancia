@@ -20,6 +20,8 @@ new Function("exports", "require", compile(read("../components/DrawerSceneCards.
     };
     if (name === "@expo/vector-icons") return { Feather: "icon", MaterialCommunityIcons: "icon" };
     if (name === "@/components/MoonCrescentIcon") return { MoonCrescentIcon: "moon-crescent" };
+    if (name === "@/hooks/useDrawerScenes") return { useDrawerScenes: () => [] };
+    if (name === "@/lib/avatar") return { resolveAvatarUrl: (value: string) => value };
     if (name === "expo-image") return { Image: "image" };
     if (name === "expo-linear-gradient") return { LinearGradient: "gradient" };
     if (name.endsWith(".jpg")) return name;
@@ -141,19 +143,21 @@ test("drawer and every screen that opens it crossfade backgrounds without changi
   }
   const background = read("../components/SceneThemeBackground.tsx");
   assert.match(background, /useNativeDriver: true/);
-  assert.match(background, /blendThemePalette\(current.from, current.to, visibleOpacity\)/);
+  assert.match(background, /key=\{layer.id\}/);
+  assert.doesNotMatch(background, /blendThemePalette/);
   assert.match(background, /generation.current !== token/);
   assert.match(background, /reduceMotionChanged/);
   assert.doesNotMatch(background, /setInterval|children/);
 });
 
-test("real background effects interrupt from the displayed palette and reduced motion settles immediately", () => {
+test("background preserves native layers on interruption, ignores stale completion and settles reduced motion", () => {
   const states: any[] = [], refs: any[] = [], effects: any[] = [];
   let stateIndex = 0, refIndex = 0, effectIndex = 0, dirty = false;
   let target = ["#000000", "#204060"];
   let reduceListener: (value: boolean) => void = () => {};
   const pending: any[] = [];
   const animationOptions: any[] = [];
+  const completions: ((result: { finished: boolean }) => void)[] = [];
   const register = (fn: () => any, deps: any[]) => {
     const index = effectIndex++;
     const previous = effects[index];
@@ -202,7 +206,7 @@ test("real background effects interrupt from the displayed palette and reduced m
         Animated: { Value, View: "animated",
           timing: (_value: any, options: any) => {
             animationOptions.push(options);
-            return { start() {}, stop() {} };
+            return { start(callback: any) { completions.push(callback); }, stop() {} };
           },
         },
       };
@@ -224,15 +228,27 @@ test("real background effects interrupt from the displayed palette and reduced m
   render();
   assert.equal(animationOptions.at(-1).duration, 600);
   assert.equal(animationOptions.at(-1).useNativeDriver, true);
-  refs[1].current.value = 0.5; // Actual native opacity at an interrupted frame.
-  target = ["#112233", "#8899aa"];
+  const baseLayer = refs[0].current[0];
+  const interruptedLayer = refs[0].current[1];
+  interruptedLayer.opacity.value = 0.5;
+  const staleCompletion = completions.at(-1)!;
+  // Different stop count must not recolor or reshape an existing layer.
+  target = ["#112233", "#8899aa", "#abcdef"];
   render();
-  assert.deepEqual(refs[0].current.from, ["#808080", "#406080"]);
-  assert.deepEqual(refs[0].current.to, target);
+  assert.equal(refs[0].current[0], baseLayer);
+  assert.equal(refs[0].current[1], interruptedLayer);
+  assert.deepEqual(interruptedLayer.colors, ["#ffffff", "#6080a0"]);
+  assert.equal(interruptedLayer.opacity.value, 0.5);
+  assert.deepEqual(refs[0].current[2].colors, target);
+  assert.equal(refs[0].current[2].opacity.value, 0);
+  staleCompletion({ finished: true });
+  assert.equal(refs[0].current.length, 3);
+  const finalLayer = refs[0].current[2];
   reduceListener(true);
   render();
-  assert.deepEqual(refs[0].current.from, target);
-  assert.equal(refs[1].current.value, 1);
+  assert.deepEqual(refs[0].current, [finalLayer]);
+  assert.equal(finalLayer.opacity.value, 1);
+  assert.deepEqual(finalLayer.colors, target);
   effects.forEach(effect => effect.cleanup?.());
 });
 
