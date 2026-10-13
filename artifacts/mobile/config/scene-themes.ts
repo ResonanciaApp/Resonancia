@@ -73,7 +73,12 @@ export const PREMIUM_BACKGROUND_GRADIENT = PREMIUM_BASE_GRADIENT.map(
       .toString(16).padStart(2, "0"),
   ).join(""),
 ) as [string, string, ...string[]];
-const GALACTIC_GRADIENT = [...PREMIUM_BACKGROUND_GRADIENT].reverse() as [string, string, ...string[]];
+const GALACTIC_GRADIENT = [...PREMIUM_BACKGROUND_GRADIENT].reverse().map(
+  color => "#" + [1, 3, 5].map(offset =>
+    Math.min(255, Math.round(parseInt(color.slice(offset, offset + 2), 16) * 1.05))
+      .toString(16).padStart(2, "0"),
+  ).join(""),
+) as [string, string, ...string[]];
 
 export const SCENE_THEMES: Record<VisualThemeId, SceneTheme> = {
   fuego: {

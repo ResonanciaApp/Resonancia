@@ -9,9 +9,11 @@ new Function("exports", ts.transpileModule(source("../config/scene-themes.ts"), 
   compilerOptions: { module: ts.ModuleKind.CommonJS },
 }).outputText)(themes);
 
-test("Galactic inherits Indigo 2 and reverses the exact Premium background", () => {
+test("Galactic inherits Indigo 2 and brightens its reversed base by 5%", () => {
   const theme = themes.SCENE_THEMES.galactic;
-  assert.deepEqual(theme.gradient, [...themes.PREMIUM_BACKGROUND_GRADIENT].reverse());
+  assert.deepEqual(theme.gradient, [...themes.PREMIUM_BACKGROUND_GRADIENT].reverse().map((hex: string) =>
+    "#" + [1, 3, 5].map(offset => Math.min(255, Math.round(parseInt(hex.slice(offset, offset + 2), 16) * 1.05)).toString(16).padStart(2, "0")).join(""),
+  ));
   assert.equal(theme.solid, theme.gradient[0]);
   assert.equal(theme.accent, themes.SCENE_THEMES.indigo2.accent);
   assert.equal(themes.getThemeStyleId(theme.id), "indigo2");
@@ -67,7 +69,8 @@ test("Galactic coordinates tab tint, icon/text colors, widget and journey pills"
   assert.equal(tabColors.getTabBarInactiveColor("galactic"), tabColors.getTabBarInactiveColor("cloudy"));
   assert.match(source("../app/(tabs)/_layout.tsx"), /activeColor=\{activeSceneId === "fuego" \? "#FFF5EF" : ACTIVE_COLOR\}/);
   assert.match(source("../app/(tabs)/inicio8.tsx"), /activeTheme\.id === "galactic" \? GALACTIC_WIDGET_PLUS_GRADIENT/);
-  const palette = themes.SCENE_THEMES.galactic.gradient;
+  // Widget colors retain their independently chosen brightness.
+  const palette = [...themes.PREMIUM_BACKGROUND_GRADIENT].reverse();
   const brighter = [palette[0], palette[palette.length - 1]].map((hex: string) =>
     "#" + [1, 3, 5].map(offset => Math.round(parseInt(hex.slice(offset, offset + 2), 16) * 1.05).toString(16).padStart(2, "0")).join("").toUpperCase(),
   );
