@@ -49,6 +49,7 @@ export default function CrearRutinaScreen() {
   const { from } = useLocalSearchParams<{ from?: string }>();
   const colors = useColors();
   const { activeSceneId, theme: activeTheme } = useSceneTheme();
+  const formMuted = activeTheme.id === "fuego" ? "#CFCFCF" : ROUTINE_MUTED;
   const insets = useSafeAreaInsets();
   const { addActivity } = useRutina();
   const [title, setTitle] = useState("");
@@ -211,7 +212,7 @@ export default function CrearRutinaScreen() {
             setSuggestedCategory(null);
           }}
           placeholder="Nombra tu actividad"
-          placeholderTextColor={ROUTINE_MUTED}
+          placeholderTextColor={formMuted}
           style={[styles.titleInput, { color: colors.foreground }]}
           accessibilityLabel="Nombre de la actividad"
           testID="crear-rutina-title"
@@ -223,7 +224,7 @@ export default function CrearRutinaScreen() {
           value={description}
           onChangeText={setDescription}
           placeholder="Añadir una descripción (opcional)"
-          placeholderTextColor={ROUTINE_MUTED}
+          placeholderTextColor={formMuted}
           style={[styles.descriptionInput, { color: colors.foreground }]}
           multiline
           textAlignVertical="top"
@@ -260,7 +261,7 @@ export default function CrearRutinaScreen() {
             pointerEvents={suggestionEditing ? "none" : "auto"}
             style={suggestionsFadeStyle}
           >
-            <View style={[styles.tabRail, { borderBottomColor: ROUTINE_MUTED }]}>
+            <View style={[styles.tabRail, { borderBottomColor: formMuted }]}>
               <ScrollView
                 horizontal
                 style={styles.tabScroller}
@@ -291,7 +292,7 @@ export default function CrearRutinaScreen() {
                       <Text
                         style={[
                           styles.tabText,
-                          { color: selected ? ROUTINE_SELECTED : ROUTINE_MUTED },
+                          { color: selected ? ROUTINE_SELECTED : formMuted },
                         ]}
                       >
                         {tab}

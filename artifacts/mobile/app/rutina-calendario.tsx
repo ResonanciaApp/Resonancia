@@ -99,8 +99,10 @@ function CalendarActivityRow({
 }) {
   const routineTheme = useRoutineTheme();
   const { toggleActivity } = useRutina();
+  const { theme } = useSceneTheme();
   const status = statusFor(activity, dateKey, occurrenceIndex);
   const completed = status === "completed";
+  const mutedColor = completed && theme.id === "fuego" ? "#DBDBDB" : "#B5B5B5";
   const skipped = status === "skipped";
   const category = getRoutineActivityCategory(activity);
   const completionProgress = useSharedValue(0);
@@ -154,7 +156,7 @@ function CalendarActivityRow({
       </Reanimated.View>
       <View style={styles.activityCopy}>
         {category ? (
-          <Text style={[styles.category, { color: "#B5B5B5" }]}>
+          <Text style={[styles.category, { color: mutedColor }]}>
             {category}
           </Text>
         ) : null}
@@ -163,7 +165,7 @@ function CalendarActivityRow({
           style={[
             styles.activityTitle,
             {
-              color: completed ? "#B5B5B5" : routineTheme.text,
+              color: completed ? mutedColor : routineTheme.text,
               textDecorationLine: completed ? "line-through" : "none",
             },
           ]}
@@ -172,8 +174,8 @@ function CalendarActivityRow({
           {activity.timesPerDay > 1 ? ` · ${occurrenceIndex + 1}/${activity.timesPerDay}` : ""}
         </Text>
         <View style={styles.repeatRow}>
-          <Feather name="repeat" size={12} color="#B5B5B5" />
-          <Text style={[styles.repeatText, { color: "#B5B5B5" }]}>
+          <Feather name="repeat" size={12} color={mutedColor} />
+          <Text style={[styles.repeatText, { color: mutedColor }]}>
              {activity.repeatEnabled
                ? activity.timesPerDay === 1
                  ? "Cada día"
