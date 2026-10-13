@@ -1,7 +1,9 @@
 import { MaterialCommunityIcons } from "@expo/vector-icons";
 import { MoonCrescentIcon } from "@/components/MoonCrescentIcon";
 import React from "react";
-import { Pressable, StyleSheet, Text, View } from "react-native";
+import { Image, Pressable, StyleSheet, Text, View } from "react-native";
+import { useDrawerScenes } from "@/hooks/useDrawerScenes";
+import { resolveAvatarUrl } from "@/lib/avatar";
 
 type SceneId = "cloudy" | "indigo2" | "natural" | "pleyades" | "galactic" | "fuego";
 
@@ -35,6 +37,7 @@ const SCENES: {
 ];
 
 export function DrawerSceneCards({ activeId, onSelect }: Props) {
+  const editorial = useDrawerScenes();
   return (
     <View>
       <View style={styles.header}>
@@ -46,12 +49,14 @@ export function DrawerSceneCards({ activeId, onSelect }: Props) {
           <View key={columnIndex} style={styles.column}>
         {column.map((s) => {
           const selected = s.id === activeId;
+          const entry = editorial.find(item => item.id === s.id);
+          const title = entry?.title ?? s.title;
           return (
             <Pressable
               key={s.id}
               testID={`drawer-scene-${s.id}`}
               accessibilityRole="radio"
-              accessibilityLabel={s.title}
+              accessibilityLabel={title}
               accessibilityState={{ checked: selected, selected }}
               onPress={() => {
                 if (!selected) onSelect(s.id);
@@ -62,13 +67,13 @@ export function DrawerSceneCards({ activeId, onSelect }: Props) {
               ]}
             >
               <View style={styles.iconWrap} pointerEvents="none">
-                {s.id === "indigo2" ? (
+                {entry?.iconPath ? <Image source={{ uri: resolveAvatarUrl(entry.iconPath)! }} style={{ width: 21, height: 21, opacity: selected ? 1 : 0.7 }} resizeMode="contain" /> : s.id === "indigo2" ? (
                   <MoonCrescentIcon size={21} color={selected ? s.iconColor : "#A8A8A8"} />
                 ) : (
                   <MaterialCommunityIcons name={s.icon} size={21} color={selected ? s.iconColor : "#A8A8A8"} />
                 )}
               </View>
-              <Text style={[styles.label, { color: selected ? "#FFFFFF" : "#A8A8A8" }]}>{s.title}</Text>
+              <Text style={[styles.label, { color: selected ? "#FFFFFF" : "#A8A8A8" }]}>{title}</Text>
             </Pressable>
           );
         })}

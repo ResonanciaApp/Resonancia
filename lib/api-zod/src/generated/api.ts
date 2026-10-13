@@ -8,6 +8,69 @@
 import * as zod from 'zod';
 
 
+export const getDrawerScenesResponseScenesItemTitleMax = 40;
+
+export const getDrawerScenesResponseScenesMin = 6;
+export const getDrawerScenesResponseScenesMax = 6;
+
+
+
+export const GetDrawerScenesResponse = zod.object({
+  "scenes": zod.array(zod.object({
+  "id": zod.enum(['cloudy', 'indigo2', 'natural', 'pleyades', 'galactic', 'fuego']),
+  "title": zod.string().min(1).max(getDrawerScenesResponseScenesItemTitleMax),
+  "iconPath": zod.string().nullable()
+})).min(getDrawerScenesResponseScenesMin).max(getDrawerScenesResponseScenesMax)
+})
+
+
+export const getAdminDrawerScenesResponseScenesItemTitleMax = 40;
+
+export const getAdminDrawerScenesResponseScenesMin = 6;
+export const getAdminDrawerScenesResponseScenesMax = 6;
+
+
+
+export const GetAdminDrawerScenesResponse = zod.object({
+  "scenes": zod.array(zod.object({
+  "id": zod.enum(['cloudy', 'indigo2', 'natural', 'pleyades', 'galactic', 'fuego']),
+  "title": zod.string().min(1).max(getAdminDrawerScenesResponseScenesItemTitleMax),
+  "iconPath": zod.string().nullable()
+})).min(getAdminDrawerScenesResponseScenesMin).max(getAdminDrawerScenesResponseScenesMax)
+})
+
+
+export const updateAdminDrawerScenesBodyScenesItemTitleMax = 40;
+
+export const updateAdminDrawerScenesBodyScenesMin = 6;
+export const updateAdminDrawerScenesBodyScenesMax = 6;
+
+
+
+export const UpdateAdminDrawerScenesBody = zod.object({
+  "scenes": zod.array(zod.object({
+  "id": zod.enum(['cloudy', 'indigo2', 'natural', 'pleyades', 'galactic', 'fuego']),
+  "title": zod.string().min(1).max(updateAdminDrawerScenesBodyScenesItemTitleMax),
+  "iconPath": zod.string().nullable()
+})).min(updateAdminDrawerScenesBodyScenesMin).max(updateAdminDrawerScenesBodyScenesMax)
+})
+
+export const updateAdminDrawerScenesResponseScenesItemTitleMax = 40;
+
+export const updateAdminDrawerScenesResponseScenesMin = 6;
+export const updateAdminDrawerScenesResponseScenesMax = 6;
+
+
+
+export const UpdateAdminDrawerScenesResponse = zod.object({
+  "scenes": zod.array(zod.object({
+  "id": zod.enum(['cloudy', 'indigo2', 'natural', 'pleyades', 'galactic', 'fuego']),
+  "title": zod.string().min(1).max(updateAdminDrawerScenesResponseScenesItemTitleMax),
+  "iconPath": zod.string().nullable()
+})).min(updateAdminDrawerScenesResponseScenesMin).max(updateAdminDrawerScenesResponseScenesMax)
+})
+
+
 export const getPremiumContentResponseContentSoundsTitleMax = 150;
 
 export const getPremiumContentResponseContentSoundsDescriptionMax = 2000;

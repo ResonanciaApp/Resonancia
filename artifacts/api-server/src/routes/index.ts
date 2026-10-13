@@ -36,11 +36,13 @@ import dailyQuotesRouter from "./daily-quotes";
 import greetingRouter from "./greeting";
 import streakInfoRouter from "./streak-info";
 import journeyInfoRouter from "./journey-info";
+import drawerScenesRouter from "./drawer-scenes";
 import premiumContentRouter from "./premium-content";
 import growthRouter from "./growth";
 
 const router: IRouter = Router();
 router.use(journeyInfoRouter);
+router.use(drawerScenesRouter);
 router.use(premiumContentRouter);
 
 router.use(healthRouter);

@@ -1,4 +1,5 @@
 export * from "./journey-info";
+export * from "./drawer-scenes";
 export * from "./premium-content";
 export * from "./streak-info";
 export * from "./growth-catalog";

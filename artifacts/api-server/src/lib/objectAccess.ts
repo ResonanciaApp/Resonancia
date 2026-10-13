@@ -5,6 +5,13 @@ import { ObjectStorageService } from "./objectStorage";
 export type ObjectReadAccess = "public" | "private" | "denied" | "inspiration-only";
 const objectStorageService = new ObjectStorageService();
 
+async function isDrawerSceneIcon(objectPath: string): Promise<boolean> {
+  const relation = await db.execute(sql`SELECT to_regclass('drawer_scenes_settings') AS name`);
+  if (!(relation.rows[0] as { name?: string })?.name) return false;
+  const result = await db.execute(sql`SELECT 1 FROM drawer_scenes_settings, jsonb_array_elements(content) scene WHERE scene->>'iconPath' = ${objectPath} LIMIT 1`);
+  return result.rows.length > 0;
+}
+
 export async function lockObjectPaths(
   tx: { execute: (query: SQL) => Promise<unknown> },
   objectPaths: string[],
@@ -21,6 +28,7 @@ export async function isObjectReferenced({
   objectPath: string;
   excludeCoverPresetId?: string;
 }): Promise<boolean> {
+  if (await isDrawerSceneIcon(objectPath)) return true;
   const relation = await db.execute(sql`SELECT to_regclass('premium_content_settings') AS name`);
   if ((relation.rows[0] as { name?: string })?.name) {
     const premium = await db.execute(sql`SELECT 1 FROM premium_content_settings p,
@@ -102,6 +110,7 @@ export async function resolveObjectReadAccess({
   objectPath: string;
   clerkUserId?: string;
 }): Promise<ObjectReadAccess> {
+  if (await isDrawerSceneIcon(objectPath)) return "public";
   const result = await db.execute(sql`
     WITH requester AS (
       SELECT id, role

@@ -168,6 +168,7 @@ const styles = StyleSheet.create({
     fontSize: 15,
     lineHeight: 23,
     color: STREAK_INFO_COLORS.subtitle,
-    textAlign: "center",
+    textAlign: "left",
+    alignSelf: "stretch",
   },
 });

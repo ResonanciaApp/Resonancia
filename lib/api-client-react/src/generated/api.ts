@@ -84,6 +84,7 @@ import type {
   DeleteAccountResponse,
   DeleteSubmission200,
   DirectMessage,
+  DrawerScenesSettings,
   EffectiveHero,
   EmotionalPhraseMoodId,
   ErrorEnvelope,
@@ -284,6 +285,213 @@ type AwaitedInput<T> = PromiseLike<T> | T;
 type SecondParameter<T extends (...args: never) => unknown> = Parameters<T>[1];
 
 
+
+export const getGetDrawerScenesUrl = () => {
+
+
+
+
+  return `/api/drawer-scenes`
+}
+
+export const getDrawerScenes = async ( options?: RequestInit): Promise<DrawerScenesSettings> => {
+
+  return customFetch<DrawerScenesSettings>(getGetDrawerScenesUrl(),
+  {
+    ...options,
+    method: 'GET'
+
+
+  }
+);}
+
+
+
+
+
+export const getGetDrawerScenesQueryKey = () => {
+    return [
+    `/api/drawer-scenes`
+    ] as const;
+    }
+
+
+export const getGetDrawerScenesQueryOptions = <TData = Awaited<ReturnType<typeof getDrawerScenes>>, TError = ErrorType<unknown>>( options?: { query?:UseQueryOptions<Awaited<ReturnType<typeof getDrawerScenes>>, TError, TData>, request?: SecondParameter<typeof customFetch>}
+) => {
+
+const {query: queryOptions, request: requestOptions} = options ?? {};
+
+  const queryKey =  queryOptions?.queryKey ?? getGetDrawerScenesQueryKey();
+
+
+
+    const queryFn: QueryFunction<Awaited<ReturnType<typeof getDrawerScenes>>> = ({ signal }) => getDrawerScenes({ signal, ...requestOptions });
+
+
+
+
+
+   return  { queryKey, queryFn, ...queryOptions} as UseQueryOptions<Awaited<ReturnType<typeof getDrawerScenes>>, TError, TData> & { queryKey: QueryKey }
+}
+
+export type GetDrawerScenesQueryResult = NonNullable<Awaited<ReturnType<typeof getDrawerScenes>>>
+export type GetDrawerScenesQueryError = ErrorType<unknown>
+
+
+
+export function useGetDrawerScenes<TData = Awaited<ReturnType<typeof getDrawerScenes>>, TError = ErrorType<unknown>>(
+  options?: { query?:UseQueryOptions<Awaited<ReturnType<typeof getDrawerScenes>>, TError, TData>, request?: SecondParameter<typeof customFetch>}
+
+ ):  UseQueryResult<TData, TError> & { queryKey: QueryKey } {
+
+  const queryOptions = getGetDrawerScenesQueryOptions(options)
+
+  const query = useQuery(queryOptions) as  UseQueryResult<TData, TError> & { queryKey: QueryKey };
+
+  return { ...query, queryKey: queryOptions.queryKey };
+}
+
+
+
+
+
+
+
+export const getGetAdminDrawerScenesUrl = () => {
+
+
+
+
+  return `/api/admin/drawer-scenes`
+}
+
+export const getAdminDrawerScenes = async ( options?: RequestInit): Promise<DrawerScenesSettings> => {
+
+  return customFetch<DrawerScenesSettings>(getGetAdminDrawerScenesUrl(),
+  {
+    ...options,
+    method: 'GET'
+
+
+  }
+);}
+
+
+
+
+
+export const getGetAdminDrawerScenesQueryKey = () => {
+    return [
+    `/api/admin/drawer-scenes`
+    ] as const;
+    }
+
+
+export const getGetAdminDrawerScenesQueryOptions = <TData = Awaited<ReturnType<typeof getAdminDrawerScenes>>, TError = ErrorType<unknown>>( options?: { query?:UseQueryOptions<Awaited<ReturnType<typeof getAdminDrawerScenes>>, TError, TData>, request?: SecondParameter<typeof customFetch>}
+) => {
+
+const {query: queryOptions, request: requestOptions} = options ?? {};
+
+  const queryKey =  queryOptions?.queryKey ?? getGetAdminDrawerScenesQueryKey();
+
+
+
+    const queryFn: QueryFunction<Awaited<ReturnType<typeof getAdminDrawerScenes>>> = ({ signal }) => getAdminDrawerScenes({ signal, ...requestOptions });
+
+
+
+
+
+   return  { queryKey, queryFn, ...queryOptions} as UseQueryOptions<Awaited<ReturnType<typeof getAdminDrawerScenes>>, TError, TData> & { queryKey: QueryKey }
+}
+
+export type GetAdminDrawerScenesQueryResult = NonNullable<Awaited<ReturnType<typeof getAdminDrawerScenes>>>
+export type GetAdminDrawerScenesQueryError = ErrorType<unknown>
+
+
+
+export function useGetAdminDrawerScenes<TData = Awaited<ReturnType<typeof getAdminDrawerScenes>>, TError = ErrorType<unknown>>(
+  options?: { query?:UseQueryOptions<Awaited<ReturnType<typeof getAdminDrawerScenes>>, TError, TData>, request?: SecondParameter<typeof customFetch>}
+
+ ):  UseQueryResult<TData, TError> & { queryKey: QueryKey } {
+
+  const queryOptions = getGetAdminDrawerScenesQueryOptions(options)
+
+  const query = useQuery(queryOptions) as  UseQueryResult<TData, TError> & { queryKey: QueryKey };
+
+  return { ...query, queryKey: queryOptions.queryKey };
+}
+
+
+
+
+
+
+
+export const getUpdateAdminDrawerScenesUrl = () => {
+
+
+
+
+  return `/api/admin/drawer-scenes`
+}
+
+export const updateAdminDrawerScenes = async (drawerScenesSettings: DrawerScenesSettings, options?: RequestInit): Promise<DrawerScenesSettings> => {
+
+  return customFetch<DrawerScenesSettings>(getUpdateAdminDrawerScenesUrl(),
+  {
+    ...options,
+    method: 'PUT',
+    headers: { 'Content-Type': 'application/json', ...options?.headers },
+    body: JSON.stringify(
+      drawerScenesSettings,)
+  }
+);}
+
+
+
+
+export const getUpdateAdminDrawerScenesMutationOptions = <TError = ErrorType<unknown>,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof updateAdminDrawerScenes>>, TError,{data: BodyType<DrawerScenesSettings>}, TContext>, request?: SecondParameter<typeof customFetch>}
+): UseMutationOptions<Awaited<ReturnType<typeof updateAdminDrawerScenes>>, TError,{data: BodyType<DrawerScenesSettings>}, TContext> => {
+
+const mutationKey = ['updateAdminDrawerScenes'];
+const {mutation: mutationOptions, request: requestOptions} = options ?
+      options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey ?
+      options
+      : {...options, mutation: {...options.mutation, mutationKey}}
+      : {mutation: { mutationKey, }, request: undefined};
+
+
+
+
+      const mutationFn: MutationFunction<Awaited<ReturnType<typeof updateAdminDrawerScenes>>, {data: BodyType<DrawerScenesSettings>}> = (props) => {
+          const {data} = props ?? {};
+
+          return  updateAdminDrawerScenes(data,requestOptions)
+        }
+
+
+
+
+
+
+  return  { mutationFn, ...mutationOptions }}
+
+    export type UpdateAdminDrawerScenesMutationResult = NonNullable<Awaited<ReturnType<typeof updateAdminDrawerScenes>>>
+    export type UpdateAdminDrawerScenesMutationBody = BodyType<DrawerScenesSettings>
+    export type UpdateAdminDrawerScenesMutationError = ErrorType<unknown>
+
+    export const useUpdateAdminDrawerScenes = <TError = ErrorType<unknown>,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof updateAdminDrawerScenes>>, TError,{data: BodyType<DrawerScenesSettings>}, TContext>, request?: SecondParameter<typeof customFetch>}
+ ): UseMutationResult<
+        Awaited<ReturnType<typeof updateAdminDrawerScenes>>,
+        TError,
+        {data: BodyType<DrawerScenesSettings>},
+        TContext
+      > => {
+      return useMutation(getUpdateAdminDrawerScenesMutationOptions(options));
+    }
 
 export const getGetPremiumContentUrl = () => {
 

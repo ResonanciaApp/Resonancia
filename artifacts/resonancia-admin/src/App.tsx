@@ -64,6 +64,7 @@ import ExplorarPage from "@/pages/explorar";
 import DormirOrdenPage from "@/pages/dormir-orden";
 import SonidosOrdenPage from "@/pages/sonidos-orden";
 import PortadasAvataresPage from "@/pages/portadas-avatares";
+import EscenaPage from "@/pages/escena";
 import ResonadoresPage from "@/pages/resonadores";
 import EmocionPage from "@/pages/emocion";
 import FraseDelDiaPage from "@/pages/frase-del-dia";
@@ -231,6 +232,7 @@ const NAV_SECTIONS = [
       { href: "/tu-camino", label: "Tu camino", icon: RouteIcon },
       { href: "/sistema-rachas", label: "Sistema de rachas", icon: Flame },
       { href: "/el-recorrido", label: "El Recorrido", icon: MapIcon },
+      { href: "/escena", label: "Escena", icon: Images },
       { href: "/geometrix", label: "Geometrix", icon: Hexagon },
     ],
   },
@@ -427,6 +429,7 @@ function AdminGate() {
         <Route path="/dormir-orden" component={DormirOrdenPage} />
         <Route path="/sonidos-orden" component={SonidosOrdenPage} />
         <Route path="/portadas-avatares" component={PortadasAvataresPage} />
+        <Route path="/escena" component={EscenaPage} />
         <Route path="/tu-camino" component={TuCaminoPage} />
         <Route path="/sistema-rachas" component={SistemaRachasPage} />
         <Route path="/el-recorrido" component={ElRecorridoPage} />

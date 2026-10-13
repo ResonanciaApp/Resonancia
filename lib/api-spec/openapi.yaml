@@ -39,6 +39,41 @@ tags:
   - name: greeting
     description: Global greeting shown on Inicio
 paths:
+  /drawer-scenes:
+    get:
+      operationId: getDrawerScenes
+      responses:
+        "200":
+          description: Drawer scene titles and icons
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/DrawerScenesSettings"
+  /admin/drawer-scenes:
+    get:
+      operationId: getAdminDrawerScenes
+      responses:
+        "200":
+          description: Drawer scene configuration
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/DrawerScenesSettings"
+    put:
+      operationId: updateAdminDrawerScenes
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/DrawerScenesSettings"
+      responses:
+        "200":
+          description: Saved drawer scenes
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/DrawerScenesSettings"
   /premium-content:
     get:
       operationId: getPremiumContent
@@ -5589,6 +5624,29 @@ paths:
         "404": {description: Reflection story not found}
 components:
   schemas:
+    DrawerScene:
+      type: object
+      required: [id, title, iconPath]
+      properties:
+        id:
+          type: string
+          enum: [cloudy, indigo2, natural, pleyades, galactic, fuego]
+        title:
+          type: string
+          minLength: 1
+          maxLength: 40
+        iconPath:
+          type: [string, "null"]
+    DrawerScenesSettings:
+      type: object
+      required: [scenes]
+      properties:
+        scenes:
+          type: array
+          minItems: 6
+          maxItems: 6
+          items:
+            $ref: "#/components/schemas/DrawerScene"
     GrowthReward:
       type: object
       required: [id, enabled, text, amount]

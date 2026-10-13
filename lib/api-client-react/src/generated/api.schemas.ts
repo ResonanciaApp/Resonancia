@@ -5,6 +5,37 @@
  * API specification
  * OpenAPI spec version: 0.1.0
  */
+export type DrawerSceneId = typeof DrawerSceneId[keyof typeof DrawerSceneId];
+
+
+export const DrawerSceneId = {
+  cloudy: 'cloudy',
+  indigo2: 'indigo2',
+  natural: 'natural',
+  pleyades: 'pleyades',
+  galactic: 'galactic',
+  fuego: 'fuego',
+} as const;
+
+export interface DrawerScene {
+  id: DrawerSceneId;
+  /**
+     * @minLength 1
+     * @maxLength 40
+     */
+  title: string;
+  /** @nullable */
+  iconPath: string | null;
+}
+
+export interface DrawerScenesSettings {
+  /**
+     * @minItems 6
+     * @maxItems 6
+     */
+  scenes: DrawerScene[];
+}
+
 export interface GrowthReward {
   /** @minLength 1 */
   id: string;
