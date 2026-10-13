@@ -142,7 +142,6 @@ export function ProfileSettingsSections({
     <View style={styles.root}>
       {placement === "settings" && __DEV__ && (
         <View style={styles.section}>
-          <Text style={[styles.sectionTitle, { color: foreground }]}>Premium testing</Text>
           <View style={[styles.card, { backgroundColor: cardBackground }]}>
             <View style={styles.row}>
               <View style={styles.iconBox}>
@@ -279,7 +278,6 @@ export function ProfileSettingsSections({
           {statisticsOpen && (
             <SettingsStatisticsPanel onClose={() => setStatisticsOpen(false)} />
           )}
-          <Text style={[styles.sectionTitle, { color: foreground }]}>Geometrix</Text>
           <Pressable
             onPress={() => openGeometrix()}
             accessibilityRole="button"
@@ -330,7 +328,7 @@ const styles = StyleSheet.create({
     paddingBottom: 20,
   },
   section: {
-    marginBottom: 20,
+    marginBottom: 45,
   },
   sectionTitle: {
     fontFamily: "Manrope",
@@ -420,7 +418,7 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     alignItems: "center",
     paddingHorizontal: 15,
-    marginBottom: 20,
+    marginBottom: 45,
   },
   geometrixText: {
     flex: 1,

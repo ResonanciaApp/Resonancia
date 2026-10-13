@@ -77,12 +77,15 @@ test("Mis estadísticas is above notifications and opens/closes its own window w
   assert.equal(texts[0], "Premium testing");
   assert.equal(nodes.find(node => node.type === "switch")?.props.accessibilityLabel, "Premium testing");
   assert.equal(labels.indexOf("Mis estadísticas"), labels.indexOf("Ayuda y soporte") + 1);
-  for (const title of ["Premium testing", "Mi cuenta", "Preferencias", "Comparte bienestar", "Información", "Nuestras redes", "Geometrix"]) {
+  for (const title of ["Mi cuenta", "Preferencias", "Comparte bienestar", "Información", "Nuestras redes"]) {
     const heading = nodes.find(node => node.type === "text" && node.props.children === title)!;
     assert.ok(heading, `Missing heading ${title}`);
     assert.equal(flatten(heading.props.style).fontSize, 19);
   }
-  const sectionContainers = nodes.filter(node => node.type === "view" && flatten(node.props.style).marginBottom === 20);
+  for (const label of ["Premium testing", "Geometrix"]) {
+    assert.equal(texts.filter(text => text === label).length, 1, `${label} has a row label only`);
+  }
+  const sectionContainers = nodes.filter(node => node.type === "view" && flatten(node.props.style).marginBottom === 45);
   assert.equal(sectionContainers.length, 6);
   for (const hidden of ["Elige el contenido que quieres recibir", "Mañana, tarde y noche"]) {
     assert.ok(!texts.includes(hidden), `${hidden} should not be shown`);
