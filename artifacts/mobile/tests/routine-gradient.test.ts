@@ -41,6 +41,18 @@ new Function("require", "module", "exports", compiled)((name: string) => {
   return mocks[name];
 }, module, module.exports);
 
+test("Fuego routine salmon is 10% darker without changing other themes", () => {
+  themeId = "fuego";
+  try {
+    const colors = ["#ED9572", "#F2AA91"].map(hex => "#" + hex.slice(1).match(/../g)!.map(channel =>
+      Math.round(parseInt(channel, 16) * 0.9).toString(16).padStart(2, "0")).join("").toUpperCase());
+    const html = renderToStaticMarkup(React.createElement(module.exports.RoutineGradientFill));
+    assert.ok(html.includes(`data-colors="${colors.join(",")}"`));
+  } finally {
+    themeId = "indigo2";
+  }
+});
+
 test("routine gradient renders only the two updated reference colors horizontally without intercepting taps", () => {
   const html = renderToStaticMarkup(React.createElement(module.exports.RoutineGradientFill));
   assert.match(html, /data-colors="#477FBD,#4A99BC"/);
