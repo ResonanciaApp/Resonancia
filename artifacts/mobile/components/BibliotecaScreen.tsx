@@ -2183,7 +2183,7 @@ export function BibliotecaScreen({
         onClose={() => setCreateVisible(false)}
         onCreatePlaylist={() => setNombreVisible(true)}
         onCreateCarpeta={() => setNombreCarpetaVisible(true)}
-        onGoMezclas={() => { openMixer(); router.navigate("/(tabs)/musica" as never); }}
+        onGoMezclas={openMixer}
         onAddResonador={() => setAddResonadorVisible(true)}
         sheetColor={librarySheetColor}
       />
