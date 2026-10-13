@@ -447,7 +447,7 @@ const styles = StyleSheet.create({
     textShadowColor: "rgba(0,0,0,.8)",
     textShadowRadius: 4,
   },
-  selectionDot: { position: "absolute", bottom: 10, alignSelf: "center", width: 8, height: 8, borderRadius: 4, backgroundColor: "rgba(59,173,2,0.7)" },
+  selectionDot: { position: "absolute", bottom: 10, alignSelf: "center", width: 8, height: 8, borderRadius: 4, backgroundColor: "rgba(61,179,122,0.7)" },
   disabled: { opacity: 0.38 },
   notice: {
     position: "absolute",
