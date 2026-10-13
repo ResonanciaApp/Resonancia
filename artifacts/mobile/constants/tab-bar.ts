@@ -12,6 +12,7 @@ export const TAB_PILL_BAR_H = 58;
 
 /** Natural keeps the same glass opacity while changing only its tint. */
 export function getTabBarGlassOverlay(themeId: string): string {
+  if (themeId === "galactic") return "rgba(9,18,41,0.744)";
   if (themeId === "fuego") return "rgba(33,16,8,0.744)";
   return themeId === "natural" ? "rgba(8,33,28,0.744)" : TAB_PILL_GLASS_OVERLAY;
 }
