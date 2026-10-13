@@ -8,7 +8,7 @@ import { useAuth } from "@/context/AuthContext";
 import { useColors } from "@/hooks/useColors";
 import { SceneThemeBackground } from "@/components/SceneThemeBackground";
 import { StoryArtworkFrame } from "@/components/StoryArtworkFrame";
-import { useCoverPresetCatalog } from "@/lib/cover-preset-catalog";
+import { useCoverPresetCatalog, reflectionStoryImage } from "@/lib/cover-preset-catalog";
 import { resolveProfileAvatarSource } from "@/lib/profile-avatar-logic";
 
 export default function PublicReflectionScreen() {
@@ -38,7 +38,7 @@ export default function PublicReflectionScreen() {
         query.isError || !story ? <Text style={[styles.unavailable, { color: colors.foreground }]}>Esta reflexión ya no está disponible.</Text> :
           <ScrollView contentContainerStyle={{ alignItems: "center", paddingBottom: insets.bottom + 24 }}>
             <StoryArtworkFrame width={width - 40} message={story.message}
-              bgImageSource={catalog.find(p => p.key === story.backgroundPresetKey)?.source}
+              bgImageSource={reflectionStoryImage(catalog, story.backgroundPresetKey)}
               composition={story}
               avatarSource={resolveProfileAvatarSource({ avatarUrl: story.avatarImagePath }, [])}
               avatarPosition={story.avatarX != null && story.avatarY != null ? { x: story.avatarX, y: story.avatarY } : undefined} />

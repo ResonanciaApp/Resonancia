@@ -15,7 +15,6 @@ import {
 import { resolveAvatarUrl } from "@/lib/avatar";
 import {
   resolveCatalogRecord,
-  padWithBootstrap,
 } from "@/lib/cover-preset-catalog-logic";
 import { parseCatalogEnvelope, type AvatarCategory } from "@/lib/profile-avatar-categories";
 
@@ -95,11 +94,6 @@ function resolveItem(item: CoverPreset): CoverCatalogItem | null {
 export function resolveCoverCatalog(items: CoverPreset[], scope?: CoverCatalogScope): CoverCatalogItem[] {
   let resolved = items.map(resolveItem).filter((item): item is CoverCatalogItem => item !== null);
 
-  if (scope === "reflection-story") {
-    const bootstrap = bundledCoverCatalog(scope);
-    resolved = padWithBootstrap(resolved, bootstrap);
-  }
-
   return resolved;
 }
 
@@ -110,6 +104,13 @@ export function catalogImage(
   if (!key) return undefined;
   const item = memoryCatalog.get(scope)?.find((candidate) => candidate.key === key || candidate.id === key);
   return item ? resolveItem(item)?.source : bundledByKey.get(key)?.source;
+}
+
+/** Deleted presets remain reconstructible in saved stories, not in the picker. */
+export function reflectionStoryImage(items: CoverCatalogItem[], key: string) {
+  return items.find(item => item.key === key)?.source
+    ?? bundledByKey.get(key)?.source
+    ?? (key.startsWith("/objects/") ? { uri: resolveAvatarUrl(key)! } : undefined);
 }
 
 async function hydrate(scope: CoverCatalogScope): Promise<void> {

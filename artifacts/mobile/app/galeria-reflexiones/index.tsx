@@ -17,7 +17,7 @@ import {
 } from "@workspace/api-client-react";
 import { StoryArtworkFrame } from "@/components/StoryArtworkFrame";
 import { resolveProfileAvatarSource } from "@/lib/profile-avatar-logic";
-import { useCoverPresetCatalogState } from "@/lib/cover-preset-catalog";
+import { useCoverPresetCatalogState, reflectionStoryImage } from "@/lib/cover-preset-catalog";
 import { useReflectionCategories } from "@/constants/reflectionCategories";
 
 const COLUMN_COUNT = 2;
@@ -129,9 +129,7 @@ export default function GalleryScreen() {
   }, [firstPageData, paginationScope, requestScope, subsequentPages]);
 
   const renderItem = ({ item }: { item: ReflectionStory }) => {
-    const bgImageSource = coverCatalog.find(
-      (candidate) => candidate.key === item.backgroundPresetKey,
-    )?.source;
+    const bgImageSource = reflectionStoryImage(coverCatalog, item.backgroundPresetKey);
     // Stories can outlive a category (or arrive before the catalog request
     // finishes). Keep historical stories renderable instead of indexing an
     // undefined legacy presentation.

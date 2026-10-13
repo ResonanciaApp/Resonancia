@@ -4,6 +4,7 @@ import {
   COVER_PRESET_SCOPES,
   REFLECTION_STORY_BUILTIN_KEYS,
   coverPresetsTable,
+  reflectionStoriesTable,
   db,
   uploadsTable,
   type CoverPreset,
@@ -32,8 +33,8 @@ import {
 const router: IRouter = Router();
 const objectStorageService = new ObjectStorageService();
 const REFLECTION_STORY_SCOPE = "reflection-story" as const;
-const DEFAULT_COVER_PRESET_LIMIT = 50;
-const REFLECTION_STORY_PRESET_LIMIT = 100;
+const DEFAULT_COVER_PRESET_LIMIT = 150;
+const REFLECTION_STORY_PRESET_LIMIT = 150;
 
 function serializePreset(preset: CoverPreset) {
   return {
@@ -148,11 +149,6 @@ router.post("/admin/cover-presets", requireAuth, requireRole("admin"), async (re
   }
   const { scope, label, objectPath } = parsed.data;
   const me = req.currentUser!;
-  if (scope === REFLECTION_STORY_SCOPE) {
-    if (objectPath) await cleanupUnclaimedObject(objectPath, me.id, req.log);
-    res.status(409).json({ error: "Mi viaje interior usa 100 posiciones fijas; reemplaza una posición existente" });
-    return;
-  }
   if (!objectPath) {
     res.status(400).json({ error: "Las nuevas portadas requieren una imagen subida" });
     return;
@@ -228,15 +224,6 @@ router.put("/admin/cover-presets/order", requireAuth, requireRole("admin"), asyn
       )) {
         throw new Error("stale_order");
       }
-      if (
-        parsed.data.scope === REFLECTION_STORY_SCOPE
-        && (
-          rows.length !== REFLECTION_STORY_PRESET_LIMIT
-          || rows.some((row) => reflectionStoryBuiltinKey(row.key) === undefined)
-        )
-      ) {
-        throw new Error("fixed_slots");
-      }
       const ids = new Set(rows.map((row) => row.id));
       if (duplicateIds(parsed.data.ids)) throw new Error("duplicates");
       if (rows.length !== parsed.data.ids.length || parsed.data.ids.some((id) => !ids.has(id))) {
@@ -273,10 +260,6 @@ router.put("/admin/cover-presets/order", requireAuth, requireRole("admin"), asyn
     }
     if (err instanceof Error && err.message === "order") {
       res.status(400).json({ error: "El orden debe incluir exactamente todas las imágenes de la colección" });
-      return;
-    }
-    if (err instanceof Error && err.message === "fixed_slots") {
-      res.status(409).json({ error: "Mi viaje interior debe conservar exactamente sus 100 posiciones fijas" });
       return;
     }
     req.log.error({ err }, "error reordering cover presets");
@@ -417,14 +400,10 @@ router.delete("/admin/cover-presets/:id", requireAuth, requireRole("admin"), asy
       [current] = await tx.select().from(coverPresetsTable).where(eq(coverPresetsTable.id, parsed.data.id)).limit(1);
       if (!current) return [];
       if (current.scope === REFLECTION_STORY_SCOPE) {
-        const builtinKey = reflectionStoryBuiltinKey(current.key);
-        if (!builtinKey) throw new Error("invalid_fixed_slot");
-        const [reset] = await tx.update(coverPresetsTable).set({
-          objectPath: null,
-          builtinKey,
-          updatedAt: new Date(),
-        }).where(eq(coverPresetsTable.id, parsed.data.id)).returning();
-        return reset ? [{ ...reset, objectPath: current.objectPath }] : [];
+        // Preserve historical artwork before removing the selectable catalog entry.
+        await tx.update(reflectionStoriesTable).set({
+          backgroundPresetKey: current.objectPath ?? current.builtinKey!,
+        }).where(eq(reflectionStoriesTable.backgroundPresetKey, current.key));
       }
       return tx.delete(coverPresetsTable).where(eq(coverPresetsTable.id, parsed.data.id)).returning();
     });
@@ -446,10 +425,6 @@ router.delete("/admin/cover-presets/:id", requireAuth, requireRole("admin"), asy
     }
     res.status(204).end();
   } catch (err) {
-    if (err instanceof Error && err.message === "invalid_fixed_slot") {
-      res.status(409).json({ error: "La posición no pertenece al catálogo fijo de Mi viaje interior" });
-      return;
-    }
     req.log.error({ err }, "error deleting cover preset");
     res.status(500).json({ error: "Error al eliminar la portada" });
   }

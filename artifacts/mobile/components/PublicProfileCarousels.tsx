@@ -12,7 +12,7 @@ import {
 } from "@workspace/api-client-react";
 import { useAuth } from "@/context/AuthContext";
 import { useColors } from "@/hooks/useColors";
-import { useCoverPresetCatalog } from "@/lib/cover-preset-catalog";
+import { useCoverPresetCatalog, reflectionStoryImage } from "@/lib/cover-preset-catalog";
 import { resolveProfileAvatarSource } from "@/lib/profile-avatar-logic";
 import { StoryArtworkFrame } from "@/components/StoryArtworkFrame";
 import {
@@ -138,7 +138,7 @@ export function PublicProfileCarousels({ userId }: { userId: number }) {
               <StoryArtworkFrame
                 width={cardWidth}
                 message={item.message}
-                bgImageSource={storyCatalog.find(p => p.key === item.backgroundPresetKey)?.source}
+                bgImageSource={reflectionStoryImage(storyCatalog, item.backgroundPresetKey)}
                 avatarSource={resolveProfileAvatarSource({ avatarUrl: item.avatarImagePath }, [])}
                 avatarPosition={item.avatarX != null && item.avatarY != null ? { x: item.avatarX, y: item.avatarY } : undefined}
                 composition={item}

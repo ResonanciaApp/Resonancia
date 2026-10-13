@@ -117,7 +117,7 @@
 - [Hero secundario en Admin Inspiración](admin-inspiration-hero-hierarchy.md) — Hero de Inicio va debajo del editor principal y plegado por defecto; nunca como tercera columna que comprima el contenido diario
 - [Controles circulares de navegación](circular-navigation-controls.md) — chevron/X/lupa/tres puntos y similares: negro 16% sin borde en toda la app; preservar tamaños y elementos decorativos
 - [Instagram Stories requiere Meta App ID](instagram-stories-meta-app-id.md) — source_application usa el ID numérico público de Meta, no el bundle ID; además declarar scheme iOS y package query Android
-- [Fondos de historias de reflexión](reflection-story-backgrounds.md) — Mi viaje interior conserva 100 slots permanentes; borrar restaura el fondo incluido y nunca reduce ni renumera el catálogo
+- [Fondos de historias de reflexión](reflection-story-backgrounds.md) — hasta 150 imágenes; borrar elimina la card y libera un cupo, sin restaurar fondos ni afectar historias guardadas
 - [Galería de historias iniciadas](reflection-story-gallery.md) — registra al confirmar “Abrir Instagram”, no al completar publicación; snapshot visual reconstruible e idempotencia por intento
 - [Control externo de fondos](reflection-story-picker-controls.md) — el botón de ampliar del compositor del muro pertenece afuera de la grilla, arriba a la derecha
 - [Muro expansivo optimista](reflection-wall-optimistic.md) — guardar siembra el caché del muro y borrar oculta la card antes de cerrar el editor; rollback solo si falla la red

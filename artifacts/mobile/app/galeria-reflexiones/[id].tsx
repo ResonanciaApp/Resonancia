@@ -12,7 +12,7 @@ import { useQueryClient } from "@tanstack/react-query";
 import { StoryShareModal } from "@/components/StoryShareModal";
 import { StoryArtworkFrame } from "@/components/StoryArtworkFrame";
 import { resolveProfileAvatarSource } from "@/lib/profile-avatar-logic";
-import { useCoverPresetCatalogState } from "@/lib/cover-preset-catalog";
+import { useCoverPresetCatalogState, reflectionStoryImage } from "@/lib/cover-preset-catalog";
 import { useColors } from "@/hooks/useColors";
 import { useAuth } from "@/context/AuthContext";
 import { Feather } from "@expo/vector-icons";
@@ -59,9 +59,7 @@ export default function GalleryDetailScreen() {
     );
   }
 
-  const selectedImageSource = coverCatalog.find(
-    (candidate) => candidate.key === story.backgroundPresetKey,
-  )?.source;
+  const selectedImageSource = reflectionStoryImage(coverCatalog, story.backgroundPresetKey);
 
   const checkConstraints = () => {
     if (!canShareReflection(story.message)) {

@@ -23,7 +23,7 @@ vi.mock("../lib/objectStorage", () => ({
 }));
 vi.mock("../lib/communityActivity", () => ({ recordCommunityEvent: vi.fn(async () => {}) }));
 
-import { coverPresetsTable, db, uploadsTable, usersTable, type User } from "@workspace/db";
+import { coverPresetsTable, reflectionStoriesTable, db, uploadsTable, usersTable, type User } from "@workspace/db";
 import { eq, inArray } from "drizzle-orm";
 import coverPresetsRouter, { reflectionStoryBuiltinKey, scopeLimit } from "./cover-presets";
 import usersRouter from "./users";
@@ -124,11 +124,11 @@ describe("cover preset catalog security and profile identity", () => {
     await db.delete(uploadsTable).where(eq(uploadsTable.id, audio.id));
   });
 
-  it("limits profile to 350 without expanding other catalogs", () => {
+  it("limits profile to 350 and other catalogs to 150", () => {
     expect(scopeLimit("profile")).toBe(350);
-    expect(scopeLimit("playlist")).toBe(50);
-    expect(scopeLimit("mix")).toBe(50);
-    expect(scopeLimit("reflection-story")).toBe(100);
+    expect(scopeLimit("playlist")).toBe(150);
+    expect(scopeLimit("mix")).toBe(150);
+    expect(scopeLimit("reflection-story")).toBe(150);
     const ids = Array.from({ length: 350 }, (_, index) => `avatar-${index}`);
     expect(ReorderAdminCoverPresetsBody.safeParse({ scope: "profile", ids, expectedIds: ids }).success).toBe(true);
     expect(ReorderAdminCoverPresetsBody.safeParse({ scope: "profile", ids: [...ids, "extra"] }).success).toBe(false);
@@ -203,11 +203,11 @@ describe("cover preset catalog security and profile identity", () => {
     await db.delete(uploadsTable).where(eq(uploadsTable.id, upload.id));
   });
 
-  it("enforces the 100-image limit for reflection story backgrounds", async () => {
+  it("enforces the 150-image limit for reflection story backgrounds", async () => {
     authAs(admin);
     const existingReflectionRows = await db.select().from(coverPresetsTable)
       .where(eq(coverPresetsTable.scope, "reflection-story"));
-    const rows = Array.from({ length: Math.max(0, 100 - existingReflectionRows.length) }, (_, index) => ({
+    const rows = Array.from({ length: Math.max(0, 150 - existingReflectionRows.length) }, (_, index) => ({
       id: `reflection-story:limit-${suffix}-${index}`,
       scope: "reflection-story" as const,
       key: `limit-${suffix}-${index}`,
@@ -216,10 +216,11 @@ describe("cover preset catalog security and profile identity", () => {
       objectPath: null,
       sortOrder: Math.max(-1, ...existingReflectionRows.map((row) => row.sortOrder)) + index + 1,
     }));
+    temporaryPresetIds.push(...rows.map(row => row.id));
     if (rows.length > 0) await db.insert(coverPresetsTable).values(rows);
     const publicList = await request(app).get("/api/cover-presets?scope=reflection-story");
     expect(publicList.status).toBe(200);
-    expect(publicList.body.presets).toHaveLength(100);
+    expect(publicList.body.presets).toHaveLength(150);
     expect(publicList.body.presets[0].sortOrder).toBe(0);
     const [upload] = await db.insert(uploadsTable).values({
       userId: admin.id,
@@ -234,15 +235,15 @@ describe("cover preset catalog security and profile identity", () => {
       objectPath: upload.objectPath,
     });
     expect(response.status).toBe(409);
-    expect(response.body.error).toContain("100");
-    expect(storageState.deleteObjectEntity).toHaveBeenCalledWith(upload.objectPath);
+    expect(response.body.error).toContain("150");
+    await vi.waitFor(() => expect(storageState.deleteObjectEntity).toHaveBeenCalledWith(upload.objectPath));
     expect(await db.select().from(uploadsTable).where(eq(uploadsTable.id, upload.id))).toHaveLength(0);
     if (rows.length > 0) {
       await db.delete(coverPresetsTable).where(inArray(coverPresetsTable.id, rows.map((row) => row.id)));
     }
   });
 
-  it("maps only the 100 permanent reflection story slots to bundled backgrounds", () => {
+  it("maps the legacy 100 reflection story keys to bundled backgrounds", () => {
     expect(reflectionStoryBuiltinKey("01")).toBe("cosmic-nebula");
     expect(reflectionStoryBuiltinKey("25")).toBe("northern-lights");
     expect(reflectionStoryBuiltinKey("26")).toBe("cosmic-nebula");
@@ -251,6 +252,33 @@ describe("cover preset catalog security and profile identity", () => {
     expect(reflectionStoryBuiltinKey("100")).toBe("northern-lights");
     expect(reflectionStoryBuiltinKey("00")).toBeUndefined();
     expect(reflectionStoryBuiltinKey("101")).toBeUndefined();
+  });
+
+  it("deletes a reflection background and allows a new upload in the freed catalog capacity", async () => {
+    authAs(admin);
+    const objectPath = `/objects/story-new-${suffix}`;
+    const [upload] = await db.insert(uploadsTable).values({
+      userId: admin.id, objectPath, name: "story.jpg", contentType: "image/jpeg", sizeBytes: 100,
+    }).returning();
+    const created = await request(app).post("/api/admin/cover-presets").send({
+      scope: "reflection-story", label: "Story fixture", objectPath,
+    });
+    expect(created.status).toBe(201);
+    temporaryPresetIds.push(created.body.id);
+    const [story] = await db.insert(reflectionStoriesTable).values({
+      userId: regular.id, idempotencyKey: `preserved-${suffix}`,
+      message: "Historia guardada", category: "clarity",
+      backgroundPresetKey: created.body.key,
+      backgroundScale: 1, backgroundX: 0, backgroundY: 0, textX: 0, textY: 0,
+    }).returning();
+    expect((await request(app).delete(`/api/admin/cover-presets/${created.body.id}`)).status).toBe(204);
+    const catalog = await request(app).get("/api/cover-presets?scope=reflection-story");
+    expect(catalog.body.presets.some((item: { id: string }) => item.id === created.body.id)).toBe(false);
+    const [preserved] = await db.select().from(reflectionStoriesTable).where(eq(reflectionStoriesTable.id, story.id));
+    expect(preserved.backgroundPresetKey).toBe(objectPath);
+    expect(storageState.deleteObjectEntity).not.toHaveBeenCalledWith(objectPath);
+    await db.delete(reflectionStoriesTable).where(eq(reflectionStoriesTable.id, story.id));
+    await db.delete(uploadsTable).where(eq(uploadsTable.id, upload.id));
   });
 
   it("does not delete an uploaded object while another entity references it", async () => {

@@ -92,7 +92,7 @@ const SCOPES: { value: CoverPresetScope; label: string; description: string }[] 
   {
     value: "reflection-story",
     label: "Mi viaje interior",
-    description: "100 fondos para compartir reflexiones como historias.",
+    description: "Hasta 150 fondos para compartir reflexiones como historias.",
   },
 ];
 
@@ -103,7 +103,7 @@ export default function PortadasAvataresPage() {
         <h1 className="text-2xl font-bold">Portadas y avatares</h1>
         <p className="mt-1 text-sm text-muted-foreground">
           Administrá las imágenes predeterminadas que los usuarios pueden elegir.
-            Perfil permite hasta 350 avatares. Mezclas y Playlists permiten 50 opciones cada una. Mi viaje interior mantiene 100 posiciones fijas.
+            Perfil permite hasta 350 avatares. Mezclas, Playlists y Mi viaje interior permiten hasta 150 imágenes cada una.
         </p>
       </div>
 
@@ -185,9 +185,8 @@ export function ScopeSection({
     }
   }, [query.error, scope.label]);
 
-  const isFixedSlots = scope.value === "reflection-story";
   const isProfile = scope.value === "profile";
-  const maxSlots = isFixedSlots ? 100 : scope.value === "profile" ? 350 : 50;
+  const maxSlots = isProfile ? 350 : 150;
   const maxReached = presets.length >= maxSlots;
 
   const categories = query.data?.categories ?? [];
@@ -261,7 +260,7 @@ export function ScopeSection({
   }
 
   function applyOrderMode() {
-    if (!isProfile || isMutating || lockingId !== null || orderConflict || orderMode === "manual") return;
+    if (isMutating || lockingId !== null || orderConflict || orderMode === "manual") return;
     const next = orderMode === "random" ? shufflePresets(presets) : interleavePresets(presets, categories);
     setPresets(next);
     setDirty(!samePresetOrder(next, baselineRef.current));
@@ -273,7 +272,7 @@ export function ScopeSection({
     savingRef.current = true;
     setCheckingOrder(true);
     try {
-      if (isProfile) {
+      {
         const fresh = await query.refetch();
         if (fresh.error || !fresh.data) throw new Error("Catalog could not be checked");
         if (presetCatalogSignature(fresh.data.presets) !== presetCatalogSignature(baselineRef.current)) {
@@ -287,7 +286,7 @@ export function ScopeSection({
         data: {
           scope: scope.value,
           ids,
-          ...(isProfile ? { expectedIds: baselineRef.current.map(item => item.id) } : {}),
+          expectedIds: baselineRef.current.map(item => item.id),
         },
       });
       queryClient.setQueryData(getListAdminCoverPresetsQueryKey({ scope: scope.value }), saved);
@@ -298,7 +297,7 @@ export function ScopeSection({
       toast.success("Orden guardado");
       void queryClient.invalidateQueries({ queryKey: getListCoverPresetsQueryKey({ scope: scope.value }) });
     } catch (error) {
-      if (isProfile && error && typeof error === "object" && "status" in error && error.status === 409) {
+      if (error && typeof error === "object" && "status" in error && error.status === 409) {
         setOrderConflict(true);
         await query.refetch();
         toast.error("El catálogo cambió. Cancela este orden para cargar la versión actual.");
@@ -386,12 +385,12 @@ export function ScopeSection({
   }
 
   async function handleDelete(preset: CoverPreset) {
-    const action = isFixedSlots ? "restaurar el fondo incluido de" : "borrar";
+    const action = "borrar";
     if (!window.confirm(`¿${action.charAt(0).toUpperCase()}${action.slice(1)} "${preset.label}"?`)) return;
     
     try {
       await deletePreset.mutateAsync({ id: preset.id });
-      toast.success(isFixedSlots ? "Fondo incluido restaurado" : "Imagen eliminada");
+      toast.success("Imagen eliminada; espacio disponible");
       void query.refetch();
     } catch {
       toast.error("Error al eliminar la imagen");
@@ -421,7 +420,7 @@ export function ScopeSection({
 
       {expanded && (
         <div id={`cover-presets-${scope.value}`} className="px-6 pb-6">
-          {!isFixedSlots && (
+          {(
             <div className="mb-4 flex justify-end">
               <label className={`inline-flex h-9 items-center justify-center rounded-md border border-input bg-background px-4 py-2 text-sm font-medium shadow-sm transition-colors hover:bg-accent hover:text-accent-foreground ${isUploadDisabled ? 'pointer-events-none opacity-50' : 'cursor-pointer'}`}>
                 <input
@@ -441,12 +440,12 @@ export function ScopeSection({
             </div>
           )}
 
-          {isProfile && (
+          {(
             <div className="mb-5 space-y-2">
               <div className="flex flex-wrap items-center gap-3">
-                <label htmlFor="profile-avatar-order-mode" className="text-sm font-medium">Orden de los avatares</label>
+                <label htmlFor={`cover-order-${scope.value}`} className="text-sm font-medium">Orden de las imágenes</label>
                 <select
-                  id="profile-avatar-order-mode"
+                  id={`cover-order-${scope.value}`}
                   value={orderMode}
                   disabled={isMutating || orderConflict || lockingId !== null || query.isLoading}
                   onChange={event => setOrderMode(event.target.value as typeof orderMode)}
@@ -454,7 +453,7 @@ export function ScopeSection({
                 >
                   <option value="manual">Manual</option>
                   <option value="random">Aleatorio</option>
-                  <option value="interleaved">Intercalado por categoría</option>
+                  {isProfile && <option value="interleaved">Intercalado por categoría</option>}
                 </select>
                 {orderMode !== "manual" && (
                   <Button variant="outline" onClick={applyOrderMode} disabled={isMutating || orderConflict || lockingId !== null || query.isLoading || presets.length < 2}>
@@ -466,7 +465,7 @@ export function ScopeSection({
                 {orderMode === "manual"
                   ? "Arrastra las tarjetas o mueve una selección a una posición."
                   : orderMode === "random"
-                    ? "Genera una mezcla de todos los avatares. El orden no cambia solo al abrir la app."
+                    ? "Mezcla las imágenes. El orden no cambia solo al abrir la app."
                     : "Alterna uno por categoría, sin repetir avatares. Sin categoría participa como otro grupo."}
                 {" "}Pulsa Guardar orden para reflejar los cambios en la app.
               </p>
@@ -552,12 +551,12 @@ export function ScopeSection({
                   {index + 1}
                 </span>
                 
-                <div className={`relative shrink-0 overflow-hidden border border-border bg-secondary ${isProfile ? "h-24 w-24 rounded-full" : "h-12 w-12 rounded-md"}`}>
+                <div className={`relative shrink-0 overflow-hidden border border-border bg-secondary ${isProfile ? "h-24 w-24 rounded-full" : "h-36 w-36 rounded-md"}`}>
                   {previewUrl(preset.objectPath, preset.builtinKey) ? (
                     <img
                       src={previewUrl(preset.objectPath, preset.builtinKey)!}
                       alt={preset.label}
-                      loading={isProfile ? "lazy" : undefined}
+                      loading="lazy"
                       className="h-full w-full object-cover"
                     />
                   ) : (
@@ -614,9 +613,9 @@ export function ScopeSection({
                       onChange={(e) => void handleReplace(preset.id, e)}
                       disabled={isMutating || dirty}
                     />
-                    {isFixedSlots ? "Cambiar fondo" : "Reemplazar"}
+                    Reemplazar
                   </label>
-                  {(!isFixedSlots || preset.source === "object") && (
+                  {(
                     <Button
                       type="button"
                       variant="ghost"
@@ -624,8 +623,10 @@ export function ScopeSection({
                       className="h-8 px-2 text-destructive hover:bg-destructive/10 hover:text-destructive"
                       onClick={() => void handleDelete(preset)}
                       disabled={isMutating || dirty}
+                      aria-label={`Borrar ${preset.label}`}
                     >
                       <Trash2 className="h-4 w-4" />
+                      {scope.value === "reflection-story" && <span className="ml-1">Borrar</span>}
                     </Button>
                   )}
                 </div>

@@ -37,7 +37,7 @@ export async function isObjectReferenced({
       OR EXISTS (SELECT 1 FROM growth_catalog g, jsonb_array_elements(g.stages) s WHERE s->>'imageUrl' = ${objectPath})
       OR EXISTS (SELECT 1 FROM growth_catalog g, jsonb_array_elements(COALESCE(g.worlds, '[]'::jsonb)) w WHERE w->>'coverUrl' = ${objectPath})
       OR EXISTS (SELECT 1 FROM users WHERE avatar_url = ${objectPath})
-      OR EXISTS (SELECT 1 FROM reflection_stories WHERE avatar_image_path = ${objectPath})
+      OR EXISTS (SELECT 1 FROM reflection_stories WHERE avatar_image_path = ${objectPath} OR background_preset_key = ${objectPath})
       OR EXISTS (SELECT 1 FROM shared_mixes WHERE image = ${objectPath})
       OR EXISTS (SELECT 1 FROM catalog_sessions WHERE image_url = ${objectPath})
       OR EXISTS (SELECT 1 FROM catalog_sessions WHERE image_key = ${objectPath})
@@ -211,10 +211,10 @@ export async function resolveObjectReadAccess({
         OR EXISTS (
           SELECT 1
           FROM reflection_stories story
-          JOIN uploads image_upload ON image_upload.object_path = story.avatar_image_path
+          JOIN uploads image_upload ON image_upload.object_path = ${objectPath}
           JOIN users uploader ON uploader.id = image_upload.user_id
-          WHERE story.is_public = true
-            AND story.avatar_image_path = ${objectPath}
+          WHERE (story.is_public = true OR story.user_id IN (SELECT id FROM requester))
+            AND (story.avatar_image_path = ${objectPath} OR story.background_preset_key = ${objectPath})
             AND (image_upload.user_id = story.user_id OR uploader.role IN ('admin', 'moderador'))
         )
         OR EXISTS (
